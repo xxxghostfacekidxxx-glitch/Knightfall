@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ash-Fall Forum</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            background: linear-gradient(45deg,#ff6b6b,#ee5a6f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-section { display: flex; gap: 15px; align-items: center; }
+
+        .btn {
+            background: linear-gradient(45deg,#ee5a6f,#f29263);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-secondary { background: rgba(255,255,255,0.1); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #ee5a6f;
+        }
+
+        .thread-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .reply-card {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 3px solid #ee5a6f;
+        }
+
+        #threadView { display: none; }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+    <h1>🔥 Ash-Fall Forum</h1>
+    <div class="user-section">
+        <span id="userDisplay">Guest</span>
+        <button class="btn" id="loginBtn">Login</button>
+        <button class="btn btn-secondary" id="signupBtn">Sign Up</button>
+        <button class="btn" id="logoutBtn" style="display:none;">Logout</button>
+    </div>
+</header>
+
+<div id="threadList">
+    <button class="btn" id="newThreadBtn">+ New Thread</button>
+    <div id="threads"></div>
+</div>
+
+<div id="threadView">
+    <button class="btn" id="backBtn">← Back</button>
+    <div id="threadDetail"></div>
+    <h3>Replies</h3>
+    <div id="replies"></div>
+    <textarea id="replyInput" placeholder="Write a reply..."></textarea>
+    <button class="btn" id="submitReply">Post Reply</button>
+</div>
+
+</div>
+
+<script>
+/* =============================
+   CONFIG
+============================= */
+const API_URL = '/api';
+
+let currentUser = null;
+let currentThreadId = null;
+
+/* =============================
+   INIT
+============================= */
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    loadThreads();
+
+    loginBtn.onclick = () => toggleModal('loginModal', true);
+    signupBtn.onclick = () => toggleModal('signupModal', true);
+    logoutBtn.onclick = logout;
+    backBtn.onclick = () => switchView(false);
+    submitReply.onclick = postReply;
+});
+
+/* =============================
+   AUTH
+============================= */
+function checkAuth() {
+    const user = localStorage.getItem('forumUser');
+    const token = localStorage.getItem('forumToken');
+    if (user && token) {
+        currentUser = JSON.parse(user);
+        updateAuthUI();
+    }
+}
+
+function updateAuthUI() {
+    userDisplay.textContent = currentUser ? currentUser.username : 'Guest';
+    loginBtn.style.display = currentUser ? 'none' : 'inline-block';
+    signupBtn.style.display = currentUser ? 'none' : 'inline-block';
+    logoutBtn.style.display = currentUser ? 'inline-block' : 'none';
+}
+
+async function logout() {
+    currentUser = null;
+    localStorage.clear();
+    updateAuthUI();
+}
+
+/* =============================
+   THREADS
+============================= */
+async function loadThreads() {
+    const res = await fetch(`${API_URL}/threads`);
+    const threads = await res.json();
+
+    threadsDiv.innerHTML = threads.map(t => `
+        <div class="thread-card" onclick="viewThread('${t.id}')">
+            <h3>${t.title}</h3>
+            <small>${t.author} • ${new Date(t.createdAt).toLocaleDateString()}</small>
+            <p>${t.content.slice(0,200)}</p>
+        </div>
+    `).join('');
+}
+
+async function viewThread(id) {
+    currentThreadId = id;
+    const res = await fetch(`${API_URL}/threads/${id}`);
+    const t = await res.json();
+
+    threadDetail.innerHTML = `
+        <h2>${t.title}</h2>
+        <p>${t.content}</p>
+        <small>${t.author}</small>
+    `;
+
+    replies.innerHTML = (t.replies || []).map(r => `
+        <div class="reply-card">
+            <strong>${r.author}</strong>
+            <p>${r.content}</p>
+        </div>
+    `).join('') || '<p>No replies yet.</p>';
+
+    switchView(true);
+}
+
+async function postReply() {
+    if (!currentUser) return alert('Login required');
+
+    const content = replyInput.value.trim();
+    if (!content) return;
+
+    await fetch(`${API_URL}/threads/${currentThreadId}/replies`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('forumToken')}`
+        },
+        body: JSON.stringify({ content })
+    });
+
+    replyInput.value = '';
+    viewThread(currentThreadId);
+}
+
+/* =============================
+   VIEW
+============================= */
+function switchView(thread) {
+    threadList.style.display = thread ? 'none' : 'block';
+    threadView.style.display = thread ? 'block' : 'none';
+}
+</script>
+</body>
+</html>
