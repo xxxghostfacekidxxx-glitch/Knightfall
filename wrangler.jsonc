@@ -13,3 +13,8 @@
     "nodejs_compat"
   ]
 }
+{
+  "analytics_engine_datasets": [
+    { "binding": "Analytix_Ashfall", "dataset": "Analytix_Ashfall" }
+  ]
+}
