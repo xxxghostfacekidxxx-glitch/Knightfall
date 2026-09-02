@@ -1,17 +1,25 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "knightfall",
   "compatibility_date": "2026-07-16",
+
   "observability": {
     "enabled": true
-,
-  "assets": 
-    "directory": ".public",
-    "not_found_handling": "single-page-application"
-  ,
-  "compatibility_flags": 
-    "nodejs_compat"
-  
-  "analytics_engine_datasets": 
-    "binding": "Analytix_Ashfall", "dataset": "Analytix_Ashfall" }
+  },
 
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "single-page-application"
+  },
+
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+
+  "analytics_engine_datasets": [
+    {
+      "binding": "Analytix_Ashfall",
+      "dataset": "Analytix_Ashfall"
+    }
+  ]
+}
