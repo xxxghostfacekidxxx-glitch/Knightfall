@@ -4,18 +4,14 @@
   "compatibility_date": "2026-07-16",
   "observability": {
     "enabled": true
-  },
-  "assets": {
+,
+  "assets": 
     "directory": ".public",
     "not_found_handling": "single-page-application"
-  },
-  "compatibility_flags": [
+  ,
+  "compatibility_flags": 
     "nodejs_compat"
-  ]
-}
-{
-  "analytics_engine_datasets": [
-    { "binding": "Analytix_Ashfall", "dataset": "Analytix_Ashfall" }
-  ]
-}
+  
+  "analytics_engine_datasets": 
+    "binding": "Analytix_Ashfall", "dataset": "Analytix_Ashfall" }
 
