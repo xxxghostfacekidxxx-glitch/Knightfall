@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Check API health
+      - name: Check API health and database
         shell: bash
         run: |
           set -euo pipefail
@@ -27,7 +27,8 @@ jobs:
           echo "GET /health -> $code"
           cat "$body"
           test "$code" = '200'
-          grep -q '"ok"' "$body"
+          grep -q '"ok":true' "$body"
+          grep -q '"database":true' "$body"
 
       - name: Check unauthenticated session boundary
         shell: bash
@@ -38,9 +39,10 @@ jobs:
           code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 20 "$base/api/auth/me")
           echo "GET /api/auth/me -> $code"
           cat "$body"
-          test "$code" = '401'
+          test "$code" = '200'
+          grep -q '"user":null' "$body"
 
-      - name: Check CORS preflight
+      - name: Check CORS preflight and security headers
         shell: bash
         run: |
           set -euo pipefail
