@@ -111,6 +111,45 @@ function isModerator(user) {
   return !!user && (user.role === "moderator" || user.role === "admin");
 }
 
+async function audit(env, user, action, targetType = null, targetId = null, details = {}) {
+  try {
+    await env.DB.prepare(
+      "INSERT INTO audit_logs (actor_id,action,target_type,target_id,details,created_at) VALUES (?,?,?,?,?,?)"
+    ).bind(
+      user?.id ?? null,
+      String(action).slice(0,120),
+      targetType ? String(targetType).slice(0,40) : null,
+      targetId != null ? Number(targetId) : null,
+      JSON.stringify(details).slice(0,4000),
+      new Date().toISOString()
+    ).run();
+  } catch (error) {
+    console.error("audit_log_failed", error);
+  }
+}
+
+const SETTING_DEFAULTS = {
+  site_name: "Knightfall",
+  maintenance_mode: "false",
+  registration_enabled: "true",
+  forum_enabled: "true",
+  announcements_enabled: "false",
+  announcement_title: "",
+  announcement_body: "",
+  feature_miss_chaos: "true",
+  feature_profiles: "true"
+};
+
+function settingValue(row) {
+  if (!row) return null;
+  return row.value;
+}
+
+async function getSetting(env, key) {
+  const row = await env.DB.prepare("SELECT value FROM site_settings WHERE key=?").bind(key).first();
+  return settingValue(row) ?? SETTING_DEFAULTS[key] ?? null;
+}
+
 function slugify(value) {
   const base = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
   return base || "thread";
@@ -149,6 +188,7 @@ export default {
       }
 
       if (url.pathname === "/api/auth/register" && request.method === "POST") {
+        if ((await getSetting(env, "registration_enabled")) === "false") return json({ error: "Registration is currently closed." }, 403, origin);
         let body;
         try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
         const username = String(body.username || "").trim().toLowerCase();
@@ -237,6 +277,7 @@ export default {
       }
 
       if (url.pathname === "/api/threads" && request.method === "POST") {
+        if ((await getSetting(env, "forum_enabled")) === "false") return json({ error: "The forum is currently in maintenance mode." }, 503, origin);
         const user = await requireUser(request, env);
         if (!user) return json({ error: "Authentication required." }, 401, origin);
         let body;
@@ -263,6 +304,7 @@ export default {
       }
 
       if (threadMatch && request.method === "POST") {
+        if ((await getSetting(env, "forum_enabled")) === "false") return json({ error: "The forum is currently in maintenance mode." }, 503, origin);
         const user = await requireUser(request, env);
         if (!user) return json({ error: "Authentication required." }, 401, origin);
         let body;
@@ -365,6 +407,7 @@ export default {
       }
 
       if (url.pathname === "/api/admin/overview" && request.method === "GET") {
+        const maintenance = await getSetting(env, "maintenance_mode");
         const user = await requireUser(request, env);
         if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
         const [users, threads, posts, reports, categories] = await Promise.all([
@@ -374,7 +417,7 @@ export default {
           env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM categories").first(),
         ]);
-        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0 } }, 200, origin);
+        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0, maintenance_mode: maintenance === "true" ? 1 : 0 } }, 200, origin);
       }
 
       if (url.pathname === "/api/admin/users" && request.method === "GET") {
@@ -429,6 +472,151 @@ export default {
         const status = ["open","resolved","dismissed"].includes(url.searchParams.get("status")) ? url.searchParams.get("status") : "open";
         const { results } = await env.DB.prepare("SELECT r.id,r.reason,r.status,r.created_at,r.resolved_at,r.moderator_note,r.reporter_id,r.thread_id,r.post_id,ru.username AS reporter_username,CASE WHEN r.thread_id IS NOT NULL THEN 'thread' ELSE 'post' END AS target_type,COALESCE(r.thread_id,r.post_id) AS target_id FROM reports r LEFT JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 250").bind(status).all();
         return json({ reports: results }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/settings" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const { results } = await env.DB.prepare("SELECT key,value,updated_at FROM site_settings ORDER BY key ASC").all();
+        return json({ settings: results }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/settings" && request.method === "PATCH") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
+        const allowed = Object.keys(SETTING_DEFAULTS);
+        const entries = Object.entries(body || {});
+        if (!entries.length || entries.some(([key,value]) => !allowed.includes(key) || typeof value !== "string" || value.length > 10000)) return json({ error: "Invalid setting payload." }, 400, origin);
+        const now = new Date().toISOString();
+        for (const [key,value] of entries) {
+          await env.DB.prepare("INSERT INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(key,value,user.id,now).run();
+          await audit(env,user,"settings.update","setting",null,{key,value});
+        }
+        return json({ ok: true }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/categories" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const { results } = await env.DB.prepare("SELECT id,name,slug,description,sort_order,created_at FROM categories ORDER BY sort_order ASC,name ASC").all();
+        return json({ categories: results }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/categories" && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
+        const name=String(body.name||"").trim(), description=String(body.description||"").trim(), sortOrder=Number(body.sort_order||0);
+        if (!validText(name,80) || description.length>500 || !Number.isInteger(sortOrder)) return json({ error: "Invalid category." },400,origin);
+        const slug=slugify(name);
+        const exists=await env.DB.prepare("SELECT id FROM categories WHERE slug=? OR name=?").bind(slug,name).first();
+        if(exists) return json({ error:"Category already exists." },409,origin);
+        const row=await env.DB.prepare("INSERT INTO categories (name,slug,description,sort_order,created_at) VALUES (?,?,?,?,?) RETURNING id").bind(name,slug,description,sortOrder,new Date().toISOString()).first();
+        await audit(env,user,"category.create","category",row.id,{name,slug});
+        return json({ id:row.id },201,origin);
+      }
+
+      const adminCategoryMatch=url.pathname.match(/^\/api\/admin\/categories\/(\d+)$/);
+      if(adminCategoryMatch && request.method==="PATCH"){
+        const user=await requireUser(request,env);
+        if(!isAdmin(user)) return json({error:"Administrator access required."},403,origin);
+        let body; try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        const id=Number(adminCategoryMatch[1]);
+        const current=await env.DB.prepare("SELECT * FROM categories WHERE id=?").bind(id).first();
+        if(!current)return json({error:"Category not found."},404,origin);
+        const name=body.name===undefined?current.name:String(body.name).trim();
+        const description=body.description===undefined?(current.description||""):String(body.description).trim();
+        const sortOrder=body.sort_order===undefined?current.sort_order:Number(body.sort_order);
+        if(!validText(name,80)||description.length>500||!Number.isInteger(sortOrder))return json({error:"Invalid category."},400,origin);
+        const slug=slugify(name);
+        const conflict=await env.DB.prepare("SELECT id FROM categories WHERE (slug=? OR name=?) AND id<>?").bind(slug,name,id).first();
+        if(conflict)return json({error:"Another category already uses that name."},409,origin);
+        await env.DB.prepare("UPDATE categories SET name=?,slug=?,description=?,sort_order=? WHERE id=?").bind(name,slug,description,sortOrder,id).run();
+        await audit(env,user,"category.update","category",id,{name,slug,sortOrder});
+        return json({ok:true},200,origin);
+      }
+
+      if(adminCategoryMatch && request.method==="DELETE"){
+        const user=await requireUser(request,env);
+        if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const id=Number(adminCategoryMatch[1]);
+        const current=await env.DB.prepare("SELECT id,name FROM categories WHERE id=?").bind(id).first();
+        if(!current)return json({error:"Category not found."},404,origin);
+        const threads=await env.DB.prepare("SELECT COUNT(*) AS count FROM threads WHERE category_id=? AND deleted_at IS NULL").bind(id).first();
+        if(Number(threads?.count||0)>0)return json({error:"Category still contains active threads. Move or remove them first."},409,origin);
+        await env.DB.prepare("DELETE FROM categories WHERE id=?").bind(id).run();
+        await audit(env,user,"category.delete","category",id,{name:current.name});
+        return json({ok:true},200,origin);
+      }
+
+      if (url.pathname === "/api/admin/audit" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||100),1),250);
+        const { results } = await env.DB.prepare("SELECT a.id,a.action,a.target_type,a.target_id,a.details,a.created_at,u.username AS actor_username FROM audit_logs a LEFT JOIN users u ON u.id=a.actor_id ORDER BY a.id DESC LIMIT ?").bind(limit).all();
+        return json({ logs: results }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/content" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const type=url.searchParams.get("type")==="posts"?"posts":"threads";
+        const includeDeleted=url.searchParams.get("include_deleted")==="1";
+        const q=String(url.searchParams.get("q")||"").trim();
+        const like="%"+q.replace(/[%_]/g,"\\      return json({ error: "Not found" }, 404, origin);")+"%";
+        let results;
+        if(type==="threads"){
+          const sql="SELECT t.id,t.title,t.slug,t.deleted_at,t.locked,t.pinned,t.created_at,u.username,c.name AS category_name FROM threads t JOIN users u ON u.id=t.user_id JOIN categories c ON c.id=t.category_id WHERE "+(includeDeleted?"1=1":"t.deleted_at IS NULL")+(q?" AND (t.title LIKE ? ESCAPE '\\' OR t.body LIKE ? ESCAPE '\\')":"")+" ORDER BY t.created_at DESC LIMIT 250";
+          const r=q?await env.DB.prepare(sql).bind(like,like).all():await env.DB.prepare(sql).all(); results=r.results;
+        }else{
+          const sql="SELECT p.id,p.thread_id,p.body,p.deleted_at,p.created_at,u.username,t.title AS thread_title FROM posts p JOIN users u ON u.id=p.user_id JOIN threads t ON t.id=p.thread_id WHERE "+(includeDeleted?"1=1":"p.deleted_at IS NULL")+(q?" AND p.body LIKE ? ESCAPE '\\'":"")+" ORDER BY p.created_at DESC LIMIT 250";
+          const r=q?await env.DB.prepare(sql).bind(like).all():await env.DB.prepare(sql).all(); results=r.results;
+        }
+        return json({ type, content: results },200,origin);
+      }
+
+      const adminContentMatch=url.pathname.match(/^\/api\/admin\/content\/(threads|posts)\/(\d+)$/);
+      if(adminContentMatch && request.method==="PATCH"){
+        const user=await requireUser(request,env);
+        if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        const type=adminContentMatch[1],id=Number(adminContentMatch[2]),action=body.action;
+        if(!["delete","restore","purge"].includes(action))return json({error:"Invalid content action."},400,origin);
+        const table=type==="threads"?"threads":"posts";
+        const row=await env.DB.prepare(`SELECT id,deleted_at FROM ${table} WHERE id=?`).bind(id).first();
+        if(!row)return json({error:"Content not found."},404,origin);
+        if(action==="restore"){
+          await env.DB.prepare(`UPDATE ${table} SET deleted_at=NULL WHERE id=?`).bind(id).run();
+        }else if(action==="delete"){
+          await env.DB.prepare(`UPDATE ${table} SET deleted_at=? WHERE id=?`).bind(new Date().toISOString(),id).run();
+        }else{
+          if(!row.deleted_at)return json({error:"Purge requires content to be soft-deleted first."},409,origin);
+          if(type==="posts"){
+            await env.DB.batch([
+              env.DB.prepare("DELETE FROM reports WHERE post_id=?").bind(id),
+              env.DB.prepare("DELETE FROM posts WHERE id=?").bind(id)
+            ]);
+          }else{
+            await env.DB.batch([
+              env.DB.prepare("DELETE FROM reports WHERE thread_id=? OR post_id IN (SELECT id FROM posts WHERE thread_id=?)").bind(id,id),
+              env.DB.prepare("DELETE FROM posts WHERE thread_id=?").bind(id),
+              env.DB.prepare("DELETE FROM threads WHERE id=?").bind(id)
+            ]);
+          }
+        }
+        await audit(env,user,`content.${action}`,type,id,{});
+        return json({ok:true},200,origin);
+      }
+
+      if (url.pathname === "/api/admin/health" && request.method === "GET") {
+        const user=await requireUser(request,env);
+        if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const started=Date.now();
+        const db=await env.DB.prepare("SELECT 1 AS ok").first();
+        const kv=await env.SESSIONS.list({limit:1});
+        const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();
+        return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);
       }
 
       return json({ error: "Not found" }, 404, origin);
