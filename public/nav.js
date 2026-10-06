@@ -28,6 +28,8 @@
       if (!d || !d.user) return;
       const account = nav.querySelector('a[href="/account.html"]');
       if (!account) return;
+      const admin = document.createElement("a");
+      if (d.user.role === "admin") { admin.href="/admin.html"; admin.textContent="Admin"; account.before(admin); }
       const profile = document.createElement("a");
       profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username);
       profile.textContent = "Profile";
