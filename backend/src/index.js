@@ -269,9 +269,20 @@ export default {
 
       const userMatch = url.pathname.match(/^\/api\/users\/([^/]+)$/);
       if (userMatch && request.method === "GET") {
-        const user = await env.DB.prepare("SELECT id,username,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE username = ?").bind(userMatch[1].toLowerCase()).first();
-        if (!user) return json({ error: "Profile not found." }, 404, origin);
-        return json({ user }, 200, origin);
+        const user = await env.DB.prepare("SELECT id,username,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at,last_seen_at,status FROM users WHERE username = ?").bind(userMatch[1].toLowerCase()).first();
+        if (!user || user.status !== "active") return json({ error: "Profile not found." }, 404, origin);
+        const [threadCount,postCount,followers,following,threads,posts] = await Promise.all([
+          env.DB.prepare("SELECT COUNT(*) AS count FROM threads WHERE user_id=? AND deleted_at IS NULL").bind(user.id).first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM posts WHERE user_id=? AND deleted_at IS NULL").bind(user.id).first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE following_id=?").bind(user.id).first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE follower_id=?").bind(user.id).first(),
+          env.DB.prepare("SELECT t.id,t.title,t.slug,t.created_at,c.name AS category_name FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.user_id=? AND t.deleted_at IS NULL ORDER BY t.created_at DESC LIMIT 8").bind(user.id).all(),
+          env.DB.prepare("SELECT p.id,p.thread_id,p.body,p.created_at,t.title AS thread_title FROM posts p JOIN threads t ON t.id=p.thread_id WHERE p.user_id=? AND p.deleted_at IS NULL AND t.deleted_at IS NULL ORDER BY p.created_at DESC LIMIT 8").bind(user.id).all()
+        ]);
+        const me=await requireUser(request,env);
+        const isFollowing=me?!!(await env.DB.prepare("SELECT 1 FROM follows WHERE follower_id=? AND following_id=?").bind(me.id,user.id).first()):false;
+        const isBlocked=me?!!(await env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(me.id,user.id).first()):false;
+        return json({ user:{...user,thread_count:Number(threadCount?.count||0),post_count:Number(postCount?.count||0),followers:Number(followers?.count||0),following_count:Number(following?.count||0),is_following:isFollowing,is_blocked:isBlocked,is_online:user.last_seen_at?Date.now()-new Date(user.last_seen_at).getTime()<5*60*1000:false},threads:threads.results||[],posts:posts.results||[] },200,origin);
       }
 
       if (url.pathname === "/api/profile" && request.method === "PUT") {
