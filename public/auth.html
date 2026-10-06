@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Knightfall | Account</title>
+  <link rel="stylesheet" href="/auth.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card" aria-labelledby="auth-title">
+      <a class="back" href="/homepage.html">← Back to community</a>
+      <h1 id="auth-title">Knightfall Account</h1>
+      <p class="muted">Create an account or return to the community.</p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" id="login-tab" type="button" role="tab" aria-selected="true">Sign in</button>
+        <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false">Register</button>
+      </div>
+
+      <form id="login-form" novalidate>
+        <label>Username or email<input name="identifier" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="primary" type="submit">Sign in</button>
+      </form>
+
+      <form id="register-form" class="hidden" novalidate>
+        <label>Username<input name="username" autocomplete="username" minlength="3" maxlength="24" required></label>
+        <label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+        <label>Display name<input name="display_name" autocomplete="nickname" maxlength="60" required></label>
+        <label>Password<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label>
+        <small>Password must be at least 12 characters.</small>
+        <button class="primary" type="submit">Create account</button>
+      </form>
+
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script>
+    const API = "https://api.ash-fall.com";
+    const loginForm = document.querySelector("#login-form");
+    const registerForm = document.querySelector("#register-form");
+    const status = document.querySelector("#status");
+    const loginTab = document.querySelector("#login-tab");
+    const registerTab = document.querySelector("#register-tab");
+
+    function show(message, error = false) {
+      status.textContent = message;
+      status.className = `status ${error ? "error" : "success"}`;
+    }
+
+    function setMode(register) {
+      loginForm.classList.toggle("hidden", register);
+      registerForm.classList.toggle("hidden", !register);
+      loginTab.classList.toggle("active", !register);
+      registerTab.classList.toggle("active", register);
+      loginTab.setAttribute("aria-selected", String(!register));
+      registerTab.setAttribute("aria-selected", String(register));
+      show("");
+    }
+
+    loginTab.addEventListener("click", () => setMode(false));
+    registerTab.addEventListener("click", () => setMode(true));
+
+    async function submit(path, data) {
+      const response = await fetch(`${API}${path}`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "Request failed.");
+      return payload;
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      show("Signing in…");
+      try {
+        const data = Object.fromEntries(new FormData(loginForm));
+        await submit("/api/auth/login", data);
+        show("Signed in. Returning to the community…");
+        setTimeout(() => location.href = "/homepage.html", 500);
+      } catch (error) { show(error.message, true); }
+    });
+
+    registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      show("Creating your account…");
+      try {
+        const data = Object.fromEntries(new FormData(registerForm));
+        await submit("/api/auth/register", data);
+        show("Account created. Welcome to Knightfall.");
+        setTimeout(() => location.href = "/homepage.html", 700);
+      } catch (error) { show(error.message, true); }
+    });
+  </script>
+</body>
+</html>
