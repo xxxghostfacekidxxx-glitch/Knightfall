@@ -670,6 +670,22 @@ export default {
         await env.DB.prepare("UPDATE conversation_members SET muted_until=? WHERE conversation_id=? AND user_id=?").bind(until,id,user.id).run();
         return json({ok:true,muted_until:until},200,origin);
       }
+      if (url.pathname === "/api/moderation/message-reports" && request.method === "GET") {
+        const user=await requireUser(request,env); if(!isModerator(user))return json({error:"Moderator access required."},403,origin);
+        const status=["open","resolved","dismissed"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"open";
+        const {results}=await env.DB.prepare("SELECT r.id,r.message_id,r.reason,r.status,r.created_at,r.resolved_at,r.reporter_id,ru.username AS reporter_username,m.sender_id,su.username AS sender_username,su.display_name AS sender_display_name,m.body,m.conversation_id FROM message_reports r JOIN messages m ON m.id=r.message_id JOIN users su ON su.id=m.sender_id JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 250").bind(status).all();
+        return json({reports:results},200,origin);
+      }
+      const messageReportMatch=url.pathname.match(/^\/api\/moderation\/message-reports\/(\d+)$/);
+      if(messageReportMatch && request.method==="PATCH"){
+        const user=await requireUser(request,env); if(!isModerator(user))return json({error:"Moderator access required."},403,origin);
+        let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        if(!["open","resolved","dismissed"].includes(body.status))return json({error:"Invalid report status."},400,origin);
+        await env.DB.prepare("UPDATE message_reports SET status=?,resolved_at=?,resolved_by=? WHERE id=?").bind(body.status,body.status==="open"?null:new Date().toISOString(),body.status==="open"?null:user.id,Number(messageReportMatch[1])).run();
+        await audit(env,user,"message_report."+body.status,"message_report",Number(messageReportMatch[1]),{});
+        return json({ok:true},200,origin);
+      }
+
       if (url.pathname === "/api/admin/message-reports" && request.method === "GET") {
         const user=await requireUser(request,env); if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
         const status=["open","resolved","dismissed"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"open";
