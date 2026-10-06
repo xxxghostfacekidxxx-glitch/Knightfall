@@ -58,4 +58,3 @@ CREATE TABLE IF NOT EXISTS message_reports (
 CREATE INDEX IF NOT EXISTS idx_message_reports_status ON message_reports(status,created_at);
 CREATE INDEX IF NOT EXISTS idx_message_reports_message ON message_reports(message_id);
 
-INSERT OR IGNORE INTO d1_migrations(name,applied_at) VALUES ('0008_community_features.sql',datetime('now'));
