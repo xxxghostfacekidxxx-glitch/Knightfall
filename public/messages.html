@@ -20,7 +20,7 @@
       <div id="conversations" class="conversation-list"></div>
     </aside>
     <section class="chat-panel">
-      <div id="chat-head" class="chat-head"><div><strong>Select a conversation</strong><small>Messages will appear here.</small></div></div>
+      <div id="chat-head" class="chat-head"><div><strong>Select a conversation</strong><small>Messages will appear here.</small></div><button id="mute-chat" hidden>Mute</button></div>
       <div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div>
       <form id="composer" class="composer" hidden>
         <textarea id="body" maxlength="4000" placeholder="Write a message..." required></textarea>
@@ -55,7 +55,7 @@ async function openConversation(id){
  $("#chat-head").innerHTML='<div><strong>'+esc(c?.other_display_name||c?.other_username||"Conversation")+'</strong><small>@'+esc(c?.other_username||"")+'</small></div>';
  $("#composer").hidden=false;
  const d=await api("/api/messages/conversations/"+id);
- $("#messages").innerHTML=(d.messages||[]).map(m=>'<article class="message '+(m.sender_id===currentUser.id?"mine":"theirs")+' '+(m.deleted_at?"deleted":"")+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username)+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p></article>').join("")||'<div class="empty">No messages yet.</div>';
+ $("#messages").innerHTML=(d.messages||[]).map(m=>{const mine=m.sender_id===currentUser.id;const read=mine&&c?.other_last_read_at&&new Date(c.other_last_read_at)>=new Date(m.created_at);return '<article class="message '+(mine?"mine":"theirs")+' '+(m.deleted_at?"deleted":"")+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username)+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+(read?" · read":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p>'+(!m.deleted_at?'<div class="message-actions">'+(mine?'<button data-edit-message="'+m.id+'">Edit</button><button data-delete-message="'+m.id+'">Delete</button>':'<button data-report-message="'+m.id+'">Report</button>')+'</div>':"")+'</article>'}).join("")||'<div class="empty">No messages yet.</div>';
  $("#messages").scrollTop=$("#messages").scrollHeight;
  await loadConversations();
 }
