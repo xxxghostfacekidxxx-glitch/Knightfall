@@ -423,6 +423,121 @@ export default {
         return json({ ok: true }, 200, origin);
       }
 
+
+      // Direct messaging
+      if (url.pathname === "/api/messages/conversations" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        const { results } = await env.DB.prepare(
+          "SELECT c.id,c.kind,c.created_at,c.updated_at,other.id AS other_user_id,other.username AS other_username,other.display_name AS other_display_name,other.avatar_url AS other_avatar_url,lm.body AS last_body,lm.created_at AS last_message_at,(SELECT COUNT(*) FROM messages um WHERE um.conversation_id=c.id AND um.sender_id<>? AND um.deleted_at IS NULL AND (cm.last_read_at IS NULL OR um.created_at>cm.last_read_at)) AS unread_count FROM conversations c JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=? JOIN conversation_members om ON om.conversation_id=c.id AND om.user_id<>? JOIN users other ON other.id=om.user_id LEFT JOIN messages lm ON lm.id=(SELECT m2.id FROM messages m2 WHERE m2.conversation_id=c.id ORDER BY m2.id DESC LIMIT 1) WHERE c.kind='direct' ORDER BY COALESCE(lm.created_at,c.updated_at) DESC LIMIT 100"
+        ).bind(user.id,user.id,user.id).all();
+        return json({ conversations: results }, 200, origin);
+      }
+
+      if (url.pathname === "/api/messages/conversations" && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
+        const username = String(body.username || "").trim().toLowerCase();
+        if (!/^[a-z0-9_]{3,24}$/.test(username)) return json({ error: "Enter a valid username." }, 400, origin);
+        const other = await env.DB.prepare("SELECT id,username,display_name,avatar_url,status FROM users WHERE username=?").bind(username).first();
+        if (!other || other.status !== "active") return json({ error: "User not found." }, 404, origin);
+        if (other.id === user.id) return json({ error: "You cannot message yourself." }, 400, origin);
+        const existing = await env.DB.prepare(
+          "SELECT c.id FROM conversations c JOIN conversation_members a ON a.conversation_id=c.id AND a.user_id=? JOIN conversation_members b ON b.conversation_id=c.id AND b.user_id=? WHERE c.kind='direct' LIMIT 1"
+        ).bind(user.id,other.id).first();
+        if (existing) return json({ id: existing.id }, 200, origin);
+        const now = new Date().toISOString();
+        const conv = await env.DB.prepare("INSERT INTO conversations (kind,created_at,updated_at) VALUES ('direct',?,?) RETURNING id").bind(now,now).first();
+        await env.DB.batch([
+          env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at) VALUES (?,?,?,?)").bind(conv.id,user.id,now,now),
+          env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at) VALUES (?,?,?,NULL)").bind(conv.id,other.id,now)
+        ]);
+        return json({ id: conv.id }, 201, origin);
+      }
+
+      const conversationMatch = url.pathname.match(/^\/api\/messages\/conversations\/(\d+)$/);
+      if (conversationMatch && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        const conversationId = Number(conversationMatch[1]);
+        const membership = await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
+        if (!membership && !isAdmin(user)) return json({ error: "Conversation not found." }, 404, origin);
+        const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100),1),250);
+        const { results } = await env.DB.prepare(
+          "SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? ORDER BY m.created_at ASC LIMIT ?"
+        ).bind(conversationId,limit).all();
+        if (membership) await env.DB.prepare("UPDATE conversation_members SET last_read_at=? WHERE conversation_id=? AND user_id=?").bind(new Date().toISOString(),conversationId,user.id).run();
+        return json({ messages: results, admin_view: !membership && isAdmin(user) }, 200, origin);
+      }
+
+      if (conversationMatch && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        const conversationId = Number(conversationMatch[1]);
+        const membership = await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
+        if (!membership) return json({ error: "Conversation not found." }, 404, origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
+        const message = String(body.body || "").trim();
+        if (!validText(message,4000)) return json({ error: "Message must be 1-4000 characters." },400,origin);
+        const now = new Date().toISOString();
+        const row = await env.DB.prepare("INSERT INTO messages (conversation_id,sender_id,body,created_at) VALUES (?,?,?,?) RETURNING id").bind(conversationId,user.id,message,now).first();
+        await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
+        return json({ id: row.id },201,origin);
+      }
+
+      const messageMatch = url.pathname.match(/^\/api\/messages\/(\d+)$/);
+      if (messageMatch && request.method === "PATCH") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        const id = Number(messageMatch[1]);
+        const row = await env.DB.prepare("SELECT id,sender_id,deleted_at FROM messages WHERE id=?").bind(id).first();
+        if (!row || row.deleted_at || row.sender_id !== user.id) return json({ error: "Message not found." },404,origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." },400,origin); }
+        const message = String(body.body || "").trim();
+        if (!validText(message,4000)) return json({ error:"Message must be 1-4000 characters." },400,origin);
+        await env.DB.prepare("UPDATE messages SET body=?,edited_at=? WHERE id=?").bind(message,new Date().toISOString(),id).run();
+        return json({ok:true},200,origin);
+      }
+
+      if (messageMatch && request.method === "DELETE") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." },401,origin);
+        const id=Number(messageMatch[1]);
+        const row=await env.DB.prepare("SELECT id,sender_id,deleted_at FROM messages WHERE id=?").bind(id).first();
+        if (!row || row.deleted_at || row.sender_id !== user.id) return json({error:"Message not found."},404,origin);
+        await env.DB.prepare("UPDATE messages SET deleted_at=? WHERE id=?").bind(new Date().toISOString(),id).run();
+        return json({ok:true},200,origin);
+      }
+
+      // Administrator message archive. Admins can inspect all conversations and message bodies,
+      // including soft-deleted messages, but authentication secrets are never exposed.
+      if (url.pathname === "/api/admin/messages" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({error:"Administrator access required."},403,origin);
+        const q=String(url.searchParams.get("q")||"").trim();
+        const conversationId=Number(url.searchParams.get("conversation_id")||0);
+        const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||250),1),500);
+        const like="%"+q.replace(/[%_]/g,"\\      if (url.pathname === "/api/admin/overview" && request.method === "GET") {")+"%";
+        let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,s.display_name AS sender_display_name,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1";
+        const params=[];
+        if(conversationId){sql+=" AND m.conversation_id=?";params.push(conversationId);}
+        if(q){sql+=" AND (m.body LIKE ? ESCAPE '\\' OR s.username LIKE ? ESCAPE '\\' OR s.display_name LIKE ? ESCAPE '\\')";params.push(like,like,like);}
+        sql+=" GROUP BY m.id ORDER BY m.created_at DESC LIMIT ?";
+        params.push(limit);
+        const {results}=await env.DB.prepare(sql).bind(...params).all();
+        return json({messages:results},200,origin);
+      }
+
+      if (url.pathname === "/api/admin/conversations" && request.method === "GET") {
+        const user=await requireUser(request,env);
+        if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const {results}=await env.DB.prepare(
+          "SELECT c.id,c.kind,c.created_at,c.updated_at,group_concat(u.username, ', ') AS participants,(SELECT COUNT(*) FROM messages m WHERE m.conversation_id=c.id) AS message_count FROM conversations c JOIN conversation_members cm ON cm.conversation_id=c.id JOIN users u ON u.id=cm.user_id GROUP BY c.id ORDER BY c.updated_at DESC LIMIT 500"
+        ).all();
+        return json({conversations:results},200,origin);
+      }
+
       if (url.pathname === "/api/admin/overview" && request.method === "GET") {
         const maintenance = await getSetting(env, "maintenance_mode");
         const user = await requireUser(request, env);
