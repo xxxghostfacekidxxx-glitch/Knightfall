@@ -1,0 +1,43 @@
+:root{
+  --kf-bg:#070707;
+  --kf-panel:#101010;
+  --kf-panel-2:#151515;
+  --kf-line:#292929;
+  --kf-muted:#8c8c8c;
+  --kf-text:#eee;
+  --kf-accent:#d35400;
+  --kf-accent-bright:#f06a0a;
+  --kf-accent-soft:rgba(211,84,0,.14);
+  color-scheme:dark;
+}
+::selection{background:rgba(211,84,0,.45);color:#fff}
+:focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#080808}
+::-webkit-scrollbar-thumb{background:#2b2b2b;border:2px solid #080808;border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:#4a4a4a}
+.kf-header{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  width:100%;padding:.85rem max(1rem,4vw);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(7,7,7,.82);backdrop-filter:blur(18px);
+  box-shadow:0 12px 40px rgba(0,0,0,.28)
+}
+.kf-brand{color:#eee;text-decoration:none;font-weight:950;letter-spacing:.18em;text-shadow:0 0 24px rgba(211,84,0,.18)}
+.kf-brand b{color:var(--kf-accent);font-weight:950}
+.kf-brand:after{content:"";display:block;width:70%;height:1px;margin-top:.25rem;background:linear-gradient(90deg,var(--kf-accent),transparent)}
+.kf-nav{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
+.kf-nav a{padding:.5rem .75rem;border:1px solid transparent;border-radius:7px;color:#929292;font-size:.78rem;text-decoration:none;transition:.22s ease}
+.kf-nav a:hover,.kf-nav a:focus-visible{border-color:#333;background:#111;color:#fff;box-shadow:0 0 18px rgba(211,84,0,.07)}
+.kf-nav-toggle{display:none;border:1px solid #333;border-radius:7px;background:#101010;color:#ddd;padding:.45rem .65rem;cursor:pointer}
+@media(max-width:760px){
+  .kf-header{position:relative}
+  .kf-nav-toggle{display:block}
+  .kf-nav{display:none;position:absolute;left:1rem;right:1rem;top:calc(100% + .5rem);padding:.5rem;border:1px solid #292929;border-radius:10px;background:rgba(10,10,10,.98);box-shadow:0 18px 45px rgba(0,0,0,.45)}
+  .kf-nav.open{display:grid}
+  .kf-nav a{padding:.75rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .kf-nav a{transition:none}
+}
