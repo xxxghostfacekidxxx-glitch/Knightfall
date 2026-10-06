@@ -342,6 +342,8 @@ export default {
         const now = new Date().toISOString();
         const result = await env.DB.prepare("INSERT INTO posts (thread_id,user_id,body,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id").bind(thread.id,user.id,String(body.body).trim(),now,now).first();
         await env.DB.prepare("UPDATE threads SET updated_at=? WHERE id=?").bind(now,thread.id).run();
+        const owner=await env.DB.prepare("SELECT user_id,title FROM threads WHERE id=?").bind(thread.id).first();
+        if(owner && owner.user_id!==user.id) await createNotification(env,{userId:owner.user_id,actorId:user.id,kind:"reply",targetType:"thread",targetId:thread.id,title:"New reply",body:"@"+user.username+" replied to your thread.",url:"/thread.html?id="+thread.id});
         return json({ id: result.id }, 201, origin);
       }
 
@@ -519,7 +521,7 @@ export default {
         const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||24),1),50);
         const like="%"+q.replace(/[%_]/g,"\\      // Direct messaging")+"%";
         const params=user?[user.id,like,like,like,like,limit]:[like,like,like,like,limit];
-        const sql="SELECT u.id,u.username,u.display_name,u.role,u.bio,u.avatar_url,u.location,u.pronouns,u.created_at,u.last_seen_at,(SELECT COUNT(*) FROM follows f WHERE f.following_id=u.id) AS followers FROM users u "+(user?"LEFT JOIN user_blocks b ON b.blocker_id=? AND b.blocked_id=u.id WHERE b.blocked_id IS NULL AND ":"WHERE ")+"u.status='active' AND (u.username LIKE ? ESCAPE '\\\\' OR u.display_name LIKE ? ESCAPE '\\\\' OR COALESCE(u.bio,'') LIKE ? ESCAPE '\\\\' OR COALESCE(u.location,'') LIKE '\\\\') ORDER BY u.created_at DESC LIMIT ?";
+        const sql="SELECT u.id,u.username,u.display_name,u.role,u.bio,u.avatar_url,u.location,u.pronouns,u.created_at,u.last_seen_at,(SELECT COUNT(*) FROM follows f WHERE f.following_id=u.id) AS followers FROM users u "+(user?"LEFT JOIN user_blocks b ON b.blocker_id=? AND b.blocked_id=u.id WHERE b.blocked_id IS NULL AND ":"WHERE ")+"u.status='active' AND (u.username LIKE ? ESCAPE '\\\\' OR u.display_name LIKE ? ESCAPE '\\\\' OR COALESCE(u.bio,'') LIKE ? ESCAPE '\\\\' OR COALESCE(u.location,'') LIKE ? ESCAPE '\\\\') ORDER BY u.created_at DESC LIMIT ?";
         const {results}=await env.DB.prepare(sql).bind(...params).all();
         return json({users:results},200,origin);
       }
