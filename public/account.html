@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Manage your Knightfall account and community profile.">
+  <title>Knightfall | Account</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/account.css">
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="account-shell">
+    <section id="account" class="account-card" aria-live="polite">
+      <p class="account-status">Checking your session…</p>
+    </section>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script>
+    const API = "https://api.ash-fall.com";
+    const root = document.querySelector("#account");
+    const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+    function memberDate(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? "Unknown" : date.toLocaleDateString(undefined, {year:"numeric", month:"long", day:"numeric"});
+    }
+
+    function renderSignedOut() {
+      root.innerHTML = `
+        <p class="eyebrow">ACCOUNT</p>
+        <h1>You're not signed in.</h1>
+        <p class="lead">Your Knightfall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
+        <div class="account-actions">
+          <a class="button primary" href="/auth.html">Sign in / Register</a>
+          <a class="button secondary" href="/homepage.html">Return to community</a>
+        </div>`;
+    }
+
+    function renderUser(user) {
+      const initials = (user.display_name || user.username || "?").slice(0,1).toUpperCase();
+      root.innerHTML = `
+        <div class="account-top">
+          <div class="avatar">${esc(initials)}</div>
+          <div>
+            <p class="eyebrow">ACCOUNT</p>
+            <h1>${esc(user.display_name || user.username)}</h1>
+            <p class="handle">@${esc(user.username)} · ${esc(user.role || "member")}</p>
+          </div>
+        </div>
+        <div class="account-grid">
+          <div><span>Email</span><strong>${esc(user.email || "Not provided")}</strong></div>
+          <div><span>Member since</span><strong>${esc(memberDate(user.created_at))}</strong></div>
+          <div><span>Profile</span><strong>${user.bio ? "Bio added" : "Ready to customize"}</strong></div>
+          <div><span>Session</span><strong>Active</strong></div>
+        </div>
+        ${user.bio ? `<div class="bio"><span>Bio</span><p>${esc(user.bio)}</p></div>` : ""}
+        <div class="account-actions">
+          <a class="button primary" href="/profile.html?username=${encodeURIComponent(user.username)}">View profile</a>
+          <a class="button secondary" href="/profile-edit.html">Edit profile</a>
+          <a class="button secondary" href="/homepage.html">Enter forum</a>
+          ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a>' : ""}
+        </div>
+        <button id="logout" class="logout" type="button">Log out</button>
+        <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
+      document.querySelector("#logout").addEventListener("click", logout);
+    }
+
+    async function getMe() {
+      const response = await fetch(`${API}/api/auth/me`, {credentials:"include", cache:"no-store"});
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Unable to check your session.");
+      return data.user || null;
+    }
+
+    async function logout() {
+      const status = document.querySelector("#account-status");
+      status.textContent = "Signing out…";
+      try {
+        const response = await fetch(`${API}/api/auth/logout`, {
+          method:"POST",
+          credentials:"include",
+          headers:{"content-type":"application/json"}
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Unable to sign out.");
+        status.textContent = "Signed out. Returning to the community…";
+        setTimeout(() => location.href = "/homepage.html", 450);
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    }
+
+    (async () => {
+      try {
+        const user = await getMe();
+        if (user) renderUser(user);
+        else renderSignedOut();
+      } catch (error) {
+        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>Account unavailable</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/homepage.html">Return to community</a></div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
