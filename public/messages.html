@@ -21,7 +21,7 @@
     </aside>
     <section class="chat-panel">
       <div id="chat-head" class="chat-head"><div><strong>Select a conversation</strong><small>Messages will appear here.</small></div><button id="mute-chat" hidden>Mute</button></div>
-      <div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div>
+      <button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div>
       <form id="composer" class="composer" hidden>
         <textarea id="body" maxlength="4000" placeholder="Write a message..." required></textarea>
         <div><small>Up to 4,000 characters</small><button class="primary">Send</button></div>
@@ -57,6 +57,8 @@ async function openConversation(id){
  const d=await api("/api/messages/conversations/"+id);
  $("#messages").innerHTML=(d.messages||[]).map(m=>{const mine=m.sender_id===currentUser.id;const read=mine&&c?.other_last_read_at&&new Date(c.other_last_read_at)>=new Date(m.created_at);return '<article class="message '+(mine?"mine":"theirs")+' '+(m.deleted_at?"deleted":"")+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username)+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+(read?" · read":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p>'+(!m.deleted_at?'<div class="message-actions">'+(mine?'<button data-edit-message="'+m.id+'">Edit</button><button data-delete-message="'+m.id+'">Delete</button>':'<button data-report-message="'+m.id+'">Report</button>')+'</div>':"")+'</article>'}).join("")||'<div class="empty">No messages yet.</div>';
  $("#messages").scrollTop=$("#messages").scrollHeight;
+ $("#load-older").hidden=(d.messages||[]).length<100;
+ $("#load-older").onclick=async()=>{const first=d.messages?.[0]?.id;if(!first)return;try{const older=await api("/api/messages/conversations/"+id+"?limit=100&before="+first);const html=(older.messages||[]).map(m=>{const mine=m.sender_id===currentUser.id;return '<article class="message '+(mine?"mine":"theirs")+' '+(m.deleted_at?"deleted":"")+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username)+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p></article>'}).join("");$("#messages").insertAdjacentHTML("afterbegin",html);if((older.messages||[]).length<100)$("#load-older").hidden=true;}catch(x){status(x.message)}};
  await loadConversations();
 }
 $("#composer").onsubmit=async e=>{e.preventDefault();if(!currentId)return;const body=$("#body").value.trim();if(!body)return;try{await api("/api/messages/conversations/"+currentId,{method:"POST",body:JSON.stringify({body})});$("#body").value="";await openConversation(currentId);status("Message sent.",true)}catch(x){status(x.message)}};
