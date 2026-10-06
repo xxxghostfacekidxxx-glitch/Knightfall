@@ -1,0 +1,25 @@
+name: Knightfall Authorization Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * 1"
+
+jobs:
+  authorization-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run non-destructive role matrix
+        env:
+          KNIGHTFALL_API: https://api.ash-fall.com
+          KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
+          KNIGHTFALL_MEMBER_PASSWORD: ${{ secrets.KNIGHTFALL_MEMBER_PASSWORD }}
+          KNIGHTFALL_MODERATOR_USERNAME: ${{ secrets.KNIGHTFALL_MODERATOR_USERNAME }}
+          KNIGHTFALL_MODERATOR_PASSWORD: ${{ secrets.KNIGHTFALL_MODERATOR_PASSWORD }}
+          KNIGHTFALL_ADMIN_USERNAME: ${{ secrets.KNIGHTFALL_ADMIN_USERNAME }}
+          KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
+        run: node scripts/authorization-audit.mjs
