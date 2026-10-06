@@ -8,7 +8,7 @@
       <a href="/homepage.html">Forum</a>
       <a href="/members.html">Members</a>
       <a href="/messages.html">Messages</a>
-      <a class="kf-notify" href="/account.html#notifications" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
+      <a class="kf-notify" href="/notifications.html" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
       <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
     </nav>`;
