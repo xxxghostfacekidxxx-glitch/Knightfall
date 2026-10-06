@@ -700,7 +700,7 @@ export default {
         const type=url.searchParams.get("type")==="posts"?"posts":"threads";
         const includeDeleted=url.searchParams.get("include_deleted")==="1";
         const q=String(url.searchParams.get("q")||"").trim();
-        const like="%"+q.replace(/[%_]/g,"\\      return json({ error: "Not found" }, 404, origin);")+"%";
+        const like="%"+q.replace(/[%_]/g,"\\const like="%"+q.replace(/[%_]/g,"\\      return json({ error: "Not found" }, 404, origin);")+"%";")+"%";
         let results;
         if(type==="threads"){
           const sql="SELECT t.id,t.title,t.slug,t.deleted_at,t.locked,t.pinned,t.created_at,u.username,c.name AS category_name FROM threads t JOIN users u ON u.id=t.user_id JOIN categories c ON c.id=t.category_id WHERE "+(includeDeleted?"1=1":"t.deleted_at IS NULL")+(q?" AND (t.title LIKE ? ESCAPE '\\' OR t.body LIKE ? ESCAPE '\\')":"")+" ORDER BY t.created_at DESC LIMIT 250";
