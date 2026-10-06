@@ -31,10 +31,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base='https://api.ash-fall.com'; jar=$(mktemp)
+          base='https://api.ash-fall.com'; jar=$(mktemp); jar2=$(mktemp)
           username="smk${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"; email="${username}@example.invalid"; password=$(openssl rand -hex 12)
+          username2="smkpeer${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"; email2="${username2}@example.invalid"; password2=$(openssl rand -hex 12)
           register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}"); echo "register=$register"; echo "$register" | grep -q '"user"'
           me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "me=$me"; echo "$me" | grep -q "\"username\":\"$username\""
+          register2=$(curl -sS -c "$jar2" -b "$jar2" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username2\",\"email\":\"$email2\",\"display_name\":\"Smoke Peer\",\"password\":\"$password2\"}"); echo "register2=$register2"; echo "$register2" | grep -q '"user"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?limit=5"); echo "notifications=$r"; echo "$r" | grep -q '"notifications"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?unread=true&limit=1"); echo "notifications-unread=$r"; echo "$r" | grep -q '"unread_count"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" -X POST "$base/api/notifications/read-all"); echo "notifications-read-all=$r"; echo "$r" | grep -q '"ok":true'
@@ -42,5 +44,10 @@ jobs:
           r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/categories"); echo "categories=$r"; echo "$r" | grep -q '"categories"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/threads?limit=1"); echo "threads=$r"; echo "$r" | grep -q '"threads"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/users/$username"); echo "profile=$r"; echo "$r" | grep -q "\"username\":\"$username\""
+          conversation=$(curl -sS -b "$jar" -H 'Content-Type: application/json' -X POST "$base/api/messages/conversations" --data "{\"username\":\"$username2\"}"); echo "conversation=$conversation"; echo "$conversation" | grep -q '"id"'; conversation_id=$(echo "$conversation" | jq -r '.id'); test "$conversation_id" != "null"
+          message=$(curl -sS -b "$jar" -H 'Content-Type: application/json' -X POST "$base/api/messages/conversations/$conversation_id" --data '{"body":"Knightfall E2E messaging test"}'); echo "message=$message"; echo "$message" | grep -q '"id"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/messages/conversations/$conversation_id"); echo "conversation-detail=$r"; echo "$r" | grep -q '"messages"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar2" "$base/api/messages/conversations"); echo "peer-conversations=$r"; echo "$r" | grep -q '"conversations"'
           logout=$(curl -sS -b "$jar" -c "$jar" -X POST "$base/api/auth/logout"); echo "logout=$logout"; echo "$logout" | grep -q '"ok":true'
+          logout2=$(curl -sS -b "$jar2" -c "$jar2" -X POST "$base/api/auth/logout"); echo "logout2=$logout2"; echo "$logout2" | grep -q '"ok":true'
           after=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "after=$after"; echo "$after" | grep -q '"user":null'
