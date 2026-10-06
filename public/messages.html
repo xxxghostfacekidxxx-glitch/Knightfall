@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knightfall | Messages</title>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/messages.css">
+</head>
+<body>
+<header class="kf-header"></header>
+<main class="messages-shell">
+  <section class="messages-hero">
+    <div><p class="eyebrow">PRIVATE CHANNELS</p><h1>Messages<span>.</span></h1><p>Direct conversations between Knightfall members. Admins retain supervisory access for moderation and safety.</p></div>
+    <button id="new-message" class="primary">New message</button>
+  </section>
+  <div id="status" class="msg-status"></div>
+  <section class="message-layout">
+    <aside class="conversation-panel">
+      <div class="panel-title"><strong>Conversations</strong><button id="refresh">↻</button></div>
+      <input id="conversation-search" class="search" placeholder="Search conversations">
+      <div id="conversations" class="conversation-list"></div>
+    </aside>
+    <section class="chat-panel">
+      <div id="chat-head" class="chat-head"><div><strong>Select a conversation</strong><small>Messages will appear here.</small></div></div>
+      <div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div>
+      <form id="composer" class="composer" hidden>
+        <textarea id="body" maxlength="4000" placeholder="Write a message..." required></textarea>
+        <div><small>Up to 4,000 characters</small><button class="primary">Send</button></div>
+      </form>
+    </section>
+  </section>
+  <section id="admin-archive" class="admin-archive" hidden>
+    <div class="archive-head"><div><p class="eyebrow">ADMINISTRATOR OVERSIGHT</p><h2>Message Archive</h2><p>Read-only supervisory access to every conversation, including soft-deleted messages.</p></div><button id="refresh-archive">Refresh archive</button></div>
+    <div class="archive-tools"><input id="archive-search" class="search" placeholder="Search message text or user"><select id="archive-conversation"><option value="0">All conversations</option></select></div>
+    <div id="archive" class="archive-list"></div>
+  </section>
+</main>
+<script src="/nav.js"></script>
+<script>
+const API="https://api.ash-fall.com";
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=v=>new Date(v).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
+let conversations=[],currentId=null,currentUser=null,admin=false;
+async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d}
+function status(t,good=false){$("#status").textContent=t;$("#status").className="msg-status "+(good?"good":"")}
+function drawConversations(){
+ const q=$("#conversation-search").value.trim().toLowerCase();
+ const list=conversations.filter(x=>(x.other_username+" "+x.other_display_name+" "+(x.last_body||"")).toLowerCase().includes(q));
+ $("#conversations").innerHTML=list.map(x=>'<button class="conversation '+(x.id===currentId?"active":"")+'" data-id="'+x.id+'"><span class="avatar">'+esc((x.other_display_name||x.other_username||"?").slice(0,1).toUpperCase())+'</span><span class="conversation-copy"><strong>'+esc(x.other_display_name||x.other_username)+'</strong><small>@'+esc(x.other_username)+'</small><em>'+esc(x.last_body||"No messages yet")+'</em></span>'+(Number(x.unread_count)>0?'<b class="unread">'+x.unread_count+'</b>':"")+'</button>').join("")||'<div class="empty">No conversations yet.</div>';
+ document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>openConversation(Number(b.dataset.id)));
+}
+async function loadConversations(){const d=await api("/api/messages/conversations");conversations=d.conversations||[];drawConversations();if(currentId&&conversations.some(x=>x.id===currentId))await openConversation(currentId)}
+async function openConversation(id){
+ currentId=id;drawConversations();const c=conversations.find(x=>x.id===id);
+ $("#chat-head").innerHTML='<div><strong>'+esc(c?.other_display_name||c?.other_username||"Conversation")+'</strong><small>@'+esc(c?.other_username||"")+'</small></div>';
+ $("#composer").hidden=false;
+ const d=await api("/api/messages/conversations/"+id);
+ $("#messages").innerHTML=(d.messages||[]).map(m=>'<article class="message '+(m.sender_id===currentUser.id?"mine":"theirs")+' '+(m.deleted_at?"deleted":"")+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username)+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p></article>').join("")||'<div class="empty">No messages yet.</div>';
+ $("#messages").scrollTop=$("#messages").scrollHeight;
+ await loadConversations();
+}
+$("#composer").onsubmit=async e=>{e.preventDefault();if(!currentId)return;const body=$("#body").value.trim();if(!body)return;try{await api("/api/messages/conversations/"+currentId,{method:"POST",body:JSON.stringify({body})});$("#body").value="";await openConversation(currentId);status("Message sent.",true)}catch(x){status(x.message)}};
+$("#new-message").onclick=async()=>{const username=prompt("Enter the member's username:");if(!username)return;try{const d=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:username.trim()})});await loadConversations();await openConversation(d.id);status("Conversation ready.",true)}catch(x){status(x.message)}};
+$("#refresh").onclick=loadConversations;$("#conversation-search").oninput=drawConversations;
+async function loadAdmin(){
+ if(!admin)return;
+ $("#admin-archive").hidden=false;
+ const d=await api("/api/admin/conversations");
+ $("#archive-conversation").innerHTML='<option value="0">All conversations</option>'+(d.conversations||[]).map(x=>'<option value="'+x.id+'">#'+x.id+' · '+esc(x.participants||"")+'</option>').join("");
+ await archive();
+}
+async function archive(){
+ if(!admin)return;
+ const cid=$("#archive-conversation").value,q=encodeURIComponent($("#archive-search").value.trim());
+ const d=await api("/api/admin/messages?conversation_id="+encodeURIComponent(cid)+"&q="+q);
+ $("#archive").innerHTML=(d.messages||[]).map(m=>'<article class="archive-row '+(m.deleted_at?"deleted":"")+'"><div><strong>#'+m.id+' · conversation #'+m.conversation_id+'</strong><small>@'+esc(m.sender_username)+' · '+esc(fmt(m.created_at))+(m.deleted_at?" · SOFT-DELETED":"")+'</small><p>'+esc(m.body).replace(/\n/g,"<br>")+'</p></div></article>').join("")||'<div class="empty">No messages found.</div>';
+}
+$("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(window.at);window.at=setTimeout(archive,250)};
+(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use messages.");currentUser=me.user;admin=me.user.role==="admin";await loadConversations();await loadAdmin();status("Messaging online.",true)}catch(e){status(e.message)}})();
+</script>
+</body></html>
