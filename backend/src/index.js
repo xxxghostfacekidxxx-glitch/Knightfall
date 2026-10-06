@@ -442,6 +442,7 @@ export default {
         try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
         if (!['open','resolved','dismissed'].includes(body.status)) return json({ error: "Invalid report status." }, 400, origin);
         await env.DB.prepare("UPDATE reports SET status=?,moderator_id=?,moderator_note=?,resolved_at=? WHERE id=?").bind(body.status,user.id,String(body.moderator_notes || body.moderator_note || "").slice(0,4000),body.status === "open" ? null : new Date().toISOString(),reportMatch[1]).run();
+        await audit(env,user,"report."+body.status,"report",Number(reportMatch[1]),{});
         return json({ ok: true }, 200, origin);
       }
 
@@ -752,6 +753,7 @@ export default {
         if (body.role !== undefined && !roles.includes(body.role)) return json({ error: "Invalid role." }, 400, origin);
         if (body.status !== undefined && !statuses.includes(body.status)) return json({ error: "Invalid account status." }, 400, origin);
         await env.DB.prepare("UPDATE users SET role=COALESCE(?,role),status=COALESCE(?,status),updated_at=? WHERE id=?").bind(body.role ?? null, body.status ?? null, new Date().toISOString(), targetId).run();
+        await audit(env,user,"user.update","user",targetId,{role:body.role,status:body.status});
         if (body.status && body.status !== "active") {
           const list = await env.SESSIONS.list({ prefix: "session:" });
           for (const key of list.keys || []) {
