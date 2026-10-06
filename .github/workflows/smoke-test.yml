@@ -36,6 +36,8 @@ jobs:
           register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}"); echo "register=$register"; echo "$register" | grep -q '"user"'
           me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "me=$me"; echo "$me" | grep -q "\"username\":\"$username\""
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?limit=5"); echo "notifications=$r"; echo "$r" | grep -q '"notifications"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?unread=true&limit=1"); echo "notifications-unread=$r"; echo "$r" | grep -q '"unread_count"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" -X POST "$base/api/notifications/read-all"); echo "notifications-read-all=$r"; echo "$r" | grep -q '"ok":true'
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/discover?q=smk&limit=5"); echo "discover=$r"; echo "$r" | grep -q '"users"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/categories"); echo "categories=$r"; echo "$r" | grep -q '"categories"'
           r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/threads?limit=1"); echo "threads=$r"; echo "$r" | grep -q '"threads"'
