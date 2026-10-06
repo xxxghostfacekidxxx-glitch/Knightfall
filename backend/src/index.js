@@ -153,6 +153,15 @@ async function createNotification(env, {userId, actorId=null, kind, targetType=n
   } catch (error) { console.error("notification_failed", error); }
 }
 
+
+async function notifyMentions(env, textValue, actor, targetType, targetId, targetUrl) {
+  const names=[...String(textValue||"").matchAll(/@([a-z0-9_]{3,24})/gi)].map(x=>x[1].toLowerCase()).filter((v,i,a)=>a.indexOf(v)===i);
+  for(const name of names){
+    const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=? AND status='active'").bind(name).first();
+    if(target && target.id!==actor.id) await createNotification(env,{userId:target.id,actorId:actor.id,kind:"mention",targetType,targetId,title:"You were mentioned",body:"@"+actor.username+" mentioned you.",url:targetUrl});
+  }
+}
+
 const SETTING_DEFAULTS = {
   site_name: "Knightfall",
   maintenance_mode: "false",
@@ -345,7 +354,7 @@ export default {
         if (!category) return json({ error: "Category not found." }, 404, origin);
         const slug = await uniqueSlug(title, env);
         const now = new Date().toISOString();
-        const result = await env.DB.prepare("INSERT INTO threads (category_id,user_id,title,slug,body,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(categoryId,user.id,title,slug,threadBody,now,now).first();
+        const result = await env.DB.prepare("INSERT INTO threads (category_id,user_id,title,slug,body,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(categoryId,user.id,title,slug,threadBody,now,now).first();\n        await notifyMentions(env,title+" "+threadBody,user,"thread",result.id,"/thread.html?id="+result.id);
         return json({ id: result.id, slug }, 201, origin);
       }
 
@@ -372,7 +381,7 @@ export default {
         const result = await env.DB.prepare("INSERT INTO posts (thread_id,user_id,body,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id").bind(thread.id,user.id,String(body.body).trim(),now,now).first();
         await env.DB.prepare("UPDATE threads SET updated_at=? WHERE id=?").bind(now,thread.id).run();
         const owner=await env.DB.prepare("SELECT user_id,title FROM threads WHERE id=?").bind(thread.id).first();
-        if(owner && owner.user_id!==user.id) await createNotification(env,{userId:owner.user_id,actorId:user.id,kind:"reply",targetType:"thread",targetId:thread.id,title:"New reply",body:"@"+user.username+" replied to your thread.",url:"/thread.html?id="+thread.id});
+        if(owner && owner.user_id!==user.id) await createNotification(env,{userId:owner.user_id,actorId:user.id,kind:"reply",targetType:"thread",targetId:thread.id,title:"New reply",body:"@"+user.username+" replied to your thread.",url:"/thread.html?id="+thread.id});\n        await notifyMentions(env,String(body.body),user,"thread",thread.id,"/thread.html?id="+thread.id);
         return json({ id: result.id }, 201, origin);
       }
 
