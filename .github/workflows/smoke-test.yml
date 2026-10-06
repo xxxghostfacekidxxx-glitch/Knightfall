@@ -42,7 +42,7 @@ jobs:
           test "$code" = '200'
           grep -q '"user":null' "$body"
 
-      - name: Check CORS preflight and security headers
+      - name: Check CORS preflight
         shell: bash
         run: |
           set -euo pipefail
@@ -57,8 +57,20 @@ jobs:
           test "$code" = '204'
           grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"
           grep -qi '^access-control-allow-credentials: true' "$headers"
+
+      - name: Check response security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.ash-fall.com'
+          headers=$(mktemp)
+          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' --max-time 20 "$base/health")
+          echo "GET /health -> $code"
+          cat "$headers"
+          test "$code" = '200'
           grep -qi '^x-content-type-options: nosniff' "$headers"
           grep -qi '^x-frame-options: DENY' "$headers"
+          grep -qi '^referrer-policy: strict-origin-when-cross-origin' "$headers"
 
       - name: Exercise registration and authenticated session
         shell: bash
