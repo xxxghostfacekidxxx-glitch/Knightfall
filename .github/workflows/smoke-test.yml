@@ -32,7 +32,7 @@ jobs:
         run: |
           set -euo pipefail
           base='https://api.ash-fall.com'; jar=$(mktemp)
-          username="smk${GITHUB_RUN_ID}"; email="${username}@example.invalid"; password=$(openssl rand -hex 12)
+          username="smk${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"; email="${username}@example.invalid"; password=$(openssl rand -hex 12)
           register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}"); echo "register=$register"; echo "$register" | grep -q '"user"'
           me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "me=$me"; echo "$me" | grep -q "\"username\":\"$username\""
           r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?limit=5"); echo "notifications=$r"; echo "$r" | grep -q '"notifications"'
