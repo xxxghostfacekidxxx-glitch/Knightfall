@@ -7,12 +7,21 @@
   <title>Knightfall Thread</title>
   <link rel="stylesheet" href="/homepage.css" />
   <style>
-    .post-card,.thread-view-card{position:relative}.post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.post-actions button,.reply-form button,.report-form button{background:#171717;color:#fff;border:1px solid #333;border-radius:8px;padding:8px 12px;cursor:pointer}.post-actions button:hover,.reply-form button:hover,.report-form button:hover{background:#252525}.post-edit,.reply-form,.report-form{margin-top:12px}.post-edit textarea,.reply-form textarea,.report-form textarea{width:100%;min-height:100px;background:#0d0d0d;color:#eee;border:1px solid #333;border-radius:8px;padding:10px;resize:vertical}.hidden{display:none}.thread-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{color:#aaa;margin-top:10px}
-  </style>
-</head>
+    .thread-view-card,.post-card{position:relative;background:linear-gradient(145deg,#131313,#0b0b0b);border:1px solid #292929;border-radius:13px;padding:1.4rem;margin-top:1.2rem;box-shadow:0 14px 40px rgba(0,0,0,.2)}
+    .thread-view-card h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.95;letter-spacing:-.05em;margin:.6rem 0}
+    .thread-meta,.post-card time{color:#777;font-size:.8rem}.thread-body,.post-body{margin-top:1.3rem;color:#ddd;line-height:1.75;overflow-wrap:anywhere}
+    .thread-controls,.post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.1rem}
+    .thread-controls button,.post-actions button,.reply-form button,.report-form button{background:#111;color:#eee;border:1px solid #333;border-radius:8px;padding:8px 12px;cursor:pointer;transition:.2s}
+    .thread-controls button:hover,.post-actions button:hover,.reply-form button:hover,.report-form button:hover{background:#181818;border-color:#d35400}
+    .post-card{padding:1.1rem;margin-top:.7rem}.post-card strong a{color:#eee;text-decoration:none}.post-card strong a:hover{color:#d35400}
+    .post-edit,.reply-form,.report-form{margin-top:12px}.post-edit textarea,.reply-form textarea,.report-form textarea{width:100%;min-height:100px;background:#0a0a0a;color:#eee;border:1px solid #333;border-radius:8px;padding:10px;resize:vertical;font:inherit}
+    .reply-form{padding:1.2rem;border:1px solid #292929;border-radius:12px;background:#101010}.reply-form button{border-color:#d35400;background:#d35400}
+    .hidden{display:none}.notice{color:#999;margin-top:10px}
+    @media(max-width:700px){.thread-view-card,.post-card{padding:1rem}.thread-controls button,.post-actions button{flex:1}}
+  </style></head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/index.html">ASH-FALL</a>
+    <a class="brand" href="/index.html"><span>KNIGHT</span><b>FALL</b></a>
     <nav aria-label="Primary navigation"><a href="/homepage.html">Forum</a><a href="/members.html">Members</a><a href="/index.html">Sanctuary</a></nav>
   </header>
   <main class="container">
