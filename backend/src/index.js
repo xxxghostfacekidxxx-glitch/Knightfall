@@ -230,6 +230,23 @@ export default {
         return json({ ok: true }, 200, origin, { "set-cookie": sessionCookie("", 0) });
       }
 
+      if (url.pathname === "/api/site-settings" && request.method === "GET") {
+        const keys = ["site_name","maintenance_mode","registration_enabled","forum_enabled","announcements_enabled","announcement_title","announcement_body","feature_miss_chaos","feature_profiles"];
+        const settings = {};
+        for (const key of keys) settings[key] = await getSetting(env,key);
+        return json({ settings }, 200, origin);
+      }
+
+      if (url.pathname.startsWith("/api/") &&
+          !url.pathname.startsWith("/api/auth/") &&
+          !url.pathname.startsWith("/api/admin/") &&
+          url.pathname !== "/api/site-settings") {
+        if ((await getSetting(env, "maintenance_mode")) === "true") {
+          const user = await requireUser(request, env);
+          if (!isAdmin(user)) return json({ error: "Knightfall is temporarily offline for maintenance." }, 503, origin);
+        }
+      }
+
       if (url.pathname === "/api/categories" && request.method === "GET") {
         const { results } = await env.DB.prepare("SELECT id,name,slug,description,sort_order,created_at FROM categories ORDER BY sort_order ASC, name ASC").all();
         return json({ categories: results }, 200, origin);
