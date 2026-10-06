@@ -719,6 +719,23 @@ export default {
         return json({ users: results }, 200, origin);
       }
 
+      const adminDetailMatch = url.pathname.match(/^\/api\/admin\/users\/(\d+)\/detail$/);
+      if(adminDetailMatch && request.method==="GET"){
+        const user=await requireUser(request,env); if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const id=Number(adminDetailMatch[1]);
+        const target=await env.DB.prepare("SELECT id,username,email,display_name,role,status,bio,avatar_url,website_url,location,pronouns,created_at,updated_at,last_seen_at FROM users WHERE id=?").bind(id).first();
+        if(!target)return json({error:"User not found."},404,origin);
+        const [threads,posts,reports,followers,following]=await Promise.all([
+          env.DB.prepare("SELECT t.id,t.title,t.slug,t.body,t.created_at,t.updated_at,t.deleted_at,c.name AS category_name FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.user_id=? ORDER BY t.created_at DESC LIMIT 250").bind(id).all(),
+          env.DB.prepare("SELECT p.id,p.thread_id,p.body,p.created_at,p.updated_at,p.deleted_at,t.title AS thread_title FROM posts p JOIN threads t ON t.id=p.thread_id WHERE p.user_id=? ORDER BY p.created_at DESC LIMIT 500").bind(id).all(),
+          env.DB.prepare("SELECT id,reason,status,created_at,resolved_at,thread_id,post_id FROM reports WHERE reporter_id=? ORDER BY created_at DESC LIMIT 250").bind(id).all(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE following_id=?").bind(id).first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE follower_id=?").bind(id).first()
+        ]);
+        await audit(env,user,"user.inspect","user",id,{});
+        return json({user:{...target,followers:Number(followers?.count||0),following_count:Number(following?.count||0),is_online:target.last_seen_at?Date.now()-new Date(target.last_seen_at).getTime()<300000:false},threads:threads.results||[],posts:posts.results||[],reports:reports.results||[]},200,origin);
+      }
+
       const adminUserMatch = url.pathname.match(/^\/api\/admin\/users\/(\d+)$/);
       if (adminUserMatch && request.method === "PATCH") {
         const user = await requireUser(request, env);
