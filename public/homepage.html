@@ -1,1 +1,87 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Knightfall community forum. From ruin, we endure."><title>Knightfall | Community</title><link rel="stylesheet" href="/homepage.css"></head><body><header class="site-header"><a class="brand" href="/index.html" aria-label="Knightfall home">KNIGHTFALL</a><nav aria-label="Primary navigation"><a href="/index.html">Sanctuary</a><a href="#forum">Forum</a><a href="/members.html">Members</a><a href="#chaos">Miss Chaos</a><a href="#manifesto">Manifesto</a></nav></header><main class="container"><section class="hero"><p class="eyebrow">THE ASHES REMAIN</p><h1>Welcome to the<br>community.</h1><p>A place for discussion, stories, debate, and rebuilding after the fall. No polished masks required.</p></section><section id="forum" class="section" aria-labelledby="forum-title"><div class="section-heading"><div><p class="eyebrow">COMMUNITY</p><h2 id="forum-title">Forum</h2></div><span id="api-status" class="status">Connecting…</span></div><div id="categories" class="categories" aria-live="polite"></div><div id="forum-message" class="forum-message" hidden></div><div class="threads-panel"><div class="section-heading compact"><div><p class="eyebrow">DISCUSSION</p><h2>Latest Threads</h2></div><button id="refresh-threads" type="button">Refresh</button></div><div id="threads" class="threads" aria-live="polite"></div></div></section><section id="chaos" class="feature"><div><p class="eyebrow">AI COMPANION</p><h2>Miss Chaos</h2><p>Our AI companion is being forged separately, with the interface and backend designed to become part of the larger Knightfall experience.</p></div><span class="coming-soon">COMING SOON</span></section><section id="manifesto" class="manifesto"><p>“Everything burns. Something remains.”</p><span>KNIGHTFALL</span></section></main><footer><p>After the fall, we remain. © 2026 Knightfall</p></footer><script>const API="https://api.ash-fall.com",categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}function renderCategories(list){categoriesEl.innerHTML=list.length?list.map((c,i)=>`<button class="category" type="button" data-category-id="${c.id}"><span class="category-mark">${String(i+1).padStart(2,"0")}</span><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description||"Community discussion.")}</p></button>`).join(""):"<p class='empty-state'>No categories yet.</p>";categoriesEl.querySelectorAll("[data-category-id]").forEach(b=>b.addEventListener("click",()=>loadThreads(b.dataset.categoryId)))}function renderThreads(list){threadsEl.innerHTML=list.length?list.map(t=>`<article class="thread-card"><div><a href="/thread.html?id=${encodeURIComponent(t.id)}">${escapeHtml(t.title)}</a><p>${escapeHtml(t.category_name)} · ${escapeHtml(t.display_name||t.username||"Member")} · ${formatDate(t.updated_at)}</p></div><span>${t.reply_count||0} ${(t.reply_count||0)==1?"reply":"replies"}</span></article>`).join(""):"<p class='empty-state'>No threads yet. The ashes are quiet for now.</p>"}async function loadCategories(){const r=await fetch(`${API}/api/categories`);if(!r.ok)throw Error();renderCategories((await r.json()).categories||[])}async function loadThreads(categoryId=""){messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';try{const r=await fetch(`${API}/api/threads${categoryId?`?category_id=${encodeURIComponent(categoryId)}`:""}`);if(!r.ok)throw Error();renderThreads((await r.json()).threads||[])}catch{threadsEl.innerHTML="";messageEl.textContent="The forum API could not be reached. The sanctuary is still standing, but the discussion service needs attention.";messageEl.hidden=false}}async function initialize(){try{await Promise.all([loadCategories(),loadThreads()]);statusEl.textContent="API online"}catch{statusEl.textContent="API unavailable";messageEl.textContent="The forum service is temporarily unavailable.";messageEl.hidden=false}}document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads());initialize();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Knightfall community. From ruin, we endure.">
+  <meta name="theme-color" content="#080808">
+  <title>Knightfall | Community</title>
+  <link rel="stylesheet" href="/homepage.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="/index.html" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation">☰</button>
+    <nav id="primary-nav" aria-label="Primary navigation">
+      <a href="/index.html">Sanctuary</a>
+      <a href="#forum">Forum</a>
+      <a href="/members.html">Members</a>
+      <a href="#chaos">Miss Chaos</a>
+      <a href="#manifesto">Manifesto</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE ASHES REMAIN</p>
+        <h1>From ruin,<br><span>we endure.</span></h1>
+        <p class="hero-lede">A community for discussion, stories, art, debate, and rebuilding after the fall. No polished masks required.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#forum">Enter the Forum</a>
+          <a class="button button-ghost" href="#manifesto">Read the Manifesto</a>
+        </div>
+      </div>
+      <div class="hero-sigil" aria-hidden="true">
+        <span class="ring ring-one"></span><span class="ring ring-two"></span>
+        <span class="flame">◆</span>
+      </div>
+    </section>
+
+    <section id="forum" class="section" aria-labelledby="forum-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">COMMUNITY</p><h2 id="forum-title">Forum</h2></div>
+        <span id="api-status" class="status">Connecting…</span>
+      </div>
+      <div id="categories" class="categories" aria-live="polite"></div>
+      <div id="forum-message" class="forum-message" hidden></div>
+      <div class="threads-panel">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">DISCUSSION</p><h2>Latest Threads</h2></div>
+          <button id="refresh-threads" class="small-button" type="button">Refresh</button>
+        </div>
+        <div id="threads" class="threads" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="chaos" class="feature">
+      <div><p class="eyebrow">AI COMPANION</p><h2>Miss Chaos</h2><p>Our AI companion is being forged separately, with the interface and backend designed to become part of the larger Knightfall experience.</p></div>
+      <span class="coming-soon">COMING SOON</span>
+    </section>
+
+    <section id="manifesto" class="manifesto">
+      <p>“Everything burns. Something remains.”</p>
+      <span>KNIGHTFALL</span>
+    </section>
+  </main>
+
+  <footer><p>After the fall, we remain. © 2026 Knightfall</p></footer>
+
+  <script>
+    const API="https://api.ash-fall.com";
+    const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");
+    const navToggle=document.querySelector(".nav-toggle"),nav=document.getElementById("primary-nav");
+    navToggle.addEventListener("click",()=>{const open=navToggle.getAttribute("aria-expanded")==="true";navToggle.setAttribute("aria-expanded",String(!open));navToggle.setAttribute("aria-label",open?"Open navigation":"Close navigation");nav.classList.toggle("open",!open)});
+    nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");navToggle.setAttribute("aria-expanded","false")}));
+    function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
+    function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
+    function renderCategories(list){categoriesEl.innerHTML=list.length?list.map((c,i)=>`<button class="category" type="button" data-category-id="${c.id}"><span class="category-mark">${String(i+1).padStart(2,"0")}</span><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description||"Community discussion.")}</p><span class="card-arrow" aria-hidden="true">↗</span></button>`).join(""):"<p class='empty-state'>No categories yet.</p>";categoriesEl.querySelectorAll("[data-category-id]").forEach(b=>b.addEventListener("click",()=>loadThreads(b.dataset.categoryId)))}
+    function renderThreads(list){threadsEl.innerHTML=list.length?list.map(t=>`<article class="thread-card"><div><a href="/thread.html?id=${encodeURIComponent(t.id)}">${escapeHtml(t.title)}</a><p>${escapeHtml(t.category_name)} · ${escapeHtml(t.display_name||t.username||"Member")} · ${formatDate(t.updated_at)}</p></div><span>${t.reply_count||0} ${(t.reply_count||0)==1?"reply":"replies"}</span></article>`).join(""):"<p class='empty-state'>No threads yet. The ashes are quiet for now.</p>"}
+    async function loadCategories(){const r=await fetch(`${API}/api/categories`);if(!r.ok)throw Error();renderCategories((await r.json()).categories||[])}
+    async function loadThreads(categoryId=""){messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';try{const r=await fetch(`${API}/api/threads${categoryId?`?category_id=${encodeURIComponent(categoryId)}`:""}`);if(!r.ok)throw Error();renderThreads((await r.json()).threads||[])}catch{threadsEl.innerHTML="";messageEl.textContent="The forum API could not be reached. The sanctuary is still standing, but the discussion service needs attention.";messageEl.hidden=false}}
+    async function initialize(){try{await Promise.all([loadCategories(),loadThreads()]);statusEl.textContent="API online";statusEl.classList.add("online")}catch{statusEl.textContent="API unavailable";messageEl.textContent="The forum service is temporarily unavailable.";messageEl.hidden=false}}
+    document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads());initialize();
+  </script>
+</body>
+</html>
