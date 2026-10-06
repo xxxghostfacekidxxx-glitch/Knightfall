@@ -35,6 +35,15 @@ nav a:hover, nav a:focus-visible { color: #fff; }
 .thread-card p, .thread-card > span { color: #777; font-size: .8rem; }
 .empty-state, .forum-message { padding: 1rem; border: 1px solid #292929; color: #888; background: #0d0d0d; }
 .forum-message { margin-top: 1rem; border-color: #54351f; color: #c8a98f; }
+.thread-view { margin-top: 2rem; }
+.thread-view-card, .post-card { padding: 1.5rem; border: 1px solid #292929; background: #0d0d0d; }
+.thread-view-card h1 { margin-bottom: .5rem; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; }
+.thread-meta, .post-card time { color: #777; font-size: .85rem; }
+.thread-body, .post-card p { margin-top: 1.5rem; color: #ccc; overflow-wrap: anywhere; }
+.posts { margin-top: 3rem; }
+.posts h2 { margin-bottom: 1rem; font-size: 1.5rem; }
+.posts { display: grid; gap: .75rem; }
+.post-card strong { margin-right: .75rem; }
 .feature { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-bottom: 5rem; padding: 2rem; border: 1px solid #292929; background: linear-gradient(135deg,#111 0%,#0b0b0b 100%); }
 .feature p:not(.eyebrow) { max-width: 650px; margin-top: .8rem; }
 .manifesto { padding: 4rem 0; border-top: 1px solid #242424; text-align: center; }
