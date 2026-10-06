@@ -47,9 +47,8 @@ jobs:
         run: |
           set -euo pipefail
           base='https://api.ash-fall.com'
-          body=$(mktemp)
           headers=$(mktemp)
-          code=$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' --max-time 20 \
+          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' --max-time 20 \
             -X OPTIONS "$base/api/auth/me" \
             -H 'Origin: https://ash-fall.com' \
             -H 'Access-Control-Request-Method: GET')
@@ -58,3 +57,59 @@ jobs:
           test "$code" = '204'
           grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"
           grep -qi '^access-control-allow-credentials: true' "$headers"
+          grep -qi '^x-content-type-options: nosniff' "$headers"
+          grep -qi '^x-frame-options: DENY' "$headers"
+
+      - name: Exercise registration and authenticated session
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.ash-fall.com'
+          jar=$(mktemp)
+          username="smoke_$(date +%s)_${GITHUB_RUN_ID}"
+          email="${username}@example.invalid"
+          password='Knightfall-Smoke-2026!'
+
+          register=$(curl -sS --max-time 30 -c "$jar" -b "$jar" \
+            -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' \
+            -X POST "$base/api/auth/register" \
+            --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Knightfall Smoke Test\",\"password\":\"$password\"}")
+          echo "$register"
+          echo "$register" | grep -q '"user"'
+
+          me=$(curl -sS --max-time 20 -b "$jar" "$base/api/auth/me")
+          echo "$me"
+          echo "$me" | grep -q "\"username\":\"$username\""
+
+          members=$(curl -sS --max-time 20 "$base/api/members?limit=1")
+          echo "$members"
+          echo "$members" | grep -q '"users"'
+
+          categories=$(curl -sS --max-time 20 "$base/api/categories")
+          echo "$categories"
+          echo "$categories" | grep -q '"categories"'
+
+          threads=$(curl -sS --max-time 20 "$base/api/threads?limit=1")
+          echo "$threads"
+          echo "$threads" | grep -q '"threads"'
+
+          profile=$(curl -sS --max-time 20 "$base/api/users/$username")
+          echo "$profile"
+          echo "$profile" | grep -q "\"username\":\"$username\""
+
+          notifications=$(curl -sS --max-time 20 -b "$jar" "$base/api/notifications?limit=5")
+          echo "$notifications"
+          echo "$notifications" | grep -q '"notifications"'
+
+          discover=$(curl -sS --max-time 20 -b "$jar" "$base/api/discover?q=smoke&limit=5")
+          echo "$discover"
+          echo "$discover" | grep -q '"users"'
+
+          logout=$(curl -sS --max-time 20 -b "$jar" -c "$jar" \
+            -H 'Origin: https://ash-fall.com' -X POST "$base/api/auth/logout")
+          echo "$logout"
+          echo "$logout" | grep -q '"ok":true'
+
+          after=$(curl -sS --max-time 20 -b "$jar" "$base/api/auth/me")
+          echo "$after"
+          echo "$after" | grep -q '"user":null'
