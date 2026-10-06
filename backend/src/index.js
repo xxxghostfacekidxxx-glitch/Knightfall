@@ -520,7 +520,7 @@ export default {
         const q=String(url.searchParams.get("q")||"").trim();
         const conversationId=Number(url.searchParams.get("conversation_id")||0);
         const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||250),1),500);
-        const like="%"+q.replace(/[%_]/g,"\\      if (url.pathname === "/api/admin/overview" && request.method === "GET") {")+"%";
+        const like="%"+q.replace(/[%_]/g,"\\const like="%"+q.replace(/[%_]/g,"\\      if (url.pathname === "/api/admin/overview" && request.method === "GET") {")+"%";")+"%";
         let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,s.display_name AS sender_display_name,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1";
         const params=[];
         if(conversationId){sql+=" AND m.conversation_id=?";params.push(conversationId);}
