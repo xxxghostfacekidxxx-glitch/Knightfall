@@ -258,7 +258,7 @@ export default {
         return json({ user: safeUser }, 200, origin, { "set-cookie": sessionCookie(token) });
       }
 
-      if (url.pathname === "/api/auth/me" && request.method === "GET") { const me=await getUser(request,env); if(me) await env.DB.prepare("UPDATE users SET last_seen_at=? WHERE id=?").bind(new Date().toISOString(),me.id).run(); return json({user:me},200,origin); }
+      if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getUser(request, env) }, 200, origin);
 
       if (url.pathname === "/api/auth/logout" && request.method === "POST") {
         const token = getCookie(request, SESSION_COOKIE);
