@@ -1,0 +1,37 @@
+name: Knightfall Ownership Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "37 4 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "scripts/ownership-audit.mjs"
+      - ".github/workflows/ownership-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knightfall-ownership-audit
+  cancel-in-progress: true
+
+jobs:
+  ownership-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run ownership boundary audit
+        env:
+          KNIGHTFALL_API: https://api.ash-fall.com
+          KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
+          KNIGHTFALL_MEMBER_PASSWORD: ${{ secrets.KNIGHTFALL_MEMBER_PASSWORD }}
+          KNIGHTFALL_MODERATOR_USERNAME: ${{ secrets.KNIGHTFALL_MODERATOR_USERNAME }}
+          KNIGHTFALL_MODERATOR_PASSWORD: ${{ secrets.KNIGHTFALL_MODERATOR_PASSWORD }}
+          KNIGHTFALL_ADMIN_USERNAME: ${{ secrets.KNIGHTFALL_ADMIN_USERNAME }}
+          KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
+        run: node scripts/ownership-audit.mjs
