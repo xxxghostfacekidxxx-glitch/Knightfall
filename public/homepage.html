@@ -10,18 +10,7 @@
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
-  <header class="site-header">
-    <a class="brand" href="/index.html" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation">☰</button>
-    <nav id="primary-nav" aria-label="Primary navigation">
-      <a href="/index.html">Sanctuary</a>
-      <a href="#forum">Forum</a>
-      <a href="/members.html">Members</a>
-      <a href="/auth.html">Account</a>
-      <a href="#chaos">Miss Chaos</a>
-      <a href="#manifesto">Manifesto</a>
-    </nav>
-  </header>
+  <header class="kf-header"></header>
 
   <main class="container">
     <section class="hero">
@@ -69,12 +58,10 @@
 
   <footer><p>After the fall, we remain. © 2026 Knightfall</p></footer>
 
+  <script src="/nav.js" defer></script>
   <script>
     const API="https://api.ash-fall.com";
     const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");
-    const navToggle=document.querySelector(".nav-toggle"),nav=document.getElementById("primary-nav");
-    navToggle.addEventListener("click",()=>{const open=navToggle.getAttribute("aria-expanded")==="true";navToggle.setAttribute("aria-expanded",String(!open));navToggle.setAttribute("aria-label",open?"Open navigation":"Close navigation");nav.classList.toggle("open",!open)});
-    nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");navToggle.setAttribute("aria-expanded","false")}));
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
     function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
     function renderCategories(list){categoriesEl.innerHTML=list.length?list.map((c,i)=>`<button class="category" type="button" data-category-id="${c.id}"><span class="category-mark">${String(i+1).padStart(2,"0")}</span><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description||"Community discussion.")}</p><span class="card-arrow" aria-hidden="true">↗</span></button>`).join(""):"<p class='empty-state'>No categories yet.</p>";categoriesEl.querySelectorAll("[data-category-id]").forEach(b=>b.addEventListener("click",()=>loadThreads(b.dataset.categoryId)))}
