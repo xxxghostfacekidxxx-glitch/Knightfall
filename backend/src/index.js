@@ -1,24 +1,98 @@
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
+const SESSION_TTL = 60 * 60 * 24 * 30;
+const PBKDF2_ITERATIONS = 120000;
 
 function getOrigin(request) {
   const origin = request.headers.get("Origin");
   return ALLOWED_ORIGINS.has(origin) ? origin : "https://ash-fall.com";
 }
 
-function json(data, status = 200, origin = "https://ash-fall.com") {
+function json(data, status = 200, origin = "https://ash-fall.com", extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "content-type": "application/json; charset=UTF-8",
       "access-control-allow-origin": origin,
-      "access-control-allow-methods": "GET,OPTIONS",
+      "access-control-allow-credentials": "true",
+      "access-control-allow-methods": "GET,POST,OPTIONS",
       "access-control-allow-headers": "content-type, authorization",
       "cache-control": "no-store",
+      ...extraHeaders,
     },
   });
 }
 
 const validText = (value, max) => typeof value === "string" && value.trim().length > 0 && value.trim().length <= max;
+const normalizeEmail = (value) => typeof value === "string" ? value.trim().toLowerCase() : "";
+const normalizeUsername = (value) => typeof value === "string" ? value.trim().toLowerCase() : "";
+const makeId = () => crypto.randomUUID();
+
+function bytesToBase64(bytes) {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+function base64ToBytes(value) {
+  const binary = atob(value);
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+async function hashPassword(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: PBKDF2_ITERATIONS, hash: "SHA-256" }, key, 256);
+  return `pbkdf2-sha256$${PBKDF2_ITERATIONS}$${bytesToBase64(salt)}$${bytesToBase64(new Uint8Array(bits))}`;
+}
+
+async function verifyPassword(password, stored) {
+  const parts = stored.split("$");
+  if (parts.length !== 4 || parts[0] !== "pbkdf2-sha256") return false;
+  const iterations = Number(parts[1]);
+  if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000) return false;
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: base64ToBytes(parts[2]), iterations, hash: "SHA-256" }, key, 256);
+  const actual = new Uint8Array(bits);
+  const expected = base64ToBytes(parts[3]);
+  if (actual.length !== expected.length) return false;
+  let difference = 0;
+  for (let i = 0; i < actual.length; i++) difference |= actual[i] ^ expected[i];
+  return difference === 0;
+}
+
+function sessionCookie(token) {
+  return `knightfall_session=${encodeURIComponent(token)}; Max-Age=${SESSION_TTL}; Path=/; HttpOnly; Secure; SameSite=Lax`;
+}
+
+function clearSessionCookie() {
+  return "knightfall_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax";
+}
+
+function getSessionToken(request) {
+  const cookie = request.headers.get("Cookie") || "";
+  const match = cookie.match(/(?:^|;\\s*)knightfall_session=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+async function getCurrentUser(request, env) {
+  const token = getSessionToken(request);
+  if (!token) return null;
+  const session = await env.SESSIONS.get(`session:${token}`, "json");
+  if (!session?.userId) return null;
+  const user = await env.DB.prepare("SELECT id, username, email, display_name, role, created_at FROM users WHERE id = ?")
+    .bind(session.userId).first();
+  return user || null;
+}
+
+function publicUser(user) {
+  return { id: user.id, username: user.username, email: user.email, display_name: user.display_name, role: user.role, created_at: user.created_at };
+}
+
+async function createSession(userId, env) {
+  const token = `${makeId()}${makeId().replaceAll("-", "")}`;
+  await env.SESSIONS.put(`session:${token}`, JSON.stringify({ userId }), { expirationTtl: SESSION_TTL });
+  return token;
+}
 
 export default {
   async fetch(request, env) {
@@ -28,7 +102,8 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: {
         "access-control-allow-origin": origin,
-        "access-control-allow-methods": "GET,OPTIONS",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-methods": "GET,POST,OPTIONS",
         "access-control-allow-headers": "content-type, authorization",
         "access-control-max-age": "86400",
       }});
@@ -37,7 +112,60 @@ export default {
     try {
       if (url.pathname === "/health" && request.method === "GET") {
         const check = await env.DB.prepare("SELECT 1 AS ok").first();
-        return json({ ok: check?.ok === 1, service: "knightfall-api", database: true }, 200, origin);
+        return json({ ok: check?.ok === 1, service: "knightfall-api", database: true, sessions: true }, 200, origin);
+      }
+
+      if (url.pathname === "/api/auth/register" && request.method === "POST") {
+        let body;
+        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
+
+        const username = normalizeUsername(body.username);
+        const email = normalizeEmail(body.email);
+        const displayName = typeof body.display_name === "string" && body.display_name.trim() ? body.display_name.trim() : username;
+        const password = typeof body.password === "string" ? body.password : "";
+
+        if (!/^[a-z0-9_]{3,24}$/.test(username)) return json({ error: "Username must be 3-24 characters using letters, numbers, or underscores." }, 400, origin);
+        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 254) return json({ error: "Please provide a valid email address." }, 400, origin);
+        if (password.length < 12 || password.length > 128) return json({ error: "Password must be 12-128 characters." }, 400, origin);
+        if (!validText(displayName, 60)) return json({ error: "Display name must be 1-60 characters." }, 400, origin);
+
+        const existing = await env.DB.prepare("SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1").bind(username, email).first();
+        if (existing) return json({ error: "That username or email is already registered." }, 409, origin);
+
+        const passwordHash = await hashPassword(password);
+        const result = await env.DB.prepare("INSERT INTO users (username, email, password_hash, display_name) VALUES (?, ?, ?, ?)")
+          .bind(username, email, passwordHash, displayName).run();
+        const userId = result.meta?.last_row_id;
+        const user = await env.DB.prepare("SELECT id, username, email, display_name, role, created_at FROM users WHERE id = ?").bind(userId).first();
+        const token = await createSession(userId, env);
+        return json({ user: publicUser(user) }, 201, origin, { "set-cookie": sessionCookie(token) });
+      }
+
+      if (url.pathname === "/api/auth/login" && request.method === "POST") {
+        let body;
+        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
+        const identifier = typeof body.identifier === "string" ? body.identifier.trim().toLowerCase() : "";
+        const password = typeof body.password === "string" ? body.password : "";
+        if (!identifier || !password) return json({ error: "Username/email and password are required." }, 400, origin);
+
+        const user = await env.DB.prepare("SELECT id, username, email, password_hash, display_name, role, created_at FROM users WHERE username = ? OR email = ? LIMIT 1")
+          .bind(identifier, identifier).first();
+        if (!user || !(await verifyPassword(password, user.password_hash))) return json({ error: "Invalid username/email or password." }, 401, origin);
+
+        const token = await createSession(user.id, env);
+        return json({ user: publicUser(user) }, 200, origin, { "set-cookie": sessionCookie(token) });
+      }
+
+      if (url.pathname === "/api/auth/me" && request.method === "GET") {
+        const user = await getCurrentUser(request, env);
+        if (!user) return json({ authenticated: false }, 200, origin);
+        return json({ authenticated: true, user: publicUser(user) }, 200, origin);
+      }
+
+      if (url.pathname === "/api/auth/logout" && request.method === "POST") {
+        const token = getSessionToken(request);
+        if (token) await env.SESSIONS.delete(`session:${token}`);
+        return json({ ok: true }, 200, origin, { "set-cookie": clearSessionCookie() });
       }
 
       if (url.pathname === "/api/categories" && request.method === "GET") {
@@ -57,7 +185,20 @@ export default {
       }
 
       if (url.pathname === "/api/threads" && request.method === "POST") {
-        return json({ error: "Authentication is not implemented yet. Sign-in will be required before posting." }, 401, origin);
+        const user = await getCurrentUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        let body;
+        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
+        if (!validText(body.title, 160) || !validText(body.body, 20000)) return json({ error: "Title and body are required." }, 400, origin);
+        const categoryId = Number(body.category_id);
+        if (!Number.isInteger(categoryId) || categoryId < 1) return json({ error: "A valid category is required." }, 400, origin);
+        const category = await env.DB.prepare("SELECT id FROM categories WHERE id = ?").bind(categoryId).first();
+        if (!category) return json({ error: "Category not found." }, 404, origin);
+        const baseSlug = body.title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "thread";
+        const slug = `${baseSlug}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+        const result = await env.DB.prepare("INSERT INTO threads (category_id, user_id, title, slug, body) VALUES (?, ?, ?, ?, ?)")
+          .bind(categoryId, user.id, body.title.trim(), slug, body.body.trim()).run();
+        return json({ id: result.meta.last_row_id, slug }, 201, origin);
       }
 
       const match = url.pathname.match(/^\/api\/threads\/(\d+)$/);
