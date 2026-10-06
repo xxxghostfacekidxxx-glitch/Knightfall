@@ -95,7 +95,8 @@ async function getSession(request, env) {
 async function getUser(request, env) {
   const session = await getSession(request, env);
   if (!session) return null;
-  return env.DB.prepare("SELECT id, username, email, display_name, role, status, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.user_id).first();
+  const user = await env.DB.prepare("SELECT id, username, email, display_name, role, status, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.user_id).first();
+  return user && user.status === "active" ? user : null;
 }
 
 async function requireUser(request, env) {
