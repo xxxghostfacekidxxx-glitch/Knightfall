@@ -1,6 +1,6 @@
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
-const PBKDF2_ITERATIONS = 120000;
+const PBKDF2_ITERATIONS = 100000;
 const SESSION_COOKIE = "knightfall_session";
 
 function getOrigin(request) {
