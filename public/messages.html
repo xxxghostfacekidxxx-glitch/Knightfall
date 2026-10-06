@@ -73,9 +73,9 @@ async function archive(){
  if(!admin)return;
  const cid=$("#archive-conversation").value,q=encodeURIComponent($("#archive-search").value.trim());
  const d=await api("/api/admin/messages?conversation_id="+encodeURIComponent(cid)+"&q="+q);
- $("#archive").innerHTML=(d.messages||[]).map(m=>'<article class="archive-row '+(m.deleted_at?"deleted":"")+'"><div><strong>#'+m.id+' · conversation #'+m.conversation_id+'</strong><small>@'+esc(m.sender_username)+' · '+esc(fmt(m.created_at))+(m.deleted_at?" · SOFT-DELETED":"")+'</small><p>'+esc(m.body).replace(/\n/g,"<br>")+'</p></div></article>').join("")||'<div class="empty">No messages found.</div>';
+ $("#archive").innerHTML=(d.messages||[]).map(m=>'<article class="archive-row '+(m.deleted_at?"deleted":"")+'"><div><strong>#'+m.id+' · conversation #'+m.conversation_id+'</strong><small>@'+esc(m.sender_username)+' · '+esc(fmt(m.created_at))+(m.deleted_at?" · SOFT-DELETED":"")+'</small><p>'+esc(m.body).replace(/\n/g,"<br>")+'</p></div><div class="row-actions"><button data-admin-message="'+m.id+'" data-action="'+(m.deleted_at?"restore":"delete")+'">'+(m.deleted_at?"Restore":"Soft delete")+'</button><button class="danger" data-admin-message="'+m.id+'" data-action="purge">Purge</button></div></article>').join("")||'<div class="empty">No messages found.</div>';
 }
-$("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(window.at);window.at=setTimeout(archive,250)};
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action==="purge"&&!confirm("Permanently purge this message?"))return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});$("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(window.at);window.at=setTimeout(archive,250)};
 (async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use messages.");currentUser=me.user;admin=me.user.role==="admin";await loadConversations();await loadAdmin();status("Messaging online.",true)}catch(e){status(e.message)}})();
 </script>
 </body></html>
