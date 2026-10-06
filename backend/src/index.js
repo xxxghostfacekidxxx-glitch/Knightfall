@@ -464,10 +464,12 @@ export default {
         const membership = await env.DB.prepare("SELECT conversation_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
         if (!membership && !isAdmin(user)) return json({ error: "Conversation not found." }, 404, origin);
         const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100),1),250);
+        const selectBody = isAdmin(user) && !membership ? "m.body" : "CASE WHEN m.deleted_at IS NOT NULL THEN '[Message deleted]' ELSE m.body END";
         const { results } = await env.DB.prepare(
-          "SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? ORDER BY m.created_at ASC LIMIT ?"
+          "SELECT m.id,m.conversation_id,m.sender_id,"+selectBody+" AS body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? ORDER BY m.created_at ASC LIMIT ?"
         ).bind(conversationId,limit).all();
         if (membership) await env.DB.prepare("UPDATE conversation_members SET last_read_at=? WHERE conversation_id=? AND user_id=?").bind(new Date().toISOString(),conversationId,user.id).run();
+        if (!membership && isAdmin(user)) await audit(env,user,"message.archive.view","conversation",conversationId,{});
         return json({ messages: results, admin_view: !membership && isAdmin(user) }, 200, origin);
       }
 
@@ -526,6 +528,7 @@ export default {
         sql+=" GROUP BY m.id ORDER BY m.created_at DESC LIMIT ?";
         params.push(limit);
         const {results}=await env.DB.prepare(sql).bind(...params).all();
+        await audit(env,user,"message.archive.search","messages",conversationId||null,{query:q,limit});
         return json({messages:results},200,origin);
       }
 
@@ -542,14 +545,15 @@ export default {
         const maintenance = await getSetting(env, "maintenance_mode");
         const user = await requireUser(request, env);
         if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
-        const [users, threads, posts, reports, categories] = await Promise.all([
+        const [users, threads, posts, reports, categories, messages] = await Promise.all([
           env.DB.prepare("SELECT COUNT(*) AS count FROM users").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM threads WHERE deleted_at IS NULL").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM posts WHERE deleted_at IS NULL").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM categories").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM messages WHERE deleted_at IS NULL").first(),
         ]);
-        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0, maintenance_mode: maintenance === "true" ? 1 : 0 } }, 200, origin);
+        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0, messages: messages?.count || 0, maintenance_mode: maintenance === "true" ? 1 : 0 } }, 200, origin);
       }
 
       if (url.pathname === "/api/admin/users" && request.method === "GET") {
