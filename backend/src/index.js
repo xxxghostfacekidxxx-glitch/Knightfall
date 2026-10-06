@@ -128,6 +128,15 @@ async function audit(env, user, action, targetType = null, targetId = null, deta
   }
 }
 
+
+async function createNotification(env, {userId, actorId=null, kind, targetType=null, targetId=null, title, body, url=null}) {
+  if (!userId || !kind || !title || !body) return;
+  try {
+    await env.DB.prepare("INSERT INTO notifications (user_id,actor_id,kind,target_type,target_id,title,body,url,created_at) VALUES (?,?,?,?,?,?,?,?,?)")
+      .bind(userId, actorId, String(kind).slice(0,60), targetType, targetId != null ? Number(targetId) : null, String(title).slice(0,160), String(body).slice(0,1000), url ? String(url).slice(0,500) : null, new Date().toISOString()).run();
+  } catch (error) { console.error("notification_failed", error); }
+}
+
 const SETTING_DEFAULTS = {
   site_name: "Knightfall",
   maintenance_mode: "false",
@@ -222,7 +231,7 @@ export default {
         return json({ user: safeUser }, 200, origin, { "set-cookie": sessionCookie(token) });
       }
 
-      if (url.pathname === "/api/auth/me" && request.method === "GET") return json({ user: await getUser(request, env) }, 200, origin);
+      if (url.pathname === "/api/auth/me" && request.method === "GET") { const me=await getUser(request,env); if(me) await env.DB.prepare("UPDATE users SET last_seen_at=? WHERE id=?").bind(new Date().toISOString(),me.id).run(); return json({user:me},200,origin); }
 
       if (url.pathname === "/api/auth/logout" && request.method === "POST") {
         const token = getCookie(request, SESSION_COOKIE);
@@ -424,7 +433,99 @@ export default {
       }
 
 
+
+      // Community notifications, presence, follows, blocks, and discovery
+      if (url.pathname === "/api/activity/ping" && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error: "Authentication required." }, 401, origin);
+        const now = new Date().toISOString();
+        await env.DB.prepare("UPDATE users SET last_seen_at=? WHERE id=?").bind(now,user.id).run();
+        return json({ ok:true, last_seen_at:now },200,origin);
+      }
+      if (url.pathname === "/api/notifications" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!user) return json({ error:"Authentication required." },401,origin);
+        const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||50),1),100);
+        const unreadOnly=url.searchParams.get("unread")==="true";
+        const sql="SELECT n.id,n.kind,n.target_type,n.target_id,n.title,n.body,n.url,n.read_at,n.created_at,a.username AS actor_username,a.display_name AS actor_display_name,a.avatar_url AS actor_avatar FROM notifications n LEFT JOIN users a ON a.id=n.actor_id WHERE n.user_id=?"+(unreadOnly?" AND n.read_at IS NULL":"")+" ORDER BY n.created_at DESC LIMIT ?";
+        const {results}=await env.DB.prepare(sql).bind(user.id,limit).all();
+        const unread=await env.DB.prepare("SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL").bind(user.id).first();
+        return json({notifications:results,unread_count:Number(unread?.count||0)},200,origin);
+      }
+      const notificationMatch=url.pathname.match(/^\/api\/notifications\/(\d+)$/);
+      if(notificationMatch && request.method==="PATCH"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        await env.DB.prepare("UPDATE notifications SET read_at=? WHERE id=? AND user_id=?").bind(new Date().toISOString(),Number(notificationMatch[1]),user.id).run();
+        return json({ok:true},200,origin);
+      }
+      if(url.pathname==="/api/notifications/read-all" && request.method==="POST"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        await env.DB.prepare("UPDATE notifications SET read_at=? WHERE user_id=? AND read_at IS NULL").bind(new Date().toISOString(),user.id).run();
+        return json({ok:true},200,origin);
+      }
+      const followMatch=url.pathname.match(/^\/api\/users\/([^/]+)\/follow$/);
+      if(followMatch && request.method==="POST"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        const target=await env.DB.prepare("SELECT id,username,status FROM users WHERE username=?").bind(followMatch[1].toLowerCase()).first();
+        if(!target || target.status!=="active")return json({error:"User not found."},404,origin);
+        if(target.id===user.id)return json({error:"You cannot follow yourself."},400,origin);
+        const blocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+        if(blocked)return json({error:"Following is unavailable between these accounts."},403,origin);
+        const exists=await env.DB.prepare("SELECT 1 FROM follows WHERE follower_id=? AND following_id=?").bind(user.id,target.id).first();
+        if(!exists){await env.DB.prepare("INSERT INTO follows (follower_id,following_id,created_at) VALUES (?,?,?)").bind(user.id,target.id,new Date().toISOString()).run();await createNotification(env,{userId:target.id,actorId:user.id,kind:"follow",targetType:"user",targetId:user.id,title:"New follower",body:"@"+user.username+" started following you.",url:"/profile.html?username="+encodeURIComponent(user.username)});}
+        return json({following:true},200,origin);
+      }
+      if(followMatch && request.method==="DELETE"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(followMatch[1].toLowerCase()).first();
+        if(target)await env.DB.prepare("DELETE FROM follows WHERE follower_id=? AND following_id=?").bind(user.id,target.id).run();
+        return json({following:false},200,origin);
+      }
+      if(followMatch && request.method==="GET"){
+        const user=await requireUser(request,env);
+        const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=?").bind(followMatch[1].toLowerCase()).first();
+        if(!target)return json({error:"User not found."},404,origin);
+        const me=user?await env.DB.prepare("SELECT 1 FROM follows WHERE follower_id=? AND following_id=?").bind(user.id,target.id).first():null;
+        const followers=await env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE following_id=?").bind(target.id).first();
+        const following=await env.DB.prepare("SELECT COUNT(*) AS count FROM follows WHERE follower_id=?").bind(target.id).first();
+        return json({following:!!me,followers:Number(followers?.count||0),following_count:Number(following?.count||0)},200,origin);
+      }
+      const blockMatch=url.pathname.match(/^\/api\/users\/([^/]+)\/block$/);
+      if(blockMatch && request.method==="POST"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        const target=await env.DB.prepare("SELECT id,username,status FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();
+        if(!target || target.status!=="active")return json({error:"User not found."},404,origin);
+        if(target.id===user.id)return json({error:"You cannot block yourself."},400,origin);
+        const now=new Date().toISOString();
+        await env.DB.batch([env.DB.prepare("INSERT OR IGNORE INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?)").bind(user.id,target.id,now),env.DB.prepare("DELETE FROM follows WHERE (follower_id=? AND following_id=?) OR (follower_id=? AND following_id=?)").bind(user.id,target.id,target.id,user.id)]);
+        return json({blocked:true},200,origin);
+      }
+      if(blockMatch && request.method==="DELETE"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();
+        if(target)await env.DB.prepare("DELETE FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).run();
+        return json({blocked:false},200,origin);
+      }
+      if(blockMatch && request.method==="GET"){
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();
+        if(!target)return json({error:"User not found."},404,origin);
+        const row=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).first();
+        return json({blocked:!!row},200,origin);
+      }
+      if(url.pathname==="/api/discover" && request.method==="GET"){
+        const user=await requireUser(request,env);
+        const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
+        const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||24),1),50);
+        const like="%"+q.replace(/[%_]/g,"\\      // Direct messaging")+"%";
+        const params=user?[user.id,like,like,like,like,limit]:[like,like,like,like,limit];
+        const sql="SELECT u.id,u.username,u.display_name,u.role,u.bio,u.avatar_url,u.location,u.pronouns,u.created_at,u.last_seen_at,(SELECT COUNT(*) FROM follows f WHERE f.following_id=u.id) AS followers FROM users u "+(user?"LEFT JOIN user_blocks b ON b.blocker_id=? AND b.blocked_id=u.id WHERE b.blocked_id IS NULL AND ":"WHERE ")+"u.status='active' AND (u.username LIKE ? ESCAPE '\\\\' OR u.display_name LIKE ? ESCAPE '\\\\' OR COALESCE(u.bio,'') LIKE ? ESCAPE '\\\\' OR COALESCE(u.location,'') LIKE '\\\\') ORDER BY u.created_at DESC LIMIT ?";
+        const {results}=await env.DB.prepare(sql).bind(...params).all();
+        return json({users:results},200,origin);
+      }
+
       // Direct messaging
+
       if (url.pathname === "/api/messages/conversations" && request.method === "GET") {
         const user = await requireUser(request, env);
         if (!user) return json({ error: "Authentication required." }, 401, origin);
@@ -509,6 +610,48 @@ export default {
         const row=await env.DB.prepare("SELECT id,sender_id,deleted_at FROM messages WHERE id=?").bind(id).first();
         if (!row || row.deleted_at || row.sender_id !== user.id) return json({error:"Message not found."},404,origin);
         await env.DB.prepare("UPDATE messages SET deleted_at=? WHERE id=?").bind(new Date().toISOString(),id).run();
+        return json({ok:true},200,origin);
+      }
+
+
+      if (messageMatch && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!user) return json({error:"Authentication required."},401,origin);
+        const id=Number(messageMatch[1]);
+        let body; try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        const reason=String(body.reason||"").trim();
+        if(!validText(reason,1000))return json({error:"A report reason is required."},400,origin);
+        const row=await env.DB.prepare("SELECT id,conversation_id,deleted_at FROM messages WHERE id=?").bind(id).first();
+        if(!row || row.deleted_at)return json({error:"Message not found."},404,origin);
+        const member=await env.DB.prepare("SELECT 1 FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(row.conversation_id,user.id).first();
+        if(!member && !isAdmin(user))return json({error:"Message not found."},404,origin);
+        await env.DB.prepare("INSERT INTO message_reports (message_id,reporter_id,reason,created_at) VALUES (?,?,?,?)").bind(id,user.id,reason,new Date().toISOString()).run();
+        return json({ok:true},201,origin);
+      }
+      if (url.pathname === "/api/messages/conversations/mute" && request.method === "POST") {
+        const user=await requireUser(request,env); if(!user)return json({error:"Authentication required."},401,origin);
+        let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        const id=Number(body.conversation_id); const minutes=Math.min(Math.max(Number(body.minutes||0),0),43200);
+        const until=minutes?new Date(Date.now()+minutes*60000).toISOString():null;
+        await env.DB.prepare("UPDATE conversation_members SET muted_until=? WHERE conversation_id=? AND user_id=?").bind(until,id,user.id).run();
+        return json({ok:true,muted_until:until},200,origin);
+      }
+      if (url.pathname === "/api/admin/message-reports" && request.method === "GET") {
+        const user=await requireUser(request,env); if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const status=["open","resolved","dismissed"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"open";
+        const {results}=await env.DB.prepare("SELECT r.id,r.message_id,r.reason,r.status,r.created_at,r.resolved_at,r.reporter_id,ru.username AS reporter_username,m.sender_id,su.username AS sender_username,su.display_name AS sender_display_name,m.body,m.conversation_id FROM message_reports r JOIN messages m ON m.id=r.message_id JOIN users su ON su.id=m.sender_id JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 250").bind(status).all();
+        return json({reports:results},200,origin);
+      }
+      const adminMessageAction=url.pathname.match(/^\/api\/admin\/messages\/(\d+)$/);
+      if(adminMessageAction && request.method==="PATCH"){
+        const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+        const id=Number(adminMessageAction[1]);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+        const action=body.action; const row=await env.DB.prepare("SELECT id FROM messages WHERE id=?").bind(id).first(); if(!row)return json({error:"Message not found."},404,origin);
+        if(action==="delete")await env.DB.prepare("UPDATE messages SET deleted_at=COALESCE(deleted_at,?) WHERE id=?").bind(new Date().toISOString(),id).run();
+        else if(action==="restore")await env.DB.prepare("UPDATE messages SET deleted_at=NULL WHERE id=?").bind(id).run();
+        else if(action==="purge"){await env.DB.prepare("DELETE FROM message_reports WHERE message_id=?").bind(id).run();await env.DB.prepare("DELETE FROM messages WHERE id=?").bind(id).run();}
+        else return json({error:"Invalid action."},400,origin);
+        await audit(env,user,"message."+action,"message",id,{});
         return json({ok:true},200,origin);
       }
 
