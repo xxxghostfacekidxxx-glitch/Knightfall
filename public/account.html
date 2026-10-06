@@ -59,7 +59,7 @@
           <a class="button primary" href="/profile.html?username=${encodeURIComponent(user.username)}">View profile</a>
           <a class="button secondary" href="/profile-edit.html">Edit profile</a>
           <a class="button secondary" href="/homepage.html">Enter forum</a>
-          ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a><a class="button primary" href="/admin.html">Administrator</a>' : ""}
+          ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a>' + (user.role === "admin" ? '<a class="button primary" href="/admin.html">Administrator</a>' : "") : ""}
         </div>
         <button id="logout" class="logout" type="button">Log out</button>
         <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
