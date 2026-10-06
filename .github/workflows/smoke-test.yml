@@ -1,0 +1,58 @@
+name: Knightfall Runtime Smoke Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'public/**'
+      - '.github/workflows/smoke-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check API health
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.ash-fall.com'
+          body=$(mktemp)
+          code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 20 "$base/health")
+          echo "GET /health -> $code"
+          cat "$body"
+          test "$code" = '200'
+          grep -q '"ok"' "$body"
+
+      - name: Check unauthenticated session boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.ash-fall.com'
+          body=$(mktemp)
+          code=$(curl -sS -o "$body" -w '%{http_code}' --max-time 20 "$base/api/auth/me")
+          echo "GET /api/auth/me -> $code"
+          cat "$body"
+          test "$code" = '401'
+
+      - name: Check CORS preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.ash-fall.com'
+          body=$(mktemp)
+          headers=$(mktemp)
+          code=$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' --max-time 20 \
+            -X OPTIONS "$base/api/auth/me" \
+            -H 'Origin: https://ash-fall.com' \
+            -H 'Access-Control-Request-Method: GET')
+          echo "OPTIONS /api/auth/me -> $code"
+          cat "$headers"
+          test "$code" = '204'
+          grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"
+          grep -qi '^access-control-allow-credentials: true' "$headers"
