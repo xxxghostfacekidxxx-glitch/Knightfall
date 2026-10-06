@@ -11,7 +11,7 @@ function json(data, status = 200, origin = "https://ash-fall.com") {
     headers: {
       "content-type": "application/json; charset=UTF-8",
       "access-control-allow-origin": origin,
-      "access-control-allow-methods": "GET,POST,OPTIONS",
+      "access-control-allow-methods": "GET,OPTIONS",
       "access-control-allow-headers": "content-type, authorization",
       "cache-control": "no-store",
     },
@@ -28,7 +28,7 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: {
         "access-control-allow-origin": origin,
-        "access-control-allow-methods": "GET,POST,OPTIONS",
+        "access-control-allow-methods": "GET,OPTIONS",
         "access-control-allow-headers": "content-type, authorization",
         "access-control-max-age": "86400",
       }});
@@ -57,32 +57,17 @@ export default {
       }
 
       if (url.pathname === "/api/threads" && request.method === "POST") {
-        let body;
-        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
-        if (!validText(body.title, 160) || !validText(body.body, 20000) || !Number.isInteger(Number(body.category_id)) || !Number.isInteger(Number(body.user_id))) {
-          return json({ error: "title, body, category_id, and user_id are required." }, 400, origin);
-        }
-        const categoryId = Number(body.category_id);
-        const userId = Number(body.user_id);
-        const category = await env.DB.prepare("SELECT id, slug FROM categories WHERE id = ?").bind(categoryId).first();
-        const user = await env.DB.prepare("SELECT id FROM users WHERE id = ?").bind(userId).first();
-        if (!category) return json({ error: "Category not found." }, 404, origin);
-        if (!user) return json({ error: "User not found. Authentication is required before posting." }, 401, origin);
-
-        const slug = `${body.title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${crypto.randomUUID().slice(0, 8)}`;
-        const thread = await env.DB.prepare("INSERT INTO threads (category_id, user_id, title, slug, body) VALUES (?, ?, ?, ?, ?) RETURNING id, category_id, user_id, title, slug, body, created_at, updated_at")
-          .bind(categoryId, userId, body.title.trim(), slug, body.body.trim()).first();
-        return json({ thread }, 201, origin);
+        return json({ error: "Authentication is not implemented yet. Sign-in will be required before posting." }, 401, origin);
       }
 
       const match = url.pathname.match(/^\/api\/threads\/(\d+)$/);
       if (match && request.method === "GET") {
         const threadId = Number(match[1]);
-        await env.DB.prepare("UPDATE threads SET views = views + 1 WHERE id = ?").bind(threadId).run();
         const thread = await env.DB.prepare("SELECT t.id, t.title, t.slug, t.category_id, c.name AS category_name, t.user_id, u.display_name AS author_name, t.body, t.pinned, t.locked, t.views, t.created_at, t.updated_at FROM threads t JOIN categories c ON c.id = t.category_id JOIN users u ON u.id = t.user_id WHERE t.id = ?").bind(threadId).first();
         if (!thread) return json({ error: "Thread not found." }, 404, origin);
+        await env.DB.prepare("UPDATE threads SET views = views + 1 WHERE id = ?").bind(threadId).run();
         const { results: posts } = await env.DB.prepare("SELECT p.id, p.thread_id, p.user_id, u.display_name AS author_name, p.body, p.created_at, p.updated_at FROM posts p JOIN users u ON u.id = p.user_id WHERE p.thread_id = ? ORDER BY p.created_at ASC").bind(threadId).all();
-        return json({ thread, posts }, 200, origin);
+        return json({ thread: { ...thread, views: Number(thread.views || 0) + 1 }, posts }, 200, origin);
       }
 
       return json({ error: "Not found" }, 404, origin);
