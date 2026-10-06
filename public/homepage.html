@@ -1,68 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Ash-Fall community forum." />
   <title>Ash-Fall Forum</title>
-  <link rel="stylesheet" href="/public/homepage.css">
+  <link rel="stylesheet" href="/homepage.css" />
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="logo">Ash-Fall</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Sanctuary</a></li>
-        <li><a href="#">The Ashes</a></li>
-        <li><a href="#">Miss Chaos AI</a></li>
-        <li><a href="#">Manifesto</a></li>
-      </ul>
+  <header class="site-header">
+    <a class="brand" href="/index.html">ASH-FALL</a>
+    <nav aria-label="Primary navigation">
+      <a href="/index.html">Sanctuary</a>
+      <a href="#forum">Forum</a>
+      <a href="#chaos">Miss Chaos AI</a>
+      <a href="#manifesto">Manifesto</a>
     </nav>
   </header>
 
-  <!-- Main content -->
-  <main>
-    <section class="forum">
-      <h2>Forum</h2>
-      <div class="category">
-        <h3>Embers: General Discussion</h3>
-        <ul>
-          <li><a href="#">Who survives the collapse?</a> - Ashwalker</li>
-          <li><a href="#">Trading scraps and secrets</a> - Ruinchild</li>
-        </ul>
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">THE ASHES REMAIN</p>
+      <h1>Welcome to the Forum</h1>
+      <p>A place for discussion, stories, debate, and rebuilding after the fall.</p>
+    </section>
+
+    <section id="forum" class="section" aria-labelledby="forum-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">COMMUNITY</p>
+          <h2 id="forum-title">Forum</h2>
+        </div>
+        <span class="status">Community foundation</span>
       </div>
-      <div class="category">
-        <h3>Inferno: Announcements</h3>
-        <ul>
-          <li><a href="#">Miss Chaos AI now online</a> - Admin</li>
-          <li><a href="#">New ruins added to map</a> - Admin</li>
-        </ul>
-      </div>
-      <div class="category">
-        <h3>Char: Stories & Chronicles</h3>
-        <ul>
-          <li><a href="#">Survivor’s log #12</a> - EmberGhost</li>
-          <li><a href="#">The Rise of the Ash Lord</a> - Scorched</li>
-        </ul>
-      </div>
-      <div class="category">
-        <h3>Smoke: Discussion & Debates</h3>
-        <ul>
-          <li><a href="#">Who betrayed the enclave?</a> - ShadowFang</li>
-          <li><a href="#">Should we rebuild or burn?</a> - NightCinder</li>
-        </ul>
+
+      <div class="categories">
+        <article class="category">
+          <span class="category-mark">01</span>
+          <h3>Embers</h3>
+          <p>General discussion, introductions, and whatever needs saying.</p>
+        </article>
+
+        <article class="category">
+          <span class="category-mark">02</span>
+          <h3>Inferno</h3>
+          <p>Announcements, updates, and important information.</p>
+        </article>
+
+        <article class="category">
+          <span class="category-mark">03</span>
+          <h3>Char</h3>
+          <p>Stories, poetry, art, chronicles, and creative work.</p>
+        </article>
+
+        <article class="category">
+          <span class="category-mark">04</span>
+          <h3>Smoke</h3>
+          <p>Debates, philosophy, difficult questions, and opposing ideas.</p>
+        </article>
       </div>
     </section>
 
-    <!-- Miss Chaos AI -->
-    <section class="ai">
-      <h2>Miss Chaos AI</h2>
-      <p>Step into the ruins and speak with Miss Chaos, your guide through the collapse.</p>
-      <a href="#" class="ai-button">Enter Miss Chaos AI</a>
+    <section id="chaos" class="feature">
+      <div>
+        <p class="eyebrow">AI COMPANION</p>
+        <h2>Miss Chaos</h2>
+        <p>Miss Chaos will eventually live here as the site's AI companion. The interface is ready; the backend remains a separate service.</p>
+      </div>
+      <span class="coming-soon">COMING SOON</span>
+    </section>
+
+    <section id="manifesto" class="manifesto">
+      <p>“Everything burns. Something remains.”</p>
+      <span>ASH-FALL</span>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer>
     <p>After the fall, we remain. © 2026 Ash-Fall</p>
   </footer>
