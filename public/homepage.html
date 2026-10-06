@@ -31,33 +31,21 @@
           <p class="eyebrow">COMMUNITY</p>
           <h2 id="forum-title">Forum</h2>
         </div>
-        <span class="status">Community foundation</span>
+        <span id="api-status" class="status">Connecting…</span>
       </div>
 
-      <div class="categories">
-        <article class="category">
-          <span class="category-mark">01</span>
-          <h3>Embers</h3>
-          <p>General discussion, introductions, and whatever needs saying.</p>
-        </article>
+      <div id="categories" class="categories" aria-live="polite"></div>
+      <div id="forum-message" class="forum-message" hidden></div>
 
-        <article class="category">
-          <span class="category-mark">02</span>
-          <h3>Inferno</h3>
-          <p>Announcements, updates, and important information.</p>
-        </article>
-
-        <article class="category">
-          <span class="category-mark">03</span>
-          <h3>Char</h3>
-          <p>Stories, poetry, art, chronicles, and creative work.</p>
-        </article>
-
-        <article class="category">
-          <span class="category-mark">04</span>
-          <h3>Smoke</h3>
-          <p>Debates, philosophy, difficult questions, and opposing ideas.</p>
-        </article>
+      <div class="threads-panel">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">DISCUSSION</p>
+            <h2>Latest Threads</h2>
+          </div>
+          <button id="refresh-threads" type="button">Refresh</button>
+        </div>
+        <div id="threads" class="threads" aria-live="polite"></div>
       </div>
     </section>
 
@@ -79,5 +67,97 @@
   <footer>
     <p>After the fall, we remain. © 2026 Ash-Fall</p>
   </footer>
+
+  <script>
+    const API = "https://api.ash-fall.com";
+    const categoriesEl = document.getElementById("categories");
+    const threadsEl = document.getElementById("threads");
+    const statusEl = document.getElementById("api-status");
+    const messageEl = document.getElementById("forum-message");
+
+    function showMessage(text) {
+      messageEl.textContent = text;
+      messageEl.hidden = false;
+    }
+
+    function clearMessage() {
+      messageEl.hidden = true;
+      messageEl.textContent = "";
+    }
+
+    function formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    function renderCategories(categories) {
+      categoriesEl.innerHTML = categories.map((category, index) => `
+        <button class="category" type="button" data-category-id="${category.id}">
+          <span class="category-mark">${String(index + 1).padStart(2, "0")}</span>
+          <h3>${escapeHtml(category.name)}</h3>
+          <p>${escapeHtml(category.description || "Community discussion.")}</p>
+        </button>
+      `).join("");
+      categoriesEl.querySelectorAll("[data-category-id]").forEach((button) => {
+        button.addEventListener("click", () => loadThreads(button.dataset.categoryId));
+      });
+    }
+
+    function renderThreads(threads) {
+      if (!threads.length) {
+        threadsEl.innerHTML = '<p class="empty-state">No threads yet. The ashes are quiet for now.</p>';
+        return;
+      }
+      threadsEl.innerHTML = threads.map((thread) => `
+        <article class="thread-card">
+          <div>
+            <a href="/thread.html?id=${encodeURIComponent(thread.id)}">${escapeHtml(thread.title)}</a>
+            <p>${escapeHtml(thread.category_name)} · ${escapeHtml(thread.author_name || "Member")} · ${formatDate(thread.updated_at)}</p>
+          </div>
+          <span>${thread.reply_count} ${thread.reply_count === 1 ? "reply" : "replies"}</span>
+        </article>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[char]));
+    }
+
+    async function loadCategories() {
+      const response = await fetch(`${API}/api/categories`);
+      if (!response.ok) throw new Error(`Categories returned ${response.status}`);
+      const data = await response.json();
+      renderCategories(data.categories || []);
+    }
+
+    async function loadThreads(categoryId = "") {
+      clearMessage();
+      threadsEl.innerHTML = '<p class="empty-state">Loading threads…</p>';
+      try {
+        const suffix = categoryId ? `?category_id=${encodeURIComponent(categoryId)}` : "";
+        const response = await fetch(`${API}/api/threads${suffix}`);
+        if (!response.ok) throw new Error(`Threads returned ${response.status}`);
+        const data = await response.json();
+        renderThreads(data.threads || []);
+      } catch (error) {
+        threadsEl.innerHTML = "";
+        showMessage("The forum API could not be reached. The site is still online, but the discussion service needs attention.");
+      }
+    }
+
+    async function initializeForum() {
+      try {
+        await Promise.all([loadCategories(), loadThreads()]);
+        statusEl.textContent = "API online";
+      } catch (error) {
+        statusEl.textContent = "API unavailable";
+        showMessage("The forum service is temporarily unavailable.");
+      }
+    }
+
+    document.getElementById("refresh-threads").addEventListener("click", () => loadThreads());
+    initializeForum();
+  </script>
 </body>
 </html>
