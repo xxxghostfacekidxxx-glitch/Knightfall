@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ash-Fall community discussion thread." />
+  <title>Ash-Fall Thread</title>
+  <link rel="stylesheet" href="/homepage.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/index.html">ASH-FALL</a>
+    <nav aria-label="Primary navigation">
+      <a href="/homepage.html">Forum</a>
+      <a href="/index.html">Sanctuary</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="section" aria-labelledby="thread-title">
+      <p class="eyebrow">DISCUSSION</p>
+      <a href="/homepage.html">← Back to forum</a>
+      <div id="thread" class="thread-view" aria-live="polite">
+        <p class="empty-state">Loading thread…</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API = "https://api.ash-fall.com";
+    const params = new URLSearchParams(window.location.search);
+    const threadId = params.get("id");
+    const root = document.getElementById("thread");
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>'"]/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", "\"": "&quot;"
+      }[char]));
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    async function loadThread() {
+      if (!/^\d+$/.test(threadId || "")) {
+        root.innerHTML = '<p class="empty-state">No valid thread was requested.</p>';
+        return;
+      }
+      try {
+        const response = await fetch(`${API}/api/threads/${encodeURIComponent(threadId)}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Thread unavailable");
+        document.title = `${data.thread.title} | Ash-Fall`;
+        root.innerHTML = `
+          <article class="thread-view-card">
+            <p class="eyebrow">${escapeHtml(data.thread.category_name)}</p>
+            <h1 id="thread-title">${escapeHtml(data.thread.title)}</h1>
+            <p class="thread-meta">${escapeHtml(data.thread.author_name)} · ${formatDate(data.thread.created_at)} · ${data.thread.views} views</p>
+            <div class="thread-body">${escapeHtml(data.thread.body).replace(/\n/g, "<br>")}</div>
+          </article>
+          <section class="posts" aria-label="Replies">
+            <h2>${data.posts.length} ${data.posts.length === 1 ? "Reply" : "Replies"}</h2>
+            ${data.posts.map((post) => `
+              <article class="post-card">
+                <strong>${escapeHtml(post.author_name)}</strong>
+                <time datetime="${escapeHtml(post.created_at)}">${formatDate(post.created_at)}</time>
+                <p>${escapeHtml(post.body).replace(/\n/g, "<br>")}</p>
+              </article>
+            `).join("") || '<p class="empty-state">No replies yet.</p>'}
+          </section>`;
+      } catch (error) {
+        root.innerHTML = `<p class="empty-state">${escapeHtml(error.message || "The thread could not be loaded.")}</p>`;
+      }
+    }
+
+    loadThread();
+  </script>
+</body>
+</html>
