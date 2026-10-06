@@ -253,7 +253,7 @@ export default {
         const thread = await env.DB.prepare("SELECT t.id,t.title,t.slug,t.category_id,t.user_id,t.body,t.created_at,t.updated_at,t.pinned,t.locked,t.views,u.username,u.display_name,u.avatar_url,c.name AS category_name FROM threads t JOIN users u ON u.id=t.user_id JOIN categories c ON c.id=t.category_id WHERE t.id=? AND t.deleted_at IS NULL").bind(threadMatch[1]).first();
         if (!thread) return json({ error: "Thread not found." }, 404, origin);
         await env.DB.prepare("UPDATE threads SET views=views+1 WHERE id=?").bind(thread.id).run();
-        const { results: posts } = await env.DB.prepare("SELECT p.id,p.thread_id,p.user_id,p.body,p.created_at,p.updated_at,p.deleted_at,u.username,u.display_name,u.avatar_url FROM posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at ASC").bind(thread.id).all();
+        const { results: posts } = await env.DB.prepare("SELECT p.id,p.thread_id,p.user_id,p.body,p.created_at,p.updated_at,u.username,u.display_name,u.avatar_url FROM posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? AND p.deleted_at IS NULL ORDER BY p.created_at ASC").bind(thread.id).all();
         return json({ thread: { ...thread, views: thread.views + 1 }, posts }, 200, origin);
       }
 
@@ -305,7 +305,7 @@ export default {
         const user = await requireUser(request, env);
         if (!user) return json({ error: "Authentication required." }, 401, origin);
         const post = await env.DB.prepare("SELECT id,user_id,deleted_at FROM posts WHERE id=?").bind(postMatch[1]).first();
-        if (!post) return json({ error: "Post not found." }, 404, origin);
+        if (!post || post.deleted_at) return json({ error: "Post not found." }, 404, origin);
         if (request.method === "PATCH") {
           if (post.user_id !== user.id && !isModerator(user)) return json({ error: "You can only edit your own post." }, 403, origin);
           let body;
