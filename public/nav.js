@@ -8,6 +8,7 @@
       <a href="/homepage.html">Forum</a>
       <a href="/members.html">Members</a>
       <a href="/messages.html">Messages</a>
+      <a class="kf-notify" href="/account.html#notifications" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
       <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
     </nav>`;
@@ -23,6 +24,15 @@
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
   }));
+  const notifyLink=nav.querySelector(".kf-notify"), badge=nav.querySelector(".kf-notify-badge");
+  function refreshNotifications(){
+    fetch("https://api.ash-fall.com/api/notifications?unread=true&limit=1",{credentials:"include",cache:"no-store"})
+      .then(r=>r.ok?r.json():null).then(d=>{if(!d||!badge)return;const n=Number(d.unread_count||0);badge.textContent=n>99?"99+":String(n);badge.hidden=n===0;}).catch(()=>{});
+  }
+  refreshNotifications();
+  setInterval(refreshNotifications,45000);
+
+  setInterval(()=>fetch("https://api.ash-fall.com/api/activity/ping",{method:"POST",credentials:"include"}).catch(()=>{}),120000);
   fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include", cache:"no-store"})
     .then(r => r.ok ? r.json() : null)
     .then(d => {
