@@ -7,6 +7,7 @@
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a href="/homepage.html">Forum</a>
       <a href="/members.html">Members</a>
+      <a href="/messages.html">Messages</a>
       <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
     </nav>`;
