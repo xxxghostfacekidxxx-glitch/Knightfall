@@ -701,15 +701,17 @@ export default {
         const maintenance = await getSetting(env, "maintenance_mode");
         const user = await requireUser(request, env);
         if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
-        const [users, threads, posts, reports, categories, messages] = await Promise.all([
+        const [users, threads, posts, reports, categories, messages, notifications, message_reports] = await Promise.all([
           env.DB.prepare("SELECT COUNT(*) AS count FROM users").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM threads WHERE deleted_at IS NULL").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM posts WHERE deleted_at IS NULL").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM categories").first(),
           env.DB.prepare("SELECT COUNT(*) AS count FROM messages WHERE deleted_at IS NULL").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM notifications").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM message_reports WHERE status='open'").first(),
         ]);
-        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0, messages: messages?.count || 0, maintenance_mode: maintenance === "true" ? 1 : 0 } }, 200, origin);
+        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0, messages: messages?.count || 0, notifications: notifications?.count || 0, open_message_reports: message_reports?.count || 0, maintenance_mode: maintenance === "true" ? 1 : 0 } }, 200, origin);
       }
 
       if (url.pathname === "/api/admin/users" && request.method === "GET") {
