@@ -95,11 +95,15 @@ async function getSession(request, env) {
 async function getUser(request, env) {
   const session = await getSession(request, env);
   if (!session) return null;
-  return env.DB.prepare("SELECT id, username, email, display_name, role, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.user_id).first();
+  return env.DB.prepare("SELECT id, username, email, display_name, role, status, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.user_id).first();
 }
 
 async function requireUser(request, env) {
   return getUser(request, env);
+}
+
+function isAdmin(user) {
+  return !!user && user.role === "admin";
 }
 
 function isModerator(user) {
@@ -171,7 +175,7 @@ export default {
         const password = typeof body.password === "string" ? body.password : "";
         if (!identifier || !password) return json({ error: "Username/email and password are required." }, 400, origin);
         const user = await env.DB.prepare("SELECT * FROM users WHERE username = ? OR email = ?").bind(identifier, identifier).first();
-        if (!user || !(await verifyPassword(password, user.password_hash))) return json({ error: "Invalid username/email or password." }, 401, origin);
+        if (!user || user.status !== "active" || !(await verifyPassword(password, user.password_hash))) return json({ error: "Invalid username/email or password." }, 401, origin);
         const token = await createSession(user.id, env);
         const safeUser = await env.DB.prepare("SELECT id, username, email, display_name, role, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(user.id).first();
         return json({ user: safeUser }, 200, origin, { "set-cookie": sessionCookie(token) });
@@ -357,6 +361,73 @@ export default {
         if (!['open','resolved','dismissed'].includes(body.status)) return json({ error: "Invalid report status." }, 400, origin);
         await env.DB.prepare("UPDATE reports SET status=?,moderator_id=?,moderator_note=?,resolved_at=? WHERE id=?").bind(body.status,user.id,String(body.moderator_notes || body.moderator_note || "").slice(0,4000),body.status === "open" ? null : new Date().toISOString(),reportMatch[1]).run();
         return json({ ok: true }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/overview" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const [users, threads, posts, reports, categories] = await Promise.all([
+          env.DB.prepare("SELECT COUNT(*) AS count FROM users").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM threads WHERE deleted_at IS NULL").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM posts WHERE deleted_at IS NULL").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first(),
+          env.DB.prepare("SELECT COUNT(*) AS count FROM categories").first(),
+        ]);
+        return json({ stats: { users: users?.count || 0, threads: threads?.count || 0, posts: posts?.count || 0, open_reports: reports?.count || 0, categories: categories?.count || 0 } }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/users" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const { results } = await env.DB.prepare("SELECT id,username,email,display_name,role,status,created_at,updated_at FROM users ORDER BY id ASC LIMIT 250").all();
+        return json({ users: results }, 200, origin);
+      }
+
+      const adminUserMatch = url.pathname.match(/^\/api\/admin\/users\/(\d+)$/);
+      if (adminUserMatch && request.method === "PATCH") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        let body; try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
+        const targetId = Number(adminUserMatch[1]);
+        const target = await env.DB.prepare("SELECT id,username,role,status FROM users WHERE id=?").bind(targetId).first();
+        if (!target) return json({ error: "User not found." }, 404, origin);
+        if (target.id === user.id && (body.role !== undefined && body.role !== "admin" || body.status !== undefined && body.status !== "active")) return json({ error: "You cannot remove or suspend your own administrator access." }, 400, origin);
+        const roles = ["member","moderator","admin"];
+        const statuses = ["active","suspended","banned"];
+        if (body.role !== undefined && !roles.includes(body.role)) return json({ error: "Invalid role." }, 400, origin);
+        if (body.status !== undefined && !statuses.includes(body.status)) return json({ error: "Invalid account status." }, 400, origin);
+        await env.DB.prepare("UPDATE users SET role=COALESCE(?,role),status=COALESCE(?,status),updated_at=? WHERE id=?").bind(body.role ?? null, body.status ?? null, new Date().toISOString(), targetId).run();
+        if (body.status && body.status !== "active") {
+          const list = await env.SESSIONS.list({ prefix: "session:" });
+          for (const key of list.keys || []) {
+            const session = await env.SESSIONS.get(key.name, "json");
+            if (session?.user_id === targetId) await env.SESSIONS.delete(key.name);
+          }
+        }
+        return json({ ok: true, user: await env.DB.prepare("SELECT id,username,email,display_name,role,status,created_at,updated_at FROM users WHERE id=?").bind(targetId).first() }, 200, origin);
+      }
+
+      if (adminUserMatch && request.method === "POST") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const targetId = Number(adminUserMatch[1]);
+        const target = await env.DB.prepare("SELECT id,username FROM users WHERE id=?").bind(targetId).first();
+        if (!target) return json({ error: "User not found." }, 404, origin);
+        const list = await env.SESSIONS.list({ prefix: "session:" });
+        let revoked = 0;
+        for (const key of list.keys || []) {
+          const session = await env.SESSIONS.get(key.name, "json");
+          if (session?.user_id === targetId) { await env.SESSIONS.delete(key.name); revoked++; }
+        }
+        return json({ ok: true, revoked }, 200, origin);
+      }
+
+      if (url.pathname === "/api/admin/reports" && request.method === "GET") {
+        const user = await requireUser(request, env);
+        if (!isAdmin(user)) return json({ error: "Administrator access required." }, 403, origin);
+        const status = ["open","resolved","dismissed"].includes(url.searchParams.get("status")) ? url.searchParams.get("status") : "open";
+        const { results } = await env.DB.prepare("SELECT r.id,r.reason,r.status,r.created_at,r.resolved_at,r.moderator_note,r.reporter_id,r.thread_id,r.post_id,ru.username AS reporter_username,CASE WHEN r.thread_id IS NOT NULL THEN 'thread' ELSE 'post' END AS target_type,COALESCE(r.thread_id,r.post_id) AS target_id FROM reports r LEFT JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 250").bind(status).all();
+        return json({ reports: results }, 200, origin);
       }
 
       return json({ error: "Not found" }, 404, origin);
