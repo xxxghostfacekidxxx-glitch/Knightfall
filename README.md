@@ -10,7 +10,7 @@ The Ash-Fall community site and its Cloudflare Pages frontend.
 - `public/*.css` - page styles
 - `backend/` - reserved for backend work; it is not part of the public Pages output
 - `wrangler.jsonc` - Cloudflare Pages configuration
-- `.github/workflows/codeql.yml` - JavaScript/TypeScript security analysis
+- `GitHub CodeQL default setup` - JavaScript/TypeScript security analysis
 
 ## Cloudflare Pages
 
