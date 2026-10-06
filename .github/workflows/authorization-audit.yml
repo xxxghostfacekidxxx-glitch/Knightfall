@@ -4,16 +4,29 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "17 4 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "scripts/authorization-audit.mjs"
+      - ".github/workflows/authorization-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knightfall-authorization-audit
+  cancel-in-progress: true
 
 jobs:
   authorization-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run non-destructive role matrix
+      - name: Run role and endpoint authorization matrix
         env:
           KNIGHTFALL_API: https://api.ash-fall.com
           KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
