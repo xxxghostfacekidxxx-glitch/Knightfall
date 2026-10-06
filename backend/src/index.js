@@ -635,8 +635,12 @@ export default {
         const message = String(body.body || "").trim();
         if (!validText(message,4000)) return json({ error: "Message must be 1-4000 characters." },400,origin);
         const now = new Date().toISOString();
+        const other=await env.DB.prepare("SELECT cm.user_id,u.username FROM conversation_members cm JOIN users u ON u.id=cm.user_id WHERE cm.conversation_id=? AND cm.user_id<>? LIMIT 1").bind(conversationId,user.id).first();
+        if(other){const blocked=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,other.user_id,other.user_id,user.id).first();if(blocked)return json({error:"Messaging is unavailable between these accounts."},403,origin);}
         const row = await env.DB.prepare("INSERT INTO messages (conversation_id,sender_id,body,created_at) VALUES (?,?,?,?) RETURNING id").bind(conversationId,user.id,message,now).first();
         await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
+        if(other) await createNotification(env,{userId:other.user_id,actorId:user.id,kind:"message",targetType:"conversation",targetId:conversationId,title:"New message",body:"@"+user.username+" sent you a message.",url:"/messages.html?conversation="+conversationId});
+        await notifyMentions(env,message,user,"conversation",conversationId,"/messages.html?conversation="+conversationId);
         return json({ id: row.id },201,origin);
       }
 
