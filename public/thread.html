@@ -3,79 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Ash-Fall community discussion thread." />
-  <title>Ash-Fall Thread</title>
+  <meta name="description" content="Knightfall community discussion thread." />
+  <title>Knightfall Thread</title>
   <link rel="stylesheet" href="/homepage.css" />
+  <style>
+    .post-card,.thread-view-card{position:relative}.post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.post-actions button,.reply-form button,.report-form button{background:#171717;color:#fff;border:1px solid #333;border-radius:8px;padding:8px 12px;cursor:pointer}.post-actions button:hover,.reply-form button:hover,.report-form button:hover{background:#252525}.post-edit,.reply-form,.report-form{margin-top:12px}.post-edit textarea,.reply-form textarea,.report-form textarea{width:100%;min-height:100px;background:#0d0d0d;color:#eee;border:1px solid #333;border-radius:8px;padding:10px;resize:vertical}.hidden{display:none}.thread-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.notice{color:#aaa;margin-top:10px}
+  </style>
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="/index.html">ASH-FALL</a>
-    <nav aria-label="Primary navigation">
-      <a href="/homepage.html">Forum</a>
-      <a href="/index.html">Sanctuary</a>
-    </nav>
+    <nav aria-label="Primary navigation"><a href="/homepage.html">Forum</a><a href="/members.html">Members</a><a href="/index.html">Sanctuary</a></nav>
   </header>
-
   <main class="container">
     <section class="section" aria-labelledby="thread-title">
-      <p class="eyebrow">DISCUSSION</p>
-      <a href="/homepage.html">← Back to forum</a>
-      <div id="thread" class="thread-view" aria-live="polite">
-        <p class="empty-state">Loading thread…</p>
-      </div>
+      <p class="eyebrow">DISCUSSION</p><a href="/homepage.html">← Back to forum</a>
+      <div id="thread" class="thread-view" aria-live="polite"><p class="empty-state">Loading thread…</p></div>
     </section>
   </main>
-
-  <script>
-    const API = "https://api.ash-fall.com";
-    const params = new URLSearchParams(window.location.search);
-    const threadId = params.get("id");
-    const root = document.getElementById("thread");
-
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>'"]/g, (char) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", "\"": "&quot;"
-      }[char]));
-    }
-
-    function formatDate(value) {
-      const date = new Date(value);
-      return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
-    }
-
-    async function loadThread() {
-      if (!/^\d+$/.test(threadId || "")) {
-        root.innerHTML = '<p class="empty-state">No valid thread was requested.</p>';
-        return;
-      }
-      try {
-        const response = await fetch(`${API}/api/threads/${encodeURIComponent(threadId)}`);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Thread unavailable");
-        document.title = `${data.thread.title} | Ash-Fall`;
-        root.innerHTML = `
-          <article class="thread-view-card">
-            <p class="eyebrow">${escapeHtml(data.thread.category_name)}</p>
-            <h1 id="thread-title">${escapeHtml(data.thread.title)}</h1>
-            <p class="thread-meta">${escapeHtml(data.thread.author_name)} · ${formatDate(data.thread.created_at)} · ${data.thread.views} views</p>
-            <div class="thread-body">${escapeHtml(data.thread.body).replace(/\n/g, "<br>")}</div>
-          </article>
-          <section class="posts" aria-label="Replies">
-            <h2>${data.posts.length} ${data.posts.length === 1 ? "Reply" : "Replies"}</h2>
-            ${data.posts.map((post) => `
-              <article class="post-card">
-                <strong>${escapeHtml(post.author_name)}</strong>
-                <time datetime="${escapeHtml(post.created_at)}">${formatDate(post.created_at)}</time>
-                <p>${escapeHtml(post.body).replace(/\n/g, "<br>")}</p>
-              </article>
-            `).join("") || '<p class="empty-state">No replies yet.</p>'}
-          </section>`;
-      } catch (error) {
-        root.innerHTML = `<p class="empty-state">${escapeHtml(error.message || "The thread could not be loaded.")}</p>`;
-      }
-    }
-
-    loadThread();
-  </script>
-</body>
-</html>
+<script>
+const API="https://api.ash-fall.com", params=new URLSearchParams(location.search), threadId=params.get("id"), root=document.getElementById("thread");
+let currentUser=null, threadData=null;
+const esc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+const date=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()};
+async function api(path,options={}){const r=await fetch(API+path,{credentials:"include",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||`Request failed (${r.status})`);return d}
+function reportForm(type,id){return `<form class="report-form hidden" data-report-type="${type}" data-report-id="${id}"><textarea maxlength="500" required placeholder="Why are you reporting this?"></textarea><div class="post-actions"><button type="submit">Submit report</button><button type="button" data-cancel-report>Cancel</button></div></form>`}
+function postHtml(p){const own=currentUser&&Number(currentUser.id)===Number(p.user_id),moderator=currentUser&&["admin","moderator"].includes(currentUser.role);return `<article class="post-card" data-post-id="${p.id}"><strong><a href="/profile.html?username=${encodeURIComponent(p.username)}">${esc(p.author_name||p.username)}</a></strong> <time datetime="${esc(p.created_at)}">${date(p.created_at)}</time><p class="post-body">${esc(p.body).replace(/\n/g,"<br>")}</p><div class="post-actions"><button type="button" data-report-post>Report</button>${own?'<button type="button" data-edit-post>Edit</button><button type="button" data-delete-post>Delete</button>':''}${moderator&&!own?'<button type="button" data-delete-post>Moderate delete</button>':''}</div><form class="post-edit hidden"><textarea maxlength="20000" required>${esc(p.body)}</textarea><div class="post-actions"><button type="submit">Save</button><button type="button" data-cancel-edit>Cancel</button></div></form>${reportForm("post",p.id)}</article>`}
+function render(){const t=threadData.thread,p=threadData.posts||[],own=currentUser&&Number(currentUser.id)===Number(t.user_id),moderator=currentUser&&["admin","moderator"].includes(currentUser.role);root.innerHTML=`<article class="thread-view-card"><p class="eyebrow">${esc(t.category_name)}</p><h1 id="thread-title">${esc(t.title)}</h1><p class="thread-meta"><a href="/profile.html?username=${encodeURIComponent(t.username)}">${esc(t.author_name||t.username)}</a> · ${date(t.created_at)} · ${esc(t.views)} views</p><div class="thread-body">${esc(t.body).replace(/\n/g,"<br>")}</div><div class="thread-controls"><button type="button" data-report-thread>Report thread</button>${moderator?`<button type="button" data-toggle-lock>${t.locked?'Unlock':'Lock'} thread</button><button type="button" data-toggle-pin>${t.pinned?'Unpin':'Pin'} thread</button><button type="button" data-delete-thread>Delete thread</button>`:''}${own?'<span class="notice">You started this thread.</span>':''}</div>${reportForm("thread",t.id)}</article><section class="posts" aria-label="Replies"><h2>${p.length} ${p.length===1?'Reply':'Replies'}</h2>${p.map(postHtml).join("")||'<p class="empty-state">No replies yet.</p>'}${t.locked?'<p class="notice">This thread is locked.</p>':currentUser?'<form id="reply-form" class="reply-form"><textarea name="body" maxlength="20000" required placeholder="Write a reply…"></textarea><button type="submit">Post reply</button></form>':'<p class="notice">Sign in to reply.</p>'}</section>`}
+async function load(){if(!/^\d+$/.test(threadId||"")){root.innerHTML='<p class="empty-state">No valid thread was requested.</p>';return}try{const me=await api('/api/auth/me');currentUser=me.user||null;threadData=await api(`/api/threads/${encodeURIComponent(threadId)}`);document.title=`${threadData.thread.title} | Knightfall`;render()}catch(e){root.innerHTML=`<p class="empty-state">${esc(e.message)}</p>`}}
+root.addEventListener('click',async e=>{const post=e.target.closest('.post-card');try{if(e.target.matches('[data-report-post],[data-report-thread]')){const form=e.target.matches('[data-report-post]')?post.querySelector('.report-form'):root.querySelector('.thread-view-card .report-form');form.classList.remove('hidden');return}if(e.target.matches('[data-cancel-report]')){e.target.closest('form').classList.add('hidden');return}if(e.target.matches('[data-edit-post]')){post.querySelector('.post-edit').classList.remove('hidden');return}if(e.target.matches('[data-cancel-edit]')){post.querySelector('.post-edit').classList.add('hidden');return}if(e.target.matches('[data-delete-post]')){if(!confirm('Delete this post?'))return;await api(`/api/posts/${post.dataset.postId}`,{method:'DELETE'});await load();return}if(e.target.matches('[data-delete-thread]')){if(!confirm('Delete this thread?'))return;await api(`/api/threads/${threadId}`,{method:'DELETE'});location.href='/homepage.html';return}if(e.target.matches('[data-toggle-lock]')){await api(`/api/threads/${threadId}/lock`,{method:'POST',body:JSON.stringify({locked:!threadData.thread.locked})});await load();return}if(e.target.matches('[data-toggle-pin]')){await api(`/api/threads/${threadId}/pin`,{method:'POST',body:JSON.stringify({pinned:!threadData.thread.pinned})});await load()}}catch(err){alert(err.message)}});
+root.addEventListener('submit',async e=>{e.preventDefault();try{if(e.target.id==='reply-form'){const body=e.target.body.value;await api(`/api/threads/${threadId}`,{method:'POST',body:JSON.stringify({body})});await load();return}if(e.target.matches('.post-edit')){const id=e.target.closest('.post-card').dataset.postId;await api(`/api/posts/${id}`,{method:'PUT',body:JSON.stringify({body:e.target.querySelector('textarea').value})});await load();return}if(e.target.matches('.report-form')){const type=e.target.dataset.reportType,id=Number(e.target.dataset.reportId),reason=e.target.querySelector('textarea').value;await api('/api/reports',{method:'POST',body:JSON.stringify(type==='post'?{post_id:id,reason}:{thread_id:id,reason})});e.target.reset();e.target.classList.add('hidden');alert('Report submitted.');}}catch(err){alert(err.message)}});
+load();
+</script>
+</body></html>
