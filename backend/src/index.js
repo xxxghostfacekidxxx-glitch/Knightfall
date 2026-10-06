@@ -1,220 +1,35 @@
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 120000;
-
-function getOrigin(request) {
-  const origin = request.headers.get("Origin");
-  return ALLOWED_ORIGINS.has(origin) ? origin : "https://ash-fall.com";
-}
-
-function json(data, status = 200, origin = "https://ash-fall.com", extraHeaders = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=UTF-8",
-      "access-control-allow-origin": origin,
-      "access-control-allow-credentials": "true",
-      "access-control-allow-methods": "GET,POST,OPTIONS",
-      "access-control-allow-headers": "content-type, authorization",
-      "cache-control": "no-store",
-      ...extraHeaders,
-    },
-  });
-}
-
-const validText = (value, max) => typeof value === "string" && value.trim().length > 0 && value.trim().length <= max;
-const normalizeEmail = (value) => typeof value === "string" ? value.trim().toLowerCase() : "";
-const normalizeUsername = (value) => typeof value === "string" ? value.trim().toLowerCase() : "";
-const makeId = () => crypto.randomUUID();
-
-function bytesToBase64(bytes) {
-  let binary = "";
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary);
-}
-
-function base64ToBytes(value) {
-  const binary = atob(value);
-  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
-}
-
-async function hashPassword(password) {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: PBKDF2_ITERATIONS, hash: "SHA-256" }, key, 256);
-  return `pbkdf2-sha256$${PBKDF2_ITERATIONS}$${bytesToBase64(salt)}$${bytesToBase64(new Uint8Array(bits))}`;
-}
-
-async function verifyPassword(password, stored) {
-  const parts = stored.split("$");
-  if (parts.length !== 4 || parts[0] !== "pbkdf2-sha256") return false;
-  const iterations = Number(parts[1]);
-  if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 1000000) return false;
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: base64ToBytes(parts[2]), iterations, hash: "SHA-256" }, key, 256);
-  const actual = new Uint8Array(bits);
-  const expected = base64ToBytes(parts[3]);
-  if (actual.length !== expected.length) return false;
-  let difference = 0;
-  for (let i = 0; i < actual.length; i++) difference |= actual[i] ^ expected[i];
-  return difference === 0;
-}
-
-function sessionCookie(token) {
-  return `knightfall_session=${encodeURIComponent(token)}; Max-Age=${SESSION_TTL}; Path=/; HttpOnly; Secure; SameSite=Lax`;
-}
-
-function clearSessionCookie() {
-  return "knightfall_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax";
-}
-
-function getSessionToken(request) {
-  const cookie = request.headers.get("Cookie") || "";
-  const match = cookie.match(/(?:^|;\\s*)knightfall_session=([^;]+)/);
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-async function getCurrentUser(request, env) {
-  const token = getSessionToken(request);
-  if (!token) return null;
-  const session = await env.SESSIONS.get(`session:${token}`, "json");
-  if (!session?.userId) return null;
-  const user = await env.DB.prepare("SELECT id, username, email, display_name, role, created_at FROM users WHERE id = ?")
-    .bind(session.userId).first();
-  return user || null;
-}
-
-function publicUser(user) {
-  return { id: user.id, username: user.username, email: user.email, display_name: user.display_name, role: user.role, created_at: user.created_at };
-}
-
-async function createSession(userId, env) {
-  const token = `${makeId()}${makeId().replaceAll("-", "")}`;
-  await env.SESSIONS.put(`session:${token}`, JSON.stringify({ userId }), { expirationTtl: SESSION_TTL });
-  return token;
-}
-
-export default {
-  async fetch(request, env) {
-    const origin = getOrigin(request);
-    const url = new URL(request.url);
-
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: {
-        "access-control-allow-origin": origin,
-        "access-control-allow-credentials": "true",
-        "access-control-allow-methods": "GET,POST,OPTIONS",
-        "access-control-allow-headers": "content-type, authorization",
-        "access-control-max-age": "86400",
-      }});
-    }
-
-    try {
-      if (url.pathname === "/health" && request.method === "GET") {
-        const check = await env.DB.prepare("SELECT 1 AS ok").first();
-        return json({ ok: check?.ok === 1, service: "knightfall-api", database: true, sessions: true }, 200, origin);
-      }
-
-      if (url.pathname === "/api/auth/register" && request.method === "POST") {
-        let body;
-        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
-
-        const username = normalizeUsername(body.username);
-        const email = normalizeEmail(body.email);
-        const displayName = typeof body.display_name === "string" && body.display_name.trim() ? body.display_name.trim() : username;
-        const password = typeof body.password === "string" ? body.password : "";
-
-        if (!/^[a-z0-9_]{3,24}$/.test(username)) return json({ error: "Username must be 3-24 characters using letters, numbers, or underscores." }, 400, origin);
-        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 254) return json({ error: "Please provide a valid email address." }, 400, origin);
-        if (password.length < 12 || password.length > 128) return json({ error: "Password must be 12-128 characters." }, 400, origin);
-        if (!validText(displayName, 60)) return json({ error: "Display name must be 1-60 characters." }, 400, origin);
-
-        const existing = await env.DB.prepare("SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1").bind(username, email).first();
-        if (existing) return json({ error: "That username or email is already registered." }, 409, origin);
-
-        const passwordHash = await hashPassword(password);
-        const result = await env.DB.prepare("INSERT INTO users (username, email, password_hash, display_name) VALUES (?, ?, ?, ?)")
-          .bind(username, email, passwordHash, displayName).run();
-        const userId = result.meta?.last_row_id;
-        const user = await env.DB.prepare("SELECT id, username, email, display_name, role, created_at FROM users WHERE id = ?").bind(userId).first();
-        const token = await createSession(userId, env);
-        return json({ user: publicUser(user) }, 201, origin, { "set-cookie": sessionCookie(token) });
-      }
-
-      if (url.pathname === "/api/auth/login" && request.method === "POST") {
-        let body;
-        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
-        const identifier = typeof body.identifier === "string" ? body.identifier.trim().toLowerCase() : "";
-        const password = typeof body.password === "string" ? body.password : "";
-        if (!identifier || !password) return json({ error: "Username/email and password are required." }, 400, origin);
-
-        const user = await env.DB.prepare("SELECT id, username, email, password_hash, display_name, role, created_at FROM users WHERE username = ? OR email = ? LIMIT 1")
-          .bind(identifier, identifier).first();
-        if (!user || !(await verifyPassword(password, user.password_hash))) return json({ error: "Invalid username/email or password." }, 401, origin);
-
-        const token = await createSession(user.id, env);
-        return json({ user: publicUser(user) }, 200, origin, { "set-cookie": sessionCookie(token) });
-      }
-
-      if (url.pathname === "/api/auth/me" && request.method === "GET") {
-        const user = await getCurrentUser(request, env);
-        if (!user) return json({ authenticated: false }, 200, origin);
-        return json({ authenticated: true, user: publicUser(user) }, 200, origin);
-      }
-
-      if (url.pathname === "/api/auth/logout" && request.method === "POST") {
-        const token = getSessionToken(request);
-        if (token) await env.SESSIONS.delete(`session:${token}`);
-        return json({ ok: true }, 200, origin, { "set-cookie": clearSessionCookie() });
-      }
-
-      if (url.pathname === "/api/categories" && request.method === "GET") {
-        const { results } = await env.DB.prepare("SELECT id, name, slug, description, sort_order FROM categories ORDER BY sort_order ASC, name ASC").all();
-        return json({ categories: results }, 200, origin);
-      }
-
-      if (url.pathname === "/api/threads" && request.method === "GET") {
-        const categoryId = Number(url.searchParams.get("category_id"));
-        const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 25), 1), 50);
-        const base = `SELECT t.id, t.title, t.slug, t.category_id, c.name AS category_name, t.user_id, u.display_name AS author_name, t.pinned, t.locked, t.views, t.created_at, t.updated_at, COUNT(p.id) AS reply_count FROM threads t JOIN categories c ON c.id = t.category_id JOIN users u ON u.id = t.user_id LEFT JOIN posts p ON p.thread_id = t.id`;
-        const query = Number.isInteger(categoryId) && categoryId > 0
-          ? env.DB.prepare(`${base} WHERE t.category_id = ? GROUP BY t.id ORDER BY t.pinned DESC, t.updated_at DESC LIMIT ?`).bind(categoryId, limit)
-          : env.DB.prepare(`${base} GROUP BY t.id ORDER BY t.pinned DESC, t.updated_at DESC LIMIT ?`).bind(limit);
-        const { results } = await query.all();
-        return json({ threads: results }, 200, origin);
-      }
-
-      if (url.pathname === "/api/threads" && request.method === "POST") {
-        const user = await getCurrentUser(request, env);
-        if (!user) return json({ error: "Authentication required." }, 401, origin);
-        let body;
-        try { body = await request.json(); } catch { return json({ error: "Request body must be valid JSON." }, 400, origin); }
-        if (!validText(body.title, 160) || !validText(body.body, 20000)) return json({ error: "Title and body are required." }, 400, origin);
-        const categoryId = Number(body.category_id);
-        if (!Number.isInteger(categoryId) || categoryId < 1) return json({ error: "A valid category is required." }, 400, origin);
-        const category = await env.DB.prepare("SELECT id FROM categories WHERE id = ?").bind(categoryId).first();
-        if (!category) return json({ error: "Category not found." }, 404, origin);
-        const baseSlug = body.title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || "thread";
-        const slug = `${baseSlug}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-        const result = await env.DB.prepare("INSERT INTO threads (category_id, user_id, title, slug, body) VALUES (?, ?, ?, ?, ?)")
-          .bind(categoryId, user.id, body.title.trim(), slug, body.body.trim()).run();
-        return json({ id: result.meta.last_row_id, slug }, 201, origin);
-      }
-
-      const match = url.pathname.match(/^\/api\/threads\/(\d+)$/);
-      if (match && request.method === "GET") {
-        const threadId = Number(match[1]);
-        const thread = await env.DB.prepare("SELECT t.id, t.title, t.slug, t.category_id, c.name AS category_name, t.user_id, u.display_name AS author_name, t.body, t.pinned, t.locked, t.views, t.created_at, t.updated_at FROM threads t JOIN categories c ON c.id = t.category_id JOIN users u ON u.id = t.user_id WHERE t.id = ?").bind(threadId).first();
-        if (!thread) return json({ error: "Thread not found." }, 404, origin);
-        await env.DB.prepare("UPDATE threads SET views = views + 1 WHERE id = ?").bind(threadId).run();
-        const { results: posts } = await env.DB.prepare("SELECT p.id, p.thread_id, p.user_id, u.display_name AS author_name, p.body, p.created_at, p.updated_at FROM posts p JOIN users u ON u.id = p.user_id WHERE p.thread_id = ? ORDER BY p.created_at ASC").bind(threadId).all();
-        return json({ thread: { ...thread, views: Number(thread.views || 0) + 1 }, posts }, 200, origin);
-      }
-
-      return json({ error: "Not found" }, 404, origin);
-    } catch (error) {
-      console.error(error);
-      return json({ error: "Internal server error" }, 500, origin);
-    }
-  },
-};
+function getOrigin(request){const origin=request.headers.get("Origin");return ALLOWED_ORIGINS.has(origin)?origin:"https://ash-fall.com"}
+function json(data,status=200,origin="https://ash-fall.com",extraHeaders={}){return new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json; charset=UTF-8","access-control-allow-origin":origin,"access-control-allow-credentials":"true","access-control-allow-methods":"GET,POST,PUT,OPTIONS","access-control-allow-headers":"content-type, authorization","cache-control":"no-store",...extraHeaders}})}
+const validText=(v,max)=>typeof v==="string"&&v.trim().length>0&&v.trim().length<=max;
+const normalizeEmail=v=>typeof v==="string"?v.trim().toLowerCase():"";
+const normalizeUsername=v=>typeof v==="string"?v.trim().toLowerCase():"";
+const makeId=()=>crypto.randomUUID();
+function bytesToBase64(bytes){let binary="";for(const byte of bytes)binary+=String.fromCharCode(byte);return btoa(binary)}
+function base64ToBytes(value){return Uint8Array.from(atob(value),c=>c.charCodeAt(0))}
+async function hashPassword(password){const salt=crypto.getRandomValues(new Uint8Array(16));const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveBits"]);const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt,iterations:PBKDF2_ITERATIONS,hash:"SHA-256"},key,256);return `pbkdf2-sha256$${PBKDF2_ITERATIONS}$${bytesToBase64(salt)}$${bytesToBase64(new Uint8Array(bits))}`}
+async function verifyPassword(password,stored){const parts=stored.split("$");if(parts.length!==4||parts[0]!=="pbkdf2-sha256")return false;const iterations=Number(parts[1]);if(!Number.isInteger(iterations)||iterations<100000||iterations>1000000)return false;const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveBits"]);const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:base64ToBytes(parts[2]),iterations,hash:"SHA-256"},key,256);const actual=new Uint8Array(bits),expected=base64ToBytes(parts[3]);if(actual.length!==expected.length)return false;let difference=0;for(let i=0;i<actual.length;i++)difference|=actual[i]^expected[i];return difference===0}
+function sessionCookie(token){return `knightfall_session=${encodeURIComponent(token)}; Max-Age=${SESSION_TTL}; Path=/; HttpOnly; Secure; SameSite=Lax`}
+function clearSessionCookie(){return "knightfall_session=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax"}
+function getSessionToken(request){const cookie=request.headers.get("Cookie")||"";const match=cookie.match(/(?:^|;\s*)knightfall_session=([^;]+)/);return match?decodeURIComponent(match[1]):null}
+async function getCurrentUser(request,env){const token=getSessionToken(request);if(!token)return null;const session=await env.SESSIONS.get(`session:${token}`,"json");if(!session?.userId)return null;return await env.DB.prepare("SELECT id, username, email, display_name, role, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.userId).first()||null}
+function publicUser(user){return {id:user.id,username:user.username,email:user.email,display_name:user.display_name,role:user.role,bio:user.bio||"",avatar_url:user.avatar_url||"",website_url:user.website_url||"",location:user.location||"",pronouns:user.pronouns||"",created_at:user.created_at}}
+async function createSession(userId,env){const token=`${makeId()}${makeId().replaceAll("-","")}`;await env.SESSIONS.put(`session:${token}`,JSON.stringify({userId}),{expirationTtl:SESSION_TTL});return token}
+function profileInput(body){return {display_name:typeof body.display_name==="string"?body.display_name.trim():"",bio:typeof body.bio==="string"?body.bio.trim():"",avatar_url:typeof body.avatar_url==="string"?body.avatar_url.trim():"",website_url:typeof body.website_url==="string"?body.website_url.trim():"",location:typeof body.location==="string"?body.location.trim():"",pronouns:typeof body.pronouns==="string"?body.pronouns.trim():""}}
+function validUrl(value){if(!value)return true;try{const u=new URL(value);return u.protocol==="https:"||u.protocol==="http:"}catch{return false}}
+export default {async fetch(request,env){const origin=getOrigin(request),url=new URL(request.url);if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-credentials":"true","access-control-allow-methods":"GET,POST,PUT,OPTIONS","access-control-allow-headers":"content-type, authorization","access-control-max-age":"86400"}});try{
+if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true,sessions:true},200,origin)}
+if(url.pathname==="/api/auth/register"&&request.method==="POST"){let body;try{body=await request.json()}catch{return json({error:"Request body must be valid JSON."},400,origin)}const username=normalizeUsername(body.username),email=normalizeEmail(body.email),displayName=typeof body.display_name==="string"&&body.display_name.trim()?body.display_name.trim():username,password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Please provide a valid email address."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);if(!validText(displayName,60))return json({error:"Display name must be 1-60 characters."},400,origin);const existing=await env.DB.prepare("SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1").bind(username,email).first();if(existing)return json({error:"That username or email is already registered."},409,origin);const passwordHash=await hashPassword(password);const result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name) VALUES (?,?,?,?)").bind(username,email,passwordHash,displayName).run();const user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id = ?").bind(result.meta.last_row_id).first();const token=await createSession(user.id,env);return json({user:publicUser(user)},201,origin,{"set-cookie":sessionCookie(token)})}
+if(url.pathname==="/api/auth/login"&&request.method==="POST"){let body;try{body=await request.json()}catch{return json({error:"Request body must be valid JSON."},400,origin)}const identifier=typeof body.identifier==="string"?body.identifier.trim().toLowerCase():"",password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT id,username,email,password_hash,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE username = ? OR email = ? LIMIT 1").bind(identifier,identifier).first();if(!user||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env);return json({user:publicUser(user)},200,origin,{"set-cookie":sessionCookie(token)})}
+if(url.pathname==="/api/auth/me"&&request.method==="GET"){const user=await getCurrentUser(request,env);return user?json({authenticated:true,user:publicUser(user)},200,origin):json({authenticated:false},200,origin)}
+if(url.pathname==="/api/auth/logout"&&request.method==="POST"){const token=getSessionToken(request);if(token)await env.SESSIONS.delete(`session:${token}`);return json({ok:true},200,origin,{"set-cookie":clearSessionCookie()})}
+const userProfileMatch=url.pathname.match(/^\/api\/users\/([^/]+)$/);
+if(userProfileMatch&&request.method==="GET"){const username=normalizeUsername(decodeURIComponent(userProfileMatch[1]));const user=await env.DB.prepare("SELECT id,username,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE username = ?").bind(username).first();if(!user)return json({error:"Profile not found."},404,origin);return json({user},200,origin)}
+if(url.pathname==="/api/profile"&&request.method==="PUT"){const user=await getCurrentUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);let body;try{body=await request.json()}catch{return json({error:"Request body must be valid JSON."},400,origin)}const p=profileInput(body);if(!validText(p.display_name,60))return json({error:"Display name must be 1-60 characters."},400,origin);if(p.bio.length>1000||p.location.length>100||p.pronouns.length>60)return json({error:"One or more profile fields are too long."},400,origin);if(!validUrl(p.avatar_url)||!validUrl(p.website_url))return json({error:"Avatar and website URLs must use http or https."},400,origin);await env.DB.prepare("UPDATE users SET display_name=?,bio=?,avatar_url=?,website_url=?,location=?,pronouns=?,updated_profile_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?").bind(p.display_name,p.bio,p.avatar_url,p.website_url,p.location,p.pronouns,user.id).run();const updated=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:publicUser(updated)},200,origin)}
+if(url.pathname==="/api/categories"&&request.method==="GET"){const {results}=await env.DB.prepare("SELECT id,name,slug,description,sort_order FROM categories ORDER BY sort_order ASC,name ASC").all();return json({categories:results},200,origin)}
+if(url.pathname==="/api/threads"&&request.method==="GET"){const categoryId=Number(url.searchParams.get("category_id")),limit=Math.min(Math.max(Number(url.searchParams.get("limit")||25),1),50),base=`SELECT t.id,t.title,t.slug,t.category_id,c.name AS category_name,t.user_id,u.display_name AS author_name,t.pinned,t.locked,t.views,t.created_at,t.updated_at,COUNT(p.id) AS reply_count FROM threads t JOIN categories c ON c.id=t.category_id JOIN users u ON u.id=t.user_id LEFT JOIN posts p ON p.thread_id=t.id`;const query=Number.isInteger(categoryId)&&categoryId>0?env.DB.prepare(`${base} WHERE t.category_id=? GROUP BY t.id ORDER BY t.pinned DESC,t.updated_at DESC LIMIT ?`).bind(categoryId,limit):env.DB.prepare(`${base} GROUP BY t.id ORDER BY t.pinned DESC,t.updated_at DESC LIMIT ?`).bind(limit);const {results}=await query.all();return json({threads:results},200,origin)}
+if(url.pathname==="/api/threads"&&request.method==="POST"){const user=await getCurrentUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);let body;try{body=await request.json()}catch{return json({error:"Request body must be valid JSON."},400,origin)}if(!validText(body.title,160)||!validText(body.body,20000))return json({error:"Title and body are required."},400,origin);const categoryId=Number(body.category_id);if(!Number.isInteger(categoryId)||categoryId<1)return json({error:"A valid category is required."},400,origin);if(!(await env.DB.prepare("SELECT id FROM categories WHERE id=?").bind(categoryId).first()))return json({error:"Category not found."},404,origin);const baseSlug=body.title.trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,80)||"thread",slug=`${baseSlug}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,result=await env.DB.prepare("INSERT INTO threads (category_id,user_id,title,slug,body) VALUES (?,?,?,?,?)").bind(categoryId,user.id,body.title.trim(),slug,body.body.trim()).run();return json({id:result.meta.last_row_id,slug},201,origin)}
+const match=url.pathname.match(/^\/api\/threads\/(\d+)$/);if(match&&request.method==="GET"){const threadId=Number(match[1]),thread=await env.DB.prepare("SELECT t.id,t.title,t.slug,t.category_id,c.name AS category_name,t.user_id,u.display_name AS author_name,t.body,t.pinned,t.locked,t.views,t.created_at,t.updated_at FROM threads t JOIN categories c ON c.id=t.category_id JOIN users u ON u.id=t.user_id WHERE t.id=?").bind(threadId).first();if(!thread)return json({error:"Thread not found."},404,origin);await env.DB.prepare("UPDATE threads SET views=views+1 WHERE id=?").bind(threadId).run();const {results:posts}=await env.DB.prepare("SELECT p.id,p.thread_id,p.user_id,u.display_name AS author_name,p.body,p.created_at,p.updated_at FROM posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at ASC").bind(threadId).all();return json({thread:{...thread,views:Number(thread.views||0)+1},posts},200,origin)}
+return json({error:"Not found"},404,origin)}catch(error){console.error(error);return json({error:"Internal server error"},500,origin)}}};
