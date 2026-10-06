@@ -22,6 +22,24 @@
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
   }));
+  fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include", cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      const x = d?.settings;
+      if (!x) return;
+      if (x.announcements_enabled === "true" && (x.announcement_title || x.announcement_body)) {
+        const banner = document.createElement("aside");
+        banner.className = "kf-announcement";
+        banner.innerHTML = "<strong>" + String(x.announcement_title || "Knightfall") .replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + "</strong><span>" + String(x.announcement_body || "").replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) + "</span>";
+        document.body.prepend(banner);
+      }
+      if (x.maintenance_mode === "true") {
+        const banner = document.createElement("aside");
+        banner.className = "kf-maintenance";
+        banner.textContent = "Knightfall is in maintenance mode. Administrator access remains available.";
+        document.body.prepend(banner);
+      }
+    }).catch(() => {});
   fetch("https://api.ash-fall.com/api/auth/me", {credentials:"include", cache:"no-store"})
     .then(r => r.ok ? r.json() : null)
     .then(d => {
