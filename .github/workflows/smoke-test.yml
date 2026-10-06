@@ -21,14 +21,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base='https://api.ash-fall.com'
-          body=$(mktemp); headers=$(mktemp)
-          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/health")
-          test "$code" = 200; grep -q '"ok":true' "$body"; grep -q '"database":true' "$body"
-          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/auth/me")
-          test "$code" = 200; grep -q '"user":null' "$body"
-          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' -X OPTIONS "$base/api/auth/me" -H 'Origin: https://ash-fall.com' -H 'Access-Control-Request-Method: GET')
-          test "$code" = 204; grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"; grep -qi '^access-control-allow-credentials: true' "$headers"
+          base='https://api.ash-fall.com'; body=$(mktemp); headers=$(mktemp)
+          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/health"); echo "health=$code $(cat "$body")"; test "$code" = 200; grep -q '"ok":true' "$body"; grep -q '"database":true' "$body"
+          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/auth/me"); echo "auth-me=$code $(cat "$body")"; test "$code" = 200; grep -q '"user":null' "$body"
+          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' -X OPTIONS "$base/api/auth/me" -H 'Origin: https://ash-fall.com' -H 'Access-Control-Request-Method: GET'); echo "cors=$code"; test "$code" = 204; grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"; grep -qi '^access-control-allow-credentials: true' "$headers"
           curl -sS -D "$headers" -o /dev/null "$base/health"; grep -qi '^x-content-type-options: nosniff' "$headers"; grep -qi '^x-frame-options: DENY' "$headers"; grep -qi '^referrer-policy: strict-origin-when-cross-origin' "$headers"
 
       - name: Authenticated API checks
@@ -36,14 +32,13 @@ jobs:
         run: |
           set -euo pipefail
           base='https://api.ash-fall.com'; jar=$(mktemp)
-          username="smk${GITHUB_RUN_ID}"; email="${username}@example.invalid"; password="KnightfallSmoke${GITHUB_RUN_ID}Aa1!"
-          register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}")
-          echo "$register"; echo "$register" | grep -q '"user"'
-          me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "$me"; echo "$me" | grep -q "\"username\":\"$username\""
-          curl -sS -b "$jar" "$base/api/notifications?limit=5" | grep -q '"notifications"'
-          curl -sS -b "$jar" "$base/api/discover?q=smk&limit=5" | grep -q '"users"'
-          curl -sS "$base/api/categories" | grep -q '"categories"'
-          curl -sS "$base/api/threads?limit=1" | grep -q '"threads"'
-          curl -sS "$base/api/users/$username" | grep -q "\"username\":\"$username\""
-          logout=$(curl -sS -b "$jar" -c "$jar" -X POST "$base/api/auth/logout"); echo "$logout"; echo "$logout" | grep -q '"ok":true'
-          after=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "$after"; echo "$after" | grep -q '"user":null'
+          username="smk${GITHUB_RUN_ID}"; email="${username}@example.invalid"; password=$(openssl rand -hex 12)
+          register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}"); echo "register=$register"; echo "$register" | grep -q '"user"'
+          me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "me=$me"; echo "$me" | grep -q "\"username\":\"$username\""
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?limit=5"); echo "notifications=$r"; echo "$r" | grep -q '"notifications"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/discover?q=smk&limit=5"); echo "discover=$r"; echo "$r" | grep -q '"users"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/categories"); echo "categories=$r"; echo "$r" | grep -q '"categories"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/threads?limit=1"); echo "threads=$r"; echo "$r" | grep -q '"threads"'
+          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/users/$username"); echo "profile=$r"; echo "$r" | grep -q "\"username\":\"$username\""
+          logout=$(curl -sS -b "$jar" -c "$jar" -X POST "$base/api/auth/logout"); echo "logout=$logout"; echo "$logout" | grep -q '"ok":true'
+          after=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "after=$after"; echo "$after" | grep -q '"user":null'
