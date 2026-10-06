@@ -7,7 +7,7 @@
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a href="/homepage.html">Forum</a>
       <a href="/members.html">Members</a>
-      <a href="/auth.html">Account</a>
+      <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
     </nav>`;
   const toggle = header.querySelector(".kf-nav-toggle");
@@ -22,4 +22,16 @@
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
   }));
+  fetch("https://api.ash-fall.com/api/auth/me", {credentials:"include", cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      if (!d || !d.user) return;
+      const account = nav.querySelector('a[href="/account.html"]');
+      if (!account) return;
+      const profile = document.createElement("a");
+      profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username);
+      profile.textContent = "Profile";
+      account.before(profile);
+    })
+    .catch(() => {});
 })();
