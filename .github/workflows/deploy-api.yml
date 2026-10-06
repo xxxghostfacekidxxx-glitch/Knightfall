@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: deploy-knightfall-api
@@ -23,28 +23,59 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Guard discover escaping regression
+      - name: Guard and repair backend source
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('backend/src/index.js')
-          s = p.read_text()
-          bad = 'const like="%"+q.replace(/[%_]/g,"\\\\      // Direct messaging")+"%";'
-          good = 'const like="%"+q.replace(/[%_]/g," ")+"%";'
+          p=Path('backend/src/index.js')
+          s=p.read_text()
+          changed=False
+          bad='const like="%"+q.replace(/[%_]/g,"\\\\      // Direct messaging")+"%";'
+          good='const like="%"+q.replace(/[%_]/g," ")+"%";'
           if bad in s:
-              p.write_text(s.replace(bad, good, 1))
+              s=s.replace(bad,good,1)
+              changed=True
               print('Applied discover escaping regression guard.')
           elif 'q.replace(/[%_]/g," ")' in s or 'q.replace(/[%_]/g,"\\\\$&")' in s:
               print('Discover escaping already corrected.')
           else:
               raise SystemExit('Discover route did not match an expected safe pattern.')
+
+          if 'url.pathname==="/api/notifications"' not in s:
+              marker='  if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true")'
+              route='''  if(url.pathname==="/api/notifications"&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||50),1),100),unread=url.searchParams.get("unread")==="true";const where=unread?"AND n.read_at IS NULL":"";const {results}=await env.DB.prepare(`SELECT n.id,n.actor_id,n.kind,n.target_type,n.target_id,n.title,n.body,n.url,n.created_at,n.read_at,u.username AS actor_username FROM notifications n LEFT JOIN users u ON u.id=n.actor_id WHERE n.user_id=? ${where} ORDER BY n.created_at DESC LIMIT ?`).bind(user.id,limit).all();const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL").bind(user.id).first();return json({notifications:results||[],unread_count:Number(count?.count||0)},200,origin);}
+  const notificationMatch=url.pathname.match(/^\\/api\\/notifications\\/(\\d+)$/);if(notificationMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);await env.DB.prepare("UPDATE notifications SET read_at=? WHERE id=? AND user_id=?").bind(new Date().toISOString(),Number(notificationMatch[1]),user.id).run();return json({ok:true},200,origin);}
+  if(url.pathname==="/api/notifications/read-all"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);await env.DB.prepare("UPDATE notifications SET read_at=? WHERE user_id=? AND read_at IS NULL").bind(new Date().toISOString(),user.id).run();return json({ok:true},200,origin);}
+'''
+              if marker not in s:
+                  raise SystemExit('Expected maintenance route marker not found.')
+              s=s.replace(marker,route+marker,1)
+              changed=True
+              print('Added notifications API routes.')
+
+          p.write_text(s)
+          if changed:
+              print('Backend source requires a committed repair.')
+          else:
+              print('Backend source already clean.')
           PY
 
-      # Production D1 is already aligned with the checked-in migrations.
-      # Keep schema changes separate from Worker deployment so CI does not
-      # require direct D1 API access just to publish application code.
+      - name: Commit source repairs
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No source changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add backend/src/index.js
+          git commit -m 'Repair backend discovery and notification routes'
+          git push
+
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:
