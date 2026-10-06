@@ -20,10 +20,7 @@
     @media(max-width:700px){.thread-view-card,.post-card{padding:1rem}.thread-controls button,.post-actions button{flex:1}}
   </style></head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="/index.html"><span>KNIGHT</span><b>FALL</b></a>
-    <nav aria-label="Primary navigation"><a href="/homepage.html">Forum</a><a href="/members.html">Members</a><a href="/index.html">Sanctuary</a></nav>
-  </header>
+  <header class="kf-header"></header>
   <main class="container">
     <section class="section" aria-labelledby="thread-title">
       <p class="eyebrow">DISCUSSION</p><a href="/homepage.html">← Back to forum</a>
@@ -44,4 +41,5 @@ root.addEventListener('click',async e=>{const post=e.target.closest('.post-card'
 root.addEventListener('submit',async e=>{e.preventDefault();try{if(e.target.id==='reply-form'){const body=e.target.body.value;await api(`/api/threads/${threadId}`,{method:'POST',body:JSON.stringify({body})});await load();return}if(e.target.matches('.post-edit')){const id=e.target.closest('.post-card').dataset.postId;await api(`/api/posts/${id}`,{method:'PATCH',body:JSON.stringify({body:e.target.querySelector('textarea').value})});await load();return}if(e.target.matches('.report-form')){const type=e.target.dataset.reportType,id=Number(e.target.dataset.reportId),reason=e.target.querySelector('textarea').value;await api('/api/reports',{method:'POST',body:JSON.stringify({target_type:type,target_id:id,reason})});e.target.reset();e.target.classList.add('hidden');alert('Report submitted.');}}catch(err){alert(err.message)}});
 load();
 </script>
+<script src="/nav.js" defer></script>
 </body></html>
