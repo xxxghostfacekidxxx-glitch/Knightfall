@@ -598,10 +598,17 @@ export default {
         if (!membership && !isAdmin(user)) return json({ error: "Conversation not found." }, 404, origin);
         const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 100),1),250);
         const selectBody = isAdmin(user) && !membership ? "m.body" : "CASE WHEN m.deleted_at IS NOT NULL THEN '[Message deleted]' ELSE m.body END";
-        const { results } = await env.DB.prepare(
-          "SELECT m.id,m.conversation_id,m.sender_id,"+selectBody+" AS body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? ORDER BY m.created_at ASC LIMIT ?"
-        ).bind(conversationId,limit).all();
-        if (membership) await env.DB.prepare("UPDATE conversation_members SET last_read_at=? WHERE conversation_id=? AND user_id=?").bind(new Date().toISOString(),conversationId,user.id).run();
+        const before=Number(url.searchParams.get("before")||0);
+        let messageRows;
+        if(before){
+          const q=await env.DB.prepare("SELECT m.id,m.conversation_id,m.sender_id,"+selectBody+" AS body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? AND m.id<? ORDER BY m.id DESC LIMIT ?").bind(conversationId,before,limit).all();
+          messageRows=(q.results||[]).reverse();
+        } else {
+          const q=await env.DB.prepare("SELECT m.id,m.conversation_id,m.sender_id,"+selectBody+" AS body,m.created_at,m.edited_at,m.deleted_at,u.username,u.display_name,u.avatar_url FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.conversation_id=? ORDER BY m.id ASC LIMIT ?").bind(conversationId,limit).all();
+          messageRows=q.results||[];
+        }
+        const results=messageRows;
+        if (membership && !before) await env.DB.prepare("UPDATE conversation_members SET last_read_at=? WHERE conversation_id=? AND user_id=?").bind(new Date().toISOString(),conversationId,user.id).run();
         if (!membership && isAdmin(user)) await audit(env,user,"message.archive.view","conversation",conversationId,{});
         return json({ messages: results, admin_view: !membership && isAdmin(user) }, 200, origin);
       }
