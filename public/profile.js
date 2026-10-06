@@ -12,7 +12,7 @@ function render(d,adminView=false){
   const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
   const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':'<div class="profile-actions"><button id="follow" class="action primary">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><a class="action" href="/messages.html">Message</a></div>';
   root.innerHTML='<div class="profile-top">'+avatar+'<div class="profile-heading"><p class="eyebrow">COMMUNITY MEMBER</p><h1>'+esc(u.display_name)+'</h1><p class="handle">@'+esc(u.username)+' · '+esc(u.role)+'</p>'+online+'</div></div>'+
-    '<div class="profile-stats"><div><b>'+u.thread_count+'</b><span>Threads</span></div><div><b>'+u.post_count+'</b><span>Replies</span></div><div><b>'+u.followers+'</b><span>Followers</span></div><div><b>'+u.following_count+'</b><span>Following</span></div></div>'+
+    '<div class="profile-stats"><div><b>'+(u.thread_count||0)+'</b><span>Threads</span></div><div><b>'+(u.post_count||0)+'</b><span>Replies</span></div><div><b>'+(u.followers||0)+'</b><span>Followers</span></div><div><b>'+(u.following_count||0)+'</b><span>Following</span></div></div>'+
     '<div class="profile-actions-wrap">'+actions+'</div>'+
     (u.bio?'<p class="bio">'+esc(u.bio)+'</p>':"")+
     '<dl><div><dt>Member since</dt><dd>'+fmt(u.created_at)+'</dd></div>'+
