@@ -9,7 +9,6 @@ const adminRoutes = [
   ["/api/admin/overview", "GET"],
   ["/api/admin/health", "GET"],
   ["/api/admin/users", "GET"],
-  ["/api/admin/deleted", "GET"],
   ["/api/admin/content?type=threads&include_deleted=0&q=", "GET"],
   ["/api/admin/categories", "GET"],
   ["/api/admin/settings", "GET"],
@@ -22,32 +21,34 @@ const adminRoutes = [
 
 const moderatorRoutes = [
   ["/api/moderation/reports?status=open", "GET"],
+  ["/api/moderation/message-reports?status=open", "GET"],
 ];
 
 const protectedMutations = [
-  ["/api/profile", "PUT"],
-  ["/api/notifications/1", "PATCH"],
-  ["/api/notifications/read-all", "POST"],
-  ["/api/messages/conversations", "POST"],
-  ["/api/messages/conversations/1", "POST"],
-  ["/api/messages/conversations/1", "PATCH"],
-  ["/api/threads", "POST"],
-  ["/api/threads/1", "POST"],
-  ["/api/threads/1", "PATCH"],
-  ["/api/threads/1", "DELETE"],
-  ["/api/posts/1", "PATCH"],
-  ["/api/posts/1", "DELETE"],
-  ["/api/reports", "POST"],
-  ["/api/moderation/reports/1", "PATCH"],
-  ["/api/admin/users/1", "PATCH"],
-  ["/api/admin/users/1", "POST"],
-  ["/api/admin/settings", "PATCH"],
-  ["/api/admin/categories", "POST"],
-  ["/api/admin/categories/1", "PATCH"],
-  ["/api/admin/categories/1", "DELETE"],
-  ["/api/admin/content/threads/1", "PATCH"],
-  ["/api/admin/content/posts/1", "PATCH"],
-  ["/api/admin/messages/1", "PATCH"],
+  ["/api/profile", "PUT", "member"],
+  ["/api/notifications/1", "PATCH", "member"],
+  ["/api/notifications/read-all", "POST", "member"],
+  ["/api/messages/conversations", "POST", "member"],
+  ["/api/messages/conversations/1", "POST", "member"],
+  ["/api/messages/conversations/1", "PATCH", "member"],
+  ["/api/threads", "POST", "member"],
+  ["/api/threads/1", "POST", "member"],
+  ["/api/threads/1", "PATCH", "member"],
+  ["/api/threads/1", "DELETE", "moderator"],
+  ["/api/posts/1", "PATCH", "member"],
+  ["/api/posts/1", "DELETE", "member"],
+  ["/api/reports", "POST", "member"],
+  ["/api/moderation/reports/1", "PATCH", "moderator"],
+  ["/api/moderation/message-reports/1", "PATCH", "moderator"],
+  ["/api/admin/users/1", "PATCH", "admin"],
+  ["/api/admin/users/1", "POST", "admin"],
+  ["/api/admin/settings", "PATCH", "admin"],
+  ["/api/admin/categories", "POST", "admin"],
+  ["/api/admin/categories/1", "PATCH", "admin"],
+  ["/api/admin/categories/1", "DELETE", "admin"],
+  ["/api/admin/content/threads/1", "PATCH", "admin"],
+  ["/api/admin/content/posts/1", "PATCH", "admin"],
+  ["/api/admin/messages/1", "PATCH", "admin"],
 ];
 
 async function request(path, cookie, method = "GET") {
@@ -106,15 +107,21 @@ for (const [route, method] of moderatorRoutes) {
   }
 }
 
-for (const [route, method] of protectedMutations) {
+for (const [route, method, requiredRole] of protectedMutations) {
   const unauth = await request(route, null, method);
-  assertStatus(unauth.status, [401,403], `unauthenticated mutation ${method} ${route}`);
+  assertStatus(unauth.status, [401,403], `unauthenticated protected ${method} ${route}`);
   const member = await request(route, cookies.member, method);
-  assertStatus(member.status, [401,403], `member mutation denied ${method} ${route}`);
-  if (route.startsWith("/api/admin/") || route.startsWith("/api/moderation/")) {
+  if (requiredRole === "member") {
+    if ([401,403].includes(member.status)) throw new Error(`member unexpectedly denied ${method} ${route}: ${member.status} ${member.body.slice(0,160)}`);
+  } else assertStatus(member.status, [401,403], `member denied ${requiredRole} ${method} ${route}`);
+  if (requiredRole === "moderator") {
     const moderator = await request(route, cookies.moderator, method);
-    assertStatus(moderator.status, [401,403], `moderator mutation denied ${method} ${route}`);
+    if ([401,403].includes(moderator.status)) throw new Error(`moderator unexpectedly denied ${method} ${route}: ${moderator.status} ${moderator.body.slice(0,160)}`);
+  } else if (requiredRole === "admin") {
+    const moderator = await request(route, cookies.moderator, method);
+    assertStatus(moderator.status, [401,403], `moderator denied admin ${method} ${route}`);
   }
+  const admin = await request(route, cookies.admin, method);
+  if ([401,403].includes(admin.status)) throw new Error(`admin unexpectedly denied ${method} ${route}: ${admin.status} ${admin.body.slice(0,160)}`);
 }
-
 console.log("Authorization audit completed successfully.");
