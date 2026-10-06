@@ -33,3 +33,6 @@ The Cloudflare dashboard/Git integration should use the repository root as the p
 ## Architecture note
 
 The public website and backend/API are intentionally kept separate. The frontend should not contain secrets, API credentials, or server-side code.
+
+
+<!-- CI trigger verification -->
