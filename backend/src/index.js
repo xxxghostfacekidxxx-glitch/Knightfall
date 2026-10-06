@@ -18,6 +18,10 @@ function json(data, status = 200, origin = "https://ash-fall.com", extra = {}) {
       "access-control-allow-headers": "content-type",
       "access-control-allow-credentials": "true",
       "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "DENY",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "permissions-policy": "camera=(),microphone=(),geolocation=()",
       ...extra,
     },
   });
@@ -59,6 +63,18 @@ async function verifyPassword(password, stored) {
   let diff = 0;
   for (let i = 0; i < actual.length; i++) diff |= actual.charCodeAt(i) ^ expected.charCodeAt(i);
   return diff === 0;
+}
+
+
+async function rateLimit(env, request, bucket, limit, windowSeconds) {
+  const ip=request.headers.get("CF-Connecting-IP") || "unknown";
+  const key="rate:"+bucket+":"+ip;
+  const now=Date.now();
+  const current=await env.SESSIONS.get(key,"json");
+  if(!current || current.reset_at<=now){await env.SESSIONS.put(key,JSON.stringify({count:1,reset_at:now+windowSeconds*1000}),{expirationTtl:windowSeconds});return true;}
+  if(current.count>=limit)return false;
+  await env.SESSIONS.put(key,JSON.stringify({count:current.count+1,reset_at:current.reset_at}),{expirationTtl:Math.max(1,Math.ceil((current.reset_at-now)/1000))});
+  return true;
 }
 
 function getCookie(request, name) {
@@ -197,6 +213,7 @@ export default {
       }
 
       if (url.pathname === "/api/auth/register" && request.method === "POST") {
+        if (!(await rateLimit(env,request,"register",5,900))) return json({error:"Too many registration attempts. Try again later."},429,origin);
         if ((await getSetting(env, "registration_enabled")) === "false") return json({ error: "Registration is currently closed." }, 403, origin);
         let body;
         try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
@@ -219,6 +236,7 @@ export default {
       }
 
       if (url.pathname === "/api/auth/login" && request.method === "POST") {
+        if (!(await rateLimit(env,request,"login",12,900))) return json({error:"Too many login attempts. Try again later."},429,origin);
         let body;
         try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400, origin); }
         const identifier = String(body.identifier || "").trim().toLowerCase();
@@ -589,6 +607,7 @@ export default {
       }
 
       if (conversationMatch && request.method === "POST") {
+        if (!(await rateLimit(env,request,"message",60,60))) return json({error:"Message rate limit reached. Slow down."},429,origin);
         const user = await requireUser(request, env);
         if (!user) return json({ error: "Authentication required." }, 401, origin);
         const conversationId = Number(conversationMatch[1]);
@@ -629,6 +648,7 @@ export default {
 
 
       if (messageMatch && request.method === "POST") {
+        if (!(await rateLimit(env,request,"message-report",10,600))) return json({error:"Report rate limit reached. Slow down."},429,origin);
         const user = await requireUser(request, env);
         if (!user) return json({error:"Authentication required."},401,origin);
         const id=Number(messageMatch[1]);
