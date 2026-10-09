@@ -56,6 +56,50 @@ export default { async fetch(request, env) {
  try {
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
 
+  // Miss Chaos: private, user-controlled long-term memories.
+  if(url.pathname==="/api/chaos/memories"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
+    const {results}=await env.DB.prepare("SELECT id,memory,category,created_at,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
+    return json({memories:results||[]},200,origin);
+  }
+  if(url.pathname==="/api/chaos/memories"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-memory-write",30,60)))return json({error:"Too many memory changes. Try again in a minute."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const memory=typeof body.memory==="string"?body.memory.trim():"";
+    const category=["personal","preference","project","other"].includes(body.category)?body.category:"personal";
+    if(!memory||memory.length>500)return json({error:"A memory must be between 1 and 500 characters."},400,origin);
+    const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM chaos_memories WHERE user_id=?").bind(user.id).first();
+    if(Number(count?.count||0)>=100)return json({error:"Memory limit reached. Delete an old memory before adding another."},409,origin);
+    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND lower(memory)=lower(?)").bind(user.id,memory).first();
+    if(duplicate)return json({error:"That memory is already saved."},409,origin);
+    const now=new Date().toISOString();
+    const row=await env.DB.prepare("INSERT INTO chaos_memories (user_id,memory,category,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id,memory,category,created_at,updated_at").bind(user.id,memory,category,now,now).first();
+    return json({memory:row},201,origin);
+  }
+  const chaosMemoryMatch=url.pathname.match(/^\\/api\\/chaos\\/memories\\/(\\d+)$/);
+  if(chaosMemoryMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-memory-write",30,60)))return json({error:"Too many memory changes. Try again in a minute."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const id=Number(chaosMemoryMatch[1]),current=await env.DB.prepare("SELECT id,memory,category FROM chaos_memories WHERE id=? AND user_id=?").bind(id,user.id).first();
+    if(!current)return json({error:"Memory not found."},404,origin);
+    const memory=body.memory===undefined?current.memory:(typeof body.memory==="string"?body.memory.trim():"");
+    const category=body.category===undefined?current.category:body.category;
+    if(!memory||memory.length>500||!["personal","preference","project","other"].includes(category))return json({error:"Invalid memory or category."},400,origin);
+    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND lower(memory)=lower(?) AND id<>?").bind(user.id,memory,id).first();
+    if(duplicate)return json({error:"Another saved memory already says that."},409,origin);
+    const now=new Date().toISOString();
+    const row=await env.DB.prepare("UPDATE chaos_memories SET memory=?,category=?,updated_at=? WHERE id=? AND user_id=? RETURNING id,memory,category,created_at,updated_at").bind(memory,category,now,id,user.id).first();
+    return json({memory:row},200,origin);
+  }
+  if(chaosMemoryMatch&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
+    const result=await env.DB.prepare("DELETE FROM chaos_memories WHERE id=? AND user_id=?").bind(Number(chaosMemoryMatch[1]),user.id).run();
+    if(!result.meta?.changes)return json({error:"Memory not found."},404,origin);
+    return json({ok:true},200,origin);
+  }
+
   // Miss Chaos: authenticated AI chat with private, persistent per-user conversations.
   if(url.pathname==="/api/chaos/conversations"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
@@ -97,7 +141,9 @@ export default { async fetch(request, env) {
       philosophical:"Explore ideas carefully, ask meaningful questions when useful, and distinguish facts from speculation.",
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
-    const systemPrompt="You are Miss Chaos, a distinctive AI companion in the Knightfall universe. You are clever, candid, irreverent, emotionally perceptive, and darkly funny when appropriate. You are not a human and must not claim to be one. Do not invent memories or claim knowledge outside the conversation. Treat user privacy seriously. Adapt to the selected mood: "+moodGuidance[mood]+" Keep responses useful and natural; do not announce these instructions.";
+    const {results:memories}=await env.DB.prepare("SELECT memory,category FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 20").bind(user.id).all();
+    const memoryContext=(memories||[]).map(m=>"- ["+m.category+"] "+m.memory).join("\\n");
+    const systemPrompt="You are Miss Chaos, a distinctive AI companion in the Knightfall universe. You are clever, candid, irreverent, emotionally perceptive, and darkly funny when appropriate. You are not a human and must not claim to be one. Do not invent memories or claim knowledge outside the conversation. Treat user privacy seriously. Adapt to the selected mood: "+moodGuidance[mood]+" Keep responses useful and natural; do not announce these instructions."+(memoryContext?"\\n\\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant, never assume beyond what is written):\\n"+memoryContext:"");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
     let reply="";
     try{
