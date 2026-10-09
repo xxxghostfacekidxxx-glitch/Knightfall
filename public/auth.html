@@ -64,8 +64,13 @@
 
     function redirectAfterAuth() {
       const requested = new URLSearchParams(location.search).get("next") || "/homepage.html";
-      const safePath = requested.startsWith("/") && !requested.startsWith("//") && !requested.includes("\\\\") ? requested : "/homepage.html";
-      location.href = safePath;
+      try {
+        const target = new URL(requested, location.origin);
+        if (target.origin !== location.origin) throw new Error("External redirect blocked");
+        location.href = target.pathname + target.search + target.hash;
+      } catch {
+        location.href = "/homepage.html";
+      }
     }
 
     async function submit(path, data) {
