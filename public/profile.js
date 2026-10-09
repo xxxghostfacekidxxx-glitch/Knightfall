@@ -27,6 +27,42 @@ function render(d,adminView=false){
     if(b)b.onclick=async()=>{try{const r=await api("/api/users/"+encodeURIComponent(u.username)+"/block",{method:u.is_blocked?"DELETE":"POST"});u.is_blocked=r.blocked;b.textContent=r.blocked?"Unblock":"Block";if(r.blocked){f.disabled=true;f.textContent="Blocked";}else f.disabled=false}catch(e){alert(e.message)}};
   }
 }
+function renderDeveloperControls(){
+  const panel=document.createElement("section");
+  panel.className="developer-card";
+  panel.id="profile-developer-controls";
+  panel.innerHTML='<div class="developer-head"><div><p class="eyebrow">PRIVATE / ROOT ACCESS</p><h2>Miss Chaos · Developer Controls</h2><p>Global personality settings for future replies.</p></div><a class="action primary" href="/admin.html">Open Admin Dashboard ↗</a></div>'+
+    '<form id="developer-form" class="developer-form">'+
+    '<label for="dial-wit">Wit <output id="dial-wit-value">75</output></label><input id="dial-wit" name="chaos_wit" type="range" min="0" max="100" value="75">'+
+    '<label for="dial-sarcasm">Sarcasm <output id="dial-sarcasm-value">60</output></label><input id="dial-sarcasm" name="chaos_sarcasm" type="range" min="0" max="100" value="60">'+
+    '<label for="dial-darkness">Dark humor <output id="dial-darkness-value">55</output></label><input id="dial-darkness" name="chaos_darkness" type="range" min="0" max="100" value="55">'+
+    '<label for="dial-warmth">Warmth <output id="dial-warmth-value">70</output></label><input id="dial-warmth" name="chaos_warmth" type="range" min="0" max="100" value="70">'+
+    '<label for="dial-philosophy">Philosophical depth <output id="dial-philosophy-value">65</output></label><input id="dial-philosophy" name="chaos_philosophy" type="range" min="0" max="100" value="65">'+
+    '<label for="chaos-custom-instructions">Extra developer guidance <small>Max 1,200 characters</small></label><textarea id="chaos-custom-instructions" name="chaos_custom_instructions" rows="4" maxlength="1200" placeholder="Optional instructions for Miss Chaos…"></textarea>'+
+    '<div class="developer-actions"><button type="submit" class="action primary">Save personality</button><p id="developer-status" role="status" hidden></p></div></form>';
+  root.append(panel);
+  const form=panel.querySelector("#developer-form"),status=panel.querySelector("#developer-status");
+  const dials=["chaos_wit","chaos_sarcasm","chaos_darkness","chaos_warmth","chaos_philosophy"];
+  const outputId=key=>"dial-"+key.replace("chaos_","")+"-value";
+  const updateOutput=key=>{const out=panel.querySelector("#"+outputId(key));if(out)out.value=form.elements[key].value;};
+  for(const key of dials)form.elements[key].addEventListener("input",()=>updateOutput(key));
+  const showStatus=(message,error=false)=>{status.textContent=message;status.hidden=false;status.classList.toggle("error",error);};
+  (async()=>{
+    try{
+      const data=await api("/api/admin/chaos-personality");
+      for(const key of dials){form.elements[key].value=Number(data.settings?.[key]??form.elements[key].value);updateOutput(key);}
+      form.elements.chaos_custom_instructions.value=data.settings?.chaos_custom_instructions||"";
+    }catch(error){showStatus(error.message,true);}
+  })();
+  form.addEventListener("submit",async event=>{
+    event.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;status.hidden=true;
+    const settings={};for(const key of dials)settings[key]=Number(form.elements[key].value);
+    settings.chaos_custom_instructions=form.elements.chaos_custom_instructions.value;
+    try{await api("/api/admin/chaos-personality",{method:"PATCH",body:JSON.stringify(settings)});showStatus("Saved. New replies will use these settings.");}
+    catch(error){showStatus(error.message,true);}
+    button.disabled=false;
+  });
+}
 async function load(){
  try{
    if(adminUserId){
@@ -37,6 +73,8 @@ async function load(){
    }
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username)); render(d,false);
+   const me=await api("/api/auth/me").catch(()=>({user:null}));
+   if(me.user?.role==="admin"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
 }
 load();
