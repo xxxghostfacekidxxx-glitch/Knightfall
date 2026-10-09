@@ -6,15 +6,19 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/**'
       - 'public/**'
       - '.github/workflows/smoke-test.yml'
+  workflow_run:
+    workflows: ["Deploy Knightfall API"]
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   smoke:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
