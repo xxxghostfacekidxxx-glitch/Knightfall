@@ -22,3 +22,25 @@
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:760px){.chaos-shell{grid-template-columns:1fr;padding:.55rem;gap:.55rem}.chaos-sidebar{min-height:0;padding:.8rem}.sidebar-title{margin:.8rem 0}.sidebar-note{display:none}.conversation-list{display:flex;max-height:none;overflow-x:auto;margin-top:.65rem}.conversation-item{max-width:180px;min-width:120px}.new-chat{align-self:flex-start;padding:.6rem .8rem}.chat-panel{min-height:calc(100dvh - 235px)}.chat-topbar{padding:.9rem;align-items:flex-start}.chaos-avatar{width:44px;height:44px;border-radius:13px}.chaos-identity h1{font-size:1.2rem}.chat-messages{max-height:none;min-height:42vh;padding:1rem .75rem}.composer{margin:0 .65rem}.chat-error{margin:0 .65rem .6rem}.welcome-card{padding:1.2rem}.mood-control select{max-width:125px}.message{max-width:96%}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* User-controlled long-term memory */
+.memory-manager{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--chaos-line)}
+.memory-heading{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+.memory-heading h3{font-size:.88rem;color:var(--chaos-green);letter-spacing:-.02em}
+.memory-heading span{font-size:.62rem;color:#898291;white-space:nowrap}
+.memory-description{font-size:.72rem;line-height:1.55;color:#918a99;margin:.5rem 0 .7rem}
+.memory-form{display:grid;gap:.45rem}
+.memory-form textarea,.memory-form select{width:100%;min-width:0;border:1px solid #39313e;border-radius:8px;background:#0b0a0f;color:#f5f0f7;padding:.6rem;font:inherit;font-size:.75rem;resize:vertical}
+.memory-form textarea{min-height:58px}
+.memory-save{border:1px solid #688b36;border-radius:8px;padding:.58rem .7rem;background:#18220f;color:var(--chaos-green);font-size:.75rem;font-weight:800;cursor:pointer}
+.memory-save:hover{background:#243318}
+.memory-list{display:grid;gap:.5rem;margin-top:.7rem;max-height:230px;overflow-y:auto}
+.memory-card{border:1px solid #332b38;border-radius:9px;background:#141219;padding:.6rem}
+.memory-card p{font-size:.75rem;line-height:1.5;overflow-wrap:anywhere;color:#e2dce7;white-space:pre-wrap;margin:0 0 .5rem}
+.memory-meta{display:flex;justify-content:space-between;align-items:center;gap:.4rem;color:#8f8797;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em}
+.memory-actions{display:flex;gap:.3rem}
+.memory-actions button{border:1px solid #3b3341;border-radius:6px;background:#1a1720;color:#d6cfdd;font-size:.65rem;padding:.3rem .45rem;cursor:pointer}
+.memory-actions button:hover{border-color:var(--chaos-pink);color:white}
+.memory-status{font-size:.7rem;line-height:1.45;color:var(--chaos-green);margin:.45rem 0 0}
+.memory-status.error{color:#ff9eb9}
+@media(max-width:760px){.memory-manager{margin-top:.8rem}.memory-list{max-height:180px}.memory-form{grid-template-columns:minmax(0,1fr) 110px}.memory-form textarea{grid-column:1/-1}.memory-save{grid-column:1/-1}.memory-card{min-width:220px}.memory-list{display:flex;overflow-x:auto}}

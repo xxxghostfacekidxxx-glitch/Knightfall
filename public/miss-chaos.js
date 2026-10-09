@@ -64,6 +64,73 @@
     renderConversationList(data.conversations || []);
     return data.conversations || [];
   }
+  const memoryListEl = $("#memory-list"), memoryCountEl = $("#memory-count");
+  const memoryForm = $("#memory-form"), memoryInput = $("#memory-input");
+  const memoryCategory = $("#memory-category"), memoryStatus = $("#memory-status");
+  const memoryCategoryNames = {personal:"Personal",preference:"Preference",project:"Project",other:"Other"};
+  function showMemoryStatus(message, isError = false) {
+    memoryStatus.textContent = message;
+    memoryStatus.classList.toggle("error", isError);
+    memoryStatus.hidden = !message;
+  }
+  async function refreshMemories() {
+    const data = await request("/api/chaos/memories");
+    const memories = data.memories || [];
+    memoryCountEl.textContent = memories.length + " / 100";
+    memoryListEl.replaceChildren();
+    if (!memories.length) {
+      const empty = document.createElement("p");
+      empty.className = "muted";
+      empty.textContent = "Nothing saved yet. Add a detail above when you want me to remember it.";
+      memoryListEl.append(empty);
+      return memories;
+    }
+    for (const memory of memories) {
+      const card = document.createElement("article");
+      card.className = "memory-card";
+      const text = document.createElement("p");
+      text.textContent = memory.memory;
+      const meta = document.createElement("div");
+      meta.className = "memory-meta";
+      const category = document.createElement("span");
+      category.textContent = memoryCategoryNames[memory.category] || "Other";
+      const actions = document.createElement("div");
+      actions.className = "memory-actions";
+      const edit = document.createElement("button");
+      edit.type = "button"; edit.textContent = "Edit";
+      edit.addEventListener("click", async () => {
+        const replacement = window.prompt("Edit this saved memory (up to 500 characters):", memory.memory);
+        if (replacement === null) return;
+        const next = replacement.trim();
+        if (!next || next.length > 500) { showMemoryStatus("Memory must be between 1 and 500 characters.", true); return; }
+        const nextCategory = window.prompt("Category: personal, preference, project, or other", memory.category);
+        if (nextCategory === null) return;
+        if (!["personal","preference","project","other"].includes(nextCategory.trim().toLowerCase())) {
+          showMemoryStatus("Choose personal, preference, project, or other.", true); return;
+        }
+        try {
+          await request("/api/chaos/memories/" + memory.id, {method:"PATCH",body:JSON.stringify({memory:next,category:nextCategory.trim().toLowerCase()})});
+          showMemoryStatus("Memory updated.");
+          await refreshMemories();
+        } catch (error) { showMemoryStatus(error.message, true); }
+      });
+      const remove = document.createElement("button");
+      remove.type = "button"; remove.textContent = "Delete";
+      remove.addEventListener("click", async () => {
+        if (!window.confirm("Delete this saved memory? Miss Chaos will no longer use it in future replies.")) return;
+        try {
+          await request("/api/chaos/memories/" + memory.id, {method:"DELETE"});
+          showMemoryStatus("Memory deleted.");
+          await refreshMemories();
+        } catch (error) { showMemoryStatus(error.message, true); }
+      });
+      actions.append(edit, remove);
+      meta.append(category, actions);
+      card.append(text, meta);
+      memoryListEl.append(card);
+    }
+    return memories;
+  }
   async function openConversation(id) {
     showError("");
     const data = await request("/api/chaos/conversations/" + encodeURIComponent(id) + "/messages");
@@ -90,7 +157,8 @@
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
-        refreshConversations()
+        refreshConversations(),
+        refreshMemories()
       ]);
       statusEl.textContent = health?.ok ? "Connected · AI model availability checked on send" : "API connection needs attention";
       if (conversations.length) await openConversation(conversations[0].id);
@@ -160,6 +228,21 @@
     recognition.onerror = () => showError("Couldn't capture speech. Check microphone permission and try again.");
     recognition.onend = () => { $("#voice-input").disabled = false; };
     try { recognition.start(); } catch { $("#voice-input").disabled = false; showError("Voice input couldn't start."); }
+  });
+  memoryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const memory = memoryInput.value.trim();
+    if (!memory || memory.length > 500) { showMemoryStatus("Memory must be between 1 and 500 characters.", true); return; }
+    const submit = memoryForm.querySelector('button[type="submit"]');
+    submit.disabled = true;
+    showMemoryStatus("");
+    try {
+      await request("/api/chaos/memories", {method:"POST",body:JSON.stringify({memory,category:memoryCategory.value})});
+      memoryInput.value = "";
+      showMemoryStatus("Saved. Miss Chaos can now use this in future conversations.");
+      await refreshMemories();
+    } catch (error) { showMemoryStatus(error.message, true); }
+    finally { submit.disabled = false; }
   });
   init();
 })();

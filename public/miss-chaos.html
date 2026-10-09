@@ -17,6 +17,21 @@
       <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
       <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
       <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
+      <section class="memory-manager" aria-labelledby="memory-heading">
+        <div class="memory-heading"><h3 id="memory-heading">✦ What I remember</h3><span id="memory-count">0 / 100</span></div>
+        <p class="memory-description">Only save what you want me to remember. You can edit or delete it anytime.</p>
+        <form id="memory-form" class="memory-form">
+          <label class="sr-only" for="memory-input">A detail for Miss Chaos to remember</label>
+          <textarea id="memory-input" rows="2" maxlength="500" placeholder="A preference, project detail, or useful fact…" required></textarea>
+          <label class="sr-only" for="memory-category">Memory category</label>
+          <select id="memory-category">
+            <option value="personal">Personal</option><option value="preference">Preference</option><option value="project">Project</option><option value="other">Other</option>
+          </select>
+          <button type="submit" class="memory-save">Save memory</button>
+        </form>
+        <p id="memory-status" class="memory-status" role="status" hidden></p>
+        <div id="memory-list" class="memory-list" aria-live="polite"><p class="muted">Loading memories…</p></div>
+      </section>
       <div class="sidebar-note"><span class="pulse-dot"></span> Private by design <small>Your conversations are tied to your account.</small></div>
     </aside>
     <section class="chat-panel" aria-label="Chat with Miss Chaos">
