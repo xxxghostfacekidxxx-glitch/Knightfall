@@ -131,28 +131,6 @@
     }
     return memories;
   }
-  async function initDeveloperControls(user) {
-    if (user?.role !== "admin") return;
-    const panel = $("#developer-controls"), developerForm = $("#developer-form"), developerStatus = $("#developer-status");
-    panel.hidden = false;
-    const dials = ["chaos_wit","chaos_sarcasm","chaos_darkness","chaos_warmth","chaos_philosophy"];
-    const updateOutput = (key) => { const inputEl = developerForm.elements[key]; const output = $("#dial-" + key.replace("chaos_","") + "-value"); if (output) output.value = inputEl.value; };
-    for (const key of dials) developerForm.elements[key].addEventListener("input", () => updateOutput(key));
-    try {
-      const data = await request("/api/admin/chaos-personality");
-      for (const key of dials) { developerForm.elements[key].value = Number(data.settings?.[key] ?? developerForm.elements[key].value); updateOutput(key); }
-      developerForm.elements.chaos_custom_instructions.value = data.settings?.chaos_custom_instructions || "";
-    } catch (error) { developerStatus.textContent = error.message; developerStatus.classList.add("error"); developerStatus.hidden = false; }
-    developerForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const button = developerForm.querySelector('button[type="submit"]'); button.disabled = true; developerStatus.hidden = true;
-      const settings = {}; for (const key of dials) settings[key] = Number(developerForm.elements[key].value);
-      settings.chaos_custom_instructions = developerForm.elements.chaos_custom_instructions.value;
-      try { await request("/api/admin/chaos-personality", {method:"PATCH",body:JSON.stringify(settings)}); developerStatus.textContent = "Personality saved. New replies will use these settings."; developerStatus.classList.remove("error"); }
-      catch (error) { developerStatus.textContent = error.message; developerStatus.classList.add("error"); }
-      developerStatus.hidden = false; button.disabled = false;
-    });
-  }
   async function openConversation(id) {
     showError("");
     const data = await request("/api/chaos/conversations/" + encodeURIComponent(id) + "/messages");
@@ -177,7 +155,6 @@
       statusEl.textContent = "Checking connection…";
       const me = await request("/api/auth/me");
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
-      await initDeveloperControls(me.user);
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
         refreshConversations(),
