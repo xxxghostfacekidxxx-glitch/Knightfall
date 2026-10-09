@@ -26,7 +26,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Check audit credentials
+        id: credentials
+        shell: bash
+        env:
+          KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
+          KNIGHTFALL_MEMBER_PASSWORD: ${{ secrets.KNIGHTFALL_MEMBER_PASSWORD }}
+          KNIGHTFALL_MODERATOR_USERNAME: ${{ secrets.KNIGHTFALL_MODERATOR_USERNAME }}
+          KNIGHTFALL_MODERATOR_PASSWORD: ${{ secrets.KNIGHTFALL_MODERATOR_PASSWORD }}
+          KNIGHTFALL_ADMIN_USERNAME: ${{ secrets.KNIGHTFALL_ADMIN_USERNAME }}
+          KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
+        run: |
+          if [ -n "$KNIGHTFALL_MEMBER_USERNAME" ] && [ -n "$KNIGHTFALL_MEMBER_PASSWORD" ] &&
+             [ -n "$KNIGHTFALL_MODERATOR_USERNAME" ] && [ -n "$KNIGHTFALL_MODERATOR_PASSWORD" ] &&
+             [ -n "$KNIGHTFALL_ADMIN_USERNAME" ] && [ -n "$KNIGHTFALL_ADMIN_PASSWORD" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Run ownership boundary audit
+        if: steps.credentials.outputs.ready == 'true'
         env:
           KNIGHTFALL_API: https://api.ash-fall.com
           KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
@@ -36,3 +56,7 @@ jobs:
           KNIGHTFALL_ADMIN_USERNAME: ${{ secrets.KNIGHTFALL_ADMIN_USERNAME }}
           KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
         run: node scripts/ownership-audit.mjs
+
+      - name: Explain skipped audit
+        if: steps.credentials.outputs.ready != 'true'
+        run: echo "::warning title=Audit skipped::Configure all six KNIGHTFALL member, moderator, and admin username/password repository secrets to run this security audit."
