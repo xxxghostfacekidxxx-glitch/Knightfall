@@ -101,7 +101,7 @@ export default { async fetch(request, env) {
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
     let reply="";
     try{
-      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct",{messages:[{role:"system",content:systemPrompt},...messages],max_tokens:700,temperature:0.8});
+      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt},...messages],max_tokens:700,temperature:0.8});
       reply=String(result?.response||"").trim();
       if(!reply)throw new Error("The model returned an empty response.");
     }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}
