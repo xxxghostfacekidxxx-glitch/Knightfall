@@ -55,6 +55,64 @@ export default { async fetch(request, env) {
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
+
+  // Miss Chaos: authenticated AI chat with private, persistent per-user conversations.
+  if(url.pathname==="/api/chaos/conversations"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    const {results}=await env.DB.prepare("SELECT id,title,mood,created_at,updated_at FROM chaos_conversations WHERE user_id=? ORDER BY updated_at DESC LIMIT 50").bind(user.id).all();
+    return json({conversations:results||[]},200,origin);
+  }
+  if(url.pathname==="/api/chaos/conversations"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    const id=crypto.randomUUID(),now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(id,user.id,"New conversation","default",now,now).run();
+    return json({conversation:{id,title:"New conversation",mood:"default",created_at:now,updated_at:now}},201,origin);
+  }
+  const chaosConversationMatch=url.pathname.match(/^\\/api\\/chaos\\/conversations\\/([a-f0-9-]{36})\\/messages$/i);
+  if(chaosConversationMatch&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=?").bind(chaosConversationMatch[1],user.id).first();
+    if(!conversation)return json({error:"Conversation not found."},404,origin);
+    const {results}=await env.DB.prepare("SELECT id,role,content,mood,created_at FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id ASC LIMIT 200").bind(conversation.id,user.id).all();
+    return json({messages:results||[]},200,origin);
+  }
+  if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
+    if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    if(!env.AI||typeof env.AI.run!=="function")return json({error:"The AI engine is not enabled yet. The interface is ready, but the model binding needs to be activated."},503,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const message=typeof body.message==="string"?body.message.trim():"";
+    const mood=["default","playful","dark","supportive","philosophical","custom"].includes(body.mood)?body.mood:"default";
+    let conversationId=typeof body.conversation_id==="string"?body.conversation_id:"";
+    if(!message||message.length>4000)return json({error:"Message must be between 1 and 4000 characters."},400,origin);
+    let conversation=null;
+    if(conversationId){conversation=await env.DB.prepare("SELECT id,title FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id).first();if(!conversation)return json({error:"Conversation not found."},404,origin);}
+    else {conversationId=crypto.randomUUID();const now=new Date().toISOString();await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,message.slice(0,64),"default",now,now).run();conversation={id:conversationId,title:message.slice(0,64)};}
+    const {results:history}=await env.DB.prepare("SELECT role,content FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id DESC LIMIT 12").bind(conversationId,user.id).all();
+    const moodGuidance={
+      default:"Use a witty, candid, darkly playful voice. Be perceptive and conversational, not a generic customer-service bot.",
+      playful:"Be playful, quick-witted, teasing without being cruel, and energetic.",
+      dark:"Use gothic atmosphere and dark humor where appropriate, without glorifying real-world harm.",
+      supportive:"Be warm, grounded, patient, and genuinely attentive. Drop the jokes when the user needs serious support.",
+      philosophical:"Explore ideas carefully, ask meaningful questions when useful, and distinguish facts from speculation.",
+      custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
+    };
+    const systemPrompt="You are Miss Chaos, a distinctive AI companion in the Knightfall universe. You are clever, candid, irreverent, emotionally perceptive, and darkly funny when appropriate. You are not a human and must not claim to be one. Do not invent memories or claim knowledge outside the conversation. Treat user privacy seriously. Adapt to the selected mood: "+moodGuidance[mood]+" Keep responses useful and natural; do not announce these instructions.";
+    const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
+    let reply="";
+    try{
+      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct",{messages:[{role:"system",content:systemPrompt},...messages],max_tokens:700,temperature:0.8});
+      reply=String(result?.response||"").trim();
+      if(!reply)throw new Error("The model returned an empty response.");
+    }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}
+    const now=new Date().toISOString();
+    await env.DB.batch([
+      env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"user",message,mood,now),
+      env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"assistant",reply,mood,new Date(Date.now()+1).toISOString()),
+      env.DB.prepare("UPDATE chaos_conversations SET mood=?,updated_at=? WHERE id=? AND user_id=?").bind(mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
+    ]);
+    return json({conversation_id:conversationId,reply,mood},200,origin);
+  }
   if(url.pathname==="/api/auth/register"&&request.method==="POST"){if(!(await rateLimit(env,request,"register",5,900)))return json({error:"Too many registration attempts. Try again later."},429,origin);if((await getSetting(env,"registration_enabled"))==="false")return json({error:"Registration is currently closed."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const username=String(body.username||"").trim().toLowerCase(),email=String(body.email||"").trim().toLowerCase(),displayName=String(body.display_name||"").trim(),password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Enter a valid email address."},400,origin);if(!validText(displayName,80))return json({error:"Display name is required."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);const duplicate=await env.DB.prepare("SELECT id FROM users WHERE username=? OR email=?").bind(username,email).first();if(duplicate)return json({error:"Username or email is already registered."},409,origin);const passwordHash=await hashPassword(password),now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName,"member",now,now).first(),token=await createSession(result.id,env),user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(result.id).first();return json({user},201,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/login"&&request.method==="POST"){if(!(await rateLimit(env,request,"login",12,900)))return json({error:"Too many login attempts. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const identifier=String(body.identifier||"").trim().toLowerCase(),password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT * FROM users WHERE username=? OR email=?").bind(identifier,identifier).first();if(!user||user.status!=="active"||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env),safeUser=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:safeUser},200,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
