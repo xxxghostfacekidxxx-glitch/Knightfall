@@ -109,7 +109,7 @@ export default { async fetch(request, env) {
     await env.DB.batch([
       env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"user",message,mood,now),
       env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"assistant",reply,mood,new Date(Date.now()+1).toISOString()),
-      env.DB.prepare("UPDATE chaos_conversations SET mood=?,updated_at=? WHERE id=? AND user_id=?").bind(mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
+      env.DB.prepare("UPDATE chaos_conversations SET title=CASE WHEN title='New conversation' THEN ? ELSE title END,mood=?,updated_at=? WHERE id=? AND user_id=?").bind(message.slice(0,64),mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
     ]);
     return json({conversation_id:conversationId,reply,mood},200,origin);
   }
