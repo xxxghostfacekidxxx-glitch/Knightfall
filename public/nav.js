@@ -6,6 +6,7 @@
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰</button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a href="/homepage.html">Forum</a>
+      <a href="/miss-chaos.html">Miss Chaos</a>
       <a href="/create-thread.html">New Thread</a>
       <a href="/members.html">Members</a>
       <a href="/messages.html">Messages</a>

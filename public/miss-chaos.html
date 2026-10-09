@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Meet Miss Chaos, the AI companion of Knightfall.">
+  <title>Miss Chaos | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/miss-chaos.css">
+</head>
+<body class="chaos-page">
+  <header class="kf-header"></header>
+  <main class="chaos-shell">
+    <aside class="chaos-sidebar" aria-label="Conversation history">
+      <a class="chaos-back" href="/homepage.html">← Back to Knightfall</a>
+      <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
+      <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
+      <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
+      <div class="sidebar-note"><span class="pulse-dot"></span> Private by design <small>Your conversations are tied to your account.</small></div>
+    </aside>
+    <section class="chat-panel" aria-label="Chat with Miss Chaos">
+      <div class="chat-topbar">
+        <div class="chaos-identity"><div class="chaos-avatar" aria-hidden="true">M<span>✦</span></div><div><p class="eyebrow">KNIGHTFALL AI COMPANION</p><h1>Miss Chaos</h1><p class="presence"><span class="pulse-dot"></span><span id="engine-status">Waking up the engine…</span></p></div></div>
+        <label class="mood-control">MOOD
+          <select id="mood" aria-label="Miss Chaos mood">
+            <option value="default">Default</option><option value="playful">Playful</option><option value="dark">Dark</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option><option value="custom">Custom</option>
+          </select>
+        </label>
+      </div>
+      <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
+        <div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me.</h2><p>I'm Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that's useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p></div>
+      </div>
+      <div id="chat-error" class="chat-error" role="status" hidden></div>
+      <form id="chat-form" class="composer">
+        <label class="sr-only" for="message-input">Message Miss Chaos</label>
+        <textarea id="message-input" name="message" rows="1" maxlength="4000" placeholder="Tell me what's on your mind…" required></textarea>
+        <div class="composer-bottom"><span id="char-count">0 / 4000</span><div class="composer-actions"><button id="voice-input" class="icon-button" type="button" aria-label="Dictate message" title="Dictate message">🎙</button><button id="speak-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken replies" aria-label="Toggle spoken replies">🔊</button><button id="send-button" class="send-button" type="submit">Send <span aria-hidden="true">↗</span></button></div></div>
+      </form>
+      <p class="privacy-note">AI can make mistakes. Don't share passwords or highly sensitive information.</p>
+    </section>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script src="/miss-chaos.js" defer></script>
+</body>
+</html>

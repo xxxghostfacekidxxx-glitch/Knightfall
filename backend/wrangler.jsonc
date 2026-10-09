@@ -19,5 +19,8 @@
       "binding": "SESSIONS",
       "id": "dd5b7be732cc4a4585aed60a9980b0b3"
     }
-  ]
+  ],
+  "ai": {
+    "binding": "AI"
+  }
 }
