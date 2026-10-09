@@ -2,5 +2,5 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "knightfall",
   "pages_build_output_dir": "./public",
-  "compatibility_date": "2026-10-05"
+  "compatibility_date": "2026-10-09"
 }
