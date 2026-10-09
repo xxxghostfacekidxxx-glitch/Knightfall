@@ -44,3 +44,14 @@
 .memory-status{font-size:.7rem;line-height:1.45;color:var(--chaos-green);margin:.45rem 0 0}
 .memory-status.error{color:#ff9eb9}
 @media(max-width:760px){.memory-manager{margin-top:.8rem}.memory-list{max-height:180px}.memory-form{grid-template-columns:minmax(0,1fr) 110px}.memory-form textarea{grid-column:1/-1}.memory-save{grid-column:1/-1}.memory-card{min-width:220px}.memory-list{display:flex;overflow-x:auto}}
+
+/* Admin-only Miss Chaos developer controls */
+.developer-controls{margin-top:1.1rem;padding-top:1rem;border-top:1px solid var(--chaos-line)}
+.developer-controls[hidden]{display:none}
+.developer-form{display:grid;gap:.35rem;margin-top:.65rem}
+.developer-form label{display:flex;justify-content:space-between;gap:.5rem;color:#cfc6d5;font-size:.72rem}
+.developer-form output{color:var(--chaos-green);font-variant-numeric:tabular-nums}
+.developer-form input[type=range]{width:100%;accent-color:var(--chaos-pink);margin:0 0 .4rem}
+.developer-form textarea{width:100%;box-sizing:border-box;resize:vertical;border:1px solid #39313e;border-radius:8px;background:#0b0a0f;color:#f5f0f7;padding:.6rem;font:inherit;font-size:.75rem}
+.developer-form label small{font-size:.62rem;color:#8f8797}
+.developer-form button:disabled{opacity:.6;cursor:wait}

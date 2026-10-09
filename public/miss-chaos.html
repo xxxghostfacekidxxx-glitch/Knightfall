@@ -32,6 +32,21 @@
         <p id="memory-status" class="memory-status" role="status" hidden></p>
         <div id="memory-list" class="memory-list" aria-live="polite"><p class="muted">Loading memories…</p></div>
       </section>
+      <section id="developer-controls" class="developer-controls" aria-labelledby="developer-heading" hidden>
+        <div class="memory-heading"><h3 id="developer-heading">⚙ Developer controls</h3><span>ADMIN</span></div>
+        <p class="memory-description">Tune Miss Chaos globally. Changes affect future replies for everyone.</p>
+        <form id="developer-form" class="developer-form">
+          <label for="dial-wit">Wit <output id="dial-wit-value">75</output></label><input id="dial-wit" name="chaos_wit" type="range" min="0" max="100" value="75">
+          <label for="dial-sarcasm">Sarcasm <output id="dial-sarcasm-value">60</output></label><input id="dial-sarcasm" name="chaos_sarcasm" type="range" min="0" max="100" value="60">
+          <label for="dial-darkness">Dark humor <output id="dial-darkness-value">55</output></label><input id="dial-darkness" name="chaos_darkness" type="range" min="0" max="100" value="55">
+          <label for="dial-warmth">Warmth <output id="dial-warmth-value">70</output></label><input id="dial-warmth" name="chaos_warmth" type="range" min="0" max="100" value="70">
+          <label for="dial-philosophy">Philosophical depth <output id="dial-philosophy-value">65</output></label><input id="dial-philosophy" name="chaos_philosophy" type="range" min="0" max="100" value="65">
+          <label for="chaos-custom-instructions">Extra guidance <small>(max 1,200 characters)</small></label>
+          <textarea id="chaos-custom-instructions" name="chaos_custom_instructions" rows="4" maxlength="1200" placeholder="Optional developer guidance…"></textarea>
+          <button type="submit" class="memory-save">Save personality</button>
+          <p id="developer-status" class="memory-status" role="status" hidden></p>
+        </form>
+      </section>
       <div class="sidebar-note"><span class="pulse-dot"></span> Private by design <small>Your conversations are tied to your account.</small></div>
     </aside>
     <section class="chat-panel" aria-label="Chat with Miss Chaos">
