@@ -68,7 +68,7 @@ export default { async fetch(request, env) {
     await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(id,user.id,"New conversation","default",now,now).run();
     return json({conversation:{id,title:"New conversation",mood:"default",created_at:now,updated_at:now}},201,origin);
   }
-  const chaosConversationMatch=url.pathname.match(/^\\/api\\/chaos\\/conversations\\/([a-f0-9-]{36})\\/messages$/i);
+  const chaosConversationMatch=url.pathname.match(/^\/api\/chaos\/conversations\/([a-f0-9-]{36})\/messages$/i);
   if(chaosConversationMatch&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=?").bind(chaosConversationMatch[1],user.id).first();
