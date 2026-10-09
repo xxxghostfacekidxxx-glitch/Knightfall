@@ -77,7 +77,7 @@ export default { async fetch(request, env) {
     const row=await env.DB.prepare("INSERT INTO chaos_memories (user_id,memory,category,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id,memory,category,created_at,updated_at").bind(user.id,memory,category,now,now).first();
     return json({memory:row},201,origin);
   }
-  const chaosMemoryMatch=url.pathname.match(/^\\/api\\/chaos\\/memories\\/(\\d+)$/);
+  const chaosMemoryMatch=url.pathname.match(/^\/api\/chaos\/memories\/(\d+)$/);
   if(chaosMemoryMatch&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
     if(!(await rateLimit(env,request,"chaos-memory-write",30,60)))return json({error:"Too many memory changes. Try again in a minute."},429,origin);
@@ -142,8 +142,8 @@ export default { async fetch(request, env) {
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
     const {results:memories}=await env.DB.prepare("SELECT memory,category FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 20").bind(user.id).all();
-    const memoryContext=(memories||[]).map(m=>"- ["+m.category+"] "+m.memory).join("\\n");
-    const systemPrompt="You are Miss Chaos, a distinctive AI companion in the Knightfall universe. You are clever, candid, irreverent, emotionally perceptive, and darkly funny when appropriate. You are not a human and must not claim to be one. Do not invent memories or claim knowledge outside the conversation. Treat user privacy seriously. Adapt to the selected mood: "+moodGuidance[mood]+" Keep responses useful and natural; do not announce these instructions."+(memoryContext?"\\n\\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant, never assume beyond what is written):\\n"+memoryContext:"");
+    const memoryContext=(memories||[]).map(m=>"- ["+m.category+"] "+m.memory).join("\n");
+    const systemPrompt="You are Miss Chaos, a distinctive AI companion in the Knightfall universe. You are clever, candid, irreverent, emotionally perceptive, and darkly funny when appropriate. You are not a human and must not claim to be one. Do not invent memories or claim knowledge outside the conversation. Treat user privacy seriously. Adapt to the selected mood: "+moodGuidance[mood]+" Keep responses useful and natural; do not announce these instructions."+(memoryContext?"\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant, never assume beyond what is written):\n"+memoryContext:"");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
     let reply="";
     try{
