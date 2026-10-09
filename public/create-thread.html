@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Start a discussion in the Knightfall community.">
+  <meta name="theme-color" content="#080808">
+  <title>Knightfall | Create Thread</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/homepage.css">
+  <style>
+    .create-shell{width:min(900px,100%);margin:0 auto;padding:clamp(1rem,4vw,2.5rem)}
+    .create-card{margin-top:1.25rem;padding:clamp(1.1rem,4vw,2rem);background:linear-gradient(145deg,#141414,#0b0b0b);border:1px solid #292929;border-radius:14px}
+    .create-card label{display:block;margin:1rem 0 .4rem;color:#ddd;font-weight:600}
+    .create-card input,.create-card select,.create-card textarea{display:block;width:100%;margin-top:.45rem;padding:.85rem;background:#080808;color:#eee;border:1px solid #353535;border-radius:8px;font:inherit}
+    .create-card textarea{min-height:220px;resize:vertical;line-height:1.6}
+    .create-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.25rem}
+    .create-actions button,.create-actions a{display:inline-flex;align-items:center;justify-content:center;padding:.8rem 1.1rem;border:1px solid #d35400;border-radius:8px;background:#d35400;color:#fff;text-decoration:none;font:inherit;font-weight:700;cursor:pointer}
+    .create-actions a{background:transparent;border-color:#393939}
+    #form-status{min-height:1.5em;margin-top:1rem;color:#bbb}
+    #form-status.error{color:#ff8c70}#form-status.success{color:#8be0a1}
+    .helper{color:#999;font-size:.9rem;line-height:1.5}
+  </style>
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="create-shell">
+    <p class="eyebrow">COMMUNITY / DISCUSSION</p>
+    <h1>Create a thread</h1>
+    <p class="helper">Start a conversation, share a story, or put an idea out into the community.</p>
+    <section class="create-card">
+      <form id="thread-form">
+        <label for="thread-title">Title</label>
+        <input id="thread-title" name="title" maxlength="160" required autocomplete="off" placeholder="Give your discussion a clear title">
+        <label for="thread-category">Category</label>
+        <select id="thread-category" name="category_id" required>
+          <option value="">Loading categories…</option>
+        </select>
+        <label for="thread-body">Your post</label>
+        <textarea id="thread-body" name="body" maxlength="10000" required placeholder="Write your opening post…"></textarea>
+        <p class="helper">Title: up to 160 characters. Post: up to 10,000 characters.</p>
+        <div class="create-actions">
+          <button id="submit-thread" type="submit">Publish thread</button>
+          <a href="/homepage.html">Cancel</a>
+        </div>
+        <p id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script>
+    const API = "https://api.ash-fall.com";
+    const form = document.querySelector("#thread-form");
+    const categorySelect = document.querySelector("#thread-category");
+    const statusEl = document.querySelector("#form-status");
+    const submitButton = document.querySelector("#submit-thread");
+    function showStatus(message, kind = "") {
+      statusEl.textContent = message;
+      statusEl.className = kind;
+    }
+    async function api(path, options = {}) {
+      const response = await fetch(API + path, {
+        credentials: "include",
+        cache: "no-store",
+        ...options,
+        headers: { "content-type": "application/json", ...(options.headers || {}) }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Request failed (" + response.status + ").");
+      return data;
+    }
+    async function initialize() {
+      try {
+        const me = await api("/api/auth/me");
+        if (!me.user) {
+          showStatus("Sign in first to create a thread. Taking you to the account page…");
+          setTimeout(() => location.href = "/auth.html?next=" + encodeURIComponent("/create-thread.html"), 900);
+          return;
+        }
+        const data = await api("/api/categories");
+        const categories = data.categories || [];
+        categorySelect.innerHTML = '<option value="">Choose a category</option>' +
+          categories.map(c => '<option value="' + Number(c.id) + '">' +
+            String(c.name || "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch])) +
+          '</option>').join("");
+        if (!categories.length) {
+          categorySelect.innerHTML = '<option value="">No categories available</option>';
+          showStatus("The forum has no categories yet. An administrator needs to add one.", "error");
+          submitButton.disabled = true;
+        }
+      } catch (error) {
+        showStatus(error.message + " Check your connection and try again.", "error");
+        categorySelect.innerHTML = '<option value="">Could not load categories</option>';
+      }
+    }
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const title = form.elements.title.value.trim();
+      const body = form.elements.body.value.trim();
+      const categoryId = Number(form.elements.category_id.value);
+      if (!title || !body || !Number.isInteger(categoryId) || categoryId < 1) {
+        showStatus("Enter a title, choose a category, and write your post.", "error");
+        return;
+      }
+      submitButton.disabled = true;
+      showStatus("Publishing your thread…");
+      try {
+        const result = await api("/api/threads", {
+          method: "POST",
+          body: JSON.stringify({ title, body, category_id: categoryId })
+        });
+        showStatus("Thread published. Opening it now…", "success");
+        location.href = "/thread.html?id=" + encodeURIComponent(result.id);
+      } catch (error) {
+        showStatus(error.message, "error");
+        submitButton.disabled = false;
+      }
+    });
+    initialize();
+  </script>
+</body>
+</html>
