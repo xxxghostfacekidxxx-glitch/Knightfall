@@ -41,15 +41,19 @@ function renderDeveloperControls(){
   '<label for="chaos-custom-instructions">Extra developer guidance <small>Max 1,200 characters</small></label><textarea id="chaos-custom-instructions" name="chaos_custom_instructions" rows="4" maxlength="1200" placeholder="Optional instructions for public Miss Chaos…"></textarea>'+
   '<div class="developer-actions"><button type="submit" class="action primary">Save personality</button><p id="developer-status" role="status" hidden></p></div></form></details>'+
   '<details open class="chaos-config-section"><summary>Behavioral architecture</summary><form id="behavior-form" class="developer-form">'+
+  '<label for="behavior-core-identity">Core identity <small>Max 2,000 characters</small></label><textarea id="behavior-core-identity" name="coreIdentity" rows="4" maxlength="2000"></textarea>'+
   '<label for="behavior-autonomy">Autonomy</label><select id="behavior-autonomy" name="autonomy"><option value="strict">Strict rule-driven</option><option value="guided">Rule-guided autonomy</option><option value="autonomous">High autonomy</option></select>'+
   '<label for="behavior-challenge">How she challenges you</label><select id="behavior-challenge" name="challenge"><option value="asked">Only when asked</option><option value="warranted">When warranted</option><option value="adversarial">Adversarial debate</option></select>'+
   '<label for="behavior-evolution">Personality evolution</label><select id="behavior-evolution" name="evolution"><option value="fixed">Fixed configuration</option><option value="controlled">Suggest changes, require approval</option><option value="adaptive">Propose contextual adaptations, never silently change identity</option></select>'+
+  '<label for="behavior-memory-policy">Memory policy</label><select id="behavior-memory-policy" name="memoryPolicy"><option value="explicit_only">Only explicitly saved memories</option><option value="explicit_relevance">Explicit memories ranked by relevance</option><option value="context_and_explicit">Conversation context plus explicitly saved memories</option></select>'+
+  '<label for="behavior-conflict-priority">Rule conflict priority <small>One priority per line</small></label><textarea id="behavior-conflict-priority" name="conflictPriority" rows="5" maxlength="1500"></textarea>'+
   '<label for="behavior-default-mode">Default mode</label><select id="behavior-default-mode" name="defaultMode"><option value="automatic">Automatic situational judgment</option><option value="standard">Standard</option><option value="analytical">Analytical</option><option value="philosophical">Philosophical</option><option value="chaos">Chaos</option><option value="supportive">Supportive</option><option value="confrontational">Confrontational</option><option value="creative">Creative</option></select>'+
   '<p class="config-label">Available behavioral modes</p><div class="chaos-check-grid">'+
   [['standard','Standard'],['analytical','Analytical'],['philosophical','Philosophical'],['chaos','Chaos'],['supportive','Supportive'],['confrontational','Confrontational'],['creative','Creative']].map(([k,l])=>'<label class="chaos-check"><input type="checkbox" name="mode_'+k+'" checked><span>'+l+'</span></label>').join('')+'</div>'+
   '<p class="config-label">Behavioral rules</p><div class="chaos-check-grid">'+
   [['honestOpposition','Honest opposition'],['contextualHumor','Contextual humor'],['challengeWithoutContempt','Challenge without contempt'],['evidenceBeforeConfidence','Evidence before confidence'],['emotionalRecognition','Recognize emotional context'],['intellectualIndependence','Intellectual independence'],['practicalCompletion','Practical completion']].map(([k,l])=>'<label class="chaos-check"><input type="checkbox" name="rule_'+k+'" checked><span>'+l+'</span></label>').join('')+'</div>'+
   '<label for="behavior-custom-rules">Additional rules <small>One rule per line, up to 20 rules / 5,000 characters</small></label><textarea id="behavior-custom-rules" name="customRules" rows="5" maxlength="5000" placeholder="Add your own precise behavioral rules, one per line…"></textarea>'+
+  '<label for="behavior-evaluation-scenarios">Testing scenarios <small>One scenario per line, max 5,000 characters</small></label><textarea id="behavior-evaluation-scenarios" name="evaluationScenarios" rows="4" maxlength="5000" placeholder="Describe situations you want to test before changing behavior…"></textarea>'+
   '<div class="developer-actions"><button type="submit" class="action primary">Save behavioral architecture</button><p id="behavior-status" role="status" hidden></p></div></form></details>';
   root.append(panel);
   const form=panel.querySelector("#developer-form"),status=panel.querySelector("#developer-status"),behaviorForm=panel.querySelector("#behavior-form"),behaviorStatus=panel.querySelector("#behavior-status");
@@ -64,7 +68,8 @@ function renderDeveloperControls(){
       for(const key of dials){form.elements[key].value=Number(data.settings?.[key]??form.elements[key].value);updateOutput(key);}
       form.elements.chaos_custom_instructions.value=data.settings?.chaos_custom_instructions||"";
       const behavior=await api("/api/admin/chaos-behavior"),c=behavior.config||{};
-      for(const key of ["autonomy","challenge","evolution","defaultMode"])behaviorForm.elements[key].value=c[key]||behaviorForm.elements[key].value;
+      for(const key of ["autonomy","challenge","evolution","defaultMode","memoryPolicy"])behaviorForm.elements[key].value=c[key]||behaviorForm.elements[key].value;
+      behaviorForm.elements.coreIdentity.value=c.coreIdentity||"";behaviorForm.elements.conflictPriority.value=c.conflictPriority||"";behaviorForm.elements.evaluationScenarios.value=c.evaluationScenarios||"";
       for(const [key,value] of Object.entries(c.modes||{})){const el=behaviorForm.elements["mode_"+key];if(el)el.checked=!!value;}
       for(const [key,value] of Object.entries(c.rules||{})){const el=behaviorForm.elements["rule_"+key];if(el)el.checked=!!value;}
       behaviorForm.elements.customRules.value=c.customRules||"";
@@ -78,7 +83,7 @@ function renderDeveloperControls(){
   });
   behaviorForm.addEventListener("submit",async event=>{
     event.preventDefault();const button=behaviorForm.querySelector('button[type="submit"]');button.disabled=true;behaviorStatus.hidden=true;
-    const config={autonomy:behaviorForm.elements.autonomy.value,challenge:behaviorForm.elements.challenge.value,evolution:behaviorForm.elements.evolution.value,defaultMode:behaviorForm.elements.defaultMode.value,modes:{},rules:{},customRules:behaviorForm.elements.customRules.value};
+    const config={coreIdentity:behaviorForm.elements.coreIdentity.value,autonomy:behaviorForm.elements.autonomy.value,challenge:behaviorForm.elements.challenge.value,evolution:behaviorForm.elements.evolution.value,defaultMode:behaviorForm.elements.defaultMode.value,memoryPolicy:behaviorForm.elements.memoryPolicy.value,conflictPriority:behaviorForm.elements.conflictPriority.value,evaluationScenarios:behaviorForm.elements.evaluationScenarios.value,modes:{},rules:{},customRules:behaviorForm.elements.customRules.value};
     for(const key of ["standard","analytical","philosophical","chaos","supportive","confrontational","creative"])config.modes[key]=behaviorForm.elements["mode_"+key].checked;
     for(const key of ["honestOpposition","contextualHumor","challengeWithoutContempt","evidenceBeforeConfidence","emotionalRecognition","intellectualIndependence","practicalCompletion"])config.rules[key]=behaviorForm.elements["rule_"+key].checked;
     try{await api("/api/admin/chaos-behavior",{method:"PATCH",body:JSON.stringify({config})});showStatus(behaviorStatus,"Behavioral architecture saved. Future public replies will use these rules.");}
