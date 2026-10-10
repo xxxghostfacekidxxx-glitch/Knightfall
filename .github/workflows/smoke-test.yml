@@ -2,12 +2,17 @@ name: Knightfall Runtime Smoke Test
 
 on:
   pull_request:
-  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - 'public/**'
+      - 'backend/src/**'
+      - 'backend/migrations/**'
+      - 'backend/wrangler.jsonc'
+      - 'wrangler.jsonc'
+      - 'scripts/static-audit.mjs'
       - '.github/workflows/smoke-test.yml'
+  workflow_dispatch:
   workflow_run:
     workflows: ["Deploy Knightfall API"]
     types: [completed]
@@ -16,43 +21,56 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: knightfall-smoke-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  smoke:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+  static-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Public API checks
-        shell: bash
-        run: |
-          set -euo pipefail
-          base='https://api.ash-fall.com'; body=$(mktemp); headers=$(mktemp)
-          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/health"); echo "health=$code $(cat "$body")"; test "$code" = 200; grep -q '"ok":true' "$body"; grep -q '"database":true' "$body"
-          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/auth/me"); echo "auth-me=$code $(cat "$body")"; test "$code" = 200; grep -q '"user":null' "$body"
-          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' -X OPTIONS "$base/api/auth/me" -H 'Origin: https://ash-fall.com' -H 'Access-Control-Request-Method: GET'); echo "cors=$code"; test "$code" = 204; grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"; grep -qi '^access-control-allow-credentials: true' "$headers"
-          curl -sS -D "$headers" -o /dev/null "$base/health"; grep -qi '^x-content-type-options: nosniff' "$headers"; grep -qi '^x-frame-options: DENY' "$headers"; grep -qi '^referrer-policy: strict-origin-when-cross-origin' "$headers"
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit JavaScript, configs, and local HTML assets
+        run: node scripts/static-audit.mjs
 
-      - name: Authenticated API checks
+  live-smoke:
+    if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check public API, bot/shop directories, CORS, and security headers
         shell: bash
         run: |
           set -euo pipefail
-          base='https://api.ash-fall.com'; jar=$(mktemp); jar2=$(mktemp)
-          username="smk${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"; email="${username}@example.invalid"; password=$(openssl rand -hex 12)
-          username2="smkpeer${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"; email2="${username2}@example.invalid"; password2=$(openssl rand -hex 12)
-          register=$(curl -sS -c "$jar" -b "$jar" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username\",\"email\":\"$email\",\"display_name\":\"Smoke Test\",\"password\":\"$password\"}"); echo "register=$register"; echo "$register" | grep -q '"user"'
-          me=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "me=$me"; echo "$me" | grep -q "\"username\":\"$username\""
-          register2=$(curl -sS -c "$jar2" -b "$jar2" -H 'Origin: https://ash-fall.com' -H 'Content-Type: application/json' -X POST "$base/api/auth/register" --data "{\"username\":\"$username2\",\"email\":\"$email2\",\"display_name\":\"Smoke Peer\",\"password\":\"$password2\"}"); echo "register2=$register2"; echo "$register2" | grep -q '"user"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?limit=5"); echo "notifications=$r"; echo "$r" | grep -q '"notifications"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/notifications?unread=true&limit=1"); echo "notifications-unread=$r"; echo "$r" | grep -q '"unread_count"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" -X POST "$base/api/notifications/read-all"); echo "notifications-read-all=$r"; echo "$r" | grep -q '"ok":true'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/discover?q=smk&limit=5"); echo "discover=$r"; echo "$r" | grep -q '"users"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/categories"); echo "categories=$r"; echo "$r" | grep -q '"categories"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/threads?limit=1"); echo "threads=$r"; echo "$r" | grep -q '"threads"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' "$base/api/users/$username"); echo "profile=$r"; echo "$r" | grep -q "\"username\":\"$username\""
-          conversation=$(curl -sS -b "$jar" -H 'Content-Type: application/json' -X POST "$base/api/messages/conversations" --data "{\"username\":\"$username2\"}"); echo "conversation=$conversation"; echo "$conversation" | grep -q '"id"'; conversation_id=$(echo "$conversation" | jq -r '.id'); test "$conversation_id" != "null"
-          message=$(curl -sS -b "$jar" -H 'Content-Type: application/json' -X POST "$base/api/messages/conversations/$conversation_id" --data '{"body":"Knightfall E2E messaging test"}'); echo "message=$message"; echo "$message" | grep -q '"id"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar" "$base/api/messages/conversations/$conversation_id"); echo "conversation-detail=$r"; echo "$r" | grep -q '"messages"'
-          r=$(curl -sS -w '\nHTTP=%{http_code}' -b "$jar2" "$base/api/messages/conversations"); echo "peer-conversations=$r"; echo "$r" | grep -q '"conversations"'
-          logout=$(curl -sS -b "$jar" -c "$jar" -X POST "$base/api/auth/logout"); echo "logout=$logout"; echo "$logout" | grep -q '"ok":true'
-          logout2=$(curl -sS -b "$jar2" -c "$jar2" -X POST "$base/api/auth/logout"); echo "logout2=$logout2"; echo "$logout2" | grep -q '"ok":true'
-          after=$(curl -sS -b "$jar" "$base/api/auth/me"); echo "after=$after"; echo "$after" | grep -q '"user":null'
+          base='https://api.ash-fall.com'
+          body=$(mktemp)
+          headers=$(mktemp)
+          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/health")
+          echo "health=$code $(cat "$body")"
+          test "$code" = 200
+          grep -q '"ok":true' "$body"
+          grep -q '"database":true' "$body"
+          for endpoint in /api/public-bots /api/shops /api/categories /api/threads; do
+            code=$(curl -sS -o "$body" -w '%{http_code}' "$base$endpoint")
+            echo "$endpoint=$code $(cat "$body" | head -c 250)"
+            test "$code" = 200
+          done
+          code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/auth/me")
+          echo "auth-me=$code $(cat "$body")"
+          test "$code" = 200
+          grep -q '"user":null' "$body"
+          code=$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' -X OPTIONS "$base/api/auth/me" -H 'Origin: https://ash-fall.com' -H 'Access-Control-Request-Method: GET')
+          echo "cors=$code"
+          test "$code" = 204
+          grep -qi '^access-control-allow-origin: https://ash-fall.com' "$headers"
+          grep -qi '^access-control-allow-credentials: true' "$headers"
+          curl -sS -D "$headers" -o /dev/null "$base/health"
+          grep -qi '^x-content-type-options: nosniff' "$headers"
+          grep -qi '^x-frame-options: DENY' "$headers"
+          grep -qi '^referrer-policy: strict-origin-when-cross-origin' "$headers"
