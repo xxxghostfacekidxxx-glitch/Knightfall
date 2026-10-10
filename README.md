@@ -52,3 +52,13 @@ The public website and backend/API are intentionally kept separate. The frontend
 - The role/ownership audits need the six `KNIGHTFALL_MEMBER_*`, `KNIGHTFALL_MODERATOR_*`, and `KNIGHTFALL_ADMIN_*` GitHub Actions secrets. Without them, those authenticated matrices are explicitly skipped.
 - The Worker deployment workflow deploys code only. D1 migrations must be applied through an authorized Cloudflare connection before a migration-dependent release. From `backend/`, review `npx wrangler d1 migrations list knightfall-forum --remote` and apply pending migrations with `npx wrangler d1 migrations apply knightfall-forum --remote` only after verifying the target database and the migration order.
 - Never use production smoke tests that create disposable accounts or permanent content unless the test includes verified cleanup. Prefer a dedicated staging database for mutating end-to-end tests.
+## Installable mobile app
+
+The frontend now includes the first phase of the Knightfall Progressive Web App (PWA):
+
+- `public/manifest.webmanifest` defines the app name, standalone display mode, theme, and launch page.
+- `public/icons/knightfall.svg` supplies the initial scalable app icon.
+- `public/sw.js` provides a small offline shell fallback. It does not cache API responses or private account, message, notification, admin, personal-bot, or vault routes.
+- `public/nav.js` registers the service worker and exposes the browser's native install prompt when supported.
+
+After the latest Pages deployment is live, open `https://ash-fall.com` in Chrome on Android. Use the browser's **Install app** or **Add to Home screen** option; if the browser exposes its native install prompt, Knightfall's navigation will also show **Install App**. Installation support and wording vary by browser. This is the web-app foundation, not yet a separately packaged Android APK or a Play Store release. The site still needs an online connection for account actions, forums, bots, and AI chats.
