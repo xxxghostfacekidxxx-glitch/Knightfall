@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, the AI companion of Knightfall.">
   <title>Miss Chaos | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261009-ember-fix2">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261010-soft-delete-admin">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -16,7 +16,19 @@
       <a class="chaos-back" href="/homepage.html">← Back to Knightfall</a>
       <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
       <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
+      <button id="show-deleted" class="archive-toggle" type="button" aria-pressed="false">Recently Deleted</button>
       <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
+      <section id="admin-chaos-archive" class="admin-archive" aria-labelledby="admin-chaos-heading" hidden>
+        <div class="memory-heading"><h3 id="admin-chaos-heading">⚑ Admin conversation archive</h3></div>
+        <p class="memory-description">Administrator access to all users' Miss Chaos conversations, including recently deleted items. Views and actions are audit-logged.</p>
+        <label class="sr-only" for="admin-chaos-search">Search conversations or usernames</label>
+        <input id="admin-chaos-search" type="search" placeholder="Search title, username, or user ID">
+        <label class="sr-only" for="admin-chaos-status">Conversation status</label>
+        <select id="admin-chaos-status"><option value="active">Active conversations</option><option value="deleted">Recently deleted</option><option value="all">All conversations</option></select>
+        <button id="admin-chaos-refresh" class="memory-save" type="button">Load archive</button>
+        <p id="admin-chaos-status-message" class="memory-status" role="status" hidden></p>
+        <div id="admin-chaos-list" class="admin-chaos-list"><p class="muted">Archive not loaded.</p></div>
+      </section>
       <section class="memory-manager" aria-labelledby="memory-heading">
         <div class="memory-heading"><h3 id="memory-heading">✦ What I remember</h3><span id="memory-count">0 / 100</span></div>
         <p class="memory-description">Only save what you want me to remember. You can edit or delete it anytime.</p>
@@ -56,6 +68,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261009-delete-chat" defer></script>
+  <script src="/miss-chaos.js?v=20261010-soft-delete-admin" defer></script>
 </body>
 </html>
