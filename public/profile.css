@@ -26,3 +26,17 @@
 .lab-chat-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:end;margin-top:.6rem}
 .lab-chat-form textarea{width:100%;min-height:54px;resize:vertical;background:#0b0b0b;color:#eee;border:1px solid #353535;border-radius:8px;padding:.75rem}
 @media(max-width:600px){.chaos-check-grid{grid-template-columns:1fr}.lab-chat-form{grid-template-columns:1fr}.lab-chat-form button{min-height:44px;width:100%}.private-badge{margin-top:.4rem}}
+
+/* Private admin assistant and approval-gated developer proposals */
+.lab-assistant-capabilities{display:flex;flex-wrap:wrap;gap:.45rem;margin:.65rem 0 1rem}
+.lab-assistant-capabilities span{border:1px solid #67402a;background:rgba(211,84,0,.08);border-radius:999px;padding:.4rem .65rem;font-size:.72rem;color:#f0b18e}
+#private-chaos-lab #lab-assistant-identity,#private-chaos-lab #lab-owner-context{width:100%;box-sizing:border-box;background:#0b0b0b;color:#eee;border:1px solid #353535;border-radius:8px;padding:.75rem}
+.lab-proposal{border:1px solid #a95427;border-radius:12px;padding:1rem;background:linear-gradient(145deg,rgba(211,84,0,.13),rgba(9,9,9,.98));max-width:100%;overflow-wrap:anywhere}
+.lab-proposal>strong{display:block;color:#f0b18e;margin-bottom:.4rem}
+.lab-proposal p{line-height:1.5}
+.lab-proposal details{margin:.75rem 0}
+.lab-proposal summary{cursor:pointer;color:#f0b18e;font-weight:700}
+.lab-proposal pre{max-height:320px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#080808;padding:.75rem;border-radius:8px;font-size:.72rem}
+.lab-proposal button{min-height:44px}
+.lab-proposal [role=status]{margin-top:.65rem;color:#f0b18e}
+@media(max-width:600px){.lab-assistant-capabilities span{font-size:.68rem}.lab-proposal{padding:.75rem}}
