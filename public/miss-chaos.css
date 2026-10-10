@@ -82,3 +82,7 @@
 .admin-chaos-actions button:hover{border-color:#f06a0a;color:#ffb16e}
 .admin-chaos-actions button:disabled{opacity:.5;cursor:wait}
 @media(max-width:760px){.admin-chaos-list{display:grid;max-height:300px}.admin-chaos-card{min-width:0}.archive-toggle{align-self:flex-start}}
+
+.admin-pagination{display:flex;align-items:center;justify-content:space-between;gap:.35rem;margin-top:.55rem;color:#a79ba5;font-size:.64rem}
+.admin-pagination button{border:1px solid #453326;border-radius:6px;background:#1a1510;color:#e8dfe9;padding:.38rem .45rem;font-size:.64rem;cursor:pointer}
+.admin-pagination button:disabled{opacity:.4;cursor:default}
