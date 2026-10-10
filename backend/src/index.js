@@ -59,12 +59,14 @@ async function saveChaosConfig(env,user,key,value){const now=new Date().toISOStr
 async function readChaosConfig(env,key,fallback){try{const parsed=JSON.parse(await getSetting(env,key)||"");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:fallback;}catch{return fallback;}}
 function normalizeBehaviorConfig(v){
  if(!v||typeof v!=="object"||Array.isArray(v))return null;
- const choices={autonomy:["strict","guided","autonomous"],challenge:["asked","warranted","adversarial"],evolution:["fixed","controlled","adaptive"],defaultMode:["automatic","standard","analytical","philosophical","chaos","supportive","confrontational","creative"]},o={};
+ const choices={autonomy:["strict","guided","autonomous"],challenge:["asked","warranted","adversarial"],evolution:["fixed","controlled","adaptive"],defaultMode:["automatic","standard","analytical","philosophical","chaos","supportive","confrontational","creative"],memoryPolicy:["explicit_only","explicit_relevance","context_and_explicit"]},o={};
  for(const k of Object.keys(choices)){if(!choices[k].includes(v[k]))return null;o[k]=v[k];}
  const modes=["standard","analytical","philosophical","chaos","supportive","confrontational","creative"],rules=["honestOpposition","contextualHumor","challengeWithoutContempt","evidenceBeforeConfidence","emotionalRecognition","intellectualIndependence","practicalCompletion"];
  if(!v.modes||!v.rules||modes.some(k=>typeof v.modes[k]!=="boolean")||rules.some(k=>typeof v.rules[k]!=="boolean"))return null;
  o.modes=Object.fromEntries(modes.map(k=>[k,v.modes[k]]));o.rules=Object.fromEntries(rules.map(k=>[k,v.rules[k]]));
- if(typeof v.customRules!=="string"||v.customRules.length>5000||v.customRules.split("\n").length>20)return null;
+ for(const [k,max] of [["coreIdentity",2000],["conflictPriority",1500],["evaluationScenarios",5000],["customRules",5000]])if(typeof v[k]!=="string"||v[k].length>max)return null;
+ if(v.customRules.split("\n").length>20)return null;
+ o.coreIdentity=v.coreIdentity.trim();o.conflictPriority=v.conflictPriority.trim();o.evaluationScenarios=v.evaluationScenarios.trim();
  o.customRules=v.customRules.split("\n").map(x=>x.trim().slice(0,240)).filter(Boolean).join("\n");return o;
 }
 function normalizeAdminLabConfig(v){
