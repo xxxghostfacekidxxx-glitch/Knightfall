@@ -1,0 +1,36 @@
+{
+  "id": "/",
+  "name": "Knightfall | Ash-Fall",
+  "short_name": "Knightfall",
+  "description": "From ruin, we endure. Community, creative tools, and Miss Chaos.",
+  "lang": "en-US",
+  "start_url": "/homepage.html?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "categories": [
+    "social",
+    "lifestyle",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "/icons/knightfall.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
