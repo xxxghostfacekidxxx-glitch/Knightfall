@@ -70,7 +70,7 @@ jobs:
             test "$code" = "$expected"
           done
           # Read-only authorization checks: these must never create production records.
-          for spec in 'GET /api/admin/overview 403' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/chaos/memories 401'; do
+          for spec in 'GET /api/admin/overview 403' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/chaos/memories 401' 'GET /api/die-ary/entries 401'; do
             read -r method endpoint expected <<< "$spec"
             if [ "$maintenance" = true ] && [[ "$endpoint" != /api/admin/* && "$endpoint" != /api/vault/* ]]; then expected=503; fi
             if [ "$endpoint" = /api/chaos/memories ] && [ "$chaos_enabled" = false ]; then expected=503; fi
