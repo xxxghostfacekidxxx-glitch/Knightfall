@@ -85,6 +85,21 @@ for (const file of htmlFiles) {
   ok("HTML structure and local assets: " + rel);
 }
 
+const apiCandidates = new Set();
+for (const file of [...htmlFiles, ...jsFiles]) {
+  const source = await readFile(file, "utf8");
+  for (const match of source.matchAll(/\\/api\\/[A-Za-z0-9_/?=&.-]+/g)) {
+    const endpoint = match[0].split(/[?#]/, 1)[0];
+    if (!endpoint.endsWith("/")) apiCandidates.add(endpoint);
+  }
+}
+for (const endpoint of apiCandidates) {
+  if (!worker.includes(endpoint) && !worker.includes(endpoint.replaceAll("/", "\\/"))) {
+    fail("Frontend references an API path not found in the Worker: " + endpoint);
+  }
+}
+ok("Frontend API path contracts checked: " + apiCandidates.size);
+
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
 for (const name of migrations) {
