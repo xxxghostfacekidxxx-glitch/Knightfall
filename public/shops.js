@@ -1,0 +1,7 @@
+(() => {
+"use strict";
+const API="https://api.ash-fall.com",root=document.querySelector("#public-shops"),count=document.querySelector("#shop-total");
+if(!root)return;const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function load(){root.innerHTML='<p class="empty-state">Loading published shops…</p>';try{const r=await fetch(API+"/api/shops",{cache:"no-store"}),d=await r.json();if(!r.ok)throw Error(d.error||"Could not load shops.");const shops=d.shops||[];count.textContent=shops.length+" public "+(shops.length===1?"shop":"shops");root.innerHTML=shops.length?shops.map(s=>'<article class="listing-card"><div class="listing-symbol" aria-hidden="true">◇</div><span class="listing-kicker">'+esc(s.template||"independent shop").replace(/-/g," ").toUpperCase()+'</span><h2>'+esc(s.name)+'</h2><p class="listing-description">'+esc(s.description||s.niche||"Independent creator storefront.")+'</p><p class="listing-owner">By <strong>'+esc(s.owner_username)+'</strong></p><a class="primary-button" href="/store.html?slug='+encodeURIComponent(s.slug)+'">Visit storefront ↗</a></article>').join(""):'<div class="empty-state"><strong>No public shops yet.</strong>Be among the first creators to set up a shop draft and publish a catalog.</div>'}catch(e){count.textContent="Directory unavailable";root.innerHTML='<div class="empty-state"><strong>Could not load shops.</strong><p>'+esc(e.message)+'</p></div>'}}
+load();
+})();
