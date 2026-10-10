@@ -60,7 +60,9 @@
       const account = nav.querySelector('a[href="/account.html"]');
       if (!account) return;
       const admin = document.createElement("a");
-      if (d.user.role === "admin") { admin.href="/admin.html"; admin.textContent="Admin"; account.before(admin); } if (d.user.role === "admin" && d.user.username === "knightfall") { const vault=document.createElement("a"); vault.href="/vault.html"; vault.textContent="Private Vault"; account.before(vault); }
+      if (d.user.role === "admin") { admin.href="/admin.html"; admin.textContent="Admin"; account.before(admin); }
+      if ((d.user.role === "admin" || d.user.role === "moderator") && d.user.status !== "suspended" && d.user.status !== "banned") { const bots=document.createElement("a"); bots.href="/personal-bots.html"; bots.textContent="Personal Bots"; account.before(bots); }
+      if (d.user.role === "admin" && d.user.username === "knightfall") { const vault=document.createElement("a"); vault.href="/vault.html"; vault.textContent="Private Vault"; account.before(vault); }
       const profile = document.createElement("a");
       profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username);
       profile.textContent = "Profile";
