@@ -65,7 +65,7 @@
       if (d.user.role === "admin") { admin.href="/admin.html"; admin.textContent="Admin"; account.before(admin); }
       if ((d.user.role === "admin" || d.user.role === "moderator") && d.user.status !== "suspended" && d.user.status !== "banned") { const bots=document.createElement("a"); bots.href="/personal-bots.html"; bots.textContent="Personal Bots"; account.before(bots); }
       if (d.user.role === "admin" && d.user.username === "knightfall") { const vault=document.createElement("a"); vault.href="/vault.html"; vault.textContent="Private Vault"; account.before(vault); }
-      const profile = document.createElement("a");
+      const myShop = document.createElement("a");\n      myShop.href="/my-shop.html"; myShop.textContent="My Shop"; account.before(myShop);\n      const profile = document.createElement("a");
       profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username);
       profile.textContent = "Profile";
       account.before(profile);
