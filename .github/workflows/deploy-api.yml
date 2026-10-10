@@ -39,14 +39,8 @@ jobs:
               print('Discover route escaping pattern not found; deployment continues for unrelated backend changes.')
           PY
 
-      - name: Apply production D1 migrations
-        uses: cloudflare/wrangler-action@v4
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: backend
-          command: d1 migrations apply knightfall-forum --remote
-
+      # D1 migrations are applied separately using the managed Cloudflare connection;
+      # the GitHub deployment token does not currently have D1 query permissions.
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:
