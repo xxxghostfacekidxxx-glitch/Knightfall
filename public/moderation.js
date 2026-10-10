@@ -2,4 +2,27 @@ const API="https://api.ash-fall.com",root=document.querySelector("#reports"),mes
 function renderReports(reports){root.innerHTML=reports.length?reports.map(r=>'<article class="report" data-id="'+esc(r.id)+'" data-target-type="'+esc(r.target_type)+'" data-target-id="'+esc(r.target_id)+'"><header><strong>Report #'+esc(r.id)+'</strong><span>'+esc(r.status)+'</span></header><p><b>Reason:</b> '+esc(r.reason)+'</p><p><b>Target:</b> '+esc(r.target_type)+' #'+esc(r.target_id)+'</p><p><b>Reporter:</b> '+esc(r.reporter_username||"Unknown")+'</p><p><b>Created:</b> '+esc(new Date(r.created_at).toLocaleString())+'</p><textarea placeholder="Moderator notes"></textarea><div class="actions"><button data-report-action="resolve">Resolve</button><button data-report-action="dismiss">Dismiss</button>'+(['thread','post'].includes(r.target_type)?'<button data-report-action="remove">Remove content</button>':'')+'</div></article>').join(""):'<div class="empty">No open community reports.</div>'}
 function renderMessageReports(reports){messageRoot.innerHTML=reports.length?reports.map(r=>'<article class="report" data-message-report="'+r.id+'"><header><strong>Message #'+r.message_id+'</strong><span>@'+esc(r.sender_username||"unknown")+'</span></header><p><b>Reason:</b> '+esc(r.reason)+'</p><p><b>Reporter:</b> @'+esc(r.reporter_username||"unknown")+' · conversation #'+r.conversation_id+'</p><blockquote>'+esc(r.body||"")+'</blockquote><div class="actions"><button data-message-action="resolve">Resolve</button><button data-message-action="dismiss">Dismiss</button><a href="/messages.html">Open messages</a></div></article>').join(""):'<div class="empty">No open message reports.</div>'}
 async function load(){try{const me=await request("/api/auth/me");if(!me.user||!["moderator","admin"].includes(me.user.role))throw Error("Moderator access required.");const [a,b]=await Promise.all([request("/api/moderation/reports?status=open"),request("/api/moderation/message-reports?status=open")]);renderReports(a.reports||[]);renderMessageReports(b.reports||[]);statusEl.textContent=(a.reports?.length||0)+" community report(s) · "+(b.reports?.length||0)+" message report(s) open."}catch(e){statusEl.textContent=e.message;root.innerHTML="";messageRoot.innerHTML=""}}
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-report-action]");if(b){const card=b.closest(".report"),id=card.dataset.id;try{await request("/api/moderation/reports/"+encodeURIComponent(id),{method:"PATCH",body:JSON.stringify({status:b.dataset.reportAction==="resolve"?"resolved":"dismissed",moderator_notes:card.querySelector("textarea").value})});await load()}catch(err){statusEl.textContent=err.message}}const m=e.target.closest("[data-message-action]");if(m){const card=m.closest(".report"),id=card.dataset.messageReport;try{await request("/api/moderation/message-reports/"+encodeURIComponent(id),{method:"PATCH",body:JSON.stringify({status:m.dataset.messageAction==="resolve"?"resolved":"dismissed"})});await load()}catch(err){statusEl.textContent=err.message}}});load();
+document.addEventListener("click",async e=>{
+ const b=e.target.closest("[data-report-action]");
+ if(b){
+  const card=b.closest(".report"),id=card.dataset.id,action=b.dataset.reportAction;
+  try{
+   if(action==="remove"){
+    const type=card.dataset.targetType,targetId=card.dataset.targetId;
+    if(!["thread","post"].includes(type)||!confirm("Remove this reported "+type+" from public view? This soft-deletes the content."))return;
+    if(type==="thread")await request("/api/threads/"+encodeURIComponent(targetId),{method:"PATCH",body:JSON.stringify({deleted:true})});
+    else await request("/api/moderation/posts/"+encodeURIComponent(targetId),{method:"DELETE"});
+    await request("/api/moderation/reports/"+encodeURIComponent(id),{method:"PATCH",body:JSON.stringify({status:"resolved"})});
+   }else{
+    await request("/api/moderation/reports/"+encodeURIComponent(id),{method:"PATCH",body:JSON.stringify({status:action==="resolve"?"resolved":"dismissed",moderator_notes:card.querySelector("textarea").value})});
+   }
+   await load();
+  }catch(err){statusEl.textContent=err.message}
+ }
+ const m=e.target.closest("[data-message-action]");
+ if(m){
+  const card=m.closest(".report"),id=card.dataset.messageReport;
+  try{await request("/api/moderation/message-reports/"+encodeURIComponent(id),{method:"PATCH",body:JSON.stringify({status:m.dataset.messageAction==="resolve"?"resolved":"dismissed"})});await load()}
+  catch(err){statusEl.textContent=err.message}
+ }
+});load();
