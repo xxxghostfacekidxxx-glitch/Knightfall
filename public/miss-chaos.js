@@ -155,11 +155,53 @@
     await refreshConversations();
     input.focus();
   }
+  const adminSearch=$("#admin-chaos-search"),adminFilter=$("#admin-chaos-status"),adminList=$("#admin-chaos-list"),adminMessage=$("#admin-chaos-status-message");
+  function archiveStatus(text,error=false){adminMessage.textContent=text;adminMessage.classList.toggle("error",error);adminMessage.hidden=!text;}
+  async function refreshAdminArchive(){
+    if(!isAdmin)return [];
+    archiveStatus("Loading archive…");
+    try{
+      const query=new URLSearchParams({status:adminFilter.value,q:adminSearch.value.trim()});
+      const data=await request("/api/admin/chaos/conversations?"+query.toString()),items=data.conversations||[];
+      adminList.replaceChildren();
+      if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent="No conversations match this filter.";adminList.append(p);}
+      for(const item of items){
+        const card=document.createElement("article");card.className="admin-chaos-card";
+        const title=document.createElement("strong");title.textContent=item.title||"Untitled conversation";
+        const meta=document.createElement("p");meta.className="admin-chaos-meta";meta.textContent="@"+item.username+" · "+item.message_count+" messages · "+(item.deleted_at?"Deleted "+new Date(item.deleted_at).toLocaleString():"Active");
+        const actions=document.createElement("div");actions.className="admin-chaos-actions";
+        const view=document.createElement("button");view.type="button";view.textContent="View";view.addEventListener("click",()=>adminOpenConversation(item.id));actions.append(view);
+        function addAction(action,label,confirmText){
+          const b=document.createElement("button");b.type="button";b.textContent=label;b.addEventListener("click",async()=>{if(confirmText&&!confirm(confirmText))return;b.disabled=true;archiveStatus("");try{await request("/api/admin/chaos/conversations/"+encodeURIComponent(item.id),{method:"PATCH",body:JSON.stringify({action})});await refreshAdminArchive();}catch(e){archiveStatus(e.message||"Archive action failed.",true);b.disabled=false;}});actions.append(b);
+        }
+        if(item.deleted_at){addAction("restore","Restore");addAction("purge","Permanently delete","Permanently erase this conversation and all its messages? This cannot be undone.");}
+        else addAction("delete","Move to Recently Deleted","Move this user's conversation to Recently Deleted for 30 days?");
+        card.append(title,meta,actions);adminList.append(card);
+      }
+      archiveStatus(items.length+" conversation(s) loaded. Results are limited to 250 per query.");return items;
+    }catch(e){archiveStatus(e.message||"Couldn't load the archive.",true);return [];}
+  }
+  async function adminOpenConversation(id){
+    showError("");adminViewing=true;activeConversation=null;input.disabled=true;sendButton.disabled=true;
+    try{
+      const data=await request("/api/admin/chaos/conversations/"+encodeURIComponent(id)+"/messages");
+      messagesEl.replaceChildren();
+      const intro=document.createElement("div");intro.className="welcome-card";
+      const eyebrow=document.createElement("p");eyebrow.className="eyebrow";eyebrow.textContent="ADMIN ARCHIVE · @"+data.conversation.username;
+      const title=document.createElement("h2");title.textContent=data.conversation.title||"Untitled conversation";
+      const note=document.createElement("p");note.textContent="Read-only administrator view. Sending messages is disabled.";
+      intro.append(eyebrow,title,note);messagesEl.append(intro);
+      for(const m of (data.messages||[]))addMessage(m.role,m.content,(m.role==="assistant"?"Miss Chaos":"User")+" · "+new Date(m.created_at).toLocaleString());
+      scrollToBottom();
+    }catch(e){showError(e.message||"Couldn't load this conversation.");}
+  }
   async function init() {
     try {
       statusEl.textContent = "Checking connection…";
       const me = await request("/api/auth/me");
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
+      isAdmin = me.user.role === "admin";
+      if (isAdmin) { $("#admin-chaos-archive").hidden = false; await refreshAdminArchive(); }
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
         refreshConversations(),
@@ -173,7 +215,11 @@
       showError(error.message || "Couldn't load Miss Chaos. Please refresh and try again.");
     }
   }
-  $("#new-chat").addEventListener("click", async () => { try { await newConversation(); } catch (e) { showError(e.message); } });
+  $("#new-chat").addEventListener("click", async () => { try { showDeleted=false; $("#show-deleted").setAttribute("aria-pressed","false"); $("#show-deleted").textContent="Recently Deleted"; await newConversation(); } catch (e) { showError(e.message); } });
+  $("#show-deleted").addEventListener("click",async()=>{showDeleted=!showDeleted;$("#show-deleted").setAttribute("aria-pressed",String(showDeleted));$("#show-deleted").textContent=showDeleted?"← Back to conversations":"Recently Deleted";try{await refreshConversations();}catch(e){showError(e.message);}});
+  $("#admin-chaos-refresh").addEventListener("click",refreshAdminArchive);
+  $("#admin-chaos-status").addEventListener("change",refreshAdminArchive);
+  let archiveSearchTimer; $("#admin-chaos-search").addEventListener("input",()=>{clearTimeout(archiveSearchTimer);archiveSearchTimer=setTimeout(refreshAdminArchive,250);});
   moodSelect.value = localStorage.getItem("missChaosMood") || "default";
   moodSelect.addEventListener("change", () => localStorage.setItem("missChaosMood", moodSelect.value));
   input.addEventListener("input", () => {
@@ -187,6 +233,7 @@
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = input.value.trim();
+    if (adminViewing) { showError("Administrator archive is read-only. Open one of your own conversations to chat."); return; }
     if (!message || busy) return;
     busy = true; sendButton.disabled = true; showError("");
     input.value = ""; input.dispatchEvent(new Event("input"));
