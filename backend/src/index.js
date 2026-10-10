@@ -150,11 +150,17 @@ async function handleVaultRequest(request, env, origin, url) {
   if (contentMatch && request.method === "GET") {
     const row = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes FROM vault_items WHERE object_key=?").bind("vault/" + contentMatch[1]).first();
     if (!row) return json({ error: "Media not found." }, 404, origin);
-    const object = await env.VAULT.get(row.object_key);
+    const rangeHeader = request.headers.get("range");
+    const useRange = !!rangeHeader && /^bytes=\\d*-\\d*$/.test(rangeHeader);
+    const object = await env.VAULT.get(row.object_key, useRange ? { range: request.headers } : undefined);
     if (!object) return json({ error: "Media object is missing from storage." }, 404, origin);
+    const ranged = Boolean(useRange && object.range);
+    const responseLength = ranged ? object.range.length : Number(row.size_bytes);
     const headers = new Headers();
     headers.set("content-type", row.content_type);
-    headers.set("content-length", String(row.size_bytes));
+    headers.set("content-length", String(responseLength));
+    headers.set("accept-ranges", "bytes");
+    if (ranged) headers.set("content-range", "bytes " + object.range.offset + "-" + (object.range.offset + object.range.length - 1) + "/" + row.size_bytes);
     headers.set("content-disposition", "inline; filename*=UTF-8''" + encodeURIComponent(row.filename).replace(/['()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase()));
     headers.set("cache-control", "private, no-store, max-age=0");
     headers.set("x-content-type-options", "nosniff");
@@ -164,7 +170,7 @@ async function handleVaultRequest(request, env, origin, url) {
     headers.set("access-control-allow-credentials", "true");
     headers.set("access-control-expose-headers", "content-length, content-type, etag");
     headers.set("vary", "Origin");
-    return new Response(object.body, { status: 200, headers });
+    return new Response(object.body, { status: ranged ? 206 : 200, headers });
   }
   const itemMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
   if (itemMatch && request.method === "DELETE") {
