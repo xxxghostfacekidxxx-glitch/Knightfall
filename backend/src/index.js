@@ -151,7 +151,7 @@ async function handleVaultRequest(request, env, origin, url) {
     const row = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes FROM vault_items WHERE object_key=?").bind("vault/" + contentMatch[1]).first();
     if (!row) return json({ error: "Media not found." }, 404, origin);
     const rangeHeader = request.headers.get("range");
-    const useRange = !!rangeHeader && /^bytes=\\d*-\\d*$/.test(rangeHeader);
+    const useRange = !!rangeHeader && /^bytes=\d*-\d*$/.test(rangeHeader);
     const object = await env.VAULT.get(row.object_key, useRange ? { range: request.headers } : undefined);
     if (!object) return json({ error: "Media object is missing from storage." }, 404, origin);
     const ranged = Boolean(useRange && object.range);
