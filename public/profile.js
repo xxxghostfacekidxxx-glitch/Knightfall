@@ -90,8 +90,21 @@ function renderDeveloperControls(){
     const config={coreIdentity:behaviorForm.elements.coreIdentity.value,autonomy:behaviorForm.elements.autonomy.value,challenge:behaviorForm.elements.challenge.value,evolution:behaviorForm.elements.evolution.value,defaultMode:behaviorForm.elements.defaultMode.value,memoryPolicy:behaviorForm.elements.memoryPolicy.value,conflictPriority:behaviorForm.elements.conflictPriority.value,evaluationScenarios:behaviorForm.elements.evaluationScenarios.value,modes:{},rules:{},customRules:behaviorForm.elements.customRules.value};
     for(const key of ["standard","analytical","philosophical","chaos","supportive","confrontational","creative"])config.modes[key]=behaviorForm.elements["mode_"+key].checked;
     for(const key of ["honestOpposition","contextualHumor","challengeWithoutContempt","evidenceBeforeConfidence","emotionalRecognition","intellectualIndependence","practicalCompletion"])config.rules[key]=behaviorForm.elements["rule_"+key].checked;
-    try{await api("/api/admin/chaos-behavior",{method:"PATCH",body:JSON.stringify({config})});showStatus(behaviorStatus,"Behavioral architecture saved. Future public replies will use these rules.");}
+    try{await api("/api/admin/chaos-behavior",{method:"PATCH",body:JSON.stringify({config})});const latest=await api("/api/admin/chaos-behavior"),sel=behaviorForm.querySelector("#behavior-versions");sel.replaceChildren();for(const v of latest.versions||[]){const o=document.createElement("option");o.value=v.id;o.textContent=new Date(v.saved_at).toLocaleString();sel.append(o);}showStatus(behaviorStatus,"Behavioral architecture saved and versioned.");}
     catch(error){showStatus(behaviorStatus,error.message,true);}button.disabled=false;
+  });
+  behaviorForm.querySelector("#behavior-rollback").addEventListener("click",async()=>{
+    const versionId=behaviorForm.querySelector("#behavior-versions").value;if(!versionId){showStatus(behaviorStatus,"Choose a saved version first.",true);return;}
+    if(!confirm("Restore this saved configuration? The current one will also be preserved."))return;
+    const button=behaviorForm.querySelector("#behavior-rollback");button.disabled=true;
+    try{const d=await api("/api/admin/chaos-behavior/rollback",{method:"POST",body:JSON.stringify({version_id:versionId})}),c=d.config||{};
+      for(const key of ["autonomy","challenge","evolution","defaultMode","memoryPolicy"])behaviorForm.elements[key].value=c[key]||behaviorForm.elements[key].value;
+      for(const key of ["coreIdentity","conflictPriority","evaluationScenarios","customRules"])behaviorForm.elements[key].value=c[key]||"";
+      for(const [key,value] of Object.entries(c.modes||{}))behaviorForm.elements["mode_"+key].checked=!!value;
+      for(const [key,value] of Object.entries(c.rules||{}))behaviorForm.elements["rule_"+key].checked=!!value;
+      const latest=await api("/api/admin/chaos-behavior"),sel=behaviorForm.querySelector("#behavior-versions");sel.replaceChildren();for(const v of latest.versions||[]){const o=document.createElement("option");o.value=v.id;o.textContent=new Date(v.saved_at).toLocaleString();sel.append(o);}
+      showStatus(behaviorStatus,"Previous behavior configuration restored.");
+    }catch(error){showStatus(behaviorStatus,error.message,true);}button.disabled=false;
   });
   renderPrivateChaosLab();
 }
