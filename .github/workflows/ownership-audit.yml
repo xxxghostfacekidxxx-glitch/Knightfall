@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: knightfall-ownership-audit
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   ownership-audit:
