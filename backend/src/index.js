@@ -186,6 +186,101 @@ async function handleVaultRequest(request, env, origin, url) {
 }
 
 
+
+async function handleShopRequest(request,env,origin,url){
+ const path=url.pathname;
+ const publicItem=path.match(/^\\/api\\/shops\\/([a-z0-9-]{1,80})$/);
+ const productItem=path.match(/^\\/api\\/my-shop\\/products\\/([a-f0-9]{32})$/);
+ if(path!=="/api/shops"&&!publicItem&&path!=="/api/my-shop"&&path!=="/api/my-shop/products"&&!productItem)return null;
+ if(path==="/api/shops"&&request.method==="GET"){
+  const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
+  const rows=q?await env.DB.prepare("SELECT s.name,s.slug,s.description,s.niche,s.template,s.updated_at,u.username AS owner_username FROM shops s JOIN users u ON u.id=s.owner_id WHERE s.is_public=1 AND u.status='active' AND (s.name LIKE ? OR s.description LIKE ? OR s.niche LIKE ?) ORDER BY s.updated_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%","%"+q+"%").all():await env.DB.prepare("SELECT s.name,s.slug,s.description,s.niche,s.template,s.updated_at,u.username AS owner_username FROM shops s JOIN users u ON u.id=s.owner_id WHERE s.is_public=1 AND u.status='active' ORDER BY s.updated_at DESC LIMIT 100").all();
+  return json({shops:rows.results||[]},200,origin);
+ }
+ if(publicItem&&request.method==="GET"){
+  const shop=await env.DB.prepare("SELECT s.id,s.name,s.slug,s.description,s.niche,s.template,s.updated_at,u.username AS owner_username FROM shops s JOIN users u ON u.id=s.owner_id WHERE s.slug=? AND s.is_public=1 AND u.status='active'").bind(publicItem[1]).first();
+  if(!shop)return json({error:"This shop is private or unavailable."},404,origin);
+  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,created_at FROM shop_products WHERE shop_id=? AND is_active=1 ORDER BY created_at DESC LIMIT 100").bind(shop.id).all();
+  return json({shop,products:products.results||[]},200,origin);
+ }
+ const user=await requireUser(request,env);
+ if(!user)return json({error:"Sign in to create and manage your shop."},401,origin);
+ if(path==="/api/my-shop"&&request.method==="GET"){
+  const shop=await env.DB.prepare("SELECT id,name,slug,description,niche,template,is_public,created_at,updated_at FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(!shop)return json({shop:null},200,origin);
+  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? ORDER BY created_at DESC").bind(shop.id).all();
+  return json({shop:{...shop,is_public:Number(shop.is_public)===1,public_url:Number(shop.is_public)===1?"/store.html?slug="+encodeURIComponent(shop.slug):null},products:(products.results||[]).map(p=>({...p,is_active:Number(p.is_active)===1}))},200,origin);
+ }
+ if(path==="/api/my-shop"&&request.method==="POST"){
+  if(!await rateLimit(env,request,"shop-create",5,300))return json({error:"Too many shop setup attempts. Try again in a few minutes."},429,origin);
+  const existing=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(existing)return json({error:"You already have a shop. Manage it instead of creating a second one."},409,origin);
+  let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+  const name=typeof body.name==="string"?body.name.trim():"",description=typeof body.description==="string"?body.description.trim():"",niche=typeof body.niche==="string"?body.niche.trim():"",template=String(body.template||"custom");
+  if(!validText(name,80)||description.length>1000||niche.length>160)return json({error:"Shop name must be 1–80 characters; description up to 1,000; niche up to 160."},400,origin);
+  if(!["dropshipping","print-on-demand","digital","curated","creator","custom"].includes(template))return json({error:"Choose a valid shop template."},400,origin);
+  const id=randomToken(16),slug=slugify(name),now=new Date().toISOString();
+  try{await env.DB.prepare("INSERT INTO shops (id,owner_id,name,slug,description,niche,template,is_public,created_at,updated_at) VALUES (?,?,?,?,?,?,?,0,?,?)").bind(id,user.id,name,slug,description,niche,template,now,now).run();}
+  catch(error){if(String(error).includes("UNIQUE"))return json({error:"That shop name or account already has a shop. Try a more distinctive name."},409,origin);throw error;}
+  await audit(env,user,"shop.create","shop",null,{name,slug,template});
+  return json({ok:true,shop:{id,name,slug,description,niche,template,is_public:false,created_at:now,updated_at:now,public_url:null},products:[]},201,origin);
+ }
+ if(path==="/api/my-shop"&&request.method==="PATCH"){
+  let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+  const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(!shop)return json({error:"Create your shop first."},404,origin);
+  const fields={};
+  if(body.name!==undefined){if(!validText(body.name,80))return json({error:"Shop name must be 1–80 characters."},400,origin);fields.name=body.name.trim();fields.slug=slugify(fields.name);}
+  if(body.description!==undefined){if(typeof body.description!=="string"||body.description.length>1000)return json({error:"Description must be at most 1,000 characters."},400,origin);fields.description=body.description.trim();}
+  if(body.niche!==undefined){if(typeof body.niche!=="string"||body.niche.length>160)return json({error:"Niche must be at most 160 characters."},400,origin);fields.niche=body.niche.trim();}
+  if(body.template!==undefined){if(!["dropshipping","print-on-demand","digital","curated","creator","custom"].includes(body.template))return json({error:"Choose a valid shop template."},400,origin);fields.template=body.template;}
+  if(body.is_public!==undefined){if(typeof body.is_public!=="boolean")return json({error:"Public access must be true or false."},400,origin);fields.is_public=body.is_public?1:0;}
+  const entries=Object.entries(fields);if(!entries.length)return json({error:"No valid changes supplied."},400,origin);
+  const now=new Date().toISOString(),sets=entries.map(([k])=>k+"=?");sets.push("updated_at=?");
+  try{await env.DB.prepare("UPDATE shops SET "+sets.join(",")+" WHERE id=? AND owner_id=?").bind(...entries.map(([,v])=>v),now,shop.id,user.id).run();}
+  catch(error){if(String(error).includes("UNIQUE"))return json({error:"That shop URL is already in use. Choose a different name."},409,origin);throw error;}
+  await audit(env,user,"shop.update","shop",null,{fields:entries.map(([k])=>k)});
+  return await handleShopRequest(new Request(request.url,{method:"GET",headers:request.headers}),env,origin,new URL("/api/my-shop",url.origin));
+ }
+ if(path==="/api/my-shop/products"&&request.method==="GET"){
+  const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(!shop)return json({products:[]},200,origin);
+  const rows=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? ORDER BY created_at DESC").bind(shop.id).all();
+  return json({products:(rows.results||[]).map(p=>({...p,is_active:Number(p.is_active)===1}))},200,origin);
+ }
+ if(path==="/api/my-shop/products"&&request.method==="POST"){
+  const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(!shop)return json({error:"Create your shop first."},404,origin);
+  let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+  const name=typeof body.name==="string"?body.name.trim():"",description=typeof body.description==="string"?body.description.trim():"",price=Number(body.price_cents),image=typeof body.image_url==="string"?body.image_url.trim():"",supplier=typeof body.supplier_url==="string"?body.supplier_url.trim():"";
+  if(!validText(name,100)||description.length>2000||!Number.isSafeInteger(price)||price<0||price>100000000)return json({error:"Provide a product name (1–100 chars), description up to 2,000 chars, and a valid price in cents."},400,origin);
+  for(const [label,value] of [["Product image",image],["Supplier URL",supplier]])if(value){try{const parsed=new URL(value);if(!["https:","http:"].includes(parsed.protocol))throw Error();}catch{return json({error:label+" must be a valid HTTP(S) URL."},400,origin);}}
+  const id=randomToken(16),now=new Date().toISOString();
+  await env.DB.prepare("INSERT INTO shop_products (id,shop_id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at) VALUES (?,?,?,?,?,?,?,1,?,?)").bind(id,shop.id,name,description,price,image,supplier,now,now).run();
+  await audit(env,user,"shop_product.create","shop_product",null,{shop_id:shop.id,name,price_cents:price});
+  return json({ok:true,product:{id,name,description,price_cents:price,image_url:image,is_active:true,created_at:now,updated_at:now}},201,origin);
+ }
+ if(productItem&&(request.method==="PATCH"||request.method==="DELETE")){
+  const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
+  if(!shop)return json({error:"Shop not found."},404,origin);
+  const product=await env.DB.prepare("SELECT id FROM shop_products WHERE id=? AND shop_id=?").bind(productItem[1],shop.id).first();
+  if(!product)return json({error:"Product not found in your shop."},404,origin);
+  if(request.method==="DELETE"){await env.DB.prepare("DELETE FROM shop_products WHERE id=? AND shop_id=?").bind(product.id,shop.id).run();await audit(env,user,"shop_product.delete","shop_product",null,{shop_id:shop.id});return json({ok:true},200,origin);}
+  let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+  const fields={};
+  if(body.name!==undefined){if(!validText(body.name,100))return json({error:"Product name must be 1–100 characters."},400,origin);fields.name=body.name.trim();}
+  if(body.description!==undefined){if(typeof body.description!=="string"||body.description.length>2000)return json({error:"Product description must be at most 2,000 characters."},400,origin);fields.description=body.description.trim();}
+  if(body.price_cents!==undefined){const p=Number(body.price_cents);if(!Number.isSafeInteger(p)||p<0||p>100000000)return json({error:"Invalid product price."},400,origin);fields.price_cents=p;}
+  for(const [field,label] of [["image_url","Product image"],["supplier_url","Supplier URL"]])if(body[field]!==undefined){if(typeof body[field]!=="string")return json({error:label+" must be a URL string."},400,origin);const value=body[field].trim();if(value){try{const parsed=new URL(value);if(!["https:","http:"].includes(parsed.protocol))throw Error();}catch{return json({error:label+" must be a valid HTTP(S) URL."},400,origin);}}fields[field]=value;}
+  if(body.is_active!==undefined){if(typeof body.is_active!=="boolean")return json({error:"Product visibility must be true or false."},400,origin);fields.is_active=body.is_active?1:0;}
+  const entries=Object.entries(fields);if(!entries.length)return json({error:"No valid product changes supplied."},400,origin);
+  const now=new Date().toISOString(),sets=entries.map(([k])=>k+"=?");sets.push("updated_at=?");
+  await env.DB.prepare("UPDATE shop_products SET "+sets.join(",")+" WHERE id=? AND shop_id=?").bind(...entries.map(([,v])=>v),now,product.id,shop.id).run();
+  return json({ok:true},200,origin);
+ }
+ return json({error:"Shop endpoint not found."},404,origin);
+}
+
 async function handlePersonalBotRequest(request,env,origin,url){
  const path=url.pathname;
  const collection="/api/personal-bots";
@@ -284,7 +379,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
-  const personalBotResponse = await handlePersonalBotRequest(request, env, origin, url);
+  const shopResponse = await handleShopRequest(request, env, origin, url);\n  if (shopResponse) return shopResponse;\n  const personalBotResponse = await handlePersonalBotRequest(request, env, origin, url);
   if (personalBotResponse) return personalBotResponse;
 
   // Miss Chaos: private, user-controlled long-term memories.
