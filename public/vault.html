@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09090c">
+  <meta name="description" content="Private administrator media vault for Knightfall.">
+  <title>Private Vault | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/vault.css">
+  <script src="/nav.js" defer></script>
+  <script src="/vault.js" defer></script>
+</head>
+<body class="vault-page">
+  <header class="kf-header"></header>
+  <main class="vault-shell">
+    <section class="vault-hero">
+      <div class="vault-hero-copy">
+        <p class="eyebrow"><span class="vault-spark"></span> KNIGHTFALL / PRIVATE STORAGE</p>
+        <h1>Your private<br><span>vault.</span></h1>
+        <p class="vault-lede">A quiet place for the things worth keeping. Private by default, owner-only by design.</p>
+        <div class="vault-security"><span aria-hidden="true">◈</span><div><strong>Owner access only</strong><small>Files are never exposed through a public bucket URL.</small></div></div>
+      </div>
+      <div class="vault-emblem" aria-hidden="true"><div class="emblem-ring"></div><div class="emblem-core">K</div><span class="emblem-orbit orbit-one"></span><span class="emblem-orbit orbit-two"></span></div>
+    </section>
+
+    <section class="vault-overview" aria-label="Storage overview">
+      <div class="overview-label"><span class="eyebrow">STORAGE CAPACITY</span><strong id="storage-value">Checking vault…</strong></div>
+      <div class="storage-track" role="progressbar" aria-label="Vault storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="storage-progress"><span id="storage-fill"></span></div>
+      <div class="storage-foot"><span id="storage-detail">Verifying private storage connection</span><span id="storage-percent">0% used</span></div>
+      <div class="overview-stats"><div><span>Saved items</span><strong id="file-count">—</strong></div><div><span>In progress</span><strong id="reserved-value">—</strong></div><div><span>Per-file limit</span><strong>50 MB</strong></div></div>
+    </section>
+
+    <section class="vault-upload-panel" aria-labelledby="upload-title">
+      <div class="section-heading"><div><p class="eyebrow">ADD TO THE ARCHIVE</p><h2 id="upload-title">Bring something in.</h2></div><span class="private-pill"><span></span> PRIVATE</span></div>
+      <div id="drop-zone" class="drop-zone">
+        <div class="upload-glyph" aria-hidden="true">↑</div>
+        <div><strong>Drop photos or media here</strong><p>Images, video, and audio · up to 50 MB per file</p></div>
+        <label class="choose-files">Choose files<input id="file-input" type="file" multiple accept="image/jpeg,image/png,image/gif,image/webp,image/avif,image/heic,image/heif,video/mp4,video/webm,video/quicktime,audio/mpeg,audio/mp4,audio/wav,audio/ogg,audio/webm,audio/aac,audio/flac,.jpg,.jpeg,.png,.gif,.webp,.avif,.heic,.heif,.mp4,.webm,.mov,.mp3,.m4a,.wav,.ogg,.aac,.flac"></label>
+      </div>
+      <div id="upload-status" class="upload-status" role="status" aria-live="polite"></div>
+      <div id="upload-queue" class="upload-queue" hidden></div>
+    </section>
+
+    <section class="vault-library" aria-labelledby="library-title">
+      <div class="section-heading library-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h2 id="library-title">The archive<span class="title-dot">.</span></h2></div><button id="refresh-vault" class="quiet-button" type="button">↻ Refresh</button></div>
+      <div class="library-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-vault" type="search" placeholder="Find a file…" autocomplete="off"></label><div class="filter-tabs" role="group" aria-label="Filter media"><button class="filter active" type="button" data-filter="all">Everything</button><button class="filter" type="button" data-filter="image">Photos</button><button class="filter" type="button" data-filter="video">Video</button><button class="filter" type="button" data-filter="audio">Audio</button></div></div>
+      <div id="vault-error" class="vault-error" hidden></div>
+      <div id="media-grid" class="media-grid"><div class="loading-card"><span class="loading-orb"></span><p>Opening the vault…</p></div></div>
+      <p class="vault-footnote">Files are served through an authenticated endpoint. Storage quota includes uploads in progress to prevent concurrent uploads from overrunning the limit.</p>
+    </section>
+  </main>
+  <footer class="vault-footer"><span>KNIGHTFALL</span><span>KEEP WHAT MATTERS.</span></footer>
+</body>
+</html>
