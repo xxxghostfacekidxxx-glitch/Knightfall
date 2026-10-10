@@ -104,7 +104,10 @@
     const list = document.createElement("div");
     list.className = "command-center-checklist-items";
     let saved = {};
-    try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}") || {}; } catch {}
+    try {
+      const parsed = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) saved = parsed;
+    } catch {}
     for (const [key, label] of checklist) {
       const row = document.createElement("label");
       row.className = "command-center-check";
