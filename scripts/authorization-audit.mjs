@@ -30,7 +30,7 @@ const protectedMutations = [
   ["/api/notifications/read-all", "POST", "member"],
   ["/api/messages/conversations", "POST", "member"],
   ["/api/messages/conversations/1", "POST", "member"],
-  ["/api/messages/conversations/1", "PATCH", "member"],
+  ["/api/messages/1", "PATCH", "member"],
   ["/api/threads", "POST", "member"],
   ["/api/threads/1", "POST", "member"],
   ["/api/threads/1", "PATCH", "member"],
