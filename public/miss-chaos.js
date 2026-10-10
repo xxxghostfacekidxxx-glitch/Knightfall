@@ -30,6 +30,7 @@
   function addMessage(role, content, label) {
     const welcome = messagesEl.querySelector(".welcome-card");
     if (welcome) welcome.remove();
+    const wasNearBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 140;
     const article = document.createElement("article");
     article.className = "message " + (role === "user" ? "user" : "assistant");
     const heading = document.createElement("div");
@@ -40,7 +41,7 @@
     text.textContent = content;
     article.append(heading, text);
     messagesEl.append(article);
-    scrollToBottom();
+    if (wasNearBottom || role === "user") scrollToBottom();
     return article;
   }
   function showWelcome() {
