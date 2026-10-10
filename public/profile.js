@@ -74,6 +74,9 @@ function renderDeveloperControls(){
       for(const [key,value] of Object.entries(c.modes||{})){const el=behaviorForm.elements["mode_"+key];if(el)el.checked=!!value;}
       for(const [key,value] of Object.entries(c.rules||{})){const el=behaviorForm.elements["rule_"+key];if(el)el.checked=!!value;}
       behaviorForm.elements.customRules.value=c.customRules||"";
+      const versionsSelect=behaviorForm.querySelector("#behavior-versions");versionsSelect.replaceChildren();
+      if(!(behavior.versions||[]).length){const option=document.createElement("option");option.value="";option.textContent="No previous versions yet";versionsSelect.append(option);}
+      else for(const version of behavior.versions){const option=document.createElement("option");option.value=version.id;option.textContent=new Date(version.saved_at).toLocaleString();versionsSelect.append(option);}
     }catch(error){showStatus(status,error.message,true);}
   })();
   form.addEventListener("submit",async event=>{
