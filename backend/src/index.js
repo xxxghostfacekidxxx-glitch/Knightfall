@@ -55,6 +55,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
+  const requestOrigin=request.headers.get("Origin");
+  if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
 
   // Miss Chaos: private, user-controlled long-term memories.
@@ -154,11 +156,15 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(url.pathname==="/api/chaos/conversations"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     const deleted=url.searchParams.get("deleted")==="1";
-    const {results}=await env.DB.prepare("SELECT id,title,mood,created_at,updated_at,deleted_at FROM chaos_conversations WHERE user_id=? AND "+(deleted?"deleted_at IS NOT NULL":"deleted_at IS NULL")+" ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
-    return json({conversations:results||[]},200,origin);
+    const q=String(url.searchParams.get("q")||"").trim().slice(0,100);
+    const clauses=["user_id=?",deleted?"deleted_at IS NOT NULL":"deleted_at IS NULL"],binds=[user.id];
+    if(q){clauses.push("(lower(title) LIKE lower(?) OR EXISTS (SELECT 1 FROM chaos_messages m WHERE m.conversation_id=chaos_conversations.id AND m.user_id=chaos_conversations.user_id AND lower(m.content) LIKE lower(?)))");binds.push("%"+q+"%","%"+q+"%");}
+    const {results}=await env.DB.prepare("SELECT id,title,mood,created_at,updated_at,deleted_at FROM chaos_conversations WHERE "+clauses.join(" AND ")+" ORDER BY updated_at DESC LIMIT 100").bind(...binds).all();
+    return json({conversations:results||[],query:q},200,origin);
   }
   if(url.pathname==="/api/chaos/conversations"&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-conversation-create",20,60)))return json({error:"Too many new conversations. Try again in a minute."},429,origin);
     const id=crypto.randomUUID(),now=new Date().toISOString();
     await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(id,user.id,"New conversation","default",now,now).run();
     return json({conversation:{id,title:"New conversation",mood:"default",created_at:now,updated_at:now}},201,origin);
@@ -175,9 +181,19 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   }
   if(chaosConversationDeleteMatch&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-conversation-write",30,60)))return json({error:"Too many conversation changes. Try again in a minute."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const id=chaosConversationDeleteMatch[1];
+    if(body.action==="rename"){
+      const title=typeof body.title==="string"?body.title.trim():"";
+      if(!title||title.length>80)return json({error:"A conversation title must be between 1 and 80 characters."},400,origin);
+      const row=await env.DB.prepare("UPDATE chaos_conversations SET title=?,updated_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL RETURNING id,title,updated_at").bind(title,new Date().toISOString(),id,user.id).first();
+      if(!row)return json({error:"Conversation not found."},404,origin);
+      await audit(env,user,"chaos.conversation.rename","chaos_conversation",id,{title_length:title.length});
+      return json({conversation:row},200,origin);
+    }
     if(body.action!=="restore")return json({error:"Invalid conversation action."},400,origin);
-    const id=chaosConversationDeleteMatch[1],cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
+    const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
     const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND user_id=? AND deleted_at IS NOT NULL AND deleted_at>?").bind(id,user.id,cutoff).run();
     if(!result.meta?.changes)return json({error:"Conversation not found or its 30-day recovery period has expired."},404,origin);
     await audit(env,user,"chaos.conversation.restore","chaos_conversation",id,{});
@@ -212,8 +228,12 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       philosophical:"Explore ideas carefully, ask meaningful questions when useful, and distinguish facts from speculation.",
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
-    const {results:memories}=await env.DB.prepare("SELECT memory,category FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 20").bind(user.id).all();
-    const memoryContext=(memories||[]).map(m=>"- ["+m.category+"] "+m.memory).join("\n");
+    const {results:allMemories}=await env.DB.prepare("SELECT memory,category,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
+    const stopWords=new Set(["the","and","for","that","with","this","from","have","your","you","are","was","were","what","when","where","why","how","about","into","then","them","they","their","there","here","can","could","would","should","will","just","not","but","our","out","all","any","who","its","it's","too","also","than","has","had","does","did","been","being","get","got","make","made","like","know","tell","please"]);
+    const continuityText=[message,conversation?.title||"",...(history||[]).slice(0,6).map(m=>m.content)].join(" ").toLowerCase();
+    const queryTokens=new Set((continuityText.match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));
+    const memories=(allMemories||[]).map((m,index)=>{const tokens=new Set((String(m.memory).toLowerCase().match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));let score=0;for(const token of queryTokens)if(tokens.has(token))score+=1;return {...m,index,score};}).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,20);
+    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
     const personality = {};
     for (const key of CHAOS_PERSONALITY_KEYS) personality[key] = await getSetting(env, key);
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
