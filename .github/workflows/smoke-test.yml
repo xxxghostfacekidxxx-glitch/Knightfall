@@ -61,6 +61,13 @@ jobs:
             echo "$endpoint=$code $(cat "$body" | head -c 250)"
             test "$code" = 200
           done
+          # Read-only authorization checks: these must never create production records.
+          for spec in 'GET /api/admin/overview 403' 'GET /api/admin/settings 403' 'GET /api/admin/chaos-lab/config 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/chaos/memories 401'; do
+            read -r method endpoint expected <<< "$spec"
+            code=$(curl -sS -o "$body" -w '%{http_code}' -X "$method" "$base$endpoint")
+            echo "authorization $method $endpoint=$code expected=$expected"
+            test "$code" = "$expected"
+          done
           code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/auth/me")
           echo "auth-me=$code $(cat "$body")"
           test "$code" = 200
