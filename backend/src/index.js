@@ -78,6 +78,103 @@ function normalizeAdminLabConfig(v){
  o.autonomy=v.autonomy;o.challenge=v.challenge;o.defaultMode=v.defaultMode;o.assistant_identity=identity.trim();o.owner_context=context.trim();o.custom_instructions=v.custom_instructions.trim();return o;
 }
 
+
+const VAULT_QUOTA_BYTES = 10 * 1024 * 1024 * 1024;
+const VAULT_MAX_FILE_BYTES = 50 * 1024 * 1024;
+const VAULT_ALLOWED_TYPES = new Set(["image/jpeg","image/png","image/gif","image/webp","image/avif","image/heic","image/heif","video/mp4","video/webm","video/quicktime","audio/mpeg","audio/mp4","audio/wav","audio/x-wav","audio/ogg","audio/webm","audio/aac","audio/flac"]);
+const VAULT_EXTENSION_TYPES = {jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",gif:"image/gif",webp:"image/webp",avif:"image/avif",heic:"image/heic",heif:"image/heif",mp4:"video/mp4",webm:"video/webm",mov:"video/quicktime",mp3:"audio/mpeg",m4a:"audio/mp4",wav:"audio/wav",ogg:"audio/ogg",aac:"audio/aac",flac:"audio/flac"};
+function vaultContentType(file) {
+  const supplied = String(file.type || "").toLowerCase().split(";")[0].trim();
+  if (VAULT_ALLOWED_TYPES.has(supplied)) return supplied;
+  const name = String(file.name || "");
+  const dot = name.lastIndexOf(".");
+  const ext = dot >= 0 ? name.slice(dot + 1).toLowerCase() : "";
+  return VAULT_EXTENSION_TYPES[ext] || "";
+}
+function vaultSafeFilename(name) {
+  return String(name || "media").normalize("NFKC").replace(/[\u0000-\u001f\u007f/\\]/g, "_").replace(/\s+/g, " ").trim().slice(0, 180) || "media";
+}
+async function vaultSummary(env) {
+  const now = Date.now();
+  const row = await env.DB.prepare("SELECT (SELECT COALESCE(SUM(size_bytes),0) FROM vault_items) AS used_bytes, (SELECT COALESCE(SUM(size_bytes),0) FROM vault_reservations WHERE expires_at > ?) AS reserved_bytes, (SELECT COUNT(*) FROM vault_items) AS file_count").bind(now).first();
+  return { quota_bytes: VAULT_QUOTA_BYTES, used_bytes: Number(row?.used_bytes || 0), reserved_bytes: Number(row?.reserved_bytes || 0), file_count: Number(row?.file_count || 0) };
+}
+async function handleVaultRequest(request, env, origin, url) {
+  if (url.pathname !== "/api/vault" && !url.pathname.startsWith("/api/vault/")) return null;
+  const user = await requireUser(request, env);
+  if (!user) return json({ error: "Sign in to access the private vault." }, 401, origin);
+  if (!chaosOwner(user)) return json({ error: "Owner-only access required." }, 403, origin);
+  const now = Date.now();
+  await env.DB.prepare("DELETE FROM vault_reservations WHERE expires_at <= ?").bind(now).run();
+  if (url.pathname === "/api/vault/summary" && request.method === "GET") {
+    return json({ summary: await vaultSummary(env) }, 200, origin);
+  }
+  if (url.pathname === "/api/vault/items" && request.method === "GET") {
+    const rows = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes,created_at,etag FROM vault_items ORDER BY created_at DESC LIMIT 300").all();
+    return json({ items: (rows.results || []).map((x) => ({ key: x.object_key.slice(6), filename: x.filename, content_type: x.content_type, size_bytes: Number(x.size_bytes), created_at: x.created_at, etag: x.etag })), summary: await vaultSummary(env) }, 200, origin);
+  }
+  if (url.pathname === "/api/vault/items" && request.method === "POST") {
+    if (!await rateLimit(env, request, "vault-upload", 20, 60)) return json({ error: "Too many uploads. Wait a minute and try again." }, 429, origin);
+    let form;
+    try { form = await request.formData(); } catch { return json({ error: "Upload form could not be read." }, 400, origin); }
+    const file = form.get("file");
+    if (!file || typeof file.arrayBuffer !== "function" || typeof file.size !== "number") return json({ error: "Choose a media file first." }, 400, origin);
+    if (file.size < 1 || file.size > VAULT_MAX_FILE_BYTES) return json({ error: "Each file must be between 1 byte and 50 MB." }, 413, origin);
+    const contentType = vaultContentType(file);
+    if (!contentType) return json({ error: "Supported formats: common photos, videos, and audio files. SVG and executable/web files are not accepted." }, 415, origin);
+    const filename = vaultSafeFilename(file.name);
+    const reservationId = randomToken(16);
+    const objectKey = "vault/" + randomToken(16);
+    const createdAt = new Date().toISOString();
+    const expiresAt = now + 15 * 60 * 1000;
+    const reserve = await env.DB.prepare("INSERT INTO vault_reservations (id,size_bytes,uploaded_by,created_at,expires_at) SELECT ?,?,?,?,? WHERE (SELECT COALESCE(SUM(size_bytes),0) FROM vault_items) + (SELECT COALESCE(SUM(size_bytes),0) FROM vault_reservations WHERE expires_at > ?) + ? <= ?").bind(reservationId, file.size, user.id, createdAt, expiresAt, now, file.size, VAULT_QUOTA_BYTES).run();
+    if (!reserve.meta?.changes) return json({ error: "The 10 GB vault quota would be exceeded. Delete files or choose a smaller upload." }, 409, origin);
+    let objectWritten = false;
+    try {
+      const stored = await env.VAULT.put(objectKey, file.stream(), { httpMetadata: { contentType } });
+      objectWritten = true;
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO vault_items (object_key,filename,content_type,size_bytes,uploaded_by,created_at,etag) VALUES (?,?,?,?,?,?,?)").bind(objectKey, filename, contentType, file.size, user.id, createdAt, stored?.httpEtag || stored?.etag || null),
+        env.DB.prepare("DELETE FROM vault_reservations WHERE id=?").bind(reservationId)
+      ]);
+      await audit(env, user, "vault.upload", "vault_item", null, { filename, size_bytes: file.size, content_type: contentType });
+      return json({ ok: true, item: { key: objectKey.slice(6), filename, content_type: contentType, size_bytes: file.size, created_at: createdAt }, summary: await vaultSummary(env) }, 201, origin);
+    } catch (error) {
+      if (objectWritten) { try { await env.VAULT.delete(objectKey); } catch (cleanupError) { console.error("vault_object_cleanup_failed", cleanupError); } }
+      try { await env.DB.prepare("DELETE FROM vault_reservations WHERE id=?").bind(reservationId).run(); } catch (cleanupError) { console.error("vault_reservation_cleanup_failed", cleanupError); }
+      console.error("vault_upload_failed", error);
+      return json({ error: "The upload could not be completed. Your quota reservation has been released." }, 500, origin);
+    }
+  }
+  const contentMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})\/content$/);
+  if (contentMatch && request.method === "GET") {
+    const row = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes FROM vault_items WHERE object_key=?").bind("vault/" + contentMatch[1]).first();
+    if (!row) return json({ error: "Media not found." }, 404, origin);
+    const object = await env.VAULT.get(row.object_key);
+    if (!object) return json({ error: "Media object is missing from storage." }, 404, origin);
+    const headers = new Headers();
+    headers.set("content-type", row.content_type);
+    headers.set("content-length", String(row.size_bytes));
+    headers.set("content-disposition", "inline; filename*=UTF-8''" + encodeURIComponent(row.filename).replace(/['()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase()));
+    headers.set("cache-control", "private, no-store, max-age=0");
+    headers.set("x-content-type-options", "nosniff");
+    headers.set("content-security-policy", "default-src 'none'; sandbox");
+    headers.set("cross-origin-resource-policy", "same-site");
+    return new Response(object.body, { status: 200, headers });
+  }
+  const itemMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
+  if (itemMatch && request.method === "DELETE") {
+    const objectKey = "vault/" + itemMatch[1];
+    const row = await env.DB.prepare("SELECT filename,size_bytes FROM vault_items WHERE object_key=?").bind(objectKey).first();
+    if (!row) return json({ error: "Media not found." }, 404, origin);
+    await env.VAULT.delete(objectKey);
+    await env.DB.prepare("DELETE FROM vault_items WHERE object_key=?").bind(objectKey).run();
+    await audit(env, user, "vault.delete", "vault_item", null, { filename: row.filename, size_bytes: Number(row.size_bytes) });
+    return json({ ok: true, summary: await vaultSummary(env) }, 200, origin);
+  }
+  return json({ error: "Vault endpoint not found." }, 404, origin);
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -85,6 +182,9 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   const requestOrigin=request.headers.get("Origin");
   if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
+
+  const vaultResponse = await handleVaultRequest(request, env, origin, url);
+  if (vaultResponse) return vaultResponse;
 
   // Miss Chaos: private, user-controlled long-term memories.
   if(url.pathname==="/api/chaos/memories"&&request.method==="GET"){
