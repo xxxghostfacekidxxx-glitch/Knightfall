@@ -380,12 +380,21 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   }
   if(url.pathname==="/api/admin/chaos-behavior"&&["GET","PATCH"].includes(request.method)){
     const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"Developer controls are reserved for the site owner."},403,origin);
-    if(request.method==="GET")return json({config:await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG)},200,origin);
+    if(request.method==="GET"){const config=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);let versions=[];try{versions=JSON.parse(await getSetting(env,"chaos_behavior_versions")||"[]");}catch{}return json({config,versions:Array.isArray(versions)?versions.map(v=>({id:v.id,saved_at:v.saved_at})):[]},200,origin);}
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const config=normalizeBehaviorConfig(body?.config);if(!config)return json({error:"Invalid behavior configuration. Check the selected options and custom-rule limits."},400,origin);
+    const previous=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);let versions=[];try{versions=JSON.parse(await getSetting(env,"chaos_behavior_versions")||"[]");}catch{}if(!Array.isArray(versions))versions=[];versions.unshift({id:randomToken(8),saved_at:new Date().toISOString(),config:previous});versions=versions.slice(0,20);await saveChaosConfig(env,user,"chaos_behavior_versions",JSON.stringify(versions));
     await saveChaosConfig(env,user,"chaos_behavior_config",JSON.stringify(config));
     await audit(env,user,"chaos.behavior.update","setting",null,{mode:config.defaultMode,enabled_rules:Object.entries(config.rules).filter(([,v])=>v).map(([k])=>k)});
     return json({ok:true,config},200,origin);
+  }
+  if(url.pathname==="/api/admin/chaos-behavior/rollback"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"Developer controls are reserved for the site owner."},403,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    let versions=[];try{versions=JSON.parse(await getSetting(env,"chaos_behavior_versions")||"[]");}catch{}
+    const selected=Array.isArray(versions)?versions.find(v=>v.id===body?.version_id):null;if(!selected)return json({error:"That configuration version is no longer available."},404,origin);
+    const current=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);versions.unshift({id:randomToken(8),saved_at:new Date().toISOString(),config:current});await saveChaosConfig(env,user,"chaos_behavior_versions",JSON.stringify(versions.slice(0,20)));await saveChaosConfig(env,user,"chaos_behavior_config",JSON.stringify(selected.config));await audit(env,user,"chaos.behavior.rollback","setting",null,{version_id:selected.id});
+    return json({ok:true,config:selected.config},200,origin);
   }
   if(url.pathname==="/api/admin/chaos-lab/config"&&["GET","PATCH"].includes(request.method)){
     const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"This private Miss Chaos instance is reserved for the site owner."},403,origin);
