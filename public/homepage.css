@@ -31,3 +31,19 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes breath{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes spin-reverse{to{transform:rotate(-360deg)}}
 @media(max-width:760px){.site-header{align-items:center}.nav-toggle{display:block}nav{display:none;position:absolute;left:1rem;right:1rem;top:calc(100% + .5rem);padding:.5rem;border:1px solid #292929;border-radius:10px;background:rgba(10,10,10,.97);box-shadow:0 18px 45px rgba(0,0,0,.45)}nav.open{display:grid}nav a{padding:.75rem}.hero{min-height:auto;padding:6rem 0 5rem}.hero-sigil{right:-24%;width:60vw;height:60vw;opacity:.25}.categories{grid-template-columns:1fr}.section-heading,.feature{align-items:flex-start;flex-direction:column}.thread-card{align-items:flex-start;flex-direction:column}.feature{padding:2rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ambient,.ring-one,.ring-two,.feature:before,.hero-copy{animation:none}.button,.category,.thread-card,nav a{transition:none}}
+
+
+/* Community ecosystem categories */
+.ecosystem-section{padding-top:1rem}
+.ecosystem-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.ecosystem-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:310px;padding:2rem;border:1px solid #292929;border-radius:13px;background:linear-gradient(145deg,rgba(22,22,22,.97),rgba(8,8,8,.98));text-decoration:none;overflow:hidden;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.ecosystem-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 0%,rgba(211,84,0,.12),transparent 45%);opacity:.6;pointer-events:none}
+.ecosystem-card:hover,.ecosystem-card:focus-visible{transform:translateY(-5px);border-color:#8d3e0d;box-shadow:0 18px 50px rgba(0,0,0,.35),0 0 30px rgba(211,84,0,.08)}
+.ecosystem-icon,.ecosystem-kicker,.ecosystem-card h3,.ecosystem-card p,.ecosystem-link{position:relative;z-index:1}
+.ecosystem-icon{display:grid;place-items:center;width:48px;height:48px;margin-bottom:1.5rem;border:1px solid rgba(211,84,0,.35);border-radius:12px;background:rgba(211,84,0,.08);color:#f06a0a;font-size:1.6rem}
+.ecosystem-kicker{color:#d35400;font-size:.66rem;font-weight:850;letter-spacing:.22em}
+.ecosystem-card h3{margin:.5rem 0 .7rem;font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-.04em}
+.ecosystem-card p{max-width:38rem;color:#999}
+.ecosystem-link{display:flex;justify-content:space-between;align-items:center;gap:1rem;width:100%;margin-top:auto;padding-top:1.8rem;color:#eee;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.ecosystem-link b{color:#f06a0a;font-size:1.2rem}
+@media(max-width:760px){.ecosystem-grid{grid-template-columns:1fr}.ecosystem-card{min-height:270px;padding:1.5rem}}
