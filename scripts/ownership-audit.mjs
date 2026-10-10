@@ -42,7 +42,10 @@ try {
   ok(await call("/api/posts/"+post_id,moderator,"PATCH",{body:"Changed"}),[403],"post boundary");
   ok(await call("/api/posts/"+post_id,moderator,"DELETE"),[403],"post delete boundary");
 } finally {
-  ok(await call("/api/threads/"+thread_id,admin,"PATCH",{deleted:true}),[200],"cleanup");
+  const softDelete = await call("/api/threads/"+thread_id,admin,"PATCH",{deleted:true});
+  ok(softDelete,[200],"cleanup soft-delete");
+  const purge = await call("/api/admin/content/threads/"+thread_id,admin,"PATCH",{action:"purge"});
+  ok(purge,[200],"cleanup permanent purge");
 }
 
 console.log("Ownership audit completed.");
