@@ -10,6 +10,7 @@ const adminRoutes = [
   ["/api/admin/health", "GET"],
   ["/api/admin/users", "GET"],
   ["/api/admin/content?type=threads&include_deleted=0&q=", "GET"],
+  ["/api/admin/deleted", "GET"],
   ["/api/admin/categories", "GET"],
   ["/api/admin/settings", "GET"],
   ["/api/admin/audit?limit=5", "GET"],
