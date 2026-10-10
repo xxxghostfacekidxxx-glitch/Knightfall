@@ -5,3 +5,24 @@
 .developer-card{margin-top:1.25rem;padding:clamp(1.1rem,4vw,1.7rem);border:1px solid rgba(211,84,0,.45);border-radius:14px;background:linear-gradient(145deg,rgba(211,84,0,.07),rgba(9,9,9,.98));box-shadow:0 14px 42px rgba(0,0,0,.3)}
 .developer-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem}.developer-head h2{font-size:1.25rem;letter-spacing:-.03em}.developer-head p:not(.eyebrow){margin-top:.35rem;color:#999;font-size:.82rem;line-height:1.5}
 .developer-form{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem;margin-top:.5rem}.developer-form label{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.45rem}.developer-form output{color:var(--kf-accent-bright);font-variant-numeric:tabular-nums}.developer-form input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--kf-accent-bright);cursor:pointer}.developer-form textarea{resize:vertical;min-height:100px}.developer-form label small{font-size:.7rem;color:#888;font-weight:400}.developer-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.7rem}.developer-actions button:disabled{opacity:.6;cursor:wait}#developer-status{color:#f0b18e;font-size:.82rem;line-height:1.5}#developer-status.error{color:#ff9ba5}
+
+/* Miss Chaos behavior architecture and isolated private lab */
+.chaos-config-section{border-top:1px solid #34251e;margin-top:1rem;padding-top:1rem}
+.chaos-config-section summary{cursor:pointer;font-size:1rem;font-weight:800;color:#f0b18e;padding:.45rem 0}
+.developer-form select{width:100%;min-height:44px;padding:.7rem;border:1px solid #353535;border-radius:8px;background:#101010;color:#eee}
+.config-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#d98b63;font-weight:800;margin:.9rem 0 .45rem}
+.chaos-check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:.5rem 0 1rem}
+.chaos-check{display:flex!important;justify-content:flex-start!important;gap:.65rem!important;align-items:center;border:1px solid #30241e;border-radius:8px;padding:.7rem;background:rgba(0,0,0,.22);margin:0!important;min-height:44px}
+.chaos-check input{accent-color:#e66a2c;width:18px;height:18px;flex:0 0 auto}
+.chaos-check span{font-size:.82rem;color:#ddd}
+.private-badge{display:inline-block;border:1px solid #6d3721;border-radius:999px;padding:.5rem .7rem;color:#f0b18e;font-size:.68rem;letter-spacing:.09em;font-weight:800}
+.admin-chaos-lab{border-color:rgba(211,84,0,.75);background:linear-gradient(145deg,rgba(211,84,0,.12),rgba(9,9,9,.98));}
+.lab-chat{border-top:1px solid #34251e;margin-top:1.25rem;padding-top:1rem}
+.lab-chat-messages{display:flex;flex-direction:column;gap:.65rem;max-height:420px;overflow:auto;padding:.3rem 0}
+.lab-message{max-width:95%;padding:.75rem .9rem;border:1px solid #30241e;border-radius:10px;background:#0c0c0c}
+.lab-message.user{align-self:flex-end;border-color:#67402a;background:#1b100b}
+.lab-message strong{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#d98b63;margin-bottom:.35rem}
+.lab-message p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;margin:0}
+.lab-chat-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;align-items:end;margin-top:.6rem}
+.lab-chat-form textarea{width:100%;min-height:54px;resize:vertical;background:#0b0b0b;color:#eee;border:1px solid #353535;border-radius:8px;padding:.75rem}
+@media(max-width:600px){.chaos-check-grid{grid-template-columns:1fr}.lab-chat-form{grid-template-columns:1fr}.lab-chat-form button{min-height:44px;width:100%}.private-badge{margin-top:.4rem}}
