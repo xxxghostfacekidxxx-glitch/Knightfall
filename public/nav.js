@@ -1,4 +1,18 @@
 (() => {
+  // Register the installable Knightfall PWA on every page that loads shared navigation.
+  if (!document.querySelector('link[rel="manifest"]')) {
+    const manifest = document.createElement("link");
+    manifest.rel = "manifest";
+    manifest.href = "/manifest.webmanifest";
+    document.head.append(manifest);
+  }
+  let themeColor = document.querySelector('meta[name="theme-color"]');
+  if (!themeColor) { themeColor = document.createElement("meta"); themeColor.name = "theme-color"; document.head.append(themeColor); }
+  themeColor.content = "#080808";
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {}), { once: true });
+  }
+
   const header = document.querySelector(".kf-header");
   if (!header) return;
   header.innerHTML = `
