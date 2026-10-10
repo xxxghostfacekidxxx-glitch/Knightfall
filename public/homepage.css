@@ -47,3 +47,6 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
 .ecosystem-link{display:flex;justify-content:space-between;align-items:center;gap:1rem;width:100%;margin-top:auto;padding-top:1.8rem;color:#eee;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .ecosystem-link b{color:#f06a0a;font-size:1.2rem}
 @media(max-width:760px){.ecosystem-grid{grid-template-columns:1fr}.ecosystem-card{min-height:270px;padding:1.5rem}}
+
+/* Clearly distinguish the gated 18+ category without breaking the existing ash-and-magma theme. */
+.category.adult-category{border-color:rgba(190,70,82,.55);background:linear-gradient(145deg,rgba(62,20,25,.5),rgba(13,13,13,.96))}.category.adult-category .category-mark{color:#f0a0aa}.category.adult-category:hover{border-color:rgba(240,110,125,.9)}
