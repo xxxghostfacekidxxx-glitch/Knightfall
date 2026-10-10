@@ -241,7 +241,7 @@ async function handleShopRequest(request,env,origin,url){
   if(body.description!==undefined){if(typeof body.description!=="string"||body.description.length>1000)return json({error:"Description must be at most 1,000 characters."},400,origin);fields.description=body.description.trim();}
   if(body.niche!==undefined){if(typeof body.niche!=="string"||body.niche.length>160)return json({error:"Niche must be at most 160 characters."},400,origin);fields.niche=body.niche.trim();}
   if(body.template!==undefined){if(!["dropshipping","print-on-demand","digital","curated","creator","custom"].includes(body.template))return json({error:"Choose a valid shop template."},400,origin);fields.template=body.template;}
-  if(body.is_public!==undefined){if(typeof body.is_public!=="boolean")return json({error:"Public access must be true or false."},400,origin);fields.is_public=body.is_public?1:0;}if(body.is_nsfw!==undefined){if(typeof body.is_nsfw!=="boolean")return json({error:"NSFW status must be true or false."},400,origin);fields.is_nsfw=body.is_nsfw?1:0;}
+  if(body.is_public!==undefined){if(typeof body.is_public!=="boolean")return json({error:"Public access must be true or false."},400,origin);fields.is_public=body.is_public?1:0;}
   const entries=Object.entries(fields);if(!entries.length)return json({error:"No valid changes supplied."},400,origin);
   const now=new Date().toISOString(),sets=entries.map(([k])=>k+"=?");sets.push("updated_at=?");
   try{await env.DB.prepare("UPDATE shops SET "+sets.join(",")+" WHERE id=? AND owner_id=?").bind(...entries.map(([,v])=>v),now,shop.id,user.id).run();}
@@ -367,11 +367,11 @@ async function handlePersonalBotRequest(request,env,origin,url){
    if(body.name!==undefined){if(!validText(body.name,60))return json({error:"Bot name must be 1–60 characters."},400,origin);fields.name=body.name.trim();fields.slug=slugify(fields.name)||"personal-bot";}
    if(body.description!==undefined){if(typeof body.description!=="string"||body.description.length>500)return json({error:"Description must be at most 500 characters."},400,origin);fields.description=body.description.trim();}
    if(body.system_prompt!==undefined){if(!validText(body.system_prompt,4000))return json({error:"Instructions must be 1–4000 characters."},400,origin);fields.system_prompt=body.system_prompt.trim();}
-   if(body.is_public!==undefined){if(typeof body.is_public!=="boolean")return json({error:"Public access must be true or false."},400,origin);fields.is_public=body.is_public?1:0;}
+   if(body.is_public!==undefined){if(typeof body.is_public!=="boolean")return json({error:"Public access must be true or false."},400,origin);fields.is_public=body.is_public?1:0;}if(body.is_nsfw!==undefined){if(typeof body.is_nsfw!=="boolean")return json({error:"NSFW status must be true or false."},400,origin);fields.is_nsfw=body.is_nsfw?1:0;}
    const entries=Object.entries(fields);if(!entries.length)return json({error:"No valid changes supplied."},400,origin);
    const now=new Date().toISOString(),sets=entries.map(([key])=>key+"=?");sets.push("updated_at=?");
    try{await env.DB.prepare("UPDATE personal_bots SET "+sets.join(",")+" WHERE id=? AND owner_id=?").bind(...entries.map(([,v])=>v),now,id,user.id).run();}catch(error){if(String(error).includes("UNIQUE"))return json({error:"You already have a bot with a conflicting name."},409,origin);throw error;}
-   await audit(env,user,"personal_bot.update","personal_bot",null,{bot_id:id,fields:entries.map(([key])=>key),is_public:fields.is_public===undefined?undefined:!!fields.is_public});
+   await audit(env,user,"personal_bot.update","personal_bot",null,{bot_id:id,fields:entries.map(([key])=>key),is_public:fields.is_public===undefined?undefined:!!fields.is_public,is_nsfw:fields.is_nsfw===undefined?undefined:!!fields.is_nsfw});
    const updated=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE id=? AND owner_id=?").bind(id,user.id).first();
    return json({ok:true,bot:{...updated,is_public:Number(updated.is_public)===1,is_nsfw:Number(updated.is_nsfw)===1,share_url:Number(updated.is_public)===1?"https://ash-fall.com/bot.html?id="+id:null}},200,origin);
   }
