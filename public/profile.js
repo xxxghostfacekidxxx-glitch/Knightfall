@@ -6,11 +6,11 @@ const esc = (value="") => String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<"
 const fmt = value => new Date(value).toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"});
 const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}}); const d=await r.json().catch(()=>({})); if(!r.ok) throw Error(d.error||"Request failed."); return d; };
 
-function render(d,adminView=false){
+function render(d,adminView=false,ownProfile=false){
   const u=d.user;
   const avatar=u.avatar_url?'<img class="avatar-img" src="'+esc(u.avatar_url)+'" alt="">':'<div class="avatar">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>';
   const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
-  const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':'<div class="profile-actions"><button id="follow" class="action primary">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><a class="action" href="/messages.html">Message</a></div>';
+  const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':ownProfile?'<div class="profile-actions"><a class="action" href="/profile-edit.html">Edit profile</a><a class="action primary" href="/die-ary.html">Open my Die-ary</a></div>':'<div class="profile-actions"><button id="follow" class="action primary">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><a class="action" href="/messages.html">Message</a></div>';
   root.innerHTML='<div class="profile-top">'+avatar+'<div class="profile-heading"><p class="eyebrow">COMMUNITY MEMBER</p><h1>'+esc(u.display_name)+'</h1><p class="handle">@'+esc(u.username)+' · '+esc(u.role)+'</p>'+online+'</div></div>'+
     '<div class="profile-stats"><div><b>'+(u.thread_count||0)+'</b><span>Threads</span></div><div><b>'+(u.post_count||0)+'</b><span>Replies</span></div><div><b>'+(u.followers||0)+'</b><span>Followers</span></div><div><b>'+(u.following_count||0)+'</b><span>Following</span></div></div>'+
     '<div class="profile-actions-wrap">'+actions+'</div>'+
@@ -164,8 +164,9 @@ async function load(){
      render(d,true); return;
    }
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
-   const d=await api("/api/users/"+encodeURIComponent(username)); render(d,false);
+   const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
+   render(d,false,!!me.user&&String(me.user.id)===String(d.user.id));
    if(me.user?.role==="admin"&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
 }
