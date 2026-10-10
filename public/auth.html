@@ -96,6 +96,17 @@
       } catch (error) { show(error.message, true); }
     });
 
+    fetch(API + "/api/site-settings", { credentials: "include", cache: "no-store" })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => {
+        if (data?.settings?.registration_enabled !== "false") return;
+        registerTab.hidden = true;
+        registerForm.hidden = true;
+        setMode(false);
+        show("New account registration is currently closed. Existing accounts can still sign in.", true);
+      })
+      .catch(() => {});
+
     registerForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       show("Creating your account…");
