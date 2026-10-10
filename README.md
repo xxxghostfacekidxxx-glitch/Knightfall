@@ -41,7 +41,8 @@ The public website and backend/API are intentionally kept separate. The frontend
 - `public/shops.html` lists public creator shops; `public/shop-builder.html` is the quick-build planner; `public/my-shop.html` manages a member's own catalog; `public/store.html` renders a public shop.
 - Personal bot limits are enforced by the API and the D1 `personal_bots_owner_limit` trigger: 10 for administrators and 5 for moderators.
 - The `Adults Only (18+)` forum category is hidden until a signed-in member completes an 18+ self-attestation. The confirmation is account-bound in KV for 30 days and enforced by the API for category listing, thread viewing, creation, and replies. This is self-attestation, not identity verification.
-- Miss Chaos and personal bots receive more permissive adult-theme guidance only after the account's 18+ confirmation. This cannot override the underlying AI model/provider's restrictions; sexual content involving minors, ambiguous-age participants, or exploitation remains prohibited.
+- Public Miss Chaos is never configured for explicit NSFW content, even for age-confirmed users. Personal bots can use adult-theme guidance after 18+ confirmation. Public bots must be explicitly marked `NSFW (18+)` by their creator to enable adult-theme guidance; unmarked public bots remain general-audience and NSFW-marked bots require age confirmation before chat. The underlying AI model/provider may still restrict outputs, and sexual content involving minors, age-ambiguous participants, coercion, or exploitation remains prohibited.
+- The `Astrology` forum category covers birth charts, zodiac signs, planetary transits, compatibility, and astrological traditions.
 - Shops currently publish product catalogs only. Checkout, payment processing, taxes, order management, and automated supplier fulfillment are not active; do not present catalog listings as completed ecommerce transactions.
 
 ## Checks and deployment
