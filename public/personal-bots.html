@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090c">
+<meta name="description" content="Create and manage your personal Knightfall AI bots.">
+<title>Personal Bots | Knightfall</title>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css">
+<script src="/nav.js" defer></script><script src="/personal-bots.js" defer></script>
+</head>
+<body class="bots-page">
+<header class="kf-header"></header>
+<main class="bots-shell">
+<section class="bots-hero"><div><p class="eyebrow">KNIGHTFALL / PERSONAL AI WORKSHOP</p><h1>Your bots.<br><span>Your rules.</span></h1><p class="bots-lede">Build personal AI companions with their own identity, purpose, and instructions. Keep them private or publish a shareable chat page.</p></div><div class="bot-emblem" aria-hidden="true"><span>✳</span><i></i></div></section>
+<div id="workspace-status" class="workspace-status" role="status" aria-live="polite">Verifying your account…</div>
+<section class="bot-limits"><div><span class="eyebrow">YOUR WORKSPACE</span><strong id="bot-count">— / — bots</strong></div><div class="limit-track" role="progressbar" aria-label="Personal bot slots" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="limit-progress"><span id="limit-fill"></span></div><p id="limit-note">Your role determines your bot limit.</p></section>
+<section class="bot-create panel">
+<div class="section-title"><div><p class="eyebrow">START SOMETHING NEW</p><h2>Create a personal bot</h2></div><span class="private-pill">PRIVATE BY DEFAULT</span></div>
+<form id="create-bot-form">
+<label>Bot name<input name="name" maxlength="60" required placeholder="e.g. The Forge, Night Archivist"></label>
+<label>Short description<input name="description" maxlength="500" placeholder="What is this bot for?"></label>
+<label>Personality and instructions<textarea name="system_prompt" rows="5" maxlength="4000" required placeholder="Define its personality, purpose, response style, boundaries, and expertise."></textarea><small>1–4,000 characters. Clear instructions make more reliable bots.</small></label>
+<button class="primary-button" type="submit">＋ Create bot</button>
+</form>
+</section>
+<section class="bot-list-section"><div class="section-title"><div><p class="eyebrow">YOUR PRIVATE WORKSHOP</p><h2>Personal bot manager</h2></div><button id="refresh-bots" class="quiet-button" type="button">Refresh</button></div>
+<div id="bot-list" class="bot-list"><div class="empty-state">Loading your workspace…</div></div>
+</section>
+<p class="bots-footnote">You control the bots you create. Public bots expose their chat interface and owner-written persona to anyone with the link. Never put passwords, API keys, private records, or other sensitive information in a bot's instructions.</p>
+</main>
+<footer class="bots-footer"><span>KNIGHTFALL</span><span>MAKE SOMETHING WORTH TALKING TO.</span></footer>
+</body></html>
