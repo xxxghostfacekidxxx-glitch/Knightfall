@@ -27,6 +27,7 @@ const moderatorRoutes = [
 
 const protectedMutations = [
   ["/api/profile", "PUT", "member"],
+  ["/api/die-ary/entries", "POST", "member"],
   ["/api/notifications/1", "PATCH", "member"],
   ["/api/notifications/read-all", "POST", "member"],
   ["/api/messages/conversations", "POST", "member"],
