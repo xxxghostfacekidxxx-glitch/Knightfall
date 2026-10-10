@@ -22,6 +22,7 @@ const publicFiles = await walk(publicDir);
 const publicPaths = new Set(publicFiles.map(file => "/" + path.relative(publicDir, file).split(path.sep).join("/")));
 const htmlFiles = publicFiles.filter(file => file.endsWith(".html"));
 const jsFiles = publicFiles.filter(file => file.endsWith(".js"));
+const cssFiles = publicFiles.filter(file => file.endsWith(".css"));
 for (const file of jsFiles) {
   const result = spawnSync(process.execPath, ["--check"], { input: await readFile(file, "utf8"), encoding: "utf8" });
   if (result.status !== 0) fail("JavaScript syntax error in " + path.relative(root, file) + ": " + (result.stderr || result.stdout).trim());
@@ -41,9 +42,34 @@ for (const configPath of ["wrangler.jsonc", "backend/wrangler.jsonc"]) {
   }
 }
 
+for (const file of cssFiles) {
+  const rel = path.relative(root, file);
+  const css = (await readFile(file, "utf8")).replace(/\/\*[\s\S]*?\*\//g, "").replace(/"(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'/g, "");
+  let depth = 0;
+  for (const ch of css) {
+    if (ch === "{") depth++;
+    if (ch === "}") depth--;
+    if (depth < 0) break;
+  }
+  if (depth !== 0) fail("Unbalanced CSS braces in " + rel);
+  else ok("CSS brace balance: " + rel);
+}
+
 for (const file of htmlFiles) {
   const rel = path.relative(root, file);
   const html = await readFile(file, "utf8");
+  const ids = [...html.matchAll(/\\bid=["']([^"']+)["']/gi)].map(m => m[1]);
+  const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+  if (duplicates.length) fail(rel + " contains duplicate id(s): " + [...new Set(duplicates)].join(", "));
+  const inlineScripts = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)];
+  for (let i = 0; i < inlineScripts.length; i++) {
+    const attrs = inlineScripts[i][1];
+    const code = inlineScripts[i][2];
+    if (/\\bsrc=["']/i.test(attrs) || !code.trim()) continue;
+    const isModule = /\\btype=["']module["']/i.test(attrs);
+    const result = spawnSync(process.execPath, isModule ? ["--input-type=module", "--check"] : ["--check"], { input: code, encoding: "utf8" });
+    if (result.status !== 0) fail("Inline JavaScript syntax error in " + rel + " script #" + (i + 1) + ": " + (result.stderr || result.stdout).trim());
+  }
   if (!/<title>\s*[^<]+<\/title>/i.test(html)) fail(rel + " is missing a non-empty title.");
   if (!/name=["']viewport["']/i.test(html)) fail(rel + " is missing a viewport meta tag.");
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(m => m[1]);
