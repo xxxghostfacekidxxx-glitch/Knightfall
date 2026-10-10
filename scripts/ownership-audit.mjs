@@ -48,4 +48,23 @@ try {
   ok(purge,[200],"cleanup permanent purge");
 }
 
+// Verify the Die-ary is isolated by account and clean up the test entry even if an assertion fails.
+const diaryTitle = "Ownership audit " + Date.now();
+let diaryId = null;
+try {
+  const createdDiary = await call("/api/die-ary/entries", member, "POST", {title:diaryTitle, body:"Temporary automated privacy test entry."});
+  if (createdDiary.status !== 201) throw new Error("Die-ary entry creation failed: " + createdDiary.status + " " + createdDiary.text.slice(0,160));
+  diaryId = Number(JSON.parse(createdDiary.text).entry?.id);
+  if (!Number.isInteger(diaryId) || diaryId < 1) throw new Error("Die-ary entry ID missing.");
+  const memberEntries = await call("/api/die-ary/entries", member);
+  if (memberEntries.status !== 200 || !JSON.parse(memberEntries.text).entries?.some(entry => Number(entry.id) === diaryId)) throw new Error("Owner cannot read their own Die-ary entry.");
+  const moderatorEntries = await call("/api/die-ary/entries", moderator);
+  if (moderatorEntries.status !== 200 || JSON.parse(moderatorEntries.text).entries?.some(entry => Number(entry.id) === diaryId)) throw new Error("Die-ary privacy failure: another account can see the entry.");
+  ok(await call("/api/die-ary/entries/" + diaryId, moderator, "PATCH", {body:"Unauthorized edit attempt."}), [404], "other account denied Die-ary edit");
+  ok(await call("/api/die-ary/entries/" + diaryId, moderator, "DELETE"), [404], "other account denied Die-ary delete");
+  console.log("PASS Die-ary entries are isolated by account.");
+} finally {
+  if (diaryId) ok(await call("/api/die-ary/entries/" + diaryId, member, "DELETE"), [200,404], "Die-ary privacy test cleanup");
+}
+
 console.log("Ownership audit completed.");
