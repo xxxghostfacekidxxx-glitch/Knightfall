@@ -92,7 +92,7 @@ function vaultContentType(file) {
   return VAULT_EXTENSION_TYPES[ext] || "";
 }
 function vaultSafeFilename(name) {
-  return String(name || "media").normalize("NFKC").replace(/[\u0000-\u001f\u007f/\\]/g, "_").replace(/\s+/g, " ").trim().slice(0, 180) || "media";
+  return String(name || "media").normalize("NFKC").replace(/[\u0000-\u001f\u007f\/\\]/g, "_").replace(/\s+/g, " ").trim().slice(0, 180) || "media";
 }
 async function vaultSummary(env) {
   const now = Date.now();
