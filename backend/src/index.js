@@ -160,6 +160,10 @@ async function handleVaultRequest(request, env, origin, url) {
     headers.set("x-content-type-options", "nosniff");
     headers.set("content-security-policy", "default-src 'none'; sandbox");
     headers.set("cross-origin-resource-policy", "same-site");
+    headers.set("access-control-allow-origin", origin);
+    headers.set("access-control-allow-credentials", "true");
+    headers.set("access-control-expose-headers", "content-length, content-type, etag");
+    headers.set("vary", "Origin");
     return new Response(object.body, { status: 200, headers });
   }
   const itemMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
