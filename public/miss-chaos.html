@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, the AI companion of Knightfall.">
   <title>Miss Chaos | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261010-soft-delete-admin">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261010-continuity-tools">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -17,6 +17,9 @@
       <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
       <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
       <button id="show-deleted" class="archive-toggle" type="button" aria-pressed="false">Recently Deleted</button>
+      <label class="sr-only" for="conversation-search">Search your conversations</label>
+      <input id="conversation-search" class="conversation-search" type="search" maxlength="100" placeholder="Search chats and messages…">
+      <p class="conversation-search-hint">Search titles and message text. Saved memories can carry across chats.</p>
       <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
       <section id="admin-chaos-archive" class="admin-archive" aria-labelledby="admin-chaos-heading" hidden>
         <div class="memory-heading"><h3 id="admin-chaos-heading">⚑ Admin conversation archive</h3></div>
@@ -69,6 +72,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261010-soft-delete-admin" defer></script>
+  <script src="/miss-chaos.js?v=20261010-continuity-tools" defer></script>
 </body>
 </html>
