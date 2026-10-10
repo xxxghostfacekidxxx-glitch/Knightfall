@@ -16,6 +16,7 @@
       <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
     </nav>`;
+  let siteSettings = null, currentUser = null;
   const toggle = header.querySelector(".kf-nav-toggle");
   const nav = header.querySelector(".kf-nav");
   toggle.addEventListener("click", () => {
@@ -38,6 +39,9 @@
     .then(d => {
       const x = d?.settings;
       if (!x) return;
+      siteSettings = x;
+      if (x.feature_miss_chaos === "false") nav.querySelector('a[href="/miss-chaos.html"]')?.remove();
+      if (x.feature_profiles === "false") { nav.querySelector('a[href="/members.html"]')?.remove(); if (currentUser?.role !== "admin") nav.querySelectorAll(".kf-profile-link").forEach(link => link.remove()); }
       if (x.announcements_enabled === "true" && (x.announcement_title || x.announcement_body)) {
         const banner = document.createElement("aside");
         banner.className = "kf-announcement";
@@ -55,6 +59,8 @@
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       if (!d || !d.user) return;
+      currentUser = d.user;
+      if (siteSettings?.feature_profiles === "false" && currentUser.role !== "admin") nav.querySelectorAll(".kf-profile-link").forEach(link => link.remove());
       refreshNotifications();
       setInterval(refreshNotifications,45000);
       const pingActivity=()=>fetch("https://api.ash-fall.com/api/activity/ping",{method:"POST",credentials:"include"}).catch(()=>{});
@@ -68,10 +74,7 @@
       if (d.user.role === "admin" && d.user.username === "knightfall") { const vault=document.createElement("a"); vault.href="/vault.html"; vault.textContent="Private Vault"; account.before(vault); }
       const myShop = document.createElement("a");
       myShop.href="/my-shop.html"; myShop.textContent="My Shop"; account.before(myShop);
-      const profile = document.createElement("a");
-      profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username);
-      profile.textContent = "Profile";
-      account.before(profile);
+      if (siteSettings?.feature_profiles !== "false" || d.user.role === "admin") { const profile = document.createElement("a"); profile.className = "kf-profile-link"; profile.href = "/profile.html?username=" + encodeURIComponent(d.user.username); profile.textContent = "Profile"; account.before(profile); }
     })
     .catch(() => {});
 })();
