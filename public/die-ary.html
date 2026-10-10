@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your private Knightfall Die-ary journal.">
+  <meta name="robots" content="noindex,nofollow">
+  <title>My Die-ary | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/die-ary.css?v=20261010">
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="diary-shell">
+    <section class="diary-hero">
+      <p class="eyebrow">YOUR PRIVATE SPACE</p>
+      <h1>Die-ary <span aria-hidden="true">✦</span></h1>
+      <p class="diary-intro">A place to put the thoughts that need somewhere to go. No audience, no likes, no performance. Just you and the page.</p>
+      <p class="diary-privacy"><strong>Private by design:</strong> entries are tied to your account and are not displayed on your public profile or to other members. Only your signed-in account can use the journal endpoints. This is an online service, so avoid storing passwords or other secrets you would not want in a web account.</p>
+    </section>
+    <section class="diary-card" aria-labelledby="entry-heading">
+      <div class="diary-card-head">
+        <div><p class="eyebrow">MAKE SOME ROOM</p><h2 id="entry-heading">Write an entry</h2></div>
+        <span id="entry-count" class="entry-count">Loading entries…</span>
+      </div>
+      <form id="diary-form">
+        <label for="entry-title">Title <span>Optional · 120 characters max</span></label>
+        <input id="entry-title" name="title" maxlength="120" autocomplete="off" placeholder="A thought, a day, a tiny apocalypse…">
+        <label for="entry-body">Your entry</label>
+        <textarea id="entry-body" name="body" rows="9" maxlength="20000" required placeholder="Start wherever you are. It doesn't have to be polished, sensible, or for anyone else."></textarea>
+        <div class="diary-form-foot"><span id="char-count">0 / 20,000</span><div class="diary-form-actions"><button type="button" id="cancel-edit" class="button secondary" hidden>Cancel edit</button><button type="submit" id="save-entry" class="button">Save privately</button></div></div>
+        <p id="diary-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section class="diary-entries-section" aria-labelledby="entries-heading">
+      <div class="diary-card-head"><div><p class="eyebrow">ONLY YOURS</p><h2 id="entries-heading">Your entries</h2></div><span class="muted">Newest first</span></div>
+      <div id="diary-entries" class="diary-entries" aria-live="polite"><p class="muted">Loading your entries…</p></div>
+    </section>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script src="/die-ary.js?v=20261010" defer></script>
+</body>
+</html>
