@@ -42,3 +42,4 @@
   .kf-nav a{transition:none}
 }
 .kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(211,84,0,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(90,35,10,.2);color:#f0b18e}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
+.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(240,106,10,.55);border-radius:7px;background:rgba(211,84,0,.14);color:#f5a06b;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(211,84,0,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
