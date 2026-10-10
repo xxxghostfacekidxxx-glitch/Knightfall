@@ -1,0 +1,18 @@
+/* Owner-only private Miss Chaos development command center */
+.admin-command-center{margin:1.15rem 0;padding:1rem;border:1px solid #50301f;border-radius:12px;background:linear-gradient(145deg,rgba(211,84,0,.08),rgba(8,8,8,.82))}
+.command-center-heading h3{font-size:1.08rem;letter-spacing:-.02em;color:#f0b18e}
+.command-center-heading p,.command-center-checklist>p{margin-top:.4rem;color:#999;font-size:.8rem;line-height:1.55}
+.command-center-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;margin-top:.9rem}
+.command-center-action{display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;min-height:88px;padding:.8rem;text-align:left;border:1px solid #3a2b22;border-radius:9px;background:#0d0c0b;color:#eee;cursor:pointer;font:inherit}
+.command-center-action:hover,.command-center-action:focus-visible{border-color:#b95d2c;background:#1a100b;outline:2px solid rgba(211,84,0,.22);outline-offset:1px}
+.command-center-action strong{font-size:.83rem;color:#f0b18e}
+.command-center-action span{font-size:.74rem;line-height:1.45;color:#999}
+.command-center-checklist{border-top:1px solid #34251e;margin-top:1rem;padding-top:.9rem}
+.command-center-checklist h4{font-size:.9rem}
+.command-center-checklist-items{display:grid;gap:.4rem;margin:.75rem 0}
+.command-center-check{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:.6rem!important;padding:.55rem .65rem;margin:0!important;border:1px solid #292522;border-radius:7px;background:#0a0a0a;font-weight:450!important}
+.command-center-check input{width:17px;height:17px;flex:0 0 auto;accent-color:#d35400}
+.command-center-check span{font-size:.78rem;line-height:1.4;color:#ddd}
+.command-center-check.complete span{color:#8eaa91;text-decoration:line-through;text-decoration-thickness:1px}
+.command-center-progress{margin:.5rem 0 .7rem;color:#d98b63;font-size:.76rem;font-variant-numeric:tabular-nums}
+@media(max-width:520px){.command-center-actions{grid-template-columns:1fr}.command-center-action{min-height:0}}
