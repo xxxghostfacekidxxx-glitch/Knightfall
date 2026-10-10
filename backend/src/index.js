@@ -132,7 +132,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     const row=await env.DB.prepare("SELECT id,user_id,deleted_at FROM chaos_conversations WHERE id=?").bind(id).first();
     if(!row)return json({error:"Conversation not found."},404,origin);
     if(action==="restore"){
-      const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND deleted_at IS NOT NULL AND deleted_at>datetime('now','-30 days')").bind(id).run();
+      const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
+      const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND deleted_at IS NOT NULL AND deleted_at>?").bind(id,cutoff).run();
       if(!result.meta?.changes)return json({error:"Conversation not found or its 30-day recovery period has expired."},404,origin);
     }else if(action==="delete"){
       if(row.deleted_at)return json({error:"Conversation is already in Recently Deleted."},409,origin);
@@ -172,8 +173,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     if(body.action!=="restore")return json({error:"Invalid conversation action."},400,origin);
-    const id=chaosConversationDeleteMatch[1];
-    const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND user_id=? AND deleted_at IS NOT NULL AND deleted_at>datetime('now','-30 days')").bind(id,user.id).run();
+    const id=chaosConversationDeleteMatch[1],cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
+    const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND user_id=? AND deleted_at IS NOT NULL AND deleted_at>?").bind(id,user.id,cutoff).run();
     if(!result.meta?.changes)return json({error:"Conversation not found or its 30-day recovery period has expired."},404,origin);
     await audit(env,user,"chaos.conversation.restore","chaos_conversation",id,{});
     return json({ok:true},200,origin);
