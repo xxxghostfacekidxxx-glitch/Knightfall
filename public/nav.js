@@ -29,10 +29,29 @@
       <a class="kf-notify" href="/notifications.html" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
       <a href="/account.html">Account</a>
       <a href="/index.html">Sanctuary</a>
+      <button class="kf-install-app" type="button" hidden>Install App</button>
     </nav>`;
   let siteSettings = null, currentUser = null;
   const toggle = header.querySelector(".kf-nav-toggle");
   const nav = header.querySelector(".kf-nav");
+  const installButton = header.querySelector(".kf-install-app");
+  let installPrompt = null;
+  window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    installPrompt = event;
+    if (installButton) installButton.hidden = false;
+  });
+  installButton?.addEventListener("click", async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice.catch(() => null);
+    installPrompt = null;
+    installButton.hidden = true;
+  });
+  window.addEventListener("appinstalled", () => {
+    installPrompt = null;
+    if (installButton) installButton.hidden = true;
+  });
   toggle.addEventListener("click", () => {
     const open = toggle.getAttribute("aria-expanded") === "true";
     toggle.setAttribute("aria-expanded", String(!open));
