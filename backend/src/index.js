@@ -400,7 +400,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   }
   if(url.pathname==="/api/admin/chaos-lab/config"&&["GET","PATCH"].includes(request.method)){
     const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"This private Miss Chaos instance is reserved for the site owner."},403,origin);
-    if(request.method==="GET")return json({config:await readChaosConfig(env,"chaos_admin_lab_config",DEFAULT_ADMIN_LAB_CONFIG)},200,origin);
+    if(request.method==="GET")return json({config:{...DEFAULT_ADMIN_LAB_CONFIG,...await readChaosConfig(env,"chaos_admin_lab_config",DEFAULT_ADMIN_LAB_CONFIG)}},200,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const config=normalizeAdminLabConfig(body?.config);if(!config)return json({error:"Invalid private-instance configuration."},400,origin);
     await saveChaosConfig(env,user,"chaos_admin_lab_config",JSON.stringify(config));
@@ -415,7 +415,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const message=typeof body.message==="string"?body.message.trim():"";
     const history=Array.isArray(body.history)?body.history.slice(-10).filter(m=>m&&["user","assistant"].includes(m.role)&&typeof m.content==="string").map(m=>({role:m.role,content:m.content.slice(0,4000)})):[];
     if(!message||message.length>4000)return json({error:"Message must be between 1 and 4000 characters."},400,origin);
-    const c=await readChaosConfig(env,"chaos_admin_lab_config",DEFAULT_ADMIN_LAB_CONFIG),publicBehavior=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG),publicPersonality={};
+    const c={...DEFAULT_ADMIN_LAB_CONFIG,...await readChaosConfig(env,"chaos_admin_lab_config",DEFAULT_ADMIN_LAB_CONFIG)},publicBehavior=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG),publicPersonality={};
     for(const key of CHAOS_PERSONALITY_KEYS){const value=await getSetting(env,key);publicPersonality[key]=key==="chaos_custom_instructions"?(value||""):(Number(value??75));}
     const level=v=>v<20?"very subtle":v<40?"low":v<60?"moderate":v<80?"strong":"very strong";
     const modes={automatic:"Select the most suitable mode from context.",standard:"Balanced and conversational.",analytical:"Structure reasoning, assumptions, evidence, and trade-offs.",philosophical:"Explore principles and implications while distinguishing speculation from fact.",chaos:"More irreverent, surprising, and creatively associative while remaining useful.",supportive:"Prioritize patience, emotional awareness, and practical care.",confrontational:"Challenge weak reasoning directly without demeaning the user.",creative:"Favor imaginative, original approaches."};
