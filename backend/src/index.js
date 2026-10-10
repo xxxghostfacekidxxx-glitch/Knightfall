@@ -189,8 +189,8 @@ async function handleVaultRequest(request, env, origin, url) {
 
 async function handleShopRequest(request,env,origin,url){
  const path=url.pathname;
- const publicItem=path.match(/^\\/api\\/shops\\/([a-z0-9-]{1,80})$/);
- const productItem=path.match(/^\\/api\\/my-shop\\/products\\/([a-f0-9]{32})$/);
+ const publicItem=path.match(/^\/api\/shops\\/([a-z0-9-]{1,80})$/);
+ const productItem=path.match(/^\/api\/my-shop\/products\\/([a-f0-9]{32})$/);
  if(path!=="/api/shops"&&!publicItem&&path!=="/api/my-shop"&&path!=="/api/my-shop/products"&&!productItem)return null;
  if(path==="/api/shops"&&request.method==="GET"){
   const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
@@ -379,7 +379,9 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
-  const shopResponse = await handleShopRequest(request, env, origin, url);\n  if (shopResponse) return shopResponse;\n  const personalBotResponse = await handlePersonalBotRequest(request, env, origin, url);
+  const shopResponse = await handleShopRequest(request, env, origin, url);
+  if (shopResponse) return shopResponse;
+  const personalBotResponse = await handlePersonalBotRequest(request, env, origin, url);
   if (personalBotResponse) return personalBotResponse;
 
   // Miss Chaos: private, user-controlled long-term memories.
