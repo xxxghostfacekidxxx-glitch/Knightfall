@@ -4,7 +4,9 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-05",
   "triggers": {
-    "crons": ["17 3 * * *"]
+    "crons": [
+      "17 3 * * *"
+    ]
   },
   "observability": {
     "enabled": true
@@ -25,5 +27,11 @@
   ],
   "ai": {
     "binding": "AI"
-  }
+  },
+  "r2_buckets": [
+    {
+      "binding": "VAULT",
+      "bucket_name": "knightfall-personal-admin-vault"
+    }
+  ]
 }
