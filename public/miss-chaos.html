@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, the AI companion of Knightfall.">
   <title>Miss Chaos | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261009-ember-fix2">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261010-soft-delete-admin">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -16,7 +16,20 @@
       <a class="chaos-back" href="/homepage.html">← Back to Knightfall</a>
       <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
       <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
+      <button id="show-deleted" class="archive-toggle" type="button" aria-pressed="false">Recently Deleted</button>
       <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
+      <section id="admin-chaos-archive" class="admin-archive" aria-labelledby="admin-chaos-heading" hidden>
+        <div class="memory-heading"><h3 id="admin-chaos-heading">⚑ Admin conversation archive</h3></div>
+        <p class="memory-description">Administrator access to all users' Miss Chaos conversations, including recently deleted items. Views and actions are audit-logged.</p>
+        <label class="sr-only" for="admin-chaos-search">Search conversations or usernames</label>
+        <input id="admin-chaos-search" type="search" placeholder="Search title, username, or user ID">
+        <label class="sr-only" for="admin-chaos-status">Conversation status</label>
+        <select id="admin-chaos-status"><option value="active">Active conversations</option><option value="deleted">Recently deleted</option><option value="all">All conversations</option></select>
+        <button id="admin-chaos-refresh" class="memory-save" type="button">Load archive</button>
+        <p id="admin-chaos-status-message" class="memory-status" role="status" hidden></p>
+        <div id="admin-chaos-list" class="admin-chaos-list"><p class="muted">Archive not loaded.</p></div>
+        <div class="admin-pagination"><button id="admin-chaos-prev" type="button" disabled>← Previous</button><span id="admin-chaos-page">Page 1</span><button id="admin-chaos-next" type="button" disabled>Next →</button></div>
+      </section>
       <section class="memory-manager" aria-labelledby="memory-heading">
         <div class="memory-heading"><h3 id="memory-heading">✦ What I remember</h3><span id="memory-count">0 / 100</span></div>
         <p class="memory-description">Only save what you want me to remember. You can edit or delete it anytime.</p>
@@ -32,7 +45,7 @@
         <p id="memory-status" class="memory-status" role="status" hidden></p>
         <div id="memory-list" class="memory-list" aria-live="polite"><p class="muted">Loading memories…</p></div>
       </section>
-      <div class="sidebar-note"><span class="pulse-dot"></span> Private by design <small>Your conversations are tied to your account.</small></div>
+      <div class="sidebar-note"><span class="pulse-dot"></span> Account-bound conversations <small>Authorized administrators may review conversations. Archive access is logged.</small></div>
     </aside>
     <section class="chat-panel" aria-label="Chat with Miss Chaos">
       <div class="chat-topbar">
@@ -52,10 +65,10 @@
         <textarea id="message-input" name="message" rows="1" maxlength="4000" placeholder="Tell me what's on your mind…" required></textarea>
         <div class="composer-bottom"><span id="char-count">0 / 4000</span><div class="composer-actions"><button id="voice-input" class="icon-button" type="button" aria-label="Dictate message" title="Dictate message">🎙</button><button id="speak-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken replies" aria-label="Toggle spoken replies">🔊</button><button id="send-button" class="send-button" type="submit">Send <span aria-hidden="true">↗</span></button></div></div>
       </form>
-      <p class="privacy-note">AI can make mistakes. Don't share passwords or highly sensitive information.</p>
+      <p class="privacy-note">AI can make mistakes. Authorized administrators may review conversations; archive access is logged. Don't share passwords or highly sensitive information.</p>
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261009-delete-chat" defer></script>
+  <script src="/miss-chaos.js?v=20261010-soft-delete-admin" defer></script>
 </body>
 </html>

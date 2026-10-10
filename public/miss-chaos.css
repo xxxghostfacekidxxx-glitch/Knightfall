@@ -63,3 +63,26 @@
 .conversation-delete:hover,.conversation-delete:focus-visible{border-color:#7d3c12;background:#24120e;color:#ff9a52}
 .conversation-delete:disabled{opacity:.45;cursor:wait}
 @media(max-width:760px){.conversation-row{min-width:0;max-width:240px;flex:0 0 auto}.conversation-row .conversation-item{min-width:0;max-width:none}.conversation-delete{flex-basis:30px}}
+
+/* Conversation recovery and administrator archive */
+.archive-toggle{margin-top:.45rem;border:1px solid #453326;border-radius:9px;background:#15110d;color:#d6cfdd;padding:.58rem .7rem;font-size:.76rem;font-weight:750;cursor:pointer}
+.archive-toggle[aria-pressed=true]{border-color:#f06a0a;color:#ffb16e;background:#24150b}
+.conversation-restore{flex:0 0 32px;border:1px solid #453326;border-radius:8px;background:#17120e;color:#f0a05e;font-size:1rem;cursor:pointer}
+.conversation-restore:hover{border-color:#f06a0a;background:#24150b}
+.conversation-restore:disabled{opacity:.5}
+.admin-archive{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--chaos-line)}
+.admin-archive[hidden]{display:none}
+.admin-archive input,.admin-archive select{box-sizing:border-box;width:100%;margin:.25rem 0;border:1px solid #3b3028;border-radius:8px;background:#0b0b0b;color:#f5f0f7;padding:.6rem;font:inherit;font-size:.73rem}
+.admin-chaos-list{display:grid;gap:.5rem;margin-top:.7rem;max-height:360px;overflow:auto}
+.admin-chaos-card{border:1px solid #49301f;border-radius:9px;background:#12100d;padding:.6rem;min-width:0}
+.admin-chaos-card strong{display:block;overflow-wrap:anywhere;font-size:.77rem;color:#f4f0f5}
+.admin-chaos-meta{font-size:.65rem;line-height:1.5;color:#a79ba5;overflow-wrap:anywhere;margin:.35rem 0}
+.admin-chaos-actions{display:flex;flex-wrap:wrap;gap:.3rem}
+.admin-chaos-actions button{border:1px solid #453326;border-radius:6px;background:#1a1510;color:#e8dfe9;font-size:.64rem;padding:.38rem .45rem;cursor:pointer}
+.admin-chaos-actions button:hover{border-color:#f06a0a;color:#ffb16e}
+.admin-chaos-actions button:disabled{opacity:.5;cursor:wait}
+@media(max-width:760px){.admin-chaos-list{display:grid;max-height:300px}.admin-chaos-card{min-width:0}.archive-toggle{align-self:flex-start}}
+
+.admin-pagination{display:flex;align-items:center;justify-content:space-between;gap:.35rem;margin-top:.55rem;color:#a79ba5;font-size:.64rem}
+.admin-pagination button{border:1px solid #453326;border-radius:6px;background:#1a1510;color:#e8dfe9;padding:.38rem .45rem;font-size:.64rem;cursor:pointer}
+.admin-pagination button:disabled{opacity:.4;cursor:default}

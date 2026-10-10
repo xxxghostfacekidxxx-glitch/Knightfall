@@ -51,7 +51,7 @@ async function getSetting(env, key) { const row = await env.DB.prepare("SELECT v
 function slugify(value) { const base=value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80); return base||"thread"; }
 async function uniqueSlug(title, env) { const base=slugify(title); let slug=base; for(let i=2;i<100;i++){const exists=await env.DB.prepare("SELECT id FROM threads WHERE slug=?").bind(slug).first(); if(!exists)return slug; slug=`${base}-${i}`;} return `${base}-${randomToken(4)}`; }
 
-export default { async fetch(request, env) {
+export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
@@ -101,10 +101,60 @@ export default { async fetch(request, env) {
     return json({ok:true},200,origin);
   }
 
+  // Administrator-only Miss Chaos archive. Every route rechecks the live account role server-side.
+  if(url.pathname==="/api/admin/chaos/conversations"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const status=["active","deleted","all"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"active";
+    const q=String(url.searchParams.get("q")||"").trim().slice(0,100),like="%"+q+"%";
+    const limit=Math.min(Math.max(Number(url.searchParams.get("limit")||100),1),100),offset=Math.min(Math.max(Number(url.searchParams.get("offset")||0),0),1000000);
+    const clauses=[],binds=[];
+    if(status==="active")clauses.push("c.deleted_at IS NULL");else if(status==="deleted")clauses.push("c.deleted_at IS NOT NULL");
+    if(q){clauses.push("(c.title LIKE ? OR u.username LIKE ? OR CAST(c.user_id AS TEXT) LIKE ?)");binds.push(like,like,like);}
+    const where=clauses.length?" WHERE "+clauses.join(" AND "):"";
+    const sql="SELECT c.id,c.user_id,c.title,c.mood,c.created_at,c.updated_at,c.deleted_at,u.username,u.display_name,(SELECT COUNT(*) FROM chaos_messages m WHERE m.conversation_id=c.id AND m.user_id=c.user_id) AS message_count FROM chaos_conversations c JOIN users u ON u.id=c.user_id"+where+" ORDER BY COALESCE(c.deleted_at,c.updated_at) DESC LIMIT ? OFFSET ?";
+    const {results}=await env.DB.prepare(sql).bind(...binds,limit,offset).all();
+    const totalRow=binds.length?await env.DB.prepare("SELECT COUNT(*) AS total FROM chaos_conversations c JOIN users u ON u.id=c.user_id"+where).bind(...binds).first():await env.DB.prepare("SELECT COUNT(*) AS total FROM chaos_conversations c JOIN users u ON u.id=c.user_id"+where).first();
+    const total=Number(totalRow?.total||0);
+    await audit(env,user,"chaos.admin_archive.list","chaos_conversation",null,{status,query:!!q,offset,limit,result_count:results?.length||0,total});
+    return json({conversations:results||[],status,total,offset,limit},200,origin);
+  }
+  const adminChaosConversationMessages=url.pathname.match(/^\/api\/admin\/chaos\/conversations\/([a-f0-9-]{36})\/messages$/i);
+  if(adminChaosConversationMessages&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const id=adminChaosConversationMessages[1];
+    const conversation=await env.DB.prepare("SELECT c.id,c.user_id,c.title,c.mood,c.created_at,c.updated_at,c.deleted_at,u.username,u.display_name FROM chaos_conversations c JOIN users u ON u.id=c.user_id WHERE c.id=?").bind(id).first();
+    if(!conversation)return json({error:"Conversation not found."},404,origin);
+    const {results}=await env.DB.prepare("SELECT id,role,content,mood,created_at FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id ASC LIMIT 500").bind(id,conversation.user_id).all();
+    await audit(env,user,"chaos.admin_archive.view","chaos_conversation",id,{owner_id:conversation.user_id,username:conversation.username,deleted:!!conversation.deleted_at});
+    return json({conversation,messages:results||[]},200,origin);
+  }
+  const adminChaosConversationMatch=url.pathname.match(/^\/api\/admin\/chaos\/conversations\/([a-f0-9-]{36})$/i);
+  if(adminChaosConversationMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const id=adminChaosConversationMatch[1],action=body.action;
+    const row=await env.DB.prepare("SELECT id,user_id,deleted_at FROM chaos_conversations WHERE id=?").bind(id).first();
+    if(!row)return json({error:"Conversation not found."},404,origin);
+    if(action==="restore"){
+      const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
+      const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND deleted_at IS NOT NULL AND deleted_at>?").bind(id,cutoff).run();
+      if(!result.meta?.changes)return json({error:"Conversation not found or its 30-day recovery period has expired."},404,origin);
+    }else if(action==="delete"){
+      if(row.deleted_at)return json({error:"Conversation is already in Recently Deleted."},409,origin);
+      await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=? WHERE id=? AND deleted_at IS NULL").bind(new Date().toISOString(),id).run();
+    }else if(action==="purge"){
+      if(!row.deleted_at)return json({error:"Move the conversation to Recently Deleted before permanently purging it."},409,origin);
+      await env.DB.prepare("DELETE FROM chaos_conversations WHERE id=?").bind(id).run();
+    }else return json({error:"Action must be restore, delete, or purge."},400,origin);
+    await audit(env,user,"chaos.admin_archive."+action,"chaos_conversation",id,{owner_id:row.user_id});
+    return json({ok:true},200,origin);
+  }
+
   // Miss Chaos: authenticated AI chat with private, persistent per-user conversations.
   if(url.pathname==="/api/chaos/conversations"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
-    const {results}=await env.DB.prepare("SELECT id,title,mood,created_at,updated_at FROM chaos_conversations WHERE user_id=? ORDER BY updated_at DESC LIMIT 50").bind(user.id).all();
+    const deleted=url.searchParams.get("deleted")==="1";
+    const {results}=await env.DB.prepare("SELECT id,title,mood,created_at,updated_at,deleted_at FROM chaos_conversations WHERE user_id=? AND "+(deleted?"deleted_at IS NOT NULL":"deleted_at IS NULL")+" ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
     return json({conversations:results||[]},200,origin);
   }
   if(url.pathname==="/api/chaos/conversations"&&request.method==="POST"){
@@ -116,19 +166,27 @@ export default { async fetch(request, env) {
   const chaosConversationDeleteMatch=url.pathname.match(/^\/api\/chaos\/conversations\/([a-f0-9-]{36})$/i);
   if(chaosConversationDeleteMatch&&request.method==="DELETE"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
-    const conversationId=chaosConversationDeleteMatch[1];
-    const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id).first();
-    if(!conversation)return json({error:"Conversation not found."},404,origin);
-    await env.DB.batch([
-      env.DB.prepare("DELETE FROM chaos_messages WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id),
-      env.DB.prepare("DELETE FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id)
-    ]);
+    const conversationId=chaosConversationDeleteMatch[1],now=new Date().toISOString();
+    const conversation=await env.DB.prepare("SELECT id,deleted_at FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id).first();
+    if(!conversation||conversation.deleted_at)return json({error:"Conversation not found."},404,origin);
+    await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(now,conversationId,user.id).run();
+    await audit(env,user,"chaos.conversation.soft_delete","chaos_conversation",conversationId,{retention_days:30});
+    return json({ok:true,deleted_at:now,retention_days:30},200,origin);
+  }
+  if(chaosConversationDeleteMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(body.action!=="restore")return json({error:"Invalid conversation action."},400,origin);
+    const id=chaosConversationDeleteMatch[1],cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString();
+    const result=await env.DB.prepare("UPDATE chaos_conversations SET deleted_at=NULL WHERE id=? AND user_id=? AND deleted_at IS NOT NULL AND deleted_at>?").bind(id,user.id,cutoff).run();
+    if(!result.meta?.changes)return json({error:"Conversation not found or its 30-day recovery period has expired."},404,origin);
+    await audit(env,user,"chaos.conversation.restore","chaos_conversation",id,{});
     return json({ok:true},200,origin);
   }
   const chaosConversationMatch=url.pathname.match(/^\/api\/chaos\/conversations\/([a-f0-9-]{36})\/messages$/i);
   if(chaosConversationMatch&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
-    const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=?").bind(chaosConversationMatch[1],user.id).first();
+    const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(chaosConversationMatch[1],user.id).first();
     if(!conversation)return json({error:"Conversation not found."},404,origin);
     const {results}=await env.DB.prepare("SELECT id,role,content,mood,created_at FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id ASC LIMIT 200").bind(conversation.id,user.id).all();
     return json({messages:results||[]},200,origin);
@@ -143,7 +201,7 @@ export default { async fetch(request, env) {
     let conversationId=typeof body.conversation_id==="string"?body.conversation_id:"";
     if(!message||message.length>4000)return json({error:"Message must be between 1 and 4000 characters."},400,origin);
     let conversation=null;
-    if(conversationId){conversation=await env.DB.prepare("SELECT id,title FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id).first();if(!conversation)return json({error:"Conversation not found."},404,origin);}
+    if(conversationId){conversation=await env.DB.prepare("SELECT id,title FROM chaos_conversations WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(conversationId,user.id).first();if(!conversation)return json({error:"Conversation not found."},404,origin);}
     else {conversationId=crypto.randomUUID();const now=new Date().toISOString();await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,message.slice(0,64),"default",now,now).run();conversation={id:conversationId,title:message.slice(0,64)};}
     const {results:history}=await env.DB.prepare("SELECT role,content FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id DESC LIMIT 12").bind(conversationId,user.id).all();
     const moodGuidance={

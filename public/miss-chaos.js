@@ -5,7 +5,7 @@
   const messagesEl = $("#chat-messages"), listEl = $("#conversation-list");
   const form = $("#chat-form"), input = $("#message-input"), sendButton = $("#send-button");
   const errorEl = $("#chat-error"), statusEl = $("#engine-status"), moodSelect = $("#mood");
-  let activeConversation = null, busy = false, speakReplies = false;
+  let activeConversation = null, busy = false, speakReplies = false, showDeleted = false, adminViewing = false, isAdmin = false;
   const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",custom:"Custom"};
 
   async function request(path, options = {}) {
@@ -46,49 +46,26 @@
   }
   function renderConversationList(items) {
     listEl.replaceChildren();
-    if (!items.length) {
-      const empty = document.createElement("p"); empty.className = "muted"; empty.textContent = "No conversations yet. Make some trouble."; listEl.append(empty); return;
-    }
-    for (const item of items) {
-      const row = document.createElement("div");
-      row.className = "conversation-row";
-      const openButton = document.createElement("button");
-      openButton.type = "button";
-      openButton.className = "conversation-item" + (item.id === activeConversation ? " active" : "");
-      openButton.textContent = item.title || "Untitled conversation";
-      openButton.title = openButton.textContent;
-      openButton.addEventListener("click", () => openConversation(item.id));
-      const deleteButton = document.createElement("button");
-      deleteButton.type = "button";
-      deleteButton.className = "conversation-delete";
-      deleteButton.textContent = "×";
-      deleteButton.title = "Delete conversation";
-      deleteButton.setAttribute("aria-label", "Delete conversation: " + openButton.textContent);
-      deleteButton.addEventListener("click", async () => {
-        if (busy) { showError("Wait until Miss Chaos finishes replying before deleting a conversation."); return; }
-        if (!window.confirm("Permanently delete this conversation and its messages? This cannot be undone.")) return;
-        deleteButton.disabled = true;
-        showError("");
-        try {
-          await request("/api/chaos/conversations/" + encodeURIComponent(item.id), {method:"DELETE"});
-          const wasActive = activeConversation === item.id;
-          if (wasActive) activeConversation = null;
-          const remaining = await refreshConversations();
-          if (wasActive) {
-            if (remaining.length) await openConversation(remaining[0].id);
-            else showWelcome();
-          }
-        } catch (error) {
-          showError(error.message || "Couldn't delete this conversation.");
-          deleteButton.disabled = false;
-        }
-      });
-      row.append(openButton, deleteButton);
+    if (!items.length) { const p=document.createElement("p");p.className="muted";p.textContent=showDeleted?"Nothing in Recently Deleted.":"No conversations yet. Make some trouble.";listEl.append(p);return; }
+    for(const item of items){
+      const row=document.createElement("div");row.className="conversation-row";
+      const open=document.createElement("button");open.type="button";open.className="conversation-item"+(item.id===activeConversation?" active":"");open.textContent=item.title||"Untitled conversation";open.title=open.textContent;
+      if(showDeleted){
+        open.disabled=true;
+        const restore=document.createElement("button");restore.type="button";restore.className="conversation-restore";restore.textContent="↶";restore.title="Restore conversation";
+        restore.addEventListener("click",async()=>{restore.disabled=true;try{await request("/api/chaos/conversations/"+encodeURIComponent(item.id),{method:"PATCH",body:JSON.stringify({action:"restore"})});await refreshConversations();showError("");}catch(e){showError(e.message);restore.disabled=false;}});
+        row.append(open,restore);
+      }else{
+        open.addEventListener("click",()=>openConversation(item.id));
+        const del=document.createElement("button");del.type="button";del.className="conversation-delete";del.textContent="×";del.title="Move to Recently Deleted";del.setAttribute("aria-label","Delete conversation: "+open.textContent);
+        del.addEventListener("click",async()=>{if(busy){showError("Wait until Miss Chaos finishes replying before deleting a conversation.");return;}if(!confirm("Move this conversation to Recently Deleted? You can restore it for 30 days before permanent deletion."))return;del.disabled=true;showError("");try{await request("/api/chaos/conversations/"+encodeURIComponent(item.id),{method:"DELETE"});const wasActive=activeConversation===item.id;if(wasActive){activeConversation=null;adminViewing=false;}const remaining=await refreshConversations();if(wasActive){if(remaining.length)await openConversation(remaining[0].id);else showWelcome();}}catch(e){showError(e.message);del.disabled=false;}});
+        row.append(open,del);
+      }
       listEl.append(row);
     }
   }
   async function refreshConversations() {
-    const data = await request("/api/chaos/conversations");
+    const data = await request("/api/chaos/conversations" + (showDeleted ? "?deleted=1" : ""));
     renderConversationList(data.conversations || []);
     return data.conversations || [];
   }
@@ -160,7 +137,7 @@
     return memories;
   }
   async function openConversation(id) {
-    showError("");
+    adminViewing=false;input.disabled=false;sendButton.disabled=busy;showError("");
     const data = await request("/api/chaos/conversations/" + encodeURIComponent(id) + "/messages");
     activeConversation = id;
     messagesEl.replaceChildren();
@@ -171,18 +148,61 @@
     scrollToBottom();
   }
   async function newConversation() {
-    showError("");
+    adminViewing=false;input.disabled=false;sendButton.disabled=busy;showError("");
     const data = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
     activeConversation = data.conversation.id;
     showWelcome();
     await refreshConversations();
     input.focus();
   }
+  const adminSearch=$("#admin-chaos-search"),adminFilter=$("#admin-chaos-status"),adminList=$("#admin-chaos-list"),adminMessage=$("#admin-chaos-status-message");
+  let adminOffset=0; const adminPageSize=100;
+  function archiveStatus(text,error=false){adminMessage.textContent=text;adminMessage.classList.toggle("error",error);adminMessage.hidden=!text;}
+  async function refreshAdminArchive(){
+    if(!isAdmin)return [];
+    archiveStatus("Loading archive…");
+    try{
+      const query=new URLSearchParams({status:adminFilter.value,q:adminSearch.value.trim(),offset:String(adminOffset),limit:String(adminPageSize)});
+      const data=await request("/api/admin/chaos/conversations?"+query.toString()),items=data.conversations||[];
+      adminList.replaceChildren();
+      if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent="No conversations match this filter.";adminList.append(p);}
+      for(const item of items){
+        const card=document.createElement("article");card.className="admin-chaos-card";
+        const title=document.createElement("strong");title.textContent=item.title||"Untitled conversation";
+        const meta=document.createElement("p");meta.className="admin-chaos-meta";meta.textContent="@"+item.username+" · "+item.message_count+" messages · "+(item.deleted_at?"Deleted "+new Date(item.deleted_at).toLocaleString():"Active");
+        const actions=document.createElement("div");actions.className="admin-chaos-actions";
+        const view=document.createElement("button");view.type="button";view.textContent="View";view.addEventListener("click",()=>adminOpenConversation(item.id));actions.append(view);
+        function addAction(action,label,confirmText){
+          const b=document.createElement("button");b.type="button";b.textContent=label;b.addEventListener("click",async()=>{if(confirmText&&!confirm(confirmText))return;b.disabled=true;archiveStatus("");try{await request("/api/admin/chaos/conversations/"+encodeURIComponent(item.id),{method:"PATCH",body:JSON.stringify({action})});await refreshAdminArchive();}catch(e){archiveStatus(e.message||"Archive action failed.",true);b.disabled=false;}});actions.append(b);
+        }
+        if(item.deleted_at){addAction("restore","Restore");addAction("purge","Permanently delete","Permanently erase this conversation and all its messages? This cannot be undone.");}
+        else addAction("delete","Move to Recently Deleted","Move this user's conversation to Recently Deleted for 30 days?");
+        card.append(title,meta,actions);adminList.append(card);
+      }
+      const total=Number(data.total||0);$("#admin-chaos-page").textContent=total?("Showing "+(adminOffset+1)+"–"+Math.min(adminOffset+items.length,total)+" of "+total):"No results";$("#admin-chaos-prev").disabled=adminOffset===0;$("#admin-chaos-next").disabled=adminOffset+items.length>=total;archiveStatus(total+" conversation(s) found. Use Next to browse every result.");return items;
+    }catch(e){archiveStatus(e.message||"Couldn't load the archive.",true);return [];}
+  }
+  async function adminOpenConversation(id){
+    showError("");adminViewing=true;activeConversation=null;input.disabled=true;sendButton.disabled=true;
+    try{
+      const data=await request("/api/admin/chaos/conversations/"+encodeURIComponent(id)+"/messages");
+      messagesEl.replaceChildren();
+      const intro=document.createElement("div");intro.className="welcome-card";
+      const eyebrow=document.createElement("p");eyebrow.className="eyebrow";eyebrow.textContent="ADMIN ARCHIVE · @"+data.conversation.username;
+      const title=document.createElement("h2");title.textContent=data.conversation.title||"Untitled conversation";
+      const note=document.createElement("p");note.textContent="Read-only administrator view. Sending messages is disabled.";
+      intro.append(eyebrow,title,note);messagesEl.append(intro);
+      for(const m of (data.messages||[]))addMessage(m.role,m.content,(m.role==="assistant"?"Miss Chaos":"User")+" · "+new Date(m.created_at).toLocaleString());
+      scrollToBottom();
+    }catch(e){showError(e.message||"Couldn't load this conversation.");}
+  }
   async function init() {
     try {
       statusEl.textContent = "Checking connection…";
       const me = await request("/api/auth/me");
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
+      isAdmin = me.user.role === "admin";
+      if (isAdmin) { $("#admin-chaos-archive").hidden = false; await refreshAdminArchive(); }
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
         refreshConversations(),
@@ -196,7 +216,13 @@
       showError(error.message || "Couldn't load Miss Chaos. Please refresh and try again.");
     }
   }
-  $("#new-chat").addEventListener("click", async () => { try { await newConversation(); } catch (e) { showError(e.message); } });
+  $("#new-chat").addEventListener("click", async () => { try { showDeleted=false; $("#show-deleted").setAttribute("aria-pressed","false"); $("#show-deleted").textContent="Recently Deleted"; await newConversation(); } catch (e) { showError(e.message); } });
+  $("#show-deleted").addEventListener("click",async()=>{showDeleted=!showDeleted;$("#show-deleted").setAttribute("aria-pressed",String(showDeleted));$("#show-deleted").textContent=showDeleted?"← Back to conversations":"Recently Deleted";try{await refreshConversations();}catch(e){showError(e.message);}});
+  $("#admin-chaos-refresh").addEventListener("click",()=>{adminOffset=0;refreshAdminArchive();});
+  $("#admin-chaos-status").addEventListener("change",()=>{adminOffset=0;refreshAdminArchive();});
+  $("#admin-chaos-prev").addEventListener("click",()=>{adminOffset=Math.max(0,adminOffset-adminPageSize);refreshAdminArchive();});
+  $("#admin-chaos-next").addEventListener("click",()=>{adminOffset+=adminPageSize;refreshAdminArchive();});
+  let archiveSearchTimer; $("#admin-chaos-search").addEventListener("input",()=>{clearTimeout(archiveSearchTimer);adminOffset=0;archiveSearchTimer=setTimeout(refreshAdminArchive,250);});
   moodSelect.value = localStorage.getItem("missChaosMood") || "default";
   moodSelect.addEventListener("change", () => localStorage.setItem("missChaosMood", moodSelect.value));
   input.addEventListener("input", () => {
@@ -210,6 +236,7 @@
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = input.value.trim();
+    if (adminViewing) { showError("Administrator archive is read-only. Open one of your own conversations to chat."); return; }
     if (!message || busy) return;
     busy = true; sendButton.disabled = true; showError("");
     input.value = ""; input.dispatchEvent(new Event("input"));

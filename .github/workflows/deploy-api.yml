@@ -39,9 +39,14 @@ jobs:
               print('Discover route escaping pattern not found; deployment continues for unrelated backend changes.')
           PY
 
-      # Production D1 is already aligned with the checked-in migrations.
-      # Keep schema changes separate from Worker deployment so CI does not
-      # require direct D1 API access just to publish application code.
+      - name: Apply production D1 migrations
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 migrations apply knightfall-forum --remote
+
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:
