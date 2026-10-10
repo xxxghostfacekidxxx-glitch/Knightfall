@@ -86,3 +86,37 @@
 .admin-pagination{display:flex;align-items:center;justify-content:space-between;gap:.35rem;margin-top:.55rem;color:#a79ba5;font-size:.64rem}
 .admin-pagination button{border:1px solid #453326;border-radius:6px;background:#1a1510;color:#e8dfe9;padding:.38rem .45rem;font-size:.64rem;cursor:pointer}
 .admin-pagination button:disabled{opacity:.4;cursor:default}
+
+
+/* Conversation search, rename actions, and small-screen usability */
+.conversation-search{box-sizing:border-box;width:100%;min-width:0;margin:.65rem 0 .2rem;border:1px solid #3b3028;border-radius:9px;background:#0b0b0b;color:#f5f0f7;padding:.68rem .72rem;font:inherit;font-size:.78rem;outline-offset:2px}
+.conversation-search:focus-visible{outline:2px solid #f06a0a;border-color:#f06a0a}
+.conversation-search-hint{font-size:.64rem;line-height:1.45;color:#8f8797;margin:.1rem 0 .4rem}
+.conversation-rename{flex:0 0 30px;align-self:stretch;border:1px solid transparent;border-radius:8px;background:transparent;color:#9b8f88;font-size:.9rem;cursor:pointer}
+.conversation-rename:hover,.conversation-rename:focus-visible{border-color:#7d3c12;background:#24120e;color:#ffb16e}
+.conversation-rename:disabled{opacity:.45;cursor:wait}
+@media(max-width:760px){
+  .chaos-shell{width:100%;box-sizing:border-box;padding:.55rem;gap:.65rem;grid-template-columns:minmax(0,1fr)}
+  .chaos-sidebar{min-height:0;padding:.85rem;border-radius:14px;max-height:none}
+  .sidebar-title{margin:.8rem 0 .65rem}
+  .conversation-list{display:flex;gap:.45rem;max-height:none;overflow-x:auto;overflow-y:hidden;padding:.15rem 0 .4rem;scroll-snap-type:x proximity}
+  .conversation-row{max-width:min(82vw,320px);scroll-snap-align:start}
+  .conversation-row .conversation-item{max-width:220px}
+  .conversation-search{font-size:16px}
+  .chat-panel{min-height:70dvh;border-radius:14px}
+  .chat-topbar{position:relative;gap:.5rem;padding:.8rem;align-items:center}
+  .chaos-identity{min-width:0;gap:.55rem}.chaos-identity>div:last-child{min-width:0}.chaos-identity h1{font-size:1.1rem}
+  .chaos-identity .eyebrow{font-size:.52rem;letter-spacing:.12em}
+  .chaos-avatar{width:40px;height:40px;flex:0 0 40px}
+  .mood-control{flex:0 0 auto}.mood-control select{max-width:112px;min-height:40px;font-size:16px}
+  .chat-messages{min-height:42dvh;padding:.8rem .65rem;overscroll-behavior:contain}
+  .composer{position:sticky;bottom:0;z-index:2;margin:0;padding:.55rem .55rem calc(.55rem + env(safe-area-inset-bottom));background:#0b0b0bf5;backdrop-filter:blur(12px)}
+  #message-input{font-size:16px;max-height:140px}
+  .composer-actions button{min-width:42px;min-height:42px}
+  .send-button{min-height:42px}
+  .privacy-note{padding:0 .75rem .7rem;font-size:.66rem}
+  .chat-error{margin:0 .65rem .5rem}
+  .memory-card{min-width:0}.memory-list{display:grid;overflow:visible;max-height:220px}
+  .admin-chaos-list{max-height:260px}
+}
+@media(max-width:390px){.chat-topbar{align-items:flex-start;flex-wrap:wrap}.mood-control{margin-left:3.1rem}.conversation-row .conversation-item{max-width:160px}.composer{margin:0 .4rem}}
