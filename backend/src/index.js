@@ -228,8 +228,12 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       philosophical:"Explore ideas carefully, ask meaningful questions when useful, and distinguish facts from speculation.",
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
-    const {results:memories}=await env.DB.prepare("SELECT memory,category FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 20").bind(user.id).all();
-    const memoryContext=(memories||[]).map(m=>"- ["+m.category+"] "+m.memory).join("\n");
+    const {results:allMemories}=await env.DB.prepare("SELECT memory,category,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
+    const stopWords=new Set(["the","and","for","that","with","this","from","have","your","you","are","was","were","what","when","where","why","how","about","into","then","them","they","their","there","here","can","could","would","should","will","just","not","but","our","out","all","any","who","its","it's","too","also","than","has","had","does","did","been","being","get","got","make","made","like","know","tell","please"]);
+    const continuityText=[message,conversation?.title||"",...(history||[]).slice(0,6).map(m=>m.content)].join(" ").toLowerCase();
+    const queryTokens=new Set((continuityText.match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));
+    const memories=(allMemories||[]).map((m,index)=>{const tokens=new Set((String(m.memory).toLowerCase().match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));let score=0;for(const token of queryTokens)if(tokens.has(token))score+=1;return {...m,index,score};}).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,20);
+    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
     const personality = {};
     for (const key of CHAOS_PERSONALITY_KEYS) personality[key] = await getSetting(env, key);
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
