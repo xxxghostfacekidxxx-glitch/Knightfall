@@ -6,6 +6,8 @@ Cloudflare Worker backend for Knightfall.
 
 - `GET /health` - service health check
 - `GET /api/categories` - forum categories
+- `GET /api/adult/status` and `POST /api/adult/confirm` - account-bound 18+ self-attestation (30-day TTL)
+- `GET /api/categories` hides the `adults-only` category until age confirmation; adult thread reads, creation, replies, and owner edits are checked server-side
 - `GET /api/members` - member listing
 - `GET /api/users/:username` - public profile
 - `GET /api/threads` - forum thread collection
