@@ -105,16 +105,16 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(url.pathname==="/api/admin/chaos/conversations"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     const status=["active","deleted","all"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"active";
-    const q=String(url.searchParams.get("q")||"").trim().slice(0,100),like="%"+q.replace(/[%_]/g,"\\  // Miss Chaos: authenticated AI chat with private, persistent per-user conversations.")+"%";
+    const q=String(url.searchParams.get("q")||"").trim().slice(0,100),like="%"+q+"%";
     const clauses=[],binds=[];
     if(status==="active")clauses.push("c.deleted_at IS NULL");else if(status==="deleted")clauses.push("c.deleted_at IS NOT NULL");
-    if(q){clauses.push("(c.title LIKE ? ESCAPE '\\\\' OR u.username LIKE ? ESCAPE '\\\\' OR CAST(c.user_id AS TEXT) LIKE ? ESCAPE '\\\\')");binds.push(like,like,like);}
+    if(q){clauses.push("(c.title LIKE ? OR u.username LIKE ? OR CAST(c.user_id AS TEXT) LIKE ?)");binds.push(like,like,like);}
     const sql="SELECT c.id,c.user_id,c.title,c.mood,c.created_at,c.updated_at,c.deleted_at,u.username,u.display_name,(SELECT COUNT(*) FROM chaos_messages m WHERE m.conversation_id=c.id AND m.user_id=c.user_id) AS message_count FROM chaos_conversations c JOIN users u ON u.id=c.user_id "+(clauses.length?"WHERE "+clauses.join(" AND "):"")+" ORDER BY COALESCE(c.deleted_at,c.updated_at) DESC LIMIT 250";
     const {results}=binds.length?await env.DB.prepare(sql).bind(...binds).all():await env.DB.prepare(sql).all();
     await audit(env,user,"chaos.admin_archive.list","chaos_conversation",null,{status,query:!!q,result_count:results?.length||0});
     return json({conversations:results||[],status},200,origin);
   }
-  const adminChaosConversationMessages=url.pathname.match(/^\\/api\\/admin\\/chaos\\/conversations\\/([a-f0-9-]{36})\\/messages$/i);
+  const adminChaosConversationMessages=url.pathname.match(/^\/api\/admin\/chaos\/conversations\/([a-f0-9-]{36})\/messages$/i);
   if(adminChaosConversationMessages&&request.method==="GET"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     const id=adminChaosConversationMessages[1];
@@ -124,7 +124,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await audit(env,user,"chaos.admin_archive.view","chaos_conversation",id,{owner_id:conversation.user_id,username:conversation.username,deleted:!!conversation.deleted_at});
     return json({conversation,messages:results||[]},200,origin);
   }
-  const adminChaosConversationMatch=url.pathname.match(/^\\/api\\/admin\\/chaos\\/conversations\\/([a-f0-9-]{36})$/i);
+  const adminChaosConversationMatch=url.pathname.match(/^\/api\/admin\/chaos\/conversations\/([a-f0-9-]{36})$/i);
   if(adminChaosConversationMatch&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
