@@ -8,7 +8,7 @@ The Ash-Fall community site and its Cloudflare Pages frontend.
 - `public/index.html` - landing page
 - `public/homepage.html` - forum/community page
 - `public/*.css` - page styles
-- `backend/` - reserved for backend work; it is not part of the public Pages output
+- `backend/` - Cloudflare Worker API and D1 migrations; excluded from the public Pages output
 - `wrangler.jsonc` - Cloudflare Pages configuration
 - `GitHub CodeQL default setup` - JavaScript/TypeScript security analysis
 
