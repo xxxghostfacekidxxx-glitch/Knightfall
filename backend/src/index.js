@@ -195,7 +195,12 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const publicInfo=!!publicMatch&&!publicChat;
  const ownerChat=!!ownerMatch&&path.endsWith("/chat");
  const ownerItem=!!ownerMatch&&!ownerChat;
- if(path!==collection&&!publicMatch&&!ownerMatch)return null;
+ if(path!==collection&&path!=="/api/public-bots"&&!publicMatch&&!ownerMatch)return null;
+ if(path==="/api/public-bots"&&request.method==="GET"){
+  const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
+  const rows=q?await env.DB.prepare("SELECT b.id,b.name,b.description,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' AND (b.name LIKE ? OR b.description LIKE ?) ORDER BY b.updated_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%").all():await env.DB.prepare("SELECT b.id,b.name,b.description,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' ORDER BY b.updated_at DESC LIMIT 100").all();
+  return json({bots:(rows.results||[]).map(b=>({id:b.id,name:b.name,description:b.description,owner_username:b.owner_username,updated_at:b.updated_at,url:"/bot.html?id="+b.id}))},200,origin);
+ }
  if(publicInfo&&request.method==="GET"){
   const bot=await env.DB.prepare("SELECT b.id,b.name,b.description,b.owner_id,b.is_public,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.id=? AND b.is_public=1 AND u.status='active'").bind(publicMatch[1]).first();
   if(!bot)return json({error:"This bot is private or no longer available."},404,origin);
