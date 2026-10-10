@@ -50,13 +50,41 @@
       const empty = document.createElement("p"); empty.className = "muted"; empty.textContent = "No conversations yet. Make some trouble."; listEl.append(empty); return;
     }
     for (const item of items) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "conversation-item" + (item.id === activeConversation ? " active" : "");
-      button.textContent = item.title || "Untitled conversation";
-      button.title = button.textContent;
-      button.addEventListener("click", () => openConversation(item.id));
-      listEl.append(button);
+      const row = document.createElement("div");
+      row.className = "conversation-row";
+      const openButton = document.createElement("button");
+      openButton.type = "button";
+      openButton.className = "conversation-item" + (item.id === activeConversation ? " active" : "");
+      openButton.textContent = item.title || "Untitled conversation";
+      openButton.title = openButton.textContent;
+      openButton.addEventListener("click", () => openConversation(item.id));
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "conversation-delete";
+      deleteButton.textContent = "×";
+      deleteButton.title = "Delete conversation";
+      deleteButton.setAttribute("aria-label", "Delete conversation: " + openButton.textContent);
+      deleteButton.addEventListener("click", async () => {
+        if (busy) { showError("Wait until Miss Chaos finishes replying before deleting a conversation."); return; }
+        if (!window.confirm("Permanently delete this conversation and its messages? This cannot be undone.")) return;
+        deleteButton.disabled = true;
+        showError("");
+        try {
+          await request("/api/chaos/conversations/" + encodeURIComponent(item.id), {method:"DELETE"});
+          const wasActive = activeConversation === item.id;
+          if (wasActive) activeConversation = null;
+          const remaining = await refreshConversations();
+          if (wasActive) {
+            if (remaining.length) await openConversation(remaining[0].id);
+            else showWelcome();
+          }
+        } catch (error) {
+          showError(error.message || "Couldn't delete this conversation.");
+          deleteButton.disabled = false;
+        }
+      });
+      row.append(openButton, deleteButton);
+      listEl.append(row);
     }
   }
   async function refreshConversations() {
