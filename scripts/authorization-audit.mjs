@@ -108,20 +108,33 @@ for (const [route, method] of moderatorRoutes) {
 }
 
 for (const [route, method, requiredRole] of protectedMutations) {
+  // Probe denial boundaries only. Some valid writes (read-all notifications, thread
+  // deletion, session revocation, category deletion) are destructive in production.
   const unauth = await request(route, null, method);
   assertStatus(unauth.status, [401,403], `unauthenticated protected ${method} ${route}`);
-  const member = await request(route, cookies.member, method);
-  if (requiredRole === "member") {
-    if ([401,403].includes(member.status)) throw new Error(`member unexpectedly denied ${method} ${route}: ${member.status} ${member.body.slice(0,160)}`);
-  } else assertStatus(member.status, [401,403], `member denied ${requiredRole} ${method} ${route}`);
-  if (requiredRole === "moderator") {
-    const moderator = await request(route, cookies.moderator, method);
-    if ([401,403].includes(moderator.status)) throw new Error(`moderator unexpectedly denied ${method} ${route}: ${moderator.status} ${moderator.body.slice(0,160)}`);
-  } else if (requiredRole === "admin") {
+  if (requiredRole === "moderator" || requiredRole === "admin") {
+    const member = await request(route, cookies.member, method);
+    assertStatus(member.status, [401,403], `member denied ${requiredRole} ${method} ${route}`);
+  }
+  if (requiredRole === "admin") {
     const moderator = await request(route, cookies.moderator, method);
     assertStatus(moderator.status, [401,403], `moderator denied admin ${method} ${route}`);
   }
-  const admin = await request(route, cookies.admin, method);
-  if ([401,403].includes(admin.status)) throw new Error(`admin unexpectedly denied ${method} ${route}: ${admin.status} ${admin.body.slice(0,160)}`);
 }
+
+for (const role of ["member", "moderator", "admin"]) {
+  const shop = await request("/api/my-shop", cookies[role], "GET");
+  if (shop.status !== 200) throw new Error(`${role} cannot access their own shop workspace: HTTP ${shop.status} ${shop.body.slice(0,160)}`);
+  console.log(`PASS ${role} own shop workspace -> ${shop.status}`);
+}
+const anonymousBots = await request("/api/personal-bots", null, "GET");
+assertStatus(anonymousBots.status, [401,403], "anonymous personal bot workspace");
+const memberBots = await request("/api/personal-bots", cookies.member, "GET");
+assertStatus(memberBots.status, [401,403], "member denied personal bot workspace");
+for (const role of ["moderator", "admin"]) {
+  const bots = await request("/api/personal-bots", cookies[role], "GET");
+  if (bots.status !== 200) throw new Error(`${role} personal bot workspace failed: HTTP ${bots.status} ${bots.body.slice(0,160)}`);
+  console.log(`PASS ${role} personal bot workspace -> ${bots.status}`);
+}
+
 console.log("Authorization audit completed successfully.");
