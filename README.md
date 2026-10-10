@@ -37,6 +37,7 @@ The public website and backend/API are intentionally kept separate. The frontend
 ## Community features
 
 - `public/bots.html` lists public personal bots; `public/personal-bots.html` is the signed-in admin/moderator bot workspace.
+- `public/die-ary.html` provides each signed-in member with a private journal; entries are not shown on public profiles and API reads/edits/deletes are scoped to the authenticated owner.
 - `public/shops.html` lists public creator shops; `public/shop-builder.html` is the quick-build planner; `public/my-shop.html` manages a member's own catalog; `public/store.html` renders a public shop.
 - Personal bot limits are enforced by the API and the D1 `personal_bots_owner_limit` trigger: 10 for administrators and 5 for moderators.
 - Shops currently publish product catalogs only. Checkout, payment processing, taxes, order management, and automated supplier fulfillment are not active; do not present catalog listings as completed ecommerce transactions.
