@@ -4,6 +4,8 @@
   const $ = (selector) => document.querySelector(selector);
   const messagesEl = $("#chat-messages"), listEl = $("#conversation-list");
   const form = $("#chat-form"), input = $("#message-input"), sendButton = $("#send-button");
+  const conversationSearch = $("#conversation-search");
+  let conversationSearchTimer = null;
   const errorEl = $("#chat-error"), statusEl = $("#engine-status"), moodSelect = $("#mood");
   let activeConversation = null, busy = false, speakReplies = false, showDeleted = false, adminViewing = false, isAdmin = false;
   const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",custom:"Custom"};
@@ -57,15 +59,22 @@
         row.append(open,restore);
       }else{
         open.addEventListener("click",()=>openConversation(item.id));
+        const rename=document.createElement("button");rename.type="button";rename.className="conversation-rename";rename.textContent="✎";rename.title="Rename conversation";rename.setAttribute("aria-label","Rename conversation: "+open.textContent);
+        rename.addEventListener("click",async()=>{const title=window.prompt("Rename this conversation (up to 80 characters):",item.title||"");if(title===null)return;const next=title.trim();if(!next||next.length>80){showError("A conversation title must be between 1 and 80 characters.");return;}rename.disabled=true;try{await request("/api/chaos/conversations/"+encodeURIComponent(item.id),{method:"PATCH",body:JSON.stringify({action:"rename",title:next})});await refreshConversations();showError("");}catch(e){showError(e.message);rename.disabled=false;}});
         const del=document.createElement("button");del.type="button";del.className="conversation-delete";del.textContent="×";del.title="Move to Recently Deleted";del.setAttribute("aria-label","Delete conversation: "+open.textContent);
         del.addEventListener("click",async()=>{if(busy){showError("Wait until Miss Chaos finishes replying before deleting a conversation.");return;}if(!confirm("Move this conversation to Recently Deleted? You can restore it for 30 days before permanent deletion."))return;del.disabled=true;showError("");try{await request("/api/chaos/conversations/"+encodeURIComponent(item.id),{method:"DELETE"});const wasActive=activeConversation===item.id;if(wasActive){activeConversation=null;adminViewing=false;}const remaining=await refreshConversations();if(wasActive){if(remaining.length)await openConversation(remaining[0].id);else showWelcome();}}catch(e){showError(e.message);del.disabled=false;}});
-        row.append(open,del);
+        row.append(open,rename,del);
       }
       listEl.append(row);
     }
   }
   async function refreshConversations() {
-    const data = await request("/api/chaos/conversations" + (showDeleted ? "?deleted=1" : ""));
+    const params=new URLSearchParams();
+    if(showDeleted)params.set("deleted","1");
+    const query=conversationSearch?.value.trim();
+    if(query)params.set("q",query);
+    const suffix=params.toString()?"?"+params.toString():"";
+    const data = await request("/api/chaos/conversations" + suffix);
     renderConversationList(data.conversations || []);
     return data.conversations || [];
   }
@@ -143,8 +152,7 @@
     messagesEl.replaceChildren();
     if (!(data.messages || []).length) showWelcome();
     else for (const message of data.messages) addMessage(message.role, message.content, message.role === "assistant" ? "Miss Chaos · " + (moodNames[message.mood] || "Default") : "You");
-    const items = await request("/api/chaos/conversations");
-    renderConversationList(items.conversations || []);
+    await refreshConversations();
     scrollToBottom();
   }
   async function newConversation() {
@@ -218,6 +226,7 @@
   }
   $("#new-chat").addEventListener("click", async () => { try { showDeleted=false; $("#show-deleted").setAttribute("aria-pressed","false"); $("#show-deleted").textContent="Recently Deleted"; await newConversation(); } catch (e) { showError(e.message); } });
   $("#show-deleted").addEventListener("click",async()=>{showDeleted=!showDeleted;$("#show-deleted").setAttribute("aria-pressed",String(showDeleted));$("#show-deleted").textContent=showDeleted?"← Back to conversations":"Recently Deleted";try{await refreshConversations();}catch(e){showError(e.message);}});
+  conversationSearch?.addEventListener("input",()=>{clearTimeout(conversationSearchTimer);conversationSearchTimer=setTimeout(async()=>{try{await refreshConversations();}catch(e){showError(e.message);}},220);});
   $("#admin-chaos-refresh").addEventListener("click",()=>{adminOffset=0;refreshAdminArchive();});
   $("#admin-chaos-status").addEventListener("change",()=>{adminOffset=0;refreshAdminArchive();});
   $("#admin-chaos-prev").addEventListener("click",()=>{adminOffset=Math.max(0,adminOffset-adminPageSize);refreshAdminArchive();});
