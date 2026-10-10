@@ -120,3 +120,45 @@
   .admin-chaos-list{max-height:260px}
 }
 @media(max-width:390px){.chat-topbar{align-items:flex-start;flex-wrap:wrap}.mood-control{margin-left:3.1rem}.conversation-row .conversation-item{max-width:160px}.composer{margin:0 .4rem}}
+
+
+/* Mobile chat scrolling: give the transcript a real bounded flex area so
+   touch scrolling moves through messages instead of stretching the whole page. */
+@media(max-width:760px){
+  .chat-panel{
+    height:clamp(380px,68dvh,760px);
+    min-height:380px;
+    max-height:calc(100dvh - 100px);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .chat-messages{
+    flex:1 1 0;
+    height:0;
+    min-height:0;
+    max-height:none;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;
+    overscroll-behavior-y:auto;
+    scroll-behavior:auto;
+    padding-bottom:1.25rem;
+    scrollbar-gutter:stable;
+  }
+  .composer{
+    position:relative;
+    inset:auto;
+    flex:0 0 auto;
+    margin:0 .55rem;
+    padding-bottom:calc(.55rem + env(safe-area-inset-bottom, 0px));
+  }
+  .chat-error{flex:0 0 auto}
+  .privacy-note{flex:0 0 auto}
+  .message{flex-shrink:0}
+}
+@media(max-width:420px){
+  .chat-panel{height:clamp(360px,65dvh,680px);min-height:360px}
+  .chat-messages{padding:.75rem .55rem 1rem}
+}
