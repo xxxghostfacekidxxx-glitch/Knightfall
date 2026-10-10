@@ -113,6 +113,18 @@ export default { async fetch(request, env) {
     await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(id,user.id,"New conversation","default",now,now).run();
     return json({conversation:{id,title:"New conversation",mood:"default",created_at:now,updated_at:now}},201,origin);
   }
+  const chaosConversationDeleteMatch=url.pathname.match(/^\/api\/chaos\/conversations\/([a-f0-9-]{36})$/i);
+  if(chaosConversationDeleteMatch&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    const conversationId=chaosConversationDeleteMatch[1];
+    const conversation=await env.DB.prepare("SELECT id FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id).first();
+    if(!conversation)return json({error:"Conversation not found."},404,origin);
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM chaos_messages WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id),
+      env.DB.prepare("DELETE FROM chaos_conversations WHERE id=? AND user_id=?").bind(conversationId,user.id)
+    ]);
+    return json({ok:true},200,origin);
+  }
   const chaosConversationMatch=url.pathname.match(/^\/api\/chaos\/conversations\/([a-f0-9-]{36})\/messages$/i);
   if(chaosConversationMatch&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);

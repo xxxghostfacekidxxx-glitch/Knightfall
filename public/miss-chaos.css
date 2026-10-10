@@ -55,3 +55,11 @@
 .developer-form textarea{width:100%;box-sizing:border-box;resize:vertical;border:1px solid #3b3028;border-radius:8px;background:#0b0b0b;color:#f5f0f7;padding:.6rem;font:inherit;font-size:.75rem}
 .developer-form label small{font-size:.62rem;color:#8f8797}
 .developer-form button:disabled{opacity:.6;cursor:wait}
+
+/* Conversation history delete controls */
+.conversation-row{display:flex;align-items:stretch;gap:.25rem;min-width:0}
+.conversation-row .conversation-item{flex:1;min-width:0}
+.conversation-delete{flex:0 0 32px;align-self:stretch;border:1px solid transparent;border-radius:8px;background:transparent;color:#9b8f88;font-size:1.2rem;line-height:1;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.conversation-delete:hover,.conversation-delete:focus-visible{border-color:#7d3c12;background:#24120e;color:#ff9a52}
+.conversation-delete:disabled{opacity:.45;cursor:wait}
+@media(max-width:760px){.conversation-row{min-width:0;max-width:240px;flex:0 0 auto}.conversation-row .conversation-item{min-width:0;max-width:none}.conversation-delete{flex-basis:30px}}
