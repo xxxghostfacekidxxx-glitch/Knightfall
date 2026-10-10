@@ -60,6 +60,8 @@ jobs:
           test "$settings_code" = 200
           maintenance=false
           if grep -q '"maintenance_mode":"true"' "$body"; then maintenance=true; fi
+          chaos_enabled=true
+          if grep -q '"feature_miss_chaos":"false"' "$body"; then chaos_enabled=false; fi
           for endpoint in /api/public-bots /api/shops /api/categories /api/threads; do
             code=$(curl -sS -o "$body" -w '%{http_code}' "$base$endpoint")
             expected=200
@@ -71,6 +73,7 @@ jobs:
           for spec in 'GET /api/admin/overview 403' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/chaos/memories 401'; do
             read -r method endpoint expected <<< "$spec"
             if [ "$maintenance" = true ] && [[ "$endpoint" != /api/admin/* && "$endpoint" != /api/vault/* ]]; then expected=503; fi
+            if [ "$endpoint" = /api/chaos/memories ] && [ "$chaos_enabled" = false ]; then expected=503; fi
             code=$(curl -sS -o "$body" -w '%{http_code}' -X "$method" "$base$endpoint")
             echo "authorization $method $endpoint=$code expected=$expected"
             test "$code" = "$expected"
