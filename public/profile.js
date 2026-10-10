@@ -144,7 +144,7 @@ async function load(){
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username)); render(d,false);
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   if(me.user?.role==="admin"&&me.user.username===d.user.username)renderDeveloperControls();
+   if(me.user?.role==="admin"&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
 }
 load();
