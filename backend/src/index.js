@@ -53,6 +53,27 @@ async function getSetting(env, key) { const row = await env.DB.prepare("SELECT v
 function slugify(value) { const base=value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80); return base||"thread"; }
 async function uniqueSlug(title, env) { const base=slugify(title); let slug=base; for(let i=2;i<100;i++){const exists=await env.DB.prepare("SELECT id FROM threads WHERE slug=?").bind(slug).first(); if(!exists)return slug; slug=`${base}-${i}`;} return `${base}-${randomToken(4)}`; }
 
+
+function chaosOwner(user){return isAdmin(user)&&user.username==="knightfall";}
+async function saveChaosConfig(env,user,key,value){const now=new Date().toISOString();await env.DB.prepare("INSERT INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(key,value,user.id,now).run();}
+async function readChaosConfig(env,key,fallback){try{const parsed=JSON.parse(await getSetting(env,key)||"");return parsed&&typeof parsed==="object"&&!Array.isArray(parsed)?parsed:fallback;}catch{return fallback;}}
+function normalizeBehaviorConfig(v){
+ if(!v||typeof v!=="object"||Array.isArray(v))return null;
+ const choices={autonomy:["strict","guided","autonomous"],challenge:["asked","warranted","adversarial"],evolution:["fixed","controlled","adaptive"],defaultMode:["automatic","standard","analytical","philosophical","chaos","supportive","confrontational","creative"]},o={};
+ for(const k of Object.keys(choices)){if(!choices[k].includes(v[k]))return null;o[k]=v[k];}
+ const modes=["standard","analytical","philosophical","chaos","supportive","confrontational","creative"],rules=["honestOpposition","contextualHumor","challengeWithoutContempt","evidenceBeforeConfidence","emotionalRecognition","intellectualIndependence","practicalCompletion"];
+ if(!v.modes||!v.rules||modes.some(k=>typeof v.modes[k]!=="boolean")||rules.some(k=>typeof v.rules[k]!=="boolean"))return null;
+ o.modes=Object.fromEntries(modes.map(k=>[k,v.modes[k]]));o.rules=Object.fromEntries(rules.map(k=>[k,v.rules[k]]));
+ if(typeof v.customRules!=="string"||v.customRules.length>5000||v.customRules.split("\n").length>20)return null;
+ o.customRules=v.customRules.split("\n").map(x=>x.trim().slice(0,240)).filter(Boolean).join("\n");return o;
+}
+function normalizeAdminLabConfig(v){
+ if(!v||typeof v!=="object"||Array.isArray(v))return null;const o={};
+ for(const k of ["chaos_wit","chaos_sarcasm","chaos_darkness","chaos_warmth","chaos_philosophy"]){const n=Number(v[k]);if(!Number.isInteger(n)||n<0||n>100)return null;o[k]=n;}
+ if(!["strict","guided","autonomous"].includes(v.autonomy)||!["asked","warranted","adversarial"].includes(v.challenge)||!["automatic","standard","analytical","philosophical","chaos","supportive","confrontational","creative"].includes(v.defaultMode)||typeof v.custom_instructions!=="string"||v.custom_instructions.length>4000)return null;
+ o.autonomy=v.autonomy;o.challenge=v.challenge;o.defaultMode=v.defaultMode;o.custom_instructions=v.custom_instructions.trim();return o;
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
