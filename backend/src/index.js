@@ -379,6 +379,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
   if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
+  if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
+  if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
