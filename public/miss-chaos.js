@@ -156,12 +156,13 @@
     input.focus();
   }
   const adminSearch=$("#admin-chaos-search"),adminFilter=$("#admin-chaos-status"),adminList=$("#admin-chaos-list"),adminMessage=$("#admin-chaos-status-message");
+  let adminOffset=0; const adminPageSize=100;
   function archiveStatus(text,error=false){adminMessage.textContent=text;adminMessage.classList.toggle("error",error);adminMessage.hidden=!text;}
   async function refreshAdminArchive(){
     if(!isAdmin)return [];
     archiveStatus("Loading archive…");
     try{
-      const query=new URLSearchParams({status:adminFilter.value,q:adminSearch.value.trim()});
+      const query=new URLSearchParams({status:adminFilter.value,q:adminSearch.value.trim(),offset:String(adminOffset),limit:String(adminPageSize)});
       const data=await request("/api/admin/chaos/conversations?"+query.toString()),items=data.conversations||[];
       adminList.replaceChildren();
       if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent="No conversations match this filter.";adminList.append(p);}
@@ -178,7 +179,7 @@
         else addAction("delete","Move to Recently Deleted","Move this user's conversation to Recently Deleted for 30 days?");
         card.append(title,meta,actions);adminList.append(card);
       }
-      archiveStatus(items.length+" conversation(s) loaded. Results are limited to 250 per query.");return items;
+      const total=Number(data.total||0);$("#admin-chaos-page").textContent=total?("Showing "+(adminOffset+1)+"–"+Math.min(adminOffset+items.length,total)+" of "+total):"No results";$("#admin-chaos-prev").disabled=adminOffset===0;$("#admin-chaos-next").disabled=adminOffset+items.length>=total;archiveStatus(total+" conversation(s) found. Use Next to browse every result.");return items;
     }catch(e){archiveStatus(e.message||"Couldn't load the archive.",true);return [];}
   }
   async function adminOpenConversation(id){
@@ -217,9 +218,11 @@
   }
   $("#new-chat").addEventListener("click", async () => { try { showDeleted=false; $("#show-deleted").setAttribute("aria-pressed","false"); $("#show-deleted").textContent="Recently Deleted"; await newConversation(); } catch (e) { showError(e.message); } });
   $("#show-deleted").addEventListener("click",async()=>{showDeleted=!showDeleted;$("#show-deleted").setAttribute("aria-pressed",String(showDeleted));$("#show-deleted").textContent=showDeleted?"← Back to conversations":"Recently Deleted";try{await refreshConversations();}catch(e){showError(e.message);}});
-  $("#admin-chaos-refresh").addEventListener("click",refreshAdminArchive);
-  $("#admin-chaos-status").addEventListener("change",refreshAdminArchive);
-  let archiveSearchTimer; $("#admin-chaos-search").addEventListener("input",()=>{clearTimeout(archiveSearchTimer);archiveSearchTimer=setTimeout(refreshAdminArchive,250);});
+  $("#admin-chaos-refresh").addEventListener("click",()=>{adminOffset=0;refreshAdminArchive();});
+  $("#admin-chaos-status").addEventListener("change",()=>{adminOffset=0;refreshAdminArchive();});
+  $("#admin-chaos-prev").addEventListener("click",()=>{adminOffset=Math.max(0,adminOffset-adminPageSize);refreshAdminArchive();});
+  $("#admin-chaos-next").addEventListener("click",()=>{adminOffset+=adminPageSize;refreshAdminArchive();});
+  let archiveSearchTimer; $("#admin-chaos-search").addEventListener("input",()=>{clearTimeout(archiveSearchTimer);adminOffset=0;archiveSearchTimer=setTimeout(refreshAdminArchive,250);});
   moodSelect.value = localStorage.getItem("missChaosMood") || "default";
   moodSelect.addEventListener("change", () => localStorage.setItem("missChaosMood", moodSelect.value));
   input.addEventListener("input", () => {
