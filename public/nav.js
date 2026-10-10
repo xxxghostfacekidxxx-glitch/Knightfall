@@ -41,6 +41,7 @@
       if (!x) return;
       siteSettings = x;
       if (x.feature_miss_chaos === "false") nav.querySelector('a[href="/miss-chaos.html"]')?.remove();
+      if (x.forum_enabled === "false") nav.querySelector('a[href="/create-thread.html"]')?.remove();
       if (x.feature_profiles === "false") { nav.querySelector('a[href="/members.html"]')?.remove(); if (currentUser?.role !== "admin") nav.querySelectorAll(".kf-profile-link").forEach(link => link.remove()); }
       if (x.announcements_enabled === "true" && (x.announcement_title || x.announcement_body)) {
         const banner = document.createElement("aside");
