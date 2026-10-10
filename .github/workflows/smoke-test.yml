@@ -73,6 +73,7 @@ jobs:
           categories_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/categories")
           test "$categories_code" = 200
           grep -q '"adult_category_locked":true' "$body"
+          grep -q '"slug":"astrology"' "$body"
           if grep -q '"slug":"adults-only"' "$body"; then echo "adult category leaked to anonymous visitor"; exit 1; fi
           adult_status_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/adult/status")
           test "$adult_status_code" = 200
