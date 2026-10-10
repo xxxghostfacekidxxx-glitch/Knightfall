@@ -4,3 +4,10 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# Local dependencies and generated output
+node_modules/
+coverage/
+dist/
+*.log
+.DS_Store
