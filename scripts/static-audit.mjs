@@ -88,7 +88,7 @@ for (const file of htmlFiles) {
 const apiCandidates = new Set();
 for (const file of [...htmlFiles, ...jsFiles]) {
   const source = await readFile(file, "utf8");
-  for (const match of source.matchAll(/\\/api\\/[A-Za-z0-9_/?=&.-]+/g)) {
+  for (const match of source.matchAll(/\/api\/[A-Za-z0-9_/?=&.-]+/g)) {
     const endpoint = match[0].split(/[?#]/, 1)[0];
     if (!endpoint.endsWith("/")) apiCandidates.add(endpoint);
   }
