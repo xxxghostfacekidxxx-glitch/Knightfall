@@ -6,7 +6,7 @@
   <meta name="description" content="Knightfall community. From ruin, we endure.">
   <meta name="theme-color" content="#080808">
   <title>Knightfall | Community</title>
-  <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/homepage.css?v=20261010-astrology-category"><script src="/nav.js" defer></script>
+  <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/homepage.css?v=20261013-category-click-fix"><script src="/nav.js" defer></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -38,8 +38,8 @@
       <div id="forum-message" class="forum-message" hidden></div>
       <div class="threads-panel">
         <div class="section-heading compact">
-          <div><p class="eyebrow">DISCUSSION</p><h2>Latest Threads</h2></div>
-          <div class="thread-toolbar"><a class="small-button" href="/create-thread.html">＋ Create thread</a><button id="refresh-threads" class="small-button" type="button">Refresh</button></div>
+          <div><p class="eyebrow" id="thread-context">DISCUSSION</p><h2 id="threads-title">Latest Threads</h2></div>
+          <div class="thread-toolbar"><button id="all-threads" class="small-button" type="button" hidden>All categories</button><a class="small-button" href="/create-thread.html">＋ Create thread</a><button id="refresh-threads" class="small-button" type="button">Refresh</button></div>
         </div>
         <div id="threads" class="threads" aria-live="polite"></div>
       </div>
@@ -71,16 +71,76 @@
 
   <script>
     const API="https://api.ash-fall.com";
-    const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");let adultCategoryLocked=true;
+    const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");
+    const titleEl=document.getElementById("threads-title"),contextEl=document.getElementById("thread-context"),allThreadsButton=document.getElementById("all-threads");
+    let adultCategoryLocked=true, selectedCategoryId="", selectedCategoryName="";
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
     function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
-    function renderCategories(list){const gate=adultCategoryLocked?`<button class="category adult-category" type="button" data-adult-confirm><span class="category-mark">18+</span><h3>Adults Only</h3><p>Age-restricted discussion. Confirm that you are 18 or older to enter.</p><span class="card-arrow" aria-hidden="true">↗</span></button>`:"";categoriesEl.innerHTML=(list.length?list.map((c,i)=>`<button class="category" type="button" data-category-id="${c.id}"><span class="category-mark">${String(i+1).padStart(2,"0")}</span><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description||"Community discussion.")}</p><span class="card-arrow" aria-hidden="true">↗</span></button>`).join(""):"<p class='empty-state'>No categories yet.</p>")+gate;categoriesEl.querySelectorAll("[data-category-id]").forEach(b=>b.addEventListener("click",()=>loadThreads(b.dataset.categoryId)));const adultButton=categoriesEl.querySelector("[data-adult-confirm]");if(adultButton)adultButton.addEventListener("click",confirmAdultAccess)}
-    function renderThreads(list){threadsEl.innerHTML=list.length?list.map(t=>`<article class="thread-card"><div><a href="/thread.html?id=${encodeURIComponent(t.id)}">${escapeHtml(t.title)}</a><p>${escapeHtml(t.category_name)} · ${escapeHtml(t.display_name||t.username||"Member")} · ${formatDate(t.updated_at)}</p></div><span>${t.reply_count||0} ${(t.reply_count||0)==1?"reply":"replies"}</span></article>`).join(""):"<p class='empty-state'>No threads yet. The ashes are quiet for now.</p>"}
-    async function loadCategories(){const r=await fetch(`${API}/api/categories`,{credentials:"include",cache:"no-store"});if(!r.ok)throw Error();const d=await r.json();adultCategoryLocked=!!d.adult_category_locked;renderCategories(d.categories||[])}
-    async function confirmAdultAccess(){if(!window.confirm("Adults Only contains mature, NSFW discussions intended strictly for adults. By continuing, you confirm that you are at least 18 years old. This is a self-attestation, not government-ID verification. Access lasts 30 days."))return;try{const r=await fetch(`${API}/api/adult/confirm`,{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({confirm:true})});const d=await r.json().catch(()=>({}));if(r.status===401){location.href="/auth.html?next="+encodeURIComponent("/homepage.html");return}if(!r.ok)throw Error(d.error||"Age confirmation failed.");adultCategoryLocked=false;await loadCategories();await loadThreads();statusEl.textContent="18+ access confirmed";statusEl.classList.add("online")}catch(e){messageEl.textContent=e.message;messageEl.hidden=false}}
-    async function loadThreads(categoryId=""){messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';try{const r=await fetch(`${API}/api/threads${categoryId?`?category_id=${encodeURIComponent(categoryId)}`:""}`,{credentials:"include",cache:"no-store"});if(!r.ok)throw Error();renderThreads((await r.json()).threads||[])}catch{threadsEl.innerHTML="";messageEl.textContent="The forum API could not be reached. The sanctuary is still standing, but the discussion service needs attention.";messageEl.hidden=false}}
-    async function initialize(){try{await Promise.all([loadCategories(),loadThreads()]);statusEl.textContent="API online";statusEl.classList.add("online")}catch{statusEl.textContent="API unavailable";messageEl.textContent="The forum service is temporarily unavailable.";messageEl.hidden=false}}
-    document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads());initialize();
+    function renderCategories(list){
+      const gate=adultCategoryLocked?'<button class="category adult-category" type="button" data-adult-confirm><span class="category-mark">18+</span><h3>Adults Only</h3><p>Age-restricted discussion. Confirm that you are 18 or older to enter.</p><span class="card-arrow" aria-hidden="true">↗</span></button>':"";
+      categoriesEl.innerHTML=(list.length?list.map((cat,i)=>'<button class="category" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(cat.name)+'</h3><p>'+escapeHtml(cat.description||"Community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>').join(""):"<p class='empty-state'>No categories yet.</p>")+gate;
+      categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.addEventListener("click",()=>{
+        selectedCategoryId=button.dataset.categoryId||"";
+        selectedCategoryName=button.querySelector("h3")?.textContent||"";
+        categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{
+          const active=card===button;
+          card.classList.toggle("is-selected",active);
+          card.setAttribute("aria-pressed",String(active));
+        });
+        titleEl.textContent=selectedCategoryName+" Threads";
+        contextEl.textContent="CATEGORY SELECTED";
+        allThreadsButton.hidden=false;
+        loadThreads(selectedCategoryId);
+        document.querySelector(".threads-panel").scrollIntoView({behavior:"smooth",block:"start"});
+      }));
+      const adultButton=categoriesEl.querySelector("[data-adult-confirm]");
+      if(adultButton)adultButton.addEventListener("click",confirmAdultAccess);
+      categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.classList.toggle("is-selected",String(button.dataset.categoryId)===String(selectedCategoryId)));
+    }
+    function renderThreads(list){
+      threadsEl.innerHTML=list.length?list.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+escapeHtml(t.title)+'</a><p>'+escapeHtml(t.category_name)+' · '+escapeHtml(t.display_name||t.username||"Member")+' · '+escapeHtml(formatDate(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>No threads in this category yet. Be the first to start a discussion.</p>";
+    }
+    async function loadCategories(){
+      const r=await fetch(API+"/api/categories",{credentials:"include",cache:"no-store"});
+      if(!r.ok)throw Error("Category service returned "+r.status);
+      const d=await r.json();adultCategoryLocked=!!d.adult_category_locked;renderCategories(d.categories||[]);
+    }
+    async function confirmAdultAccess(){
+      if(!window.confirm("Adults Only contains mature, NSFW discussions intended strictly for adults. By continuing, you confirm that you are at least 18 years old. This is a self-attestation, not government-ID verification. Access lasts 30 days."))return;
+      try{
+        const r=await fetch(API+"/api/adult/confirm",{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({confirm:true})});
+        const d=await r.json().catch(()=>({}));
+        if(r.status===401){location.href="/auth.html?next="+encodeURIComponent("/homepage.html");return}
+        if(!r.ok)throw Error(d.error||"Age confirmation failed.");
+        adultCategoryLocked=false;await loadCategories();await loadThreads();
+        statusEl.textContent="18+ access confirmed";statusEl.classList.add("online");
+      }catch(e){messageEl.textContent=e.message||"Age confirmation failed.";messageEl.hidden=false}
+    }
+    async function loadThreads(categoryId=""){
+      messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';
+      try{
+        const r=await fetch(API+"/api/threads"+(categoryId?"?category_id="+encodeURIComponent(categoryId):""),{credentials:"include",cache:"no-store"});
+        if(!r.ok)throw Error("Thread service returned "+r.status);
+        const d=await r.json();renderThreads(d.threads||[]);
+      }catch(e){
+        threadsEl.innerHTML="";
+        messageEl.textContent="The forum could not load threads. Please try Refresh in a moment.";
+        messageEl.hidden=false;
+      }
+    }
+    function showAllThreads(){
+      selectedCategoryId="";selectedCategoryName="";
+      categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{card.classList.remove("is-selected");card.setAttribute("aria-pressed","false")});
+      titleEl.textContent="Latest Threads";contextEl.textContent="DISCUSSION";allThreadsButton.hidden=true;loadThreads();
+    }
+    allThreadsButton.addEventListener("click",showAllThreads);
+    document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads(selectedCategoryId));
+    async function initialize(){
+      const results=await Promise.allSettled([loadCategories(),loadThreads()]);
+      if(results.every(x=>x.status==="fulfilled")){statusEl.textContent="API online";statusEl.classList.add("online")}
+      else{statusEl.textContent="Partially unavailable";messageEl.textContent="Some forum features could not load. Try refreshing the page.";messageEl.hidden=false}
+    }
+    initialize();
   </script>
 </body>
 </html>
