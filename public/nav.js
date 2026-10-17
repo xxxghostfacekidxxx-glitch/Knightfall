@@ -16,10 +16,10 @@
   const header = document.querySelector(".kf-header");
   if (!header) return;
   header.innerHTML = `
-    <a class="kf-brand" href="/index.html" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
+    <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰</button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
-      <a href="/homepage.html">Forum</a>
+      <a href="/homepage.html">The Forum</a>
       <a href="/bots.html">Bots</a>
       <a href="/shops.html">Shops</a>
       <a href="/miss-chaos.html">Miss Chaos</a>
@@ -28,7 +28,7 @@
       <a href="/messages.html">Messages</a>
       <a class="kf-notify" href="/notifications.html" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
       <a href="/account.html">Account</a>
-      <a href="/index.html">Sanctuary</a>
+      <a href="/index.html">Home</a>
       <button class="kf-install-app" type="button" hidden>Install App</button>
     </nav>`;
   let siteSettings = null, currentUser = null;
