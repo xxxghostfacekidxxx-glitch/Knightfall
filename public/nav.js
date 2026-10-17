@@ -1,5 +1,5 @@
 (() => {
-  // Register the installable Knightfall PWA on every page that loads shared navigation.
+  // Register the installable Ash-Fall PWA on every page that loads shared navigation.
   if (!document.querySelector('link[rel="manifest"]')) {
     const manifest = document.createElement("link");
     manifest.rel = "manifest";
