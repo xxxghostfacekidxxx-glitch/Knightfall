@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Manage your Knightfall account and community profile.">
-  <title>Knightfall | Account</title>
+  <meta name="description" content="Manage your Ash-Fall account and community profile. Your corner of the chaos, without the unnecessary paperwork.">
+  <title>Ash-Fall | Account</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/account.css">
 </head>
@@ -29,8 +29,8 @@
     function renderSignedOut() {
       root.innerHTML = `
         <p class="eyebrow">ACCOUNT</p>
-        <h1>You're not signed in.</h1>
-        <p class="lead">Your Knightfall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
+        <h1>YOUR CORNER OF THE CHAOS</h1>
+        <p class="lead">Your Ash-Fall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
         <div class="account-actions">
           <a class="button primary" href="/auth.html">Sign in / Register</a>
           <a class="button secondary" href="/homepage.html">Return to community</a>
@@ -97,7 +97,7 @@
         if (user) renderUser(user);
         else renderSignedOut();
       } catch (error) {
-        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>Account unavailable</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/homepage.html">Return to community</a></div>`;
+        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>ACCOUNT UNAVAILABLE</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/homepage.html">Return to community</a></div>`;
       }
     })();
   </script>
