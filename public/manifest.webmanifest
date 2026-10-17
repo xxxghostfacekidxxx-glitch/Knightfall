@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Knightfall | Ash-Fall",
-  "short_name": "Knightfall",
-  "description": "From ruin, we endure. Community, creative tools, and Miss Chaos.",
+  "name": "Ash-Fall | Beautifully Unhinged",
+  "short_name": "Ash-Fall",
+  "description": "A beautifully unhinged community for outsiders, creators, dark humor, strange ideas, and Miss Chaos. From chaos, I make my way.",
   "lang": "en-US",
   "start_url": "/homepage.html?source=pwa",
   "scope": "/",
