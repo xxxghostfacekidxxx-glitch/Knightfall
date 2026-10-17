@@ -131,7 +131,7 @@
     function showAllThreads(){
       selectedCategoryId="";selectedCategoryName="";
       categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{card.classList.remove("is-selected");card.setAttribute("aria-pressed","false")});
-      titleEl.textContent="Latest Threads";contextEl.textContent="DISCUSSION";allThreadsButton.hidden=true;loadThreads();
+      titleEl.textContent="Latest Mayhem";contextEl.textContent="DISCUSSION";allThreadsButton.hidden=true;loadThreads();
     }
     allThreadsButton.addEventListener("click",showAllThreads);
     document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads(selectedCategoryId));
