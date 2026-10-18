@@ -89,7 +89,9 @@
         return communityOrder.indexOf(labelA)-communityOrder.indexOf(labelB);
       });
       const renderButton=(cat,i,compact=false)=>{
-        const displayName=normalizeCategory(cat.name)==="community"?"Community Board":cat.name;
+        const normalizedName=normalizeCategory(cat.name);
+        const displayNames={"community":"Community Board","mindless scribbling":"Mindless Scribbling","general discussion":"General Discussions","general discussions":"General Discussions"};
+        const displayName=displayNames[normalizedName]||cat.name;
         return '<button class="category'+(compact?' community-subcategory':'')+'" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(displayName)+'</h3><p>'+escapeHtml(cat.description||"Community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>';
       };
       const communityGroup=community.length
