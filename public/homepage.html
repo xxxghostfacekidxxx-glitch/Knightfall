@@ -6,7 +6,7 @@
   <meta name="description" content="Ash-Fall is a beautifully unhinged community for outsiders, creators, dark humor, true crime, strange ideas, and glorious chaos.">
   <meta name="theme-color" content="#080808">
   <title>Ash-Fall | Community</title>
-  <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/homepage.css?v=20261013-category-click-fix"><script src="/nav.js" defer></script>
+  <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/homepage.css?v=20261018-community-category-group"><script src="/nav.js" defer></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -77,8 +77,27 @@
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
     function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
     function renderCategories(list){
+      const communityOrder=["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","community"];
+      const normalizeCategory=name=>String(name||"").trim().toLowerCase().replace(/\\s+/g," ");
+      const communityNames=new Set(communityOrder);
+      const community=list.filter(cat=>communityNames.has(normalizeCategory(cat.name)));
+      const featured=list.filter(cat=>!communityNames.has(normalizeCategory(cat.name)));
+      community.sort((a,b)=>{
+        const nameA=normalizeCategory(a.name),nameB=normalizeCategory(b.name);
+        const labelA=nameA==="general discussion"||nameA==="general discussions"?"general discussion":nameA;
+        const labelB=nameB==="general discussion"||nameB==="general discussions"?"general discussion":nameB;
+        return communityOrder.indexOf(labelA)-communityOrder.indexOf(labelB);
+      });
+      const renderButton=(cat,i,compact=false)=>{
+        const displayName=normalizeCategory(cat.name)==="community"?"Community Board":cat.name;
+        return '<button class="category'+(compact?' community-subcategory':'')+'" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(displayName)+'</h3><p>'+escapeHtml(cat.description||"Community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>';
+      };
+      const communityGroup=community.length
+        ? '<section class="community-category-group" aria-labelledby="community-category-title"><div class="community-group-heading"><div><span class="category-mark">COMMUNITY / OPEN DISCUSSION</span><h3 id="community-category-title">Community</h3><p>One home for games, art, music, philosophy, true crime, and whatever else is rattling around in your head.</p></div><span class="community-count">'+community.length+' topics</span></div><div class="community-subcategories">'+community.map((cat,i)=>renderButton(cat,i,true)).join("")+'</div></section>'
+        : "";
       const gate=adultCategoryLocked?'<button class="category adult-category" type="button" data-adult-confirm><span class="category-mark">18+</span><h3>Adults Only</h3><p>Age-restricted discussion. Confirm that you are 18 or older to enter.</p><span class="card-arrow" aria-hidden="true">↗</span></button>':"";
-      categoriesEl.innerHTML=(list.length?list.map((cat,i)=>'<button class="category" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(cat.name)+'</h3><p>'+escapeHtml(cat.description||"Community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>').join(""):"<p class='empty-state'>A stunning absence of conversation. Someone start something.</p>")+gate;
+      categoriesEl.innerHTML=(featured.length?featured.map(renderButton).join(""):"")+communityGroup+gate;
+      if(!featured.length&&!community.length)categoriesEl.innerHTML="<p class='empty-state'>A stunning absence of conversation. Someone start something.</p>"+gate;
       categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.addEventListener("click",()=>{
         selectedCategoryId=button.dataset.categoryId||"";
         selectedCategoryName=button.querySelector("h3")?.textContent||"";
