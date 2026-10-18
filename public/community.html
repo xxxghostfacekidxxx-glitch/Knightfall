@@ -54,7 +54,7 @@
       topics.sort((a,b)=>order.indexOf(normalizeCategory(a.name))-order.indexOf(normalizeCategory(b.name)));
       categoriesEl.innerHTML=topics.map((cat,i)=>{
         const name=normalizeCategory(cat.name)==="general discussion"||normalizeCategory(cat.name)==="general discussions"?"General Discussions":cat.name;
-        return '<button class="category" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(name)+'</h3><p>'+escapeHtml(cat.description||"A place for community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>';
+        return '<a class="category" href="/community-topic.html?category_id='+encodeURIComponent(cat.id)+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(name)+'</h3><p>'+escapeHtml(cat.description||"A place for community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></a>';
       }).join("")||'<p class="empty-state">The topic list is empty. Suspiciously quiet. Try again shortly.</p>';
       categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.addEventListener("click",()=>{
         selectedCategoryId=button.dataset.categoryId||"";
@@ -81,11 +81,23 @@
     async function loadThreads(categoryId=""){
       messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';
       try{
-        const r=await fetch(API+"/api/threads"+(categoryId?"?category_id="+encodeURIComponent(categoryId):""),{credentials:"include",cache:"no-store"});
-        if(!r.ok)throw Error("Thread service returned "+r.status);
-        const d=await r.json();
-        const communityIds=new Set(categories.filter(cat=>topicNames.has(normalizeCategory(cat.name))).map(cat=>String(cat.id)));
-        renderThreads((d.threads||[]).filter(thread=>categoryId?true:communityIds.has(String(thread.category_id))));
+        const communityIds=categories.filter(cat=>topicNames.has(normalizeCategory(cat.name))).map(cat=>String(cat.id));
+        let threads=[];
+        if(categoryId){
+          const r=await fetch(API+"/api/threads?category_id="+encodeURIComponent(categoryId),{credentials:"include",cache:"no-store"});
+          if(!r.ok)throw Error("Thread service returned "+r.status);
+          const d=await r.json();threads=d.threads||[];
+        }else{
+          const results=await Promise.all(communityIds.map(async id=>{
+            const r=await fetch(API+"/api/threads?category_id="+encodeURIComponent(id),{credentials:"include",cache:"no-store"});
+            if(!r.ok)throw Error("Thread service returned "+r.status);
+            const d=await r.json();return d.threads||[];
+          }));
+          const unique=new Map();
+          results.flat().forEach(thread=>unique.set(String(thread.id),thread));
+          threads=[...unique.values()].sort((a,b)=>Number(b.pinned)-Number(a.pinned)||new Date(b.updated_at)-new Date(a.updated_at)).slice(0,25);
+        }
+        renderThreads(threads);
       }catch(e){threadsEl.innerHTML="";messageEl.textContent="The community threads could not load. Please try Refresh in a moment.";messageEl.hidden=false}
     }
     function showAllThreads(){
