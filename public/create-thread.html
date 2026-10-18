@@ -79,10 +79,14 @@
         }
         const data = await api("/api/categories");
         const categories = data.categories || [];
+        const requestedCategoryId = new URLSearchParams(location.search).get("category_id");
         categorySelect.innerHTML = '<option value="">Choose a category</option>' +
           categories.map(c => '<option value="' + Number(c.id) + '">' +
             String(c.name || "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch])) +
           '</option>').join("");
+        if (requestedCategoryId && categories.some(c => String(c.id) === String(requestedCategoryId))) {
+          categorySelect.value = requestedCategoryId;
+        }
         if (!categories.length) {
           categorySelect.innerHTML = '<option value="">No categories available</option>';
           showStatus("The forum has no categories yet. An administrator needs to add one.", "error");
