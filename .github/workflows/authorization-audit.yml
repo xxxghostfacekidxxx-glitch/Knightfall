@@ -20,13 +20,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  authorization-audit:
+  audit_credentials:
+    name: Check dedicated audit accounts
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 2
+    outputs:
+      ready: ${{ steps.credentials.outputs.ready }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
       - name: Check audit credentials
         id: credentials
         shell: bash
@@ -42,12 +42,23 @@ jobs:
              [ -n "$KNIGHTFALL_MODERATOR_USERNAME" ] && [ -n "$KNIGHTFALL_MODERATOR_PASSWORD" ] &&
              [ -n "$KNIGHTFALL_ADMIN_USERNAME" ] && [ -n "$KNIGHTFALL_ADMIN_PASSWORD" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "All dedicated role-test credentials are present."
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Authenticated audit skipped::One or more dedicated role-test secrets are missing."
           fi
 
+  authorization_audit:
+    name: Authenticated authorization tests
+    needs: audit_credentials
+    if: needs.audit_credentials.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
       - name: Run role and endpoint authorization matrix
-        if: steps.credentials.outputs.ready == 'true'
         env:
           KNIGHTFALL_API: https://api.ash-fall.com
           KNIGHTFALL_MEMBER_USERNAME: ${{ secrets.KNIGHTFALL_MEMBER_USERNAME }}
@@ -58,16 +69,21 @@ jobs:
           KNIGHTFALL_ADMIN_PASSWORD: ${{ secrets.KNIGHTFALL_ADMIN_PASSWORD }}
         run: node scripts/authorization-audit.mjs
 
+  audit_skipped:
+    name: Explain skipped authenticated audit
+    needs: audit_credentials
+    if: needs.audit_credentials.outputs.ready != 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: Explain skipped audit
-        if: steps.credentials.outputs.ready != 'true'
+        shell: bash
         run: |
-          echo "::warning title=Audit skipped::Configure all six KNIGHTFALL member, moderator, and admin username/password repository secrets to run this security audit."
           {
-            echo "## Security audit: SKIPPED"
+            echo "## Authenticated security audit: SKIPPED"
             echo ""
-            echo "The authenticated role matrix did not run because one or more dedicated test-account secrets are missing."
+            echo "The authenticated checks did not run because one or more dedicated test-account secrets are missing. The authenticated audit job is marked skipped, not passed."
             echo ""
             echo "Configure all six repository Actions secrets: `KNIGHTFALL_MEMBER_USERNAME`, `KNIGHTFALL_MEMBER_PASSWORD`, `KNIGHTFALL_MODERATOR_USERNAME`, `KNIGHTFALL_MODERATOR_PASSWORD`, `KNIGHTFALL_ADMIN_USERNAME`, and `KNIGHTFALL_ADMIN_PASSWORD`."
             echo ""
-            echo "Do not use production personal credentials or place secret values in logs, issues, or commits."
+            echo "Use dedicated test accounts only. Do not use production personal credentials or put secret values in logs, issues, or commits."
           } >> "$GITHUB_STEP_SUMMARY"
