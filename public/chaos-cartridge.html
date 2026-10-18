@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Chaos Cartridge is Ash-Fall's home for browser games, strange experiments, and playable digital chaos.">
+  <meta name="theme-color" content="#080808">
+  <title>Chaos Cartridge | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/homepage.css?v=20261018-chaos-cartridge">
+  <script src="/nav.js" defer></script>
+  <style>
+    .cartridge-back{display:inline-flex;margin-bottom:1.5rem;color:#bbb;text-decoration:none;font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .cartridge-back:hover{color:var(--accent-bright)}
+    .cartridge-hero{min-height:0;padding:2.5rem 0 3.5rem}
+    .cartridge-title{font-size:clamp(3.3rem,10vw,7rem)!important;line-height:.86!important;letter-spacing:-.065em}
+    .cartridge-title span{color:var(--accent-bright)!important;text-shadow:0 0 35px rgba(211,84,0,.14)}
+    .cartridge-intro{max-width:720px}
+    .cartridge-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:2rem 0 1rem}
+    .cartridge-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+    .cartridge-cabinet{position:relative;display:flex;flex-direction:column;min-height:245px;padding:1.4rem;border:1px solid #292929;border-radius:12px;background:linear-gradient(145deg,rgba(20,20,20,.96),rgba(9,9,9,.96));overflow:hidden}
+    .cartridge-cabinet:after{content:"";position:absolute;right:-55px;bottom:-75px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 68%);pointer-events:none}
+    .cartridge-number{color:var(--accent);font-size:.7rem;font-weight:850;letter-spacing:.18em}
+    .cartridge-cabinet h3{margin:1.2rem 0 .45rem;font-size:1.3rem}
+    .cartridge-cabinet p{color:#999;font-size:.92rem}
+    .cartridge-cabinet .status{align-self:flex-start;margin-top:auto}
+    .cartridge-empty{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:1.2rem;padding:clamp(1.4rem,4vw,2.5rem);border:1px solid #292929;border-radius:12px;background:linear-gradient(145deg,rgba(20,20,20,.96),rgba(9,9,9,.96))}
+    .cartridge-icon{display:grid;place-items:center;width:68px;height:68px;border:1px solid rgba(211,84,0,.35);border-radius:12px;background:rgba(211,84,0,.08);color:var(--accent-bright);font-size:2rem}
+    .cartridge-empty h2{font-size:clamp(1.5rem,4vw,2.3rem);line-height:1.1;letter-spacing:-.04em}
+    .cartridge-empty p{margin-top:.55rem;color:#999;max-width:650px}
+    .cartridge-note{margin-top:1rem;color:#777;font-size:.82rem}
+    @media(max-width:760px){.cartridge-shelf{grid-template-columns:1fr}.cartridge-empty{grid-template-columns:1fr}.cartridge-icon{width:56px;height:56px}}
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="kf-header"></header>
+  <main class="container community-directory">
+    <a class="cartridge-back" href="/homepage.html">← Back to Ash-Fall</a>
+    <section class="hero cartridge-hero">
+      <div class="hero-copy cartridge-intro">
+        <p class="eyebrow">ASH-FALL / PLAYABLE CHAOS</p>
+        <h1 class="cartridge-title">CHAOS<br><span>CARTRIDGE</span></h1>
+        <p class="hero-lede">Video games, rage quits, questionable strategies, cursed mods, and digital worlds we'd probably be better off living in.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#game-shelf">Enter the arcade</a>
+          <a class="button button-ghost" href="/community.html">Talk games</a>
+        </div>
+      </div>
+      <div class="hero-sigil" aria-hidden="true">
+        <span class="ring ring-one"></span><span class="ring ring-two"></span><span class="flame">◆</span>
+      </div>
+    </section>
+
+    <section id="game-shelf" class="section" aria-labelledby="game-shelf-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">INSERT CHAOS</p><h2 id="game-shelf-title">The Game Shelf</h2></div>
+        <span class="status">ARCADE IN DEVELOPMENT</span>
+      </div>
+      <div class="cartridge-shelf">
+        <div class="cartridge-empty">
+          <div class="cartridge-icon" aria-hidden="true">▣</div>
+          <div>
+            <p class="eyebrow">CABINET 001 / AWAITING CONTENT</p>
+            <h2>The machines are wired. The games aren't loaded yet.</h2>
+            <p>This is the home for games that run directly on Ash-Fall. Browser games and original experiments will live here as they are added. No fake launch buttons, no pretend downloads, no digital cardboard cutouts claiming to be playable.</p>
+            <p class="cartridge-note">The arcade shell is ready. The first playable game still needs to be added.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature">
+      <div><p class="eyebrow">THE COMMUNITY SIDE QUEST</p><h2>Got game-related chaos?</h2><p>Discuss games, share projects, and swap cursed ideas in the community while the playable arcade grows.</p></div>
+      <a class="button button-primary" href="/community.html">Visit community ↗</a>
+    </section>
+    <section class="manifesto"><p>Insert cartridge. Abandon sanity.</p><span>CHAOS CARTRIDGE / ASH-FALL ARCADE</span></section>
+  </main>
+  <footer><p>The world is a beautiful fucking disaster. © 2026 Ash-Fall</p></footer>
+</body>
+</html>
