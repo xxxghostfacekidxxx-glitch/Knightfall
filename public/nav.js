@@ -20,7 +20,7 @@
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰</button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a href="/homepage.html">Explore Realms</a>
-      <a href="/community.html">Community</a>
+      <a href="/community.html">The Madhouse</a>
       <a href="/bots.html">Bots</a>
       <a href="/shops.html">Shops</a>
       <a href="/die-ary.html">Die-ary</a>
