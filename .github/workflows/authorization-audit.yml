@@ -60,4 +60,14 @@ jobs:
 
       - name: Explain skipped audit
         if: steps.credentials.outputs.ready != 'true'
-        run: echo "::warning title=Audit skipped::Configure all six KNIGHTFALL member, moderator, and admin username/password repository secrets to run this security audit."
+        run: |
+          echo "::warning title=Audit skipped::Configure all six KNIGHTFALL member, moderator, and admin username/password repository secrets to run this security audit."
+          {
+            echo "## Security audit: SKIPPED"
+            echo ""
+            echo "The authenticated role matrix did not run because one or more dedicated test-account secrets are missing."
+            echo ""
+            echo "Configure all six repository Actions secrets: `KNIGHTFALL_MEMBER_USERNAME`, `KNIGHTFALL_MEMBER_PASSWORD`, `KNIGHTFALL_MODERATOR_USERNAME`, `KNIGHTFALL_MODERATOR_PASSWORD`, `KNIGHTFALL_ADMIN_USERNAME`, and `KNIGHTFALL_ADMIN_PASSWORD`."
+            echo ""
+            echo "Do not use production personal credentials or place secret values in logs, issues, or commits."
+          } >> "$GITHUB_STEP_SUMMARY"
