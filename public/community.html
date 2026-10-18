@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Find your corner of the Ash-Fall community: gaming, art, music, philosophy, true crime, and creative chaos.">
+  <meta name="description" content="The Madhouse: a gathering of lunatics, insane ramblings, unfiltered thoughts, and unhinged conversations.">
   <meta name="theme-color" content="#080808">
-  <title>Community | Ash-Fall</title>
+  <title>The Madhouse | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/homepage.css?v=20261018-topic-links">
   <script src="/nav.js" defer></script>
@@ -17,22 +17,22 @@
     <a class="community-back" href="/homepage.html">← Back to the homepage</a>
     <section class="hero" style="min-height:0;padding:2rem 0 3rem">
       <div class="hero-copy">
-        <p class="eyebrow">ASH-FALL / COMMUNITY DIRECTORY</p>
-        <h1 style="font-size:clamp(3rem,8vw,6rem)">Find your<br><span>kind of chaos.</span></h1>
-        <p class="hero-lede">Games, art, music, philosophy, true crime, and the thoughts that refuse to stay inside your skull. Pick a corner and get talking.</p>
+        <p class="eyebrow">ASH-FALL / THE MADHOUSE</p>
+        <h1 style="font-size:clamp(3rem,8vw,6rem)">THE<br><span>MADHOUSE.</span></h1>
+        <p class="hero-lede">A gathering of lunatics, insane ramblings, unfiltered thoughts, and unhinged conversations. Bring your strange ideas, your dark humor, your art, your obsessions, and whatever the hell is on your mind.</p>
       </div>
     </section>
     <section class="section" aria-labelledby="community-topics-title" style="padding-top:3rem">
       <div class="section-heading">
-        <div><p class="eyebrow">CHOOSE YOUR RABBIT HOLE</p><h2 id="community-topics-title">Community Topics</h2></div>
+        <div><p class="eyebrow">CHOOSE YOUR RABBIT HOLE</p><h2 id="community-topics-title">Pick Your Rabbit Hole</h2></div>
         <span id="api-status" class="status">Negotiating with the machinery…</span>
       </div>
       <div id="categories" class="community-directory-grid" aria-live="polite"></div>
       <div id="forum-message" class="forum-message" hidden></div>
       <div class="threads-panel">
         <div class="section-heading compact">
-          <div><p class="eyebrow" id="thread-context">COMMUNITY</p><h2 id="threads-title">Latest Community Mayhem</h2></div>
-          <div class="thread-toolbar"><button id="all-threads" class="small-button" type="button" hidden>All community threads</button><button id="refresh-threads" class="small-button" type="button">Refresh the machinery</button></div>
+          <div><p class="eyebrow" id="thread-context">THE MADHOUSE</p><h2 id="threads-title">Latest Madhouse Mayhem</h2></div>
+          <div class="thread-toolbar"><button id="all-threads" class="small-button" type="button" hidden>All Madhouse threads</button><button id="refresh-threads" class="small-button" type="button">Refresh the machinery</button></div>
         </div>
         <div id="threads" class="threads" aria-live="polite"></div>
       </div>
@@ -64,7 +64,7 @@
           card.setAttribute("aria-pressed",String(active));
         });
         const category=categories.find(cat=>String(cat.id)===String(selectedCategoryId));
-        const name=category?category.name:"Community";
+        const name=category?category.name:"The Madhouse";
         titleEl.textContent=name+" Threads";contextEl.textContent="COMMUNITY / "+name.toUpperCase();
         allThreadsButton.hidden=false;loadThreads(selectedCategoryId);
         document.querySelector(".threads-panel").scrollIntoView({behavior:"smooth",block:"start"});
@@ -103,12 +103,12 @@
     function showAllThreads(){
       selectedCategoryId="";
       categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{card.classList.remove("is-selected");card.setAttribute("aria-pressed","false")});
-      titleEl.textContent="Latest Community Mayhem";contextEl.textContent="COMMUNITY";allThreadsButton.hidden=true;loadThreads();
+      titleEl.textContent="Latest Madhouse Mayhem";contextEl.textContent="THE MADHOUSE";allThreadsButton.hidden=true;loadThreads();
     }
     allThreadsButton.addEventListener("click",showAllThreads);
     document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads(selectedCategoryId));
     async function initialize(){
-      try{await loadCategories();await loadThreads();statusEl.textContent="Community online";statusEl.classList.add("online")}
+      try{await loadCategories();await loadThreads();statusEl.textContent="The Madhouse is open";statusEl.classList.add("online")}
       catch(e){statusEl.textContent="Partially unavailable";messageEl.textContent="Some community features could not load. Try refreshing the page.";messageEl.hidden=false}
     }
     initialize();
