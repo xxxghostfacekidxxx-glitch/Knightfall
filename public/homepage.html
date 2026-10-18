@@ -78,7 +78,7 @@
     function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
     function renderCategories(list){
       const communityOrder=["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","community"];
-      const normalizeCategory=name=>String(name||"").trim().toLowerCase().replace(/\\s+/g," ");
+      const normalizeCategory=name=>String(name||"").trim().toLowerCase().replace(/\s+/g," ");
       const communityNames=new Set(communityOrder);
       const community=list.filter(cat=>communityNames.has(normalizeCategory(cat.name)));
       const featured=list.filter(cat=>!communityNames.has(normalizeCategory(cat.name)));
