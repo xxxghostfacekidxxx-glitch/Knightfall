@@ -22,6 +22,7 @@
       <a href="/homepage.html">The Forum</a>
       <a href="/bots.html">Bots</a>
       <a href="/shops.html">Shops</a>
+      <a href="/chaos-cartridge.html">Chaos Cartridge</a>
       <a href="/miss-chaos.html">Miss Chaos</a>
       <a href="/create-thread.html">New Thread</a>
       <a href="/members.html">Members</a>
