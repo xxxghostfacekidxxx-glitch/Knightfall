@@ -1,4 +1,4 @@
-const CACHE_NAME = "ashfall-shell-v2";
+const CACHE_NAME = "knightfall-shell-v3";
 const APP_SHELL = [
   "/index.html",
   "/theme.css",
@@ -17,7 +17,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key.startsWith("knightfall-shell-") && key !== CACHE_NAME).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => /^(?:knightfall|ashfall)-shell-/.test(key) && key !== CACHE_NAME).map(key => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
