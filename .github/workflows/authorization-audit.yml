@@ -83,7 +83,7 @@ jobs:
             echo ""
             echo "The authenticated checks did not run because one or more dedicated test-account secrets are missing. The authenticated audit job is marked skipped, not passed."
             echo ""
-            echo "Configure all six repository Actions secrets: `KNIGHTFALL_MEMBER_USERNAME`, `KNIGHTFALL_MEMBER_PASSWORD`, `KNIGHTFALL_MODERATOR_USERNAME`, `KNIGHTFALL_MODERATOR_PASSWORD`, `KNIGHTFALL_ADMIN_USERNAME`, and `KNIGHTFALL_ADMIN_PASSWORD`."
+            echo 'Configure all six repository Actions secrets: `KNIGHTFALL_MEMBER_USERNAME`, `KNIGHTFALL_MEMBER_PASSWORD`, `KNIGHTFALL_MODERATOR_USERNAME`, `KNIGHTFALL_MODERATOR_PASSWORD`, `KNIGHTFALL_ADMIN_USERNAME`, and `KNIGHTFALL_ADMIN_PASSWORD`.'
             echo ""
             echo "Use dedicated test accounts only. Do not use production personal credentials or put secret values in logs, issues, or commits."
           } >> "$GITHUB_STEP_SUMMARY"
