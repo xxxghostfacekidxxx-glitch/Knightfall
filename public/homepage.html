@@ -98,7 +98,7 @@
         ? '<section class="community-category-group" aria-labelledby="community-category-title"><div class="community-group-heading"><div><span class="category-mark">COMMUNITY / OPEN DISCUSSION</span><h3 id="community-category-title">Community</h3><p>One home for games, art, music, philosophy, true crime, and whatever else is rattling around in your head.</p></div><span class="community-count">'+community.length+' topics</span></div><div class="community-subcategories">'+community.map((cat,i)=>renderButton(cat,i,true)).join("")+'</div></section>'
         : "";
       const gate=adultCategoryLocked?'<button class="category adult-category" type="button" data-adult-confirm><span class="category-mark">18+</span><h3>Adults Only</h3><p>Age-restricted discussion. Confirm that you are 18 or older to enter.</p><span class="card-arrow" aria-hidden="true">↗</span></button>':"";
-      categoriesEl.innerHTML=(featured.length?featured.map((cat,i)=>renderButton(cat,i,false)).join(""):"")+communityGroup+gate;
+      categoriesEl.innerHTML=communityGroup+(featured.length?featured.map((cat,i)=>renderButton(cat,i,false)).join(""):"")+gate;
       if(!featured.length&&!community.length)categoriesEl.innerHTML="<p class='empty-state'>A stunning absence of conversation. Someone start something.</p>"+gate;
       categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.addEventListener("click",()=>{
         selectedCategoryId=button.dataset.categoryId||"";
