@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Read and create discussions in an Ash-Fall community topic.">
+  <meta name="theme-color" content="#080808">
+  <title>Community Topic | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/homepage.css?v=20261018-topic-pages">
+  <script src="/nav.js" defer></script>
+  <style>
+    .topic-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0 1.5rem}
+    .topic-actions a{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1rem;border:1px solid #d35400;border-radius:8px;color:#fff;background:#d35400;text-decoration:none;font-weight:700}
+    .topic-actions a.secondary{background:#101010;border-color:#333}
+    .account-note{color:#aaa;line-height:1.6;margin:.7rem 0 1.2rem}
+    .topic-title{font-size:clamp(2.5rem,7vw,5rem);line-height:.98;letter-spacing:-.04em}
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="kf-header"></header>
+  <main class="container community-directory">
+    <a class="community-back" href="/community.html">← All Community Topics</a>
+    <section class="hero" style="min-height:0;padding:2rem 0 2.5rem">
+      <div class="hero-copy">
+        <p class="eyebrow">ASH-FALL / COMMUNITY THREADS</p>
+        <h1 id="topic-title" class="topic-title">Loading the rabbit hole…</h1>
+        <p id="topic-description" class="hero-lede">Fetching the discussions. The machinery is making noises.</p>
+        <div class="topic-actions">
+          <a id="create-link" href="/create-thread.html" hidden>＋ Start a thread</a>
+          <a class="secondary" href="/community.html">Browse all topics</a>
+        </div>
+        <p id="account-note" class="account-note">Checking account status…</p>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="topic-threads-heading">
+      <div class="section-heading compact">
+        <div><p class="eyebrow" id="topic-kicker">COMMUNITY / TOPIC</p><h2 id="topic-threads-heading">Threads</h2></div>
+        <button id="refresh-threads" class="small-button" type="button">Refresh threads</button>
+      </div>
+      <div id="topic-message" class="forum-message" hidden></div>
+      <div id="topic-threads" class="threads" aria-live="polite"><p class="empty-state">Loading threads…</p></div>
+    </section>
+  </main>
+  <footer><p>The world is a beautiful fucking disaster. © 2026 Ash-Fall</p></footer>
+  <script>
+    const API="https://api.ash-fall.com";
+    const params=new URLSearchParams(location.search);
+    const requestedId=params.get("category_id");
+    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"]);
+    const titleEl=document.getElementById("topic-title"),descriptionEl=document.getElementById("topic-description"),threadsEl=document.getElementById("topic-threads"),messageEl=document.getElementById("topic-message"),createLink=document.getElementById("create-link"),accountNote=document.getElementById("account-note");
+    let category=null;
+    function esc(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
+    function normalize(v){return String(v||"").trim().toLowerCase().replace(/\s+/g," ")}
+    function date(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
+    async function get(path){const r=await fetch(API+path,{credentials:"include",cache:"no-store"});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+")");return d}
+    function renderThreads(list){
+      threadsEl.innerHTML=list.length?list.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+esc(t.title)+'</a><p>'+esc(t.display_name||t.username||"Member")+' · '+esc(date(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>No threads here yet. Be the first to start a conversation.</p>";
+    }
+    async function loadThreads(){
+      threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';messageEl.hidden=true;
+      try{const d=await get("/api/threads?category_id="+encodeURIComponent(category.id));renderThreads(d.threads||[])}
+      catch(e){threadsEl.innerHTML="";messageEl.textContent=e.message||"Threads could not be loaded.";messageEl.hidden=false}
+    }
+    async function initialize(){
+      try{
+        if(!requestedId||!/^\d+$/.test(requestedId))throw Error("This topic link is missing a valid category.");
+        const [categoryData,me]=await Promise.all([get("/api/categories"),get("/api/auth/me")]);
+        const cats=categoryData.categories||[];
+        category=cats.find(c=>String(c.id)===String(requestedId));
+        if(!category||!topicNames.has(normalize(category.name)))throw Error("That community topic could not be found.");
+        const displayName=normalize(category.name).startsWith("general discussion")?"General Discussions":category.name;
+        titleEl.textContent=displayName;descriptionEl.textContent=category.description||"Open discussion for the Ash-Fall community.";
+        document.title=displayName+" | Ash-Fall";
+        document.getElementById("topic-kicker").textContent="COMMUNITY / "+displayName.toUpperCase();
+        document.getElementById("topic-threads-heading").textContent=displayName+" Threads";
+        const user=me.user||null;
+        if(user){createLink.hidden=false;createLink.href="/create-thread.html?category_id="+encodeURIComponent(category.id);accountNote.textContent="Signed in as "+(user.display_name||user.username)+". Your thread can join this conversation."}
+        else{createLink.hidden=true;accountNote.innerHTML='You can read the discussions without an account. <a href="/auth.html?next='+encodeURIComponent("/create-thread.html?category_id="+category.id)+'">Sign in or create an account</a> to start a thread.'}
+        await loadThreads();
+      }catch(e){titleEl.textContent="Topic unavailable";descriptionEl.textContent=e.message||"This community topic could not be loaded.";threadsEl.innerHTML="";messageEl.textContent=e.message||"Topic unavailable.";messageEl.hidden=false;accountNote.textContent="";createLink.hidden=true}
+    }
+    document.getElementById("refresh-threads").addEventListener("click",loadThreads);
+    initialize();
+  </script>
+</body>
+</html>
