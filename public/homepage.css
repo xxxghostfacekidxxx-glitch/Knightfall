@@ -50,3 +50,18 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
 
 /* Clearly distinguish the gated 18+ category without breaking the existing ash-and-magma theme. */
 .category.adult-category{border-color:rgba(190,70,82,.55);background:linear-gradient(145deg,rgba(62,20,25,.5),rgba(13,13,13,.96))}.category.adult-category .category-mark{color:#f0a0aa}.category.adult-category:hover{border-color:rgba(240,110,125,.9)}
+
+
+/* Compact, grouped community topics keep the homepage easy to scan. */
+.community-category-group{grid-column:1/-1;min-width:0;padding:1.35rem;border:1px solid #292929;border-radius:12px;background:linear-gradient(145deg,rgba(18,18,18,.97),rgba(8,8,8,.97));}
+.community-group-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;}
+.community-group-heading h3{margin:.3rem 0 .35rem;font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;}
+.community-group-heading p{max-width:650px;color:#999;font-size:.92rem;}
+.community-count{flex-shrink:0;padding:.3rem .6rem;border:1px solid #333;border-radius:999px;color:#999;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;}
+.community-subcategories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;}
+.category.community-subcategory{min-height:0;padding:1rem;border-radius:9px;background:linear-gradient(145deg,rgba(23,23,23,.98),rgba(12,12,12,.98));}
+.category.community-subcategory h3{margin:.55rem 0 .25rem;font-size:1rem;}
+.category.community-subcategory p{max-width:100%;font-size:.78rem;line-height:1.45;}
+.category.community-subcategory .card-arrow{right:.75rem;top:.65rem;font-size:1rem;}
+@media(max-width:900px){.community-subcategories{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:520px){.community-category-group{padding:1rem}.community-group-heading{flex-direction:column}.community-subcategories{grid-template-columns:1fr}.category.community-subcategory{padding:.9rem}.category.community-subcategory h3{padding-right:1rem}}
