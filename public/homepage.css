@@ -81,3 +81,7 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
 .community-back:hover,.community-back:focus-visible{color:var(--accent-bright);}
 .community-directory .threads-panel{margin-top:3rem;padding-top:2rem;border-top:1px solid #292929;}
 @media(max-width:620px){.community-directory-grid{grid-template-columns:1fr;}.category.community-entry{min-height:175px;}}
+
+/* Community topic cards are links, not in-place category filters. */
+.community-directory-grid a.category{display:block;text-decoration:none;color:inherit;}
+.community-directory-grid a.category:focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px;}
