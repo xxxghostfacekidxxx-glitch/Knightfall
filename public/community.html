@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Find your corner of the Ash-Fall community: gaming, art, music, philosophy, true crime, and creative chaos.">
+  <meta name="theme-color" content="#080808">
+  <title>Community | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/homepage.css?v=20261018-community-page">
+  <script src="/nav.js" defer></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="kf-header"></header>
+  <main class="container community-directory">
+    <a class="community-back" href="/homepage.html">← Back to the homepage</a>
+    <section class="hero" style="min-height:0;padding:2rem 0 3rem">
+      <div class="hero-copy">
+        <p class="eyebrow">ASH-FALL / COMMUNITY DIRECTORY</p>
+        <h1 style="font-size:clamp(3rem,8vw,6rem)">Find your<br><span>kind of chaos.</span></h1>
+        <p class="hero-lede">Games, art, music, philosophy, true crime, and the thoughts that refuse to stay inside your skull. Pick a corner and get talking.</p>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="community-topics-title" style="padding-top:3rem">
+      <div class="section-heading">
+        <div><p class="eyebrow">CHOOSE YOUR RABBIT HOLE</p><h2 id="community-topics-title">Community Topics</h2></div>
+        <span id="api-status" class="status">Negotiating with the machinery…</span>
+      </div>
+      <div id="categories" class="community-directory-grid" aria-live="polite"></div>
+      <div id="forum-message" class="forum-message" hidden></div>
+      <div class="threads-panel">
+        <div class="section-heading compact">
+          <div><p class="eyebrow" id="thread-context">COMMUNITY</p><h2 id="threads-title">Latest Community Mayhem</h2></div>
+          <div class="thread-toolbar"><button id="all-threads" class="small-button" type="button" hidden>All community threads</button><button id="refresh-threads" class="small-button" type="button">Refresh the machinery</button></div>
+        </div>
+        <div id="threads" class="threads" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+  <footer><p>The world is a beautiful fucking disaster. © 2026 Ash-Fall</p></footer>
+  <script>
+    const API="https://api.ash-fall.com";
+    const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");
+    const titleEl=document.getElementById("threads-title"),contextEl=document.getElementById("thread-context"),allThreadsButton=document.getElementById("all-threads");
+    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"]);
+    let selectedCategoryId="",categories=[];
+    function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
+    function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
+    function normalizeCategory(name){return String(name||"").trim().toLowerCase().replace(/\s+/g," ")}
+    function renderCategories(){
+      const topics=categories.filter(cat=>topicNames.has(normalizeCategory(cat.name)));
+      const order=["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"];
+      topics.sort((a,b)=>order.indexOf(normalizeCategory(a.name))-order.indexOf(normalizeCategory(b.name)));
+      categoriesEl.innerHTML=topics.map((cat,i)=>{
+        const name=normalizeCategory(cat.name)==="general discussion"||normalizeCategory(cat.name)==="general discussions"?"General Discussions":cat.name;
+        return '<button class="category" type="button" data-category-id="'+escapeHtml(cat.id)+'" aria-pressed="'+(String(cat.id)===String(selectedCategoryId))+'"><span class="category-mark">'+String(i+1).padStart(2,"0")+'</span><h3>'+escapeHtml(name)+'</h3><p>'+escapeHtml(cat.description||"A place for community discussion.")+'</p><span class="card-arrow" aria-hidden="true">↗</span></button>';
+      }).join("")||'<p class="empty-state">The topic list is empty. Suspiciously quiet. Try again shortly.</p>';
+      categoriesEl.querySelectorAll("[data-category-id]").forEach(button=>button.addEventListener("click",()=>{
+        selectedCategoryId=button.dataset.categoryId||"";
+        categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{
+          const active=card===button;
+          card.classList.toggle("is-selected",active);
+          card.setAttribute("aria-pressed",String(active));
+        });
+        const category=categories.find(cat=>String(cat.id)===String(selectedCategoryId));
+        const name=category?category.name:"Community";
+        titleEl.textContent=name+" Threads";contextEl.textContent="COMMUNITY / "+name.toUpperCase();
+        allThreadsButton.hidden=false;loadThreads(selectedCategoryId);
+        document.querySelector(".threads-panel").scrollIntoView({behavior:"smooth",block:"start"});
+      }));
+    }
+    function renderThreads(list){
+      threadsEl.innerHTML=list.length?list.map(t=>'<article class="thread-card"><div><a href="/thread.html?id='+encodeURIComponent(t.id)+'">'+escapeHtml(t.title)+'</a><p>'+escapeHtml(t.category_name)+' · '+escapeHtml(t.display_name||t.username||"Member")+' · '+escapeHtml(formatDate(t.updated_at))+'</p></div><span>'+Number(t.reply_count||0)+' '+(Number(t.reply_count||0)===1?"reply":"replies")+'</span></article>').join(""):"<p class='empty-state'>No threads here yet. Be the first to make a little noise.</p>";
+    }
+    async function loadCategories(){
+      const r=await fetch(API+"/api/categories",{credentials:"include",cache:"no-store"});
+      if(!r.ok)throw Error("Category service returned "+r.status);
+      const d=await r.json();categories=d.categories||[];renderCategories();
+    }
+    async function loadThreads(categoryId=""){
+      messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';
+      try{
+        const r=await fetch(API+"/api/threads"+(categoryId?"?category_id="+encodeURIComponent(categoryId):""),{credentials:"include",cache:"no-store"});
+        if(!r.ok)throw Error("Thread service returned "+r.status);
+        const d=await r.json();
+        const communityIds=new Set(categories.filter(cat=>topicNames.has(normalizeCategory(cat.name))).map(cat=>String(cat.id)));
+        renderThreads((d.threads||[]).filter(thread=>categoryId?true:communityIds.has(String(thread.category_id))));
+      }catch(e){threadsEl.innerHTML="";messageEl.textContent="The community threads could not load. Please try Refresh in a moment.";messageEl.hidden=false}
+    }
+    function showAllThreads(){
+      selectedCategoryId="";
+      categoriesEl.querySelectorAll("[data-category-id]").forEach(card=>{card.classList.remove("is-selected");card.setAttribute("aria-pressed","false")});
+      titleEl.textContent="Latest Community Mayhem";contextEl.textContent="COMMUNITY";allThreadsButton.hidden=true;loadThreads();
+    }
+    allThreadsButton.addEventListener("click",showAllThreads);
+    document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads(selectedCategoryId));
+    async function initialize(){
+      try{await loadCategories();await loadThreads();statusEl.textContent="Community online";statusEl.classList.add("online")}
+      catch(e){statusEl.textContent="Partially unavailable";messageEl.textContent="Some community features could not load. Try refreshing the page.";messageEl.hidden=false}
+    }
+    initialize();
+  </script>
+</body>
+</html>
