@@ -574,13 +574,13 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     const rankedMemories=(allMemories||[]).map((m,index)=>{const tokens=new Set((String(m.memory).toLowerCase().match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));let score=0;for(const token of queryTokens)if(tokens.has(token))score+=1;return {...m,index,score};}).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,20);
     const explicitMemoryRequest=/\b(remember|memory|memories|recall|what do you know about me|what did i tell you|use what you know|based on what you know|saved context)\b/i.test(message);
     let memories=[];
-    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
     const personality = {};
     for (const key of CHAOS_PERSONALITY_KEYS) personality[key] = await getSetting(env, key);
     const behaviorConfig=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);
     if(behaviorConfig.memoryPolicy==="explicit_only"){const relevant=rankedMemories.filter(m=>m.score>0);memories=explicitMemoryRequest?(relevant.length?relevant.slice(0,10):rankedMemories.slice(0,10)):[];}
     else if(behaviorConfig.memoryPolicy==="context_and_explicit"){const relevant=rankedMemories.filter(m=>m.score>0).slice(0,15);memories=[...relevant,...(allMemories||[]).slice(0,5).filter(m=>!relevant.some(r=>r.memory===m.memory))].slice(0,20);}
     else{memories=rankedMemories.filter(m=>m.score>0).slice(0,12);}
+    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
     const modeText={standard:"balanced, natural conversation",analytical:"structured reasoning, assumptions, evidence, and trade-offs",philosophical:"principles and implications, while marking speculation",chaos:"extra irreverence and creative associations when appropriate",supportive:"emotional awareness, patience, and practical care",confrontational:"directly challenge weak reasoning without contempt",creative:"imaginative, original approaches"};
     const ruleText={honestOpposition:"Challenge flawed reasoning when it matters; never manufacture disagreement.",contextualHumor:"Use humor when it fits; drop it during serious distress.",challengeWithoutContempt:"Critique claims and choices, not the user's worth.",evidenceBeforeConfidence:"Match confidence to evidence and mark uncertainty.",emotionalRecognition:"Recognize emotional context without replacing honesty with flattery.",intellectualIndependence:"Keep independent judgment; do not agree merely to please.",practicalCompletion:"Complete requested tasks concretely and state limitations honestly."};
     const autonomyText={strict:"Follow explicit instructions closely and avoid unrequested initiative.",guided:"Use judgment to improve outcomes while respecting the request.",autonomous:"Take reasonable initiative within the request; never claim actions not performed."};
