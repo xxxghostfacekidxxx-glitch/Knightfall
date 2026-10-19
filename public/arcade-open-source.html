@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="A curated launchpad for open-source games that run in your browser, with source repositories and license notes.">
+<title>Open-Source Game Hall | Chaos Cartridge | Ash-Fall</title>
+<link rel="stylesheet" href="/theme.css">
+<script src="/nav.js" defer></script>
+<style>
+:root{color-scheme:dark;--a:#f06a0a;--line:#303030;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% 0%,#d3540020,transparent 38%),radial-gradient(ellipse at 90% 70%,#f06a0a0c,transparent 34%),#080808;color:#eee}
+main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;margin-bottom:1.4rem;color:#bbb;text-decoration:none;font-size:.82rem}.back:hover,a:hover{color:#ff9a4d}
+.hero{padding:1rem 0 2.2rem}.eyebrow{color:var(--a);font-size:.7rem;font-weight:900;letter-spacing:.2em}.hero h1{font-size:clamp(2.6rem,8vw,5.7rem);line-height:.9;letter-spacing:-.06em;margin:.5rem 0 1rem}.hero h1 span{color:var(--a)}.lede{max-width:780px;color:#aaa;line-height:1.75}
+.notice{padding:1rem 1.2rem;border:1px solid #5c351c;border-radius:12px;background:#1a1009;color:#d9c7b8;line-height:1.65;margin:1.3rem 0 2rem}.notice strong{color:#ffb477}
+.shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.cabinet{display:flex;flex-direction:column;padding:1.35rem;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,#141414,#090909);min-height:260px}.cabinet h2{font-size:1.45rem;margin:.7rem 0 .5rem;letter-spacing:-.03em}.cabinet p{color:#aaa;line-height:1.65;margin:.3rem 0}.genre{font-size:.68rem;color:var(--a);font-weight:900;letter-spacing:.14em;text-transform:uppercase}.license{display:inline-flex;align-self:flex-start;margin:.5rem 0;padding:.28rem .55rem;border:1px solid #383838;border-radius:999px;color:#c8c8c8;font-size:.72rem}.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:auto;padding-top:1rem}.button{display:inline-flex;align-items:center;justify-content:center;padding:.72rem .9rem;border-radius:8px;text-decoration:none;font-weight:850;font-size:.86rem;border:1px solid #454545;color:#eee;background:#181818}.button.primary{border-color:var(--a);background:var(--a);color:#190c04}.button:focus-visible{outline:2px solid #ffb477;outline-offset:3px}.section-title{margin:2.5rem 0 1rem;font-size:1.7rem}.fineprint{margin-top:2rem;border-top:1px solid #292929;padding-top:1.2rem;color:#888;font-size:.84rem;line-height:1.7}.fineprint a{color:#f06a0a}
+@media(max-width:650px){.shelf{grid-template-columns:1fr}.cabinet{min-height:0}.actions .button{flex:1}}
+</style>
+</head>
+<body>
+<header class="kf-header"></header>
+<main>
+<a class="back" href="/chaos-cartridge.html">← Back to Chaos Cartridge</a>
+<section class="hero">
+<p class="eyebrow">ASH-FALL / COMMUNITY-CURATED SOFTWARE</p>
+<h1>OPEN-SOURCE<br><span>GAME HALL</span></h1>
+<p class="lede">A little cabinet of games made by people who decided the world needed more ways to lose an afternoon. These are links to the original projects and their own playable builds, not suspicious copies scraped into our server.</p>
+<div class="hero-actions"><a class="button primary" href="#browser-games">Browse browser games</a><a class="button" href="/arcade-progress.html">Arcade leaderboards ↗</a></div>
+</section>
+<div class="notice"><strong>License sanity check:</strong> the source list at <a href="https://github.com/bobeff/open-source-games" target="_blank" rel="noopener noreferrer">bobeff/open-source-games</a> is a directory, not a blanket license for every game listed there. Each game has its own code, asset, trademark, and distribution terms. We are linking to the projects' own hosted versions rather than copying third-party code or artwork without a full portable-build and asset review.</div>
+<section id="browser-games">
+<p class="eyebrow">PLAY IN YOUR BROWSER</p>
+<h2 class="section-title">The playable picks</h2>
+<div class="shelf">
+<article class="cabinet">
+<span class="genre">City builder / simulation</span><h2>IsoCity</h2>
+<p>Build an isometric city with roads, services, and a miniature world that will absolutely demand more infrastructure than your budget can handle.</p>
+<span class="license">MIT · source license checked</span>
+<div class="actions"><a class="button primary" href="https://iso-city.com" target="_blank" rel="noopener noreferrer">Play IsoCity ↗</a><a class="button" href="https://github.com/amilich/isometric-city" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+<article class="cabinet">
+<span class="genre">Theme park / management</span><h2>IsoCoaster</h2>
+<p>Design a tiny theme park and send guests onto your questionable engineering decisions. From the same open-source project as IsoCity.</p>
+<span class="license">MIT · project license checked</span>
+<div class="actions"><a class="button primary" href="https://iso-coaster.com" target="_blank" rel="noopener noreferrer">Play IsoCoaster ↗</a><a class="button" href="https://github.com/amilich/isometric-city" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+<article class="cabinet">
+<span class="genre">Puzzle / roguelike</span><h2>Whatajong</h2>
+<p>Mahjong solitaire with roguelike structure. Match tiles, plan ahead, and discover that even relaxing puzzles can become a tiny personal vendetta.</p>
+<span class="license">MIT · source license checked</span>
+<div class="actions"><a class="button primary" href="https://whatajong.com" target="_blank" rel="noopener noreferrer">Play Whatajong ↗</a><a class="button" href="https://github.com/masylum/whatajong" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+<article class="cabinet">
+<span class="genre">Turn-based tactics / strategy</span><h2>Open Panzer</h2>
+<p>A browser-based, HTML5 turn-based war game inspired by classic hex-and-counter tactics. Best on a larger screen, because tiny tactical maps on a phone are an act of optimism.</p>
+<span class="license">GPL-2.0-or-later · README checked</span>
+<div class="actions"><a class="button primary" href="http://www.linuxconsulting.ro/openpanzer/" target="_blank" rel="noopener noreferrer">Open game ↗</a><a class="button" href="https://github.com/nicupavel/openpanzer" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+<article class="cabinet">
+<span class="genre">City simulation / classic</span><h2>micropolisJS</h2>
+<p>A JavaScript/HTML5 port of the classic city simulation. This project has GPLv3 terms plus additional conditions, including trademark restrictions, so it stays linked to its original host here.</p>
+<span class="license">GPL-3.0 + additional terms</span>
+<div class="actions"><a class="button primary" href="https://www.graememcc.co.uk/micropolisJS/" target="_blank" rel="noopener noreferrer">Play micropolisJS ↗</a><a class="button" href="https://github.com/graememcc/micropolisJS" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+</div>
+</section>
+<section>
+<p class="eyebrow">OPEN SOURCE, NOT NECESSARILY BROWSER-BASED</p>
+<h2 class="section-title">Worth a look outside the arcade</h2>
+<div class="shelf">
+<article class="cabinet">
+<span class="genre">Point-and-click adventure</span><h2>Dead Ascend</h2>
+<p>A hand-drawn zombie escape adventure with puzzles. The source is MIT-licensed, but the project is a Qt/QML application rather than a drop-in browser game, so we are not pretending it can run inside this page.</p>
+<span class="license">MIT · source license checked</span>
+<div class="actions"><a class="button primary" href="https://blackgrain.itch.io/dead-ascend" target="_blank" rel="noopener noreferrer">Game downloads ↗</a><a class="button" href="https://github.com/larpon/DeadAscend" target="_blank" rel="noopener noreferrer">Source + license</a></div>
+</article>
+</div>
+</section>
+<p class="fineprint">Third-party games remain owned by their respective authors. License labels describe the linked source project, not necessarily every bundled font, music track, image, or other asset. We have not copied their code into Ash-Fall, and Ash-Fall account saves and leaderboards do not sync with external games. This collection is a curated launchpad; availability, controls, and external site policies are controlled by each project. <br><br>Discovery list: <a href="https://github.com/bobeff/open-source-games" target="_blank" rel="noopener noreferrer">bobeff/open-source-games ↗</a></p>
+</main>
+</body>
+</html>

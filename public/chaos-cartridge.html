@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Chaos Cartridge is Ash-Fall's home for browser games, strange experiments, and playable digital chaos.">
+  <meta name="description" content="Chaos Cartridge is Ash-Fall's home for browser games, strange experiments, open-source game discoveries, and playable digital chaos.">
   <meta name="theme-color" content="#080808">
   <title>Chaos Cartridge | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/homepage.css?v=20261018-chaos-cartridge">
+  <link rel="stylesheet" href="/homepage.css?v=20261019-open-source-games">
   <script src="/nav.js" defer></script>
   <style>
     .cartridge-back{display:inline-flex;margin-bottom:1.5rem;color:#bbb;text-decoration:none;font-size:.8rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
@@ -29,6 +29,10 @@
     .cartridge-empty h2{font-size:clamp(1.5rem,4vw,2.3rem);line-height:1.1;letter-spacing:-.04em}
     .cartridge-empty p{margin-top:.55rem;color:#999;max-width:650px}
     .cartridge-note{margin-top:1rem;color:#777;font-size:.82rem}
+    .open-source-callout{display:flex;align-items:center;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;padding:clamp(1.4rem,4vw,2.2rem);border:1px solid rgba(240,106,10,.35);border-radius:12px;background:linear-gradient(120deg,rgba(211,84,0,.1),rgba(12,12,12,.95));margin-top:2rem}
+    .open-source-callout p{max-width:700px;color:#aaa;margin-top:.6rem}
+    .open-source-callout h2{font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.04em}
+    .open-source-callout a{white-space:nowrap}
     @media(max-width:760px){.cartridge-shelf{grid-template-columns:1fr}.cartridge-empty{grid-template-columns:1fr}.cartridge-icon{width:56px;height:56px}}
   </style>
 </head>
@@ -41,7 +45,7 @@
       <div class="hero-copy cartridge-intro">
         <p class="eyebrow">ASH-FALL / PLAYABLE CHAOS</p>
         <h1 class="cartridge-title">CHAOS<br><span>CARTRIDGE</span></h1>
-        <p class="hero-lede">Video games, rage quits, questionable strategies, cursed mods, and ten playable browser games for the beautifully unhinged.</p>
+        <p class="hero-lede">Video games, rage quits, questionable strategies, cursed mods, open-source discoveries, and ten original playable browser games for the beautifully unhinged.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#game-shelf">Enter the arcade</a>
           <a class="button button-ghost" href="/community.html">Talk games</a>
@@ -51,11 +55,10 @@
         <span class="ring ring-one"></span><span class="ring ring-two"></span><span class="flame">◆</span>
       </div>
     </section>
-
     <section id="game-shelf" class="section" aria-labelledby="game-shelf-title">
       <div class="section-heading">
         <div><p class="eyebrow">INSERT CHAOS</p><h2 id="game-shelf-title">The Game Shelf</h2></div>
-        <span class="status">10 GAMES AVAILABLE</span>
+        <span class="status">10 ORIGINAL GAMES</span>
       </div>
       <div class="cartridge-shelf">
         <article class="cartridge-cabinet" style="--glow:rgba(240,106,10,.18)"><span class="cartridge-number">CABINET 001 / REFLEX</span><h3>Cinder Clicker</h3><p>Fifteen seconds. One glowing ember. Click like the rent depends on it.</p><span class="status">PLAYABLE</span><a class="button button-primary" style="margin-top:1rem;align-self:flex-start" href="/arcade-games.html">Play now ↗</a></article>
@@ -69,8 +72,11 @@
         <article class="cartridge-cabinet" style="--glow:rgba(211,84,0,.14)"><span class="cartridge-number">CABINET 009 / PUZZLE</span><h3>Minefield of Bad Ideas</h3><p>Clear the hidden mines with deduction, not the traditional method of screaming.</p><span class="status">PLAYABLE</span><a class="button button-primary" style="margin-top:1rem;align-self:flex-start" href="/arcade-vault.html#vault-mines">Play now ↗</a></article>
         <article class="cartridge-cabinet" style="--glow:rgba(240,106,10,.16)"><span class="cartridge-number">CABINET 010 / DESTRUCTION</span><h3>Ember Breaker</h3><p>Break the bricks, steer the ember, and briefly feel in control of something.</p><span class="status">PLAYABLE</span><a class="button button-primary" style="margin-top:1rem;align-self:flex-start" href="/arcade-vault.html#vault-breakout">Play now ↗</a></article>
       </div>
+      <section class="open-source-callout">
+        <div><p class="eyebrow">THE INTERNET'S WEIRD LITTLE TREASURE CHEST</p><h2>Open-Source Game Hall</h2><p>City builders, a roguelike Mahjong puzzle, turn-based tactics, and more, with links to original game hosts, source repositories, and license notes. We check each project individually instead of treating “open source” like a magical copyright eraser.</p></div>
+        <a class="button button-primary" href="/arcade-open-source.html">Explore open-source games ↗</a>
+      </section>
     </section>
-
     <section class="feature">
       <div><p class="eyebrow">THE COMMUNITY SIDE QUEST</p><h2>Got game-related chaos?</h2><p>Discuss games, share projects, and swap cursed ideas in the community while the playable arcade grows.</p></div>
       <a class="button button-primary" href="/community.html">Visit community ↗</a>
