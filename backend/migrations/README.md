@@ -29,3 +29,8 @@ A migration can have its intended data present while its filename is missing fro
 ## Current known review item
 
 `0017_true_crime_sanctum_infernum.sql` inserts two categories with `INSERT OR IGNORE`. The production category rows were present during the October 19, 2026 audit, but the filename was absent from the migration ledger. Reconcile this using the normal Wrangler migration runner and verify both category slugs afterward.
+
+
+## Arcade progress migration
+
+`0019_arcade_progress.sql` adds per-account high scores and private, versioned save slots. It is additive and does not alter existing community data. Before applying it, reconcile the already-present True Crime, Sanctum Infernum, Gaming, and Mindless Scribbling categories with the missing `0017` and `0018` migration ledger entries by running the idempotent migrations in order. Then apply `0019` with the normal Wrangler migration runner and verify the two arcade tables and indexes. Do not expose the arcade save UI as production-ready until the schema is applied and the API deployment succeeds.
