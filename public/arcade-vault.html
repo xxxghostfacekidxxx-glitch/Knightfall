@@ -53,6 +53,7 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;colo
 (()=>{
 const $=id=>document.getElementById(id);
 document.querySelectorAll('[data-vault]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-vault]').forEach(b=>b.setAttribute('aria-selected',String(b===btn)));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='vault-'+btn.dataset.vault));}));
+const initialPanel=location.hash.replace('#vault-','');if(['snake','mines','breakout'].includes(initialPanel)){const initialTab=document.querySelector('[data-vault="'+initialPanel+'"]');if(initialTab)initialTab.click();}
 /* Snake */
 const N=16, board=$('snake-board');let snake=[],food={x:8,y:8},dir={x:1,y:0},nextDir={x:1,y:0},snakeTimer=null,snakeRunning=false,snakeOver=false,snakeScore=0;
 function drawSnake(){board.innerHTML='';for(let y=0;y<N;y++)for(let x=0;x<N;x++){const d=document.createElement('div');d.className='snake-cell';if(snake.some(s=>s.x===x&&s.y===y))d.classList.add('snake');if(food.x===x&&food.y===y)d.classList.add('food');board.appendChild(d)}$('snake-score').textContent=snakeScore;$('snake-state').textContent=snakeOver?'Game over':snakeRunning?'Running':'Paused'}
