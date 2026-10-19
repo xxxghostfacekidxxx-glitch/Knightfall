@@ -803,8 +803,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       statements.push(upsert("chaos_behavior_versions",JSON.stringify(versions)),upsert("chaos_behavior_config",JSON.stringify(behavior)));
     }
     for(const [key,value] of Object.entries(personality))statements.push(upsert(key,String(value)));
-    try{await env.DB.batch(statements);}catch(error){console.error("chaos_proposal_atomic_apply_failed",error);return json({error:"The proposal was not applied because the configuration transaction failed. No partial changes were saved."},500,origin);}
-    await audit(env,user,"chaos.proposal.apply","setting",null,{behavior:!!behavior,personality_keys:Object.keys(personality),rollback_version_id:versionId});
+    const auditDetails=JSON.stringify({behavior:!!behavior,personality_keys:Object.keys(personality),rollback_version_id:versionId}).slice(0,4000);
+    statements.push(env.DB.prepare("INSERT INTO audit_logs (actor_id,action,target_type,target_id,details,created_at) VALUES (?,?,?,?,?,?)").bind(user.id,"chaos.proposal.apply","setting",null,auditDetails,now));
+    try{await env.DB.batch(statements);}catch(error){console.error("chaos_proposal_atomic_apply_failed",error);return json({error:"The proposal was not applied because the configuration transaction failed. No partial changes or audit records were saved."},500,origin);}
     return json({ok:true,behavior,personality,rollback_version_id:versionId},200,origin);
   }
   if(url.pathname==="/api/admin/chaos-lab/chat"&&request.method==="POST"){
