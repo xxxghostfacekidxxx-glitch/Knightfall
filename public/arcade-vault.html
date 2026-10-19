@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Three more free, original browser arcade games in Ash-Fall's Chaos Cartridge.">
+<title>Arcade Vault | Chaos Cartridge | Ash-Fall</title>
+<link rel="stylesheet" href="/theme.css">
+<script src="/nav.js" defer></script>
+<style>
+:root{color-scheme:dark;--a:#f06a0a;--panel:#111;--line:#303030}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% 0%,#d3540020,transparent 38%),#080808;color:#eee}
+main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;color:#bbb;text-decoration:none;margin-bottom:1rem;font-size:.85rem}
+.hero{padding:1rem 0 2rem}.eyebrow{color:var(--a);font-size:.7rem;font-weight:900;letter-spacing:.2em}.hero h1{font-size:clamp(2.8rem,9vw,6rem);line-height:.9;letter-spacing:-.06em;margin:.5rem 0 1rem}.hero h1 span{color:var(--a)}.lede,.muted{color:#aaa;line-height:1.65;max-width:760px}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}.tabs button,.btn{border:1px solid #393939;border-radius:9px;background:#151515;color:#eee;padding:.75rem 1rem;font:inherit;font-weight:800;cursor:pointer}.tabs button[aria-selected=true],.btn.primary{background:var(--a);border-color:var(--a);color:#180b03}
+.panel{display:none;border:1px solid var(--line);border-radius:14px;background:#101010;padding:clamp(1rem,3vw,2rem);min-height:430px}.panel.active{display:block}.panel h2{font-size:clamp(1.5rem,4vw,2.3rem);margin:.2rem 0 .6rem}.stats{display:flex;gap:1rem;flex-wrap:wrap;color:#aaa;margin:1rem 0}.stats strong{color:var(--a)}.arena{min-height:230px;border:1px solid #292929;border-radius:12px;background:#090909;padding:1rem;display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap}.message{min-height:1.5rem;color:#ddd}.btn:focus-visible,.tabs button:focus-visible,button:focus-visible{outline:2px solid var(--a);outline-offset:3px}
+#snake-board{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));width:min(100%,400px);aspect-ratio:1;background:#111;border:1px solid #303030;touch-action:manipulation}.snake-cell{min-width:0;aspect-ratio:1;background:#101010}.snake-cell.snake{background:#f06a0a;border-radius:3px}.snake-cell.food{background:#a4ff8a;border-radius:50%;transform:scale(.65)}
+.snake-controls{display:grid;grid-template-columns:repeat(3,52px);gap:.35rem;margin-top:1rem;justify-content:center}.snake-controls button{height:42px;border:1px solid #393939;border-radius:8px;background:#181818;color:#eee;font-size:1.2rem}
+#mine-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;width:min(100%,440px)}.mine-cell{aspect-ratio:1;border:1px solid #393939;border-radius:5px;background:#191919;color:#eee;font-weight:900;font-size:clamp(.8rem,3vw,1.1rem);padding:0}.mine-cell.open{background:#252525;border-color:#333}.mine-cell.flag{color:var(--a)}
+#breakout{width:100%;max-width:700px;aspect-ratio:7/4;background:#080808;border:1px solid #333;border-radius:8px;touch-action:pan-y}
+.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}.credits{margin-top:2rem;padding:1rem;border-top:1px solid #292929;color:#888;font-size:.82rem;line-height:1.6}
+@media(max-width:540px){.tabs{display:grid;grid-template-columns:1fr}.tabs button{text-align:left}.panel{padding:1rem}.arena{padding:.6rem}.snake-controls{grid-template-columns:repeat(3,48px)}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body><header class="kf-header"></header>
+<main>
+<a class="back" href="/chaos-cartridge.html">← Back to Chaos Cartridge</a>
+<section class="hero"><p class="eyebrow">ASH-FALL / EXTRA CABINETS</p><h1>THE <span>ARCADE VAULT</span></h1><p class="lede">Three more original browser games, built for this arcade: Snake, Minefield, and Ember Breaker. No third-party game code, accounts, downloads, or tracking. Just the ancient human tradition of losing to a rectangle.</p></section>
+<div class="tabs" role="tablist" aria-label="Choose a vault game">
+<button role="tab" aria-selected="true" aria-controls="vault-snake" id="tab-snake" data-vault="snake">08 · Snake in the Ashes</button>
+<button role="tab" aria-selected="false" aria-controls="vault-mines" id="tab-mines" data-vault="mines">09 · Minefield of Bad Ideas</button>
+<button role="tab" aria-selected="false" aria-controls="vault-breakout" id="tab-breakout" data-vault="breakout">10 · Ember Breaker</button>
+</div>
+<section class="panel active" id="vault-snake" role="tabpanel" aria-labelledby="tab-snake">
+<p class="eyebrow">ARCADE / SURVIVAL</p><h2>Snake in the Ashes</h2><p class="muted">Eat the green embers, grow longer, and try not to introduce your face to your own tail. Use arrow keys or WASD; mobile players get directional buttons.</p>
+<div class="stats"><span>Embers: <strong id="snake-score">0</strong></span><span>Best this run: <strong id="snake-best">0</strong></span><span>Status: <strong id="snake-state">Ready</strong></span></div>
+<div class="arena"><div id="snake-board" role="img" aria-label="Snake game board"></div></div><div class="actions"><button class="btn primary" id="snake-start">Start / Restart</button><button class="btn" id="snake-pause">Pause</button></div>
+<div class="snake-controls" aria-label="Snake touch controls"><span></span><button data-dir="up" aria-label="Up">↑</button><span></span><button data-dir="left" aria-label="Left">←</button><button data-dir="down" aria-label="Down">↓</button><button data-dir="right" aria-label="Right">→</button></div><p class="message" id="snake-message" aria-live="polite">Start the game when ready.</p>
+</section>
+<section class="panel" id="vault-mines" role="tabpanel" aria-labelledby="tab-mines">
+<p class="eyebrow">PUZZLE / DEDUCTION</p><h2>Minefield of Bad Ideas</h2><p class="muted">Clear the board without detonating one of ten hidden mines. Numbers show how many mines touch that square. On a phone, use Flag mode to mark suspicious squares.</p>
+<div class="stats"><span>Flags: <strong id="mine-flags">0</strong>/10</span><span>Safe tiles: <strong id="mine-safe">0</strong></span></div><div class="actions"><button class="btn primary" id="mine-new">New minefield</button><button class="btn" id="mine-flag-mode" aria-pressed="false">Flag mode: off</button></div><div class="arena"><div id="mine-board" role="group" aria-label="Minefield board"></div></div><p class="message" id="mine-message" aria-live="polite">Choose a tile. Regret is an optional feature.</p>
+</section>
+<section class="panel" id="vault-breakout" role="tabpanel" aria-labelledby="tab-breakout">
+<p class="eyebrow">ARCADE / DESTRUCTION</p><h2>Ember Breaker</h2><p class="muted">Break every brick with the ember ball. Move the paddle with your mouse, finger, or arrow keys. Three lives. No refunds from the void.</p>
+<div class="stats"><span>Bricks: <strong id="brick-score">0</strong>/24</span><span>Lives: <strong id="brick-lives">3</strong></span><span>Status: <strong id="brick-state">Ready</strong></span></div><div class="arena"><canvas id="breakout" width="700" height="400" aria-label="Breakout game canvas"></canvas></div><div class="actions"><button class="btn primary" id="brick-start">Start / Restart</button><button class="btn" id="brick-pause">Pause</button></div><p class="message" id="brick-message" aria-live="polite">Start to launch the ember. Drag or move to steer.</p>
+</section>
+<section class="credits"><strong>Discovery credit:</strong> <a href="https://github.com/leereilly/games" target="_blank" rel="noopener noreferrer" style="color:#f06a0a">Games on GitHub by Lee Reilly</a> is an archived index of game projects, not a single game engine or a bundle of games to copy. These three mini-games are original implementations made for Ash-Fall; no code from linked projects is included here. Any future third-party game will be reviewed and credited under its own license.</section>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+document.querySelectorAll('[data-vault]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-vault]').forEach(b=>b.setAttribute('aria-selected',String(b===btn)));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='vault-'+btn.dataset.vault));}));
+/* Snake */
+const N=16, board=$('snake-board');let snake=[],food={x:8,y:8},dir={x:1,y:0},nextDir={x:1,y:0},snakeTimer=null,snakeRunning=false,snakeOver=false,snakeScore=0;
+function drawSnake(){board.innerHTML='';for(let y=0;y<N;y++)for(let x=0;x<N;x++){const d=document.createElement('div');d.className='snake-cell';if(snake.some(s=>s.x===x&&s.y===y))d.classList.add('snake');if(food.x===x&&food.y===y)d.classList.add('food');board.appendChild(d)}$('snake-score').textContent=snakeScore;$('snake-state').textContent=snakeOver?'Game over':snakeRunning?'Running':'Paused'}
+function newFood(){let p;do{p={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)}}while(snake.some(s=>s.x===p.x&&s.y===p.y));food=p}
+function endSnake(msg){snakeRunning=false;snakeOver=true;clearInterval(snakeTimer);$('snake-message').textContent=msg;drawSnake()}
+function stepSnake(){dir=nextDir;const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(head.x<0||head.y<0||head.x>=N||head.y>=N||snake.some((s,i)=>i<snake.length-1&&s.x===head.x&&s.y===head.y)){endSnake('You crashed. The ashes are unimpressed. Final score: '+snakeScore+'.');return}snake.unshift(head);if(head.x===food.x&&head.y===food.y){snakeScore++;$('snake-best').textContent=Math.max(Number($('snake-best').textContent),snakeScore);if(snake.length===N*N){endSnake('Board consumed. You absolute menace.');return}newFood()}else snake.pop();drawSnake()}
+function setDir(d){if(d.x!==-dir.x||d.y!==-dir.y)nextDir=d}
+function startSnake(){clearInterval(snakeTimer);snake=[{x:4,y:8},{x:3,y:8},{x:2,y:8}];dir={x:1,y:0};nextDir={x:1,y:0};snakeScore=0;snakeOver=false;snakeRunning=true;newFood();$('snake-message').textContent='Eat the embers. Avoid the walls and your own tail.';drawSnake();snakeTimer=setInterval(()=>{if(snakeRunning)stepSnake()},145)}
+$('snake-start').addEventListener('click',startSnake);$('snake-pause').addEventListener('click',()=>{if(snakeOver)return;snakeRunning=!snakeRunning;$('snake-message').textContent=snakeRunning?'Back into the fire.':'Paused. Even snakes need a breather.';drawSnake()});
+document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>setDir(({up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}})[b.dataset.dir])));
+document.addEventListener('keydown',e=>{if(['ArrowUp','w','W'].includes(e.key)){setDir({x:0,y:-1});if($('vault-snake').classList.contains('active'))e.preventDefault()}if(['ArrowDown','s','S'].includes(e.key)){setDir({x:0,y:1});if($('vault-snake').classList.contains('active'))e.preventDefault()}if(['ArrowLeft','a','A'].includes(e.key)){setDir({x:-1,y:0});if($('vault-snake').classList.contains('active'))e.preventDefault()}if(['ArrowRight','d','D'].includes(e.key)){setDir({x:1,y:0});if($('vault-snake').classList.contains('active'))e.preventDefault()}});
+drawSnake();
+/* Mines */
+const MW=8,MH=8,MINES=10,mboard=$('mine-board');let cells=[],flagMode=false,mineDone=false,firstClick=true;
+function makeMines(){cells=Array.from({length:MW*MH},()=>({mine:false,open:false,flag:false,n:0}));let placed=0;while(placed<MINES){const i=Math.floor(Math.random()*cells.length);if(!cells[i].mine){cells[i].mine=true;placed++}}cells.forEach((c,i)=>{const x=i%MW,y=Math.floor(i/MW);c.n=neighbors(x,y).filter(j=>cells[j].mine).length});mineDone=false;firstClick=true;flagMode=false;$('mine-flag-mode').setAttribute('aria-pressed','false');$('mine-flag-mode').textContent='Flag mode: off';$('mine-message').textContent='Choose a tile. Regret is an optional feature.';renderMines()}
+function neighbors(x,y){const a=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const xx=x+dx,yy=y+dy;if(xx>=0&&yy>=0&&xx<MW&&yy<MH)a.push(yy*MW+xx)}return a}
+function renderMines(){mboard.innerHTML='';cells.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='mine-cell'+(c.open?' open':'')+(c.flag?' flag':'');b.setAttribute('aria-label',c.open?(c.mine?'Mine':c.n?'Number '+c.n:'Empty'):(c.flag?'Flagged tile':'Hidden tile'));b.textContent=c.flag?'⚑':c.open?(c.mine?'✹':c.n||''):' ';if(c.open&&c.n&&!c.mine)b.style.color=['','#a4d7ff','#a4ff8a','#ff9c75','#c2a1ff','#ffcc66'][c.n]||'#eee';b.addEventListener('click',()=>clickMine(i));mboard.appendChild(b)});$('mine-flags').textContent=cells.filter(c=>c.flag).length;$('mine-safe').textContent=cells.filter(c=>c.open&&!c.mine).length}
+function revealMine(i){const c=cells[i];if(c.open||c.flag||mineDone)return;c.open=true;if(c.mine){mineDone=true;cells.forEach(x=>{if(x.mine)x.open=true});$('mine-message').textContent='Boom. The minefield has filed a complaint against your decisions.';return}if(c.n===0)neighbors(i%MW,Math.floor(i/MW)).forEach(revealMine);if(cells.filter(x=>x.open&&!x.mine).length===MW*MH-MINES){mineDone=true;$('mine-message').textContent='Field cleared. Suspiciously competent.'}}
+function clickMine(i){if(mineDone)return;const c=cells[i];if(flagMode){if(!c.open){c.flag=!c.flag;renderMines()}return}if(c.flag)return;if(firstClick&&c.mine){c.mine=false;c.n=0;let safe=neighbors(i%MW,Math.floor(i/MW)).find(j=>!cells[j].mine&&j!==i);if(safe===undefined)safe=cells.findIndex((x,j)=>!x.mine&&j!==i);if(safe>=0){cells[safe].mine=true}cells.forEach((x,j)=>{x.n=neighbors(j%MW,Math.floor(j/MW)).filter(k=>cells[k].mine).length})}firstClick=false;revealMine(i);renderMines()}
+$('mine-new').addEventListener('click',makeMines);$('mine-flag-mode').addEventListener('click',()=>{flagMode=!flagMode;$('mine-flag-mode').setAttribute('aria-pressed',String(flagMode));$('mine-flag-mode').textContent='Flag mode: '+(flagMode?'on':'off');$('mine-message').textContent=flagMode?'Tap tiles to flag or unflag them.':'Flag mode off. Tap to reveal.'});makeMines();
+/* Ember Breaker */
+const canvas=$('breakout'),ctx=canvas.getContext('2d');let bx=350,by=330,bvx=3,bvy=-3,paddle=300,bricks=[],lives=3,brickRunning=false,brickEnded=false,brickFrame=null,brickScore=0;
+function resetBricks(){bricks=[];for(let r=0;r<4;r++)for(let c=0;c<6;c++)bricks.push({x:22+c*110,y:35+r*25,w:96,h:15,on:true})}
+function drawBricks(){ctx.clearRect(0,0,700,400);ctx.fillStyle='#080808';ctx.fillRect(0,0,700,400);bricks.forEach((b,i)=>{if(!b.on)return;ctx.fillStyle=['#f06a0a','#d35400','#9c3c00','#73300b'][Math.floor(i/6)];ctx.fillRect(b.x,b.y,b.w,b.h)});ctx.fillStyle='#ddd';ctx.fillRect(paddle,370,100,12);ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);ctx.fillStyle='#a4ff8a';ctx.shadowColor='#a4ff8a';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;$('brick-score').textContent=brickScore;$('brick-lives').textContent=lives;$('brick-state').textContent=brickEnded?'Game over':brickRunning?'Running':'Paused'}
+function finishBrick(msg){brickRunning=false;brickEnded=true;cancelAnimationFrame(brickFrame);$('brick-message').textContent=msg;drawBricks()}
+function brickLoop(){if(!brickRunning)return;bx+=bvx;by+=bvy;if(bx<8||bx>692)bvx=-bvx;if(by<8)bvy=Math.abs(bvy);if(by>362&&by<384&&bx>paddle&&bx<paddle+100){bvy=-Math.abs(bvy);bvx+=(bx-(paddle+50))*.025}if(by>405){lives--;if(lives<=0){finishBrick('Three lives gone. The bricks remain emotionally unavailable.');return}bx=350;by=330;bvy=-3;bvx=3;$('brick-message').textContent='Life lost. '+lives+' remaining.'}bricks.forEach(b=>{if(b.on&&bx>b.x&&bx<b.x+b.w&&by>b.y&&by<b.y+b.h){b.on=false;bvy=-bvy;brickScore++}});if(brickScore===bricks.length){finishBrick('All bricks demolished. The void reluctantly applauds.');return}drawBricks();brickFrame=requestAnimationFrame(brickLoop)}
+function startBrick(){cancelAnimationFrame(brickFrame);bx=350;by=330;bvx=3;bvy=-3;paddle=300;lives=3;brickScore=0;brickEnded=false;brickRunning=true;resetBricks();$('brick-message').textContent='Break the bricks. Keep the ember alive.';drawBricks();brickLoop()}
+function movePaddle(clientX){const r=canvas.getBoundingClientRect();paddle=Math.max(0,Math.min(600,(clientX-r.left)*700/r.width-50))}
+canvas.addEventListener('pointermove',e=>movePaddle(e.clientX));canvas.addEventListener('pointerdown',e=>movePaddle(e.clientX));document.addEventListener('keydown',e=>{if(!$('vault-breakout').classList.contains('active'))return;if(e.key==='ArrowLeft')paddle=Math.max(0,paddle-28);if(e.key==='ArrowRight')paddle=Math.min(600,paddle+28)});$('brick-start').addEventListener('click',startBrick);$('brick-pause').addEventListener('click',()=>{if(brickEnded)return;brickRunning=!brickRunning;$('brick-message').textContent=brickRunning?'Back to breaking.':'Paused.';if(brickRunning)brickLoop();drawBricks()});resetBricks();drawBricks();
+})();
+</script>
+</body></html>
