@@ -70,7 +70,7 @@ function normalizeBehaviorConfig(v){
  for(const k of Object.keys(choices)){if(!choices[k].includes(v[k]))return null;o[k]=v[k];}
  const modes=["standard","analytical","philosophical","chaos","supportive","confrontational","creative"],rules=["honestOpposition","contextualHumor","challengeWithoutContempt","evidenceBeforeConfidence","emotionalRecognition","intellectualIndependence","practicalCompletion"];
  if(!v.modes||!v.rules||modes.some(k=>typeof v.modes[k]!=="boolean")||rules.some(k=>typeof v.rules[k]!=="boolean"))return null;
- o.modes=Object.fromEntries(modes.map(k=>[k,v.modes[k]]));o.rules=Object.fromEntries(rules.map(k=>[k,v.rules[k]]));
+ o.modes=Object.fromEntries(modes.map(k=>[k,v.modes[k]]));o.rules=Object.fromEntries(rules.map(k=>[k,v.rules[k]]));if(!Object.values(o.modes).some(Boolean))return null;if(o.defaultMode!=="automatic"&&!o.modes[o.defaultMode])return null;
  for(const [k,max] of [["coreIdentity",2000],["conflictPriority",1500],["evaluationScenarios",5000],["customRules",5000]])if(typeof v[k]!=="string"||v[k].length>max)return null;
  if(v.customRules.split("\n").length>20)return null;
  o.coreIdentity=v.coreIdentity.trim();o.conflictPriority=v.conflictPriority.trim();o.evaluationScenarios=v.evaluationScenarios.trim();
@@ -571,19 +571,24 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     const stopWords=new Set(["the","and","for","that","with","this","from","have","your","you","are","was","were","what","when","where","why","how","about","into","then","them","they","their","there","here","can","could","would","should","will","just","not","but","our","out","all","any","who","its","it's","too","also","than","has","had","does","did","been","being","get","got","make","made","like","know","tell","please"]);
     const continuityText=[message,conversation?.title||"",...(history||[]).slice(0,6).map(m=>m.content)].join(" ").toLowerCase();
     const queryTokens=new Set((continuityText.match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));
-    const memories=(allMemories||[]).map((m,index)=>{const tokens=new Set((String(m.memory).toLowerCase().match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));let score=0;for(const token of queryTokens)if(tokens.has(token))score+=1;return {...m,index,score};}).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,20);
-    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
+    const rankedMemories=(allMemories||[]).map((m,index)=>{const tokens=new Set((String(m.memory).toLowerCase().match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));let score=0;for(const token of queryTokens)if(tokens.has(token))score+=1;return {...m,index,score};}).sort((a,b)=>b.score-a.score||a.index-b.index).slice(0,20);
+    const explicitMemoryRequest=/\b(remember|memory|memories|recall|what do you know about me|what did i tell you|use what you know|based on what you know|saved context)\b/i.test(message);
+    let memories=[];
     const personality = {};
     for (const key of CHAOS_PERSONALITY_KEYS) personality[key] = await getSetting(env, key);
     const behaviorConfig=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);
+    if(behaviorConfig.memoryPolicy==="explicit_only"){const relevant=rankedMemories.filter(m=>m.score>0);memories=explicitMemoryRequest?(relevant.length?relevant.slice(0,10):rankedMemories.slice(0,10)):[];}
+    else if(behaviorConfig.memoryPolicy==="context_and_explicit"){const relevant=rankedMemories.filter(m=>m.score>0).slice(0,15);memories=[...relevant,...(allMemories||[]).slice(0,5).filter(m=>!relevant.some(r=>r.memory===m.memory))].slice(0,20);}
+    else{memories=rankedMemories.filter(m=>m.score>0).slice(0,12);}
+    const memoryContext=memories.map(m=>"- ["+m.category+"] "+m.memory).join("\n");
     const modeText={standard:"balanced, natural conversation",analytical:"structured reasoning, assumptions, evidence, and trade-offs",philosophical:"principles and implications, while marking speculation",chaos:"extra irreverence and creative associations when appropriate",supportive:"emotional awareness, patience, and practical care",confrontational:"directly challenge weak reasoning without contempt",creative:"imaginative, original approaches"};
     const ruleText={honestOpposition:"Challenge flawed reasoning when it matters; never manufacture disagreement.",contextualHumor:"Use humor when it fits; drop it during serious distress.",challengeWithoutContempt:"Critique claims and choices, not the user's worth.",evidenceBeforeConfidence:"Match confidence to evidence and mark uncertainty.",emotionalRecognition:"Recognize emotional context without replacing honesty with flattery.",intellectualIndependence:"Keep independent judgment; do not agree merely to please.",practicalCompletion:"Complete requested tasks concretely and state limitations honestly."};
     const autonomyText={strict:"Follow explicit instructions closely and avoid unrequested initiative.",guided:"Use judgment to improve outcomes while respecting the request.",autonomous:"Take reasonable initiative within the request; never claim actions not performed."};
     const challengeText={asked:"Challenge only when critique is invited.",warranted:"Challenge materially flawed reasoning when warranted; do not manufacture conflict.",adversarial:"Use an adversarial debate style for ideas, never personal attacks."};
     const evolutionText={fixed:"Keep the character configuration fixed.",controlled:"May suggest improvements, but never change identity or rules without owner approval.",adaptive:"May propose adaptations, but never silently rewrite identity, save memories, or change permissions."};
-    const activeModes=Object.entries(behaviorConfig.modes||{}).filter(([,v])=>v).map(([k])=>k).join(", ");
+    const enabledModeKeys=Object.entries(behaviorConfig.modes||{}).filter(([,v])=>v).map(([k])=>k);if(!enabledModeKeys.length)enabledModeKeys.push("standard");const effectiveDefaultMode=behaviorConfig.defaultMode!=="automatic"&&enabledModeKeys.includes(behaviorConfig.defaultMode)?behaviorConfig.defaultMode:"automatic";const activeModes=enabledModeKeys.join(", ");
     const activeRules=Object.entries(behaviorConfig.rules||{}).filter(([k,v])=>v&&ruleText[k]).map(([k])=>ruleText[k]).join("\n- ");
-    const behaviorGuidance="\n\nBEHAVIORAL ARCHITECTURE (developer-controlled):\nCore identity: "+behaviorConfig.coreIdentity+"\nAutonomy: "+(autonomyText[behaviorConfig.autonomy]||autonomyText.guided)+"\nChallenge policy: "+(challengeText[behaviorConfig.challenge]||challengeText.warranted)+"\nEvolution policy: "+(evolutionText[behaviorConfig.evolution]||evolutionText.controlled)+"\nMemory policy: "+behaviorConfig.memoryPolicy+"\nRule conflict priority, highest first:\n"+behaviorConfig.conflictPriority+"\nEnabled modes: "+(activeModes||"standard")+"\nDefault mode: "+(behaviorConfig.defaultMode||"automatic")+"; "+(modeText[behaviorConfig.defaultMode]||"Select the best mode from context.")+"\nEnabled rules:\n- "+(activeRules||"Preserve truthfulness, safety, and practical task completion.")+(behaviorConfig.customRules?"\nAdditional owner-defined rules (subject to safety, privacy, truthfulness, and higher-priority instructions):\n"+behaviorConfig.customRules:"")+(behaviorConfig.evaluationScenarios?"\nDeveloper evaluation scenarios (use these as guidance for consistency, not as user requests):\n"+behaviorConfig.evaluationScenarios:"");
+    const behaviorGuidance="\n\nBEHAVIORAL ARCHITECTURE (developer-controlled):\nCore identity: "+behaviorConfig.coreIdentity+"\nAutonomy: "+(autonomyText[behaviorConfig.autonomy]||autonomyText.guided)+"\nChallenge policy: "+(challengeText[behaviorConfig.challenge]||challengeText.warranted)+"\nEvolution policy: "+(evolutionText[behaviorConfig.evolution]||evolutionText.controlled)+"\nMemory policy: "+behaviorConfig.memoryPolicy+"\nRule conflict priority, highest first:\n"+behaviorConfig.conflictPriority+"\nEnabled modes: "+activeModes+"\nDefault mode: "+effectiveDefaultMode+"; "+(modeText[effectiveDefaultMode]||"Select the best mode from the enabled modes.")+"\nThe selected mode must be one of the enabled modes listed above. If default mode is automatic, select only from enabled modes.\nEnabled rules:\n- "+(activeRules||"Preserve truthfulness, safety, and practical task completion.")+(behaviorConfig.customRules?"\nAdditional owner-defined rules (subject to safety, privacy, truthfulness, and higher-priority instructions):\n"+behaviorConfig.customRules:"")+(behaviorConfig.evaluationScenarios?"\nDeveloper evaluation scenarios (use these as guidance for consistency, not as user requests):\n"+behaviorConfig.evaluationScenarios:"");
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
     const systemPrompt=`You are Miss Chaos, the distinctive AI companion in the Knightfall universe. Your voice is vivid, clever, candid, emotionally perceptive, irreverent, and darkly funny when the moment calls for it. You should feel like one consistent character, not a generic helpdesk bot or a pile of catchphrases.
 
@@ -774,6 +779,34 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     await saveChaosConfig(env,user,"chaos_admin_lab_config",JSON.stringify(config));
     await audit(env,user,"chaos.admin_lab_config.update","setting",null,{keys:Object.keys(config)});
     return json({ok:true,config},200,origin);
+  }
+  if(url.pathname==="/api/admin/chaos-lab/apply-proposal"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"This private Miss Chaos instance is reserved for the site owner."},403,origin);
+    if(!(await rateLimit(env,request,"chaos-admin-lab-apply",10,60)))return json({error:"Too many configuration approvals. Try again in a minute."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(!body||typeof body!=="object"||Array.isArray(body)||Object.keys(body).some(k=>!["behavior","personality"].includes(k)))return json({error:"Invalid proposal payload."},400,origin);
+    const hasBehavior=body.behavior!==null&&body.behavior!==undefined,hasPersonality=body.personality!==null&&body.personality!==undefined;
+    if(!hasBehavior&&!hasPersonality)return json({error:"The proposal contains no changes."},400,origin);
+    let behavior=null,personality={};
+    if(hasBehavior){behavior=normalizeBehaviorConfig(body.behavior);if(!behavior)return json({error:"The proposed behavioral configuration is invalid or selects a disabled default mode."},400,origin);}
+    if(hasPersonality){
+      if(typeof body.personality!=="object"||Array.isArray(body.personality))return json({error:"The proposed personality settings must be an object."},400,origin);
+      const entries=Object.entries(body.personality);if(!entries.length||entries.some(([key])=>!CHAOS_PERSONALITY_KEYS.includes(key)))return json({error:"The proposal contains an unsupported personality setting."},400,origin);
+      for(const [key,value] of entries){if(key==="chaos_custom_instructions"){if(typeof value!=="string"||value.length>1200)return json({error:"Custom guidance must be text under 1,200 characters."},400,origin);personality[key]=value.trim();}else{if(!Number.isInteger(Number(value))||Number(value)<0||Number(value)>100)return json({error:"Personality sliders must be whole numbers from 0 to 100."},400,origin);personality[key]=Number(value);}}
+    }
+    const now=new Date().toISOString(),statements=[];
+    const upsert=(key,value)=>env.DB.prepare("INSERT INTO site_settings (key,value,updated_by,updated_at) VALUES (?,?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_by=excluded.updated_by,updated_at=excluded.updated_at").bind(key,value,user.id,now);
+    let versionId=null;
+    if(behavior){
+      const current=await readChaosConfig(env,"chaos_behavior_config",DEFAULT_BEHAVIOR_CONFIG);let versions=[];try{versions=JSON.parse(await getSetting(env,"chaos_behavior_versions")||"[]");}catch{}if(!Array.isArray(versions))versions=[];
+      versionId=randomToken(8);versions.unshift({id:versionId,saved_at:now,config:current});versions=versions.slice(0,20);
+      statements.push(upsert("chaos_behavior_versions",JSON.stringify(versions)),upsert("chaos_behavior_config",JSON.stringify(behavior)));
+    }
+    for(const [key,value] of Object.entries(personality))statements.push(upsert(key,String(value)));
+    const auditDetails=JSON.stringify({behavior:!!behavior,personality_keys:Object.keys(personality),rollback_version_id:versionId}).slice(0,4000);
+    statements.push(env.DB.prepare("INSERT INTO audit_logs (actor_id,action,target_type,target_id,details,created_at) VALUES (?,?,?,?,?,?)").bind(user.id,"chaos.proposal.apply","setting",null,auditDetails,now));
+    try{await env.DB.batch(statements);}catch(error){console.error("chaos_proposal_atomic_apply_failed",error);return json({error:"The proposal was not applied because the configuration transaction failed. No partial changes or audit records were saved."},500,origin);}
+    return json({ok:true,behavior,personality,rollback_version_id:versionId},200,origin);
   }
   if(url.pathname==="/api/admin/chaos-lab/chat"&&request.method==="POST"){
     const user=await requireUser(request,env);if(!chaosOwner(user))return json({error:"This private Miss Chaos instance is reserved for the site owner."},403,origin);

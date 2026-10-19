@@ -33,6 +33,21 @@ const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
 else ok("Worker module syntax");
 
+const chaosInvariants = [
+  ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
+  ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
+  ["disabled default modes are rejected", /o\.defaultMode!=="automatic"&&!o\.modes\[o\.defaultMode\]/],
+  ["Chaos Lab proposal application is owner-gated", /chaos-lab\/apply-proposal[\s\S]{0,220}chaosOwner\(user\)/],
+  ["approved Chaos Lab changes use a D1 batch", /chaos-lab\/apply-proposal[\s\S]{0,5000}env\.DB\.batch\(statements\)/],
+];
+for (const [label, pattern] of chaosInvariants) {
+  if (!pattern.test(worker)) fail("Chaos invariant missing: " + label);
+  else ok("Chaos invariant: " + label);
+}
+const chaosLabHtml = await readFile(path.join(publicDir, "chaos-lab.html"), "utf8");
+if (!chaosLabHtml.includes("/api/admin/chaos-lab/apply-proposal")) fail("Chaos Lab UI does not use the atomic proposal endpoint.");
+else ok("Chaos Lab proposal UI uses the atomic endpoint");
+
 for (const configPath of ["wrangler.jsonc", "backend/wrangler.jsonc"]) {
   try {
     JSON.parse(await readFile(path.join(root, configPath), "utf8"));

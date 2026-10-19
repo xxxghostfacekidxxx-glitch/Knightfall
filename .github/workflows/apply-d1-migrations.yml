@@ -1,0 +1,51 @@
+name: Apply reviewed D1 migrations
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_production:
+        description: Confirm that reviewed pending migrations should be applied to the production D1 database.
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knightfall-production-d1-migrations
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: ${{ inputs.confirm_production }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Require dedicated migration credentials
+        shell: bash
+        env:
+          CLOUDFLARE_D1_MIGRATION_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_D1_MIGRATION_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_D1_MIGRATION_TOKEN Actions secret with D1 migration permissions before running this workflow."
+            exit 1
+          fi
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::The CLOUDFLARE_ACCOUNT_ID Actions secret is required."
+            exit 1
+          fi
+          echo "Dedicated migration credentials are present."
+
+      - name: Apply pending remote migrations
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 migrations apply knightfall-forum --remote
