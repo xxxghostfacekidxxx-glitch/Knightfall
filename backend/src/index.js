@@ -643,7 +643,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({conversation_id:conversationId,reply,mood},200,origin);
   }
   // Arcade persistence: scoreboards are public; score submissions and saves require a session.
-  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker"]);
+  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter"]);
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
     const limit=boundedInt(url.searchParams.get("limit"),10,1,50);
