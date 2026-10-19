@@ -642,6 +642,63 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     ]);
     return json({conversation_id:conversationId,reply,mood},200,origin);
   }
+  // Arcade persistence: scoreboards are public; score submissions and saves require a session.
+  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker"]);
+  if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
+    const game=String(url.searchParams.get("game")||"");
+    const limit=boundedInt(url.searchParams.get("limit"),10,1,50);
+    if(game&&!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
+    const rows=game
+      ? await env.DB.prepare("SELECT s.game_key,s.best_score,s.runs,s.achieved_at,u.username,u.display_name FROM arcade_high_scores s JOIN users u ON u.id=s.user_id WHERE s.game_key=? AND u.status='active' ORDER BY s.best_score DESC,s.achieved_at ASC LIMIT "+limit).bind(game).all()
+      : await env.DB.prepare("SELECT s.game_key,s.best_score,s.runs,s.achieved_at,u.username,u.display_name FROM arcade_high_scores s JOIN users u ON u.id=s.user_id WHERE u.status='active' ORDER BY s.best_score DESC,s.achieved_at ASC LIMIT "+limit).all();
+    const user=await requireUser(request,env);
+    let mine=[];
+    if(user){const result=await env.DB.prepare("SELECT game_key,best_score,runs,achieved_at,updated_at FROM arcade_high_scores WHERE user_id=? ORDER BY updated_at DESC").bind(user.id).all();mine=result.results||[];}
+    return json({scores:rows.results||[],mine},200,origin,{"cache-control":"no-store"});
+  }
+  if(url.pathname==="/api/arcade/scores"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to save your score to the leaderboard."},401,origin);
+    if(!(await rateLimit(env,request,"arcade-score",60,60)))return json({error:"Too many score submissions. Try again shortly."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const game=String(body.game_key||""),score=Number(body.score);
+    if(!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
+    if(!Number.isSafeInteger(score)||score<0||score>1000000000)return json({error:"Score must be a non-negative whole number."},400,origin);
+    const now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO arcade_high_scores (user_id,game_key,best_score,runs,achieved_at,updated_at) VALUES (?,?,?,1,?,?) ON CONFLICT(user_id,game_key) DO UPDATE SET best_score=MAX(arcade_high_scores.best_score,excluded.best_score),runs=arcade_high_scores.runs+1,achieved_at=CASE WHEN excluded.best_score>arcade_high_scores.best_score THEN excluded.achieved_at ELSE arcade_high_scores.achieved_at END,updated_at=excluded.updated_at").bind(user.id,game,score,now,now).run();
+    const saved=await env.DB.prepare("SELECT game_key,best_score,runs,achieved_at,updated_at FROM arcade_high_scores WHERE user_id=? AND game_key=?").bind(user.id,game).first();
+    return json({ok:true,score:saved},200,origin,{"cache-control":"no-store"});
+  }
+  if(url.pathname==="/api/arcade/progress"&&(request.method==="GET"||request.method==="PUT"||request.method==="DELETE")){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to access saved game progress."},401,origin);
+    if(request.method==="GET"){
+      const game=String(url.searchParams.get("game")||"");
+      if(game&&!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
+      const rows=game
+        ? await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at FROM arcade_saves WHERE user_id=? AND game_key=? ORDER BY updated_at DESC").bind(user.id,game).all()
+        : await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at FROM arcade_saves WHERE user_id=? ORDER BY updated_at DESC LIMIT 200").bind(user.id).all();
+      return json({saves:(rows.results||[]).map(row=>({...row,save_data:JSON.parse(row.save_data)}))},200,origin,{"cache-control":"no-store"});
+    }
+    if(request.method==="DELETE"){
+      const game=String(url.searchParams.get("game")||""),slot=String(url.searchParams.get("save_key")||"autosave");
+      if(!arcadeGames.has(game)||!/^[a-z0-9_-]{1,40}$/.test(slot))return json({error:"Invalid game or save slot."},400,origin);
+      await env.DB.prepare("DELETE FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).run();
+      return json({ok:true},200,origin);
+    }
+    if(!(await rateLimit(env,request,"arcade-save",60,60)))return json({error:"Too many save changes. Try again shortly."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const game=String(body.game_key||""),slot=String(body.save_key||"autosave"),version=Number(body.schema_version||1),state=body.save_data;
+    if(!arcadeGames.has(game)||!/^[a-z0-9_-]{1,40}$/.test(slot))return json({error:"Invalid game or save slot."},400,origin);
+    if(!Number.isSafeInteger(version)||version<1||version>100)return json({error:"Invalid save schema version."},400,origin);
+    if(!state||typeof state!=="object"||Array.isArray(state))return json({error:"Save data must be a JSON object."},400,origin);
+    const encoded=JSON.stringify(state);
+    if(encoded.length>32768)return json({error:"Save data is too large (32 KB maximum)."},413,origin);
+    const count=await env.DB.prepare("SELECT COUNT(*) AS total FROM arcade_saves WHERE user_id=?").bind(user.id).first();
+    const exists=await env.DB.prepare("SELECT id FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).first();
+    if(!exists&&Number(count?.total||0)>=200)return json({error:"This account has reached its 200 save-slot limit."},409,origin);
+    const now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO arcade_saves (user_id,game_key,save_key,schema_version,save_data,created_at,updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(user_id,game_key,save_key) DO UPDATE SET schema_version=excluded.schema_version,save_data=excluded.save_data,updated_at=excluded.updated_at").bind(user.id,game,slot,version,encoded,now,now).run();
+    return json({ok:true,game_key:game,save_key:slot,schema_version:version,updated_at:now},200,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname==="/api/auth/register"&&request.method==="POST"){if(!(await rateLimit(env,request,"register",5,900)))return json({error:"Too many registration attempts. Try again later."},429,origin);if((await getSetting(env,"registration_enabled"))==="false")return json({error:"Registration is currently closed."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const username=String(body.username||"").trim().toLowerCase(),email=String(body.email||"").trim().toLowerCase(),displayName=String(body.display_name||"").trim(),password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Enter a valid email address."},400,origin);if(!validText(displayName,80))return json({error:"Display name is required."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);const duplicate=await env.DB.prepare("SELECT id FROM users WHERE username=? OR email=?").bind(username,email).first();if(duplicate)return json({error:"Username or email is already registered."},409,origin);const passwordHash=await hashPassword(password),now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName,"member",now,now).first(),token=await createSession(result.id,env),user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(result.id).first();return json({user},201,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/login"&&request.method==="POST"){if(!(await rateLimit(env,request,"login",12,900)))return json({error:"Too many login attempts. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const identifier=String(body.identifier||"").trim().toLowerCase(),password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT * FROM users WHERE username=? OR email=?").bind(identifier,identifier).first();if(!user||user.status!=="active"||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env),safeUser=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:safeUser},200,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
