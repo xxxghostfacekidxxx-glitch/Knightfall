@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS arcade_high_scores (
 CREATE INDEX IF NOT EXISTS idx_arcade_scores_leaderboard
   ON arcade_high_scores(game_key, best_score DESC, achieved_at ASC);
 CREATE TABLE IF NOT EXISTS arcade_saves (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   game_key TEXT NOT NULL,
   save_key TEXT NOT NULL DEFAULT 'autosave',
