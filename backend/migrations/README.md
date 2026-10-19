@@ -12,7 +12,9 @@ The production database is `knightfall-forum`, configured in `backend/wrangler.j
 
 ## Apply reviewed migrations
 
-From the repository root, apply pending migrations to the remote database:
+The repository includes a guarded GitHub Actions workflow at `.github/workflows/apply-d1-migrations.yml`. It is manual-only, requires an explicit production confirmation, and uses a dedicated `CLOUDFLARE_D1_MIGRATION_TOKEN` secret with D1 migration permissions. Configure that secret before running the workflow.
+
+From the repository root, the equivalent command is:
 
 ```sh
 npx wrangler d1 migrations apply knightfall-forum --remote --config backend/wrangler.jsonc
