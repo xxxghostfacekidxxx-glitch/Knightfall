@@ -644,6 +644,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   }
   // Arcade persistence: scoreboards are public; score submissions and saves require a session.
   const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter","reaction-ritual-afterdark","madhouse-match","lights-out-afterburn","whack-a-glitch-panic","cinder-clicker-pocket","snake-ashes-redux","ember-breakout-afterdark","pong-no-return"]);
+  // Conservative sanity caps for the new fixed-rule games. These catch obvious forged values, not all cheating.
+  const arcadeScoreCaps = { "reaction-ritual-afterdark":1000, "madhouse-match":2000, "lights-out-afterburn":500, "whack-a-glitch-panic":60, "snake-ashes-redux":100000, "ember-breakout-afterdark":300, "pong-no-return":7 };
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
     const limit=boundedInt(url.searchParams.get("limit"),10,1,50);
@@ -663,7 +665,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const game=String(body.game_key||""),score=Number(body.score);
     if(!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
-    if(!Number.isSafeInteger(score)||score<0||score>1000000000)return json({error:"Score must be a non-negative whole number."},400,origin);
+    const scoreCap=arcadeScoreCaps[game]??1000000000;
+    if(!Number.isSafeInteger(score)||score<0||score>scoreCap)return json({error:"Score is outside the accepted range for this game."},400,origin);
     const now=new Date().toISOString();
     await env.DB.prepare("INSERT INTO arcade_high_scores (user_id,game_key,best_score,runs,achieved_at,updated_at) VALUES (?,?,?,1,?,?) ON CONFLICT(user_id,game_key) DO UPDATE SET best_score=MAX(arcade_high_scores.best_score,excluded.best_score),runs=arcade_high_scores.runs+1,achieved_at=CASE WHEN excluded.best_score>arcade_high_scores.best_score THEN excluded.achieved_at ELSE arcade_high_scores.achieved_at END,updated_at=excluded.updated_at").bind(user.id,game,score,now,now).run();
     const saved=await env.DB.prepare("SELECT game_key,best_score,runs,achieved_at,updated_at FROM arcade_high_scores WHERE user_id=? AND game_key=?").bind(user.id,game).first();
