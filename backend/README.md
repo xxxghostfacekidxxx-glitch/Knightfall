@@ -36,3 +36,8 @@ npx wrangler deploy
 ```
 
 The public website remains on Cloudflare Pages. This Worker is API-only.
+
+
+## Password recovery email configuration
+
+Password recovery requires a Resend API key and a sender address on a domain verified with Resend. Configure `RESEND_API_KEY` as a secret on the `knightfall-api` Worker, and configure `PASSWORD_RESET_FROM` as a Worker variable with the verified sender address. Do not commit the API key to Git. The public endpoint deliberately returns the same response for known and unknown emails. Reset links expire after 30 minutes and are invalidated after use. Staff recovery emails the account's registered address; staff cannot view or set a member's password directly. Password changes revoke existing sessions.
