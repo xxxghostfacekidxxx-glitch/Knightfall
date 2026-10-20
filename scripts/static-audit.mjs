@@ -43,6 +43,15 @@ for (const [label, pattern] of arcadeInvariants) {
   else ok("Arcade invariant: " + label);
 }
 
+const saveInvariants = [
+  ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
+  ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,650}progressSaved\?"Score saved to your account/],
+];
+for (const [label, pattern] of saveInvariants) {
+  if (!pattern.test(worker + "\n" + saveScript)) fail("Arcade save invariant missing: " + label);
+  else ok("Arcade save invariant: " + label);
+}
+
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
