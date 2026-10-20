@@ -29,6 +29,7 @@ for (const file of jsFiles) {
   else ok("JavaScript syntax: " + path.relative(root, file));
 }
 const worker = await readFile(path.join(root, "backend/src/index.js"), "utf8");
+const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8");
 const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: worker, encoding: "utf8" });
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
 else ok("Worker module syntax");
@@ -41,6 +42,15 @@ const arcadeInvariants = [
 for (const [label, pattern] of arcadeInvariants) {
   if (!pattern.test(worker)) fail("Arcade invariant missing: " + label);
   else ok("Arcade invariant: " + label);
+}
+
+const saveInvariants = [
+  ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
+  ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,650}progressSaved\?"Score saved to your account/],
+];
+for (const [label, pattern] of saveInvariants) {
+  if (!pattern.test(worker + "\n" + saveScript)) fail("Arcade save invariant missing: " + label);
+  else ok("Arcade save invariant: " + label);
 }
 
 const chaosInvariants = [
