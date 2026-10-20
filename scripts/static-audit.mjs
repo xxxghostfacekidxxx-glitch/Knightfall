@@ -47,7 +47,10 @@ for (const [label, pattern] of arcadeInvariants) {
 
 const saveInvariants = [
   ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
-  ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,650}progressSaved\?"Score saved to your account/],
+  ["arcade saves expose revision-aware conflict detection", /expectedRevision[\s\S]{0,1200}revision=arcade_saves\.revision\+1[\s\S]{0,300}conflict:true/],
+  ["arcade save schema includes monotonic revisions", /0020_arcade_save_revisions\.sql/],
+  ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,750}progressSaved\?"Score saved to your account/],
+  ["arcade client can load and conditionally save a revision", /loadProgress\(gameKey[\s\S]{0,700}expected_revision/],
 ];
 for (const [label, pattern] of saveInvariants) {
   if (!pattern.test(worker + "\n" + saveScript)) fail("Arcade save invariant missing: " + label);
