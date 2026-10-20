@@ -145,6 +145,7 @@ if (!cityGame.includes("data-character") || !cityGame.includes("data-mutation"))
 if (!cityGame.includes("cinders-unlocked") || !cityGame.includes("unlockRules") || !cityGame.includes("unlockedCharacters")) fail("City of Cinders is missing mixed character unlock progression.");
 if (!cityGame.includes("restoreAccountProgress") || !cityGame.includes("api.loadProgress(gameKey)")) fail("City of Cinders does not restore account-backed character progression.");
 if (!cityGame.includes("selectedCharacter==='malpractice'") || !cityGame.includes("selectedCharacter==='wreckoning'")) fail("City of Cinders is missing character-specific visual identity details.");
+if (!cityGame.includes("aerialSlash") || !cityGame.includes("nearby.hp-=.65") || !cityGame.includes("Math.min(combo-1,4)*.16")) fail("City of Cinders is missing signature attack behavior for its roster.");
 const arcadeSave = await readFile(path.join(root, "public/arcade-save.js"), "utf8");
 if (!arcadeSave.includes("async function loadProgress") || !arcadeSave.includes("loadProgress,saveProgress")) fail("Arcade save helper does not expose account-backed progress loading.");
 if (!cityGame.includes("data-hold") || !cityGame.includes("data-tap")) fail("City of Cinders is missing touch controls.");
