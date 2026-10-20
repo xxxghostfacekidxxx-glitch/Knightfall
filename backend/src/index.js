@@ -709,7 +709,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"password-reset",5,900)))return json({message:"If an account matches that email, password-reset instructions will be sent."},200,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const email=String(body.email||"").trim().toLowerCase();
-    if(email.length<=254&&/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){
+    if(email.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
       const target=await env.DB.prepare("SELECT id,email,username FROM users WHERE email=? AND status='active'").bind(email).first();
       if(target&&env.RESEND_API_KEY&&env.PASSWORD_RESET_FROM){
         const token=randomToken(32),digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
