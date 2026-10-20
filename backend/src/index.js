@@ -686,6 +686,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       return json({ok:true},200,origin);
     }
     if(!(await rateLimit(env,request,"arcade-save",60,60)))return json({error:"Too many save changes. Try again shortly."},429,origin);
+    if(!(await rateLimit(env,request,"arcade-save-account",120,60,user.id)))return json({error:"This account is saving too frequently. Wait a minute and try again."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const game=String(body.game_key||""),slot=String(body.save_key||"autosave"),version=Number(body.schema_version||1),state=body.save_data;
     if(!arcadeGames.has(game)||!/^[a-z0-9_-]{1,40}$/.test(slot))return json({error:"Invalid game or save slot."},400,origin);
