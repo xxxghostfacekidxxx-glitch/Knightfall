@@ -136,6 +136,16 @@ for (const endpoint of apiCandidates) {
 }
 ok("Frontend API path contracts checked: " + apiCandidates.size);
 
+const cityGame = await readFile(path.join(root, "public/city-of-cinders.html"), "utf8");
+const cartridge = await readFile(path.join(root, "public/chaos-cartridge.html"), "utf8");
+const arcadeProgress = await readFile(path.join(root, "public/arcade-progress.html"), "utf8");
+if (!cityGame.includes("gameKey='city-of-cinders'")) fail("City of Cinders is missing its arcade game key.");
+if (!cityGame.includes("data-hold") || !cityGame.includes("data-tap")) fail("City of Cinders is missing touch controls.");
+if (!cartridge.includes('href="/city-of-cinders.html"')) fail("Chaos Cartridge does not link to City of Cinders.");
+if (!arcadeProgress.includes('"city-of-cinders":"City of Cinders"')) fail("Arcade records do not register City of Cinders.");
+if (!worker.includes('"city-of-cinders"') || !worker.includes('"city-of-cinders":25000')) fail("Worker does not allow and sanity-bound City of Cinders scores.");
+ok("City of Cinders game, controls, records, and score API registration checked.");
+
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
 for (const name of migrations) {
