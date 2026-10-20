@@ -143,6 +143,10 @@ if (!cityGame.includes("gameKey='city-of-cinders'")) fail("City of Cinders is mi
 if (!["guttermaw","malpractice","dredge","ash-tyrant","widowbyte","wreckoning"].every(key => cityGame.includes(key))) fail("City of Cinders is missing one or more of its six playable monsters.");
 if (!cityGame.includes("data-character") || !cityGame.includes("data-mutation")) fail("City of Cinders is missing character selection or mutation controls.");
 if (!cityGame.includes("cinders-unlocked") || !cityGame.includes("unlockRules") || !cityGame.includes("unlockedCharacters")) fail("City of Cinders is missing mixed character unlock progression.");
+if (!cityGame.includes("restoreAccountProgress") || !cityGame.includes("api.loadProgress(gameKey)")) fail("City of Cinders does not restore account-backed character progression.");
+if (!cityGame.includes("selectedCharacter==='malpractice'") || !cityGame.includes("selectedCharacter==='wreckoning'")) fail("City of Cinders is missing character-specific visual identity details.");
+const arcadeSave = await readFile(path.join(root, "public/arcade-save.js"), "utf8");
+if (!arcadeSave.includes("async function loadProgress") || !arcadeSave.includes("loadProgress,saveProgress")) fail("Arcade save helper does not expose account-backed progress loading.");
 if (!cityGame.includes("data-hold") || !cityGame.includes("data-tap")) fail("City of Cinders is missing touch controls.");
 if (!cartridge.includes('href="/city-of-cinders.html"')) fail("Chaos Cartridge does not link to City of Cinders.");
 if (!arcadeProgress.includes('"city-of-cinders":"City of Cinders"')) fail("Arcade records do not register City of Cinders.");
