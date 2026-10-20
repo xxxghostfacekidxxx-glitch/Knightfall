@@ -34,8 +34,8 @@ if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck
 else ok("Worker module syntax");
 
 const arcadeInvariants = [
-  ["arcade score submissions require a signed-in account", /\/api\/arcade\/scores[\\s\\S]{0,350}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
-  ["arcade scores are rate-limited per network and account", /rateLimit\(env,request,"arcade-score",60,60\)[\\s\\S]{0,220}rateLimit\(env,request,"arcade-score-account",20,60,user\.id\)/],
+  ["arcade score submissions require a signed-in account", /\/api\/arcade\/scores[\s\S]{0,350}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
+  ["arcade scores are rate-limited per network and account", /rateLimit\(env,request,"arcade-score",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-score-account",20,60,user\.id\)/],
   ["arcade scores reject unsafe, negative, or excessive values", /Number\.isSafeInteger\(score\)\|\|score<0\|\|score>1000000000/],
 ];
 for (const [label, pattern] of arcadeInvariants) {
