@@ -704,6 +704,58 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     await env.DB.prepare("INSERT INTO arcade_saves (user_id,game_key,save_key,schema_version,save_data,created_at,updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(user_id,game_key,save_key) DO UPDATE SET schema_version=excluded.schema_version,save_data=excluded.save_data,updated_at=excluded.updated_at").bind(user.id,game,slot,version,encoded,now,now).run();
     return json({ok:true,game_key:game,save_key:slot,schema_version:version,updated_at:now},200,origin,{"cache-control":"no-store"});
   }
+
+  if(url.pathname==="/api/auth/password-reset/request"&&request.method==="POST"){
+    if(!(await rateLimit(env,request,"password-reset",5,900)))return json({message:"If an account matches that email, password-reset instructions will be sent."},200,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const email=String(body.email||"").trim().toLowerCase();
+    if(email.length<=254&&/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)){
+      const target=await env.DB.prepare("SELECT id,email,username FROM users WHERE email=? AND status='active'").bind(email).first();
+      if(target&&env.RESEND_API_KEY&&env.PASSWORD_RESET_FROM){
+        const token=randomToken(32),digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
+        await env.SESSIONS.put("password-reset:"+digest,JSON.stringify({user_id:target.id,created_at:Date.now()}),{expirationTtl:1800});
+        const resetUrl="https://ash-fall.com/reset-password.html?token="+encodeURIComponent(token);
+        const sent=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.PASSWORD_RESET_FROM,to:[target.email],subject:"Reset your Ash-Fall password",text:"A password reset was requested for your Ash-Fall account. This link expires in 30 minutes and can only be used once. If you did not request this, ignore this email.\n\n"+resetUrl,html:"<p>A password reset was requested for your Ash-Fall account.</p><p>This link expires in 30 minutes and can only be used once.</p><p><a href=\""+resetUrl+"\">Reset my password</a></p><p>If you did not request this, ignore this email.</p>"})});
+        if(!sent.ok){await env.SESSIONS.delete("password-reset:"+digest);console.error("password_reset_email_delivery_failed",sent.status);}
+      } else if(target) console.error("password_reset_email_not_configured");
+    }
+    return json({message:"If an account matches that email, password-reset instructions will be sent."},200,origin);
+  }
+  if(url.pathname==="/api/auth/password-reset/complete"&&request.method==="POST"){
+    if(!(await rateLimit(env,request,"password-reset-complete",10,900)))return json({error:"Too many attempts. Request a new reset link later."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const token=typeof body.token==="string"?body.token:"",password=typeof body.password==="string"?body.password:"";
+    if(!/^[a-f0-9]{64}$/.test(token)||password.length<12||password.length>128)return json({error:"Use a valid reset link and a password between 12 and 128 characters."},400,origin);
+    const digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join(""),key="password-reset:"+digest,reset=await env.SESSIONS.get(key,"json");
+    if(!reset||!reset.user_id)return json({error:"This reset link is invalid or has expired. Request a new one."},400,origin);
+    await env.SESSIONS.delete(key);
+    const passwordHash=await hashPassword(password),now=new Date().toISOString();
+    await env.DB.prepare("UPDATE users SET password_hash=?,updated_at=? WHERE id=? AND status='active'").bind(passwordHash,now,reset.user_id).run();
+    const sessions=await env.SESSIONS.list({prefix:"session:"});for(const item of sessions.keys||[]){const session=await env.SESSIONS.get(item.name,"json");if(session?.user_id===reset.user_id)await env.SESSIONS.delete(item.name);}
+    const target=await env.DB.prepare("SELECT id,username FROM users WHERE id=?").bind(reset.user_id).first();
+    if(target)await audit(env,{id:reset.user_id,username:target.username},"password.reset.self","user",reset.user_id,{method:"email_token"});
+    return json({ok:true,message:"Password updated. Sign in with your new password."},200,origin,{"set-cookie":sessionCookie("",0)});
+  }
+  const moderatorResetMatch=url.pathname.match(/^\/api\/moderation\/users\/(\d+)\/password-reset$/);
+  const adminResetMatch=url.pathname.match(/^\/api\/admin\/users\/(\d+)\/password-reset$/);
+  if((moderatorResetMatch||adminResetMatch)&&request.method==="POST"){
+    const actor=await requireUser(request,env),isAdminReset=!!adminResetMatch;
+    if(isAdminReset?!isAdmin(actor):!isModerator(actor))return json({error:isAdminReset?"Administrator access required.":"Moderator access required."},403,origin);
+    if(!env.RESEND_API_KEY||!env.PASSWORD_RESET_FROM)return json({error:"Password-reset email is not configured. Set RESEND_API_KEY and PASSWORD_RESET_FROM on the API Worker."},503,origin);
+    const targetId=Number((isAdminReset?adminResetMatch:moderatorResetMatch)[1]),target=await env.DB.prepare("SELECT id,email,username,role,status FROM users WHERE id=?").bind(targetId).first();
+    if(!target)return json({error:"User not found."},404,origin);
+    if(target.role==="admin"&&!isAdmin(actor))return json({error:"Moderators cannot reset administrator accounts."},403,origin);
+    if(target.username==="knightfall"&&(!chaosOwner(actor)||!isAdminReset))return json({error:"Only the site owner can initiate recovery for the owner account."},403,origin);
+    if(target.status!=="active")return json({error:"Reactivate this account before initiating password recovery."},409,origin);
+    if(!(await rateLimit(env,request,"staff-password-reset",10,900,actor.id)))return json({error:"Too many password reset actions. Try again later."},429,origin);
+    const token=randomToken(32),digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    await env.SESSIONS.put("password-reset:"+digest,JSON.stringify({user_id:target.id,created_at:Date.now()}),{expirationTtl:1800});
+    const resetUrl="https://ash-fall.com/reset-password.html?token="+encodeURIComponent(token);
+    const sent=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.PASSWORD_RESET_FROM,to:[target.email],subject:"Ash-Fall account password reset",text:"A moderator or administrator initiated password recovery for your Ash-Fall account. The link expires in 30 minutes and can only be used once. If you did not expect this, contact the site team.\n\n"+resetUrl,html:"<p>A moderator or administrator initiated password recovery for your Ash-Fall account.</p><p>This link expires in 30 minutes and can only be used once.</p><p><a href=\""+resetUrl+"\">Choose a new password</a></p><p>If you did not expect this, contact the site team.</p>"})});
+    if(!sent.ok){await env.SESSIONS.delete("password-reset:"+digest);console.error("staff_password_reset_email_failed",sent.status);return json({error:"The reset email could not be sent. Check the email provider configuration."},502,origin);}
+    await audit(env,actor,"user.password_reset.initiated","user",target.id,{method:isAdminReset?"admin":"moderator"});
+    return json({ok:true,message:"Password reset instructions sent to the account email."},200,origin);
+  }
   if(url.pathname==="/api/auth/register"&&request.method==="POST"){if(!(await rateLimit(env,request,"register",5,900)))return json({error:"Too many registration attempts. Try again later."},429,origin);if((await getSetting(env,"registration_enabled"))==="false")return json({error:"Registration is currently closed."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const username=String(body.username||"").trim().toLowerCase(),email=String(body.email||"").trim().toLowerCase(),displayName=String(body.display_name||"").trim(),password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Enter a valid email address."},400,origin);if(!validText(displayName,80))return json({error:"Display name is required."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);const duplicate=await env.DB.prepare("SELECT id FROM users WHERE username=? OR email=?").bind(username,email).first();if(duplicate)return json({error:"Username or email is already registered."},409,origin);const passwordHash=await hashPassword(password),now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName,"member",now,now).first(),token=await createSession(result.id,env),user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(result.id).first();return json({user},201,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/login"&&request.method==="POST"){if(!(await rateLimit(env,request,"login",12,900)))return json({error:"Too many login attempts. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const identifier=String(body.identifier||"").trim().toLowerCase(),password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT * FROM users WHERE username=? OR email=?").bind(identifier,identifier).first();if(!user||user.status!=="active"||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env),safeUser=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:safeUser},200,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
