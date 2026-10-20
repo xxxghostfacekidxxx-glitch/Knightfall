@@ -29,6 +29,7 @@ for (const file of jsFiles) {
   else ok("JavaScript syntax: " + path.relative(root, file));
 }
 const worker = await readFile(path.join(root, "backend/src/index.js"), "utf8");
+const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8");
 const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: worker, encoding: "utf8" });
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
 else ok("Worker module syntax");
