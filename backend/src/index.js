@@ -760,7 +760,11 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const actor=await requireUser(request,env);if(!isModerator(actor))return json({error:"Moderator access required."},403,origin);
     const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
     if(q.length<2)return json({users:[]},200,origin);
-    const like="%"+q.replace(/[\\%_]/g,"\\  if(url.pathname==="/api/auth/register"&&request.method==="POST")")+"%";
+    const like="%"+q.replace(/[%_]/g,"")+"%";
+    const {results}=await env.DB.prepare("SELECT id,username,display_name,role,status FROM users WHERE username LIKE ? OR display_name LIKE ? ORDER BY username ASC LIMIT 50").bind(like,like).all();
+    return json({users:(results||[]).filter(x=>x.role!=="admin"||isAdmin(actor))},200,origin);
+  }
+  if(url.pathname==="/api/auth/register"&&request.method==="POST")")+"%";
     const {results}=await env.DB.prepare("SELECT id,username,display_name,role,status FROM users WHERE username LIKE ? ESCAPE '\\\\' OR display_name LIKE ? ESCAPE '\\\\' ORDER BY username ASC LIMIT 50").bind(like,like).all();
     return json({users:(results||[]).filter(x=>x.role!=="admin"||isAdmin(actor))},200,origin);
   }
