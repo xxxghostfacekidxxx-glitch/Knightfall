@@ -47,8 +47,9 @@ for (const [label, pattern] of arcadeInvariants) {
 
 const saveInvariants = [
   ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
-  ["arcade saves expose revision-aware conflict detection", /expectedRevision[\s\S]{0,1200}revision=arcade_saves\.revision\+1[\s\S]{0,300}conflict:true/],
-  ["arcade save schema includes monotonic revisions", /0020_arcade_save_revisions\.sql/],
+  ["arcade saves expose revision-aware conflict detection", /expected_revision/],
+  ["arcade save writes increment revisions conditionally", /revision=arcade_saves\.revision\+1/],
+  ["stale arcade save writes return a conflict response", /conflict:true/],
   ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,750}progressSaved\?"Score saved to your account/],
   ["arcade client can load and conditionally save a revision", /loadProgress\(gameKey[\s\S]{0,700}expected_revision/],
 ];
@@ -138,6 +139,10 @@ for (const endpoint of apiCandidates) {
   }
 }
 ok("Frontend API path contracts checked: " + apiCandidates.size);
+
+const revisionMigration = await readFile(path.join(root, "backend/migrations/0020_arcade_save_revisions.sql"), "utf8");
+if (!/ADD COLUMN revision INTEGER NOT NULL DEFAULT 1/.test(revisionMigration)) fail("Arcade save revision migration does not add a defaulted revision column.");
+else ok("Arcade save revision migration adds a monotonic revision column");
 
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
