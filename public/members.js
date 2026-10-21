@@ -72,7 +72,7 @@
     status.textContent = "Searching the inhabitants…";
     try {
       const query = encodeURIComponent(search.value.trim());
-      const response = await fetch(API + "/api/discover?q=" + query, { credentials:"include", cache:"no-store" });
+      const response = await fetch(API + "/api/discover?q=" + query + "&limit=50", { credentials:"include", cache:"no-store" });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Member directory returned " + response.status + ".");
       if (currentRequest !== requestNumber) return;
