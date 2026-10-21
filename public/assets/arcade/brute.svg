@@ -1,1 +1,53 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160"><defs><linearGradient id="skin" x2="1" y2="1"><stop stop-color="#e1a7ff"/><stop offset=".5" stop-color="#8b50a9"/><stop offset="1" stop-color="#322039"/></linearGradient><linearGradient id="armor" x2="1"><stop stop-color="#27202f"/><stop offset=".5" stop-color="#5d466a"/><stop offset="1" stop-color="#201722"/></linearGradient></defs><ellipse cx="64" cy="150" rx="39" ry="6" fill="#05040a" opacity=".7"/><path d="m38 95-7 34-10 15 21 7 17-24 8-28M83 94l8 35 14 13 12-9-14-22-3-20" fill="#2c2431" stroke="#100d15" stroke-width="6"/><path d="m20 140 22-1 7 10-29 4zM100 140l17-6 8 8-6 9-19-2z" fill="#08080d" stroke="#b24be8" stroke-width="4"/><path d="m33 43-18 12-5 30 18 17 17-14M92 43l16 11 9 29-14 17-16-13" fill="url(#armor)" stroke="#100d15" stroke-width="6"/><path d="m34 43 59-2 12 24-8 41-57 2-13-39z" fill="url(#skin)" stroke="#100d15" stroke-width="6"/><path d="m31 48-14-21 24 9 4 13M96 48l18-22-4 29-14 5" fill="#211824" stroke="#100d15" stroke-width="5"/><path d="m36 14 29-6 27 10 9 22-11 21-43 4-18-18z" fill="url(#skin)" stroke="#100d15" stroke-width="6"/><path d="m35 22 9-16 11 10 11-15 9 14 15-9 5 18-17-4-13 4-17-1z" fill="#1a141f" stroke="#08070c" stroke-width="4"/><path d="m41 33 19-4-4 10-15 2M70 29l18 2-5 10-13-2" fill="#100a16"/><path d="m46 34 11-1M73 34l9 1" stroke="#ffcf3f" stroke-width="5" stroke-linecap="round"/><path d="m46 48 11-7 8 8 7-7 10 7-18 10z" fill="#fff0d2" stroke="#100d15" stroke-width="3"/><path d="m36 64 18 2-4 9-17-2M79 63l17-2 3 10-17 4" fill="#201725" stroke="#100d15" stroke-width="3"/><path d="m38 79 20 8-7 9-17-6M80 83l20-9 5 10-21 12" fill="#b24be8"/><path d="m43 111 16 4-4 10-15-5M76 113l15-5 4 9-17 7" fill="#b24be8"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
+<defs><linearGradient id="flesh" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7a17a"/><stop offset=".36" stop-color="#85634f"/><stop offset=".75" stop-color="#4b3633"/><stop offset="1" stop-color="#211a20"/></linearGradient><linearGradient id="armor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4c3a3c"/><stop offset=".45" stop-color="#211d26"/><stop offset="1" stop-color="#0a0b11"/></linearGradient><linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e5d6be"/><stop offset=".3" stop-color="#8f8c89"/><stop offset="1" stop-color="#27252d"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="2.5"/></filter></defs>
+<ellipse cx="64" cy="151" rx="40" ry="6" fill="#020207" opacity=".85" filter="url(#shadow)"/>
+<!-- massive planted legs -->
+<path d="m38 94 1 27-6 16-11 7 2 7 28 1 8-12 10-25-1-18z" fill="#282329" stroke="#090a10" stroke-width="5" stroke-linejoin="round"/>
+<path d="m77 95 5 27 13 14 13 5 4 7-7 7-25-6-12-14-9-24z" fill="#33252b" stroke="#090a10" stroke-width="5" stroke-linejoin="round"/>
+<path d="m24 141 26-2 5 8-3 6H20zM92 136l16 3 8 8-4 6-24-5z" fill="#09090f" stroke="#ba5547" stroke-width="2.5"/>
+<path d="m26 148 24-1m47-1 16 2" stroke="#e6d7c3" stroke-width="1.6"/>
+<path d="m40 122 13 2-5 8-12-1m35-9 15 4 4 5-12-2" fill="none" stroke="#7e5d50" stroke-width="2.4"/>
+<!-- oversized arms and armor -->
+<path d="m39 48-17 5-11 18 3 19 13 12 14-10 6-22M87 48l16 5 11 19-3 18-13 12-13-10-6-22" fill="url(#armor)" stroke="#08090f" stroke-width="5.5" stroke-linejoin="round"/>
+<path d="m16 69 17-8 10 11-4 18-14 6-10-10zM96 63l12 9-2 17-12 7-8-12z" fill="#4a3438" stroke="#171017" stroke-width="3"/>
+<path d="m19 74 10-5 8 6-4 12-10 3zM99 70l7 4-2 10-7 4-4-7z" fill="#17141c" stroke="#ba5547" stroke-width="2"/>
+<!-- thick torso with torn industrial armor -->
+<path d="m35 43 54-2 14 22-7 43-25 10-31-9-14-39z" fill="url(#armor)" stroke="#09090f" stroke-width="5.5" stroke-linejoin="round"/>
+<path d="m38 54 14 5-4 36-9-3m44-38-10 9 8 31 8-4" fill="none" stroke="#d86c4c" stroke-width="3"/>
+<path d="m52 49 24-1 7 43-17 17-15-14z" fill="url(#steel)" stroke="#100e15" stroke-width="4"/>
+<path d="m58 58 12-1 5 30-9 11-9-10z" fill="#28232b"/>
+<path d="m41 69 10 5-2 9-10-3m35-9 11-5m-9 14 10-3" fill="none" stroke="#a99c92" stroke-width="1.8"/>
+<!-- heavy industrial harness, bolts, hazard patch -->
+<path d="m35 55 57 37" stroke="#08090e" stroke-width="9"/>
+<path d="m35 55 57 37" stroke="#8b7773" stroke-width="4"/>
+<path d="m42 60 6 4m7 5 6 4m7 5 6 4m7 5 5 4" stroke="#f0d3ae" stroke-width="1.5"/>
+<path d="m41 81 15 1-3 13-14-2z" fill="#e1a53f" stroke="#100e14" stroke-width="2"/>
+<path d="m43 84 9 0m-8 4 7 0m-6 4 5 0" stroke="#17131b" stroke-width="2"/>
+<circle cx="43" cy="58" r="2.4" fill="#f0d3ae"/><circle cx="88" cy="89" r="2.4" fill="#f0d3ae"/>
+<!-- huge neck and head -->
+<path d="m49 42 2 13 13 8 14-10-2-14z" fill="#765244" stroke="#151016" stroke-width="3"/>
+<path d="m36 16 38-4 19 15-2 24-17 15-27-4-15-17-1-18z" fill="url(#flesh)" stroke="#130e15" stroke-width="5" stroke-linejoin="round"/>
+<path d="m40 27 10-10 8 10 10-13 6 15 11-5-5 15-14-3-14 3z" fill="#67483e" opacity=".65"/>
+<!-- scalp, broken horns, bald scars -->
+<path d="m36 23-7-15 17 8 8-13 9 13 13-9 4 15 14-5-4 21-12-8-15 4-14-4-7 8z" fill="#252029" stroke="#0a0b10" stroke-width="3.5"/>
+<path d="m42 16 7 4 6-9 7 11 11-9 2 13 9-5-4 13-14-3-13 3z" fill="#59403b"/>
+<path d="m40 14-6-9 13 5m36 8 8-9-3 16" fill="#18151e" stroke="#08090e" stroke-width="2.5"/>
+<!-- deeply set eyes -->
+<path d="m40 29 19-4 0 8-17 5zM65 28l17-3 3 7-18 6z" fill="#211319"/>
+<path d="m44 32 10-1" stroke="#ffcf3f" stroke-width="3.5" stroke-linecap="round"/>
+<path d="m69 32 8-1" stroke="#ff5b4c" stroke-width="3.5" stroke-linecap="round"/>
+<path d="m62 29-5 14 4 4" fill="none" stroke="#5b3832" stroke-width="2.5"/>
+<!-- broken nose and tusked mouth -->
+<path d="m58 36 8 0-3 11-7 1-3-4z" fill="#65453e"/>
+<path d="m43 45 15-5 8 3 8-4 12 5-5 13-15 5-14-6z" fill="#25151a" stroke="#170d13" stroke-width="3"/>
+<path d="m49 45 5-2 4 9-5 1zM72 43l5-1 1 9-5 1z" fill="url(#steel)" stroke="#30212a" stroke-width="1.5"/>
+<path d="m59 54 5 4 6-4" fill="none" stroke="#a33d3b" stroke-width="2"/>
+<!-- neck bolts, shoulder spikes and scars -->
+<path d="m35 51 14 6 7 11-10-4-5-6-5 3-6-8zM88 50l-10 7-5 11 10-4 5-6 5 2 4-7z" fill="#111119" stroke="#6e5150" stroke-width="2.5"/>
+<path d="m30 56-9-12 15 6m56 7 10-12-3 17" fill="#3e2e34" stroke="#0a0b10" stroke-width="3"/>
+<circle cx="43" cy="58" r="2" fill="#e7d2b7"/><circle cx="84" cy="57" r="2" fill="#e7d2b7"/>
+<path d="m40 75 7 3m-6 5 7 2m37-8 7-4m-8 12 6-2" stroke="#e0b99d" stroke-width="1.4" opacity=".8"/>
+<!-- heavy knuckles -->
+<path d="m12 84 8-4 9 5 2 9-9 6-8-5zM99 83l8-4 9 6 1 8-9 6-8-6z" fill="#80604f" stroke="#151016" stroke-width="3"/>
+<path d="m17 87 6 2m-4 3 5 2m78-6 5 2m-3 4 5 1" stroke="#e3c09f" stroke-width="1.5"/>
+</svg>
