@@ -80,6 +80,35 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;marg
 </section>
 <p class="fineprint">Third-party games remain owned by their respective authors. License labels describe the linked source project, not necessarily every bundled font, music track, image, or other asset. We have not copied their code into Ash-Fall, and Ash-Fall account saves and leaderboards do not sync with external games. This collection is a curated launchpad; availability, controls, and external site policies are controlled by each project. <br><br>Discovery list: <a href="https://github.com/bobeff/open-source-games" target="_blank" rel="noopener noreferrer">bobeff/open-source-games ↗</a></p>
 </main>
-<script src="/arcade-open-source.js?v=20261021-library-tools" defer></script>
+<script>
+(() => {
+  "use strict";
+  const search=document.querySelector("#game-search");
+  const genre=document.querySelector("#game-genre");
+  const count=document.querySelector("#game-results-count");
+  const cards=[...document.querySelectorAll("[data-game-card]")];
+  if(!search||!genre||!count||!cards.length)return;
+  const normalize=value=>String(value||"").toLowerCase().normalize("NFKD");
+  const empty=document.createElement("div");
+  empty.className="game-empty";
+  empty.hidden=true;
+  empty.innerHTML="<strong>No games on this shelf.</strong>Try another search or choose a broader genre.";
+  document.querySelector("#browser-games .shelf")?.append(empty);
+  const render=()=>{
+    const q=normalize(search.value.trim()),g=genre.value;
+    let shown=0;
+    cards.forEach(card=>{
+      const visible=normalize(card.textContent).includes(q)&&(g==="all"||card.dataset.genre===g);
+      card.hidden=!visible;
+      if(visible)shown++;
+    });
+    empty.hidden=shown>0;
+    count.textContent=shown+" of "+cards.length+" projects shown";
+  };
+  search.addEventListener("input",render);
+  genre.addEventListener("change",render);
+  render();
+})();
+</script>
 </body>
 </html>
