@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manage your Ash-Fall friends, requests, and new connections.">
+  <title>Ash-Fall | Friends</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/profile.css?v=20261021-friends">
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="profile-shell friends-page">
+    <nav><a href="/">← Back to Ash-Fall</a></nav>
+    <section class="card friends-page-card">
+      <p class="eyebrow">YOUR PEOPLE · YOUR CIRCLE</p>
+      <h1>Friends & connections.</h1>
+      <p class="handle">Find your kind of strange. Manage requests. Keep your circle yours.</p>
+      <div id="friends-summary" class="friends-summary" aria-live="polite"><span>Loading your connections…</span></div>
+      <section class="friend-discover">
+        <div><h2>Find someone</h2><p class="muted">Search by username, display name, bio, or location.</p></div>
+        <form id="friend-search-form" class="friend-search-form">
+          <label for="friend-search">Search members</label>
+          <div class="friend-request-row"><input id="friend-search" maxlength="80" placeholder="Search the Madhouse…" autocomplete="off"><button class="action primary" type="submit">Search</button></div>
+        </form>
+        <div id="friend-search-results" class="member-grid"><p class="muted">Search for people to get started.</p></div>
+        <p id="friends-status" role="status" aria-live="polite"></p>
+      </section>
+      <div class="friends-page-columns">
+        <section><h2>Your friends <span id="friends-total" class="friend-count">0</span></h2><div id="friends-list" class="member-grid"><p class="muted">Loading…</p></div></section>
+        <section><h2>Incoming requests <span id="incoming-total" class="friend-count">0</span></h2><div id="incoming-list" class="member-grid"></div><h2 class="outgoing-title">Sent requests <span id="outgoing-total" class="friend-count">0</span></h2><div id="outgoing-list" class="member-grid"></div></section>
+      </div>
+    </section>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script src="/friends.js?v=20261021-friends" defer></script>
+</body>
+</html>
