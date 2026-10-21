@@ -841,6 +841,60 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   const blockMatch=url.pathname.match(/^\/api\/users\/([^/]+)\/block$/);if(blockMatch&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id,username,status FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(!target||target.status!=="active")return json({error:"User not found."},404,origin);if(target.id===user.id)return json({error:"You cannot block yourself."},400,origin);const now=new Date().toISOString();await env.DB.batch([env.DB.prepare("INSERT OR IGNORE INTO user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?)").bind(user.id,target.id,now),env.DB.prepare("DELETE FROM follows WHERE (follower_id=? AND following_id=?) OR (follower_id=? AND following_id=?)").bind(user.id,target.id,target.id,user.id)]);return json({blocked:true},200,origin);}
   if(blockMatch&&request.method==="DELETE"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(target)await env.DB.prepare("DELETE FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).run();return json({blocked:false},200,origin);}
   if(blockMatch&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const target=await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(blockMatch[1].toLowerCase()).first();if(!target)return json({error:"User not found."},404,origin);const row=await env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).first();return json({blocked:!!row},200,origin);}
+  // Friend requests: accepted friendships are mutual; only the recipient may accept/decline.
+  if(url.pathname==="/api/friends"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage friends."},401,origin);
+    const [friends,incoming,outgoing]=await Promise.all([
+      env.DB.prepare("SELECT fr.id,fr.updated_at AS since,u.id AS user_id,u.username,u.display_name,u.avatar_url FROM friend_requests fr JOIN users u ON u.id=CASE WHEN fr.requester_id=? THEN fr.addressee_id ELSE fr.requester_id END WHERE (fr.requester_id=? OR fr.addressee_id=?) AND fr.status='accepted' AND u.status='active' ORDER BY COALESCE(u.display_name,u.username) COLLATE NOCASE").bind(user.id,user.id,user.id).all(),
+      env.DB.prepare("SELECT fr.id,fr.created_at,u.id AS user_id,u.username,u.display_name,u.avatar_url FROM friend_requests fr JOIN users u ON u.id=fr.requester_id WHERE fr.addressee_id=? AND fr.status='pending' AND u.status='active' ORDER BY fr.created_at DESC LIMIT 100").bind(user.id).all(),
+      env.DB.prepare("SELECT fr.id,fr.created_at,u.id AS user_id,u.username,u.display_name,u.avatar_url FROM friend_requests fr JOIN users u ON u.id=fr.addressee_id WHERE fr.requester_id=? AND fr.status='pending' AND u.status='active' ORDER BY fr.created_at DESC LIMIT 100").bind(user.id).all()
+    ]);
+    return json({friends:friends.results||[],incoming:incoming.results||[],outgoing:outgoing.results||[]},200,origin);
+  }
+  if(url.pathname==="/api/friends/request"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to add friends."},401,origin);
+    if(!await rateLimit(env,request,"friend-request",30,600))return json({error:"Too many friend requests. Try again later."},429,origin);
+    let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+    const username=String(payload?.username||"").trim().toLowerCase();
+    if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Enter a valid username."},400,origin);
+    const target=await env.DB.prepare("SELECT id,username,status FROM users WHERE username=?").bind(username).first();
+    if(!target||target.status!=="active")return json({error:"Member not found."},404,origin);
+    if(target.id===user.id)return json({error:"You cannot add yourself as a friend."},400,origin);
+    const [blockedByMe,blockedMe]=await Promise.all([
+      env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(user.id,target.id).first(),
+      env.DB.prepare("SELECT 1 FROM user_blocks WHERE blocker_id=? AND blocked_id=?").bind(target.id,user.id).first()
+    ]);
+    if(blockedByMe||blockedMe)return json({error:"Friend requests aren't available for this member."},403,origin);
+    const existing=await env.DB.prepare("SELECT id,requester_id,addressee_id,status FROM friend_requests WHERE (requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?) ORDER BY id DESC LIMIT 1").bind(user.id,target.id,target.id,user.id).first();
+    if(existing?.status==="accepted")return json({error:"You're already friends."},409,origin);
+    if(existing?.status==="pending"&&existing.requester_id===user.id)return json({error:"Friend request already sent."},409,origin);
+    const now=new Date().toISOString();
+    if(existing?.status==="pending"&&existing.addressee_id===user.id){await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=?").bind(now,existing.id).run();return json({ok:true,status:"accepted",request_id:existing.id},200,origin);}
+    if(existing)await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,existing.id).run();
+    else await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) VALUES (?,?,'pending',?,?)").bind(user.id,target.id,now,now).run();
+    return json({ok:true,status:"pending"},201,origin);
+  }
+  const friendRequestMatch=url.pathname.match(/^\/api\/friends\/([0-9]+)$/);
+  if(friendRequestMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage friend requests."},401,origin);
+    let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+    const id=Number(friendRequestMatch[1]),action=String(payload?.action||"");
+    if(!Number.isSafeInteger(id)||id<1||!["accept","decline"].includes(action))return json({error:"Invalid friend request action."},400,origin);
+    const row=await env.DB.prepare("SELECT id FROM friend_requests WHERE id=? AND addressee_id=? AND status='pending'").bind(id,user.id).first();
+    if(!row)return json({error:"Incoming friend request not found."},404,origin);
+    const now=new Date().toISOString(),status=action==="accept"?"accepted":"declined";
+    await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
+    return json({ok:true,status},200,origin);
+  }
+  if(friendRequestMatch&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage friends."},401,origin);
+    const id=Number(friendRequestMatch[1]);
+    const row=await env.DB.prepare("SELECT id,requester_id,addressee_id,status FROM friend_requests WHERE id=? AND (requester_id=? OR addressee_id=?)").bind(id,user.id,user.id).first();
+    if(!row)return json({error:"Friendship or request not found."},404,origin);
+    if(row.status==="pending"&&row.requester_id!==user.id)return json({error:"Only the sender can cancel an outgoing request."},403,origin);
+    await env.DB.prepare("DELETE FROM friend_requests WHERE id=?").bind(id).run();
+    return json({ok:true,removed:true},200,origin);
+  }
   if(url.pathname==="/api/discover"&&request.method==="GET"){const user=await requireUser(request,env);const q=String(url.searchParams.get("q")||"").trim().slice(0,80);const limit=boundedInt(url.searchParams.get("limit"),24,1,50);const like="%"+q.replace(/[%_]/g,"\\$&")+"%";const params=user?[user.id,like,like,like,like,limit]:[like,like,like,like,limit];const sql="SELECT u.id,u.username,u.display_name,u.role,u.bio,u.avatar_url,u.location,u.pronouns,u.created_at,u.last_seen_at,(SELECT COUNT(*) FROM follows f WHERE f.following_id=u.id) AS followers FROM users u "+(user?"LEFT JOIN user_blocks b ON b.blocker_id=? AND b.blocked_id=u.id WHERE b.blocked_id IS NULL AND ":"WHERE ")+"u.status='active' AND (u.username LIKE ? ESCAPE '\\' OR u.display_name LIKE ? ESCAPE '\\' OR COALESCE(u.bio,'') LIKE ? ESCAPE '\\' OR COALESCE(u.location,'') LIKE ? ESCAPE '\\') ORDER BY u.created_at DESC LIMIT ?";const {results}=await env.DB.prepare(sql).bind(...params).all();return json({users:results},200,origin);}
   if(url.pathname==="/api/messages/conversations"&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const {results}=await env.DB.prepare("SELECT c.id,c.kind,c.created_at,c.updated_at,other.id AS other_user_id,other.username AS other_username,other.display_name AS other_display_name,other.avatar_url AS other_avatar_url,om.last_read_at AS other_last_read_at,cm.muted_until,lm.body AS last_body,lm.created_at AS last_message_at,(SELECT COUNT(*) FROM messages um WHERE um.conversation_id=c.id AND um.sender_id<>? AND um.deleted_at IS NULL AND (cm.last_read_at IS NULL OR um.created_at>cm.last_read_at)) AS unread_count FROM conversations c JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=? JOIN conversation_members om ON om.conversation_id=c.id AND om.user_id<>? JOIN users other ON other.id=om.user_id LEFT JOIN messages lm ON lm.id=(SELECT m2.id FROM messages m2 WHERE m2.conversation_id=c.id ORDER BY m2.id DESC LIMIT 1) WHERE c.kind='direct' ORDER BY COALESCE(lm.created_at,c.updated_at) DESC LIMIT 100").bind(user.id,user.id,user.id).all();return json({conversations:results},200,origin);}
   if(url.pathname==="/api/messages/conversations"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);if(!await rateLimit(env,request,"conversation-create",20,600))return json({error:"Too many new conversations. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const username=String(body.username||"").trim().toLowerCase();if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Enter a valid username."},400,origin);const other=await env.DB.prepare("SELECT id,username,display_name,avatar_url,status FROM users WHERE username=?").bind(username).first();if(!other||other.status!=="active")return json({error:"User not found."},404,origin);if(other.id===user.id)return json({error:"You cannot message yourself."},400,origin);const existing=await env.DB.prepare("SELECT c.id FROM conversations c JOIN conversation_members a ON a.conversation_id=c.id AND a.user_id=? JOIN conversation_members b ON b.conversation_id=c.id AND b.user_id=? WHERE c.kind='direct' LIMIT 1").bind(user.id,other.id).first();if(existing)return json({id:existing.id},200,origin);const now=new Date().toISOString(),conv=await env.DB.prepare("INSERT INTO conversations (kind,created_at,updated_at) VALUES ('direct',?,?) RETURNING id").bind(now,now).first();await env.DB.batch([env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at) VALUES (?,?,?,?)").bind(conv.id,user.id,now,now),env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at) VALUES (?,?,?,NULL)").bind(conv.id,other.id,now)]);return json({id:conv.id},201,origin);}
