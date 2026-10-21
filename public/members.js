@@ -72,11 +72,21 @@
     status.textContent = "Searching the inhabitants…";
     try {
       const query = encodeURIComponent(search.value.trim());
-      const response = await fetch(API + "/api/discover?q=" + query + "&limit=50", { credentials:"include", cache:"no-store" });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Member directory returned " + response.status + ".");
+      const allUsers = [];
+      let offset = 0;
+      while (offset < 10000) {
+        const response = await fetch(API + "/api/discover?q=" + query + "&limit=50&offset=" + offset, { credentials:"include", cache:"no-store" });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Member directory returned " + response.status + ".");
+        if (currentRequest !== requestNumber) return;
+        const batch = Array.isArray(data.users) ? data.users : [];
+        allUsers.push(...batch);
+        if (batch.length < 50) break;
+        offset += batch.length;
+        status.textContent = "Loading the inhabitants… " + allUsers.length + " found";
+      }
       if (currentRequest !== requestNumber) return;
-      users = Array.isArray(data.users) ? data.users : [];
+      users = allUsers;
       render();
     } catch (error) {
       if (currentRequest !== requestNumber) return;
