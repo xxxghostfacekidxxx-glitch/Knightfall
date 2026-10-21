@@ -176,3 +176,21 @@
 .small-action.secondary{border-color:#3b3028;background:#151210;color:#c1b2a6}
 .small-action:disabled{opacity:.6;cursor:default}
 @media(max-width:480px){.compose-tabs{gap:.1rem}.compose-tab{padding:.55rem .45rem;font-size:.76rem}.person-row{gap:.45rem;flex-wrap:wrap}.person-actions{width:100%;padding-left:48px;justify-content:flex-start}.small-action{padding:.5rem .65rem}}
+
+/* Keyboard and touch polish for the inbox. */
+.conversation:focus-visible,.inbox-filter:focus-visible,.panel-title button:focus-visible,
+.chat-head button:focus-visible,.message-actions button:focus-visible,.composer button:focus-visible,
+.load-older:focus-visible,.small-action:focus-visible,.compose-tab:focus-visible,
+.icon-button:focus-visible,.messages-hero button:focus-visible{
+  outline:2px solid #f08a58;outline-offset:2px
+}
+.msg-status:not(.good):not(:empty){color:#e9a18c}
+.conversation[aria-current="true"]{border-color:#75432b}
+.composer textarea:disabled{opacity:.65;cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){.messages-list{scroll-behavior:auto}.message-actions{transition:none}}
+@media(max-width:850px){
+  .conversation-panel{flex-shrink:0}
+  .chat-panel{min-height:0}
+  .conversation-list{overscroll-behavior:contain}
+  .messages-list{overscroll-behavior:contain}
+}
