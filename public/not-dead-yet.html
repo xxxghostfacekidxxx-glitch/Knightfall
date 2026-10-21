@@ -25,7 +25,8 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
 const W=960,H=540,ground=452,keys=new Set(),held={left:false,right:false},pointer={x:700,y:280,down:false},player={x:140,y:ground-76,vx:0,vy:0,w:38,h:76,hp:100,face:1,inv:0};
-let bullets=[],zombies=[],particles=[],running=false,paused=false,ended=false,frame=0,score=0,timeLeft=60,wave=1,spawnClock=0,lastTick=0,raf=0,best=0,sound=false,audio=null;\nfunction cameraX(){return Math.max(0,player.x-220)}
+let bullets=[],zombies=[],particles=[],running=false,paused=false,ended=false,frame=0,score=0,timeLeft=60,wave=1,spawnClock=0,lastTick=0,raf=0,best=0,sound=false,audio=null;
+function cameraX(){return Math.max(0,player.x-220)}
 try{best=Number(localStorage.getItem('af-zombie-proto-best')||0)}catch{}$('best').textContent=best;
 function resizePointer(e){const r=canvas.getBoundingClientRect();pointer.x=(e.clientX-r.left)*W/r.width;pointer.y=(e.clientY-r.top)*H/r.height}
 canvas.addEventListener('pointermove',resizePointer);canvas.addEventListener('pointerdown',e=>{resizePointer(e);pointer.down=true;canvas.focus();if(e.pointerType==='touch')fire()});window.addEventListener('pointerup',()=>pointer.down=false);
