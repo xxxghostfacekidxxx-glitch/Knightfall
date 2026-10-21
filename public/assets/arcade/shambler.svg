@@ -1,1 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160"><defs><linearGradient id="f" x2="1" y2="1"><stop stop-color="#b7db70"/><stop offset=".5" stop-color="#628d42"/><stop offset="1" stop-color="#253c2b"/></linearGradient><linearGradient id="cloth" x2="1"><stop stop-color="#20232a"/><stop offset=".5" stop-color="#495044"/><stop offset="1" stop-color="#1b211d"/></linearGradient></defs><ellipse cx="65" cy="150" rx="35" ry="6" fill="#05040a" opacity=".7"/><path d="m44 100-10 32-13 12 20 6 16-22 5-29M78 99l7 32 15 12 12-8-13-22-3-20" fill="#303a2c" stroke="#15171a" stroke-width="5"/><path d="m23 141 21-2 7 9-28 4zM96 140l17-5 7 8-6 8-18-2z" fill="#090c0b" stroke="#536f40" stroke-width="3"/><path d="m43 49-14 10-9 29 13 18 13-12M83 48l13 8 10 27-10 17-13-12" fill="url(#cloth)" stroke="#15171a" stroke-width="5"/><path d="m42 48 41-3 12 19-9 42-39 2-12-40z" fill="url(#f)" stroke="#15171a" stroke-width="5"/><path d="m43 58 10 4-3 36-8-3M82 56l-8 6 7 34 8-3" stroke="#344a30" stroke-width="4" fill="none"/><path d="m60 55 10 0 4 40-9 9-9-10z" fill="#6d5545" stroke="#15171a" stroke-width="3"/><path d="m48 15 32-3 14 17-5 24-13 13-25-3-13-16-1-18z" fill="url(#f)" stroke="#15171a" stroke-width="5"/><path d="m41 22 6-13 9 9 9-14 7 14 11-8 4 18-13-3-14 4-17-1z" fill="#29352a" stroke="#111511" stroke-width="4"/><path d="m45 33 14-4-2 8-12 2M68 29l14 1-4 8-10-1" fill="#151718"/><path d="m49 34 8-1M72 33l6 1" stroke="#ffcf3f" stroke-width="4" stroke-linecap="round"/><path d="m49 44 9-4 6 6 6-4 9 6-14 7z" fill="#21161d"/><path d="m31 76-12 7 7 9 11-8M96 72l11 8-5 10-11-8" fill="#7f9a5a" stroke="#15171a" stroke-width="4"/><path d="m88 77 29-4 4 8-30 7z" fill="#aab4a0" stroke="#15171a" stroke-width="4"/><path d="m110 77 12 0 2 5-13 2z" fill="#ffcf3f"/><path d="m43 115 16 4-4 10-15-5M76 117l15-5 4 9-17 7" fill="#6e8c4b"/><path d="m48 79 9 3-3 9-9-3M73 79l8-4 3 9-8 5" fill="#ffcf3f"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
+<defs><linearGradient id="rot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4bb75"/><stop offset=".4" stop-color="#687b50"/><stop offset="1" stop-color="#27372d"/></linearGradient><linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#50433e"/><stop offset="1" stop-color="#171a1a"/></linearGradient><linearGradient id="bone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0e1b8"/><stop offset="1" stop-color="#95856b"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="2"/></filter></defs>
+<ellipse cx="64" cy="150" rx="29" ry="5" fill="#020604" opacity=".8" filter="url(#shadow)"/>
+<!-- crooked, dragging legs -->
+<path d="m46 96 3 23-11 16-5 12 15 3 12-15 7-23-2-17z" fill="#30372c" stroke="#111710" stroke-width="4" stroke-linejoin="round"/>
+<path d="m72 98 7 19 11 11 12 11-6 9-18-7-12-16-7-18z" fill="#3c4130" stroke="#111710" stroke-width="4" stroke-linejoin="round"/>
+<path d="m34 143 16-2 5 6-3 6H31zM91 139l13-1 7 8-4 6-17-3z" fill="#171b17" stroke="#78815a" stroke-width="2"/>
+<path d="m37 123 10 4-5 7m35-13 9 7" fill="none" stroke="#87905e" stroke-width="2"/>
+<!-- ragged arms, one dangling -->
+<path d="m43 52-13 5-9 22 3 14 10 8 8-9 5-20M83 52l11 5 9 21-3 13-9 6-8-8-5-19" fill="url(#cloth)" stroke="#11130f" stroke-width="4.5" stroke-linejoin="round"/>
+<path d="m25 76 11 3-2 14-8 3-6-9z" fill="#6e8253" stroke="#172017" stroke-width="2.5"/>
+<path d="m92 74 9 3-2 10-8 5-4-9z" fill="#6e8253" stroke="#172017" stroke-width="2.5"/>
+<!-- torn uniform torso -->
+<path d="m42 47 40-2 12 17-8 41-20 7-22-7-12-37z" fill="url(#cloth)" stroke="#0d110e" stroke-width="4.5" stroke-linejoin="round"/>
+<path d="m44 55 11 5-4 33-7-4m37-33-7 7 7 28 7-4" fill="none" stroke="#8c8d68" stroke-width="2.5"/>
+<path d="m56 54 16-1 5 37-11 12-10-11z" fill="#8b9165" stroke="#1b2118" stroke-width="3"/>
+<path d="m60 62 8-1 3 25-7 8-7-8z" fill="#2a3025"/>
+<path d="m44 74 8 4-3 8-8-3m31-9 9-5" fill="none" stroke="#c1bc88" stroke-width="1.5"/>
+<path d="m45 98 10-1-2 8-8 2m25-9 9-4 3 6-9 6" fill="#687c4d"/>
+<!-- exposed bone and torn sleeve -->
+<path d="m28 83 5 2 2 8-4 5-5-3z" fill="url(#bone)"/>
+<path d="m29 87 5 2m-5 2 5 2" stroke="#73684f" stroke-width="1.3"/>
+<!-- neck and lolling head -->
+<path d="m54 45 1 11 9 7 9-9-1-12z" fill="#596b48" stroke="#1a2016" stroke-width="2.5"/>
+<path d="m45 17 31-4 15 15-4 21-14 14-22-3-12-15-1-18z" fill="url(#rot)" stroke="#11170f" stroke-width="4.5" stroke-linejoin="round"/>
+<path d="m47 24 9-8 6 10 8-12 5 14 10-5-4 14-13-2-12 2z" fill="#4c603d" opacity=".8"/>
+<!-- exposed skull under patchy hair -->
+<path d="m43 24-5-12 14 5 6-12 8 11 11-9 4 13 12-4-3 17-12-7-12 3-13-3-6 7z" fill="#22271d" stroke="#10140e" stroke-width="3.5"/>
+<path d="m46 18 8 4 5-8 7 10 9-8 2 11 8-5-4 12-13-3-13 3z" fill="#4b5a3a"/>
+<!-- sunken mismatched eyes -->
+<path d="m45 30 15-4 1 8-14 4zM66 28l14-2 3 8-15 4z" fill="#182019"/>
+<path d="m49 32 7-1" stroke="#ffcf3f" stroke-width="3" stroke-linecap="round"/>
+<circle cx="74" cy="32" r="3.2" fill="#ff4b45"/>
+<circle cx="75" cy="32" r="1" fill="#fff0ce"/>
+<path d="m63 30-4 12 4 2" fill="none" stroke="#34452c" stroke-width="2"/>
+<!-- ruined jaw and crooked teeth -->
+<path d="m47 43 11-4 7 3 8-3 10 5-6 11-13 4-12-6z" fill="#25251d" stroke="#20251a" stroke-width="2.5"/>
+<path d="m53 44 5-1 1 6-5 0m10-4 4-1 1 5-4 1m7-6 4 0-1 5-3 0" fill="url(#bone)"/>
+<path d="m49 51 5 3 2-3m9 4 3-3 4 2" fill="none" stroke="#8f3f3e" stroke-width="2"/>
+<!-- torn collar, hazard tag, stains -->
+<path d="m41 51 13 5 5 9-9-3-5-5-5 3-5-7zM81 50l-9 7-4 8 9-3 5-5 5 2 4-7z" fill="#111610" stroke="#737955" stroke-width="2"/>
+<path d="m47 62 8 3-2 6-8-2z" fill="#9e4b42"/>
+<path d="m48 64 5 2" stroke="#d6c18a" stroke-width="1.2"/>
+<path d="m45 79 6 2m-5 4 5 1m29-6 5-2" stroke="#b4bb75" stroke-width="1.2" opacity=".8"/>
+<!-- reaching claw -->
+<path d="m20 90-7 5 3 5 7-2 4 4 4-3-3-7z" fill="#718553" stroke="#11170f" stroke-width="2.5"/>
+<path d="m98 88 8 1 4 6-4 4-4-3-5 2-3-4z" fill="#718553" stroke="#11170f" stroke-width="2.5"/>
+</svg>
