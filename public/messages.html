@@ -13,7 +13,16 @@
     <div><p class="eyebrow">PRIVATE CHANNELS</p><h1>THE INBOX<span>.</span></h1><p>Direct conversations between Ash-Fall members. Admins retain supervisory access for moderation and safety.</p></div>
     <button id="new-message" class="primary">New message</button>
   </section>
-  <div id="status" class="msg-status"></div>
+  <div id="status" class="msg-status" role="status" aria-live="polite"></div>
+  <dialog id="compose-dialog" class="compose-dialog" aria-labelledby="compose-title">
+    <form id="compose-form">
+      <div class="compose-dialog-head"><div><p class="eyebrow">OPEN A PRIVATE CHANNEL</p><h2 id="compose-title">New conversation</h2></div><button type="button" id="close-compose" class="icon-button" aria-label="Close">×</button></div>
+      <label for="member-search">Find a member</label>
+      <input id="member-search" class="search" type="search" autocomplete="off" placeholder="Search username or display name…">
+      <div id="member-results" class="member-results"><p class="empty">Start typing to find members.</p></div>
+      <p class="compose-hint">Only active members appear. You can’t start a conversation with yourself.</p>
+    </form>
+  </dialog>
   <section class="message-layout">
     <aside class="conversation-panel">
       <div class="panel-title"><strong>Conversations</strong><button id="refresh">↻</button></div>
@@ -55,7 +64,13 @@ $("#conversations").addEventListener("click",e=>{const b=e.target.closest("[data
 async function refreshCurrent(){if(!currentId||loading)return;try{const box=$("#messages"),nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<100;const d=await api("/api/messages/conversations/"+currentId+"?limit=100");const incoming=d.messages||[];const oldTop=box.scrollTop;renderMessages(incoming,false);if(!nearBottom)box.scrollTop=oldTop;const c=activeConversation();if(c){c.unread_count=0;} }catch(e){status(e.message)}}
 $("#composer").onsubmit=async e=>{e.preventDefault();if(!currentId)return;const field=$("#body"),body=field.value.trim();if(!body)return;const send=e.submitter; if(send){send.disabled=true;send.textContent="Sending…"}try{await api("/api/messages/conversations/"+currentId,{method:"POST",body:JSON.stringify({body})});field.value="";await Promise.all([loadConversations({openSelected:false}),refreshCurrent()]);status("Message sent.",true);field.focus()}catch(x){status(x.message)}finally{if(send){send.disabled=false;send.textContent="Send"}}};
 $("#body").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();$("#composer").requestSubmit()}});
-$("#new-message").onclick=async()=>{const username=prompt("Enter the member's username to start a private conversation:");if(!username)return;try{const d=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:username.trim()})});currentId=Number(d.id);await loadConversations({openSelected:false});await openConversation(currentId);status("Private conversation ready.",true)}catch(x){status(x.message)}};
+const composeDialog=$("#compose-dialog"),memberSearch=$("#member-search"),memberResults=$("#member-results");
+$("#new-message").onclick=()=>{composeDialog.showModal();memberSearch.value="";memberResults.innerHTML='<p class="empty">Start typing to find members.</p>';memberSearch.focus()};
+$("#close-compose").onclick=()=>composeDialog.close();
+composeDialog.addEventListener("click",e=>{if(e.target===composeDialog)composeDialog.close()});
+memberSearch.oninput=()=>{clearTimeout(searchHandle);const term=memberSearch.value.trim();if(term.length<2){memberResults.innerHTML='<p class="empty">Type at least two characters.</p>';return}memberResults.innerHTML='<p class="empty">Searching members…</p>';searchHandle=setTimeout(async()=>{try{const d=await api("/api/discover?q="+encodeURIComponent(term)+"&limit=30");const matches=(d.users||[]).filter(u=>Number(u.id)!==Number(currentUser.id));memberResults.innerHTML=matches.map(u=>'<button type="button" class="member-result" data-start-user="'+esc(u.username)+'"><span class="avatar">'+esc((u.display_name||u.username||"?").slice(0,1).toUpperCase())+'</span><span><strong>'+esc(u.display_name||u.username)+'</strong><small>@'+esc(u.username)+'</small></span><span class="member-open">Message ↗</span></button>').join("")||'<p class="empty">No active members matched that search.</p>'}catch(e){memberResults.innerHTML='<p class="empty">'+esc(e.message)+'</p>'}},250)};
+memberResults.addEventListener("click",async e=>{const b=e.target.closest("[data-start-user]");if(!b)return;b.disabled=true;try{const d=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:b.dataset.startUser})});composeDialog.close();currentId=Number(d.id);await loadConversations({openSelected:false});await openConversation(currentId);status("Private conversation ready.",true)}catch(x){status(x.message);b.disabled=false}});
+$("#compose-form").addEventListener("submit",e=>e.preventDefault());
 $("#refresh").onclick=async()=>{try{await loadConversations();status("Inbox refreshed.",true)}catch(e){status(e.message)}};$("#conversation-search").oninput=drawConversations;
 $("#mute-chat").onclick=async()=>{if(!currentId)return;const muted=$("#mute-chat").dataset.muted==="1";try{await api("/api/messages/conversations/mute",{method:"POST",body:JSON.stringify({conversation_id:currentId,minutes:muted?0:1440})});await loadConversations({openSelected:false});await openConversation(currentId,{scroll:false});status(muted?"Conversation unmuted.":"Conversation muted for 24 hours.",true)}catch(e){status(e.message)}};
 $("#load-older").onclick=async()=>{if(!currentId||!oldestId)return;const button=$("#load-older"),box=$("#messages"),height=box.scrollHeight;button.disabled=true;button.textContent="Loading…";try{const d=await api("/api/messages/conversations/"+currentId+"?limit=100&before="+encodeURIComponent(oldestId));const older=d.messages||[];if(older.length){renderMessages(older,true);box.scrollTop=box.scrollHeight-height;}if(older.length<100)button.hidden=true;oldestId=older.length?older[0].id:oldestId;}catch(e){status(e.message)}finally{button.disabled=false;button.textContent="Load older messages"}};
