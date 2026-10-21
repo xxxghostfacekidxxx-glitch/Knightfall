@@ -643,7 +643,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({conversation_id:conversationId,reply,mood},200,origin);
   }
   // Arcade persistence: scoreboards are public; score submissions and saves require a session.
-  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter","reaction-ritual-afterdark","madhouse-match","lights-out-afterburn","whack-a-glitch-panic","cinder-clicker-pocket","snake-ashes-redux","ember-breakout-afterdark","pong-no-return","city-of-cinders"]);
+  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter","reaction-ritual-afterdark","madhouse-match","lights-out-afterburn","whack-a-glitch-panic","cinder-clicker-pocket","snake-ashes-redux","ember-breakout-afterdark","pong-no-return","city-of-cinders"],"not-dead-yet"]);
   // Conservative sanity caps for the new fixed-rule games. These catch obvious forged values, not all cheating.
   const arcadeScoreCaps = { "reaction-ritual-afterdark":1000, "madhouse-match":2000, "lights-out-afterburn":500, "whack-a-glitch-panic":60, "snake-ashes-redux":100000, "ember-breakout-afterdark":300, "pong-no-return":7, "city-of-cinders":25000 };
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
