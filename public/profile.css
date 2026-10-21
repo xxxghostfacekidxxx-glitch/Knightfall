@@ -40,3 +40,22 @@
 .lab-proposal button{min-height:44px}
 .lab-proposal [role=status]{margin-top:.65rem;color:#f0b18e}
 @media(max-width:600px){.lab-assistant-capabilities span{font-size:.68rem}.lab-proposal{padding:.75rem}}
+
+/* Member connections and friend management */
+.profile-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.friends-panel{margin-top:1.5rem;padding:clamp(1rem,4vw,1.5rem);border:1px solid #30251f;border-radius:14px;background:linear-gradient(145deg,rgba(211,84,0,.055),rgba(9,9,9,.98))}
+.friends-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.friends-panel h2{font-size:1.4rem;letter-spacing:-.035em}.friends-panel h3{font-size:.98rem;margin:.6rem 0}
+.friend-request-form{padding:1rem;border:1px solid #292929;border-radius:10px;background:#0b0b0b}
+.friend-request-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;margin-top:.5rem}
+#profile-friend-status{min-height:1.2rem;margin-top:.4rem;color:#e4a17d;font-size:.82rem}
+.friends-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.friend-list{display:grid;gap:.6rem}
+.friend-card{display:flex;justify-content:space-between;align-items:center;gap:.65rem;padding:.7rem;border:1px solid #292929;border-radius:10px;background:#0c0c0c;min-width:0}
+.friend-person{display:flex;align-items:center;gap:.65rem;min-width:0;flex:1;color:#eee!important}
+.friend-person img,.friend-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover;border:1px solid #4a3326;background:#1a100b;display:grid;place-items:center;color:#f06a0a;font-weight:800}
+.friend-person strong,.friend-person small{display:block;overflow-wrap:anywhere}.friend-person small{font-size:.75rem;color:#888;margin-top:.15rem}
+.friend-card-actions{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:flex-end}.friend-card-actions .action{font-size:.75rem;padding:.5rem .6rem}
+.friend-count{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;border-radius:999px;background:#25140c;color:#f0b18e;font-size:.72rem}
+.outgoing-title{margin-top:1.25rem!important}
+@media(max-width:700px){.profile-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.friends-columns{grid-template-columns:1fr}.friend-request-row{grid-template-columns:1fr}.friend-request-row button{min-height:44px}.friend-card{align-items:flex-start}.friend-card-actions{max-width:45%}}
