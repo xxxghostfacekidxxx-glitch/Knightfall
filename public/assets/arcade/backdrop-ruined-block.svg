@@ -1,1 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#17112c" stop-opacity=".15"/><stop offset="1" stop-color="#ff633d" stop-opacity=".1"/></linearGradient><linearGradient id="glass" x2="0" y2="1"><stop stop-color="#ffcf3f" stop-opacity=".9"/><stop offset="1" stop-color="#ff633d" stop-opacity=".15"/></linearGradient></defs><rect width="1200" height="540" fill="url(#sky)"/><g fill="#0b0a16" stroke="#302039" stroke-width="3"><path d="M0 340V155h110v-44h65v91h48v-70h72v208z"/><path d="M270 360V205h60v-70h100v44h52v181z"/><path d="M490 360V120h120v-52h42v80h72v212z"/><path d="M710 360V190h78v-75h68v42h45v203z"/><path d="M885 360V150h100v-40h45v72h62v-54h108v232z"/></g><g fill="url(#glass)" opacity=".78"><path d="M20 180h12v18H20zM51 180h12v18H51zM82 180h12v18H82zM20 222h12v18H20zM51 222h12v18H51zM82 222h12v18H82zM291 230h13v23h-13zM325 230h13v23h-13zM359 230h13v23h-13zM515 150h15v25h-15zM553 150h15v25h-15zM591 150h15v25h-15zM515 197h15v25h-15zM553 197h15v25h-15zM744 218h13v23h-13zM777 218h13v23h-13zM908 184h15v22h-15zM946 184h15v22h-15zM1085 205h14v22h-14zM1120 205h14v22h-14z"/></g><g fill="none" stroke="#ff3c73" stroke-width="4" opacity=".8"><path d="M90 142h70v31H90zM505 96h100v28H505zM920 130h92v30h-92z"/><path d="M120 143l12 28 12-28M948 132l15 26 15-26"/></g><g fill="#ffcf3f" font-family="monospace" font-weight="900" font-size="17"><text x="98" y="164">NO FUTURE</text><text x="519" y="116">HELP?</text><text x="932" y="151">OPEN</text></g><g stroke="#100b17" stroke-width="5" fill="none"><path d="M0 270Q150 290 310 255T620 260T930 240T1200 265"/><path d="M220 180v115m-22-85h44m-44 30h44m-44 30h44M1030 160v130m-22-95h44m-44 30h44"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#17112d"/><stop offset=".5" stop-color="#49212e"/><stop offset="1" stop-color="#ff633d" stop-opacity=".2"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffe0a1"/><stop offset="1" stop-color="#ff633d" stop-opacity=".12"/></linearGradient>
+ <linearGradient id="concrete" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#302438"/><stop offset="1" stop-color="#100f1a"/></linearGradient>
+ <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff633d" stop-opacity="0"/><stop offset=".5" stop-color="#ff633d" stop-opacity=".15"/><stop offset="1" stop-color="#bd67ff" stop-opacity="0"/></linearGradient>
+ <pattern id="windows" width="33" height="42" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="12" height="21" fill="#ffb477" opacity=".25"/><rect x="21" y="5" width="7" height="21" fill="#bd67ff" opacity=".1"/><path d="M3 31h27" stroke="#0a0b12" stroke-width="3"/></pattern>
+</defs>
+<rect width="1200" height="540" fill="url(#sky)"/>
+<circle cx="820" cy="175" r="78" fill="#ff654a" opacity=".06"/><circle cx="820" cy="175" r="54" fill="#ffb477" opacity=".08"/>
+<!-- distant broken skyline -->
+<g fill="#0b0b16" stroke="#33223a" stroke-width="2">
+ <path d="M0 335V220h50v-35h20v61h34v-90h38v18h34v-49h27v90h25v-54h42v174z"/>
+ <path d="M250 350V247h34v-25h24v-40h43v30h27v-77h18v-27h17v39h29v-50h18v-23h15v72h31v204z"/>
+ <path d="M560 348V208h39v-46h24v-33h20v79h42v-52h39v-69h25v-24h15v35h29v-51h17v74h31v207z"/>
+ <path d="M875 348V228h38v-42h22v-80h20v-28h17v45h24v-32h27v71h38v-50h21v-33h18v72h33v197z"/>
+</g>
+<!-- lit windows on the far skyline -->
+<g fill="#ffb477" opacity=".5">
+ <path d="M16 244h7v13h-7zM37 244h7v13h-7zM16 273h7v13h-7zM37 273h7v13h-7zM129 214h7v15h-7zM155 214h7v15h-7zM129 245h7v15h-7zM319 238h8v13h-8zM345 238h8v13h-8zM414 171h7v14h-7zM443 171h7v14h-7zM582 235h8v15h-8zM611 235h8v15h-8zM735 167h8v15h-8zM764 167h8v15h-8zM904 254h8v14h-8zM930 254h8v14h-8zM1043 184h8v15h-8zM1072 184h8v15h-8zM1143 218h8v15h-8z"/>
+</g>
+<!-- foreground tower silhouettes -->
+<g stroke="#080912" stroke-width="5" stroke-linejoin="round">
+ <path d="M-20 365V133l63 12 18 38 0 182z" fill="url(#concrete)"/>
+ <path d="M43 365V187l24-35 23 21 9 192z" fill="#15111f"/>
+ <path d="M215 365V206l30-22 12-65 20 22 16 55 23 13v156z" fill="#191321"/>
+ <path d="M397 365V155l43-28 13 42 36-16 20 28v184z" fill="#120f1c"/>
+ <path d="M690 365V196l29-20 8-61 23-23 19 39 30 9 15 45v180z" fill="#15101e"/>
+ <path d="M905 365V182l31-29 15-56 23 22 17 54 37 18v174z" fill="#1a1421"/>
+ <path d="M1090 365V162l30-24 17 15 9 38 35 15v159z" fill="#120f1b"/>
+</g>
+<!-- windows, cracked facades, broken floors -->
+<g opacity=".8">
+ <path d="M0 160h42v203H0z" fill="url(#windows)"/>
+ <path d="M222 224h72v137h-72z" fill="url(#windows)"/>
+ <path d="M405 178h76v183h-76z" fill="url(#windows)"/>
+ <path d="M699 209h102v153H699z" fill="url(#windows)"/>
+ <path d="M914 201h93v160h-93z" fill="url(#windows)"/>
+ <path d="m18 199 12 14-6 22 10 13-9 26 8 20m204-77 18 14-8 21 10 11-7 22m178-80-8 23 12 17-10 28 7 15m291-36 10 18-9 19 12 16-5 26m214-119-11 18 8 23-12 16 8 25" fill="none" stroke="#05060d" stroke-width="5"/>
+ <path d="m7 180 12 4-3 9 13 8m204 64 12 2m180-91 16-6m290 60 13-5m208-21 14 3" fill="none" stroke="#ffb477" stroke-width="1.3" opacity=".5"/>
+</g>
+<!-- damaged rooftop billboard -->
+<path d="M72 142 177 148 173 196 67 188z" fill="#080910" stroke="#594050" stroke-width="4"/>
+<path d="m78 150 90 5-3 30-90-5z" fill="#28131f" stroke="#ff633d" stroke-width="2"/>
+<text x="87" y="173" fill="#ffcf3f" font-family="monospace" font-size="16" font-weight="900" transform="rotate(3 87 173)">NO FUTURE</text>
+<path d="m101 153 9 30m25-27-11 28" stroke="#ff633d" stroke-width="2" opacity=".8"/>
+<!-- flickering sign and broken neon -->
+<path d="M501 109h116v41H501z" fill="#0a0a12" stroke="#ff3c73" stroke-width="3"/>
+<path d="M510 117h97v25h-97z" fill="#241126" stroke="#8f2e6d" stroke-width="1.5"/>
+<text x="522" y="136" fill="#ff7b82" font-family="monospace" font-size="16" font-weight="900">HELP?</text>
+<path d="m512 145 18-3m69-24 8 7" stroke="#ffb477" stroke-width="2"/>
+<path d="M954 133h93v34h-93z" fill="#0b0a12" stroke="#c8ff49" stroke-width="2.5"/>
+<text x="966" y="155" fill="#c8ff49" font-family="monospace" font-size="15" font-weight="900">OPEN</text>
+<path d="m978 136 6 14 7-14" fill="none" stroke="#e6ffad" stroke-width="2"/>
+<!-- power lines, dangling cables, streetlight -->
+<g fill="none" stroke-linecap="round">
+ <path d="M0 116Q180 160 355 107T690 114T1015 102T1200 126" stroke="#08080f" stroke-width="3"/>
+ <path d="M0 121Q180 165 355 112T690 119T1015 107T1200 131" stroke="#71516f" stroke-width="1" opacity=".7"/>
+ <path d="M190 0v74l-9 12 13 10-5 26m520-122v66l-12 11 8 15m300-88v49l10 8-6 18" stroke="#080910" stroke-width="3"/>
+ <path d="M120 181v130m-17-96h34m-34 31h34m-34 31h34M1120 164v151m-18-105h36m-36 34h36m-36 34h36" stroke="#080810" stroke-width="5"/>
+</g>
+<!-- smoke and polluted light haze -->
+<path d="M0 327Q155 295 295 327T600 320T900 325T1200 309V410H0Z" fill="url(#haze)" opacity=".8"/>
+<g fill="#ff9c67" opacity=".13"><circle cx="120" cy="300" r="16"/><circle cx="148" cy="293" r="25"/><circle cx="174" cy="301" r="13"/><circle cx="735" cy="289" r="20"/><circle cx="762" cy="283" r="31"/><circle cx="790" cy="294" r="17"/></g>
+<!-- sharp rubble and foreground silhouettes -->
+<path d="M0 359 42 350 64 363 91 354 113 363 144 347 168 364 193 357 218 364 242 349 268 362 292 357 320 364 348 350 377 364 407 355 430 363 460 350 485 363 512 355 540 365 572 353 602 365 628 355 653 363 681 349 707 365 739 356 763 364 791 350 818 363 847 356 873 365 901 351 928 364 956 355 985 365 1012 350 1043 365 1070 356 1096 365 1123 351 1150 364 1180 355 1200 362V390H0Z" fill="#08090f"/>
+<g fill="#ff633d" opacity=".65"><path d="m89 365 9-2 5 2-8 2zM345 360l7-3 5 3-8 2zM748 361l11-3 4 3-9 2zM1054 360l8-3 6 3-9 2z"/></g>
+<rect y="360" width="1200" height="180" fill="url(#haze)" opacity=".4"/>
+</svg>
