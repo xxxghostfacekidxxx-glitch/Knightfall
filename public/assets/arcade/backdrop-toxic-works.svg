@@ -1,1 +1,68 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540"><defs><linearGradient id="fog" x2="0" y2="1"><stop stop-color="#132b29" stop-opacity=".12"/><stop offset="1" stop-color="#8ee342" stop-opacity=".14"/></linearGradient></defs><rect width="1200" height="540" fill="url(#fog)"/><g fill="#0a1716" stroke="#23473a" stroke-width="4"><path d="M0 360V210h120v-90h80v240z"/><path d="M190 360V160h100v-70h70v90h65v180z"/><path d="M440 360V195h90v-115h90v80h70v200z"/><path d="M670 360V150h95v-65h90v100h75v175z"/><path d="M900 360V205h95v-100h65v70h140v185z"/></g><g stroke="#8ee342" stroke-width="5" fill="none" opacity=".85"><path d="M35 235h135v60H35zM235 200h145v50H235zM475 220h155v50H475zM700 185h130v50H700zM930 240h190v50H930z"/><path d="M48 247l24 36 24-36 24 36 24-36M250 212l24 26 24-26 24 26 24-26M490 232l24 26 24-26 24 26 24-26"/></g><g fill="#8ee342" opacity=".8"><circle cx="145" cy="140" r="8"/><circle cx="310" cy="110" r="7"/><circle cx="575" cy="96" r="8"/><circle cx="795" cy="103" r="6"/><circle cx="1030" cy="126" r="8"/></g><g stroke="#ffcf3f" stroke-width="4" fill="none" opacity=".6"><path d="M100 120v90m-20-55h40M330 90v70m-20-45h40M580 80v100m-22-65h44M790 80v70m-20-45h40M1040 100v100m-20-65h40"/></g><g fill="#ffcf3f" font-family="monospace" font-weight="900" font-size="16"><text x="43" y="270">BIOHAZARD</text><text x="244" y="234">NO REFUNDS</text><text x="490" y="252">TOXIC</text><text x="715" y="217">RUN</text><text x="945" y="272">BAD AIR</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#101c25"/><stop offset=".55" stop-color="#263a2e"/><stop offset="1" stop-color="#8ee342" stop-opacity=".16"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3e5548"/><stop offset=".5" stop-color="#1b2b25"/><stop offset="1" stop-color="#0a1210"/></linearGradient>
+ <linearGradient id="acid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dfff6b"/><stop offset="1" stop-color="#7bca2c" stop-opacity=".1"/></linearGradient>
+ <linearGradient id="fog" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8ee342" stop-opacity="0"/><stop offset=".5" stop-color="#8ee342" stop-opacity=".24"/><stop offset="1" stop-color="#8ee342" stop-opacity="0"/></linearGradient>
+ <pattern id="grate" width="20" height="18" patternUnits="userSpaceOnUse"><path d="M0 0h20M0 0v18" fill="none" stroke="#9eb4a1" stroke-width="1" opacity=".25"/></pattern>
+</defs>
+<rect width="1200" height="540" fill="url(#sky)"/>
+<!-- toxic moon and chemical vapor -->
+<circle cx="820" cy="160" r="70" fill="#b9ff53" opacity=".09"/><circle cx="820" cy="160" r="46" fill="#dfff6b" opacity=".12"/>
+<path d="M0 275Q160 250 310 276T620 270T900 277T1200 265V400H0Z" fill="url(#fog)"/>
+<g fill="#9cdb58" opacity=".1"><circle cx="130" cy="286" r="25"/><circle cx="162" cy="276" r="40"/><circle cx="196" cy="288" r="22"/><circle cx="707" cy="294" r="27"/><circle cx="743" cy="280" r="44"/><circle cx="781" cy="291" r="23"/></g>
+<!-- far stacks and pipe forest -->
+<g fill="#101b18" stroke="#3a5745" stroke-width="3">
+ <path d="M0 348V220h70v-48h26v176z"/>
+ <path d="M125 348V258h43v-88h24v-45h23v58h31v165z"/>
+ <path d="M315 348V207h45v-44h20v-78h23v-36h18v54h26v104h25v141z"/>
+ <path d="M514 348V233h46v-73h26v-43h21v65h35v-98h22v-34h17v52h27v-28h20v59h30v215z"/>
+ <path d="M842 348V208h40v-70h27v-54h20v-30h18v48h28v-61h22v-28h18v70h29v-39h19v62h35v242z"/>
+</g>
+<!-- stack tops and hot exhaust -->
+<g fill="#0b1311" stroke="#6a8b63" stroke-width="2.5">
+ <path d="M337 49h35v20h-35zM330 42h49v8h-49zM357 30h8v12h-8z"/>
+ <path d="M540 148h48v13h-48zM548 138h32v10h-32z"/>
+ <path d="M895 48h34v18h-34zM887 40h50v8h-50z"/>
+ <path d="M1033 61h34v18h-34zM1026 53h49v8h-49z"/>
+</g>
+<g fill="#8ee342" opacity=".2"><ellipse cx="360" cy="22" rx="25" ry="12"/><ellipse cx="912" cy="27" rx="23" ry="11"/><ellipse cx="1049" cy="41" rx="28" ry="12"/></g>
+<!-- industrial tanks -->
+<g stroke="#080f0c" stroke-width="5" stroke-linejoin="round">
+ <path d="M-12 365V205q0-29 31-29h58q31 0 31 29v160z" fill="url(#steel)"/>
+ <path d="M176 365V247q0-27 28-27h52q28 0 28 27v118z" fill="#1a2b23"/>
+ <path d="M675 365V194q0-34 33-34h64q33 0 33 34v171z" fill="url(#steel)"/>
+ <path d="M1000 365V230q0-28 28-28h52q28 0 28 28v135z" fill="#1b2a22"/>
+</g>
+<!-- tank seams, bolts and warning bands -->
+<g fill="none" stroke-width="3">
+ <path d="M-4 236h107M-4 285h107M180 267h100M180 311h100M682 224h117M682 277h117M682 326h117M1005 259h98M1005 306h98" stroke="#607f69"/>
+ <path d="M-4 251h107M682 291h117M1005 273h98" stroke="#8ee342" stroke-width="6" opacity=".65"/>
+</g>
+<g fill="#dfff6b"><circle cx="18" cy="232" r="2"/><circle cx="82" cy="232" r="2"/><circle cx="193" cy="264" r="2"/><circle cx="264" cy="264" r="2"/><circle cx="698" cy="220" r="2"/><circle cx="783" cy="220" r="2"/><circle cx="1018" cy="255" r="2"/><circle cx="1080" cy="255" r="2"/></g>
+<!-- pipes, valves, catwalks -->
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M0 137h160v28h130v-44h64m-354 60h96v22h89" stroke="#090f0c" stroke-width="12"/>
+ <path d="M0 137h160v28h130v-44h64m-354 60h96v22h89" stroke="#49644e" stroke-width="5"/>
+ <path d="M410 0v122h-48v60h88v35h76m-116-95h42m-42 14h42" stroke="#090f0c" stroke-width="12"/>
+ <path d="M410 0v122h-48v60h88v35h76" stroke="#78916e" stroke-width="5"/>
+ <path d="M838 0v105h76v50h65v-38h50v-30h171" stroke="#090f0c" stroke-width="13"/>
+ <path d="M838 0v105h76v50h65v-38h50v-30h171" stroke="#71876e" stroke-width="5"/>
+ <path d="M150 110v95m-14-76h28m-28 27h28m-28 27h28M944 160v100m-14-80h28m-28 25h28m-28 25h28" stroke="#0a100d" stroke-width="6"/>
+</g>
+<!-- grated refinery tower -->
+<path d="M455 104h58v261h-58z" fill="#111d18" stroke="#050b09" stroke-width="5"/>
+<path d="M455 104h58v261h-58z" fill="url(#grate)"/>
+<path d="M448 105h72m-72 49h72m-72 49h72m-72 49h72m-72 49h72" stroke="#607b65" stroke-width="3"/>
+<!-- hazardous signage -->
+<path d="M307 140h111v49H307z" fill="#0a120d" stroke="#8ee342" stroke-width="3"/>
+<text x="318" y="160" fill="#dfff6b" font-family="monospace" font-size="14" font-weight="900">TOXIC</text><text x="318" y="177" fill="#dfff6b" font-family="monospace" font-size="14" font-weight="900">AS HELL</text>
+<path d="M868 176h102v43H868z" fill="#101810" stroke="#e0ff72" stroke-width="2.5"/>
+<path d="m880 186 10 20h-20z" fill="#dfff6b"/><text x="900" y="203" fill="#dfff6b" font-family="monospace" font-size="12" font-weight="900">DANGER</text>
+<path d="M196 301h62v28h-62z" fill="#0b100d" stroke="#8ee342" stroke-width="2"/>
+<text x="204" y="319" fill="#dfff6b" font-family="monospace" font-size="11" font-weight="900">KEEP OUT</text>
+<!-- sparks, hanging cable, foreground waste -->
+<g fill="#dfff6b" opacity=".8"><circle cx="572" cy="194" r="2"/><circle cx="579" cy="202" r="1.5"/><circle cx="990" cy="214" r="2"/><circle cx="983" cy="221" r="1.3"/></g>
+<path d="M0 357 42 350 64 363 91 354 113 363 144 347 168 364 193 357 218 364 242 349 268 362 292 357 320 364 348 350 377 364 407 355 430 363 460 350 485 363 512 355 540 365 572 353 602 365 628 355 653 363 681 349 707 365 739 356 763 364 791 350 818 363 847 356 873 365 901 351 928 364 956 355 985 365 1012 350 1043 365 1070 356 1096 365 1123 351 1150 364 1180 355 1200 362V390H0Z" fill="#080e0b"/>
+<rect y="360" width="1200" height="180" fill="url(#fog)" opacity=".45"/>
+</svg>
