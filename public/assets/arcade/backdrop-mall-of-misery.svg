@@ -1,1 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540"><defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#2b1739" stop-opacity=".12"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".1"/></linearGradient></defs><rect width="1200" height="540" fill="url(#sky)"/><g fill="#100b1b" stroke="#5b244f" stroke-width="3"><path d="M0 360V180h200v-70h60v250z"/><path d="M230 360V140h210v-48h90v268z"/><path d="M520 360V195h90v-85h200v250z"/><path d="M800 360V145h145v-60h70v90h185v185z"/></g><g fill="#ffcf3f" opacity=".8"><path d="M24 205h150v9H24zM24 231h150v9H24zM24 257h150v9H24zM260 170h190v7H260zM260 192h190v7H260zM260 214h190v7H260zM840 175h300v8H840z"/></g><g fill="#ff3c73" opacity=".8"><path d="M45 120h115v40H45zM560 145h170v38H560zM890 115h150v38H890z"/></g><g fill="#120b1b" stroke="#ffcf3f" stroke-width="3"><path d="M52 128h100v23H52zM574 153h142v21H574zM907 123h116v22H907z"/></g><g fill="#ffcf3f" font-family="monospace" font-size="18" font-weight="900"><text x="61" y="146">MALL CLOSED</text><text x="585" y="170">BUY NOTHING</text><text x="917" y="139">LAST SALE</text></g><g stroke="#f06a0a" stroke-width="5" fill="none" opacity=".75"><path d="M0 305h1200M200 180v130m-10-95h20m-20 28h20m-20 28h20M1000 150v155m-10-100h20m-20 28h20m-20 28h20"/></g><g fill="#8ee342" opacity=".6"><circle cx="150" cy="302" r="5"/><circle cx="605" cy="285" r="7"/><circle cx="1070" cy="302" r="5"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#20112f"/><stop offset=".55" stop-color="#552039"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".16"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffcf3f" stop-opacity=".65"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".12"/></linearGradient>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#342039"/><stop offset=".55" stop-color="#1a1020"/><stop offset="1" stop-color="#0b0a12"/></linearGradient>
+ <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff3c73" stop-opacity="0"/><stop offset=".5" stop-color="#ff3c73" stop-opacity=".2"/><stop offset="1" stop-color="#ffcf3f" stop-opacity="0"/></linearGradient>
+ <pattern id="tiles" width="42" height="34" patternUnits="userSpaceOnUse"><path d="M0 0h42v34H0z" fill="none" stroke="#bd67ff" stroke-width="1" opacity=".18"/></pattern>
+</defs>
+<rect width="1200" height="540" fill="url(#sky)"/>
+<!-- dead shopping district in the distance -->
+<g fill="#100b1b" stroke="#45203f" stroke-width="3">
+ <path d="M0 355V205h90v-45h48v30h54v-72h31v25h36v212z"/>
+ <path d="M255 355V171h47v-45h34v-52h22v-32h19v47h29v-28h21v-18h19v45h36v267z"/>
+ <path d="M520 355V215h75v-78h39v-47h20v-27h19v42h33v-24h21v-16h18v50h42v240z"/>
+ <path d="M814 355V167h60v-40h39v-66h23v-28h18v41h30v-20h23v-14h19v48h33v-29h19v64h90v232z"/>
+</g>
+<!-- storefront blocks -->
+<g stroke="#080810" stroke-width="4" stroke-linejoin="round">
+ <path d="M-10 365V176h218v189z" fill="url(#wall)"/>
+ <path d="M225 365V138h254v227z" fill="#211428"/>
+ <path d="M504 365V187h290v178z" fill="url(#wall)"/>
+ <path d="M812 365V146h398v219z" fill="#211328"/>
+</g>
+<!-- shattered glass curtain walls -->
+<path d="M10 199h184v151H10zM239 160h226v190H239zM518 209h263v141H518zM827 166h365v184H827z" fill="url(#tiles)"/>
+<g fill="url(#glass)" opacity=".75">
+ <path d="M26 220h22v32H26zM64 220h22v32H64zM102 220h22v32h-22zM140 220h22v32h-22zM26 271h22v32H26zM102 271h22v32h-22zM258 179h19v28h-19zM294 179h19v28h-19zM330 179h19v28h-19zM366 179h19v28h-19zM402 179h19v28h-19zM258 225h19v28h-19zM330 225h19v28h-19zM366 225h19v28h-19zM540 229h20v28h-20zM579 229h20v28h-20zM618 229h20v28h-20zM657 229h20v28h-20zM696 229h20v28h-20zM846 185h22v30h-22zM890 185h22v30h-22zM934 185h22v30h-22zM978 185h22v30h-22zM1022 185h22v30h-22zM1066 185h22v30h-22zM1110 185h22v30h-22z"/>
+</g>
+<!-- neon canopy strips -->
+<g fill="none" stroke-width="5">
+ <path d="M0 187h205M231 149h246M512 198h278M820 157h380" stroke="#ffcf3f"/>
+ <path d="M0 194h205M231 156h246M512 205h278M820 164h380" stroke="#ff3c73" stroke-width="2"/>
+</g>
+<!-- garish, broken store signs -->
+<path d="M37 112h151v51H37z" fill="#100b18" stroke="#ff3c73" stroke-width="3"/>
+<path d="M45 120h135v35H45z" fill="#2b1429" stroke="#9b3b74" stroke-width="1.5"/>
+<text x="54" y="143" fill="#ffcf3f" font-family="monospace" font-size="17" font-weight="900">MALL CLOSED</text>
+<path d="M550 126h181v47H550z" fill="#0c0a14" stroke="#ffcf3f" stroke-width="3"/>
+<text x="566" y="155" fill="#ffcf3f" font-family="monospace" font-size="18" font-weight="900">BUY NOTHING</text>
+<path d="M882 106h174v45H882z" fill="#100b18" stroke="#ff3c73" stroke-width="3"/>
+<text x="896" y="134" fill="#ff819c" font-family="monospace" font-size="17" font-weight="900">LAST SALE</text>
+<path d="M1044 115h119v35h-119z" fill="#171022" stroke="#bd67ff" stroke-width="2"/>
+<text x="1057" y="138" fill="#d4a0ff" font-family="monospace" font-size="13" font-weight="900">NO REFUNDS</text>
+<!-- escalators and broken elevated walkway -->
+<path d="M0 286h1200" stroke="#0a0911" stroke-width="9"/>
+<path d="M0 286h1200" stroke="#ff3c73" stroke-width="2" opacity=".65"/>
+<path d="M170 286 265 345h-38l-95-59zM202 286l95 59h-20l-95-59z" fill="#181020" stroke="#09080f" stroke-width="3"/>
+<path d="M888 286 972 345h-34l-86-59zM919 286l84 59h-20l-84-59z" fill="#181020" stroke="#09080f" stroke-width="3"/>
+<g stroke="#ffcf3f" stroke-width="2" opacity=".6"><path d="M159 292l78 49m-62-49 78 49m-62-49 78 49m626-49 76 49m-60-49 76 49m-60-49 76 49"/></g>
+<!-- abandoned sign supports, cables, busted lamps -->
+<g fill="none" stroke-linecap="round">
+ <path d="M80 0v105m-12-32h24m-24 19h24M760 0v123m-13-42h26m-26 20h26M1140 0v100m-12-35h24" stroke="#090810" stroke-width="5"/>
+ <path d="M0 90Q170 121 320 90T610 88T900 93T1200 84" stroke="#0a0810" stroke-width="3"/>
+ <path d="M0 94Q170 125 320 94T610 92T900 97T1200 88" stroke="#bd67ff" stroke-width="1" opacity=".6"/>
+</g>
+<g fill="#8ee342" opacity=".65"><circle cx="150" cy="304" r="4"/><circle cx="605" cy="286" r="6"/><circle cx="1070" cy="303" r="4"/></g>
+<path d="M0 357 42 350 64 363 91 354 113 363 144 347 168 364 193 357 218 364 242 349 268 362 292 357 320 364 348 350 377 364 407 355 430 363 460 350 485 363 512 355 540 365 572 353 602 365 628 355 653 363 681 349 707 365 739 356 763 364 791 350 818 363 847 356 873 365 901 351 928 364 956 355 985 365 1012 350 1043 365 1070 356 1096 365 1123 351 1150 364 1180 355 1200 362V390H0Z" fill="#080810"/>
+<rect y="360" width="1200" height="180" fill="url(#haze)" opacity=".45"/>
+</svg>
