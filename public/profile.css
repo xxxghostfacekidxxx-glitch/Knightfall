@@ -81,3 +81,7 @@
 .friends-list-tools input:focus-visible,.friends-list-tools select:focus-visible{outline:2px solid #a95427;outline-offset:2px}
 .friends-list-section{min-width:0}
 @media(max-width:560px){.friends-list-tools{grid-template-columns:1fr}.friends-list-tools select,.friends-list-tools input{min-height:44px}}
+
+/* Clear feedback for profile-to-inbox actions. */
+.profile-action-status{margin-top:.65rem;padding:.65rem .8rem;border:1px solid #4a3021;border-radius:8px;background:#120d09;color:#f0b18e;font-size:.82rem;line-height:1.5;overflow-wrap:anywhere}
+.profile-actions [data-message-user]:disabled{opacity:.65;cursor:wait}
