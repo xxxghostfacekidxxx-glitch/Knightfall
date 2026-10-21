@@ -72,3 +72,12 @@
 .avatar-preview{width:104px;height:104px;object-fit:cover;border-radius:50%;border:2px solid #633a25;box-shadow:0 0 0 4px rgba(211,84,0,.08)}
 .avatar-preview-placeholder{width:104px;height:104px;display:grid;place-items:center;text-align:center;padding:.5rem;border-radius:50%;border:1px dashed #555;color:#777;background:#111;font-size:.8rem}
 .avatar-preview-wrap button{margin-left:auto}
+
+
+/* Friend hub controls: compact, keyboard-friendly, and consistent with the ember theme. */
+.friends-list-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(170px,.55fr);gap:.65rem;margin:.8rem 0 1rem;padding:.8rem;border:1px solid #292522;border-radius:10px;background:#0c0b0a}
+.friends-list-tools label{display:grid;gap:.4rem;color:#a89b91;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+.friends-list-tools input,.friends-list-tools select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #38302a;border-radius:8px;background:#090908;color:#f1e9e2;padding:.72rem .8rem;font:inherit;font-size:.86rem;text-transform:none;letter-spacing:normal}
+.friends-list-tools input:focus-visible,.friends-list-tools select:focus-visible{outline:2px solid #a95427;outline-offset:2px}
+.friends-list-section{min-width:0}
+@media(max-width:560px){.friends-list-tools{grid-template-columns:1fr}.friends-list-tools select,.friends-list-tools input{min-height:44px}}
