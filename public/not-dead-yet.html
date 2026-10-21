@@ -45,7 +45,7 @@ main{width:min(1240px,96%);margin:1.6rem auto 4rem}
 </style></head>
 <body><header class="kf-header"></header><main>
 <a class="back" href="/zombie-diary.html">← Back to Zombie Lab</a>
-<section class="hero"><p class="eyebrow">ASH-FALL ORIGINAL / PROTOTYPE 001</p><h1>NOT DEAD YET, <span>ASSHOLE!</span></h1><p class="muted">A first playable slice of our own cartoon zombie shooter. Survive the horde, shoot the shambling idiots, and try not to become an employee benefit.</p><span class="stat">BUILD 0.5 · CUSTOM ART · FOUR STAGE BACKDROPS</span></section>
+<section class="hero"><p class="eyebrow">ASH-FALL ORIGINAL / PROTOTYPE 001</p><h1>NOT DEAD YET, <span>ASSHOLE!</span></h1><p class="muted">A first playable slice of our own cartoon zombie shooter. Survive the horde, shoot the shambling idiots, and try not to become an employee benefit.</p><span class="stat">BUILD 0.6 · REDRAWN CAST · FOUR REBUILT WORLDS</span></section>
 <section class="game-shell">
 <div class="loadout" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.7rem;margin:.2rem 0 1rem">
 <label class="stat">GAME MODE<select id="mode" style="display:block;width:100%;margin-top:.35rem;background:#171717;color:#eee;border:1px solid #444;border-radius:6px;padding:.55rem"><option value="survival">Survival · 60 seconds</option><option value="campaign">Campaign · eliminate 20</option><option value="arena">Arena · 90 seconds</option></select></label>
@@ -70,7 +70,7 @@ main{width:min(1240px,96%);margin:1.6rem auto 4rem}
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
-const W=960,H=540,ground=452,keys=new Set(),held={left:false,right:false},pointer={x:700,y:280,down:false},player={x:140,y:ground-76,vx:0,vy:0,w:38,h:76,hp:100,maxHp:100,face:1,inv:0};
+const W=960,H=540,ground=452,pixelRatio=Math.min(window.devicePixelRatio||1,2),keys=new Set(),held={left:false,right:false},pointer={x:700,y:280,down:false},player={x:140,y:ground-76,vx:0,vy:0,w:38,h:76,hp:100,maxHp:100,face:1,inv:0};canvas.width=W*pixelRatio;canvas.height=H*pixelRatio;ctx.scale(pixelRatio,pixelRatio);
 let bullets=[],zombies=[],particles=[],pickups=[],hazards=[],props=[],deathFX=[],impactRings=[],running=false,paused=false,ended=false,frame=0,score=0,kills=0,timeLeft=60,wave=1,spawnClock=0,pickupClock=5,lastTick=0,raf=0,best=0,sound=false,audio=null,fireCooldown=0,damageFlash=0,modeKey="survival",bossesSpawned=[],playerShots=0,streak=0,streakTimer=0,shake=0,muzzleTimer=0,muzzleX=0,muzzleY=0,impactTexts=[],killBanners=[];
 const arcadeSprites={malpractice:new Image(),guttermaw:new Image(),dredge:new Image(),shambler:new Image(),sprinter:new Image(),brute:new Image(),boss:new Image()};
 const arcadeSpritePaths={malpractice:'/assets/arcade/malpractice.svg',guttermaw:'/assets/arcade/guttermaw.svg',dredge:'/assets/arcade/dredge.svg',shambler:'/assets/arcade/shambler.svg',sprinter:'/assets/arcade/sprinter.svg',brute:'/assets/arcade/brute.svg',boss:'/assets/arcade/middle-management.svg'};
