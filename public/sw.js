@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v3";
+const CACHE_NAME = "knightfall-shell-v4";
 const APP_SHELL = [
   "/index.html",
   "/theme.css",
@@ -28,7 +28,7 @@ self.addEventListener("fetch", event => {
 
   // Never intercept API calls, cross-origin traffic, non-GET requests, or private routes.
   if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
-  if (url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
+  if (url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
 
   if (request.mode === "navigate") {
     event.respondWith(
