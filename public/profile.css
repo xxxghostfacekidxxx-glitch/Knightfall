@@ -64,3 +64,11 @@
 .friends-page{width:min(1120px,94%)}.friends-page-card>h1{margin:.15rem 0}.friends-summary{display:flex;gap:.7rem;flex-wrap:wrap;margin:1.25rem 0}.friends-summary span{padding:.75rem .9rem;border:1px solid #30251f;border-radius:9px;background:#0d0d0d;color:#aaa}.friends-summary strong{color:#f0b18e;font-size:1.15rem;margin-right:.25rem}
 .friend-discover{margin:1rem 0 1.5rem;padding:1rem;border:1px solid #30251f;border-radius:12px;background:linear-gradient(145deg,rgba(211,84,0,.06),rgba(9,9,9,.8))}.friend-discover h2,.friends-page-columns h2{font-size:1.15rem;margin-bottom:.35rem}.friend-search-form{margin:.8rem 0}.member-grid{display:grid;gap:.65rem;align-content:start}.member-card{display:flex;justify-content:space-between;align-items:center;gap:.7rem;min-width:0;padding:.8rem;border:1px solid #292929;border-radius:10px;background:#0b0b0b}.member-card .friend-person{align-items:flex-start}.member-bio{max-width:340px;line-height:1.35}.friends-page-columns{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1rem}.friends-page-columns>section{min-width:0}.friends-page-columns h2{margin:.8rem 0}.friends-page .empty-state{padding:1rem;border:1px dashed #333;border-radius:9px}.friends-page #friends-status{min-height:1.4rem;color:#f0b18e}.friends-page #friends-status.error{color:#ff9ba5}
 @media(max-width:760px){.friends-page-columns{grid-template-columns:1fr}.member-card{align-items:flex-start}.member-card .friend-card-actions{max-width:48%}.member-card .action{font-size:.72rem;padding:.48rem}.friends-summary{gap:.4rem}.friends-summary span{flex:1;min-width:100px}}
+
+/* Avatar upload editor */
+.avatar-editor{margin-top:.5rem;padding:1rem;border:1px solid #30251f;border-radius:12px;background:#0b0b0b}
+.avatar-editor>label{margin-bottom:.5rem}.avatar-editor>.muted{font-size:.78rem;line-height:1.5}
+.avatar-preview-wrap{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin:.8rem 0 1rem}
+.avatar-preview{width:104px;height:104px;object-fit:cover;border-radius:50%;border:2px solid #633a25;box-shadow:0 0 0 4px rgba(211,84,0,.08)}
+.avatar-preview-placeholder{width:104px;height:104px;display:grid;place-items:center;text-align:center;padding:.5rem;border-radius:50%;border:1px dashed #555;color:#777;background:#111;font-size:.8rem}
+.avatar-preview-wrap button{margin-left:auto}
