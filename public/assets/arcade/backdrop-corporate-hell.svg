@@ -1,1 +1,58 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540"><defs><linearGradient id="hell" x2="0" y2="1"><stop stop-color="#1d1027" stop-opacity=".1"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".12"/></linearGradient></defs><rect width="1200" height="540" fill="url(#hell)"/><g fill="#100b18" stroke="#422038" stroke-width="4"><path d="M0 360V145h125v-35h70v250z"/><path d="M195 360V95h150v-45h85v310z"/><path d="M430 360V145h95v-70h120v285z"/><path d="M645 360V105h180v-50h70v305z"/><path d="M895 360V135h135v-40h75v65h95v200z"/></g><g fill="#ff3c73" opacity=".8"><path d="M25 165h145v8H25zM220 125h180v8H220zM460 165h145v8H460zM680 130h175v8H680zM925 155h225v8H925z"/></g><g fill="#ffcf3f" font-family="monospace" font-weight="900" font-size="19"><text x="36" y="200">HR DEPT.</text><text x="232" y="160">PERFORMANCE</text><text x="473" y="200">RESTRUCTURE</text><text x="700" y="165">QUARTERLY</text><text x="943" y="190">YOU ARE REPLACEABLE</text></g><g fill="#1d1220" stroke="#ff3c73" stroke-width="4"><path d="M52 230h90v90H52zM255 190h110v130H255zM480 230h90v90H480zM700 190h110v130H700zM965 220h130v100H965z"/></g><g fill="#ffcf3f"><path d="M65 242h64v7H65zM268 202h84v7h-84zM493 242h64v7h-64zM713 202h84v7h-84zM980 232h100v7H980z"/></g><g stroke="#ff3c73" stroke-width="3" fill="none" opacity=".65"><path d="M0 300h1200M150 0v360M420 0v360M660 0v360M900 0v360"/><path d="M145 65l12 20-12 20-12-20zM415 40l12 20-12 20-12-20zM655 55l12 20-12 20-12-20zM895 35l12 20-12 20-12-20z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#100c20"/><stop offset=".5" stop-color="#37142b"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".17"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bd67ff" stop-opacity=".6"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".08"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#32243b"/><stop offset=".5" stop-color="#18111f"/><stop offset="1" stop-color="#090910"/></linearGradient>
+ <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff3c73" stop-opacity="0"/><stop offset=".5" stop-color="#ff3c73" stop-opacity=".2"/><stop offset="1" stop-color="#bd67ff" stop-opacity="0"/></linearGradient>
+ <pattern id="grid" width="26" height="32" patternUnits="userSpaceOnUse"><path d="M0 0h26M0 0v32" stroke="#bd67ff" stroke-width="1" opacity=".23"/><rect x="5" y="6" width="14" height="18" fill="#ff3c73" opacity=".1"/></pattern>
+</defs>
+<rect width="1200" height="540" fill="url(#sky)"/>
+<!-- looming corporate skyline -->
+<g fill="#0a0914" stroke="#40223e" stroke-width="3">
+ <path d="M0 363V225h63v-53h33v36h39v-75h22v-25h18v46h30v-70h19v-29h20v68h33v315z"/>
+ <path d="M285 365V175h58v-52h31v-55h21v-32h20v46h34v-66h22v-18h18v60h34v307z"/>
+ <path d="M590 365V151h47v-65h32v-40h20v-30h18v47h31v-31h21v-23h19v73h36v283z"/>
+ <path d="M848 365V200h52v-74h28v-51h22v-26h19v39h31v-60h19v-18h20v58h31v-37h20v65h31v269z"/>
+</g>
+<!-- high-rise glass grids -->
+<path d="M302 183h96v181h-96zM608 160h105v205H608zM863 210h94v154h-94zM1003 168h93v196h-93z" fill="url(#grid)"/>
+<g fill="#ff3c73" opacity=".65">
+ <path d="M314 204h9v20h-9zM338 204h9v20h-9zM362 204h9v20h-9zM314 244h9v20h-9zM362 244h9v20h-9zM620 181h10v20h-10zM648 181h10v20h-10zM676 181h10v20h-10zM620 220h10v20h-10zM676 220h10v20h-10zM878 234h10v18h-10zM910 234h10v18h-10zM1020 190h10v20h-10zM1050 190h10v20h-10zM1080 190h10v20h-10z"/>
+</g>
+<!-- antennae, razor edges and search lights -->
+<g fill="none" stroke-linecap="round">
+ <path d="M424 0v54m-10-36h20m-20 16h20M715 0v37m-11-21h22m-22 11h22M1054 0v32m-12-17h24" stroke="#090810" stroke-width="5"/>
+ <path d="M0 109Q170 142 320 108T610 103T900 112T1200 98" stroke="#bd67ff" stroke-width="2" opacity=".55"/>
+ <path d="M74 0 30 245m482-245 42 260m458-260-75 260" stroke="#bd67ff" stroke-width="1.5" opacity=".12"/>
+</g>
+<!-- monolithic headquarters -->
+<path d="M450 365V121l34-24 19-49 21 25 17-46 23 42 21-18 21 30 29 14v270z" fill="url(#steel)" stroke="#08070e" stroke-width="5"/>
+<path d="M467 365V133l37-25 20-38 17 27 20-39 20 35 20-14 16 25 14 10v251z" fill="url(#glass)" opacity=".7"/>
+<path d="M475 139h145m-145 37h145m-145 37h145m-145 37h145m-145 37h145m-145 37h145" stroke="#0a0912" stroke-width="5"/>
+<path d="M496 121v244m34-274v274m35-264v264m34-238v238m33-215v215" stroke="#08070f" stroke-width="4"/>
+<path d="M493 153h12v17h-12zM528 153h12v17h-12zM563 153h12v17h-12zM598 153h12v17h-12zM493 194h12v17h-12zM563 194h12v17h-12zM598 194h12v17h-12zM528 235h12v17h-12zM563 235h12v17h-12zM493 276h12v17h-12zM598 276h12v17h-12z" fill="#ff3c73" opacity=".8"/>
+<!-- billboard and corporate propaganda -->
+<path d="M86 151h164v64H86z" fill="#080810" stroke="#ff3c73" stroke-width="3"/>
+<path d="M94 159h148v48H94z" fill="#231025" stroke="#7f2c64" stroke-width="1.5"/>
+<text x="104" y="179" fill="#ff6e91" font-family="monospace" font-size="15" font-weight="900">YOUR LIFE</text><text x="104" y="198" fill="#ffcf3f" font-family="monospace" font-size="15" font-weight="900">IS A KPI</text>
+<path d="M883 143h169v59H883z" fill="#080810" stroke="#bd67ff" stroke-width="3"/>
+<path d="M891 151h153v43H891z" fill="#20102a" stroke="#64357b" stroke-width="1.5"/>
+<text x="904" y="169" fill="#d8a5ff" font-family="monospace" font-size="13" font-weight="900">EMPLOYEE</text><text x="904" y="185" fill="#ff6e91" font-family="monospace" font-size="13" font-weight="900">OF THE DEAD</text>
+<!-- hanging neon sign -->
+<path d="M494 57h125v39H494z" fill="#100b17" stroke="#ff3c73" stroke-width="2.5"/>
+<text x="507" y="82" fill="#ff638b" font-family="monospace" font-size="17" font-weight="900">MGT. HELL</text>
+<path d="M510 60v-9m92 9v-9" stroke="#9d729e" stroke-width="2"/>
+<!-- skeletal tower cranes -->
+<g fill="none" stroke="#09080f" stroke-width="5" stroke-linejoin="round">
+ <path d="M272 64v301m-33-263h66m-66 0 66 45m-66-45-22 37m22-37 25 39m-25-39 24 0m-24 0-20-25m20 25 20-25"/>
+ <path d="M1121 54v311m-42-266h84m-84 0 84 52m-84-52-27 39m27-39 29 43m-29-43 26 0m-26 0-20-26"/>
+</g>
+<!-- red emergency haze and rooftop smoke -->
+<path d="M0 323Q160 295 300 325T600 317T900 323T1200 307V412H0Z" fill="url(#haze)"/>
+<g fill="#bd67ff" opacity=".1"><circle cx="175" cy="291" r="18"/><circle cx="203" cy="282" r="30"/><circle cx="231" cy="294" r="17"/><circle cx="905" cy="289" r="20"/><circle cx="936" cy="278" r="34"/><circle cx="970" cy="291" r="18"/></g>
+<!-- jagged rooftops and rooftop HVAC -->
+<path d="M0 360 38 351 61 364 88 355 112 364 145 348 169 364 193 356 220 364 245 349 268 363 296 356 321 364 350 350 379 364 407 355 432 364 461 349 487 363 516 355 541 364 572 352 600 365 628 355 654 363 681 349 709 365 738 356 765 364 792 350 819 363 848 355 875 364 903 350 931 364 957 355 986 365 1013 350 1044 364 1071 355 1098 365 1125 350 1152 364 1180 355 1200 362V390H0Z" fill="#07070e"/>
+<g fill="#15101c" stroke="#05050a" stroke-width="3"><path d="M115 350v-19h25v19zM148 350v-27h17v27zM722 350v-24h35v24zM760 350v-17h22v17zM1005 350v-28h31v28z"/></g>
+<g fill="#ff3c73" opacity=".7"><path d="m120 336 14 0v3h-14zM728 333h21v3h-21zM1011 332h17v3h-17z"/></g>
+<rect y="362" width="1200" height="178" fill="url(#haze)" opacity=".35"/>
+</svg>
