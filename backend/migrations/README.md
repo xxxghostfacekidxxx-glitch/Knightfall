@@ -34,3 +34,14 @@ A migration can have its intended data present while its filename is missing fro
 ## Arcade progress migration
 
 `0019_arcade_progress.sql` adds per-account high scores and private, versioned save slots. It is additive and does not alter existing community data. Before applying it, reconcile the already-present True Crime, Sanctum Infernum, Gaming, and Mindless Scribbling categories with the missing `0017` and `0018` migration ledger entries by running the idempotent migrations in order. Then apply `0019` with the normal Wrangler migration runner and verify the two arcade tables and indexes. Do not expose the arcade save UI as production-ready until the schema is applied and the API deployment succeeds.
+
+
+## Friend requests and friendships
+
+`0020_friends.sql` creates the friend-request table used by the authenticated `/api/friends` endpoints. The migration is additive. Apply it to the production D1 database using the documented manual migration workflow before relying on friend requests in the live site:
+
+```sh
+npx wrangler d1 migrations apply knightfall-forum --remote --config backend/wrangler.jsonc
+```
+
+After applying it, verify the migration ledger includes `0020_friends.sql`, then test sending a request, accepting it from the recipient account, declining a request, cancelling an outgoing request, and removing an accepted friend. Worker deployment alone does not apply this schema.
