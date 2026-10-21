@@ -1,0 +1,22 @@
+(() => {
+  const API="https://api.ash-fall.com";
+  const $=s=>document.querySelector(s);
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const api=async(path,opts={})=>{const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d;};
+  const status= $("#friends-status");
+  const say=(message,error=false)=>{status.textContent=message;status.classList.toggle("error",error);};
+  const personCard=(u,actions="")=>'<article class="member-card"><a class="friend-person" href="/profile.html?username='+encodeURIComponent(u.username)+'">'+(u.avatar_url?'<img src="'+esc(u.avatar_url)+'" alt="">':'<span class="friend-avatar">'+esc((u.display_name||u.username||"?").slice(0,1).toUpperCase())+'</span>')+'<span><strong>'+esc(u.display_name||u.username)+'</strong><small>@'+esc(u.username)+'</small>'+(u.bio?'<small class="member-bio">'+esc(u.bio).slice(0,100)+'</small>':"")+'</span></a><div class="friend-card-actions">'+actions+'</div></article>';
+  const load=async()=>{
+    try{
+      const d=await api("/api/friends");
+      $("#friends-total").textContent=d.friends.length;$("#incoming-total").textContent=d.incoming.length;$("#outgoing-total").textContent=d.outgoing.length;
+      $("#friends-summary").innerHTML='<span><strong>'+d.friends.length+'</strong> friends</span><span><strong>'+d.incoming.length+'</strong> incoming</span><span><strong>'+d.outgoing.length+'</strong> sent</span>';
+      $("#friends-list").innerHTML=d.friends.length?d.friends.map(u=>personCard(u,'<a class="action primary" href="/messages.html">Message</a><button class="action" data-action="remove" data-id="'+u.id+'">Remove</button>')).join(""):'<p class="muted empty-state">Your circle is empty. Search for a few good weirdos.</p>';
+      $("#incoming-list").innerHTML=d.incoming.length?d.incoming.map(u=>personCard(u,'<button class="action primary" data-action="accept" data-id="'+u.id+'">Accept</button><button class="action" data-action="decline" data-id="'+u.id+'">Decline</button>')).join(""):'<p class="muted empty-state">No incoming requests.</p>';
+      $("#outgoing-list").innerHTML=d.outgoing.length?d.outgoing.map(u=>personCard(u,'<button class="action" data-action="cancel" data-id="'+u.id+'">Cancel</button>')).join(""):'<p class="muted empty-state">No sent requests.</p>';
+      document.querySelectorAll("[data-action]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{const a=b.dataset.action;if(a==="accept"||a==="decline")await api("/api/friends/"+b.dataset.id,{method:"PATCH",body:JSON.stringify({action:a})});else await api("/api/friends/"+b.dataset.id,{method:"DELETE"});say(a==="accept"?"Friend request accepted.":a==="decline"?"Request declined.":a==="cancel"?"Request cancelled.":"Friend removed.");await load();}catch(e){say(e.message,true);b.disabled=false;}});
+    }catch(e){say(e.message,true);$("#friends-list").innerHTML='<p class="muted">Sign in to manage your friends.</p>';if(/sign in|authentication/i.test(e.message))setTimeout(()=>{location.href="/auth.html";},900);}
+  };
+  $("#friend-search-form").addEventListener("submit",async e=>{e.preventDefault();const q=$("#friend-search").value.trim();if(!q){say("Enter something to search for.");return;}const results=$("#friend-search-results");results.innerHTML='<p class="muted">Searching…</p>';say("");try{const d=await api("/api/discover?q="+encodeURIComponent(q)+"&limit=30");if(!d.users?.length){results.innerHTML='<p class="muted empty-state">No members found. The void remains undefeated.</p>';return;}results.innerHTML=d.users.map(u=>personCard(u,'<button class="action primary" data-add-friend="'+esc(u.username)+'">Add friend</button><a class="action" href="/profile.html?username='+encodeURIComponent(u.username)+'">Profile</a>')).join("");results.querySelectorAll("[data-add-friend]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{const r=await api("/api/friends/request",{method:"POST",body:JSON.stringify({username:b.dataset.addFriend})});b.textContent=r.status==="accepted"?"Friends ✓":"Request sent ✓";say(r.status==="accepted"?"You're now friends.":"Friend request sent.");await load();}catch(err){say(err.message,true);b.disabled=false;}});}catch(err){results.innerHTML="";say(err.message,true);}});
+  load();
+})();
