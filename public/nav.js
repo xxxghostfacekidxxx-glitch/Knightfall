@@ -104,6 +104,7 @@
       pingActivity();
       setInterval(pingActivity,120000);
       const account = nav.querySelector('a[href="/account.html"]');
+      const friends = document.createElement("a"); friends.href="/friends.html"; friends.textContent="Friends"; account.before(friends);
       if (!account) return;
       const admin = document.createElement("a");
       if (d.user.role === "admin") { admin.href="/admin.html"; admin.textContent="Admin"; account.before(admin); }
