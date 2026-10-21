@@ -1,2 +1,38 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Meet the people behind Ash-Fall: strange minds, loud ideas, and their own lore."><title>Ash-Fall Members</title><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/members.css"></head><body><header class="kf-header"></header><main><h1>BEHOLD: PEOPLE WITH THEIR OWN LORE.</h1><p class="intro">The people who make Ash-Fall worth keeping alive.</p><input id="search" type="search" placeholder="Search members…" autocomplete="off"><section id="members" aria-live="polite"><p>Loading members…</p></section></main><script src="/nav.js" defer></script><script src="/members.js" defer></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Meet the people behind Ash-Fall: strange minds, loud ideas, and their own lore.">
+  <meta name="theme-color" content="#080808">
+  <title>Members | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/members.css?v=20261021-directory-refresh">
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="members-page">
+    <section class="members-hero">
+      <p class="eyebrow">ASH-FALL / THE PEOPLE</p>
+      <h1>MEET THE<br><span>BEAUTIFULLY UNHINGED.</span></h1>
+      <p class="intro">A community is more than a pile of usernames. Meet the people, find your kind of strange, and make a connection.</p>
+      <div class="directory-stats" aria-live="polite">
+        <div><strong id="member-count">—</strong><span>Members shown</span></div>
+        <div><strong id="online-count">—</strong><span>Recently active</span></div>
+      </div>
+    </section>
+    <section class="directory" aria-label="Member directory">
+      <div class="directory-toolbar">
+        <label class="search-wrap" for="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search names, handles, or lore…" autocomplete="off" spellcheck="false"></label>
+        <label class="filter-wrap" for="presence-filter"><span>Presence</span><select id="presence-filter"><option value="all">Everyone</option><option value="online">Recently active</option><option value="offline">Away</option></select></label>
+        <label class="filter-wrap" for="sort-filter"><span>Sort by</span><select id="sort-filter"><option value="active">Recently active</option><option value="name">Name A–Z</option><option value="followers">Most followed</option><option value="newest">Newest members</option></select></label>
+      </div>
+      <p id="directory-status" class="directory-status" role="status">Loading the inhabitants…</p>
+      <section id="members" class="members-grid" aria-live="polite" aria-busy="true"></section>
+    </section>
+    <footer class="members-footer"><span>NO ALGORITHMIC PERSONALITY REQUIRED.</span><a href="/homepage.html">Back to the madness ↗</a></footer>
+  </main>
+  <script src="/nav.js" defer></script>
+  <script src="/members.js?v=20261021-directory-refresh" defer></script>
+</body>
+</html>
