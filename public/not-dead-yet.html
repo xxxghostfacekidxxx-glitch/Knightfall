@@ -25,7 +25,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
 const W=960,H=540,ground=452,keys=new Set(),held={left:false,right:false},pointer={x:700,y:280,down:false},player={x:140,y:ground-76,vx:0,vy:0,w:38,h:76,hp:100,face:1,inv:0};
-let bullets=[],zombies=[],particles=[],running=false,paused=false,ended=false,frame=0,score=0,timeLeft=60,wave=1,spawnClock=0,lastTick=0,raf=0,best=0,sound=false,audio=null;
+let bullets=[],zombies=[],particles=[],running=false,paused=false,ended=false,frame=0,score=0,timeLeft=60,wave=1,spawnClock=0,lastTick=0,raf=0,best=0,sound=false,audio=null;\nfunction cameraX(){return Math.max(0,player.x-220)}
 try{best=Number(localStorage.getItem('af-zombie-proto-best')||0)}catch{}$('best').textContent=best;
 function resizePointer(e){const r=canvas.getBoundingClientRect();pointer.x=(e.clientX-r.left)*W/r.width;pointer.y=(e.clientY-r.top)*H/r.height}
 canvas.addEventListener('pointermove',resizePointer);canvas.addEventListener('pointerdown',e=>{resizePointer(e);pointer.down=true;canvas.focus();if(e.pointerType==='touch')fire()});window.addEventListener('pointerup',()=>pointer.down=false);
@@ -33,7 +33,7 @@ window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowleft
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 function beep(freq=180,duration=.05){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.type='square';o.frequency.value=freq;g.gain.value=.025;o.connect(g);g.connect(audio.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.stop(audio.currentTime+duration)}catch{}}
 function jump(){if(player.y+player.h>=ground-1){player.vy=-550;beep(260,.07)}}
-function fire(){if(!running||paused||ended)return;const px=player.x+player.w/2,py=player.y+player.h*.42,dx=pointer.x-px,dy=pointer.y-py,len=Math.hypot(dx,dy)||1;bullets.push({x:px,y:py,vx:dx/len*720,vy:dy/len*720,life:1.1});player.face=dx>=0?1:-1;beep(115,.035)}
+function fire(){if(!running||paused||ended)return;const px=player.x+player.w/2,py=player.y+player.h*.42,dx=(pointer.x+cameraX())-px,dy=pointer.y-py,len=Math.hypot(dx,dy)||1;bullets.push({x:px,y:py,vx:dx/len*720,vy:dy/len*720,life:1.1});player.face=dx>=0?1:-1;beep(115,.035)}
 canvas.addEventListener('click',()=>{if(running&&!paused)fire()});
 $('start').onclick=()=>startGame();$('restart').onclick=()=>startGame();
 $('pause').onclick=togglePause;$('sound').onclick=()=>{sound=!sound;$('sound').textContent='Sound: '+(sound?'on':'off');if(sound)beep(440,.08)};
@@ -54,7 +54,7 @@ for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=280*dt;p.life-=dt}part
 $('health').textContent=player.hp;$('score').textContent=score;$('wave').textContent=wave;$('time').textContent=Math.ceil(timeLeft)}
 function draw(){ctx.clearRect(0,0,W,H);const cam=Math.max(0,player.x-220);ctx.save();ctx.translate(-cam,0);
 const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#17122a');sky.addColorStop(.65,'#15222a');sky.addColorStop(1,'#10130f');ctx.fillStyle=sky;ctx.fillRect(cam,0,W+cam,H);
-for(let i=0;i<15;i++){const x=i*110;ctx.fillStyle=i%2?'#222034':'#29212c';ctx.fillRect(x,245-(i%3)*22,72,ground-(245-(i%3)*22));ctx.fillStyle='#8ee342';for(let j=0;j<4;j++)ctx.fillRect(x+12+(j%2)*28,265+j*27,7,11)}
+for(let i=Math.floor(cam/110)-1;i<Math.ceil((cam+W)/110)+1;i++){const x=i*110;ctx.fillStyle=i%2?'#222034':'#29212c';ctx.fillRect(x,245-(Math.abs(i)%3)*22,72,ground-(245-(Math.abs(i)%3)*22));ctx.fillStyle='#8ee342';for(let j=0;j<4;j++)ctx.fillRect(x+12+(j%2)*28,265+j*27,7,11)}
 ctx.fillStyle='#39302b';ctx.fillRect(cam,ground,W+cam,100);ctx.fillStyle='#f06a0a';ctx.fillRect(cam,ground,W+cam,4);
 for(let x=Math.floor(cam/90)*90;x<cam+W+90;x+=90){ctx.fillStyle='#62504a';ctx.fillRect(x,ground+25,38,4)}
 for(const z of zombies){ctx.save();ctx.translate(z.x+z.w/2,z.y);ctx.scale(z.x<player.x?-1:1,1);ctx.fillStyle=z.hit>0?'#f7e6ad':z.tough?'#b24be8':'#8ee342';ctx.beginPath();ctx.moveTo(-z.w*.45,z.h*.4);ctx.lineTo(-z.w*.38,8);ctx.lineTo(-z.w*.05,0);ctx.lineTo(z.w*.36,7);ctx.lineTo(z.w*.46,z.h*.7);ctx.lineTo(z.w*.2,z.h);ctx.lineTo(-z.w*.25,z.h);ctx.closePath();ctx.fill();ctx.fillStyle='#161616';ctx.fillRect(-z.w*.22,15,8,7);ctx.fillRect(z.w*.12,15,8,7);ctx.fillStyle='#f06a0a';ctx.fillRect(-z.w*.14,31,15,4);ctx.strokeStyle='#8ee342';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-z.w*.3,z.h*.55);ctx.lineTo(-z.w*.65,z.h*.75);ctx.moveTo(z.w*.3,z.h*.55);ctx.lineTo(z.w*.62,z.h*.65);ctx.stroke();ctx.restore()}
