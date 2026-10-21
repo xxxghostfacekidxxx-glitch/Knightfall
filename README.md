@@ -62,3 +62,12 @@ The frontend now includes the first phase of the Knightfall Progressive Web App 
 - `public/nav.js` registers the service worker and exposes the browser's native install prompt when supported.
 
 After the latest Pages deployment is live, open `https://ash-fall.com` in Chrome on Android. Use the browser's **Install app** or **Add to Home screen** option; if the browser exposes its native install prompt, Knightfall's navigation will also show **Install App**. Installation support and wording vary by browser. This is the web-app foundation, not yet a separately packaged Android APK or a Play Store release. The site still needs an online connection for account actions, forums, bots, and AI chats.
+
+
+## Open-Source Arsenal
+
+- `public/open-source-arsenal.html` is a curated guide to upstream projects that can inform or extend Ash-Fall: Elgg, HumHub, Flarum, Immich, Umami, and A Dark Room.
+- The guide distinguishes upstream references from software actually installed in Knightfall. These projects are not bundled or falsely represented as deployed services.
+- The current public frontend is Cloudflare Pages and the API is a Cloudflare Worker with D1, KV, and R2. Traditional Docker/PHP/Ruby/Node services such as a full Elgg/HumHub/Flarum/Immich/Umami deployment cannot simply be copied into a Worker. Running them requires separate compatible hosting and operational maintenance.
+- Existing native features already cover parts of the same needs: member profiles/friends and the Madhouse, site messaging, the private R2-backed vault, and Chaos Cartridge including the Open-Source Game Hall. The guide links these internal equivalents where useful.
+- Before reusing any upstream code, artwork, or assets, review the specific repository's current license, attribution requirements, trademarks, security posture, and deployment model. The Awesome Selfhosted list is a discovery index, not a blanket license grant.

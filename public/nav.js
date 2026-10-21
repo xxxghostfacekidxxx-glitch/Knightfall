@@ -25,6 +25,7 @@
       <a href="/shops.html">Shops</a>
       <a href="/die-ary.html">Die-ary</a>
       <a href="/chaos-cartridge.html">Chaos Cartridge</a>
+      <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
       <a href="/miss-chaos.html">Miss Chaos</a>
       <a href="/create-thread.html">New Thread</a>
       <a href="/members.html">Members</a>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="A practical Ash-Fall guide to open-source social platforms, forums, private media, analytics, and browser games, with honest compatibility notes.">
+  <title>The Open-Source Arsenal | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/open-source-arsenal.css">
+  <script src="/nav.js" defer></script>
+  <script src="/open-source-arsenal.js" defer></script>
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="arsenal-shell">
+    <a class="back-link" href="/homepage.html">← Back to the realms</a>
+    <section class="arsenal-hero">
+      <p class="eyebrow">ASH-FALL / OPEN-SOURCE INTELLIGENCE</p>
+      <h1>STEAL THE<br><span>GOOD IDEAS.</span></h1>
+      <p class="lede">A field guide to open-source projects that could make this ecosystem stronger. We are borrowing ideas, linking to the original creators, and checking compatibility before anything gets bolted into production. The internet has enough mystery meat software already.</p>
+      <div class="hero-stats" aria-label="Guide overview">
+        <div><strong>06</strong><span>Featured projects</span></div>
+        <div><strong>04</strong><span>Core areas covered</span></div>
+        <div><strong>0</strong><span>Fake deployments claimed</span></div>
+      </div>
+    </section>
+
+    <section class="compat-note" aria-labelledby="compat-title">
+      <span class="note-icon" aria-hidden="true">!</span>
+      <div><h2 id="compat-title">Important: inspiration is not installation</h2>
+      <p>Ash-Fall currently uses Cloudflare Pages for the website and a Cloudflare Worker for the API, with D1, KV, and R2. Full self-hosted apps that expect Docker, PHP, Ruby, a long-running Node server, or their own database cannot run directly inside a Worker. This page is a curated launchpad, not a claim that these six separate applications have been installed. We can reuse compatible ideas and connect external services only after their hosting, security, cost, and maintenance are settled.</p></div>
+    </section>
+
+    <section class="native-map" aria-labelledby="native-title">
+      <div><p class="eyebrow">ALREADY IN OUR HOUSE</p><h2 id="native-title">Build on what Ash-Fall has.</h2></div>
+      <div class="native-grid">
+        <a href="/members.html"><span>01 / SOCIAL</span><strong>Profiles & friends</strong><small>Member directory and friendship workflows</small></a>
+        <a href="/community.html"><span>02 / COMMUNITY</span><strong>The Madhouse</strong><small>Forum categories, threads, replies, moderation</small></a>
+        <a href="/messages.html"><span>03 / COMMUNICATION</span><strong>Messages</strong><small>Native site messaging, no separate chat server required</small></a>
+        <a href="/vault.html"><span>04 / MEDIA</span><strong>Private Vault</strong><small>Authenticated R2-backed media storage for the authorized owner</small></a>
+        <a href="/arcade-open-source.html"><span>05 / GAMES</span><strong>Open-Source Game Hall</strong><small>Curated browser games and original source links</small></a>
+      </div>
+    </section>
+
+    <section class="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-heading"><div><p class="eyebrow">UPSTREAM PROJECTS</p><h2 id="catalog-title">The shortlist<span>.</span></h2><p>Search the list or filter by the problem you're trying to solve.</p></div><span class="catalog-count" id="result-count" aria-live="polite">6 projects</span></div>
+      <div class="catalog-tools">
+        <label class="search-control"><span aria-hidden="true">⌕</span><input id="project-search" type="search" placeholder="Search projects, features, or technology…" autocomplete="off"></label>
+        <div class="filter-row" role="group" aria-label="Filter projects">
+          <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">All projects</button>
+          <button class="filter-button" type="button" data-filter="social" aria-pressed="false">Social & forums</button>
+          <button class="filter-button" type="button" data-filter="media" aria-pressed="false">Media storage</button>
+          <button class="filter-button" type="button" data-filter="analytics" aria-pressed="false">Analytics</button>
+          <button class="filter-button" type="button" data-filter="games" aria-pressed="false">Games</button>
+        </div>
+      </div>
+
+      <div class="project-grid" id="project-grid">
+        <article class="project-card" data-category="social" data-search="elgg social network profiles activity feed groups plugins php">
+          <div class="project-top"><span class="project-mark">EL</span><span class="project-kind">Social-network reference</span></div>
+          <h3>Elgg</h3><p class="project-summary">A mature social-network framework with user profiles, activity streams, groups, relationships, and a plugin ecosystem.</p>
+          <div class="project-meta"><span>Best for</span><strong>Social feature architecture</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> use it as a feature reference for profile feeds, groups, and extensibility. Knightfall already has native profiles and friends; replacing the current app with Elgg would be a separate migration, not a drop-in addition.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://elgg.org/" target="_blank" rel="noopener noreferrer">Official site ↗</a><a class="project-link" href="https://github.com/Elgg/Elgg" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+
+        <article class="project-card" data-category="social" data-search="humhub community collaboration social network spaces groups members php">
+          <div class="project-top"><span class="project-mark">HH</span><span class="project-kind">Community-space reference</span></div>
+          <h3>HumHub</h3><p class="project-summary">A social collaboration platform organized around spaces, groups, members, and community activity.</p>
+          <div class="project-meta"><span>Best for</span><strong>Groups and themed realms</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> useful inspiration for organizing interest-based spaces and community navigation. Our realms can evolve in that direction without importing an entire second account system.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://www.humhub.com/" target="_blank" rel="noopener noreferrer">Official site ↗</a><a class="project-link" href="https://github.com/humhub/humhub" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+
+        <article class="project-card" data-category="social" data-search="flarum forum discussion threads tags extensions php community">
+          <div class="project-top"><span class="project-mark">FL</span><span class="project-kind">Forum UX reference</span></div>
+          <h3>Flarum</h3><p class="project-summary">A modern discussion forum focused on readable threads, tags, extensions, and a clean interface.</p>
+          <div class="project-meta"><span>Best for</span><strong>Discussion and forum UX</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> borrow interaction patterns for thread lists, topic labels, replies, and moderation clarity. The Madhouse already has its own API and database, so installing Flarum alongside it would split the community unless deliberately integrated.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://flarum.org/" target="_blank" rel="noopener noreferrer">Official site ↗</a><a class="project-link" href="https://github.com/flarum/flarum" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+
+        <article class="project-card" data-category="media" data-search="immich photo gallery video library self hosted uploads albums machine learning docker">
+          <div class="project-top"><span class="project-mark">IM</span><span class="project-kind">Separate media service</span></div>
+          <h3>Immich</h3><p class="project-summary">A self-hosted photo and video management application with a polished library-oriented experience.</p>
+          <div class="project-meta"><span>Best for</span><strong>Large personal media libraries</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> study its media-library workflows. It is not a Cloudflare Worker package. Knightfall already has a private R2-backed vault; Immich would require separate compatible hosting and a carefully designed authentication boundary before any account integration.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://immich.app/" target="_blank" rel="noopener noreferrer">Official site ↗</a><a class="project-link" href="https://github.com/immich-app/immich" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+
+        <article class="project-card" data-category="analytics" data-search="umami privacy friendly website analytics dashboard traffic events self hosted node postgres">
+          <div class="project-top"><span class="project-mark">UM</span><span class="project-kind">Analytics service</span></div>
+          <h3>Umami</h3><p class="project-summary">A privacy-focused website analytics platform with traffic and event reporting.</p>
+          <div class="project-meta"><span>Best for</span><strong>Site usage insights</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> a candidate for measuring page usage without building every report ourselves. It is not configured on this site today. Before adding its tracking script, decide hosting, privacy notice, retention, and which events are appropriate to collect.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://umami.is/" target="_blank" rel="noopener noreferrer">Official site ↗</a><a class="project-link" href="https://github.com/umami-software/umami" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+
+        <article class="project-card" data-category="games" data-search="a dark room browser game javascript text adventure survival open source">
+          <div class="project-top"><span class="project-mark">DR</span><span class="project-kind">Game inspiration</span></div>
+          <h3>A Dark Room</h3><p class="project-summary">A minimalist browser-based text adventure that grows from a small survival loop into a larger exploration game.</p>
+          <div class="project-meta"><span>Best for</span><strong>Progression and atmosphere</strong></div>
+          <p class="fit-note"><b>Ash-Fall fit:</b> study its pacing, restrained interface, and incremental progression for Chaos Cartridge. The existing Open-Source Game Hall links out to upstream games; this page does not copy its code or assets. Verify the current license and distribution terms before bundling anything.</p>
+          <div class="project-actions"><a class="project-link primary" href="https://adarkroom.doublespeakgames.com/" target="_blank" rel="noopener noreferrer">Play online ↗</a><a class="project-link" href="https://github.com/doublespeakgames/adarkroom" target="_blank" rel="noopener noreferrer">Source repository</a></div>
+        </article>
+      </div>
+      <div id="no-results" class="no-results" hidden>No projects match that search. Try a broader term; the catalog is not offended.</div>
+    </section>
+
+    <section class="next-steps">
+      <p class="eyebrow">SENSIBLE IMPLEMENTATION ORDER</p><h2>What we should actually do next.</h2>
+      <ol>
+        <li><strong>Keep the native community unified.</strong> Improve profiles, friends, messages, and the Madhouse inside Knightfall rather than splitting members across separate platforms.</li>
+        <li><strong>Harden and expand the private vault.</strong> Confirm R2 limits, ownership checks, upload validation, and recovery before adding a second media service.</li>
+        <li><strong>Add privacy-conscious analytics deliberately.</strong> Evaluate Umami hosting and consent/privacy requirements before loading any tracker.</li>
+        <li><strong>Expand Chaos Cartridge safely.</strong> Link to upstream playable games first. Bundle a game only after checking source and asset licenses, offline behavior, and save-data integration.</li>
+      </ol>
+      <a class="return-link" href="/chaos-cartridge.html">Return to Chaos Cartridge ↗</a>
+    </section>
+    <footer class="arsenal-footer"><span>ASH-FALL / KNIGHTFALL</span><span>CHECK THE LICENSE. KEEP THE GOOD IDEAS.</span><a href="https://github.com/awesome-selfhosted/awesome-selfhosted" target="_blank" rel="noopener noreferrer">Source directory: Awesome Selfhosted ↗</a></footer>
+  </main>
+</body>
+</html>
