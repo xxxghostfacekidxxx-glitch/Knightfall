@@ -1,0 +1,72 @@
+/* Ash-Fall realm polish: shared visual language across the site's major destinations. */
+:root{--realm-ember:#f06a0a;--realm-rust:#d35400;--realm-line:rgba(255,255,255,.09);--realm-muted:#a29a93}
+.directory-shell,.community-directory{position:relative;isolation:isolate}
+.directory-shell:before,.community-directory:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -4vw auto;height:28rem;background:radial-gradient(ellipse at 75% 15%,rgba(211,84,0,.105),transparent 58%),linear-gradient(115deg,transparent 35%,rgba(255,255,255,.012),transparent 72%)}
+.directory-hero{position:relative;padding-top:clamp(4.5rem,9vw,7.5rem);padding-bottom:3.2rem;border-bottom-color:rgba(255,255,255,.11)}
+.directory-hero:after{content:"ASH-FALL / REALMS";position:absolute;right:0;bottom:1.25rem;color:#50453e;font-size:.58rem;font-weight:900;letter-spacing:.25em}
+.directory-hero h1{max-width:1000px;font-size:clamp(3.2rem,8vw,7rem);letter-spacing:-.075em;text-wrap:balance}
+.directory-hero h1 span{color:#9e958e;background:linear-gradient(95deg,#e8e2dc,#77716b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.directory-hero>p:not(.eyebrow){max-width:700px;color:#aaa29b;line-height:1.85}
+.directory-hero .hero-actions{margin-bottom:.7rem}
+.directory-hero .search-bar{margin-top:2rem}
+.directory-meta{padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.listing-grid,.quick-grid{gap:1rem;padding-top:1.5rem;padding-bottom:2.5rem}
+.listing-card,.quick-card{position:relative;isolation:isolate;min-height:300px;border-color:#302a26;background:linear-gradient(145deg,rgba(22,20,19,.98),rgba(10,10,10,.98));box-shadow:0 16px 42px rgba(0,0,0,.2);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.listing-card:before,.quick-card:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(211,84,0,.13),transparent 52%);opacity:.8;pointer-events:none}
+.listing-card:hover,.quick-card:hover{transform:translateY(-4px);border-color:#78401f;box-shadow:0 22px 52px rgba(0,0,0,.32),0 0 28px rgba(211,84,0,.055)}
+.listing-symbol{flex-shrink:0;box-shadow:inset 0 0 22px rgba(211,84,0,.08);border-color:#57321e}
+.listing-kicker{letter-spacing:.18em}
+.listing-card h2,.quick-card h2{letter-spacing:-.035em}
+.listing-description,.quick-card p{line-height:1.75;color:#a29b95}
+.listing-card .primary-button,.quick-card .primary-button{margin-top:auto}
+.primary-button{min-height:44px;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+.primary-button:hover,.primary-button:focus-visible{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 9px 26px rgba(211,84,0,.17)}
+.quiet-button{transition:border-color .2s ease,background .2s ease}
+.quiet-button:hover,.quiet-button:focus-visible{border-color:#704021;background:#19130f}
+.directory-cta{position:relative;isolation:isolate;overflow:hidden;margin-top:1.5rem;border-color:#3b2a20;background:linear-gradient(115deg,#171310,#0d0c0b 70%);box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.directory-cta:after{content:"✳";position:absolute;z-index:-1;right:2rem;top:50%;transform:translateY(-50%);color:rgba(240,106,10,.09);font-size:10rem;line-height:1}
+.directory-cta h2{letter-spacing:-.05em}
+.directory-footer{margin-top:2rem;background:rgba(7,7,7,.55);letter-spacing:.16em}
+.section-label{letter-spacing:.22em}
+.quick-card{min-height:330px}
+.community-directory .hero{min-height:0;position:relative;padding:clamp(4rem,8vw,6.5rem) 0 4rem!important;border-bottom:1px solid #2a2521}
+.community-directory .hero-copy{max-width:850px}
+.community-directory .hero h1{font-size:clamp(3.8rem,10vw,8rem)!important;line-height:.86;letter-spacing:-.08em}
+.community-directory .hero h1 span{color:#b2a69d;text-shadow:0 0 36px rgba(211,84,0,.09)}
+.community-directory .hero-lede{max-width:660px;color:#aaa29b;line-height:1.85}
+.community-directory .section{padding-top:4rem;padding-bottom:4rem}
+.community-directory .section-heading{align-items:flex-end}
+.community-directory .section-heading h2{font-size:clamp(2.2rem,5vw,3.7rem);letter-spacing:-.06em}
+.community-directory .categories,.community-directory .community-directory-grid{gap:.9rem}
+.community-directory .category{min-height:215px;border-color:#302a26;background:linear-gradient(145deg,rgba(22,20,19,.98),rgba(9,9,9,.98))}
+.community-directory .category-mark{color:#df7130}
+.community-directory .category h3{font-size:1.5rem;letter-spacing:-.035em}
+.community-directory .threads-panel{margin-top:3rem;padding-top:2.5rem}
+.community-directory .thread-card{border-color:#2d2926;background:linear-gradient(100deg,#121110,#0b0b0b);padding:1.25rem 1.35rem}
+.community-directory .thread-card:hover{border-color:#744020;box-shadow:inset 3px 0 var(--realm-ember),0 12px 30px rgba(0,0,0,.16)}
+.community-directory .thread-card a{line-height:1.4}
+.cartridge-hero{min-height:560px!important;padding-top:clamp(4.5rem,9vw,7rem)!important;padding-bottom:5rem!important}
+.cartridge-title{font-size:clamp(4rem,10vw,8rem)!important;letter-spacing:-.08em!important;line-height:.83!important}
+.cartridge-title span{color:#a69b91;text-shadow:0 0 34px rgba(211,84,0,.12)}
+.cartridge-intro{max-width:750px}
+.cartridge-intro .cartridge-lede,.cartridge-intro .hero-lede{max-width:620px;color:#aaa29b;line-height:1.85}
+.cartridge-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.cartridge-cabinet{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:1.45rem;border:1px solid #302a26;border-radius:13px;background:linear-gradient(145deg,#171513,#0b0b0b);overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.cartridge-cabinet:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,var(--glow,rgba(211,84,0,.13)),transparent 56%);pointer-events:none}
+.cartridge-cabinet>*{position:relative}
+.cartridge-cabinet:hover{transform:translateY(-4px);border-color:#704021;box-shadow:0 20px 45px rgba(0,0,0,.28)}
+.cartridge-cabinet h3{margin:.7rem 0 .5rem;font-size:1.65rem;line-height:1.08;letter-spacing:-.04em}
+.cartridge-cabinet p{color:#a49b93;line-height:1.7;font-size:.9rem}
+.cartridge-number{font-size:.59rem;line-height:1.5;letter-spacing:.14em;color:#c36a35;font-weight:900}
+.cartridge-cabinet .status{margin-top:1rem}
+.cartridge-cabinet .button{margin-top:auto!important}
+.cartridge-note{padding-top:.8rem;font-size:.75rem!important}
+.open-source-callout{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:2rem;margin:1rem 0;border:1px solid #342920;border-radius:13px;background:linear-gradient(115deg,#171310,#0b0b0b 75%)}
+.open-source-callout:after{content:"↗";position:absolute;z-index:-1;right:2rem;top:50%;transform:translateY(-50%);color:rgba(240,106,10,.08);font-size:9rem;font-weight:900}
+.open-source-callout>div{max-width:760px}
+.open-source-callout h2{font-size:clamp(1.7rem,3.5vw,2.6rem);letter-spacing:-.05em}
+.open-source-callout p:not(.eyebrow){margin-top:.65rem;color:#a29a93;line-height:1.75}
+.community-directory footer,.directory-shell+footer{margin-top:2rem}
+@media(max-width:900px){.cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.directory-cta:after{right:1rem;font-size:7rem}}
+@media(max-width:620px){.directory-hero{padding-top:4rem;padding-bottom:3rem}.directory-hero:after{font-size:.48rem}.directory-hero h1{font-size:clamp(2.9rem,13vw,4.5rem)}.directory-cta{padding:1.4rem}.directory-cta:after{right:-1.5rem;font-size:6rem}.community-directory .hero{padding-top:4rem!important;padding-bottom:3rem!important}.community-directory .hero h1{font-size:clamp(3.6rem,16vw,5.5rem)!important}.community-directory .section{padding-top:3rem;padding-bottom:3rem}.cartridge-hero{min-height:0!important;padding-top:4rem!important;padding-bottom:3.5rem!important}.cartridge-title{font-size:clamp(3.6rem,15vw,5.8rem)!important}.cartridge-shelf{grid-template-columns:1fr}.cartridge-cabinet{min-height:260px}.open-source-callout{align-items:flex-start;flex-direction:column;padding:1.4rem}.open-source-callout:after{right:0;font-size:6rem}}
+@media(prefers-reduced-motion:reduce){.listing-card,.quick-card,.cartridge-cabinet,.primary-button{transition:none}}
