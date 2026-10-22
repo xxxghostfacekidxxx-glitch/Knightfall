@@ -414,6 +414,7 @@ export class MonsterWorldRoom {
     const now = Date.now();
     if (now - player.lastMoveAt < 80) return;
     player.lastMoveAt = now;
+    socket.serializeAttachment(player);
     const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
     const x = player.x + delta[0], y = player.y + delta[1];
     const blocked = new Set(["2,2", "9,2", "2,7", "9,7"]);
