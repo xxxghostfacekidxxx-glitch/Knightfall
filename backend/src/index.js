@@ -405,14 +405,14 @@ export class MonsterWorldRoom {
     this.broadcast({ type: "player-joined", player: { userId, username, x, y } }, server);
     return new Response(null, { status: 101, webSocket: client });
   }
-  webSocketMessage(socket, message) {
+  async webSocketMessage(socket, message) {
     if (typeof message !== "string" || message.length > 512) return;
     let body; try { body = JSON.parse(message); } catch (_) { return; }
     if (body?.type !== "move" || !["up", "down", "left", "right"].includes(body.direction)) return;
     const player = socket.deserializeAttachment();
     if (!player) return;
     const now = Date.now();
-    if (now - player.lastMoveAt < 80) return;
+    if (now - player.lastMoveAt < 120) return;
     player.lastMoveAt = now;
     socket.serializeAttachment(player);
     const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
@@ -422,9 +422,29 @@ export class MonsterWorldRoom {
       socket.send(JSON.stringify({ type: "move-blocked" }));
       return;
     }
-    player.x = x; player.y = y;
-    socket.serializeAttachment(player);
-    this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y } });
+    // Persist each accepted move from the world server. The browser cannot author position or step count.
+    try {
+      const row = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(player.userId).first();
+      if (!row) { socket.send(JSON.stringify({ type: "world-save-required" })); return; }
+      let save; try { save = JSON.parse(row.save_json); } catch (_) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
+      if (save.x !== player.x || save.y !== player.y) {
+        socket.send(JSON.stringify({ type: "world-save-conflict" }));
+        return;
+      }
+      if (!Number.isInteger(save.steps) || save.steps >= 10000000) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
+      save.x = x; save.y = y; save.steps += 1;
+      const nextVersion = Number(row.version) + 1;
+      const result = await this.env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?").bind(JSON.stringify(save), player.userId, Number(row.version)).run();
+      if (Number(result.meta?.changes || 0) !== 1) {
+        socket.send(JSON.stringify({ type: "world-save-conflict" }));
+        return;
+      }
+      player.x = x; player.y = y;
+      socket.serializeAttachment(player);
+      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, steps: save.steps, version: nextVersion } });
+    } catch (_) {
+      socket.send(JSON.stringify({ type: "world-save-error" }));
+    }
   }
   webSocketClose(socket) {
     const player = socket.deserializeAttachment();
