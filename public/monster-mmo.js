@@ -40,10 +40,10 @@
   let worldUserId = null;
   const remotePlayers = new Map();
   function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,hp:c.hp})),bag:state.bag};}
-  function save(){
+  function save(syncCloud=true){
     const local={...state,battle:null};
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(local)); } catch (_) {}
-    if(!cloudEnabled||!cloudReady)return;
+    if(!syncCloud||!cloudEnabled||!cloudReady)return Promise.resolve();
     const payload=snapshot();
     cloudQueue=cloudQueue.then(async()=>{
       const response=await fetch(API_BASE+"/api/game/save",{method:"PUT",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({save:payload,expected_version:cloudVersion})});
@@ -53,6 +53,7 @@
       cloudVersion=Number(data.version)||cloudVersion;
       setCloudStatus("CLOUD SAVE · SYNCED");
     }).catch(()=>{note("Cloud sync is unavailable. Local progress remains saved.");setCloudStatus("LOCAL SAVE");});
+    return cloudQueue;
   }
   async function cloudAction(action,payload={}){
     if(!cloudEnabled||!cloudReady)return null;
@@ -92,7 +93,7 @@
         setCloudStatus("CLOUD SAVE · SYNCED");
       }else{
         setCloudStatus("CLOUD SAVE · NEW PROFILE");
-        save();
+        await save();
       }
     }catch(_){cloudEnabled=false;cloudReady=true;setCloudStatus("LOCAL SAVE · CLOUD OFFLINE");}
   }
@@ -126,15 +127,18 @@
         if(message.type==="world-ready"){
           worldConnected=true;worldUserId=Number(message.you.userId);state.x=message.you.x;state.y=message.you.y;remotePlayers.clear();
           for(const player of message.players||[])if(player.userId!==message.you.userId)remotePlayers.set(player.userId,player);
-          render();note("Connected to Cinder Meadow. Other trainers are now visible.");setCloudStatus("SHARED WORLD · ONLINE");save();return;
+          render();note("Connected to Cinder Meadow. Other trainers are now visible.");setCloudStatus("SHARED WORLD · ONLINE");save(false);return;
         }
         if(message.type==="player-joined"){if(message.player&&message.player.userId!==undefined){remotePlayers.set(message.player.userId,message.player);renderMap();note(message.player.username+" entered Cinder Meadow.");}return;}
         if(message.type==="player-moved"){
           const player=message.player;if(!player)return;
-          if(worldSocket&&player.userId===worldUserId){state.x=player.x;state.y=player.y;state.steps++;render();const checkEncounter=!state.battle&&tileAt(state.x,state.y)==="grass";save();if(checkEncounter){if(cloudEnabled)cloudAction("encounter-check");else if(Math.random()<.22)startEncounter();}}
+          if(worldSocket&&player.userId===worldUserId){state.x=player.x;state.y=player.y;if(Number.isInteger(player.steps))state.steps=player.steps;if(Number.isInteger(player.version))cloudVersion=player.version;render();const checkEncounter=!state.battle&&tileAt(state.x,state.y)==="grass";save(false);if(checkEncounter){if(cloudEnabled)cloudAction("encounter-check");else if(Math.random()<.22)startEncounter();}}
           else if(player.userId!==undefined){remotePlayers.set(player.userId,player);renderMap();}
           return;
         }
+        if(message.type==="world-save-required"){note("Create or sync a cloud save before entering the shared world.");worldConnected=false;return;}
+        if(message.type==="world-save-conflict"){note("Your saved position changed in another session. Reconnecting to the latest cloud position.");worldConnected=false;try{worldSocket.close(4002,"Save position conflict");}catch(_){}syncCloudSave().then(()=>{if(cloudEnabled){cloudAction("status").then(()=>connectWorld());}});return;}
+        if(message.type==="world-save-error"){note("The server could not persist that move. Your last saved position is safe.");return;}
         if(message.type==="player-left"){remotePlayers.delete(message.userId);renderMap();return;}
         if(message.type==="move-blocked")note("The world server blocked that route.");
       });
