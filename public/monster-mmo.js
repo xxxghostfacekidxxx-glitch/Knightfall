@@ -30,7 +30,48 @@
     party:[{id:"embercub",name:"Embercub",type:"fire",icon:"✹",level:5,hp:18,maxHp:18,attack:5}],
     bag:8
   };
-  function save(){ try { localStorage.setItem(SAVE_KEY, JSON.stringify({...state,battle:null})); } catch (_) {} }
+  const API_BASE = window.ASH_FALL_API_BASE || "https://api.ash-fall.com";
+  let cloudVersion = 0;
+  let cloudEnabled = false;
+  let cloudReady = false;
+  let cloudQueue = Promise.resolve();
+  function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,hp:c.hp})),bag:state.bag};}
+  function save(){
+    const local={...state,battle:null};
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(local)); } catch (_) {}
+    if(!cloudEnabled||!cloudReady)return;
+    const payload=snapshot();
+    cloudQueue=cloudQueue.then(async()=>{
+      const response=await fetch(API_BASE+"/api/game/save",{method:"PUT",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({save:payload,expected_version:cloudVersion})});
+      const data=await response.json().catch(()=>({}));
+      if(response.status===409&&data.conflict){cloudEnabled=false;note("Cloud save conflict detected. This session stays local to protect the other session's progress.");setCloudStatus("SAVE CONFLICT");return;}
+      if(!response.ok){if(response.status===401){cloudEnabled=false;setCloudStatus("LOCAL SAVE");}else note("Cloud save failed. Local progress is still safe in this browser.");return;}
+      cloudVersion=Number(data.version)||cloudVersion;
+      setCloudStatus("CLOUD SAVE · SYNCED");
+    }).catch(()=>{note("Cloud sync is unavailable. Local progress remains saved.");setCloudStatus("LOCAL SAVE");});
+  }
+  function setCloudStatus(label){const node=document.getElementById("save-status");if(node)node.textContent=label;}
+  async function syncCloudSave(){
+    setCloudStatus("CHECKING ACCOUNT…");
+    try{
+      const response=await fetch(API_BASE+"/api/game/save",{method:"GET",credentials:"include",headers:{"accept":"application/json"}});
+      if(response.status===401){cloudEnabled=false;cloudReady=true;setCloudStatus("LOCAL SAVE · SIGN IN TO SYNC");return;}
+      if(!response.ok)throw new Error("Cloud save endpoint unavailable");
+      const data=await response.json();
+      cloudEnabled=true;cloudReady=true;cloudVersion=Number(data.version)||0;
+      if(data.save){
+        const remote=data.save;
+        state.x=remote.x;state.y=remote.y;state.steps=remote.steps;state.encounters=remote.encounters;state.caught=remote.caught;state.badges=remote.badges;state.bag=remote.bag;
+        state.party=remote.party.map(c=>{const base=creatures.find(s=>s.id===c.id);return {...base,level:c.level,hp:c.hp,maxHp:c.maxHp,attack:c.attack};});
+        try{localStorage.setItem(SAVE_KEY,JSON.stringify({...state,battle:null}));}catch(_){}
+        render();note("Your Ash-Fall cloud save has been loaded.");
+        setCloudStatus("CLOUD SAVE · SYNCED");
+      }else{
+        setCloudStatus("CLOUD SAVE · NEW PROFILE");
+        save();
+      }
+    }catch(_){cloudEnabled=false;cloudReady=true;setCloudStatus("LOCAL SAVE · CLOUD OFFLINE");}
+  }
   function load(){ try { const data=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!data||!Array.isArray(data.party)||!data.party.length)return; state.x=Math.max(1,Math.min(W-2,Number(data.x)||4));state.y=Math.max(1,Math.min(H-2,Number(data.y)||4));state.steps=Number(data.steps)||0;state.encounters=Number(data.encounters)||0;state.caught=Number(data.caught)||0;state.badges=Number(data.badges)||0;state.party=data.party.slice(0,6);state.bag=Math.max(0,Number(data.bag)||0); } catch (_) {} }
   function note(message){const li=document.createElement("li");li.textContent=message;log.prepend(li);while(log.children.length>7)log.lastElementChild.remove();}
   function tileAt(x,y){if(y===0||y===H-1||x===0||x===W-1)return "tree";if((x===4||x===5)&&y>=2&&y<=6)return "path";if((x===6)&&y>=5&&y<=7)return "path";if((x===1||x===10)&&y===5)return "water";if(blocked.has(x+","+y))return "rock";return "grass";}
@@ -50,5 +91,5 @@
   document.getElementById("run-btn").addEventListener("click",retreat);
   document.getElementById("reset-save").addEventListener("click",()=>{if(!window.confirm("Reset this browser's local prototype progress?"))return;try{localStorage.removeItem(SAVE_KEY);}catch(_){}location.reload();});
   window.addEventListener("keydown",event=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","W","A","S","D"].includes(event.key)){if(event.target instanceof HTMLInputElement||event.target instanceof HTMLTextAreaElement)return;event.preventDefault();const key=event.key.toLowerCase();move(({arrowup:"up",w:"up",arrowdown:"down",s:"down",arrowleft:"left",a:"left",arrowright:"right",d:"right"})[key]);}});
-  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");
+  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave();
 })();
