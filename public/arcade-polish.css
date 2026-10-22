@@ -61,3 +61,102 @@ main.af-game-root:-webkit-full-screen>.back,main.af-game-root:-webkit-full-scree
 main.af-game-root:fullscreen .roster,main.af-game-root:fullscreen .roster-heading,main.af-game-root:fullscreen .mutation-row,main.af-game-root:fullscreen .character-banner,
 main.af-game-root:-webkit-full-screen .roster,main.af-game-root:-webkit-full-screen .roster-heading,main.af-game-root:-webkit-full-screen .mutation-row,main.af-game-root:-webkit-full-screen .character-banner{display:none!important}
 main.af-game-root:fullscreen .hud,main.af-game-root:-webkit-full-screen .hud{margin-top:.3rem}
+
+
+/* Round six: keep the game itself in charge of the screen, especially on phones. */
+.af-game-root:fullscreen,
+.af-game-root:-webkit-full-screen {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+.af-game-root:fullscreen .af-game-tools,
+.af-game-root:-webkit-full-screen .af-game-tools {
+  margin-bottom: clamp(.5rem, 1.5vh, 1rem);
+}
+.af-game-root:fullscreen .cab-body,
+.af-game-root:-webkit-full-screen .cab-body {
+  align-items: start;
+}
+.af-game-root:fullscreen .side,
+.af-game-root:-webkit-full-screen .side {
+  min-width: 0;
+}
+.af-game-root:fullscreen .cabinet,
+.af-game-root:fullscreen .game,
+.af-game-root:fullscreen .game-panel,
+.af-game-root:fullscreen .panel,
+.af-game-root:-webkit-full-screen .cabinet,
+.af-game-root:-webkit-full-screen .game,
+.af-game-root:-webkit-full-screen .game-panel,
+.af-game-root:-webkit-full-screen .panel {
+  transform: none !important;
+  box-shadow: none !important;
+}
+.af-game-root:fullscreen button,
+.af-game-root:-webkit-full-screen button {
+  touch-action: manipulation;
+}
+.af-game-root:fullscreen .log,
+.af-game-root:-webkit-full-screen .log {
+  max-height: min(34vh, 340px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.af-game-root:fullscreen canvas,
+.af-game-root:-webkit-full-screen canvas {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 10rem);
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .af-game-root:fullscreen,
+  .af-game-root:-webkit-full-screen {
+    padding: .4rem .65rem;
+  }
+  .af-game-root:fullscreen .af-game-tools,
+  .af-game-root:-webkit-full-screen .af-game-tools {
+    min-height: 38px;
+    padding: .3rem .55rem;
+    margin-bottom: .45rem;
+  }
+  .af-game-root:fullscreen .af-fullscreen-toggle,
+  .af-game-root:-webkit-full-screen .af-fullscreen-toggle {
+    min-height: 34px;
+    padding: .35rem .65rem;
+  }
+  .af-game-root:fullscreen .hero,
+  .af-game-root:-webkit-full-screen .hero {
+    padding-block: .35rem !important;
+  }
+  .af-game-root:fullscreen .cab-body,
+  .af-game-root:-webkit-full-screen .cab-body {
+    grid-template-columns: minmax(0, 1.6fr) minmax(220px, .7fr);
+    gap: .7rem;
+    padding: .65rem;
+  }
+  .af-game-root:fullscreen canvas,
+  .af-game-root:-webkit-full-screen canvas {
+    max-height: calc(100dvh - 5.5rem);
+  }
+}
+@media (max-width: 650px) {
+  .af-game-root:fullscreen .cab-body,
+  .af-game-root:-webkit-full-screen .cab-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .af-game-root:fullscreen .log,
+  .af-game-root:-webkit-full-screen .log {
+    max-height: 28dvh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .af-game-root:fullscreen *,
+  .af-game-root:-webkit-full-screen * {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
