@@ -112,8 +112,9 @@
       loginTab.addEventListener("click", () => setMode("login"));
       registerTab.addEventListener("click", () => setMode("register"));
       document.querySelectorAll("[data-provider]").forEach(button => button.addEventListener("click", () => {
-        const provider = button.dataset.provider === "google" ? "Google" : "Facebook";
-        document.getElementById("social-note").textContent = provider + " sign-in isn't connected yet. It needs OAuth app credentials and secure callback routes on the backend; this button won't send you to a fake login page.";
+        const provider = button.dataset.provider;
+        document.getElementById("social-note").textContent = "Connecting securely to " + (provider === "google" ? "Google" : "Facebook") + "…";
+        window.location.assign(API + "/auth/oauth/" + provider + "/start?return_to=%2Faccount.html");
       }));
       async function submitForm(form, endpoint, statusId, payloadBuilder) {
         const status = document.getElementById(statusId);
@@ -130,7 +131,7 @@
           if (!response.ok) throw new Error(data.error || "We couldn't complete that request. Please try again.");
           status.style.color = "#a7e5ad";
           status.textContent = "You're in. Opening Ash-Fall…";
-          window.location.assign("/homepage.html");
+          window.location.assign("/account.html");
         } catch (error) {
           status.style.color = "#ffb17f";
           status.textContent = error.message || "Network error. Check your connection and try again.";
@@ -147,7 +148,7 @@
         event.preventDefault();
         submitForm(registerForm, "/auth/register", "register-status", form => ({display_name:form.get("display_name"),username:form.get("username"),email:form.get("email"),password:form.get("password")}));
       });
-      fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace("/homepage.html")}).catch(()=>{});
+      fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace("/account.html")}).catch(()=>{});
       const params = new URLSearchParams(location.search);
       if (params.get("mode") === "register") setMode("register");
     })();
