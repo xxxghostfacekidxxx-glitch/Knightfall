@@ -10,3 +10,21 @@ h1{margin-bottom:1.35rem;font-size:clamp(2.6rem,8.5vw,6.4rem);line-height:.9;let
 @keyframes emerge{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{transform:scale(.97);opacity:.55}50%{transform:scale(1.02);opacity:1}}
 @media(max-width:600px){body{padding:1rem;place-items:start center}.ember-field{width:95vw;height:95vw}.monolith{padding:2rem 1rem}.tagline{margin-bottom:2rem}.enter-button{max-width:100%;font-size:.72rem;letter-spacing:.07em}}
 @media(prefers-reduced-motion:reduce){.monolith,.ember-field{animation:none}.enter-button{transition:none}}
+
+
+/* Entry screen refinement: preserve the stark Ash-Fall identity while improving small-screen reading. */
+.monolith{max-width:900px}
+h1 span{color:#c8bdb4;text-shadow:0 0 38px rgba(211,84,0,.12)}
+.doctrine{border-color:rgba(211,84,0,.22);background:linear-gradient(90deg,transparent,rgba(211,84,0,.025),transparent)}
+.doctrine p:not(.eyebrow){color:#d0cbc6}
+.enter-button:focus-visible{outline:2px solid #ff9a52;outline-offset:5px}
+@media(max-width:600px){
+  body{padding:.75rem}
+  .monolith{padding:2rem .35rem}
+  h1{font-size:clamp(2.35rem,11.5vw,4rem);line-height:.96;letter-spacing:-.055em}
+  .eyebrow{font-size:.62rem;letter-spacing:.25em}
+  .tagline{font-size:1rem;line-height:1.7}
+  .doctrine{padding:1.25rem .25rem;margin-bottom:2rem}
+  .doctrine p:not(.eyebrow){font-size:.95rem;line-height:1.75}
+  .enter-button{width:100%;justify-content:center;padding:1rem .75rem;letter-spacing:.045em}
+}
