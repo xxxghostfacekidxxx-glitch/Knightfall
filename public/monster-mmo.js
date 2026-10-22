@@ -142,5 +142,7 @@
       worldSocket.addEventListener("error",()=>{setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");});
     }catch(_){worldSocket=null;setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");}
   }
+  function restAtCamp(){if(state.battle){note("You cannot rest during a wild battle.");return;}if(state.x!==4||state.y!==1){note("Return to the camp at X 04 / Y 01 to rest.");return;}if(cloudEnabled){cloudAction("rest");return;}state.party.forEach(member=>{member.hp=member.maxHp;});note("The campfire crackles. Your party is fully rested.");render();save();}
+  document.getElementById("rest-btn").addEventListener("click",restAtCamp);
   load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave().then(()=>{if(cloudEnabled){cloudAction("status");connectWorld();}});
 })();
