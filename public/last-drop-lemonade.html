@@ -22,6 +22,19 @@ $('sell').addEventListener('click',()=>{if(state.done||state.day>7)return;const 
 $('upgrade-sign').addEventListener('click',()=>{if(state.sign||state.cash<12||state.day>7)return;state.cash-=12;state.sign=true;note('🎨 You spend $12 painting a gloriously tacky sign. Foot traffic should rise by about 22%.');render()});
 $('upgrade-cooler').addEventListener('click',()=>{if(state.cooler||state.cash<18||state.day>7)return;state.cash-=18;state.cooler=true;note('🧊 You bolt a scavenged cooler together. Ice costs drop by 40% for the rest of the season.');render()});
 $('restart').addEventListener('click',()=>{if(confirm('Start a new seven-day business? Current run will be lost.'))fresh()});
+
+function addTools(){
+ const box=document.createElement("section");box.className="panel";box.style.marginTop="1rem";
+ const h=document.createElement("h2");h.textContent="Run tools";box.append(h);
+ const p=document.createElement("p");p.className="muted";p.textContent="Export your save or copy a compact business report. Keyboard: S opens the stand, E exports.";box.append(p);
+ const status=document.createElement("p");status.className="muted";status.id="run-tools-status";status.setAttribute("aria-live","polite");status.textContent="Local autosave is active.";box.append(status);
+ const exp=document.createElement("button");exp.type="button";exp.className="btn";exp.textContent="Export save";exp.addEventListener("click",()=>{const blob=new Blob([JSON.stringify({game:"Last Drop Lemonade",version:1,save:state},null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="last-drop-lemonade-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent="Save exported.";});box.append(exp);
+ const copy=document.createElement("button");copy.type="button";copy.className="btn";copy.textContent="Copy report";copy.style.marginLeft=".5rem";copy.addEventListener("click",async()=>{const report="Last Drop Lemonade | Day "+state.day+" of 7 | Cash "+money(state.cash)+" | Reputation "+state.rep+" | Days sold "+state.history.length;try{await navigator.clipboard.writeText(report);status.textContent="Business report copied.";}catch{status.textContent=report;}});box.append(copy);
+ document.querySelector("main").append(box);
+ document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase();if(k==="s"&&!state.done&&state.day<=7)$("sell").click();if(k==="e")exp.click();});
+}
+
+addTools();
 if(!load())fresh();else{render();note('↩ Your last business was restored from this browser. The books survived the night.')}
 })();
 </script></body></html>
