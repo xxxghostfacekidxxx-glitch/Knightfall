@@ -78,6 +78,8 @@ if (!worker.includes('url.pathname==="/api/game/world"') || !worker.includes("en
 else ok("Monster MMO shared-world route is wired to Durable Objects");
 if (!worker.includes("export class MonsterWorldRoom") || !worker.includes("async webSocketMessage(socket, message)") || !worker.includes("player-moved")) fail("Monster MMO world room is missing server-side movement handling.");
 else ok("Monster MMO world room exposes server-side movement handling");
+if (!worker.includes('SELECT save_json,version FROM monster_game_saves WHERE user_id=?') || !worker.includes('type: "world-ready", you: { userId, username, x, y, steps, version }')) fail("Monster MMO shared-world reconnect does not initialize from the saved D1 position/version.");
+else ok("Monster MMO shared-world reconnect starts from authoritative saved position and version");
 if (!worker.includes('SELECT save_json,version FROM monster_game_saves WHERE user_id=?') || !worker.includes('UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?') || !worker.includes("world-save-conflict")) fail("Monster MMO world movement is not persisted with optimistic version checks.");
 else ok("Monster MMO world server persists accepted movement with version checks");
 const backendWrangler = JSON.parse(await readFile(path.join(root, "backend/wrangler.jsonc"), "utf8"));
@@ -97,6 +99,7 @@ if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.inclu
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
 else ok("Monster MMO client connects to the shared world and sends movement intents");
 if (!monsterMmoClient.includes("save(false)") || !monsterMmoClient.includes("player.steps") || !monsterMmoClient.includes("player.version")) fail("Monster MMO client is not consuming authoritative movement save versions.");
+if (!monsterMmoClient.includes("message.you.steps") || !monsterMmoClient.includes("message.you.version")) fail("Monster MMO client does not restore authoritative step/version state on reconnect.");
 else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
 if (!monsterMmoClient.includes("xp: c.xp") && !monsterMmoClient.includes("xp:Number(c.xp)") || !monsterMmoClient.includes("xp-mini") || !monsterMmoClient.includes("awardExperience")) fail("Monster MMO client is missing creature XP progression and display.");
 if (!monsterMmoClient.includes("function typeMultiplier(attacker,defender)") || !monsterMmoClient.includes("It was super effective!") || !monsterMmoClient.includes("The attack was resisted.")) fail("Monster MMO client is missing type matchup feedback.");
