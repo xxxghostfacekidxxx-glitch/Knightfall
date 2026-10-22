@@ -142,5 +142,5 @@
       worldSocket.addEventListener("error",()=>{setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");});
     }catch(_){worldSocket=null;setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");}
   }
-  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave().then(()=>{if(cloudEnabled)connectWorld();});
+  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave().then(()=>{if(cloudEnabled){cloudAction("status");connectWorld();}});
 })();
