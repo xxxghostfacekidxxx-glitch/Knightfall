@@ -289,3 +289,9 @@
 @media(max-width:480px){
   .message-layout.show-chat{height:calc(var(--messages-visible-height, 100dvh) - 150px)}
 }
+
+
+/* Clear, non-destructive feedback when either participant has blocked the other. */
+.blocked-tag{display:inline-block;margin-top:.3rem;color:#f0a38b;font-size:.58rem;font-weight:900;letter-spacing:.08em}
+.conversation-restricted{padding:1rem 1.1rem;border-top:1px solid #4a2b20;background:#160f0c;color:#f0c4b5;font-size:.82rem;line-height:1.55}
+.conversation-restricted[hidden]{display:none}
