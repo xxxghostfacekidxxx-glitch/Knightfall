@@ -2,7 +2,7 @@
   "use strict";
   const boot = () => {
     if (document.querySelector("[data-arcade-fullscreen]")) return;
-    const target = document.querySelector("main.wrap, main.arcade, main, .wrap, .arcade");
+    const target = document.querySelector("main.wrap, main.arcade, main, .wrap, .arcade") || document.body;
     if (!target) return;
     target.classList.add("arcade-fullscreen-target");
     const dock = document.createElement("div");
