@@ -43,6 +43,44 @@ button:focus-visible,.action:focus-visible{outline:3px solid currentColor;outlin
 .wallet-inline strong{font-variant-numeric:tabular-nums}
 @media(max-width:650px){.wrap{width:calc(100% - 16px);margin:8px auto 32px}.hero h1{font-size:clamp(2.8rem,14vw,4.5rem)}.hud{padding:7px;gap:7px;border-radius:15px}.meter{min-width:calc(33.333% - 8px);padding:10px}.meter small{font-size:.6rem}.meter strong{font-size:1.15rem}.cabinet,.playfield,.field{border-radius:15px!important}.panel,.lower .panel,.below .panel{padding:15px!important}.odds-card{padding:11px}}
 
+
+/* PREMIUM CABINET PASS: midnight sapphire, casino gold, precision chrome */
+:root{--gold:#ffd783;--electric:#52d8ff}
+body{background:radial-gradient(ellipse at 14% 0,#123b5c 0,transparent 38%),radial-gradient(ellipse at 90% 10%,#142c52 0,transparent 36%),#030812;letter-spacing:.01em}
+.wrap{width:min(1480px,98%);margin:1.25rem auto 4rem}
+.hero{padding:1.6rem 0 1.3rem;gap:1.5rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.55rem;padding:.42rem .7rem;border:1px solid #59dfff66;border-radius:999px;background:#06182acc;box-shadow:0 0 24px #31caff18}
+h1{font-size:clamp(3rem,8vw,7rem);letter-spacing:-.085em;text-shadow:0 5px 0 #050b18,0 0 42px #269dff44}
+.hero p{font-size:1rem;max-width:780px;color:#a9c6df}
+.cabinet{position:relative;border:1px solid #4f9dcc;border-radius:22px;background:linear-gradient(145deg,#0d2139,#060c19 60%);box-shadow:0 0 0 5px #07111f,0 0 0 6px #45c7ff3b,0 25px 90px #000c,0 0 55px #228eff1b}
+.cabinet:before{content:"";position:absolute;inset:0 0 auto;height:3px;z-index:3;background:linear-gradient(90deg,transparent,#83e8ff,#ffe29a,#83e8ff,transparent)}
+.hud{gap:1px;background:#28648b}
+.meter{background:linear-gradient(155deg,#102943,#081322);padding:.85rem 1rem}
+.meter small{color:#7fb9d8;letter-spacing:.16em}
+.meter strong{font-variant-numeric:tabular-nums;text-shadow:0 0 16px #49bfff35}
+.field{background:radial-gradient(ellipse at 50% 90%,#123d61,#030811 75%);padding:6px}
+.field canvas{border-radius:12px;box-shadow:inset 0 0 40px #19baff1b;outline:1px solid #62cfff55}
+.overlay{background:linear-gradient(135deg,#030812ef,#09213af2);backdrop-filter:blur(12px)}
+.dialog{border:1px solid #71d7ff99;border-radius:20px;background:linear-gradient(145deg,#123b58f5,#080f20f7);box-shadow:0 0 0 5px #071827,0 0 55px #28aaff2b,0 25px 70px #000a}
+.dialog .big{filter:drop-shadow(0 0 15px #6ddfff);font-size:3rem}
+.dialog h2{letter-spacing:-.06em;text-shadow:0 0 25px #4abaff55}
+.dialog p{color:#b9d6ea}
+.controls{background:linear-gradient(90deg,#06101f,#0d2035,#06101f);border-top:1px solid #3679a3;padding:1rem;gap:.8rem}
+.btn{border:1px solid #376e94;background:linear-gradient(180deg,#173651,#0a1b2d);border-radius:10px;box-shadow:inset 0 1px #ffffff12,0 4px 0 #030711;color:#eaf8ff;transition:transform .12s,border-color .12s,filter .12s}
+.btn:hover{border-color:#82e6ff;filter:brightness(1.18);transform:translateY(-1px)}
+.btn:active{transform:translateY(2px);box-shadow:inset 0 1px #ffffff12,0 1px 0 #030711}
+.btn.hot{background:linear-gradient(135deg,#fff0b2,#ffc45f 48%,#5bdfff);border-color:#ffe6a0;color:#101b2c;box-shadow:0 0 24px #51caff33,0 4px 0 #17466b}
+.btn.selected{background:linear-gradient(135deg,#16415c,#0b2236);border-color:#a3eaff;color:#b8f0ff;box-shadow:inset 0 0 0 1px #65d7ff,0 0 20px #2baaff1b}
+.panel{border:1px solid #254f73;background:linear-gradient(145deg,#0d2032,#070e1b);border-radius:16px;box-shadow:0 12px 35px #0005}
+.panel h2{letter-spacing:-.035em}
+.panel p,.panel li{color:#a9c3d9}
+.pay{border-color:#244d70;background:linear-gradient(145deg,#102c43,#081421);transition:transform .15s,border-color .15s}
+.pay:hover{transform:translateY(-2px);border-color:#80dfff}
+.pay span{color:#ffe09a;font-variant-numeric:tabular-nums}
+.status{color:#91ddff;padding:.55rem .75rem;border-left:2px solid #54cfff;background:#091a2a}
+.foot{letter-spacing:.13em;color:#5786a6}
+@media(max-width:700px){.wrap{width:96%}.hero{padding-top:1rem}.field{padding:3px}.controls{padding:.7rem}.meter{padding:.65rem}.dialog{padding:1.1rem}}
+
 </style></head>
 <body><header class="kf-header"></header><main class="wrap">
 <a class="back" href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a>
