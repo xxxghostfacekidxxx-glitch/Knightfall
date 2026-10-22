@@ -1180,8 +1180,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
         const damage=Math.max(1,Math.min(30,lead.attack+Math.floor(Math.random()*4)));
         battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage.";
         if(battle.hp===0){
-          lead.level=Math.min(100,lead.level+1);lead.maxHp=Math.min(500,(lead.maxHp||lead.hp)+2);lead.hp=lead.maxHp;lead.attack=Math.min(100,lead.attack+1);
-          battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" reached level "+lead.level+".";
+          const gainedXp=Math.max(8,battle.level*12);lead.xp=(lead.xp||0)+gainedXp;let gainedLevels=0;
+          while(lead.level<100&&lead.xp>=lead.level*20){lead.xp-=lead.level*20;lead.level++;gainedLevels++;}
+          if(gainedLevels){lead.maxHp=Math.min(500,(lead.maxHp||lead.hp)+2*gainedLevels);lead.hp=lead.maxHp;lead.attack=Math.min(100,species[lead.id].attack+Math.floor((lead.level-1)/3));}
+          battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" gained "+gainedXp+" XP"+(gainedLevels?" and reached level "+lead.level:"") +".";
         }else{
           const counter=Math.max(1,Math.min(20,battle.attack+Math.floor(Math.random()*3)));
           lead.hp=Math.max(1,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
@@ -1228,7 +1230,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
     const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
     if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
-    if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
+    if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
     const species={
       mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3},
       embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4},
@@ -1237,9 +1239,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     };
     const party=[];
     for(const member of input.party){
-      if(!member||typeof member!=="object"||!species[member.id]||!int(member.level,1,100)||!int(member.hp,0,500))return json({error:"Party contains an invalid creature."},400,origin);
+      if(!member||typeof member!=="object"||!species[member.id]||!int(member.level,1,100)||!int(member.hp,0,500)||!int(member.xp??0,0,999999))return json({error:"Party contains an invalid creature."},400,origin);
       const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
-      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3))});
+      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3))});
     }
     const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
     const now=new Date().toISOString();
