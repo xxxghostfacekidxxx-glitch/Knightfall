@@ -124,5 +124,6 @@ body{margin:0;background:radial-gradient(ellipse at 15% 0%,#d354001b,transparent
   whackStart.addEventListener('click',()=>{clearInterval(whackTimer);clearInterval(whackSpawner);whackScore=0;whackTime=20;whackRunning=true;whackScoreEl.textContent='0';whackTimeEl.textContent='20';whackStart.disabled=true;whackMsg.textContent='PURGE ACTIVE.';spawnWhack();whackSpawner=setInterval(spawnWhack,850);whackTimer=setInterval(()=>{whackTime--;whackTimeEl.textContent=whackTime;if(whackTime<=0)endWhack();},1000);});
 })();
 </script>
+<script src="/arcade-feedback.js?v=20261022" defer></script>
 </body>
 </html>
