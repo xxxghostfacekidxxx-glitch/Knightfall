@@ -194,3 +194,9 @@
   .conversation-list{overscroll-behavior:contain}
   .messages-list{overscroll-behavior:contain}
 }
+
+/* Active conversation and unread state stay obvious without relying on color alone. */
+.conversation[aria-current="true"]{box-shadow:inset 3px 0 0 #e7793c}
+.conversation[aria-current="true"] .conversation-copy strong{color:#fff}
+.unread{min-width:1.35rem;min-height:1.35rem;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:0 .3rem;font-size:.7rem;font-variant-numeric:tabular-nums}
+.inbox-filter{white-space:nowrap}
