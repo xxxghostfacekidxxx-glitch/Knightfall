@@ -6,7 +6,7 @@
   <meta name="description" content="Manage your Ash-Fall account and community profile. Your corner of the chaos, without the unnecessary paperwork.">
   <title>Ash-Fall | Account</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/account.css?v=20261021-account-polish>
+  <link rel="stylesheet" href="/account.css?v=20261022-account-polish">
 </head>
 <body>
   <header class="kf-header"></header>
@@ -33,7 +33,7 @@
         <p class="lead">Your Ash-Fall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
         <div class="account-actions">
           <a class="button primary" href="/auth.html">Sign in / Register</a>
-          <a class="button secondary" href="/homepage.html">Return to community</a>
+          <a class="button secondary" href="/index.html">Return to sign in</a>
         </div>`;
     }
 
@@ -58,7 +58,7 @@
         <div class="account-actions">
           <a class="button primary" href="/profile.html?username=${encodeURIComponent(user.username)}">View profile</a>
           <a class="button secondary" href="/profile-edit.html">Edit profile</a>
-          <a class="button secondary" href="/homepage.html">Enter forum</a>
+          <a class="button secondary" href="/index.html">Return to sign in</a>
           ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a><a class="button secondary" href="/moderation-accounts.html">Account recovery</a>' + (user.role === "admin" ? '<a class="button primary" href="/admin.html">Administrator</a>' : "") : ""}
         </div>
         <button id="logout" class="logout" type="button">Log out</button>
@@ -85,7 +85,7 @@
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || "Unable to sign out.");
         status.textContent = "Signed out. Returning to the community…";
-        setTimeout(() => location.href = "/homepage.html", 450);
+        setTimeout(() => location.href = "/index.html", 450);
       } catch (error) {
         status.textContent = error.message;
       }
@@ -97,7 +97,7 @@
         if (user) renderUser(user);
         else renderSignedOut();
       } catch (error) {
-        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>ACCOUNT UNAVAILABLE</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/homepage.html">Return to community</a></div>`;
+        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>ACCOUNT UNAVAILABLE</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/index.html">Return to sign in</a></div>`;
       }
     })();
   </script>
