@@ -84,6 +84,10 @@ const backendWrangler = JSON.parse(await readFile(path.join(root, "backend/wrang
 if (!backendWrangler.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Backend Wrangler config is missing the MONSTER_WORLD Durable Object binding.");
 else ok("Monster MMO Durable Object binding is configured");
 const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), "utf8");
+const monsterMmoHtml = await readFile(path.join(publicDir, "monster-mmo.html"), "utf8");
+const monsterMmoCss = await readFile(path.join(publicDir, "monster-mmo.css"), "utf8");
+if (!monsterMmoHtml.includes('id="type-matchup"') || !monsterMmoClient.includes('getElementById("type-matchup")') || !monsterMmoCss.includes(".type-matchup.effective")) fail("Monster MMO live type matchup indicator is incomplete.");
+else ok("Monster MMO renders and styles the live type matchup indicator");
 if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
 else ok("Monster MMO client uses credentialed cloud-save requests");
 if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
