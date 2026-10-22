@@ -1196,7 +1196,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid save data."},400,origin);
     const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
     if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
-    const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===4||x===5)&&y>=2&&y<=6)&&!(x===6&&y>=5&&y<=7)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
+    const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
     if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
     if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);}
     const species={
