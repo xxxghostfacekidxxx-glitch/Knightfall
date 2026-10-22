@@ -8,10 +8,10 @@
     "arcade-after-dark.html": ".game",
     "arcade-originals.html": ".cabinet",
     "arcade-fresh-meat.html": ".cabinet",
-    "city-of-cinders.html": ".game-shell",
-    "not-dead-yet.html": ".game-shell",
-    "last-drop-lemonade.html": ".layout",
-    "wagonbound.html": ".layout"
+    "city-of-cinders.html": "main",
+    "not-dead-yet.html": "main",
+    "last-drop-lemonade.html": "main",
+    "wagonbound.html": "main"
   };
   const selector = selectors[page];
   if (!selector) return;
