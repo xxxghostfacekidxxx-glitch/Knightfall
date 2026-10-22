@@ -650,29 +650,34 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to view your wallet."},401,origin);
     const now=Date.now(),today=new Date(now).toISOString().slice(0,10);
     await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
-    const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date,last_mission_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
     const onlineAt=wallet?.last_online_claim_at?new Date(wallet.last_online_claim_at).getTime():0;
-    return json({balance:Number(wallet?.balance??500),online_reward:50,daily_reward:250,online_ready:!onlineAt||now-onlineAt>=30*60*1000,online_next_at:onlineAt?new Date(onlineAt+30*60*1000).toISOString():null,daily_ready:wallet?.last_daily_claim_date!==today,daily_claim_date:wallet?.last_daily_claim_date||null,server_time:new Date(now).toISOString()},200,origin);
+    const played=await env.DB.prepare("SELECT COUNT(*) AS count FROM arcade_high_scores WHERE user_id=? AND updated_at>=?").bind(user.id,today+"T00:00:00.000Z").first();
+    const questPlayed=Number(played?.count||0)>0;
+    return json({balance:Number(wallet?.balance??500),online_reward:50,daily_reward:250,mission_reward:100,online_ready:!onlineAt||now-onlineAt>=30*60*1000,online_next_at:onlineAt?new Date(onlineAt+30*60*1000).toISOString():null,daily_ready:wallet?.last_daily_claim_date!==today,quest_played:questPlayed,quest_ready:questPlayed&&wallet?.last_mission_claim_date!==today,daily_claim_date:wallet?.last_daily_claim_date||null,server_time:new Date(now).toISOString()},200,origin);
   }
   if(url.pathname==="/api/economy/claim"&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in before claiming credits."},401,origin);
     if(!await rateLimit(env,request,"economy-claim",12,60,user.id))return json({error:"Too many claim attempts. Wait a moment."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const type=String(body.type||""),now=Date.now(),nowIso=new Date(now).toISOString(),today=nowIso.slice(0,10);
-    if(!["online","daily"].includes(type))return json({error:"Unknown reward type."},400,origin);
+    if(!["online","daily","quest"].includes(type))return json({error:"Unknown reward type."},400,origin);
     await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
     let claimed=0;
     if(type==="online"){
       const result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+50,last_online_claim_at=?,updated_at=? WHERE user_id=? AND (last_online_claim_at IS NULL OR julianday(?) - julianday(last_online_claim_at) >= 0.0208333333)").bind(nowIso,nowIso,user.id,nowIso).run();
       if(!result.meta?.changes)return json({error:"Online bonus is on cooldown. It refreshes every 30 minutes."},429,origin);claimed=50;
-    }else{
+    }else if(type==="daily"){
       const result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+250,last_daily_claim_date=?,updated_at=? WHERE user_id=? AND (last_daily_claim_date IS NULL OR last_daily_claim_date<>?)").bind(today,nowIso,user.id,today).run();
       if(!result.meta?.changes)return json({error:"Your daily reward is already claimed. Come back after the UTC day resets."},429,origin);claimed=250;
+    }else{
+      const result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+100,last_mission_claim_date=?,updated_at=? WHERE user_id=? AND (last_mission_claim_date IS NULL OR last_mission_claim_date<>?) AND EXISTS (SELECT 1 FROM arcade_high_scores WHERE user_id=? AND updated_at>=?)").bind(today,nowIso,user.id,today,user.id,today+"T00:00:00.000Z").run();
+      if(!result.meta?.changes)return json({error:"Play an arcade game and submit a score today to unlock this daily mission. It can be claimed once per UTC day."},409,origin);claimed=100;
     }
-    await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,claimed,type==="online"?"30-minute online bonus":"daily login reward",nowIso).run();
-    const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,claimed,type==="online"?"30-minute online bonus":type==="daily"?"daily login reward":"daily arcade mission",nowIso).run();
+    const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date,last_mission_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
     await audit(env,user,"economy.claim","wallet",user.id,{type,amount:claimed,balance:Number(wallet.balance)});
-    return json({ok:true,type,claimed,balance:Number(wallet.balance),online_next_at:wallet.last_online_claim_at?new Date(new Date(wallet.last_online_claim_at).getTime()+30*60*1000).toISOString():null,daily_ready:wallet.last_daily_claim_date!==today},200,origin);
+    return json({ok:true,type,claimed,balance:Number(wallet.balance),online_next_at:wallet.last_online_claim_at?new Date(new Date(wallet.last_online_claim_at).getTime()+30*60*1000).toISOString():null,daily_ready:wallet.last_daily_claim_date!==today,quest_ready:wallet.last_mission_claim_date!==today},200,origin);
   }
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
