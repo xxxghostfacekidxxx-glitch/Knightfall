@@ -392,16 +392,20 @@ export class MonsterWorldRoom {
     }
     const pair = new WebSocketPair();
     const client = pair[0], server = pair[1];
-    const x = Math.max(1, Math.min(10, Number(request.headers.get("x-game-x")) || 4));
-    const y = Math.max(1, Math.min(8, Number(request.headers.get("x-game-y")) || 4));
-    const player = { userId, username, x, y, lastMoveAt: 0 };
+    const savedRow = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(userId).first();
+    if (!savedRow) return new Response("Create a cloud save before entering the shared world.", { status: 409 });
+    let saved; try { saved = JSON.parse(savedRow.save_json); } catch (_) { return new Response("Saved position is unreadable.", { status: 500 }); }
+    const x = Number(saved.x), y = Number(saved.y), steps = Number(saved.steps);
+    if (!Number.isInteger(x) || x < 1 || x > 10 || !Number.isInteger(y) || y < 1 || y > 8 || !Number.isInteger(steps) || steps < 0) return new Response("Saved position is invalid.", { status: 409 });
+    const version = Number(savedRow.version) || 1;
+    const player = { userId, username, x, y, steps, version, lastMoveAt: 0 };
     this.state.acceptWebSocket(server);
     server.serializeAttachment(player);
     const others = this.state.getWebSockets().filter(socket => socket !== server).map(socket => {
       const p = socket.deserializeAttachment();
       return p ? { userId: p.userId, username: p.username, x: p.x, y: p.y } : null;
     }).filter(Boolean);
-    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y }, players: others }));
+    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y, steps, version }, players: others }));
     this.broadcast({ type: "player-joined", player: { userId, username, x, y } }, server);
     return new Response(null, { status: 101, webSocket: client });
   }
