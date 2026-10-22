@@ -131,7 +131,7 @@
         if(message.type==="player-joined"){if(message.player&&message.player.userId!==undefined){remotePlayers.set(message.player.userId,message.player);renderMap();note(message.player.username+" entered Cinder Meadow.");}return;}
         if(message.type==="player-moved"){
           const player=message.player;if(!player)return;
-          if(worldSocket&&player.userId===worldUserId){state.x=player.x;state.y=player.y;state.steps++;render();const triggerEncounter=!state.battle&&tileAt(state.x,state.y)==="grass"&&Math.random()<.22;save();if(triggerEncounter)startEncounter();}
+          if(worldSocket&&player.userId===worldUserId){state.x=player.x;state.y=player.y;state.steps++;render();const checkEncounter=!state.battle&&tileAt(state.x,state.y)==="grass";save();if(checkEncounter){if(cloudEnabled)cloudAction("encounter-check");else if(Math.random()<.22)startEncounter();}}
           else if(player.userId!==undefined){remotePlayers.set(player.userId,player);renderMap();}
           return;
         }
