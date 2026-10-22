@@ -1116,7 +1116,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","attack","capture","flee","status"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","capture","flee","status"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1134,14 +1134,16 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
-    if(action==="start"){
+    if(action==="start"||action==="encounter-check"){
       if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
       if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
       const onGrass=(save.y===1&&save.x>=1&&save.x<=9)||(save.y>=2&&save.y<=4&&((save.x>=1&&save.x<=3)||(save.x>=6&&save.x<=10)))||(save.y>=5&&save.y<=6&&((save.x>=1&&save.x<=4)||(save.x>=7&&save.x<=10)))||(save.y>=7&&save.y<=8);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
-      const ids=Object.keys(species),chosen=species[ids[crypto.getRandomValues(new Uint8Array(1))[0]%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
-      battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
-      save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
+      if(action==="start"||Math.random()<0.22){
+        const ids=Object.keys(species),chosen=species[ids[crypto.getRandomValues(new Uint8Array(1))[0]%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
+        save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
+      }
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
       if(action==="attack"){
