@@ -30,7 +30,9 @@ scenes.register('slots', createSlots(game));
 scenes.register('blackjack', createBlackjack(game));
 scenes.register('roulette', createRoulette(game));
 scenes.register('plinko', createPlinko(game));
-scenes.go('lobby');
+const requestedGame = new URLSearchParams(window.location.search).get('game');
+const classicGames = new Set(['slots', 'blackjack', 'roulette', 'plinko']);
+scenes.go(classicGames.has(requestedGame) ? requestedGame : 'lobby');
 
 // разблокировка звука по первому жесту
 function unlock() { audio.ensure(); audio.resume(); }
