@@ -53,3 +53,11 @@ button,select,input,textarea{accent-color:var(--af-ember)}
 button:disabled{cursor:not-allowed}
 @media(max-width:650px){.af-game-tools{padding:.55rem;align-items:stretch}.af-game-kicker{align-self:center}.af-fullscreen-toggle{min-height:44px}.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{padding:.55rem}.af-game-root:fullscreen .af-game-tools,.af-game-root:-webkit-full-screen .af-game-tools{gap:.45rem}.af-game-root:fullscreen canvas,.af-game-root:-webkit-full-screen canvas{max-height:calc(100dvh - 180px)}}
 @media(prefers-reduced-motion:reduce){.af-fullscreen-toggle{transition:none}}
+
+/* Full-page game layouts keep their HUDs and controls while hiding only marketing chrome. */
+main.af-game-root:fullscreen,main.af-game-root:-webkit-full-screen{display:block!important;width:100%!important;max-width:none!important;margin:0!important}
+main.af-game-root:fullscreen>.back,main.af-game-root:fullscreen>.hero,main.af-game-root:fullscreen>.intro,main.af-game-root:fullscreen>.account,
+main.af-game-root:-webkit-full-screen>.back,main.af-game-root:-webkit-full-screen>.hero,main.af-game-root:-webkit-full-screen>.intro,main.af-game-root:-webkit-full-screen>.account{display:none!important}
+main.af-game-root:fullscreen .roster,main.af-game-root:fullscreen .roster-heading,main.af-game-root:fullscreen .mutation-row,main.af-game-root:fullscreen .character-banner,
+main.af-game-root:-webkit-full-screen .roster,main.af-game-root:-webkit-full-screen .roster-heading,main.af-game-root:-webkit-full-screen .mutation-row,main.af-game-root:-webkit-full-screen .character-banner{display:none!important}
+main.af-game-root:fullscreen .hud,main.af-game-root:-webkit-full-screen .hud{margin-top:.3rem}
