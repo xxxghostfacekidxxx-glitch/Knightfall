@@ -4,12 +4,12 @@ Last updated: 2026-10-21
 
 ## Implemented on the feature branch
 
-- Responsive browser prototype: tile map, keyboard/touch movement, original placeholder creature encounters, basic turn-based battle/capture loop, party panel, event log.
+- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species, turn-based battles/capture, party management, event log, and creature XP progress bars.
 - Local browser save for offline play, including creature XP progress and visible progress bars.
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
-  - `POST /api/game/action`: validates encounter starts, attacks/counters, captures, flee, party lead changes, rest, and server-authoritative XP/level gains.
+  - `POST /api/game/action`: validates encounter starts, attacks/counters, captures, flee, party lead changes, rest, and server-authoritative XP/level gains across the eight-species original roster.
 - D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table; `0024_monster_game_battles.sql` stores one active battle per account so reloads can restore it.
 - Save validation checks position/counters, requires walkable tiles, rejects non-adjacent position changes, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session. The ordinary save route cannot alter party membership/levels/HP, inventory, or progression counters; those changes go through validated game actions. First-time cloud creation supports a bounded import of existing local progress so players do not lose prototype saves.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
