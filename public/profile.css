@@ -85,3 +85,26 @@
 /* Clear feedback for profile-to-inbox actions. */
 .profile-action-status{margin-top:.65rem;padding:.65rem .8rem;border:1px solid #4a3021;border-radius:8px;background:#120d09;color:#f0b18e;font-size:.82rem;line-height:1.5;overflow-wrap:anywhere}
 .profile-actions [data-message-user]:disabled{opacity:.65;cursor:wait}
+
+
+/* Profile and friends visual refinement: stronger hierarchy, warm ember depth, accessible focus. */
+.profile-shell{padding-top:clamp(1.5rem,4vw,3.5rem);padding-bottom:4rem}
+.profile-shell>.card,.profile-shell .card,.friends-page-card{background:linear-gradient(145deg,rgba(20,18,16,.98),rgba(9,9,9,.98));border-color:#34281f;box-shadow:0 24px 70px rgba(0,0,0,.32),0 0 45px rgba(211,84,0,.035)}
+.profile-top{gap:clamp(1rem,3vw,1.7rem);padding-bottom:1.4rem;border-bottom:1px solid #2c241f}
+.profile-heading h1{line-height:.98;text-wrap:balance}
+.profile-shell .eyebrow{letter-spacing:.2em;color:#e47a3b}
+.profile-shell .handle{color:#958b83;line-height:1.6}
+.profile-stats{gap:.65rem}
+.profile-stats>div{border:1px solid #30261f!important;border-radius:10px;background:linear-gradient(145deg,rgba(211,84,0,.07),rgba(10,10,10,.7));padding:.9rem!important}
+.profile-stats strong{color:#f3e8df}
+.profile-shell input:not([type=checkbox]):not([type=radio]),.profile-shell textarea,.profile-shell select{border-color:#3b2b20!important;background:#0b0b0b!important;color:#f3eee9!important;border-radius:9px}
+.profile-shell input:focus-visible,.profile-shell textarea:focus-visible,.profile-shell select:focus-visible,.profile-shell button:focus-visible,.profile-shell a:focus-visible{outline:2px solid #f06a0a;outline-offset:3px}
+.profile-shell .action,.profile-shell button{transition:transform .18s ease,border-color .18s ease,filter .18s ease}
+.profile-shell .action:hover,.profile-shell button:hover{filter:brightness(1.08)}
+.friends-panel,.friend-discover{background:linear-gradient(145deg,rgba(211,84,0,.055),rgba(10,10,10,.97))!important;border-color:#38281e!important}
+.friend-card{background:linear-gradient(110deg,#15120f,#0c0c0c)!important;border-color:#30261f!important;transition:border-color .18s ease,transform .18s ease}
+.friend-card:hover{border-color:#70401f!important;transform:translateY(-2px)}
+.friend-count{background:#2b180d!important;color:#ffad78!important}
+.friends-summary>*,.friends-summary span{border-color:#38281e}
+.avatar-editor,.friend-request-form{background:#0d0c0b!important;border-color:#35281f!important}
+@media(prefers-reduced-motion:reduce){.profile-shell .action,.profile-shell button,.friend-card{transition:none!important}}
