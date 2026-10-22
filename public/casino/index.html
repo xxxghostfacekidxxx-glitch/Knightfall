@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ash-Fall Casino | Chaos Cartridge</title>
+  <meta name="description" content="Play slots, blackjack, European roulette, and Plinko for free with virtual chips in Ash-Fall Chaos Cartridge." />
+  
+  <meta name="theme-color" content="#050309" />
+  
+  
+  
+  
+  
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      min-height: 100svh;
+      background: #050309;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 46px 12px 46px;
+      /* Ash-Fall casino cabinet */
+      background:
+        radial-gradient(circle at 50% 40%, #15102a 0%, #070411 70%, #030208 100%);
+      font-family: monospace;
+    }
+    #screen {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      /* "корпус" аркадного автомата вокруг экрана */
+      box-shadow:
+        0 0 0 4px #1b1330,
+        0 0 0 8px #2a1b4d,
+        0 0 40px 10px rgba(123, 47, 247, 0.35);
+      background: #000;
+      cursor: pointer;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100svh - 100px);
+    }
+    .site-exit{position:fixed;top:10px;left:12px;z-index:5;color:#f0c5ff;text-decoration:none;font:700 12px/1.2 monospace;letter-spacing:.04em;padding:9px 11px;border:1px solid #46315f;border-radius:8px;background:#090611ef}
+    .site-exit:hover,.site-exit:focus-visible{border-color:#f06a0a;color:#fff;outline:none}
+    .casino-credit{position:fixed;bottom:7px;left:8px;right:8px;text-align:center;color:#958ca7;font:10px/1.4 monospace}
+    .casino-credit a{color:#d8b6ff}
+    @media(max-height:420px){body{padding-top:38px;padding-bottom:26px}.site-exit{top:4px;left:6px;padding:5px 7px}.casino-credit{bottom:2px;font-size:9px}}
+  </style>
+</head>
+<body>
+  <a class="site-exit" href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a>
+  <canvas id="screen" aria-label="Ash-Fall Casino: slots, blackjack, roulette, and Plinko. Use arrow keys and Enter or tap the game cards."></canvas>
+  <p class="casino-credit">PLAY-MONEY ONLY · Virtual chips have no cash value · Adapted from <a href="https://github.com/Lemelson/casino-by-ai" target="_blank" rel="noopener noreferrer">Casino by AI</a> under MIT License</p>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
