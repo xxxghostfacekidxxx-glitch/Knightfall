@@ -1156,6 +1156,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
+    const strongAgainst={fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
+    const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
     if(action==="rest"){
@@ -1181,8 +1183,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
       if(action==="attack"){
-        const damage=Math.max(1,Math.min(30,lead.attack+Math.floor(Math.random()*4)));
-        battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage.";
+        const multiplier=typeMultiplier(lead.type,battle.type);
+        const damage=Math.max(1,Math.min(40,Math.round((lead.attack+Math.floor(Math.random()*4))*multiplier)));
+        battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage."+(multiplier>1?" It was super effective!":multiplier<1?" The attack was resisted.":"");
         if(battle.hp===0){
           const gainedXp=Math.max(8,battle.level*12);lead.xp=(lead.xp||0)+gainedXp;let gainedLevels=0;
           while(lead.level<100&&lead.xp>=lead.level*20){lead.xp-=lead.level*20;lead.level++;gainedLevels++;}
