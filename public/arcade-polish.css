@@ -78,8 +78,8 @@ a:hover{color:#ffb080}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 
 /* Display treatment for canvas arenas and card-table surfaces. */
-.playfield,.field,.play-area,.canvas-wrap{position:relative;isolation:isolate}
-.playfield:after,.field:after,.play-area:after,.canvas-wrap:after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.28) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0,rgba(255,255,255,.014) 1px,transparent 1px,transparent 4px);box-shadow:inset 0 0 70px rgba(0,0,0,.22)}
+.playfield:has(canvas),.field:has(canvas),.play-area:has(canvas),.canvas-wrap:has(canvas){position:relative;isolation:isolate}
+ .playfield:has(canvas):after,.field:has(canvas):after,.play-area:has(canvas):after,.canvas-wrap:has(canvas):after{content:"";position:absolute;z-index:1;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.28) 100%),repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0,rgba(255,255,255,.014) 1px,transparent 1px,transparent 4px);box-shadow:inset 0 0 70px rgba(0,0,0,.22)}
 .screen-overlay,.overlay{z-index:2}
 .felt{background-color:#0c3525!important;background-image:radial-gradient(ellipse at 50% 15%,rgba(61,160,107,.27),transparent 65%),repeating-linear-gradient(115deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 1px,transparent 1px,transparent 5px),linear-gradient(145deg,#12452f,#09271b)!important;border-color:rgba(108,204,148,.3)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.035),inset 0 0 65px rgba(0,0,0,.22),0 18px 45px rgba(0,0,0,.22)}
 .playing-card{box-shadow:0 8px 18px rgba(0,0,0,.28),inset 0 0 0 1px rgba(25,25,25,.09)!important}
