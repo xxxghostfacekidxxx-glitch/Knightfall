@@ -868,9 +868,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(existing?.status==="accepted")return json({error:"You're already friends."},409,origin);
     if(existing?.status==="pending"&&existing.requester_id===user.id)return json({error:"Friend request already sent."},409,origin);
     const now=new Date().toISOString();
-    if(existing?.status==="pending"&&existing.addressee_id===user.id){await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=?").bind(now,existing.id).run();return json({ok:true,status:"accepted",request_id:existing.id},200,origin);}
+    if(existing?.status==="pending"&&existing.addressee_id===user.id){await env.DB.prepare("UPDATE friend_requests SET status='accepted',updated_at=? WHERE id=?").bind(now,existing.id).run();await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});return json({ok:true,status:"accepted",request_id:existing.id},200,origin);}
     if(existing)await env.DB.prepare("UPDATE friend_requests SET requester_id=?,addressee_id=?,status='pending',created_at=?,updated_at=? WHERE id=?").bind(user.id,target.id,now,now,existing.id).run();
     else await env.DB.prepare("INSERT INTO friend_requests (requester_id,addressee_id,status,created_at,updated_at) VALUES (?,?,'pending',?,?)").bind(user.id,target.id,now,now).run();
+    await createNotification(env,{userId:target.id,actorId:user.id,kind:"friend_request",targetType:"user",targetId:user.id,title:"New friend request",body:"@"+user.username+" sent you a friend request.",url:"/friends.html"});
     return json({ok:true,status:"pending"},201,origin);
   }
   const friendRequestMatch=url.pathname.match(/^\/api\/friends\/([0-9]+)$/);
@@ -879,10 +880,11 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
     const id=Number(friendRequestMatch[1]),action=String(payload?.action||"");
     if(!Number.isSafeInteger(id)||id<1||!["accept","decline"].includes(action))return json({error:"Invalid friend request action."},400,origin);
-    const row=await env.DB.prepare("SELECT id FROM friend_requests WHERE id=? AND addressee_id=? AND status='pending'").bind(id,user.id).first();
+    const row=await env.DB.prepare("SELECT id,requester_id FROM friend_requests WHERE id=? AND addressee_id=? AND status='pending'").bind(id,user.id).first();
     if(!row)return json({error:"Incoming friend request not found."},404,origin);
     const now=new Date().toISOString(),status=action==="accept"?"accepted":"declined";
     await env.DB.prepare("UPDATE friend_requests SET status=?,updated_at=? WHERE id=? AND addressee_id=? AND status='pending'").bind(status,now,id,user.id).run();
+    if(status==="accepted")await createNotification(env,{userId:row.requester_id,actorId:user.id,kind:"friend_accepted",targetType:"user",targetId:user.id,title:"Friend request accepted",body:"@"+user.username+" accepted your friend request.",url:"/profile.html?username="+encodeURIComponent(user.username)});
     return json({ok:true,status},200,origin);
   }
   if(friendRequestMatch&&request.method==="DELETE"){
