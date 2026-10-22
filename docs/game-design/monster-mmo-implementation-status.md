@@ -36,4 +36,4 @@ Last updated: 2026-10-21
 
 ## Next engineering milestone
 
-Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then move encounter-trigger probability and movement-to-save coordination fully server-side. Add inventory/trading rules only after these core invariants pass staging.
+Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then finish movement-to-save coordination and test the online game under reconnects and concurrent sessions. Add inventory/trading rules only after these core invariants pass staging.
