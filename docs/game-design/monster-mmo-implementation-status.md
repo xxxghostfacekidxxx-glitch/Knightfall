@@ -4,7 +4,7 @@ Last updated: 2026-10-21
 
 ## Implemented on the feature branch
 
-- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species, turn-based battles/capture, party management, event log, and creature XP progress bars.
+- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species with custom SVG illustrations, turn-based battles/capture, party management, event log, and creature XP progress bars.
 - Local browser save for offline play, including creature XP progress and visible progress bars.
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
