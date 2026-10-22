@@ -68,7 +68,7 @@ for (const [label, pattern] of chaosInvariants) {
 const friendInvariants = [
   ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
-  ["friend request mutations require ownership of the pending request", /\/api\/friends\/:id[\s\S]{0,1800}addressee_id=\? AND status='pending'/],
+  ["friend request mutations require ownership of the pending request", /SELECT id FROM friend_requests WHERE id=\\? AND addressee_id=\\? AND status=\x27pending\x27/],
   ["friend routes honor blocked relationships", /\/api\/friends\/request[\s\S]{0,2200}user_blocks/],
 ];
 for (const [label, pattern] of friendInvariants) {
