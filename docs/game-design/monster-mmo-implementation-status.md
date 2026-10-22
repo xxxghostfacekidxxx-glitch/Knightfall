@@ -9,7 +9,7 @@ Last updated: 2026-10-21
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
-- D1 migration `0012_monster_game_saves.sql` creates a one-save-per-user table.
+- D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table.
 - Save validation checks position/counters, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
 - Static audit assertions cover authentication, version checks, species allowlisting, rate limits, and credentialed cloud requests.
