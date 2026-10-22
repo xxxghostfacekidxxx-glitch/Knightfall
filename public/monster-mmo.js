@@ -10,7 +10,11 @@
     { id:"mossbit", name:"Mossbit", type:"grass", icon:"✿", hp:14, attack:3, description:"A curious little sprout with a stubborn streak." },
     { id:"embercub", name:"Embercub", type:"fire", icon:"✹", hp:12, attack:4, description:"A warm-furred cub with sparks dancing along its ears." },
     { id:"driftfin", name:"Driftfin", type:"water", icon:"◈", hp:16, attack:2, description:"A glassy-eyed creek dweller that moves like a ripple." },
-    { id:"gloamlet", name:"Gloamlet", type:"ghost", icon:"☾", hp:10, attack:5, description:"A shy dusk spirit that seems to slip between shadows." }
+    { id:"gloamlet", name:"Gloamlet", type:"ghost", icon:"☾", hp:10, attack:5, description:"A shy dusk spirit that seems to slip between shadows." },
+    { id:"thornspit", name:"Thornspit", type:"thorn", icon:"✥", hp:18, attack:4, description:"A spiteful bramble brute that launches seed-spines when cornered." },
+    { id:"zipfang", name:"Zipfang", type:"electric", icon:"ϟ", hp:11, attack:7, description:"A jittery alley-runner that crackles with stolen stormlight." },
+    { id:"grubruckle", name:"Grubruckle", type:"stone", icon:"⬟", hp:22, attack:3, description:"A stubborn burrow tank with a shell like broken pavement." },
+    { id:"mournwing", name:"Mournwing", type:"air", icon:"⌁", hp:13, attack:6, description:"A ragged dusk glider that rides the wind through abandoned places." }
   ];
   const terrain = [
     "tttttttttttt",
