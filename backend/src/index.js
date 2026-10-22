@@ -823,6 +823,82 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const {results}=await env.DB.prepare("SELECT id,username,display_name,role,status FROM users WHERE username LIKE ? OR display_name LIKE ? ORDER BY username ASC LIMIT 50").bind(like,like).all();
     return json({users:(results||[]).filter(x=>x.role!=="admin"||isAdmin(actor))},200,origin);
   }
+  // OAuth sign-in: configure provider client IDs/secrets in Worker secrets before enabling.
+  const oauthMatch=url.pathname.match(/^\/api\/auth\/oauth\/(google|facebook)\/(start|callback)$/);
+  if(oauthMatch){
+    const provider=oauthMatch[1],stage=oauthMatch[2];
+    const providerConfig=provider==="google"?{clientId:env.GOOGLE_CLIENT_ID,clientSecret:env.GOOGLE_CLIENT_SECRET,redirect:"https://api.ash-fall.com/api/auth/oauth/google/callback"}:{clientId:env.FACEBOOK_CLIENT_ID,clientSecret:env.FACEBOOK_CLIENT_SECRET,redirect:"https://api.ash-fall.com/api/auth/oauth/facebook/callback"};
+    const site="https://ash-fall.com";
+    if(!providerConfig.clientId||!providerConfig.clientSecret){
+      if(stage==="start")return Response.redirect(site+"/index.html?oauth_error=provider_not_configured",302);
+      return Response.redirect(site+"/index.html?oauth_error=provider_not_configured",302);
+    }
+    if(stage==="start"&&request.method==="GET"){
+      const state=randomToken(32);
+      const returnTo=url.searchParams.get("return_to")==="/account.html"?"/account.html":"/account.html";
+      await env.SESSIONS.put("oauth_state:"+state,JSON.stringify({provider,return_to:returnTo,created_at:Date.now()}),{expirationTtl:600});
+      const authorize=new URL(provider==="google"?"https://accounts.google.com/o/oauth2/v2/auth":"https://www.facebook.com/v19.0/dialog/oauth");
+      authorize.searchParams.set("client_id",providerConfig.clientId);
+      authorize.searchParams.set("redirect_uri",providerConfig.redirect);
+      authorize.searchParams.set("response_type","code");
+      authorize.searchParams.set("state",state);
+      if(provider==="google"){authorize.searchParams.set("scope","openid email profile");authorize.searchParams.set("prompt","select_account");}
+      else{authorize.searchParams.set("scope","email,public_profile");}
+      return Response.redirect(authorize.toString(),302);
+    }
+    if(stage==="callback"&&request.method==="GET"){
+      const state=url.searchParams.get("state")||"",code=url.searchParams.get("code")||"";
+      const stateKey="oauth_state:"+state;
+      const saved=state?await env.SESSIONS.get(stateKey,"json"):null;
+      if(state)await env.SESSIONS.delete(stateKey);
+      if(!saved||saved.provider!==provider||Date.now()-Number(saved.created_at||0)>10*60*1000||!code||url.searchParams.has("error"))return Response.redirect(site+"/index.html?oauth_error=verification_failed",302);
+      try{
+        let tokenResponse,accessToken,identity;
+        if(provider==="google"){
+          tokenResponse=await fetch("https://oauth2.googleapis.com/token",{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:new URLSearchParams({code,client_id:providerConfig.clientId,client_secret:providerConfig.clientSecret,redirect_uri:providerConfig.redirect,grant_type:"authorization_code"})});
+          const tokenData=await tokenResponse.json();
+          if(!tokenResponse.ok||!tokenData.access_token)throw new Error("Google token exchange failed");
+          accessToken=tokenData.access_token;
+          const profileResponse=await fetch("https://openidconnect.googleapis.com/v1/userinfo",{headers:{authorization:"Bearer "+accessToken}});
+          identity=await profileResponse.json();
+          if(!profileResponse.ok||identity.email_verified!==true)throw new Error("Google email not verified");
+        }else{
+          tokenResponse=await fetch("https://graph.facebook.com/v19.0/oauth/access_token?"+new URLSearchParams({client_id:providerConfig.clientId,client_secret:providerConfig.clientSecret,redirect_uri:providerConfig.redirect,code}));
+          const tokenData=await tokenResponse.json();
+          if(!tokenResponse.ok||!tokenData.access_token)throw new Error("Facebook token exchange failed");
+          accessToken=tokenData.access_token;
+          const profileResponse=await fetch("https://graph.facebook.com/me?"+new URLSearchParams({fields:"id,name,email",access_token:accessToken}));
+          identity=await profileResponse.json();
+          if(!profileResponse.ok||!identity.email)throw new Error("Facebook did not return an email address");
+        }
+        const email=String(identity.email||"").trim().toLowerCase();
+        const displayName=String(identity.name||identity.given_name||email.split("@")[0]).trim().slice(0,80);
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)throw new Error("Provider email invalid");
+        let user=await env.DB.prepare("SELECT id,username,email,display_name,role,status FROM users WHERE email=?").bind(email).first();
+        if(user&&user.status!=="active")return Response.redirect(site+"/index.html?oauth_error=account_unavailable",302);
+        if(!user){
+          if((await getSetting(env,"registration_enabled"))==="false")return Response.redirect(site+"/index.html?oauth_error=registration_closed",302);
+          let base=String(identity.preferred_username||email.split("@")[0]).toLowerCase().replace(/[^a-z0-9_]/g,"_").replace(/^_+|_+$/g,"").slice(0,20);
+          if(base.length<3)base="member_"+base;
+          let username=base,suffix=1;
+          while(await env.DB.prepare("SELECT id FROM users WHERE username=?").bind(username).first()){
+            const tail="_"+suffix++;username=base.slice(0,24-tail.length)+tail;
+          }
+          const now=new Date().toISOString(),passwordHash=await hashPassword(randomToken(48));
+          const created=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName||username,"member",now,now).first();
+          user={id:created.id,username,email,display_name:displayName||username,role:"member",status:"active"};
+          await ensureWallet(env,user);
+          await audit(env,user,"auth.oauth.register","user",user.id,{provider});
+        }
+        const sessionToken=await createSession(user.id,env);
+        return new Response(null,{status:302,headers:{"location":site+(saved.return_to==="/account.html"?saved.return_to:"/account.html"),"set-cookie":sessionCookie(sessionToken),"cache-control":"no-store","referrer-policy":"no-referrer"}});
+      }catch(error){
+        console.error("oauth_callback_failed",provider,error);
+        return Response.redirect(site+"/index.html?oauth_error=sign_in_failed",302);
+      }
+    }
+    return json({error:"Method not allowed."},405,origin,{"allow":"GET"});
+  }
   if(url.pathname==="/api/auth/register"&&request.method==="POST"){if(!(await rateLimit(env,request,"register",5,900)))return json({error:"Too many registration attempts. Try again later."},429,origin);if((await getSetting(env,"registration_enabled"))==="false")return json({error:"Registration is currently closed."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const username=String(body.username||"").trim().toLowerCase(),email=String(body.email||"").trim().toLowerCase(),displayName=String(body.display_name||"").trim(),password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Enter a valid email address."},400,origin);if(!validText(displayName,80))return json({error:"Display name is required."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);const duplicate=await env.DB.prepare("SELECT id FROM users WHERE username=? OR email=?").bind(username,email).first();if(duplicate)return json({error:"Username or email is already registered."},409,origin);const passwordHash=await hashPassword(password),now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName,"member",now,now).first(),token=await createSession(result.id,env),user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(result.id).first();return json({user},201,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/login"&&request.method==="POST"){if(!(await rateLimit(env,request,"login",12,900)))return json({error:"Too many login attempts. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const identifier=String(body.identifier||"").trim().toLowerCase(),password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT * FROM users WHERE username=? OR email=?").bind(identifier,identifier).first();if(!user||user.status!=="active"||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env),safeUser=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:safeUser},200,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
