@@ -60,6 +60,7 @@ const monsterMmoChecks = [
   ["monster MMO saves use optimistic version checks", worker.includes("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?")],
   ["monster MMO saves canonicalize creatures against an allowlist", ["mossbit:{name:\"Mossbit\"","embercub:{name:\"Embercub\"","driftfin:{name:\"Driftfin\"","gloamlet:{name:\"Gloamlet\""].every(value=>worker.includes(value))],
   ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
+  ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
 ];
 for (const [label, passed] of monsterMmoChecks) {
   if (!passed) fail("Monster MMO invariant missing: " + label);
@@ -76,6 +77,7 @@ const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), 
 if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
 else ok("Monster MMO client uses credentialed cloud-save requests");
 if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
+if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudAction("start")','cloudAction("attack")','cloudAction("capture")','cloudAction("flee")'].every(action=>monsterMmoClient.includes(action))) fail("Monster MMO online battle actions are not routed through the server.");
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
 else ok("Monster MMO client connects to the shared world and sends movement intents");
 const chaosInvariants = [
