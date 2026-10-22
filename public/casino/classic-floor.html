@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Classic Casino Floor | Ash-Fall</title>
+  <meta name="description" content="Play slots, blackjack, European roulette, Plinko, and three original fish-table cabinets with virtual credits in Ash-Fall Casino." />
+  
+  <meta name="theme-color" content="#050309" />
+  
+  
+  
+  
+  
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      min-height: 100svh;
+      background: #050309;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 46px 12px 46px;
+      /* Ash-Fall casino cabinet */
+      background:
+        radial-gradient(circle at 50% 40%, #15102a 0%, #070411 70%, #030208 100%);
+      font-family: monospace;
+    }
+    #screen {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      /* "корпус" аркадного автомата вокруг экрана */
+      box-shadow:
+        0 0 0 4px #1b1330,
+        0 0 0 8px #2a1b4d,
+        0 0 40px 10px rgba(123, 47, 247, 0.35);
+      background: #000;
+      cursor: pointer;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100svh - 100px);
+    }
+    .site-exit{position:fixed;top:10px;left:12px;z-index:5;color:#f0c5ff;text-decoration:none;font:700 12px/1.2 monospace;letter-spacing:.04em;padding:9px 11px;border:1px solid #46315f;border-radius:8px;background:#090611ef}
+    .site-exit:hover,.site-exit:focus-visible{border-color:#f06a0a;color:#fff;outline:none}
+    .casino-credit{position:fixed;bottom:7px;left:8px;right:8px;text-align:center;color:#958ca7;font:10px/1.4 monospace}
+    .casino-credit a{color:#d8b6ff}
+    @media(max-height:420px){body{padding-top:38px;padding-bottom:26px}.site-exit{top:4px;left:6px;padding:5px 7px}.casino-credit{bottom:2px;font-size:9px}}
+  
+    .fish-tables-link{position:fixed;top:10px;right:12px;z-index:6;display:inline-flex;align-items:center;gap:10px;min-height:38px;padding:0 14px;border:1px solid #7958b9;border-radius:10px;background:linear-gradient(135deg,#221934f5,#0d0a18f5);color:#f4eaff;text-decoration:none;font:900 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;box-shadow:0 8px 28px #0008,inset 0 1px #ffffff14;transition:transform .18s,border-color .18s,box-shadow .18s}
+    .fish-tables-link span{display:grid;place-items:center;width:22px;height:22px;border:1px solid #ad8be066;border-radius:7px;color:#edc5ff;background:#a56cff14;font-size:14px}
+    .fish-tables-link:hover,.fish-tables-link:focus-visible{transform:translateY(-2px);border-color:#d7b1ff;box-shadow:0 12px 34px #7f40ff26;outline:2px solid #cba2ff;outline-offset:3px}
+    #screen{border-radius:8px;box-shadow:0 0 0 3px #12131a,0 0 0 7px #2a2044,0 0 0 8px #574184,0 18px 65px #000a,0 0 58px #7b2ff733}
+    @media(max-width:520px){.fish-tables-link{top:8px;right:8px;min-height:34px;padding:0 9px;font-size:9px;letter-spacing:.08em}.site-exit{top:8px;left:8px;font-size:10px;padding:8px 9px}}
+  </style>
+<link rel="stylesheet" href="/arcade-polish.css?v=20261022-cabinet-refresh3">
+<script src="/arcade-polish.js?v=20261022-cabinet-refresh3" defer></script>
+</head>
+<body>
+  <a class="site-exit" href="/casino/index.html">← CASINO LOBBY</a>
+  <a class="fish-tables-link" href="/casino/fish-tables.html">FISH TABLES <span aria-hidden="true">↗</span></a>
+  <canvas id="screen" aria-label="Ash-Fall Casino: slots, blackjack, European roulette, and Plinko. Use arrow keys and Enter or tap the game cards. Fish-table cabinets are linked above."></canvas>
+  <p class="casino-credit">PLAY-MONEY ONLY · Virtual chips have no cash value · Adapted from <a href="https://github.com/Lemelson/casino-by-ai" target="_blank" rel="noopener noreferrer">Casino by AI</a> under MIT License</p>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
