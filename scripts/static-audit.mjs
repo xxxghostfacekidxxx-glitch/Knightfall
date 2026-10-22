@@ -65,6 +65,7 @@ const monsterMmoChecks = [
   ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
   ["monster MMO party lead selection is server-validated", worker.includes('action==="party-lead"') && worker.includes("The active creature cannot change during battle.")],
   ["monster MMO XP and level gains are server-authoritative", worker.includes("gainedXp=Math.max(8,battle.level*12)") && worker.includes("lead.xp=(lead.xp||0)+gainedXp") && worker.includes("member.xp??0")],
+  ["monster MMO type effectiveness is calculated server-side", worker.includes("const typeMultiplier=(attacker,defender)") && worker.includes("multiplier>1?\" It was super effective!\"") && worker.includes("multiplier<1?\" The attack was resisted.\"")],
   ["monster MMO server allowlists the expanded original roster", ["thornspit","zipfang","grubruckle","mournwing"].every(id=>worker.includes(id))],
   ["monster MMO resting is restricted to camp", worker.includes('action==="rest"') && worker.includes("Return to the camp at X 04 / Y 01 to rest.")],
   ["online encounter chance and grass validation are server-side", worker.includes('action==="encounter-check"' ) && worker.includes("Wild encounters can only begin in tall grass.") && worker.includes("Math.random()<0.22")],
@@ -94,6 +95,8 @@ else ok("Monster MMO client connects to the shared world and sends movement inte
 if (!monsterMmoClient.includes("save(false)") || !monsterMmoClient.includes("player.steps") || !monsterMmoClient.includes("player.version")) fail("Monster MMO client is not consuming authoritative movement save versions.");
 else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
 if (!monsterMmoClient.includes("xp: c.xp") && !monsterMmoClient.includes("xp:Number(c.xp)") || !monsterMmoClient.includes("xp-mini") || !monsterMmoClient.includes("awardExperience")) fail("Monster MMO client is missing creature XP progression and display.");
+if (!monsterMmoClient.includes("function typeMultiplier(attacker,defender)") || !monsterMmoClient.includes("It was super effective!") || !monsterMmoClient.includes("The attack was resisted.")) fail("Monster MMO client is missing type matchup feedback.");
+else ok("Monster MMO local battles show type effectiveness feedback");
 if (!["thornspit","zipfang","grubruckle","mournwing"].every(id=>monsterMmoClient.includes(id))) {
   fail("Monster MMO client is missing the expanded original creature roster.");
 } else {
