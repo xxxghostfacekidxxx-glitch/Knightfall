@@ -11,12 +11,14 @@ import { createRoulette } from './scenes/roulette.js';
 import { createPlinko } from './scenes/plinko.js';
 
 const W = 320, H = 180;
+const RENDER_SCALE = 4; // High-density rendering while preserving logical game coordinates.
 
 const canvas = document.getElementById('screen');
-canvas.width = W;
-canvas.height = H;
-const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
+canvas.width = W * RENDER_SCALE;
+canvas.height = H * RENDER_SCALE;
+const ctx = canvas.getContext('2d', { alpha: false });
+ctx.setTransform(RENDER_SCALE, 0, 0, RENDER_SCALE, 0, 0);
+ctx.imageSmoothingEnabled = true;
 
 const g = new Renderer(ctx, W, H);
 const input = createInput(canvas, W, H);
