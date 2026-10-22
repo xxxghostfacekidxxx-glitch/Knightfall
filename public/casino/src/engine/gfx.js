@@ -34,39 +34,41 @@ export class Renderer {
   hline(x, y, w, color) { this.rect(x, y, w, 1, color); }
   vline(x, y, h, color) { this.rect(x, y, 1, h, color); }
 
+  // Anti-aliased vector primitives are rendered into a 4x backing buffer.
+  // Keep gameplay coordinates logical (320x180) while avoiding jagged circular edges.
   line(x0, y0, x1, y1, color) {
-    x0 |= 0; y0 |= 0; x1 |= 0; y1 |= 0;
-    const dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    const dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
-    let err = dx + dy;
-    for (;;) {
-      this.px(x0, y0, color);
-      if (x0 === x1 && y0 === y1) break;
-      const e2 = 2 * err;
-      if (e2 >= dy) { err += dy; x0 += sx; }
-      if (e2 <= dx) { err += dx; y0 += sy; }
-    }
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x0 + 0.5, y0 + 0.5);
+    ctx.lineTo(x1 + 0.5, y1 + 0.5);
+    ctx.stroke();
+    ctx.restore();
   }
 
   circle(cx, cy, r, color) {
-    cx = Math.round(cx); cy = Math.round(cy); r = Math.round(r);
-    const r2 = r * r;
-    this.ctx.fillStyle = color;
-    for (let y = -r; y <= r; y++) {
-      const span = Math.floor(Math.sqrt(r2 - y * y + 0.5));
-      this.ctx.fillRect(cx - span, cy + y, span * 2 + 1, 1);
-    }
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(0.5, r), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 
   ring(cx, cy, r, color, th = 1) {
-    cx = Math.round(cx); cy = Math.round(cy); r = Math.round(r);
-    const inner = (r - th) * (r - th), outer = r * r;
-    for (let y = -r; y <= r; y++) {
-      for (let x = -r; x <= r; x++) {
-        const d = x * x + y * y;
-        if (d <= outer && d > inner) this.px(cx + x, cy + y, color);
-      }
-    }
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(0.75, th);
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(0.5, r - th / 2), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
   }
 
   // Спрайт: rows — массив строк; map — { символ: цвет }, '.'/' ' = прозрачно.
