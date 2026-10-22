@@ -4,12 +4,12 @@ Last updated: 2026-10-21
 
 ## Implemented on the feature branch
 
-- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species with custom SVG illustrations, turn-based battles/capture, party management, event log, and creature XP progress bars.
+- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species with custom SVG illustrations, turn-based battles/capture, party management, elemental type matchups, event log, and creature XP progress bars.
 - Local browser save for offline play, including creature XP progress and visible progress bars.
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
-  - `POST /api/game/action`: validates encounter starts, attacks/counters, captures, flee, party lead changes, rest, and server-authoritative XP/level gains across the eight-species original roster.
+  - `POST /api/game/action`: validates encounter starts, attacks/counters, elemental damage multipliers, captures, flee, party lead changes, rest, and server-authoritative XP/level gains across the eight-species original roster.
 - D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table; `0024_monster_game_battles.sql` stores one active battle per account so reloads can restore it.
 - Save validation checks position/counters, requires walkable tiles, rejects non-adjacent position changes, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session. The ordinary save route cannot alter party membership/levels/HP, inventory, or progression counters; those changes go through validated game actions. First-time cloud creation supports a bounded import of existing local progress so players do not lose prototype saves.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
@@ -28,12 +28,12 @@ Last updated: 2026-10-21
 
 ## Known limitations
 
-- The shared-world WebSocket zone is implemented on the feature branch, but it is not deployed or staging-tested yet. Player presence is ephemeral across zone restarts; player saves persist in D1. There is no server-run encounter RNG or server-authoritative battle engine.
-- Browser combat still determines outcomes client-side. A modified client can cheat, so do not treat captured creatures, levels, or combat results as trusted competitive state yet.
+- The shared-world WebSocket zone and server-authoritative online encounter/battle actions are implemented on the feature branch, but they are not deployed or staging-tested yet. Player presence is ephemeral across zone restarts; player saves and active battles persist in D1.
+- Signed-out/offline combat is intentionally client-side. Online combat outcomes use Worker-side RNG and save-version checks, but staging tests must still verify action sequencing, concurrent sessions, and consistency between save and active-battle writes before treating them as production-ready.
 - The cloud-save API persists a bounded party and progress counters, but it is not a complete inventory/economy/trading system.
 - If two tabs edit the same save, the version check rejects the stale write. The UI warns the player instead of merging automatically.
 - The public Pokémon IP and third-party asset rights question remains unresolved. This branch uses original placeholder creature concepts only; no ROMs or Pokémon assets are bundled.
 
 ## Next engineering milestone
 
-Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then finish making movement persistence originate from the world server rather than the browser, then test the online game under reconnects and concurrent sessions. Add inventory/trading rules only after these core invariants pass staging.
+Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, and test reconnects, concurrent actions, and save/battle consistency. Add inventory/trading rules only after these core invariants pass staging.
