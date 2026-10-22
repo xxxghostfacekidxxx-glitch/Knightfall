@@ -38,6 +38,44 @@ button:focus-visible,.action:focus-visible{outline:3px solid currentColor;outlin
 .wallet-inline strong{font-variant-numeric:tabular-nums}
 @media(max-width:650px){.wrap{width:calc(100% - 16px);margin:8px auto 32px}.hero h1{font-size:clamp(2.8rem,14vw,4.5rem)}.hud{padding:7px;gap:7px;border-radius:15px}.meter{min-width:calc(33.333% - 8px);padding:10px}.meter small{font-size:.6rem}.meter strong{font-size:1.15rem}.cabinet,.playfield,.field{border-radius:15px!important}.panel,.lower .panel,.below .panel{padding:15px!important}.odds-card{padding:11px}}
 
+
+/* PREMIUM CABINET PASS: luminous reef, layered glass, tactile controls */
+:root{--neon-gold:#fff0a2;--cabinet-edge:#38e8dc}
+body{background:radial-gradient(ellipse at 12% 0%,#154b61 0,transparent 38%),radial-gradient(ellipse at 88% 14%,#532d76 0,transparent 35%),#030910;letter-spacing:.01em}
+.wrap{width:min(1480px,98%);margin:1.25rem auto 4rem}
+.hero{padding:1.6rem 0 1.3rem;gap:1.5rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.55rem;padding:.42rem .7rem;border:1px solid #4fe8dc66;border-radius:999px;background:#061b25cc;box-shadow:0 0 24px #2ce7dc18}
+h1{font-size:clamp(3rem,8vw,7rem);letter-spacing:-.085em;text-shadow:0 5px 0 #061019,0 0 38px #24e7d855}
+.hero p{font-size:1rem;max-width:780px;color:#a9d7df}
+.cabinet{position:relative;border:1px solid #54fff0a8;border-radius:22px;background:linear-gradient(145deg,#0c2330,#060d17 60%);box-shadow:0 0 0 5px #06121c,0 0 0 6px #37dcd744,0 25px 90px #000c,0 0 55px #19d8d51b}
+.cabinet:before{content:"";position:absolute;inset:0 0 auto;height:3px;z-index:3;background:linear-gradient(90deg,transparent,#7efff3,#f2a7ff,#7efff3,transparent);opacity:.9}
+.hud{gap:1px;background:#2cdedc55}
+.meter{background:linear-gradient(155deg,#102936,#08141e);padding:.85rem 1rem}
+.meter small{color:#70c8d2;letter-spacing:.16em}
+.meter strong{font-variant-numeric:tabular-nums;text-shadow:0 0 16px #43f4df35}
+.field{background:radial-gradient(ellipse at 50% 90%,#143948,#02070d 75%);padding:6px}
+.field canvas{border-radius:12px;box-shadow:inset 0 0 40px #00e6d61b;outline:1px solid #61f9ee55}
+.overlay{background:linear-gradient(135deg,#020810eF,#071d2af2);backdrop-filter:blur(12px)}
+.dialog{border:1px solid #66fff0a6;border-radius:20px;background:linear-gradient(145deg,#123d49f5,#080f1df7);box-shadow:0 0 0 5px #08202b,0 0 55px #24f1df2b,0 25px 70px #000a}
+.dialog .big{filter:drop-shadow(0 0 15px #57fff2);font-size:3rem}
+.dialog h2{letter-spacing:-.06em;text-shadow:0 0 25px #40f4e655}
+.dialog p{color:#b8dce4}
+.controls{background:linear-gradient(90deg,#07121d,#0b1d29,#07121d);border-top:1px solid #4be9dc55;padding:1rem;gap:.8rem}
+.btn{border:1px solid #3f8794;background:linear-gradient(180deg,#163746,#0b1c28);border-radius:10px;box-shadow:inset 0 1px #ffffff12,0 4px 0 #030910;color:#e7ffff;transition:transform .12s,border-color .12s,filter .12s}
+.btn:hover{border-color:#69fff0;filter:brightness(1.18);transform:translateY(-1px)}
+.btn:active{transform:translateY(2px);box-shadow:inset 0 1px #ffffff12,0 1px 0 #030910}
+.btn.hot{background:linear-gradient(135deg,#b9fff4,#39d9cf 48%,#a1a8ff);border-color:#b8fff5;color:#03161c;box-shadow:0 0 24px #30e6d733,0 4px 0 #164d55}
+.btn.selected{background:linear-gradient(135deg,#164e57,#0b2733);border-color:#7affef;color:#aafff6;box-shadow:inset 0 0 0 1px #58fff0,0 0 20px #2be8d21b}
+.panel{border:1px solid #2d7981;background:linear-gradient(145deg,#0e202b,#080f18);border-radius:16px;box-shadow:0 12px 35px #0004}
+.panel h2{letter-spacing:-.035em}
+.panel p,.panel li{color:#aac8d0}
+.pay{border-color:#285a67;background:linear-gradient(145deg,#102d39,#09151f);transition:transform .15s,border-color .15s}
+.pay:hover{transform:translateY(-2px);border-color:#68fff0}
+.pay span{color:#9ffdf0;font-variant-numeric:tabular-nums}
+.status{color:#8cece3;padding:.55rem .75rem;border-left:2px solid #4ceadd;background:#0b1b24}
+.foot{letter-spacing:.13em;color:#548b95}
+@media(max-width:700px){.wrap{width:96%}.hero{padding-top:1rem}.field{padding:3px}.controls{padding:.7rem}.meter{padding:.65rem}.dialog{padding:1.1rem}}
+
 </style></head><body><header class="kf-header"></header><main class="wrap"><a class="back" href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a><header class="hero"><div><p class="eyebrow">CABINET 026 · CYBER-REEF FISH TABLE</p><h1>NEON KELP:<br><span>REEF RUSH.</span></h1><p>A neon-soaked reef bounty run. Tag glowing schools to build a combo, charge your prism cannon, then unleash a screen-clearing pulse before the bio-luminescent predators escape.</p></div></header>
 <section class="cabinet" aria-label="Neon Kelp fish table game"><div class="hud"><div class="meter"><small>Credits</small><strong class="green" id="credits">1,200</strong></div><div class="meter"><small>Reef score</small><strong id="score">0</strong></div><div class="meter"><small>Shot price</small><strong id="price">3</strong></div><div class="meter"><small>Current surge</small><strong id="wave">01</strong></div><div class="meter"><small>Prism charge</small><strong id="charge">0%</strong></div></div><div class="field"><canvas id="game" width="1200" height="675" aria-label="Aim with pointer and hold to fire. Press space to shoot."></canvas><div class="overlay" id="overlay"><div class="dialog"><div class="big">✦ 🐟 ✦</div><p class="eyebrow">NEON ECOSYSTEM DETECTED</p><h2 id="ot">LIGHT UP THE REEF</h2><p id="oc">Catch glowing schools for combo bonuses. Every shot costs credits. Fill the prism meter by landing hits, then fire a pulse that hits everything on screen.</p><button class="btn hot" id="start">START REEF RUN</button></div></div></div><div class="controls"><div class="group"><span class="label">PRISM CANNON</span><button class="btn gun selected" data-g="0">PULSE · 3</button><button class="btn gun" data-g="1">LANCE · 7</button><button class="btn gun" data-g="2">SPLITTER · 14</button></div><div class="group"><button class="btn" id="nova">✦ PRISM SURGE</button><button class="btn" id="pause" disabled>Ⅱ Pause</button><button class="btn" id="full">⛶ Fullscreen</button><button class="btn" id="sound">♫ Sound Off</button></div></div></section><p class="status" id="status" role="status" aria-live="polite">Aim at a target. The reef is waiting to be irresponsibly illuminated.</p>
 <section class="odds-panel" aria-labelledby="neon-odds-title"><h2 id="neon-odds-title">Odds, hit counts &amp; payout guide</h2><p class="odds-intro">The displayed shot cost is 3 / 7 / 14 Cinders. Hit counts assume the basic pulse; combos multiply catch payouts. The Core has a shield phase, so not every shot damages it. Base bounty is before chain/depth bonuses. Catch payouts cap at 3,000 Cinders each and are rate-limited; missed shots still cost Cinders.</p><div class="odds-grid"><div class="odds-card"><strong>Glow Fry</strong><span>1 hit · 22 base</span></div><div class="odds-card"><strong>Prism Ray</strong><span>2 hits · 65 base</span></div><div class="odds-card"><strong>Bloom Puffer</strong><span>4 hits · 110 base</span></div><div class="odds-card"><strong>Kelp Crab</strong><span>6 hits · 180 base</span></div><div class="odds-card"><strong>Glass Eel</strong><span>5 hits · 250 base</span></div><div class="odds-card"><strong>Neon Shark</strong><span>13 hits · 450 base</span></div><div class="odds-card"><strong>Sunken Core</strong><span>70 hits · 1,600 + 200 bonus</span></div></div><div class="wallet-inline"><span>Shared Ash-Fall wallet</span><strong id="neon-wallet-balance">Loading Cinders…</strong><span id="neon-wallet-status">Sign in to play for shared credits.</span></div></section><div class="below"><section class="panel"><h2>Reef bounty board</h2><div class="paytable"><div class="pay"><b>✧ Glow fry</b><span>20 pts</span></div><div class="pay"><b>◈ Prism ray</b><span>65 pts</span></div><div class="pay"><b>✹ Bloom puffer</b><span>110 pts</span></div><div class="pay"><b>⬡ Kelp crab</b><span>180 pts</span></div><div class="pay"><b>❖ Glass eel</b><span>250 pts</span></div><div class="pay"><b>✦ Neon shark</b><span>450 pts</span></div><div class="pay"><b>☼ Sunken core</b><span>1,600 pts</span></div><div class="pay"><b>✺ Prism Surge</b><span>Full-screen hit</span></div></div></section><section class="panel"><h2>How this cabinet differs</h2><ul><li>Three weapons: steady Pulse, piercing Lance, and a three-way Splitter.</li><li>Every hit charges the Prism meter. At 100%, Surge deals damage to every target on screen.</li><li>Glowing school formations pay a combo bonus when caught quickly.</li><li>The Sunken Core boss periodically creates a protective ring. Shoot through gaps or wait for the shield to drop.</li><li>Fictional arcade credits only. Your best score is saved locally on this device.</li></ul><button class="btn" id="reset">Reset cabinet</button><p id="best">Best score: 0</p></section></div><p class="foot">NEON KELP: REEF RUSH · ORIGINAL ASH-FALL GAME · NO CASH GAMBLING</p></main>
