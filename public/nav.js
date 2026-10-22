@@ -19,20 +19,24 @@
     <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰</button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
-      <a href="/homepage.html">Explore Realms</a>
-      <a href="/community.html">The Madhouse</a>
+      <a href="/homepage.html">Explore</a>
+      <a href="/community.html">Community</a>
+      <a href="/chaos-cartridge.html">Games</a>
       <a href="/bots.html">Bots</a>
       <a href="/shops.html">Shops</a>
-      <a href="/die-ary.html">Die-ary</a>
-      <a href="/chaos-cartridge.html">Chaos Cartridge</a>
-      <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
-      <a href="/miss-chaos.html">Miss Chaos</a>
-      <a href="/create-thread.html">New Thread</a>
-      <a href="/members.html">Members</a>
-      <a href="/messages.html">Messages</a>
-      <a class="kf-notify" href="/notifications.html" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
-      <a href="/account.html">Account</a>
-      <a href="/index.html">Home</a>
+      <details class="kf-nav-more">
+        <summary>More <span aria-hidden="true">⌄</span></summary>
+        <div class="kf-nav-more-menu">
+          <a href="/miss-chaos.html">Miss Chaos</a>
+          <a href="/die-ary.html">Die-ary</a>
+          <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
+          <a href="/create-thread.html">New Thread</a>
+          <a href="/members.html">Members</a>
+          <a href="/messages.html">Messages</a>
+          <a class="kf-notify" href="/notifications.html" aria-label="Notifications">Alerts <span class="kf-notify-badge" hidden>0</span></a>
+          <a href="/account.html">Account</a>
+        </div>
+      </details>
       <button class="kf-install-app" type="button" hidden>Install App</button>
     </nav>`;
   let siteSettings = null, currentUser = null;
@@ -62,7 +66,7 @@
     toggle.setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
     nav.classList.toggle("open", !open);
   });
-  nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+  nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {\n    nav.querySelector(".kf-nav-more")?.removeAttribute("open");
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
   }));
