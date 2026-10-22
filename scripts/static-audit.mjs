@@ -54,6 +54,23 @@ for (const [label, pattern] of saveInvariants) {
   else ok("Arcade save invariant: " + label);
 }
 
+const monsterMmoInvariants = [
+  ["monster MMO save reads require an authenticated account", /\/api\/game\/save\"&&request\.method===\"GET\"\)\{[\\s\\S]{0,180}requireUser\(request,env\)/],
+  ["monster MMO save writes require an authenticated account", /\/api\/game\/save\"&&request\.method===\"PUT\"\)\{[\\s\\S]{0,180}requireUser\(request,env\)/],
+  ["monster MMO saves use optimistic version checks", /UPDATE monster_game_saves SET save_json=\?,version=version\+1,updated_at=\? WHERE user_id=\? AND version=\?/],
+  ["monster MMO saves canonicalize creatures against an allowlist", /const species=\{[\\s\\S]{0,400}mossbit:[\\s\\S]{0,250}embercub:[\\s\\S]{0,250}driftfin:[\\s\\S]{0,250}gloamlet:/],
+  ["monster MMO saves are rate limited", /rateLimit\(env,request,\"monster-save\",60,60,user\.id\)/],
+];
+for (const [label, pattern] of monsterMmoInvariants) {
+  if (!pattern.test(worker)) fail("Monster MMO invariant missing: " + label);
+  else ok("Monster MMO invariant: " + label);
+}
+const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), "utf8");
+if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
+else ok("Monster MMO client uses credentialed cloud-save requests");
+if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("Save conflict")) {
+  if (!monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
+}
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
