@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Ash-Fall monster-catching MMORPG prototype: explore, encounter creatures, battle, and test the browser game loop.">
+  <title>Monster MMO Prototype | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/monster-mmo.css">
+  <script src="/nav.js" defer></script>
+  <script src="/monster-mmo.js" defer></script>
+</head>
+<body>
+  <header class="kf-header"></header>
+  <main class="mmo-shell">
+    <a class="mmo-back" href="/chaos-cartridge.html">← Back to Chaos Cartridge</a>
+    <section class="mmo-hero">
+      <div>
+        <p class="eyebrow">ASH-FALL / WORLD-BUILD 001</p>
+        <h1>WILD<br><span>FRONTIER</span></h1>
+        <p class="mmo-lede">The first playable slice of the monster-catching MMO: walk the route, find a wild creature, test the battle loop, and keep a local prototype save.</p>
+        <div class="mmo-status-row"><span class="status-pill"><i></i> LOCAL PROTOTYPE</span><span class="mmo-muted">No server or real multiplayer connected yet</span></div>
+      </div>
+      <aside class="trainer-card">
+        <div class="trainer-avatar" aria-hidden="true"><span>✦</span></div>
+        <div><span class="micro-label">FIELD TRAINER</span><h2 id="trainer-name">Ash-Fall Explorer</h2><p><span id="trainer-badges">0</span> badges · <span id="trainer-catches">0</span> caught</p></div>
+        <button id="reset-save" class="quiet-button" type="button">Reset local save</button>
+      </aside>
+    </section>
+
+    <section class="mmo-layout" aria-label="Game prototype">
+      <div class="world-panel">
+        <div class="panel-topline"><div><span class="micro-label">ZONE 01 / CINDER MEADOW</span><h2>The Old Route</h2></div><span id="world-state" class="world-state">Exploring</span></div>
+        <div class="world-frame">
+          <div id="world-map" class="world-map" role="application" aria-label="Tile map. Move with arrow keys or WASD; use the directional controls on touch screens."></div>
+          <div class="map-overlay"><span>ASH-FALL FIELD TEST</span><span id="coordinates">X 04 / Y 04</span></div>
+        </div>
+        <div class="movement-pad" aria-label="Touch movement controls">
+          <button type="button" data-move="up" aria-label="Move up">▲</button>
+          <div><button type="button" data-move="left" aria-label="Move left">◀</button><button type="button" data-move="down" aria-label="Move down">▼</button><button type="button" data-move="right" aria-label="Move right">▶</button></div>
+        </div>
+        <p class="controls-hint">Move with WASD or arrow keys. Tall grass can trigger encounters. Your progress is stored in this browser only.</p>
+      </div>
+
+      <aside class="side-stack">
+        <section class="panel team-panel">
+          <div class="panel-topline"><div><span class="micro-label">ACTIVE PARTY</span><h2>Your Crew</h2></div><span id="party-count" class="count-chip">1 / 6</span></div>
+          <div id="party-list" class="party-list"></div>
+        </section>
+        <section class="panel log-panel">
+          <div class="panel-topline"><div><span class="micro-label">FIELD NOTES</span><h2>Recent Events</h2></div></div>
+          <ol id="event-log" class="event-log" aria-live="polite"><li>You arrive at the edge of Cinder Meadow.</li></ol>
+        </section>
+      </aside>
+    </section>
+
+    <section id="encounter-panel" class="encounter-panel" hidden aria-labelledby="encounter-title">
+      <div class="encounter-art" id="encounter-art" aria-hidden="true"><span>✦</span></div>
+      <div class="encounter-copy"><p class="micro-label">WILD ENCOUNTER</p><h2 id="encounter-title">A wild creature appeared!</h2><p id="encounter-description">It looks ready to fight.</p><div class="hp-track"><span id="wild-hp-bar"></span></div><p id="wild-hp-text" class="hp-label">HP 10 / 10</p></div>
+      <div class="encounter-actions"><button id="attack-btn" class="action-primary" type="button">Attack</button><button id="capture-btn" class="action-secondary" type="button">Capture</button><button id="run-btn" class="action-quiet" type="button">Retreat</button></div>
+    </section>
+
+    <section class="mmo-footnote">
+      <strong>Prototype boundary:</strong> this is a client-side gameplay proof, not the production MMO. It uses temporary original creature placeholders and browser-local saves. Pokémon artwork/data, authenticated Ash-Fall saves, server-authoritative combat, real-time players, trading, and public launch remain separate tasks pending technical and rights review.
+    </section>
+  </main>
+</body>
+</html>
