@@ -1028,6 +1028,52 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   if(url.pathname==="/api/admin/content"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const type=url.searchParams.get("type")==="posts"?"posts":"threads",includeDeleted=url.searchParams.get("include_deleted")==="1",q=String(url.searchParams.get("q")||"").trim(),like="%"+q.replace(/[%_]/g,"\\$&")+"%";let results;if(type==="threads"){const sql="SELECT t.id,t.title,t.slug,t.deleted_at,t.locked,t.pinned,t.created_at,u.username,c.name AS category_name FROM threads t JOIN users u ON u.id=t.user_id JOIN categories c ON c.id=t.category_id WHERE "+(includeDeleted?"1=1":"t.deleted_at IS NULL")+(q?" AND (t.title LIKE ? ESCAPE '\\' OR t.body LIKE ? ESCAPE '\\')":"")+" ORDER BY t.created_at DESC LIMIT 250";const r=q?await env.DB.prepare(sql).bind(like,like).all():await env.DB.prepare(sql).all();results=r.results;}else{const sql="SELECT p.id,p.thread_id,p.body,p.deleted_at,p.created_at,u.username,t.title AS thread_title FROM posts p JOIN users u ON u.id=p.user_id JOIN threads t ON t.id=p.thread_id WHERE "+(includeDeleted?"1=1":"p.deleted_at IS NULL")+(q?" AND p.body LIKE ? ESCAPE '\\'":"")+" ORDER BY p.created_at DESC LIMIT 250";const r=q?await env.DB.prepare(sql).bind(like).all():await env.DB.prepare(sql).all();results=r.results;}return json({type,content:results},200,origin);}
   const adminContentMatch=url.pathname.match(/^\/api\/admin\/content\/(threads|posts)\/(\d+)$/);if(adminContentMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const type=adminContentMatch[1],id=Number(adminContentMatch[2]),action=body.action;if(!["delete","restore","purge"].includes(action))return json({error:"Invalid content action."},400,origin);const table=type==="threads"?"threads":"posts",row=await env.DB.prepare(`SELECT id,deleted_at FROM ${table} WHERE id=?`).bind(id).first();if(!row)return json({error:"Content not found."},404,origin);if(action==="restore")await env.DB.prepare(`UPDATE ${table} SET deleted_at=NULL WHERE id=?`).bind(id).run();else if(action==="delete")await env.DB.prepare(`UPDATE ${table} SET deleted_at=? WHERE id=?`).bind(new Date().toISOString(),id).run();else{if(!row.deleted_at)return json({error:"Purge requires content to be soft-deleted first."},409,origin);if(type==="posts")await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE post_id=?").bind(id),env.DB.prepare("DELETE FROM posts WHERE id=?").bind(id)]);else await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE thread_id=? OR post_id IN (SELECT id FROM posts WHERE thread_id=?)").bind(id,id),env.DB.prepare("DELETE FROM posts WHERE thread_id=?").bind(id),env.DB.prepare("DELETE FROM threads WHERE id=?").bind(id)]);}await audit(env,user,`content.${action}`,type,id,{});return json({ok:true},200,origin);}
   if(url.pathname==="/api/admin/health"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const started=Date.now(),db=await env.DB.prepare("SELECT 1 AS ok").first();await env.SESSIONS.list({limit:1});const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);}
+
+  // Monster MMO persistent saves. The server canonicalizes creature stats and never trusts client roles/ownership.
+  if(url.pathname==="/api/game/save"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to sync game progress."},401,origin);
+    const row=await env.DB.prepare("SELECT save_json,version,updated_at FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(!row)return json({save:null,version:0,updated_at:null},200,origin);
+    let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
+    return json({save,version:Number(row.version)||1,updated_at:row.updated_at},200,origin);
+  }
+  if(url.pathname==="/api/game/save"&&request.method==="PUT"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to sync game progress."},401,origin);
+    if(!(await rateLimit(env,request,"monster-save",60,60,user.id)))return json({error:"Too many save requests. Try again shortly."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const expected=Number(body?.expected_version);
+    if(!Number.isInteger(expected)||expected<0)return json({error:"Invalid save version."},400,origin);
+    const input=body?.save;
+    if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid save data."},400,origin);
+    const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
+    if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
+    const species={
+      mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3},
+      embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4},
+      driftfin:{name:"Driftfin",type:"water",icon:"◈",hp:16,attack:2},
+      gloamlet:{name:"Gloamlet",type:"ghost",icon:"☾",hp:10,attack:5}
+    };
+    const party=[];
+    for(const member of input.party){
+      if(!member||typeof member!=="object"||!species[member.id]||!int(member.level,1,100)||!int(member.hp,0,500))return json({error:"Party contains an invalid creature."},400,origin);
+      const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
+      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3))});
+    }
+    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
+    const now=new Date().toISOString();
+    if(expected===0){
+      try{await env.DB.prepare("INSERT INTO monster_game_saves (user_id,save_json,version,updated_at) VALUES (?,?,1,?)").bind(user.id,JSON.stringify(clean),now).run();}
+      catch(error){const current=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(current)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(current.version)},409,origin);throw error;}
+      await audit(env,user,"monster_mmo.save.create","game_save",user.id,{party_size:party.length});
+      return json({ok:true,save:clean,version:1,updated_at:now},200,origin);
+    }
+    const result=await env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),now,user.id,expected).run();
+    if(!result.meta||result.meta.changes!==1){const current=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(current?.version)||0},409,origin);}
+    await audit(env,user,"monster_mmo.save.update","game_save",user.id,{version:expected+1,party_size:party.length});
+    return json({ok:true,save:clean,version:expected+1,updated_at:now},200,origin);
+  }
   return json({error:"Not found"},404,origin);
  }catch(error){console.error(error);return json({error:"Internal server error"},500,origin);}
 }};
