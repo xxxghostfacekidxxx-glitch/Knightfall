@@ -49,7 +49,7 @@ button{font:inherit;cursor:pointer}
 .side-stack{display:grid;gap:1rem}
 .team-panel,.log-panel{padding:1rem}
 .party-list{display:grid;gap:.55rem}
-.party-creature{display:grid;grid-template-columns:43px minmax(0,1fr) auto;align-items:center;gap:.7rem;padding:.65rem;border:1px solid #292929;border-radius:9px;background:#0d0d0d}
+.party-creature{display:grid;grid-template-columns:43px minmax(0,1fr) auto auto;align-items:center;gap:.55rem;padding:.65rem;border:1px solid #292929;border-radius:9px;background:#0d0d0d}.party-creature.is-lead{border-color:#526b32;box-shadow:inset 3px 0 #a7d957}.party-select{border:1px solid #3d4b2d;border-radius:6px;padding:.35rem .45rem;background:#171d11;color:#c8ef7b;font-size:.62rem;font-weight:800;letter-spacing:.05em}.party-select:disabled{opacity:.55;cursor:default}
 .creature-token{display:grid;place-items:center;width:43px;height:43px;border-radius:9px;border:1px solid #465137;background:radial-gradient(circle at 30% 25%,#c8ef7b,#517b38 55%,#1a3420);color:#17200f;font-size:1.35rem;font-weight:900}
 .creature-token.fire{border-color:#784224;background:radial-gradient(circle at 30% 25%,#ffc28a,#e45b24 56%,#602311);color:#311006}
 .creature-token.water{border-color:#24556a;background:radial-gradient(circle at 30% 25%,#a6e8ff,#2b85ae 56%,#12384e);color:#071c28}
