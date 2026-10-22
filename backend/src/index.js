@@ -1137,6 +1137,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(action==="start"){
       if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
       if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
+      const onGrass=(save.y===1&&save.x>=1&&save.x<=9)||(save.y>=2&&save.y<=4&&((save.x>=1&&save.x<=3)||(save.x>=6&&save.x<=10)))||(save.y>=5&&save.y<=6&&((save.x>=1&&save.x<=4)||(save.x>=7&&save.x<=10)))||(save.y>=7&&save.y<=8);
+      if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       const ids=Object.keys(species),chosen=species[ids[crypto.getRandomValues(new Uint8Array(1))[0]%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
       battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
       save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
