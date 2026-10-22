@@ -65,10 +65,19 @@ for (const [label, passed] of monsterMmoChecks) {
   if (!passed) fail("Monster MMO invariant missing: " + label);
   else ok("Monster MMO invariant: " + label);
 }
+if (!worker.includes('url.pathname==="/api/game/world"') || !worker.includes("env.MONSTER_WORLD.get(id).fetch")) fail("Monster MMO WebSocket route is missing authenticated Durable Object routing.");
+else ok("Monster MMO shared-world route is wired to Durable Objects");
+if (!worker.includes("export class MonsterWorldRoom") || !worker.includes("webSocketMessage(socket, message)") || !worker.includes("player-moved")) fail("Monster MMO world room is missing server-side movement handling.");
+else ok("Monster MMO world room exposes server-side movement handling");
+const backendWrangler = JSON.parse(await readFile(path.join(root, "backend/wrangler.jsonc"), "utf8"));
+if (!backendWrangler.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Backend Wrangler config is missing the MONSTER_WORLD Durable Object binding.");
+else ok("Monster MMO Durable Object binding is configured");
 const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), "utf8");
 if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
 else ok("Monster MMO client uses credentialed cloud-save requests");
 if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
+if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
+else ok("Monster MMO client connects to the shared world and sends movement intents");
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
