@@ -1134,7 +1134,12 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
-    if(action==="start"||action==="encounter-check"){
+    if(action==="party-lead"){
+      if(battle)return json({error:"The active creature cannot change during battle."},409,origin);
+      const index=body.index;
+      if(!Number.isInteger(index)||index<0||index>=save.party.length)return json({error:"Choose a valid party member."},400,origin);
+      if(index!==0){const active=save.party[0];save.party[0]=save.party[index];save.party[index]=active;message=save.party[0].name+" is now leading the party.";}else message=save.party[0].name+" is already leading the party.";
+    }else if(action==="start"||action==="encounter-check"){
       if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
       if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
       const onGrass=save.x>=1&&save.x<=10&&save.y>=1&&save.y<=8&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===10)&&save.y===5)&&!["2,2","9,2","2,7","9,7"].includes(save.x+","+save.y);
