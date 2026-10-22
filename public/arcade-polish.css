@@ -160,3 +160,101 @@ main.af-game-root:fullscreen .hud,main.af-game-root:-webkit-full-screen .hud{mar
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Round seven: consistent interaction states and readable game telemetry. */
+:root {
+  --af-focus-ring: #b8ff38;
+  --af-success: #a4ff8a;
+  --af-warning: #ffcf70;
+  --af-danger: #ff6680;
+}
+.af-game-root :is(button, a, input, select, textarea, [role="button"]) {
+  -webkit-tap-highlight-color: transparent;
+}
+.af-game-root :is(button, .btn, .button, .action, .primary) {
+  touch-action: manipulation;
+}
+.af-game-root :is(button, .btn, .button, .action, .primary):active:not(:disabled) {
+  filter: brightness(.94);
+}
+.af-game-root :is(button, .btn, .button, .action, .primary):disabled {
+  opacity: .48;
+  filter: saturate(.55);
+  transform: none !important;
+  box-shadow: none !important;
+}
+.af-game-root :is(input, select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+  border-color: #463a31;
+}
+.af-game-root :is(input, select, textarea):focus-visible {
+  outline: 2px solid var(--af-focus-ring) !important;
+  outline-offset: 2px;
+  border-color: var(--af-focus-ring) !important;
+}
+.af-game-root :is(.status, .message, [role="status"], [aria-live="polite"]) {
+  overflow-wrap: anywhere;
+}
+.af-game-root :is(.stat, .stats, .hud, .scoreline) {
+  font-variant-numeric: tabular-nums;
+}
+.af-game-root :is(.stat small, .stat label, .hud small) {
+  line-height: 1.4;
+}
+.af-game-root :is(.status, .message, [role="status"]) {
+  min-height: 1.5em;
+}
+.af-game-root :is(.game-shell, .cabinet, .game-panel, .panel, .game, .card) {
+  min-width: 0;
+}
+.af-game-root :is(canvas, video, img, svg) {
+  max-width: 100%;
+}
+.af-game-root canvas {
+  display: block;
+  margin-inline: auto;
+}
+.af-game-root :is(.actions, .controls, .row, .pad) {
+  align-items: center;
+}
+.af-game-root :is(.actions, .controls, .row, .pad) > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.af-game-root :is(.log, .message-log, .history, .feed) {
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+}
+.af-game-root :is(.tabs, .game-tabs, .game-library-tools) {
+  scrollbar-width: thin;
+  scrollbar-color: #70401f #100e0c;
+}
+.af-game-root :is(.tabs, .game-tabs) button[aria-selected="true"],
+.af-game-root :is(button[aria-pressed="true"], .active) {
+  box-shadow: inset 0 0 0 1px #f06a0a55;
+}
+.af-game-root :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline-color: var(--af-focus-ring) !important;
+}
+@media (max-width: 650px) {
+  .af-game-root :is(.actions, .controls, .row, .pad) {
+    gap: .45rem;
+  }
+  .af-game-root :is(.actions, .controls, .row, .pad) > button,
+  .af-game-root :is(.actions, .controls, .row, .pad) > .btn {
+    min-height: 42px;
+  }
+  .af-game-root :is(.stat, .stats .stat) {
+    overflow-wrap: anywhere;
+  }
+}
+@media (prefers-contrast: more) {
+  .af-game-root :is(.stat, .panel, .cabinet, .game, .game-panel, .card, .screen, .arena) {
+    border-color: #9a8d81 !important;
+  }
+  .af-game-root :is(.muted, .note, .hint, .fine, .fineprint, .footnote) {
+    color: #d1c8bf !important;
+  }
+}
