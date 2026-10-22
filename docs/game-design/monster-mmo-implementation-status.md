@@ -9,10 +9,12 @@ Last updated: 2026-10-21
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
-- D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table.
+  - `POST /api/game/action`: starts a wild battle only from server-validated grass tiles, resolves attacks/counters/capture/flee on the server, and persists battle outcomes before returning them.
+- D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table; `0024_monster_game_battles.sql` stores one active battle per account so reloads can restore it.
 - Save validation checks position/counters, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
-- Static audit assertions cover authentication, version checks, species allowlisting, rate limits, and credentialed cloud requests.
+- The online client routes battle actions through the authenticated Worker and restores active battle state after reconnect. Signed-out/offline play retains the local prototype combat fallback.
+- Static audit assertions cover authentication, version checks, species allowlisting, rate limits, server-side battle actions, and credentialed cloud requests.
 
 ## Deployment requirements before cloud sync and multiplayer can work
 
@@ -20,8 +22,9 @@ Last updated: 2026-10-21
 2. Apply the new D1 migration to the staging database first. Do not apply to production without confirming the target database and backup state.
 3. Verify `api.ash-fall.com` points to the Worker version containing these routes, that the Pages origin is allowed by the Worker CORS configuration, and that the Durable Object binding/migration is active.
 4. Test sign-in, GET empty save, first PUT, GET restored save, stale-version conflict, invalid species rejection, rate limiting, and logout.
-5. Test two signed-in accounts in separate browsers: join, movement broadcast, blocked movement, reconnect, duplicate-session handling, and clean disconnect.
-6. Only after staging passes, plan production migration/deployment with backup and rollback steps.
+5. Test server battle actions: encounter outside grass rejected, start from grass, attack damage/counter, capture success/failure, no-supplies and full-party rejection, flee, reload battle recovery, stale-version conflict, and request rate limits.
+6. Test two signed-in accounts in separate browsers: join, movement broadcast, blocked movement, reconnect, duplicate-session handling, and clean disconnect.
+7. Only after staging passes, plan production migration/deployment with backup and rollback steps.
 
 ## Known limitations
 
@@ -33,4 +36,4 @@ Last updated: 2026-10-21
 
 ## Next engineering milestone
 
-Build the smallest isolated real-time zone service with server-authoritative movement and presence, then move encounters and battle outcomes server-side. Use a staging environment and load tests before connecting a live public player population.
+Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then move encounter-trigger probability and movement-to-save coordination fully server-side. Add inventory/trading rules only after these core invariants pass staging.
