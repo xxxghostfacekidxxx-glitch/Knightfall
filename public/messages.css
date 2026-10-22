@@ -210,3 +210,6 @@
  .chat-tools{gap:.35rem}
 }
 @media(max-width:480px){.mobile-inbox-back{padding:.45rem .5rem;font-size:.68rem}}
+
+/* Delivery state: quiet, readable feedback without cluttering the conversation. */
+.message-delivery{color:var(--kf-accent-bright);font-weight:800;letter-spacing:.025em}.message-meta .message-delivery[aria-label]{white-space:nowrap}
