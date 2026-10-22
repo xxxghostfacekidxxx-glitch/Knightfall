@@ -34,7 +34,22 @@
     .open-source-callout h2{font-size:clamp(1.5rem,4vw,2.2rem);letter-spacing:-.04em}
     .open-source-callout a{white-space:nowrap}
     @media(max-width:760px){.cartridge-shelf{grid-template-columns:1fr}.cartridge-empty{grid-template-columns:1fr}.cartridge-icon{width:56px;height:56px}}
-  </style>
+  
+/* Premium arcade floor: cabinets feel like a real neon-lit game room */
+body{background:radial-gradient(ellipse at 15% 0,#2d1827 0,transparent 34%),radial-gradient(ellipse at 90% 10%,#142d3d 0,transparent 32%),#08090e}
+main,.page,.container{isolation:isolate}
+.cartridge-cabinet{position:relative;overflow:hidden;border:1px solid #ffffff24!important;border-radius:18px!important;background:linear-gradient(155deg,#171a26f5,#0b0e17f7)!important;box-shadow:inset 0 1px #ffffff12,0 12px 35px #0007,0 0 25px var(--glow,transparent)!important;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important}
+.cartridge-cabinet:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--glow,#fff),transparent);opacity:.9}
+.cartridge-cabinet:hover{transform:translateY(-5px)!important;border-color:#ffffff66!important;box-shadow:inset 0 1px #ffffff22,0 20px 45px #0009,0 0 32px var(--glow,transparent)!important}
+.cartridge-number{display:inline-flex;align-items:center;gap:.35rem;color:#b8c8d9!important;font-size:.67rem!important;font-weight:900;letter-spacing:.13em}
+.cartridge-cabinet h3{letter-spacing:-.045em!important;text-shadow:0 0 22px var(--glow,transparent)}
+.cartridge-cabinet p{color:#aeb9c8!important;line-height:1.65!important}
+.cartridge-cabinet .status{border:1px solid #ffffff20;border-radius:999px;padding:.35rem .55rem;background:#ffffff08;align-self:flex-start}
+.cartridge-cabinet .button{border-radius:10px!important;box-shadow:0 4px 0 #0006,0 0 22px var(--glow,transparent)!important;transition:transform .15s,filter .15s!important}
+.cartridge-cabinet .button:hover{transform:translateY(-2px)!important;filter:brightness(1.14)}
+@media(prefers-reduced-motion:reduce){.cartridge-cabinet,.cartridge-cabinet .button{transition:none!important}.cartridge-cabinet:hover,.cartridge-cabinet .button:hover{transform:none!important}}
+
+</style>
   <link rel="stylesheet" href="/realm-polish.css?v=20261021-realms">
 </head>
 <body>
