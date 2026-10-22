@@ -59,6 +59,7 @@ const monsterMmoChecks = [
   ["monster MMO save writes require an authenticated account", worker.includes('if(url.pathname==="/api/game/save"&&request.method==="PUT"){') && worker.includes("const user=await requireUser(request,env);")],
   ["monster MMO saves use optimistic version checks", worker.includes("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?")],
   ["monster MMO saves reject teleports and blocked terrain", worker.includes("Trainer movement must be one adjacent tile at a time.") && worker.includes("Trainer position must be on a walkable map tile.")],
+  ["monster MMO save endpoint restricts progression edits", worker.includes("Progression and inventory can only change through validated game actions.") && worker.includes("Party changes can only be made through validated game actions.") && worker.includes("Initial cloud progress exceeds the migration limits.")],
   ["monster MMO saves canonicalize creatures against an allowlist", ["mossbit:{name:\"Mossbit\"","embercub:{name:\"Embercub\"","driftfin:{name:\"Driftfin\"","gloamlet:{name:\"Gloamlet\""].every(value=>worker.includes(value))],
   ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
   ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
