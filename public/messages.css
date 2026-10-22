@@ -213,3 +213,6 @@
 
 /* Delivery state: quiet, readable feedback without cluttering the conversation. */
 .message-delivery{color:var(--kf-accent-bright);font-weight:800;letter-spacing:.025em}.message-meta .message-delivery[aria-label]{white-space:nowrap}
+
+.mute-duration-label{font-size:.65rem;color:#93877e;white-space:nowrap}.chat-tools #mute-duration{max-width:112px;min-width:0;padding:.42rem .35rem;background:#100d0b;color:#e7c1a8;border:1px solid #3a2a21;border-radius:7px;font-size:.7rem}.chat-tools #mute-duration:focus-visible,.chat-tools #mute-chat:focus-visible{outline:2px solid var(--kf-accent);outline-offset:2px}
+@media(max-width:600px){.chat-tools{gap:.3rem;flex-wrap:wrap;justify-content:flex-end}.mute-duration-label{display:none}.chat-tools #mute-duration{max-width:92px}.secure-label{display:none}}
