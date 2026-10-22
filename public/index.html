@@ -150,6 +150,20 @@
       });
       fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace("/account.html")}).catch(()=>{});
       const params = new URLSearchParams(location.search);
+      const oauthErrors = {
+        provider_not_configured: "Social sign-in is not configured on the server yet. Use email sign-in for now.",
+        verification_failed: "The social sign-in verification expired or was rejected. Please try again.",
+        account_unavailable: "This account is suspended or unavailable. Contact an administrator.",
+        registration_closed: "New registrations are currently closed.",
+        sign_in_failed: "Social sign-in could not be completed. Please try again or use email sign-in."
+      };
+      if (params.has("oauth_error")) {
+        const message = oauthErrors[params.get("oauth_error")] || oauthErrors.sign_in_failed;
+        document.getElementById("social-note").textContent = message;
+        document.getElementById("login-status").textContent = message;
+        document.getElementById("login-status").style.color = "#ffb17f";
+        history.replaceState({}, "", "/index.html");
+      }
       if (params.get("mode") === "register") setMode("register");
     })();
   </script>
