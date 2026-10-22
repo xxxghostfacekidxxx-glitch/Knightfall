@@ -86,7 +86,7 @@ const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), 
 if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
 else ok("Monster MMO client uses credentialed cloud-save requests");
 if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
-if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudAction("start")','cloudAction("attack")','cloudAction("capture")','cloudAction("flee")','cloudAction("party-lead")'].every(action=>monsterMmoClient.includes(action))) fail("Monster MMO online actions are not routed through the server.");
+if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudAction("start")','cloudAction("encounter-check")','cloudAction("attack")','cloudAction("capture")','cloudAction("flee")','cloudAction("party-lead",'].every(action=>monsterMmoClient.includes(action))) fail("Monster MMO online actions are not routed through the server.");
 else ok("Monster MMO battle and party actions use the server-authoritative action endpoint");
 if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.includes('getElementById("rest-btn")')) fail("Monster MMO camp rest control is missing its action handler.");
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
