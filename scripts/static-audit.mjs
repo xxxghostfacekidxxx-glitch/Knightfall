@@ -65,6 +65,22 @@ for (const [label, pattern] of chaosInvariants) {
   if (!pattern.test(worker)) fail("Chaos invariant missing: " + label);
   else ok("Chaos invariant: " + label);
 }
+const friendInvariants = [
+  ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
+  ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
+  ["friend request mutations require ownership of the pending request", /\/api\/friends\/:id[\s\S]{0,1800}addressee_id=\? AND status='pending'/],
+  ["friend routes honor blocked relationships", /\/api\/friends\/request[\s\S]{0,2200}user_blocks/],
+];
+for (const [label, pattern] of friendInvariants) {
+  if (!pattern.test(worker)) fail("Friend invariant missing: " + label);
+  else ok("Friend invariant: " + label);
+}
+const friendsMigration = await readFile(path.join(root, "backend/migrations/0020_friends.sql"), "utf8");
+if (!friendsMigration.includes("CREATE TABLE IF NOT EXISTS friend_requests")) fail("Friend migration is missing friend_requests.");
+if (!friendsMigration.includes("UNIQUE(requester_id, addressee_id)")) fail("Friend migration is missing directional request uniqueness.");
+if (!friendsMigration.includes("CHECK(requester_id <> addressee_id)")) fail("Friend migration does not prevent self-friend rows.");
+else ok("Friend migration constraints");
+
 const chaosLabHtml = await readFile(path.join(publicDir, "chaos-lab.html"), "utf8");
 if (!chaosLabHtml.includes("/api/admin/chaos-lab/apply-proposal")) fail("Chaos Lab UI does not use the atomic proposal endpoint.");
 else ok("Chaos Lab proposal UI uses the atomic endpoint");
