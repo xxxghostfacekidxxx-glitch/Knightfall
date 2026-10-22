@@ -679,6 +679,27 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     await audit(env,user,"economy.claim","wallet",user.id,{type,amount:claimed,balance:Number(wallet.balance)});
     return json({ok:true,type,claimed,balance:Number(wallet.balance),online_next_at:wallet.last_online_claim_at?new Date(new Date(wallet.last_online_claim_at).getTime()+30*60*1000).toISOString():null,daily_ready:wallet.last_daily_claim_date!==today,quest_ready:wallet.last_mission_claim_date!==today},200,origin);
   }
+  if(url.pathname==="/api/economy/game-transaction"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use your shared Cinders wallet."},401,origin);
+    if(!(await rateLimit(env,request,"economy-game-transaction",600,60,user.id)))return json({error:"Too many game transactions. Pause a moment."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const action=String(body.action||""),game=String(body.game||""),amount=Number(body.amount),now=new Date().toISOString();
+    const gameLabels={"trench-bounty":"Trench Bounty","neon-kelp-reef":"Neon Kelp: Reef Rush","magma-trench":"Magma Trench: Relic Hunt"};
+    if(!gameLabels[game])return json({error:"Unknown fish-table cabinet."},400,origin);
+    if(!Number.isSafeInteger(amount)||amount<1||amount>(action==="spend"?20:3000))return json({error:"Transaction amount is outside the allowed range."},400,origin);
+    await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
+    let result;
+    if(action==="spend"){
+      result=await env.DB.prepare("UPDATE user_wallets SET balance=balance-?,updated_at=? WHERE user_id=? AND balance>=?").bind(amount,now,user.id,amount).run();
+      if(!result.meta?.changes){const w=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();return json({error:"Not enough Cinders for that shot.",balance:Number(w?.balance||0)},409,origin);}
+    }else if(action==="earn"){
+      result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+?,updated_at=? WHERE user_id=?").bind(amount,now,user.id).run();
+      if(!result.meta?.changes)return json({error:"Wallet update failed."},409,origin);
+    }else return json({error:"Unknown transaction action."},400,origin);
+    await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,action==="spend"?-amount:amount,gameLabels[game]+(action==="spend"?" shot cost":" catch payout"),now).run();
+    const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    return json({ok:true,action,amount,balance:Number(wallet?.balance||0)},200,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
     const limit=boundedInt(url.searchParams.get("limit"),10,1,50);
