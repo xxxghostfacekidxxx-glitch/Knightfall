@@ -98,6 +98,9 @@ if (!["thornspit","zipfang","grubruckle","mournwing"].every(id=>monsterMmoClient
 } else {
   ok("Monster MMO original roster contains eight creatures");
 }
+if (!["mossbit","embercub","driftfin","gloamlet","thornspit","zipfang","grubruckle","mournwing"].every(id=>publicPaths.has("/assets/monster-sprites/"+id+".svg"))) fail("Monster MMO is missing one or more original creature sprite assets.");
+else ok("Monster MMO includes all eight original creature sprite assets");
+if (!monsterMmoClient.includes("setCreatureArt") || !monsterMmoClient.includes('sprite.src="/assets/monster-sprites/"+c.id+".svg"')) fail("Monster MMO does not render the original creature sprite assets.");
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
