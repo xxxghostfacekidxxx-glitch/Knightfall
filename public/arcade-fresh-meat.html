@@ -40,4 +40,5 @@ function startDump(){clearInterval(dumpTimer);dumpLive=true;dumpScore=0;dumpRema
 function endDump(){if(!dumpLive)return;dumpLive=false;clearInterval(dumpTimer);dumpBest=Math.max(dumpBest,dumpScore);store.set('ashfall-dumpster-dive-best',dumpBest);$('dump-best').textContent=dumpBest;$('dump-msg').textContent='Dive over. Salvaged '+dumpScore+' scrap. Wash your hands.';submit('dumpster-dive',dumpScore,{score:dumpScore,best:dumpBest,items:dumpFound})}
 $('dump-start').onclick=startDump;buildDump();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(rLive){rPaused=true;$('run-pause').textContent='RESUME SHIFT';$('run-msg').textContent='Shift paused while you were away.'}if(cirRun){cirRun=false;cirBusy=false;stopCircuitTimers();$('cir-msg').textContent='Sequence suspended while the page was hidden. Start again to avoid a stale signal.'}if(dumpLive){dumpLive=false;clearInterval(dumpTimer);$('dump-msg').textContent='Scavenge run paused by leaving the page. Start a fresh run when ready.'}}});})();
-</script></body></html>
+</script><script src="/arcade-feedback.js?v=20261022" defer></script>
+</body></html>
