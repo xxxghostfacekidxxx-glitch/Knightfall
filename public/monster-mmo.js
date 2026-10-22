@@ -35,6 +35,9 @@
   let cloudEnabled = false;
   let cloudReady = false;
   let cloudQueue = Promise.resolve();
+  let worldSocket = null;
+  let worldConnected = false;
+  const remotePlayers = new Map();
   function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,hp:c.hp})),bag:state.bag};}
   function save(){
     const local={...state,battle:null};
@@ -75,10 +78,10 @@
   function load(){ try { const data=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!data||!Array.isArray(data.party)||!data.party.length)return; state.x=Math.max(1,Math.min(W-2,Number(data.x)||4));state.y=Math.max(1,Math.min(H-2,Number(data.y)||4));state.steps=Number(data.steps)||0;state.encounters=Number(data.encounters)||0;state.caught=Number(data.caught)||0;state.badges=Number(data.badges)||0;state.party=data.party.slice(0,6);state.bag=Math.max(0,Number(data.bag)||0); } catch (_) {} }
   function note(message){const li=document.createElement("li");li.textContent=message;log.prepend(li);while(log.children.length>7)log.lastElementChild.remove();}
   function tileAt(x,y){if(y===0||y===H-1||x===0||x===W-1)return "tree";if((x===4||x===5)&&y>=2&&y<=6)return "path";if((x===6)&&y>=5&&y<=7)return "path";if((x===1||x===10)&&y===5)return "water";if(blocked.has(x+","+y))return "rock";return "grass";}
-  function renderMap(){map.replaceChildren();for(let y=0;y<H;y++){for(let x=0;x<W;x++){const cell=document.createElement("div");cell.className="map-tile "+tileAt(x,y);cell.setAttribute("aria-hidden","true");if(x===state.x&&y===state.y){cell.classList.add("player-tile");const sprite=document.createElement("span");sprite.className="player-sprite";cell.append(sprite);}map.append(cell);}}document.getElementById("coordinates").textContent="X "+String(state.x+1).padStart(2,"0")+" / Y "+String(state.y+1).padStart(2,"0");}
+  function renderMap(){map.replaceChildren();for(let y=0;y<H;y++){for(let x=0;x<W;x++){const cell=document.createElement("div");cell.className="map-tile "+tileAt(x,y);cell.setAttribute("aria-hidden","true");for(const player of remotePlayers.values()){if(player.x===x&&player.y===y){const sprite=document.createElement("span");sprite.className="remote-player-sprite";sprite.title=player.username; sprite.setAttribute("aria-label",player.username);cell.append(sprite);}}if(x===state.x&&y===state.y){cell.classList.add("player-tile");const sprite=document.createElement("span");sprite.className="player-sprite";cell.append(sprite);}map.append(cell);}}document.getElementById("coordinates").textContent="X "+String(state.x+1).padStart(2,"0")+" / Y "+String(state.y+1).padStart(2,"0");}
   function renderParty(){const list=document.getElementById("party-list");list.replaceChildren();state.party.forEach(c=>{const row=document.createElement("div");row.className="party-creature";const token=document.createElement("span");token.className="creature-token "+c.type;token.textContent=c.icon;const info=document.createElement("div");info.className="creature-info";const name=document.createElement("strong");name.textContent=c.name;const small=document.createElement("small");small.textContent="HP "+c.hp+" / "+c.maxHp;const hp=document.createElement("div");hp.className="hp-mini";const bar=document.createElement("span");bar.style.width=Math.max(0,Math.min(100,c.hp/c.maxHp*100))+"%";hp.append(bar);info.append(name,small,hp);const level=document.createElement("span");level.className="level-tag";level.textContent="Lv. "+c.level;row.append(token,info,level);list.append(row);});document.getElementById("party-count").textContent=state.party.length+" / 6";document.getElementById("trainer-catches").textContent=state.caught;}
   function render(){renderMap();renderParty();document.getElementById("trainer-badges").textContent=state.badges;document.getElementById("world-state").textContent=state.battle?"In battle":"Exploring";}
-  function move(dir){if(state.battle)return;const delta={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[dir];if(!delta)return;const nx=state.x+delta[0],ny=state.y+delta[1];if(nx<1||nx>W-2||ny<1||ny>H-2||tileAt(nx,ny)==="rock"||tileAt(nx,ny)==="tree"||tileAt(nx,ny)==="water"){note("The terrain blocks that route.");return;}state.x=nx;state.y=ny;state.steps++;render();if(tileAt(nx,ny)==="grass"&&Math.random()<.22)startEncounter();else if(state.steps%6===0)note("The route is quiet. Something rustles in the grass nearby.");save();}
+  function move(dir){if(state.battle)return;if(worldConnected&&worldSocket&&worldSocket.readyState===WebSocket.OPEN){worldSocket.send(JSON.stringify({type:"move",direction:dir}));return;}const delta={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[dir];if(!delta)return;const nx=state.x+delta[0],ny=state.y+delta[1];if(nx<1||nx>W-2||ny<1||ny>H-2||tileAt(nx,ny)==="rock"||tileAt(nx,ny)==="tree"||tileAt(nx,ny)==="water"){note("The terrain blocks that route.");return;}state.x=nx;state.y=ny;state.steps++;render();if(tileAt(nx,ny)==="grass"&&Math.random()<.22)startEncounter();else if(state.steps%6===0)note("The route is quiet. Something rustles in the grass nearby.");save();}
   function startEncounter(){if(state.battle)return;const base=creatures[Math.floor(Math.random()*creatures.length)];state.battle={...base,hp:base.hp,maxHp:base.hp};state.encounters++;encounterPanel.hidden=false;document.getElementById("encounter-art").className="encounter-art "+base.type;document.getElementById("encounter-art").textContent=base.icon;document.getElementById("encounter-title").textContent="Wild "+base.name+"!";document.getElementById("encounter-description").textContent=base.description;document.getElementById("capture-btn").textContent="Capture · "+state.bag;note("A wild "+base.name+" appeared in the grass!");renderBattle();render();}
   function renderBattle(){if(!state.battle)return;const b=state.battle;document.getElementById("wild-hp-bar").style.width=Math.max(0,b.hp/b.maxHp*100)+"%";document.getElementById("wild-hp-text").textContent="HP "+b.hp+" / "+b.maxHp;document.getElementById("capture-btn").disabled=state.bag<1;document.getElementById("capture-btn").style.opacity=state.bag<1?".5":"1";}
   function finishBattle(message){note(message);state.battle=null;encounterPanel.hidden=true;render();save();}
@@ -91,5 +94,32 @@
   document.getElementById("run-btn").addEventListener("click",retreat);
   document.getElementById("reset-save").addEventListener("click",()=>{if(!window.confirm("Reset this browser's local prototype progress?"))return;try{localStorage.removeItem(SAVE_KEY);}catch(_){}location.reload();});
   window.addEventListener("keydown",event=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","W","A","S","D"].includes(event.key)){if(event.target instanceof HTMLInputElement||event.target instanceof HTMLTextAreaElement)return;event.preventDefault();const key=event.key.toLowerCase();move(({arrowup:"up",w:"up",arrowdown:"down",s:"down",arrowleft:"left",a:"left",arrowright:"right",d:"right"})[key]);}});
-  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave();
+  function connectWorld(){
+    if(!cloudEnabled||worldSocket)return;
+    setCloudStatus("CONNECTING TO SHARED WORLD…");
+    try{
+      worldSocket=new WebSocket("wss://api.ash-fall.com/api/game/world");
+      worldSocket.addEventListener("open",()=>{setCloudStatus("WORLD CONNECTED");});
+      worldSocket.addEventListener("message",event=>{
+        let message;try{message=JSON.parse(event.data);}catch(_){return;}
+        if(message.type==="world-ready"){
+          worldConnected=true;state.x=message.you.x;state.y=message.you.y;remotePlayers.clear();
+          for(const player of message.players||[])if(player.userId!==message.you.userId)remotePlayers.set(player.userId,player);
+          render();note("Connected to Cinder Meadow. Other trainers are now visible.");setCloudStatus("SHARED WORLD · ONLINE");save();return;
+        }
+        if(message.type==="player-joined"){if(message.player&&message.player.userId!==undefined){remotePlayers.set(message.player.userId,message.player);renderMap();note(message.player.username+" entered Cinder Meadow.");}return;}
+        if(message.type==="player-moved"){
+          const player=message.player;if(!player)return;
+          if(worldSocket&&player.userId===Number(window.__ASH_FALL_USER_ID)){state.x=player.x;state.y=player.y;render();if(!state.battle&&tileAt(state.x,state.y)==="grass"&&Math.random()<.22)startEncounter();save();}
+          else if(player.userId!==undefined){remotePlayers.set(player.userId,player);renderMap();}
+          return;
+        }
+        if(message.type==="player-left"){remotePlayers.delete(message.userId);renderMap();return;}
+        if(message.type==="move-blocked")note("The world server blocked that route.");
+      });
+      worldSocket.addEventListener("close",()=>{worldConnected=false;worldSocket=null;remotePlayers.clear();renderMap();setCloudStatus("CLOUD SAVE · WORLD OFFLINE");note("Shared world disconnected. Local movement remains available.");});
+      worldSocket.addEventListener("error",()=>{setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");});
+    }catch(_){worldSocket=null;setCloudStatus("CLOUD SAVE · WORLD UNAVAILABLE");}
+  }
+  load();render();note("Local prototype save loaded. Find tall grass to trigger an encounter.");syncCloudSave().then(()=>{if(cloudEnabled)connectWorld();});
 })();
