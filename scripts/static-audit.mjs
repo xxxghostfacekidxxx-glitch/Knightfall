@@ -73,8 +73,10 @@ for (const [label, passed] of monsterMmoChecks) {
 }
 if (!worker.includes('url.pathname==="/api/game/world"') || !worker.includes("env.MONSTER_WORLD.get(id).fetch")) fail("Monster MMO WebSocket route is missing authenticated Durable Object routing.");
 else ok("Monster MMO shared-world route is wired to Durable Objects");
-if (!worker.includes("export class MonsterWorldRoom") || !worker.includes("webSocketMessage(socket, message)") || !worker.includes("player-moved")) fail("Monster MMO world room is missing server-side movement handling.");
+if (!worker.includes("export class MonsterWorldRoom") || !worker.includes("async webSocketMessage(socket, message)") || !worker.includes("player-moved")) fail("Monster MMO world room is missing server-side movement handling.");
 else ok("Monster MMO world room exposes server-side movement handling");
+if (!worker.includes('SELECT save_json,version FROM monster_game_saves WHERE user_id=?') || !worker.includes('UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?') || !worker.includes("world-save-conflict")) fail("Monster MMO world movement is not persisted with optimistic version checks.");
+else ok("Monster MMO world server persists accepted movement with version checks");
 const backendWrangler = JSON.parse(await readFile(path.join(root, "backend/wrangler.jsonc"), "utf8"));
 if (!backendWrangler.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Backend Wrangler config is missing the MONSTER_WORLD Durable Object binding.");
 else ok("Monster MMO Durable Object binding is configured");
@@ -86,6 +88,8 @@ if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudA
 if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.includes('getElementById("rest-btn")')) fail("Monster MMO camp rest control is missing its action handler.");
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
 else ok("Monster MMO client connects to the shared world and sends movement intents");
+if (!monsterMmoClient.includes("save(false)") || !monsterMmoClient.includes("player.steps") || !monsterMmoClient.includes("player.version")) fail("Monster MMO client is not consuming authoritative movement save versions.");
+else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
