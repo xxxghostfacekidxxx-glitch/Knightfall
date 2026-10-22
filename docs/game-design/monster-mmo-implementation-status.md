@@ -5,15 +5,15 @@ Last updated: 2026-10-21
 ## Implemented on the feature branch
 
 - Responsive browser prototype: tile map, keyboard/touch movement, original placeholder creature encounters, basic turn-based battle/capture loop, party panel, event log.
-- Local browser save for offline play.
+- Local browser save for offline play, including creature XP progress and visible progress bars.
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
-  - `POST /api/game/action`: starts a wild battle only from server-validated grass tiles, resolves attacks/counters/capture/flee on the server, and persists battle outcomes before returning them.
+  - `POST /api/game/action`: validates encounter starts, attacks/counters, captures, flee, party lead changes, rest, and server-authoritative XP/level gains.
 - D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table; `0024_monster_game_battles.sql` stores one active battle per account so reloads can restore it.
 - Save validation checks position/counters, requires walkable tiles, rejects non-adjacent position changes, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session. The ordinary save route cannot alter party membership/levels/HP, inventory, or progression counters; those changes go through validated game actions. First-time cloud creation supports a bounded import of existing local progress so players do not lose prototype saves.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
-- The online client routes battle actions and party lead selection through the authenticated Worker and restores active battle state after reconnect. Party members can be selected as the active lead outside battle, and the camp at X 04 / Y 01 restores the party when no battle is active. Signed-out/offline play retains the local prototype combat fallback.
+- The online client routes battle actions and party lead selection through the authenticated Worker and restores active battle state after reconnect. Party members can be selected as the active lead outside battle, the camp at X 04 / Y 01 restores the party when no battle is active, and victories award XP toward a level-based threshold. XP, level, HP, and derived stats are persisted server-side for online play. Signed-out/offline play retains the local prototype combat fallback.
 - Static audit assertions cover authentication, version checks, species allowlisting, rate limits, server-side battle actions, and credentialed cloud requests.
 
 ## Deployment requirements before cloud sync and multiplayer can work
