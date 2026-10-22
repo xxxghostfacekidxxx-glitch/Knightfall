@@ -72,4 +72,5 @@ function persistCardStats(key,patch){const s=readCardStats(),old=s[key]||{wins:0
 $('card-fullscreen')?.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch{status('sol-status','Fullscreen is unavailable in this browser.');}});
 $('card-reset-stats')?.addEventListener('click',()=>{if(confirm('Reset locally saved card-room records on this device?')){try{localStorage.removeItem('ashfall-cardroom-stats')}catch{}writeCardStats();}});
 writeCardStats();
-\n</script></body></html>
+
+</script></body></html>
