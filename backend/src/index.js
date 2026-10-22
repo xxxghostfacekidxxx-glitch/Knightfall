@@ -1212,10 +1212,12 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(battleFinished)battle=null;
     const now=new Date().toISOString(),nextVersion=version+1;
     const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag};
-    const update=await env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version).run();
-    if(!update.meta||update.meta.changes!==1){const latest=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress.",conflict:true,version:Number(latest?.version)||0},409,origin);}
-    if(battle)await env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) VALUES (?,?,?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now).run();
-    else await env.DB.prepare("DELETE FROM monster_game_battles WHERE user_id=?").bind(user.id).run();
+    const saveUpdate=env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version);
+    const battleUpdate=battle
+      ? env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now,user.id,nextVersion)
+      : env.DB.prepare("DELETE FROM monster_game_battles WHERE user_id=? AND EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?)").bind(user.id,user.id,nextVersion);
+    const results=await env.DB.batch([saveUpdate,battleUpdate]);
+    if(!results[0]?.meta||results[0].meta.changes!==1){const latest=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress.",conflict:true,version:Number(latest?.version)||0},409,origin);}
     await audit(env,user,"monster_mmo.action","game_save",user.id,{action,version:nextVersion,battle_active:!!battle});
     return json({ok:true,action,message,battle,save:clean,version:nextVersion,updated_at:now},200,origin);
   }
