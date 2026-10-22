@@ -91,10 +91,10 @@ if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.inclu
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
 else ok("Monster MMO client connects to the shared world and sends movement intents");
 if (!monsterMmoClient.includes("save(false)") || !monsterMmoClient.includes("player.steps") || !monsterMmoClient.includes("player.version")) fail("Monster MMO client is not consuming authoritative movement save versions.");
+else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
 if (!monsterMmoClient.includes("xp: c.xp") && !monsterMmoClient.includes("xp:Number(c.xp)") || !monsterMmoClient.includes("xp-mini") || !monsterMmoClient.includes("awardExperience")) fail("Monster MMO client is missing creature XP progression and display.");
 if (!["thornspit","zipfang","grubruckle","mournwing"].every(id=>monsterMmoClient.includes(id))) fail("Monster MMO client is missing the expanded original creature roster.");
 else ok("Monster MMO original roster contains eight creatures");
-else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],
