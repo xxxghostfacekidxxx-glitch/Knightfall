@@ -63,6 +63,7 @@ const monsterMmoChecks = [
   ["monster MMO saves canonicalize creatures against an allowlist", ["mossbit:{name:\"Mossbit\"","embercub:{name:\"Embercub\"","driftfin:{name:\"Driftfin\"","gloamlet:{name:\"Gloamlet\""].every(value=>worker.includes(value))],
   ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
   ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
+  ["monster MMO save and active battle state are committed atomically", worker.includes("const results=await env.DB.batch([saveUpdate,battleUpdate])") && worker.includes("version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json")],
   ["monster MMO party lead selection is server-validated", worker.includes('action==="party-lead"') && worker.includes("The active creature cannot change during battle.")],
   ["monster MMO XP and level gains are server-authoritative", worker.includes("gainedXp=Math.max(8,battle.level*12)") && worker.includes("lead.xp=(lead.xp||0)+gainedXp") && worker.includes("member.xp??0")],
   ["monster MMO type effectiveness is calculated server-side", worker.includes("const typeMultiplier=(attacker,defender)") && worker.includes("multiplier>1?\" It was super effective!\"") && worker.includes("multiplier<1?\" The attack was resisted.\"")],
