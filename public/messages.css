@@ -216,3 +216,5 @@
 
 .mute-duration-label{font-size:.65rem;color:#93877e;white-space:nowrap}.chat-tools #mute-duration{max-width:112px;min-width:0;padding:.42rem .35rem;background:#100d0b;color:#e7c1a8;border:1px solid #3a2a21;border-radius:7px;font-size:.7rem}.chat-tools #mute-duration:focus-visible,.chat-tools #mute-chat:focus-visible{outline:2px solid var(--kf-accent);outline-offset:2px}
 @media(max-width:600px){.chat-tools{gap:.3rem;flex-wrap:wrap;justify-content:flex-end}.mute-duration-label{display:none}.chat-tools #mute-duration{max-width:92px}.secure-label{display:none}}
+
+.muted-tag{display:inline-block;margin-top:.25rem;padding:.15rem .28rem;border:1px solid #493427;border-radius:4px;color:#b58b6d;font-size:.52rem;letter-spacing:.08em;font-weight:800;line-height:1.2}
