@@ -27,7 +27,7 @@
   const blocked = new Set(["0,0","11,0","0,9","11,9","2,2","9,2","2,7","9,7"]);
   const state = {
     x:4,y:4,steps:0,encounters:0,caught:0,badges:0,battle:null,
-    party:[{id:"embercub",name:"Embercub",type:"fire",icon:"✹",level:5,hp:18,maxHp:18,attack:5}],
+    party:[{id:"embercub",name:"Embercub",type:"fire",icon:"✹",level:5,xp:0,hp:18,maxHp:18,attack:5}],
     bag:8
   };
   const API_BASE = window.ASH_FALL_API_BASE || "https://api.ash-fall.com";
@@ -39,7 +39,7 @@
   let worldConnected = false;
   let worldUserId = null;
   const remotePlayers = new Map();
-  function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,hp:c.hp})),bag:state.bag};}
+  function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,xp:c.xp||0,hp:c.hp})),bag:state.bag};}
   function save(syncCloud=true){
     const local={...state,battle:null};
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(local)); } catch (_) {}
@@ -62,7 +62,7 @@
       const data=await response.json().catch(()=>({}));
       if(response.status===409&&data.conflict){cloudEnabled=false;setCloudStatus("SAVE CONFLICT");note("Online save conflict detected. Reload cloud progress before continuing.");return null;}
       if(!response.ok){note(data.error||"Online action failed.");return null;}
-      if(data.save){const remote=data.save;state.x=remote.x;state.y=remote.y;state.steps=remote.steps;state.encounters=remote.encounters;state.caught=remote.caught;state.badges=remote.badges;state.bag=remote.bag;state.party=remote.party.map(c=>{const base=creatures.find(item=>item.id===c.id);return {...base,level:c.level,hp:c.hp,maxHp:c.maxHp,attack:c.attack};});}
+      if(data.save){const remote=data.save;state.x=remote.x;state.y=remote.y;state.steps=remote.steps;state.encounters=remote.encounters;state.caught=remote.caught;state.badges=remote.badges;state.bag=remote.bag;state.party=remote.party.map(c=>{const base=creatures.find(item=>item.id===c.id);return {...base,level:c.level,xp:Number(c.xp)||0,hp:c.hp,maxHp:c.maxHp,attack:c.attack};});}
       state.battle=data.battle||null;
       if(action!=="status")cloudVersion=Number(data.version)||cloudVersion;
       try{localStorage.setItem(SAVE_KEY,JSON.stringify({...state,battle:null}));}catch(_){}
@@ -87,7 +87,7 @@
       if(data.save){
         const remote=data.save;
         state.x=remote.x;state.y=remote.y;state.steps=remote.steps;state.encounters=remote.encounters;state.caught=remote.caught;state.badges=remote.badges;state.bag=remote.bag;
-        state.party=remote.party.map(c=>{const base=creatures.find(s=>s.id===c.id);return {...base,level:c.level,hp:c.hp,maxHp:c.maxHp,attack:c.attack};});
+        state.party=remote.party.map(c=>{const base=creatures.find(s=>s.id===c.id);return {...base,level:c.level,xp:Number(c.xp)||0,hp:c.hp,maxHp:c.maxHp,attack:c.attack};});
         try{localStorage.setItem(SAVE_KEY,JSON.stringify({...state,battle:null}));}catch(_){}
         render();note("Your Ash-Fall cloud save has been loaded.");
         setCloudStatus("CLOUD SAVE · SYNCED");
@@ -97,7 +97,7 @@
       }
     }catch(_){cloudEnabled=false;cloudReady=true;setCloudStatus("LOCAL SAVE · CLOUD OFFLINE");}
   }
-  function load(){ try { const data=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!data||!Array.isArray(data.party)||!data.party.length)return; state.x=Math.max(1,Math.min(W-2,Number(data.x)||4));state.y=Math.max(1,Math.min(H-2,Number(data.y)||4));state.steps=Number(data.steps)||0;state.encounters=Number(data.encounters)||0;state.caught=Number(data.caught)||0;state.badges=Number(data.badges)||0;state.party=data.party.slice(0,6);state.bag=Math.max(0,Number(data.bag)||0); } catch (_) {} }
+  function load(){ try { const data=JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(!data||!Array.isArray(data.party)||!data.party.length)return; state.x=Math.max(1,Math.min(W-2,Number(data.x)||4));state.y=Math.max(1,Math.min(H-2,Number(data.y)||4));state.steps=Number(data.steps)||0;state.encounters=Number(data.encounters)||0;state.caught=Number(data.caught)||0;state.badges=Number(data.badges)||0;state.party=data.party.slice(0,6).map(c=>({...c,xp:Number(c.xp)||0}));state.bag=Math.max(0,Number(data.bag)||0); } catch (_) {} }
   function note(message){const li=document.createElement("li");li.textContent=message;log.prepend(li);while(log.children.length>7)log.lastElementChild.remove();}
   function tileAt(x,y){if(y===0||y===H-1||x===0||x===W-1)return "tree";if((x===4||x===5)&&y>=2&&y<=6)return "path";if((x===6)&&y>=5&&y<=7)return "path";if((x===1||x===10)&&y===5)return "water";if(blocked.has(x+","+y))return "rock";return "grass";}
   function renderMap(){map.replaceChildren();for(let y=0;y<H;y++){for(let x=0;x<W;x++){const cell=document.createElement("div");cell.className="map-tile "+tileAt(x,y);cell.setAttribute("aria-hidden","true");for(const player of remotePlayers.values()){if(player.x===x&&player.y===y){const sprite=document.createElement("span");sprite.className="remote-player-sprite";sprite.title=player.username; sprite.setAttribute("aria-label",player.username);cell.append(sprite);}}if(x===state.x&&y===state.y){cell.classList.add("player-tile");const sprite=document.createElement("span");sprite.className="player-sprite";cell.append(sprite);}map.append(cell);}}document.getElementById("coordinates").textContent="X "+String(state.x+1).padStart(2,"0")+" / Y "+String(state.y+1).padStart(2,"0");}
@@ -107,8 +107,9 @@
   function startEncounter(){if(state.battle)return;if(cloudEnabled){cloudAction("start");return;}const base=creatures[Math.floor(Math.random()*creatures.length)];state.battle={...base,hp:base.hp,maxHp:base.hp};state.encounters++;encounterPanel.hidden=false;document.getElementById("encounter-art").className="encounter-art "+base.type;document.getElementById("encounter-art").textContent=base.icon;document.getElementById("encounter-title").textContent="Wild "+base.name+"!";document.getElementById("encounter-description").textContent=base.description;document.getElementById("capture-btn").textContent="Capture · "+state.bag;note("A wild "+base.name+" appeared in the grass!");renderBattle();render();}
   function renderBattle(){if(!state.battle)return;const b=state.battle;document.getElementById("wild-hp-bar").style.width=Math.max(0,b.hp/b.maxHp*100)+"%";document.getElementById("wild-hp-text").textContent="HP "+b.hp+" / "+b.maxHp;document.getElementById("capture-btn").disabled=state.bag<1;document.getElementById("capture-btn").style.opacity=state.bag<1?".5":"1";}
   function finishBattle(message){note(message);state.battle=null;encounterPanel.hidden=true;render();save();}
-  function attack(){const b=state.battle,lead=state.party[0];if(!b||!lead)return;if(cloudEnabled){cloudAction("attack");return;}const damage=Math.max(1,lead.attack+Math.floor(Math.random()*4));b.hp=Math.max(0,b.hp-damage);note(lead.name+" dealt "+damage+" damage.");if(b.hp<=0){lead.level+=1;lead.maxHp+=2;lead.hp=lead.maxHp;finishBattle(b.name+" fled after the knockout. "+lead.name+" reached level "+lead.level+".");return;}const counter=Math.max(1,b.attack+Math.floor(Math.random()*3));lead.hp=Math.max(1,lead.hp-counter);note(b.name+" counterattacked for "+counter+" damage. Your lead creature hangs on.");render();renderBattle();save();}
-  function capture(){const b=state.battle;if(!b||state.bag<1||state.party.length>=6)return;if(cloudEnabled){cloudAction("capture");return;}if(Math.random()<.42+(1-b.hp/b.maxHp)*.48){state.party.push({id:b.id,name:b.name,type:b.type,icon:b.icon,level:Math.max(2,Math.floor(Math.random()*4)+2),hp:b.maxHp,maxHp:b.maxHp,attack:b.attack});state.caught++;state.bag--;finishBattle(b.name+" joined your party!");}else{state.bag--;note(b.name+" broke free. Capture supplies left: "+state.bag+".");renderBattle();save();}}
+  function awardExperience(member,amount){member.xp=(member.xp||0)+amount;let levels=0;while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;levels++;}if(levels){member.maxHp=Math.min(500,member.maxHp+levels*2);member.hp=member.maxHp;const base=creatures.find(c=>c.id===member.id);member.attack=Math.min(100,(base?.attack||member.attack)+Math.floor((member.level-1)/3));}return levels;}
+  function attack(){const b=state.battle,lead=state.party[0];if(!b||!lead)return;if(cloudEnabled){cloudAction("attack");return;}const damage=Math.max(1,lead.attack+Math.floor(Math.random()*4));b.hp=Math.max(0,b.hp-damage);note(lead.name+" dealt "+damage+" damage.");if(b.hp<=0){const gained=Math.max(8,(b.level||1)*12),levels=awardExperience(lead,gained);finishBattle(b.name+" was defeated. "+lead.name+" gained "+gained+" XP"+(levels?" and reached level "+lead.level:"")+".");return;}const counter=Math.max(1,b.attack+Math.floor(Math.random()*3));lead.hp=Math.max(1,lead.hp-counter);note(b.name+" counterattacked for "+counter+" damage. Your lead creature hangs on.");render();renderBattle();save();}
+  function capture(){const b=state.battle;if(!b||state.bag<1||state.party.length>=6)return;if(cloudEnabled){cloudAction("capture");return;}if(Math.random()<.42+(1-b.hp/b.maxHp)*.48){state.party.push({id:b.id,name:b.name,type:b.type,icon:b.icon,level:Math.max(2,Math.floor(Math.random()*4)+2),xp:0,hp:b.maxHp,maxHp:b.maxHp,attack:b.attack});state.caught++;state.bag--;finishBattle(b.name+" joined your party!");}else{state.bag--;note(b.name+" broke free. Capture supplies left: "+state.bag+".");renderBattle();save();}}
   function retreat(){if(!state.battle)return;if(cloudEnabled){cloudAction("flee");return;}finishBattle("You retreated safely. The route is still waiting.");}
   document.querySelectorAll("[data-move]").forEach(button=>button.addEventListener("click",()=>move(button.dataset.move)));
   document.getElementById("attack-btn").addEventListener("click",attack);
