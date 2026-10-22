@@ -24,7 +24,7 @@ const htmlFiles = publicFiles.filter(file => file.endsWith(".html"));
 const jsFiles = publicFiles.filter(file => file.endsWith(".js"));
 const cssFiles = publicFiles.filter(file => file.endsWith(".css"));
 for (const file of jsFiles) {
-  const result = spawnSync(process.execPath, ["--check"], { input: await readFile(file, "utf8"), encoding: "utf8" });
+  const result = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: await readFile(file, "utf8"), encoding: "utf8" });
   if (result.status !== 0) fail("JavaScript syntax error in " + path.relative(root, file) + ": " + (result.stderr || result.stdout).trim());
   else ok("JavaScript syntax: " + path.relative(root, file));
 }
