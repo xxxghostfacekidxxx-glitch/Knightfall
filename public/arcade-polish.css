@@ -29,3 +29,50 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:800px){.hero{padding-top:3.5rem!important}.hero h1{font-size:clamp(3rem,12vw,5rem)!important}.shelf,.grid,.layout{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:560px){.hero{padding-top:2.8rem!important;padding-bottom:1.6rem!important}.hero h1{font-size:clamp(2.7rem,13vw,4.2rem)!important}.shelf,.grid,.layout{grid-template-columns:minmax(0,1fr)!important}.cabinet,.game{border-radius:12px!important}.game-tabs,.tabs{display:flex;max-width:100%;overflow-x:auto;padding-bottom:.3rem}.game-tabs button,.tabs button{flex:0 0 auto}.back{font-size:.85rem}}
 @media(prefers-reduced-motion:reduce){.cabinet,.game,.back,.btn,.button,.action,.primary{transition:none!important}}
+
+
+/* Cabinet refresh: deeper materials, clearer hierarchy, stronger play surfaces. */
+:root{--arcade-ember:#ff6b24;--arcade-gold:#ffc56d;--arcade-ink:#08090d;--arcade-surface:#101218;--arcade-edge:rgba(255,255,255,.105);--arcade-copy:#f6f3ef;--arcade-dim:#aaa6a2}
+html{scroll-behavior:smooth;scroll-padding-top:1.5rem}
+body{background-color:var(--arcade-ink);background-image:radial-gradient(ellipse at 50% -14rem,rgba(255,103,36,.18),transparent 48%),radial-gradient(ellipse at 100% 42%,rgba(79,90,150,.075),transparent 35%),linear-gradient(180deg,#0a0b10 0%,#08090d 72%);color:var(--arcade-copy);-webkit-font-smoothing:antialiased}
+main,main.wrap,.wrap,.arcade{isolation:isolate}
+.hero h1,h1{font-weight:950;text-wrap:balance}
+.hero h1 span,h1 span{filter:drop-shadow(0 5px 22px rgba(255,107,36,.13))}
+.eyebrow,.kicker,.tagline{font-weight:900;text-transform:uppercase;letter-spacing:.19em}
+.cabinet,.game,.game-panel,.panel,.card,.account,.board-wrap,.table-wrap,.scoreboard,.side-panel{border:1px solid var(--arcade-edge)!important;border-radius:18px!important;background:linear-gradient(145deg,rgba(23,25,33,.97),rgba(11,12,17,.99))!important;box-shadow:0 24px 70px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.035)}
+.cabinet,.game,.game-panel,.panel,.card{backdrop-filter:blur(12px)}
+.cabinet,.game{overflow:hidden}
+.cabinet:after,.game:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 1px rgba(255,255,255,.055);z-index:2}
+.cabinet:hover,.game:hover,.card:hover{border-color:rgba(255,151,93,.3)!important;box-shadow:0 28px 80px rgba(0,0,0,.42),0 0 35px rgba(255,107,36,.045)}
+p{line-height:1.72}
+.lede,.muted,.sub,.description{color:#b3b1b7}
+button,.btn,.button,.action,input,select,textarea{font:inherit}
+button,.btn,.button,.action{border-radius:10px;transition:transform .16s ease,border-color .16s ease,background .16s ease,filter .16s ease,box-shadow .16s ease}
+button:not(:disabled),.btn:not(:disabled),.button:not(:disabled),.action:not(:disabled){touch-action:manipulation}
+button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled),.action:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.08)}
+button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled),.action:active:not(:disabled){transform:translateY(0) scale(.985)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #ff9a63!important;outline-offset:4px}
+button:disabled,.btn:disabled,.button:disabled,.action:disabled{cursor:not-allowed;filter:saturate(.4);opacity:.42}
+input,select,textarea{border:1px solid rgba(255,255,255,.14)!important;border-radius:10px!important;background:#090b10!important;color:#fff!important}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,138,83,.7)!important;box-shadow:0 0 0 3px rgba(255,107,36,.1)}
+.stat,.stats>*,.meter,.score-row>*,.pill,.badge,.chip{border-color:rgba(255,255,255,.1)}
+.stat,.meter{box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.stat strong,.meter strong{font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+canvas{max-width:100%}
+.cabinet canvas,.game canvas,.play-area canvas,.field canvas,.playfield canvas{image-rendering:auto}
+.screen,.arena,.play-area,.canvas,.playfield,.field{border:1px solid rgba(255,255,255,.1)!important;border-radius:14px;overflow:hidden}
+a{transition:color .16s ease,opacity .16s ease}
+a:hover{color:#ffb080}
+.arcade-tools{display:flex;justify-content:flex-end;align-items:center;gap:.65rem;margin:0 0 .8rem}
+.arcade-fullscreen{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:42px;padding:.7rem 1rem;border:1px solid rgba(255,157,103,.3);border-radius:11px;background:linear-gradient(135deg,rgba(255,107,36,.16),rgba(255,197,109,.06));color:#ffe2cf;font-size:.76rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.06)}
+.arcade-fullscreen svg{width:16px;height:16px;flex:none}
+.arcade-fullscreen:hover{border-color:#ff9867;background:rgba(255,107,36,.22)}
+.arcade-fullscreen[aria-pressed=true]{background:linear-gradient(135deg,#ff6b24,#d84b12);color:#1b0b04;border-color:#ff9867}
+.arcade-fullscreen:focus-visible{outline:2px solid #ffc56d;outline-offset:4px}
+.arcade-fullscreen-target:fullscreen{width:100vw;height:100vh;max-width:none!important;max-height:none!important;margin:0!important;padding:clamp(10px,2vw,28px)!important;overflow:auto;background:#08090d!important;border:0!important;border-radius:0!important}
+.arcade-fullscreen-target:fullscreen .playfield canvas,.arcade-fullscreen-target:fullscreen .field canvas,.arcade-fullscreen-target:fullscreen .play-area canvas{max-height:68vh;object-fit:contain}
+.arcade-fullscreen-target:fullscreen .hero{padding-top:.4rem!important;padding-bottom:1rem!important}
+.arcade-fullscreen-target:fullscreen .hero h1{font-size:clamp(2rem,5vw,4rem)!important}
+@media(min-width:1100px){.cabinet,.game{border-radius:20px!important}.cabinet,.game,.panel{padding:clamp(1.2rem,2vw,2rem)}}
+@media(max-width:720px){.cabinet,.game,.game-panel,.panel,.card{border-radius:14px!important}.arcade-tools{margin-bottom:.65rem}.arcade-fullscreen{min-height:40px;padding:.6rem .8rem}.hero{gap:.8rem}.stats{gap:.45rem}.stat{padding:.7rem .6rem}.stat strong{font-size:clamp(1.05rem,5vw,1.4rem)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
