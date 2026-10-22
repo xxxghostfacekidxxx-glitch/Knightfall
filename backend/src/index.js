@@ -1109,6 +1109,69 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const id=env.MONSTER_WORLD.idFromName("cinder-meadow");
     return env.MONSTER_WORLD.get(id).fetch(new Request("https://monster-world/connect",{method:"GET",headers}));
   }
+  // Server-authoritative monster encounters and turn resolution. The browser sends intents, never outcomes.
+  if(url.pathname==="/api/game/action"&&request.method==="POST"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to play online."},401,origin);
+    if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const action=body?.action;
+    if(!["start","attack","capture","flee","status"].includes(action))return json({error:"Unknown game action."},400,origin);
+    const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
+    let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
+    const version=Number(row.version)||1;
+    if(body.expected_version!==version)return json({error:"Your save changed in another session. Reload cloud progress.",conflict:true,version},409,origin);
+    const battleRow=await env.DB.prepare("SELECT battle_json FROM monster_game_battles WHERE user_id=?").bind(user.id).first();
+    let battle=null;try{battle=battleRow?JSON.parse(battleRow.battle_json):null;}catch{battle=null;}
+    const species={
+      mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3,description:"A curious little sprout with a stubborn streak."},
+      embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4,description:"A warm-furred cub with sparks dancing along its ears."},
+      driftfin:{name:"Driftfin",type:"water",icon:"◈",hp:16,attack:2,description:"A glassy-eyed creek dweller that moves like a ripple."},
+      gloamlet:{name:"Gloamlet",type:"ghost",icon:"☾",hp:10,attack:5,description:"A shy dusk spirit that seems to slip between shadows."}
+    };
+    const lead=save.party?.[0];
+    if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
+    let message="",battleFinished=false;
+    if(action==="status")return json({battle,save,version},200,origin);
+    if(action==="start"){
+      if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
+      if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
+      const ids=Object.keys(species),chosen=species[ids[crypto.getRandomValues(new Uint8Array(1))[0]%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+      battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
+      save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
+    }else{
+      if(!battle)return json({error:"There is no active encounter."},409,origin);
+      if(action==="attack"){
+        const damage=Math.max(1,Math.min(30,lead.attack+Math.floor(Math.random()*4)));
+        battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage.";
+        if(battle.hp===0){
+          lead.level=Math.min(100,lead.level+1);lead.maxHp=Math.min(500,(lead.maxHp||lead.hp)+2);lead.hp=lead.maxHp;lead.attack=Math.min(100,lead.attack+1);
+          battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" reached level "+lead.level+".";
+        }else{
+          const counter=Math.max(1,Math.min(20,battle.attack+Math.floor(Math.random()*3)));
+          lead.hp=Math.max(1,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
+        }
+      }else if(action==="capture"){
+        if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
+        if(save.party.length>=6)return json({error:"Your party is full."},409,origin);
+        save.bag--;
+        if(Math.random()<.35+(1-battle.hp/battle.maxHp)*.55){
+          const base=species[battle.id];save.party.push({id:battle.id,name:base.name,type:base.type,icon:base.icon,level:battle.level,hp:battle.maxHp,maxHp:battle.maxHp,attack:battle.attack});
+          save.caught=Math.min(1000000,(save.caught||0)+1);battleFinished=true;message=battle.name+" joined your party!";
+        }else message=battle.name+" broke free. Capture supplies left: "+save.bag+".";
+      }else if(action==="flee"){battleFinished=true;message="You retreated safely.";}
+    }
+    if(battleFinished)battle=null;
+    const now=new Date().toISOString(),nextVersion=version+1;
+    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag};
+    const update=await env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version).run();
+    if(!update.meta||update.meta.changes!==1){const latest=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress.",conflict:true,version:Number(latest?.version)||0},409,origin);}
+    if(battle)await env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) VALUES (?,?,?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now).run();
+    else await env.DB.prepare("DELETE FROM monster_game_battles WHERE user_id=?").bind(user.id).run();
+    await audit(env,user,"monster_mmo.action","game_save",user.id,{action,version:nextVersion,battle_active:!!battle});
+    return json({ok:true,action,message,battle,save:clean,version:nextVersion,updated_at:now},200,origin);
+  }
   // Monster MMO persistent saves. The server canonicalizes creature stats and never trusts client roles/ownership.
   if(url.pathname==="/api/game/save"&&request.method==="GET"){
     const user=await requireUser(request,env);
