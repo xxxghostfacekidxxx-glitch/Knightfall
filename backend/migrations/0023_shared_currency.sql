@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS user_wallets (
   balance INTEGER NOT NULL DEFAULT 500 CHECK (balance >= 0),
   last_online_claim_at TEXT,
   last_daily_claim_date TEXT,
+  last_mission_claim_date TEXT,
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
