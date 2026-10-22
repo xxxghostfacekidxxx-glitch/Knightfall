@@ -67,7 +67,7 @@ async function endVoid(){if(dead)return;running=false;dead=true;vbest=Math.max(v
 $('void-start').addEventListener('click',resetVoid);
 function holdButton(id,key){const el=$(id);const on=e=>{e.preventDefault();held[key]=true};const off=()=>held[key]=false;el.addEventListener('pointerdown',on);['pointerup','pointercancel','pointerleave'].forEach(ev=>el.addEventListener(ev,off))}
 holdButton('void-left','left');holdButton('void-right','right');holdButton('void-fire','fire');
-document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true});document.addEventListener('keyup',e=>keys[e.key]=false);document.addEventListener('visibilitychange',()=>{if(document.hidden){held={left:false,right:false,fire:false};keys={}}});
+document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true});document.addEventListener('keyup',e=>keys[e.key]=false);document.addEventListener('visibilitychange',()=>{if(document.hidden){held={left:false,right:false,fire:false};keys={}}});window.addEventListener('blur',()=>{held={left:false,right:false,fire:false};keys={}});
 draw();
 })();
 </script></body></html>
