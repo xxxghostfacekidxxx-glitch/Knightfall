@@ -64,6 +64,7 @@ const monsterMmoChecks = [
   ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
   ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
   ["monster MMO party lead selection is server-validated", worker.includes('action==="party-lead"') && worker.includes("The active creature cannot change during battle.")],
+  ["monster MMO resting is restricted to camp", worker.includes('action==="rest"') && worker.includes("Return to the camp at X 04 / Y 01 to rest.")],
   ["online encounter chance and grass validation are server-side", worker.includes('action==="encounter-check"' ) && worker.includes("Wild encounters can only begin in tall grass.") && worker.includes("Math.random()<0.22")],
 ];
 for (const [label, passed] of monsterMmoChecks) {
@@ -82,6 +83,7 @@ if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmo
 else ok("Monster MMO client uses credentialed cloud-save requests");
 if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
 if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudAction("start")','cloudAction("encounter-check")','cloudAction("attack")','cloudAction("capture")','cloudAction("flee")'].every(action=>monsterMmoClient.includes(action)) || !monsterMmoClient.includes('cloudAction("party-lead"')) fail("Monster MMO online actions are not routed through the server.");
+if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.includes('getElementById("rest-btn")')) fail("Monster MMO camp rest control is missing its action handler.");
 if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
 else ok("Monster MMO client connects to the shared world and sends movement intents");
 const chaosInvariants = [
