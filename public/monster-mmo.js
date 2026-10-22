@@ -37,6 +37,7 @@
   let cloudQueue = Promise.resolve();
   let worldSocket = null;
   let worldConnected = false;
+  let worldUserId = null;
   const remotePlayers = new Map();
   function snapshot(){return {x:state.x,y:state.y,steps:state.steps,encounters:state.encounters,caught:state.caught,badges:state.badges,party:state.party.map(c=>({id:c.id,level:c.level,hp:c.hp})),bag:state.bag};}
   function save(){
@@ -103,14 +104,14 @@
       worldSocket.addEventListener("message",event=>{
         let message;try{message=JSON.parse(event.data);}catch(_){return;}
         if(message.type==="world-ready"){
-          worldConnected=true;state.x=message.you.x;state.y=message.you.y;remotePlayers.clear();
+          worldConnected=true;worldUserId=Number(message.you.userId);state.x=message.you.x;state.y=message.you.y;remotePlayers.clear();
           for(const player of message.players||[])if(player.userId!==message.you.userId)remotePlayers.set(player.userId,player);
           render();note("Connected to Cinder Meadow. Other trainers are now visible.");setCloudStatus("SHARED WORLD · ONLINE");save();return;
         }
         if(message.type==="player-joined"){if(message.player&&message.player.userId!==undefined){remotePlayers.set(message.player.userId,message.player);renderMap();note(message.player.username+" entered Cinder Meadow.");}return;}
         if(message.type==="player-moved"){
           const player=message.player;if(!player)return;
-          if(worldSocket&&player.userId===Number(window.__ASH_FALL_USER_ID)){state.x=player.x;state.y=player.y;render();if(!state.battle&&tileAt(state.x,state.y)==="grass"&&Math.random()<.22)startEncounter();save();}
+          if(worldSocket&&player.userId===worldUserId){state.x=player.x;state.y=player.y;render();if(!state.battle&&tileAt(state.x,state.y)==="grass"&&Math.random()<.22)startEncounter();save();}
           else if(player.userId!==undefined){remotePlayers.set(player.userId,player);renderMap();}
           return;
         }
