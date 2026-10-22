@@ -653,6 +653,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const now=Date.now(),today=new Date(now).toISOString().slice(0,10);
     await ensureWallet(env,user);
     const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date,last_mission_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    if(Number(wallet?.balance||0)<1 && (user.username==="knightfall" || ["admin","moderator","god"].includes(user.role))){const refill=startingWalletBalance(user);await env.DB.prepare("UPDATE user_wallets SET balance=?,updated_at=? WHERE user_id=?").bind(refill,new Date().toISOString(),user.id).run();await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,refill,"privileged wallet recovery",new Date().toISOString()).run();wallet.balance=refill;}
     const onlineAt=wallet?.last_online_claim_at?new Date(wallet.last_online_claim_at).getTime():0;
     const played=await env.DB.prepare("SELECT COUNT(*) AS count FROM arcade_high_scores WHERE user_id=? AND updated_at>=?").bind(user.id,today+"T00:00:00.000Z").first();
     const questPlayed=Number(played?.count||0)>0;
