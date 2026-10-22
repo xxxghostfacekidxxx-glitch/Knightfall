@@ -93,4 +93,5 @@ function movePaddle(clientX){const r=canvas.getBoundingClientRect();paddle=Math.
 canvas.addEventListener('pointermove',e=>movePaddle(e.clientX));canvas.addEventListener('pointerdown',e=>movePaddle(e.clientX));document.addEventListener('keydown',e=>{if(!$('vault-breakout').classList.contains('active'))return;if(e.key==='ArrowLeft')paddle=Math.max(0,paddle-28);if(e.key==='ArrowRight')paddle=Math.min(600,paddle+28)});$('brick-start').addEventListener('click',startBrick);$('brick-pause').addEventListener('click',()=>{if(brickEnded)return;brickRunning=!brickRunning;$('brick-message').textContent=brickRunning?'Back to breaking.':'Paused.';if(brickRunning)brickLoop();drawBricks()});resetBricks();drawBricks();
 })();
 </script>
+<script src="/arcade-feedback.js?v=20261022" defer></script>
 </body></html>
