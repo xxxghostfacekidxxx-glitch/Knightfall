@@ -45,3 +45,11 @@ npx wrangler d1 migrations apply knightfall-forum --remote --config backend/wran
 ```
 
 After applying it, verify the migration ledger includes `0020_friends.sql`, then test sending a request, accepting it from the recipient account, declining a request, cancelling an outgoing request, and removing an accepted friend. Worker deployment alone does not apply this schema.
+
+## Exact message read cursors
+
+`0022_message_read_cursors.sql` adds `conversation_members.last_read_message_id` so unread counts and seen indicators compare stable message IDs rather than timestamps. It is additive and retains `last_read_at` for compatibility with existing records and older clients.
+
+The Worker checks whether the new column exists before using it, so deploying the backend first does not break messaging while the migration is pending. The inbox and chat UI prefer exact message-ID receipts as soon as the column is present and fall back to timestamp behavior until then.
+
+Apply the migration through the guarded **Apply reviewed D1 migrations** GitHub Actions workflow after reviewing the pending migration ledger and confirming the required `CLOUDFLARE_D1_MIGRATION_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets are configured. The workflow requires the explicit `confirm_production` input. After it completes, verify the ledger includes `0022_message_read_cursors.sql` and check that `last_read_message_id` exists on `conversation_members`. Do not report exact-ID receipts as active in production until those checks pass.
