@@ -1116,7 +1116,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","capture","flee","status","party-lead"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","capture","flee","status","party-lead","rest"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1134,7 +1134,12 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
-    if(action==="party-lead"){
+    if(action==="rest"){
+      if(battle)return json({error:"You cannot rest during a wild battle."},409,origin);
+      if(save.x!==4||save.y!==1)return json({error:"Return to the camp at X 04 / Y 01 to rest."},403,origin);
+      save.party=save.party.map(member=>({...member,hp:member.maxHp}));
+      message="The campfire crackles. Your party is fully rested.";
+    }else if(action==="party-lead"){
       if(battle)return json({error:"The active creature cannot change during battle."},409,origin);
       const index=body.index;
       if(!Number.isInteger(index)||index<0||index>=save.party.length)return json({error:"Choose a valid party member."},400,origin);
