@@ -40,8 +40,10 @@ async function createSession(userId, env) { const token = randomToken(32); await
 async function getSession(request, env) { const token = getCookie(request, SESSION_COOKIE); if (!token) return null; const session = await env.SESSIONS.get(`session:${token}`, "json"); if (!session) return null; if (session.expires_at <= Date.now()) { await env.SESSIONS.delete(`session:${token}`); return null; } return session; }
 async function getUser(request, env) { const session = await getSession(request, env); if (!session) return null; const user = await env.DB.prepare("SELECT id, username, email, display_name, role, status, bio, avatar_url, website_url, location, pronouns, created_at FROM users WHERE id = ?").bind(session.user_id).first(); if (!user || user.status !== "active") { const token = getCookie(request, SESSION_COOKIE); if (token) await env.SESSIONS.delete("session:" + token); return null; } return user; }
 async function requireUser(request, env) { return getUser(request, env); }
-function isAdmin(user) { return !!user && user.role === "admin"; }
-function isModerator(user) { return !!user && (user.role === "moderator" || user.role === "admin"); }
+function isAdmin(user) { return !!user && (user.role === "admin" || user.role === "god"); }
+function isModerator(user) { return !!user && (user.role === "moderator" || user.role === "admin" || user.role === "god"); }
+function startingWalletBalance(user) { return user && (user.username === "knightfall" || ["admin", "moderator", "god"].includes(user.role)) ? 1000000 : 2000; }
+async function ensureWallet(env, user) { await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,?)").bind(user.id, startingWalletBalance(user)).run(); }
 async function audit(env, user, action, targetType = null, targetId = null, details = {}) { try { await env.DB.prepare("INSERT INTO audit_logs (actor_id,action,target_type,target_id,details,created_at) VALUES (?,?,?,?,?,?)").bind(user?.id ?? null,String(action).slice(0,120),targetType ? String(targetType).slice(0,40) : null,targetId != null && Number.isFinite(Number(targetId)) ? Number(targetId) : null,JSON.stringify(details).slice(0,4000),new Date().toISOString()).run(); } catch (error) { console.error("audit_log_failed", error); } }
 async function createNotification(env, {userId, actorId=null, kind, targetType=null, targetId=null, title, body, url=null}) { if (!userId || !kind || !title || !body) return; try { if (targetType === "conversation" && targetId != null && ["message","mention"].includes(String(kind))) { const membership = await env.DB.prepare("SELECT muted_until FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(Number(targetId), userId).first(); if (membership?.muted_until && new Date(membership.muted_until).getTime() > Date.now()) return; } await env.DB.prepare("INSERT INTO notifications (user_id,actor_id,kind,target_type,target_id,title,body,url,created_at) VALUES (?,?,?,?,?,?,?,?,?)").bind(userId, actorId, String(kind).slice(0,60), targetType, targetId != null ? Number(targetId) : null, String(title).slice(0,160), String(body).slice(0,1000), url ? String(url).slice(0,500) : null, new Date().toISOString()).run(); } catch (error) { console.error("notification_failed", error); } }
 async function notifyMentions(env, textValue, actor, targetType, targetId, targetUrl) { const names=[...String(textValue||"").matchAll(/@([a-z0-9_]{3,24})/gi)].map(x=>x[1].toLowerCase()).filter((v,i,a)=>a.indexOf(v)===i); for(const name of names){ const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=? AND status='active'").bind(name).first(); if(target && target.id!==actor.id) await createNotification(env,{userId:target.id,actorId:actor.id,kind:"mention",targetType,targetId,title:"You were mentioned",body:"@"+actor.username+" mentioned you.",url:targetUrl}); } }
@@ -649,7 +651,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   if(url.pathname==="/api/economy"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to view your wallet."},401,origin);
     const now=Date.now(),today=new Date(now).toISOString().slice(0,10);
-    await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
+    await ensureWallet(env,user);
     const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date,last_mission_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
     const onlineAt=wallet?.last_online_claim_at?new Date(wallet.last_online_claim_at).getTime():0;
     const played=await env.DB.prepare("SELECT COUNT(*) AS count FROM arcade_high_scores WHERE user_id=? AND updated_at>=?").bind(user.id,today+"T00:00:00.000Z").first();
@@ -662,7 +664,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const type=String(body.type||""),nowIso=new Date().toISOString(),today=nowIso.slice(0,10);
     if(!["online","daily","quest"].includes(type))return json({error:"Unknown reward type."},400,origin);
-    await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
+    await ensureWallet(env,user);
     let claimed=0;
     if(type==="online"){
       const result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+50,last_online_claim_at=?,updated_at=? WHERE user_id=? AND (last_online_claim_at IS NULL OR julianday(?) - julianday(last_online_claim_at) >= 0.0208333333)").bind(nowIso,nowIso,user.id,nowIso).run();
@@ -687,7 +689,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const gameLabels={"trench-bounty":"Trench Bounty","neon-kelp-reef":"Neon Kelp: Reef Rush","magma-trench":"Magma Trench: Relic Hunt"};
     if(!gameLabels[game])return json({error:"Unknown fish-table cabinet."},400,origin);
     if(!Number.isSafeInteger(amount)||amount<1||amount>(action==="spend"?20:3000))return json({error:"Transaction amount is outside the allowed range."},400,origin);
-    await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
+    await ensureWallet(env,user);
     let result;
     if(action==="spend"){
       result=await env.DB.prepare("UPDATE user_wallets SET balance=balance-?,updated_at=? WHERE user_id=? AND balance>=?").bind(amount,now,user.id,amount).run();
