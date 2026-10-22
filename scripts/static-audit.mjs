@@ -62,6 +62,7 @@ const monsterMmoChecks = [
   ["monster MMO saves canonicalize creatures against an allowlist", ["mossbit:{name:\"Mossbit\"","embercub:{name:\"Embercub\"","driftfin:{name:\"Driftfin\"","gloamlet:{name:\"Gloamlet\""].every(value=>worker.includes(value))],
   ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
   ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
+  ["monster MMO party lead selection is server-validated", worker.includes('action==="party-lead"') && worker.includes("The active creature cannot change during battle.")],
   ["online encounter chance and grass validation are server-side", worker.includes('action==="encounter-check"' ) && worker.includes("Wild encounters can only begin in tall grass.") && worker.includes("Math.random()<0.22")],
 ];
 for (const [label, passed] of monsterMmoChecks) {
