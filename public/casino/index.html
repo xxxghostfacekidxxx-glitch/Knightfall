@@ -1,70 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Ash-Fall Casino | Chaos Cartridge</title>
-  <meta name="description" content="Play slots, blackjack, European roulette, Plinko, and three original fish-table cabinets with virtual credits in Ash-Fall Casino." />
-  
-  <meta name="theme-color" content="#050309" />
-  
-  
-  
-  
-  
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      min-height: 100svh;
-      background: #050309;
-      overflow: hidden;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      padding: 46px 12px 46px;
-      /* Ash-Fall casino cabinet */
-      background:
-        radial-gradient(circle at 50% 40%, #15102a 0%, #070411 70%, #030208 100%);
-      font-family: monospace;
-    }
-    #screen {
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      /* "корпус" аркадного автомата вокруг экрана */
-      box-shadow:
-        0 0 0 4px #1b1330,
-        0 0 0 8px #2a1b4d,
-        0 0 40px 10px rgba(123, 47, 247, 0.35);
-      background: #000;
-      cursor: pointer;
-      max-width: calc(100vw - 24px);
-      max-height: calc(100svh - 100px);
-    }
-    .site-exit{position:fixed;top:10px;left:12px;z-index:5;color:#f0c5ff;text-decoration:none;font:700 12px/1.2 monospace;letter-spacing:.04em;padding:9px 11px;border:1px solid #46315f;border-radius:8px;background:#090611ef}
-    .site-exit:hover,.site-exit:focus-visible{border-color:#f06a0a;color:#fff;outline:none}
-    .casino-credit{position:fixed;bottom:7px;left:8px;right:8px;text-align:center;color:#958ca7;font:10px/1.4 monospace}
-    .casino-credit a{color:#d8b6ff}
-    @media(max-height:420px){body{padding-top:38px;padding-bottom:26px}.site-exit{top:4px;left:6px;padding:5px 7px}.casino-credit{bottom:2px;font-size:9px}}
-  
-    .fish-tables-link{position:fixed;top:10px;right:12px;z-index:6;display:inline-flex;align-items:center;gap:10px;min-height:38px;padding:0 14px;border:1px solid #7958b9;border-radius:10px;background:linear-gradient(135deg,#221934f5,#0d0a18f5);color:#f4eaff;text-decoration:none;font:900 11px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;box-shadow:0 8px 28px #0008,inset 0 1px #ffffff14;transition:transform .18s,border-color .18s,box-shadow .18s}
-    .fish-tables-link span{display:grid;place-items:center;width:22px;height:22px;border:1px solid #ad8be066;border-radius:7px;color:#edc5ff;background:#a56cff14;font-size:14px}
-    .fish-tables-link:hover,.fish-tables-link:focus-visible{transform:translateY(-2px);border-color:#d7b1ff;box-shadow:0 12px 34px #7f40ff26;outline:2px solid #cba2ff;outline-offset:3px}
-    #screen{border-radius:8px;box-shadow:0 0 0 3px #12131a,0 0 0 7px #2a2044,0 0 0 8px #574184,0 18px 65px #000a,0 0 58px #7b2ff733}
-    @media(max-width:520px){.fish-tables-link{top:8px;right:8px;min-height:34px;padding:0 9px;font-size:9px;letter-spacing:.08em}.site-exit{top:8px;left:8px;font-size:10px;padding:8px 9px}}
-  </style>
-<link rel="stylesheet" href="/arcade-polish.css?v=20261022-cabinet-refresh3">
-<script src="/arcade-polish.js?v=20261022-cabinet-refresh3" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090e">
+<meta name="description" content="The Ash-Fall Casino floor: slots, blackjack, European roulette, Plinko, and three original underwater fish-table arcade games. Virtual credits only.">
+<title>Ash-Fall Casino | The Floor</title>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/arcade-polish.css?v=20261022-casino-floor">
+<style>
+:root{color-scheme:dark;--ink:#08090e;--panel:#11141d;--edge:#ffffff17;--copy:#f5f5f7;--muted:#a0a7b5;--gold:#f6cb78;--violet:#b58aff;--ember:#ff763d}
+*{box-sizing:border-box}
+html{min-height:100%;scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 51% -20%,#4d28734a,transparent 54%),radial-gradient(ellipse at 98% 45%,#f36b2110,transparent 34%),linear-gradient(180deg,#0b0c13,#08090e 78%);color:var(--copy);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.floor{width:min(1400px,calc(100% - 48px));margin:0 auto;padding:23px 0 56px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:24px;border-bottom:1px solid #ffffff10}
+.brand{display:inline-flex;align-items:center;gap:11px;color:#f7f1ff;text-decoration:none;font-size:.78rem;font-weight:950;letter-spacing:.16em}
+.brand-icon{display:grid;place-items:center;width:38px;height:38px;border:1px solid #9e79c65c;border-radius:12px;background:linear-gradient(140deg,#332349,#10121b);color:#f0d8ff;font-size:1.1rem;box-shadow:inset 0 1px #ffffff17,0 0 24px #a36aff13}
+.top-actions{display:flex;align-items:center;gap:9px}
+.pill-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 13px;border:1px solid var(--edge);border-radius:10px;background:#ffffff05;color:#d5d8e0;text-decoration:none;font-size:.72rem;font-weight:850;transition:transform .18s,border-color .18s,background .18s}
+.pill-link:hover{transform:translateY(-2px);border-color:#b58aff88;background:#ffffff0a}
+.pill-link.hot{border-color:#9b72d5;background:linear-gradient(130deg,#8b4adb,#56308e);color:#fff;box-shadow:0 7px 23px #6733a72b}
+.masthead{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;padding:clamp(42px,7vw,86px) 0 31px}
+.kicker{display:flex;align-items:center;gap:9px;margin:0 0 17px;color:#c7a6ff;font-size:.68rem;font-weight:950;letter-spacing:.2em;text-transform:uppercase}
+.kicker:before{content:"";width:24px;height:2px;background:linear-gradient(90deg,#ad75ff,#ff9b68);box-shadow:0 0 12px #a36aff77}
+h1{max-width:900px;margin:0;font-size:clamp(3.5rem,9vw,8.2rem);line-height:.83;letter-spacing:-.09em;font-weight:1000;text-wrap:balance}
+h1 span{display:block;margin-top:.12em;color:transparent;background:linear-gradient(98deg,#fff 0%,#d8c5ff 49%,#ffbe83 100%);-webkit-background-clip:text;background-clip:text}
+.intro{max-width:680px;margin:23px 0 0;color:#a9b0bf;font-size:clamp(.94rem,1.5vw,1.07rem);line-height:1.8}
+.side-stat{min-width:170px;padding:16px 17px;border:1px solid #ffffff17;border-radius:15px;background:linear-gradient(145deg,#ffffff08,#ffffff02);box-shadow:inset 0 1px #ffffff08}
+.side-stat small{display:block;color:#8992a2;font-size:.62rem;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+.side-stat strong{display:block;margin-top:6px;font-size:1.9rem;line-height:1;letter-spacing:-.06em}
+.side-stat span{display:block;margin-top:9px;color:#bab1cb;font-size:.7rem}
+.section-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:22px 0 16px}
+.section-heading h2{margin:0;font-size:clamp(1.3rem,2.4vw,1.8rem);letter-spacing:-.055em}
+.section-heading p{margin:0;color:#828b9b;font-size:.77rem;text-align:right}
+.catalog{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}
+.game-card{--accent:#c9a4ff;--accent2:#f0daff;position:relative;display:flex;grid-column:span 3;min-width:0;min-height:330px;flex-direction:column;overflow:hidden;border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);border-radius:19px;background:linear-gradient(155deg,#171a26,#0d1018 73%);text-decoration:none;isolation:isolate;box-shadow:0 18px 52px #0005,inset 0 1px #ffffff0d;transition:transform .24s,border-color .24s,box-shadow .24s}
+.game-card:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 70% 0%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 65%);pointer-events:none}
+.game-card:after{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.75}
+.game-card:hover,.game-card:focus-visible{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent) 67%,white 5%);box-shadow:0 27px 60px #0008,0 0 29px color-mix(in srgb,var(--accent) 9%,transparent),inset 0 1px #ffffff1a;outline:none}
+.game-card.slot{--accent:#f3ca73;--accent2:#fff0b8}
+.game-card.bj{--accent:#67e9be;--accent2:#bdffe7}
+.game-card.roulette{--accent:#fa8b85;--accent2:#ffd0ce}
+.game-card.plinko{--accent:#c79aff;--accent2:#eed8ff}
+.game-card.trench{--accent:#5eeaff;--accent2:#c3fbff}
+.game-card.neon{--accent:#52f4d5;--accent2:#ff90e5}
+.game-card.magma{--accent:#ff773d;--accent2:#ffd37b}
+.art{position:relative;display:grid;place-items:center;height:170px;overflow:hidden;background:radial-gradient(ellipse at 50% 65%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 64%),linear-gradient(180deg,#121623,#0b0d14)}
+.art:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:25px 25px;mask-image:linear-gradient(#000a,transparent)}
+.art:after{content:"";position:absolute;inset:auto 0 0;height:25%;background:linear-gradient(transparent,#10131cf5)}
+.art svg{position:relative;z-index:1;width:100%;height:100%;padding:10px 20px;overflow:visible;filter:drop-shadow(0 10px 24px color-mix(in srgb,var(--accent) 20%,transparent))}
+.art-label{position:absolute;z-index:2;top:13px;left:14px;color:var(--accent);font:900 .59rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.15em;text-transform:uppercase}
+.art-badge{position:absolute;z-index:2;right:12px;top:10px;padding:6px 7px;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);border-radius:6px;background:#080a10c9;color:var(--accent2);font:850 .54rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(12px)}
+.art .float{animation:float 5s ease-in-out infinite}
+.art .float.delay{animation-delay:-2.2s}
+.art .pulse{transform-origin:50% 50%;animation:pulse 3.5s ease-in-out infinite}
+.copy{display:flex;flex:1;flex-direction:column;padding:17px 17px 16px}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#8e98a9;font-size:.59rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.ready{display:inline-flex;align-items:center;gap:6px}.ready:before{content:"";width:5px;height:5px;border-radius:50%;background:#6ae3b5;box-shadow:0 0 9px #6ae3b5}
+.copy h3{margin:11px 0 0;font-size:clamp(1.08rem,1.35vw,1.4rem);line-height:1.13;letter-spacing:-.045em;font-weight:950}
+.copy p{flex:1;min-height:4.9em;margin:10px 0 16px;color:#a3abba;font-size:.78rem;line-height:1.7}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:13px;border-top:1px solid #ffffff12;color:var(--accent2);font-size:.68rem;font-weight:950;letter-spacing:.075em;text-transform:uppercase}
+.launch{display:grid;place-items:center;width:27px;height:27px;border:1px solid color-mix(in srgb,var(--accent) 42%,transparent);border-radius:8px;background:color-mix(in srgb,var(--accent) 10%,transparent);font-size:.95rem;transition:transform .18s}
+.game-card:hover .launch{transform:translate(2px,-2px)}
+.floor-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px;padding:16px 18px;border:1px solid #ffffff12;border-radius:13px;background:#ffffff03;color:#858e9e;font-size:.7rem;line-height:1.7}
+.floor-foot strong{color:#cbd0dc}.floor-foot a{color:#c9a5ff;text-decoration:none}.floor-foot a:hover{text-decoration:underline}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:.9;transform:scale(1.04)}}
+@media(min-width:1100px){.game-card:nth-child(5),.game-card:nth-child(6),.game-card:nth-child(7){grid-column:span 4}.game-card:nth-child(n+5){min-height:355px}.game-card:nth-child(n+5) .art{height:210px}.game-card:nth-child(n+5) .copy h3{font-size:1.48rem}.game-card:nth-child(n+5) .copy p{font-size:.84rem}}
+@media(max-width:1099px){.game-card{grid-column:span 4}.game-card:nth-child(n+5){grid-column:span 4}.catalog{gap:12px}.masthead{grid-template-columns:1fr}.side-stat{display:flex;align-items:center;gap:15px;width:max-content;min-width:0;padding:11px 14px}.side-stat strong{margin:0;font-size:1.3rem}.side-stat span{margin:0}}
+@media(max-width:760px){.floor{width:calc(100% - 28px);padding-top:14px}.masthead{padding-top:48px}.catalog{grid-template-columns:repeat(2,minmax(0,1fr))}.game-card,.game-card:nth-child(n+5){grid-column:span 1;min-height:320px}.art{height:150px}.copy{padding:14px}.copy h3{font-size:1.05rem}.copy p{font-size:.75rem}.side-stat{width:auto}.floor-foot{align-items:flex-start;flex-direction:column}.section-heading{align-items:flex-start;flex-direction:column}.section-heading p{text-align:left}}
+@media(max-width:470px){.topbar{align-items:flex-start}.brand{font-size:.64rem;letter-spacing:.1em}.brand-icon{width:33px;height:33px}.top-actions{gap:5px}.pill-link{min-height:34px;padding:0 8px;font-size:.62rem}.catalog{grid-template-columns:minmax(0,1fr)}.game-card,.game-card:nth-child(n+5){min-height:0;display:grid;grid-template-columns:112px minmax(0,1fr);grid-column:1/-1}.art{height:100%;min-height:216px}.art svg{padding:14px 4px}.art-label{left:8px;top:9px;font-size:.48rem;letter-spacing:.08em}.art-badge{right:6px;top:30px;font-size:.45rem}.copy{padding:15px 13px}.copy p{min-height:0;margin:9px 0 13px}.copy h3{font-size:1.08rem}.card-top{font-size:.52rem;letter-spacing:.07em}.card-bottom{font-size:.56rem}.launch{flex:0 0 auto}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-  <a class="site-exit" href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a>
-  <a class="fish-tables-link" href="/casino/fish-tables.html">FISH TABLES <span aria-hidden="true">↗</span></a>
-  <canvas id="screen" aria-label="Ash-Fall Casino: slots, blackjack, European roulette, and Plinko. Use arrow keys and Enter or tap the game cards. Fish-table cabinets are linked above."></canvas>
-  <p class="casino-credit">PLAY-MONEY ONLY · Virtual chips have no cash value · Adapted from <a href="https://github.com/Lemelson/casino-by-ai" target="_blank" rel="noopener noreferrer">Casino by AI</a> under MIT License</p>
-  <script type="module" src="./src/main.js"></script>
+<main class="floor">
+  <header class="topbar">
+    <a class="brand" href="/chaos-cartridge.html"><span class="brand-icon" aria-hidden="true">✦</span><span>ASH-FALL <span style="color:#c3a7ee">CASINO</span></span></a>
+    <nav class="top-actions" aria-label="Casino navigation"><a class="pill-link" href="/chaos-cartridge.html">← Arcade</a><a class="pill-link hot" href="/casino/fish-tables.html">Fish table room ↗</a></nav>
+  </header>
+  <section class="masthead">
+    <div><p class="kicker">The virtual casino floor · Seven cabinets</p><h1>THE FLOOR<br><span>IS YOURS.</span></h1><p class="intro">Choose a table, learn its rhythm and make every move count. Classic casino games share the floor with three original fish-shooter cabinets built exclusively for Ash-Fall. No real-money gambling. Just browser games with far too much personality.</p></div>
+    <div class="side-stat" aria-label="Seven playable game cabinets"><div><small>On the floor</small><strong>07</strong></div><span>playable cabinets<br>all browser-based</span></div>
+  </section>
+  <section aria-labelledby="classic-title">
+    <div class="section-heading"><h2 id="classic-title">Classic tables</h2><p>Four familiar formats. A fresh cabinet around each one.</p></div>
+    <div class="catalog">
+      <a class="game-card slot" href="/casino/classic-floor.html?game=slots" aria-label="Play Neon Seven slots">
+        <div class="art"><span class="art-label">01 / REELS</span><span class="art-badge">Spin & win</span>
+          <svg viewBox="0 0 220 160" role="img" aria-label="Three glowing slot reels showing sevens"><defs><linearGradient id="slot-metal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0af"/><stop offset=".3" stop-color="#95622d"/><stop offset="1" stop-color="#24172a"/></linearGradient><linearGradient id="slot-neon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5b4"/><stop offset=".5" stop-color="#ffc65c"/><stop offset="1" stop-color="#f06b35"/></linearGradient></defs><ellipse class="pulse" cx="110" cy="94" rx="75" ry="55" fill="#f8bb59" opacity=".12"/><g class="float"><rect x="37" y="25" width="146" height="105" rx="10" fill="url(#slot-metal)" stroke="#ffdd8e" stroke-width="2"/><rect x="46" y="37" width="128" height="72" rx="5" fill="#11111a" stroke="#72502e" stroke-width="2"/><rect x="51" y="42" width="37" height="62" rx="3" fill="#1a1c27"/><rect x="91" y="42" width="37" height="62" rx="3" fill="#21202a"/><rect x="131" y="42" width="37" height="62" rx="3" fill="#1a1c27"/><g fill="url(#slot-neon)" font-size="43" font-weight="1000" text-anchor="middle" font-family="system-ui"><text x="69" y="87">7</text><text x="109" y="87">7</text><text x="149" y="87">7</text></g><path d="M50 117H170" stroke="#fff1b0" stroke-width="2" opacity=".8"/><circle cx="164" cy="29" r="3" fill="#fff7d1"/><path d="M183 55h10v21h-10" stroke="#ffce69" stroke-width="4" fill="none"/></g><g fill="#ffe4a3"><circle cx="26" cy="42" r="2"/><circle cx="195" cy="111" r="1.5"/><circle cx="53" cy="18" r="1.5"/></g></svg>
+        </div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Classic</span></div><h3>Neon Seven Slots</h3><p>Three reels, weighted symbols, a center payline and animated wins. Spin, set your bet and learn the paytable.</p><div class="card-bottom"><span>Enter the reels</span><span class="launch">↗</span></div></div>
+      </a>
+      <a class="game-card bj" href="/casino/classic-floor.html?game=blackjack" aria-label="Play blackjack">
+        <div class="art"><span class="art-label">02 / CARD TABLE</span><span class="art-badge">Beat the dealer</span>
+          <svg viewBox="0 0 220 160" role="img" aria-label="Two premium playing cards on an emerald felt table"><defs><linearGradient id="card-surface" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbfff7"/><stop offset="1" stop-color="#b8cdbf"/></linearGradient></defs><ellipse cx="110" cy="111" rx="77" ry="32" fill="#1abf86" opacity=".13"/><g class="float delay" transform="translate(89 82) rotate(-13)"><rect x="-35" y="-52" width="70" height="102" rx="7" fill="#17251f" stroke="#75edbf" stroke-width="2"/><rect x="-31" y="-48" width="62" height="94" rx="4" fill="#10291f"/><path d="M-23-36l46 70M23-36l-46 70" stroke="#2e5b4a" stroke-width="2"/></g><g class="float" transform="translate(126 78) rotate(12)"><rect x="-35" y="-52" width="70" height="102" rx="7" fill="url(#card-surface)" stroke="#c9ffe7" stroke-width="2"/><text x="-26" y="-28" font-size="20" fill="#ce3f54" font-weight="900">A</text><path d="M0-4C-24-20-27 1 0 22C27 1 24-20 0-4Z" fill="#cf3855"/><text x="14" y="39" font-size="20" fill="#ce3f54" font-weight="900" text-anchor="middle">♥</text></g><circle cx="35" cy="34" r="2" fill="#a0ffe0"/><circle cx="184" cy="115" r="2" fill="#a0ffe0"/></svg>
+        </div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Classic</span></div><h3>Blackjack</h3><p>Hit, stand, double or split against the dealer. The table handles the shuffle, soft 17 and payouts.</p><div class="card-bottom"><span>Take a seat</span><span class="launch">↗</span></div></div>
+      </a>
+      <a class="game-card roulette" href="/casino/classic-floor.html?game=roulette" aria-label="Play European roulette">
+        <div class="art"><span class="art-label">03 / WHEEL</span><span class="art-badge">European zero</span>
+          <svg viewBox="0 0 220 160" role="img" aria-label="Polished roulette wheel with red black and green pockets"><defs><radialGradient id="roulette-gold"><stop stop-color="#fff1ba"/><stop offset=".6" stop-color="#b78135"/><stop offset="1" stop-color="#342218"/></radialGradient></defs><g class="pulse"><circle cx="110" cy="82" r="64" fill="#f47f79" opacity=".07"/></g><g class="float"><circle cx="110" cy="82" r="58" fill="#171a20" stroke="url(#roulette-gold)" stroke-width="5"/><circle cx="110" cy="82" r="47" fill="#0c1714" stroke="#f0c878" stroke-width="2"/><g transform="translate(110 82)"><path d="M0 0V-46A46 46 0 0 1 15.7-43.2Z" fill="#1b1b20" stroke="#d7b46d" stroke-width="1"/><path d="M0 0L15.7-43.2A46 46 0 0 1 29.5-35.3Z" fill="#b92f3b"/><path d="M0 0L29.5-35.3A46 46 0 0 1 39.8-23Z" fill="#111216"/><path d="M0 0L39.8-23A46 46 0 0 1 46 0Z" fill="#b92f3b"/><path d="M0 0L46 0A46 46 0 0 1 39.8 23Z" fill="#111216"/><path d="M0 0L39.8 23A46 46 0 0 1 23 39.8Z" fill="#b92f3b"/><path d="M0 0L23 39.8A46 46 0 0 1 0 46Z" fill="#111216"/><path d="M0 0L0 46A46 46 0 0 1 -23 39.8Z" fill="#b92f3b"/><path d="M0 0L-23 39.8A46 46 0 0 1 -39.8 23Z" fill="#111216"/><path d="M0 0L-39.8 23A46 46 0 0 1 -46 0Z" fill="#b92f3b"/><path d="M0 0L-46 0A46 46 0 0 1 -39.8-23Z" fill="#111216"/><path d="M0 0L-39.8-23A46 46 0 0 1 -23-39.8Z" fill="#b92f3b"/><path d="M0 0L-23-39.8A46 46 0 0 1 0-46Z" fill="#111216"/></g><circle cx="110" cy="82" r="21" fill="url(#roulette-gold)" stroke="#ffe6a3" stroke-width="1.5"/><circle cx="110" cy="82" r="9" fill="#211b1c" stroke="#ffe6a3" stroke-width="2"/><circle cx="110" cy="82" r="3" fill="#ffe6a3"/></g><circle cx="110" cy="18" r="3" fill="#fff2d1"/><circle cx="166" cy="101" r="2" fill="#fff2d1"/></svg>
+        </div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Classic</span></div><h3>European Roulette</h3><p>Bet on numbers, colors, even money, columns or dozens. One green zero, a spinning wheel and a bouncing ball.</p><div class="card-bottom"><span>Place your bets</span><span class="launch">↗</span></div></div>
+      </a>
+      <a class="game-card plinko" href="/casino/classic-floor.html?game=plinko" aria-label="Play Plinko">
+        <div class="art"><span class="art-label">04 / DROP</span><span class="art-badge">Multipliers</span>
+          <svg viewBox="0 0 220 160" role="img" aria-label="Glowing plinko board with a ball falling through pegs"><defs><linearGradient id="plinko-orb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".45" stop-color="#d7b0ff"/><stop offset="1" stop-color="#8853d2"/></linearGradient></defs><path d="M40 19H180L162 121H58Z" fill="#191320" stroke="#a978e5" stroke-width="2"/><g fill="#dfc4ff" opacity=".9"><circle cx="80" cy="40" r="2.8"/><circle cx="110" cy="40" r="2.8"/><circle cx="140" cy="40" r="2.8"/><circle cx="65" cy="59" r="2.8"/><circle cx="95" cy="59" r="2.8"/><circle cx="125" cy="59" r="2.8"/><circle cx="155" cy="59" r="2.8"/><circle cx="80" cy="78" r="2.8"/><circle cx="110" cy="78" r="2.8"/><circle cx="140" cy="78" r="2.8"/><circle cx="65" cy="97" r="2.8"/><circle cx="95" cy="97" r="2.8"/><circle cx="125" cy="97" r="2.8"/><circle cx="155" cy="97" r="2.8"/></g><g class="float"><circle cx="104" cy="30" r="8" fill="url(#plinko-orb)" stroke="#fff" stroke-width="1.5"/><path d="M104 41l-8 13m8-13l9 12m-9-12l-1 18" stroke="#dfbdff" stroke-width="2" stroke-linecap="round"/></g><g fill="#9b62d8"><rect x="51" y="125" width="20" height="10" rx="2"/><rect x="73" y="125" width="20" height="10" rx="2"/><rect x="95" y="125" width="30" height="10" rx="2"/><rect x="127" y="125" width="20" height="10" rx="2"/><rect x="149" y="125" width="20" height="10" rx="2"/></g><text x="110" y="146" text-anchor="middle" font-size="9" fill="#ecd9ff" font-weight="900">x1.2   x5   x1.2</text></svg>
+        </div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Classic</span></div><h3>Plinko</h3><p>Drop a ball through the peg field and let the bounce decide which multiplier catches it at the bottom.</p><div class="card-bottom"><span>Drop a ball</span><span class="launch">↗</span></div></div>
+      </a>
+    </div>
+  </section>
+  <section aria-labelledby="fish-title">
+    <div class="section-heading"><h2 id="fish-title">Original fish tables</h2><p>Three custom worlds. Boss encounters, weapon choice and target feedback.</p></div>
+    <div class="catalog">
+      <a class="game-card trench" href="/abyssal-arsenal.html" aria-label="Play Trench Bounty">
+        <div class="art"><span class="art-label">05 / DEEP SEA</span><span class="art-badge">Boss bounty</span><svg viewBox="0 0 220 160" role="img" aria-label="Cyan deep-sea fish illustration"><defs><linearGradient id="fish-a" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e4ffff"/><stop offset=".4" stop-color="#50dff5"/><stop offset="1" stop-color="#07506e"/></linearGradient></defs><circle class="pulse" cx="113" cy="80" r="59" stroke="#5eeaff" stroke-dasharray="4 7" stroke-width="1.5" fill="none"/><g class="float"><path d="M43 80Q64 35 112 51Q150 51 161 80Q147 108 111 108Q65 123 43 80L13 53L20 80L13 106Z" fill="url(#fish-a)" stroke="#b9fbff" stroke-width="2"/><path d="M84 54L99 37L119 52M83 105L103 121L119 107M76 66L90 80L76 93" fill="none" stroke="#0b596a" stroke-width="3"/><circle cx="138" cy="72" r="5" fill="#06121d" stroke="#fff" stroke-width="1.5"/><circle cx="139" cy="71" r="1.3" fill="#fff"/></g><g stroke="#b4fbff" fill="none"><circle cx="165" cy="58" r="18"/><path d="M140 58h10m30 0h10m-25-25v10m0 30v10"/></g><circle cx="33" cy="30" r="2" fill="#b4fbff"/><circle cx="179" cy="122" r="2" fill="#b4fbff"/></svg></div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Original</span></div><h3>Trench Bounty</h3><p>Chain-blast schools and meet the Trench Leviathan with four cannon power levels.</p><div class="card-bottom"><span>Explore the abyss</span><span class="launch">↗</span></div></div>
+      </a>
+      <a class="game-card neon" href="/neon-kelp-reef-rush.html" aria-label="Play Neon Kelp: Reef Rush">
+        <div class="art"><span class="art-label">06 / CYBER REEF</span><span class="art-badge">Combo chain</span><svg viewBox="0 0 220 160" role="img" aria-label="Teal and magenta cyber reef fish"><defs><linearGradient id="fish-b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d8fff5"/><stop offset=".45" stop-color="#48efcf"/><stop offset="1" stop-color="#17696e"/></linearGradient></defs><circle class="pulse" cx="111" cy="80" r="58" fill="none" stroke="#ff7adf" stroke-dasharray="20 6 3 6"/><g class="float"><path d="M42 80Q64 36 111 52Q149 51 164 80Q143 108 110 108Q64 121 42 80L11 54L22 80L11 106Z" fill="url(#fish-b)" stroke="#c0fff3" stroke-width="2"/><path d="M83 55L100 37L120 53M84 106L103 121L120 107M77 66L91 80L77 93" fill="none" stroke="#0d5059" stroke-width="3"/><circle cx="140" cy="72" r="5" fill="#07141a" stroke="#ff9fe7" stroke-width="2"/><path d="M60 69h13m-13 9h8m-8 9h12" stroke="#fff" stroke-width="2"/></g><path d="M174 38q15 10 0 20q-15 10 0 20" stroke="#ff74e1" fill="none" stroke-width="3"/><circle cx="30" cy="35" r="2" fill="#8affea"/><circle cx="189" cy="120" r="2" fill="#ff8de5"/></svg></div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Original</span></div><h3>Neon Kelp: Reef Rush</h3><p>Switch Pulse, Lance or Splitter, build combo chains and break the Sunken Core.</p><div class="card-bottom"><span>Enter the reef</span><span class="launch">↗</span></div></div>
+      </a>
+      <a class="game-card magma" href="/magma-trench-relic-hunt.html" aria-label="Play Magma Trench: Relic Hunt">
+        <div class="art"><span class="art-label">07 / LAVA ZONE</span><span class="art-badge">Heat management</span><svg viewBox="0 0 220 160" role="img" aria-label="Molten fish with orange and gold armored fins"><defs><linearGradient id="fish-c" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff1bf"/><stop offset=".4" stop-color="#ff9850"/><stop offset="1" stop-color="#781b19"/></linearGradient></defs><path d="M0 132l25-17l18 12l20-23l23 26l20-19l24 20l24-25l25 26l24-20l17 15v33H0Z" fill="#421517"/><circle class="pulse" cx="110" cy="80" r="57" fill="none" stroke="#ffbc66" stroke-dasharray="3 7"/><g class="float"><path d="M43 80Q64 35 112 51Q150 51 161 80Q147 108 111 108Q65 123 43 80L13 53L20 80L13 106Z" fill="url(#fish-c)" stroke="#ffd58a" stroke-width="2"/><path d="M83 54L94 33L109 47L125 33L127 54M83 106L102 124L119 107" fill="#a83021" stroke="#ffbf63" stroke-width="3"/><path d="M77 67l14 12l-13 14m31-29l12 13l-11 13" stroke="#7b211c" stroke-width="3" fill="none"/><circle cx="139" cy="72" r="5" fill="#230d0b" stroke="#ffe6a7" stroke-width="2"/></g><circle cx="178" cy="43" r="2" fill="#ffc56a"/><circle cx="36" cy="37" r="2" fill="#ffc56a"/></svg></div><div class="copy"><div class="card-top"><span class="ready">Ready to play</span><span>Original</span></div><h3>Magma Trench: Relic Hunt</h3><p>Manage cannon heat, trigger Vent Burst and hunt the Furnace King for relic rewards.</p><div class="card-bottom"><span>Enter the caldera</span><span class="launch">↗</span></div></div>
+      </a>
+    </div>
+  </section>
+  <footer class="floor-foot"><div><strong>Play-money only.</strong> Virtual credits have no cash value and cannot be deposited or redeemed.</div><div>Original Ash-Fall cabinets · <a href="/casino/fish-tables.html">View fish-table collection ↗</a> · <a href="/chaos-cartridge.html">Back to Chaos Cartridge</a></div></footer>
+</main>
 </body>
 </html>
