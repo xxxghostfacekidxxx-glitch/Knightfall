@@ -133,7 +133,7 @@
       worldSocket.addEventListener("message",event=>{
         let message;try{message=JSON.parse(event.data);}catch(_){return;}
         if(message.type==="world-ready"){
-          worldConnected=true;worldUserId=Number(message.you.userId);state.x=message.you.x;state.y=message.you.y;remotePlayers.clear();
+          worldConnected=true;worldUserId=Number(message.you.userId);state.x=message.you.x;state.y=message.you.y;if(Number.isInteger(message.you.steps))state.steps=message.you.steps;if(Number.isInteger(message.you.version))cloudVersion=message.you.version;remotePlayers.clear();
           for(const player of message.players||[])if(player.userId!==message.you.userId)remotePlayers.set(player.userId,player);
           render();note("Connected to Cinder Meadow. Other trainers are now visible.");setCloudStatus("SHARED WORLD · ONLINE");save(false);return;
         }
