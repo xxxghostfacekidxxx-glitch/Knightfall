@@ -1214,6 +1214,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
     const now=new Date().toISOString();
     if(expected===0){
+      if(input.x!==4||input.y!==4||input.steps!==0||input.encounters!==0||input.caught!==0||input.badges!==0||input.bag!==8||input.party.length!==1||input.party[0].id!=="embercub"||input.party[0].level!==5)return json({error:"New cloud saves must start from the standard trainer profile."},403,origin);
       try{await env.DB.prepare("INSERT INTO monster_game_saves (user_id,save_json,version,updated_at) VALUES (?,?,1,?)").bind(user.id,JSON.stringify(clean),now).run();}
       catch(error){const current=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(current)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(current.version)},409,origin);throw error;}
       await audit(env,user,"monster_mmo.save.create","game_save",user.id,{party_size:party.length});
