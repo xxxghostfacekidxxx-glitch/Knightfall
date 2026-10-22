@@ -4,7 +4,7 @@ Last updated: 2026-10-21
 
 ## Implemented on the feature branch
 
-- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species with custom SVG illustrations, turn-based battles/capture, party management, elemental type matchups, event log, and creature XP progress bars.
+- Responsive browser prototype: tile map, keyboard/touch movement, eight original creature species with custom SVG illustrations, turn-based battles/capture, party management, elemental type matchups with a live effectiveness indicator, event log, and creature XP progress bars.
 - Local browser save for offline play, including creature XP progress and visible progress bars.
 - Authenticated Worker endpoints:
   - `GET /api/game/save`: loads the signed-in user's save.
@@ -14,7 +14,7 @@ Last updated: 2026-10-21
 - Save validation checks position/counters, requires walkable tiles, rejects non-adjacent position changes, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session. The ordinary save route cannot alter party membership/levels/HP, inventory, or progression counters; those changes go through validated game actions. First-time cloud creation supports a bounded import of existing local progress so players do not lose prototype saves.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
 - The online client routes battle actions and party lead selection through the authenticated Worker and restores active battle state after reconnect. Party members can be selected as the active lead outside battle, the camp at X 04 / Y 01 restores the party when no battle is active, and victories award XP toward a level-based threshold. XP, level, HP, and derived stats are persisted server-side for online play. Signed-out/offline play retains the local prototype combat fallback.
-- Static audit assertions cover authentication, version checks, species allowlisting, rate limits, server-side battle actions, and credentialed cloud requests.
+- Static audit assertions cover authentication, version checks, species allowlisting, rate limits, server-side battle actions, type-effectiveness parity, original sprite assets, the live matchup indicator, and credentialed cloud requests.
 
 ## Deployment requirements before cloud sync and multiplayer can work
 
