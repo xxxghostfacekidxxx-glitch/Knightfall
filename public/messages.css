@@ -200,3 +200,13 @@
 .conversation[aria-current="true"] .conversation-copy strong{color:#fff}
 .unread{min-width:1.35rem;min-height:1.35rem;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:0 .3rem;font-size:.7rem;font-variant-numeric:tabular-nums}
 .inbox-filter{white-space:nowrap}
+
+.mobile-inbox-back{display:none;border:1px solid #4a3023!important;background:#20140e!important;color:#ffc19d!important;border-radius:8px;padding:.48rem .6rem;font-size:.72rem;font-weight:800;white-space:nowrap}
+@media(max-width:850px){
+ .message-layout.show-chat{grid-template-columns:minmax(0,1fr)}
+ .message-layout.show-chat>.conversation-panel{display:none}
+ .message-layout:not(.show-chat)>.chat-panel{display:none}
+ .mobile-inbox-back{display:inline-flex;align-items:center;justify-content:center}
+ .chat-tools{gap:.35rem}
+}
+@media(max-width:480px){.mobile-inbox-back{padding:.45rem .5rem;font-size:.68rem}}
