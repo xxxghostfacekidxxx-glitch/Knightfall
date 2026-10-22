@@ -642,9 +642,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({conversation_id:conversationId,reply,mood},200,origin);
   }
   // Arcade persistence: scoreboards are public; score submissions and saves require a session.
-  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter","reaction-ritual-afterdark","madhouse-match","lights-out-afterburn","whack-a-glitch-panic","cinder-clicker-pocket","snake-ashes-redux","ember-breakout-afterdark","pong-no-return","city-of-cinders","not-dead-yet","graveyard-shift","cursed-circuit","dumpster-dive"]);
+  const arcadeGames = new Set(["cinder-clicker","madhouse-memory","guess-the-curse","reaction-ritual","rock-paper-ruin","tic-tac-toe-doom","whack-a-glitch","snake-in-the-ashes","minefield-bad-ideas","ember-breaker","cinder-2048","ashes-void-shooter","reaction-ritual-afterdark","madhouse-match","lights-out-afterburn","whack-a-glitch-panic","cinder-clicker-pocket","snake-ashes-redux","ember-breakout-afterdark","pong-no-return","city-of-cinders","not-dead-yet","graveyard-shift","cursed-circuit","dumpster-dive","trench-bounty","neon-kelp-reef","magma-trench"]);
   // Conservative sanity caps for the new fixed-rule games. These catch obvious forged values, not all cheating.
-  const arcadeScoreCaps = { "reaction-ritual-afterdark":1000, "madhouse-match":2000, "lights-out-afterburn":500, "whack-a-glitch-panic":60, "snake-ashes-redux":100000, "ember-breakout-afterdark":300, "pong-no-return":7, "city-of-cinders":25000, "graveyard-shift":2000, "cursed-circuit":100, "dumpster-dive":250 };
+  const arcadeScoreCaps = { "reaction-ritual-afterdark":1000, "madhouse-match":2000, "lights-out-afterburn":500, "whack-a-glitch-panic":60, "snake-ashes-redux":100000, "ember-breakout-afterdark":300, "pong-no-return":7, "city-of-cinders":25000, "graveyard-shift":2000, "cursed-circuit":100, "dumpster-dive":250, "trench-bounty":1000000, "neon-kelp-reef":1000000, "magma-trench":1000000 };
   // Shared profile currency and server-enforced reward cooldowns.
   if(url.pathname==="/api/economy"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to view your wallet."},401,origin);
@@ -678,6 +678,29 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const wallet=await env.DB.prepare("SELECT balance,last_online_claim_at,last_daily_claim_date,last_mission_claim_date FROM user_wallets WHERE user_id=?").bind(user.id).first();
     await audit(env,user,"economy.claim","wallet",user.id,{type,amount:claimed,balance:Number(wallet.balance)});
     return json({ok:true,type,claimed,balance:Number(wallet.balance),online_next_at:wallet.last_online_claim_at?new Date(new Date(wallet.last_online_claim_at).getTime()+30*60*1000).toISOString():null,daily_ready:wallet.last_daily_claim_date!==today,quest_ready:wallet.last_mission_claim_date!==today},200,origin);
+  }
+  if(url.pathname==="/api/economy/game-transaction"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use your shared Cinders wallet."},401,origin);
+    if(!(await rateLimit(env,request,"economy-game-transaction",600,60,user.id)))return json({error:"Too many game transactions. Pause a moment."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const action=String(body.action||""),game=String(body.game||""),amount=Number(body.amount),now=new Date().toISOString();
+    const gameLabels={"trench-bounty":"Trench Bounty","neon-kelp-reef":"Neon Kelp: Reef Rush","magma-trench":"Magma Trench: Relic Hunt"};
+    if(!gameLabels[game])return json({error:"Unknown fish-table cabinet."},400,origin);
+    if(!Number.isSafeInteger(amount)||amount<1||amount>(action==="spend"?20:3000))return json({error:"Transaction amount is outside the allowed range."},400,origin);
+    await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,500)").bind(user.id).run();
+    let result;
+    if(action==="spend"){
+      result=await env.DB.prepare("UPDATE user_wallets SET balance=balance-?,updated_at=? WHERE user_id=? AND balance>=?").bind(amount,now,user.id,amount).run();
+      if(!result.meta?.changes){const w=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();return json({error:"Not enough Cinders for that shot.",balance:Number(w?.balance||0)},409,origin);}
+    }else if(action==="earn"){
+      const recent=await env.DB.prepare("SELECT COALESCE(SUM(amount),0) AS total FROM wallet_ledger WHERE user_id=? AND amount>0 AND reason LIKE '%catch payout' AND created_at>=?").bind(user.id,new Date(Date.now()-60000).toISOString()).first();
+      if(Number(recent?.total||0)+amount>5000)return json({error:"Catch payout limit reached for this minute. Keep playing after the payout window cools down."},429,origin);
+      result=await env.DB.prepare("UPDATE user_wallets SET balance=balance+?,updated_at=? WHERE user_id=?").bind(amount,now,user.id).run();
+      if(!result.meta?.changes)return json({error:"Wallet update failed."},409,origin);
+    }else return json({error:"Unknown transaction action."},400,origin);
+    await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,action==="spend"?-amount:amount,gameLabels[game]+(action==="spend"?" shot cost":" catch payout"),now).run();
+    const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    return json({ok:true,action,amount,balance:Number(wallet?.balance||0)},200,origin,{"cache-control":"no-store"});
   }
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
