@@ -57,3 +57,8 @@ Apply the migration through the guarded **Apply reviewed D1 migrations** GitHub 
 ## Production application record (2026-10-22)
 
 The production D1 database `knightfall-forum` was verified to be missing migrations `0020_friends.sql`, `0021_member_bot_slots.sql`, and `0022_message_read_cursors.sql`. The guarded GitHub workflow could not be triggered through the connected GitHub integration, so the exact reviewed SQL for those three additive migrations was applied through the Cloudflare D1 query API in order. Each migration's ledger row was inserted only after its SQL completed successfully. A subsequent read-only verification confirmed all three ledger rows, the `friend_requests` table, the role-aware `personal_bots_owner_limit` trigger (regular members 2, moderators 5, admins 10), and `conversation_members.last_read_message_id` are present. This was a direct API application, not a run of the Wrangler migration workflow.
+
+
+## Starting Cinders balances (0024)
+
+Migration `0024_starting_cinders.sql` raises each existing wallet to a minimum starting balance without reducing balances above the threshold: regular members receive at least 2,000 Cinders; admins, moderators, god-role accounts, and the `knightfall` owner account receive at least 1,000,000. The adjustment is recorded in `wallet_ledger`. The Worker also creates new wallets with the appropriate role-based starting balance. Apply this migration through the guarded production migration workflow or an authorized D1 migration process, then verify the wallet balances and migration ledger before reporting it live.
