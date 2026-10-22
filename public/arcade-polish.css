@@ -258,3 +258,70 @@ main.af-game-root:fullscreen .hud,main.af-game-root:-webkit-full-screen .hud{mar
     color: #d1c8bf !important;
   }
 }
+
+
+/* Round eight: game-specific presentation layers. Keep each game's identity while
+   making the actual play area, HUD and live feedback feel deliberately designed. */
+
+/* City of Cinders: arcade-fighter HUD and character-select clarity. */
+body:has(#roster) .roster{gap:.85rem}
+body:has(#roster) .monster-card{position:relative;overflow:hidden;min-height:118px;padding:1rem;background:linear-gradient(145deg,#191713,#0c0c0c 72%);border-radius:13px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+body:has(#roster) .monster-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--arcade-ember),#b8ff38);opacity:.65}
+body:has(#roster) .monster-card[aria-pressed="true"]{background:linear-gradient(145deg,#242016,#10120b);border-color:#b8ff38!important;box-shadow:0 0 0 1px #b8ff3830,0 12px 30px #0008}
+body:has(#roster) .monster-card strong{font-size:1.02rem;letter-spacing:-.025em;margin-bottom:.35rem}
+body:has(#roster) .hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:.65rem}
+body:has(#roster) .hud .stat{border-radius:11px;background:linear-gradient(150deg,#171513,#0b0b0b);padding:.8rem;border-color:#3b3027}
+body:has(#roster) .game-shell{border-radius:15px;border:1px solid #493528;background:#090909;box-shadow:inset 0 0 45px #0008,0 18px 45px #0005}
+body:has(#roster) .canvas-wrap{border-radius:12px;overflow:hidden;background:#08090a}
+body:has(#roster) .overlay-panel{backdrop-filter:blur(9px);border:1px solid #f06a0a70;box-shadow:0 16px 55px #000b}
+body:has(#roster) .mobile-controls .control{min-height:48px;border-radius:12px;font-weight:900}
+
+/* Not Dead Yet: compact survival HUD, readable campaign progress and strong action hierarchy. */
+body:has(#campaign-stage) .hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:.55rem;margin:1rem 0}
+body:has(#campaign-stage) .hud .stat{padding:.7rem .8rem;border-radius:10px;background:linear-gradient(145deg,#18151a,#0b0b0e);border-color:#39313e}
+body:has(#campaign-stage) .hud .stat strong{font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+body:has(#campaign-stage) #campaign-stage{border:1px solid #3e343f;border-radius:12px;padding:1rem;background:linear-gradient(120deg,#17131b,#0c0b10)}
+body:has(#campaign-stage) #stage-progress,body:has(#campaign-stage) #contract-bar{accent-color:#c8ff49}
+body:has(#campaign-stage) .game-shell{border-radius:16px;border:1px solid #41303a;background:#08090d;box-shadow:inset 0 0 55px #0009,0 20px 55px #0007}
+body:has(#campaign-stage) .screen{overflow:hidden;border-radius:12px;background:#09090e}
+body:has(#campaign-stage) .controls{gap:.65rem}
+body:has(#campaign-stage) .controls button,body:has(#campaign-stage) .touch-controls button{min-height:44px;border-radius:10px}
+body:has(#campaign-stage) #overlay{backdrop-filter:blur(8px)}
+body:has(#campaign-stage) #achievement-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.5rem}
+
+/* Lemonade Stand: business dashboard hierarchy and a calmer management surface. */
+body:has(#upgrade-sign) .layout{align-items:start}
+body:has(#upgrade-sign) .layout>.panel:first-child{background:radial-gradient(ellipse at 100% 0%,#c7f36b0b,transparent 45%),linear-gradient(145deg,#171a13,#0b0d0a)!important}
+body:has(#upgrade-sign) .layout>.panel:last-child{background:linear-gradient(155deg,#151710,#0b0d0a)!important}
+body:has(#upgrade-sign) .stats{gap:.65rem}
+body:has(#upgrade-sign) .stat{min-width:0;transition:border-color .18s ease}
+body:has(#upgrade-sign) .stat strong{font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+body:has(#upgrade-sign) .controls{gap:.9rem}
+body:has(#upgrade-sign) .field input,body:has(#upgrade-sign) .field select{min-height:44px;border-radius:9px;background:#090b08}
+body:has(#upgrade-sign) #log{max-height:300px;overflow:auto;overscroll-behavior:contain;border:1px solid #303728;border-radius:10px;padding:.8rem;background:#090b08;line-height:1.65}
+body:has(#upgrade-sign) .panel h2{display:flex;align-items:center;gap:.55rem}
+
+/* Wagonbound: journey planning, party condition and event log become distinct panels. */
+body:has(#rookcondition) .layout{align-items:start}
+body:has(#rookcondition) .layout>.panel:first-child{background:radial-gradient(ellipse at 50% 0%,#e7c58b0b,transparent 50%),linear-gradient(145deg,#191610,#0d0c09)!important}
+body:has(#rookcondition) .layout>.panel:last-child{background:linear-gradient(155deg,#17140f,#0b0a08)!important}
+body:has(#rookcondition) .stats{gap:.65rem}
+body:has(#rookcondition) .stat{min-width:0;transition:border-color .18s ease}
+body:has(#rookcondition) .stat strong{font-variant-numeric:tabular-nums}
+body:has(#rookcondition) .event{border:1px solid #4a3a27;border-radius:12px;background:linear-gradient(135deg,#1b1710,#100e0a);padding:1rem}
+body:has(#rookcondition) .landscape{border-radius:13px;box-shadow:inset 0 0 40px #0008}
+body:has(#rookcondition) #log{max-height:320px;overflow:auto;overscroll-behavior:contain;border:1px solid #3a3023;border-radius:10px;padding:.8rem;background:#0b0a08;line-height:1.65}
+body:has(#rookcondition) .controls button{min-height:44px;border-radius:9px}
+
+/* Small screens: prevent HUD cards and management controls from squeezing the play field. */
+@media(max-width:620px){
+ body:has(#roster) .hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body:has(#campaign-stage) .hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body:has(#upgrade-sign) .stats,body:has(#rookcondition) .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body:has(#upgrade-sign) .controls,body:has(#rookcondition) .controls{grid-template-columns:minmax(0,1fr)}
+ body:has(#campaign-stage) .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body:has(#campaign-stage) .controls button,body:has(#campaign-stage) .touch-controls button{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(#roster) .monster-card,body:has(#upgrade-sign) .stat,body:has(#rookcondition) .stat{transition:none}
+}
