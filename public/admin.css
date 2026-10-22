@@ -48,3 +48,5 @@ tbody tr:hover{background:rgba(211,84,0,.035)}
  th,td{padding:.65rem .55rem}
 }
 @media(prefers-reduced-motion:reduce){.admin-shortcut,.content-row,.category-row,.report,.audit-row{transition:none}}
+
+.user-count{display:block;margin-top:.35rem;color:#aaa;font-size:.76rem;font-variant-numeric:tabular-nums}.loading-users{padding:1rem;color:#aaa;border:1px solid #292929;border-radius:9px;background:#0d0d0d}.user-count[aria-live]{min-height:1.1rem}
