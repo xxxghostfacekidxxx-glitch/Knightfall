@@ -11,7 +11,7 @@ Last updated: 2026-10-21
   - `PUT /api/game/save`: writes a validated save with an optimistic version check.
   - `POST /api/game/action`: starts a wild battle only from server-validated grass tiles, resolves attacks/counters/capture/flee on the server, and persists battle outcomes before returning them.
 - D1 migration `0023_monster_game_saves.sql` creates a one-save-per-user table; `0024_monster_game_battles.sql` stores one active battle per account so reloads can restore it.
-- Save validation checks position/counters, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session.
+- Save validation checks position/counters, requires walkable tiles, rejects non-adjacent position changes, limits party size, canonicalizes creature identities/stats from a server-side allowlist, rate-limits writes, and rejects conflicting versions rather than silently overwriting another session.
 - Client attempts cloud sync using the existing Ash-Fall session cookie and falls back to local storage when signed out or the API is unavailable.
 - The online client routes battle actions through the authenticated Worker and restores active battle state after reconnect. Signed-out/offline play retains the local prototype combat fallback.
 - Static audit assertions cover authentication, version checks, species allowlisting, rate limits, server-side battle actions, and credentialed cloud requests.
@@ -36,4 +36,4 @@ Last updated: 2026-10-21
 
 ## Next engineering milestone
 
-Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then finish movement-to-save coordination and test the online game under reconnects and concurrent sessions. Add inventory/trading rules only after these core invariants pass staging.
+Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, then finish making movement persistence originate from the world server rather than the browser, then test the online game under reconnects and concurrent sessions. Add inventory/trading rules only after these core invariants pass staging.
