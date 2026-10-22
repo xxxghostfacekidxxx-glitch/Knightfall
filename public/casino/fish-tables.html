@@ -47,7 +47,7 @@ h1 span{background:linear-gradient(95deg,#fff 3%,#d9c8ff 45%,#ffb183 100%);-webk
 .art:after{content:"";position:absolute;inset:auto 0 0;height:30%;background:linear-gradient(transparent,#0e121bf2)}
 .art svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .art .halo{fill:var(--accent);opacity:.11;filter:blur(20px)}
-.art .fish-body{fill:url(#body-gradient);stroke:var(--accent);stroke-opacity:.85;stroke-width:2}
+.art .fish-body{fill:url(#trench-gradient);stroke:var(--accent);stroke-opacity:.85;stroke-width:2}
 .art .fish-detail{fill:none;stroke:var(--accent2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
 .art .spark{fill:var(--accent2);filter:drop-shadow(0 0 5px var(--accent))}
 .art .reticle{fill:none;stroke:var(--accent2);stroke-width:1.5;opacity:.72}
@@ -80,7 +80,7 @@ h1 span{background:linear-gradient(95deg,#fff 3%,#d9c8ff 45%,#ffb183 100%);-webk
 <main class="room-wrap">
   <nav class="room-nav" aria-label="Casino navigation">
     <a class="room-brand" href="/casino/index.html" style="text-decoration:none"><span class="brand-mark" aria-hidden="true">✦</span><span>ASH-FALL <span style="color:#b69adf">CASINO</span></span></a>
-    <div class="nav-links"><a class="nav-link" href="/casino/index.html">← Classic tables</a><a class="nav-link primary" href="/chaos-cartridge.html">Arcade hub ↗</a></div>
+    <div class="nav-links"><a class="nav-link" href="/casino/index.html">← Casino floor</a><a class="nav-link primary" href="/chaos-cartridge.html">Arcade hub ↗</a></div>
   </nav>
   <section class="hero">
     <p class="eyebrow">Original arcade cabinets · Collection 03</p>
@@ -95,7 +95,7 @@ h1 span{background:linear-gradient(95deg,#fff 3%,#d9c8ff 45%,#ffb183 100%);-webk
         <div class="art">
           <span class="game-index">CABINET 025 / ABYSS</span><span class="art-chip">Bounty hunt</span>
           <svg viewBox="0 0 480 270" role="img" aria-label="Glowing deep-sea fish and a targeting reticle">
-            <defs><linearGradient id="body-gradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dcffff"/><stop offset=".34" stop-color="#39d8f1"/><stop offset="1" stop-color="#09536e"/></linearGradient><radialGradient id="water"><stop stop-color="#1c88b3" stop-opacity=".55"/><stop offset="1" stop-color="#08101c" stop-opacity="0"/></radialGradient></defs>
+            <defs><linearGradient id="trench-gradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dcffff"/><stop offset=".34" stop-color="#39d8f1"/><stop offset="1" stop-color="#09536e"/></linearGradient><radialGradient id="water"><stop stop-color="#1c88b3" stop-opacity=".55"/><stop offset="1" stop-color="#08101c" stop-opacity="0"/></radialGradient></defs>
             <ellipse class="halo" cx="240" cy="141" rx="135" ry="85"/><ellipse cx="245" cy="135" rx="190" ry="100" fill="url(#water)"/>
             <g class="spin" opacity=".42"><circle class="reticle" cx="258" cy="131" r="82" stroke-dasharray="3 8"/><circle class="reticle" cx="258" cy="131" r="61" stroke-dasharray="20 6 3 6"/></g>
             <g class="drifter" transform="translate(230 136)">
@@ -121,7 +121,7 @@ h1 span{background:linear-gradient(95deg,#fff 3%,#d9c8ff 45%,#ffb183 100%);-webk
             <g fill="none" stroke="#28a999" stroke-width="3" opacity=".65"><path d="M14 270Q36 222 22 170T37 82M24 213q30-4 33-30M25 157q-21-12-23-32M454 270q-13-40 5-72t2-92M455 218q-34-2-41-34"/><path d="M52 270Q73 220 62 188T74 116M421 270q-24-37-7-76" stroke="#4ff6d1"/></g>
             <g class="spin" opacity=".38" fill="none" stroke="#ff5bdc"><circle cx="254" cy="131" r="83" stroke-dasharray="4 10"/><circle cx="254" cy="131" r="64" stroke-dasharray="36 8 4 8"/></g>
             <g class="drifter" transform="translate(248 139)">
-              <path d="M-83 0Q-45-54 11-32Q54-25 75 0Q49 34 4 31Q-45 38-83 0L-129-35L-111 0L-129 35Z" fill="url(#body-gradient)" stroke="#b4fff0" stroke-width="2"/>
+              <path d="M-83 0Q-45-54 11-32Q54-25 75 0Q49 34 4 31Q-45 38-83 0L-129-35L-111 0L-129 35Z" fill="url(#neon-gradient)" stroke="#b4fff0" stroke-width="2"/>
               <path d="M-22-28L-5-50L25-29M-20 26L7 47L28 26M-31-13L-9 0L-31 13M-3-22L8 22" fill="none" stroke="#073d4c" stroke-width="3"/>
               <path d="M-64-5h11m-11 11h8m-6-21h7" stroke="#fff" stroke-width="2"/>
               <circle cx="45" cy="-7" r="5" fill="#09101a" stroke="#e6fffc" stroke-width="2"/><circle cx="46" cy="-8" r="1.5" fill="#fff"/>
@@ -144,13 +144,13 @@ h1 span{background:linear-gradient(95deg,#fff 3%,#d9c8ff 45%,#ffb183 100%);-webk
             <path d="M0 249L51 230L101 251L146 215L195 246L242 218L286 249L334 219L379 248L428 221L480 243V270H0Z" fill="url(#lava)" opacity=".9"/>
             <g class="spin" opacity=".3" fill="none" stroke="#ffc56a"><circle cx="253" cy="131" r="83" stroke-dasharray="2 9"/><circle cx="253" cy="131" r="62" stroke-dasharray="28 6 4 7"/></g>
             <g class="drifter" transform="translate(246 137)">
-              <path d="M-77 0Q-45-47 7-31Q48-26 69 0Q43 31 3 30Q-45 38-77 0L-119-34L-104 0L-119 34Z" fill="url(#body-gradient)" stroke="#ffd48a" stroke-width="2.5"/>
+              <path d="M-77 0Q-45-47 7-31Q48-26 69 0Q43 31 3 30Q-45 38-77 0L-119-34L-104 0L-119 34Z" fill="url(#magma-gradient)" stroke="#ffd48a" stroke-width="2.5"/>
               <path d="M-19-28L-14-53L6-40L23-54L31-28M-20 26L-4 44L17 28" fill="#9b241a" stroke="#ffbd58" stroke-width="3"/>
               <path d="M-39-14L-23-4L-38 7M-8-18L5-4L-9 11M20-14L31-4L21 8" fill="none" stroke="#661b17" stroke-width="4"/>
               <circle cx="42" cy="-7" r="5.5" fill="#260c0b" stroke="#ffdf9b" stroke-width="2"/><circle cx="43" cy="-8" r="1.7" fill="#fff3ca"/>
               <path d="M52 6l14 2" stroke="#5d1412" stroke-width="3"/>
             </g>
-            <g class="drifter delay" transform="translate(110 85) scale(.33)"><path d="M-77 0Q-45-47 7-31Q48-26 69 0Q43 31 3 30Q-45 38-77 0L-119-34L-104 0L-119 34Z" fill="url(#body-gradient)" stroke="#ffd48a" stroke-width="5"/></g>
+            <g class="drifter delay" transform="translate(110 85) scale(.33)"><path d="M-77 0Q-45-47 7-31Q48-26 69 0Q43 31 3 30Q-45 38-77 0L-119-34L-104 0L-119 34Z" fill="url(#magma-gradient)" stroke="#ffd48a" stroke-width="5"/></g>
             <g class="drifter" transform="translate(381 184) scale(.26)"><path d="M-77 0Q-45-47 7-31Q48-26 69 0Q43 31 3 30Q-45 38-77 0L-119-34L-104 0L-119 34Z" fill="url(#body-gradient)" stroke="#ffd48a" stroke-width="5"/></g>
             <g class="reticle" transform="translate(307 116)" stroke="#ffe0a0"><circle r="28"/><circle r="4"/><path d="M-40 0h23M17 0h23M0-40v23M0 17v23"/></g>
             <g fill="#ffcf77"><circle cx="75" cy="185" r="2"/><circle cx="395" cy="68" r="1.8"/><circle cx="345" cy="48" r="2"/><circle cx="153" cy="214" r="1.5"/></g>
