@@ -379,6 +379,69 @@ async function handlePersonalBotRequest(request,env,origin,url){
  return json({error:"Personal bot endpoint not found."},404,origin);
 }
 
+export class MonsterWorldRoom {
+  constructor(state, env) { this.state = state; this.env = env; }
+  async fetch(request) {
+    if (request.headers.get("Upgrade")?.toLowerCase() !== "websocket") return new Response("WebSocket upgrade required", { status: 426 });
+    const userId = Number(request.headers.get("x-game-user-id"));
+    const username = String(request.headers.get("x-game-username") || "Trainer").slice(0, 32);
+    if (!Number.isInteger(userId) || userId < 1) return new Response("Unauthorized", { status: 401 });
+    for (const socket of this.state.getWebSockets()) {
+      const prior = socket.deserializeAttachment();
+      if (prior?.userId === userId) { try { socket.close(4001, "Reconnected"); } catch (_) {} }
+    }
+    const pair = new WebSocketPair();
+    const client = pair[0], server = pair[1];
+    const x = Math.max(1, Math.min(10, Number(request.headers.get("x-game-x")) || 4));
+    const y = Math.max(1, Math.min(8, Number(request.headers.get("x-game-y")) || 4));
+    const player = { userId, username, x, y, lastMoveAt: 0 };
+    this.state.acceptWebSocket(server);
+    server.serializeAttachment(player);
+    const others = this.state.getWebSockets().filter(socket => socket !== server).map(socket => {
+      const p = socket.deserializeAttachment();
+      return p ? { userId: p.userId, username: p.username, x: p.x, y: p.y } : null;
+    }).filter(Boolean);
+    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y }, players: others }));
+    this.broadcast({ type: "player-joined", player: { userId, username, x, y } }, server);
+    return new Response(null, { status: 101, webSocket: client });
+  }
+  webSocketMessage(socket, message) {
+    if (typeof message !== "string" || message.length > 512) return;
+    let body; try { body = JSON.parse(message); } catch (_) { return; }
+    if (body?.type !== "move" || !["up", "down", "left", "right"].includes(body.direction)) return;
+    const player = socket.deserializeAttachment();
+    if (!player) return;
+    const now = Date.now();
+    if (now - player.lastMoveAt < 80) return;
+    player.lastMoveAt = now;
+    const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
+    const x = player.x + delta[0], y = player.y + delta[1];
+    const blocked = new Set(["2,2", "9,2", "2,7", "9,7"]);
+    if (x < 1 || x > 10 || y < 1 || y > 8 || blocked.has(x + "," + y) || ((x === 1 || x === 10) && y === 5)) {
+      socket.send(JSON.stringify({ type: "move-blocked" }));
+      return;
+    }
+    player.x = x; player.y = y;
+    socket.serializeAttachment(player);
+    this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y } });
+  }
+  webSocketClose(socket) {
+    const player = socket.deserializeAttachment();
+    if (player) this.broadcast({ type: "player-left", userId: player.userId });
+  }
+  webSocketError(socket) {
+    const player = socket.deserializeAttachment();
+    if (player) this.broadcast({ type: "player-left", userId: player.userId });
+  }
+  broadcast(payload, except = null) {
+    const data = JSON.stringify(payload);
+    for (const socket of this.state.getWebSockets()) {
+      if (socket === except || socket.readyState !== 1) continue;
+      try { socket.send(data); } catch (_) {}
+    }
+  }
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -1029,6 +1092,22 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   const adminContentMatch=url.pathname.match(/^\/api\/admin\/content\/(threads|posts)\/(\d+)$/);if(adminContentMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const type=adminContentMatch[1],id=Number(adminContentMatch[2]),action=body.action;if(!["delete","restore","purge"].includes(action))return json({error:"Invalid content action."},400,origin);const table=type==="threads"?"threads":"posts",row=await env.DB.prepare(`SELECT id,deleted_at FROM ${table} WHERE id=?`).bind(id).first();if(!row)return json({error:"Content not found."},404,origin);if(action==="restore")await env.DB.prepare(`UPDATE ${table} SET deleted_at=NULL WHERE id=?`).bind(id).run();else if(action==="delete")await env.DB.prepare(`UPDATE ${table} SET deleted_at=? WHERE id=?`).bind(new Date().toISOString(),id).run();else{if(!row.deleted_at)return json({error:"Purge requires content to be soft-deleted first."},409,origin);if(type==="posts")await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE post_id=?").bind(id),env.DB.prepare("DELETE FROM posts WHERE id=?").bind(id)]);else await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE thread_id=? OR post_id IN (SELECT id FROM posts WHERE thread_id=?)").bind(id,id),env.DB.prepare("DELETE FROM posts WHERE thread_id=?").bind(id),env.DB.prepare("DELETE FROM threads WHERE id=?").bind(id)]);}await audit(env,user,`content.${action}`,type,id,{});return json({ok:true},200,origin);}
   if(url.pathname==="/api/admin/health"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const started=Date.now(),db=await env.DB.prepare("SELECT 1 AS ok").first();await env.SESSIONS.list({limit:1});const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);}
 
+  if(url.pathname==="/api/game/world"&&request.method==="GET"){
+    const requestOrigin=request.headers.get("Origin");
+    if(requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return new Response("Origin not allowed",{status:403});
+    if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return new Response("WebSocket upgrade required",{status:426});
+    const user=await requireUser(request,env);
+    if(!user)return new Response("Sign in to join the shared world",{status:401});
+    let x=4,y=4;
+    const saved=await env.DB.prepare("SELECT save_json FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(saved?.save_json){try{const data=JSON.parse(saved.save_json);if(Number.isInteger(data.x))x=data.x;if(Number.isInteger(data.y))y=data.y;}catch(_){}}
+    const headers=new Headers(request.headers);
+    headers.set("x-game-user-id",String(user.id));
+    headers.set("x-game-username",String(user.username||user.display_name||"Trainer").slice(0,32));
+    headers.set("x-game-x",String(x));headers.set("x-game-y",String(y));
+    const id=env.MONSTER_WORLD.idFromName("cinder-meadow");
+    return env.MONSTER_WORLD.get(id).fetch(new Request("https://monster-world/connect",{method:"GET",headers}));
+  }
   // Monster MMO persistent saves. The server canonicalizes creature stats and never trusts client roles/ownership.
   if(url.pathname==="/api/game/save"&&request.method==="GET"){
     const user=await requireUser(request,env);
