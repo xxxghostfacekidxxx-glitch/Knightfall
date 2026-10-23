@@ -295,5 +295,31 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "29 additional self-hosted cabinets are still pending; no claim of completion until each has an individual code, asset, dependency, and runtime audit."
+  "remainingTarget": "29 additional self-hosted cabinets are still pending; no claim of completion until each has an individual code, asset, dependency, and runtime audit.",
+  "nativeAdaptations": [
+    {
+      "id": "rock-paper-scissors",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/board/rock-paper-scissors/index.html",
+      "reason": "Upstream build requires Phaser and multiple scene files; the generic game rules were reimplemented in standalone HTML/CSS/JS.",
+      "assets": "No upstream code/assets reused; original emoji UI only.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "connect-four",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/kenrick95/c4",
+      "licenseReviewed": "MIT",
+      "reason": "Upstream project uses a TypeScript/Yarn build pipeline; game was reimplemented with an original minimax CPU to avoid importing its dependency chain.",
+      "assets": "No upstream code/assets reused; original CSS and DOM board.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    }
+  ]
 }
