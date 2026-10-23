@@ -346,3 +346,17 @@
 
 /* Messenger-style typing presence */
 .typing-indicator{min-height:1.2rem;padding:.15rem 1.2rem .35rem;color:var(--kf-accent-bright);font-size:.78rem;font-style:italic;background:#0b0b0b}.typing-indicator[hidden]{display:none}
+
+/* Messenger-style emoji reactions */
+.message-reactions{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-top:.55rem;min-height:1.6rem}
+.reaction-add,.reaction-options button,.reaction-chip{border:1px solid #403027;background:#15110e;color:#e8d8cb;border-radius:999px;min-height:30px;padding:.25rem .55rem;font-size:.78rem;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.reaction-add{font-size:.68rem;font-weight:750;color:#bba99b}
+.reaction-options{display:inline-flex;gap:.2rem;flex-wrap:wrap;padding:.2rem;background:#0e0c0a;border:1px solid #38281e;border-radius:999px}
+.reaction-options[hidden]{display:none}
+.reaction-options button{min-width:32px;padding:.22rem .35rem;font-size:.95rem}
+.reaction-chip{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem}
+.reaction-chip span{font-size:.7rem;font-weight:800;color:#d8bca9}
+.reaction-chip.mine-reaction{border-color:var(--kf-accent-bright);background:#302014;box-shadow:inset 0 0 0 1px #8b4b26}
+.reaction-add:hover,.reaction-options button:hover,.reaction-chip:hover{border-color:var(--kf-accent-bright);background:#2a1a10;transform:translateY(-1px)}
+.reaction-add:focus-visible,.reaction-options button:focus-visible,.reaction-chip:focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:2px}
+@media(max-width:480px){.message-reactions{gap:.25rem}.reaction-options{border-radius:12px}.reaction-options button{min-width:34px;min-height:34px}.reaction-add{min-height:34px}}
