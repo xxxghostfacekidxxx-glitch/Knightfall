@@ -724,6 +724,19 @@
       "sourceImported": true,
       "importedPath": "public/arcade/hosted/hex-puzzle/",
       "integrationNote": "Self-hosted single-file adaptation; config is local and external audio assets are disabled."
+    },
+    {
+      "id": "curvy-snake",
+      "name": "Curvy Snake",
+      "category": "Arcade",
+      "description": "Steer a glowing snake, collect orbs, and avoid your own trail.",
+      "playUrl": "/arcade/hosted/curvy-snake/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/curvy-snake/",
+      "integrationNote": "Self-hosted single-file adaptation; local config and original inline SVG artwork; audio disabled."
     }
   ]
 }
