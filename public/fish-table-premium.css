@@ -88,3 +88,22 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
 }
 @media(max-width:390px){.meter{padding:8px 6px!important}.meter strong{font-size:1rem!important}.pay{padding:10px!important}.pay b,.pay span{font-size:.75rem!important}.odds-grid{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* Casino-grade finish pass: machined trim, deliberate depth, legible play surfaces. */
+.cabinet{border-radius:24px!important;box-shadow:0 0 0 2px #02060b,0 0 0 5px #0d1b29,0 0 0 6px rgba(var(--ft-accent-rgb),.3),0 34px 100px #000d,0 0 85px rgba(var(--ft-accent-rgb),.1)!important}
+.cabinet:after{content:"";position:absolute;z-index:7;inset:8px;border:1px solid rgba(255,255,255,.065);border-radius:17px;pointer-events:none}
+.hud{background:linear-gradient(180deg,#1a2c40,#07101c 70%)!important}
+.meter{border-radius:9px!important;border-color:rgba(255,255,255,.09)!important;box-shadow:inset 0 1px rgba(255,255,255,.07),inset 0 -18px 24px #0003}
+.meter .credit{color:#d9ffad!important;text-shadow:0 0 15px #baff7a3b}
+.playfield,.field{background:radial-gradient(ellipse at 50% 45%,rgba(var(--ft-accent-rgb),.09),transparent 64%),linear-gradient(180deg,#020812,#061522 52%,#020710)!important}
+.playfield canvas,.field canvas{filter:contrast(1.035) saturate(1.12)}
+.controls{background:linear-gradient(180deg,#0b1a2a,#040a13)!important}
+.control-label{font-size:.63rem!important;font-weight:900}
+.pay,.odds-card{box-shadow:inset 0 1px rgba(255,255,255,.045),0 8px 20px #0002}
+.pay:focus-visible,.odds-card:focus-visible{outline:3px solid var(--ft-hot)!important;outline-offset:3px}
+.fish-pop section{border-color:var(--ft-hot)!important;box-shadow:0 0 0 1px rgba(255,214,138,.2),0 0 0 5px #07101d,0 30px 100px #000e,0 0 60px rgba(var(--ft-accent-rgb),.17)!important}
+.fish-pop section>button{border:1px solid var(--ft-line);border-radius:9px;background:#071321;color:#f4fbff;padding:.55rem .8rem;cursor:pointer}
+.fish-pop section>button:hover{border-color:var(--ft-hot);color:var(--ft-hot)}
+button:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.4)}
+@media(max-width:760px){.cabinet:after{inset:5px;border-radius:11px}.playfield canvas,.field canvas{filter:saturate(1.08)}}
+@media(prefers-reduced-motion:reduce){.cabinet,.pay,.odds-card,.btn{transition:none!important}}
