@@ -378,12 +378,14 @@
       "name": "Archer",
       "category": "Sports",
       "description": "Aim carefully, judge the arc, and hit the target.",
-      "playUrl": "https://sausi-7.github.io/games/games/sports/archer/index.html",
+      "playUrl": "/arcade/hosted/archer/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
-      "sourceImported": false,
-      "sourcePath": "games/sports/archer/index.html"
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "sourcePath": "games/sports/archer/index.html",
+      "importedPath": "public/arcade/hosted/archer/",
+      "integrationNote": "Self-hosted multi-file adaptation; config is local, remote font/background/audio assets removed, inline SVG retained."
     },
     {
       "id": "balance-stack",

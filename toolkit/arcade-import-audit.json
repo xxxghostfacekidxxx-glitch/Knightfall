@@ -196,6 +196,34 @@
         "local session state only",
         "no account save or leaderboard"
       ]
+    },
+    {
+      "id": "archer",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/archer/",
+      "sourcePath": "games/sports/archer/{index.html,script.js,style.css}",
+      "assets": {
+        "inlineSvg": "upstream inline vector artwork retained",
+        "background": "upstream PNG not redistributed; local CSS gradient",
+        "font": "font loader removed",
+        "audio": "not redistributed; disabled"
+      },
+      "dependencies": [
+        "browser DOM",
+        "SVG",
+        "pointer/touch input"
+      ],
+      "securityNotes": [
+        "removed config.json network fetch",
+        "no external runtime scripts or CDN",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "local session score only",
+        "no account save or leaderboard"
+      ]
     }
   ],
   "deferred": [
