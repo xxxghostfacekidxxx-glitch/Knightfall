@@ -360,3 +360,7 @@
 .reaction-add:hover,.reaction-options button:hover,.reaction-chip:hover{border-color:var(--kf-accent-bright);background:#2a1a10;transform:translateY(-1px)}
 .reaction-add:focus-visible,.reaction-options button:focus-visible,.reaction-chip:focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:2px}
 @media(max-width:480px){.message-reactions{gap:.25rem}.reaction-options{border-radius:12px}.reaction-options button{min-width:34px;min-height:34px}.reaction-add{min-height:34px}}
+
+/* Group conversations */
+.messages-hero-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}.messages-hero-actions button{white-space:nowrap}.messages-hero-actions .secondary{border:1px solid var(--kf-line);background:transparent;color:var(--kf-text,#f5f5f5);border-radius:999px;padding:.85rem 1.15rem;font:inherit;font-weight:700;cursor:pointer}.messages-hero-actions .secondary:hover{border-color:var(--kf-accent);color:var(--kf-accent)}
+@media(max-width:620px){.messages-hero-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.messages-hero-actions button{padding:.8rem .6rem}}
