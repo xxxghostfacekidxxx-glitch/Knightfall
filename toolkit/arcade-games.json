@@ -397,15 +397,17 @@
     },
     {
       "id": "balance-stack",
-      "name": "Balance Stack",
+      "name": "Balance Beam",
       "category": "Arcade",
-      "description": "Stack blocks without letting your tower wobble apart.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/balance-stack/index.html",
+      "description": "Counter the shifting tilt and keep the beam stable for 30 seconds.",
+      "playUrl": "/arcade/hosted/balance-stack/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/arcade/balance-stack/index.html"
+      "sourcePath": "games/arcade/balance-stack/index.html",
+      "importedPath": "public/arcade/hosted/balance-stack/",
+      "integrationNote": "Fresh native canvas balance game; upstream path was a Phaser/Jet Fighter shell."
     },
     {
       "id": "basketball",
@@ -463,15 +465,17 @@
     },
     {
       "id": "candy-crush",
-      "name": "Candy Crush",
+      "name": "Sugar Crash",
       "category": "Casual",
-      "description": "Swap matching candies in a match-three puzzle.",
-      "playUrl": "https://sausi-7.github.io/games/games/casual/candy-crush/index.html",
+      "description": "Swap neighboring gems to match three or more and score chains.",
+      "playUrl": "/arcade/hosted/candy-crush/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/casual/candy-crush/index.html"
+      "sourcePath": "games/casual/candy-crush/index.html",
+      "importedPath": "public/arcade/hosted/candy-crush/",
+      "integrationNote": "Fresh native match-3 game; upstream path was a Phaser/Jet Fighter shell."
     },
     {
       "id": "car-race",
@@ -661,15 +665,17 @@
     },
     {
       "id": "words-of-wonder",
-      "name": "Words of Wonder",
+      "name": "Word Weave",
       "category": "Word",
-      "description": "Build words from a letter wheel and clear the puzzle.",
-      "playUrl": "https://sausi-7.github.io/games/games/word-quiz/words-of-wonder/index.html",
+      "description": "Build words from a six-letter wheel and clear the local puzzle.",
+      "playUrl": "/arcade/hosted/words-of-wonder/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/word-quiz/words-of-wonder/index.html"
+      "sourcePath": "games/word-quiz/words-of-wonder/index.html",
+      "importedPath": "public/arcade/hosted/words-of-wonder/",
+      "integrationNote": "Fresh native word puzzle; upstream Phaser scene dependencies were not imported."
     },
     {
       "id": "penalty-shootout",

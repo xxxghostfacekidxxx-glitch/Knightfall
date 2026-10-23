@@ -512,6 +512,43 @@
         "canvas"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "candy-crush",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/casual/candy-crush/index.html",
+      "reason": "Listed page is a differently titled Phaser/Jet Fighter shell; no upstream candy branding or code/assets imported.",
+      "assets": "Original CSS-generated gems; no third-party assets.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "words-of-wonder",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/word-quiz/words-of-wonder/index.html",
+      "reason": "Upstream uses Phaser and multiple scenes; dependencies/assets were not imported.",
+      "assets": "Original local word bank and DOM/CSS; no third-party assets.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "balance-stack",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/arcade/balance-stack/index.html",
+      "reason": "Listed page is a differently titled Phaser/Jet Fighter shell; no upstream code/assets imported.",
+      "assets": "Original canvas art and CSS; no third-party assets.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }
