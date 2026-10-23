@@ -1,0 +1,31 @@
+/* Ocean-table cabinet overhaul: high-contrast aquatic arena, brass trim, arcade HUD. */
+:root{--ft-hot:#ffd36b!important;--ft-line:rgba(255,211,107,.38)!important}
+body{background:radial-gradient(ellipse at 50% 0,#12627b 0,transparent 43%),linear-gradient(#03121d,#02060c 70%)!important}
+.wrap{width:min(1600px,calc(100% - 24px))!important;margin:8px auto 42px!important}
+.hero{padding:10px 8px 13px!important;margin-bottom:12px!important;border-bottom:1px solid #ffd36b55!important}
+.hero h1{font-size:clamp(2.2rem,5.4vw,4.6rem)!important;line-height:.9!important;letter-spacing:-.055em!important;text-shadow:0 4px 0 #07131d,0 0 24px #37d9ff25}
+.hero p:not(.eyebrow){display:none!important}
+.hero:after{right:0;top:-50%;width:30%;height:170%;background:radial-gradient(ellipse,#ffd36b22,transparent 70%)!important}
+.eyebrow{color:#ffe29a!important;text-shadow:0 0 12px #ffc95a55}
+.cabinet{border:3px solid #b88739!important;border-radius:15px!important;background:linear-gradient(145deg,#243f52,#081724 40%,#02070c)!important;box-shadow:0 0 0 2px #f8d98a,0 0 0 7px #2b1c0c,0 18px 70px #000e,0 0 45px #3ddcff18!important}
+.cabinet:before{height:5px!important;background:linear-gradient(90deg,#3a210c,#ffeab1,#b77b27,#fff0b7,#5e3815)!important;box-shadow:0 0 20px #ffcc6a55!important}
+.cabinet:after{inset:7px!important;border:1px solid #fff0b326!important;border-radius:9px!important}
+.hud{padding:7px!important;gap:5px!important;background:linear-gradient(#263e50,#0b1a27)!important;border-bottom:2px solid #9b6b2a!important}
+.meter{border:1px solid #d8b66d55!important;border-radius:7px!important;background:linear-gradient(150deg,#1b384a,#07131e)!important;box-shadow:inset 0 1px #ffffff17,inset 0 -10px 20px #0005!important}
+.meter small{color:#c3d9e3!important;font-size:.62rem!important;letter-spacing:.12em!important}
+.meter strong{color:#fff2bf!important;text-shadow:0 0 12px #ffcf5a36!important}
+.meter .credit{color:#d6ffad!important}
+.playfield,.field{background:#03121c!important;box-shadow:inset 0 0 0 3px #0c2531,inset 0 0 60px #000b!important}
+.playfield:after,.field:after{border:2px solid #d4a65366!important;background:linear-gradient(180deg,#b9f3ff0b,transparent 16%,transparent 75%,#0007),repeating-linear-gradient(0deg,#fff1 0 1px,transparent 1px 4px)!important;box-shadow:inset 0 0 90px #0008!important}
+.playfield canvas,.field canvas{width:100%!important;max-height:82vh!important;aspect-ratio:16/9!important;object-fit:fill!important;filter:saturate(1.18) contrast(1.08)!important}
+.controls{padding:12px!important;gap:10px!important;background:linear-gradient(#172e3d,#050b12)!important;border-top:2px solid #b88739!important}
+.btn,.controls button{border-color:#c59a4d88!important;border-radius:7px!important;background:linear-gradient(#294758,#0b1b27)!important;box-shadow:inset 0 1px #ffffff24,0 3px 0 #020509,0 8px 18px #0005!important}
+.btn.hot{background:linear-gradient(#fff0ad,#e5a93e)!important;color:#201405!important;border-color:#fff0b7!important}
+.btn.selected,.power.selected,.gun.selected{background:linear-gradient(#57451d,#171b1c)!important;color:#ffe49a!important;border-color:#ffe39a!important}
+.seat-instructions{border-color:#c59a4d66!important;background:linear-gradient(90deg,#091721,#172e3d,#091721)!important;color:#e8f2f6!important}
+.odds-panel,.panel,.below .panel{border-color:#c59a4d44!important;background:linear-gradient(145deg,#102735,#050c13)!important}
+.odds-card{border-color:#c59a4d35!important;background:linear-gradient(145deg,#1a3442,#09151f)!important}
+.screen-overlay,.overlay{background:radial-gradient(ellipse,#061e2be8,#02070dec)!important;backdrop-filter:blur(5px)}
+.dialog{border:1px solid #f4d18a!important;border-radius:12px!important;background:linear-gradient(145deg,#1c3947,#06131d)!important;box-shadow:0 0 0 4px #9b6b2a66,0 25px 80px #000e,0 0 40px #ffd36b1a!important}
+.dialog h2{color:#fff0b5!important;text-shadow:0 0 20px #ffd36b35}
+@media(max-width:760px){.wrap{width:calc(100% - 10px)!important;margin:5px auto 24px!important}.hero{padding:8px 4px 10px!important}.cabinet{border-width:2px!important;border-radius:9px!important}.playfield canvas,.field canvas{max-height:none!important;aspect-ratio:4/3!important;object-fit:fill!important}.controls{padding:8px!important}.meter{padding:9px 7px!important}}
