@@ -72,3 +72,8 @@ Migration `0024_starting_cinders.sql` raises each existing wallet to a minimum s
 ## Message reactions (0026)
 
 Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. The authenticated API only returns reactions for messages in a conversation the requester belongs to, and reaction writes verify both message existence and conversation membership. The UI supports a curated set of eight emoji and refreshes reaction counts when the conversation is rendered or polled. Apply the migration through the guarded production migration workflow and verify the table/index before treating reactions as available in production.
+
+
+## Group conversations (0027)
+
+0027_group_conversations.sql adds a group name and creator reference to conversations. The group API uses the existing conversation_members access boundary, so messages, reactions, typing status, and read state remain scoped to current group membership. Apply this additive migration before deploying a Worker version that queries group metadata. Verify both new columns exist and the migration ledger includes 0027_group_conversations.sql; then create a test group with at least two other active members and verify all participants can read and send messages while non-members receive a not-found response.
