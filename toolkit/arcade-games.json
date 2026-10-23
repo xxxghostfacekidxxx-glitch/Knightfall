@@ -752,6 +752,19 @@
       "sourceImported": true,
       "importedPath": "public/arcade/hosted/swipe-assassin/",
       "integrationNote": "Self-hosted single-file adaptation; config is local, character art replaced with inline SVG, and audio disabled."
+    },
+    {
+      "id": "goalmouth-mayhem",
+      "name": "Goalmouth Mayhem",
+      "category": "Sports",
+      "description": "A chaotic one-minute football duel against a local CPU opponent.",
+      "playUrl": "/arcade/hosted/goalmouth-mayhem/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/goalmouth-mayhem/",
+      "integrationNote": "Self-hosted single-file adaptation renamed and re-themed; external config and audio removed."
     }
   ]
 }
