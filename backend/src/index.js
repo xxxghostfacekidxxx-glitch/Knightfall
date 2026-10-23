@@ -1140,16 +1140,28 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       return json({id:row.id,filename:original,content_type:type,byte_size:file.size},201,origin);
     }catch(e){await env.MESSAGE_ATTACHMENTS.delete(key).catch(()=>{});return json({error:"The attachment could not be stored."},500,origin)}
   }
+  const attachmentDeleteMatch=url.pathname.match(/^\/api\/messages\/attachments\/(\d+)$/);
+  if(attachmentDeleteMatch&&request.method==="DELETE"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Authentication required."},401,origin);
+    if(!env.MESSAGE_ATTACHMENTS)return json({error:"Private attachment storage is not configured."},503,origin);
+    const id=Number(attachmentDeleteMatch[1]);
+    const row=await env.DB.prepare("SELECT id,object_key FROM message_attachments WHERE id=? AND uploader_id=? AND message_id IS NULL").bind(id,user.id).first();
+    if(!row)return json({error:"Pending attachment not found."},404,origin);
+    await env.MESSAGE_ATTACHMENTS.delete(row.object_key);
+    await env.DB.prepare("DELETE FROM message_attachments WHERE id=?").bind(id).run();
+    return json({ok:true},200,origin);
+  }
   const attachmentDownloadMatch=url.pathname.match(/^\/api\/messages\/attachments\/(\d+)$/);
   if(attachmentDownloadMatch&&request.method==="GET"){
     const user=await requireUser(request,env);
     if(!user)return json({error:"Authentication required."},401,origin);
     if(!env.MESSAGE_ATTACHMENTS)return json({error:"Private attachment storage is not configured."},503,origin);
     const id=Number(attachmentDownloadMatch[1]);
-    const attachment=await env.DB.prepare("SELECT a.id,a.conversation_id,a.message_id,a.uploader_id,a.object_key,a.original_filename,a.content_type,a.byte_size FROM message_attachments a WHERE a.id=?").bind(id).first();
+    const attachment=await env.DB.prepare("SELECT a.id,a.conversation_id,a.message_id,a.uploader_id,a.object_key,a.original_filename,a.content_type,a.byte_size,m.deleted_at FROM message_attachments a LEFT JOIN messages m ON m.id=a.message_id WHERE a.id=?").bind(id).first();
     if(!attachment)return json({error:"Attachment not found."},404,origin);
     const member=await env.DB.prepare("SELECT 1 AS ok FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(attachment.conversation_id,user.id).first();
-    if(!member||(!attachment.message_id&&Number(attachment.uploader_id)!==Number(user.id)))return json({error:"Attachment not found."},404,origin);
+    if(!member||(!attachment.message_id&&Number(attachment.uploader_id)!==Number(user.id))||(attachment.message_id&&attachment.deleted_at))return json({error:"Attachment not found."},404,origin);
     const object=await env.MESSAGE_ATTACHMENTS.get(attachment.object_key);
     if(!object)return json({error:"Attachment file is missing."},404,origin);
     const filename=String(attachment.original_filename||"attachment").replace(/[\r\n"\\]/g,"_");
@@ -1166,7 +1178,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const raw=url.searchParams.get("message_ids")||"";
     const ids=[...new Set(raw.split(",").map(x=>Number(x)).filter(x=>Number.isSafeInteger(x)&&x>0))].slice(0,100);
     if(!ids.length)return json({attachments:[]},200,origin);
-    const {results}=await env.DB.prepare("SELECT id,message_id,original_filename,content_type,byte_size,created_at FROM message_attachments WHERE conversation_id=? AND message_id IN ("+ids.map(()=>"?").join(",")+") ORDER BY id").bind(conversationId,...ids).all();
+    const {results}=await env.DB.prepare("SELECT a.id,a.message_id,a.original_filename,a.content_type,a.byte_size,a.created_at FROM message_attachments a JOIN messages m ON m.id=a.message_id AND m.deleted_at IS NULL WHERE a.conversation_id=? AND a.message_id IN ("+ids.map(()=>"?").join(",")+") ORDER BY id").bind(conversationId,...ids).all();
     return json({attachments:results||[]},200,origin);
   }
   const groupMembersMatch=url.pathname.match(/^\/api\/messages\/conversations\/(\d+)\/members(?:\/(\d+))?$/);
