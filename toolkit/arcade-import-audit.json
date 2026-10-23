@@ -320,6 +320,45 @@
         "inline HTML/CSS/JavaScript"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "doodle-jump",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/platformer/doodle-jump/index.html",
+      "reason": "The listed source path resolves to a differently titled Phaser/Jet Fighter page; mismatch rejected.",
+      "assets": "No upstream code/assets copied; original canvas game and CSS.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "basketball",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/sports/basketball/index.html",
+      "reason": "The listed source path resolves to a differently titled Kaiju Krush Phaser page; mismatch rejected.",
+      "assets": "No upstream code/assets copied; original canvas game and CSS.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "bowling",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/sports/bowling/index.html",
+      "reason": "Upstream uses Phaser and bundled image assets; those dependencies and assets were not imported.",
+      "assets": "No upstream code/assets copied; original canvas bowling game and CSS.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }

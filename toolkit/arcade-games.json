@@ -410,24 +410,28 @@
       "name": "Basketball",
       "category": "Sports",
       "description": "Time the shot and arc the ball through the hoop.",
-      "playUrl": "https://sausi-7.github.io/games/games/sports/basketball/index.html",
+      "playUrl": "/arcade/hosted/basketball/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/sports/basketball/index.html"
+      "sourcePath": "games/sports/basketball/index.html",
+      "importedPath": "public/arcade/hosted/basketball/",
+      "integrationNote": "Fresh native canvas shooting game; upstream listed path resolved to a mismatched Kaiju Krush Phaser page."
     },
     {
       "id": "bowling",
       "name": "Bowling",
       "category": "Sports",
       "description": "Line up your throw and chase the perfect frame.",
-      "playUrl": "https://sausi-7.github.io/games/games/sports/bowling/index.html",
+      "playUrl": "/arcade/hosted/bowling/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/sports/bowling/index.html"
+      "sourcePath": "games/sports/bowling/index.html",
+      "importedPath": "public/arcade/hosted/bowling/",
+      "integrationNote": "Fresh native canvas bowling game; upstream Phaser dependency and bundled assets were not imported."
     },
     {
       "id": "bubble-pop",
@@ -518,12 +522,14 @@
       "name": "Doodle Jump",
       "category": "Platformer",
       "description": "Bounce higher from platform to platform without falling.",
-      "playUrl": "https://sausi-7.github.io/games/games/platformer/doodle-jump/index.html",
+      "playUrl": "/arcade/hosted/doodle-jump/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/platformer/doodle-jump/index.html"
+      "sourcePath": "games/platformer/doodle-jump/index.html",
+      "importedPath": "public/arcade/hosted/doodle-jump/",
+      "integrationNote": "Fresh native canvas platform jumper; upstream listed path was a mismatched Phaser/Jet Fighter page."
     },
     {
       "id": "space-waves",
