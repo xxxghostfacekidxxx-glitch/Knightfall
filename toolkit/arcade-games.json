@@ -500,16 +500,18 @@
       "sourcePath": "games/board/chess/index.html"
     },
     {
-      "id": "crossy-road",
-      "name": "Crossy Road",
+      "id": "road-riot",
+      "name": "Road Riot",
       "category": "Arcade",
-      "description": "Hop across busy roads, rivers, and rail lines.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/crossy-road/index.html",
+      "description": "Hop across moving traffic and survive a chaotic road crossing.",
+      "playUrl": "/arcade/hosted/crossy-road/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/arcade/crossy-road/index.html"
+      "sourcePath": "games/arcade/crossy-road/index.html",
+      "importedPath": "public/arcade/hosted/crossy-road/",
+      "integrationNote": "Renamed generic crossing game; upstream Three.js and separate script were not imported."
     },
     {
       "id": "cut-the-rope",
@@ -580,24 +582,28 @@
       "name": "Space Fighter",
       "category": "Shooter",
       "description": "Dogfight through asteroid fields in a space shooter.",
-      "playUrl": "https://sausi-7.github.io/games/games/shooter/space-fighter/index.html",
+      "playUrl": "/arcade/hosted/space-fighter/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/shooter/space-fighter/index.html"
+      "sourcePath": "games/shooter/space-fighter/index.html",
+      "importedPath": "public/arcade/hosted/space-fighter/",
+      "integrationNote": "Fresh native horizontal canvas shooter; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "survivor",
       "name": "Survivor",
       "category": "Shooter",
       "description": "Hold out against escalating waves of enemies.",
-      "playUrl": "https://sausi-7.github.io/games/games/shooter/survivor/index.html",
+      "playUrl": "/arcade/hosted/survivor/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/shooter/survivor/index.html"
+      "sourcePath": "games/shooter/survivor/index.html",
+      "importedPath": "public/arcade/hosted/survivor/",
+      "integrationNote": "Fresh native arena survival game; upstream Phaser multi-scene build was not imported."
     },
     {
       "id": "two-cars",

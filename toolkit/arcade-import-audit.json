@@ -473,6 +473,45 @@
         "canvas"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "space-fighter",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/shooter/space-fighter/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
+      "assets": "No upstream code/assets copied; original canvas shooter.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "survivor",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/shooter/survivor/index.html",
+      "reason": "Upstream requires Phaser and multiple scene files; dependencies/assets were not imported.",
+      "assets": "No upstream code/assets copied; original canvas survival game.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "road-riot",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/arcade/crossy-road/index.html",
+      "reason": "Upstream requires Three.js and a separate script; dependencies/assets were not imported.",
+      "assets": "No upstream code/assets copied; original 2D canvas crossing game, renamed to avoid upstream branding.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }
