@@ -435,6 +435,44 @@
         "inline HTML/CSS/JavaScript"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "alien-battle",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/shooter/alien-battle/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
+      "assets": "No upstream code/assets copied; original canvas shooter.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "bubble-pop",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/casual/bubble-pop/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
+      "assets": "No upstream code/assets copied; original DOM/CSS bubble puzzle.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "car-race",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/racing/car-race/index.html",
+      "reason": "Upstream requires Three.js and config.json; those dependencies were not imported.",
+      "assets": "No upstream code/assets copied; original canvas racing visuals.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }

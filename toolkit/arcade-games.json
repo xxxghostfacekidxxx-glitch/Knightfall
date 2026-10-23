@@ -372,12 +372,14 @@
       "name": "Alien Battle",
       "category": "Shooter",
       "description": "Survive waves of hostile aliens in a top-down shooter.",
-      "playUrl": "https://sausi-7.github.io/games/games/shooter/alien-battle/index.html",
+      "playUrl": "/arcade/hosted/alien-battle/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/shooter/alien-battle/index.html"
+      "sourcePath": "games/shooter/alien-battle/index.html",
+      "importedPath": "public/arcade/hosted/alien-battle/",
+      "integrationNote": "Fresh native canvas shooter; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "archer",
@@ -438,12 +440,14 @@
       "name": "Bubble Pop",
       "category": "Casual",
       "description": "Pop matching bubbles and build a high score.",
-      "playUrl": "https://sausi-7.github.io/games/games/casual/bubble-pop/index.html",
+      "playUrl": "/arcade/hosted/bubble-pop/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/casual/bubble-pop/index.html"
+      "sourcePath": "games/casual/bubble-pop/index.html",
+      "importedPath": "public/arcade/hosted/bubble-pop/",
+      "integrationNote": "Fresh native bubble-matching puzzle; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "bubble-shooter",
@@ -474,12 +478,14 @@
       "name": "Car Race",
       "category": "Racing",
       "description": "Dodge traffic in a fast arcade racing run.",
-      "playUrl": "https://sausi-7.github.io/games/games/racing/car-race/index.html",
+      "playUrl": "/arcade/hosted/car-race/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/racing/car-race/index.html"
+      "sourcePath": "games/racing/car-race/index.html",
+      "importedPath": "public/arcade/hosted/car-race/",
+      "integrationNote": "Fresh native canvas racer; upstream Three.js/config dependencies were not imported."
     },
     {
       "id": "chess",
