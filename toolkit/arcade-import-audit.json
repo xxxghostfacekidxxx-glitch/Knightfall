@@ -397,6 +397,44 @@
         "canvas"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "endless-runner",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/racing/endless-runner/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
+      "assets": "No upstream code/assets copied; original canvas runner.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "two-cars",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/racing/two-cars/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Jet Fighter page.",
+      "assets": "No upstream code/assets copied; original canvas two-car game.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "wordlee",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/word-quiz/wordle/index.html",
+      "reason": "Listed upstream page resolves to a differently titled Phaser/Kaiju Krush page.",
+      "assets": "No upstream code/assets copied; original local word list and DOM/CSS.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }
