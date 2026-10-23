@@ -359,6 +359,44 @@
         "canvas"
       ],
       "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "penalty-shootout",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/sports/penalty/index.html",
+      "reason": "Upstream build depends on Phaser and config.json; neither imported.",
+      "assets": "No upstream code/assets copied; original canvas goal/keeper art.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "whack-a-bug",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/arcade/whack-a-bug/index.html",
+      "reason": "Listed path resolves to a differently titled Phaser/Jet Fighter page; mismatch rejected.",
+      "assets": "No upstream code/assets copied; original HTML/CSS with emoji.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
+    },
+    {
+      "id": "stack-tower",
+      "status": "native-original-replacement",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "games/3d/stack-tower/index.html",
+      "reason": "Upstream requires Three.js CDN and bundled audio; those dependencies/assets were not imported.",
+      "assets": "No upstream code/assets copied; original canvas geometry/CSS.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "accountBoundary": "No account tokens, Cinders, or server score API."
     }
   ]
 }

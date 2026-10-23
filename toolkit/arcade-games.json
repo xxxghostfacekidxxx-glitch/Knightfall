@@ -622,12 +622,14 @@
       "name": "Whack-a-Bug",
       "category": "Arcade",
       "description": "Smash bugs as they pop up and race the clock.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/whack-a-bug/index.html",
+      "playUrl": "/arcade/hosted/whack-a-bug/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/arcade/whack-a-bug/index.html"
+      "sourcePath": "games/arcade/whack-a-bug/index.html",
+      "importedPath": "public/arcade/hosted/whack-a-bug/",
+      "integrationNote": "Fresh native click/tap game; upstream listed path mismatched to Jet Fighter."
     },
     {
       "id": "wordlee",
@@ -658,24 +660,28 @@
       "name": "Penalty Shootout",
       "category": "Sports",
       "description": "Take on the keeper in a penalty-kick showdown.",
-      "playUrl": "https://sausi-7.github.io/games/games/sports/penalty/index.html",
+      "playUrl": "/arcade/hosted/penalty-shootout/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/sports/penalty/index.html"
+      "sourcePath": "games/sports/penalty/index.html",
+      "importedPath": "public/arcade/hosted/penalty-shootout/",
+      "integrationNote": "Fresh native canvas shootout; upstream required Phaser and config fetch."
     },
     {
       "id": "stack-tower",
       "name": "Stack Tower",
       "category": "Simulation",
       "description": "Stack 3D blocks as high as you can without dropping them.",
-      "playUrl": "https://sausi-7.github.io/games/games/3d/stack-tower/index.html",
+      "playUrl": "/arcade/hosted/stack-tower/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/3d/stack-tower/index.html"
+      "sourcePath": "games/3d/stack-tower/index.html",
+      "importedPath": "public/arcade/hosted/stack-tower/",
+      "integrationNote": "Fresh native 2D canvas stacker; upstream required Three.js and bundled audio."
     },
     {
       "id": "kaiju-krush",
