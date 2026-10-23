@@ -737,6 +737,19 @@
       "sourceImported": true,
       "importedPath": "public/arcade/hosted/curvy-snake/",
       "integrationNote": "Self-hosted single-file adaptation; local config and original inline SVG artwork; audio disabled."
+    },
+    {
+      "id": "swipe-assassin",
+      "name": "Swipe Assassin",
+      "category": "Arcade",
+      "description": "Move through a grid and approach enemies from behind.",
+      "playUrl": "/arcade/hosted/swipe-assassin/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/swipe-assassin/",
+      "integrationNote": "Self-hosted single-file adaptation; config is local, character art replaced with inline SVG, and audio disabled."
     }
   ]
 }
