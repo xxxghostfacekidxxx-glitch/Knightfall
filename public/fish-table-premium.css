@@ -107,3 +107,7 @@ body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
 button:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.4)}
 @media(max-width:760px){.cabinet:after{inset:5px;border-radius:11px}.playfield canvas,.field canvas{filter:saturate(1.08)}}
 @media(prefers-reduced-motion:reduce){.cabinet,.pay,.odds-card,.btn{transition:none!important}}
+
+/* Four-seat fish-table control lane labels */
+.seat-instructions{margin:.7rem 0 1rem;padding:.75rem 1rem;border:1px solid var(--ft-line);border-radius:12px;background:linear-gradient(90deg,#071321,#0d2030,#071321);color:#d6e9f3;font-size:.82rem;line-height:1.5;text-align:center;letter-spacing:.02em}
+@media(max-width:680px){.seat-instructions{font-size:.72rem;padding:.65rem}}
