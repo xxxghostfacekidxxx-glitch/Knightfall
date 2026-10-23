@@ -1,0 +1,12 @@
+/* Chaos Cartridge shared sprite renderer. Purely visual: it never touches game state or saves. */
+(()=>{'use strict';
+const names=['imp','skull','glitch','heart','coin','bolt','boom','fish','jelly','cannon','bat','crown','orb','rocket','crab','portal','skullfish','heartbreak','star','bug','flame','diamond','trophy','eye'];
+const image=new Image();image.decoding='async';image.src='/assets/arcade/chaos-sprite-atlas.svg?v=20261023-1';
+const positions=Object.fromEntries(names.map((name,i)=>[name,{x:(i%12)*64,y:Math.floor(i/12)*64}]));
+const colors={pink:'#ff55d8',green:'#c6ff45',cyan:'#54f5df',white:'#fff'};
+function draw(ctx,name,x,y,w,h,opts={}){if(!ctx||!image.complete||!image.naturalWidth)return false;const p=positions[name];if(!p)return false;ctx.save();if(opts.alpha!==undefined)ctx.globalAlpha=opts.alpha;if(opts.glow){ctx.shadowColor=opts.glow===true?colors.pink:opts.glow;ctx.shadowBlur=opts.blur||12}if(opts.rotation){ctx.translate(x+w/2,y+h/2);ctx.rotate(opts.rotation);ctx.drawImage(image,p.x,p.y,64,64,-w/2,-h/2,w,h)}else ctx.drawImage(image,p.x,p.y,64,64,x,y,w,h);ctx.restore();return true}
+function burst(ctx,x,y,frame=0,scale=1){const names=['boom','star','bolt','glitch'];const name=names[Math.abs(frame|0)%names.length];return draw(ctx,name,x-18*scale,y-18*scale,36*scale,36*scale,{glow:true,blur:15,alpha:.95})}
+function ready(){return image.complete&&image.naturalWidth===768}
+image.addEventListener('error',()=>console.warn('[ChaosSprites] Atlas failed to load:',image.src));
+window.ChaosSprites=Object.freeze({draw,burst,ready,names:Object.freeze([...names]),image});
+})();
