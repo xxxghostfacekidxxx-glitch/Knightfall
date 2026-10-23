@@ -54,6 +54,65 @@ for (const [label, pattern] of saveInvariants) {
   else ok("Arcade save invariant: " + label);
 }
 
+const monsterMmoChecks = [
+  ["monster MMO save reads require an authenticated account", worker.includes('if(url.pathname==="/api/game/save"&&request.method==="GET"){') && worker.includes("const user=await requireUser(request,env);")],
+  ["monster MMO save writes require an authenticated account", worker.includes('if(url.pathname==="/api/game/save"&&request.method==="PUT"){') && worker.includes("const user=await requireUser(request,env);")],
+  ["monster MMO saves use optimistic version checks", worker.includes("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?")],
+  ["monster MMO saves reject teleports and blocked terrain", worker.includes("Trainer movement must be one adjacent tile at a time.") && worker.includes("Trainer position must be on a walkable map tile.")],
+  ["monster MMO save endpoint restricts progression edits", worker.includes("Progression and inventory can only change through validated game actions.") && worker.includes("Party changes can only be made through validated game actions.") && worker.includes("Initial cloud progress exceeds the migration limits.")],
+  ["monster MMO saves canonicalize creatures against an allowlist", ["mossbit:{name:\"Mossbit\"","embercub:{name:\"Embercub\"","driftfin:{name:\"Driftfin\"","gloamlet:{name:\"Gloamlet\""].every(value=>worker.includes(value))],
+  ["monster MMO saves are rate limited", worker.includes('rateLimit(env,request,"monster-save",60,60,user.id)')],
+  ["monster MMO actions resolve battles server-side", worker.includes('url.pathname==="/api/game/action"&&request.method==="POST"') && worker.includes("monster_game_battles") && worker.includes('action==="capture"') && worker.includes('action==="attack"')],
+  ["monster MMO save and active battle state are committed atomically", worker.includes("const results=await env.DB.batch([saveUpdate,battleUpdate])") && worker.includes("version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json")],
+  ["monster MMO party lead selection is server-validated", worker.includes('action==="party-lead"') && worker.includes("The active creature cannot change during battle.")],
+  ["monster MMO XP and level gains are server-authoritative", worker.includes("gainedXp=Math.max(8,battle.level*12)") && worker.includes("lead.xp=(lead.xp||0)+gainedXp") && worker.includes("member.xp??0")],
+  ["monster MMO type effectiveness is calculated server-side", worker.includes("const typeMultiplier=(attacker,defender)") && worker.includes("multiplier>1?\" It was super effective!\"") && worker.includes("multiplier<1?\" The attack was resisted.\"")],
+  ["monster MMO server allowlists the expanded original roster", ["thornspit","zipfang","grubruckle","mournwing"].every(id=>worker.includes(id))],
+  ["monster MMO resting is restricted to camp", worker.includes('action==="rest"') && worker.includes("Return to the camp at X 04 / Y 01 to rest.")],
+  ["online encounter chance and grass validation are server-side", worker.includes('action==="encounter-check"' ) && worker.includes("Wild encounters can only begin in tall grass.") && worker.includes("Math.random()<0.22")],
+];
+for (const [label, passed] of monsterMmoChecks) {
+  if (!passed) fail("Monster MMO invariant missing: " + label);
+  else ok("Monster MMO invariant: " + label);
+}
+if (!worker.includes('url.pathname==="/api/game/world"') || !worker.includes("env.MONSTER_WORLD.get(id).fetch")) fail("Monster MMO WebSocket route is missing authenticated Durable Object routing.");
+else ok("Monster MMO shared-world route is wired to Durable Objects");
+if (!worker.includes("export class MonsterWorldRoom") || !worker.includes("async webSocketMessage(socket, message)") || !worker.includes("player-moved")) fail("Monster MMO world room is missing server-side movement handling.");
+else ok("Monster MMO world room exposes server-side movement handling");
+if (!worker.includes('SELECT save_json,version FROM monster_game_saves WHERE user_id=?') || !worker.includes('type: "world-ready", you: { userId, username, x, y, steps, version }')) fail("Monster MMO shared-world reconnect does not initialize from the saved D1 position/version.");
+else ok("Monster MMO shared-world reconnect starts from authoritative saved position and version");
+if (!worker.includes('SELECT save_json,version FROM monster_game_saves WHERE user_id=?') || !worker.includes('UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?') || !worker.includes("world-save-conflict")) fail("Monster MMO world movement is not persisted with optimistic version checks.");
+else ok("Monster MMO world server persists accepted movement with version checks");
+const backendWrangler = JSON.parse(await readFile(path.join(root, "backend/wrangler.jsonc"), "utf8"));
+if (!backendWrangler.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Backend Wrangler config is missing the MONSTER_WORLD Durable Object binding.");
+else ok("Monster MMO Durable Object binding is configured");
+const monsterMmoClient = await readFile(path.join(publicDir, "monster-mmo.js"), "utf8");
+const monsterMmoHtml = await readFile(path.join(publicDir, "monster-mmo.html"), "utf8");
+const monsterMmoCss = await readFile(path.join(publicDir, "monster-mmo.css"), "utf8");
+if (!monsterMmoHtml.includes('id="type-matchup"') || !monsterMmoClient.includes('getElementById("type-matchup")') || !monsterMmoCss.includes(".type-matchup.effective")) fail("Monster MMO live type matchup indicator is incomplete.");
+else ok("Monster MMO renders and styles the live type matchup indicator");
+if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/save"') || !monsterMmoClient.includes('credentials:"include"')) fail("Monster MMO client is missing authenticated cloud-save requests.");
+else ok("Monster MMO client uses credentialed cloud-save requests");
+if (!monsterMmoClient.includes("cloudVersion") || !monsterMmoClient.includes("conflict detected")) fail("Monster MMO client is missing cloud-save conflict handling.");
+if (!monsterMmoClient.includes('fetch(API_BASE+"/api/game/action"') || !['cloudAction("start")','cloudAction("encounter-check")','cloudAction("attack")','cloudAction("capture")','cloudAction("flee")','cloudAction("party-lead",'].every(action=>monsterMmoClient.includes(action))) fail("Monster MMO online actions are not routed through the server.");
+else ok("Monster MMO battle and party actions use the server-authoritative action endpoint");
+if (!monsterMmoClient.includes('cloudAction("rest")') || !monsterMmoClient.includes('getElementById("rest-btn")')) fail("Monster MMO camp rest control is missing its action handler.");
+if (!monsterMmoClient.includes('new WebSocket("wss://api.ash-fall.com/api/game/world")') || !monsterMmoClient.includes('type:"move",direction:dir')) fail("Monster MMO client is missing shared-world WebSocket movement.");
+else ok("Monster MMO client connects to the shared world and sends movement intents");
+if (!monsterMmoClient.includes("save(false)") || !monsterMmoClient.includes("player.steps") || !monsterMmoClient.includes("player.version")) fail("Monster MMO client is not consuming authoritative movement save versions.");
+if (!monsterMmoClient.includes("message.you.steps") || !monsterMmoClient.includes("message.you.version")) fail("Monster MMO client does not restore authoritative step/version state on reconnect.");
+else ok("Monster MMO client uses authoritative movement coordinates, steps, and versions");
+if (!monsterMmoClient.includes("xp: c.xp") && !monsterMmoClient.includes("xp:Number(c.xp)") || !monsterMmoClient.includes("xp-mini") || !monsterMmoClient.includes("awardExperience")) fail("Monster MMO client is missing creature XP progression and display.");
+if (!monsterMmoClient.includes("function typeMultiplier(attacker,defender)") || !monsterMmoClient.includes("It was super effective!") || !monsterMmoClient.includes("The attack was resisted.")) fail("Monster MMO client is missing type matchup feedback.");
+else ok("Monster MMO local battles show type effectiveness feedback");
+if (!["thornspit","zipfang","grubruckle","mournwing"].every(id=>monsterMmoClient.includes(id))) {
+  fail("Monster MMO client is missing the expanded original creature roster.");
+} else {
+  ok("Monster MMO original roster contains eight creatures");
+}
+if (!["mossbit","embercub","driftfin","gloamlet","thornspit","zipfang","grubruckle","mournwing"].every(id=>publicPaths.has("/assets/monster-sprites/"+id+".svg"))) fail("Monster MMO is missing one or more original creature sprite assets.");
+else ok("Monster MMO includes all eight original creature sprite assets");
+if (!monsterMmoClient.includes("setCreatureArt") || !monsterMmoClient.includes('sprite.src="/assets/monster-sprites/"+c.id+".svg"')) fail("Monster MMO does not render the original creature sprite assets.");
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
   ["memory retrieval filters irrelevant memories", /rankedMemories\.filter\(m=>m\.score>0\)/],

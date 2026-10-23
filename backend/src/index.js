@@ -381,6 +381,94 @@ async function handlePersonalBotRequest(request,env,origin,url){
  return json({error:"Personal bot endpoint not found."},404,origin);
 }
 
+export class MonsterWorldRoom {
+  constructor(state, env) { this.state = state; this.env = env; }
+  async fetch(request) {
+    if (request.headers.get("Upgrade")?.toLowerCase() !== "websocket") return new Response("WebSocket upgrade required", { status: 426 });
+    const userId = Number(request.headers.get("x-game-user-id"));
+    const username = String(request.headers.get("x-game-username") || "Trainer").slice(0, 32);
+    if (!Number.isInteger(userId) || userId < 1) return new Response("Unauthorized", { status: 401 });
+    for (const socket of this.state.getWebSockets()) {
+      const prior = socket.deserializeAttachment();
+      if (prior?.userId === userId) { try { socket.close(4001, "Reconnected"); } catch (_) {} }
+    }
+    const pair = new WebSocketPair();
+    const client = pair[0], server = pair[1];
+    const savedRow = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(userId).first();
+    if (!savedRow) return new Response("Create a cloud save before entering the shared world.", { status: 409 });
+    let saved; try { saved = JSON.parse(savedRow.save_json); } catch (_) { return new Response("Saved position is unreadable.", { status: 500 }); }
+    const x = Number(saved.x), y = Number(saved.y), steps = Number(saved.steps);
+    if (!Number.isInteger(x) || x < 1 || x > 10 || !Number.isInteger(y) || y < 1 || y > 8 || !Number.isInteger(steps) || steps < 0) return new Response("Saved position is invalid.", { status: 409 });
+    const version = Number(savedRow.version) || 1;
+    const player = { userId, username, x, y, steps, version, lastMoveAt: 0 };
+    this.state.acceptWebSocket(server);
+    server.serializeAttachment(player);
+    const others = this.state.getWebSockets().filter(socket => socket !== server).map(socket => {
+      const p = socket.deserializeAttachment();
+      return p ? { userId: p.userId, username: p.username, x: p.x, y: p.y } : null;
+    }).filter(Boolean);
+    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y, steps, version }, players: others }));
+    this.broadcast({ type: "player-joined", player: { userId, username, x, y } }, server);
+    return new Response(null, { status: 101, webSocket: client });
+  }
+  async webSocketMessage(socket, message) {
+    if (typeof message !== "string" || message.length > 512) return;
+    let body; try { body = JSON.parse(message); } catch (_) { return; }
+    if (body?.type !== "move" || !["up", "down", "left", "right"].includes(body.direction)) return;
+    const player = socket.deserializeAttachment();
+    if (!player) return;
+    const now = Date.now();
+    if (now - player.lastMoveAt < 120) return;
+    player.lastMoveAt = now;
+    socket.serializeAttachment(player);
+    const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
+    const x = player.x + delta[0], y = player.y + delta[1];
+    const blocked = new Set(["2,2", "9,2", "2,7", "9,7"]);
+    if (x < 1 || x > 10 || y < 1 || y > 8 || blocked.has(x + "," + y) || ((x === 1 || x === 10) && y === 5)) {
+      socket.send(JSON.stringify({ type: "move-blocked" }));
+      return;
+    }
+    // Persist each accepted move from the world server. The browser cannot author position or step count.
+    try {
+      const row = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(player.userId).first();
+      if (!row) { socket.send(JSON.stringify({ type: "world-save-required" })); return; }
+      let save; try { save = JSON.parse(row.save_json); } catch (_) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
+      if (save.x !== player.x || save.y !== player.y) {
+        socket.send(JSON.stringify({ type: "world-save-conflict" }));
+        return;
+      }
+      if (!Number.isInteger(save.steps) || save.steps >= 10000000) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
+      save.x = x; save.y = y; save.steps += 1;
+      const nextVersion = Number(row.version) + 1;
+      const result = await this.env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?").bind(JSON.stringify(save), player.userId, Number(row.version)).run();
+      if (Number(result.meta?.changes || 0) !== 1) {
+        socket.send(JSON.stringify({ type: "world-save-conflict" }));
+        return;
+      }
+      player.x = x; player.y = y;
+      socket.serializeAttachment(player);
+      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, steps: save.steps, version: nextVersion } });
+    } catch (_) {
+      socket.send(JSON.stringify({ type: "world-save-error" }));
+    }
+  }
+  webSocketClose(socket) {
+    const player = socket.deserializeAttachment();
+    if (player) this.broadcast({ type: "player-left", userId: player.userId });
+  }
+  webSocketError(socket) {
+    const player = socket.deserializeAttachment();
+    if (player) this.broadcast({ type: "player-left", userId: player.userId });
+  }
+  broadcast(payload, except = null) {
+    const data = JSON.stringify(payload);
+    for (const socket of this.state.getWebSockets()) {
+      if (socket === except || socket.readyState !== 1) continue;
+      try { socket.send(data); } catch (_) {}
+    }
+  }
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -1176,6 +1264,164 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   if(url.pathname==="/api/admin/content"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const type=url.searchParams.get("type")==="posts"?"posts":"threads",includeDeleted=url.searchParams.get("include_deleted")==="1",q=String(url.searchParams.get("q")||"").trim(),like="%"+q.replace(/[%_]/g,"\\$&")+"%";let results;if(type==="threads"){const sql="SELECT t.id,t.title,t.slug,t.deleted_at,t.locked,t.pinned,t.created_at,u.username,c.name AS category_name FROM threads t JOIN users u ON u.id=t.user_id JOIN categories c ON c.id=t.category_id WHERE "+(includeDeleted?"1=1":"t.deleted_at IS NULL")+(q?" AND (t.title LIKE ? ESCAPE '\\' OR t.body LIKE ? ESCAPE '\\')":"")+" ORDER BY t.created_at DESC LIMIT 250";const r=q?await env.DB.prepare(sql).bind(like,like).all():await env.DB.prepare(sql).all();results=r.results;}else{const sql="SELECT p.id,p.thread_id,p.body,p.deleted_at,p.created_at,u.username,t.title AS thread_title FROM posts p JOIN users u ON u.id=p.user_id JOIN threads t ON t.id=p.thread_id WHERE "+(includeDeleted?"1=1":"p.deleted_at IS NULL")+(q?" AND p.body LIKE ? ESCAPE '\\'":"")+" ORDER BY p.created_at DESC LIMIT 250";const r=q?await env.DB.prepare(sql).bind(like).all():await env.DB.prepare(sql).all();results=r.results;}return json({type,content:results},200,origin);}
   const adminContentMatch=url.pathname.match(/^\/api\/admin\/content\/(threads|posts)\/(\d+)$/);if(adminContentMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const type=adminContentMatch[1],id=Number(adminContentMatch[2]),action=body.action;if(!["delete","restore","purge"].includes(action))return json({error:"Invalid content action."},400,origin);const table=type==="threads"?"threads":"posts",row=await env.DB.prepare(`SELECT id,deleted_at FROM ${table} WHERE id=?`).bind(id).first();if(!row)return json({error:"Content not found."},404,origin);if(action==="restore")await env.DB.prepare(`UPDATE ${table} SET deleted_at=NULL WHERE id=?`).bind(id).run();else if(action==="delete")await env.DB.prepare(`UPDATE ${table} SET deleted_at=? WHERE id=?`).bind(new Date().toISOString(),id).run();else{if(!row.deleted_at)return json({error:"Purge requires content to be soft-deleted first."},409,origin);if(type==="posts")await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE post_id=?").bind(id),env.DB.prepare("DELETE FROM posts WHERE id=?").bind(id)]);else await env.DB.batch([env.DB.prepare("DELETE FROM reports WHERE thread_id=? OR post_id IN (SELECT id FROM posts WHERE thread_id=?)").bind(id,id),env.DB.prepare("DELETE FROM posts WHERE thread_id=?").bind(id),env.DB.prepare("DELETE FROM threads WHERE id=?").bind(id)]);}await audit(env,user,`content.${action}`,type,id,{});return json({ok:true},200,origin);}
   if(url.pathname==="/api/admin/health"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const started=Date.now(),db=await env.DB.prepare("SELECT 1 AS ok").first();await env.SESSIONS.list({limit:1});const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);}
+
+  if(url.pathname==="/api/game/world"&&request.method==="GET"){
+    const requestOrigin=request.headers.get("Origin");
+    if(requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return new Response("Origin not allowed",{status:403});
+    if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return new Response("WebSocket upgrade required",{status:426});
+    const user=await requireUser(request,env);
+    if(!user)return new Response("Sign in to join the shared world",{status:401});
+    let x=4,y=4;
+    const saved=await env.DB.prepare("SELECT save_json FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(saved?.save_json){try{const data=JSON.parse(saved.save_json);if(Number.isInteger(data.x))x=data.x;if(Number.isInteger(data.y))y=data.y;}catch(_){}}
+    const headers=new Headers(request.headers);
+    headers.set("x-game-user-id",String(user.id));
+    headers.set("x-game-username",String(user.username||user.display_name||"Trainer").slice(0,32));
+    headers.set("x-game-x",String(x));headers.set("x-game-y",String(y));
+    const id=env.MONSTER_WORLD.idFromName("cinder-meadow");
+    return env.MONSTER_WORLD.get(id).fetch(new Request("https://monster-world/connect",{method:"GET",headers}));
+  }
+  // Server-authoritative monster encounters and turn resolution. The browser sends intents, never outcomes.
+  if(url.pathname==="/api/game/action"&&request.method==="POST"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to play online."},401,origin);
+    if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const action=body?.action;
+    if(!["start","encounter-check","attack","capture","flee","status","party-lead","rest"].includes(action))return json({error:"Unknown game action."},400,origin);
+    const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
+    let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
+    const version=Number(row.version)||1;
+    if(body.expected_version!==version)return json({error:"Your save changed in another session. Reload cloud progress.",conflict:true,version},409,origin);
+    const battleRow=await env.DB.prepare("SELECT battle_json FROM monster_game_battles WHERE user_id=?").bind(user.id).first();
+    let battle=null;try{battle=battleRow?JSON.parse(battleRow.battle_json):null;}catch{battle=null;}
+    const species={
+      mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3,description:"A curious little sprout with a stubborn streak."},
+      embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4,description:"A warm-furred cub with sparks dancing along its ears."},
+      driftfin:{name:"Driftfin",type:"water",icon:"◈",hp:16,attack:2,description:"A glassy-eyed creek dweller that moves like a ripple."},
+      gloamlet:{name:"Gloamlet",type:"ghost",icon:"☾",hp:10,attack:5,description:"A shy dusk spirit that seems to slip between shadows."},
+      thornspit:{name:"Thornspit",type:"thorn",icon:"✥",hp:18,attack:4,description:"A spiteful bramble brute that launches seed-spines when cornered."},
+      zipfang:{name:"Zipfang",type:"electric",icon:"ϟ",hp:11,attack:7,description:"A jittery alley-runner that crackles with stolen stormlight."},
+      grubruckle:{name:"Grubruckle",type:"stone",icon:"⬟",hp:22,attack:3,description:"A stubborn burrow tank with a shell like broken pavement."},
+      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6,description:"A ragged dusk glider that rides the wind through abandoned places."}
+    };
+    const lead=save.party?.[0];
+    if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
+    const strongAgainst={fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
+    const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
+    let message="",battleFinished=false;
+    if(action==="status")return json({battle,save,version},200,origin);
+    if(action==="rest"){
+      if(battle)return json({error:"You cannot rest during a wild battle."},409,origin);
+      if(save.x!==4||save.y!==1)return json({error:"Return to the camp at X 04 / Y 01 to rest."},403,origin);
+      save.party=save.party.map(member=>({...member,hp:member.maxHp}));
+      message="The campfire crackles. Your party is fully rested.";
+    }else if(action==="party-lead"){
+      if(battle)return json({error:"The active creature cannot change during battle."},409,origin);
+      const index=body.index;
+      if(!Number.isInteger(index)||index<0||index>=save.party.length)return json({error:"Choose a valid party member."},400,origin);
+      if(index!==0){const active=save.party[0];save.party[0]=save.party[index];save.party[index]=active;message=save.party[0].name+" is now leading the party.";}else message=save.party[0].name+" is already leading the party.";
+    }else if(action==="start"||action==="encounter-check"){
+      if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
+      if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
+      const onGrass=save.x>=1&&save.x<=10&&save.y>=1&&save.y<=8&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===10)&&save.y===5)&&!["2,2","9,2","2,7","9,7"].includes(save.x+","+save.y);
+      if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
+      if(action==="start"||Math.random()<0.22){
+        const ids=Object.keys(species),limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
+        save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
+      }
+    }else{
+      if(!battle)return json({error:"There is no active encounter."},409,origin);
+      if(action==="attack"){
+        const multiplier=typeMultiplier(lead.type,battle.type);
+        const damage=Math.max(1,Math.min(40,Math.round((lead.attack+Math.floor(Math.random()*4))*multiplier)));
+        battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage."+(multiplier>1?" It was super effective!":multiplier<1?" The attack was resisted.":"");
+        if(battle.hp===0){
+          const gainedXp=Math.max(8,battle.level*12);lead.xp=(lead.xp||0)+gainedXp;let gainedLevels=0;
+          while(lead.level<100&&lead.xp>=lead.level*20){lead.xp-=lead.level*20;lead.level++;gainedLevels++;}
+          if(gainedLevels){lead.maxHp=Math.min(500,(lead.maxHp||lead.hp)+2*gainedLevels);lead.hp=lead.maxHp;lead.attack=Math.min(100,species[lead.id].attack+Math.floor((lead.level-1)/3));}
+          battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" gained "+gainedXp+" XP"+(gainedLevels?" and reached level "+lead.level:"") +".";
+        }else{
+          const counter=Math.max(1,Math.min(20,battle.attack+Math.floor(Math.random()*3)));
+          lead.hp=Math.max(1,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
+        }
+      }else if(action==="capture"){
+        if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
+        if(save.party.length>=6)return json({error:"Your party is full."},409,origin);
+        save.bag--;
+        if(Math.random()<.35+(1-battle.hp/battle.maxHp)*.55){
+          const base=species[battle.id];save.party.push({id:battle.id,name:base.name,type:base.type,icon:base.icon,level:battle.level,hp:battle.maxHp,maxHp:battle.maxHp,attack:battle.attack});
+          save.caught=Math.min(1000000,(save.caught||0)+1);battleFinished=true;message=battle.name+" joined your party!";
+        }else message=battle.name+" broke free. Capture supplies left: "+save.bag+".";
+      }else if(action==="flee"){battleFinished=true;message="You retreated safely.";}
+    }
+    if(battleFinished)battle=null;
+    const now=new Date().toISOString(),nextVersion=version+1;
+    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag};
+    const saveUpdate=env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version);
+    const battleUpdate=battle
+      ? env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now,user.id,nextVersion)
+      : env.DB.prepare("DELETE FROM monster_game_battles WHERE user_id=? AND EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?)").bind(user.id,user.id,nextVersion);
+    const results=await env.DB.batch([saveUpdate,battleUpdate]);
+    if(!results[0]?.meta||results[0].meta.changes!==1){const latest=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress.",conflict:true,version:Number(latest?.version)||0},409,origin);}
+    await audit(env,user,"monster_mmo.action","game_save",user.id,{action,version:nextVersion,battle_active:!!battle});
+    return json({ok:true,action,message,battle,save:clean,version:nextVersion,updated_at:now},200,origin);
+  }
+  // Monster MMO persistent saves. The server canonicalizes creature stats and never trusts client roles/ownership.
+  if(url.pathname==="/api/game/save"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to sync game progress."},401,origin);
+    const row=await env.DB.prepare("SELECT save_json,version,updated_at FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+    if(!row)return json({save:null,version:0,updated_at:null},200,origin);
+    let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
+    return json({save,version:Number(row.version)||1,updated_at:row.updated_at},200,origin);
+  }
+  if(url.pathname==="/api/game/save"&&request.method==="PUT"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to sync game progress."},401,origin);
+    if(!(await rateLimit(env,request,"monster-save",60,60,user.id)))return json({error:"Too many save requests. Try again shortly."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const expected=Number(body?.expected_version);
+    if(!Number.isInteger(expected)||expected<0)return json({error:"Invalid save version."},400,origin);
+    const input=body?.save;
+    if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid save data."},400,origin);
+    const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
+    if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
+    const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
+    if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
+    if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
+    const species={
+      mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3},
+      embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4},
+      driftfin:{name:"Driftfin",type:"water",icon:"◈",hp:16,attack:2},
+      gloamlet:{name:"Gloamlet",type:"ghost",icon:"☾",hp:10,attack:5},
+      thornspit:{name:"Thornspit",type:"thorn",icon:"✥",hp:18,attack:4},
+      zipfang:{name:"Zipfang",type:"electric",icon:"ϟ",hp:11,attack:7},
+      grubruckle:{name:"Grubruckle",type:"stone",icon:"⬟",hp:22,attack:3},
+      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6}
+    };
+    const party=[];
+    for(const member of input.party){
+      if(!member||typeof member!=="object"||!species[member.id]||!int(member.level,1,100)||!int(member.hp,0,500)||!int(member.xp??0,0,999999))return json({error:"Party contains an invalid creature."},400,origin);
+      const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
+      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3))});
+    }
+    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
+    const now=new Date().toISOString();
+    if(expected===0){
+      if(input.steps>10000||input.encounters>1000||input.caught>50||input.badges!==0||input.bag>8||input.party.some(member=>member.level>10||member.hp<1))return json({error:"Initial cloud progress exceeds the migration limits."},403,origin);
+      try{await env.DB.prepare("INSERT INTO monster_game_saves (user_id,save_json,version,updated_at) VALUES (?,?,1,?)").bind(user.id,JSON.stringify(clean),now).run();}
+      catch(error){const current=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(current)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(current.version)},409,origin);throw error;}
+      await audit(env,user,"monster_mmo.save.create","game_save",user.id,{party_size:party.length});
+      return json({ok:true,save:clean,version:1,updated_at:now},200,origin);
+    }
+    const result=await env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),now,user.id,expected).run();
+    if(!result.meta||result.meta.changes!==1){const current=await env.DB.prepare("SELECT version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(current?.version)||0},409,origin);}
+    await audit(env,user,"monster_mmo.save.update","game_save",user.id,{version:expected+1,party_size:party.length});
+    return json({ok:true,save:clean,version:expected+1,updated_at:now},200,origin);
+  }
   return json({error:"Not found"},404,origin);
  }catch(error){console.error(error);return json({error:"Internal server error"},500,origin);}
 }};
