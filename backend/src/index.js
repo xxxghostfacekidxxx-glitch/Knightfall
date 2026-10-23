@@ -381,6 +381,64 @@ async function handlePersonalBotRequest(request,env,origin,url){
  return json({error:"Personal bot endpoint not found."},404,origin);
 }
 
+
+const PUBLIC_ASSET_MAX_BYTES = 2 * 1024 * 1024;
+function assetSlug(value) {
+  return String(value || "").normalize("NFKC").toLowerCase().trim().replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64) || "sprite";
+}
+async function handlePublicAssetRequest(request, env, origin, url) {
+  const publicMatch = url.pathname.match(/^\/public-assets\/([a-f0-9]{32})$/);
+  if (publicMatch && (request.method === "GET" || request.method === "HEAD")) {
+    const object = await env.PUBLIC_ASSETS.get("sprites/" + publicMatch[1]);
+    if (!object) return json({ error: "Public asset not found." }, 404, origin);
+    const headers = new Headers({
+      "content-type": "image/png",
+      "cache-control": "public, max-age=31536000, immutable",
+      "x-content-type-options": "nosniff",
+      "content-security-policy": "default-src 'none'; sandbox",
+      "cross-origin-resource-policy": "cross-origin",
+      "access-control-allow-origin": "*",
+      "content-length": String(object.size || 0)
+    });
+    if (object.httpEtag) headers.set("etag", object.httpEtag);
+    return new Response(request.method === "HEAD" ? null : object.body, { status: 200, headers });
+  }
+  if (url.pathname !== "/api/devil-tools/assets") return null;
+  const user = await requireUser(request, env);
+  if (!user) return json({ error: "Sign in before publishing assets." }, 401, origin);
+  if (!isAdmin(user)) return json({ error: "Administrator access required to publish game assets." }, 403, origin);
+  if (request.method === "GET") {
+    const rows = await env.DB.prepare("SELECT id,asset_name,content_type,size_bytes,created_at,etag FROM public_asset_releases ORDER BY created_at DESC LIMIT 100").all();
+    return json({ assets: (rows.results || []).map(row => ({ ...row, url: "/public-assets/" + row.id, size_bytes: Number(row.size_bytes) })) }, 200, origin);
+  }
+  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, origin, { allow: "GET, POST" });
+  if (!await rateLimit(env, request, "public-asset-publish", 12, 60, user.id)) return json({ error: "Too many asset releases. Wait a minute and try again." }, 429, origin);
+  let form;
+  try { form = await request.formData(); } catch { return json({ error: "Upload form could not be read." }, 400, origin); }
+  const file = form.get("file");
+  const assetName = assetSlug(form.get("name"));
+  if (!file || typeof file.arrayBuffer !== "function" || typeof file.size !== "number") return json({ error: "Choose a sprite image to publish." }, 400, origin);
+  if (file.size < 8 || file.size > PUBLIC_ASSET_MAX_BYTES) return json({ error: "Published sprites must be between 8 bytes and 2 MB." }, 413, origin);
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const isPng = bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47 && bytes[4] === 0x0d && bytes[5] === 0x0a && bytes[6] === 0x1a && bytes[7] === 0x0a;
+  if (!isPng) return json({ error: "Only validated PNG image data is accepted. SVG, HTML, and arbitrary files are not publishable." }, 415, origin);
+  const id = randomToken(16);
+  const objectKey = "sprites/" + id;
+  const createdAt = new Date().toISOString();
+  let stored = false;
+  try {
+    const object = await env.PUBLIC_ASSETS.put(objectKey, bytes, { httpMetadata: { contentType: "image/png", cacheControl: "public, max-age=31536000, immutable" }, customMetadata: { assetName, uploadedBy: String(user.id) } });
+    stored = true;
+    await env.DB.prepare("INSERT INTO public_asset_releases (id,asset_name,object_key,content_type,size_bytes,uploaded_by,created_at,etag) VALUES (?,?,?,?,?,?,?,?)").bind(id, assetName, objectKey, "image/png", bytes.byteLength, user.id, createdAt, object?.httpEtag || object?.etag || null).run();
+    await audit(env, user, "public_asset.publish", "public_asset", null, { id, asset_name: assetName, size_bytes: bytes.byteLength, content_type: "image/png" });
+    return json({ ok: true, asset: { id, name: assetName, content_type: "image/png", size_bytes: bytes.byteLength, created_at: createdAt, url: "/public-assets/" + id } }, 201, origin);
+  } catch (error) {
+    if (stored) { try { await env.PUBLIC_ASSETS.delete(objectKey); } catch (cleanupError) { console.error("public_asset_cleanup_failed", cleanupError); } }
+    console.error("public_asset_publish_failed", error);
+    return json({ error: "Asset publication failed. No release was recorded." }, 500, origin);
+  }
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -394,6 +452,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
+  const publicAssetResponse = await handlePublicAssetRequest(request, env, origin, url);
+  if (publicAssetResponse) return publicAssetResponse;
   const shopResponse = await handleShopRequest(request, env, origin, url);
   if (shopResponse) return shopResponse;
   const personalBotResponse = await handlePersonalBotRequest(request, env, origin, url);
