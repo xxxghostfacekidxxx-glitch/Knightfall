@@ -66,7 +66,8 @@
     toggle.setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
     nav.classList.toggle("open", !open);
   });
-  nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {\n    nav.querySelector(".kf-nav-more")?.removeAttribute("open");
+  nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+    nav.querySelector(".kf-nav-more")?.removeAttribute("open");
     nav.classList.remove("open");
     toggle.setAttribute("aria-expanded", "false");
   }));
