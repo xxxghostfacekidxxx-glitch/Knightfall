@@ -83,7 +83,11 @@ body{margin:0;background:radial-gradient(ellipse at 15% 0%,#d354001b,transparent
 <script>
 (() => {
   const tabs=[...document.querySelectorAll('[role="tab"][data-game]')];
-  tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(t=>t.setAttribute('aria-selected',String(t===tab)));document.querySelectorAll('.game-panel').forEach(p=>p.classList.toggle('active',p.id===tab.getAttribute('aria-controls')));}));
+  function activateGame(tab,{updateHash=true}={}){if(!tab)return;tabs.forEach(t=>t.setAttribute('aria-selected',String(t===tab)));document.querySelectorAll('.game-panel').forEach(p=>p.classList.toggle('active',p.id===tab.getAttribute('aria-controls')));if(updateHash&&location.hash!=='#game-'+tab.dataset.game)history.replaceState(null,'','#game-'+tab.dataset.game);}
+  tabs.forEach(tab=>tab.addEventListener('click',()=>activateGame(tab)));
+  const initialGame=location.hash.replace(/^#game-/,'');
+  const initialTab=tabs.find(tab=>tab.dataset.game===initialGame);
+  if(initialTab)activateGame(initialTab,{updateHash:false});
   // Cinder Clicker
   // Paint the Cinder Clicker target with the original sprite atlas while keeping its button hitbox unchanged.
   let cinderScore=0,cinderBest=0,cinderTime=15,cinderTimer=null,cinderRunning=false;
