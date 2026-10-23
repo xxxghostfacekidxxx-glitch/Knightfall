@@ -392,3 +392,23 @@
 #manage-group{border:1px solid var(--kf-line,rgba(255,255,255,.18));border-radius:999px;background:transparent;color:inherit;padding:.55rem .85rem;cursor:pointer}
 #manage-group:hover{border-color:var(--kf-accent,#ff45b5);color:var(--kf-accent,#ff45b5)}
 @media(max-width:520px){#manage-group-dialog{padding:1rem}.group-result button{font-size:.82rem}}
+
+
+/* Private message attachments */
+.composer-main{display:flex;flex-direction:column;gap:.45rem;min-width:0;flex:1}
+.composer-main textarea{width:100%;min-width:0}
+#attach-file{align-self:flex-end;flex:0 0 auto;width:2.7rem;height:2.7rem;border:1px solid var(--kf-line,rgba(255,255,255,.2));border-radius:50%;background:transparent;color:var(--kf-accent,#ff45b5);font-size:1.35rem;cursor:pointer}
+#attach-file:hover{border-color:var(--kf-accent,#ff45b5);background:rgba(255,55,170,.1)}
+#attach-file:disabled{opacity:.5;cursor:wait}
+.pending-attachments{display:flex;flex-wrap:wrap;gap:.4rem}
+.pending-attachment{display:flex;align-items:center;gap:.5rem;max-width:100%;border:1px solid var(--kf-line,rgba(255,255,255,.15));border-radius:12px;padding:.35rem .55rem;background:rgba(0,0,0,.16);font-size:.82rem}
+.pending-attachment>span{overflow-wrap:anywhere}
+.pending-attachment button{border:0;background:transparent;color:var(--kf-accent,#ff45b5);font-size:1.1rem;cursor:pointer}
+.message-attachments{display:flex;flex-wrap:wrap;gap:.45rem;margin:.4rem 0}
+.message-attachment{display:flex;align-items:center;gap:.6rem;max-width:100%;border:1px solid var(--kf-line,rgba(255,255,255,.14));border-radius:12px;padding:.55rem .7rem;color:inherit;text-decoration:none;background:rgba(0,0,0,.12)}
+.message-attachment:hover{border-color:var(--kf-accent,#ff45b5)}
+.message-attachment .attachment-icon{font-size:1.2rem;color:var(--kf-accent,#ff45b5)}
+.message-attachment>span:last-child{display:flex;flex-direction:column;min-width:0}
+.message-attachment strong{overflow-wrap:anywhere;font-size:.9rem}
+.message-attachment small{opacity:.72;font-size:.75rem}
+@media(max-width:620px){#attach-file{width:2.5rem;height:2.5rem}.composer-main{flex-basis:calc(100% - 3.2rem)}.message-attachment{max-width:100%}}
