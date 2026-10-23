@@ -62,3 +62,8 @@ The production D1 database `knightfall-forum` was verified to be missing migrati
 ## Starting Cinders balances (0024)
 
 Migration `0024_starting_cinders.sql` raises each existing wallet to a minimum starting balance without reducing balances above the threshold: regular members receive at least 2,000 Cinders; admins, moderators, god-role accounts, and the `knightfall` owner account receive at least 1,000,000. The adjustment is recorded in `wallet_ledger`. The Worker also creates new wallets with the appropriate role-based starting balance. Apply this migration through the guarded production migration workflow or an authorized D1 migration process, then verify the wallet balances and migration ledger before reporting it live.
+
+
+## Live typing indicators (0025)
+
+`0025_message_typing.sql` adds the nullable `conversation_members.typing_until` field and an index for short-lived typing presence. The Worker only allows conversation members to update their own typing state or read the other participant's active typing state. Typing leases expire after seven seconds, and the browser refreshes presence every 2.2 seconds while a conversation is open. The migration was applied and verified in production on 2026-10-23; the `typing_until` column and migration ledger entry are present.
