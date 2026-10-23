@@ -426,16 +426,25 @@ async function handlePublicAssetRequest(request, env, origin, url) {
   const objectKey = "sprites/" + id;
   const createdAt = new Date().toISOString();
   let stored = false;
+  let recorded = false;
   try {
     const object = await env.PUBLIC_ASSETS.put(objectKey, bytes, { httpMetadata: { contentType: "image/png", cacheControl: "public, max-age=31536000, immutable" }, customMetadata: { assetName, uploadedBy: String(user.id) } });
     stored = true;
     await env.DB.prepare("INSERT INTO public_asset_releases (id,asset_name,object_key,content_type,size_bytes,uploaded_by,created_at,etag) VALUES (?,?,?,?,?,?,?,?)").bind(id, assetName, objectKey, "image/png", bytes.byteLength, user.id, createdAt, object?.httpEtag || object?.etag || null).run();
+    recorded = true;
     await audit(env, user, "public_asset.publish", "public_asset", null, { id, asset_name: assetName, size_bytes: bytes.byteLength, content_type: "image/png" });
     return json({ ok: true, asset: { id, name: assetName, content_type: "image/png", size_bytes: bytes.byteLength, created_at: createdAt, url: "/public-assets/" + id } }, 201, origin);
   } catch (error) {
-    if (stored) { try { await env.PUBLIC_ASSETS.delete(objectKey); } catch (cleanupError) { console.error("public_asset_cleanup_failed", cleanupError); } }
+    if (recorded) {
+      try { await env.DB.prepare("DELETE FROM public_asset_releases WHERE id = ?").bind(id).run(); }
+      catch (cleanupError) { console.error("public_asset_record_cleanup_failed", cleanupError); }
+    }
+    if (stored) {
+      try { await env.PUBLIC_ASSETS.delete(objectKey); }
+      catch (cleanupError) { console.error("public_asset_object_cleanup_failed", cleanupError); }
+    }
     console.error("public_asset_publish_failed", error);
-    return json({ error: "Asset publication failed. No release was recorded." }, 500, origin);
+    return json({ error: "Asset publication failed. The release was rolled back where possible." }, 500, origin);
   }
 }
 
