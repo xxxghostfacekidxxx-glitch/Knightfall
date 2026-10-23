@@ -7,9 +7,12 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
   const boot = () => {
     if (document.querySelector("[data-arcade-tool-dock]")) return;
-    const target = document.querySelector("main.wrap") || document.querySelector("main.arcade") || document.querySelector("main") || document.querySelector(".wrap") || document.querySelector(".arcade") || document.body;
-    if (!target) return;
-    target.classList.add("arcade-fullscreen-target");
+    // Fullscreen belongs to the actual game cabinet, not the whole website or its navigation.
+    // Prefer the cabinet that contains the active play surface and its controls.
+    const target = document.querySelector(".cabinet:has(.playfield), .cabinet:has(canvas), .game.active, .game-panel.active, .arcade-game, .playfield, .felt, .table[aria-label]");
+    const toolbarHost = target || document.querySelector("main.wrap") || document.querySelector("main.arcade") || document.querySelector("main") || document.querySelector(".wrap") || document.querySelector(".arcade") || document.body;
+    if (!toolbarHost) return;
+    if (target) target.classList.add("arcade-fullscreen-target");
     const dock = document.createElement("nav");
     dock.className = "arcade-tools";
     dock.dataset.arcadeToolDock = "true";
@@ -24,12 +27,15 @@
       b.append(icon, text); b.addEventListener("click", action); dock.append(b);
       return b;
     };
-    const fullscreen = makeButton("Fullscreen", "⛶", async () => {
-      try {
-        if (document.fullscreenElement) await document.exitFullscreen();
-        else if (target.requestFullscreen) await target.requestFullscreen({ navigationUI: "hide" });
-      } catch { fullscreen.title = "Fullscreen is unavailable here. Use your browser menu."; }
-    }, "F", false);
+    let fullscreen = null;
+    if (target && typeof target.requestFullscreen === "function") {
+      fullscreen = makeButton("Fullscreen", "⛶", async () => {
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else await target.requestFullscreen({ navigationUI: "hide" });
+        } catch { fullscreen.title = "Fullscreen is unavailable here. Use your browser menu."; }
+      }, "F", false);
+    }
     const focus = makeButton("Focus mode", "◉", () => {
       prefs.focus = !prefs.focus; document.body.classList.toggle("arcade-focus-mode", prefs.focus);
       focus.setAttribute("aria-pressed", String(prefs.focus)); save();
@@ -43,13 +49,14 @@
       motion.setAttribute("aria-pressed", String(prefs.motion)); save();
     }, "M", prefs.motion);
     const help = makeButton("Keyboard help", "?", () => toggleHelp(), "H", null);
-    target.insertBefore(dock, target.firstChild);
+    toolbarHost.insertBefore(dock, toolbarHost.firstChild);
     const panel = document.createElement("section");
     panel.className = "arcade-shortcuts"; panel.hidden = true; panel.setAttribute("aria-label", "Arcade keyboard shortcuts");
-    panel.innerHTML = '<div class="arcade-shortcuts-head"><strong>ARCADE QUICK CONTROLS</strong><button type="button" class="arcade-help-close" aria-label="Close keyboard help">×</button></div><dl><div><dt>F</dt><dd>Toggle fullscreen</dd></div><div><dt>G</dt><dd>Toggle focus mode</dd></div><div><dt>C</dt><dd>Toggle high contrast</dd></div><div><dt>M</dt><dd>Reduce motion effects</dd></div><div><dt>H or ?</dt><dd>Show or hide this guide</dd></div><div><dt>Esc</dt><dd>Exit fullscreen or close browser dialog</dd></div></dl><p>Game-specific controls remain unchanged. Preferences are saved on this device.</p>';
-    target.insertBefore(panel, dock.nextSibling);
+    panel.innerHTML = '<div class="arcade-shortcuts-head"><strong>ARCADE QUICK CONTROLS</strong><button type="button" class="arcade-help-close" aria-label="Close keyboard help">×</button></div><dl><div><dt>F</dt><dd>Toggle fullscreen (game screens only)</dd></div><div><dt>G</dt><dd>Toggle focus mode</dd></div><div><dt>C</dt><dd>Toggle high contrast</dd></div><div><dt>M</dt><dd>Reduce motion effects</dd></div><div><dt>H or ?</dt><dd>Show or hide this guide</dd></div><div><dt>Esc</dt><dd>Exit fullscreen or close browser dialog</dd></div></dl><p>Fullscreen contains the game surface and its gameplay controls. Game-specific controls remain unchanged.</p>';
+    toolbarHost.insertBefore(panel, dock.nextSibling);
     const togglePressed = (button, on) => button.setAttribute("aria-pressed", String(on));
     const syncFullscreen = () => {
+      if (!fullscreen) return;
       const active = document.fullscreenElement === target;
       fullscreen.setAttribute("aria-pressed", String(active));
       fullscreen.querySelector("span:last-child").textContent = active ? "Exit fullscreen" : "Fullscreen";
@@ -65,7 +72,7 @@
     document.addEventListener("keydown", e => {
       if (e.altKey || e.ctrlKey || e.metaKey || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName) || document.activeElement?.isContentEditable) return;
       const k = e.key.toLowerCase();
-      if (k === "f") { e.preventDefault(); fullscreen.click(); }
+      if (k === "f" && fullscreen) { e.preventDefault(); fullscreen.click(); }
       else if (k === "g") { e.preventDefault(); focus.click(); }
       else if (k === "c") { e.preventDefault(); contrast.click(); }
       else if (k === "m") { e.preventDefault(); motion.click(); }
