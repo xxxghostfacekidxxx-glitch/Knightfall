@@ -336,8 +336,10 @@ input,select,textarea,.guess-form input{
   color:#f8f3ff!important;
 }
 .playfield canvas,.field canvas,.play-area canvas,.canvas-wrap canvas,.game canvas,.cabinet canvas{
-  image-rendering:pixelated;
+  image-rendering:auto;
 }
+/* Only explicitly marked pixel-art assets should use nearest-neighbour scaling. */
+.pixel-art,.sprite-thumb,.asset-thumb{image-rendering:pixelated;image-rendering:crisp-edges;}
 .arcade-tools{gap:.55rem}
 .arcade-tool-icon{color:#c6ff45}
 .arcade-shortcuts-head{color:#ff75e3!important}
