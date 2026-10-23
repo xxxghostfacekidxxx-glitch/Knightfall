@@ -295,3 +295,51 @@
 .blocked-tag{display:inline-block;margin-top:.3rem;color:#f0a38b;font-size:.58rem;font-weight:900;letter-spacing:.08em}
 .conversation-restricted{padding:1rem 1.1rem;border-top:1px solid #4a2b20;background:#160f0c;color:#f0c4b5;font-size:.82rem;line-height:1.55}
 .conversation-restricted[hidden]{display:none}
+
+
+/* Accessibility: make chat and inbox scrollbars easier to see and grab, especially on touch screens. */
+.messages-list,
+.conversation-panel {
+  scrollbar-width: auto;
+  scrollbar-color: #a85b2d #17110d;
+  scrollbar-gutter: stable;
+}
+.messages-list::-webkit-scrollbar,
+.conversation-panel::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+.messages-list::-webkit-scrollbar-track,
+.conversation-panel::-webkit-scrollbar-track {
+  background: #17110d;
+  border-left: 1px solid #34251b;
+  border-radius: 10px;
+}
+.messages-list::-webkit-scrollbar-thumb,
+.conversation-panel::-webkit-scrollbar-thumb {
+  min-height: 48px;
+  background: #8a4a26;
+  border: 3px solid #17110d;
+  border-radius: 10px;
+}
+.messages-list::-webkit-scrollbar-thumb:hover,
+.conversation-panel::-webkit-scrollbar-thumb:hover {
+  background: #e87845;
+}
+.messages-list::-webkit-scrollbar-thumb:active,
+.conversation-panel::-webkit-scrollbar-thumb:active {
+  background: #ff9a61;
+}
+@media (max-width: 850px) {
+  .message-layout.show-chat .messages-list {
+    scrollbar-width: auto;
+    scrollbar-color: #a85b2d #17110d;
+  }
+  .message-layout.show-chat .messages-list::-webkit-scrollbar {
+    width: 18px;
+  }
+  .message-layout.show-chat .messages-list::-webkit-scrollbar-thumb {
+    min-height: 56px;
+    border-width: 3px;
+  }
+}
