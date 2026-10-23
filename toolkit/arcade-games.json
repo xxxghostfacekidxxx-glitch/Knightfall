@@ -8,11 +8,13 @@
       "name": "2048",
       "category": "Puzzle",
       "description": "Slide, merge, and chase the 2048 tile.",
-      "playUrl": "https://play2048.co/",
+      "playUrl": "/arcade/hosted/2048/",
       "repository": "https://github.com/gabrielecirulli/2048",
       "license": "MIT",
-      "launchMode": "external",
-      "sourceImported": false
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/2048/",
+      "integrationNote": "Self-hosted MIT import; audit documented in toolkit/arcade-import-audit.json and public/arcade/hosted/2048/SOURCE.md. Browser-local saves only."
     },
     {
       "id": "hextris",
