@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Your Ash-Fall inbox. Messages, conversations, and whatever the hell is happening.">
 <title>Ash-Fall | Messages</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/messages.css?v=20261023-groups">
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/messages.css?v=20261023-group-picker">
 </head>
 <body>
 <header class="kf-header"></header>
@@ -25,6 +25,18 @@
       <p class="compose-hint">Add friends to build your circle, or start a private conversation.</p></section>
       <section id="people-friends" class="people-pane" role="tabpanel" hidden><div id="friends-list" class="member-results"><p class="empty">Loading friends…</p></div></section>
       <section id="people-requests" class="people-pane" role="tabpanel" hidden><div id="requests-list" class="member-results"><p class="empty">Loading requests…</p></div></section>
+    </form>
+  </dialog>
+  <dialog id="group-dialog" class="compose-dialog" aria-labelledby="group-title">
+    <form id="group-form">
+      <div class="compose-dialog-head"><div><p class="eyebrow">BUILD YOUR CREW</p><h2 id="group-title">Create a group</h2></div><button type="button" id="close-group" class="icon-button" aria-label="Close">×</button></div>
+      <label for="group-name">Group name</label>
+      <input id="group-name" class="search" maxlength="80" minlength="2" required placeholder="Give this chat a name">
+      <label for="group-member-search">Add members</label>
+      <input id="group-member-search" class="search" type="search" autocomplete="off" placeholder="Search usernames or display names…">
+      <div id="group-selected" class="group-selected" aria-live="polite"><p class="empty">No members selected yet.</p></div>
+      <div id="group-member-results" class="member-results"><p class="empty">Search for at least two members.</p></div>
+      <div class="group-form-footer"><span id="group-member-count">0 of 49 members selected</span><button id="create-group-submit" class="primary" type="submit">Create group</button></div>
     </form>
   </dialog>
   <section class="message-layout">
@@ -103,7 +115,16 @@ return '<article class="person-row">'+avatar+'<span class="person-info"><strong>
 async function loadFriends(){const d=await api("/api/friends");friendData={friends:d.friends||[],incoming:d.incoming||[],outgoing:d.outgoing||[]};$("#friends-list").innerHTML=friendData.friends.map(p=>personRow(p,"friend")).join("")||'<p class="empty">No friends yet. Find members to build your circle.</p>';$("#requests-list").innerHTML=friendData.incoming.map(p=>personRow(p,"incoming")).join("")+friendData.outgoing.map(p=>personRow(p,"outgoing")).join("")||'<p class="empty">No pending friend requests.</p>';$("#friend-request-count").textContent=friendData.incoming.length;$("#friend-request-count").hidden=!friendData.incoming.length}
 async function showPeopleTab(tab){document.querySelectorAll("[data-people-tab]").forEach(b=>{const active=b.dataset.peopleTab===tab;b.classList.toggle("active",active);b.setAttribute("aria-selected",String(active))});$("#people-discover").hidden=tab!=="discover";$("#people-friends").hidden=tab!=="friends";$("#people-requests").hidden=tab!=="requests";await loadFriends()}
 $("#new-message").onclick=()=>{composeDialog.showModal();showPeopleTab("discover").catch(e=>status(e.message));memberSearch.value="";memberResults.innerHTML='<p class="empty">Start typing to find members.</p>';memberSearch.focus()};
-$("#new-group").onclick=async()=>{const name=prompt("Name this group (2–80 characters):");if(name===null)return;const usernamesText=prompt("Enter at least two member usernames, separated by commas (no @ symbols):");if(usernamesText===null)return;const usernames=[...new Set(usernamesText.split(",").map(x=>x.trim().replace(/^@/,"").toLowerCase()).filter(Boolean))];try{const d=await api("/api/messages/groups",{method:"POST",body:JSON.stringify({name,usernames})});await loadConversations({openSelected:false});await openConversation(Number(d.id));status("Group created. "+Number(d.participant_count)+" members are in.",true)}catch(e){status(e.message)}};
+const groupDialog=$("#group-dialog"),groupName=$("#group-name"),groupSearch=$("#group-member-search"),groupResults=$("#group-member-results"),groupSelected=$("#group-selected"),groupCount=$("#group-member-count"),groupSubmit=$("#create-group-submit");let selectedGroupMembers=new Map(),groupSearchHandle=0,groupSearchToken=0;
+function drawGroupSelection(){groupSelected.innerHTML=selectedGroupMembers.size?[...selectedGroupMembers.values()].map(u=>'<button type="button" class="group-chip" data-group-remove="'+esc(u.username)+'" aria-label="Remove '+esc(u.username)+'"> '+esc(u.display_name||u.username)+' <span>×</span></button>').join(""):'<p class="empty">No members selected yet.</p>';groupCount.textContent=selectedGroupMembers.size+' of 49 members selected';groupSubmit.disabled=selectedGroupMembers.size<2||selectedGroupMembers.size>49}
+$("#new-group").onclick=()=>{selectedGroupMembers=new Map();groupName.value="";groupSearch.value="";groupResults.innerHTML='<p class="empty">Search for at least two members.</p>';drawGroupSelection();groupDialog.showModal();groupName.focus()};
+$("#close-group").onclick=()=>groupDialog.close();
+groupDialog.addEventListener("click",e=>{if(e.target===groupDialog)groupDialog.close()});
+groupSearch.oninput=()=>{clearTimeout(groupSearchHandle);const token=++groupSearchToken,term=groupSearch.value.trim();if(term.length<2){groupResults.innerHTML='<p class="empty">Type at least two characters.</p>';return}groupResults.innerHTML='<p class="empty">Searching members…</p>';groupSearchHandle=setTimeout(async()=>{try{const d=await api("/api/discover?q="+encodeURIComponent(term)+"&limit=30");if(token!==groupSearchToken||term!==groupSearch.value.trim())return;const matches=(d.users||[]).filter(u=>Number(u.id)!==Number(currentUser.id));groupResults.innerHTML=matches.map(u=>{const chosen=selectedGroupMembers.has(u.username);return '<div class="group-result"><span class="avatar">'+esc((u.display_name||u.username||"?").slice(0,1).toUpperCase())+'</span><span><strong>'+esc(u.display_name||u.username)+'</strong><small>@'+esc(u.username)+'</small></span><button type="button" class="'+(chosen?'secondary':'primary')+'" data-group-add="'+esc(u.username)+'" '+(chosen||selectedGroupMembers.size>=49?'disabled':'')+'>'+(chosen?'Added':'+ Add')+'</button></div>'}).join("")||'<p class="empty">No active members matched that search.</p>'}catch(e){if(token===groupSearchToken)groupResults.innerHTML='<p class="empty">'+esc(e.message)+'</p>'}},250)};
+groupResults.addEventListener("click",e=>{const btn=e.target.closest("[data-group-add]");if(!btn||selectedGroupMembers.size>=49)return;const username=btn.dataset.groupAdd;if(selectedGroupMembers.has(username))return;const row=btn.closest(".group-result"),name=row?.querySelector("strong")?.textContent||username;selectedGroupMembers.set(username,{username,display_name:name});drawGroupSelection();groupSearch.dispatchEvent(new Event("input"))});
+groupSelected.addEventListener("click",e=>{const btn=e.target.closest("[data-group-remove]");if(!btn)return;selectedGroupMembers.delete(btn.dataset.groupRemove);drawGroupSelection();groupSearch.dispatchEvent(new Event("input"))});
+$("#group-form").addEventListener("submit",async e=>{e.preventDefault();const name=groupName.value.trim(),usernames=[...selectedGroupMembers.keys()];if(name.length<2||usernames.length<2){status("Enter a group name and select at least two members.");return}groupSubmit.disabled=true;groupSubmit.textContent="Creating…";try{const d=await api("/api/messages/groups",{method:"POST",body:JSON.stringify({name,usernames})});groupDialog.close();await loadConversations({openSelected:false});await openConversation(Number(d.id));status("Group created. "+Number(d.participant_count)+" members are in.",true)}catch(e){status(e.message)}finally{groupSubmit.textContent="Create group";drawGroupSelection()}});
+
 $("#close-compose").onclick=()=>composeDialog.close();
 document.querySelectorAll("[data-people-tab]").forEach(b=>b.addEventListener("click",()=>showPeopleTab(b.dataset.peopleTab).catch(e=>status(e.message))));
 $("#friends-list").addEventListener("click",async e=>{const msg=e.target.closest("[data-message-user]"),remove=e.target.closest("[data-friend-remove]");try{if(msg){const d=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:msg.dataset.messageUser})});composeDialog.close();await loadConversations({openSelected:false});await openConversation(Number(d.id))}else if(remove&&confirm("Remove this friend? You can send another request later.")){await api("/api/friends/"+remove.dataset.friendRemove,{method:"DELETE"});await loadFriends();status("Friend removed.",true)}}catch(x){status(x.message)}});
