@@ -23,7 +23,7 @@
 <section class="panel" style="margin-top:1rem" id="release-simulator"><h2>Asset Release Queue <span class="small">· prototype</span></h2><p>Admin-only mock publishing workflow for testing the release UI. This does <strong>not</strong> upload to the private vault, replace live sprites, or publish public assets. The private vault stays private; pretending otherwise would be a security bug wearing a fake mustache.</p><div class="bar"><button class="btn" id="stage-release" type="button">＋ Stage selected sprite</button><button class="btn primary" id="simulate-release" type="button">▶ Simulate release</button><button class="btn" id="clear-release" type="button">Clear queue</button></div><div class="console" id="release-queue" role="status" aria-live="polite">Queue empty. Select a sprite and stage it to begin.</div><p class="small">Prototype queue exists in this browser session only. A real publisher needs a dedicated authenticated Worker endpoint, role checks, asset validation, and a public asset destination separate from private media storage.</p></section>
 </aside></div></div>
 <p class="foot">ASH-FALL · DEVIL TOOLS · SPRITE WORKSHOP / LOCAL PREVIEW BUILD</p></main>
-<script src="/arcade-sprites.js?v=20261023-4"></script>
+<script src="/arcade-sprites.js?v=20261023-5"></script>
 <script>
 (()=>{'use strict';
 const API='https://api.ash-fall.com', $=s=>document.querySelector(s),status=$('#status'),workshop=$('#workshop');
