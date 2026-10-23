@@ -534,12 +534,14 @@
       "name": "Ludo",
       "category": "Board",
       "description": "Race tokens around the board against three AI opponents.",
-      "playUrl": "https://sausi-7.github.io/games/games/board/ludo/index.html",
+      "playUrl": "/arcade/hosted/ludo/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
-      "sourceImported": false,
-      "sourcePath": "games/board/ludo/index.html"
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "sourcePath": "games/board/ludo/index.html",
+      "importedPath": "public/arcade/hosted/ludo/",
+      "integrationNote": "Self-hosted single-file adaptation; no external assets or runtime dependencies."
     },
     {
       "id": "pac-man",
@@ -696,6 +698,19 @@
       "launchMode": "external",
       "sourceImported": false,
       "sourcePath": "games/platformer/parkour/index.html"
+    },
+    {
+      "id": "line-trap",
+      "name": "Line Trap",
+      "category": "Puzzle",
+      "description": "Draw lines, avoid roaming enemies, and survive the trap.",
+      "playUrl": "/arcade/hosted/line-trap/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/line-trap/",
+      "integrationNote": "Self-hosted single-file adaptation; no external assets or runtime dependencies."
     }
   ]
 }
