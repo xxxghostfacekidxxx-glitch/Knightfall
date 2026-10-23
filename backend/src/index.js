@@ -1120,7 +1120,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!user)return json({error:"Authentication required."},401,origin);
     if(!await rateLimit(env,request,"group-create",5,600,user.id))return json({error:"Too many groups created. Try again later."},429,origin);
     let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
-    const name=String(body.name||"").trim().replace(/\\s+/g," ").slice(0,80);
+    const name=String(body.name||"").trim().replace(/\s+/g," ").slice(0,80);
     if(name.length<2)return json({error:"Group name must be at least 2 characters."},400,origin);
     if(!Array.isArray(body.usernames))return json({error:"Provide a list of member usernames."},400,origin);
     const usernames=[...new Set(body.usernames.map(x=>String(x||"").trim().toLowerCase()).filter(x=>x&&x!==String(user.username||"").toLowerCase()))];
