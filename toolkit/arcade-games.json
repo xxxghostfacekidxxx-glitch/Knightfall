@@ -711,6 +711,19 @@
       "sourceImported": true,
       "importedPath": "public/arcade/hosted/line-trap/",
       "integrationNote": "Self-hosted single-file adaptation; no external assets or runtime dependencies."
+    },
+    {
+      "id": "hex-puzzle",
+      "name": "Hex Puzzle",
+      "category": "Puzzle",
+      "description": "Drag shapes into the hex grid, clear lines, and beat the timer.",
+      "playUrl": "/arcade/hosted/hex-puzzle/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/hex-puzzle/",
+      "integrationNote": "Self-hosted single-file adaptation; config is local and external audio assets are disabled."
     }
   ]
 }
