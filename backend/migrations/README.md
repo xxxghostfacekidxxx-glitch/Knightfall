@@ -77,3 +77,8 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 ## Group conversations (0027)
 
 0027_group_conversations.sql adds a group name and creator reference to conversations. The group API uses the existing conversation_members access boundary, so messages, reactions, typing status, and read state remain scoped to current group membership. Apply this additive migration before deploying a Worker version that queries group metadata. Verify both new columns exist and the migration ledger includes 0027_group_conversations.sql; then create a test group with at least two other active members and verify all participants can read and send messages while non-members receive a not-found response.
+
+
+## Private message attachments (0028)
+
+`0028_message_attachments.sql` stores attachment metadata only; file bytes live in the separate private R2 bucket `knightfall-message-attachments` bound as `MESSAGE_ATTACHMENTS`. The bucket has no public domain binding. Uploads require conversation membership, are limited to 10 MiB per file and an explicit image/PDF/TXT/DOCX MIME allowlist, and are linked to a message only when the sender submits that message. Downloads require current conversation membership; pending uploads are visible only to their uploader, and attachments on deleted messages are not downloadable. Never bind the private personal vault or public game-asset bucket for this feature.
