@@ -1131,11 +1131,15 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const allowed=new Set(["image/jpeg","image/png","image/gif","image/webp","application/pdf","text/plain","application/vnd.openxmlformats-officedocument.wordprocessingml.document"]);
     const type=String(file.type||"").toLowerCase();
     if(!allowed.has(type))return json({error:"Allowed files: JPG, PNG, GIF, WebP, PDF, TXT, and DOCX."},415,origin);
+    const bytes=await file.arrayBuffer(),head=new Uint8Array(bytes).slice(0,16);
+    const starts=(...values)=>values.every((v,i)=>head[i]===v);
+    const signatureOk=type==="image/jpeg"?starts(0xff,0xd8,0xff):type==="image/png"?starts(0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a):type==="image/gif"?(String.fromCharCode(...head.slice(0,6))==="GIF87a"||String.fromCharCode(...head.slice(0,6))==="GIF89a"):type==="image/webp"?(String.fromCharCode(...head.slice(0,4))==="RIFF"&&String.fromCharCode(...head.slice(8,12))==="WEBP"):type==="application/pdf"?String.fromCharCode(...head.slice(0,5))==="%PDF-":type==="text/plain"?!new Uint8Array(bytes).includes(0):starts(0x50,0x4b,0x03,0x04);
+    if(!signatureOk)return json({error:"The file contents do not match an allowed file type."},415,origin);
     const original=String(file.name||"attachment").replace(/[\\/\\\\\u0000-\\u001f\\u007f]/g,"_").trim().slice(0,180)||"attachment";
     const key=conversationId+"/"+user.id+"/"+crypto.randomUUID();
     const now=new Date().toISOString();
     try{
-      await env.MESSAGE_ATTACHMENTS.put(key,await file.arrayBuffer(),{httpMetadata:{contentType:type,cacheControl:"private, no-store"},customMetadata:{conversationId:String(conversationId),uploaderId:String(user.id)}});
+      await env.MESSAGE_ATTACHMENTS.put(key,bytes,{httpMetadata:{contentType:type,cacheControl:"private, no-store"},customMetadata:{conversationId:String(conversationId),uploaderId:String(user.id)}});
       const row=await env.DB.prepare("INSERT INTO message_attachments (conversation_id,message_id,uploader_id,object_key,original_filename,content_type,byte_size,created_at) VALUES (?,NULL,?,?,?,?,?,?) RETURNING id").bind(conversationId,user.id,key,original,type,file.size,now).first();
       return json({id:row.id,filename:original,content_type:type,byte_size:file.size},201,origin);
     }catch(e){await env.MESSAGE_ATTACHMENTS.delete(key).catch(()=>{});return json({error:"The attachment could not be stored."},500,origin)}
