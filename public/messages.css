@@ -381,3 +381,14 @@
 .group-form-footer{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding-top:.7rem;border-top:1px solid var(--kf-line,rgba(255,255,255,.12));position:sticky;bottom:-1px;background:inherit}
 #group-member-count{font-size:.85rem;opacity:.75}
 @media(max-width:520px){#group-dialog{padding:1rem}.group-form-footer{align-items:stretch;flex-direction:column}.group-form-footer button{width:100%}.group-result{gap:.45rem}.group-result button{padding:.5rem}}
+
+
+/* Group membership management */
+#manage-group-dialog{width:min(620px,calc(100vw - 24px));max-height:min(88dvh,820px);overflow:auto}
+#manage-group-dialog .compose-hint{margin:.3rem 0 .8rem;opacity:.78}
+.manage-group-add{border-top:1px solid var(--kf-line,rgba(255,255,255,.12));margin-top:1rem;padding-top:1rem}
+.manage-group-add label{display:block;font-weight:750;margin-bottom:.45rem}
+.manage-group-add .search{width:100%;margin-bottom:.5rem}
+#manage-group{border:1px solid var(--kf-line,rgba(255,255,255,.18));border-radius:999px;background:transparent;color:inherit;padding:.55rem .85rem;cursor:pointer}
+#manage-group:hover{border-color:var(--kf-accent,#ff45b5);color:var(--kf-accent,#ff45b5)}
+@media(max-width:520px){#manage-group-dialog{padding:1rem}.group-result button{font-size:.82rem}}
