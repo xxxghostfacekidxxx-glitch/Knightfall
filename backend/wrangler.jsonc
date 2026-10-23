@@ -32,6 +32,10 @@
     {
       "binding": "VAULT",
       "bucket_name": "knightfall-personal-admin-vault"
+    },
+    {
+      "binding": "PUBLIC_ASSETS",
+      "bucket_name": "knightfall-public-game-assets"
     }
   ]
 }
