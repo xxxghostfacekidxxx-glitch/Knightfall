@@ -61,6 +61,57 @@
         "local timer only",
         "no account save or leaderboard"
       ]
+    },
+    {
+      "id": "ludo",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/ludo/",
+      "sourcePath": "games/board/ludo/index.html",
+      "assets": {
+        "images": "none",
+        "audio": "none",
+        "fonts": "system fonts",
+        "scripts": "inline only"
+      },
+      "dependencies": [
+        "browser DOM",
+        "browser timer"
+      ],
+      "securityNotes": [
+        "no external network calls",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "local-only game state",
+        "no online multiplayer or leaderboard"
+      ]
+    },
+    {
+      "id": "line-trap",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/line-trap/",
+      "sourcePath": "games/puzzle/line-trap/index.html",
+      "assets": {
+        "images": "none",
+        "audio": "none",
+        "fonts": "system fonts",
+        "scripts": "inline canvas runtime"
+      },
+      "dependencies": [
+        "browser canvas",
+        "requestAnimationFrame"
+      ],
+      "securityNotes": [
+        "no external network calls",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "no account save or leaderboard"
+      ]
     }
   ],
   "deferred": [
