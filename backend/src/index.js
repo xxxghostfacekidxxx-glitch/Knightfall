@@ -1180,7 +1180,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const onGrass=save.x>=1&&save.x<=10&&save.y>=1&&save.y<=8&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===10)&&save.y===5)&&!["2,2","9,2","2,7","9,7"].includes(save.x+","+save.y);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       if(action==="start"||Math.random()<0.22){
-        const ids=Object.keys(species),chosen=species[ids[crypto.getRandomValues(new Uint8Array(1))[0]%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        const ids=Object.keys(species),limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
         battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
         save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
       }
