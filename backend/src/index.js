@@ -1225,7 +1225,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }
     if(request.method==="DELETE"&&targetId){
       if(Number(user.id)!==targetId&&Number(group.created_by)!==Number(user.id))return json({error:"Only the group creator can remove other members."},403,origin);
-      if(targetId===Number(group.created_by)&&Number(user.id)!==targetId)return json({error:"The group creator cannot be removed. Transfer ownership first."},400,origin);
+      if(targetId===Number(group.created_by))return json({error:"The group creator cannot leave or be removed until group ownership transfer is supported."},400,origin);
       const target=await env.DB.prepare("SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,targetId).first();
       if(!target)return json({error:"That member is not in this group."},404,origin);
       await env.DB.prepare("DELETE FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,targetId).run();
