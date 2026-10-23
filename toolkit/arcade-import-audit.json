@@ -112,6 +112,34 @@
       "limitations": [
         "no account save or leaderboard"
       ]
+    },
+    {
+      "id": "hex-puzzle",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/hex-puzzle/",
+      "sourcePath": "games/puzzle/hex-puzzle/index.html",
+      "assets": {
+        "images": "none",
+        "audio": "external audio references removed/disabled",
+        "fonts": "system fonts",
+        "scripts": "inline only"
+      },
+      "dependencies": [
+        "browser DOM",
+        "browser timer",
+        "HTML drag/input"
+      ],
+      "securityNotes": [
+        "removed config.json network fetch",
+        "no external runtime dependencies",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "local session score only",
+        "no account save or leaderboard"
+      ]
     }
   ],
   "deferred": [
