@@ -332,17 +332,6 @@
       "license": "License check required",
       "launchMode": "external",
       "sourceImported": false
-    },
-    {
-      "id": "isometric-coaster",
-      "name": "Isometric Coaster",
-      "category": "Simulation",
-      "description": "Experiment with roller-coaster layouts and track design.",
-      "playUrl": "https://isocoaster.com/",
-      "repository": "https://github.com/amilich/isometric-coaster",
-      "license": "MIT (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
     }
   ]
 }
