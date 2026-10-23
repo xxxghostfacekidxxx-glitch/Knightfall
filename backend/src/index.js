@@ -1115,6 +1115,56 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const results=[...(direct.results||[]),...(groups.results||[])].sort((a,b)=>String(b.last_message_at||b.updated_at).localeCompare(String(a.last_message_at||a.updated_at))).slice(0,100);
     return json({conversations:results},200,origin);
   }
+  const groupMembersMatch=url.pathname.match(/^\/api\/messages\/conversations\/(\d+)\/members(?:\/(\d+))?$/);
+  if(groupMembersMatch){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Authentication required."},401,origin);
+    const conversationId=Number(groupMembersMatch[1]),targetId=groupMembersMatch[2]?Number(groupMembersMatch[2]):null;
+    const group=await env.DB.prepare("SELECT id,kind,created_by FROM conversations WHERE id=?").bind(conversationId).first();
+    if(!group||group.kind!=="group")return json({error:"Group not found."},404,origin);
+    const membership=await env.DB.prepare("SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,user.id).first();
+    if(!membership)return json({error:"Group not found."},404,origin);
+    if(request.method==="GET"&&!targetId){
+      const {results}=await env.DB.prepare("SELECT u.id,u.username,u.display_name,u.avatar_url,cm.joined_at,CASE WHEN c.created_by=u.id THEN 1 ELSE 0 END AS is_creator FROM conversation_members cm JOIN users u ON u.id=cm.user_id JOIN conversations c ON c.id=cm.conversation_id WHERE cm.conversation_id=? ORDER BY is_creator DESC,COALESCE(u.display_name,u.username) COLLATE NOCASE").bind(conversationId).all();
+      return json({members:results||[],created_by:group.created_by},200,origin);
+    }
+    if(request.method==="POST"&&!targetId){
+      if(Number(group.created_by)!==Number(user.id))return json({error:"Only the group creator can add members."},403,origin);
+      if(!await rateLimit(env,request,"group-members-add",20,600,user.id))return json({error:"Too many member changes. Try again later."},429,origin);
+      let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+      const usernames=[...new Set((Array.isArray(body.usernames)?body.usernames:[]).map(x=>String(x||"").trim().toLowerCase()).filter(Boolean))];
+      if(!usernames.length||usernames.length>49)return json({error:"Select between 1 and 49 members."},400,origin);
+      const marks=usernames.map(()=>"?").join(",");
+      const found=await env.DB.prepare("SELECT id,username,status FROM users WHERE username IN ("+marks+")").bind(...usernames).all();
+      const active=(found.results||[]).filter(x=>x.status==="active");
+      if(active.length!==usernames.length)return json({error:"One or more members were not found or are not active."},400,origin);
+      const ids=active.map(x=>Number(x.id));
+      const existing=await env.DB.prepare("SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id IN ("+ids.map(()=>"?").join(",")+")").bind(conversationId,...ids).all();
+      const already=new Set((existing.results||[]).map(x=>Number(x.user_id)));
+      const add=active.filter(x=>!already.has(Number(x.id)));
+      const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM conversation_members WHERE conversation_id=?").bind(conversationId).first();
+      if(Number(count?.n||0)+add.length>50)return json({error:"Groups can have up to 50 members."},400,origin);
+      if(!add.length)return json({error:"Those members are already in this group."},400,origin);
+      const addIds=add.map(x=>Number(x.id));
+      const blocked=await env.DB.prepare("SELECT 1 AS ok FROM user_blocks WHERE (blocker_id=? AND blocked_id IN ("+addIds.map(()=>"?").join(",")+")) OR (blocked_id=? AND blocker_id IN ("+addIds.map(()=>"?").join(",")+")) LIMIT 1").bind(user.id,...addIds,user.id,...addIds).first();
+      if(blocked)return json({error:"Messaging is restricted between you and one or more selected members."},403,origin);
+      const now=new Date().toISOString();
+      await env.DB.batch(add.map(x=>env.DB.prepare("INSERT INTO conversation_members (conversation_id,user_id,joined_at,last_read_at) VALUES (?,?,?,?)").bind(conversationId,Number(x.id),now,null)));
+      await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
+      return json({ok:true,added:add.length},200,origin);
+    }
+    if(request.method==="DELETE"&&targetId){
+      if(Number(user.id)!==targetId&&Number(group.created_by)!==Number(user.id))return json({error:"Only the group creator can remove other members."},403,origin);
+      if(targetId===Number(group.created_by)&&Number(user.id)!==targetId)return json({error:"The group creator cannot be removed. Transfer ownership first."},400,origin);
+      const target=await env.DB.prepare("SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,targetId).first();
+      if(!target)return json({error:"That member is not in this group."},404,origin);
+      await env.DB.prepare("DELETE FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(conversationId,targetId).run();
+      const now=new Date().toISOString();
+      await env.DB.prepare("UPDATE conversations SET updated_at=? WHERE id=?").bind(now,conversationId).run();
+      return json({ok:true,left:targetId===Number(user.id)},200,origin);
+    }
+    return json({error:"Unsupported group member operation."},405,origin);
+  }
   if(url.pathname==="/api/messages/groups"&&request.method==="POST"){
     const user=await requireUser(request,env);
     if(!user)return json({error:"Authentication required."},401,origin);
