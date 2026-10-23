@@ -55,7 +55,8 @@ const API="https://api.ash-fall.com";
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt=v=>{const d=new Date(v);return Number.isNaN(d.getTime())?"":d.toLocaleString([], {dateStyle:"medium",timeStyle:"short"})};
-const MESSAGE_PAGE_SIZE=50;\nlet conversations=[],currentId=null,currentUser=null,admin=false,loading=false,conversationLoadToken=0,currentRefreshToken=0,inboxLoadToken=0,archiveLoadToken=0,memberSearchToken=0,oldestId=null,pollHandle=null,memberSearchHandle=null,archiveSearchHandle=null,inboxFilter="all";
+const MESSAGE_PAGE_SIZE=50;
+let conversations=[],currentId=null,currentUser=null,admin=false,loading=false,conversationLoadToken=0,currentRefreshToken=0,inboxLoadToken=0,archiveLoadToken=0,memberSearchToken=0,oldestId=null,pollHandle=null,memberSearchHandle=null,archiveSearchHandle=null,inboxFilter="all";
 async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d}
 function status(t,good=false){$("#status").textContent=t;$("#status").className="msg-status "+(good?"good":"")}
 function conversationName(c){return c?.other_display_name||c?.other_username||"Conversation"}
