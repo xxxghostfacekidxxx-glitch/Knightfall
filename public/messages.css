@@ -364,3 +364,20 @@
 /* Group conversations */
 .messages-hero-actions{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}.messages-hero-actions button{white-space:nowrap}.messages-hero-actions .secondary{border:1px solid var(--kf-line);background:transparent;color:var(--kf-text,#f5f5f5);border-radius:999px;padding:.85rem 1.15rem;font:inherit;font-weight:700;cursor:pointer}.messages-hero-actions .secondary:hover{border-color:var(--kf-accent);color:var(--kf-accent)}
 @media(max-width:620px){.messages-hero-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.messages-hero-actions button{padding:.8rem .6rem}}
+
+
+/* Searchable group member picker */
+#group-dialog{width:min(620px,calc(100vw - 24px));max-height:min(88dvh,820px);overflow:auto}
+#group-form{display:flex;flex-direction:column;gap:.7rem}
+#group-form>label{font-weight:750;margin-top:.35rem}
+.group-selected{display:flex;flex-wrap:wrap;gap:.45rem;min-height:2.3rem}
+.group-chip{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--kf-line,rgba(255,255,255,.18));background:rgba(255,55,170,.12);color:inherit;border-radius:999px;padding:.45rem .75rem;cursor:pointer}
+.group-chip span{color:var(--kf-accent,#ff45b5);font-size:1.2rem;line-height:1}
+.group-result{display:flex;align-items:center;gap:.7rem;padding:.65rem;border-bottom:1px solid var(--kf-line,rgba(255,255,255,.1));min-width:0}
+.group-result>span:nth-child(2){display:flex;flex-direction:column;gap:.15rem;min-width:0;flex:1}
+.group-result small{opacity:.72}
+.group-result button{flex-shrink:0;padding:.55rem .8rem}
+.group-result button:disabled{opacity:.6;cursor:default}
+.group-form-footer{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding-top:.7rem;border-top:1px solid var(--kf-line,rgba(255,255,255,.12));position:sticky;bottom:-1px;background:inherit}
+#group-member-count{font-size:.85rem;opacity:.75}
+@media(max-width:520px){#group-dialog{padding:1rem}.group-form-footer{align-items:stretch;flex-direction:column}.group-form-footer button{width:100%}.group-result{gap:.45rem}.group-result button{padding:.5rem}}
