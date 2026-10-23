@@ -248,6 +248,30 @@
         "local session score only",
         "no account save or leaderboard"
       ]
+    },
+    {
+      "id": "blockfall",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/blockfall/",
+      "sourcePath": "games/puzzle/tetris/index.html",
+      "assets": {
+        "background": "upstream background image removed; CSS gradient used",
+        "audio": "upstream audio assets not redistributed; disabled",
+        "fonts": "system fonts",
+        "scripts": "inline only"
+      },
+      "securityNotes": [
+        "removed config.json network fetch",
+        "no external runtime dependencies",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "local session score only",
+        "no account save or leaderboard"
+      ],
+      "namingNote": "Renamed Blockfall; no Tetris branding or images are included."
     }
   ],
   "deferred": [

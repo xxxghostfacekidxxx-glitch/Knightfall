@@ -259,15 +259,17 @@
       "sourceImported": false
     },
     {
-      "id": "tetris",
-      "name": "Tetris",
+      "id": "blockfall",
+      "name": "Blockfall",
       "category": "Puzzle",
-      "description": "Stack falling blocks and clear complete lines.",
-      "playUrl": "https://emjay045.github.io/browser-games/tetris/",
-      "repository": "https://github.com/emjay045/browser-games",
-      "license": "License check required",
-      "launchMode": "external",
-      "sourceImported": false
+      "description": "Stack falling blocks, clear lines, and survive the rising speed.",
+      "playUrl": "/arcade/hosted/blockfall/",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/blockfall/",
+      "integrationNote": "Renamed and re-themed single-file adaptation; external config, background, and audio assets removed."
     },
     {
       "id": "breakout",
