@@ -76,11 +76,13 @@
       "name": "Connect Four",
       "category": "Board",
       "description": "Play a tactical four-in-a-row match against an AI.",
-      "playUrl": "https://kenrick95.github.io/c4/demo/",
+      "playUrl": "/arcade/hosted/connect-four/",
       "repository": "https://github.com/kenrick95/c4",
-      "license": "MIT",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/connect-four/",
+      "integrationNote": "Fresh local minimax implementation after reviewing the TypeScript/Yarn upstream build; no third-party assets or runtime dependencies."
     },
     {
       "id": "isocity",
@@ -342,12 +344,14 @@
       "name": "Rock Paper Scissors",
       "category": "Board",
       "description": "The classic hand game against the computer.",
-      "playUrl": "https://sausi-7.github.io/games/games/board/rock-paper-scissors/index.html",
+      "playUrl": "/arcade/hosted/rock-paper-scissors/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/board/rock-paper-scissors/index.html"
+      "sourcePath": "games/board/rock-paper-scissors/index.html",
+      "importedPath": "public/arcade/hosted/rock-paper-scissors/",
+      "integrationNote": "Fresh local implementation after reviewing the Phaser-based upstream build; no third-party assets or runtime dependencies."
     },
     {
       "id": "sudoku",
