@@ -168,6 +168,34 @@
         "local score only",
         "no account save or leaderboard"
       ]
+    },
+    {
+      "id": "swipe-assassin",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/swipe-assassin/",
+      "sourcePath": "games/arcade/swipe-assassin/index.html",
+      "assets": {
+        "upstreamSprites": "not redistributed",
+        "audio": "not redistributed; disabled",
+        "inlineSvg": "original simple character silhouettes"
+      },
+      "dependencies": [
+        "browser canvas",
+        "browser DOM",
+        "requestAnimationFrame"
+      ],
+      "securityNotes": [
+        "removed config.json network fetch",
+        "removed external audio paths",
+        "no external runtime dependencies",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "local session state only",
+        "no account save or leaderboard"
+      ]
     }
   ],
   "deferred": [
