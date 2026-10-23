@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-22",
+  "purpose": "Curated upstream sources for Knightfall game development and game-server operations. This catalog is not a claim that any project is deployed in production.",
+  "policy": {
+    "neverDeployThirdPartyCodeAutomatically": true,
+    "verifyUpstreamLicenseBeforeRedistribution": true,
+    "keepUpstreamLicenseAndNotices": true,
+    "reviewAssetsSeparatelyFromCode": true,
+    "reviewSecurityAndMaintenanceBeforeUse": true,
+    "cloudflareCompatibility": "Docker, PHP, Ruby, JVM, and long-running Node server applications do not run directly inside the current Cloudflare Pages + Workers architecture. Use these as local references or host them separately."
+  },
+  "projects": [
+    {
+      "id": "hextris",
+      "name": "Hextris",
+      "kind": "browser-game",
+      "license": "GPL-3.0",
+      "repository": "https://github.com/Hextris/hextris",
+      "mode": "clone",
+      "size": "small",
+      "use": "Polished replayable puzzle-game loop, responsive canvas/UI and high-score flow.",
+      "integration": "Reference first; review GPL obligations and assets before bundling."
+    },
+    {
+      "id": "a-dark-room",
+      "name": "A Dark Room",
+      "kind": "browser-game",
+      "license": "MPL-2.0",
+      "repository": "https://github.com/doublespeakgames/adarkroom",
+      "mode": "clone",
+      "size": "small",
+      "use": "Atmosphere, resource progression, incremental survival and narrative pacing.",
+      "integration": "Strong reference for an original Ash-Fall survival game; preserve MPL notices for any covered files."
+    },
+    {
+      "id": "clumsy-bird",
+      "name": "Clumsy Bird",
+      "kind": "browser-game",
+      "license": "MIT",
+      "repository": "https://github.com/ellisonleao/clumsy-bird",
+      "mode": "clone",
+      "size": "small",
+      "use": "Simple arcade physics, collision loops and restart flow.",
+      "integration": "Learning/reference code; verify current upstream license and third-party assets."
+    },
+    {
+      "id": "elevator-saga",
+      "name": "Elevator Saga",
+      "kind": "browser-game",
+      "license": "MIT",
+      "repository": "https://github.com/magwo/elevatorsaga",
+      "mode": "clone",
+      "size": "small",
+      "use": "Simulation loop, objective-based levels and performance feedback.",
+      "integration": "Reference for a new logistics/simulation challenge."
+    },
+    {
+      "id": "agar-io-clone",
+      "name": "Agar.IO Clone",
+      "kind": "multiplayer-game",
+      "license": "VERIFY-UPSTREAM",
+      "repository": "https://github.com/huytd/agar.io-clone",
+      "mode": "reference-only",
+      "size": "medium",
+      "use": "Canvas multiplayer architecture and real-time state synchronization.",
+      "integration": "Do not deploy as-is; verify the actual upstream repo and license, and adapt server architecture for Workers/Durable Objects."
+    },
+    {
+      "id": "mindustry",
+      "name": "Mindustry",
+      "kind": "game-engine-reference",
+      "license": "GPL-3.0",
+      "repository": "https://github.com/Anuken/Mindustry",
+      "mode": "reference-only",
+      "size": "large",
+      "use": "Tower-defense waves, resource economy, structures and upgrade progression.",
+      "integration": "Large Java project; reference mechanics, not a drop-in browser component. Verify current license."
+    },
+    {
+      "id": "0ad",
+      "name": "0 A.D.",
+      "kind": "game-engine-reference",
+      "license": "GPL-2.0-or-later",
+      "repository": "https://github.com/0ad/0ad",
+      "mode": "reference-only",
+      "size": "large",
+      "use": "RTS unit/faction design, combat and resource systems.",
+      "integration": "Large native game; reference only, not suitable for the current browser site as-is."
+    },
+    {
+      "id": "legend-of-green-dragon",
+      "name": "Legend of the Green Dragon",
+      "kind": "browser-rpg",
+      "license": "VERIFY-UPSTREAM",
+      "repository": "https://github.com/lotgd/core",
+      "mode": "reference-only",
+      "size": "medium",
+      "use": "Persistent browser RPG characters, daily actions, quests and community progression.",
+      "integration": "Repository/license must be verified before cloning or reuse; study only until verified."
+    },
+    {
+      "id": "pterodactyl-panel",
+      "name": "Pterodactyl Panel",
+      "kind": "game-server-admin",
+      "license": "MIT",
+      "repository": "https://github.com/pterodactyl/panel",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Game server control-panel UX, role-based operations, consoles, files and schedules.",
+      "integration": "Design reference; requires separate compatible hosting and server daemon, not Workers."
+    },
+    {
+      "id": "pelican-panel",
+      "name": "Pelican Panel",
+      "kind": "game-server-admin",
+      "license": "AGPL-3.0",
+      "repository": "https://github.com/pelican-dev/panel",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Modern game-server panel and operational workflows.",
+      "integration": "Design reference; AGPL obligations apply to covered use, and it needs separate hosting."
+    },
+    {
+      "id": "linuxgsm",
+      "name": "LinuxGSM",
+      "kind": "game-server-admin",
+      "license": "MIT",
+      "repository": "https://github.com/GameServerManagers/LinuxGSM",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Install, update, monitor and manage many dedicated game servers.",
+      "integration": "Useful if Knightfall later runs dedicated multiplayer servers on Linux; not for browser-only games."
+    },
+    {
+      "id": "gameap",
+      "name": "GameAP",
+      "kind": "game-server-admin",
+      "license": "MIT",
+      "repository": "https://github.com/gameap/gameap",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Game-server fleet management and operations UI.",
+      "integration": "Separate hosting required; evaluate security and deployment before use."
+    },
+    {
+      "id": "pufferpanel",
+      "name": "PufferPanel",
+      "kind": "game-server-admin",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/PufferPanel/PufferPanel",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Game-server management workflows and panel UX.",
+      "integration": "Separate hosting required; reference before any adoption."
+    },
+    {
+      "id": "gameyfin",
+      "name": "Gameyfin",
+      "kind": "game-library",
+      "license": "AGPL-3.0",
+      "repository": "https://github.com/gameyfin/gameyfin",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Self-hosted game-library catalog and organization.",
+      "integration": "Potential separate library service; not a browser game engine or Cloudflare Worker package."
+    },
+    {
+      "id": "romm",
+      "name": "RomM",
+      "kind": "game-library",
+      "license": "AGPL-3.0",
+      "repository": "https://github.com/rommapp/romm",
+      "mode": "clone",
+      "size": "medium",
+      "use": "Self-hosted retro-game library organization and metadata.",
+      "integration": "Do not import ROMs; user must supply legally obtained content. Separate hosting required."
+    },
+    {
+      "id": "pkvault",
+      "name": "PKVault",
+      "kind": "game-utility",
+      "license": "GPL-3.0",
+      "repository": "https://github.com/chnapy/pkvault",
+      "mode": "reference-only",
+      "size": "small",
+      "use": "Pokémon-related collection/Pokédex utility patterns.",
+      "integration": "Reference only. Pokémon is third-party IP; no franchise assets or branding should be copied into an original Knightfall game."
+    },
+    {
+      "id": "sunshine",
+      "name": "Sunshine",
+      "kind": "game-streaming",
+      "license": "GPL-3.0",
+      "repository": "https://github.com/LizardByte/Sunshine",
+      "mode": "reference-only",
+      "size": "large",
+      "use": "Self-hosted game-streaming host.",
+      "integration": "Separate machine and streaming infrastructure required; not a current browser arcade dependency."
+    }
+  ]
+}
