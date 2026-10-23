@@ -47,12 +47,18 @@ for (const [label, pattern] of arcadeInvariants) {
 
 const saveInvariants = [
   ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
+  ["arcade save writes use revision-aware conditional updates", /expected_revision[\s\S]{0,1800}revision=arcade_saves\.revision\+1/],
+  ["arcade save client sends an expected revision", /body\.expected_revision=expectedRevision/],
   ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,650}progressSaved\?"Score saved to your account/],
 ];
 for (const [label, pattern] of saveInvariants) {
   if (!pattern.test(worker + "\n" + saveScript)) fail("Arcade save invariant missing: " + label);
   else ok("Arcade save invariant: " + label);
 }
+
+const revisionMigration = await readFile(path.join(root, "backend/migrations/0025_arcade_save_revisions.sql"), "utf8");
+if (!/ADD COLUMN revision INTEGER NOT NULL DEFAULT 1/.test(revisionMigration)) fail("Arcade save revision migration does not add a defaulted revision column.");
+else ok("Arcade save revision migration adds a monotonic revision column");
 
 const chaosInvariants = [
   ["explicit-only memory policy is enforced", /behaviorConfig\.memoryPolicy==="explicit_only"/],
