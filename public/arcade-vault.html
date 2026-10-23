@@ -26,8 +26,8 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;colo
 
 .snake-cell.volatile{background:#f06a0a!important;box-shadow:0 0 14px #ff4d00,inset 0 0 7px #ffe1a6;animation:volatilePulse .65s infinite alternate}@keyframes volatilePulse{to{filter:brightness(1.8);transform:scale(.84)}}
 </style>
-  <link rel="stylesheet" href="/arcade-polish.css?v=20261022-controls2">
-<script src="/arcade-polish.js?v=20261022-controls2" defer></script>
+  <link rel="stylesheet" href="/arcade-polish.css?v=20261023-devil-tools">
+<script src="/arcade-polish.js?v=20261023-devil-tools" defer></script>
 </head>
 <body><header class="kf-header"></header>
 <main>
@@ -55,6 +55,7 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;colo
 </section>
 <section class="credits"><strong>Discovery credit:</strong> <a href="https://github.com/leereilly/games" target="_blank" rel="noopener noreferrer" style="color:#f06a0a">Games on GitHub by Lee Reilly</a> is an archived index of game projects, not a single game engine or a bundle of games to copy. These three mini-games are original implementations made for Ash-Fall; no code from linked projects is included here. Any future third-party game will be reviewed and credited under its own license.</section>
 </main>
+<script src="/arcade-sprites.js?v=20261023-1"></script>
 <script>
 (()=>{
 const $=id=>document.getElementById(id);
@@ -85,7 +86,7 @@ $('mine-new').addEventListener('click',makeMines);$('mine-flag-mode').addEventLi
 /* Ember Breaker */
 const canvas=$('breakout'),ctx=canvas.getContext('2d');let bx=350,by=330,bvx=3,bvy=-3,paddle=300,bricks=[],lives=3,brickRunning=false,brickEnded=false,brickFrame=null,brickScore=0;
 function resetBricks(){bricks=[];for(let r=0;r<4;r++)for(let c=0;c<6;c++)bricks.push({x:22+c*110,y:35+r*25,w:96,h:15,on:true,hp:r===0?2:1})}
-function drawBricks(){ctx.clearRect(0,0,700,400);ctx.fillStyle='#080808';ctx.fillRect(0,0,700,400);bricks.forEach((b,i)=>{if(!b.on)return;ctx.fillStyle=b.hp===2?'#ffe1a6':['#f06a0a','#d35400','#9c3c00','#73300b'][Math.floor(i/6)];ctx.fillRect(b.x,b.y,b.w,b.h);if(b.hp===2){ctx.strokeStyle='#fff3d0';ctx.lineWidth=2;ctx.strokeRect(b.x+3,b.y+3,b.w-6,b.h-6)}});ctx.fillStyle='#ddd';ctx.fillRect(paddle,370,100,12);ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);ctx.fillStyle='#a4ff8a';ctx.shadowColor='#a4ff8a';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;$('brick-score').textContent=brickScore;$('brick-lives').textContent=lives;$('brick-state').textContent=brickEnded?'Game over':brickRunning?'Running':'Paused'}
+function drawBricks(){ctx.clearRect(0,0,700,400);ctx.fillStyle='#080808';ctx.fillRect(0,0,700,400);bricks.forEach((b,i)=>{if(!b.on)return;ctx.fillStyle=b.hp===2?'#ffe1a6':['#f06a0a','#d35400','#9c3c00','#73300b'][Math.floor(i/6)];ctx.fillRect(b.x,b.y,b.w,b.h);if(b.hp===2){ctx.strokeStyle='#fff3d0';ctx.lineWidth=2;ctx.strokeRect(b.x+3,b.y+3,b.w-6,b.h-6)}});ctx.fillStyle='#ddd';ctx.fillRect(paddle,370,100,12);ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);ctx.fillStyle='#a4ff8a';ctx.shadowColor='#a4ff8a';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;window.ChaosSprites?.draw(ctx,'orb',bx-12,by-12,24,24,{glow:'#ff55d8',blur:12});$('brick-score').textContent=brickScore;$('brick-lives').textContent=lives;$('brick-state').textContent=brickEnded?'Game over':brickRunning?'Running':'Paused'}
 function finishBrick(msg){brickRunning=false;brickEnded=true;cancelAnimationFrame(brickFrame);$('brick-message').textContent=msg;drawBricks();window.AshFallArcade?.recordScore('ember-breaker',brickScore,{bricksBroken:brickScore,lives});}
 function brickLoop(){if(!brickRunning)return;bx+=bvx;by+=bvy;if(bx<8||bx>692)bvx=-bvx;if(by<8)bvy=Math.abs(bvy);if(by>362&&by<384&&bx>paddle&&bx<paddle+100){bvy=-Math.abs(bvy);bvx+=(bx-(paddle+50))*.025}if(by>405){lives--;if(lives<=0){finishBrick('Three lives gone. The bricks remain emotionally unavailable.');return}bx=350;by=330;bvy=-3;bvx=3;$('brick-message').textContent='Life lost. '+lives+' remaining.'}bricks.forEach(b=>{if(b.on&&bx>b.x&&bx<b.x+b.w&&by>b.y&&by<b.y+b.h){b.hp--;bvy=-bvy;if(b.hp<=0){b.on=false;brickScore++}else $('brick-message').textContent='KILN-HARDENED BRICK DAMAGED. Hit it again.';}});if(bricks.every(b=>!b.on)){finishBrick('All bricks demolished. The void reluctantly applauds.');return}drawBricks();brickFrame=requestAnimationFrame(brickLoop)}
 function startBrick(){cancelAnimationFrame(brickFrame);bx=350;by=330;bvx=3;bvy=-3;paddle=300;lives=3;brickScore=0;brickEnded=false;brickRunning=true;resetBricks();$('brick-message').textContent='Break the bricks. Keep the ember alive.';drawBricks();brickLoop()}
