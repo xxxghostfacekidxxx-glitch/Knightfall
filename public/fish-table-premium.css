@@ -5,7 +5,7 @@
   --ft-line:rgba(151,220,255,.22);--ft-glass:rgba(8,19,33,.88);
 }
 body:has(#trench-wallet-balance){--ft-accent:#64e8ff;--ft-accent-rgb:100,232,255;--ft-hot:#ffd88a}
-body:has(#reef-wallet-balance){--ft-accent:#60ffe1;--ft-accent-rgb:96,255,225;--ft-hot:#ff68df}
+body:has(#neon-wallet-balance){--ft-accent:#60ffe1;--ft-accent-rgb:96,255,225;--ft-hot:#ff68df}
 body:has(#magma-wallet-balance){--ft-accent:#ff9a55;--ft-accent-rgb:255,154,85;--ft-hot:#ffe0a0}
 html{scroll-behavior:smooth}
 body{isolation:isolate;min-height:100vh;background-color:#030812}
