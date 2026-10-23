@@ -867,7 +867,7 @@ button,.btn{background:linear-gradient(135deg,#a8ff48,#ff5edb)!important;color:#
 
     function clearLine(keys) {
       collectSfx.currentTime = 0;
-      void 0.catch(() => { });
+      Promise.resolve();
 
       spawnClearFx(keys);
       for (const k of keys) {
@@ -1011,7 +1011,7 @@ button,.btn{background:linear-gradient(135deg,#a8ff48,#ff5edb)!important;color:#
       startTimer();
 
       bgm.currentTime = 0;
-      void 0.catch(() => { });
+      Promise.resolve();
     }
 
     /* =========================
@@ -1036,7 +1036,7 @@ button,.btn{background:linear-gradient(135deg,#a8ff48,#ff5edb)!important;color:#
       startTimer();            // already exists
 
       bgm.currentTime = 0;
-      void 0.catch(() => { });
+      Promise.resolve();
     }
 
 
