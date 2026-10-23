@@ -598,12 +598,14 @@
       "name": "Two Cars",
       "category": "Racing",
       "description": "Control two cars at once and collect while dodging hazards.",
-      "playUrl": "https://sausi-7.github.io/games/games/racing/two-cars/index.html",
+      "playUrl": "/arcade/hosted/two-cars/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/racing/two-cars/index.html"
+      "sourcePath": "games/racing/two-cars/index.html",
+      "importedPath": "public/arcade/hosted/two-cars/",
+      "integrationNote": "Fresh native two-car coordination game; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "tower-shooter",
@@ -636,12 +638,14 @@
       "name": "Wordlee",
       "category": "Word",
       "description": "Guess the hidden five-letter word in six attempts.",
-      "playUrl": "https://sausi-7.github.io/games/games/word-quiz/wordle/index.html",
+      "playUrl": "/arcade/hosted/wordlee/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/word-quiz/wordle/index.html"
+      "sourcePath": "games/word-quiz/wordle/index.html",
+      "importedPath": "public/arcade/hosted/wordlee/",
+      "integrationNote": "Fresh native word puzzle with embedded word list; upstream source path was mismatched to Phaser/Kaiju Krush."
     },
     {
       "id": "words-of-wonder",
@@ -700,12 +704,14 @@
       "name": "Endless Runner",
       "category": "Racing",
       "description": "Keep running, dodge hazards, and see how long you last.",
-      "playUrl": "https://sausi-7.github.io/games/games/racing/endless-runner/index.html",
+      "playUrl": "/arcade/hosted/endless-runner/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/racing/endless-runner/index.html"
+      "sourcePath": "games/racing/endless-runner/index.html",
+      "importedPath": "public/arcade/hosted/endless-runner/",
+      "integrationNote": "Fresh native canvas runner; upstream source path was mismatched to Phaser/Jet Fighter."
     },
     {
       "id": "parkour",
