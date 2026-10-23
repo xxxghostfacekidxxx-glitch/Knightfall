@@ -10,7 +10,7 @@
 <div class="panel" id="sp-bidding"><div class="topbar"><div><strong>Place your bid</strong><div class="muted" style="font-size:.82rem">How many tricks will you personally take?</div></div><div style="display:flex;gap:.5rem;align-items:center"><select id="sp-bid" aria-label="Your bid"></select><button class="btn primary" id="sp-bid-submit">Lock bid</button></div></div></div>
 <h3 style="margin-bottom:.25rem">Your hand</h3><p class="muted" style="margin-top:0;font-size:.82rem">Cards are sorted low to high by suit. You must follow suit when possible. Spades cannot lead until broken unless you have only spades.</p><div class="hand" id="sp-hand" aria-label="Your hand"></div><div class="status" id="sp-status" role="status" aria-live="polite">Deal ready. Place your bid to begin.</div>
 </section><section class="panel"><div class="topbar"><strong>Round history</strong><button class="btn" id="sp-clear-history">Clear local history</button></div><div class="history" id="sp-history">Your results will appear here.</div><p class="muted" style="font-size:.8rem">Scoring: make your team contract for 10 points per bid trick, plus one per overtrick (“bag”). Missing your contract costs 10 points per bid trick. Ten bags cost 100 points. Nil bids and real-money wagering are not included.</p></section><p class="foot">CHAOS CARTRIDGE · Local CPU opponents. No real-money wagering.</p></main>
-<script src="/arcade-sprites.js?v=20261023-1"></script>
+<script src="/arcade-sprites.js?v=20261023-2"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), suits=['♣','♦','♥','♠'], ranks=['2','3','4','5','6','7','8','9','10','J','Q','K','A'], val=r=>r==='A'?14:r==='K'?13:r==='Q'?12:r==='J'?11:Number(r), isRed=s=>s==='♦'||s==='♥';
