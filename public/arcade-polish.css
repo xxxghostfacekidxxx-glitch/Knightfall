@@ -111,3 +111,112 @@ html.arcade-reduce-motion *,html.arcade-reduce-motion *:before,html.arcade-reduc
 .arcade-fullscreen-target:fullscreen .arcade-tools{position:sticky;top:0}
 @media(max-width:600px){.arcade-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}.arcade-tool{width:100%;min-height:42px;padding:.55rem .4rem;font-size:.68rem}.arcade-shortcuts dl{grid-template-columns:repeat(2,minmax(0,1fr))}.arcade-shortcuts{padding:.8rem}}
 @media(prefers-reduced-motion:reduce){.arcade-tool{transition:none!important}}
+
+
+/* True gameplay fullscreen: use the cabinet as the viewport and preserve the HUD + input controls. */
+.arcade-fullscreen-target:fullscreen {
+  display:flex!important;
+  flex-direction:column!important;
+  width:100vw!important;
+  height:100dvh!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:clamp(8px,1.4vw,20px)!important;
+  gap:clamp(6px,1vh,12px)!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#05080e!important;
+  isolation:isolate!important;
+}
+.arcade-fullscreen-target:fullscreen > .arcade-tools,
+.arcade-fullscreen-target:fullscreen > .arcade-shortcuts {
+  flex:0 0 auto;
+  margin:0!important;
+}
+.arcade-fullscreen-target:fullscreen .playfield,
+.arcade-fullscreen-target:fullscreen .field,
+.arcade-fullscreen-target:fullscreen .play-area,
+.arcade-fullscreen-target:fullscreen .canvas-wrap {
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+.arcade-fullscreen-target:fullscreen .playfield canvas,
+.arcade-fullscreen-target:fullscreen .field canvas,
+.arcade-fullscreen-target:fullscreen .play-area canvas,
+.arcade-fullscreen-target:fullscreen .canvas-wrap canvas {
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  aspect-ratio:unset!important;
+  object-fit:contain!important;
+}
+.arcade-fullscreen-target:fullscreen .hud,
+.arcade-fullscreen-target:fullscreen .controls,
+.arcade-fullscreen-target:fullscreen .control-group,
+.arcade-fullscreen-target:fullscreen .seat-instructions,
+.arcade-fullscreen-target:fullscreen .readout {
+  flex:0 0 auto!important;
+}
+.arcade-fullscreen-target:fullscreen .controls {
+  padding:clamp(6px,1vw,14px)!important;
+  gap:clamp(6px,1vw,12px)!important;
+}
+.arcade-fullscreen-target:fullscreen .lower,
+.arcade-fullscreen-target:fullscreen .odds-panel,
+.arcade-fullscreen-target:fullscreen .paytable,
+.arcade-fullscreen-target:fullscreen .foot,
+.arcade-fullscreen-target:fullscreen .fineprint {
+  display:none!important;
+}
+.arcade-fullscreen-target:fullscreen .hero {
+  flex:0 0 auto!important;
+  padding:.25rem 0!important;
+  margin:0!important;
+  border:0!important;
+}
+.arcade-fullscreen-target:fullscreen .hero h1,
+.arcade-fullscreen-target:fullscreen h1 {
+  font-size:clamp(1.2rem,3vw,2.4rem)!important;
+  margin:.1rem 0!important;
+}
+.arcade-fullscreen-target:fullscreen .hero p,
+.arcade-fullscreen-target:fullscreen .back {
+  display:none!important;
+}
+.arcade-fullscreen-target:fullscreen .screen-overlay {
+  z-index:10;
+}
+.arcade-fullscreen-target:fullscreen .table,
+.arcade-fullscreen-target:fullscreen .felt {
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+}
+@media (orientation:landscape) and (max-height:600px) {
+  .arcade-fullscreen-target:fullscreen { padding:5px!important; gap:5px!important; }
+  .arcade-fullscreen-target:fullscreen .hud { grid-template-columns:repeat(5,minmax(0,1fr))!important; margin:0!important; padding:4px!important; gap:4px!important; }
+  .arcade-fullscreen-target:fullscreen .meter { min-width:0!important; padding:5px 7px!important; }
+  .arcade-fullscreen-target:fullscreen .meter small { font-size:.55rem!important; }
+  .arcade-fullscreen-target:fullscreen .meter strong { font-size:clamp(.8rem,2.3vh,1.2rem)!important; }
+  .arcade-fullscreen-target:fullscreen .controls { padding:4px!important; }
+  .arcade-fullscreen-target:fullscreen .btn,
+  .arcade-fullscreen-target:fullscreen .arcade-tool { min-height:34px!important; padding:5px 8px!important; font-size:.72rem!important; }
+}
+@media (max-width:700px) {
+  .arcade-fullscreen-target:fullscreen { padding:5px!important; gap:5px!important; }
+  .arcade-fullscreen-target:fullscreen .arcade-tools { display:flex!important; flex-wrap:wrap!important; justify-content:flex-end!important; gap:4px!important; }
+  .arcade-fullscreen-target:fullscreen .arcade-tool { width:auto!important; min-height:34px!important; padding:5px 8px!important; }
+  .arcade-fullscreen-target:fullscreen .controls { flex-wrap:wrap!important; justify-content:center!important; }
+}
