@@ -18,10 +18,11 @@ Sprite names: `imp`, `skull`, `glitch`, `heart`, `coin`, `bolt`, `boom`, `fish`,
 - `arcade-fresh-meat.html`: scrap pickups in Graveyard Shift.
 - `arcade-after-dark.html`: snake head/food, Breakout ball, and Pong ball.
 - `arcade-vault.html`: Ember Breaker orb.
+- `arcade-games.html`: Cinder Clicker flame and original sprite pairs in Madhouse Memory; the Whack-a-Glitch target uses the glitch sprite.
 - `abyssal-arsenal.html`, `neon-kelp-reef-rush.html`, and `magma-trench-relic-hunt.html`: fish/boss sprite badges.
 - `not-dead-yet.html`: medkit, shield, and scrap pickup sprites; its dedicated character and enemy artwork remains in place.
 - `city-of-cinders.html`: character flame accent.
-- Arcade index, card-game, and casino pages load the shared neon theme and/or sprite-card decoration.
+- Arcade index, mini-game, open-source, card-room, Spades, card-expansion, and casino pages load the shared neon theme and animated sprite-card decoration. The card stamps are decorative and do not cover interactive controls.
 
 ## Devil Tools
 
@@ -29,4 +30,4 @@ Sprite names: `imp`, `skull`, `glitch`, `heart`, `coin`, `bolt`, `boom`, `fish`,
 
 ## Safety and testing notes
 
-The renderer is visual-only and does not change scores, balances, saves, collision boxes, or game controls. JavaScript syntax checks were run against the modified game pages. A live browser and Cloudflare Pages deployment test is still required to verify image loading, layout, and gameplay in production.
+The renderer is visual-only and does not change scores, balances, saves, collision boxes, or game controls. JavaScript syntax checks should be run against the modified game pages before deployment. A live browser and Cloudflare Pages deployment test is still required to verify image loading, layout, and gameplay in production.
