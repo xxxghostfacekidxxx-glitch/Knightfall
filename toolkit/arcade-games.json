@@ -352,12 +352,14 @@
       "name": "Sudoku",
       "category": "Puzzle",
       "description": "Solve a 9×9 number grid, from easy warm-up to brain-melting.",
-      "playUrl": "https://sausi-7.github.io/games/games/puzzle/sudoku/index.html",
+      "playUrl": "/arcade/hosted/sudoku/",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
-      "sourceImported": false,
-      "sourcePath": "games/puzzle/sudoku/index.html"
+      "license": "MIT",
+      "launchMode": "self-hosted",
+      "sourceImported": true,
+      "sourcePath": "games/puzzle/sudoku/index.html",
+      "importedPath": "public/arcade/hosted/sudoku/",
+      "integrationNote": "Self-hosted single-file adaptation; upstream config fetch removed, no external assets or runtime dependencies."
     },
     {
       "id": "alien-battle",

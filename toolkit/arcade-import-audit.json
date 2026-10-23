@@ -31,6 +31,36 @@
         "no account sync",
         "no Cinders or server leaderboard integration"
       ]
+    },
+    {
+      "id": "sudoku",
+      "repository": "https://github.com/sausi-7/games",
+      "license": "MIT",
+      "status": "self-hosted-adaptation",
+      "path": "public/arcade/hosted/sudoku/",
+      "sourcePath": "games/puzzle/sudoku/index.html",
+      "assets": {
+        "images": "none loaded; config.json background fetch removed",
+        "audio": "none",
+        "fonts": "system font stack",
+        "scripts": "inline only; no remote script"
+      },
+      "dependencies": [
+        "browser DOM",
+        "browser timer",
+        "canvas for confetti"
+      ],
+      "securityNotes": [
+        "removed config.json network fetch",
+        "removed parent-window orientation postMessage",
+        "no external runtime calls",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "fixed puzzle source build",
+        "local timer only",
+        "no account save or leaderboard"
+      ]
     }
   ],
   "deferred": [
