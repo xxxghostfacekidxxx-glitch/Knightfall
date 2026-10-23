@@ -514,16 +514,16 @@
       "sourcePath": "games/platformer/doodle-jump/index.html"
     },
     {
-      "id": "fruit-merge",
-      "name": "Fruit Merge",
-      "category": "Casual",
-      "description": "Drop fruit, merge matching pieces, and evolve bigger fruit.",
-      "playUrl": "https://sausi-7.github.io/games/games/casual/fruit-merge/index.html",
+      "id": "space-waves",
+      "name": "Space Waves",
+      "category": "Arcade",
+      "description": "Ride through waves of space debris and survive the cosmic obstacle course.",
+      "playUrl": "https://sausi-7.github.io/games/games/arcade/space-waves/index.html",
       "repository": "https://github.com/sausi-7/games",
       "license": "MIT repository license; review game-specific IP/assets before import",
       "launchMode": "external",
       "sourceImported": false,
-      "sourcePath": "games/casual/fruit-merge/index.html"
+      "sourcePath": "games/arcade/space-waves/index.html"
     },
     {
       "id": "ludo",
