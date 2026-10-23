@@ -67,3 +67,8 @@ Migration `0024_starting_cinders.sql` raises each existing wallet to a minimum s
 ## Live typing indicators (0025)
 
 `0025_message_typing.sql` adds the nullable `conversation_members.typing_until` field and an index for short-lived typing presence. The Worker only allows conversation members to update their own typing state or read the other participant's active typing state. Typing leases expire after seven seconds, and the browser refreshes presence every 2.2 seconds while a conversation is open. The migration was applied and verified in production on 2026-10-23; the `typing_until` column and migration ledger entry are present.
+
+
+## Message reactions (0026)
+
+Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. The authenticated API only returns reactions for messages in a conversation the requester belongs to, and reaction writes verify both message existence and conversation membership. The UI supports a curated set of eight emoji and refreshes reaction counts when the conversation is rendered or polled. Apply the migration through the guarded production migration workflow and verify the table/index before treating reactions as available in production.
