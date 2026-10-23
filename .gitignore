@@ -11,3 +11,6 @@ coverage/
 dist/
 *.log
 .DS_Store
+
+# Local-only third-party source checkouts (never commit vendor projects)
+toolkit/vendor/
