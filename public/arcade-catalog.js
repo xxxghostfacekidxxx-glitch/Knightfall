@@ -83,7 +83,9 @@
         const matches = [];
         section.querySelectorAll(".arcade-mini-card").forEach(card => {
           const hit = !query || (card.innerText || "").toLowerCase().includes(query);
-          card.hidden = !hit;
+          const index = [...section.querySelectorAll(".arcade-mini-card")].indexOf(card);
+          const expanded = section.querySelector(".arcade-view-all").getAttribute("aria-expanded") === "true";
+          card.hidden = !hit || (!query && index >= 4 && !expanded);
           if (hit) { visible++; matches.push(card); }
         });
         section.hidden = matches.length === 0;
