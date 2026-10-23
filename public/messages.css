@@ -412,3 +412,11 @@
 .message-attachment strong{overflow-wrap:anywhere;font-size:.9rem}
 .message-attachment small{opacity:.72;font-size:.75rem}
 @media(max-width:620px){#attach-file{width:2.5rem;height:2.5rem}.composer-main{flex-basis:calc(100% - 3.2rem)}.message-attachment{max-width:100%}}
+
+
+/* Live presence and notification controls */
+.presence-label{display:inline-flex;align-items:center;color:var(--muted,#b8b8c8);font-size:.75rem;white-space:nowrap}
+#enable-notifications{border:1px solid rgba(255,70,190,.42);background:rgba(255,70,190,.08);color:inherit;border-radius:999px;padding:.45rem .7rem;font-size:.75rem;cursor:pointer}
+#enable-notifications[aria-pressed="true"]{border-color:rgba(110,255,80,.5);color:#8dff8b;background:rgba(110,255,80,.08)}
+#enable-notifications:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:760px){.presence-label{display:none}#enable-notifications{font-size:.68rem;padding:.4rem .5rem}}
