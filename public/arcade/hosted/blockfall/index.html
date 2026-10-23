@@ -1258,14 +1258,6 @@
       setHowToOverlayText();
       dropInterval = CONFIG.mechanics.base_drop_speed;
       initAudioFromConfig();
-    } catch (e) {
-        console.error("Failed to load config.json, using defaults", e);
-        CONFIG = defaultConfig;
-        TARGET_SCORE = CONFIG.mechanics.target_score;
-        targetVal.textContent = TARGET_SCORE;
-        setHowToOverlayText();
-        dropInterval = CONFIG.mechanics.base_drop_speed;
-      }
     }
 
     // Game loop
