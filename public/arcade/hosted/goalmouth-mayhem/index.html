@@ -246,10 +246,6 @@
         text: { title: "Goalmouth Mayhem", startTitle: "⚽ GOALMOUTH MAYHEM", startDesc: "Move: ◀ ▶ or A / D\nJump: ↑ / W\nKick: Space\n\nScore more goals in 60 seconds to win!", winTitle: "🎉 YOU WIN", winDesc: "You own this ridiculous pitch.", loseTitle: "GAME OVER", loseDesc: "The CPU got lucky. Obviously." },
         audio: {}
       };
-    } catch (err) {
-        console.warn("⚠ Could not load config.json, using defaults.", err);
-        GAME_CONFIG = null;
-      }
     }
 
     function applyConfig() {
