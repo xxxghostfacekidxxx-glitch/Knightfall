@@ -220,3 +220,155 @@ html.arcade-reduce-motion *,html.arcade-reduce-motion *:before,html.arcade-reduc
   .arcade-fullscreen-target:fullscreen .arcade-tool { width:auto!important; min-height:34px!important; padding:5px 8px!important; }
   .arcade-fullscreen-target:fullscreen .controls { flex-wrap:wrap!important; justify-content:center!important; }
 }
+
+
+/* CHAOS CARTRIDGE: toxic slime + bubblegum neon arcade overhaul. */
+:root{
+  --arcade-ember:#ff4fd8;
+  --arcade-rust:#b92eff;
+  --arcade-line:rgba(255,79,216,.32);
+  --arcade-ember:#ff55d8;
+  --arcade-gold:#c6ff45;
+  --arcade-electric:#5bffb7;
+  --arcade-ink:#070a10;
+  --arcade-surface:#111321;
+  --arcade-edge:rgba(111,255,183,.24);
+  --arcade-copy:#f7f2ff;
+  --arcade-dim:#b6b3c9;
+}
+html{scrollbar-color:#ff55d8 #090b13}
+body{
+  background-color:#070910!important;
+  background-image:
+    radial-gradient(ellipse at 12% 4%,rgba(255,55,211,.2),transparent 32%),
+    radial-gradient(ellipse at 88% 12%,rgba(69,255,158,.16),transparent 33%),
+    radial-gradient(ellipse at 50% 100%,rgba(149,49,255,.12),transparent 42%),
+    linear-gradient(180deg,#080912,#070910 68%,#0b0814)!important;
+  color:#f8f3ff;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:50;
+  pointer-events:none;
+  opacity:.13;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(255,255,255,.16) 4px,transparent 5px);
+  mix-blend-mode:screen;
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:49;
+  pointer-events:none;
+  opacity:.2;
+  background-image:radial-gradient(rgba(255,255,255,.38) .65px,transparent .8px);
+  background-size:5px 5px;
+  mask-image:linear-gradient(to bottom,black,transparent 75%);
+}
+.arcade-fullscreen-target:fullscreen{background:#070910!important}
+.hero h1,.cartridge-title,h1{
+  text-shadow:3px 0 rgba(255,65,210,.32),-3px 0 rgba(81,255,171,.25),0 0 32px rgba(255,79,216,.18)!important;
+}
+.hero h1 span,.cartridge-title span,h1 span{
+  color:#c6ff45!important;
+  text-shadow:0 0 8px rgba(198,255,69,.45),0 0 28px rgba(198,255,69,.18)!important;
+}
+.eyebrow,.kicker,.cartridge-number,.section-label{
+  color:#ff65df!important;
+  text-shadow:0 0 15px rgba(255,79,216,.25);
+}
+.cabinet,.game,.game-panel,.panel,.cartridge-cabinet,.odds-panel,.arcade-shortcuts,.playfield,.play-area,.field,.canvas-wrap{
+  border-color:rgba(101,255,183,.32)!important;
+  background-color:#0e111d!important;
+  box-shadow:0 0 0 1px rgba(255,79,216,.1),0 0 28px rgba(71,255,170,.055),0 20px 60px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.055)!important;
+}
+.cabinet:before,.game:before,.cartridge-cabinet:before{
+  background:linear-gradient(110deg,transparent,rgba(255,79,216,.13),rgba(111,255,183,.13),transparent)!important;
+}
+.cartridge-cabinet{
+  border-radius:14px!important;
+  background:linear-gradient(145deg,rgba(23,15,34,.98),rgba(9,14,22,.99))!important;
+}
+.cartridge-cabinet:after{
+  background:radial-gradient(circle,var(--glow,rgba(255,79,216,.2)),transparent 70%)!important;
+}
+.cartridge-cabinet h3,.game h2,.game-panel h2,.panel h2,.odds-panel h2{
+  color:#f8f1ff;
+  text-shadow:0 0 18px rgba(255,79,216,.1);
+}
+.cartridge-cabinet p,.lede,.muted,.hero p:not(.eyebrow),.panel p,.panel li{
+  color:#b9b8cb!important;
+}
+.status,.pill,.badge,.genre,.license,.tag{
+  border:1px solid rgba(198,255,69,.36)!important;
+  background:rgba(198,255,69,.07)!important;
+  color:#d6ff7c!important;
+}
+button,.btn,.button,.action,.primary,.game-tabs button,.arcade-tool{
+  border-color:rgba(255,91,219,.48)!important;
+  background:linear-gradient(135deg,rgba(255,79,216,.16),rgba(92,255,178,.08))!important;
+  color:#fff1ff!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 18px rgba(255,79,216,.06)!important;
+}
+button:hover:not(:disabled),.btn:hover:not(:disabled),.button:hover:not(:disabled),.action:hover:not(:disabled),.arcade-tool:hover{
+  border-color:#c6ff45!important;
+  box-shadow:0 0 0 1px rgba(198,255,69,.26),0 0 24px rgba(255,79,216,.18)!important;
+}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid #c6ff45!important;
+  outline-offset:3px;
+}
+button:active:not(:disabled),.btn:active:not(:disabled),.button:active:not(:disabled),.action:active:not(:disabled){
+  filter:saturate(1.35);
+}
+.btn.hot,.button-primary,.action.primary,.arcade-tool[aria-pressed=true]{
+  background:linear-gradient(120deg,#ff4fd8 0%,#ff76b8 48%,#c6ff45 100%)!important;
+  border-color:#ffd4f5!important;
+  color:#160b1b!important;
+  font-weight:950!important;
+  box-shadow:0 0 24px rgba(255,79,216,.2),inset 0 1px rgba(255,255,255,.5)!important;
+}
+input,select,textarea,.guess-form input{
+  border-color:rgba(111,255,183,.32)!important;
+  background:#080b13!important;
+  color:#f8f3ff!important;
+}
+.playfield canvas,.field canvas,.play-area canvas,.canvas-wrap canvas,.game canvas,.cabinet canvas{
+  image-rendering:pixelated;
+}
+.arcade-tools{gap:.55rem}
+.arcade-tool-icon{color:#c6ff45}
+.arcade-shortcuts-head{color:#ff75e3!important}
+.arcade-shortcuts dt{border-color:rgba(198,255,69,.5)!important;color:#c6ff45!important;background:rgba(198,255,69,.08)!important}
+.score-row strong,.stat strong,.meter strong,.credits,.credit{color:#c6ff45!important}
+.score-row,.stat,.meter,.readout,.message,.wallet-inline{
+  border-color:rgba(111,255,183,.18)!important;
+}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{
+  border-color:#c6ff45!important;
+  background:linear-gradient(120deg,rgba(255,79,216,.2),rgba(198,255,69,.12))!important;
+  color:#e5ff9e!important;
+}
+.memory-card.revealed,.memory-card.matched,.whack-hole.live,.reaction-box.ready,.ttt-cell:hover{
+  border-color:#c6ff45!important;
+  box-shadow:0 0 22px rgba(198,255,69,.18)!important;
+}
+.target{
+  background:linear-gradient(135deg,#ff4fd8,#c6ff45)!important;
+  color:#100b16!important;
+  box-shadow:0 0 30px rgba(255,79,216,.35),0 0 50px rgba(198,255,69,.12)!important;
+}
+.fineprint,.fine,.footnote,.cartridge-note{color:#85849c!important}
+a{color:#ff82e5}
+a:hover{color:#d7ff72}
+@media(prefers-reduced-motion:no-preference){
+  .cartridge-cabinet:nth-child(3n+1),.game:nth-child(3n+1){animation:chaos-flicker 7s steps(2,end) infinite}
+  .cartridge-cabinet:nth-child(3n+2),.game:nth-child(3n+2){animation:chaos-flicker 9s steps(2,end) infinite reverse}
+  @keyframes chaos-flicker{0%,94%,100%{filter:none}95%{filter:brightness(1.09) saturate(1.3)}96%{filter:brightness(.98)}}
+}
+@media(prefers-reduced-motion:reduce){
+  body:before,body:after{display:none!important}
+  .cartridge-cabinet,.game,.cabinet{animation:none!important}
+}
