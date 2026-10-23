@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-23",
+  "policy": {
+    "verifyCodeAndAssetsSeparately": true,
+    "preserveLicenses": true,
+    "neverExecuteUnreviewedUpstreamCode": true,
+    "neverGiveImportedGamesAuthTokens": true,
+    "requireServerValidationForScoresAndRewards": true
+  },
+  "imported": [
+    {
+      "id": "2048",
+      "repository": "https://github.com/gabrielecirulli/2048",
+      "license": "MIT",
+      "status": "self-hosted-import",
+      "path": "public/arcade/hosted/2048/",
+      "upstreamCommit": "478b6ec346e3787f589e4af751378d06ded4cbbc",
+      "assets": {
+        "images": "not redistributed",
+        "audio": "not redistributed",
+        "fonts": "upstream font import removed; system fonts used",
+        "icons": "not redistributed"
+      },
+      "dependencies": [
+        "browser DOM",
+        "browser localStorage"
+      ],
+      "limitations": [
+        "local browser save only",
+        "no account sync",
+        "no Cinders or server leaderboard integration"
+      ]
+    }
+  ],
+  "deferred": [
+    {
+      "id": "clumsy-bird",
+      "repository": "https://github.com/ellisonleao/clumsy-bird",
+      "status": "deferred",
+      "reason": "bundled audio and sprite asset rights need separate review; game uses MelonJS"
+    },
+    {
+      "id": "html5-asteroids",
+      "repository": "https://github.com/dmcinnes/HTML5-Asteroids",
+      "status": "deferred",
+      "reason": "MIT code license found, but third-party sound assets have separate provenance; old jQuery dependency needs review"
+    },
+    {
+      "id": "connect-four",
+      "repository": "https://github.com/kenrick95/c4",
+      "license": "MIT",
+      "status": "deferred",
+      "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
+    }
+  ],
+  "remainingTarget": "29 additional self-hosted cabinets are still pending; no claim of completion until each has an individual code, asset, dependency, and runtime audit."
+}
