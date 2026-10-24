@@ -21,8 +21,16 @@
   "ai": { "binding": "AI" },
   "r2_buckets": [
     {
+      "binding": "VAULT",
+      "bucket_name": "knightfall-monster-staging-vault"
+    },
+    {
       "binding": "PUBLIC_ASSETS",
       "bucket_name": "knightfall-monster-staging"
+    },
+    {
+      "binding": "MESSAGE_ATTACHMENTS",
+      "bucket_name": "knightfall-monster-staging-attachments"
     }
   ],
   "durable_objects": {
