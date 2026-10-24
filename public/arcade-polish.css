@@ -509,3 +509,23 @@ body:has(#rookcondition) .controls button{min-height:44px;border-radius:9px}
 @media(prefers-reduced-motion:reduce){
  body:has(#roster) .monster-card,body:has(#upgrade-sign) .stat,body:has(#rookcondition) .stat{transition:none}
 }
+
+
+/* Ash-Fall arcade feedback: score changes, messages, and tactile controls. */
+.af-feedback-status{position:relative;transition:color .16s ease,border-color .16s ease}
+.af-feedback-pulse{animation:afFeedbackPulse .48s ease-out}
+.af-feedback-alert{animation:afFeedbackAlert .48s ease-out}
+.af-feedback-number{font-variant-numeric:tabular-nums}
+.af-feedback-press{transform:scale(.975)!important;filter:brightness(1.2)}
+.af-arcade-hidden .af-feedback-pulse,.af-arcade-hidden .af-feedback-alert{animation:none!important}
+@keyframes afFeedbackPulse{
+  0%{filter:brightness(1.55);text-shadow:0 0 18px #ff4fa355}
+  100%{filter:brightness(1);text-shadow:none}
+}
+@keyframes afFeedbackAlert{
+  0%{color:#ff806d;filter:brightness(1.3)}
+  100%{filter:brightness(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .af-feedback-pulse,.af-feedback-alert,.af-feedback-press{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
+}
