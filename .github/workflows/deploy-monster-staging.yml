@@ -86,7 +86,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
-          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM audit_logs WHERE actor_id IN (SELECT id FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}b'))"
+          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM audit_logs WHERE actor_id IN (SELECT id FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}b'))"
 
       - name: Clean test accounts and game saves
         if: always()
@@ -99,4 +99,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
-          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}b')"
+          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}b')"
