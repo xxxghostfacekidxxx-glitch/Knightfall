@@ -77,6 +77,35 @@
       const root = document.getElementById(button.dataset.fullscreenTarget);
       label(button, !!active && active === root);
     });
+    document.querySelectorAll(".af-game-root").forEach(root => {
+      if (root === active && root.dataset.afFullscreenLayout !== "true") {
+        root.dataset.afFullscreenLayout = "true";
+        root.dataset.afOriginalStyle = root.getAttribute("style") === null ? "__none__" : root.getAttribute("style");
+        root.style.cssText = "width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:clamp(8px,2vw,24px);overflow:auto;box-sizing:border-box;background:#080808;border-radius:0;";
+        root.querySelectorAll(":scope > .back,:scope > .hero,:scope > .intro,:scope > .account,:scope > .directory-hero,:scope > .roster,:scope > .roster-heading,:scope > .mutation-row,:scope > .character-banner").forEach(el => {
+          el.dataset.afOriginalStyle = el.getAttribute("style") === null ? "__none__" : el.getAttribute("style");
+          el.style.display = "none";
+        });
+        root.querySelectorAll("canvas").forEach(canvas => {
+          canvas.dataset.afOriginalStyle = canvas.getAttribute("style") === null ? "__none__" : canvas.getAttribute("style");
+          canvas.style.maxHeight = "calc(100dvh - 190px)";
+          canvas.style.width = "100%";
+          canvas.style.objectFit = "contain";
+        });
+        const tools = root.querySelector(".af-game-tools");
+        if (tools) { tools.style.position = "sticky"; tools.style.top = "0"; tools.style.zIndex = "100"; }
+      } else if (root !== active && root.dataset.afFullscreenLayout === "true") {
+        const original = root.dataset.afOriginalStyle;
+        if (original === "__none__") root.removeAttribute("style"); else root.setAttribute("style", original);
+        root.querySelectorAll("[data-af-original-style]").forEach(el => {
+          const style = el.dataset.afOriginalStyle;
+          if (style === "__none__") el.removeAttribute("style"); else el.setAttribute("style", style);
+          delete el.dataset.afOriginalStyle;
+        });
+        delete root.dataset.afFullscreenLayout;
+        delete root.dataset.afOriginalStyle;
+      }
+    });
   }
   document.addEventListener("fullscreenchange", syncButtons);
   document.addEventListener("webkitfullscreenchange", syncButtons);
