@@ -82,3 +82,8 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 ## Private message attachments (0028)
 
 `0028_message_attachments.sql` stores attachment metadata only; file bytes live in the separate private R2 bucket `knightfall-message-attachments` bound as `MESSAGE_ATTACHMENTS`. The bucket has no public domain binding. Uploads require conversation membership, are limited to 10 MiB per file and an explicit image/PDF/TXT/DOCX MIME allowlist, and are linked to a message only when the sender submits that message. Downloads require current conversation membership; pending uploads are visible only to their uploader, and attachments on deleted messages are not downloadable. Never bind the private personal vault or public game-asset bucket for this feature.
+
+
+## Arcade save revisions (0029)
+
+`0029_arcade_save_revisions.sql` adds a monotonic revision to each arcade save. Revision-aware clients send `expected_revision`; stale writes receive HTTP 409 and must reload before retrying. Apply the migration before deploying the revision-aware Worker. Test that an update advances the revision and that a stale conditional update changes zero rows. The migration is additive and preserves existing save rows at revision 1.
