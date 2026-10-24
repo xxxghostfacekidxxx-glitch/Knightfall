@@ -46,6 +46,8 @@ for (const [label, pattern] of arcadeInvariants) {
 }
 
 const saveInvariants = [
+  ["arcade save writes use revision-aware conditional updates", /expected_revision[\s\S]{0,1800}revision=arcade_saves\.revision\+1/],
+  ["arcade save client sends an expected revision", /expected_revision:expectedRevision/],
   ["arcade saves are rate-limited per network and account", /rateLimit\(env,request,"arcade-save",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-save-account",120,60,user\.id\)/],
   ["score save success is reported independently from progress sync", /let progressSaved=true[\s\S]{0,650}progressSaved\?"Score saved to your account/],
 ];
