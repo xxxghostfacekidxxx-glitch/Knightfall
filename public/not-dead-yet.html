@@ -193,4 +193,5 @@ $('share-run').addEventListener('click',async()=>{const summary='Not Dead Yet, A
 $('show-leaderboard').addEventListener('click',async()=>{const panel=$('run-leaderboard'),list=$('run-leaderboard-list');panel.hidden=false;list.textContent='Loading scores…';try{const response=await fetch('https://api.ash-fall.com/api/arcade/scores?game=not-dead-yet&limit=10',{credentials:'include',cache:'no-store'});const data=await response.json();if(!response.ok)throw new Error(data.error||'Leaderboard unavailable');list.replaceChildren();const rows=data.scores||[];if(!rows.length){const li=document.createElement('li');li.textContent='No scores yet. Be the first to make a terrible decision.';list.append(li);}rows.forEach(row=>{const li=document.createElement('li');li.textContent=(row.display_name||row.username||'Player')+' · '+Number(row.best_score).toLocaleString()+' points';list.append(li);});}catch(error){list.textContent=error.message||'Leaderboard unavailable';}});
 })();
 </script><script src="/arcade-polish.js?v=20261023-devil-tools" defer></script>
+<script src="/arcade-fullscreen.js?v=20261024" defer></script>
 </body></html>
