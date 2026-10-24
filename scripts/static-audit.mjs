@@ -234,7 +234,31 @@ if (stagingConfig.r2_buckets?.some(binding => binding.binding === "VAULT")) fail
 if (!stagingConfig.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Staging config must declare the MonsterWorldRoom Durable Object.");
 ok("Monster MMO staging config is isolated-by-default and cannot silently bind production D1, sessions, or private vault.");
 
-
+const provisionedStagingPath = path.join(root, "backend/wrangler.monster-staging.jsonc");
+try {
+  await access(provisionedStagingPath);
+  const provisioned = JSON.parse(await readFile(provisionedStagingPath, "utf8"));
+  if (provisioned.name !== "knightfall-monster-staging" || provisioned.workers_dev !== true) fail("Provisioned MMO staging Worker must have its own workers.dev name.");
+  if (provisioned.d1_databases?.[0]?.database_id !== "6c72439f-2319-4f03-9bb6-711157d18963") fail("Provisioned staging config must use the isolated MMO D1 database.");
+  if (provisioned.kv_namespaces?.[0]?.id !== "56931d38c9f64871b812867e422b771b") fail("Provisioned staging config must use the isolated MMO session KV.");
+  const stagingBuckets = new Set((provisioned.r2_buckets || []).map(binding => binding.bucket_name));
+  for (const bucket of ["knightfall-monster-staging", "knightfall-monster-staging-vault", "knightfall-monster-staging-attachments"]) {
+    if (!stagingBuckets.has(bucket)) fail("Provisioned staging config is missing isolated R2 bucket: " + bucket);
+  }
+  if (provisioned.d1_databases?.some(binding => binding.database_id === "c64617c2-ac78-44ba-b107-a17e10638a57")) fail("Provisioned staging config references production D1.");
+  if (provisioned.kv_namespaces?.some(binding => binding.id === "dd5b7be732cc4a4585aed60a9980b0b3")) fail("Provisioned staging config references production sessions.");
+  if ((provisioned.r2_buckets || []).some(binding => /knightfall-personal-admin-vault|knightfall-message-attachments|knightfall-public-game-assets/.test(binding.bucket_name))) fail("Provisioned staging config references a production R2 bucket.");
+  if (!provisioned.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Provisioned staging config must bind MonsterWorldRoom.");
+  const stagingWorkflow = await readFile(path.join(root, ".github/workflows/deploy-monster-staging.yml"), "utf8");
+  if (!stagingWorkflow.includes("CLOUDFLARE_STAGING_API_TOKEN") || !stagingWorkflow.includes("KNIGHTFALL_STAGING_API_BASE_URL")) fail("Staging workflow must require staging-only credentials and URL.");
+  const smokeTest = await readFile(path.join(root, "scripts/monster-mmo-staging-smoke.mjs"), "utf8");
+  for (const check of ["stale revision conflict", "capture persistence", "account save isolation", "progression tamper rejection"]) {
+    if (!smokeTest.includes(check)) fail("Staging smoke test is missing coverage: " + check);
+  }
+  ok("Provisioned Monster MMO staging resources, workflow guards, and smoke-test coverage checked.");
+} catch (error) {
+  if (error?.code !== "ENOENT") fail("Could not validate provisioned Monster MMO staging config: " + error.message);
+}
 
 if (errors.length) {
   console.error("\nSTATIC AUDIT FAILED");
