@@ -1,0 +1,59 @@
+name: Deploy isolated Monster MMO staging
+
+on:
+  push:
+    branches:
+      - staging/monster-mmo-isolated
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-monster-staging.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knightfall-monster-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: monster-staging
+    steps:
+      - name: Checkout staging branch
+        uses: actions/checkout@v7
+
+      - name: Require staging-only Cloudflare credentials
+        shell: bash
+        env:
+          CLOUDFLARE_STAGING_API_TOKEN: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_STAGING_API_TOKEN" ]; then
+            echo "::error::Configure CLOUDFLARE_STAGING_API_TOKEN with Worker deploy and staging D1 migration permissions."
+            exit 1
+          fi
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Configure CLOUDFLARE_ACCOUNT_ID."
+            exit 1
+          fi
+          echo "Staging-only credentials are present."
+
+      - name: Apply migrations to isolated staging D1
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 migrations apply knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc
+
+      - name: Deploy isolated staging Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy --config wrangler.monster-staging.jsonc
