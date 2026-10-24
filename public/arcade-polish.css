@@ -374,3 +374,69 @@ a:hover{color:#d7ff72}
   body:before,body:after{display:none!important}
   .cartridge-cabinet,.game,.cabinet{animation:none!important}
 }
+
+
+/* Integrated arcade fullscreen and cabinet polish, recolored for Ash-Fall. */
+/* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
+:root{--arcade-ember:#a8ff3e;--arcade-rust:#ff4fa3;--arcade-line:#303030}
+main.arcade,body>main{position:relative;isolation:isolate}
+main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,79,163,.11),transparent 58%)}
+.hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
+.hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
+.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,79,163,.1)}
+.hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
+.back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#a8ff3e!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
+.back:hover{color:#ff4fa3!important;transform:translateX(-2px)}
+.cabinet,.game,.game-panel,.panel,.card{border-color:#303030!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
+.cabinet,.game{position:relative;isolation:isolate;overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,79,163,.09),transparent 56%);pointer-events:none}
+.cabinet:hover,.game:hover{border-color:#a8ff3e!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
+.cabinet h2,.game h2,.game-panel h2,.panel h2{letter-spacing:-.04em}
+.cabinet p,.game p,.game-panel .muted,.panel .muted{line-height:1.75}
+.btn,.button,.action,.primary{transition:transform .17s ease,filter .17s ease,border-color .17s ease}
+.btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #a8ff3e!important;outline-offset:3px}
+.screen,.arena,.play-area,.canvas{border-color:#ff4fa3!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
+.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
+.game-tabs,.tabs,.game-library-tools{gap:.6rem}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#ff4fa3!important;background:rgba(255,79,163,.14)!important;color:#a8ff3e!important}
+.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#ff4fa3}
+.cabinet .tag,.genre,.license,.pill{border-color:#ff4fa3!important;color:#a8ff3e!important;background:rgba(255,79,163,.075)!important}
+.shelf,.grid,.layout,.dump-grid{gap:1rem}
+.cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
+.fineprint,.fine,.footnote{color:#716960;line-height:1.7}
+@media(max-width:800px){.hero{padding-top:3.5rem!important}.hero h1{font-size:clamp(3rem,12vw,5rem)!important}.shelf,.grid,.layout{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:560px){.hero{padding-top:2.8rem!important;padding-bottom:1.6rem!important}.hero h1{font-size:clamp(2.7rem,13vw,4.2rem)!important}.shelf,.grid,.layout{grid-template-columns:minmax(0,1fr)!important}.cabinet,.game{border-radius:12px!important}.game-tabs,.tabs{display:flex;max-width:100%;overflow-x:auto;padding-bottom:.3rem}.game-tabs button,.tabs button{flex:0 0 auto}.back{font-size:.85rem}}
+@media(prefers-reduced-motion:reduce){.cabinet,.game,.back,.btn,.button,.action,.primary{transition:none!important}}
+
+
+/* Round five: unified cabinet chrome, legible controls and true game fullscreen. */
+:root{--af-ember:#a8ff3e;--af-panel:#11100f;--af-edge:#303030;--af-text:#f5f1ed;--af-muted:#aaa19a}
+.af-game-root{position:relative;min-width:0;isolation:isolate}
+.af-game-tools{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem;padding:.65rem .75rem;border:1px solid #303030;border-radius:10px;background:linear-gradient(100deg,#1a1511,#0b0b0b 75%);box-shadow:inset 0 1px 0 #ffffff08}
+.af-game-kicker{font-size:.64rem;font-weight:950;letter-spacing:.18em;color:#bda18c}
+.af-fullscreen-toggle{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:42px;padding:.65rem .9rem;border:1px solid #70401f;border-radius:9px;background:linear-gradient(135deg,#a8ff3e,#c94a00);color:#160a03;font:inherit;font-size:.83rem;font-weight:900;letter-spacing:.01em;cursor:pointer;box-shadow:0 5px 18px #a8ff3e20;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.af-fullscreen-toggle:hover{filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 8px 24px #a8ff3e30}
+.af-fullscreen-toggle:focus-visible{outline:2px solid #ffd1a8;outline-offset:3px}
+.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{width:100%;height:100%;max-width:none;max-height:none;overflow:auto;margin:0!important;padding:clamp(.75rem,2.5vw,2rem);border:0!important;border-radius:0!important;background:radial-gradient(ellipse at 15% 0%,#ff4fa328,transparent 38%),#080808!important;color:#f5f1ed;box-shadow:none!important}
+.af-game-root:fullscreen .af-game-tools,.af-game-root:-webkit-full-screen .af-game-tools{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:#11100fee}
+.af-game-root:fullscreen canvas,.af-game-root:-webkit-full-screen canvas{max-height:calc(100vh - 190px);object-fit:contain}
+.af-game-root:fullscreen .screen,.af-game-root:-webkit-full-screen .screen{min-height:0}
+.af-game-root:fullscreen .arena,.af-game-root:fullscreen .play-area,.af-game-root:-webkit-full-screen .arena,.af-game-root:-webkit-full-screen .play-area{min-height:min(44vh,480px)}
+.af-game-root:fullscreen .game-panel,.af-game-root:fullscreen .panel,.af-game-root:-webkit-full-screen .game-panel,.af-game-root:-webkit-full-screen .panel{min-height:calc(100vh - 150px)}
+.af-game-root:fullscreen .canvas-wrap canvas,.af-game-root:-webkit-full-screen .canvas-wrap canvas{width:100%;max-height:calc(100vh - 230px);object-fit:contain}
+.af-game-root:fullscreen .af-fullscreen-toggle,.af-game-root:-webkit-full-screen .af-fullscreen-toggle{background:#a4ff8a;border-color:#a4ff8a;color:#091007}
+.af-game-root:fullscreen .layout,.af-game-root:-webkit-full-screen .layout{width:100%;max-width:1500px;margin-inline:auto}
+.af-game-root:fullscreen .log,.af-game-root:-webkit-full-screen .log{scrollbar-color:#70401f #100e0c}
+button,select,input,textarea{accent-color:var(--af-ember)}
+button:disabled{cursor:not-allowed}
+@media(max-width:650px){.af-game-tools{padding:.55rem;align-items:stretch}.af-game-kicker{align-self:center}.af-fullscreen-toggle{min-height:44px}.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{padding:.55rem}.af-game-root:fullscreen .af-game-tools,.af-game-root:-webkit-full-screen .af-game-tools{gap:.45rem}.af-game-root:fullscreen canvas,.af-game-root:-webkit-full-screen canvas{max-height:calc(100dvh - 180px)}}
+@media(prefers-reduced-motion:reduce){.af-fullscreen-toggle{transition:none}}
+
+/* Full-page game layouts keep their HUDs and controls while hiding only marketing chrome. */
+main.af-game-root:fullscreen,main.af-game-root:-webkit-full-screen{display:block!important;width:100%!important;max-width:none!important;margin:0!important}
+main.af-game-root:fullscreen>.back,main.af-game-root:fullscreen>.hero,main.af-game-root:fullscreen>.intro,main.af-game-root:fullscreen>.account,
+main.af-game-root:-webkit-full-screen>.back,main.af-game-root:-webkit-full-screen>.hero,main.af-game-root:-webkit-full-screen>.intro,main.af-game-root:-webkit-full-screen>.account{display:none!important}
+main.af-game-root:fullscreen .roster,main.af-game-root:fullscreen .roster-heading,main.af-game-root:fullscreen .mutation-row,main.af-game-root:fullscreen .character-banner,
+main.af-game-root:-webkit-full-screen .roster,main.af-game-root:-webkit-full-screen .roster-heading,main.af-game-root:-webkit-full-screen .mutation-row,main.af-game-root:-webkit-full-screen .character-banner{display:none!important}
+main.af-game-root:fullscreen .hud,main.af-game-root:-webkit-full-screen .hud{margin-top:.3rem}
