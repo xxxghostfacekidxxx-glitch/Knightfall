@@ -74,4 +74,5 @@ holdButton('void-left','left');holdButton('void-right','right');holdButton('void
 document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true});document.addEventListener('keyup',e=>keys[e.key]=false);document.addEventListener('visibilitychange',()=>{if(document.hidden){held={left:false,right:false,fire:false};keys={}}});
 draw();
 })();
-</script></body></html>
+</script><script src="/arcade-fullscreen.js?v=20261024" defer></script>
+</body></html>
