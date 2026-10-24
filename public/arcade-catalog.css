@@ -1,26 +1,19 @@
-/* Compact genre shelves for Chaos Cartridge. Uses the existing Bubble Gum pink/green palette. */
-#game-shelf .arcade-genre{margin:1.8rem 0 2.3rem}
-.arcade-genre-heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 .9rem;padding:0 0 .85rem;border-bottom:1px solid #ff55d82e}
-.arcade-genre-heading h3{margin:.15rem 0 .2rem;font-size:clamp(1.25rem,2.8vw,1.8rem);letter-spacing:-.04em}
-.arcade-genre-count{font-size:.75rem;color:#a99ab5}
-.arcade-view-all{flex:0 0 auto;padding:.58rem .85rem;border:1px solid #ff55d866;border-radius:999px;background:#ff55d810;color:#ff9be9;font-size:.78rem;font-weight:850;cursor:pointer}
-.arcade-view-all:hover{border-color:#c6ff45;background:#c6ff4514;color:#d9ff8b}
-.arcade-catalog-toolbar{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:.8rem;margin:1.2rem 0 1.5rem}
-.arcade-search-label{font-size:.8rem;font-weight:850;color:#c6ff45;letter-spacing:.04em}
-.arcade-catalog-toolbar input{width:100%;min-width:0;padding:.8rem .95rem;border:1px solid #ff55d84a!important;border-radius:12px!important;background:#100d19!important;color:#fff!important}
-.arcade-catalog-toolbar input::placeholder{color:#8f819b}
-.arcade-search-count{min-width:0;color:#c6ff45;font-size:.78rem;text-align:right}
-.arcade-genre-shelf{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:.75rem!important}
-.arcade-mini-card{min-height:0!important;padding:1rem!important;border-radius:13px!important}
-.arcade-mini-card h3{margin:.7rem 0 .35rem!important;font-size:1.05rem!important;line-height:1.2}
-.arcade-mini-card p{font-size:.82rem!important;line-height:1.5!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.arcade-mini-card .cartridge-number{font-size:.58rem!important;letter-spacing:.08em!important}
-.arcade-mini-card .status{font-size:.62rem!important;padding:.25rem .45rem!important}
-.arcade-mini-card .button{font-size:.76rem!important;padding:.62rem .75rem!important}
-.arcade-mini-card .cartridge-note{font-size:.72rem!important;line-height:1.45!important}
-.arcade-mini-card[hidden]{display:none!important}
-.arcade-genre[hidden]{display:none!important}
-@media(max-width:900px){.arcade-genre-shelf{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
-@media(max-width:650px){.arcade-genre-shelf{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.6rem!important}.arcade-mini-card{padding:.8rem!important}.arcade-mini-card h3{font-size:.98rem!important}.arcade-mini-card p{-webkit-line-clamp:2}.arcade-catalog-toolbar{grid-template-columns:1fr;gap:.45rem}.arcade-search-count{text-align:left}.arcade-genre-heading{align-items:flex-start}}
-@media(max-width:390px){.arcade-genre-shelf{grid-template-columns:minmax(0,1fr)!important}.arcade-mini-card p{-webkit-line-clamp:3}}
-@media(prefers-reduced-motion:reduce){.arcade-view-all{transition:none!important}}
+/* One flat, fully visible Chaos Cartridge shelf. Genres are labels, never click-through categories. */
+#game-shelf .cartridge-shelf{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;align-items:stretch}
+#game-shelf .cartridge-cabinet{min-width:0;min-height:245px;padding:1.05rem!important}
+#game-shelf .cartridge-cabinet[hidden]{display:none!important}
+#game-shelf .cartridge-cabinet h3{font-size:1.08rem;line-height:1.2;overflow-wrap:anywhere}
+#game-shelf .cartridge-cabinet p{font-size:.82rem;line-height:1.55}
+#game-shelf .cartridge-number{font-size:.58rem;letter-spacing:.08em}
+#game-shelf .cartridge-cabinet .status{font-size:.62rem;padding:.3rem .45rem}
+#game-shelf .cartridge-note{margin:.2rem 0 .6rem;font-size:.7rem;line-height:1.4}
+#game-shelf .flat-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:auto;position:relative;z-index:1}
+#game-shelf .flat-actions .button{font-size:.72rem;padding:.58rem .65rem;white-space:normal}
+#game-shelf .arcade-catalog-toolbar{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:.8rem;margin:1.2rem 0 1.5rem}
+#game-shelf .arcade-search-label{font-size:.78rem;font-weight:900;color:var(--accent-bright,#c6ff45);letter-spacing:.08em}
+#game-shelf .arcade-catalog-toolbar input{width:100%;min-width:0;padding:.8rem .95rem;border:1px solid #ff55d866;border-radius:12px;background:#100d19;color:#fff}
+#game-shelf .arcade-catalog-toolbar input::placeholder{color:#998da2}
+#game-shelf .arcade-search-count{font-size:.76rem;color:#c6ff45;text-align:right;white-space:nowrap}
+@media(max-width:1100px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}#game-shelf .cartridge-cabinet{padding:.8rem!important;min-height:230px}#game-shelf .cartridge-cabinet h3{font-size:1rem}#game-shelf .cartridge-cabinet p{font-size:.78rem}#game-shelf .arcade-catalog-toolbar{grid-template-columns:1fr;gap:.45rem}#game-shelf .arcade-search-count{text-align:left}}
+@media(max-width:390px){#game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr)}}
