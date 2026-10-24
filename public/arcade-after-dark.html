@@ -71,4 +71,5 @@ function holdP(id,k){let el=$(id),on=e=>{e.preventDefault();pHeld[k]=true},off=(
 })();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){window.__afArcadeVisibility={snake:sRun,breakout:bRun,pong:pRun};if(sRun){clearInterval(sLoop);sRun=false}if(bRun){clearInterval(bLoop);bRun=false}if(pRun){clearInterval(pLoop);pRun=false}}else{const resume=window.__afArcadeVisibility||{};if(resume.snake){sRun=true;sLoop=setInterval(snakeTick,125);$('sstatus').textContent='Welcome back. Rift Serpent resumed.'}if(resume.breakout){bRun=true;bLoop=setInterval(bTick,16);$('bstatus').textContent='Welcome back. Ember Breakout resumed.'}if(resume.pong){pRun=true;pLoop=setInterval(pTick,16);$('pstatus').textContent='Welcome back. Pong resumed.'}window.__afArcadeVisibility={snake:false,breakout:false,pong:false}}});
 </script><script src="/arcade-fullscreen.js?v=20261024" defer></script>
+<script src="/arcade-feedback.js?v=20261024" defer></script>
 </body></html>
