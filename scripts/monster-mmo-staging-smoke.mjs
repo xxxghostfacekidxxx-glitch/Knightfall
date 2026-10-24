@@ -25,7 +25,7 @@ async function request(path, {method="GET", user=null, body=null, allow=[200]}={
   return {status:response.status,data};
 }
 async function authenticate(user) {
-  let result = await request("/api/auth/register", {method:"POST",body:user,allow:[201,409]});
+  let result = await request("/api/auth/register", {method:"POST",user,body:user,allow:[201,409]});
   if (result.status === 409) result = await request("/api/auth/login", {method:"POST",body:{identifier:user.username,password:user.password},user,allow:[200]});
   if (result.status !== 201 && result.status !== 200) throw new Error("Could not authenticate staging account " + user.username);
   if (result.data.user?.username !== user.username) throw new Error("Authenticated account identity mismatch.");
@@ -57,7 +57,7 @@ async function main() {
   const stale = await request("/api/game/save",{method:"PUT",user:users[0],body:{save:{...saveFor("embercub",5,18,3,4),steps:1},expected_version:av-1},allow:[409]});
   if (!stale.data.conflict) throw new Error("Stale save was not rejected as a conflict.");
   // Weaken the encounter, then test the capture path with the current expected version.
-  for (let i=0; i<16 && battle.data.battle && battle.data.battle.hp > battle.data.battle.maxHp*0.3; i++) {
+  for (let i=0; i<16 && battle.data.battle && battle.data.battle.hp > battle.data.battle.maxHp*0.7; i++) {
     battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"attack",expected_version:av},allow:[200]});
     av = Number(battle.data.version);
   }
