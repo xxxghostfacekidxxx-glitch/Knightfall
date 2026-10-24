@@ -31,6 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/monster-mmo-staging-smoke.mjs
+          node scripts/static-audit.mjs
           node -e 'JSON.parse(require("fs").readFileSync("backend/wrangler.monster-staging.jsonc", "utf8")); console.log("Staging Wrangler config parses as JSON.")'
           if grep -Eq 'c64617c2-ac78-44ba-b107-a17e10638a57|dd5b7be732cc4a4585aed60a9980b0b3|knightfall-personal-admin-vault|knightfall-public-game-assets|knightfall-message-attachments' backend/wrangler.monster-staging.jsonc; then
             echo "::error::Staging config references a production resource."
