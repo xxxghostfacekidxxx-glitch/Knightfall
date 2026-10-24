@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "knightfall-arcade-save-staging",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-05",
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "REPLACE_WITH_ISOLATED_ARCADE_STAGING_D1_NAME",
+      "database_id": "REPLACE_WITH_ISOLATED_ARCADE_STAGING_D1_UUID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "REPLACE_WITH_ISOLATED_ARCADE_STAGING_KV_NAMESPACE_ID"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  }
+}
