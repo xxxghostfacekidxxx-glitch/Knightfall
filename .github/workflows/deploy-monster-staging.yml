@@ -6,6 +6,7 @@ on:
       - staging/monster-mmo-isolated
     paths:
       - 'backend/**'
+      - 'scripts/monster-mmo-staging-smoke.mjs'
       - '.github/workflows/deploy-monster-staging.yml'
   workflow_dispatch:
 
@@ -30,6 +31,7 @@ jobs:
         env:
           CLOUDFLARE_STAGING_API_TOKEN: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KNIGHTFALL_STAGING_API_BASE_URL: ${{ secrets.KNIGHTFALL_STAGING_API_BASE_URL }}
         run: |
           set -euo pipefail
           if [ -z "$CLOUDFLARE_STAGING_API_TOKEN" ]; then
@@ -40,7 +42,15 @@ jobs:
             echo "::error::Configure CLOUDFLARE_ACCOUNT_ID."
             exit 1
           fi
-          echo "Staging-only credentials are present."
+          if [ -z "$KNIGHTFALL_STAGING_API_BASE_URL" ]; then
+            echo "::error::Configure KNIGHTFALL_STAGING_API_BASE_URL to the isolated staging Worker URL."
+            exit 1
+          fi
+          if [[ "$KNIGHTFALL_STAGING_API_BASE_URL" =~ ash-fall\.com|api\.ash-fall\.com ]]; then
+            echo "::error::The staging URL must not target production."
+            exit 1
+          fi
+          echo "Staging-only credentials and endpoint are present."
 
       - name: Apply migrations to isolated staging D1
         uses: cloudflare/wrangler-action@v4
@@ -57,3 +67,36 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: deploy --config wrangler.monster-staging.jsonc
+
+      - name: Run two-account MMO smoke test
+        env:
+          KNIGHTFALL_STAGING_API_BASE_URL: ${{ secrets.KNIGHTFALL_STAGING_API_BASE_URL }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node scripts/monster-mmo-staging-smoke.mjs
+
+      - name: Clean test audit records
+        if: always()
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v4
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM audit_logs WHERE actor_id IN (SELECT id FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}b'))"
+
+      - name: Clean test accounts and game saves
+        if: always()
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v4
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 9)${GITHUB_RUN_ATTEMPT}b')"
