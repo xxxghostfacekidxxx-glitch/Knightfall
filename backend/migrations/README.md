@@ -45,3 +45,8 @@ npx wrangler d1 migrations apply knightfall-forum --remote --config backend/wran
 ```
 
 After applying it, verify the migration ledger includes `0020_friends.sql`, then test sending a request, accepting it from the recipient account, declining a request, cancelling an outgoing request, and removing an accepted friend. Worker deployment alone does not apply this schema.
+
+
+## Monster MMO staging migrations (0030–0031)
+
+`0030_monster_game_saves.sql` creates authenticated player saves with optimistic versions. `0031_monster_game_battles.sql` persists the active battle state. These follow the existing production migration sequence and the planned `0029_arcade_save_revisions.sql`; do not renumber them without checking the current migration directory. Apply only to an isolated staging database until MMO authorization, reconnect, battle, rate-limit, and two-account world tests pass.
