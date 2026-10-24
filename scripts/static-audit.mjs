@@ -171,6 +171,28 @@ if (!arcadeProgress.includes('"city-of-cinders":"City of Cinders"')) fail("Arcad
 if (!worker.includes('"city-of-cinders"') || !worker.includes('"city-of-cinders":25000')) fail("Worker does not allow and sanity-bound City of Cinders scores.");
 ok("City of Cinders game, controls, records, and score API registration checked.");
 
+const feedbackPages = [
+  "public/arcade-games.html",
+  "public/arcade-vault.html",
+  "public/arcade-after-dark.html",
+  "public/arcade-originals.html",
+  "public/arcade-fresh-meat.html",
+  "public/city-of-cinders.html",
+  "public/not-dead-yet.html",
+  "public/last-drop-lemonade.html",
+  "public/wagonbound.html",
+];
+for (const file of feedbackPages) {
+  const page = await readFile(path.join(root, file), "utf8");
+  const references = page.match(/\/arcade-feedback\\.js(?:\\?[^"' ]*)?/g) || [];
+  if (references.length !== 1) fail("Arcade feedback controller must be included exactly once: " + file);
+}
+const feedbackScript = await readFile(path.join(root, "public/arcade-feedback.js"), "utf8");
+if (!feedbackScript.includes("new MutationObserver") || !feedbackScript.includes("if (!seen.has(root))")) fail("Arcade feedback observer must detect changes without overwriting its previous text snapshot.");
+const feedbackCss = await readFile(path.join(root, "public/arcade-polish.css"), "utf8");
+if (!feedbackCss.includes(".af-feedback-pulse") || !feedbackCss.includes("prefers-reduced-motion:reduce")) fail("Arcade feedback styling or reduced-motion support is missing.");
+ok("Arcade feedback is installed once on all nine games and preserves accessible, reduced-motion-safe change detection.");
+
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
 for (const name of migrations) {
