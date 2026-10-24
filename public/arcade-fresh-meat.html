@@ -40,4 +40,5 @@ $('dump-best').textContent=dumpBest;function buildDump(){const grid=$('dump-grid
 function startDump(){clearInterval(dumpTimer);dumpLive=true;dumpScore=0;dumpRemaining=25;dumpFound=0;$('dump-score').textContent=0;$('dump-time').textContent=25;$('dump-msg').textContent='Hands in the dumpster. Regrettable.';buildDump();dumpTimer=setInterval(()=>{dumpRemaining--;$('dump-time').textContent=dumpRemaining;if(dumpRemaining<=0)endDump()},1000)}
 function endDump(){if(!dumpLive)return;dumpLive=false;clearInterval(dumpTimer);dumpBest=Math.max(dumpBest,dumpScore);store.set('ashfall-dumpster-dive-best',dumpBest);$('dump-best').textContent=dumpBest;$('dump-msg').textContent='Dive over. Salvaged '+dumpScore+' scrap. Wash your hands.';submit('dumpster-dive',dumpScore,{score:dumpScore,best:dumpBest,items:dumpFound})}
 $('dump-start').onclick=startDump;buildDump();})();
-</script></body></html>
+</script><script src="/arcade-fullscreen.js?v=20261024" defer></script>
+</body></html>
