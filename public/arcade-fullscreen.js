@@ -93,7 +93,7 @@
           canvas.style.objectFit = "contain";
         });
         const tools = root.querySelector(".af-game-tools");
-        if (tools) { tools.style.position = "sticky"; tools.style.top = "0"; tools.style.zIndex = "100"; }
+        if (tools) { tools.dataset.afOriginalStyle = tools.getAttribute("style") === null ? "__none__" : tools.getAttribute("style"); tools.style.position = "sticky"; tools.style.top = "0"; tools.style.zIndex = "100"; }
       } else if (root !== active && root.dataset.afFullscreenLayout === "true") {
         const original = root.dataset.afOriginalStyle;
         if (original === "__none__") root.removeAttribute("style"); else root.setAttribute("style", original);
