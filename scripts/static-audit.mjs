@@ -56,7 +56,7 @@ for (const [label, pattern] of saveInvariants) {
   else ok("Arcade save invariant: " + label);
 }
 
-const revisionMigration = await readFile(path.join(root, "backend/migrations/0025_arcade_save_revisions.sql"), "utf8");
+const revisionMigration = await readFile(path.join(root, "backend/migrations/0029_arcade_save_revisions.sql"), "utf8");
 if (!/ADD COLUMN revision INTEGER NOT NULL DEFAULT 1/.test(revisionMigration)) fail("Arcade save revision migration does not add a defaulted revision column.");
 else ok("Arcade save revision migration adds a monotonic revision column");
 
