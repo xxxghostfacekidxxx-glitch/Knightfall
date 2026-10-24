@@ -186,6 +186,19 @@ for (const name of migrations) {
 }
 ok("Migration files present: " + migrations.length);
 
+const arcadeStagingPath = path.join(root, "backend/wrangler.arcade-staging.example.jsonc");
+const arcadeStaging = JSON.parse(await readFile(arcadeStagingPath, "utf8"));
+if (arcadeStaging.name !== "knightfall-arcade-save-staging") fail("Arcade save staging config must use a dedicated Worker name.");
+if (arcadeStaging.d1_databases?.[0]?.database_id !== "REPLACE_WITH_ISOLATED_ARCADE_STAGING_D1_UUID") fail("Arcade staging D1 must remain an explicit placeholder until isolated resources are provisioned.");
+if (arcadeStaging.kv_namespaces?.[0]?.id !== "REPLACE_WITH_ISOLATED_ARCADE_STAGING_KV_NAMESPACE_ID") fail("Arcade staging session KV must remain an explicit placeholder until isolated resources are provisioned.");
+if (arcadeStaging.d1_databases?.[0]?.database_id === "c64617c2-ac78-44ba-b107-a17e10638a57") fail("Arcade staging config must never bind production forum D1.");
+if (arcadeStaging.kv_namespaces?.[0]?.id === "dd5b7be732cc4a4585aed60a9980b0b3") fail("Arcade staging config must never bind production session KV.");
+if ((arcadeStaging.r2_buckets || []).some(binding => /personal-admin-vault|message-attachments/.test(binding.bucket_name))) fail("Arcade staging Worker must not bind private or production attachment buckets.");
+if (arcadeStaging.r2_buckets?.some(binding => binding.binding === "VAULT")) fail("Arcade staging Worker must not bind the private admin vault.");
+ok("Arcade save staging config is isolated-by-default and blocks production database/session bindings.");
+
+
+
 if (errors.length) {
   console.error("\nSTATIC AUDIT FAILED");
   for (const error of errors) console.error("FAIL " + error);
