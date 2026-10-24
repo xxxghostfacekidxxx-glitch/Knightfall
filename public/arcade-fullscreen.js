@@ -31,12 +31,14 @@
 
       const tools = document.createElement("div");
       tools.className = "af-game-tools";
+      tools.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.7rem 1rem;margin-bottom:.8rem;border:1px solid rgba(255,79,163,.25);border-radius:12px;background:linear-gradient(100deg,rgba(255,79,163,.10),rgba(168,255,62,.06));";
       const tag = document.createElement("span");
       tag.className = "af-game-kicker";
       tag.textContent = "ASH-FALL ARCADE";
       const button = document.createElement("button");
       button.type = "button";
       button.className = "af-fullscreen-toggle";
+      button.style.cssText = "display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:.65rem .9rem;border:1px solid #ff4fa3;border-radius:9px;background:linear-gradient(135deg,#ff4fa3,#a8ff3e);color:#101010;font:inherit;font-size:.83rem;font-weight:900;cursor:pointer;";
       button.dataset.fullscreenTarget = root.id;
       label(button, false);
       button.addEventListener("click", async () => {
