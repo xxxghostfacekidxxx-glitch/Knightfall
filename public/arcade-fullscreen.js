@@ -23,6 +23,7 @@
   };
 
   function init() {
+    document.querySelectorAll('[id$="status"],[id$="message"],[id$="msg"],[role="status"],[aria-live="polite"]').forEach(el => { if (!el.hasAttribute("aria-live")) el.setAttribute("aria-live", "polite"); if (!el.hasAttribute("aria-atomic")) el.setAttribute("aria-atomic", "true"); });
     document.querySelectorAll(selector).forEach((root, index) => {
       if (root.dataset.afFullscreenReady === "true") return;
       root.dataset.afFullscreenReady = "true";
