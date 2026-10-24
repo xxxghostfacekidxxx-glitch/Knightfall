@@ -184,7 +184,7 @@ const feedbackPages = [
 ];
 for (const file of feedbackPages) {
   const page = await readFile(path.join(root, file), "utf8");
-  const references = page.match(/\/arcade-feedback\\.js(?:\\?[^"' ]*)?/g) || [];
+  const references = page.match(/\/arcade-feedback\.js(?:\?[^"' ]*)?/g) || [];
   if (references.length !== 1) fail("Arcade feedback controller must be included exactly once: " + file);
 }
 const feedbackScript = await readFile(path.join(root, "public/arcade-feedback.js"), "utf8");
