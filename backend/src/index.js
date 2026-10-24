@@ -806,8 +806,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const game=String(url.searchParams.get("game")||"");
       if(game&&!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
       const rows=game
-        ? await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at FROM arcade_saves WHERE user_id=? AND game_key=? ORDER BY updated_at DESC").bind(user.id,game).all()
-        : await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at FROM arcade_saves WHERE user_id=? ORDER BY updated_at DESC LIMIT 200").bind(user.id).all();
+        ? await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at,revision FROM arcade_saves WHERE user_id=? AND game_key=? ORDER BY updated_at DESC").bind(user.id,game).all()
+        : await env.DB.prepare("SELECT game_key,save_key,schema_version,save_data,created_at,updated_at,revision FROM arcade_saves WHERE user_id=? ORDER BY updated_at DESC LIMIT 200").bind(user.id).all();
       return json({saves:(rows.results||[]).map(row=>({...row,save_data:JSON.parse(row.save_data)}))},200,origin,{"cache-control":"no-store"});
     }
     if(request.method==="DELETE"){
@@ -819,18 +819,22 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"arcade-save",60,60)))return json({error:"Too many save changes. Try again shortly."},429,origin);
     if(!(await rateLimit(env,request,"arcade-save-account",120,60,user.id)))return json({error:"This account is saving too frequently. Wait a minute and try again."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    const game=String(body.game_key||""),slot=String(body.save_key||"autosave"),version=Number(body.schema_version||1),state=body.save_data;
+    const game=String(body.game_key||""),slot=String(body.save_key||"autosave"),version=Number(body.schema_version||1),state=body.save_data,expectedRevision=body.expected_revision===undefined||body.expected_revision===null?null:Number(body.expected_revision);
     if(!arcadeGames.has(game)||!/^[a-z0-9_-]{1,40}$/.test(slot))return json({error:"Invalid game or save slot."},400,origin);
     if(!Number.isSafeInteger(version)||version<1||version>100)return json({error:"Invalid save schema version."},400,origin);
     if(!state||typeof state!=="object"||Array.isArray(state))return json({error:"Save data must be a JSON object."},400,origin);
     const encoded=JSON.stringify(state);
     if(encoded.length>32768)return json({error:"Save data is too large (32 KB maximum)."},413,origin);
     const count=await env.DB.prepare("SELECT COUNT(*) AS total FROM arcade_saves WHERE user_id=?").bind(user.id).first();
-    const exists=await env.DB.prepare("SELECT id FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).first();
+    const exists=await env.DB.prepare("SELECT id,revision FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).first();
+    if(expectedRevision!==null&&(!Number.isSafeInteger(expectedRevision)||expectedRevision<0))return json({error:"Invalid expected save revision."},400,origin);
+    if(expectedRevision!==null&&Number(exists?.revision||0)!==expectedRevision)return json({error:"This save changed on another device. Reload the latest save before writing again.",conflict:true,current_revision:Number(exists?.revision||0)},409,origin);
     if(!exists&&Number(count?.total||0)>=200)return json({error:"This account has reached its 200 save-slot limit."},409,origin);
     const now=new Date().toISOString();
-    await env.DB.prepare("INSERT INTO arcade_saves (user_id,game_key,save_key,schema_version,save_data,created_at,updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(user_id,game_key,save_key) DO UPDATE SET schema_version=excluded.schema_version,save_data=excluded.save_data,updated_at=excluded.updated_at").bind(user.id,game,slot,version,encoded,now,now).run();
-    return json({ok:true,game_key:game,save_key:slot,schema_version:version,updated_at:now},200,origin,{"cache-control":"no-store"});
+    const write=await env.DB.prepare("INSERT INTO arcade_saves (user_id,game_key,save_key,schema_version,save_data,created_at,updated_at,revision) VALUES (?,?,?,?,?,?,?,1) ON CONFLICT(user_id,game_key,save_key) DO UPDATE SET schema_version=excluded.schema_version,save_data=excluded.save_data,updated_at=excluded.updated_at,revision=arcade_saves.revision+1 WHERE ? IS NULL OR arcade_saves.revision=?").bind(user.id,game,slot,version,encoded,now,now,expectedRevision,expectedRevision).run();
+    if(expectedRevision!==null&&Number(write.meta?.changes||0)===0){const current=await env.DB.prepare("SELECT revision,updated_at FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).first();return json({error:"This save changed on another device. Reload the latest save before writing again.",conflict:true,current_revision:Number(current?.revision||0)},409,origin);}
+    const saved=await env.DB.prepare("SELECT revision,updated_at FROM arcade_saves WHERE user_id=? AND game_key=? AND save_key=?").bind(user.id,game,slot).first();
+    return json({ok:true,game_key:game,save_key:slot,schema_version:version,revision:Number(saved?.revision||1),updated_at:saved?.updated_at||now},200,origin,{"cache-control":"no-store"});
   }
 
   if(url.pathname==="/api/auth/password-reset/request"&&request.method==="POST"){
