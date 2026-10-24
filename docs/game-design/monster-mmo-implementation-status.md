@@ -37,3 +37,12 @@ Last updated: 2026-10-21
 ## Next engineering milestone
 
 Validate and deploy the new save/battle migrations to isolated staging, run two-account multiplayer tests, and test reconnects, concurrent actions, and save/battle consistency. Add inventory/trading rules only after these core invariants pass staging.
+
+
+## Isolated staging deployment gate
+
+Use `backend/wrangler.staging.example.jsonc` as the starting point for a separate staging config. It intentionally contains placeholder IDs and is not deployable as-is. Provision a dedicated staging D1 database, a dedicated session KV namespace, and the `knightfall-mmo-staging-assets` R2 bucket; replace only the placeholders in a private working copy and keep that file out of production deployment commands. The staging Worker name must remain `knightfall-mmo-staging`. Do not bind `knightfall-forum`, `KNIGHTFALL_SESSIONS`, `knightfall-personal-admin-vault`, or production message attachments.
+
+Before deploying, verify the new D1 database contains the minimum compatible account schema required by the Worker, then apply the numbered migrations in order, including `0030_monster_game_saves.sql` and `0031_monster_game_battles.sql`. Confirm the migration table and foreign-key constraints before running any player tests. Use test-only accounts and staging cookies; never copy production user records or session values into staging.
+
+The release gate is: (1) static audit passes; (2) staging Worker health and unauthenticated access controls pass; (3) authenticated save create/read/update and stale-version 409 tests pass; (4) battle actions verify type effectiveness, capture/flee, XP, party restrictions, camp-healing restrictions, and atomic save/battle consistency; (5) two separate test accounts verify WebSocket authorization, movement validation, reconnect persistence, and disconnect cleanup; (6) rate limits and unauthorized access tests pass. Keep the PR in draft until these checks pass. No production migration or deployment is authorized by this template.
