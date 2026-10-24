@@ -222,6 +222,20 @@ for (const name of migrations) {
 }
 ok("Migration files present: " + migrations.length);
 
+const stagingConfigPath = path.join(root, "backend/wrangler.staging.example.jsonc");
+const stagingConfig = JSON.parse(await readFile(stagingConfigPath, "utf8"));
+if (stagingConfig.name !== "knightfall-mmo-staging") fail("Monster MMO staging config must use a separate Worker name.");
+if (stagingConfig.d1_databases?.[0]?.database_id !== "REPLACE_WITH_ISOLATED_STAGING_D1_UUID") fail("Staging D1 must remain an explicit placeholder until an isolated database is provisioned.");
+if (stagingConfig.kv_namespaces?.[0]?.id !== "REPLACE_WITH_ISOLATED_STAGING_KV_NAMESPACE_ID") fail("Staging session KV must remain an explicit placeholder until an isolated namespace is provisioned.");
+if (stagingConfig.d1_databases?.[0]?.database_id === "c64617c2-ac78-44ba-b107-a17e10638a57") fail("Staging config must never use production forum D1.");
+if (stagingConfig.kv_namespaces?.[0]?.id === "dd5b7be732cc4a4585aed60a9980b0b3") fail("Staging config must never use production session KV.");
+if ((stagingConfig.r2_buckets || []).some(binding => /personal-admin-vault|message-attachments/.test(binding.bucket_name))) fail("Staging Worker must not bind the private admin vault or production message attachments.");
+if (stagingConfig.r2_buckets?.some(binding => binding.binding === "VAULT")) fail("Staging Worker must not expose the private vault binding.");
+if (!stagingConfig.durable_objects?.bindings?.some(binding => binding.name === "MONSTER_WORLD" && binding.class_name === "MonsterWorldRoom")) fail("Staging config must declare the MonsterWorldRoom Durable Object.");
+ok("Monster MMO staging config is isolated-by-default and cannot silently bind production D1, sessions, or private vault.");
+
+
+
 if (errors.length) {
   console.error("\nSTATIC AUDIT FAILED");
   for (const error of errors) console.error("FAIL " + error);
