@@ -44,15 +44,26 @@
         "/arcade/hosted/snek-souls/SOURCE-NOTICE.md"
       ],
       "notes": "Single-file upstream Snake game with Knightfall account save/resume controls and leaderboard submission."
+    },
+    {
+      "gameId": "cabinet-hextris",
+      "title": "Hextris",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/Hextris/hextris",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "/arcade/hosted/hextris/index.html",
+        "/arcade/hosted/hextris/hextris.js",
+        "/arcade/hosted/hextris/vendor-bundle.js",
+        "/arcade/hosted/hextris/style/style.css",
+        "/arcade/hosted/hextris/LICENSE.md",
+        "/arcade/hosted/hextris/SOURCE-NOTICE.md",
+        "/arcade/hosted/hextris/THIRD-PARTY-NOTICES.md"
+      ],
+      "notes": "Bundled source and vendor dependencies; removed upstream remote analytics, advertising, and external score beacon; added account score and save/resume integration."
     }
   ],
   "notYetImported": [
-    {
-      "gameId": "cabinet-hextris",
-      "candidate": "https://github.com/Hextris/hextris",
-      "license": "GPL-3.0-or-later",
-      "blocker": "Requires complete source, dependency, asset, and corresponding-source audit before redistribution."
-    },
     {
       "gameId": "cabinet-isocity",
       "candidate": "https://github.com/amilich/isometric-city",
