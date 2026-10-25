@@ -180,6 +180,21 @@
         "/arcade/hosted/i18n.js"
       ],
       "notes": "Adapted the upstream self-contained Canvas/vector runner; retained the MIT license, copied the shared language layer locally with its external analytics loader removed, restyled it for Ash-Fall, and added account-best-score loading and leaderboard submission."
+    },
+    {
+      "gameId": "cabinet-balloon-pop",
+      "title": "Balloon Pop: Ash-Fall Edition",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/balloon-pop/index.html",
+        "/arcade/hosted/balloon-pop/LICENSE.txt",
+        "/arcade/hosted/balloon-pop/SOURCE-NOTICE.md",
+        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
+        "/arcade/hosted/i18n.js"
+      ],
+      "notes": "Adapted the upstream self-contained Canvas balloon/bomb game, retained MIT licensing, removed its unrelated external downloader promotion and analytics loader, restyled it, and added account best-score loading and leaderboard submission."
     }
   ],
   "notYetImported": [

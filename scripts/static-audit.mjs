@@ -193,9 +193,19 @@ if (!worker.includes('"cabinet-dino-run"') || !worker.includes('"cabinet-dino-ru
 if (!manifest.imports.some(entry => entry.gameId === "cabinet-dino-run" && entry.status === "imported-adapted")) fail("Dino Run is missing its imported source manifest entry.");
 if (!dinoRunCatalog.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunCartridge.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunRecords.includes('"cabinet-dino-run":"Dino Run: Ash-Fall Edition"')) fail("Dino Run is missing from a public arcade surface.");
 const shelfCount = (dinoRunCartridge.slice(dinoRunCartridge.indexOf('<div class="cartridge-shelf">'), dinoRunCartridge.indexOf('<section class="feature">')).match(/class="cartridge-cabinet/g) || []).length;
-if (shelfCount !== 108) fail("Main arcade shelf count does not match the 108 integrated cabinet cards.");
-if ((dinoRunCatalog.match(/<article class="game"/g) || []).length !== 69 || !dinoRunCatalog.includes("69 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Open-source arcade catalog count does not match its 69 game cards.");
+if (shelfCount !== 109) fail("Main arcade shelf count does not match the 109 integrated cabinet cards.");
+if ((dinoRunCatalog.match(/<article class="game"/g) || []).length !== 70 || !dinoRunCatalog.includes("70 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Open-source arcade catalog count does not match its 70 game cards.");
 ok("Dino Run source notice, account integration, score cap, and catalog registration checked.");
+const balloonPopGame = await readFile(path.join(publicDir, "arcade/hosted/balloon-pop/index.html"), "utf8");
+const balloonPopCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+const balloonPopCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
+const balloonPopRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!balloonPopGame.includes("cabinet-balloon-pop") || !balloonPopGame.includes("recordScore")) fail("Balloon Pop is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-balloon-pop"') || !worker.includes('"cabinet-balloon-pop":100000')) fail("Balloon Pop is not allowlisted with a bounded score cap.");
+if (!manifest.imports.some(entry => entry.gameId === "cabinet-balloon-pop" && entry.status === "imported-adapted")) fail("Balloon Pop is missing its imported source manifest entry.");
+if (!balloonPopCatalog.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopCartridge.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopRecords.includes('"cabinet-balloon-pop":"Balloon Pop: Ash-Fall Edition"')) fail("Balloon Pop is missing from a public arcade surface.");
+ok("Balloon Pop source notice, account integration, score cap, and catalog registration checked.");
+
 
 
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
