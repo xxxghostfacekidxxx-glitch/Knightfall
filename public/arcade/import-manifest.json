@@ -418,6 +418,16 @@
       "files": [
         "/arcade/hosted/marshland-marksman/index.html"
       ]
+    },
+    {
+      "gameId": "cabinet-cinder-crossing",
+      "title": "Cinder Crossing",
+      "license": "Original Knightfall code and vector artwork; no upstream source or assets copied",
+      "notes": "Original grid-based traffic-dodging game with keyboard, swipe, and touch-pad controls, pause/fullscreen, local best-score persistence, issue reporting, account leaderboard submission, and a bounded score cap. No Cinders transactions.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/cinder-crossing/index.html"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-10-25"
