@@ -62,6 +62,13 @@ jobs:
           if grep -q '"maintenance_mode":"true"' "$body"; then maintenance=true; fi
           chaos_enabled=true
           if grep -q '"feature_miss_chaos":"false"' "$body"; then chaos_enabled=false; fi
+          # Public profile galleries should respond for an existing member after the profile-media migration.
+          photos_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/profile/photos?username=knightfall")
+          photos_expected=200
+          if [ "$maintenance" = true ]; then photos_expected=503; fi
+          echo "profile-gallery=$photos_code expected=$photos_expected $(cat "$body" | head -c 250)"
+          test "$photos_code" = "$photos_expected"
+          if [ "$photos_code" = 200 ]; then grep -q '"photos":' "$body"; fi
           for endpoint in /api/public-bots /api/shops /api/categories /api/threads; do
             code=$(curl -sS -o "$body" -w '%{http_code}' "$base$endpoint")
             expected=200
