@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-three entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-four entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
