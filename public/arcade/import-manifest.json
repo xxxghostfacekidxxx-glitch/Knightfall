@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Track source provenance, license checks, and import status for locally hosted Chaos Cartridge games.",
+  "policy": "Only mark a game imported when upstream source is actually present locally and required license/attribution notices are bundled. A source link or original prototype is not an import.",
+  "imports": [
+    {
+      "gameId": "classic-2048",
+      "title": "2048",
+      "status": "imported",
+      "upstream": "https://github.com/gabrielecirulli/2048",
+      "license": "MIT",
+      "notes": "Existing local import; retain upstream license and attribution."
+    },
+    {
+      "gameId": "ashes-asteroids",
+      "title": "Asteroids",
+      "status": "imported",
+      "upstream": "https://github.com/joeythelantern/HTML5-Asteroids",
+      "license": "MIT",
+      "notes": "Existing local adaptation; verify exact upstream provenance against its bundled notice."
+    },
+    {
+      "gameId": "cabinet-custom-tetris",
+      "title": "Custom Tetris",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/billritz/Tetris",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/custom-tetris/index.html",
+        "/arcade/hosted/custom-tetris/LICENSE.txt",
+        "/arcade/hosted/custom-tetris/SOURCE-NOTICE.md"
+      ],
+      "notes": "Single-file upstream implementation with Knightfall styling, account save/resume, and score submission."
+    }
+  ],
+  "notYetImported": [
+    {
+      "gameId": "cabinet-hextris",
+      "candidate": "https://github.com/Hextris/hextris",
+      "license": "GPL-3.0-or-later",
+      "blocker": "Requires complete source, dependency, asset, and corresponding-source audit before redistribution."
+    },
+    {
+      "gameId": "cabinet-isocity",
+      "candidate": "https://github.com/amilich/isometric-city",
+      "license": "MIT",
+      "blocker": "Next.js/TypeScript project; needs build/dependency audit and static export compatibility review."
+    },
+    {
+      "gameId": "cabinet-green-mahjong",
+      "candidate": "https://github.com/danbeck/green-mahjong",
+      "license": "Code and artwork have different terms",
+      "blocker": "Artwork is CC-BY-NC; do not redistribute those assets in this project. A code-only import needs a clean asset replacement and attribution audit."
+    }
+  ]
+}
