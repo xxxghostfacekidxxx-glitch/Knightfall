@@ -22,7 +22,7 @@ function render(d,adminView=false,ownProfile=false){
     '</dl><div class="activity-grid"><section><h2>Recent threads</h2>'+((d.threads||[]).map(t=>'<a class="activity" href="/thread.html?id='+t.id+'"><strong>'+esc(t.title)+'</strong><small>'+esc(t.category_name)+' · '+fmt(t.created_at)+'</small></a>').join("")||'<p class="muted">No threads yet.</p>')+'</section><section><h2>Recent replies</h2>'+((d.posts||[]).map(p=>'<a class="activity" href="/thread.html?id='+p.thread_id+'"><strong>'+esc(p.thread_title)+'</strong><small>'+esc(p.body).slice(0,180)+' · '+fmt(p.created_at)+'</small></a>').join("")||'<p class="muted">No replies yet.</p>')+'</section></div>';
   root.style.setProperty("--profile-accent", /^#[0-9a-fA-F]{6}$/.test(u.accent_color||"") ? u.accent_color : "#e66a2c");
   root.dataset.theme = ["ember","midnight","toxic","bubblegum","mono"].includes(u.profile_theme) ? u.profile_theme : "ember";
-  if (u.cover_url) { const c=document.createElement("div"); c.className="profile-cover"; c.style.backgroundImage="url("+JSON.stringify(u.cover_url)+")"; root.prepend(c); }
+  if (u.cover_url) { const c=document.createElement("div"),img=document.createElement("img"); c.className="profile-cover"; img.setAttribute("src",u.cover_url); img.setAttribute("alt",""); img.loading="lazy"; c.append(img); root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
   const heading=root.querySelector(".profile-heading");
   for (const [field,cls] of [["status_message","profile-status-message"],["tagline","profile-tagline"]]) if (heading && u[field]) { const p=document.createElement("p"); p.className=cls; p.textContent=u[field]; heading.append(p); }
