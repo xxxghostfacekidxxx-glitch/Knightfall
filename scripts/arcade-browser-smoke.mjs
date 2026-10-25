@@ -156,6 +156,34 @@ try {
     }
   }
 
+  // Verify chess turn order and basic legal pawn movement rather than just a board render.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=chess", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("chess HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap();
+      const board = page.locator("#game");
+      await board.tap({ position: { x: 124, y: 155 } });
+      await board.tap({ position: { x: 124, y: 120 } });
+      if (Number(await page.locator("#score").innerText()) !== 1) throw new Error("white pawn's legal two-square move was rejected");
+      if (!/black to move/i.test(await page.locator("#game-state").innerText())) throw new Error("turn did not pass to Black");
+      await board.tap({ position: { x: 124, y: 68 } });
+      await board.tap({ position: { x: 124, y: 103 } });
+      if (Number(await page.locator("#score").innerText()) !== 2) throw new Error("black pawn's legal two-square move was rejected");
+      if (!/white to move/i.test(await page.locator("#game-state").innerText())) throw new Error("turn did not return to White");
+      if (errors.length) throw new Error(errors.join(" | "));
+      console.log("PASS chess gameplay: legal pawn moves and alternating turns");
+    } catch (error) {
+      console.error("FAIL chess gameplay: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   // Verify the maze is traversable and the territory game has a live rival.
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
