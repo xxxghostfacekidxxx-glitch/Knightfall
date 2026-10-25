@@ -8,7 +8,7 @@ const shellCss=document.createElement('style');shellCss.textContent='.af-arcade-
 const nav=document.createElement('nav');nav.className='af-arcade-nav';nav.setAttribute('aria-label','Ash-Fall arcade navigation');
 const brand=document.createElement('a');brand.className='af-arcade-brand';brand.href='/';brand.textContent='ASH-FALL';
 const links=document.createElement('div');links.className='af-arcade-links';
-const current=document.createElement('span');current.className='af-arcade-current';current.textContent=(document.title||'Arcade Game').replace(/\\s*[|·-]\\s*(Chaos Cartridge|Ash-Fall).*$/i,'');
+const current=document.createElement('span');current.className='af-arcade-current';current.textContent=(document.title||'Arcade Game').replace(/\s*[|·-]\s*(Chaos Cartridge|Ash-Fall).*$/i,'');
 const shelf=document.createElement('a');shelf.href='/chaos-cartridge.html';shelf.textContent='Chaos Cartridge';
 const all=document.createElement('a');all.href='/arcade-30-games.html';all.textContent='All Games';
 const licenses=document.createElement('a');licenses.href='/arcade/arcade-license-guide.html';licenses.textContent='Licenses';
