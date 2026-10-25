@@ -2,7 +2,7 @@
 function installHostedGameIssueReport(){
   if(!/^\/arcade\/hosted\//.test(location.pathname))return;
   if(document.querySelector('script[src*="arcade-account-bridge.js"]'))return;
-  if(document.querySelector('a[href*="github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new"]'))return;
+  if(document.querySelector('a[href*="github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new"],#report,[data-report-issue]'))return;
   const gameTitle=(document.title||"Arcade game").replace(/\s*[|·-]\s*(Chaos Cartridge|Ash-Fall).*$/i,"").trim()||"Arcade game";
   const report=document.createElement("a");
   report.className="af-hosted-game-report";
