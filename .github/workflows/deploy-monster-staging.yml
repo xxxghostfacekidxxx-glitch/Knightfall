@@ -40,6 +40,7 @@ jobs:
           echo "No production resource references found in staging config."
 
       - name: Require staging-only Cloudflare credentials
+        id: credentials
         shell: bash
         env:
           CLOUDFLARE_STAGING_API_TOKEN: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
@@ -64,6 +65,7 @@ jobs:
             exit 1
           fi
           echo "Staging-only credentials and endpoint are present."
+          echo "ready=true" >> "$GITHUB_OUTPUT"
 
       - name: Apply migrations to isolated staging D1
         uses: cloudflare/wrangler-action@v4
@@ -89,8 +91,7 @@ jobs:
         run: node scripts/monster-mmo-staging-smoke.mjs
 
       - name: Clean test audit records
-        if: always()
-        continue-on-error: true
+        if: always() && steps.credentials.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v4
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
@@ -102,8 +103,7 @@ jobs:
           command: d1 execute knightfall-monster-staging --remote --config wrangler.monster-staging.jsonc --command "DELETE FROM audit_logs WHERE actor_id IN (SELECT id FROM users WHERE username IN ('mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}a','mmo$(printf '%s' "$GITHUB_RUN_ID" | tail -c 8)${GITHUB_RUN_ATTEMPT}b'))"
 
       - name: Clean test accounts and game saves
-        if: always()
-        continue-on-error: true
+        if: always() && steps.credentials.outputs.ready == 'true'
         uses: cloudflare/wrangler-action@v4
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
