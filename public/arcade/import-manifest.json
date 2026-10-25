@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "purpose": "Track source provenance, license checks, and import status for locally hosted Chaos Cartridge games.",
-  "policy": "Imported means upstream source is actually present locally with required license notices. Ash-Fall original builds are playable reimplementations and must not be labeled upstream imports. Restricted or unverified upstream assets are not copied.",
+  "policy": "Imported means upstream source is actually present locally with required license notices. Ash-Fall original builds are playable reimplementations and must not be labeled upstream imports. Restricted or unverified upstream assets are not copied. License audit entries are scoped to the exact upstream LICENSE file inspected; they do not automatically clear separate artwork, audio, or dependency rights.",
   "imports": [
     {
       "gameId": "classic-2048",
@@ -233,8 +233,8 @@
       "gameId": "cabinet-hexgl",
       "title": "HexGL",
       "candidate": "https://github.com/BKcore/HexGL",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MIT verified (LICENSE)",
+      "blocker": "MIT permits source redistribution with its notice. Still audit bundled textures, audio, dependencies, and build output before importing the complete game."
     },
     {
       "gameId": "cabinet-trigger-rally",
@@ -254,8 +254,8 @@
       "gameId": "cabinet-browserquest",
       "title": "BrowserQuest",
       "candidate": "https://github.com/mozilla/BrowserQuest",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MPL-2.0 code; CC-BY-SA content (LICENSE)",
+      "blocker": "Code and content have different terms. Audit attribution/share-alike obligations for every map, sprite, sound, and other asset before importing; do not treat code license as covering all assets."
     },
     {
       "gameId": "cabinet-digger",
@@ -275,8 +275,8 @@
       "gameId": "cabinet-duckhunt-js",
       "title": "DuckHunt JS",
       "candidate": "https://github.com/MattSurabian/DuckHunt-JS",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MIT verified (LICENSE)",
+      "blocker": "MIT permits source redistribution with notice. Audit the included sprites, sound files, third-party libraries, and remote calls before importing."
     },
     {
       "gameId": "cabinet-flappy-bird-style",
@@ -409,5 +409,6 @@
         "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
       ]
     }
-  ]
+  ],
+  "auditUpdatedAt": "2026-10-25"
 }
