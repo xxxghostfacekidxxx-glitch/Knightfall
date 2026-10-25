@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Ash-Fall's locally hosted Asteroids cabinet, adapted from Doug McInnes's MIT-licensed Canvas Asteroids.">
+<title>Asteroids.exe | Chaos Cartridge | Ash-Fall</title>
+<style>
+:root{color-scheme:dark;--pink:#ff4fa3;--green:#a8ff3e;--panel:#11151e;--line:#ffffff24}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 14% 0,#35132d 0,transparent 36%),radial-gradient(ellipse at 92% 8%,#14303a 0,transparent 34%),#080a0f;color:#f5f7fb;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{padding:12px 10px 32px}.wrap{max-width:1000px;margin:auto}.back{display:inline-flex;margin:0 0 12px;color:#f5f7fb;text-decoration:none;font-weight:900}.panel{padding:clamp(12px,3vw,24px);border:1px solid var(--line);border-radius:18px;background:linear-gradient(155deg,#171a26f5,#0b0e17f7);box-shadow:0 18px 50px #0008}.kicker{color:var(--pink);font-size:.7rem;font-weight:900;letter-spacing:.18em}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}.hero h1{font-size:clamp(2.7rem,8vw,5.4rem);line-height:.88;letter-spacing:-.07em;margin:.5rem 0}.hero h1 span{color:var(--green)}.lede{max-width:700px;color:#aeb9c8;line-height:1.65}.tag{border:1px solid #a8ff3e50;border-radius:8px;padding:.55rem .7rem;color:var(--green);font-size:.65rem;font-weight:900;letter-spacing:.12em}.stage{position:relative;margin-top:16px;padding:clamp(6px,1.4vw,14px);border:1px solid #a8ff3e50;border-radius:14px;background:#060a0e;box-shadow:0 0 32px #a8ff3e0c}.stage canvas{display:block;width:100%;height:auto;aspect-ratio:13/9;background:#03070b;border-radius:8px;touch-action:none}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid #ffffff2c;border-radius:9px;padding:10px 14px;background:#ffffff0a;color:#f5f7fb;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer}.btn.primary{background:var(--pink);color:#160d17;border-color:transparent}.status{color:#aeb9c8;font-size:.78rem;line-height:1.5}.touch-controls{display:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.touch-controls button{min-height:56px;touch-action:none;background:#111923;border:1px solid #a8ff3e50;border-radius:10px;color:var(--green);font-weight:900}.touch-controls button[data-key="space"]{background:#ff4fa31c;border-color:#ff4fa380;color:#ff9ecb}.credits{margin-top:14px;border-top:1px solid #ffffff18;padding-top:12px;color:#9ca8b9;font-size:.75rem;line-height:1.6}.credits a{color:var(--green)}details{margin-top:10px;border:1px solid #ffffff1e;border-radius:9px;padding:10px;color:#aeb9c8;font-size:.76rem;line-height:1.6}summary{cursor:pointer;color:var(--green);font-weight:900}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:.7rem;max-height:320px;overflow:auto;background:#080a0f;padding:10px;border-radius:7px}@media(max-width:700px){.touch-controls{display:grid}.lede{font-size:.9rem}.tag{align-self:flex-start}}
+</style>
+</head>
+<body><main class="wrap">
+<a class="back" href="/chaos-cartridge.html">← Chaos Cartridge</a>
+<section class="panel">
+<header class="hero"><div><p class="kicker">ASH-FALL / SELF-HOSTED CABINET</p><h1>ASTEROIDS<span>.EXE</span></h1></div><span class="tag">LOCAL GAME · MIT SOURCE</span></header>
+<p class="lede">Pilot the ship, blast the rocks, and try not to turn your spaceship into a brief philosophical statement. Move with ←/→, thrust with ↑, fire with Space, and pause with P. On touchscreens, use the controls below.</p>
+<div class="stage" id="asteroids-stage"><canvas id="canvas" width="780" height="540" aria-label="Asteroids game playfield"></canvas></div>
+<div class="toolbar"><button class="btn primary" id="fullscreen" type="button">Enter fullscreen</button><button class="btn" id="sound-toggle" type="button">Sound: off</button><span class="status" id="game-status" role="status" aria-live="polite">Click the game and press Space to start.</span></div>
+<div class="touch-controls" aria-label="Touch game controls"><button type="button" data-key="left">◀ TURN</button><button type="button" data-key="up">▲ THRUST</button><button type="button" data-key="right">TURN ▶</button><button type="button" data-key="space">✦ FIRE</button></div>
+<p class="credits">Adapted for Chaos Cartridge from <a href="https://github.com/dmcinnes/HTML5-Asteroids" target="_blank" rel="noopener noreferrer">Canvas Asteroids by Doug McInnes</a>. The upstream game logic is retained with local presentation, touch controls, and fullscreen support. Sound assets are intentionally omitted from this hosted build; gameplay does not depend on them.</p>
+<details><summary>Open-source license (MIT)</summary><p>Original project: Doug McInnes, 2010. Source repository: <a href="https://github.com/dmcinnes/HTML5-Asteroids" target="_blank" rel="noopener noreferrer">dmcinnes/HTML5-Asteroids</a>.</p><pre>Copyright (c) 2010 Doug McInnes
+ 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+ 
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+ 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN      
+THE SOFTWARE.
+</pre><p>The bundled jQuery library retains its upstream license header. The typeface implementation retains its source attribution comments.</p></details>
+</section></main>
+<script src="jquery-1.4.1.min.js"></script>
+<script src="vector_battle_regular.typeface.js"></script>
+<script src="game.js"></script>
+<script>
+(() => {
+  const status=document.getElementById("game-status");
+  const canvas=document.getElementById("canvas");
+  const stage=document.getElementById("asteroids-stage");
+  const fullscreen=document.getElementById("fullscreen");
+  fullscreen.addEventListener("click",async()=>{
+    try {
+      if(!document.fullscreenElement) await stage.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch { status.textContent="Fullscreen is not available in this browser."; }
+  });
+  document.addEventListener("fullscreenchange",()=>{fullscreen.textContent=document.fullscreenElement?"Exit fullscreen":"Enter fullscreen";});
+  document.querySelectorAll("[data-key]").forEach(button=>{
+    const key=button.dataset.key;
+    const down=e=>{e.preventDefault();if(window.KEY_STATUS)window.KEY_STATUS[key]=true;window.gameStart=true;};
+    const up=e=>{e.preventDefault();if(window.KEY_STATUS)window.KEY_STATUS[key]=false;};
+    button.addEventListener("pointerdown",down);
+    ["pointerup","pointercancel","pointerleave"].forEach(type=>button.addEventListener(type,up));
+    button.addEventListener("contextmenu",e=>e.preventDefault());
+  });
+  const sound=document.getElementById("sound-toggle");
+  sound.addEventListener("click",()=>{
+    if(window.SFX){window.SFX.muted=!window.SFX.muted;sound.textContent="Sound: "+(window.SFX.muted?"off":"on");status.textContent="Sound files are not bundled in this cabinet; gameplay remains fully playable.";}
+  });
+  document.addEventListener("visibilitychange",()=>{if(document.hidden&&window.KEY_STATUS){Object.keys(window.KEY_STATUS).forEach(k=>{if(k!=="keyDown")window.KEY_STATUS[k]=false;});}});
+})();
+</script></body></html>
