@@ -148,6 +148,44 @@ try {
   }
   await bridgePage.close();
 
+  // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
+  const manifestResponse = await catalogPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
+  if (!manifestResponse || manifestResponse.status() !== 200) {
+    console.error("FAIL account bridge manifest: could not fetch manifest");
+    failed = true;
+  } else {
+    const manifest = await manifestResponse.json();
+    const bridgeEntries = Array.isArray(manifest.games) ? manifest.games : [];
+    const manifestProblems = [];
+    for (const game of bridgeEntries) {
+      const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+      try {
+        const response = await page.goto(base + game.path, { waitUntil: "domcontentloaded", timeout: 20000 });
+        if (!response || response.status() !== 200) manifestProblems.push(game.gameId + ": page not reachable");
+        const script = page.locator('script[src*="arcade-account-bridge.js"]').first();
+        if (await script.count() !== 1) manifestProblems.push(game.gameId + ": expected exactly one account bridge script");
+        else {
+          const config = await script.evaluate(el => ({ gameId: el.dataset.gameId, scoreMode: el.dataset.scoreMode || "score" }));
+          if (config.gameId !== game.gameId) manifestProblems.push(game.gameId + ": script game ID does not match manifest");
+          if (!["score", "completion", "moves", "wave"].includes(config.scoreMode)) manifestProblems.push(game.gameId + ": unsupported score mode " + config.scoreMode);
+        }
+        const reports = page.locator(".af-report");
+        await reports.waitFor({ state: "attached", timeout: 4000 }).catch(() => {});
+        if (await reports.count() !== 1) manifestProblems.push(game.gameId + ": expected exactly one issue-report link");
+      } catch (error) {
+        manifestProblems.push(game.gameId + ": " + (error?.message || String(error)));
+      } finally {
+        await page.close();
+      }
+    }
+    if (manifestProblems.length) {
+      console.error("FAIL account bridge manifest audit: " + manifestProblems.slice(0, 15).join(" | "));
+      failed = true;
+    } else {
+      console.log("PASS account bridge manifest: " + bridgeEntries.length + " games have matching page config and one issue-report link");
+    }
+  }
+
   // Crawl every playable cabinet linked by the catalog. This catches dead routes and
   // page-start exceptions before the owner has to manually test the entire collection.
   const catalogPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
