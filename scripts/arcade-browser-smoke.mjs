@@ -195,6 +195,18 @@ try {
         if (!response || response.status() !== 200) routeFailures.push(`${route}: HTTP ${response?.status() ?? "no response"}`);
         else if (!(await page.title()).trim()) routeFailures.push(`${route}: missing document title`);
         await page.waitForTimeout(100);
+        const bridgeScriptCount = await page.locator('script[src*="arcade-account-bridge.js"]').count();
+        if (bridgeScriptCount) {
+          const nav = page.locator(".af-arcade-nav");
+          if (!(await nav.count()) || !(await nav.isVisible())) {
+            routeFailures.push(`${route}: account-bridged game is missing the Ash-Fall navigation shell`);
+          } else {
+            const links = await nav.locator("a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
+            if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html")) {
+              routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade navigation links`);
+            }
+          }
+        }
         if (route.includes("/hextris/")) {
           const details = await page.evaluate(() => window.__routeErrorDetails || []);
           if (details.length) routeFailures.push(`${route}: error details ${JSON.stringify(details)}`);
