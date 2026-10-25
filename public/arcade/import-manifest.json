@@ -75,6 +75,181 @@
       "candidate": "https://github.com/danbeck/green-mahjong",
       "license": "Code and artwork have different terms",
       "blocker": "Artwork is CC-BY-NC; do not redistribute those assets in this project. A code-only import needs a clean asset replacement and attribution audit."
+    },
+    {
+      "gameId": "cabinet-a-dark-room",
+      "title": "A Dark Room",
+      "candidate": "https://github.com/doublespeakgames/adarkroom",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-clumsy-bird",
+      "title": "Clumsy Bird",
+      "candidate": "https://github.com/ellisonleao/clumsy-bird",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-elevator-saga",
+      "title": "Elevator Saga",
+      "candidate": "https://github.com/magwo/elevatorsaga",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-3d-city",
+      "title": "3D City",
+      "candidate": "https://github.com/lo-th/3d.city",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-particle-clicker",
+      "title": "Particle Clicker",
+      "candidate": "https://github.com/particle-clicker/particle-clicker",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-freeciv-web",
+      "title": "Freeciv Web",
+      "candidate": "https://github.com/freeciv/freeciv-web",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-cube-composer",
+      "title": "Cube Composer",
+      "candidate": "https://github.com/sharkdp/cube-composer",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-hexgl",
+      "title": "HexGL",
+      "candidate": "https://github.com/BKcore/HexGL",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-trigger-rally",
+      "title": "Trigger Rally",
+      "candidate": "https://github.com/trigger-rally/trigger-rally",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-open-panzer",
+      "title": "Open Panzer",
+      "candidate": "https://github.com/openpanzer/OpenPanzer",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-browserquest",
+      "title": "BrowserQuest",
+      "candidate": "https://github.com/mozilla/BrowserQuest",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-digger",
+      "title": "Digger",
+      "candidate": "https://github.com/lutzroeder/digger",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-ball-and-wall",
+      "title": "Ball and Wall",
+      "candidate": "https://github.com/budnix/ball-and-wall",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-duckhunt-js",
+      "title": "DuckHunt JS",
+      "candidate": "https://github.com/MattSurabian/DuckHunt-JS",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-flappy-bird-style",
+      "title": "Flappy Bird-style",
+      "candidate": "https://github.com/emjay045/browser-games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-dino-dash",
+      "title": "Dino Dash",
+      "candidate": "https://github.com/emjay045/browser-games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-skifree",
+      "title": "SkiFree",
+      "candidate": "https://github.com/justinbarr/ski-free",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-bubble-shooter",
+      "title": "Bubble Shooter",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-chess",
+      "title": "Chess",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-cut-the-rope",
+      "title": "Cut the Rope",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-space-waves",
+      "title": "Space Waves",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-pac-man",
+      "title": "Pac-Man",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-tower-shooter",
+      "title": "Tower Shooter",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-kaiju-krush",
+      "title": "Kaiju Krush",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    },
+    {
+      "gameId": "cabinet-parkour",
+      "title": "Parkour",
+      "candidate": "https://github.com/sausi-7/games",
+      "license": "not yet verified",
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
     }
   ]
 }
