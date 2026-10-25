@@ -64,3 +64,16 @@ tbody tr:hover{background:rgba(211,84,0,.035)}
 .test-bot-state{margin-top:.2rem;color:#b6a28d;font-size:.62rem;font-weight:800;letter-spacing:.08em}
 .fleet-footnote{color:#888;font-size:.8rem;line-height:1.6}
 @media(max-width:760px){.test-bot-grid{grid-template-columns:1fr}.fleet-run{width:100%}}
+
+/* Automated Repair Center */
+.repair-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem;margin:1rem 0}
+.repair-flow span{padding:.8rem .65rem;border:1px solid #3b3027;border-radius:8px;background:rgba(211,84,0,.06);color:#d8c4b3;font-size:.78rem;font-weight:800;text-align:center}
+.repair-queue{display:grid;gap:.7rem}
+.repair-ticket{padding:1rem;border:1px solid #352b24;border-radius:10px;background:linear-gradient(110deg,#151210,#0b0b0b)}
+.repair-ticket-top{display:flex;justify-content:space-between;gap:.75rem;align-items:flex-start}
+.repair-ticket-top strong{overflow-wrap:anywhere;color:#f0e7df}
+.repair-open{flex:0 0 auto;color:#ffb15e;font-size:.68rem;font-weight:900;letter-spacing:.07em}
+.repair-ticket p{color:#bdb5ae;line-height:1.6;margin:.7rem 0}
+.repair-ticket small{color:#8f8882}
+.repair-ticket .row-actions{margin-top:.8rem}
+@media(max-width:760px){.repair-flow{grid-template-columns:1fr 1fr}.repair-flow span:last-child{grid-column:1/-1}.repair-ticket-top{flex-direction:column}}
