@@ -83,6 +83,49 @@ try {
   for (const failure of routeFailures) console.error("FAIL hosted route: " + failure);
   if (routeFailures.length) failed = true;
 
+  // Test every query-driven variant in the two shared game engines.
+  const sharedCabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","ball-and-wall","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
+  for (const id of sharedCabinetIds) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=" + encodeURIComponent(id), { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").click({ timeout: 3000 });
+      await page.waitForTimeout(120);
+      const state = await page.locator("#game-state").innerText();
+      if (!/running/i.test(state)) throw new Error("game did not start: " + state);
+      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
+      console.log("PASS shared cabinet start: " + id);
+    } catch (error) {
+      console.error("FAIL shared cabinet start: " + id + ": " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+  for (const id of ["particle-clicker", "cube-composer", "skifree", "ball-and-wall"]) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/ashfall-mini-games.html?game=" + encodeURIComponent(id), { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").click({ timeout: 3000 });
+      await page.waitForTimeout(120);
+      const state = await page.locator("#status").innerText();
+      if (!/running/i.test(state)) throw new Error("mini-game did not start: " + state);
+      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
+      console.log("PASS mini-game start: " + id);
+    } catch (error) {
+      console.error("FAIL mini-game start: " + id + ": " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   for (const game of games) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
