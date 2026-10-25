@@ -162,6 +162,13 @@ if (!worker.includes('"cabinet-marshland-marksman"') || !worker.includes('"cabin
 const openSourceCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
 if (!openSourceCatalog.includes('href="/arcade/hosted/marshland-marksman/index.html"')) fail("Marshland Marksman is missing from the arcade catalog.");
 ok("Arcade manifest paths, provenance records, and Marshland Marksman account integration checked.");
+if (!openSourceCatalog.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Cinder Crossing is missing from the arcade catalog.");
+const cinderGame = await readFile(path.join(publicDir, "arcade/hosted/cinder-crossing/index.html"), "utf8");
+if (!cinderGame.includes("cabinet-cinder-crossing") || !cinderGame.includes("recordScore")) fail("Cinder Crossing is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-cinder-crossing"') || !worker.includes('"cabinet-cinder-crossing":1000')) fail("Cinder Crossing is not allowlisted with a bounded score cap.");
+if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-cinder-crossing")) fail("Cinder Crossing is missing from the arcade manifest.");
+ok("Cinder Crossing catalog, account integration, score cap, and manifest registration checked.");
+
 
 const apiCandidates = new Set();
 for (const file of [...htmlFiles, ...jsFiles]) {
