@@ -543,15 +543,17 @@
     },
     {
       "id": "cut-the-rope",
-      "name": "Cut the Rope",
+      "name": "Tether Tangle",
       "category": "Puzzle",
-      "description": "Slice ropes and use physics to guide candy to its goal.",
-      "playUrl": "https://sausi-7.github.io/games/games/puzzle/cut-rope/index.html",
+      "description": "Cut the tether at the right moment, collect glowing stars, and swing the orb into the receiver.",
+      "playUrl": "/arcade/hosted/tether-tangle/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/puzzle/cut-rope/index.html"
+      "sourcePath": "games/puzzle/cut-rope/index.html",
+      "importedPath": "public/arcade/hosted/tether-tangle/",
+      "integrationNote": "Original pendulum physics puzzle using broad rope-cutting and gravity mechanics only; no upstream code, characters, levels, or assets copied. Best stage stored locally."
     },
     {
       "id": "doodle-jump",
