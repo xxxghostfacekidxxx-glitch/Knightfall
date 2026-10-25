@@ -288,6 +288,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Hexa Havoc, Bubble Pop, and Rift Wardens.
+  const arcadeRestoreCases = [
+    { name:"Hexa Havoc", path:"/arcade/hosted/hexa-havoc/index.html", gameId:"cabinet-hexa-havoc", data:{serialized:{cells:Array.from({length:8},(_,y)=>Array.from({length:8},(_,x)=>y===7&&x===0?1:-1)),piece:{col:3,row:1,colors:[0,1,2]},score:70,best:100}}, check:()=>document.querySelector("#score")?.textContent==="70"&&document.querySelector("#best")?.textContent==="100" },
+    { name:"Bubble Pop", path:"/arcade/hosted/bubble-pop/index.html", gameId:"cabinet-bubble-pop", data:{serialized:{board:Array.from({length:8},()=>Array.from({length:9},()=>1)),score:25,time:37,active:true}}, check:()=>document.querySelector("#score")?.textContent==="25"&&document.querySelector("#time")?.textContent==="37"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
+    { name:"Rift Wardens", path:"/arcade/hosted/rift-wardens/index.html", gameId:"cabinet-rift-wardens", data:{serialized:{towers:[{x:4,y:1,type:"burst",cool:0.2}],enemies:[{x:0.5,y:3.5,idx:0,hp:44,max:65,speed:0.8,r:11,reward:11}],shots:[],cash:75,lives:8,wave:3,kills:4,selected:"burst",running:true,spawned:2,waveCount:14,high:4,spawnDelay:500}}, check:()=>document.querySelector("#wave")?.textContent==="3"&&document.querySelector("#cash")?.textContent==="75"&&document.querySelector("#lives")?.textContent==="8" }
+  ];
+  for(const testCase of arcadeRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
+    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
