@@ -454,14 +454,26 @@ function profilePhotoUrl(id) { return "https://api.ash-fall.com/api/profile-medi
 async function handleProfilePhotoRequest(request, env, origin, url) {
   const publicMatch = url.pathname.match(/^\/api\/profile-media\/(\d+)$/);
   if (publicMatch && (request.method === "GET" || request.method === "HEAD")) {
-    const photo = await env.DB.prepare("SELECT object_key,content_type,size_bytes FROM profile_photos WHERE id=?").bind(Number(publicMatch[1])).first();
+    const photo = await env.DB.prepare("SELECT p.object_key,p.content_type,p.size_bytes,p.kind,p.user_id,u.profile_visibility FROM profile_photos p JOIN users u ON u.id=p.user_id WHERE p.id=? AND u.status='active'").bind(Number(publicMatch[1])).first();
     if (!photo || !env.PROFILE_MEDIA) return json({error:"Photo not found."},404,origin);
+    if (photo.kind === "gallery") {
+      const viewer = await requireUser(request,env);
+      const ownerViewing = viewer?.id === photo.user_id;
+      const moderatorViewing = isModerator(viewer);
+      if (photo.profile_visibility === "private" && !ownerViewing && !moderatorViewing) return json({error:"Photo not found."},404,origin);
+      if (photo.profile_visibility === "friends" && !ownerViewing && !moderatorViewing) {
+        if (!viewer) return json({error:"Sign in to view this photo."},401,origin);
+        const friendship = await env.DB.prepare("SELECT 1 FROM friend_requests WHERE status='accepted' AND ((requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)) LIMIT 1").bind(viewer.id,photo.user_id,photo.user_id,viewer.id).first();
+        if (!friendship) return json({error:"Photo not found."},404,origin);
+      }
+    }
     const object = await env.PROFILE_MEDIA.get(photo.object_key);
     if (!object) return json({error:"Photo not found."},404,origin);
+    const cacheControl = photo.kind === "gallery" ? "private, no-store" : "public, max-age=3600, stale-while-revalidate=86400";
     const headers = new Headers({
       "content-type": photo.content_type,
       "content-length": String(object.size || photo.size_bytes),
-      "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+      "cache-control": cacheControl,
       "x-content-type-options": "nosniff",
       "content-security-policy": "default-src 'none'; sandbox",
       "access-control-allow-origin": "*",
