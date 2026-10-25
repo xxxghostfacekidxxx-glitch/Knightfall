@@ -126,6 +126,19 @@
         "/arcade/hosted/whack-a-mole/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream single-file reaction game; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local best score, and submits completed round results to the account leaderboard."
+    },
+    {
+      "gameId": "cabinet-minesweeper",
+      "title": "Minesweeper",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/minesweeper/index.html",
+        "/arcade/hosted/minesweeper/LICENSE.txt",
+        "/arcade/hosted/minesweeper/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream first-click-safe Minesweeper; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced best-time keys, and submits bounded scores for successful clears."
     }
   ],
   "notYetImported": [
