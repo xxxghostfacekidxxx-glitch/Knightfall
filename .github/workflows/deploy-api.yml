@@ -39,7 +39,14 @@ jobs:
               print('Discover route escaping pattern not found; deployment continues for unrelated backend changes.')
           PY
 
-      # Apply D1 migrations through the reviewed migration workflow before deploying schema-dependent code.
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: d1 migrations apply knightfall-forum --remote
+
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
         with:

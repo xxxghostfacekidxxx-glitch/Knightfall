@@ -1,0 +1,36 @@
+.push-settings {
+  margin: 1.5rem 0 2rem;
+  padding: 1.25rem;
+  border: 1px solid #292929;
+  border-radius: 14px;
+  background: #0d0d0d;
+}
+.push-settings-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.push-settings h2 { font-size:clamp(1.6rem,4vw,2.4rem); margin:.25rem 0; }
+.push-settings h2 span { color:var(--kf-accent); }
+.push-settings p { color:#999; }
+.push-toggle, .push-actions button {
+  background:var(--kf-accent); color:#080808; border:1px solid var(--kf-accent);
+  border-radius:7px; padding:.7rem .9rem; font-weight:700; cursor:pointer;
+}
+.push-toggle:disabled { opacity:.55; cursor:not-allowed; }
+.push-status { padding:.75rem 0; color:#aaa; min-height:1.8rem; }
+.push-preferences { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; }
+.push-preferences label { display:flex; align-items:flex-start; gap:.65rem; padding:.9rem; border:1px solid #2b2b2b; border-radius:9px; background:#0a0a0a; cursor:pointer; }
+.push-preferences input { accent-color:var(--kf-accent); margin-top:.25rem; }
+.push-preferences strong, .push-preferences small, .quiet-hours strong, .quiet-hours small { display:block; }
+.push-preferences small, .quiet-hours small { color:#777; margin-top:.25rem; line-height:1.4; }
+.quiet-hours { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; padding:1rem 0; }
+.quiet-hours > div { flex:1; min-width:180px; }
+.quiet-hours label { display:flex; align-items:center; gap:.45rem; color:#aaa; }
+.quiet-hours input { background:#111; color:#eee; border:1px solid #333; border-radius:6px; padding:.5rem; }
+.push-actions { display:flex; gap:.6rem; flex-wrap:wrap; }
+.push-actions .secondary-action { background:#111; color:#ddd; border-color:#333; }
+.push-footnote { font-size:.82rem; line-height:1.5; margin-bottom:0; }
+@media(max-width:700px) {
+  .push-settings-head { align-items:stretch; flex-direction:column; }
+  .push-preferences { grid-template-columns:1fr; }
+  .quiet-hours { align-items:flex-start; }
+  .quiet-hours > div { flex-basis:100%; }
+  .push-actions button { flex:1; }
+}
