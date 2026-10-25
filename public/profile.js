@@ -178,6 +178,40 @@ async function loadProfileFriends(){
   await refresh();
 }
 root.addEventListener("click",async event=>{const button=event.target.closest("[data-message-user]");if(!button)return;event.preventDefault();const targetUsername=button.dataset.messageUser;if(!targetUsername)return;button.disabled=true;let line=root.querySelector("#profile-action-status");if(!line){line=document.createElement("p");line.id="profile-action-status";line.setAttribute("role","status");line.setAttribute("aria-live","polite");line.className="profile-action-status";const wrap=root.querySelector(".profile-actions-wrap");if(wrap)wrap.append(line);else root.append(line);}try{line.textContent="Opening private conversation…";const conversation=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:targetUsername})});location.href="/messages.html?conversation="+encodeURIComponent(conversation.id);}catch(error){line.textContent="Could not open conversation: "+error.message;button.disabled=false;}});
+
+async function loadProfilePhotos(username,ownProfile){
+  const panel=document.createElement("section");
+  panel.className="photo-gallery-panel";
+  panel.id="profile-photo-gallery";
+  panel.innerHTML='<div class="photo-gallery-head"><div><p class="eyebrow">THE PHOTO WALL</p><h2>Photos</h2><p class="muted">Snapshots from the chaos. Images are stored with Ash-Fall, not left hanging off random links.</p></div><span class="photo-gallery-count" id="profile-photo-count">Loading…</span></div>'+
+    (ownProfile?'<form id="profile-photo-upload" class="photo-upload-form"><label for="profile-photo-file">Add photos <small>JPG, PNG, GIF, or WebP · up to 8 MB each · 60 photos maximum</small></label><input id="profile-photo-file" name="file" type="file" accept="image/jpeg,image/png,image/gif,image/webp" required><label for="profile-photo-caption">Caption <small>Optional · 240 characters</small></label><input id="profile-photo-caption" name="caption" maxlength="240" placeholder="What is happening in this picture?"><button class="action primary" type="submit">Upload photo</button><p id="profile-photo-status" role="status" aria-live="polite"></p></form>':'')+
+    '<div id="profile-photo-grid" class="profile-photo-grid"><p class="muted">Loading photos…</p></div>';
+  root.append(panel);
+  const grid=panel.querySelector("#profile-photo-grid"),count=panel.querySelector("#profile-photo-count"),status=panel.querySelector("#profile-photo-status");
+  const refresh=async()=>{
+    const data=await api("/api/profile/photos?username="+encodeURIComponent(username));
+    const photos=data.photos||[];count.textContent=photos.length+" / 60";
+    grid.innerHTML=photos.length?photos.map(photo=>'<article class="profile-photo-card"><a class="profile-photo-image" href="'+esc(photo.url)+'" target="_blank" rel="noopener noreferrer" aria-label="Open full-size photo"><img src="'+esc(photo.url)+'" alt="'+esc(photo.caption||"Photo shared by "+username)+'" loading="lazy"></a>'+(photo.caption?'<p class="profile-photo-caption">'+esc(photo.caption)+'</p>':'')+'<div class="profile-photo-meta"><time datetime="'+esc(photo.created_at)+'">'+fmt(photo.created_at)+'</time>'+(ownProfile?'<button class="action photo-delete" type="button" data-photo-delete="'+Number(photo.id)+'">Delete</button>':'')+'</div></article>').join(""):'<p class="photo-empty">No photos here yet.</p>';
+  };
+  try{await refresh()}catch(error){grid.innerHTML='<p class="photo-empty">Photos could not load: '+esc(error.message)+'</p>';count.textContent="Unavailable"}
+  if(ownProfile){
+    panel.querySelector("#profile-photo-upload").addEventListener("submit",async event=>{
+      event.preventDefault();const form=event.currentTarget,file=form.elements.file.files?.[0],button=form.querySelector('button[type="submit"]');
+      if(!file)return;button.disabled=true;status.textContent="Uploading photo…";
+      try{const data=new FormData();data.append("file",file);data.append("caption",form.elements.caption.value);data.append("kind","gallery");const response=await fetch(API+"/api/profile/photos",{method:"POST",credentials:"include",body:data});const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||"Photo upload failed.");form.reset();status.textContent="Photo uploaded.";await refresh();}
+      catch(error){status.textContent=error.message}
+      button.disabled=false;
+    });
+    grid.addEventListener("click",async event=>{
+      const button=event.target.closest("[data-photo-delete]");if(!button)return;
+      if(!confirm("Delete this photo from your profile?"))return;
+      button.disabled=true;
+      try{await api("/api/profile/photos/"+encodeURIComponent(button.dataset.photoDelete),{method:"DELETE"});await refresh();status.textContent="Photo deleted."}
+      catch(error){status.textContent=error.message;button.disabled=false}
+    });
+  }
+}
+
 async function load(){
  try{
    if(adminUserId){
@@ -189,7 +223,7 @@ async function load(){
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   render(d,false,!!me.user&&String(me.user.id)===String(d.user.id));
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(me.user?.role==="admin"&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}

@@ -108,3 +108,30 @@
 .friends-summary>*,.friends-summary span{border-color:#38281e}
 .avatar-editor,.friend-request-form{background:#0d0c0b!important;border-color:#35281f!important}
 @media(prefers-reduced-motion:reduce){.profile-shell .action,.profile-shell button,.friend-card{transition:none!important}}
+
+
+/* Member photo gallery: uploads are served through the profile-media API. */
+.photo-gallery-panel{margin-top:1.5rem;padding:clamp(1rem,4vw,1.5rem);border:1px solid #38281e;border-radius:14px;background:linear-gradient(145deg,rgba(211,84,0,.055),rgba(10,10,10,.97))}
+.photo-gallery-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.photo-gallery-head h2{font-size:1.45rem;letter-spacing:-.035em;margin:.1rem 0 .35rem}
+.photo-gallery-head .muted{font-size:.84rem;line-height:1.5;max-width:620px}
+.photo-gallery-count{border:1px solid #4b3020;border-radius:999px;padding:.45rem .7rem;color:#f0b18e;background:#160e09;font-size:.75rem;font-weight:800;white-space:nowrap}
+.photo-upload-form{display:grid;gap:.65rem;margin:0 0 1.2rem;padding:1rem;border:1px solid #34271f;border-radius:10px;background:#0b0b0b}
+.photo-upload-form label{display:grid;gap:.35rem}
+.photo-upload-form label small{font-size:.74rem;font-weight:400;color:#94877e;line-height:1.5}
+.photo-upload-form input[type=file]{min-height:44px;padding:.55rem;font-size:.8rem}
+.photo-upload-form button{justify-self:start;min-height:44px}
+#profile-photo-status{min-height:1.1rem;color:#f0b18e;font-size:.82rem;overflow-wrap:anywhere}
+.profile-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+.profile-photo-card{min-width:0;overflow:hidden;border:1px solid #30261f;border-radius:10px;background:#0b0b0b}
+.profile-photo-image{display:block;aspect-ratio:1/1;overflow:hidden;background:#14110f}
+.profile-photo-image img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+.profile-photo-image:hover img{transform:scale(1.035)}
+.profile-photo-caption{padding:.65rem .7rem .1rem;color:#e3d8cf;font-size:.84rem;line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
+.profile-photo-meta{display:flex;align-items:center;justify-content:space-between;gap:.45rem;flex-wrap:wrap;padding:.6rem .7rem;color:#8f837a;font-size:.7rem}
+.photo-delete{font-size:.7rem;padding:.35rem .5rem;color:#ffb3a5;border-color:#5c3028}
+.photo-empty{grid-column:1/-1;padding:1.4rem;border:1px dashed #3c3028;border-radius:10px;text-align:center;color:#94877e;line-height:1.5}
+.photo-upload-form button:disabled,.photo-delete:disabled{opacity:.55;cursor:wait}
+@media(max-width:650px){.profile-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo-gallery-head{align-items:flex-start}.photo-gallery-count{font-size:.7rem}}
+@media(max-width:360px){.profile-photo-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.profile-photo-image img{transition:none}}
