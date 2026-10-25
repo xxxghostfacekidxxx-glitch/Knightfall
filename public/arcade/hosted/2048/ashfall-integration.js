@@ -86,11 +86,4 @@
     loadingCloud = false;
     if (window.AshFallArcade?.user) scheduleCloudSave();
   };
-
-  const existing = window.AshFall2048Ready;
-  if (!existing) {
-    window.AshFall2048Ready = manager => setTimeout(() => {
-      if (typeof window.AshFall2048Ready === "function") window.AshFall2048Ready(manager);
-    }, 0);
-  }
 })();
