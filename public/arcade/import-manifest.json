@@ -611,6 +611,176 @@
       "files": [
         "/arcade/hosted/last-ember/index.html"
       ]
+    },
+    {
+      "gameId": "cabinet-skyline-foundry",
+      "title": "Skyline Foundry",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Skyline Foundry, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/skyline-foundry/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-neon-mahjong",
+      "title": "Neon Mahjong",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Neon Mahjong, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/neon-mahjong/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-cinder-hopper",
+      "title": "Cinder Hopper",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Clumsy Bird, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/cinder-hopper/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-lift-riot",
+      "title": "Lift Riot",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Elevator Saga, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/lift-riot/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-particle-panic",
+      "title": "Particle Panic",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Particle Clicker, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/particle-panic/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-ashen-dominion",
+      "title": "Ashen Dominion",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Freeciv Web, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ashen-dominion/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-rusty-sky",
+      "title": "Rusty Sky",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to HexGL, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/rusty-sky/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-car-race",
+      "title": "Car Race",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Trigger Rally, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/car-race/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-ruinwalkers",
+      "title": "Ruinwalkers",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to BrowserQuest, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ruinwalkers/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-burrow-blitz",
+      "title": "Burrow Blitz",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Digger, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/burrow-blitz/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-bubble-pop",
+      "title": "Bubble Pop",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Bubble Shooter, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/bubble-pop/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-cinder-chess",
+      "title": "Cinder Chess",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Chess, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/cinder-chess/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-tether-tangle",
+      "title": "Tether Tangle",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Cut the Rope, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/tether-tangle/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-space-fighter",
+      "title": "Space Fighter",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Space Waves, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/space-fighter/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-glitch-munch",
+      "title": "Glitch Munch",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Pac-Man, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/glitch-munch/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-bubble-barrage",
+      "title": "Bubble Barrage",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Tower Shooter, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/bubble-barrage/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-rooftop-riot",
+      "title": "Rooftop Riot",
+      "license": "Original Ash-Fall implementation; no upstream source or assets copied",
+      "notes": "Original local game with its own implementation and assets. It is a genre-inspired alternative to Parkour, not an upstream import or a feature-equivalent replacement.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/rooftop-riot/index.html"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-10-25"
