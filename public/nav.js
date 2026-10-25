@@ -34,7 +34,7 @@
       <details class="kf-nav-group kf-profile-group">
         <summary>My Profile <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu kf-profile-menu">
-          <a class="kf-profile-link" href="/die-ary.html">Die-ary</a>
+          <a href="/die-ary.html">Die-ary</a>
           <a class="kf-members-link" href="/members.html">Members</a>
           <a href="/messages.html">Messages</a>
           <a href="/friends.html">Friends</a>
