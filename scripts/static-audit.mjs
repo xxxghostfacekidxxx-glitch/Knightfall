@@ -159,7 +159,8 @@ for (const entry of manifestEntries) {
 const marksman = await readFile(path.join(publicDir, "arcade/hosted/marshland-marksman/index.html"), "utf8");
 if (!marksman.includes("cabinet-marshland-marksman") || !marksman.includes("recordScore")) fail("Marshland Marksman is missing account leaderboard integration.");
 if (!worker.includes('"cabinet-marshland-marksman"') || !worker.includes('"cabinet-marshland-marksman":1000')) fail("Marshland Marksman is not allowlisted with a bounded score cap.");
-if (!catalog.includes('href="/arcade/hosted/marshland-marksman/index.html"')) fail("Marshland Marksman is missing from the arcade catalog.");
+const openSourceCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+if (!openSourceCatalog.includes('href="/arcade/hosted/marshland-marksman/index.html"')) fail("Marshland Marksman is missing from the arcade catalog.");
 ok("Arcade manifest paths, provenance records, and Marshland Marksman account integration checked.");
 
 const apiCandidates = new Set();
