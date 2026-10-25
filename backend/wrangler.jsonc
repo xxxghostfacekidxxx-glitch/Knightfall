@@ -40,6 +40,10 @@
     {
       "binding": "MESSAGE_ATTACHMENTS",
       "bucket_name": "knightfall-message-attachments"
+    },
+    {
+      "binding": "PROFILE_MEDIA",
+      "bucket_name": "knightfall-profile-media"
     }
   ]
 }
