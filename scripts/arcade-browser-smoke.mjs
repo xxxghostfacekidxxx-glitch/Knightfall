@@ -146,12 +146,25 @@ try {
     for (const route of routes) {
       const errors = [];
       const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
-      page.on("pageerror", error => errors.push(error.message));
+      page.on("pageerror", error => errors.push(error.stack || error.message));
+      if (route.includes("/hextris/")) {
+        await page.addInitScript(() => {
+          window.__routeErrorDetails = [];
+          window.addEventListener("error", event => window.__routeErrorDetails.push({
+            message: event.message, filename: event.filename, lineno: event.lineno, colno: event.colno,
+            stack: event.error && event.error.stack
+          }));
+        });
+      }
       try {
         const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 20000 });
         if (!response || response.status() !== 200) routeFailures.push(`${route}: HTTP ${response?.status() ?? "no response"}`);
         else if (!(await page.title()).trim()) routeFailures.push(`${route}: missing document title`);
         await page.waitForTimeout(100);
+        if (route.includes("/hextris/")) {
+          const details = await page.evaluate(() => window.__routeErrorDetails || []);
+          if (details.length) routeFailures.push(`${route}: error details ${JSON.stringify(details)}`);
+        }
         if (errors.length) routeFailures.push(`${route}: ${errors.join(" | ")}`);
       } catch (error) {
         routeFailures.push(`${route}: ${error.message}`);
