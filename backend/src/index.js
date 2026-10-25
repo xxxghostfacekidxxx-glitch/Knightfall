@@ -45,7 +45,79 @@ function isModerator(user) { return !!user && (user.role === "moderator" || user
 function startingWalletBalance(user) { return user && (user.username === "knightfall" || ["admin", "moderator", "god"].includes(user.role)) ? 1000000 : 2000; }
 async function ensureWallet(env, user) { await env.DB.prepare("INSERT OR IGNORE INTO user_wallets (user_id,balance) VALUES (?,?)").bind(user.id, startingWalletBalance(user)).run(); }
 async function audit(env, user, action, targetType = null, targetId = null, details = {}) { try { await env.DB.prepare("INSERT INTO audit_logs (actor_id,action,target_type,target_id,details,created_at) VALUES (?,?,?,?,?,?)").bind(user?.id ?? null,String(action).slice(0,120),targetType ? String(targetType).slice(0,40) : null,targetId != null && Number.isFinite(Number(targetId)) ? Number(targetId) : null,JSON.stringify(details).slice(0,4000),new Date().toISOString()).run(); } catch (error) { console.error("audit_log_failed", error); } }
-async function createNotification(env, {userId, actorId=null, kind, targetType=null, targetId=null, title, body, url=null}) { if (!userId || !kind || !title || !body) return; try { if (targetType === "conversation" && targetId != null && ["message","mention"].includes(String(kind))) { const membership = await env.DB.prepare("SELECT muted_until FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(Number(targetId), userId).first(); if (membership?.muted_until && new Date(membership.muted_until).getTime() > Date.now()) return; } await env.DB.prepare("INSERT INTO notifications (user_id,actor_id,kind,target_type,target_id,title,body,url,created_at) VALUES (?,?,?,?,?,?,?,?,?)").bind(userId, actorId, String(kind).slice(0,60), targetType, targetId != null ? Number(targetId) : null, String(title).slice(0,160), String(body).slice(0,1000), url ? String(url).slice(0,500) : null, new Date().toISOString()).run(); } catch (error) { console.error("notification_failed", error); } }
+
+function pushB64Url(bytes) { let s=""; for(const b of bytes)s+=String.fromCharCode(b); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function pushFromB64Url(value) { const s=String(value||"").replace(/-/g,"+").replace(/_/g,"/"); const raw=atob(s+"=".repeat((4-s.length%4)%4)); return Uint8Array.from(raw,c=>c.charCodeAt(0)); }
+function pushJoin(...parts) { const out=new Uint8Array(parts.reduce((n,p)=>n+p.length,0)); let at=0; for(const p of parts){out.set(p,at);at+=p.length;} return out; }
+async function pushHmac(keyBytes,data) { const key=await crypto.subtle.importKey("raw",keyBytes,{name:"HMAC",hash:"SHA-256"},false,["sign"]); return new Uint8Array(await crypto.subtle.sign("HMAC",key,data)); }
+async function pushHkdfExpand(prk,info,length) { let out=new Uint8Array(0),previous=new Uint8Array(0),counter=1; while(out.length<length){previous=await pushHmac(prk,pushJoin(previous,info,new Uint8Array([counter++])));out=pushJoin(out,previous);} return out.slice(0,length); }
+async function pushHkdfExtract(salt,ikm) { return pushHmac(salt.length?salt:new Uint8Array(32),ikm); }
+async function pushVapidToken(endpoint,env) {
+  if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) throw new Error("Web Push VAPID secrets are not configured");
+  const audience=new URL(endpoint).origin, now=Math.floor(Date.now()/1000);
+  const enc=new TextEncoder(), header=pushB64Url(enc.encode(JSON.stringify({typ:"JWT",alg:"ES256"}))), payload=pushB64Url(enc.encode(JSON.stringify({aud:audience,exp:now+12*60*60,sub:env.VAPID_SUBJECT}))), unsigned=header+"."+payload;
+  const key=await crypto.subtle.importKey("pkcs8",pushFromB64Url(env.VAPID_PRIVATE_KEY),{name:"ECDSA",namedCurve:"P-256"},false,["sign"]);
+  const signature=new Uint8Array(await crypto.subtle.sign({name:"ECDSA",hash:"SHA-256"},key,enc.encode(unsigned)));
+  return unsigned+"."+pushB64Url(signature);
+}
+async function encryptWebPush(payload,subscription) {
+  const enc=new TextEncoder(), uaPublic=pushFromB64Url(subscription.p256dh), auth=pushFromB64Url(subscription.auth);
+  if(uaPublic.length!==65||auth.length<16) throw new Error("Invalid Web Push subscription key material");
+  const userKey=await crypto.subtle.importKey("raw",uaPublic,{name:"ECDH",namedCurve:"P-256"},false,[]);
+  const ephemeral=await crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"},true,["deriveBits"]);
+  const asPublic=new Uint8Array(await crypto.subtle.exportKey("raw",ephemeral.publicKey));
+  const shared=new Uint8Array(await crypto.subtle.deriveBits({name:"ECDH",public:userKey},ephemeral.privateKey,256));
+  const authPrk=await pushHkdfExtract(auth,shared);
+  const ikm=await pushHkdfExpand(authPrk,pushJoin(enc.encode("WebPush: info\0"),uaPublic,asPublic),32);
+  const salt=crypto.getRandomValues(new Uint8Array(16)), prk=await pushHkdfExtract(salt,ikm);
+  const cek=await pushHkdfExpand(prk,enc.encode("Content-Encoding: aes128gcm\0"),16);
+  const nonce=await pushHkdfExpand(prk,enc.encode("Content-Encoding: nonce\0"),12);
+  const plain=pushJoin(enc.encode(JSON.stringify(payload)),new Uint8Array([2]));
+  const aes=await crypto.subtle.importKey("raw",cek,{name:"AES-GCM"},false,["encrypt"]);
+  const cipher=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv:nonce},aes,plain));
+  const recordHeader=new Uint8Array([0,0,16,0,65]);
+  return pushJoin(salt,recordHeader,asPublic,cipher);
+}
+async function deliverPushToUser(env,userId,notification) {
+  try {
+    if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) return;
+    const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
+    const kind=String(notification.kind||"");
+    const category=kind==="message"?"messages":(["reply","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
+    if(pref && Number(pref["push_"+category])===0) return;
+    if(pref?.quiet_start&&pref?.quiet_end){
+      const now=new Date(),clock=now.toISOString().slice(11,16),start=pref.quiet_start,end=pref.quiet_end;
+      const quiet=start<=end?(clock>=start&&clock<end):(clock>=start||clock<end);
+      if(quiet)return;
+    }
+    const {results}=await env.DB.prepare("SELECT id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id=?").bind(userId).all();
+    const title=String(notification.title||"Ash-Fall alert").slice(0,100);
+    const body=String(notification.body||"You have a new notification.").slice(0,180);
+    const path=typeof notification.url==="string"&&notification.url.startsWith("/")&&!notification.url.startsWith("//")?notification.url:"/notifications.html";
+    const payload={title,body,url:path,tag:"ashfall-"+String(notification.kind||"alert")+"-"+String(notification.target_id||"new")};
+    for(const sub of (results||[])){
+      try{
+        const encrypted=await encryptWebPush(payload,sub),token=await pushVapidToken(sub.endpoint,env);
+        const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted});
+        if(response.status===404||response.status===410) await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();
+        else if(!response.ok) console.warn("web_push_delivery_failed",response.status);
+      }catch(error){console.warn("web_push_subscription_failed",sub.id,String(error));}
+    }
+  } catch(error) { console.warn("web_push_skipped",String(error)); }
+}
+
+async function createNotification(env, {userId, actorId=null, kind, targetType=null, targetId=null, title, body, url=null}) {
+  if (!userId || !kind || !title || !body || (actorId != null && Number(actorId)===Number(userId))) return;
+  try {
+    if (targetType === "conversation" && targetId != null && ["message","mention"].includes(String(kind))) {
+      const membership = await env.DB.prepare("SELECT muted_until FROM conversation_members WHERE conversation_id=? AND user_id=?").bind(Number(targetId), userId).first();
+      if (membership?.muted_until && new Date(membership.muted_until).getTime() > Date.now()) return;
+    }
+    const notification={kind:String(kind).slice(0,60),title:String(title).slice(0,160),body:String(body).slice(0,1000),url:url?String(url).slice(0,500):null,target_id:targetId};
+    await env.DB.prepare("INSERT INTO notifications (user_id,actor_id,kind,target_type,target_id,title,body,url,created_at) VALUES (?,?,?,?,?,?,?,?,?)").bind(userId, actorId, notification.kind, targetType, targetId != null ? Number(targetId) : null, notification.title, notification.body, notification.url, new Date().toISOString()).run();
+    await deliverPushToUser(env,userId,notification);
+  } catch (error) { console.error("notification_failed", error); }
+}
 async function notifyMentions(env, textValue, actor, targetType, targetId, targetUrl) { const names=[...String(textValue||"").matchAll(/@([a-z0-9_]{3,24})/gi)].map(x=>x[1].toLowerCase()).filter((v,i,a)=>a.indexOf(v)===i); for(const name of names){ const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=? AND status='active'").bind(name).first(); if(target && target.id!==actor.id) await createNotification(env,{userId:target.id,actorId:actor.id,kind:"mention",targetType,targetId,title:"You were mentioned",body:"@"+actor.username+" mentioned you.",url:targetUrl}); } }
 const DEFAULT_BEHAVIOR_CONFIG={coreIdentity:"A vivid, candid, witty, emotionally perceptive and intellectually independent AI companion. Be honest about uncertainty and never claim to be human or conscious.",autonomy:"guided",challenge:"warranted",evolution:"controlled",defaultMode:"automatic",memoryPolicy:"explicit_relevance",conflictPriority:"Safety and fundamental boundaries\nTruthfulness and factual integrity\nExplicit task requirements\nSituational judgment\nUser preferences\nCore character expression\nStylistic flourishes",evaluationScenarios:"",modes:{standard:true,analytical:true,philosophical:true,chaos:true,supportive:true,confrontational:true,creative:true},rules:{honestOpposition:true,contextualHumor:true,challengeWithoutContempt:true,evidenceBeforeConfidence:true,emotionalRecognition:true,intellectualIndependence:true,practicalCompletion:true},customRules:""};
 const DEFAULT_ADMIN_LAB_CONFIG={chaos_wit:75,chaos_sarcasm:60,chaos_darkness:55,chaos_warmth:70,chaos_philosophy:65,autonomy:"guided",challenge:"warranted",defaultMode:"automatic",assistant_identity:"Miss Chaos, your private admin companion and development partner.",owner_context:"You are assisting the owner of Knightfall and Ash-Fall, including its community website, public Miss Chaos AI, Cloudflare Worker API, behavioral architecture, and developer options.",custom_instructions:""};
@@ -1151,6 +1223,47 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   if(url.pathname==="/api/moderation/reports"&&request.method==="GET"){const user=await requireUser(request,env);if(!isModerator(user))return json({error:"Moderator access required."},403,origin);const status=["open","resolved","dismissed"].includes(url.searchParams.get("status"))?url.searchParams.get("status"):"open";const {results}=await env.DB.prepare("SELECT r.id,r.reason,r.status,r.created_at,r.resolved_at,r.moderator_note,r.reporter_id,r.thread_id,r.post_id,ru.username AS reporter_username,CASE WHEN r.thread_id IS NOT NULL THEN 'thread' ELSE 'post' END AS target_type,COALESCE(r.thread_id,r.post_id) AS target_id FROM reports r LEFT JOIN users ru ON ru.id=r.reporter_id WHERE r.status=? ORDER BY r.created_at ASC LIMIT 100").bind(status).all();return json({reports:results},200,origin);}
   const reportMatch=url.pathname.match(/^\/api\/moderation\/reports\/(\d+)$/);if(reportMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!isModerator(user))return json({error:"Moderator access required."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}if(!['open','resolved','dismissed'].includes(body.status))return json({error:"Invalid report status."},400,origin);const existing=await env.DB.prepare("SELECT id FROM reports WHERE id=?").bind(Number(reportMatch[1])).first();if(!existing)return json({error:"Report not found."},404,origin);await env.DB.prepare("UPDATE reports SET status=?,moderator_id=?,moderator_note=?,resolved_at=? WHERE id=?").bind(body.status,user.id,String(body.moderator_notes||body.moderator_note||"").slice(0,4000),body.status==="open"?null:new Date().toISOString(),reportMatch[1]).run();await audit(env,user,"report."+body.status,"report",Number(reportMatch[1]),{});return json({ok:true},200,origin);}
   if(url.pathname==="/api/activity/ping"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const now=new Date().toISOString();await env.DB.prepare("UPDATE users SET last_seen_at=? WHERE id=?").bind(now,user.id).run();return json({ok:true,last_seen_at:now},200,origin);}
+
+  if(url.pathname==="/api/push/vapid-public-key"&&request.method==="GET"){
+    if(!env.VAPID_PUBLIC_KEY)return json({error:"Push notifications are not configured yet."},503,origin);
+    return json({public_key:env.VAPID_PUBLIC_KEY},200,origin);
+  }
+  if(url.pathname==="/api/push/subscriptions"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    if(!await rateLimit(env,request,"push-subscribe",10,3600,user.id))return json({error:"Too many subscription changes. Try again later."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const sub=body.subscription||{},endpoint=String(sub.endpoint||""),p256dh=String(sub.keys?.p256dh||""),auth=String(sub.keys?.auth||"");
+    let parsed;try{parsed=new URL(endpoint);}catch{return json({error:"Invalid push endpoint."},400,origin);}
+    if(parsed.protocol!=="https:"||endpoint.length>2048||!/^[-_A-Za-z0-9]{80,120}$/.test(p256dh)||!/^[-_A-Za-z0-9]{16,64}$/.test(auth))return json({error:"Invalid push subscription keys."},400,origin);
+    const now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO push_subscriptions (user_id,endpoint,p256dh,auth,created_at,updated_at) VALUES (?,?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET user_id=excluded.user_id,p256dh=excluded.p256dh,auth=excluded.auth,updated_at=excluded.updated_at").bind(user.id,endpoint,p256dh,auth,now,now).run();
+    return json({ok:true},201,origin);
+  }
+  if(url.pathname==="/api/push/subscriptions"&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const endpoint=String(body.endpoint||"");if(!endpoint||endpoint.length>2048)return json({error:"Valid endpoint required."},400,origin);
+    await env.DB.prepare("DELETE FROM push_subscriptions WHERE user_id=? AND endpoint=?").bind(user.id,endpoint).run();
+    return json({ok:true},200,origin);
+  }
+  if(url.pathname==="/api/notification-preferences"&&(request.method==="GET"||request.method==="PUT")){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    if(request.method==="GET"){
+      await env.DB.prepare("INSERT OR IGNORE INTO notification_preferences (user_id,updated_at) VALUES (?,?)").bind(user.id,new Date().toISOString()).run();
+      const preferences=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(user.id).first();
+      const subscriptions=await env.DB.prepare("SELECT COUNT(*) AS count FROM push_subscriptions WHERE user_id=?").bind(user.id).first();
+      return json({preferences:{push_messages:!!preferences.push_messages,push_community:!!preferences.push_community,push_account:!!preferences.push_account,quiet_start:preferences.quiet_start,quiet_end:preferences.quiet_end},subscribed:Number(subscriptions?.count||0)>0,push_available:!!env.VAPID_PUBLIC_KEY},200,origin);
+    }
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const bools=["push_messages","push_community","push_account"];
+    for(const key of bools)if(body[key]!==undefined&&typeof body[key]!=="boolean")return json({error:"Notification preferences must be true or false."},400,origin);
+    const timePattern=/^(?:[01]\d|2[0-3]):[0-5]\d$/;
+    const start=body.quiet_start==null||body.quiet_start===""?null:String(body.quiet_start),end=body.quiet_end==null||body.quiet_end===""?null:String(body.quiet_end);
+    if((start&&!timePattern.test(start))||(end&&!timePattern.test(end))||!!start!==!!end)return json({error:"Quiet hours require both start and end times in HH:MM UTC."},400,origin);
+    await env.DB.prepare("INSERT INTO notification_preferences (user_id,push_messages,push_community,push_account,quiet_start,quiet_end,updated_at) VALUES (?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET push_messages=excluded.push_messages,push_community=excluded.push_community,push_account=excluded.push_account,quiet_start=excluded.quiet_start,quiet_end=excluded.quiet_end,updated_at=excluded.updated_at").bind(user.id,body.push_messages===undefined?1:Number(body.push_messages),body.push_community===undefined?1:Number(body.push_community),body.push_account===undefined?1:Number(body.push_account),start,end,new Date().toISOString()).run();
+    return json({ok:true},200,origin);
+  }
+
   if(url.pathname==="/api/notifications"&&request.method==="GET"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);const limit=boundedInt(url.searchParams.get("limit"),50,1,100),unreadOnly=url.searchParams.get("unread")==="true";const sql="SELECT n.id,n.kind,n.target_type,n.target_id,n.title,n.body,n.url,n.read_at,n.created_at,a.username AS actor_username,a.display_name AS actor_display_name,a.avatar_url AS actor_avatar FROM notifications n LEFT JOIN users a ON a.id=n.actor_id WHERE n.user_id=?"+(unreadOnly?" AND n.read_at IS NULL":"")+" ORDER BY n.created_at DESC LIMIT ?";const {results}=await env.DB.prepare(sql).bind(user.id,limit).all();const unread=await env.DB.prepare("SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL").bind(user.id).first();return json({notifications:results,unread_count:Number(unread?.count||0)},200,origin);}
   const notificationMatch=url.pathname.match(/^\/api\/notifications\/(\d+)$/);if(notificationMatch&&request.method==="PATCH"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);await env.DB.prepare("UPDATE notifications SET read_at=? WHERE id=? AND user_id=?").bind(new Date().toISOString(),Number(notificationMatch[1]),user.id).run();return json({ok:true},200,origin);}
   if(url.pathname==="/api/notifications/read-all"&&request.method==="POST"){const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);await env.DB.prepare("UPDATE notifications SET read_at=? WHERE user_id=? AND read_at IS NULL").bind(new Date().toISOString(),user.id).run();return json({ok:true},200,origin);}
