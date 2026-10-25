@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  issues: write
 
 concurrency:
   group: arcade-test-bot-fleet-${{ github.ref }}
@@ -79,3 +81,68 @@ jobs:
             /tmp/arcade-live-results.log
           if-no-files-found: ignore
           retention-days: 14
+
+  report-failure:
+    name: Create or update repair ticket
+    if: always() && needs.browser-bot.result == 'failure'
+    needs: [browser-bot]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      issues: write
+    steps:
+      - name: Summarize failed bot jobs
+        id: summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          gh run view "$RUN_ID" --repo "$GH_REPO" --json url,headSha,jobs > /tmp/run.json
+          FAILED_BOTS=$(jq -r '[.jobs[] | select(.conclusion == "failure") | .name] | unique | join(", ")' /tmp/run.json)
+          RUN_URL=$(jq -r '.url' /tmp/run.json)
+          HEAD_SHA=$(jq -r '.headSha' /tmp/run.json)
+          {
+            echo "failed_bots=$FAILED_BOTS"
+            echo "run_url=$RUN_URL"
+            echo "head_sha=$HEAD_SHA"
+          } >> "$GITHUB_OUTPUT"
+      - name: Create repair ticket or update existing open ticket
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          FAILED_BOTS: ${{ steps.summary.outputs.failed_bots }}
+          RUN_URL: ${{ steps.summary.outputs.run_url }}
+          HEAD_SHA: ${{ steps.summary.outputs.head_sha }}
+        run: |
+          TITLE="[Arcade Test Fleet] Browser checks failed"
+          BODY=$(cat <<EOF
+          ## Automated arcade test failure
+
+          - **Failed agents:** ${FAILED_BOTS:-Unknown}
+          - **Commit:** ${HEAD_SHA}
+          - **Workflow evidence:** ${RUN_URL}
+
+          ## Repair protocol
+          - [ ] Download the failed agent's `arcade-test-results-*` artifact and identify the first actionable failure.
+          - [ ] Reproduce the failure locally; distinguish a game defect from a live-site/network/deployment issue.
+          - [ ] Create a dedicated fix branch and make the smallest targeted change.
+          - [ ] Add or update a regression check for the exact failure.
+          - [ ] Run the full arcade browser suite and relevant static/API checks.
+          - [ ] Open a pull request with root cause, changed files, test evidence, and rollback notes.
+          - [ ] Human reviewer approves and merges only after checks pass.
+
+          **Safety:** This ticket is diagnostic evidence, not permission to edit production automatically. The fleet never pushes a repair or merges a pull request on its own.
+
+          ---
+          Updated from workflow run: ${RUN_URL}
+          EOF
+          )
+          EXISTING=$(gh issue list --repo "$GH_REPO" --state open --search '"[Arcade Test Fleet] Browser checks failed" in:title' --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "$GH_REPO" --body "$BODY"
+            echo "Updated existing repair issue #$EXISTING"
+          else
+            gh issue create --repo "$GH_REPO" --title "$TITLE" --body "$BODY"
+          fi
