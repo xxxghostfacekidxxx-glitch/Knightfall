@@ -1,0 +1,57 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "knightfall-mmo-staging",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-05",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "knightfall-monster-staging",
+      "database_id": "6c72439f-2319-4f03-9bb6-711157d18963",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "id": "56931d38c9f64871b812867e422b771b"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "r2_buckets": [
+    {
+      "binding": "MESSAGE_ATTACHMENTS",
+      "bucket_name": "knightfall-mmo-staging-attachments"
+    },
+    {
+      "binding": "PUBLIC_ASSETS",
+      "bucket_name": "knightfall-mmo-staging-public-assets"
+    },
+    {
+      "binding": "VAULT",
+      "bucket_name": "knightfall-mmo-staging-vault"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MONSTER_WORLD",
+        "class_name": "MonsterWorldRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-monster-world",
+      "new_sqlite_classes": [
+        "MonsterWorldRoom"
+      ]
+    }
+  ]
+}
