@@ -334,6 +334,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Rusty Sky, Blockfall, and Endless Runner.
+  const runnerRestoreCases = [
+    {name:"Rusty Sky",path:"/arcade/hosted/rusty-sky/index.html",gameId:"cabinet-rusty-sky",data:{serialized:{targets:[{x:300,y:210,vx:30,vy:2,size:24,phase:1,color:"#45d9ff",kind:"bird"}],score:60,best:90,ammo:4,time:18,round:2,spawnDelay:400}},check:()=>document.querySelector("#score")?.textContent==="60"&&document.querySelector("#ammo")?.textContent==="4"&&document.querySelector("#overlay")?.hidden===true},
+    {name:"Blockfall",path:"/arcade/hosted/blockfall/index.html",gameId:"cabinet-blockfall",data:{serialized:{board:Array.from({length:20},()=>Array(10).fill(0)),currentPiece:{type:"T",rotation:0,x:3,y:4},nextPiece:{type:"I",rotation:0,x:3,y:-1},isPaused:false,started:true,score:240,linesCleared:4,level:1,dropInterval:800,isWin:false,elapsedSinceDrop:100}},check:()=>document.querySelector("#score-val")?.textContent==="240"&&document.querySelector("#lines-val")?.textContent==="4"&&document.querySelector("#status-banner")?.style.display==="none"},
+    {name:"Endless Runner",path:"/arcade/hosted/endless-runner/index.html",gameId:"cabinet-endless-runner",data:{serialized:{player:{x:75,y:400,vy:0,w:30,h:38},obs:[{x:320,y:505,w:30,h:35}],score:123,speed:432,spawn:0.8,ground:530}},check:()=>Number(document.querySelector("#score")?.textContent)>=123&&document.querySelector("#state")?.textContent==="Cloud save restored."}
+  ];
+  for(const testCase of runnerRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
+    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
