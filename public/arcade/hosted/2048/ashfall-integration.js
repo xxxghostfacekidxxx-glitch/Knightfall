@@ -64,6 +64,7 @@
       }
     }
 
+    if (window.AshFallArcade?.ready) await window.AshFallArcade.ready;
     if (window.AshFallArcade?.user) {
       try {
         const cloud = await window.AshFallArcade.loadProgress(GAME_KEY);
