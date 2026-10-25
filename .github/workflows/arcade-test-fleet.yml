@@ -1,0 +1,77 @@
+name: Arcade Test Bot Fleet
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "public/arcade/**"
+      - "scripts/arcade-browser-smoke.mjs"
+      - ".github/workflows/arcade-test-fleet.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arcade-test-bot-fleet-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  browser-bot:
+    name: "${{ matrix.bot }} · full arcade audit"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        bot:
+          - Ash Sentinel
+          - Cinder Scout
+          - Rook Runner
+          - Maze Warden
+          - Tower Keeper
+          - Rally Hound
+          - Kaiju Watch
+          - Pixel Medic
+          - Savekeeper
+          - Cabinet Auditor
+    steps:
+      - name: Checkout Knightfall
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local static site
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/knightfall-static.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/chaos-cartridge.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/knightfall-static.log
+          exit 1
+      - name: Run full local arcade browser suite
+        env:
+          ARCADE_TEST_BASE: http://127.0.0.1:8765
+        run: node scripts/arcade-browser-smoke.mjs
+      - name: Run full live-site arcade browser suite
+        env:
+          ARCADE_TEST_BASE: https://ash-fall.com
+        run: node scripts/arcade-browser-smoke.mjs
+      - name: Save per-bot test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-test-results-${{ strategy.job-index }}-${{ matrix.bot }}
+          path: |
+            /tmp/knightfall-static.log
+          if-no-files-found: ignore
+          retention-days: 14
