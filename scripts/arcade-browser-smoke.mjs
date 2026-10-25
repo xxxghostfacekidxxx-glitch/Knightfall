@@ -126,6 +126,29 @@ try {
     }
   }
 
+  // Use real touch taps on the shared engine to catch mouse-only controls on phones.
+  for (const id of sharedCabinetIds) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=" + encodeURIComponent(id), { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap({ timeout: 3000 });
+      await page.locator("#game").tap({ position: { x: 180, y: 140 }, timeout: 3000 });
+      await page.waitForTimeout(100);
+      const state = await page.locator("#game-state").innerText();
+      if (!/running/i.test(state)) throw new Error("touch start did not enter running state: " + state);
+      if (errors.length) throw new Error("touch interaction exception: " + errors.join(" | "));
+      console.log("PASS touch controls: " + id);
+    } catch (error) {
+      console.error("FAIL touch controls: " + id + ": " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   for (const game of games) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
@@ -217,8 +240,14 @@ try {
     const reportHref = await bridgePage.locator(".af-report").getAttribute("href");
     const reportUrl = new URL(reportHref);
     const reportBody = reportUrl.searchParams.get("body") || "";
-    if (!reportUrl.searchParams.get("title")?.includes("Hexa Havoc") || !reportBody.includes("/arcade/hosted/hexa-havoc/index.html") || !reportBody.includes("Steps to reproduce:") || !reportBody.includes("Device/browser")) {
-      console.error("FAIL account bridge: issue report is missing game/page/reproduction context");
+    const reportChecks = {
+      title: Boolean(reportUrl.searchParams.get("title")?.includes("Hexa Havoc")),
+      page: reportBody.includes("/arcade/hosted/hexa-havoc/index.html"),
+      reproduction: reportBody.includes("Steps to reproduce:"),
+      device: reportBody.includes("Device/browser")
+    };
+    if (Object.values(reportChecks).some(ok => !ok)) {
+      console.error("FAIL account bridge: issue report context checks " + JSON.stringify(reportChecks) + " | linkPath=" + reportUrl.pathname);
       failed = true;
     } else {
       console.log("PASS account bridge: issue report includes game, page, reproduction prompts, and browser context");
@@ -489,7 +518,8 @@ try {
     for (const game of bridgeEntries) {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
       try {
-        const response = await page.goto(base + game.path, { waitUntil: "domcontentloaded", timeout: 20000 });
+        const response = await page.goto(base + game.path, { waitUntil: "commit", timeout: 8000 });
+      await page.waitForLoadState("domcontentloaded", { timeout: 1500 }).catch(() => {});
         if (!response || response.status() !== 200) manifestProblems.push(game.gameId + ": page not reachable");
         const script = page.locator('script[src*="arcade-account-bridge.js"]').first();
         if (await script.count() !== 1) manifestProblems.push(game.gameId + ": expected exactly one account bridge script");
