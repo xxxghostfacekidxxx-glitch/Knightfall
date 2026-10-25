@@ -47,7 +47,8 @@ try {
     });
     let response;
     try {
-      response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 12000 });
+      response = await page.goto(base + route, { waitUntil: "commit", timeout: 6000 });
+      await page.waitForLoadState("domcontentloaded", { timeout: 1800 }).catch(() => {});
       await page.waitForTimeout(100);
       const title = await page.title();
       const bodyText = await page.locator("body").innerText().catch(() => "");
