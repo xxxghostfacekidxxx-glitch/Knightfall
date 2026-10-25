@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Sixty-four entries launch locally; one remaining candidate still needs an individually adapted local game or an explicit, documented reuse of a Knightfall-original cabinet. Remaining work must be tested before it is described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. All sixty-five entries now point to locally hosted Knightfall games or cabinets; several entries intentionally reuse Knightfall-original cabinets. Continue auditing distinct engines, dependency provenance, gameplay quality, and account-save integration.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
@@ -1115,6 +1115,29 @@
       "limitations": [
         "single-player only; no networking or shared world",
         "campaign state is session-local",
+        "no account save or server leaderboard integration"
+      ]
+    },
+    {
+      "id": "neon-vector",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/BKcore/HexGL",
+      "reviewedPath": "conceptual futuristic-racing reference only; no upstream code/assets copied",
+      "reason": "Created an original pseudo-3D highway racer with perspective road rendering, three-lane traffic avoidance, acceleration, braking, boost, distance tracking, and local best distance. Replaces the HexGL queue entry without importing upstream source, models, vehicle art, or track assets.",
+      "assets": "Original canvas-drawn perspective highway, scenery, traffic, and vehicle; no upstream code, models, textures, audio, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas",
+        "localStorage"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "pseudo-3D rendering rather than full WebGL",
+        "best distance stored locally only",
         "no account save or server leaderboard integration"
       ]
     }
