@@ -126,6 +126,33 @@ try {
     }
   }
 
+  // Regression: the Freeciv-inspired territory cabinet must have a reachable victory condition.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=freeciv-web", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap();
+      for (let i = 0; i < 20; i++) {
+        const col = i % 10, row = Math.floor(i / 10);
+        await page.locator("#game").tap({ position: { x: 200 + col * 48 + 20, y: 130 + row * 48 + 20 } });
+        const state = await page.locator("#game-state").innerText();
+        if (/Territory won/i.test(state)) break;
+      }
+      const state = await page.locator("#game-state").innerText();
+      if (!/Territory won/i.test(state)) throw new Error("20 claimed tiles did not trigger victory: " + state);
+      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
+      console.log("PASS Freeciv-inspired cabinet territory victory condition");
+    } catch (error) {
+      console.error("FAIL Freeciv-inspired cabinet victory: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   // Regression: Particle Clicker upgrade buttons must be actionable without pixel-hunting on the canvas.
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
