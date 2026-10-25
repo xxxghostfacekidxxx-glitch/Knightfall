@@ -472,6 +472,10 @@ try {
             if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html") || !links.includes("/arcade/arcade-license-guide.html")) {
               routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade or license navigation links`);
             }
+            const reportLink = nav.locator('a[href*="github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new"]');
+            if (!(await reportLink.count()) || (await reportLink.first().textContent()).trim() !== "Report issue") {
+              routeFailures.push(`${route}: Ash-Fall navigation is missing its direct game issue-report link`);
+            }
           }
         }
         if (route.includes("/hextris/")) {
