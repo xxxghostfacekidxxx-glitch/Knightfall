@@ -1,6 +1,21 @@
 import { chromium } from "playwright";
+import { readdir } from "node:fs/promises";
+import path from "node:path";
 
 const base = process.env.ARCADE_TEST_BASE || "http://127.0.0.1:8765";
+const hostedRoot = path.resolve("public/arcade/hosted");
+
+async function listHostedHtml(dir = hostedRoot) {
+  const routes = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) routes.push(...await listHostedHtml(full));
+    else if (entry.isFile() && entry.name.endsWith(".html")) {
+      routes.push("/" + path.relative("public", full).split(path.sep).join("/"));
+    }
+  }
+  return routes;
+}
 const games = [
   { name: "Marshland Marksman", path: "/arcade/hosted/marshland-marksman/index.html", start: "#start", pause: false },
   { name: "Cinder Crossing", path: "/arcade/hosted/cinder-crossing/index.html", start: "#start", pause: true },
@@ -140,7 +155,8 @@ try {
     } else {
       mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
     }
-    const routes = [...new Set([...catalogRoutes, ...mainRoutes])];
+    const localHostedRoutes = await listHostedHtml();
+    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes])];
     console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
     for (const route of routes) {
