@@ -70,6 +70,62 @@
       "path": "/arcade/hosted/prism-panic/index.html",
       "scoreSelector": "#moves",
       "scoreMode": "moves"
+    },
+    {
+      "gameId": "cabinet-neon-vector",
+      "title": "Neon Vector",
+      "path": "/arcade/hosted/neon-vector/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-cinder-circuit",
+      "title": "Cinder Circuit",
+      "path": "/arcade/hosted/cinder-circuit/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-hexforge-command",
+      "title": "Hexforge Command",
+      "path": "/arcade/hosted/hexforge-command/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-neon-mahjong",
+      "title": "Neon Mahjong",
+      "path": "/arcade/hosted/neon-mahjong/index.html",
+      "scoreSelector": "#moves",
+      "scoreMode": "moves"
+    },
+    {
+      "gameId": "cabinet-ruinwalkers",
+      "title": "Ruinwalkers",
+      "path": "/arcade/hosted/ruinwalkers/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-burrow-blitz",
+      "title": "Burrow Blitz",
+      "path": "/arcade/hosted/burrow-blitz/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-blockfall",
+      "title": "Blockfall",
+      "path": "/arcade/hosted/blockfall/index.html",
+      "scoreSelector": "#score-val",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-rusty-sky",
+      "title": "Rusty Sky",
+      "path": "/arcade/hosted/rusty-sky/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
     }
   ]
 }
