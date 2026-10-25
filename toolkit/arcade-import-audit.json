@@ -868,6 +868,29 @@
         "local high score only",
         "no account save or server leaderboard integration"
       ]
+    },
+    {
+      "id": "rooftop-riot",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "conceptual platformer reference only; no upstream code/assets copied",
+      "reason": "Created an original side-scrolling rooftop platformer with procedural platforms, jump physics, collectible shards, camera scrolling, falls, extraction goal, keyboard and touch controls. Replaces the Parkour queue entry without importing upstream code or art.",
+      "assets": "Original canvas-drawn skyline, rooftop platforms, player, and collectibles; no upstream code, sprites, audio, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas",
+        "localStorage"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "single procedural course per run",
+        "best distance stored locally only",
+        "no account save or server leaderboard integration"
+      ]
     }
   ]
 }
