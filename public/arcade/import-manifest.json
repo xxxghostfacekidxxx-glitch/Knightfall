@@ -139,6 +139,19 @@
         "/arcade/hosted/minesweeper/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream first-click-safe Minesweeper; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced best-time keys, and submits bounded scores for successful clears."
+    },
+    {
+      "gameId": "cabinet-memory-match",
+      "title": "Memory Match",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/memory-match/index.html",
+        "/arcade/hosted/memory-match/LICENSE.txt",
+        "/arcade/hosted/memory-match/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream single-file card matching game with three difficulty levels; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced local best results, and submits bounded scores to the account leaderboard."
     }
   ],
   "notYetImported": [
