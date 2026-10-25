@@ -18,14 +18,16 @@
     },
     {
       "id": "hextris",
-      "name": "Hextris",
+      "name": "Hexa Havoc",
       "category": "Puzzle",
-      "description": "Fast, rotating hexagon block-matching.",
-      "playUrl": "https://hextris.io/",
+      "description": "Rotate and drop color clusters in a fast hex-grid puzzle built for Knightfall.",
+      "playUrl": "/arcade/hosted/hexa-havoc/index.html",
       "repository": "https://github.com/Hextris/hextris",
-      "license": "GPL-3.0",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/hextris/",
+      "integrationNote": "Native original replacement; no upstream code or assets copied. Browser-local best score only."
     },
     {
       "id": "a-dark-room",
@@ -110,14 +112,16 @@
     },
     {
       "id": "particle-clicker",
-      "name": "Particle Clicker",
+      "name": "Particle Panic",
       "category": "Idle",
-      "description": "Build a particle-physics lab, one click at a time.",
-      "playUrl": "https://particle-clicker.web.cern.ch/",
+      "description": "Fund a chaotic research lab, unlock upgrades, and let your experiments run wild.",
+      "playUrl": "/arcade/hosted/particle-panic/index.html",
       "repository": "https://github.com/particle-clicker/particle-clicker",
-      "license": "Verify upstream",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/particle-clicker/",
+      "integrationNote": "Native original incremental research game; no upstream code or assets copied. Browser-local progress only."
     },
     {
       "id": "freeciv-web",
