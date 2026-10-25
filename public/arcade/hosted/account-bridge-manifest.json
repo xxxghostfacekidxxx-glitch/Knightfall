@@ -75,7 +75,7 @@
       "gameId": "cabinet-neon-vector",
       "title": "Neon Vector",
       "path": "/arcade/hosted/neon-vector/index.html",
-      "scoreSelector": "#best",
+      "scoreSelector": "#distance",
       "scoreMode": "score"
     },
     {
