@@ -11,6 +11,7 @@ on:
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
       - 'scripts/static-audit.mjs'
+      - 'scripts/arcade-browser-smoke.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
   workflow_run:
