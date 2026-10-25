@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-nine entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. Sixty entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
@@ -1004,6 +1004,29 @@
       "limitations": [
         "top-down arena combat rather than city destruction",
         "best score stored locally only",
+        "no account save or server leaderboard integration"
+      ]
+    },
+    {
+      "id": "hexforge-command",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/openpanzer/OpenPanzer",
+      "reviewedPath": "conceptual hex-tactics reference only; no upstream code/assets copied",
+      "reason": "Created an original turn-based hex tactics game with three friendly units, enemy AI, terrain obstacles, movement range, adjacent attacks, health, and a three-mission campaign. Replaces the Open Panzer queue entry without importing upstream source, unit art, or maps.",
+      "assets": "Original canvas-drawn hex board, abstract units, terrain, and health bars; no upstream code, sprites, audio, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas",
+        "localStorage"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "small three-mission skirmish campaign",
+        "best mission stored locally only",
         "no account save or server leaderboard integration"
       ]
     }
