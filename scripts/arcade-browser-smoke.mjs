@@ -156,6 +156,52 @@ try {
     }
   }
 
+  // Verify the maze is traversable and the territory game has a live rival.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=pac-man", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("maze HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap();
+      for (let i = 0; i < 21; i++) await page.keyboard.press("ArrowRight");
+      for (let i = 0; i < 12; i++) await page.keyboard.press("ArrowDown");
+      const state = await page.locator("#game-state").innerText();
+      const score = Number(await page.locator("#score").innerText());
+      if (!/maze escaped/i.test(state) || score < 100) throw new Error("maze exit was not reachable: " + state + " / score " + score);
+      if (errors.length) throw new Error(errors.join(" | "));
+      console.log("PASS maze gameplay: exit reached with keyboard controls");
+    } catch (error) {
+      console.error("FAIL maze gameplay: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=freeciv-web", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("strategy HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap();
+      await page.locator("#game").tap({ position: { x: 180, y: 140 } });
+      if (Number(await page.locator("#score").innerText()) < 10) throw new Error("player territory tap did not score");
+      await page.waitForTimeout(1700);
+      const state = await page.locator("#game-state").innerText();
+      if (!/rival claimed territory/i.test(state)) throw new Error("rival did not take a territory turn: " + state);
+      if (errors.length) throw new Error(errors.join(" | "));
+      console.log("PASS strategy gameplay: player claims territory and rival responds");
+    } catch (error) {
+      console.error("FAIL strategy gameplay: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   for (const game of games) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
