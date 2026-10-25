@@ -290,7 +290,7 @@ for (const entry of accountBridgeManifest.games) {
   if (!worker.includes('"' + entry.gameId + '"') || !worker.includes('"' + entry.gameId + '":')) fail("Account bridge game is not allowlisted with a score cap: " + entry.gameId);
 }
 if (!accountBridgeSource.includes("recordScore") || !accountBridgeSource.includes("loadProgress") || !accountBridgeSource.includes("async function autosave") || !accountBridgeSource.includes("15000")) fail("Shared arcade account bridge is missing cloud score/progress support or periodic checkpoint saves.");
-if (!accountBridgeSource.includes("/arcade/arcade-license-guide.html")) fail("Shared arcade navigation is missing the source and license guide.");
+if (!accountBridgeSource.includes("/arcade/arcade-license-guide.html") || !accountBridgeSource.includes("Report issue") || !accountBridgeSource.includes("issues/new")) fail("Shared arcade navigation is missing the source guide or direct game issue reporting.");
 const licenseGuide = await readFile(path.join(publicDir, "arcade/arcade-license-guide.html"), "utf8");
 if (!licenseGuide.includes("/arcade/import-manifest.json") || !licenseGuide.includes("ashFallOriginalBuilds") || !licenseGuide.includes("notYetImported") || !licenseGuide.includes("item.candidate") || !licenseGuide.includes("manifest-search")) fail("Arcade source and license guide does not render searchable source, original-build, and pending-candidate records.");
 const importManifest = JSON.parse(await readFile(path.join(publicDir, "arcade/import-manifest.json"), "utf8"));
