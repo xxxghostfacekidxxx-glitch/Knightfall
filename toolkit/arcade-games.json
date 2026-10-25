@@ -453,13 +453,13 @@
     },
     {
       "id": "bubble-shooter",
-      "name": "Bubble Shooter",
+      "name": "Bubble Barrage",
       "category": "Casual",
-      "description": "Aim, match colors, and clear bubble clusters.",
-      "playUrl": "https://sausi-7.github.io/games/games/casual/bubble-shooter/index.html",
+      "description": "Match neon orbs and clear the reactor ceiling in an original Knightfall puzzle cabinet.",
+      "playUrl": "/arcade/hosted/bubble-barrage/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
       "sourcePath": "games/casual/bubble-shooter/index.html"
     },
