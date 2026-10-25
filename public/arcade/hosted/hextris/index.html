@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui"/>
 		<link rel="stylesheet" href="style/style.css">
 		<script src="vendor-bundle.js"></script>
+		<script src="jquery.min.js"></script>
 		
 	</head>
 	<body>
@@ -77,7 +78,26 @@
             note(result && result.saved ? "Score sent to the account leaderboard." : "Sign in to submit scores.", Boolean(result && result.saved));
           } catch (e) { note(e.message || "Score submission failed.", false); }
         });
-        if (window.AshFallArcade && window.AshFallArcade.ready) window.AshFallArcade.ready.then(async () => {
+          let autoSubmittedScore = null;
+        const gameOverScreen = $("gameoverscreen");
+        const submitCompletedRun = async () => {
+          const style = getComputedStyle(gameOverScreen);
+          if (style.display === "none" || style.visibility === "hidden") return;
+          const score = Math.max(0, Number(window.score) || 0);
+          if (score <= 0 || autoSubmittedScore === score) return;
+          autoSubmittedScore = score;
+          try {
+            await window.AshFallArcade.ready;
+            if (!window.AshFallArcade.user) { note("Sign in to sync completed runs.", false); return; }
+            const result = await window.AshFallArcade.recordScore(gameKey, score, { score, serialized: exportSaveState(), source: "automatic-game-over" });
+            note(result && result.saved ? "Game-over score saved to your account leaderboard." : "Run ended; account score sync did not complete.", Boolean(result && result.saved));
+          } catch (e) { note(e.message || "Automatic score submission failed.", false); }
+        };
+        new MutationObserver(submitCompletedRun).observe(gameOverScreen, { attributes: true, childList: true, subtree: true });
+        document.addEventListener("click", event => {
+          if (event.target && event.target.closest && event.target.closest("#startBtn,#restart,#restartBtn")) autoSubmittedScore = null;
+        });
+      if (window.AshFallArcade && window.AshFallArcade.ready) window.AshFallArcade.ready.then(async () => {
           if (!window.AshFallArcade.user) return;
           try { const saved = await window.AshFallArcade.loadProgress(gameKey, "autosave"); if (saved && saved.serialized) note("Cloud save found. Tap Resume to load it."); } catch {}
         });
