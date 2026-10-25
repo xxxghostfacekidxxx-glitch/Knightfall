@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-title-key="lightsOut.docTitle">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Lights Out | Chaos Cartridge | Ash-Fall</title>
+<meta name="description" content="Play Lights Out free in your browser. Every tap flips a light and its four neighbours — switch them all off. Three board sizes, guaranteed solvable, unlimited undo, works on mobile and desktop.">
+<meta name="keywords" content="lights out,lights out puzzle,toggle puzzle,logic puzzle,grid puzzle,brain game,free online game,html5 game,browser game,mobile game,no install">
+<meta name="author" content="mashukui; adapted by Ash-Fall">
+<meta property="og:title" content="Lights Out — Free Online Lights Out Puzzle">
+<meta property="og:description" content="Tap a light to flip it and its neighbours. Switch every light off in as few moves as possible.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #101a2b 0%, #1e3550 55%, #2a2340 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    justify-content: safe center;
+    min-height: 100vh; min-height: 100svh; padding: 12px 12px 4px; user-select: none;
+  }
+  .panel {
+    position: relative;
+    --cs: 56px; --gap: 6px; --n: 5;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px; padding: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  }
+  .topbar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .stat {
+    flex: 1; background: rgba(255,255,255,.07); border-radius: 10px;
+    padding: 4px 8px; text-align: center; color: #fff; min-width: 0;
+  }
+  .stat small { display: block; font-size: 9px; font-weight: 700; letter-spacing: 1px; opacity: .55; white-space: nowrap; }
+  .stat span { font-size: 15px; font-weight: 800; letter-spacing: .5px; }
+  #mute-btn {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; padding: 0;
+    background: rgba(255,255,255,.07); border: none; color: #fff;
+    font-size: 17px; cursor: pointer;
+  }
+  .diffs { display: flex; gap: 8px; margin-bottom: 10px; }
+  .diff {
+    flex: 1; min-height: 44px; border-radius: 12px; border: none; cursor: pointer;
+    background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
+    font-family: inherit; font-size: 13px; font-weight: 800; letter-spacing: .5px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .diff.active { background: #ffd76e; color: #4a3400; }
+  /* 棋盘：格子尺寸走 CSS 变量由 fit() 算（不能按 3/5/7 硬分支），
+     数量变化时容器可滚动兜底，触控目标永不小于 40px。 */
+  .board-area { width: 100%; overflow: auto; border-radius: 12px; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(var(--n), var(--cs));
+    gap: var(--gap);
+    justify-content: center; align-content: center;
+    margin: 0 auto; width: max-content; min-width: 100%;
+    padding: 0;
+  }
+  .lo-cell {
+    width: var(--cs); height: var(--cs);
+    border: none; border-radius: 10px; padding: 0; display: block;
+    background: rgba(255,255,255,.09);
+    box-shadow: inset 0 3px 0 rgba(255,255,255,.10), inset 0 -3px 0 rgba(0,0,0,.30);
+    cursor: pointer;
+    transition: background .14s ease, box-shadow .14s ease, transform .07s ease;
+  }
+  .lo-cell.on {
+    background: #ffd76e;
+    box-shadow: 0 0 16px rgba(255,215,110,.65), inset 0 3px 0 rgba(255,255,255,.55), inset 0 -3px 0 rgba(170,105,0,.35);
+  }
+  .lo-cell:active { transform: scale(.93); }
+  .lo-cell.cursor { outline: 3px solid #6fd7ff; outline-offset: -3px; }
+  .actions { display: flex; gap: 8px; margin-top: 12px; }
+  .actions button {
+    flex: 1; min-height: 48px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; letter-spacing: .5px; font-family: inherit;
+    transition: transform .12s ease;
+  }
+  .actions button:active { transform: scale(.96); }
+  .actions button:disabled { opacity: .4; cursor: default; }
+  .btn-primary { background: #4a90ff; color: #fff; box-shadow: 0 4px 0 #2a63bd; }
+  .btn-ghost { background: rgba(255,255,255,.14); color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+  .overlay {
+    position: absolute; inset: 0; border-radius: 18px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; text-align: center; padding: 18px;
+    background: rgba(10, 20, 32, .86); backdrop-filter: blur(3px); color: #fff; z-index: 6;
+  }
+  .hidden { display: none !important; }
+  .over-title { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .over-sub { font-size: 13px; opacity: .78; line-height: 1.65; }
+  .stars { font-size: 30px; letter-spacing: 4px; }
+  .final-line { font-size: 15px; font-weight: 700; }
+  .new-record {
+    background: #ffd76e; color: #5a3e00; font-size: 12px; font-weight: 800;
+    padding: 4px 14px; border-radius: 999px; animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+  .over-btns { display: flex; gap: 8px; margin-top: 6px; width: 100%; }
+  .over-btns button {
+    flex: 1; min-height: 48px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 15px; font-weight: 800; font-family: inherit;
+  }
+  .icon-big { font-size: 40px; }
+  .footer {
+    margin-top: 10px; color: rgba(255,255,255,.5); font-size: 12px;
+    text-align: center; line-height: 1.9; max-width: 460px;
+  }
+  .footer a { color: rgba(255,255,255,.78); text-decoration: none; display: inline-block; min-width: 44px; min-height: 44px; line-height: 44px; }
+  .footer a:hover { color: #ffd76e; }
+  /* 手机横屏(视口高 ≤560px)纵向极紧：画布/棋盘放最左，顶栏、难度、操作键并到右侧一列。
+     挖掉的都是「非触控目标」的纵向空白，按钮尺寸一律不动。 */
+  @media (orientation: landscape) and (max-height: 560px) {
+    body { padding: 6px 8px 2px; }
+    /* 必须 nowrap：一旦允许换行，侧栏会掉到棋盘下面把面板顶高 11px 被裁。
+       棋盘 width:auto + flex:0 0 auto 不可缩，侧栏 flex:1 1 auto 吃掉剩余宽度，
+       内部各排按钮再自己换行，于是面板高度 = max(棋盘, 侧栏) 而不是两者之和。 */
+    .panel {
+      padding: 8px; display: flex; flex-wrap: nowrap; align-items: flex-start; gap: 6px;
+      justify-content: center;
+    }
+    .board-area { order: -1; flex: 0 0 auto; width: auto; margin: 0; }
+    .side { order: 0; flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+    .topbar { margin-bottom: 6px; }
+    .diffs { margin-bottom: 6px; flex-wrap: wrap; }
+    .actions { margin-top: 0; flex-wrap: wrap; }
+    .actions button { flex: 1 1 84px; min-height: 44px; }
+    .footer { max-width: none; line-height: 1.5; }
+    .stat { padding: 1px 6px; }
+    .stat small { font-size: 8px; }
+    .stat span { font-size: 13px; }
+    .diff { flex: 1 1 84px; min-height: 40px; font-size: 12px; }
+  }
+
+  /* Ash-Fall cabinet presentation */
+  body{background:radial-gradient(ellipse at 12% 0,#32152c 0,transparent 36%),radial-gradient(ellipse at 92% 12%,#14313b 0,transparent 34%),#08090e;color:#f5f7fb}
+  .panel,.game-panel{background:linear-gradient(155deg,#171a26f5,#0b0e17f7)!important;border-color:#ffffff24!important;box-shadow:0 18px 50px #0007}
+  .stat,.hud,.scoreboard{background:#ffffff0b!important;border-color:#ffffff18!important;color:#f5f7fb}
+  button,.btn-primary{background:#a8ff48!important;color:#11170a!important;border-color:#a8ff48!important}
+  button:disabled{opacity:.4}
+  .footer{color:#9ca7b8}.footer a{color:#ff5edb}.footer a:hover{color:#a8ff48}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+<script>
+/* Local English fallback; do not load upstream shared analytics. */
+window.WG = { onChange: function () {} };
+window.t = function (key, values) {
+  var messages = {
+    "common.bestLabel": "Best: {n} moves",
+    "common.copied": "Copied!",
+    "common.shareScore": "SHARE SCORE",
+    "lightsOut.first": "First puzzle. Turn every light off.",
+    "lightsOut.final": "{n} moves · Par: {m}",
+    "lightsOut.over": "PUZZLE SOLVED",
+    "lightsOut.share": "I solved Lights Out on Ash-Fall in {n} moves. Can you do better? {url}"
+  };
+  var text = messages[key] || key;
+  Object.keys(values || {}).forEach(function (name) {
+    text = text.replace(new RegExp("\\{" + name + "\\}", "g"), String(values[name]));
+  });
+  return text;
+};
+</script>
+</head>
+<body data-wg-home>
+
+<div class="panel" id="panel">
+  <div class="board-area" id="board-area">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="side" id="side">
+    <div class="topbar">
+      <div class="stat"><small data-i18n="lightsOut.hudMoves">MOVES</small><span id="hud-moves">0</span></div>
+      <div class="stat"><small data-i18n="lightsOut.hudBest">BEST</small><span id="hud-best">—</span></div>
+      <div class="stat"><small data-i18n="lightsOut.hudPar">PAR</small><span id="hud-par">—</span></div>
+      <button id="mute-btn" data-i18n-title="common.toggleSound" title="Toggle sound">🔊</button>
+    </div>
+
+    <div class="diffs" id="diffs">
+      <button class="diff" data-size="3" data-i18n="lightsOut.diffEasy">EASY</button>
+      <button class="diff" data-size="5" data-i18n="lightsOut.diffNormal">NORMAL</button>
+      <button class="diff" data-size="7" data-i18n="lightsOut.diffHard">HARD</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="btn-undo" data-i18n="lightsOut.undo">UNDO</button>
+      <button class="btn-ghost" id="btn-restart" data-i18n="lightsOut.restart">RESTART</button>
+      <button class="btn-ghost" id="btn-new" data-i18n="lightsOut.new">NEW</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="over-overlay">
+    <div class="stars" id="stars">★★★</div>
+    <div class="over-title" id="over-title"></div>
+    <div class="final-line" id="final-line"></div>
+    <div class="new-record hidden" id="new-record" data-i18n="common.newRecord">🏆 NEW RECORD!</div>
+    <div class="over-sub" id="over-best"></div>
+    <div class="over-btns">
+      <button class="btn-primary" id="btn-again" data-i18n="common.playAgain">PLAY AGAIN</button>
+      <button class="btn-ghost" id="btn-share2" data-i18n="common.shareScore">SHARE SCORE</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="start-overlay">
+    <div class="icon-big">💡</div>
+    <div class="over-title" data-i18n="lightsOut.title">LIGHTS OUT</div>
+    <div class="over-sub" data-i18n-html="lightsOut.tip">Tap a light: it flips <b>itself and its four neighbours</b>.<br>Switch every light off to win.<br>Every puzzle is generated backwards from a solved board, so it always has a solution.</div>
+    <div class="over-sub" id="start-best"></div>
+    <button class="btn-primary" id="btn-start" data-i18n="common.start" style="margin-top:6px;padding:12px 28px;">START</button>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="/chaos-cartridge.html">← Back to Chaos Cartridge</a>
+  <span> · Imported from <a href="https://github.com/mashukui/web-games" target="_blank" rel="noopener noreferrer">mashukui/web-games</a> under MIT.</span>
+</div>
+
+<script src="/arcade-save.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var LEVELS = { 3: { taps: 4 }, 5: { taps: 8 }, 7: { taps: 14 } };
+  var MIN_CS = 40, MAX_CS = 76;        // 触控目标下限 40px（mobile-probe 的判据就是这个数）
+  var CHROME_FALLBACK = 300;
+  var storeBase = 'lights_out_best_';
+
+  var panel = document.getElementById('panel');
+  var boardEl = document.getElementById('board');
+  var boardArea = document.getElementById('board-area');
+  var footerEl = document.querySelector('.footer');
+  var startOverlay = document.getElementById('start-overlay');
+  var overOverlay = document.getElementById('over-overlay');
+  var overTitleEl = document.getElementById('over-title');
+
+  var size = 5;
+  var grid = [];            // 长度 size*size，1 = 亮
+  var initial = [];         // 本局开局（RESTART 用）
+  var history = [];         // 撤销栈：每项是一份 grid 深拷贝
+  var moves = 0, solved = false, started = false, cursor = 0;
+  var endKey = null, endStats = null;
+  var best = {};            // { 3: n, 5: n, 7: n }
+  var parNow = 0;
+
+  // 探针会把 expose 注入到整页唯一的「IIFE 收尾锚点」之前，所以这里绝不能出现第二个顶层 IIFE。
+  // 一律用普通函数 + 调用。
+  function loadBest() {
+    for (var s in LEVELS) {
+      var v = 0;
+      try { v = parseInt(localStorage.getItem(storeBase + s + '_v1') || '0', 10) || 0; } catch (e) { v = 0; }
+      best[s] = v;
+    }
+    try {
+      var last = parseInt(localStorage.getItem('lights_out_size_v1') || '0', 10);
+      if (LEVELS[last]) size = last;
+    } catch (e) {}
+  }
+  loadBest();
+  function saveBest() {
+    try { localStorage.setItem(storeBase + size + '_v1', String(best[size] || 0)); } catch (e) {}
+  }
+  function saveSize() {
+    try { localStorage.setItem('ashfall_lights_out_size_v1', String(size)); } catch (e) {}
+  }
+
+  // ===== 音效 =====
+  var audioCtx = null, muted = false;
+  function beep(freq, dur, type, vol) {
+    if (muted) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.12, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch (e) {}
+  }
+  var sfx = {
+    flip:  function (on) { beep(on ? 660 : 340, 0.05, 'triangle', 0.05); },
+    nope:  function () { beep(150, 0.09, 'sawtooth', 0.04); },
+    undo:  function () { beep(420, 0.06, 'sine', 0.05); },
+    win:   function () { [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { setTimeout(function () { beep(f, 0.2, 'triangle', 0.09); }, i * 95); }); }
+  };
+  var muteBtn = document.getElementById('mute-btn');
+  muteBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); muted = !muted;
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
+
+  // ===== GF(2) 线性代数：算「最少步数」 =====
+  // 每一次点击是一个 GF(2) 变量，约束是「每格被翻转奇数次」。A x = b 求最小重量的 x。
+  // 解空间 = 一个特解 + 零空间；零空间维数很小（3×3 / 7×7 是 0，5×5 是 2）→ 直接枚举取最小重量。
+  function minMoves(b, nIn) {
+    var n = nIn || size, N = n * n, i, j;
+    var rows = [];
+    for (var k = 0; k < N; k++) {
+      var row = new Uint8Array(N + 1);
+      var r = Math.floor(k / n), c = k % n;
+      var nb = [[r, c], [r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+      for (var t = 0; t < nb.length; t++) {
+        var rr = nb[t][0], cc = nb[t][1];
+        if (rr < 0 || cc < 0 || rr >= n || cc >= n) continue;
+        row[rr * n + cc] = 1;
+      }
+      row[N] = b[k] ? 1 : 0;
+      rows.push(row);
+    }
+    var where = new Array(N), pivot = [], rank = 0;
+    for (i = 0; i < N; i++) where[i] = -1;
+    for (var col = 0; col < N && rank < N; col++) {
+      var p = -1;
+      for (i = rank; i < N; i++) if (rows[i][col]) { p = i; break; }
+      if (p < 0) continue;
+      var tmp = rows[rank]; rows[rank] = rows[p]; rows[p] = tmp;
+      for (i = 0; i < N; i++) {
+        if (i !== rank && rows[i][col]) { for (j = col; j <= N; j++) rows[i][j] ^= rows[rank][j]; }
+      }
+      where[col] = rank; pivot.push(col); rank++;
+    }
+    for (i = rank; i < N; i++) if (rows[i][N]) return null;   // 无解（直接随机置位就会出现这种局）
+    var x = new Uint8Array(N);
+    for (i = 0; i < pivot.length; i++) x[pivot[i]] = rows[where[pivot[i]]][N];
+    var free = [];
+    for (i = 0; i < N; i++) if (where[i] < 0) free.push(i);
+    var basis = [];
+    for (i = 0; i < free.length; i++) {
+      var v = new Uint8Array(N);
+      v[free[i]] = 1;
+      for (j = 0; j < pivot.length; j++) v[pivot[j]] = rows[where[pivot[j]]][free[i]];
+      basis.push(v);
+    }
+    var bestX = null, bestW = Infinity, total = 1 << basis.length;
+    for (var m = 0; m < total; m++) {
+      var cand = new Uint8Array(N), w = 0;
+      for (i = 0; i < N; i++) cand[i] = x[i];
+      for (var bi = 0; bi < basis.length; bi++) {
+        if (m & (1 << bi)) { for (i = 0; i < N; i++) cand[i] ^= basis[bi][i]; }
+      }
+      for (i = 0; i < N; i++) if (cand[i]) w++;
+      if (w < bestW) { bestW = w; bestX = cand; }
+    }
+    var out = [];
+    for (i = 0; i < N; i++) if (bestX[i]) out.push(i);
+    return out;
+  }
+  function isSolvable(b, nIn) { return minMoves(b, nIn) !== null; }
+  function isLandscape() {
+    return window.matchMedia('(orientation: landscape) and (max-height: 560px)').matches;
+  }
+
+  // ===== 局面生成：必须「从全灭反向点」 =====
+  // 直接随机置位会有大量无解局（5×5 只有约 1/4 的局面可解），玩家会卡死在死局上。
+  function makePuzzle(n, taps) {
+    var g = new Uint8Array(n * n), i, lit = 0;
+    for (i = 0; i < taps; i++) toggleAt(g, n, (Math.random() * n * n) | 0);   // 反向随机点 N 次
+    for (i = 0; i < n * n; i++) if (g[i]) lit++;
+    if (lit === 0) return makePuzzle(n, taps + 1);     // 全灭 = 白送，重来
+    return g;
+  }
+  function toggleAt(g, n, idx) {
+    var r = Math.floor(idx / n), c = idx % n;
+    var nb = [[r, c], [r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+    for (var t = 0; t < nb.length; t++) {
+      var rr = nb[t][0], cc = nb[t][1];
+      if (rr < 0 || cc < 0 || rr >= n || cc >= n) continue;
+      var j = rr * n + cc;
+      g[j] = g[j] ? 0 : 1;
+    }
+  }
+
+  // ===== 渲染 =====
+  function buildDom() {
+    boardEl.innerHTML = '';
+    var n = size, i;
+    var frag = document.createDocumentFragment();
+    for (i = 0; i < n * n; i++) {
+      var b = document.createElement('button');
+      b.className = 'lo-cell';
+      b.type = 'button';
+      b.dataset.i = String(i);
+      frag.appendChild(b);
+    }
+    boardEl.appendChild(frag);
+    panel.style.setProperty('--n', String(n));
+    paint();
+    fit();
+  }
+  function paint(flash) {
+    var cells = boardEl.children, i;
+    for (i = 0; i < cells.length; i++) {
+      cells[i].classList.toggle('on', !!grid[i]);
+      cells[i].classList.toggle('cursor', i === cursor && started && !solved);
+    }
+    if (flash !== undefined && cells[flash]) {
+      cells[flash].classList.remove('lo-pop');
+      void cells[flash].offsetWidth;
+    }
+  }
+  // 「除棋盘以外占掉的纵向高度」。
+  // 竖屏：panel.offsetHeight - boardArea.offsetHeight 恰好等于面板里除棋盘外的一切，且对 --cs 免疫。
+  // 横屏：棋盘与侧栏是并排的，这个差值不再代表纵向开销 → 改成「页面内边距 + 页脚 + 面板内边距」。
+  function chromeHeight() {
+    var pcs = getComputedStyle(panel);
+    var panelPadY = parseFloat(pcs.paddingTop || 0) + parseFloat(pcs.paddingBottom || 0)
+      + parseFloat(pcs.borderTopWidth || 0) + parseFloat(pcs.borderBottomWidth || 0);
+    var bcs = getComputedStyle(document.body);
+    var bodyPadY = parseFloat(bcs.paddingTop || 0) + parseFloat(bcs.paddingBottom || 0);
+    var footerH = footerEl ? footerEl.offsetHeight : 0;
+    var footerGap = footerEl ? parseFloat(getComputedStyle(footerEl).marginTop || 0) : 0;
+    var rest;
+    if (isLandscape()) {
+      rest = panelPadY;
+    } else {
+      var total = panel.offsetHeight, b = boardArea.offsetHeight;
+      rest = (total > b && b > 0) ? (total - b) : CHROME_FALLBACK;
+    }
+    return rest + bodyPadY + footerH + footerGap + 8;
+  }
+  // 尺寸自适应：格子大小由「视口 + 当前 n」算出来，不按 3/5/7 硬分支。
+  // ★ 可用宽度只从 window.innerWidth 反推（读 panel.clientWidth 会与 --cs 循环依赖）。
+  function fit() {
+    var n = size;
+    var pcs = getComputedStyle(panel);
+    var panelPad = parseFloat(pcs.paddingLeft || 0) + parseFloat(pcs.paddingRight || 0)
+      + parseFloat(pcs.borderLeftWidth || 0) + parseFloat(pcs.borderRightWidth || 0);
+    var bcs = getComputedStyle(document.body);
+    var bodyPadX = parseFloat(bcs.paddingLeft || 0) + parseFloat(bcs.paddingRight || 0);
+    var availW = Math.min(window.innerWidth - bodyPadX, 620) - panelPad;
+    var availH = window.innerHeight - chromeHeight();
+    if (availH < 60) availH = 60;
+    var gap = n >= 7 ? 4 : 6;
+    var cs = Math.floor(Math.min((availW - gap * (n - 1)) / n, (availH - gap * (n - 1)) / n));
+    if (!(cs > 0)) cs = MIN_CS;
+    if (cs < MIN_CS) cs = MIN_CS;          // 触控目标底线；装不下时交给 .board-area 滚动
+    if (cs > MAX_CS) cs = MAX_CS;
+    panel.style.setProperty('--cs', cs + 'px');
+    panel.style.setProperty('--gap', gap + 'px');
+    boardArea.style.maxHeight = Math.round(availH) + 'px';
+  }
+
+  // ===== HUD / 文案 =====
+  function starsFor(mv, par) {
+    if (!par) return 1;
+    if (mv <= par) return 3;
+    if (mv <= par + 2) return 2;
+    return 1;
+  }
+  function fmtStars(s) { return ['★☆☆', '★★☆', '★★★'][s - 1]; }
+  function refreshBest() {
+    var b = best[size] || 0;
+    document.getElementById('hud-best').textContent = b > 0 ? b : '—';
+    document.getElementById('start-best').textContent = b > 0 ? t('common.bestLabel', { n: b }) : t('lightsOut.first');
+    document.getElementById('over-best').textContent = b > 0 ? t('common.bestLabel', { n: b }) : '';
+  }
+  function refreshHud() {
+    document.getElementById('hud-moves').textContent = moves;
+    document.getElementById('hud-par').textContent = parNow > 0 ? parNow : '—';
+    document.getElementById('btn-undo').disabled = history.length === 0;
+    document.getElementById('btn-restart').disabled = history.length === 0;
+    var diffs = document.querySelectorAll('.diff');
+    for (var i = 0; i < diffs.length; i++) {
+      diffs[i].classList.toggle('active', parseInt(diffs[i].dataset.size, 10) === size);
+    }
+  }
+  function refreshOver() {
+    if (!endKey) return;
+    overTitleEl.textContent = t(endKey);
+    if (endStats) {
+      document.getElementById('stars').textContent = fmtStars(endStats.stars);
+      document.getElementById('final-line').innerHTML = t('lightsOut.final', { n: endStats.moves, m: endStats.par });
+    }
+  }
+  function refreshAll() { refreshBest(); refreshHud(); refreshOver(); }
+  WG.onChange(function () { refreshAll(); fit(); });
+
+  // ===== 流程 =====
+  function newPuzzle(s, tapsOverride) {
+    if (s) { size = s; saveSize(); }
+    var taps = tapsOverride || LEVELS[size].taps;
+    grid = Array.prototype.slice.call(makePuzzle(size, taps));
+    initial = grid.slice();
+    history = []; moves = 0; solved = false; cursor = 0;
+    endKey = null; endStats = null;
+    var sol = minMoves(grid);
+    parNow = sol ? sol.length : 0;
+    overOverlay.classList.add('hidden');
+    document.getElementById('new-record').classList.add('hidden');
+    buildDom();
+    refreshAll();
+  }
+  function restart() {
+    if (!history.length) { sfx.nope(); return; }
+    grid = initial.slice();
+    history = []; moves = 0; solved = false;
+    started = true;
+    startOverlay.classList.add('hidden');
+    overOverlay.classList.add('hidden');
+    endKey = null;
+    paint(); refreshAll();
+    sfx.undo();
+  }
+  function undo() {
+    if (!history.length || solved) { sfx.nope(); return; }
+    grid = history.pop();
+    moves = Math.max(0, moves - 1);
+    started = true;
+    startOverlay.classList.add('hidden');
+    paint(); refreshAll();
+    sfx.undo();
+  }
+  function begin() {
+    if (started) return;
+    started = true;
+    startOverlay.classList.add('hidden');
+    paint();
+  }
+  function tap(i, viaKey) {
+    if (solved) return;
+    begin();
+    cursor = i;
+    history.push(grid.slice());
+    if (history.length > 400) history.shift();
+    toggleAt(grid, size, i);
+    moves++;
+    sfx.flip(!!grid[i]);
+    paint();
+    refreshHud();
+    if (isCleared()) win();
+  }
+  function isCleared() {
+    for (var i = 0; i < grid.length; i++) if (grid[i]) return false;
+    return true;
+  }
+  function win() {
+    solved = true;
+    endKey = 'lightsOut.over';
+    var par = parNow || moves;
+    var st = starsFor(moves, par);
+    var rec = false;
+    if (!best[size] || moves < best[size]) { best[size] = moves; rec = true; saveBest(); }
+    endStats = { moves: moves, par: par, stars: st };
+    /* Faster solutions earn a higher account leaderboard score. */
+    try {
+      if (window.AshFallArcade && typeof window.AshFallArcade.recordScore === 'function') {
+        var arcadeScore = Math.max(0, 1000 - moves * 10 + st * 100);
+        Promise.resolve(window.AshFallArcade.recordScore('cabinet-lights-out', arcadeScore, {
+          size: size, moves: moves, par: par, stars: st
+        })).catch(function () {});
+      }
+    } catch (e) {}
+    sfx.win();
+    document.getElementById('new-record').classList.toggle('hidden', !rec);
+    refreshAll();
+    paint();
+    overOverlay.classList.remove('hidden');
+  }
+
+  // ===== 输入：点击 / 触摸（tap 合成 click） =====
+  boardEl.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== boardEl && !el.dataset.i) el = el.parentNode;
+    if (!el || el === boardEl) return;
+    tap(parseInt(el.dataset.i, 10));
+  });
+
+  // ===== 输入：键盘 =====
+  window.addEventListener('keydown', function (e) {
+    var k = String(e.key || '').toLowerCase();
+    var r = Math.floor(cursor / size), c = cursor % size;
+    if (k === 'arrowleft' || k === 'a') { cursor = r * size + (c - 1 + size) % size; paint(); e.preventDefault(); return; }
+    if (k === 'arrowright' || k === 'd') { cursor = r * size + (c + 1) % size; paint(); e.preventDefault(); return; }
+    if (k === 'arrowup' || k === 'w') { cursor = ((r - 1 + size) % size) * size + c; paint(); e.preventDefault(); return; }
+    if (k === 'arrowdown' || k === 's') { cursor = ((r + 1) % size) * size + c; paint(); e.preventDefault(); return; }
+    if (k === ' ' || k === 'enter') { tap(cursor, true); e.preventDefault(); return; }
+    if (k === 'z' || k === 'u') { undo(); e.preventDefault(); return; }
+    if (k === 'r') { restart(); e.preventDefault(); return; }
+    if (k === 'n') { newPuzzle(); e.preventDefault(); return; }
+  });
+
+  document.getElementById('btn-start').addEventListener('click', begin);
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-restart').addEventListener('click', restart);
+  document.getElementById('btn-new').addEventListener('click', function () { begin(); newPuzzle(); });
+  document.getElementById('btn-again').addEventListener('click', function () { begin(); newPuzzle(); });
+  document.getElementById('diffs').addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== document.getElementById('diffs') && !el.dataset.size) el = el.parentNode;
+    if (!el || el === document.getElementById('diffs')) return;
+    var s = parseInt(el.dataset.size, 10);
+    if (s === size) return;
+    started = true;
+    startOverlay.classList.add('hidden');
+    newPuzzle(s);
+    sfx.flip(true);
+  });
+
+  function shareText() {
+    var mv = endStats ? endStats.moves : moves;
+    return t('lightsOut.share', { n: mv, url: location.href });
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  document.getElementById('btn-share2').addEventListener('click', function () {
+    var full = shareText(), btn = document.getElementById('btn-share2');
+    function done() {
+      btn.textContent = t('common.copied');
+      setTimeout(function () { btn.textContent = t('common.shareScore'); }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(done, function () { fallbackCopy(full, done); });
+    } else fallbackCopy(full, done);
+  });
+
+  var rTimer = null;
+  window.addEventListener('resize', function () {
+    if (rTimer) clearTimeout(rTimer);
+    rTimer = setTimeout(fit, 80);
+  });
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener('load', function () { setTimeout(fit, 300); });
+
+  newPuzzle(size);
+})();
+</script>
+</body>
+</html>
