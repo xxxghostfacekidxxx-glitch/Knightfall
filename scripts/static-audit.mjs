@@ -292,8 +292,19 @@ for (const entry of accountBridgeManifest.games) {
 if (!accountBridgeSource.includes("recordScore") || !accountBridgeSource.includes("loadProgress") || !accountBridgeSource.includes("async function autosave") || !accountBridgeSource.includes("15000")) fail("Shared arcade account bridge is missing cloud score/progress support or periodic checkpoint saves.");
 if (!accountBridgeSource.includes("/arcade/arcade-license-guide.html")) fail("Shared arcade navigation is missing the source and license guide.");
 const licenseGuide = await readFile(path.join(publicDir, "arcade/arcade-license-guide.html"), "utf8");
-if (!licenseGuide.includes("/arcade/import-manifest.json") || !licenseGuide.includes("ashFallOriginalBuilds") || !licenseGuide.includes("notYetImported")) fail("Arcade source and license guide does not render the full import manifest.");
-ok("Account bridge registered for " + accountBridgeManifest.games.length + " locally hosted games; source and license guide is linked.");
+if (!licenseGuide.includes("/arcade/import-manifest.json") || !licenseGuide.includes("ashFallOriginalBuilds") || !licenseGuide.includes("notYetImported") || !licenseGuide.includes("item.candidate") || !licenseGuide.includes("manifest-search")) fail("Arcade source and license guide does not render searchable source, original-build, and pending-candidate records.");
+const importManifest = JSON.parse(await readFile(path.join(publicDir, "arcade/import-manifest.json"), "utf8"));
+const originalIds = new Set();
+for (const entry of importManifest.ashFallOriginalBuilds || []) {
+  if (!entry.gameId || originalIds.has(entry.gameId)) fail("Missing or duplicate original-build game ID: " + (entry.gameId || entry.title || "unknown"));
+  originalIds.add(entry.gameId);
+  for (const file of entry.files || []) {
+    try { await readFile(path.join(publicDir, file.replace(/^\\/+/, "")), "utf8"); }
+    catch { fail("Original-build manifest references a missing local file: " + file); }
+  }
+}
+if ((importManifest.ashFallOriginalBuilds || []).length < 26) fail("Arcade manifest should document all 26 current Ash-Fall original builds.");
+ok("Account bridge registered for " + accountBridgeManifest.games.length + " locally hosted games; " + originalIds.size + " original builds have unique IDs and valid local files; searchable source and license guide is linked.");
 
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
