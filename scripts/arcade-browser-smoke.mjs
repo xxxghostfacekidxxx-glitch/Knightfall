@@ -17,7 +17,7 @@ try {
   for (const game of games) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
-    page.on("pageerror", error => errors.push(error.message));
+    page.on("pageerror", error => errors.push(error.stack || error.message));
     const response = await page.goto(base + game.path, { waitUntil: "networkidle", timeout: 30000 });
     if (!response || response.status() !== 200) {
       console.error(`FAIL ${game.name}: page returned ${response?.status() ?? "no response"}`);

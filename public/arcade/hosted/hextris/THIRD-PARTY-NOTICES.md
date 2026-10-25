@@ -11,3 +11,5 @@ Bundled dependencies and their upstream license notices:
 - SweetAlert: upstream notice retained in source header.
 
 No third-party advertising, analytics, or external score beacon is retained in this adaptation.
+
+- Keyboard compatibility: `keypress-compat.js` is original Knightfall code implementing only the `register_combo` behavior used by this adaptation; no upstream Keypress library source is bundled.
