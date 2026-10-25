@@ -81,6 +81,48 @@ try {
     await page.close();
   }
 
+  // Exercise account score submission on a real bridged game page using a fake API.
+  // No score data is written to an actual user account.
+  const bridgePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await bridgePage.addInitScript(() => {
+    window.__bridgeTestScores = [];
+    window.AshFallArcade = {
+      ready: Promise.resolve(),
+      user: { id: "browser-smoke-test" },
+      loadProgress: async () => ({ bestScore: 5 }),
+      recordScore: async (gameId, score, meta) => {
+        window.__bridgeTestScores.push({ gameId, score, meta });
+        return { saved: true };
+      }
+    };
+  });
+  const bridgeResponse = await bridgePage.goto(base + "/arcade/hosted/hexa-havoc/index.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+  if (!bridgeResponse || bridgeResponse.status() !== 200) {
+    console.error("FAIL account bridge: could not open the bridge test game");
+    failed = true;
+  } else {
+    await bridgePage.locator("canvas").first().click({ position: { x: 20, y: 20 } });
+    await bridgePage.evaluate(() => {
+      const score = document.querySelector("#score");
+      if (score) score.textContent = "42";
+      const overlay = document.createElement("div");
+      overlay.className = "overlay";
+      overlay.id = "bridge-test-overlay";
+      overlay.style.cssText = "display:block;position:fixed;inset:0;z-index:999999;background:#000;color:#fff";
+      overlay.textContent = "Game Over";
+      document.body.appendChild(overlay);
+    });
+    await bridgePage.waitForFunction(() => window.__bridgeTestScores.length === 1, null, { timeout: 4000 });
+    const bridgeRecord = await bridgePage.evaluate(() => window.__bridgeTestScores[0]);
+    if (bridgeRecord.gameId !== "cabinet-hexa-havoc" || bridgeRecord.score !== 42) {
+      console.error("FAIL account bridge: submitted score did not match the ended run");
+      failed = true;
+    } else {
+      console.log("PASS account bridge: detects game over and submits the correct score to the account API");
+    }
+  }
+  await bridgePage.close();
+
   // Crawl every playable cabinet linked by the catalog. This catches dead routes and
   // page-start exceptions before the owner has to manually test the entire collection.
   const catalogPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });

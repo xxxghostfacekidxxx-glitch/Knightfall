@@ -2057,7 +2057,7 @@ function initialize(a) {
 			e.preventDefault();
 		}, false);
 		$(window).resize(scaleCanvas);
-		$(window).unload(function() {
+		$(window).on("unload", function() {
 
 			if (gameState == 1 || gameState == -1 || gameState === 0) localStorage.setItem("saveState", exportSaveState());
 			else localStorage.setItem("saveState", "{}");
