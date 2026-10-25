@@ -591,15 +591,17 @@
     },
     {
       "id": "pac-man",
-      "name": "Pac-Man",
+      "name": "Glitch Munch",
       "category": "Arcade",
-      "description": "Clear the maze while avoiding the ghosts.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/pacman/index.html",
+      "description": "Clear a neon maze, collect data crumbs, and use power pulses to evade corrupted processes.",
+      "playUrl": "/arcade/hosted/glitch-munch/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/arcade/pacman/index.html"
+      "sourcePath": "games/arcade/pacman/index.html",
+      "importedPath": "public/arcade/hosted/glitch-munch/",
+      "integrationNote": "Original maze-chase game using broad maze collection mechanics only; no Pac-Man characters, maze, source, or assets copied. Best score stored locally."
     },
     {
       "id": "space-fighter",
