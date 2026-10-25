@@ -202,8 +202,8 @@ try {
             routeFailures.push(`${route}: account-bridged game is missing the Ash-Fall navigation shell`);
           } else {
             const links = await nav.locator("a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
-            if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html")) {
-              routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade navigation links`);
+            if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html") || !links.includes("/arcade/arcade-license-guide.html")) {
+              routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade or license navigation links`);
             }
           }
         }
