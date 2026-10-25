@@ -67,6 +67,11 @@ jobs:
           exit 1
       - name: Exercise hosted arcade cabinets in mobile Chromium
         run: node scripts/arcade-browser-smoke.mjs
+      - name: Verify deployed arcade in mobile Chromium
+        if: github.event_name != 'pull_request'
+        env:
+          ARCADE_TEST_BASE: https://ash-fall.com
+        run: node scripts/arcade-browser-smoke.mjs
 
   live-smoke:
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
