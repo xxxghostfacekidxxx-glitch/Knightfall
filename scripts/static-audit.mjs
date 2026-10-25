@@ -38,7 +38,7 @@ const arcadeInvariants = [
   ["arcade score submissions require a signed-in account", /\/api\/arcade\/scores[\s\S]{0,350}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["arcade scores are rate-limited per network and account", /rateLimit\(env,request,"arcade-score",60,60\)[\s\S]{0,220}rateLimit\(env,request,"arcade-score-account",20,60,user\.id\)/],
   ["arcade scores reject unsafe, negative, or excessive values", /score>scoreCap/],
-  ["new fixed-rule arcade games have conservative score caps", /arcadeScoreCaps[\s\S]{0,500}"pong-no-return":7/],
+  ["new fixed-rule arcade games have conservative score caps", /arcadeScoreCaps[\s\S]{0,1000}"pong-no-return":7/],
 ];
 for (const [label, pattern] of arcadeInvariants) {
   if (!pattern.test(worker)) fail("Arcade invariant missing: " + label);
@@ -184,6 +184,19 @@ if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-colo
 const colossusRecordsPage = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
 if (!colossusRecordsPage.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
 ok("Colossus Clash controls, account integration, score cap, and provenance checked.");
+const dinoRunGame = await readFile(path.join(publicDir, "arcade/hosted/dino-run/index.html"), "utf8");
+const dinoRunCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+const dinoRunCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
+const dinoRunRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!dinoRunGame.includes("cabinet-dino-run") || !dinoRunGame.includes("recordScore")) fail("Dino Run is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-dino-run"') || !worker.includes('"cabinet-dino-run":100000')) fail("Dino Run is not allowlisted with a bounded score cap.");
+if (!manifest.imports.some(entry => entry.gameId === "cabinet-dino-run" && entry.status === "imported-adapted")) fail("Dino Run is missing its imported source manifest entry.");
+if (!dinoRunCatalog.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunCartridge.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunRecords.includes('"cabinet-dino-run":"Dino Run: Ash-Fall Edition"')) fail("Dino Run is missing from a public arcade surface.");
+const shelfCount = (dinoRunCartridge.slice(dinoRunCartridge.indexOf('<div class="cartridge-shelf">'), dinoRunCartridge.indexOf('<section class="feature">')).match(/class="cartridge-cabinet/g) || []).length;
+if (shelfCount !== 108) fail("Main arcade shelf count does not match the 108 integrated cabinet cards.");
+if ((dinoRunCatalog.match(/<article class="game"/g) || []).length !== 69 || !dinoRunCatalog.includes("69 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Open-source arcade catalog count does not match its 69 game cards.");
+ok("Dino Run source notice, account integration, score cap, and catalog registration checked.");
+
 
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");

@@ -165,6 +165,21 @@
         "/arcade/hosted/breakout/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream Canvas brick-breaker with physics, particles, levels, and synthesized sound; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced best score, and submits bounded scores."
+    },
+    {
+      "gameId": "cabinet-dino-run",
+      "title": "Dino Run: Ash-Fall Edition",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/dino-run/index.html",
+        "/arcade/hosted/dino-run/LICENSE.txt",
+        "/arcade/hosted/dino-run/SOURCE-NOTICE.md",
+        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
+        "/arcade/hosted/i18n.js"
+      ],
+      "notes": "Adapted the upstream self-contained Canvas/vector runner; retained the MIT license, copied the shared language layer locally with its external analytics loader removed, restyled it for Ash-Fall, and added account-best-score loading and leaderboard submission."
     }
   ],
   "notYetImported": [
