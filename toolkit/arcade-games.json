@@ -209,14 +209,16 @@
     },
     {
       "id": "browserquest",
-      "name": "BrowserQuest",
+      "name": "Ruinwalkers",
       "category": "RPG",
-      "description": "A tiny multiplayer pixel-art adventure.",
-      "playUrl": "https://browserquest.mozilla.org/",
+      "description": "Explore the fallen district, fight roaming creatures, recover five relics, and reach the extraction gate.",
+      "playUrl": "/arcade/hosted/ruinwalkers/index.html",
       "repository": "https://github.com/mozilla/BrowserQuest",
-      "license": "MPL-2.0 (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/ruinwalkers/",
+      "integrationNote": "Original single-player tile RPG using broad exploration/combat mechanics only; not multiplayer and not a BrowserQuest port. No upstream code, maps, characters, or assets copied. Session-local campaign."
     },
     {
       "id": "digger",
