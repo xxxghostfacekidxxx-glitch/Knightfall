@@ -452,7 +452,7 @@ async function handlePublicAssetRequest(request, env, origin, url) {
 const PROFILE_PHOTO_MAX_BYTES = 8 * 1024 * 1024;
 function profilePhotoUrl(id) { return "https://api.ash-fall.com/api/profile-media/" + Number(id); }
 async function handleProfilePhotoRequest(request, env, origin, url) {
-  const publicMatch = url.pathname.match(/^\\/api\\/profile-media\\/(\\d+)$/);
+  const publicMatch = url.pathname.match(/^\/api\/profile-media\/(\d+)$/);
   if (publicMatch && (request.method === "GET" || request.method === "HEAD")) {
     const photo = await env.DB.prepare("SELECT object_key,content_type,size_bytes FROM profile_photos WHERE id=?").bind(Number(publicMatch[1])).first();
     if (!photo || !env.PROFILE_MEDIA) return json({error:"Photo not found."},404,origin);
@@ -519,7 +519,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
       return json({error:"Photo upload failed. Your profile was not changed."},500,origin);
     }
   }
-  const deleteMatch=url.pathname.match(/^\\/api\\/profile\\/photos\\/(\\d+)$/);
+  const deleteMatch=url.pathname.match(/^\/api\/profile\/photos\/(\d+)$/);
   if (deleteMatch && request.method==="DELETE") {
     const user=await requireUser(request,env);
     if (!user) return json({error:"Authentication required."},401,origin);
