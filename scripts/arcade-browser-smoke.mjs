@@ -163,14 +163,14 @@ try {
       mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
       const featuredCount = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
       const viewAll = catalogPage.locator("#game-shelf .arcade-view-all a[href='/arcade-30-games.html']");
-      if (featuredCount !== 12) {
-        console.error("FAIL featured shelf: expected 12 visible cards, found " + featuredCount);
+      if (featuredCount !== 30) {
+        console.error("FAIL featured shelf: expected 30 visible cards, found " + featuredCount);
         failed = true;
       } else if (!(await viewAll.count())) {
         console.error("FAIL featured shelf: missing View all 76 games link");
         failed = true;
       } else {
-        console.log("PASS featured shelf: 12 cards and a direct link to the full catalog");
+        console.log("PASS featured shelf: 30 cards and a direct link to the full catalog");
       }
     }
     const localHostedRoutes = await listHostedHtml();
