@@ -20,6 +20,10 @@ function render(d,adminView=false,ownProfile=false){
     (u.pronouns?'<div><dt>Pronouns</dt><dd>'+esc(u.pronouns)+'</dd></div>':"")+
     (u.website_url?'<div><dt>Website</dt><dd><a href="'+esc(u.website_url)+'" rel="noopener noreferrer nofollow">'+esc(u.website_url)+'</a></dd></div>':"")+
     '</dl><div class="activity-grid"><section><h2>Recent threads</h2>'+((d.threads||[]).map(t=>'<a class="activity" href="/thread.html?id='+t.id+'"><strong>'+esc(t.title)+'</strong><small>'+esc(t.category_name)+' · '+fmt(t.created_at)+'</small></a>').join("")||'<p class="muted">No threads yet.</p>')+'</section><section><h2>Recent replies</h2>'+((d.posts||[]).map(p=>'<a class="activity" href="/thread.html?id='+p.thread_id+'"><strong>'+esc(p.thread_title)+'</strong><small>'+esc(p.body).slice(0,180)+' · '+fmt(p.created_at)+'</small></a>').join("")||'<p class="muted">No replies yet.</p>')+'</section></div>';
+  root.style.setProperty("--profile-accent", /^#[0-9a-fA-F]{6}$/.test(u.accent_color||"") ? u.accent_color : "#e66a2c");
+  root.dataset.theme = ["ember","midnight","toxic","bubblegum","mono"].includes(u.profile_theme) ? u.profile_theme : "ember";
+  if (u.cover_url) { const c=document.createElement("div"); c.className="profile-cover"; c.style.backgroundImage="url("+JSON.stringify(u.cover_url)+")"; root.prepend(c); }
+  if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
