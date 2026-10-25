@@ -137,8 +137,15 @@ try {
       await page.locator("#start").tap({ timeout: 3000 });
       await page.locator("#game").tap({ position: { x: 180, y: 140 }, timeout: 3000 });
       await page.waitForTimeout(100);
-      const state = await page.locator("#game-state").innerText();
+      let state = await page.locator("#game-state").innerText();
       if (!/running/i.test(state)) throw new Error("touch start did not enter running state: " + state);
+      if (id === "tower-shooter" && Number(await page.locator("#score").innerText()) < 10) throw new Error("touch did not place a defense tower and award placement points");
+      if (id === "hexgl" || id === "trigger-rally") {
+        await page.waitForTimeout(2200);
+        state = await page.locator("#game-state").innerText();
+        const score = Number(await page.locator("#score").innerText());
+        if (score < 1 && !/collision/i.test(state)) throw new Error("race produced neither obstacle progress nor a collision; obstacle loop may be empty");
+      }
       if (errors.length) throw new Error("touch interaction exception: " + errors.join(" | "));
       console.log("PASS touch controls: " + id);
     } catch (error) {
