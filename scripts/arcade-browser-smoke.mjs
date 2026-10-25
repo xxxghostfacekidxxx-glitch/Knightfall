@@ -285,7 +285,7 @@ try {
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
     try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores puzzle state")}
-    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    catch(error){const diagnostic=await page.evaluate(()=>({bridgeStatus:document.querySelector(".af-account-bridge-status")?.textContent,scoreLabel:document.querySelector("#scoreLabel")?.textContent,stateLabel:document.querySelector("#stateLabel")?.textContent,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,importType:typeof window.importSaveState}));console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+" | diagnostic="+JSON.stringify(diagnostic));failed=true}
     finally{await page.close()}
   }
 
