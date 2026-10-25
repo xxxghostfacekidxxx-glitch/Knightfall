@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-six entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-seven entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
@@ -935,6 +935,29 @@
       "limitations": [
         "arcade-style lane-based handling rather than full physics",
         "best result stored locally only",
+        "no account save or server leaderboard integration"
+      ]
+    },
+    {
+      "id": "burrow-blitz",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/lutzroeder/digger",
+      "reviewedPath": "conceptual digging-game reference only; no upstream code/assets copied",
+      "reason": "Created an original tile-digging game with destructible dirt, collectible gems, falling rocks, depth tracking, an exit objective, and keyboard/touch controls. Replaces the Digger queue entry without importing upstream code or artwork.",
+      "assets": "Original canvas-drawn dirt, rocks, gems, player, and exit; no upstream code, sprites, audio, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas",
+        "localStorage"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "single randomized digging board",
+        "best score stored locally only",
         "no account save or server leaderboard integration"
       ]
     }
