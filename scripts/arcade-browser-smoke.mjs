@@ -149,7 +149,8 @@ try {
   await bridgePage.close();
 
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
-  const manifestResponse = await catalogPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
+  const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
   if (!manifestResponse || manifestResponse.status() !== 200) {
     console.error("FAIL account bridge manifest: could not fetch manifest");
     failed = true;
@@ -185,6 +186,8 @@ try {
       console.log("PASS account bridge manifest: " + bridgeEntries.length + " games have matching page config and one issue-report link");
     }
   }
+
+  await manifestPage.close();
 
   // Crawl every playable cabinet linked by the catalog. This catches dead routes and
   // page-start exceptions before the owner has to manually test the entire collection.
