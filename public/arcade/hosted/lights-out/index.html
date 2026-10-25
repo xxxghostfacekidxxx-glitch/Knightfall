@@ -550,7 +550,7 @@ window.t = function (key, values) {
     /* Faster solutions earn a higher account leaderboard score. */
     try {
       if (window.AshFallArcade && typeof window.AshFallArcade.recordScore === 'function') {
-        var arcadeScore = Math.max(0, 1000 - moves * 10 + st * 100);
+        var arcadeScore = Math.max(0, Math.min(1000, 1000 - moves * 10 + st * 100));
         Promise.resolve(window.AshFallArcade.recordScore('cabinet-lights-out', arcadeScore, {
           size: size, moves: moves, par: par, stars: st
         })).catch(function () {});
