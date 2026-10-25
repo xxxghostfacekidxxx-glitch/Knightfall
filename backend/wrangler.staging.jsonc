@@ -11,7 +11,7 @@
       "binding": "DB",
       "database_name": "knightfall-monster-staging",
       "database_id": "6c72439f-2319-4f03-9bb6-711157d18963",
-      "migrations_dir": "migrations"
+      "migrations_dir": "migrations-staging"
     }
   ],
   "kv_namespaces": [
