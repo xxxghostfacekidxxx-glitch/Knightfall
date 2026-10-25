@@ -67,6 +67,7 @@
             await window.AshFallArcade.ready; const saved = await window.AshFallArcade.loadProgress(gameKey, "autosave");
             if (!saved || typeof saved.serialized !== "string") { note("No cloud save found yet.", false); return; }
             localStorage.setItem("saveState", saved.serialized);
+            sessionStorage.setItem("knightfall-hextris-resume", "1");
             location.reload();
           } catch (e) { note(e.message || "Sign in to resume a cloud save.", false); }
         });
@@ -81,6 +82,12 @@
           try { const saved = await window.AshFallArcade.loadProgress(gameKey, "autosave"); if (saved && saved.serialized) note("Cloud save found. Tap Resume to load it."); } catch {}
         });
       })();
+      window.jQuery(function() {
+        if (sessionStorage.getItem("knightfall-hextris-resume") === "1") {
+          sessionStorage.removeItem("knightfall-hextris-resume");
+          window.setTimeout(function() { if (typeof startBtnHandler === "function") startBtnHandler(); }, 50);
+        }
+      });
     </script>
 </body>
 </html>
