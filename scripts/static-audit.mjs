@@ -285,7 +285,7 @@ ok("Arcade feedback is installed once on all nine games and preserves accessible
 const accountBridgeManifest = JSON.parse(await readFile(path.join(publicDir, "arcade/hosted/account-bridge-manifest.json"), "utf8"));
 const accountBridgeSource = await readFile(path.join(publicDir, "arcade/hosted/arcade-account-bridge.js"), "utf8");
 for (const entry of accountBridgeManifest.games) {
-  const page = await readFile(path.join(publicDir, entry.path.replace(/^\\/+/, "")), "utf8");
+  const page = await readFile(path.join(publicDir, entry.path.replace(/^\/+/, "")), "utf8");
   if (!page.includes('src="/arcade/hosted/arcade-account-bridge.js"') || !page.includes('data-game-id="' + entry.gameId + '"')) fail("Account bridge missing from game page: " + entry.gameId);
   if (!worker.includes('"' + entry.gameId + '"') || !worker.includes('"' + entry.gameId + '":')) fail("Account bridge game is not allowlisted with a score cap: " + entry.gameId);
 }
