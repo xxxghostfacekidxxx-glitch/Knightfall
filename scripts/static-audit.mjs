@@ -299,7 +299,7 @@ for (const entry of importManifest.ashFallOriginalBuilds || []) {
   if (!entry.gameId || originalIds.has(entry.gameId)) fail("Missing or duplicate original-build game ID: " + (entry.gameId || entry.title || "unknown"));
   originalIds.add(entry.gameId);
   for (const file of entry.files || []) {
-    try { await readFile(path.join(publicDir, file.replace(/^\\/+/, "")), "utf8"); }
+    try { await readFile(path.join(publicDir, file.replace(/^\/+/, "")), "utf8"); }
     catch { fail("Original-build manifest references a missing local file: " + file); }
   }
 }
