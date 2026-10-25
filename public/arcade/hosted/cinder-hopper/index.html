@@ -18,4 +18,5 @@ function collide(p){const x=Math.max(p.x,Math.min(bird.x,p.x+p.w)),y1=Math.max(0
 function end(){running=false;over=true;stateEl.textContent='CRASHED';if(score>best){best=score;bestEl.textContent=best;localStorage.setItem('kf-cinder-hopper-best',String(best))}startBtn.textContent='Try again';draw()}
 function loop(t){if(!running)return;const dt=Math.min(.035,(t-last||16)/1000);last=t;frame+=dt*60;bird.vy+=900*dt;bird.y+=bird.vy*dt;if(frame%95<1)addPipe();pipes.forEach(p=>{p.x-=235*dt;if(!p.scored&&p.x+p.w<bird.x){p.scored=true;score++;scoreEl.textContent=score}});pipes=pipes.filter(p=>p.x+p.w>-20);if(pipes.some(collide)){end();return}draw();raf=requestAnimationFrame(loop)}
 startBtn.addEventListener('click',reset);canvas.addEventListener('pointerdown',e=>{e.preventDefault();hop()});window.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();hop()} });muteBtn.addEventListener('click',()=>{muted=!muted;muteBtn.textContent='Sound: '+(muted?'off':'off');muteBtn.setAttribute('aria-pressed',String(!muted))});draw()})();
-</script></body></html>
+</script><script src="/arcade/hosted/arcade-account-bridge.js" data-game-id="cabinet-cinder-hopper" data-score-mode="score" data-score-selector="#score"></script>
+</body></html>

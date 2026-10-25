@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "games": [
+    {
+      "gameId": "cabinet-hexa-havoc",
+      "title": "Hexa Havoc",
+      "path": "/arcade/hosted/hexa-havoc/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-last-ember",
+      "title": "Last Ember",
+      "path": "/arcade/hosted/last-ember/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-cinder-hopper",
+      "title": "Cinder Hopper",
+      "path": "/arcade/hosted/cinder-hopper/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-lift-riot",
+      "title": "Lift Riot",
+      "path": "/arcade/hosted/lift-riot/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-connect-four",
+      "title": "Connect Four",
+      "path": "/arcade/hosted/connect-four/index.html",
+      "scoreSelector": "#playerScore,#score,.score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-ashen-blocks",
+      "title": "Ashen Blocks",
+      "path": "/arcade/hosted/ashen-blocks/index.html",
+      "scoreSelector": "#score,#score-val",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-skyline-foundry",
+      "title": "Skyline Foundry",
+      "path": "/arcade/hosted/skyline-foundry/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-particle-panic",
+      "title": "Particle Panic",
+      "path": "/arcade/hosted/particle-panic/index.html",
+      "scoreSelector": "#points",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-ashen-dominion",
+      "title": "Ashen Dominion",
+      "path": "/arcade/hosted/ashen-dominion/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-prism-panic",
+      "title": "Prism Panic",
+      "path": "/arcade/hosted/prism-panic/index.html",
+      "scoreSelector": "#moves",
+      "scoreMode": "moves"
+    }
+  ]
+}
