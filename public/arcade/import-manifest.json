@@ -413,7 +413,7 @@
       "gameId": "cabinet-marshland-marksman",
       "title": "Marshland Marksman",
       "license": "Original Knightfall code and vector artwork; no upstream source or assets copied",
-      "notes": "Canvas shooting gallery with mouse/touch targeting, original vector wildlife, local best-score persistence, synthesized sound, fullscreen, and issue reporting. Account-wide score/currency integration intentionally not claimed.",
+      "notes": "Original Canvas shooting gallery with mouse/touch targeting, original vector wildlife, local best-score persistence, synthesized sound, fullscreen, and issue reporting. Signed-in runs load the account best and submit completed scores through the shared arcade API; no Cinders transactions are enabled.",
       "status": "ashfall-original-build",
       "files": [
         "/arcade/hosted/marshland-marksman/index.html"
