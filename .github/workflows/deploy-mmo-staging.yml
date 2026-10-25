@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/src/**'
+      - 'backend/src/index.mmo-staging.js'
       - 'backend/migrations/0030_monster_game_saves.sql'
       - 'backend/migrations/0031_monster_game_battles.sql'
       - 'backend/wrangler.staging.jsonc'
