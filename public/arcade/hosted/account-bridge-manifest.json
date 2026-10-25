@@ -350,6 +350,20 @@
       "path": "/arcade/hosted/hex-puzzle/index.html",
       "scoreSelector": "#score",
       "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-swipe-assassin",
+      "title": "Swipe Assassin",
+      "path": "/arcade/hosted/swipe-assassin/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-goalmouth-mayhem",
+      "title": "Goalmouth Mayhem",
+      "path": "/arcade/hosted/goalmouth-mayhem/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
     }
   ]
 }
