@@ -31,14 +31,16 @@
     },
     {
       "id": "a-dark-room",
-      "name": "A Dark Room",
+      "name": "Last Ember",
       "category": "Adventure",
-      "description": "A quiet fire grows into a strange survival story.",
-      "playUrl": "https://adarkroom.doublespeakgames.com/",
+      "description": "Gather supplies, feed your fire, reinforce shelter, and survive a strange post-collapse world.",
+      "playUrl": "/arcade/hosted/last-ember/index.html",
       "repository": "https://github.com/doublespeakgames/adarkroom",
-      "license": "MPL-2.0",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/a-dark-room/",
+      "integrationNote": "Original Knightfall survival narrative using broad genre mechanics only; no upstream code/assets copied. Browser-local save."
     },
     {
       "id": "clumsy-bird",
@@ -237,14 +239,16 @@
     },
     {
       "id": "duckhunt-js",
-      "name": "DuckHunt JS",
+      "name": "Rusty Sky",
       "category": "Arcade",
-      "description": "Aim, click, and try not to embarrass yourself.",
-      "playUrl": "https://mattsurabian.com/duckhunt/",
+      "description": "A scrapyard shooting gallery with flying targets, limited ammo, and three rounds.",
+      "playUrl": "/arcade/hosted/rusty-sky/index.html",
       "repository": "https://github.com/MattSurabian/DuckHunt-JS",
-      "license": "MIT (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/duckhunt-js/",
+      "integrationNote": "Original Knightfall shooting gallery; no upstream code/assets copied. Browser-local high score."
     },
     {
       "id": "snake",
