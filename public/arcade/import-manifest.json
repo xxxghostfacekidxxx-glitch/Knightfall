@@ -152,6 +152,19 @@
         "/arcade/hosted/memory-match/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream single-file card matching game with three difficulty levels; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced local best results, and submits bounded scores to the account leaderboard."
+    },
+    {
+      "gameId": "cabinet-breakout",
+      "title": "Breakout",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/breakout/index.html",
+        "/arcade/hosted/breakout/LICENSE.txt",
+        "/arcade/hosted/breakout/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream Canvas brick-breaker with physics, particles, levels, and synthesized sound; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced best score, and submits bounded scores."
     }
   ],
   "notYetImported": [
