@@ -140,6 +140,28 @@ for (const file of htmlFiles) {
   ok("HTML structure and local assets: " + rel);
 }
 
+
+const manifest = JSON.parse(await readFile(path.join(publicDir, "arcade/import-manifest.json"), "utf8"));
+if (!Array.isArray(manifest.imports) || !Array.isArray(manifest.ashFallOriginalBuilds)) fail("Arcade import manifest is missing import/original-build arrays.");
+const manifestEntries = [...manifest.imports, ...manifest.ashFallOriginalBuilds];
+const manifestIds = manifestEntries.map(entry => entry.gameId);
+if (new Set(manifestIds).size !== manifestIds.length) fail("Arcade manifest contains duplicate gameId values.");
+for (const entry of manifestEntries) {
+  if (!entry.gameId || !/^[a-z0-9-]+$/.test(entry.gameId)) fail("Invalid arcade manifest gameId: " + String(entry.gameId));
+  for (const item of entry.files || []) {
+    const localPath = item.startsWith("/") ? item : "/" + item;
+    if (!publicPaths.has(localPath)) fail("Manifest entry " + entry.gameId + " lists a missing local file: " + item);
+  }
+  if (entry.status === "imported-adapted" && (!entry.upstream || !entry.license || !(entry.files || []).some(f => /LICENSE|NOTICE|SOURCE-NOTICE/i.test(f)))) {
+    fail("Imported adaptation lacks upstream, license, or a bundled notice reference: " + entry.gameId);
+  }
+}
+const marksman = await readFile(path.join(publicDir, "arcade/hosted/marshland-marksman/index.html"), "utf8");
+if (!marksman.includes("cabinet-marshland-marksman") || !marksman.includes("recordScore")) fail("Marshland Marksman is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-marshland-marksman"') || !worker.includes('"cabinet-marshland-marksman":1000')) fail("Marshland Marksman is not allowlisted with a bounded score cap.");
+if (!catalog.includes('href="/arcade/hosted/marshland-marksman/index.html"')) fail("Marshland Marksman is missing from the arcade catalog.");
+ok("Arcade manifest paths, provenance records, and Marshland Marksman account integration checked.");
+
 const apiCandidates = new Set();
 for (const file of [...htmlFiles, ...jsFiles]) {
   const source = await readFile(file, "utf8");
