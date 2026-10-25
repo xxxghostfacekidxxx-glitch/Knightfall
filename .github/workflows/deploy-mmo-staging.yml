@@ -1,0 +1,51 @@
+name: Deploy Monster MMO Staging
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/src/**'
+      - 'backend/migrations/0030_monster_game_saves.sql'
+      - 'backend/migrations/0031_monster_game_battles.sql'
+      - 'backend/wrangler.staging.jsonc'
+      - '.github/workflows/deploy-mmo-staging.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-monster-mmo-staging
+  cancel-in-progress: true
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate isolated staging configuration
+        working-directory: backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const c = JSON.parse(fs.readFileSync("wrangler.staging.jsonc", "utf8"));
+            if (c.name !== "knightfall-mmo-staging") throw new Error("Unexpected Worker name");
+            if (c.d1_databases?.[0]?.database_id !== "6c72439f-2319-4f03-9bb6-711157d18963") throw new Error("Staging must use the isolated D1 database");
+            if (c.kv_namespaces?.[0]?.id !== "56931d38c9f64871b812867e422b771b") throw new Error("Staging must use the isolated KV namespace");
+            if (c.r2_buckets?.some(b => !b.bucket_name.startsWith("knightfall-mmo-staging-"))) throw new Error("Staging must not bind production R2 buckets");
+            if (c.routes?.length) throw new Error("Staging must not bind production routes");
+            console.log("Isolated staging bindings validated.");
+          '
+
+      - name: Deploy isolated Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy --config wrangler.staging.jsonc
