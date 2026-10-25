@@ -1234,7 +1234,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const sub=body.subscription||{},endpoint=String(sub.endpoint||""),p256dh=String(sub.keys?.p256dh||""),auth=String(sub.keys?.auth||"");
     let parsed;try{parsed=new URL(endpoint);}catch{return json({error:"Invalid push endpoint."},400,origin);}
-    if(parsed.protocol!=="https:"||endpoint.length>2048||!/^[-_A-Za-z0-9]{80,120}$/.test(p256dh)||!/^[-_A-Za-z0-9]{16,64}$/.test(auth))return json({error:"Invalid push subscription keys."},400,origin);
+    const host=parsed.hostname.toLowerCase(),allowedPushHost=host==="fcm.googleapis.com"||host==="web.push.apple.com"||host==="updates.push.services.mozilla.com"||host.endsWith(".push.services.mozilla.com")||host.endsWith(".notify.windows.com");if(parsed.protocol!=="https:"||parsed.username||parsed.password||parsed.port||!allowedPushHost||endpoint.length>2048||!/^[-_A-Za-z0-9]{80,120}$/.test(p256dh)||!/^[-_A-Za-z0-9]{16,64}$/.test(auth))return json({error:"Invalid push subscription keys or endpoint."},400,origin);
     const now=new Date().toISOString();
     await env.DB.prepare("INSERT INTO push_subscriptions (user_id,endpoint,p256dh,auth,created_at,updated_at) VALUES (?,?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET user_id=excluded.user_id,p256dh=excluded.p256dh,auth=excluded.auth,updated_at=excluded.updated_at").bind(user.id,endpoint,p256dh,auth,now,now).run();
     return json({ok:true},201,origin);
