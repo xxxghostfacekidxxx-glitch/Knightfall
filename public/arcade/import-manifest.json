@@ -61,6 +61,19 @@
         "/arcade/hosted/hextris/THIRD-PARTY-NOTICES.md"
       ],
       "notes": "Bundled source and vendor dependencies; removed upstream remote analytics, advertising, and external score beacon; added account score and save/resume integration."
+    },
+    {
+      "gameId": "cabinet-maze-muncher",
+      "title": "Maze Muncher",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/maze-muncher/index.html",
+        "/arcade/hosted/maze-muncher/LICENSE.txt",
+        "/arcade/hosted/maze-muncher/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream single-file maze chase game; removed upstream shared i18n/analytics dependency, applied Ash-Fall theme, namespaced local best-score key, and added account leaderboard submission on completed runs."
     }
   ],
   "notYetImported": [
