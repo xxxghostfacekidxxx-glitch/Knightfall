@@ -55,14 +55,16 @@
     },
     {
       "id": "elevator-saga",
-      "name": "Elevator Saga",
+      "name": "Lift Riot",
       "category": "Strategy",
-      "description": "Write code to move elevators efficiently.",
-      "playUrl": "https://play.elevatorsaga.com/",
+      "description": "Dispatch a lift, collect passengers, deliver them efficiently, and keep the building from losing its mind.",
+      "playUrl": "/arcade/hosted/lift-riot/index.html",
       "repository": "https://github.com/magwo/elevatorsaga",
-      "license": "MIT",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/lift-riot/",
+      "integrationNote": "Original elevator-management simulation using broad genre conventions only; no upstream code/assets copied. Browser-local best score only."
     },
     {
       "id": "asteroids",
