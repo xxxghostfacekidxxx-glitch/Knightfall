@@ -127,7 +127,7 @@ jobs:
           - **Workflow evidence:** ${RUN_URL}
 
           ## Repair protocol
-          - [ ] Download the failed agent's `arcade-test-results-*` artifact and identify the first actionable failure.
+          - [ ] Download the failed agent's \`arcade-test-results-*\` artifact and identify the first actionable failure.
           - [ ] Reproduce the failure locally; distinguish a game defect from a live-site/network/deployment issue.
           - [ ] Create a dedicated fix branch and make the smallest targeted change.
           - [ ] Add or update a regression check for the exact failure.
