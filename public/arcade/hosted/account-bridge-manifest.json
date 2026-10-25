@@ -126,6 +126,62 @@
       "path": "/arcade/hosted/rusty-sky/index.html",
       "scoreSelector": "#score",
       "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-curvy-snake-arcade",
+      "title": "Curvy Snake",
+      "path": "/arcade/hosted/curvy-snake/index.html",
+      "scoreSelector": "#scoreLabel,.score-big",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-wordlee",
+      "title": "Wordlee",
+      "path": "/arcade/hosted/wordlee/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-endless-runner",
+      "title": "Endless Runner",
+      "path": "/arcade/hosted/endless-runner/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-slush-rush",
+      "title": "Slush Rush",
+      "path": "/arcade/hosted/slush-rush/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-rock-paper-scissors",
+      "title": "Rock Paper Scissors",
+      "path": "/arcade/hosted/rock-paper-scissors/index.html",
+      "scoreSelector": "#playerScore",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-sudoku",
+      "title": "Sudoku",
+      "path": "/arcade/hosted/sudoku/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-alien-battle",
+      "title": "Alien Battle",
+      "path": "/arcade/hosted/alien-battle/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-archer",
+      "title": "Archer",
+      "path": "/arcade/hosted/archer/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
     }
   ]
 }
