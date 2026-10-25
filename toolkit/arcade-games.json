@@ -186,14 +186,16 @@
     },
     {
       "id": "green-mahjong",
-      "name": "Green Mahjong",
+      "name": "Neon Mahjong",
       "category": "Puzzle",
-      "description": "Solitaire mahjong with layouts and tile matching.",
-      "playUrl": "https://danbeck.github.io/green-mahjong/",
+      "description": "Clear matching pairs from a layered tile board. Find open tiles, plan ahead, and beat your best time.",
+      "playUrl": "/arcade/hosted/neon-mahjong/index.html",
       "repository": "https://github.com/danbeck/green-mahjong",
-      "license": "GPL-3.0",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/neon-mahjong/",
+      "integrationNote": "Original Mahjong solitaire layout and tile interface using generic matching-pair rules; no upstream code or assets copied. Browser-local best time."
     },
     {
       "id": "browserquest",
