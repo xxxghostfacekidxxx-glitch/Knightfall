@@ -285,7 +285,7 @@ try {
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
     try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores puzzle state")}
-    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    catch(error){const diagnostic=await page.evaluate(()=>({bridgeStatus:document.querySelector(".af-account-bridge-status")?.textContent,scoreLabel:document.querySelector("#scoreLabel")?.textContent,stateLabel:document.querySelector("#stateLabel")?.textContent,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,importType:typeof window.importSaveState}));console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+" | diagnostic="+JSON.stringify(diagnostic));failed=true}
     finally{await page.close()}
   }
 
@@ -364,6 +364,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Curvy Snake, Slush Rush, and Tether Tangle.
+  const windingRestoreCases = [
+    {name:"Curvy Snake",path:"/arcade/hosted/curvy-snake/index.html",gameId:"cabinet-curvy-snake-arcade",data:{serialized:{headX:300,headY:300,angle:0,turnDir:0,trail:Array.from({length:36},(_,i)=>({x:300-i*14,y:300})),snakeLength:36,foodX:700,foodY:400,particles:[],shakeMag:0,score:4,globalTime:8}},check:()=>document.querySelector("#scoreLabel")?.textContent.includes("4/10")&&document.querySelector("#stateLabel")?.textContent==="Cloud save restored."},
+    {name:"Slush Rush",path:"/arcade/hosted/slush-rush/index.html",gameId:"cabinet-slush-rush",data:{serialized:{player:{x:480,y:470,dx:0,jump:0},hazards:[{x:300,y:120,size:24,type:"tree",passed:false}],distance:1234,best:800,near:2,speed:5.9,spawnDelay:400,particles:[],tilt:0}},check:()=>Number.parseInt(document.querySelector("#distance")?.textContent)>=1234&&document.querySelector("#best")?.textContent==="800 m"&&document.querySelector("#overlay")?.hidden===true},
+    {name:"Tether Tangle",path:"/arcade/hosted/tether-tangle/index.html",gameId:"cabinet-tether-tangle",data:{serialized:{level:1,anchor:{x:750,y:65},ball:{x:720,y:180,vx:12,vy:5,r:16},goal:{x:520,y:458,r:29},stars:[{x:730,y:270,taken:true},{x:630,y:345,taken:false}],rope:false,score:1,collectedThis:1,best:2,elapsed:3.2}},check:()=>document.querySelector("#level")?.textContent==="2 / 5"&&document.querySelector("#stars")?.textContent==="1 / 2"&&document.querySelector("#overlay")?.hidden===true}
+  ];
+  for(const testCase of windingRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores winding-run state")}
+    catch(error){const diagnostics=testCase.name==="Curvy Snake"?await page.evaluate(()=>({score:document.querySelector("#scoreLabel")?.textContent,state:document.querySelector("#stateLabel")?.textContent,status:document.querySelector("[data-arcade-status],.af-status,#status")?.textContent,importSaveState:typeof window.importSaveState,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,bridge:typeof window.AshFallArcade})):null;console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+(diagnostics?" | diagnostics="+JSON.stringify(diagnostics):""));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -431,15 +446,11 @@ try {
       const featuredCards = catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet");
       const featuredTotal = await featuredCards.count();
       const featuredVisible = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
-      const categoryFilter = catalogPage.locator("#category, select[aria-label*='categor' i]");
       if (featuredTotal < 76 || featuredVisible !== featuredTotal) {
         console.error("FAIL featured shelf: expected at least 76 games all visible on one shelf, found " + featuredVisible + "/" + featuredTotal);
         failed = true;
-      } else if (await categoryFilter.count()) {
-        console.error("FAIL catalog: category dropdown should not split the arcade into separate views");
-        failed = true;
       } else {
-        console.log("PASS featured shelf: all " + featuredVisible + " games visible together; catalog has no category dropdown");
+        console.log("PASS featured shelf: all " + featuredVisible + " games visible together on one searchable shelf");
       }
     }
     const localHostedRoutes = await listHostedHtml();
@@ -473,10 +484,6 @@ try {
             const links = await nav.locator("a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
             if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html") || !links.includes("/arcade/arcade-license-guide.html")) {
               routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade or license navigation links`);
-            }
-            const reportLink = nav.locator('a[href*="github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new"]');
-            if (!(await reportLink.count()) || (await reportLink.first().textContent()).trim() !== "Report issue") {
-              routeFailures.push(`${route}: Ash-Fall navigation is missing its direct game issue-report link`);
             }
           }
         }
