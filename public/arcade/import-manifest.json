@@ -217,188 +217,296 @@
       "gameId": "cabinet-isocity",
       "candidate": "https://github.com/amilich/isometric-city",
       "license": "MIT",
-      "blocker": "Next.js/TypeScript project; needs build/dependency audit and static export compatibility review."
+      "blocker": "Next.js/TypeScript project; needs build/dependency audit and static export compatibility review. Local alternative: Skyline Foundry (/arcade/hosted/skyline-foundry/index.html). Original city-building-inspired game; not an upstream import.",
+      "localReplacement": {
+        "title": "Skyline Foundry",
+        "path": "/arcade/hosted/skyline-foundry/index.html"
+      }
     },
     {
       "gameId": "cabinet-green-mahjong",
       "candidate": "https://github.com/danbeck/green-mahjong",
       "license": "Code and artwork have different terms",
-      "blocker": "Artwork is CC-BY-NC; do not redistribute those assets in this project. A code-only import needs a clean asset replacement and attribution audit."
+      "blocker": "Artwork is CC-BY-NC; do not redistribute those assets in this project. A code-only import needs a clean asset replacement and attribution audit. Local alternative: Neon Mahjong (/arcade/hosted/neon-mahjong/index.html). Original local mahjong-style game; CC-BY-NC upstream artwork is not copied.",
+      "localReplacement": {
+        "title": "Neon Mahjong",
+        "path": "/arcade/hosted/neon-mahjong/index.html"
+      }
     },
     {
       "gameId": "cabinet-a-dark-room",
       "title": "A Dark Room",
       "candidate": "https://github.com/doublespeakgames/adarkroom",
       "license": "MPL-2.0 verified (LICENSE.md and package.json)",
-      "blocker": "Upstream import remains intentionally pending a full source/dependency/audio/image audit. A locally hosted original survival reimagining already exists at /arcade/hosted/last-ember/index.html; it does not copy A Dark Room source, text, or assets."
+      "blocker": "Upstream import remains intentionally pending a full source/dependency/audio/image audit. A locally hosted original survival reimagining already exists at /arcade/hosted/last-ember/index.html; it does not copy A Dark Room source, text, or assets. Local alternative: Last Ember (/arcade/hosted/last-ember/index.html). Original text/resource survival reimagining; no upstream source, text, or assets copied.",
+      "localReplacement": {
+        "title": "Last Ember",
+        "path": "/arcade/hosted/last-ember/index.html"
+      }
     },
     {
       "gameId": "cabinet-clumsy-bird",
       "title": "Clumsy Bird",
       "candidate": "https://github.com/ellisonleao/clumsy-bird",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Cinder Hopper (/arcade/hosted/cinder-hopper/index.html). Original jumping/platform challenge; not an upstream import.",
+      "localReplacement": {
+        "title": "Cinder Hopper",
+        "path": "/arcade/hosted/cinder-hopper/index.html"
+      }
     },
     {
       "gameId": "cabinet-elevator-saga",
       "title": "Elevator Saga",
       "candidate": "https://github.com/magwo/elevatorsaga",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Lift Riot (/arcade/hosted/lift-riot/index.html). Original elevator/vertical arcade challenge; not an upstream import.",
+      "localReplacement": {
+        "title": "Lift Riot",
+        "path": "/arcade/hosted/lift-riot/index.html"
+      }
     },
     {
       "gameId": "cabinet-3d-city",
       "title": "3D City",
       "candidate": "https://github.com/lo-th/3d.city",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Skyline Foundry (/arcade/hosted/skyline-foundry/index.html). Original city/management-inspired game; not an upstream import.",
+      "localReplacement": {
+        "title": "Skyline Foundry",
+        "path": "/arcade/hosted/skyline-foundry/index.html"
+      }
     },
     {
       "gameId": "cabinet-particle-clicker",
       "title": "Particle Clicker",
       "candidate": "https://github.com/particle-clicker/particle-clicker",
       "license": "MIT verified (LICENSE)",
-      "blocker": "AngularJS/jQuery-heavy project with many referenced files. Audit every dependency and asset, then package the complete local runtime before importing."
+      "blocker": "AngularJS/jQuery-heavy project with many referenced files. Audit every dependency and asset, then package the complete local runtime before importing. Local alternative: Particle Panic (/arcade/hosted/particle-panic/index.html). Original particle arcade game. The separate clicker concept is also an Ash-Fall mini-game build.",
+      "localReplacement": {
+        "title": "Particle Panic",
+        "path": "/arcade/hosted/particle-panic/index.html"
+      }
     },
     {
       "gameId": "cabinet-freeciv-web",
       "title": "Freeciv Web",
       "candidate": "https://github.com/freeciv/freeciv-web",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Ashen Dominion (/arcade/hosted/ashen-dominion/index.html). Original strategy-themed game; not a replacement for Freeciv's full multiplayer 4X feature set.",
+      "localReplacement": {
+        "title": "Ashen Dominion",
+        "path": "/arcade/hosted/ashen-dominion/index.html"
+      }
     },
     {
       "gameId": "cabinet-cube-composer",
       "title": "Cube Composer",
       "candidate": "https://github.com/sharkdp/cube-composer",
       "license": "MIT verified (LICENSE and package.json)",
-      "blocker": "The upstream repository is PureScript source with Gulp/Bower-era build dependencies; tested dist paths were absent. Needs a reproducible build and local runtime audit before direct import."
+      "blocker": "The upstream repository is PureScript source with Gulp/Bower-era build dependencies; tested dist paths were absent. Needs a reproducible build and local runtime audit before direct import. Local alternative: Ash-Fall mini-games (/arcade/hosted/ashfall-mini-games.html). Original grid-logic puzzle build; no upstream Cube Composer source copied.",
+      "localReplacement": {
+        "title": "Ash-Fall mini-games",
+        "path": "/arcade/hosted/ashfall-mini-games.html"
+      }
     },
     {
       "gameId": "cabinet-hexgl",
       "title": "HexGL",
       "candidate": "https://github.com/BKcore/HexGL",
       "license": "MIT verified (LICENSE)",
-      "blocker": "MIT permits source redistribution with its notice. Still audit bundled textures, audio, dependencies, and build output before importing the complete game."
+      "blocker": "MIT permits source redistribution with its notice. Still audit bundled textures, audio, dependencies, and build output before importing the complete game. Local alternative: Rusty Sky (/arcade/hosted/rusty-sky/index.html). Original racing game, not a 3D HexGL-equivalent import.",
+      "localReplacement": {
+        "title": "Rusty Sky",
+        "path": "/arcade/hosted/rusty-sky/index.html"
+      }
     },
     {
       "gameId": "cabinet-trigger-rally",
       "title": "Trigger Rally",
       "candidate": "https://github.com/trigger-rally/trigger-rally",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Car Race (/arcade/hosted/car-race/index.html). Original local racing game; not an upstream import.",
+      "localReplacement": {
+        "title": "Car Race",
+        "path": "/arcade/hosted/car-race/index.html"
+      }
     },
     {
       "gameId": "cabinet-open-panzer",
       "title": "Open Panzer",
       "candidate": "https://github.com/openpanzer/OpenPanzer",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Ashen Dominion (/arcade/hosted/ashen-dominion/index.html). Original strategy game; not a substitute for Open Panzer's full feature set.",
+      "localReplacement": {
+        "title": "Ashen Dominion",
+        "path": "/arcade/hosted/ashen-dominion/index.html"
+      }
     },
     {
       "gameId": "cabinet-browserquest",
       "title": "BrowserQuest",
       "candidate": "https://github.com/mozilla/BrowserQuest",
       "license": "MPL-2.0 code; CC-BY-SA content (LICENSE)",
-      "blocker": "Code and content have different terms. Audit attribution/share-alike obligations for every map, sprite, sound, and other asset before importing; do not treat code license as covering all assets."
+      "blocker": "Code and content have different terms. Audit attribution/share-alike obligations for every map, sprite, sound, and other asset before importing; do not treat code license as covering all assets. Local alternative: Ruinwalkers (/arcade/hosted/ruinwalkers/index.html). Original adventure game, not an MMORPG replacement for BrowserQuest.",
+      "localReplacement": {
+        "title": "Ruinwalkers",
+        "path": "/arcade/hosted/ruinwalkers/index.html"
+      }
     },
     {
       "gameId": "cabinet-digger",
       "title": "Digger",
       "candidate": "https://github.com/lutzroeder/digger",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Burrow Blitz (/arcade/hosted/burrow-blitz/index.html). Original digging/arcade game; not an upstream import.",
+      "localReplacement": {
+        "title": "Burrow Blitz",
+        "path": "/arcade/hosted/burrow-blitz/index.html"
+      }
     },
     {
       "gameId": "cabinet-ball-and-wall",
       "title": "Ball and Wall",
       "candidate": "https://github.com/budnix/ball-and-wall",
       "license": "MIT verified for code (LICENSE); Pegasus artwork has separate terms",
-      "blocker": "Do not copy the separately licensed Pegasus artwork. A code-only import requires replacing those assets and auditing the remaining image/audio files."
+      "blocker": "Do not copy the separately licensed Pegasus artwork. A code-only import requires replacing those assets and auditing the remaining image/audio files. Local alternative: Ball & Wall: Ember Breakout (/arcade/hosted/ashfall-mini-games.html). Original breakout build; separately licensed Pegasus artwork is not used.",
+      "localReplacement": {
+        "title": "Ball & Wall: Ember Breakout",
+        "path": "/arcade/hosted/ashfall-mini-games.html"
+      }
     },
     {
       "gameId": "cabinet-duckhunt-js",
       "title": "DuckHunt JS",
       "candidate": "https://github.com/MattSurabian/DuckHunt-JS",
       "license": "MIT verified (LICENSE)",
-      "blocker": "MIT permits source redistribution with notice. Audit the included sprites, sound files, third-party libraries, and remote calls before importing."
+      "blocker": "MIT permits source redistribution with notice. Audit the included sprites, sound files, third-party libraries, and remote calls before importing. Local alternative: Marshland Marksman (/arcade/hosted/marshland-marksman/index.html). Original hunting-gallery game with original vector wildlife; no upstream sprites or sounds copied.",
+      "localReplacement": {
+        "title": "Marshland Marksman",
+        "path": "/arcade/hosted/marshland-marksman/index.html"
+      }
     },
     {
       "gameId": "cabinet-flappy-bird-style",
       "title": "Flappy Bird-style",
       "candidate": "https://github.com/emjay045/browser-games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Cinder Hopper (/arcade/hosted/cinder-hopper/index.html). Original jumping game; not an upstream import.",
+      "localReplacement": {
+        "title": "Cinder Hopper",
+        "path": "/arcade/hosted/cinder-hopper/index.html"
+      }
     },
     {
       "gameId": "cabinet-dino-dash",
       "title": "Dino Dash",
       "candidate": "https://github.com/emjay045/browser-games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Dino Run: Ash-Fall Edition (/arcade/hosted/dino-run/index.html). Locally hosted adapted runner with required license notices.",
+      "localReplacement": {
+        "title": "Dino Run: Ash-Fall Edition",
+        "path": "/arcade/hosted/dino-run/index.html"
+      }
     },
     {
       "gameId": "cabinet-skifree",
       "title": "SkiFree",
       "candidate": "https://github.com/justinbarr/ski-free",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: SkiFree: Slalom of Doom (/arcade/hosted/ashfall-mini-games.html). Original downhill avoidance game; no upstream source or art copied.",
+      "localReplacement": {
+        "title": "SkiFree: Slalom of Doom",
+        "path": "/arcade/hosted/ashfall-mini-games.html"
+      }
     },
     {
       "gameId": "cabinet-bubble-shooter",
       "title": "Bubble Shooter",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Bubble Pop (/arcade/hosted/bubble-pop/index.html). Original bubble-popping arcade game; not an upstream import.",
+      "localReplacement": {
+        "title": "Bubble Pop",
+        "path": "/arcade/hosted/bubble-pop/index.html"
+      }
     },
     {
       "gameId": "cabinet-chess",
       "title": "Chess",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Cinder Chess (/arcade/hosted/cinder-chess/index.html). Original chess cabinet; not an upstream import.",
+      "localReplacement": {
+        "title": "Cinder Chess",
+        "path": "/arcade/hosted/cinder-chess/index.html"
+      }
     },
     {
       "gameId": "cabinet-cut-the-rope",
       "title": "Cut the Rope",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Tether Tangle (/arcade/hosted/tether-tangle/index.html). Original rope/physics puzzle; not an upstream import.",
+      "localReplacement": {
+        "title": "Tether Tangle",
+        "path": "/arcade/hosted/tether-tangle/index.html"
+      }
     },
     {
       "gameId": "cabinet-space-waves",
       "title": "Space Waves",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Space Fighter (/arcade/hosted/space-fighter/index.html). Original space shooter; not an upstream import.",
+      "localReplacement": {
+        "title": "Space Fighter",
+        "path": "/arcade/hosted/space-fighter/index.html"
+      }
     },
     {
       "gameId": "cabinet-pac-man",
       "title": "Pac-Man",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Glitch Munch (/arcade/hosted/glitch-munch/index.html). Original maze-chase game; not an upstream import.",
+      "localReplacement": {
+        "title": "Glitch Munch",
+        "path": "/arcade/hosted/glitch-munch/index.html"
+      }
     },
     {
       "gameId": "cabinet-tower-shooter",
       "title": "Tower Shooter",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Bubble Barrage (/arcade/hosted/bubble-barrage/index.html). Original shooting cabinet; not an upstream import.",
+      "localReplacement": {
+        "title": "Bubble Barrage",
+        "path": "/arcade/hosted/bubble-barrage/index.html"
+      }
     },
     {
       "gameId": "cabinet-kaiju-krush",
       "title": "Kaiju Krush",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Colossus Clash (/arcade/hosted/colossus-clash/index.html). Original monster-arena brawler; not an upstream import.",
+      "localReplacement": {
+        "title": "Colossus Clash",
+        "path": "/arcade/hosted/colossus-clash/index.html"
+      }
     },
     {
       "gameId": "cabinet-parkour",
       "title": "Parkour",
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited. Local alternative: Rooftop Riot (/arcade/hosted/rooftop-riot/index.html). Original rooftop/platform game; not an upstream import.",
+      "localReplacement": {
+        "title": "Rooftop Riot",
+        "path": "/arcade/hosted/rooftop-riot/index.html"
+      }
     }
   ],
   "ashFallOriginalBuilds": [
