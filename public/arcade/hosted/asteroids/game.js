@@ -839,34 +839,11 @@ Text = {
 };
 
 SFX = {
-  laser:     new Audio(),
-  explosion: new Audio()
+  // Sound assets are intentionally omitted from the Ash-Fall build.
+  laser: function () {},
+  explosion: function () {},
+  muted: true
 };
-
-// preload audio
-for (var sfx in SFX) {
-  (function () {
-    var audio = SFX[sfx];
-    audio.muted = true;
-    audio.play();
-
-    SFX[sfx] = function () {
-      if (!this.muted) {
-        if (audio.duration == 0) {
-          // somehow dropped out
-          audio.load();
-          audio.play();
-        } else {
-          audio.muted = false;
-          audio.currentTime = 0;
-        }
-      }
-      return audio;
-    }
-  })();
-}
-// pre-mute audio
-SFX.muted = true;
 
 Game = {
   score: 0,
