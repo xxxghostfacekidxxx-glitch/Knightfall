@@ -16,7 +16,6 @@ on:
 permissions:
   contents: read
   actions: read
-  issues: write
 
 concurrency:
   group: arcade-test-bot-fleet-${{ github.ref }}
@@ -24,6 +23,9 @@ concurrency:
 
 jobs:
   browser-bot:
+    permissions:
+      contents: read
+      actions: read
     name: "${{ matrix.bot }} · full arcade audit"
     runs-on: ubuntu-latest
     timeout-minutes: 20
