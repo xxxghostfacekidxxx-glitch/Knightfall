@@ -344,14 +344,16 @@
     },
     {
       "id": "skifree",
-      "name": "SkiFree",
+      "name": "Slush Rush",
       "category": "Arcade",
-      "description": "Ski downhill, dodge obstacles, and watch your back.",
-      "playUrl": "https://ski.ihoc.net/",
+      "description": "Ski a procedurally generated downhill course, dodge hazards, and push for a new distance record.",
+      "playUrl": "/arcade/hosted/slush-rush/index.html",
       "repository": "https://github.com/justinbarr/ski-free",
-      "license": "License check required",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/slush-rush/",
+      "integrationNote": "Original downhill survival game using broad skiing-game mechanics only; no upstream code, characters, or assets copied. Browser-local best distance."
     },
     {
       "id": "rock-paper-scissors",
