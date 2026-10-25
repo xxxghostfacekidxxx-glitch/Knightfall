@@ -250,6 +250,28 @@ try {
     }
   }
 
+  // Zero-move/zero-wave screens must not be mistaken for active runs or leaderboard scores.
+  const idlePuzzle = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await idlePuzzle.addInitScript(() => {
+    window.__idleScores = [];
+    window.AshFallArcade = {
+      ready: Promise.resolve(), user: { id: "browser-smoke-test" },
+      loadProgress: async () => null,
+      saveProgress: async () => ({ revision: 1 }),
+      recordScore: async (...args) => { window.__idleScores.push(args); return { saved: true }; }
+    };
+  });
+  await idlePuzzle.goto(base + "/arcade/hosted/neon-mahjong/index.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+  await idlePuzzle.waitForTimeout(900);
+  const idleScoreCount = await idlePuzzle.evaluate(() => window.__idleScores.length);
+  if (idleScoreCount !== 0) {
+    console.error("FAIL account bridge: idle moves-mode puzzle submitted a score before the player moved");
+    failed = true;
+  } else {
+    console.log("PASS account bridge: zero moves does not generate a fake score or start a run");
+  }
+  await idlePuzzle.close();
+
   // Verify cloud save restoration for word, number, tile, and mirror puzzles.
   const puzzleRestoreCases = [
     { name:"Wordlee", path:"/arcade/hosted/wordlee/index.html", gameId:"cabinet-wordlee", data:{serialized:{answer:"ASHEN",row:1,guess:"CLOUD",done:false,guesses:[{word:"GHOST",colors:["absent","absent","absent","absent","absent"]}],keyState:{G:"absent"}}}, check:()=>document.querySelector("#board .tile")?.textContent==="G"&&document.querySelector("#status")?.textContent.includes("Cloud save restored") },
