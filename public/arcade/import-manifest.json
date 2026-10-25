@@ -31,6 +31,19 @@
         "/arcade/hosted/custom-tetris/SOURCE-NOTICE.md"
       ],
       "notes": "Single-file upstream implementation with Knightfall styling, account save/resume, and score submission."
+    },
+    {
+      "gameId": "cabinet-curvy-snake",
+      "title": "Snek Souls",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mpaterakis/html-snakeGame",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/snek-souls/index.html",
+        "/arcade/hosted/snek-souls/LICENSE.txt",
+        "/arcade/hosted/snek-souls/SOURCE-NOTICE.md"
+      ],
+      "notes": "Single-file upstream Snake game with Knightfall account save/resume controls and leaderboard submission."
     }
   ],
   "notYetImported": [
