@@ -14,6 +14,8 @@
 #game-shelf .arcade-catalog-toolbar input{width:100%;min-width:0;padding:.8rem .95rem;border:1px solid #ff55d866;border-radius:12px;background:#100d19;color:#fff}
 #game-shelf .arcade-catalog-toolbar input::placeholder{color:#998da2}
 #game-shelf .arcade-search-count{font-size:.76rem;color:#c6ff45;text-align:right;white-space:nowrap}
+#game-shelf .arcade-report-issue{position:relative;z-index:1;display:inline-flex;align-self:flex-start;align-items:center;gap:.35rem;margin-top:.9rem;padding:.35rem 0;color:#c2a8c8;font-size:.72rem;font-weight:750;text-decoration:none;border-bottom:1px dashed #b78ac866}
+#game-shelf .arcade-report-issue:hover,#game-shelf .arcade-report-issue:focus-visible{color:#ff77d9;border-color:#ff77d9;outline-offset:3px}
 @media(max-width:1100px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}#game-shelf .cartridge-cabinet{padding:.8rem!important;min-height:230px}#game-shelf .cartridge-cabinet h3{font-size:1rem}#game-shelf .cartridge-cabinet p{font-size:.78rem}#game-shelf .arcade-catalog-toolbar{grid-template-columns:1fr;gap:.45rem}#game-shelf .arcade-search-count{text-align:left}}
 @media(max-width:390px){#game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr)}}
