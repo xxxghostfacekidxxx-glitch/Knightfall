@@ -214,14 +214,16 @@
     },
     {
       "id": "digger",
-      "name": "Digger",
+      "name": "Burrow Blitz",
       "category": "Arcade",
-      "description": "Dig through a tile world and dodge danger.",
-      "playUrl": "https://lutzroeder.github.io/digger/",
+      "description": "Dig through dirt, collect neon gems, and avoid rocks that fall into the tunnels you create.",
+      "playUrl": "/arcade/hosted/burrow-blitz/index.html",
       "repository": "https://github.com/lutzroeder/digger",
-      "license": "Verify upstream",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/burrow-blitz/",
+      "integrationNote": "Original tile-digging arcade game using broad digging and falling-rock mechanics only; no upstream source or assets copied. Best score stored locally."
     },
     {
       "id": "ball-and-wall",
