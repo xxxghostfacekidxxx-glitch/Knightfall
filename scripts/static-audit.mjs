@@ -168,8 +168,10 @@ if (!cinderGame.includes("cabinet-cinder-crossing") || !cinderGame.includes("rec
 if (!worker.includes('"cabinet-cinder-crossing"') || !worker.includes('"cabinet-cinder-crossing":1000')) fail("Cinder Crossing is not allowlisted with a bounded score cap.");
 if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-cinder-crossing")) fail("Cinder Crossing is missing from the arcade manifest.");
 ok("Cinder Crossing catalog, account integration, score cap, and manifest registration checked.");
-if (!cartridge.includes('href="/arcade/hosted/marshland-marksman/index.html"') || !cartridge.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Chaos Cartridge is missing one or more newly integrated cabinets.");
-if (!arcadeProgress.includes('"cabinet-marshland-marksman":"Marshland Marksman"') || !arcadeProgress.includes('"cabinet-cinder-crossing":"Cinder Crossing"')) fail("Arcade records page does not register the new cabinet leaderboards.");
+const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
+const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!mainCartridgeAudit.includes('href="/arcade/hosted/marshland-marksman/index.html"') || !mainCartridgeAudit.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Chaos Cartridge is missing one or more newly integrated cabinets.");
+if (!recordsPageAudit.includes('"cabinet-marshland-marksman":"Marshland Marksman"') || !recordsPageAudit.includes('"cabinet-cinder-crossing":"Cinder Crossing"')) fail("Arcade records page does not register the new cabinet leaderboards.");
 ok("New cabinets are linked from the main arcade and registered in the player records page.");
 
 
