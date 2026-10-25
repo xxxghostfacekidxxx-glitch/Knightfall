@@ -211,7 +211,7 @@ function hideText() {
 }
 
 function gameOverDisplay() {
-	if (window.AshFallArcade && Number.isFinite(Number(score))) window.AshFallArcade.recordScore("cabinet-hextris", Number(score), { score: Number(score) }).catch(function() {});
+	if (window.AshFallArcade && Number.isFinite(Number(score))) Promise.resolve(window.AshFallArcade.ready).then(function() { return window.AshFallArcade.recordScore("cabinet-hextris", Number(score), { serialized: exportSaveState() }); }).catch(function() {});
 	settings.ending_block=false;
 	Cookies.set("visited",true);
 	var c = document.getElementById("canvas");
