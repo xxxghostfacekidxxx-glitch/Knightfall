@@ -428,16 +428,18 @@ try {
       failed = true;
     } else {
       mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
-      const featuredCount = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
-      const viewAll = catalogPage.locator("#game-shelf .arcade-view-all a[href='/arcade-30-games.html']");
-      if (featuredCount !== 30) {
-        console.error("FAIL featured shelf: expected 30 visible cards, found " + featuredCount);
+      const featuredCards = catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet");
+      const featuredTotal = await featuredCards.count();
+      const featuredVisible = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
+      const categoryFilter = catalogPage.locator("#category, select[aria-label*='categor' i]");
+      if (featuredTotal < 76 || featuredVisible !== featuredTotal) {
+        console.error("FAIL featured shelf: expected at least 76 games all visible on one shelf, found " + featuredVisible + "/" + featuredTotal);
         failed = true;
-      } else if (!(await viewAll.count())) {
-        console.error("FAIL featured shelf: missing View all 76 games link");
+      } else if (await categoryFilter.count()) {
+        console.error("FAIL catalog: category dropdown should not split the arcade into separate views");
         failed = true;
       } else {
-        console.log("PASS featured shelf: 30 cards and a direct link to the full catalog");
+        console.log("PASS featured shelf: all " + featuredVisible + " games visible together; catalog has no category dropdown");
       }
     }
     const localHostedRoutes = await listHostedHtml();
