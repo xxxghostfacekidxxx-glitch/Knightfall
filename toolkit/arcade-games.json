@@ -107,14 +107,16 @@
     },
     {
       "id": "3d-city",
-      "name": "3D City",
+      "name": "Skyline Foundry",
       "category": "Simulation",
-      "description": "A browser-based city-building sandbox.",
-      "playUrl": "https://lo-th.github.io/3d.city/index.html",
+      "description": "Build an isometric district with homes, markets, parks, roads, and a growing daily budget.",
+      "playUrl": "/arcade/hosted/skyline-foundry/index.html",
       "repository": "https://github.com/lo-th/3d.city",
-      "license": "GPL-3.0",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/skyline-foundry/",
+      "integrationNote": "Original isometric city-building game using broad sandbox-building mechanics only; no upstream code, models, textures, or assets copied. City state is session-local."
     },
     {
       "id": "particle-clicker",
