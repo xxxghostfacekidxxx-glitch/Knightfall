@@ -159,14 +159,16 @@
     },
     {
       "id": "hexgl",
-      "name": "HexGL",
+      "name": "Neon Vector",
       "category": "Racing",
-      "description": "A futuristic WebGL anti-gravity racer.",
-      "playUrl": "https://hexgl.bkcore.com/play/",
+      "description": "Race a neon highway at escalating speeds, shift across three lanes, and boost through traffic.",
+      "playUrl": "/arcade/hosted/neon-vector/index.html",
       "repository": "https://github.com/BKcore/HexGL",
-      "license": "MIT (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/neon-vector/",
+      "integrationNote": "Original pseudo-3D futuristic highway racer using broad arcade racing mechanics only; no upstream code, vehicle art, models, or track assets copied. Best distance stored locally."
     },
     {
       "id": "trigger-rally",
