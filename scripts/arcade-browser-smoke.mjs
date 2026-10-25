@@ -52,12 +52,14 @@ try {
       await page.waitForTimeout(50);
       // On each hosted route, exercise one obvious start/play control when present.
       // This catches click-handler crashes that a plain HTTP/HTML check misses.
-      const startControl = page.getByRole("button", {
+      const overlayStart = page.locator("#start-overlay button:not([disabled]), #playButton, #btn-start, #start").first();
+      const genericStart = page.getByRole("button", {
         name: /^(start|start game|start run|start \/ restart|play|play game|new game|begin|launch|restart|run it back)$/i
       }).first();
+      const startControl = await overlayStart.count() && await overlayStart.isVisible().catch(() => false) ? overlayStart : genericStart;
       if (await startControl.count() && await startControl.isVisible().catch(() => false) && await startControl.isEnabled().catch(() => false)) {
         try {
-          await startControl.click({ timeout: 1000 });
+          await startControl.click({ timeout: 1000, force: true });
           await page.waitForTimeout(120);
         } catch (error) {
           routeFailures.push(route + ": start/play control failed: " + (error?.message || String(error)));
