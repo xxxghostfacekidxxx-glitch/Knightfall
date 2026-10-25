@@ -737,15 +737,17 @@
     },
     {
       "id": "kaiju-krush",
-      "name": "Kaiju Krush",
+      "name": "Colossus Clash",
       "category": "Arcade",
-      "description": "Smash through a city as a gigantic monster.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/kaiju-krush/index.html",
+      "description": "Fight off waves of abstract monsters in a ruined arena with directional attacks and escalating difficulty.",
+      "playUrl": "/arcade/hosted/colossus-clash/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/arcade/kaiju-krush/index.html"
+      "sourcePath": "games/arcade/kaiju-krush/index.html",
+      "importedPath": "public/arcade/hosted/colossus-clash/",
+      "integrationNote": "Original top-down monster arena using broad monster-brawler mechanics only; no upstream code, characters, or assets copied. Best score stored locally."
     },
     {
       "id": "endless-runner",
