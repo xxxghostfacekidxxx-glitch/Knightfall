@@ -35,7 +35,7 @@ try {
   let routePasses = 0;
   const routeFailures = [];
   for (const route of hostedRoutes) {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
     const errors = [];
     const badAssets = [];
     page.on("pageerror", error => errors.push(error.message || String(error)));
@@ -59,7 +59,7 @@ try {
       const startControl = await overlayStart.count() && await overlayStart.isVisible().catch(() => false) ? overlayStart : genericStart;
       if (await startControl.count() && await startControl.isVisible().catch(() => false) && await startControl.isEnabled().catch(() => false)) {
         try {
-          await startControl.click({ timeout: 1000, force: true });
+          await startControl.tap({ timeout: 1000, force: true });
           await page.waitForTimeout(120);
         } catch (error) {
           routeFailures.push(route + ": start/play control failed: " + (error?.message || String(error)));
@@ -242,7 +242,7 @@ try {
     const reportBody = reportUrl.searchParams.get("body") || "";
     const reportChecks = {
       title: Boolean(reportUrl.searchParams.get("title")?.includes("Hexa Havoc")),
-      page: reportBody.includes("/arcade/hosted/hexa-havoc/index.html"),
+      page: reportBody.includes("/arcade/hosted/hexa-havoc"),
       reproduction: reportBody.includes("Steps to reproduce:"),
       device: reportBody.includes("Device/browser")
     };
