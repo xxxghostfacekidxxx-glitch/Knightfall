@@ -146,6 +146,13 @@ try {
     console.error("FAIL catalog crawl: catalog page did not return HTTP 200");
     failed = true;
   } else {
+    const catalogCardCount = await catalogPage.locator("#grid article.game").count();
+    if (catalogCardCount !== 76) {
+      console.error("FAIL catalog count: expected 76 playable cards, found " + catalogCardCount);
+      failed = true;
+    } else {
+      console.log("PASS catalog count: all 76 playable game cards are present");
+    }
     const catalogRoutes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
     const mainResponse = await catalogPage.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded", timeout: 30000 });
     let mainRoutes = [];
@@ -154,6 +161,17 @@ try {
       failed = true;
     } else {
       mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
+      const featuredCount = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
+      const viewAll = catalogPage.locator("#game-shelf .arcade-view-all a[href='/arcade-30-games.html']");
+      if (featuredCount !== 12) {
+        console.error("FAIL featured shelf: expected 12 visible cards, found " + featuredCount);
+        failed = true;
+      } else if (!(await viewAll.count())) {
+        console.error("FAIL featured shelf: missing View all 76 games link");
+        failed = true;
+      } else {
+        console.log("PASS featured shelf: 12 cards and a direct link to the full catalog");
+      }
     }
     const localHostedRoutes = await listHostedHtml();
     const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes])];
