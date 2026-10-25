@@ -645,15 +645,17 @@
     },
     {
       "id": "tower-shooter",
-      "name": "Tower Shooter",
+      "name": "Rift Wardens",
       "category": "Shooter",
-      "description": "Defend your tower against waves of incoming enemies.",
-      "playUrl": "https://sausi-7.github.io/games/games/shooter/tower-shooter/index.html",
+      "description": "Place pulse, burst, and chill turrets to defend the road from escalating enemy waves.",
+      "playUrl": "/arcade/hosted/rift-wardens/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/shooter/tower-shooter/index.html"
+      "sourcePath": "games/shooter/tower-shooter/index.html",
+      "importedPath": "public/arcade/hosted/rift-wardens/",
+      "integrationNote": "Original canvas tower-defense game using broad genre mechanics only; no upstream source or assets copied. Best defeated count stored locally."
     },
     {
       "id": "whack-a-bug",
