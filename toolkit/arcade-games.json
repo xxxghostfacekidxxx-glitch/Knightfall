@@ -755,15 +755,17 @@
     },
     {
       "id": "parkour",
-      "name": "Parkour",
+      "name": "Rooftop Riot",
       "category": "Platformer",
-      "description": "Wall-run, slide, and vault through an obstacle course.",
-      "playUrl": "https://sausi-7.github.io/games/games/platformer/parkour/index.html",
+      "description": "Leap between neon rooftops, collect shards, and reach the extraction beacon before gravity files a complaint.",
+      "playUrl": "/arcade/hosted/rooftop-riot/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/platformer/parkour/index.html"
+      "sourcePath": "games/platformer/parkour/index.html",
+      "importedPath": "public/arcade/hosted/rooftop-riot/",
+      "integrationNote": "Original 2D platform game using broad parkour mechanics only; no upstream source or assets copied. Best distance stored locally."
     },
     {
       "id": "line-trap",
