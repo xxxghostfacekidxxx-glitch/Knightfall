@@ -1,36 +1,40 @@
 name: Deploy Monster MMO Staging
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'backend/src/index.mmo-staging.js'
-      - 'backend/migrations/0030_monster_game_saves.sql'
-      - 'backend/migrations/0031_monster_game_battles.sql'
-      - 'backend/wrangler.staging.jsonc'
-      - '.github/workflows/deploy-mmo-staging.yml'
   workflow_dispatch:
+    inputs:
+      confirm_staging:
+        description: Confirm deployment to the isolated Monster MMO staging Worker.
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
   group: deploy-monster-mmo-staging
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy-staging:
+    if: ${{ inputs.confirm_staging }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Validate isolated staging configuration
+      - name: Validate isolated staging configuration and credentials
         working-directory: backend
         shell: bash
+        env:
+          CLOUDFLARE_STAGING_API_TOKEN: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
+          test -n "$CLOUDFLARE_STAGING_API_TOKEN" || { echo "::error::Missing dedicated CLOUDFLARE_STAGING_API_TOKEN."; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID."; exit 1; }
           node -e '
             const fs = require("node:fs");
             const c = JSON.parse(fs.readFileSync("wrangler.staging.jsonc", "utf8"));
@@ -47,7 +51,7 @@ jobs:
       - name: Deploy isolated Worker
         uses: cloudflare/wrangler-action@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: deploy --config wrangler.staging.jsonc
