@@ -148,6 +148,48 @@ try {
   }
   await bridgePage.close();
 
+  // Verify a cloud save restores actual game state, not just leaderboard metadata.
+  const restorePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  await restorePage.addInitScript(() => {
+    window.AshFallArcade = {
+      ready: Promise.resolve(),
+      user: { id: "browser-smoke-test" },
+      loadProgress: async gameId => gameId === "cabinet-last-ember" ? ({
+        bestScore: 11,
+        serialized: {
+          wood: 27, scrap: 6, food: 4, warm: 82, people: 2, day: 4,
+          shelter: 1, alive: true, log: [{ msg: "Restored from cloud save", event: true }]
+        }
+      }) : null,
+      saveProgress: async () => ({ revision: 2 }),
+      recordScore: async () => ({ saved: true })
+    };
+  });
+  const restoreResponse = await restorePage.goto(base + "/arcade/hosted/last-ember/index.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+  if (!restoreResponse || restoreResponse.status() !== 200) {
+    console.error("FAIL cloud save restore: could not open Last Ember");
+    failed = true;
+  } else {
+    try {
+      await restorePage.waitForFunction(() =>
+        document.querySelector("#wood")?.textContent === "27" &&
+        document.querySelector("#day")?.textContent === "4" &&
+        document.querySelector("#story")?.textContent.includes("Restored from cloud save"),
+      null, { timeout: 5000 });
+      const localCopy = await restorePage.evaluate(() => JSON.parse(localStorage.getItem("last-ember-save-v1") || "null"));
+      if (!localCopy || localCopy.wood !== 27 || localCopy.day !== 4) {
+        console.error("FAIL cloud save restore: restored state was not persisted locally");
+        failed = true;
+      } else {
+        console.log("PASS cloud save restore: Last Ember restores remote resources/day/journal and updates local save");
+      }
+    } catch {
+      console.error("FAIL cloud save restore: remote game state did not appear in the UI");
+      failed = true;
+    }
+  }
+  await restorePage.close();
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
