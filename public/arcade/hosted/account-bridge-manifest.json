@@ -152,7 +152,7 @@
       "gameId": "cabinet-slush-rush",
       "title": "Slush Rush",
       "path": "/arcade/hosted/slush-rush/index.html",
-      "scoreSelector": "#best",
+      "scoreSelector": "#distance",
       "scoreMode": "score"
     },
     {
