@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en" data-title-key="sokoban.docTitle">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Sokoban | Chaos Cartridge | Ash-Fall</title>
+<meta name="description" content="Play Sokoban free in your browser: push every crate onto a target across 30 hand-checked levels. Swipe, tap the pad or use the arrow keys, with unlimited undo and a stuck warning.">
+<meta name="keywords" content="sokoban,push box,puzzle game,sokoban online,warehouse puzzle,block puzzle,30 levels,free online game,html5 game,browser game,mobile game">
+<meta name="author" content="mashukui; adapted by Ash-Fall">
+<meta property="og:title" content="Sokoban — Free Online Crate Pushing Puzzle">
+<meta property="og:description" content="Push every crate onto a target across 30 levels. Unlimited undo, stuck warning, works on mobile and desktop.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #1b2233 0%, #2d2438 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    justify-content: safe center;
+    min-height: 100vh; min-height: 100svh; padding: 10px 8px 4px;
+    user-select: none; touch-action: manipulation;
+  }
+  .panel {
+    position: relative;
+    --cs: 40px;            /* 格子边长，由 JS 的 fit() 覆写 */
+    --gap: 2px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px; padding: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .side { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 100%; }
+  .boardcol { display: flex; align-items: center; justify-content: center; }
+  .padcol { display: flex; align-items: center; justify-content: center; }
+
+  .topbar { display: flex; align-items: center; gap: 6px; width: 100%; }
+  .stat {
+    flex: 1; background: rgba(255,255,255,.07); border-radius: 10px;
+    padding: 3px 6px; text-align: center; color: #fff; min-width: 0;
+  }
+  .stat small { display: block; font-size: 9px; font-weight: 700; letter-spacing: 1px; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat span { font-size: 15px; font-weight: 800; letter-spacing: .5px; }
+  #mute-btn {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; padding: 0;
+    background: rgba(255,255,255,.07); border: none; color: #fff;
+    font-size: 17px; cursor: pointer; font-family: inherit;
+  }
+
+  .levelrow { display: flex; align-items: center; gap: 6px; width: 100%; }
+  .levelrow button {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 11px; border: none;
+    background: rgba(255,255,255,.12); color: #fff; font-size: 15px; font-family: inherit;
+    cursor: pointer; transition: background .15s;
+  }
+  .levelrow button:hover { background: rgba(255,255,255,.2); }
+  .levelrow button.hot { background: #f0a500; color: #2a1d00; animation: pulse 1s ease-in-out infinite; }
+  .status {
+    flex: 1; min-width: 0; min-height: 22px; font-size: 13px; font-weight: 800;
+    letter-spacing: .5px; color: #ffd76e; text-align: center; line-height: 1.3;
+  }
+  #hint {
+    width: 100%; margin-top: -3px; font-size: 12px; font-weight: 700;
+    color: #ff9f8a; text-align: center; line-height: 1.4;
+  }
+  /* 没有提示时整块塌掉，别白占纵向（手机横屏最缺的就是纵向） */
+  #hint:empty { display: none; }
+
+  .board {
+    display: grid;
+    gap: var(--gap);
+    padding: calc(var(--gap) * 1.5);
+    background: #2b3345;
+    border-radius: 12px;
+    box-shadow: inset 0 3px 12px rgba(0,0,0,.45);
+    touch-action: none;                      /* 滑动自己处理，别让浏览器抢去做滚动 */
+  }
+  .scell { position: relative; border-radius: 3px; background: #39435a; }
+  .scell.wall { background: #1d2432; box-shadow: inset 0 0 0 1px rgba(255,255,255,.045); }
+  /* 目标点：没箱子时也看得见的小菱形 */
+  .scell.goal::after {
+    content: ''; position: absolute; inset: 30%; border-radius: 3px;
+    background: #f0a500; opacity: .55; transform: rotate(45deg) scale(.62);
+  }
+  .scell.walk { cursor: pointer; }
+  /* 箱子：<span> 必须 display:block，否则行内元素忽略百分比尺寸 → 塌成 0×0（SPECS 14） */
+  .crate {
+    display: block; position: absolute; inset: 8%; border-radius: 4px;
+    background: linear-gradient(150deg, #d8a86a, #a4703a 70%, #7d5024);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.22), 0 2px 3px rgba(0,0,0,.35);
+    transition: left .08s ease, top .08s ease;
+  }
+  .crate::after {
+    content: ''; position: absolute; inset: 18%; border-radius: 2px;
+    border: 2px solid rgba(0,0,0,.18);
+  }
+  .crate.on { background: linear-gradient(150deg, #8fe08a, #35a55e 70%, #1f7a41); }
+  .crate.pop { animation: pop .18s ease; }
+  @keyframes pop { 0%,100% { transform: scale(1) } 45% { transform: scale(1.16) } }
+  .hero {
+    display: block; position: absolute; inset: 12%; border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, #9fd4ff, #3b82f6 62%, #1d4ed8);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.35);
+  }
+  .hero::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 34%; height: 34%;
+    margin: -17% 0 0 -17%; border-radius: 50%;
+    background: rgba(255,255,255,.75);
+  }
+
+  .actions { display: flex; gap: 8px; width: 100%; }
+  .actions button {
+    flex: 1; min-height: 44px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; letter-spacing: 1px; font-family: inherit;
+    transition: transform .12s ease;
+  }
+  .actions button:active { transform: scale(.96); }
+  .actions button:disabled { opacity: .4; cursor: default; }
+  .btn-primary { background: #4a90ff; color: #fff; box-shadow: 0 4px 0 #2a63bd; }
+  .btn-ghost { background: rgba(255,255,255,.14); color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+
+  /* 屏幕方向键：单击走一格，按住连续走（照抄 cross-road 的做法） */
+  .dpad {
+    display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(2, 50px);
+    gap: 8px;
+  }
+  .dpad button {
+    min-height: 50px; border-radius: 12px; font-size: 20px; font-weight: 800; font-family: inherit;
+    background: rgba(255,255,255,.13); color: #fff; box-shadow: 0 3px 0 rgba(0,0,0,.28);
+    border: none; padding: 0; cursor: pointer;
+  }
+  .dpad button:active { background: rgba(255,255,255,.28); }
+  .dpad [data-dir="up"] { grid-column: 2; grid-row: 1; }
+  .dpad [data-dir="left"] { grid-column: 1; grid-row: 2; }
+  .dpad [data-dir="down"] { grid-column: 2; grid-row: 2; }
+  .dpad [data-dir="right"] { grid-column: 3; grid-row: 2; }
+
+  .overlay {
+    position: absolute; inset: 0; border-radius: 18px; z-index: 6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 7px; text-align: center; padding: 18px;
+    background: rgba(14, 16, 26, .88); backdrop-filter: blur(3px); color: #fff;
+  }
+  .hidden { display: none !important; }
+  .over-title { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .over-sub { font-size: 13px; opacity: .8; line-height: 1.6; }
+  .icon-big { font-size: 40px; }
+  .final-line { font-size: 15px; font-weight: 700; }
+  .new-record {
+    background: #ffd76e; color: #5a3e00; font-size: 12px; font-weight: 800;
+    padding: 4px 14px; border-radius: 999px; animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+  .over-btns { display: flex; gap: 8px; margin-top: 6px; width: 100%; }
+  .over-btns button {
+    flex: 1; min-height: 44px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; font-family: inherit;
+  }
+  .start-btn { margin-top: 6px; padding: 12px 28px; }
+
+  .footer {
+    margin-top: 10px; color: rgba(255,255,255,.5); font-size: 12px;
+    text-align: center; line-height: 1.9; max-width: 470px;
+  }
+  .footer a {
+    color: rgba(255,255,255,.78); text-decoration: none; display: inline-block;
+    min-width: 44px; min-height: 44px; line-height: 44px;
+  }
+  .footer a:hover { color: #ffd76e; }
+
+  /* 横屏 / 矮窗口（视口高 ≤700px）：改成左右分栏 —— 棋盘靠左，HUD/方向键靠右。
+     竖排时纵向只剩 ~200px（格子被压到 20px 点不准），横排后棋盘高度可用 ~330px。
+     挖掉的都是「不是触控目标」的纵向浪费，触控目标一律保持 ≥44px。 */
+  @media (orientation: landscape) and (max-height: 700px) {
+    body { padding: 2px 6px 2px; }
+    .panel { flex-direction: row; align-items: center; padding: 6px; gap: 8px; }
+    .boardcol { order: -1; }
+    .side { width: 200px; flex: 0 0 auto; gap: 5px; }
+    /* 侧栏只有 200px，三个 HUD 标签（CRATES 最长）必须缩字距才不被省略号吃掉 */
+    .stat { padding: 3px 4px; }
+    .stat small { font-size: 8px; letter-spacing: .4px; }
+    .padcol { flex: 0 0 auto; }
+    .dpad { grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(2, 46px); gap: 6px; }
+    .footer { max-width: none; margin-top: 4px; line-height: 1.4; font-size: 11px; }
+    /* 横向明明有余量、纵向只剩几十像素时，把站点工具行与页脚文字并到同一行 ——
+       省下的是「不是触控目标」的折行高度，三键仍各自 44×44 */
+    .footer .wg-tools { display: inline-flex; vertical-align: middle; margin-right: 8px; }
+    .status { min-height: 18px; font-size: 12px; }
+    .overlay { padding: 10px; gap: 5px; }
+    .over-title { font-size: 18px; }
+    .over-sub, .final-line { font-size: 12px; }
+    .icon-big { font-size: 26px; }
+    .over-btns button { min-height: 44px; font-size: 13px; }
+  }
+
+  /* Ash-Fall cabinet presentation */
+  body{background:radial-gradient(ellipse at 12% 0,#32152c 0,transparent 36%),radial-gradient(ellipse at 92% 12%,#14313b 0,transparent 34%),#08090e;color:#f5f7fb}
+  .panel,.game-panel{background:linear-gradient(155deg,#171a26f5,#0b0e17f7)!important;border-color:#ffffff24!important;box-shadow:0 18px 50px #0007}
+  .stat,.hud,.status-panel{background:#ffffff0b!important;border-color:#ffffff18!important;color:#f5f7fb}
+  button,.btn-primary{background:#a8ff48!important;color:#11170a!important;border-color:#a8ff48!important}
+  button:disabled{opacity:.4}
+  a{color:#ff5edb}
+  .footer{color:#9ca7b8}.footer a{color:#ff5edb}.footer a:hover{color:#a8ff48}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+<script>
+/* Local English fallback: no upstream collection analytics or remote language bundle. */
+window.WG = { onChange: function () {} };
+window.t = function (key, values) {
+  var messages = {
+    "common.bestScore": "Best: {n} moves",
+    "common.copied": "Copied!",
+    "common.shareScore": "SHARE SCORE",
+    "sokoban.solved": "LEVEL CLEARED",
+    "sokoban.progress": "LEVEL {n} OF {t}",
+    "sokoban.stuck": "Deadlock! Undo a move or restart.",
+    "sokoban.overAll": "ALL LEVELS CLEARED",
+    "sokoban.finalLine": "Moves: {m} · Pushes: {p} · Best moves: {b}",
+    "sokoban.nextLevel": "NEXT LEVEL",
+    "sokoban.cleared": "{n} / {t} LEVELS CLEARED",
+    "sokoban.first": "First run. Push every crate onto a target.",
+    "sokoban.share": "I cleared level {n} of Sokoban in {m} moves on Ash-Fall. {u}"
+  };
+  var text = messages[key] || key;
+  Object.keys(values || {}).forEach(function (name) {
+    text = text.replace(new RegExp("\\{" + name + "\\}", "g"), String(values[name]));
+  });
+  return text;
+};
+</script>
+</head>
+<body data-wg-home>
+
+<div class="panel" id="panel">
+  <div class="side">
+    <div class="topbar">
+      <div class="stat"><small data-i18n="sokoban.levelLabel">LEVEL</small><span id="hud-level">1/30</span></div>
+      <div class="stat"><small data-i18n="sokoban.moves">MOVES</small><span id="hud-moves">0</span></div>
+      <div class="stat"><small data-i18n="sokoban.boxes">CRATES</small><span id="hud-crates">0/2</span></div>
+      <button id="mute-btn" data-i18n-title="common.toggleSound" title="Toggle sound">🔊</button>
+    </div>
+
+    <div class="levelrow">
+      <button id="btn-prev" data-i18n-title="sokoban.prev" data-i18n-aria="sokoban.prev" aria-label="Previous level">◀</button>
+      <div class="status" id="status"></div>
+      <button id="btn-next" data-i18n-title="sokoban.next" data-i18n-aria="sokoban.next" aria-label="Next level">▶</button>
+    </div>
+    <div id="hint"></div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="btn-undo" data-i18n="sokoban.undo">UNDO</button>
+      <button class="btn-ghost" id="btn-restart" data-i18n="sokoban.restart">RESTART</button>
+    </div>
+  </div>
+
+  <div class="boardcol">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="padcol">
+    <div class="dpad" id="dpad">
+      <button data-dir="up"    data-i18n-aria="sokoban.up"    aria-label="Up">▲</button>
+      <button data-dir="left"  data-i18n-aria="sokoban.left"  aria-label="Left">◀</button>
+      <button data-dir="down"  data-i18n-aria="sokoban.down"  aria-label="Down">▼</button>
+      <button data-dir="right" data-i18n-aria="sokoban.right" aria-label="Right">▶</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="over-overlay">
+    <div class="over-sub" data-i18n="sokoban.over">LEVEL CLEAR</div>
+    <div class="over-title" id="over-title"></div>
+    <div class="final-line" id="final-line"></div>
+    <div class="new-record hidden" id="new-record" data-i18n="common.newRecord">🏆 NEW RECORD!</div>
+    <div class="over-sub" id="over-best"></div>
+    <div class="over-btns">
+      <button class="btn-primary" id="btn-next-level" data-i18n="sokoban.nextLevel">NEXT LEVEL</button>
+      <button class="btn-ghost" id="btn-share2" data-i18n="common.shareScore">SHARE SCORE</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="start-overlay">
+    <div class="icon-big">📦</div>
+    <div class="over-title" data-i18n="sokoban.title">SOKOBAN</div>
+    <div class="over-sub" data-i18n-html="sokoban.tip">Push every <b>crate</b> onto a target square.<br>You can only <b>push</b>, never pull — so think about the order.<br>Swipe the board, use the pad below, or press <b>arrows / WASD</b>; <b>U</b> undoes a move.</div>
+    <div class="over-sub" id="start-best"></div>
+    <button class="btn-primary start-btn" id="btn-start" data-i18n="common.start">START</button>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="/chaos-cartridge.html">← Back to Chaos Cartridge</a>
+  <span> · Imported from <a href="https://github.com/mashukui/web-games" target="_blank" rel="noopener noreferrer">mashukui/web-games</a> under MIT.</span>
+</div>
+
+<script src="/arcade-save.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ============ 关卡数据 ============ */
+  /* 30 关：由 _gen-sokoban.js 反向生成（保证有解）+ 正向重放复验 + 有界 BFS 复算最少推动次数。
+     图例：# 墙 / 空格 地板 / . 目标 / $ 箱子 / * 箱子在目标上 / @ 玩家 / + 玩家在目标上。
+     每关注释：[关号] 尺寸 箱子数 minPushes(构造解长度)。 */
+  var LEVELS = [
+    /* [1] 7x7 箱子=1 minPushes=3 构造解=29 */
+    ['#######', '#     #', '#   . #', '#     #', '#  $@ #', '#     #', '#######'],
+    /* [2] 9x8 箱子=1 minPushes=3 构造解=73 */
+    ['#########', '#       #', '#       #', '#       #', '#       #', '#       #', '# . @$  #', '#########'],
+    /* [3] 9x7 箱子=1 minPushes=3 构造解=51 */
+    ['#########', '#       #', '#   @$  #', '#       #', '#   .   #', '#       #', '#########'],
+    /* [4] 8x8 箱子=1 minPushes=3 构造解=39 */
+    ['########', '#      #', '#     .#', '#   #  #', '#      #', '#     $#', '#     @#', '########'],
+    /* [5] 7x8 箱子=1 minPushes=4 构造解=26 */
+    ['#######', '#     #', '#   $@#', '#     #', '# .   #', '#     #', '#     #', '#######'],
+    /* [6] 6x8 箱子=2 minPushes=4 构造解=22 */
+    ['######', '#    #', '#   .#', '# $  #', '# +  #', '##  $#', '#    #', '######'],
+    /* [7] 7x8 箱子=2 minPushes=4 构造解=52 */
+    ['#######', '#     #', '#     #', '#   #.#', '# $   #', '# @. $#', '#     #', '#######'],
+    /* [8] 7x6 箱子=2 minPushes=4 构造解=40 */
+    ['#######', '#   @ #', '# .#$ #', '#     #', '#*    #', '#######'],
+    /* [9] 9x6 箱子=2 minPushes=4 构造解=12 */
+    ['#########', '#   .$ ##', '# .     #', '#   $   #', '#  #@#  #', '#########'],
+    /* [10] 9x7 箱子=2 minPushes=4 构造解=74 */
+    ['#########', '#       #', '# # .   #', '#.    $ #', '#$   #  #', '#@      #', '#########'],
+    /* [11] 8x7 箱子=3 minPushes=6 构造解=38 */
+    ['########', '#      #', '# $  $@#', '#  .   #', '#    . #', '# $ .  #', '########'],
+    /* [12] 9x7 箱子=3 minPushes=6 构造解=58 */
+    ['#########', '#   . $@#', '# $ #   #', '#    .  #', '#       #', '#*      #', '#########'],
+    /* [13] 7x8 箱子=4 minPushes=6 构造解=6 */
+    ['#######', '##    #', '#     #', '#  . .#', '#  $#$#', '#  .$@#', '# .$ ##', '#######'],
+    /* [14] 7x7 箱子=4 minPushes=6 构造解=8 */
+    ['#######', '#  $. #', '# ## .#', '# .   #', '#   $$#', '##  *@#', '#######'],
+    /* [15] 6x8 箱子=4 minPushes=6 构造解=22 */
+    ['######', '#    #', '# .  #', '#  . #', '#.  *#', '#$$$##', '# @  #', '######'],
+    /* [16] 6x8 箱子=4 minPushes=6 构造解=40 */
+    ['######', '#*   #', '#..# #', '#  $ #', '#  $@#', '#$ . #', '#    #', '######'],
+    /* [17] 8x8 箱子=3 minPushes=7 构造解=17 */
+    ['########', '# $  . #', '#      #', '#      #', '#   .  #', '# $    #', '##@ .$ #', '########'],
+    /* [18] 8x7 箱子=3 minPushes=7 构造解=37 */
+    ['########', '# .  $ #', '#      #', '##     #', '# $  .##', '#@$.   #', '########'],
+    /* [19] 9x7 箱子=4 minPushes=7 构造解=73 */
+    ['#########', '# $. *  #', '#     . #', '#       #', '#   $@  #', '#   $ . #', '#########'],
+    /* [20] 9x6 箱子=4 minPushes=7 构造解=15 */
+    ['#########', '# .   $@#', '#     $ #', '#     .##', '# $ . *##', '#########'],
+    /* [21] 9x6 箱子=4 minPushes=7 构造解=15 */
+    ['#########', '# $  .* #', '#    $@ #', '#    .  #', '# $  .  #', '#########'],
+    /* [22] 9x7 箱子=2 minPushes=8 构造解=68 */
+    ['#########', '#@$   . #', '#   . # #', '#   #   #', '# $    ##', '#       #', '#########'],
+    /* [23] 9x5 箱子=3 minPushes=8 构造解=18 */
+    ['#########', '#   . $ #', '# .   $@#', '#   . $ #', '#########'],
+    /* [24] 8x8 箱子=4 minPushes=8 构造解=18 */
+    ['########', '#*     #', '#      #', '#. #$  #', '#  $@  #', '#$ . . #', '#      #', '########'],
+    /* [25] 8x8 箱子=4 minPushes=8 构造解=42 */
+    ['########', '#@$ .  #', '#      #', '#   .  #', '# $    #', '#      #', '# $ *. #', '########'],
+    /* [26] 9x8 箱子=3 minPushes=9 构造解=23 */
+    ['#########', '# .@$   #', '#       #', '#  $ $  #', '#     . #', '#     . #', '#       #', '#########'],
+    /* [27] 9x7 箱子=4 minPushes=9 构造解=13 */
+    ['#########', '# .*  $@#', '#      $#', '#      .#', '#       #', '# $   . #', '#########'],
+    /* [28] 6x8 箱子=4 minPushes=9 构造解=23 */
+    ['######', '#    #', '#$  .#', '#@$  #', '#*   #', '#. .$#', '# #  #', '######'],
+    /* [29] 9x8 箱子=4 minPushes=11 构造解=11 */
+    ['#########', '#       #', '#  .  ..#', '# $  $  #', '#       #', '#     #$#', '# .   $@#', '#########'],
+    /* [30] 9x8 箱子=3 minPushes=12 构造解=70 */
+    ['#########', '#  .  $ #', '# .     #', '#    #  #', '#     $ #', '#       #', '# .  $@ #', '#########'],
+  ];
+
+  var SCORE_KEY = 'ashfall_sokoban_progress_v1';
+
+  var panel = document.getElementById('panel');
+  var boardEl = document.getElementById('board');
+  var sideEl = document.querySelector('.side');
+  var padEl = document.querySelector('.padcol');
+  var footerEl = document.querySelector('.footer');
+  var hintEl = document.getElementById('hint');
+  var statusEl = document.getElementById('status');
+  var startOverlay = document.getElementById('start-overlay');
+  var overOverlay = document.getElementById('over-overlay');
+
+  // ===== 音效 =====
+  var audioCtx = null, muted = false;
+  function beep(freq, dur, type, vol) {
+    if (muted) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.12, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch (e) {}
+  }
+  var sfx = {
+    step:  function () { beep(300, 0.03, 'sine', 0.04); },
+    push:  function () { beep(180, 0.06, 'square', 0.06); setTimeout(function () { beep(140, 0.05, 'square', 0.04); }, 40); },
+    lock:  function () { beep(680, 0.07, 'triangle', 0.07); setTimeout(function () { beep(900, 0.08, 'triangle', 0.06); }, 55); },
+    bad:   function () { beep(120, 0.08, 'sawtooth', 0.05); },
+    undo:  function () { beep(420, 0.05, 'triangle', 0.05); },
+    win:   function () { [0, 100, 200, 320].forEach(function (d, i) { setTimeout(function () { beep(520 + i * 170, 0.15, 'triangle', 0.09); }, d); }); },
+    lose:  function () { beep(220, 0.2, 'sawtooth', 0.08); }
+  };
+  var muteBtn = document.getElementById('mute-btn');
+  muteBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); muted = !muted;
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
+
+  // ===== 状态 =====
+  var levelIdx = 0;
+  var W = 7, H = 7, CELLS = 49;
+  var wall = [], goal = [];            // 静态：墙 / 目标点
+  var boxes = {};                      // 动态：箱子下标 → 1
+  var player = 0;
+  var moves = 0, pushes = 0;
+  var history = [];                    // 撤销栈：每步存一份 {player, boxes, moves, pushes}
+  var solved = false, deadlocked = false;
+  var lastResult = null;
+  var cellEls = [], crateEls = [], walkEls = [];
+  var heroEl = null, heroCell = -1;
+  var store = loadStore();
+
+  var DIRV = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  var DIRK = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
+
+  function loadStore() {
+    var out = { cur: 0, best: {} };
+    try {
+      var raw = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}') || {};
+      if (typeof raw.cur === 'number') out.cur = Math.max(0, Math.min(LEVELS.length - 1, raw.cur | 0));
+      if (raw.best && typeof raw.best === 'object') out.best = raw.best;
+    } catch (e) {}
+    return out;
+  }
+  function saveStore() {
+    try { localStorage.setItem(SCORE_KEY, JSON.stringify(store)); } catch (e) {}
+  }
+  function clearedCount() {
+    var n = 0, i;
+    for (i = 0; i < LEVELS.length; i++) if (store.best[i + 1]) n++;
+    return n;
+  }
+
+  // ===== 关卡装载 =====
+  function loadLevel(idx, keepOverlay) {
+    levelIdx = Math.max(0, Math.min(LEVELS.length - 1, idx));
+    var rows = LEVELS[levelIdx];
+    H = rows.length; W = rows[0].length; CELLS = W * H;
+    wall = []; goal = []; boxes = {}; player = 0;
+    moves = 0; pushes = 0; history = [];
+    solved = false; deadlocked = false; lastResult = null;
+    for (var y = 0; y < H; y++) {
+      for (var x = 0; x < W; x++) {
+        var i = y * W + x, c = rows[y][x] || ' ';
+        wall[i] = c === '#';
+        goal[i] = c === '.' || c === '*' || c === '+';
+        if (c === '$' || c === '*') boxes[i] = 1;
+        if (c === '@' || c === '+') player = i;
+      }
+    }
+    buildBoard();
+    if (store.cur !== levelIdx) { store.cur = levelIdx; saveStore(); }
+    if (!keepOverlay) overOverlay.classList.add('hidden');
+    refreshAll();
+  }
+
+  // ===== 棋盘 DOM =====
+  function buildBoard() {
+    boardEl.innerHTML = '';
+    boardEl.style.gridTemplateColumns = 'repeat(' + W + ', var(--cs))';
+    boardEl.style.gridTemplateRows = 'repeat(' + H + ', var(--cs))';
+    cellEls = []; crateEls = []; walkEls = [];
+    for (var i = 0; i < CELLS; i++) {
+      var d = document.createElement('div');
+      d.className = 'scell' + (wall[i] ? ' wall' : '') + (goal[i] ? ' goal' : '');
+      d.dataset.i = String(i);
+      if (!wall[i]) {
+        var c = document.createElement('span');
+        c.className = 'crate';
+        c.style.display = 'none';
+        d.appendChild(c);
+        crateEls[i] = c;
+      } else crateEls[i] = null;
+      boardEl.appendChild(d);
+      cellEls[i] = d;
+    }
+    heroEl = document.createElement('span');
+    heroEl.className = 'hero';
+    if (!wall[player]) cellEls[player].appendChild(heroEl);
+    heroCell = player;
+    render();
+  }
+  function render(popIdx) {
+    for (var i = 0; i < CELLS; i++) {
+      var c = crateEls[i];
+      if (!c) continue;
+      var has = !!boxes[i];
+      c.style.display = has ? 'block' : 'none';
+      c.className = 'crate' + (has && goal[i] ? ' on' : '') + (has && i === popIdx ? ' pop' : '');
+    }
+    if (heroCell !== player) {
+      if (cellEls[heroCell]) { try { cellEls[heroCell].removeChild(heroEl); } catch (e) {} }
+      cellEls[player].appendChild(heroEl);
+      heroCell = player;
+    }
+    var lm = mqLandscape.matches;
+    for (var j = 0; j < CELLS; j++) {
+      if (cellEls[j].className.indexOf('walk') >= 0) cellEls[j].className = cellEls[j].className.replace(/ ?walk/g, '');
+    }
+    if (!lm) {   // 竖屏没有 D-pad 在下面，点相邻格子是最顺手的第二输入
+      for (var d2 = 0; d2 < 4; d2++) {
+        var k = Object.keys(DIRV)[d2], dv = DIRV[k];
+        var nx = (player % W) + dv[0], ny = ((player / W) | 0) + dv[1];
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+        var t = ny * W + nx;
+        if (!wall[t]) cellEls[t].className += ' walk';
+      }
+    }
+  }
+
+  // ===== 规则 =====
+  function boxCount() { var n = 0; for (var i in boxes) n++; return n; }
+  function onGoalCount() { var n = 0; for (var i in boxes) if (goal[i]) n++; return n; }
+
+  /* 死局判定（只报「不可能再有解」的情况，绝不误报）：
+     ① 箱子被夹在两条互相垂直的墙之间 → 再也推不动，肯定死
+     ② 箱子贴着某面墙且它所在的那条「整段可滑动区间」里没有任何目标点 → 它永远离不开这行/列 */
+  function runHasGoal(i, dx, dy) {
+    var x = i % W, y = (i / W) | 0;
+    while (x >= 0 && y >= 0 && x < W && y < H && !wall[y * W + x]) {
+      if (goal[y * W + x]) return true;
+      x += dx; y += dy;
+    }
+    return false;
+  }
+  function isDeadlock() {
+    for (var b in boxes) {
+      var i = +b;
+      if (goal[i]) continue;
+      var x = i % W, y = (i / W) | 0;
+      var up = y === 0 || wall[(y - 1) * W + x];
+      var down = y === H - 1 || wall[(y + 1) * W + x];
+      var left = x === 0 || wall[y * W + x - 1];
+      var right = x === W - 1 || wall[y * W + x + 1];
+      if ((up || down) && (left || right)) return true;
+      if (up || down) { if (!runHasGoal(i, -1, 0) && !runHasGoal(i, 1, 0)) return true; }
+      if (left || right) { if (!runHasGoal(i, 0, -1) && !runHasGoal(i, 0, 1)) return true; }
+    }
+    return false;
+  }
+
+  // push 一步：dir 是 'up'|'down'|'left'|'right'
+  function doMove(dirName) {
+    if (solved) return false;
+    var dv = DIRV[dirName];
+    if (!dv) return false;
+    var px = player % W, py = (player / W) | 0;
+    var nx = px + dv[0], ny = py + dv[1];
+    if (nx < 0 || ny < 0 || nx >= W || ny >= H) { sfx.bad(); return false; }
+    var t = ny * W + nx;
+    if (wall[t]) { sfx.bad(); return false; }
+    var snap = null;
+    var pushIdx = -1;
+    if (boxes[t]) {
+      var bx = nx + dv[0], by = ny + dv[1];
+      if (bx < 0 || by < 0 || bx >= W || by >= H) { sfx.bad(); return false; }
+      var b2 = by * W + bx;
+      if (wall[b2] || boxes[b2]) { sfx.bad(); return false; }
+      snap = snapshot();
+      delete boxes[t]; boxes[b2] = 1;
+      pushes++;
+      pushIdx = b2;
+      sfx.push();
+    } else {
+      snap = snapshot();
+      sfx.step();
+    }
+    history.push(snap);
+    moves++;
+    player = t;
+    if (pushIdx >= 0 && goal[pushIdx]) sfx.lock();
+
+    render(pushIdx);
+    deadlocked = isDeadlock();
+    var allOn = onGoalCount() === boxCount();
+    if (allOn) { solveLevel(); return true; }
+    renderHud(); renderStatus(); renderHint();
+    return true;
+  }
+  function snapshot() {
+    var b = {};
+    for (var k in boxes) b[k] = 1;
+    return { player: player, boxes: b, moves: moves, pushes: pushes };
+  }
+  function restore(s) {
+    player = s.player;
+    boxes = {};
+    for (var k in s.boxes) boxes[k] = 1;
+    moves = s.moves; pushes = s.pushes;
+  }
+  function undo() {
+    if (!history.length) return false;
+    restore(history.pop());
+    solved = false; lastResult = null;
+    overOverlay.classList.add('hidden');
+    deadlocked = isDeadlock();
+    render();
+    refreshAll();
+    sfx.undo();
+    return true;
+  }
+  function restart() {
+    loadLevel(levelIdx, false);
+    sfx.undo();
+  }
+  function solveLevel() {
+    solved = true;
+    var rec = false, prev = store.best[levelIdx + 1];
+    if (!prev || moves < prev) { store.best[levelIdx + 1] = moves; rec = true; }
+    store.cur = Math.min(LEVELS.length - 1, Math.max(store.cur, levelIdx + (levelIdx < LEVELS.length - 1 ? 1 : 0)));
+    saveStore();
+    /* Global score means highest level cleared; keep move counts in the attached progress summary. */
+    try {
+      if (window.AshFallArcade && typeof window.AshFallArcade.recordScore === 'function') {
+        Promise.resolve(window.AshFallArcade.recordScore('cabinet-sokoban', levelIdx + 1, {
+          level: levelIdx + 1, moves: moves, pushes: pushes, cleared: clearedCount(), allLevels: LEVELS.length
+        })).catch(function () {});
+      }
+    } catch (e) {}
+    var allDone = clearedCount() === LEVELS.length;
+    lastResult = {
+      level: levelIdx + 1, moves: moves, pushes: pushes,
+      best: store.best[levelIdx + 1], record: rec, allDone: allDone
+    };
+    renderHud(); renderStatus(); renderOver(); renderStartBest();
+    overOverlay.classList.remove('hidden');
+    sfx.win();
+  }
+  function gotoLevel(n, autoStart) {
+    var i = Math.max(0, Math.min(LEVELS.length - 1, n));
+    loadLevel(i, false);
+    if (autoStart) startOverlay.classList.add('hidden');
+  }
+
+  // ===== HUD / 文案 =====
+  function renderHud() {
+    document.getElementById('hud-level').textContent = (levelIdx + 1) + '/' + LEVELS.length;
+    document.getElementById('hud-moves').textContent = String(moves);
+    document.getElementById('hud-crates').textContent = onGoalCount() + '/' + boxCount();
+    document.getElementById('btn-undo').disabled = history.length === 0;
+    document.getElementById('btn-prev').disabled = levelIdx === 0;
+    document.getElementById('btn-next').disabled = levelIdx === LEVELS.length - 1;
+    document.getElementById('btn-next').classList.toggle('hot', solved);
+  }
+  function renderStatus() {
+    statusEl.textContent = solved
+      ? t('sokoban.solved')
+      : t('sokoban.progress', { n: levelIdx + 1, t: LEVELS.length });
+  }
+  function renderHint() {
+    hintEl.textContent = deadlocked && !solved ? t('sokoban.stuck') : '';
+  }
+  function renderOver() {
+    if (!lastResult) return;
+    var r = lastResult;
+    document.getElementById('over-title').textContent = r.allDone
+      ? t('sokoban.overAll')
+      : t('sokoban.progress', { n: r.level, t: LEVELS.length });
+    document.getElementById('final-line').textContent =
+      t('sokoban.finalLine', { m: r.moves, p: r.pushes, b: r.best });
+    document.getElementById('over-best').textContent = t('common.bestScore', { n: r.best });
+    document.getElementById('new-record').classList.toggle('hidden', !r.record);
+    var nb = document.getElementById('btn-next-level');
+    nb.classList.toggle('hidden', r.level >= LEVELS.length);
+    nb.textContent = t('sokoban.nextLevel');
+  }
+  function renderStartBest() {
+    var n = clearedCount();
+    document.getElementById('start-best').textContent = n > 0
+      ? t('sokoban.cleared', { n: n, t: LEVELS.length })
+      : t('sokoban.first');
+  }
+  function refreshAll() {
+    renderHud(); renderStatus(); renderHint(); renderOver(); renderStartBest(); fit();
+  }
+
+  // ===== 输入：键盘 =====
+  document.addEventListener('keydown', function (e) {
+    var k = String(e.key || '').toLowerCase();
+    var map = {
+      arrowleft: 'left', arrowright: 'right', arrowup: 'up', arrowdown: 'down',
+      a: 'left', d: 'right', w: 'up', s: 'down'
+    };
+    if (map[k]) { doMove(map[k]); e.preventDefault(); return; }
+    if (k === 'u' || k === 'z') { undo(); e.preventDefault(); return; }
+    if (k === 'r') { restart(); e.preventDefault(); return; }
+    if (k === 'n') { if (levelIdx < LEVELS.length - 1) gotoLevel(levelIdx + 1, true); e.preventDefault(); return; }
+    if (k === 'p') { if (levelIdx > 0) gotoLevel(levelIdx - 1, true); e.preventDefault(); return; }
+  });
+
+  // ===== 输入：格子点击（走一步 / 点相邻格）=====
+  boardEl.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== boardEl && el.dataset.i === undefined) el = el.parentNode;
+    if (!el || el === boardEl) return;
+    var i = parseInt(el.dataset.i, 10);
+    if (i === player) return;
+    var px = player % W, py = (player / W) | 0, tx = i % W, ty = (i / W) | 0;
+    var dx = tx - px, dy = ty - py;
+    if (Math.abs(dx) + Math.abs(dy) !== 1) return;         // 只认正相邻的四格
+    if (dx === 1) doMove('right');
+    else if (dx === -1) doMove('left');
+    else if (dy === 1) doMove('down');
+    else if (dy === -1) doMove('up');
+  });
+
+  // ===== 输入：滑动 =====
+  var sw = null;
+  boardEl.addEventListener('pointerdown', function (e) {
+    sw = { x: e.clientX, y: e.clientY };
+  });
+  boardEl.addEventListener('pointerup', function (e) {
+    if (!sw) return;
+    var dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+    sw = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;   // 太短当点击处理
+    if (Math.abs(dx) > Math.abs(dy)) doMove(dx > 0 ? 'right' : 'left');
+    else doMove(dy > 0 ? 'down' : 'up');
+  });
+  boardEl.addEventListener('pointercancel', function () { sw = null; });
+
+  // ===== 输入：屏幕方向键（单击走一格，按住连续走）=====
+  var holdTimer = null;
+  Array.prototype.forEach.call(document.querySelectorAll('#dpad button'), function (b) {
+    var handled = false;                    // 逻辑上只走一次：pointerdown 已经走过了，尾随的 click 就丢掉
+    function stopHold() { if (holdTimer) { clearInterval(holdTimer); holdTimer = null; } }
+    b.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      handled = true;
+      doMove(b.dataset.dir);
+      stopHold();
+      holdTimer = setInterval(function () { doMove(b.dataset.dir); }, 170);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave', 'lostpointercapture'].forEach(function (ev) {
+      b.addEventListener(ev, stopHold);
+    });
+    b.addEventListener('click', function () {
+      if (handled) { handled = false; return; }
+      doMove(b.dataset.dir);
+    });
+    b.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  });
+
+  // ===== 按钮 =====
+  document.getElementById('btn-start').addEventListener('click', function () {
+    startOverlay.classList.add('hidden');
+  });
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-restart').addEventListener('click', restart);
+  document.getElementById('btn-prev').addEventListener('click', function () { if (levelIdx > 0) gotoLevel(levelIdx - 1, true); });
+  document.getElementById('btn-next').addEventListener('click', function () { if (levelIdx < LEVELS.length - 1) gotoLevel(levelIdx + 1, true); });
+  document.getElementById('btn-next-level').addEventListener('click', function () {
+    if (levelIdx < LEVELS.length - 1) gotoLevel(levelIdx + 1, true);
+    else { overOverlay.classList.add('hidden'); gotoLevel(0, true); }
+  });
+
+  // ===== 分享 =====
+  function shareText() {
+    var r = lastResult;
+    if (!r) return t('sokoban.share', { n: levelIdx + 1, m: moves, u: location.href });
+    return t('sokoban.share', { n: r.level, m: r.moves, u: location.href });
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  document.getElementById('btn-share2').addEventListener('click', function () {
+    var full = shareText(), btn = document.getElementById('btn-share2');
+    function done() {
+      btn.textContent = t('common.copied');
+      setTimeout(function () { btn.textContent = t('common.shareScore'); }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(done, function () { fallbackCopy(full, done); });
+    } else fallbackCopy(full, done);
+  });
+
+  // ===== 尺寸自适应 =====
+  /* 棋盘尺寸随关卡变（6×7 ~ 9×8），所以 fit() 每次换关都要重算：
+     竖屏：可用高 = 视口 − body 内边距 − 面板内边距 − 页脚 − 侧栏(.side) − 方向键(.padcol) − 余量
+     横屏：左右分栏，可用宽改为减掉侧栏与方向键的宽度，高度只减页脚。
+     两个方向都实测，不写死魔数。 */
+  var GAP = 2, MIN_C = 12, MAX_C = 64;
+  var mqLandscape = window.matchMedia('(orientation: landscape) and (max-height: 700px)');
+  function fit() {
+    var bcs = getComputedStyle(document.body);
+    var pcs = getComputedStyle(panel);
+    var bodyPadV = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom);
+    var bodyPadH = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight);
+    var panelPadV = parseFloat(pcs.paddingTop) + parseFloat(pcs.paddingBottom);
+    var panelPadH = parseFloat(pcs.paddingLeft) + parseFloat(pcs.paddingRight);
+    var fcs = footerEl ? getComputedStyle(footerEl) : null;
+    var footerH = footerEl ? footerEl.offsetHeight + parseFloat(fcs.marginTop || 0) : 90;
+    var land = mqLandscape.matches;
+    var BORDER = 2, BOARD_PAD = GAP * 3;     // 面板描边 + 棋盘自身内边距（不扣会横向溢出几像素）
+    var availW, availH;
+    if (land) {
+      availW = window.innerWidth - bodyPadH - panelPadH - BORDER - BOARD_PAD - sideEl.offsetWidth - padEl.offsetWidth - 16;
+      availH = window.innerHeight - bodyPadV - panelPadV - BORDER - BOARD_PAD - footerH - 6;
+    } else {
+      availW = window.innerWidth - bodyPadH - panelPadH - BORDER - BOARD_PAD - 4;
+      availH = window.innerHeight - bodyPadV - panelPadV - BORDER - BOARD_PAD - footerH - sideEl.offsetHeight - padEl.offsetHeight - 16;
+    }
+    var cs = Math.floor(Math.min((availW - (W - 1) * GAP) / W, (availH - (H - 1) * GAP) / H));
+    cs = Math.max(MIN_C, Math.min(MAX_C, cs));
+    panel.style.setProperty('--cs', cs + 'px');
+    panel.style.setProperty('--gap', GAP + 'px');
+  }
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fit, 80);
+  });
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener('load', function () { setTimeout(fit, 300); });
+
+  // ===== 探针用的只读状态 / 测试钩子 =====
+  window.__st = function () {
+    return {
+      level: levelIdx + 1, levels: LEVELS.length,
+      width: W, height: H,
+      moves: moves, pushes: pushes,
+      boxesOnGoal: onGoalCount(), boxesTotal: boxCount(),
+      solved: solved, stuck: deadlocked,
+      playerX: player % W, playerY: (player / W) | 0,
+      best: store.best[levelIdx + 1] || 0
+    };
+  };
+  /* 跳到第 n 关（供 state-layout-probe 逐关量布局用；只切状态，不走玩法） */
+  window.__lv = function (n) {
+    gotoLevel((n | 0) - 1, true);
+    return window.__st();
+  };
+
+  // ===== 启动 =====
+  WG.onChange(function () { refreshAll(); });
+  loadLevel(store.cur, false);
+  startOverlay.classList.remove('hidden');
+  fit();
+  setTimeout(fit, 120);
+})();
+</script>
+</body>
+</html>
