@@ -179,14 +179,16 @@
     },
     {
       "id": "open-panzer",
-      "name": "Open Panzer",
+      "name": "Hexforge Command",
       "category": "Strategy",
-      "description": "Turn-based tactical battles inspired by classic hex strategy.",
-      "playUrl": "https://openpanzer.net/",
+      "description": "Command a small squad across a tactical hex map, reposition units, and eliminate hostiles across three missions.",
+      "playUrl": "/arcade/hosted/hexforge-command/index.html",
       "repository": "https://github.com/openpanzer/OpenPanzer",
-      "license": "GPL (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/hexforge-command/",
+      "integrationNote": "Original turn-based hex tactics game using broad strategy mechanics only; no upstream code, units, maps, or assets copied. Best mission stored locally."
     },
     {
       "id": "green-mahjong",
