@@ -93,8 +93,8 @@
       "gameId": "cabinet-a-dark-room",
       "title": "A Dark Room",
       "candidate": "https://github.com/doublespeakgames/adarkroom",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MPL-2.0 verified (LICENSE.md and package.json)",
+      "blocker": "License permits redistribution subject to MPL source and notice obligations. Import remains pending a complete audit of the large script/dependency tree, audio and image assets, legacy mobile redirect, and remote integrations."
     },
     {
       "gameId": "cabinet-clumsy-bird",
@@ -121,8 +121,8 @@
       "gameId": "cabinet-particle-clicker",
       "title": "Particle Clicker",
       "candidate": "https://github.com/particle-clicker/particle-clicker",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MIT verified (LICENSE)",
+      "blocker": "AngularJS/jQuery-heavy project with many referenced files. Audit every dependency and asset, then package the complete local runtime before importing."
     },
     {
       "gameId": "cabinet-freeciv-web",
@@ -135,8 +135,8 @@
       "gameId": "cabinet-cube-composer",
       "title": "Cube Composer",
       "candidate": "https://github.com/sharkdp/cube-composer",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MIT verified (LICENSE and package.json)",
+      "blocker": "The upstream repository is PureScript source with Gulp/Bower-era build dependencies; tested dist paths were absent. Needs a reproducible build and local runtime audit before direct import."
     },
     {
       "gameId": "cabinet-hexgl",
@@ -177,8 +177,8 @@
       "gameId": "cabinet-ball-and-wall",
       "title": "Ball and Wall",
       "candidate": "https://github.com/budnix/ball-and-wall",
-      "license": "not yet verified",
-      "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+      "license": "MIT verified for code (LICENSE); Pegasus artwork has separate terms",
+      "blocker": "Do not copy the separately licensed Pegasus artwork. A code-only import requires replacing those assets and auditing the remaining image/audio files."
     },
     {
       "gameId": "cabinet-duckhunt-js",
