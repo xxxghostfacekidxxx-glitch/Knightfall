@@ -408,6 +408,16 @@
         "/arcade/hosted/ashfall-mini-games.js",
         "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
       ]
+    },
+    {
+      "gameId": "cabinet-marshland-marksman",
+      "title": "Marshland Marksman",
+      "license": "Original Knightfall code and vector artwork; no upstream source or assets copied",
+      "notes": "Canvas shooting gallery with mouse/touch targeting, original vector wildlife, local best-score persistence, synthesized sound, fullscreen, and issue reporting. Account-wide score/currency integration intentionally not claimed.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/marshland-marksman/index.html"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-10-25"
