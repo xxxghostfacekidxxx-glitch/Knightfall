@@ -137,7 +137,11 @@ try {
       await page.locator("#start").tap();
       for (let i = 0; i < 20; i++) {
         const col = i % 10, row = Math.floor(i / 10);
-        await page.locator("#game").tap({ position: { x: 200 + col * 48 + 20, y: 130 + row * 48 + 20 } });
+        const position = await page.locator("#game").evaluate((canvas, logical) => {
+          const rect = canvas.getBoundingClientRect();
+          return { x: (logical.x / canvas.width) * rect.width, y: (logical.y / canvas.height) * rect.height };
+        }, { x: 200 + col * 48 + 20, y: 130 + row * 48 + 20 });
+        await page.locator("#game").tap({ position });
         const state = await page.locator("#game-state").innerText();
         if (/Territory won/i.test(state)) break;
       }
