@@ -130,6 +130,7 @@ try {
     await bridgePage.evaluate(() => {
       const score = document.querySelector("#score");
       if (score) score.textContent = "42";
+      window.exportSaveState = () => ({ score: 42 });
       const overlay = document.createElement("div");
       overlay.className = "overlay";
       overlay.id = "bridge-test-overlay";
