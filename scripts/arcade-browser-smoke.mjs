@@ -304,6 +304,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Balance Stack, Doodle Jump, and Stack Tower.
+  const platformRestoreCases = [
+    { name:"Balance Stack",path:"/arcade/hosted/balance-stack/index.html",gameId:"cabinet-balance-stack",data:{serialized:{tilt:0.4,wind:0, time:18,windTimer:0.4,score:60}},check:()=>document.querySelector("#time")?.textContent==="18"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
+    { name:"Doodle Jump",path:"/arcade/hosted/doodle-jump/index.html",gameId:"cabinet-doodle-jump",data:{serialized:{player:{x:190,y:400,vx:0,vy:-200,r:15},plats:[{x:20,y:540,w:80},{x:160,y:470,w:70}],cam:0,score:720}},check:()=>document.querySelector("#score")?.textContent==="720"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
+    { name:"Stack Tower",path:"/arcade/hosted/stack-tower/index.html",gameId:"cabinet-stack-tower",data:{serialized:{blocks:[{x:90,w:240,y:550},{x:110,w:200,y:500}],active:{x:35,w:200,y:450},score:7,dir:1,cam:0}},check:()=>document.querySelector("#score")?.textContent==="7"&&document.querySelector("#state")?.textContent==="Cloud save restored." }
+  ];
+  for(const testCase of platformRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
+    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
