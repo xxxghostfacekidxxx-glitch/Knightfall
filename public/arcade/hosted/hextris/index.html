@@ -58,13 +58,13 @@
         $("kf-save").addEventListener("click", async () => {
           try {
             const serialized = exportSaveState();
-            await window.AshFallArcade.saveProgress(gameKey, { serialized }, "autosave", 1);
+            await window.AshFallArcade.ready; await window.AshFallArcade.saveProgress(gameKey, { serialized }, "autosave", 1);
             note("Game progress saved to your account.");
           } catch (e) { note(e.message || "Sign in to sync progress across devices.", false); }
         });
         $("kf-resume").addEventListener("click", async () => {
           try {
-            const saved = await window.AshFallArcade.loadProgress(gameKey, "autosave");
+            await window.AshFallArcade.ready; const saved = await window.AshFallArcade.loadProgress(gameKey, "autosave");
             if (!saved || typeof saved.serialized !== "string") { note("No cloud save found yet.", false); return; }
             localStorage.setItem("saveState", saved.serialized);
             location.reload();
@@ -72,7 +72,7 @@
         });
         $("kf-submit").addEventListener("click", async () => {
           try {
-            const result = await window.AshFallArcade.recordScore(gameKey, Number(window.score) || 0, { serialized: exportSaveState() });
+            await window.AshFallArcade.ready; const result = await window.AshFallArcade.recordScore(gameKey, Number(window.score) || 0, { serialized: exportSaveState() });
             note(result && result.saved ? "Score sent to the account leaderboard." : "Sign in to submit scores.", Boolean(result && result.saved));
           } catch (e) { note(e.message || "Score submission failed.", false); }
         });
