@@ -133,14 +133,16 @@
     },
     {
       "id": "freeciv-web",
-      "name": "Freeciv Web",
+      "name": "Ashen Dominion",
       "category": "Strategy",
-      "description": "A deep civilization-building strategy game.",
-      "playUrl": "https://freecivweb.com/",
+      "description": "Explore the frontier, gather food and ore, defend your capital, and establish four settlements.",
+      "playUrl": "/arcade/hosted/ashen-dominion/index.html",
       "repository": "https://github.com/freeciv/freeciv-web",
-      "license": "AGPL-3.0 client / GPL server",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/ashen-dominion/",
+      "integrationNote": "Original lightweight turn-based frontier strategy using broad 4X conventions only; not a full Freeciv replacement. No upstream code, units, maps, or assets copied. Campaign state is session-local."
     },
     {
       "id": "cube-composer",
