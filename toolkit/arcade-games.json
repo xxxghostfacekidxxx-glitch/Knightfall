@@ -86,14 +86,16 @@
     },
     {
       "id": "isocity",
-      "name": "IsoCity",
+      "name": "Ashen Blocks",
       "category": "Simulation",
-      "description": "Build an isometric city in your browser.",
-      "playUrl": "https://iso-city.com/",
+      "description": "Build a neon district, connect homes with roads, balance the budget, and grow a city.",
+      "playUrl": "/arcade/hosted/ashen-blocks/index.html",
       "repository": "https://github.com/amilich/isometric-city",
-      "license": "MIT (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/ashen-blocks/",
+      "integrationNote": "Native original replacement using generic city-building mechanics only; no upstream code or assets copied. Local session state only; no account save or Cinders integration."
     },
     {
       "id": "3d-city",
