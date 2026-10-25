@@ -519,15 +519,17 @@
     },
     {
       "id": "chess",
-      "name": "Chess",
+      "name": "Cinder Chess",
       "category": "Board",
-      "description": "Play the classic strategy game against the computer.",
-      "playUrl": "https://sausi-7.github.io/games/games/board/chess/index.html",
+      "description": "Play White against a local AI with legal moves, check detection, checkmate, and automatic queen promotion.",
+      "playUrl": "/arcade/hosted/cinder-chess/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
-      "sourcePath": "games/board/chess/index.html"
+      "sourcePath": "games/board/chess/index.html",
+      "importedPath": "public/arcade/hosted/cinder-chess/",
+      "integrationNote": "Original local chess implementation and move-selection AI; no upstream code or piece assets copied. Omits castling and en passant; wins/best streak stored locally."
     },
     {
       "id": "road-riot",
