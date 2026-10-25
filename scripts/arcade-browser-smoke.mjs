@@ -349,6 +349,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Candy Crush, Bubble Barrage, and Car Race.
+  const matchRestoreCases = [
+    {name:"Candy Crush",path:"/arcade/hosted/candy-crush/index.html",gameId:"cabinet-candy-crush",data:{serialized:{board:Array.from({length:8},()=>Array(8).fill(0)),selected:{r:2,c:3},score:250,moves:12}},check:()=>document.querySelector("#score")?.textContent==="250"&&document.querySelector("#moves")?.textContent==="12"&&document.querySelector("#state")?.textContent==="Cloud save restored."},
+    {name:"Bubble Barrage",path:"/arcade/hosted/bubble-barrage/index.html",gameId:"cabinet-bubble-barrage",data:{serialized:{grid:[{row:0,col:0,color:"#ff5edb",alive:true},{row:0,col:1,color:"#ff5edb",alive:true},{row:0,col:2,color:"#ff5edb",alive:true}],score:120,shots:4,aimOn:true,shooter:"#a8ff48",best:150,pointer:{x:320,y:150}}},check:()=>document.querySelector("#score")?.textContent==="120"&&document.querySelector("#shots")?.textContent==="4"&&document.querySelector("#best")?.textContent==="150"},
+    {name:"Car Race",path:"/arcade/hosted/car-race/index.html",gameId:"cabinet-car-race",data:{serialized:{lane:2,traffic:[{lane:0,y:100,h:50}],score:345,speed:772,spawn:0.4}},check:()=>Number(document.querySelector("#score")?.textContent)>=345&&document.querySelector("#state")?.textContent==="Cloud save restored."}
+  ];
+  for(const testCase of matchRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores match/racing state")}
+    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
