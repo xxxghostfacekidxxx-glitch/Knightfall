@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "knightfall-mmo-staging",
-  "main": "src/index.js",
+  "main": "src/index.mmo-staging.js",
   "compatibility_date": "2026-10-05",
   "workers_dev": true,
   "observability": {
