@@ -223,7 +223,7 @@ async function loadProfilePhotos(username,ownProfile){
 async function load(){
  try{
    if(adminUserId){
-     const me=await api("/api/auth/me"); if(me.user?.role!=="admin") throw Error("Administrator access required.");
+     const me=await api("/api/auth/me"); if(!["admin","god"].includes(me.user?.role)) throw Error("Administrator access required.");
      const d=await api("/api/admin/users/"+encodeURIComponent(adminUserId)+"/detail");
      d.user.is_online=d.user.last_seen_at?Date.now()-new Date(d.user.last_seen_at).getTime()<5*60*1000:false;
      render(d,true); return;
@@ -233,7 +233,7 @@ async function load(){
    const me=await api("/api/auth/me").catch(()=>({user:null}));
    const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
-   if(me.user?.role==="admin"&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
+   if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
 }
 load();
