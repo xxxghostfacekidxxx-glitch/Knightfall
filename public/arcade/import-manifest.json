@@ -230,7 +230,7 @@
       "title": "A Dark Room",
       "candidate": "https://github.com/doublespeakgames/adarkroom",
       "license": "MPL-2.0 verified (LICENSE.md and package.json)",
-      "blocker": "License permits redistribution subject to MPL source and notice obligations. Import remains pending a complete audit of the large script/dependency tree, audio and image assets, legacy mobile redirect, and remote integrations."
+      "blocker": "Upstream import remains intentionally pending a full source/dependency/audio/image audit. A locally hosted original survival reimagining already exists at /arcade/hosted/last-ember/index.html; it does not copy A Dark Room source, text, or assets."
     },
     {
       "gameId": "cabinet-clumsy-bird",
@@ -492,6 +492,16 @@
       "status": "ashfall-original-build",
       "files": [
         "/arcade/hosted/colossus-clash/index.html"
+      ]
+    },
+    {
+      "gameId": "cabinet-last-ember",
+      "title": "Last Ember: Survival Reimagining",
+      "license": "Original Knightfall implementation; no A Dark Room source, text, or assets copied",
+      "notes": "Locally hosted text-and-resource survival game using original writing and implementation. This is a genre-inspired Ash-Fall original, not an upstream A Dark Room import.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/last-ember/index.html"
       ]
     }
   ],
