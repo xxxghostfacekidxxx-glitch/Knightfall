@@ -54,7 +54,9 @@ THE SOFTWARE.
   const status=document.getElementById("game-status");
   if(window.Game?.FSM){
     const originalEndGame=window.Game.FSM.end_game;
+    const originalExecute=window.Game.FSM.execute;
     let recorded=false;
+    window.Game.FSM.execute=function(){if(this.state==="waiting"||this.state==="start")recorded=false;return originalExecute.call(this);};
     window.Game.FSM.end_game=function(){
       if(this.state==="waiting") recorded=false;
       if(!recorded){
