@@ -166,14 +166,16 @@
     },
     {
       "id": "trigger-rally",
-      "name": "Trigger Rally",
+      "name": "Cinder Circuit",
       "category": "Racing",
-      "description": "Arcade rally driving with tight corners and dirt tracks.",
-      "playUrl": "https://triggerrally.com/",
+      "description": "Race three laps around a neon oval, manage speed, dodge rival drivers, and burn boost at the right time.",
+      "playUrl": "/arcade/hosted/cinder-circuit/index.html",
       "repository": "https://github.com/trigger-rally/trigger-rally",
-      "license": "Verify upstream",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/cinder-circuit/",
+      "integrationNote": "Original arcade racer using broad racing-game mechanics only; no upstream code, vehicle art, track, or assets copied. Best result stored locally."
     },
     {
       "id": "open-panzer",
