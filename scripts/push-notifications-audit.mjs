@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const worker = await readFile(path.join(root, "backend/src/index.js"), "utf8");
-const migration = await readFile(path.join(root, "backend/migrations/0021_web_push.sql"), "utf8");
+const migration = await readFile(path.join(root, "backend/migrations/0032_web_push.sql"), "utf8");
 const serviceWorker = await readFile(path.join(root, "public/sw.js"), "utf8");
 const page = await readFile(path.join(root, "public/notifications.html"), "utf8");
 const docs = await readFile(path.join(root, "docs/web-push-setup.md"), "utf8");
