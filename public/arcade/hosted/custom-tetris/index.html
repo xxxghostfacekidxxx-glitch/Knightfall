@@ -151,6 +151,12 @@
         #arcade-account-status { flex:1 1 100%; color:#aeb3c8; font-size:.8rem; line-height:1.5; }
         #knightfall-sync { min-height:1.4em; color:#c6ff45; }
         .game-container { margin: 0 auto; max-width:100%; }
+        .tetris-touch-controls { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; width:100%; max-width:300px; }
+        .tetris-touch-controls button { min-height:46px; border:1px solid #c6ff4580; border-radius:10px; background:#141a22; color:#f7f3ff; font:800 14px system-ui,sans-serif; touch-action:manipulation; user-select:none; -webkit-user-select:none; }
+        .tetris-touch-controls button:active { background:#c6ff45; color:#11150b; transform:scale(.97); }
+        .tetris-touch-controls button:focus-visible { outline:3px solid #ff55d8; outline-offset:2px; }
+        @media(min-width:701px) { .tetris-touch-controls { max-width:300px; } }
+        @media(max-width:700px) { .tetris-touch-controls button { min-height:50px; font-size:13px; } }
         @media(max-width:700px) { body{padding:8px}.game-container{gap:8px;transform-origin:top center;transform:scale(.92);margin-bottom:-40px}.knightfall-bar{padding:11px}.knightfall-actions button{flex:1 1 auto} }
 
     </style>
@@ -169,7 +175,15 @@
     </nav>
     <div class="game-container">
         <div class="canvas-wrapper">
-            <canvas id="gameCanvas" width="300" height="600"></canvas>
+            <canvas id="gameCanvas" width="300" height="600" aria-label="Tetris playfield"></canvas>
+            <div id="tetris-touch-controls" class="tetris-touch-controls" aria-label="Touch game controls">
+              <button type="button" data-tetris-action="left" aria-label="Move left">◀</button>
+              <button type="button" data-tetris-action="rotate" aria-label="Rotate piece">↻ Rotate</button>
+              <button type="button" data-tetris-action="right" aria-label="Move right">▶</button>
+              <button type="button" data-tetris-action="down" aria-label="Soft drop">▼ Drop</button>
+              <button type="button" data-tetris-action="hard-drop" aria-label="Hard drop">⬇ Slam</button>
+              <button type="button" data-tetris-action="pause" aria-label="Pause or resume">Ⅱ Pause</button>
+            </div>
             <button class="toggle-btn sound-toggle" id="soundToggle">Sound: ON</button>
             <button class="toggle-btn theme-toggle" id="themeToggle">Theme: Dark</button>
         </div>
@@ -758,6 +772,27 @@
             document.getElementById('gameOver').style.display = 'none';
             updateUI();
         }
+
+        const touchControls = document.getElementById('tetris-touch-controls');
+        touchControls?.addEventListener('click', event => {
+            const button = event.target.closest('[data-tetris-action]');
+            if (!button || button.disabled) return;
+            event.preventDefault();
+            initAudio();
+            if (gameOver) {
+                if (button.dataset.tetrisAction === 'hard-drop') resetGame();
+                return;
+            }
+            if (clearingLines.length > 0) return;
+            switch (button.dataset.tetrisAction) {
+                case 'left': move(-1); break;
+                case 'right': move(1); break;
+                case 'rotate': rotatePiece(); break;
+                case 'down': drop(); score += 1; updateUI(); break;
+                case 'hard-drop': hardDrop(); break;
+                case 'pause': paused = !paused; break;
+            }
+        });
 
         document.addEventListener('keydown', e => {
             // Initialize audio on first keypress
