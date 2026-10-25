@@ -19,7 +19,7 @@ body{padding:12px 10px 32px}.wrap{max-width:1000px;margin:auto}.back{display:inl
 <header class="hero"><div><p class="kicker">ASH-FALL / SELF-HOSTED CABINET</p><h1>ASTEROIDS<span>.EXE</span></h1></div><span class="tag">LOCAL GAME · MIT SOURCE</span></header>
 <p class="lede">Pilot the ship, blast the rocks, and try not to turn your spaceship into a brief philosophical statement. Move with ←/→, thrust with ↑, fire with Space, and pause with P. On touchscreens, use the controls below.</p>
 <div class="stage" id="asteroids-stage"><canvas id="canvas" width="780" height="540" aria-label="Asteroids game playfield"></canvas></div>
-<div class="toolbar"><button class="btn primary" id="fullscreen" type="button">Enter fullscreen</button><span class="status">Audio disabled in this build</span><span class="status" id="game-status" role="status" aria-live="polite">Click the game and press Space to start.</span></div>
+<div class="toolbar"><button class="btn primary" id="fullscreen" type="button">Enter fullscreen</button><span class="status">Audio disabled in this build</span><span class="status" id="game-status" role="status" aria-live="polite">Click the game and press Space to start.</span><span class="status" id="arcade-account-status" role="status" aria-live="polite">Checking account sync…</span></div>
 <div class="touch-controls" aria-label="Touch game controls"><button type="button" data-key="left">◀ TURN</button><button type="button" data-key="up">▲ THRUST</button><button type="button" data-key="right">TURN ▶</button><button type="button" data-key="space">✦ FIRE</button></div>
 <p class="credits">Adapted for Chaos Cartridge from <a href="https://github.com/dmcinnes/HTML5-Asteroids" target="_blank" rel="noopener noreferrer">Canvas Asteroids by Doug McInnes</a>. The upstream game logic is retained with local presentation, touch controls, and fullscreen support. Sound assets are intentionally omitted from this hosted build; gameplay does not depend on them.</p>
 <details><summary>Open-source license (MIT)</summary><p>Original project: Doug McInnes, 2010. Source repository: <a href="https://github.com/dmcinnes/HTML5-Asteroids" target="_blank" rel="noopener noreferrer">dmcinnes/HTML5-Asteroids</a>.</p><pre>The MIT License (MIT)
@@ -48,9 +48,25 @@ THE SOFTWARE.
 <script src="jquery-1.4.1.min.js"></script>
 <script src="vector_battle_regular.typeface.js"></script>
 <script src="game.js"></script>
+<script src="/arcade-save.js"></script>
 <script>
 (() => {
   const status=document.getElementById("game-status");
+  if(window.Game?.FSM){
+    const originalEndGame=window.Game.FSM.end_game;
+    let recorded=false;
+    window.Game.FSM.end_game=function(){
+      if(this.state==="waiting") recorded=false;
+      if(!recorded){
+        recorded=true;
+        const score=Math.max(0,Number(window.Game.score)||0);
+        const progress={score,lives:Number(window.Game.lives)||0,game:"asteroids",lastPlayedAt:new Date().toISOString()};
+        Promise.resolve(window.AshFallArcade?.ready).then(()=>window.AshFallArcade?.recordScore("ashes-asteroids",score,progress)).catch(()=>{});
+      }
+      return originalEndGame.call(this);
+    };
+  }
+
   const canvas=document.getElementById("canvas");
   const stage=document.getElementById("asteroids-stage");
   const fullscreen=document.getElementById("fullscreen");
