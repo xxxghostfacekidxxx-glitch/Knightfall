@@ -181,7 +181,8 @@ const colossusGame = await readFile(path.join(publicDir, "arcade/hosted/colossus
 if (!colossusGame.includes("cabinet-colossus-clash") || !colossusGame.includes("recordScore")) fail("Colossus Clash is missing account leaderboard integration.");
 if (!worker.includes('"cabinet-colossus-clash"') || !worker.includes('"cabinet-colossus-clash":100000')) fail("Colossus Clash is not allowlisted with a bounded score cap.");
 if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-colossus-clash")) fail("Colossus Clash is missing from the arcade manifest.");
-if (!recordsPageAudit.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
+const colossusRecordsPage = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!colossusRecordsPage.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
 ok("Colossus Clash controls, account integration, score cap, and provenance checked.");
 
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
