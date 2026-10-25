@@ -74,6 +74,19 @@
         "/arcade/hosted/maze-muncher/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream single-file maze chase game; removed upstream shared i18n/analytics dependency, applied Ash-Fall theme, namespaced local best-score key, and added account leaderboard submission on completed runs."
+    },
+    {
+      "gameId": "cabinet-sokoban",
+      "title": "Sokoban",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/sokoban/index.html",
+        "/arcade/hosted/sokoban/LICENSE.txt",
+        "/arcade/hosted/sokoban/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream single-file crate-pushing puzzle with original levels; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local progress storage, and submits highest cleared level to account leaderboard."
     }
   ],
   "notYetImported": [
