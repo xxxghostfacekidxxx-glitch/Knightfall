@@ -9,6 +9,8 @@ on:
     paths:
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
+      - "public/admin.html"
+      - "public/admin.css"
       - ".github/workflows/arcade-test-fleet.yml"
 
 permissions:
