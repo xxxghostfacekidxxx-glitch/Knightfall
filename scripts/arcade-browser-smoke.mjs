@@ -29,6 +29,44 @@ const games = [
 const browser = await chromium.launch({ headless: true });
 let failed = false;
 try {
+  // First audit every hosted HTML route, not just the handful of hand-picked games.
+  // This catches broken asset paths and runtime crashes before targeted gameplay tests.
+  const hostedRoutes = await listHostedHtml();
+  let routePasses = 0;
+  const routeFailures = [];
+  for (const route of hostedRoutes) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    const errors = [];
+    const badAssets = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    page.on("response", response => {
+      const url = response.url();
+      if (url.startsWith(base) && response.status() >= 400) {
+        badAssets.push(response.status() + " " + new URL(url).pathname);
+      }
+    });
+    let response;
+    try {
+      response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 12000 });
+      await page.waitForTimeout(100);
+      const title = await page.title();
+      const bodyText = await page.locator("body").innerText().catch(() => "");
+      if (!response || response.status() !== 200) routeFailures.push(route + ": HTTP " + (response?.status() ?? "no response"));
+      else if (!title.trim()) routeFailures.push(route + ": missing document title");
+      else if (!bodyText.trim()) routeFailures.push(route + ": empty document body");
+      if (errors.length) routeFailures.push(route + ": JavaScript exception: " + errors.slice(0, 2).join(" | "));
+      if (badAssets.length) routeFailures.push(route + ": local asset errors: " + [...new Set(badAssets)].slice(0, 5).join(", "));
+      if (response?.status() === 200 && title.trim() && bodyText.trim() && !errors.length && !badAssets.length) routePasses++;
+    } catch (error) {
+      routeFailures.push(route + ": navigation failed: " + (error?.message || String(error)));
+    } finally {
+      await page.close();
+    }
+  }
+  console.log("Hosted route audit: " + routePasses + "/" + hostedRoutes.length + " pages loaded without detected runtime or local-asset errors");
+  for (const failure of routeFailures) console.error("FAIL hosted route: " + failure);
+  if (routeFailures.length) failed = true;
+
   for (const game of games) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
