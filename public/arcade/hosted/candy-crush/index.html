@@ -7,4 +7,5 @@ function matches(){const set=new Set();for(let r=0;r<N;r++){let start=0;for(let 
 function settle(){let m=matches();if(!m.length){locked=false;update();return;}score+=m.length*10+(m.length>=4?20:0);for(const [r,c] of m)board[r][c]=null;for(let c=0;c<N;c++){const col=[];for(let r=N-1;r>=0;r--)if(board[r][c]!==null)col.push(board[r][c]);while(col.length<N)col.push(rand());for(let r=N-1,i=0;r>=0;r--,i++)board[r][c]=col[i];}selected=null;update();setTimeout(settle,100);}
 function tap(r,c){if(locked||moves<=0)return;if(!selected){selected={r,c};update();return;}const a=selected;if(a.r===r&&a.c===c){selected=null;update();return;}if(Math.abs(a.r-r)+Math.abs(a.c-c)!==1){selected={r,c};update();return;}[board[a.r][a.c],board[r][c]]=[board[r][c],board[a.r][a.c]];selected=null;const m=matches();if(!m.length){[board[a.r][a.c],board[r][c]]=[board[r][c],board[a.r][a.c]];$("state").textContent="No match. Try another swap.";update();return;}moves--;locked=true;$("state").textContent="SUGAR RUSH!";update();setTimeout(settle,100);if(moves===0)$("state").textContent="OUT OF MOVES";}
 $("restart").addEventListener("click",init);init();
-</script></body></html>
+</script><script src="/arcade/hosted/arcade-account-bridge.js" data-game-id="cabinet-candy-crush" data-score-mode="score" data-score-selector="#score"></script>
+</body></html>

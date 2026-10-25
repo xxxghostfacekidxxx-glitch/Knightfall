@@ -182,6 +182,62 @@
       "path": "/arcade/hosted/archer/index.html",
       "scoreSelector": "",
       "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-balance-stack",
+      "title": "Balance Stack",
+      "path": "/arcade/hosted/balance-stack/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-basketball",
+      "title": "Basketball",
+      "path": "/arcade/hosted/basketball/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-bowling",
+      "title": "Bowling",
+      "path": "/arcade/hosted/bowling/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-bubble-pop",
+      "title": "Bubble Pop",
+      "path": "/arcade/hosted/bubble-pop/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-bubble-barrage",
+      "title": "Bubble Barrage",
+      "path": "/arcade/hosted/bubble-barrage/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-candy-crush",
+      "title": "Candy Crush",
+      "path": "/arcade/hosted/candy-crush/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-car-race",
+      "title": "Car Race",
+      "path": "/arcade/hosted/car-race/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-cinder-chess",
+      "title": "Cinder Chess",
+      "path": "/arcade/hosted/cinder-chess/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
     }
   ]
 }
