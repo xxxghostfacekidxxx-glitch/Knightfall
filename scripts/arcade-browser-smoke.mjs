@@ -126,6 +126,59 @@ try {
     }
   }
 
+  // Regression: Particle Clicker upgrade buttons must be actionable without pixel-hunting on the canvas.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/ashfall-mini-games.html?game=particle-clicker", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      await page.locator("#start").tap();
+      for (let i = 0; i < 50; i++) await page.locator("#clicker-generate").tap();
+      const boost = page.locator("#clicker-boost");
+      if (!(await boost.isEnabled())) throw new Error("research upgrade stayed disabled after earning 50 particles");
+      await boost.tap();
+      const generateLabel = await page.locator("#clicker-generate").innerText();
+      if (!generateLabel.includes("+2")) throw new Error("research upgrade did not increase generation: " + generateLabel);
+      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
+      console.log("PASS Particle Clicker touch generation and upgrade purchase");
+    } catch (error) {
+      console.error("FAIL Particle Clicker upgrade controls: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
+  // Regression: Custom Tetris exposes working touch controls for phones without a keyboard.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message || String(error)));
+    try {
+      const response = await page.goto(base + "/arcade/hosted/custom-tetris/index.html", { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
+      const before = await page.evaluate(() => window.KnightfallTetris.getState());
+      await page.locator('[data-tetris-action="left"]').tap();
+      const afterMove = await page.evaluate(() => window.KnightfallTetris.getState());
+      if (afterMove.piece.x >= before.piece.x) throw new Error("left touch control did not move the piece left");
+      await page.locator('[data-tetris-action="down"]').tap();
+      const afterDrop = await page.evaluate(() => window.KnightfallTetris.getState());
+      if (afterDrop.score <= afterMove.score) throw new Error("soft-drop touch control did not update score");
+      await page.locator('[data-tetris-action="pause"]').tap();
+      const afterPause = await page.evaluate(() => window.KnightfallTetris.getState());
+      if (!afterPause.paused) throw new Error("pause touch control did not pause the game");
+      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
+      console.log("PASS Custom Tetris mobile move, drop, and pause controls");
+    } catch (error) {
+      console.error("FAIL Custom Tetris touch controls: " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
+
   // Use real touch taps on the shared engine to catch mouse-only controls on phones.
   for (const id of sharedCabinetIds) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
