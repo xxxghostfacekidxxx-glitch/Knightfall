@@ -168,6 +168,16 @@ if (!cinderGame.includes("cabinet-cinder-crossing") || !cinderGame.includes("rec
 if (!worker.includes('"cabinet-cinder-crossing"') || !worker.includes('"cabinet-cinder-crossing":1000')) fail("Cinder Crossing is not allowlisted with a bounded score cap.");
 if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-cinder-crossing")) fail("Cinder Crossing is missing from the arcade manifest.");
 ok("Cinder Crossing catalog, account integration, score cap, and manifest registration checked.");
+const afterburnGame = await readFile(path.join(publicDir, "arcade/hosted/afterburn-breakout/index.html"), "utf8");
+if (!afterburnGame.includes("cabinet-afterburn-breakout") || !afterburnGame.includes("recordScore")) fail("Afterburn Breakout is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-afterburn-breakout"') || !worker.includes('"cabinet-afterburn-breakout":1000')) fail("Afterburn Breakout is not allowlisted with a bounded score cap.");
+if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-afterburn-breakout")) fail("Afterburn Breakout is missing from the arcade manifest.");
+const afterburnCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+const afterburnCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
+const afterburnRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!afterburnCatalog.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnCartridge.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnRecords.includes('"cabinet-afterburn-breakout":"Afterburn Breakout"')) fail("Afterburn Breakout is missing from a public arcade surface.");
+ok("Afterburn Breakout catalog, account integration, score cap, and manifest registration checked.");
+
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
 if (!mainCartridgeAudit.includes('href="/arcade/hosted/marshland-marksman/index.html"') || !mainCartridgeAudit.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Chaos Cartridge is missing one or more newly integrated cabinets.");
