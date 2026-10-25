@@ -448,6 +448,93 @@ async function handlePublicAssetRequest(request, env, origin, url) {
   }
 }
 
+
+const PROFILE_PHOTO_MAX_BYTES = 8 * 1024 * 1024;
+function profilePhotoUrl(id) { return "https://api.ash-fall.com/api/profile-media/" + Number(id); }
+async function handleProfilePhotoRequest(request, env, origin, url) {
+  const publicMatch = url.pathname.match(/^\\/api\\/profile-media\\/(\\d+)$/);
+  if (publicMatch && (request.method === "GET" || request.method === "HEAD")) {
+    const photo = await env.DB.prepare("SELECT object_key,content_type,size_bytes FROM profile_photos WHERE id=?").bind(Number(publicMatch[1])).first();
+    if (!photo || !env.PROFILE_MEDIA) return json({error:"Photo not found."},404,origin);
+    const object = await env.PROFILE_MEDIA.get(photo.object_key);
+    if (!object) return json({error:"Photo not found."},404,origin);
+    const headers = new Headers({
+      "content-type": photo.content_type,
+      "content-length": String(object.size || photo.size_bytes),
+      "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+      "x-content-type-options": "nosniff",
+      "content-security-policy": "default-src 'none'; sandbox",
+      "access-control-allow-origin": "*",
+      "cross-origin-resource-policy": "cross-origin"
+    });
+    if (object.httpEtag) headers.set("etag", object.httpEtag);
+    return new Response(request.method === "HEAD" ? null : object.body,{status:200,headers});
+  }
+  if (url.pathname === "/api/profile/photos" && request.method === "GET") {
+    const username = String(url.searchParams.get("username") || "").trim();
+    if (!username || username.length > 24) return json({error:"A valid username is required."},400,origin);
+    const owner = await env.DB.prepare("SELECT id FROM users WHERE username=? AND status='active'").bind(username).first();
+    if (!owner) return json({error:"Profile not found."},404,origin);
+    const rows = await env.DB.prepare("SELECT id,content_type,size_bytes,caption,created_at FROM profile_photos WHERE user_id=? AND kind='gallery' ORDER BY created_at DESC,id DESC LIMIT 60").bind(owner.id).all();
+    return json({photos:(rows.results||[]).map(p=>({...p,size_bytes:Number(p.size_bytes),url:profilePhotoUrl(p.id)}))},200,origin);
+  }
+  if (url.pathname === "/api/profile/photos" && request.method === "POST") {
+    const user = await requireUser(request,env);
+    if (!user) return json({error:"Authentication required."},401,origin);
+    if (!env.PROFILE_MEDIA) return json({error:"Profile photo storage is not configured."},503,origin);
+    if (!await rateLimit(env,request,"profile-photo-upload",15,60,user.id)) return json({error:"Too many photo uploads. Try again in a minute."},429,origin);
+    let form; try { form=await request.formData(); } catch { return json({error:"Upload must use multipart form data."},400,origin); }
+    const file=form.get("file"), kind=String(form.get("kind")||"gallery"), caption=String(form.get("caption")||"").trim();
+    if (kind!=="gallery"&&kind!=="avatar") return json({error:"Invalid photo type."},400,origin);
+    if (caption.length>240) return json({error:"Captions must be 240 characters or fewer."},400,origin);
+    if (!file||typeof file.arrayBuffer!=="function"||!file.size) return json({error:"Choose an image to upload."},400,origin);
+    if (file.size>PROFILE_PHOTO_MAX_BYTES) return json({error:"Images must be 8 MB or smaller."},413,origin);
+    const type=String(file.type||"").toLowerCase();
+    if (!new Set(["image/jpeg","image/png","image/gif","image/webp"]).has(type)) return json({error:"Use JPG, PNG, GIF, or WebP images."},415,origin);
+    if (kind==="gallery") {
+      const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM profile_photos WHERE user_id=? AND kind='gallery'").bind(user.id).first();
+      if (Number(count?.count||0)>=60) return json({error:"Your profile gallery is full. Remove a photo before adding another."},409,origin);
+    }
+    const bytes=await file.arrayBuffer(),head=new Uint8Array(bytes).slice(0,12);
+    const starts=(...values)=>values.every((v,i)=>head[i]===v);
+    const signatureOk=type==="image/jpeg"?starts(0xff,0xd8,0xff):type==="image/png"?starts(0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a):type==="image/gif"?(String.fromCharCode(...head.slice(0,6))==="GIF87a"||String.fromCharCode(...head.slice(0,6))==="GIF89a"):(String.fromCharCode(...head.slice(0,4))==="RIFF"&&String.fromCharCode(...head.slice(8,12))==="WEBP");
+    if (!signatureOk) return json({error:"The file contents do not match a supported image format."},415,origin);
+    const objectKey="profiles/"+Number(user.id)+"/"+randomToken(20);
+    let previous=null;
+    if (kind==="avatar") previous=await env.DB.prepare("SELECT id,object_key FROM profile_photos WHERE user_id=? AND kind='avatar'").bind(user.id).first();
+    try {
+      await env.PROFILE_MEDIA.put(objectKey,bytes,{httpMetadata:{contentType:type,cacheControl:"public, max-age=3600"}});
+      const now=new Date().toISOString();
+      const inserted=await env.DB.prepare("INSERT INTO profile_photos (user_id,object_key,content_type,size_bytes,caption,kind,created_at) VALUES (?,?,?,?,?,?,?) RETURNING id,content_type,size_bytes,caption,kind,created_at").bind(user.id,objectKey,type,file.size,caption,kind,now).first();
+      if (kind==="avatar") await env.DB.prepare("UPDATE users SET avatar_url=?,updated_profile_at=? WHERE id=?").bind(profilePhotoUrl(inserted.id),now,user.id).run();
+      if (previous) {
+        await env.DB.prepare("DELETE FROM profile_photos WHERE id=? AND user_id=?").bind(previous.id,user.id).run();
+        try { await env.PROFILE_MEDIA.delete(previous.object_key); } catch (cleanupError) { console.error("profile_avatar_cleanup_failed",cleanupError); }
+      }
+      await audit(env,user,kind==="avatar"?"profile.avatar.upload":"profile.photo.upload","profile_photo",inserted.id,{kind,size_bytes:file.size,content_type:type});
+      return json({photo:{...inserted,id:Number(inserted.id),size_bytes:Number(inserted.size_bytes),url:profilePhotoUrl(inserted.id)}},201,origin);
+    } catch(error) {
+      try { await env.PROFILE_MEDIA.delete(objectKey); } catch {}
+      console.error("profile_photo_upload_failed",error);
+      return json({error:"Photo upload failed. Your profile was not changed."},500,origin);
+    }
+  }
+  const deleteMatch=url.pathname.match(/^\\/api\\/profile\\/photos\\/(\\d+)$/);
+  if (deleteMatch && request.method==="DELETE") {
+    const user=await requireUser(request,env);
+    if (!user) return json({error:"Authentication required."},401,origin);
+    const photo=await env.DB.prepare("SELECT id,user_id,object_key,kind FROM profile_photos WHERE id=?").bind(Number(deleteMatch[1])).first();
+    if (!photo) return json({error:"Photo not found."},404,origin);
+    if (Number(photo.user_id)!==Number(user.id)) return json({error:"You can only delete your own photos."},403,origin);
+    await env.DB.prepare("DELETE FROM profile_photos WHERE id=? AND user_id=?").bind(photo.id,user.id).run();
+    if (photo.kind==="avatar") await env.DB.prepare("UPDATE users SET avatar_url='',updated_profile_at=? WHERE id=? AND avatar_url=?").bind(new Date().toISOString(),user.id,profilePhotoUrl(photo.id)).run();
+    try { await env.PROFILE_MEDIA.delete(photo.object_key); } catch(error) { console.error("profile_photo_delete_cleanup_failed",error); }
+    await audit(env,user,"profile.photo.delete","profile_photo",photo.id,{kind:photo.kind});
+    return json({ok:true},200,origin);
+  }
+  return null;
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -461,6 +548,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
+  const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
+  if (profilePhotoResponse) return profilePhotoResponse;
   const publicAssetResponse = await handlePublicAssetRequest(request, env, origin, url);
   if (publicAssetResponse) return publicAssetResponse;
   const shopResponse = await handleShopRequest(request, env, origin, url);
