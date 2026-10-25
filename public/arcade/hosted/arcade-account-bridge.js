@@ -13,8 +13,8 @@ const shelf=document.createElement('a');shelf.href='/chaos-cartridge.html';shelf
 const all=document.createElement('a');all.href='/arcade-30-games.html';all.textContent='All Games';
 const licenses=document.createElement('a');licenses.href='/arcade/arcade-license-guide.html';licenses.textContent='Licenses';
 const report=document.createElement('a');report.textContent='Report issue';report.target='_blank';report.rel='noopener noreferrer';
-const reportTitle=(document.title||'Arcade game').replace(/\\s*[|·-]\\s*(Chaos Cartridge|Ash-Fall).*$/i,'').trim()||'Arcade game';
-const reportBody='Game: '+reportTitle+'\\nPage: '+location.href+'\\n\\nWhat happened?\\n\\nSteps to reproduce:\\n\\nDevice/browser (optional): '+navigator.userAgent;
+const reportTitle=(document.title||'Arcade game').replace(/\s*[|·-]\s*(Chaos Cartridge|Ash-Fall).*$/i,'').trim()||'Arcade game';
+const reportBody='Game: '+reportTitle+'\nPage: '+location.href+'\n\nWhat happened?\n\nSteps to reproduce:\n\nDevice/browser (optional): '+navigator.userAgent;
 report.href='https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new?title='+encodeURIComponent('Arcade issue: '+reportTitle)+'&body='+encodeURIComponent(reportBody);
 links.append(current,shelf,all,licenses,report);nav.append(brand,links);
 if(document.body&&!document.querySelector('.af-arcade-nav'))document.body.insertBefore(nav,document.body.firstChild);
