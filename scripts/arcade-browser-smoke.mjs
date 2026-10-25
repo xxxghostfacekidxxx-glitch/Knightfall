@@ -89,8 +89,17 @@ try {
     console.error("FAIL catalog crawl: catalog page did not return HTTP 200");
     failed = true;
   } else {
-    const routes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
-    console.log(`INFO catalog crawl: checking ${routes.length} locally hosted game routes`);
+    const catalogRoutes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
+    const mainResponse = await catalogPage.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+    let mainRoutes = [];
+    if (!mainResponse || mainResponse.status() !== 200) {
+      console.error("FAIL main arcade crawl: main shelf did not return HTTP 200");
+      failed = true;
+    } else {
+      mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
+    }
+    const routes = [...new Set([...catalogRoutes, ...mainRoutes])];
+    console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
     for (const route of routes) {
       const errors = [];
@@ -109,10 +118,10 @@ try {
       }
     }
     if (routeFailures.length) {
-      console.error("FAIL catalog route crawl:\n" + routeFailures.join("\n"));
+      console.error("FAIL arcade route crawl:\n" + routeFailures.join("\n"));
       failed = true;
     } else {
-      console.log(`PASS catalog route crawl: all ${routes.length} local game pages returned HTTP 200 with titles and no uncaught browser exceptions`);
+      console.log(`PASS arcade route crawl: all ${routes.length} local game pages returned HTTP 200 with titles and no uncaught browser exceptions`);
     }
   }
   await catalogPage.close();
