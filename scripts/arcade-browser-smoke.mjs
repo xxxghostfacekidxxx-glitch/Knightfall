@@ -47,9 +47,9 @@ try {
     });
     let response;
     try {
-      response = await page.goto(base + route, { waitUntil: "commit", timeout: 6000 });
-      await page.waitForLoadState("domcontentloaded", { timeout: 1800 }).catch(() => {});
-      await page.waitForTimeout(100);
+      response = await page.goto(base + route, { waitUntil: "commit", timeout: 2500 });
+      await page.waitForLoadState("domcontentloaded", { timeout: 350 }).catch(() => {});
+      await page.waitForTimeout(50);
       const title = await page.title();
       const bodyText = await page.locator("body").innerText().catch(() => "");
       if (!response || response.status() !== 200) routeFailures.push(route + ": HTTP " + (response?.status() ?? "no response"));
