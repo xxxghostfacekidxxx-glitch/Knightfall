@@ -63,7 +63,7 @@ jobs:
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
-        run: node scripts/arcade-browser-smoke.mjs
+        run: node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log 2>&1 | tee /tmp/arcade-local-results.log
       - name: Run full live-site arcade browser suite
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
@@ -75,5 +75,7 @@ jobs:
           name: arcade-test-results-${{ strategy.job-index }}-${{ matrix.bot }}
           path: |
             /tmp/knightfall-static.log
+            /tmp/arcade-local-results.log
+            /tmp/arcade-live-results.log
           if-no-files-found: ignore
           retention-days: 14
