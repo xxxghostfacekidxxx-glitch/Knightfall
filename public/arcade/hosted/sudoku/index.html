@@ -166,6 +166,9 @@ body{display:flex;flex-direction:column;justify-content:flex-start;align-items:c
       timeLeft--;}
     const timerInterval=setInterval(updateTimer,1000);
 
+    window.exportSaveState=()=>gameOver?null:({grid:grid.map(r=>r.slice()),selected:selected?{...selected}:null,timeLeft});
+    window.importSaveState=d=>{if(!d||!Array.isArray(d.grid)||d.grid.length!==9||!d.grid.every(r=>Array.isArray(r)&&r.length===9&&r.every(n=>Number.isInteger(n)&&n>=0&&n<=9))||!Number.isFinite(d.timeLeft))return false;grid=d.grid.map(r=>r.slice());selected=d.selected&&Number.isInteger(d.selected.r)&&Number.isInteger(d.selected.c)&&d.selected.r>=0&&d.selected.r<9&&d.selected.c>=0&&d.selected.c<9?{r:d.selected.r,c:d.selected.c}:null;timeLeft=Math.max(1,Math.min(600,Math.floor(d.timeLeft)));gameOver=false;winMessage.style.display='none';render();updateTimer();return true};
+
     // Confetti animation
     function launchConfetti(){
       const confetti=document.getElementById('confetti');
