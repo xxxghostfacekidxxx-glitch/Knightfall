@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-10-23",
+  "updated": "2026-10-24",
   "purpose": "Discovery and launch index for browser-playable games. External play URLs are not hosted by Knightfall; source repositories are linked for review. Import status is tracked per game; code has not been imported unless sourceImported is true.",
   "games": [
     {
@@ -240,14 +240,14 @@
     },
     {
       "id": "snake",
-      "name": "Snake",
+      "name": "Curvy Snake",
       "category": "Arcade",
-      "description": "Eat, grow, and avoid your own increasingly bad decisions.",
-      "playUrl": "https://emjay045.github.io/browser-games/snake/",
+      "description": "Steer a glowing trail through the wreckage. One wrong turn and your tail becomes your own worst enemy.",
+      "playUrl": "/arcade/hosted/curvy-snake/index.html",
       "repository": "https://github.com/emjay045/browser-games",
-      "license": "License check required",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "MIT; local adaptation audited in toolkit/arcade-import-audit.json",
+      "launchMode": "self-hosted",
+      "sourceImported": true
     },
     {
       "id": "pong",
@@ -297,13 +297,13 @@
     },
     {
       "id": "wordle-style-word-game",
-      "name": "Wordle-style Word Game",
+      "name": "Wordlee",
       "category": "Word",
-      "description": "Crack the hidden word in six guesses.",
-      "playUrl": "https://emjay045.github.io/browser-games/wordle/",
+      "description": "Crack the daily-style word puzzle inside Knightfall. Six guesses, increasingly questionable confidence.",
+      "playUrl": "/arcade/hosted/wordlee/index.html",
       "repository": "https://github.com/emjay045/browser-games",
-      "license": "License check required",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false
     },
     {
@@ -319,13 +319,13 @@
     },
     {
       "id": "dino-dash",
-      "name": "Dino Dash",
+      "name": "Ash-Fall: Endless Run",
       "category": "Arcade",
-      "description": "Jump the hazards and keep the run alive.",
-      "playUrl": "https://emjay045.github.io/browser-games/dino-dash/",
+      "description": "Sprint through the ruined city, dodge the hazards, and see how long your questionable survival instincts hold.",
+      "playUrl": "/arcade/hosted/endless-runner/index.html",
       "repository": "https://github.com/emjay045/browser-games",
-      "license": "License check required",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false
     },
     {
@@ -545,13 +545,13 @@
     },
     {
       "id": "space-waves",
-      "name": "Space Waves",
+      "name": "Cinder Squadron",
       "category": "Arcade",
-      "description": "Ride through waves of space debris and survive the cosmic obstacle course.",
-      "playUrl": "https://sausi-7.github.io/games/games/arcade/space-waves/index.html",
+      "description": "Take the fight into the toxic dark in Knightfall's locally hosted space-combat cabinet.",
+      "playUrl": "/arcade/hosted/space-fighter/index.html",
       "repository": "https://github.com/sausi-7/games",
-      "license": "MIT repository license; review game-specific IP/assets before import",
-      "launchMode": "external",
+      "license": "Original Knightfall implementation; upstream code/assets not copied",
+      "launchMode": "self-hosted-native",
       "sourceImported": false,
       "sourcePath": "games/arcade/space-waves/index.html"
     },
