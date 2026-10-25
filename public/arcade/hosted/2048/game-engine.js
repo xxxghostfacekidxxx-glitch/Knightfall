@@ -460,8 +460,8 @@ window.fakeStorage = {
 };
 
 function LocalStorageManager() {
-  this.bestScoreKey     = "bestScore";
-  this.gameStateKey     = "gameState";
+  this.bestScoreKey     = "ashfall-2048-bestScore";
+  this.gameStateKey     = "ashfall-2048-gameState";
 
   var supported = this.localStorageSupported();
   this.storage = supported ? window.localStorage : window.fakeStorage;
@@ -782,5 +782,7 @@ GameManager.prototype.positionsEqual = function (first, second) {
 /* Imported upstream file: application.js | https://github.com/gabrielecirulli/2048 */
 // Wait till the browser is ready to render the game (avoids glitches)
 window.requestAnimationFrame(function () {
-  new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
+  var manager = new GameManager(4, KeyboardInputManager, HTMLActuator, LocalStorageManager);
+  window.ashFall2048 = manager;
+  if (typeof window.AshFall2048Ready === "function") window.AshFall2048Ready(manager);
 });
