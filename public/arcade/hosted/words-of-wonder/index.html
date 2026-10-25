@@ -5,4 +5,5 @@ const bank=["STONE","STORE","ONSET","NOTES","TONES","TENOR","SNORE","ROSE","REST
 function init(){found=[];score=0;$("found").textContent=0;$("score").textContent=0;$("status").textContent="Find all 12 words.";$("letters").innerHTML=[..."STONER"].map(ch=>'<span class="letter">'+ch+'</span>').join("");$("words").innerHTML="";$("guess").value="";}
 function submit(e){e.preventDefault();const w=$("guess").value.trim().toUpperCase();$("guess").value="";if(!bank.includes(w)){$("status").textContent="Not in this puzzle's word list.";return;}if(found.includes(w)){$("status").textContent="Already found. No double-dipping.";return;}found.push(w);score+=w.length*10;$("found").textContent=found.length;$("score").textContent=score;const el=document.createElement("span");el.className="word";el.textContent=w;$("words").appendChild(el);$("status").textContent=found.length===bank.length?"Puzzle cleared. Your vocabulary has escaped containment.":"Nice. "+(bank.length-found.length)+" words left.";}
 $("form").addEventListener("submit",submit);$("reset").addEventListener("click",init);init();
-</script></body></html>
+</script><script src="/arcade/hosted/arcade-account-bridge.js" data-game-id="cabinet-words-of-wonder" data-score-mode="score" data-score-selector="#score"></script>
+</body></html>

@@ -294,6 +294,62 @@
       "path": "/arcade/hosted/two-cars/index.html",
       "scoreSelector": "#score",
       "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-rift-wardens",
+      "title": "Rift Wardens",
+      "path": "/arcade/hosted/rift-wardens/index.html",
+      "scoreSelector": "#wave",
+      "scoreMode": "wave"
+    },
+    {
+      "gameId": "cabinet-whack-a-bug",
+      "title": "Whack-a-Bug",
+      "path": "/arcade/hosted/whack-a-bug/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-words-of-wonder",
+      "title": "Words of Wonder",
+      "path": "/arcade/hosted/words-of-wonder/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-penalty-shootout",
+      "title": "Penalty Shootout",
+      "path": "/arcade/hosted/penalty-shootout/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-stack-tower",
+      "title": "Stack Tower",
+      "path": "/arcade/hosted/stack-tower/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-rooftop-riot",
+      "title": "Rooftop Riot",
+      "path": "/arcade/hosted/rooftop-riot/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-line-trap",
+      "title": "Line Trap",
+      "path": "/arcade/hosted/line-trap/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-hex-puzzle",
+      "title": "Hex Puzzle",
+      "path": "/arcade/hosted/hex-puzzle/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
     }
   ]
 }
