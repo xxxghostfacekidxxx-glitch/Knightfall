@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "purpose": "Track source provenance, license checks, and import status for locally hosted Chaos Cartridge games.",
-  "policy": "Only mark a game imported when upstream source is actually present locally and required license/attribution notices are bundled. A source link or original prototype is not an import.",
+  "policy": "Imported means upstream source is actually present locally with required license notices. Ash-Fall original builds are playable reimplementations and must not be labeled upstream imports. Restricted or unverified upstream assets are not copied.",
   "imports": [
     {
       "gameId": "classic-2048",
@@ -250,6 +250,60 @@
       "candidate": "https://github.com/sausi-7/games",
       "license": "not yet verified",
       "blocker": "Do not redistribute as an upstream import until source license, asset rights, dependencies, and build/runtime requirements are audited."
+    }
+  ],
+  "ashFallOriginalBuilds": [
+    {
+      "gameId": "cabinet-particle-clicker",
+      "title": "Particle Clicker",
+      "upstream": "https://github.com/particle-clicker/particle-clicker",
+      "license": "MIT upstream; no upstream source copied",
+      "notes": "Original incremental lab game with click generation, upgrade costs, scientists, passive research, account saves, and scores.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ashfall-mini-games.html",
+        "/arcade/hosted/ashfall-mini-games.js",
+        "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
+      ]
+    },
+    {
+      "gameId": "cabinet-cube-composer",
+      "title": "Cube Composer",
+      "upstream": "https://github.com/sharkdp/cube-composer",
+      "license": "MIT upstream; no upstream source copied",
+      "notes": "Original grid logic puzzle with toggleable current tiles, level progression, and score saves.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ashfall-mini-games.html",
+        "/arcade/hosted/ashfall-mini-games.js",
+        "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
+      ]
+    },
+    {
+      "gameId": "cabinet-skifree",
+      "title": "SkiFree: Slalom of Doom",
+      "upstream": "https://github.com/justinbarr/ski-free",
+      "license": "Upstream license not verified; no upstream source or art copied",
+      "notes": "Original downhill avoidance game with obstacles, tokens, lives, speed ramp, touch and keyboard controls.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ashfall-mini-games.html",
+        "/arcade/hosted/ashfall-mini-games.js",
+        "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
+      ]
+    },
+    {
+      "gameId": "cabinet-ball-and-wall",
+      "title": "Ball & Wall: Ember Breakout",
+      "upstream": "https://github.com/budnix/ball-and-wall",
+      "license": "MIT upstream code; separately licensed Pegasus artwork not used",
+      "notes": "Original Canvas breakout game with paddle control, destructible bricks, lives, increasing levels, saves, and score sync.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/ashfall-mini-games.html",
+        "/arcade/hosted/ashfall-mini-games.js",
+        "/arcade/hosted/ASH-FALL-MINI-GAMES-NOTICE.md"
+      ]
     }
   ]
 }
