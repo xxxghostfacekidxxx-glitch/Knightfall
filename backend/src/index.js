@@ -56,7 +56,7 @@ async function pushVapidToken(endpoint,env) {
   if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) throw new Error("Web Push VAPID secrets are not configured");
   const audience=new URL(endpoint).origin, now=Math.floor(Date.now()/1000);
   const enc=new TextEncoder(), header=pushB64Url(enc.encode(JSON.stringify({typ:"JWT",alg:"ES256"}))), payload=pushB64Url(enc.encode(JSON.stringify({aud:audience,exp:now+12*60*60,sub:env.VAPID_SUBJECT}))), unsigned=header+"."+payload;
-  const key=await crypto.subtle.importKey("pkcs8",pushFromB64Url(env.VAPID_PRIVATE_KEY),{name:"ECDSA",namedCurve:"P-256"},false,["sign"]);
+  const privateBytes=pushFromB64Url(env.VAPID_PRIVATE_KEY),publicBytes=pushFromB64Url(env.VAPID_PUBLIC_KEY);if(privateBytes.length!==32||publicBytes.length!==65||publicBytes[0]!==4)throw new Error("VAPID keys must be uncompressed P-256 Web Push keys");const jwk={kty:"EC",crv:"P-256",x:pushB64Url(publicBytes.slice(1,33)),y:pushB64Url(publicBytes.slice(33,65)),d:pushB64Url(privateBytes),ext:true,key_ops:["sign"]};const key=await crypto.subtle.importKey("jwk",jwk,{name:"ECDSA",namedCurve:"P-256"},false,["sign"]);
   const signature=new Uint8Array(await crypto.subtle.sign({name:"ECDSA",hash:"SHA-256"},key,enc.encode(unsigned)));
   return unsigned+"."+pushB64Url(signature);
 }
