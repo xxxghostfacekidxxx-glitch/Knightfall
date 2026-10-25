@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Sixty-one entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. Sixty-two entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
@@ -1050,6 +1050,28 @@
         "AI is a lightweight capture-biased legal-move selector rather than a deep search engine",
         "castling and en passant omitted",
         "local wins/best streak only; no account save or server leaderboard"
+      ]
+    },
+    {
+      "id": "skyline-foundry",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/lo-th/3d.city",
+      "reviewedPath": "conceptual city-building reference only; no upstream code/assets copied",
+      "reason": "Created an original isometric city builder with diamond-grid placement, roads, homes, markets, parks, population, daily income, and treasury management. Replaces the 3D City queue entry without importing upstream code, models, textures, or assets.",
+      "assets": "Original canvas-drawn isometric tiles, building cubes, parks, and interface; no upstream code, models, textures, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "city state resets with the session",
+        "no account save or server persistence",
+        "no account leaderboard integration"
       ]
     }
   ]
