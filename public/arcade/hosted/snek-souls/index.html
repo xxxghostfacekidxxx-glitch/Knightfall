@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="author" content="Manos Paterakis">
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAGFBMVEUAAACAqlV2s1R4s1V2sVQpLzN3slXdLkStZgv6AAAABXRSTlMABkN1ee5NLt8AAABDSURBVAgdBcExDQIAFESxTicFCUhh/iTkzWzYp4XVgV51+FUdvngEWICFsAiWvWHZKUu3uqWrWrpuLdWtsrrV0Ydn/jIdGZnjcut/AAAAAElFTkSuQmCC">
+  <title>SNEK SOULS</title>
+  <style>
+    body {
+      /* Prevent drag-to-reload */
+      overflow-y: hidden;
+    }
+
+    .grid-container {
+      display: grid;
+      position: absolute;
+      box-shadow: 0px 0px 25px 5px black;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      margin: 0 auto;
+    }
+
+    .grid-container > div {
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0px 0px 30px 0px rgba(0,0,0,0.35);
+      border: 1px solid black;
+      text-align: center;
+      font-size: 30px;
+    }
+
+    #scoreboard {
+      position: fixed;
+      z-index: 999;
+      padding: 5px;
+      font: bold 15px Arial;
+      border: 1px solid black;
+      border-radius: 3px;
+      background: rgba(255,255,255, 0.6);
+    }
+
+    #modal {
+      position: fixed;
+      z-index: 99;
+      background: lightcyan;
+      text-align: center;
+      width: 300px;
+      height: 450px;
+      display: block;
+      font-family: 'Arial';
+      box-shadow: 0px 0px 25px 5px black;
+      padding: 20px;
+      top: 50%;
+      left: 50%;
+      margin: 0 auto;
+      margin-left: -170px;
+      margin-top: -245px;
+    }
+
+    #modal > button {
+      margin: 0 auto;
+      display: block;
+      font-size: 20px;
+      width: 100px;
+    }
+  
+    /* Knightfall/Ash-Fall wrapper and account-sync controls; original game source is retained below. */
+    body { background: radial-gradient(ellipse at 10% 0%, #3a1233 0, transparent 40%), #080a10 !important; color:#f7f3ff; }
+    .knightfall-bar { position:fixed; z-index:1200; top:0; left:0; width:100%; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 14px; background:#0d1019f2; border-bottom:1px solid #ff55d866; box-shadow:0 8px 24px #0007; color:#f7f3ff; font:13px system-ui,sans-serif; }
+    .knightfall-bar a { color:#c6ff45; text-decoration:none; font-weight:900; }
+    .knightfall-brand { color:#ff55d8; font-size:.68rem; font-weight:950; letter-spacing:.14em; }
+    .knightfall-bar strong { display:block; font-size:1rem; margin-top:2px; }
+    .knightfall-actions { position:fixed; z-index:1200; bottom:0; left:0; width:100%; display:flex; gap:7px; align-items:center; flex-wrap:wrap; padding:8px 12px; background:#0d1019f2; border-top:1px solid #c6ff4544; color:#c8cadd; font:12px system-ui,sans-serif; }
+    .knightfall-actions button { border:1px solid #c6ff4566; border-radius:8px; padding:8px 10px; background:#141a22; color:#fff; font-weight:850; cursor:pointer; }
+    .knightfall-actions button.primary { background:#c6ff45; color:#11150b; }
+    #arcade-account-status { flex:1 1 100%; line-height:1.4; }
+    #knightfall-sync { color:#c6ff45; }
+    .grid-container { top:62px !important; height:calc(100% - 112px) !important; }
+    #scoreboard { top:68px !important; left:8px !important; background:#10131ddd !important; border:1px solid #ff55d866 !important; color:#c6ff45 !important; border-radius:8px !important; }
+    #modal { z-index:1100 !important; background:#111522 !important; color:#f7f3ff !important; border:1px solid #ff55d8 !important; border-radius:16px !important; }
+    #modal button { background:#c6ff45; color:#11150b; border:0; border-radius:9px; padding:10px 16px; font-weight:900; }
+
+  </style>
+</head>
+<body>
+  <header class="knightfall-bar"><div><div class="knightfall-brand">CHAOS CARTRIDGE · LICENSED IMPORT</div><strong>Snek Souls</strong><span style="color:#9da5bc;font-size:.72rem">Upstream by Manos Paterakis · MIT License</span></div><a href="/chaos-cartridge.html">← Arcade shelf</a></header>
+  <nav class="knightfall-actions" aria-label="Account save controls"><button class="primary" id="knightfall-save">Save progress</button><button id="knightfall-resume">Resume saved game</button><button id="knightfall-score">Submit score</button><span id="knightfall-sync" role="status" aria-live="polite">Local play works without an account.</span><div id="arcade-account-status" role="status" aria-live="polite">Checking account…</div></nav>
+  <div id="modal"></div>
+  <div class="grid-container"></div>
+  <div id='scoreboard'>Snek Souls</div>
+  <script>
+    var snakeGame = (function() {
+      // Editable variables
+      var snakeColor = 'green';
+      var snakeHeadColor = 'darkgreen';
+      var foodColor = 'yellow';
+      var biteColor = 'red';
+      var gridSize = 49;
+      var scoreIncrement = 50;
+      var interval = 750;
+
+      // Uneditable variables
+      var grid = document.getElementsByClassName("grid-container")[0];
+      var direction = -1;
+      var foodPosition = -1;
+      var lastFoodEaten = true;
+      var score = 0;
+      var touchDevice = false;
+      var snakeTail = [];
+      var previousPos = -1;
+      var snakeIsDead = false;
+      var gridSqRoot = Math.sqrt(gridSize);
+      var snakePosition = (gridSize + gridSqRoot) / 2;
+      var touchY = -1;
+      var touchX = -1;
+      var snakeMoving = false;
+
+      // Adjust the game grid to the window
+      window.addEventListener("resize", function(e) {
+        resizeGrid();
+      });  
+      window.addEventListener("load", function(e) {
+        // Set random background color [https://css-tricks.com/snippets/javascript/random-hex-color/]
+        document.body.style.background =  '#' + Math.floor(Math.random()*16777215).toString(16);
+        createCSScolumns();
+        createBlocks();
+        resizeGrid();
+        if (is_touch_device()) {
+          touchDevice = true;
+        }
+        _game.resetModal();
+      });
+
+      // Detect touch start (for swipe)
+      document.addEventListener("touchstart", function(e) {
+        touchX = e.touches[0].pageX;
+        touchY = e.touches[0].pageY;
+      });
+
+      // Change direction on touch end (for swipe)
+      document.addEventListener("touchend", function(e) {
+        // Calculate swipe
+        var swipeX = touchX - e.changedTouches[0].pageX;
+        var swipeY = touchY - e.changedTouches[0].pageY;
+
+        // If swipe was significant enough
+        if (Math.abs(swipeX) > window.innerWidth / 10 || Math.abs(swipeY) > window.innerHeight / 10) {
+          // If X swipe was bigger than Y swipe
+          if (Math.abs(swipeX) > Math.abs(swipeY)) {
+            // Horizontal swipe
+            if (swipeX > 0) {
+              // Left swipe
+              _game.changeDirection(0);
+            } else {
+              // Right swipe
+              _game.changeDirection(1);
+            }
+          } else {
+            // Vertical swipe
+            if (swipeY > 0) {
+              // Up swipe
+              _game.changeDirection(3);
+            } else {
+              // Down swipe
+              _game.changeDirection(2);
+            }
+          }
+        }
+      });
+
+      // Change direction on key press
+      document.addEventListener("keydown", function(e) {
+        if (e.keyCode == '38') {
+          // up arrow
+          _game.changeDirection(3);
+        }
+        else if (e.keyCode == '40') {
+          // down arrow
+          _game.changeDirection(2);
+        }
+        else if (e.keyCode == '37') {
+          // left arrow
+          _game.changeDirection(0);
+        }
+        else if (e.keyCode == '39') {
+          // right arrow
+          _game.changeDirection(1);
+        }
+      });
+
+      // Resize grid
+      function resizeGrid() {
+        if (window.innerWidth > window.innerHeight) {
+          grid.style.width = window.innerHeight + 'px';
+          grid.style.height = '';
+          grid.style.marginLeft = (window.innerWidth - grid.clientWidth)/2 + 'px';
+          grid.style.marginTop = 0;
+        } else {
+          grid.style.height = window.innerWidth + 'px';
+          grid.style.width = '';
+          grid.style.marginTop = (window.innerHeight - grid.clientHeight)/2 + 'px';
+          grid.style.marginLeft = 0;
+        }
+      }
+
+      // Create grid blocks
+      function createBlocks() {
+        for (var i = 0; i < gridSize; i++) {
+          var blockDiv = document.createElement("div");
+          blockDiv.id = 'block' + i;
+          grid.appendChild(blockDiv);
+        }
+      }
+
+      // Create columns with CSS
+      function createCSScolumns() {
+        var columnsString = '';
+        for (var i = 0; i < gridSqRoot; i++) {
+          columnsString+= (100/gridSqRoot) + '% ';
+        }
+        grid.style.gridTemplateColumns = columnsString;
+      }
+
+      // Check if touch device [https://ctrlq.org/code/19616-detect-touch-screen-javascript]
+      function is_touch_device() {
+        return (('ontouchstart' in window)
+          || (navigator.MaxTouchPoints > 0)
+          || (navigator.msMaxTouchPoints > 0));
+      }
+
+      var _game = {
+
+        getInterval: function() {
+          return interval;
+        },
+
+        setInterval: function(val) {
+          interval = val;
+        },
+
+        // Draw the snake on the grid
+        drawBoard: function() {
+          for (var i = 0; i < grid.children.length; i++) {
+            grid.children[i].style.background = '';
+          }
+          // Draw tail
+          for (var i = 0; i < snakeTail.length; i++) {
+            document.getElementById('block' + snakeTail[i]).style.background = snakeColor;
+          }
+          // Draw snake head
+          if (!snakeIsDead) {
+            document.getElementById('block' + snakePosition).style.background = snakeHeadColor;
+          } else {
+            document.getElementById('block' + snakePosition).style.background = biteColor;
+          }
+          // Draw food
+          document.getElementById('block' + foodPosition).style.background = foodColor;
+          // Draw score
+          document.getElementById('scoreboard').textContent = 'Souls = ' + score;
+        },
+
+        // Play a round
+        play: function() {
+          _game.moveSnake();
+          _game.checkForDeath();
+          _game.tryToEatFood();
+          if (lastFoodEaten) {
+            _game.placeFood();
+          }
+          _game.drawBoard();
+          if (!snakeIsDead) {
+            setTimeout(_game.play,_game.getInterval());
+          }
+        },
+
+        // Move snake to a new tile
+        moveSnake: function() {
+          snakeMoving = true;
+          previousPos = snakePosition;
+          switch (direction) {
+            // left
+            case 0: {
+              if (snakePosition >= 0) {
+                if ((snakePosition % gridSqRoot) === 0) {
+                  snakePosition += (gridSqRoot - 1);
+                } else {
+                  snakePosition--;
+                }
+              } else {
+                _game.moveSnake();
+              }
+              break;
+            }
+            // right
+            case 1: {
+              if (snakePosition + 1 <= gridSize) {
+                if ((snakePosition % gridSqRoot) === (gridSqRoot - 1)) {
+                  snakePosition -= (gridSqRoot - 1);
+                } else {
+                  snakePosition++;
+                }
+              } else {
+                _game.moveSnake();
+              }
+              break;
+            }
+            // down
+            case 2: {
+              if (snakePosition + gridSqRoot < gridSize) {
+                snakePosition+= gridSqRoot;
+              } else {
+                snakePosition-= (gridSize - gridSqRoot);
+              }
+              break;
+            }
+            // up
+            case 3: {
+              if (snakePosition - gridSqRoot >= 0) {
+                snakePosition-= gridSqRoot;
+              } else {
+                snakePosition+= (gridSize - gridSqRoot);
+              }
+              break;
+            }
+            default: break;
+          }
+          // Update snake tail
+          snakeTail.unshift(previousPos);
+          snakeTail.pop();
+          snakeMoving = false;
+        },
+
+        // Change snake direction
+        changeDirection: function(newDirection) {
+          if (_game.checkLegalMove(newDirection)) {
+            direction = newDirection;
+          }
+        },
+
+        // Try eating food
+        tryToEatFood: function() {
+          // Eat food
+          if (snakePosition === foodPosition) {
+            lastFoodEaten = true;
+            score += scoreIncrement;
+            if (snakeTail.length > 0) {
+              snakeTail.push(snakeTail[snakeTail.length - 1]);
+            } else {
+              snakeTail.unshift(previousPos);
+            }
+            if (score === 150) {
+              interval = 500;
+            } else if (score === 300) {
+              interval = 350;
+            } else if (score === 500) {
+              interval = 250;
+            } else if (score === 750) {
+              interval = 200;
+            } else if (score === 1000) {
+              interval = 175;
+            } else if (score === 1500) {
+              document.getElementById('modal').innerHTML = "<h1>Teriyaki Sauce Chicken Dinner!</h1><button onclick='snakeGame.hideModal();'>Play Again</button>";
+              snakeIsDead = true;
+              _game.changeDirection(-1);
+              _game.showModal();
+            }
+          }
+        },
+
+        // Place food on the grid
+        placeFood: function() {
+          lastFoodEaten = false;
+          foodPosition = Math.floor(Math.random() * 36);
+          while (foodPosition === snakePosition || snakeTail.indexOf(foodPosition) > -1) {
+            foodPosition = Math.floor(Math.random() * 36);
+          }
+        },
+
+        // Check for death
+        checkForDeath: function() {
+          if (snakeTail.indexOf(snakePosition) > -1) {
+            snakeIsDead = true;
+            _game.changeDirection(-1);
+            if (_game.submitKnightfallScore) _game.submitKnightfallScore().catch(function() {});
+            setTimeout(_game.showModal,2000);
+          }
+        },
+
+        // Check for legal move
+        checkLegalMove: function(newDirection) {
+          if (snakeMoving) {
+            return false;
+          }
+          var legalMove = true;
+          // left
+          if (newDirection === 0 && (snakeTail[0] === snakePosition-1 || snakeTail[0] === snakePosition+gridSqRoot-1)) {
+            legalMove = false;
+          }
+          // right
+          if (newDirection === 1 && (snakeTail[0] === snakePosition+1 || snakeTail[0] === snakePosition-gridSqRoot+1)) {
+            legalMove = false;
+          }
+          // down
+          if (newDirection === 2 && (snakeTail[0] === snakePosition+gridSqRoot || snakeTail[0] === snakePosition- gridSize+gridSqRoot)) {
+            legalMove = false;
+          }
+          // up
+          if (newDirection === 3 && (snakeTail[0] === snakePosition-gridSqRoot || snakeTail[0] === snakePosition+gridSize-gridSqRoot)) {
+            legalMove = false;
+          }
+          return legalMove;
+        },
+
+        // Hide modal
+        hideModal: function() {
+          document.getElementById('modal').style.display = 'none';
+
+          // Reset values
+          snakeIsDead = false;
+          snakePosition = 21;
+          snakeTail = [];
+          interval = 750;
+          score = 0;
+          direction = -1;
+          _game.placeFood();
+          _game.resetModal();
+
+          // Start playing
+          _game.play();
+        },
+
+        // Show modal
+        showModal: function() {
+          document.getElementById('modal').style.display = '';
+        },
+
+        // Reset modal
+        resetModal: function() {
+          document.getElementById('modal').innerHTML = "<h1 class=\"font-weight-bold\">How to play</h1><h2 class=\"font-weight-bold\">Keyboard Buttons</h2><div>Press Up-Down-Right-Left arrows to change your snek's direction</div><br><h2 class=\"font-weight-bold\">Touchscreen Buttons</h2><div>Swipe on the screen to change your snek's direction</div><br><h2 class=\"font-weight-bold\">Game goal</h2><div>Try eating the food blocks (yellow) to get as big as possible</div><br><button onclick='snakeGame.hideModal();'>Start</button>";
+        }
+      };
+
+
+      // Knightfall account-save adapter; this does not replace the upstream game loop.
+      _game.getKnightfallState = function() {
+        return JSON.parse(JSON.stringify({ direction, foodPosition, lastFoodEaten, score, snakeTail, previousPos, snakePosition, interval, snakeIsDead }));
+      };
+      _game.setKnightfallState = function(state) {
+        if (!state || !Array.isArray(state.snakeTail) || !Number.isFinite(Number(state.snakePosition))) throw new Error('Saved Snake data is invalid.');
+        direction = Number(state.direction); foodPosition = Number(state.foodPosition); lastFoodEaten = Boolean(state.lastFoodEaten);
+        score = Math.max(0, Number(state.score) || 0); snakeTail = state.snakeTail; previousPos = Number(state.previousPos);
+        snakePosition = Number(state.snakePosition); interval = Math.max(100, Number(state.interval) || 750); snakeIsDead = Boolean(state.snakeIsDead);
+        document.getElementById('modal').style.display = snakeIsDead ? '' : 'none';
+        _game.drawBoard();
+        if (!snakeIsDead) _game.play();
+      };
+      _game.submitKnightfallScore = function() {
+        if (!window.AshFallArcade) return Promise.reject(new Error('Account save service is not ready.'));
+        return window.AshFallArcade.recordScore('cabinet-curvy-snake', score, _game.getKnightfallState());
+      };
+
+      return _game;
+    })();
+
+  </script>
+
+  <script src="/arcade-save.js"></script>
+  <script>
+    (() => {
+      const $ = id => document.getElementById(id);
+      const key = 'cabinet-curvy-snake';
+      const note = (text, ok = true) => { $('knightfall-sync').textContent = text; $('knightfall-sync').style.color = ok ? '#c6ff45' : '#ff9de8'; };
+      $('knightfall-save').addEventListener('click', async () => {
+        try { await window.AshFallArcade.saveProgress(key, snakeGame.getKnightfallState(), 'autosave', 1); note('Progress saved to your account.'); }
+        catch (e) { note(e.message || 'Could not save progress. Sign in first.', false); }
+      });
+      $('knightfall-resume').addEventListener('click', async () => {
+        try { const state = await window.AshFallArcade.loadProgress(key, 'autosave'); if (!state) { note('No cloud save found for this game yet.', false); return; } snakeGame.setKnightfallState(state); note('Saved game restored.'); }
+        catch (e) { note(e.message || 'Could not load saved progress. Sign in first.', false); }
+      });
+      $('knightfall-score').addEventListener('click', async () => {
+        try { const result = await snakeGame.submitKnightfallScore(); note(result?.saved ? 'Score submitted to the leaderboard.' : 'Sign in to submit your score.', Boolean(result?.saved)); }
+        catch (e) { note(e.message || 'Could not submit score.', false); }
+      });
+      if (window.AshFallArcade?.ready) window.AshFallArcade.ready.then(async () => {
+        if (!window.AshFallArcade.user) return;
+        try { const state = await window.AshFallArcade.loadProgress(key, 'autosave'); if (state) note('Account save found. Use Resume saved game when ready.'); } catch {}
+      });
+    })();
+  </script>
+</body>
+</html>
