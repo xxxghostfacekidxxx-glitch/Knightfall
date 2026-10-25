@@ -116,6 +116,16 @@ try {
     console.error("FAIL account bridge: could not open the bridge test game");
     failed = true;
   } else {
+    await bridgePage.waitForSelector(".af-report", { timeout: 4000 });
+    const reportHref = await bridgePage.locator(".af-report").getAttribute("href");
+    const reportUrl = new URL(reportHref);
+    const reportBody = reportUrl.searchParams.get("body") || "";
+    if (!reportUrl.searchParams.get("title")?.includes("Hexa Havoc") || !reportBody.includes("/arcade/hosted/hexa-havoc/index.html") || !reportBody.includes("Steps to reproduce:") || !reportBody.includes("Device/browser")) {
+      console.error("FAIL account bridge: issue report is missing game/page/reproduction context");
+      failed = true;
+    } else {
+      console.log("PASS account bridge: issue report includes game, page, reproduction prompts, and browser context");
+    }
     await bridgePage.locator("canvas").first().click({ position: { x: 20, y: 20 } });
     await bridgePage.evaluate(() => {
       const score = document.querySelector("#score");
