@@ -428,6 +428,16 @@
       "files": [
         "/arcade/hosted/cinder-crossing/index.html"
       ]
+    },
+    {
+      "gameId": "cabinet-afterburn-breakout",
+      "title": "Afterburn Breakout",
+      "license": "Original Knightfall code and vector artwork; no upstream source or assets copied",
+      "notes": "Original Canvas brick-breaker with keyboard and touch/pointer controls, pause/fullscreen, local best score, account leaderboard submission, and a conservative server score cap. No Cinders transactions.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/afterburn-breakout/index.html"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-10-25"
