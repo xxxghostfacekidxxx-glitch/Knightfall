@@ -438,6 +438,16 @@
       "files": [
         "/arcade/hosted/afterburn-breakout/index.html"
       ]
+    },
+    {
+      "gameId": "cabinet-colossus-clash",
+      "title": "Colossus Clash",
+      "license": "Original Knightfall code and vector artwork; no upstream source or assets copied",
+      "notes": "Original monster arena brawler with directional touch controls, keyboard movement, attack cooldown, escalating waves, local best-score persistence, account leaderboard submission, and a bounded server score cap. No Cinders transactions.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/arcade/hosted/colossus-clash/index.html"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-10-25"

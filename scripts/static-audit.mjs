@@ -177,6 +177,12 @@ const afterburnCartridge = await readFile(path.join(publicDir, "chaos-cartridge.
 const afterburnRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
 if (!afterburnCatalog.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnCartridge.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnRecords.includes('"cabinet-afterburn-breakout":"Afterburn Breakout"')) fail("Afterburn Breakout is missing from a public arcade surface.");
 ok("Afterburn Breakout catalog, account integration, score cap, and manifest registration checked.");
+const colossusGame = await readFile(path.join(publicDir, "arcade/hosted/colossus-clash/index.html"), "utf8");
+if (!colossusGame.includes("cabinet-colossus-clash") || !colossusGame.includes("recordScore")) fail("Colossus Clash is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-colossus-clash"') || !worker.includes('"cabinet-colossus-clash":100000')) fail("Colossus Clash is not allowlisted with a bounded score cap.");
+if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-colossus-clash")) fail("Colossus Clash is missing from the arcade manifest.");
+if (!recordsPageAudit.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
+ok("Colossus Clash controls, account integration, score cap, and provenance checked.");
 
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
