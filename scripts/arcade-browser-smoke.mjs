@@ -319,6 +319,21 @@ try {
     finally{await page.close()}
   }
 
+  // Verify cloud resume for Hexforge Command, Neon Vector, and Cinder Circuit.
+  const campaignRestoreCases = [
+    {name:"Hexforge Command",path:"/arcade/hosted/hexforge-command/index.html",gameId:"cabinet-hexforge-command",data:{serialized:{tiles:Array.from({length:63},(_,i)=>({q:i%9,r:Math.floor(i/9),blocked:false,terrain:"plain"})),units:[{id:"p0-1",team:"p",q:0,r:1,hp:55,max:55,atk:18,moved:false,acted:false},{id:"p0-3",team:"p",q:0,r:3,hp:48,max:48,atk:22,moved:true,acted:false},{id:"e8-1",team:"e",q:8,r:1,hp:45,max:55,atk:14,moved:false,acted:false}],selected:{id:"p0-1"},mission:2,playerTurn:true,best:2,notice:"Cloud save restored."}},check:()=>document.querySelector("#mission")?.textContent==="2 / 3"&&document.querySelector("#friends")?.textContent==="2"&&document.querySelector("#message")?.textContent==="Cloud save restored. Your squad is ready."},
+    {name:"Neon Vector",path:"/arcade/hosted/neon-vector/index.html",gameId:"cabinet-neon-vector",data:{serialized:{lane:1,speed:0.8,boost:55,distance:1234,best:900,traffic:[{lane:-1,z:0.5,type:"rival",color:"#45d9ff"}],spawnDelay:500,roadOffset:0.2}},check:()=>document.querySelector("#best")?.textContent==="900 m"&&document.querySelector("#boost")?.textContent.includes("55%")&&document.querySelector("#overlay")?.hidden===true},
+    {name:"Cinder Circuit",path:"/arcade/hosted/cinder-circuit/index.html",gameId:"cabinet-cinder-circuit",data:{serialized:{angle:1.5,speed:0.8,lane:0.2,lap:1,time:47,boost:60,oldAngle:1.4,playerLaps:1,best:2000,cars:[{name:"Mauve",color:"#ff5edb",a:1.1,v:1.05,l:-0.4},{name:"Volt",color:"#45d9ff",a:2.2,v:1.12,l:0.25},{name:"Ruckus",color:"#ffb15e",a:3.1,v:1,l:0.65}]}},check:()=>document.querySelector("#lap")?.textContent==="1 / 3"&&document.querySelector("#time")?.textContent==="47s"&&document.querySelector("#overlay")?.hidden===true}
+  ];
+  for(const testCase of campaignRestoreCases){
+    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
+    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores campaign/racing state")}
+    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
+    finally{await page.close()}
+  }
+
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   const manifestResponse = await manifestPage.goto(base + "/arcade/hosted/account-bridge-manifest.json", { waitUntil: "domcontentloaded", timeout: 30000 });
