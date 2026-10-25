@@ -24,6 +24,11 @@ function render(d,adminView=false,ownProfile=false){
   root.dataset.theme = ["ember","midnight","toxic","bubblegum","mono"].includes(u.profile_theme) ? u.profile_theme : "ember";
   if (u.cover_url) { const c=document.createElement("div"); c.className="profile-cover"; c.style.backgroundImage="url("+JSON.stringify(u.cover_url)+")"; root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
+  const heading=root.querySelector(".profile-heading");
+  for (const [field,cls] of [["status_message","profile-status-message"],["tagline","profile-tagline"]]) if (heading && u[field]) { const p=document.createElement("p"); p.className=cls; p.textContent=u[field]; heading.append(p); }
+  if (u.favorite_quote) { const q=document.createElement("blockquote"); q.className="profile-quote"; q.textContent="“"+u.favorite_quote+"”"; root.querySelector(".profile-actions-wrap")?.after(q); }
+  if (u.interests || u.favorite_games || u.favorite_music) { const section=document.createElement("section"); section.className="profile-favorites"; const h=document.createElement("h2"); h.textContent="Things I’m into"; section.append(h); for (const [label,value] of [["Interests",u.interests],["Favorite games",u.favorite_games],["Favorite music",u.favorite_music]]) if(value) { const p=document.createElement("p"),b=document.createElement("strong"); b.textContent=label+" "; p.append(b,document.createTextNode(value)); section.append(p); } root.querySelector(".bio")?.after(section); }
+
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
