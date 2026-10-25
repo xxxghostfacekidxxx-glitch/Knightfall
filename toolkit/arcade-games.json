@@ -142,14 +142,16 @@
     },
     {
       "id": "cube-composer",
-      "name": "Cube Composer",
+      "name": "Prism Panic",
       "category": "Puzzle",
-      "description": "Manipulate cubes with functional-programming logic.",
-      "playUrl": "https://cubecomposer.com/",
+      "description": "Rotate optical mirrors to route a beam through a layered puzzle grid and reach the receiver.",
+      "playUrl": "/arcade/hosted/prism-panic/index.html",
       "repository": "https://github.com/sharkdp/cube-composer",
-      "license": "MIT (verify current repo)",
-      "launchMode": "external",
-      "sourceImported": false
+      "license": "Original Knightfall implementation",
+      "launchMode": "self-hosted-native",
+      "sourceImported": false,
+      "importedPath": "public/arcade/hosted/prism-panic/",
+      "integrationNote": "Original mirror-routing logic puzzle using generic optical routing mechanics; no upstream code, levels, or assets copied. Best progress is browser-local."
     },
     {
       "id": "hexgl",
