@@ -3,16 +3,14 @@
  */
 (() => {
   "use strict";
-  const GAME_KEY = "cinder-2048";
+  const GAME_KEY = "classic-2048";
   const status = document.getElementById("arcade-account-status");
-  let ready = false;
   let loadingCloud = true;
   let saveTimer = null;
   let lastRecorded = "";
   const setStatus = message => { if (status) status.textContent = message; };
 
   window.AshFall2048Ready = async manager => {
-    ready = true;
     const storage = manager.storageManager;
     const nativeSetup = manager.setup.bind(manager);
     const nativeActuate = manager.actuate.bind(manager);
