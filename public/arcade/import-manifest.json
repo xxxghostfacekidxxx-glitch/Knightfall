@@ -100,6 +100,19 @@
         "/arcade/hosted/air-hockey/SOURCE-NOTICE.md"
       ],
       "notes": "Adapted upstream single-file air hockey with AI opponent; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local streak storage, and submits match results to the account leaderboard."
+    },
+    {
+      "gameId": "cabinet-lights-out",
+      "title": "Lights Out",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/lights-out/index.html",
+        "/arcade/hosted/lights-out/LICENSE.txt",
+        "/arcade/hosted/lights-out/SOURCE-NOTICE.md"
+      ],
+      "notes": "Adapted upstream solvable Lights Out puzzle; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local storage, and submits completed puzzle scores to account leaderboard."
     }
   ],
   "notYetImported": [
