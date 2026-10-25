@@ -50,6 +50,19 @@ try {
       response = await page.goto(base + route, { waitUntil: "commit", timeout: 2500 });
       await page.waitForLoadState("domcontentloaded", { timeout: 350 }).catch(() => {});
       await page.waitForTimeout(50);
+      // On each hosted route, exercise one obvious start/play control when present.
+      // This catches click-handler crashes that a plain HTTP/HTML check misses.
+      const startControl = page.getByRole("button", {
+        name: /^(start|start game|start run|start \/ restart|play|play game|new game|begin|launch|restart|run it back)$/i
+      }).first();
+      if (await startControl.count() && await startControl.isVisible().catch(() => false) && await startControl.isEnabled().catch(() => false)) {
+        try {
+          await startControl.click({ timeout: 1000 });
+          await page.waitForTimeout(120);
+        } catch (error) {
+          routeFailures.push(route + ": start/play control failed: " + (error?.message || String(error)));
+        }
+      }
       const title = await page.title();
       const bodyText = await page.locator("body").innerText().catch(() => "");
       if (!response || response.status() !== 200) routeFailures.push(route + ": HTTP " + (response?.status() ?? "no response"));
