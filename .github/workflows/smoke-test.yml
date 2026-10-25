@@ -39,6 +39,32 @@ jobs:
       - name: Audit JavaScript, configs, and local HTML assets
         run: node scripts/static-audit.mjs
 
+  arcade-browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local static site
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/knightfall-static.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/chaos-cartridge.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/knightfall-static.log
+          exit 1
+      - name: Exercise hosted arcade cabinets in mobile Chromium
+        run: node scripts/arcade-browser-smoke.mjs
+
   live-smoke:
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
