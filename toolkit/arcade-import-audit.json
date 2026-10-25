@@ -289,7 +289,7 @@
       "reason": "TypeScript/Yarn build chain needs dependency and compiled-output review"
     }
   ],
-  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-four entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
+  "remainingTarget": "The catalog contains 65 candidate entries. Fifty-five entries launch locally; several entries intentionally reuse Knightfall-original cabinets. Remaining candidates must be individually adapted and tested before they are described as locally playable.",
   "nativeAdaptations": [
     {
       "id": "rock-paper-scissors",
@@ -889,6 +889,29 @@
       "limitations": [
         "single procedural course per run",
         "best distance stored locally only",
+        "no account save or server leaderboard integration"
+      ]
+    },
+    {
+      "id": "glitch-munch",
+      "status": "self-hosted-native-implementation",
+      "reviewedSource": "https://github.com/sausi-7/games",
+      "reviewedPath": "conceptual maze-chase reference only; no upstream code/assets copied",
+      "reason": "Created an original maze-chase game with a generated wall layout, collectible crumbs, power pulses, roaming enemies, lives, scoring, and keyboard/touch controls. Replaces the Pac-Man catalog candidate without copying its characters, maze, source, or artwork.",
+      "assets": "Original canvas-drawn neon maze, player, and abstract glitch creatures; no upstream code, sprites, audio, fonts, or scripts reused.",
+      "dependencies": [
+        "inline HTML/CSS/JavaScript",
+        "canvas",
+        "localStorage"
+      ],
+      "securityNotes": [
+        "no external runtime calls",
+        "no third-party scripts",
+        "no account tokens or Cinders access"
+      ],
+      "limitations": [
+        "one generated maze layout per run",
+        "best score stored locally only",
         "no account save or server leaderboard integration"
       ]
     }
