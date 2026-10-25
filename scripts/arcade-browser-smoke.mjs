@@ -58,6 +58,42 @@ try {
     if (!errors.length && pixels >= 1000) console.log(`PASS ${game.name}: mobile viewport, start interaction, rendered canvas${game.pause ? ", pause/resume" : ""}`);
     await page.close();
   }
+
+  // Crawl every playable cabinet linked by the catalog. This catches dead routes and
+  // page-start exceptions before the owner has to manually test the entire collection.
+  const catalogPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  const catalogResponse = await catalogPage.goto(base + "/arcade-30-games.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+  if (!catalogResponse || catalogResponse.status() !== 200) {
+    console.error("FAIL catalog crawl: catalog page did not return HTTP 200");
+    failed = true;
+  } else {
+    const routes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
+    console.log(`INFO catalog crawl: checking ${routes.length} locally hosted game routes`);
+    const routeFailures = [];
+    for (const route of routes) {
+      const errors = [];
+      const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+      page.on("pageerror", error => errors.push(error.message));
+      try {
+        const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 20000 });
+        if (!response || response.status() !== 200) routeFailures.push(`${route}: HTTP ${response?.status() ?? "no response"}`);
+        else if (!(await page.title()).trim()) routeFailures.push(`${route}: missing document title`);
+        await page.waitForTimeout(100);
+        if (errors.length) routeFailures.push(`${route}: ${errors.join(" | ")}`);
+      } catch (error) {
+        routeFailures.push(`${route}: ${error.message}`);
+      } finally {
+        await page.close();
+      }
+    }
+    if (routeFailures.length) {
+      console.error("FAIL catalog route crawl:\n" + routeFailures.join("\n"));
+      failed = true;
+    } else {
+      console.log(`PASS catalog route crawl: all ${routes.length} local game pages returned HTTP 200 with titles and no uncaught browser exceptions`);
+    }
+  }
+  await catalogPage.close();
 } finally {
   await browser.close();
 }
