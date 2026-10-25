@@ -67,11 +67,13 @@
       "name": "Asteroids",
       "category": "Arcade",
       "description": "Pilot, rotate, shoot, and avoid becoming space dust.",
-      "playUrl": "https://dougmcinnes.com/html-5-asteroids/",
+      "playUrl": "/arcade/hosted/asteroids/index.html",
       "repository": "https://github.com/dmcinnes/HTML5-Asteroids",
       "license": "MIT",
-      "launchMode": "external",
-      "sourceImported": false
+      "launchMode": "self-hosted-native",
+      "sourceImported": true,
+      "importedPath": "public/arcade/hosted/asteroids/",
+      "integrationNote": "Locally hosted implementation. Existing audit flags upstream dependency and sound-asset provenance for additional review; do not treat this as a fully cleaned original rewrite yet."
     },
     {
       "id": "connect-four",
