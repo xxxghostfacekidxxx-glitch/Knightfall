@@ -144,6 +144,14 @@ try {
       failed = true;
     } else {
       console.log("PASS account bridge: detects game over and submits the correct score to the account API");
+      await bridgePage.waitForTimeout(900);
+      const repeatedScores = await bridgePage.evaluate(() => window.__bridgeTestScores.length);
+      if (repeatedScores !== 1) {
+        console.error("FAIL account bridge: the same game-over state submitted the score " + repeatedScores + " times");
+        failed = true;
+      } else {
+        console.log("PASS account bridge: persistent game-over state does not duplicate score submissions");
+      }
     }
   }
   await bridgePage.close();
@@ -189,6 +197,58 @@ try {
     }
   }
   await restorePage.close();
+
+  // Verify cloud restore for the city builder and turn-based board game.
+  const cabinetRestoreCases = [
+    {
+      name: "Ashen Blocks",
+      path: "/arcade/hosted/ashen-blocks/index.html",
+      gameId: "cabinet-ashen-blocks",
+      saved: {
+        bestScore: 0,
+        serialized: {
+          grid: Array.from({ length: 9 }, (_, y) => Array.from({ length: 12 }, (_, x) => (y === 4 && x < 4) ? "road" : "empty")),
+          tool: "road", money: 845, day: 7, pop: 0, happy: 50
+        }
+      },
+      check: () => document.querySelector("#money")?.textContent === "$845" && document.querySelector("#day")?.textContent === "7"
+    },
+    {
+      name: "Connect Four",
+      path: "/arcade/hosted/connect-four/index.html",
+      gameId: "cabinet-connect-four",
+      saved: {
+        serialized: {
+          board: Array.from({ length: 6 }, (_, y) => Array.from({ length: 7 }, (_, x) => y === 5 && x === 3 ? 1 : y === 5 && x === 4 ? 2 : 0)),
+          history: []
+        }
+      },
+      check: () => document.querySelectorAll("#board .p1").length === 1 && document.querySelectorAll("#board .p2").length === 1
+    }
+  ];
+  for (const testCase of cabinetRestoreCases) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+    await page.addInitScript(save => {
+      window.AshFallArcade = {
+        ready: Promise.resolve(),
+        user: { id: "browser-smoke-test" },
+        loadProgress: async gameId => gameId === save.gameId ? save.data : null,
+        saveProgress: async () => ({ revision: 2 }),
+        recordScore: async () => ({ saved: true })
+      };
+    }, { gameId: testCase.gameId, data: testCase.saved });
+    const response = await page.goto(base + testCase.path, { waitUntil: "domcontentloaded", timeout: 30000 });
+    try {
+      if (!response || response.status() !== 200) throw new Error("page did not return HTTP 200");
+      await page.waitForFunction(testCase.check, null, { timeout: 5000 });
+      console.log("PASS cloud save restore: " + testCase.name + " restores saved game state");
+    } catch (error) {
+      console.error("FAIL cloud save restore: " + testCase.name + ": " + (error?.message || String(error)));
+      failed = true;
+    } finally {
+      await page.close();
+    }
+  }
 
   // Audit every account-bridge manifest entry for a matching hosted page and bridge config.
   const manifestPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
