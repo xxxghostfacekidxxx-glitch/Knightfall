@@ -290,7 +290,10 @@ for (const entry of accountBridgeManifest.games) {
   if (!worker.includes('"' + entry.gameId + '"') || !worker.includes('"' + entry.gameId + '":')) fail("Account bridge game is not allowlisted with a score cap: " + entry.gameId);
 }
 if (!accountBridgeSource.includes("recordScore") || !accountBridgeSource.includes("loadProgress")) fail("Shared arcade account bridge is missing cloud score/progress support.");
-ok("Account bridge registered for " + accountBridgeManifest.games.length + " locally hosted games.");
+if (!accountBridgeSource.includes("/arcade/arcade-license-guide.html")) fail("Shared arcade navigation is missing the source and license guide.");
+const licenseGuide = await readFile(path.join(publicDir, "arcade/arcade-license-guide.html"), "utf8");
+if (!licenseGuide.includes("/arcade/import-manifest.json") || !licenseGuide.includes("ashFallOriginalBuilds") || !licenseGuide.includes("notYetImported")) fail("Arcade source and license guide does not render the full import manifest.");
+ok("Account bridge registered for " + accountBridgeManifest.games.length + " locally hosted games; source and license guide is linked.");
 
 const migrationsDir = path.join(root, "backend/migrations");
 const migrations = (await readdir(migrationsDir)).filter(name => name.endsWith(".sql")).sort();
