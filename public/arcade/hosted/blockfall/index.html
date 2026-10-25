@@ -1309,6 +1309,9 @@
       drawBoard();
     }
 
+    window.exportSaveState=()=>!started||isGameOver?null:({board:board.map(row=>row.slice()),currentPiece:currentPiece?{...currentPiece}:null,nextPiece:nextPiece?{...nextPiece}:null,isPaused,started,score,linesCleared,level,dropInterval,isWin,elapsedSinceDrop:Math.max(0,performance.now()-lastDropTime)});
+    window.importSaveState=d=>{const validPiece=p=>p&&Object.hasOwn(TETROMINOS,p.type)&&Number.isInteger(p.rotation)&&p.rotation>=0&&p.rotation<4&&Number.isInteger(p.x)&&p.x>=-4&&p.x<COLS&&Number.isInteger(p.y)&&p.y>=-4&&p.y<ROWS;if(!d||!Array.isArray(d.board)||d.board.length!==ROWS||!d.board.every(row=>Array.isArray(row)&&row.length===COLS&&row.every(v=>v===EMPTY||Object.hasOwn(TETROMINOS,v)))||!validPiece(d.currentPiece)||!validPiece(d.nextPiece)||typeof d.isPaused!=="boolean"||d.started!==true||!Number.isFinite(d.score)||!Number.isFinite(d.linesCleared)||!Number.isFinite(d.level)||!Number.isFinite(d.dropInterval)||!Number.isFinite(d.elapsedSinceDrop))return false;board=d.board.map(row=>row.slice());currentPiece={...d.currentPiece};nextPiece={...d.nextPiece};isPaused=d.isPaused;started=true;isGameOver=false;isWin=false;score=Math.max(0,Math.floor(d.score));linesCleared=Math.max(0,Math.floor(d.linesCleared));level=Math.max(1,Math.floor(d.level));dropInterval=Math.max(120,Math.min(2000,d.dropInterval));lastDropTime=performance.now()-Math.max(0,Math.min(dropInterval,d.elapsedSinceDrop));updateUI();drawBoard();if(isPaused){showStatus("Paused","Tap any control or press P",false,false,"paused",false)}else hideStatus();return true};window.isGameOver=()=>isGameOver;window.isGameActive=()=>started&&!isGameOver;
+
     // Boot sequence
     (async () => {
       await loadConfig();
