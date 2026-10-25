@@ -238,6 +238,62 @@
       "path": "/arcade/hosted/cinder-chess/index.html",
       "scoreSelector": "#best",
       "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-crossy-road",
+      "title": "Crossy Road",
+      "path": "/arcade/hosted/crossy-road/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-tether-tangle",
+      "title": "Tether Tangle",
+      "path": "/arcade/hosted/tether-tangle/index.html",
+      "scoreSelector": "#best",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-doodle-jump",
+      "title": "Doodle Jump",
+      "path": "/arcade/hosted/doodle-jump/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-space-fighter",
+      "title": "Space Fighter",
+      "path": "/arcade/hosted/space-fighter/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-ludo",
+      "title": "Ludo",
+      "path": "/arcade/hosted/ludo/index.html",
+      "scoreSelector": "",
+      "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-glitch-munch",
+      "title": "Glitch Munch",
+      "path": "/arcade/hosted/glitch-munch/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-survivor",
+      "title": "Survivor",
+      "path": "/arcade/hosted/survivor/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
+    },
+    {
+      "gameId": "cabinet-two-cars",
+      "title": "Two Cars",
+      "path": "/arcade/hosted/two-cars/index.html",
+      "scoreSelector": "#score",
+      "scoreMode": "score"
     }
   ]
 }
