@@ -35,6 +35,8 @@ jobs:
             const fs = require("node:fs");
             const c = JSON.parse(fs.readFileSync("wrangler.staging.jsonc", "utf8"));
             if (c.name !== "knightfall-mmo-staging") throw new Error("Unexpected Worker name");
+            const source = fs.readFileSync("src/index.mmo-staging.js", "utf8");
+            if (!source.includes("class MonsterWorldRoom") || !source.includes("/api/game/save")) throw new Error("MMO staging entrypoint is incomplete");
             if (c.d1_databases?.[0]?.database_id !== "6c72439f-2319-4f03-9bb6-711157d18963") throw new Error("Staging must use the isolated D1 database");
             if (c.kv_namespaces?.[0]?.id !== "56931d38c9f64871b812867e422b771b") throw new Error("Staging must use the isolated KV namespace");
             if (c.r2_buckets?.some(b => !b.bucket_name.startsWith("knightfall-mmo-staging-"))) throw new Error("Staging must not bind production R2 buckets");
