@@ -56,17 +56,35 @@ async function main() {
   // Stale writes must conflict rather than overwrite the latest version.
   const stale = await request("/api/game/save",{method:"PUT",user:users[0],body:{save:{...saveFor("embercub",5,18,3,4),steps:1},expected_version:av-1},allow:[409]});
   if (!stale.data.conflict) throw new Error("Stale save was not rejected as a conflict.");
-  // Weaken the encounter, then test the capture path with the current expected version.
-  for (let i=0; i<16 && battle.data.battle && battle.data.battle.hp > battle.data.battle.maxHp*0.7; i++) {
-    battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"attack",expected_version:av},allow:[200]});
-    av = Number(battle.data.version);
+  // Exercise capture without making the smoke test flaky when a weak wild creature
+  // is defeated by one random hit. If an attack ends the encounter, start another.
+  let captured = false;
+  let captureAttempts = 0;
+  let encountersTried = 0;
+  while (!captured && captureAttempts < 8 && encountersTried < 8) {
+    if (!battle.data.battle) {
+      battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"start",expected_version:av},allow:[200]});
+      av = Number(battle.data.version);
+      if (!battle.data.battle) continue;
+      encountersTried++;
+    }
+    while (battle.data.battle && battle.data.battle.hp > battle.data.battle.maxHp*0.55) {
+      battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"attack",expected_version:av},allow:[200]});
+      av = Number(battle.data.version);
+    }
+    if (!battle.data.battle) continue;
+    while (battle.data.battle && captureAttempts < 8) {
+      captureAttempts++;
+      battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"capture",expected_version:av},allow:[200,409]});
+      if (battle.status === 409) throw new Error("Capture failed validation: " + JSON.stringify(battle.data));
+      av = Number(battle.data.version);
+      if (Number(battle.data.save?.caught) === 1) {
+        captured = true;
+        break;
+      }
+    }
   }
-  for (let i=0; i<8 && battle.data.battle; i++) {
-    battle = await request("/api/game/action",{method:"POST",user:users[0],body:{action:"capture",expected_version:av},allow:[200,409]});
-    if (battle.status === 409) throw new Error("Capture failed validation: " + JSON.stringify(battle.data));
-    av = Number(battle.data.version);
-  }
-  if (battle.data.battle) throw new Error("Capture loop did not resolve the encounter.");
+  if (!captured) throw new Error("Capture smoke test did not catch a creature after " + captureAttempts + " attempts.");
   const aAfter = await request("/api/game/save",{user:users[0]});
   const bAfter = await request("/api/game/save",{user:users[1]});
   if (aAfter.data.save?.caught !== 1) throw new Error("Capture progress did not persist to account A.");
