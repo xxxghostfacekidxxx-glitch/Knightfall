@@ -193,7 +193,7 @@ if (!worker.includes('"cabinet-dino-run"') || !worker.includes('"cabinet-dino-ru
 if (!manifest.imports.some(entry => entry.gameId === "cabinet-dino-run" && entry.status === "imported-adapted")) fail("Dino Run is missing its imported source manifest entry.");
 if (!dinoRunCatalog.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunCartridge.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunRecords.includes('"cabinet-dino-run":"Dino Run: Ash-Fall Edition"')) fail("Dino Run is missing from a public arcade surface.");
 const shelfCount = (dinoRunCartridge.slice(dinoRunCartridge.indexOf('<div class="cartridge-shelf">'), dinoRunCartridge.indexOf('<section class="feature">')).match(/class="cartridge-cabinet/g) || []).length;
-if (shelfCount !== 109) fail("Main arcade shelf count does not match the 109 integrated cabinet cards.");
+if (shelfCount !== 110) fail("Main arcade shelf count does not match the 110 integrated cabinet cards.");
 if ((dinoRunCatalog.match(/<article class="game"/g) || []).length !== 70 || !dinoRunCatalog.includes("70 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Open-source arcade catalog count does not match its 70 game cards.");
 ok("Dino Run source notice, account integration, score cap, and catalog registration checked.");
 const balloonPopGame = await readFile(path.join(publicDir, "arcade/hosted/balloon-pop/index.html"), "utf8");
@@ -205,6 +205,17 @@ if (!worker.includes('"cabinet-balloon-pop"') || !worker.includes('"cabinet-ball
 if (!manifest.imports.some(entry => entry.gameId === "cabinet-balloon-pop" && entry.status === "imported-adapted")) fail("Balloon Pop is missing its imported source manifest entry.");
 if (!balloonPopCatalog.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopCartridge.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopRecords.includes('"cabinet-balloon-pop":"Balloon Pop: Ash-Fall Edition"')) fail("Balloon Pop is missing from a public arcade surface.");
 ok("Balloon Pop source notice, account integration, score cap, and catalog registration checked.");
+const hanoiGame = await readFile(path.join(publicDir, "arcade/hosted/hanoi/index.html"), "utf8");
+const hanoiCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+const hanoiCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
+const hanoiRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
+if (!hanoiGame.includes("cabinet-hanoi") || !hanoiGame.includes("recordScore")) fail("Tower of Hanoi is missing account leaderboard integration.");
+if (!worker.includes('"cabinet-hanoi"') || !worker.includes('"cabinet-hanoi":100000')) fail("Tower of Hanoi is not allowlisted with a bounded score cap.");
+if (!manifest.imports.some(entry => entry.gameId === "cabinet-hanoi" && entry.status === "imported-adapted")) fail("Tower of Hanoi is missing its imported source manifest entry.");
+if (!hanoiCatalog.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiCartridge.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiRecords.includes('"cabinet-hanoi":"Tower of Hanoi: Ash-Fall Edition"')) fail("Tower of Hanoi is missing from a public arcade surface.");
+if ((hanoiCatalog.match(/<article class="game"/g) || []).length !== 71 || !hanoiCatalog.includes("71 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Arcade catalog count does not match 71 game cards.");
+ok("Tower of Hanoi source notice, account integration, score cap, and catalog registration checked.");
+
 
 
 

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en" data-title-key="hanoi.docTitle">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tower of Hanoi — Free Online Disk Stacking Puzzle</title>
+<meta name="description" content="Play Tower of Hanoi free in your browser: move the whole stack to the last peg, one disk at a time, and never put a bigger disk on a smaller one. 5 levels, undo, star ratings, works on mobile and desktop.">
+<meta name="keywords" content="tower of hanoi,hanoi puzzle,disk puzzle,logic game,brain teaser,free online game,html5 game,browser game,mobile game,no install">
+<meta name="author" content="mashukui">
+<meta property="og:title" content="Tower of Hanoi — Free Online Disk Stacking Puzzle">
+<meta property="og:description" content="Move the whole tower to the last peg. Five levels from 3 to 7 disks, unlimited undo and star ratings.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗼</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #1b2233 0%, #2c2438 55%, #1a2b38 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    justify-content: safe center;
+    min-height: 100vh; min-height: 100svh; padding: 10px 8px 4px;
+    user-select: none; touch-action: manipulation;
+  }
+  .panel {
+    position: relative;
+    --dw: 120px;      /* 最宽盘宽度,由 fit() 覆写 */
+    --dh: 26px;       /* 盘厚,由 fit() 覆写 */
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px; padding: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .topbar { display: flex; align-items: center; gap: 6px; width: 100%; }
+  .stat {
+    flex: 1; background: rgba(255,255,255,.07); border-radius: 10px;
+    padding: 3px 6px; text-align: center; color: #fff; min-width: 0;
+  }
+  .stat small { display: block; font-size: 9px; font-weight: 700; letter-spacing: 1px; opacity: .55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat span { font-size: 15px; font-weight: 800; letter-spacing: .5px; }
+  #mute-btn {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; padding: 0;
+    background: rgba(255,255,255,.07); border: none; color: #fff;
+    font-size: 17px; cursor: pointer; font-family: inherit;
+  }
+  #status {
+    width: 100%; min-height: 18px; font-size: 12px; font-weight: 800;
+    letter-spacing: .5px; color: #ffd76e; text-align: center; line-height: 1.3;
+  }
+  #status:empty { display: none; }
+
+  .board-area { width: 100%; display: flex; justify-content: center; }
+  .board {
+    display: flex; gap: 6px; align-items: stretch;
+    width: calc(var(--dw) * 3 + 12px); max-width: 100%;
+    padding: 4px 0 0; border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.12));
+    touch-action: none;
+  }
+  .peg {
+    flex: 1 1 0; min-width: 96px; position: relative;
+    display: flex; flex-direction: column-reverse; align-items: center; justify-content: flex-start;
+    padding-bottom: 12px; border-radius: 10px; cursor: pointer;
+    outline: none; transition: background .15s ease;
+  }
+  /* 立柱 */
+  .peg::before {
+    content: ''; position: absolute; left: 50%; bottom: 10px; width: 6px;
+    height: calc(100% - 14px); margin-left: -3px; border-radius: 3px;
+    background: linear-gradient(90deg, #5b6478, #8b96ad 45%, #4a5364);
+    z-index: 0;
+  }
+  /* 底座 */
+  .peg::after {
+    content: ''; position: absolute; left: 2px; right: 2px; bottom: 0; height: 10px;
+    border-radius: 6px; background: linear-gradient(180deg, #6d788f, #3f4757);
+    box-shadow: 0 2px 4px rgba(0,0,0,.35);
+  }
+  .peg.cur { background: rgba(255,255,255,.06); }
+  .peg.sel { background: rgba(255,215,110,.14); box-shadow: inset 0 0 0 2px #ffd76e; }
+  .peg.sel::after { background: linear-gradient(180deg, #ffd76e, #c99a19); }
+  .peg.nope { animation: nope .28s ease; }
+  @keyframes nope { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-4px) } 75% { transform: translateX(4px) } }
+
+  /* <span> 当盘子必须 display:block，否则行内元素忽略高度 → 塌成 0×0 */
+  .disk {
+    display: block; position: relative; z-index: 1;
+    height: var(--dh); width: var(--w, 60%);
+    margin-bottom: 2px; border-radius: calc(var(--dh) / 2);
+    background: linear-gradient(180deg, var(--c1), var(--c2));
+    box-shadow: inset 0 -2px 3px rgba(0,0,0,.28), inset 0 2px 0 rgba(255,255,255,.28), 0 2px 4px rgba(0,0,0,.32);
+    transition: width .16s ease;
+  }
+  .disk.just { animation: drop .2s ease; }
+  @keyframes drop { 0% { transform: translateY(-26px); opacity: .35 } 100% { transform: none; opacity: 1 } }
+
+  .actions { display: flex; gap: 8px; width: 100%; }
+  .actions button {
+    flex: 1; min-height: 46px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; letter-spacing: 1px; font-family: inherit;
+    transition: transform .12s ease;
+  }
+  .actions button:active { transform: scale(.96); }
+  .actions button:disabled { opacity: .38; cursor: default; }
+  .btn-primary { background: #4a90ff; color: #fff; box-shadow: 0 4px 0 #2a63bd; }
+  .btn-ghost { background: rgba(255,255,255,.14); color: #fff; box-shadow: 0 4px 0 rgba(0,0,0,.25); }
+
+  .overlay {
+    position: absolute; inset: 0; border-radius: 18px; z-index: 6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 7px; text-align: center; padding: 18px;
+    background: rgba(14, 16, 26, .9); backdrop-filter: blur(3px); color: #fff;
+  }
+  .hidden { display: none !important; }
+  .over-title { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+  .over-sub { font-size: 13px; opacity: .8; line-height: 1.6; }
+  .icon-big { font-size: 40px; }
+  .final-line { font-size: 15px; font-weight: 700; }
+  #over-stars { font-size: 26px; letter-spacing: 6px; color: #ffd76e; min-height: 30px; }
+  .new-record {
+    background: #ffd76e; color: #5a3e00; font-size: 12px; font-weight: 800;
+    padding: 4px 14px; border-radius: 999px; animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+  .over-btns { display: flex; gap: 8px; margin-top: 6px; width: 100%; }
+  .over-btns button {
+    flex: 1; min-height: 46px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; font-family: inherit;
+  }
+  .start-btn { margin-top: 6px; padding: 12px 28px; }
+
+  .footer {
+    margin-top: 10px; color: rgba(255,255,255,.5); font-size: 12px;
+    text-align: center; line-height: 1.9; max-width: 470px;
+  }
+  .footer a {
+    color: rgba(255,255,255,.78); text-decoration: none; display: inline-block;
+    min-width: 44px; min-height: 44px; line-height: 44px;
+  }
+  .footer a:hover { color: #ffd76e; }
+
+  @media (max-width: 430px) {
+    body { padding: 6px 4px 2px; }
+    .panel { padding: 6px; border-radius: 14px; }
+    .overlay { border-radius: 14px; }
+  }
+  /* 横屏 / 矮窗口：顶栏与按钮行并到左右两侧，纵向全给盘子 */
+  @media (orientation: landscape) and (max-height: 700px) {
+    body { padding: 2px 6px 2px; }
+    .panel { flex-direction: row; align-items: center; padding: 6px; gap: 8px; }
+    .topbar { flex-direction: column; width: 132px; flex: 0 0 auto; gap: 4px; }
+    .stat { width: 100%; padding: 1px 4px; }
+    .stat small { font-size: 8px; letter-spacing: .4px; }
+    .stat span { font-size: 13px; }
+    #status { position: absolute; left: 8px; bottom: 6px; width: auto; font-size: 11px; }
+    .board-area { order: 2; flex: 1 1 auto; min-width: 0; }
+    .actions { order: 3; flex: 0 0 auto; flex-direction: column; width: 116px; }
+    .actions button { width: 116px; }
+    .footer { max-width: none; margin-top: 4px; line-height: 1.4; font-size: 11px; }
+    .footer .wg-tools { display: inline-flex; vertical-align: middle; margin-right: 8px; }
+    .overlay { padding: 8px; gap: 4px; }
+    .over-title { font-size: 18px; }
+    .over-sub, .final-line { font-size: 12px; }
+    .icon-big { font-size: 24px; }
+    #over-stars { font-size: 20px; min-height: 22px; }
+    .over-btns button { min-height: 44px; font-size: 12px; }
+  }
+</style>
+<style>
+  body{background:radial-gradient(ellipse at 16% 0,#35132d,transparent 43%),radial-gradient(ellipse at 90% 8%,#14313b,transparent 38%),#08090e;color:#f5f6fa}
+  .wrap{border:1px solid #ff5edb70;box-shadow:0 20px 60px #0009}
+  .hud-item,.status-card{background:#141927;border-color:#ffffff24;color:#f5f6fa}
+  .btn-primary{background:#a8ff48;color:#10150b;box-shadow:0 5px 0 #588a1f}
+  .btn-primary:active{box-shadow:0 2px 0 #588a1f}
+  .btn-ghost{background:#ff5edb;color:#180c17;box-shadow:0 5px 0 #92327d}
+  .btn-ghost:active{box-shadow:0 2px 0 #92327d}
+  .footer a{color:#ff5edb}
+  .account-status{width:min(700px,calc(100% - 20px));margin:10px auto 0;padding:10px 12px;border:1px solid #ffffff24;border-radius:10px;background:#111521;color:#b9c2d3;font-size:12px;line-height:1.5;text-align:center}
+  .account-status a{color:#a8ff48;font-weight:800}
+</style>
+<script src="/arcade-save.js"></script><script src="../i18n.js"></script>
+</head>
+<body>
+
+<div class="panel" id="panel">
+  <div class="topbar">
+    <div class="stat"><small data-i18n="hanoi.hudLevel">LEVEL</small><span id="hud-level">1/5</span></div>
+    <div class="stat"><small data-i18n="hanoi.hudMoves">MOVES</small><span id="hud-moves">0</span></div>
+    <div class="stat"><small data-i18n="hanoi.hudPar">PAR</small><span id="hud-par">7</span></div>
+    <button id="mute-btn" data-i18n-title="common.toggleSound" title="Toggle sound">🔊</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div class="board-area" id="board-area">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-ghost" id="btn-undo" data-i18n="hanoi.undo">UNDO</button>
+    <button class="btn-ghost" id="btn-restart" data-i18n="hanoi.restart">RESTART</button>
+  </div>
+
+  <div class="overlay hidden" id="over-overlay">
+    <div class="icon-big">🗼</div>
+    <div class="over-title" id="over-title"></div>
+    <div id="over-stars"></div>
+    <div class="final-line" id="final-line"></div>
+    <div class="new-record hidden" id="new-record" data-i18n="common.newRecord">🏆 NEW RECORD!</div>
+    <div class="over-sub" id="over-best"></div>
+    <div class="over-btns">
+      <button class="btn-primary" id="btn-next" data-i18n="hanoi.next">NEXT LEVEL</button>
+      <button class="btn-ghost" id="btn-again" data-i18n="common.playAgain">PLAY AGAIN</button>
+      <button class="btn-ghost" id="btn-share" data-i18n="common.shareScore">SHARE SCORE</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="start-overlay">
+    <div class="icon-big">🗼</div>
+    <div class="over-title" data-i18n="hanoi.title">HANOI</div>
+    <div class="over-sub" data-i18n-html="hanoi.tip">Move every <b>disk</b> to the right-hand peg. A bigger disk can never sit on a smaller one.<br>Tap a peg to lift its top disk, then tap another peg to drop it.<br>Keys <b>1–3</b> pick a peg, <b>Enter</b> drops, <b>Z</b> undoes.</div>
+    <div class="over-sub" id="start-best"></div>
+    <button class="btn-primary start-btn" id="btn-start" data-i18n="common.start">START</button>
+  </div>
+</div>
+<p class="account-status" id="account-status" role="status" aria-live="polite">Checking account save service…</p>
+
+<div class="footer">
+  <span data-i18n="common.madeBy">Made by</span> <a href="https://github.com/mashukui" target="_blank" rel="noopener">@mashukui</a> ·
+  <a href="/chaos-cartridge.html">Chaos Cartridge</a> ·
+  <a href="https://github.com/mashukui/web-games" target="_blank" rel="noopener noreferrer">Original source (MIT)</a> ·
+  <a href="/arcade-progress.html">Player records</a> ·
+  <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new?title=Arcade%20issue%3A%20Tower%20of%20Hanoi" target="_blank" rel="noopener noreferrer">Report a game issue</a>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var LEVELS = [3, 4, 5, 6, 7];     // L1–L5 的盘子数
+  var STORE_KEY = 'ashfall_hanoi_best_v1';
+  var GAME_KEY = 'cabinet-hanoi';
+  var TONES = ['#e8524a', '#f0952f', '#f2c94c', '#37c068', '#3d86f5', '#a86cf0', '#23c4c4'];
+  var TONE2 = ['#a52f29', '#a96313', '#a8861c', '#1c7c40', '#1c56a8', '#6636a8', '#0d7d7d'];
+
+  var panel = document.getElementById('panel');
+  var boardEl = document.getElementById('board');
+  var boardArea = document.getElementById('board-area');
+  var footerEl = document.querySelector('.footer');
+  var topbarEl = document.querySelector('.topbar');
+  var actionsEl = document.querySelector('.actions');
+  var statusEl = document.getElementById('status');
+  var startOverlay = document.getElementById('start-overlay');
+  var overOverlay = document.getElementById('over-overlay');
+
+  // ===== 音效 =====
+  var audioCtx = null, muted = false;
+  function beep(freq, dur, type, vol) {
+    if (muted) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.12, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch (e) {}
+  }
+  var sfx = {
+    pick: function () { beep(540, 0.04, 'triangle', 0.05); },
+    drop: function () { beep(300, 0.07, 'sine', 0.07); setTimeout(function () { beep(220, 0.06, 'sine', 0.05); }, 45); },
+    bad:  function () { beep(120, 0.09, 'sawtooth', 0.05); },
+    undo: function () { beep(400, 0.06, 'triangle', 0.05); },
+    win:  function () { [0, 110, 220, 340].forEach(function (d, i) { setTimeout(function () { beep(520 + i * 160, 0.16, 'triangle', 0.09); }, d); }); }
+  };
+  var muteBtn = document.getElementById('mute-btn');
+  muteBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); muted = !muted;
+    muteBtn.textContent = muted ? '🔇' : '🔊';
+  });
+
+  // ===== 状态 =====
+  var levelIdx = 0;
+  var n = LEVELS[0];
+  var pegs = [[], [], []];
+  var selected = null;
+  var cursor = 0;
+  var moves = 0, par = 7;
+  var solved = false;
+  var history = [];
+  var endKey = null, endStats = null;
+  var startAt = 0;
+  var store = { best: {} };
+
+  function loadStore() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+      // loop-probe 会把任何含 best 的键塞成 99999 —— 必须挡住非对象
+      if (raw && typeof raw === 'object' && raw.best && typeof raw.best === 'object') {
+        for (var k in raw.best) {
+          var v = raw.best[k];
+          if (typeof v === 'number' && isFinite(v) && v > 0) store.best[k] = v | 0;
+        }
+      }
+    } catch (e) {}
+  }
+  loadStore();
+  function saveStore() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {}
+  }
+  function bestFor(k) { return store.best[String(k)] || 0; }
+
+  // ===== 关卡 =====
+  function parOf(k) { return Math.pow(2, k) - 1; }
+
+  function gotoLevel(idx, autoStart) {
+    levelIdx = Math.max(0, Math.min(LEVELS.length - 1, idx | 0));
+    n = LEVELS[levelIdx];
+    par = parOf(n);
+    pegs = [[], [], []];
+    for (var d = n; d >= 1; d--) pegs[0].push(d);      // 数组尾 = 顶端,自大到小
+    selected = null;
+    cursor = 0;
+    moves = 0;
+    solved = false;
+    history = [];
+    endKey = null;
+    endStats = null;
+    startAt = Date.now();
+    overOverlay.classList.add('hidden');
+    if (autoStart) startOverlay.classList.add('hidden');
+    buildBoard();
+    refreshAll();
+    fit();
+  }
+
+  // ===== 棋盘 =====
+  function buildBoard() {
+    boardEl.innerHTML = '';
+    for (var i = 0; i < 3; i++) {
+      var p = document.createElement('div');
+      p.className = 'peg';
+      p.dataset.peg = String(i);
+      p.setAttribute('role', 'button');
+      p.setAttribute('tabindex', '-1');
+      boardEl.appendChild(p);
+    }
+    renderPegs(-1);
+  }
+
+  function diskWidth(k) {
+    // 宽度按盘号：k=n 最宽 = --dw
+    return 'calc(var(--dw) * ' + (0.42 + 0.58 * k / n).toFixed(4) + ')';
+  }
+
+  function renderPegs(justPeg) {
+    for (var i = 0; i < 3; i++) {
+      var peg = boardEl.children[i];
+      if (!peg) continue;
+      peg.innerHTML = '';
+      peg.className = 'peg' + (selected === i ? ' sel' : '') + (cursor === i ? ' cur' : '');
+      var stack = pegs[i];
+      for (var j = 0; j < stack.length; j++) {
+        var k = stack[j];
+        var d = document.createElement('span');
+        d.className = 'disk';
+        d.dataset.k = String(k);
+        d.style.setProperty('--w', diskWidth(k));
+        d.style.setProperty('--c1', TONES[(k - 1) % TONES.length]);
+        d.style.setProperty('--c2', TONE2[(k - 1) % TONE2.length]);
+        if (i === justPeg && j === stack.length - 1) d.className += ' just';
+        peg.appendChild(d);
+      }
+    }
+  }
+
+  function shake(i) {
+    var peg = boardEl.children[i];
+    if (!peg) return;
+    peg.classList.remove('nope');
+    void peg.offsetWidth;
+    peg.classList.add('nope');
+  }
+
+  // ===== 规则 =====
+  function legalMove(from, to) {
+    if (from === to) return false;
+    if (!pegs[from].length) return false;
+    if (!pegs[to].length) return true;
+    return pegs[to][pegs[to].length - 1] > pegs[from][pegs[from].length - 1];
+  }
+
+  function doMove(from, to, silent) {
+    var disk = pegs[from].pop();
+    pegs[to].push(disk);
+    history.push({ from: from, to: to });
+    moves++;
+    selected = null;
+    cursor = to;
+    if (!silent) sfx.drop();
+    renderPegs(to);
+    if (pegs[2].length === n) { solveLevel(); return; }
+    refreshHud();
+    refreshStatus();
+  }
+
+  function tapPeg(i) {
+    if (solved) return;
+    cursor = i;
+    if (selected === null) {
+      // 空柱也能"选中"（再点一次取消）——手机上盲点也不会静默失败
+      selected = i;
+      if (pegs[i].length) sfx.pick(); else sfx.bad();
+      renderPegs(-1);
+      refreshStatus();
+      return;
+    }
+    if (selected === i) { selected = null; sfx.pick(); renderPegs(-1); refreshStatus(); return; }
+    var from = selected;
+    if (legalMove(from, i)) { doMove(from, i); return; }
+    shake(i); sfx.bad();
+    renderPegs(-1);       // 非法：选择保留,只抖一下
+  }
+
+  function undo() {
+    if (!history.length) return;
+    var h = history.pop();
+    var disk = pegs[h.to].pop();
+    pegs[h.from].push(disk);
+    moves = Math.max(0, moves - 1);
+    selected = null;
+    cursor = h.from;
+    if (solved) {
+      solved = false; endKey = null; endStats = null;
+      overOverlay.classList.add('hidden');
+    }
+    sfx.undo();
+    renderPegs(h.from);
+    refreshAll();
+  }
+
+  function restart() {
+    gotoLevel(levelIdx, false);
+    startOverlay.classList.add('hidden');
+    overOverlay.classList.add('hidden');
+    sfx.undo();
+  }
+
+  function starsFor(m) {
+    if (m === par) return 3;
+    if (m <= par + 2) return 2;
+    return 1;
+  }
+
+  function solveLevel() {
+    solved = true;
+    var stars = starsFor(moves);
+    var prev = bestFor(n);
+    var rec = !prev || moves < prev;
+    if (rec) { store.best[String(n)] = moves; saveStore(); }
+    endKey = 'hanoi.over';
+    endStats = { level: levelIdx + 1, n: n, moves: moves, par: par, stars: stars, best: bestFor(n), record: rec };
+    refreshHud();
+    refreshStatus();
+    refreshOver();
+    renderStartBest();
+    overOverlay.classList.remove('hidden');
+    var runScore = Math.max(0, (levelIdx + 1) * 1000 + stars * 100 - Math.max(0, moves - par) * 10);
+    if (window.AshFallArcade && window.AshFallArcade.user) {
+      window.AshFallArcade.recordScore(GAME_KEY, runScore, { score: runScore, level: levelIdx + 1, moves: moves, par: par, stars: stars, completed: true }).then(function (result) {
+        document.getElementById('account-status').textContent = result.saved ? 'Level completion saved to your Ash-Fall account leaderboard.' : 'Level complete; account score sync did not complete.';
+      }).catch(function () { document.getElementById('account-status').textContent = 'Level complete. Account sync is temporarily unavailable.'; });
+    } else {
+      document.getElementById('account-status').innerHTML = '<a href="/auth.html?next=' + encodeURIComponent(location.pathname) + '">Sign in</a> to sync puzzle scores across devices.';
+    }
+    sfx.win();
+  }
+
+  function nextLevel() {
+    if (levelIdx < LEVELS.length - 1) gotoLevel(levelIdx + 1, true);
+    else { gotoLevel(0, true); }
+    overOverlay.classList.add('hidden');
+  }
+
+  // ===== HUD / 文案 =====
+  function refreshHud() {
+    document.getElementById('hud-level').textContent = (levelIdx + 1) + '/' + LEVELS.length;
+    document.getElementById('hud-moves').textContent = String(moves);
+    document.getElementById('hud-par').textContent = String(par);
+    var ub = document.getElementById('btn-undo');
+    ub.disabled = history.length === 0;
+  }
+  function refreshStatus() {
+    if (solved) { statusEl.textContent = t('hanoi.over'); return; }
+    if (selected !== null && pegs[selected].length) { statusEl.textContent = t('hanoi.picked', { n: selected + 1 }); return; }
+    statusEl.textContent = '';
+  }
+  function refreshOver() {
+    if (!endKey || !endStats) return;
+    var s = endStats;
+    document.getElementById('over-title').textContent = t(endKey);
+    document.getElementById('over-stars').textContent = '★★★☆☆☆'.slice(3 - s.stars, 6 - s.stars);
+    document.getElementById('final-line').textContent = t('hanoi.final', { m: s.moves, p: s.par, s: s.stars });
+    document.getElementById('over-best').textContent = t('common.bestLabel', { n: s.best });
+    document.getElementById('new-record').classList.toggle('hidden', !s.record);
+    document.getElementById('btn-next').classList.toggle('hidden', s.level >= LEVELS.length);
+    document.getElementById('btn-again').classList.toggle('hidden', s.level < LEVELS.length);
+  }
+  function renderStartBest() {
+    var done = 0;
+    for (var i = 0; i < LEVELS.length; i++) if (store.best[String(LEVELS[i])]) done++;
+    document.getElementById('start-best').textContent = done > 0
+      ? t('hanoi.record', { n: done, t: LEVELS.length })
+      : t('hanoi.first');
+  }
+  function refreshAll() {
+    refreshHud(); refreshStatus(); refreshOver(); renderStartBest(); renderPegs(-1); fit();
+  }
+
+  // ===== 尺寸 =====
+  var PW_CAP = 584;
+  function fit() {
+    var bcs = getComputedStyle(document.body);
+    var pcs = getComputedStyle(panel);
+    var bodyPadH = parseFloat(bcs.paddingLeft) + parseFloat(bcs.paddingRight);
+    var bodyPadV = parseFloat(bcs.paddingTop) + parseFloat(bcs.paddingBottom);
+    var panelPadH = parseFloat(pcs.paddingLeft) + parseFloat(pcs.paddingRight);
+    var panelPadV = parseFloat(pcs.paddingTop) + parseFloat(pcs.paddingBottom);
+    var land = window.matchMedia('(orientation: landscape) and (max-height: 700px)').matches;
+    var BORDER = 2;
+
+    // ★ 可用宽只从 window.innerWidth 反推（不能读 panel.clientWidth → 循环依赖）
+    var availW = Math.min(window.innerWidth, PW_CAP) - bodyPadH - panelPadH - BORDER - (land ? 132 + 116 + 16 : 0);
+    var dw = Math.floor((availW - 12) / 3);
+    dw = Math.max(96, Math.min(168, dw));
+    panel.style.setProperty('--dw', dw + 'px');
+
+    var footerH = footerEl ? footerEl.offsetHeight + 10 : 90;
+    var chromeH;
+    if (land) {
+      chromeH = bodyPadV + panelPadV + BORDER + 16 + footerH;
+    } else {
+      chromeH = bodyPadV + panelPadV + BORDER + 16 + footerH +
+                (topbarEl ? topbarEl.offsetHeight : 48) + (actionsEl ? actionsEl.offsetHeight : 50) +
+                (statusEl.offsetHeight || 0);
+    }
+    var availH = Math.max(96, window.innerHeight - chromeH);
+    var dh = Math.floor((availH - 96) / (n + 1));
+    dh = Math.max(16, Math.min(34, dh));
+    panel.style.setProperty('--dh', dh + 'px');
+
+    var need = n * (dh + 2) + 16;
+    boardArea.style.maxHeight = availH + 'px';
+    boardArea.style.overflowY = need > availH ? 'auto' : 'visible';
+  }
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(fit, 80);
+  });
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener('load', function () { setTimeout(fit, 300); });
+
+  // ===== 输入 =====
+  boardEl.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== boardEl && el.dataset && el.dataset.peg === undefined) el = el.parentNode;
+    if (!el || el === boardEl || !el.dataset || el.dataset.peg === undefined) return;
+    tapPeg(parseInt(el.dataset.peg, 10));
+  });
+
+  window.addEventListener('keydown', function (e) {
+    var k = String(e.key || '');
+    var low = k.toLowerCase();
+    if (low === '1' || k === '2' || k === '3') { tapPeg(parseInt(k, 10) - 1); e.preventDefault(); return; }
+    if (k === 'ArrowLeft') { cursor = (cursor + 2) % 3; renderPegs(-1); e.preventDefault(); return; }
+    if (k === 'ArrowRight') { cursor = (cursor + 1) % 3; renderPegs(-1); e.preventDefault(); return; }
+    if (k === 'Enter' || k === ' ') { tapPeg(cursor); e.preventDefault(); return; }
+    if (low === 'z') { undo(); e.preventDefault(); return; }
+    if (low === 'r') { restart(); e.preventDefault(); return; }
+    if (low === 'escape') { selected = null; renderPegs(-1); refreshStatus(); return; }
+  });
+
+  // ===== 按钮 =====
+  document.getElementById('btn-start').addEventListener('click', function () {
+    startOverlay.classList.add('hidden');
+    startAt = Date.now();
+    fit();
+  });
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-restart').addEventListener('click', restart);
+  document.getElementById('btn-next').addEventListener('click', nextLevel);
+  document.getElementById('btn-again').addEventListener('click', function () { gotoLevel(0, true); });
+
+  // ===== 分享 =====
+  function shareText() {
+    var s = endStats || { level: levelIdx + 1, moves: moves };
+    return t('hanoi.share', { l: s.level, m: s.moves, url: location.href });
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  document.getElementById('btn-share').addEventListener('click', function () {
+    var full = shareText(), btn = document.getElementById('btn-share');
+    function done() {
+      btn.textContent = t('common.copied');
+      setTimeout(function () { btn.textContent = t('common.shareScore'); }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(done, function () { fallbackCopy(full, done); });
+    } else fallbackCopy(full, done);
+  });
+
+  // ===== 探针接口 =====
+  window.__st = function () {
+    return {
+      n: n, pegs: [pegs[0].slice(), pegs[1].slice(), pegs[2].slice()],
+      selected: selected, moves: moves, par: par, solved: solved,
+      endKey: endKey, best: store.best, level: levelIdx + 1
+    };
+  };
+  window.__lv = function (k) { gotoLevel((k | 0) - 1, true); return window.__st(); };
+  window.__plan = function () {
+    var out = [];
+    (function move(k, a, c, b) {
+      if (k <= 0) return;
+      move(k - 1, a, b, c);
+      out.push([a, c]);
+      move(k - 1, b, c, a);
+    })(n, 0, 2, 1);
+    return out;
+  };
+
+  // ===== 启动 =====
+  WG.onChange(function () { refreshHud(); refreshStatus(); refreshOver(); renderStartBest(); fit(); });
+  gotoLevel(0, false);
+  startOverlay.classList.remove('hidden');
+  fit();
+  setTimeout(fit, 120);
+  if (location.hash === '#play') { startOverlay.classList.add('hidden'); }
+  if (window.AshFallArcade && window.AshFallArcade.ready) {
+    window.AshFallArcade.ready.then(async function () {
+      if (window.AshFallArcade.user) {
+        try {
+          var saved = await window.AshFallArcade.loadProgress(GAME_KEY);
+          document.getElementById('account-status').textContent = 'Signed in. Completed levels sync to your account leaderboard. Account best: ' + Number(saved && saved.bestScore || 0) + '.';
+        } catch (e) {
+          document.getElementById('account-status').textContent = 'Signed in; cloud save unavailable, local play still works.';
+        }
+      } else {
+        document.getElementById('account-status').innerHTML = '<a href="/auth.html?next=' + encodeURIComponent(location.pathname) + '">Sign in</a> to sync puzzle scores across devices.';
+      }
+    }).catch(function () { document.getElementById('account-status').textContent = 'Account service unavailable; local play still works.'; });
+  }
+})();
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ const games = [
   { name: "Colossus Clash", path: "/arcade/hosted/colossus-clash/index.html", start: "#start", pause: false },
   { name: "Dino Run: Ash-Fall Edition", path: "/arcade/hosted/dino-run/index.html", start: "#btn-start", pause: false },
   { name: "Balloon Pop: Ash-Fall Edition", path: "/arcade/hosted/balloon-pop/index.html", start: "#btn-start", pause: false },
+  { name: "Tower of Hanoi: Ash-Fall Edition", path: "/arcade/hosted/hanoi/index.html", start: "#btn-start", pause: false, canvas: false, board: "#board" },
 ];
 
 const browser = await chromium.launch({ headless: true });
@@ -25,7 +26,17 @@ try {
       continue;
     }
     const canvas = page.locator("canvas").first();
-    if (await canvas.count() !== 1) {
+    let pixels = 0;
+    let boardVisible = false;
+    if (game.canvas === false) {
+      const board = page.locator(game.board || "svg").first();
+      if (await board.count() < 1) {
+        console.error(`FAIL ${game.name}: expected a visible game board`);
+        failed = true;
+        await page.close();
+        continue;
+      }
+    } else if (await canvas.count() !== 1) {
       console.error(`FAIL ${game.name}: expected exactly one game canvas`);
       failed = true;
       await page.close();
@@ -33,17 +44,25 @@ try {
     }
     await page.locator(game.start).click();
     await page.waitForTimeout(350);
-    const pixels = await canvas.evaluate(el => {
-      const c = el.getContext("2d");
-      if (!c) return 0;
-      const data = c.getImageData(0, 0, el.width, el.height).data;
-      let count = 0;
-      for (let i = 3; i < data.length; i += 4) if (data[i] > 0) count++;
-      return count;
-    });
-    if (pixels < 1000) {
-      console.error(`FAIL ${game.name}: canvas appears blank after starting (${pixels} painted pixels)`);
-      failed = true;
+    if (game.canvas === false) {
+      boardVisible = await page.locator(game.board || "svg").first().isVisible();
+      if (!boardVisible) {
+        console.error(`FAIL ${game.name}: game board is not visible after starting`);
+        failed = true;
+      }
+    } else {
+      pixels = await canvas.evaluate(el => {
+        const c = el.getContext("2d");
+        if (!c) return 0;
+        const data = c.getImageData(0, 0, el.width, el.height).data;
+        let count = 0;
+        for (let i = 3; i < data.length; i += 4) if (data[i] > 0) count++;
+        return count;
+      });
+      if (pixels < 1000) {
+        console.error(`FAIL ${game.name}: canvas appears blank after starting (${pixels} painted pixels)`);
+        failed = true;
+      }
     }
     if (game.pause) {
       const pause = page.locator("#pause");
@@ -58,7 +77,7 @@ try {
       console.error(`FAIL ${game.name}: browser errors: ${errors.join(" | ")}`);
       failed = true;
     }
-    if (!errors.length && pixels >= 1000) console.log(`PASS ${game.name}: mobile viewport, start interaction, rendered canvas${game.pause ? ", pause/resume" : ""}`);
+    if (!errors.length && (game.canvas === false ? boardVisible : pixels >= 1000)) console.log(`PASS ${game.name}: mobile viewport, start interaction, ${game.canvas === false ? "visible SVG board" : "rendered canvas"}${game.pause ? ", pause/resume" : ""}`);
     await page.close();
   }
 

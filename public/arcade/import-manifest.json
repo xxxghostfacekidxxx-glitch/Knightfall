@@ -195,6 +195,21 @@
         "/arcade/hosted/i18n.js"
       ],
       "notes": "Adapted the upstream self-contained Canvas balloon/bomb game, retained MIT licensing, removed its unrelated external downloader promotion and analytics loader, restyled it, and added account best-score loading and leaderboard submission."
+    },
+    {
+      "gameId": "cabinet-hanoi",
+      "title": "Tower of Hanoi: Ash-Fall Edition",
+      "status": "imported-adapted",
+      "upstream": "https://github.com/mashukui/web-games",
+      "license": "MIT",
+      "files": [
+        "/arcade/hosted/hanoi/index.html",
+        "/arcade/hosted/hanoi/LICENSE.txt",
+        "/arcade/hosted/hanoi/SOURCE-NOTICE.md",
+        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
+        "/arcade/hosted/i18n.js"
+      ],
+      "notes": "Adapted the upstream SVG/DOM puzzle with the MIT license retained, unrelated downloader promotion and analytics loader removed, Ash-Fall styling, account leaderboard submission on completed levels, and issue reporting."
     }
   ],
   "notYetImported": [
