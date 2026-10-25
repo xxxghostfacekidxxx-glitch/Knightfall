@@ -12,7 +12,11 @@ const current=document.createElement('span');current.className='af-arcade-curren
 const shelf=document.createElement('a');shelf.href='/chaos-cartridge.html';shelf.textContent='Chaos Cartridge';
 const all=document.createElement('a');all.href='/arcade-30-games.html';all.textContent='All Games';
 const licenses=document.createElement('a');licenses.href='/arcade/arcade-license-guide.html';licenses.textContent='Licenses';
-links.append(current,shelf,all,licenses);nav.append(brand,links);
+const report=document.createElement('a');report.textContent='Report issue';report.target='_blank';report.rel='noopener noreferrer';
+const reportTitle=(document.title||'Arcade game').replace(/\\s*[|·-]\\s*(Chaos Cartridge|Ash-Fall).*$/i,'').trim()||'Arcade game';
+const reportBody='Game: '+reportTitle+'\\nPage: '+location.href+'\\n\\nWhat happened?\\n\\nSteps to reproduce:\\n\\nDevice/browser (optional): '+navigator.userAgent;
+report.href='https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new?title='+encodeURIComponent('Arcade issue: '+reportTitle)+'&body='+encodeURIComponent(reportBody);
+links.append(current,shelf,all,licenses,report);nav.append(brand,links);
 if(document.body&&!document.querySelector('.af-arcade-nav'))document.body.insertBefore(nav,document.body.firstChild);
 const status=document.createElement('p');status.className='af-account-bridge-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.textContent='Checking account score sync…';
 const css=document.createElement('style');css.textContent='.af-account-bridge-status{max-width:760px;margin:10px auto;padding:9px 12px;border:1px solid #ffffff24;border-radius:10px;background:#101521;color:#aeb9cb;font:12px/1.5 system-ui,sans-serif;text-align:center}.af-account-bridge-status a{color:#a8ff48;font-weight:800}.af-account-bridge-status .af-report{color:#ff5edb;margin-left:10px}';document.head.appendChild(css);document.body.appendChild(status);
