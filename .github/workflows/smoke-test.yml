@@ -11,6 +11,7 @@ on:
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
       - 'scripts/static-audit.mjs'
+      - 'scripts/push-notifications-audit.mjs'
       - 'scripts/arcade-browser-smoke.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
@@ -38,7 +39,7 @@ jobs:
         with:
           node-version: '22'
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node scripts/static-audit.mjs
+        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
