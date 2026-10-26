@@ -246,7 +246,7 @@ async function loadProfilePhotos(username,ownProfile){
     photoDialog.querySelector("[data-prev]").addEventListener("click",()=>showPhotoAt(galleryIndex-1));
     photoDialog.querySelector("[data-next]").addEventListener("click",()=>showPhotoAt(galleryIndex+1));
     photoDialog.addEventListener("click",e=>{if(e.target===photoDialog)closePhotoDialog();});
-    document.body.append(photoDialog);document.addEventListener("keydown",photoKeys);showPhotoAt(index);photoDialog.querySelector("[data-close]").focus();
+    previousBodyOverflow=document.body.style.overflow;document.body.style.overflow="hidden";document.body.append(photoDialog);document.addEventListener("keydown",photoKeys);showPhotoAt(index);photoDialog.querySelector("[data-close]").focus();
   }
   grid.addEventListener("click",event=>{const link=event.target.closest("[data-photo-index]");if(!link)return;event.preventDefault();openPhotoDialog(Number(link.dataset.photoIndex));});
   let albumSelection="",albumPhotos=null,albumIds=[],favoriteIds=new Set();
