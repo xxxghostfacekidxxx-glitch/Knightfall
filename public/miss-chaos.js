@@ -8,6 +8,10 @@
   let conversationSearchTimer = null;
   const errorEl = $("#chat-error"), statusEl = $("#engine-status"), moodSelect = $("#mood");
   let activeConversation = null, busy = false, speakReplies = false, showDeleted = false, adminViewing = false, isAdmin = false;
+  let conversationLoadVersion = 0, conversationListVersion = 0;
+  const drafts = new Map();
+  function saveDraft() { if (!adminViewing) drafts.set(activeConversation || "new", input.value); }
+  function restoreDraft() { input.value = drafts.get(activeConversation || "new") || ""; input.dispatchEvent(new Event("input")); }
   const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",custom:"Custom"};
 
   async function request(path, options = {}) {
@@ -75,7 +79,9 @@
     const query=conversationSearch?.value.trim();
     if(query)params.set("q",query);
     const suffix=params.toString()?"?"+params.toString():"";
+    const version = ++conversationListVersion;
     const data = await request("/api/chaos/conversations" + suffix);
+    if (version !== conversationListVersion) return data.conversations || [];
     renderConversationList(data.conversations || []);
     return data.conversations || [];
   }
@@ -147,20 +153,30 @@
     return memories;
   }
   async function openConversation(id) {
-    adminViewing=false;input.disabled=false;sendButton.disabled=busy;showError("");
+    if (busy) { showError("Wait for Miss Chaos to finish before switching chats."); return; }
+    saveDraft();
+    const version = ++conversationLoadVersion;
+    showError("");
     const data = await request("/api/chaos/conversations/" + encodeURIComponent(id) + "/messages");
+    if (version !== conversationLoadVersion) return;
+    adminViewing=false;input.disabled=false;sendButton.disabled=busy;
     activeConversation = id;
     messagesEl.replaceChildren();
     if (!(data.messages || []).length) showWelcome();
     else for (const message of data.messages) addMessage(message.role, message.content, message.role === "assistant" ? "Miss Chaos · " + (moodNames[message.mood] || "Default") : "You");
+    restoreDraft();
     await refreshConversations();
     scrollToBottom();
   }
   async function newConversation() {
+    if (busy) { showError("Wait for the current reply before starting another chat."); return; }
+    saveDraft();
+    ++conversationLoadVersion;
     adminViewing=false;input.disabled=false;sendButton.disabled=busy;showError("");
     const data = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
     activeConversation = data.conversation.id;
     showWelcome();
+    restoreDraft();
     await refreshConversations();
     input.focus();
   }
@@ -192,6 +208,8 @@
     }catch(e){archiveStatus(e.message||"Couldn't load the archive.",true);return [];}
   }
   async function adminOpenConversation(id){
+    if (busy) { showError("Wait for the current reply before opening the archive."); return; }
+    saveDraft(); ++conversationLoadVersion;
     showError("");adminViewing=true;activeConversation=null;input.disabled=true;sendButton.disabled=true;
     try{
       const data=await request("/api/admin/chaos/conversations/"+encodeURIComponent(id)+"/messages");
@@ -239,6 +257,7 @@
     $("#char-count").textContent = input.value.length + " / 4000";
     input.style.height = "auto";
     input.style.height = Math.min(input.scrollHeight, 180) + "px";
+    saveDraft();
   });
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
@@ -251,7 +270,7 @@
     busy = true; sendButton.disabled = true; showError("");
     input.value = ""; input.dispatchEvent(new Event("input"));
     addMessage("user", message, "You");
-    const typing = document.createElement("div"); typing.className = "typing"; typing.textContent = "Miss Chaos is thinking…"; messagesEl.append(typing); scrollToBottom();
+    const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…"; messagesEl.append(typing); scrollToBottom();
     try {
       if (!activeConversation) {
         const created = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
@@ -268,13 +287,13 @@
         const utterance = new SpeechSynthesisUtterance(result.reply);
         utterance.rate = 1.02; window.speechSynthesis.speak(utterance);
       }
-      await refreshConversations();
+      await refreshConversations().catch(() => {});
     } catch (error) {
       typing.remove();
       showError(error.message || "Miss Chaos couldn't answer just now.");
       statusEl.textContent = "Waiting for a working AI connection";
       input.value = message; input.dispatchEvent(new Event("input"));
-    } finally { busy = false; sendButton.disabled = false; input.focus(); }
+    } finally { busy = false; sendButton.disabled = adminViewing; if (!adminViewing) input.focus(); }
   });
   $("#speak-toggle").addEventListener("click", () => {
     speakReplies = !speakReplies;
