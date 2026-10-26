@@ -1,0 +1,51 @@
+// Lightweight approximate geocentric ecliptic longitudes (orbital elements).
+// Based on public-domain low-precision orbital elements by Paul Schlyter.
+// Not Swiss Ephemeris, JPL DE, or a substitute for professional chart calculations.
+const rad=Math.PI/180, deg=180/Math.PI;
+const norm=x=>((x%360)+360)%360;
+const sin=x=>Math.sin(x*rad),cos=x=>Math.cos(x*rad);
+const signs=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+function solve(M,e){let E=M+deg*e*sin(M)*(1+e*cos(M));for(let i=0;i<8;i++)E-=(E-deg*e*sin(E)-M)/(1-e*cos(E));return E}
+function elements(d,n,i,w,a,e,M){
+ const E=solve(norm(M),e),x=a*(cos(E)-e),y=a*Math.sqrt(1-e*e)*sin(E);
+ const v=Math.atan2(y,x)*deg,r=Math.hypot(x,y);
+ return {x:r*(cos(n)*cos(v+w)-sin(n)*sin(v+w)*cos(i)),y:r*(sin(n)*cos(v+w)+cos(n)*sin(v+w)*cos(i)),z:r*sin(v+w)*sin(i),v,r};
+}
+function positions(date){
+ const d=date.getTime()/86400000+2440587.5-2451543.5;
+ const sun=elements(d,0,0,282.9404+4.70935e-5*d,1,0.016709-1.151e-9*d,356.0470+0.9856002585*d);
+ const sunLong=norm(Math.atan2(sun.y,sun.x)*deg);
+ const models={
+ Mercury:[48.3313+3.24587e-5*d,7.0047+5e-8*d,29.1241+1.01444e-5*d,0.387098,0.205635+5.59e-10*d,168.6562+4.0923344368*d],
+ Venus:[76.6799+2.4659e-5*d,3.3946+2.75e-8*d,54.8910+1.38374e-5*d,0.723330,0.006773-1.302e-9*d,48.0052+1.6021302244*d],
+ Mars:[49.5574+2.11081e-5*d,1.8497-1.78e-8*d,286.5016+2.92961e-5*d,1.523688,0.093405+2.516e-9*d,18.6021+0.5240207766*d],
+ Jupiter:[100.4542+2.76854e-5*d,1.3030-1.557e-7*d,273.8777+1.64505e-5*d,5.20256,0.048498+4.469e-9*d,19.8950+0.0830853001*d],
+ Saturn:[113.6634+2.3898e-5*d,2.4886-1.081e-7*d,339.3939+2.97661e-5*d,9.55475,0.055546-9.499e-9*d,316.9670+0.0334442282*d],
+ Uranus:[74.0005+1.3978e-5*d,0.7733+1.9e-8*d,96.6612+3.0565e-5*d,19.18171-1.55e-8*d,0.047318+7.45e-9*d,142.5905+0.011725806*d],
+ Neptune:[131.7806+3.0173e-5*d,1.7700-2.55e-7*d,272.8461-6.027e-6*d,30.05826+3.313e-8*d,0.008606+2.15e-9*d,260.2471+0.005995147*d]
+ };
+ const output={Sun:sunLong};
+ for(const [name,args] of Object.entries(models)){const p=elements(d,...args);output[name]=norm(Math.atan2(p.y+sun.y,p.x+sun.x)*deg)}
+ const moon=elements(d,125.1228-0.0529538083*d,5.1454,318.0634+0.1643573223*d,60.2666,0.054900,115.3654+13.0649929509*d);
+ const moonM=norm(115.3654+13.0649929509*d),sunM=norm(356.0470+0.9856002585*d);
+ const elong=norm(125.1228-0.0529538083*d+318.0634+0.1643573223*d+moonM-sunLong);
+ const argLat=norm(318.0634+0.1643573223*d+moonM);
+ const correction=-1.274*sin(moonM-2*elong)+0.658*sin(2*elong)-0.186*sin(sunM)-0.059*sin(2*moonM-2*elong)-0.057*sin(moonM-2*elong+sunM)+0.053*sin(moonM+2*elong)+0.046*sin(2*elong-sunM)+0.041*sin(moonM-sunM)-0.035*sin(elong)-0.031*sin(moonM+sunM)-0.015*sin(2*argLat-2*elong)+0.011*sin(moonM-4*elong);
+ output.Moon=norm(Math.atan2(moon.y,moon.x)*deg+correction);
+ return output;
+}
+export function calculateAstrology(iso){
+ const time=new Date(iso);
+ if(!Number.isFinite(time.getTime())||time.getUTCFullYear()<1900||time.getUTCFullYear()>2100)throw Error("Use a valid UTC time between 1900 and 2100.");
+ const now=positions(time),before=positions(new Date(time.getTime()-86400000)),after=positions(new Date(time.getTime()+86400000));
+ const bodies=Object.fromEntries(Object.entries(now).map(([name,longitude])=>{
+  const speed=((after[name]-before[name]+540)%360-180)/2;
+  return [name,{longitude:Number(longitude.toFixed(3)),sign:signs[Math.floor(longitude/30)],degree_in_sign:Number((longitude%30).toFixed(3)),retrograde:speed<0}];
+ }));
+ const aspects=[],names=Object.keys(bodies),targets=[["conjunction",0],["sextile",60],["square",90],["trine",120],["opposition",180]];
+ for(let i=0;i<names.length;i++)for(let j=i+1;j<names.length;j++){
+  const a=bodies[names[i]].longitude,b=bodies[names[j]].longitude,diff=Math.abs(a-b),sep=Math.min(diff,360-diff);
+  for(const [type,angle] of targets){const orb=Math.abs(sep-angle);if(orb<=4)aspects.push({a:names[i],b:names[j],type,orb:Number(orb.toFixed(2))});}
+ }
+ return {utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. No Ascendant, houses, Pluto, lunar nodes, topocentric corrections or exact ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
+}
