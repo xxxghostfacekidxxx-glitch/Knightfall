@@ -214,3 +214,5 @@
 
 /* Copy and export actions */
 .message-actions{display:flex;justify-content:flex-end;gap:.35rem;margin-top:.3rem}.message-copy{font:inherit;font-size:.72rem;border:1px solid #7a607d70;border-radius:7px;background:#151019b8;color:#d8c3df;padding:.22rem .65rem;cursor:pointer}.message-copy:hover,.message-copy:focus-visible{border-color:#39ff88;color:#aaffc8;outline-offset:2px}.message-copy:focus-visible{outline:2px solid #39ff88}#export-chat{margin-top:.4rem;width:100%;text-align:center}#export-chat:disabled{opacity:.5;cursor:wait}
+
+#memory-search{display:block;width:100%;min-width:0;box-sizing:border-box;margin:.65rem 0;padding:.6rem .75rem;border:1px solid #9860a277;border-radius:10px;background:#130f18;color:#f4e6fa;font:inherit}#memory-search:focus-visible{outline:2px solid #39ff88;outline-offset:2px}#voice-input[aria-pressed="true"]{color:#39ff88;border-color:#39ff88;box-shadow:0 0 12px #39ff8866}
