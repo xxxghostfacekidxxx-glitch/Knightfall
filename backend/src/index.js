@@ -741,12 +741,10 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(url.pathname.startsWith("/api/creator/")||url.pathname.startsWith("/api/dating/")){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to continue."},401,origin);
     const verified=await env.DB.prepare("SELECT status,expires_at FROM adult_access_verifications WHERE user_id=?").bind(user.id).first();
-    // The owner account can enter these routes for operational support and moderation.
-    // This is not a substitute for marking the account as age-verified.
-    const ownerOverride=user.username==="knightfall"&&isAdmin(user);
+    // Administrative review uses dedicated, audited endpoints. Interactive adult
+    // creator and dating routes require real provider-backed verification for everyone.
     const verifiedAdult=!!verified&&verified.status==="verified"&&(!verified.expires_at||new Date(verified.expires_at).getTime()>Date.now());
-    if(!verifiedAdult&&!ownerOverride)return json({error:"Verified 18+ access is required for adult creator and dating features.",code:"ADULT_VERIFICATION_REQUIRED"},403,origin);
-    if(ownerOverride&&!verifiedAdult)await audit(env,user,"admin.adult_access.override","adult_access",user.id,{reason:"Owner support/moderation access; age verification remains unconfirmed."});
+    if(!verifiedAdult)return json({error:"Verified 18+ access is required for adult creator and dating features.",code:"ADULT_VERIFICATION_REQUIRED"},403,origin);
     if(url.pathname==="/api/dating/profile"&&request.method==="GET"){
       const profile=await env.DB.prepare("SELECT display_name,bio,age_range_min,age_range_max,city_label,interests,seeking,visibility,updated_at FROM dating_profiles WHERE user_id=?").bind(user.id).first();
       return json({profile:profile||null},200,origin);
