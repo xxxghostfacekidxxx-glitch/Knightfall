@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, Ash-Fall's sharp-tongued AI companion for conversation, creativity, and useful answers.">
   <title>Miss Chaos | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-chat4">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-stream1">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -47,6 +47,8 @@
           <button type="submit" class="memory-save">Save memory</button>
         </form>
         <p id="memory-status" class="memory-status" role="status" hidden></p>
+        <label class="sr-only" for="memory-search">Search saved memories</label>
+        <input id="memory-search" type="search" maxlength="100" placeholder="Search saved memories…">
         <div id="memory-list" class="memory-list" aria-live="polite"><p class="muted">Loading memories…</p></div>
       </section>
       <div class="sidebar-note"><span class="pulse-dot"></span> Account-bound conversations <small>Authorized administrators may review conversations. Archive access is logged.</small></div>
@@ -83,6 +85,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261026-chat4" defer></script>
+  <script src="/miss-chaos.js?v=20261026-stream1" defer></script>
 </body>
 </html>
