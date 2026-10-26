@@ -1122,7 +1122,7 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
-    const aiOptions={messages:[{role:"system",content:systemPrompt+"\\n\\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    const aiOptions={messages:[{role:"system",content:systemPrompt+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
     if(body.stream===true){
       let source;
       try{
@@ -1132,7 +1132,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       const encoder=new TextEncoder();
       const stream=new ReadableStream({
         async start(controller){
-          const send=(event,data)=>controller.enqueue(encoder.encode("event: "+event+"\\ndata: "+JSON.stringify(data)+"\\n\\n"));
+          const send=(event,data)=>controller.enqueue(encoder.encode("event: "+event+"\ndata: "+JSON.stringify(data)+"\n\n"));
           const reader=source.getReader(),decoder=new TextDecoder();
           let pending="",reply="",completed=false;
           const processLine=(line)=>{
@@ -1149,8 +1149,8 @@ For complex questions, organize the answer clearly and provide actionable detail
               if(done)break;
               pending+=decoder.decode(value,{stream:true});
               let boundary;
-              while((boundary=pending.indexOf("\\n"))!==-1){
-                const line=pending.slice(0,boundary).replace(/\\r$/,"");
+              while((boundary=pending.indexOf("\n"))!==-1){
+                const line=pending.slice(0,boundary).replace(/\r$/,"");
                 pending=pending.slice(boundary+1);
                 processLine(line);
               }
