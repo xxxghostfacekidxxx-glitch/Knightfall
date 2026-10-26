@@ -716,7 +716,65 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       const rows=await env.DB.prepare("SELECT d.user_id,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,u.username,u.avatar_url FROM dating_profiles d JOIN users u ON u.id=d.user_id WHERE d.visibility='discoverable' AND u.status='active' AND d.user_id<>? AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=d.user_id) OR (b.blocker_id=d.user_id AND b.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM dating_matches m WHERE (m.user_low_id=MIN(?,d.user_id) AND m.user_high_id=MAX(?,d.user_id) AND m.status<>'active')) ORDER BY d.updated_at DESC LIMIT ?").bind(user.id,user.id,user.id,user.id,user.id,limit).all();
       return json({profiles:rows.results||[]},200,origin);
     }
-    return json({error:"Creator and dating endpoint not implemented yet."},501,origin);
+    if(url.pathname==="/api/dating/like"&&request.method==="POST"){
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const target=Number(body.user_id);
+      if(!Number.isSafeInteger(target)||target<=0||target===user.id)return json({error:"Choose another member to like."},400,origin);
+      const targetProfile=await env.DB.prepare("SELECT d.user_id FROM dating_profiles d JOIN adult_access_verifications v ON v.user_id=d.user_id JOIN users u ON u.id=d.user_id WHERE d.user_id=? AND d.visibility='discoverable' AND u.status='active' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?)").bind(target,new Date().toISOString()).first();
+      if(!targetProfile)return json({error:"That dating profile is unavailable."},404,origin);
+      const blocked=await env.DB.prepare("SELECT 1 AS blocked FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target,target,user.id).first();
+      if(blocked)return json({error:"This interaction is unavailable."},403,origin);
+      const now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO dating_likes (from_user_id,to_user_id,created_at) VALUES (?,?,?) ON CONFLICT(from_user_id,to_user_id) DO NOTHING").bind(user.id,target,now).run();
+      const reciprocal=await env.DB.prepare("SELECT 1 AS matched FROM dating_likes WHERE from_user_id=? AND to_user_id=?").bind(target,user.id).first();
+      if(reciprocal){
+        const low=Math.min(user.id,target),high=Math.max(user.id,target);
+        await env.DB.prepare("INSERT INTO dating_matches (user_low_id,user_high_id,status,created_at,updated_at) VALUES (?,?,'active',?,?) ON CONFLICT(user_low_id,user_high_id) DO UPDATE SET status='active',updated_at=excluded.updated_at").bind(low,high,now,now).run();
+        await audit(env,user,"dating.match.create","dating_match",null,{matched_user_id:target});
+        return json({ok:true,matched:true,user_id:target},200,origin);
+      }
+      return json({ok:true,matched:false},200,origin);
+    }
+    if(url.pathname==="/api/dating/matches"&&request.method==="GET"){
+      const rows=await env.DB.prepare("SELECT u.id AS user_id,u.username,u.display_name,u.avatar_url,d.display_name AS dating_name,d.city_label,m.created_at AS matched_at FROM dating_matches m JOIN users u ON u.id=CASE WHEN m.user_low_id=? THEN m.user_high_id ELSE m.user_low_id END JOIN dating_profiles d ON d.user_id=u.id JOIN adult_access_verifications v ON v.user_id=u.id WHERE (m.user_low_id=? OR m.user_high_id=?) AND m.status='active' AND d.visibility='discoverable' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?) AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY m.updated_at DESC LIMIT 100").bind(user.id,user.id,user.id,new Date().toISOString(),user.id,user.id).all();
+      return json({matches:rows.results||[]},200,origin);
+    }
+    const unmatch=url.pathname.match(/^\\/api\\/dating\\/matches\\/(\\d+)$/);
+    if(unmatch&&request.method==="DELETE"){
+      const target=Number(unmatch[1]),low=Math.min(user.id,target),high=Math.max(user.id,target);
+      await env.DB.prepare("UPDATE dating_matches SET status='unmatched',updated_at=? WHERE user_low_id=? AND user_high_id=?").bind(new Date().toISOString(),low,high).run();
+      await env.DB.prepare("DELETE FROM dating_likes WHERE (from_user_id=? AND to_user_id=?) OR (from_user_id=? AND to_user_id=?)").bind(user.id,target,target,user.id).run();
+      return json({ok:true},200,origin);
+    }
+    if(url.pathname==="/api/creator/profile"&&request.method==="GET"){
+      const profile=await env.DB.prepare("SELECT creator_name,bio,is_adult_creator,is_published,created_at,updated_at FROM creator_profiles WHERE user_id=?").bind(user.id).first();
+      return json({profile:profile||null},200,origin);
+    }
+    if(url.pathname==="/api/creator/profile"&&request.method==="PUT"){
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const name=typeof body.creator_name==="string"?body.creator_name.trim():"",bio=typeof body.bio==="string"?body.bio.trim():"";
+      if(name.length<2||name.length>80||bio.length>2000)return json({error:"Creator name must be 2–80 characters and bio no longer than 2,000."},400,origin);
+      const now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO creator_profiles (user_id,creator_name,bio,is_adult_creator,is_published,created_at,updated_at) VALUES (?,?,?,1,0,?,?) ON CONFLICT(user_id) DO UPDATE SET creator_name=excluded.creator_name,bio=excluded.bio,is_adult_creator=1,updated_at=excluded.updated_at").bind(user.id,name,bio,now,now).run();
+      await audit(env,user,"creator.profile.update","creator_profile",user.id,{});
+      return json({ok:true},200,origin);
+    }
+    if(url.pathname==="/api/creator/posts"&&(request.method==="GET"||request.method==="POST")){
+      if(request.method==="GET"){
+        const rows=await env.DB.prepare("SELECT id,title,description,content_rating,visibility,price_cents,status,published_at,created_at,updated_at FROM creator_posts WHERE creator_id=? ORDER BY created_at DESC LIMIT 100").bind(user.id).all();
+        return json({posts:rows.results||[]},200,origin);
+      }
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const profile=await env.DB.prepare("SELECT user_id FROM creator_profiles WHERE user_id=? AND is_adult_creator=1").bind(user.id).first();
+      if(!profile)return json({error:"Create your adult creator profile first."},409,origin);
+      const title=typeof body.title==="string"?body.title.trim():"",description=typeof body.description==="string"?body.description.trim():"",rating=String(body.content_rating||"mature"),visibility=String(body.visibility||"subscribers"),price=Number(body.price_cents||0);
+      if(!title||title.length>160||description.length>3000||!["general","mature","explicit"].includes(rating)||!["public_preview","subscribers","paid_unlock"].includes(visibility)||!Number.isSafeInteger(price)||price<0||price>1000000)return json({error:"Check title, description, rating, visibility, and price (in cents)."},400,origin);
+      const id=randomToken(16),now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO creator_posts (id,creator_id,title,description,content_rating,visibility,price_cents,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,'draft',?,?)").bind(id,user.id,title,description,rating,visibility,price,now,now).run();
+      await audit(env,user,"creator.post.draft.create","creator_post",id,{content_rating:rating});
+      return json({ok:true,id,status:"draft",note:"Draft metadata only. Media upload, publishing, subscriptions, and paid checkout are not enabled yet."},201,origin);
+    }
+    return json({error:"Creator or dating route not found."},404,origin);
   }
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
