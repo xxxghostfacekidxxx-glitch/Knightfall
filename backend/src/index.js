@@ -630,6 +630,68 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
   return null;
 }
 
+
+async function handleMediaAlbums(request,env,origin,url){
+ if(!url.pathname.startsWith("/api/media-library"))return null;
+ const user=await requireUser(request,env);
+ if(!user)return json({error:"Authentication required."},401,origin);
+ const method=request.method,pathname=url.pathname;
+ const body=async()=>{try{return await request.json()}catch{return null}};
+ const albumId=pathname.match(/^\/api\/media-library\/albums\/(\d+)$/);
+ const member=pathname.match(/^\/api\/media-library\/albums\/(\d+)\/photos\/(\d+)$/);
+ const favorite=pathname.match(/^\/api\/media-library\/favorites\/(\d+)$/);
+ if(pathname==="/api/media-library/albums"&&method==="GET"){
+   const rows=await env.DB.prepare("SELECT a.id,a.name,a.created_at,COUNT(ap.photo_id) AS photo_count FROM media_albums a LEFT JOIN media_album_photos ap ON ap.album_id=a.id WHERE a.owner_id=? GROUP BY a.id ORDER BY a.created_at DESC LIMIT 100").bind(user.id).all();
+   return json({albums:rows.results||[]},200,origin);
+ }
+ if(pathname==="/api/media-library/albums"&&method==="POST"){
+   const data=await body(),name=String(data?.name||"").trim();
+   if(!name||name.length>80)return json({error:"Album name must be 1–80 characters."},400,origin);
+   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM media_albums WHERE owner_id=?").bind(user.id).first();
+   if(Number(count?.n||0)>=100)return json({error:"Album limit reached."},409,origin);
+   const now=new Date().toISOString();
+   const album=await env.DB.prepare("INSERT INTO media_albums(owner_id,name,created_at,updated_at) VALUES(?,?,?,?) RETURNING id,name,created_at").bind(user.id,name,now,now).first();
+   return json({album},201,origin);
+ }
+ if(albumId&&method==="DELETE"){
+   const result=await env.DB.prepare("DELETE FROM media_albums WHERE id=? AND owner_id=?").bind(Number(albumId[1]),user.id).run();
+   return json({ok:result.meta.changes>0},result.meta.changes?200:404,origin);
+ }
+ if(albumId&&method==="GET"){
+   const album=await env.DB.prepare("SELECT id,name,created_at FROM media_albums WHERE id=? AND owner_id=?").bind(Number(albumId[1]),user.id).first();
+   if(!album)return json({error:"Album not found."},404,origin);
+   const rows=await env.DB.prepare("SELECT p.id,p.caption,p.created_at FROM media_album_photos ap JOIN profile_photos p ON p.id=ap.photo_id WHERE ap.album_id=? AND p.user_id=? AND p.kind='gallery' ORDER BY ap.added_at DESC").bind(album.id,user.id).all();
+   return json({album,photos:(rows.results||[]).map(p=>({...p,url:profilePhotoUrl(p.id)}))},200,origin);
+ }
+ if(member&&(method==="PUT"||method==="DELETE")){
+   const aid=Number(member[1]),pid=Number(member[2]);
+   const album=await env.DB.prepare("SELECT id FROM media_albums WHERE id=? AND owner_id=?").bind(aid,user.id).first();
+   if(!album)return json({error:"Album not found."},404,origin);
+   if(method==="PUT"){
+     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery'").bind(pid,user.id).first();
+     if(!photo)return json({error:"Photo not found in your gallery."},404,origin);
+     await env.DB.prepare("INSERT OR IGNORE INTO media_album_photos(album_id,photo_id,added_at) VALUES(?,?,?)").bind(aid,pid,new Date().toISOString()).run();
+   }else{
+     await env.DB.prepare("DELETE FROM media_album_photos WHERE album_id=? AND photo_id=?").bind(aid,pid).run();
+   }
+   return json({ok:true},200,origin);
+ }
+ if(pathname==="/api/media-library/favorites"&&method==="GET"){
+   const rows=await env.DB.prepare("SELECT p.id,p.caption,p.created_at FROM media_photo_favorites f JOIN profile_photos p ON p.id=f.photo_id WHERE f.user_id=? AND p.user_id=? AND p.kind='gallery' ORDER BY f.created_at DESC").bind(user.id,user.id).all();
+   return json({photos:(rows.results||[]).map(p=>({...p,url:profilePhotoUrl(p.id)}))},200,origin);
+ }
+ if(favorite&&(method==="PUT"||method==="DELETE")){
+   const pid=Number(favorite[1]);
+   if(method==="PUT"){
+     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery'").bind(pid,user.id).first();
+     if(!photo)return json({error:"Photo not found in your gallery."},404,origin);
+     await env.DB.prepare("INSERT OR IGNORE INTO media_photo_favorites(user_id,photo_id,created_at) VALUES(?,?,?)").bind(user.id,pid,new Date().toISOString()).run();
+   }else await env.DB.prepare("DELETE FROM media_photo_favorites WHERE user_id=? AND photo_id=?").bind(user.id,pid).run();
+   return json({ok:true},200,origin);
+ }
+ return json({error:"Media library route not found."},404,origin);
+}
+
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
@@ -853,6 +915,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
 
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
+  const mediaAlbumResponse = await handleMediaAlbums(request, env, origin, url);
+  if (mediaAlbumResponse) return mediaAlbumResponse;
   const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
   if (profilePhotoResponse) return profilePhotoResponse;
   const publicAssetResponse = await handlePublicAssetRequest(request, env, origin, url);
