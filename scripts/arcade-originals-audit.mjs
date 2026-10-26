@@ -19,7 +19,7 @@ for(const game of manifest.games){
  const htmlPath=join(root,game.engine.slice(1));
  if(existsSync(htmlPath)){
   const html=readFileSync(htmlPath,"utf8");
-  const scripts=[...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)].map(m=>m[1]).filter(Boolean);
+  const scripts=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).filter(Boolean);
   for(let index=0;index<scripts.length;index++){
    try{new Script(scripts[index],{filename:game.id+"-inline-"+index+".js"})}
    catch(error){errors.push(game.id+": invalid inline JavaScript: "+error.message)}
