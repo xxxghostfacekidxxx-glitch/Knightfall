@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris</title>
+    <title>Cinder Blocks | Ash-Fall Chaos Cartridge</title>
     <style>
         :root {
             --bg-primary: #1a1a2e;
@@ -158,6 +158,18 @@
         @media(min-width:701px) { .tetris-touch-controls { max-width:300px; } }
         @media(max-width:700px) { .tetris-touch-controls button { min-height:50px; font-size:13px; } }
         @media(max-width:700px) { body{padding:8px}.game-container{gap:8px;transform-origin:top center;transform:scale(.92);margin-bottom:-40px}.knightfall-bar{padding:11px}.knightfall-actions button{flex:1 1 auto} }
+        /* Ash-Fall Cinder Blocks cabinet: usable thumb controls and distinct neon identity. */
+        :root { --bg-primary:#080a10; --bg-secondary:#15111e; --border-color:#f05ab9; --score-color:#c6ff45; --level-color:#ff8c42; --lines-color:#ff55d8; --btn-bg:#242032; --btn-hover:#41304d; }
+        .game-container { align-items:flex-start; }
+        #gameCanvas { box-shadow:0 0 0 2px #c6ff4525,0 0 30px #ff55d82a; }
+        .tetris-touch-controls { max-width:306px; gap:10px; }
+        .tetris-touch-controls button { min-height:58px; font-size:16px; box-shadow:inset 0 -3px 0 #0008; }
+        .tetris-touch-controls button[data-tetris-action="hard-drop"] { background:#ff55d8; color:#170c19; border-color:#ff9de8; }
+        .tetris-touch-controls button[data-tetris-action="pause"] { border-color:#ff8c42; }
+        .tetris-touch-controls button:disabled { opacity:.5; cursor:not-allowed; }
+        .tetris-help { color:#c6cbd6; font:12px/1.5 system-ui,sans-serif; margin:8px 0 0; text-align:center; }
+        @media(max-width:700px) { .tetris-touch-controls button { min-height:62px; font-size:15px; } .toggle-btn { z-index:2; } }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
         /* Mobile layout: stack the side panel instead of scaling overlapping controls. */
         @media(max-width:700px) { .game-container{flex-direction:column;align-items:center;transform:none;margin-bottom:0;width:100%}.canvas-wrapper{width:min(100%,306px)}#gameCanvas{width:100%;height:auto;aspect-ratio:1/2}.side-panel{width:min(100%,306px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.panel-box{min-width:0;margin-bottom:0}.controls{overflow-wrap:anywhere}.tetris-touch-controls{width:100%;max-width:none}.tetris-touch-controls button{min-width:0} }
 
@@ -165,7 +177,7 @@
 </head>
 <body>
     <header class="knightfall-bar">
-      <div><div class="knightfall-brand">CHAOS CARTRIDGE · LICENSED IMPORT</div><strong style="display:block;font-size:1.35rem;margin:.2rem 0">Custom Tetris</strong><div class="knightfall-meta">Upstream source by Bill Ritz · MIT License · adapted for Knightfall account saves</div></div>
+      <div><div class="knightfall-brand">ASH-FALL · CHAOS CARTRIDGE</div><strong style="display:block;font-size:1.35rem;margin:.2rem 0">Cinder Blocks</strong><div class="knightfall-meta">Upstream source by Bill Ritz · MIT License · adapted for Knightfall account saves</div></div>
       <a href="/chaos-cartridge.html">← Arcade shelf</a>
     </header>
     <nav class="knightfall-actions" aria-label="Account save controls">
@@ -186,6 +198,7 @@
               <button type="button" data-tetris-action="hard-drop" aria-label="Hard drop">⬇ Slam</button>
               <button type="button" data-tetris-action="pause" aria-label="Pause or resume">Ⅱ Pause</button>
             </div>
+            <p class="tetris-help">Tap arrows to move, rotate to turn, Drop to descend, Slam to place instantly. Keyboard controls work too.</p>
             <button class="toggle-btn sound-toggle" id="soundToggle">Sound: ON</button>
             <button class="toggle-btn theme-toggle" id="themeToggle">Theme: Dark</button>
         </div>
@@ -785,7 +798,7 @@
                 if (button.dataset.tetrisAction === 'hard-drop') resetGame();
                 return;
             }
-            if (clearingLines.length > 0) return;
+            if (clearingLines.length > 0 || (paused && button.dataset.tetrisAction !== 'pause')) return;
             switch (button.dataset.tetrisAction) {
                 case 'left': move(-1); break;
                 case 'right': move(1); break;
@@ -808,6 +821,7 @@
             }
 
             if (clearingLines.length > 0) return; // Don't allow input during clear animation
+            if (paused && !['p', 'P', 'm', 'M', 't', 'T'].includes(e.key)) return;
 
             switch(e.key) {
                 case 'ArrowLeft': move(-1); break;
