@@ -258,3 +258,5 @@
 .studio-layout-actions{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.8rem 0}.studio-layout-actions .action{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:.65rem .9rem;text-decoration:none}.studio-layout-row:focus-within{outline:1px solid #d87b3a;outline-offset:2px}@media(max-width:480px){.studio-layout-actions .action{flex:1 1 100%}}
 
 .studio-layout-presets{display:flex;flex-wrap:wrap;gap:.55rem;margin:.8rem 0 1rem}.studio-layout-presets button{flex:1 1 125px;padding:.75rem .65rem;border:1px solid #754629;border-radius:10px;background:#221711;color:#f4e6d9;font:inherit;font-weight:650;cursor:pointer}.studio-layout-presets button:hover,.studio-layout-presets button:focus-visible{background:#3a2116;border-color:#ee8742;outline-offset:2px}@media(max-width:480px){.studio-layout-presets button{flex:1 1 100%;min-height:42px}}
+
+.studio-layout-presets button[aria-pressed="true"]{border-color:#ff9a55;background:#50301e;box-shadow:inset 0 0 0 1px #e66a2c;color:#fff}.studio-layout-presets button[aria-pressed="true"]::before{content:"✓ ";font-weight:800}
