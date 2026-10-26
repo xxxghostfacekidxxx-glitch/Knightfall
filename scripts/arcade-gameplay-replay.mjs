@@ -6,7 +6,7 @@ const dir=process.env.ARCADE_REPLAY_DIR||"/tmp/arcade-replays";
 await mkdir(dir,{recursive:true});
 const cases=[
  {id:"particle-clicker",route:"/arcade/hosted/ashfall-mini-games.html?game=particle-clicker",steps:[["tap","#start"],["tap","#clicker-generate",50],["assert-enabled","#clicker-boost"],["tap","#clicker-boost"],["assert-text","#clicker-generate","+2"]]},
- {id:"freeciv-web",route:"/arcade/hosted/arcade-cabinet.html?game=freeciv-web",steps:[["tap","#start"],["tap-canvas","#game",180,140],["assert-min","#score",10]]},
+ {id:"freeciv-web",route:"/arcade/hosted/arcade-cabinet.html?game=freeciv-web",steps:[["tap","#start"],["tap-canvas","#game",324,134],["assert-min","#score",10]]},
  {id:"kaiju-krush",route:"/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",steps:[["tap","#start"],["tap-canvas","#game",480,450],["assert-min","#score",25]]},
  {id:"custom-tetris",route:"/arcade/hosted/custom-tetris/index.html",steps:[["tap",'[data-tetris-action="left"]'],["tap",'[data-tetris-action="pause"]'],["assert-paused"]]}
 ];
@@ -14,7 +14,8 @@ const browser=await chromium.launch({headless:true});let failures=0;
 try {
  for(const scenario of cases){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
-  const errors=[],history=[];
+  const errors=[],history=[],requests=[];
+  page.on("requestfailed",request=>{if(request.url().startsWith(base))requests.push({url:request.url(),reason:request.failure()?.errorText})});
   page.on("pageerror",e=>errors.push(String(e)));
   try{
    await page.addInitScript(()=>{Math.random=()=>0.5});
@@ -39,10 +40,11 @@ try {
     }
    }
    if(errors.length)throw Error(errors.join(" | "));
+   if(requests.length)throw Error("failed local requests: "+JSON.stringify(requests));
    console.log("PASS "+scenario.id);
   }catch(error){
    failures++;
-   const details={scenario:scenario.id,route:scenario.route,steps:history,error:String(error),browserErrors:errors,base};
+   const details={scenario:scenario.id,route:scenario.route,steps:history,error:String(error),browserErrors:errors,failedRequests:requests,base};
    await writeFile(path.join(dir,scenario.id+".json"),JSON.stringify(details,null,2));
    await page.screenshot({path:path.join(dir,scenario.id+".png"),timeout:3000}).catch(()=>{});
    console.error("FAIL "+scenario.id+": "+String(error));
