@@ -259,6 +259,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-archer",
+      "name": "Cinder Archer",
+      "genre": "Sports",
+      "sprites": [
+        "ash-bow.svg",
+        "cinder-target.svg"
+      ],
+      "notes": "Original archery challenge with ballistic arrow physics, animated targets, touch drag aiming, keyboard controls, and bespoke bow and target artwork.",
+      "engine": "/arcade/hosted/cinder-archer/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-archer",
+      "assets": [
+        {
+          "name": "ash-bow.svg",
+          "path": "/arcade/hosted/cinder-archer/sprites/ash-bow.svg"
+        },
+        {
+          "name": "cinder-target.svg",
+          "path": "/arcade/hosted/cinder-archer/sprites/cinder-target.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
