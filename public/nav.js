@@ -62,6 +62,7 @@
           <a href="/social.html">Activity & Groups</a>
           <a href="/adults.html">Adults Only (18+)</a>
           <a href="/dating.html">Dating Realm (18+)</a>
+          <a href="/user-agreement.html">User Agreement</a>
         </div>
       </details>
       <details class="kf-nav-group kf-profile-group">
