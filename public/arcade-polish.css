@@ -378,30 +378,30 @@ a:hover{color:#d7ff72}
 
 /* Integrated arcade fullscreen and cabinet polish, recolored for Ash-Fall. */
 /* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
-:root{--arcade-ember:#a8ff3e;--arcade-rust:#ff4fa3;--arcade-line:#303030}
+:root{--arcade-ember:#a8ff3e;--arcade-rust:#e66a2c;--arcade-line:#303030}
 main.arcade,body>main{position:relative;isolation:isolate}
-main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,79,163,.11),transparent 58%)}
+main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(230,106,44,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
-.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,79,163,.1)}
+.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(230,106,44,.1)}
 .hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
 .back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#a8ff3e!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
-.back:hover{color:#ff4fa3!important;transform:translateX(-2px)}
+.back:hover{color:#e66a2c!important;transform:translateX(-2px)}
 .cabinet,.game,.game-panel,.panel,.card{border-color:#303030!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
 .cabinet,.game{position:relative;isolation:isolate;overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
-.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,79,163,.09),transparent 56%);pointer-events:none}
+.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(230,106,44,.09),transparent 56%);pointer-events:none}
 .cabinet:hover,.game:hover{border-color:#a8ff3e!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
 .cabinet h2,.game h2,.game-panel h2,.panel h2{letter-spacing:-.04em}
 .cabinet p,.game p,.game-panel .muted,.panel .muted{line-height:1.75}
 .btn,.button,.action,.primary{transition:transform .17s ease,filter .17s ease,border-color .17s ease}
 .btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #a8ff3e!important;outline-offset:3px}
-.screen,.arena,.play-area,.canvas{border-color:#ff4fa3!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
+.screen,.arena,.play-area,.canvas{border-color:#e66a2c!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
 .stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
 .game-tabs,.tabs,.game-library-tools{gap:.6rem}
-.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#ff4fa3!important;background:rgba(255,79,163,.14)!important;color:#a8ff3e!important}
-.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#ff4fa3}
-.cabinet .tag,.genre,.license,.pill{border-color:#ff4fa3!important;color:#a8ff3e!important;background:rgba(255,79,163,.075)!important}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#e66a2c!important;background:rgba(230,106,44,.14)!important;color:#a8ff3e!important}
+.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#e66a2c}
+.cabinet .tag,.genre,.license,.pill{border-color:#e66a2c!important;color:#a8ff3e!important;background:rgba(230,106,44,.075)!important}
 .shelf,.grid,.layout,.dump-grid{gap:1rem}
 .cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
 .fineprint,.fine,.footnote{color:#716960;line-height:1.7}
@@ -418,7 +418,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .af-fullscreen-toggle{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:42px;padding:.65rem .9rem;border:1px solid #70401f;border-radius:9px;background:linear-gradient(135deg,#a8ff3e,#c94a00);color:#160a03;font:inherit;font-size:.83rem;font-weight:900;letter-spacing:.01em;cursor:pointer;box-shadow:0 5px 18px #a8ff3e20;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
 .af-fullscreen-toggle:hover{filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 8px 24px #a8ff3e30}
 .af-fullscreen-toggle:focus-visible{outline:2px solid #ffd1a8;outline-offset:3px}
-.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{width:100%;height:100%;max-width:none;max-height:none;overflow:auto;margin:0!important;padding:clamp(.75rem,2.5vw,2rem);border:0!important;border-radius:0!important;background:radial-gradient(ellipse at 15% 0%,#ff4fa328,transparent 38%),#080808!important;color:#f5f1ed;box-shadow:none!important}
+.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{width:100%;height:100%;max-width:none;max-height:none;overflow:auto;margin:0!important;padding:clamp(.75rem,2.5vw,2rem);border:0!important;border-radius:0!important;background:radial-gradient(ellipse at 15% 0%,#e66a2c28,transparent 38%),#080808!important;color:#f5f1ed;box-shadow:none!important}
 .af-game-root:fullscreen .af-game-tools,.af-game-root:-webkit-full-screen .af-game-tools{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:#11100fee}
 .af-game-root:fullscreen canvas,.af-game-root:-webkit-full-screen canvas{max-height:calc(100vh - 190px);object-fit:contain}
 .af-game-root:fullscreen .screen,.af-game-root:-webkit-full-screen .screen{min-height:0}
@@ -519,7 +519,7 @@ body:has(#rookcondition) .controls button{min-height:44px;border-radius:9px}
 .af-feedback-press{transform:scale(.975)!important;filter:brightness(1.2)}
 .af-arcade-hidden .af-feedback-pulse,.af-arcade-hidden .af-feedback-alert{animation:none!important}
 @keyframes afFeedbackPulse{
-  0%{filter:brightness(1.55);text-shadow:0 0 18px #ff4fa355}
+  0%{filter:brightness(1.55);text-shadow:0 0 18px #e66a2c55}
   100%{filter:brightness(1);text-shadow:none}
 }
 @keyframes afFeedbackAlert{
