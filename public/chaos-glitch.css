@@ -1,18 +1,31 @@
-/* Chaos Cartridge signal corruption: restrained CRT scanlines, RGB split, and glitch flashes. */
-html{--glitch-pink:#ff2f92;--glitch-green:#c6ff45;--glitch-cyan:#54f5df}
-body.chaos-glitch-arcade{position:relative;isolation:isolate}
-body.chaos-glitch-arcade::before{content:"";position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:.12;background:repeating-linear-gradient(to bottom,transparent 0 3px,#000 4px 5px);mix-blend-mode:multiply}
-body.chaos-glitch-arcade::after{content:"";position:fixed;inset:0;z-index:8999;pointer-events:none;opacity:.14;background:linear-gradient(90deg,#ff2f920d 0%,transparent 30%,#54f5df0c 72%,transparent 100%);animation:cc-signal-drift 9s steps(1,end) infinite}
-body.chaos-glitch-arcade .hero h1,body.chaos-glitch-arcade .hero h1 span{position:relative;text-shadow:2px 0 #ff2f9255,-2px 0 #54f5df44}
-body.chaos-glitch-arcade .hero h1::after{content:attr(data-glitch);position:absolute;left:0;top:0;width:100%;color:#ff2f92;opacity:0;clip-path:inset(40% 0 42%);transform:translateX(2px);pointer-events:none}
-body.chaos-glitch-arcade .game-panel.active,body.chaos-glitch-arcade .cabinet,body.chaos-glitch-arcade .game,body.chaos-glitch-arcade .play-area,body.chaos-glitch-arcade .screen{animation:cc-panel-flicker 8s steps(1,end) infinite}
-body.chaos-glitch-arcade button:hover,body.chaos-glitch-arcade a:hover{filter:drop-shadow(2px 0 #ff2f9266) drop-shadow(-2px 0 #54f5df44)}
-#miss-chaos-presence .mc-head img,#miss-chaos-launcher img{position:relative;filter:drop-shadow(1px 0 #ff2f9266) drop-shadow(-1px 0 #54f5df55)}
-#miss-chaos-presence[data-expression="thinking"] .mc-head img{animation:mc-thinking 1.4s ease-in-out infinite,cc-face-glitch 3.8s steps(1,end) infinite}
-#miss-chaos-presence[data-expression="speaking"] .mc-head img{animation:cc-face-glitch 2.4s steps(1,end) infinite;box-shadow:0 0 0 2px #39ff8866,0 0 22px #39ff8888}
-#miss-chaos-presence .mc-head{position:relative;overflow:hidden}
-#miss-chaos-presence .mc-head::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;background:repeating-linear-gradient(to bottom,transparent 0 3px,#000 4px 5px)}
-@keyframes cc-signal-drift{0%,92%,100%{transform:translateX(0);opacity:.1}93%{transform:translateX(2px);opacity:.3}94%{transform:translateX(-3px);opacity:.18}95%{transform:translateX(0);opacity:.12}}
-@keyframes cc-panel-flicker{0%,93%,95%,100%{filter:none}94%{filter:brightness(1.06) saturate(1.15)}}
-@keyframes cc-face-glitch{0%,88%,91%,100%{transform:translate(0);filter:drop-shadow(1px 0 #ff2f92aa) drop-shadow(-1px 0 #54f5df88)}89%{transform:translate(1px,-1px);filter:drop-shadow(3px 0 #ff2f92) drop-shadow(-3px 0 #54f5df)}90%{transform:translate(-1px,0);filter:drop-shadow(-2px 0 #ff2f92) drop-shadow(2px 0 #54f5df)}}
-@media(prefers-reduced-motion:reduce){body.chaos-glitch-arcade::after,body.chaos-glitch-arcade .game-panel.active,body.chaos-glitch-arcade .cabinet,body.chaos-glitch-arcade .game,body.chaos-glitch-arcade .play-area,body.chaos-glitch-arcade .screen,#miss-chaos-presence .mc-head img{animation:none!important}body.chaos-glitch-arcade .hero h1{text-shadow:none}}
+/* Persistent signal corruption for Chaos Cartridge and Miss Chaos. Keep effects visual-only and pointer-safe. */
+html{--glitch-pink:#ff2f92;--glitch-green:#c6ff45;--glitch-cyan:#54f5df;--glitch-violet:#a66bff}
+body.chaos-glitch-arcade{position:relative;isolation:isolate;background-image:repeating-linear-gradient(0deg,#0000 0 3px,#0005 4px 5px),linear-gradient(115deg,#ff2f9208,transparent 34%,#54f5df0a 74%,transparent)}
+/* Always-on CRT texture, with intermittent horizontal signal tears. */
+body.chaos-glitch-arcade::before{content:"";position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:.23;background:repeating-linear-gradient(to bottom,transparent 0 2px,#000b 3px 4px);mix-blend-mode:multiply}
+body.chaos-glitch-arcade::after{content:"";position:fixed;inset:0;z-index:8999;pointer-events:none;opacity:.26;background:linear-gradient(transparent 0 18%,#ff2f9214 18.2% 18.6%,transparent 18.8% 61%,#54f5df12 61.2% 61.6%,transparent 61.8%),linear-gradient(90deg,#ff2f9210,transparent 24%,#54f5df0b 72%,#a66bff0b);animation:cc-signal-drift 4.8s steps(1,end) infinite}
+body.chaos-glitch-arcade .hero h1,body.chaos-glitch-arcade h1,body.chaos-glitch-arcade .section-title{position:relative;text-shadow:2px 0 #ff2f92,-2px 0 #54f5df,0 0 16px #ff2f9244;animation:cc-title-jitter 5.2s steps(1,end) infinite}
+body.chaos-glitch-arcade .hero h1::after,body.chaos-glitch-arcade h1::after{content:attr(data-glitch);position:absolute;inset:0;color:#ff2f92;opacity:.18;clip-path:inset(42% 0 38%);transform:translateX(3px);pointer-events:none;text-shadow:-2px 0 #54f5df;animation:cc-title-slice 3.7s steps(1,end) infinite}
+body.chaos-glitch-arcade .game-panel,body.chaos-glitch-arcade .game-panel.active,body.chaos-glitch-arcade .cabinet,body.chaos-glitch-arcade .game,body.chaos-glitch-arcade .play-area,body.chaos-glitch-arcade .screen{position:relative;border-color:#ff2f9277;box-shadow:0 0 0 1px #54f5df20,inset 0 0 24px #ff2f9209,0 0 20px #ff2f9210;animation:cc-panel-flicker 5.6s steps(1,end) infinite}
+body.chaos-glitch-arcade .game-panel::before,body.chaos-glitch-arcade .cabinet::before,body.chaos-glitch-arcade .play-area::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;z-index:2;pointer-events:none;background:linear-gradient(90deg,transparent,#ff2f92 18%,#54f5df 52%,transparent 82%);opacity:.78;animation:cc-edge-scan 3.2s linear infinite}
+body.chaos-glitch-arcade button:hover,body.chaos-glitch-arcade a:hover{filter:drop-shadow(2px 0 #ff2f92) drop-shadow(-2px 0 #54f5df);text-shadow:0 0 8px #ff2f9266}
+/* Miss Chaos remains visibly corrupted even while idle, not just while talking. */
+#miss-chaos-presence{filter:drop-shadow(0 0 14px #ff2f9218)}
+#miss-chaos-launcher{border-color:#ff2f92;box-shadow:0 0 0 1px #54f5df55,0 0 24px #ff2f9255,0 8px 32px #000b;animation:mc-launcher-pulse 3s ease-in-out infinite}
+#miss-chaos-presence .mc-head{position:relative;overflow:hidden;background:linear-gradient(100deg,#ff2f9222,#54f5df0b 65%,transparent)}
+#miss-chaos-presence .mc-head img,#miss-chaos-launcher img{position:relative;filter:drop-shadow(2px 0 #ff2f92) drop-shadow(-2px 0 #54f5df);animation:cc-face-glitch 2.8s steps(1,end) infinite}
+#miss-chaos-presence .mc-head::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.34;background:repeating-linear-gradient(to bottom,transparent 0 2px,#000b 3px 4px),linear-gradient(transparent 0 22%,#ff2f9238 22.5% 25%,transparent 25.5% 68%,#54f5df30 68.5% 70%,transparent 70.5%);animation:mc-face-scan 4s linear infinite}
+#miss-chaos-presence .mc-head::before{content:"SIGNAL: UNSTABLE";position:absolute;right:8px;bottom:4px;z-index:2;color:#c6ff45;font:700 8px/1 monospace;letter-spacing:.12em;text-shadow:1px 0 #ff2f92;opacity:.8;pointer-events:none}
+#miss-chaos-presence #miss-chaos-window{border-color:#ff2f92;box-shadow:0 0 0 1px #54f5df55,0 0 32px #ff2f922c,0 20px 70px #000b}
+#miss-chaos-presence .mc-bubble.assistant{border-left:2px solid #ff2f92;box-shadow:inset 2px 0 #54f5df18}
+#miss-chaos-presence[data-expression="thinking"] .mc-head img{animation:mc-thinking 1.4s ease-in-out infinite,cc-face-glitch 1.7s steps(1,end) infinite}
+#miss-chaos-presence[data-expression="speaking"] .mc-head img{animation:cc-face-glitch 1.1s steps(1,end) infinite;box-shadow:0 0 0 2px #39ff8866,0 0 22px #39ff8888}
+@keyframes cc-signal-drift{0%,18%,20%,47%,49%,72%,100%{transform:translateX(0);opacity:.2}19%{transform:translateX(5px);opacity:.5}48%{transform:translateX(-4px);opacity:.38}73%{transform:translateX(2px);opacity:.42}}
+@keyframes cc-title-jitter{0%,38%,39%,74%,76%,100%{transform:translateX(0)}38.5%{transform:translateX(1px)}75%{transform:translateX(-1px)}}
+@keyframes cc-title-slice{0%,68%,71%,100%{clip-path:inset(42% 0 38%);transform:translateX(3px);opacity:.16}69%{clip-path:inset(12% 0 76%);transform:translateX(-4px);opacity:.85}70%{clip-path:inset(62% 0 18%);transform:translateX(5px);opacity:.72}}
+@keyframes cc-panel-flicker{0%,31%,32%,67%,69%,100%{filter:none}31.5%{filter:brightness(1.12) saturate(1.25)}68%{filter:brightness(1.06) contrast(1.1)}}
+@keyframes cc-edge-scan{0%{transform:translateY(0);opacity:.35}50%{opacity:.9}100%{transform:translateY(180px);opacity:.35}}
+@keyframes cc-face-glitch{0%,61%,64%,100%{transform:translate(0);filter:drop-shadow(2px 0 #ff2f92) drop-shadow(-2px 0 #54f5df)}62%{transform:translate(2px,-1px);filter:drop-shadow(5px 0 #ff2f92) drop-shadow(-5px 0 #54f5df) hue-rotate(25deg)}63%{transform:translate(-2px,1px);filter:drop-shadow(-4px 0 #ff2f92) drop-shadow(4px 0 #54f5df) contrast(1.3)}}
+@keyframes mc-face-scan{0%{background-position:0 0,0 0}100%{background-position:0 24px,0 100%}}
+@keyframes mc-launcher-pulse{0%,100%{box-shadow:0 0 0 1px #54f5df55,0 0 18px #ff2f9233,0 8px 32px #000b}50%{box-shadow:0 0 0 2px #54f5df88,0 0 30px #ff2f9277,0 8px 32px #000b}}
+@media(prefers-reduced-motion:reduce){body.chaos-glitch-arcade::after,body.chaos-glitch-arcade h1,body.chaos-glitch-arcade .section-title,body.chaos-glitch-arcade .game-panel,body.chaos-glitch-arcade .game-panel.active,body.chaos-glitch-arcade .cabinet,body.chaos-glitch-arcade .game,body.chaos-glitch-arcade .play-area,body.chaos-glitch-arcade .screen,body.chaos-glitch-arcade .game-panel::before,body.chaos-glitch-arcade .cabinet::before,body.chaos-glitch-arcade .play-area::before,#miss-chaos-launcher,#miss-chaos-presence .mc-head img,#miss-chaos-presence .mc-head::after{animation:none!important}body.chaos-glitch-arcade h1{text-shadow:2px 0 #ff2f92,-2px 0 #54f5df}}
