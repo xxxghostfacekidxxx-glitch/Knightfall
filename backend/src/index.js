@@ -1166,8 +1166,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const password=body&&typeof body.password==="string"?body.password:"",confirmation=body&&typeof body.confirmation_username==="string"?body.confirmation_username.trim().toLowerCase():"";
     if(password.length>128)return json({error:"Password is too long."},400,origin);
+    if(confirmation!==String(user.username).toLowerCase())return json({error:"Enter your exact username to confirm this request."},403,origin);
     if(password){const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);}
-    else if(confirmation!==String(user.username).toLowerCase())return json({error:"Enter your exact username to confirm this request, or provide your current password."},403,origin);
     const existing=await env.DB.prepare("SELECT id,requested_at FROM account_deletion_requests WHERE user_id=? AND status='pending' ORDER BY id DESC LIMIT 1").bind(user.id).first();
     if(existing)return json({ok:true,already_pending:true,requested_at:existing.requested_at,message:"A deletion request is already pending review."},200,origin);
     const now=new Date().toISOString(),deadline=new Date(Date.now()+30*24*60*60*1000).toISOString();
