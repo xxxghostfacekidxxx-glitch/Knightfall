@@ -1231,6 +1231,186 @@
         }
       ],
       "status": "rebranded and committed; independent provenance and browser QA pending"
+    },
+    {
+      "id": "candy-crush",
+      "name": "Cinder Confection",
+      "genre": "Casual",
+      "sprites": [
+        "cinder-candy.svg"
+      ],
+      "notes": "Match combustible candies in the Ash-Fall confectionery. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/candy-crush/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/candy-crush",
+      "assets": [
+        {
+          "name": "cinder-candy.svg",
+          "path": "/arcade/hosted/candy-crush/sprites/cinder-candy.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "car-race",
+      "name": "Inferno Speedway",
+      "genre": "Racing",
+      "sprites": [
+        "speedway.svg"
+      ],
+      "notes": "Race through the burning highway. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/car-race/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/car-race",
+      "assets": [
+        {
+          "name": "speedway.svg",
+          "path": "/arcade/hosted/car-race/sprites/speedway.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "crossy-road",
+      "name": "Ash Crossing",
+      "genre": "Arcade",
+      "sprites": [
+        "crossing.svg"
+      ],
+      "notes": "Cross a chaotic roadway and survive. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/crossy-road/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crossy-road",
+      "assets": [
+        {
+          "name": "crossing.svg",
+          "path": "/arcade/hosted/crossy-road/sprites/crossing.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "doodle-jump",
+      "name": "Cinder Ascension",
+      "genre": "Platformer",
+      "sprites": [
+        "ascension.svg"
+      ],
+      "notes": "Climb a crumbling vertical world. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/doodle-jump/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/doodle-jump",
+      "assets": [
+        {
+          "name": "ascension.svg",
+          "path": "/arcade/hosted/doodle-jump/sprites/ascension.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "survivor",
+      "name": "Last Cinder Standing",
+      "genre": "Survival",
+      "sprites": [
+        "survivor.svg"
+      ],
+      "notes": "Outlast waves of creatures in the ruins. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/survivor/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/survivor",
+      "assets": [
+        {
+          "name": "survivor.svg",
+          "path": "/arcade/hosted/survivor/sprites/survivor.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "two-cars",
+      "name": "Twin Inferno",
+      "genre": "Racing",
+      "sprites": [
+        "twin-car.svg"
+      ],
+      "notes": "Control two vehicles through simultaneous hazards. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/two-cars/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/two-cars",
+      "assets": [
+        {
+          "name": "twin-car.svg",
+          "path": "/arcade/hosted/two-cars/sprites/twin-car.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "whack-a-bug",
+      "name": "Crypt Exterminator",
+      "genre": "Arcade",
+      "sprites": [
+        "exterminator.svg"
+      ],
+      "notes": "Clear the crypt of invading bugs. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/whack-a-bug/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/whack-a-bug",
+      "assets": [
+        {
+          "name": "exterminator.svg",
+          "path": "/arcade/hosted/whack-a-bug/sprites/exterminator.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "words-of-wonder",
+      "name": "Ashen Lexicon",
+      "genre": "Word",
+      "sprites": [
+        "lexicon.svg"
+      ],
+      "notes": "Form words from letters in a cursed puzzle. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/words-of-wonder/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/words-of-wonder",
+      "assets": [
+        {
+          "name": "lexicon.svg",
+          "path": "/arcade/hosted/words-of-wonder/sprites/lexicon.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "penalty-shootout",
+      "name": "Cinder Shootout",
+      "genre": "Sports",
+      "sprites": [
+        "shootout.svg"
+      ],
+      "notes": "Take penalty shots against the infernal keeper. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/penalty-shootout/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/penalty-shootout",
+      "assets": [
+        {
+          "name": "shootout.svg",
+          "path": "/arcade/hosted/penalty-shootout/sprites/shootout.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "stack-tower",
+      "name": "Ash Spire",
+      "genre": "Arcade",
+      "sprites": [
+        "spire.svg"
+      ],
+      "notes": "Stack blocks into a towering ruin. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "engine": "/arcade/hosted/stack-tower/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/stack-tower",
+      "assets": [
+        {
+          "name": "spire.svg",
+          "path": "/arcade/hosted/stack-tower/sprites/spire.svg"
+        }
+      ],
+      "status": "rebranded and committed; code provenance and browser QA pending"
     }
   ]
 }
