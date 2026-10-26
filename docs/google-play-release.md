@@ -29,7 +29,7 @@ Keep the existing Cloudflare Pages site and Worker API as the product backend. F
 ## Policy and account requirements (release blockers until verified)
 
 - [ ] Replace/review the privacy policy draft at `public/privacy.html` against the actual live data flows, vendors, retention, contact details, and legal requirements. The draft intentionally calls out facts the operator must verify; do not submit it unchanged without that review.
-- [ ] Implement and test a complete account-deletion flow for accounts created in the app, including deletion-request access outside the app via a stable public URL. Define treatment of user posts, messages, AI conversations, game progress, push subscriptions, logs, and backups.
+- [x] Add authenticated password-confirmed deletion-request capture and a public external request-instructions URL. This records a request only; actual deletion execution remains a release blocker until every associated data store is handled and verified.
 - [ ] Publish a monitored privacy/support contact method and accurate account-deletion instructions. These are not yet evidenced by this repository audit.
 - [ ] Complete Google Play Data safety, content rating, target audience, ads declaration, app access instructions, and any applicable age/content disclosures based on the actual shipped behavior.
 - [ ] Review third-party game licenses, bundled assets, trademarks, and attribution before including them in the app.
@@ -54,9 +54,17 @@ Do not call the app Play-ready until all are true:
 6. Automated static/runtime checks pass and authenticated checks are executed rather than skipped.
 7. Store declarations, screenshots, icon assets, signing, and testing requirements are complete.
 
+## Account deletion operations: mandatory before Play submission
+
+- Requests are recorded in `account_deletion_requests` and exposed to admins at `/admin-deletion-requests.html`.
+- The endpoint verifies the signed-in session and current password, rejects admin/God accounts for separate handling, rate-limits requests, and records an audit event.
+- Admin queue statuses `pending` and `in_progress` are tracking states only. Never mark a request completed until the account and associated personal data have actually been deleted or anonymized under a documented retention policy.
+- A production-grade deletion executor still needs an audited data inventory across D1, KV, R2, push subscriptions, AI conversation/memory records, sessions, messages/attachments, bot configurations, game progress/currency, shops, public content, and provider-side copies. It must have tests proving cross-account isolation and cleanup. The current queue is not a substitute for this executor.
+- The public deletion page states the process and deadline, but a monitored privacy contact must be published before store submission.
+
 ## Known outstanding risks at the time this document was added
 
 - Push notification issue #141 remains open until authenticated staging authorization tests and real background delivery are verified.
 - Existing ownership/authorization CI workflows can skip their authenticated tests when dedicated credentials are missing; a green workflow with a skipped test is not an end-to-end pass.
 - No Google Play developer account, Android package ID, signing certificate, assetlinks statement, signed AAB, store listing, or tester cohort has been established.
-- Account deletion and a verified privacy contact are not evidenced by the current public account UI.
+- Account deletion requests can now be recorded and reviewed, but automated or verified full data deletion is NOT implemented. The admin queue intentionally cannot mark a request completed. A monitored privacy contact is still missing and must be configured.
