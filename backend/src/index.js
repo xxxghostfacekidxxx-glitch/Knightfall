@@ -211,6 +211,7 @@ async function handleVaultRequest(request, env, origin, url) {
   if (folderMatch && (request.method==="PATCH" || request.method==="DELETE")) {
     const id=Number(folderMatch[1]);
     if (request.method==="DELETE") {
+      await env.DB.prepare("DELETE FROM vault_folder_items WHERE folder_id=?").bind(id).run();
       const result=await env.DB.prepare("DELETE FROM vault_folders WHERE id=?").bind(id).run();
       if (!result.meta?.changes) return json({error:"Folder not found."},404,origin);
       await audit(env,user,"vault.folder.delete","vault_folder",id);
