@@ -15,7 +15,7 @@
   <p class="muted studio-preview-note">This preview updates as you edit. Your real profile changes only when you save.</p>
 </section><section class="studio-section"><h2>Appearance</h2>
 <label>Display name<input name="display_name" maxlength="60" required></label>
-<label>Bio<textarea name="bio" maxlength="1000" rows="6"></textarea></label>
+<label>Bio <small id="studio-bio-count" class="studio-field-count">0 / 1000</small><textarea name="bio" maxlength="1000" rows="6"></textarea></label>
 <section class="avatar-editor"><label>Profile picture<input id="avatar-file" type="file" accept="image/jpeg,image/png,image/webp"></label><p class="muted">Upload JPG, PNG, or WebP. Images are resized to 320 × 320 and compressed before saving.</p><div class="avatar-preview-wrap"><img id="avatar-preview" class="avatar-preview" alt="Profile picture preview" hidden><span id="avatar-placeholder" class="avatar-preview-placeholder">Your picture</span><button id="avatar-clear" class="action" type="button">Remove picture</button></div><label>Or use an image URL<input name="avatar_url" type="text" inputmode="url" maxlength="100000" placeholder="https://…"></label></section>
 <label>Website<input name="website_url" type="url" maxlength="500" placeholder="https://…"></label>
 <label>Location<input name="location" maxlength="100"></label>
