@@ -4,8 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/**'
-      - '.github/workflows/deploy-api.yml'
+      - 'backend/src/index.js'
+      - 'backend/migrations/**'
+      - 'backend/wrangler.jsonc'
   workflow_dispatch:
 
 permissions:
