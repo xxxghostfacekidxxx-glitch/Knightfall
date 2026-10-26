@@ -231,3 +231,12 @@
 .ash-photo-lightbox-image img{display:block;max-width:100%;max-height:100%;object-fit:contain}
 .ash-photo-lightbox-footer p{margin:0;text-align:center;overflow-wrap:anywhere;font-size:.9rem;max-width:65ch}
 @media(max-width:560px){.ash-photo-lightbox{padding-inline:8px}.ash-photo-lightbox-footer{flex-wrap:wrap}.ash-photo-lightbox-footer p{order:-1;flex:1 0 100%}}
+
+/* Media album management */
+.profile-album-tools{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:18px 0;padding:14px;border:1px solid rgba(230,106,44,.28);border-radius:12px;background:rgba(20,16,13,.65)}
+.profile-album-tools form{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
+.profile-album-tools label{display:block;font-size:.8rem;color:#e9b393;font-weight:700}
+.profile-album-tools input,.profile-album-tools select{min-height:40px;max-width:100%;border:1px solid #7a4730;background:#17110f;color:#fff3e8;border-radius:8px;padding:8px 10px}
+.profile-album-tools [data-album-status]{flex-basis:100%;margin:0;color:#e9b393;font-size:.82rem}
+.profile-photo-meta{flex-wrap:wrap}
+.profile-photo-meta .action{min-height:34px}
