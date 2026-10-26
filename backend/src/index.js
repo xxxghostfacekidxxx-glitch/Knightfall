@@ -1164,7 +1164,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(["admin","god"].includes(user.role))return json({error:"Administrator and God accounts require a separately reviewed owner-controlled deletion process. Contact the site operator."},403,origin);
     if(!await rateLimit(env,request,"account-deletion-request",3,3600,user.id))return json({error:"Too many deletion requests. Try again later."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    const password=typeof body.password==="string"?body.password:"";
+    const password=body&&typeof body.password==="string"?body.password:"";
     if(!password||password.length>128)return json({error:"Enter your current password to confirm this request."},400,origin);
     const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();
     if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);
@@ -1655,7 +1655,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const result=status?await env.DB.prepare(query).bind(status).all():await env.DB.prepare(query).all();
     return json({requests:result.results||[]},200,origin);
   }
-  const deletionRequestMatch=url.pathname.match(/^\\/api\\/admin\\/account-deletion-requests\\/(\\d+)$/);
+  const deletionRequestMatch=url.pathname.match(/^\/api\/admin\/account-deletion-requests\/(\d+)$/);
   if(deletionRequestMatch&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
