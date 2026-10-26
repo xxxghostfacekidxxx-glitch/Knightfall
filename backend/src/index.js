@@ -1899,7 +1899,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const conversationParam=url.searchParams.get("conversation_id");
       const conversationId=conversationParam?Number(conversationParam):0;
       if(conversationParam&&(!Number.isSafeInteger(conversationId)||conversationId<1))return json({error:"Invalid conversation id."},400,origin);
-      const like="%"+q.replace(/[\\\\%_]/g,"\\\\q.replace(/[%_]/g,"\\$&")+"%";
+      const like="%"+q.replace(/[\\%_]/g,"\\$&")+"%";
       let sql="SELECT m.id,m.conversation_id")+"%";
       let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1";
       const params=[];
