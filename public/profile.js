@@ -270,6 +270,8 @@ async function loadProfilePhotos(username,ownProfile){
       try{
         if(button.dataset.removeAlbum){await api("/api/media-library/albums/"+Number(albumSelection)+"/photos/"+id,{method:"DELETE"});albumPhotos?.delete(id);albumStatus.textContent="Removed from album.";}else if(button.dataset.favoritePhoto){const isFav=favoriteIds.has(id);await api("/api/media-library/favorites/"+id,{method:isFav?"DELETE":"PUT"});if(isFav)favoriteIds.delete(id);else favoriteIds.add(id);}
         else {const name=prompt("Add to which album?\\n"+albumIds.map(a=>a.name).join("\\n"));if(name===null)return;const album=albumIds.find(a=>a.name.toLowerCase()===name.trim().toLowerCase());if(!album)throw Error("Choose an existing album name.");await api("/api/media-library/albums/"+Number(album.id)+"/photos/"+id,{method:"PUT"});if(String(album.id)===albumSelection)albumPhotos?.add(id);albumStatus.textContent="Photo added to "+album.name+".";}
+        await loadAlbumOptions();
+        if(albumSelection&&albumSelection!=="favorites"){const updated=await api("/api/media-library/albums/"+Number(albumSelection));albumPhotos=new Set((updated.photos||[]).map(p=>Number(p.id)));}
         await refresh();
       }catch(error){albumStatus.textContent=error.message}
     });
