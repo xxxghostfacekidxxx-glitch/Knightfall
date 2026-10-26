@@ -1,4 +1,15 @@
 (() => {
+  // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
+  if (/^(?:\\/arcade(?:[-/]|$)|\\/chaos-cartridge(?:\\.html)?$)/i.test(location.pathname)) {
+    document.documentElement.classList.add("chaos-glitch-arcade");
+    if (!document.querySelector('link[data-chaos-glitch]')) {
+      const glitch = document.createElement("link");
+      glitch.rel = "stylesheet";
+      glitch.href = "/chaos-glitch.css?v=20261026-glitch1";
+      glitch.dataset.chaosGlitch = "true";
+      document.head.append(glitch);
+    }
+  }
   // Shared PWA setup and global Chaos Cartridge favicon.
   const iconLinks = [
     { rel: "icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
@@ -27,7 +38,7 @@
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261026-presence3";
+    companion.src = "/miss-chaos-presence.js?v=20261026-presence4";
     companion.dataset.missChaosPresence = "true";
     document.head.append(companion);
   }
