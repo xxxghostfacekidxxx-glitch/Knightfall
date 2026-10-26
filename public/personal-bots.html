@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090c">
 <meta name="description" content="Create and manage your personal Ash-Fall AI bots. Keep them private or share them when ready.">
 <title>Personal Bots | Ash-Fall</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder4">
-<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder4" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder5">
+<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder5" defer></script>
 </head>
 <body class="bots-page">
 <header class="kf-header"></header>
@@ -17,7 +17,7 @@
 <div class="section-title"><div><p class="eyebrow">START SOMETHING NEW</p><h2>Create a personal bot</h2></div><span class="private-pill">PRIVATE BY DEFAULT</span></div>
 <div class="bot-starter"><div><strong>Quick-start personalities</strong><p>Choose a foundation, then make it yours.</p></div><div class="bot-starter-grid" id="bot-starter-grid"><button type="button" data-bot-template="companion">🖤 Companion</button><button type="button" data-bot-template="creative">✍️ Creative partner</button><button type="button" data-bot-template="game">🎮 Game master</button><button type="button" data-bot-template="research">🔎 Research helper</button><button type="button" data-bot-template="custom">⚙️ Blank slate</button></div></div>
 <form id="create-bot-form">
-<div class="bot-draft-tools"><span id="bot-draft-status" role="status">Start with a template or write your own.</span><button type="button" id="bot-clear-draft" class="quiet-button">Clear draft</button></div>
+<div class="bot-draft-tools"><span id="bot-draft-status" role="status">Start with a template or write your own.</span><div class="bot-draft-actions"><button type="button" id="bot-import-blueprint" class="quiet-button">Import blueprint</button><button type="button" id="bot-clear-draft" class="quiet-button">Clear draft</button></div></div>
 <label>Bot name <small id="bot-name-count">0 / 60</small><input name="name" maxlength="60" required placeholder="e.g. The Forge, Night Archivist"></label>
 <label>Short description <small id="bot-description-count">0 / 500</small><input name="description" maxlength="500" placeholder="What is this bot for?"></label>
 <fieldset class="bot-personality"><legend>Fine-tune its personality</legend><div class="bot-personality-grid"><label>Voice<select id="bot-voice"><option value="balanced">Balanced</option><option value="witty">Witty and sarcastic</option><option value="warm">Warm and encouraging</option><option value="dramatic">Dramatic and theatrical</option><option value="formal">Precise and professional</option></select></label><label>Reply length<select id="bot-length"><option value="adaptive">Match the conversation</option><option value="short">Short and punchy</option><option value="detailed">Detailed and thorough</option></select></label><label>Creativity<select id="bot-creativity"><option value="balanced">Balanced</option><option value="imaginative">Imaginative</option><option value="grounded">Grounded and practical</option></select></label></div><button type="button" class="quiet-button" id="bot-apply-personality">Apply to instructions</button><small>These choices add editable guidance to the prompt. You can rewrite or remove it before creating your bot.</small></fieldset>
