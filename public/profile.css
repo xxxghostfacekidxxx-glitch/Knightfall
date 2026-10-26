@@ -171,3 +171,37 @@
 .cover-preview-wrap button{margin-left:auto}
 .studio-live-preview input,.cover-editor input{max-width:100%}
 @media(max-width:500px){.studio-live-preview{padding:.7rem}.studio-preview-cover{height:95px}.studio-preview-person{align-items:flex-start;padding:.75rem}.studio-preview-avatar{width:48px;height:48px;flex-basis:48px}.cover-preview-wrap button{margin-left:0}}
+
+
+/* Profile theme repair: profile.js sets data-theme on #profile, not .profile-shell. */
+#profile{--profile-accent:#e66a2c;overflow:hidden;min-width:0}
+#profile[data-theme="ember"]{--profile-accent:#e66a2c}
+#profile[data-theme="midnight"]{--profile-accent:#7894ff}
+#profile[data-theme="toxic"]{--profile-accent:#9ce84b}
+#profile[data-theme="bubblegum"]{--profile-accent:#ff62c7}
+#profile[data-theme="mono"]{--profile-accent:#e4e4e4}
+#profile .profile-heading h1,#profile .eyebrow,#profile .profile-stats b,
+#profile .profile-favorites h2,#profile .profile-status-message{color:var(--profile-accent)}
+#profile .profile-cover{margin:-1.4rem -1.4rem 1.3rem;height:clamp(110px,22vw,220px);overflow:hidden}
+#profile .profile-cover img{width:100%;height:100%;object-fit:cover}
+#profile .wallet-card{border-color:color-mix(in srgb,var(--profile-accent) 42%,#292929);background:radial-gradient(ellipse at 5% 0%,color-mix(in srgb,var(--profile-accent) 12%,transparent),transparent 62%),linear-gradient(130deg,#171310,#0d0d0d)}
+#profile .wallet-kicker,#profile .wallet-balance small{color:var(--profile-accent)}
+#profile .wallet-balance{color:#f3ece6}
+#profile .wallet-claims button.action.primary{border-color:var(--profile-accent);background:color-mix(in srgb,var(--profile-accent) 16%,#101010)}
+#profile .profile-actions .primary{border-color:var(--profile-accent);background:color-mix(in srgb,var(--profile-accent) 15%,#111)}
+#profile .profile-stats div{min-width:0}
+#profile .profile-stats b{overflow-wrap:anywhere}
+#profile .bio{margin-top:1.2rem;line-height:1.75}
+#profile .profile-favorites,#profile .profile-quote{border-color:color-mix(in srgb,var(--profile-accent) 25%,#292929)}
+@media(max-width:600px){
+ #profile{padding:1rem}
+ #profile .profile-cover{margin:-1rem -1rem 1rem;height:120px}
+ #profile .profile-top{flex-direction:row;align-items:center;gap:.85rem}
+ #profile .avatar-img,#profile .avatar{width:68px;height:68px;flex:0 0 68px}
+ #profile .profile-heading h1{font-size:clamp(1.5rem,7vw,2.4rem);overflow-wrap:anywhere}
+ #profile .profile-stats{gap:.4rem}
+ #profile .profile-stats div{padding:.7rem}
+ #profile .profile-actions{gap:.4rem}
+ #profile .profile-actions .action{flex:1 1 auto;text-align:center}
+ #profile .wallet-card{padding:.85rem}
+}

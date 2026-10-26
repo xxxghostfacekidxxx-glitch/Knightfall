@@ -420,3 +420,55 @@
 #enable-notifications[aria-pressed="true"]{border-color:rgba(110,255,80,.5);color:#8dff8b;background:rgba(110,255,80,.08)}
 #enable-notifications:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:760px){.presence-label{display:none}#enable-notifications{font-size:.68rem;padding:.4rem .5rem}}
+
+
+/* Mobile inbox correction: one primary pane at a time, stable viewport and keyboard-safe composer. */
+.mobile-inbox-back{display:none}
+.message-layout{min-width:0}
+.chat-panel,.conversation-panel{min-width:0}
+.chat-head{flex-wrap:wrap;align-items:flex-start}
+.chat-tools{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;min-width:0}
+.chat-identity{display:flex;align-items:center;gap:.65rem;min-width:0}
+.chat-identity>span:last-child{min-width:0;overflow-wrap:anywhere}
+.composer{display:flex;align-items:flex-end;gap:.5rem;flex-wrap:wrap}
+.composer-main{min-width:0;flex:1 1 70%}
+.composer textarea{min-height:48px;height:auto;max-height:32dvh;resize:none;font-size:16px;overflow-y:auto}
+.composer>div{gap:.5rem;flex-wrap:wrap}
+@media(max-width:850px){
+ .message-layout{position:relative;display:block;height:auto;min-height:0;max-height:none;overflow:hidden}
+ .conversation-panel{max-height:none;height:auto;overflow:visible;border:0}
+ .conversation-list{max-height:34dvh;overflow:auto}
+ .chat-panel{display:none;height:auto;min-height:0;max-height:none}
+ .message-layout.show-chat .conversation-panel{display:none}
+ .message-layout.show-chat .chat-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:calc(100dvh - 155px);min-height:360px;max-height:calc(100dvh - 155px)}
+ .message-layout.show-chat #typing-indicator,.message-layout.show-chat #load-older{grid-row:auto}
+ .chat-head{position:relative;padding:.65rem;gap:.5rem}
+ .chat-tools{gap:.35rem}
+ .chat-tools button,.chat-tools select{min-height:36px;max-width:100%}
+ .mobile-inbox-back{display:inline-flex!important;align-items:center;justify-content:center}
+ .messages-list{min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:.7rem}
+ .composer{position:relative;padding:.55rem;padding-bottom:max(.55rem,env(safe-area-inset-bottom));gap:.4rem}
+ .composer-main{flex-basis:calc(100% - 3.1rem)}
+ .composer textarea{min-height:46px;max-height:24dvh;padding:.65rem}
+ .composer>div{margin-top:.2rem}
+ .messages-hero-actions{width:100%}
+}
+@media(max-width:480px){
+ .messages-shell{width:calc(100% - 1rem);padding:.65rem 0 calc(1rem + env(safe-area-inset-bottom))}
+ .messages-hero{gap:.75rem}
+ .messages-hero h1{font-size:clamp(2.25rem,11vw,3.2rem)}
+ .message-layout.show-chat .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
+ .chat-head{padding:.5rem}
+ .chat-identity .chat-avatar{width:34px;height:34px}
+ .chat-tools{width:100%}
+ .chat-tools #presence-label,.chat-tools .secure-label{display:none}
+ .chat-tools #enable-notifications{margin-left:auto}
+ .message{max-width:94%;font-size:.93rem}
+}
+
+/* Keep chat action accents aligned with the ember palette on every viewport. */
+#enable-notifications{border-color:rgba(230,106,44,.42);background:rgba(230,106,44,.08)}
+#enable-notifications:hover{border-color:var(--kf-accent);color:var(--kf-accent)}
+.group-chip{background:rgba(230,106,44,.12)}
+.group-chip span,#attach-file,.pending-attachment button,.message-attachment .attachment-icon{color:var(--kf-accent)}
+.message-attachment:hover{border-color:var(--kf-accent)}

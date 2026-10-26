@@ -5,12 +5,12 @@
   --kf-line:#292929;
   --kf-muted:#8c8c8c;
   --kf-text:#eee;
-  --kf-accent:#ff4fa3;
+  --kf-accent:#e66a2c;
   --kf-accent-bright:#a8ff3e;
-  --kf-accent-soft:rgba(255,79,163,.14);
+  --kf-accent-soft:rgba(230,106,44,.14);
   color-scheme:dark;
 }
-::selection{background:rgba(255,79,163,.45);color:#fff}
+::selection{background:rgba(230,106,44,.45);color:#fff}
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
 ::-webkit-scrollbar{width:10px}
 ::-webkit-scrollbar-track{background:#080808}
@@ -24,12 +24,12 @@
   background:rgba(7,7,7,.82);backdrop-filter:blur(18px);
   box-shadow:0 12px 40px rgba(0,0,0,.28)
 }
-.kf-brand{color:#eee;text-decoration:none;font-weight:950;letter-spacing:.18em;text-shadow:0 0 24px rgba(255,79,163,.18)}
+.kf-brand{color:#eee;text-decoration:none;font-weight:950;letter-spacing:.18em;text-shadow:0 0 24px rgba(230,106,44,.18)}
 .kf-brand b{color:var(--kf-accent);font-weight:950}
 .kf-brand:after{content:"";display:block;width:70%;height:1px;margin-top:.25rem;background:linear-gradient(90deg,var(--kf-accent),transparent)}
 .kf-nav{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
 .kf-nav a{padding:.5rem .75rem;border:1px solid transparent;border-radius:7px;color:#929292;font-size:.78rem;text-decoration:none;transition:.22s ease}
-.kf-nav a:hover,.kf-nav a:focus-visible{border-color:#333;background:#111;color:#fff;box-shadow:0 0 18px rgba(255,79,163,.07)}
+.kf-nav a:hover,.kf-nav a:focus-visible{border-color:#333;background:#111;color:#fff;box-shadow:0 0 18px rgba(230,106,44,.07)}
 .kf-nav-toggle{display:none;border:1px solid #333;border-radius:7px;background:#101010;color:#ddd;padding:.45rem .65rem;cursor:pointer}
 @media(max-width:760px){
   .kf-header{position:relative}
@@ -41,8 +41,8 @@
 @media(prefers-reduced-motion:reduce){
   .kf-nav a{transition:none}
 }
-.kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(255,79,163,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(90,35,10,.2);color:#f0b18e}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
-.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(168,255,62,.55);border-radius:7px;background:rgba(255,79,163,.14);color:#f5a06b;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(255,79,163,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
+.kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(230,106,44,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(90,35,10,.2);color:#f0b18e}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
+.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(168,255,62,.55);border-radius:7px;background:rgba(230,106,44,.14);color:#f5a06b;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(230,106,44,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
 
 
 /* Compact secondary navigation keeps the main paths visible without turning the header into a sitemap. */
@@ -94,3 +94,14 @@
  .kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}
 }
 @media(prefers-reduced-motion:reduce){.kf-nav-primary,.kf-nav-menu a{transition:none}}
+
+
+/* Ash-Fall core palette: ember is the site default; character-specific pink stays scoped. */
+:root{--kf-accent:#e66a2c;--kf-accent-bright:#ffad78;--kf-accent-soft:rgba(230,106,44,.14)}
+::selection{background:rgba(230,106,44,.45);color:#fff}
+.kf-brand{ text-shadow:0 0 24px rgba(230,106,44,.18) }
+.kf-nav a:hover,.kf-nav a:focus-visible{box-shadow:0 0 18px rgba(230,106,44,.07)}
+.kf-announcement,.kf-maintenance{border-bottom-color:rgba(230,106,44,.35)}
+.kf-install-app{background:rgba(230,106,44,.14);color:#f5a06b}
+.kf-install-app:hover{background:rgba(230,106,44,.25)}
+.kf-nav-menu .kf-notify-badge{background:var(--kf-accent);color:#100804}
