@@ -365,7 +365,7 @@
   });
   async function streamChaosReply(conversationId,message,mood,onDelta){
     const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,stream:true})});
-    if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data.error||"Streaming request failed ("+response.status+").");}
+    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
     if(!response.body)throw Error("Your browser does not support streamed replies.");
     const reader=response.body.getReader(),decoder=new TextDecoder();
     let pending="",reply="",done=false;
