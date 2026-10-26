@@ -205,3 +205,19 @@
  #profile .profile-actions .action{flex:1 1 auto;text-align:center}
  #profile .wallet-card{padding:.85rem}
 }
+
+/* Optional member birth chart, matching the active profile theme. */
+.profile-birth-chart{margin:1.1rem 0;padding:1.1rem;border:1px solid color-mix(in srgb,var(--profile-accent,#e66a2c) 50%,transparent);border-radius:16px;background:linear-gradient(145deg,#15111b,#201523);color:#f4e8f6}
+.profile-birth-chart h2{margin:0 0 .3rem;color:var(--profile-accent,#e66a2c)}
+.birth-chart-system{font-size:.8rem;color:#c5b4cd;margin:.25rem 0 .85rem}
+.birth-chart-big-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
+.birth-chart-big-three>div{border:1px solid #795d8055;border-radius:12px;padding:.8rem;background:#ffffff08;min-width:0}
+.birth-chart-big-three span{display:block;font-size:.75rem;color:#c4b4d0}
+.birth-chart-big-three strong{display:block;font-size:clamp(.9rem,2.5vw,1.25rem);overflow-wrap:anywhere}
+.profile-birth-chart details{margin-top:.85rem}
+.profile-birth-chart summary{cursor:pointer;color:var(--profile-accent,#e66a2c);font-weight:700}
+.birth-chart-placements{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.25rem .8rem;padding-top:.7rem}
+.birth-chart-placements p{margin:.15rem 0;font-size:.84rem}
+#birth-chart-studio{margin-top:1.25rem}
+#birth-chart-form input,#birth-chart-form select{max-width:100%}
+@media(max-width:480px){.birth-chart-big-three{gap:.3rem}.birth-chart-big-three>div{padding:.55rem}}
