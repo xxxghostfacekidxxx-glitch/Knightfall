@@ -441,16 +441,45 @@
     if (!speakReplies && "speechSynthesis" in window) window.speechSynthesis.cancel();
     if (!("speechSynthesis" in window)) { speakReplies = false; showError("Spoken replies aren't supported by this browser."); }
   });
+  let activeRecognition=null;
   $("#voice-input").addEventListener("click", () => {
+    const button=$("#voice-input");
+    if(activeRecognition){activeRecognition.stop();return;}
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) { showError("Voice input isn't supported in this browser. You can still type messages."); return; }
     const recognition = new Recognition();
-    recognition.lang = navigator.language || "en-US"; recognition.interimResults = false; recognition.maxAlternatives = 1;
-    $("#voice-input").disabled = true; showError("");
-    recognition.onresult = (event) => { input.value = (input.value ? input.value + " " : "") + event.results[0][0].transcript; input.dispatchEvent(new Event("input")); input.focus(); };
-    recognition.onerror = () => showError("Couldn't capture speech. Check microphone permission and try again.");
-    recognition.onend = () => { $("#voice-input").disabled = false; };
-    try { recognition.start(); } catch { $("#voice-input").disabled = false; showError("Voice input couldn't start."); }
+    recognition.lang = navigator.language || "en-US";
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    const baseText=input.value.trim();
+    let finalText="";
+    recognition.onresult = event => {
+      let interim="";
+      for(let i=event.resultIndex;i<event.results.length;i++){
+        const text=event.results[i][0]?.transcript||"";
+        if(event.results[i].isFinal)finalText+=text+" ";
+        else interim+=text;
+      }
+      input.value=[baseText,(finalText+interim).trim()].filter(Boolean).join(" ");
+      input.dispatchEvent(new Event("input"));
+    };
+    recognition.onerror = event => {if(event.error!=="aborted")showError("Microphone: "+(event.error||"speech recognition failed")+". Check permission and try again.");};
+    recognition.onend = () => {
+      if(activeRecognition===recognition)activeRecognition=null;
+      button.setAttribute("aria-pressed","false");
+      button.setAttribute("aria-label","Dictate a message");
+      button.title="Dictate a message";
+      input.focus();
+    };
+    try{
+      recognition.start();
+      activeRecognition=recognition;
+      button.setAttribute("aria-pressed","true");
+      button.setAttribute("aria-label","Stop dictation");
+      button.title="Stop dictation";
+      showError("");
+    }catch{activeRecognition=null;showError("Voice input couldn't start.");}
   });
   memoryForm.addEventListener("submit", async (event) => {
     event.preventDefault();
