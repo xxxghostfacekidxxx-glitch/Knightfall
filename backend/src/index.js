@@ -325,6 +325,7 @@ async function handleVaultRequest(request, env, origin, url) {
     const row = await env.DB.prepare("SELECT filename,size_bytes FROM vault_items WHERE object_key=?").bind(objectKey).first();
     if (!row) return json({ error: "Media not found." }, 404, origin);
     await env.VAULT.delete(objectKey);
+    await env.DB.prepare("DELETE FROM vault_folder_items WHERE object_key=?").bind(objectKey).run();
     await env.DB.prepare("DELETE FROM vault_items WHERE object_key=?").bind(objectKey).run();
     await audit(env, user, "vault.delete", "vault_item", null, { filename: row.filename, size_bytes: Number(row.size_bytes) });
     return json({ ok: true, summary: await vaultSummary(env) }, 200, origin);
