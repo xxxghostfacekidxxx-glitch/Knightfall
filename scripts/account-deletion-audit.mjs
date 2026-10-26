@@ -18,6 +18,8 @@ assert.match(backend, /requireUser\(request,env\)/);
 assert.match(backend, /verifyPassword\(password,credential\.password_hash\)/);
 assert.match(backend, /rateLimit\(env,request,"account-deletion-request"/);
 assert.match(backend, /account\.deletion\.request/);
+assert.match(backend, /kind:"account_deletion_request"/);
+assert.match(backend, /url:"\/admin-deletion-requests\.html"/);
 assert.match(backend, /if\(url\.pathname==="\/api\/admin\/account-deletion-requests"&&request\.method==="GET"\)/);
 assert.match(backend, /if\(deletionRequestMatch&&request\.method==="PATCH"\)/);
 assert.match(backend, /\["in_progress","rejected"\]\.includes\(status\)/);
