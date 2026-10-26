@@ -33,6 +33,10 @@ const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8"
 const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: worker, encoding: "utf8" });
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
 else ok("Worker module syntax");
+const deployWorkflow = await readFile(path.join(root, ".github/workflows/deploy-api.yml"), "utf8");
+if (!deployWorkflow.includes("CLOUDFLARE_D1_MIGRATION_TOKEN") || !deployWorkflow.includes('apiToken: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}')) fail("D1 migrations must use the dedicated migration token, not the general Worker deploy token.");
+if (!deployWorkflow.includes("Require dedicated D1 migration credentials")) fail("Deployment must fail early with a clear message when D1 migration credentials are missing.");
+else ok("Deployment uses a dedicated D1 migration token with explicit preflight validation.");
 
 const arcadeInvariants = [
   ["arcade score submissions require a signed-in account", /\/api\/arcade\/scores[\s\S]{0,350}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
