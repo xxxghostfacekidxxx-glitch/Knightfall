@@ -23,3 +23,20 @@ test("profile navigation supports mobile and keyboard access",()=>{
  assert.match(css,/\.profile-jump\{flex-wrap:nowrap;overflow-x:auto/);
  assert.match(css,/scroll-margin-top/);
 });
+
+test("profile editor section navigation targets real editor panels",()=>{
+ const html=readFileSync(new URL("profile-edit.html",root),"utf8");
+ for(const id of ["studio-appearance","studio-interests","studio-privacy","layout-studio","birth-chart-studio"]){
+   assert.match(html,new RegExp('href="#'+id+'"'),"jump link "+id);
+   assert.match(html,new RegExp('id="'+id+'"'),"section "+id);
+ }
+ assert.match(html,/class="studio-save-bar"/);
+ assert.match(html,/type="submit">Save profile/);
+});
+test("cover photo and member details remain usable on phones",()=>{
+ assert.match(css,/#profile \.profile-cover::after/);
+ assert.match(css,/#profile:has\(\.profile-cover\) \.profile-top/);
+ assert.match(css,/#profile dl\{display:grid/);
+ assert.match(css,/\.studio-jump a:focus-visible/);
+ assert.match(css,/\.studio-save-bar button\{width:100%\}/);
+});
