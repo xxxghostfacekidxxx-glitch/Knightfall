@@ -10,10 +10,14 @@ const cases=[
  {id:"kaiju-krush",route:"/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",steps:[["tap","#start"],["tap-canvas","#game",480,450],["assert-min","#score",25]]},
  {id:"custom-tetris",route:"/arcade/hosted/custom-tetris/index.html",steps:[["tap",'[data-tetris-action="left"]'],["tap",'[data-tetris-action="pause"]'],["assert-paused"]]}
 ];
+const profiles={phone:[390,844],smallPhone:[320,640],largePhone:[430,932],tablet:[768,1024],desktop:[1366,768]};
+const profile=process.env.ARCADE_TEST_PROFILE||"phone";
+if(!profiles[profile])throw Error("Unknown arcade test profile: "+profile);
+const [width,height]=profiles[profile];
 const browser=await chromium.launch({headless:true});let failures=0;
 try {
  for(const scenario of cases){
-  const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+  const page=await browser.newPage({viewport:{width,height},isMobile:profile!=="desktop",hasTouch:true});
   const errors=[],history=[],requests=[];
   page.on("requestfailed",request=>{if(request.url().startsWith(base))requests.push({url:request.url(),reason:request.failure()?.errorText})});
   page.on("pageerror",e=>errors.push(String(e)));
@@ -41,13 +45,13 @@ try {
    }
    if(errors.length)throw Error(errors.join(" | "));
    if(requests.length)throw Error("failed local requests: "+JSON.stringify(requests));
-   console.log("PASS "+scenario.id);
+   console.log("PASS "+profile+" "+scenario.id);
   }catch(error){
    failures++;
-   const details={scenario:scenario.id,route:scenario.route,steps:history,error:String(error),browserErrors:errors,failedRequests:requests,base};
+   const details={scenario:scenario.id,route:scenario.route,steps:history,error:String(error),browserErrors:errors,failedRequests:requests,base,profile};
    await writeFile(path.join(dir,scenario.id+".json"),JSON.stringify(details,null,2));
    await page.screenshot({path:path.join(dir,scenario.id+".png"),timeout:3000}).catch(()=>{});
-   console.error("FAIL "+scenario.id+": "+String(error));
+   console.error("FAIL "+profile+" "+scenario.id+": "+String(error));
   }finally{await page.close()}
  }
 }finally{await browser.close()}
