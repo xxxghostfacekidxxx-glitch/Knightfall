@@ -44,4 +44,7 @@
 @media(prefers-reduced-motion:reduce){.mc-head img{transition:none;animation:none!important}}
 
 #mc-game-tips{margin:.45rem .75rem 0;align-self:flex-start;border:1px solid #51402b;border-radius:8px;background:#17130f;color:#c7ff8a;padding:.45rem .65rem;font:inherit;font-size:.72rem;font-weight:750;cursor:pointer}#mc-game-tips[hidden]{display:none}
-\n/* Keep portrait glitch treatment consistent with the Chaos Cartridge signal effect. */\n#miss-chaos-presence .mc-head img{image-rendering:auto;filter:drop-shadow(1px 0 #ff2f9255) drop-shadow(-1px 0 #54f5df44)}\n#miss-chaos-presence[data-expression="speaking"] .mc-head img{outline:1px solid #39ff8866}\n
+
+/* Keep portrait glitch treatment consistent with the Chaos Cartridge signal effect. */
+#miss-chaos-presence .mc-head img{image-rendering:auto;filter:drop-shadow(1px 0 #ff2f9255) drop-shadow(-1px 0 #54f5df44)}
+#miss-chaos-presence[data-expression="speaking"] .mc-head img{outline:1px solid #39ff8866}
