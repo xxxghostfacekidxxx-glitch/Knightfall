@@ -1783,7 +1783,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const sub=await env.DB.prepare("SELECT id FROM push_subscriptions WHERE user_id=? LIMIT 1").bind(user.id).first();
     if(!sub)return json({error:"This device is not subscribed to push notifications."},409,origin);
     const pushAttempt=await deliverPushToUser(env,user.id,{kind:"account",title:"Ash-Fall test alert",body:"Push notifications are connected on this device.",url:"/notifications.html",target_id:"test"});
-    return json({ok:true},200,origin);
+    return json({ok:!!pushAttempt?.accepted,delivery:pushAttempt||{attempted:0,accepted:0,expired:0,failed:0}},pushAttempt?.accepted?200:503,origin);
   }
   if(url.pathname==="/api/notification-preferences"&&(request.method==="GET"||request.method==="PUT")){
     const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
