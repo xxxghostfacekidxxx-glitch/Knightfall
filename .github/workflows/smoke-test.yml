@@ -10,6 +10,7 @@ on:
       - 'backend/package.json'
       - 'scripts/astrology.test.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
+      - 'scripts/miss-chaos-ux.test.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
@@ -46,7 +47,7 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs
+        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
