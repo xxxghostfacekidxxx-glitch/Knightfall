@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, Ash-Fall's sharp-tongued AI companion for conversation, creativity, and useful answers.">
   <title>Miss Chaos | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-astro2">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-astro5">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -64,10 +64,11 @@
   <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
   <label>Birth latitude (optional; north +) <input id="astro-latitude" type="number" min="-66" max="66" step="any" placeholder="e.g. 44.98"></label>
   <label>Birth longitude (optional; east +) <input id="astro-longitude" type="number" min="-180" max="180" step="any" placeholder="e.g. -93.27"></label>
+  <label>House system <select id="astro-house-system"><option value="equal">Equal houses</option><option value="whole-sign">Whole-sign houses</option></select></label>
   <button type="submit">Calculate placements</button><button type="button" id="astro-transits">Calculate today’s transits</button>
 </form>
 <p id="astro-chart-status" role="status" class="astro-help"></p>
-<p class="astro-help">Use the UTC offset that applied on the birth date, including daylight saving time. This calculator estimates planetary signs, degrees, retrogrades and major aspects. Add both birth-place coordinates to calculate an approximate Ascendant and equal houses (not Placidus). Coordinates are used for calculation only and are not stored separately by the calculator. The prepared chat draft will contain chart results.</p></section>
+<p class="astro-help">Use the UTC offset that applied on the birth date, including daylight saving time. This calculator estimates planetary signs, degrees, retrogrades and major aspects. Add both birth-place coordinates to calculate an approximate Ascendant and equal or whole-sign houses (not Placidus). Coordinates are used for calculation only and are not stored separately by the calculator. The prepared chat draft will contain chart results.</p></section>
       <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
         <div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me. Try not to break anything important. I just got here.</h2><p>I'm Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that's useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p></div>
       </div>
@@ -81,6 +82,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261026-astro4" defer></script>
+  <script src="/miss-chaos.js?v=20261026-astro5" defer></script>
 </body>
 </html>
