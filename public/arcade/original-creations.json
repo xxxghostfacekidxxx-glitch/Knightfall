@@ -1051,6 +1051,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-echo",
+      "name": "Ember Echo",
+      "genre": "Puzzle",
+      "sprites": [
+        "echo.svg"
+      ],
+      "notes": "Repeat growing sequences of colored signals.",
+      "engine": "/arcade/hosted/ember-echo/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-echo",
+      "assets": [
+        {
+          "name": "echo.svg",
+          "path": "/arcade/hosted/ember-echo/sprites/echo.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-labyrinth",
+      "name": "Crypt Labyrinth",
+      "genre": "Puzzle",
+      "sprites": [
+        "compass.svg"
+      ],
+      "notes": "Escape a procedurally carved nine-by-nine crypt maze.",
+      "engine": "/arcade/hosted/crypt-labyrinth/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-labyrinth",
+      "assets": [
+        {
+          "name": "compass.svg",
+          "path": "/arcade/hosted/crypt-labyrinth/sprites/compass.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-siege",
+      "name": "Ash Siege",
+      "genre": "Arcade",
+      "sprites": [
+        "turret.svg"
+      ],
+      "notes": "Defend the citadel against descending Void invaders.",
+      "engine": "/arcade/hosted/ash-siege/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-siege",
+      "assets": [
+        {
+          "name": "turret.svg",
+          "path": "/arcade/hosted/ash-siege/sprites/turret.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-constellation",
+      "name": "Void Constellation",
+      "genre": "Puzzle",
+      "sprites": [
+        "star.svg"
+      ],
+      "notes": "Connect every star once along a network of paths.",
+      "engine": "/arcade/hosted/void-constellation/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-constellation",
+      "assets": [
+        {
+          "name": "star.svg",
+          "path": "/arcade/hosted/void-constellation/sprites/star.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-balance",
+      "name": "Crypt Balance",
+      "genre": "Puzzle",
+      "sprites": [
+        "scale.svg"
+      ],
+      "notes": "Balance five sets of weighted infernal stones.",
+      "engine": "/arcade/hosted/crypt-balance/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-balance",
+      "assets": [
+        {
+          "name": "scale.svg",
+          "path": "/arcade/hosted/crypt-balance/sprites/scale.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
