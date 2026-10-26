@@ -796,6 +796,14 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await env.DB.prepare("INSERT INTO social_group_members (group_id,user_id,role,status,joined_at) VALUES (?,?,'member',?,?) ON CONFLICT(group_id,user_id) DO UPDATE SET status=excluded.status,joined_at=excluded.joined_at").bind(group.id,user.id,status,now).run();
     return json({ok:true,status},200,origin);
   }
+  if(url.pathname==="/api/member-shop/catalog"&&request.method==="GET"){
+    return json({checkout_enabled:false,products:[
+      {sku:"bot_slot_1",name:"One extra bot slot",price_cents:199,kind:"bot_slots",quantity:1},
+      {sku:"bot_slot_5",name:"Five extra bot slots",price_cents:799,kind:"bot_slots",quantity:5},
+      {sku:"cinders_5000",name:"5,000 Cinders",price_cents:299,kind:"cinders",quantity:5000},
+      {sku:"cinders_25000",name:"25,000 Cinders",price_cents:999,kind:"cinders",quantity:25000}
+    ],notice:"Preview only. No checkout or real-money Cinder fulfillment is active."},200,origin);
+  }
   // Private creator-media readiness: no uploads or downloads are permitted
   // until verified age assurance, consent workflows, and moderation are live.
   if(url.pathname==="/api/creator/media/status"&&request.method==="GET"){
