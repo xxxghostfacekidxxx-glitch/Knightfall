@@ -19,6 +19,10 @@ on:
     paths:
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
+      - "scripts/arcade-gameplay-replay.mjs"
+      - "scripts/arcade-gameplay-doctor.mjs"
+      - "scripts/arcade-asset-doctor.mjs"
+      - "scripts/arcade-asset-doctor.test.mjs"
       - "public/admin.html"
       - "public/admin.css"
       - ".github/workflows/arcade-test-fleet.yml"
@@ -85,8 +89,13 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
-      - name: Verify automated repair rules
-        run: node --test scripts/arcade-asset-doctor.test.mjs
+      - name: Validate bot scripts and repair rules
+        run: |
+          node --check scripts/arcade-browser-smoke.mjs
+          node --check scripts/arcade-gameplay-replay.mjs
+          node --check scripts/arcade-gameplay-doctor.mjs
+          node --check scripts/arcade-asset-doctor.mjs
+          node --test scripts/arcade-asset-doctor.test.mjs
       - name: Audit arcade asset references
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
@@ -155,7 +164,6 @@ jobs:
           cat /tmp/arcade-gameplay-doctor.json
           node --check public/arcade/hosted/arcade-cabinet-engine.js
       - name: Verify proposed gameplay repairs in browser
-        if: always()
         run: |
           if git diff --quiet -- public/arcade; then exit 0; fi
           python3 -m http.server 8766 --directory public > /tmp/arcade-repair-server.log 2>&1 &
@@ -165,7 +173,7 @@ jobs:
           done
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-          ARCADE_TEST_BASE=http://127.0.0.1:8766 node scripts/arcade-gameplay-replay.mjs
+          ARCADE_TEST_BASE=http://127.0.0.1:8766 ARCADE_TEST_PROFILE=phone node scripts/arcade-gameplay-replay.mjs
       - name: Create reviewable repair PR only when files changed
         env:
           GH_TOKEN: ${{ github.token }}
