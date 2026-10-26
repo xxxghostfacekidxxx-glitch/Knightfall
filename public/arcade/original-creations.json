@@ -144,6 +144,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-grid",
+      "name": "Cinder Grid",
+      "genre": "Board",
+      "sprites": [
+        "ember-token.svg",
+        "void-token.svg"
+      ],
+      "notes": "Original ember and void token artwork with a new four-in-a-row engine and CPU opponent.",
+      "engine": "/arcade/hosted/cinder-grid/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-grid",
+      "assets": [
+        {
+          "name": "ember-token.svg",
+          "path": "/arcade/hosted/cinder-grid/sprites/ember-token.svg"
+        },
+        {
+          "name": "void-token.svg",
+          "path": "/arcade/hosted/cinder-grid/sprites/void-token.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
