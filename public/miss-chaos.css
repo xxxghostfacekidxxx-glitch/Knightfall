@@ -196,3 +196,6 @@
 .mood-control select:focus,.conversation-search:focus,.memory-form input:focus,.memory-form textarea:focus,.memory-form select:focus,.admin-archive input:focus,.admin-archive select:focus{outline:2px solid rgba(240,106,10,.7)!important}
 .privacy-note{color:#766e66!important}
 @media(prefers-reduced-motion:reduce){.chaos-avatar,.welcome-card,.message{animation:none!important;transition:none!important}}
+
+/* Character portrait replaces the placeholder initial. */
+.chaos-avatar{overflow:hidden;flex:0 0 54px;padding:0}.chaos-avatar img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}.chaos-avatar span{z-index:1;text-shadow:0 0 8px #000}

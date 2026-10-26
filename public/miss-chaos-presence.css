@@ -1,0 +1,32 @@
+/* Miss Chaos: persistent site-wide companion */
+#miss-chaos-presence{--mc-pink:#ff2f92;--mc-green:#39ff88;--mc-bg:#0b0b0e;--mc-line:#38313b;position:fixed;z-index:9998;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#f7f2f7}
+#miss-chaos-presence *{box-sizing:border-box}
+#miss-chaos-launcher{position:relative;display:flex;align-items:center;gap:.65rem;border:1px solid #ff2f92a8;border-radius:999px;padding:.42rem .85rem .42rem .42rem;background:linear-gradient(135deg,#151018,#08090a);color:#fff;box-shadow:0 8px 32px #0009,0 0 22px #ff2f9224;cursor:pointer;font:inherit;font-weight:800;transition:transform .18s,border-color .18s}
+#miss-chaos-launcher:hover{transform:translateY(-2px);border-color:var(--mc-green)}
+#miss-chaos-launcher img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--mc-pink)}
+#miss-chaos-launcher .mc-launch-copy{display:grid;gap:2px;text-align:left}
+#miss-chaos-launcher strong{font-size:.84rem;letter-spacing:.01em}
+#miss-chaos-launcher small{color:#b8adb9;font-size:.68rem;font-weight:600}
+#miss-chaos-launcher .mc-status-dot{position:absolute;left:39px;top:39px;width:11px;height:11px;border:2px solid #101010;border-radius:50%;background:var(--mc-green);box-shadow:0 0 10px #39ff88a0}
+#miss-chaos-window{position:absolute;right:0;bottom:calc(100% + 12px);width:min(370px,calc(100vw - 24px));height:min(570px,calc(100dvh - 120px));display:flex;flex-direction:column;overflow:hidden;border:1px solid #513044;border-radius:18px;background:#0c0c10;box-shadow:0 20px 70px #000b,0 0 32px #ff2f9217}
+#miss-chaos-window[hidden]{display:none}
+.mc-head{display:flex;align-items:center;gap:.7rem;padding:.85rem;border-bottom:1px solid #2a252d;background:linear-gradient(100deg,#ff2f9214,transparent)}
+.mc-head img{width:44px;height:44px;border-radius:12px;object-fit:cover;border:1px solid #ff2f92}
+.mc-head-copy{flex:1;min-width:0}.mc-head-copy strong{display:block;font-size:.9rem}.mc-head-copy small{display:block;margin-top:3px;color:#a69ca9;font-size:.68rem}
+.mc-head-actions{display:flex;gap:.35rem}.mc-head-actions button{width:32px;height:32px;border:1px solid #39313c;border-radius:8px;background:#17151a;color:#eee;cursor:pointer}
+#mc-mood{width:100%;border:0;border-bottom:1px solid #28232b;background:#111015;color:#c7becb;padding:.5rem .75rem;font:inherit;font-size:.72rem}
+#mc-messages{display:flex;flex:1;flex-direction:column;gap:.65rem;overflow-y:auto;padding:.85rem;overscroll-behavior:contain}
+.mc-bubble{max-width:90%;padding:.7rem .8rem;border:1px solid #302a33;border-radius:12px;background:#151418;color:#eee;font-size:.82rem;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.mc-bubble.user{align-self:flex-end;border-color:#7c2858;background:#24121e}.mc-bubble.assistant{align-self:flex-start}.mc-bubble.system{max-width:100%;color:#bdb2c1;font-size:.76rem;background:#111114}
+.mc-typing{color:#b7a8b8;font-size:.76rem;padding:.3rem}
+#mc-error{padding:0 .8rem .5rem;color:#ffb1c9;font-size:.74rem}
+#mc-error:empty{display:none}
+#mc-form{display:flex;align-items:flex-end;gap:.45rem;padding:.65rem;border-top:1px solid #2a252d;background:#101014}
+#mc-input{flex:1;min-width:0;max-height:110px;resize:none;border:1px solid #39313c;border-radius:10px;background:#08080b;color:#fff;padding:.7rem;font:inherit;font-size:.82rem;line-height:1.45}
+#mc-input:focus{outline:2px solid #39ff88;outline-offset:1px}
+#mc-send{border:0;border-radius:10px;background:linear-gradient(135deg,#ff2f92,#b83a78);color:#fff;padding:.72rem .8rem;font:inherit;font-size:.78rem;font-weight:850;cursor:pointer}
+#mc-send:disabled{opacity:.5;cursor:wait}
+.mc-footer{padding:.45rem .75rem .6rem;color:#817783;font-size:.62rem;line-height:1.4;background:#101014}
+#miss-chaos-presence a{color:#ff91c9}
+@media(max-width:480px){#miss-chaos-presence{right:10px;bottom:max(10px,env(safe-area-inset-bottom))}#miss-chaos-launcher{padding:.35rem .6rem .35rem .35rem}#miss-chaos-launcher img{width:42px;height:42px}#miss-chaos-window{right:-2px;width:calc(100vw - 20px);height:min(68dvh,590px)}}
+@media(prefers-reduced-motion:reduce){#miss-chaos-launcher{transition:none}}

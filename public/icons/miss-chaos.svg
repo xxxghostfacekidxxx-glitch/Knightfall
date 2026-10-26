@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<title id="title">Miss Chaos</title><desc id="desc">Stylized cyberpunk portrait with magenta hair, green eyes, and a black choker.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#311024"/><stop offset=".55" stop-color="#101116"/><stop offset="1" stop-color="#061a11"/></linearGradient>
+ <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff73c5"/><stop offset=".42" stop-color="#ff168c"/><stop offset="1" stop-color="#5a174e"/></linearGradient>
+ <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7c4b9"/><stop offset="1" stop-color="#a96e78"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect width="256" height="256" rx="38" fill="url(#bg)"/>
+<circle cx="190" cy="58" r="45" fill="#ff168c" opacity=".22" filter="url(#glow)"/><circle cx="58" cy="190" r="40" fill="#39ff88" opacity=".12" filter="url(#glow)"/>
+<path d="M35 256Q24 192 45 94Q48 26 126 18Q211 11 226 95L240 256Z" fill="#08090d" stroke="#ff168c" stroke-width="4"/>
+<path d="M42 112Q25 45 91 28Q147 2 199 38Q239 67 216 135L202 188L61 180Z" fill="url(#hair)"/>
+<path d="M77 73Q72 117 88 145L75 207L48 238L51 109Z" fill="#ff168c"/><path d="M171 45Q217 76 203 132L222 210L195 235L187 142Z" fill="#76165d"/>
+<path d="M86 72Q106 49 145 58Q178 63 183 98L175 148Q166 177 135 188Q107 178 92 153L80 112Z" fill="url(#skin)"/>
+<path d="M80 91Q94 51 135 53Q169 52 190 84L174 90L159 72L137 89L116 73L99 96Z" fill="#171019"/>
+<path d="M90 106Q108 93 126 106L117 119L97 118Z" fill="#24101f"/><path d="M142 106Q161 94 177 105L169 119L149 119Z" fill="#24101f"/>
+<path d="M96 111L119 112" stroke="#39ff88" stroke-width="4" stroke-linecap="round"/><path d="M149 112L172 110" stroke="#39ff88" stroke-width="4" stroke-linecap="round"/>
+<circle cx="108" cy="112" r="3.5" fill="#eaffc9"/><circle cx="160" cy="112" r="3.5" fill="#eaffc9"/>
+<path d="M133 114L126 139L137 142" fill="none" stroke="#92535d" stroke-width="3" stroke-linecap="round"/>
+<path d="M115 155Q135 165 153 151Q141 177 123 165Z" fill="#7b294a"/><path d="M117 155Q135 161 151 152" fill="none" stroke="#ffd0d2" stroke-width="2"/>
+<path d="M86 145Q93 182 130 193Q164 181 180 146L194 256H63Z" fill="#111116" stroke="#ff168c" stroke-width="3"/>
+<path d="M99 186L129 204L158 185L171 256H83Z" fill="#090a0d"/>
+<path d="M93 184Q126 203 161 183L158 197Q128 217 97 197Z" fill="#24232b" stroke="#39ff88" stroke-width="3"/>
+<circle cx="128" cy="208" r="10" fill="#0c0c0f" stroke="#39ff88" stroke-width="3"/><path d="M128 218V229" stroke="#39ff88" stroke-width="3"/>
+<path d="M71 65L58 98L74 89L63 122L90 92Z" fill="#ff9bd7"/><path d="M180 34L192 68L207 58L199 94L217 74Z" fill="#ff9bd7"/>
+<path d="M54 160L68 151L62 177L78 168" fill="none" stroke="#39ff88" stroke-width="4" stroke-linecap="round"/>
+<path d="M188 147L202 139L196 165L211 156" fill="none" stroke="#39ff88" stroke-width="4" stroke-linecap="round"/>
+<path d="M100 128L108 130M154 129L162 127" stroke="#2b1424" stroke-width="2" stroke-linecap="round"/>
+<circle cx="184" cy="174" r="3" fill="#39ff88"/><circle cx="79" cy="175" r="3" fill="#ff168c"/>
+</svg>
