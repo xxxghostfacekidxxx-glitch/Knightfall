@@ -1,7 +1,8 @@
-const CACHE_NAME = "knightfall-shell-v7";
+const CACHE_NAME = "knightfall-shell-v8";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
+  "/homepage.html",
   "/theme.css",
   "/nav.js",
   "/icons/chaos-cartridge.svg",
@@ -10,9 +11,9 @@ const APP_SHELL = [
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
 });
-self.addEventListener("activate", event => {
+self.addEventListener("message", event => {\n  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();\n});\n\nself.addEventListener("activate", event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => /^(?:knightfall|ashfall)-shell-/.test(key) && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 
@@ -47,7 +48,7 @@ self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
-  if (url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
+  if (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
       const cached = await caches.match("/offline.html");
@@ -55,7 +56,7 @@ self.addEventListener("fetch", event => {
     }));
     return;
   }
-  if (APP_SHELL.includes(url.pathname)) {
+  if (APP_SHELL.includes(url.pathname) && !request.headers.has("Authorization")) {
     event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(async response => {
       if (response.ok) { const cache = await caches.open(CACHE_NAME); cache.put(request, response.clone()); }
       return response;
