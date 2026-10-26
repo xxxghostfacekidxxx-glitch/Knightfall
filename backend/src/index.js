@@ -1164,10 +1164,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(["admin","god"].includes(user.role))return json({error:"Administrator and God accounts require a separately reviewed owner-controlled deletion process. Contact the site operator."},403,origin);
     if(!await rateLimit(env,request,"account-deletion-request",3,3600,user.id))return json({error:"Too many deletion requests. Try again later."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    const password=body&&typeof body.password==="string"?body.password:"";
-    if(!password||password.length>128)return json({error:"Enter your current password to confirm this request."},400,origin);
-    const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();
-    if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);
+    const password=body&&typeof body.password==="string"?body.password:"",confirmation=body&&typeof body.confirmation_username==="string"?body.confirmation_username.trim().toLowerCase():"";
+    if(password.length>128)return json({error:"Password is too long."},400,origin);
+    if(password){const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);}
+    else if(confirmation!==String(user.username).toLowerCase())return json({error:"Enter your exact username to confirm this request, or provide your current password."},403,origin);
     const existing=await env.DB.prepare("SELECT id,requested_at FROM account_deletion_requests WHERE user_id=? AND status='pending' ORDER BY id DESC LIMIT 1").bind(user.id).first();
     if(existing)return json({ok:true,already_pending:true,requested_at:existing.requested_at,message:"A deletion request is already pending review."},200,origin);
     const now=new Date().toISOString(),deadline=new Date(Date.now()+30*24*60*60*1000).toISOString();
@@ -1657,6 +1657,21 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const result=status?await env.DB.prepare(query).bind(status).all():await env.DB.prepare(query).all();
     return json({requests:result.results||[]},200,origin);
   }
+  if(url.pathname==="/api/account/deletion-request"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    const requestRow=await env.DB.prepare("SELECT id,status,requested_at,scheduled_for FROM account_deletion_requests WHERE user_id=? AND status IN ('pending','in_progress') ORDER BY requested_at DESC LIMIT 1").bind(user.id).first();
+    return json({request:requestRow||null},200,origin);
+  }
+  if(url.pathname==="/api/account/deletion-request"&&request.method==="DELETE"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    if(!await rateLimit(env,request,"account-deletion-cancel",5,3600,user.id))return json({error:"Too many cancellation attempts. Try again later."},429,origin);
+    const pending=await env.DB.prepare("SELECT id FROM account_deletion_requests WHERE user_id=? AND status='pending' ORDER BY requested_at DESC LIMIT 1").bind(user.id).first();
+    if(!pending)return json({error:"No cancellable pending request was found. Contact the operator if processing has already started."},409,origin);
+    const now=new Date().toISOString();await env.DB.prepare("UPDATE account_deletion_requests SET status='rejected',operator_note='Cancelled by account holder on ' || ? WHERE id=? AND user_id=? AND status='pending'").bind(now,pending.id,user.id).run();
+    await audit(env,user,"account.deletion.request.cancel","account_deletion_request",pending.id,{});
+    return json({ok:true,message:"Your pending deletion request was cancelled."},200,origin);
+  }
+
   const deletionRequestMatch=url.pathname.match(/^\/api\/admin\/account-deletion-requests\/(\d+)$/);
   if(deletionRequestMatch&&request.method==="PATCH"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
