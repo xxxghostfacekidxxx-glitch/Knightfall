@@ -30,3 +30,15 @@
 #miss-chaos-presence a{color:#ff91c9}
 @media(max-width:480px){#miss-chaos-presence{right:10px;bottom:max(10px,env(safe-area-inset-bottom))}#miss-chaos-launcher{padding:.35rem .6rem .35rem .35rem}#miss-chaos-launcher img{width:42px;height:42px}#miss-chaos-window{right:-2px;width:calc(100vw - 20px);height:min(68dvh,590px)}}
 @media(prefers-reduced-motion:reduce){#miss-chaos-launcher{transition:none}}
+
+/* Mood-aware presence cues and optional spoken-reply state. */
+.mc-head img{transition:transform .22s,filter .22s,box-shadow .22s}
+#miss-chaos-presence[data-expression="playful"] .mc-head img{filter:saturate(1.35);box-shadow:0 0 18px #ff2f9266;transform:rotate(-3deg)}
+#miss-chaos-presence[data-expression="dark"] .mc-head img{filter:contrast(1.12) saturate(.9);box-shadow:0 0 14px #39ff8844}
+#miss-chaos-presence[data-expression="supportive"] .mc-head img{box-shadow:0 0 18px #39ff8866}
+#miss-chaos-presence[data-expression="philosophical"] .mc-head img{filter:hue-rotate(12deg);box-shadow:0 0 18px #b58cff55}
+#miss-chaos-presence[data-expression="thinking"] .mc-head img{animation:mc-thinking 1.4s ease-in-out infinite}
+#miss-chaos-presence[data-expression="speaking"] .mc-head img{box-shadow:0 0 0 3px #39ff8866,0 0 24px #39ff8888}
+#mc-voice[aria-pressed="true"]{border-color:#39ff88;color:#39ff88;box-shadow:0 0 12px #39ff8833}
+@keyframes mc-thinking{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@media(prefers-reduced-motion:reduce){.mc-head img{transition:none;animation:none!important}}
