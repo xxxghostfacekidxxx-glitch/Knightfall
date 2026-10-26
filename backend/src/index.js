@@ -640,6 +640,52 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 
+  // Member safety controls: reports and blocks are private to the acting account.
+  if(url.pathname==="/api/social/blocks"&&(request.method==="GET"||request.method==="POST")){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
+    if(request.method==="GET"){
+      const rows=await env.DB.prepare("SELECT b.blocked_id AS user_id,u.username,b.created_at FROM social_user_blocks b JOIN users u ON u.id=b.blocked_id WHERE b.blocker_id=? ORDER BY b.created_at DESC LIMIT 500").bind(viewer.id).all();
+      return json({blocks:rows.results||[]},200,origin);
+    }
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const target=Number(body.user_id);
+    if(!Number.isSafeInteger(target)||target<=0||target===viewer.id)return json({error:"Choose another member to block."},400,origin);
+    const targetUser=await env.DB.prepare("SELECT id FROM users WHERE id=? AND status='active'").bind(target).first();
+    if(!targetUser)return json({error:"Member not found."},404,origin);
+    await env.DB.prepare("INSERT INTO social_user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()).run();
+    await audit(env,viewer,"social.member.block","social_user_block",target,{});
+    return json({ok:true,blocked_user_id:target},200,origin);
+  }
+  const unblockMatch=url.pathname.match(/^\\/api\\/social\\/blocks\\/([0-9]+)$/);
+  if(unblockMatch&&request.method==="DELETE"){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
+    const target=Number(unblockMatch[1]);
+    await env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target).run();
+    await audit(env,viewer,"social.member.unblock","social_user_block",target,{});
+    return json({ok:true},200,origin);
+  }
+  if(url.pathname==="/api/social/report"&&request.method==="POST"){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to report content or a member."},401,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const objectType=String(body.object_type||"");
+    const objectId=body.object_id==null?"":String(body.object_id).trim().slice(0,160);
+    const reason=typeof body.reason==="string"?body.reason.trim().slice(0,120):"";
+    const details=typeof body.details==="string"?body.details.trim().slice(0,3000):"";
+    const rawReported=body.reported_user_id==null?null:Number(body.reported_user_id);
+    const reportedUserId=Number.isSafeInteger(rawReported)&&rawReported>0&&rawReported!==viewer.id?rawReported:null;
+    if(!["profile","activity","group","creator_post","dating_profile","message"].includes(objectType)||reason.length<3)return json({error:"Choose a valid report category and provide a reason of at least 3 characters."},400,origin);
+    if(body.reported_user_id!=null&&reportedUserId===null)return json({error:"Invalid reported member."},400,origin);
+    if(reportedUserId!==null&&!await env.DB.prepare("SELECT id FROM users WHERE id=?").bind(reportedUserId).first())return json({error:"Reported member not found."},404,origin);
+    const recent=await env.DB.prepare("SELECT COUNT(*) AS count FROM safety_reports WHERE reporter_id=? AND created_at>=datetime('now','-1 hour')").bind(viewer.id).first();
+    if(Number(recent?.count||0)>=10)return json({error:"Report limit reached. Try again later."},429,origin);
+    const result=await env.DB.prepare("INSERT INTO safety_reports (reporter_id,reported_user_id,object_type,object_id,reason,details,status,created_at) VALUES (?,?,?,?,?,?,'open',?)").bind(viewer.id,reportedUserId,objectType,objectId||null,reason,details,new Date().toISOString()).run();
+    await audit(env,viewer,"social.safety.report","safety_report",result.meta?.last_row_id,{object_type:objectType,reported_user_id:reportedUserId});
+    return json({ok:true,report_id:result.meta?.last_row_id,note:"Your report has been submitted for review."},201,origin);
+  }
+
   // Elgg-inspired activity stream, interest groups, adult gate, creator memberships, and dating foundation.
   if(url.pathname==="/api/social/activity"&&(request.method==="GET"||request.method==="POST")){
     const viewer=await requireUser(request,env);
