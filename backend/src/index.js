@@ -821,6 +821,17 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       await audit(env,user,"creator.profile.update","creator_profile",user.id,{});
       return json({ok:true},200,origin);
     }
+    if(url.pathname==="/api/creator/drafts/remove"&&request.method==="POST"){
+      const data=await request.json().catch(()=>null);
+      const draftId=typeof data?.id==="string"?data.id:"";
+      if(!/^[a-zA-Z0-9_-]{8,100}$/.test(draftId))return json({error:"Invalid draft."},400,origin);
+      const draft=await env.DB.prepare("SELECT status,media_key FROM creator_posts WHERE id=? AND creator_id=?").bind(draftId,user.id).first();
+      if(!draft)return json({error:"Draft not found."},404,origin);
+      if(draft.status!=="draft"||draft.media_key)return json({error:"Only drafts without media can be removed."},409,origin);
+      await env.DB.prepare("DELETE FROM creator_posts WHERE id=? AND creator_id=? AND status='draft' AND media_key IS NULL").bind(draftId,user.id).run();
+      await audit(env,user,"creator.draft.remove","creator_post",null,{draft_id:draftId});
+      return json({ok:true},200,origin);
+    }
     if(url.pathname==="/api/creator/posts"&&(request.method==="GET"||request.method==="POST")){
       if(request.method==="GET"){
         const rows=await env.DB.prepare("SELECT id,title,description,content_rating,visibility,price_cents,status,published_at,created_at,updated_at FROM creator_posts WHERE creator_id=? ORDER BY created_at DESC LIMIT 100").bind(user.id).all();
