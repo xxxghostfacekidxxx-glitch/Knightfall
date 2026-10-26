@@ -10,6 +10,7 @@ on:
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
+      - "scripts/arcade-gameplay-doctor.mjs"
       - ".github/workflows/arcade-test-fleet.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -136,6 +137,11 @@ jobs:
           node scripts/arcade-asset-doctor.mjs --fix > /tmp/arcade-doctor.json || status=$?
           cat /tmp/arcade-doctor.json
           if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then exit "$status"; fi
+      - name: Apply known-safe gameplay regression fixes
+        run: |
+          node scripts/arcade-gameplay-doctor.mjs --fix > /tmp/arcade-gameplay-doctor.json
+          cat /tmp/arcade-gameplay-doctor.json
+          node --check public/arcade/hosted/arcade-cabinet-engine.js
       - name: Create reviewable repair PR only when files changed
         env:
           GH_TOKEN: ${{ github.token }}
@@ -152,10 +158,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$BRANCH"
           git add public/arcade
-          git commit -m "fix(arcade): normalize broken public-prefixed asset URLs"
+          git commit -m "fix(arcade): apply verified asset and gameplay regression repairs"
           git push --force-with-lease origin "$BRANCH"
           if gh pr list --repo "$GH_REPO" --head "$BRANCH" --state open --json number --jq 'length' | grep -qx '0'; then
-            gh pr create --repo "$GH_REPO" --base main --head "$BRANCH" --title "fix(arcade): automated safe asset URL repairs" --body "Deterministic repairs only: removes an invalid /public/ URL prefix when the corrected asset exists. Review required. Source: https://github.com/$GH_REPO/actions/runs/$RUN_ID"
+            gh pr create --repo "$GH_REPO" --base main --head "$BRANCH" --title "fix(arcade): automated asset and gameplay regression repairs" --body "Deterministic repairs only: existing-file asset URL corrections and known Kaiju hitbox regression signature. Review required. Source: https://github.com/$GH_REPO/actions/runs/$RUN_ID"
           fi
 
   report-failure:
