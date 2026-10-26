@@ -448,6 +448,75 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-lanterns",
+      "name": "Void Lanterns",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-lantern.svg",
+        "void-lantern.svg"
+      ],
+      "notes": "Extinguish the infernal lanterns in an original solvable toggle-grid logic puzzle.",
+      "engine": "/arcade/hosted/void-lanterns/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-lanterns",
+      "assets": [
+        {
+          "name": "ember-lantern.svg",
+          "path": "/arcade/hosted/void-lanterns/sprites/ember-lantern.svg"
+        },
+        {
+          "name": "void-lantern.svg",
+          "path": "/arcade/hosted/void-lanterns/sprites/void-lantern.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-pairs",
+      "name": "Crypt Pairs",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-sigil.svg",
+        "void-sigil.svg"
+      ],
+      "notes": "Reveal matching sigils in an original sixteen-card memory challenge.",
+      "engine": "/arcade/hosted/crypt-pairs/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-pairs",
+      "assets": [
+        {
+          "name": "ember-sigil.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/ember-sigil.svg"
+        },
+        {
+          "name": "void-sigil.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/void-sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-mines",
+      "name": "Cinder Mines",
+      "genre": "Puzzle",
+      "sprites": [
+        "ash-marker.svg",
+        "void-mine.svg"
+      ],
+      "notes": "Clear a minefield of hidden Void charges with first-click safety and mobile flag controls.",
+      "engine": "/arcade/hosted/cinder-mines/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-mines",
+      "assets": [
+        {
+          "name": "ash-marker.svg",
+          "path": "/arcade/hosted/cinder-mines/sprites/ash-marker.svg"
+        },
+        {
+          "name": "void-mine.svg",
+          "path": "/arcade/hosted/cinder-mines/sprites/void-mine.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
