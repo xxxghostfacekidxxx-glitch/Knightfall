@@ -116,6 +116,34 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ashbound-runner",
+      "name": "Ashbound Runner",
+      "genre": "Platformer",
+      "sprites": [
+        "runner.svg",
+        "spike.svg",
+        "wing.svg"
+      ],
+      "notes": "Original wasteland runner, spike hazard, and winged scavenger sprites.",
+      "engine": "/arcade/hosted/ashbound-runner/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashbound-runner",
+      "assets": [
+        {
+          "name": "runner.svg",
+          "path": "/arcade/hosted/ashbound-runner/sprites/runner.svg"
+        },
+        {
+          "name": "spike.svg",
+          "path": "/arcade/hosted/ashbound-runner/sprites/spike.svg"
+        },
+        {
+          "name": "wing.svg",
+          "path": "/arcade/hosted/ashbound-runner/sprites/wing.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
