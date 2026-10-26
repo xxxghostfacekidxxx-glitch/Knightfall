@@ -399,12 +399,12 @@
     input.value = ""; input.dispatchEvent(new Event("input"));
     addMessage("user", message, "You");
     const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…"; messagesEl.append(typing); scrollToBottom();
+    let streamedArticle=null;
     try {
       if (!activeConversation) {
         const created = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
         activeConversation = created.conversation.id;
       }
-      let streamedArticle=null;
       const result=await streamChaosReply(activeConversation,message,moodSelect.value,partial=>{
         if(!streamedArticle){typing.remove();streamedArticle=addMessage("assistant",partial,"Miss Chaos · "+(moodNames[moodSelect.value]||"Default"));}
         else streamedArticle.querySelector(".message-content").textContent=partial;
@@ -431,8 +431,11 @@
       showError((error.message || "Reply unavailable.") + " Check the conversation history before retrying, since the server may have saved the message.");
     } finally { busy = false; sendButton.disabled = adminViewing; if (!adminViewing) input.focus(); }
   });
+  speakReplies=localStorage.getItem("missChaosSpeakReplies")==="1";
+  $("#speak-toggle").setAttribute("aria-pressed",String(speakReplies));
   $("#speak-toggle").addEventListener("click", () => {
     speakReplies = !speakReplies;
+    try{localStorage.setItem("missChaosSpeakReplies",speakReplies?"1":"0")}catch{}
     $("#speak-toggle").setAttribute("aria-pressed", String(speakReplies));
     $("#speak-toggle").title = speakReplies ? "Spoken replies on" : "Toggle spoken replies";
     if (!speakReplies && "speechSynthesis" in window) window.speechSynthesis.cancel();
