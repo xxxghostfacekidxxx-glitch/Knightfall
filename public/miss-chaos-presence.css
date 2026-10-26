@@ -42,3 +42,5 @@
 #mc-voice[aria-pressed="true"]{border-color:#39ff88;color:#39ff88;box-shadow:0 0 12px #39ff8833}
 @keyframes mc-thinking{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.mc-head img{transition:none;animation:none!important}}
+
+#mc-game-tips{margin:.45rem .75rem 0;align-self:flex-start;border:1px solid #51402b;border-radius:8px;background:#17130f;color:#c7ff8a;padding:.45rem .65rem;font:inherit;font-size:.72rem;font-weight:750;cursor:pointer}#mc-game-tips[hidden]{display:none}
