@@ -4,7 +4,8 @@ const APP_SHELL = [
   "/offline.html",
   "/theme.css",
   "/nav.js",
-  "/icons/knightfall.svg"
+  "/icons/knightfall.svg",
+  "/icons/knightfall-maskable.svg"
 ];
 
 self.addEventListener("install", event => {
