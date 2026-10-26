@@ -270,7 +270,7 @@
     const button = event.currentTarget.querySelector('button[type="submit"]');
     const local = $("#astro-birth-time").value;
     const offset = Number($("#astro-utc-offset").value);
-    const parts = /^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})$/.exec(local);
+    const parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
     if (!parts || !Number.isFinite(offset) || offset < -12 || offset > 14) { status.textContent = "Enter a valid birth date, time, and historical UTC offset."; return; }
     const [year, month, day, hour, minute] = parts.slice(1).map(Number);
     const clock = new Date(Date.UTC(year, month - 1, day, hour, minute));
