@@ -27,7 +27,7 @@
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261026-presence1";
+    companion.src = "/miss-chaos-presence.js?v=20261026-presence2";
     companion.dataset.missChaosPresence = "true";
     document.head.append(companion);
   }
