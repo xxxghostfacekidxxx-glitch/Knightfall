@@ -20,9 +20,42 @@
     "entertainment"
   ],
   "shortcuts": [
-    { "name": "Explore Ash-Fall", "short_name": "Explore", "url": "/homepage.html?source=app-shortcut", "icons": [{ "src": "/icons/knightfall.svg", "sizes": "any", "type": "image/svg+xml" }] },
-    { "name": "Chaos Cartridge", "short_name": "Games", "url": "/chaos-cartridge.html?source=app-shortcut", "icons": [{ "src": "/icons/knightfall.svg", "sizes": "any", "type": "image/svg+xml" }] },
-    { "name": "Messages", "short_name": "Messages", "url": "/messages.html?source=app-shortcut", "icons": [{ "src": "/icons/knightfall.svg", "sizes": "any", "type": "image/svg+xml" }] }
+    {
+      "name": "Explore Ash-Fall",
+      "short_name": "Explore",
+      "url": "/homepage.html?source=app-shortcut",
+      "icons": [
+        {
+          "src": "/icons/knightfall-maskable.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Chaos Cartridge",
+      "short_name": "Games",
+      "url": "/chaos-cartridge.html?source=app-shortcut",
+      "icons": [
+        {
+          "src": "/icons/knightfall-maskable.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "short_name": "Messages",
+      "url": "/messages.html?source=app-shortcut",
+      "icons": [
+        {
+          "src": "/icons/knightfall-maskable.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
   ],
   "icons": [
     {
@@ -32,7 +65,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/knightfall.svg",
+      "src": "/icons/knightfall-maskable.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
