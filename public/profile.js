@@ -220,6 +220,16 @@ async function loadProfilePhotos(username,ownProfile){
   }
 }
 
+async function loadMemberActivity(member,own){
+ const section=document.createElement("section");section.className="profile-social-panel";
+ section.innerHTML='<h2>Member updates</h2><p class="muted">Regular social updates appear here. Adult content stays separate.</p>'+(own?'<form id="profile-update-form"><textarea maxlength="5000" rows="3" placeholder="Share an update" required></textarea><select aria-label="Update visibility"><option value="public">Public</option><option value="followers">Followers</option><option value="private">Private</option></select><button class="action primary">Publish</button><p role="status"></p></form>':'')+'<div id="member-update-list"></div>';
+ root.append(section);
+ const list=section.querySelector("#member-update-list");
+ const refresh=async()=>{const d=await api("/api/social/activity?user_id="+encodeURIComponent(member.id)+"&limit=30");list.innerHTML=(d.activities||[]).map(a=>'<article class="activity"><small>'+esc(new Date(a.created_at).toLocaleString())+(own?' · '+esc(a.visibility):'')+'</small><p>'+esc(a.body)+'</p></article>').join("")||'<p class="muted">No updates yet.</p>'};
+ try{await refresh()}catch(e){list.textContent=e.message}
+ if(own)section.querySelector("form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,button=form.querySelector("button"),status=form.querySelector('[role="status"]');button.disabled=true;try{await api("/api/social/activity",{method:"POST",body:JSON.stringify({body:form.querySelector("textarea").value,visibility:form.querySelector("select").value})});form.querySelector("textarea").value="";status.textContent="Published.";await refresh()}catch(err){status.textContent=err.message}finally{button.disabled=false}});
+}
+
 async function load(){
  try{
    if(adminUserId){
@@ -231,7 +241,7 @@ async function load(){
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadMemberActivity(d.user,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
