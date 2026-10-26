@@ -1411,6 +1411,186 @@
         }
       ],
       "status": "rebranded and committed; code provenance and browser QA pending"
+    },
+    {
+      "id": "cinder-crossing",
+      "name": "Cinder Crossing",
+      "genre": "Arcade",
+      "sprites": [
+        "crossing-mark.svg"
+      ],
+      "notes": "Cross perilous lanes through the ashlands. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/cinder-crossing/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-crossing",
+      "assets": [
+        {
+          "name": "crossing-mark.svg",
+          "path": "/arcade/hosted/cinder-crossing/sprites/crossing-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "afterburn-breakout",
+      "name": "Afterburn Breakout",
+      "genre": "Arcade",
+      "sprites": [
+        "afterburn-mark.svg"
+      ],
+      "notes": "Break through the infernal brick wall. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/afterburn-breakout/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/afterburn-breakout",
+      "assets": [
+        {
+          "name": "afterburn-mark.svg",
+          "path": "/arcade/hosted/afterburn-breakout/sprites/afterburn-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "hexa-havoc",
+      "name": "Hexa Havoc",
+      "genre": "Puzzle",
+      "sprites": [
+        "hex-mark.svg"
+      ],
+      "notes": "Build combos on a tactical hex board. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/hexa-havoc/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hexa-havoc",
+      "assets": [
+        {
+          "name": "hex-mark.svg",
+          "path": "/arcade/hosted/hexa-havoc/sprites/hex-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "last-ember",
+      "name": "Last Ember",
+      "genre": "Adventure",
+      "sprites": [
+        "last-ember-mark.svg"
+      ],
+      "notes": "Survive the last days of a ruined world. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/last-ember/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/last-ember",
+      "assets": [
+        {
+          "name": "last-ember-mark.svg",
+          "path": "/arcade/hosted/last-ember/sprites/last-ember-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "cinder-hopper",
+      "name": "Cinder Hopper",
+      "genre": "Platformer",
+      "sprites": [
+        "hopper-mark.svg"
+      ],
+      "notes": "Hop through the burning obstacle field. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/cinder-hopper/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-hopper",
+      "assets": [
+        {
+          "name": "hopper-mark.svg",
+          "path": "/arcade/hosted/cinder-hopper/sprites/hopper-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "lift-riot",
+      "name": "Lift Riot",
+      "genre": "Strategy",
+      "sprites": [
+        "lift-mark.svg"
+      ],
+      "notes": "Manage chaotic elevator traffic. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/lift-riot/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/lift-riot",
+      "assets": [
+        {
+          "name": "lift-mark.svg",
+          "path": "/arcade/hosted/lift-riot/sprites/lift-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "ashen-blocks",
+      "name": "Ashen Blocks",
+      "genre": "Puzzle",
+      "sprites": [
+        "blocks-mark.svg"
+      ],
+      "notes": "Fit blocks into the Ash-Fall puzzle board. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/ashen-blocks/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashen-blocks",
+      "assets": [
+        {
+          "name": "blocks-mark.svg",
+          "path": "/arcade/hosted/ashen-blocks/sprites/blocks-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "skyline-foundry",
+      "name": "Skyline Foundry",
+      "genre": "Strategy",
+      "sprites": [
+        "skyline-mark.svg"
+      ],
+      "notes": "Build a new skyline from the ruins. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/skyline-foundry/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/skyline-foundry",
+      "assets": [
+        {
+          "name": "skyline-mark.svg",
+          "path": "/arcade/hosted/skyline-foundry/sprites/skyline-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "particle-panic",
+      "name": "Particle Panic",
+      "genre": "Arcade",
+      "sprites": [
+        "particle-mark.svg"
+      ],
+      "notes": "Survive the particle storm. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/particle-panic/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/particle-panic",
+      "assets": [
+        {
+          "name": "particle-mark.svg",
+          "path": "/arcade/hosted/particle-panic/sprites/particle-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "ashen-dominion",
+      "name": "Ashen Dominion",
+      "genre": "Strategy",
+      "sprites": [
+        "dominion-mark.svg"
+      ],
+      "notes": "Command an ashland frontier faction. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "engine": "/arcade/hosted/ashen-dominion/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashen-dominion",
+      "assets": [
+        {
+          "name": "dominion-mark.svg",
+          "path": "/arcade/hosted/ashen-dominion/sprites/dominion-mark.svg"
+        }
+      ],
+      "status": "original SVG art integrated; provenance and browser QA pending"
     }
   ]
 }
