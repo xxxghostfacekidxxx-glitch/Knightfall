@@ -1,10 +1,10 @@
 # Ash-Fall Social, Adult Creator, and Dating Integration Plan
 
 ## Architecture
-Ash-Fall remains a Cloudflare Pages frontend backed by its existing Cloudflare Worker, D1, R2, and session system. Elgg is an architectural reference, not a PHP application to install inside a Worker. The new D1 migration `0024_social_adult_dating.sql` creates the first data foundation for activity streams, interest groups, bookmarks, adult creator posts and subscriptions, dating profiles/matches, and safety reports.
+Ash-Fall remains a Cloudflare Pages frontend backed by its existing Cloudflare Worker, D1, R2, and session system. Elgg is an architectural reference, not a PHP application to install inside a Worker. The new D1 migration `0033_social_adult_dating.sql` creates the first data foundation for activity streams, interest groups, bookmarks, adult creator posts and subscriptions, dating profiles/matches, and safety reports.
 
 ## Build sequence
-1. Apply migration 0024 to the production D1 database and validate every table/index before deploying routes.
+1. Apply migration 0033 to the production D1 database and validate every table/index before deploying routes.
 2. Add authenticated, paginated activity endpoints with per-item visibility checks and follow/block filtering.
 3. Add group CRUD, join/approval/invite workflows, group roles, and moderation.
 4. Add a provider-backed 18+ verification flow. Store only verification status and provider reference; do not store ID photos. Access is denied by default and must be rechecked on every adult endpoint.
@@ -30,4 +30,7 @@ This review interface displays stored text and record metadata; it is not a medi
 ## Member safety and moderation workflows
 Authenticated members can submit bounded safety reports through `POST /api/social/report`, list their own block list through `GET /api/social/blocks`, block an active member through `POST /api/social/blocks`, and unblock through `DELETE /api/social/blocks/:userId`. Reports are rate-limited per reporter and written to the moderation queue; block/unblock and report actions are audited. Dating discovery and match lists exclude members blocked in either direction. The restricted administrator review panel includes a Safety Reports category, ordered to surface open reports first.
 
-Migration `0025_social_safety_controls.sql` creates the dedicated block relation and reporting index. Apply migrations 0024 and 0025 in order before deploying these routes. These controls are API foundations; the user-facing report/block buttons and staff report-resolution workflow still need browser testing and additional UI work.
+Migration `0034_social_safety_controls.sql` creates the dedicated block relation and reporting index. Apply migrations 0033 and 0034 in order before deploying these routes. These controls are API foundations; the user-facing report/block buttons and staff report-resolution workflow still need browser testing and additional UI work.
+
+## Production rollout record (2026-10-26)
+The migrations were renumbered to 0033/0034 because 0024 and 0025 were already used for unrelated production schema changes. Both new migrations were applied to `knightfall-forum` and recorded in `d1_migrations`. Cloudflare Pages deployed the merged social frontend, and the Worker script was uploaded through Cloudflare's content-only endpoint to preserve existing bindings and secrets. The dedicated `knightfall-creator-private-media` R2 bucket exists but is not connected to public upload or delivery endpoints. Adult age assurance, creator media publishing, payment integration, and full live user journey tests remain release gates; do not represent these as active capabilities.
