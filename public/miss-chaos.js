@@ -102,6 +102,8 @@
   const memoryForm = $("#memory-form"), memoryInput = $("#memory-input");
   const memoryCategory = $("#memory-category"), memoryStatus = $("#memory-status");
   const memoryCategoryNames = {personal:"Personal",preference:"Preference",project:"Project",other:"Other"};
+  let memorySearchTimer;
+  $("#memory-search")?.addEventListener("input",()=>{clearTimeout(memorySearchTimer);memorySearchTimer=setTimeout(()=>refreshMemories().catch(error=>showMemoryStatus(error.message,true)),200);});
   function showMemoryStatus(message, isError = false) {
     memoryStatus.textContent = message;
     memoryStatus.classList.toggle("error", isError);
@@ -110,16 +112,18 @@
   async function refreshMemories() {
     const data = await request("/api/chaos/memories");
     const memories = data.memories || [];
+    const search = ($("#memory-search")?.value || "").trim().toLowerCase();
+    const filteredMemories=search?memories.filter(m=>String(m.memory).toLowerCase().includes(search)||String(m.category).toLowerCase().includes(search)):memories;
     memoryCountEl.textContent = memories.length + " / 100";
     memoryListEl.replaceChildren();
-    if (!memories.length) {
+    if (!filteredMemories.length) {
       const empty = document.createElement("p");
       empty.className = "muted";
-      empty.textContent = "Nothing saved yet. Add a detail above when you want me to remember it.";
+      empty.textContent = search ? "No saved memories match your search." : "Nothing saved yet. Add a detail above when you want me to remember it.";
       memoryListEl.append(empty);
       return memories;
     }
-    for (const memory of memories) {
+    for (const memory of filteredMemories) {
       const card = document.createElement("article");
       card.className = "memory-card";
       const text = document.createElement("p");
