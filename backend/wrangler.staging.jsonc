@@ -4,6 +4,9 @@
   "main": "src/index.mmo-staging.js",
   "compatibility_date": "2026-10-05",
   "workers_dev": true,
+  "vars": {
+    "STAGING_ALLOWED_ORIGINS": "http://localhost:8765,http://127.0.0.1:8765"
+  },
   "observability": {
     "enabled": true
   },
