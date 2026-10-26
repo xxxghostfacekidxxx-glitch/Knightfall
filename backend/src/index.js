@@ -1014,7 +1014,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to calculate a chart."},401,origin);
     if(!(await rateLimit(env,request,"chaos-chart",15,60)))return json({error:"Too many chart requests. Try again shortly."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    if(typeof body.utc!=="string"||body.utc.length>40||!/^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d(?::\\d\\d(?:\\.\\d{1,3})?)?Z$/.test(body.utc))return json({error:"Provide a UTC timestamp ending in Z."},400,origin);
+    if(typeof body.utc!=="string"||body.utc.length>40||!/^\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d{1,3})?)?Z$/.test(body.utc))return json({error:"Provide a UTC timestamp ending in Z."},400,origin);
     try{return json(typeof body.natal_utc==="string" ? calculateTransits(body.natal_utc,body.utc) : calculateAstrology(body.utc),200,origin);}
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
