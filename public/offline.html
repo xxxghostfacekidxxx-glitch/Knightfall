@@ -29,9 +29,20 @@
   <h1>The chaos can wait.</h1>
   <p>You're offline right now. Private pages, messages, games that need the server, and account actions are not stored for offline use. Reconnect to pick up where you left off; we deliberately avoid caching your private account data on this device.</p>
   <div class="actions">
-    <button type="button" onclick="location.reload()">Try again</button>
+    <button id="retry-connection" type="button">Try again</button>
     <a class="secondary" href="/index.html">Back to sign in</a>
   </div>
+  <p id="connection-status" role="status" aria-live="polite">Waiting for a connection…</p>
 </main>
+<script>
+  const retry = document.getElementById("retry-connection");
+  const status = document.getElementById("connection-status");
+  retry.addEventListener("click", () => location.reload());
+  window.addEventListener("online", () => {
+    status.textContent = "Connection restored. Reloading Ash-Fall…";
+    location.reload();
+  });
+  window.addEventListener("offline", () => { status.textContent = "Still offline. Your private data remains uncached."; });
+</script>
 </body>
 </html>
