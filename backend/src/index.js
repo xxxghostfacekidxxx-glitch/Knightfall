@@ -405,7 +405,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  }
  const user=await requireUser(request,env);
  if(!user)return json({error:"Sign in to manage your personal bots."},401,origin);
- const cap=user.role==="admin"?10:user.role==="moderator"?5:2;
+ const cap=user.role==="god"||user.role==="admin"?10:user.role==="moderator"?5:2;
  if(path===collection&&request.method==="GET"){
   const {results}=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE owner_id=? ORDER BY created_at DESC").bind(user.id).all();
   return json({bots:(results||[]).map(b=>({...b,is_public:Number(b.is_public)===1,is_nsfw:Number(b.is_nsfw)===1,share_url:Number(b.is_public)===1?"https://ash-fall.com/bot.html?id="+b.id:null})),limit:cap,role:user.role},200,origin);
