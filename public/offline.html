@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="robots" content="noindex">
+  <title>You're offline | Ash-Fall</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/theme.css">
+  <style>
+    .offline{width:min(680px,92%);margin:12vh auto 3rem;padding:clamp(1.3rem,5vw,3rem);border:1px solid #333;border-radius:18px;background:#101010;text-align:center}
+    .offline .mark{font-size:3rem;color:#a8ff3e}
+    .offline h1{font-size:clamp(2.4rem,8vw,4.5rem);line-height:.95;letter-spacing:-.06em;margin:.6rem 0 1rem}
+    .offline p{color:#aaa;line-height:1.7}
+    .offline .actions{display:flex;justify-content:center;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}
+    .offline a,.offline button{border:1px solid #a8ff3e;border-radius:8px;background:#a8ff3e;color:#101010;padding:.8rem 1rem;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+    .offline a.secondary{background:#171717;color:#eee;border-color:#393939}
+  </style>
+</head>
+<body>
+<main class="offline">
+  <div class="mark" aria-hidden="true">✳</div>
+  <p class="eyebrow">ASH-FALL / CONNECTION LOST</p>
+  <h1>The chaos can wait.</h1>
+  <p>You're offline right now. Private pages, messages, games that need the server, and account actions are not stored for offline use. Reconnect to pick up where you left off; we deliberately avoid caching your private account data on this device.</p>
+  <div class="actions">
+    <button type="button" onclick="location.reload()">Try again</button>
+    <a class="secondary" href="/index.html">Back to sign in</a>
+  </div>
+</main>
+</body>
+</html>
