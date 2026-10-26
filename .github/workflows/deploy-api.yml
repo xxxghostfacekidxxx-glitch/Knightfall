@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'backend/src/**'
+      - 'backend/package.json'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
   workflow_dispatch:
@@ -23,6 +24,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
+      - name: Install astronomy dependency
+        run: npm install --prefix backend --no-audit --no-fund
 
       - name: Verify astrology calculations
         run: node --test scripts/astrology.test.mjs
