@@ -351,6 +351,34 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-kickoff",
+      "name": "Cinder Kickoff",
+      "genre": "Sports",
+      "sprites": [
+        "cinder-striker.svg",
+        "void-keeper.svg",
+        "ash-ball.svg"
+      ],
+      "notes": "Original one-minute top-down soccer game with CPU opponent, ball physics, keyboard and mobile controls, and three bespoke SVG sprites.",
+      "engine": "/arcade/hosted/cinder-kickoff/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-kickoff",
+      "assets": [
+        {
+          "name": "cinder-striker.svg",
+          "path": "/arcade/hosted/cinder-kickoff/sprites/cinder-striker.svg"
+        },
+        {
+          "name": "void-keeper.svg",
+          "path": "/arcade/hosted/cinder-kickoff/sprites/void-keeper.svg"
+        },
+        {
+          "name": "ash-ball.svg",
+          "path": "/arcade/hosted/cinder-kickoff/sprites/ash-ball.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
