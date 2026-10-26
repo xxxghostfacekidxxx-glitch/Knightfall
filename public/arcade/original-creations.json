@@ -517,6 +517,75 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-serpent",
+      "name": "Ember Serpent",
+      "genre": "Arcade",
+      "sprites": [
+        "serpent.svg",
+        "relic.svg"
+      ],
+      "notes": "Original molten-serpent arcade game with swipe steering, relic collection, and growing-tail survival.",
+      "engine": "/arcade/hosted/ember-serpent/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-serpent",
+      "assets": [
+        {
+          "name": "serpent.svg",
+          "path": "/arcade/hosted/ember-serpent/sprites/serpent.svg"
+        },
+        {
+          "name": "relic.svg",
+          "path": "/arcade/hosted/ember-serpent/sprites/relic.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-crateworks",
+      "name": "Ash Crateworks",
+      "genre": "Puzzle",
+      "sprites": [
+        "crate.svg",
+        "furnace.svg"
+      ],
+      "notes": "Push salvage crates onto furnaces through original warehouse puzzles with undo support.",
+      "engine": "/arcade/hosted/ash-crateworks/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-crateworks",
+      "assets": [
+        {
+          "name": "crate.svg",
+          "path": "/arcade/hosted/ash-crateworks/sprites/crate.svg"
+        },
+        {
+          "name": "furnace.svg",
+          "path": "/arcade/hosted/ash-crateworks/sprites/furnace.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-smash",
+      "name": "Crypt Smash",
+      "genre": "Arcade",
+      "sprites": [
+        "void-wisp.svg",
+        "ember-hammer.svg"
+      ],
+      "notes": "Smash rising Void creatures in a 45-second reaction game while avoiding friendly embers.",
+      "engine": "/arcade/hosted/crypt-smash/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-smash",
+      "assets": [
+        {
+          "name": "void-wisp.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/void-wisp.svg"
+        },
+        {
+          "name": "ember-hammer.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/ember-hammer.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
