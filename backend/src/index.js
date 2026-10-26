@@ -657,11 +657,11 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await audit(env,viewer,"social.member.block","social_user_block",target,{});
     return json({ok:true,blocked_user_id:target},200,origin);
   }
-  const unblockMatch=url.pathname.match(/^\\/api\\/social\\/blocks\\/([0-9]+)$/);
-  if(unblockMatch&&request.method==="DELETE"){
+  const unblockMatch=url.pathname.startsWith("/api/social/blocks/")?url.pathname.slice("/api/social/blocks/".length):"";
+  if(unblockMatch&&/^[0-9]+$/.test(unblockMatch)&&request.method==="DELETE"){
     const viewer=await requireUser(request,env);
     if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
-    const target=Number(unblockMatch[1]);
+    const target=Number(unblockMatch);
     await env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target).run();
     await audit(env,viewer,"social.member.unblock","social_user_block",target,{});
     return json({ok:true},200,origin);
