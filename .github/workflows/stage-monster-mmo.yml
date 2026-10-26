@@ -60,6 +60,10 @@ jobs:
             console.log("Canonical staging config, isolated bindings, and non-production CORS validated.");
           '
 
+      - name: Check staging Worker JavaScript syntax
+        working-directory: backend
+        run: node --check src/index.mmo-staging.js
+
       - name: Apply migrations to isolated staging D1
         uses: cloudflare/wrangler-action@v4
         with:
