@@ -679,7 +679,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     if(!["profile","activity","group","creator_post","dating_profile","message"].includes(objectType)||reason.length<3)return json({error:"Choose a valid report category and provide a reason of at least 3 characters."},400,origin);
     if(body.reported_user_id!=null&&reportedUserId===null)return json({error:"Invalid reported member."},400,origin);
     if(reportedUserId!==null&&!await env.DB.prepare("SELECT id FROM users WHERE id=?").bind(reportedUserId).first())return json({error:"Reported member not found."},404,origin);
-    const recent=await env.DB.prepare("SELECT COUNT(*) AS count FROM safety_reports WHERE reporter_id=? AND created_at>=datetime('now','-1 hour')").bind(viewer.id).first();
+    const recent=await env.DB.prepare("SELECT COUNT(*) AS count FROM safety_reports WHERE reporter_id=? AND datetime(created_at)>=datetime('now','-1 hour')").bind(viewer.id).first();
     if(Number(recent?.count||0)>=10)return json({error:"Report limit reached. Try again later."},429,origin);
     const result=await env.DB.prepare("INSERT INTO safety_reports (reporter_id,reported_user_id,object_type,object_id,reason,details,status,created_at) VALUES (?,?,?,?,?,?,'open',?)").bind(viewer.id,reportedUserId,objectType,objectId||null,reason,details,new Date().toISOString()).run();
     await audit(env,viewer,"social.safety.report","safety_report",result.meta?.last_row_id,{object_type:objectType,reported_user_id:reportedUserId});
@@ -773,7 +773,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       if(!Number.isSafeInteger(target)||target<=0||target===user.id)return json({error:"Choose another member to like."},400,origin);
       const targetProfile=await env.DB.prepare("SELECT d.user_id FROM dating_profiles d JOIN adult_access_verifications v ON v.user_id=d.user_id JOIN users u ON u.id=d.user_id WHERE d.user_id=? AND d.visibility='discoverable' AND u.status='active' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?)").bind(target,new Date().toISOString()).first();
       if(!targetProfile)return json({error:"That dating profile is unavailable."},404,origin);
-      const blocked=await env.DB.prepare("SELECT 1 AS blocked FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target,target,user.id).first();
+      const blocked=await env.DB.prepare("SELECT 1 AS blocked FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) UNION ALL SELECT 1 AS blocked FROM social_user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target,target,user.id,user.id,target,target,user.id).first();
       if(blocked)return json({error:"This interaction is unavailable."},403,origin);
       const now=new Date().toISOString();
       await env.DB.prepare("INSERT INTO dating_likes (from_user_id,to_user_id,created_at) VALUES (?,?,?) ON CONFLICT(from_user_id,to_user_id) DO NOTHING").bind(user.id,target,now).run();
