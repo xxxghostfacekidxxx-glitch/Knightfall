@@ -177,6 +177,28 @@
     toggle.setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
     nav.classList.toggle("open", !open);
   });
+  // Keep the mobile menu navigable by keyboard and dismissible without hunting for the tiny toggle.
+  const closeMobileMenu = () => {
+    if (!nav.classList.contains("open")) return;
+    nav.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open navigation");
+    nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.removeAttribute("open"));
+  };
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (nav.classList.contains("open")) {
+      closeMobileMenu();
+      toggle.focus();
+    } else {
+      const openGroup = nav.querySelector(".kf-nav-group[open]");
+      if (openGroup) { openGroup.removeAttribute("open"); openGroup.querySelector("summary")?.focus(); }
+    }
+  });
+  document.addEventListener("pointerdown", event => {
+    if (!header.contains(event.target)) closeMobileMenu();
+  });
+  window.addEventListener("popstate", closeMobileMenu);
   nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
     nav.querySelectorAll(".kf-nav-group").forEach(group => group.removeAttribute("open"));
     nav.classList.remove("open");
