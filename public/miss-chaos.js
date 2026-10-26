@@ -263,6 +263,32 @@
   moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
+  $("#astro-chart-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const status = $("#astro-chart-status");
+    const button = event.currentTarget.querySelector('button[type="submit"]');
+    const local = $("#astro-birth-time").value;
+    const offset = Number($("#astro-utc-offset").value);
+    const parts = /^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})$/.exec(local);
+    if (!parts || !Number.isFinite(offset) || offset < -12 || offset > 14) { status.textContent = "Enter a valid birth date, time, and historical UTC offset."; return; }
+    const [year, month, day, hour, minute] = parts.slice(1).map(Number);
+    const clock = new Date(Date.UTC(year, month - 1, day, hour, minute));
+    if (clock.getUTCFullYear() !== year || clock.getUTCMonth() !== month - 1 || clock.getUTCDate() !== day || clock.getUTCHours() !== hour || clock.getUTCMinutes() !== minute) { status.textContent = "That calendar date or time is invalid."; return; }
+    const utc = new Date(clock.getTime() - offset * 3600000).toISOString().replace(".000Z","Z");
+    button.disabled = true;
+    status.textContent = "Calculating approximate planetary positions…";
+    try {
+      const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify({utc})});
+      const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
+      const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
+      moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
+      input.value = "Please interpret my approximate Western tropical birth chart in depth. UTC: " + chart.utc + ". Placements: " + placements + ". Major aspects (up to 4° orb): " + aspects + ". Explain strengths, challenges, patterns, and the chart as a whole. No rising sign or houses have been calculated. Treat astrology as symbolic interpretation, and clearly state the limitations of these approximate calculations.";
+      input.dispatchEvent(new Event("input"));
+      status.textContent = "Calculated " + Object.keys(chart.bodies || {}).length + " planetary positions and " + (chart.aspects || []).length + " major aspects. Reading prepared below; review and press Send.";
+      input.focus();
+    } catch (error) { status.textContent = error.message || "Chart calculation failed."; }
+    finally { button.disabled = false; }
+  });
   astroTools.addEventListener("click", event => { const button = event.target.closest("[data-astro-prompt]"); if (!button || busy || adminViewing) return; const prompt = astrologyPrompts[button.dataset.astroPrompt]; if (!prompt) return; input.value = prompt; input.dispatchEvent(new Event("input")); input.focus(); });
   input.addEventListener("input", () => {
     $("#char-count").textContent = input.value.length + " / 4000";
