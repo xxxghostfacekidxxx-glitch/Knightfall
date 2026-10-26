@@ -221,3 +221,13 @@
 #birth-chart-studio{margin-top:1.25rem}
 #birth-chart-form input,#birth-chart-form select{max-width:100%}
 @media(max-width:480px){.birth-chart-big-three{gap:.3rem}.birth-chart-big-three>div{padding:.55rem}}
+
+/* Native photo library viewer */
+.ash-photo-lightbox{position:fixed;inset:0;z-index:100000;background:rgba(6,7,9,.97);color:#f8f2eb;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:max(12px,env(safe-area-inset-top)) 16px max(12px,env(safe-area-inset-bottom));}
+.ash-photo-lightbox-bar,.ash-photo-lightbox-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.ash-photo-lightbox button{background:#211b18;border:1px solid #b75b2c;border-radius:9px;color:#f8f2eb;padding:10px 14px;cursor:pointer;font:inherit;font-weight:700}
+.ash-photo-lightbox button:focus-visible{outline:3px solid #f07837;outline-offset:3px}
+.ash-photo-lightbox-image{display:flex;justify-content:center;align-items:center;min-height:0;overflow:hidden}
+.ash-photo-lightbox-image img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+.ash-photo-lightbox-footer p{margin:0;text-align:center;overflow-wrap:anywhere;font-size:.9rem;max-width:65ch}
+@media(max-width:560px){.ash-photo-lightbox{padding-inline:8px}.ash-photo-lightbox-footer{flex-wrap:wrap}.ash-photo-lightbox-footer p{order:-1;flex:1 0 100%}}
