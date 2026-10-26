@@ -13,12 +13,8 @@ The canonical inventory is [public/arcade/original-creations.json](../public/arc
 
 ## Current archive
 
-| Game | Custom SVG files | Status |
-| --- | ---: | --- |
-| Cinder Merge | 0 | Original implementation committed; browser QA pending |
-| Cinder Drift | 3 | Original implementation committed; browser QA pending |
-| Ash Serpent | 2 | Original implementation committed; browser QA pending |
-| Ember Pop | 3 | Original implementation committed; browser QA pending |
-| Pyre Stacks | 2 | Original implementation committed; browser QA pending |
+The authoritative, up-to-date inventory is the JSON manifest rather than a manually maintained count in this document. Devil Tools reads the manifest dynamically, including game names, sprites, source links, and QA status.
 
-The gallery reads the manifest at runtime and uses native browser download links for SVG assets. It does not upload or publish assets automatically. Old imported game directories are intentionally not deleted until all references and license obligations are audited.
+The archive includes Cinder Merge, Cinder Drift, Ash Serpent, Ember Pop, Pyre Stacks, Ashbound Runner, Cinder Grid, Crypt Words, and Ember Clash. Each entry is committed; browser QA and live deployment confirmation remain pending.
+
+Old imported game directories are intentionally not deleted until all references and license obligations are audited.
