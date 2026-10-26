@@ -67,6 +67,7 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      # Run this on every pull request so mobile overflow regressions block the Android-readiness PR.
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
       - name: Exercise hosted arcade cabinets in mobile Chromium
