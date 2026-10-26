@@ -49,6 +49,48 @@
     window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {}), { once: true });
   }
 
+  // An update is announced, never forced in the middle of a chat or game.
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    let updateToast = null;
+    const showUpdate = registration => {
+      if (!registration.waiting || !navigator.serviceWorker.controller || updateToast) return;
+      updateToast = document.createElement("aside");
+      updateToast.className = "kf-app-update";
+      updateToast.setAttribute("role", "status");
+      const message = document.createElement("span");
+      message.textContent = "Ash-Fall update ready. Install it when you're done here.";
+      const apply = document.createElement("button");
+      apply.type = "button"; apply.textContent = "Update";
+      const later = document.createElement("button");
+      later.type = "button"; later.textContent = "Later";
+      apply.addEventListener("click", () => {
+        apply.disabled = true; apply.textContent = "Updating…";
+        registration.waiting?.postMessage({type:"SKIP_WAITING"});
+      });
+      later.addEventListener("click", () => { updateToast.remove(); updateToast = null; });
+      updateToast.append(message, apply, later);
+      document.body.append(updateToast);
+    };
+    navigator.serviceWorker.ready.then(registration => {
+      if (registration.waiting) showUpdate(registration);
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        worker?.addEventListener("statechange", () => {
+          if (worker.state === "installed") showUpdate(registration);
+        });
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") registration.update().catch(() => {});
+      });
+    }).catch(() => {});
+    let updateActivated = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (updateActivated) return;
+      updateActivated = true;
+      if (updateToast) location.reload();
+    });
+  }
+
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
