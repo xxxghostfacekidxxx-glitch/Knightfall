@@ -43,7 +43,20 @@
     const text = document.createElement("div");
     text.className = "message-content";
     text.textContent = content;
-    article.append(heading, text);
+    const actions = document.createElement("div");
+    actions.className = "message-actions";
+    const copy = document.createElement("button");
+    copy.type = "button"; copy.className = "message-copy";
+    copy.textContent = "Copy"; copy.setAttribute("aria-label", "Copy " + (role === "user" ? "your" : "Miss Chaos") + " message");
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(content);
+        copy.textContent = "Copied";
+        setTimeout(() => { if (copy.isConnected) copy.textContent = "Copy"; }, 1600);
+      } catch { showError("Copy failed. Select the message text to copy it manually."); }
+    });
+    actions.append(copy);
+    article.append(heading, text, actions);
     messagesEl.append(article);
     if (wasNearBottom || role === "user") scrollToBottom();
     return article;
@@ -168,6 +181,29 @@
     await refreshConversations();
     scrollToBottom();
   }
+  async function exportConversation() {
+    if (busy || adminViewing) { showError("Export is available for your own conversations when no reply is in progress."); return; }
+    if (!activeConversation) { showError("Open a saved conversation before exporting."); return; }
+    const button = $("#export-chat");
+    button.disabled = true;
+    try {
+      const data = await request("/api/chaos/conversations/" + encodeURIComponent(activeConversation) + "/messages");
+      const lines = ["# Miss Chaos conversation", "", "Exported: " + new Date().toISOString(), "", ...(data.messages || []).flatMap(message => [
+        "## " + (message.role === "user" ? "You" : "Miss Chaos"),
+        "", String(message.content || ""), ""
+      ])];
+      const blob = new Blob([lines.join("\n")], {type:"text/markdown;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "miss-chaos-chat-" + new Date().toISOString().slice(0,10) + ".md";
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+      showError("");
+    } catch (error) { showError("Export failed: " + error.message); }
+    finally { button.disabled = false; }
+  }
+  $("#export-chat").addEventListener("click", exportConversation);
   async function newConversation() {
     if (busy) { showError("Wait for the current reply before starting another chat."); return; }
     saveDraft();
@@ -357,7 +393,12 @@
       typing.remove();
       showError(error.message || "Miss Chaos couldn't answer just now.");
       statusEl.textContent = "Waiting for a working AI connection";
+      // The server may have persisted the request even when the response failed.
+      // Keep the unsent text recoverable without encouraging an accidental duplicate send.
+      const optimistic = [...messagesEl.querySelectorAll(".message.user")].at(-1);
+      if (optimistic?.querySelector(".message-content")?.textContent === message) optimistic.remove();
       input.value = message; input.dispatchEvent(new Event("input"));
+      showError((error.message || "Reply unavailable.") + " Check the conversation history before retrying, since the server may have saved the message.");
     } finally { busy = false; sendButton.disabled = adminViewing; if (!adminViewing) input.focus(); }
   });
   $("#speak-toggle").addEventListener("click", () => {
