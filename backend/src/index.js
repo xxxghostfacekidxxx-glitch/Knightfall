@@ -676,7 +676,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await audit(env,user,"social.group.create","social_group",null,{group_id:id,visibility});
     return json({ok:true,group:{id,name,slug,description,visibility,join_policy:joinPolicy,created_at:now}},201,origin);
   }
-  const groupJoinMatch=url.pathname.match(/^\/api\/social\/groups\/([A-Za-z0-9_-]{8,80})\/join$/);
+  const groupJoinParts=url.pathname.split("/"); const groupJoinId=groupJoinParts[4]; const groupJoinMatch=groupJoinParts.length===6&&groupJoinParts[1]==="api"&&groupJoinParts[2]==="social"&&groupJoinParts[3]==="groups"&&groupJoinParts[5]==="join"&&typeof groupJoinId==="string"&&/^[A-Za-z0-9_-]{8,80}$/.test(groupJoinId)?[null,groupJoinId]:null;
   if(groupJoinMatch&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to join a group."},401,origin);
     const group=await env.DB.prepare("SELECT id,visibility,join_policy,status FROM social_groups WHERE id=?").bind(groupJoinMatch[1]).first();
@@ -739,9 +739,9 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
       const rows=await env.DB.prepare("SELECT u.id AS user_id,u.username,u.display_name,u.avatar_url,d.display_name AS dating_name,d.city_label,m.created_at AS matched_at FROM dating_matches m JOIN users u ON u.id=CASE WHEN m.user_low_id=? THEN m.user_high_id ELSE m.user_low_id END JOIN dating_profiles d ON d.user_id=u.id JOIN adult_access_verifications v ON v.user_id=u.id WHERE (m.user_low_id=? OR m.user_high_id=?) AND m.status='active' AND d.visibility='discoverable' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?) AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY m.updated_at DESC LIMIT 100").bind(user.id,user.id,user.id,new Date().toISOString(),user.id,user.id).all();
       return json({matches:rows.results||[]},200,origin);
     }
-    const unmatch=url.pathname.match(/^\\/api\\/dating\\/matches\\/(\\d+)$/);
-    if(unmatch&&request.method==="DELETE"){
-      const target=Number(unmatch[1]),low=Math.min(user.id,target),high=Math.max(user.id,target);
+    const unmatch=url.pathname.startsWith("/api/dating/matches/")?url.pathname.slice("/api/dating/matches/".length):"";
+    if(unmatch&&/^[0-9]+$/.test(unmatch)&&request.method==="DELETE"){
+      const target=Number(unmatch),low=Math.min(user.id,target),high=Math.max(user.id,target);
       await env.DB.prepare("UPDATE dating_matches SET status='unmatched',updated_at=? WHERE user_low_id=? AND user_high_id=?").bind(new Date().toISOString(),low,high).run();
       await env.DB.prepare("DELETE FROM dating_likes WHERE (from_user_id=? AND to_user_id=?) OR (from_user_id=? AND to_user_id=?)").bind(user.id,target,target,user.id).run();
       return json({ok:true},200,origin);
