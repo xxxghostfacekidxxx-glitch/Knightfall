@@ -425,6 +425,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-columns",
+      "name": "Cinder Columns",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-gem.svg",
+        "void-gem.svg"
+      ],
+      "notes": "Original falling-gem match-three game with chain reactions, keyboard and mobile controls, and bespoke ember and void gems.",
+      "engine": "/arcade/hosted/cinder-columns/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-columns",
+      "assets": [
+        {
+          "name": "ember-gem.svg",
+          "path": "/arcade/hosted/cinder-columns/sprites/ember-gem.svg"
+        },
+        {
+          "name": "void-gem.svg",
+          "path": "/arcade/hosted/cinder-columns/sprites/void-gem.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
