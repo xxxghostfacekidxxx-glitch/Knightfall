@@ -56,7 +56,9 @@ Do not call the app Play-ready until all are true:
 
 ## Production migration gate
 
-Migration `0033_account_deletion_requests.sql` has been merged to the main branch as an additive schema change. I have **not** applied it to the production D1 database. Before merging PR #149 and activating the new account UI/API, an authorized operator must review and run the GitHub Actions workflow **Apply reviewed D1 migrations** with its explicit `confirm_production` input enabled. The workflow requires `CLOUDFLARE_D1_MIGRATION_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets. Verify the workflow succeeds and the migration appears in the remote D1 migration history before proceeding. Do not assume the migration is applied because the file is present in GitHub.
+Migration `0033_account_deletion_requests.sql` is merged to `main` as an additive schema change, but it is **not confirmed applied** to production D1. PR #149 is merged; its Worker deployment was blocked because the previous `CLOUDFLARE_API_TOKEN` could not access D1 (Cloudflare error 7403). The deployment workflow now uses the dedicated `CLOUDFLARE_D1_MIGRATION_TOKEN` for migrations and retains `CLOUDFLARE_API_TOKEN` for Worker deployment.
+
+Before retrying deployment, configure/verify GitHub Actions secrets `CLOUDFLARE_D1_MIGRATION_TOKEN` (D1 migration permissions for the Knightfall account) and `CLOUDFLARE_ACCOUNT_ID` (must match the account that owns database `knightfall-forum`). The separate **Apply reviewed D1 migrations** workflow also requires explicit `confirm_production` confirmation. Verify that the migration step succeeds and that `0033_account_deletion_requests.sql` appears in the remote migration history before treating account-deletion request APIs as active. Do not assume the migration is applied because the file is present in GitHub.
 
 ## Account deletion operations: mandatory before Play submission
 
