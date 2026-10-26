@@ -39,7 +39,7 @@ assert.match(adminPage, /does not erase account data/i);
 assert.doesNotMatch(adminPage, /data-action="completed"/);
 assert.match(privacy, /does not itself erase the account/i);
 assert.equal(manifest.shortcuts.length, 3);
-assert.ok(manifest.icons.some(icon => icon.src === "/icons/knightfall-maskable.svg"));
-assert.ok(existsSync(new URL("../public/icons/knightfall-maskable.svg", import.meta.url)));
+assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg"));
+assert.ok(existsSync(new URL("../public/icons/chaos-cartridge-maskable.svg", import.meta.url)));
 
 console.log("Account deletion request static audit passed. Full data deletion remains an explicit release blocker.");
