@@ -40,3 +40,16 @@ test("cover photo and member details remain usable on phones",()=>{
  assert.match(css,/\.studio-jump a:focus-visible/);
  assert.match(css,/\.studio-save-bar button\{width:100%\}/);
 });
+
+test("profile shortcuts follow visible customized panels and include photo gallery",()=>{
+ assert.match(js,/function refreshProfileJump\(\)/);
+ assert.match(js,/\["#profile-photo-gallery","Photos"\]/);
+ assert.match(js,/\["\.profile-social-panel","Updates"\]/);
+ assert.match(js,/if\(!section\|\|section.hidden\)continue/);
+ assert.match(js,/refreshProfileJump\(\);\}/);
+});
+test("gallery validates size and image format before uploading",()=>{
+ assert.match(js,/file.size>8\*1024\*1024/);
+ assert.match(js,/\["image\/jpeg","image\/png","image\/gif","image\/webp"\]/);
+ assert.match(js,/finally\{button.disabled=false;\}/);
+});
