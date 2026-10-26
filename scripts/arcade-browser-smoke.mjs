@@ -130,23 +130,16 @@ try {
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
     try {
+      await page.addInitScript(() => { Math.random = () => 0.5; });
       const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=kaiju-krush", { waitUntil: "domcontentloaded", timeout: 10000 });
       if (!response || response.status() !== 200) throw new Error("Kaiju Krush page unavailable");
       await page.locator("#start").tap();
       const canvas = page.locator("#game");
-      const box = await canvas.boundingBox();
-      if (!box) throw new Error("Kaiju Krush canvas missing");
-      // Buildings occupy the lower stage; sample the rightmost building center by
-      // recording a deterministic Math.random stream before starting the game.
-      await page.evaluate(() => {
-        const stage = document.querySelector("#game");
-        stage.dataset.arcadeHitboxCheck = "ready";
-      });
-      const engine = await page.evaluate(async () => {
-        const response = await fetch("/arcade/hosted/arcade-cabinet-engine.js");
-        return response.ok ? await response.text() : "";
-      });
-      if (!engine.includes('mode==="kaiju"?(Math.abs(o.x-q.x)')) throw new Error("rectangular building hitbox handler missing");
+      const rect = await canvas.boundingBox();
+      if (!rect) throw new Error("Kaiju Krush canvas missing");
+      await canvas.tap({position:{x:480*rect.width/960,y:450*rect.height/600}});
+      const score = Number(await page.locator("#score").innerText());
+      if (score < 25) throw new Error("tapping a visible building did not score: "+score);
       console.log("PASS Kaiju Krush building hitbox regression");
     } catch (error) {
       console.error("FAIL Kaiju Krush hitbox regression: " + (error?.message || String(error)));
