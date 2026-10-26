@@ -59,6 +59,9 @@
           <a href="/shops.html">Shops &amp; Dropshipping</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
           <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
+          <a href="/social.html">Activity & Groups</a>
+          <a href="/adults.html">Adults Only (18+)</a>
+          <a href="/dating.html">Dating Realm (18+)</a>
         </div>
       </details>
       <details class="kf-nav-group kf-profile-group">
