@@ -338,7 +338,7 @@ function refreshProfileJump(){
   }else old?.remove();
 }
 
-function applyProfileLayout(layout){if(!Array.isArray(layout))return;const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!item||typeof item.id!=="string"||typeof item.visible!=="boolean"||!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}refreshProfileJump();}
+function applyProfileLayout(layout){if(!Array.isArray(layout)){refreshProfileJump();return;}const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!item||typeof item.id!=="string"||typeof item.visible!=="boolean"||!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}refreshProfileJump();}
 
 async function load(){
  try{
