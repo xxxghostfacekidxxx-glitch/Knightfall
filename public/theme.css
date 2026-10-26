@@ -105,3 +105,11 @@
 .kf-install-app{background:rgba(230,106,44,.14);color:#f5a06b}
 .kf-install-app:hover{background:rgba(230,106,44,.25)}
 .kf-nav-menu .kf-notify-badge{background:var(--kf-accent);color:#100804}
+
+/* High-visibility install action: always present, not hidden until the browser offers a prompt. */
+.kf-nav .kf-install-app{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:44px;padding:.7rem 1rem;margin-left:.35rem;border:1px solid #c6ff45;border-radius:10px;background:linear-gradient(125deg,#c6ff45 0%,#9cff38 45%,#ff2f92 145%);color:#090909;font-size:.82rem;font-weight:950;letter-spacing:.015em;box-shadow:0 0 0 1px #c6ff4544,0 0 20px #c6ff4530,0 0 24px #ff2f9220;text-shadow:none;animation:kf-install-pulse 2.8s ease-in-out infinite}
+.kf-nav .kf-install-app:hover,.kf-nav .kf-install-app:focus-visible{border-color:#fff;background:linear-gradient(125deg,#e3ff9e,#c6ff45 45%,#ff62ad 145%);color:#000;transform:translateY(-1px);box-shadow:0 0 0 2px #c6ff4555,0 0 28px #c6ff4566,0 0 34px #ff2f9244}
+.kf-nav .kf-install-app[hidden]{display:none}
+@keyframes kf-install-pulse{0%,100%{box-shadow:0 0 0 1px #c6ff4533,0 0 14px #c6ff4522,0 0 18px #ff2f9218}50%{box-shadow:0 0 0 2px #c6ff4566,0 0 24px #c6ff4544,0 0 26px #ff2f9230}}
+@media(max-width:760px){.kf-nav .kf-install-app{width:100%;justify-content:center;min-height:48px;margin:.45rem 0;padding:.85rem;font-size:.9rem}}
+@media(prefers-reduced-motion:reduce){.kf-nav .kf-install-app{animation:none}}
