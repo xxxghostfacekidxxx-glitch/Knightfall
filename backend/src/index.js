@@ -1134,12 +1134,13 @@ For complex questions, organize the answer clearly and provide actionable detail
         async start(controller){
           const send=(event,data)=>controller.enqueue(encoder.encode("event: "+event+"\ndata: "+JSON.stringify(data)+"\n\n"));
           const reader=source.getReader(),decoder=new TextDecoder();
-          let pending="",reply="",completed=false;
+          let pending="",reply="";
           const processLine=(line)=>{
             if(!line.startsWith("data:"))return;
             const data=line.slice(5).trim();
             if(data==="[DONE]")return;
             let packet;try{packet=JSON.parse(data)}catch{return}
+            if(packet.error)throw Error("Model stream reported an inference error.");
             const delta=typeof packet.response==="string"?packet.response:"";
             if(delta){reply+=delta;send("delta",{text:delta});}
           };
@@ -1164,7 +1165,7 @@ For complex questions, organize the answer clearly and provide actionable detail
               env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"assistant",reply.trim(),mood,new Date(Date.now()+1).toISOString()),
               env.DB.prepare("UPDATE chaos_conversations SET title=CASE WHEN title='New conversation' THEN ? ELSE title END,mood=?,updated_at=? WHERE id=? AND user_id=?").bind(message.slice(0,64),mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
             ]);
-            completed=true;send("done",{conversation_id:conversationId,mood});
+            send("done",{conversation_id:conversationId,mood});
           }catch(error){console.error("miss_chaos_stream_failed",error);send("error",{error:"The reply was interrupted and was not saved. Please retry."});}
           finally{try{reader.releaseLock()}catch{}controller.close();}
         }
