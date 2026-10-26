@@ -61,7 +61,7 @@ Migration `0033_account_deletion_requests.sql` has been merged to the main branc
 ## Account deletion operations: mandatory before Play submission
 
 - Requests are recorded in `account_deletion_requests` and exposed to admins at `/admin-deletion-requests.html`.
-- The endpoint verifies the signed-in session and current password, rejects admin/God accounts for separate handling, rate-limits requests, and records an audit event.
+- The endpoint verifies the signed-in session and exact username confirmation, optionally verifies the current password for password-based accounts, supports cancellation while a request is pending, rejects admin/God accounts for separate handling, rate-limits changes, and records audit events. New requests notify active administrators.
 - Admin queue statuses `pending` and `in_progress` are tracking states only. Never mark a request completed until the account and associated personal data have actually been deleted or anonymized under a documented retention policy.
 - A production-grade deletion executor still needs an audited data inventory across D1, KV, R2, push subscriptions, AI conversation/memory records, sessions, messages/attachments, bot configurations, game progress/currency, shops, public content, and provider-side copies. It must have tests proving cross-account isolation and cleanup. The current queue is not a substitute for this executor.
 - The public deletion page states the process and deadline, but a monitored privacy contact must be published before store submission.
