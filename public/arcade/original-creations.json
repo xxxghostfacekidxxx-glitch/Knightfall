@@ -236,6 +236,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ashfall-foundry",
+      "name": "Ashfall Foundry",
+      "genre": "Puzzle",
+      "sprites": [
+        "cinder-block.svg",
+        "void-block.svg"
+      ],
+      "notes": "Original falling-block engine with seven-piece bag, line clearing, hold, ghost piece, keyboard and touch controls, and bespoke block artwork.",
+      "engine": "/arcade/hosted/ashfall-foundry/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashfall-foundry",
+      "assets": [
+        {
+          "name": "cinder-block.svg",
+          "path": "/arcade/hosted/ashfall-foundry/sprites/cinder-block.svg"
+        },
+        {
+          "name": "void-block.svg",
+          "path": "/arcade/hosted/ashfall-foundry/sprites/void-block.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
