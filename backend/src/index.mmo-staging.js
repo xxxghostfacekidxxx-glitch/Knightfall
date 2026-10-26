@@ -1,30 +1,37 @@
-const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
+// Staging deliberately excludes production website origins. Add a dedicated staging
+// frontend origin through STAGING_ALLOWED_ORIGINS when one is provisioned.
+const DEFAULT_STAGING_ORIGINS = new Set(["http://localhost:8765", "http://127.0.0.1:8765"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 100000;
 const SESSION_COOKIE = "knightfall_session";
 
-function getOrigin(request) {
-  const origin = request.headers.get("Origin");
-  return ALLOWED_ORIGINS.has(origin) ? origin : "https://ash-fall.com";
+function allowedOrigins(env) {
+  return new Set([
+    ...DEFAULT_STAGING_ORIGINS,
+    ...(env.STAGING_ALLOWED_ORIGINS || "").split(",").map(value => value.trim()).filter(Boolean),
+  ]);
 }
 
-function json(data, status = 200, origin = "https://ash-fall.com", extra = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=UTF-8",
-      "access-control-allow-origin": origin,
-      "access-control-allow-methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-      "access-control-allow-headers": "content-type",
-      "access-control-allow-credentials": "true",
-      "cache-control": "no-store",
-      "x-content-type-options": "nosniff",
-      "x-frame-options": "DENY",
-      "referrer-policy": "strict-origin-when-cross-origin",
-      "permissions-policy": "camera=(),microphone=(),geolocation=()",
-      ...extra,
-    },
-  });
+function getOrigin(request, origins = DEFAULT_STAGING_ORIGINS) {
+  const origin = request.headers.get("Origin");
+  return origins.has(origin) ? origin : "";
+}
+
+function json(data, status = 200, origin = "", extra = {}) {
+  const headers = {
+    "content-type": "application/json; charset=UTF-8",
+    "access-control-allow-methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-allow-credentials": "true",
+    "cache-control": "no-store",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "permissions-policy": "camera=(),microphone=(),geolocation=()",
+    ...extra,
+  };
+  if (origin) headers["access-control-allow-origin"] = origin;
+  return new Response(JSON.stringify(data), { status, headers });
 }
 function validText(value, max, allowEmpty = false) { if (typeof value !== "string") return false; if (allowEmpty && value.trim() === "") return true; return value.trim().length > 0 && value.trim().length <= max; }
 function boundedInt(value, fallback, min, max) { if (value === null || value === undefined || String(value).trim() === "") return fallback; const n = Number(value); if (!Number.isFinite(n)) return fallback; return Math.min(max, Math.max(min, Math.trunc(n))); }
@@ -468,11 +475,11 @@ export class MonsterWorldRoom {
 }
 
 export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
- const origin=getOrigin(request),url=new URL(request.url);
+ const origins=allowedOrigins(env),origin=getOrigin(request,origins),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
   const requestOrigin=request.headers.get("Origin");
-  if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
+  if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!origins.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
   if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
@@ -1119,7 +1126,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
 
   if(url.pathname==="/api/game/world"&&request.method==="GET"){
     const requestOrigin=request.headers.get("Origin");
-    if(requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return new Response("Origin not allowed",{status:403});
+    if(requestOrigin&&!origins.has(requestOrigin))return new Response("Origin not allowed",{status:403});
     if(request.headers.get("Upgrade")?.toLowerCase()!=="websocket")return new Response("WebSocket upgrade required",{status:426});
     const user=await requireUser(request,env);
     if(!user)return new Response("Sign in to join the shared world",{status:401});
