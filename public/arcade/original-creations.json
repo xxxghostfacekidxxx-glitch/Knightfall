@@ -1141,6 +1141,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "alien-battle",
+      "name": "Cinder Invasion",
+      "genre": "Shooter",
+      "sprites": [
+        "cinder-invader.svg"
+      ],
+      "notes": "Defend the ashes against an invading swarm. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "engine": "/arcade/hosted/alien-battle/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/alien-battle",
+      "assets": [
+        {
+          "name": "cinder-invader.svg",
+          "path": "/arcade/hosted/alien-battle/sprites/cinder-invader.svg"
+        }
+      ],
+      "status": "rebranded and committed; independent provenance and browser QA pending"
+    },
+    {
+      "id": "balance-stack",
+      "name": "Ashfall Balancer",
+      "genre": "Arcade",
+      "sprites": [
+        "balance-sigil.svg"
+      ],
+      "notes": "Keep a stack steady against the rising winds. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "engine": "/arcade/hosted/balance-stack/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/balance-stack",
+      "assets": [
+        {
+          "name": "balance-sigil.svg",
+          "path": "/arcade/hosted/balance-stack/sprites/balance-sigil.svg"
+        }
+      ],
+      "status": "rebranded and committed; independent provenance and browser QA pending"
+    },
+    {
+      "id": "basketball",
+      "name": "Inferno Hoops",
+      "genre": "Sports",
+      "sprites": [
+        "inferno-ball.svg"
+      ],
+      "notes": "Launch flaming basketball shots into the infernal hoop. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "engine": "/arcade/hosted/basketball/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/basketball",
+      "assets": [
+        {
+          "name": "inferno-ball.svg",
+          "path": "/arcade/hosted/basketball/sprites/inferno-ball.svg"
+        }
+      ],
+      "status": "rebranded and committed; independent provenance and browser QA pending"
+    },
+    {
+      "id": "bowling",
+      "name": "Crypt Bowling",
+      "genre": "Sports",
+      "sprites": [
+        "crypt-pin.svg"
+      ],
+      "notes": "Roll for strikes on the crypt's cursed lanes. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "engine": "/arcade/hosted/bowling/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bowling",
+      "assets": [
+        {
+          "name": "crypt-pin.svg",
+          "path": "/arcade/hosted/bowling/sprites/crypt-pin.svg"
+        }
+      ],
+      "status": "rebranded and committed; independent provenance and browser QA pending"
+    },
+    {
+      "id": "bubble-pop",
+      "name": "Ember Bubbles",
+      "genre": "Casual",
+      "sprites": [
+        "ember-bubble.svg"
+      ],
+      "notes": "Pop matching ember bubbles for points. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "engine": "/arcade/hosted/bubble-pop/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bubble-pop",
+      "assets": [
+        {
+          "name": "ember-bubble.svg",
+          "path": "/arcade/hosted/bubble-pop/sprites/ember-bubble.svg"
+        }
+      ],
+      "status": "rebranded and committed; independent provenance and browser QA pending"
     }
   ]
 }
