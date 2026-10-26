@@ -269,3 +269,36 @@
 #profile-wallet,.profile-favorites,.profile-birth-chart,.activity-grid{scroll-margin-top:6rem}
 @media(max-width:560px){.profile-jump{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scroll-snap-type:x proximity}.profile-jump a{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start}}
 @media(prefers-reduced-motion:reduce){.profile-jump a{transition:none}}
+
+/* Profile header: cover art, portrait and personal details. */
+#profile{overflow:clip}
+#profile .profile-cover{position:relative;height:clamp(150px,26vw,260px);margin:calc(-1 * clamp(1.4rem,5vw,2.2rem)) calc(-1 * clamp(1.4rem,5vw,2.2rem)) 1.4rem;border-radius:16px 16px 0 0;background:#1c120c;overflow:hidden}
+#profile .profile-cover::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.62));pointer-events:none}
+#profile .profile-cover img{width:100%;height:100%;object-fit:cover;object-position:center}
+#profile:has(.profile-cover) .profile-top{position:relative;margin-top:-3.7rem;z-index:1}
+#profile:has(.profile-cover) .avatar,#profile:has(.profile-cover) .avatar-img{background:#19120f;border:3px solid var(--profile-accent,#e66a2c);box-shadow:0 0 0 5px #130e0b}
+#profile .profile-heading{min-width:0}
+#profile .profile-heading h1{overflow-wrap:anywhere}
+#profile dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem 1rem;margin-top:1.4rem}
+#profile dl>div{min-width:0;padding:.8rem 1rem;border:1px solid #32271e;border-radius:10px;background:#110e0c}
+#profile dl dd{overflow-wrap:anywhere;line-height:1.55}
+#profile .profile-actions-wrap{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+#profile .profile-actions-wrap .action{min-height:44px}
+.studio-jump{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 1.25rem;padding:.6rem;background:#130f0c;border:1px solid #463020;border-radius:12px}
+.studio-jump a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.5rem .85rem;border:1px solid #684027;border-radius:9px;color:#f5c6a5;text-decoration:none;font-size:.85rem;font-weight:750}
+.studio-jump a:hover{background:#342015;color:#fff}
+.studio-jump a:focus-visible{outline:3px solid #ff9851;outline-offset:2px}
+#studio-appearance,#studio-interests,#studio-privacy,#layout-studio,#birth-chart-studio{scroll-margin-top:6rem}
+.studio-save-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.3rem;padding:1rem;border:1px solid #644027;border-radius:12px;background:#21150e}
+.studio-save-bar span{color:#e7c6ac;font-size:.85rem;line-height:1.5}
+.studio-save-bar button{min-height:46px;min-width:150px}
+@media(max-width:620px){
+ #profile .profile-cover{height:170px;margin:-1rem -1rem 1.25rem}
+ #profile:has(.profile-cover) .profile-top{margin-top:-3.25rem}
+ #profile dl{grid-template-columns:1fr}
+ #profile .profile-actions-wrap .action{flex:1 1 140px;text-align:center}
+ .studio-jump{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:thin}
+ .studio-jump a{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start}
+ .studio-save-bar{align-items:stretch}
+ .studio-save-bar button{width:100%}
+}
