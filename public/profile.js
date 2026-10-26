@@ -216,10 +216,34 @@ async function loadProfilePhotos(username,ownProfile){
     '<div id="profile-photo-grid" class="profile-photo-grid"><p class="muted">Loading photos…</p></div>';
   root.append(panel);
   const grid=panel.querySelector("#profile-photo-grid"),count=panel.querySelector("#profile-photo-count"),status=panel.querySelector("#profile-photo-status");
+  // Native gallery viewer: no third-party media service, no new public permissions.
+  let galleryPhotos=[],galleryIndex=0,photoDialog=null,previousFocus=null;
+  function closePhotoDialog(){if(!photoDialog)return;photoDialog.remove();photoDialog=null;document.removeEventListener("keydown",photoKeys);previousFocus?.focus?.();}
+  function showPhotoAt(index){
+    if(!galleryPhotos.length)return;
+    galleryIndex=(index+galleryPhotos.length)%galleryPhotos.length;
+    const photo=galleryPhotos[galleryIndex];
+    photoDialog.querySelector("img").src=photo.url;
+    photoDialog.querySelector("img").alt=photo.caption||"Profile photo";
+    photoDialog.querySelector("[data-photo-caption]").textContent=photo.caption||"";
+    photoDialog.querySelector("[data-photo-position]").textContent=(galleryIndex+1)+" / "+galleryPhotos.length;
+  }
+  function photoKeys(e){if(e.key==="Escape"){e.preventDefault();closePhotoDialog();}else if(e.key==="ArrowRight"){e.preventDefault();showPhotoAt(galleryIndex+1);}else if(e.key==="ArrowLeft"){e.preventDefault();showPhotoAt(galleryIndex-1);}else if(e.key==="Tab"&&photoDialog){const controls=[...photoDialog.querySelectorAll("button")];const i=controls.indexOf(document.activeElement);if(e.shiftKey&&i===0){e.preventDefault();controls[controls.length-1].focus();}else if(!e.shiftKey&&i===controls.length-1){e.preventDefault();controls[0].focus();}}}
+  function openPhotoDialog(index){
+    if(!galleryPhotos.length)return;closePhotoDialog();previousFocus=document.activeElement;
+    photoDialog=document.createElement("div");photoDialog.className="ash-photo-lightbox";photoDialog.setAttribute("role","dialog");photoDialog.setAttribute("aria-modal","true");photoDialog.setAttribute("aria-label","Profile photo viewer");
+    photoDialog.innerHTML='<div class="ash-photo-lightbox-bar"><span data-photo-position></span><button type="button" data-close aria-label="Close photo viewer">✕ Close</button></div><div class="ash-photo-lightbox-image"><img alt=""></div><div class="ash-photo-lightbox-footer"><button type="button" data-prev aria-label="Previous photo">← Previous</button><p data-photo-caption></p><button type="button" data-next aria-label="Next photo">Next →</button></div>';
+    photoDialog.querySelector("[data-close]").addEventListener("click",closePhotoDialog);
+    photoDialog.querySelector("[data-prev]").addEventListener("click",()=>showPhotoAt(galleryIndex-1));
+    photoDialog.querySelector("[data-next]").addEventListener("click",()=>showPhotoAt(galleryIndex+1));
+    photoDialog.addEventListener("click",e=>{if(e.target===photoDialog)closePhotoDialog();});
+    document.body.append(photoDialog);document.addEventListener("keydown",photoKeys);showPhotoAt(index);photoDialog.querySelector("[data-close]").focus();
+  }
+  grid.addEventListener("click",event=>{const link=event.target.closest("[data-photo-index]");if(!link)return;event.preventDefault();openPhotoDialog(Number(link.dataset.photoIndex));});
   const refresh=async()=>{
     const data=await api("/api/profile/photos?username="+encodeURIComponent(username));
-    const photos=data.photos||[];count.textContent=photos.length+" / 60";
-    grid.innerHTML=photos.length?photos.map(photo=>'<article class="profile-photo-card"><a class="profile-photo-image" href="'+esc(photo.url)+'" target="_blank" rel="noopener noreferrer" aria-label="Open full-size photo"><img src="'+esc(photo.url)+'" alt="'+esc(photo.caption||"Photo shared by "+username)+'" loading="lazy"></a>'+(photo.caption?'<p class="profile-photo-caption">'+esc(photo.caption)+'</p>':'')+'<div class="profile-photo-meta"><time datetime="'+esc(photo.created_at)+'">'+fmt(photo.created_at)+'</time>'+(ownProfile?'<button class="action photo-delete" type="button" data-photo-delete="'+Number(photo.id)+'">Delete</button>':'')+'</div></article>').join(""):'<p class="photo-empty">No photos here yet.</p>';
+    const photos=data.photos||[];galleryPhotos=photos;count.textContent=photos.length+" / 60";
+    grid.innerHTML=photos.length?photos.map((photo,index)=>'<article class="profile-photo-card"><a class="profile-photo-image" href="'+esc(photo.url)+'" data-photo-index="'+index+'" aria-label="Open photo in gallery viewer"><img src="'+esc(photo.url)+'" alt="'+esc(photo.caption||"Photo shared by "+username)+'" loading="lazy"></a>'+(photo.caption?'<p class="profile-photo-caption">'+esc(photo.caption)+'</p>':'')+'<div class="profile-photo-meta"><time datetime="'+esc(photo.created_at)+'">'+fmt(photo.created_at)+'</time>'+(ownProfile?'<button class="action photo-delete" type="button" data-photo-delete="'+Number(photo.id)+'">Delete</button>':'')+'</div></article>').join(""):'<p class="photo-empty">No photos here yet.</p>';
   };
   try{await refresh()}catch(error){grid.innerHTML='<p class="photo-empty">Photos could not load: '+esc(error.message)+'</p>';count.textContent="Unavailable"}
   if(ownProfile){
