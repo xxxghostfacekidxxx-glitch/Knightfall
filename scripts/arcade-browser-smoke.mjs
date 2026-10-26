@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { readdir } from "node:fs/promises";
+import { readdir, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const base = process.env.ARCADE_TEST_BASE || "http://127.0.0.1:8765";
@@ -27,6 +27,32 @@ const games = [
 ];
 
 const browser = await chromium.launch({ headless: true });
+// Preserve evidence from the first browser exceptions rather than losing it when
+// a failing page closes. Screenshots and error metadata are uploaded by the fleet.
+const rawNewPage = browser.newPage.bind(browser);
+let evidenceCount = 0;
+browser.newPage = async options => {
+  const page = await rawNewPage(options);
+  const problems = [];
+  page.on("pageerror", error => problems.push({type:"pageerror",message:String(error?.stack || error)}));
+  page.on("requestfailed", request => {
+    if (request.url().startsWith(base)) problems.push({type:"requestfailed",url:request.url(),message:request.failure()?.errorText || "unknown"});
+  });
+  const rawClose = page.close.bind(page);
+  page.close = async (...args) => {
+    if (problems.length && evidenceCount < 12) {
+      const number = ++evidenceCount;
+      const dir = "/tmp/arcade-browser-evidence";
+      try {
+        await mkdir(dir,{recursive:true});
+        await writeFile(path.join(dir,"failure-"+number+".json"),JSON.stringify({url:page.url(),problems:problems.slice(0,15)},null,2));
+        await page.screenshot({path:path.join(dir,"failure-"+number+".png"),timeout:2500}).catch(()=>{});
+      } catch (error) { console.error("Evidence capture failed:",String(error)); }
+    }
+    return rawClose(...args);
+  };
+  return page;
+};
 let failed = false;
 try {
   // First audit every hosted HTML route, not just the handful of hand-picked games.
