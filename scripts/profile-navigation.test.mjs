@@ -53,3 +53,16 @@ test("gallery validates size and image format before uploading",()=>{
  assert.match(js,/\["image\/jpeg","image\/png","image\/gif","image\/webp"\]/);
  assert.match(js,/finally\{button.disabled=false;\}/);
 });
+
+test("gallery viewer restores scroll and disables navigation for one photo",()=>{
+ assert.match(js,/document\.body\.style\.overflow="hidden"/);
+ assert.match(js,/document\.body\.style\.overflow=previousBodyOverflow/);
+ assert.match(js,/\[data-prev\]"\)\.disabled=galleryPhotos\.length<2/);
+ assert.match(js,/\[data-next\]"\)\.disabled=galleryPhotos\.length<2/);
+});
+test("album picker uses a real select instead of a typed album name",()=>{
+ assert.match(js,/data-photo-album/);
+ assert.match(js,/Choose album for photo/);
+ assert.match(js,/albumIds\.find\(a=>String\(a\.id\)===selected\)/);
+ assert.doesNotMatch(js,/prompt\("Add to which album/);
+});
