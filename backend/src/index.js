@@ -191,9 +191,59 @@ async function handleVaultRequest(request, env, origin, url) {
   if (url.pathname === "/api/vault/summary" && request.method === "GET") {
     return json({ summary: await vaultSummary(env) }, 200, origin);
   }
+  if (url.pathname === "/api/vault/folders" && request.method === "GET") {
+    const folders = await env.DB.prepare("SELECT f.id,f.name,f.created_at,COUNT(i.object_key) AS item_count FROM vault_folders f LEFT JOIN vault_folder_items i ON i.folder_id=f.id GROUP BY f.id ORDER BY f.name COLLATE NOCASE LIMIT 200").all();
+    return json({ folders: folders.results || [] }, 200, origin);
+  }
+  if (url.pathname === "/api/vault/folders" && request.method === "POST") {
+    if (!await rateLimit(env, request, "vault-folder-edit", 30, 60)) return json({error:"Too many folder changes."},429,origin);
+    let data;try { data=await request.json(); } catch { return json({error:"Invalid JSON."},400,origin); }
+    const name=typeof data?.name==="string"?data.name.trim():"";
+    if (!name || name.length>80 || /[\\x00-\\x1f\\x7f]/.test(name)) return json({error:"Folder name must be 1–80 printable characters."},400,origin);
+    const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM vault_folders").first();
+    if (Number(count?.n||0)>=200) return json({error:"Folder limit reached."},409,origin);
+    const now=new Date().toISOString();
+    const folder=await env.DB.prepare("INSERT INTO vault_folders(name,created_at,updated_at) VALUES(?,?,?) RETURNING id,name,created_at").bind(name,now,now).first();
+    await audit(env,user,"vault.folder.create","vault_folder",folder.id);
+    return json({folder},201,origin);
+  }
+  const folderMatch=url.pathname.match(/^\\/api\\/vault\\/folders\\/(\\d+)$/);
+  if (folderMatch && (request.method==="PATCH" || request.method==="DELETE")) {
+    const id=Number(folderMatch[1]);
+    if (request.method==="DELETE") {
+      const result=await env.DB.prepare("DELETE FROM vault_folders WHERE id=?").bind(id).run();
+      if (!result.meta?.changes) return json({error:"Folder not found."},404,origin);
+      await audit(env,user,"vault.folder.delete","vault_folder",id);
+      return json({ok:true},200,origin);
+    }
+    let data;try { data=await request.json(); } catch { return json({error:"Invalid JSON."},400,origin); }
+    const name=typeof data?.name==="string"?data.name.trim():"";
+    if (!name || name.length>80 || /[\\x00-\\x1f\\x7f]/.test(name)) return json({error:"Folder name must be 1–80 printable characters."},400,origin);
+    const result=await env.DB.prepare("UPDATE vault_folders SET name=?,updated_at=? WHERE id=?").bind(name,new Date().toISOString(),id).run();
+    if (!result.meta?.changes) return json({error:"Folder not found."},404,origin);
+    await audit(env,user,"vault.folder.rename","vault_folder",id);
+    return json({ok:true,name},200,origin);
+  }
+  const moveMatch=url.pathname.match(/^\\/api\\/vault\\/items\\/([a-f0-9]{32})\\/folder$/);
+  if (moveMatch && request.method==="PUT") {
+    if (!await rateLimit(env,request,"vault-folder-move",100,60)) return json({error:"Too many folder changes."},429,origin);
+    let data;try { data=await request.json(); } catch { return json({error:"Invalid JSON."},400,origin); }
+    const folderId=data?.folder_id===null?null:Number(data?.folder_id);
+    if (folderId!==null && (!Number.isSafeInteger(folderId)||folderId<1)) return json({error:"Invalid folder."},400,origin);
+    const key="vault/"+moveMatch[1];
+    const item=await env.DB.prepare("SELECT object_key FROM vault_items WHERE object_key=?").bind(key).first();
+    if (!item) return json({error:"File not found."},404,origin);
+    if (folderId!==null) {
+      const folder=await env.DB.prepare("SELECT id FROM vault_folders WHERE id=?").bind(folderId).first();
+      if (!folder) return json({error:"Folder not found."},404,origin);
+      await env.DB.prepare("INSERT INTO vault_folder_items(object_key,folder_id,added_at) VALUES(?,?,?) ON CONFLICT(object_key) DO UPDATE SET folder_id=excluded.folder_id,added_at=excluded.added_at").bind(key,folderId,new Date().toISOString()).run();
+    } else await env.DB.prepare("DELETE FROM vault_folder_items WHERE object_key=?").bind(key).run();
+    await audit(env,user,"vault.folder.move","vault_item",null,{folder_id:folderId});
+    return json({ok:true,folder_id:folderId},200,origin);
+  }
   if (url.pathname === "/api/vault/items" && request.method === "GET") {
-    const rows = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes,created_at,etag FROM vault_items ORDER BY created_at DESC LIMIT 300").all();
-    return json({ items: (rows.results || []).map((x) => ({ key: x.object_key.slice(6), filename: x.filename, content_type: x.content_type, size_bytes: Number(x.size_bytes), created_at: x.created_at, etag: x.etag })), summary: await vaultSummary(env) }, 200, origin);
+    const rows = await env.DB.prepare("SELECT v.object_key,v.filename,v.content_type,v.size_bytes,v.created_at,v.etag,fi.folder_id FROM vault_items v LEFT JOIN vault_folder_items fi ON fi.object_key=v.object_key ORDER BY v.created_at DESC LIMIT 300").all();
+    return json({ items: (rows.results || []).map((x) => ({ key: x.object_key.slice(6), filename: x.filename, content_type: x.content_type, size_bytes: Number(x.size_bytes), created_at: x.created_at, etag: x.etag, folder_id: x.folder_id ?? null })), summary: await vaultSummary(env) }, 200, origin);
   }
   if (url.pathname === "/api/vault/items" && request.method === "POST") {
     if (!await rateLimit(env, request, "vault-upload", 20, 60)) return json({ error: "Too many uploads. Wait a minute and try again." }, 429, origin);
