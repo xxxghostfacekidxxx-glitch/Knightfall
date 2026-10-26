@@ -640,6 +640,194 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 
+  // Member safety controls: reports and blocks are private to the acting account.
+  if(url.pathname==="/api/social/blocks"&&(request.method==="GET"||request.method==="POST")){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
+    if(request.method==="GET"){
+      const rows=await env.DB.prepare("SELECT b.blocked_id AS user_id,u.username,b.created_at FROM social_user_blocks b JOIN users u ON u.id=b.blocked_id WHERE b.blocker_id=? ORDER BY b.created_at DESC LIMIT 500").bind(viewer.id).all();
+      return json({blocks:rows.results||[]},200,origin);
+    }
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const target=Number(body.user_id);
+    if(!Number.isSafeInteger(target)||target<=0||target===viewer.id)return json({error:"Choose another member to block."},400,origin);
+    const targetUser=await env.DB.prepare("SELECT id FROM users WHERE id=? AND status='active'").bind(target).first();
+    if(!targetUser)return json({error:"Member not found."},404,origin);
+    await env.DB.prepare("INSERT INTO social_user_blocks (blocker_id,blocked_id,created_at) VALUES (?,?,?) ON CONFLICT(blocker_id,blocked_id) DO NOTHING").bind(viewer.id,target,new Date().toISOString()).run();
+    await audit(env,viewer,"social.member.block","social_user_block",target,{});
+    return json({ok:true,blocked_user_id:target},200,origin);
+  }
+  const unblockMatch=url.pathname.startsWith("/api/social/blocks/")?url.pathname.slice("/api/social/blocks/".length):"";
+  if(unblockMatch&&/^[0-9]+$/.test(unblockMatch)&&request.method==="DELETE"){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to manage blocked members."},401,origin);
+    const target=Number(unblockMatch);
+    await env.DB.prepare("DELETE FROM social_user_blocks WHERE blocker_id=? AND blocked_id=?").bind(viewer.id,target).run();
+    await audit(env,viewer,"social.member.unblock","social_user_block",target,{});
+    return json({ok:true},200,origin);
+  }
+  if(url.pathname==="/api/social/report"&&request.method==="POST"){
+    const viewer=await requireUser(request,env);
+    if(!viewer)return json({error:"Sign in to report content or a member."},401,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const objectType=String(body.object_type||"");
+    const objectId=body.object_id==null?"":String(body.object_id).trim().slice(0,160);
+    const reason=typeof body.reason==="string"?body.reason.trim().slice(0,120):"";
+    const details=typeof body.details==="string"?body.details.trim().slice(0,3000):"";
+    const rawReported=body.reported_user_id==null?null:Number(body.reported_user_id);
+    const reportedUserId=Number.isSafeInteger(rawReported)&&rawReported>0&&rawReported!==viewer.id?rawReported:null;
+    if(!["profile","activity","group","creator_post","dating_profile","message"].includes(objectType)||reason.length<3)return json({error:"Choose a valid report category and provide a reason of at least 3 characters."},400,origin);
+    if(body.reported_user_id!=null&&reportedUserId===null)return json({error:"Invalid reported member."},400,origin);
+    if(reportedUserId!==null&&!await env.DB.prepare("SELECT id FROM users WHERE id=?").bind(reportedUserId).first())return json({error:"Reported member not found."},404,origin);
+    const recent=await env.DB.prepare("SELECT COUNT(*) AS count FROM safety_reports WHERE reporter_id=? AND created_at>=datetime('now','-1 hour')").bind(viewer.id).first();
+    if(Number(recent?.count||0)>=10)return json({error:"Report limit reached. Try again later."},429,origin);
+    const result=await env.DB.prepare("INSERT INTO safety_reports (reporter_id,reported_user_id,object_type,object_id,reason,details,status,created_at) VALUES (?,?,?,?,?,?,'open',?)").bind(viewer.id,reportedUserId,objectType,objectId||null,reason,details,new Date().toISOString()).run();
+    await audit(env,viewer,"social.safety.report","safety_report",result.meta?.last_row_id,{object_type:objectType,reported_user_id:reportedUserId});
+    return json({ok:true,report_id:result.meta?.last_row_id,note:"Your report has been submitted for review."},201,origin);
+  }
+
+  // Elgg-inspired activity stream, interest groups, adult gate, creator memberships, and dating foundation.
+  if(url.pathname==="/api/social/activity"&&(request.method==="GET"||request.method==="POST")){
+    const viewer=await requireUser(request,env);
+    if(request.method==="POST"&&!viewer)return json({error:"Sign in to publish an activity."},401,origin);
+    if(request.method==="GET"){
+      const limit=boundedInt(url.searchParams.get("limit"),30,1,50),before=boundedInt(url.searchParams.get("before"),Number.MAX_SAFE_INTEGER,1,Number.MAX_SAFE_INTEGER);
+      const rows=await env.DB.prepare("SELECT a.id,a.user_id,a.activity_type,a.body,a.visibility,a.created_at,a.updated_at,u.username,u.display_name,u.avatar_url FROM social_activity a JOIN users u ON u.id=a.user_id WHERE a.deleted_at IS NULL AND a.id<? AND u.status='active' AND (a.visibility='public' OR a.user_id=? OR (a.visibility='followers' AND EXISTS (SELECT 1 FROM follows f WHERE f.follower_id=? AND f.following_id=a.user_id))) AND NOT EXISTS (SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=a.user_id) OR (b.blocker_id=a.user_id AND b.blocked_id=?)) ORDER BY a.id DESC LIMIT ?").bind(before,viewer?.id||0,viewer?.id||0,viewer?.id||0,viewer?.id||0,limit).all();
+      return json({activities:rows.results||[],next_before:rows.results?.length===limit?rows.results[rows.results.length-1].id:null},200,origin);
+    }
+    if(!await rateLimit(env,request,"social-activity-create",20,300,viewer.id))return json({error:"Too many posts. Wait a few minutes."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const text=typeof body.body==="string"?body.body.trim():"",visibility=String(body.visibility||"public");
+    if(!validText(text,5000)||!["public","followers","private"].includes(visibility))return json({error:"Write a post up to 5,000 characters and choose a valid visibility."},400,origin);
+    const now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO social_activity (user_id,activity_type,body,visibility,created_at,updated_at) VALUES (?,'status',?,?,?,?)").bind(viewer.id,text,visibility,now,now).run();
+    await audit(env,viewer,"social.activity.create","social_activity",result.meta?.last_row_id,{visibility});
+    return json({ok:true,id:result.meta?.last_row_id,created_at:now},201,origin);
+  }
+  if(url.pathname==="/api/social/groups"&&(request.method==="GET"||request.method==="POST")){
+    if(request.method==="GET"){
+      const viewer=await requireUser(request,env),q=String(url.searchParams.get("q")||"").trim().slice(0,80);
+      const rows=await env.DB.prepare("SELECT g.id,g.name,g.slug,g.description,g.visibility,g.join_policy,g.created_at,u.username AS owner_username,(SELECT COUNT(*) FROM social_group_members gm WHERE gm.group_id=g.id AND gm.status='active') AS member_count FROM social_groups g JOIN users u ON u.id=g.owner_id WHERE g.status='active' AND (g.visibility='public' OR EXISTS(SELECT 1 FROM social_group_members gm WHERE gm.group_id=g.id AND gm.user_id=? AND gm.status='active')) AND (?='' OR g.name LIKE ? OR g.description LIKE ?) ORDER BY member_count DESC,g.created_at DESC LIMIT 100").bind(viewer?.id||0,q,"%"+q+"%","%"+q+"%").all();
+      return json({groups:rows.results||[]},200,origin);
+    }
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to create an interest group."},401,origin);
+    if(!await rateLimit(env,request,"social-group-create",5,3600,user.id))return json({error:"Too many groups created recently."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const name=typeof body.name==="string"?body.name.trim():"",description=typeof body.description==="string"?body.description.trim():"",visibility=String(body.visibility||"public"),joinPolicy=String(body.join_policy||"open");
+    if(!validText(name,80)||name.length<2||description.length>2000||!["public","private","invite"].includes(visibility)||!["open","approval","invite"].includes(joinPolicy))return json({error:"Provide a group name (2–80 chars), description up to 2,000 chars, and valid privacy/join settings."},400,origin);
+    const slug=slugify(name)+"-"+randomToken(3),id=randomToken(16),now=new Date().toISOString();
+    await env.DB.batch([
+      env.DB.prepare("INSERT INTO social_groups (id,owner_id,name,slug,description,visibility,join_policy,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?)").bind(id,user.id,name,slug,description,visibility,joinPolicy,now,now),
+      env.DB.prepare("INSERT INTO social_group_members (group_id,user_id,role,status,joined_at) VALUES (?,?,'owner','active',?)").bind(id,user.id,now)
+    ]);
+    await audit(env,user,"social.group.create","social_group",null,{group_id:id,visibility});
+    return json({ok:true,group:{id,name,slug,description,visibility,join_policy:joinPolicy,created_at:now}},201,origin);
+  }
+  const groupJoinParts=url.pathname.split("/"); const groupJoinId=groupJoinParts[4]; const groupJoinMatch=groupJoinParts.length===6&&groupJoinParts[1]==="api"&&groupJoinParts[2]==="social"&&groupJoinParts[3]==="groups"&&groupJoinParts[5]==="join"&&typeof groupJoinId==="string"&&/^[A-Za-z0-9_-]{8,80}$/.test(groupJoinId)?[null,groupJoinId]:null;
+  if(groupJoinMatch&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to join a group."},401,origin);
+    const group=await env.DB.prepare("SELECT id,visibility,join_policy,status FROM social_groups WHERE id=?").bind(groupJoinMatch[1]).first();
+    if(!group||group.status!=="active")return json({error:"Group not found."},404,origin);
+    if(group.visibility==="invite"||group.join_policy==="invite")return json({error:"This group is invite-only."},403,origin);
+    const status=group.join_policy==="approval"?"pending":"active",now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO social_group_members (group_id,user_id,role,status,joined_at) VALUES (?,?,'member',?,?) ON CONFLICT(group_id,user_id) DO UPDATE SET status=excluded.status,joined_at=excluded.joined_at").bind(group.id,user.id,status,now).run();
+    return json({ok:true,status},200,origin);
+  }
+  if(url.pathname==="/api/adult/status"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to check adult access."},401,origin);
+    const row=await env.DB.prepare("SELECT status,provider,verified_at,expires_at FROM adult_access_verifications WHERE user_id=?").bind(user.id).first();
+    const verified=!!row&&row.status==="verified"&&(!row.expires_at||new Date(row.expires_at).getTime()>Date.now());
+    return json({verified,status:verified?"verified":(row?.status||"unverified"),verification_provider_configured:Boolean(env.AGE_VERIFICATION_PROVIDER&&env.AGE_VERIFICATION_SECRET),message:verified?"Adult access is verified.": "Adult areas remain locked until an approved age-assurance provider verifies this account."},200,origin);
+  }
+  if(url.pathname.startsWith("/api/creator/")||url.pathname.startsWith("/api/dating/")){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to continue."},401,origin);
+    const verified=await env.DB.prepare("SELECT status,expires_at FROM adult_access_verifications WHERE user_id=?").bind(user.id).first();
+    // The owner account can enter these routes for operational support and moderation.
+    // This is not a substitute for marking the account as age-verified.
+    const ownerOverride=user.username==="knightfall"&&isAdmin(user);
+    const verifiedAdult=!!verified&&verified.status==="verified"&&(!verified.expires_at||new Date(verified.expires_at).getTime()>Date.now());
+    if(!verifiedAdult&&!ownerOverride)return json({error:"Verified 18+ access is required for adult creator and dating features.",code:"ADULT_VERIFICATION_REQUIRED"},403,origin);
+    if(ownerOverride&&!verifiedAdult)await audit(env,user,"admin.adult_access.override","adult_access",user.id,{reason:"Owner support/moderation access; age verification remains unconfirmed."});
+    if(url.pathname==="/api/dating/profile"&&request.method==="GET"){
+      const profile=await env.DB.prepare("SELECT display_name,bio,age_range_min,age_range_max,city_label,interests,seeking,visibility,updated_at FROM dating_profiles WHERE user_id=?").bind(user.id).first();
+      return json({profile:profile||null},200,origin);
+    }
+    if(url.pathname==="/api/dating/profile"&&request.method==="PUT"){
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const displayName=typeof body.display_name==="string"?body.display_name.trim():"",bio=typeof body.bio==="string"?body.bio.trim():"",city=typeof body.city_label==="string"?body.city_label.trim():"",min=Number(body.age_range_min??18),max=Number(body.age_range_max??99),visibility=String(body.visibility||"hidden");
+      if(!validText(displayName,80)||bio.length>2000||city.length>100||!Number.isInteger(min)||!Number.isInteger(max)||min<18||max<min||max>120||!["hidden","discoverable","paused"].includes(visibility))return json({error:"Check profile fields, adult age range, and visibility."},400,origin);
+      const interests=Array.isArray(body.interests)?JSON.stringify(body.interests.filter(x=>typeof x==="string").map(x=>x.trim().slice(0,40)).filter(Boolean).slice(0,20)): "[]";
+      const seeking=Array.isArray(body.seeking)?JSON.stringify(body.seeking.filter(x=>typeof x==="string").map(x=>x.trim().slice(0,40)).filter(Boolean).slice(0,10)): "[]";
+      const now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO dating_profiles (user_id,display_name,bio,age_range_min,age_range_max,city_label,interests,seeking,visibility,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET display_name=excluded.display_name,bio=excluded.bio,age_range_min=excluded.age_range_min,age_range_max=excluded.age_range_max,city_label=excluded.city_label,interests=excluded.interests,seeking=excluded.seeking,visibility=excluded.visibility,updated_at=excluded.updated_at").bind(user.id,displayName,bio,min,max,city,interests,seeking,visibility,now,now).run();
+      await audit(env,user,"dating.profile.update","dating_profile",user.id,{visibility});
+      return json({ok:true},200,origin);
+    }
+    if(url.pathname==="/api/dating/discover"&&request.method==="GET"){
+      const limit=boundedInt(url.searchParams.get("limit"),24,1,40);
+      const rows=await env.DB.prepare("SELECT d.user_id,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,u.username,u.avatar_url FROM dating_profiles d JOIN users u ON u.id=d.user_id WHERE d.visibility='discoverable' AND u.status='active' AND EXISTS(SELECT 1 FROM adult_access_verifications v WHERE v.user_id=d.user_id AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?)) AND d.user_id<>? AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=d.user_id) OR (b.blocker_id=d.user_id AND b.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM social_user_blocks sb WHERE (sb.blocker_id=? AND sb.blocked_id=d.user_id) OR (sb.blocker_id=d.user_id AND sb.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM dating_matches m WHERE (m.user_low_id=MIN(?,d.user_id) AND m.user_high_id=MAX(?,d.user_id) AND m.status<>'active')) ORDER BY d.updated_at DESC LIMIT ?").bind(new Date().toISOString(),user.id,user.id,user.id,user.id,user.id,user.id,user.id,limit).all();
+      return json({profiles:rows.results||[]},200,origin);
+    }
+    if(url.pathname==="/api/dating/like"&&request.method==="POST"){
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const target=Number(body.user_id);
+      if(!Number.isSafeInteger(target)||target<=0||target===user.id)return json({error:"Choose another member to like."},400,origin);
+      const targetProfile=await env.DB.prepare("SELECT d.user_id FROM dating_profiles d JOIN adult_access_verifications v ON v.user_id=d.user_id JOIN users u ON u.id=d.user_id WHERE d.user_id=? AND d.visibility='discoverable' AND u.status='active' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?)").bind(target,new Date().toISOString()).first();
+      if(!targetProfile)return json({error:"That dating profile is unavailable."},404,origin);
+      const blocked=await env.DB.prepare("SELECT 1 AS blocked FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1").bind(user.id,target,target,user.id).first();
+      if(blocked)return json({error:"This interaction is unavailable."},403,origin);
+      const now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO dating_likes (from_user_id,to_user_id,created_at) VALUES (?,?,?) ON CONFLICT(from_user_id,to_user_id) DO NOTHING").bind(user.id,target,now).run();
+      const reciprocal=await env.DB.prepare("SELECT 1 AS matched FROM dating_likes WHERE from_user_id=? AND to_user_id=?").bind(target,user.id).first();
+      if(reciprocal){
+        const low=Math.min(user.id,target),high=Math.max(user.id,target);
+        await env.DB.prepare("INSERT INTO dating_matches (user_low_id,user_high_id,status,created_at,updated_at) VALUES (?,?,'active',?,?) ON CONFLICT(user_low_id,user_high_id) DO UPDATE SET status='active',updated_at=excluded.updated_at").bind(low,high,now,now).run();
+        await audit(env,user,"dating.match.create","dating_match",null,{matched_user_id:target});
+        return json({ok:true,matched:true,user_id:target},200,origin);
+      }
+      return json({ok:true,matched:false},200,origin);
+    }
+    if(url.pathname==="/api/dating/matches"&&request.method==="GET"){
+      const rows=await env.DB.prepare("SELECT u.id AS user_id,u.username,u.display_name,u.avatar_url,d.display_name AS dating_name,d.city_label,m.created_at AS matched_at FROM dating_matches m JOIN users u ON u.id=CASE WHEN m.user_low_id=? THEN m.user_high_id ELSE m.user_low_id END JOIN dating_profiles d ON d.user_id=u.id JOIN adult_access_verifications v ON v.user_id=u.id WHERE (m.user_low_id=? OR m.user_high_id=?) AND m.status='active' AND d.visibility='discoverable' AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?) AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM social_user_blocks sb WHERE (sb.blocker_id=? AND sb.blocked_id=u.id) OR (sb.blocker_id=u.id AND sb.blocked_id=?)) ORDER BY m.updated_at DESC LIMIT 100").bind(user.id,user.id,user.id,new Date().toISOString(),user.id,user.id,user.id,user.id).all();
+      return json({matches:rows.results||[]},200,origin);
+    }
+    const unmatch=url.pathname.startsWith("/api/dating/matches/")?url.pathname.slice("/api/dating/matches/".length):"";
+    if(unmatch&&/^[0-9]+$/.test(unmatch)&&request.method==="DELETE"){
+      const target=Number(unmatch),low=Math.min(user.id,target),high=Math.max(user.id,target);
+      await env.DB.prepare("UPDATE dating_matches SET status='unmatched',updated_at=? WHERE user_low_id=? AND user_high_id=?").bind(new Date().toISOString(),low,high).run();
+      await env.DB.prepare("DELETE FROM dating_likes WHERE (from_user_id=? AND to_user_id=?) OR (from_user_id=? AND to_user_id=?)").bind(user.id,target,target,user.id).run();
+      return json({ok:true},200,origin);
+    }
+    if(url.pathname==="/api/creator/profile"&&request.method==="GET"){
+      const profile=await env.DB.prepare("SELECT creator_name,bio,is_adult_creator,is_published,created_at,updated_at FROM creator_profiles WHERE user_id=?").bind(user.id).first();
+      return json({profile:profile||null},200,origin);
+    }
+    if(url.pathname==="/api/creator/profile"&&request.method==="PUT"){
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const name=typeof body.creator_name==="string"?body.creator_name.trim():"",bio=typeof body.bio==="string"?body.bio.trim():"";
+      if(name.length<2||name.length>80||bio.length>2000)return json({error:"Creator name must be 2–80 characters and bio no longer than 2,000."},400,origin);
+      const now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO creator_profiles (user_id,creator_name,bio,is_adult_creator,is_published,created_at,updated_at) VALUES (?,?,?,1,0,?,?) ON CONFLICT(user_id) DO UPDATE SET creator_name=excluded.creator_name,bio=excluded.bio,is_adult_creator=1,updated_at=excluded.updated_at").bind(user.id,name,bio,now,now).run();
+      await audit(env,user,"creator.profile.update","creator_profile",user.id,{});
+      return json({ok:true},200,origin);
+    }
+    if(url.pathname==="/api/creator/posts"&&(request.method==="GET"||request.method==="POST")){
+      if(request.method==="GET"){
+        const rows=await env.DB.prepare("SELECT id,title,description,content_rating,visibility,price_cents,status,published_at,created_at,updated_at FROM creator_posts WHERE creator_id=? ORDER BY created_at DESC LIMIT 100").bind(user.id).all();
+        return json({posts:rows.results||[]},200,origin);
+      }
+      let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+      const profile=await env.DB.prepare("SELECT user_id FROM creator_profiles WHERE user_id=? AND is_adult_creator=1").bind(user.id).first();
+      if(!profile)return json({error:"Create your adult creator profile first."},409,origin);
+      const title=typeof body.title==="string"?body.title.trim():"",description=typeof body.description==="string"?body.description.trim():"",rating=String(body.content_rating||"mature"),visibility=String(body.visibility||"subscribers"),price=Number(body.price_cents||0);
+      if(!title||title.length>160||description.length>3000||!["general","mature","explicit"].includes(rating)||!["public_preview","subscribers","paid_unlock"].includes(visibility)||!Number.isSafeInteger(price)||price<0||price>1000000)return json({error:"Check title, description, rating, visibility, and price (in cents)."},400,origin);
+      const id=randomToken(16),now=new Date().toISOString();
+      await env.DB.prepare("INSERT INTO creator_posts (id,creator_id,title,description,content_rating,visibility,price_cents,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,'draft',?,?)").bind(id,user.id,title,description,rating,visibility,price,now,now).run();
+      await audit(env,user,"creator.post.draft.create","creator_post",id,{content_rating:rating});
+      return json({ok:true,id,status:"draft",note:"Draft metadata only. Media upload, publishing, subscriptions, and paid checkout are not enabled yet."},201,origin);
+    }
+    return json({error:"Creator or dating route not found."},404,origin);
+  }
+
   const vaultResponse = await handleVaultRequest(request, env, origin, url);
   if (vaultResponse) return vaultResponse;
   const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
@@ -1686,6 +1874,46 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({ok:true,status},200,origin);
   }
 
+  if(url.pathname==="/api/admin/social-review"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const kind=String(url.searchParams.get("kind")||"activity");
+    const limit=boundedInt(url.searchParams.get("limit"),50,1,100);
+    const offset=boundedInt(url.searchParams.get("offset"),0,0,100000);
+    if(!["activity","creator_posts","dating_profiles","safety_reports","messages"].includes(kind))return json({error:"Unsupported review category."},400,origin);
+    let rows=[];
+    if(kind==="activity"){
+      const r=await env.DB.prepare("SELECT a.id,a.user_id,u.username,a.activity_type,a.object_type,a.object_id,a.body,a.visibility,a.group_id,a.created_at,a.updated_at,a.deleted_at FROM social_activity a JOIN users u ON u.id=a.user_id ORDER BY a.created_at DESC,a.id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
+    }else if(kind==="creator_posts"){
+      const r=await env.DB.prepare("SELECT p.id,p.creator_id,u.username,p.title,p.description,p.content_rating,p.visibility,p.price_cents,p.status,p.published_at,p.created_at,p.updated_at FROM creator_posts p JOIN users u ON u.id=p.creator_id ORDER BY p.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
+    }else if(kind==="dating_profiles"){
+      const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
+    }else if(kind==="safety_reports"){
+      const r=await env.DB.prepare("SELECT r.id,r.reporter_id,reporter.username AS reporter_username,r.reported_user_id,reported.username AS reported_username,r.object_type,r.object_id,r.reason,r.details,r.status,r.created_at,r.resolved_at,r.resolved_by FROM safety_reports r JOIN users reporter ON reporter.id=r.reporter_id LEFT JOIN users reported ON reported.id=r.reported_user_id ORDER BY CASE r.status WHEN 'open' THEN 0 WHEN 'reviewing' THEN 1 ELSE 2 END,r.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
+    }else{
+      const q=String(url.searchParams.get("q")||"").trim().slice(0,120);
+      const conversationParam=url.searchParams.get("conversation_id");
+      const conversationId=conversationParam?Number(conversationParam):0;
+      if(conversationParam&&(!Number.isSafeInteger(conversationId)||conversationId<1))return json({error:"Invalid conversation id."},400,origin);
+      const like="%"+q.replace(/[\\%_]/g,"\\$&")+"%";
+      let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1";
+      const params=[];
+      if(conversationId){sql+=" AND m.conversation_id=?";params.push(conversationId);}
+      if(q){sql+=" AND (m.body LIKE ? ESCAPE '\\' OR s.username LIKE ? ESCAPE '\\')";params.push(like,like);}
+      sql+=" GROUP BY m.id ORDER BY m.created_at DESC LIMIT ? OFFSET ?";
+      params.push(limit,offset);
+      const r=await env.DB.prepare(sql).bind(...params).all();
+      rows=r.results||[];
+      await audit(env,user,"admin.private_messages.review","messages",conversationId||null,{query_present:!!q,count:rows.length,offset,limit});
+      return json({kind,items:rows,limit,offset},200,origin);
+    }
+    await audit(env,user,"admin.social_review.view",kind,null,{count:rows.length,offset,limit});
+    return json({kind,items:rows,limit,offset},200,origin);
+  }
   if(url.pathname==="/api/admin/health"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const started=Date.now(),db=await env.DB.prepare("SELECT 1 AS ok").first();await env.SESSIONS.list({limit:1});const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);}
   return json({error:"Not found"},404,origin);
  }catch(error){console.error(error);return json({error:"Internal server error"},500,origin);}

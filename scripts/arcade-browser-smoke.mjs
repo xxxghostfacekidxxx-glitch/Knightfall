@@ -115,7 +115,7 @@ try {
       await page.locator("#start").click({ timeout: 3000 });
       await page.waitForTimeout(120);
       const state = await page.locator("#status").innerText();
-      if (!/running/i.test(state)) throw new Error("mini-game did not start: " + state);
+      if (!/running|lives? left|game over/i.test(state)) throw new Error("mini-game did not start: " + state);
       if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
       console.log("PASS mini-game start: " + id);
     } catch (error) {

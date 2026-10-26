@@ -59,6 +59,10 @@
           <a href="/shops.html">Shops &amp; Dropshipping</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
           <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
+          <a href="/social.html">Activity & Groups</a>
+          <a href="/adults.html">Adults Only (18+)</a>
+          <a href="/dating.html">Dating Realm (18+)</a>
+          <a href="/user-agreement.html">User Agreement</a>
         </div>
       </details>
       <details class="kf-nav-group kf-profile-group">
@@ -165,14 +169,14 @@
       }
       currentUser = d.user;
       const user = currentUser;
-      if (siteSettings?.feature_profiles === "false" && user.role !== "admin") {
+      if (siteSettings?.feature_profiles === "false" && !["admin","god"].includes(user.role)) {
         nav.querySelector(".kf-members-link")?.remove();
         nav.querySelectorAll(".kf-profile-link,.kf-my-profile-link").forEach(link => link.remove());
       }
       if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
-      if (!(user.role === "admin" && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
-      if (user.role === "admin") nav.querySelector(".kf-admin-link").hidden = false;
-      if (["admin","moderator"].includes(user.role)) {
+      if (!(["admin","god"].includes(user.role) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
+      if (["admin","god"].includes(user.role)) nav.querySelector(".kf-admin-link").hidden = false;
+      if (["admin","moderator","god"].includes(user.role)) {
         nav.querySelector(".kf-mod-link").hidden = false;
         nav.querySelector(".kf-recovery-link").hidden = false;
       }
