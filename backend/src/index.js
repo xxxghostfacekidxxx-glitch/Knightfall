@@ -1880,7 +1880,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const kind=String(url.searchParams.get("kind")||"activity");
     const limit=boundedInt(url.searchParams.get("limit"),50,1,100);
     const offset=boundedInt(url.searchParams.get("offset"),0,0,100000);
-    if(!["activity","creator_posts","dating_profiles","messages"].includes(kind))return json({error:"Unsupported review category."},400,origin);
+    if(!["activity","creator_posts","dating_profiles","safety_reports","messages"].includes(kind))return json({error:"Unsupported review category."},400,origin);
     let rows=[];
     if(kind==="activity"){
       const r=await env.DB.prepare("SELECT a.id,a.user_id,u.username,a.activity_type,a.object_type,a.object_id,a.body,a.visibility,a.group_id,a.created_at,a.updated_at,a.deleted_at FROM social_activity a JOIN users u ON u.id=a.user_id ORDER BY a.created_at DESC,a.id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
@@ -1890,6 +1890,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       rows=r.results||[];
     }else if(kind==="dating_profiles"){
       const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
+    }else if(kind==="safety_reports"){
+      const r=await env.DB.prepare("SELECT r.id,r.reporter_id,reporter.username AS reporter_username,r.reported_user_id,reported.username AS reported_username,r.object_type,r.object_id,r.reason,r.details,r.status,r.created_at,r.resolved_at,r.resolved_by FROM safety_reports r JOIN users reporter ON reporter.id=r.reporter_id LEFT JOIN users reported ON reported.id=r.reported_user_id ORDER BY CASE r.status WHEN 'open' THEN 0 WHEN 'reviewing' THEN 1 ELSE 2 END,r.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
       rows=r.results||[];
     }else{
       const q=String(url.searchParams.get("q")||"").trim().slice(0,120);
