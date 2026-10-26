@@ -276,10 +276,16 @@
     const clock = new Date(Date.UTC(year, month - 1, day, hour, minute));
     if (clock.getUTCFullYear() !== year || clock.getUTCMonth() !== month - 1 || clock.getUTCDate() !== day || clock.getUTCHours() !== hour || clock.getUTCMinutes() !== minute) { status.textContent = "That calendar date or time is invalid."; return; }
     const utc = new Date(clock.getTime() - offset * 3600000).toISOString().replace(".000Z","Z");
+    const latText = $("#astro-latitude").value.trim();
+    const lonText = $("#astro-longitude").value.trim();
+    if (Boolean(latText) !== Boolean(lonText)) { status.textContent = "Enter both birth coordinates or neither."; return; }
+    const latitude = Number(latText), longitude = Number(lonText);
+    if (latText && (!Number.isFinite(latitude) || !Number.isFinite(longitude) || latitude < -66 || latitude > 66 || longitude < -180 || longitude > 180)) { status.textContent = "Invalid birth coordinates."; return; }
+    const chartRequest = latText ? {utc,latitude,longitude} : {utc};
     button.disabled = true;
     status.textContent = "Calculating approximate planetary positions…";
     try {
-      const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify({utc})});
+      const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(chartRequest)});
       latestNatalUtc = utc;
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
