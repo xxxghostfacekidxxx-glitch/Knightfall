@@ -3,7 +3,8 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/icons/miss-chaos.svg?v=20261026-face1";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261026-presence4"; document.head.append(css);\n  const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261026-glitch1"; document.head.append(glitchCss);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261026-presence4"; document.head.append(css);
+  const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261026-glitch1"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
     <section id="miss-chaos-window" aria-label="Chat with Miss Chaos" aria-hidden="true" hidden>
