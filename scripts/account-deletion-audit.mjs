@@ -18,6 +18,7 @@ assert.match(backend, /if\(url\.pathname==="\/api\/account\/deletion-request"&&r
 assert.match(backend, /requireUser\(request,env\)/);
 assert.match(backend, /verifyPassword\(password,credential\.password_hash\)/);
 assert.match(backend, /confirmation!==String\(user\.username\)\.toLowerCase\(\)/);
+assert.match(backend, /status IN \(\x27pending\x27,\x27in_progress\x27\)/, "duplicate active requests must be prevented");
 assert.match(backend, /request\.method==="DELETE"/);
 assert.match(backend, /rateLimit\(env,request,"account-deletion-request"/);
 assert.match(backend, /account\.deletion\.request/);
