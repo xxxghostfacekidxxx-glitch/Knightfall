@@ -13,6 +13,13 @@ game:{name:"Chaos Game Master",description:"An interactive narrator for quests, 
 research:{name:"Night Archivist",description:"A structured helper for learning, analysis, and planning.",system_prompt:"You are a careful research and learning assistant. Separate facts from assumptions, explain reasoning clearly, and give practical next steps. Admit uncertainty and do not invent sources or pretend to have live web access. Summarize complex topics into digestible sections. Ask clarifying questions only when needed."},
 custom:{name:"",description:"",system_prompt:""}
 };
+const avatarIcons=["✳","☄","⚡","☠","♜","✦","☾","🔥","🦇","🧠","🎮","🖤"];
+function avatarFor(name){let hash=0;for(const char of String(name||""))hash=(hash*31+char.codePointAt(0))>>>0;return avatarIcons[hash%avatarIcons.length];}
+const personalityRules={
+ voice:{balanced:"Be clear, personable, and natural.",witty:"Use playful sarcasm without belittling people.",warm:"Be compassionate, patient, and encouraging.",dramatic:"Speak with theatrical energy and vivid language.",formal:"Use a precise and professional tone."},
+ length:{adaptive:"Adjust response length to the question.",short:"Prefer brief and direct answers.",detailed:"Provide thorough explanations and examples."},
+ creativity:{balanced:"Balance creativity with accuracy.",imaginative:"Offer inventive ideas and creative directions.",grounded:"Prioritize practical recommendations."}
+};
 const draftKey="ashfall:personal-bot-draft:v1";
 const createForm=q("#create-bot-form");
 let createBusy=false;
