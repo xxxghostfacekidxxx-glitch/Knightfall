@@ -676,7 +676,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await audit(env,user,"social.group.create","social_group",null,{group_id:id,visibility});
     return json({ok:true,group:{id,name,slug,description,visibility,join_policy:joinPolicy,created_at:now}},201,origin);
   }
-  const groupJoinMatch=url.pathname.match(/^\/api\/social\/groups\/([a-f0-9]{32})\/join$/);
+  const groupJoinMatch=url.pathname.match(/^\/api\/social\/groups\/([A-Za-z0-9_-]{8,80})\/join$/);
   if(groupJoinMatch&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to join a group."},401,origin);
     const group=await env.DB.prepare("SELECT id,visibility,join_policy,status FROM social_groups WHERE id=?").bind(groupJoinMatch[1]).first();
@@ -713,7 +713,7 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     }
     if(url.pathname==="/api/dating/discover"&&request.method==="GET"){
       const limit=boundedInt(url.searchParams.get("limit"),24,1,40);
-      const rows=await env.DB.prepare("SELECT d.user_id,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,u.username,u.avatar_url FROM dating_profiles d JOIN users u ON u.id=d.user_id WHERE d.visibility='discoverable' AND u.status='active' AND d.user_id<>? AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=d.user_id) OR (b.blocker_id=d.user_id AND b.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM dating_matches m WHERE (m.user_low_id=MIN(?,d.user_id) AND m.user_high_id=MAX(?,d.user_id) AND m.status<>'active')) ORDER BY d.updated_at DESC LIMIT ?").bind(user.id,user.id,user.id,user.id,user.id,limit).all();
+      const rows=await env.DB.prepare("SELECT d.user_id,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,u.username,u.avatar_url FROM dating_profiles d JOIN users u ON u.id=d.user_id WHERE d.visibility='discoverable' AND u.status='active' AND EXISTS(SELECT 1 FROM adult_access_verifications v WHERE v.user_id=d.user_id AND v.status='verified' AND (v.expires_at IS NULL OR v.expires_at>?)) AND d.user_id<>? AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=d.user_id) OR (b.blocker_id=d.user_id AND b.blocked_id=?)) AND NOT EXISTS(SELECT 1 FROM dating_matches m WHERE (m.user_low_id=MIN(?,d.user_id) AND m.user_high_id=MAX(?,d.user_id) AND m.status<>'active')) ORDER BY d.updated_at DESC LIMIT ?").bind(new Date().toISOString(),user.id,user.id,user.id,user.id,user.id,limit).all();
       return json({profiles:rows.results||[]},200,origin);
     }
     if(url.pathname==="/api/dating/like"&&request.method==="POST"){
