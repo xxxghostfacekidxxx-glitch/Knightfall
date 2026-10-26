@@ -28,6 +28,26 @@ function render(d,adminView=false,ownProfile=false){
   if (u.favorite_quote) { const q=document.createElement("blockquote"); q.className="profile-quote"; q.textContent="“"+u.favorite_quote+"”"; root.querySelector(".profile-actions-wrap")?.after(q); }
   if (u.interests || u.favorite_games || u.favorite_music) { const section=document.createElement("section"); section.className="profile-favorites"; const h=document.createElement("h2"); h.textContent="Things I’m into"; section.append(h); for (const [label,value] of [["Interests",u.interests],["Favorite games",u.favorite_games],["Favorite music",u.favorite_music]]) if(value) { const p=document.createElement("p"),b=document.createElement("strong"); b.textContent=label+" "; p.append(b,document.createTextNode(value)); section.append(p); } (root.querySelector(".bio")||root.querySelector(".profile-actions-wrap"))?.after(section); }
 
+  if(d.birth_chart){
+    const chart=d.birth_chart,section=document.createElement("section");
+    section.className="profile-birth-chart";section.setAttribute("aria-label","Member birth chart");
+    const heading=document.createElement("h2");heading.textContent="✦ Cosmic blueprint";
+    const detail=document.createElement("p");detail.className="birth-chart-system";detail.textContent="Western tropical · "+(chart.house_system||"Equal houses")+" · Shared by this member";
+    const bigThree=document.createElement("div");bigThree.className="birth-chart-big-three";
+    for(const [name,sign] of [["Sun",chart.bodies?.Sun?.sign],["Moon",chart.bodies?.Moon?.sign],["Rising",chart.ascendant_sign]]){
+      if(!sign)continue;
+      const card=document.createElement("div"),label=document.createElement("span"),value=document.createElement("strong");
+      label.textContent=name;value.textContent=sign;card.append(label,value);bigThree.append(card);
+    }
+    const details=document.createElement("details"),summary=document.createElement("summary"),grid=document.createElement("div");
+    summary.textContent="View planetary placements";grid.className="birth-chart-placements";
+    for(const [name,body] of Object.entries(chart.bodies||{})){
+      const item=document.createElement("p"),strong=document.createElement("strong");
+      strong.textContent=name;item.append(strong,document.createTextNode(" "+body.sign+" "+body.degree+"°"+(body.retrograde?" ℞":"")+(chart.house_placements?.[name]?" · House "+chart.house_placements[name]:"")));grid.append(item);
+    }
+    details.append(summary,grid);section.append(heading,detail,bigThree,details);
+    const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
+  }
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
