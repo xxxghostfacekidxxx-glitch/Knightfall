@@ -1,3 +1,4 @@
+import { calculateAstrology } from "./astrology.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 100000;
@@ -1008,6 +1009,14 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     if(!conversation)return json({error:"Conversation not found."},404,origin);
     const {results}=await env.DB.prepare("SELECT id,role,content,mood,created_at FROM chaos_messages WHERE conversation_id=? AND user_id=? ORDER BY id ASC LIMIT 200").bind(conversation.id,user.id).all();
     return json({messages:results||[]},200,origin);
+  }
+  if(url.pathname==="/api/chaos/astrology/chart"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to calculate a chart."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-chart",15,60)))return json({error:"Too many chart requests. Try again shortly."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(typeof body.utc!=="string"||body.utc.length>40||!/^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d(?::\\d\\d(?:\\.\\d{1,3})?)?Z$/.test(body.utc))return json({error:"Provide a UTC timestamp ending in Z."},400,origin);
+    try{return json(calculateAstrology(body.utc),200,origin);}
+    catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
   if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
     if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);
