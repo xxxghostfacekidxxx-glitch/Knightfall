@@ -1487,7 +1487,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const previous=await env.DB.prepare("SELECT chart_json FROM profile_birth_charts WHERE user_id=?").bind(owner.id).first();
     let stored=previous?.chart_json||"";
     if(body.utc!==undefined){
-      if(typeof body.utc!=="string"||body.utc.length>40||!/^\\d{4}-\\d{2}-\\d{2}T/.test(body.utc))return json({error:"Valid UTC birth time required."},400,origin);
+      if(typeof body.utc!=="string"||body.utc.length>40||!/^\d{4}-\d{2}-\d{2}T/.test(body.utc))return json({error:"Valid UTC birth time required."},400,origin);
       if(!Number.isFinite(body.latitude)||!Number.isFinite(body.longitude)||body.latitude < -66||body.latitude > 66||body.longitude < -180||body.longitude > 180)return json({error:"Valid birth latitude and longitude are required."},400,origin);
       if(!["equal","whole-sign"].includes(body.house_system))return json({error:"Unsupported house system."},400,origin);
       try{
