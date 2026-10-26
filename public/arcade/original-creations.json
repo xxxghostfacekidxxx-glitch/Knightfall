@@ -691,6 +691,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-taps",
+      "name": "Cinder Taps",
+      "genre": "Arcade",
+      "sprites": [
+        "ember-target.svg"
+      ],
+      "notes": "Tap the moving ember across nine furnace vents in a 30-second reflex challenge.",
+      "engine": "/arcade/hosted/cinder-taps/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-taps",
+      "assets": [
+        {
+          "name": "ember-target.svg",
+          "path": "/arcade/hosted/cinder-taps/sprites/ember-target.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-sequence",
+      "name": "Void Sequence",
+      "genre": "Puzzle",
+      "sprites": [
+        "rune.svg"
+      ],
+      "notes": "Memorize and repeat an expanding pattern of four infernal runes.",
+      "engine": "/arcade/hosted/void-sequence/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-sequence",
+      "assets": [
+        {
+          "name": "rune.svg",
+          "path": "/arcade/hosted/void-sequence/sprites/rune.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-orbit",
+      "name": "Ash Orbit",
+      "genre": "Puzzle",
+      "sprites": [
+        "conduit.svg"
+      ],
+      "notes": "Rotate sixteen conduit tiles until every connection joins and the circuit seals.",
+      "engine": "/arcade/hosted/ash-orbit/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-orbit",
+      "assets": [
+        {
+          "name": "conduit.svg",
+          "path": "/arcade/hosted/ash-orbit/sprites/conduit.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-count",
+      "name": "Crypt Count",
+      "genre": "Puzzle",
+      "sprites": [
+        "number-sigil.svg"
+      ],
+      "notes": "Crack a secret four-digit code with exact-position and misplaced-digit clues.",
+      "engine": "/arcade/hosted/crypt-count/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-count",
+      "assets": [
+        {
+          "name": "number-sigil.svg",
+          "path": "/arcade/hosted/crypt-count/sprites/number-sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-path",
+      "name": "Ember Path",
+      "genre": "Puzzle",
+      "sprites": [
+        "path-sigil.svg"
+      ],
+      "notes": "Trace all 25 ash tiles in one unbroken path without revisiting a square.",
+      "engine": "/arcade/hosted/ember-path/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-path",
+      "assets": [
+        {
+          "name": "path-sigil.svg",
+          "path": "/arcade/hosted/ember-path/sprites/path-sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
