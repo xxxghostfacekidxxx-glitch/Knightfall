@@ -200,6 +200,12 @@ try {
       await page.locator('[data-tetris-action="pause"]').tap();
       const afterPause = await page.evaluate(() => window.KnightfallTetris.getState());
       if (!afterPause.paused) throw new Error("pause touch control did not pause the game");
+      await page.locator('[data-tetris-action="left"]').tap();
+      const whilePaused = await page.evaluate(() => window.KnightfallTetris.getState());
+      if (whilePaused.piece.x !== afterPause.piece.x) throw new Error("piece moved despite paused state");
+      await page.locator('[data-tetris-action="pause"]').tap();
+      const afterResume = await page.evaluate(() => window.KnightfallTetris.getState());
+      if (afterResume.paused) throw new Error("pause button failed to resume the game");
       if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
       console.log("PASS Custom Tetris mobile move, drop, and pause controls");
     } catch (error) {
