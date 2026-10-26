@@ -474,6 +474,13 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const user=await requireUser(request,env);
  if(!user)return json({error:"Sign in to manage your personal bots."},401,origin);
  const historyMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/history$/);
+ if(historyMatch&&request.method==="DELETE"){
+  const bot=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(historyMatch[1],user.id).first();
+  if(!bot)return json({error:"Bot not found."},404,origin);
+  const result=await env.DB.prepare("DELETE FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=?").bind(bot.id,user.id).run();
+  await audit(env,user,"personal_bot.history.delete","personal_bot",null,{bot_id:bot.id,deleted:result.meta?.changes||0});
+  return json({ok:true,deleted:result.meta?.changes||0},200,origin);
+ }
  if(historyMatch&&request.method==="GET"){
   const bot=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(historyMatch[1],user.id).first();
   if(!bot)return json({error:"Bot not found."},404,origin);
