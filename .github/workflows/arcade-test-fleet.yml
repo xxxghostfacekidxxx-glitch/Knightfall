@@ -8,6 +8,8 @@ on:
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
+      - "scripts/arcade-import-audit.mjs"
+      - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
@@ -22,6 +24,8 @@ on:
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
       - "scripts/arcade-asset-doctor.mjs"
+      - "scripts/arcade-import-audit.mjs"
+      - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "public/admin.html"
       - "public/admin.css"
@@ -96,6 +100,10 @@ jobs:
           node --check scripts/arcade-gameplay-doctor.mjs
           node --check scripts/arcade-asset-doctor.mjs
           node --test scripts/arcade-asset-doctor.test.mjs
+      - name: Audit local game imports and license records
+        run: |
+          node --check scripts/arcade-import-audit.mjs
+          node scripts/arcade-import-audit.mjs 2>&1 | tee /tmp/arcade-import-audit.log
       - name: Audit arcade asset references
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
@@ -129,6 +137,7 @@ jobs:
             /tmp/arcade-local-results.log
             /tmp/arcade-live-results.log
             /tmp/arcade-asset-audit.json
+            /tmp/arcade-import-audit.log
             /tmp/arcade-browser-evidence/
             /tmp/arcade-replays/
             /tmp/arcade-gameplay-replay.log
