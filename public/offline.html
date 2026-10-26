@@ -9,6 +9,10 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/theme.css">
   <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{max-width:100%;overflow-x:clip}
+    body{margin:0}
+
     .offline{width:min(680px,92%);margin:12vh auto 3rem;padding:clamp(1.3rem,5vw,3rem);border:1px solid #333;border-radius:18px;background:#101010;text-align:center}
     .offline .mark{font-size:3rem;color:#a8ff3e}
     .offline h1{font-size:clamp(2.4rem,8vw,4.5rem);line-height:.95;letter-spacing:-.06em;margin:.6rem 0 1rem}
