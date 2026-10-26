@@ -34,3 +34,9 @@ The chart now includes **Pluto** from a low-precision heliocentric series, and *
 ## Accuracy and deployment gate
 
 Do not label these calculations Swiss Ephemeris or JPL precision. Before promoting them as production-verified, confirm `node --test scripts/astrology.test.mjs`, the static audit, the backend deployment workflow, and an authenticated browser check of the chart and transit controls. Existing CI status is not proof of a successful live deployment until a run completes successfully.
+
+## Higher-accuracy planetary engine (October 2026)
+
+The backend now imports **Astronomy Engine 2.1.19**, an MIT-licensed astronomical calculation library, to compute the geocentric Sun, Moon, Mercury through Pluto, converted to the true ecliptic of date. This replaces the original low-precision planetary orbital-element approximations. Planetary retrograde flags are still estimated from daily longitude differences. Mean lunar nodes remain an approximate secular model; equal/whole-sign houses and Midheaven use approximate angle formulas, and the user's historical UTC offset must still be supplied accurately.
+
+The backend declares the dependency in `backend/package.json`; GitHub deployment and smoke-test workflows install it before executing `node --test scripts/astrology.test.mjs`. The API's anonymous-access check is also included in the live smoke workflow. **No production verification is implied by the commit alone.** Do not describe this implementation as Swiss Ephemeris or claim verified Placidus houses.
