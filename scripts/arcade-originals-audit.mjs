@@ -20,8 +20,8 @@ for(const game of manifest.games){
  const htmlPath=join(root,game.engine.slice(1));
  if(existsSync(htmlPath)){
   const html=readFileSync(htmlPath,"utf8");
-  if(!html.includes('src="/arcade-save.js"'))errors.push(game.id+": missing shared score bridge");
-  if(!html.includes("recordScore("))errors.push(game.id+": missing score submission");
+  if(!html.includes('src="/arcade-save.js"')&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"'))errors.push(game.id+": missing shared score bridge");
+  if(!html.includes("recordScore(")&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"'))errors.push(game.id+": missing score submission");
   for(const m of html.matchAll(/(?:src|href)="(\.\/sprites\/[^"]+)"/g)){
    if(!existsSync(join(root,"arcade/hosted",game.id,m[1])))errors.push(game.id+": broken sprite reference "+m[1]);
   }
