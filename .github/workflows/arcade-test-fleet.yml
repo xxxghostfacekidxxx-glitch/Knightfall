@@ -67,11 +67,11 @@ jobs:
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
-        run: node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
+        run: set -o pipefail\n          node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
       - name: Run full live-site arcade browser suite
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
-        run: node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log
+        run: set -o pipefail\n          node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log
       - name: Save per-bot test evidence
         if: always()
         uses: actions/upload-artifact@v4
