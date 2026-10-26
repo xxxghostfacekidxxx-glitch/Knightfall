@@ -20,6 +20,50 @@
 <article style="margin-top:1rem;padding:.75rem;border:1px solid #ffffff22;border-radius:10px;background:#080b13"><img src="/branding/archive/ash-fall-wordmark.svg" alt="Archived original Ash-Fall wordmark" style="display:block;width:100%;max-height:120px;object-fit:contain;background:#07070b;border-radius:8px"><strong style="display:block;margin:.6rem 0">Archived original Ash-Fall logo / wordmark</strong><a class="btn" href="/branding/archive/ash-fall-wordmark.svg" download>Download old logo SVG</a></article>
 <p class="small">Palette: hot pink #ff27ce · acid green #c6ff45 · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
 </section>
+<section class="panel" id="original-creations" style="margin:1rem 0;border-color:#ff9c5488">
+<h2>Original Creations · Game & Sprite Archive</h2>
+<p>First-party Knightfall games and their original artwork. Every entry links to its playable cabinet, editable SVG source assets, and GitHub implementation. New originals belong in <code>/arcade/original-creations.json</code>; legacy imports are not included.</p>
+<div class="bar"><a class="btn" href="/arcade/original-creations.json" target="_blank" rel="noopener noreferrer">View source manifest</a><button type="button" class="btn" id="refresh-originals">Refresh archive</button></div>
+<p class="small" id="originals-status" role="status">Loading first-party artwork catalog…</p>
+<div id="originals-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:.8rem"></div>
+</section>
+<script>
+(function(){
+'use strict';
+const gallery=document.getElementById('originals-gallery'),status=document.getElementById('originals-status');
+function link(label,url,download){const a=document.createElement('a');a.href=url;a.textContent=label;a.style.color='#c6ff45';a.style.fontSize='.78rem';a.style.overflowWrap='anywhere';if(download)a.download='';if(url.startsWith('https://')){a.target='_blank';a.rel='noopener noreferrer'}return a}
+async function refresh(){
+status.textContent='Loading original creations…';gallery.replaceChildren();
+try{
+const response=await fetch('/arcade/original-creations.json',{cache:'no-store',credentials:'same-origin'});
+if(!response.ok)throw Error('Manifest request failed ('+response.status+')');
+const data=await response.json();
+if(!Array.isArray(data.games))throw Error('Invalid originals manifest');
+let assets=0;
+for(const game of data.games){
+const card=document.createElement('article');card.style.cssText='padding:.85rem;border:1px solid #ffffff28;border-radius:12px;background:#080b13;display:grid;gap:.55rem';
+const heading=document.createElement('strong');heading.textContent=game.name;heading.style.color='#ffbd80';card.append(heading);
+const info=document.createElement('small');info.textContent=game.genre+' · '+game.status;info.style.color='#b4b2c6';card.append(info);
+const preview=document.createElement('div');preview.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px';
+for(const asset of game.assets||[]){
+assets++;const tile=document.createElement('a');tile.href=asset.path;tile.download='';tile.title='Download '+asset.name;tile.style.cssText='display:grid;gap:4px;text-align:center;text-decoration:none;color:#d9ff9c;font-size:.64rem;overflow-wrap:anywhere';
+const image=document.createElement('img');image.src=asset.path;image.alt=game.name+' '+asset.name;image.loading='lazy';image.style.cssText='width:100%;aspect-ratio:1;object-fit:contain;background:#151923;border:1px solid #ffffff20;border-radius:8px;padding:5px';tile.append(image);
+const label=document.createElement('span');label.textContent=asset.name;tile.append(label);preview.append(tile);
+}
+if(!(game.assets||[]).length){const empty=document.createElement('small');empty.textContent='CSS-rendered graphics · no separate SVG files';empty.style.color='#aaaec1';preview.append(empty)}
+card.append(preview);
+const notes=document.createElement('small');notes.textContent=game.notes;notes.style.color='#aaaec1';card.append(notes);
+const links=document.createElement('div');links.style.cssText='display:flex;gap:12px;flex-wrap:wrap';links.append(link('Play game',game.engine),link('Browse source',game.source));card.append(links);gallery.append(card);
+}
+status.textContent=data.games.length+' original games · '+assets+' original SVG sprites cataloged. Browser QA status is shown per game.';
+}catch(error){status.textContent='Could not load originals archive: '+error.message}
+}
+document.getElementById('refresh-originals').addEventListener('click',refresh);
+const observer=new MutationObserver(()=>{if(!document.getElementById('workshop').classList.contains('hidden')){observer.disconnect();refresh()}});
+observer.observe(document.getElementById('workshop'),{attributes:true,attributeFilter:['class']});
+if(!document.getElementById('workshop').classList.contains('hidden')){observer.disconnect();refresh()}
+})();
+</script>
 <div class="layout"><div>
 <section class="panel"><h2>Sprite Sheet Preview</h2><p>Original SVG pixel-art sheet for the Chaos Cartridge arcade. Choose a sprite below to spotlight it, or upload a local image to inspect it without sending the file to the server.</p><div id="stage" class="sprite-stage glow"><img id="sheet" src="/assets/arcade/chaos-sprite-sheet.svg" alt="Twenty-four original neon arcade sprites" decoding="async"><div id="spotlight" class="spotlight" aria-label="Selected sprite preview"></div></div>
 <div class="bar"><button type="button" class="btn primary" id="animate">▶ Preview animation</button><button type="button" class="btn" id="download">↓ Export SVG sheet</button><button type="button" class="btn" id="download-selected">↓ Export selected sprite</button><button type="button" class="btn" id="download-png">↓ Export PNG preview</button><label class="btn" for="upload">＋ Load local image</label><input class="hidden" id="upload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></div>
