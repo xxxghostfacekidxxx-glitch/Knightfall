@@ -9,6 +9,8 @@ on:
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
+      - "scripts/arcade-originals-audit.mjs"
+      - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
@@ -25,6 +27,8 @@ on:
       - "scripts/arcade-gameplay-doctor.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
+      - "scripts/arcade-originals-audit.mjs"
+      - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "public/admin.html"
@@ -105,6 +109,10 @@ jobs:
           node --check scripts/arcade-import-audit.mjs
           set -o pipefail
           node scripts/arcade-import-audit.mjs 2>&1 | tee /tmp/arcade-import-audit.log
+      - name: Validate first-party games and sprite archive
+        run: |
+          node --check scripts/arcade-originals-audit.mjs
+          node scripts/arcade-originals-audit.mjs
       - name: Audit arcade asset references
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
