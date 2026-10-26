@@ -1829,28 +1829,36 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
   }
 
   if(url.pathname==="/api/admin/social-review"&&request.method==="GET"){
-    const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
-    const kind=String(url.searchParams.get("kind")||"activity"),limit=boundedInt(url.searchParams.get("limit"),50,1,100),offset=boundedInt(url.searchParams.get("offset"),0,0,100000);
+    const user=await requireUser(request,env);
+    if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const kind=String(url.searchParams.get("kind")||"activity");
+    const limit=boundedInt(url.searchParams.get("limit"),50,1,100);
+    const offset=boundedInt(url.searchParams.get("offset"),0,0,100000);
     if(!["activity","creator_posts","dating_profiles","messages"].includes(kind))return json({error:"Unsupported review category."},400,origin);
     let rows=[];
     if(kind==="activity"){
-      const r=await env.DB.prepare("SELECT a.id,a.user_id,u.username,a.activity_type,a.object_type,a.object_id,a.body,a.visibility,a.group_id,a.created_at,a.updated_at,a.deleted_at FROM social_activity a JOIN users u ON u.id=a.user_id ORDER BY a.created_at DESC,a.id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+      const r=await env.DB.prepare("SELECT a.id,a.user_id,u.username,a.activity_type,a.object_type,a.object_id,a.body,a.visibility,a.group_id,a.created_at,a.updated_at,a.deleted_at FROM social_activity a JOIN users u ON u.id=a.user_id ORDER BY a.created_at DESC,a.id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
     }else if(kind==="creator_posts"){
-      const r=await env.DB.prepare("SELECT p.id,p.creator_id,u.username,p.title,p.description,p.content_rating,p.visibility,p.price_cents,p.media_key,p.status,p.published_at,p.created_at,p.updated_at FROM creator_posts p JOIN users u ON u.id=p.creator_id ORDER BY p.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+      const r=await env.DB.prepare("SELECT p.id,p.creator_id,u.username,p.title,p.description,p.content_rating,p.visibility,p.price_cents,p.status,p.published_at,p.created_at,p.updated_at FROM creator_posts p JOIN users u ON u.id=p.creator_id ORDER BY p.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
     }else if(kind==="dating_profiles"){
-      const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+      const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();
+      rows=r.results||[];
     }else{
-      const q=String(url.searchParams.get("q")||"").trim().slice(0,120),conversationParam=url.searchParams.get("conversation_id"),conversationId=conversationParam?Number(conversationParam):0;
+      const q=String(url.searchParams.get("q")||"").trim().slice(0,120);
+      const conversationParam=url.searchParams.get("conversation_id");
+      const conversationId=conversationParam?Number(conversationParam):0;
       if(conversationParam&&(!Number.isSafeInteger(conversationId)||conversationId<1))return json({error:"Invalid conversation id."},400,origin);
-      const like="%"+q.replace(/[%_]/g,"\\    }else{
-      const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
-    }
-    await audit(env,user,"admin.social_review.view",kind,null,{count:rows.length,offset,limit});")+"%";
-      let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1",params=[];
+      const like="%"+q.replace(/[%_]/g,"\\$&")+"%";
+      let sql="SELECT m.id,m.conversation_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at,s.username AS sender_username,group_concat(cm.user_id) AS member_ids FROM messages m JOIN users s ON s.id=m.sender_id JOIN conversation_members cm ON cm.conversation_id=m.conversation_id WHERE 1=1";
+      const params=[];
       if(conversationId){sql+=" AND m.conversation_id=?";params.push(conversationId);}
-      if(q){sql+=" AND (m.body LIKE ? ESCAPE '\\\\' OR s.username LIKE ? ESCAPE '\\\\')";params.push(like,like);}
-      sql+=" GROUP BY m.id ORDER BY m.created_at DESC LIMIT ? OFFSET ?";params.push(limit,offset);
-      const r=await env.DB.prepare(sql).bind(...params).all();rows=r.results||[];
+      if(q){sql+=" AND (m.body LIKE ? ESCAPE '\\' OR s.username LIKE ? ESCAPE '\\')";params.push(like,like);}
+      sql+=" GROUP BY m.id ORDER BY m.created_at DESC LIMIT ? OFFSET ?";
+      params.push(limit,offset);
+      const r=await env.DB.prepare(sql).bind(...params).all();
+      rows=r.results||[];
       await audit(env,user,"admin.private_messages.review","messages",conversationId||null,{query_present:!!q,count:rows.length,offset,limit});
       return json({kind,items:rows,limit,offset},200,origin);
     }
