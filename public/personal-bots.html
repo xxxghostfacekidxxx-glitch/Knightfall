@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090c">
 <meta name="description" content="Create and manage your personal Ash-Fall AI bots. Keep them private or share them when ready.">
 <title>Personal Bots | Ash-Fall</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261010-nsfw-optin">
-<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261010-nsfw-optin" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder2">
+<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder2" defer></script>
 </head>
 <body class="bots-page">
 <header class="kf-header"></header>
@@ -15,12 +15,14 @@
 <section class="bot-limits"><div><span class="eyebrow">YOUR WORKSPACE</span><strong id="bot-count">— / — bots</strong></div><div class="limit-track" role="progressbar" aria-label="Personal bot slots" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="limit-progress"><span id="limit-fill"></span></div><p id="limit-note">Your role determines your bot limit.</p></section>
 <section class="bot-create panel">
 <div class="section-title"><div><p class="eyebrow">START SOMETHING NEW</p><h2>Create a personal bot</h2></div><span class="private-pill">PRIVATE BY DEFAULT</span></div>
+<div class="bot-starter"><div><strong>Quick-start personalities</strong><p>Choose a foundation, then make it yours.</p></div><div class="bot-starter-grid" id="bot-starter-grid"><button type="button" data-bot-template="companion">🖤 Companion</button><button type="button" data-bot-template="creative">✍️ Creative partner</button><button type="button" data-bot-template="game">🎮 Game master</button><button type="button" data-bot-template="research">🔎 Research helper</button><button type="button" data-bot-template="custom">⚙️ Blank slate</button></div></div>
 <form id="create-bot-form">
-<label>Bot name<input name="name" maxlength="60" required placeholder="e.g. The Forge, Night Archivist"></label>
-<label>Short description<input name="description" maxlength="500" placeholder="What is this bot for?"></label>
-<label>Personality and instructions<textarea name="system_prompt" rows="5" maxlength="4000" required placeholder="Define its personality, purpose, response style, boundaries, and expertise."></textarea><small>1–4,000 characters. Clear instructions make more reliable bots.</small></label>
+<div class="bot-draft-tools"><span id="bot-draft-status" role="status">Start with a template or write your own.</span><button type="button" id="bot-clear-draft" class="quiet-button">Clear draft</button></div>
+<label>Bot name <small id="bot-name-count">0 / 60</small><input name="name" maxlength="60" required placeholder="e.g. The Forge, Night Archivist"></label>
+<label>Short description <small id="bot-description-count">0 / 500</small><input name="description" maxlength="500" placeholder="What is this bot for?"></label>
+<label>Personality and instructions <small id="bot-prompt-count">0 / 4000</small><textarea name="system_prompt" rows="5" maxlength="4000" required placeholder="Define its personality, purpose, response style, boundaries, and expertise."></textarea><small>1–4,000 characters. Clear instructions make more reliable bots.</small></label>
 <label class="nsfw-optin"><input type="checkbox" name="is_nsfw"> <span><strong>Mark this bot as NSFW (18+)</strong><small>Required for public bots that generate adult content. Public NSFW bots are age-gated. Keep this off for general-audience bots.</small></span></label>
-<button class="primary-button" type="submit">＋ Create bot</button>
+<div class="bot-prompt-check"><strong>Creation checklist</strong><p id="bot-prompt-feedback">Give your bot a name and clear instructions.</p></div><button class="primary-button" type="submit">＋ Create private bot</button>
 </form>
 </section>
 <section class="bot-list-section"><div class="section-title"><div><p class="eyebrow">YOUR PRIVATE WORKSHOP</p><h2>Personal bot manager</h2></div><button id="refresh-bots" class="quiet-button" type="button">Refresh</button></div>
