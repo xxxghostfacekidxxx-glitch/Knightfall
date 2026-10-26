@@ -3,13 +3,6 @@ name: Stage Monster MMO API
 on:
   workflow_dispatch:
     inputs:
-      source_branch:
-        description: Prototype branch to stage
-        required: true
-        type: choice
-        options:
-          - feature/monster-mmo-prototype
-        default: feature/monster-mmo-prototype
       confirm_staging:
         description: Confirm that the isolated staging D1 schema should be initialized and the staging Worker deployed.
         required: true
@@ -29,23 +22,43 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout selected prototype branch
+      - name: Checkout canonical main staging configuration
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.source_branch }}
+          ref: main
 
       - name: Require staging credentials
         shell: bash
         env:
           CLOUDFLARE_D1_MIGRATION_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_STAGING_API_TOKEN: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
           test -n "$CLOUDFLARE_D1_MIGRATION_TOKEN" || { echo "::error::Missing CLOUDFLARE_D1_MIGRATION_TOKEN."; exit 1; }
-          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Missing CLOUDFLARE_API_TOKEN."; exit 1; }
+          test -n "$CLOUDFLARE_STAGING_API_TOKEN" || { echo "::error::Missing CLOUDFLARE_STAGING_API_TOKEN."; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID."; exit 1; }
           echo "Staging credentials are present."
+
+      - name: Validate isolated staging configuration
+        working-directory: backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e '
+            const fs = require("node:fs");
+            const c = JSON.parse(fs.readFileSync("wrangler.staging.jsonc", "utf8"));
+            if (c.name !== "knightfall-mmo-staging") throw new Error("Unexpected Worker name");
+            if (c.main !== "src/index.mmo-staging.js") throw new Error("Unexpected staging entrypoint");
+            if (c.d1_databases?.[0]?.database_id !== "6c72439f-2319-4f03-9bb6-711157d18963") throw new Error("Staging must use the isolated D1 database");
+            if (c.kv_namespaces?.[0]?.id !== "56931d38c9f64871b812867e422b771b") throw new Error("Staging must use the isolated KV namespace");
+            if (c.r2_buckets?.some(b => !b.bucket_name.startsWith("knightfall-mmo-staging-"))) throw new Error("Staging must not bind production R2 buckets");
+            if (c.routes?.length) throw new Error("Staging must not bind production routes");
+            const source = fs.readFileSync("src/index.mmo-staging.js", "utf8");
+            const corsBlock = source.slice(0, source.indexOf("function json"));
+            if (corsBlock.includes('"https://ash-fall.com"') || corsBlock.includes('"https://www.ash-fall.com"')) throw new Error("Staging CORS must not include production origins");
+            console.log("Canonical staging config, isolated bindings, and non-production CORS validated.");
+          '
 
       - name: Apply migrations to isolated staging D1
         uses: cloudflare/wrangler-action@v4
@@ -58,7 +71,7 @@ jobs:
       - name: Deploy isolated staging Worker
         uses: cloudflare/wrangler-action@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: deploy --config wrangler.staging.jsonc
