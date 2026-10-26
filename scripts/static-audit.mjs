@@ -101,6 +101,28 @@ for (const configPath of ["wrangler.jsonc", "backend/wrangler.jsonc"]) {
   }
 }
 
+const stagingWorker = await readFile(path.join(root, "backend/src/index.mmo-staging.js"), "utf8");
+const stagingSyntax = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: stagingWorker, encoding: "utf8" });
+if (stagingSyntax.status !== 0) fail("Monster MMO staging Worker syntax error: " + (stagingSyntax.stderr || stagingSyntax.stdout).trim());
+else ok("Monster MMO staging Worker module syntax");
+try {
+  const productionConfig = JSON.parse(await readFile(path.join(root, "backend/wrangler.jsonc"), "utf8"));
+  const stagingConfig = JSON.parse(await readFile(path.join(root, "backend/wrangler.staging.jsonc"), "utf8"));
+  if (stagingConfig.name !== "knightfall-mmo-staging" || stagingConfig.main !== "src/index.mmo-staging.js") fail("Monster MMO staging Worker name or entrypoint is incorrect.");
+  if (stagingConfig.d1_databases?.[0]?.database_id === productionConfig.d1_databases?.[0]?.database_id) fail("Monster MMO staging must not bind production D1.");
+  if (stagingConfig.kv_namespaces?.[0]?.id === productionConfig.kv_namespaces?.[0]?.id) fail("Monster MMO staging must not bind production KV.");
+  if (stagingConfig.r2_buckets?.some(bucket => !bucket.bucket_name.startsWith("knightfall-mmo-staging-"))) fail("Monster MMO staging must not bind production R2 buckets.");
+  if (stagingConfig.routes?.length) fail("Monster MMO staging must not bind production routes.");
+  const corsBlock = stagingWorker.slice(0, stagingWorker.indexOf("function json"));
+  if (corsBlock.includes('"https://ash-fall.com"') || corsBlock.includes('"https://www.ash-fall.com"') || stagingWorker.includes('return origin : "https://ash-fall.com"')) fail("Monster MMO staging CORS must not allow or fall back to production origins.");
+  if (!stagingWorker.includes("STAGING_ALLOWED_ORIGINS")) fail("Monster MMO staging must use an environment-specific origin allowlist.");
+  const stagingWorkflow = await readFile(path.join(root, ".github/workflows/stage-monster-mmo.yml"), "utf8");
+  if (!stagingWorkflow.includes("ref: main") || !stagingWorkflow.includes("CLOUDFLARE_STAGING_API_TOKEN") || !stagingWorkflow.includes("Validate isolated staging configuration")) fail("Monster MMO staging workflow must use canonical main config, dedicated staging credentials, and isolation checks.");
+  ok("Monster MMO staging config, storage isolation, origin policy, and deployment workflow checked.");
+} catch (error) {
+  fail("Monster MMO staging audit could not validate configuration: " + error.message);
+}
+
 for (const file of cssFiles) {
   const rel = path.relative(root, file);
   const css = (await readFile(file, "utf8")).replace(/\/\*[\s\S]*?\*\//g, "").replace(/"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, "");
