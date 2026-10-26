@@ -302,3 +302,10 @@
  .studio-save-bar{align-items:stretch}
  .studio-save-bar button{width:100%}
 }
+
+/* Album selection and lightbox controls */
+.profile-photo-meta .photo-album-choice{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;min-width:0}
+.photo-album-choice select{width:auto;max-width:170px;min-height:42px;padding:.5rem .6rem;border:1px solid #67422b;border-radius:8px;background:#18110d;color:#f4e4d8}
+.photo-album-choice select:focus-visible{outline:3px solid #e66a2c;outline-offset:2px}
+.ash-photo-lightbox button:disabled{opacity:.35;cursor:not-allowed}
+@media(max-width:600px){.profile-photo-meta .photo-album-choice{flex:1 1 100%;justify-content:space-between}.photo-album-choice select{flex:1;max-width:none}}
