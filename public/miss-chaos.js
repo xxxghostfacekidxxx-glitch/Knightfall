@@ -281,7 +281,8 @@
     if (Boolean(latText) !== Boolean(lonText)) { status.textContent = "Enter both birth coordinates or neither."; return; }
     const latitude = Number(latText), longitude = Number(lonText);
     if (latText && (!Number.isFinite(latitude) || !Number.isFinite(longitude) || latitude < -66 || latitude > 66 || longitude < -180 || longitude > 180)) { status.textContent = "Invalid birth coordinates."; return; }
-    const chartRequest = latText ? {utc,latitude,longitude} : {utc};
+    const house_system = $("#astro-house-system").value;
+    const chartRequest = latText ? {utc,latitude,longitude,house_system} : {utc};
     button.disabled = true;
     status.textContent = "Calculating approximate planetary positions…";
     try {
@@ -289,7 +290,7 @@
       latestNatalUtc = utc;
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
-      const houseInfo = chart.angles ? " Ascendant: " + chart.angles.ascendant_sign + " " + (chart.angles.ascendant % 30).toFixed(1) + " degrees. Equal houses. Planetary houses: " + Object.entries(chart.house_placements || {}).map(([name,house]) => name + " house " + house).join("; ") + "." : " Ascendant and houses unavailable without birth coordinates.";
+      const houseInfo = chart.angles ? " Ascendant: " + chart.angles.ascendant_sign + " " + (chart.angles.ascendant % 30).toFixed(1) + " degrees. Midheaven: " + chart.angles.midheaven_sign + " " + (chart.angles.midheaven % 30).toFixed(1) + " degrees. House system: " + chart.angles.house_system + ". Planetary houses: "  + Object.entries(chart.house_placements || {}).map(([name,house]) => name + " house " + house).join("; ") + "." : " Ascendant and houses unavailable without birth coordinates.";
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
       input.value = "Please interpret my approximate Western tropical birth chart in depth. UTC: " + chart.utc + ". Placements: " + placements + ". Major aspects (up to 4° orb): " + aspects + ". Explain strengths, challenges, patterns, and the chart as a whole. " + houseInfo + " Treat astrology as symbolic interpretation, and clearly state the limitations of these approximate calculations.";
       input.dispatchEvent(new Event("input"));
