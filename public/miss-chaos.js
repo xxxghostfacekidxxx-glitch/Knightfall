@@ -289,8 +289,9 @@
       latestNatalUtc = utc;
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
+      const houseInfo = chart.angles ? " Ascendant: " + chart.angles.ascendant_sign + " " + (chart.angles.ascendant % 30).toFixed(1) + " degrees. Equal houses. Planetary houses: " + Object.entries(chart.house_placements || {}).map(([name,house]) => name + " house " + house).join("; ") + "." : " Ascendant and houses unavailable without birth coordinates.";
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = "Please interpret my approximate Western tropical birth chart in depth. UTC: " + chart.utc + ". Placements: " + placements + ". Major aspects (up to 4° orb): " + aspects + ". Explain strengths, challenges, patterns, and the chart as a whole. No rising sign or houses have been calculated. Treat astrology as symbolic interpretation, and clearly state the limitations of these approximate calculations.";
+      input.value = "Please interpret my approximate Western tropical birth chart in depth. UTC: " + chart.utc + ". Placements: " + placements + ". Major aspects (up to 4° orb): " + aspects + ". Explain strengths, challenges, patterns, and the chart as a whole. " + houseInfo + " Treat astrology as symbolic interpretation, and clearly state the limitations of these approximate calculations.";
       input.dispatchEvent(new Event("input"));
       status.textContent = "Calculated " + Object.keys(chart.bodies || {}).length + " planetary positions and " + (chart.aspects || []).length + " major aspects. Reading prepared below; review and press Send.";
       input.focus();
