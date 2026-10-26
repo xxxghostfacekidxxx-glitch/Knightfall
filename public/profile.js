@@ -325,7 +325,7 @@ async function load(){
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadMemberActivity(d.user,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);applyProfileLayout(d.profile_layout);await loadMemberActivity(d.user,ownProfile);applyProfileLayout(d.profile_layout);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
