@@ -305,6 +305,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-veil",
+      "name": "Ash Veil",
+      "genre": "Arcade",
+      "sprites": [
+        "cinder-rogue.svg",
+        "void-sentinel.svg"
+      ],
+      "notes": "Original stealth-grid game with patrol sightlines, three sector layouts, ember-key collection, keyboard and touch controls, and original rogue and sentinel sprites.",
+      "engine": "/arcade/hosted/ash-veil/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-veil",
+      "assets": [
+        {
+          "name": "cinder-rogue.svg",
+          "path": "/arcade/hosted/ash-veil/sprites/cinder-rogue.svg"
+        },
+        {
+          "name": "void-sentinel.svg",
+          "path": "/arcade/hosted/ash-veil/sprites/void-sentinel.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
