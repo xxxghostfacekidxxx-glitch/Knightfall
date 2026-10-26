@@ -5,7 +5,7 @@
     if (!document.querySelector('link[data-chaos-glitch]')) {
       const glitch = document.createElement("link");
       glitch.rel = "stylesheet";
-      glitch.href = "/chaos-glitch.css?v=20261026-glitch1";
+      glitch.href = "/chaos-glitch.css?v=20261026-glitch2";
       glitch.dataset.chaosGlitch = "true";
       document.head.append(glitch);
     }
