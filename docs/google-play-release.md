@@ -29,7 +29,7 @@ Keep the existing Cloudflare Pages site and Worker API as the product backend. F
 ## Policy and account requirements (release blockers until verified)
 
 - [ ] Replace/review the privacy policy draft at `public/privacy.html` against the actual live data flows, vendors, retention, contact details, and legal requirements. The draft intentionally calls out facts the operator must verify; do not submit it unchanged without that review.
-- [x] Add authenticated password-confirmed deletion-request capture and a public external request-instructions URL. This records a request only; actual deletion execution remains a release blocker until every associated data store is handled and verified.
+- [x] Add authenticated deletion-request capture, password confirmation when available, username confirmation for social-login accounts, cancellation while a request is pending, and a public external request-instructions URL. This records a request only; actual deletion execution remains a release blocker until every associated data store is handled and verified.
 - [ ] Publish a monitored privacy/support contact method and accurate account-deletion instructions. These are not yet evidenced by this repository audit.
 - [ ] Complete Google Play Data safety, content rating, target audience, ads declaration, app access instructions, and any applicable age/content disclosures based on the actual shipped behavior.
 - [ ] Review third-party game licenses, bundled assets, trademarks, and attribution before including them in the app.
