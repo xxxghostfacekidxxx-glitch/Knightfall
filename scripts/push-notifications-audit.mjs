@@ -16,6 +16,7 @@ const checks = [
   ["notification creation calls background delivery", worker.includes("await deliverPushToUser(env,userId,notification)")],
   ["message and community preferences are enforced", worker.includes('const category=kind==="message"?"messages"') && worker.includes('pref["push_"+category]')],
   ["test delivery is rate limited", worker.includes('/api/push/test') && worker.includes('"push-test",3,3600')],
+  ["push test reports actual provider acceptance", worker.includes("delivery.accepted++") && worker.includes("delivery.failed++") && worker.includes("pushAttempt?.accepted?200:503")],
   ["service worker handles push events and notification clicks", serviceWorker.includes('addEventListener("push"') && serviceWorker.includes('addEventListener("notificationclick"')],
   ["settings page offers enable, disable, preference and test controls", ["Enable push notifications", "/api/notification-preferences", "/api/push/subscriptions", "/api/push/test"].every(x => page.includes(x))],
   ["deployment instructions do not require committing private keys", docs.includes("must never be committed to GitHub") && docs.includes("VAPID_PRIVATE_KEY")]
