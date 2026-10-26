@@ -1168,8 +1168,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(password.length>128)return json({error:"Password is too long."},400,origin);
     if(confirmation!==String(user.username).toLowerCase())return json({error:"Enter your exact username to confirm this request."},403,origin);
     if(password){const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);}
-    const existing=await env.DB.prepare("SELECT id,requested_at FROM account_deletion_requests WHERE user_id=? AND status='pending' ORDER BY id DESC LIMIT 1").bind(user.id).first();
-    if(existing)return json({ok:true,already_pending:true,requested_at:existing.requested_at,message:"A deletion request is already pending review."},200,origin);
+    const existing=await env.DB.prepare("SELECT id,status,requested_at FROM account_deletion_requests WHERE user_id=? AND status IN ('pending','in_progress') ORDER BY id DESC LIMIT 1").bind(user.id).first();
+    if(existing)return json({ok:true,already_pending:true,status:existing.status,requested_at:existing.requested_at,message:existing.status==="in_progress"?"Your account deletion request is already being processed.":"A deletion request is already pending review."},200,origin);
     const now=new Date().toISOString(),deadline=new Date(Date.now()+30*24*60*60*1000).toISOString();
     await env.DB.prepare("INSERT INTO account_deletion_requests (user_id,username_snapshot,email_snapshot,status,requested_at,scheduled_for) VALUES (?,?,?,'pending',?,?)").bind(user.id,user.username,user.email,now,deadline).run();
     await audit(env,user,"account.deletion.request","account",user.id,{scheduled_for:deadline});
