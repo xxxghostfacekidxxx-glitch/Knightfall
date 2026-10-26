@@ -26,3 +26,8 @@ This review interface displays stored text and record metadata; it is not a medi
 - Users must control who can view, save, message, or purchase their content; include consent, block, report, takedown, and appeal flows. No non-consensual intimate imagery, impersonation, coercion, or content of uncertain age/consent.
 - Payment providers, app stores, hosting providers, and local laws may restrict adult services. Confirm provider approval before implementing checkout or accepting uploads.
 - This migration is schema groundwork only. It does not yet enable adult access, upload explicit media, process payments, or make dating operational.
+
+## Member safety and moderation workflows
+Authenticated members can submit bounded safety reports through `POST /api/social/report`, list their own block list through `GET /api/social/blocks`, block an active member through `POST /api/social/blocks`, and unblock through `DELETE /api/social/blocks/:userId`. Reports are rate-limited per reporter and written to the moderation queue; block/unblock and report actions are audited. Dating discovery and match lists exclude members blocked in either direction. The restricted administrator review panel includes a Safety Reports category, ordered to surface open reports first.
+
+Migration `0025_social_safety_controls.sql` creates the dedicated block relation and reporting index. Apply migrations 0024 and 0025 in order before deploying these routes. These controls are API foundations; the user-facing report/block buttons and staff report-resolution workflow still need browser testing and additional UI work.
