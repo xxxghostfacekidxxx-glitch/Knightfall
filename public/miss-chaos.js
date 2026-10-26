@@ -50,12 +50,27 @@
     copy.textContent = "Copy"; copy.setAttribute("aria-label", "Copy " + (role === "user" ? "your" : "Miss Chaos") + " message");
     copy.addEventListener("click", async () => {
       try {
-        await navigator.clipboard.writeText(content);
+        await navigator.clipboard.writeText(text.textContent);
         copy.textContent = "Copied";
         setTimeout(() => { if (copy.isConnected) copy.textContent = "Copy"; }, 1600);
       } catch { showError("Copy failed. Select the message text to copy it manually."); }
     });
     actions.append(copy);
+    if(role!=="user" && "speechSynthesis" in window){
+      const listen=document.createElement("button");
+      listen.type="button";listen.className="message-copy message-listen";
+      listen.textContent="Listen";listen.setAttribute("aria-label","Read this Miss Chaos reply aloud");
+      listen.addEventListener("click",()=>{
+        const synth=window.speechSynthesis;
+        if(synth.speaking){synth.cancel();if(listen.dataset.playing==="true"){listen.dataset.playing="false";listen.textContent="Listen";return;}}
+        const utterance=new SpeechSynthesisUtterance(text.textContent);
+        utterance.lang=navigator.language||"en-US";utterance.rate=1.02;
+        listen.dataset.playing="true";listen.textContent="Stop";
+        const reset=()=>{listen.dataset.playing="false";listen.textContent="Listen";};
+        utterance.onend=reset;utterance.onerror=reset;synth.speak(utterance);
+      });
+      actions.append(listen);
+    }
     article.append(heading, text, actions);
     messagesEl.append(article);
     if (wasNearBottom || role === "user") scrollToBottom();
@@ -457,10 +472,9 @@
     recognition.continuous = false;
     recognition.maxAlternatives = 1;
     const baseText=input.value.trim();
-    let finalText="";
     recognition.onresult = event => {
-      let interim="";
-      for(let i=event.resultIndex;i<event.results.length;i++){
+      let finalText="",interim="";
+      for(let i=0;i<event.results.length;i++){
         const text=event.results[i][0]?.transcript||"";
         if(event.results[i].isFinal)finalText+=text+" ";
         else interim+=text;
