@@ -44,6 +44,23 @@
       </div>
     </section>
 
+
+    <section class="elgg-bridge" aria-labelledby="elgg-bridge-title">
+      <div class="elgg-bridge-heading">
+        <p class="eyebrow">ELGG-INSPIRED SOCIAL LAYER</p>
+        <h2 id="elgg-bridge-title">Bring the useful parts to Ash-Fall<span>.</span></h2>
+        <p>Elgg is a PHP social-network framework, not a plug-in we can drop into Cloudflare Pages or a Worker. Instead, this is the native feature map for bringing its strongest social patterns into Knightfall without splitting member accounts or moving everyone's data into a second platform.</p>
+      </div>
+      <div class="elgg-feature-grid">
+        <article><span>01 / IDENTITY</span><h3>Richer member profiles</h3><p>Profile fields, interests, bios, avatar, activity history, and privacy-aware profile visibility.</p><a href="/members.html">Member directory ↗</a></article>
+        <article><span>02 / ACTIVITY</span><h3>Personal activity stream</h3><p>A feed for posts, replies, friend activity, game achievements, and followed community topics, with controls to mute or hide items.</p><a href="/community.html">The Madhouse ↗</a></article>
+        <article><span>03 / GROUPS</span><h3>Interest groups</h3><p>Elgg-style groups mapped to Ash-Fall realms: gaming, art, music, philosophy, and private or invite-only circles.</p><a href="/community.html">Browse community ↗</a></article>
+        <article><span>04 / RELATIONSHIPS</span><h3>Friends and subscriptions</h3><p>Friend requests, following, block/mute controls, and activity preferences tied to the existing Ash-Fall account.</p><a href="/friends.html">Friends ↗</a></article>
+        <article><span>05 / PUBLISHING</span><h3>Posts, files, and bookmarks</h3><p>Share posts and approved media, bookmark useful threads, and manage visibility without exposing private vault files.</p><a href="/vault.html">Private Vault ↗</a></article>
+        <article><span>06 / EXTENSIONS</span><h3>Feature modules</h3><p>A modular approach for polls, events, badges, and creator tools, with server-side permission checks and a consistent audit trail.</p><a href="/open-source-arsenal.html">Arsenal reference ↗</a></article>
+      </div>
+      <div class="elgg-implementation-note"><strong>Implementation rule:</strong> reuse the existing Ash-Fall identity, Worker API, and database. This section documents the target features; it does not claim that all six have already been built. Build and test each module against the current API before exposing it to members. Official Elgg source: <a href="https://github.com/Elgg/Elgg" target="_blank" rel="noopener noreferrer">github.com/Elgg/Elgg ↗</a>.</div>
+    </section>
     <section class="catalog" aria-labelledby="catalog-title">
       <div class="catalog-heading"><div><p class="eyebrow">UPSTREAM PROJECTS</p><h2 id="catalog-title">The shortlist<span>.</span></h2><p>Search the list or filter by the problem you're trying to solve.</p></div><span class="catalog-count" id="result-count" aria-live="polite">6 projects</span></div>
       <div class="catalog-tools">
