@@ -1195,7 +1195,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       if(!result.meta?.changes)return json({error:"Wallet update failed."},409,origin);
     }else return json({error:"Unknown transaction action."},400,origin);
     await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,action==="spend"?-amount:amount,gameLabels[game]+(action==="spend"?" shot cost":" catch payout"),now).run();
-    const publicChart=await env.DB.prepare("SELECT chart_json FROM profile_birth_charts WHERE user_id=? AND visible=1").bind(user.id).first();const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();
+    const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();
     return json({ok:true,action,amount,balance:Number(wallet?.balance||0)},200,origin,{"cache-control":"no-store"});
   }
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
