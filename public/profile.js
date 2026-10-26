@@ -214,6 +214,11 @@ async function loadProfilePhotos(username,ownProfile){
   panel.innerHTML='<div class="photo-gallery-head"><div><p class="eyebrow">THE PHOTO WALL</p><h2>Photos</h2><p class="muted">Snapshots from the chaos. Images are stored with Ash-Fall, not left hanging off random links.</p></div><span class="photo-gallery-count" id="profile-photo-count">Loading…</span></div>'+
     (ownProfile?'<form id="profile-photo-upload" class="photo-upload-form"><label for="profile-photo-file">Add photos <small>JPG, PNG, GIF, or WebP · up to 8 MB each · 60 photos maximum</small></label><input id="profile-photo-file" name="file" type="file" accept="image/jpeg,image/png,image/gif,image/webp" required><label for="profile-photo-caption">Caption <small>Optional · 240 characters</small></label><input id="profile-photo-caption" name="caption" maxlength="240" placeholder="What is happening in this picture?"><button class="action primary" type="submit">Upload photo</button><p id="profile-photo-status" role="status" aria-live="polite"></p></form>':'')+
     '<div id="profile-photo-grid" class="profile-photo-grid"><p class="muted">Loading photos…</p></div>';
+  if(ownProfile){
+    const albumTools=document.createElement("div");albumTools.className="profile-album-tools";
+    albumTools.innerHTML='<form data-create-album><label for="new-profile-album">New album</label><input id="new-profile-album" name="name" maxlength="80" required placeholder="Album name"><button type="submit" class="action">Create</button></form><label for="profile-album-select">Browse albums</label><select id="profile-album-select"><option value="">All photos</option><option value="favorites">★ Favorites</option></select><p data-album-status role="status" aria-live="polite"></p>';
+    panel.append(albumTools);
+  }
   root.append(panel);
   const grid=panel.querySelector("#profile-photo-grid"),count=panel.querySelector("#profile-photo-count"),status=panel.querySelector("#profile-photo-status");
   // Native gallery viewer: no third-party media service, no new public permissions.
@@ -240,10 +245,37 @@ async function loadProfilePhotos(username,ownProfile){
     document.body.append(photoDialog);document.addEventListener("keydown",photoKeys);showPhotoAt(index);photoDialog.querySelector("[data-close]").focus();
   }
   grid.addEventListener("click",event=>{const link=event.target.closest("[data-photo-index]");if(!link)return;event.preventDefault();openPhotoDialog(Number(link.dataset.photoIndex));});
+  let albumSelection="",albumPhotos=null,albumIds=[],favoriteIds=new Set();
+  const albumSelect=panel.querySelector("#profile-album-select"),albumStatus=panel.querySelector("[data-album-status]");
+  async function loadAlbumOptions(){
+    if(!ownProfile)return;
+    const [albums,favorites]=await Promise.all([api("/api/media-library/albums"),api("/api/media-library/favorites")]);
+    albumIds=albums.albums||[];favoriteIds=new Set((favorites.photos||[]).map(p=>Number(p.id)));
+    albumSelect.innerHTML='<option value="">All photos</option><option value="favorites">★ Favorites</option>'+albumIds.map(a=>'<option value="'+Number(a.id)+'">'+esc(a.name)+' ('+Number(a.photo_count)+')</option>').join("");
+    albumSelect.value=albumSelection;
+  }
+  if(ownProfile){
+    try{await loadAlbumOptions()}catch(error){albumStatus.textContent="Albums unavailable until the media migration is applied: "+error.message}
+    panel.querySelector("[data-create-album]").addEventListener("submit",async e=>{
+      e.preventDefault();const form=e.currentTarget,name=form.elements.name.value.trim();if(!name)return;
+      try{await api("/api/media-library/albums",{method:"POST",body:JSON.stringify({name})});form.reset();albumStatus.textContent="Album created.";await loadAlbumOptions();}
+      catch(error){albumStatus.textContent=error.message}
+    });
+    albumSelect.addEventListener("change",async()=>{albumSelection=albumSelect.value;try{if(albumSelection&&albumSelection!=="favorites"){const data=await api("/api/media-library/albums/"+encodeURIComponent(albumSelection));albumPhotos=new Set((data.photos||[]).map(p=>Number(p.id)));}else albumPhotos=null;await refresh();}catch(error){albumStatus.textContent=error.message}});
+    grid.addEventListener("click",async e=>{
+      const button=e.target.closest("[data-favorite-photo],[data-add-album]");if(!button)return;
+      const id=Number(button.dataset.favoritePhoto||button.dataset.addAlbum);
+      try{
+        if(button.dataset.favoritePhoto){const isFav=favoriteIds.has(id);await api("/api/media-library/favorites/"+id,{method:isFav?"DELETE":"PUT"});if(isFav)favoriteIds.delete(id);else favoriteIds.add(id);}
+        else if(albumSelection&&albumSelection!=="favorites"){await api("/api/media-library/albums/"+encodeURIComponent(albumSelection)+"/photos/"+id,{method:"PUT"});albumPhotos?.add(id);}
+        await refresh();
+      }catch(error){albumStatus.textContent=error.message}
+    });
+  }
   const refresh=async()=>{
     const data=await api("/api/profile/photos?username="+encodeURIComponent(username));
-    const photos=data.photos||[];galleryPhotos=photos;count.textContent=photos.length+" / 60";
-    grid.innerHTML=photos.length?photos.map((photo,index)=>'<article class="profile-photo-card"><a class="profile-photo-image" href="'+esc(photo.url)+'" data-photo-index="'+index+'" aria-label="Open photo in gallery viewer"><img src="'+esc(photo.url)+'" alt="'+esc(photo.caption||"Photo shared by "+username)+'" loading="lazy"></a>'+(photo.caption?'<p class="profile-photo-caption">'+esc(photo.caption)+'</p>':'')+'<div class="profile-photo-meta"><time datetime="'+esc(photo.created_at)+'">'+fmt(photo.created_at)+'</time>'+(ownProfile?'<button class="action photo-delete" type="button" data-photo-delete="'+Number(photo.id)+'">Delete</button>':'')+'</div></article>').join(""):'<p class="photo-empty">No photos here yet.</p>';
+    const allPhotos=data.photos||[];const photos=albumSelection==="favorites"?allPhotos.filter(p=>favoriteIds.has(Number(p.id))):albumPhotos?allPhotos.filter(p=>albumPhotos.has(Number(p.id))):allPhotos;galleryPhotos=photos;count.textContent=photos.length+" / 60";
+    grid.innerHTML=photos.length?photos.map((photo,index)=>'<article class="profile-photo-card"><a class="profile-photo-image" href="'+esc(photo.url)+'" data-photo-index="'+index+'" aria-label="Open photo in gallery viewer"><img src="'+esc(photo.url)+'" alt="'+esc(photo.caption||"Photo shared by "+username)+'" loading="lazy"></a>'+(photo.caption?'<p class="profile-photo-caption">'+esc(photo.caption)+'</p>':'')+'<div class="profile-photo-meta"><time datetime="'+esc(photo.created_at)+'">'+fmt(photo.created_at)+'</time>'+(ownProfile?'<button class="action" type="button" data-favorite-photo="'+Number(photo.id)+'" aria-label="Toggle favorite">'+(favoriteIds.has(Number(photo.id))?'★':'☆')+'</button>'+(albumSelection&&albumSelection!=='favorites'?'<button class="action" type="button" data-add-album="'+Number(photo.id)+'">Add to album</button>':'')+'<button class="action photo-delete" type="button" data-photo-delete="'+Number(photo.id)+'">Delete</button>':'')+'</div></article>').join(""):'<p class="photo-empty">No photos here yet.</p>';
   };
   try{await refresh()}catch(error){grid.innerHTML='<p class="photo-empty">Photos could not load: '+esc(error.message)+'</p>';count.textContent="Unavailable"}
   if(ownProfile){
