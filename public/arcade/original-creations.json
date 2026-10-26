@@ -282,6 +282,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-enclosure",
+      "name": "Cinder Enclosure",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-core.svg",
+        "void-core.svg"
+      ],
+      "notes": "Original boundary-claiming territory puzzle with a CPU opponent, turn retention on captured squares, touch controls, and bespoke core sprites.",
+      "engine": "/arcade/hosted/cinder-enclosure/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-enclosure",
+      "assets": [
+        {
+          "name": "ember-core.svg",
+          "path": "/arcade/hosted/cinder-enclosure/sprites/ember-core.svg"
+        },
+        {
+          "name": "void-core.svg",
+          "path": "/arcade/hosted/cinder-enclosure/sprites/void-core.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
