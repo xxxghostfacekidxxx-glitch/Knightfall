@@ -26,7 +26,7 @@
       "url": "/homepage.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/knightfall-maskable.svg",
+          "src": "/icons/chaos-cartridge-maskable.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -38,7 +38,7 @@
       "url": "/chaos-cartridge.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/knightfall-maskable.svg",
+          "src": "/icons/chaos-cartridge-maskable.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -50,7 +50,7 @@
       "url": "/messages.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/knightfall-maskable.svg",
+          "src": "/icons/chaos-cartridge-maskable.svg",
           "sizes": "any",
           "type": "image/svg+xml"
         }
@@ -59,13 +59,13 @@
   ],
   "icons": [
     {
-      "src": "/icons/knightfall.svg",
+      "src": "/icons/chaos-cartridge.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/icons/knightfall-maskable.svg",
+      "src": "/icons/chaos-cartridge-maskable.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "maskable"
