@@ -20,3 +20,9 @@ The API requires an authenticated session, is rate limited, and does not persist
 ## Engineering checks
 
 Run `node --test scripts/astrology.test.mjs` and `node scripts/static-audit.mjs`. The backend deployment workflow runs the astrology tests and triggers for changes anywhere under `backend/src/`. Live deployment still depends on configured Cloudflare credentials and passing GitHub Actions.
+
+## Location-based Ascendant and houses
+
+The calculator now accepts optional birth latitude and longitude (north/east positive, south/west negative). When both are supplied, it calculates an **approximate Ascendant** from local sidereal time and mean obliquity, then uses twelve **equal houses** spaced 30 degrees from the Ascendant. It does **not** calculate Placidus or whole-sign houses, and limits latitude to -66 through +66 degrees. The city and historical UTC offset must be determined by the user; the calculator does not perform geocoding or timezone lookup.
+
+This remains a **low-precision** planetary ephemeris. Pluto and lunar nodes are absent, and exact birth-time rectification, professional-grade ephemerides and sidereal charts are not implemented. Location input is not separately persisted by the calculator; if the user sends the prepared interpretation prompt, the chart information enters their normal chat history.
