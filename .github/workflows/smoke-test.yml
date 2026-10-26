@@ -7,6 +7,7 @@ on:
     paths:
       - 'public/**'
       - 'backend/src/**'
+      - 'scripts/astrology.test.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
@@ -41,7 +42,7 @@ jobs:
         with:
           node-version: '22'
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs
+        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
