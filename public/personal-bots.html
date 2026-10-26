@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090c">
 <meta name="description" content="Create and manage your personal Ash-Fall AI bots. Keep them private or share them when ready.">
 <title>Personal Bots | Ash-Fall</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder2">
-<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder2" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder3">
+<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder3" defer></script>
 </head>
 <body class="bots-page">
 <header class="kf-header"></header>
@@ -20,6 +20,8 @@
 <div class="bot-draft-tools"><span id="bot-draft-status" role="status">Start with a template or write your own.</span><button type="button" id="bot-clear-draft" class="quiet-button">Clear draft</button></div>
 <label>Bot name <small id="bot-name-count">0 / 60</small><input name="name" maxlength="60" required placeholder="e.g. The Forge, Night Archivist"></label>
 <label>Short description <small id="bot-description-count">0 / 500</small><input name="description" maxlength="500" placeholder="What is this bot for?"></label>
+<fieldset class="bot-personality"><legend>Fine-tune its personality</legend><div class="bot-personality-grid"><label>Voice<select id="bot-voice"><option value="balanced">Balanced</option><option value="witty">Witty and sarcastic</option><option value="warm">Warm and encouraging</option><option value="dramatic">Dramatic and theatrical</option><option value="formal">Precise and professional</option></select></label><label>Reply length<select id="bot-length"><option value="adaptive">Match the conversation</option><option value="short">Short and punchy</option><option value="detailed">Detailed and thorough</option></select></label><label>Creativity<select id="bot-creativity"><option value="balanced">Balanced</option><option value="imaginative">Imaginative</option><option value="grounded">Grounded and practical</option></select></label></div><button type="button" class="quiet-button" id="bot-apply-personality">Apply to instructions</button><small>These choices add editable guidance to the prompt. You can rewrite or remove it before creating your bot.</small></fieldset>
+<div class="bot-live-preview"><span class="bot-preview-icon" id="bot-preview-icon" aria-hidden="true">✳</span><div><strong id="bot-preview-name">Your bot</strong><p id="bot-preview-description">Give your creation a name and a purpose.</p></div></div>
 <label>Personality and instructions <small id="bot-prompt-count">0 / 4000</small><textarea name="system_prompt" rows="5" maxlength="4000" required placeholder="Define its personality, purpose, response style, boundaries, and expertise."></textarea><small>1–4,000 characters. Clear instructions make more reliable bots.</small></label>
 <label class="nsfw-optin"><input type="checkbox" name="is_nsfw"> <span><strong>Mark this bot as NSFW (18+)</strong><small>Required for public bots that generate adult content. Public NSFW bots are age-gated. Keep this off for general-audience bots.</small></span></label>
 <div class="bot-prompt-check"><strong>Creation checklist</strong><p id="bot-prompt-feedback">Give your bot a name and clear instructions.</p></div><button class="primary-button" type="submit">＋ Create private bot</button>
