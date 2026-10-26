@@ -7,6 +7,7 @@ on:
     paths:
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
+      - "scripts/arcade-asset-doctor.mjs"
       - ".github/workflows/arcade-test-fleet.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -70,6 +71,10 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      - name: Audit arcade asset references
+        run: |
+          node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
+          cat /tmp/arcade-asset-audit.json
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
@@ -92,8 +97,50 @@ jobs:
             /tmp/knightfall-static.log
             /tmp/arcade-local-results.log
             /tmp/arcade-live-results.log
+            /tmp/arcade-asset-audit.json
           if-no-files-found: ignore
           retention-days: 14
+
+  safe-auto-repair:
+    name: Prepare safe asset repairs for review
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Apply strictly deterministic arcade asset fixes
+        run: |
+          node scripts/arcade-asset-doctor.mjs --fix > /tmp/arcade-doctor.json || true
+          cat /tmp/arcade-doctor.json
+      - name: Create reviewable repair PR only when files changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- public/arcade; then
+            echo "No safe repairs needed"
+            exit 0
+          fi
+          BRANCH="bot/arcade-asset-doctor"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add public/arcade
+          git commit -m "fix(arcade): normalize broken public-prefixed asset URLs"
+          git push --force-with-lease origin "$BRANCH"
+          if gh pr list --repo "$GH_REPO" --head "$BRANCH" --state open --json number --jq 'length' | grep -qx '0'; then
+            gh pr create --repo "$GH_REPO" --base main --head "$BRANCH" --title "fix(arcade): automated safe asset URL repairs" --body "Deterministic repairs only: removes an invalid /public/ URL prefix when the corrected asset exists. Review required. Source: https://github.com/$GH_REPO/actions/runs/$RUN_ID"
+          fi
 
   report-failure:
     if: github.event_name != 'pull_request' && always() && needs.browser-bot.result == 'failure'
