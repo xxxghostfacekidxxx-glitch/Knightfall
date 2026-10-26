@@ -167,6 +167,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-words",
+      "name": "Crypt Words",
+      "genre": "Word",
+      "sprites": [
+        "rune.svg",
+        "seal.svg"
+      ],
+      "notes": "Original five-letter decoding puzzle and infernal rune/seal vector art.",
+      "engine": "/arcade/hosted/crypt-words/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-words",
+      "assets": [
+        {
+          "name": "rune.svg",
+          "path": "/arcade/hosted/crypt-words/sprites/rune.svg"
+        },
+        {
+          "name": "seal.svg",
+          "path": "/arcade/hosted/crypt-words/sprites/seal.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
