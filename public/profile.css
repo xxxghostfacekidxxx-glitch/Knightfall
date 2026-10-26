@@ -250,3 +250,5 @@
 .studio-preview-avatar{overflow:hidden}.studio-preview-avatar-image{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
 
 #profile .wallet-card{border-color:var(--profile-accent,#e66a2c);background:linear-gradient(135deg,#22160f,#101014)}#profile .wallet-kicker,#profile .wallet-balance small{color:var(--profile-accent,#e66a2c)}#profile .wallet-balance{color:#fff2e8}#profile .wallet-main p,#profile .wallet-public-note,#profile .wallet-claims #wallet-status{color:#c8b6aa}
+
+#profile .profile-favorites,#profile .profile-birth-chart{border-color:var(--profile-accent,#e66a2c);background:linear-gradient(135deg,#211a15,#101013)}#profile .profile-favorites p{overflow-wrap:anywhere;line-height:1.65}#profile .profile-quote{overflow-wrap:anywhere;border-left:3px solid var(--profile-accent,#e66a2c);padding:.8rem 1rem;margin:1.1rem 0;background:#171413;border-radius:0 12px 12px 0}@media(max-width:560px){#profile .profile-favorites,#profile .profile-birth-chart{padding:.85rem}#profile .wallet-balance{font-size:clamp(1.4rem,7vw,2.2rem)}}
