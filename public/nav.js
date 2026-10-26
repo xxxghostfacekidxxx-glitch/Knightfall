@@ -10,6 +10,20 @@
       document.head.append(glitch);
     }
   }
+  // Shared donation footer. Payment destination is configured on the support page.
+  const mountSupportFooter = () => {
+    if (document.getElementById("ashfall-support-footer")) return;
+    const footer = document.createElement("footer");
+    footer.id = "ashfall-support-footer";
+    footer.setAttribute("aria-label", "Support Ash-Fall");
+    footer.innerHTML = '<span>Enjoying the chaos? Help keep Ash-Fall running.</span> <a href="/support.html">❤️ Support Ash-Fall</a>';
+    const css = document.createElement("style");
+    css.textContent = '#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ab562b;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#ffb46e;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #ffb46e;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
+    document.head.append(css);
+    document.body.append(footer);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",mountSupportFooter,{once:true});
+  else mountSupportFooter();
   // Shared PWA setup and global Chaos Cartridge favicon.
   const iconLinks = [
     { rel: "icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
