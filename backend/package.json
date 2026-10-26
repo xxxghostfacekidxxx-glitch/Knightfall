@@ -1,0 +1,8 @@
+{
+  "name": "knightfall-api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "astronomy-engine": "2.1.19"
+  }
+}
