@@ -328,6 +328,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "hex-embers",
+      "name": "Hex Embers",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-hex.svg",
+        "void-hex.svg"
+      ],
+      "notes": "Original hexagonal cluster-clearing puzzle with a seven-by-seven board, chain scoring, move limits, local autosave, and bespoke ember/void relic sprites.",
+      "engine": "/arcade/hosted/hex-embers/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hex-embers",
+      "assets": [
+        {
+          "name": "ember-hex.svg",
+          "path": "/arcade/hosted/hex-embers/sprites/ember-hex.svg"
+        },
+        {
+          "name": "void-hex.svg",
+          "path": "/arcade/hosted/hex-embers/sprites/void-hex.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
