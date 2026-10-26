@@ -28,8 +28,6 @@ try {
   assert.ok(manifest.icons.some(icon => icon.src === "/icons/knightfall-maskable.svg" && icon.purpose === "maskable"));
   for (const icon of manifest.icons) assert.equal((await page.request.get(base + icon.src)).status(), 200, icon.src);
   for (const shortcut of manifest.shortcuts || []) assert.equal((await page.request.get(base + new URL(shortcut.url, base).pathname)).status(), 200, shortcut.url);
-  const privacy = await page.locator('a[href="/account-deletion.html"]').count();
-  assert.ok(privacy > 0, "privacy page should link to the public account deletion instructions");
   await page.goto(base + "/privacy.html", { waitUntil: "domcontentloaded" });
   assert.ok(await page.locator('a[href="/account-deletion.html"]').count(), "privacy page should link to the deletion URL");
   console.log("PWA mobile smoke passed: start page, manifest, icons, shortcuts, privacy/deletion/offline pages, and narrow viewport.");
