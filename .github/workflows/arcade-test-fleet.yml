@@ -2,6 +2,12 @@ name: Arcade Test Bot Fleet
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "public/arcade/**"
+      - "scripts/arcade-browser-smoke.mjs"
+      - ".github/workflows/arcade-test-fleet.yml"
   schedule:
     - cron: "17 */6 * * *"
   push:
@@ -71,6 +77,7 @@ jobs:
           set -o pipefail
           node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
       - name: Run full live-site arcade browser suite
+        if: github.event_name != 'pull_request'
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
         run: |
@@ -89,8 +96,8 @@ jobs:
           retention-days: 14
 
   report-failure:
+    if: github.event_name != 'pull_request' && always() && needs.browser-bot.result == 'failure'
     name: Create or update repair ticket
-    if: always() && needs.browser-bot.result == 'failure'
     needs: [browser-bot]
     runs-on: ubuntu-latest
     timeout-minutes: 5
