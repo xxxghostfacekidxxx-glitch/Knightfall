@@ -80,6 +80,7 @@ async function encryptWebPush(payload,subscription) {
   return pushJoin(salt,recordHeader,asPublic,cipher);
 }
 async function deliverPushToUser(env,userId,notification) {
+  const delivery={attempted:0,accepted:0,expired:0,failed:0};
   try {
     if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) return;
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
@@ -97,14 +98,17 @@ async function deliverPushToUser(env,userId,notification) {
     const path=typeof notification.url==="string"&&notification.url.startsWith("/")&&!notification.url.startsWith("//")?notification.url:"/notifications.html";
     const payload={title,body,url:path,tag:"ashfall-"+String(notification.kind||"alert")+"-"+String(notification.target_id||"new")};
     for(const sub of (results||[])){
+      delivery.attempted++;
       try{
         const encrypted=await encryptWebPush(payload,sub),token=await pushVapidToken(sub.endpoint,env);
         const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted});
-        if(response.status===404||response.status===410) await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();
-        else if(!response.ok) console.warn("web_push_delivery_failed",response.status);
-      }catch(error){console.warn("web_push_subscription_failed",sub.id,String(error));}
+        if(response.status===404||response.status===410){delivery.expired++;await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();}
+        else if(!response.ok){delivery.failed++;console.warn("web_push_delivery_failed",response.status);}
+        else delivery.accepted++;
+      }catch(error){delivery.failed++;console.warn("web_push_subscription_failed",sub.id,String(error));}
     }
   } catch(error) { console.warn("web_push_skipped",String(error)); }
+  return delivery;
 }
 
 async function createNotification(env, {userId, actorId=null, kind, targetType=null, targetId=null, title, body, url=null}) {
