@@ -26,6 +26,13 @@ function positions(date){
  };
  const output={Sun:sunLong};
  for(const [name,args] of Object.entries(models)){const p=elements(d,...args);output[name]=norm(Math.atan2(p.y+sun.y,p.x+sun.x)*deg)}
+ // Low-precision Pluto series (heliocentric longitude, latitude and distance).
+ // Approximation is intentionally identified as such, especially near sign cusps.
+ const S=50.03+0.033459652*d,P=238.95+0.003968789*d;
+ const plon=238.9508+0.00400703*d-19.799*sin(P)+19.848*sin(2*P)+0.897*sin(3*P)-4.956*sin(S)+0.610*sin(2*S)+1.211*sin(P-S)-1.341*sin(P+S)+0.267*sin(2*P-S)-0.143*sin(2*P+S)+0.364*sin(3*P-S)+0.119*sin(3*P+S)-0.186*sin(P-2*S)-0.034*sin(P+2*S)+0.031*sin(2*P-2*S)+0.010*sin(2*P+2*S);
+ const plat=-3.9082-5.453*sin(P)-14.975*cos(P)+3.527*sin(2*P)+1.673*cos(2*P)-1.051*sin(3*P)+0.328*cos(3*P)+0.179*sin(P-S)-0.291*cos(P-S)+0.019*sin(P+S)+0.100*cos(P+S)-0.031*sin(2*P-S)-0.026*cos(2*P-S)+0.011*cos(2*P+S);
+ const pr=40.72+6.68*sin(P)+6.90*cos(P)-1.18*sin(2*P)-0.03*cos(2*P)+0.15*sin(3*P)-0.14*cos(3*P);
+ output.Pluto=norm(Math.atan2(pr*sin(plon)*cos(plat)+sun.y,pr*cos(plon)*cos(plat)+sun.x)*deg);
  const moon=elements(d,125.1228-0.0529538083*d,5.1454,318.0634+0.1643573223*d,60.2666,0.054900,115.3654+13.0649929509*d);
  const moonM=norm(115.3654+13.0649929509*d),sunM=norm(356.0470+0.9856002585*d);
  const elong=norm(125.1228-0.0529538083*d+318.0634+0.1643573223*d+moonM-sunLong);
@@ -69,7 +76,7 @@ export function calculateAstrology(iso,location,houseSystem="equal"){
  }
  const angles=location ? calculateAngles(time.toISOString(),location.latitude,location.longitude,houseSystem) : null;
  const housePlacements=angles ? Object.fromEntries(Object.entries(bodies).map(([name,body])=>[name,Math.floor(norm(body.longitude-angles.houses[0])/30)+1])) : null;
- return {angles,house_placements:housePlacements,utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. Ascendant, Midheaven and equal/whole-sign houses require coordinates; mean lunar nodes are approximate; no Pluto, topocentric corrections or high-precision ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
+ return {angles,house_placements:housePlacements,utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. Ascendant, Midheaven and equal/whole-sign houses require coordinates; mean lunar nodes are approximate; Pluto uses a low-precision series; no topocentric corrections or high-precision ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
 }
 
 export function calculateTransits(natalUtc,transitUtc){
