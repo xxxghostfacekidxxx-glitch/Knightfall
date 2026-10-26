@@ -363,6 +363,33 @@
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
   });
+  async function streamChaosReply(conversationId,message,mood,onDelta){
+    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,stream:true})});
+    if(!response.ok){const data=await response.json().catch(()=>({}));throw Error(data.error||"Streaming request failed ("+response.status+").");}
+    if(!response.body)throw Error("Your browser does not support streamed replies.");
+    const reader=response.body.getReader(),decoder=new TextDecoder();
+    let pending="",reply="",done=false;
+    function handleEvent(block){
+      const lines=block.split("\n"),type=(lines.find(line=>line.startsWith("event:"))||"").slice(6).trim();
+      const raw=lines.filter(line=>line.startsWith("data:")).map(line=>line.slice(5).trim()).join("\n");
+      if(!raw)return;
+      let payload;try{payload=JSON.parse(raw)}catch{return}
+      if(type==="delta"){reply+=payload.text||"";onDelta(reply);}
+      if(type==="error")throw Error(payload.error||"Stream interrupted.");
+      if(type==="done")done=true;
+    }
+    try{
+      while(true){
+        const chunk=await reader.read();if(chunk.done)break;
+        pending+=decoder.decode(chunk.value,{stream:true}).replaceAll("\r\n","\n");
+        let index;while((index=pending.indexOf("\n\n"))>=0){const block=pending.slice(0,index);pending=pending.slice(index+2);handleEvent(block);}
+      }
+      pending+=decoder.decode();
+      if(pending.trim())handleEvent(pending.trim());
+      if(!done)throw Error("Connection closed before the reply was saved.");
+      return {reply,mood};
+    }finally{reader.releaseLock();}
+  }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = input.value.trim();
@@ -377,11 +404,14 @@
         const created = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
         activeConversation = created.conversation.id;
       }
-      const result = await request("/api/chaos/chat", {method:"POST",body:JSON.stringify({
-        conversation_id:activeConversation, message, mood:moodSelect.value
-      })});
+      let streamedArticle=null;
+      const result=await streamChaosReply(activeConversation,message,moodSelect.value,partial=>{
+        if(!streamedArticle){typing.remove();streamedArticle=addMessage("assistant",partial,"Miss Chaos · "+(moodNames[moodSelect.value]||"Default"));}
+        else streamedArticle.querySelector(".message-content").textContent=partial;
+        if(messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<180)scrollToBottom();
+      });
       typing.remove();
-      addMessage("assistant", result.reply, "Miss Chaos · " + (moodNames[result.mood] || "Default"));
+      if(!streamedArticle)addMessage("assistant",result.reply,"Miss Chaos · "+(moodNames[result.mood]||"Default"));
       statusEl.textContent = "Connected · Miss Chaos is listening";
       if (speakReplies && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
