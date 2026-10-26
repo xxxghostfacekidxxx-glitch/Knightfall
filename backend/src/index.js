@@ -1015,7 +1015,16 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     if(!(await rateLimit(env,request,"chaos-chart",15,60)))return json({error:"Too many chart requests. Try again shortly."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     if(typeof body.utc!=="string"||body.utc.length>40||!/^\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d{1,3})?)?Z$/.test(body.utc))return json({error:"Provide a UTC timestamp ending in Z."},400,origin);
-    try{return json(typeof body.natal_utc==="string" ? calculateTransits(body.natal_utc,body.utc) : calculateAstrology(body.utc),200,origin);}
+    try{
+      const hasLocation=body.latitude!==undefined||body.longitude!==undefined;
+      if(hasLocation&&(!Number.isFinite(body.latitude)||!Number.isFinite(body.longitude)||body.latitude < -66||body.latitude > 66||body.longitude < -180||body.longitude > 180))return json({error:"Provide valid numeric latitude (-66 to 66) and longitude (-180 to 180)."},400,origin);
+      const location=hasLocation?{latitude:body.latitude,longitude:body.longitude}:null;
+      if(body.natal_utc!==undefined){
+        if(typeof body.natal_utc!=="string"||body.natal_utc.length>40)return json({error:"Invalid natal UTC timestamp."},400,origin);
+        return json(calculateTransits(body.natal_utc,body.utc),200,origin);
+      }
+      return json(calculateAstrology(body.utc,location),200,origin);
+    }
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
   if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
