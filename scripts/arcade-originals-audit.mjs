@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { Script } from "node:vm";
 const root=resolve("public");
 const catalog=readFileSync(join(root,"arcade-30-games.html"),"utf8");
 const manifest=JSON.parse(readFileSync(join(root,"arcade/original-creations.json"),"utf8"));
@@ -14,6 +15,15 @@ for(const game of manifest.games){
  const local=[game.engine,...(game.assets||[]).map(a=>a.path)];
  for(const url of local){
   if(typeof url!=="string"||!url.startsWith("/")||url.includes("..")||!existsSync(join(root,url.slice(1))))errors.push(game.id+": missing or unsafe asset "+url);
+ }
+ const htmlPath=join(root,game.engine.slice(1));
+ if(existsSync(htmlPath)){
+  const html=readFileSync(htmlPath,"utf8");
+  const scripts=[...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)].map(m=>m[1]).filter(Boolean);
+  for(let index=0;index<scripts.length;index++){
+   try{new Script(scripts[index],{filename:game.id+"-inline-"+index+".js"})}
+   catch(error){errors.push(game.id+": invalid inline JavaScript: "+error.message)}
+  }
  }
  for(const asset of game.assets||[]){
   if(asset.path!=="/arcade/hosted/"+game.id+"/sprites/"+asset.name)errors.push(game.id+": sprite path mismatch: "+asset.name);
