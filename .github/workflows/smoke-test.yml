@@ -7,6 +7,7 @@ on:
     paths:
       - 'public/**'
       - 'backend/src/**'
+      - 'backend/package.json'
       - 'scripts/astrology.test.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
@@ -41,6 +42,8 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Install astronomy dependency
+        run: npm install --prefix backend --no-audit --no-fund
       - name: Audit JavaScript, configs, and local HTML assets
         run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs
 
