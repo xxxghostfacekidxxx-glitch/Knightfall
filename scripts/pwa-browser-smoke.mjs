@@ -11,7 +11,13 @@ try {
     assert.equal(response?.status(), 200, path + " should return HTTP 200");
     assert.ok(await page.locator("h1").count(), path + " should have a main heading");
     const width = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, content: document.documentElement.scrollWidth }));
-    assert.ok(width.content <= width.viewport + 1, path + " should not overflow horizontally on a 390px viewport");
+    if (width.content > width.viewport + 1) {
+      const offenders = await page.evaluate(() => [...document.querySelectorAll("*")].map(el => {
+        const rect = el.getBoundingClientRect();
+        return { tag: el.tagName, id: el.id, className: typeof el.className === "string" ? el.className : "", text: (el.innerText || "").slice(0, 90), left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width) };
+      }).filter(el => el.right > document.documentElement.clientWidth + 1 || el.left < -1).slice(0, 15));
+      assert.ok(width.content <= width.viewport + 1, path + " should not overflow horizontally on a 390px viewport. Offenders: " + JSON.stringify(offenders));
+    }
   }
   await page.goto(base + "/homepage.html", { waitUntil: "domcontentloaded" });
   assert.equal(await page.locator('link[rel="manifest"]').getAttribute("href"), "/manifest.webmanifest");
