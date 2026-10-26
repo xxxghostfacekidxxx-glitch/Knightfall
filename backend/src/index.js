@@ -1828,6 +1828,21 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({ok:true,status},200,origin);
   }
 
+  if(url.pathname==="/api/admin/social-review"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const kind=String(url.searchParams.get("kind")||"activity"),limit=boundedInt(url.searchParams.get("limit"),50,1,100),offset=boundedInt(url.searchParams.get("offset"),0,0,100000);
+    if(!["activity","creator_posts","dating_profiles"].includes(kind))return json({error:"Unsupported review category."},400,origin);
+    let rows=[];
+    if(kind==="activity"){
+      const r=await env.DB.prepare("SELECT a.id,a.user_id,u.username,a.activity_type,a.object_type,a.object_id,a.body,a.visibility,a.group_id,a.created_at,a.updated_at,a.deleted_at FROM social_activity a JOIN users u ON u.id=a.user_id ORDER BY a.created_at DESC,a.id DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+    }else if(kind==="creator_posts"){
+      const r=await env.DB.prepare("SELECT p.id,p.creator_id,u.username,p.title,p.description,p.content_rating,p.visibility,p.price_cents,p.media_key,p.status,p.published_at,p.created_at,p.updated_at FROM creator_posts p JOIN users u ON u.id=p.creator_id ORDER BY p.created_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+    }else{
+      const r=await env.DB.prepare("SELECT d.user_id,u.username,d.display_name,d.bio,d.age_range_min,d.age_range_max,d.city_label,d.interests,d.seeking,d.visibility,d.created_at,d.updated_at,v.status AS verification_status,v.expires_at AS verification_expires_at FROM dating_profiles d JOIN users u ON u.id=d.user_id LEFT JOIN adult_access_verifications v ON v.user_id=d.user_id ORDER BY d.updated_at DESC LIMIT ? OFFSET ?").bind(limit,offset).all();rows=r.results||[];
+    }
+    await audit(env,user,"admin.social_review.view",kind,null,{count:rows.length,offset,limit});
+    return json({kind,items:rows,limit,offset},200,origin);
+  }
   if(url.pathname==="/api/admin/health"&&request.method==="GET"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);const started=Date.now(),db=await env.DB.prepare("SELECT 1 AS ok").first();await env.SESSIONS.list({limit:1});const open=await env.DB.prepare("SELECT COUNT(*) AS count FROM reports WHERE status='open'").first();return json({ok:db?.ok===1,latency_ms:Date.now()-started,kv:true,open_reports:Number(open?.count||0),now:new Date().toISOString()},200,origin);}
   return json({error:"Not found"},404,origin);
  }catch(error){console.error(error);return json({error:"Internal server error"},500,origin);}
