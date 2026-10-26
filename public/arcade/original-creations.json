@@ -781,6 +781,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "rune-rush",
+      "name": "Rune Rush",
+      "genre": "Puzzle",
+      "sprites": [
+        "rune-token.svg"
+      ],
+      "notes": "Solve fast arithmetic challenges against a 45-second clock.",
+      "engine": "/arcade/hosted/rune-rush/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rune-rush",
+      "assets": [
+        {
+          "name": "rune-token.svg",
+          "path": "/arcade/hosted/rune-rush/sprites/rune-token.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-slots",
+      "name": "Cinder Slots",
+      "genre": "Arcade",
+      "sprites": [
+        "slot-sigil.svg"
+      ],
+      "notes": "Spin three ember symbols for points in a no-wager arcade minigame.",
+      "engine": "/arcade/hosted/cinder-slots/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-slots",
+      "assets": [
+        {
+          "name": "slot-sigil.svg",
+          "path": "/arcade/hosted/cinder-slots/sprites/slot-sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-target",
+      "name": "Void Target",
+      "genre": "Arcade",
+      "sprites": [
+        "void-eye.svg"
+      ],
+      "notes": "Hit moving Void eyes in a timed precision gallery.",
+      "engine": "/arcade/hosted/void-target/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-target",
+      "assets": [
+        {
+          "name": "void-eye.svg",
+          "path": "/arcade/hosted/void-target/sprites/void-eye.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-tiles",
+      "name": "Ash Tiles",
+      "genre": "Puzzle",
+      "sprites": [
+        "tile-mark.svg"
+      ],
+      "notes": "Reorder fifteen sliding tiles in an original ash-themed number puzzle.",
+      "engine": "/arcade/hosted/ash-tiles/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-tiles",
+      "assets": [
+        {
+          "name": "tile-mark.svg",
+          "path": "/arcade/hosted/ash-tiles/sprites/tile-mark.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-hunt",
+      "name": "Crypt Hunt",
+      "genre": "Puzzle",
+      "sprites": [
+        "crypt-letter.svg"
+      ],
+      "notes": "Discover hidden infernal words across a nine-by-nine letter grid.",
+      "engine": "/arcade/hosted/crypt-hunt/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-hunt",
+      "assets": [
+        {
+          "name": "crypt-letter.svg",
+          "path": "/arcade/hosted/crypt-hunt/sprites/crypt-letter.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
