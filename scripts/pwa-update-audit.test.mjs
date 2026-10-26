@@ -22,3 +22,17 @@ test("app provides offline shell and quick Miss Chaos launch",()=>{
  assert.ok(sw.includes('"/homepage.html"'));
  assert.ok(manifest.shortcuts.some(s=>s.url.startsWith("/miss-chaos.html")));
 });
+
+test("push click never navigates away from an unrelated open chat or game",()=>{
+ assert.match(sw,/clients\.find\(client => client\.url === target\)/);
+ assert.doesNotMatch(sw,/existing\.navigate\(target\)/);
+ assert.match(sw,/clients\.openWindow\(target\)/);
+});
+test("mobile navigation closes on Escape and outside interaction",()=>{
+ assert.match(nav,/event\.key !== "Escape"/);
+ assert.match(nav,/document\.addEventListener\("pointerdown"/);
+ assert.match(nav,/window\.addEventListener\("popstate", closeMobileMenu\)/);
+});
+test("service worker does not contain escaped newline syntax errors",()=>{
+ assert.ok(!sw.includes(String.raw`\\n  if (event.data`));
+});
