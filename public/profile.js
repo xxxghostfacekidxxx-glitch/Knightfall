@@ -216,7 +216,7 @@ async function loadProfilePhotos(username,ownProfile){
     '<div id="profile-photo-grid" class="profile-photo-grid"><p class="muted">Loading photos…</p></div>';
   if(ownProfile){
     const albumTools=document.createElement("div");albumTools.className="profile-album-tools";
-    albumTools.innerHTML='<form data-create-album><label for="new-profile-album">New album</label><input id="new-profile-album" name="name" maxlength="80" required placeholder="Album name"><button type="submit" class="action">Create</button></form><label for="profile-album-select">Browse albums</label><select id="profile-album-select"><option value="">All photos</option><option value="favorites">★ Favorites</option></select><p data-album-status role="status" aria-live="polite"></p>';
+    albumTools.innerHTML='<form data-create-album><label for="new-profile-album">New album</label><input id="new-profile-album" name="name" maxlength="80" required placeholder="Album name"><button type="submit" class="action">Create</button></form><label for="profile-album-select">Browse albums</label><select id="profile-album-select"><option value="">All photos</option><option value="favorites">★ Favorites</option></select><button type="button" class="action" data-delete-album hidden>Delete selected album</button><p data-album-status role="status" aria-live="polite"></p>';
     panel.append(albumTools);
   }
   root.append(panel);
@@ -253,6 +253,7 @@ async function loadProfilePhotos(username,ownProfile){
     albumIds=albums.albums||[];favoriteIds=new Set((favorites.photos||[]).map(p=>Number(p.id)));
     albumSelect.innerHTML='<option value="">All photos</option><option value="favorites">★ Favorites</option>'+albumIds.map(a=>'<option value="'+Number(a.id)+'">'+esc(a.name)+' ('+Number(a.photo_count)+')</option>').join("");
     albumSelect.value=albumSelection;
+    panel.querySelector("[data-delete-album]").hidden=!albumSelection||albumSelection==="favorites";
   }
   if(ownProfile){
     try{await loadAlbumOptions()}catch(error){albumStatus.textContent="Albums unavailable until the media migration is applied: "+error.message}
@@ -261,6 +262,7 @@ async function loadProfilePhotos(username,ownProfile){
       try{await api("/api/media-library/albums",{method:"POST",body:JSON.stringify({name})});form.reset();albumStatus.textContent="Album created.";await loadAlbumOptions();}
       catch(error){albumStatus.textContent=error.message}
     });
+    panel.querySelector("[data-delete-album]").addEventListener("click",async()=>{if(!albumSelection||albumSelection==="favorites")return;const selected=albumIds.find(a=>String(a.id)===albumSelection);if(!selected||!confirm("Delete album "+selected.name+"? Photos will remain in your gallery."))return;try{await api("/api/media-library/albums/"+Number(selected.id),{method:"DELETE"});albumSelection="";albumPhotos=null;await loadAlbumOptions();await refresh();albumStatus.textContent="Album deleted. Photos preserved.";}catch(error){albumStatus.textContent=error.message}});
     albumSelect.addEventListener("change",async()=>{albumSelection=albumSelect.value;try{if(albumSelection&&albumSelection!=="favorites"){const data=await api("/api/media-library/albums/"+encodeURIComponent(albumSelection));albumPhotos=new Set((data.photos||[]).map(p=>Number(p.id)));}else albumPhotos=null;await refresh();}catch(error){albumStatus.textContent=error.message}});
     grid.addEventListener("click",async e=>{
       const button=e.target.closest("[data-favorite-photo],[data-add-album]");if(!button)return;
