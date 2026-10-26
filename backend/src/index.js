@@ -207,7 +207,7 @@ async function handleVaultRequest(request, env, origin, url) {
     await audit(env,user,"vault.folder.create","vault_folder",folder.id);
     return json({folder},201,origin);
   }
-  const folderMatch=url.pathname.match(/^\\/api\\/vault\\/folders\\/(\\d+)$/);
+  const folderMatch=url.pathname.match(/^\/api\/vault\/folders\/(\d+)$/);
   if (folderMatch && (request.method==="PATCH" || request.method==="DELETE")) {
     const id=Number(folderMatch[1]);
     if (request.method==="DELETE") {
@@ -224,7 +224,7 @@ async function handleVaultRequest(request, env, origin, url) {
     await audit(env,user,"vault.folder.rename","vault_folder",id);
     return json({ok:true,name},200,origin);
   }
-  const moveMatch=url.pathname.match(/^\\/api\\/vault\\/items\\/([a-f0-9]{32})\\/folder$/);
+  const moveMatch=url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})\/folder$/);
   if (moveMatch && request.method==="PUT") {
     if (!await rateLimit(env,request,"vault-folder-move",100,60)) return json({error:"Too many folder changes."},429,origin);
     let data;try { data=await request.json(); } catch { return json({error:"Invalid JSON."},400,origin); }
