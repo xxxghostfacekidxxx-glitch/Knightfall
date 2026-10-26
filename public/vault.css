@@ -17,3 +17,7 @@
 .vault-selection{display:flex;align-items:center;gap:8px;padding:9px 12px;color:#f5d3b4;font-size:.85rem;cursor:pointer}
 .vault-selection input{accent-color:#e57b35;width:17px;height:17px}
 .media-card:has(.vault-selection input:checked){outline:2px solid #e57b35;outline-offset:-2px}
+
+.vault-folder-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 18px;color:#eac4a7}
+.vault-folder-tools select{max-width:230px;padding:9px 12px;border:1px solid #8a512b;border-radius:9px;background:#211712;color:#ffe2c6}
+.vault-folder-tools button:disabled{opacity:.45;cursor:not-allowed}
