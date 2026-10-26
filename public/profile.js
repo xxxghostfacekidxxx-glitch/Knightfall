@@ -235,7 +235,7 @@ async function loadProfilePhotos(username,ownProfile){
     photoDialog.querySelector("img").src=photo.url;
     photoDialog.querySelector("img").alt=photo.caption||"Profile photo";
     photoDialog.querySelector("[data-photo-caption]").textContent=photo.caption||"";
-    photoDialog.querySelector("[data-photo-position]").textContent=(galleryIndex+1)+" / "+galleryPhotos.length;
+    photoDialog.querySelector("[data-photo-position]").textContent=(galleryIndex+1)+" / "+galleryPhotos.length;photoDialog.querySelector("[data-prev]").disabled=galleryPhotos.length<2;photoDialog.querySelector("[data-next]").disabled=galleryPhotos.length<2;
   }
   function photoKeys(e){if(e.key==="Escape"){e.preventDefault();closePhotoDialog();}else if(e.key==="ArrowRight"){e.preventDefault();showPhotoAt(galleryIndex+1);}else if(e.key==="ArrowLeft"){e.preventDefault();showPhotoAt(galleryIndex-1);}else if(e.key==="Tab"&&photoDialog){const controls=[...photoDialog.querySelectorAll("button")];const i=controls.indexOf(document.activeElement);if(e.shiftKey&&i===0){e.preventDefault();controls[controls.length-1].focus();}else if(!e.shiftKey&&i===controls.length-1){e.preventDefault();controls[0].focus();}}}
   function openPhotoDialog(index){
