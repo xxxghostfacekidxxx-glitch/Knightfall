@@ -52,23 +52,6 @@ function render(d,adminView=false,ownProfile=false){
     details.append(summary,grid);section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
   }
-  // Jump links are built only from sections the member actually chose to share.
-  const jumpTargets=[
-    ["#profile-wallet","Wallet"],
-    [".profile-favorites","Interests"],
-    [".profile-birth-chart","Birth chart"],
-    [".activity-grid","Activity"]
-  ];
-  const jump=document.createElement("nav");jump.className="profile-jump";jump.setAttribute("aria-label","Profile sections");
-  for(const [selector,label] of jumpTargets){
-    const section=root.querySelector(selector);
-    if(!section)continue;
-    const id=section.id||"profile-section-"+label.toLowerCase().replace(/[^a-z]+/g,"-");
-    section.id=id;
-    const link=document.createElement("a");link.href="#"+id;link.textContent=label;
-    jump.append(link);
-  }
-  if(jump.children.length>1)root.querySelector(".profile-actions-wrap")?.after(jump);
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
@@ -331,7 +314,31 @@ async function loadMemberActivity(member,own){
  if(own)section.querySelector("form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,button=form.querySelector("button"),status=form.querySelector('[role="status"]');button.disabled=true;try{await api("/api/social/activity",{method:"POST",body:JSON.stringify({body:form.querySelector("textarea").value,visibility:form.querySelector("select").value})});form.querySelector("textarea").value="";status.textContent="Published.";await refresh()}catch(err){status.textContent=err.message}finally{button.disabled=false}});
 }
 
-function applyProfileLayout(layout){if(!Array.isArray(layout))return;const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!item||typeof item.id!=="string"||typeof item.visible!=="boolean"||!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}}
+function refreshProfileJump(){
+  const old=root.querySelector(".profile-jump");
+  const sections=[
+    ["#profile-wallet","Wallet"],
+    [".profile-favorites","Interests"],
+    [".profile-birth-chart","Birth chart"],
+    [".activity-grid","Activity"],
+    [".profile-social-panel","Updates"],
+    ["#profile-photo-gallery","Photos"]
+  ];
+  const jump=document.createElement("nav");jump.className="profile-jump";jump.setAttribute("aria-label","Profile sections");
+  for(const [selector,label] of sections){
+    const section=root.querySelector(selector);
+    if(!section||section.hidden)continue;
+    const id=section.id||"profile-section-"+label.toLowerCase();
+    section.id=id;
+    const link=document.createElement("a");link.href="#"+id;link.textContent=label;jump.append(link);
+  }
+  if(jump.children.length>1){
+    if(old)old.replaceWith(jump);
+    else root.querySelector(".profile-actions-wrap")?.after(jump);
+  }else old?.remove();
+}
+
+function applyProfileLayout(layout){if(!Array.isArray(layout))return;const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!item||typeof item.id!=="string"||typeof item.visible!=="boolean"||!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}refreshProfileJump();}
 
 async function load(){
  try{
@@ -339,12 +346,12 @@ async function load(){
      const me=await api("/api/auth/me"); if(!["admin","god"].includes(me.user?.role)) throw Error("Administrator access required.");
      const d=await api("/api/admin/users/"+encodeURIComponent(adminUserId)+"/detail");
      d.user.is_online=d.user.last_seen_at?Date.now()-new Date(d.user.last_seen_at).getTime()<5*60*1000:false;
-     render(d,true); return;
+     render(d,true);refreshProfileJump(); return;
    }
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);applyProfileLayout(d.profile_layout);await loadMemberActivity(d.user,ownProfile);applyProfileLayout(d.profile_layout);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);refreshProfileJump();applyProfileLayout(d.profile_layout);await loadMemberActivity(d.user,ownProfile);applyProfileLayout(d.profile_layout);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
