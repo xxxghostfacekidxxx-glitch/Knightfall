@@ -310,6 +310,8 @@ async function loadMemberActivity(member,own){
  if(own)section.querySelector("form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,button=form.querySelector("button"),status=form.querySelector('[role="status"]');button.disabled=true;try{await api("/api/social/activity",{method:"POST",body:JSON.stringify({body:form.querySelector("textarea").value,visibility:form.querySelector("select").value})});form.querySelector("textarea").value="";status.textContent="Published.";await refresh()}catch(err){status.textContent=err.message}finally{button.disabled=false}});
 }
 
+function applyProfileLayout(layout){if(!Array.isArray(layout))return;const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}}
+
 async function load(){
  try{
    if(adminUserId){
@@ -321,7 +323,7 @@ async function load(){
    if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
    const d=await api("/api/users/"+encodeURIComponent(username));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadMemberActivity(d.user,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);await loadMemberActivity(d.user,ownProfile);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
