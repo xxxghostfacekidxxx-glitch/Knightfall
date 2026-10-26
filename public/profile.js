@@ -3,7 +3,9 @@ const root = document.querySelector("#profile");
 const username = new URLSearchParams(location.search).get("username");
 const adminUserId = new URLSearchParams(location.search).get("admin_user_id");
 const esc = (value="") => String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-const fmt = value => new Date(value).toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"});
+const fmt = value => { const date=new Date(value);return Number.isNaN(date.getTime())?"Date unavailable":date.toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"}); };
+const safeExternalUrl = value => { try { const url=new URL(String(value||""));return ["https:","http:"].includes(url.protocol)?url.href:""; } catch { return ""; } };
+
 const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}}); const d=await r.json().catch(()=>({})); if(!r.ok) throw Error(d.error||"Request failed."); return d; };
 
 function render(d,adminView=false,ownProfile=false){
@@ -11,7 +13,7 @@ function render(d,adminView=false,ownProfile=false){
 
   const u=d.user;
   const avatar=u.avatar_url?'<img class="avatar-img" src="'+esc(u.avatar_url)+'" alt="Profile picture of '+esc(u.display_name||u.username)+'" loading="lazy" referrerpolicy="no-referrer">':'<div class="avatar" aria-hidden="true">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>';
-  const safeWebsite = /^https?:\/\//i.test(String(u.website_url||"")) ? String(u.website_url) : "";const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
+  const safeWebsite = safeExternalUrl(u.website_url);const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
   const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':ownProfile?'<div class="profile-actions"><a class="action" href="/profile-edit.html">Edit profile</a><a class="action primary" href="/die-ary.html">Open my Die-ary</a><a class="action" href="/friends.html">Manage friends</a></div>':'<div class="profile-actions"><button id="friend" class="action primary">Add friend</button><button id="follow" class="action">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><button class="action" data-message-user="'+esc(u.username)+'">Message</button></div>';
   root.innerHTML='<div class="profile-top">'+avatar+'<div class="profile-heading"><p class="eyebrow">COMMUNITY MEMBER</p><h1>'+esc(u.display_name)+'</h1><p class="handle">@'+esc(u.username)+' · '+esc(u.role)+'</p>'+online+'</div></div>'+
     '<section class="wallet-card" id="profile-wallet"><div class="wallet-main"><span class="wallet-kicker">ASH-FALL ARCADE WALLET</span><strong class="wallet-balance">✦ '+Number(u.credits??500).toLocaleString()+' <small>CINDERS</small></strong><p>One shared, fictional currency for arcade perks and future game unlocks.</p></div>'+(ownProfile?'<div class="wallet-claims"><button class="action primary" id="claim-daily" type="button">Claim daily · +250</button><button class="action" id="claim-online" type="button">Online bonus · +50</button><button class="action" id="claim-quest" type="button">Daily arcade mission · +100</button><p id="wallet-status" role="status" aria-live="polite">Loading reward availability…</p></div>':'<p class="wallet-public-note">Member balance</p>')+'</section>'+'<div class="profile-stats"><div><b>'+(u.thread_count||0)+'</b><span>Threads</span></div><div><b>'+(u.post_count||0)+'</b><span>Replies</span></div><div><b>'+(u.followers||0)+'</b><span>Followers</span></div><div><b>'+(u.following_count||0)+'</b><span>Following</span></div><div><b id="profile-friend-stat">'+(u.friend_count||0)+'</b><span>Friends</span></div></div>'+
@@ -50,6 +52,23 @@ function render(d,adminView=false,ownProfile=false){
     details.append(summary,grid);section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
   }
+  // Jump links are built only from sections the member actually chose to share.
+  const jumpTargets=[
+    ["#profile-wallet","Wallet"],
+    [".profile-favorites","Interests"],
+    [".profile-birth-chart","Birth chart"],
+    [".activity-grid","Activity"]
+  ];
+  const jump=document.createElement("nav");jump.className="profile-jump";jump.setAttribute("aria-label","Profile sections");
+  for(const [selector,label] of jumpTargets){
+    const section=root.querySelector(selector);
+    if(!section)continue;
+    const id=section.id||"profile-section-"+label.toLowerCase().replace(/[^a-z]+/g,"-");
+    section.id=id;
+    const link=document.createElement("a");link.href="#"+id;link.textContent=label;
+    jump.append(link);
+  }
+  if(jump.children.length>1)root.querySelector(".profile-actions-wrap")?.after(jump);
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
