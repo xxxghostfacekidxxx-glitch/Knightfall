@@ -103,6 +103,7 @@ jobs:
       - name: Audit local game imports and license records
         run: |
           node --check scripts/arcade-import-audit.mjs
+          set -o pipefail
           node scripts/arcade-import-audit.mjs 2>&1 | tee /tmp/arcade-import-audit.log
       - name: Audit arcade asset references
         run: |
@@ -113,6 +114,7 @@ jobs:
           ARCADE_TEST_PROFILE: ${{ matrix.profile }}
           ARCADE_TEST_BASE: http://127.0.0.1:8765
         run: |
+          set -o pipefail
           node scripts/arcade-gameplay-replay.mjs 2>&1 | tee /tmp/arcade-gameplay-replay.log
       - name: Run full local arcade browser suite
         env:
