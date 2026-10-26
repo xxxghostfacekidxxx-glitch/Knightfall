@@ -586,6 +586,52 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-maze",
+      "name": "Cinder Maze",
+      "genre": "Arcade",
+      "sprites": [
+        "ember-shard.svg",
+        "void-watcher.svg"
+      ],
+      "notes": "Explore original crypt corridors, collect ember shards and evade the Void watcher.",
+      "engine": "/arcade/hosted/cinder-maze/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-maze",
+      "assets": [
+        {
+          "name": "ember-shard.svg",
+          "path": "/arcade/hosted/cinder-maze/sprites/ember-shard.svg"
+        },
+        {
+          "name": "void-watcher.svg",
+          "path": "/arcade/hosted/cinder-maze/sprites/void-watcher.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "pyre-hex",
+      "name": "Pyre Hex",
+      "genre": "Puzzle",
+      "sprites": [
+        "pyre-core.svg",
+        "ember-chip.svg"
+      ],
+      "notes": "Rotate a six-sided furnace to build matching ember chains before the stacks overflow.",
+      "engine": "/arcade/hosted/pyre-hex/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/pyre-hex",
+      "assets": [
+        {
+          "name": "pyre-core.svg",
+          "path": "/arcade/hosted/pyre-hex/sprites/pyre-core.svg"
+        },
+        {
+          "name": "ember-chip.svg",
+          "path": "/arcade/hosted/pyre-hex/sprites/ember-chip.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
