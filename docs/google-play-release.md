@@ -54,6 +54,10 @@ Do not call the app Play-ready until all are true:
 6. Automated static/runtime checks pass and authenticated checks are executed rather than skipped.
 7. Store declarations, screenshots, icon assets, signing, and testing requirements are complete.
 
+## Production migration gate
+
+Migration `0033_account_deletion_requests.sql` has been merged to the main branch as an additive schema change. I have **not** applied it to the production D1 database. Before merging PR #149 and activating the new account UI/API, an authorized operator must review and run the GitHub Actions workflow **Apply reviewed D1 migrations** with its explicit `confirm_production` input enabled. The workflow requires `CLOUDFLARE_D1_MIGRATION_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets. Verify the workflow succeeds and the migration appears in the remote D1 migration history before proceeding. Do not assume the migration is applied because the file is present in GitHub.
+
 ## Account deletion operations: mandatory before Play submission
 
 - Requests are recorded in `account_deletion_requests` and exposed to admins at `/admin-deletion-requests.html`.
