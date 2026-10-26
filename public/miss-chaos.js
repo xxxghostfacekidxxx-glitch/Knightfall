@@ -263,6 +263,7 @@
   moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
+  let latestNatalUtc = null;
   $("#astro-chart-form").addEventListener("submit", async event => {
     event.preventDefault();
     const status = $("#astro-chart-status");
@@ -279,6 +280,7 @@
     status.textContent = "Calculating approximate planetary positions…";
     try {
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify({utc})});
+      latestNatalUtc = utc;
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
@@ -287,6 +289,24 @@
       status.textContent = "Calculated " + Object.keys(chart.bodies || {}).length + " planetary positions and " + (chart.aspects || []).length + " major aspects. Reading prepared below; review and press Send.";
       input.focus();
     } catch (error) { status.textContent = error.message || "Chart calculation failed."; }
+    finally { button.disabled = false; }
+  });
+  $("#astro-transits").addEventListener("click", async event => {
+    const button = event.currentTarget, status = $("#astro-chart-status");
+    button.disabled = true; status.textContent = "Calculating current planetary transits…";
+    try {
+      const utc = new Date().toISOString().replace(/\\.\\d{3}Z$/, "Z");
+      const body = latestNatalUtc ? {utc,natal_utc:latestNatalUtc} : {utc};
+      const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(body)});
+      const positions = chart.transit_bodies || chart.bodies || {};
+      const placements = Object.entries(positions).map(([name,p]) => name + " " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " Rx" : "")).join("; ");
+      const aspects = (chart.transit_aspects || chart.aspects || []).slice(0,22).map(a => chart.transit_aspects ? a.transit + " " + a.type + " natal " + a.natal + " (orb " + a.orb + "°)" : a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
+      moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
+      input.value = "Interpret these approximate planetary transits in depth as symbolic astrology, not scientific predictions. UTC: " + utc + ". Transit positions: " + placements + ". " + (latestNatalUtc ? "Birth UTC: " + latestNatalUtc + ". Transit-to-natal aspects: " : "Current planetary aspects: ") + aspects + ". Please explain themes, timing uncertainty, and practical reflection without making deterministic predictions or claiming exact ephemeris accuracy.";
+      input.dispatchEvent(new Event("input"));
+      status.textContent = latestNatalUtc ? "Natal transit comparison prepared. Review and Send." : "Current planetary transit reading prepared. Calculate your natal chart first for personal transit aspects.";
+      input.focus();
+    } catch (error) { status.textContent = error.message || "Transit calculation failed."; }
     finally { button.disabled = false; }
   });
   astroTools.addEventListener("click", event => { const button = event.target.closest("[data-astro-prompt]"); if (!button || busy || adminViewing) return; const prompt = astrologyPrompts[button.dataset.astroPrompt]; if (!prompt) return; input.value = prompt; input.dispatchEvent(new Event("input")); input.focus(); });
