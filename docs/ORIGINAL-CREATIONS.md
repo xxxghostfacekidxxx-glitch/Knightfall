@@ -15,6 +15,6 @@ The canonical inventory is [public/arcade/original-creations.json](../public/arc
 
 The authoritative, up-to-date inventory is the JSON manifest rather than a manually maintained count in this document. Devil Tools reads the manifest dynamically, including game names, sprites, source links, and QA status.
 
-The archive includes Cinder Merge, Cinder Drift, Ash Serpent, Ember Pop, Pyre Stacks, Ashbound Runner, Cinder Grid, Crypt Words, and Ember Clash. Each entry is committed; browser QA and live deployment confirmation remain pending.
+Each game in the manifest records its implementation path, original assets, and verification status. Counts and names should be read directly from the manifest, not copied into this document. Browser QA and live deployment confirmation remain pending for recently added games.
 
 Old imported game directories are intentionally not deleted until all references and license obligations are audited.
