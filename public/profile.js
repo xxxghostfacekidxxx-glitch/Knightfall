@@ -226,7 +226,7 @@ async function loadProfilePhotos(username,ownProfile){
   root.append(panel);
   const grid=panel.querySelector("#profile-photo-grid"),count=panel.querySelector("#profile-photo-count"),status=panel.querySelector("#profile-photo-status");
   // Native gallery viewer: no third-party media service, no new public permissions.
-  let galleryPhotos=[],galleryIndex=0,photoDialog=null,previousFocus=null;
+  let galleryPhotos=[],galleryIndex=0,photoDialog=null,previousFocus=null,previousBodyOverflow="";
   function closePhotoDialog(){if(!photoDialog)return;photoDialog.remove();photoDialog=null;document.removeEventListener("keydown",photoKeys);previousFocus?.focus?.();}
   function showPhotoAt(index){
     if(!galleryPhotos.length)return;
