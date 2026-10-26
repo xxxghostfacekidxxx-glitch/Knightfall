@@ -439,9 +439,9 @@
  .conversation-panel{max-height:none;height:auto;overflow:visible;border:0}
  .conversation-list{max-height:34dvh;overflow:auto}
  .chat-panel{display:none;height:auto;min-height:0;max-height:none}
- .message-layout.chat-open .conversation-panel{display:none}
- .message-layout.chat-open .chat-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:calc(100dvh - 155px);min-height:360px;max-height:calc(100dvh - 155px)}
- .message-layout.chat-open #typing-indicator,.message-layout.chat-open #load-older{grid-row:auto}
+ .message-layout.show-chat .conversation-panel{display:none}
+ .message-layout.show-chat .chat-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:calc(100dvh - 155px);min-height:360px;max-height:calc(100dvh - 155px)}
+ .message-layout.show-chat #typing-indicator,.message-layout.show-chat #load-older{grid-row:auto}
  .chat-head{position:relative;padding:.65rem;gap:.5rem}
  .chat-tools{gap:.35rem}
  .chat-tools button,.chat-tools select{min-height:36px;max-width:100%}
@@ -457,7 +457,7 @@
  .messages-shell{width:calc(100% - 1rem);padding:.65rem 0 calc(1rem + env(safe-area-inset-bottom))}
  .messages-hero{gap:.75rem}
  .messages-hero h1{font-size:clamp(2.25rem,11vw,3.2rem)}
- .message-layout.chat-open .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
+ .message-layout.show-chat .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
  .chat-head{padding:.5rem}
  .chat-identity .chat-avatar{width:34px;height:34px}
  .chat-tools{width:100%}
@@ -465,3 +465,10 @@
  .chat-tools #enable-notifications{margin-left:auto}
  .message{max-width:94%;font-size:.93rem}
 }
+
+/* Keep chat action accents aligned with the ember palette on every viewport. */
+#enable-notifications{border-color:rgba(230,106,44,.42);background:rgba(230,106,44,.08)}
+#enable-notifications:hover{border-color:var(--kf-accent);color:var(--kf-accent)}
+.group-chip{background:rgba(230,106,44,.12)}
+.group-chip span,#attach-file,.pending-attachment button,.message-attachment .attachment-icon{color:var(--kf-accent)}
+.message-attachment:hover{border-color:var(--kf-accent)}
