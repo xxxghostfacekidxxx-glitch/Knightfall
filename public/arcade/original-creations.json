@@ -961,6 +961,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-sort",
+      "name": "Ember Sort",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-flask.svg"
+      ],
+      "notes": "Sort four ember colors into six flasks.",
+      "engine": "/arcade/hosted/ember-sort/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-sort",
+      "assets": [
+        {
+          "name": "ember-flask.svg",
+          "path": "/arcade/hosted/ember-sort/sprites/ember-flask.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-pulse",
+      "name": "Void Pulse",
+      "genre": "Arcade",
+      "sprites": [
+        "pulse-core.svg"
+      ],
+      "notes": "Time ten strikes against a rotating pulse needle.",
+      "engine": "/arcade/hosted/void-pulse/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-pulse",
+      "assets": [
+        {
+          "name": "pulse-core.svg",
+          "path": "/arcade/hosted/void-pulse/sprites/pulse-core.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-shift",
+      "name": "Crypt Shift",
+      "genre": "Puzzle",
+      "sprites": [
+        "shift-rune.svg"
+      ],
+      "notes": "Shift rows and columns to restore a 4×4 rune matrix.",
+      "engine": "/arcade/hosted/crypt-shift/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-shift",
+      "assets": [
+        {
+          "name": "shift-rune.svg",
+          "path": "/arcade/hosted/crypt-shift/sprites/shift-rune.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-cannon",
+      "name": "Ash Cannon",
+      "genre": "Arcade",
+      "sprites": [
+        "cannonball.svg"
+      ],
+      "notes": "Aim and fire across a gravity-driven fortress range.",
+      "engine": "/arcade/hosted/ash-cannon/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-cannon",
+      "assets": [
+        {
+          "name": "cannonball.svg",
+          "path": "/arcade/hosted/ash-cannon/sprites/cannonball.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-lanes",
+      "name": "Cinder Lanes",
+      "genre": "Arcade",
+      "sprites": [
+        "lane-ember.svg"
+      ],
+      "notes": "Dodge Void traps and collect embers across four lanes.",
+      "engine": "/arcade/hosted/cinder-lanes/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-lanes",
+      "assets": [
+        {
+          "name": "lane-ember.svg",
+          "path": "/arcade/hosted/cinder-lanes/sprites/lane-ember.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
