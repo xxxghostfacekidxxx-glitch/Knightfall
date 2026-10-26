@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v8";
+const CACHE_NAME = "knightfall-shell-v9";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -42,8 +42,9 @@ self.addEventListener("notificationclick", event => {
   const path = event.notification.data && typeof event.notification.data.url === "string" && event.notification.data.url.startsWith("/") && !event.notification.data.url.startsWith("//") ? event.notification.data.url : "/notifications.html";
   const target = new URL(path, self.location.origin).href;
   event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
-    const existing = clients.find(client => new URL(client.url).origin === self.location.origin);
-    if (existing) return existing.navigate(target).then(() => existing.focus());
+    // Never hijack a different chat, game, or unfinished form just because it shares our origin.
+    const existing = clients.find(client => client.url === target);
+    if (existing) return existing.focus();
     return self.clients.openWindow(target);
   }));
 });
