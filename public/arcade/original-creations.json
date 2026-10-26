@@ -190,6 +190,34 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-clash",
+      "name": "Ember Clash",
+      "genre": "Board",
+      "sprites": [
+        "ember.svg",
+        "blade.svg",
+        "shield.svg"
+      ],
+      "notes": "Original elemental sigil battle with three bespoke SVG tokens, CPU opponent and local match saves.",
+      "engine": "/arcade/hosted/ember-clash/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-clash",
+      "assets": [
+        {
+          "name": "ember.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/ember.svg"
+        },
+        {
+          "name": "blade.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/blade.svg"
+        },
+        {
+          "name": "shield.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/shield.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
