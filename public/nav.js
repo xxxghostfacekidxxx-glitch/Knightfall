@@ -38,7 +38,7 @@
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261026-presence4";
+    companion.src = "/miss-chaos-presence.js?v=20261026-presence5";
     companion.dataset.missChaosPresence = "true";
     document.head.append(companion);
   }
@@ -79,7 +79,7 @@
           <a class="kf-my-profile-link" href="/profile.html">View My Public Profile</a>
         </div>
       </details>
-      <button class="kf-install-app" type="button" hidden>Install App</button>
+      <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>`;
 
   let siteSettings = null, currentUser = null;
@@ -92,15 +92,19 @@
 
   window.addEventListener("beforeinstallprompt", event => {
     event.preventDefault(); installPrompt = event;
-    if (installButton) installButton.hidden = false;
+    if (installButton) { installButton.hidden = false; installButton.innerHTML = "⬇ <span>Install Ash-Fall</span>"; }
   });
   installButton?.addEventListener("click", async () => {
-    if (!installPrompt) return;
+    if (!installPrompt) {
+      alert("To install Ash-Fall, open your browser menu (⋮ on Android/Chrome or Share on iPhone), then choose Install app or Add to Home Screen. If Ash-Fall is already installed, open it from your home screen.");
+      return;
+    }
     installPrompt.prompt();
-    await installPrompt.userChoice.catch(() => null);
-    installPrompt = null; installButton.hidden = true;
+    const choice = await installPrompt.userChoice.catch(() => null);
+    installPrompt = null;
+    if (choice?.outcome === "accepted") installButton.innerHTML = "✓ <span>Install requested</span>";
   });
-  window.addEventListener("appinstalled", () => { installPrompt = null; if (installButton) installButton.hidden = true; });
+  window.addEventListener("appinstalled", () => { installPrompt = null; if (installButton) { installButton.innerHTML = "✓ <span>App Installed</span>"; installButton.setAttribute("aria-label","Ash-Fall is installed"); } });
   toggle.addEventListener("click", () => {
     const open = toggle.getAttribute("aria-expanded") === "true";
     toggle.setAttribute("aria-expanded", String(!open));
