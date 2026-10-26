@@ -4,7 +4,6 @@ import path from "node:path";
 const apply=process.argv.includes("--fix");
 const root=path.resolve("public/arcade/hosted");
 const rules=[
- {file:"ashfall-mini-games.js",id:"particle-clicker-generation",bad:'if(mode==="particle-clicker"){if(q.y>440){',good:'if(mode==="particle-clicker"){if(q.y>440){'},
  {file:"arcade-cabinet-engine.js",id:"kaiju-hitbox",bad:'let i=items.findIndex(o=>Math.hypot(o.x-q.x,o.y-q.y)<o.r+14);',good:'let i=items.findIndex(o=>mode==="kaiju"?(Math.abs(o.x-q.x)<(o.w||42)/2+12&&q.y>=520-(o.h||90)-12&&q.y<=532):Math.hypot(o.x-q.x,o.y-q.y)<(o.r||20)+14);'}
 ];
 const findings=[];
