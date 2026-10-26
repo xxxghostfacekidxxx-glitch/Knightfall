@@ -44,6 +44,10 @@
     {
       "binding": "PROFILE_MEDIA",
       "bucket_name": "knightfall-profile-media"
+    },
+    {
+      "binding": "CREATOR_MEDIA",
+      "bucket_name": "knightfall-creator-private-media"
     }
   ]
 }
