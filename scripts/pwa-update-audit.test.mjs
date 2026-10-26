@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
+import {Script} from "node:vm";
 const root=new URL("../public/",import.meta.url);
 const sw=readFileSync(new URL("sw.js",root),"utf8");
 const nav=readFileSync(new URL("nav.js",root),"utf8");
@@ -35,4 +36,14 @@ test("mobile navigation closes on Escape and outside interaction",()=>{
 });
 test("service worker does not contain escaped newline syntax errors",()=>{
  assert.ok(!sw.includes(String.raw`\\n  if (event.data`));
+});
+
+test("notification settings script parses and refuses unsafe alert destinations",()=>{
+ const html=readFileSync(new URL("notifications.html",root),"utf8");
+ const inline=[...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]).filter(Boolean);
+ assert.ok(inline.length,"notification settings inline script must exist");
+ for(const code of inline)new Script(code,{filename:"notifications.html"});
+ assert.match(html,/function safeNoticeUrl\\(value\\)/);
+ assert.match(html,/safeNoticeUrl\\(n\\.url\\)/);
+ assert.match(html,/visibilitychange/);
 });
