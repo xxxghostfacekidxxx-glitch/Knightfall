@@ -13,6 +13,7 @@ on:
       - 'scripts/static-audit.mjs'
       - 'scripts/push-notifications-audit.mjs'
       - 'scripts/account-deletion-audit.mjs'
+      - 'scripts/pwa-browser-smoke.mjs'
       - 'scripts/arcade-browser-smoke.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
@@ -66,6 +67,8 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
+        run: node scripts/pwa-browser-smoke.mjs
       - name: Exercise hosted arcade cabinets in mobile Chromium
         run: node scripts/arcade-browser-smoke.mjs
       - name: Verify deployed arcade in mobile Chromium
