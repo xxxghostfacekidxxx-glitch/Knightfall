@@ -1122,6 +1122,55 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
+    const aiOptions={messages:[{role:"system",content:systemPrompt+"\\n\\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    if(body.stream===true){
+      let source;
+      try{
+        source=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{...aiOptions,stream:true});
+        if(!source||typeof source.getReader!=="function")throw Error("Streaming model did not return a readable stream.");
+      }catch(error){console.error("miss_chaos_stream_start_failed",error);return json({error:"Streaming is temporarily unavailable. Try sending again."},502,origin);}
+      const encoder=new TextEncoder();
+      const stream=new ReadableStream({
+        async start(controller){
+          const send=(event,data)=>controller.enqueue(encoder.encode("event: "+event+"\\ndata: "+JSON.stringify(data)+"\\n\\n"));
+          const reader=source.getReader(),decoder=new TextDecoder();
+          let pending="",reply="",completed=false;
+          const processLine=(line)=>{
+            if(!line.startsWith("data:"))return;
+            const data=line.slice(5).trim();
+            if(data==="[DONE]")return;
+            let packet;try{packet=JSON.parse(data)}catch{return}
+            const delta=typeof packet.response==="string"?packet.response:"";
+            if(delta){reply+=delta;send("delta",{text:delta});}
+          };
+          try{
+            while(true){
+              const {done,value}=await reader.read();
+              if(done)break;
+              pending+=decoder.decode(value,{stream:true});
+              let boundary;
+              while((boundary=pending.indexOf("\\n"))!==-1){
+                const line=pending.slice(0,boundary).replace(/\\r$/,"");
+                pending=pending.slice(boundary+1);
+                processLine(line);
+              }
+            }
+            pending+=decoder.decode();
+            if(pending.trim())processLine(pending.trim());
+            if(!reply.trim())throw Error("The model returned an empty response.");
+            const now=new Date().toISOString();
+            await env.DB.batch([
+              env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"user",message,mood,now),
+              env.DB.prepare("INSERT INTO chaos_messages (conversation_id,user_id,role,content,mood,created_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,"assistant",reply.trim(),mood,new Date(Date.now()+1).toISOString()),
+              env.DB.prepare("UPDATE chaos_conversations SET title=CASE WHEN title='New conversation' THEN ? ELSE title END,mood=?,updated_at=? WHERE id=? AND user_id=?").bind(message.slice(0,64),mood,new Date(Date.now()+1).toISOString(),conversationId,user.id)
+            ]);
+            completed=true;send("done",{conversation_id:conversationId,mood});
+          }catch(error){console.error("miss_chaos_stream_failed",error);send("error",{error:"The reply was interrupted and was not saved. Please retry."});}
+          finally{try{reader.releaseLock()}catch{}controller.close();}
+        }
+      });
+      return new Response(stream,{headers:{"content-type":"text/event-stream; charset=utf-8","cache-control":"no-cache, no-transform","x-accel-buffering":"no","access-control-allow-origin":origin,"access-control-allow-credentials":"true","x-content-type-options":"nosniff"}});
+    }
     let reply="";
     try{
       const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
