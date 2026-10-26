@@ -733,6 +733,18 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     await env.DB.prepare("INSERT INTO social_group_members (group_id,user_id,role,status,joined_at) VALUES (?,?,'member',?,?) ON CONFLICT(group_id,user_id) DO UPDATE SET status=excluded.status,joined_at=excluded.joined_at").bind(group.id,user.id,status,now).run();
     return json({ok:true,status},200,origin);
   }
+  // Private creator-media readiness: no uploads or downloads are permitted
+  // until verified age assurance, consent workflows, and moderation are live.
+  if(url.pathname==="/api/creator/media/status"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in required."},401,origin);
+    return json({storage_configured:Boolean(env.CREATOR_MEDIA),uploads_enabled:false,downloads_enabled:false,publishing_enabled:false,payments_enabled:false,reason:"Private creator media requires verified age assurance, consent review, and authorized delivery before activation."},200,origin);
+  }
+  if(url.pathname.startsWith("/api/creator/media/")){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in required."},401,origin);
+    return json({error:"Creator media transfers are not enabled until age verification and consent controls are approved.",code:"CREATOR_MEDIA_LOCKED"},503,origin);
+  }
   if(url.pathname==="/api/adult/status"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to check adult access."},401,origin);
     const row=await env.DB.prepare("SELECT status,provider,verified_at,expires_at FROM adult_access_verifications WHERE user_id=?").bind(user.id).first();
