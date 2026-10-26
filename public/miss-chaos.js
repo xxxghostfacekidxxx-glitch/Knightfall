@@ -12,7 +12,7 @@
   const drafts = new Map();
   function saveDraft() { if (!adminViewing) drafts.set(activeConversation || "new", input.value); }
   function restoreDraft() { input.value = drafts.get(activeConversation || "new") || ""; input.dispatchEvent(new Event("input")); }
-  const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",custom:"Custom"};
+  const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",astrology:"Astrology",custom:"Custom"};
 
   async function request(path, options = {}) {
     const response = await fetch(API + path, {
@@ -251,8 +251,19 @@
   $("#admin-chaos-prev").addEventListener("click",()=>{adminOffset=Math.max(0,adminOffset-adminPageSize);refreshAdminArchive();});
   $("#admin-chaos-next").addEventListener("click",()=>{adminOffset+=adminPageSize;refreshAdminArchive();});
   let archiveSearchTimer; $("#admin-chaos-search").addEventListener("input",()=>{clearTimeout(archiveSearchTimer);adminOffset=0;archiveSearchTimer=setTimeout(refreshAdminArchive,250);});
-  moodSelect.value = localStorage.getItem("missChaosMood") || "default";
-  moodSelect.addEventListener("change", () => localStorage.setItem("missChaosMood", moodSelect.value));
+  const astroTools = $("#astrology-tools");
+  const astrologyPrompts = {
+    natal:"I would like an in-depth natal chart interpretation. Please tell me what birth details and calculated placements you need, explain tropical vs. sidereal if relevant, and do not guess planetary positions.",
+    compatibility:"Help me explore astrological compatibility in depth. Tell me what chart details you need for both people and explain synastry, major aspects, and limitations without claiming fate is predetermined.",
+    transits:"I would like an in-depth explanation of current transits and how to interpret them. Please distinguish general symbolism from exact planetary positions you cannot verify, and tell me what chart or ephemeris details you need.",
+    placements:"I have chart placements I want interpreted in depth. Ask me to paste the signs, degrees, houses, and aspects. Explain the chart ruler, patterns, elements, modalities, and how the pieces fit together."
+  };
+  function updateAstrologyTools() { astroTools.hidden = moodSelect.value !== "astrology"; }
+  const savedMood = localStorage.getItem("missChaosMood");
+  moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
+  updateAstrologyTools();
+  moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
+  astroTools.addEventListener("click", event => { const button = event.target.closest("[data-astro-prompt]"); if (!button || busy || adminViewing) return; const prompt = astrologyPrompts[button.dataset.astroPrompt]; if (!prompt) return; input.value = prompt; input.dispatchEvent(new Event("input")); input.focus(); });
   input.addEventListener("input", () => {
     $("#char-count").textContent = input.value.length + " / 4000";
     input.style.height = "auto";
