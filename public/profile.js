@@ -8,7 +8,7 @@ const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:
 
 function render(d,adminView=false,ownProfile=false){
   const u=d.user;
-  const avatar=u.avatar_url?'<img class="avatar-img" src="'+esc(u.avatar_url)+'" alt="">':'<div class="avatar">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>';
+  const avatar=u.avatar_url?'<img class="avatar-img" src="'+esc(u.avatar_url)+'" alt="Profile picture of '+esc(u.display_name||u.username)+'" loading="lazy" referrerpolicy="no-referrer">':'<div class="avatar" aria-hidden="true">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>';
   const safeWebsite = /^https?:\/\//i.test(String(u.website_url||"")) ? String(u.website_url) : "";const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
   const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':ownProfile?'<div class="profile-actions"><a class="action" href="/profile-edit.html">Edit profile</a><a class="action primary" href="/die-ary.html">Open my Die-ary</a><a class="action" href="/friends.html">Manage friends</a></div>':'<div class="profile-actions"><button id="friend" class="action primary">Add friend</button><button id="follow" class="action">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><button class="action" data-message-user="'+esc(u.username)+'">Message</button></div>';
   root.innerHTML='<div class="profile-top">'+avatar+'<div class="profile-heading"><p class="eyebrow">COMMUNITY MEMBER</p><h1>'+esc(u.display_name)+'</h1><p class="handle">@'+esc(u.username)+' · '+esc(u.role)+'</p>'+online+'</div></div>'+
