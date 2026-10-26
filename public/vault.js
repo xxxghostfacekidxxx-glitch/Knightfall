@@ -4,16 +4,16 @@
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
   const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const bytes=n=>{n=Number(n||0);if(n<1024)return n+" B";const u=["KB","MB","GB","TB"];let i=-1;do{n/=1024;i++;}while(n>=1024&&i<u.length-1);return(n>=100?n.toFixed(0):n>=10?n.toFixed(1):n.toFixed(2))+" "+u[i];};
-  const state={items:[],filter:"all",search:"",sort:"newest",urls:new Map(),selected:new Set(),busy:false};
+  const state={items:[],filter:"all",search:"",sort:"newest",urls:new Map(),selected:new Set(),folders:[],folder:"all",busy:false};
   async function api(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options});const d=(r.headers.get("content-type")||"").includes("application/json")?await r.json().catch(()=>({})):{};if(!r.ok)throw Error(d.error||"Vault request failed ("+r.status+").");return d;}
   function message(s,type=""){const e=$("#upload-status");e.textContent=s;e.className="upload-status"+(type?" "+type:"");}
   function error(s){const e=$("#vault-error");e.textContent=s;e.hidden=!s;}
   function release(){for(const u of state.urls.values())URL.revokeObjectURL(u);state.urls.clear();}
   function kind(x){return x.content_type.startsWith("image/")?"image":x.content_type.startsWith("video/")?"video":x.content_type.startsWith("audio/")?"audio":"other";}
   function updateSummary(s={}){const q=Number(s.quota_bytes||10737418240),used=Number(s.used_bytes||0),reserved=Number(s.reserved_bytes||0),pct=Math.min(100,used/q*100);$("#storage-value").textContent=bytes(used)+" of "+bytes(q);$("#storage-fill").style.width=pct+"%";$("#storage-progress").setAttribute("aria-valuenow",String(Math.round(pct)));$("#storage-detail").textContent=bytes(Math.max(0,q-used-reserved))+" available";$("#storage-percent").textContent=pct.toFixed(pct<10?2:1)+"% used";$("#file-count").textContent=String(s.file_count??state.items.length);$("#reserved-value").textContent=bytes(reserved);}
-  function visibleItems(){return state.items.filter(x=>(state.filter==='all'||kind(x)===state.filter)&&String(x.filename||'').toLowerCase().includes(state.search.toLowerCase()));}
-  function updateSelection(){const count=state.selected.size;$('#vault-selection-count').textContent=count+' selected';$('#vault-delete-selected').disabled=!count||state.busy;}
-  function render(){release();const items=state.items.filter(x=>(state.filter==="all"||kind(x)===state.filter)&&String(x.filename||"").toLowerCase().includes(state.search.toLowerCase()));items.sort((a,b)=>{if(state.sort==="name")return String(a.filename||"").localeCompare(String(b.filename||""),undefined,{numeric:true,sensitivity:"base"});if(state.sort==="size")return Number(b.size_bytes||0)-Number(a.size_bytes||0);const da=Date.parse(a.created_at||"")||0,db=Date.parse(b.created_at||"")||0;return state.sort==="oldest"?da-db:db-da;});const grid=$("#media-grid");if(!items.length){grid.innerHTML='<div class="empty-state"><strong>'+(state.items.length?"Nothing matches that filter.":"Your archive starts here.")+'</strong><span>'+(state.items.length?"Try another search or media filter.":"Add your first photo, video, or audio file above.")+"</span></div>";return;}
+  function visibleItems(){return state.items.filter(x=>(state.filter==='all'||kind(x)===state.filter)&&String(x.filename||'').toLowerCase().includes(state.search.toLowerCase())&&(state.folder==="all"||(state.folder==="unfiled"?x.folder_id==null:String(x.folder_id)===state.folder)));}
+  function updateSelection(){const count=state.selected.size;$('#vault-selection-count').textContent=count+' selected';$('#vault-delete-selected').disabled=!count||state.busy;$('#vault-move-selected').disabled=!count||state.busy;}
+  function render(){release();const items=state.items.filter(x=>(state.filter==="all"||kind(x)===state.filter)&&String(x.filename||"").toLowerCase().includes(state.search.toLowerCase())&&(state.folder==="all"||(state.folder==="unfiled"?x.folder_id==null:String(x.folder_id)===state.folder)));items.sort((a,b)=>{if(state.sort==="name")return String(a.filename||"").localeCompare(String(b.filename||""),undefined,{numeric:true,sensitivity:"base"});if(state.sort==="size")return Number(b.size_bytes||0)-Number(a.size_bytes||0);const da=Date.parse(a.created_at||"")||0,db=Date.parse(b.created_at||"")||0;return state.sort==="oldest"?da-db:db-da;});const grid=$("#media-grid");if(!items.length){grid.innerHTML='<div class="empty-state"><strong>'+(state.items.length?"Nothing matches that filter.":"Your archive starts here.")+'</strong><span>'+(state.items.length?"Try another search or media filter.":"Add your first photo, video, or audio file above.")+"</span></div>";return;}
     grid.innerHTML=items.map(x=>'<article class="media-card"><label class="vault-selection"><input type="checkbox" data-select-media="'+esc(x.key)+'" '+(state.selected.has(x.key)?"checked":"")+' aria-label="Select '+esc(x.filename)+'"> Select</label><div class="media-preview" data-preview="'+esc(x.key)+'"><span class="media-placeholder" aria-hidden="true">'+(kind(x)==="image"?"▧":kind(x)==="video"?"▶":"♫")+'</span><span class="media-type">'+esc(kind(x))+'</span></div><div class="media-info"><div class="media-name" title="'+esc(x.filename)+'">'+esc(x.filename)+'</div><div class="media-meta"><span>'+bytes(x.size_bytes)+'</span><span>'+esc(new Date(x.created_at).toLocaleDateString())+'</span></div><div class="media-actions"><button type="button" data-rename="'+esc(x.key)+'">Rename</button><button type="button" data-download="'+esc(x.key)+'">Download</button><button type="button" class="delete-media" data-delete="'+esc(x.key)+'">Delete</button></div></div></article>').join("");
     items.forEach(x=>{
       const slot=$('[data-preview="'+CSS.escape(x.key)+'"]');
@@ -39,7 +39,39 @@
     if(!viewer){viewer=document.createElement("div");viewer.className="vault-lightbox";viewer.setAttribute("role","dialog");viewer.setAttribute("aria-modal","true");viewer.setAttribute("aria-label","Photo viewer");viewer.style.cssText="position:fixed;inset:0;z-index:99999;background:rgba(4,5,8,.96);display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:12px;color:#fff;gap:10px";viewer.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><strong class="vault-lightbox-title" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></strong><button type="button" data-close aria-label="Close viewer">✕ Close</button></div><div style="display:flex;align-items:center;justify-content:center;min-height:0"><img alt="" style="max-width:100%;max-height:100%;object-fit:contain"></div><div style="display:flex;justify-content:center;gap:12px"><button type="button" data-prev aria-label="Previous photo">← Previous</button><button type="button" data-next aria-label="Next photo">Next →</button></div>';viewer.querySelector("[data-close]").onclick=closeViewer;viewer.querySelector("[data-prev]").onclick=()=>stepViewer(-1);viewer.querySelector("[data-next]").onclick=()=>stepViewer(1);viewer.addEventListener("click",e=>{if(e.target===viewer)closeViewer();});document.body.append(viewer);document.addEventListener("keydown",viewerKeys);}
     viewer.dataset.key=key;viewer.querySelector(".vault-lightbox-title").textContent=item.filename;const img=viewer.querySelector("img");img.alt=item.filename;img.crossOrigin="use-credentials";img.src=API+"/api/vault/items/"+encodeURIComponent(key)+"/content";viewer.querySelector("[data-close]").focus();
   }
-  async function refresh(){error("");try{const d=await api("/api/vault/items");state.items=d.items||[];const valid=new Set(state.items.map(x=>x.key));for(const key of state.selected)if(!valid.has(key))state.selected.delete(key);updateSummary(d.summary);render();updateSelection();}catch(e){error(e.message);$("#media-grid").innerHTML='<div class="empty-state"><strong>Could not open the vault.</strong><span>Check your session and connection, then refresh.</span></div>';}}
+  function folderControls(){
+    const select=$("#vault-folder-filter");
+    select.innerHTML='<option value="all">All files</option><option value="unfiled">Unfiled</option>'+state.folders.map(f=>'<option value="'+Number(f.id)+'">'+esc(f.name)+' ('+Number(f.item_count||0)+')</option>').join("");
+    if(!["all","unfiled"].includes(state.folder)&&!state.folders.some(f=>String(f.id)===state.folder))state.folder="all";
+    select.value=state.folder;
+    const active=state.folders.some(f=>String(f.id)===state.folder);
+    $("#vault-rename-folder").disabled=!active;$("#vault-delete-folder").disabled=!active;
+  }
+  async function loadFolders(){const d=await api("/api/vault/folders");state.folders=d.folders||[];folderControls();}
+  async function createFolder(){
+    const name=prompt("New private folder name:");if(name===null)return;
+    try{await api("/api/vault/folders",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({name:name.trim()})});await loadFolders();message("Folder created.","success");}catch(e){message(e.message,"error");}
+  }
+  async function renameFolder(){
+    const f=state.folders.find(x=>String(x.id)===state.folder);if(!f)return;
+    const name=prompt("Rename folder:",f.name);if(name===null)return;
+    try{await api("/api/vault/folders/"+f.id,{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({name:name.trim()})});await loadFolders();message("Folder renamed.","success");}catch(e){message(e.message,"error");}
+  }
+  async function deleteFolder(){
+    const f=state.folders.find(x=>String(x.id)===state.folder);if(!f||!confirm("Delete folder "+f.name+"? Files remain in the vault."))return;
+    try{await api("/api/vault/folders/"+f.id,{method:"DELETE"});state.folder="all";await refresh();message("Folder deleted. Files preserved.","success");}catch(e){message(e.message,"error");}
+  }
+  async function moveSelected(){
+    const keys=[...state.selected];if(!keys.length||state.busy)return;
+    const options=state.folders.map(f=>f.id+": "+f.name).join("\\n");
+    const answer=prompt("Destination folder ID (0 = Unfiled):\\n"+options);if(answer===null)return;
+    const id=Number(answer.trim());
+    if(!Number.isSafeInteger(id)||id<0||(id!==0&&!state.folders.some(f=>Number(f.id)===id))){message("Invalid folder ID.","error");return;}
+    state.busy=true;updateSelection();let done=0,failed=0;
+    for(const key of keys){try{await api("/api/vault/items/"+encodeURIComponent(key)+"/folder",{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify({folder_id:id||null})});state.selected.delete(key);done++;}catch(e){failed++;}}
+    state.busy=false;await refresh();message(done+" moved"+(failed?", "+failed+" failed":"."),failed?"error":"success");
+  }
+  async function refresh(){error("");try{const d=await api("/api/vault/items");state.items=d.items||[];const valid=new Set(state.items.map(x=>x.key));for(const key of state.selected)if(!valid.has(key))state.selected.delete(key);updateSummary(d.summary);await loadFolders();render();updateSelection();}catch(e){error(e.message);$("#media-grid").innerHTML='<div class="empty-state"><strong>Could not open the vault.</strong><span>Check your session and connection, then refresh.</span></div>';}}
   async function upload(files){if(state.busy||!files.length)return;state.busy=true;$("#file-input").disabled=true;const queue=$("#upload-queue");queue.hidden=false;queue.replaceChildren();let ok=0,bad=0;
     for(let i=0;i<files.length;i++){const f=files[i],row=document.createElement("div"),name=document.createElement("span"),size=document.createElement("small"),p=document.createElement("progress");row.className="queue-row";name.textContent=f.name;size.textContent=bytes(f.size);p.max=1;p.value=0;row.append(name,size,p);queue.append(row);message("Uploading "+(i+1)+" of "+files.length+"…");try{const form=new FormData();form.append("file",f,f.name);const d=await api("/api/vault/items",{method:"POST",body:form});p.value=1;size.textContent="Saved";ok++;if(d.summary)updateSummary(d.summary);}catch(e){bad++;size.textContent=e.message;size.title=e.message;size.style.color="#ff9a9a";}}
     state.busy=false;$("#file-input").disabled=false;$("#file-input").value="";message(ok+" saved"+(bad?", "+bad+" failed":"."),bad?"error":"success");await refresh();if(!bad)setTimeout(()=>{if(!state.busy)message("");},4000);
@@ -65,6 +97,11 @@
   const drop=$("#drop-zone");["dragenter","dragover"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add("dragging");}));["dragleave","drop"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove("dragging");}));drop.addEventListener("drop",e=>upload([...e.dataTransfer.files]));
   $("#refresh-vault").addEventListener("click",refresh);$("#search-vault").addEventListener("input",e=>{state.search=e.target.value;render();});$("#sort-vault").addEventListener("change",e=>{state.sort=e.target.value;render();});
   $$(".filter").forEach(b=>b.addEventListener("click",()=>{$$(".filter").forEach(x=>x.classList.toggle("active",x===b));state.filter=b.dataset.filter;render();}));
+  $("#vault-folder-filter").addEventListener("change",e=>{state.folder=e.target.value;folderControls();render();});
+  $("#vault-create-folder").addEventListener("click",createFolder);
+  $("#vault-rename-folder").addEventListener("click",renameFolder);
+  $("#vault-delete-folder").addEventListener("click",deleteFolder);
+  $("#vault-move-selected").addEventListener("click",moveSelected);
   $("#vault-select-visible").addEventListener("click",()=>{for(const item of visibleItems())state.selected.add(item.key);render();updateSelection();});
   $("#vault-clear-selection").addEventListener("click",()=>{state.selected.clear();render();updateSelection();});
   $("#vault-delete-selected").addEventListener("click",deleteSelected);
