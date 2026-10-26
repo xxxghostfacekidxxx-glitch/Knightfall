@@ -8,6 +8,7 @@ on:
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
+      - "scripts/arcade-asset-doctor.test.mjs"
       - ".github/workflows/arcade-test-fleet.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -71,6 +72,8 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      - name: Verify automated repair rules
+        run: node --test scripts/arcade-asset-doctor.test.mjs
       - name: Audit arcade asset references
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
@@ -117,10 +120,14 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "22"
+      - name: Verify automated repair rules
+        run: node --test scripts/arcade-asset-doctor.test.mjs
       - name: Apply strictly deterministic arcade asset fixes
         run: |
-          node scripts/arcade-asset-doctor.mjs --fix > /tmp/arcade-doctor.json || true
+          status=0
+          node scripts/arcade-asset-doctor.mjs --fix > /tmp/arcade-doctor.json || status=$?
           cat /tmp/arcade-doctor.json
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then exit "$status"; fi
       - name: Create reviewable repair PR only when files changed
         env:
           GH_TOKEN: ${{ github.token }}
