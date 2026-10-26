@@ -1,0 +1,21 @@
+// Guard known gameplay regressions. Exact, reviewable repairs only.
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+const apply=process.argv.includes("--fix");
+const root=path.resolve("public/arcade/hosted");
+const rules=[
+ {file:"ashfall-mini-games.js",id:"particle-clicker-generation",bad:'if(mode==="particle-clicker"){if(q.y>440){',good:'if(mode==="particle-clicker"){if(q.y>440){'},
+ {file:"arcade-cabinet-engine.js",id:"kaiju-hitbox",bad:'let i=items.findIndex(o=>Math.hypot(o.x-q.x,o.y-q.y)<o.r+14);',good:'let i=items.findIndex(o=>mode==="kaiju"?(Math.abs(o.x-q.x)<(o.w||42)/2+12&&q.y>=520-(o.h||90)-12&&q.y<=532):Math.hypot(o.x-q.x,o.y-q.y)<(o.r||20)+14);'}
+];
+const findings=[];
+for(const rule of rules){
+ const file=path.join(root,rule.file);
+ const source=await readFile(file,"utf8");
+ if(source.includes(rule.good) && rule.good!==rule.bad)continue;
+ if(rule.bad===rule.good)continue;
+ const matches=source.split(rule.bad).length-1;
+ if(matches!==1){findings.push({rule:rule.id,status:"manual-review",matches});continue}
+ if(apply)await writeFile(file,source.replace(rule.bad,rule.good));
+ findings.push({rule:rule.id,status:apply?"repaired":"repair-available"});
+}
+console.log(JSON.stringify({mode:apply?"fix":"audit",findings},null,2));
