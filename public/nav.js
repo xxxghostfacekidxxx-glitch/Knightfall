@@ -1,6 +1,6 @@
 (() => {
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
-  if (/^(?:\\/arcade(?:[-/]|$)|\\/chaos-cartridge(?:\\.html)?$)/i.test(location.pathname)) {
+  if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
     document.documentElement.classList.add("chaos-glitch-arcade");
     if (!document.querySelector('link[data-chaos-glitch]')) {
       const glitch = document.createElement("link");
