@@ -9,6 +9,7 @@ on:
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-asset-doctor.test.mjs"
+      - "scripts/arcade-gameplay-replay.mjs"
       - ".github/workflows/arcade-test-fleet.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -78,6 +79,11 @@ jobs:
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
           cat /tmp/arcade-asset-audit.json
+      - name: Reproduce mobile gameplay scenarios
+        env:
+          ARCADE_TEST_BASE: http://127.0.0.1:8765
+        run: |
+          node scripts/arcade-gameplay-replay.mjs 2>&1 | tee /tmp/arcade-gameplay-replay.log
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
@@ -102,6 +108,8 @@ jobs:
             /tmp/arcade-live-results.log
             /tmp/arcade-asset-audit.json
             /tmp/arcade-browser-evidence/
+            /tmp/arcade-replays/
+            /tmp/arcade-gameplay-replay.log
           if-no-files-found: ignore
           retention-days: 14
 
