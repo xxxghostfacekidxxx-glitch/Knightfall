@@ -4,8 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090c">
 <meta name="description" content="Create and manage your personal Ash-Fall AI bots. Keep them private or share them when ready.">
 <title>Personal Bots | Ash-Fall</title>
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder3">
-<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder3" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/personal-bots.css?v=20261026-builder4">
+<script src="/nav.js" defer></script><script src="/personal-bots.js?v=20261026-builder4" defer></script>
 </head>
 <body class="bots-page">
 <header class="kf-header"></header>
@@ -28,6 +28,7 @@
 </form>
 </section>
 <section class="bot-list-section"><div class="section-title"><div><p class="eyebrow">YOUR PRIVATE WORKSHOP</p><h2>Personal bot manager</h2></div><button id="refresh-bots" class="quiet-button" type="button">Refresh</button></div>
+<div class="bot-manager-toolbar"><label class="bot-search-label">Find a bot<input id="bot-search" type="search" placeholder="Search names and descriptions…" autocomplete="off"></label><label class="bot-filter-label">Visibility<select id="bot-visibility"><option value="all">All bots</option><option value="private">Private only</option><option value="public">Published only</option></select></label><span id="bot-results-count" role="status" aria-live="polite"></span></div>
 <div id="bot-list" class="bot-list"><div class="empty-state">Loading your workspace…</div></div>
 </section>
 <p class="bots-footnote">You control the bots you create. Public bots expose their chat interface and owner-written persona to anyone with the link. Never put passwords, API keys, private records, or other sensitive information in a bot's instructions.</p>
