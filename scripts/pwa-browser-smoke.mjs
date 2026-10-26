@@ -25,7 +25,7 @@ try {
   assert.equal(manifestResponse.status(), 200);
   const manifest = await manifestResponse.json();
   assert.ok(manifest.name && manifest.start_url === "/homepage.html?source=pwa" && manifest.scope === "/");
-  assert.ok(manifest.icons.some(icon => icon.src === "/icons/knightfall-maskable.svg" && icon.purpose === "maskable"));
+  assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg" && icon.purpose === "maskable"));
   for (const icon of manifest.icons) assert.equal((await page.request.get(base + icon.src)).status(), 200, icon.src);
   for (const shortcut of manifest.shortcuts || []) assert.equal((await page.request.get(base + new URL(shortcut.url, base).pathname)).status(), 200, shortcut.url);
   await page.goto(base + "/privacy.html", { waitUntil: "domcontentloaded" });
