@@ -431,6 +431,7 @@
       });
       typing.remove();
       if(!streamedArticle)addMessage("assistant",result.reply,"Miss Chaos · "+(moodNames[result.mood]||"Default"));
+      else streamedArticle.querySelector(".message-content").textContent=result.reply;
       statusEl.textContent = "Connected · Miss Chaos is listening";
       if (speakReplies && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
