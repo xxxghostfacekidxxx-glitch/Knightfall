@@ -1874,6 +1874,22 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     return json({ok:true,status},200,origin);
   }
 
+  if(url.pathname.startsWith("/api/admin/safety-reports/")&&request.method==="PATCH"){
+    const user=await requireUser(request,env);
+    if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
+    const id=Number(url.pathname.split("/").pop());
+    if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid report id."},400,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const status=String(body.status||"");
+    if(!["open","reviewing","resolved","dismissed"].includes(status))return json({error:"Unsupported report status."},400,origin);
+    const previous=await env.DB.prepare("SELECT id,status FROM safety_reports WHERE id=?").bind(id).first();
+    if(!previous)return json({error:"Report not found."},404,origin);
+    const resolved=["resolved","dismissed"].includes(status);
+    await env.DB.prepare("UPDATE safety_reports SET status=?,resolved_at=?,resolved_by=? WHERE id=?").bind(status,resolved?new Date().toISOString():null,resolved?user.id:null,id).run();
+    await audit(env,user,"social.safety.report.status","safety_report",id,{from:previous.status,to:status});
+    return json({ok:true,id,status},200,origin);
+  }
+
   if(url.pathname==="/api/admin/social-review"&&request.method==="GET"){
     const user=await requireUser(request,env);
     if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
