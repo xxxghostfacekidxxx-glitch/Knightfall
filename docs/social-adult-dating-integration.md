@@ -13,6 +13,11 @@ Ash-Fall remains a Cloudflare Pages frontend backed by its existing Cloudflare W
 7. Add dating discovery and mutual-match endpoints. Require verified adult access for every profile in this section; use coarse location labels only, never publish precise location; block/report controls and opt-out must be present from launch.
 8. Build front-end routes, tests, audit logs, abuse controls, and moderation dashboard.
 
+## Administrator review controls
+The protected Worker endpoint `GET /api/admin/social-review` supports activity records, creator post metadata, dating profiles, and private messages. It requires an authenticated administrator/God role and writes audit entries for each review request. Message review supports a bounded text/username query and optional conversation ID. The God Mode dashboard exposes a restricted Social Review panel and loads it only when selected. The existing message archive endpoints remain separately protected by the administrator check.
+
+This review interface displays stored text and record metadata; it is not a media-delivery bypass. Creator media remains unavailable until private object storage, authorization-checked delivery, consent/takedown workflows, and provider approvals are implemented. Review access must be used for legitimate safety, support, moderation, security, or legal purposes, consistent with the public User Agreement.
+
 ## Non-negotiable safety and privacy requirements
 - All participants must be adults. No minors, age-ambiguous users, or sexual content involving minors.
 - A checkbox or date-of-birth field is not sufficient for access to explicit media. Use a reputable age-assurance provider that supports the intended jurisdictions, retain minimal proof, and implement expiry/revocation.
