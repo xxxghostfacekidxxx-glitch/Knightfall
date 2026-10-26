@@ -1,11 +1,12 @@
-const CACHE_NAME = "knightfall-shell-v6";
+const CACHE_NAME = "knightfall-shell-v7";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
   "/theme.css",
   "/nav.js",
-  "/icons/knightfall.svg",
-  "/icons/knightfall-maskable.svg"
+  "/icons/chaos-cartridge.svg",
+  "/icons/chaos-cartridge-maskable.svg",
+  "/branding/chaos-cartridge-logo.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -24,8 +25,8 @@ self.addEventListener("push", event => {
   const path = typeof payload.url === "string" && payload.url.startsWith("/") && !payload.url.startsWith("//") ? payload.url : "/notifications.html";
   event.waitUntil(self.registration.showNotification(title, {
     body,
-    icon: "/icons/knightfall.svg",
-    badge: "/icons/knightfall.svg",
+    icon: "/icons/chaos-cartridge.svg",
+    badge: "/icons/chaos-cartridge.svg",
     tag: payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert",
     renotify: false,
     data: { url: path }
