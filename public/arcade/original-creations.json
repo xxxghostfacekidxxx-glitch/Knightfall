@@ -655,6 +655,42 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-ricochet",
+      "name": "Ember Ricochet",
+      "genre": "Arcade",
+      "sprites": [
+        "ember-orb.svg"
+      ],
+      "notes": "Rotate an ember shield to ricochet a glowing orb and survive increasingly fast bounces.",
+      "engine": "/arcade/hosted/ember-ricochet/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-ricochet",
+      "assets": [
+        {
+          "name": "ember-orb.svg",
+          "path": "/arcade/hosted/ember-ricochet/sprites/ember-orb.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-fallout",
+      "name": "Ash Fallout",
+      "genre": "Arcade",
+      "sprites": [
+        "falling-cinder.svg"
+      ],
+      "notes": "Dodge accelerating burning debris and survive the fallout for the highest score.",
+      "engine": "/arcade/hosted/ash-fallout/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-fallout",
+      "assets": [
+        {
+          "name": "falling-cinder.svg",
+          "path": "/arcade/hosted/ash-fallout/sprites/falling-cinder.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
