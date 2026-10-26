@@ -1,5 +1,16 @@
 (() => {
-  // Shared PWA setup.
+  // Shared PWA setup and global Chaos Cartridge favicon.
+  const iconLinks = [
+    { rel: "icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
+    { rel: "shortcut icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
+    { rel: "apple-touch-icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1" }
+  ];
+  iconLinks.forEach(spec => {
+    let link = document.head.querySelector('link[rel="' + spec.rel + '"]');
+    if (!link) { link = document.createElement("link"); link.rel = spec.rel; document.head.append(link); }
+    link.href = spec.href;
+    if (spec.type) link.type = spec.type;
+  });
   if (!document.querySelector('link[rel="manifest"]')) {
     const manifest = document.createElement("link");
     manifest.rel = "manifest";
