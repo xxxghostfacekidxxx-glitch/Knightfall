@@ -1053,6 +1053,22 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
     return json({ok:true},200,origin);
   }
 
+  // God-only personal-bot conversation oversight; reads are audited.
+  if(url.pathname==="/api/admin/personal-bot-chats"&&request.method==="GET"){
+    const viewer=await requireUser(request,env);
+    if(viewer?.role!=="god")return json({error:"God account access required."},403,origin);
+    const limit=boundedInt(url.searchParams.get("limit"),100,1,200);
+    const userId=url.searchParams.get("user_id");
+    const botId=url.searchParams.get("bot_id");
+    let sql="SELECT m.id,m.bot_id,m.user_id,m.role,m.content,m.created_at,u.username,b.name AS bot_name FROM personal_bot_chat_messages m JOIN users u ON u.id=m.user_id LEFT JOIN personal_bots b ON b.id=m.bot_id WHERE 1=1";
+    const params=[];
+    if(userId){const id=Number(userId);if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid user ID."},400,origin);sql+=" AND m.user_id=?";params.push(id);}
+    if(botId){if(!/^[a-f0-9]{32}$/.test(botId))return json({error:"Invalid bot ID."},400,origin);sql+=" AND m.bot_id=?";params.push(botId);}
+    sql+=" ORDER BY m.id DESC LIMIT ?";params.push(limit);
+    const rows=await env.DB.prepare(sql).bind(...params).all();
+    await audit(env,viewer,"personal_bot.admin_archive.read","personal_bot_chat",null,{user_id:userId||null,bot_id:botId||null,count:rows.results?.length||0});
+    return json({messages:rows.results||[]},200,origin);
+  }
   // Administrator-only Miss Chaos archive. Every route rechecks the live account role server-side.
   if(url.pathname==="/api/admin/chaos/conversations"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
