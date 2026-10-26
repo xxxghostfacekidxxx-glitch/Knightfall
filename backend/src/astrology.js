@@ -49,3 +49,14 @@ export function calculateAstrology(iso){
  }
  return {utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. No Ascendant, houses, Pluto, lunar nodes, topocentric corrections or exact ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
 }
+
+export function calculateTransits(natalUtc,transitUtc){
+ const natal=calculateAstrology(natalUtc),transit=calculateAstrology(transitUtc);
+ const types=[["conjunction",0],["sextile",60],["square",90],["trine",120],["opposition",180]];
+ const aspects=[];
+ for(const [moving,m] of Object.entries(transit.bodies))for(const [natalBody,n] of Object.entries(natal.bodies)){
+  const raw=Math.abs(m.longitude-n.longitude),sep=Math.min(raw,360-raw);
+  for(const [type,angle] of types){const orb=Math.abs(sep-angle);if(orb<=2)aspects.push({transit:moving,natal:natalBody,type,orb:Number(orb.toFixed(2))});}
+ }
+ return {natal_utc:natal.utc,transit_utc:transit.utc,transit_bodies:transit.bodies,transit_aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:transit.limitations};
+}
