@@ -34,7 +34,21 @@ function positions(date){
  output.Moon=norm(Math.atan2(moon.y,moon.x)*deg+correction);
  return output;
 }
-export function calculateAstrology(iso){
+// Ascendant at the eastern ecliptic/horizon intersection; equal-house cusps
+// are 30 degrees apart from the Ascendant. These are NOT Placidus houses.
+export function calculateAngles(iso, latitude, longitude){
+ const lat=Number(latitude),lon=Number(longitude),time=new Date(iso);
+ if(!Number.isFinite(time.getTime())||!Number.isFinite(lat)||!Number.isFinite(lon)||lat < -66||lat > 66||lon < -180||lon > 180)throw Error("Provide a valid UTC date and coordinates (latitude -66 to 66, longitude -180 to 180).");
+ const jd=time.getTime()/86400000+2440587.5,T=(jd-2451545)/36525;
+ const gmst=norm(280.46061837+360.98564736629*(jd-2451545)+0.000387933*T*T-T*T*T/38710000);
+ const lst=norm(gmst+lon);
+ const obliquity=23.439291111-0.013004167*T-0.0000001639*T*T+0.0000005036*T*T*T;
+ const theta=lst*rad,eps=obliquity*rad,phi=lat*rad;
+ const asc=norm(Math.atan2(-Math.cos(theta),Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))*deg);
+ const houses=Array.from({length:12},(_,i)=>Number(norm(asc+i*30).toFixed(3)));
+ return {ascendant:Number(asc.toFixed(3)),ascendant_sign:signs[Math.floor(asc/30)],houses,house_system:"Equal houses (Ascendant-based)",latitude:lat,longitude:lon,limitations:"Approximate sidereal time and mean obliquity; no nutation/refraction corrections. Equal houses are not Placidus or whole-sign houses. Extreme latitudes are not supported."};
+}
+export function calculateAstrology(iso,location){
  const time=new Date(iso);
  if(!Number.isFinite(time.getTime())||time.getUTCFullYear()<1900||time.getUTCFullYear()>2100)throw Error("Use a valid UTC time between 1900 and 2100.");
  const now=positions(time),before=positions(new Date(time.getTime()-86400000)),after=positions(new Date(time.getTime()+86400000));
@@ -47,7 +61,9 @@ export function calculateAstrology(iso){
   const a=bodies[names[i]].longitude,b=bodies[names[j]].longitude,diff=Math.abs(a-b),sep=Math.min(diff,360-diff);
   for(const [type,angle] of targets){const orb=Math.abs(sep-angle);if(orb<=4)aspects.push({a:names[i],b:names[j],type,orb:Number(orb.toFixed(2))});}
  }
- return {utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. No Ascendant, houses, Pluto, lunar nodes, topocentric corrections or exact ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
+ const angles=location ? calculateAngles(time.toISOString(),location.latitude,location.longitude) : null;
+ const housePlacements=angles ? Object.fromEntries(Object.entries(bodies).map(([name,body])=>[name,Math.floor(norm(body.longitude-angles.ascendant)/30)+1])) : null;
+ return {angles,house_placements:housePlacements,utc:time.toISOString(),zodiac:"tropical (approximate)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Low-precision orbital-element calculations. Ascendant and equal houses require coordinates; no Pluto, lunar nodes, topocentric corrections or high-precision ephemeris accuracy. Retrograde is estimated from daily positions. Do not use for precise electional astrology."};
 }
 
 export function calculateTransits(natalUtc,transitUtc){
