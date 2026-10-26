@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "title": "Chaos Cartridge Original Creations",
+  "description": "First-party Knightfall game implementations and original vector artwork. Catalog entries are source references, not copyright registrations.",
+  "updated": "2026-10-26",
+  "games": [
+    {
+      "id": "cinder-merge",
+      "name": "Cinder Merge",
+      "genre": "Puzzle",
+      "sprites": [],
+      "notes": "Original tile-merging engine; visual tiles are CSS-rendered.",
+      "engine": "/arcade/hosted/cinder-merge/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-merge",
+      "assets": [],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-drift",
+      "name": "Cinder Drift",
+      "genre": "Shooter",
+      "sprites": [
+        "ship.svg",
+        "debris.svg",
+        "ember.svg"
+      ],
+      "notes": "Original ship, debris and projectile vector artwork.",
+      "engine": "/arcade/hosted/cinder-drift/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-drift",
+      "assets": [
+        {
+          "name": "ship.svg",
+          "path": "/arcade/hosted/cinder-drift/sprites/ship.svg"
+        },
+        {
+          "name": "debris.svg",
+          "path": "/arcade/hosted/cinder-drift/sprites/debris.svg"
+        },
+        {
+          "name": "ember.svg",
+          "path": "/arcade/hosted/cinder-drift/sprites/ember.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-serpent",
+      "name": "Ash Serpent",
+      "genre": "Arcade",
+      "sprites": [
+        "serpent-head.svg",
+        "ember-fruit.svg"
+      ],
+      "notes": "Original character and collectible vector artwork.",
+      "engine": "/arcade/hosted/ash-serpent/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-serpent",
+      "assets": [
+        {
+          "name": "serpent-head.svg",
+          "path": "/arcade/hosted/ash-serpent/sprites/serpent-head.svg"
+        },
+        {
+          "name": "ember-fruit.svg",
+          "path": "/arcade/hosted/ash-serpent/sprites/ember-fruit.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-pop",
+      "name": "Ember Pop",
+      "genre": "Arcade",
+      "sprites": [
+        "wisp.svg",
+        "mine.svg",
+        "star.svg"
+      ],
+      "notes": "Original spirit, hazard and bonus collectible artwork.",
+      "engine": "/arcade/hosted/ember-pop/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-pop",
+      "assets": [
+        {
+          "name": "wisp.svg",
+          "path": "/arcade/hosted/ember-pop/sprites/wisp.svg"
+        },
+        {
+          "name": "mine.svg",
+          "path": "/arcade/hosted/ember-pop/sprites/mine.svg"
+        },
+        {
+          "name": "star.svg",
+          "path": "/arcade/hosted/ember-pop/sprites/star.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "pyre-stacks",
+      "name": "Pyre Stacks",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-disc.svg",
+        "sigil.svg"
+      ],
+      "notes": "Original ring texture and infernal sigil artwork.",
+      "engine": "/arcade/hosted/pyre-stacks/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/pyre-stacks",
+      "assets": [
+        {
+          "name": "ember-disc.svg",
+          "path": "/arcade/hosted/pyre-stacks/sprites/ember-disc.svg"
+        },
+        {
+          "name": "sigil.svg",
+          "path": "/arcade/hosted/pyre-stacks/sprites/sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    }
+  ]
+}
