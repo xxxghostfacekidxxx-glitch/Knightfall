@@ -76,7 +76,7 @@ chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;chartStatus.text
 chartForm.addEventListener("submit",async event=>{
  event.preventDefault();
  const button=chartForm.querySelector('button[type="submit"]'),local=document.querySelector("#birth-chart-local").value,offset=Number(document.querySelector("#birth-chart-offset").value),latitude=Number(document.querySelector("#birth-chart-lat").value),longitude=Number(document.querySelector("#birth-chart-lon").value);
- const match=/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2})$/.exec(local);
+ const match=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
  if(!match||!Number.isFinite(offset)||offset < -12||offset > 14||!Number.isFinite(latitude)||!Number.isFinite(longitude)){chartStatus.textContent="Enter valid birth details.";return;}
  const [year,month,day,hour,minute]=match.slice(1).map(Number),clock=new Date(Date.UTC(year,month-1,day,hour,minute));
  if(clock.getUTCFullYear()!==year||clock.getUTCMonth()!==month-1||clock.getUTCDate()!==day||clock.getUTCHours()!==hour||clock.getUTCMinutes()!==minute){chartStatus.textContent="Invalid birth date.";return;}
