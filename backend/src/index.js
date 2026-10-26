@@ -1023,7 +1023,8 @@ export default { async scheduled(controller, env, ctx) { const cutoff=new Date(D
         if(typeof body.natal_utc!=="string"||body.natal_utc.length>40)return json({error:"Invalid natal UTC timestamp."},400,origin);
         return json(calculateTransits(body.natal_utc,body.utc),200,origin);
       }
-      return json(calculateAstrology(body.utc,location),200,origin);
+      if(body.house_system!==undefined&&!["equal","whole-sign"].includes(body.house_system))return json({error:"Unsupported house system."},400,origin);
+      return json(calculateAstrology(body.utc,location,body.house_system||"equal"),200,origin);
     }
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
