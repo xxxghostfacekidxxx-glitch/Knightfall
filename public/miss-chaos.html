@@ -7,7 +7,7 @@
   <meta name="description" content="Meet Miss Chaos, Ash-Fall's sharp-tongued AI companion for conversation, creativity, and useful answers.">
   <title>Miss Chaos | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-astro1">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-astro2">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -59,7 +59,13 @@
           </select>
         </label>
       </div>
-      <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div><p class="astro-help">For a calculated birth chart, provide your birth date, accurate birth time, birth location, and a chart from a trusted calculator. Without those, Miss Chaos can still explain the symbolism.</p></section>
+      <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div><form id="astro-chart-form" class="astro-chart-form">
+  <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
+  <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
+  <button type="submit">Calculate placements</button>
+</form>
+<p id="astro-chart-status" role="status" class="astro-help"></p>
+<p class="astro-help">Use the UTC offset that applied on the birth date, including daylight saving time. This calculator estimates planetary signs, degrees, retrogrades and major aspects. It does not calculate rising signs or houses, and it does not need or store your birth location.</p></section>
       <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
         <div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me. Try not to break anything important. I just got here.</h2><p>I'm Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that's useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p></div>
       </div>
@@ -73,6 +79,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261026-astro1" defer></script>
+  <script src="/miss-chaos.js?v=20261026-astro2" defer></script>
 </body>
 </html>
