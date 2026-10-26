@@ -9,6 +9,7 @@
     <section id="miss-chaos-window" aria-label="Chat with Miss Chaos" aria-hidden="true" hidden>
       <header class="mc-head"><img src="${AVATAR}" alt="Miss Chaos portrait"><div class="mc-head-copy"><strong>Miss Chaos</strong><small id="mc-presence-status"><span aria-hidden="true">● </span>Your chaos, one tap away</small></div><div class="mc-head-actions"><button type="button" id="mc-voice" aria-label="Enable spoken replies" aria-pressed="false" title="Spoken replies">♫</button><button type="button" id="mc-full-chat" aria-label="Open full Miss Chaos chat" title="Full chat">↗</button><button type="button" id="mc-close" aria-label="Close Miss Chaos" title="Close">×</button></div></header>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
+      <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
       <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
       <form id="mc-form"><label class="sr-only" for="mc-input">Message Miss Chaos</label><textarea id="mc-input" rows="1" maxlength="4000" placeholder="Tell me what's going on…" required></textarea><button id="mc-send" type="submit">Send ↗</button></form>
       <div class="mc-footer">Account chat · Saved to your Miss Chaos conversations. AI can make mistakes.</div>
@@ -31,6 +32,8 @@
   $("#mc-close").addEventListener("click",close);$("#mc-full-chat").addEventListener("click",()=>location.href="/miss-chaos.html");
   voiceButton.addEventListener("click",()=>{if(!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){error.textContent="This browser does not support spoken replies.";return;}voiceEnabled=!voiceEnabled;voiceButton.setAttribute("aria-pressed",String(voiceEnabled));voiceButton.setAttribute("aria-label",voiceEnabled?"Disable spoken replies":"Enable spoken replies");voiceButton.title=voiceEnabled?"Turn spoken replies off":"Turn spoken replies on";if(voiceEnabled)speak("Spoken replies are on. Your ears have accepted the terms of chaos.");else{window.speechSynthesis.cancel();setExpression(mood.value);}});
   mood.addEventListener("change",()=>setExpression(mood.value));
+  const gameTips=$("#mc-game-tips");
+  if(/arcade|chaos-cartridge|game/i.test(location.pathname)){gameTips.hidden=false;gameTips.addEventListener("click",()=>{input.value="Give me tips for playing this game on Chaos Cartridge. Explain the controls, strategy, and any useful beginner tricks.";input.focus();input.dispatchEvent(new Event("input"));$("#mc-form").requestSubmit();});}
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!panel.hidden)close();});
   input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("#mc-form").requestSubmit();}});
   input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";});
