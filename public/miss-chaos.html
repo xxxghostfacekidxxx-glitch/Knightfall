@@ -62,7 +62,7 @@
       <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div><form id="astro-chart-form" class="astro-chart-form">
   <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
   <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
-  <button type="submit">Calculate placements</button>
+  <button type="submit">Calculate placements</button><button type="button" id="astro-transits">Calculate today’s transits</button>
 </form>
 <p id="astro-chart-status" role="status" class="astro-help"></p>
 <p class="astro-help">Use the UTC offset that applied on the birth date, including daylight saving time. This calculator estimates planetary signs, degrees, retrogrades and major aspects. It does not calculate rising signs or houses, and it does not need or store your birth location.</p></section>
@@ -79,6 +79,6 @@
     </section>
   </main>
   <script src="/nav.js" defer></script>
-  <script src="/miss-chaos.js?v=20261026-astro2" defer></script>
+  <script src="/miss-chaos.js?v=20261026-astro3" defer></script>
 </body>
 </html>
