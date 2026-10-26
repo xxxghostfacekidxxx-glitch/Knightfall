@@ -54,6 +54,17 @@ jobs:
           - Pixel Medic
           - Savekeeper
           - Cabinet Auditor
+        include:
+          - { bot: Ash Sentinel, profile: phone }
+          - { bot: Cinder Scout, profile: smallPhone }
+          - { bot: Rook Runner, profile: largePhone }
+          - { bot: Maze Warden, profile: tablet }
+          - { bot: Tower Keeper, profile: desktop }
+          - { bot: Rally Hound, profile: phone }
+          - { bot: Kaiju Watch, profile: smallPhone }
+          - { bot: Pixel Medic, profile: largePhone }
+          - { bot: Savekeeper, profile: tablet }
+          - { bot: Cabinet Auditor, profile: desktop }
     steps:
       - name: Checkout Knightfall
         uses: actions/checkout@v7
@@ -80,8 +91,9 @@ jobs:
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
           cat /tmp/arcade-asset-audit.json
-      - name: Reproduce mobile gameplay scenarios
+      - name: Reproduce mobile and desktop gameplay scenarios
         env:
+          ARCADE_TEST_PROFILE: ${{ matrix.profile }}
           ARCADE_TEST_BASE: http://127.0.0.1:8765
         run: |
           node scripts/arcade-gameplay-replay.mjs 2>&1 | tee /tmp/arcade-gameplay-replay.log
@@ -142,6 +154,18 @@ jobs:
           node scripts/arcade-gameplay-doctor.mjs --fix > /tmp/arcade-gameplay-doctor.json
           cat /tmp/arcade-gameplay-doctor.json
           node --check public/arcade/hosted/arcade-cabinet-engine.js
+      - name: Verify proposed gameplay repairs in browser
+        if: always()
+        run: |
+          if git diff --quiet -- public/arcade; then exit 0; fi
+          python3 -m http.server 8766 --directory public > /tmp/arcade-repair-server.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8766/chaos-cartridge.html >/dev/null; then break; fi
+            sleep 1
+          done
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+          ARCADE_TEST_BASE=http://127.0.0.1:8766 node scripts/arcade-gameplay-replay.mjs
       - name: Create reviewable repair PR only when files changed
         env:
           GH_TOKEN: ${{ github.token }}
