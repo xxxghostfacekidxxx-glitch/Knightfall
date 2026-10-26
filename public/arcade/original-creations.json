@@ -218,6 +218,24 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-sudoku",
+      "name": "Ash Sudoku",
+      "genre": "Puzzle",
+      "sprites": [
+        "logic-sigil.svg"
+      ],
+      "notes": "Original Sudoku generator with unique-solution validation, hints, three difficulties, saved progress, and original chamber sigil artwork.",
+      "engine": "/arcade/hosted/ash-sudoku/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-sudoku",
+      "assets": [
+        {
+          "name": "logic-sigil.svg",
+          "path": "/arcade/hosted/ash-sudoku/sprites/logic-sigil.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
