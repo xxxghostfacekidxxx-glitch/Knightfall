@@ -26,3 +26,11 @@ Run `node --test scripts/astrology.test.mjs` and `node scripts/static-audit.mjs`
 The calculator now accepts optional birth latitude and longitude (north/east positive, south/west negative). When both are supplied, it calculates an **approximate Ascendant** from local sidereal time and mean obliquity, then uses twelve **equal houses** spaced 30 degrees from the Ascendant. It does **not** calculate Placidus or whole-sign houses, and limits latitude to -66 through +66 degrees. The city and historical UTC offset must be determined by the user; the calculator does not perform geocoding or timezone lookup.
 
 This remains a **low-precision** planetary ephemeris. Pluto and lunar nodes are absent, and exact birth-time rectification, professional-grade ephemerides and sidereal charts are not implemented. Location input is not separately persisted by the calculator; if the user sends the prepared interpretation prompt, the chart information enters their normal chat history.
+
+## Additional celestial points and house systems
+
+The chart now includes **Pluto** from a low-precision heliocentric series, and **mean North and South lunar nodes**. The nodes are approximate and are not the oscillating/true nodes. It also calculates an approximate **Midheaven** from local sidereal time. With coordinates, the user may choose **equal houses** or **whole-sign houses**; Placidus remains unsupported. These approximations must not be represented as professional-grade ephemeris data, especially close to sign or house cusps.
+
+## Accuracy and deployment gate
+
+Do not label these calculations Swiss Ephemeris or JPL precision. Before promoting them as production-verified, confirm `node --test scripts/astrology.test.mjs`, the static audit, the backend deployment workflow, and an authenticated browser check of the chart and transit controls. Existing CI status is not proof of a successful live deployment until a run completes successfully.
