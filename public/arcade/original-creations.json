@@ -871,6 +871,96 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "cinder-dice",
+      "name": "Cinder Dice",
+      "genre": "Board",
+      "sprites": [
+        "dice.svg"
+      ],
+      "notes": "Roll dice against the Void and bank points before losing your turn.",
+      "engine": "/arcade/hosted/cinder-dice/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-dice",
+      "assets": [
+        {
+          "name": "dice.svg",
+          "path": "/arcade/hosted/cinder-dice/sprites/dice.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-bridge",
+      "name": "Void Bridge",
+      "genre": "Puzzle",
+      "sprites": [
+        "bridge.svg"
+      ],
+      "notes": "Connect a six-by-six bridge before the CPU connects the opposite sides.",
+      "engine": "/arcade/hosted/void-bridge/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-bridge",
+      "assets": [
+        {
+          "name": "bridge.svg",
+          "path": "/arcade/hosted/void-bridge/sprites/bridge.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-caldera",
+      "name": "Crypt Caldera",
+      "genre": "Puzzle",
+      "sprites": [
+        "lava.svg"
+      ],
+      "notes": "Rotate channels to conduct molten energy across a crypt grid.",
+      "engine": "/arcade/hosted/crypt-caldera/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-caldera",
+      "assets": [
+        {
+          "name": "lava.svg",
+          "path": "/arcade/hosted/crypt-caldera/sprites/lava.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-dash",
+      "name": "Ash Dash",
+      "genre": "Arcade",
+      "sprites": [
+        "runner.svg"
+      ],
+      "notes": "Jump over approaching ruins in a one-button endless survival sprint.",
+      "engine": "/arcade/hosted/ash-dash/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-dash",
+      "assets": [
+        {
+          "name": "runner.svg",
+          "path": "/arcade/hosted/ash-dash/sprites/runner.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ember-vault",
+      "name": "Ember Vault",
+      "genre": "Puzzle",
+      "sprites": [
+        "wheel.svg"
+      ],
+      "notes": "Align four rotating rune wheels to unlock an infernal vault.",
+      "engine": "/arcade/hosted/ember-vault/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-vault",
+      "assets": [
+        {
+          "name": "wheel.svg",
+          "path": "/arcade/hosted/ember-vault/sprites/wheel.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
