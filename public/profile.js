@@ -289,10 +289,10 @@ async function loadProfilePhotos(username,ownProfile){
   if(ownProfile){
     panel.querySelector("#profile-photo-upload").addEventListener("submit",async event=>{
       event.preventDefault();const form=event.currentTarget,file=form.elements.file.files?.[0],button=form.querySelector('button[type="submit"]');
-      if(!file)return;button.disabled=true;status.textContent="Uploading photo…";
+      if(!file)return;if(file.size>8*1024*1024){status.textContent="Choose a photo smaller than 8 MB.";return;}if(!["image/jpeg","image/png","image/gif","image/webp"].includes(file.type)){status.textContent="Choose a JPG, PNG, GIF, or WebP image.";return;}button.disabled=true;status.textContent="Uploading photo…";
       try{const data=new FormData();data.append("file",file);data.append("caption",form.elements.caption.value);data.append("kind","gallery");const response=await fetch(API+"/api/profile/photos",{method:"POST",credentials:"include",body:data});const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||"Photo upload failed.");form.reset();status.textContent="Photo uploaded.";await refresh();}
       catch(error){status.textContent=error.message}
-      button.disabled=false;
+      finally{button.disabled=false;}
     });
     grid.addEventListener("click",async event=>{
       const button=event.target.closest("[data-photo-delete]");if(!button)return;
