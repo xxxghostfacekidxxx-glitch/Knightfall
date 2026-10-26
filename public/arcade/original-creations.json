@@ -632,6 +632,29 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "ash-circuit",
+      "name": "Ash Circuit",
+      "genre": "Board",
+      "sprites": [
+        "cinder-runner.svg",
+        "void-runner.svg"
+      ],
+      "notes": "Original four-house dice racing game with three CPU opponents, capture mechanics, four runners per team and bespoke SVG tokens.",
+      "engine": "/arcade/hosted/ash-circuit/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ash-circuit",
+      "assets": [
+        {
+          "name": "cinder-runner.svg",
+          "path": "/arcade/hosted/ash-circuit/sprites/cinder-runner.svg"
+        },
+        {
+          "name": "void-runner.svg",
+          "path": "/arcade/hosted/ash-circuit/sprites/void-runner.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
