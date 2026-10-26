@@ -1591,6 +1591,186 @@
         }
       ],
       "status": "original SVG art integrated; provenance and browser QA pending"
+    },
+    {
+      "id": "prism-panic",
+      "name": "Prism Panic",
+      "genre": "Puzzle",
+      "sprites": [
+        "prism.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/prism-panic/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/prism-panic",
+      "assets": [
+        {
+          "name": "prism.svg",
+          "path": "/arcade/hosted/prism-panic/sprites/prism.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "neon-vector",
+      "name": "Neon Vector",
+      "genre": "Arcade",
+      "sprites": [
+        "vector.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/neon-vector/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/neon-vector",
+      "assets": [
+        {
+          "name": "vector.svg",
+          "path": "/arcade/hosted/neon-vector/sprites/vector.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "cinder-circuit",
+      "name": "Cinder Circuit",
+      "genre": "Puzzle",
+      "sprites": [
+        "circuit.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/cinder-circuit/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-circuit",
+      "assets": [
+        {
+          "name": "circuit.svg",
+          "path": "/arcade/hosted/cinder-circuit/sprites/circuit.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "hexforge-command",
+      "name": "Hexforge Command",
+      "genre": "Strategy",
+      "sprites": [
+        "forge.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/hexforge-command/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hexforge-command",
+      "assets": [
+        {
+          "name": "forge.svg",
+          "path": "/arcade/hosted/hexforge-command/sprites/forge.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "neon-mahjong",
+      "name": "Crypt Mahjong",
+      "genre": "Puzzle",
+      "sprites": [
+        "mahjong.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/neon-mahjong/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/neon-mahjong",
+      "assets": [
+        {
+          "name": "mahjong.svg",
+          "path": "/arcade/hosted/neon-mahjong/sprites/mahjong.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "ruinwalkers",
+      "name": "Ruinwalkers",
+      "genre": "Adventure",
+      "sprites": [
+        "ruin.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/ruinwalkers/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ruinwalkers",
+      "assets": [
+        {
+          "name": "ruin.svg",
+          "path": "/arcade/hosted/ruinwalkers/sprites/ruin.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "burrow-blitz",
+      "name": "Burrow Blitz",
+      "genre": "Arcade",
+      "sprites": [
+        "burrow.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/burrow-blitz/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/burrow-blitz",
+      "assets": [
+        {
+          "name": "burrow.svg",
+          "path": "/arcade/hosted/burrow-blitz/sprites/burrow.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "rusty-sky",
+      "name": "Rusty Sky",
+      "genre": "Arcade",
+      "sprites": [
+        "sky.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/rusty-sky/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rusty-sky",
+      "assets": [
+        {
+          "name": "sky.svg",
+          "path": "/arcade/hosted/rusty-sky/sprites/sky.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "endless-runner",
+      "name": "Ash-Fall: Endless Run",
+      "genre": "Runner",
+      "sprites": [
+        "run.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/endless-runner/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/endless-runner",
+      "assets": [
+        {
+          "name": "run.svg",
+          "path": "/arcade/hosted/endless-runner/sprites/run.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "slush-rush",
+      "name": "Slush Rush",
+      "genre": "Arcade",
+      "sprites": [
+        "slush.svg"
+      ],
+      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "engine": "/arcade/hosted/slush-rush/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/slush-rush",
+      "assets": [
+        {
+          "name": "slush.svg",
+          "path": "/arcade/hosted/slush-rush/sprites/slush.svg"
+        }
+      ],
+      "status": "original emblem integrated; code provenance and browser QA pending"
     }
   ]
 }
