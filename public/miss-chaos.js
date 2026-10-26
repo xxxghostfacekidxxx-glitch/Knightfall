@@ -302,7 +302,7 @@
     const button = event.currentTarget, status = $("#astro-chart-status");
     button.disabled = true; status.textContent = "Calculating current planetary transits…";
     try {
-      const utc = new Date().toISOString().replace(/\\.\\d{3}Z$/, "Z");
+      const utc = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
       const body = latestNatalUtc ? {utc,natal_utc:latestNatalUtc} : {utc};
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(body)});
       const positions = chart.transit_bodies || chart.bodies || {};
