@@ -440,7 +440,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const publicInfo=!!publicMatch&&!publicChat;
  const ownerChat=!!ownerMatch&&path.endsWith("/chat");
  const ownerItem=!!ownerMatch&&!ownerChat;
- if(path!==collection&&path!=="/api/public-bots"&&!publicMatch&&!ownerMatch&&!/^\/api\/personal-bots\/[a-f0-9]{32}\/history$/.test(path))return null;
+ if(path!==collection&&path!=="/api/public-bots"&&!publicMatch&&!ownerMatch&&!/^\/api\/personal-bots\/[a-f0-9]{32}\/(?:history|memory)$/.test(path))return null;
  if(path==="/api/public-bots"&&request.method==="GET"){
   const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
   const rows=q?await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' AND (b.name LIKE ? OR b.description LIKE ?) ORDER BY b.updated_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%").all():await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' ORDER BY b.updated_at DESC LIMIT 100").all();
@@ -473,6 +473,18 @@ async function handlePersonalBotRequest(request,env,origin,url){
  }
  const user=await requireUser(request,env);
  if(!user)return json({error:"Sign in to manage your personal bots."},401,origin);
+ const memoryMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/memory$/);
+ if(memoryMatch&&(request.method==="GET"||request.method==="PUT")){
+  const botId=memoryMatch[1];
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(botId,user.id).first();
+  if(!owned)return json({error:"Bot not found."},404,origin);
+  if(request.method==="GET"){const row=await env.DB.prepare("SELECT enabled,notes FROM personal_bot_memory WHERE bot_id=? AND owner_id=?").bind(botId,user.id).first();return json({enabled:Number(row?.enabled||0)===1,notes:row?.notes||""},200,origin);}
+  let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+  if(typeof body.enabled!=="boolean"||typeof body.notes!=="string"||body.notes.length>2000)return json({error:"Provide enabled (boolean) and notes (up to 2000 characters)."},400,origin);
+  await env.DB.prepare("INSERT INTO personal_bot_memory(bot_id,owner_id,enabled,notes,updated_at) VALUES(?,?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(bot_id) DO UPDATE SET enabled=excluded.enabled,notes=excluded.notes,updated_at=CURRENT_TIMESTAMP").bind(botId,user.id,body.enabled?1:0,body.notes).run();
+  await audit(env,user,"personal_bot.memory.update","personal_bot",null,{bot_id:botId,enabled:body.enabled});
+  return json({ok:true,enabled:body.enabled,notes:body.notes},200,origin);
+ }
  const historyMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/history$/);
  if(historyMatch&&request.method==="DELETE"){
   const botId=historyMatch[1];
