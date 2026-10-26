@@ -254,6 +254,20 @@ async function handleVaultRequest(request, env, origin, url) {
     headers.set("vary", "Origin");
     return new Response(object.body, { status: ranged ? 206 : 200, headers });
   }
+  const renameMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
+  if (renameMatch && request.method === "PATCH") {
+    if (!await rateLimit(env, request, "vault-rename", 30, 60)) return json({ error: "Too many edits. Try again shortly." }, 429, origin);
+    let payload;
+    try { payload = await request.json(); } catch { return json({ error: "Invalid JSON body." }, 400, origin); }
+    if (typeof payload?.filename !== "string" || !payload.filename.trim() || payload.filename.length > 180) return json({ error: "Filename must be 1 to 180 characters." }, 400, origin);
+    const filename = vaultSafeFilename(payload.filename);
+    if (!filename || filename.length > 180) return json({ error: "Invalid filename." }, 400, origin);
+    const objectKey = "vault/" + renameMatch[1];
+    const updated = await env.DB.prepare("UPDATE vault_items SET filename=? WHERE object_key=?").bind(filename, objectKey).run();
+    if (!updated.meta?.changes) return json({ error: "Media not found." }, 404, origin);
+    await audit(env, user, "vault.rename", "vault_item", null, { key: renameMatch[1] });
+    return json({ ok: true, filename }, 200, origin);
+  }
   const itemMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
   if (itemMatch && request.method === "DELETE") {
     const objectKey = "vault/" + itemMatch[1];
