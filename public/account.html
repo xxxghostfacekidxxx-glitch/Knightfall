@@ -62,8 +62,23 @@
           ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a><a class="button secondary" href="/moderation-accounts.html">Account recovery</a>' + (user.role === "admin" ? '<a class="button primary" href="/admin.html">Administrator</a>' : "") : ""}
         </div>
         <button id="logout" class="logout" type="button">Log out</button>
+        ${["admin","god"].includes(user.role) ? "" : '<section class="account-deletion" aria-labelledby="delete-account-title"><h2 id="delete-account-title">Delete your account</h2><p>Request permanent account deletion. You must confirm with your current password. The operator must complete the request within 30 days; submitting this request does not itself erase your data.</p><form id="delete-account-form"><label for="delete-account-password">Current password</label><input id="delete-account-password" name="password" type="password" autocomplete="current-password" required maxlength="128"><label class="delete-confirm"><input id="delete-account-confirm" type="checkbox" required> I understand this requests permanent account deletion.</label><button class="logout" type="submit">Request account deletion</button></form><p><a href="/account-deletion.html">Read the deletion policy</a></p></section>'}
         <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
       document.querySelector("#logout").addEventListener("click", logout);
+      const deletionForm=document.querySelector("#delete-account-form");
+      if(deletionForm) deletionForm.addEventListener("submit", async event=>{
+        event.preventDefault();
+        if(!document.querySelector("#delete-account-confirm").checked)return;
+        const status=document.querySelector("#account-status"),submit=deletionForm.querySelector("button[type=submit]");
+        submit.disabled=true;status.textContent="Submitting deletion request…";
+        try{
+          const response=await fetch(API+"/api/account/deletion-request",{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({password:document.querySelector("#delete-account-password").value})});
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok)throw new Error(data.error||"Could not submit the deletion request.");
+          status.textContent=data.message||"Deletion request submitted. It is not yet completed.";
+          document.querySelector("#delete-account-password").value="";submit.textContent="Request recorded";
+        }catch(error){status.textContent=error.message;submit.disabled=false;}
+      });
     }
 
     async function getMe() {
