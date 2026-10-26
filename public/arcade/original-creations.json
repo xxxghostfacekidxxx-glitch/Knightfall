@@ -379,6 +379,52 @@
         }
       ],
       "status": "committed; browser QA pending"
+    },
+    {
+      "id": "void-hockey",
+      "name": "Void Hockey",
+      "genre": "Sports",
+      "sprites": [
+        "ember-paddle.svg",
+        "void-paddle.svg"
+      ],
+      "notes": "Face the Void in an original neon air-hockey duel with puck physics, touch controls and first-to-seven scoring.",
+      "engine": "/arcade/hosted/void-hockey/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-hockey",
+      "assets": [
+        {
+          "name": "ember-paddle.svg",
+          "path": "/arcade/hosted/void-hockey/sprites/ember-paddle.svg"
+        },
+        {
+          "name": "void-paddle.svg",
+          "path": "/arcade/hosted/void-hockey/sprites/void-paddle.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
+    },
+    {
+      "id": "crypt-breaker",
+      "name": "Crypt Breaker",
+      "genre": "Arcade",
+      "sprites": [
+        "ember-orb.svg",
+        "crypt-brick.svg"
+      ],
+      "notes": "Smash through the crypt walls in an original paddle-and-orb game with progressive waves and score tracking.",
+      "engine": "/arcade/hosted/crypt-breaker/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-breaker",
+      "assets": [
+        {
+          "name": "ember-orb.svg",
+          "path": "/arcade/hosted/crypt-breaker/sprites/ember-orb.svg"
+        },
+        {
+          "name": "crypt-brick.svg",
+          "path": "/arcade/hosted/crypt-breaker/sprites/crypt-brick.svg"
+        }
+      ],
+      "status": "committed; browser QA pending"
     }
   ]
 }
