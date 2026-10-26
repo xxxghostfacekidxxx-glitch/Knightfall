@@ -55,6 +55,18 @@
           "type": "image/svg+xml"
         }
       ]
+    },
+    {
+      "name": "Miss Chaos",
+      "short_name": "Miss Chaos",
+      "url": "/miss-chaos.html?source=app-shortcut",
+      "icons": [
+        {
+          "src": "/icons/chaos-cartridge-maskable.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ],
   "icons": [
