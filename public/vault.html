@@ -7,9 +7,9 @@
   <meta name="description" content="Private administrator media vault for Ash-Fall. Check access and storage limits before uploading sensitive material.">
   <title>Private Vault | Ash-Fall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/vault.css?v=20261026-vault-bulk">
+  <link rel="stylesheet" href="/vault.css?v=20261026-vault-folders">
   <script src="/nav.js" defer></script>
-  <script src="/vault.js?v=20261026-vault-bulk" defer></script>
+  <script src="/vault.js?v=20261026-vault-folders" defer></script>
 </head>
 <body class="vault-page">
   <header class="kf-header"></header>
@@ -45,6 +45,7 @@
     <section class="vault-library" aria-labelledby="library-title">
       <div class="section-heading library-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h2 id="library-title">The archive<span class="title-dot">.</span></h2></div><button id="refresh-vault" class="quiet-button" type="button">↻ Refresh</button></div>
       <div class="library-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-vault" type="search" placeholder="Find a file…" autocomplete="off"></label><label class="vault-sort-label" for="sort-vault">Sort <select id="sort-vault"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="name">Name A–Z</option><option value="size">Largest first</option></select></label><div class="filter-tabs" role="group" aria-label="Filter media"><button class="filter active" type="button" data-filter="all">Everything</button><button class="filter" type="button" data-filter="image">Photos</button><button class="filter" type="button" data-filter="video">Video</button><button class="filter" type="button" data-filter="audio">Audio</button></div></div>
+      <div class="vault-folder-tools" aria-label="Private folders"><label for="vault-folder-filter">Folder</label><select id="vault-folder-filter"><option value="all">All files</option><option value="unfiled">Unfiled</option></select><button id="vault-create-folder" type="button" class="quiet-button">New folder</button><button id="vault-rename-folder" type="button" class="quiet-button" disabled>Rename folder</button><button id="vault-delete-folder" type="button" class="quiet-button" disabled>Delete folder</button><button id="vault-move-selected" type="button" class="quiet-button" disabled>Move selected</button></div>
       <div class="vault-bulk-tools" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0"><button id="vault-select-visible" type="button" class="quiet-button">Select visible</button><button id="vault-clear-selection" type="button" class="quiet-button">Clear selection</button><span id="vault-selection-count" aria-live="polite">0 selected</span><button id="vault-delete-selected" type="button" class="quiet-button" disabled>Delete selected</button></div>
       <div id="vault-error" class="vault-error" hidden></div>
       <div id="media-grid" class="media-grid"><div class="loading-card"><span class="loading-orb"></span><p>Opening the vault…</p></div></div>
