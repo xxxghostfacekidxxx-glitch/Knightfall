@@ -158,6 +158,8 @@
         @media(min-width:701px) { .tetris-touch-controls { max-width:300px; } }
         @media(max-width:700px) { .tetris-touch-controls button { min-height:50px; font-size:13px; } }
         @media(max-width:700px) { body{padding:8px}.game-container{gap:8px;transform-origin:top center;transform:scale(.92);margin-bottom:-40px}.knightfall-bar{padding:11px}.knightfall-actions button{flex:1 1 auto} }
+        /* Mobile layout: stack the side panel instead of scaling overlapping controls. */
+        @media(max-width:700px) { .game-container{flex-direction:column;align-items:center;transform:none;margin-bottom:0;width:100%}.canvas-wrapper{width:min(100%,306px)}#gameCanvas{width:100%;height:auto;aspect-ratio:1/2}.side-panel{width:min(100%,306px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.panel-box{min-width:0;margin-bottom:0}.controls{overflow-wrap:anywhere}.tetris-touch-controls{width:100%;max-width:none}.tetris-touch-controls button{min-width:0} }
 
     </style>
 </head>

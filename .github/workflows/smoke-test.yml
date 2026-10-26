@@ -12,6 +12,8 @@ on:
       - 'wrangler.jsonc'
       - 'scripts/static-audit.mjs'
       - 'scripts/push-notifications-audit.mjs'
+      - 'scripts/account-deletion-audit.mjs'
+      - 'scripts/pwa-browser-smoke.mjs'
       - 'scripts/arcade-browser-smoke.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
@@ -39,7 +41,7 @@ jobs:
         with:
           node-version: '22'
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs
+        run: node scripts/static-audit.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
@@ -65,6 +67,9 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      # Run this on every pull request so mobile overflow regressions block the Android-readiness PR.
+      - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
+        run: node scripts/pwa-browser-smoke.mjs
       - name: Exercise hosted arcade cabinets in mobile Chromium
         run: node scripts/arcade-browser-smoke.mjs
       - name: Verify deployed arcade in mobile Chromium
@@ -120,7 +125,7 @@ jobs:
           test "$adult_status_code" = 200
           grep -q '"confirmed":false' "$body"
           # Read-only authorization checks: these must never create production records.
-          for spec in 'GET /api/admin/overview 403' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'POST /api/admin/chaos-lab/apply-proposal 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/messages/conversations/1/typing 401' 'GET /api/messages/conversations/1/reactions 401' 'POST /api/messages/1/reactions 401' 'POST /api/messages/groups 401' 'GET /api/messages/conversations/1/members 401' 'POST /api/messages/conversations/1/members 401' 'GET /api/messages/conversations/1/attachments 401' 'POST /api/messages/conversations/1/attachments 401' 'GET /api/messages/attachments/1 401' 'DELETE /api/messages/attachments/1 401' 'GET /api/friends 401' 'POST /api/profile/photos 401' 'DELETE /api/profile/photos/1 401' 'GET /api/chaos/memories 401' 'GET /api/die-ary/entries 401'; do
+          for spec in 'GET /api/admin/overview 403' 'GET /api/admin/account-deletion-requests 403' 'POST /api/account/deletion-request 401' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'POST /api/admin/chaos-lab/apply-proposal 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/messages/conversations 401' 'GET /api/messages/conversations/1/typing 401' 'GET /api/messages/conversations/1/reactions 401' 'POST /api/messages/1/reactions 401' 'POST /api/messages/groups 401' 'GET /api/messages/conversations/1/members 401' 'POST /api/messages/conversations/1/members 401' 'GET /api/messages/conversations/1/attachments 401' 'POST /api/messages/conversations/1/attachments 401' 'GET /api/messages/attachments/1 401' 'DELETE /api/messages/attachments/1 401' 'GET /api/friends 401' 'POST /api/profile/photos 401' 'DELETE /api/profile/photos/1 401' 'GET /api/chaos/memories 401' 'GET /api/die-ary/entries 401'; do
             read -r method endpoint expected <<< "$spec"
             if [ "$maintenance" = true ] && [[ "$endpoint" != /api/admin/* && "$endpoint" != /api/vault/* ]]; then expected=503; fi
             if [ "$endpoint" = /api/chaos/memories ] && [ "$chaos_enabled" = false ]; then expected=503; fi

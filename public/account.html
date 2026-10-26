@@ -7,6 +7,17 @@
   <title>Ash-Fall | Account</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/account.css?v=20261022-account-polish">
+  <style>
+    .account-deletion{margin-top:2rem;padding:1.1rem;border:1px solid #5b3028;border-radius:12px;background:#15100f}
+    .account-deletion h2{margin:.2rem 0 .7rem;color:#ff9b81;font-size:1.25rem}
+    .account-deletion p{color:#bbb;line-height:1.65}
+    .account-deletion form{display:grid;gap:.7rem;margin:1rem 0}
+    .account-deletion label{font-size:.9rem;color:#ddd}
+    .account-deletion input[type=password]{width:100%;box-sizing:border-box;padding:.8rem;border-radius:8px;border:1px solid #49413d;background:#080808;color:#fff;font:inherit}
+    .account-deletion .delete-confirm{display:flex;gap:.6rem;align-items:flex-start}
+    .account-deletion .delete-confirm input{margin-top:.35rem}
+    .account-deletion button:disabled{opacity:.55;cursor:wait}
+  </style>
 </head>
 <body>
   <header class="kf-header"></header>
@@ -62,8 +73,41 @@
           ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a><a class="button secondary" href="/moderation-accounts.html">Account recovery</a>' + (user.role === "admin" ? '<a class="button primary" href="/admin.html">Administrator</a>' : "") : ""}
         </div>
         <button id="logout" class="logout" type="button">Log out</button>
+        ${["admin","god"].includes(user.role) ? "" : '<section class="account-deletion" aria-labelledby="delete-account-title"><h2 id="delete-account-title">Delete your account</h2><p>Submit a permanent deletion request. If your account uses a password, you can confirm with it. If you sign in with Google or Facebook, type your exact username while signed in. The operator must complete a valid request within 30 days; submitting it does not itself erase your data.</p><form id="delete-account-form"><label for="delete-account-password">Current password (optional for social sign-in)</label><input id="delete-account-password" name="password" type="password" autocomplete="current-password" maxlength="128"><label for="delete-account-username">Type your username to confirm</label><input id="delete-account-username" name="confirmation_username" autocomplete="username" required maxlength="24" placeholder="Your exact username"><label class="delete-confirm"><input id="delete-account-confirm" type="checkbox" required> I understand this requests permanent account deletion.</label><button class="logout" type="submit">Request account deletion</button></form><div id="deletion-request-status" role="status" aria-live="polite"></div><button id="cancel-deletion-request" class="logout" type="button" hidden>Cancel pending request</button><p><a href="/account-deletion.html">Read the deletion policy</a></p></section>'}
         <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
       document.querySelector("#logout").addEventListener("click", logout);
+      const deletionForm=document.querySelector("#delete-account-form");
+      if(deletionForm) deletionForm.addEventListener("submit", async event=>{
+        event.preventDefault();
+        if(!document.querySelector("#delete-account-confirm").checked)return;
+        const status=document.querySelector("#account-status"),submit=deletionForm.querySelector("button[type=submit]");
+        submit.disabled=true;status.textContent="Submitting deletion request…";
+        try{
+          const response=await fetch(API+"/api/account/deletion-request",{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({password:document.querySelector("#delete-account-password").value,confirmation_username:document.querySelector("#delete-account-username").value})});
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok)throw new Error(data.error||"Could not submit the deletion request.");
+          status.textContent=data.message||"Deletion request submitted. It is not yet completed.";
+          document.querySelector("#delete-account-password").value="";document.querySelector("#delete-account-username").value="";submit.textContent="Request recorded";await loadDeletionStatus();
+        }catch(error){status.textContent=error.message;submit.disabled=false;}
+      });
+      async function loadDeletionStatus(){
+        const panel=document.querySelector("#deletion-request-status"),cancel=document.querySelector("#cancel-deletion-request");
+        if(!panel||!cancel)return;
+        try{
+          const response=await fetch(API+"/api/account/deletion-request",{credentials:"include",cache:"no-store"});
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok)throw new Error(data.error||"Unable to load deletion request status.");
+          const request=data.request;
+          panel.textContent=request?"Request #"+request.id+" is "+request.status+". Requested "+memberDate(request.requested_at)+", due by "+memberDate(request.scheduled_for)+".":"No pending deletion request.";
+          cancel.hidden=!request||request.status!=="pending";
+        }catch(error){panel.textContent=error.message;}
+      }
+      const cancelDeletion=document.querySelector("#cancel-deletion-request");
+      if(cancelDeletion)cancelDeletion.addEventListener("click",async()=>{
+        const status=document.querySelector("#account-status");cancelDeletion.disabled=true;status.textContent="Cancelling pending request…";
+        try{const response=await fetch(API+"/api/account/deletion-request",{method:"DELETE",credentials:"include",headers:{"content-type":"application/json"}});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||"Could not cancel request.");status.textContent=data.message||"Request cancelled.";await loadDeletionStatus();const submit=document.querySelector("#delete-account-form button[type=submit]");if(submit){submit.disabled=false;submit.textContent="Request account deletion";}}catch(error){status.textContent=error.message;}finally{cancelDeletion.disabled=false;}
+      });
+      loadDeletionStatus();
     }
 
     async function getMe() {

@@ -1,9 +1,11 @@
-const CACHE_NAME = "knightfall-shell-v5";
+const CACHE_NAME = "knightfall-shell-v6";
 const APP_SHELL = [
   "/index.html",
+  "/offline.html",
   "/theme.css",
   "/nav.js",
-  "/icons/knightfall.svg"
+  "/icons/knightfall.svg",
+  "/icons/knightfall-maskable.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -47,8 +49,8 @@ self.addEventListener("fetch", event => {
   if (url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
-      const cached = await caches.match("/index.html");
-      return cached || new Response("You are offline. Reconnect to load Knightfall.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      const cached = await caches.match("/offline.html");
+      return cached || new Response("You are offline. Reconnect to load Ash-Fall.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }));
     return;
   }

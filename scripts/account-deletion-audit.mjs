@@ -1,0 +1,45 @@
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+
+const read = path => readFileSync(new URL(path, import.meta.url), "utf8");
+const backend = read("../backend/src/index.js");
+const migration = read("../backend/migrations/0033_account_deletion_requests.sql");
+const account = read("../public/account.html");
+const homepage = read("../public/homepage.html");
+const publicPage = read("../public/account-deletion.html");
+const adminPage = read("../public/admin-deletion-requests.html");
+const privacy = read("../public/privacy.html");
+const manifest = JSON.parse(read("../public/manifest.webmanifest"));
+
+assert.match(migration, /CREATE TABLE IF NOT EXISTS account_deletion_requests/);
+assert.match(migration, /user_id INTEGER REFERENCES users\(id\) ON DELETE SET NULL/);
+assert.match(migration, /scheduled_for TEXT NOT NULL/);
+assert.match(backend, /if\(url\.pathname==="\/api\/account\/deletion-request"&&request\.method==="POST"\)/);
+assert.match(backend, /requireUser\(request,env\)/);
+assert.match(backend, /verifyPassword\(password,credential\.password_hash\)/);
+assert.match(backend, /confirmation!==String\(user\.username\)\.toLowerCase\(\)/);
+assert.match(backend, /status IN \(\x27pending\x27,\x27in_progress\x27\)/, "duplicate active requests must be prevented");
+assert.match(backend, /request\.method==="DELETE"/);
+assert.match(backend, /rateLimit\(env,request,"account-deletion-request"/);
+assert.match(backend, /account\.deletion\.request/);
+assert.match(backend, /kind:"account_deletion_request"/);
+assert.match(backend, /url:"\/admin-deletion-requests\.html"/);
+assert.match(backend, /if\(url\.pathname==="\/api\/admin\/account-deletion-requests"&&request\.method==="GET"\)/);
+assert.match(backend, /if\(deletionRequestMatch&&request\.method==="PATCH"\)/);
+assert.match(backend, /\["in_progress","rejected"\]\.includes\(status\)/);
+assert.match(homepage, /rel="manifest" href="\/manifest\.webmanifest"/);
+assert.match(account, /id="delete-account-form"/);
+assert.match(account, /id="delete-account-confirm"/);
+assert.match(account, /autocomplete="current-password"/);
+assert.match(account, /id="delete-account-username"/);
+assert.match(account, /cancel-deletion-request/);
+assert.match(publicPage, /account-deletion\.html|Account deletion/i);
+assert.match(publicPage, /does not immediately erase/i);
+assert.match(adminPage, /does not erase account data/i);
+assert.doesNotMatch(adminPage, /data-action="completed"/);
+assert.match(privacy, /does not itself erase the account/i);
+assert.equal(manifest.shortcuts.length, 3);
+assert.ok(manifest.icons.some(icon => icon.src === "/icons/knightfall-maskable.svg"));
+assert.ok(existsSync(new URL("../public/icons/knightfall-maskable.svg", import.meta.url)));
+
+console.log("Account deletion request static audit passed. Full data deletion remains an explicit release blocker.");
