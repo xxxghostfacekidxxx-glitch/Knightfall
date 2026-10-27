@@ -12,7 +12,7 @@ for(const id of ["rooftop-riot","colossus-clash"]){
   const ctx={clearRect(){},fillRect(){},strokeRect(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},rotate(){},ellipse(){},roundRect(){},createLinearGradient(){return{addColorStop(){}}}};
   node("game").getContext=()=>ctx;
   const document={getElementById:node,querySelector:()=>null,addEventListener:(name,fn)=>listeners.set("document:"+name,fn),dispatchEvent:e=>events.push(e)};
-  const sandbox={document,window:{},localStorage:{getItem:()=>null,setItem(){}},location:{href:"https://ash-fall.com",pathname:"/arcade"},performance:{now:()=>0},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
+  const sandbox={document,window:{},Image:class{constructor(){this.complete=false;this.naturalWidth=0}set src(v){this._src=v}},localStorage:{getItem:()=>null,setItem(){}},location:{href:"https://ash-fall.com",pathname:"/arcade"},performance:{now:()=>0},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
   runInNewContext(source,sandbox,{timeout:1000});
   node("start").onclick();
   const old=frames.shift();
