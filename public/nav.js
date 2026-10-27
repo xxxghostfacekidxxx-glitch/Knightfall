@@ -1,4 +1,11 @@
 (() => {
+  // Shared Gravewave theme and original artwork, loaded once on all nav-enabled pages.
+  if (!document.querySelector('link[data-gravewave-theme]')) {
+    const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-gravewave1';theme.dataset.gravewaveTheme='true';document.head.append(theme);
+  }
+  if (!document.querySelector('script[data-gravewave-decor]')) {
+    const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-gravewave1';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
+  }
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
   if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
     document.body.classList.add("chaos-glitch-arcade");
