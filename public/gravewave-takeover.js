@@ -7,7 +7,7 @@ const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','grav
 const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg';
 const excluded=/\/(?:checkout|payment|vault|settings)/i.test(location.pathname);
 const privateForm=/\/(?:messages|account|login|register|reset-password|auth)/i.test(location.pathname);
-function mascot(i,cls){const el=document.createElement('img');el.src=src(i);el.alt='';el.setAttribute('aria-hidden','true');el.className=cls;el.loading='lazy';el.decoding='async';return el}
+function mascot(i,cls){const el=document.createElement('img');el.src=src(i);el.alt='';el.setAttribute('aria-hidden','true');el.className=cls;el.loading=cls==='gw-crew-art'?'eager':'lazy';el.decoding='async';el.addEventListener('error',()=>el.remove(),{once:true});return el}
 function mount(){
  // Visible, non-interactive character crew on every public site page.
  if(!excluded&&!document.querySelector('.gw-character-crew')){
@@ -31,7 +31,7 @@ function mount(){
    for(const panel of panels){
     if(count>=36)break;
     if(panel.closest('dialog,[contenteditable],.game-panel,.play-area,.screen,.chat-messages,.message-list,.messages-thread,.conversation,.composer'))continue;
-    if(panel.querySelector('.gw-panel-mascot'))continue;
+    if(panel.querySelector('.gw-panel-mascot,.kf-gravewave-corner'))continue;
     if(getComputedStyle(panel).position==='static')panel.style.position='relative';
     panel.append(mascot(count+2,'gw-panel-mascot'));count++;
    }
