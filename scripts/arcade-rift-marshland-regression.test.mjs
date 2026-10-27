@@ -1,0 +1,32 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {Script,runInNewContext} from "node:vm";
+const getSource=id=>{const html=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");return [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("function start()"))};
+test("Rift Wardens invalidates old frames after save restoration",()=>{
+ const source=getSource("rift-wardens");assert.doesNotThrow(()=>new Script(source));
+ const nodes=new Map(),frames=[],events=[];
+ const el=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",onclick:null});return nodes.get(k)};
+ const ctx={clearRect(){},fillRect(){},strokeRect(){},setLineDash(){},beginPath(){},moveTo(){},lineTo(){},stroke(){},arc(){},fill(){}};
+ el("game").getContext=()=>ctx;el("game").addEventListener=()=>{};el("game").width=960;el("game").height=560;
+ const win={},doc={getElementById:el,querySelectorAll:()=>[],dispatchEvent:e=>events.push(e)};
+ const sandbox={document:doc,window:win,localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
+ runInNewContext(source,sandbox,{timeout:1000});
+ el("start").onclick();
+ const old=frames.shift(),snapshot=win.exportSaveState();
+ assert.equal(win.importSaveState(snapshot),true);
+ const count=frames.length;old(100);
+ assert.equal(frames.length,count,"old game loop must not reschedule after restore");
+ assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
+ assert.equal(win.importSaveState({...snapshot,spawned:99999}),false);
+ assert.equal(win.importSaveState({...snapshot,lives:0}),false);
+});
+test("Marshland Marksman uses generation-bound frames and idempotent finish",()=>{
+ const source=getSource("marshland-marksman");
+ assert.ok(source);assert.doesNotThrow(()=>new Script(source));
+ assert.match(source,/function tick\(now,token\)\{if\(token!==epoch\|\|!active\)return/);
+ assert.match(source,/function start\(\)\{epoch\+\+;const token=epoch/);
+ assert.match(source,/function end\(\)\{if\(!active\)return/);
+ assert.ok(source.includes("ashfall:arcade-started"));
+ assert.ok(source.includes("ashfall:arcade-finished"));
+});
