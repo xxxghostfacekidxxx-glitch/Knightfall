@@ -1771,6 +1771,240 @@
         }
       ],
       "status": "original emblem integrated; code provenance and browser QA pending"
+    },
+    {
+      "id": "bubble-barrage",
+      "name": "Bubble Barrage",
+      "genre": "Puzzle",
+      "sprites": [
+        "bubble-barrage-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/bubble-barrage/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bubble-barrage",
+      "assets": [
+        {
+          "name": "bubble-barrage-mark.svg",
+          "path": "/arcade/hosted/bubble-barrage/sprites/bubble-barrage-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "cinder-chess",
+      "name": "Cinder Chess",
+      "genre": "Strategy",
+      "sprites": [
+        "chess-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/cinder-chess/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-chess",
+      "assets": [
+        {
+          "name": "chess-mark.svg",
+          "path": "/arcade/hosted/cinder-chess/sprites/chess-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "tether-tangle",
+      "name": "Tether Tangle",
+      "genre": "Puzzle",
+      "sprites": [
+        "tether-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/tether-tangle/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/tether-tangle",
+      "assets": [
+        {
+          "name": "tether-mark.svg",
+          "path": "/arcade/hosted/tether-tangle/sprites/tether-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "space-fighter",
+      "name": "Cinder Squadron",
+      "genre": "Shooter",
+      "sprites": [
+        "squadron-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/space-fighter/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/space-fighter",
+      "assets": [
+        {
+          "name": "squadron-mark.svg",
+          "path": "/arcade/hosted/space-fighter/sprites/squadron-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "glitch-munch",
+      "name": "Glitch Munch",
+      "genre": "Arcade",
+      "sprites": [
+        "munch-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/glitch-munch/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/glitch-munch",
+      "assets": [
+        {
+          "name": "munch-mark.svg",
+          "path": "/arcade/hosted/glitch-munch/sprites/munch-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "rift-wardens",
+      "name": "Rift Wardens",
+      "genre": "Strategy",
+      "sprites": [
+        "wardens-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/rift-wardens/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rift-wardens",
+      "assets": [
+        {
+          "name": "wardens-mark.svg",
+          "path": "/arcade/hosted/rift-wardens/sprites/wardens-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "colossus-clash",
+      "name": "Colossus Clash",
+      "genre": "Action",
+      "sprites": [
+        "colossus-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/colossus-clash/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/colossus-clash",
+      "assets": [
+        {
+          "name": "colossus-mark.svg",
+          "path": "/arcade/hosted/colossus-clash/sprites/colossus-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "rooftop-riot",
+      "name": "Rooftop Riot",
+      "genre": "Platformer",
+      "sprites": [
+        "rooftop-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/rooftop-riot/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rooftop-riot",
+      "assets": [
+        {
+          "name": "rooftop-mark.svg",
+          "path": "/arcade/hosted/rooftop-riot/sprites/rooftop-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "marshland-marksman",
+      "name": "Marshland Marksman",
+      "genre": "Shooter",
+      "sprites": [
+        "marshland-mark.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/marshland-marksman/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/marshland-marksman",
+      "assets": [
+        {
+          "name": "marshland-mark.svg",
+          "path": "/arcade/hosted/marshland-marksman/sprites/marshland-mark.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "particle-clicker",
+      "name": "Cinder Collider",
+      "genre": "Idle",
+      "sprites": [
+        "reactor.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/particle-clicker/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/particle-clicker",
+      "assets": [
+        {
+          "name": "reactor.svg",
+          "path": "/arcade/hosted/particle-clicker/sprites/reactor.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "cube-composer",
+      "name": "Crypt Conduits",
+      "genre": "Puzzle",
+      "sprites": [
+        "conduits.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/cube-composer/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cube-composer",
+      "assets": [
+        {
+          "name": "conduits.svg",
+          "path": "/arcade/hosted/cube-composer/sprites/conduits.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "skifree",
+      "name": "Ash Slope",
+      "genre": "Arcade",
+      "sprites": [
+        "slope.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/skifree/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/skifree",
+      "assets": [
+        {
+          "name": "slope.svg",
+          "path": "/arcade/hosted/skifree/sprites/slope.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "ball-and-wall",
+      "name": "Ember Rebound",
+      "genre": "Arcade",
+      "sprites": [
+        "rebound.svg"
+      ],
+      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "engine": "/arcade/hosted/ball-and-wall/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ball-and-wall",
+      "assets": [
+        {
+          "name": "rebound.svg",
+          "path": "/arcade/hosted/ball-and-wall/sprites/rebound.svg"
+        }
+      ],
+      "status": "cataloged; code provenance and browser QA pending"
     }
   ]
 }
