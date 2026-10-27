@@ -93,6 +93,7 @@ jobs:
         run: node scripts/arcade-browser-smoke.mjs
 
   live-smoke:
+    needs: static-audit
     if: github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 10
