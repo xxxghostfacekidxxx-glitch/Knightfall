@@ -184,7 +184,7 @@
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a class="kf-nav-primary" href="/homepage.html">Explore</a>
-      <a class="kf-nav-primary" href="/community.html">The Madhouse</a>
+      <a class="kf-nav-primary" href="/community.html">Forums</a>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
       <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
       <details class="kf-nav-group">
