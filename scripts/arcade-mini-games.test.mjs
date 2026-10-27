@@ -55,3 +55,15 @@ test("Ash Slope retains fractional distance between frames",()=>{
 test("Ember Rebound requires multiple hits on reinforced bricks",()=>{
  assert.match(shared,/if\(b\.hp&&state\.x>b\.x[\s\S]*?\{b\.hp--;state\.vy\*=-1;setScore\(score\+10\);break\}/);
 });
+
+test("Ash Slope pickups are collected only once and old objects are bounded",()=>{
+ assert.match(shared,/!t\.collected&&Math\.abs\(t\.x-state\.x\)<25/);
+ assert.match(shared,/t\.collected=true;setScore\(score\+10\)/);
+ assert.match(shared,/state\.tokens=state\.tokens\.filter\(t=>!t\.collected/);
+ assert.match(shared,/state\.obstacles=state\.obstacles\.filter\(o=>!o\.hit/);
+});
+test("Cinder Collider keyboard upgrades use the same logic as touch buttons",()=>{
+ assert.match(shared,/if\(e\.key==="1"\)clickerAction\("generate"\)/);
+ assert.match(shared,/if\(e\.key==="2"\)clickerAction\("boost"\)/);
+ assert.match(shared,/if\(e\.key==="3"\)clickerAction\("scientist"\)/);
+});
