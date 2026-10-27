@@ -1,4 +1,6 @@
 @import url("/design-system.css?v=20261026-foundation1");
+/* Shared neon styling also applies on pages that omit nav.js. */
+@import url("/neon-global.css?v=20261026-neonfix2");
 :root{color-scheme:dark}
 ::selection{background:rgba(255,85,216,.45);color:#fff}
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
