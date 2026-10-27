@@ -17,7 +17,8 @@ for(const id of ["glitch-munch","rift-wardens"]){
   const ctx={fillRect(){},strokeRect(){},clearRect(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},closePath(){},setLineDash(){}};
   el("game").getContext=()=>ctx;el("game").width=960;el("game").height=560;
   const document={getElementById:el,querySelectorAll:()=>[],addEventListener:(type,fn)=>handlers.set("document:"+type,fn),dispatchEvent:e=>events.push(e)};
-  const sandbox={document,window:{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
+  const seededMath=Object.create(Math);seededMath.random=()=>0.5;
+  const sandbox={document,window:{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},Math:seededMath,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
   const instrumented=id==="glitch-munch"?source.replace("})();","globalThis.__arcadeProbe={getLives:()=>lives,setEnemies:v=>{enemies=v},setPlayer:v=>{player=v},hit:stepEnemies};})();"):source;
   runInNewContext(instrumented,sandbox,{timeout:1000});
   el("start").onclick();
