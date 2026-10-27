@@ -13,7 +13,7 @@ test("chat export is user-owned and loads through authenticated conversation end
 });
 test("message copy is rendered with textContent and accessible labeling",()=>{
  assert.match(js,/copy\.setAttribute\("aria-label"/);
- assert.match(js,/navigator\.clipboard\.writeText\(content\)/);
+ assert.match(js,/navigator\.clipboard\.writeText\(text\.textContent\)/);
  assert.match(js,/text\.textContent = content/);
 });
 test("inference response budget supports long-form readings",()=>{
