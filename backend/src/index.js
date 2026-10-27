@@ -1,4 +1,4 @@
-import { shouldRetryPushDelivery } from "./push-retry-policy.js";
+import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
@@ -82,17 +82,17 @@ async function encryptWebPush(payload,subscription) {
   return pushJoin(salt,recordHeader,asPublic,cipher);
 }
 async function deliverPushToUser(env,userId,notification) {
-  const delivery={attempted:0,accepted:0,expired:0,failed:0};
+  const delivery={attempted:0,accepted:0,expired:0,failed:0,transient:0};
   try {
     if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) return delivery;
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
     const kind=String(notification.kind||"");
     const category=kind==="message"?"messages":(["reply","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
-    if(pref && Number(pref["push_"+category])===0) return;
+    if(pref && Number(pref["push_"+category])===0) return delivery;
     if(pref?.quiet_start&&pref?.quiet_end){
       const now=new Date(),clock=now.toISOString().slice(11,16),start=pref.quiet_start,end=pref.quiet_end;
       const quiet=start<=end?(clock>=start&&clock<end):(clock>=start||clock<end);
-      if(quiet)return;
+      if(quiet)return delivery;
     }
     const {results}=await env.DB.prepare("SELECT id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id=?").bind(userId).all();
     const title=String(notification.title||"Ash-Fall alert").slice(0,100);
@@ -105,9 +105,9 @@ async function deliverPushToUser(env,userId,notification) {
         const encrypted=await encryptWebPush(payload,sub),token=await pushVapidToken(sub.endpoint,env);
         const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted});
         if(response.status===404||response.status===410){delivery.expired++;await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();}
-        else if(!response.ok){delivery.failed++;console.warn("web_push_delivery_failed",response.status);}
+        else if(!response.ok){delivery.failed++;if(isTransientPushStatus(response.status))delivery.transient++;console.warn("web_push_delivery_failed",response.status);}
         else delivery.accepted++;
-      }catch(error){delivery.failed++;console.warn("web_push_subscription_failed",sub.id,String(error));}
+      }catch(error){delivery.failed++;delivery.transient++;console.warn("web_push_subscription_failed",sub.id,String(error));}
     }
   } catch(error) { console.warn("web_push_skipped",String(error)); }
   return delivery;
