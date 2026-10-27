@@ -17,7 +17,7 @@ export async function checkTurnstile(env, request, token) {
         /^(staging\.ash-fall\.com|staging-[a-z0-9-]+\.pages\.dev)$/.test(env.TURNSTILE_STAGING_HOSTNAME)) {
       approved.push(env.TURNSTILE_STAGING_HOSTNAME);
     }
-    return result.success === true && approved.includes(result.hostname);
+    return result.success === true && result.action === "register" && approved.includes(result.hostname);
   } catch {
     return false;
   }
