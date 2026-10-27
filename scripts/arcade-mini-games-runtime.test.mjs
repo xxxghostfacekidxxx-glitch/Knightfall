@@ -17,7 +17,8 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   const store=new Map(),localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
   const location={pathname:"/arcade/hosted/"+id+"/index.html",search:"",href:"https://ash-fall.com/arcade/hosted/"+id+"/index.html"};
   const window={addEventListener(){}};
-  const sandbox={document:doc,window,location,URLSearchParams,localStorage,performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn),Math,Number,Promise,Set,console};\n  runInNewContext(source.replace("})();","globalThis.__miniTest={getState:()=>state};})();"),sandbox,{timeout:1500});
+  const sandbox={document:doc,window,location,URLSearchParams,localStorage,performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn),Math,Number,Promise,Set,console};
+  runInNewContext(source.replace("})();","globalThis.__miniTest={getState:()=>state};})();"),sandbox,{timeout:1500});
   assert.equal(typeof listeners.get("start:click"),"function");
   listeners.get("start:click")();
   assert.ok(frames.length>0);
@@ -27,6 +28,11 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   const queued=frames.length;
   stale(999);
   assert.equal(frames.length,queued,"stale animation frame must not reschedule after restart");
-  assert.equal(elements.get("score").textContent,"0");\n  if(id==="cube-composer"){\n   sandbox.__miniTest.getState().level=9;\n   listeners.get("start:click")();\n   assert.equal(sandbox.__miniTest.getState().level,1,"new puzzle run must reset level");\n  }
+  assert.equal(elements.get("score").textContent,"0");
+  if(id==="cube-composer"){
+   sandbox.__miniTest.getState().level=9;
+   listeners.get("start:click")();
+   assert.equal(sandbox.__miniTest.getState().level,1,"new puzzle run must reset level");
+  }
  });
 }
