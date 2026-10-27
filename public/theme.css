@@ -1,15 +1,5 @@
-:root{
-  --kf-bg:#070707;
-  --kf-panel:#101010;
-  --kf-panel-2:#151515;
-  --kf-line:#292929;
-  --kf-muted:#8c8c8c;
-  --kf-text:#eee;
-  --kf-accent:#e66a2c;
-  --kf-accent-bright:#a8ff3e;
-  --kf-accent-soft:rgba(230,106,44,.14);
-  color-scheme:dark;
-}
+@import url("/design-system.css?v=20261026-foundation1");
+:root{color-scheme:dark}
 ::selection{background:rgba(230,106,44,.45);color:#fff}
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
 ::-webkit-scrollbar{width:10px}
@@ -97,7 +87,7 @@
 
 
 /* Ash-Fall core palette: ember is the site default; character-specific pink stays scoped. */
-:root{--kf-accent:#e66a2c;--kf-accent-bright:#ffad78;--kf-accent-soft:rgba(230,106,44,.14)}
+/* Ember palette is now defined once in design-system.css. */
 ::selection{background:rgba(230,106,44,.45);color:#fff}
 .kf-brand{ text-shadow:0 0 24px rgba(230,106,44,.18) }
 .kf-nav a:hover,.kf-nav a:focus-visible{box-shadow:0 0 18px rgba(230,106,44,.07)}
