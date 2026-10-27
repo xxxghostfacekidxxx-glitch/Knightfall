@@ -802,7 +802,22 @@ async function handleMediaAlbums(request,env,origin,url){
  return json({error:"Media library route not found."},404,origin);
 }
 
-export default { async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
+export default { async queue(batch, env) {
+  for (const message of batch.messages) {
+    try {
+      const job = message.body;
+      if (job?.type !== "push-notification" || !Number.isSafeInteger(Number(job.userId)) || !job.notification) {
+        message.ack();
+        continue;
+      }
+      await deliverPushToUser(env, Number(job.userId), job.notification);
+      message.ack();
+    } catch (error) {
+      console.error("queue_delivery_failed",String(error));
+      message.retry();
+    }
+  }
+}, async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
