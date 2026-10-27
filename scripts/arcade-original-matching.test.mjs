@@ -19,3 +19,10 @@ test("matching engine has group flood fill and adjacent-only swaps",()=>{
  assert.ok(js.includes("collapse(matches)"));
  assert.ok(js.includes("Math.abs(a.x-cx)+Math.abs(a.y-cy)!==1"));
 });
+test("matching engine guards against deadlocked boards and resets round sync",()=>{
+ assert.ok(js.includes("function hasMove()"));
+ assert.ok(js.includes("function ensureMove()"));
+ assert.ok(js.includes("if(ensureMove())"));
+ assert.ok(js.includes("ashfall:arcade-started"));
+ assert.ok(js.includes("ashfall:arcade-finished"));
+});
