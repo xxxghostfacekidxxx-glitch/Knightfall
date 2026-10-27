@@ -472,3 +472,24 @@
 .group-chip{background:rgba(230,106,44,.12)}
 .group-chip span,#attach-file,.pending-attachment button,.message-attachment .attachment-icon{color:var(--kf-accent)}
 .message-attachment:hover{border-color:var(--kf-accent)}
+
+/* Inbox layout: avoid grid overflow and preserve touch-friendly controls. */
+.messages-shell,.message-layout,.conversation-panel,.chat-panel,.chat-head,.chat-tools{min-width:0}
+.message-layout{grid-template-columns:minmax(260px,320px) minmax(0,1fr)}
+.chat-head,.messages-hero{flex-wrap:wrap}
+.message,.message p,.message-attachment{overflow-wrap:anywhere}
+.chat-tools button,.inbox-filter,.chat-head button{min-height:40px}
+@media(max-width:850px){
+ .messages-shell{width:calc(100% - 1.25rem);padding:1.25rem 0 4rem}
+ .messages-hero{gap:1rem;padding:1rem 0 1.4rem}
+ .messages-hero h1{line-height:1;overflow-wrap:break-word}
+ .message-layout{grid-template-columns:minmax(0,1fr);border-radius:12px}
+ .conversation-panel{min-width:0}
+ .chat-panel{min-width:0}
+}
+@media(max-width:480px){
+ .messages-shell{width:calc(100% - 1rem)}
+ .message-layout{border-radius:9px}
+ .chat-tools{flex-wrap:wrap;gap:.4rem}
+ .message{max-width:94%}
+}
