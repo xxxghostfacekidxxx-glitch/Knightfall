@@ -59,7 +59,6 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 .messages-shell :where(.primary,.secondary,.action,button){touch-action:manipulation}
 :where(.game-card,.arcade-card,.cartridge-cabinet,.cabinet){isolation:isolate}
 :where(.game-card,.arcade-card,.cartridge-cabinet,.cabinet)>.kf-gravewave-corner{z-index:0}
-:where(.game-card,.arcade-card,.cartridge-cabinet,.cabinet)>:not(.kf-gravewave-corner){position:relative;z-index:1}
 @media(max-width:600px){
  .messages-hero{flex-wrap:wrap}
  .messages-hero-actions{flex-wrap:wrap;width:100%}
