@@ -19,3 +19,19 @@
 @media(max-width:1100px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}#game-shelf .cartridge-cabinet{padding:.8rem!important;min-height:230px}#game-shelf .cartridge-cabinet h3{font-size:1rem}#game-shelf .cartridge-cabinet p{font-size:.78rem}#game-shelf .arcade-catalog-toolbar{grid-template-columns:1fr;gap:.45rem}#game-shelf .arcade-search-count{text-align:left}}
 @media(max-width:390px){#game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr)}}
+
+/* Consistent card heights, responsive discovery controls and touch targets. */
+#game-shelf{min-width:0}
+#game-shelf .cartridge-shelf{align-items:stretch}
+#game-shelf .cartridge-cabinet{display:flex;flex-direction:column;min-width:0}
+#game-shelf .cartridge-cabinet h3{margin-block:.75rem .45rem;text-wrap:balance}
+#game-shelf .flat-actions{align-items:stretch}
+#game-shelf .flat-actions .button{min-height:44px;flex:1 1 90px;text-align:center;overflow-wrap:anywhere}
+#game-shelf .arcade-catalog-toolbar{min-width:0}
+#game-shelf .arcade-catalog-toolbar input{min-height:44px}
+@media(max-width:540px){
+ #game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr);gap:.75rem}
+ #game-shelf .cartridge-cabinet{min-height:0;padding:1rem!important}
+ #game-shelf .cartridge-cabinet p{font-size:.87rem}
+ #game-shelf .cartridge-cabinet h3{font-size:1.15rem}
+}
