@@ -124,7 +124,7 @@
       <a class="kf-nav-primary" href="/homepage.html">Explore</a>
       <a class="kf-nav-primary" href="/community.html">The Madhouse</a>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
-      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html">Messages</a>
+      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
       <details class="kf-nav-group">
         <summary>Discover <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -293,6 +293,8 @@
         return;
       }
       profileGroup.hidden = false;
+      const messageShortcut=nav.querySelector(".kf-messages-shortcut");
+      if(messageShortcut) messageShortcut.hidden=false;
       nav.querySelector(".kf-sign-in-link")?.remove();
       currentUser = d.user;
       const user = currentUser;
