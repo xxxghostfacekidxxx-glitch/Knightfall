@@ -28,6 +28,12 @@ on:
       - "scripts/arcade-tether-tangle.test.mjs"
       - "scripts/arcade-original-runner-regression.test.mjs"
       - "scripts/arcade-original-sports.test.mjs"
+      - "scripts/arcade-provenance-runtime.test.mjs"
+      - "scripts/arcade-mini-games-runtime.test.mjs"
+      - "scripts/arcade-space-fighter.test.mjs"
+      - "scripts/arcade-bubble-barrage.test.mjs"
+      - "scripts/arcade-tether-tangle.test.mjs"
+      - "scripts/arcade-original-runner-regression.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
@@ -145,7 +151,7 @@ jobs:
         run: |
           node --check scripts/arcade-originals-audit.mjs
           node scripts/arcade-originals-audit.mjs
-      - name: Inventory code and asset provenance across all 103 cartridges
+      - name: Inventory code and asset provenance across 104 cartridges
         run: |
           node --check scripts/arcade-provenance-audit.mjs
           node scripts/arcade-provenance-audit.mjs --report
