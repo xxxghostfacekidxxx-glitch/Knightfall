@@ -314,14 +314,19 @@
       }
       if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
       if (!(["admin","god"].includes(user.role) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
-      if (["admin","god"].includes(user.role)) nav.querySelector(".kf-admin-link").hidden = false;
+      if (["admin","god"].includes(user.role)) {
+        const adminLink = nav.querySelector(".kf-admin-link");
+        if (adminLink) adminLink.hidden = false;
+      }
       if (["admin","moderator","god"].includes(user.role)) {
-        nav.querySelector(".kf-mod-link").hidden = false;
-        nav.querySelector(".kf-recovery-link").hidden = false;
+        const modLink = nav.querySelector(".kf-mod-link");
+        const recoveryLink = nav.querySelector(".kf-recovery-link");
+        if (modLink) modLink.hidden = false;
+        if (recoveryLink) recoveryLink.hidden = false;
       }
       const myProfile = nav.querySelector(".kf-my-profile-link");
       if (myProfile) myProfile.href = "/profile.html?username=" + encodeURIComponent(user.username);
-      if (siteSettings?.feature_profiles === "false" && user.role !== "admin") {
+      if (siteSettings?.feature_profiles === "false" && !["admin","god"].includes(user.role)) {
         nav.querySelector(".kf-profile-link")?.remove();
         nav.querySelector(".kf-my-profile-link")?.remove();
       }
