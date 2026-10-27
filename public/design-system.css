@@ -1,0 +1,47 @@
+/* Ash-Fall shared design foundation. Keep component-specific styles in page CSS. */
+:root{
+  --af-bg:#070707;
+  --af-surface:#101010;
+  --af-surface-raised:#171411;
+  --af-border:#342a23;
+  --af-text:#f1ede9;
+  --af-muted:#aaa19a;
+  --af-ember:#e66a2c;
+  --af-ember-light:#ffad78;
+  --af-ember-soft:rgba(230,106,44,.14);
+  --af-radius-sm:9px;
+  --af-radius-md:14px;
+  --af-radius-lg:18px;
+  --af-space-1:.5rem;
+  --af-space-2:1rem;
+  --af-space-3:1.5rem;
+  --af-space-4:2rem;
+  --af-page-max:1120px;
+  --af-touch-target:44px;
+  --kf-bg:var(--af-bg);
+  --kf-panel:var(--af-surface);
+  --kf-panel-2:var(--af-surface-raised);
+  --kf-line:var(--af-border);
+  --kf-muted:var(--af-muted);
+  --kf-text:var(--af-text);
+  --kf-accent:var(--af-ember);
+  --kf-accent-bright:var(--af-ember-light);
+  --kf-accent-soft:var(--af-ember-soft);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:5rem}
+body{min-width:0}
+main,section,article,aside{min-width:0}
+img,svg,video,canvas{max-width:100%}
+:where(input,textarea,select){font:inherit}
+:where(button,[role="button"]){font:inherit}
+:where(button,input,textarea,select,a):focus-visible{outline:2px solid var(--af-ember-light);outline-offset:3px}
+:where(.af-container){width:min(var(--af-page-max),calc(100% - 2rem));margin-inline:auto}
+:where(.af-card){min-width:0;border:1px solid var(--af-border);border-radius:var(--af-radius-md);background:var(--af-surface)}
+:where(.af-stack){display:grid;gap:var(--af-space-2)}
+:where(.af-cluster){display:flex;align-items:center;gap:var(--af-space-2);flex-wrap:wrap}
+:where(.af-grid){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--af-space-2)}
+:where(.af-button){display:inline-flex;align-items:center;justify-content:center;min-height:var(--af-touch-target);padding:.65rem 1rem;border:1px solid var(--af-border);border-radius:var(--af-radius-sm);background:var(--af-surface-raised);color:var(--af-text);text-decoration:none;cursor:pointer}
+:where(.af-button-primary){border-color:var(--af-ember);background:var(--af-ember);color:#100904;font-weight:800}
+@media(max-width:600px){:where(.af-container){width:calc(100% - 1.25rem)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
