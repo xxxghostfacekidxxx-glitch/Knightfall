@@ -9,7 +9,7 @@ for(const id of ["rooftop-riot","colossus-clash"]){
   assert.ok(source);assert.doesNotThrow(()=>new Script(source));
   const nodes=new Map(),frames=[],events=[],listeners=new Map();
   const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",hidden:false,style:{},addEventListener:(name,fn)=>listeners.set(k+":"+name,fn)});return nodes.get(k)};
-  const ctx={clearRect(){},fillRect(){},strokeRect(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},createLinearGradient(){return{addColorStop(){}}}};
+  const ctx={clearRect(){},fillRect(){},strokeRect(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},rotate(){},ellipse(){},roundRect(){},createLinearGradient(){return{addColorStop(){}}}};
   node("game").getContext=()=>ctx;
   const document={getElementById:node,querySelector:()=>null,addEventListener:(name,fn)=>listeners.set("document:"+name,fn),dispatchEvent:e=>events.push(e)};
   const sandbox={document,window:{},localStorage:{getItem:()=>null,setItem(){}},location:{href:"https://ash-fall.com",pathname:"/arcade"},performance:{now:()=>0},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
