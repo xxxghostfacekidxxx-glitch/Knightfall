@@ -168,8 +168,18 @@
     document.head.append(companion);
   }
 
+  // Defer navigation mounting for PWA pages that load the shared script early.
+  const initializeNavigation = () => {
   const header = document.querySelector(".kf-header");
-  if (!header) return;
+  if (!header || header.dataset.kfNavMounted === "true") return;
+  header.dataset.kfNavMounted = "true";
+  // Keep the mobile navigation above ambient glitch layers and floating mascots.
+  if (!document.getElementById("kf-pwa-navigation-recovery")) {
+    const recoveryStyle = document.createElement("style");
+    recoveryStyle.id = "kf-pwa-navigation-recovery";
+    recoveryStyle.textContent = `html body .kf-header{z-index:1000!important;isolation:isolate}html body .kf-header .kf-nav-toggle{position:relative;z-index:1002;visibility:visible;opacity:1;pointer-events:auto}html body .kf-header .kf-nav{z-index:1001}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important}@media(max-width:1080px){html body .kf-header{display:flex!important;align-items:center;justify-content:space-between;min-height:60px}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;min-height:44px!important}html body .kf-header .kf-nav:not(.open){display:none!important}html body .kf-header .kf-nav.open{display:grid!important;position:absolute!important;top:100%!important;left:.5rem!important;right:.5rem!important;max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:#100c1c!important;border:1px solid #ff55d8!important;box-shadow:0 12px 36px #000c!important;padding:.7rem!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{min-height:44px}html body .kf-header .kf-nav-group[open] .kf-nav-menu{position:static!important;max-height:none!important}}`;
+    document.head.append(recoveryStyle);
+  }
   // Shared keyboard shortcut to bypass the site-wide navigation.
   const mainContent=document.querySelector("main");
   if(mainContent && !document.querySelector(".kf-skip-link")){
@@ -409,4 +419,7 @@
       nav.querySelector(".kf-vault-link")?.remove();
       nav.querySelector(".kf-my-profile-link")?.remove();
     });
+}  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
+  else initializeNavigation();
 })();
