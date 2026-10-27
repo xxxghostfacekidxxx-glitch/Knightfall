@@ -8,13 +8,13 @@ function circle(x,y,r,color){g.fillStyle=color;g.beginPath();g.arc(x,y,r,0,Math.
 function label(t){$("status").textContent=t}
 function add(n){score+=n;best=Math.max(score,best);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-run-"+id,String(best))}catch{}}
 function finish(t){running=false;label(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
-function reset(){epoch++;running=true;last=performance.now();score=0;$("score").textContent="0";world={x:110,y:isSlush?350:365,vy:0,ground:390,obstacles:[],spawn:1,speed:190,time:0,life:3,invuln:0,flap:0};label("RUNNING · dodge the ruins");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(t=>loop(t,epoch));draw()}
+function reset(){epoch++;keys.clear();hold=false;running=true;last=performance.now();score=0;$("score").textContent="0";world={x:110,y:isSlush?364:225,vy:0,ground:390,obstacles:[],spawn:1,speed:190,time:0,life:3,invuln:0,flap:0};label("RUNNING · dodge the ruins");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(t=>loop(t,epoch));draw()}
 function jump(){if(!running)return;if(isSlush){if(world.y>=world.ground-26)world.vy=-370}else world.vy=-235}
 function loop(now,token){if(token!==epoch||!running)return;const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;const s=world;s.time+=dt;s.speed=Math.min(390,190+s.time*2);s.spawn-=dt;s.invuln=Math.max(0,s.invuln-dt);
  if(s.spawn<=0){s.spawn=rnd(.9,1.6)*190/s.speed;s.obstacles.push({x:W+30,y:isSlush?390:150+rnd(0,210),w:rnd(24,48),h:isSlush?rnd(25,55):65,passed:false})}
  if(isSlush){s.vy+=900*dt;s.y+=s.vy*dt;if(s.y>s.ground-26){s.y=s.ground-26;s.vy=0}}
- else {s.vy+=420*dt;s.y+=s.vy*dt;if(keys.has("ArrowUp")||keys.has(" ")||hold){s.vy-=630*dt}s.y=Math.max(30,Math.min(420,s.y));if(s.y>=420||s.y<=30){s.life--;s.y=225;s.vy=0;if(s.life<=0)finish("FLIGHT LOST")}}
- for(const o of s.obstacles){o.x-=s.speed*dt;if(!o.passed&&o.x+o.w<s.x-20){o.passed=true;add(10)}
+ else {s.vy+=420*dt;s.y+=s.vy*dt;if(keys.has("ArrowUp")||keys.has(" ")||hold){s.vy-=630*dt}s.y=Math.max(30,Math.min(420,s.y));if((s.y>=420||s.y<=30)&&s.invuln<=0){s.life--;s.invuln=1.25;s.y=225;s.vy=0;if(s.life<=0)finish("FLIGHT LOST")}}
+ for(const o of s.obstacles){if(!running)break;o.x-=s.speed*dt;if(!o.passed&&o.x+o.w<s.x-20){o.passed=true;add(10)}
   if(s.invuln<=0&&s.x+19>o.x&&s.x-19<o.x+o.w&&s.y+22>o.y-o.h&&s.y-22<o.y){s.life--;s.invuln=1.5;if(s.life<=0){finish("RUN ENDED");break}}}
  s.obstacles=s.obstacles.filter(o=>o.x+o.w>-20).slice(-30);draw();if(running)requestAnimationFrame(t=>loop(t,token))}
 function draw(){rect(0,0,W,H,"#0c1018");for(let i=0;i<24;i++){const x=(i*83-world.time*12)%W;circle((x+W)%W,25+(i*37)%240,1.4,"#c8b2a3")}
