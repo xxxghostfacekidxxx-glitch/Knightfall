@@ -1,6 +1,6 @@
 @import url("/design-system.css?v=20261026-foundation1");
 :root{color-scheme:dark}
-::selection{background:rgba(230,106,44,.45);color:#fff}
+::selection{background:rgba(255,85,216,.45);color:#fff}
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
 ::-webkit-scrollbar{width:10px}
 ::-webkit-scrollbar-track{background:#080808}
@@ -14,12 +14,12 @@
   background:rgba(7,7,7,.82);backdrop-filter:blur(18px);
   box-shadow:0 12px 40px rgba(0,0,0,.28)
 }
-.kf-brand{color:#eee;text-decoration:none;font-weight:950;letter-spacing:.18em;text-shadow:0 0 24px rgba(230,106,44,.18)}
+.kf-brand{color:#eee;text-decoration:none;font-weight:950;letter-spacing:.18em;text-shadow:0 0 24px rgba(255,85,216,.18)}
 .kf-brand b{color:var(--kf-accent);font-weight:950}
 .kf-brand:after{content:"";display:block;width:70%;height:1px;margin-top:.25rem;background:linear-gradient(90deg,var(--kf-accent),transparent)}
 .kf-nav{display:flex;align-items:center;justify-content:flex-end;gap:.25rem}
 .kf-nav a{padding:.5rem .75rem;border:1px solid transparent;border-radius:7px;color:#929292;font-size:.78rem;text-decoration:none;transition:.22s ease}
-.kf-nav a:hover,.kf-nav a:focus-visible{border-color:#333;background:#111;color:#fff;box-shadow:0 0 18px rgba(230,106,44,.07)}
+.kf-nav a:hover,.kf-nav a:focus-visible{border-color:#333;background:#111;color:#fff;box-shadow:0 0 18px rgba(255,85,216,.07)}
 .kf-nav-toggle{display:none;border:1px solid #333;border-radius:7px;background:#101010;color:#ddd;padding:.45rem .65rem;cursor:pointer}
 @media(max-width:760px){
   .kf-header{position:relative}
@@ -31,8 +31,8 @@
 @media(prefers-reduced-motion:reduce){
   .kf-nav a{transition:none}
 }
-.kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(230,106,44,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(90,35,10,.2);color:#f0b18e}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
-.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(168,255,62,.55);border-radius:7px;background:rgba(230,106,44,.14);color:#f5a06b;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(230,106,44,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
+.kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(255,85,216,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(90,35,10,.2);color:#f0b18e}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
+.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(168,255,62,.55);border-radius:7px;background:rgba(255,85,216,.14);color:#f5a06b;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(255,85,216,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
 
 
 /* Compact secondary navigation keeps the main paths visible without turning the header into a sitemap. */
@@ -88,12 +88,12 @@
 
 /* Ash-Fall core palette: ember is the site default; character-specific pink stays scoped. */
 /* Ember palette is now defined once in design-system.css. */
-::selection{background:rgba(230,106,44,.45);color:#fff}
-.kf-brand{ text-shadow:0 0 24px rgba(230,106,44,.18) }
-.kf-nav a:hover,.kf-nav a:focus-visible{box-shadow:0 0 18px rgba(230,106,44,.07)}
-.kf-announcement,.kf-maintenance{border-bottom-color:rgba(230,106,44,.35)}
-.kf-install-app{background:rgba(230,106,44,.14);color:#f5a06b}
-.kf-install-app:hover{background:rgba(230,106,44,.25)}
+::selection{background:rgba(255,85,216,.45);color:#fff}
+.kf-brand{ text-shadow:0 0 24px rgba(255,85,216,.18) }
+.kf-nav a:hover,.kf-nav a:focus-visible{box-shadow:0 0 18px rgba(255,85,216,.07)}
+.kf-announcement,.kf-maintenance{border-bottom-color:rgba(255,85,216,.35)}
+.kf-install-app{background:rgba(255,85,216,.14);color:#f5a06b}
+.kf-install-app:hover{background:rgba(255,85,216,.25)}
 .kf-nav-menu .kf-notify-badge{background:var(--kf-accent);color:#100804}
 
 /* High-visibility install action: always present, not hidden until the browser offers a prompt. */
@@ -108,8 +108,8 @@
 .kf-header{min-height:70px;padding-block:.65rem}
 .kf-nav{flex-wrap:nowrap;min-width:0}
 .kf-nav-primary,.kf-nav-group>summary{white-space:nowrap}
-.kf-nav a[aria-current="page"]{color:#fff;background:var(--kf-accent-soft);border-color:rgba(230,106,44,.45)}
-.kf-nav-group:has(a[aria-current="page"])>summary{color:#ffbd91;border-color:rgba(230,106,44,.35)}
+.kf-nav a[aria-current="page"]{color:#fff;background:var(--kf-accent-soft);border-color:rgba(255,85,216,.45)}
+.kf-nav-group:has(a[aria-current="page"])>summary{color:#ffbd91;border-color:rgba(255,85,216,.35)}
 .kf-nav-menu{max-width:min(90vw,340px)}
 .kf-nav-menu a{min-height:42px}
 .kf-header+main{min-width:0}
@@ -153,19 +153,19 @@ img,video,iframe{max-width:100%}
  .kf-nav-primary,.kf-nav-group>summary{min-height:44px}
 }
 @media(max-width:1080px){
- .kf-nav-toggle[aria-expanded="true"]{background:var(--kf-accent-soft);border-color:rgba(230,106,44,.6);color:#fff}
+ .kf-nav-toggle[aria-expanded="true"]{background:var(--kf-accent-soft);border-color:rgba(255,85,216,.6);color:#fff}
  .kf-nav.open{z-index:80}
 }
 
-.kf-skip-link{position:fixed;left:1rem;top:-100px;z-index:9999;padding:.75rem 1rem;background:#e66a2c;color:#080808;font-weight:850;border-radius:0 0 9px 9px;text-decoration:none}
+.kf-skip-link{position:fixed;left:1rem;top:-100px;z-index:9999;padding:.75rem 1rem;background:#ff55d8;color:#080808;font-weight:850;border-radius:0 0 9px 9px;text-decoration:none}
 .kf-skip-link:focus{top:0}
 main:focus{outline:none}
 
 
 /* Navigation polish: prevent hidden links leaking into menus and avoid crowded tablet headers. */
 .kf-nav [hidden],.kf-nav-menu [hidden],.kf-profile-group[hidden]{display:none!important}
-.kf-nav-section-current,.kf-nav-group>summary.kf-nav-section-current{color:var(--kf-accent-bright);background:rgba(230,106,44,.09)}
-.kf-nav a[aria-current="page"]{color:var(--kf-accent-bright);border-color:rgba(230,106,44,.4);background:rgba(230,106,44,.1)}
+.kf-nav-section-current,.kf-nav-group>summary.kf-nav-section-current{color:var(--kf-accent-bright);background:rgba(255,85,216,.09)}
+.kf-nav a[aria-current="page"]{color:var(--kf-accent-bright);border-color:rgba(255,85,216,.4);background:rgba(255,85,216,.1)}
 .kf-nav-menu a:focus-visible,.kf-nav-group>summary:focus-visible,.kf-nav-toggle:focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:2px}
 @media(min-width:761px) and (max-width:1080px){
  .kf-nav-toggle{display:flex;align-items:center;gap:.45rem;min-height:44px}
@@ -181,8 +181,8 @@ main:focus{outline:none}
 
 /* First-party Devil Tools SVG sprite stamps. Pure decoration, no hit targets. */
 .kf-devil-stamp{display:inline-block;flex:none;width:30px;height:30px;background-repeat:no-repeat;background-size:1200% 200%;background-position:var(--kf-sprite-x,0%) var(--kf-sprite-y,0%);image-rendering:pixelated;pointer-events:none;vertical-align:middle}
-.kf-devil-title-stamps{display:flex;align-items:center;gap:.35rem;width:max-content;max-width:100%;margin:.25rem 0 .9rem;opacity:.7;filter:drop-shadow(0 0 5px rgba(230,106,44,.22));pointer-events:none}
-.kf-devil-title-stamps::after{content:"";display:block;width:clamp(36px,8vw,105px);height:1px;margin-left:.35rem;background:linear-gradient(90deg,rgba(230,106,44,.55),transparent)}
+.kf-devil-title-stamps{display:flex;align-items:center;gap:.35rem;width:max-content;max-width:100%;margin:.25rem 0 .9rem;opacity:.7;filter:drop-shadow(0 0 5px rgba(255,85,216,.22));pointer-events:none}
+.kf-devil-title-stamps::after{content:"";display:block;width:clamp(36px,8vw,105px);height:1px;margin-left:.35rem;background:linear-gradient(90deg,rgba(255,85,216,.55),transparent)}
 .kf-devil-footer-stamps{display:flex;justify-content:center;gap:.55rem;margin:0 auto .45rem;opacity:.72;pointer-events:none}
 .kf-devil-footer-stamps .kf-devil-stamp{width:26px;height:26px}
 @media(max-width:600px){.kf-devil-title-stamps{gap:.15rem;margin:.2rem 0 .55rem}.kf-devil-title-stamps .kf-devil-stamp{width:23px;height:23px}.kf-devil-footer-stamps .kf-devil-stamp{width:22px;height:22px}}
