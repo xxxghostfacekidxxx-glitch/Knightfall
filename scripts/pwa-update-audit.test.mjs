@@ -40,7 +40,7 @@ test("service worker does not contain escaped newline syntax errors",()=>{
 
 test("notification settings script parses and refuses unsafe alert destinations",()=>{
  const html=readFileSync(new URL("notifications.html",root),"utf8");
- const inline=[...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]).filter(Boolean);
+ const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
  assert.ok(inline.length,"notification settings inline script must exist");
  for(const code of inline)new Script(code,{filename:"notifications.html"});
  assert.match(html,/function safeNoticeUrl\\(value\\)/);
