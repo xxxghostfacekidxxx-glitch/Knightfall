@@ -26,7 +26,7 @@ test("Tether Tangle retry removes unbanked stars, stage win banks them and old l
  const node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:"",hidden:false,onclick:null});return nodes.get(id)};
  const document={getElementById:node,dispatchEvent:e=>events.push(e)};
  const sandbox={document,window:{},Math,localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail}},requestAnimationFrame:fn=>frames.push(fn)};
- const exposed=source.replace("})();","globalThis.__tether={setStars:(n)=>{score=n;collectedThis=n;},setStage:(total,earned)=>{score=total;collectedThis=earned;},win:()=>{won=true;},getScore:()=>score};})();");
+ const exposed=source.replace("draw()})();","draw();globalThis.__tether={setStars:(n)=>{score=n;collectedThis=n;},setStage:(total,earned)=>{score=total;collectedThis=earned;},win:()=>{won=true;},getScore:()=>score};})();");
  assert.notEqual(exposed,source);
  runInNewContext(exposed,sandbox,{timeout:1000});
  const stale=frames.shift();
