@@ -1579,18 +1579,33 @@
       "name": "Ashen Dominion",
       "genre": "Strategy",
       "sprites": [
-        "dominion-mark.svg"
+        "dominion-mark.svg",
+        "cinder-guard.svg",
+        "void-raider.svg",
+        "ember-outpost.svg"
       ],
-      "notes": "Command an ashland frontier faction. Existing Knightfall first-party implementation; code provenance not independently verified.",
+      "notes": "Original Ash-Fall Cinder Guard, Void Raider and Ember Outpost SVG illustrations are now drawn inside the hosted strategy game. Existing game-engine code still requires an independent provenance review; live browser QA pending.",
       "engine": "/arcade/hosted/ashen-dominion/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ashen-dominion",
       "assets": [
         {
           "name": "dominion-mark.svg",
           "path": "/arcade/hosted/ashen-dominion/sprites/dominion-mark.svg"
+        },
+        {
+          "name": "cinder-guard.svg",
+          "path": "/arcade/hosted/ashen-dominion/sprites/cinder-guard.svg"
+        },
+        {
+          "name": "void-raider.svg",
+          "path": "/arcade/hosted/ashen-dominion/sprites/void-raider.svg"
+        },
+        {
+          "name": "ember-outpost.svg",
+          "path": "/arcade/hosted/ashen-dominion/sprites/ember-outpost.svg"
         }
       ],
-      "status": "original SVG art integrated; provenance and browser QA pending"
+      "status": "original gameplay sprites integrated; engine provenance and browser QA pending"
     },
     {
       "id": "prism-panic",
