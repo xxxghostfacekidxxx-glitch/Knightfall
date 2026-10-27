@@ -9,7 +9,7 @@
 <div class="push-actions"><button id="save-prefs" type="button">Save preferences</button><button id="test-push" type="button" class="secondary-action">Send test notification</button></div>
 <p class="push-footnote">Your choices apply to this account. Browser permission is controlled by your device. You can turn push off here or in your browser settings.</p></section>
 <div id="status" role="status" aria-live="polite"></div><section id="notifications"></section></main>
-<script src="/nav.js"></script><script>
+<script src="/nav.js?v=20261027-category-nav6"></script><script>
 const API="https://api.ash-fall.com",root=document.querySelector("#notifications"),status=document.querySelector("#status"),pushStatus=document.querySelector("#push-status"),pushToggle=document.querySelector("#push-toggle"),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),fmt=v=>new Date(v).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
 async function api(p,o={}){const r=await fetch(API+p,{credentials:"include",cache:"no-store",...o,headers:{"content-type":"application/json",...(o.headers||{})}}),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d}
 function setPushStatus(message){pushStatus.textContent=message}
