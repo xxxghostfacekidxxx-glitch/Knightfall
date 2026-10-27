@@ -271,6 +271,7 @@
       if (!d?.user) {
         // Signed-out visitors still see the grouped destinations, but not private tools.
         nav.querySelector(".kf-personal-bots-link")?.remove();
+        nav.querySelector(".kf-messages-shortcut")?.remove();
         nav.querySelector(".kf-vault-link")?.remove();
         nav.querySelector(".kf-my-profile-link")?.remove();
         return;
@@ -301,6 +302,7 @@
       setInterval(pingActivity, 120000);
     }).catch(() => {
       nav.querySelector(".kf-personal-bots-link")?.remove();
+      nav.querySelector(".kf-messages-shortcut")?.remove();
       nav.querySelector(".kf-vault-link")?.remove();
       nav.querySelector(".kf-my-profile-link")?.remove();
     });
