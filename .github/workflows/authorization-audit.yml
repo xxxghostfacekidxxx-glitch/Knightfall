@@ -70,12 +70,12 @@ jobs:
         run: node scripts/authorization-audit.mjs
 
   audit_skipped:
-    name: Explain skipped authenticated audit
+    name: Require authenticated audit credentials
     needs: audit_credentials
     if: needs.audit_credentials.outputs.ready != 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Explain skipped audit
+      - name: Fail when authenticated audit cannot run
         shell: bash
         run: |
           {
@@ -87,3 +87,5 @@ jobs:
             echo ""
             echo "Use dedicated test accounts only. Do not use production personal credentials or put secret values in logs, issues, or commits."
           } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=Authenticated security audit not run::Configure all six dedicated audit secrets to enable role-based security verification."
+          exit 1
