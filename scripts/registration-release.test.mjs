@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 
 const frontend = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
 const backend = readFileSync(new URL("../backend/src/turnstile.js", import.meta.url), "utf8");
+const api = readFileSync(new URL("../backend/src/index.js", import.meta.url), "utf8");
 
 test("registration Turnstile action agrees across frontend and backend", () => {
   assert.match(frontend, /sitekey:data\.site_key,action:"register"/);
@@ -14,4 +15,8 @@ test("frontend submits the challenge response during registration", () => {
 });
 test("backend requires approved hostname as well as action", () => {
   assert.match(backend, /approved\.includes\(result\.hostname\)/);
+});
+
+test("Turnstile configuration is not cached across deployments", () => {
+  assert.match(api, /turnstile-config"&&request\.method==="GET"\)return json\([^\n]+\{"cache-control":"no-store"\}\)/);
 });
