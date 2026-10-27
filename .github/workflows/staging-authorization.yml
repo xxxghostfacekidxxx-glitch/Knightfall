@@ -1,0 +1,32 @@
+name: Staging authorization smoke checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_api:
+        description: 'Isolated staging API URL (never production)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  authorization:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: staging
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Reject production targets
+        env:
+          STAGING_API: ${{ inputs.staging_api }}
+        run: |
+          node -e 'const u=new URL(process.env.STAGING_API);if(u.protocol!=="https:"||!/(^|\\.)[a-z0-9-]+\\.workers\\.dev$|^staging\\.api\\.ash-fall\\.com$/i.test(u.hostname)||u.hostname==="api.ash-fall.com")process.exit(1)'
+      - name: Verify unauthenticated authorization boundaries
+        env:
+          STAGING_API: ${{ inputs.staging_api }}
+        run: node scripts/staging-authorization-smoke.mjs
