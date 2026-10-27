@@ -27,8 +27,10 @@ function hasMove(){
 function ensureMove(){
  if(hasMove())return false;
  for(let attempt=0;attempt<30;attempt++){create();if(hasMove())return true}
- // A guaranteed adjacent matching group or swappable pair.
- board[0][0]=board[0][1]=board[0][2]=0;
+ // Deterministic solvable fallback without any initial matches.
+ board=Array.from({length:N},(_,y)=>Array.from({length:N},(_,x)=>(x+y)%5));
+ if(id==="bubble-pop")board[0][1]=0;
+ else{board[0][0]=0;board[0][1]=1;board[0][2]=0;board[1][1]=0;}
  return true;
 }
 function findMatches(){const found=new Set();for(let y=0;y<N;y++)for(let x=0;x<N;x++){const v=board[y][x];if(x+2<N&&board[y][x+1]===v&&board[y][x+2]===v){let j=x;while(j<N&&board[y][j]===v){found.add(y+","+j);j++}}if(y+2<N&&board[y+1][x]===v&&board[y+2][x]===v){let j=y;while(j<N&&board[j][x]===v){found.add(j+","+x);j++}}}return found}
