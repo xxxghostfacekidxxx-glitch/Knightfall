@@ -139,10 +139,10 @@
         <summary>Discover <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
           <a href="/bots.html">Public Bots</a>
-          <a href="/shops.html">Shops &amp; Dropshipping</a>
+          <a href="/shops.html">Shops</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
-          <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
-          <a href="/social.html">Activity &amp; Groups</a>
+          <a href="/open-source-arsenal.html">Open Source</a>
+          <a href="/social.html">Groups &amp; Activity</a>
           <a href="/members.html">Find Members</a>
           <a href="/adults.html">Adults Only (18+)</a>
           <a href="/dating.html">Dating Realm (18+)</a>
@@ -165,7 +165,7 @@
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
           <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
           <a class="kf-recovery-link" href="/moderation-accounts.html" hidden>Account Recovery</a>
-          <a class="kf-my-profile-link" href="/profile.html">View My Public Profile</a>
+          <a class="kf-my-profile-link" href="/profile.html">My Profile</a>
         </div>
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>
@@ -178,6 +178,12 @@
   nav.querySelectorAll('a[href^="/"]').forEach(link => {
     const destination = new URL(link.getAttribute("href"),location.origin).pathname;
     if (destination === currentPath) link.setAttribute("aria-current","page");
+  });
+  // Indicate which grouped section contains the current page.
+  nav.querySelectorAll(".kf-nav-group").forEach(group => {
+    if (group.querySelector('a[aria-current="page"]')) {
+      group.querySelector("summary")?.classList.add("kf-nav-section-current");
+    }
   });
   nav.querySelectorAll(".kf-nav-group").forEach(group => {
     group.addEventListener("toggle", () => {
