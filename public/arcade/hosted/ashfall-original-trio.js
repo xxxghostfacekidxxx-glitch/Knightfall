@@ -11,7 +11,7 @@ function reset(){generation++;score=0;$("score").textContent="0";playing=true;la
  if(id==="whack-a-bug")game={time:45,bugs:[],spawn:0};
  else if(id==="stack-tower")game={blocks:[{x:180,y:450,w:240}],beam:{x:0,y:416,w:240,v:170},level:1};
  else game={time:60,tilt:0,wind:0,drop:320,blocks:[],gust:2};
- note("RUNNING");const seq=generation;requestAnimationFrame(now=>loop(now,seq))}
+ note("RUNNING");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));const seq=generation;requestAnimationFrame(now=>loop(now,seq))}
 function tap(x,y){if(!playing)return;
  if(id==="whack-a-bug"){const i=game.bugs.findIndex(b=>Math.hypot(b.x-x,b.y-y)<b.r+8);if(i>=0){game.bugs.splice(i,1);points(10)}else game.time-=1}
  else if(id==="stack-tower"){const b=game.blocks.at(-1),m=game.beam,l=Math.max(b.x,m.x),r=Math.min(b.x+b.w,m.x+m.w),w=r-l;
