@@ -33,7 +33,7 @@ function draw(){rect(0,0,W,H,"#0b0c13");for(let x=0;x<W;x+=40)rect(x,0,1,H,"#292
  text("TAP TO PLAY",320,480)}
 c.addEventListener("pointerdown",e=>{const r=c.getBoundingClientRect();tap((e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height)});
 $("restart").addEventListener("click",reset);
-document.addEventListener("keydown",e=>{if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();if(playing)tap(320,250);else reset()}});
+document.addEventListener("keydown",e=>{if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();if(playing){if(id==="whack-a-bug")note("Tap a target to exterminate it");else tap(320,250)}else reset()}});
 document.addEventListener("visibilitychange",()=>{last=performance.now()});
 $("best").textContent=best;game={time:45,bugs:[],blocks:[],level:1};draw();note("Ready · press Start");
 })();
