@@ -203,6 +203,16 @@
     emergency.textContent='html body .kf-header{display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:2147482000!important;min-height:62px!important;padding:8px 14px!important;background:#100c1c!important;border-bottom:2px solid #ff55d8!important;visibility:visible!important;opacity:1!important}html body .kf-header .kf-brand{display:inline-flex!important;flex-shrink:0!important;color:white!important;font-weight:900!important}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:76px!important;min-height:44px!important;background:#22132d!important;color:#c6ff45!important;border:1px solid #ff55d8!important;border-radius:10px!important}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important;display:grid!important;position:absolute!important;top:100%!important;left:8px!important;right:8px!important;z-index:2147482001!important;max-height:calc(100dvh - 75px)!important;overflow:auto!important;padding:12px!important;background:#100c1c!important;border:1px solid #ff55d8!important;border-radius:12px!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;color:#f9f3ff!important}@media(min-width:1081px){html body .kf-header .kf-nav{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;flex-wrap:wrap!important}html body .kf-header .kf-nav-toggle{display:none!important}}@media(max-width:1080px){html body .kf-header .kf-nav:not(.open){display:none!important}}';
     document.head.append(emergency);
   }
+  // Legacy category pages sometimes wrap the header in transformed or clipped
+  // containers. Move the shared chrome directly under body before mounting.
+  if (header.parentElement !== document.body) document.body.prepend(header);
+  // One consistent layer, above mascots and the persistent chat widget.
+  if (!document.getElementById("kf-nav-stability-css")) {
+    const stable=document.createElement("style");
+    stable.id="kf-nav-stability-css";
+    stable.textContent=`html body>.kf-header{position:sticky!important;top:0!important;z-index:2147483001!important;overflow:visible!important;transform:none!important;filter:none!important;isolation:isolate!important;width:100%!important;box-sizing:border-box!important}html body>.kf-header .kf-nav-toggle{cursor:pointer!important;pointer-events:auto!important}html body>.kf-header .kf-nav.open{z-index:2147483002!important;pointer-events:auto!important}html body>.kf-header .kf-nav-menu{z-index:2147483003!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}html body>.kf-header .kf-nav a{pointer-events:auto!important}@media(max-width:1080px){html body>.kf-header .kf-nav.open{max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:static!important;overflow:visible!important;max-height:none!important}}@media(min-width:1081px){html body>.kf-header .kf-nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:absolute!important}}`;
+    document.head.append(stable);
+  }
   header.innerHTML = `
     <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
@@ -329,15 +339,9 @@
       nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
     }
   });
-  // Close the drawer when keyboard focus leaves the entire header.
-  header.addEventListener("focusout", () => {
-    queueMicrotask(() => {
-      if (!header.contains(document.activeElement)) {
-        closeMobileMenu();
-        nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
-      }
-    });
-  });
+  // Do not close the menu on focusout: tapping nested mobile dropdowns moves
+  // focus between summary and links, which otherwise collapses the drawer.
+  // Outside pointerdown and Escape remain the intentional dismissal paths.
   window.addEventListener("resize", () => {
     if (window.innerWidth > 1080) closeMobileMenu();
   });
