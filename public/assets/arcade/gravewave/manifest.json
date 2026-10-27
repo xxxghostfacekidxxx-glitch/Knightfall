@@ -1,0 +1,200 @@
+{
+  "pack": "Gravewave Game Sprites",
+  "version": 1,
+  "license": "Original artwork for Ash-Fall / Knightfall",
+  "coordinateSystem": "96x96 SVG; transparent background",
+  "sprites": [
+    {
+      "id": "bone-drone",
+      "name": "Bone Drone",
+      "category": "enemy",
+      "src": "/assets/arcade/gravewave/bone-drone.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "toxic-turret",
+      "name": "Toxic Turret",
+      "category": "enemy",
+      "src": "/assets/arcade/gravewave/toxic-turret.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "void-eye",
+      "name": "Void Eye",
+      "category": "enemy",
+      "src": "/assets/arcade/gravewave/void-eye.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "skull-missile",
+      "name": "Skull Missile",
+      "category": "projectile",
+      "src": "/assets/arcade/gravewave/skull-missile.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "plasma-bolt",
+      "name": "Plasma Bolt",
+      "category": "projectile",
+      "src": "/assets/arcade/gravewave/plasma-bolt.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "hex-flame",
+      "name": "Hex Flame",
+      "category": "projectile",
+      "src": "/assets/arcade/gravewave/hex-flame.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "cinder-heart",
+      "name": "Cinder Heart",
+      "category": "pickup",
+      "src": "/assets/arcade/gravewave/cinder-heart.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "bone-coin",
+      "name": "Bone Coin",
+      "category": "pickup",
+      "src": "/assets/arcade/gravewave/bone-coin.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "chaos-shield",
+      "name": "Chaos Shield",
+      "category": "pickup",
+      "src": "/assets/arcade/gravewave/chaos-shield.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "ghost-key",
+      "name": "Ghost Key",
+      "category": "pickup",
+      "src": "/assets/arcade/gravewave/ghost-key.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "grave-platform",
+      "name": "Grave Platform",
+      "category": "terrain",
+      "src": "/assets/arcade/gravewave/grave-platform.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "grave-crate",
+      "name": "Grave Crate",
+      "category": "terrain",
+      "src": "/assets/arcade/gravewave/grave-crate.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "acid-spikes",
+      "name": "Acid Spikes",
+      "category": "hazard",
+      "src": "/assets/arcade/gravewave/acid-spikes.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "neon-portal",
+      "name": "Neon Portal",
+      "category": "effect",
+      "src": "/assets/arcade/gravewave/neon-portal.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "impact-burst",
+      "name": "Impact Burst",
+      "category": "effect",
+      "src": "/assets/arcade/gravewave/impact-burst.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "id": "warning-skull",
+      "name": "Warning Skull",
+      "category": "ui",
+      "src": "/assets/arcade/gravewave/warning-skull.svg",
+      "width": 96,
+      "height": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ]
+}
