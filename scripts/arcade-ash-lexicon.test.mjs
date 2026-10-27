@@ -8,6 +8,9 @@ test("Ashen Lexicon parses and has a local score bridge",()=>{
  const page=readFileSync("public/arcade/hosted/words-of-wonder/index.html","utf8");
  assert.ok(page.includes('data-game-id="cabinet-words-of-wonder"'));
  assert.ok(page.includes("ash-lexicon.js"));
+ assert.ok(source.includes("ashfall:arcade-started"));
+ assert.ok(source.includes("ashfall:arcade-finished"));
+ assert.ok(readFileSync("public/arcade/hosted/arcade-account-bridge.js","utf8").includes("ashfall:arcade-started"));
 });
 test("duplicate letters are graded only once when the answer has one copy",()=>{
  const match=source.match(/function grade\(guess,answer\)\{[^}]*\}[^}]*\}/);
