@@ -129,7 +129,19 @@
           turnstileEnabled = true;
           const script = document.createElement("script");
           script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-          script.onload = () => { const render = () => window.turnstile.render("#register-turnstile", {sitekey:data.site_key}); if (!registerForm.hidden) render(); else registerTab.addEventListener("click", render, {once:true}); };
+          script.onload = () => {
+            let rendered = false;
+            const render = () => {
+              if (rendered || registerForm.hidden || !window.turnstile) return;
+              rendered = true;
+              window.turnstile.render("#register-turnstile", {sitekey:data.site_key});
+            };
+            render();
+            registerTab.addEventListener("click", () => queueMicrotask(render));
+          };
+          script.onerror = () => {
+            document.getElementById("register-status").textContent = "Security verification could not load. Check your connection and refresh.";
+          };
           document.head.append(script);
         }).catch(() => {});
       async function submitForm(form, endpoint, statusId, payloadBuilder) {
