@@ -29,3 +29,8 @@ test("Bubble Barrage does not create concurrent projectiles or stale restart fra
  assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
  assert.equal(nodes.get("#score").textContent,0);
 });
+
+test("Bubble Barrage color matching and projectile direction",()=>{
+ assert.ok(source.includes("if(b.color===color&&Math.hypot("));
+ assert.ok(source.includes("dy=Math.min(-35,ty-origin.y)"));
+});
