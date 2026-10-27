@@ -31,6 +31,13 @@ for(const [file,ids] of Object.entries(groups)){
   h.listeners.get("restart:click")();
   if(file==="ashfall-original-matching.js")assert.equal(h.elements.get("score").textContent,"0","fresh puzzle must not grant free points");
   if(file!=="ashfall-original-matching.js")for(let i=0;i<5;i++){const f=h.frames.shift();assert.ok(f,"animated game should schedule a frame");f((i+1)*16)}
+  if(file==="ashfall-original-trio.js"){
+   const stale=h.frames.shift();
+   h.listeners.get("restart:click")();
+   const pending=h.frames.length;
+   stale(1000);
+   assert.equal(h.frames.length,pending,"old animation frames must not reschedule after restart");
+  }
   h.listeners.get("canvas:pointerdown")({clientX:320,clientY:240});
   assert.ok(h.elements.get("score").textContent!=="","score element should be populated");
   assert.ok(h.elements.get("status").textContent!=="","status element should be populated");
