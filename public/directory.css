@@ -6,3 +6,13 @@
 @media(max-width:560px){.listing-grid,.quick-grid{grid-template-columns:1fr}.search-bar{align-items:stretch;flex-direction:column}.directory-footer{flex-direction:column}.directory-hero h1{font-size:clamp(2.8rem,14vw,4.6rem)}}
 
 .nsfw-listing-badge,.sfw-listing-badge{display:inline-flex;align-items:center;width:max-content;margin:.35rem 0 .6rem;padding:.22rem .6rem;border:1px solid rgba(130,130,130,.45);border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.05em}.nsfw-listing-badge{border-color:rgba(220,91,109,.75);color:#f2a4ae;background:rgba(90,22,31,.24)}.sfw-listing-badge{color:#b9c7bd}
+
+/* Unified discovery pages: stable cards and touch-first search. */
+.directory-shell,.directory-hero,.listing-grid,.listing-card,.quick-grid,.quick-card{min-width:0}
+.directory-hero h1{overflow-wrap:anywhere;text-wrap:balance;line-height:.98}
+.search-bar{max-width:100%;flex-wrap:wrap}
+.search-bar input{min-width:0;flex:1 1 230px}
+.search-bar button,.listing-card a,.quick-card a{min-height:44px}
+.listing-card,.quick-card{overflow-wrap:anywhere}
+@media(max-width:760px){.directory-hero{padding:2.7rem 0 1.5rem}.directory-shell{width:calc(100% - 1.25rem)}.directory-hero h1{font-size:clamp(2.7rem,11vw,4.8rem)}}
+@media(max-width:560px){.search-bar>*{width:100%}.listing-grid,.quick-grid{grid-template-columns:minmax(0,1fr)}}
