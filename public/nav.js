@@ -34,6 +34,44 @@
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",mountSupportFooter,{once:true});
   else mountSupportFooter();
+  // Original Devil Tools SVG atlas: small, decorative stamps across shared pages.
+  // Use the existing first-party asset; never insert SVG markup from user content.
+  const mountDevilToolsStamps = () => {
+    const atlas = "/assets/arcade/chaos-sprite-atlas.svg";
+    const stamp = (name, index) => {
+      const node = document.createElement("span");
+      node.className = "kf-devil-stamp kf-devil-stamp-" + name;
+      node.style.setProperty("--kf-sprite-x", (index % 12) * 100 / 11 + "%");
+      node.style.setProperty("--kf-sprite-y", index < 12 ? "0%" : "100%");
+      node.style.backgroundImage = 'url("' + atlas + '")';
+      node.setAttribute("aria-hidden", "true");
+      return node;
+    };
+    const footer = document.getElementById("ashfall-support-footer");
+    if (footer && !footer.querySelector(".kf-devil-footer-stamps")) {
+      const collection = document.createElement("span");
+      collection.className = "kf-devil-footer-stamps";
+      collection.setAttribute("aria-hidden", "true");
+      collection.append(stamp("flame", 20), stamp("skull", 1), stamp("crown", 11));
+      footer.prepend(collection);
+    }
+    const main = document.querySelector("main");
+    const title = main?.querySelector("h1");
+    if (!title || main.querySelector(".kf-devil-title-stamps")) return;
+    const path = location.pathname;
+    // Keep account, private content, moderation, and editor screens distraction-free.
+    if (/\/(?:admin|moderation|account|profile|messages|vault|adult|dating|friends|notifications|devil-tools|die-ary|create-|edit-)/i.test(path)) return;
+    const collection = document.createElement("span");
+    collection.className = "kf-devil-title-stamps";
+    collection.setAttribute("aria-hidden", "true");
+    const indexes = /arcade|chaos-cartridge|game/i.test(path) ? [2, 6, 11] :
+      /community|madhouse|social/i.test(path) ? [1, 10, 18] :
+      /shop|support/i.test(path) ? [4, 20, 16] : [20, 1, 11];
+    indexes.forEach((index, i) => collection.append(stamp("title-" + i, index)));
+    title.after(collection);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountDevilToolsStamps, { once: true });
+  else mountDevilToolsStamps();
   // Shared PWA setup and global Chaos Cartridge favicon.
   const iconLinks = [
     { rel: "icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
