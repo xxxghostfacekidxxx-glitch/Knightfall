@@ -1,10 +1,14 @@
-const CACHE_NAME = "knightfall-shell-v13";
+const CACHE_NAME = "knightfall-shell-v14";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
   "/homepage.html",
   "/theme.css",
   "/nav.js",
+  "/gravewave-takeover.css",
+  "/gravewave-takeover.js",
+  "/assets/devil-tools/neon-nuisances/moxie.svg",
+  "/assets/devil-tools/neon-nuisances/gravebyte.svg",
   "/icons/chaos-cartridge.svg",
   "/icons/chaos-cartridge-maskable.svg",
   "/branding/chaos-cartridge-logo.svg"
