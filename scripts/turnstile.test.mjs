@@ -64,3 +64,13 @@ test("a valid token for a different action cannot be reused for registration", a
   try { assert.equal(await checkTurnstile(enabled,request,"token"),false); }
   finally { globalThis.fetch = original; }
 });
+
+test("staging hostname allowlist rejects lookalike and unrelated domains", async () => {
+  const original = globalThis.fetch;
+  try {
+    for (const hostname of ["staging.ash-fall.com.evil.example", "staging-evil.example.com", "staging--.pages.dev"]) {
+      globalThis.fetch = async () => new Response(JSON.stringify({success:true,action:"register",hostname}),{status:200});
+      assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:hostname},request,"token"),false,hostname);
+    }
+  } finally { globalThis.fetch = original; }
+});
