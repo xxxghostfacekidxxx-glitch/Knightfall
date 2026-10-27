@@ -170,9 +170,15 @@
 
   // Defer navigation mounting for PWA pages that load the shared script early.
   const initializeNavigation = () => {
-  const header = document.querySelector(".kf-header");
-  if (!header || header.dataset.kfNavMounted === "true") return;
+  let header = document.querySelector(".kf-header");
+  if (!header) {
+    header = document.createElement("header");
+    header.className = "kf-header";
+    document.body.prepend(header);
+  }
+  if (header.dataset.kfNavMounted === "true") return;
   header.dataset.kfNavMounted = "true";
+  header.setAttribute("aria-label", "Ash-Fall site navigation");
   // Keep the mobile navigation above ambient glitch layers and floating mascots.
   if (!document.getElementById("kf-pwa-navigation-recovery")) {
     const recoveryStyle = document.createElement("style");
@@ -211,9 +217,10 @@
           <a href="/dating.html">Dating Realm (18+)</a>
         </div>
       </details>
-      <details class="kf-nav-group kf-profile-group" hidden>
+      <details class="kf-nav-group kf-profile-group">
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu kf-profile-menu">
+          <a href="/members.html">Member Profiles</a>
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
           <a href="/friends.html">Friends</a>
@@ -260,10 +267,9 @@
   // Auth and feature settings arrive independently. Wait for both before removing
   // profile links, otherwise a slow auth response can hide privileged navigation.
   function applyProfileVisibility() {
-    if (!authResolved || siteSettings?.feature_profiles !== "false") return;
-    if (currentUser && ["admin", "god"].includes(currentUser.role)) return;
-    nav.querySelector(".kf-members-link")?.remove();
-    nav.querySelectorAll(".kf-profile-link,.kf-my-profile-link").forEach(link => link.remove());
+    // Profiles are a core route. Never erase navigation links because a
+    // stale feature flag or an unavailable settings request says otherwise.
+    return;
   }
   const toggle = header.querySelector(".kf-nav-toggle");
   const installButton = header.querySelector(".kf-install-app");
@@ -381,7 +387,7 @@
         nav.querySelector(".kf-personal-bots-link")?.remove();
         nav.querySelector(".kf-messages-shortcut")?.remove();
         nav.querySelector(".kf-vault-link")?.remove();
-        nav.querySelector(".kf-my-profile-link")?.remove();
+        nav.querySelector(".kf-profile-link")?.remove();
         return;
       }
       profileGroup.hidden = false;
@@ -417,7 +423,7 @@
       nav.querySelector(".kf-personal-bots-link")?.remove();
       nav.querySelector(".kf-messages-shortcut")?.remove();
       nav.querySelector(".kf-vault-link")?.remove();
-      nav.querySelector(".kf-my-profile-link")?.remove();
+      nav.querySelector(".kf-profile-link")?.remove();
     });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
