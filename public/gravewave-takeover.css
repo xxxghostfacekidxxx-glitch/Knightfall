@@ -1,7 +1,7 @@
 /* Gravewave takeover: persistent, non-interactive site-wide neon interference. */
 :root{--gw-pink:#ff55d8;--gw-green:#c6ff45;--gw-ink:#070710}
 body.gravewave-everywhere{position:relative}
-body.gravewave-everywhere::after{content:"";position:fixed;inset:0;z-index:8500;pointer-events:none;opacity:.19;background:repeating-linear-gradient(to bottom,transparent 0 3px,#02000c55 4px 5px),linear-gradient(180deg,transparent 16%,#ff55d815 16.3% 16.6%,transparent 17%,transparent 73%,#c6ff4511 73.2% 73.5%,transparent 74%);animation:gw-signal 7s steps(1,end) infinite}
+body.gravewave-everywhere::after{content:"";position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.13;background:repeating-linear-gradient(to bottom,transparent 0 3px,#02000c55 4px 5px),linear-gradient(180deg,transparent 16%,#ff55d815 16.3% 16.6%,transparent 17%,transparent 73%,#c6ff4511 73.2% 73.5%,transparent 74%);animation:gw-signal 7s steps(1,end) infinite}
 body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:1px 0 #ff55d866,-1px 0 #c6ff4544,0 0 17px #ff55d833}
 body.gravewave-everywhere :where(.kf-header,.entry-card,.panel,.cabinet,.game-card,.arcade-card,.messages-shell,.chaos-shell){box-shadow:0 0 0 1px #ff55d815,0 0 24px #ff55d80b}
 body.gravewave-everywhere :where(.kf-nav a,.kf-nav-group>summary,.primary,.btn):hover{filter:drop-shadow(1px 0 #ff55d888) drop-shadow(-1px 0 #c6ff4588)}
@@ -41,3 +41,11 @@ h1.gw-glitch-mark{display:block}
 .gw-panel-mascot{width:clamp(44px,5.5vw,70px);height:clamp(44px,5.5vw,70px);opacity:.9;z-index:1}
 @media(max-width:680px){.gw-character-crew{max-width:168px;right:4px;bottom:calc(5px + env(safe-area-inset-bottom));opacity:.94}.gw-crew-member{width:49px;height:60px;margin-left:-10px}.gw-ambient{opacity:.27}.gw-panel-mascot{width:38px;height:38px;opacity:.8}}
 @media(prefers-reduced-motion:reduce){.gw-crew-member{animation:none}}
+
+/* Keep the cast visible without obscuring typing, dialogs or fullscreen play. */
+body:has(input:focus,textarea:focus,[contenteditable="true"]:focus) .gw-character-crew{opacity:.16;transition:opacity .16s ease}
+body:has(dialog[open]) .gw-character-crew,
+body:has(:fullscreen) .gw-character-crew{display:none}
+body:has(dialog[open])::after,
+body:has(:fullscreen)::after{display:none}
+@media(max-width:680px){body:has(input:focus,textarea:focus) .gw-character-crew{opacity:0}}
