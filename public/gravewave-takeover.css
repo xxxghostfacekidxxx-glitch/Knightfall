@@ -25,3 +25,9 @@ body.gravewave-everywhere :where(.kf-nav a,.kf-nav-group>summary,.primary,.btn):
 @keyframes gw-text-split{0%,46%,48%,84%,86%,100%{filter:none}47%{filter:drop-shadow(2px 0 #ff55d8) drop-shadow(-2px 0 #c6ff45)}85%{filter:drop-shadow(-2px 0 #ff55d8) drop-shadow(2px 0 #c6ff45)}}
 @media(max-width:680px){.gw-ambient{opacity:.15}.gw-ambient img{width:90px}.gw-panel-mascot{width:28px;height:28px;opacity:.4}.gw-input-shell>.gw-input-mascot{width:19px;height:19px}}
 @media(prefers-reduced-motion:reduce){body.gravewave-everywhere::after,.gw-ambient img,.gw-panel-mascot,.gw-glitch-mark{animation:none!important}}
+
+/* Input mascots are backgrounds, not extra DOM wrappers, so form layouts remain intact. */
+input.gw-mascot-input{background-image:var(--gw-input-mascot)!important;background-position:right 10px center!important;background-repeat:no-repeat!important;background-size:24px 24px!important;padding-right:44px!important}
+textarea.gw-mascot-textarea{background-image:var(--gw-input-mascot)!important;background-position:right 12px bottom 10px!important;background-repeat:no-repeat!important;background-size:29px 29px!important;padding-right:44px!important;padding-bottom:40px!important}
+h1.gw-glitch-mark{display:block}
+@media(max-width:680px){input.gw-mascot-input{background-size:19px 19px!important}textarea.gw-mascot-textarea{background-size:22px 22px!important}}
