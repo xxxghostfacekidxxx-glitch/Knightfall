@@ -1910,36 +1910,56 @@
       "name": "Colossus Clash",
       "genre": "Action",
       "sprites": [
-        "colossus-mark.svg"
+        "colossus-mark.svg",
+        "ash-bruiser.svg",
+        "cinder-fighter.svg"
       ],
-      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "notes": "Original Ash-Fall gameplay character and collectible SVG artwork integrated in the canvas renderer. Underlying engine provenance requires independent review; browser QA pending.",
       "engine": "/arcade/hosted/colossus-clash/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/colossus-clash",
       "assets": [
         {
           "name": "colossus-mark.svg",
           "path": "/arcade/hosted/colossus-clash/sprites/colossus-mark.svg"
+        },
+        {
+          "name": "ash-bruiser.svg",
+          "path": "/arcade/hosted/colossus-clash/sprites/ash-bruiser.svg"
+        },
+        {
+          "name": "cinder-fighter.svg",
+          "path": "/arcade/hosted/colossus-clash/sprites/cinder-fighter.svg"
         }
       ],
-      "status": "cataloged; code provenance and browser QA pending"
+      "status": "original gameplay art integrated; engine provenance and browser QA pending"
     },
     {
       "id": "rooftop-riot",
       "name": "Rooftop Riot",
       "genre": "Platformer",
       "sprites": [
-        "rooftop-mark.svg"
+        "rooftop-mark.svg",
+        "ash-runner.svg",
+        "ember-shard.svg"
       ],
-      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "notes": "Original Ash-Fall gameplay character and collectible SVG artwork integrated in the canvas renderer. Underlying engine provenance requires independent review; browser QA pending.",
       "engine": "/arcade/hosted/rooftop-riot/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rooftop-riot",
       "assets": [
         {
           "name": "rooftop-mark.svg",
           "path": "/arcade/hosted/rooftop-riot/sprites/rooftop-mark.svg"
+        },
+        {
+          "name": "ash-runner.svg",
+          "path": "/arcade/hosted/rooftop-riot/sprites/ash-runner.svg"
+        },
+        {
+          "name": "ember-shard.svg",
+          "path": "/arcade/hosted/rooftop-riot/sprites/ember-shard.svg"
         }
       ],
-      "status": "cataloged; code provenance and browser QA pending"
+      "status": "original gameplay art integrated; engine provenance and browser QA pending"
     },
     {
       "id": "marshland-marksman",
