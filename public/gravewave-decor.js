@@ -6,7 +6,7 @@ const mascotRoot='/assets/devil-tools/neon-nuisances/',spriteRoot='/assets/arcad
 const sensitive=/\/(?:admin|moderation|account|profile|messages|vault|adult|dating|friends|notifications|devil-tools|die-ary|create-|edit-|settings|checkout|payment|login|register)/i;
 const path=location.pathname.toLowerCase();
 function img(src){const el=document.createElement('img');el.src=src;el.alt='';el.setAttribute('aria-hidden','true');el.loading='lazy';el.decoding='async';return el}
-function mount(){if(document.querySelector('[data-gravewave-decor]'))return;
+function mount(){if(document.querySelector('.kf-gravewave-title'))return;
  const footer=document.getElementById('ashfall-support-footer')||document.querySelector('footer');
  if(footer){const ribbon=document.createElement('div');ribbon.className='kf-gravewave-ribbon';ribbon.dataset.gravewaveDecor='footer';const seed=[0,4,8,10,2];seed.forEach(i=>ribbon.append(img(mascotRoot+mascots[i]+'.svg')));footer.prepend(ribbon)}
  if(sensitive.test(path))return;
