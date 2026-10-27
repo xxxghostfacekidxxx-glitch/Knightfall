@@ -117,6 +117,16 @@
 
   const header = document.querySelector(".kf-header");
   if (!header) return;
+  // Shared keyboard shortcut to bypass the site-wide navigation.
+  const mainContent=document.querySelector("main");
+  if(mainContent && !document.querySelector(".kf-skip-link")){
+    if(!mainContent.id) mainContent.id="main-content";
+    const skip=document.createElement("a");
+    skip.className="kf-skip-link";
+    skip.href="#"+mainContent.id;
+    skip.textContent="Skip to content";
+    header.before(skip);
+  }
   header.innerHTML = `
     <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
