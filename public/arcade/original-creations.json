@@ -1185,7 +1185,7 @@
       "sprites": [
         "inferno-ball.svg"
       ],
-      "notes": "Launch flaming basketball shots into the infernal hoop. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/basketball/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/basketball",
       "assets": [
@@ -1194,7 +1194,7 @@
           "path": "/arcade/hosted/basketball/sprites/inferno-ball.svg"
         }
       ],
-      "status": "rebranded and committed; independent provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "bowling",
@@ -1203,7 +1203,7 @@
       "sprites": [
         "crypt-pin.svg"
       ],
-      "notes": "Roll for strikes on the crypt's cursed lanes. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/bowling/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bowling",
       "assets": [
@@ -1212,7 +1212,7 @@
           "path": "/arcade/hosted/bowling/sprites/crypt-pin.svg"
         }
       ],
-      "status": "rebranded and committed; independent provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "bubble-pop",
@@ -1383,7 +1383,7 @@
       "sprites": [
         "shootout.svg"
       ],
-      "notes": "Take penalty shots against the infernal keeper. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with independently written Ash-Fall sports canvas engine (ashfall-original-sports.js). Existing emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/penalty-shootout/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/penalty-shootout",
       "assets": [
@@ -1392,7 +1392,7 @@
           "path": "/arcade/hosted/penalty-shootout/sprites/shootout.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "stack-tower",
