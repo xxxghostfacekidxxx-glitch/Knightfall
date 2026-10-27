@@ -1,28 +1,28 @@
 /* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
-:root{--arcade-ember:#f06a0a;--arcade-rust:#d35400;--arcade-line:#342820}
+:root{--arcade-ember:#ff55d8;--arcade-rust:#b728a1;--arcade-line:#342820}
 main.arcade,body>main{position:relative;isolation:isolate}
-main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(211,84,0,.11),transparent 58%)}
+main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,85,216,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
-.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(211,84,0,.1)}
+.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,85,216,.1)}
 .hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
 .back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#c5a18a!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
-.back:hover{color:#ffad78!important;transform:translateX(-2px)}
+.back:hover{color:#c6ff45!important;transform:translateX(-2px)}
 .cabinet,.game,.game-panel,.panel{border-color:#342820!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
 .cabinet,.game{position:relative;isolation:isolate;overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
-.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(211,84,0,.09),transparent 56%);pointer-events:none}
+.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,85,216,.09),transparent 56%);pointer-events:none}
 .cabinet:hover,.game:hover{border-color:#654027!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
 .cabinet h2,.game h2,.game-panel h2,.panel h2{letter-spacing:-.04em}
 .cabinet p,.game p,.game-panel .muted,.panel .muted{line-height:1.75}
 .btn,.button,.action,.primary{transition:transform .17s ease,filter .17s ease,border-color .17s ease}
 .btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #f06a0a!important;outline-offset:3px}
-.screen,.arena,.play-area,.canvas{border-color:#4b3020!important;box-shadow:inset 0 0 0 1px rgba(240,106,10,.045),inset 0 0 40px rgba(0,0,0,.5)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #ff55d8!important;outline-offset:3px}
+.screen,.arena,.play-area,.canvas{border-color:#4b3020!important;box-shadow:inset 0 0 0 1px rgba(255,85,216,.045),inset 0 0 40px rgba(0,0,0,.5)}
 .stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
 .game-tabs,.tabs,.game-library-tools{gap:.6rem}
-.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#b6531b!important;background:rgba(211,84,0,.14)!important;color:#ffd0b1!important}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#b6531b!important;background:rgba(255,85,216,.14)!important;color:#ffd0b1!important}
 .cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#e47a3b}
-.cabinet .tag,.genre,.license,.pill{border-color:#52321e!important;color:#eaa274!important;background:rgba(211,84,0,.075)!important}
+.cabinet .tag,.genre,.license,.pill{border-color:#52321e!important;color:#eaa274!important;background:rgba(255,85,216,.075)!important}
 .shelf,.grid,.layout,.dump-grid{gap:1rem}
 .cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
 .fineprint,.fine,.footnote{color:#716960;line-height:1.7}
@@ -32,7 +32,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 
 /* Cabinet refresh: deeper materials, clearer hierarchy, stronger play surfaces. */
-:root{--arcade-ember:#ff6b24;--arcade-gold:#ffc56d;--arcade-ink:#08090d;--arcade-surface:#101218;--arcade-edge:rgba(255,255,255,.105);--arcade-copy:#f6f3ef;--arcade-dim:#aaa6a2}
+:root{--arcade-ember:#ff55d8;--arcade-gold:#ffc56d;--arcade-ink:#08090d;--arcade-surface:#101218;--arcade-edge:rgba(255,255,255,.105);--arcade-copy:#f6f3ef;--arcade-dim:#aaa6a2}
 html{scroll-behavior:smooth;scroll-padding-top:1.5rem}
 body{background-color:var(--arcade-ink);background-image:radial-gradient(ellipse at 50% -14rem,rgba(255,103,36,.18),transparent 48%),radial-gradient(ellipse at 100% 42%,rgba(79,90,150,.075),transparent 35%),linear-gradient(180deg,#0a0b10 0%,#08090d 72%);color:var(--arcade-copy);-webkit-font-smoothing:antialiased}
 main,main.wrap,.wrap,.arcade{isolation:isolate}
@@ -67,7 +67,7 @@ a:hover{color:#ffb080}
 .arcade-fullscreen{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:42px;padding:.7rem 1rem;border:1px solid rgba(255,157,103,.3);border-radius:11px;background:linear-gradient(135deg,rgba(255,107,36,.16),rgba(255,197,109,.06));color:#ffe2cf;font-size:.76rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.06)}
 .arcade-fullscreen svg{width:16px;height:16px;flex:none}
 .arcade-fullscreen:hover{border-color:#ff9867;background:rgba(255,107,36,.22)}
-.arcade-fullscreen[aria-pressed=true]{background:linear-gradient(135deg,#ff6b24,#d84b12);color:#1b0b04;border-color:#ff9867}
+.arcade-fullscreen[aria-pressed=true]{background:linear-gradient(135deg,#ff55d8,#d84b12);color:#1b0b04;border-color:#ff9867}
 .arcade-fullscreen:focus-visible{outline:2px solid #ffc56d;outline-offset:4px}
 .arcade-fullscreen-target:fullscreen{width:100vw;height:100vh;max-width:none!important;max-height:none!important;margin:0!important;padding:clamp(10px,2vw,28px)!important;overflow:auto;background:#08090d!important;border:0!important;border-radius:0!important}
 .arcade-fullscreen-target:fullscreen .playfield canvas,.arcade-fullscreen-target:fullscreen .field canvas,.arcade-fullscreen-target:fullscreen .play-area canvas{max-height:68vh;object-fit:contain}
@@ -90,7 +90,7 @@ a:hover{color:#ffb080}
 .arcade-tool{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:40px;padding:.62rem .82rem;border:1px solid rgba(255,157,103,.25);border-radius:10px;background:linear-gradient(135deg,rgba(255,107,36,.12),rgba(255,197,109,.035));color:#ffe2cf;font-size:.7rem;font-weight:900;letter-spacing:.045em;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.05)}
 .arcade-tool-icon{font-size:1rem;line-height:1}
 .arcade-tool:hover{border-color:#ff9867;background:rgba(255,107,36,.2)}
-.arcade-tool[aria-pressed=true]{background:linear-gradient(135deg,#ff6b24,#d84b12);color:#1b0b04;border-color:#ff9867}
+.arcade-tool[aria-pressed=true]{background:linear-gradient(135deg,#ff55d8,#d84b12);color:#1b0b04;border-color:#ff9867}
 .arcade-tool:focus-visible,.arcade-help-close:focus-visible{outline:2px solid #ffc56d;outline-offset:3px}
 .arcade-shortcuts{position:relative;z-index:19;margin:0 0 1rem;padding:1rem 1.1rem;border:1px solid rgba(255,157,103,.28);border-radius:14px;background:linear-gradient(145deg,#17131a,#0a0b10);box-shadow:0 18px 44px #0008;color:#f5eee8}
 .arcade-shortcuts[hidden]{display:none}
@@ -98,7 +98,7 @@ a:hover{color:#ffb080}
 .arcade-help-close{width:34px;height:34px;border:1px solid #554239;border-radius:8px;background:#1b1717;color:#fff;font-size:1.35rem;cursor:pointer}
 .arcade-shortcuts dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.9rem 0}
 .arcade-shortcuts dl>div{display:flex;align-items:center;gap:.6rem;min-width:0;padding:.55rem;border:1px solid #ffffff12;border-radius:8px;background:#ffffff05}
-.arcade-shortcuts dt{flex:none;min-width:2rem;padding:.3rem .45rem;text-align:center;border:1px solid #ff9a6340;border-radius:6px;background:#ff6b2417;color:#ffc56d;font-weight:900}
+.arcade-shortcuts dt{flex:none;min-width:2rem;padding:.3rem .45rem;text-align:center;border:1px solid #ff9a6340;border-radius:6px;background:#ff55d817;color:#ffc56d;font-weight:900}
 .arcade-shortcuts dd{margin:0;color:#c7c0bb;font-size:.82rem}
 .arcade-shortcuts p{margin:.6rem 0 0;color:#8e8985;font-size:.78rem}
 body.arcade-focus-mode>header,body.arcade-focus-mode>.kf-header,body.arcade-focus-mode>nav,body.arcade-focus-mode>footer{display:none!important}
@@ -378,30 +378,30 @@ a:hover{color:#d7ff72}
 
 /* Integrated arcade fullscreen and cabinet polish, recolored for Ash-Fall. */
 /* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
-:root{--arcade-ember:#a8ff3e;--arcade-rust:#e66a2c;--arcade-line:#303030}
+:root{--arcade-ember:#a8ff3e;--arcade-rust:#ff55d8;--arcade-line:#303030}
 main.arcade,body>main{position:relative;isolation:isolate}
-main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(230,106,44,.11),transparent 58%)}
+main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,85,216,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
-.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(230,106,44,.1)}
+.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,85,216,.1)}
 .hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
 .back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#a8ff3e!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
-.back:hover{color:#e66a2c!important;transform:translateX(-2px)}
+.back:hover{color:#ff55d8!important;transform:translateX(-2px)}
 .cabinet,.game,.game-panel,.panel,.card{border-color:#303030!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
 .cabinet,.game{position:relative;isolation:isolate;overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
-.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(230,106,44,.09),transparent 56%);pointer-events:none}
+.cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,85,216,.09),transparent 56%);pointer-events:none}
 .cabinet:hover,.game:hover{border-color:#a8ff3e!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
 .cabinet h2,.game h2,.game-panel h2,.panel h2{letter-spacing:-.04em}
 .cabinet p,.game p,.game-panel .muted,.panel .muted{line-height:1.75}
 .btn,.button,.action,.primary{transition:transform .17s ease,filter .17s ease,border-color .17s ease}
 .btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #a8ff3e!important;outline-offset:3px}
-.screen,.arena,.play-area,.canvas{border-color:#e66a2c!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
+.screen,.arena,.play-area,.canvas{border-color:#ff55d8!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
 .stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
 .game-tabs,.tabs,.game-library-tools{gap:.6rem}
-.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#e66a2c!important;background:rgba(230,106,44,.14)!important;color:#a8ff3e!important}
-.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#e66a2c}
-.cabinet .tag,.genre,.license,.pill{border-color:#e66a2c!important;color:#a8ff3e!important;background:rgba(230,106,44,.075)!important}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#ff55d8!important;background:rgba(255,85,216,.14)!important;color:#a8ff3e!important}
+.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#ff55d8}
+.cabinet .tag,.genre,.license,.pill{border-color:#ff55d8!important;color:#a8ff3e!important;background:rgba(255,85,216,.075)!important}
 .shelf,.grid,.layout,.dump-grid{gap:1rem}
 .cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
 .fineprint,.fine,.footnote{color:#716960;line-height:1.7}
@@ -418,7 +418,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .af-fullscreen-toggle{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:42px;padding:.65rem .9rem;border:1px solid #70401f;border-radius:9px;background:linear-gradient(135deg,#a8ff3e,#c94a00);color:#160a03;font:inherit;font-size:.83rem;font-weight:900;letter-spacing:.01em;cursor:pointer;box-shadow:0 5px 18px #a8ff3e20;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
 .af-fullscreen-toggle:hover{filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 8px 24px #a8ff3e30}
 .af-fullscreen-toggle:focus-visible{outline:2px solid #ffd1a8;outline-offset:3px}
-.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{width:100%;height:100%;max-width:none;max-height:none;overflow:auto;margin:0!important;padding:clamp(.75rem,2.5vw,2rem);border:0!important;border-radius:0!important;background:radial-gradient(ellipse at 15% 0%,#e66a2c28,transparent 38%),#080808!important;color:#f5f1ed;box-shadow:none!important}
+.af-game-root:fullscreen,.af-game-root:-webkit-full-screen{width:100%;height:100%;max-width:none;max-height:none;overflow:auto;margin:0!important;padding:clamp(.75rem,2.5vw,2rem);border:0!important;border-radius:0!important;background:radial-gradient(ellipse at 15% 0%,#ff55d828,transparent 38%),#080808!important;color:#f5f1ed;box-shadow:none!important}
 .af-game-root:fullscreen .af-game-tools,.af-game-root:-webkit-full-screen .af-game-tools{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:#11100fee}
 .af-game-root:fullscreen canvas,.af-game-root:-webkit-full-screen canvas{max-height:calc(100vh - 190px);object-fit:contain}
 .af-game-root:fullscreen .screen,.af-game-root:-webkit-full-screen .screen{min-height:0}
@@ -519,7 +519,7 @@ body:has(#rookcondition) .controls button{min-height:44px;border-radius:9px}
 .af-feedback-press{transform:scale(.975)!important;filter:brightness(1.2)}
 .af-arcade-hidden .af-feedback-pulse,.af-arcade-hidden .af-feedback-alert{animation:none!important}
 @keyframes afFeedbackPulse{
-  0%{filter:brightness(1.55);text-shadow:0 0 18px #e66a2c55}
+  0%{filter:brightness(1.55);text-shadow:0 0 18px #ff55d855}
   100%{filter:brightness(1);text-shadow:none}
 }
 @keyframes afFeedbackAlert{
