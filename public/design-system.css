@@ -1,14 +1,14 @@
 /* Ash-Fall shared design foundation. Keep component-specific styles in page CSS. */
 :root{
-  --af-bg:#070707;
-  --af-surface:#101010;
-  --af-surface-raised:#171411;
-  --af-border:#342a23;
-  --af-text:#f1ede9;
-  --af-muted:#aaa19a;
-  --af-ember:#e66a2c;
-  --af-ember-light:#ffad78;
-  --af-ember-soft:rgba(230,106,44,.14);
+  --af-bg:#070710;
+  --af-surface:#101020;
+  --af-surface-raised:#191329;
+  --af-border:#65316f;
+  --af-text:#f9f3ff;
+  --af-muted:#b9aeca;
+  --af-ember:#ff55d8;
+  --af-ember-light:#c6ff45;
+  --af-ember-soft:rgba(255,85,216,.15);
   --af-radius-sm:9px;
   --af-radius-md:14px;
   --af-radius-lg:18px;
@@ -42,6 +42,6 @@ img,svg,video,canvas{max-width:100%}
 :where(.af-cluster){display:flex;align-items:center;gap:var(--af-space-2);flex-wrap:wrap}
 :where(.af-grid){display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:var(--af-space-2)}
 :where(.af-button){display:inline-flex;align-items:center;justify-content:center;min-height:var(--af-touch-target);padding:.65rem 1rem;border:1px solid var(--af-border);border-radius:var(--af-radius-sm);background:var(--af-surface-raised);color:var(--af-text);text-decoration:none;cursor:pointer}
-:where(.af-button-primary){border-color:var(--af-ember);background:var(--af-ember);color:#100904;font-weight:800}
+:where(.af-button-primary){border-color:var(--af-ember);background:var(--af-ember);color:#15071b;font-weight:800}
 @media(max-width:600px){:where(.af-container){width:calc(100% - 1.25rem)}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
