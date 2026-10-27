@@ -48,3 +48,13 @@
 /* Keep portrait glitch treatment consistent with the Chaos Cartridge signal effect. */
 #miss-chaos-presence .mc-head img{image-rendering:auto;filter:drop-shadow(1px 0 #ff2f9255) drop-shadow(-1px 0 #54f5df44)}
 #miss-chaos-presence[data-expression="speaking"] .mc-head img{outline:1px solid #39ff8866}
+
+/* Footer-aware positioning: support and shop links must remain tappable. */
+#miss-chaos-presence{bottom:calc(max(16px,env(safe-area-inset-bottom)) + var(--mc-footer-clearance,0px))}
+@media(max-width:480px){
+ #miss-chaos-presence{bottom:calc(max(10px,env(safe-area-inset-bottom)) + var(--mc-footer-clearance,0px))}
+ #miss-chaos-launcher{width:54px;height:54px;justify-content:center;padding:4px;border-radius:50%}
+ #miss-chaos-launcher .mc-launch-copy{display:none}
+ #miss-chaos-launcher img{width:44px;height:44px}
+ #miss-chaos-window{max-height:calc(100dvh - 95px - var(--mc-footer-clearance,0px))}
+}
