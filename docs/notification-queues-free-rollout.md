@@ -23,6 +23,6 @@ Example optional Wrangler fragment (do not paste over existing bindings):
 
 ## Safety
 
-The current push delivery helper catches per-subscription failures, so the consumer can acknowledge a job even if a remote push provider rejected delivery. Treat this as best-effort delivery until explicit failure classification and retry telemetry are added.
+The push helper tracks attempted, accepted, expired, failed and transient deliveries. The consumer retries only when no subscription accepted the notification and at least one transient delivery failure occurred. Permanent HTTP failures are not retried; a partially accepted notification is acknowledged to avoid duplicate alerts. This remains best-effort push delivery, not an exactly-once guarantee.
 
 Do not enable Queues on production until the resource exists, the consumer is attached, and usage has been confirmed within free limits.
