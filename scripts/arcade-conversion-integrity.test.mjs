@@ -26,3 +26,10 @@ test("new lunar landing game has an independent local engine",()=>{
  const page=readFileSync("public/arcade/hosted/cinder-lander/index.html","utf8");
  assert.ok(page.includes('src="/arcade/hosted/cinder-lander/game.js"'));
 });
+test("all newly authored animated engines reset the leaderboard run lifecycle",()=>{
+ for(const file of ["ashfall-original-trio.js","ashfall-original-sports.js","ashfall-original-driving.js","ashfall-original-action.js","ashfall-original-runner.js","ashfall-original-vector.js","ashfall-original-matching.js","cinder-lander/game.js"]){
+  const source=readFileSync("public/arcade/hosted/"+file,"utf8");
+  assert.ok(source.includes("ashfall:arcade-started"),file+" must notify account bridge on start");
+  assert.ok(source.includes("ashfall:arcade-finished"),file+" must notify account bridge on completion");
+ }
+});
