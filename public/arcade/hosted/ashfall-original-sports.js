@@ -15,7 +15,7 @@ function target(){
  else targets=Array.from({length:10},(_,i)=>({x:205+(i%4)*67+rand(-8,8),y:135+Math.floor(i/4)*65,r:18,alive:true}));
 }
 function end(){active=false;status("ROUND COMPLETE · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
-function start(){generation++;score=0;shots=0;elapsed=0;round=0;active=true;last=performance.now();$("score").textContent="0";target();status("PLAYING · aim and tap");requestAnimationFrame(now=>loop(now,generation));draw()}
+function start(){generation++;score=0;shots=0;elapsed=0;round=0;active=true;last=performance.now();$("score").textContent="0";target();status("PLAYING · aim and tap");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(now=>loop(now,generation));draw()}
 function fire(x,y){if(!active)return;shots++;pointer={x,y};
  if(id==="bowling"){
   let hits=0;for(const t of targets){if(t.alive&&Math.abs(t.x-x)<75&&Math.abs(t.y-y)<90){t.alive=false;hits++}}
