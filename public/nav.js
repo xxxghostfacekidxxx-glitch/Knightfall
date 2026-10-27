@@ -22,7 +22,7 @@
     if (document.getElementById("ashfall-shop-link") || location.pathname==="/cinder-shop.html") return;
     const link=document.createElement("a");
     link.id="ashfall-shop-link";link.href="/cinder-shop.html";link.textContent="🔥 Cinder Shop";
-    link.style.cssText="display:inline-block;margin:.5rem 0 0;color:#ffbd85;font-weight:700;text-decoration:underline;text-underline-offset:3px";
+    link.style.cssText="display:inline-block;margin:.5rem 0 0;color:#c6ff45;font-weight:700;text-decoration:underline;text-underline-offset:3px";
     const footer=document.getElementById("ashfall-support-footer");
     if(footer)footer.append(document.createElement("br"),link);
   };
@@ -34,7 +34,7 @@
     footer.setAttribute("aria-label", "Support Ash-Fall");
     footer.innerHTML = '<span>Enjoying the chaos? Help keep Ash-Fall running.</span> <a href="/support.html">❤️ Support Ash-Fall</a>';
     const css = document.createElement("style");
-    css.textContent = '#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ab562b;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#ffb46e;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #ffb46e;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
+    css.textContent = '#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ff55d8;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#c6ff45;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #c6ff45;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
     document.head.append(css);
     document.body.append(footer);
     mountShopLink();
