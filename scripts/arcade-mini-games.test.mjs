@@ -67,3 +67,21 @@ test("Cinder Collider keyboard upgrades use the same logic as touch buttons",()=
  assert.match(shared,/if\(e\.key==="2"\)clickerAction\("boost"\)/);
  assert.match(shared,/if\(e\.key==="3"\)clickerAction\("scientist"\)/);
 });
+
+test("Crypt Conduits accepts alternative connected routes and rejects disconnected tiles",()=>{
+ const fn=shared.match(/function circuitConnected\(grid\)\{[\s\S]*?\n\}/)?.[0];
+ assert.ok(fn,"connection validator missing");
+ const connected=Function(fn+";return circuitConnected")();
+ const blank=()=>Array.from({length:5},()=>Array(5).fill(0));
+ const path=blank();
+ for(let x=0;x<5;x++)path[0][x]=1;
+ for(let y=0;y<5;y++)path[y][4]=1;
+ assert.equal(connected(path),true,"top and right edge route must count");
+ const oldPath=blank();
+ for(let y=0;y<5;y++)oldPath[y][0]=1;
+ for(let x=0;x<5;x++)oldPath[4][x]=1;
+ assert.equal(connected(oldPath),true,"left and bottom edge route must count");
+ const isolated=blank();isolated[0][0]=isolated[4][4]=1;
+ assert.equal(connected(isolated),false,"disconnected endpoints must not win");
+ assert.equal(connected(blank()),false,"empty grid must not win");
+});
