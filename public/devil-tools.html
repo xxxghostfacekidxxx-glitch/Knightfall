@@ -21,8 +21,8 @@
 <p class="small">Palette: hot pink #ff27ce · acid green #c6ff45 · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
 </section>
 <section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
-<h2>Neon Nuisances · Original Mascot Pack</h2>
-<p>Eight original cute-creepy neon characters, each with four animated variants: idle, blink, bounce, and mischief. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
+<h2>Gravewave · Neon Nuisances</h2>
+<p>Twelve original cute-horror metalhead mascots, including exposed ribs, cyber skeletons, fanged aliens, and coffin ghouls. Each has four animated variants: idle, blink, bounce, and mischief. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
 <p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
 <div id="nuisances-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 <a class="btn" href="/assets/devil-tools/neon-nuisances/manifest.json" target="_blank" rel="noopener noreferrer">View mascot manifest</a>
@@ -40,9 +40,9 @@ const title=document.createElement('strong');title.textContent=item.name;title.s
 const a=document.createElement('a');a.href=item.svg;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.45rem;font-size:.7rem';
 const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['original','idle','blink','bounce','mischief']){const option=document.createElement('option');option.value=mode;option.textContent=mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
 select.addEventListener('change',()=>{const mode=select.value;const url=mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url;a.href=url;a.download=item.id+(mode==='original'?'':'-'+mode)+'.svg'});
-card.append(img,title,select,a);root.append(card);
+const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';card.append(img,title,desc,select,a);root.append(card);
 }
-status.textContent=data.characters.length+' original mascots · '+(data.characters.length*4)+' animated SVG variants available.';
+status.textContent=data.characters.length+' Gravewave mascots · '+(data.characters.length*4)+' animated SVG variants available.';
 }).catch(e=>{status.textContent='Mascot collection unavailable: '+e.message});
 })();
 </script>
