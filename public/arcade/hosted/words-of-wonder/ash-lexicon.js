@@ -1,5 +1,5 @@
 (()=>{"use strict";
-const words=["EMBER","CINDER","CRYPT","FLAME","RUINS","GHOST","NIGHT","CHAOS","SHADOW","ASHEN","RAVEN","DREAD","FORGE","BLAZE","WRAITH","SPORE","CROWN","BLOOD","STORM","STONE"];
+const words=["EMBER","CRYPT","FLAME","RUINS","GHOST","NIGHT","CHAOS","ASHEN","RAVEN","DREAD","FORGE","BLAZE","SPORE","CROWN","BLOOD","STORM","STONE"];
 const $=id=>document.getElementById(id);let target="",guesses=[],active=false,score=0,best=0,round=0,keyboard={};
 try{best=Number(localStorage.getItem("ash-lexicon-best"))||0}catch{}
 function announce(s){$("status").textContent=s}
