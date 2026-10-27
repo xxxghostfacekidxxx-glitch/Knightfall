@@ -8,20 +8,21 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
  test(id+" starts, animates, restarts and keeps a single animation loop",()=>{
   const html=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
   assert.ok(html.includes("/arcade/hosted/ashfall-mini-games.js"));
-  const elements=new Map(),listeners=new Map(),frames=[];
+  const elements=new Map(),listeners=new Map(),frames=[],events=[];
   const el=k=>{if(!elements.has(k))elements.set(k,{textContent:"",value:"",hidden:false,disabled:false,style:{},href:"",addEventListener:(event,fn)=>listeners.set(k+":"+event,fn)});return elements.get(k)};
   const ctx={fillRect(){},strokeRect(){},fillText(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},roundRect(){},save(){},restore(){},translate(){}};
   const canvas={width:960,height:600,getContext:()=>ctx,addEventListener:(event,fn)=>listeners.set("canvas:"+event,fn),getBoundingClientRect:()=>({left:0,top:0,width:960,height:600})};
   elements.set("game",canvas);
-  const doc={getElementById:el,addEventListener:(event,fn)=>listeners.set("document:"+event,fn),fullscreenElement:null,hidden:false};
+  const doc={getElementById:el,addEventListener:(event,fn)=>listeners.set("document:"+event,fn),fullscreenElement:null,hidden:false,dispatchEvent:e=>events.push(e)};
   const store=new Map(),localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
   const location={pathname:"/arcade/hosted/"+id+"/index.html",search:"",href:"https://ash-fall.com/arcade/hosted/"+id+"/index.html"};
   const window={addEventListener(){}};
-  const sandbox={document:doc,window,location,URLSearchParams,localStorage,performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn),Math,Number,Promise,Set,console};
+  const sandbox={document:doc,window,location,URLSearchParams,localStorage,performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn),CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail}},Math,Number,Promise,Set,console};
   runInNewContext(source.replace("})();","globalThis.__miniTest={getState:()=>state};})();"),sandbox,{timeout:1500});
   assert.equal(typeof listeners.get("start:click"),"function");
   listeners.get("start:click")();
   assert.ok(frames.length>0);
+  assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,1);
   for(let i=0;i<4;i++){const frame=frames.shift();assert.ok(frame);frame((i+1)*16)}
   const stale=frames.shift();assert.ok(stale);
   listeners.get("start:click")();
@@ -29,6 +30,7 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   stale(999);
   assert.equal(frames.length,queued,"stale animation frame must not reschedule after restart");
   assert.equal(elements.get("score").textContent,"0");
+  assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
   if(id==="cube-composer"){
    sandbox.__miniTest.getState().level=9;
    listeners.get("start:click")();
