@@ -198,3 +198,24 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
   .ecosystem-kicker{overflow-wrap:anywhere}
 }
 @media(prefers-reduced-motion:reduce){.featured-action b,.ecosystem-card .ecosystem-icon{transition:none}}
+
+/* Mobile-first page rhythm shared by the homepage and Madhouse directory. */
+.container{max-width:1120px;min-width:0}
+.hero-copy,.section-heading,.featured-card,.ecosystem-card,.category,.thread-card{min-width:0}
+.hero h1,.section h2,.feature h2{text-wrap:balance;overflow-wrap:break-word}
+.hero-lede,.section-heading p,.category p,.ecosystem-card p{max-width:65ch}
+.hero-actions a,.hero-actions button{min-height:44px}
+.community-directory-grid{min-width:0}
+@media(min-width:761px) and (max-width:1050px){
+ .hero{min-height:0;padding:clamp(3rem,7vw,5rem) 0}
+ .hero h1{font-size:clamp(3.6rem,8vw,6.3rem)}
+ .section-heading{align-items:start}
+}
+@media(max-width:760px){
+ .hero{min-height:0;padding:clamp(2.4rem,8vw,4rem) 0 3rem}
+ .hero h1{font-size:clamp(2.6rem,11vw,4.7rem);line-height:.95}
+ .section-heading{flex-wrap:wrap;align-items:flex-start;gap:.75rem;margin-bottom:1.4rem}
+ .hero-actions{gap:.6rem}
+ .hero-actions .button{flex:1 1 100%;max-width:100%;text-align:center}
+ .category,.ecosystem-card{padding:clamp(1rem,4vw,1.5rem)}
+}
