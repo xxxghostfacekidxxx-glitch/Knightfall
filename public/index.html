@@ -14,20 +14,20 @@
   <script src="/nav.js" defer></script>
   <style>
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 18% 15%,rgba(230,106,44,.13),transparent 38%),radial-gradient(ellipse at 88% 90%,rgba(230,106,44,.08),transparent 34%),#070707;color:#eee;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 18% 15%,rgba(255,85,216,.13),transparent 38%),radial-gradient(ellipse at 88% 90%,rgba(198,255,69,.08),transparent 34%),#070710;color:#eee;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:radial-gradient(circle,rgba(255,255,255,.6) 0 1px,transparent 1.4px);background-size:151px 163px}
     .entry-layout{position:relative;z-index:1;width:min(1120px,100%);margin:0 auto;padding:clamp(1.2rem,4vw,3.5rem);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:clamp(2rem,6vw,5.5rem);align-items:center;min-height:calc(100vh - 74px)}
     .brand-story{padding:1rem 0}
     .eyebrow{color:#a8ff3e;font-size:.7rem;font-weight:850;letter-spacing:.27em;text-transform:uppercase}
     h1{font-size:clamp(3rem,7vw,6.3rem);line-height:.91;letter-spacing:-.065em;margin:1.25rem 0;font-weight:900}
-    h1 span{color:#c8bdb4;text-shadow:0 0 35px rgba(230,106,44,.12)}
+    h1 span{color:#c8bdb4;text-shadow:0 0 35px rgba(255,85,216,.12)}
     .intro{max-width:34rem;color:#aaa;font-size:1.04rem;line-height:1.8}
     .values{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:2rem}
     .values span{border:1px solid #292929;border-radius:999px;padding:.48rem .8rem;color:#c3c3c3;font-size:.76rem}
     .entry-card{border:1px solid #303030;border-radius:18px;background:linear-gradient(155deg,rgba(22,22,22,.98),rgba(10,10,10,.98));padding:clamp(1.25rem,3vw,2rem);box-shadow:0 25px 90px #0008}
     .tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.3rem;border:1px solid #292929;border-radius:10px;background:#090909;margin-bottom:1.4rem}
     .tab{border:0;border-radius:7px;background:transparent;color:#999;padding:.8rem;font:inherit;font-size:.88rem;font-weight:750;cursor:pointer}
-    .tab[aria-selected="true"]{background:#241309;color:#ff9a52;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
+    .tab[aria-selected="true"]{background:#241309;color:#c6ff45;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
     h2{font-size:1.45rem;margin:.2rem 0 .4rem;letter-spacing:-.025em}
     .subcopy{color:#999;font-size:.88rem;line-height:1.6;margin:0 0 1.3rem}
     .social-stack{display:grid;gap:.65rem}
@@ -42,14 +42,14 @@
     input{width:100%;min-height:45px;border:1px solid #343434;border-radius:8px;background:#090909;color:#f5f5f5;padding:.75rem .85rem;font:inherit;font-size:.9rem}
     input:focus{outline:2px solid #a8ff3e;outline-offset:1px;border-color:#a8ff3e}
     input::placeholder{color:#696969}
-    .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #a8ff3e;border-radius:9px;background:linear-gradient(180deg,#f58b39,#b84600);color:#fff;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #e66a2c26}
+    .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #a8ff3e;border-radius:9px;background:linear-gradient(180deg,#ff55d8,#b728a1);color:#180a20;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #ff55d826}
     .primary:hover{filter:brightness(1.1)}
     .primary:disabled{opacity:.6;cursor:wait}
     .status{min-height:1.2rem;margin:.7rem 0 0;color:#ffb17f;font-size:.8rem;line-height:1.5}
     .legal{color:#777;font-size:.72rem;line-height:1.6;text-align:center;margin:1rem 0 0}
     .legal a{color:#d8a07c}
     .below{color:#858585;text-align:center;font-size:.78rem;margin:1.2rem 0 0}
-    .below a{color:#ff9a52;text-decoration:none;font-weight:750}
+    .below a{color:#c6ff45;text-decoration:none;font-weight:750}
     [hidden]{display:none!important}
     @media(max-width:760px){.entry-layout{grid-template-columns:1fr;gap:1.2rem;min-height:auto;padding:1.5rem 1rem 2.5rem}.brand-story{padding:.6rem 0}.brand-story h1{font-size:clamp(2.8rem,13vw,4.7rem);margin:.8rem 0}.intro{font-size:.95rem;line-height:1.7}.values{margin-top:1.2rem}.entry-card{padding:1.2rem;border-radius:14px}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
