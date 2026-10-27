@@ -223,10 +223,10 @@
 /* Messaging finish pass: clearer hierarchy, focused controls, and warmer conversation surfaces. */
 .messages-shell{width:min(1480px,96%);padding-top:clamp(1rem,3vw,2rem)}
 .messages-hero{position:relative;isolation:isolate}
-.messages-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:-1rem -2vw;background:radial-gradient(ellipse at 85% 0%,rgba(211,84,0,.12),transparent 55%)}
+.messages-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:-1rem -2vw;background:radial-gradient(ellipse at 85% 0%,rgba(255,85,216,.12),transparent 55%)}
 .messages-hero h1{font-size:clamp(2.8rem,6vw,4.8rem)!important;letter-spacing:-.07em!important}
 .messages-hero h1 span{color:#e87845}
-.message-layout{border:1px solid #34271f!important;border-radius:17px!important;box-shadow:0 25px 80px rgba(0,0,0,.34),0 0 35px rgba(211,84,0,.035)!important;overflow:hidden}
+.message-layout{border:1px solid #34271f!important;border-radius:17px!important;box-shadow:0 25px 80px rgba(0,0,0,.34),0 0 35px rgba(255,85,216,.035)!important;overflow:hidden}
 .conversation-panel{border-right:1px solid #30251e!important}
 .panel-title strong{letter-spacing:-.04em}
 .conversation{border:1px solid transparent!important;transition:background .18s ease,border-color .18s ease}
@@ -239,15 +239,15 @@
 .message.theirs{background:linear-gradient(145deg,#191613,#100f0e)!important;border-color:#342820!important}
 .composer{border-top-color:#30251e!important;background:linear-gradient(180deg,#100f0e,#0b0b0a)!important}
 .composer textarea{border-color:#38291f!important;background:#0b0a09!important;border-radius:10px!important}
-.composer textarea:focus{outline:2px solid rgba(240,106,10,.7)!important;outline-offset:1px}
-.composer button.primary,.messages-hero .primary{background:linear-gradient(180deg,#f07832,#c34e09)!important;border-color:#d35400!important;color:#fff!important}
-.composer button.primary:hover:not(:disabled),.messages-hero .primary:hover{box-shadow:0 8px 24px rgba(211,84,0,.16)}
+.composer textarea:focus{outline:2px solid rgba(255,85,216,.7)!important;outline-offset:1px}
+.composer button.primary,.messages-hero .primary{background:linear-gradient(180deg,#f07832,#c34e09)!important;border-color:#b728a1!important;color:#fff!important}
+.composer button.primary:hover:not(:disabled),.messages-hero .primary:hover{box-shadow:0 8px 24px rgba(255,85,216,.16)}
 .message-actions button,.chat-head button,.panel-title button,.icon-button{transition:background .16s ease,border-color .16s ease,color .16s ease}
 .message-actions button:hover,.chat-head button:hover,.panel-title button:hover,.icon-button:hover{border-color:#76421f!important;color:#ffb18c!important}
 .compose-dialog{border-color:#4a3021!important;background:linear-gradient(145deg,#171310,#0b0b0b)!important}
 .compose-dialog input,.compose-dialog textarea,.compose-dialog select{background:#0a0908!important;border-color:#38291f!important;color:#eee!important}
 .member-result:hover,.member-result:focus-visible{border-color:#9b4d1e!important;background:#21150e!important}
-.messages-shell a:focus-visible,.messages-shell button:focus-visible,.messages-shell input:focus-visible,.messages-shell textarea:focus-visible{outline:2px solid #f06a0a!important;outline-offset:3px}
+.messages-shell a:focus-visible,.messages-shell button:focus-visible,.messages-shell input:focus-visible,.messages-shell textarea:focus-visible{outline:2px solid #ff55d8!important;outline-offset:3px}
 @media(max-width:850px){.messages-shell{width:min(100% - 1rem,760px)}.message-layout{border-radius:13px!important}.messages-hero{align-items:flex-start}.messages-hero .primary{flex-shrink:0}}
 @media(prefers-reduced-motion:reduce){.conversation,.message-actions button,.chat-head button,.panel-title button,.icon-button{transition:none!important}}
 
@@ -467,9 +467,9 @@
 }
 
 /* Keep chat action accents aligned with the ember palette on every viewport. */
-#enable-notifications{border-color:rgba(230,106,44,.42);background:rgba(230,106,44,.08)}
+#enable-notifications{border-color:rgba(255,85,216,.42);background:rgba(255,85,216,.08)}
 #enable-notifications:hover{border-color:var(--kf-accent);color:var(--kf-accent)}
-.group-chip{background:rgba(230,106,44,.12)}
+.group-chip{background:rgba(255,85,216,.12)}
 .group-chip span,#attach-file,.pending-attachment button,.message-attachment .attachment-icon{color:var(--kf-accent)}
 .message-attachment:hover{border-color:var(--kf-accent)}
 
