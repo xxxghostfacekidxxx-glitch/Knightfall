@@ -220,7 +220,22 @@
     }
   });
   document.addEventListener("pointerdown", event => {
-    if (!header.contains(event.target)) closeMobileMenu();
+    if (!header.contains(event.target)) {
+      closeMobileMenu();
+      nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
+    }
+  });
+  // Close the drawer when keyboard focus leaves the entire header.
+  header.addEventListener("focusout", () => {
+    queueMicrotask(() => {
+      if (!header.contains(document.activeElement)) {
+        closeMobileMenu();
+        nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
+      }
+    });
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1080) closeMobileMenu();
   });
   window.addEventListener("popstate", closeMobileMenu);
   nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
