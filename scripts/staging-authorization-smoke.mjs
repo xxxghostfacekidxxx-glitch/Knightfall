@@ -1,7 +1,7 @@
 const base = process.env.STAGING_API;
 if (!base) throw Error("STAGING_API required");
 const url = new URL(base);
-if (url.protocol !== "https:" || url.hostname === "api.ash-fall.com") throw Error("Production forbidden");
+if (url.protocol !== "https:" || !(url.hostname === "staging.api.ash-fall.com" || (url.hostname.startsWith("staging-") && url.hostname.endsWith(".workers.dev")))) throw Error("Dedicated staging host required");
 const cases = [
   ["/api/admin/overview", 403],
   ["/api/admin/settings", 403],
