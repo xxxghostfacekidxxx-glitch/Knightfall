@@ -1,10 +1,10 @@
 (() => {
   // Shared Gravewave theme and original artwork, loaded once on all nav-enabled pages.
   if (!document.querySelector('link[data-gravewave-theme]')) {
-    const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-gravewave1';theme.dataset.gravewaveTheme='true';document.head.append(theme);
+    const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-neonfix2';theme.dataset.gravewaveTheme='true';document.head.append(theme);
   }
   if (!document.querySelector('script[data-gravewave-decor]')) {
-    const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-gravewave1';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
+    const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-neonfix2';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
   }
   // Full-site Gravewave signal interference and original mascot decorations.
   if (!document.querySelector('link[data-gravewave-takeover]')) {
@@ -119,7 +119,7 @@
       if (!document.getElementById("kf-app-update-style")) {
         const style = document.createElement("style");
         style.id = "kf-app-update-style";
-        style.textContent = '.kf-app-update{position:fixed;z-index:2147483000;bottom:max(1rem,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(92vw,540px);display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;padding:.85rem 1rem;border:1px solid #ff9b4b;border-radius:14px;background:#17100df5;color:#fce4cc;box-shadow:0 8px 36px #000a;font:600 14px/1.45 system-ui,sans-serif}.kf-app-update span{flex:1 1 210px}.kf-app-update button{min-height:40px;padding:.5rem .8rem;border-radius:8px;border:1px solid #ff9b4b;background:#ff9b4b;color:#1c100a;font:700 14px system-ui;cursor:pointer}.kf-app-update button:last-child{background:transparent;color:#fce4cc}.kf-app-update button:focus-visible{outline:2px solid #a8ff3e;outline-offset:2px}@media(max-width:400px){.kf-app-update{bottom:max(.4rem,env(safe-area-inset-bottom));gap:.45rem}}';
+        style.textContent = '.kf-app-update{position:fixed;z-index:2147483000;bottom:max(1rem,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(92vw,540px);display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;padding:.85rem 1rem;border:1px solid #ff55d8;border-radius:14px;background:#140d20f5;color:#f9f3ff;box-shadow:0 8px 36px #000a;font:600 14px/1.45 system-ui,sans-serif}.kf-app-update span{flex:1 1 210px}.kf-app-update button{min-height:40px;padding:.5rem .8rem;border-radius:8px;border:1px solid #ff55d8;background:#ff55d8;color:#15071b;font:700 14px system-ui;cursor:pointer}.kf-app-update button:last-child{background:transparent;color:#f9f3ff}.kf-app-update button:focus-visible{outline:2px solid #a8ff3e;outline-offset:2px}@media(max-width:400px){.kf-app-update{bottom:max(.4rem,env(safe-area-inset-bottom));gap:.45rem}}';
         document.head.append(style);
       }
       updateToast = document.createElement("aside");
