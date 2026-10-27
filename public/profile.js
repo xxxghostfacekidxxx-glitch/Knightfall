@@ -365,6 +365,6 @@ async function load(){
    applyProfileLayout(d.profile_layout);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
- }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
+ }catch(error){root.innerHTML="<h1>Profile temporarily unavailable</h1><p>"+esc(error.message)+"</p><p>Profile data could not be loaded. Your profile has not been deleted.</p><div class=\"profile-actions\"><button class=\"action primary\" type=\"button\" id=\"retry-profile\">Retry profile</button><a class=\"action\" href=\"/members.html\">Browse members</a><a class=\"action\" href=\"/account.html\">Account settings</a></div>";root.querySelector("#retry-profile")?.addEventListener("click",()=>{root.innerHTML="<p>Loading profile…</p>";load();},{once:true});}
 }
 load();
