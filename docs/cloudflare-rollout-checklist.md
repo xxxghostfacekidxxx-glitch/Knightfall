@@ -14,3 +14,11 @@ Do not enable broad lifecycle deletion on VAULT, MESSAGE_ATTACHMENTS, PROFILE_ME
 
 ## Release gates
 Run node --test scripts/turnstile.test.mjs, the static audit, and browser registration checks. Confirm GitHub Actions results and Cloudflare deployment status independently. No resource creation or production activation is implied by a Git commit.
+
+## Staging Turnstile hostname
+
+Production verification accepts only `ash-fall.com` and `www.ash-fall.com` by default. A dedicated staging Worker may set `TURNSTILE_STAGING_HOSTNAME=staging.ash-fall.com` (or a `staging-*.pages.dev` host) and register that exact hostname with its Turnstile widget. Do not set this variable in production. The secret and site key must both be present; never publish the secret. Staging registration should be tested separately from production.
+
+## Notification queue resilience
+
+Push-provider calls have an 8-second per-subscription timeout. Transient D1 subscription lookup errors now count as retryable delivery failures. A partial delivery success is acknowledged to avoid duplicate alerts; this is best-effort rather than exactly-once delivery. Production queues remain opt-in and unbound until staging and free-tier usage are verified.
