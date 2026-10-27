@@ -11,7 +11,7 @@ function stop(t){running=false;note(t+" · "+score+" points");document.dispatchE
 function start(){token++;running=true;score=0;last=performance.now();$("score").textContent="0";
  if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:i===0?265:rand(40,480),y:420-i*55}))};
  else state={x:320,y:id==="survivor"?240:410,hp:id==="survivor"?5:3,enemies:[],shots:[],spawn:0,fire:0,elapsed:0};
- note("RUNNING");requestAnimationFrame(t=>loop(t,token));draw()}
+ note("RUNNING");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(t=>loop(t,token));draw()}
 function loop(now,seq){if(!running||seq!==token)return;const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;const s=state;
  const dx=(keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0),dy=(keys.has("ArrowDown")?1:0)-(keys.has("ArrowUp")?1:0);
  s.x=Math.max(20,Math.min(620,s.x+dx*260*dt));
