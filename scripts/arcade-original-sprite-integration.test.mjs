@@ -4,7 +4,9 @@ import {readFileSync,existsSync} from "node:fs";
 const catalog=JSON.parse(readFileSync("public/arcade/original-creations.json","utf8"));
 for(const [id,names] of Object.entries({
  "ashen-dominion":["cinder-guard.svg","void-raider.svg","ember-outpost.svg"],
- "glitch-munch":["ember-devourer.svg","void-stalker.svg"]
+ "glitch-munch":["ember-devourer.svg","void-stalker.svg"],
+ "rooftop-riot":["ash-runner.svg","ember-shard.svg"],
+ "colossus-clash":["ash-bruiser.svg","cinder-fighter.svg"]
 })){
  test(id+" original sprite assets are local, cataloged and used in gameplay",()=>{
   const game=catalog.games.find(g=>g.id===id);
