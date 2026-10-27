@@ -1149,7 +1149,7 @@
       "sprites": [
         "cinder-invader.svg"
       ],
-      "notes": "Defend the ashes against an invading swarm. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/alien-battle/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/alien-battle",
       "assets": [
@@ -1158,7 +1158,7 @@
           "path": "/arcade/hosted/alien-battle/sprites/cinder-invader.svg"
         }
       ],
-      "status": "rebranded and committed; independent provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "balance-stack",
@@ -1293,7 +1293,7 @@
       "sprites": [
         "ascension.svg"
       ],
-      "notes": "Climb a crumbling vertical world. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/doodle-jump/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/doodle-jump",
       "assets": [
@@ -1302,7 +1302,7 @@
           "path": "/arcade/hosted/doodle-jump/sprites/ascension.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "survivor",
@@ -1311,7 +1311,7 @@
       "sprites": [
         "survivor.svg"
       ],
-      "notes": "Outlast waves of creatures in the ruins. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced legacy page and gameplay JavaScript with original Ash-Fall action canvas engine (ashfall-original-action.js); original emblem retained; full browser QA pending.",
       "engine": "/arcade/hosted/survivor/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/survivor",
       "assets": [
@@ -1320,7 +1320,7 @@
           "path": "/arcade/hosted/survivor/sprites/survivor.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "two-cars",
