@@ -176,7 +176,8 @@
     header.className = "kf-header";
     document.body.prepend(header);
   }
-  if (header.dataset.kfNavMounted === "true") return;
+  // A stale/partial mount must never leave the site without navigation.
+  if (header.dataset.kfNavMounted === "true" && header.querySelector("#kf-primary-nav") && header.querySelector(".kf-nav-toggle")) return;
   header.dataset.kfNavMounted = "true";
   header.setAttribute("aria-label", "Ash-Fall site navigation");
   // Keep the mobile navigation above ambient glitch layers and floating mascots.
@@ -195,6 +196,12 @@
     skip.href="#"+mainContent.id;
     skip.textContent="Skip to content";
     header.before(skip);
+  }
+  // Inline emergency chrome so navigation survives delayed or cached theme CSS.
+  if (!document.getElementById("kf-nav-emergency-css")) {
+    const emergency=document.createElement("style");emergency.id="kf-nav-emergency-css";
+    emergency.textContent='html body .kf-header{display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:2147482000!important;min-height:62px!important;padding:8px 14px!important;background:#100c1c!important;border-bottom:2px solid #ff55d8!important;visibility:visible!important;opacity:1!important}html body .kf-header .kf-brand{display:inline-flex!important;flex-shrink:0!important;color:white!important;font-weight:900!important}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:76px!important;min-height:44px!important;background:#22132d!important;color:#c6ff45!important;border:1px solid #ff55d8!important;border-radius:10px!important}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important;display:grid!important;position:absolute!important;top:100%!important;left:8px!important;right:8px!important;z-index:2147482001!important;max-height:calc(100dvh - 75px)!important;overflow:auto!important;padding:12px!important;background:#100c1c!important;border:1px solid #ff55d8!important;border-radius:12px!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;color:#f9f3ff!important}@media(min-width:1081px){html body .kf-header .kf-nav{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;flex-wrap:wrap!important}html body .kf-header .kf-nav-toggle{display:none!important}}@media(max-width:1080px){html body .kf-header .kf-nav:not(.open){display:none!important}}';
+    document.head.append(emergency);
   }
   header.innerHTML = `
     <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
