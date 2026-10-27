@@ -20,6 +20,24 @@
 <article style="margin-top:1rem;padding:.75rem;border:1px solid #ffffff22;border-radius:10px;background:#080b13"><img src="/branding/archive/ash-fall-wordmark.svg" alt="Archived original Ash-Fall wordmark" style="display:block;width:100%;max-height:120px;object-fit:contain;background:#07070b;border-radius:8px"><strong style="display:block;margin:.6rem 0">Archived original Ash-Fall logo / wordmark</strong><a class="btn" href="/branding/archive/ash-fall-wordmark.svg" download>Download old logo SVG</a></article>
 <p class="small">Palette: hot pink #ff27ce · acid green #c6ff45 · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
 </section>
+<section class="panel" id="gravewave-game-sprites" style="margin:1rem 0;border-color:#c6ff4577">
+<h2>Gravewave · Game-Ready Neon Sprites</h2>
+<p>Enemies, projectiles, pickups, hazards, terrain, effects, and UI icons. Sixteen original transparent SVG assets, sized for arcade games. Use <code>/gravewave-sprites.js</code> to preload and draw them on canvas.</p>
+<p id="gravewave-game-status" class="small" role="status">Loading game sprites…</p>
+<div id="gravewave-game-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:.7rem"></div>
+<a class="btn" href="/assets/arcade/gravewave/manifest.json" target="_blank" rel="noopener noreferrer">Game sprite manifest</a>
+</section>
+<script>
+(()=>{'use strict';const root=document.getElementById('gravewave-game-gallery'),status=document.getElementById('gravewave-game-status');
+fetch('/assets/arcade/gravewave/manifest.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{if(!Array.isArray(data.sprites))throw Error('Invalid sprite manifest');
+let count=0;for(const item of data.sprites){if(!/^[a-z]+(?:-[a-z]+)*$/.test(item.id)||item.src!=='/assets/arcade/gravewave/'+item.id+'.svg')continue;
+const card=document.createElement('article');card.style.cssText='border:1px solid #ffffff24;background:#090b15;border-radius:12px;padding:.65rem;text-align:center';
+const img=document.createElement('img');img.src=item.src;img.alt=item.name;img.loading='lazy';img.width=96;img.height=96;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #c6ff4566)';
+const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem';
+const type=document.createElement('small');type.textContent=item.category;type.style.cssText='display:block;color:#b6b5cb';
+const a=document.createElement('a');a.href=item.src;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.5rem;font-size:.7rem';
+card.append(img,title,type,a);root.append(card);count++}status.textContent=count+' game-ready sprites available.'}).catch(e=>{status.textContent='Game sprite collection unavailable: '+e.message})})();
+</script>
 <section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
 <h2>Gravewave · Neon Nuisances</h2>
 <p>Twelve original cute-horror metalhead mascots, including exposed ribs, cyber skeletons, fanged aliens, and coffin ghouls. Each has four animated variants: idle, blink, bounce, and mischief. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
