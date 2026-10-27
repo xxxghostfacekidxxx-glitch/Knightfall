@@ -441,6 +441,7 @@
       await refreshConversations().catch(() => {});
     } catch (error) {
       typing.remove();
+      if (streamedArticle) streamedArticle.remove();
       showError(error.message || "Miss Chaos couldn't answer just now.");
       statusEl.textContent = "Waiting for a working AI connection";
       // The server may have persisted the request even when the response failed.
