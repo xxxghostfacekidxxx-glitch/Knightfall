@@ -3,10 +3,17 @@
 const base='/assets/devil-tools/neon-nuisances/';
 const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot'];
 const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg';
-const excluded=/\/(?:admin|moderation|vault|adult|dating|checkout|payment|settings)/i.test(location.pathname);
-const privateForm=/\/(?:messages|profile|account|login|register|reset-password|auth)/i.test(location.pathname);
+const excluded=/\/(?:checkout|payment|vault|settings)/i.test(location.pathname);
+const privateForm=/\/(?:messages|account|login|register|reset-password|auth)/i.test(location.pathname);
 function mascot(i,cls){const el=document.createElement('img');el.src=src(i);el.alt='';el.setAttribute('aria-hidden','true');el.className=cls;el.loading='lazy';el.decoding='async';return el}
 function mount(){
+ // Visible, non-interactive character crew on every public site page.
+ if(!excluded&&!document.querySelector('.gw-character-crew')){
+  const crew=document.createElement('aside');crew.className='gw-character-crew';crew.setAttribute('aria-label','Ash-Fall original mascot characters');
+  [0,8,10,11].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
+  document.body.append(crew);
+ }
+
  document.body.classList.add('gravewave-everywhere');
  if(!document.querySelector('.gw-ambient')&&!excluded){
   const ambient=document.createElement('div');ambient.className='gw-ambient';ambient.setAttribute('aria-hidden','true');
@@ -20,7 +27,7 @@ function mount(){
    const panels=main.querySelectorAll('.entry-card,.feature-card,.game-card,.arcade-card,.cartridge-cabinet,.cabinet,.af-card,.community-card,.category-card,.topic-card,.shop-card,.panel');
    let count=0;
    for(const panel of panels){
-    if(count>=24)break;
+    if(count>=36)break;
     if(panel.closest('dialog,[contenteditable],.game-panel,.play-area,.screen,.chat-messages,.message-list,.messages-thread,.conversation,.composer'))continue;
     if(panel.querySelector('.gw-panel-mascot'))continue;
     if(getComputedStyle(panel).position==='static')panel.style.position='relative';
