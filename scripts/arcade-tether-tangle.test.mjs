@@ -41,5 +41,9 @@ test("Tether Tangle retry removes unbanked stars, stage win banks them and old l
  sandbox.__tether.win();
  node("next").onclick();
  assert.equal(sandbox.__tether.getScore(),2,"clearing a stage banks earned stars");
+ sandbox.__tether.setStars(4);
+ sandbox.__tether.win();
+ node("reset").onclick();
+ assert.equal(sandbox.__tether.getScore(),2,"Reset must not allow replaying a completed stage to farm stars");
  assert.ok(events.filter(e=>e.type==="ashfall:arcade-started").length>=3);
 });
