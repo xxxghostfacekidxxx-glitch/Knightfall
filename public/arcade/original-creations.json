@@ -2005,6 +2005,17 @@
         }
       ],
       "status": "cataloged; code provenance and browser QA pending"
+    },
+    {
+      "id": "cinder-lander",
+      "name": "Cinder Lander",
+      "genre": "Simulation",
+      "sprites": [],
+      "notes": "Independently authored Ash-Fall lander physics, procedural terrain, vector spacecraft, and touch controls. Genre research reference: cscazorla/javascript-videogame-lunar-lander (MIT); no upstream code or art incorporated. Browser QA pending.",
+      "engine": "/arcade/hosted/cinder-lander/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-lander",
+      "assets": [],
+      "status": "original Ash-Fall engine committed; browser QA pending"
     }
   ]
 }
