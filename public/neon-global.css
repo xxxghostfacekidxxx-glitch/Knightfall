@@ -1,0 +1,46 @@
+/* Ash-Fall Gravewave site-wide neon palette. Intentional overrides for legacy orange page skins. */
+:root{
+ --af-bg:#070710;--af-surface:#101020;--af-surface-raised:#191329;--af-border:#65316f;--af-text:#f9f3ff;--af-muted:#b9aeca;
+ --af-ember:#ff55d8;--af-ember-light:#c6ff45;--af-ember-soft:rgba(255,85,216,.15);
+ --kf-bg:#070710;--kf-panel:#101020;--kf-panel-2:#191329;--kf-line:#65316f;--kf-muted:#b9aeca;--kf-text:#f9f3ff;
+ --kf-accent:#ff55d8;--kf-accent-bright:#c6ff45;--kf-accent-soft:rgba(255,85,216,.15);
+ --arcade-ember:#ff55d8;--arcade-rust:#bc2d9a;--arcade-line:#65316f;--arcade-gold:#c6ff45;--arcade-ink:#070710;
+ --dt-pink:#ff55d8;--dt-green:#c6ff45;accent-color:#c6ff45;color-scheme:dark
+}
+html{background:#070710}
+body{background-color:#070710!important;background-image:radial-gradient(ellipse at 12% 5%,rgba(255,85,216,.14),transparent 42%),radial-gradient(ellipse at 91% 70%,rgba(198,255,69,.08),transparent 39%)!important;color:#f9f3ff}
+::selection{background:#ff55d8;color:#090911}
+:where(a){color:#ff8ce6}
+:where(a:hover){color:#c6ff45}
+:where(h1,h2,h3){text-shadow:0 0 20px rgba(255,85,216,.13)}
+:where(button,input,select,textarea){accent-color:#c6ff45}
+:where(button,a,input,select,textarea,[role="button"]):focus-visible{outline:2px solid #c6ff45!important;outline-offset:3px}
+:where(input,textarea,select){border-color:#684171;background-color:#100f1d;color:#f9f3ff}
+:where(input,textarea,select):focus{border-color:#c6ff45;box-shadow:0 0 0 2px rgba(198,255,69,.13)}
+:where(.panel,.card,.cabinet,.game,.game-panel,.entry-card,.af-card,.profile-card,.post-card){border-color:#65316f!important;background:linear-gradient(150deg,#181125,#0b0b17)!important}
+:where(.panel,.card,.cabinet,.game,.game-panel,.entry-card):hover{border-color:#ff55d8!important}
+:where(.btn,.button,.action,.primary,.af-button-primary,button[type="submit"]){border-color:#ff55d8!important}
+:where(.primary,.af-button-primary,button[type="submit"]){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;color:#15071b!important;font-weight:800}
+:where(.btn:hover,.button:hover,.action:hover,.primary:hover){box-shadow:0 0 18px rgba(255,85,216,.24)}
+:where(.eyebrow,.tag,.genre,.pill,.license){color:#c6ff45!important}
+:where(.tag,.genre,.pill,.license){border-color:#5c8132!important;background:rgba(198,255,69,.07)!important}
+.kf-header{background:rgba(9,8,19,.94)!important;border-bottom-color:rgba(255,85,216,.45)!important}
+.kf-brand{color:#fff!important;text-shadow:0 0 16px rgba(255,85,216,.3)!important}
+.kf-brand b{color:#c6ff45!important}
+.kf-nav a:hover,.kf-nav-group[open]>summary,.kf-nav-primary:hover{color:#c6ff45!important;border-color:#ff55d8!important;background:rgba(255,85,216,.1)!important}
+.kf-install-app{background:rgba(198,255,69,.12)!important;color:#c6ff45!important;border-color:#c6ff45!important}
+.kf-announcement,.kf-maintenance{border-bottom-color:#ff55d8!important;background:#160e22!important;color:#f8dafa!important}
+#ashfall-support-footer{background:#0f0c1b!important;border-top:1px solid #ff55d8!important;color:#d8cde0!important}
+#ashfall-support-footer a,#ashfall-shop-link{color:#c6ff45!important}
+::-webkit-scrollbar-thumb{background:#7c2774!important;border-color:#100d1c!important}
+::-webkit-scrollbar-thumb:hover{background:#ff55d8!important}
+/* Decorative artwork never blocks gameplay, navigation, forms, or pointer events. */
+.kf-gravewave-ribbon{display:flex;align-items:center;justify-content:center;gap:clamp(.35rem,2vw,1rem);flex-wrap:wrap;margin:.75rem auto;max-width:600px;pointer-events:none}
+.kf-gravewave-ribbon img{width:clamp(32px,5vw,52px);height:clamp(32px,5vw,52px);object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,85,216,.48));animation:kf-neon-hover 3.6s ease-in-out infinite}
+.kf-gravewave-ribbon img:nth-child(even){animation-delay:-1.6s;filter:drop-shadow(0 0 8px rgba(198,255,69,.45))}
+.kf-gravewave-title{display:flex;gap:.4rem;align-items:center;margin:.35rem 0 .6rem;pointer-events:none}
+.kf-gravewave-title img{width:36px;height:36px;object-fit:contain;filter:drop-shadow(0 0 7px #ff55d866)}
+.kf-gravewave-corner{position:absolute;right:1rem;top:1rem;width:36px;height:36px;object-fit:contain;pointer-events:none;opacity:.72;filter:drop-shadow(0 0 7px #c6ff4580)}
+@keyframes kf-neon-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(max-width:600px){.kf-gravewave-ribbon img{width:32px;height:32px}.kf-gravewave-title img{width:27px;height:27px}.kf-gravewave-corner{width:26px;height:26px;right:.4rem;top:.4rem}}
+@media(prefers-reduced-motion:reduce){.kf-gravewave-ribbon img{animation:none}}
