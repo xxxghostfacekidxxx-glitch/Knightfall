@@ -163,6 +163,7 @@
         } catch (error) {
           status.style.color = "#ffb17f";
           status.textContent = error.message || "Network error. Check your connection and try again.";
+          if (endpoint.endsWith("/register") && turnstileEnabled && window.turnstile) window.turnstile.reset();
         } finally {
           submit.disabled = false;
           submit.textContent = endpoint.endsWith("/login") ? "Log in to Ash-Fall ↗" : "Create my account ↗";
