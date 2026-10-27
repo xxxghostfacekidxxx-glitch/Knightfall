@@ -65,3 +65,6 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
  .messages-hero-actions>button{min-height:44px;flex:1 1 120px}
  .kf-gravewave-ribbon{gap:.25rem}
 }
+
+/* Never stack the old atlas stamp on top of the new original Gravewave artwork. */
+:where(.game-card,.arcade-card,.cartridge-cabinet,.cabinet):has(>.kf-gravewave-corner)>.chaos-sprite-stamp{display:none!important}
