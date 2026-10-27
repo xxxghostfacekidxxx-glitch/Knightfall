@@ -13,7 +13,7 @@ function mount(){if(document.querySelector('.kf-gravewave-title'))return;
  const main=document.querySelector('main');if(!main)return;
  const title=main.querySelector('h1');if(title&&!main.querySelector('.kf-gravewave-title')){const wrap=document.createElement('div');wrap.className='kf-gravewave-title';wrap.dataset.gravewaveDecor='title';const id=/arcade|game|cartridge/.test(path)?'gravebyte':/community|madhouse/.test(path)?'statichex':/shop|support/.test(path)?'rattlepop':'thornriot';wrap.append(img(mascotRoot+id+'.svg'),img(spriteRoot+(/arcade|game/.test(path)?'plasma-bolt':'cinder-heart')+'.svg'));title.after(wrap)}
  const cards=main.querySelectorAll('.game-card,.arcade-card,.cartridge-cabinet,.cabinet,.af-card,.feature-card');
- for(let i=0;i<Math.min(cards.length,18);i++){const card=cards[i];if(card.querySelector('.kf-gravewave-corner'))continue;const style=getComputedStyle(card);if(style.position==='static')card.style.position='relative';const deco=img(spriteRoot+sprites[i%sprites.length]+'.svg');deco.className='kf-gravewave-corner';deco.dataset.gravewaveDecor='card';card.append(deco)}
+ for(let i=0;i<Math.min(cards.length,18);i++){const card=cards[i];if(card.querySelector('.kf-gravewave-corner'))continue;const style=getComputedStyle(card);if(style.position==='static')card.style.position='relative';const oldStamp=card.querySelector('.chaos-sprite-stamp');if(oldStamp)oldStamp.remove();const deco=img(spriteRoot+sprites[i%sprites.length]+'.svg');deco.className='kf-gravewave-corner';deco.dataset.gravewaveDecor='card';card.append(deco)}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
