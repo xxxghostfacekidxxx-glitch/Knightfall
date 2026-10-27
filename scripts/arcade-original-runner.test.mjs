@@ -15,6 +15,11 @@ for(const id of ["slush-rush","rusty-sky"])test(id+" boots, accepts input, and a
  runInNewContext(source,{document,window:{},location:{pathname:"/arcade/hosted/"+id+"/index.html"},Math,Number,Set,CustomEvent:class{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
  handlers.get("restart:click")();
  for(let i=0;i<5;i++){const fn=frames.shift();assert.ok(fn);fn((i+1)*16)}
+ const stale=frames.shift();
+ handlers.get("restart:click")();
+ const queued=frames.length;
+ stale(1000);
+ assert.equal(frames.length,queued,"stale run frame must not reschedule after restart");
  handlers.get("canvas:pointerdown")({preventDefault(){}});
  assert.ok(elements.get("score").textContent!=="");
 });
