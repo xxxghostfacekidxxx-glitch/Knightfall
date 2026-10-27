@@ -5,8 +5,11 @@ if (url.protocol !== "https:" || !(url.hostname === "staging.api.ash-fall.com" |
 const cases = [
   ["/api/admin/overview", 403],
   ["/api/admin/settings", 403],
+  ["/api/admin/audit", 403],
   ["/api/personal-bots", 401],
   ["/api/vault/items", 401],
+  ["/api/vault/summary", 401],
+  ["/api/notifications", 401],
   ["/api/messages/conversations", 401]
 ];
 let failures = 0;
