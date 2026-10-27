@@ -14,6 +14,7 @@
   const isOnline = user => Boolean(user.last_seen_at && Date.now() - new Date(user.last_seen_at).getTime() < 300000);
   let users = [];
   let requestNumber = 0;
+  let activeController = null;
   let timer;
 
   function memberCard(user) {
@@ -68,6 +69,9 @@
 
   async function load() {
     const currentRequest = ++requestNumber;
+    activeController?.abort();
+    const controller = new AbortController();
+    activeController = controller;
     root.setAttribute("aria-busy", "true");
     status.textContent = "Searching the inhabitants…";
     try {
@@ -75,7 +79,7 @@
       const allUsers = [];
       let offset = 0;
       while (offset < 10000) {
-        const response = await fetch(API + "/api/discover?q=" + query + "&limit=50&offset=" + offset, { credentials:"include", cache:"no-store" });
+        const response = await fetch(API + "/api/discover?q=" + query + "&limit=50&offset=" + offset, { credentials:"include", cache:"no-store", signal:controller.signal });
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || "Member directory returned " + response.status + ".");
         if (currentRequest !== requestNumber) return;
@@ -89,11 +93,13 @@
       users = allUsers;
       render();
     } catch (error) {
-      if (currentRequest !== requestNumber) return;
+      if (currentRequest !== requestNumber || error.name === "AbortError") return;
       root.setAttribute("aria-busy", "false");
       root.innerHTML = '<div class="directory-empty"><span aria-hidden="true">⚠</span><h2>The directory is being difficult.</h2><p>' + esc(error.message || "Unable to load members.") + '</p><button type="button" id="retry-members">Try again</button></div>';
       status.textContent = "Could not load members.";
       document.querySelector("#retry-members").addEventListener("click", load);
+    } finally {
+      if (activeController === controller) activeController = null;
     }
   }
 
