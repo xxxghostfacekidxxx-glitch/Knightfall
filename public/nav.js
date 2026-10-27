@@ -6,6 +6,14 @@
   if (!document.querySelector('script[data-gravewave-decor]')) {
     const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-neonfix2';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
   }
+  // Loaded after legacy page styles, including on cached installed-app pages.
+  if (!document.querySelector('link[data-gravewave-consistency]')) {
+    const consistency=document.createElement('link');
+    consistency.rel='stylesheet';
+    consistency.href='/gravewave-consistency.css?v=20261027-profile-neon1';
+    consistency.dataset.gravewaveConsistency='true';
+    document.head.append(consistency);
+  }
   // Full-site Gravewave signal interference and original mascot decorations.
   if (!document.querySelector('link[data-gravewave-takeover]')) {
     const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/gravewave-takeover.css?v=20261026-mascot2';sheet.dataset.gravewaveTakeover='true';document.head.append(sheet);
