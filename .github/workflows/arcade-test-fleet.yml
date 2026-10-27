@@ -10,6 +10,7 @@ on:
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
+      - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
@@ -28,6 +29,7 @@ on:
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
+      - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
@@ -113,6 +115,10 @@ jobs:
         run: |
           node --check scripts/arcade-originals-audit.mjs
           node scripts/arcade-originals-audit.mjs
+      - name: Inventory code and asset provenance across all 103 cartridges
+        run: |
+          node --check scripts/arcade-provenance-audit.mjs
+          node scripts/arcade-provenance-audit.mjs --report
       - name: Audit arcade asset references
         run: |
           node scripts/arcade-asset-doctor.mjs > /tmp/arcade-asset-audit.json || true
@@ -148,6 +154,7 @@ jobs:
             /tmp/arcade-live-results.log
             /tmp/arcade-asset-audit.json
             /tmp/arcade-import-audit.log
+            artifacts/arcade-provenance.json
             /tmp/arcade-browser-evidence/
             /tmp/arcade-replays/
             /tmp/arcade-gameplay-replay.log
