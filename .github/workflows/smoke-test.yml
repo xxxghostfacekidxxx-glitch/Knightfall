@@ -9,6 +9,7 @@ on:
       - 'backend/src/**'
       - 'backend/package.json'
       - 'scripts/cloudflare-free-config.test.mjs'
+      - 'scripts/turnstile-ui.test.mjs'
       - 'scripts/notification-queue.test.mjs'
       - 'scripts/push-retry-policy.test.mjs'
       - 'scripts/astrology.test.mjs'
@@ -53,7 +54,7 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/turnstile.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
+        run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
