@@ -17,3 +17,7 @@ test("registration errors reset one-time challenge tokens", () => {
 test("registration payload includes challenge response", () => {
   assert.match(html, /turnstile_token: form\.querySelector/);
 });
+
+test("registration challenge is explicitly labeled for backend action validation", () => {
+  assert.match(html, /sitekey:data\.site_key,action:"register"/);
+});
