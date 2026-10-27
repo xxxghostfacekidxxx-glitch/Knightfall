@@ -1720,12 +1720,12 @@
     },
     {
       "id": "rusty-sky",
-      "name": "Rusty Sky",
+      "name": "Rustwing Flight",
       "genre": "Arcade",
       "sprites": [
         "sky.svg"
       ],
-      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "notes": "Independent first-party side-scrolling game implementation in ashfall-original-runner.js. Legacy game page and gameplay replaced; earlier imported code provenance remains recorded in history. Browser QA pending.",
       "engine": "/arcade/hosted/rusty-sky/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/rusty-sky",
       "assets": [
@@ -1734,7 +1734,7 @@
           "path": "/arcade/hosted/rusty-sky/sprites/sky.svg"
         }
       ],
-      "status": "original emblem integrated; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "endless-runner",
@@ -1756,12 +1756,12 @@
     },
     {
       "id": "slush-rush",
-      "name": "Slush Rush",
+      "name": "Ashslide Rush",
       "genre": "Arcade",
       "sprites": [
         "slush.svg"
       ],
-      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "notes": "Independent first-party side-scrolling game implementation in ashfall-original-runner.js. Legacy game page and gameplay replaced; earlier imported code provenance remains recorded in history. Browser QA pending.",
       "engine": "/arcade/hosted/slush-rush/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/slush-rush",
       "assets": [
@@ -1770,7 +1770,7 @@
           "path": "/arcade/hosted/slush-rush/sprites/slush.svg"
         }
       ],
-      "status": "original emblem integrated; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "bubble-barrage",
