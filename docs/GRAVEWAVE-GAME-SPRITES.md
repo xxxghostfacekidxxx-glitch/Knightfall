@@ -26,3 +26,21 @@ For DOM usage, `GravewaveSprites.element('ghost-key')` returns an `HTMLImageElem
 - Draw a sprite at several sizes, rotations, and glow settings on desktop and mobile.
 - Confirm games remain functional without the Gravewave loader loaded.
 - Confirm no browser errors on missing sprite/network failures.
+
+## Legacy arcade renderer bridge (October 2026)
+
+The existing `public/arcade-sprites.js` now also exposes:
+- `ChaosSprites.preloadOriginal('bone-drone')`: resolves to a boolean after loading.
+- `ChaosSprites.drawOriginal(ctx,'bone-drone',x,y,48,48,{glow:'#c6ff45'})`: draws a 96×96 original SVG at the specified canvas rectangle, returning `false` until loaded.
+- `ChaosSprites.originalIds`: immutable list of the 16 original assets.
+
+Example:
+
+```js
+await ChaosSprites.preloadOriginal('bone-drone');
+function renderEnemy(ctx, enemy) {
+  ChaosSprites.drawOriginal(ctx, 'bone-drone', enemy.x, enemy.y, 48, 48, {glow:'#ff55d8'});
+}
+```
+
+This bridge does not automatically change enemy types, gameplay, collisions, or game saves. Game-specific code must call the drawing method to display the new sprites in a live playfield.
