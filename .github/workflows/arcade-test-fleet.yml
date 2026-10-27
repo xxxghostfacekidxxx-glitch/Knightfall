@@ -12,7 +12,8 @@ on:
       - "scripts/arcade-originals-audit.mjs"
       - "scripts/arcade-mini-games.test.mjs"
       - "scripts/arcade-original-trio.test.mjs"
-      - "scripts/arcade-original-sports.test.mjs"
+      - "scripts/arcade-original-driving.test.mjs"
+      - "scripts/arcade-original-sports.test.mjs scripts/arcade-original-driving.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
@@ -34,7 +35,8 @@ on:
       - "scripts/arcade-originals-audit.mjs"
       - "scripts/arcade-mini-games.test.mjs"
       - "scripts/arcade-original-trio.test.mjs"
-      - "scripts/arcade-original-sports.test.mjs"
+      - "scripts/arcade-original-driving.test.mjs"
+      - "scripts/arcade-original-sports.test.mjs scripts/arcade-original-driving.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
@@ -111,7 +113,7 @@ jobs:
           node --check scripts/arcade-gameplay-replay.mjs
           node --check scripts/arcade-gameplay-doctor.mjs
           node --check scripts/arcade-asset-doctor.mjs
-          node --test scripts/arcade-asset-doctor.test.mjs scripts/arcade-mini-games.test.mjs scripts/arcade-original-trio.test.mjs scripts/arcade-original-sports.test.mjs
+          node --test scripts/arcade-asset-doctor.test.mjs scripts/arcade-mini-games.test.mjs scripts/arcade-original-trio.test.mjs scripts/arcade-original-sports.test.mjs scripts/arcade-original-driving.test.mjs
       - name: Audit local game imports and license records
         run: |
           node --check scripts/arcade-import-audit.mjs
