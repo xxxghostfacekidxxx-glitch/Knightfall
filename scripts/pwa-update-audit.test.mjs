@@ -43,7 +43,7 @@ test("notification settings script parses and refuses unsafe alert destinations"
  const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
  assert.ok(inline.length,"notification settings inline script must exist");
  for(const code of inline)new Script(code,{filename:"notifications.html"});
- assert.match(html,/function safeNoticeUrl\\(value\\)/);
- assert.match(html,/safeNoticeUrl\\(n\\.url\\)/);
+ assert.ok(html.includes('function safeNoticeUrl(value)'));
+ assert.ok(html.includes('safeNoticeUrl(n.url)'));
  assert.match(html,/visibilitychange/);
 });
