@@ -17,7 +17,7 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 :where(button,a,input,select,textarea,[role="button"]):focus-visible{outline:2px solid #c6ff45!important;outline-offset:3px}
 :where(input,textarea,select){border-color:#684171;background-color:#100f1d;color:#f9f3ff}
 :where(input,textarea,select):focus{border-color:#c6ff45;box-shadow:0 0 0 2px rgba(198,255,69,.13)}
-:where(.panel,.card,.cabinet,.game,.game-panel,.entry-card,.af-card,.profile-card,.post-card){border-color:#65316f!important;background:linear-gradient(150deg,#181125,#0b0b17)!important}
+:where(.panel,.card,.cabinet,.game,.game-panel,.entry-card,.af-card,.post-card){border-color:#65316f!important;background:linear-gradient(150deg,#181125,#0b0b17)!important}
 :where(.panel,.card,.cabinet,.game,.game-panel,.entry-card):hover{border-color:#ff55d8!important}
 :where(.btn,.button,.action,.primary,.af-button-primary,button[type="submit"]){border-color:#ff55d8!important}
 :where(.primary,.af-button-primary,button[type="submit"]){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;color:#15071b!important;font-weight:800}
@@ -44,3 +44,12 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 @keyframes kf-neon-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(max-width:600px){.kf-gravewave-ribbon img{width:32px;height:32px}.kf-gravewave-title img{width:27px;height:27px}.kf-gravewave-corner{width:26px;height:26px;right:.4rem;top:.4rem}}
 @media(prefers-reduced-motion:reduce){.kf-gravewave-ribbon img{animation:none}}
+
+/* Preserve member-selected profile skins while keeping shared chrome neon. */
+:where([data-profile-theme],[data-user-theme],.profile-theme-preview,.profile-custom-theme) :where(.card,.panel,.profile-card){background:var(--profile-card-bg,inherit);border-color:var(--profile-border,inherit)}
+/* More specific neon controls for older arcade and account templates. */
+:where(.tab[aria-selected="true"],.tabs .active,.game-tabs button[aria-selected="true"]){background:rgba(255,85,216,.17)!important;color:#c6ff45!important;border-color:#ff55d8!important}
+:where(.back,.kf-nav-primary,.kf-nav-group>summary){color:#e2d4f0}
+:where(.screen,.arena,.play-area,.canvas){border-color:#62346d!important}
+:where(.status.good,.success,[role="status"].success){color:#c6ff45}
+:where(.status.bad,.error,[role="alert"]){color:#ff93df}
