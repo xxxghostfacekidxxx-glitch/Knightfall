@@ -1,6 +1,6 @@
 (()=>{"use strict";
 const canvas=document.querySelector("#lander-field"),ctx=canvas.getContext("2d"),$=id=>document.getElementById(id),W=720,H=520;
-const keys=new Set();let ship,terrain=[],pad,particles=[],stars=[],score=0,best=0,level=1,active=false,sequence=0,last=0,hold={left:false,right:false,thrust:false};
+const keys=new Set();let ship,terrain=[],pad,particles=[],stars=[],score=0,best=0,level=1,active=false,sequence=0,last=0,lastOutcome="ready",hold={left:false,right:false,thrust:false};
 try{best=Number(localStorage.getItem("ashfall-cinder-lander-best"))||0}catch{}
 const rand=(a,b)=>a+Math.random()*(b-a);
 function resetWorld(){
@@ -14,12 +14,12 @@ function updateHud(){$("score").textContent=score;$("best").textContent=best;$("
 function ground(x){const i=Math.max(0,Math.min(terrain.length-2,Math.floor(x/20))),a=terrain[i],b=terrain[i+1];return a.y+(b.y-a.y)*Math.max(0,Math.min(1,(x-a.x)/20))}
 function status(s){$("status").textContent=s}
 function finish(success){
- active=false;hold.thrust=false;ship.thrust=false;
+ active=false;lastOutcome=success?"landed":"crashed";hold.thrust=false;ship.thrust=false;
  if(success){const bonus=Math.round(250+ship.fuel*7+Math.max(0,45-Math.hypot(ship.vx,ship.vy))*8);score+=bonus;best=Math.max(best,score);try{localStorage.setItem("ashfall-cinder-lander-best",String(best))}catch{}status("LANDED · +"+bonus+" · press Next Mission");$("restart").textContent="Next Mission";level++}
  else{status("IMPACT · mission failed · press Retry");$("restart").textContent="Retry Mission";for(let i=0;i<28;i++)particles.push({x:ship.x,y:ship.y,vx:rand(-90,90),vy:rand(-110,80),life:rand(.3,1)})}
  updateHud();document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-cinder-lander",score}}))
 }
-function start(){sequence++;active=true;last=performance.now();hold={left:false,right:false,thrust:false};$("restart").textContent="Restart";resetWorld();status("Guide the lander onto the glowing extraction platform");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+"cinder-lander"}}));requestAnimationFrame(t=>loop(t,sequence))}
+function start(){if(lastOutcome!=="landed"){score=0;level=1}lastOutcome="active";sequence++;active=true;last=performance.now();hold={left:false,right:false,thrust:false};$("restart").textContent="Restart";resetWorld();status("Guide the lander onto the glowing extraction platform");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+"cinder-lander"}}));requestAnimationFrame(t=>loop(t,sequence))}
 function step(dt){if(!active)return;
  const turn=(keys.has("ArrowRight")||keys.has("d")||hold.right?1:0)-(keys.has("ArrowLeft")||keys.has("a")||hold.left?1:0);
  ship.angle=Math.max(-1.1,Math.min(1.1,ship.angle+turn*2.1*dt));
@@ -38,11 +38,11 @@ function draw(){ctx.fillStyle="#0c0b15";ctx.fillRect(0,0,W,H);
  const glow=ctx.createLinearGradient(0,330,0,H);glow.addColorStop(0,"#41231c");glow.addColorStop(1,"#171119");ctx.fillStyle=glow;ctx.beginPath();ctx.moveTo(0,H);ctx.lineTo(0,terrain[0].y);for(const p of terrain)ctx.lineTo(p.x,p.y);ctx.lineTo(W,H);ctx.closePath();ctx.fill();
  ctx.strokeStyle="#f0834a";ctx.lineWidth=2;ctx.beginPath();terrain.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
  ctx.fillStyle="#ffb35d";ctx.fillRect(pad.x,389,pad.w,9);ctx.fillStyle="#fff0a2";ctx.fillRect(pad.x+8,387,12,4);ctx.fillRect(pad.x+pad.w-20,387,12,4);
- ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(ship.angle);
+ if(lastOutcome!=="crashed"){ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(ship.angle);
  ctx.strokeStyle="#f8c99b";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-10,11);ctx.lineTo(-15,17);ctx.lineTo(-23,17);ctx.moveTo(10,11);ctx.lineTo(15,17);ctx.lineTo(23,17);ctx.stroke();
  ctx.fillStyle="#e9b27b";ctx.beginPath();ctx.moveTo(0,-20);ctx.lineTo(15,10);ctx.lineTo(-15,10);ctx.closePath();ctx.fill();
  ctx.fillStyle="#392634";ctx.beginPath();ctx.arc(0,-3,6,0,Math.PI*2);ctx.fill();
- if(ship.thrust){ctx.fillStyle="#ffe8a0";ctx.beginPath();ctx.moveTo(-6,11);ctx.lineTo(0,rand(26,39));ctx.lineTo(6,11);ctx.fill()}ctx.restore();
+ if(ship.thrust){ctx.fillStyle="#ffe8a0";ctx.beginPath();ctx.moveTo(-6,11);ctx.lineTo(0,rand(26,39));ctx.lineTo(6,11);ctx.fill()}ctx.restore();}
  for(const p of particles){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle="#ffa75e";ctx.fillRect(p.x,p.y,4,4)}ctx.globalAlpha=1;
  ctx.font="bold 16px system-ui";ctx.textAlign="center";ctx.fillStyle="#ffe6c4";ctx.fillText("CINDER LANDER · DESCENT "+level,360,25);
  if(!active){ctx.fillStyle="#0009";ctx.fillRect(175,185,370,72);ctx.fillStyle="#ffe0ba";ctx.font="bold 19px system-ui";ctx.fillText("MISSION CONTROL · READY",360,225)}
