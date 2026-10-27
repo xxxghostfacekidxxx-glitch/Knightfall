@@ -12,7 +12,7 @@ const $=x=>document.getElementById(x),canvas=$("game"),ctx=canvas.getContext("2d
 $("title").textContent=d.title;$("tag").textContent=d.tag;$("desc").textContent=d.desc;
 $("report").href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new?title="+encodeURIComponent("Arcade issue: "+d.title)+"&body="+encodeURIComponent("Game: "+d.title+"\nPage: "+location.href+"\n\nWhat happened?\n\nSteps to reproduce:");
 let score=0,best=0,running=false,over=false,last=0,frame=0,state={},cloudReady=false,loopGeneration=0;
-const colors=["#ff5edb","#c6ff45","#43dcff","#ff9b54","#b59aff"];
+const colors=["#ef9a63","#ffcf8d","#8cc7c0","#c56d4b","#c2a8a0"];
 function status(t){$("status").textContent=t}
 function loadLocal(){try{const x=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(x&&x.state){state=x.state;score=Number(x.score)||0;best=Number(x.best)||0}}catch{}}
 function saveLocal(){try{localStorage.setItem("af-mini-"+id,JSON.stringify({score,best,state,frame}))}catch{}}
