@@ -13,6 +13,6 @@ test("duplicate letters are graded only once when the answer has one copy",()=>{
  const match=source.match(/function grade\(guess,answer\)\{[^}]*\}[^}]*\}/);
  assert.ok(match,"grading function must exist");
  const grade=runInNewContext(match[0]+";grade",{}, {timeout:1000});
- assert.deepEqual(Array.from(grade("EEEEE","EMBER")),["hit","near","miss","miss","miss"]);
+ assert.deepEqual(Array.from(grade("EEEEE","EMBER")),["hit","miss","miss","hit","miss"]);
  assert.deepEqual(Array.from(grade("EMBER","EMBER")),["hit","hit","hit","hit","hit"]);
 });
