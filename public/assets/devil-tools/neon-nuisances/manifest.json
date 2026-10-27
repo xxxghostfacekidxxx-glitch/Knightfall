@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 3,
+  "version": 4,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -182,6 +182,46 @@
         "bounce": "/assets/devil-tools/neon-nuisances/thornriot-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/thornriot-mischief.svg"
       }
+    },
+    {
+      "id": "volt-imp",
+      "name": "Voltimp",
+      "type": "electric imp",
+      "primary": "#c6ff45",
+      "accent": "#ff27ce",
+      "description": "Tiny electric demon with a cracked neon skull and lightning tail",
+      "svg": "/assets/devil-tools/neon-nuisances/volt-imp.svg",
+      "variants": {}
+    },
+    {
+      "id": "crypt-koi",
+      "name": "Cryptkoi",
+      "type": "undead koi",
+      "primary": "#79f7ff",
+      "accent": "#ff5eaf",
+      "description": "Floating ghost koi with bone fins and bubble-gum fangs",
+      "svg": "/assets/devil-tools/neon-nuisances/crypt-koi.svg",
+      "variants": {}
+    },
+    {
+      "id": "casket-pup",
+      "name": "Casketpup",
+      "type": "skeletal hellhound",
+      "primary": "#ff9bcb",
+      "accent": "#c6ff45",
+      "description": "Punk hellhound pup with coffin ears and an exposed rib cage",
+      "svg": "/assets/devil-tools/neon-nuisances/casket-pup.svg",
+      "variants": {}
+    },
+    {
+      "id": "void-sprout",
+      "name": "Voidsprout",
+      "type": "carnivorous flower",
+      "primary": "#bd84ff",
+      "accent": "#c6ff45",
+      "description": "Smiling carnivorous cosmic flower with glowing bones and razor petals",
+      "svg": "/assets/devil-tools/neon-nuisances/void-sprout.svg",
+      "variants": {}
     }
   ],
   "animationVariants": [
