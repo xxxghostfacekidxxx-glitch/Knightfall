@@ -25,7 +25,7 @@ test("configured challenge fails closed when verification is unavailable", async
 
 test("configured challenge accepts only successful approved-host verification", async () => {
   const original = globalThis.fetch;
-  globalThis.fetch = async () => new Response(JSON.stringify({ success: true, hostname: "ash-fall.com" }), { status: 200 });
+  globalThis.fetch = async () => new Response(JSON.stringify({ success: true, action: "register", hostname: "ash-fall.com" }), { status: 200 });
   try {
     assert.equal(await checkTurnstile(enabled, request, "test-token"), true);
   } finally {
@@ -40,7 +40,7 @@ test("partial configuration fails closed", async () => {
 
 test("successful verification from an unapproved hostname is rejected", async () => {
   const original = globalThis.fetch;
-  globalThis.fetch = async () => new Response(JSON.stringify({ success: true, hostname: "example.com" }), { status: 200 });
+  globalThis.fetch = async () => new Response(JSON.stringify({ success: true, action: "register", hostname: "example.com" }), { status: 200 });
   try {
     assert.equal(await checkTurnstile(enabled, request, "test-token"), false);
   } finally {
@@ -50,10 +50,17 @@ test("successful verification from an unapproved hostname is rejected", async ()
 
 test("explicit staging hostname is accepted only when configured", async () => {
   const original = globalThis.fetch;
-  globalThis.fetch = async () => new Response(JSON.stringify({success:true,hostname:"staging.ash-fall.com"}),{status:200});
+  globalThis.fetch = async () => new Response(JSON.stringify({success:true,action:"register",hostname:"staging.ash-fall.com"}),{status:200});
   try {
     assert.equal(await checkTurnstile(enabled,request,"token"),false);
     assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"staging.ash-fall.com"},request,"token"),true);
     assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"evil.example.com"},request,"token"),false);
   } finally { globalThis.fetch = original; }
+});
+
+test("a valid token for a different action cannot be reused for registration", async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({success:true,action:"login",hostname:"ash-fall.com"}),{status:200});
+  try { assert.equal(await checkTurnstile(enabled,request,"token"),false); }
+  finally { globalThis.fetch = original; }
 });
