@@ -8,6 +8,10 @@ on:
       - 'backend/package.json'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
+      - 'public/index.html'
+      - 'scripts/registration-release.test.mjs'
+      - 'scripts/turnstile.test.mjs'
+      - 'scripts/turnstile-ui.test.mjs'
   workflow_dispatch:
 
 permissions:
