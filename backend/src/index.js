@@ -84,7 +84,7 @@ async function encryptWebPush(payload,subscription) {
 async function deliverPushToUser(env,userId,notification) {
   const delivery={attempted:0,accepted:0,expired:0,failed:0};
   try {
-    if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) return;
+    if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT) return delivery;
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
     const kind=String(notification.kind||"");
     const category=kind==="message"?"messages":(["reply","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
@@ -807,7 +807,7 @@ export default { async queue(batch, env) {
   for (const message of batch.messages) {
     try {
       const job = message.body;
-      if (job?.type !== "push-notification" || !Number.isSafeInteger(Number(job.userId)) || !job.notification) {
+      if (job?.type !== "push-notification" || !Number.isSafeInteger(job.userId) || job.userId < 1 || !job.notification || typeof job.notification !== "object") {
         message.ack();
         continue;
       }
