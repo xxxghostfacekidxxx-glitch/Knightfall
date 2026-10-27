@@ -348,10 +348,21 @@ async function load(){
      d.user.is_online=d.user.last_seen_at?Date.now()-new Date(d.user.last_seen_at).getTime()<5*60*1000:false;
      render(d,true);refreshProfileJump(); return;
    }
-   if(!username){root.innerHTML="<h1>Profile not found</h1><p>No username was supplied.</p>";return;}
-   const d=await api("/api/users/"+encodeURIComponent(username));
+   let targetUsername=username;
+   if(!targetUsername){
+     const session=await api("/api/auth/me").catch(()=>({user:null}));
+     if(!session.user?.username){root.innerHTML='<h1>Sign in to view your profile</h1><p>Open a member profile from the directory, or sign in to view your own.</p><p><a class="action primary" href="/index.html">Sign in</a> <a class="action" href="/members.html">Browse members</a></p>';return;}
+     targetUsername=session.user.username;
+     const url=new URL(location.href);url.searchParams.set("username",targetUsername);history.replaceState(null,"",url);
+   }
+   const d=await api("/api/users/"+encodeURIComponent(targetUsername));
    const me=await api("/api/auth/me").catch(()=>({user:null}));
-   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);refreshProfileJump();applyProfileLayout(d.profile_layout);await loadMemberActivity(d.user,ownProfile);applyProfileLayout(d.profile_layout);await loadProfilePhotos(d.user.username,ownProfile);applyProfileLayout(d.profile_layout);
+   const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);refreshProfileJump();applyProfileLayout(d.profile_layout);
+   // Optional modules must not make an otherwise valid public profile disappear.
+   try{await loadMemberActivity(d.user,ownProfile)}catch(error){console.warn("Profile activity unavailable",error)}
+   applyProfileLayout(d.profile_layout);
+   try{await loadProfilePhotos(d.user.username,ownProfile)}catch(error){console.warn("Profile photos unavailable",error)}
+   applyProfileLayout(d.profile_layout);
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile unavailable</h1><p>"+esc(error.message)+"</p>";}
