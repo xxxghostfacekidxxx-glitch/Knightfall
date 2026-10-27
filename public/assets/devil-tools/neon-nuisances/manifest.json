@@ -1,0 +1,71 @@
+{
+  "pack": "Devil Tools: Neon Nuisances",
+  "version": 1,
+  "license": "Original artwork for Ash-Fall / Knightfall",
+  "characters": [
+    {
+      "id": "moxie",
+      "name": "Moxie the Moon Moth",
+      "type": "moth",
+      "primary": "#ff66d9",
+      "accent": "#86faff",
+      "svg": "/assets/devil-tools/neon-nuisances/moxie.svg"
+    },
+    {
+      "id": "bloop",
+      "name": "Bloop the Abyss Axolotl",
+      "type": "axolotl",
+      "primary": "#5cf4e7",
+      "accent": "#ff7ebd",
+      "svg": "/assets/devil-tools/neon-nuisances/bloop.svg"
+    },
+    {
+      "id": "pippa",
+      "name": "Pippa the Pumpkin Gremlin",
+      "type": "pumpkin",
+      "primary": "#ff9b45",
+      "accent": "#c6ff45",
+      "svg": "/assets/devil-tools/neon-nuisances/pippa.svg"
+    },
+    {
+      "id": "nib",
+      "name": "Nib the Candy Bat",
+      "type": "bat",
+      "primary": "#b78cff",
+      "accent": "#ff67c6",
+      "svg": "/assets/devil-tools/neon-nuisances/nib.svg"
+    },
+    {
+      "id": "glim",
+      "name": "Glim the Lantern Ghost",
+      "type": "ghost",
+      "primary": "#e6faff",
+      "accent": "#79ffba",
+      "svg": "/assets/devil-tools/neon-nuisances/glim.svg"
+    },
+    {
+      "id": "zuzu",
+      "name": "Zuzu the Stardust Slime",
+      "type": "slime",
+      "primary": "#b4ff63",
+      "accent": "#ff80dd",
+      "svg": "/assets/devil-tools/neon-nuisances/zuzu.svg"
+    },
+    {
+      "id": "kiki",
+      "name": "Kiki the Neon Kitty",
+      "type": "cat",
+      "primary": "#ff8cce",
+      "accent": "#76f6ff",
+      "svg": "/assets/devil-tools/neon-nuisances/kiki.svg"
+    },
+    {
+      "id": "emberbun",
+      "name": "Emberbun the Fire Rabbit",
+      "type": "rabbit",
+      "primary": "#ffb36c",
+      "accent": "#ff65c7",
+      "svg": "/assets/devil-tools/neon-nuisances/emberbun.svg"
+    }
+  ]
+}
