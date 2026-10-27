@@ -22,3 +22,7 @@ test("retryable HTTP statuses are rate limits, timeouts, and server errors", () 
   for (const status of [408,425,429,500,502,503,504]) assert.equal(isTransientPushStatus(status),true);
   for (const status of [400,401,403,404,410,422]) assert.equal(isTransientPushStatus(status),false);
 });
+
+test("retry transient subscription lookup failure before any push attempts", () => {
+  assert.equal(shouldRetryPushDelivery({attempted:0,accepted:0,failed:1,transient:1}),true);
+});
