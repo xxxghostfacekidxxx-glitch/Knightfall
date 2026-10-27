@@ -25,7 +25,7 @@ jobs:
         env:
           STAGING_API: ${{ inputs.staging_api }}
         run: |
-          node -e 'const u=new URL(process.env.STAGING_API);if(u.protocol!=="https:"||!/(^|\\.)[a-z0-9-]+\\.workers\\.dev$|^staging\\.api\\.ash-fall\\.com$/i.test(u.hostname)||u.hostname==="api.ash-fall.com")process.exit(1)'
+          node -e 'const u=new URL(process.env.STAGING_API);if(u.protocol!=="https:"||!(u.hostname==="staging.api.ash-fall.com"||(u.hostname.startsWith("staging-")&&u.hostname.endsWith(".workers.dev"))))process.exit(1)'
       - name: Check staging API health
         env:
           STAGING_API: ${{ inputs.staging_api }}
