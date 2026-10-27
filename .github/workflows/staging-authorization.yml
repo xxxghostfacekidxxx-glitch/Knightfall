@@ -30,3 +30,7 @@ jobs:
         env:
           STAGING_API: ${{ inputs.staging_api }}
         run: curl --fail --silent --show-error "$STAGING_API/health"
+      - name: Check anonymous authorization boundaries
+        env:
+          STAGING_API: ${{ inputs.staging_api }}
+        run: node scripts/staging-authorization-smoke.mjs
