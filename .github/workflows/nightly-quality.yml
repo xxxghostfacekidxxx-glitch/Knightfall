@@ -29,7 +29,7 @@ jobs:
           node scripts/push-notifications-audit.mjs
           node scripts/account-deletion-audit.mjs
           node scripts/security-surface-inventory.mjs
-          node --test scripts/turnstile.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs
+          node --test scripts/turnstile.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs
           node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
       - name: Install browser test dependencies
         run: |
