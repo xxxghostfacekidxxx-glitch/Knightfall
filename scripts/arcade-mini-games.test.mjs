@@ -47,3 +47,11 @@ test("animation loop throttles synchronous localStorage writes",()=>{
  assert.match(shared,/now-lastAutoSave>=2000/);
  assert.match(shared,/if\(now-lastAutoSave>=2000\)\{saveLocal\(\);lastAutoSave=now\}/);
 });
+
+test("Ash Slope retains fractional distance between frames",()=>{
+ assert.match(shared,/state\.distance=\(Number\(state\.distance\)\|\|0\)\+dt\*\.12/);
+ assert.match(shared,/state\.distance-=gained;setScore\(score\+gained\)/);
+});
+test("Ember Rebound requires multiple hits on reinforced bricks",()=>{
+ assert.match(shared,/if\(b\.hp&&state\.x>b\.x[\s\S]*?\{b\.hp--;state\.vy\*=-1;setScore\(score\+10\);break\}/);
+});
