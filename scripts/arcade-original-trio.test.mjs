@@ -21,5 +21,5 @@ test("engine implements distinct mechanics and preserves best score",()=>{
  assert.ok(js.includes('id==="stack-tower"'));
  assert.ok(js.includes('game.tilt'));
  assert.ok(js.includes("localStorage.setItem"));
- assert.ok(js.includes("requestAnimationFrame(loop)"));
+ assert.match(js, /requestAnimationFrame\(\s*(?:loop|(?:\w+)\s*=>\s*loop\(\s*\w+\s*,\s*seq\s*\))\s*\)/);
 });
