@@ -6,7 +6,7 @@ function note(t){$("status").textContent=t}
 function points(n){score+=n;best=Math.max(score,best);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-original-"+id,String(best))}catch{}}
 function rect(x,y,w,h,color){g.fillStyle=color;g.fillRect(x,y,w,h)}
 function text(t,x,y){g.fillStyle="#ffe3c0";g.font="bold 19px system-ui";g.textAlign="center";g.fillText(t,x,y)}
-function end(t){playing=false;note(t+" · "+score+" points");try{window.AshFallArcade?.recordScore?.("cabinet-"+id,score,{schema:1,score})}catch{}}
+function end(t){playing=false;note(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
 function reset(){generation++;score=0;$("score").textContent="0";playing=true;last=performance.now();frame=0;
  if(id==="whack-a-bug")game={time:45,bugs:[],spawn:0};
  else if(id==="stack-tower")game={blocks:[{x:180,y:450,w:240}],beam:{x:0,y:416,w:240,v:170},level:1};
