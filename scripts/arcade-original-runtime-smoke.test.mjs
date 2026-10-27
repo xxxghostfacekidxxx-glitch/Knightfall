@@ -29,6 +29,7 @@ for(const [file,ids] of Object.entries(groups)){
   const h=harness(file,id);
   assert.ok(h.listeners.has("restart:click"),"restart control must be wired");
   h.listeners.get("restart:click")();
+  if(file==="ashfall-original-matching.js")assert.equal(h.elements.get("score").textContent,"0","fresh puzzle must not grant free points");
   if(file!=="ashfall-original-matching.js")for(let i=0;i<5;i++){const f=h.frames.shift();assert.ok(f,"animated game should schedule a frame");f((i+1)*16)}
   h.listeners.get("canvas:pointerdown")({clientX:320,clientY:240});
   assert.ok(h.elements.get("score").textContent!=="","score element should be populated");
