@@ -48,6 +48,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "scripts/arcade-*.test.mjs"
       - "public/arcade/**"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
