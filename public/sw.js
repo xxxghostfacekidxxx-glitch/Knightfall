@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v10";
+const CACHE_NAME = "knightfall-shell-v11";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -22,12 +22,23 @@ self.addEventListener("activate", event => {
 });
 
 // Web Push works when the site is backgrounded or closed, where the browser supports it.
+function safeNotificationPath(value) {
+  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || /[\\\\\x00-\x1f]/.test(value)) return "/notifications.html";
+  try {
+    const parsed = new URL(value, self.location.origin);
+    if (parsed.origin !== self.location.origin) return "/notifications.html";
+    return parsed.pathname + parsed.search + parsed.hash;
+  } catch {
+    return "/notifications.html";
+  }
+}
+
 self.addEventListener("push", event => {
   let payload = {};
   try { payload = event.data ? event.data.json() : {}; } catch { payload = { title: "Ash-Fall alert", body: "You have a new notification." }; }
   const title = String(payload.title || "Ash-Fall alert").slice(0, 120);
   const body = String(payload.body || "You have a new notification.").slice(0, 240);
-  const path = typeof payload.url === "string" && payload.url.startsWith("/") && !payload.url.startsWith("//") ? payload.url : "/notifications.html";
+  const path = safeNotificationPath(payload.url);
   event.waitUntil(self.registration.showNotification(title, {
     body,
     icon: "/icons/chaos-cartridge.svg",
@@ -39,7 +50,7 @@ self.addEventListener("push", event => {
 });
 self.addEventListener("notificationclick", event => {
   event.notification.close();
-  const path = event.notification.data && typeof event.notification.data.url === "string" && event.notification.data.url.startsWith("/") && !event.notification.data.url.startsWith("//") ? event.notification.data.url : "/notifications.html";
+  const path = safeNotificationPath(event.notification.data?.url);
   const target = new URL(path, self.location.origin).href;
   event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
     // Never hijack a different chat, game, or unfinished form just because it shares our origin.
