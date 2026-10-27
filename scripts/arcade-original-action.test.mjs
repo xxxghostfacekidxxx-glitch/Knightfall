@@ -18,5 +18,7 @@ test("distinct action mechanics are implemented",()=>{
  assert.ok(js.includes('id==="survivor"'));
  assert.ok(js.includes("s.platforms"));
  assert.ok(js.includes("s.enemies"));
+ assert.ok(js.includes("nearest=s.enemies.reduce"));
+ assert.ok(js.includes("Math.hypot(e.x-s.x,e.y-s.y)<26"));
  assert.ok(js.includes("localStorage.setItem"));
 });
