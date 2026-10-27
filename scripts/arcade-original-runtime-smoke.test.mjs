@@ -10,6 +10,15 @@ const groups={
  "ashfall-original-matching.js":["bubble-pop","candy-crush"],
  "ashfall-original-action.js":["doodle-jump","survivor","alien-battle"]
 };
+test("all rewritten games submit via a single account bridge completion event",()=>{
+ for(const file of Object.keys(groups)){
+  const source=readFileSync(root+file,"utf8");
+  assert.ok(source.includes('ashfall:arcade-finished'),file+" should signal completion");
+  assert.ok(!source.includes('AshFallArcade?.recordScore'),file+" should not submit duplicate direct scores");
+ }
+ const bridge=readFileSync(root+"arcade-account-bridge.js","utf8");
+ assert.ok(bridge.includes("addEventListener('ashfall:arcade-finished'"));
+});
 function harness(file,id){
  const listeners=new Map(),frames=[],store=new Map(),events=[];
  const node=name=>({textContent:"",tagName:"DIV",addEventListener(type,fn){listeners.set(name+":"+type,fn)}});
