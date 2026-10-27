@@ -1,11 +1,11 @@
 {
-  "pack": "Devil Tools: Neon Nuisances",
-  "version": 2,
+  "pack": "Devil Tools: Neon Nuisances · Gravewave",
+  "version": 3,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
       "id": "moxie",
-      "name": "Moxie the Moon Moth",
+      "name": "Vexwing",
       "type": "moth",
       "primary": "#ff66d9",
       "accent": "#86faff",
@@ -15,11 +15,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/moxie-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/moxie-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/moxie-mischief.svg"
-      }
+      },
+      "description": "Skeletal moth with razor fringe"
     },
     {
       "id": "bloop",
-      "name": "Bloop the Abyss Axolotl",
+      "name": "Gillrot",
       "type": "axolotl",
       "primary": "#5cf4e7",
       "accent": "#ff7ebd",
@@ -29,11 +30,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/bloop-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/bloop-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/bloop-mischief.svg"
-      }
+      },
+      "description": "Radioactive axolotl with exposed ribs"
     },
     {
       "id": "pippa",
-      "name": "Pippa the Pumpkin Gremlin",
+      "name": "Hexgourd",
       "type": "pumpkin",
       "primary": "#ff9b45",
       "accent": "#c6ff45",
@@ -43,11 +45,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/pippa-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/pippa-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/pippa-mischief.svg"
-      }
+      },
+      "description": "Pumpkin graveyard gremlin"
     },
     {
       "id": "nib",
-      "name": "Nib the Candy Bat",
+      "name": "Nocturnib",
       "type": "bat",
       "primary": "#b78cff",
       "accent": "#ff67c6",
@@ -57,11 +60,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/nib-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/nib-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/nib-mischief.svg"
-      }
+      },
+      "description": "Fanged candy-bat punk"
     },
     {
       "id": "glim",
-      "name": "Glim the Lantern Ghost",
+      "name": "Cryptglow",
       "type": "ghost",
       "primary": "#e6faff",
       "accent": "#79ffba",
@@ -71,11 +75,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/glim-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/glim-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/glim-mischief.svg"
-      }
+      },
+      "description": "Glowing ghost with exposed ribs"
     },
     {
       "id": "zuzu",
-      "name": "Zuzu the Stardust Slime",
+      "name": "Sludgebyte",
       "type": "slime",
       "primary": "#b4ff63",
       "accent": "#ff80dd",
@@ -85,11 +90,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/zuzu-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/zuzu-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/zuzu-mischief.svg"
-      }
+      },
+      "description": "Mutant toxic sludge metalhead"
     },
     {
       "id": "kiki",
-      "name": "Kiki the Neon Kitty",
+      "name": "Riotpaws",
       "type": "cat",
       "primary": "#ff8cce",
       "accent": "#76f6ff",
@@ -99,11 +105,12 @@
         "blink": "/assets/devil-tools/neon-nuisances/kiki-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/kiki-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/kiki-mischief.svg"
-      }
+      },
+      "description": "Undead alley cat"
     },
     {
       "id": "emberbun",
-      "name": "Emberbun the Fire Rabbit",
+      "name": "Cinderfang",
       "type": "rabbit",
       "primary": "#ffb36c",
       "accent": "#ff65c7",
@@ -113,6 +120,67 @@
         "blink": "/assets/devil-tools/neon-nuisances/emberbun-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/emberbun-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/emberbun-mischief.svg"
+      },
+      "description": "Burnt skeletal bunny"
+    },
+    {
+      "id": "gravebyte",
+      "name": "Gravebyte",
+      "description": "Cyber skeleton DJ",
+      "type": "robot",
+      "primary": "#aaff48",
+      "accent": "#fc4ca8",
+      "svg": "/assets/devil-tools/neon-nuisances/gravebyte.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/gravebyte-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/gravebyte-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/gravebyte-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/gravebyte-mischief.svg"
+      }
+    },
+    {
+      "id": "statichex",
+      "name": "Statichex",
+      "description": "Antenna-headed alien punk",
+      "type": "alien",
+      "primary": "#6af9ed",
+      "accent": "#f97aff",
+      "svg": "/assets/devil-tools/neon-nuisances/statichex.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/statichex-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/statichex-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/statichex-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/statichex-mischief.svg"
+      }
+    },
+    {
+      "id": "rattlepop",
+      "name": "Rattlepop",
+      "description": "Candy-colored coffin ghoul",
+      "type": "coffin",
+      "primary": "#ffb55b",
+      "accent": "#b4ff58",
+      "svg": "/assets/devil-tools/neon-nuisances/rattlepop.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/rattlepop-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/rattlepop-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/rattlepop-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/rattlepop-mischief.svg"
+      }
+    },
+    {
+      "id": "thornriot",
+      "name": "Thornriot",
+      "description": "Thorny cyclops demon",
+      "type": "cyclops",
+      "primary": "#ff5c83",
+      "accent": "#a9ff45",
+      "svg": "/assets/devil-tools/neon-nuisances/thornriot.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/thornriot-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/thornriot-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/thornriot-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/thornriot-mischief.svg"
       }
     }
   ],
@@ -121,5 +189,6 @@
     "blink",
     "bounce",
     "mischief"
-  ]
+  ],
+  "artDirection": "Original cute-horror metalhead creatures, skeletal cutaways, neon slime, alien punk and sci-fi graveyard energy."
 }
