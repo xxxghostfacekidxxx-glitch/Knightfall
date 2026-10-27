@@ -18,7 +18,7 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   const location={pathname:"/arcade/hosted/"+id+"/index.html",search:"",href:"https://ash-fall.com/arcade/hosted/"+id+"/index.html"};
   const window={addEventListener(){}};
   const sandbox={document:doc,window,location,URLSearchParams,localStorage,performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn),CustomEvent:class{constructor(type,options){this.type=type;this.detail=options.detail}},Math,Number,Promise,Set,console};
-  runInNewContext(source.replace("})();","globalThis.__miniTest={getState:()=>state};})();"),sandbox,{timeout:1500});
+  runInNewContext(source.replace("})();","globalThis.__miniTest={getState:()=>state,finish};})();"),sandbox,{timeout:1500});
   assert.equal(typeof listeners.get("start:click"),"function");
   listeners.get("start:click")();
   assert.ok(frames.length>0);
@@ -31,6 +31,17 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   assert.equal(frames.length,queued,"stale animation frame must not reschedule after restart");
   assert.equal(elements.get("score").textContent,"0");
   assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
+  if(id==="ball-and-wall"){
+   const state=sandbox.__miniTest.getState();
+   state.x=5;state.y=200;state.vx=-3;state.vy=-4;
+   frames.shift()(80);
+   assert.equal(state.x,10,"ball clamps at the left wall");
+   assert.ok(state.vx>0,"ball bounces away from left wall");
+   state.x=state.paddle;state.y=530;state.vy=4;
+   frames.shift()(96);
+   assert.equal(state.y,520,"paddle collision resolves outside paddle");
+   assert.ok(state.vy<0,"paddle reflects the ball upward");
+  }
   if(id==="cube-composer"){
    sandbox.__miniTest.getState().level=9;
    listeners.get("start:click")();
