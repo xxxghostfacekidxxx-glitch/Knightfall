@@ -1257,7 +1257,7 @@
       "sprites": [
         "speedway.svg"
       ],
-      "notes": "Race through the burning highway. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/car-race/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/car-race",
       "assets": [
@@ -1266,7 +1266,7 @@
           "path": "/arcade/hosted/car-race/sprites/speedway.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "crossy-road",
@@ -1275,7 +1275,7 @@
       "sprites": [
         "crossing.svg"
       ],
-      "notes": "Cross a chaotic roadway and survive. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/crossy-road/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crossy-road",
       "assets": [
@@ -1284,7 +1284,7 @@
           "path": "/arcade/hosted/crossy-road/sprites/crossing.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "doodle-jump",
@@ -1329,7 +1329,7 @@
       "sprites": [
         "twin-car.svg"
       ],
-      "notes": "Control two vehicles through simultaneous hazards. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/two-cars/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/two-cars",
       "assets": [
@@ -1338,7 +1338,7 @@
           "path": "/arcade/hosted/two-cars/sprites/twin-car.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "whack-a-bug",
