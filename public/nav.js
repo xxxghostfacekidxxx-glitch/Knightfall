@@ -244,7 +244,7 @@
   const nav = header.querySelector(".kf-nav");
   // Keep orientation clear across the many sections of Ash-Fall.
   const normalizedPath = path => {
-    const clean = path.replace(/\\/$/, "") || "/";
+    const clean = path.endsWith("/") ? path.slice(0, -1) || "/" : path;
     return clean === "/" ? "/index.html" : clean;
   };
   const currentPath = normalizedPath(location.pathname);
