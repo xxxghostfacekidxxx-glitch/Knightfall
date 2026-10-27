@@ -1221,7 +1221,7 @@
       "sprites": [
         "ember-bubble.svg"
       ],
-      "notes": "Pop matching ember bubbles for points. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall original puzzle canvas engine (ashfall-original-matching.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/bubble-pop/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/bubble-pop",
       "assets": [
@@ -1230,7 +1230,7 @@
           "path": "/arcade/hosted/bubble-pop/sprites/ember-bubble.svg"
         }
       ],
-      "status": "rebranded and committed; independent provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "candy-crush",
@@ -1239,7 +1239,7 @@
       "sprites": [
         "cinder-candy.svg"
       ],
-      "notes": "Match combustible candies in the Ash-Fall confectionery. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall original puzzle canvas engine (ashfall-original-matching.js). Existing original emblem retained; live browser QA pending.",
       "engine": "/arcade/hosted/candy-crush/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/candy-crush",
       "assets": [
@@ -1248,7 +1248,7 @@
           "path": "/arcade/hosted/candy-crush/sprites/cinder-candy.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "car-race",
