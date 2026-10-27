@@ -161,6 +161,17 @@
       <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>`;
 
+  // Keep orientation clear across the many sections of Ash-Fall.
+  const currentPath = location.pathname.replace(/\/$/,"") || "/index.html";
+  nav.querySelectorAll('a[href^="/"]').forEach(link => {
+    const destination = new URL(link.getAttribute("href"),location.origin).pathname;
+    if (destination === currentPath) link.setAttribute("aria-current","page");
+  });
+  nav.querySelectorAll(".kf-nav-group").forEach(group => {
+    group.addEventListener("toggle", () => {
+      if (group.open) nav.querySelectorAll(".kf-nav-group").forEach(other => { if (other !== group) other.open = false; });
+    });
+  });
   let siteSettings = null, currentUser = null;
   const toggle = header.querySelector(".kf-nav-toggle");
   const nav = header.querySelector(".kf-nav");
