@@ -12,6 +12,13 @@ test("Ashen Lexicon parses and has a local score bridge",()=>{
  assert.ok(source.includes("ashfall:arcade-finished"));
  assert.ok(readFileSync("public/arcade/hosted/arcade-account-bridge.js","utf8").includes("ashfall:arcade-started"));
 });
+test("all generated answers are exactly five letters",()=>{
+ const match=source.match(/const words=(\[[^;]+\]);/);
+ assert.ok(match);
+ const words=JSON.parse(match[1]);
+ assert.ok(words.length>=10);
+ assert.ok(words.every(word=>/^[A-Z]{5}$/.test(word)));
+});
 test("duplicate letters are graded only once when the answer has one copy",()=>{
  const match=source.match(/function grade\(guess,answer\)\{[^}]*\}[^}]*\}/);
  assert.ok(match,"grading function must exist");
