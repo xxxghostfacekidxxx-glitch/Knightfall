@@ -26,3 +26,16 @@ Example optional Wrangler fragment (do not paste over existing bindings):
 The push helper tracks attempted, accepted, expired, failed and transient deliveries. The consumer retries only when no subscription accepted the notification and at least one transient delivery failure occurred. Permanent HTTP failures are not retried; a partially accepted notification is acknowledged to avoid duplicate alerts. This remains best-effort push delivery, not an exactly-once guarantee.
 
 Do not enable Queues on production until the resource exists, the consumer is attached, and usage has been confirmed within free limits.
+
+## Acceptance checklist before enabling production
+
+- [ ] The standard static-audit job passes on main.
+- [ ] Staging push test reaches a subscribed device while the page is closed.
+- [ ] An expired subscription is removed without repeated delivery attempts.
+- [ ] A temporary provider error is retried and a permanent rejection is not.
+- [ ] Muted conversations, disabled alert categories and quiet hours remain respected.
+- [ ] Queue retries are capped in the staging consumer configuration.
+- [ ] Cloudflare dashboard confirms the intended queue operations fit within the current Free-plan allowance.
+- [ ] A rollback is documented: remove the producer binding and deploy, which restores direct delivery.
+
+**Important:** Merely committing the queue consumer does not create a Cloudflare queue or prove background notifications work. Keep the production binding absent until these checks pass.
