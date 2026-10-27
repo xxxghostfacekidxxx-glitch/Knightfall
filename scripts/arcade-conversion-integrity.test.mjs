@@ -14,7 +14,7 @@ test("every cataloged original has a locally hosted entry point",()=>{
 });
 test("rewritten engines do not embed imported remote game scripts",()=>{
  const rewritten=catalog.games.filter(g=>g.status.startsWith("original Ash-Fall engine"));
- assert.ok(rewritten.length>=15);
+ assert.ok(rewritten.length>=17);
  for(const g of rewritten){
   const page=readFileSync("public"+g.engine,"utf8");
   assert.ok(!/<script[^>]+src=["']https?:\/\//i.test(page),g.id+" includes a remote game script");
