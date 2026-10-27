@@ -1864,18 +1864,28 @@
       "name": "Glitch Munch",
       "genre": "Arcade",
       "sprites": [
-        "munch-mark.svg"
+        "munch-mark.svg",
+        "ember-devourer.svg",
+        "void-stalker.svg"
       ],
-      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
+      "notes": "Original Ash-Fall Ember Devourer and Void Stalker SVG characters integrated into live canvas gameplay, with existing emblem. Underlying engine provenance remains unverified; browser QA pending.",
       "engine": "/arcade/hosted/glitch-munch/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/glitch-munch",
       "assets": [
         {
           "name": "munch-mark.svg",
           "path": "/arcade/hosted/glitch-munch/sprites/munch-mark.svg"
+        },
+        {
+          "name": "ember-devourer.svg",
+          "path": "/arcade/hosted/glitch-munch/sprites/ember-devourer.svg"
+        },
+        {
+          "name": "void-stalker.svg",
+          "path": "/arcade/hosted/glitch-munch/sprites/void-stalker.svg"
         }
       ],
-      "status": "cataloged; code provenance and browser QA pending"
+      "status": "original gameplay sprites integrated; engine provenance and browser QA pending"
     },
     {
       "id": "rift-wardens",
