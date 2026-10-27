@@ -1167,7 +1167,7 @@
       "sprites": [
         "balance-sigil.svg"
       ],
-      "notes": "Keep a stack steady against the rising winds. Existing first-party game engine with original Ash-Fall artwork; source attribution reviewed at catalog level, provenance audit pending.",
+      "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
       "engine": "/arcade/hosted/balance-stack/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/balance-stack",
       "assets": [
@@ -1176,7 +1176,7 @@
           "path": "/arcade/hosted/balance-stack/sprites/balance-sigil.svg"
         }
       ],
-      "status": "rebranded and committed; independent provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "basketball",
@@ -1347,7 +1347,7 @@
       "sprites": [
         "exterminator.svg"
       ],
-      "notes": "Clear the crypt of invading bugs. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
       "engine": "/arcade/hosted/whack-a-bug/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/whack-a-bug",
       "assets": [
@@ -1356,7 +1356,7 @@
           "path": "/arcade/hosted/whack-a-bug/sprites/exterminator.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "words-of-wonder",
@@ -1401,7 +1401,7 @@
       "sprites": [
         "spire.svg"
       ],
-      "notes": "Stack blocks into a towering ruin. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
       "engine": "/arcade/hosted/stack-tower/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/stack-tower",
       "assets": [
@@ -1410,7 +1410,7 @@
           "path": "/arcade/hosted/stack-tower/sprites/spire.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "cinder-crossing",
