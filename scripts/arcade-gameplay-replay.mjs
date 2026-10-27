@@ -5,7 +5,7 @@ const base=process.env.ARCADE_TEST_BASE||"http://127.0.0.1:8765";
 const dir=process.env.ARCADE_REPLAY_DIR||"/tmp/arcade-replays";
 await mkdir(dir,{recursive:true});
 const cases=[
- {id:"particle-clicker",route:"/arcade/hosted/ashfall-mini-games.html?game=particle-clicker",steps:[["tap","#start"],["tap","#clicker-generate",50],["assert-enabled","#clicker-boost"],["tap","#clicker-boost"],["assert-text","#clicker-generate","+2"]]},
+ {id:"particle-clicker",route:"/arcade/hosted/particle-clicker/index.html",steps:[["tap","#start"],["tap","#clicker-generate",50],["assert-enabled","#clicker-boost"],["tap","#clicker-boost"],["assert-text","#clicker-generate","+2"]]},
  {id:"freeciv-web",route:"/arcade/hosted/arcade-cabinet.html?game=freeciv-web",steps:[["tap","#start"],["tap-canvas","#game",324,134],["assert-min","#score",10]]},
  {id:"kaiju-krush",route:"/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",steps:[["tap","#start"],["tap-canvas","#game",480,450],["assert-min","#score",25]]},
  {id:"custom-tetris",route:"/arcade/hosted/custom-tetris/index.html",steps:[["tap",'[data-tetris-action="left"]'],["tap",'[data-tetris-action="pause"]'],["assert-paused"]]}
