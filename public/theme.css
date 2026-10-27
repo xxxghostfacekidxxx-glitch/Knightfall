@@ -166,3 +166,7 @@ img,video,iframe{max-width:100%}
  .kf-nav-toggle[aria-expanded="true"]{background:var(--kf-accent-soft);border-color:rgba(230,106,44,.6);color:#fff}
  .kf-nav.open{z-index:80}
 }
+
+.kf-skip-link{position:fixed;left:1rem;top:-100px;z-index:9999;padding:.75rem 1rem;background:#e66a2c;color:#080808;font-weight:850;border-radius:0 0 9px 9px;text-decoration:none}
+.kf-skip-link:focus{top:0}
+main:focus{outline:none}
