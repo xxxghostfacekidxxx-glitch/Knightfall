@@ -38,7 +38,8 @@ assert.match(publicPage, /does not immediately erase/i);
 assert.match(adminPage, /does not erase account data/i);
 assert.doesNotMatch(adminPage, /data-action="completed"/);
 assert.match(privacy, /does not itself erase the account/i);
-assert.equal(manifest.shortcuts.length, 3);
+assert.ok(manifest.shortcuts.length >= 3, "PWA must retain its three core shortcuts");
+for (const url of ["/homepage.html", "/chaos-cartridge.html", "/messages.html"]) assert.ok(manifest.shortcuts.some(item => item.url.startsWith(url)), `Missing core shortcut: ${url}`);
 assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg"));
 assert.ok(existsSync(new URL("../public/icons/chaos-cartridge-maskable.svg", import.meta.url)));
 
