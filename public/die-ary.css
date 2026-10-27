@@ -36,3 +36,13 @@
 .diary-entry-actions .delete-entry{border-color:#603027;color:#ffb0a4}
 .diary-empty{padding:2rem 1rem;text-align:center;border:1px dashed #383838;border-radius:12px;color:#929292;line-height:1.7}
 @media(max-width:560px){.diary-shell{width:94%;padding-top:1rem}.diary-entry-head{display:block}.diary-form-foot{align-items:flex-start}.diary-form-actions{width:100%}.diary-form-actions button{flex:1}}
+
+/* Diary writing experience: readable text and stable mobile editing. */
+.diary-shell,.diary-card,.diary-entry,.diary-entry-actions{min-width:0}
+.diary-hero h1{overflow-wrap:anywhere;text-wrap:balance}
+.diary-shell input:not([type="checkbox"]),.diary-shell textarea,.diary-shell select{max-width:100%;min-width:0}
+.diary-shell textarea{resize:vertical}
+.diary-entry{overflow-wrap:anywhere}
+.diary-entry-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.diary-shell button{min-height:44px}
+@media(max-width:560px){.diary-shell{width:calc(100% - 1.25rem);padding:1.2rem 0 3rem}.diary-form-actions{flex-wrap:wrap}.diary-form-actions button{flex:1 1 140px}}
