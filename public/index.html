@@ -121,6 +121,17 @@
         document.getElementById("social-note").textContent = "Connecting securely to " + (provider === "google" ? "Google" : "Facebook") + "…";
         window.location.assign(API + "/auth/oauth/" + provider + "/start?return_to=%2Faccount.html");
       }));
+      let turnstileEnabled = false;
+      fetch(API + "/auth/turnstile-config")
+        .then(r => r.json())
+        .then(data => {
+          if (!data.site_key) return;
+          turnstileEnabled = true;
+          const script = document.createElement("script");
+          script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+          script.onload = () => window.turnstile.render("#register-turnstile", {sitekey:data.site_key});
+          document.head.append(script);
+        }).catch(() => {});
       async function submitForm(form, endpoint, statusId, payloadBuilder) {
         const status = document.getElementById(statusId);
         const submit = form.querySelector('button[type="submit"]');
