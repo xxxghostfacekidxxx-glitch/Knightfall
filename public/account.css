@@ -15,3 +15,17 @@
 .account-card input,.account-card textarea,.account-card select{max-width:100%;border-color:#3a2b20;background:#0c0b0a;color:#eee;border-radius:9px}
 .account-card a:focus-visible,.account-card button:focus-visible,.account-card input:focus-visible,.account-card select:focus-visible{outline:2px solid #f06a0a;outline-offset:3px}
 @media(max-width:600px){.account-shell{width:min(100% - 1.1rem,940px);padding-top:1.4rem}.account-card{border-radius:14px}.account-actions{display:grid;grid-template-columns:1fr}.account-actions>*{width:100%}}
+
+/* Account settings: predictable responsive forms and cards. */
+.account-shell,.account-card,.account-top,.account-grid,.account-actions{min-width:0}
+.account-top{flex-wrap:wrap}
+.account-card h1{overflow-wrap:anywhere;line-height:1.05}
+.account-card label{overflow-wrap:anywhere}
+.account-card input,.account-card textarea,.account-card select{width:100%;min-width:0;max-width:100%}
+.account-card button,.account-actions a{min-height:44px}
+@media(max-width:600px){
+ .account-shell{width:calc(100% - 1.25rem)}
+ .account-card{padding:1.15rem}
+ .account-grid{grid-template-columns:minmax(0,1fr);gap:.65rem}
+ .account-actions{gap:.65rem}
+}
