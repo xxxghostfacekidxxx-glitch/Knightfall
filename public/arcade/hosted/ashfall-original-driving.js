@@ -10,19 +10,19 @@ function end(t){running=false;label(t+" · "+score+" points");try{window.AshFall
 function reset(){generation++;running=true;score=0;steps=0;elapsed=0;spawn=.6;obstacles=[];player=1;cars=[{lane:0,y:400},{lane:2,y:400}];$("score").textContent="0";last=performance.now();label("DRIVE · avoid hazards");requestAnimationFrame(t=>loop(t,generation));draw()}
 function action(direction){
  if(!running)return;
- if(id==="crossy-road"){if(direction==="up"){steps++;points(5)}else if(direction==="down"){steps=Math.max(0,steps-1)}else player=Math.max(0,Math.min(2,player+direction));if(steps>=30)end("CROSSING COMPLETE")}
+ if(id==="crossy-road"){if(direction==="up"){steps++;points(5);obstacles=obstacles.filter(o=>Math.abs(o.y-400)>65||o.lane!==player)}else if(direction==="down"){steps=Math.max(0,steps-1)}else player=Math.max(0,Math.min(2,player+direction));if(steps>=30)end("CROSSING COMPLETE")}
  else if(id==="two-cars"){if(direction==="left")cars[0].lane=cars[0].lane===0?1:0;else if(direction==="right")cars[1].lane=cars[1].lane===2?3:2}
  else player=Math.max(0,Math.min(3,player+(direction==="left"?-1:direction==="right"?1:0)));
  draw()
 }
 function loop(now,token){if(!running||token!==generation)return;const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;elapsed+=dt;spawn-=dt;
  if(spawn<=0){spawn=Math.max(.35,1.1-elapsed/180);const track=id==="crossy-road"?Math.floor(random(0,3)):Math.floor(random(0,4));obstacles.push({lane:track,y:-40,passed:false,speed:120+elapsed*1.8});}
- for(const o of obstacles){o.y+=o.speed*dt;if(!o.passed&&o.y>460){o.passed=true;points(2)}}
+ for(const o of obstacles){o.y+=o.speed*dt;if(!o.passed&&o.y>460){o.passed=true;if(id!=="crossy-road")points(2)}}
  obstacles=obstacles.filter(o=>o.y<540).slice(-25);
  for(const o of obstacles){if(Math.abs(o.y-400)>35)continue;
  if(id==="two-cars"&&cars.some(car=>car.lane===o.lane)){end("TWIN CRASH");break}
  if(id==="car-race"&&o.lane===player){end("CRASHED OUT");break}
- if(id==="crossy-road"&&o.lane===player&&steps>0){end("CROSSING FAILED");break}}
+ if(id==="crossy-road"&&o.lane===player&&steps>0&&steps%3!==0){end("CROSSING FAILED");break}}
  if(running&&id==="crossy-road"&&elapsed>70)end("TIME EXPIRED");
  draw();if(running)requestAnimationFrame(t=>loop(t,token))}
 function draw(){rect(0,0,640,500,"#100e13");rect(45,45,550,420,"#3a3538");for(let i=0;i<5;i++)rect(55+i*110,45,3,420,"#bcb1a0");
