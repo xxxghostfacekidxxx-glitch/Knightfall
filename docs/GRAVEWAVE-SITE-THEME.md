@@ -26,3 +26,17 @@ No game logic or player state is modified. Existing game sprites continue to wor
 6. If Cloudflare Pages is deployed from the default branch, confirm the build and cache have updated before declaring the live site complete.
 
 The shared styling is intentionally a broad pass, not a guarantee that every legacy inline color or independently styled page has been converted.
+
+## Site-wide mascot takeover and signal glitch
+
+Shared `nav.js` also loads:
+- `/gravewave-takeover.css`: persistent transparent CRT scanlines, intermittent pink/green chromatic flicker, floating background mascots, neon text accents, and CSS-background mascots on supported inputs.
+- `/gravewave-takeover.js`: places original, locally hosted SVGs in background ambience and up to 24 public cards per page. It decorates supported text/search/email/URL inputs and textareas without adding wrappers or changing form submission.
+
+All inserted SVG images have empty alt text and `aria-hidden`; decorative layers use `pointer-events:none`. Reduced-motion preferences disable animated effects. Private and payment-sensitive routes avoid ambient/card overlays, and private/editor forms avoid decorative input artwork. Passwords, game playfields, dialogs, and chat composers are deliberately excluded from input overlays. The persistent glitch is visual only and does not change data, game logic, or authorization.
+
+### QA notes
+- Check narrow mobile screens for form padding, readability, and background mascot overlap.
+- Verify `nav.js` is included on every desired page. Pages without it do not receive these shared effects.
+- Test reduced motion, keyboard focus, game input, and chat typing.
+- Confirm deployment and asset requests in browser developer tools before declaring production rollout verified.
