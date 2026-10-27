@@ -1,5 +1,5 @@
 (()=>{"use strict";
-const q=new URLSearchParams(location.search),id=q.get("game")||"particle-clicker";
+const q=new URLSearchParams(location.search),pathGame=location.pathname.match(/\/arcade\/hosted\/(particle-clicker|cube-composer|skifree|ball-and-wall)\/index\.html$/)?.[1],id=pathGame||q.get("game")||"particle-clicker";
 const defs={
  "particle-clicker":{title:"Particle Clicker",tag:"REACTOR LAB",desc:"Generate research, recruit scientists, and build an absurdly overfunded particle collider.",key:"cabinet-particle-clicker"},
  "cube-composer":{title:"Cube Composer",tag:"LOGIC SYNTH",desc:"Route energy through a programmable grid. Toggle tiles, chain the current, and solve each board.",key:"cabinet-cube-composer"},
