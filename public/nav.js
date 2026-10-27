@@ -138,7 +138,7 @@
           <a href="/dating.html">Dating Realm (18+)</a>
         </div>
       </details>
-      <details class="kf-nav-group kf-profile-group">
+      <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu kf-profile-menu">
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
@@ -158,6 +158,7 @@
           <a class="kf-my-profile-link" href="/profile.html">View My Public Profile</a>
         </div>
       </details>
+      <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>
       <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>`;
 
@@ -291,6 +292,8 @@
         nav.querySelector(".kf-my-profile-link")?.remove();
         return;
       }
+      profileGroup.hidden = false;
+      nav.querySelector(".kf-sign-in-link")?.remove();
       currentUser = d.user;
       const user = currentUser;
       if (siteSettings?.feature_profiles === "false" && !["admin","god"].includes(user.role)) {
