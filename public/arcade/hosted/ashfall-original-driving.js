@@ -6,7 +6,7 @@ const random=(a,b)=>a+Math.random()*(b-a),lane=x=>110+x*140;
 function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function label(t){$("status").textContent=t}
 function points(n){score+=n;best=Math.max(best,score);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-drive-"+id,String(best))}catch{}}
-function end(t){running=false;label(t+" · "+score+" points");try{window.AshFallArcade?.recordScore?.("cabinet-"+id,score,{schema:1,score,steps})}catch{}}
+function end(t){running=false;label(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
 function reset(){generation++;running=true;score=0;steps=0;elapsed=0;spawn=.6;obstacles=[];player=1;cars=[{lane:0,y:400},{lane:2,y:400}];$("score").textContent="0";last=performance.now();label("DRIVE · avoid hazards");requestAnimationFrame(t=>loop(t,generation));draw()}
 function action(direction){
  if(!running)return;
