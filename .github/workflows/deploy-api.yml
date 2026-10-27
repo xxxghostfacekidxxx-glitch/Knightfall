@@ -47,30 +47,10 @@ jobs:
               print('Discover route escaping pattern not found; deployment continues for unrelated backend changes.')
           PY
 
-      - name: Require dedicated D1 migration credentials
-        shell: bash
-        env:
-          CLOUDFLARE_D1_MIGRATION_TOKEN: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          set -euo pipefail
-          if [ -z "$CLOUDFLARE_D1_MIGRATION_TOKEN" ]; then
-            echo "::error::Add the CLOUDFLARE_D1_MIGRATION_TOKEN Actions secret with D1 migration permissions."
-            exit 1
-          fi
-          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "::error::The CLOUDFLARE_ACCOUNT_ID Actions secret is required."
-            exit 1
-          fi
-          echo "Dedicated D1 migration credentials are present."
-
-      - name: Apply D1 migrations
-        uses: cloudflare/wrangler-action@v4
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: backend
-          command: d1 migrations apply knightfall-forum --remote
+      # Schema migrations are intentionally NOT applied by routine code deployments.
+      # Use the separately approved apply-d1-migrations.yml workflow after review.
+      - name: Confirm migration separation
+        run: echo 'Production D1 schema changes require the reviewed migration workflow.'
 
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
