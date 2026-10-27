@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v11";
+const CACHE_NAME = "knightfall-shell-v12";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -73,9 +73,20 @@ self.addEventListener("fetch", event => {
     return;
   }
   if (APP_SHELL.includes(url.pathname) && !request.headers.has("Authorization")) {
-    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(async response => {
-      if (response.ok) { const cache = await caches.open(CACHE_NAME); cache.put(request, response.clone()); }
-      return response;
-    })));
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        // Prefer fresh shared assets after deployments, but retain offline fallback.
+        const response = await fetch(request);
+        if (response.ok && response.type === "basic") {
+          await cache.put(request, response.clone()).catch(() => {});
+        }
+        return response;
+      } catch (error) {
+        const cached = await cache.match(request, { ignoreSearch: true });
+        if (cached) return cached;
+        throw error;
+      }
+    })());
   }
 });
