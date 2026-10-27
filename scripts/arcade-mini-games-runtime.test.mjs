@@ -42,6 +42,9 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
    assert.equal(state.y,520,"paddle collision resolves outside paddle");
    assert.ok(state.vy<0,"paddle reflects the ball upward");
   }
+  sandbox.__miniTest.finish("TEST COMPLETE");
+  sandbox.__miniTest.finish("TEST COMPLETE");
+  assert.equal(events.filter(e=>e.type==="ashfall:arcade-finished").length,1,"a run must emit only one finish event");
   if(id==="cube-composer"){
    sandbox.__miniTest.getState().level=9;
    listeners.get("start:click")();
