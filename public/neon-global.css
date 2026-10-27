@@ -46,7 +46,6 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 @media(prefers-reduced-motion:reduce){.kf-gravewave-ribbon img{animation:none}}
 
 /* Preserve member-selected profile skins while keeping shared chrome neon. */
-:where([data-profile-theme],[data-user-theme],.profile-theme-preview,.profile-custom-theme) :where(.card,.panel,.profile-card){background:var(--profile-card-bg,inherit);border-color:var(--profile-border,inherit)}
 /* More specific neon controls for older arcade and account templates. */
 :where(.tab[aria-selected="true"],.tabs .active,.game-tabs button[aria-selected="true"]){background:rgba(255,85,216,.17)!important;color:#c6ff45!important;border-color:#ff55d8!important}
 :where(.back,.kf-nav-primary,.kf-nav-group>summary){color:#e2d4f0}
