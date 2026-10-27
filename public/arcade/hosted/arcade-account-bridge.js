@@ -35,6 +35,14 @@ let active=false,submitted=false,runPeak=0,lastScore=0,graceUntil=0,apiPromise=n
 function getApi(){if(window.AshFallArcade)return Promise.resolve(window.AshFallArcade);if(apiPromise)return apiPromise;apiPromise=new Promise((resolve,reject)=>{let el=[...document.scripts].find(x=>x.src.includes('/arcade-save.js'));if(el){el.addEventListener('load',()=>window.AshFallArcade?resolve(window.AshFallArcade):reject(new Error('Account helper did not initialize')),{once:true});el.addEventListener('error',reject,{once:true});setTimeout(()=>window.AshFallArcade?resolve(window.AshFallArcade):reject(new Error('Account helper timed out')),5000)}else{el=document.createElement('script');el.src='/arcade-save.js';el.onload=()=>window.AshFallArcade?resolve(window.AshFallArcade):reject(new Error('Account helper did not initialize'));el.onerror=reject;document.head.appendChild(el)}});return apiPromise}
 function begin(){active=true;submitted=false;runPeak=0;lastScore=0;graceUntil=Date.now()+1400}
 async function finish(score,reason){if(submitted)return;const finalScore=Math.max(1,Math.floor(Number(score)||runPeak||1));submitted=true;active=false;try{const api=await getApi();if(api.ready)await api.ready;if(!api.user){signIn();return}const state=stateSnapshot();const progress={score:finalScore,bestScore:Math.max(finalScore,runPeak),source:'account-bridge',reason,completionOnly:mode==='completion',savedAt:new Date().toISOString()};if(state!==null)progress.serialized=state;const result=await api.recordScore(gameId,finalScore,progress);status.textContent=result&&result.saved?'Score saved to your Ash-Fall account leaderboard.':'Run ended; account score sync did not complete.';addReport()}catch(e){status.textContent='Local play still works; account score sync is unavailable.';addReport()}}
+document.addEventListener('ashfall:arcade-finished',event=>{
+ const detail=event.detail||{};
+ if(detail.gameId!==gameId)return;
+ const finalScore=Number(detail.score);
+ if(!Number.isFinite(finalScore)||finalScore<0)return;
+ runPeak=Math.max(runPeak,finalScore);
+ finish(finalScore,'original-game-finished');
+});
 const startSelector='#start,#btn-start,#btnStart,#startBtn,#btn-again,#btn-restart,#restart,#restartBtn,.start-button,[data-action="start"]';
 document.addEventListener('click',e=>{if(e.target&&e.target.closest&&e.target.closest(startSelector))begin()});document.addEventListener('keydown',e=>{if(!active&&!document.querySelector(startSelector)&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Enter','w','a','s','d','W','A','S','D'].includes(e.key))begin()});
 document.addEventListener('pointerdown',e=>{if(e.target&&e.target.closest&&e.target.closest('canvas,svg,.board,.game-board,.keyboard,#keyboard,#grid,[data-game-surface]')){if(!overlayOver()&&!active)begin()}});
