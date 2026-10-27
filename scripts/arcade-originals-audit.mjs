@@ -7,6 +7,9 @@ const manifest=JSON.parse(readFileSync(join(root,"arcade/original-creations.json
 const errors=[],seen=new Set();
 const catalogLinks=[...catalog.matchAll(/href="(\/arcade\/hosted\/[^"]+\/index\.html)"/g)].map(m=>m[1]);
 if(!Array.isArray(manifest.games))throw Error("Original creations manifest missing games array");
+const catalogCards=[...catalog.matchAll(/<article\\b[^>]*class="game"[^>]*>[\\s\\S]*?<\\/article>/g)];
+if(catalogCards.length!==manifest.games.length)errors.push("Catalog/manifest count mismatch: "+catalogCards.length+" cards vs "+manifest.games.length+" games");
+if(manifest.games.length!==103)errors.push("Expected 103 arcade originals, found "+manifest.games.length);
 for(const game of manifest.games){
  if(!/^[a-z0-9-]+$/.test(game.id)||seen.has(game.id)){errors.push("Invalid or duplicate game id: "+game.id);continue}
  seen.add(game.id);
