@@ -23,7 +23,7 @@ self.addEventListener("activate", event => {
 
 // Web Push works when the site is backgrounded or closed, where the browser supports it.
 function safeNotificationPath(value) {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || /[\\\\\x00-\x1f]/.test(value)) return "/notifications.html";
+  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//") || /%5c|%2f/i.test(value) || /[\\\\\x00-\x1f]/.test(value)) return "/notifications.html";
   try {
     const parsed = new URL(value, self.location.origin);
     if (parsed.origin !== self.location.origin) return "/notifications.html";
