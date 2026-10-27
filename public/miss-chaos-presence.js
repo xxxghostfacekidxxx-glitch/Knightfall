@@ -17,6 +17,21 @@
     </section>
     <button id="miss-chaos-launcher" type="button" aria-expanded="false" aria-controls="miss-chaos-window"><span style="position:relative"><img src="${AVATAR}" alt=""><i class="mc-status-dot" aria-hidden="true"></i></span><span class="mc-launch-copy"><strong>Miss Chaos</strong><small>Need me? I'm right here.</small></span></button>`;
   document.body.append(root);
+  // Keep the floating companion clear of the support/shop footer while it is visible.
+  // IntersectionObserver also handles mobile browser bars and changing viewport heights.
+  const supportFooter = document.getElementById("ashfall-support-footer");
+  if (supportFooter && "IntersectionObserver" in window) {
+    const adjustForFooter = () => {
+      const rect = supportFooter.getBoundingClientRect();
+      const overlap = Math.max(0, window.innerHeight - Math.max(0, rect.top));
+      root.style.setProperty("--mc-footer-clearance", Math.min(overlap, window.innerHeight * 0.5) + "px");
+    };
+    const observer = new IntersectionObserver(() => adjustForFooter(), {threshold:[0,0.01,0.5,1]});
+    observer.observe(supportFooter);
+    window.addEventListener("resize", adjustForFooter, {passive:true});
+    window.addEventListener("scroll", adjustForFooter, {passive:true});
+    adjustForFooter();
+  }
   const $=s=>root.querySelector(s), panel=$("#miss-chaos-window"), launcher=$("#miss-chaos-launcher"), messages=$("#mc-messages"), input=$("#mc-input"), send=$("#mc-send"), error=$("#mc-error");
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
   const status=$("#mc-presence-status"), voiceButton=$("#mc-voice"), mood=$("#mc-mood");
