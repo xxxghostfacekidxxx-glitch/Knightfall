@@ -210,7 +210,7 @@
   if (!document.getElementById("kf-nav-stability-css")) {
     const stable=document.createElement("style");
     stable.id="kf-nav-stability-css";
-    stable.textContent=`html body>.kf-header{position:sticky!important;top:0!important;z-index:2147483001!important;overflow:visible!important;transform:none!important;filter:none!important;isolation:isolate!important;width:100%!important;box-sizing:border-box!important}html body>.kf-header .kf-nav-toggle{cursor:pointer!important;pointer-events:auto!important}html body>.kf-header .kf-nav.open{z-index:2147483002!important;pointer-events:auto!important}html body>.kf-header .kf-nav-menu{z-index:2147483003!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}html body>.kf-header .kf-nav a{pointer-events:auto!important}@media(max-width:1080px){html body>.kf-header .kf-nav.open{max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:static!important;overflow:visible!important;max-height:none!important}}@media(min-width:1081px){html body>.kf-header .kf-nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:absolute!important}}`;
+    stable.textContent=`html body>.kf-header{position:sticky!important;top:0!important;z-index:2147483001!important;overflow:visible!important;transform:none!important;filter:none!important;isolation:isolate!important;width:100%!important;box-sizing:border-box!important}html body>.kf-header .kf-nav-toggle{cursor:pointer!important;pointer-events:auto!important}html body>.kf-header .kf-nav.open{z-index:2147483002!important;pointer-events:auto!important}html body>.kf-header .kf-nav-menu{z-index:2147483003!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}html body>.kf-header .kf-nav a{pointer-events:auto!important}html body>.kf-header .kf-nav [hidden]{display:none!important}@media(max-width:1080px){html body>.kf-header .kf-nav.open{max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:static!important;overflow:visible!important;max-height:none!important}}@media(min-width:1081px){html body>.kf-header .kf-nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:absolute!important}}`;
     document.head.append(stable);
   }
   header.innerHTML = `
@@ -220,6 +220,9 @@
       <a class="kf-nav-primary" href="/homepage.html">Explore</a>
       <a class="kf-nav-primary" href="/community.html">Forums</a>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
+       <a class="kf-nav-primary" href="/members.html">Profiles</a>
+       <a class="kf-nav-primary" href="/friends.html">Friends</a>
+       <a class="kf-nav-primary kf-admin-quick-link" href="/admin.html" hidden>God Mode</a>
       <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
       <details class="kf-nav-group">
         <summary>Discover <span aria-hidden="true">⌄</span></summary>
@@ -410,12 +413,15 @@
       applyProfileVisibility();
       const user = currentUser;
       if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
-      if (!(["admin","god"].includes(user.role) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
-      if (["admin","god"].includes(user.role)) {
+      if (!(["admin","god"].includes(normalizedRole) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
+      const normalizedRole = String(user.role || "").trim().toLowerCase();
+      if (["admin","god"].includes(normalizedRole)) {
+        const quickLink = nav.querySelector(".kf-admin-quick-link");
+        if (quickLink) quickLink.hidden = false;
         const adminLink = nav.querySelector(".kf-admin-link");
         if (adminLink) adminLink.hidden = false;
       }
-      if (["admin","moderator","god"].includes(user.role)) {
+      if (["admin","moderator","god"].includes(normalizedRole)) {
         const modLink = nav.querySelector(".kf-mod-link");
         const recoveryLink = nav.querySelector(".kf-recovery-link");
         if (modLink) modLink.hidden = false;
