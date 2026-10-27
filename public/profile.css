@@ -309,3 +309,15 @@
 .photo-album-choice select:focus-visible{outline:3px solid #e66a2c;outline-offset:2px}
 .ash-photo-lightbox button:disabled{opacity:.35;cursor:not-allowed}
 @media(max-width:600px){.profile-photo-meta .photo-album-choice{flex:1 1 100%;justify-content:space-between}.photo-album-choice select{flex:1;max-width:none}}
+
+/* Shared profile and friends page layout guardrails. */
+.profile-shell,.profile-shell .card,.profile-shell section,.profile-shell .profile-actions-wrap{min-width:0}
+.profile-shell h1,.profile-shell h2,.profile-shell .bio{overflow-wrap:anywhere}
+.profile-shell button,.profile-shell .action{min-height:42px}
+.profile-shell img,.profile-shell video{max-width:100%}
+@media(max-width:600px){
+ .profile-shell{width:calc(100% - 1.25rem);padding:1.2rem 0 3rem}
+ .profile-shell .card{padding:1.1rem}
+ .profile-shell .profile-actions-wrap{display:flex;flex-wrap:wrap;gap:.6rem}
+ .profile-shell .profile-actions-wrap>*{max-width:100%}
+}
