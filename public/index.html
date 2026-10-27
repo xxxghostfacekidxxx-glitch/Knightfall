@@ -141,7 +141,7 @@
         try {
           const response = await fetch(API + endpoint, {
             method: "POST", credentials: "include", headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(payloadBuilder(new FormData(form)))
+            body: JSON.stringify(Object.assign(payloadBuilder(new FormData(form)), endpoint.endsWith("/register") && turnstileEnabled ? {turnstile_token: form.querySelector('[name="cf-turnstile-response"]')?.value || ""} : {}))
           });
           const data = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(data.error || "We couldn't complete that request. Please try again.");
