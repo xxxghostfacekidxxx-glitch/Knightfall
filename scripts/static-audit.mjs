@@ -34,9 +34,10 @@ const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
 else ok("Worker module syntax");
 const deployWorkflow = await readFile(path.join(root, ".github/workflows/deploy-api.yml"), "utf8");
-if (!deployWorkflow.includes("CLOUDFLARE_D1_MIGRATION_TOKEN") || !deployWorkflow.includes('apiToken: ${{ secrets.CLOUDFLARE_D1_MIGRATION_TOKEN }}')) fail("D1 migrations must use the dedicated migration token, not the general Worker deploy token.");
-if (!deployWorkflow.includes("Require dedicated D1 migration credentials")) fail("Deployment must fail early with a clear message when D1 migration credentials are missing.");
-else ok("Deployment uses a dedicated D1 migration token with explicit preflight validation.");
+const migrationWorkflow = await readFile(path.join(root, ".github/workflows/apply-d1-migrations.yml"), "utf8");
+if (deployWorkflow.includes("d1 migrations apply")) fail("Routine API deployments must never auto-apply production D1 migrations.");
+if (!migrationWorkflow.includes("confirm_production") || !migrationWorkflow.includes("CLOUDFLARE_D1_MIGRATION_TOKEN") || !migrationWorkflow.includes("d1 migrations apply knightfall-forum --remote")) fail("Reviewed production migration workflow must require explicit approval and dedicated credentials.");
+else ok("Production D1 migrations are separated from routine Worker deployments.");
 
 const arcadeInvariants = [
   ["arcade score submissions require a signed-in account", /\/api\/arcade\/scores[\s\S]{0,350}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
