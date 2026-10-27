@@ -91,6 +91,7 @@
         <div class="field"><label for="register-username">Username</label><input id="register-username" name="username" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" title="3–24 letters, numbers, or underscores" placeholder="letters_numbers_underscores"></div>
         <div class="field"><label for="register-email">Email address</label><input id="register-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></div>
         <div class="field"><label for="register-password">Password <span style="color:#888;font-weight:500">(12 characters minimum)</span></label><input id="register-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128" placeholder="Create a strong password"></div>
+        <div id="register-turnstile"></div>
         <button class="primary" type="submit">Create my account ↗</button>
         <p class="status" id="register-status" role="status" aria-live="polite"></p>
         <p class="legal">By creating an account, you agree to use Ash-Fall responsibly and treat other members with basic human decency. A surprisingly rare feature.</p>
