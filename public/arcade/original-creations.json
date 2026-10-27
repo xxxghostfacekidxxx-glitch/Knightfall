@@ -1594,12 +1594,12 @@
     },
     {
       "id": "prism-panic",
-      "name": "Prism Panic",
+      "name": "Prism Siege",
       "genre": "Puzzle",
       "sprites": [
         "prism.svg"
       ],
-      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "notes": "Independent original first-party canvas shooter engine in ashfall-original-vector.js, distinct mode rules, keyboard and touch input, account scoring. Legacy code and page replaced; browser QA pending.",
       "engine": "/arcade/hosted/prism-panic/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/prism-panic",
       "assets": [
@@ -1608,16 +1608,16 @@
           "path": "/arcade/hosted/prism-panic/sprites/prism.svg"
         }
       ],
-      "status": "original emblem integrated; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "neon-vector",
-      "name": "Neon Vector",
+      "name": "Cinder Vector",
       "genre": "Arcade",
       "sprites": [
         "vector.svg"
       ],
-      "notes": "Existing Knightfall-hosted game with newly integrated Ash-Fall emblem and orange styling. Code and embedded assets require independent provenance review.",
+      "notes": "Independent original first-party canvas shooter engine in ashfall-original-vector.js, distinct mode rules, keyboard and touch input, account scoring. Legacy code and page replaced; browser QA pending.",
       "engine": "/arcade/hosted/neon-vector/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/neon-vector",
       "assets": [
@@ -1626,7 +1626,7 @@
           "path": "/arcade/hosted/neon-vector/sprites/vector.svg"
         }
       ],
-      "status": "original emblem integrated; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "cinder-circuit",
