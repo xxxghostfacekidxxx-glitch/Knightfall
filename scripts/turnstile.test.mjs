@@ -47,3 +47,13 @@ test("successful verification from an unapproved hostname is rejected", async ()
     globalThis.fetch = original;
   }
 });
+
+test("explicit staging hostname is accepted only when configured", async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({success:true,hostname:"staging.ash-fall.com"}),{status:200});
+  try {
+    assert.equal(await checkTurnstile(enabled,request,"token"),false);
+    assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"staging.ash-fall.com"},request,"token"),true);
+    assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"evil.example.com"},request,"token"),false);
+  } finally { globalThis.fetch = original; }
+});
