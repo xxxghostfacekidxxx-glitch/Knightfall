@@ -3,7 +3,7 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261026-presence6"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261027-footerfix1"; document.head.append(css);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261026-glitch2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
