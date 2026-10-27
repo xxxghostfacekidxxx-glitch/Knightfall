@@ -1,4 +1,4 @@
-:root{--bot-panel:#111116;--bot-panel-2:#17171e;--bot-line:rgba(255,255,255,.1);--bot-muted:#a19ca6;--bot-accent:#d35400;--bot-bright:#ff7b29;--bot-good:#83d6a0;--bot-danger:#ff9393}
+:root{--bot-panel:#111116;--bot-panel-2:#17171e;--bot-line:rgba(255,255,255,.1);--bot-muted:#a19ca6;--bot-accent:var(--af-ember);--bot-bright:var(--af-ember-light);--bot-good:#83d6a0;--bot-danger:#ff9393}
 .bots-page{min-height:100vh;background:radial-gradient(ellipse at 80% 2%,rgba(211,84,0,.12),transparent 38%),var(--kf-bg);color:var(--kf-text)}
 .bots-shell{width:min(1180px,92%);margin:auto;padding:2.7rem 0 5rem}
 .bots-hero{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:1.25rem 0 2.4rem}
