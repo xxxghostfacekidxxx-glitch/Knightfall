@@ -177,3 +177,13 @@ main:focus{outline:none}
  .kf-nav-menu a{white-space:normal;padding:.75rem .8rem}
  .kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}
 }
+
+
+/* First-party Devil Tools SVG sprite stamps. Pure decoration, no hit targets. */
+.kf-devil-stamp{display:inline-block;flex:none;width:30px;height:30px;background-repeat:no-repeat;background-size:1200% 200%;background-position:var(--kf-sprite-x,0%) var(--kf-sprite-y,0%);image-rendering:pixelated;pointer-events:none;vertical-align:middle}
+.kf-devil-title-stamps{display:flex;align-items:center;gap:.35rem;width:max-content;max-width:100%;margin:.25rem 0 .9rem;opacity:.7;filter:drop-shadow(0 0 5px rgba(230,106,44,.22));pointer-events:none}
+.kf-devil-title-stamps::after{content:"";display:block;width:clamp(36px,8vw,105px);height:1px;margin-left:.35rem;background:linear-gradient(90deg,rgba(230,106,44,.55),transparent)}
+.kf-devil-footer-stamps{display:flex;justify-content:center;gap:.55rem;margin:0 auto .45rem;opacity:.72;pointer-events:none}
+.kf-devil-footer-stamps .kf-devil-stamp{width:26px;height:26px}
+@media(max-width:600px){.kf-devil-title-stamps{gap:.15rem;margin:.2rem 0 .55rem}.kf-devil-title-stamps .kf-devil-stamp{width:23px;height:23px}.kf-devil-footer-stamps .kf-devil-stamp{width:22px;height:22px}}
+@media(prefers-reduced-motion:reduce){.kf-devil-stamp{animation:none!important}}
