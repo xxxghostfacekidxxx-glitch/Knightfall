@@ -6,6 +6,13 @@
   if (!document.querySelector('script[data-gravewave-decor]')) {
     const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-gravewave1';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
   }
+  // Full-site Gravewave signal interference and original mascot decorations.
+  if (!document.querySelector('link[data-gravewave-takeover]')) {
+    const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/gravewave-takeover.css?v=20261026-takeover1';sheet.dataset.gravewaveTakeover='true';document.head.append(sheet);
+  }
+  if (!document.querySelector('script[data-gravewave-takeover]')) {
+    const art=document.createElement('script');art.src='/gravewave-takeover.js?v=20261026-takeover1';art.defer=true;art.dataset.gravewaveTakeover='true';document.head.append(art);
+  }
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
   if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
     document.body.classList.add("chaos-glitch-arcade");
