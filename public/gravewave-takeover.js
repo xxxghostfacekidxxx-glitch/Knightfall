@@ -1,5 +1,7 @@
 /* Site-wide original character takeover. All artwork is local, decorative, and inert. */
 (()=>{'use strict';
+if(window.__gravewaveTakeoverLoaded)return;
+window.__gravewaveTakeoverLoaded=true;
 const base='/assets/devil-tools/neon-nuisances/';
 const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot'];
 const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg';
