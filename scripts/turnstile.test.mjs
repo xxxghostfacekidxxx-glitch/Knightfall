@@ -32,3 +32,18 @@ test("configured challenge accepts only successful approved-host verification", 
     globalThis.fetch = original;
   }
 });
+
+test("partial configuration fails closed", async () => {
+  assert.equal(await checkTurnstile({ TURNSTILE_SECRET_KEY: "secret" }, request, "token"), false);
+  assert.equal(await checkTurnstile({ TURNSTILE_SITE_KEY: "site" }, request, "token"), false);
+});
+
+test("successful verification from an unapproved hostname is rejected", async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ success: true, hostname: "example.com" }), { status: 200 });
+  try {
+    assert.equal(await checkTurnstile(enabled, request, "test-token"), false);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
