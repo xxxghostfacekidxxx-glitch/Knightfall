@@ -7,7 +7,7 @@ function rect(x,y,w,h,color){g.fillStyle=color;g.fillRect(x,y,w,h)}
 function circle(x,y,r,color){g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=color;g.fill()}
 function note(t){$("status").textContent=t}
 function award(n){score+=n;best=Math.max(score,best);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-action-"+id,String(best))}catch{}}
-function stop(t){running=false;note(t+" · "+score+" points");try{window.AshFallArcade?.recordScore?.("cabinet-"+id,score,{schema:1,score})}catch{}}
+function stop(t){running=false;note(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
 function start(){token++;running=true;score=0;last=performance.now();$("score").textContent="0";
  if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:i===0?265:rand(40,480),y:420-i*55}))};
  else state={x:320,y:id==="survivor"?240:410,hp:id==="survivor"?5:3,enemies:[],shots:[],spawn:0,fire:0,elapsed:0};
