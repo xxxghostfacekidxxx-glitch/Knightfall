@@ -155,3 +155,14 @@ img,video,iframe{max-width:100%}
  .kf-nav-menu a{white-space:normal}
  .kf-nav .kf-install-app{width:100%;margin:.3rem 0;justify-content:center}
 }
+
+/* Honor authenticated navigation visibility even when flex/grid rules apply. */
+.kf-nav [hidden]{display:none!important}
+.kf-nav-group:has(a[aria-current="page"])>summary{box-shadow:inset 0 -2px 0 var(--kf-accent)}
+@media(min-width:1081px){
+ .kf-nav-primary,.kf-nav-group>summary{min-height:44px}
+}
+@media(max-width:1080px){
+ .kf-nav-toggle[aria-expanded="true"]{background:var(--kf-accent-soft);border-color:rgba(230,106,44,.6);color:#fff}
+ .kf-nav.open{z-index:80}
+}
