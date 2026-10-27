@@ -19,7 +19,7 @@ function finish(success){
  else{status("IMPACT · mission failed · press Retry");$("restart").textContent="Retry Mission";for(let i=0;i<28;i++)particles.push({x:ship.x,y:ship.y,vx:rand(-90,90),vy:rand(-110,80),life:rand(.3,1)})}
  updateHud();document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-cinder-lander",score}}))
 }
-function start(){sequence++;active=true;last=performance.now();hold={left:false,right:false,thrust:false};$("restart").textContent="Restart";resetWorld();status("Guide the lander onto the glowing extraction platform");requestAnimationFrame(t=>loop(t,sequence))}
+function start(){sequence++;active=true;last=performance.now();hold={left:false,right:false,thrust:false};$("restart").textContent="Restart";resetWorld();status("Guide the lander onto the glowing extraction platform");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+"cinder-lander"}}));requestAnimationFrame(t=>loop(t,sequence))}
 function step(dt){if(!active)return;
  const turn=(keys.has("ArrowRight")||keys.has("d")||hold.right?1:0)-(keys.has("ArrowLeft")||keys.has("a")||hold.left?1:0);
  ship.angle=Math.max(-1.1,Math.min(1.1,ship.angle+turn*2.1*dt));
