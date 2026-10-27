@@ -121,7 +121,14 @@ async function createNotification(env, {userId, actorId=null, kind, targetType=n
     }
     const notification={kind:String(kind).slice(0,60),title:String(title).slice(0,160),body:String(body).slice(0,1000),url:url?String(url).slice(0,500):null,target_id:targetId};
     await env.DB.prepare("INSERT INTO notifications (user_id,actor_id,kind,target_type,target_id,title,body,url,created_at) VALUES (?,?,?,?,?,?,?,?,?)").bind(userId, actorId, notification.kind, targetType, targetId != null ? Number(targetId) : null, notification.title, notification.body, notification.url, new Date().toISOString()).run();
-    await deliverPushToUser(env,userId,notification);
+    if (env.NOTIFICATION_QUEUE) {
+      try {
+        await env.NOTIFICATION_QUEUE.send({type:"push-notification",userId,notification});
+      } catch (error) {
+        console.warn("queue_enqueue_failed",String(error));
+        await deliverPushToUser(env,userId,notification);
+      }
+    } else await deliverPushToUser(env,userId,notification);
   } catch (error) { console.error("notification_failed", error); }
 }
 async function notifyMentions(env, textValue, actor, targetType, targetId, targetUrl) { const names=[...String(textValue||"").matchAll(/@([a-z0-9_]{3,24})/gi)].map(x=>x[1].toLowerCase()).filter((v,i,a)=>a.indexOf(v)===i); for(const name of names){ const target=await env.DB.prepare("SELECT id,username FROM users WHERE username=? AND status='active'").bind(name).first(); if(target && target.id!==actor.id) await createNotification(env,{userId:target.id,actorId:actor.id,kind:"mention",targetType,targetId,title:"You were mentioned",body:"@"+actor.username+" mentioned you.",url:targetUrl}); } }
