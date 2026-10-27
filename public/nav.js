@@ -190,7 +190,15 @@
       if (group.open) nav.querySelectorAll(".kf-nav-group").forEach(other => { if (other !== group) other.open = false; });
     });
   });
-  let siteSettings = null, currentUser = null;
+  let siteSettings = null, currentUser = null, authResolved = false;
+  // Auth and feature settings arrive independently. Wait for both before removing
+  // profile links, otherwise a slow auth response can hide privileged navigation.
+  function applyProfileVisibility() {
+    if (!authResolved || siteSettings?.feature_profiles !== "false") return;
+    if (currentUser && ["admin", "god"].includes(currentUser.role)) return;
+    nav.querySelector(".kf-members-link")?.remove();
+    nav.querySelectorAll(".kf-profile-link,.kf-my-profile-link").forEach(link => link.remove());
+  }
   const toggle = header.querySelector(".kf-nav-toggle");
   const installButton = header.querySelector(".kf-install-app");
   const profileGroup = nav.querySelector(".kf-profile-group");
@@ -278,15 +286,15 @@
       siteSettings = d?.settings || null;
       if (!siteSettings) return;
       if (siteSettings.feature_miss_chaos === "false") nav.querySelector('a[href="/miss-chaos.html"]')?.remove();
-      if (siteSettings.feature_profiles === "false") {
-        nav.querySelector(".kf-members-link")?.remove();
-        nav.querySelectorAll(".kf-profile-link,.kf-my-profile-link").forEach(link => link.remove());
-      }
+      applyProfileVisibility();
       if (siteSettings.announcements_enabled === "true" && (siteSettings.announcement_title || siteSettings.announcement_body)) {
-        const escape = value => String(value || "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
         const banner = document.createElement("aside");
         banner.className = "kf-announcement";
-        banner.innerHTML = "<strong>" + escape(siteSettings.announcement_title || "Knightfall") + "</strong><span>" + escape(siteSettings.announcement_body) + "</span>";
+        const heading = document.createElement("strong");
+        heading.textContent = siteSettings.announcement_title || "Knightfall";
+        const message = document.createElement("span");
+        message.textContent = siteSettings.announcement_body || "";
+        banner.append(heading, message);
         document.body.prepend(banner);
       }
       if (siteSettings.maintenance_mode === "true") {
@@ -301,6 +309,8 @@
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       if (!d?.user) {
+        authResolved = true;
+        applyProfileVisibility();
         // Signed-out visitors still see the grouped destinations, but not private tools.
         nav.querySelector(".kf-personal-bots-link")?.remove();
         nav.querySelector(".kf-messages-shortcut")?.remove();
@@ -313,11 +323,9 @@
       if(messageShortcut) messageShortcut.hidden=false;
       nav.querySelector(".kf-sign-in-link")?.remove();
       currentUser = d.user;
+      authResolved = true;
+      applyProfileVisibility();
       const user = currentUser;
-      if (siteSettings?.feature_profiles === "false" && !["admin","god"].includes(user.role)) {
-        nav.querySelector(".kf-members-link")?.remove();
-        nav.querySelectorAll(".kf-profile-link,.kf-my-profile-link").forEach(link => link.remove());
-      }
       if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
       if (!(["admin","god"].includes(user.role) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
       if (["admin","god"].includes(user.role)) {
@@ -332,16 +340,14 @@
       }
       const myProfile = nav.querySelector(".kf-my-profile-link");
       if (myProfile) myProfile.href = "/profile.html?username=" + encodeURIComponent(user.username);
-      if (siteSettings?.feature_profiles === "false" && !["admin","god"].includes(user.role)) {
-        nav.querySelector(".kf-profile-link")?.remove();
-        nav.querySelector(".kf-my-profile-link")?.remove();
-      }
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
       const pingActivity = () => fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"}).catch(() => {});
       pingActivity();
       setInterval(pingActivity, 120000);
     }).catch(() => {
+      authResolved = true;
+      applyProfileVisibility();
       nav.querySelector(".kf-personal-bots-link")?.remove();
       nav.querySelector(".kf-messages-shortcut")?.remove();
       nav.querySelector(".kf-vault-link")?.remove();
