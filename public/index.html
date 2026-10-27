@@ -134,7 +134,7 @@
             const render = () => {
               if (rendered || registerForm.hidden || !window.turnstile) return;
               rendered = true;
-              window.turnstile.render("#register-turnstile", {sitekey:data.site_key});
+              window.turnstile.render("#register-turnstile", {sitekey:data.site_key,action:"register"});
             };
             render();
             registerTab.addEventListener("click", () => queueMicrotask(render));
