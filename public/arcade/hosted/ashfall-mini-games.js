@@ -1,10 +1,10 @@
 (()=>{"use strict";
 const q=new URLSearchParams(location.search),pathGame=location.pathname.match(/\/arcade\/hosted\/(particle-clicker|cube-composer|skifree|ball-and-wall)\/index\.html$/)?.[1],id=pathGame||q.get("game")||"particle-clicker";
 const defs={
- "particle-clicker":{title:"Particle Clicker",tag:"REACTOR LAB",desc:"Generate research, recruit scientists, and build an absurdly overfunded particle collider.",key:"cabinet-particle-clicker"},
- "cube-composer":{title:"Cube Composer",tag:"LOGIC SYNTH",desc:"Route energy through a programmable grid. Toggle tiles, chain the current, and solve each board.",key:"cabinet-cube-composer"},
- "skifree":{title:"SkiFree: Slalom of Doom",tag:"DOWNHILL DISASTER",desc:"Swerve through a frozen wasteland, collect cinder tokens, and avoid trees, rocks, and very rude wildlife.",key:"cabinet-skifree"},
- "ball-and-wall":{title:"Ball & Wall: Ember Breakout",tag:"ARCADE IMPACT",desc:"Keep the ember in play, smash the neon wall, and clear increasingly nasty formations.",key:"cabinet-ball-and-wall"}
+ "particle-clicker":{title:"Cinder Collider",tag:"REACTOR LAB",desc:"Generate research, recruit scientists, and build an absurdly overfunded particle collider.",key:"cabinet-particle-clicker"},
+ "cube-composer":{title:"Crypt Conduits",tag:"LOGIC SYNTH",desc:"Route energy through a programmable grid. Toggle tiles, chain the current, and solve each board.",key:"cabinet-cube-composer"},
+ "skifree":{title:"Ash Slope",tag:"DOWNHILL DISASTER",desc:"Swerve through a frozen wasteland, collect cinder tokens, and avoid trees, rocks, and very rude wildlife.",key:"cabinet-skifree"},
+ "ball-and-wall":{title:"Ember Rebound",tag:"ARCADE IMPACT",desc:"Keep the ember in play, smash the neon wall, and clear increasingly nasty formations.",key:"cabinet-ball-and-wall"}
 };
 const d=defs[id]||defs["particle-clicker"];
 document.title=d.title+" | Chaos Cartridge";
