@@ -1365,7 +1365,7 @@
       "sprites": [
         "lexicon.svg"
       ],
-      "notes": "Form words from letters in a cursed puzzle. Existing Knightfall-hosted engine; original branding art. Code provenance review pending.",
+      "notes": "Original five-letter decoding engine with duplicate-letter-aware grading, score progression, touch keyboard, and account completion event. Previous page and gameplay replaced; browser QA pending.",
       "engine": "/arcade/hosted/words-of-wonder/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/words-of-wonder",
       "assets": [
@@ -1374,7 +1374,7 @@
           "path": "/arcade/hosted/words-of-wonder/sprites/lexicon.svg"
         }
       ],
-      "status": "rebranded and committed; code provenance and browser QA pending"
+      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
     },
     {
       "id": "penalty-shootout",
