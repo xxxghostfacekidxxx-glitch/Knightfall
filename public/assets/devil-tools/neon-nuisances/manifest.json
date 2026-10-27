@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances",
-  "version": 1,
+  "version": 2,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -9,7 +9,13 @@
       "type": "moth",
       "primary": "#ff66d9",
       "accent": "#86faff",
-      "svg": "/assets/devil-tools/neon-nuisances/moxie.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/moxie.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/moxie-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/moxie-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/moxie-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/moxie-mischief.svg"
+      }
     },
     {
       "id": "bloop",
@@ -17,7 +23,13 @@
       "type": "axolotl",
       "primary": "#5cf4e7",
       "accent": "#ff7ebd",
-      "svg": "/assets/devil-tools/neon-nuisances/bloop.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/bloop.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/bloop-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/bloop-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/bloop-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/bloop-mischief.svg"
+      }
     },
     {
       "id": "pippa",
@@ -25,7 +37,13 @@
       "type": "pumpkin",
       "primary": "#ff9b45",
       "accent": "#c6ff45",
-      "svg": "/assets/devil-tools/neon-nuisances/pippa.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/pippa.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/pippa-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/pippa-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/pippa-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/pippa-mischief.svg"
+      }
     },
     {
       "id": "nib",
@@ -33,7 +51,13 @@
       "type": "bat",
       "primary": "#b78cff",
       "accent": "#ff67c6",
-      "svg": "/assets/devil-tools/neon-nuisances/nib.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/nib.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/nib-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/nib-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/nib-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/nib-mischief.svg"
+      }
     },
     {
       "id": "glim",
@@ -41,7 +65,13 @@
       "type": "ghost",
       "primary": "#e6faff",
       "accent": "#79ffba",
-      "svg": "/assets/devil-tools/neon-nuisances/glim.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/glim.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/glim-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/glim-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/glim-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/glim-mischief.svg"
+      }
     },
     {
       "id": "zuzu",
@@ -49,7 +79,13 @@
       "type": "slime",
       "primary": "#b4ff63",
       "accent": "#ff80dd",
-      "svg": "/assets/devil-tools/neon-nuisances/zuzu.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/zuzu.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/zuzu-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/zuzu-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/zuzu-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/zuzu-mischief.svg"
+      }
     },
     {
       "id": "kiki",
@@ -57,7 +93,13 @@
       "type": "cat",
       "primary": "#ff8cce",
       "accent": "#76f6ff",
-      "svg": "/assets/devil-tools/neon-nuisances/kiki.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/kiki.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/kiki-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/kiki-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/kiki-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/kiki-mischief.svg"
+      }
     },
     {
       "id": "emberbun",
@@ -65,7 +107,19 @@
       "type": "rabbit",
       "primary": "#ffb36c",
       "accent": "#ff65c7",
-      "svg": "/assets/devil-tools/neon-nuisances/emberbun.svg"
+      "svg": "/assets/devil-tools/neon-nuisances/emberbun.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/emberbun-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/emberbun-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/emberbun-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/emberbun-mischief.svg"
+      }
     }
+  ],
+  "animationVariants": [
+    "idle",
+    "blink",
+    "bounce",
+    "mischief"
   ]
 }
