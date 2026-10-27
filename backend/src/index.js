@@ -103,13 +103,13 @@ async function deliverPushToUser(env,userId,notification) {
       delivery.attempted++;
       try{
         const encrypted=await encryptWebPush(payload,sub),token=await pushVapidToken(sub.endpoint,env);
-        const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted});
+        const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted,signal:AbortSignal.timeout(8000)});
         if(response.status===404||response.status===410){delivery.expired++;await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();}
         else if(!response.ok){delivery.failed++;if(isTransientPushStatus(response.status))delivery.transient++;console.warn("web_push_delivery_failed",response.status);}
         else delivery.accepted++;
       }catch(error){delivery.failed++;delivery.transient++;console.warn("web_push_subscription_failed",sub.id,String(error));}
     }
-  } catch(error) { console.warn("web_push_skipped",String(error)); }
+  } catch(error) { delivery.failed++;delivery.transient++;console.warn("web_push_skipped",String(error)); }
   return delivery;
 }
 
