@@ -1,3 +1,4 @@
+import { shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
@@ -810,8 +811,9 @@ export default { async queue(batch, env) {
         message.ack();
         continue;
       }
-      await deliverPushToUser(env, Number(job.userId), job.notification);
-      message.ack();
+      const result = await deliverPushToUser(env, Number(job.userId), job.notification);
+      if (shouldRetryPushDelivery(result)) message.retry();
+      else message.ack();
     } catch (error) {
       console.error("queue_delivery_failed",String(error));
       message.retry();
