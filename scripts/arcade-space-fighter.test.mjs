@@ -15,10 +15,14 @@ test("Space Fighter restart invalidates old frames and failure submits score onc
  const canvas={getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:420,height:620}),addEventListener:(event,fn)=>handlers.set("canvas:"+event,fn)};
  nodes.set("game",canvas);
  const doc={getElementById:node,addEventListener:(event,fn)=>handlers.set("document:"+event,fn),dispatchEvent:e=>events.push(e)};
- const sandbox={document:doc,Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
- runInNewContext(source.replace("init();\n","init();\n"),sandbox,{timeout:1000});
+ const store=new Map();const sandbox={document:doc,localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
+ runInNewContext(source.replace("init();
+","init();
+"),sandbox,{timeout:1000});
  assert.ok(frames.length);
  const stale=frames.shift();handlers.get("restart:click")();const queued=frames.length;stale(100);assert.equal(frames.length,queued);
  assert.ok(events.filter(e=>e.type==="ashfall:arcade-started").length>=2);
+ assert.ok(source.includes("ashfall-space-fighter-best"));
+ assert.ok(source.includes("visibilitychange"));
  for(let i=0;i<5;i++){const f=frames.shift();assert.ok(f);f(100+i*16)}
 });
