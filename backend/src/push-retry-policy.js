@@ -8,6 +8,5 @@ export function shouldRetryPushDelivery(delivery) {
   if (!delivery || typeof delivery !== "object") return true;
   const accepted = Number(delivery.accepted) || 0;
   const transient = Number(delivery.transient) || 0;
-  const attempted = Number(delivery.attempted) || 0;
-  return accepted === 0 && transient > 0 && attempted > 0;
+  return accepted === 0 && transient > 0;
 }
