@@ -83,3 +83,16 @@ h1 span{color:var(--accent)}
 .members-footer{border-top-color:#302720}
 .members-page a:focus-visible,.members-page button:focus-visible,.members-page input:focus-visible,.members-page select:focus-visible{outline:2px solid #f06a0a;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.member-card{transition:none!important}}
+
+/* Member directory readability and responsive cards. */
+.members-page,.members-hero,.member-card,.member-copy{min-width:0}
+.members-hero h1{overflow-wrap:anywhere;line-height:1}
+.member-card strong,.member-copy,.member-card-footer{overflow-wrap:anywhere}
+.members-page input,.members-page select,.members-page button{min-height:44px;max-width:100%}
+.member-card-footer{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+@media(max-width:760px){
+ .members-page{width:calc(100% - 1.25rem);padding:1rem 0 3rem}
+ .members-hero{padding:2.5rem 0 1.5rem}
+ .members-hero h1{font-size:clamp(2.6rem,10vw,4.5rem)}
+ .directory-stats>div{flex:1 1 130px;min-width:0}
+}
