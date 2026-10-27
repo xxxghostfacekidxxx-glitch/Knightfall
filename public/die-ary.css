@@ -1,4 +1,4 @@
-:root{color-scheme:dark;--diary-accent:#d35400;--diary-bright:#f06a0a}
+:root{color-scheme:dark;--diary-accent:var(--af-ember);--diary-bright:var(--af-ember-light)}
 .diary-shell{position:relative;z-index:1;width:min(920px,92%);margin:0 auto;padding:2rem 0 5rem;color:#eee}
 .diary-hero{padding:clamp(1.5rem,5vw,3rem) 0 1.5rem}
 .diary-hero h1{font-size:clamp(2.5rem,8vw,4.8rem);letter-spacing:-.06em;line-height:1.05}
