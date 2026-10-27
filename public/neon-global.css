@@ -68,3 +68,15 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 
 /* Never stack the old atlas stamp on top of the new original Gravewave artwork. */
 :where(.game-card,.arcade-card,.cartridge-cabinet,.cabinet):has(>.kf-gravewave-corner)>.chaos-sprite-stamp{display:none!important}
+
+/* Neon-first chrome: beat legacy page-local orange declarations without changing
+   member-authored profile skins or game canvas art. */
+:root{--ember:#ff55d8;--ember-light:#c6ff45;--accent:#ff55d8;--accent-bright:#c6ff45;--primary:#ff55d8;--highlight:#c6ff45;--orange:#ff55d8;--rust:#bc2d9a;--gold:#c6ff45}
+body:not(.profile-custom-theme) :is(.kf-header,.kf-nav-menu,.kf-nav-more-menu,.kf-nav.open){border-color:#65316f!important;background-color:#100c1c!important}
+body:not(.profile-custom-theme) :is(.kf-nav-toggle,.kf-nav-group>summary,.kf-nav-more summary){border-color:#65316f!important;color:#f9f3ff!important}
+body:not(.profile-custom-theme) :is(.kf-nav a[aria-current="page"],.kf-nav-section-current,.kf-nav-group[open]>summary){color:#c6ff45!important;background:rgba(255,85,216,.15)!important;border-color:#ff55d8!important}
+body:not(.profile-custom-theme) :is(.kf-install-app,.kf-nav .kf-install-app){color:#090911!important;border-color:#c6ff45!important;background:linear-gradient(125deg,#c6ff45,#9cff38)!important}
+body:not(.profile-custom-theme) :is(.tab[aria-selected="true"],.tabs .active){background:rgba(255,85,216,.18)!important;color:#c6ff45!important;border-color:#ff55d8!important}
+body:not(.profile-custom-theme) :is(.primary,.af-button-primary,button[type="submit"]:not(.danger)){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#15071b!important}
+body:not(.profile-custom-theme) :is(.entry-card,.card,.panel,.game-card,.arcade-card,.cabinet){border-color:#65316f!important}
+body:not(.profile-custom-theme) :is(.legal a,.below a,.eyebrow){color:#c6ff45!important}
