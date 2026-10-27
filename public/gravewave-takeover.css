@@ -1,0 +1,27 @@
+/* Gravewave takeover: persistent, non-interactive site-wide neon interference. */
+:root{--gw-pink:#ff55d8;--gw-green:#c6ff45;--gw-ink:#070710}
+body.gravewave-everywhere{position:relative}
+body.gravewave-everywhere::after{content:"";position:fixed;inset:0;z-index:8500;pointer-events:none;opacity:.19;background:repeating-linear-gradient(to bottom,transparent 0 3px,#02000c55 4px 5px),linear-gradient(180deg,transparent 16%,#ff55d815 16.3% 16.6%,transparent 17%,transparent 73%,#c6ff4511 73.2% 73.5%,transparent 74%);animation:gw-signal 7s steps(1,end) infinite}
+body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:1px 0 #ff55d866,-1px 0 #c6ff4544,0 0 17px #ff55d833}
+body.gravewave-everywhere :where(.kf-header,.entry-card,.panel,.cabinet,.game-card,.arcade-card,.messages-shell,.chaos-shell){box-shadow:0 0 0 1px #ff55d815,0 0 24px #ff55d80b}
+body.gravewave-everywhere :where(.kf-nav a,.kf-nav-group>summary,.primary,.btn):hover{filter:drop-shadow(1px 0 #ff55d888) drop-shadow(-1px 0 #c6ff4588)}
+.gw-ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.28}
+.gw-ambient img{position:absolute;width:clamp(80px,13vw,170px);height:auto;max-height:170px;object-fit:contain;filter:drop-shadow(0 0 18px #ff55d866);animation:gw-float 9s ease-in-out infinite}
+.gw-ambient img:nth-child(1){left:-2rem;top:17%;transform:rotate(-15deg)}
+.gw-ambient img:nth-child(2){right:-2rem;top:42%;animation-delay:-3s}
+.gw-ambient img:nth-child(3){left:3%;bottom:5%;animation-delay:-6s}
+.gw-panel-mascot{position:absolute;right:.55rem;bottom:.45rem;width:clamp(26px,4vw,49px);height:clamp(26px,4vw,49px);object-fit:contain;opacity:.55;z-index:0;pointer-events:none;filter:drop-shadow(0 0 9px #ff55d888);animation:gw-float 4.5s ease-in-out infinite}
+.gw-panel-mascot:nth-of-type(odd){filter:drop-shadow(0 0 9px #c6ff4588);animation-delay:-2s}
+.gw-input-shell{position:relative;min-width:0}
+.gw-input-shell>.gw-input-mascot{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:23px;height:23px;opacity:.55;pointer-events:none;z-index:1;filter:drop-shadow(0 0 5px #ff55d866)}
+.gw-input-shell>input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]):not([type="password"]):not([type="date"]):not([type="time"]):not([type="number"]):not([type="submit"]):not([type="button"]){padding-right:39px}
+.gw-input-shell>input{max-width:100%}
+.gw-textarea-frame{position:relative;min-width:0}
+.gw-textarea-frame>.gw-textarea-mascot{position:absolute;right:10px;bottom:10px;width:26px;height:26px;opacity:.3;pointer-events:none}
+.gw-textarea-frame>textarea{padding-right:44px;padding-bottom:34px}
+.gw-glitch-mark{position:relative;display:inline-block;animation:gw-text-split 8s steps(1,end) infinite}
+@keyframes gw-signal{0%,32%,34%,68%,70%,100%{transform:translateX(0);opacity:.16}33%{transform:translateX(3px);opacity:.3}69%{transform:translateX(-3px);opacity:.25}}
+@keyframes gw-float{0%,100%{translate:0 0}50%{translate:0 -7px}}
+@keyframes gw-text-split{0%,46%,48%,84%,86%,100%{filter:none}47%{filter:drop-shadow(2px 0 #ff55d8) drop-shadow(-2px 0 #c6ff45)}85%{filter:drop-shadow(-2px 0 #ff55d8) drop-shadow(2px 0 #c6ff45)}}
+@media(max-width:680px){.gw-ambient{opacity:.15}.gw-ambient img{width:90px}.gw-panel-mascot{width:28px;height:28px;opacity:.4}.gw-input-shell>.gw-input-mascot{width:19px;height:19px}}
+@media(prefers-reduced-motion:reduce){body.gravewave-everywhere::after,.gw-ambient img,.gw-panel-mascot,.gw-glitch-mark{animation:none!important}}
