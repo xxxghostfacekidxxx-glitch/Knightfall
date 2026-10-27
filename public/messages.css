@@ -493,3 +493,21 @@
  .chat-tools{flex-wrap:wrap;gap:.4rem}
  .message{max-width:94%}
 }
+
+/* Mobile keyboard and compact landscape: keep composer visible and history independently scrollable. */
+@media(max-width:850px){
+ .message-layout.show-chat .chat-panel{height:calc(100dvh - 155px);max-height:calc(100dvh - 155px);min-height:0;overflow:hidden}
+ .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overflow-x:hidden}
+ .message-layout.show-chat .composer{flex-shrink:0;max-width:100%;padding-bottom:max(.55rem,env(safe-area-inset-bottom))}
+ .message-layout.show-chat .chat-head{flex-shrink:0;max-width:100%}
+ .composer textarea{max-height:min(24dvh,160px)}
+}
+@media(max-width:480px){
+ .message-layout.show-chat .chat-panel{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px);min-height:0}
+}
+@media(max-width:850px) and (max-height:500px){
+ .message-layout.show-chat .chat-panel{height:calc(100dvh - 48px);max-height:calc(100dvh - 48px)}
+ .messages-hero{display:none}
+ .messages-shell{padding-top:.25rem}
+ .composer textarea{max-height:20dvh}
+}
