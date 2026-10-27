@@ -355,7 +355,19 @@ async function load(){
      targetUsername=session.user.username;
      const url=new URL(location.href);url.searchParams.set("username",targetUsername);history.replaceState(null,"",url);
    }
-   const d=await api("/api/users/"+encodeURIComponent(targetUsername));
+   let d;
+   try { d=await api("/api/users/"+encodeURIComponent(targetUsername)); }
+   catch(primaryError){
+     // The public directory can still display a member when the detailed profile
+     // endpoint is temporarily unavailable. Never claim private fields are public.
+     const directory=await api("/api/discover?q="+encodeURIComponent(targetUsername)+"&limit=50&offset=0").catch(()=>null);
+     const member=directory?.users?.find(u=>String(u.username||"").toLowerCase()===targetUsername.toLowerCase());
+     if(!member)throw primaryError;
+     const safeName=esc(member.display_name||member.username);
+     root.innerHTML='<div class="profile-top"><div class="avatar">'+esc(safeName.slice(0,1).toUpperCase())+'</div><div class="profile-heading"><h1>'+safeName+'</h1><p class="handle">@'+esc(member.username)+'</p></div></div><p class="bio">'+esc(member.bio||"This member has not added a public bio.")+'</p><p class="muted">Detailed profile information is temporarily unavailable.</p><div class="profile-actions"><a class="action primary" href="/members.html">Member directory</a><a class="action" href="/profile.html?username='+encodeURIComponent(member.username)+'">Retry full profile</a></div>';
+     return;
+   }
+   if(!d?.user?.username)throw Error("Profile data was incomplete. Please retry.");
    const me=await api("/api/auth/me").catch(()=>({user:null}));
    const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile);refreshProfileJump();applyProfileLayout(d.profile_layout);
    // Optional modules must not make an otherwise valid public profile disappear.
