@@ -46,3 +46,12 @@
 .bot-draft-actions{display:flex;flex-wrap:wrap;gap:.5rem}.bot-draft-actions .quiet-button{min-height:38px}@media(max-width:600px){.bot-draft-actions{width:100%}.bot-draft-actions .quiet-button{flex:1 1 auto}}
 
 .bot-memory{border-top:1px solid #503329;margin-top:.75rem;padding:.75rem 0}.bot-memory>summary{cursor:pointer;color:#ffb07d;font-weight:700}.bot-memory p{color:#c6b5ab;font-size:.85rem}.bot-memory form{display:grid;gap:.65rem;margin-top:.8rem}.bot-memory textarea{width:100%;background:#151218;color:#f2e8df;border:1px solid #49342d;border-radius:9px;padding:.8rem;font:inherit}.bot-memory label{display:flex;align-items:center;gap:.5rem}.bot-memory button{justify-self:start}
+
+/* Bot workshop: prevent editor and memory forms from escaping narrow screens. */
+.bots-shell,.bots-hero,.bot-card,.bot-memory,.bot-draft-actions{min-width:0}
+.bots-hero{flex-wrap:wrap}
+.bots-hero h1{overflow-wrap:anywhere;text-wrap:balance}
+.bots-shell input:not([type="checkbox"]):not([type="radio"]),.bots-shell textarea,.bots-shell select{max-width:100%;min-width:0}
+.bots-shell button,.bots-shell a.button{min-height:44px}
+.bot-memory textarea{max-width:100%;resize:vertical}
+@media(max-width:760px){.bots-shell{width:calc(100% - 1.25rem);padding:1.4rem 0 3rem}.bots-hero{gap:1rem;padding:1rem 0 1.5rem}.bots-hero h1{font-size:clamp(2.5rem,10vw,4.2rem)}}
