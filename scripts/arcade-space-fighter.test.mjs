@@ -16,9 +16,7 @@ test("Space Fighter restart invalidates old frames and failure submits score onc
  nodes.set("game",canvas);
  const doc={getElementById:node,addEventListener:(event,fn)=>handlers.set("document:"+event,fn),dispatchEvent:e=>events.push(e)};
  const store=new Map();const sandbox={document:doc,localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
- runInNewContext(source.replace("init();
-","init();
-"),sandbox,{timeout:1000});
+ runInNewContext(source,sandbox,{timeout:1000});
  assert.ok(frames.length);
  const stale=frames.shift();handlers.get("restart:click")();const queued=frames.length;stale(100);assert.equal(frames.length,queued);
  assert.ok(events.filter(e=>e.type==="ashfall:arcade-started").length>=2);
