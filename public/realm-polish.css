@@ -70,3 +70,19 @@
 @media(max-width:900px){.cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.directory-cta:after{right:1rem;font-size:7rem}}
 @media(max-width:620px){.directory-hero{padding-top:4rem;padding-bottom:3rem}.directory-hero:after{font-size:.48rem}.directory-hero h1{font-size:clamp(2.9rem,13vw,4.5rem)}.directory-cta{padding:1.4rem}.directory-cta:after{right:-1.5rem;font-size:6rem}.community-directory .hero{padding-top:4rem!important;padding-bottom:3rem!important}.community-directory .hero h1{font-size:clamp(3.6rem,16vw,5.5rem)!important}.community-directory .section{padding-top:3rem;padding-bottom:3rem}.cartridge-hero{min-height:0!important;padding-top:4rem!important;padding-bottom:3.5rem!important}.cartridge-title{font-size:clamp(3.6rem,15vw,5.8rem)!important}.cartridge-shelf{grid-template-columns:1fr}.cartridge-cabinet{min-height:260px}.open-source-callout{align-items:flex-start;flex-direction:column;padding:1.4rem}.open-source-callout:after{right:0;font-size:6rem}}
 @media(prefers-reduced-motion:reduce){.listing-card,.quick-card,.cartridge-cabinet,.primary-button{transition:none}}
+
+/* Directory and arcade layout consistency across viewport sizes. */
+.community-directory,.community-directory-grid,.cartridge-shelf,.cartridge-toolbar{min-width:0}
+.community-directory-grid{align-items:stretch}
+.community-directory .category,.community-directory .thread-card{min-width:0;overflow-wrap:anywhere}
+.community-directory .hero-copy{max-width:100%;min-width:0}
+.community-directory .hero h1{text-wrap:balance;overflow-wrap:anywhere}
+.cartridge-toolbar{align-items:center}
+@media(max-width:760px){
+ .community-directory .hero{padding:2.5rem 0 2.75rem!important}
+ .community-directory .hero h1{font-size:clamp(2.6rem,11vw,4.6rem)!important;line-height:.98!important}
+ .community-directory-grid{grid-template-columns:minmax(0,1fr)}
+ .cartridge-toolbar{align-items:stretch;flex-direction:column}
+ .cartridge-toolbar>*{max-width:100%}
+ .cartridge-back,.community-back{min-height:40px;align-items:center}
+}
