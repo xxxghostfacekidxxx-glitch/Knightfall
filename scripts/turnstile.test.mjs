@@ -53,7 +53,9 @@ test("explicit staging hostname is accepted only when configured", async () => {
   globalThis.fetch = async () => new Response(JSON.stringify({success:true,action:"register",hostname:"staging.ash-fall.com"}),{status:200});
   try {
     assert.equal(await checkTurnstile(enabled,request,"token"),false);
-    assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"staging.ash-fall.com"},request,"token"),true);
+    assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"staging.ash-fall.com"},request,"token"),false, "production API must reject staging challenge tokens");
+    const stagingRequest = new Request("https://knightfall-mmo-staging.workers.dev/api/auth/register");
+    assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"staging.ash-fall.com"},stagingRequest,"token"),true);
     assert.equal(await checkTurnstile({...enabled,TURNSTILE_STAGING_HOSTNAME:"evil.example.com"},request,"token"),false);
   } finally { globalThis.fetch = original; }
 });
