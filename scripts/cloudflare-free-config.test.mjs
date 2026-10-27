@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 
 const config = JSON.parse(readFileSync(new URL("../backend/wrangler.jsonc", import.meta.url), "utf8"));
 
-test("no paid-only Cloudflare resources enabled in production config", () => {
+test("no unreviewed Cloudflare resource types enabled in production config", () => {
   for (const key of ["hyperdrive", "vectorize", "workflows", "containers", "analytics_engine_datasets", "unsafe"]) {
     assert.equal(config[key], undefined, key + " requires an explicit free-tier review before enabling");
   }
