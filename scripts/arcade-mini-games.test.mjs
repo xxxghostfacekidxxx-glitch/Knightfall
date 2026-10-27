@@ -25,7 +25,7 @@ for(const [id,title] of cases){
   const page=readFileSync(join(root,id,"index.html"),"utf8");
   assert.match(page,/src="\/arcade-save\.js"/);
   assert.match(page,/src="\/arcade\/hosted\/ashfall-mini-games\.js"/);
-  assert.match(page,new RegExp("<title>"+title.replace(/[.*+?^$()|[\]{}]/g,"\\$&")));
+  assert.ok(page.includes("<title>"+title+" | Chaos Cartridge</title>"),"page title out of sync");
   const sprite=page.match(/src="\.\/sprites\/([^"]+)"/)?.[1];
   assert.ok(sprite,"standalone emblem missing");
   assert.ok(existsSync(join(root,id,"sprites",sprite)),"emblem file missing");
