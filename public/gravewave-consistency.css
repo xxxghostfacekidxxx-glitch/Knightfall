@@ -1,0 +1,16 @@
+/* Gravewave consistency layer: legacy account/profile styles must not leak ember. */
+:root{--profile-default-accent:#ff55d8;--profile-default-bright:#c6ff45}
+.profile-shell,.members-page,.friends-page{--accent:#ff55d8;--bright:#c6ff45;color:#f9f3ff}
+.profile-shell .card,.profile-shell .friends-panel,.profile-shell .friend-card,.profile-shell .profile-stats>div,.profile-shell .wallet-card,.profile-shell .profile-social-panel,.profile-shell .profile-favorites,.members-page .member-card,.friends-page .member-card{background:linear-gradient(145deg,#181125,#0b0b17)!important;border-color:#65316f!important;color:#f9f3ff}
+.profile-shell .wallet-card{box-shadow:0 12px 36px #0007,0 0 24px #ff55d812!important}
+.profile-shell .wallet-kicker,.profile-shell .eyebrow,.profile-shell .friend-count,.members-page .eyebrow{color:#c6ff45!important}
+.profile-shell .wallet-balance,.profile-shell .profile-heading h1,.members-page h1{color:#f9f3ff!important}
+.profile-shell .wallet-balance small,.profile-shell .handle,.profile-shell .profile-stats span,.profile-shell .muted{color:#b9aeca!important}
+.profile-shell .action.primary,.profile-shell button.primary,.profile-shell button[type=submit],.friends-page .action.primary{background:linear-gradient(135deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#15071b!important}
+.profile-shell .action:not(.primary),.profile-shell .profile-jump a,.profile-shell .friend-card-actions button,.members-page .member-card-footer a{border-color:#65316f!important;color:#f9f3ff!important;background:#191329!important}
+.profile-shell input,.profile-shell select,.profile-shell textarea,.friends-page input,.friends-page select,.members-page input,.members-page select{background:#100f1d!important;border-color:#684171!important;color:#f9f3ff!important}
+.profile-shell a:hover,.members-page a:hover{color:#c6ff45!important}
+.profile-shell .profile-stats>div,.profile-shell dl>div{border-color:#65316f!important}
+#profile[data-theme="ember"]{--profile-accent:#ff55d8!important}
+#profile[data-theme="ember"] .avatar,#profile[data-theme="ember"] .profile-cover{border-color:#ff55d8!important}
+@media(max-width:620px){.profile-shell .wallet-card,.profile-shell .profile-stats>div{min-width:0}}
