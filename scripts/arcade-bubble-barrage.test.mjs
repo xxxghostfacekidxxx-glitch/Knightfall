@@ -1,0 +1,31 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {Script,runInNewContext} from "node:vm";
+const html=readFileSync("public/arcade/hosted/bubble-barrage/index.html","utf8");
+const source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("function attach("));
+test("Bubble Barrage uses local parseable code and score bridge",()=>{
+ assert.ok(source);assert.doesNotThrow(()=>new Script(source));
+ assert.ok(html.includes('data-game-id="cabinet-bubble-barrage"'));
+});
+test("Bubble Barrage does not create concurrent projectiles or stale restart frames",()=>{
+ const frames=[],events=[],handlers=new Map(),nodes=new Map(),store=new Map();
+ const node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:"",addEventListener:(type,fn)=>handlers.set(id+":"+type,fn)});return nodes.get(id)};
+ const ctx={clearRect(){},fillRect(){},beginPath(){},arc(){},fill(){},stroke(){},moveTo(){},lineTo(){},fillText(){},setLineDash(){},createLinearGradient(){return{addColorStop(){}}}};
+ const canvas={getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:640,height:560}),addEventListener:(type,fn)=>handlers.set("canvas:"+type,fn)};
+ nodes.set("#game",canvas);
+ const document={querySelector:node,dispatchEvent:e=>events.push(e)};
+ const window={};
+ runInNewContext(source,{document,window,Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
+ assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,1);
+ const click=handlers.get("canvas:pointerdown");
+ click({preventDefault(){},clientX:320,clientY:80});
+ assert.equal(frames.length,1);
+ click({preventDefault(){},clientX:330,clientY:70});
+ assert.equal(frames.length,1,"second shot must wait until the first lands");
+ const stale=frames.shift();
+ handlers.get("#new:click")();
+ const count=frames.length;stale();assert.equal(frames.length,count,"restart must invalidate in-flight projectile frames");
+ assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
+ assert.equal(nodes.get("#score").textContent,0);
+});
