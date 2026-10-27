@@ -39,8 +39,16 @@ for(const game of manifest.games){
 const catalog=await readFile(join(root,"arcade-30-games.html"),"utf8");
 const external=[...catalog.matchAll(/<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>/g)].map(m=>m[1]);
 const duplicateMedia=[...mediaHashes.entries()].filter(([,files])=>files.length>1).map(([sha256,files])=>({sha256,files}));
-const output={schema:2,duplicateMedia,runtimeDependencies,generatedAt:new Date().toISOString(),games:evidence.length,flaggedGames:evidence.filter(e=>e.flags.length).length,unverifiedGames:evidence.length,externalCatalogLinks:[...new Set(external)],disclaimer:"Static inspection only. Originality requires author/source history, asset provenance, license review, and independent gameplay QA.",entries:evidence};
+const statusCounts={};
+const priorityReview=[];
+for(const game of manifest.games){
+ const status=String(game.status||"unspecified");
+ statusCounts[status]=(statusCounts[status]||0)+1;
+ if(/rebrand|emblem|provenance|cataloged/i.test(status))priorityReview.push({id:game.id,status,reason:"Rebranding or catalog registration is not evidence of independently authored code"});
+}
+
+const output={schema:3,statusCounts,priorityReview,duplicateMedia,runtimeDependencies,generatedAt:new Date().toISOString(),games:evidence.length,flaggedGames:evidence.filter(e=>e.flags.length).length,unverifiedGames:evidence.length,externalCatalogLinks:[...new Set(external)],disclaimer:"Static inspection only. Originality requires author/source history, asset provenance, license review, and independent gameplay QA.",entries:evidence};
 if(report){await mkdir(resolve("artifacts"),{recursive:true});await writeFile(resolve("artifacts/arcade-provenance.json"),JSON.stringify(output,null,2)+"\n")}
-console.log("Arcade provenance inventory:",output.games,"games;",output.flaggedGames,"flagged for review;",output.unverifiedGames,"not independently cleared;",duplicateMedia.length,"duplicate asset groups;",runtimeDependencies.length,"external runtime assets");
+console.log("Arcade provenance inventory:",output.games,"games;",output.flaggedGames,"flagged for review;",output.unverifiedGames,"not independently cleared;",duplicateMedia.length,"duplicate asset groups;",runtimeDependencies.length,"external runtime assets;",priorityReview.length,"priority provenance reviews");
 for(const e of evidence.filter(e=>e.flags.length))console.log("REVIEW",e.id,e.flags.map(f=>f.type).join(", "));
 if(strict&&evidence.some(e=>e.flags.length))process.exitCode=1;
