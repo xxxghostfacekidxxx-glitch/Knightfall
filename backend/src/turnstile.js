@@ -14,7 +14,7 @@ export async function checkTurnstile(env, request, token) {
     const approved = ["ash-fall.com", "www.ash-fall.com"];
     // Optional explicit staging hostname, never inferred from request headers.
     if (typeof env.TURNSTILE_STAGING_HOSTNAME === "string" &&
-        /^(staging\.ash-fall\.com|staging-[a-z0-9-]+\.pages\.dev)$/.test(env.TURNSTILE_STAGING_HOSTNAME)) {
+        /^(staging\.ash-fall\.com|staging-[a-z0-9]+(?:-[a-z0-9]+)*\.pages\.dev)$/.test(env.TURNSTILE_STAGING_HOSTNAME)) {
       approved.push(env.TURNSTILE_STAGING_HOSTNAME);
     }
     return result.success === true && result.action === "register" && approved.includes(result.hostname);
