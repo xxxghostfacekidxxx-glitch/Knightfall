@@ -123,31 +123,34 @@
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a class="kf-nav-primary" href="/homepage.html">Explore</a>
       <a class="kf-nav-primary" href="/community.html">The Madhouse</a>
-      <a class="kf-nav-primary" href="/chaos-cartridge.html">Games</a>
+      <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
+      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html">Messages</a>
       <details class="kf-nav-group">
-        <summary>Creations <span aria-hidden="true">⌄</span></summary>
+        <summary>Discover <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
           <a href="/bots.html">Public Bots</a>
           <a href="/shops.html">Shops &amp; Dropshipping</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
           <a href="/open-source-arsenal.html">Open-Source Arsenal</a>
-          <a href="/social.html">Activity & Groups</a>
+          <a href="/social.html">Activity &amp; Groups</a>
+          <a href="/members.html">Find Members</a>
           <a href="/adults.html">Adults Only (18+)</a>
           <a href="/dating.html">Dating Realm (18+)</a>
-          <a href="/user-agreement.html">User Agreement</a>
         </div>
       </details>
       <details class="kf-nav-group kf-profile-group">
-        <summary>My Profile <span aria-hidden="true">⌄</span></summary>
+        <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu kf-profile-menu">
+          <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
           <a class="kf-members-link" href="/members.html">Members</a>
-          <a href="/messages.html">Messages</a>
           <a href="/friends.html">Friends</a>
           <a class="kf-personal-bots-link" href="/personal-bots.html">Personal Bots</a>
           <a class="kf-vault-link" href="/vault.html">Private Vault</a>
           <a href="/my-shop.html">My Shop</a>
-          <a class="kf-account-link" href="/account.html">Account</a>
+          <a class="kf-account-link" href="/account.html">Account Settings</a>
+          <a href="/support.html">Support Ash-Fall</a>
+          <a href="/user-agreement.html">Terms &amp; Policies</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
           <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
