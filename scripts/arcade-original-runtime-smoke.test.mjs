@@ -11,18 +11,18 @@ const groups={
  "ashfall-original-action.js":["doodle-jump","survivor","alien-battle"]
 };
 function harness(file,id){
- const listeners=new Map(),frames=[],store=new Map();
+ const listeners=new Map(),frames=[],store=new Map(),events=[];
  const node=name=>({textContent:"",tagName:"DIV",addEventListener(type,fn){listeners.set(name+":"+type,fn)}});
  const elements=new Map();
  const get=name=>{if(!elements.has(name))elements.set(name,node(name));return elements.get(name)};
  const ctx={fillRect(){},beginPath(){},arc(){},fill(){},fillText(){},stroke(){},strokeRect(){},roundRect(){},save(){},restore(){},translate(){},rotate(){},moveTo(){},lineTo(){},set fillStyle(v){},set font(v){},set textAlign(v){},set strokeStyle(v){},set lineWidth(v){}};
  const canvas={...node("canvas"),getContext(){return ctx},getBoundingClientRect(){return {left:0,top:0,width:640,height:file.includes("trio")?500:480}}};
  canvas.addEventListener=(type,fn)=>listeners.set("canvas:"+type,fn);
- const document={querySelector(){return canvas},getElementById:get,addEventListener(type,fn){listeners.set("document:"+type,fn)},hidden:false};
+ const document={querySelector(){return canvas},getElementById:get,addEventListener(type,fn){listeners.set("document:"+type,fn)},dispatchEvent(event){events.push(event)},hidden:false};
  const window={addEventListener(){},AshFallArcade:{recordScore(){}}};
- const sandbox={window,document,location:{pathname:"/arcade/hosted/"+id+"/index.html"},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},Math,Number,Set,Array,Map,performance:{now:()=>0},requestAnimationFrame:fn=>{frames.push(fn);return frames.length},cancelAnimationFrame(){},console};
+ const sandbox={window,document,CustomEvent:class{constructor(type,init){this.type=type;this.detail=init.detail}},location:{pathname:"/arcade/hosted/"+id+"/index.html"},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},Math,Number,Set,Array,Map,performance:{now:()=>0},requestAnimationFrame:fn=>{frames.push(fn);return frames.length},cancelAnimationFrame(){},console};
  runInNewContext(readFileSync(root+file,"utf8"),sandbox,{filename:file,timeout:1000});
- return {listeners,frames,elements,canvas};
+ return {listeners,frames,elements,canvas,events};
 }
 for(const [file,ids] of Object.entries(groups)){
  for(const id of ids)test(id+" boots, starts, renders frames and accepts input",()=>{
