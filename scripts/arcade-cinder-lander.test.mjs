@@ -17,11 +17,20 @@ test("Cinder Lander starts, advances flight physics, and accepts touch thrust",(
  const canvas={getContext:()=>ctx};
  const doc={querySelector:()=>canvas,getElementById:element,addEventListener:(type,fn)=>handlers.set("document:"+type,fn),dispatchEvent(){}};
  const sandbox={document:doc,window:{},location:{pathname:"/arcade/hosted/cinder-lander/index.html"},Math,Set,Number,CustomEvent:class{},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)};
- runInNewContext(source,sandbox,{timeout:1000});
+ runInNewContext(source.replace("})();","globalThis.__landerTest={finish,getScore:()=>score,getLevel:()=>level};})();"),sandbox,{timeout:1000});
  assert.ok(handlers.has("restart:click"));
  handlers.get("restart:click")();
  handlers.get("thrust:pointerdown")({preventDefault(){},pointerId:1});
  for(let i=0;i<12;i++){const f=frames.shift();assert.ok(f,"flight must schedule frames");f((i+1)*16)}
  assert.ok(Number(els.get("fuel").textContent)<100,"thrust should consume fuel");
  assert.ok(Number(els.get("altitude").textContent)>=0);
+ sandbox.__landerTest.finish(true);
+ const earned=sandbox.__landerTest.getScore();
+ assert.ok(earned>0);
+ handlers.get("restart:click")();
+ assert.equal(sandbox.__landerTest.getScore(),earned,"next mission keeps earned score");
+ sandbox.__landerTest.finish(false);
+ handlers.get("restart:click")();
+ assert.equal(sandbox.__landerTest.getScore(),0,"retry after impact starts a clean session");
+ assert.equal(sandbox.__landerTest.getLevel(),1,"retry resets mission progression");
 });
