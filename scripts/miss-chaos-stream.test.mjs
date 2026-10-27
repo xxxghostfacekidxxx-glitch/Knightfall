@@ -17,7 +17,7 @@ test("client consumes deltas, requires done, and safely falls back when stream c
  assert.match(ui,/type==="delta"/);
  assert.match(ui,/if\(!done\)throw Error/);
  assert.match(ui,/Streaming is temporarily unavailable/);
- assert.match(ui,/if\(streamedArticle\)streamedArticle.remove\(\)/);
+ assert.match(ui,/streamedArticle\.remove\(\)/);
 });
 test("dictation has stop control and memory search is private client-side filtering",()=>{
  assert.match(ui,/if\(activeRecognition\)\{activeRecognition.stop\(\);return;\}/);
