@@ -11,7 +11,7 @@ for(const id of ["cinder-chess","ashen-dominion"]){
   const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",innerHTML:"",disabled:false,onclick:null,addEventListener(){},append(){},classList:{add(){}}});return nodes.get(k)};
   node("map").getContext=()=>({clearRect(){},fillRect(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},fill(){},stroke(){},arc(){},fillText(){}});
   const document={getElementById:node,createElement:()=>({classList:{add(){}},setAttribute(){},addEventListener(){}}),dispatchEvent:e=>events.push(e)};
-  const sandbox={document,Math,localStorage:{getItem:()=>null,setItem(){}},CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},setTimeout:fn=>{timers.push(fn);return timers.length},clearTimeout(){}};
+  const sandbox={document,Math,Image:class{constructor(){this.complete=false;this.naturalWidth=0}set src(v){this._src=v}},localStorage:{getItem:()=>null,setItem(){}},CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},setTimeout:fn=>{timers.push(fn);return timers.length},clearTimeout(){}};
   runInNewContext(source,sandbox,{timeout:1000});
   assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,1);
   node(id==="cinder-chess"?"new":"reset").onclick();
