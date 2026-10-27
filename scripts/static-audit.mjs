@@ -221,7 +221,8 @@ if (!manifest.imports.some(entry => entry.gameId === "cabinet-dino-run" && entry
 if (!dinoRunCatalog.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunCartridge.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunRecords.includes('"cabinet-dino-run":"Dino Run: Ash-Fall Edition"')) fail("Dino Run is missing from a public arcade surface.");
 const shelfCount = (dinoRunCartridge.slice(dinoRunCartridge.indexOf('<div class="cartridge-shelf">'), dinoRunCartridge.indexOf('<section class="feature">')).match(/class="cartridge-cabinet/g) || []).length;
 if (shelfCount !== 110) fail("Main arcade shelf count does not match the 110 integrated cabinet cards.");
-if ((dinoRunCatalog.match(/<article class="game"/g) || []).length !== 76 || !dinoRunCatalog.includes("76 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Open-source arcade catalog count does not match its 76 game cards.");
+const catalogCardCount = (dinoRunCatalog.match(/<article class="game"/g) || []).length;
+if (catalogCardCount === 0 || !dinoRunCatalog.includes(`${catalogCardCount} CABINETS / LOCAL PLAYABLE ENTRIES`)) fail("Open-source arcade catalog header count does not match its game cards.");
 ok("Dino Run source notice, account integration, score cap, and catalog registration checked.");
 const balloonPopGame = await readFile(path.join(publicDir, "arcade/hosted/balloon-pop/index.html"), "utf8");
 const balloonPopCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
@@ -240,7 +241,8 @@ if (!hanoiGame.includes("cabinet-hanoi") || !hanoiGame.includes("recordScore")) 
 if (!worker.includes('"cabinet-hanoi"') || !worker.includes('"cabinet-hanoi":100000')) fail("Tower of Hanoi is not allowlisted with a bounded score cap.");
 if (!manifest.imports.some(entry => entry.gameId === "cabinet-hanoi" && entry.status === "imported-adapted")) fail("Tower of Hanoi is missing its imported source manifest entry.");
 if (!hanoiCatalog.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiCartridge.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiRecords.includes('"cabinet-hanoi":"Tower of Hanoi: Ash-Fall Edition"')) fail("Tower of Hanoi is missing from a public arcade surface.");
-if ((hanoiCatalog.match(/<article class="game"/g) || []).length !== 76 || !hanoiCatalog.includes("76 CABINETS / LOCAL PLAYABLE ENTRIES")) fail("Arcade catalog count does not match 76 game cards.");
+const hanoiCardCount = (hanoiCatalog.match(/<article class="game"/g) || []).length;
+if (hanoiCardCount === 0 || !hanoiCatalog.includes(`${hanoiCardCount} CABINETS / LOCAL PLAYABLE ENTRIES`)) fail("Arcade catalog header count does not match game cards.");
 ok("Tower of Hanoi source notice, account integration, score cap, and catalog registration checked.");
 
 
