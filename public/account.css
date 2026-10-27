@@ -21,7 +21,7 @@
 .account-top{flex-wrap:wrap}
 .account-card h1{overflow-wrap:anywhere;line-height:1.05}
 .account-card label{overflow-wrap:anywhere}
-.account-card input,.account-card textarea,.account-card select{width:100%;min-width:0;max-width:100%}
+.account-card input:not([type="checkbox"]):not([type="radio"]),.account-card textarea,.account-card select{width:100%;min-width:0;max-width:100%}
 .account-card button,.account-actions a{min-height:44px}
 @media(max-width:600px){
  .account-shell{width:calc(100% - 1.25rem)}
