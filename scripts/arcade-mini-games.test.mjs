@@ -39,3 +39,11 @@ test("score submission preserves local state when offline",()=>{
 test("local resume clears prior game-over flag",()=>{
  assert.match(shared,/running=true;over=false;last=performance\.now\(\);setScore\(score\);status\("Device save resumed"\)/);
 });
+
+test("backgrounding preserves progress without ending a run",()=>{
+ assert.match(shared,/document\.addEventListener\("visibilitychange",\(\)=>\{if\(document\.hidden\)\{saveLocal\(\)\}last=performance\.now\(\)\}\)/);
+});
+test("animation loop throttles synchronous localStorage writes",()=>{
+ assert.match(shared,/now-lastAutoSave>=2000/);
+ assert.match(shared,/if\(now-lastAutoSave>=2000\)\{saveLocal\(\);lastAutoSave=now\}/);
+});
