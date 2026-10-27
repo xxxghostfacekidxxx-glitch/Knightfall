@@ -24,14 +24,21 @@ function loop(now,seq){if(!running||seq!==token)return;const dt=Math.min(.04,Mat
  }else{
   s.elapsed+=dt;s.spawn-=dt;s.fire-=dt;
   if(id==="survivor")s.y=Math.max(20,Math.min(460,s.y+dy*260*dt));
-  if(s.spawn<=0){s.spawn=Math.max(.32,1-s.elapsed/150);s.enemies.push({x:rand(30,610),y:id==="survivor"?-20:-20})}
-  if(s.fire<=0){s.fire=id==="survivor"?.4:.26;s.shots.push({x:s.x,y:s.y,vy:-430})}
-  for(const b of s.shots)b.y+=b.vy*dt;
-  for(let i=s.enemies.length-1;i>=0;i--){const e=s.enemies[i];e.y+=(id==="survivor"?95:125)*dt;
+  if(s.spawn<=0){s.spawn=Math.max(.32,1-s.elapsed/150);s.enemies.push(id==="survivor"?{x:Math.random()<.5?-20:660,y:rand(30,450)}:{x:rand(30,610),y:-20})}
+  if(s.fire<=0){
+   s.fire=id==="survivor"?.4:.26;
+   if(id==="survivor"&&s.enemies.length){
+    const nearest=s.enemies.reduce((a,b)=>Math.hypot(a.x-s.x,a.y-s.y)<Math.hypot(b.x-s.x,b.y-s.y)?a:b);
+    const distance=Math.hypot(nearest.x-s.x,nearest.y-s.y)||1;
+    s.shots.push({x:s.x,y:s.y,vx:(nearest.x-s.x)/distance*430,vy:(nearest.y-s.y)/distance*430});
+   }else if(id!=="survivor")s.shots.push({x:s.x,y:s.y,vy:-430});
+  }
+  for(const b of s.shots){b.y+=b.vy*dt;b.x+=(b.vx||0)*dt}
+  for(let i=s.enemies.length-1;i>=0;i--){const e=s.enemies[i];if(id==="survivor"){const d=Math.hypot(s.x-e.x,s.y-e.y)||1;e.x+=(s.x-e.x)/d*95*dt;e.y+=(s.y-e.y)/d*95*dt}else e.y+=125*dt;
    const hit=s.shots.findIndex(b=>Math.hypot(e.x-b.x,e.y-b.y)<24);
    if(hit>=0){s.enemies.splice(i,1);s.shots.splice(hit,1);award(10)}
-   else if(e.y>460){s.enemies.splice(i,1);s.hp--;if(s.hp<=0)stop("DEFENSE LOST")}}
-  s.shots=s.shots.filter(b=>b.y>-30).slice(-60);s.enemies=s.enemies.slice(-50);
+   else if(id==="survivor"?Math.hypot(e.x-s.x,e.y-s.y)<26:e.y>460){s.enemies.splice(i,1);s.hp--;if(s.hp<=0)stop("DEFENSE LOST")}}
+  s.shots=s.shots.filter(b=>b.y>-30&&b.y<510&&b.x>-30&&b.x<670).slice(-60);s.enemies=s.enemies.slice(-50);
  }
  draw();if(running)requestAnimationFrame(t=>loop(t,seq))}
 function draw(){rect(0,0,W,H,"#0e0c14");for(let x=0;x<W;x+=40)rect(x,0,1,H,"#34252b");
