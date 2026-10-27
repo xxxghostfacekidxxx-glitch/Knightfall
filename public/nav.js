@@ -153,7 +153,6 @@
         <div class="kf-nav-menu kf-profile-menu">
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
-          <a class="kf-members-link" href="/members.html">Members</a>
           <a href="/friends.html">Friends</a>
           <a class="kf-personal-bots-link" href="/personal-bots.html">Personal Bots</a>
           <a class="kf-vault-link" href="/vault.html">Private Vault</a>
@@ -174,10 +173,14 @@
 
   const nav = header.querySelector(".kf-nav");
   // Keep orientation clear across the many sections of Ash-Fall.
-  const currentPath = location.pathname.replace(/\/$/,"") || "/index.html";
+  const normalizedPath = path => {
+    const clean = path.replace(/\\/$/, "") || "/";
+    return clean === "/" ? "/index.html" : clean;
+  };
+  const currentPath = normalizedPath(location.pathname);
   nav.querySelectorAll('a[href^="/"]').forEach(link => {
-    const destination = new URL(link.getAttribute("href"),location.origin).pathname;
-    if (destination === currentPath) link.setAttribute("aria-current","page");
+    const destination = normalizedPath(new URL(link.getAttribute("href"), location.origin).pathname);
+    if (destination === currentPath) link.setAttribute("aria-current", "page");
   });
   // Indicate which grouped section contains the current page.
   nav.querySelectorAll(".kf-nav-group").forEach(group => {
