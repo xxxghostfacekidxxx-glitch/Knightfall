@@ -9,7 +9,7 @@ function note(t){$("status").textContent=t}
 function award(n){score+=n;best=Math.max(score,best);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-action-"+id,String(best))}catch{}}
 function stop(t){running=false;note(t+" · "+score+" points");try{window.AshFallArcade?.recordScore?.("cabinet-"+id,score,{schema:1,score})}catch{}}
 function start(){token++;running=true;score=0;last=performance.now();$("score").textContent="0";
- if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:rand(40,480),y:420-i*55}))};
+ if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:i===0?265:rand(40,480),y:420-i*55}))};
  else state={x:320,y:id==="survivor"?240:410,hp:id==="survivor"?5:3,enemies:[],shots:[],spawn:0,fire:0,elapsed:0};
  note("RUNNING");requestAnimationFrame(t=>loop(t,token));draw()}
 function loop(now,seq){if(!running||seq!==token)return;const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;const s=state;
