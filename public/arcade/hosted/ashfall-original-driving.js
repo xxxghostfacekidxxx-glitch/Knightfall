@@ -22,7 +22,7 @@ function loop(now,token){if(!running||token!==generation)return;const dt=Math.mi
  for(const o of obstacles){if(Math.abs(o.y-400)>35)continue;
  if(id==="two-cars"&&cars.some(car=>car.lane===o.lane)){end("TWIN CRASH");break}
  if(id==="car-race"&&o.lane===player){end("CRASHED OUT");break}
- if(id==="crossy-road"&&o.lane===player&&steps>0&&steps%3!==0){end("CROSSING FAILED");break}}
+ if(id==="crossy-road"&&o.lane===player&&steps>0){end("CROSSING FAILED");break}}
  if(running&&id==="crossy-road"&&elapsed>70)end("TIME EXPIRED");
  draw();if(running)requestAnimationFrame(t=>loop(t,token))}
 function draw(){rect(0,0,640,500,"#100e13");rect(45,45,550,420,"#3a3538");for(let i=0;i<5;i++)rect(55+i*110,45,3,420,"#bcb1a0");
