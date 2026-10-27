@@ -419,7 +419,7 @@
       nav.querySelector(".kf-vault-link")?.remove();
       nav.querySelector(".kf-my-profile-link")?.remove();
     });
-}  };
+  };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
   else initializeNavigation();
 })();
