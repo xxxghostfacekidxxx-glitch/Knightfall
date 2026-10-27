@@ -21,3 +21,11 @@
 .vault-folder-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 18px;color:#eac4a7}
 .vault-folder-tools select{max-width:230px;padding:9px 12px;border:1px solid #8a512b;border-radius:9px;background:#211712;color:#ffe2c6}
 .vault-folder-tools button:disabled{opacity:.45;cursor:not-allowed}
+
+/* Private vault: keep media, upload tools and folders usable on mobile. */
+.vault-shell,.vault-hero,.vault-hero-copy,.vault-folder-tools,.media-card{min-width:0}
+.vault-shell img,.vault-shell video{max-width:100%}
+.vault-shell input:not([type="checkbox"]):not([type="radio"]),.vault-shell textarea,.vault-shell select{max-width:100%;min-width:0}
+.vault-shell button,.vault-shell .button{min-height:44px}
+.vault-folder-tools{flex-wrap:wrap}
+@media(max-width:760px){.vault-shell{width:calc(100% - 1.25rem);margin-bottom:3rem}.vault-hero{grid-template-columns:minmax(0,1fr);gap:1rem;padding:2rem 0}.vault-folder-tools select{max-width:100%}}
