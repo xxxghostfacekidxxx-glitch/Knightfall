@@ -23,7 +23,7 @@ test("Ash Crossing awards points only after crossing five lanes",()=>{
  const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",addEventListener:(ev,fn)=>handlers.set(k+":"+ev,fn)});return nodes.get(k)};
  const ctx={fillRect(){},fillText(){}};
  const canvas={getContext:()=>ctx,addEventListener:(ev,fn)=>handlers.set("canvas:"+ev,fn),getBoundingClientRect:()=>({left:0,top:0,width:640,height:500})};
- const document={querySelector:()=>canvas,getElementById:node,addEventListener:(ev,fn)=>handlers.set("document:"+ev),dispatchEvent(){}};
+ const document={querySelector:()=>canvas,getElementById:node,addEventListener:(ev,fn)=>handlers.set("document:"+ev,fn),dispatchEvent(){}};
  const randomMath=Object.create(Math);randomMath.random=()=>.5;
  runInNewContext(js,{document,location:{pathname:"/arcade/hosted/crossy-road/index.html"},Math:randomMath,Number,CustomEvent:class{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
  handlers.get("restart:click")();
