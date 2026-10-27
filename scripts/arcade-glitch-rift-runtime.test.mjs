@@ -18,7 +18,8 @@ for(const id of ["glitch-munch","rift-wardens"]){
   el("game").getContext=()=>ctx;el("game").width=960;el("game").height=560;
   const document={getElementById:el,querySelectorAll:()=>[],addEventListener:(type,fn)=>handlers.set("document:"+type,fn),dispatchEvent:e=>events.push(e)};
   const sandbox={document,window:{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},Math,CustomEvent:class{constructor(type,opts){this.type=type;this.detail=opts.detail}},requestAnimationFrame:fn=>frames.push(fn)};
-  runInNewContext(source,sandbox,{timeout:1000});
+  const instrumented=id==="glitch-munch"?source.replace("})();","globalThis.__arcadeProbe={getLives:()=>lives,setEnemies:v=>{enemies=v},setPlayer:v=>{player=v},hit:stepEnemies};})();"):source;
+  runInNewContext(instrumented,sandbox,{timeout:1000});
   el("start").onclick();
   assert.ok(frames.length>0);
   const stale=frames.shift();
@@ -27,5 +28,13 @@ for(const id of ["glitch-munch","rift-wardens"]){
   const before=frames.length;
   if(id==="glitch-munch"){stale(100);assert.equal(frames.length,before);}
   assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,id==="glitch-munch"?2:1);
+  if(id==="glitch-munch"){
+   sandbox.__arcadeProbe.setPlayer({x:1,y:1});
+   sandbox.__arcadeProbe.setEnemies([{x:1,y:2,color:"#fff"},{x:2,y:1,color:"#fff"}]);
+   const beforeLives=sandbox.__arcadeProbe.getLives();
+   sandbox.__arcadeProbe.hit();
+   assert.equal(sandbox.__arcadeProbe.getLives(),beforeLives-1,"multiple enemies cannot drain more than one life during recovery");
+  }
+
  });
 }
