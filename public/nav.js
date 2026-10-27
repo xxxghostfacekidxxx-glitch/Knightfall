@@ -172,6 +172,7 @@
       <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>`;
 
+  const nav = header.querySelector(".kf-nav");
   // Keep orientation clear across the many sections of Ash-Fall.
   const currentPath = location.pathname.replace(/\/$/,"") || "/index.html";
   nav.querySelectorAll('a[href^="/"]').forEach(link => {
@@ -185,7 +186,6 @@
   });
   let siteSettings = null, currentUser = null;
   const toggle = header.querySelector(".kf-nav-toggle");
-  const nav = header.querySelector(".kf-nav");
   const installButton = header.querySelector(".kf-install-app");
   const profileGroup = nav.querySelector(".kf-profile-group");
   const badge = nav.querySelector(".kf-notify-badge");
