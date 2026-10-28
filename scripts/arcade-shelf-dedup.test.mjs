@@ -19,3 +19,17 @@ assert.equal(new Set(hrefs).size,hrefs.length,"Duplicate play links in secondary
 for(const slug of ["dino-run","balloon-pop","hanoi"])assert.ok(!hrefs.includes("/arcade/hosted/"+slug+"/index.html"),"Adapted clone reintroduced: "+slug);
 for(const game of ["neon-drift","cinder-defense"])assert.ok(hrefs.includes("/arcade/hosted/ashfall-neon-engine.html?game="+game),"New Ash-Fall engine missing: "+game);
 console.log("Secondary catalog verified: "+cards.length+" unique original entries.");
+
+const {existsSync}=await import("node:fs");
+const retiredDirs=["dino-run","balloon-pop","hanoi","snek-souls","custom-tetris","hextris","maze-muncher","sokoban","air-hockey","lights-out","whack-a-mole","minesweeper","memory-match","breakout"];
+const inventory=JSON.parse(readFileSync("public/arcade/import-manifest.json","utf8"));
+for(const slug of retiredDirs){
+ const route="/arcade/hosted/"+slug+"/index.html";
+ assert.ok(!existsSync("public"+route),"Copied game implementation still present: "+route);
+ assert.ok(!html.includes('href="'+route+'"'),"Retired copied game still linked on main shelf: "+route);
+ assert.ok(!catalog.includes('href="'+route+'"'),"Retired copied game still linked in catalog: "+route);
+}
+for(const entry of inventory.imports.filter(e=>e.status==="removed")){
+ for(const file of entry.files||[])assert.ok(!existsSync("public"+file),"Retired import file still present: "+file);
+}
+console.log("Retired copied game implementations and public links verified absent.");
