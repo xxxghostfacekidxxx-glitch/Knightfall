@@ -95,3 +95,13 @@ test("offline galactic bureau contracts award one-time capture supplies",()=>{
  assert.match(js,/if\(connected\|\|busy\|\|battle\)return/);
  assert.match(js,/function render\(\)\{renderStory\(\);renderBureau\(\);/);
 });
+
+test("faction commander bosses are playable, uncatchable, and award rewards once",()=>{
+ assert.ok(html.includes('id="faction-commanders"'));
+ assert.ok(html.includes('id="commander-status"'));
+ for(const id of ["squibblex-prime","ember-auditor","glorp-collector"])assert.match(js,new RegExp('id:"'+id+'"'));
+ assert.match(js,/battle=\{\.\.\.make\(boss\.species,boss\.level\),bossId:id,name:boss\.name\}/);
+ assert.match(js,/if\(battle\.bossId\)\{log\("Commanders are contractually uncatchable/);
+ assert.match(js,/save\.defeatedCommanders\.includes\(id\)/);
+ assert.match(js,/const commanderReward=battle\.bossId\?defeatCommander\(battle\.bossId\):""/);
+});
