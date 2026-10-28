@@ -22,15 +22,11 @@
     {
       "gameId": "cabinet-custom-tetris",
       "title": "Custom Tetris",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/billritz/Tetris",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/custom-tetris/index.html",
-        "/arcade/hosted/custom-tetris/LICENSE.txt",
-        "/arcade/hosted/custom-tetris/SOURCE-NOTICE.md"
-      ],
-      "notes": "Single-file upstream implementation with Knightfall styling, account save/resume, and score submission."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-curvy-snake",
@@ -44,123 +40,83 @@
     {
       "gameId": "cabinet-hextris",
       "title": "Hextris",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/Hextris/hextris",
       "license": "GPL-3.0-or-later",
-      "files": [
-        "/arcade/hosted/hextris/index.html",
-        "/arcade/hosted/hextris/hextris.js",
-        "/arcade/hosted/hextris/vendor-bundle.js",
-        "/arcade/hosted/hextris/style/style.css",
-        "/arcade/hosted/hextris/LICENSE.md",
-        "/arcade/hosted/hextris/SOURCE-NOTICE.md",
-        "/arcade/hosted/hextris/THIRD-PARTY-NOTICES.md"
-      ],
-      "notes": "Bundled source and vendor dependencies; removed upstream remote analytics, advertising, and external score beacon; added account score and save/resume integration."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-maze-muncher",
       "title": "Maze Muncher",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/maze-muncher/index.html",
-        "/arcade/hosted/maze-muncher/LICENSE.txt",
-        "/arcade/hosted/maze-muncher/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream single-file maze chase game; removed upstream shared i18n/analytics dependency, applied Ash-Fall theme, namespaced local best-score key, and added account leaderboard submission on completed runs."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-sokoban",
       "title": "Sokoban",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/sokoban/index.html",
-        "/arcade/hosted/sokoban/LICENSE.txt",
-        "/arcade/hosted/sokoban/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream single-file crate-pushing puzzle with original levels; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local progress storage, and submits highest cleared level to account leaderboard."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-air-hockey",
       "title": "Air Hockey",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/air-hockey/index.html",
-        "/arcade/hosted/air-hockey/LICENSE.txt",
-        "/arcade/hosted/air-hockey/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream single-file air hockey with AI opponent; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local streak storage, and submits match results to the account leaderboard."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-lights-out",
       "title": "Lights Out",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/lights-out/index.html",
-        "/arcade/hosted/lights-out/LICENSE.txt",
-        "/arcade/hosted/lights-out/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream solvable Lights Out puzzle; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local storage, and submits completed puzzle scores to account leaderboard."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-whack-a-mole",
       "title": "Whack-a-Mole",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/whack-a-mole/index.html",
-        "/arcade/hosted/whack-a-mole/LICENSE.txt",
-        "/arcade/hosted/whack-a-mole/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream single-file reaction game; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced local best score, and submits completed round results to the account leaderboard."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-minesweeper",
       "title": "Minesweeper",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/minesweeper/index.html",
-        "/arcade/hosted/minesweeper/LICENSE.txt",
-        "/arcade/hosted/minesweeper/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream first-click-safe Minesweeper; removed shared upstream i18n/analytics dependency, applied Ash-Fall skin, namespaced best-time keys, and submits bounded scores for successful clears."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-memory-match",
       "title": "Memory Match",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/memory-match/index.html",
-        "/arcade/hosted/memory-match/LICENSE.txt",
-        "/arcade/hosted/memory-match/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream single-file card matching game with three difficulty levels; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced local best results, and submits bounded scores to the account leaderboard."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-breakout",
       "title": "Breakout",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/breakout/index.html",
-        "/arcade/hosted/breakout/LICENSE.txt",
-        "/arcade/hosted/breakout/SOURCE-NOTICE.md"
-      ],
-      "notes": "Adapted upstream Canvas brick-breaker with physics, particles, levels, and synthesized sound; removed shared upstream i18n/analytics dependency, applied Ash-Fall theme, namespaced best score, and submits bounded scores."
+      "files": [],
+      "notes": "Retired copied upstream implementation after independent Ash-Fall replacements were linked in public catalogs. Historical upstream and license metadata retained."
     },
     {
       "gameId": "cabinet-dino-run",
