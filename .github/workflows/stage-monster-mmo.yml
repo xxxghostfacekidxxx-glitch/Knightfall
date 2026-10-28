@@ -61,7 +61,9 @@ jobs:
           '
 
       - name: Test monster battle rules and staging isolation
-        run: node --test scripts/monster-mmo-battle.test.mjs
+        run: |
+          node --test scripts/monster-mmo-battle.test.mjs
+          node --test scripts/monster-mmo-frontend.test.mjs
 
       - name: Check staging Worker JavaScript syntax
         working-directory: backend
