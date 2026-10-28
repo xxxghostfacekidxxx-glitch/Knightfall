@@ -529,3 +529,32 @@ body:has(#rookcondition) .controls button{min-height:44px;border-radius:9px}
 @media(prefers-reduced-motion:reduce){
   .af-feedback-pulse,.af-feedback-alert,.af-feedback-press{animation:none!important;transition:none!important;transform:none!important;filter:none!important}
 }
+
+
+/* Display reliability: gameplay canvases must fit mobile cabinets without cropping.
+   Keep native drawing-buffer dimensions intact so input coordinates still map correctly. */
+:where(.game-panel,.cabinet,.game,.panel,.playfield,.field,.play-area,.canvas-wrap,.screen,.arena){min-width:0}
+:where(.playfield,.field,.play-area,.canvas-wrap,.screen,.arena) canvas{
+  display:block;
+  max-width:100%;
+  height:auto;
+  object-fit:contain;
+}
+:where(.playfield,.field,.play-area,.canvas-wrap,.screen,.arena) iframe{
+  display:block;
+  width:100%;
+  max-width:100%;
+  border:0;
+}
+:where(.arcade-fullscreen-target:fullscreen) {
+  box-sizing:border-box;
+  width:100vw!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+}
+@media(max-width:720px){
+  :where(.game-panel,.cabinet,.game,.panel){max-width:100%}
+  :where(.playfield,.field,.play-area,.canvas-wrap,.screen,.arena){max-width:100%}
+}
