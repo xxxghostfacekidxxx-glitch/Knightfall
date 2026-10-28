@@ -13,6 +13,7 @@ const invariants=[
  {file:"arcade-cabinet-engine.js",id:"blocks-row-clearing",pattern:/grid=grid\.filter\(row=>/},
  {file:"arcade-cabinet-engine.js",id:"storage-safe-boot",pattern:/best=\(\(\)=>\{try\{return Math\.max/},
  {file:"arcade-cabinet-engine.js",id:"adjacent-digging",pattern:/Math\.abs\(xx-p\.x\)\+Math\.abs\(yy-p\.y\)===1/},
+ {file:"ashfall-mini-games.js",id:"async-resume-syntax",pattern:/async function resume\(\)\{try\{await/},
  {file:"ashfall-mini-games.js",id:"tap-start-all-mini-games",pattern:/if\(!running\)\{start\(\);return\}/},
  {file:"ashfall-mini-games.js",id:"validate-local-mini-saves",pattern:/if\(x&&validSavedState\(x\.state\)\)/},
  {file:"arcade-cabinet-engine.js",id:"score-button-finally",pattern:/finally\{saveScoreButton\.disabled=false\}/},
