@@ -66,3 +66,22 @@ test("album picker uses a real select instead of a typed album name",()=>{
  assert.match(js,/albumIds\.find\(a=>String\(a\.id\)===selected\)/);
  assert.doesNotMatch(js,/prompt\("Add to which album/);
 });
+
+test("public profile endpoint loads its own layout and survives corrupt optional JSON",()=>{
+ const api=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
+ const start=api.indexOf("const userMatch=url.pathname.match");
+ const end=api.indexOf("// Die-ary:",start);
+ assert.ok(start>=0&&end>start,"public profile handler exists");
+ const handler=api.slice(start,end);
+ assert.match(handler,/const layoutRow=await env\.DB\.prepare\("SELECT layout_json FROM profile_layouts WHERE user_id=\?"\)/);
+ assert.match(handler,/profile_layout:profileLayout/);
+ assert.match(handler,/birth_chart:publicBirthChart/);
+ assert.match(handler,/catch\(error\)\{console\.error\("profile_layout_parse_failed"/);
+ assert.match(handler,/catch\(error\)\{console\.error\("profile_birth_chart_parse_failed"/);
+});
+test("profile actions respect account identity and authenticated God role",()=>{
+ assert.match(js,/if\(me\.user\?\.role==="god"&&ownProfile\)renderDeveloperControls\(\)/);
+ assert.match(js,/fallbackOwn\?/);
+ assert.match(js,/!signedIn\?/);
+ assert.match(js,/button\.onclick=async\(\)=>\{button\.disabled=true;try\{await api\("\/api\/friends\/"/);
+});
