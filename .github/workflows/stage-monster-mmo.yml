@@ -60,6 +60,9 @@ jobs:
             console.log("Canonical staging config, isolated bindings, and non-production CORS validated.");
           '
 
+      - name: Test monster battle rules and staging isolation
+        run: node --test scripts/monster-mmo-battle.test.mjs
+
       - name: Check staging Worker JavaScript syntax
         working-directory: backend
         run: node --check src/index.mmo-staging.js
