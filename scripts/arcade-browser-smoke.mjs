@@ -17,6 +17,8 @@ async function listHostedHtml(dir = hostedRoot) {
   return routes;
 }
 const games = [
+  { name: "Neon Drift", path: "/arcade/hosted/ashfall-neon-engine.html?game=neon-drift", start: "#start", pause: false },
+  { name: "Cinder Defense", path: "/arcade/hosted/ashfall-neon-engine.html?game=cinder-defense", start: "#start", pause: false },
   { name: "Marshland Marksman", path: "/arcade/hosted/marshland-marksman/index.html", start: "#start", pause: false },
   { name: "Cinder Crossing", path: "/arcade/hosted/cinder-crossing/index.html", start: "#start", pause: true },
   { name: "Afterburn Breakout", path: "/arcade/hosted/afterburn-breakout/index.html", start: "#start", pause: true },
