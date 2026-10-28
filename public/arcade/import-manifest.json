@@ -169,47 +169,29 @@
     {
       "gameId": "cabinet-dino-run",
       "title": "Dino Run: Ash-Fall Edition",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/dino-run/index.html",
-        "/arcade/hosted/dino-run/LICENSE.txt",
-        "/arcade/hosted/dino-run/SOURCE-NOTICE.md",
-        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
-        "/arcade/hosted/i18n.js"
-      ],
-      "notes": "Adapted the upstream self-contained Canvas/vector runner; retained the MIT license, copied the shared language layer locally with its external analytics loader removed, restyled it for Ash-Fall, and added account-best-score loading and leaderboard submission."
+      "files": [],
+      "notes": "Removed from public site and repository after replacing with original Ash-Fall game alternatives; historical provenance retained for audit."
     },
     {
       "gameId": "cabinet-balloon-pop",
       "title": "Balloon Pop: Ash-Fall Edition",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/balloon-pop/index.html",
-        "/arcade/hosted/balloon-pop/LICENSE.txt",
-        "/arcade/hosted/balloon-pop/SOURCE-NOTICE.md",
-        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
-        "/arcade/hosted/i18n.js"
-      ],
-      "notes": "Adapted the upstream self-contained Canvas balloon/bomb game, retained MIT licensing, removed its unrelated external downloader promotion and analytics loader, restyled it, and added account best-score loading and leaderboard submission."
+      "files": [],
+      "notes": "Removed from public site and repository after replacing with original Ash-Fall game alternatives; historical provenance retained for audit."
     },
     {
       "gameId": "cabinet-hanoi",
       "title": "Tower of Hanoi: Ash-Fall Edition",
-      "status": "imported-adapted",
+      "status": "removed",
       "upstream": "https://github.com/mashukui/web-games",
       "license": "MIT",
-      "files": [
-        "/arcade/hosted/hanoi/index.html",
-        "/arcade/hosted/hanoi/LICENSE.txt",
-        "/arcade/hosted/hanoi/SOURCE-NOTICE.md",
-        "/arcade/hosted/WEB-GAMES-LICENSE.txt",
-        "/arcade/hosted/i18n.js"
-      ],
-      "notes": "Adapted the upstream SVG/DOM puzzle with the MIT license retained, unrelated downloader promotion and analytics loader removed, Ash-Fall styling, account leaderboard submission on completed levels, and issue reporting."
+      "files": [],
+      "notes": "Removed from public site and repository after replacing with original Ash-Fall game alternatives; historical provenance retained for audit."
     }
   ],
   "notYetImported": [
