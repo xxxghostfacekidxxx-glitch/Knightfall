@@ -24,6 +24,11 @@ function render(d,adminView=false,ownProfile=false){
     (u.pronouns?'<div><dt>Pronouns</dt><dd>'+esc(u.pronouns)+'</dd></div>':"")+
     (u.website_url?'<div><dt>Website</dt><dd>'+(safeWebsite?'<a href="'+esc(safeWebsite)+'" rel="noopener noreferrer nofollow">'+esc(safeWebsite)+'</a>':esc(u.website_url))+'</dd></div>':"")+
     '</dl><div class="activity-grid"><section><h2>Recent threads</h2>'+((d.threads||[]).map(t=>'<a class="activity" href="/thread.html?id='+t.id+'"><strong>'+esc(t.title)+'</strong><small>'+esc(t.category_name)+' · '+fmt(t.created_at)+'</small></a>').join("")||'<p class="muted">No threads yet.</p>')+'</section><section><h2>Recent replies</h2>'+((d.posts||[]).map(p=>'<a class="activity" href="/thread.html?id='+p.thread_id+'"><strong>'+esc(p.thread_title)+'</strong><small>'+esc(p.body).slice(0,180)+' · '+fmt(p.created_at)+'</small></a>').join("")||'<p class="muted">No replies yet.</p>')+'</section></div>';
+  // Keep connection controls immediately under the member header, above the wallet.
+  // They were previously buried after the wallet and counters on mobile.
+  const connectionActions=root.querySelector(".profile-actions-wrap");
+  const profileHeader=root.querySelector(".profile-top");
+  if(connectionActions&&profileHeader)profileHeader.after(connectionActions);
   const themeColors={ember:"#e66a2c",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")&&u.accent_color!=="#e66a2c"?u.accent_color:themeColors[root.dataset.theme]);
   if (u.cover_url) { const c=document.createElement("div"),img=document.createElement("img"); c.className="profile-cover"; img.setAttribute("src",u.cover_url); img.setAttribute("alt",""); img.loading="lazy"; c.append(img); root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
