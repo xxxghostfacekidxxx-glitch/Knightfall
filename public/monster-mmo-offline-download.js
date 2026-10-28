@@ -11,7 +11,7 @@
   button.addEventListener("click", async () => {
     if (button.disabled) return;
     button.disabled = true;
-    status.textContent = "Packaging Cinder Meadow for offline testing…";
+    status.textContent = "Packaging Hell & High Orbit for offline testing…";
     try {
       const [html, css, js] = await Promise.all([
         load("/monster-mmo.html"),
@@ -44,7 +44,7 @@
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = "ash-fall-cinder-meadow-offline.html";
+      anchor.download = "ash-fall-hell-and-high-orbit-offline.html";
       document.body.append(anchor);
       anchor.click();
       anchor.remove();
