@@ -76,6 +76,25 @@ try {
       await page.close();
     }
   }
+  // Catch layout regressions that leave game canvases invisible or wider than a phone.
+  for (const route of ["/arcade/hosted/ashfall-mini-games.html", "/arcade/hosted/arcade-cabinet.html?game=ash-cannon"]) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    try {
+      const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response?.ok()) throw new Error(route + " failed to load: " + (response?.status() || "unknown"));
+      const layout = await page.evaluate(() => {
+        const canvas = document.querySelector("canvas");
+        if (!canvas) return { error: "no canvas" };
+        const rect = canvas.getBoundingClientRect();
+        return { width: rect.width, height: rect.height, left: rect.left, right: rect.right, viewport: innerWidth };
+      });
+      if (layout.error || layout.width < 50 || layout.height < 50 || layout.left < -2 || layout.right > layout.viewport + 2) {
+        throw new Error(route + " canvas layout is clipped or invisible: " + JSON.stringify(layout));
+      }
+    } finally {
+      await page.close();
+    }
+  }
   // First audit every hosted HTML route, not just the handful of hand-picked games.
   // This catches broken asset paths and runtime crashes before targeted gameplay tests.
   const hostedRoutes = await listHostedHtml();
