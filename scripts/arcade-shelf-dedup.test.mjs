@@ -11,7 +11,7 @@ for(const id of originalTargets)assert.ok(ids.includes(id),"Expected original ar
 console.log("Arcade shelf verified: "+ids.length+" unique entries, "+retired.length+" retired duplicates absent.");
 
 const catalog=readFileSync("public/arcade-30-games.html","utf8");
-const cards=[...catalog.matchAll(/<article class="game"[^>]*>[\\s\\S]*?<\\/article>/g)].map(m=>m[0]);
+const cards=[...catalog.matchAll(/<article class="game"[^>]*>[\s\S]*?<\/article>/g)].map(m=>m[0]);
 assert.equal(cards.length,106,"Secondary arcade catalog count must match its heading");
 const hrefs=cards.map(c=>c.match(/class="play" href="([^"]+)"/)?.[1]);
 assert.ok(hrefs.every(Boolean),"Each catalog card needs a play link");
