@@ -95,6 +95,37 @@ try {
       await page.close();
     }
   }
+  // Each shared cabinet variant must actually start, not merely return HTTP 200.
+  const cabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","ball-and-wall","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
+  const cabinetFailures = [];
+  for (const id of cabinetIds) {
+    const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const errors = [];
+    page.on("pageerror",error=>errors.push(error.message));
+    try {
+      const response = await page.goto(base+"/arcade/hosted/arcade-cabinet.html?game="+encodeURIComponent(id),{waitUntil:"domcontentloaded",timeout:10000});
+      if (!response?.ok()) throw new Error("HTTP "+response?.status());
+      await page.locator("#start").click({timeout:3000});
+      await page.waitForTimeout(80);
+      const state = await page.locator("#game-state").textContent();
+      if (!state?.includes("Running")) throw new Error("Start did not enter Running state: "+state);
+      const canvas = await page.locator("#game").evaluate(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}));
+      if(canvas.w<50||canvas.h<50)throw new Error("Game canvas invisible");
+      if(id==="trigger-rally"||id==="hexgl"||id==="ball-and-wall"){
+        const box=await page.locator("#game").boundingBox();
+        if(box){
+          await page.mouse.move(box.x+box.width*.5,box.y+box.height*.7);
+          await page.mouse.down();
+          await page.mouse.move(box.x+box.width*.65,box.y+box.height*.7,{steps:3});
+          await page.mouse.up();
+        }
+      }
+      if(errors.length)throw new Error(errors.join(" | "));
+    } catch(error){cabinetFailures.push(id+": "+error.message);}
+    finally{await page.close();}
+  }
+  if(cabinetFailures.length){console.error("FAIL playable cabinet variants:\\n"+cabinetFailures.join("\\n"));failed=true;}
+  else console.log("PASS all "+cabinetIds.length+" shared cabinet variants started without browser exceptions");
   // First audit every hosted HTML route, not just the handful of hand-picked games.
   // This catches broken asset paths and runtime crashes before targeted gameplay tests.
   const hostedRoutes = await listHostedHtml();
