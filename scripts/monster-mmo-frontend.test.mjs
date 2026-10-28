@@ -38,3 +38,13 @@ test("journal and starter selection are wired to original species",()=>{
  assert.match(js,/offlineSeen=new Set\(seen\)/);
  assert.match(js,/seen\.add\(id\)/);
 });
+
+test("eight original chibi infernal creature portraits are generated without external art",()=>{
+ assert.match(js,/const infernalLooks=/);
+ assert.match(js,/function monsterPortrait\(/);
+ assert.match(js,/document\.createElementNS\("http:\/\/www\.w3\.org\/2000\/svg","svg"\)/);
+ assert.match(js,/monsterPortrait\(battle\.id,"large"\)/);
+ assert.match(js,/monsterPortrait\(id,"tiny"\)/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+ assert.ok(html.includes("Infernal Bestiary"));
+});
