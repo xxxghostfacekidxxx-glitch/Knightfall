@@ -85,3 +85,13 @@ test("broken galactic calendar replaces the real-world origin year",()=>{
  assert.match(js,/absurdMonths/);
  assert.doesNotMatch(js,/In 1999, a galactic firmware update/);
 });
+
+test("offline galactic bureau contracts award one-time capture supplies",()=>{
+ assert.ok(html.includes('id="bureau-contracts"'));
+ assert.ok(html.includes('id="bureau-status"'));
+ for(const id of ["microwave","pigeons","toaster","treaty"])assert.match(js,new RegExp('id:"'+id+'"'));
+ assert.match(js,/save\.claimedContracts\.includes\(id\)/);
+ assert.match(js,/save\.bag=\(save\.bag\|\|0\)\+contract\.reward/);
+ assert.match(js,/if\(connected\|\|busy\|\|battle\)return/);
+ assert.match(js,/function render\(\)\{renderStory\(\);renderBureau\(\);/);
+});
