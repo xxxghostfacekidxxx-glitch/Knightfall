@@ -93,6 +93,14 @@ for (const [label, present] of [
 ]) {
   if (present) ok(label); else fail(label);
 }
+for (const [label, present] of [
+  ["profile follow requests guard against duplicate taps", profileScript.includes("if(f.disabled)return")],
+  ["profile block disables message action", profileScript.includes("message.disabled=u.is_blocked")],
+  ["profile fallback distinguishes the current account", profileScript.includes("fallbackOwn?")],
+  ["profile fallback keeps the editor available to its owner", profileScript.includes('href="/profile-edit.html">Edit profile')]
+]) {
+  if (present) ok(label); else fail(label);
+}
 const friendInvariants = [
   ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
