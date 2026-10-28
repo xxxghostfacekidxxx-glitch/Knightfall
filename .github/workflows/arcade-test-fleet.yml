@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - "public/arcade/**"
+      - "public/chaos-cartridge-theme.css"
+      - "public/arcade-polish.css"
+      - "public/arcade-games.html"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
@@ -50,6 +53,9 @@ on:
     paths:
       - "scripts/arcade-*.test.mjs"
       - "public/arcade/**"
+      - "public/chaos-cartridge-theme.css"
+      - "public/arcade-polish.css"
+      - "public/arcade-games.html"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
