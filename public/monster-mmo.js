@@ -102,7 +102,7 @@ function renderBureau(){
   const brief=document.createElement("p");brief.textContent=contract.brief;
   const button=document.createElement("button");const done=claimed.includes(contract.id),ready=save.steps>=contract.need;
   button.textContent=done?"FILED ✓":ready?"CLAIM "+contract.reward+" CAPTURE SUPPLIES":"UNLOCKS AT "+contract.need+" STEPS";
-  button.disabled=connected||busy||!ready||done;
+  button.disabled=connected||busy||!!battle||!ready||done;
   button.addEventListener("click",()=>claimContract(contract.id));
   card.append(heading,issuer,brief,button);board.append(card);
  }
