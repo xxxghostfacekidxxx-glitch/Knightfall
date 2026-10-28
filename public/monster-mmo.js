@@ -52,10 +52,21 @@ const invasionChapters=[
  ["EPISODE 1 · HELL HAS ENTERED THE CHAT","Earth's demons refuse to let extraterrestrial weirdos destroy their favorite planet. Their reasons: the pizza, the heavy metal, and a legally binding lease on the moon."],
  ["EPISODE 2 · OPERATION SCREAMING TOASTER","The aliens deploy a planet-sized toaster to turn the oceans into soup. The demon resistance must recruit tiny hellspawn and steal the toaster's power cord."],
  ["EPISODE 3 · THE PIGEON SUPREMACY","Alien commander Squibblex discovers pigeons and assumes they run Earth. The resistance must intercept a peace treaty addressed to a birdbath."],
- ["EPISODE 4 · DEMONS, DOOM AND DISCOUNT COUPONS","A malfunctioning Glorpbot army offers 30% off annihilation. Hell's finest idiots must save Earth before the invasion's quarterly performance review."]
+ ["EPISODE 4 · DEMONS, DOOM AND DISCOUNT COUPONS","A malfunctioning Glorpbot army offers 30% off annihilation. Hell's finest idiots must save Earth before the invasion's quarterly performance review. Neither army intends to return Earth to humanity. The only question is who gets the keys."]
 ];
+const warBroadcasts=[
+ "EARTH NEWS: The alien fleet has declared the moon a parking violation.",
+ "HELL PUBLIC RELATIONS: We are not invading. We are conducting an extremely aggressive rescue.",
+ "HUMANITY: Please stop using our cities as chess pieces.",
+ "ALIEN COMMAND: All humans must report to the nearest condiment processing center.",
+ "DEMON COMMAND: The planet is under new management. The screams remain complimentary.",
+ "BREAKING: The United Nations has been replaced with three raccoons and a fax machine.",
+ "ALIEN SCIENCE: Earth has been classified as a moderately haunted sandwich.",
+ "INFERNAL LEGAL NOTICE: Saving Earth does not transfer ownership back to humans."
+];
+function warBroadcast(){return warBroadcasts[Math.floor((save.steps||0)/5)%warBroadcasts.length]}
 function currentChapter(){return Math.min(invasionChapters.length-1,Math.floor((save.steps||0)/12))}
-function renderStory(){const chapter=invasionChapters[currentChapter()];$("story-title").textContent=chapter[0];$("story-text").textContent=chapter[1];$("story-progress").textContent="Episode "+(currentChapter()+1)+"/"+invasionChapters.length+" · Walk "+Math.max(0,(currentChapter()+1)*12-(save.steps||0))+" more tiles for the next transmission (offline preview).";}
+function renderStory(){$("war-broadcast").textContent=warBroadcast();const chapter=invasionChapters[currentChapter()];$("story-title").textContent=chapter[0];$("story-text").textContent=chapter[1];$("story-progress").textContent="Episode "+(currentChapter()+1)+"/"+invasionChapters.length+" · Walk "+Math.max(0,(currentChapter()+1)*12-(save.steps||0))+" more tiles for the next transmission (offline preview).";}
 function persist(){if(connected)return;try{localStorage.setItem("ashfall:cinder-meadow:demo",JSON.stringify(save));localStorage.setItem("ashfall:cinder-meadow:seen",JSON.stringify([...seen]))}catch{}}
 function render(){renderStory();const map=$("world");map.replaceChildren();for(let y=1;y<=8;y++)for(let x=1;x<=10;x++){const cell=document.createElement("div");const isCamp=x===4&&y===1;cell.className="tile "+(obstacles.has(x+","+y)?"rock":!walkable(x,y)?"wall":isCamp?"camp":grass(x,y)?"grass":"path");cell.setAttribute("role","gridcell");cell.setAttribute("aria-label",x+","+y+(isCamp?" camp":""));let icon=isCamp?"⛺":obstacles.has(x+","+y)?"◆":grass(x,y)?"♣":"";const other=[...players.values()].find(p=>p.x===x&&p.y===y&&p.userId!==selfId);if(other){cell.classList.add("other");icon="◉";cell.title=other.username}if(save.x===x&&save.y===y){cell.classList.add("player");icon="♟"}const span=document.createElement("span");span.textContent=icon;cell.append(span);map.append(cell)}
  $("position").textContent=String(save.x).padStart(2,"0")+", "+String(save.y).padStart(2,"0");
