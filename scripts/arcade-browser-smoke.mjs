@@ -55,6 +55,27 @@ browser.newPage = async options => {
 };
 let failed = false;
 try {
+  // Regression guard: the arcade theme must never restore the retired orange palette.
+  // Exercise the actual CSS cascade rather than checking source text alone.
+  for (const route of ["/chaos-cartridge.html", "/arcade-games.html", "/arcade-30-games.html"]) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    try {
+      const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 10000 });
+      if (!response?.ok()) throw new Error(route + " returned " + (response?.status() || "no response"));
+      await page.evaluate(() => document.fonts?.ready).catch(() => {});
+      const palette = await page.evaluate(() => {
+        const root = getComputedStyle(document.documentElement);
+        return {
+          chaos: root.getPropertyValue("--chaos-pink").trim().toLowerCase(),
+          ember: root.getPropertyValue("--arcade-ember").trim().toLowerCase()
+        };
+      });
+      if (palette.chaos && palette.chaos !== "#ff55d8") throw new Error(route + " has incorrect arcade pink: " + palette.chaos);
+      if (palette.ember && !["#ff55d8", "var(--chaos-pink)"].includes(palette.ember)) throw new Error(route + " has incorrect arcade ember: " + palette.ember);
+    } finally {
+      await page.close();
+    }
+  }
   // First audit every hosted HTML route, not just the handful of hand-picked games.
   // This catches broken asset paths and runtime crashes before targeted gameplay tests.
   const hostedRoutes = await listHostedHtml();
