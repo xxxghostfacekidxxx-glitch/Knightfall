@@ -6,6 +6,11 @@ const root=path.resolve("public/arcade/hosted");
 const rules=[
  {file:"arcade-cabinet-engine.js",id:"kaiju-hitbox",bad:'let i=items.findIndex(o=>Math.hypot(o.x-q.x,o.y-q.y)<o.r+14);',good:'let i=items.findIndex(o=>mode==="kaiju"?(Math.abs(o.x-q.x)<(o.w||42)/2+12&&q.y>=520-(o.h||90)-12&&q.y<=532):Math.hypot(o.x-q.x,o.y-q.y)<(o.r||20)+14);'}
 ];
+const invariants=[
+ {file:"ashfall-mini-games.js",id:"mini-cloud-save-identity",pattern:/s\.schema===1&&s\.game===id&&s\.state/},
+ {file:"ashfall-mini-games.js",id:"mini-device-save-shape",pattern:/typeof s\.state==="object"&&!Array\.isArray\(s\.state\)/},
+ {file:"arcade-cabinet-engine.js",id:"score-button-finally",pattern:/finally\{saveScoreButton\.disabled=false\}/}
+];
 const findings=[];
 for(const rule of rules){
  const file=path.join(root,rule.file);
@@ -17,4 +22,6 @@ for(const rule of rules){
  if(apply)await writeFile(file,source.replace(rule.bad,rule.good));
  findings.push({rule:rule.id,status:apply?"repaired":"repair-available"});
 }
+for(const check of invariants){const source=await readFile(path.join(root,check.file),"utf8");if(!check.pattern.test(source))findings.push({rule:check.id,status:"manual-review",reason:"Gameplay invariant missing"});}
+if(findings.some(item=>item.status==="manual-review"))process.exitCode=1;
 console.log(JSON.stringify({mode:apply?"fix":"audit",findings},null,2));
