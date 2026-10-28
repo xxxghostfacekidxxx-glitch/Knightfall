@@ -1,6 +1,6 @@
 /* Chaos Cartridge: Bubble Gum neon arcade skin. Scoped to arcade pages; no game logic changes. */
 :root{
-  --chaos-pink:#e66a2c;--chaos-green:#c6ff45;--chaos-cyan:#54f5df;
+  --chaos-pink:#ff55d8;--chaos-green:#c6ff45;--chaos-cyan:#54f5df;
   --arcade-ember:var(--chaos-pink);--arcade-gold:var(--chaos-green);
   --arcade-rust:var(--chaos-pink);--arcade-line:#44304a;
   --arcade-accent:var(--chaos-pink);--arcade-muted:#b8aec2;
@@ -10,33 +10,33 @@ html{scroll-behavior:smooth;scroll-padding-top:1rem}
 body{
  background-color:#070710!important;color:#f7f2ff;
  background-image:
-  radial-gradient(ellipse at 8% 0%,#e66a2c1b,transparent 38%),
+  radial-gradient(ellipse at 8% 0%,#ff55d81b,transparent 38%),
   radial-gradient(ellipse at 94% 25%,#c6ff4512,transparent 34%),
   linear-gradient(180deg,#090814 0%,#070710 72%)!important;
 }
 .hero h1 span,h1 span{color:var(--chaos-green)!important;text-shadow:0 0 24px #c6ff4533}
 .eyebrow,.kicker,.tagline,.hero .eyebrow{color:var(--chaos-pink)!important}
 .cabinet,.game,.game-panel,.panel,.account,.board-wrap,.table-wrap,.scoreboard,.side-panel{
- border-color:#e66a2c3d!important;
+ border-color:#ff55d83d!important;
  background:linear-gradient(145deg,#171020f7,#0b0b16fa)!important;
  box-shadow:0 18px 52px #0008,inset 0 1px #ffffff08;
 }
-.cabinet:before,.game:before{background:radial-gradient(ellipse at 100% 0%,#e66a2c17,transparent 58%)!important}
-.cabinet:hover,.game:hover{border-color:#c6ff4577!important;box-shadow:0 24px 62px #0009,0 0 28px #e66a2c12!important}
+.cabinet:before,.game:before{background:radial-gradient(ellipse at 100% 0%,#ff55d817,transparent 58%)!important}
+.cabinet:hover,.game:hover{border-color:#c6ff4577!important;box-shadow:0 24px 62px #0009,0 0 28px #ff55d812!important}
 button,.btn,.button,.action,select,input,textarea{accent-color:var(--chaos-green)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{
  outline:2px solid var(--chaos-green)!important;outline-offset:3px;
 }
 .game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active,
-button[aria-pressed=true]{border-color:var(--chaos-pink)!important;background:linear-gradient(120deg,#e66a2c,#c6ff45)!important;color:#150b1b!important}
+button[aria-pressed=true]{border-color:var(--chaos-pink)!important;background:linear-gradient(120deg,#ff55d8,#c6ff45)!important;color:#150b1b!important}
 .action.primary,.btn.primary,.button.primary,.primary{background:linear-gradient(120deg,var(--chaos-pink),var(--chaos-green))!important;color:#150b1b!important;border-color:#f8c8ef!important}
 .back{color:#e5c9ec!important}.back:hover{color:var(--chaos-green)!important}
-.screen,.arena,.play-area,.canvas{border-color:#e66a2c44!important;box-shadow:inset 0 0 0 1px #c6ff450a,inset 0 0 42px #0008!important}
-.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#e66a2c2c}
+.screen,.arena,.play-area,.canvas{border-color:#ff55d844!important;box-shadow:inset 0 0 0 1px #c6ff450a,inset 0 0 42px #0008!important}
+.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#ff55d82c}
 .cabinet .tag,.genre,.license,.pill{border-color:#c6ff4555!important;color:var(--chaos-green)!important;background:#c6ff450c!important}
 .target,.memory-card.revealed,.memory-card.matched,.whack-hole.live{border-color:var(--chaos-pink)!important}
-.target{background:var(--chaos-pink)!important;color:#170817!important;box-shadow:0 0 28px #e66a2c33!important}
+.target{background:var(--chaos-pink)!important;color:#170817!important;box-shadow:0 0 28px #ff55d833!important}
 .memory-card.matched{color:var(--chaos-green)!important;background:#182014!important}
 .footnote,.fineprint,.fine{color:#8d8299!important}
-.chaos-sprite-stamp{filter:drop-shadow(0 0 7px #e66a2c66) drop-shadow(0 0 5px #c6ff4533)!important}
+.chaos-sprite-stamp{filter:drop-shadow(0 0 7px #ff55d866) drop-shadow(0 0 5px #c6ff4533)!important}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chaos-sprite-stamp{animation:none!important}}
