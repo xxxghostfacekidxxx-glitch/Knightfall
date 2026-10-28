@@ -102,6 +102,15 @@ for (const [label, present] of [
 ]) {
   if (present) ok(label); else fail(label);
 }
+const devilTools = await readFile(path.join(publicDir, "devil-tools.html"), "utf8");
+for (const [label, present] of [
+  ["Devil Tools searchable workspace directory", devilTools.includes('id="dt-tool-search"')],
+  ["Devil Tools focused sections", devilTools.includes("setupWorkspaceDirectory();buildCatalog()")],
+  ["Devil Tools show-all option", devilTools.includes('id="dt-show-all"')],
+  ["Devil Tools role-based God badge", devilTools.includes("String(user.role||'').toLowerCase()==='god'")]
+]) {
+  if (present) ok(label); else fail(label);
+}
 const friendInvariants = [
   ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
