@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - "public/monster-mmo.*"
+      - "public/admin.html"
       - "backend/src/index.mmo-staging.js"
       - "scripts/monster-mmo-*.test.mjs"
       - ".github/workflows/monster-mmo-ci.yml"
@@ -29,6 +30,7 @@ jobs:
         run: |
           node --test scripts/monster-mmo-frontend.test.mjs
           node --test scripts/monster-mmo-battle.test.mjs
+          node --test scripts/monster-mmo-admin.test.mjs
       - name: Validate source syntax
         run: |
           node --check public/monster-mmo.js
