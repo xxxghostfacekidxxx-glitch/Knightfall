@@ -72,6 +72,18 @@ for (const [label, pattern] of chaosInvariants) {
   if (!pattern.test(worker)) fail("Chaos invariant missing: " + label);
   else ok("Chaos invariant: " + label);
 }
+// Profile regression guards: actions must survive a degraded profile response.
+const profileScript = await readFile(path.join(publicDir, "profile.js"), "utf8");
+const profileHtml = await readFile(path.join(publicDir, "profile.html"), "utf8");
+for (const [label, present] of [
+  ["profile fallback retains add friend", profileScript.includes('data-fallback-friend')],
+  ["profile fallback retains message", profileScript.includes('data-message-user')],
+  ["profile incoming request accepts by ID", profileScript.includes('encodeURIComponent(incoming.id)')],
+  ["profile uses neon default accent", profileScript.includes('ember:"#ff55d8"')],
+  ["profile scripts are cache-versioned", /profile\\.js\\?v=20261028-profile-audit4/.test(profileHtml)]
+]) {
+  if (present) ok(label); else fail(label);
+}
 const friendInvariants = [
   ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
