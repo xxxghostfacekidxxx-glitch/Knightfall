@@ -22,6 +22,11 @@ for(const game of ["neon-drift","cinder-defense"]){
   listeners.get("document:keydown")({key:"ArrowLeft",preventDefault(){}});
   frames.shift()(16);
   assert.ok(frames.length>=1);
+  listeners.get("document:keydown")({key:"A",preventDefault(){}});
+  doc.hidden=true;
+  listeners.get("document:visibilitychange")();
+  assert.match(element("status").textContent,/Paused/);
+  doc.hidden=false;
   listeners.get("start:click")();
   assert.equal(element("score").textContent,"0");
   assert.equal(element("status").textContent,"Playing");
