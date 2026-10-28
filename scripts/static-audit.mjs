@@ -250,43 +250,14 @@ if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-colo
 const colossusRecordsPage = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
 if (!colossusRecordsPage.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
 ok("Colossus Clash controls, account integration, score cap, and provenance checked.");
-const dinoRunGame = await readFile(path.join(publicDir, "arcade/hosted/dino-run/index.html"), "utf8");
-const dinoRunCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
-const dinoRunCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
-const dinoRunRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
-if (!dinoRunGame.includes("cabinet-dino-run") || !dinoRunGame.includes("recordScore")) fail("Dino Run is missing account leaderboard integration.");
-if (!worker.includes('"cabinet-dino-run"') || !worker.includes('"cabinet-dino-run":100000')) fail("Dino Run is not allowlisted with a bounded score cap.");
-if (!manifest.imports.some(entry => entry.gameId === "cabinet-dino-run" && entry.status === "imported-adapted")) fail("Dino Run is missing its imported source manifest entry.");
-if (!dinoRunCatalog.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunCartridge.includes('href="/arcade/hosted/dino-run/index.html"') || !dinoRunRecords.includes('"cabinet-dino-run":"Dino Run: Ash-Fall Edition"')) fail("Dino Run is missing from a public arcade surface.");
-const shelfCount = (dinoRunCartridge.slice(dinoRunCartridge.indexOf('<div class="cartridge-shelf">'), dinoRunCartridge.indexOf('<section class="feature">')).match(/class="cartridge-cabinet/g) || []).length;
-if (shelfCount !== 110) fail("Main arcade shelf count does not match the 110 integrated cabinet cards.");
-const catalogCardCount = (dinoRunCatalog.match(/<article class="game"/g) || []).length;
-if (catalogCardCount === 0 || !dinoRunCatalog.includes(`${catalogCardCount} CABINETS / LOCAL PLAYABLE ENTRIES`)) fail("Open-source arcade catalog header count does not match its game cards.");
-ok("Dino Run source notice, account integration, score cap, and catalog registration checked.");
-const balloonPopGame = await readFile(path.join(publicDir, "arcade/hosted/balloon-pop/index.html"), "utf8");
-const balloonPopCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
-const balloonPopCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
-const balloonPopRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
-if (!balloonPopGame.includes("cabinet-balloon-pop") || !balloonPopGame.includes("recordScore")) fail("Balloon Pop is missing account leaderboard integration.");
-if (!worker.includes('"cabinet-balloon-pop"') || !worker.includes('"cabinet-balloon-pop":100000')) fail("Balloon Pop is not allowlisted with a bounded score cap.");
-if (!manifest.imports.some(entry => entry.gameId === "cabinet-balloon-pop" && entry.status === "imported-adapted")) fail("Balloon Pop is missing its imported source manifest entry.");
-if (!balloonPopCatalog.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopCartridge.includes('href="/arcade/hosted/balloon-pop/index.html"') || !balloonPopRecords.includes('"cabinet-balloon-pop":"Balloon Pop: Ash-Fall Edition"')) fail("Balloon Pop is missing from a public arcade surface.");
-ok("Balloon Pop source notice, account integration, score cap, and catalog registration checked.");
-const hanoiGame = await readFile(path.join(publicDir, "arcade/hosted/hanoi/index.html"), "utf8");
-const hanoiCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
-const hanoiCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
-const hanoiRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
-if (!hanoiGame.includes("cabinet-hanoi") || !hanoiGame.includes("recordScore")) fail("Tower of Hanoi is missing account leaderboard integration.");
-if (!worker.includes('"cabinet-hanoi"') || !worker.includes('"cabinet-hanoi":100000')) fail("Tower of Hanoi is not allowlisted with a bounded score cap.");
-if (!manifest.imports.some(entry => entry.gameId === "cabinet-hanoi" && entry.status === "imported-adapted")) fail("Tower of Hanoi is missing its imported source manifest entry.");
-if (!hanoiCatalog.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiCartridge.includes('href="/arcade/hosted/hanoi/index.html"') || !hanoiRecords.includes('"cabinet-hanoi":"Tower of Hanoi: Ash-Fall Edition"')) fail("Tower of Hanoi is missing from a public arcade surface.");
-const hanoiCardCount = (hanoiCatalog.match(/<article class="game"/g) || []).length;
-if (hanoiCardCount === 0 || !hanoiCatalog.includes(`${hanoiCardCount} CABINETS / LOCAL PLAYABLE ENTRIES`)) fail("Arcade catalog header count does not match game cards.");
-ok("Tower of Hanoi source notice, account integration, score cap, and catalog registration checked.");
-
-
-
-
+const arcadeShelf = await readFile(path.join(publicDir,"chaos-cartridge.html"),"utf8");
+const arcadeCatalog = await readFile(path.join(publicDir,"arcade-30-games.html"),"utf8");
+const shelfIds=[...arcadeShelf.matchAll(/data-game-id="([^"]+)"/g)].map(m=>m[1]);
+if(new Set(shelfIds).size!==shelfIds.length)fail("Duplicate game IDs in main arcade shelf.");
+const catalogCount=(arcadeCatalog.match(/<article class="game"/g)||[]).length;
+if(!arcadeCatalog.includes(`${catalogCount} CABINETS / LOCAL PLAYABLE ENTRIES`))fail("Arcade catalog heading does not match game cards.");
+for(const retired of ["dino-run","balloon-pop","hanoi"]){if(arcadeShelf.includes('/arcade/hosted/'+retired+'/index.html')||arcadeCatalog.includes('/arcade/hosted/'+retired+'/index.html'))fail("Retired imported game still linked: "+retired);}
+ok("Arcade shelf and catalog counts and retired import routes checked.");
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
 if (!mainCartridgeAudit.includes('href="/arcade/hosted/marshland-marksman/index.html"') || !mainCartridgeAudit.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Chaos Cartridge is missing one or more newly integrated cabinets.");
