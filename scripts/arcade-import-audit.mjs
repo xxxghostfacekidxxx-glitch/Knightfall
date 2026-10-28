@@ -16,13 +16,14 @@ for (const [index, match] of entries.entries()) {
   const title = block.match(/<h2>(.*?)<\/h2>/)?.[1] ?? `Cabinet ${index + 1}`;
   const play = block.match(/<a\b[^>]*class="play"[^>]*href="([^"]+)"/)?.[1];
   if (!play) { errors.push(`${title}: missing play link`); continue; }
-  if (!play.startsWith("/arcade/hosted/") || !play.endsWith(".html")) {
+  const launchPath = play.split("?")[0].split("#")[0];
+  if (!launchPath.startsWith("/arcade/hosted/") || !launchPath.endsWith(".html")) {
     errors.push(`${title}: launch must point to a locally hosted HTML file (${play})`);
     continue;
   }
   if (seen.has(play)) warnings.push(`${title}: shares launch URL ${play}`);
   seen.add(play);
-  const path = resolve(root, "public", play.slice(1));
+  const path = resolve(root, "public", launchPath.slice(1));
   try { await access(path); } catch { errors.push(`${title}: missing ${play}`); }
   const isOriginal = /Original Knightfall/i.test(block);
   if (!isOriginal) {
