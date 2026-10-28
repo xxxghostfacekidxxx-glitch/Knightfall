@@ -57,3 +57,12 @@ test("original alien invasion episodes and creature roster exist",()=>{
  assert.match(js,/ALIEN INVASION!/);
  assert.match(js,/const keys=connected\?Object\.keys\(species\)\.slice\(0,8\):Object\.keys\(species\)/);
 });
+
+test("canonical ending is a demon-alien treaty, not either faction winning",()=>{
+ assert.match(js,/FINAL EPISODE · THE GREAT GALACTIC DIVORCE OF EARTH/);
+ assert.match(js,/They divide Earth into alien and infernal territories/);
+ assert.match(js,/Hell is welcomed into intergalactic society/);
+ assert.match(js,/moderately intelligent livestock with excellent snack-making capabilities/);
+ assert.match(js,/Treaty signed\. Earth partitioned\. Humanity reclassified/);
+ assert.match(js,/Witness the Treaty of Two Extremely Bad Landlords/);
+});
