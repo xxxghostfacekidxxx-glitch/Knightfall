@@ -44,8 +44,11 @@
 <form id="birth-chart-form" class="profile-studio-form">
 <label>Birth date and local time<input id="birth-chart-local" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
 <label>UTC offset at birth (including daylight saving)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
-<label>Birth latitude (north positive)<input id="birth-chart-lat" type="number" min="-66" max="66" step="any" required placeholder="44.98"></label>
-<label>Birth longitude (east positive)<input id="birth-chart-lon" type="number" min="-180" max="180" step="any" required placeholder="-93.27"></label>
+<label>Birth city (city, state/region, country)<input id="birth-chart-city" type="text" autocomplete="off" placeholder="e.g. Des Moines, Iowa, USA" required></label>
+<div class="profile-actions"><button type="button" id="birth-chart-city-search" class="action">Find birth city</button></div>
+<label>Choose matching city<select id="birth-chart-city-results" required disabled><option value="">Search for your birth city first</option></select></label>
+<p id="birth-chart-city-status" class="muted" role="status" aria-live="polite">Select a matching location before calculating. City search uses OpenStreetMap Nominatim.</p>
+<input id="birth-chart-lat" type="hidden"><input id="birth-chart-lon" type="hidden">
 <label>House system<select id="birth-chart-houses"><option value="equal">Equal houses</option><option value="whole-sign">Whole sign</option></select></label>
 <label class="studio-toggle"><input type="checkbox" id="birth-chart-visible"><span><strong>Display my birth chart on my profile</strong><small>Off by default. Turn it on only if you want other people to see your chart placements.</small></span></label>
 <div class="profile-actions"><button type="submit">Calculate and save chart</button><button type="button" id="birth-chart-remove" class="action">Delete saved chart</button></div>
@@ -84,11 +87,30 @@ document.querySelector("#reset-layout").addEventListener("click",()=>{layoutItem
 const chartForm=document.querySelector("#birth-chart-form"),chartStatus=document.querySelector("#birth-chart-status"),chartVisible=document.querySelector("#birth-chart-visible");
 async function chartApi(method,body){const response=await fetch(API+"/api/profile/birth-chart",{method,credentials:"include",cache:"no-store",headers:{"content-type":"application/json"},...(body?{body:JSON.stringify(body)}:{})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Chart request failed.");return data;}
 chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
+const birthCityInput=document.querySelector("#birth-chart-city"),birthCitySearch=document.querySelector("#birth-chart-city-search"),birthCityResults=document.querySelector("#birth-chart-city-results"),birthCityStatus=document.querySelector("#birth-chart-city-status"),birthLat=document.querySelector("#birth-chart-lat"),birthLon=document.querySelector("#birth-chart-lon");
+let citySearchVersion=0;
+function clearBirthCity(){birthLat.value="";birthLon.value="";birthCityResults.replaceChildren(new Option("Search for your birth city first",""));birthCityResults.disabled=true;citySearchVersion++;}
+birthCityInput.addEventListener("input",()=>{clearBirthCity();birthCityStatus.textContent="Find your city, then select the correct result.";});
+birthCityResults.addEventListener("change",()=>{const option=birthCityResults.selectedOptions[0];birthLat.value=option?.dataset.lat||"";birthLon.value=option?.dataset.lon||"";birthCityStatus.textContent=birthLat.value&&birthLon.value?"Selected: "+option.textContent:"Choose a matching city.";});
+birthCitySearch.addEventListener("click",async()=>{
+ const query=birthCityInput.value.trim();if(query.length<3){birthCityStatus.textContent="Enter at least 3 characters, including the country for best results.";return;}
+ clearBirthCity();const version=citySearchVersion;birthCitySearch.disabled=true;birthCityStatus.textContent="Searching cities…";
+ try{
+  const params=new URLSearchParams({q:query,format:"jsonv2",addressdetails:"1",limit:"8"});
+  const response=await fetch("https://nominatim.openstreetmap.org/search?"+params.toString(),{headers:{"Accept":"application/json"}});
+  if(!response.ok)throw Error("City lookup is temporarily unavailable.");
+  const places=await response.json();if(version!==citySearchVersion)return;
+  const matches=Array.isArray(places)?places.filter(place=>Number.isFinite(Number(place.lat))&&Number.isFinite(Number(place.lon))&&Math.abs(Number(place.lat))<=66):[];
+  birthCityResults.replaceChildren(new Option("Select your birth city",""));
+  matches.forEach(place=>{const option=new Option(place.display_name,place.place_id);option.dataset.lat=String(place.lat);option.dataset.lon=String(place.lon);birthCityResults.add(option);});
+  birthCityResults.disabled=!matches.length;birthCityStatus.textContent=matches.length?"Select the correct city from the results.":"No supported location found. Try city, region and country.";
+ }catch(error){if(version===citySearchVersion)birthCityStatus.textContent=error.message||"City lookup failed. Try again.";}finally{birthCitySearch.disabled=false;}
+});
 chartForm.addEventListener("submit",async event=>{
  event.preventDefault();
  const button=chartForm.querySelector('button[type="submit"]'),local=document.querySelector("#birth-chart-local").value,offset=Number(document.querySelector("#birth-chart-offset").value),latitude=Number(document.querySelector("#birth-chart-lat").value),longitude=Number(document.querySelector("#birth-chart-lon").value);
  const match=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
- if(!match||!Number.isFinite(offset)||offset < -12||offset > 14||!Number.isFinite(latitude)||!Number.isFinite(longitude)){chartStatus.textContent="Enter valid birth details.";return;}
+ if(!match||!Number.isFinite(offset)||offset < -12||offset > 14||!birthCityResults.value||!birthLat.value||!birthLon.value||!Number.isFinite(latitude)||Math.abs(latitude)>66||!Number.isFinite(longitude)||Math.abs(longitude)>180){chartStatus.textContent="Enter valid birth details and select a birth city from the search results.";return;}
  const [year,month,day,hour,minute]=match.slice(1).map(Number),clock=new Date(Date.UTC(year,month-1,day,hour,minute));
  if(clock.getUTCFullYear()!==year||clock.getUTCMonth()!==month-1||clock.getUTCDate()!==day||clock.getUTCHours()!==hour||clock.getUTCMinutes()!==minute){chartStatus.textContent="Invalid birth date.";return;}
  const utc=new Date(clock.getTime()-offset*3600000).toISOString();
@@ -96,5 +118,5 @@ chartForm.addEventListener("submit",async event=>{
  try{const result=await chartApi("PUT",{utc,latitude,longitude,house_system:document.querySelector("#birth-chart-houses").value,visible:chartVisible.checked});chartStatus.textContent="Chart saved. "+(result.visible?"Displayed on your profile.":"Private and hidden.");}catch(error){chartStatus.textContent=error.message;}finally{button.disabled=false;}
 });
 chartVisible.addEventListener("change",async()=>{const visible=chartVisible.checked;chartVisible.disabled=true;try{const result=await chartApi("PUT",{visible});chartStatus.textContent=result.visible?"Birth chart is now displayed on your profile.":"Birth chart hidden from your profile.";}catch(error){chartVisible.checked=!visible;chartStatus.textContent=error.message;}finally{chartVisible.disabled=false;}});
-document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();}catch(error){chartStatus.textContent=error.message;}});
+document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
 </script></body></html>
