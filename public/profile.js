@@ -29,7 +29,7 @@ function render(d,adminView=false,ownProfile=false){
   const connectionActions=root.querySelector(".profile-actions-wrap");
   const profileHeader=root.querySelector(".profile-top");
   if(connectionActions&&profileHeader)profileHeader.after(connectionActions);
-  const themeColors={ember:"#e66a2c",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")&&u.accent_color!=="#e66a2c"?u.accent_color:themeColors[root.dataset.theme]);
+  const themeColors={ember:"#ff55d8",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")&&u.accent_color.toLowerCase()!=="#e66a2c"?u.accent_color:themeColors[root.dataset.theme]);
   if (u.cover_url) { const c=document.createElement("div"),img=document.createElement("img"); c.className="profile-cover"; img.setAttribute("src",u.cover_url); img.setAttribute("alt",""); img.loading="lazy"; c.append(img); root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
   const heading=root.querySelector(".profile-heading");
@@ -66,14 +66,14 @@ function render(d,adminView=false,ownProfile=false){
   }
   if(ownProfile&&!adminView)loadProfileFriends();
   if(!ownProfile&&!adminView){
-    const friendButton=document.querySelector("#friend");
+    const friendButton=root.querySelector("#friend");
     if(friendButton)friendButton.onclick=async()=>{friendButton.disabled=true;const previous=friendButton.textContent;try{const result=await api("/api/friends/request",{method:"POST",body:JSON.stringify({username:u.username})});friendButton.textContent=result.status==="accepted"?"Friends ✓":"Request sent ✓";friendButton.classList.add("primary");friendButton.disabled=true;}catch(error){friendButton.textContent=error.message;setTimeout(()=>{friendButton.textContent=previous;friendButton.disabled=false;},2400);}};
   }
   if(adminView){const meta=document.createElement("div");meta.className="admin-meta";meta.innerHTML="<span>Account: "+esc(u.status||"unknown")+"</span><span>Email: "+esc(u.email||"not exposed")+"</span><span>Reports filed: "+((d.reports||[]).length)+"</span>";root.querySelector(".profile-actions-wrap").after(meta);}
   if(!adminView){
-    const f=document.querySelector("#follow"),b=document.querySelector("#block");
+    const f=root.querySelector("#follow"),b=root.querySelector("#block");
     if(f)f.onclick=async()=>{try{const r=await api("/api/users/"+encodeURIComponent(u.username)+"/follow",{method:u.is_following?"DELETE":"POST"});u.is_following=r.following;f.textContent=r.following?"Following":"Follow";u.followers+=r.following?1:-1;root.querySelector(".profile-stats div:nth-child(3) b").textContent=u.followers}catch(e){alert(e.message)}};
-    if(b)b.onclick=async()=>{try{const r=await api("/api/users/"+encodeURIComponent(u.username)+"/block",{method:u.is_blocked?"DELETE":"POST"});u.is_blocked=r.blocked;b.textContent=r.blocked?"Unblock":"Block";if(r.blocked){f.disabled=true;f.textContent="Blocked";}else f.disabled=false}catch(e){alert(e.message)}};
+    if(b)b.onclick=async()=>{try{const r=await api("/api/users/"+encodeURIComponent(u.username)+"/block",{method:u.is_blocked?"DELETE":"POST"});u.is_blocked=r.blocked;b.textContent=r.blocked?"Unblock":"Block";if(f){if(r.blocked){f.disabled=true;f.textContent="Blocked";}else{f.disabled=false;f.textContent=u.is_following?"Following":"Follow";}}}catch(e){alert(e.message)}};
   }
 }
 function renderDeveloperControls(){
@@ -381,7 +381,19 @@ async function load(){
    applyProfileLayout(d.profile_layout);
    try{await loadProfilePhotos(d.user.username,ownProfile)}catch(error){console.warn("Profile photos unavailable",error)}
    applyProfileLayout(d.profile_layout);
-   if(me.user&&String(me.user.id)!==String(d.user.id)){try{const relations=await api("/api/friends"),button=document.querySelector("#friend");if(button){if(relations.friends.some(person=>person.username===d.user.username)){button.textContent="Friends ✓";button.disabled=true;}else if(relations.outgoing.some(person=>person.username===d.user.username)){button.textContent="Request sent";button.disabled=true;}else if(relations.incoming.some(person=>person.username===d.user.username)){button.textContent="Accept request";}}}catch{}}
+   if(me.user&&String(me.user.id)!==String(d.user.id)){try{
+     const relations=await api("/api/friends"),button=root.querySelector("#friend");
+     if(button){
+       const matches=person=>String(person.username||"").toLowerCase()===String(d.user.username).toLowerCase();
+       const incoming=(relations.incoming||[]).find(matches);
+       if((relations.friends||[]).some(matches)){button.textContent="Friends ✓";button.disabled=true;}
+       else if((relations.outgoing||[]).some(matches)){button.textContent="Request sent ✓";button.disabled=true;}
+       else if(incoming){
+         button.textContent="Accept request";button.disabled=false;
+         button.onclick=async()=>{button.disabled=true;try{await api("/api/friends/"+encodeURIComponent(incoming.id),{method:"PATCH",body:JSON.stringify({action:"accept"})});button.textContent="Friends ✓";const stat=root.querySelector("#profile-friend-stat");if(stat)stat.textContent=String(Number(stat.textContent||0)+1);}catch(error){button.textContent=error.message;button.disabled=false;}};
+       }
+     }
+   }catch(error){console.warn("Friendship state unavailable",error);}}
    if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile temporarily unavailable</h1><p>"+esc(error.message)+"</p><p>Profile data could not be loaded. Your profile has not been deleted.</p><div class=\"profile-actions\"><button class=\"action primary\" type=\"button\" id=\"retry-profile\">Retry profile</button><a class=\"action\" href=\"/members.html\">Browse members</a><a class=\"action\" href=\"/account.html\">Account settings</a></div>";root.querySelector("#retry-profile")?.addEventListener("click",()=>{root.innerHTML="<p>Loading profile…</p>";load();},{once:true});}
 }
