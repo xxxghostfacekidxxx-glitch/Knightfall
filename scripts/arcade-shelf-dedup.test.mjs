@@ -9,3 +9,13 @@ for(const id of retired)assert.ok(!ids.includes(id),"Retired imported or duplica
 const originalTargets=["hexa-havoc","cinder-maze","ash-crateworks","void-hockey","void-lanterns","whack-a-bug","pyre-stacks","crypt-pairs","ash-serpent","neon-drift","cinder-defense"];
 for(const id of originalTargets)assert.ok(ids.includes(id),"Expected original arcade listing missing: "+id);
 console.log("Arcade shelf verified: "+ids.length+" unique entries, "+retired.length+" retired duplicates absent.");
+
+const catalog=readFileSync("public/arcade-30-games.html","utf8");
+const cards=[...catalog.matchAll(/<article class="game"[^>]*>[\\s\\S]*?<\\/article>/g)].map(m=>m[0]);
+assert.equal(cards.length,106,"Secondary arcade catalog count must match its heading");
+const hrefs=cards.map(c=>c.match(/class="play" href="([^"]+)"/)?.[1]);
+assert.ok(hrefs.every(Boolean),"Each catalog card needs a play link");
+assert.equal(new Set(hrefs).size,hrefs.length,"Duplicate play links in secondary catalog");
+for(const slug of ["dino-run","balloon-pop","hanoi"])assert.ok(!hrefs.includes("/arcade/hosted/"+slug+"/index.html"),"Adapted clone reintroduced: "+slug);
+for(const game of ["neon-drift","cinder-defense"])assert.ok(hrefs.includes("/arcade/hosted/ashfall-neon-engine.html?game="+game),"New Ash-Fall engine missing: "+game);
+console.log("Secondary catalog verified: "+cards.length+" unique original entries.");
