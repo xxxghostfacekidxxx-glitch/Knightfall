@@ -80,7 +80,7 @@ for (const [label, present] of [
   ["profile fallback retains message", profileScript.includes('data-message-user')],
   ["profile incoming request accepts by ID", profileScript.includes('encodeURIComponent(incoming.id)')],
   ["profile uses neon default accent", profileScript.includes('ember:"#ff55d8"')],
-  ["profile scripts are cache-versioned", profileHtml.includes('profile.js?v=20261028-profile-audit4')]
+  ["profile scripts are cache-versioned", profileHtml.includes('profile.js?v=20261028-profile-audit5')]
 ]) {
   if (present) ok(label); else fail(label);
 }
@@ -97,6 +97,7 @@ for (const [label, present] of [
   ["profile follow requests guard against duplicate taps", profileScript.includes("if(f.disabled)return")],
   ["profile block disables message action", profileScript.includes("message.disabled=u.is_blocked")],
   ["profile fallback distinguishes the current account", profileScript.includes("fallbackOwn?")],
+  ["profile guests receive sign-in controls", profileScript.includes("!signedIn?") && profileScript.includes("!fallbackSession.user?")],
   ["profile fallback keeps the editor available to its owner", profileScript.includes('href="/profile-edit.html">Edit profile')]
 ]) {
   if (present) ok(label); else fail(label);
