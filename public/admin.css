@@ -77,3 +77,13 @@ tbody tr:hover{background:rgba(211,84,0,.035)}
 .repair-ticket small{color:#8f8882}
 .repair-ticket .row-actions{margin-top:.8rem}
 @media(max-width:760px){.repair-flow{grid-template-columns:1fr 1fr}.repair-flow span:last-child{grid-column:1/-1}.repair-ticket-top{flex-direction:column}}
+
+/* Gravewave admin palette: remove retired orange from every dashboard component. */
+.admin-shell{--kf-accent:#ff55d8;--kf-accent-bright:#c6ff45;--kf-accent-soft:rgba(255,85,216,.16);--kf-line:#65316f;color:#f9f3ff}
+.admin-shell :is(.stat,.admin-panel,.panel,.content-row,.category-row,.report,.audit-row,.loading-users,.test-bot-card,.repair-ticket,.repair-flow span,.fleet-note){background:linear-gradient(145deg,#181125,#0b0b17)!important;border-color:#65316f!important;color:#f9f3ff}
+.admin-shell :is(.test-bot-avatar,.badge,.health-pill,.fleet-run,.admin-tabs button,.row-actions button){border-color:#65316f!important;background:#191329!important;color:#f9f3ff}
+.admin-shell :is(.test-bot-state,.repair-open,.eyebrow,.stat span,.repair-ticket small,.test-bot-avatar){color:#c6ff45!important}
+.admin-shell :is(.repair-ticket-top strong,.test-bot-card strong,.repair-ticket p,.fleet-note,.repair-flow span){color:#f9f3ff!important}
+.admin-shell :is(.admin-tabs button.active,.admin-tabs button:hover,button.primary,.fleet-run:hover){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#15071b!important}
+.admin-shell :is(input,select,textarea,.search){background:#100f1d!important;border-color:#684171!important;color:#f9f3ff!important}
+.admin-shell :is(.danger,.warning){border-color:#ff55d8!important;color:#ff9de8!important}
