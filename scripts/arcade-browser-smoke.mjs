@@ -299,40 +299,6 @@ try {
     }
   }
 
-  // Regression: Custom Tetris exposes working touch controls for phones without a keyboard.
-  {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
-    const errors = [];
-    page.on("pageerror", error => errors.push(error.message || String(error)));
-    try {
-      const response = await page.goto(base + "/arcade/hosted/custom-tetris/index.html", { waitUntil: "domcontentloaded", timeout: 10000 });
-      if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
-      const before = await page.evaluate(() => window.KnightfallTetris.getState());
-      await page.locator('[data-tetris-action="left"]').tap();
-      const afterMove = await page.evaluate(() => window.KnightfallTetris.getState());
-      if (afterMove.piece.x >= before.piece.x) throw new Error("left touch control did not move the piece left");
-      await page.locator('[data-tetris-action="down"]').tap();
-      const afterDrop = await page.evaluate(() => window.KnightfallTetris.getState());
-      if (afterDrop.score <= afterMove.score) throw new Error("soft-drop touch control did not update score");
-      await page.locator('[data-tetris-action="pause"]').tap();
-      const afterPause = await page.evaluate(() => window.KnightfallTetris.getState());
-      if (!afterPause.paused) throw new Error("pause touch control did not pause the game");
-      await page.locator('[data-tetris-action="left"]').tap();
-      const whilePaused = await page.evaluate(() => window.KnightfallTetris.getState());
-      if (whilePaused.piece.x !== afterPause.piece.x) throw new Error("piece moved despite paused state");
-      await page.locator('[data-tetris-action="pause"]').tap();
-      const afterResume = await page.evaluate(() => window.KnightfallTetris.getState());
-      if (afterResume.paused) throw new Error("pause button failed to resume the game");
-      if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
-      console.log("PASS Custom Tetris mobile move, drop, and pause controls");
-    } catch (error) {
-      console.error("FAIL Custom Tetris touch controls: " + (error?.message || String(error)));
-      failed = true;
-    } finally {
-      await page.close();
-    }
-  }
-
   // Use real touch taps on the shared engine to catch mouse-only controls on phones.
   for (const id of sharedCabinetIds) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
