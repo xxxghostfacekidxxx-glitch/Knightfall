@@ -1,9 +1,11 @@
-const CACHE_NAME = "knightfall-shell-v16";
+const CACHE_NAME = "knightfall-shell-v17";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
   "/homepage.html",
   "/theme.css",
+  "/neon-global.css",
+  "/gravewave-consistency.css",
   "/nav.js",
   "/gravewave-takeover.css",
   "/gravewave-takeover.js",
