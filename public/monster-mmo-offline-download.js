@@ -31,7 +31,7 @@
         .replace(jsTag, "<script>" + safeJs + "</script>");
       // The offline package never attempts staging authentication or multiplayer.
       bundled = bundled.replace(/<section class="panel"><h2>Multiplayer staging<\/h2>[\s\S]*?<\/section>/,
-        '<section class="panel"><h2>Offline test build</h2><p class="hint">This self-contained file runs without internet. Progress is stored locally in this browser when storage is available. Cloud saves and multiplayer are disabled.</p></section>');
+        '<section class="panel"><h2>Offline test build</h2><p class="hint">This self-contained file runs without internet. Progress is stored locally in this browser when storage is available. Cloud saves and multiplayer are disabled.</p><div id="players" hidden></div></section>');
       bundled = bundled.replace(/<a href="\/chaos-cartridge.html">[^<]*<\/a>/,
         '<span class="tag">STANDALONE OFFLINE TEST BUILD</span>');
       // Remove online-only buttons and listeners from the self-contained build.
