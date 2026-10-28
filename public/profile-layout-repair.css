@@ -15,3 +15,16 @@
  #profile dl{grid-template-columns:minmax(0,1fr)}
  #profile .profile-actions>*{max-width:100%;min-width:0}
 }
+
+/* Keep member-to-member actions visible and reachable on narrow devices. */
+#profile>.profile-actions-wrap{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;margin:.75rem 0 1.25rem;position:relative;z-index:1}
+#profile>.profile-actions-wrap>.profile-actions{display:flex;flex-wrap:wrap;gap:.55rem;min-width:0;max-width:100%}
+#profile>.profile-actions-wrap :is(button,a){min-height:44px;display:inline-flex;align-items:center;justify-content:center;white-space:normal;text-align:center}
+#profile .profile-action-status{flex-basis:100%;overflow-wrap:anywhere}
+@media(max-width:620px){
+ #profile>.profile-actions-wrap>.profile-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #profile>.profile-actions-wrap>.profile-actions>*{min-width:0}
+ #profile>.profile-actions-wrap>#share-profile{width:100%}
+ #profile .friend-request-row{display:flex;flex-wrap:wrap}
+ #profile .friend-request-row input{min-width:0;flex:1 1 160px}
+}
