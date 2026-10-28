@@ -260,6 +260,9 @@
           <a href="/user-agreement.html">Terms &amp; Policies</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
+          <a class="kf-admin-toolkit-link" href="/devil-tools.html" hidden>Devil’s Toolkit</a>
+          <a class="kf-admin-foundry-link" href="/dev-toolkit.html" hidden>Creator Foundry</a>
+          <a class="kf-admin-arsenal-link" href="/open-source-arsenal.html" hidden>Open Source Arsenal</a>
           <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
           <a class="kf-recovery-link" href="/moderation-accounts.html" hidden>Account Recovery</a>
           <a class="kf-my-profile-link" href="/profile.html">My Profile</a>
@@ -421,13 +424,14 @@
       applyProfileVisibility();
       const user = currentUser;
       if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
-      if (!(["admin","god"].includes(normalizedRole) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
       const normalizedRole = String(user.role || "").trim().toLowerCase();
+      if (!(["admin","god"].includes(normalizedRole) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
       if (["admin","god"].includes(normalizedRole)) {
         const quickLink = nav.querySelector(".kf-admin-quick-link");
         if (quickLink) quickLink.hidden = false;
         const adminLink = nav.querySelector(".kf-admin-link");
         if (adminLink) adminLink.hidden = false;
+        nav.querySelectorAll(".kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link").forEach(link => { link.hidden = false; });
       }
       if (["admin","moderator","god"].includes(normalizedRole)) {
         const modLink = nav.querySelector(".kf-mod-link");
