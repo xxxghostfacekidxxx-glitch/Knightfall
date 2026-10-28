@@ -29,3 +29,12 @@ test("cloud play uses server intents and protects offline state",()=>{
  assert.match(js,/credentials:"include"/);
  assert.match(js,/new WebSocket\(wsUrl\)/);
 });
+
+test("journal and starter selection are wired to original species",()=>{
+ for(const id of ["journal","quests","starter-select","reset-preview"])assert.ok(html.includes('id="'+id+'"'),"Missing "+id);
+ for(const id of ["mossbit","embercub","driftfin"])assert.ok(html.includes('data-starter="'+id+'"'),"Missing starter "+id);
+ for(const id of ["mossbit","embercub","driftfin","gloamlet","thornspit","zipfang","grubruckle","mournwing"])assert.ok(js.includes(id+":["),"Missing original species "+id);
+ assert.match(js,/function persist\(/);
+ assert.match(js,/offlineSeen=new Set\(seen\)/);
+ assert.match(js,/seen\.add\(id\)/);
+});
