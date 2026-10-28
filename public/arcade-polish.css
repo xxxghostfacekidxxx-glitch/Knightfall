@@ -1,31 +1,31 @@
 /* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
-:root{--arcade-ember:#ff55d8;--arcade-rust:#b728a1;--arcade-line:#342820}
+:root{--arcade-ember:#ff55d8;--arcade-rust:#b728a1;--arcade-line:#65316f}
 main.arcade,body>main{position:relative;isolation:isolate}
 main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,85,216,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
-.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,85,216,.1)}
-.hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
-.back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#c5a18a!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
+.hero h1 span{color:#c6ff45;text-shadow:0 0 36px rgba(255,85,216,.1)}
+.hero .lede,.hero .muted{max-width:760px;color:#b9aeca;line-height:1.8}
+.back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#e7b7e6!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
 .back:hover{color:#c6ff45!important;transform:translateX(-2px)}
-.cabinet,.game,.game-panel,.panel{border-color:#342820!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
+.cabinet,.game,.game-panel,.panel{border-color:#65316f!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
 .cabinet,.game{position:relative;isolation:isolate;overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
 .cabinet:before,.game:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,85,216,.09),transparent 56%);pointer-events:none}
-.cabinet:hover,.game:hover{border-color:#654027!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
+.cabinet:hover,.game:hover{border-color:#ff55d8!important;box-shadow:0 24px 54px rgba(0,0,0,.32)}
 .cabinet h2,.game h2,.game-panel h2,.panel h2{letter-spacing:-.04em}
 .cabinet p,.game p,.game-panel .muted,.panel .muted{line-height:1.75}
 .btn,.button,.action,.primary{transition:transform .17s ease,filter .17s ease,border-color .17s ease}
 .btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #ff55d8!important;outline-offset:3px}
-.screen,.arena,.play-area,.canvas{border-color:#4b3020!important;box-shadow:inset 0 0 0 1px rgba(255,85,216,.045),inset 0 0 40px rgba(0,0,0,.5)}
-.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
+.screen,.arena,.play-area,.canvas{border-color:#65316f!important;box-shadow:inset 0 0 0 1px rgba(255,85,216,.045),inset 0 0 40px rgba(0,0,0,.5)}
+.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#65316f}
 .game-tabs,.tabs,.game-library-tools{gap:.6rem}
-.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#b6531b!important;background:rgba(255,85,216,.14)!important;color:#ffd0b1!important}
-.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#e47a3b}
-.cabinet .tag,.genre,.license,.pill{border-color:#52321e!important;color:#eaa274!important;background:rgba(255,85,216,.075)!important}
+.game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#ff55d8!important;background:rgba(255,85,216,.14)!important;color:#f9d7f3!important}
+.cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#c6ff45}
+.cabinet .tag,.genre,.license,.pill{border-color:#65316f!important;color:#c6ff45!important;background:rgba(255,85,216,.075)!important}
 .shelf,.grid,.layout,.dump-grid{gap:1rem}
 .cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
-.fineprint,.fine,.footnote{color:#716960;line-height:1.7}
+.fineprint,.fine,.footnote{color:#b9aeca;line-height:1.7}
 @media(max-width:800px){.hero{padding-top:3.5rem!important}.hero h1{font-size:clamp(3rem,12vw,5rem)!important}.shelf,.grid,.layout{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:560px){.hero{padding-top:2.8rem!important;padding-bottom:1.6rem!important}.hero h1{font-size:clamp(2.7rem,13vw,4.2rem)!important}.shelf,.grid,.layout{grid-template-columns:minmax(0,1fr)!important}.cabinet,.game{border-radius:12px!important}.game-tabs,.tabs{display:flex;max-width:100%;overflow-x:auto;padding-bottom:.3rem}.game-tabs button,.tabs button{flex:0 0 auto}.back{font-size:.85rem}}
 @media(prefers-reduced-motion:reduce){.cabinet,.game,.back,.btn,.button,.action,.primary{transition:none!important}}
@@ -383,8 +383,8 @@ main.arcade,body>main{position:relative;isolation:isolate}
 main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(255,85,216,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
-.hero h1 span{color:#a79c92;text-shadow:0 0 36px rgba(255,85,216,.1)}
-.hero .lede,.hero .muted{max-width:760px;color:#aaa29a;line-height:1.8}
+.hero h1 span{color:#c6ff45;text-shadow:0 0 36px rgba(255,85,216,.1)}
+.hero .lede,.hero .muted{max-width:760px;color:#b9aeca;line-height:1.8}
 .back{display:inline-flex;align-items:center;gap:.5rem;margin:.6rem 0 1rem!important;color:#a8ff3e!important;text-decoration:none;letter-spacing:.04em;transition:color .18s ease,transform .18s ease}
 .back:hover{color:#ff55d8!important;transform:translateX(-2px)}
 .cabinet,.game,.game-panel,.panel,.card{border-color:#303030!important;background:linear-gradient(145deg,rgba(21,18,16,.98),rgba(9,9,9,.98))!important;box-shadow:0 18px 48px rgba(0,0,0,.22)}
@@ -397,14 +397,14 @@ main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;poin
 .btn:hover,.button:hover,.action:hover,.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #a8ff3e!important;outline-offset:3px}
 .screen,.arena,.play-area,.canvas{border-color:#ff55d8!important;box-shadow:inset 0 0 0 1px rgba(168,255,62,.045),inset 0 0 40px rgba(0,0,0,.5)}
-.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#30251e}
+.stat,.stats,.scoreline,.account-status,.message,.status,.note,.credits{border-color:#65316f}
 .game-tabs,.tabs,.game-library-tools{gap:.6rem}
 .game-tabs button[aria-selected=true],.tabs button[aria-selected=true],.tabs .active{border-color:#ff55d8!important;background:rgba(255,85,216,.14)!important;color:#a8ff3e!important}
 .cabinet .eyebrow,.game .eyebrow,.hero .eyebrow{color:#ff55d8}
 .cabinet .tag,.genre,.license,.pill{border-color:#ff55d8!important;color:#a8ff3e!important;background:rgba(255,85,216,.075)!important}
 .shelf,.grid,.layout,.dump-grid{gap:1rem}
 .cabinet canvas,.game canvas,.canvas{max-width:100%;border-radius:8px}
-.fineprint,.fine,.footnote{color:#716960;line-height:1.7}
+.fineprint,.fine,.footnote{color:#b9aeca;line-height:1.7}
 @media(max-width:800px){.hero{padding-top:3.5rem!important}.hero h1{font-size:clamp(3rem,12vw,5rem)!important}.shelf,.grid,.layout{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:560px){.hero{padding-top:2.8rem!important;padding-bottom:1.6rem!important}.hero h1{font-size:clamp(2.7rem,13vw,4.2rem)!important}.shelf,.grid,.layout{grid-template-columns:minmax(0,1fr)!important}.cabinet,.game{border-radius:12px!important}.game-tabs,.tabs{display:flex;max-width:100%;overflow-x:auto;padding-bottom:.3rem}.game-tabs button,.tabs button{flex:0 0 auto}.back{font-size:.85rem}}
 @media(prefers-reduced-motion:reduce){.cabinet,.game,.back,.btn,.button,.action,.primary{transition:none!important}}
