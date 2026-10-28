@@ -51,9 +51,20 @@ function log(message){$("log").textContent=message}
 // The signal pairs with both demonic sigils and alien command receivers.
 const controllerLore={
  title:"THE TEN PERCENT · APPENDIX 404",
- text:"In 1999, a galactic firmware update collided with Earth's microwave ovens. Exactly ten percent of humans developed an Appendix 404: a useless-looking organ that broadcasts the universe's default pairing code whenever its owner gets mildly annoyed. Aliens hear an executive override. Demons hear an ancient summoning command. You can order both around, which makes you the most dangerous unpaid intern in the apocalypse.",
+ text:"In Year 7½ of the 43rd Yesterday, on Tuesday 92 of Month -3 (fiscal era A.B.C.: After Before Coupons), a galactic firmware update collided with Earth's microwave ovens. Exactly ten percent of humans developed an Appendix 404: a useless-looking organ that broadcasts the universe's default pairing code whenever its owner gets mildly annoyed. Aliens hear an executive override. Demons hear an ancient summoning command. You can order both around, which makes you the most dangerous unpaid intern in the apocalypse.",
  note:"CLASSIFICATION: Dual-Signal Handler · Alien and demon units can join the same party."
 };
+// The Galactic Bureau of Chronological Misconduct abolished linear time.
+// Every five steps advance a day, but the year moves backwards on alternate weeks.
+const absurdWeekdays=["Tuesday","Second Tuesday","Pre-Friday","Unlicensed Sunday","Thursday Again","Yesterday","Taxday"];
+const absurdMonths=["-3","0","13","Pickle","February II","NULL","8½"];
+function nonsenseDate(steps=0){
+ const day=Math.floor(Math.max(0,steps)/5);
+ const year=7-(Math.floor(day/7)%4)+(Math.floor(day/28)%2?"½":"");
+ const weekday=absurdWeekdays[day%absurdWeekdays.length];
+ const month=absurdMonths[Math.floor(day/3)%absurdMonths.length];
+ return "YEAR "+year+" OF THE 43RD YESTERDAY · "+weekday.toUpperCase()+" "+(92+day)+" · MONTH "+month+" · A.B.C.";
+}
 const invasionChapters=[
  ["EPISODE 0 · THE APOCALYPSE HAS PAPERWORK","An alien armada arrives to conquer Earth, but its navigation AI mistakes a fast-food drive-through for the United Nations. The invasion fleet demands all dipping sauces. You discover you are one of the ten percent of humans born with an Appendix 404, a biological universal remote that commands BOTH aliens and demons. Unfortunately, nobody installed an off switch."],
  ["EPISODE 1 · HELL HAS ENTERED THE CHAT","Earth's demons refuse to let extraterrestrial weirdos destroy their favorite planet. Their reasons: the pizza, the heavy metal, and a legally binding lease on the moon."],
@@ -76,7 +87,7 @@ const warBroadcasts=[
 ];
 function warBroadcast(){return warBroadcasts[Math.floor((save.steps||0)/5)%warBroadcasts.length]}
 function currentChapter(){return Math.min(invasionChapters.length-1,Math.floor((save.steps||0)/12))}
-function renderStory(){$("controller-title").textContent=controllerLore.title;$("controller-text").textContent=controllerLore.text;$("controller-note").textContent=controllerLore.note;$("war-broadcast").textContent=warBroadcast();const chapter=invasionChapters[currentChapter()];$("story-title").textContent=chapter[0];$("story-text").textContent=chapter[1];$("story-progress").textContent=currentChapter()===invasionChapters.length-1?"FINAL TRANSMISSION · Treaty signed. Earth partitioned. Humanity reclassified.":"Episode "+(currentChapter()+1)+"/"+invasionChapters.length+" · Walk "+Math.max(0,(currentChapter()+1)*12-(save.steps||0))+" more tiles for the next transmission (offline preview).";}
+function renderStory(){$("absurd-date").textContent=nonsenseDate(save.steps);$("controller-title").textContent=controllerLore.title;$("controller-text").textContent=controllerLore.text;$("controller-note").textContent=controllerLore.note;$("war-broadcast").textContent=warBroadcast();const chapter=invasionChapters[currentChapter()];$("story-title").textContent=chapter[0];$("story-text").textContent=chapter[1];$("story-progress").textContent=currentChapter()===invasionChapters.length-1?"FINAL TRANSMISSION · Treaty signed. Earth partitioned. Humanity reclassified.":"Episode "+(currentChapter()+1)+"/"+invasionChapters.length+" · Walk "+Math.max(0,(currentChapter()+1)*12-(save.steps||0))+" more tiles for the next transmission (offline preview).";}
 function persist(){if(connected)return;try{localStorage.setItem("ashfall:cinder-meadow:demo",JSON.stringify(save));localStorage.setItem("ashfall:cinder-meadow:seen",JSON.stringify([...seen]))}catch{}}
 function render(){renderStory();const map=$("world");map.replaceChildren();for(let y=1;y<=8;y++)for(let x=1;x<=10;x++){const cell=document.createElement("div");const isCamp=x===4&&y===1;cell.className="tile "+(obstacles.has(x+","+y)?"rock":!walkable(x,y)?"wall":isCamp?"camp":grass(x,y)?"grass":"path");cell.setAttribute("role","gridcell");cell.setAttribute("aria-label",x+","+y+(isCamp?" camp":""));let icon=isCamp?"⛺":obstacles.has(x+","+y)?"◆":grass(x,y)?"♣":"";const other=[...players.values()].find(p=>p.x===x&&p.y===y&&p.userId!==selfId);if(other){cell.classList.add("other");icon="◉";cell.title=other.username}if(save.x===x&&save.y===y){cell.classList.add("player");icon="♟"}const span=document.createElement("span");span.textContent=icon;cell.append(span);map.append(cell)}
  $("position").textContent=String(save.x).padStart(2,"0")+", "+String(save.y).padStart(2,"0");
