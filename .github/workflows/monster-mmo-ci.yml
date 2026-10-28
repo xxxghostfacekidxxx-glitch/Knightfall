@@ -1,0 +1,35 @@
+name: Monster MMO Checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/monster-mmo.*"
+      - "backend/src/index.mmo-staging.js"
+      - "scripts/monster-mmo-*.test.mjs"
+      - ".github/workflows/monster-mmo-ci.yml"
+  pull_request:
+    paths:
+      - "public/monster-mmo.*"
+      - "backend/src/index.mmo-staging.js"
+      - "scripts/monster-mmo-*.test.mjs"
+      - ".github/workflows/monster-mmo-ci.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Validate MMO frontend and battle rules
+        run: |
+          node --test scripts/monster-mmo-frontend.test.mjs
+          node --test scripts/monster-mmo-battle.test.mjs
+      - name: Validate source syntax
+        run: |
+          node --check public/monster-mmo.js
+          node --check backend/src/index.mmo-staging.js
