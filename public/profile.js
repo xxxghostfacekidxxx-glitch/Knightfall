@@ -374,7 +374,7 @@ async function load(){
      const safeName=esc(member.display_name||member.username);
      const fallbackSession=await api("/api/auth/me").catch(()=>({user:null}));
      const fallbackOwn=String(fallbackSession.user?.username||"").toLowerCase()===String(member.username).toLowerCase();
-     root.innerHTML='<div class="profile-top"><div class="avatar">'+esc(safeName.slice(0,1).toUpperCase())+'</div><div class="profile-heading"><h1>'+safeName+'</h1><p class="handle">@'+esc(member.username)+'</p></div></div><p class="bio">'+esc(member.bio||"This member has not added a public bio.")+'</p><p class="muted">Detailed profile information is temporarily unavailable.</p><div class="profile-actions">'+(fallbackOwn?'<a class="action primary" href="/profile-edit.html">Edit profile</a>':!fallbackSession.user?'<a class="action primary" href="/auth.html?next=%2Fprofile.html">Sign in to connect</a>':'<button class="action primary" type="button" data-fallback-friend="'+esc(member.username)+'">Add friend</button><button class="action" type="button" data-message-user="'+esc(member.username)+'">Message</button>')+'<a class="action" href="/members.html">Member directory</a><a class="action" href="/profile.html?username='+encodeURIComponent(member.username)+'">Retry full profile</a></div>';
+     root.innerHTML='<div class="profile-top"><div class="avatar">'+esc(String(member.display_name||member.username).slice(0,1).toUpperCase())+'</div><div class="profile-heading"><h1>'+safeName+'</h1><p class="handle">@'+esc(member.username)+'</p></div></div><p class="bio">'+esc(member.bio||"This member has not added a public bio.")+'</p><p class="muted">Detailed profile information is temporarily unavailable.</p><div class="profile-actions">'+(fallbackOwn?'<a class="action primary" href="/profile-edit.html">Edit profile</a>':!fallbackSession.user?'<a class="action primary" href="/auth.html?next=%2Fprofile.html">Sign in to connect</a>':'<button class="action primary" type="button" data-fallback-friend="'+esc(member.username)+'">Add friend</button><button class="action" type="button" data-message-user="'+esc(member.username)+'">Message</button>')+'<a class="action" href="/members.html">Member directory</a><a class="action" href="/profile.html?username='+encodeURIComponent(member.username)+'">Retry full profile</a></div>';
      return;
    }
    if(!d?.user?.username)throw Error("Profile data was incomplete. Please retry.");
@@ -398,7 +398,7 @@ async function load(){
        }
      }
    }catch(error){console.warn("Friendship state unavailable",error);}}
-   if(["admin","god"].includes(me.user?.role)&&me.user.username==="knightfall"&&me.user.username===d.user.username)renderDeveloperControls();
+   if(me.user?.role==="god"&&ownProfile)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile temporarily unavailable</h1><p>"+esc(error.message)+"</p><p>Profile data could not be loaded. Your profile has not been deleted.</p><div class=\"profile-actions\"><button class=\"action primary\" type=\"button\" id=\"retry-profile\">Retry profile</button><a class=\"action\" href=\"/members.html\">Browse members</a><a class=\"action\" href=\"/account.html\">Account settings</a></div>";root.querySelector("#retry-profile")?.addEventListener("click",()=>{root.innerHTML="<p>Loading profile…</p>";load();},{once:true});}
 }
 load();
