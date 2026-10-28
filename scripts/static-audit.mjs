@@ -84,6 +84,15 @@ for (const [label, present] of [
 ]) {
   if (present) ok(label); else fail(label);
 }
+const profileEditor = await readFile(path.join(publicDir, "profile-edit.html"), "utf8");
+for (const [label, present] of [
+  ["profile fallback honors private and blocked responses", profileScript.includes("primaryError.status===403")],
+  ["profile editor clears pending cover upload", profileEditor.includes("delete coverFile._compressedBlob;coverUrl.value")],
+  ["profile editor prevents duplicate saves", profileEditor.includes("if(saveButton.disabled)return")],
+  ["profile editor retains uploaded avatar URL", profileEditor.includes("avatarUrl.value=data.avatar_url")]
+]) {
+  if (present) ok(label); else fail(label);
+}
 const friendInvariants = [
   ["friend list requires an authenticated user", /\/api\/friends[\s\S]{0,180}requireUser\(request,env\);if\(!user\)return json\(\{error:/],
   ["friend requests reject self-adds", /\/api\/friends\/request[\s\S]{0,1400}target\.id===user\.id/],
