@@ -1167,6 +1167,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
+    if(!Number.isInteger(lead.hp)||lead.hp<0||lead.hp>lead.maxHp)return json({error:"Your active creature has invalid health."},400,origin);
     const strongAgainst={fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
     const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
     let message="",battleFinished=false;
@@ -1180,8 +1181,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       if(battle)return json({error:"The active creature cannot change during battle."},409,origin);
       const index=body.index;
       if(!Number.isInteger(index)||index<0||index>=save.party.length)return json({error:"Choose a valid party member."},400,origin);
+      if(save.party[index].hp<=0)return json({error:"A fainted creature cannot lead the party. Rest at camp first."},409,origin);
       if(index!==0){const active=save.party[0];save.party[0]=save.party[index];save.party[index]=active;message=save.party[0].name+" is now leading the party.";}else message=save.party[0].name+" is already leading the party.";
     }else if(action==="start"||action==="encounter-check"){
+      if(lead.hp<=0)return json({error:"Your lead creature has fainted. Switch to a healthy creature or rest at camp."},409,origin);
       if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
       if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
       const onGrass=save.x>=1&&save.x<=10&&save.y>=1&&save.y<=8&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===10)&&save.y===5)&&!["2,2","9,2","2,7","9,7"].includes(save.x+","+save.y);
@@ -1194,6 +1197,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
       if(action==="attack"){
+        if(lead.hp<=0)return json({error:"Your lead creature has fainted. Retreat and rest at camp."},409,origin);
         const multiplier=typeMultiplier(lead.type,battle.type);
         const damage=Math.max(1,Math.min(40,Math.round((lead.attack+Math.floor(Math.random()*4))*multiplier)));
         battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage."+(multiplier>1?" It was super effective!":multiplier<1?" The attack was resisted.":"");
@@ -1204,13 +1208,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" gained "+gainedXp+" XP"+(gainedLevels?" and reached level "+lead.level:"") +".";
         }else{
           const counter=Math.max(1,Math.min(20,battle.attack+Math.floor(Math.random()*3)));
-          lead.hp=Math.max(1,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
+          lead.hp=Math.max(0,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
+          if(lead.hp===0){battleFinished=true;message+=" "+lead.name+" fainted. The encounter ended. Return to camp or switch to a healthy creature."; }
         }
       }else if(action==="capture"){
         if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
         if(save.party.length>=6)return json({error:"Your party is full."},409,origin);
         save.bag--;
-        if(Math.random()<.35+(1-battle.hp/battle.maxHp)*.55){
+        if(Math.random()<Math.min(.9,.35+(1-battle.hp/battle.maxHp)*.55)){
           const base=species[battle.id];save.party.push({id:battle.id,name:base.name,type:base.type,icon:base.icon,level:battle.level,hp:battle.maxHp,maxHp:battle.maxHp,attack:battle.attack});
           save.caught=Math.min(1000000,(save.caught||0)+1);battleFinished=true;message=battle.name+" joined your party!";
         }else message=battle.name+" broke free. Capture supplies left: "+save.bag+".";
