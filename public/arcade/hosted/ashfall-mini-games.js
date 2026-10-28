@@ -14,7 +14,7 @@ $("report").href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues
 let score=0,best=0,running=false,over=false,last=0,frame=0,state={},cloudReady=false,loopGeneration=0;
 const colors=["#ef9a63","#ffcf8d","#8cc7c0","#c56d4b","#c2a8a0"];
 function status(t){$("status").textContent=t}
-function loadLocal(){try{const x=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(x&&x.state){state=x.state;score=Number(x.score)||0;best=Number(x.best)||0}}catch{}}
+function loadLocal(){try{const x=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(x&&validSavedState(x.state)){state=x.state;score=Math.max(0,Number(x.score)||0);best=Math.max(score,Number(x.best)||0)}}catch{}}
 function saveLocal(){try{localStorage.setItem("af-mini-"+id,JSON.stringify({score,best,state,frame}))}catch{}}
 function snapshot(){return {schema:1,game:id,score,best,state,frame}}
 function drawBase(){ctx.fillStyle="#080b12";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle="#252b3b";ctx.lineWidth=1;for(let x=0;x<canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}for(let y=0;y<canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}}
