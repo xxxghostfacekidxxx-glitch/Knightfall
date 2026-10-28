@@ -13,6 +13,8 @@ const invariants=[
  {file:"arcade-cabinet-engine.js",id:"blocks-row-clearing",pattern:/grid=grid\.filter\(row=>/},
  {file:"arcade-cabinet-engine.js",id:"storage-safe-boot",pattern:/best=\(\(\)=>\{try\{return Math\.max/},
  {file:"arcade-cabinet-engine.js",id:"score-button-finally",pattern:/finally\{saveScoreButton\.disabled=false\}/},
+ {file:"arcade-cabinet-engine.js",id:"tap-to-jump",pattern:/if\(mode==="flap"\|\|mode==="runner"\)\{p\.vy=-9;draw\(\);return\}/},
+ {file:"arcade-cabinet-engine.js",id:"tap-to-steer",pattern:/if\(mode==="race"\|\|mode==="breakout"\)\{p\.x=mode==="race"/},
  {file:"arcade-cabinet-engine.js",id:"mobile-drag-steering",pattern:/c\.addEventListener\("pointermove",e=>\{/},
  {file:"arcade-cabinet-engine.js",id:"race-touch-bounds",pattern:/mode==="race"\?clamp\(q\.x,250,710\)/}
 ];
