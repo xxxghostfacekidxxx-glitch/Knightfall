@@ -9,11 +9,12 @@ test("creature frontend parses as a module",()=>{
  const result=spawnSync(process.execPath,["--check","--input-type=module"],{input:js,encoding:"utf8"});
  assert.equal(result.status,0,result.stderr);
 });
-test("map has 10 by 8 grid and safe walkable rules",()=>{
- assert.match(js,/x<=10&&y>=1&&y<=8/);
+test("offline map expands to 16 by 12 while staging stays 10 by 8",()=>{
+ assert.match(js,/x<=16&&y>=1&&y<=12/);
+ assert.match(js,/const width=connected\?10:16,height=connected\?8:12/);
  assert.match(js,/obstacles=new Set/);
  assert.match(js,/function render\(/);
- assert.match(css,/grid-template-columns:repeat\(10/);
+ assert.match(js,/map\.style\.gridTemplateColumns/);
 });
 test("mobile controls and gameplay are wired",()=>{
  for(const id of ["world","party","battle","trainer","connect","disconnect","rest","encounter","log"])assert.ok(html.includes('id="'+id+'"'),"Missing "+id);
@@ -55,7 +56,7 @@ test("original alien invasion episodes and creature roster exist",()=>{
  assert.match(js,/const invasionChapters=/);
  assert.match(js,/function renderStory\(/);
  assert.match(js,/ALIEN INVASION!/);
- assert.match(js,/const keys=connected\?Object\.keys\(species\)\.slice\(0,8\):Object\.keys\(species\)/);
+ assert.match(js,/const zone=territory\(save\.x,save\.y\)\.type/);
 });
 
 test("canonical ending is a demon-alien treaty, not either faction winning",()=>{
@@ -104,4 +105,15 @@ test("faction commander bosses are playable, uncatchable, and award rewards once
  assert.match(js,/if\(battle\.bossId\)\{log\("Commanders are contractually uncatchable/);
  assert.match(js,/save\.defeatedCommanders\.includes\(id\)/);
  assert.match(js,/const commanderReward=battle\.bossId\?defeatCommander\(battle\.bossId\):""/);
+});
+
+test("faction world has three reward landmarks and location-specific encounters",()=>{
+ assert.ok(html.includes('id="territory-status"'));
+ for(const id of ["dish","tax","border"])assert.match(js,new RegExp('id:"'+id+'"'));
+ assert.match(js,/function visitLandmark\(x,y\)/);
+ assert.match(js,/save\.visitedLandmarks\.includes\(site\.id\)/);
+ assert.match(js,/if\(connected&&\(x>10\|\|y>8\)\)/);
+ assert.match(js,/zone==="alien"\?Object\.keys\(species\)/);
+ assert.match(css,/tile\.zone-alien/);
+ assert.match(css,/tile\.zone-demon/);
 });
