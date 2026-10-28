@@ -80,7 +80,7 @@ for (const [label, present] of [
   ["profile fallback retains message", profileScript.includes('data-message-user')],
   ["profile incoming request accepts by ID", profileScript.includes('encodeURIComponent(incoming.id)')],
   ["profile uses neon default accent", profileScript.includes('ember:"#ff55d8"')],
-  ["profile scripts are cache-versioned", /profile\\.js\\?v=20261028-profile-audit4/.test(profileHtml)]
+  ["profile scripts are cache-versioned", profileHtml.includes('profile.js?v=20261028-profile-audit4')]
 ]) {
   if (present) ok(label); else fail(label);
 }
