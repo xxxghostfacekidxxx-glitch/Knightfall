@@ -49,3 +49,11 @@ body:has(:fullscreen) .gw-character-crew{display:none}
 body:has(dialog[open])::after,
 body:has(:fullscreen)::after{display:none}
 @media(max-width:680px){body:has(input:focus,textarea:focus) .gw-character-crew{opacity:0}}
+
+
+/* Arcade screens need every pixel for HUDs and touch controls.
+   Keep decorative cast and scanlines off active canvas-based game pages. */
+body:has(canvas) .gw-character-crew,
+body:has(canvas) .gw-ambient,
+body:has(canvas) .gw-panel-mascot{display:none!important}
+body.gravewave-everywhere:has(canvas)::after{display:none!important}
