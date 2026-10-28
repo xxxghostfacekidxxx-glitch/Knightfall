@@ -21,3 +21,8 @@ test("staging cannot silently expose production origins",()=>{
  const header=source.slice(0,source.indexOf("function json"));
  assert.doesNotMatch(header,/https:\/\/(?:www\.)?ash-fall\.com/);
 });
+
+test("multiplayer movement is blocked during active battles",()=>{
+ assert.match(source,/const activeBattle = await this\.env\.DB\.prepare/);
+ assert.match(source,/if \(activeBattle\) \{ socket\.send\(JSON\.stringify\(\{ type: "move-blocked", reason: "battle" \}\)\)/);
+});
