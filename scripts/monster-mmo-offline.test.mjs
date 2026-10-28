@@ -21,7 +21,7 @@ test("admin can download a complete single-file offline creature game", async ()
   vm.runInNewContext(read("monster-mmo-offline-download.js"), context);
   assert.equal(typeof clickHandler, "function");
   await clickHandler();
-  assert.equal(filename, "ash-fall-cinder-meadow-offline.html");
+  assert.equal(filename, "ash-fall-hell-and-high-orbit-offline.html");
   assert.ok(blob, status.textContent);
   const html = await blob.text();
   assert.ok(html.includes("<style>"));
