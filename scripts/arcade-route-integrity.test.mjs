@@ -17,4 +17,5 @@ for(const catalog of catalogs){
 }
 const retired=["dino-run","balloon-pop","hanoi","snek-souls","custom-tetris","hextris","maze-muncher","sokoban","air-hockey","lights-out","whack-a-mole","minesweeper","memory-match","breakout"];
 for(const slug of retired)if(existsSync("public/arcade/hosted/"+slug+"/index.html"))failures.push("Retired import restored: "+slug);
+if(routes.size<80)failures.push("Arcade audit checked suspiciously few playable routes: "+routes.size);
 if(failures.length){console.error(failures.join("\n"));process.exitCode=1}else console.log("Arcade route audit passed: "+routes.size+" unique playable routes checked across both catalogs.");
