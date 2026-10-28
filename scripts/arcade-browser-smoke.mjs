@@ -23,9 +23,6 @@ const games = [
   { name: "Cinder Crossing", path: "/arcade/hosted/cinder-crossing/index.html", start: "#start", pause: true },
   { name: "Afterburn Breakout", path: "/arcade/hosted/afterburn-breakout/index.html", start: "#start", pause: true },
   { name: "Colossus Clash", path: "/arcade/hosted/colossus-clash/index.html", start: "#start", pause: false },
-  { name: "Dino Run: Ash-Fall Edition", path: "/arcade/hosted/dino-run/index.html", start: "#btn-start", pause: false },
-  { name: "Balloon Pop: Ash-Fall Edition", path: "/arcade/hosted/balloon-pop/index.html", start: "#btn-start", pause: false },
-  { name: "Tower of Hanoi: Ash-Fall Edition", path: "/arcade/hosted/hanoi/index.html", start: "#btn-start", pause: false, canvas: false, board: "#board" },
 ];
 
 const browser = await chromium.launch({ headless: true });
