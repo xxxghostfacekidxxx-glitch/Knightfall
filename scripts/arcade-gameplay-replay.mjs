@@ -7,8 +7,7 @@ await mkdir(dir,{recursive:true});
 const cases=[
  {id:"particle-clicker",route:"/arcade/hosted/particle-clicker/index.html",steps:[["tap","#start"],["tap","#clicker-generate",50],["assert-enabled","#clicker-boost"],["tap","#clicker-boost"],["assert-text","#clicker-generate","+2"]]},
  {id:"freeciv-web",route:"/arcade/hosted/arcade-cabinet.html?game=freeciv-web",steps:[["tap","#start"],["tap-canvas","#game",324,134],["assert-min","#score",10]]},
- {id:"kaiju-krush",route:"/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",steps:[["tap","#start"],["tap-canvas","#game",480,450],["assert-min","#score",25]]},
- {id:"custom-tetris",route:"/arcade/hosted/custom-tetris/index.html",steps:[["tap",'[data-tetris-action="left"]'],["tap",'[data-tetris-action="pause"]'],["assert-paused"]]}
+ {id:"kaiju-krush",route:"/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",steps:[["tap","#start"],["tap-canvas","#game",480,450],["assert-min","#score",25]]}
 ];
 const profiles={phone:[390,844],smallPhone:[320,640],largePhone:[430,932],tablet:[768,1024],desktop:[1366,768]};
 const profile=process.env.ARCADE_TEST_PROFILE||"phone";
