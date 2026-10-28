@@ -9,6 +9,9 @@ const rules=[
 const invariants=[
  {file:"ashfall-mini-games.js",id:"mini-cloud-save-identity",pattern:/s\.schema===1&&s\.game===id&&s\.state/},
  {file:"ashfall-mini-games.js",id:"mini-device-save-shape",pattern:/typeof s\.state==="object"&&!Array\.isArray\(s\.state\)/},
+ {file:"arcade-cabinet-engine.js",id:"blocks-fall-and-lock",pattern:/if\(mode==="blocks"&&frame%16===0\)/},
+ {file:"arcade-cabinet-engine.js",id:"blocks-row-clearing",pattern:/grid=grid\.filter\(row=>/},
+ {file:"arcade-cabinet-engine.js",id:"storage-safe-boot",pattern:/best=\(\(\)=>\{try\{return Math\.max/},
  {file:"arcade-cabinet-engine.js",id:"score-button-finally",pattern:/finally\{saveScoreButton\.disabled=false\}/},
  {file:"arcade-cabinet-engine.js",id:"mobile-drag-steering",pattern:/c\.addEventListener\("pointermove",e=>\{/},
  {file:"arcade-cabinet-engine.js",id:"race-touch-bounds",pattern:/mode==="race"\?clamp\(q\.x,250,710\)/}
