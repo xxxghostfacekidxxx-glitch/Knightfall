@@ -75,3 +75,13 @@ test("player is a ten-percent Appendix 404 dual-faction handler",()=>{
  for(const id of ["controller-title","controller-text","controller-note"])assert.ok(html.includes('id="'+id+'"'));
  assert.match(js,/Pair your Appendix 404 with an alien/);
 });
+
+test("broken galactic calendar replaces the real-world origin year",()=>{
+ assert.ok(html.includes('id="absurd-date"'));
+ assert.match(js,/Year 7½ of the 43rd Yesterday/);
+ assert.match(js,/Tuesday 92 of Month -3/);
+ assert.match(js,/function nonsenseDate\(steps=0\)/);
+ assert.match(js,/absurdWeekdays/);
+ assert.match(js,/absurdMonths/);
+ assert.doesNotMatch(js,/In 1999, a galactic firmware update/);
+});
