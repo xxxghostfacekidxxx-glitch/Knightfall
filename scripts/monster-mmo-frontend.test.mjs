@@ -33,7 +33,7 @@ test("cloud play uses server intents and protects offline state",()=>{
 test("journal and starter selection are wired to original species",()=>{
  for(const id of ["journal","quests","starter-select","reset-preview"])assert.ok(html.includes('id="'+id+'"'),"Missing "+id);
  for(const id of ["mossbit","embercub","driftfin"])assert.ok(html.includes('data-starter="'+id+'"'),"Missing starter "+id);
- for(const id of ["mossbit","embercub","driftfin","gloamlet","thornspit","zipfang","grubruckle","mournwing"])assert.ok(js.includes(id+":["),"Missing original species "+id);
+ for(const id of ["mossbit","embercub","driftfin","gloamlet","thornspit","zipfang","grubruckle","mournwing","squibblex","glorpbot","noodloid","blipmoth"])assert.ok(js.includes(id+":["),"Missing original species "+id);
  assert.match(js,/function persist\(/);
  assert.match(js,/offlineSeen=new Set\(seen\)/);
  assert.match(js,/seen\.add\(id\)/);
@@ -47,4 +47,13 @@ test("eight original chibi infernal creature portraits are generated without ext
  assert.match(js,/monsterPortrait\(id,"tiny"\)/);
  assert.match(css,/prefers-reduced-motion:reduce/);
  assert.ok(html.includes("Infernal Bestiary"));
+});
+
+test("original alien invasion episodes and creature roster exist",()=>{
+ for(const id of ["story-title","story-text","story-progress"])assert.ok(html.includes('id="'+id+'"'));
+ for(const id of ["squibblex","glorpbot","noodloid","blipmoth"])assert.ok(js.includes(id+":["));
+ assert.match(js,/const invasionChapters=/);
+ assert.match(js,/function renderStory\(/);
+ assert.match(js,/ALIEN INVASION!/);
+ assert.match(js,/const keys=connected\?Object\.keys\(species\)\.slice\(0,8\):Object\.keys\(species\)/);
 });
