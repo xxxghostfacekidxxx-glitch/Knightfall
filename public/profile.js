@@ -6,7 +6,7 @@ const esc = (value="") => String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<"
 const fmt = value => { const date=new Date(value);return Number.isNaN(date.getTime())?"Date unavailable":date.toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"}); };
 const safeExternalUrl = value => { try { const url=new URL(String(value||""),location.origin);return ["https:","http:"].includes(url.protocol)?url.href:""; } catch { return ""; } };
 
-const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}}); const d=await r.json().catch(()=>({})); if(!r.ok) throw Error(d.error||"Request failed."); return d; };
+const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}}); const d=await r.json().catch(()=>({})); if(!r.ok){const error=new Error(d.error||"Request failed.");error.status=r.status;throw error;} return d; };
 
 function render(d,adminView=false,ownProfile=false){
   root.onclick=async event=>{const button=event.target.closest("#share-profile");if(!button)return;const link=new URL("/profile.html",location.origin);link.searchParams.set("username",d.user.username);try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(link.href);button.textContent="Link copied ✓";}else{window.prompt("Copy profile link:",link.href);}}catch{window.prompt("Copy profile link:",link.href);}};
@@ -364,6 +364,8 @@ async function load(){
    let d;
    try { d=await api("/api/users/"+encodeURIComponent(targetUsername)); }
    catch(primaryError){
+     // Never bypass a private, blocked, or otherwise restricted profile via directory data.
+     if(primaryError.status===401||primaryError.status===403||primaryError.status===404)throw primaryError;
      // The public directory can still display a member when the detailed profile
      // endpoint is temporarily unavailable. Never claim private fields are public.
      const directory=await api("/api/discover?q="+encodeURIComponent(targetUsername)+"&limit=50&offset=0").catch(()=>null);
