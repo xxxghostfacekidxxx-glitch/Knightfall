@@ -435,6 +435,8 @@ export class MonsterWorldRoom {
     }
     // Persist each accepted move from the world server. The browser cannot author position or step count.
     try {
+      const activeBattle = await this.env.DB.prepare("SELECT 1 AS active FROM monster_game_battles WHERE user_id=?").bind(player.userId).first();
+      if (activeBattle) { socket.send(JSON.stringify({ type: "move-blocked", reason: "battle" })); return; }
       const row = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(player.userId).first();
       if (!row) { socket.send(JSON.stringify({ type: "world-save-required" })); return; }
       let save; try { save = JSON.parse(row.save_json); } catch (_) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
