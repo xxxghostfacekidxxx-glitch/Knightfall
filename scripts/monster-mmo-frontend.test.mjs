@@ -117,3 +117,14 @@ test("faction world has three reward landmarks and location-specific encounters"
  assert.match(css,/tile\.zone-alien/);
  assert.match(css,/tile\.zone-demon/);
 });
+
+test("settlement NPCs support proximity dialogue and one-time landmark quest rewards",()=>{
+ assert.ok(html.includes('id="settlement-npcs"'));
+ assert.ok(html.includes('id="settlement-status"'));
+ for(const id of ["mox","vex","quibble"])assert.match(js,new RegExp('id:"'+id+'"'));
+ assert.match(js,/function speakToNPC\(id\)/);
+ assert.match(js,/Math\.abs\(npc\.x-save\.x\)\+Math\.abs\(npc\.y-save\.y\)>1/);
+ assert.match(js,/save\.npcQuestsDone\.includes\(id\)/);
+ assert.match(js,/save\.bag=\(save\.bag\|\|0\)\+npc\.reward/);
+ assert.match(js,/renderSettlements\(\)/);
+});
