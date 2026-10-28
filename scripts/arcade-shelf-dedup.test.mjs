@@ -1,0 +1,11 @@
+import {readFileSync} from "node:fs";
+import assert from "node:assert/strict";
+const html=readFileSync("public/chaos-cartridge.html","utf8");
+const ids=[...html.matchAll(/<article class="cartridge-cabinet arcade-flat-card" data-game-id="([^"]+)"/g)].map(m=>m[1]);
+assert.ok(ids.length>50,"Arcade shelf unexpectedly empty");
+assert.equal(new Set(ids).size,ids.length,"Duplicate arcade shelf game IDs found");
+const retired=["2048","asteroids","snake","pong","blockfall","breakout","minesweeper","wordle-style-word-game","flappy-bird-style","hextris","maze-muncher","sokoban","air-hockey","lights-out","whack-a-mole","custom-tetris","memory-match","curvy-snake"];
+for(const id of retired)assert.ok(!ids.includes(id),"Retired imported or duplicate arcade listing reappeared: "+id);
+const originalTargets=["hexa-havoc","cinder-maze","ash-crateworks","void-hockey","void-lanterns","whack-a-bug","pyre-stacks","crypt-pairs","ash-serpent","neon-drift","cinder-defense"];
+for(const id of originalTargets)assert.ok(ids.includes(id),"Expected original arcade listing missing: "+id);
+console.log("Arcade shelf verified: "+ids.length+" unique entries, "+retired.length+" retired duplicates absent.");
