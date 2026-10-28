@@ -1,5 +1,4 @@
 import {readFileSync,existsSync} from "node:fs";
-import assert from "node:assert/strict";
 const catalogs=["public/chaos-cartridge.html","public/arcade-30-games.html"];
 const failures=[],routes=new Map();
 for(const catalog of catalogs){
@@ -9,8 +8,9 @@ for(const catalog of catalogs){
   const href=match[0].match(/<a\b[^>]*href="([^"]+)"[^>]*class="(?:button button-primary|play)"/)?.[1]
    ??match[0].match(/<a\b[^>]*class="(?:button button-primary|play)"[^>]*href="([^"]+)"/)?.[1];
   if(!href){failures.push(catalog+" card "+(index+1)+": missing playable link");continue}
-  if(!href.startsWith("/arcade/hosted/"))continue;
+  if(!href.startsWith("/") || href.startsWith("//"))continue;
   const path=href.split(/[?#]/)[0];
+  if(!path.endsWith(".html"))continue;
   if(!existsSync("public"+path))failures.push(catalog+" card "+(index+1)+": missing "+path);
   routes.set(href,(routes.get(href)||0)+1);
  }
