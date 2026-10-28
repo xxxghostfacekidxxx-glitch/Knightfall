@@ -66,3 +66,12 @@ test("canonical ending is a demon-alien treaty, not either faction winning",()=>
  assert.match(js,/Treaty signed\. Earth partitioned\. Humanity reclassified/);
  assert.match(js,/Witness the Treaty of Two Extremely Bad Landlords/);
 });
+
+test("player is a ten-percent Appendix 404 dual-faction handler",()=>{
+ assert.match(js,/const controllerLore=/);
+ assert.match(js,/Exactly ten percent of humans developed an Appendix 404/);
+ assert.match(js,/Aliens hear an executive override/);
+ assert.match(js,/Demons hear an ancient summoning command/);
+ for(const id of ["controller-title","controller-text","controller-note"])assert.ok(html.includes('id="'+id+'"'));
+ assert.match(js,/Pair your Appendix 404 with an alien/);
+});
