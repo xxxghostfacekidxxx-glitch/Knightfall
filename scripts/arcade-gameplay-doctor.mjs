@@ -7,8 +7,8 @@ const rules=[
  {file:"arcade-cabinet-engine.js",id:"kaiju-hitbox",bad:'let i=items.findIndex(o=>Math.hypot(o.x-q.x,o.y-q.y)<o.r+14);',good:'let i=items.findIndex(o=>mode==="kaiju"?(Math.abs(o.x-q.x)<(o.w||42)/2+12&&q.y>=520-(o.h||90)-12&&q.y<=532):Math.hypot(o.x-q.x,o.y-q.y)<(o.r||20)+14);'}
 ];
 const invariants=[
- {file:"ashfall-mini-games.js",id:"mini-cloud-save-identity",pattern:/s\.schema===1&&s\.game===id&&s\.state/},
- {file:"ashfall-mini-games.js",id:"mini-device-save-shape",pattern:/typeof s\.state==="object"&&!Array\.isArray\(s\.state\)/},
+ {file:"ashfall-mini-games.js",id:"mini-cloud-save-identity",pattern:/s\.schema===1&&s\.game===id&&validSavedState\(s\.state\)/},
+ {file:"ashfall-mini-games.js",id:"mini-device-save-shape",pattern:/if\(s&&validSavedState\(s\.state\)\)/},
  {file:"arcade-cabinet-engine.js",id:"blocks-fall-and-lock",pattern:/if\(mode==="blocks"&&frame%16===0\)/},
  {file:"arcade-cabinet-engine.js",id:"blocks-row-clearing",pattern:/grid=grid\.filter\(row=>/},
  {file:"arcade-cabinet-engine.js",id:"storage-safe-boot",pattern:/best=\(\(\)=>\{try\{return Math\.max/},
