@@ -10,3 +10,5 @@
 
 /* Hell & High Orbit title treatment */
 .shell>header h1{max-width:1000px;line-height:.96;font-size:clamp(2.4rem,7vw,5.8rem);text-transform:uppercase;text-shadow:3px 3px 0 #1c1325,0 0 25px #ff55cc30}.shell>header h1 em{display:block;color:#caff45;font-size:.54em;letter-spacing:.19em;margin-top:.32em;text-shadow:0 0 14px #caff4577}.shell>header{padding:16px 0 28px}.shell>header .tag{border:1px solid #caff4566;border-radius:999px;padding:6px 10px;background:#caff450b}.war-tagline{margin:20px 0 12px}
+
+.controller-panel{background:linear-gradient(125deg,#152a27,#25102e 72%);border:1px solid #caff4590}.controller-panel .eyebrow{font-size:.7rem;letter-spacing:.12em;color:#caff45;font-weight:800}.controller-panel h2{color:#caff45}.controller-panel p:not(.eyebrow){line-height:1.55}.controller-panel small{display:block;color:#ff9be4;margin-top:12px;font-weight:700}
