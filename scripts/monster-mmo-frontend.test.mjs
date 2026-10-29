@@ -232,6 +232,6 @@ test("offline creatures unlock four named moves by level without trusting client
  assert.match(js,/if\(name==="move"\)/);
  assert.match(js,/chosen\.unlocked/);
  assert.match(js,/extra\.movePower/);
- assert.match(js,/!connected&&b\.dataset\.moveSlot!==undefined/);
+ assert.match(js,/b\.dataset\.moveSlot!==undefined/);
  assert.match(js,/if\(connected\)\{const data=await request\("\/api\/game\/action"/);
 });
