@@ -1,0 +1,73 @@
+/* Ash-Fall section overhaul. Scoped by page roots to avoid legacy layout collisions. */
+:where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.cartridge-shelf,.foundry,.members-page,.friends-page,.dt-workspace-nav){
+ --section-surface:#121122;--section-raised:#1b1630;--section-stroke:rgba(255,85,216,.34);
+ --section-green:#c6ff45;--section-pink:#ff55d8;--section-muted:#c4b9d3;
+}
+.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero{
+ position:relative;isolation:isolate;border-radius:20px;padding:clamp(1.15rem,3vw,2.4rem);
+ background:radial-gradient(ellipse at 95% 5%,rgba(255,85,216,.14),transparent 46%),linear-gradient(135deg,#191329,#0b0d19 74%);
+ border:1px solid var(--section-stroke);box-shadow:0 18px 44px #0007,inset 0 1px #ffffff12;
+}
+.community-directory :where(.community-directory-grid,.threads),.cartridge-shelf{gap:clamp(.7rem,2vw,1.3rem)}
+.community-directory :where(.category,.thread-card,.forum-message,.threads-panel),.cartridge-shelf :where(.cartridge-cabinet,.arcade-flat-card){
+ position:relative;min-width:0;overflow-wrap:anywhere;border:1px solid var(--section-stroke);
+ border-radius:15px;background:linear-gradient(145deg,#1b1530,#0e101d 72%);
+ box-shadow:0 10px 26px #0005,inset 0 1px #ffffff0c;
+}
+.community-directory :where(.category,.thread-card):hover,.cartridge-shelf :where(.cartridge-cabinet,.arcade-flat-card):hover{
+ border-color:rgba(198,255,69,.6);box-shadow:0 12px 34px #0007,0 0 19px #ff55d818;
+}
+.community-directory :where(.thread-search,.thread-toolbar input){max-width:100%;min-width:0}
+.community-directory .category-mark{color:var(--section-green)}
+.cartridge-hero .cartridge-title{text-wrap:balance;line-height:1.03}
+.cartridge-shelf .cartridge-number{color:var(--section-green)}
+.cartridge-shelf :where(.flat-actions,.hero-actions){gap:.55rem;flex-wrap:wrap}
+.messages-shell .messages-hero{align-items:center;margin-bottom:1rem}
+.messages-shell .messages-hero h1,.admin-shell .hero h1{font-size:clamp(2.4rem,6vw,5.4rem);line-height:.98}
+.messages-shell .message-layout{background:#0e0d1a;border:1px solid var(--section-stroke);border-radius:18px;box-shadow:0 22px 54px #0007;min-width:0}
+.messages-shell .conversation-panel{background:linear-gradient(180deg,#171327,#100f1e);border-right-color:var(--section-stroke);min-width:0}
+.messages-shell .chat-panel{background:linear-gradient(165deg,#100f20,#0b0c16);min-width:0}
+.messages-shell .chat-head{background:rgba(20,17,34,.9);border-bottom:1px solid var(--section-stroke)}
+.messages-shell .conversation{border-radius:12px;transition:background-color .15s,border-color .15s}
+.messages-shell .conversation.active{background:rgba(255,85,216,.12);box-shadow:inset 3px 0 var(--section-pink)}
+.messages-shell .messages-list{min-height:0;overscroll-behavior:contain}
+.messages-shell .composer{background:#171326;border-top:1px solid var(--section-stroke);min-width:0}
+.messages-shell .composer :where(textarea,input){min-width:0;max-width:100%}
+.messages-shell .message{overflow-wrap:anywhere}
+.admin-shell .stats{gap:clamp(.55rem,1.3vw,.9rem)}
+.admin-shell :where(.stat,.admin-panel,.admin-shortcut,.test-bot-card,.repair-ticket){background:linear-gradient(145deg,#1a142b,#0d0e1b);border:1px solid var(--section-stroke);border-radius:14px;box-shadow:0 8px 24px #0004}
+.admin-shell .stat{min-width:0}
+.admin-shell .stat :where(strong,b){color:var(--section-green)}
+.admin-shell .admin-tabs{display:flex;gap:.4rem;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:.5rem 0}
+.admin-shell .admin-tabs button{flex:0 0 auto;white-space:nowrap;min-height:42px}
+.admin-shell .admin-tabs .active{border-color:var(--section-green);box-shadow:0 0 0 1px #c6ff4555}
+.admin-shell .table-wrap{overflow-x:auto;max-width:100%;border-radius:12px}
+.admin-shell :where(.admin-shortcuts,.settings-grid,.test-bot-grid){min-width:0}
+body:not(.profile-custom-theme) .profile-shell .card{border:1px solid var(--section-stroke);border-radius:18px;background:linear-gradient(145deg,#191426,#0c0d19);box-shadow:0 18px 42px #0006}
+body:not(.profile-custom-theme) .profile-shell :where(.profile-cover,.avatar){border-color:rgba(255,85,216,.45)}
+body:not(.profile-custom-theme) .profile-shell :where(.wallet-card,.profile-stats>div,.friend-card){border-radius:14px;box-shadow:0 10px 25px #0004}
+body:not(.profile-custom-theme) .profile-shell :where(.action,.friend-request-row button){min-height:42px}
+.members-page .members-grid{gap:clamp(.65rem,2vw,1.15rem)}
+.members-page .member-card{background:linear-gradient(145deg,#191427,#0d101c);border:1px solid var(--section-stroke);border-radius:15px}
+.foundry :where(.tool-card,.notice,.quick-grid>a),.dt-workspace-nav :where(.dt-section-nav,.metric){border-color:var(--section-stroke);border-radius:14px}
+.foundry .tool-grid,.foundry .quick-grid{gap:clamp(.7rem,1.8vw,1.1rem)}
+.foundry .tool-card{background:linear-gradient(145deg,#1b152b,#10101e);box-shadow:0 12px 30px #0005}
+.dt-workspace-nav{background:linear-gradient(145deg,#171326,#0d0f1d);border:1px solid var(--section-stroke);border-radius:16px}
+.dt-workspace-nav :where(button,a){min-height:40px}
+:where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page) :where(button,a,input,textarea,select):focus-visible{outline:2px solid var(--section-green);outline-offset:3px}
+@media(max-width:800px){
+ .messages-shell .messages-hero,.admin-shell>.hero{gap:.9rem;align-items:stretch;flex-wrap:wrap}
+ .messages-shell .messages-hero-actions{display:flex;flex-wrap:wrap;gap:.5rem}
+ .admin-shell .stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+ .admin-shell .admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+ .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero{border-radius:14px}
+}
+@media(max-width:600px){
+ .messages-shell,.admin-shell{width:calc(100% - 1rem);padding-top:.75rem}
+ .messages-shell .messages-hero,.admin-shell>.hero{padding:1rem}
+ .messages-shell .message-layout{border-radius:12px}
+ .admin-shell .admin-tabs{position:relative}
+ .profile-shell{width:calc(100% - 1rem)}
+ .community-directory :where(.category,.thread-card){border-radius:12px}
+}
+@media(prefers-reduced-motion:reduce){.messages-shell .conversation{transition:none}}
