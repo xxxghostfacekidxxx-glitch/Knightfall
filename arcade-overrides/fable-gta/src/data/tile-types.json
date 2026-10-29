@@ -1,0 +1,74 @@
+[
+  {
+    "id": "road_h",
+    "name": "Road (horizontal)",
+    "height": 0,
+    "color": "#282734",
+    "texture": "asphalt_h",
+    "solid": false,
+    "drivable": true
+  },
+  {
+    "id": "road_v",
+    "name": "Road (vertical)",
+    "height": 0,
+    "color": "#282734",
+    "texture": "asphalt_v",
+    "solid": false,
+    "drivable": true
+  },
+  {
+    "id": "intersection",
+    "name": "Intersection",
+    "height": 0,
+    "color": "#282734",
+    "texture": "asphalt_x",
+    "solid": false,
+    "drivable": true
+  },
+  {
+    "id": "sidewalk",
+    "name": "Sidewalk",
+    "height": 0.15,
+    "color": "#5c526d",
+    "texture": "pavement",
+    "solid": false,
+    "drivable": false
+  },
+  {
+    "id": "grass",
+    "name": "Grass",
+    "height": 0.05,
+    "color": "#244b3f",
+    "texture": "grass",
+    "solid": false,
+    "drivable": false
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "height": -0.2,
+    "color": "#25195a",
+    "texture": "water",
+    "solid": true,
+    "drivable": false
+  },
+  {
+    "id": "building",
+    "name": "Building",
+    "height": 6,
+    "color": "#64274d",
+    "texture": "facade",
+    "solid": true,
+    "drivable": false
+  },
+  {
+    "id": "building_tall",
+    "name": "Tall Building",
+    "height": 12,
+    "color": "#33204e",
+    "texture": "facade",
+    "solid": true,
+    "drivable": false
+  }
+]
