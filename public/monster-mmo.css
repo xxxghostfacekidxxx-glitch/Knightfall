@@ -465,3 +465,26 @@ body:has(#battle-panel:not([hidden])) .shell{margin:0!important;padding:0!import
 #battle-panel:not([hidden]) > [hidden]{display:none!important}
 #battle-panel:not([hidden]) .battle-command-content > [hidden]{display:none!important}
 #battle-panel:not([hidden]) .battle-command-content > :not([hidden]){min-height:0}
+
+/* Hell & High Orbit visual direction: readable handheld RPG with original neon sci-fi art. */
+:root{--hh-pink:#ff63c8;--hh-mint:#baff73;--hh-ink:#090e20;--hh-stroke:#6d7d9b}
+body{background:radial-gradient(ellipse at 52% -20%,#2d214d 0,transparent 52%),linear-gradient(180deg,#0d1327,#080b15 70%)!important}
+.game-header{background:linear-gradient(90deg,#17253c,#20132f)!important;border:2px solid #62748e!important;border-bottom-color:#ff63c8!important;box-shadow:0 4px 0 #060a15,0 14px 32px #0008!important}
+.game-header strong{color:#f9f2fc!important;letter-spacing:.08em;text-shadow:2px 2px 0 #713a76,0 0 16px #ff63c84d}
+.game-header button{border:2px solid #baff73!important;background:#192b31!important;color:#ddffba!important;box-shadow:inset 0 1px 0 #ffffff20,0 3px 0 #071318!important}
+.world-panel{background:linear-gradient(180deg,#18243a,#101725)!important;border:2px solid #64758f!important;border-bottom-color:#ff63c8!important;box-shadow:0 7px 0 #070b16,0 24px 55px #0008!important}
+.world-panel .toolbar{border-bottom:1px solid #94a4c039;padding-bottom:7px}
+.world-panel .toolbar #zone{color:#f5edff!important;text-shadow:0 2px 0 #141325;font-weight:900}
+.game-screen{background:#071426!important;border:4px solid #26384f!important;outline:2px solid #91b1b855;box-shadow:inset 0 0 0 3px #07101c,0 7px 0 #070c15,0 14px 30px #0009!important;overflow:hidden!important}
+#pixel-overworld,#pixel-battle{image-rendering:pixelated!important;image-rendering:crisp-edges}
+#battle-panel:not([hidden]){background:radial-gradient(ellipse at 50% 8%,#2c3158 0,#0a1123 67%)!important}
+#battle-panel .battle-topline{background:#182339!important;color:#eff8ff!important;border-bottom:2px solid #ff63c8!important;text-shadow:1px 2px 0 #0b0d20}
+#battle-panel .battle-command{background:linear-gradient(180deg,#f6ebd9,#e5e1d5)!important;border:3px solid #26394d!important;box-shadow:inset 0 0 0 2px #fff9eb,0 5px 0 #0b1022,0 10px 26px #0008!important;color:#192439!important}
+#battle-panel .battle-prompt{color:#263147!important}
+#battle-panel .battle-command-tabs button{border:2px solid #3e5365!important;background:#e2e6dc!important;color:#233146!important;font-weight:900!important;box-shadow:inset 0 2px 0 #ffffffa0,0 2px 0 #a2a8aa!important}
+#battle-panel .battle-command-tabs button[aria-selected="true"]{background:#243a47!important;color:#cfff85!important;border-color:#83bb75!important;box-shadow:inset 0 2px 0 #445e62,0 2px 0 #121f2a!important}
+#battle-panel .battle-moves button,#battle-panel .battle-support button,#battle-panel .battle-switch{background:#fffaf0!important;color:#25324a!important;border:2px solid #7b8a93!important;border-radius:7px!important;box-shadow:inset 0 2px 0 #fff,0 3px 0 #a4a9a7!important;font-weight:800!important}
+#battle-panel .battle-moves button:disabled,#battle-panel .battle-switch:disabled{opacity:.5!important;filter:grayscale(.5)}
+#battle-panel .battle-moves button:not(:disabled):active,#battle-panel .battle-support button:not(:disabled):active{transform:translateY(2px);box-shadow:inset 0 1px 0 #fff,0 1px 0 #a4a9a7!important}
+#battle-panel button:focus-visible,.game-header button:focus-visible{outline:3px solid #ff63c8!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#battle-panel button,.game-header button{transition:none!important}}
