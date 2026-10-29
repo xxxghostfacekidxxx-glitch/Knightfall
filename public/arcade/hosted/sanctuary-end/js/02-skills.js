@@ -39,18 +39,19 @@ const SKILLDEFS = {
   shockwave: { name: 'Shockwave', ico: '💥', type: 'active', kind: 'shockwave', elem: 'phys', cost: 16, cd: 1300, maxRank: 5, req: 1, granted: false, desc: 'Stamp a rolling wave of force that pierces everything and knocks foes back. Rank boosts damage.' },
 };
 const ACTIVE_ORDER = ['strike', 'cleave', 'rend', 'whirlwind', 'leap', 'groundslam', 'charge', 'warcry', 'frenzy', 'shockwave', 'multishot', 'volley', 'fanofknives', 'shadowstep', 'blink', 'teleportstorm', 'fireball', 'frost', 'frostnova', 'nova', 'chain', 'meteor', 'arcaneorb', 'blizzard', 'secondwind'];
+/* Ash-Fall original class identities. Internal IDs stay stable for engine compatibility. */
 const CLASSES = {
-  warrior: { name: 'Warrior', col: 0x9a3020, base: { str: 18, dex: 10, vit: 16, eng: 6 }, grow: { hp: 24, mp: 5, dmg: 4 }, dmgMult: 1.15, granted: ['cleave'], blurb: 'Brawler — high life, strong melee, Cleave.' },
-  mage: { name: 'Mage', col: 0x2a3aaa, base: { str: 8, dex: 10, vit: 10, eng: 20 }, grow: { hp: 14, mp: 12, dmg: 2 }, spellMult: 1.3, granted: ['fireball', 'frost'], blurb: 'Glass cannon — spells hit hard, low life.' },
-  rogue: { name: 'Rogue', col: 0x2a7a3a, base: { str: 12, dex: 20, vit: 11, eng: 9 }, grow: { hp: 18, mp: 7, dmg: 3 }, critBonus: 0.08, granted: ['multishot'], blurb: 'Swift — crit & speed, throws daggers.' },
-  barbarian: { name: 'Barbarian', col: 0x8a5a20, base: { str: 20, dex: 12, vit: 14, eng: 4 }, grow: { hp: 22, mp: 4, dmg: 5 }, dmgMult: 1.1, critBonus: 0.04, granted: ['rend'], blurb: 'Fury incarnate — fast heavy melee, bleeds & shockwaves.' },
+  warrior: { name: 'Hellwarden', col: 0xff4ebf, base: { str: 17, dex: 10, vit: 19, eng: 6 }, grow: { hp: 25, mp: 5, dmg: 4 }, dmgMult: 1.13, granted: ['cleave'], blurb: 'Infernal frontliner. Heavy armor, brutal cleaves and battlefield control.' },
+  mage: { name: 'Hexweaver', col: 0x945aff, base: { str: 8, dex: 11, vit: 10, eng: 21 }, grow: { hp: 14, mp: 13, dmg: 2 }, spellMult: 1.32, granted: ['fireball', 'frost'], blurb: 'Occult spellcaster. Burning hexes, frozen curses and volatile arcana.' },
+  rogue: { name: 'Voidstalker', col: 0x58f5ef, base: { str: 11, dex: 21, vit: 11, eng: 9 }, grow: { hp: 18, mp: 8, dmg: 3 }, critBonus: 0.09, granted: ['multishot'], blurb: 'Alien-shadow assassin. Poison volleys, teleport strikes and precision.' },
+  barbarian: { name: 'Ruinborn', col: 0xb8ff40, base: { str: 21, dex: 12, vit: 15, eng: 4 }, grow: { hp: 23, mp: 4, dmg: 5 }, dmgMult: 1.1, critBonus: 0.04, granted: ['rend'], blurb: 'Mutated berserker. Bleeding wounds, seismic blows and unstoppable rage.' },
 };
-// active skills unlock automatically by level per class; the forest below holds passive power
+// Skills are existing engine-implemented effects, assembled into Ash-Fall class kits.
 const CLASS_ACTIVES = {
-  warrior: { strike: 1, cleave: 1, groundslam: 3, charge: 5, whirlwind: 6, warcry: 9, leap: 10, secondwind: 12 },
-  mage: { strike: 1, fireball: 1, frost: 2, frostnova: 4, arcaneorb: 4, nova: 6, blink: 8, chain: 10, blizzard: 13, meteor: 14 },
-  rogue: { strike: 1, multishot: 1, shadowstep: 5, volley: 6, fanofknives: 7, blink: 8, teleportstorm: 9, secondwind: 12 },
-  barbarian: { strike: 1, rend: 1, groundslam: 2, frenzy: 4, charge: 5, shockwave: 7, whirlwind: 8, warcry: 10, leap: 11, secondwind: 12 },
+  warrior: { strike: 1, cleave: 1, groundslam: 3, charge: 5, warcry: 7, whirlwind: 9, secondwind: 12, leap: 14 },
+  mage: { strike: 1, fireball: 1, frost: 1, frostnova: 4, arcaneorb: 5, nova: 7, chain: 9, blink: 11, meteor: 14 },
+  rogue: { strike: 1, multishot: 1, shadowstep: 3, volley: 5, fanofknives: 7, blink: 9, teleportstorm: 11, secondwind: 13 },
+  barbarian: { strike: 1, rend: 1, groundslam: 3, frenzy: 4, shockwave: 6, charge: 8, whirlwind: 10, warcry: 12, leap: 14 },
 };
 // Auto-grant only the level-1 starting kit. Higher abilities are unlocked by spending an ability point (see unlockAbility).
 function syncActives() { const m = CLASS_ACTIVES[character.class] || CLASS_ACTIVES.warrior; for (const id in m) { if (m[id] <= 1 && (character.skills[id] || 0) < 1) character.skills[id] = 1; } }
