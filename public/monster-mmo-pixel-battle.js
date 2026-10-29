@@ -73,6 +73,40 @@
    }
   }
  }
+ const evolutionCanvas=document.createElement("canvas");
+ evolutionCanvas.width=256;evolutionCanvas.height=192;
+ evolutionCanvas.id="pixel-evolution";
+ evolutionCanvas.setAttribute("aria-label","Creature evolution animation");
+ evolutionCanvas.setAttribute("role","img");
+ evolutionCanvas.hidden=true;
+ document.body.append(evolutionCanvas);
+ const ec=evolutionCanvas.getContext("2d");
+ if(ec)ec.imageSmoothingEnabled=false;
+ let evolution=null;
+ document.addEventListener("hell-high-orbit:evolution",event=>{
+  const detail=event.detail||{};
+  if(!window.HellOrbitSprites?.ids.includes(detail.from)||!window.HellOrbitSprites?.ids.includes(detail.to)||!ec)return;
+  evolution={...detail,started:performance.now()};
+  evolutionCanvas.hidden=false;
+ });
+ function drawEvolution(time){
+  if(!evolution||!ec)return;
+  const elapsed=time-evolution.started,duration=2400,p=Math.min(1,elapsed/duration);
+  if(p>=1){evolutionCanvas.hidden=true;evolution=null;return;}
+  ec.fillStyle="#11162b";ec.fillRect(0,0,256,192);
+  for(let i=0;i<36;i++){
+   const angle=i*2.399+time/420,radius=20+p*95;
+   ec.fillStyle=i%2?"#ff65cc":"#cbff6d";
+   ec.fillRect(128+Math.cos(angle)*radius,88+Math.sin(angle)*radius,4,4);
+  }
+  const changing=p>.32&&p<.77,showNew=p>=.77||(changing&&Math.floor(elapsed/90)%2===0);
+  const size=changing?80+Math.round(Math.sin(p*Math.PI)*20):88;
+  window.HellOrbitSprites.draw(ec,showNew?evolution.to:evolution.from,128-size/2,37,size,Math.floor(time/150)%4);
+  ec.font="bold 12px monospace";ec.textAlign="center";
+  ec.fillStyle="#f8e9f5";
+  ec.fillText(p<.77?"EVOLUTION IN PROGRESS":"EVOLUTION COMPLETE",128,152);
+  ec.fillStyle="#caff61";ec.fillText((p<.77?evolution.previous:evolution.name).slice(0,25),128,171);
+ }
  let current=null,effect=null;
  const refresh=()=>{if(current&&!panel.hidden)stage(current.enemy,current.lead);};
  document.addEventListener("hell-high-orbit:effect",event=>{
@@ -86,7 +120,7 @@
   canvas.hidden=!current;if(current)refresh();
  });
  let lastFrame=-1;
- function animate(time){const frame=Math.floor(time/160);if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}requestAnimationFrame(animate);}
+ function animate(time){drawEvolution(time);const frame=Math.floor(time/160);if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}requestAnimationFrame(animate);}
  requestAnimationFrame(animate);
  canvas.hidden=true;
 })();
