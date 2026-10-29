@@ -235,3 +235,21 @@ test("offline creatures unlock four named moves by level without trusting client
  assert.match(js,/b\.dataset\.moveSlot!==undefined/);
  assert.match(js,/if\(connected\)\{const data=await request\("\/api\/game\/action"/);
 });
+
+test("all 31 original creatures have animated atlas frames and offline packaging",()=>{
+ const atlas=readFileSync("public/monster-mmo-sprite-atlas.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ assert.match(html,/monster-mmo-sprite-atlas\.js/);
+ assert.match(atlas,/atlas\.width=32\*4/);
+ assert.match(atlas,/ids\.length/);
+ assert.match(atlas,/window\.HellOrbitSprites/);
+ assert.match(atlas,/minionmouse minivillain minieddie/);
+ assert.match(js,/minionmouse/);
+ assert.match(offline,/spriteAtlas/);
+ assert.match(offline,/replace\(spriteTag/);
+ assert.match(readFileSync("public/monster-mmo-pixel-battle.js","utf8"),/requestAnimationFrame\(animate\)/);
+ for(const code of [atlas,offline]){
+  const result=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  assert.equal(result.status,0,result.stderr);
+ }
+});
