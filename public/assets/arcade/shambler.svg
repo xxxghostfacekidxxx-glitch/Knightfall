@@ -29,7 +29,7 @@
 <path d="m46 18 8 4 5-8 7 10 9-8 2 11 8-5-4 12-13-3-13 3z" fill="#4b5a3a"/>
 <!-- sunken mismatched eyes -->
 <path d="m45 30 15-4 1 8-14 4zM66 28l14-2 3 8-15 4z" fill="#182019"/>
-<path d="m49 32 7-1" stroke="#ffcf3f" stroke-width="3" stroke-linecap="round"/>
+<path d="m49 32 7-1" stroke="#56306b" stroke-width="3" stroke-linecap="round"/>
 <circle cx="74" cy="32" r="3.2" fill="#ff4b45"/>
 <circle cx="75" cy="32" r="1" fill="#fff0ce"/>
 <path d="m63 30-4 12 4 2" fill="none" stroke="#34452c" stroke-width="2"/>
@@ -39,7 +39,7 @@
 <path d="m49 51 5 3 2-3m9 4 3-3 4 2" fill="none" stroke="#8f3f3e" stroke-width="2"/>
 <!-- torn collar, hazard tag, stains -->
 <path d="m41 51 13 5 5 9-9-3-5-5-5 3-5-7zM81 50l-9 7-4 8 9-3 5-5 5 2 4-7z" fill="#111610" stroke="#737955" stroke-width="2"/>
-<path d="m47 62 8 3-2 6-8-2z" fill="#9e4b42"/>
+<path d="m47 62 8 3-2 6-8-2z" fill="#ff55d8"/>
 <path d="m48 64 5 2" stroke="#d6c18a" stroke-width="1.2"/>
 <path d="m45 79 6 2m-5 4 5 1m29-6 5-2" stroke="#b4bb75" stroke-width="1.2" opacity=".8"/>
 <!-- reaching claw -->
