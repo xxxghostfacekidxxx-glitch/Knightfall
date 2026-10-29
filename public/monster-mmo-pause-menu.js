@@ -13,3 +13,18 @@ close.addEventListener("click",()=>setOpen(false));backdrop.addEventListener("cl
 document.addEventListener("keydown",e=>{const opened=menu.classList.contains("is-open");if(opened){if(e.key==="Escape"){e.preventDefault();setOpen(false);}else if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d","W","A","S","D"].includes(e.key)&&!editable()){e.stopImmediatePropagation();e.preventDefault();}else if(e.key==="Tab"){const focusable=[...menu.querySelectorAll("button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled)")].filter(el=>el.getClientRects().length);if(focusable.length){const first=focusable[0],last=focusable.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}}return;}if(!editable()&&!battleActive()&&(e.key==="m"||e.key==="M"||e.key==="Escape")){e.preventDefault();setOpen(true);}},true);
 select(active);
 })();
+/* A handheld four-command battle interface, separate from the overworld pause menu. */
+const battleTabs=[...document.querySelectorAll("[data-battle-tab]")];
+const battleSections=[...document.querySelectorAll("[data-battle-section]")];
+const battleHint=document.getElementById("battle-command-hint");
+function chooseBattleTab(name){
+ battleTabs.forEach(b=>b.setAttribute("aria-selected",String(b.dataset.battleTab===name)));
+ battleSections.forEach(section=>{section.hidden=section.dataset.battleSection!==name;});
+ if(battleHint)battleHint.textContent=({fight:"Choose one of four moves.",party:"Send in a healthy reserve.",bag:"Use an item or defensive action."})[name]||"Choose a command.";
+}
+battleTabs.forEach(b=>b.addEventListener("click",()=>chooseBattleTab(b.dataset.battleTab)));
+document.addEventListener("hell-high-orbit:battle",e=>{
+ const current=e.detail;
+ if(!current){chooseBattleTab("fight");return;}
+ if(current.lead?.hp<=0&&battleTabs.length)chooseBattleTab("party");
+});
