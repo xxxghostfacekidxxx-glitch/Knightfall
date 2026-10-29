@@ -207,3 +207,19 @@ test("original canvas pixel overworld is wired into online and offline builds",(
  const packaged=spawnSync(process.execPath,["--check"],{input:offline,encoding:"utf8"});
  assert.equal(packaged.status,0,packaged.stderr);
 });
+
+test("pixel battle renderer is present in both online and offline builds",()=>{
+ const battleArt=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ assert.match(html,/monster-mmo-pixel-battle\.js/);
+ assert.match(js,/hell-high-orbit:battle/);
+ assert.match(css,/#pixel-battle/);
+ assert.match(battleArt,/function creature\(/);
+ assert.match(battleArt,/function stage\(/);
+ assert.match(offline,/pixelBattle/);
+ assert.match(offline,/replace\(battleTag/);
+ for(const content of [battleArt,offline]){
+  const result=spawnSync(process.execPath,["--check"],{input:content,encoding:"utf8"});
+  assert.equal(result.status,0,result.stderr);
+ }
+});
