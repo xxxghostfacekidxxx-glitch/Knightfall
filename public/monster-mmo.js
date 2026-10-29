@@ -176,7 +176,8 @@ const regionEncounterPool=(id)=>{
  if(!options)return wildIds;
  const alien=wildIds.filter(k=>infernalLooks[k][2]>=8);
  const demon=wildIds.filter(k=>infernalLooks[k][2]<8);
- return [...(options.alienWeight>=5?alien:demon),...(options.alienWeight===5?demon:options.alienWeight>=5?alien:demon)];
+ // Duplicate candidates to weight encounters without adding any new species.
+ return [...Array.from({length:options.alienWeight},()=>alien).flat(),...Array.from({length:10-options.alienWeight},()=>demon).flat()];
 };
 const regionObstacles={
  orbit:new Set(["3,3","3,4","4,3","8,2","8,3","11,7","12,7","13,7","6,10","7,10"]),
