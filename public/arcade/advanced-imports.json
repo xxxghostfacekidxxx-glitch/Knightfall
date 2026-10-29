@@ -1,0 +1,28 @@
+{
+  "games": [
+    {
+      "slug": "interstellar-armada",
+      "title": "Interstellar Armada",
+      "mode": "singleplayer",
+      "license": "GPL-3.0 / CC BY 4.0",
+      "route": "/arcade/hosted/interstellar-armada/index.html#local",
+      "source": "/arcade/hosted/interstellar-armada/source.html"
+    },
+    {
+      "slug": "browserquest-solo",
+      "title": "BrowserQuest \u00b7 Solo Edition",
+      "mode": "singleplayer",
+      "license": "MPL-2.0 / CC BY-SA 3.0",
+      "route": "/arcade/hosted/browserquest-solo/index.html",
+      "source": "/arcade/hosted/browserquest-solo/source.html"
+    },
+    {
+      "slug": "openfront-solo",
+      "title": "OpenFront \u00b7 Solo Edition",
+      "mode": "singleplayer",
+      "license": "AGPL-3.0 / CC BY-SA 4.0",
+      "route": "/arcade/hosted/openfront-solo/index.html",
+      "source": "/arcade/hosted/openfront-solo/source.html"
+    }
+  ]
+}

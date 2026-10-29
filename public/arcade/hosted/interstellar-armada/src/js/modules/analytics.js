@@ -1,0 +1,2 @@
+// Knightfall: analytics disabled, 2026-10-29.
+define("modules/analytics",[],function(){return{init:function(){},login:function(){},sendEvent:function(){},isEnabled:function(){return false;},enable:function(){},disable:function(){},setEnabled:function(){}}});
