@@ -26,18 +26,20 @@ jobs:
           out.mkdir(exist_ok=True)
           games=json.loads(pathlib.Path('public/arcade/original-creations.json').read_text())['games']
           built=0
+          missing=[]
           for game in games:
               game_id=game['id']
               if game.get('engine') != f'/arcade/hosted/{game_id}/index.html': continue
               folder=root/game_id
               if not (folder/'index.html').is_file():
-                  print(f'WARNING: missing entry: {game_id}')
+                  missing.append(game_id)
                   continue
               with zipfile.ZipFile(out/f'{game_id}.zip','w',compression=zipfile.ZIP_STORED) as z:
                   for file in folder.rglob('*'):
                       if file.is_file() and not file.is_symlink() and not any(part.startswith('.') for part in file.relative_to(folder).parts):
                           z.write(file,file.relative_to(folder).as_posix())
               built+=1
+          if missing: raise SystemExit('Missing playable entry points: '+', '.join(missing))
           if not built: raise SystemExit('No games packaged')
           print(f'Packaged {built} games')
           PY
