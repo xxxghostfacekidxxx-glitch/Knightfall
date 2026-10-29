@@ -412,3 +412,16 @@ test("overworld interaction and faction battle art remain wired",()=>{
  const check=spawnSync(process.execPath,["--check"],{input:battleArt,encoding:"utf8"});
  assert.equal(check.status,0,check.stderr);
 });
+
+
+test("game social menu and offline bundle are wired",()=>{
+ const social=readFileSync("public/monster-mmo-social.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ for(const id of ["game-global-feed","game-global-form","game-friends-list","game-friend-requests","game-friend-form"])assert.ok(html.includes('id="'+id+'"'));
+ assert.match(html,/data-pause-tab="social"/);
+ assert.match(html,/monster-mmo-social\.js/);
+ assert.match(social,/\/api\/game\/global-chat/);
+ assert.match(social,/\/api\/friends\/request/);
+ assert.match(offline,/safeSocial/);
+ for(const code of [social,offline]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+});
