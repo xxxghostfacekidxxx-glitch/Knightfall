@@ -179,3 +179,11 @@ test("three legendary shrines have unique portraits, rarity and one-time capture
  assert.match(js,/save\.capturedLegendaries\.push\(battle\.legendaryId\)/);
  assert.match(js,/action\("legendary",\{id\}\)/);
 });
+
+test("expanded evolution families and new tactical moves are visible",()=>{
+ for(const id of ["gloamshade","thornmaw","gravruckle","doomwing","noodlarch","bliporacle","hexhound","astraljelly"])assert.ok(js.includes(id+':'));
+ for(const action of ["quick","mend"])assert.ok(html.includes('data-action="'+action+'"'));
+ assert.match(js,/gloamlet:\["gloamshade",5\]/);
+ assert.match(js,/quick\?2:1/);
+ assert.match(js,/Second Wind/);
+});
