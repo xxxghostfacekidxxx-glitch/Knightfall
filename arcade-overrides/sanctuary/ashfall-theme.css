@@ -12,3 +12,13 @@ body{background:#0b0715!important}
 #manaGlobe{border-color:#58f5ef!important}
 button:focus-visible,a:focus-visible{outline:2px solid #b8ff40;outline-offset:2px}
 @media(max-width:680px){#hud{height:104px}#actionBar{max-width:68vw;transform:translateX(-50%) scale(.82);transform-origin:bottom center}#healthGlobe{left:4px}#manaGlobe{right:4px}.globe{width:90px;height:90px}}
+
+/* Visible development identity: the original edition remains visually untouched. */
+body::after{
+  content:"ASH-FALL · DEV BUILD";position:fixed;top:8px;right:10px;z-index:1000;
+  pointer-events:none;padding:5px 9px;border:1px solid #ff4ebf;
+  border-radius:5px;background:#100d1bdf;color:#b8ff40;
+  font:700 10px/1.2 system-ui,sans-serif;letter-spacing:.12em;
+  box-shadow:0 0 14px #ff4ebf55;
+}
+@media(max-width:680px){body::after{font-size:8px;top:3px;right:3px;padding:3px 5px}}
