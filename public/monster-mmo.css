@@ -358,3 +358,35 @@ body.pause-open .world-panel{pointer-events:none}
 #battle-panel [data-battle-section]:not([hidden]){display:block}
 #battle-panel [data-battle-section][hidden]{display:none!important}
 @media(max-width:560px){#battle-panel .battle-command-tabs{gap:4px}#battle-panel .battle-command-tabs button{font-size:.76rem!important;min-height:50px!important;padding:7px 2px!important}}
+
+/* Handheld battle pass: distinct battle field and bottom command window. */
+#battle-panel:not([hidden]){display:flex;flex-direction:column;align-items:center;gap:0!important;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(180deg,#b4d9dc 0%,#a6c9b6 40%,#659f87 67%,#314f4c 100%)!important;padding:clamp(8px,2dvh,18px) max(8px,calc((100vw - 780px)/2)) max(16px,env(safe-area-inset-bottom))!important}
+#battle-panel .battle-topline{width:100%;max-width:760px;margin:0 0 5px!important;color:#172d34!important;font-size:.68rem!important;letter-spacing:.07em}
+#battle-panel #pixel-battle{width:100%;max-width:760px;max-height:min(54dvh,470px)!important;margin:0 auto 6px!important;border:4px solid #203b41!important;border-radius:5px!important;background:#c5d9b8!important;box-shadow:0 0 0 3px #f7efd5,0 7px 0 #2d534d!important;image-rendering:pixelated}
+#battle-panel .battle-effect:not([hidden]){width:100%;max-width:760px;margin:4px 0!important;padding:6px 8px!important;background:#f8f1de!important;color:#28323a!important;border:3px solid #243945!important;font-size:.76rem!important}
+#battle-panel .battle-command{margin:5px auto 0!important;padding:10px!important;max-width:760px;border:4px solid #273c49!important;border-radius:6px!important;box-shadow:inset 0 0 0 2px #fff,0 5px 0 #19303d!important;background:#f8f0db!important}
+#battle-panel .battle-prompt{padding:1px 3px 8px!important;color:#1d2935!important}
+#battle-panel .battle-prompt span{font-size:clamp(.76rem,2vw,1rem);font-weight:900}
+#battle-panel .battle-command-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px!important;margin-bottom:9px!important}
+#battle-panel .battle-command-tabs button{min-height:48px!important;border:3px solid #3c5861!important;border-radius:5px!important;background:#e7eddf!important;color:#1a2932!important;font:900 .85rem ui-monospace,monospace!important;box-shadow:inset 0 -3px #c7d4c6!important}
+#battle-panel .battle-command-tabs button[aria-selected="true"]{background:#caff45!important;border-color:#233c3e!important;box-shadow:inset 0 -4px #a3cb37!important}
+#battle-panel .battle-command-tabs button:not(:disabled):active{transform:translateY(2px)}
+#battle-panel .battle-command-content{border-top:2px solid #aebcaf;padding-top:8px}
+#battle-panel .battle-moves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
+#battle-panel .battle-moves button{min-height:58px!important;border:2px solid #4e6972!important;border-left:6px solid #ff65c4!important;border-radius:5px!important;background:#fffdf3!important;color:#1b2b36!important;font:800 .83rem ui-monospace,monospace!important;padding:8px 10px!important;text-align:left}
+#battle-panel .battle-moves button:nth-child(even){border-left-color:#93ba57!important}
+#battle-panel .battle-moves button:disabled{opacity:.55;filter:grayscale(.45)}
+#battle-panel .battle-support{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#battle-panel .battle-support button{min-height:50px!important;border:2px solid #53716c!important;background:#e9f3df!important;color:#1c3037!important;font-weight:800}
+#battle-panel .battle-switch{min-height:52px!important;border-radius:5px!important}
+#battle-panel .battle-section-caption{margin:0 0 8px}
+@media(max-width:560px){
+ #battle-panel:not([hidden]){padding:6px 6px max(12px,env(safe-area-inset-bottom))!important}
+ #battle-panel #pixel-battle{max-height:45dvh!important}
+ #battle-panel .battle-command{padding:7px!important}
+ #battle-panel .battle-command-tabs{gap:4px!important}
+ #battle-panel .battle-command-tabs button{min-height:46px!important;font-size:.73rem!important;padding:5px 2px!important}
+ #battle-panel .battle-moves button{min-height:54px!important;font-size:.74rem!important;padding:6px!important}
+ #battle-panel .battle-support{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-height:660px){#battle-panel #pixel-battle{max-height:36dvh!important}#battle-panel .battle-moves button{min-height:46px!important}}
