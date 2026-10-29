@@ -19,7 +19,7 @@ try {
   browser = await chromium.launch({ headless: true });
   for (const [slug, selector] of [
     ['a-dark-room', '#wrapper'],
-    ['evolution-of-trust', '#preloader']
+    ['evolution-of-trust', '#slideshow .button:not([deactivated])']
   ]) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     const errors = [];
@@ -29,6 +29,15 @@ try {
     });
     if (!response?.ok()) throw new Error(`${slug}: bad HTTP status ${response?.status()}`);
     await page.locator(selector).first().waitFor({ state: 'attached', timeout: 15000 });
+    if (slug === 'a-dark-room') {
+      await page.locator('#lightButton').click();
+      await page.locator('#stokeButton').waitFor({ state: 'visible' });
+    } else {
+      // The transient #preloader is removed on success; wait for playable UI.
+      await page.locator('#slideshow .button:not([deactivated]) #hitbox').click();
+      await page.locator('#slideshow .button[size=long] #hitbox').waitFor({ state: 'visible' });
+      await page.locator('#slideshow .button[size=long] #hitbox').click();
+    }
     await page.waitForTimeout(1500);
     if (errors.length) throw new Error(`${slug}: browser errors: ${errors.join(' | ')}`);
     console.log(`${slug}: mobile viewport smoke passed`);

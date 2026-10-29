@@ -45,5 +45,21 @@ trust=Path("public/arcade/hosted/evolution-of-trust/index.html")
 html=trust.read_text()
 html=html.replace('<body>', '<body><nav style="position:relative;z-index:100;padding:10px;background:#15111a"><a style="color:#a8ff48" href="/arcade-30-games.html">← Chaos Cartridge</a> · <a style="color:#ff5edb" href="LICENSE">CC0</a></nav>', 1)
 trust.write_text(html)
+# Upstream's effects include BY-NC and Sampling+ material. Substitute the
+# explicitly credited CC0 coin-get effect for every non-music effect so no
+# restricted recording remains in this commercial site's distributed copy.
+sounds=trust.parent / "assets/sounds"
+cc0=(sounds / "coin_get.mp3").read_bytes()
+for sound in sounds.glob("*.mp3"):
+    if sound.name not in {"bg_music.mp3", "coin_get.mp3"}:
+        sound.write_bytes(cc0)
+(trust.parent / "KNIGHTFALL-CHANGES.md").write_text(
+    "# Knightfall hosting changes\n\n"
+    "All non-music sound effects are replaced with the CC0 coin-get recording "
+    "by plasterbrain credited in README.md. The original restricted effect "
+    "recordings are not distributed in this copy. Music remains Komiku's "
+    "CC0 Bleu. Upstream credits and library notices are retained.\n"
+)
+
 PY
 echo "Import staged. Review bundled third-party licenses, run tests, and inspect changes before commit."
