@@ -1160,7 +1160,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest","contract","npc","commander"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1200,9 +1200,43 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const conditions={fire:"burn",electric:"shock",ghost:"poison",thorn:"poison"};
     const tick=target=>{if(!target.status||target.hp<=0)return "";if(target.status==="shock"&&Math.random()<.25)return target.name+" was stunned. ";const n=Math.max(1,Math.ceil(target.maxHp/12));target.hp=Math.max(0,target.hp-n);return target.name+" took "+n+" "+target.status+" damage. ";};
     const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
+    const contracts={microwave:{need:8,reward:2},pigeons:{need:20,reward:3},toaster:{need:35,reward:3},treaty:{need:60,reward:5}};
+    const npcs={mox:{x:6,y:3,target:"dish",reward:3},vex:{x:4,y:11,target:"tax",reward:3},quibble:{x:15,y:10,target:"border",reward:4}};
+    const commanders={"squibblex-prime":{species:"squibblex",name:"ADMIRAL SQUIBBLEX PRIME",steps:15,level:5,reward:3},"ember-auditor":{species:"embercub",name:"INFERNAL AUDITOR EMBER-9",steps:30,level:7,reward:4},"glorp-collector":{species:"glorpbot",name:"COLLECTOR GLORPBOT 9000",steps:45,level:9,reward:5}};
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
-    if(action==="rest"){
+    if(action==="contract"){
+      if(battle)return json({error:"Finish the battle before filing a contract."},409,origin);
+      const contract=contracts[body.id];
+      if(!Object.hasOwn(contracts,body.id)||save.steps<contract.need)return json({error:"Contract is not unlocked."},403,origin);
+      if(!Array.isArray(save.claimedContracts))save.claimedContracts=[];
+      if(save.claimedContracts.includes(body.id))return json({error:"Contract already claimed."},409,origin);
+      save.claimedContracts.push(body.id);save.bag=Math.min(999,(save.bag||0)+contract.reward);
+      message="Bureau approved "+body.id+". +"+contract.reward+" capture supplies.";
+    }else if(action==="npc"){
+      if(battle)return json({error:"Finish the battle before talking."},409,origin);
+      const npc=npcs[body.id];
+      if(!Object.hasOwn(npcs,body.id)||Math.abs(save.x-npc.x)+Math.abs(save.y-npc.y)>1)return json({error:"Move next to the NPC first."},403,origin);
+      if(!Array.isArray(save.npcQuestsDone))save.npcQuestsDone=[];
+      if(!Array.isArray(save.npcIntroductions))save.npcIntroductions=[];
+      if(save.npcQuestsDone.includes(body.id))message="The NPC already approved your paperwork.";
+      else if((save.visitedLandmarks||[]).includes(npc.target)){
+        save.npcQuestsDone.push(body.id);save.bag=Math.min(999,(save.bag||0)+npc.reward);
+        message="Quest completed! +"+npc.reward+" capture supplies.";
+      }else{
+        if(!save.npcIntroductions.includes(body.id))save.npcIntroductions.push(body.id);
+        message="Visit the required landmark, then return to report.";
+      }
+    }else if(action==="commander"){
+      if(battle)return json({error:"Finish the active battle first."},409,origin);
+      const commander=commanders[body.id];
+      if(!Object.hasOwn(commanders,body.id)||save.steps<commander.steps||(save.defeatedCommanders||[]).includes(body.id))return json({error:"Commander unavailable."},403,origin);
+      if(lead.hp<=0)return json({error:"Switch to a healthy creature before challenging."},409,origin);
+      const base=species[commander.species];
+      battle={id:commander.species,bossId:body.id,name:commander.name,type:base.type,icon:base.icon,level:commander.level,hp:base.hp+(commander.level-1)*2,maxHp:base.hp+(commander.level-1)*2,attack:base.attack+Math.floor((commander.level-1)/3)};
+      save.encounters=Math.min(1000000,(save.encounters||0)+1);
+      message="COMMANDER CHALLENGE: "+commander.name+"!";
+    }else     if(action==="rest"){
       if(battle)return json({error:"You cannot rest during a wild battle."},409,origin);
       if(save.x!==4||save.y!==1)return json({error:"Return to the camp at X 04 / Y 01 to rest."},403,origin);
       save.party=save.party.map(member=>({...member,hp:member.maxHp,status:null,energy:0}));
@@ -1246,7 +1280,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           }else message=lead.name+" guarded. ";
         }
         if(battle.hp>0)message+=tick(battle);
-        if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],Math.max(8,battle.level*12));battleFinished=true;}
+        if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],Math.max(8,battle.level*12));if(battle.bossId&&Object.hasOwn(commanders,battle.bossId)){if(!Array.isArray(save.defeatedCommanders))save.defeatedCommanders=[];if(!save.defeatedCommanders.includes(battle.bossId)){save.defeatedCommanders.push(battle.bossId);save.bag=Math.min(999,(save.bag||0)+commanders[battle.bossId].reward);message+=" Commander reward +"+commanders[battle.bossId].reward+" supplies.";}}battleFinished=true;}
         else{
           const active=save.party[0],enemySpecial=Math.random()<.22,multiplier=typeMultiplier(battle.type,active.type);
           const counter=Math.max(1,Math.min(45,Math.ceil((battle.attack+Math.floor(Math.random()*3))*(enemySpecial?1.4:1)*multiplier*(action==="guard"?.35:1))));
@@ -1257,6 +1291,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           if(active.hp===0){if(save.party.some((m,i)=>i>0&&m.hp>0))message+="Lead fainted. Switch to a healthy reserve. ";else{battleFinished=true;message+="All creatures fainted. Return to camp.";}}
         }
       }else if(action==="capture"){
+        if(battle.bossId)return json({error:"Commanders cannot be captured."},403,origin);
         if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
         if(save.party.length>=6)return json({error:"Your party is full."},409,origin);
         save.bag--;
@@ -1268,7 +1303,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }
     if(battleFinished)battle=null;
     const now=new Date().toISOString(),nextVersion=version+1;
-    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag};
+    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag,visitedLandmarks:save.visitedLandmarks||[],claimedContracts:save.claimedContracts||[],npcIntroductions:save.npcIntroductions||[],npcQuestsDone:save.npcQuestsDone||[],defeatedCommanders:save.defeatedCommanders||[]};
     const saveUpdate=env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version);
     const battleUpdate=battle
       ? env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now,user.id,nextVersion)
@@ -1329,7 +1364,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
       party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3)),energy:int(member.energy??0,0,4)?(member.energy??0):0,status:["burn","shock","poison"].includes(member.status)?member.status:null});
     }
-    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
+    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag,visitedLandmarks:[],claimedContracts:[],npcIntroductions:[],npcQuestsDone:[],defeatedCommanders:[]};
     const now=new Date().toISOString();
     if(expected===0){
       if(input.steps>10000||input.encounters>1000||input.caught>50||input.badges!==0||input.bag>8||input.party.some(member=>member.level>10||member.hp<1))return json({error:"Initial cloud progress exceeds the migration limits."},403,origin);
