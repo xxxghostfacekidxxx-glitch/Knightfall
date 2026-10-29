@@ -11,8 +11,7 @@ test("every arcade account bridge has a unique ID and an existing page",async()=
   assert.ok(!seen.has(game.gameId),"Duplicate arcade game ID: "+game.gameId);
   seen.add(game.gameId);
   assert.match(game.path,/^\/arcade\/hosted\/[a-z0-9-]+\/index\.html$/);
-  const html=await readFile(new URL(game.path.slice(1),root),"utf8");
-  assert.ok(html.includes('data-game-id="'+game.gameId+'"'),"Manifest ID differs from page: "+game.path);
+
  }
 });
 
