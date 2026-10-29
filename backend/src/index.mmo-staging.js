@@ -386,6 +386,21 @@ async function handlePersonalBotRequest(request,env,origin,url){
  return json({error:"Personal bot endpoint not found."},404,origin);
 }
 
+const monsterRegions={
+ meadow:{gates:{right:"orbit",down:"inferno"},blocked:new Set(["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"])},
+ orbit:{gates:{left:"meadow",down:"border"},blocked:new Set(["3,3","3,4","4,3","8,2","8,3","11,7","12,7","13,7","6,10","7,10"])},
+ inferno:{gates:{up:"meadow",right:"border"},blocked:new Set(["4,2","5,2","6,2","11,3","12,3","8,7","9,7","10,7","3,10","13,10"])},
+ border:{gates:{up:"orbit",left:"inferno"},blocked:new Set(["3,3","4,3","12,3","13,3","6,6","10,6","6,9","10,9"])}
+};
+const monsterRegion=id=>Object.hasOwn(monsterRegions,id)?id:"meadow";
+const monsterGate=(region,direction,x,y)=>{
+ const gates=monsterRegions[region].gates;
+ if(direction==="right"&&x===17&&y>=5&&y<=8)return gates.right;
+ if(direction==="left"&&x===0&&y>=5&&y<=8)return gates.left;
+ if(direction==="down"&&y===13&&x>=7&&x<=10)return gates.down;
+ if(direction==="up"&&y===0&&x>=7&&x<=10)return gates.up;
+ return null;
+};
 export class MonsterWorldRoom {
   constructor(state, env) { this.state = state; this.env = env; }
   async fetch(request) {
@@ -402,18 +417,18 @@ export class MonsterWorldRoom {
     const savedRow = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(userId).first();
     if (!savedRow) return new Response("Create a cloud save before entering the shared world.", { status: 409 });
     let saved; try { saved = JSON.parse(savedRow.save_json); } catch (_) { return new Response("Saved position is unreadable.", { status: 500 }); }
-    const x = Number(saved.x), y = Number(saved.y), steps = Number(saved.steps);
+    const x = Number(saved.x), y = Number(saved.y), steps = Number(saved.steps), region=monsterRegion(saved.region);
     if (!Number.isInteger(x) || x < 1 || x > 16 || !Number.isInteger(y) || y < 1 || y > 12 || !Number.isInteger(steps) || steps < 0) return new Response("Saved position is invalid.", { status: 409 });
     const version = Number(savedRow.version) || 1;
-    const player = { userId, username, x, y, steps, version, lastMoveAt: 0 };
+    const player = { userId, username, x, y, region, steps, version, lastMoveAt: 0 };
     this.state.acceptWebSocket(server);
     server.serializeAttachment(player);
     const others = this.state.getWebSockets().filter(socket => socket !== server).map(socket => {
       const p = socket.deserializeAttachment();
-      return p ? { userId: p.userId, username: p.username, x: p.x, y: p.y } : null;
+      return p ? { userId: p.userId, username: p.username, x: p.x, y: p.y, region: p.region||"meadow" } : null;
     }).filter(Boolean);
-    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y, steps, version }, players: others }));
-    this.broadcast({ type: "player-joined", player: { userId, username, x, y } }, server);
+    server.send(JSON.stringify({ type: "world-ready", you: { userId, username, x, y, region, steps, version }, players: others }));
+    this.broadcast({ type: "player-joined", player: { userId, username, x, y, region } }, server);
     return new Response(null, { status: 101, webSocket: client });
   }
   async webSocketMessage(socket, message) {
@@ -427,9 +442,18 @@ export class MonsterWorldRoom {
     player.lastMoveAt = now;
     socket.serializeAttachment(player);
     const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
-    const x = player.x + delta[0], y = player.y + delta[1];
-    const blocked = new Set(["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"]);
-    if (x < 1 || x > 16 || y < 1 || y > 12 || blocked.has(x + "," + y) || ((x === 1 || x === 16) && y === 5)) {
+    let x = player.x + delta[0], y = player.y + delta[1];
+    const previousRegion=monsterRegion(player.region),nextRegion=monsterGate(previousRegion,body.direction,x,y);
+    const region=nextRegion||previousRegion;
+    if(nextRegion){
+      if(body.direction==="right")x=1;
+      else if(body.direction==="left")x=16;
+      else if(body.direction==="down")y=1;
+      else y=12;
+      if(previousRegion==="orbit"&&body.direction==="left"&&y===5)y=6;
+    }
+    const blocked=monsterRegions[region].blocked;
+    if (!nextRegion&&(x < 1 || x > 16 || y < 1 || y > 12 || blocked.has(x + "," + y) || (region==="meadow"&&(x===1||x===16)&&y===5)) || nextRegion&&blocked.has(x+","+y)) {
       socket.send(JSON.stringify({ type: "move-blocked" }));
       return;
     }
@@ -440,14 +464,14 @@ export class MonsterWorldRoom {
       const row = await this.env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(player.userId).first();
       if (!row) { socket.send(JSON.stringify({ type: "world-save-required" })); return; }
       let save; try { save = JSON.parse(row.save_json); } catch (_) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
-      if (save.x !== player.x || save.y !== player.y) {
+      if (save.x !== player.x || save.y !== player.y || monsterRegion(save.region)!==previousRegion) {
         socket.send(JSON.stringify({ type: "world-save-conflict" }));
         return;
       }
       if (!Number.isInteger(save.steps) || save.steps >= 10000000) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
-      save.x = x; save.y = y; save.steps += 1;
+      save.x = x; save.y = y; save.region=region; save.steps += 1;
       const landmarks={"14,3":{id:"dish",reward:2},"3,10":{id:"tax",reward:2},"13,10":{id:"border",reward:3}};
-      const landmark=landmarks[x+","+y];
+      const landmark=region==="meadow"?landmarks[x+","+y]:null;
       let discovery=null;
       if(landmark){
         if(!Array.isArray(save.visitedLandmarks))save.visitedLandmarks=[];
@@ -463,9 +487,9 @@ export class MonsterWorldRoom {
         socket.send(JSON.stringify({ type: "world-save-conflict" }));
         return;
       }
-      player.x = x; player.y = y;
+      player.x = x; player.y = y; player.region=region;
       socket.serializeAttachment(player);
-      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, steps: save.steps, version: nextVersion, bag: save.bag, visitedLandmarks: save.visitedLandmarks||[], discovery } });
+      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, region, steps: save.steps, version: nextVersion, bag: save.bag, visitedLandmarks: save.visitedLandmarks||[], discovery } });
     } catch (_) {
       socket.send(JSON.stringify({ type: "world-save-error" }));
     }
@@ -1347,7 +1371,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }
     if(battleFinished)battle=null;
     const now=new Date().toISOString(),nextVersion=version+1;
-    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag,visitedLandmarks:save.visitedLandmarks||[],claimedContracts:save.claimedContracts||[],npcIntroductions:save.npcIntroductions||[],npcQuestsDone:save.npcQuestsDone||[],defeatedCommanders:save.defeatedCommanders||[],capturedLegendaries:save.capturedLegendaries||[]};
+    const clean={region:monsterRegion(save.region),x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag,visitedLandmarks:save.visitedLandmarks||[],claimedContracts:save.claimedContracts||[],npcIntroductions:save.npcIntroductions||[],npcQuestsDone:save.npcQuestsDone||[],defeatedCommanders:save.defeatedCommanders||[],capturedLegendaries:save.capturedLegendaries||[]};
     const saveUpdate=env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version);
     const battleUpdate=battle
       ? env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now,user.id,nextVersion)
