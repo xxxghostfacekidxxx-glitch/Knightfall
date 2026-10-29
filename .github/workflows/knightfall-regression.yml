@@ -28,4 +28,4 @@ jobs:
           node --check scripts/arcade-bridge-manifest.test.mjs
       - name: Run focused regression tests
         run: |
-          node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs scripts/devil-tools-icon-choices.test.mjs scripts/monster-recovered-sprites.test.mjs scripts/arcade-revision-migration.test.mjs scripts/archived-arcade-features.test.mjs
+          node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs scripts/devil-tools-icon-choices.test.mjs scripts/monster-recovered-sprites.test.mjs scripts/arcade-revision-migration.test.mjs scripts/archived-arcade-features.test.mjs scripts/arcade-bridge-manifest.test.mjs
