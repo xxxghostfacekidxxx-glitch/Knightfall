@@ -46,6 +46,14 @@ async function extractZip(buffer, id, onProgress) {
   if(!(await cache.match(PREFIX+id+'/sanctuary.html')))throw Error('Game entry point missing');
  }catch(err){await caches.delete('ashfall-god-game-'+id+'-v1');throw err;}
 }
+async function storageStatus(){
+ const el=document.querySelector('#storage-status');if(!el)return;
+ try{if(!navigator.storage?.estimate){el.textContent='Storage estimate unavailable in this browser.';return}
+ const {usage=0,quota=0}=await navigator.storage.estimate();
+ const mb=n=>(n/1048576).toFixed(1)+' MB';
+ el.textContent='Device storage: '+mb(usage)+' used'+(quota?' of '+mb(quota)+' available quota':'')+'. Offline games use browser storage and can be cleared by the device.';
+ }catch(e){el.textContent='Device storage estimate unavailable.'}
+}
 async function updateButtons(){
  for(const id of ids){
   const cache=await caches.open('ashfall-god-game-'+id+'-v1');
@@ -76,9 +84,9 @@ document.querySelectorAll('[data-install]').forEach(b=>b.onclick=async()=>{
   say('Installed '+id+'. Ready for offline play.');await updateButtons();
  }catch(e){say('Install failed: '+e.message)}finally{b.disabled=false;bar.hidden=true;}
 });
-document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=async()=>{await caches.delete('ashfall-god-game-'+b.dataset.remove+'-v1');say('Local game removed.');await updateButtons()});
+document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=async()=>{await caches.delete('ashfall-god-game-'+b.dataset.remove+'-v1');say('Local game removed.');await updateButtons();await storageStatus()});
 let promptEvent;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;document.querySelector('#install-app').hidden=false});
 document.querySelector('#install-app').onclick=async()=>{if(promptEvent){await promptEvent.prompt();promptEvent=null}};
 (async()=>{if('serviceWorker' in navigator)try{await navigator.serviceWorker.register('/admin-offline/sw.js',{scope:'/admin-offline/'});await navigator.serviceWorker.ready;}catch(e){say('Offline service worker unavailable: '+e.message)}
- await updateButtons();await auth();})();
+ await updateButtons();await storageStatus();await auth();})();
 })();
