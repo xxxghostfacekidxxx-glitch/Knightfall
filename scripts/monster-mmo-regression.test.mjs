@@ -58,3 +58,24 @@ test("Creator Foundry lists official free game tools without shipping their bina
  for(const name of ["Phaser 3 / 4","Tiled Map Editor","LDtk World Builder","Piskel Sprite Animator","LibreSprite"])assert.ok(html.includes(name),name);
  assert.match(html,/29 tools/);
 });
+
+test("vendored Phaser runtime is installed with license and safe fallback",async()=>{
+ const fs=await import("node:fs/promises");
+ const runtime=new URL("../public/vendor/phaser/phaser.min.js",import.meta.url);
+ const stat=await fs.stat(runtime);
+ assert.ok(stat.size>100000,"Phaser runtime must be a nonempty bundled build");
+ const license=await load("public/vendor/phaser/LICENSE.md");
+ assert.match(license,/MIT License/);
+ const html=await load("public/monster-mmo.html");
+ const bridge=await load("public/monster-mmo-engine-bridge.js");
+ assert.match(html,/monster-mmo-engine-bridge\.js/);
+ assert.match(bridge,/\/vendor\/phaser\/phaser\.min\.js/);
+ assert.match(bridge,/script\.onerror=\(\)=>\{\}/);
+ assert.match(bridge,/pointerEvents|pointer-events:none/);
+});
+test("overworld contains deterministic original faction micro-biomes",async()=>{
+ const world=await load("public/monster-mmo-pixel-world.js");
+ assert.match(world,/Original layered micro-biomes/);
+ assert.match(world,/hash\(x\/32,y\/32,71\)/);
+ assert.match(world,/Faction-specific mushrooms/);
+});
