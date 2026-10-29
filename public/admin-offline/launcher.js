@@ -16,24 +16,24 @@ async function extractZip(buffer, id, onProgress) {
  const v=new DataView(buffer), bytes=new Uint8Array(buffer), dec=new TextDecoder();
  let eocd=-1;for(let p=buffer.byteLength-22;p>=Math.max(0,buffer.byteLength-65557);p--){if(u32(v,p)===0x06054b50){eocd=p;break;}}
  if(eocd<0)throw Error('Invalid ZIP: central directory missing');
- const total=u16(v,eocd+10),start=u32(v,eocd+16);
+ const total=u16(v,eocd+10),start=u32(v,eocd+16);\n if(start>=buffer.byteLength || total===0)throw Error('Empty or invalid ZIP package');
  if(total>20000)throw Error('Package contains too many files');
  let p=start, entries=[], size=0;
  for(let i=0;i<total;i++){
-  if(u32(v,p)!==0x02014b50)throw Error('Invalid ZIP entry');
+  if(p+46>buffer.byteLength || u32(v,p)!==0x02014b50)throw Error('Invalid ZIP entry');
   const method=u16(v,p+10),compressed=u32(v,p+20),uncompressed=u32(v,p+24),n=u16(v,p+28),extra=u16(v,p+30),comment=u16(v,p+32),offset=u32(v,p+42);
-  const name=dec.decode(bytes.subarray(p+46,p+46+n));p+=46+n+extra+comment;
-  if(name.endsWith('/'))continue;
+  if(p+46+n+extra+comment>buffer.byteLength)throw Error('Truncated ZIP directory');\n  const name=dec.decode(bytes.subarray(p+46,p+46+n));p+=46+n+extra+comment;
+  if(name.endsWith('/'))continue;\n  if(!name || entries.some(e=>e.name===name))throw Error('Duplicate or empty ZIP asset path');
   if(!safeName(name))throw Error('Unsafe archive filename');
   if(uncompressed>100*1024*1024)throw Error('Individual asset too large');
   size+=uncompressed;if(size>650*1024*1024)throw Error('Package exceeds 650 MB offline storage limit');
   entries.push({name,method,compressed,uncompressed,offset});
  }
- const cache=await caches.open('ashfall-god-game-'+id+'-v1');
+ const cacheName='ashfall-god-game-'+id+'-v1';\n const cache=await caches.open(cacheName);
  try{
   for(let i=0;i<entries.length;i++){
    const e=entries[i],o=e.offset;
-   if(u32(v,o)!==0x04034b50)throw Error('Invalid local ZIP entry');
+   if(o+30>buffer.byteLength || u32(v,o)!==0x04034b50)throw Error('Invalid local ZIP entry');
    const data=o+30+u16(v,o+26)+u16(v,o+28);
    if(data+e.compressed>buffer.byteLength)throw Error('Truncated ZIP asset');
    const raw=await inflate(bytes.subarray(data,data+e.compressed),e.method);
