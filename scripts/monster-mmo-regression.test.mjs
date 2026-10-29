@@ -8,9 +8,11 @@ test("battle commands have matching selectable panels",async()=>{
   assert.match(html,new RegExp('data-battle-tab="'+tab+'"'));
   assert.match(html,new RegExp('data-battle-section="'+tab+'"'));
  }
- const js=await load("public/monster-mmo.js");
- assert.match(js,/querySelectorAll\("#battle-panel \[data-battle-tab\]"\)/);
- assert.match(js,/section\.hidden=section\.dataset\.battleSection!==selected/);
+ const pause=await load("public/monster-mmo-pause-menu.js");
+ const game=await load("public/monster-mmo.js");
+ assert.match(pause,/battleTabs\.forEach\(b=>b\.addEventListener/);
+ assert.match(pause,/section\.hidden=section\.dataset\.battleSection!==name/);
+ assert.doesNotMatch(game,/querySelectorAll\("#battle-panel \[data-battle-tab\]"\)/);
 });
 test("combat is a single viewport rather than a scrolling page",async()=>{
  const css=await load("public/monster-mmo.css");
