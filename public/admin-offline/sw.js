@@ -1,0 +1,10 @@
+const SHELL='ashfall-god-shell-v1',SHELL_FILES=['/admin-offline/','/admin-offline/index.html','/admin-offline/launcher.js','/admin-offline/manifest.webmanifest'];
+self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(c=>c.addAll(SHELL_FILES)));self.skipWaiting()});
+self.addEventListener('activate',event=>{event.waitUntil(self.clients.claim())});
+self.addEventListener('fetch',event=>{
+ if(event.request.method!=='GET')return;
+ const u=new URL(event.request.url);if(u.origin!==self.location.origin)return;
+ const match=/^\/admin-offline\/play\/(sanctuary-original|ashfall-infernal-reign-dev)\//.exec(u.pathname);
+ if(match){event.respondWith((async()=>{const c=await caches.open('ashfall-god-game-'+match[1]+'-v1');return await c.match(event.request,{ignoreSearch:true})||new Response('This game asset is not installed on this device.',{status:404,headers:{'content-type':'text/plain','cache-control':'no-store'}})})());return;}
+ if(SHELL_FILES.includes(u.pathname)){event.respondWith(fetch(event.request).then(r=>r.ok?r:Promise.reject(Error('offline'))).catch(()=>caches.match(event.request).then(r=>r||new Response('App shell unavailable',{status:503}))));}
+});
