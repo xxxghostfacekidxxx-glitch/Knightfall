@@ -1324,7 +1324,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const onGrass=save.x>=1&&save.x<=16&&save.y>=1&&save.y<=12&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===16)&&save.y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(save.x+","+save.y);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       if(action==="start"||Math.random()<0.22){
-        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly","quarklet","quarkzilla","saucerpup","orbithound","glitchgrub","bytebeetle","voidsnail","chronoshell"];const wildIds=Object.keys(species).filter(id=>!["minionmouse","minivillain","minieddie"].includes(id));const ids=zone==="alien"?alienIds:zone==="demon"?wildIds.filter(id=>!alienIds.includes(id)):wildIds,limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly","quarklet","quarkzilla","saucerpup","orbithound","glitchgrub","bytebeetle","voidsnail","chronoshell"];const wildIds=Object.keys(species).filter(id=>!["minionmouse","minivillain","minieddie"].includes(id));const ids=zone==="alien"?alienIds:zone==="demon"?wildIds.filter(id=>!alienIds.includes(id)):wildIds,limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const rareIds=new Set(["mausoleopard","brinebrute","pyroclast","sonicrypt","drownmire","ossiforge","stormgob","sporelord","quarkzilla","orbithound","bytebeetle","chronoshell","gravruckle","astraljelly","noodlarch","bliporacle"]);
+        const evolvedIds=new Set(Object.values(evolutions).map(e=>e[0]));
+        const weight=id=>rareIds.has(id)?1:evolvedIds.has(id)?3:8;
+        const total=ids.reduce((n,id)=>n+weight(id),0);
+        const random=new Uint32Array(1);crypto.getRandomValues(random);
+        let roll=(random[0]/4294967296)*total,id=ids.at(-1);
+        for(const candidate of ids){roll-=weight(candidate);if(roll<0){id=candidate;break}}
+        const chosen=species[id],level=1+Math.floor(Math.random()*4);
         battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
         save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
       }
