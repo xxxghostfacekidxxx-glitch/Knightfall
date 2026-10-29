@@ -78,7 +78,7 @@ async function updateButtons(){
  }
 }
 async function auth(){
- try{const r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'});if(!r.ok)throw Error('Login required');
+ try{const r=await fetch('https://api.ash-fall.com/api/auth/me',{credentials:'include',cache:'no-store'});if(!r.ok)throw Error('Login required');
  const data=await r.json();if(!['admin','god'].includes(data.user?.role))throw Error('Administrator access required');
  say('Administrator verified. Install games to this device.');games.hidden=false;return true;
  }catch(e){
@@ -92,7 +92,7 @@ function wireButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.
  try{
   if(!await auth())throw Error('Online admin verification required');
   say('Downloading private '+id+' package…');
-  const r=await fetch('/api/admin/game-downloads/'+id,{credentials:'same-origin',cache:'no-store'});
+  const r=await fetch('https://api.ash-fall.com/api/admin/game-downloads/'+id,{credentials:'include',cache:'no-store'});
   if(!r.ok)throw Error('Private package unavailable (HTTP '+r.status+'). Check R2 upload workflow.');
   const buffer=await r.arrayBuffer();say('Installing '+id+' ('+Math.round(buffer.byteLength/1048576)+' MB)…');
   await extractZip(buffer,id,p=>{bar.value=p;say('Installing '+id+': '+p+'%');});
