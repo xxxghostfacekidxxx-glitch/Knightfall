@@ -55,11 +55,24 @@
    else{
     const p=elapsed/850,hit=effect.kind==="attack",special=effect.kind==="special",evolution=effect.kind==="evolution";
     if(hit||special){
-     const cx=290,cy=70;
-     for(let i=0;i<(special?20:9);i++){
-      const angle=i*2.399+elapsed/210,radius=p*(special?65:39);
-      const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
-      fill(px,py,special?6:4,special?6:4,i%2?"#ff61d4":"#d4ff68");
+     const tint={fire:["#ff7b52","#ffcf6a"],grass:["#a2f263","#438c5a"],water:["#61ddf6","#2b8cc9"],electric:["#eaff6b","#ff69d1"],cosmic:["#8affdd","#fc69ce"],ghost:["#c3a4ff","#604dba"],air:["#e5f9ff","#88a8ed"],thorn:["#f879b5","#caff65"],stone:["#c7c3d4","#74738e"]}[effect.type]||["#ff61d4","#d4ff68"];
+     const variant=effect.type||"cosmic",cx=290,cy=70;
+     const count=special?28:12;
+     for(let i=0;i<count;i++){
+      const a=i*2.399+elapsed/(special?180:260);
+      const radius=p*(special?65:39),px=cx+Math.cos(a)*radius,py=cy+Math.sin(a)*radius;
+      if(variant==="electric"){fill(px-3,py,9,2,tint[i%2]);fill(px+1,py-4,2,9,tint[i%2]);}
+      else if(variant==="water"){fill(px,py,3,8,tint[i%2]);fill(px-2,py+6,7,2,tint[i%2]);}
+      else if(variant==="fire"){fill(px,py,5,9,tint[i%2]);fill(px+1,py-4,3,5,tint[i%2]);}
+      else if(variant==="grass"||variant==="thorn"){fill(px-3,py,9,3,tint[i%2]);fill(px,py-3,3,9,tint[i%2]);}
+      else if(variant==="stone"){fill(px,py,8,8,tint[i%2]);fill(px+2,py-3,4,3,tint[i%2]);}
+      else if(variant==="ghost"){fill(px,py,6,6,tint[i%2]);fill(px+2,py+6,3,4,tint[i%2]);}
+      else if(variant==="air"){fill(px-5,py,13,2,tint[i%2]);fill(px+1,py+4,9,2,tint[i%2]);}
+      else {fill(px,py,5,5,tint[i%2]);}
+     }
+     if(effect.species==="minionmouse"||effect.species==="minivillain"||effect.species==="minieddie"){
+      const sign=effect.species==="minionmouse"?"M":effect.species==="minivillain"?"V":"E";
+      c.font="bold 24px monospace";c.fillStyle=tint[0];c.fillText(sign,282,73);
      }
      if(p<.18){c.fillStyle="rgba(255,255,255,.4)";c.fillRect(253,26,85,83);}
     }
@@ -113,7 +126,7 @@
  document.addEventListener("hell-high-orbit:effect",event=>{
   const detail=event.detail||{};
   if(!["attack","special","evolution"].includes(detail.kind))return;
-  effect={kind:detail.kind,started:performance.now()};
+  effect={kind:detail.kind,type:detail.type,species:detail.species,started:performance.now()};
   refresh();
  });
  document.addEventListener("hell-high-orbit:battle",event=>{
