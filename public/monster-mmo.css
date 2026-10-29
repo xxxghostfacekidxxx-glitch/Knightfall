@@ -166,3 +166,19 @@ body{background:radial-gradient(ellipse at 50% 0,#203038,#090d18 72%);font-famil
 #world-interact:not([hidden]){display:block;margin:8px auto 4px;min-height:38px;max-width:100%;padding:7px 14px;border:2px solid #ff65c4;border-radius:4px;background:#caff45;color:#1a2730;font:900 .8rem ui-monospace,monospace;box-shadow:3px 3px 0 #243542}
 #world-interact:focus-visible{outline:3px solid #fff7df;outline-offset:3px}
 body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-events:none}
+
+/* Social lives in the pause menu, never over the exploration map. */
+.game-social .social-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:9px 0}
+.game-social .social-tabs button{border:2px solid #50646c;border-radius:3px;background:#dfe8d8;color:#1c2b34;min-height:39px;font-weight:800;font-size:.75rem}
+.game-social .social-tabs button[aria-selected=true]{background:#caff45}
+.game-social [data-social-panel][hidden]{display:none!important}
+.game-social .social-feed{height:min(38dvh,290px);overflow:auto;overscroll-behavior:contain;background:#182637;color:#f9f3e5;padding:9px;border:3px solid #586b6c;font-size:.78rem}
+.game-social .social-entry{border-bottom:1px solid #71818b66;padding:6px 2px;overflow-wrap:anywhere}
+.game-social .social-entry strong{color:#caff45;margin-right:7px}
+.game-social .social-entry time{font-size:.65rem;color:#a8bac0}
+.game-social .social-compose{display:flex;gap:5px;margin-top:9px}
+.game-social .social-compose input{flex:1;min-width:0;background:#fffdf2;color:#192633;border:2px solid #637880;border-radius:3px;padding:9px}
+.game-social .social-compose button,.game-social .social-requests button{background:#caff45;color:#1c2b34;border:2px solid #394c50;border-radius:3px;font-weight:800;padding:7px}
+.game-social .social-requests{margin-top:10px;font-size:.78rem}
+.game-social .social-inbox-link{display:inline-block;padding:12px;background:#caff45;color:#17252e;font-weight:900;text-decoration:none;border:2px solid #354a4e}
+#game-social-status{font-size:.76rem;min-height:1.3em;color:#7a315e}
