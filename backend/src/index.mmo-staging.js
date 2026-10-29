@@ -1292,13 +1292,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
        thorn:["Briar Jab","Thorn Rush","Briar Hex","Thousand Needles"],
        stone:["Pebble Bash","Rock Rush","Gravestone Slam","Faultline Fury"]
       };
+      const speciesUltimate={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
       let chosenMove=null;
       if(action==="move"){
        const index=body.index;
        if(!Number.isInteger(index)||index<0||index>3)return json({error:"Invalid move slot."},400,origin);
        const levelRequired=[1,1,3,6][index];
        if((lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
-       chosenMove={name:(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.75,1.65,2.1][index],charge:index>=2?2:0,index};
+       chosenMove={name:index===3?(speciesUltimate[lead.id]||(moveNames[lead.type]||moveNames.cosmic)[index]):(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.75,1.65,2.1][index],charge:index>=2?2:0,index};
        if((lead.energy||0)<chosenMove.charge)return json({error:"Not enough charge."},409,origin);
       }
       if(["attack","special","guard","quick","mend","switch","move"].includes(action)){
