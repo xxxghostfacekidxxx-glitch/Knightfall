@@ -1184,6 +1184,11 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!Number.isInteger(lead.hp)||lead.hp<0||lead.hp>lead.maxHp)return json({error:"Your active creature has invalid health."},400,origin);
     const strongAgainst={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
     const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
+    const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7]};
+    const moves={ashhorn:"Tax-Free Inferno",mossreaper:"Cemetery Bloom",cryptfin:"Haunted Undertow",voltmaw:"Blackout Bite",squibmarshal:"Admiral's Override",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap"};
+    const conditions={fire:"burn",electric:"shock",ghost:"poison",thorn:"poison"};
+    const tick=target=>{if(!target.status||target.hp<=0)return "";if(target.status==="shock"&&Math.random()<.25)return target.name+" was stunned. ";const n=Math.max(1,Math.ceil(target.maxHp/12));target.hp=Math.max(0,target.hp-n);return target.name+" took "+n+" "+target.status+" damage. ";};
+    const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
     if(action==="rest"){
@@ -1210,20 +1215,35 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       }
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
-      if(action==="attack"){
-        if(lead.hp<=0)return json({error:"Your lead creature has fainted. Retreat and rest at camp."},409,origin);
-        const multiplier=typeMultiplier(lead.type,battle.type);
-        const damage=Math.max(1,Math.min(40,Math.round((lead.attack+Math.floor(Math.random()*4))*multiplier)));
-        battle.hp=Math.max(0,battle.hp-damage);message=lead.name+" dealt "+damage+" damage."+(multiplier>1?" It was super effective!":multiplier<1?" The attack was resisted.":"");
-        if(battle.hp===0){
-          const gainedXp=Math.max(8,battle.level*12);lead.xp=(lead.xp||0)+gainedXp;let gainedLevels=0;
-          while(lead.level<100&&lead.xp>=lead.level*20){lead.xp-=lead.level*20;lead.level++;gainedLevels++;}
-          if(gainedLevels){lead.maxHp=Math.min(500,(lead.maxHp||lead.hp)+2*gainedLevels);lead.hp=lead.maxHp;lead.attack=Math.min(100,species[lead.id].attack+Math.floor((lead.level-1)/3));}
-          battleFinished=true;message+=" "+battle.name+" was defeated. "+lead.name+" gained "+gainedXp+" XP"+(gainedLevels?" and reached level "+lead.level:"") +".";
+      if(["attack","special","guard","switch"].includes(action)){
+        if(action==="switch"){
+          const index=body.index;
+          if(!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return json({error:"Select a healthy reserve creature."},400,origin);
+          [save.party[0],save.party[index]]=[save.party[index],save.party[0]];
+          message=save.party[0].name+" switched in. ";
         }else{
-          const counter=Math.max(1,Math.min(20,battle.attack+Math.floor(Math.random()*3)));
-          lead.hp=Math.max(0,lead.hp-counter);message+=" "+battle.name+" counterattacked for "+counter+" damage.";
-          if(lead.hp===0){battleFinished=true;message+=" "+lead.name+" fainted. The encounter ended. Return to camp or switch to a healthy creature."; }
+          if(lead.hp<=0)return json({error:"Switch to a healthy reserve creature."},409,origin);
+          const special=action==="special",guard=action==="guard";
+          if(special&&(lead.energy||0)<2)return json({error:"Special move needs two charge."},409,origin);
+          if(special)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+1);
+          if(!guard){
+            const multiplier=typeMultiplier(lead.type,battle.type);
+            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(special?1.65:1)*multiplier)));
+            battle.hp=Math.max(0,battle.hp-damage);
+            message=lead.name+" used "+(special?(moves[lead.id]||"Elemental Special"):"Attack")+" for "+damage+" damage. ";
+            if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
+          }else message=lead.name+" guarded. ";
+        }
+        if(battle.hp>0)message+=tick(battle);
+        if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],Math.max(8,battle.level*12));battleFinished=true;}
+        else{
+          const active=save.party[0],enemySpecial=Math.random()<.22,multiplier=typeMultiplier(battle.type,active.type);
+          const counter=Math.max(1,Math.min(45,Math.ceil((battle.attack+Math.floor(Math.random()*3))*(enemySpecial?1.4:1)*multiplier*(action==="guard"?.35:1))));
+          active.hp=Math.max(0,active.hp-counter);
+          message+=battle.name+(enemySpecial?" used an enemy special":" counterattacked")+" for "+counter+". ";
+          if(enemySpecial&&!active.status&&conditions[battle.type]&&Math.random()<.3){active.status=conditions[battle.type];message+=active.name+" is "+active.status+"! ";}
+          message+=tick(active);
+          if(active.hp===0){if(save.party.some((m,i)=>i>0&&m.hp>0))message+="Lead fainted. Switch to a healthy reserve. ";else{battleFinished=true;message+="All creatures fainted. Return to camp.";}}
         }
       }else if(action==="capture"){
         if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
