@@ -39,6 +39,13 @@ match = re.search(r'<div id="count" class="count" aria-live="polite">(\d+) CABIN
 if match:
     n = int(match.group(1))
     html = html.replace(match.group(0), match.group(0).replace(str(n), str(n + 2)), 1)
-html = re.sub(r'<section aria-label="Selected open-source imports pending gameplay verification".*?</section>\s*', '', html, count=1, flags=re.S)
+html = re.sub(
+    r'<section aria-label="Selected open-source imports pending gameplay verification".*?</section>\\s*',
+    '<section aria-label="Advanced games in development"><h2>Advanced games in development</h2>'
+    '<p>Kaetram (#22) and OpenFront (#24) require multiplayer backends. '
+    'Space Huggers (#26) requires redistribution clearance. '
+    'Interstellar Armada (#28) requires licensed audio and WebGL validation.</p></section>',
+    html, count=1, flags=re.S
+)
 catalog.write_text(html, encoding="utf-8")
 print("Added two selected game routes to staging catalog.")
