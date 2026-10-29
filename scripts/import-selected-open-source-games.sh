@@ -2,7 +2,7 @@
 # Reproducible local vendor script. Run from repository root after reviewing upstream code and assets.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-for cmd in git python3; do command -v "$cmd" >/dev/null || { echo "Missing $cmd" >&2; exit 1; }; done
+for cmd in git python3 tar; do command -v "$cmd" >/dev/null || { echo "Missing $cmd" >&2; exit 1; }; done
 if [[ ! "${ADR_COMMIT:-}" =~ ^[0-9a-f]{40}$ || ! "${TRUST_COMMIT:-}" =~ ^[0-9a-f]{40}$ ]]; then
   echo "Set ADR_COMMIT and TRUST_COMMIT to audited 40-character commit hashes before importing." >&2
   exit 1
@@ -19,12 +19,13 @@ vendor() {
     echo "Unexpected upstream SHA for $name: $sha (expected $ref)" >&2; exit 1
   fi
   mkdir -p "$target"
-  cp -a "$source/." "$target/"
-  rm -rf "$target/.git" "$target/.github" "$target/node_modules"
+  # Export tracked files only: never copy upstream .git history or untracked build outputs.
+  git -C "$source" archive --format=tar HEAD | tar -xf - -C "$target"
+  rm -rf "$target/.github" "$target/node_modules"
   printf '%s\n' "$remote @ $sha" > "$target/UPSTREAM.txt"
   echo "Imported $name from $sha"
 }
-# For an auditable import, replace latest with an inspected full commit SHA.
+# Import only pinned, full upstream commit IDs supplied by the staging workflow.
 vendor "a-dark-room" "https://github.com/doublespeakgames/adarkroom.git" "$ADR_COMMIT"
 vendor "evolution-of-trust" "https://github.com/ncase/trust.git" "$TRUST_COMMIT"
 python3 - <<'PY'
