@@ -3,7 +3,7 @@
 if(window.__gravewaveTakeoverLoaded)return;
 window.__gravewaveTakeoverLoaded=true;
 const base='/assets/devil-tools/neon-nuisances/';
-const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot'];
+const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot','minion-mouse','mini-villain','mini-eddie','gutterkit'];
 const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg';
 const excluded=/\/(?:checkout|payment|vault|settings)/i.test(location.pathname);
 const privateForm=/\/(?:messages|account|login|register|reset-password|auth)/i.test(location.pathname);
@@ -12,14 +12,14 @@ function mount(){
  // Visible, non-interactive character crew on every public site page.
  if(!excluded&&!document.querySelector('.gw-character-crew')){
   const crew=document.createElement('aside');crew.className='gw-character-crew';crew.setAttribute('aria-label','Ash-Fall original mascot characters');
-  [0,8,10,11].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
+  [12,13,14,15].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
   document.body.append(crew);
  }
 
  document.body.classList.add('gravewave-everywhere');
  if(!document.querySelector('.gw-ambient')&&!excluded){
   const ambient=document.createElement('div');ambient.className='gw-ambient';ambient.setAttribute('aria-hidden','true');
-  [8,9,11].forEach(i=>ambient.append(mascot(i,'')));
+  [12,14,15].forEach(i=>ambient.append(mascot(i,'')));
   document.body.prepend(ambient);
  }
  // Do not interfere with private forms, editors, or game canvases.
