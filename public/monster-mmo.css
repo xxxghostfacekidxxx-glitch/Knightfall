@@ -92,3 +92,8 @@ body{background:#090b12}.shell{max-width:920px;padding:8px 12px 20px}.game-heade
 #game-menu>.panel.pause-active{display:block!important}
 #battle-panel:not([hidden]){z-index:300}
 @media(max-width:790px){.shell{padding:5px}.game-header{padding:6px 4px!important}.world-panel{padding:4px}#game-menu{inset:0;border-width:2px;border-radius:0;padding:10px}.pause-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.world-panel .toolbar{font-size:.75rem}}
+
+/* Dialogue feedback stays compact, with battles always above the pause overlay. */
+#log{position:relative;border:2px solid #a5ed65;border-radius:3px;background:#171c2b;color:#f3f1f7;font-family:ui-monospace,monospace;line-height:1.4;max-height:5.2em;overflow:auto}
+body.pause-open{overflow:hidden}body.pause-open .pad button{pointer-events:none}#game-menu .panel .hint{font-size:.8rem}#game-menu .panel h2{font-size:.92rem}#game-menu .creature{padding:6px}#game-menu .monster-portrait{width:42px;height:42px}
+#battle-panel .battle-support{margin-top:5px}#battle-panel .battle-menu-label{font-size:.7rem}#battle-panel .battle-moves button{min-height:48px}#battle-panel:not([hidden]){max-height:96dvh}
