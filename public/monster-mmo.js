@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-const species={mossbit:["Mossbit","✿","grass",14,3],embercub:["Embercub","✹","fire",12,4],driftfin:["Driftfin","◈","water",16,2],gloamlet:["Gloamlet","☾","ghost",10,5],thornspit:["Thornspit","✥","thorn",18,4],zipfang:["Zipfang","ϟ","electric",11,7],grubruckle:["Grubruckle","⬟","stone",22,3],mournwing:["Mournwing","⌁","air",13,6],squibblex:["Squibblex","☄","cosmic",12,5],glorpbot:["Glorpbot","⚙","electric",19,4],noodloid:["Noodloid","〰","cosmic",15,4],blipmoth:["Blipmoth","✧","air",11,6],ashhorn:["Ashhorn","♈","fire",21,7],mossreaper:["Mossreaper","❧","grass",26,6],cryptfin:["Cryptfin","◉","water",28,5],voltmaw:["Voltmaw","ϟ","electric",22,10],squibmarshal:["Squibmarshal","☄","cosmic",25,8],glorpcannon:["Glorpcannon","⚙","electric",34,7],hexpup:["Hexpup","✦","ghost",16,6],starjelly:["Starjelly","✺","cosmic",18,5],minionmouse:["Minion Mouse","🐭","electric",34,11],minivillain:["Mini Villain","♛","ghost",38,12],minieddie:["Mini Eddie","★","fire",42,13]};
+const species={mossbit:["Mossbit","✿","grass",14,3],embercub:["Embercub","✹","fire",12,4],driftfin:["Driftfin","◈","water",16,2],gloamlet:["Gloamlet","☾","ghost",10,5],thornspit:["Thornspit","✥","thorn",18,4],zipfang:["Zipfang","ϟ","electric",11,7],grubruckle:["Grubruckle","⬟","stone",22,3],mournwing:["Mournwing","⌁","air",13,6],squibblex:["Squibblex","☄","cosmic",12,5],glorpbot:["Glorpbot","⚙","electric",19,4],noodloid:["Noodloid","〰","cosmic",15,4],blipmoth:["Blipmoth","✧","air",11,6],ashhorn:["Ashhorn","♈","fire",21,7],mossreaper:["Mossreaper","❧","grass",26,6],cryptfin:["Cryptfin","◉","water",28,5],voltmaw:["Voltmaw","ϟ","electric",22,10],squibmarshal:["Squibmarshal","☄","cosmic",25,8],glorpcannon:["Glorpcannon","⚙","electric",34,7],hexpup:["Hexpup","✦","ghost",16,6],starjelly:["Starjelly","✺","cosmic",18,5],gloamshade:["Gloamshade","☽","ghost",23,9],thornmaw:["Thornmaw","✥","thorn",32,8],gravruckle:["Gravruckle","⬟","stone",39,7],doomwing:["Doomwing","⌁","air",27,10],noodlarch:["Noodlarch","〰","cosmic",31,9],bliporacle:["Bliporacle","✧","air",26,11],hexhound:["Hexhound","✦","ghost",30,10],astraljelly:["Astraljelly","✺","cosmic",33,9],minionmouse:["Minion Mouse","🐭","electric",34,11],minivillain:["Mini Villain","♛","ghost",38,12],minieddie:["Mini Eddie","★","fire",42,13]};
 // Original chibi hellspawn: asymmetric antennae, crooked horns, oversized eyes,
 // jagged little grins and neon infernal palettes. No third-party character art.
 const infernalLooks={
@@ -23,6 +23,14 @@ const infernalLooks={
  glorpcannon:["#5bd7fc","#e4ff49",9,"Glorpbot evolution; launches high-velocity coupons"],
  hexpup:["#b385fa","#ff6ec7",3,"Small ghost dog that howls in hexadecimal"],
  starjelly:["#9affd5","#fa8df6",10,"Floating alien jellyfish with a suspicious diploma"],
+ gloamshade:["#9665ff","#eaff68",3,"Evolved Gloamlet; steals the shadows of shadows"],
+ thornmaw:["#e94ca1","#b6ff3c",4,"Evolved Thornspit; bramble armor and cursed teeth"],
+ gravruckle:["#ad9cb8","#d7ff5a",6,"Evolved Grubruckle; a walking cemetery wall"],
+ doomwing:["#8255f9","#ff91c3",7,"Evolved Mournwing; screams across dimensions"],
+ noodlarch:["#f5a4ff","#70ffc1",10,"Evolved Noodloid; controls the alien paperwork galaxy"],
+ bliporacle:["#d7ff65","#a16cff",11,"Evolved Blipmoth; broadcasts tomorrow's disasters"],
+ hexhound:["#ba78ff","#ff6fd5",3,"Evolved Hexpup; guards the underworld firewall"],
+ astraljelly:["#91ffe5","#f47aff",10,"Evolved Starjelly; floats between black holes"],
  minionmouse:["#a5ff53","#ff4fc8",12,"Tiny crown, enormous ears, and a talent for short-circuiting alien warships."],
  minivillain:["#d57aff","#adff3f",13,"A pocket-sized mastermind with a cape, a crown, and fourteen unnecessarily complicated plans."],
  minieddie:["#ff638e","#caff44",14,"The smallest legend with the biggest heart. His battle cry makes demons reconsider their life choices."]
@@ -53,7 +61,7 @@ function monsterPortrait(id,size="small"){
  add("path",{d:"M30 80 L22 84 M94 76 L101 79",stroke:accent,"stroke-width":3,"stroke-linecap":"round"});
  return svg;
 }
-const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7]};
+const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8]};
 const typeAdvantages={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
 function typeMultiplier(attacker,defender){return typeAdvantages[attacker]?.includes(defender)?1.5:typeAdvantages[defender]?.includes(attacker)?.75:1}
 function evolveCreature(creature){
@@ -74,7 +82,7 @@ function battleStrike(attacker,defender,special=false){
  return {damage,multiplier};
 }
 // Offline status rules and battle presentation; staging continues using its own server rules.
-const speciesMoves={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap"};
+const speciesMoves={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
 function statusName(target){return target.status==="burn"?"BURNED":target.status==="shock"?"SHOCKED":target.status==="poison"?"CURSED":"CLEAR"}
 function inflictStatus(attacker,defender){
  if(defender.status||Math.random()>=.3)return "";
