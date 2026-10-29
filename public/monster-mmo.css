@@ -390,3 +390,67 @@ body.pause-open .world-panel{pointer-events:none}
  #battle-panel .battle-support{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-height:660px){#battle-panel #pixel-battle{max-height:36dvh!important}#battle-panel .battle-moves button{min-height:46px!important}}
+
+/* Battle viewport v4. No page scrolling: the whole encounter fits one screen. */
+body:has(#battle-panel:not([hidden])){overflow:hidden!important;height:100dvh!important;overscroll-behavior:none}
+body:has(#battle-panel:not([hidden])) .game-header,
+body:has(#battle-panel:not([hidden])) .layout,
+body:has(#battle-panel:not([hidden])) #log{display:none!important}
+body:has(#battle-panel:not([hidden])) .shell{margin:0!important;padding:0!important;width:100%!important;max-width:none!important;height:100dvh!important}
+#battle-panel:not([hidden]){
+ position:fixed!important;inset:0!important;z-index:500!important;
+ width:100vw!important;height:100dvh!important;max-width:none!important;
+ margin:0!important;box-sizing:border-box!important;
+ display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;
+ justify-items:center!important;align-items:stretch!important;
+ gap:0!important;overflow:hidden!important;
+ padding:max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))!important;
+}
+#battle-panel .battle-topline{grid-row:1;display:flex;align-items:center;justify-content:space-between;min-height:20px;max-width:700px;margin:0!important;font-size:.65rem!important}
+#battle-panel #pixel-battle{
+ grid-row:2;min-width:0;min-height:0;
+ width:auto!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+ aspect-ratio:384/208;object-fit:contain;align-self:center;justify-self:center;
+ margin:0!important;border:3px solid #203b41!important;
+ box-sizing:border-box!important;
+}
+#battle-panel .battle-command{
+ grid-row:3;align-self:end;width:min(100%,700px)!important;max-width:700px!important;
+ min-height:0;max-height:min(49dvh,370px);overflow:hidden!important;
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ padding:clamp(4px,1dvh,9px)!important;margin:0!important;
+ box-sizing:border-box!important;
+}
+#battle-panel .battle-prompt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 4px!important}
+#battle-panel .battle-prompt span{font-size:clamp(.65rem,1.8dvh,.88rem)!important}
+#battle-panel #battle-command-hint{font-size:clamp(.58rem,1.5dvh,.75rem)!important}
+#battle-panel .battle-command-tabs{flex:0 0 auto;margin:0 0 5px!important;gap:4px!important}
+#battle-panel .battle-command-tabs button{min-height:clamp(34px,5.6dvh,48px)!important;padding:3px!important;font-size:clamp(.68rem,1.8dvh,.84rem)!important}
+#battle-panel .battle-command-content{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding-top:4px!important}
+#battle-panel .battle-moves{gap:4px!important}
+#battle-panel .battle-moves button{min-height:clamp(37px,6dvh,54px)!important;padding:4px 6px!important;font-size:clamp(.66rem,1.7dvh,.81rem)!important;line-height:1.15!important}
+#battle-panel .battle-support{gap:4px!important}
+#battle-panel .battle-support button,#battle-panel .battle-switch{min-height:38px!important;padding:4px!important}
+#battle-panel .battle-section-caption{font-size:.73rem;margin:0 0 4px!important}
+#battle-panel #battle-effect:not([hidden]){
+ position:absolute!important;top:max(27px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+ width:min(90vw,500px);z-index:30;margin:0!important;pointer-events:none;
+}
+@media(max-height:580px){
+ #battle-panel .battle-topline{min-height:16px}
+ #battle-panel .battle-command{max-height:56dvh!important}
+ #battle-panel .battle-prompt{padding-bottom:2px!important}
+ #battle-panel .battle-command-tabs{margin-bottom:3px!important}
+ #battle-panel .battle-command-tabs button{min-height:32px!important}
+ #battle-panel .battle-moves button{min-height:34px!important}
+}
+@media(orientation:landscape) and (max-height:480px){
+ #battle-panel:not([hidden]){grid-template-columns:minmax(0,1fr) minmax(230px,43vw)!important;grid-template-rows:auto minmax(0,1fr)!important;column-gap:6px!important}
+ #battle-panel .battle-topline{grid-column:1/-1;grid-row:1;max-width:none}
+ #battle-panel #pixel-battle{grid-column:1;grid-row:2}
+ #battle-panel .battle-command{grid-column:2;grid-row:2;align-self:stretch;max-height:100%!important;width:100%!important}
+ #battle-panel .battle-prompt{display:none}
+ #battle-panel .battle-command-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #battle-panel .battle-command-tabs button{min-height:30px!important}
+ #battle-panel .battle-moves button{min-height:32px!important}
+}
