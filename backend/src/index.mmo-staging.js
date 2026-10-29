@@ -1160,7 +1160,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","special","guard","quick","mend","switch","capture","flee","status","party-lead","rest","contract","npc","commander","legendary"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","special","guard","quick","mend","switch","move","capture","flee","status","party-lead","rest","contract","npc","commander","legendary"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
