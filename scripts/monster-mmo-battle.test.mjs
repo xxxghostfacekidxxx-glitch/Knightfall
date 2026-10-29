@@ -58,3 +58,11 @@ test("server validates online quests and persists all completion flags",()=>{
  assert.match(source,/save\.defeatedCommanders\.push\(battle\.bossId\)/);
  assert.match(source,/previousSave\?\.claimedContracts\|\|\[\]/);
 });
+
+test("legendary creatures have authoritative one-time capture rules",()=>{
+ for(const id of ["minionmouse","minivillain","minieddie"])assert.ok(source.includes(id+':{name:'));
+ assert.match(source,/if\(action==="legendary"\)/);
+ assert.match(source,/save\.capturedLegendaries\.push\(battle\.legendaryId\)/);
+ assert.match(source,/capturedLegendaries:save\.capturedLegendaries\|\|\[\]/);
+ assert.match(source,/const wildIds=Object\.keys\(species\)/);
+});
