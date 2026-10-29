@@ -12,7 +12,7 @@ permissions:
   contents: write
 concurrency:
   group: stage-advanced-static-games
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   import-and-test:
     runs-on: ubuntu-latest

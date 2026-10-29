@@ -26,9 +26,9 @@ try{
     for(let i=0;i<3;i++){const dialog=page.locator('#dialog_screenContainer');if(await dialog.isVisible()){console.log('Armada dialog:',await page.locator('#dialog_message').innerText());await page.locator('#dialog_leftButton').click();await page.waitForTimeout(250)}else break;}
     await page.getByText('Single player',{exact:true}).click({timeout:30000});
     await page.getByText('Campaign',{exact:true}).click({timeout:30000});
-    await page.locator('#missionListContainer .listContainer > *').first().click({timeout:30000});
-    await page.locator('#launchButton').click();
-    await page.locator('#battleCanvas').waitFor({state:'visible',timeout:60000});
+    await page.locator('[id$="_missionListContainer"] .listContainer > *').first().click({timeout:30000});
+    await page.locator('[id$="_launchButton"]:visible').click();
+    await page.locator('[id$="_battleCanvas"]').waitFor({state:'visible',timeout:60000});
    }else{
     await page.locator('username-input input').fill('Knightfall');
     await page.locator('#single-player').click({timeout:60000});
