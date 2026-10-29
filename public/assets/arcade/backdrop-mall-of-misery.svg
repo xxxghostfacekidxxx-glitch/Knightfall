@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540">
 <defs>
  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#20112f"/><stop offset=".55" stop-color="#552039"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".16"/></linearGradient>
- <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#56306b" stop-opacity=".65"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".12"/></linearGradient>
+ <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffcf3f" stop-opacity=".65"/><stop offset="1" stop-color="#ff3c73" stop-opacity=".12"/></linearGradient>
  <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#342039"/><stop offset=".55" stop-color="#1a1020"/><stop offset="1" stop-color="#0b0a12"/></linearGradient>
- <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff3c73" stop-opacity="0"/><stop offset=".5" stop-color="#ff3c73" stop-opacity=".2"/><stop offset="1" stop-color="#56306b" stop-opacity="0"/></linearGradient>
+ <linearGradient id="haze" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff3c73" stop-opacity="0"/><stop offset=".5" stop-color="#ff3c73" stop-opacity=".2"/><stop offset="1" stop-color="#ffcf3f" stop-opacity="0"/></linearGradient>
  <pattern id="tiles" width="42" height="34" patternUnits="userSpaceOnUse"><path d="M0 0h42v34H0z" fill="none" stroke="#bd67ff" stroke-width="1" opacity=".18"/></pattern>
 </defs>
 <rect width="1200" height="540" fill="url(#sky)"/>
@@ -28,15 +28,15 @@
 </g>
 <!-- neon canopy strips -->
 <g fill="none" stroke-width="5">
- <path d="M0 187h205M231 149h246M512 198h278M820 157h380" stroke="#56306b"/>
+ <path d="M0 187h205M231 149h246M512 198h278M820 157h380" stroke="#ffcf3f"/>
  <path d="M0 194h205M231 156h246M512 205h278M820 164h380" stroke="#ff3c73" stroke-width="2"/>
 </g>
 <!-- garish, broken store signs -->
 <path d="M37 112h151v51H37z" fill="#100b18" stroke="#ff3c73" stroke-width="3"/>
 <path d="M45 120h135v35H45z" fill="#2b1429" stroke="#9b3b74" stroke-width="1.5"/>
-<text x="54" y="143" fill="#56306b" font-family="monospace" font-size="17" font-weight="900">MALL CLOSED</text>
-<path d="M550 126h181v47H550z" fill="#0c0a14" stroke="#56306b" stroke-width="3"/>
-<text x="566" y="155" fill="#56306b" font-family="monospace" font-size="18" font-weight="900">BUY NOTHING</text>
+<text x="54" y="143" fill="#ffcf3f" font-family="monospace" font-size="17" font-weight="900">MALL CLOSED</text>
+<path d="M550 126h181v47H550z" fill="#0c0a14" stroke="#ffcf3f" stroke-width="3"/>
+<text x="566" y="155" fill="#ffcf3f" font-family="monospace" font-size="18" font-weight="900">BUY NOTHING</text>
 <path d="M882 106h174v45H882z" fill="#100b18" stroke="#ff3c73" stroke-width="3"/>
 <text x="896" y="134" fill="#ff819c" font-family="monospace" font-size="17" font-weight="900">LAST SALE</text>
 <path d="M1044 115h119v35h-119z" fill="#171022" stroke="#bd67ff" stroke-width="2"/>
@@ -46,7 +46,7 @@
 <path d="M0 286h1200" stroke="#ff3c73" stroke-width="2" opacity=".65"/>
 <path d="M170 286 265 345h-38l-95-59zM202 286l95 59h-20l-95-59z" fill="#181020" stroke="#09080f" stroke-width="3"/>
 <path d="M888 286 972 345h-34l-86-59zM919 286l84 59h-20l-84-59z" fill="#181020" stroke="#09080f" stroke-width="3"/>
-<g stroke="#56306b" stroke-width="2" opacity=".6"><path d="M159 292l78 49m-62-49 78 49m-62-49 78 49m626-49 76 49m-60-49 76 49m-60-49 76 49"/></g>
+<g stroke="#ffcf3f" stroke-width="2" opacity=".6"><path d="M159 292l78 49m-62-49 78 49m-62-49 78 49m626-49 76 49m-60-49 76 49m-60-49 76 49"/></g>
 <!-- abandoned sign supports, cables, busted lamps -->
 <g fill="none" stroke-linecap="round">
  <path d="M80 0v105m-12-32h24m-24 19h24M760 0v123m-13-42h26m-26 20h26M1140 0v100m-12-35h24" stroke="#090810" stroke-width="5"/>
