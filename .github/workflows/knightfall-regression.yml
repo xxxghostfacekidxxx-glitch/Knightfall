@@ -1,0 +1,26 @@
+name: Knightfall smoke and regression tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check public/monster-mmo.js
+          node --check public/arcade-save.js
+          node --check public/monster-mmo-moves.js
+          node --check scripts/messages-history-cursor.test.mjs
+      - name: Run focused regression tests
+        run: |
+          node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs
