@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Validate independent four-move progression library
+        run: node --test scripts/monster-mmo-moves.test.mjs
       - name: Validate MMO frontend and battle rules
         run: |
           node --test scripts/monster-mmo-frontend.test.mjs
