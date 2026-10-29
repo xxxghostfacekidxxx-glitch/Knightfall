@@ -29,3 +29,11 @@ test("arcade catalog links both playable imports without claiming they are origi
  for(const game of selected)assert.ok(html.includes("/arcade/hosted/"+game+"/index.html"));
  assert.ok(html.includes("Original source"));
 });
+
+test("Progress Knight includes narrow-screen panel stacking and avoids remote CSS dependencies",async()=>{
+ const html=await read("arcade/hosted/progress-knight/index.html");
+ assert.ok(html.includes("@media(max-width:800px)"));
+ assert.ok(html.includes('display:flex;flex-direction:column'));
+ assert.ok(!html.includes("www.w3schools.com"));
+ assert.ok(!html.includes("cdn.icon-icons.com"));
+});
