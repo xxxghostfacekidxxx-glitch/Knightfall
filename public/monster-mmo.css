@@ -231,3 +231,16 @@ body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-event
 #battle-panel .battle-moves button:disabled{opacity:.55}
 #battle-panel .battle-moves button:not(:disabled):focus-visible{background:#caff45;color:#15212b}
 @media(hover:hover){#battle-panel .battle-moves button:not(:disabled):hover{background:#ecffd1;color:#18232e}}
+
+/* Original field map: a classic RPG utility, hidden behind the pause menu. */
+.region-map-panel{padding:12px!important}
+.region-map-panel h2{font-size:1rem;letter-spacing:.03em}
+#game-region-map{display:block;width:100%;max-width:576px;height:auto;aspect-ratio:4/3;image-rendering:pixelated;margin:10px auto;border:5px solid #283b48;box-shadow:0 0 0 3px #caff45;background:#203d35}
+.region-map-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 14px;margin:14px 0 7px;font-size:.74rem;font-weight:800}
+.region-map-legend span{display:inline-flex;align-items:center;gap:5px}
+.map-dot{display:inline-block;width:11px;height:11px;border:2px solid #1d2d37;background:#caff45}
+.map-dot.player-dot{background:#ff7bc8}
+.map-dot.alien-dot{background:#397d84}
+.map-dot.demon-dot{background:#9b537d}
+.map-dot.site-dot{background:#f5ff84}
+#game-map-location{font-size:.78rem;text-align:center;font-weight:800;padding:8px;background:#e5e9d5;color:#24343b;border:2px solid #677d78}
