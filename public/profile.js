@@ -29,7 +29,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
   const connectionActions=root.querySelector(".profile-actions-wrap");
   const profileHeader=root.querySelector(".profile-top");
   if(connectionActions&&profileHeader)profileHeader.after(connectionActions);
-  const themeColors={ember:"#ff55d8",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")&&u.accent_color.toLowerCase()!=="#e66a2c"?u.accent_color:themeColors[root.dataset.theme]);
+  const themeColors={ember:"#ff55d8",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")&&u.accent_color.toLowerCase()!=="#ff55d8"?u.accent_color:themeColors[root.dataset.theme]);
   if (safeExternalUrl(u.cover_url)) { const c=document.createElement("div"),img=document.createElement("img"); c.className="profile-cover"; img.setAttribute("src",safeExternalUrl(u.cover_url)); img.setAttribute("alt",""); img.loading="lazy"; c.append(img); root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
   const heading=root.querySelector(".profile-heading");
