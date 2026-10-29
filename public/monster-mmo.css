@@ -244,3 +244,6 @@ body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-event
 .map-dot.demon-dot{background:#9b537d}
 .map-dot.site-dot{background:#f5ff84}
 #game-map-location{font-size:.78rem;text-align:center;font-weight:800;padding:8px;background:#e5e9d5;color:#24343b;border:2px solid #677d78}
+
+/* Unexplored map cells stay hidden until the trainer reaches the area. */
+.map-dot.fog-dot{background:#172530;border-color:#526172}
