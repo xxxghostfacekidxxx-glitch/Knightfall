@@ -1,6 +1,6 @@
 :root{color-scheme:dark;--arsenal-accent:#ff55d8;--arsenal-line:#303030;--arsenal-muted:#a3a3a3}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 12% 0%,rgba(211,84,0,.14),transparent 38%),radial-gradient(ellipse at 95% 68%,rgba(240,106,10,.055),transparent 30%),#080808;color:#eee}
+body{margin:0;background:radial-gradient(ellipse at 12% 0%,rgba(255,85,216,.14),transparent 38%),radial-gradient(ellipse at 95% 68%,rgba(240,106,10,.055),transparent 30%),#080808;color:#eee}
 a{color:inherit}
 .arsenal-shell{width:min(1160px,calc(100% - 2rem));margin:1.8rem auto 0}
 .back-link{display:inline-block;margin-bottom:1.4rem;color:#aaa;text-decoration:none;font-size:.85rem}
@@ -8,7 +8,7 @@ a{color:inherit}
 .arsenal-hero{position:relative;padding:2rem 0 3.2rem;border-bottom:1px solid #292929}
 .eyebrow{margin:0 0 .75rem;color:var(--arsenal-accent);font-size:.68rem;font-weight:900;letter-spacing:.23em}
 .arsenal-hero h1{margin:0;font-size:clamp(3.3rem,10vw,7.7rem);line-height:.84;letter-spacing:-.07em;font-weight:950}
-.arsenal-hero h1 span{color:var(--arsenal-accent);text-shadow:0 0 38px rgba(211,84,0,.18)}
+.arsenal-hero h1 span{color:var(--arsenal-accent);text-shadow:0 0 38px rgba(255,85,216,.18)}
 .lede{max-width:780px;margin:1.6rem 0 0;color:#aaa;font-size:1.04rem;line-height:1.8}
 .hero-stats{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem}
 .hero-stats div{display:flex;flex-direction:column;min-width:150px;padding:.8rem 1rem;border:1px solid #292929;border-radius:10px;background:linear-gradient(145deg,#141414,#090909)}
@@ -33,7 +33,7 @@ a{color:inherit}
 .project-card{display:flex;flex-direction:column;padding:1.4rem;border:1px solid #2c2c2c;border-radius:13px;background:linear-gradient(145deg,#151515,#090909);min-width:0;transition:border-color .2s,transform .2s}
 .project-card:hover{border-color:#57341d;transform:translateY(-2px)}.project-card[hidden]{display:none}
 .project-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem}
-.project-mark{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(240,106,10,.35);border-radius:11px;background:rgba(211,84,0,.1);color:#56306b;font-weight:950;letter-spacing:-.05em}
+.project-mark{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(240,106,10,.35);border-radius:11px;background:rgba(255,85,216,.1);color:#56306b;font-weight:950;letter-spacing:-.05em}
 .project-kind{color:#999;font-size:.68rem;text-align:right}
 .project-card h3{margin:1rem 0 .35rem;font-size:1.55rem;letter-spacing:-.04em}.project-summary{margin:0;color:#aaa;line-height:1.65}
 .project-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-top:1rem;padding:.75rem 0;border-top:1px solid #292929;border-bottom:1px solid #292929}
