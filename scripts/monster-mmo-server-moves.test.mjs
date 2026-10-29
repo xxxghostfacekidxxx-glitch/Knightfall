@@ -16,3 +16,9 @@ test("level locks and charge checks remain server authoritative",()=>{
  assert.match(worker,/const levelRequired=\[1,1,3,6\]\[index\]/);
  assert.match(worker,/if\(\(lead\.energy\|\|0\)<chosenMove\.charge\)/);
 });
+
+test("legacy attack actions cannot bypass server move PP",()=>{
+ assert.match(worker,/\["move","attack","quick","special"\]\.includes\(action\)/);
+ assert.match(worker,/action==="move"\?body\.index:action==="attack"\?0:action==="quick"\?1:2/);
+ assert.match(worker,/if\(battle\.movePp\[index\]<=0\)return json/);
+});
