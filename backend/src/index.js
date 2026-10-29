@@ -1,3 +1,4 @@
+import { serveAdminGameArchive } from './admin-game-downloads.js';
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
@@ -821,6 +822,10 @@ export default { async queue(batch, env) {
   }
 }, async scheduled(controller, env, ctx) { const cutoff=new Date(Date.now()-30*24*60*60*1000).toISOString(); await env.DB.prepare("DELETE FROM chaos_conversations WHERE deleted_at IS NOT NULL AND deleted_at<=?").bind(cutoff).run(); }, async fetch(request, env) {
  const origin=getOrigin(request),url=new URL(request.url);
+ if(url.pathname.startsWith('/api/admin/game-downloads/')) {
+   try { return await serveAdminGameArchive(request, env, getUser); }
+   catch(e) { return new Response('Download service unavailable', {status:503,headers:{'cache-control':'no-store'}}); }
+ }
  if(request.method==="OPTIONS")return new Response(null,{status:204,headers:{"access-control-allow-origin":origin,"access-control-allow-methods":"GET,POST,PUT,PATCH,DELETE,OPTIONS","access-control-allow-headers":"content-type","access-control-allow-credentials":"true","access-control-max-age":"86400"}});
  try {
   const requestOrigin=request.headers.get("Origin");
