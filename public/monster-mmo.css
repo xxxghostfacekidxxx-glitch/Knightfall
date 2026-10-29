@@ -161,3 +161,8 @@ body{background:radial-gradient(ellipse at 50% 0,#203038,#090d18 72%);font-famil
 #battle-party .battle-switch{background:#fefbf1;color:#1d2932;border:2px solid #6b8a7b}
 #battle-party .battle-switch:disabled{color:#8c8d93;background:#e0dfdc}
 @media(max-width:560px){.shell{padding:5px}.game-header{gap:5px}.game-header strong{font-size:.78rem}.game-header button{padding:7px 9px}.world-panel{padding:4px!important}.battle-command{padding:7px}.battle-command-tabs button{font-size:.72rem;min-height:40px}#battle-panel:not([hidden]){padding:7px 8px 20px}.battle-topline{font-size:.6rem}.battle-prompt{font-size:.85rem}#battle-panel .battle-moves button{min-height:44px;font-size:.73rem;padding:6px}#battle-panel .battle-support{grid-template-columns:1fr 1fr}}
+
+/* Field interactions are available without opening Missions. */
+#world-interact:not([hidden]){display:block;margin:8px auto 4px;min-height:38px;max-width:100%;padding:7px 14px;border:2px solid #ff65c4;border-radius:4px;background:#caff45;color:#1a2730;font:900 .8rem ui-monospace,monospace;box-shadow:3px 3px 0 #243542}
+#world-interact:focus-visible{outline:3px solid #fff7df;outline-offset:3px}
+body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-events:none}
