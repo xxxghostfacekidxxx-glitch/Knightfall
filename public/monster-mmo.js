@@ -95,7 +95,7 @@ function evolveCreature(creature){
  creature.id=next[0];creature.name=name;creature.icon=icon;creature.type=type;
  creature.maxHp=Math.max(creature.maxHp+8,hp+(creature.level-1)*2);
  creature.hp=creature.maxHp;creature.attack=Math.max(creature.attack+3,attack);
- seen.add(creature.id);
+ seen.add(creature.id);registerCapture(creature.id);
  document.dispatchEvent(new CustomEvent("hell-high-orbit:evolution",{detail:{from:previousId,to:creature.id,previous,name}}));
  return " "+previous+" EVOLVED into "+name+"!";
 }
@@ -308,9 +308,9 @@ function visitLandmark(x,y){
  return site.report;
 }
 
-const initial=(starter="embercub")=>({region:"meadow",x:4,y:4,steps:0,encounters:0,caught:0,badges:0,bag:8,party:[make(starter)]});
+const initial=(starter="embercub")=>({region:"meadow",x:4,y:4,steps:0,encounters:0,caught:0,caughtSpecies:[starter],badges:0,bag:8,party:[make(starter)]});
 let save=initial(),battle=null,version=0,api="",socket=null,connected=false,busy=false,players=new Map(),selfId=null,offlineSave=null,offlineSeen=null,movePending=false,seen=new Set();
-try{const cached=JSON.parse(localStorage.getItem("ashfall:cinder-meadow:demo")||"null");if(cached&&(!cached.region||regions[cached.region])&&cached.x>=1&&cached.x<=16&&cached.y>=1&&cached.y<=12&&Array.isArray(cached.party)&&cached.party.length&&cached.party.length<=6&&cached.party.every(p=>species[p.id]))save=cached;const savedSeen=JSON.parse(localStorage.getItem("ashfall:cinder-meadow:seen")||"[]");if(Array.isArray(savedSeen))seen=new Set(savedSeen.filter(id=>species[id]))}catch{}
+try{const cached=JSON.parse(localStorage.getItem("ashfall:cinder-meadow:demo")||"null");if(cached&&(!cached.region||regions[cached.region])&&cached.x>=1&&cached.x<=16&&cached.y>=1&&cached.y<=12&&Array.isArray(cached.party)&&cached.party.length&&cached.party.length<=6&&cached.party.every(p=>species[p.id]))save=cached;const savedSeen=JSON.parse(localStorage.getItem("ashfall:cinder-meadow:seen")||"[]");if(Array.isArray(savedSeen))seen=new Set(savedSeen.filter(id=>species[id]));if(!Array.isArray(save.caughtSpecies))save.caughtSpecies=[];for(const member of save.party)if(species[member.id]&&!save.caughtSpecies.includes(member.id))save.caughtSpecies.push(member.id)}catch{}
 function log(message){$("log").textContent=message;document.dispatchEvent(new CustomEvent("hell-high-orbit:log",{detail:{message}}))}
 // Canon: 10% of humans carry the Appendix 404, a cosmic firmware mistake.
 // The signal pairs with both demonic sigils and alien command receivers.
@@ -428,12 +428,19 @@ function defeatCommander(id){
 function warBroadcast(){return warBroadcasts[Math.floor((save.steps||0)/5)%warBroadcasts.length]}
 function currentChapter(){return Math.min(invasionChapters.length-1,Math.floor((save.steps||0)/12))}
 function renderStory(){$("absurd-date").textContent=nonsenseDate(save.steps);$("controller-title").textContent=controllerLore.title;$("controller-text").textContent=controllerLore.text;$("controller-note").textContent=controllerLore.note;$("war-broadcast").textContent=warBroadcast();const chapter=invasionChapters[currentChapter()];$("story-title").textContent=chapter[0];$("story-text").textContent=chapter[1];$("story-progress").textContent=currentChapter()===invasionChapters.length-1?"FINAL TRANSMISSION · Treaty signed. Earth partitioned. Humanity reclassified.":"Episode "+(currentChapter()+1)+"/"+invasionChapters.length+" · Walk "+Math.max(0,(currentChapter()+1)*12-(save.steps||0))+" more tiles for the next transmission (offline preview).";}
+const rareSpecies=new Set(["mausoleopard","brinebrute","pyroclast","sonicrypt","drownmire","ossiforge","stormgob","sporelord","quarkzilla","orbithound","bytebeetle","chronoshell","gravruckle","astraljelly","noodlarch","bliporacle"]);
+const rarityOf=id=>legendaryIds.has(id)?"LEGENDARY":rareSpecies.has(id)?"RARE":Object.values(evolutions).some(v=>v[0]===id)?"UNCOMMON":"COMMON";
+function registerCapture(id){
+ if(!species[id])return;
+ if(!Array.isArray(save.caughtSpecies))save.caughtSpecies=[];
+ if(!save.caughtSpecies.includes(id))save.caughtSpecies.push(id);
+}
 function renderDex(){
  const board=$("dex-entries"),progress=$("dex-progress"),filter=$("dex-filter");
  if(!board||!progress)return;
- const owned=new Set((save.party||[]).map(p=>p.id));
+ const owned=new Set([...(Array.isArray(save.caughtSpecies)?save.caughtSpecies:[]),...(save.party||[]).map(p=>p.id)]);
  const all=Object.keys(species),known=new Set([...seen,...owned]);
- progress.textContent=known.size+" / "+all.length+" discovered · "+owned.size+" species in your current party";
+ progress.textContent=known.size+" / "+all.length+" discovered · "+owned.size+" species collected";
  const mode=filter?.value||"all";
  const list=all.filter(id=>mode==="seen"?known.has(id):mode==="caught"?owned.has(id):mode==="missing"?!known.has(id):true);
  board.replaceChildren();
@@ -445,9 +452,9 @@ function renderDex(){
   if(visible)portrait.append(monsterPortrait(id));else portrait.textContent="?";
   const detail=document.createElement("div"),name=document.createElement("strong"),meta=document.createElement("p");
   name.textContent=visible?info[0]:"???";
-  meta.textContent=visible?info[2].toUpperCase()+" · "+(infernalLooks[id]?.[3]||"Unclassified creature"):"Not yet encountered";
+  meta.textContent=visible?info[2].toUpperCase()+" · "+rarityOf(id)+" · "+(infernalLooks[id]?.[3]||"Unclassified creature"):"Not yet encountered";
   detail.append(name,meta);
-  const status=document.createElement("span");status.className="dex-status";status.textContent=owned.has(id)?"IN PARTY":visible?"SEEN":"UNKNOWN";
+  const status=document.createElement("span");status.className="dex-status";status.textContent=owned.has(id)?"CAUGHT":visible?"SEEN":"UNKNOWN";
   card.append(number,portrait,detail,status);board.append(card);
  }
 }
@@ -486,7 +493,7 @@ async function request(path,method="GET",body){const response=await fetch(api+pa
 async function action(name,extra={}){if(busy)return false;busy=true;render();let succeeded=false;try{if(connected){const previousLead=save.party?.[0]?{id:save.party[0].id,name:save.party[0].name}:null;const previousBattle=battle?{id:battle.id,hp:battle.hp,status:battle.status}:null;const data=await request("/api/game/action","POST",{action:name,expected_version:version,...extra});save=data.save;version=data.version;battle=data.battle;if(previousLead&&save.party?.[0]&&previousLead.id!==save.party[0].id&&name!=="switch"){document.dispatchEvent(new CustomEvent("hell-high-orbit:evolution",{detail:{from:previousLead.id,to:save.party[0].id,previous:previousLead.name,name:save.party[0].name}}));}if(battle?.id)seen.add(battle.id);if(data.message?.includes("evolved into"))showBattleEffect("evolution",data.message);else if(["attack","special","quick","move"].includes(name))showBattleEffect(name==="special"||(name==="move"&&extra.index>=2)?"special":"attack",data.message||"Battle action completed",{damage:previousBattle&&(!battle||battle.id===previousBattle.id)?Math.max(0,previousBattle.hp-(battle?.hp??0)):null,target:"enemy",fainted:!!previousBattle&&!battle,status:battle?.status||null});log(data.message||"Action completed");succeeded=true}else{offlineAction(name,extra);succeeded=true}}catch(e){log(e.message);if(connected&&/version|conflict|session/i.test(e.message))await sync().catch(()=>{})}finally{busy=false;persist();render();if(name==="rest")document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal-result",{detail:{success:succeeded}}))}return succeeded}
 function offlineAction(name,extra){const lead=save.party[0];if(name==="rest"){if(currentRegion()!=="meadow"||save.x!==4||save.y!==1||battle)return;save.party.forEach(p=>{p.hp=p.maxHp;p.status=null;p.energy=0});log("Your party rested at the campfire.");return}if(name==="switch"){const index=extra.index;if(!battle||!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return;[save.party[0],save.party[index]]=[save.party[index],save.party[0]];if(lead.hp<=0){log(save.party[0].name+" enters the battle!");return}const counter=Math.max(1,battle.attack+Math.floor(Math.random()*3));save.party[0].hp=Math.max(0,save.party[0].hp-counter);log(save.party[0].name+" switched in and took "+counter+" damage.");if(!save.party.some(p=>p.hp>0)){battle=null;log("Your party fainted.")}return}if(name==="party-lead"){if(battle||save.party[extra.index]?.hp<=0)return;const [p]=save.party.splice(extra.index,1);save.party.unshift(p);log(p.name+" now leads your party.");return}if(name==="start"||name==="encounter-check"){if(battle||!grass(save.x,save.y)||lead.hp<=0)return;if(name==="encounter-check"&&Math.random()>.22)return;const zone=territory(save.x,save.y).type;const wildIds=Object.keys(species).filter(k=>!legendaryIds.has(k));const keys=currentRegion()==="meadow"?(zone==="alien"?wildIds.filter(k=>infernalLooks[k][2]>=8):zone==="demon"?wildIds.filter(k=>infernalLooks[k][2]<8):wildIds):regionEncounterPool(currentRegion());
  const id=keys[Math.floor(Math.random()*keys.length)],profile=regionEncounters[currentRegion()];
- const level=profile?profile.levelMin+Math.floor(Math.random()*(profile.levelMax-profile.levelMin+1)):1+Math.floor(Math.random()*4);battle=make(id,level);battleVisual=null;seen.add(id);save.encounters++;log((infernalLooks[id][2]>=8?"ALIEN INVASION! ":"HELLSPAWN ALERT! ")+"A wild "+battle.name+" appeared!");return}if(!battle)return;if(name==="flee"){battle=null;log("You retreated safely.");return}if(name==="capture"){if(battle.bossId){log("Commanders are contractually uncatchable. Defeat them instead.");return}if(save.bag<1||save.party.length>=6){log("You need capture supplies and an open party slot.");return}save.bag--;if(Math.random()<Math.min(battle.legendaryId?.35:.9,(battle.legendaryId?.08:.35)+(1-battle.hp/battle.maxHp)*(battle.legendaryId?.3:.55))){if(battle.legendaryId){save.capturedLegendaries||=[];save.capturedLegendaries.push(battle.legendaryId)}save.party.push({...battle,legendaryId:undefined});save.caught++;log(battle.name+" joined your party!");battle=null}else log("The creature broke free.");return}if(name==="move"){
+ const level=profile?profile.levelMin+Math.floor(Math.random()*(profile.levelMax-profile.levelMin+1)):1+Math.floor(Math.random()*4);battle=make(id,level);battleVisual=null;seen.add(id);save.encounters++;log((infernalLooks[id][2]>=8?"ALIEN INVASION! ":"HELLSPAWN ALERT! ")+"A wild "+battle.name+" appeared!");return}if(!battle)return;if(name==="flee"){battle=null;log("You retreated safely.");return}if(name==="capture"){if(battle.bossId){log("Commanders are contractually uncatchable. Defeat them instead.");return}if(save.bag<1||save.party.length>=6){log("You need capture supplies and an open party slot.");return}save.bag--;if(Math.random()<Math.min(battle.legendaryId?.35:.9,(battle.legendaryId?.08:.35)+(1-battle.hp/battle.maxHp)*(battle.legendaryId?.3:.55))){if(battle.legendaryId){save.capturedLegendaries||=[];save.capturedLegendaries.push(battle.legendaryId)}save.party.push({...battle,legendaryId:undefined});registerCapture(battle.id);save.caught++;log(battle.name+" joined your party!");battle=null}else log("The creature broke free.");return}if(name==="move"){
  const index=extra.index;
  const chosen=Number.isInteger(index)&&index>=0&&index<4?learnedMoves(lead)[index]:null;
  if(!Number.isInteger(index)||index<0||index>3||!chosen||!chosen.unlocked){log("That move is not unlocked yet.");return}
