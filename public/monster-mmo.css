@@ -488,3 +488,7 @@ body{background:radial-gradient(ellipse at 52% -20%,#2d214d 0,transparent 52%),l
 #battle-panel .battle-moves button:not(:disabled):active,#battle-panel .battle-support button:not(:disabled):active{transform:translateY(2px);box-shadow:inset 0 1px 0 #fff,0 1px 0 #a4a9a7!important}
 #battle-panel button:focus-visible,.game-header button:focus-visible{outline:3px solid #ff63c8!important;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){#battle-panel button,.game-header button{transition:none!important}}
+
+/* Locally vendored Phaser is a purely decorative layer: it never steals movement or taps. */
+#hell-orbit-ambient-layer,#hell-orbit-ambient-layer canvas{pointer-events:none!important;touch-action:none!important}
+#hell-orbit-ambient-layer canvas{display:block;width:100%!important;height:100%!important;image-rendering:pixelated!important}
