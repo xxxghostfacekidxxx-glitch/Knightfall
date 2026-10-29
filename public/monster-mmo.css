@@ -64,3 +64,10 @@
 #world{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;pointer-events:none!important;opacity:0!important}
 
 #pixel-battle{display:block;width:100%;max-width:768px;aspect-ratio:24/13;height:auto;margin:0 auto 12px;image-rendering:pixelated;border:4px solid #1a2034;box-shadow:0 0 0 2px #f8e6fa}#pixel-battle[hidden]{display:none}#battle-panel:not([hidden]) #battle>.monster-portrait.large{display:none}#battle-panel:not([hidden]) #battle{min-height:0;padding:8px;background:#f6e9d6;color:#201a29;font-family:monospace;border:3px solid #22243a}
+
+/* Four primary battle commands, separated from utility actions. */
+#battle-panel .battle-menu-label{margin:12px 0 5px;font:700 .8rem ui-monospace,monospace;letter-spacing:.15em;color:#f4f6de}
+#battle-panel .battle-moves{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#battle-panel .battle-moves button{min-height:54px;font-size:clamp(.75rem,1.5vw,1rem);font-weight:800}
+#battle-panel .battle-support{display:flex;flex-wrap:wrap;gap:7px;background:#202335;border-color:#77828a}
+#battle-panel .battle-support button{flex:1 1 95px;font-size:.78rem}
