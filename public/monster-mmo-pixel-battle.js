@@ -68,7 +68,7 @@
     const status=names[effect.status];
     if(status){c.font="bold 10px monospace";c.fillStyle="#ffe16b";c.fillText(status,258,40);}
    }
-   if(elapsed>=1100)effect=null;
+   if(elapsed>=1100){effect=null;if(panel.hidden){current=null;canvas.hidden=true;}}
    else{
     const p=elapsed/850,hit=effect.kind==="attack",special=effect.kind==="special",evolution=effect.kind==="evolution";
     if(hit||special){
@@ -139,7 +139,7 @@
   ec.fillStyle="#caff61";ec.fillText((p<.77?evolution.previous:evolution.name).slice(0,25),128,171);
  }
  let current=null,effect=null;
- const refresh=()=>{if(current&&!panel.hidden)stage(current.enemy,current.lead);};
+ const refresh=()=>{if(current&&(!panel.hidden||effect))stage(current.enemy,current.lead);};
  document.addEventListener("hell-high-orbit:effect",event=>{
   const detail=event.detail||{};
   if(!["attack","special","evolution"].includes(detail.kind))return;
@@ -148,10 +148,10 @@
  });
  document.addEventListener("hell-high-orbit:battle",event=>{
   current=event.detail?.enemy&&event.detail?.lead?event.detail:null;
-  canvas.hidden=!current;if(current)refresh();
+  canvas.hidden=!current&&!effect;if(current)refresh();
  });
  let lastFrame=-1;
- function animate(time){if(!document.hidden){drawEvolution(time);const frame=Math.floor(time/(reducedMotion?1200:160));if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}}requestAnimationFrame(animate);}
+ function animate(time){if(!document.hidden){drawEvolution(time);const frame=Math.floor(time/(reducedMotion?1200:160));if(frame!==lastFrame&&current&&(!panel.hidden||effect)){lastFrame=frame;refresh();}}requestAnimationFrame(animate);}
  requestAnimationFrame(animate);
  canvas.hidden=true;
 })();
