@@ -38,7 +38,7 @@
       }
     }
     /* Original faction terrain props: readable silhouettes on a 32px tile grid. */
-    const prop=hash(x/32,y/32,17)%11;
+    const prop=hash(x/32,y/32,17)%19;
     if(!path&&!stone&&!wall&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
       if(prop===0||prop===1){
         const trunk=alien?"#255963":demon?"#493048":"#5b4b38";
@@ -90,10 +90,15 @@
     }else{fill(x+12,y+7,11,5,"#252039");}
     fill(x+10,y+1,14,3,coat);
   }
-  function npc(x,y) {
-    fill(x+8,y+25,17,5,"#252238");fill(x+7,y+13,19,13,"#a6ee59");
-    fill(x+10,y+5,13,11,"#c77ba8");fill(x+7,y+2,5,9,"#ff62c9");
-    fill(x+22,y+1,5,10,"#ff62c9");fill(x+12,y+10,3,3,"#1b2031");fill(x+20,y+10,3,3,"#1b2031");
+  function npc(x,y,variant=0) {
+    const coat=variant===1?"#b25b87":variant===2?"#6cd7c8":"#a6ee59";
+    const face=variant===1?"#e89db8":variant===2?"#8ce5df":"#c77ba8";
+    fill(x+8,y+25,17,5,"#252238");fill(x+7,y+13,19,13,coat);
+    fill(x+10,y+5,13,11,face);fill(x+7,y+2,5,9,variant===2?"#83f9e6":"#ff62c9");
+    fill(x+22,y+1,5,10,variant===2?"#83f9e6":"#ff62c9");
+    fill(x+12,y+10,3,3,"#1b2031");fill(x+20,y+10,3,3,"#1b2031");
+    if(variant===1){fill(x+13,y+16,8,6,"#352a4e");fill(x+16,y+18,2,5,"#e8e3b3");}
+    if(variant===2){fill(x+10,y+3,13,3,"#2b6675");fill(x+13,y+1,7,3,"#ff81ce");}
   }
   function render() {
     const cells=world.children;
@@ -108,7 +113,7 @@
     if(playerIndex>=0)previousCell=playerIndex;
     for(let i=0;i<cells.length;i++){
       const t=cells[i],x=(i%W)*TILE,y=Math.floor(i/W)*TILE;
-      if(t.classList.contains("npc"))npc(x,y);
+      if(t.classList.contains("npc"))npc(x,y,t.classList.contains("zone-demon")?1:t.classList.contains("zone-alien")?2:0);
       if(t.classList.contains("other"))character(x,y,1);
       if(t.classList.contains("player"))character(x,y,0);
     }
