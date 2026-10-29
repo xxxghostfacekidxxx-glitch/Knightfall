@@ -49,9 +49,38 @@
   const hp=(x,y,value,max)=>{fill(x,y,115,7,"#313448");fill(x+2,y+2,Math.max(0,Math.round(111*Math.min(1,value/Math.max(1,max)))),3,value/max<.25?"#e45a6a":value/max<.5?"#e6bc51":"#70c76d");};
   hp(19,31,enemy.hp,enemy.maxHp);hp(230,175,lead.hp,lead.maxHp);
   c.fillText("HP "+lead.hp+"/"+lead.maxHp,230,190);
+  if(effect){
+   const elapsed=performance.now()-effect.started;
+   if(elapsed>=850)effect=null;
+   else{
+    const p=elapsed/850,hit=effect.kind==="attack",special=effect.kind==="special",evolution=effect.kind==="evolution";
+    if(hit||special){
+     const cx=290,cy=70;
+     for(let i=0;i<(special?20:9);i++){
+      const angle=i*2.399+elapsed/210,radius=p*(special?65:39);
+      const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
+      fill(px,py,special?6:4,special?6:4,i%2?"#ff61d4":"#d4ff68");
+     }
+     if(p<.18){c.fillStyle="rgba(255,255,255,.4)";c.fillRect(253,26,85,83);}
+    }
+    if(evolution){
+     for(let i=0;i<18;i++){
+      const a=i*Math.PI/9+elapsed/310;
+      const x=90+Math.cos(a)*(12+p*70),y=139+Math.sin(a)*(12+p*58);
+      fill(x,y,5,5,i%2?"#ff70d0":"#caff61");
+     }
+    }
+   }
+  }
  }
- let current=null;
+ let current=null,effect=null;
  const refresh=()=>{if(current&&!panel.hidden)stage(current.enemy,current.lead);};
+ document.addEventListener("hell-high-orbit:effect",event=>{
+  const detail=event.detail||{};
+  if(!["attack","special","evolution"].includes(detail.kind))return;
+  effect={kind:detail.kind,started:performance.now()};
+  refresh();
+ });
  document.addEventListener("hell-high-orbit:battle",event=>{
   current=event.detail?.enemy&&event.detail?.lead?event.detail:null;
   canvas.hidden=!current;if(current)refresh();
