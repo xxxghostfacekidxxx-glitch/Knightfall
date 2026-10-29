@@ -26,7 +26,7 @@ jobs:
             git fetch origin staging/selected-open-source-games-14-15
             git switch -C staging/selected-open-source-games-14-15 FETCH_HEAD
             git fetch origin main
-            git merge --ff-only origin/main || { echo "Staging diverged from main; refusing force-push. Reconcile manually." >&2; exit 1; }
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" merge --no-edit origin/main || { echo "Staging merge conflict; refusing force-push. Reconcile manually." >&2; exit 1; }
           else
             git switch -c staging/selected-open-source-games-14-15
           fi
@@ -52,12 +52,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
+          # A staging branch may already have a clean merge from main; push that update too.
           if git diff --cached --quiet; then
             echo "No staged import changes; checking review PR state."
           else
             git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
-            git push origin HEAD:refs/heads/staging/selected-open-source-games-14-15
           fi
+          git push origin HEAD:refs/heads/staging/selected-open-source-games-14-15
           if gh pr list --head staging/selected-open-source-games-14-15 --base main --state open --json number --jq "length" | grep -qx 0; then
             gh pr create --base main --head staging/selected-open-source-games-14-15 --title "Stage A Dark Room and Evolution of Trust for license and gameplay review" --body "Pinned upstream snapshots. Review third-party attribution, all media licenses, local resource loading, mobile gameplay and build before merging to production."
           else

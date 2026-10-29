@@ -15,10 +15,13 @@ class Links(HTMLParser):
     def __init__(self):
         super().__init__()
         self.paths = []
+        self.external_scripts = []
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == "script" and attrs.get("src"):
             self.paths.append(attrs["src"])
+            if attrs["src"].startswith(("http://", "https://", "//")):
+                self.external_scripts.append(attrs["src"])
         if tag == "link" and attrs.get("href") and attrs.get("rel") in ("stylesheet", "icon", "shortcut icon", "image_src"):
             self.paths.append(attrs["href"])
 
@@ -35,6 +38,10 @@ for game, license_name in GAMES.items():
     html = index.read_text(encoding="utf-8")
     parser = Links()
     parser.feed(html)
+    for remote in parser.external_scripts:
+        failures.append(f"{game}: remote executable script prohibited: {remote}")
+    if game == "a-dark-room" and "googletagmanager.com" in html:
+        failures.append(f"{game}: upstream analytics references remain")
     for ref in parser.paths:
         if ref.startswith(("http://", "https://", "//", "data:", "#")):
             if ref.startswith(("http://", "https://", "//")) and "googletagmanager" in ref:
