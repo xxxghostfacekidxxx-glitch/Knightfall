@@ -2,6 +2,7 @@ import {chromium} from 'playwright';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 const base=process.env.GAME_BASE_URL||'http://127.0.0.1:18741';
+const failures=[];
 const server=process.env.GAME_BASE_URL?null:spawn('python3',['-m','http.server','18741','--directory','public'],{stdio:'ignore'});
 let browser;await mkdir('advanced-game-evidence',{recursive:true});
 try{
@@ -19,7 +20,7 @@ try{
     await page.locator('#createcharacter .play:not(.disabled)').click({timeout:60000});
     await page.waitForFunction(()=>document.body.classList.contains('started'),null,{timeout:60000});
     await page.locator('body').click({position:{x:640,y:400}});
-    await page.locator('canvas').first().click({position:{x:450,y:230}});
+    await page.locator('#foreground').click({position:{x:450,y:230}});
     if(!await page.locator('canvas').count())throw Error('World canvas missing');
    }else if(slug==='interstellar-armada'){
     await page.getByText('Single player',{exact:true}).waitFor({state:'visible',timeout:60000});
@@ -39,7 +40,8 @@ try{
    await page.waitForTimeout(2500);
    if(errors.length)throw Error(errors.join(' | '));
    console.log(`${slug}: gameplay launch passed`);
-  }catch(error){await writeFile(`advanced-game-evidence/${slug}.html`,await page.content());throw error}
+  }catch(error){await writeFile(`advanced-game-evidence/${slug}.html`,await page.content());console.error(slug,error.message);failures.push(`${slug}: ${error.message}`)}
   finally{await page.screenshot({path:`advanced-game-evidence/${slug}.png`});await page.close()}
  }
+ if(failures.length)throw Error(failures.join('\n'));
 }finally{await browser?.close();server?.kill()}

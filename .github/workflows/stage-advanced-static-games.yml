@@ -39,8 +39,29 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts esbuild@0.25.12 playwright@1.58.2
           npx playwright install --with-deps chromium
+      - uses: actions/cache/restore@v4
+        id: game-cache
+        with:
+          path: |
+            public/arcade/hosted/interstellar-armada
+            public/arcade/hosted/browserquest-solo
+            public/arcade/hosted/openfront-solo
+            public/arcade/advanced-imports.json
+            public/arcade-30-games.html
+          key: advanced-static-v1-${{ hashFiles('scripts/advanced-games/**', 'scripts/import-advanced-static-games.sh') }}
       - name: Import and build audited pinned sources
+        if: steps.game-cache.outputs.cache-hit != 'true'
         run: bash scripts/import-advanced-static-games.sh
+      - uses: actions/cache/save@v4
+        if: steps.game-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            public/arcade/hosted/interstellar-armada
+            public/arcade/hosted/browserquest-solo
+            public/arcade/hosted/openfront-solo
+            public/arcade/advanced-imports.json
+            public/arcade-30-games.html
+          key: ${{ steps.game-cache.outputs.cache-primary-key }}
       - name: Verify deployment file sizes and license exclusions
         run: |
           python3 scripts/advanced-games/verify.py
