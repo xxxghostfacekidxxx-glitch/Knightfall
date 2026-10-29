@@ -144,6 +144,22 @@
       "license": "MIT",
       "files": [],
       "notes": "Removed from public site and repository after replacing with original Ash-Fall game alternatives; historical provenance retained for audit."
+    },
+    {
+      "gameId": "cabinet-pikkuautot-city",
+      "title": "Pikkuautot 3D: City Edition",
+      "status": "imported",
+      "upstream": "https://github.com/pemmyz/js_pikkuautot_redux",
+      "license": "MIT",
+      "notes": "Unmodified upstream game sources and bundled Three.js/Planck.js; MIT license retained. Optional auto textures not imported; upstream documents procedural fallback. Runtime and third-party dependency notices require verification before declaring production-ready.",
+      "files": [
+        "/arcade/hosted/pikkuautot-city/index.html",
+        "/arcade/hosted/pikkuautot-city/script.js",
+        "/arcade/hosted/pikkuautot-city/style.css",
+        "/arcade/hosted/pikkuautot-city/three.min.js",
+        "/arcade/hosted/pikkuautot-city/planck.min.js",
+        "/arcade/hosted/pikkuautot-city/LICENSE"
+      ]
     }
   ],
   "notYetImported": [
