@@ -273,3 +273,7 @@ body.interior-open #world-interact{pointer-events:none}
 .interior-journal-entry{padding:7px 8px;background:#263947;border:1px solid #44535e;font-size:.7rem;color:#aebac1}
 .interior-journal-entry.is-discovered{color:#e7f8d1;border-color:#9cc86c}
 @media(max-width:480px){#interior-journal-entries{grid-template-columns:1fr}}
+
+/* Route exits are visible on the playfield but the travel guide remains in the map menu. */
+.world .tile.route-gate{position:relative}
+#game-map-location{line-height:1.5}
