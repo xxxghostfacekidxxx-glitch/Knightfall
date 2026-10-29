@@ -86,6 +86,32 @@
   fill(0,108,384,100,ground);fill(0,131,384,77,alien?"#69a3a0":infernal?"#a07887":"#86a883");
   for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?(alien?"#88c6b8":infernal?"#bf91aa":"#759d79"):(alien?"#417b82":infernal?"#774c71":"#b5bd91"));
   fill(219,102,140,13,"#355f68");fill(230,93,119,16,"#acc2a2");fill(23,176,149,12,"#395b62");fill(34,164,127,15,"#a3b69b");
+  // Faction foreground silhouettes give the battle stage real near/mid/far depth.
+  // Kept beneath creatures and HUD so moves remain readable on small phones.
+  const horizon=alien?"#244c60":infernal?"#46273f":"#31564b";
+  for(let i=0;i<16;i++){
+   const fx=(i*41+9)%384,h=7+(i*17)%17;
+   if(alien){
+    fill(fx,132-h,4,h,horizon);fill(fx-3,130-h,10,3,"#4b9ba4");
+    fill(fx,125-h,2,4,"#adfff0");
+   }else if(infernal){
+    fill(fx,133-h,5,h,horizon);fill(fx-3,127-h,11,4,"#9e5278");
+    fill(fx+1,123-h,3,4,"#ffbd83");
+   }else{
+    fill(fx,135-h,4,h,horizon);
+    fill(fx-5,131-h,14,4,"#4e8661");
+    fill(fx-2,127-h,8,4,"#74a873");
+   }
+  }
+  // A subtle textured lip anchors the two battle platforms.
+  for(let i=0;i<9;i++){
+   const x=32+i*16;
+   fill(x,179+(i%2),8,2,alien?"#86bdb5":infernal?"#ba8299":"#a9c092");
+  }
+  for(let i=0;i<8;i++){
+   const x=228+i*16;
+   fill(x,105+(i%2),8,2,alien?"#85c5c0":infernal?"#c28fa5":"#bbcb9b");
+  }
   // Ground contact shadows and rim glints make atlas sprites sit in the arena.
   // Shadows are drawn before creatures, so silhouettes stay readable at 384px.
   fill(264,100,63,4,"#233b48");fill(272,98,47,2,"#42606a");

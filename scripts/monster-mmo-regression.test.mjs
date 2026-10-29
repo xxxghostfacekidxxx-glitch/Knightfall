@@ -123,3 +123,11 @@ test("battle sprites have ground shadows and environmental glints",async()=>{
  assert.match(stage,/Ground contact shadows and rim glints/);
  assert.match(stage,/fill\(264,100,63,4/);
 });
+
+test("battle stage includes distinct foreground parallax silhouettes for all three factions",async()=>{
+ const battle=await load("public/monster-mmo-pixel-battle.js");
+ assert.match(battle,/Faction foreground silhouettes/);
+ assert.match(battle,/if\(alien\)/);
+ assert.match(battle,/else if\(infernal\)/);
+ assert.match(battle,/subtle textured lip/);
+});
