@@ -41,7 +41,7 @@ try{
    if(errors.length)throw Error(errors.join(' | '));
    console.log(`${slug}: gameplay launch passed`);
   }catch(error){await writeFile(`advanced-game-evidence/${slug}.html`,await page.content());console.error(slug,error.message);failures.push(`${slug}: ${error.message}`)}
-  finally{await page.screenshot({path:`advanced-game-evidence/${slug}.png`});await page.close()}
+  finally{try{await page.screenshot({path:`advanced-game-evidence/${slug}.png`,timeout:10000,animations:'disabled'})}catch(error){console.warn(`${slug}: optional screenshot unavailable: ${error.message}`)}await page.close()}
  }
  if(failures.length)throw Error(failures.join('\n'));
 }finally{await browser?.close();server?.kill()}
