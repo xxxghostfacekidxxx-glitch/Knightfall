@@ -185,6 +185,12 @@
     const base=path?"#bba078":stone?"#646879":wall?"#3a4055":alien?"#276779":demon?"#70405c":"#457c54";
     fill(x,y,32,32,base);
     if(path) {
+      // Interlocking cobbles and compact path borders make routes read as real terrain.
+      fill(x,y,32,2,"#e3c79b");fill(x,y+30,32,2,"#8c755f");
+      for(let row=0;row<4;row++){
+        fill(x,y+row*8+4,32,1,"#9c8269");
+        for(let col=(row%2)*8;col<32;col+=16)fill(x+col,y+row*8+4,1,5,"#ad9171");
+      }
       for(let i=0;i<7;i++){let h=hash(x,y,i),px=h%29,py=(h>>>9)%29;dot(x+px,y+py,i%2?"#d8b88b":"#957d65",2);}
     } else if(wall) {
       for(let row=0;row<4;row++){fill(x,y+row*8,32,1,"#202536");for(let col=(row%2)*8;col<32;col+=16)fill(x+col,y+row*8,1,8,"#242a3b");}
@@ -288,6 +294,24 @@
       else{fill(x+12,y+10,3,2,"#22243a");fill(x+20,y+10,3,2,"#22243a");}
     }else{fill(x+12,y+7,11,5,"#252039");}
     fill(x+10,y+1,14,3,coat);
+    if(variant===0){
+      // Trainer silhouette: directional backpack, side-facing profile and walking arms.
+      const moving=walkFrame>0,arm=moving?(step%2?2:-2):0;
+      if(facing==="up"){
+        fill(x+10,y+13,14,12,"#202d45");fill(x+12,y+15,10,8,"#d0d85c");
+        fill(x+15,y+17,4,4,"#ff65c4");
+      }else if(facing==="left"||facing==="right"){
+        const bx=facing==="left"?x+20:x+5;
+        fill(bx,y+14,7,12,"#223047");fill(bx+1,y+16,5,7,"#caff45");
+        const fx=facing==="left"?x+8:x+23;
+        fill(fx,y+16+arm,4,7,"#f2b69c");
+      }else{
+        fill(x+9,y+15+arm,4,8,"#f2b69c");
+        fill(x+22,y+15-arm,4,8,"#f2b69c");
+        fill(x+12,y+12,10,3,"#ffb5df");
+      }
+      fill(x+10,y+2,14,2,"#caff45");
+    }
   }
   function npc(x,y,variant=0) {
     const coat=variant===1?"#b25b87":variant===2?"#6cd7c8":"#a6ee59";
