@@ -247,3 +247,16 @@ body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-event
 
 /* Unexplored map cells stay hidden until the trainer reaches the area. */
 .map-dot.fog-dot{background:#172530;border-color:#526172}
+
+/* Pixel-art field station interior. Kept within the actual game screen. */
+.game-screen{position:relative}
+.rpg-station[hidden]{display:none!important}
+.rpg-station{position:absolute;inset:0;z-index:8;background:#202c3d;display:flex;flex-direction:column;align-items:center;justify-content:center;border:5px solid #caff45;box-shadow:inset 0 0 0 4px #1b2637}
+.rpg-station canvas{display:block;width:100%;height:auto;max-height:calc(100% - 50px);object-fit:contain;image-rendering:pixelated;pointer-events:none}
+.rpg-station-actions{display:flex;gap:10px;justify-content:center;align-items:center;width:100%;min-height:48px;padding:4px;background:#233748}
+.rpg-station-actions button{border:2px solid #101c2a;border-radius:3px;background:#f6eed8;color:#1b2b36;font-family:ui-monospace,monospace;font-weight:900;font-size:.82rem;min-height:35px;padding:5px 12px}
+.rpg-station-actions button:first-child{background:#caff45}
+.rpg-station-actions button:focus-visible{outline:3px solid #ff75c4;outline-offset:2px}
+body.interior-open .pad{pointer-events:none;opacity:.45}
+body.interior-open #world-interact{pointer-events:none}
+@media(max-width:480px){.rpg-station-actions{gap:5px}.rpg-station-actions button{font-size:.7rem;padding:4px 6px}}
