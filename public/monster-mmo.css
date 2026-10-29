@@ -57,3 +57,8 @@
 .pad button{border-radius:4px;box-shadow:inset -4px -4px #7e9932,0 4px #090b12}
 @media(max-width:790px){.layout{grid-template-columns:1fr}.world-panel{padding:6px}.world{border-width:2px}.tile span{font-size:clamp(9px,3vw,18px)}#battle-panel:not([hidden]){inset:2vh 6px;padding:10px}#battle-panel .buttons{gap:5px;padding:6px}#battle-panel .buttons button{padding:9px 6px;font-size:.75rem}.shell>header{padding-bottom:12px}}
 @media(prefers-reduced-motion:reduce){.tile.player:after{animation:none}}
+
+/* Canvas overworld replaces the visual DOM tile grid; DOM retains accessible map semantics. */
+.world-panel{position:relative}
+#pixel-overworld{display:block;width:100%;height:auto;aspect-ratio:4/3;image-rendering:pixelated;image-rendering:crisp-edges;border:4px solid #111322;box-shadow:0 0 0 2px #caff45;background:#1c2630}
+#world{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;pointer-events:none!important;opacity:0!important}
