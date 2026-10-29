@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
 <defs>
- <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb66d"/><stop offset=".25" stop-color="#f47725"/><stop offset=".7" stop-color="#b9471c"/><stop offset="1" stop-color="#54271e"/></linearGradient>
+ <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e8b5f5"/><stop offset=".25" stop-color="#56306b"/><stop offset=".7" stop-color="#ff55d8"/><stop offset="1" stop-color="#54271e"/></linearGradient>
  <linearGradient id="metal" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#e5edf0"/><stop offset=".3" stop-color="#788894"/><stop offset=".7" stop-color="#35434d"/><stop offset="1" stop-color="#141c23"/></linearGradient>
  <linearGradient id="cloth" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#10151d"/><stop offset=".45" stop-color="#343b45"/><stop offset="1" stop-color="#11151b"/></linearGradient>
- <linearGradient id="skin" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#f4d2b5"/><stop offset=".6" stop-color="#bd8b78"/><stop offset="1" stop-color="#76505a"/></linearGradient>
+ <linearGradient id="skin" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#e8b5f5"/><stop offset=".6" stop-color="#56306b"/><stop offset="1" stop-color="#76505a"/></linearGradient>
  <linearGradient id="visor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#baff9a"/><stop offset=".25" stop-color="#5fe28a"/><stop offset=".7" stop-color="#1d6b53"/><stop offset="1" stop-color="#122c2b"/></linearGradient>
  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.2"/></filter>
 </defs>
@@ -12,7 +12,7 @@
 <path d="M43 48L26 73 33 102 46 95 51 61Z" fill="#252b34" stroke="#090d13" stroke-width="3"/>
 <path d="M30 72L43 67 47 90 34 96Z" fill="#59616a" stroke="#151920" stroke-width="2"/>
 <path d="M81 49L98 63 94 91 82 89 77 62Z" fill="#242a33" stroke="#0b1016" stroke-width="3"/>
-<path d="M83 63L94 67 90 83 81 81Z" fill="#ff613e" stroke="#171820" stroke-width="2"/>
+<path d="M83 63L94 67 90 83 81 81Z" fill="#ff55d8" stroke="#171820" stroke-width="2"/>
 <!-- boots and reinforced cargo trousers -->
 <path d="M46 103L61 105 58 133 49 145 29 145 26 138 41 128Z" fill="#202630" stroke="#090d13" stroke-width="4" stroke-linejoin="round"/>
 <path d="M68 103L83 101 86 126 101 139 98 146 76 146 65 136Z" fill="#171e27" stroke="#090d13" stroke-width="4" stroke-linejoin="round"/>
@@ -22,15 +22,15 @@
 <path d="M28 151L48 151M79 151L100 151" stroke="#a4ff8a" stroke-width="2"/>
 <!-- torso and layered utility jacket -->
 <path d="M43 48L31 58 23 87 34 98 43 85 42 114 84 114 84 84 94 98 106 88 96 60 81 48Z" fill="url(#jacket)" stroke="#10141a" stroke-width="4" stroke-linejoin="round"/>
-<path d="M43 51L57 60 52 111 42 112 39 78 31 90 27 86 36 61Z" fill="#ffad63" opacity=".8"/>
-<path d="M82 51L69 61 76 111 85 111 88 79 96 91 101 87 92 61Z" fill="#8e361f" opacity=".85"/>
+<path d="M43 51L57 60 52 111 42 112 39 78 31 90 27 86 36 61Z" fill="#e8b5f5" opacity=".8"/>
+<path d="M82 51L69 61 76 111 85 111 88 79 96 91 101 87 92 61Z" fill="#56306b" opacity=".85"/>
 <path d="M57 59L67 60 73 111 54 111Z" fill="url(#cloth)" stroke="#121720" stroke-width="2"/>
 <path d="M58 66L67 66 69 106 58 106Z" fill="#c5d0d2" opacity=".7"/>
 <path d="M57 68L67 68M57 75L68 75M57 82L69 82" stroke="#202b33" stroke-width="2"/>
 <path d="M35 68L46 74 42 87 31 83Z" fill="#222b35" stroke="#10151b" stroke-width="2"/>
 <path d="M32 77L41 80" stroke="#a4ff8a" stroke-width="3"/>
 <path d="M81 70L92 66 96 79 85 86Z" fill="#202a33" stroke="#10151b" stroke-width="2"/>
-<path d="M85 73L92 71" stroke="#ffcf73" stroke-width="3"/>
+<path d="M85 73L92 71" stroke="#e8b5f5" stroke-width="3"/>
 <!-- left arm, glove and forearm armor -->
 <path d="M31 61L23 79 15 98 23 104 35 87 43 68Z" fill="url(#jacket)" stroke="#11151b" stroke-width="4" stroke-linejoin="round"/>
 <path d="M17 94L28 98 25 109 16 107 12 101Z" fill="url(#metal)" stroke="#10151b" stroke-width="3"/>
@@ -41,28 +41,28 @@
 <path d="M95 91L106 88 111 95 108 104 98 106 93 100Z" fill="#242c36" stroke="#090d13" stroke-width="3"/>
 <path d="M101 90L111 91 119 86 122 91 113 100 104 101Z" fill="url(#metal)" stroke="#090d13" stroke-width="3"/>
 <path d="M113 87L123 84 126 88 122 94 113 95Z" fill="#171e26" stroke="#05080c" stroke-width="2"/>
-<path d="M115 88L123 87" stroke="#ffcf73" stroke-width="2"/>
+<path d="M115 88L123 87" stroke="#e8b5f5" stroke-width="2"/>
 <!-- neck and head -->
 <path d="M51 44L52 55 74 57 76 44Z" fill="url(#skin)" stroke="#141820" stroke-width="3"/>
 <path d="M39 20L46 9 61 5 78 12 88 27 83 46 70 55 52 51 41 41Z" fill="#20232b" stroke="#090d13" stroke-width="4" stroke-linejoin="round"/>
-<path d="M43 22L48 10 62 8 75 14 82 25 76 30 61 26 49 31Z" fill="#e9b78e"/>
+<path d="M43 22L48 10 62 8 75 14 82 25 76 30 61 26 49 31Z" fill="#e8b5f5"/>
 <path d="M44 21L50 11 63 10 75 15 81 23 77 27 62 23 48 29Z" fill="#28252a"/>
 <!-- spiky hair -->
 <path d="M39 25L31 14 43 17 42 4 55 14 63 0 68 15 82 8 79 22 91 25 82 34 44 35Z" fill="#17131d" stroke="#080a0e" stroke-width="3" stroke-linejoin="round"/>
-<path d="M43 14L50 18 54 10M64 10L66 17 76 14" fill="none" stroke="#ff613e" stroke-width="2"/>
+<path d="M43 14L50 18 54 10M64 10L66 17 76 14" fill="none" stroke="#ff55d8" stroke-width="2"/>
 <!-- goggles with bright toxic lenses -->
 <path d="M39 27L57 24 62 30 60 41 42 42 37 36Z" fill="#11181d" stroke="#080b10" stroke-width="3"/>
 <path d="M64 29L69 24 85 27 87 35 81 42 66 40Z" fill="#11181d" stroke="#080b10" stroke-width="3"/>
 <path d="M42 30L56 28 57 36 44 37Z" fill="url(#visor)"/><path d="M69 28L82 30 81 37 68 36Z" fill="url(#visor)"/>
 <path d="M44 30L53 29" stroke="#f0ffd7" stroke-width="2"/><path d="M70 29L79 30" stroke="#f0ffd7" stroke-width="2"/>
-<path d="M60 32L66 32" stroke="#ff613e" stroke-width="3"/>
+<path d="M60 32L66 32" stroke="#ff55d8" stroke-width="3"/>
 <path d="M48 44L61 47 76 42 73 50 60 55 51 51Z" fill="#10161c" stroke="#090d12" stroke-width="3"/>
 <path d="M54 47L57 49 59 47 62 50 65 47 68 48" fill="none" stroke="#a4ff8a" stroke-width="2"/>
 <!-- straps, rivets, wear and insignia -->
 <path d="M36 57L45 64 41 70 32 63Z" fill="#1b232c" stroke="#0b1015" stroke-width="2"/>
-<circle cx="38" cy="62" r="2" fill="#ffcf73"/><circle cx="87" cy="61" r="2" fill="#ffcf73"/>
+<circle cx="38" cy="62" r="2" fill="#e8b5f5"/><circle cx="87" cy="61" r="2" fill="#e8b5f5"/>
 <path d="M43 92L50 95 48 101 41 99Z" fill="#252d36"/><path d="M78 91L85 89 87 96 80 99Z" fill="#252d36"/>
-<path d="M44 83L48 84M80 80L84 79" stroke="#f9b177" stroke-width="2"/>
+<path d="M44 83L48 84M80 80L84 79" stroke="#e8b5f5" stroke-width="2"/>
 <path d="M58 91L66 91 67 100 58 100Z" fill="#111920" stroke="#697780" stroke-width="1.5"/><path d="M60 94L65 94" stroke="#a4ff8a" stroke-width="2"/>
-<path d="M28 135L36 137M82 135L90 137" stroke="#ff613e" stroke-width="2"/>
+<path d="M28 135L36 137M82 135L90 137" stroke="#ff55d8" stroke-width="2"/>
 </svg>
