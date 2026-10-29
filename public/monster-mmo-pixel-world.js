@@ -100,6 +100,37 @@
     if(variant===1){fill(x+13,y+16,8,6,"#352a4e");fill(x+16,y+18,2,5,"#e8e3b3");}
     if(variant===2){fill(x+10,y+3,13,3,"#2b6675");fill(x+13,y+1,7,3,"#ff81ce");}
   }
+  const regionMap=document.getElementById("game-region-map");
+  const mapCtx=regionMap?.getContext("2d");
+  if(mapCtx)mapCtx.imageSmoothingEnabled=false;
+  function renderRegionMap(cells,playerIndex){
+    if(!mapCtx)return;
+    const unit=24;
+    mapCtx.clearRect(0,0,384,288);
+    for(let i=0;i<cells.length;i++){
+      const t=cells[i],x=(i%W)*unit,y=Math.floor(i/W)*unit;
+      const zone=t.classList.contains("zone-alien")?"#397d84":t.classList.contains("zone-demon")?"#9b537d":"#719b66";
+      const color=t.classList.contains("wall")?"#263b50":t.classList.contains("rock")?"#70778a":t.classList.contains("path")?"#d6ba8c":zone;
+      mapCtx.fillStyle=color;mapCtx.fillRect(x,y,unit,unit);
+      mapCtx.strokeStyle="#182b3150";mapCtx.strokeRect(x+.5,y+.5,unit-1,unit-1);
+      if(t.classList.contains("camp")){mapCtx.fillStyle="#fff0b4";mapCtx.fillRect(x+7,y+7,10,10);}
+      if(t.classList.contains("landmark")){
+        mapCtx.fillStyle="#1e273b";mapCtx.fillRect(x+6,y+5,12,14);
+        mapCtx.fillStyle="#f5ff84";mapCtx.fillRect(x+9,y+8,6,8);
+      }
+    }
+    if(playerIndex>=0){
+      const x=(playerIndex%W)*unit+12,y=Math.floor(playerIndex/W)*unit+12;
+      mapCtx.fillStyle="#101f29";mapCtx.fillRect(x-8,y-8,16,16);
+      mapCtx.fillStyle="#ff7bc8";mapCtx.fillRect(x-5,y-5,10,10);
+      mapCtx.fillStyle="#ffffff";mapCtx.fillRect(x-2,y-2,4,4);
+    }
+    const label=document.getElementById("game-map-location");
+    if(label&&playerIndex>=0){
+      const tile=cells[playerIndex],x=playerIndex%W+1,y=Math.floor(playerIndex/W)+1;
+      label.textContent="Trainer position: "+String(x).padStart(2,"0")+", "+String(y).padStart(2,"0")+" · "+(tile.classList.contains("zone-alien")?"Alien territory":tile.classList.contains("zone-demon")?"Infernal territory":"Contested territory");
+    }
+  }
   function render() {
     const cells=world.children;
     if(cells.length!==W*H)return;
@@ -111,6 +142,7 @@
       step++;walkFrame=3;
     }
     if(playerIndex>=0)previousCell=playerIndex;
+    renderRegionMap(cells,playerIndex);
     for(let i=0;i<cells.length;i++){
       const t=cells[i],x=(i%W)*TILE,y=Math.floor(i/W)*TILE;
       if(t.classList.contains("npc"))npc(x,y,t.classList.contains("zone-demon")?1:t.classList.contains("zone-alien")?2:0);
