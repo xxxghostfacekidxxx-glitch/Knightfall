@@ -9,6 +9,75 @@
   canvas.id = "pixel-overworld";
   canvas.setAttribute("aria-hidden", "true");
   world.parentNode.insertBefore(canvas, world);
+  /* A genuine, self-contained explorable building interior, not another HUD panel. */
+  const station=document.createElement("section");
+  station.className="rpg-station";
+  station.hidden=true;
+  station.setAttribute("role","dialog");
+  station.setAttribute("aria-modal","true");
+  station.setAttribute("aria-label","Field station interior");
+  const room=document.createElement("canvas");
+  room.width=256;room.height=192;
+  room.setAttribute("aria-hidden","true");
+  const actions=document.createElement("div");
+  actions.className="rpg-station-actions";
+  const heal=document.createElement("button");
+  heal.type="button";heal.textContent="✚ Heal Party";
+  const exit=document.createElement("button");
+  exit.type="button";exit.textContent="↩ Exit";
+  actions.append(heal,exit);
+  station.append(room,actions);
+  canvas.parentNode.append(station);
+  let stationPreviousFocus=null;
+  function drawStation(){
+    const c=room.getContext("2d");if(!c)return;
+    c.imageSmoothingEnabled=false;
+    const rect=(x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h)};
+    rect(0,0,256,192,"#283e4c");
+    for(let x=0;x<256;x+=32)for(let y=0;y<192;y+=32){
+      rect(x+1,y+1,30,30,(x/32+y/32)%2===0?"#7a8c88":"#849994");
+    }
+    rect(0,0,256,39,"#38465d");rect(0,36,256,5,"#182b3a");
+    rect(12,9,232,21,"#f3e7c6");rect(24,15,208,9,"#3a5662");
+    rect(94,13,68,13,"#ff73c3");rect(98,16,60,7,"#282b42");
+    // Healing counter and monitor.
+    rect(24,55,208,44,"#30465a");rect(28,59,200,35,"#e4d9c5");
+    rect(97,45,62,32,"#23394c");rect(105,50,46,20,"#8ee6d8");
+    rect(124,52,8,16,"#ff77c4");rect(120,56,16,8,"#ff77c4");
+    rect(28,94,200,9,"#583e59");
+    // Creature recovery pods.
+    for(let i=0;i<3;i++){const x=45+i*70;rect(x,111,35,38,"#263e52");rect(x+4,114,27,25,"#93dfe1");rect(x+9,118,17,13,"#d2ff7c");rect(x+11,139,13,6,"#ff7ac8");}
+    // Doorway and floor shadow.
+    rect(105,172,46,20,"#35414b");rect(113,176,30,16,"#e7d7b8");
+    rect(116,157,24,14,"#2d2b43");rect(121,149,14,12,"#ff7ac8");
+    rect(125,154,5,5,"#f6c3a5");
+  }
+  function closeStation(){
+    if(station.hidden)return;
+    station.hidden=true;document.body.classList.remove("interior-open");
+    (stationPreviousFocus?.isConnected?stationPreviousFocus:document.getElementById("world-interact"))?.focus();
+    stationPreviousFocus=null;
+  }
+  document.addEventListener("hell-high-orbit:enter-station",()=>{
+    if(document.body.classList.contains("pause-open")||document.body.classList.contains("dialogue-open")||!document.getElementById("battle-panel")?.hidden)return;
+    stationPreviousFocus=document.activeElement;station.hidden=false;
+    document.body.classList.add("interior-open");drawStation();heal.focus();
+  });
+  heal.addEventListener("click",()=>{
+    document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal"));
+    heal.textContent="✚ Party Restored";
+    setTimeout(()=>{heal.textContent="✚ Heal Party"},1300);
+  });
+  exit.addEventListener("click",closeStation);
+  document.addEventListener("keydown",e=>{
+    if(station.hidden)return;
+    if(e.key==="Escape"){e.preventDefault();e.stopImmediatePropagation();closeStation()}
+    else if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)){e.preventDefault();e.stopImmediatePropagation()}
+    else if(e.key==="Tab"){
+      if(e.shiftKey&&document.activeElement===heal){e.preventDefault();exit.focus()}
+      else if(!e.shiftKey&&document.activeElement===exit){e.preventDefault();heal.focus()}
+    }
+  },true);
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) { canvas.remove(); return; }
   const TILE = 32, W = 16, H = 12;
