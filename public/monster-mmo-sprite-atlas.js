@@ -5,12 +5,12 @@
 const ids="embercub ashhorn mossbit mossreaper driftfin cryptfin zipfang voltmaw squibblex squibmarshal glorpbot glorpcannon gloamlet gloamshade thornspit thornmaw grubruckle gravruckle mournwing doomwing noodloid noodlarch blipmoth bliporacle hexpup hexhound starjelly astraljelly minionmouse minivillain minieddie casketkit mausoleopard impickle brinebrute cinderling pyroclast screecher sonicrypt puddlegloom drownmire fossilimp ossiforge zapgob stormgob moldmunch sporelord quarklet quarkzilla saucerpup orbithound glitchgrub bytebeetle voidsnail chronoshell".split(" ");
 const colors={fire:["#ff8666","#a3335e"],grass:["#9fef6d","#3e8560"],water:["#67e2ef","#3569b7"],electric:["#f1f778","#8c55a6"],cosmic:["#88f9db","#5573b3"],ghost:["#c8a7ff","#654889"],air:["#c1e7ff","#688ab6"],thorn:["#f18fc2","#963f71"],stone:["#b9afc2","#5e6175"]};
 const types="fire fire grass grass water water electric electric cosmic cosmic electric electric ghost ghost thorn thorn stone stone air air cosmic cosmic air air ghost ghost cosmic cosmic electric ghost fire ghost ghost thorn thorn fire fire air air water water stone stone electric electric grass grass cosmic cosmic cosmic cosmic electric electric cosmic cosmic".split(" ");
-const atlas=document.createElement("canvas");atlas.width=32*4;atlas.height=32*ids.length;
+const atlas=document.createElement("canvas");atlas.width=32*8;atlas.height=32*ids.length;
 const ctx=atlas.getContext("2d");if(!ctx)return;ctx.imageSmoothingEnabled=false;
 const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
-function sprite(id,frame){
+function sprite(id,frame,back=false){
  const n=ids.indexOf(id);if(n<0)return;
- const x=frame*32,y=n*32,bob=frame===1?1:frame===3?-1:0;
+ const x=(frame+(back?4:0))*32,y=n*32,bob=frame===1?1:frame===3?-1:0;
  const [base,shade]=colors[types[n]]||colors.cosmic,ink="#242037",accent=n%2?"#ff6dbb":"#d9ff6c";
  const r=(a,b,w,h,c)=>rect(x+a,y+b+bob,w,h,c);
  const family=n>=31?Math.floor((n-31)/2)+16:Math.floor(n/2),evolved=n>=31?(n-31)%2===1:n%2===1&&n<28;
@@ -99,20 +99,24 @@ function sprite(id,frame){
  if(id==="minieddie"){r(5,4,6,10,accent);r(21,4,6,10,accent);r(13,2,6,8,"#fff1ca");}
  if([3,6,8,12].includes(family)){r(12,14,8,7,shade);r(14,16,4,3,accent);}
  if([1,4,7,11].includes(family)){r(7,18,4,3,accent);r(21,18,4,3,accent);}
- r(9,17,5,5,ink);r(19,17,5,5,ink);r(11,18,2,2,"#fff");r(21,18,2,2,"#fff");
- r(14,23,5,2,ink);r(15,25,2,3,"#fff1dc");r(19,25,2,3,"#fff1dc");
+ if(!back){r(9,17,5,5,ink);r(19,17,5,5,ink);r(11,18,2,2,"#fff");r(21,18,2,2,"#fff");
+ r(14,23,5,2,ink);r(15,25,2,3,"#fff1dc");r(19,25,2,3,"#fff1dc");}else{
+  // Back view: a real separate frame, not the front face flipped horizontally.
+  r(8,13,16,12,shade);r(11,14,10,10,base);
+  r(13,15,6,8,accent);r(6,19,4,5,ink);r(22,19,4,5,ink);
+  if(evolved){r(11,7,10,6,shade);r(14,9,4,5,accent);}
+ }
  const leg=frame%2?2:0;r(9,27-leg,5,4,shade);r(19,27-(2-leg),5,4,shade);
  if(evolved){r(4,13,3,8,accent);r(25,13,3,8,accent);}
  // Every species has a unique, stable sigil pattern.
  const code=n+17;
  for(let j=0;j<3;j++)if((code>>j)&1)r(11+j*4,12,2,3,accent);
 }
-for(let n=0;n<ids.length;n++)for(let frame=0;frame<4;frame++)sprite(ids[n],frame);
+for(let n=0;n<ids.length;n++)for(let frame=0;frame<4;frame++){sprite(ids[n],frame);sprite(ids[n],frame,true);}
 function draw(ctx,id,x,y,size=64,frame=0,back=false){
  const n=ids.indexOf(id);if(n<0)return false;
  ctx.save();ctx.imageSmoothingEnabled=false;
- if(back){ctx.translate(x+size,0);ctx.scale(-1,1);x=0;}
- ctx.drawImage(atlas,(Math.floor(frame)%4)*32,n*32,32,32,x,y,size,size);
+ ctx.drawImage(atlas,((Math.floor(frame)%4)+(back?4:0))*32,n*32,32,32,x,y,size,size);
  ctx.restore();return true;
 }
 window.HellOrbitSprites=Object.freeze({ids:Object.freeze(ids),atlas,draw});
