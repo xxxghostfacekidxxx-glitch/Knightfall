@@ -38,5 +38,6 @@ test("quest step tracking and region survive save normalization",async()=>{
  const frontend=await load("public/monster-mmo.js");
  const backend=await load("backend/src/index.mmo-staging.js");
  assert.match(frontend,/typeof save\.routeQuestSteps!=="object"/);
- assert.match(backend,/const clean=\{region:previousSave\?monsterRegion\(previousSave\.region\):"meadow"/);
+ assert.match(backend,/const clean=\{region:validatedRegion/);
+ assert.match(backend,/monsterRegions\[validatedRegion\]\.blocked\.has/);
 });
