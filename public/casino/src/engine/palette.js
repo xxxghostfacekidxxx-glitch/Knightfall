@@ -13,8 +13,8 @@ export const C = {
   feltLt:  '#15794a',
 
   // акценты-неон
-  gold:    '#ffcc33',
-  goldDk:  '#c8881a',
+  gold:    '#c6ff45',
+  goldDk:  '#7cbd30',
   red:     '#e0294a',
   redLt:   '#ff5c7a',
   redDk:   '#a01530',
@@ -31,5 +31,5 @@ export const C = {
   grayDk:  '#332c4a',
   green:   '#5dd66f',
   yellow:  '#ffe34d',
-  orange:  '#ff8a2b',
+  orange:  '#ff55d8',
 };
