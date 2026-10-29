@@ -47,11 +47,11 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
           if git diff --cached --quiet; then
-            echo "No staged import changes"
-            exit 0
+            echo "No staged import changes; checking review PR state."
+          else
+            git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
+            git push origin HEAD:refs/heads/staging/selected-open-source-games-14-15
           fi
-          git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
-          git push origin HEAD:refs/heads/staging/selected-open-source-games-14-15
           if gh pr list --head staging/selected-open-source-games-14-15 --base main --state open --json number --jq "length" | grep -qx 0; then
             gh pr create --base main --head staging/selected-open-source-games-14-15 --title "Stage A Dark Room and Evolution of Trust for license and gameplay review" --body "Pinned upstream snapshots. Review third-party attribution, all media licenses, local resource loading, mobile gameplay and build before merging to production."
           else
