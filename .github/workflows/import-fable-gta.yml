@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/import-fable-gta.yml'
+      - 'arcade-overrides/fable-gta/**'
 permissions:
   contents: write
 concurrency:
@@ -31,6 +32,7 @@ jobs:
           mkdir -p vendor/fable-gta
           rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='dist' /tmp/fable-gta/ vendor/fable-gta/
           cp /tmp/fable-gta-revision.txt vendor/fable-gta/UPSTREAM_COMMIT.txt
+          cp arcade-overrides/fable-gta/src/App.tsx vendor/fable-gta/src/App.tsx
       - name: Install dependencies and verify TypeScript
         working-directory: vendor/fable-gta
         run: npm ci --no-audit --no-fund
