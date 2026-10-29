@@ -14,7 +14,7 @@ test("fainted creatures cannot lead or start encounters",()=>{
  assert.match(source,/if\(lead\.hp<=0\)return json/);
 });
 test("capture odds are bounded and supply is consumed server-side",()=>{
- assert.match(source,/Math\.min\(\.9,\.35\+/);
+ assert.match(source,/Math\.min\(battle\.legendaryId\?\.35:\.9/);
  assert.match(source,/save\.bag--/);
 });
 test("staging cannot silently expose production origins",()=>{
