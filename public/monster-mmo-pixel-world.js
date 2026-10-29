@@ -37,6 +37,30 @@
         fill(px+2,py+1,3,3,alien?"#83f4e1":demon?"#ff9ecf":"#b0ed79");
       }
     }
+    /* Original faction terrain props: readable silhouettes on a 32px tile grid. */
+    const prop=hash(x/32,y/32,17)%11;
+    if(!path&&!stone&&!wall&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
+      if(prop===0||prop===1){
+        const trunk=alien?"#255963":demon?"#493048":"#5b4b38";
+        const leaf=alien?"#7ae7d9":demon?"#e87bab":"#9cce6b";
+        fill(x+14,y+17,5,12,trunk);fill(x+8,y+10,17,11,leaf);
+        fill(x+11,y+5,12,8,alien?"#b2ffde":demon?"#ffadd8":"#c8e98c");
+        fill(x+8,y+15,4,6,alien?"#3b8c91":demon?"#8b456f":"#568754");
+      }else if(prop===2){
+        fill(x+7,y+22,18,5,"#2c3b43");fill(x+10,y+14,12,9,alien?"#79dfeb":demon?"#c69cdd":"#a6b3ad");
+        fill(x+12,y+11,8,5,alien?"#c4fff6":demon?"#ffcae5":"#e6e4c8");
+      }else if(prop===3){
+        const blossom=alien?"#7cf5ee":demon?"#ff7bc9":"#ffdf83";
+        for(let i=0;i<3;i++){const px=x+6+i*8;fill(px,y+19,2,9,"#477c55");fill(px-2,y+17,6,4,blossom);}
+      }else if(prop===4&&alien){
+        fill(x+12,y+14,9,14,"#304f65");fill(x+9,y+8,15,9,"#8af0d6");fill(x+13,y+3,7,6,"#ff7fda");
+        dot(x+15,y+11,"#16374a",3);
+      }else if(prop===5&&demon){
+        fill(x+12,y+16,9,12,"#423449");fill(x+8,y+8,17,11,"#f48cb2");
+        fill(x+9,y+4,5,8,"#e45a91");fill(x+20,y+4,5,8,"#e45a91");
+        fill(x+15,y+12,3,3,"#22273a");
+      }
+    }
     if(t.classList.contains("camp")) {
       fill(x+4,y+23,25,5,"#453a47");fill(x+6,y+15,20,10,"#a83f75");
       fill(x+9,y+10,14,15,"#ffd987");fill(x+14,y+16,5,9,"#5a3449");
