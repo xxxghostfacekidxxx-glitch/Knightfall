@@ -45,6 +45,8 @@ jobs:
           test -f public/arcade/hosted/evolution-of-trust/js/main.js
           ! grep -q 'www.googletagmanager.com/gtag/js' public/arcade/hosted/a-dark-room/index.html
           python3 scripts/verify-selected-open-source-imports.py
+          python3 -m py_compile scripts/verify-selected-open-source-imports.py
+          bash -n scripts/import-selected-open-source-games.sh
       - name: Push isolated review branch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -54,7 +56,11 @@ jobs:
           git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
           # A staging branch may already have a clean merge from main; push that update too.
           if git diff --cached --quiet; then
-            echo "No staged import changes; checking review PR state."
+            echo "No staged import changes."
+            if ! gh pr list --head staging/selected-open-source-games-14-15 --base main --state open --json number --jq "length" | grep -qx 0; then
+              echo "Existing review PR retained."
+            fi
+            exit 0
           else
             git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
           fi
