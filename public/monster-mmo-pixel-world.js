@@ -28,6 +28,16 @@
   actions.append(heal,exit);
   station.append(room,actions);
   canvas.parentNode.append(station);
+  const roomCaption=document.createElement("p");
+  roomCaption.className="rpg-station-caption";
+  station.insertBefore(roomCaption,actions);
+  const interiors={
+    station:{title:"FIELD STATION",description:"Recovery pods are humming. Rest your creatures before heading out.",accent:"#caff45"},
+    dish:{title:"GALACTIC SAUCER PARKING",description:"An alien customs checkpoint. The parking meters accept moon dust and threats.",accent:"#73e8e7"},
+    tax:{title:"INFERNAL TAX CATHEDRAL",description:"A demonic filing office. Every form has seventeen signatures and one curse.",accent:"#ff74b6"},
+    border:{title:"FUTURE TREATY OFFICE",description:"The proposed division of Earth is still being negotiated on a pizza box.",accent:"#f6df8d"}
+  };
+  let currentInterior="station";
   let stationPreviousFocus=null;
   function drawStation(){
     const c=room.getContext("2d");if(!c)return;
@@ -40,6 +50,31 @@
     rect(0,0,256,39,"#38465d");rect(0,36,256,5,"#182b3a");
     rect(12,9,232,21,"#f3e7c6");rect(24,15,208,9,"#3a5662");
     rect(94,13,68,13,"#ff73c3");rect(98,16,60,7,"#282b42");
+    if(currentInterior!=="station"){
+      const accent=interiors[currentInterior].accent;
+      rect(18,50,220,99,"#2b3c4b");
+      rect(23,55,210,89,"#4b5864");
+      rect(28,60,200,79,"#d2c9b7");
+      if(currentInterior==="dish"){
+        // Alien customs terminal, hovering specimen and oversized inspection eye.
+        rect(36,69,54,49,"#2a5968");rect(42,74,42,32,"#8ce9dc");
+        rect(49,80,28,19,"#223c55");rect(58,84,10,10,"#ff78cf");
+        rect(112,67,104,10,accent);rect(121,81,86,47,"#264e61");
+        rect(130,89,68,27,"#8ce9dc");rect(147,95,34,15,"#243b55");
+      }else if(currentInterior==="tax"){
+        // Two columns of cursed paperwork and a fiery reception window.
+        for(let i=0;i<4;i++){rect(34+i*47,70,32,54,"#513b54");rect(38+i*47,74,24,44,"#f4d8bb");}
+        rect(72,61,112,12,accent);rect(106,86,44,36,"#392e4b");
+        rect(112,90,32,24,"#ff9a60");rect(119,95,18,15,"#ffe59a");
+      }else{
+        // A treaty table and the notorious pizza-box map.
+        rect(39,70,178,15,"#3c5263");rect(47,85,162,44,"#8d665a");
+        rect(67,89,120,30,"#e8d5a1");rect(79,94,97,20,"#ffbd74");
+        rect(123,94,6,20,"#ff6cae");rect(129,98,39,4,"#7be4df");
+      }
+      rect(105,172,46,20,"#35414b");rect(113,176,30,16,"#e7d7b8");
+      return;
+    }
     // Healing counter and monitor.
     rect(24,55,208,44,"#30465a");rect(28,59,200,35,"#e4d9c5");
     rect(97,45,62,32,"#23394c");rect(105,50,46,20,"#8ee6d8");
@@ -58,10 +93,15 @@
     (stationPreviousFocus?.isConnected?stationPreviousFocus:document.getElementById("world-interact"))?.focus();
     stationPreviousFocus=null;
   }
-  document.addEventListener("hell-high-orbit:enter-station",()=>{
+  document.addEventListener("hell-high-orbit:enter-station",e=>{
     if(document.body.classList.contains("pause-open")||document.body.classList.contains("dialogue-open")||!document.getElementById("battle-panel")?.hidden)return;
+    currentInterior=Object.hasOwn(interiors,e.detail?.kind)?e.detail.kind:"station";
+    station.setAttribute("aria-label",interiors[currentInterior].title);
+    roomCaption.textContent=interiors[currentInterior].title+" · "+interiors[currentInterior].description;
+    heal.hidden=currentInterior!=="station";
     stationPreviousFocus=document.activeElement;station.hidden=false;
-    document.body.classList.add("interior-open");drawStation();heal.focus();
+    document.body.classList.add("interior-open");drawStation();
+    (heal.hidden?exit:heal).focus();
   });
   heal.addEventListener("click",()=>{
     document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal"));
@@ -74,8 +114,8 @@
     if(e.key==="Escape"){e.preventDefault();e.stopImmediatePropagation();closeStation()}
     else if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)){e.preventDefault();e.stopImmediatePropagation()}
     else if(e.key==="Tab"){
-      if(e.shiftKey&&document.activeElement===heal){e.preventDefault();exit.focus()}
-      else if(!e.shiftKey&&document.activeElement===exit){e.preventDefault();heal.focus()}
+      if(!heal.hidden&&e.shiftKey&&document.activeElement===heal){e.preventDefault();exit.focus()}
+      else if(!heal.hidden&&!e.shiftKey&&document.activeElement===exit){e.preventDefault();heal.focus()}
     }
   },true);
   const ctx = canvas.getContext("2d", { alpha: false });
