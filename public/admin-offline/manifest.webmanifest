@@ -8,6 +8,12 @@
   "theme_color": "#12091d",
   "icons": [
     {
+      "src": "/admin-offline/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
       "src": "/favicon.ico",
       "sizes": "any",
       "type": "image/x-icon"
