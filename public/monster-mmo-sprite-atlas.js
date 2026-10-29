@@ -125,6 +125,33 @@ function sprite(id,frame,back=false){
  if(id==="minieddie"){r(5,4,6,10,accent);r(21,4,6,10,accent);r(13,2,6,8,"#fff1ca");}
  if([3,6,8,12].includes(family)){r(12,14,8,7,shade);r(14,16,4,3,accent);}
  if([1,4,7,11].includes(family)){r(7,18,4,3,accent);r(21,18,4,3,accent);}
+ // Distinct surface details for every creature, not just palette-swapped silhouettes.
+ // Seeded from species identity so every animation frame stays consistent.
+ const motif=(n*2654435761)>>>0;
+ const light=colors[types[n]]?.[0]||"#b5f6dd";
+ const dark=colors[types[n]]?.[1]||"#50618e";
+ if(!["minionmouse","minivillain","minieddie"].includes(id)){
+  const pattern=motif%6;
+  if(pattern===0){ // plated armor
+   r(11,13,10,4,light);r(9,19,14,3,dark);r(14,22,5,4,accent);
+  }else if(pattern===1){ // striped pelt
+   for(let k=0;k<3;k++)r(9+k*5,12+(k%2)*3,3,10,dark);
+   r(13,22,7,3,light);
+  }else if(pattern===2){ // neon runic markings
+   r(12,12,3,7,accent);r(12,18,9,3,accent);r(19,12,3,9,accent);
+  }else if(pattern===3){ // crystalline chest and scales
+   r(14,12,6,4,light);r(11,16,12,6,accent);r(14,22,6,4,dark);
+  }else if(pattern===4){ // freckled poisonous hide
+   for(let k=0;k<6;k++)r(9+((k*7+n)%15),13+((k*5+n)%11),2+(k%2),2,k%2?accent:dark);
+  }else{ // segmented cyber / chitin shell
+   r(10,13,13,3,dark);r(9,18,15,3,accent);r(11,23,11,3,dark);
+  }
+  // Signature off-center feature breaks the generic front-facing template.
+  if(n%4===0){r(4,9,6,5,accent);r(22,6,6,8,shade);}
+  if(n%4===1){r(13,2,6,10,shade);r(15,0,3,6,accent);}
+  if(n%4===2){r(3,20,9,4,accent);r(21,17,9,5,shade);}
+  if(n%4===3){r(5,6,5,10,shade);r(23,4,5,12,accent);}
+ }
  if(!back){r(9,17,5,5,ink);r(19,17,5,5,ink);r(11,18,2,2,"#fff");r(21,18,2,2,"#fff");
  r(14,23,5,2,ink);r(15,25,2,3,"#fff1dc");r(19,25,2,3,"#fff1dc");}else{
   // Back view: a real separate frame, not the front face flipped horizontally.
