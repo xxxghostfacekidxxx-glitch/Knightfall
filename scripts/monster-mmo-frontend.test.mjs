@@ -140,7 +140,7 @@ test("offline battles support charged specials and guarding without changing sta
  assert.ok(html.includes('data-action="special"'));
  assert.ok(html.includes('data-action="guard"'));
  assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false\)/);
- assert.match(js,/if\(name==="attack"\|\|name==="special"\|\|name==="guard"\)/);
+ assert.match(js,/if\(\["attack","special","guard","quick","mend"\]\.includes\(name\)\)/);
  assert.match(js,/lead\.energy-=2/);
  assert.match(js,/guarding\?\.35:1/);
  assert.doesNotMatch(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
