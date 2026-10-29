@@ -71,3 +71,9 @@
 #battle-panel .battle-moves button{min-height:54px;font-size:clamp(.75rem,1.5vw,1rem);font-weight:800}
 #battle-panel .battle-support{display:flex;flex-wrap:wrap;gap:7px;background:#202335;border-color:#77828a}
 #battle-panel .battle-support button{flex:1 1 95px;font-size:.78rem}
+
+/* Creature move unlock affordances. */
+#battle-panel .battle-moves button:disabled{opacity:.6;filter:grayscale(.6);cursor:not-allowed}
+#battle-panel .battle-moves button:not(:disabled):focus-visible{outline:3px solid #caff45;outline-offset:2px}
+#battle-panel .battle-moves button:nth-child(3){border-left:5px solid #ff68ca}
+#battle-panel .battle-moves button:nth-child(4){border-left:5px solid #caff45}
