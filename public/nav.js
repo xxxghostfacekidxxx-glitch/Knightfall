@@ -5,6 +5,12 @@
     polish.rel='stylesheet';polish.href='/visual-refresh.css?v=20261029-v2';
     polish.dataset.visualRefresh='true';document.head.append(polish);
   }
+  // Page-specific visual refresh is late-mounted so legacy inline styles cannot override it.
+  if (!document.querySelector('link[data-section-overhaul]')) {
+    const sections=document.createElement('link');sections.rel='stylesheet';
+    sections.href='/section-overhaul.css?v=20261029-sections1';
+    sections.dataset.sectionOverhaul='true';document.head.append(sections);
+  }
   // Shared Gravewave theme and original artwork, loaded once on all nav-enabled pages.
   if (!document.querySelector('link[data-gravewave-theme]')) {
     const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-neonfix2';theme.dataset.gravewaveTheme='true';document.head.append(theme);
