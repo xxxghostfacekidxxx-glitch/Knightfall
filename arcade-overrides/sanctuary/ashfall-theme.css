@@ -1,0 +1,14 @@
+/* Ash-Fall theme layer for Sanctuary's End. Upstream gameplay stays untouched. */
+:root{
+  --bg:#0d0918;--panel:#100d1b;--border:#74305f;--border-lit:#ff4ebf;
+  --gold:#b8ff40;--gold-bright:#d5ff7c;--text:#eee7f5;--muted:#b7a4c8;
+  --accent:#261331;--accent-hover:#3e2048;
+}
+body{background:#0b0715!important}
+#actionBar{border-color:#ff4ebf!important;box-shadow:0 0 0 2px #0b0715,0 0 26px #ff4ebf33!important}
+#actionBar button:hover{filter:brightness(1.15)}
+#lvlBadge{border-color:#b8ff40!important}
+#healthGlobe{border-color:#ff4ebf!important}
+#manaGlobe{border-color:#58f5ef!important}
+button:focus-visible,a:focus-visible{outline:2px solid #b8ff40;outline-offset:2px}
+@media(max-width:680px){#hud{height:104px}#actionBar{max-width:68vw;transform:translateX(-50%) scale(.82);transform-origin:bottom center}#healthGlobe{left:4px}#manaGlobe{right:4px}.globe{width:90px;height:90px}}
