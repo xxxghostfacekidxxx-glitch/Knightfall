@@ -97,3 +97,13 @@ body{background:#090b12}.shell{max-width:920px;padding:8px 12px 20px}.game-heade
 #log{position:relative;border:2px solid #a5ed65;border-radius:3px;background:#171c2b;color:#f3f1f7;font-family:ui-monospace,monospace;line-height:1.4;max-height:5.2em;overflow:auto}
 body.pause-open{overflow:hidden}body.pause-open .pad button{pointer-events:none}#game-menu .panel .hint{font-size:.8rem}#game-menu .panel h2{font-size:.92rem}#game-menu .creature{padding:6px}#game-menu .monster-portrait{width:42px;height:42px}
 #battle-panel .battle-support{margin-top:5px}#battle-panel .battle-menu-label{font-size:.7rem}#battle-panel .battle-moves button{min-height:48px}#battle-panel:not([hidden]){max-height:96dvh}
+
+/* Original handheld dialogue: a small, readable text window, not another dashboard. */
+.field-dialogue[hidden]{display:none!important}
+.field-dialogue{position:fixed;z-index:320;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(92vw,760px);display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:12px;border:3px solid #caff45;border-radius:4px;background:#101725;color:#f8f6fc;box-shadow:0 0 0 4px #080b12,0 10px 40px #000a;font-family:ui-monospace,monospace}
+.field-dialogue-portrait{display:grid;place-items:center;aspect-ratio:1;background:#293248;border:2px solid #ff65ce;font-size:2rem;image-rendering:pixelated}
+.field-dialogue-body strong{color:#caff45;font-size:.75rem;letter-spacing:.07em}
+.field-dialogue-body p{margin:6px 0 10px;font-size:clamp(.85rem,2.5vw,1rem);line-height:1.5;max-height:6em;overflow:auto}
+.field-dialogue-body button{float:right;min-height:32px;border-radius:3px;background:#caff45;color:#111622;font-weight:800}
+body.dialogue-open .pad button{pointer-events:none}
+@media(max-width:460px){.field-dialogue{grid-template-columns:48px minmax(0,1fr);gap:7px;padding:8px}.field-dialogue-portrait{font-size:1.4rem}.field-dialogue-body p{max-height:7em}}
