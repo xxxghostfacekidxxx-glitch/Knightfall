@@ -34,7 +34,7 @@ test("online server supports all twenty monsters and six evolutions",()=>{
 });
 test("online battles authorize specials, guarding, switching, statuses and enemy AI",()=>{
  assert.match(source,/\["start","encounter-check","attack","special","guard","quick","mend","switch"/);
- assert.match(source,/if\(\["attack","special","guard","switch"\]\.includes\(action\)\)/);
+ assert.match(source,/if\(\["attack","special","guard","quick","mend","switch"\]\.includes\(action\)\)/);
  assert.match(source,/Number\.isInteger\(index\)/);
  assert.match(source,/if\(special&&\(lead\.energy\|\|0\)<2\)/);
  assert.match(source,/const tick=target=>/);
