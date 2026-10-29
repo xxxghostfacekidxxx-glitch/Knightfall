@@ -347,3 +347,14 @@ body.pause-open .world-panel{pointer-events:none}
 }
 @media(max-width:350px){#game-menu{grid-template-columns:94px minmax(0,1fr)}#game-menu .pause-tabs button{font-size:.64rem!important}}
 @media(prefers-reduced-motion:reduce){#game-menu,#game-menu *{scroll-behavior:auto!important}}
+
+/* Battle input hotfix: command controls must remain above decorative canvases. */
+#battle-panel:not([hidden]){isolation:isolate;touch-action:pan-y}
+#battle-panel .battle-command{position:relative;z-index:20;pointer-events:auto!important}
+#battle-panel .battle-command-tabs,#battle-panel .battle-command-content,#battle-panel .battle-command-content [data-battle-section]{position:relative;z-index:21;pointer-events:auto!important}
+#battle-panel .battle-command-tabs button,#battle-panel .battle-command-content button{position:relative;z-index:22;pointer-events:auto!important;touch-action:manipulation;cursor:pointer}
+#battle-panel .battle-command-tabs button{min-height:48px!important}
+#battle-panel #pixel-battle,#battle-panel #battle-effect{pointer-events:none}
+#battle-panel [data-battle-section]:not([hidden]){display:block}
+#battle-panel [data-battle-section][hidden]{display:none!important}
+@media(max-width:560px){#battle-panel .battle-command-tabs{gap:4px}#battle-panel .battle-command-tabs button{font-size:.76rem!important;min-height:50px!important;padding:7px 2px!important}}
