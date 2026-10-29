@@ -113,7 +113,7 @@ test("faction world has three reward landmarks and location-specific encounters"
  assert.match(js,/function visitLandmark\(x,y\)/);
  assert.match(js,/save\.visitedLandmarks\.includes\(site\.id\)/);
  assert.match(js,/const width=16,height=12/);
- assert.match(js,/zone==="alien"\?Object\.keys\(species\)/);
+ assert.match(js,/zone==="alien"\?wildIds\.filter/);
  assert.match(css,/tile\.zone-alien/);
  assert.match(css,/tile\.zone-demon/);
 });
@@ -173,7 +173,7 @@ test("online map, missions and bosses are enabled in the shared world",()=>{
 });
 
 test("three legendary shrines have unique portraits, rarity and one-time captures",()=>{
- for(const id of ["minionmouse","minivillain","minieddie"]){assert.match(js,new RegExp(id+':\\\\['));assert.ok(html.includes('id="legendary-creatures"'));}
+ for(const id of ["minionmouse","minivillain","minieddie"]){assert.ok(js.includes(id+':'+String.fromCharCode(91)));assert.ok(html.includes('id="legendary-creatures"'));}
  assert.match(js,/function summonLegendary\(id\)/);
  assert.match(js,/legendaryIds\.has\(k\)/);
  assert.match(js,/save\.capturedLegendaries\.push\(battle\.legendaryId\)/);
