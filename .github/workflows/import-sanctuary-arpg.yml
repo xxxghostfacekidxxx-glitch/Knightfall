@@ -116,7 +116,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end /tmp/ashfall-admin-game-packages/sanctuary-original.zip /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
+          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end public/admin-offline/games public/admin-offline/game-assets.json
           if ! git diff --cached --quiet; then
             git commit -m "vendor(arcade): import Sanctuary's End ARPG with Ash-Fall theme"
             git push
