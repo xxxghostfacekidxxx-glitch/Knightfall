@@ -39,7 +39,7 @@ const infernalLooks={
  mausoleopard:["#8f70ee","#ffb2d5",3,"A graveyard prowler whose purr rattles tombstones."],
  impickle:["#a5ee48","#ff6cbb",4,"A pickled imp grown in forbidden brine."],
  brinebrute:["#6dcf59","#f978c5",4,"A vinegar-armored demon with terrible table manners."],
- cinderling:["#ff975b","#caff4c",1,"A matchbox gremlin that hoards burnt wishes."],
+ cinderling:["#ff8ce6","#caff4c",1,"A matchbox gremlin that hoards burnt wishes."],
  pyroclast:["#ff4c6b","#ffe24a",1,"A living blast furnace with a tantrum problem."],
  screecher:["#ae87ff","#f95aa6",7,"A bat demon that communicates in feedback."],
  sonicrypt:["#8855d9","#ff7dd5",7,"A spectral amplifier with wings."],
