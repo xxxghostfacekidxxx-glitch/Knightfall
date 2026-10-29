@@ -55,15 +55,16 @@
         .replace(socialTag, '<script defer>' + safeSocial + '</script>');
       // The offline package never attempts staging authentication or multiplayer.
       bundled = bundled.replace(/<section class="panel" data-pause-section="settings"><h2>Multiplayer staging<\/h2>[\s\S]*?<\/section>/,
-        '<section class="panel" data-pause-section="settings"><h2>Offline test build</h2><p class="hint">This self-contained file runs without internet. Progress is stored locally in this browser when storage is available. Cloud saves and multiplayer are disabled.</p><div id="players" hidden></div></section>');
+        '<section class="panel" data-pause-section="settings"><h2>Offline test build</h2><p class="hint">This self-contained file runs without internet. Progress is stored locally in this browser when storage is available. Cloud saves and multiplayer are disabled.</p><input id="endpoint" type="url" hidden><button id="connect" type="button" hidden disabled>Connect</button><button id="disconnect" type="button" hidden disabled>Disconnect</button><button id="reset-preview" type="button">Reset offline preview</button><div id="players" hidden></div></section>');
       bundled = bundled.replace(/<a href="\/chaos-cartridge.html">[^<]*<\/a>/,
         '<span class="tag">STANDALONE OFFLINE TEST BUILD</span>');
       // Remove online-only buttons and listeners from the self-contained build.
-      bundled = bundled.replace("$(\"connect\").addEventListener(\"click\",connect);$(\"disconnect\").addEventListener(\"click\",disconnect);", "");
-      if (bundled.includes('id="connect"') || bundled.includes('src="/monster-mmo.js"') ||
+      // Keep hidden control placeholders so shared game initialization can attach its listeners safely.
+      if (bundled.includes('src="/monster-mmo.js"') ||
           bundled.includes('href="/monster-mmo.css"') || bundled.includes('src="/monster-mmo-pixel-world.js"') || bundled.includes('src="/monster-mmo-pixel-battle.js"') || bundled.includes('src="/monster-mmo-sprite-atlas.js"') || bundled.includes('src="/monster-mmo-pause-menu.js"') || bundled.includes('src="/monster-mmo-dialogue.js"') || bundled.includes('src="/monster-mmo-social.js"')) {
         throw new Error("Offline packaging did not remove all online-only assets.");
       }
+      bundled = bundled.replace('<section class="panel game-social" data-pause-section="social">','<section class="panel game-social" data-pause-section="social"><p class="hint">Friends and chat are available only in connected multiplayer. This offline test build cannot send messages.</p>');
       const blob = new Blob([bundled], { type: "text/html;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement("a");
