@@ -66,3 +66,11 @@ test("legendary creatures have authoritative one-time capture rules",()=>{
  assert.match(source,/capturedLegendaries:save\.capturedLegendaries\|\|\[\]/);
  assert.match(source,/const wildIds=Object\.keys\(species\)/);
 });
+
+test("multiplayer validates tactical recovery and expanded evolution roster",()=>{
+ for(const id of ["gloamshade","thornmaw","gravruckle","doomwing","noodlarch","bliporacle","hexhound","astraljelly"])assert.ok(source.includes(id+':{name:'));
+ assert.match(source,/if\(\(special\|\|mend\)&&\(lead\.energy\|\|0\)<2\)/);
+ assert.match(source,/quick\?2:1/);
+ assert.match(source,/lead\.status=null/);
+ assert.match(source,/const evolutions=/);
+});
