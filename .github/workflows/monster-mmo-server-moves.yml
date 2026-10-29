@@ -5,6 +5,8 @@ on:
     paths:
       - 'backend/src/index.mmo-staging.js'
       - 'scripts/monster-mmo-server-moves.test.mjs'
+      - 'public/monster-mmo.js'
+      - 'scripts/monster-mmo-client-pp.test.mjs'
       - '.github/workflows/monster-mmo-server-moves.yml'
   pull_request:
     paths:
@@ -19,4 +21,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test scripts/monster-mmo-server-moves.test.mjs
+      - run: node --test scripts/monster-mmo-server-moves.test.mjs scripts/monster-mmo-client-pp.test.mjs
