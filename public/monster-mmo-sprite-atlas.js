@@ -24,6 +24,16 @@ function sprite(id,frame){
  if([7,10,11].includes(family)){r(13,2,6,12,accent);}
  r(bodyX,11,bodyW,16,ink);r(bodyX+2,10,bodyW-4,16,shade);r(bodyX+3,12,bodyW-6,12,base);
 
+ // Family-specific anatomy, deliberately drawn over the common silhouette.
+ const fish=["driftfin","cryptfin"].includes(id),bot=["glorpbot","glorpcannon"].includes(id);
+ const jelly=["starjelly","astraljelly"].includes(id),winged=["mournwing","doomwing","blipmoth","bliporacle"].includes(id);
+ const serpent=["noodloid","noodlarch"].includes(id),stone=["grubruckle","gravruckle"].includes(id);
+ if(fish){r(4,15,25,11,ink);r(7,16,18,8,base);r(1,13,8,13,shade);r(12,5,10,10,accent);r(13,25,8,4,shade);}
+ if(bot){r(5,9,22,20,ink);r(7,11,18,16,shade);r(9,13,14,11,base);r(14,2,4,9,accent);r(2,15,5,10,shade);r(25,15,5,10,shade);}
+ if(jelly){r(5,8,22,14,ink);r(7,6,18,16,base);r(8,20,4,10,accent);r(14,20,4,11,shade);r(21,20,4,10,accent);}
+ if(winged){r(1,7,11,17,shade);r(20,7,11,17,shade);r(10,10,12,16,base);r(3,9,5,9,accent);r(24,9,5,9,accent);}
+ if(serpent){r(4,22,23,6,shade);r(10,18,16,7,base);r(14,7,10,15,ink);r(16,9,6,13,base);r(2,19,8,5,accent);}
+ if(stone){r(3,18,26,11,ink);r(6,12,20,15,shade);r(9,9,14,16,base);r(11,5,10,7,accent);}
  // Individually authored silhouette details for the 28 regular creatures.
  const features={
   embercub:()=>{r(6,5,5,9,accent);r(21,5,5,9,accent);r(13,7,6,4,"#ffe4a1");},
