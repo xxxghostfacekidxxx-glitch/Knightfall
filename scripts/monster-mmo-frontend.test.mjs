@@ -249,7 +249,7 @@ test("all 31 original creatures have animated atlas frames and offline packaging
  assert.match(offline,/replace\(spriteTag/);
  assert.match(readFileSync("public/monster-mmo-pixel-battle.js","utf8"),/requestAnimationFrame\(animate\)/);
  for(const code of [atlas,offline]){
-  const result=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  const result=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});
   assert.equal(result.status,0,result.stderr);
  }
 });
@@ -265,7 +265,7 @@ test("creature artwork and battle effects remain locally bundled and parseable",
  assert.match(js,/new CustomEvent\("hell-high-orbit:effect"/);
  assert.doesNotMatch(battle,/\\n function animate/);
  for(const code of [atlas,battle]){
-  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});
   assert.equal(check.status,0,check.stderr);
  }
 });
@@ -280,7 +280,7 @@ test("evolution cinematic uses previous and evolved sprite IDs and responsive ov
  assert.match(battle,/duration=2400/);
  assert.match(css,/#pixel-evolution\[hidden\]/);
  for(const code of [battle,atlas]){
-  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});
   assert.equal(check.status,0,check.stderr);
  }
 });
@@ -314,7 +314,7 @@ test("species ultimate attacks and nine elemental battle effects",()=>{
  }
  assert.match(js,/\["attack","special","quick","move"\]\.includes\(name\)/);
  for(const code of [battle,server]){
-  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});
   assert.equal(check.status,0,check.stderr);
  }
 });
@@ -329,7 +329,7 @@ test("combat feedback displays real HP deltas, status and final faint frame",()=
  assert.match(battle,/FAINTED/);
  assert.match(battle,/else if\(!effect\)current=null/);
  for(const code of [battle,js]){
-  const result=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  const result=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});
   assert.equal(result.status,0,result.stderr);
  }
 });
@@ -354,7 +354,7 @@ test("map-first pause UI keeps all gameplay panels accessible",()=>{
  assert.match(css,/#game-menu\.is-open/);
  assert.match(offline,/load\("\/monster-mmo-pause-menu\.js"\)/);
  assert.match(offline,/replace\(pauseTag/);
- for(const code of [pause,offline]){const parsed=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(parsed.status,0,parsed.stderr);}
+ for(const code of [pause,offline]){const parsed=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});assert.equal(parsed.status,0,parsed.stderr);}
 });
 
 
@@ -370,7 +370,7 @@ test("one pause menu and self-contained handheld dialogue are wired",()=>{
  assert.match(offline,/load\("\/monster-mmo-dialogue\.js"\)/);
  assert.match(offline,/replace\(dialogueTag/);
  assert.match(css,/\.field-dialogue\[hidden\]/);
- for(const code of [dialogue,offline]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+ for(const code of [dialogue,offline]){const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
 });
 
 
@@ -396,7 +396,7 @@ test("handheld battle commands expose one panel at a time",()=>{
  assert.match(css,/\.battle-command-tabs/);
  assert.match(css,/#battle-panel \.battle-moves/);
  assert.match(pixelWorld,/Original faction terrain props/);
- for(const code of [pause,pixelWorld]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+ for(const code of [pause,pixelWorld]){const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
 });
 
 
@@ -423,5 +423,5 @@ test("game social menu and offline bundle are wired",()=>{
  assert.match(social,/\/api\/game\/global-chat/);
  assert.match(social,/\/api\/friends\/request/);
  assert.match(offline,/safeSocial/);
- for(const code of [social,offline]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+ for(const code of [social,offline]){const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
 });
