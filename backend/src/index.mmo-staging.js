@@ -1448,8 +1448,17 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid save data."},400,origin);
     const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
     if(!int(input.x,1,16)||!int(input.y,1,12)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
-    const isWalkable=(x,y)=>int(x,1,16)&&int(y,1,12)&&!((x===1||x===16)&&y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(x+","+y);
-    if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
+    // A save must validate against the player's actual region, not meadow's obstacle map.
+    // Existing saves are loaded before validating the destination.
+    const regionForSave=async()=>{
+      if(expected===0)return "meadow";
+      const row=await env.DB.prepare("SELECT save_json FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
+      if(!row)return "meadow";
+      try{return monsterRegion(JSON.parse(row.save_json).region);}catch{return "meadow";}
+    };
+    const validatedRegion=await regionForSave();
+    const isWalkable=(x,y)=>int(x,1,16)&&int(y,1,12)&&!((x===1||x===16)&&y===5)&&!monsterRegions[validatedRegion].blocked.has(x+","+y);
+    if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile in "+validatedRegion+"."},400,origin);
     let previousSave=null;if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);previousSave=oldSave;}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)||(member.energy||0)!==(oldSave.party[index].energy||0)||(member.status||null)!==(oldSave.party[index].status||null)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
     const species={
       mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3},
@@ -1514,7 +1523,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
       party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3)),energy:int(member.energy??0,0,4)?(member.energy??0):0,status:["burn","shock","poison"].includes(member.status)?member.status:null});
     }
-    const clean={region:previousSave?monsterRegion(previousSave.region):"meadow",x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,caughtSpecies:previousSave?[...new Set([...(Array.isArray(previousSave.caughtSpecies)?previousSave.caughtSpecies:[]),...party.map(p=>p.id)])].filter(id=>Object.hasOwn(species,id)).slice(0,100):[...new Set(party.map(p=>p.id))],badges:input.badges,party,bag:input.bag,visitedLandmarks:previousSave?.visitedLandmarks||[],claimedContracts:previousSave?.claimedContracts||[],npcIntroductions:previousSave?.npcIntroductions||[],npcQuestsDone:previousSave?.npcQuestsDone||[],defeatedCommanders:previousSave?.defeatedCommanders||[],capturedLegendaries:previousSave?.capturedLegendaries||[]};
+    const clean={region:validatedRegion,x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,caughtSpecies:previousSave?[...new Set([...(Array.isArray(previousSave.caughtSpecies)?previousSave.caughtSpecies:[]),...party.map(p=>p.id)])].filter(id=>Object.hasOwn(species,id)).slice(0,100):[...new Set(party.map(p=>p.id))],badges:input.badges,party,bag:input.bag,visitedLandmarks:previousSave?.visitedLandmarks||[],claimedContracts:previousSave?.claimedContracts||[],npcIntroductions:previousSave?.npcIntroductions||[],npcQuestsDone:previousSave?.npcQuestsDone||[],defeatedCommanders:previousSave?.defeatedCommanders||[],capturedLegendaries:previousSave?.capturedLegendaries||[]};
     const now=new Date().toISOString();
     if(expected===0){
       if(input.steps>10000||input.encounters>1000||input.caught>50||input.badges!==0||input.bag>8||input.party.some(member=>member.level>10||member.hp<1))return json({error:"Initial cloud progress exceeds the migration limits."},403,origin);
