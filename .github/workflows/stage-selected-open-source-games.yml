@@ -47,13 +47,16 @@ jobs:
           python3 scripts/verify-selected-open-source-imports.py
           python3 -m py_compile scripts/verify-selected-open-source-imports.py
           bash -n scripts/import-selected-open-source-games.sh
+          python3 scripts/prepare-selected-game-catalog.py
+          grep -q 'href="/arcade/hosted/a-dark-room/index.html"' public/arcade-30-games.html
+          grep -q 'href="/arcade/hosted/evolution-of-trust/index.html"' public/arcade-30-games.html
       - name: Push isolated review branch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
+          git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust public/arcade-30-games.html
           # A staging branch may already have a clean merge from main; push that update too.
           if git diff --cached --quiet; then
             echo "No staged import changes."
