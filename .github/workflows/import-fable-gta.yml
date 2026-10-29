@@ -35,6 +35,9 @@ jobs:
           cp arcade-overrides/fable-gta/src/App.tsx vendor/fable-gta/src/App.tsx
           cp arcade-overrides/fable-gta/src/render/builtinModels.ts vendor/fable-gta/src/render/builtinModels.ts
           cp arcade-overrides/fable-gta/src/render/proceduralTextures.ts vendor/fable-gta/src/render/proceduralTextures.ts
+          cp arcade-overrides/fable-gta/src/render/SceneEnvironment.tsx vendor/fable-gta/src/render/SceneEnvironment.tsx
+          cp arcade-overrides/fable-gta/src/App.css vendor/fable-gta/src/App.css
+          cp arcade-overrides/fable-gta/src/data/tile-types.json vendor/fable-gta/src/data/tile-types.json
       - name: Install dependencies and verify TypeScript
         working-directory: vendor/fable-gta
         run: npm ci --no-audit --no-fund
@@ -46,6 +49,11 @@ jobs:
           mkdir -p public/arcade/hosted/fable-gta
           rsync -a --delete vendor/fable-gta/dist/ public/arcade/hosted/fable-gta/
           cp vendor/fable-gta/LICENSE public/arcade/hosted/fable-gta/LICENSE
+      - name: Check compiled entry and bundled asset references
+        run: |
+          test -s public/arcade/hosted/fable-gta/index.html
+          test -d public/arcade/hosted/fable-gta/assets
+          grep -q '/arcade/hosted/fable-gta/assets/' public/arcade/hosted/fable-gta/index.html
       - name: Commit import and compiled build
         run: |
           git config user.name "github-actions[bot]"
