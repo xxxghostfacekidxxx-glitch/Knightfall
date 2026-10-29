@@ -71,3 +71,24 @@ body:not(.profile-custom-theme) .profile-shell :where(.action,.friend-request-ro
  .community-directory :where(.category,.thread-card){border-radius:12px}
 }
 @media(prefers-reduced-motion:reduce){.messages-shell .conversation{transition:none}}
+
+/* Visual QA repair: message composer and overlays must not inherit legacy orange. */
+body:not(.profile-custom-theme) .messages-shell .composer{background:linear-gradient(180deg,#191329,#0d0e1a)!important;border-top:1px solid #ff55d855!important;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
+body:not(.profile-custom-theme) .messages-shell .composer textarea{background:#0b0d1b!important;border:1px solid #ff55d866!important;color:#f9f3ff!important;min-width:0;max-width:100%;font-size:16px}
+body:not(.profile-custom-theme) .messages-shell .composer textarea:focus{outline:2px solid #c6ff45!important;border-color:#c6ff45!important}
+body:not(.profile-custom-theme) .messages-shell :where(.composer button.primary,.messages-hero button.primary){background:linear-gradient(125deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#130919!important}
+body:not(.profile-custom-theme) .messages-shell :where(.composer button.primary,.messages-hero button.primary) span{color:inherit!important}
+.messages-shell .composer-main,.messages-shell .composer-actions{min-width:0;max-width:100%}
+.messages-shell .composer-main{display:flex;flex-wrap:wrap;gap:.5rem}
+.messages-shell .composer textarea{flex:1 1 220px}
+.messages-shell .composer-actions{flex-wrap:wrap}
+body:has(.messages-shell) .gw-character-crew{display:none!important}
+body:has(.messages-shell) .gw-ambient{opacity:.08}
+body:has(.admin-shell) .gw-character-crew,body:has(.dt-workspace-nav) .gw-character-crew{opacity:.16;pointer-events:none}
+@media(max-width:680px){
+ .messages-shell .composer{position:relative;z-index:3}
+ .messages-shell .composer-main{width:100%}
+ .messages-shell .composer textarea{width:100%;flex-basis:100%}
+ .messages-shell .composer-actions{justify-content:flex-end}
+ .messages-shell .message-layout{min-height:0}
+}
