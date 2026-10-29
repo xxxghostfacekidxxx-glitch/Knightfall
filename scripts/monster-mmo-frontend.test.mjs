@@ -145,3 +145,14 @@ test("offline battles support charged specials and guarding without changing sta
  assert.match(js,/guarding\?\.35:1/);
  assert.match(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
 });
+
+test("offline battle adds original move names, status damage and accessible visual effects",()=>{
+ assert.ok(html.includes('id="battle-effect"'));
+ assert.match(js,/const speciesMoves=/);
+ assert.match(js,/function inflictStatus\(attacker,defender\)/);
+ assert.match(js,/function statusTick\(target\)/);
+ assert.match(js,/function showBattleEffect\(kind,message\)/);
+ assert.match(js,/if\(evolutionMessage\.includes\("EVOLVED"\)\)showBattleEffect/);
+ assert.match(js,/p\.status=null;p\.energy=0/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
+});
