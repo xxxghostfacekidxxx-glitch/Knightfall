@@ -79,3 +79,19 @@ test("overworld contains deterministic original faction micro-biomes",async()=>{
  assert.match(world,/hash\(x\/32,y\/32,71\)/);
  assert.match(world,/Faction-specific mushrooms/);
 });
+
+test("overworld movement interpolates only adjacent steps and honors reduced motion",async()=>{
+ const world=await load("public/monster-mmo-pixel-world.js");
+ assert.match(world,/Presentation-only tween/);
+ assert.match(world,/distance===1/);
+ assert.match(world,/reducedMotion/);
+ assert.match(world,/duration:145/);
+ assert.match(world,/motion=null;loadExplored/);
+});
+test("tile boundaries blend adjacent terrain with directional shading",async()=>{
+ const world=await load("public/monster-mmo-pixel-world.js");
+ assert.match(world,/Tile-aware edges/);
+ assert.match(world,/const adjacent=\(dx,dy\)/);
+ assert.match(world,/sameSurface\(north\)/);
+ assert.match(world,/sameSurface\(south\)/);
+});
