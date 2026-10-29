@@ -45,3 +45,16 @@ test("quest step tracking and region survive save normalization",async()=>{
  assert.match(backend,/const clean=\{region:validatedRegion/);
  assert.match(backend,/monsterRegions\[validatedRegion\]\.blocked\.has/);
 });
+
+test("original faction battle scenery and readable handheld theme ship together",async()=>{
+ const stage=await load("public/monster-mmo-pixel-battle.js");
+ const css=await load("public/monster-mmo.css");
+ for(const cue of ["Orbiting saucers","Hellscape spires","Two-tone moon/planet","prefers-reduced-motion"])assert.ok(stage.includes(cue)||css.includes(cue),cue);
+ assert.match(css,/--hh-pink:#ff63c8/);
+ assert.match(css,/button\[aria-selected="true"\]/);
+});
+test("Creator Foundry lists official free game tools without shipping their binaries",async()=>{
+ const html=await load("public/dev-toolkit.html");
+ for(const name of ["Phaser 3 / 4","Tiled Map Editor","LDtk World Builder","Piskel Sprite Animator","LibreSprite"])assert.ok(html.includes(name),name);
+ assert.match(html,/29 tools/);
+});
