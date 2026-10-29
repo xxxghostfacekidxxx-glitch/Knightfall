@@ -9,9 +9,9 @@ test("creature frontend parses as a module",()=>{
  const result=spawnSync(process.execPath,["--check","--input-type=module"],{input:js,encoding:"utf8"});
  assert.equal(result.status,0,result.stderr);
 });
-test("offline map expands to 16 by 12 while staging stays 10 by 8",()=>{
+test("online and offline maps share the 16 by 12 world",()=>{
  assert.match(js,/x<=16&&y>=1&&y<=12/);
- assert.match(js,/const width=connected\?10:16,height=connected\?8:12/);
+ assert.match(js,/const width=16,height=12/);
  assert.match(js,/obstacles=new Set/);
  assert.match(js,/function render\(/);
  assert.match(js,/map\.style\.gridTemplateColumns/);
@@ -93,7 +93,7 @@ test("offline galactic bureau contracts award one-time capture supplies",()=>{
  for(const id of ["microwave","pigeons","toaster","treaty"])assert.match(js,new RegExp('id:"'+id+'"'));
  assert.match(js,/save\.claimedContracts\.includes\(id\)/);
  assert.match(js,/save\.bag=\(save\.bag\|\|0\)\+contract\.reward/);
- assert.match(js,/if\(connected\|\|busy\|\|battle\)return/);
+ assert.match(js,/if\(connected\)\{action\("contract",\{id\}\);return\}/);
  assert.match(js,/function render\(\)\{renderStory\(\);renderBureau\(\);/);
 });
 
@@ -112,7 +112,7 @@ test("faction world has three reward landmarks and location-specific encounters"
  for(const id of ["dish","tax","border"])assert.match(js,new RegExp('id:"'+id+'"'));
  assert.match(js,/function visitLandmark\(x,y\)/);
  assert.match(js,/save\.visitedLandmarks\.includes\(site\.id\)/);
- assert.match(js,/if\(connected&&\(x>10\|\|y>8\)\)/);
+ assert.match(js,/const width=16,height=12/);
  assert.match(js,/zone==="alien"\?Object\.keys\(species\)/);
  assert.match(css,/tile\.zone-alien/);
  assert.match(css,/tile\.zone-demon/);
@@ -143,7 +143,7 @@ test("offline battles support charged specials and guarding without changing sta
  assert.match(js,/if\(name==="attack"\|\|name==="special"\|\|name==="guard"\)/);
  assert.match(js,/lead\.energy-=2/);
  assert.match(js,/guarding\?\.35:1/);
- assert.match(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
+ assert.doesNotMatch(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
 });
 
 test("offline battle adds original move names, status damage and accessible visual effects",()=>{
@@ -163,4 +163,11 @@ test("online battle actions render server-confirmed effects and allow creature s
  assert.match(js,/if\(name==="switch"\)/);
  assert.match(js,/if\(data\.message\?\.includes\("evolved into"\)\)showBattleEffect/);
  assert.doesNotMatch(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
+});
+
+test("online map, missions and bosses are enabled in the shared world",()=>{
+ assert.match(js,/if\(connected\)\{action\("npc",\{id\}\);return\}/);
+ assert.match(js,/if\(connected\)\{action\("commander",\{id\}\);return\}/);
+ assert.match(js,/save\.visitedLandmarks=data\.player\.visitedLandmarks/);
+ assert.match(js,/const width=16,height=12/);
 });
