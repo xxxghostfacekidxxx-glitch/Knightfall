@@ -17,6 +17,7 @@ select(active);
 const battleTabs=[...document.querySelectorAll("[data-battle-tab]")];
 const battleSections=[...document.querySelectorAll("[data-battle-section]")];
 const battleHint=document.getElementById("battle-command-hint");
+let lastLeadId=null,lastLeadHp=null;
 function chooseBattleTab(name){
  battleTabs.forEach(b=>b.setAttribute("aria-selected",String(b.dataset.battleTab===name)));
  battleSections.forEach(section=>{section.hidden=section.dataset.battleSection!==name;});
@@ -25,6 +26,9 @@ function chooseBattleTab(name){
 battleTabs.forEach(b=>b.addEventListener("click",()=>chooseBattleTab(b.dataset.battleTab)));
 document.addEventListener("hell-high-orbit:battle",e=>{
  const current=e.detail;
- if(!current){chooseBattleTab("fight");return;}
- if(current.lead?.hp<=0&&battleTabs.length)chooseBattleTab("party");
+ if(!current){lastLeadId=null;lastLeadHp=null;chooseBattleTab("fight");return;}
+ const lead=current.lead;
+ if(lead?.hp<=0&&battleTabs.length)chooseBattleTab("party");
+ else if(lead&&((lastLeadId!==null&&lead.id!==lastLeadId)||(lastLeadHp!==null&&lastLeadHp<=0&&lead.hp>0)))chooseBattleTab("fight");
+ lastLeadId=lead?.id||null;lastLeadHp=lead?.hp??null;
 });
