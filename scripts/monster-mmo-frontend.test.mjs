@@ -372,3 +372,14 @@ test("one pause menu and self-contained handheld dialogue are wired",()=>{
  assert.match(css,/\.field-dialogue\[hidden\]/);
  for(const code of [dialogue,offline]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
 });
+
+
+test("battle party switch is accessible and fainting preserves healthy reserves",()=>{
+ assert.ok(html.includes('id="battle-party"'));
+ assert.match(js,/const battleParty=\$\("battle-party"\)/);
+ assert.match(js,/swap\.addEventListener\("click",\(\)=>action\("switch",\{index:i\}\)\)/);
+ assert.match(js,/swap\.disabled=busy\|\|p\.hp<=0/);
+ assert.match(js,/if\(lead\.hp<=0\)\{log\(save\.party\[0\]\.name\+" enters the battle!"\);return\}/);
+ assert.match(js,/if\(save\.party\.some\(\(p,i\)=>i>0&&p\.hp>0\)\)log\(lead\.name\+" fainted! Choose a healthy creature below to continue\."\)/);
+ assert.match(css,/#battle-party \.battle-switch/);
+});
