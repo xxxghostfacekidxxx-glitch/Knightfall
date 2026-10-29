@@ -49,9 +49,24 @@
   const visitKey="ashfall:hell-high-orbit:interior-stamps-v1";
   let interiorStamps=new Set();
   try{const saved=JSON.parse(localStorage.getItem(visitKey)||"[]");if(Array.isArray(saved))interiorStamps=new Set(saved.filter(id=>Object.hasOwn(interiors,id)))}catch{}
+  function renderInteriorJournal(){
+    const progress=document.getElementById("interior-journal-progress");
+    const entries=document.getElementById("interior-journal-entries");
+    if(progress)progress.textContent=interiorStamps.size+" / "+Object.keys(interiors).length+" locations inspected";
+    if(!entries)return;
+    entries.replaceChildren();
+    for(const [kind,info] of Object.entries(interiors)){
+      const item=document.createElement("div");
+      item.className="interior-journal-entry"+(interiorStamps.has(kind)?" is-discovered":"");
+      item.textContent=(interiorStamps.has(kind)?"✓ ":"◇ ")+(interiorStamps.has(kind)?info.title:"Unknown location");
+      entries.append(item);
+    }
+  }
+  renderInteriorJournal();
   function recordVisit(kind){
     if(interiorStamps.has(kind))return false;
     interiorStamps.add(kind);
+    renderInteriorJournal();
     try{localStorage.setItem(visitKey,JSON.stringify([...interiorStamps]))}catch{}
     document.dispatchEvent(new CustomEvent("hell-high-orbit:interior-discovered",{detail:{kind,visited:interiorStamps.size,total:Object.keys(interiors).length}}));
     return true;
