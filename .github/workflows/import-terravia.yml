@@ -1,0 +1,65 @@
+name: Import Terravia Creature RPG
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-terravia.yml'
+permissions:
+  contents: write
+concurrency:
+  group: terravia-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Clone and verify MIT upstream
+        run: |
+          git clone --depth 1 https://github.com/maxgfr/terravia.git /tmp/terravia
+          grep -q 'MIT License' /tmp/terravia/LICENSE
+          grep -q 'Copyright (c) 2026 Maxime Golfier' /tmp/terravia/LICENSE
+          git -C /tmp/terravia rev-parse HEAD > /tmp/terravia-revision
+      - name: Test and build for Ash-Fall subdirectory
+        run: |
+          cd /tmp/terravia
+          npm ci
+          npm test -- --run
+          npm run build -- --base=/arcade/hosted/terravia/
+      - name: Install standalone static game and attribution
+        run: |
+          TARGET=public/arcade/hosted/terravia
+          mkdir -p "$TARGET"
+          rsync -a --delete /tmp/terravia/dist/ "$TARGET/"
+          cp /tmp/terravia/LICENSE "$TARGET/LICENSE"
+          cp /tmp/terravia-revision "$TARGET/UPSTREAM_COMMIT.txt"
+          cat > "$TARGET/ASHFALL_SOURCE.txt" <<'EOF'
+          Terravia by Maxime Golfier (MIT)
+          https://github.com/maxgfr/terravia
+          This is the original open-source game, built for hosting on Ash-Fall.
+          No Ash-Fall ownership of the original artwork, code, or characters is claimed.
+          EOF
+          test -s "$TARGET/index.html"
+          test -s "$TARGET/LICENSE"
+          grep -q '/arcade/hosted/terravia/' "$TARGET/index.html"
+          if grep -R -lE '(https?://[^" ]+\.js|cdn\.jsdelivr\.net|unpkg\.com)' "$TARGET/index.html"; then
+            echo "::warning::Inspect external resources before claiming complete offline play"
+          fi
+      - name: Commit hosted game
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/arcade/hosted/terravia
+          if ! git diff --cached --quiet; then
+            git commit -m "vendor(arcade): host MIT-licensed Terravia creature RPG"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
