@@ -182,3 +182,43 @@ body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-event
 .game-social .social-requests{margin-top:10px;font-size:.78rem}
 .game-social .social-inbox-link{display:inline-block;padding:12px;background:#caff45;color:#17252e;font-weight:900;text-decoration:none;border:2px solid #354a4e}
 #game-social-status{font-size:.76rem;min-height:1.3em;color:#7a315e}
+
+/* Handheld RPG polish: crisp pixels, quiet chrome, world-first layout. */
+.game-screen{position:relative;isolation:isolate;overflow:hidden;max-width:780px;margin:0 auto;background:#203d35;border:5px solid #1c2b37;outline:3px solid #b8d6b5;box-shadow:0 0 0 6px #334e57,0 12px 0 #101c2b}
+.game-screen #pixel-overworld{width:100%;aspect-ratio:4/3;object-fit:fill;display:block;image-rendering:pixelated}
+.game-screen .screen-corner{position:absolute;z-index:1;pointer-events:none;width:15px;height:15px;border-color:#d7f2b9}
+.screen-corner-top{top:5px;left:5px;border-top:3px solid;border-left:3px solid}
+.screen-corner-bottom{bottom:5px;right:5px;border-bottom:3px solid;border-right:3px solid}
+.world-panel .toolbar{max-width:780px;margin:0 auto 10px;display:flex;align-items:center;gap:8px;min-height:37px;background:#eae9d4;border:3px solid #293a45;color:#273541;padding:4px 9px}
+.world-panel .toolbar strong{flex:1;min-width:0;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zone-emblem{display:grid;place-items:center;width:23px;height:23px;flex:none;background:#caff45;color:#22373d;border:2px solid #324b48;font-size:.8rem}
+.world-panel .pad{margin-top:14px}
+.world-panel .pad button{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#world-interact:not([hidden]){margin-top:12px}
+#log{max-width:780px;line-height:1.45}
+#battle-panel #battle.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+#battle-panel:not([hidden]){display:flex;flex-direction:column;justify-content:flex-start;gap:7px}
+#pixel-battle{display:block;width:100%;height:auto;aspect-ratio:24/13;max-height:min(51dvh,450px);object-fit:contain;background:#203e53}
+.battle-command{width:100%;max-width:760px;margin:0 auto}
+.battle-command-tabs button:focus-visible,.battle-moves button:focus-visible,.pause-tabs button:focus-visible,.world-panel .pad button:focus-visible{outline:3px solid #ff66c6;outline-offset:2px}
+.battle-command-tabs button:active,.battle-moves button:active{transform:translateY(2px)}
+#game-menu .pause-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#game-menu .pause-tabs button{min-width:0;white-space:normal;overflow-wrap:anywhere}
+.game-social .social-conversations{display:flex;gap:5px;overflow-x:auto;max-width:100%;padding:7px 0}
+.game-social .social-dm-choice{flex:none;background:#d8e7d0;color:#22323c;border:2px solid #627980;border-radius:3px;padding:7px;font-size:.72rem}
+.game-social .social-dm-choice[aria-pressed=true]{background:#caff45}
+.game-social .social-inbox-link{margin-top:10px}
+@media(max-width:560px){
+ .game-screen{border-width:3px;outline-width:2px;box-shadow:0 0 0 4px #334e57,0 6px 0 #101c2b}
+ .world-panel .toolbar{padding:3px 6px;min-height:32px}
+ .world-panel .toolbar strong{font-size:.65rem}
+ #battle-panel:not([hidden]){gap:3px;padding:5px 7px 10px}
+ #pixel-battle{max-height:46dvh}
+ .battle-command{padding:6px;margin-top:2px}
+ .battle-command-tabs{gap:3px;margin-bottom:5px}
+ .battle-command-tabs button{min-height:38px;font-size:.69rem}
+ .battle-prompt{padding:2px 0 5px}
+ #battle-panel .battle-moves{gap:4px}
+ #battle-panel .battle-moves button{min-height:43px}
+}
+@media(prefers-reduced-motion:reduce){.battle-command-tabs button:active,.battle-moves button:active{transform:none}}
