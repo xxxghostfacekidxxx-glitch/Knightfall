@@ -65,7 +65,7 @@
   });
   heal.addEventListener("click",()=>{
     document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal"));
-    heal.textContent="✚ Party Restored";
+    heal.textContent="✚ Healing requested";
     setTimeout(()=>{heal.textContent="✚ Heal Party"},1300);
   });
   exit.addEventListener("click",closeStation);
