@@ -26,21 +26,22 @@ for slug, title, category, license_name, upstream, desc in games:
         f'<a class="source" href="https://github.com/{upstream}" target="_blank" '
         f'rel="noopener noreferrer">Original source</a></div></article>'
     )
-if all(f'href="/arcade/hosted/{slug}/index.html"' in html for slug, *_ in games):
-    print("Catalog routes already exist; no change.")
-    raise SystemExit(0)
-if any(f'href="/arcade/hosted/{slug}/index.html"' in html for slug, *_ in games):
+present = [f'href="/arcade/hosted/{slug}/index.html"' in html for slug, *_ in games]
+if any(present) and not all(present):
     raise SystemExit("Only one selected game present; manual catalog review required")
-needle = '<section id="grid" class="grid" aria-label="All locally playable games">'
-assert needle in html
-html = html.replace(needle, needle + "\n" + "\n".join(cards), 1)
-# Existing count is a legacy hard-coded total; update only if all markers agree.
-match = re.search(r'<div id="count" class="count" aria-live="polite">(\d+) CABINETS</div>', html)
-if match:
-    n = int(match.group(1))
-    html = html.replace(match.group(0), match.group(0).replace(str(n), str(n + 2)), 1)
+if not all(present):
+    needle = '<section id="grid" class="grid" aria-label="All locally playable games">'
+    assert needle in html
+    html = html.replace(needle, needle + "\n" + "\n".join(cards), 1)
+# Derive every displayed total from actual cards, including on reruns.
+count = len(re.findall(r'<article class="game"[^>]*>', html))
+html = re.sub(r'ARCADE × \d+', f'ARCADE × {count}', html)
+html = re.sub(r'\d+ CABINETS', f'{count} CABINETS', html)
+html = re.sub(r'\d+ locally hosted game entries', f'{count} locally hosted game entries', html)
+html = html.replace('These are Ash-Fall original game entries.',
+                    'Includes Ash-Fall originals and credited open-source imports.')
 html = re.sub(
-    r'<section aria-label="Selected open-source imports pending gameplay verification".*?</section>\\s*',
+    r'<section aria-label="Selected open-source imports pending gameplay verification".*?</section>\s*',
     '<section aria-label="Advanced games in development"><h2>Advanced games in development</h2>'
     '<p>Kaetram (#22) and OpenFront (#24) require multiplayer backends. '
     'Space Huggers (#26) requires redistribution clearance. '

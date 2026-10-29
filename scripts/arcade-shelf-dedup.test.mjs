@@ -12,7 +12,9 @@ console.log("Arcade shelf verified: "+ids.length+" unique entries, "+retired.len
 
 const catalog=readFileSync("public/arcade-30-games.html","utf8");
 const cards=[...catalog.matchAll(/<article class="game"[^>]*>[\s\S]*?<\/article>/g)].map(m=>m[0]);
-assert.equal(cards.length,106,"Secondary arcade catalog count must match its heading");
+const headingCount=Number(catalog.match(/ARCADE × (\d+)/)?.[1]);
+assert.ok(headingCount>100,"Catalog heading must contain its cabinet count");
+assert.equal(cards.length,headingCount,"Secondary arcade catalog count must match its heading");
 const hrefs=cards.map(c=>c.match(/class="play" href="([^"]+)"/)?.[1]);
 assert.ok(hrefs.every(Boolean),"Each catalog card needs a play link");
 assert.equal(new Set(hrefs).size,hrefs.length,"Duplicate play links in secondary catalog");
