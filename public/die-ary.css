@@ -5,7 +5,7 @@
 .diary-hero h1 span{color:var(--diary-bright);font-size:.5em;vertical-align:middle}
 .eyebrow{font-size:.68rem;font-weight:850;letter-spacing:.15em;color:#e8b5f5;margin-bottom:.65rem}
 .diary-intro{font-size:1.08rem;line-height:1.7;color:#c7c7c7;max-width:720px;margin-top:1rem}
-.diary-privacy{margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid #493020;border-left:3px solid var(--diary-accent);border-radius:8px;background:rgba(211,84,0,.07);color:#c7b9af;font-size:.86rem;line-height:1.65}
+.diary-privacy{margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid #493020;border-left:3px solid var(--diary-accent);border-radius:8px;background:rgba(255,85,216,.07);color:#c7b9af;font-size:.86rem;line-height:1.65}
 .diary-privacy strong{color:#e8b5f5}
 .diary-card{padding:clamp(1rem,4vw,1.6rem);border:1px solid #2b2b2b;border-radius:15px;background:linear-gradient(145deg,rgba(20,20,20,.98),rgba(8,8,8,.98));box-shadow:0 18px 55px rgba(0,0,0,.25);margin:1rem 0 1.5rem}
 .diary-card-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.1rem}
@@ -16,7 +16,7 @@
 #diary-form label span{color:#777;font-size:.72rem;font-weight:400}
 #diary-form input,#diary-form textarea{width:100%;box-sizing:border-box;border:1px solid #373737;border-radius:9px;background:#0a0a0a;color:#f4f4f4;padding:.85rem .9rem;font:inherit;line-height:1.6}
 #diary-form textarea{resize:vertical;min-height:180px;white-space:pre-wrap}
-#diary-form input:focus,#diary-form textarea:focus{outline:2px solid rgba(211,84,0,.45);border-color:var(--diary-accent)}
+#diary-form input:focus,#diary-form textarea:focus{outline:2px solid rgba(255,85,216,.45);border-color:var(--diary-accent)}
 .diary-form-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.4rem}
 .diary-form-actions{display:flex;gap:.55rem;flex-wrap:wrap}
 .button{min-height:44px;padding:.7rem 1rem;border:1px solid var(--diary-accent);border-radius:8px;background:linear-gradient(180deg,var(--diary-bright),var(--diary-accent));color:#fff;font-weight:800;cursor:pointer}
