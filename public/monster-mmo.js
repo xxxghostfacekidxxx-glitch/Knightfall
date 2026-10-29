@@ -180,7 +180,7 @@ function speakToRouteNPC(){
  if(!npc||Math.abs(npc.x-save.x)+Math.abs(npc.y-save.y)>1)return;
  if(!Array.isArray(save.routeQuestsDone))save.routeQuestsDone=[];
  if(!Array.isArray(save.routeQuestsStarted))save.routeQuestsStarted=[];
- if(!Array.isArray(save.routeQuestSteps))save.routeQuestSteps={};
+ if(!save.routeQuestSteps||typeof save.routeQuestSteps!=="object"||Array.isArray(save.routeQuestSteps))save.routeQuestSteps={};
  if(save.routeQuestsDone.includes(npc.id)){log(npc.name+": The paperwork has already been filed.");return}
  if(!save.routeQuestsStarted.includes(npc.id)){
    save.routeQuestsStarted.push(npc.id);save.routeQuestSteps[npc.id]=save.steps;log(npc.name+": "+npc.intro);
