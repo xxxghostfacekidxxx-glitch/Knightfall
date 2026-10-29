@@ -147,7 +147,8 @@
   refresh();
  });
  document.addEventListener("hell-high-orbit:battle",event=>{
-  current=event.detail?.enemy&&event.detail?.lead?event.detail:null;
+  const incoming=event.detail?.enemy&&event.detail?.lead?event.detail:null;
+  if(incoming)current=incoming;else if(!effect)current=null;
   canvas.hidden=!current&&!effect;if(current)refresh();
  });
  let lastFrame=-1;
