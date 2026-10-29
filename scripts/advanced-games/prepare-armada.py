@@ -19,7 +19,7 @@ for relative in ['data/resources.json','src/data/resources.json']:
  p=dest/relative;p.write_text(p.read_text().replace('spacecraft/collision.ogg','spacecraft/collision-knightfall.wav'))
 for relative in ['config/config.json','src/config/config.json']:
  p=dest/relative;d=json.loads(p.read_text());d['analyticsUrl']='';d['missionHubUrl']='';p.write_text(json.dumps(d))
-p=dest/'index.html';s=p.read_text().replace('href="/assets/','href="assets/').replace('https://pabitrabanerjee.me/Interstellar-Armada/assets/images/orientation.png','assets/images/orientation.png');p.write_text(s)
+p=dest/'index.html';s=p.read_text().replace('href="/assets/','href="assets/').replace('https://pabitrabanerjee.me/Interstellar-Armada/assets/images/orientation.png','assets/images/orientation.png');s=s.replace('</head>', '<style>[id$="mainMenu.multiplayer"],[id$="singlePlayer.communityMissions"]{display:none!important}</style></head>');p.write_text(s)
 (dest/'KNIGHTFALL-CHANGES.md').write_text('''# Knightfall hosting changes — 2026-10-29
 
 Interstellar Armada by Pabitra Banerjee. Code GPL-3.0; artwork and music CC BY 4.0. Full original credits and third-party notices are retained in LICENSE.txt and license/.

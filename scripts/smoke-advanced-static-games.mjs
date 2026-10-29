@@ -18,10 +18,13 @@ try{
     await page.locator('#nameinput').fill('Knightfall');
     await page.locator('#createcharacter .play:not(.disabled)').click({timeout:60000});
     await page.waitForFunction(()=>document.body.classList.contains('started'),null,{timeout:60000});
-    await page.keyboard.press('ArrowRight');
+    await page.locator('body').click({position:{x:640,y:400}});
+    await page.locator('canvas').first().click({position:{x:450,y:230}});
     if(!await page.locator('canvas').count())throw Error('World canvas missing');
    }else if(slug==='interstellar-armada'){
-    await page.getByText('Single player',{exact:true}).click({timeout:60000});
+    await page.getByText('Single player',{exact:true}).waitFor({state:'visible',timeout:60000});
+    for(let i=0;i<3;i++){const dialog=page.locator('#dialog_screenContainer');if(await dialog.isVisible()){console.log('Armada dialog:',await page.locator('#dialog_message').innerText());await page.locator('#dialog_leftButton').click();await page.waitForTimeout(250)}else break;}
+    await page.getByText('Single player',{exact:true}).click({timeout:30000});
     await page.getByText('Campaign',{exact:true}).click({timeout:30000});
     await page.locator('#missionListContainer .listContainer > *').first().click({timeout:30000});
     await page.locator('#launchButton').click();

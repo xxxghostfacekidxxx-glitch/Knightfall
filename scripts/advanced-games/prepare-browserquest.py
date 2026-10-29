@@ -19,3 +19,8 @@ Original game by Little Workshop for Mozilla. Code MPL 2.0; content CC BY-SA 3.0
 
 This edition runs the original world simulation in a browser Web Worker with a local transport. Exploration, enemies, equipment, and chests remain local to the player. It is singleplayer, without an online multiplayer service. Original server sources are in server-source/; modified transport and source archive are included. Browser character saves remain local. This is a modified edition, not an official Mozilla service.
 ''')
+
+# The upstream snapshot omits music recordings: keep effects and skip absent music.
+p=dest/'js/audio.js';s=p.read_text().replace('this.musicNames = ["village", "beach", "forest", "cave", "desert", "lavaland", "boss"];','this.musicNames = [];').replace('if(!self.game.renderer.mobile) {','if(self.musicNames.length && !self.game.renderer.mobile) {');p.write_text(s)
+# Defer the hurt-overlay conversion until the sprite's image pixels are ready.
+p=dest/'js/sprite.js';s=p.read_text().replace('createHurtSprite: function() {',"createHurtSprite: function() {\n            if(!this.image.complete || !this.image.naturalWidth) { this.image.addEventListener('load', this.createHurtSprite.bind(this), {once:true}); return; }");p.write_text(s)
