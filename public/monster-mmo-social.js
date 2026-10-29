@@ -71,7 +71,7 @@ $("game-dm-form")?.addEventListener("submit",async e=>{
  try{await api("/api/messages/conversations/"+currentDmId,{method:"POST",body:JSON.stringify({body})});input.value="";lastDmId=0;await loadInbox();message("")}catch(error){message(error.message)}
 });
 async function refresh(){
- const menu=$("game-menu");if(!menu?.classList.contains("is-open")||!connectedOrigin()||inFlight)return;
+ const menu=$("game-menu");if(!menu?.classList.contains("is-open")||!document.querySelector('[data-pause-section="social"]')?.classList.contains("pause-active")||!connectedOrigin()||inFlight)return;
  
  inFlight=true;try{if(selected==="global")await loadGlobal();else if(selected==="friends")await loadFriends();else await loadInbox();message("")}catch(e){message(e.message)}finally{inFlight=false}
 }
@@ -79,6 +79,7 @@ $("game-global-form")?.addEventListener("submit",async e=>{e.preventDefault();co
 $("game-friend-form")?.addEventListener("submit",async e=>{e.preventDefault();const field=$("game-friend-name"),username=field.value.trim();if(!username)return;try{await api("/api/friends/request",{method:"POST",body:JSON.stringify({username})});field.value="";await loadFriends();message("Friend request sent.")}catch(error){message(error.message)}});
 const observer=new MutationObserver(()=>{const origin=connectedOrigin();if(origin!==lastOrigin){lastOrigin=origin;lastChatId=0;lastDmId=0;currentDmId=null;feed.textContent=origin?"Loading global chat…":"Connect to multiplayer in Settings to use global chat.";friends.textContent=origin?"Loading friends…":"Connect to multiplayer in Settings to see friends.";}refresh()});
 const menu=$("game-menu");if(menu)observer.observe(menu,{attributes:true,attributeFilter:["class"]});
+const socialSection=document.querySelector('[data-pause-section="social"]');if(socialSection)observer.observe(socialSection,{attributes:true,attributeFilter:["class"]});
 observer.observe(document.body,{attributes:true,attributeFilter:["data-game-api-origin"]});
 const connection=$("connection");if(connection)observer.observe(connection,{childList:true,characterData:true,subtree:true});
 setInterval(()=>{if(!document.hidden)refresh()},8000);
