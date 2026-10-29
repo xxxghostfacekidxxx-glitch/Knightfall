@@ -1,0 +1,105 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { margin: 0; height: 100%; overflow: hidden; background: #100d20; color: #f6eaff; }
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+.topbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: #151124; border-bottom: 1px solid #26283200;
+  border-bottom: 1px solid #262832;
+}
+.logo { font-weight: 800; letter-spacing: 0.08em; margin-right: 12px; color: #b8ff40; }
+.topbar button {
+  background: #211a32; color: #c8c8d2; border: 1px solid #6c3c77;
+  padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.topbar button.active { background: #b8ff40; color: #151124; font-weight: 700; }
+.topbar-import { margin-left: auto; }
+
+.game-root { position: relative; flex: 1; }
+.game-root canvas { display: block; }
+
+.hud {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(13, 14, 18, 0.75); border: 1px solid #6c3c77;
+  border-radius: 10px; padding: 10px 14px; font-size: 14px;
+  pointer-events: none; backdrop-filter: blur(6px);
+}
+.hud-row { display: flex; gap: 18px; margin: 2px 0; }
+.hud-health { font-weight: 700; }
+.hud-score { color: #b8ff40; font-weight: 700; }
+
+.overlay-panel {
+  position: absolute; top: 0; right: 0; width: 420px; height: 100%;
+  overflow-y: auto; background: rgba(17, 18, 24, 0.96);
+  border-left: 1px solid #6c3c77; padding: 16px;
+}
+
+.config-menu h2 { font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+.config-menu .hint { font-size: 12px; color: #8a8a96; margin: 4px 0 10px; }
+.config-menu section { margin-bottom: 24px; }
+.config-menu details { margin: 6px 0; background: #211a32; border-radius: 8px; padding: 6px 10px; }
+.config-menu summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+.config-menu button { background: #211a32; color: #c8c8d2; border: 1px solid #6c3c77; border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 12px; }
+
+.tile-list { display: flex; flex-direction: column; gap: 6px; }
+.tile-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.tile-swatch { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #6c3c77; flex-shrink: 0; }
+.tile-name { flex: 1; }
+
+.slider-row { display: grid; grid-template-columns: 90px 1fr 64px; align-items: center; gap: 8px; font-size: 12px; margin: 4px 0; }
+.slider-row input[type='number'] { width: 64px; background: #211a32; border: 1px solid #6c3c77; color: #f6eaff; border-radius: 6px; padding: 3px 6px; }
+.slider-row .val { text-align: right; color: #b8ff40; }
+input[type='range'] { accent-color: #b8ff40; }
+
+.upload-inline { font-size: 12px; color: #c8c8d2; cursor: pointer; }
+.upload-inline input[type='file'] { display: none; }
+.upload-inline::after { content: ' ⬆'; }
+label.upload-inline { background: #211a32; border: 1px solid #6c3c77; border-radius: 6px; padding: 4px 10px; }
+
+.editor-layout { display: flex; flex: 1; min-height: 0; }
+.editor-viewport { flex: 1; position: relative; }
+.editor-panel {
+  width: 360px; overflow-y: auto; background: #151124;
+  border-left: 1px solid #6c3c77; padding: 16px;
+}
+.editor-panel h2 { margin-top: 0; font-size: 16px; }
+.editor-panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a8a96; margin: 14px 0 4px; }
+.editor-panel label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; margin: 8px 0; }
+.editor-panel select { background: #211a32; border: 1px solid #6c3c77; color: #f6eaff; border-radius: 8px; padding: 6px; }
+.editor-panel button { background: #211a32; color: #c8c8d2; border: 1px solid #6c3c77; border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+.editor-panel button.active { background: #6c3c77; color: #fff; }
+.editor-panel button.primary { background: #b8ff40; color: #151124; font-weight: 700; }
+.gizmo-modes { display: flex; gap: 6px; margin: 10px 0; }
+.editor-actions { display: flex; gap: 8px; margin-top: 14px; align-items: center; }
+.upload input[type='file'] { font-size: 12px; }
+
+/* Ash-Fall City: responsive cyber-goth interface */
+.topbar{border-bottom:1px solid #ff4ebf;box-shadow:0 2px 16px #ff4ebf33;flex-wrap:wrap;gap:6px;z-index:5}
+.logo{color:#ff4ebf;text-shadow:0 0 12px #ff4ebf77}
+.topbar button{min-height:36px}
+.topbar button.active,.editor-panel button.primary{background:#b8ff40;color:#130e20;border-color:#b8ff40}
+.topbar a{border:1px solid #b8ff4080;border-radius:7px;text-decoration:none;font-size:12px}
+.hud{border-color:#ff4ebf88;background:rgba(15,10,30,.83);box-shadow:0 0 20px #ff4ebf22}
+.hud-score{color:#b8ff40}
+.overlay-panel,.editor-panel{border-color:#ff4ebf77}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #b8ff40;outline-offset:2px}
+@media(max-width:720px){
+  .topbar{padding:6px;gap:4px}
+  .topbar button{padding:6px 8px;font-size:12px}
+  .logo{font-size:12px;margin-right:2px}
+  .topbar-import{margin-left:0}
+  .hud{font-size:11px;padding:7px;top:6px;left:6px}
+  .hud-row{gap:9px}
+  .overlay-panel{width:min(100%,370px)}
+  .editor-layout{flex-direction:column}
+  .editor-panel{width:100%;max-height:45vh;border-left:0;border-top:1px solid #ff4ebf}
+  .editor-viewport{min-height:40vh}
+}
