@@ -1,0 +1,59 @@
+name: Import Sanctuary's End ARPG
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-sanctuary-arpg.yml'
+      - 'arcade-overrides/sanctuary/**'
+permissions:
+  contents: write
+concurrency:
+  group: sanctuary-arpg-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch open-source ARPG
+        run: |
+          git clone --depth 1 https://github.com/J3vb/Sanctuarys_End.git /tmp/sanctuary
+          test -f /tmp/sanctuary/LICENSE
+          test -f /tmp/sanctuary/CREDITS.md
+          test -f /tmp/sanctuary/sanctuary.html
+          grep -q 'MIT License' /tmp/sanctuary/LICENSE
+          git -C /tmp/sanctuary rev-parse HEAD > /tmp/sanctuary-revision
+      - name: Copy static game and preserve licenses
+        run: |
+          mkdir -p public/arcade/hosted/sanctuary-end
+          rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='Server' --exclude='tests' --exclude='.github' --exclude='package-lock.json' --exclude='package.json' --exclude='jsconfig.json' --exclude='biome.json' --exclude='README.md' --exclude='ROADMAP.md' --exclude='CHANGELOG.md' /tmp/sanctuary/ public/arcade/hosted/sanctuary-end/
+          cp /tmp/sanctuary-revision public/arcade/hosted/sanctuary-end/UPSTREAM_COMMIT.txt
+          cp arcade-overrides/sanctuary/ashfall-theme.css public/arcade/hosted/sanctuary-end/ashfall-theme.css
+          python3 - <<'PY'
+          from pathlib import Path
+          page = Path('public/arcade/hosted/sanctuary-end/sanctuary.html')
+          html = page.read_text()
+          assert '</head>' in html
+          html = html.replace('</head>', '<link rel="stylesheet" href="./ashfall-theme.css">\n</head>', 1)
+          page.write_text(html)
+          PY
+      - name: Validate static bundle
+        run: |
+          test -s public/arcade/hosted/sanctuary-end/sanctuary.html
+          test -s public/arcade/hosted/sanctuary-end/LICENSE
+          test -s public/arcade/hosted/sanctuary-end/CREDITS.md
+          test -d public/arcade/hosted/sanctuary-end/js
+          test -d public/arcade/hosted/sanctuary-end/vendor
+          grep -q 'ashfall-theme.css' public/arcade/hosted/sanctuary-end/sanctuary.html
+      - name: Commit playable static game
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/arcade/hosted/sanctuary-end
+          if ! git diff --cached --quiet; then
+            git commit -m "vendor(arcade): import Sanctuary's End ARPG with Ash-Fall theme"
+            git push
+          fi
