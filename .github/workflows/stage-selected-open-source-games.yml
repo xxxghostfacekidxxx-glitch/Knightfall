@@ -1,6 +1,10 @@
 name: Stage selected open-source games
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/stage-selected-open-source-games.yml'
 permissions:
   contents: write
   pull-requests: write
