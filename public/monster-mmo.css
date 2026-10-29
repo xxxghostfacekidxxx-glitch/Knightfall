@@ -77,3 +77,8 @@
 #battle-panel .battle-moves button:not(:disabled):focus-visible{outline:3px solid #caff45;outline-offset:2px}
 #battle-panel .battle-moves button:nth-child(3){border-left:5px solid #ff68ca}
 #battle-panel .battle-moves button:nth-child(4){border-left:5px solid #caff45}
+
+/* Full-screen evolution overlay, accessible on mobile and offline builds. */
+#pixel-evolution{position:fixed;z-index:9998;top:50%;left:50%;transform:translate(-50%,-50%);width:min(92vw,640px);height:auto;aspect-ratio:4/3;image-rendering:pixelated;border:4px solid #ff65cc;box-shadow:0 0 0 100vmax rgba(6,8,20,.86),0 0 28px #caff61;background:#11162b;pointer-events:none}
+#pixel-evolution[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){#pixel-evolution{transition:none;animation:none}}
