@@ -49,9 +49,10 @@ jobs:
           assert 'ashfall-theme.css' not in original.read_text(), 'Original must remain untouched'
           html=dev.read_text()
           assert '</head>' in html
+          html=html.replace("<title>Sanctuary's End — 3D</title>", "<title>Ash-Fall: Infernal Reign · Development Edition</title>")
           if 'ashfall-theme.css' not in html:
               html=html.replace('</head>', '<link rel="stylesheet" href="./ashfall-theme.css">\\n</head>', 1)
-              dev.write_text(html)
+          dev.write_text(html)
           PY
       - name: Validate static bundle
         run: |
