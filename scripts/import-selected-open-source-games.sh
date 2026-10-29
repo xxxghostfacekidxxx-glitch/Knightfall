@@ -10,7 +10,8 @@ fi
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 vendor() {
-  local name="$1" remote="$2" ref="$3" source="$work/$name" target="public/arcade/hosted/$name"
+  local name="$1" remote="$2" ref="$3"
+  local source="$work/$name" target="public/arcade/hosted/$name"
   git clone --quiet --filter=blob:none "$remote" "$source"
   git -C "$source" checkout --quiet --detach "$ref"
   local sha
