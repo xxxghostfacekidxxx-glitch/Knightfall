@@ -1,0 +1,66 @@
+[
+  {
+    "id": "player",
+    "name": "Player",
+    "category": "player",
+    "modelUrl": "",
+    "builtin": "player",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "sedan",
+    "name": "Sedan",
+    "category": "vehicle",
+    "modelUrl": "",
+    "builtin": "sedan",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "police",
+    "name": "Police Cruiser",
+    "category": "vehicle",
+    "modelUrl": "",
+    "builtin": "police",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "truck",
+    "name": "Box Truck",
+    "category": "vehicle",
+    "modelUrl": "",
+    "builtin": "truck",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "barrel",
+    "name": "Explosive Barrel",
+    "category": "prop",
+    "modelUrl": "",
+    "builtin": "barrel",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "tree",
+    "name": "Tree",
+    "category": "prop",
+    "modelUrl": "",
+    "builtin": "tree",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "streetlight",
+    "name": "Traffic Light",
+    "category": "prop",
+    "modelUrl": "",
+    "builtin": "streetlight",
+    "transform": { "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  },
+  {
+    "id": "pistol",
+    "name": "Pistol Pickup",
+    "category": "weapon",
+    "modelUrl": "",
+    "builtin": "pistol",
+    "transform": { "position": { "x": 0, "y": 0.5, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } }
+  }
+]

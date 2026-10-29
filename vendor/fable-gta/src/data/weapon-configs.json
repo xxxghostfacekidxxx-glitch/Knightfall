@@ -1,0 +1,4 @@
+[
+  { "id": "pistol", "name": "Pistol", "damage": 25, "fireRate": 3, "range": 30, "projectileSpeed": 60, "ammo": 60 },
+  { "id": "smg", "name": "SMG", "damage": 12, "fireRate": 10, "range": 25, "projectileSpeed": 70, "ammo": 180 }
+]

@@ -1,0 +1,64 @@
+{
+  "name": "Downtown",
+  "legend": {
+    "-": "road_h",
+    "|": "road_v",
+    "+": "intersection",
+    "s": "sidewalk",
+    "g": "grass",
+    "w": "water",
+    "B": "building",
+    "T": "building_tall"
+  },
+  "rows": [
+    "ssssssssssssssssssssssssssssssss",
+    "sBBBs|sBBBBBBs|sTTBBs|sBBBBBBBws",
+    "sBBBs|sBBBBBBs|sTTBBs|sBBBBBBBws",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "-----+--------+------+----------",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "sBBBs|sggggggs|sBBBBs|sTTTBBBBgs",
+    "sBBBs|sggggggs|sBBBBs|sTTTBBBBgs",
+    "sBBBs|sggggggs|sBBBBs|sBBBBBBBgs",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "-----+--------+------+----------",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "sTTBs|sBBBBBBs|sggggs|sBBBBBBBBs",
+    "sTTBs|sBBBBBBs|sggggs|sBBBBBBBBs",
+    "sssss|ssssssss|sggggs|sBBBBBBBBs",
+    "sBBBs|sBBBBBBs|sggggs|ssssssssss",
+    "sBBBs|sBBBBBBs|ssssss|sBBBBBBBBs",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "-----+--------+------+----------",
+    "sssss|ssssssss|ssssss|ssssssssss",
+    "sBBBs|sTTTTBBs|sBBBBs|sggggggggs",
+    "sBBBs|sTTTTBBs|sBBBBs|sggggggggs",
+    "swwws|sBBBBBBs|sBBBBs|sggggggggs",
+    "ssssssssssssssssssssssssssssssss"
+  ],
+  "playerSpawn": { "position": { "x": 22, "y": 0, "z": 18 }, "rotationY": 0 },
+  "objects": [
+    { "presetId": "tree", "position": { "x": 30, "y": 0, "z": 26 }, "rotationY": 0 },
+    { "presetId": "tree", "position": { "x": 38, "y": 0, "z": 30 }, "rotationY": 1.2 },
+    { "presetId": "tree", "position": { "x": 70, "y": 0, "z": 82 }, "rotationY": 2.1 },
+    { "presetId": "tree", "position": { "x": 110, "y": 0, "z": 84 }, "rotationY": 0.5 },
+    { "presetId": "barrel", "position": { "x": 26, "y": 0, "z": 42 }, "rotationY": 0 },
+    { "presetId": "barrel", "position": { "x": 90, "y": 0, "z": 42 }, "rotationY": 0 },
+    { "presetId": "streetlight", "position": { "x": 21, "y": 0, "z": 21 }, "rotationY": 0 },
+    { "presetId": "streetlight", "position": { "x": 61, "y": 0, "z": 21 }, "rotationY": 1.5708 },
+    { "presetId": "streetlight", "position": { "x": 61, "y": 0, "z": 45 }, "rotationY": 3.1416 },
+    { "presetId": "pistol", "position": { "x": 34, "y": 0, "z": 30 }, "rotationY": 0 }
+  ],
+  "vehicleSpawns": [
+    { "presetId": "sedan", "position": { "x": 30, "y": 0, "z": 18 }, "rotationY": 1.5708 },
+    { "presetId": "police", "position": { "x": 50, "y": 0, "z": 42 }, "rotationY": 1.5708 },
+    { "presetId": "truck", "position": { "x": 80, "y": 0, "z": 76 }, "rotationY": 1.5708, "traffic": true },
+    { "presetId": "sedan", "position": { "x": 100, "y": 0, "z": 18 }, "rotationY": -1.5708, "traffic": true },
+    { "presetId": "sedan", "position": { "x": 46, "y": 0, "z": 42 }, "rotationY": 1.5708, "traffic": true }
+  ],
+  "pedestrianSpawns": [
+    { "x": 18, "y": 0, "z": 14 }, { "x": 40, "y": 0, "z": 14 }, { "x": 60, "y": 0, "z": 38 },
+    { "x": 84, "y": 0, "z": 38 }, { "x": 100, "y": 0, "z": 70 }, { "x": 30, "y": 0, "z": 70 },
+    { "x": 50, "y": 0, "z": 88 }, { "x": 110, "y": 0, "z": 14 }
+  ]
+}

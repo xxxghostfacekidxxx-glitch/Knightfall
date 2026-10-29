@@ -1,0 +1,41 @@
+[
+  {
+    "presetId": "sedan",
+    "name": "Sedan",
+    "maxSpeed": 22,
+    "maxReverseSpeed": 8,
+    "acceleration": 14,
+    "brakeForce": 28,
+    "turnRate": 2.4,
+    "friction": 1.6,
+    "grip": 0.92,
+    "handbrakeGripMultiplier": 0.25,
+    "halfExtents": { "x": 1.0, "z": 2.1 }
+  },
+  {
+    "presetId": "police",
+    "name": "Police Cruiser",
+    "maxSpeed": 26,
+    "maxReverseSpeed": 9,
+    "acceleration": 17,
+    "brakeForce": 30,
+    "turnRate": 2.7,
+    "friction": 1.5,
+    "grip": 0.94,
+    "handbrakeGripMultiplier": 0.22,
+    "halfExtents": { "x": 1.0, "z": 2.2 }
+  },
+  {
+    "presetId": "truck",
+    "name": "Box Truck",
+    "maxSpeed": 15,
+    "maxReverseSpeed": 6,
+    "acceleration": 8,
+    "brakeForce": 20,
+    "turnRate": 1.6,
+    "friction": 1.8,
+    "grip": 0.97,
+    "handbrakeGripMultiplier": 0.4,
+    "halfExtents": { "x": 1.2, "z": 3.0 }
+  }
+]

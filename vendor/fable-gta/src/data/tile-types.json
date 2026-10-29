@@ -1,0 +1,10 @@
+[
+  { "id": "road_h", "name": "Road (horizontal)", "height": 0, "color": "#3a3a3e", "texture": "asphalt_h", "solid": false, "drivable": true },
+  { "id": "road_v", "name": "Road (vertical)", "height": 0, "color": "#3a3a3e", "texture": "asphalt_v", "solid": false, "drivable": true },
+  { "id": "intersection", "name": "Intersection", "height": 0, "color": "#3a3a3e", "texture": "asphalt_x", "solid": false, "drivable": true },
+  { "id": "sidewalk", "name": "Sidewalk", "height": 0.15, "color": "#9a9aa0", "texture": "pavement", "solid": false, "drivable": false },
+  { "id": "grass", "name": "Grass", "height": 0.05, "color": "#3f7a3a", "texture": "grass", "solid": false, "drivable": false },
+  { "id": "water", "name": "Water", "height": -0.2, "color": "#1d4e72", "texture": "water", "solid": true, "drivable": false },
+  { "id": "building", "name": "Building", "height": 6, "color": "#8a7f72", "texture": "facade", "solid": true, "drivable": false },
+  { "id": "building_tall", "name": "Tall Building", "height": 12, "color": "#6e7480", "texture": "facade", "solid": true, "drivable": false }
+]

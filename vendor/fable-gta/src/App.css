@@ -1,0 +1,82 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { margin: 0; height: 100%; overflow: hidden; background: #0d0e12; color: #e8e8ee; }
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+.topbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: #15161c; border-bottom: 1px solid #26283200;
+  border-bottom: 1px solid #262832;
+}
+.logo { font-weight: 800; letter-spacing: 0.08em; margin-right: 12px; color: #ffd866; }
+.topbar button {
+  background: #1e2028; color: #c8c8d2; border: 1px solid #2e3140;
+  padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.topbar button.active { background: #ffd866; color: #15161c; font-weight: 700; }
+.topbar-import { margin-left: auto; }
+
+.game-root { position: relative; flex: 1; }
+.game-root canvas { display: block; }
+
+.hud {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(13, 14, 18, 0.75); border: 1px solid #2e3140;
+  border-radius: 10px; padding: 10px 14px; font-size: 14px;
+  pointer-events: none; backdrop-filter: blur(6px);
+}
+.hud-row { display: flex; gap: 18px; margin: 2px 0; }
+.hud-health { font-weight: 700; }
+.hud-score { color: #ffd866; font-weight: 700; }
+
+.overlay-panel {
+  position: absolute; top: 0; right: 0; width: 420px; height: 100%;
+  overflow-y: auto; background: rgba(17, 18, 24, 0.96);
+  border-left: 1px solid #2e3140; padding: 16px;
+}
+
+.config-menu h2 { font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+.config-menu .hint { font-size: 12px; color: #8a8a96; margin: 4px 0 10px; }
+.config-menu section { margin-bottom: 24px; }
+.config-menu details { margin: 6px 0; background: #1a1c24; border-radius: 8px; padding: 6px 10px; }
+.config-menu summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+.config-menu button { background: #1e2028; color: #c8c8d2; border: 1px solid #2e3140; border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 12px; }
+
+.tile-list { display: flex; flex-direction: column; gap: 6px; }
+.tile-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.tile-swatch { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2e3140; flex-shrink: 0; }
+.tile-name { flex: 1; }
+
+.slider-row { display: grid; grid-template-columns: 90px 1fr 64px; align-items: center; gap: 8px; font-size: 12px; margin: 4px 0; }
+.slider-row input[type='number'] { width: 64px; background: #1a1c24; border: 1px solid #2e3140; color: #e8e8ee; border-radius: 6px; padding: 3px 6px; }
+.slider-row .val { text-align: right; color: #ffd866; }
+input[type='range'] { accent-color: #ffd866; }
+
+.upload-inline { font-size: 12px; color: #c8c8d2; cursor: pointer; }
+.upload-inline input[type='file'] { display: none; }
+.upload-inline::after { content: ' ⬆'; }
+label.upload-inline { background: #1e2028; border: 1px solid #2e3140; border-radius: 6px; padding: 4px 10px; }
+
+.editor-layout { display: flex; flex: 1; min-height: 0; }
+.editor-viewport { flex: 1; position: relative; }
+.editor-panel {
+  width: 360px; overflow-y: auto; background: #111218;
+  border-left: 1px solid #2e3140; padding: 16px;
+}
+.editor-panel h2 { margin-top: 0; font-size: 16px; }
+.editor-panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a8a96; margin: 14px 0 4px; }
+.editor-panel label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; margin: 8px 0; }
+.editor-panel select { background: #1a1c24; border: 1px solid #2e3140; color: #e8e8ee; border-radius: 8px; padding: 6px; }
+.editor-panel button { background: #1e2028; color: #c8c8d2; border: 1px solid #2e3140; border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 13px; }
+.editor-panel button.active { background: #2e3140; color: #fff; }
+.editor-panel button.primary { background: #ffd866; color: #15161c; font-weight: 700; }
+.gizmo-modes { display: flex; gap: 6px; margin: 10px 0; }
+.editor-actions { display: flex; gap: 8px; margin-top: 14px; align-items: center; }
+.upload input[type='file'] { font-size: 12px; }
