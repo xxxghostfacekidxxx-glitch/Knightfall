@@ -34,7 +34,7 @@
 <!-- billboard and corporate propaganda -->
 <path d="M86 151h164v64H86z" fill="#080810" stroke="#ff3c73" stroke-width="3"/>
 <path d="M94 159h148v48H94z" fill="#231025" stroke="#7f2c64" stroke-width="1.5"/>
-<text x="104" y="179" fill="#ff6e91" font-family="monospace" font-size="15" font-weight="900">YOUR LIFE</text><text x="104" y="198" fill="#ffcf3f" font-family="monospace" font-size="15" font-weight="900">IS A KPI</text>
+<text x="104" y="179" fill="#ff6e91" font-family="monospace" font-size="15" font-weight="900">YOUR LIFE</text><text x="104" y="198" fill="#56306b" font-family="monospace" font-size="15" font-weight="900">IS A KPI</text>
 <path d="M883 143h169v59H883z" fill="#080810" stroke="#bd67ff" stroke-width="3"/>
 <path d="M891 151h153v43H891z" fill="#20102a" stroke="#64357b" stroke-width="1.5"/>
 <text x="904" y="169" fill="#d8a5ff" font-family="monospace" font-size="13" font-weight="900">EMPLOYEE</text><text x="904" y="185" fill="#ff6e91" font-family="monospace" font-size="13" font-weight="900">OF THE DEAD</text>
