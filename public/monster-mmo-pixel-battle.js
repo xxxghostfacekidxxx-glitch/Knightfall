@@ -83,10 +83,11 @@
  const ec=evolutionCanvas.getContext("2d");
  if(ec)ec.imageSmoothingEnabled=false;
  let evolution=null;
+ const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
  document.addEventListener("hell-high-orbit:evolution",event=>{
   const detail=event.detail||{};
   if(!window.HellOrbitSprites?.ids.includes(detail.from)||!window.HellOrbitSprites?.ids.includes(detail.to)||!ec)return;
-  evolution={...detail,started:performance.now()};
+  evolution={...detail,started:performance.now()-(reducedMotion?1900:0)};
   evolutionCanvas.hidden=false;
  });
  function drawEvolution(time){
@@ -120,7 +121,7 @@
   canvas.hidden=!current;if(current)refresh();
  });
  let lastFrame=-1;
- function animate(time){drawEvolution(time);const frame=Math.floor(time/160);if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}requestAnimationFrame(animate);}
+ function animate(time){if(!document.hidden){drawEvolution(time);const frame=Math.floor(time/(reducedMotion?1200:160));if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}}requestAnimationFrame(animate);}
  requestAnimationFrame(animate);
  canvas.hidden=true;
 })();
