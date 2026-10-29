@@ -3,8 +3,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 for cmd in git python3; do command -v "$cmd" >/dev/null || { echo "Missing $cmd" >&2; exit 1; }; done
-if [[ ! "${ADR_COMMIT:-}" =~ ^[0-9a-f]{40}$ || ! "${TRUST_COMMIT:-}" =~ ^[0-9a-f]{40}$ ]]; then
-  echo "Set ADR_COMMIT and TRUST_COMMIT to audited 40-character commit hashes before importing." >&2
+if [[ ! "${ADR_COMMIT:-}" =~ ^[0-9a-f]{40}$ || ! "${TRUST_COMMIT:-}" =~ ^[0-9a-f]{40}$ || ! "${SPACEHUGGERS_COMMIT:-}" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "Set ADR_COMMIT, TRUST_COMMIT, and SPACEHUGGERS_COMMIT to audited 40-character commit hashes before importing." >&2
   exit 1
 fi
 work="$(mktemp -d)"
@@ -27,6 +27,7 @@ vendor() {
 # For an auditable import, replace latest with an inspected full commit SHA.
 vendor "a-dark-room" "https://github.com/doublespeakgames/adarkroom.git" "$ADR_COMMIT"
 vendor "evolution-of-trust" "https://github.com/ncase/trust.git" "$TRUST_COMMIT"
+vendor "space-huggers" "https://github.com/KilledByAPixel/SpaceHuggers.git" "$SPACEHUGGERS_COMMIT"
 python3 - <<'PY'
 from pathlib import Path
 adr=Path("public/arcade/hosted/a-dark-room/index.html")
