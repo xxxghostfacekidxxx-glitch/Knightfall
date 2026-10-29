@@ -309,6 +309,7 @@
   const discoveryKey="ashfall:hell-high-orbit:explored-v2";
   const regionDiscoveryKey=()=>discoveryKey+":"+regionId;
   let explored=new Set();
+  let lastDiscovered=-1;
   function loadExplored(){
     explored=new Set();
     try{
@@ -322,7 +323,6 @@
     explored.clear();lastDiscovered=-1;regionId="meadow";
     try{for(const id of ["meadow","orbit","inferno","border"])localStorage.removeItem(discoveryKey+":"+id)}catch{}
   });
-  let lastDiscovered=-1;
   function discover(index){
     if(index<0||index===lastDiscovered)return;
     lastDiscovered=index;
@@ -374,6 +374,10 @@
     }
   }
   function render() {
+    const current=world.dataset.region||"meadow";
+    if(current!==regionId&&/^(meadow|orbit|inferno|border)$/.test(current)){
+      regionId=current;previousCell=-1;walkFrame=0;loadExplored();
+    }
     const cells=world.children;
     if(cells.length!==W*H)return;
     for(let i=0;i<cells.length;i++)ground((i%W)*TILE,Math.floor(i/W)*TILE,cells[i]);
