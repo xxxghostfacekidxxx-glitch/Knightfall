@@ -284,3 +284,18 @@ test("evolution cinematic uses previous and evolved sprite IDs and responsive ov
   assert.equal(check.status,0,check.stderr);
  }
 });
+
+test("four-slot battles preserve guard and validate multiplayer evolution animation",()=>{
+ const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ assert.match(html,/data-action="guard">Guard/);
+ for(let slot=0;slot<4;slot++)assert.ok(html.includes('data-move-slot="'+slot+'"'));
+ assert.match(js,/const previousLead=save\.party/);
+ assert.match(js,/previousLead\.id!==save\.party\[0\]\.id/);
+ assert.match(js,/name!=="switch"/);
+ assert.match(js,/const index=extra\.index/);
+ assert.match(js,/Number\.isInteger\(index\)&&index>=0&&index<4/);
+ assert.match(battle,/prefers-reduced-motion/);
+ assert.match(battle,/!document\.hidden/);
+ const check=spawnSync(process.execPath,["--check"],{input:battle,encoding:"utf8"});
+ assert.equal(check.status,0,check.stderr);
+});
