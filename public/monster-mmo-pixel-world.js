@@ -23,9 +23,11 @@
   actions.className="rpg-station-actions";
   const heal=document.createElement("button");
   heal.type="button";heal.textContent="✚ Heal Party";
+  const inspect=document.createElement("button");
+  inspect.type="button";inspect.textContent="✦ Inspect";
   const exit=document.createElement("button");
   exit.type="button";exit.textContent="↩ Exit";
-  actions.append(heal,exit);
+  actions.append(heal,inspect,exit);
   station.append(room,actions);
   canvas.parentNode.append(station);
   const roomCaption=document.createElement("p");
@@ -38,6 +40,23 @@
     border:{title:"FUTURE TREATY OFFICE",description:"The proposed division of Earth is still being negotiated on a pizza box.",accent:"#f6df8d"}
   };
   let currentInterior="station";
+  const inspectNotes={
+    station:"The recovery pods have stickers reading 'NO REFUNDS AFTER RESURRECTION.'",
+    dish:"CUSTOMS NOTICE: Earth has been classified as a hazardous snack planet. Please declare all humans.",
+    tax:"INFERNAL FORM 666-B: Your soul is not taxable unless sold in a bundled family plan.",
+    border:"The treaty divides Earth into two territories and gives humanity a single complaint mailbox."
+  };
+  const visitKey="ashfall:hell-high-orbit:interior-stamps-v1";
+  let interiorStamps=new Set();
+  try{const saved=JSON.parse(localStorage.getItem(visitKey)||"[]");if(Array.isArray(saved))interiorStamps=new Set(saved.filter(id=>Object.hasOwn(interiors,id)))}catch{}
+  function recordVisit(kind){
+    if(interiorStamps.has(kind))return false;
+    interiorStamps.add(kind);
+    try{localStorage.setItem(visitKey,JSON.stringify([...interiorStamps]))}catch{}
+    document.dispatchEvent(new CustomEvent("hell-high-orbit:interior-discovered",{detail:{kind,visited:interiorStamps.size,total:Object.keys(interiors).length}}));
+    return true;
+  }
+
   let stationPreviousFocus=null;
   function drawStation(){
     const c=room.getContext("2d");if(!c)return;
@@ -99,6 +118,7 @@
     station.setAttribute("aria-label",interiors[currentInterior].title);
     roomCaption.textContent=interiors[currentInterior].title+" · "+interiors[currentInterior].description;
     heal.hidden=currentInterior!=="station";
+    inspect.textContent=interiorStamps.has(currentInterior)?"✦ Inspect again":"✦ Inspect";
     stationPreviousFocus=document.activeElement;station.hidden=false;
     document.body.classList.add("interior-open");drawStation();
     (heal.hidden?exit:heal).focus();
@@ -108,14 +128,20 @@
     heal.textContent="✚ Healing requested";
     setTimeout(()=>{heal.textContent="✚ Heal Party"},1300);
   });
+  inspect.addEventListener("click",()=>{
+    const first=recordVisit(currentInterior);
+    roomCaption.textContent=inspectNotes[currentInterior]+(first?" · New field journal stamp!":"");
+    inspect.textContent="✦ Inspect again";
+  });
   exit.addEventListener("click",closeStation);
   document.addEventListener("keydown",e=>{
     if(station.hidden)return;
     if(e.key==="Escape"){e.preventDefault();e.stopImmediatePropagation();closeStation()}
     else if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)){e.preventDefault();e.stopImmediatePropagation()}
     else if(e.key==="Tab"){
-      if(!heal.hidden&&e.shiftKey&&document.activeElement===heal){e.preventDefault();exit.focus()}
-      else if(!heal.hidden&&!e.shiftKey&&document.activeElement===exit){e.preventDefault();heal.focus()}
+      const controls=[heal,inspect,exit].filter(button=>!button.hidden);
+      const index=controls.indexOf(document.activeElement);
+      if(index>=0){e.preventDefault();controls[(index+(e.shiftKey?-1:1)+controls.length)%controls.length].focus()}
     }
   },true);
   const ctx = canvas.getContext("2d", { alpha: false });
