@@ -77,11 +77,20 @@ jobs:
           grep -q "Ruinborn" public/arcade/hosted/sanctuary-end/js/02-skills.js
           ! grep -q "Hellwarden" public/arcade/hosted/sanctuary-original/js/02-skills.js
           grep -q 'ashfall-theme.css' public/arcade/hosted/sanctuary-end/sanctuary.html
+      - name: Build downloadable offline game archives
+        run: |
+          mkdir -p public/arcade/downloads
+          (cd public/arcade/hosted/sanctuary-original && zip -q -r ../../downloads/sanctuary-original.zip .)
+          (cd public/arcade/hosted/sanctuary-end && zip -q -r ../../downloads/ashfall-infernal-reign-dev.zip .)
+          unzip -tq public/arcade/downloads/sanctuary-original.zip
+          unzip -tq public/arcade/downloads/ashfall-infernal-reign-dev.zip
+          test -s public/arcade/downloads/sanctuary-original.zip
+          test -s public/arcade/downloads/ashfall-infernal-reign-dev.zip
       - name: Commit playable static game
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end
+          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end public/arcade/downloads/sanctuary-original.zip public/arcade/downloads/ashfall-infernal-reign-dev.zip
           if ! git diff --cached --quiet; then
             git commit -m "vendor(arcade): import Sanctuary's End ARPG with Ash-Fall theme"
             git push
