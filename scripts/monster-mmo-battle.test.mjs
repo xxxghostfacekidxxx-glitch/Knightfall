@@ -38,6 +38,23 @@ test("online battles authorize specials, guarding, switching, statuses and enemy
  assert.match(source,/Number\.isInteger\(index\)/);
  assert.match(source,/if\(special&&\(lead\.energy\|\|0\)<2\)/);
  assert.match(source,/const tick=target=>/);
- assert.match(source,/const enemySpecial=Math\.random\(\)<\.22/);
+ assert.match(source,/enemySpecial=Math\.random\(\)<\.22/);
  assert.match(source,/member\.energy\|\|0/);
+});
+
+test("multiplayer shares full map, faction encounters and landmark rewards",()=>{
+ assert.match(source,/x > 16 \|\| y < 1 \|\| y > 12/);
+ assert.match(source,/const landmarks=\{"14,3":/);
+ assert.match(source,/save\.visitedLandmarks\.push\(landmark\.id\)/);
+ assert.match(source,/const zone=save\.x>=11/);
+ assert.match(source,/visitedLandmarks:save\.visitedLandmarks\|\|\[\]/);
+});
+test("server validates online quests and persists all completion flags",()=>{
+ assert.match(source,/if\(action==="contract"\)/);
+ assert.match(source,/if\(action==="npc"\)/);
+ assert.match(source,/if\(action==="commander"\)/);
+ assert.match(source,/save\.claimedContracts\.includes\(body\.id\)/);
+ assert.match(source,/save\.npcQuestsDone\.push\(body\.id\)/);
+ assert.match(source,/save\.defeatedCommanders\.push\(battle\.bossId\)/);
+ assert.match(source,/previousSave\?\.claimedContracts\|\|\[\]/);
 });
