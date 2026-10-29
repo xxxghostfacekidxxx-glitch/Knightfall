@@ -37,3 +37,11 @@ These are **19** old feature/fix branches. Most are thousands of commits behind 
 2. Prefer cherry-picking individual missing changes or rewriting small fixes on main.
 3. Require syntax, regression and staging checks before production backend deployment.
 4. Archive stale branches only after verifying no open PR, deployment or useful unported code depends on them.
+
+## Follow-up reconciliation evidence
+- `feature/chaos-cartridge-card-room`: `public/arcade-card-room.html` is **already on main** and is longer than the branch's earlier version (19,793 versus 17,250 characters). Do not overwrite it with the branch copy.
+- `fix/messages-older-history-refresh-2026-10-23`: `public/messages.html` on main already implements cursor-based older-message pagination, with request-token checks and scroll-height restoration. Preserve current implementation; do not overwrite with older 30,664-character file (main 53,910).
+- `feat/arcade-save-restore-wave-8`: `scripts/arcade-browser-smoke.mjs` is already on main with a more extensive test harness (62,538 versus 39,385 characters). Do not downgrade.
+- `feat/monster-four-move-loadouts`: independent `monster-mmo-moves.js` module is **absent from main**. Current game uses its own learned-move system. Treat PP, accuracy and loadout persistence as **candidate enhancements**, not safely merged features.
+- The staging cloud-save validator had a meadow-only obstacle map despite four regions. Corrected on main to validate the saved region's obstacle map, with a regression assertion.
+- The latest source comparisons do not constitute a browser test or a successful Worker deployment.
