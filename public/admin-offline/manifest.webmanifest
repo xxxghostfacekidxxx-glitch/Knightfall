@@ -1,0 +1,16 @@
+{
+  "name": "Ash-Fall God Mode · Offline Arcade",
+  "short_name": "God Mode Arcade",
+  "start_url": "/admin-offline/index.html",
+  "scope": "/admin-offline/",
+  "display": "standalone",
+  "background_color": "#0b0914",
+  "theme_color": "#12091d",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
