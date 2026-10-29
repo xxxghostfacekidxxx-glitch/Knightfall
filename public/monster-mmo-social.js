@@ -6,10 +6,9 @@ const status=$("game-social-status"),feed=$("game-global-feed"),friends=$("game-
 let selected="global",inFlight=false,lastOrigin="",lastChatId=0;
 function message(value){status.textContent=value||"";}
 function connectedOrigin(){
- const indicator=$("connection")?.textContent||"";
- const raw=$("endpoint")?.value.trim()||"";
- if(!indicator.includes("online")||!raw)return "";
- try{const url=new URL(raw);return url.protocol==="https:"||url.hostname==="localhost"?url.origin:""}catch{return ""}
+ const raw=document.body.dataset.gameApiOrigin||"";
+ if(!raw)return "";
+ try{const url=new URL(raw);return url.protocol==="https:"||["localhost","127.0.0.1"].includes(url.hostname)?url.origin:""}catch{return ""}
 }
 async function api(path,options={}){
  const origin=connectedOrigin();if(!origin)throw Error("Connect to multiplayer staging in Settings first.");
@@ -39,9 +38,9 @@ async function loadFriends(){
  const data=await api("/api/friends");friends.replaceChildren();requests.replaceChildren();
  const accepted=data.friends||[],incoming=data.incoming||[],outgoing=data.outgoing||[];
  if(!accepted.length)friends.append(node("p","","No friends yet. Send a request below."));
- for(const p of accepted){const line=node("div","social-entry");line.append(node("strong","",p.display_name||p.username),node("span","","@"+p.username));friends.append(line);}
+ for(const p of accepted){const line=node("div","social-entry");line.append(node("strong","",p.display_name||p.username),node("span","","@"+p.username+" "));const profile=node("a","","Profile");profile.href="/profile.html?user="+encodeURIComponent(p.username);profile.style.marginLeft="10px";profile.style.color="#caff45";line.append(profile);friends.append(line);}
  for(const p of incoming){const line=node("div","social-entry");line.append(node("span","","Request from @"+p.username+" "));for(const action of ["accept","decline"]){const btn=node("button","",action==="accept"?"Accept":"Decline");btn.type="button";btn.addEventListener("click",async()=>{try{await api("/api/friends/"+p.id,{method:"PATCH",body:JSON.stringify({action})});await loadFriends();message("Request "+action+"ed.")}catch(e){message(e.message)}});line.append(btn)}requests.append(line)}
- if(outgoing.length)requests.append(node("p","","Pending: "+outgoing.map(p=>"@"+p.username).join(", ")));
+ for(const p of outgoing){const line=node("div","social-entry");line.append(node("span","","Pending: @"+p.username+" "));const cancel=node("button","","Cancel");cancel.type="button";cancel.addEventListener("click",async()=>{try{await api("/api/friends/"+p.id,{method:"DELETE"});await loadFriends();message("Friend request cancelled.")}catch(e){message(e.message)}});line.append(cancel);requests.append(line)}
 }
 async function refresh(){
  const menu=$("game-menu");if(!menu?.classList.contains("is-open")||!connectedOrigin()||inFlight)return;
@@ -52,6 +51,7 @@ $("game-global-form")?.addEventListener("submit",async e=>{e.preventDefault();co
 $("game-friend-form")?.addEventListener("submit",async e=>{e.preventDefault();const field=$("game-friend-name"),username=field.value.trim();if(!username)return;try{await api("/api/friends/request",{method:"POST",body:JSON.stringify({username})});field.value="";await loadFriends();message("Friend request sent.")}catch(error){message(error.message)}});
 const observer=new MutationObserver(()=>{const origin=connectedOrigin();if(origin!==lastOrigin){lastOrigin=origin;lastChatId=0;feed.textContent=origin?"Loading global chat…":"Connect to multiplayer in Settings to use global chat.";friends.textContent=origin?"Loading friends…":"Connect to multiplayer in Settings to see friends.";}refresh()});
 const menu=$("game-menu");if(menu)observer.observe(menu,{attributes:true,attributeFilter:["class"]});
+observer.observe(document.body,{attributes:true,attributeFilter:["data-game-api-origin"]});
 const connection=$("connection");if(connection)observer.observe(connection,{childList:true,characterData:true,subtree:true});
 setInterval(()=>{if(!document.hidden)refresh()},8000);
 })();
