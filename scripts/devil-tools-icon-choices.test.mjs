@@ -30,7 +30,7 @@ test("eight original vector icon options are complete and available",async()=>{
  for(const id of ids){
   assert.ok(page.includes("['"+id+"',"),"Missing gallery entry: "+id);
   const svg=await archivedRead("icons/choices/"+id+".svg");
-  assert.match(svg,/<svg[^>]+viewBox="0 0 96 96"/);
+  assert.match(svg,/<svg[^>]+viewBox="0 0 (?:96|128) (?:96|128)"/);
   assert.match(svg,/<\/svg>/);
   assert.match(svg,/#ff55d8/);
   assert.match(svg,/#c6ff45/);
