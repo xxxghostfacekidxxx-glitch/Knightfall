@@ -277,3 +277,16 @@ body.interior-open #world-interact{pointer-events:none}
 /* Route exits are visible on the playfield but the travel guide remains in the map menu. */
 .world .tile.route-gate{position:relative}
 #game-map-location{line-height:1.5}
+
+/* Compact handheld-style encyclopedia, kept entirely inside the pause menu. */
+.dex-panel #dex-filter{max-width:16rem;margin:.35rem 0 .8rem}
+.dex-entries{display:grid;gap:.45rem;max-height:min(58vh,550px);overflow-y:auto;overscroll-behavior:contain}
+.dex-entry{display:grid;grid-template-columns:2.5rem 3.3rem minmax(0,1fr) auto;align-items:center;gap:.55rem;padding:.55rem .65rem;border:1px solid rgba(173,255,113,.22);border-radius:9px;background:rgba(10,18,27,.8);min-width:0}
+.dex-number{font-size:.73rem;opacity:.65;font-variant-numeric:tabular-nums}
+.dex-portrait{width:3rem;height:3rem;display:grid;place-items:center;font-size:1.8rem;color:#9bafc0}
+.dex-portrait .monster-portrait{width:3rem;height:3rem;max-width:100%;max-height:100%}
+.dex-entry strong{display:block;font-size:.88rem}
+.dex-entry p{font-size:.72rem;opacity:.78;margin:.15rem 0 0;overflow-wrap:anywhere}
+.dex-status{font-size:.62rem;letter-spacing:.04em;color:#c5ff84}
+.dex-entry.is-hidden{opacity:.7}
+@media(max-width:420px){.dex-entry{grid-template-columns:2rem 2.7rem minmax(0,1fr);gap:.3rem}.dex-portrait,.dex-portrait .monster-portrait{width:2.5rem;height:2.5rem}.dex-status{grid-column:3;justify-self:start}}
