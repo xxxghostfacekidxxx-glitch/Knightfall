@@ -398,3 +398,17 @@ test("handheld battle commands expose one panel at a time",()=>{
  assert.match(pixelWorld,/Original faction terrain props/);
  for(const code of [pause,pixelWorld]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
 });
+
+
+test("overworld interaction and faction battle art remain wired",()=>{
+ const battleArt=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ assert.ok(html.includes('id="world-interact"'));
+ assert.match(js,/const interact=\$\("world-interact"\)/);
+ assert.match(js,/interact\.dataset\.npc=nearby\?\.id/);
+ assert.match(js,/speakToNPC\(id\)/);
+ assert.match(css,/#world-interact:not\(\[hidden\]\)/);
+ assert.match(battleArt,/Faction-specific skyline and arena props/);
+ assert.match(battleArt,/const alien=\["cosmic","electric","water"\]/);
+ const check=spawnSync(process.execPath,["--check"],{input:battleArt,encoding:"utf8"});
+ assert.equal(check.status,0,check.stderr);
+});
