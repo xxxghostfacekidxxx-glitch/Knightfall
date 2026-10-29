@@ -1,4 +1,10 @@
 (() => {
+  // Late-mounted shared polish wins over legacy page skins without changing navigation logic.
+  if (!document.querySelector('link[data-visual-refresh]')) {
+    const polish=document.createElement('link');
+    polish.rel='stylesheet';polish.href='/visual-refresh.css?v=20261029-v2';
+    polish.dataset.visualRefresh='true';document.head.append(polish);
+  }
   // Shared Gravewave theme and original artwork, loaded once on all nav-enabled pages.
   if (!document.querySelector('link[data-gravewave-theme]')) {
     const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-neonfix2';theme.dataset.gravewaveTheme='true';document.head.append(theme);
