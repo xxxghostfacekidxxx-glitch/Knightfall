@@ -1,0 +1,79 @@
+{
+  "pack": "Ash-Fall City Forge: Neon Aftermath",
+  "version": 1,
+  "license": "Original procedural artwork for Ash-Fall / Knightfall",
+  "engine": "Three.js",
+  "source": "arcade-overrides/fable-gta/src/render/builtinModels.ts",
+  "environment": "arcade-overrides/fable-gta/src/render/SceneEnvironment.tsx",
+  "textures": "arcade-overrides/fable-gta/src/render/proceduralTextures.ts",
+  "models": [
+    {
+      "id": "sedan",
+      "name": "Grave Runner",
+      "kind": "vehicle",
+      "color": "#945aff",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "police",
+      "name": "Neon Enforcement",
+      "kind": "vehicle",
+      "color": "#ff4ebf",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "truck",
+      "name": "Chaos Courier",
+      "kind": "vehicle",
+      "color": "#945aff",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "player",
+      "name": "Riot Runner",
+      "kind": "character",
+      "color": "#ff4ebf",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "pedestrian",
+      "name": "Extraterrestrial Civilian",
+      "kind": "character",
+      "color": "#b8ff40",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "barrel",
+      "name": "Volatile Sludge Drum",
+      "kind": "prop",
+      "color": "#71315c",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "tree",
+      "name": "Sporewood",
+      "kind": "prop",
+      "color": "#945aff",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "streetlight",
+      "name": "Chromatic Signal",
+      "kind": "prop",
+      "color": "#58f5ef",
+      "format": "procedural-threejs"
+    },
+    {
+      "id": "pistol",
+      "name": "Neon Sidearm Pickup",
+      "kind": "pickup",
+      "color": "#ff4ebf",
+      "format": "procedural-threejs"
+    }
+  ],
+  "futureImports": {
+    "supported": "GLB models via GTA-2W Asset Editor",
+    "notYetImplemented": "Persistent upload storage, asset conversion from SVG, custom model placement IDs",
+    "mascotSource": "/assets/devil-tools/neon-nuisances/manifest.json"
+  }
+}
