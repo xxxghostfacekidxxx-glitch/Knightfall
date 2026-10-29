@@ -8,7 +8,7 @@ test("both imported open-source games have complete local script and stylesheet 
  for(const game of selected){
   const base="arcade/hosted/"+game+"/";
   const html=await read(base+"index.html");
-  for(const match of html.matchAll(/<(?:script|link)\\b[^>]*(?:src|href)=["']([^"']+)["']/g)){
+  for(const match of html.matchAll(/<(?:script|link)[^>]*(?:src|href)=["']([^"']+)["']/g)){
    const ref=match[1];
    if(ref.startsWith("http")||ref.startsWith("#"))continue;
    if(ref.startsWith("/")){if(ref.startsWith("/arcade/"))await access(new URL(ref.slice(1),root));continue;}
