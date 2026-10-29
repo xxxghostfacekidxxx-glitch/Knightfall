@@ -199,6 +199,12 @@
         fill(px+2,py+1,3,3,alien?"#83f4e1":demon?"#ff9ecf":"#b0ed79");
       }
     }
+    if(t.classList.contains("route-gate")){
+      fill(x+4,y+25,24,5,"#273c48");
+      fill(x+14,y+9,4,19,"#c8dba1");
+      fill(x+7,y+7,18,9,"#fff1b5");
+      fill(x+10,y+10,12,3,"#b65c94");
+    }
     /* Original faction terrain props: readable silhouettes on a 32px tile grid. */
     const prop=hash(x/32,y/32,17)%19;
     if(!path&&!stone&&!wall&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
@@ -294,15 +300,27 @@
     if(variant===2){fill(x+10,y+3,13,3,"#2b6675");fill(x+13,y+1,7,3,"#ff81ce");}
   }
   /* Keep exploration discovery independent of the server's battle/save schema. */
-  const discoveryKey="ashfall:hell-high-orbit:explored-v1";
+  let regionId="meadow";
+  document.addEventListener("hell-high-orbit:region-changed",e=>{
+    const next=e.detail?.region;
+    if(typeof next!=="string"||!/^(meadow|orbit|inferno|border)$/.test(next))return;
+    regionId=next;previousCell=-1;walkFrame=0;loadExplored();schedule();
+  });
+  const discoveryKey="ashfall:hell-high-orbit:explored-v2";
+  const regionDiscoveryKey=()=>discoveryKey+":"+regionId;
   let explored=new Set();
-  try{
-    const stored=JSON.parse(localStorage.getItem(discoveryKey)||"[]");
-    if(Array.isArray(stored))explored=new Set(stored.filter(i=>Number.isInteger(i)&&i>=0&&i<W*H));
-  }catch{}
+  function loadExplored(){
+    explored=new Set();
+    try{
+      const stored=JSON.parse(localStorage.getItem(regionDiscoveryKey())||"[]");
+      if(Array.isArray(stored))explored=new Set(stored.filter(i=>Number.isInteger(i)&&i>=0&&i<W*H));
+    }catch{}
+    lastDiscovered=-1;
+  }
+  loadExplored();
   document.addEventListener("hell-high-orbit:reset-exploration",()=>{
-    explored.clear();lastDiscovered=-1;
-    try{localStorage.removeItem(discoveryKey)}catch{}
+    explored.clear();lastDiscovered=-1;regionId="meadow";
+    try{for(const id of ["meadow","orbit","inferno","border"])localStorage.removeItem(discoveryKey+":"+id)}catch{}
   });
   let lastDiscovered=-1;
   function discover(index){
@@ -314,7 +332,7 @@
       const px=x+ox,py=y+oy;
       if(px>=0&&px<W&&py>=0&&py<H)explored.add(py*W+px);
     }
-    try{localStorage.setItem(discoveryKey,JSON.stringify([...explored]))}catch{}
+    try{localStorage.setItem(regionDiscoveryKey(),JSON.stringify([...explored]))}catch{}
   }
   const regionMap=document.getElementById("game-region-map");
   const mapCtx=regionMap?.getContext("2d");
@@ -334,6 +352,9 @@
       const color=t.classList.contains("wall")?"#263b50":t.classList.contains("rock")?"#70778a":t.classList.contains("path")?"#d6ba8c":zone;
       mapCtx.fillStyle=color;mapCtx.fillRect(x,y,unit,unit);
       mapCtx.strokeStyle="#182b3150";mapCtx.strokeRect(x+.5,y+.5,unit-1,unit-1);
+      if(t.classList.contains("route-gate")){
+        mapCtx.fillStyle="#f6df8d";mapCtx.fillRect(x+8,y+8,8,8);
+      }
       if(t.classList.contains("camp")){mapCtx.fillStyle="#fff0b4";mapCtx.fillRect(x+7,y+7,10,10);}
       if(t.classList.contains("landmark")){
         mapCtx.fillStyle="#1e273b";mapCtx.fillRect(x+6,y+5,12,14);
