@@ -370,7 +370,8 @@
     const label=document.getElementById("game-map-location");
     if(label&&playerIndex>=0){
       const tile=cells[playerIndex],x=playerIndex%W+1,y=Math.floor(playerIndex/W)+1;
-      label.textContent="Trainer: "+String(x).padStart(2,"0")+", "+String(y).padStart(2,"0")+" · "+(tile.classList.contains("zone-alien")?"Alien territory":tile.classList.contains("zone-demon")?"Infernal territory":"Contested territory")+" · Map discovered: "+Math.round(explored.size/(W*H)*100)+"%";
+      const regionNames={meadow:"Cinder Meadow",orbit:"Orbitfall Approach",inferno:"Ashen Toll Road",border:"Treaty Crossing"};
+      label.textContent=(regionNames[regionId]||"Cinder Meadow")+" · Trainer: "+String(x).padStart(2,"0")+", "+String(y).padStart(2,"0")+" · Map discovered: "+Math.round(explored.size/(W*H)*100)+"%";
     }
   }
   function render() {
