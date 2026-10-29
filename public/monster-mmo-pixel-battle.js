@@ -34,10 +34,15 @@
   }
  }
  function stage(enemy,lead){
-  fill(0,0,384,208,"#1b3154");
+  const alien=["cosmic","electric","water"].includes(enemy.type),infernal=["fire","ghost","thorn"].includes(enemy.type);
+  const sky=alien?"#153a57":infernal?"#482a54":"#1b3154";
+  const ground=alien?"#407b83":infernal?"#80607c":"#648b75";
+  fill(0,0,384,208,sky);
   for(let i=0;i<15;i++){const x=(i*97)%384,y=(i*43)%92;fill(x,y,2,2,i%2?"#a6d9ef":"#ff8ee1");}
-  fill(0,108,384,100,"#648b75");fill(0,131,384,77,"#86a883");
-  for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?"#759d79":"#b5bd91");
+  // Faction-specific skyline and arena props, all original pixel art.
+  for(let i=0;i<8;i++){const x=i*53+(i%3)*9;fill(x,80-(i%3)*8,alien?13:18,32,alien?"#2c6e7b":infernal?"#59314e":"#416b68");if(alien){fill(x+3,74-(i%3)*8,7,7,"#78f5df");fill(x+5,67-(i%3)*8,3,7,"#ff81c8");}else if(infernal){fill(x+4,72-(i%3)*8,9,12,"#a84c77");fill(x+7,68-(i%3)*8,3,6,"#f8a0c5");}}
+  fill(0,108,384,100,ground);fill(0,131,384,77,alien?"#69a3a0":infernal?"#a07887":"#86a883");
+  for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?(alien?"#88c6b8":infernal?"#bf91aa":"#759d79"):(alien?"#417b82":infernal?"#774c71":"#b5bd91"));
   fill(219,102,140,13,"#355f68");fill(230,93,119,16,"#acc2a2");fill(23,176,149,12,"#395b62");fill(34,164,127,15,"#a3b69b");
   if(!window.HellOrbitSprites?.draw(c,enemy.id,256,28,80,Math.floor(performance.now()/260)%4))creature(260,34,enemy.id,enemy.type);
   if(!window.HellOrbitSprites?.draw(c,lead.id,49,105,80,Math.floor(performance.now()/330)%4,true))creature(58,110,lead.id,lead.type,true);
