@@ -156,3 +156,11 @@ test("offline battle adds original move names, status damage and accessible visu
  assert.match(js,/p\.status=null;p\.energy=0/);
  assert.match(css,/prefers-reduced-motion:reduce/);
 });
+
+test("online battle actions render server-confirmed effects and allow creature switching",()=>{
+ assert.match(js,/btn\.textContent=battle\?"Switch":"Lead"/);
+ assert.match(js,/action\("switch",\{index:i\}\)/);
+ assert.match(js,/if\(name==="switch"\)/);
+ assert.match(js,/if\(data\.message\?\.includes\("evolved into"\)\)showBattleEffect/);
+ assert.doesNotMatch(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
+});
