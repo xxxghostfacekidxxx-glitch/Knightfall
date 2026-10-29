@@ -6,19 +6,22 @@ export async function serveAdminGameArchive(request, env, getUser) {
     ['sanctuary-original', 'admin-game-builds/sanctuary-original.zip'],
     ['ashfall-infernal-reign-dev', 'admin-game-builds/ashfall-infernal-reign-dev.zip']
   ]) allowed.set(id, key);
+  const origin = request.headers.get('Origin');
+  const cors = origin === 'https://ash-fall.com' || origin === 'https://www.ash-fall.com' || origin === 'https://knightfall.pages.dev' ? {'access-control-allow-origin':origin,'access-control-allow-credentials':'true','vary':'Origin'} : {};
+  const respond = (body, status, headers={}) => new Response(body,{status,headers:{'cache-control':'no-store',...cors,...headers}});
   const url = new URL(request.url);
   const match = /^\/api\/admin\/game-downloads\/([a-z0-9-]+)$/.exec(url.pathname);
   if (!match) return null;
-  if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', {status:405,headers:{allow:'GET, HEAD'}});
+  if (request.method !== 'GET' && request.method !== 'HEAD') return respond('Method not allowed',405,{allow:'GET, HEAD'});
   const user = await getUser(request, env);
-  if (!user) return new Response('Sign in required', {status:401,headers:{'cache-control':'no-store'}});
-  if (!['admin','god'].includes(user.role)) return new Response('Administrator access required', {status:403,headers:{'cache-control':'no-store'}});
+  if (!user) return respond('Sign in required',401);
+  if (!['admin','god'].includes(user.role)) return respond('Administrator access required',403);
   const key = allowed.get(match[1]);
-  if (!key) return new Response('Unknown game', {status:404,headers:{'cache-control':'no-store'}});
-  if (!env.VAULT) return new Response('Private game storage not configured', {status:503});
+  if (!key) return respond('Unknown game',404);
+  if (!env.VAULT) return respond('Private game storage not configured',503);
   const object = await env.VAULT.get(key);
-  if (!object) return new Response('Package not built or uploaded yet', {status:404,headers:{'cache-control':'no-store'}});
-  const headers = new Headers({
+  if (!object) return respond('Package not built or uploaded yet',404);
+  const headers = new Headers({...cors,
     'content-type':'application/zip',
     'content-disposition': 'attachment; filename="'+match[1]+'.zip"',
     'cache-control':'private, no-store',
