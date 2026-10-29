@@ -222,3 +222,12 @@ body.pause-open #world-interact,body.dialogue-open #world-interact{pointer-event
  #battle-panel .battle-moves button{min-height:43px}
 }
 @media(prefers-reduced-motion:reduce){.battle-command-tabs button:active,.battle-moves button:active{transform:none}}
+
+/* Pocket-console input and map readability. */
+.game-screen{touch-action:none;user-select:none;-webkit-user-select:none}
+.game-screen canvas{pointer-events:none}
+.world-panel .pad button{font-family:ui-monospace,monospace;font-weight:900;transition:background .1s ease,transform .1s ease}
+.world-panel .pad button:active{background:#caff45;color:#142a31;transform:translateY(2px)}
+#battle-panel .battle-moves button:disabled{opacity:.55}
+#battle-panel .battle-moves button:not(:disabled):focus-visible{background:#caff45;color:#15212b}
+@media(hover:hover){#battle-panel .battle-moves button:not(:disabled):hover{background:#ecffd1;color:#18232e}}
