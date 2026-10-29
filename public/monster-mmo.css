@@ -107,3 +107,10 @@ body.pause-open{overflow:hidden}body.pause-open .pad button{pointer-events:none}
 .field-dialogue-body button{float:right;min-height:32px;border-radius:3px;background:#caff45;color:#111622;font-weight:800}
 body.dialogue-open .pad button{pointer-events:none}
 @media(max-width:460px){.field-dialogue{grid-template-columns:48px minmax(0,1fr);gap:7px;padding:8px}.field-dialogue-portrait{font-size:1.4rem}.field-dialogue-body p{max-height:7em}}
+
+/* Battle party selection stays visible even while the normal party is in the pause menu. */
+#battle-party{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:8px 0 12px}
+#battle-party:empty::before{content:"No reserve creatures. Capture more to build your party.";grid-column:1/-1;font-size:.8rem;color:#b9b7c8}
+#battle-party .battle-switch{min-height:46px;padding:8px;text-align:left;border:2px solid #caff45;border-radius:4px;background:#1e2934;color:#fff;font-size:.78rem}
+#battle-party .battle-switch:disabled{opacity:.4;border-color:#66707b}
+@media(max-width:420px){#battle-party{grid-template-columns:1fr}}
