@@ -128,3 +128,20 @@ test("settlement NPCs support proximity dialogue and one-time landmark quest rew
  assert.match(js,/save\.bag=\(save\.bag\|\|0\)\+npc\.reward/);
  assert.match(js,/renderSettlements\(\)/);
 });
+
+test("twenty original monsters include six evolution lines",()=>{
+ for(const id of ["ashhorn","mossreaper","cryptfin","voltmaw","squibmarshal","glorpcannon","hexpup","starjelly"])assert.match(js,new RegExp(id+':\\['));
+ assert.match(js,/const evolutions=/);
+ assert.match(js,/function evolveCreature\(creature\)/);
+ assert.match(js,/function awardExperience\(creature,amount\)/);
+ assert.match(js,/evolveCreature\(creature\)/);
+});
+test("offline battles support charged specials and guarding without changing staging actions",()=>{
+ assert.ok(html.includes('data-action="special"'));
+ assert.ok(html.includes('data-action="guard"'));
+ assert.match(js,/function battleStrike\(attacker,defender,special=false\)/);
+ assert.match(js,/if\(name==="attack"\|\|name==="special"\|\|name==="guard"\)/);
+ assert.match(js,/lead\.energy-=2/);
+ assert.match(js,/guarding\?\.35:1/);
+ assert.match(js,/connected&&\["special","guard"\]\.includes\(b\.dataset\.action\)/);
+});
