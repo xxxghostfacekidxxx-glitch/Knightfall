@@ -20,22 +20,24 @@ test("Devil Tools displays all thirteen icon choices with SVG download and brows
  assert.match(html,/link\.download=id\+'\.svg'/);
 });
 
+
 // Recovered from archived feat/devil-tools-eight-icons-2026-10-29.
-test("archived neon icon variants remain visible and downloadable",async()=>{
- const ids=["toxic-seraph","void-bunny","neon-reaper","chaos-cat","broken-halo","alien-static","heart-hazard","eclipse-fang"];
- const page=await readFile(new URL("devil-tools.html",root),"utf8");
+const archivedRead=name=>readFile(new URL(name,root),"utf8");
+test("eight original vector icon options are complete and available",async()=>{
+ const page=await archivedRead("devil-tools.html");
+ assert.match(page,/13 App Icon Candidates/);
  for(const id of ids){
   assert.ok(page.includes("['"+id+"',"),"Missing gallery entry: "+id);
-  const svg=await readFile(new URL("icons/choices/"+id+".svg",root),"utf8");
+  const svg=await archivedRead("icons/choices/"+id+".svg");
   assert.match(svg,/<svg[^>]+viewBox="0 0 96 96"/);
-  assert.match(svg,/<\\/svg>/);
+  assert.match(svg,/<\/svg>/);
   assert.match(svg,/#ff55d8/);
   assert.match(svg,/#c6ff45/);
  }
 });
-test("mobile message composer keeps neon styling without mascot overlay",async()=>{
- const css=await readFile(new URL("section-overhaul.css",root),"utf8");
- assert.match(css,/\\.messages-shell \\.composer textarea\\{background:#0b0d1b!important/);
- assert.match(css,/body:has\\(\\.messages-shell\\) \\.gw-character-crew\\{display:none!important\\}/);
- assert.match(css,/\\.messages-shell \\.composer-actions\\{justify-content:flex-end\\}/);
+test("mobile message controls keep neon style and avoid mascot overlay",async()=>{
+ const css=await archivedRead("section-overhaul.css");
+ assert.match(css,/\.messages-shell \.composer textarea\{background:#0b0d1b!important/);
+ assert.match(css,/body:has\(\.messages-shell\) \.gw-character-crew\{display:none!important\}/);
+ assert.match(css,/\.messages-shell \.composer-actions\{justify-content:flex-end\}/);
 });
