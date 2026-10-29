@@ -23,6 +23,7 @@ test("Devil Tools displays all thirteen icon choices with SVG download and brows
 
 // Recovered from archived feat/devil-tools-eight-icons-2026-10-29.
 const archivedRead=name=>readFile(new URL(name,root),"utf8");
+const ids=["toxic-seraph","void-bunny","neon-reaper","chaos-cat","broken-halo","alien-static","heart-hazard","eclipse-fang"];
 test("eight original vector icon options are complete and available",async()=>{
  const page=await archivedRead("devil-tools.html");
  assert.match(page,/13 App Icon Candidates/);
