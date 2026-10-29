@@ -1,0 +1,63 @@
+name: Stage advanced static game editions
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/stage-advanced-static-games.yml'
+      - 'scripts/advanced-games/**'
+      - 'scripts/import-advanced-static-games.sh'
+      - 'scripts/smoke-advanced-static-games.mjs'
+permissions:
+  contents: write
+concurrency:
+  group: stage-advanced-static-games
+  cancel-in-progress: false
+jobs:
+  import-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare isolated review branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin staging/advanced-static-games >/dev/null; then
+            git fetch origin staging/advanced-static-games
+            git switch -c staging/advanced-static-games FETCH_HEAD
+            git merge --no-edit origin/main
+          else
+            git switch -c staging/advanced-static-games
+          fi
+      - name: Install build and browser tools without lifecycle scripts
+        run: |
+          npm install --no-save --ignore-scripts esbuild@0.25.12 playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Import and build audited pinned sources
+        run: bash scripts/import-advanced-static-games.sh
+      - name: Verify deployment file sizes and license exclusions
+        run: |
+          python3 scripts/advanced-games/verify.py
+          node --test scripts/arcade-shelf-dedup.test.mjs scripts/selected-open-source-games.test.mjs
+      - name: Launch each real game in Chromium
+        run: node scripts/smoke-advanced-static-games.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advanced-game-browser-evidence
+          path: advanced-game-evidence
+      - name: Push verified review branch
+        run: |
+          git add public/arcade/hosted/interstellar-armada public/arcade/hosted/browserquest-solo public/arcade/hosted/openfront-solo public/arcade/advanced-imports.json public/arcade-30-games.html
+          if git diff --cached --quiet; then
+            echo 'Imports already match main; no branch push required.'
+          else
+            git commit -m 'feat(arcade): host Armada, BrowserQuest solo and OpenFront solo'
+            git push origin HEAD:refs/heads/staging/advanced-static-games
+          fi

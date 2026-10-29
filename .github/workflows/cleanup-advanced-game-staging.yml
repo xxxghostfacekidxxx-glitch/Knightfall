@@ -1,0 +1,20 @@
+name: Clean up merged advanced-game staging branch
+on:
+  pull_request:
+    types: [closed]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'staging/advanced-static-games'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete merged staging branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh api -X DELETE "repos/$GH_REPO/git/refs/heads/staging/advanced-static-games"
