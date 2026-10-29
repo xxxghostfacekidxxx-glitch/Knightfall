@@ -173,6 +173,21 @@
         "/vendor/fable-gta/",
         "/arcade/hosted/fable-gta/index.html"
       ]
+    },
+    {
+      "gameId": "cabinet-sanctuary-end",
+      "title": "Sanctuary's End · Ash-Fall Edition",
+      "status": "build-pending",
+      "upstream": "https://github.com/J3vb/Sanctuarys_End",
+      "license": "MIT game code; separate third-party asset licenses in CREDITS.md",
+      "notes": "GitHub Actions imports self-hosted static game, preserves LICENSE/CREDITS, adds non-destructive Ash-Fall CSS theme. Verify workflow, mobile controls, model attribution, runtime and production deployment before marking playable. Multiplayer relay is not imported.",
+      "files": [
+        "/.github/workflows/import-sanctuary-arpg.yml",
+        "/arcade-overrides/sanctuary/ashfall-theme.css",
+        "/arcade/hosted/sanctuary-end/sanctuary.html",
+        "/arcade/hosted/sanctuary-end/LICENSE",
+        "/arcade/hosted/sanctuary-end/CREDITS.md"
+      ]
     }
   ],
   "notYetImported": [
