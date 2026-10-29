@@ -12,7 +12,6 @@ for p in sorted(root.rglob('*')):
 groups=[[]];size=0
 for p,rel in files:
  n=p.stat().st_size
- assert n<24*1024*1024,f'Source file too large: {rel}'
  if size+n>20*1024*1024 and groups[-1]:groups.append([]);size=0
  groups[-1].append((p,rel));size+=n
 links=[]
