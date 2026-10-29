@@ -14,3 +14,5 @@ p=root/'src/client/index.html';s=p.read_text();s=re.sub(r'<script\b[^>]*>.*?</sc
 
 Pinned OpenFront source: c2cf2ce65f74ac91859f68a84aec89aeda5722ee, before the proprietary asset split documented in LICENSING.md. Code AGPL-3.0; all assets CC BY-SA 4.0. Attribution: OpenFront.io / OpenFront LLC. Original copyright notices retained. This modified edition offers browser-local singleplayer against bots; no public/private multiplayer, login, purchases, advertising, analytics, or official OpenFront API service is provided. Game paths are mounted under openfront-solo. A complete modified source archive with build inputs is supplied as source.zip.
 ''')
+
+p=root/'src/client/Main.ts';s=p.read_text().replace('window.PageOS.session.newPageView();','void 0; // Knightfall: no advertising page-view reporting.');p.write_text(s)

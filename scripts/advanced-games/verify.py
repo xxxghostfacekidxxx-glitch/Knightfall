@@ -14,6 +14,6 @@ assert not (a/'assets/sfx/spacecraft/collision.ogg').exists()
 assert (a/'assets/sfx/spacecraft/collision-knightfall.wav').read_bytes()[:4]==b'RIFF'
 for name in ['data/resources.json','src/data/resources.json']:assert 'spacecraft/collision.ogg' not in (a/name).read_text()
 for name in ['config/config.json','src/config/config.json']:
- d=json.loads((a/name).read_text());assert not d['analyticsUrl'] and not d['missionHubUrl']
+ d=json.loads((a/name).read_text());assert not d['analyticsUrl'] and not d['missionHubUrl'] and d['analyticsEnabled'] is False
 assert 'KnightfallLocalSocket' in (root/'browserquest-solo/js/gameclient.js').read_text()
 print('Pinned import license exclusions and solo transports verified')

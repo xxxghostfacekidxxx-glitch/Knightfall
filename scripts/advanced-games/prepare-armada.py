@@ -18,7 +18,7 @@ with wave.open(str(audio),'wb') as out:
 for relative in ['data/resources.json','src/data/resources.json']:
  p=dest/relative;p.write_text(p.read_text().replace('spacecraft/collision.ogg','spacecraft/collision-knightfall.wav'))
 for relative in ['config/config.json','src/config/config.json']:
- p=dest/relative;d=json.loads(p.read_text());d['analyticsUrl']='';d['missionHubUrl']='';p.write_text(json.dumps(d))
+ p=dest/relative;d=json.loads(p.read_text());d['analyticsUrl']='';d['analyticsEnabled']=False;d['missionHubUrl']='';p.write_text(json.dumps(d))
 p=dest/'index.html';s=p.read_text().replace('href="/assets/','href="assets/').replace('https://pabitrabanerjee.me/Interstellar-Armada/assets/images/orientation.png','assets/images/orientation.png');s=s.replace('</head>', '<style>[id$="mainMenu.multiplayer"],[id$="singlePlayer.communityMissions"]{display:none!important}</style></head>');p.write_text(s)
 (dest/'KNIGHTFALL-CHANGES.md').write_text('''# Knightfall hosting changes — 2026-10-29
 
@@ -29,3 +29,8 @@ The BY-NC collision recording is excluded. A new mathematically synthesized coll
 Modified preferred-form source is included under src/, with Gruntfile.js and package.json. source.zip contains these code and build inputs; runtime assets are directly available alongside this file. No warranty; redistribution of covered code is under GPL-3.0.
 ''')
 print('Armada prepared:',dest)
+
+# Replace the reporting module as well: a blank URL alone still permits local POSTs.
+module='define("modules/analytics",[],function(){return{init:function(){},login:function(){},sendEvent:function(){},isEnabled:function(){return false;},enable:function(){},disable:function(){},setEnabled:function(){}}});'
+(dest/'src/js/modules/analytics.js').write_text('// Knightfall: analytics disabled, 2026-10-29.\n'+module)
+p=dest/'js/main.js';s=p.read_text();start=s.index('define("modules/analytics"');end=s.index('define(',start+10);s=s[:start]+module[:-1]+',\n'+s[end:];p.write_text(s)
