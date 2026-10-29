@@ -1,0 +1,53 @@
+name: Import and build Fable GTA city editor
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-fable-gta.yml'
+permissions:
+  contents: write
+concurrency:
+  group: fable-gta-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch MIT licensed upstream
+        run: |
+          git clone --depth 1 https://github.com/CodingFreeze/Fable_GTA.git /tmp/fable-gta
+          git -C /tmp/fable-gta rev-parse HEAD > /tmp/fable-gta-revision.txt
+          test -f /tmp/fable-gta/LICENSE
+          grep -q 'MIT License' /tmp/fable-gta/LICENSE
+      - name: Vendor editable source
+        run: |
+          mkdir -p vendor/fable-gta
+          rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='dist' /tmp/fable-gta/ vendor/fable-gta/
+          cp /tmp/fable-gta-revision.txt vendor/fable-gta/UPSTREAM_COMMIT.txt
+      - name: Install dependencies and verify TypeScript
+        working-directory: vendor/fable-gta
+        run: npm ci --no-audit --no-fund
+      - name: Build standalone arcade app with subpath
+        working-directory: vendor/fable-gta
+        run: npm run build -- --base=/arcade/hosted/fable-gta/
+      - name: Publish generated static assets
+        run: |
+          mkdir -p public/arcade/hosted/fable-gta
+          rsync -a --delete vendor/fable-gta/dist/ public/arcade/hosted/fable-gta/
+          cp vendor/fable-gta/LICENSE public/arcade/hosted/fable-gta/LICENSE
+      - name: Commit import and compiled build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vendor/fable-gta public/arcade/hosted/fable-gta
+          if ! git diff --cached --quiet; then
+            git commit -m "vendor(arcade): import Fable GTA city editor and compiled game"
+            git push
+          fi
