@@ -1,0 +1,41 @@
+name: One-time safe branch cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cleanup-merged-branches-once.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete only branches fully contained in main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branches=(
+            "arcade-account-bridge-rollout"
+            "backend/forum-api"
+            "backend/forum-api-v2"
+            "feat/neon-vector-futuristic-racer"
+            "fix/miss-chaos-memory-recall"
+            "integrate/arcade-round-two-safe-merge-2026-10-24"
+          )
+          for branch in "${branches[@]}"; do
+            if ! gh api "repos/$GH_REPO/branches/$branch" >/dev/null 2>&1; then
+              echo "Already absent: $branch"
+              continue
+            fi
+            ahead=$(gh api "repos/$GH_REPO/compare/main...${branch}" --jq '.ahead_by')
+            if [[ "$ahead" != "0" ]]; then
+              echo "::warning::Preserving $branch: $ahead commits not contained in main"
+              continue
+            fi
+            echo "Deleting fully contained branch: $branch"
+            gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
+          done
