@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/stage-selected-open-source-games.yml'
+      - 'scripts/import-selected-open-source-games.sh'
+      - 'scripts/prepare-selected-game-catalog.py'
 permissions:
   contents: write
   pull-requests: write
