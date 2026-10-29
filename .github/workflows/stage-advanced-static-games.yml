@@ -46,8 +46,6 @@ jobs:
             public/arcade/hosted/interstellar-armada
             public/arcade/hosted/browserquest-solo
             public/arcade/hosted/openfront-solo
-            public/arcade/advanced-imports.json
-            public/arcade-30-games.html
           key: advanced-static-v1-${{ hashFiles('scripts/advanced-games/**', 'scripts/import-advanced-static-games.sh') }}
       - name: Import and build audited pinned sources
         if: steps.game-cache.outputs.cache-hit != 'true'
@@ -59,9 +57,9 @@ jobs:
             public/arcade/hosted/interstellar-armada
             public/arcade/hosted/browserquest-solo
             public/arcade/hosted/openfront-solo
-            public/arcade/advanced-imports.json
-            public/arcade-30-games.html
           key: ${{ steps.game-cache.outputs.cache-primary-key }}
+      - name: Refresh catalog against the current branch
+        run: python3 scripts/advanced-games/catalog.py
       - name: Verify deployment file sizes and license exclusions
         run: |
           python3 scripts/advanced-games/verify.py
