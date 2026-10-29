@@ -1,0 +1,401 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Hide overflow to make it tight */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #eee;
+    user-select: none;
+}
+
+/* --- MOBILE MODE LOCK --- */
+body.mobile-mode {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#gameContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* THE SCREEN: Fixed Internal Resolution */
+#screen {
+    width: 960px;
+    height: 720px;
+    background: #1a1a1a;
+    position: relative;
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    flex-shrink: 0;
+}
+
+#canvas-container {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+canvas { 
+    display: block; 
+}
+
+/* --- TOGGLE BUTTON --- */
+#mobile-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 2000;
+    background: #333;
+    color: white;
+    border: 2px solid #555;
+    font-size: 12px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+body.mobile-mode #mobile-btn { 
+    display: none; 
+}
+
+/* --- MOBILE CONTROLS OVERLAY --- */
+#mobile-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3000;
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+body.mobile-mode #mobile-controls {
+    display: flex;
+}
+
+.mobile-control-btn {
+    pointer-events: auto;
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.15);
+    border: 3px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    color: white;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    backdrop-filter: blur(4px);
+    margin-bottom: 20px;
+    transition: transform 0.1s, background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-control-btn:active {
+    background: rgba(255,255,255,0.4);
+    transform: scale(0.95);
+}
+
+#mobile-dpad {
+    display: flex;
+    gap: 15px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+#mobile-action {
+    display: flex;
+    gap: 15px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+/* Header & HUD */
+#gameHeader.hidden, #hud.hidden, #optionsHint.hidden { 
+    display: none; 
+}
+
+#gameHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    z-index: 10;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+
+h1 {
+    margin: 0;
+    text-shadow: 2px 2px 0px #000;
+    color: #ffcc00; 
+    font-style: italic;
+    font-size: 2.5em;
+}
+
+h3 {
+    margin: 0 0 20px 0;
+    color: #ddd;
+}
+
+#headerButtons {
+    position: absolute;
+    right: 20px;
+    pointer-events: auto;
+}
+
+button {
+    background: #333;
+    color: white;
+    border: 1px solid #666;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+button:hover { 
+    background: #555; 
+}
+button:active { 
+    background: #777; 
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Menus */
+.menu-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid #555;
+    padding: 20px 40px;
+    border-radius: 8px;
+    z-index: 20;
+    min-width: 320px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.menu-overlay.hidden { 
+    display: none; 
+}
+
+/* Custom Styles For the Full Map View */
+.map-container {
+    width: 80vw;
+    height: 80vh;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-header {
+    padding: 15px 25px;
+    background: #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #555;
+}
+
+.map-header h2 { 
+    margin: 0; 
+    font-size: 1.5em; 
+    color: #ffcc00; 
+}
+.map-hint { 
+    color: #aaa; 
+    font-size: 0.9em; 
+    font-style: italic; 
+}
+
+.map-canvas {
+    flex: 1;
+    width: 100%;
+    cursor: grab;
+    background: #111;
+}
+
+.map-canvas:active {
+    cursor: grabbing;
+}
+
+.setting-group {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+.setting-group h3 { 
+    margin: 0 0 5px 0; 
+    font-size: 1rem; 
+    color: #ffcc00; 
+}
+
+.setting-row { 
+    display: flex; 
+    justify-content: space-between; 
+    margin: 8px 0; 
+    align-items: center; 
+}
+.slider-value { 
+    width: 30px; 
+    text-align: right; 
+    color: #ffcc00; 
+}
+
+.section { 
+    margin-bottom: 15px; 
+    border-bottom: 1px solid #444; 
+    padding-bottom: 10px; 
+}
+.section p { 
+    color: #aaa; 
+    margin: 5px 0 10px 0; 
+    font-weight: bold;
+}
+
+.info-text { 
+    font-size: 0.8em; 
+    color: #aaa; 
+    margin-top: 5px; 
+    font-style: italic;
+}
+.small-text { 
+    font-size: 0.8em; 
+    color: #888; 
+    margin-top: 20px;
+}
+
+/* Split Screen Device UI */
+.device-slot {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid #555;
+    padding: 8px;
+    margin: 4px 0;
+    color: #888;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+.device-slot.ready {
+    border-color: #ffcc00;
+    color: #ffcc00;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+}
+
+input[type="checkbox"] { 
+    transform: scale(1.3); 
+    cursor: pointer; 
+}
+
+/* Toggle Buttons for Physics / Game Modes */
+.toggle-group {
+    display: flex;
+    gap: 0;
+}
+.toggle-btn {
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    background-color: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #555;
+}
+.toggle-group .toggle-btn {
+    border-radius: 0;
+}
+.toggle-group .toggle-btn:first-child { 
+    border-radius: 4px 0 0 4px; 
+}
+.toggle-group .toggle-btn:last-child { 
+    border-radius: 0 4px 4px 0; 
+}
+.toggle-btn:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+}
+.toggle-btn.active {
+    background-color: #ffcc00;
+    color: #111;
+    border-color: #ffcc00;
+    font-weight: bold;
+}
+
+/* HUD */
+#hud {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    pointer-events: none;
+    font-family: monospace;
+    font-size: 1.2em;
+    text-shadow: 1px 1px 0 #000;
+    z-index: 10;
+}
+#p1Score { 
+    color: #ffcc00; 
+    font-weight: bold; 
+}
+#p2Score { 
+    color: #cc66ff; 
+    font-weight: bold; 
+    margin-top: 10px; 
+}
+
+/* Bottom Left Hint */
+.bottom-left-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.9em;
+    color: rgba(255,255,255,0.5);
+    z-index: 10;
+    pointer-events: none;
+    font-family: monospace;
+}
+.clickable { 
+    cursor: pointer; 
+    color: #aaa; 
+    text-decoration: underline; 
+}
