@@ -1,9 +1,11 @@
-// Private admin game archive delivery. Never expose R2 object keys as user input.
+import catalog from '../../public/arcade/original-creations.json';
+// Private admin game archive delivery. IDs are strictly allowlisted from the reviewed catalog.
 export async function serveAdminGameArchive(request, env, getUser) {
-  const allowed = new Map([
+  const allowed = new Map(catalog.games.filter(game => /^\/arcade\/hosted\/[a-z0-9-]+\/index\.html$/.test(game.engine) && game.id === game.engine.split('/')[3]).map(game => [game.id, 'admin-game-builds/'+game.id+'.zip']));
+  for (const [id, key] of [
     ['sanctuary-original', 'admin-game-builds/sanctuary-original.zip'],
     ['ashfall-infernal-reign-dev', 'admin-game-builds/ashfall-infernal-reign-dev.zip']
-  ]);
+  ]) allowed.set(id, key);
   const url = new URL(request.url);
   const match = /^\/api\/admin\/game-downloads\/([a-z0-9-]+)$/.exec(url.pathname);
   if (!match) return null;
