@@ -269,3 +269,18 @@ test("creature artwork and battle effects remain locally bundled and parseable",
   assert.equal(check.status,0,check.stderr);
  }
 });
+
+test("evolution cinematic uses previous and evolved sprite IDs and responsive overlay",()=>{
+ const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ const atlas=readFileSync("public/monster-mmo-sprite-atlas.js","utf8");
+ assert.match(js,/hell-high-orbit:evolution/);
+ assert.match(js,/from:previousId,to:creature\.id/);
+ assert.match(battle,/document\.addEventListener\("hell-high-orbit:evolution"/);
+ assert.match(battle,/HellOrbitSprites\.draw\(ec/);
+ assert.match(battle,/duration=2400/);
+ assert.match(css,/#pixel-evolution\[hidden\]/);
+ for(const code of [battle,atlas]){
+  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  assert.equal(check.status,0,check.stderr);
+ }
+});
