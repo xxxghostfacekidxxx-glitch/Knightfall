@@ -41,6 +41,48 @@
   for(let i=0;i<15;i++){const x=(i*97)%384,y=(i*43)%92;fill(x,y,2,2,i%2?"#a6d9ef":"#ff8ee1");}
   // Faction-specific skyline and arena props, all original pixel art.
   for(let i=0;i<8;i++){const x=i*53+(i%3)*9;fill(x,80-(i%3)*8,alien?13:18,32,alien?"#2c6e7b":infernal?"#59314e":"#416b68");if(alien){fill(x+3,74-(i%3)*8,7,7,"#78f5df");fill(x+5,67-(i%3)*8,3,7,"#ff81c8");}else if(infernal){fill(x+4,72-(i%3)*8,9,12,"#a84c77");fill(x+7,68-(i%3)*8,3,6,"#f8a0c5");}}
+  // Distinctive original region silhouettes, atmospheric depth and animated sky.
+  // Drawn as pixel primitives so the game remains free, offline-ready and asset-independent.
+  const tick=Math.floor(performance.now()/220),reduced=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const twinkle=reduced?0:tick;
+  // Two-tone moon/planet with a sharp pixel rim and crater/shadow texture.
+  const orbX=alien?302:infernal?302:316,orbY=alien?28:infernal?23:29;
+  for(let dy=-19;dy<=19;dy+=3){
+   const span=Math.floor(Math.sqrt(Math.max(0,19*19-dy*dy))/3)*3;
+   fill(orbX-span,orbY+dy,span*2+3,3,alien?"#8be3d7":infernal?"#ef9aa9":"#c4d3dc");
+  }
+  fill(orbX+2,orbY-13,10,9,alien?"#459ba8":infernal?"#9b506d":"#839ab4");
+  fill(orbX-10,orbY+3,7,5,alien?"#4babb0":infernal?"#ad5c7c":"#8ba3b9");
+  if(alien){
+   // Orbiting saucers and hovering cyan antennas.
+   for(let i=0;i<3;i++){
+    const x=32+i*94,y=35+(i%2)*16;
+    fill(x,y,23,4,"#0d354f");fill(x+4,y-4,15,5,"#a5fff0");
+    fill(x+9,y-7,5,3,"#ff83d1");fill(x+4,y+4,3,5,"#76e7dc");fill(x+16,y+4,3,5,"#76e7dc");
+   }
+  }else if(infernal){
+   // Hellscape spires, ember motes and distant crooked citadel.
+   for(let i=0;i<8;i++){
+    const x=17+i*51,h=12+(i*13)%24;
+    fill(x,103-h,9,h,"#351f40");fill(x+3,96-h,3,9,"#351f40");
+    fill(x+2,99-h,3,4,"#f48a9d");
+   }
+   for(let i=0;i<13;i++)fill((i*83+17)%384,25+(i*29+twinkle*(i%3+1))%75,2,3,i%2?"#ff9c6b":"#f6d18a");
+  }else{
+   // Scrappy Earth skyline, distant firs and glitched signal tower.
+   for(let i=0;i<17;i++){
+    const x=i*25,h=13+(i*11)%23;
+    fill(x,110-h,18,h,"#234c55");
+    fill(x+6,104-h,5,7,"#4c8990");
+   }
+   fill(70,48,5,55,"#253b56");fill(61,53,23,3,"#253b56");
+   fill(70,43,5,5,"#ff70c9");
+  }
+  // Tiny animated light signals give the battlefield life without noisy overlays.
+  for(let i=0;i<10;i++){
+   const x=(i*71+13)%384,y=15+(i*37)%70;
+   if((i+twinkle)%4!==0)fill(x,y,2,2,alien?"#98ffed":infernal?"#fca6be":"#d4e7f0");
+  }
   fill(0,108,384,100,ground);fill(0,131,384,77,alien?"#69a3a0":infernal?"#a07887":"#86a883");
   for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?(alien?"#88c6b8":infernal?"#bf91aa":"#759d79"):(alien?"#417b82":infernal?"#774c71":"#b5bd91"));
   fill(219,102,140,13,"#355f68");fill(230,93,119,16,"#acc2a2");fill(23,176,149,12,"#395b62");fill(34,164,127,15,"#a3b69b");
