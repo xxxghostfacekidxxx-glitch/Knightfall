@@ -150,9 +150,9 @@
     },
     {
       "gameId": "cabinet-slush-rush",
-      "title": "Slush Rush",
+      "title": "Ashslide Rush",
       "path": "/arcade/hosted/slush-rush/index.html",
-      "scoreSelector": "#distance",
+      "scoreSelector": "#score",
       "scoreMode": "score"
     },
     {
@@ -364,6 +364,13 @@
       "path": "/arcade/hosted/goalmouth-mayhem/index.html",
       "scoreSelector": "",
       "scoreMode": "completion"
+    },
+    {
+      "gameId": "cabinet-slush-rush-original",
+      "title": "Slush Rush (Original Downhill)",
+      "path": "/arcade/hosted/slush-rush-original/index.html",
+      "scoreSelector": "#distance",
+      "scoreMode": "score"
     }
   ]
 }
