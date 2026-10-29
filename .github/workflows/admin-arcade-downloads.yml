@@ -1,0 +1,56 @@
+name: Build private admin arcade downloads
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/hosted/**'
+      - 'public/arcade/original-creations.json'
+      - '.github/workflows/admin-arcade-downloads.yml'
+permissions:
+  contents: read
+concurrency:
+  group: admin-arcade-downloads
+  cancel-in-progress: true
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build each catalog game as a separate ZIP
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, zipfile
+          root=pathlib.Path('public/arcade/hosted')
+          out=pathlib.Path('/tmp/ashfall-admin-packages')
+          out.mkdir(exist_ok=True)
+          games=json.loads(pathlib.Path('public/arcade/original-creations.json').read_text())['games']
+          built=0
+          for game in games:
+              game_id=game['id']
+              if game.get('engine') != f'/arcade/hosted/{game_id}/index.html': continue
+              folder=root/game_id
+              if not (folder/'index.html').is_file():
+                  print(f'WARNING: missing entry: {game_id}')
+                  continue
+              with zipfile.ZipFile(out/f'{game_id}.zip','w',compression=zipfile.ZIP_STORED) as z:
+                  for file in folder.rglob('*'):
+                      if file.is_file() and not file.is_symlink() and not any(part.startswith('.') for part in file.relative_to(folder).parts):
+                          z.write(file,file.relative_to(folder).as_posix())
+              built+=1
+          if not built: raise SystemExit('No games packaged')
+          print(f'Packaged {built} games')
+          PY
+      - name: Publish private packages to Cloudflare R2
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Cloudflare R2 credentials not configured; packages were not published."
+            exit 1
+          fi
+          for file in /tmp/ashfall-admin-packages/*.zip; do
+            name="$(basename "$file")"
+            npx --yes wrangler@4 r2 object put "knightfall-personal-admin-vault/admin-game-builds/$name" --file "$file" --remote
+          done
