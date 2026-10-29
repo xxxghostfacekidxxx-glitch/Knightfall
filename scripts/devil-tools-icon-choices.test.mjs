@@ -12,9 +12,9 @@ test("eight original icon SVGs are accessible, square and standalone",async()=>{
   assert.ok(!/<script|onload=|href="https?:/i.test(svg));
  }
 });
-test("Devil Tools displays all thirteen icon choices with SVG download and browser-only preview",async()=>{
+test("Devil Tools displays all twenty-one icon choices with SVG download and browser-only preview",async()=>{
  const html=await readFile(new URL("devil-tools.html",root),"utf8");
- assert.match(html,/13 App Icon Candidates/);
+ assert.match(html,/21 App Icon Candidates/);
  for(const id of icons)assert.ok(html.includes("['"+id+"',"),id);
  assert.match(html,/localStorage\.setItem\('knightfall-app-icon-candidate'/);
  assert.match(html,/link\.download=id\+'\.svg'/);
@@ -26,7 +26,7 @@ const archivedRead=name=>readFile(new URL(name,root),"utf8");
 const ids=["toxic-seraph","void-bunny","neon-reaper","chaos-cat","broken-halo","alien-static","heart-hazard","eclipse-fang"];
 test("eight original vector icon options are complete and available",async()=>{
  const page=await archivedRead("devil-tools.html");
- assert.match(page,/13 App Icon Candidates/);
+ assert.match(page,/21 App Icon Candidates/);
  for(const id of ids){
   assert.ok(page.includes("['"+id+"',"),"Missing gallery entry: "+id);
   const svg=await archivedRead("icons/choices/"+id+".svg");
