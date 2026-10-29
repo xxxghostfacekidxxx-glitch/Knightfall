@@ -80,8 +80,8 @@ jobs:
       - name: Build downloadable offline game archives
         run: |
           mkdir -p /tmp/ashfall-admin-game-packages
-          (cd public/arcade/hosted/sanctuary-original && zip -q -r /tmp/ashfall-admin-game-packages/sanctuary-original.zip .)
-          (cd public/arcade/hosted/sanctuary-end && zip -q -r /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip .)
+          (cd public/arcade/hosted/sanctuary-original && zip -q -0 -r /tmp/ashfall-admin-game-packages/sanctuary-original.zip .)
+          (cd public/arcade/hosted/sanctuary-end && zip -q -0 -r /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip .)
           unzip -tq /tmp/ashfall-admin-game-packages/sanctuary-original.zip
           unzip -tq /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
           test -s /tmp/ashfall-admin-game-packages/sanctuary-original.zip
