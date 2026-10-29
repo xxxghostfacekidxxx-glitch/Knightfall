@@ -299,3 +299,22 @@ test("four-slot battles preserve guard and validate multiplayer evolution animat
  const check=spawnSync(process.execPath,["--check"],{input:battle,encoding:"utf8"});
  assert.equal(check.status,0,check.stderr);
 });
+
+test("species ultimate attacks and nine elemental battle effects",()=>{
+ const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ const server=readFileSync("backend/src/index.mmo-staging.js","utf8");
+ assert.match(js,/name:index===3\?\(speciesMoves\[creature\?\.id\]/);
+ assert.match(server,/const speciesUltimate=/);
+ assert.match(server,/index===3\?\(speciesUltimate\[lead\.id\]/);
+ for(const type of ["fire","grass","water","electric","cosmic","ghost","air","thorn","stone"]){
+  assert.ok(battle.includes(type),"Missing elemental animation: "+type);
+ }
+ for(const id of ["minionmouse","minivillain","minieddie"]){
+  assert.ok(battle.includes(id),"Missing legendary animation: "+id);
+ }
+ assert.match(js,/\["attack","special","quick","move"\]\.includes\(name\)/);
+ for(const code of [battle,server]){
+  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  assert.equal(check.status,0,check.stderr);
+ }
+});
