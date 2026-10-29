@@ -25,6 +25,8 @@ jobs:
           if git ls-remote --exit-code --heads origin staging/selected-open-source-games-14-15 >/dev/null; then
             git fetch origin staging/selected-open-source-games-14-15
             git switch -C staging/selected-open-source-games-14-15 FETCH_HEAD
+            git fetch origin main
+            git merge --ff-only origin/main || { echo "Staging diverged from main; refusing force-push. Reconcile manually." >&2; exit 1; }
           else
             git switch -c staging/selected-open-source-games-14-15
           fi
