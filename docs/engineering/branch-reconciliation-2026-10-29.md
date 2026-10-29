@@ -2,7 +2,7 @@
 
 Baseline: production branch `main`. Compared every one of 31 non-main GitHub branches against `main` using GitHub's commit comparison. **Ahead** does not mean the changes are absent from production: cherry-picks, rebases and later rewrites can preserve equivalent functionality under different commit IDs.
 
-## Already incorporated / no ahead commits (5)
+## Already incorporated / no ahead commits (6)
 - `arcade-account-bridge-rollout`
 - `backend/forum-api`
 - `backend/forum-api-v2`
@@ -17,7 +17,7 @@ Correction: **six** branches have zero ahead commits. They can be archived after
 - `feature/monster-mmo-prototype`: 123 ahead, 2862 behind. Old backend, migrations, game client and staging workflow. **Preserve as historical reference**, not a direct merge.
 - `staging/monster-mmo-isolated`: 130 ahead, 2862 behind. Old isolated staging backend/migrations. **Preserve as historical reference** until active staging bindings and migrations are compared.
 
-## Arcade and games (18 branches)
+## Arcade and games (19 branches)
 `add-chaos-cartridge-games-2026-10-19`, `arcade-account-saves-round-three-2026-10-22`, `arcade-all-games-next-steps-2026-10-21`, `arcade-every-game-round-two-2026-10-22`, `arcade-fullscreen-refinement-round-six-2026-10-22`, `arcade-fullscreen-ui-round-five-2026-10-22`, `arcade-game-specific-visuals-round-eight-2026-10-22`, `arcade-gameplay-feedback-round-nine-2026-10-22`, `arcade-gameplay-safety-round-four-2026-10-22`, `arcade-originality-upgrade-layer-2026-10-21`, `arcade-progression-saves-round-ten-2026-10-22`, `arcade-save-revision-conflicts-2026-10-20`, `arcade-ui-systems-round-seven-2026-10-22`, `chaos-cartridge-mega-expansion-2026-10-19`, `feat/arcade-save-restore-wave-8`, `feature/chaos-cartridge-card-room`, `fix/arcade-save-revisions-renumbered-2026-10-23`, `fix/arcade-static-audit`, `fix/rebase-save-resume`.
 These are **19** old feature/fix branches. Most are thousands of commits behind main, and many touch the same files. Preserve unique assets and games; audit differences by file and test before cherry-picking. Never merge all simultaneously.
 
