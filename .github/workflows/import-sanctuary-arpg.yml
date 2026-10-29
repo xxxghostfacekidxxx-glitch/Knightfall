@@ -77,7 +77,7 @@ jobs:
           grep -q "Ruinborn" public/arcade/hosted/sanctuary-end/js/02-skills.js
           ! grep -q "Hellwarden" public/arcade/hosted/sanctuary-original/js/02-skills.js
           grep -q 'ashfall-theme.css' public/arcade/hosted/sanctuary-end/sanctuary.html
-      - name: Build downloadable offline game archives
+      - name: Validate offline launcher scripts\n        run: |\n          node --check public/admin-offline/launcher.js\n          node --check public/admin-offline/sw.js\n          node --check backend/src/admin-game-downloads.js\n          python3 -m json.tool public/admin-offline/manifest.webmanifest >/dev/null\n      - name: Build downloadable offline game archives
         run: |
           mkdir -p /tmp/ashfall-admin-game-packages
           (cd public/arcade/hosted/sanctuary-original && zip -q -0 -r /tmp/ashfall-admin-game-packages/sanctuary-original.zip .)
@@ -85,7 +85,7 @@ jobs:
           unzip -tq /tmp/ashfall-admin-game-packages/sanctuary-original.zip
           unzip -tq /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
           test -s /tmp/ashfall-admin-game-packages/sanctuary-original.zip
-          test -s /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
+          test -s /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip\n          unzip -Z1 /tmp/ashfall-admin-game-packages/sanctuary-original.zip | grep -qx 'sanctuary.html'\n          unzip -Z1 /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip | grep -qx 'sanctuary.html'
       - name: Upload private admin packages to R2 when credentials are configured
         env:
           CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
