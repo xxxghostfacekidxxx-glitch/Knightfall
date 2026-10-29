@@ -2,9 +2,9 @@
    Drawn entirely from original vector-to-pixel primitives, no remote/copyrighted assets. */
 (()=>{
 "use strict";
-const ids="embercub ashhorn mossbit mossreaper driftfin cryptfin zipfang voltmaw squibblex squibmarshal glorpbot glorpcannon gloamlet gloamshade thornspit thornmaw grubruckle gravruckle mournwing doomwing noodloid noodlarch blipmoth bliporacle hexpup hexhound starjelly astraljelly minionmouse minivillain minieddie".split(" ");
+const ids="embercub ashhorn mossbit mossreaper driftfin cryptfin zipfang voltmaw squibblex squibmarshal glorpbot glorpcannon gloamlet gloamshade thornspit thornmaw grubruckle gravruckle mournwing doomwing noodloid noodlarch blipmoth bliporacle hexpup hexhound starjelly astraljelly minionmouse minivillain minieddie casketkit mausoleopard impickle brinebrute cinderling pyroclast screecher sonicrypt puddlegloom drownmire fossilimp ossiforge zapgob stormgob moldmunch sporelord quarklet quarkzilla saucerpup orbithound glitchgrub bytebeetle voidsnail chronoshell".split(" ");
 const colors={fire:["#ff8666","#a3335e"],grass:["#9fef6d","#3e8560"],water:["#67e2ef","#3569b7"],electric:["#f1f778","#8c55a6"],cosmic:["#88f9db","#5573b3"],ghost:["#c8a7ff","#654889"],air:["#c1e7ff","#688ab6"],thorn:["#f18fc2","#963f71"],stone:["#b9afc2","#5e6175"]};
-const types="fire fire grass grass water water electric electric cosmic cosmic electric electric ghost ghost thorn thorn stone stone air air cosmic cosmic air air ghost ghost cosmic cosmic electric ghost fire".split(" ");
+const types="fire fire grass grass water water electric electric cosmic cosmic electric electric ghost ghost thorn thorn stone stone air air cosmic cosmic air air ghost ghost cosmic cosmic electric ghost fire ghost ghost thorn thorn fire fire air air water water stone stone electric electric grass grass cosmic cosmic cosmic cosmic electric electric cosmic cosmic".split(" ");
 const atlas=document.createElement("canvas");atlas.width=32*4;atlas.height=32*ids.length;
 const ctx=atlas.getContext("2d");if(!ctx)return;ctx.imageSmoothingEnabled=false;
 const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
@@ -13,7 +13,7 @@ function sprite(id,frame){
  const x=frame*32,y=n*32,bob=frame===1?1:frame===3?-1:0;
  const [base,shade]=colors[types[n]]||colors.cosmic,ink="#242037",accent=n%2?"#ff6dbb":"#d9ff6c";
  const r=(a,b,w,h,c)=>rect(x+a,y+b+bob,w,h,c);
- const family=Math.floor(n/2),evolved=n%2===1&&n<28;
+ const family=n>=31?Math.floor((n-31)/2)+16:Math.floor(n/2),evolved=n>=31?(n-31)%2===1:n%2===1&&n<28;
  const bodyW=evolved?22:18,bodyX=(32-bodyW)/2;
  // Distinct anatomy per evolutionary family, with stronger evolved silhouettes.
  if([2,7,10,11].includes(family)){r(3,12,8,9,shade);r(21,12,8,9,shade);}
@@ -65,7 +65,34 @@ function sprite(id,frame){
   starjelly:()=>{r(4,18,5,10,accent);r(13,20,5,9,accent);r(23,18,5,10,accent);},
   astraljelly:()=>{r(1,16,6,13,accent);r(9,19,6,12,accent);r(18,19,6,12,accent);r(26,16,5,13,accent);}
  };
- features[id]?.();
+ // The twelve newer evolutionary families get their own anatomy, not recolored placeholders.
+ const newShapes={
+  casketkit:()=>{r(4,7,8,9,shade);r(20,7,8,9,shade);r(8,23,16,5,ink);r(12,3,8,6,accent);},
+  mausoleopard:()=>{r(1,7,9,13,shade);r(22,7,9,13,shade);r(4,23,24,6,ink);r(14,1,4,9,accent);},
+  impickle:()=>{r(11,0,10,9,accent);r(4,13,5,13,shade);r(23,13,5,13,shade);r(14,20,4,8,accent);},
+  brinebrute:()=>{r(9,0,14,11,accent);r(2,10,9,17,shade);r(21,10,9,17,shade);r(12,23,8,5,ink);},
+  cinderling:()=>{r(11,0,10,11,accent);r(6,7,5,9,shade);r(21,7,5,9,shade);r(14,3,4,6,"#fff0a5");},
+  pyroclast:()=>{r(5,0,7,15,accent);r(20,0,7,15,accent);r(11,2,10,8,"#ffed9d");r(3,23,26,6,shade);},
+  screecher:()=>{r(0,7,12,18,shade);r(20,7,12,18,shade);r(8,3,5,8,accent);r(19,3,5,8,accent);},
+  sonicrypt:()=>{r(0,4,13,23,shade);r(19,4,13,23,shade);r(10,1,12,8,accent);r(4,24,24,4,ink);},
+  puddlegloom:()=>{r(2,23,28,7,shade);r(5,18,22,10,base);r(11,7,10,6,accent);},
+  drownmire:()=>{r(0,20,32,10,shade);r(3,14,26,12,base);r(8,4,16,9,accent);r(2,26,7,4,ink);},
+  fossilimp:()=>{r(7,2,5,13,accent);r(20,2,5,13,accent);r(6,23,20,6,shade);r(14,13,4,4,"#f5e5ca");},
+  ossiforge:()=>{r(3,4,10,11,shade);r(19,4,10,11,shade);r(1,22,30,8,ink);r(11,0,10,8,accent);},
+  zapgob:()=>{r(6,0,4,13,accent);r(22,0,4,13,accent);r(3,13,8,6,shade);r(21,13,8,6,shade);},
+  stormgob:()=>{r(2,0,6,15,accent);r(24,0,6,15,accent);r(11,1,10,8,shade);r(1,23,30,5,accent);},
+  moldmunch:()=>{r(2,8,28,9,shade);r(6,5,20,12,base);r(13,1,6,7,accent);r(8,25,5,4,accent);},
+  sporelord:()=>{r(0,5,32,12,shade);r(3,3,26,12,base);r(13,0,6,6,accent);r(5,25,22,5,shade);},
+  quarklet:()=>{r(11,0,10,7,accent);r(3,13,7,10,shade);r(22,13,7,10,shade);r(13,24,6,6,accent);},
+  quarkzilla:()=>{r(6,0,20,10,accent);r(0,13,11,13,shade);r(21,13,11,13,shade);r(13,25,6,6,accent);},
+  saucerpup:()=>{r(3,4,9,11,shade);r(20,4,9,11,shade);r(4,24,24,5,accent);r(13,6,6,5,"#fff");},
+  orbithound:()=>{r(0,2,12,16,shade);r(20,2,12,16,shade);r(2,24,28,6,accent);r(12,3,8,6,"#fff");},
+  glitchgrub:()=>{r(4,21,24,8,shade);r(8,5,16,10,accent);r(15,0,2,7,ink);r(3,13,5,8,accent);},
+  bytebeetle:()=>{r(0,12,11,16,shade);r(21,12,11,16,shade);r(8,3,16,14,accent);r(13,0,6,6,ink);},
+  voidsnail:()=>{r(2,14,26,14,shade);r(7,9,18,16,accent);r(12,12,8,8,ink);r(24,5,4,12,base);},
+  chronoshell:()=>{r(0,12,32,17,shade);r(4,5,24,20,accent);r(10,10,12,11,ink);r(25,0,5,17,base);}
+ };
+ features[id]?.();newShapes[id]?.();
  // Species-specific accessories and faces. Legendary creatures receive dedicated shapes.
  if(id==="minionmouse"){r(2,3,10,10,base);r(20,3,10,10,base);r(11,5,10,4,accent);r(14,1,4,4,accent);}
  if(id==="minivillain"){r(3,11,7,17,"#623a81");r(22,11,7,17,"#623a81");r(11,3,10,7,accent);r(15,0,3,4,accent);}
