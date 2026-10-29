@@ -28,7 +28,7 @@
       // Inline the entire game so a file:// launch needs no web server.
       // Escape closing tags to prevent asset text from prematurely ending a block.
       const safeCss = css.replace(/<\/style/gi, "<\\/style");
-      const safePixel = pixelWorld.replace(/<\\/script/gi, "<\\\\/script");
+      const safePixel = pixelWorld.replace(/<\/script/gi, "<\\/script");
       const safeJs = js.replace(/<\/script/gi, "<\\/script");
       let bundled = html.replace(cssTag, "<style>" + safeCss + "</style>")
         .replace(jsTag, "<script>" + safeJs + "</script>")
