@@ -1,0 +1,50 @@
+name: Verify advanced games on production
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/advanced-imports.json'
+      - '.github/workflows/verify-advanced-live.yml'
+permissions:
+  contents: read
+concurrency:
+  group: verify-advanced-live
+  cancel-in-progress: true
+jobs:
+  production-game-launches:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wait for the production import catalog
+        run: |
+          node --input-type=module <<'JS'
+          let ready=false;
+          for(let i=0;i<60;i++){
+            try{
+              const response=await fetch('https://ash-fall.com/arcade/advanced-imports.json',{cache:'no-store'});
+              const data=await response.json();
+              if(['browserquest-solo','interstellar-armada','openfront-solo'].every(slug=>data.games?.some(game=>game.slug===slug))){ready=true;break;}
+            }catch{}
+            await new Promise(resolve=>setTimeout(resolve,5000));
+          }
+          if(!ready)throw Error('Production import catalog did not deploy within five minutes');
+          console.log('Production import catalog is available');
+          JS
+      - name: Install Chromium without package lifecycle scripts
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Launch all three games on the live domain
+        env:
+          GAME_BASE_URL: https://ash-fall.com
+        run: node scripts/smoke-advanced-static-games.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: advanced-production-game-evidence
+          path: advanced-game-evidence
