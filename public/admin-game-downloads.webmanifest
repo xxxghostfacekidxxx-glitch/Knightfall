@@ -1,0 +1,16 @@
+{
+  "name": "Ash-Fall Admin Game Downloads",
+  "short_name": "Ash-Fall Admin",
+  "start_url": "/admin-game-downloads.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d0815",
+  "theme_color": "#150c20",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
