@@ -264,3 +264,12 @@ body.interior-open #world-interact{pointer-events:none}
 /* Compact room labels preserve the handheld view while giving interiors context. */
 .rpg-station-caption{position:absolute;left:6px;right:6px;top:6px;margin:0;padding:5px 7px;background:#172636e8;color:#f6eed8;border:2px solid #caff45;font-size:clamp(.55rem,1.5vw,.72rem);line-height:1.3;text-align:center;z-index:2;pointer-events:none}
 .rpg-station-actions button[hidden]{display:none!important}
+
+/* Building discovery belongs in the map journal, never on the playfield. */
+.interior-journal{margin:12px auto 0;max-width:576px;padding:12px;border:2px solid #455e63;background:#1b2a37;color:#f6eed8}
+.interior-journal>strong{font-size:.8rem;letter-spacing:.06em;color:#caff45}
+#interior-journal-progress{margin:7px 0;font-size:.75rem;color:#f5dba9}
+#interior-journal-entries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.interior-journal-entry{padding:7px 8px;background:#263947;border:1px solid #44535e;font-size:.7rem;color:#aebac1}
+.interior-journal-entry.is-discovered{color:#e7f8d1;border-color:#9cc86c}
+@media(max-width:480px){#interior-journal-entries{grid-template-columns:1fr}}
