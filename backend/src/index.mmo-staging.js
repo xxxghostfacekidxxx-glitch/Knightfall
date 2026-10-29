@@ -403,7 +403,7 @@ export class MonsterWorldRoom {
     if (!savedRow) return new Response("Create a cloud save before entering the shared world.", { status: 409 });
     let saved; try { saved = JSON.parse(savedRow.save_json); } catch (_) { return new Response("Saved position is unreadable.", { status: 500 }); }
     const x = Number(saved.x), y = Number(saved.y), steps = Number(saved.steps);
-    if (!Number.isInteger(x) || x < 1 || x > 10 || !Number.isInteger(y) || y < 1 || y > 8 || !Number.isInteger(steps) || steps < 0) return new Response("Saved position is invalid.", { status: 409 });
+    if (!Number.isInteger(x) || x < 1 || x > 16 || !Number.isInteger(y) || y < 1 || y > 12 || !Number.isInteger(steps) || steps < 0) return new Response("Saved position is invalid.", { status: 409 });
     const version = Number(savedRow.version) || 1;
     const player = { userId, username, x, y, steps, version, lastMoveAt: 0 };
     this.state.acceptWebSocket(server);
@@ -428,8 +428,8 @@ export class MonsterWorldRoom {
     socket.serializeAttachment(player);
     const delta = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[body.direction];
     const x = player.x + delta[0], y = player.y + delta[1];
-    const blocked = new Set(["2,2", "9,2", "2,7", "9,7"]);
-    if (x < 1 || x > 10 || y < 1 || y > 8 || blocked.has(x + "," + y) || ((x === 1 || x === 10) && y === 5)) {
+    const blocked = new Set(["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"]);
+    if (x < 1 || x > 16 || y < 1 || y > 12 || blocked.has(x + "," + y) || ((x === 1 || x === 16) && y === 5)) {
       socket.send(JSON.stringify({ type: "move-blocked" }));
       return;
     }
@@ -1205,11 +1205,11 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     }else if(action==="start"||action==="encounter-check"){
       if(lead.hp<=0)return json({error:"Your lead creature has fainted. Switch to a healthy creature or rest at camp."},409,origin);
       if(battle)return json({error:"A battle is already active.",battle,save,version},409,origin);
-      if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>10||save.y<1||save.y>8)return json({error:"Invalid trainer position."},400,origin);
-      const onGrass=save.x>=1&&save.x<=10&&save.y>=1&&save.y<=8&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===10)&&save.y===5)&&!["2,2","9,2","2,7","9,7"].includes(save.x+","+save.y);
+      if(!Number.isInteger(save.x)||!Number.isInteger(save.y)||save.x<1||save.x>16||save.y<1||save.y>12)return json({error:"Invalid trainer position."},400,origin);
+      const onGrass=save.x>=1&&save.x<=16&&save.y>=1&&save.y<=12&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===16)&&save.y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(save.x+","+save.y);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       if(action==="start"||Math.random()<0.22){
-        const ids=Object.keys(species),limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly"];const ids=zone==="alien"?alienIds:zone==="demon"?Object.keys(species).filter(id=>!alienIds.includes(id)):Object.keys(species),limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
         battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
         save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
       }
@@ -1286,8 +1286,8 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const input=body?.save;
     if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid save data."},400,origin);
     const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
-    if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
-    const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
+    if(!int(input.x,1,16)||!int(input.y,1,12)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
+    const isWalkable=(x,y)=>int(x,1,16)&&int(y,1,12)&&!((x===1||x===16)&&y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(x+","+y);
     if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
     if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)||(member.energy||0)!==(oldSave.party[index].energy||0)||(member.status||null)!==(oldSave.party[index].status||null)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
     const species={
