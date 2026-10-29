@@ -3,7 +3,7 @@
 const box=document.getElementById("field-dialogue"),text=document.getElementById("field-dialogue-text"),speaker=document.getElementById("field-dialogue-speaker"),next=document.getElementById("field-dialogue-next");
 if(!box||!text||!speaker||!next)return;
 const queue=[];let current=null,timer=0,visible=0,full="",previousFocus=null;
-const named=[["MOX THE UNLICENSED MAYOR","📢"],["VEX THE INFERNAL CLERK","😈"],["AMBASSADOR QUIBBLE","👽"]];
+const named=[["MOX THE UNLICENSED MAYOR","📢"],["VEX THE INFERNAL CLERK","😈"],["AMBASSADOR QUIBBLE","👽"],["PROFESSOR STATIC","👽"],["SISTER BRIMSTONE","😈"],["INSPECTOR CRUMB","⚖"]];
 const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 function stopTyping(){if(timer){clearInterval(timer);timer=0}}
 function reveal(){stopTyping();visible=full.length;text.textContent=full;next.textContent="Continue ▸"}
