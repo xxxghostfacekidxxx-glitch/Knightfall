@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-const species={mossbit:["Mossbit","✿","grass",14,3],embercub:["Embercub","✹","fire",12,4],driftfin:["Driftfin","◈","water",16,2],gloamlet:["Gloamlet","☾","ghost",10,5],thornspit:["Thornspit","✥","thorn",18,4],zipfang:["Zipfang","ϟ","electric",11,7],grubruckle:["Grubruckle","⬟","stone",22,3],mournwing:["Mournwing","⌁","air",13,6],squibblex:["Squibblex","☄","cosmic",12,5],glorpbot:["Glorpbot","⚙","electric",19,4],noodloid:["Noodloid","〰","cosmic",15,4],blipmoth:["Blipmoth","✧","air",11,6],ashhorn:["Ashhorn","♈","fire",21,7],mossreaper:["Mossreaper","❧","grass",26,6],cryptfin:["Cryptfin","◉","water",28,5],voltmaw:["Voltmaw","ϟ","electric",22,10],squibmarshal:["Squibmarshal","☄","cosmic",25,8],glorpcannon:["Glorpcannon","⚙","electric",34,7],hexpup:["Hexpup","✦","ghost",16,6],starjelly:["Starjelly","✺","cosmic",18,5],gloamshade:["Gloamshade","☽","ghost",23,9],thornmaw:["Thornmaw","✥","thorn",32,8],gravruckle:["Gravruckle","⬟","stone",39,7],doomwing:["Doomwing","⌁","air",27,10],noodlarch:["Noodlarch","〰","cosmic",31,9],bliporacle:["Bliporacle","✧","air",26,11],hexhound:["Hexhound","✦","ghost",30,10],astraljelly:["Astraljelly","✺","cosmic",33,9],minionmouse:["Minion Mouse","🐭","electric",34,11],minivillain:["Mini Villain","♛","ghost",38,12],minieddie:["Mini Eddie","★","fire",42,13]};
+const species={mossbit:["Mossbit","✿","grass",14,3],embercub:["Embercub","✹","fire",12,4],driftfin:["Driftfin","◈","water",16,2],gloamlet:["Gloamlet","☾","ghost",10,5],thornspit:["Thornspit","✥","thorn",18,4],zipfang:["Zipfang","ϟ","electric",11,7],grubruckle:["Grubruckle","⬟","stone",22,3],mournwing:["Mournwing","⌁","air",13,6],squibblex:["Squibblex","☄","cosmic",12,5],glorpbot:["Glorpbot","⚙","electric",19,4],noodloid:["Noodloid","〰","cosmic",15,4],blipmoth:["Blipmoth","✧","air",11,6],ashhorn:["Ashhorn","♈","fire",21,7],mossreaper:["Mossreaper","❧","grass",26,6],cryptfin:["Cryptfin","◉","water",28,5],voltmaw:["Voltmaw","ϟ","electric",22,10],squibmarshal:["Squibmarshal","☄","cosmic",25,8],glorpcannon:["Glorpcannon","⚙","electric",34,7],hexpup:["Hexpup","✦","ghost",16,6],starjelly:["Starjelly","✺","cosmic",18,5],gloamshade:["Gloamshade","☽","ghost",23,9],thornmaw:["Thornmaw","✥","thorn",32,8],gravruckle:["Gravruckle","⬟","stone",39,7],doomwing:["Doomwing","⌁","air",27,10],noodlarch:["Noodlarch","〰","cosmic",31,9],bliporacle:["Bliporacle","✧","air",26,11],hexhound:["Hexhound","✦","ghost",30,10],astraljelly:["Astraljelly","✺","cosmic",33,9],minionmouse:["Minion Mouse","🐭","electric",34,11],minivillain:["Mini Villain","♛","ghost",38,12],minieddie:["Mini Eddie","★","fire",42,13],casketkit:["Casketkit","☾","ghost",16,5],mausoleopard:["Mausoleopard","☾","ghost",30,9],impickle:["Impickle","✥","thorn",17,4],brinebrute:["Brinebrute","✥","thorn",32,8],cinderling:["Cinderling","✹","fire",13,5],pyroclast:["Pyroclast","✹","fire",29,10],screecher:["Screecher","⌁","air",14,6],sonicrypt:["Sonicrypt","⌁","air",28,11],puddlegloom:["Puddlegloom","◈","water",19,3],drownmire:["Drownmire","◈","water",36,7],fossilimp:["Fossilimp","⬟","stone",22,3],ossiforge:["Ossiforge","⬟","stone",42,7],zapgob:["Zapgob","ϟ","electric",12,7],stormgob:["Stormgob","ϟ","electric",27,11],moldmunch:["Moldmunch","✿","grass",20,3],sporelord:["Sporelord","✿","grass",37,7],quarklet:["Quarklet","☄","cosmic",14,5],quarkzilla:["Quarkzilla","☄","cosmic",33,10],saucerpup:["Saucerpup","☄","cosmic",17,4],orbithound:["Orbithound","☄","cosmic",35,9],glitchgrub:["Glitchgrub","ϟ","electric",15,5],bytebeetle:["Bytebeetle","ϟ","electric",31,9],voidsnail:["Voidsnail","☄","cosmic",23,3],chronoshell:["Chronoshell","☄","cosmic",43,7]};
 // Original chibi hellspawn: asymmetric antennae, crooked horns, oversized eyes,
 // jagged little grins and neon infernal palettes. No third-party character art.
 const infernalLooks={
@@ -34,6 +34,31 @@ const infernalLooks={
  minionmouse:["#a5ff53","#ff4fc8",12,"Tiny crown, enormous ears, and a talent for short-circuiting alien warships."],
  minivillain:["#d57aff","#adff3f",13,"A pocket-sized mastermind with a cape, a crown, and fourteen unnecessarily complicated plans."],
  minieddie:["#ff638e","#caff44",14,"The smallest legend with the biggest heart. His battle cry makes demons reconsider their life choices."]
+,
+ casketkit:[3,"#b18cff",#ff77b7,"A coffin kitten that naps inside haunted shoeboxes."],
+ mausoleopard:[7,"#8f70ee",#ffb2d5,"A graveyard prowler whose purr rattles tombstones."],
+ impickle:[4,"#a5ee48",#ff6cbb,"A pickled imp grown in forbidden brine."],
+ brinebrute:[8,"#6dcf59",#f978c5,"A vinegar-armored demon with terrible table manners."],
+ cinderling:[1,"#ff975b",#caff4c,"A matchbox gremlin that hoards burnt wishes."],
+ pyroclast:[7,"#ff4c6b",#ffe24a,"A living blast furnace with a tantrum problem."],
+ screecher:[7,"#ae87ff",#f95aa6,"A bat demon that communicates in feedback."],
+ sonicrypt:[8,"#8855d9",#ff7dd5,"A spectral amplifier with wings."],
+ puddlegloom:[2,"#67d9e9",#d57bff,"A sad puddle with teeth and excellent posture."],
+ drownmire:[8,"#3f9abf",#ff7ed0,"A sewer monarch that floods nightmares."],
+ fossilimp:[6,"#c1a2a1",#c8ff5e,"A horned fossil that refuses to stay extinct."],
+ ossiforge:[9,"#b18b9e",#f5d77c,"A skeletal forge golem assembled from prehistoric mistakes."],
+ zapgob:[5,"#d7ff57",#ff68c4,"A battery thief with four crooked antennae."],
+ stormgob:[8,"#a8ff40",#fd53d8,"A lightning-powered gremlin that eats satellites."],
+ moldmunch:[0,"#9af06a",#fa74bb,"A fungus demon that feeds on abandoned lunches."],
+ sporelord:[8,"#59bb78",#ff55b1,"A walking mushroom graveyard with royal ambitions."],
+ quarklet:[8,"#82ffe2",#f95be4,"An alien tadpole formed from a spilled wormhole."],
+ quarkzilla:[9,"#59f5bc",#ff8cd7,"A miniature cosmic terror that folds parking garages."],
+ saucerpup:[12,"#79e8ff",#d6ff55,"An alien puppy that fetches meteorites."],
+ orbithound:[8,"#53d2e9",#f76bd2,"A loyal starhound that chases entire moons."],
+ glitchgrub:[9,"#6be5f8",#d7ff6d,"A corrupted robot larva that speaks in error codes."],
+ bytebeetle:[8,"#66c8ec",#ff6cbf,"An armored alien beetle that devours firewalls."],
+ voidsnail:[10,"#c49cff",#79ffdc,"A cosmic snail whose shell contains yesterday."],
+ chronoshell:[9,"#9c78e6",#7bffc7,"A time-bending gastropod that arrives before it leaves."]
 };
 function monsterPortrait(id,size="small"){
  const look=infernalLooks[id]||infernalLooks.gloamlet;
@@ -61,7 +86,7 @@ function monsterPortrait(id,size="small"){
  add("path",{d:"M30 80 L22 84 M94 76 L101 79",stroke:accent,"stroke-width":3,"stroke-linecap":"round"});
  return svg;
 }
-const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8]};
+const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8],casketkit:["mausoleopard",7],impickle:["brinebrute",8],cinderling:["pyroclast",7],screecher:["sonicrypt",8],puddlegloom:["drownmire",8],fossilimp:["ossiforge",9],zapgob:["stormgob",8],moldmunch:["sporelord",8],quarklet:["quarkzilla",9],saucerpup:["orbithound",8],glitchgrub:["bytebeetle",8],voidsnail:["chronoshell",9]};
 const typeAdvantages={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
 function typeMultiplier(attacker,defender){return typeAdvantages[attacker]?.includes(defender)?1.5:typeAdvantages[defender]?.includes(attacker)?.75:1}
 function evolveCreature(creature){
@@ -101,7 +126,7 @@ function learnedMoves(creature){
  const names=moveLearnsets[creature?.type]||moveLearnsets.cosmic;
  return names.map((name,index)=>({name:index===3?(speciesMoves[creature?.id]||name):name,level:moveUnlockLevels[index],unlocked:(creature?.level||1)>=moveUnlockLevels[index],charge:index>=2?2:0,power:[1,.8,1.55,1.9][index]}));
 }
-const speciesMoves={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
+const speciesMoves={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova",mausoleopard:"Crypt Cataclysm",brinebrute:"Brine Apocalypse",pyroclast:"Furnace Frenzy",sonicrypt:"Feedback Funeral",drownmire:"Midnight Undertow",ossiforge:"Bonebreaker",stormgob:"Thunder Theft",sporelord:"Spore Dominion",quarkzilla:"Wormhole Crunch",orbithound:"Lunar Fetch",bytebeetle:"Kernel Panic",chronoshell:"Yesterday Spiral"};
 function statusName(target){return target.status==="burn"?"BURNED":target.status==="shock"?"SHOCKED":target.status==="poison"?"CURSED":"CLEAR"}
 function inflictStatus(attacker,defender){
  if(defender.status||Math.random()>=.3)return "";
