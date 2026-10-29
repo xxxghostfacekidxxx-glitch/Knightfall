@@ -66,11 +66,12 @@ const typeAdvantages={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire
 function typeMultiplier(attacker,defender){return typeAdvantages[attacker]?.includes(defender)?1.5:typeAdvantages[defender]?.includes(attacker)?.75:1}
 function evolveCreature(creature){
  const next=evolutions[creature.id];if(!next||creature.level<next[1])return "";
- const previous=creature.name;const [name,icon,type,hp,attack]=species[next[0]];
+ const previous=creature.name,previousId=creature.id;const [name,icon,type,hp,attack]=species[next[0]];
  creature.id=next[0];creature.name=name;creature.icon=icon;creature.type=type;
  creature.maxHp=Math.max(creature.maxHp+8,hp+(creature.level-1)*2);
  creature.hp=creature.maxHp;creature.attack=Math.max(creature.attack+3,attack);
  seen.add(creature.id);
+ document.dispatchEvent(new CustomEvent("hell-high-orbit:evolution",{detail:{from:previousId,to:creature.id,previous,name}}));
  return " "+previous+" EVOLVED into "+name+"!";
 }
 const specialMoves={fire:["Cinder Burst",1.65],grass:["Grave Bloom",1.55],water:["Abyss Jet",1.55],electric:["Voltage Bite",1.65],cosmic:["Orbital Glitch",1.7],ghost:["Nightmare Ping",1.6],air:["Void Gust",1.55],thorn:["Briar Hex",1.6],stone:["Gravestone Slam",1.6]};
