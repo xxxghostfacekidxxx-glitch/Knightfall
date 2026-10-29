@@ -160,6 +160,19 @@
         "/arcade/hosted/pikkuautot-city/planck.min.js",
         "/arcade/hosted/pikkuautot-city/LICENSE"
       ]
+    },
+    {
+      "gameId": "cabinet-fable-gta",
+      "title": "GTA-2W · Ash-Fall City Workshop",
+      "status": "build-pending",
+      "upstream": "https://github.com/CodingFreeze/Fable_GTA",
+      "license": "MIT",
+      "notes": "GitHub Actions workflow vendors editable upstream source, retains license and revision, and builds Vite output into hosted arcade path. Verify workflow completion, production runtime, bundled assets and dependency notices before marking imported.",
+      "files": [
+        "/.github/workflows/import-fable-gta.yml",
+        "/vendor/fable-gta/",
+        "/arcade/hosted/fable-gta/index.html"
+      ]
     }
   ],
   "notYetImported": [
