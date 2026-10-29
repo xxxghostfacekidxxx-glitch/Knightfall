@@ -446,6 +446,17 @@ export class MonsterWorldRoom {
       }
       if (!Number.isInteger(save.steps) || save.steps >= 10000000) { socket.send(JSON.stringify({ type: "world-save-error" })); return; }
       save.x = x; save.y = y; save.steps += 1;
+      const landmarks={"14,3":{id:"dish",reward:2},"3,10":{id:"tax",reward:2},"13,10":{id:"border",reward:3}};
+      const landmark=landmarks[x+","+y];
+      let discovery=null;
+      if(landmark){
+        if(!Array.isArray(save.visitedLandmarks))save.visitedLandmarks=[];
+        if(!save.visitedLandmarks.includes(landmark.id)){
+          save.visitedLandmarks.push(landmark.id);
+          save.bag=Math.min(999,(save.bag||0)+landmark.reward);
+          discovery={id:landmark.id,reward:landmark.reward};
+        }
+      }
       const nextVersion = Number(row.version) + 1;
       const result = await this.env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND version=?").bind(JSON.stringify(save), player.userId, Number(row.version)).run();
       if (Number(result.meta?.changes || 0) !== 1) {
@@ -454,7 +465,7 @@ export class MonsterWorldRoom {
       }
       player.x = x; player.y = y;
       socket.serializeAttachment(player);
-      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, steps: save.steps, version: nextVersion } });
+      this.broadcast({ type: "player-moved", player: { userId: player.userId, username: player.username, x, y, steps: save.steps, version: nextVersion, bag: save.bag, visitedLandmarks: save.visitedLandmarks||[], discovery } });
     } catch (_) {
       socket.send(JSON.stringify({ type: "world-save-error" }));
     }
