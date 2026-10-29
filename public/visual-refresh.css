@@ -1,0 +1,63 @@
+/* Knightfall / Ash-Fall visual system v2. Shared polish, not a layout rewrite.
+   Original neon palette. Honor personal profile themes and interactive game canvases. */
+:root{
+ --af-v2-ink:#080812;--af-v2-card:#141324;--af-v2-raised:#1b1730;
+ --af-v2-pink:#ff55d8;--af-v2-green:#c6ff45;--af-v2-text:#f9f3ff;
+ --af-v2-muted:#c1b7d1;--af-v2-line:rgba(255,85,216,.27);
+ --af-v2-shadow:0 18px 48px rgba(0,0,0,.34);
+}
+html{scrollbar-color:#65316f #080812}
+body:not(.profile-custom-theme){font-synthesis:none;-webkit-font-smoothing:antialiased}
+body:not(.profile-custom-theme) :where(.panel,.card,.entry-card,.cabinet,.arcade-card,.game-card,.friend-card,.member-card,.messages-shell,.chaos-shell){
+ border-radius:clamp(12px,1.8vw,20px);
+ border-color:var(--af-v2-line);
+ box-shadow:var(--af-v2-shadow),inset 0 1px 0 rgba(255,255,255,.045);
+}
+body:not(.profile-custom-theme) :where(.panel,.card,.entry-card,.cabinet,.arcade-card,.game-card,.friend-card,.member-card){
+ background-image:linear-gradient(145deg,rgba(255,85,216,.055),transparent 46%);
+}
+body:not(.profile-custom-theme) :where(.kf-header){
+ border-bottom-color:var(--af-v2-line);
+ background:rgba(8,8,18,.92);
+ box-shadow:0 10px 30px rgba(0,0,0,.26);
+}
+body:not(.profile-custom-theme) :where(.kf-nav a,.kf-nav-group>summary){
+ border-radius:10px;
+ transition:background-color .18s ease,color .18s ease,border-color .18s ease;
+}
+body:not(.profile-custom-theme) :where(.kf-nav a,.kf-nav-group>summary):focus-visible{
+ outline:2px solid var(--af-v2-green);outline-offset:3px;
+}
+body:not(.profile-custom-theme) :where(.kf-nav a[aria-current="page"],.kf-nav .active){
+ color:var(--af-v2-green);background:rgba(198,255,69,.09);border-color:rgba(198,255,69,.3);
+}
+body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]),textarea,select){
+ border-radius:10px;min-width:0;max-width:100%;
+ border-color:rgba(255,85,216,.3);
+ background-color:#10101f;color:var(--af-v2-text);
+}
+body:not(.profile-custom-theme) :where(input,textarea,select):focus-visible{
+ outline:2px solid var(--af-v2-green);outline-offset:2px;border-color:var(--af-v2-green);
+}
+body:not(.profile-custom-theme) :where(button,.btn,.primary,[role="button"]){
+ transition:transform .14s ease,filter .14s ease,box-shadow .14s ease;
+}
+@media(hover:hover) and (pointer:fine){
+ body:not(.profile-custom-theme) :where(button:not(:disabled),.btn,.primary):hover{filter:brightness(1.1)}
+ body:not(.profile-custom-theme) :where(.game-card,.arcade-card,.member-card):hover{
+  border-color:rgba(198,255,69,.48);box-shadow:var(--af-v2-shadow),0 0 24px rgba(255,85,216,.1);
+ }
+}
+body:not(.profile-custom-theme) :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed}
+body:not(.profile-custom-theme) :where(h1,h2,h3){text-wrap:balance}
+body:not(.profile-custom-theme) :where(p,li){overflow-wrap:break-word}
+body:not(.profile-custom-theme) :where(.muted,.subtitle,.meta,.helper-text){color:var(--af-v2-muted)}
+:where(.kf-header,.kf-nav,.panel,.card,.entry-card,.messages-shell,.chaos-shell){min-width:0}
+@media(max-width:680px){
+ body:not(.profile-custom-theme) :where(.kf-header){padding:.7rem .8rem}
+ body:not(.profile-custom-theme) :where(.panel,.card,.entry-card){border-radius:13px}
+ body:not(.profile-custom-theme) :where(input,textarea,select){font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ body:not(.profile-custom-theme) :where(button,.btn,.primary,.game-card,.arcade-card,.member-card){transition:none!important}
+}
