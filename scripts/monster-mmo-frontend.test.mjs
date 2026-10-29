@@ -139,7 +139,7 @@ test("twenty original monsters include six evolution lines",()=>{
 test("offline battles support charged specials and guarding without changing staging actions",()=>{
  assert.ok(html.includes('data-action="special"'));
  assert.ok(html.includes('data-action="guard"'));
- assert.match(js,/function battleStrike\(attacker,defender,special=false\)/);
+ assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false\)/);
  assert.match(js,/if\(name==="attack"\|\|name==="special"\|\|name==="guard"\)/);
  assert.match(js,/lead\.energy-=2/);
  assert.match(js,/guarding\?\.35:1/);
