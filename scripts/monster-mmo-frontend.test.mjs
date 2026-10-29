@@ -333,3 +333,11 @@ test("combat feedback displays real HP deltas, status and final faint frame",()=
   assert.equal(result.status,0,result.stderr);
  }
 });
+
+test("XP curve and rarity rewards are visible in offline progression",()=>{
+ assert.ok(js.includes("const xpRequired=level=>"));
+ assert.ok(js.includes("awardExperience(lead,experienceReward(battle))"));
+ assert.ok(js.includes("power:[1,.8,1.55,1.9]"));
+ assert.ok(js.includes("Evolves Lv "));
+ assert.ok(js.includes(" · XP "));
+});
