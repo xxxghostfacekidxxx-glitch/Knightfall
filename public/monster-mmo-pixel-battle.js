@@ -56,5 +56,5 @@
   current=event.detail?.enemy&&event.detail?.lead?event.detail:null;
   canvas.hidden=!current;if(current)refresh();
  });
- function animate(){if(current&&!panel.hidden)refresh();requestAnimationFrame(animate);}\n requestAnimationFrame(animate);\n canvas.hidden=true;
+ let lastFrame=-1;\n function animate(time){const frame=Math.floor(time/160);if(frame!==lastFrame&&current&&!panel.hidden){lastFrame=frame;refresh();}requestAnimationFrame(animate);}\n requestAnimationFrame(animate);\n canvas.hidden=true;
 })();
