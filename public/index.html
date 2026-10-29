@@ -46,9 +46,9 @@
     .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #a8ff3e;border-radius:9px;background:linear-gradient(180deg,#ff55d8,#b728a1);color:#180a20;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #ff55d826}
     .primary:hover{filter:brightness(1.1)}
     .primary:disabled{opacity:.6;cursor:wait}
-    .status{min-height:1.2rem;margin:.7rem 0 0;color:#ffb17f;font-size:.8rem;line-height:1.5}
+    .status{min-height:1.2rem;margin:.7rem 0 0;color:#ff8ce6;font-size:.8rem;line-height:1.5}
     .legal{color:#777;font-size:.72rem;line-height:1.6;text-align:center;margin:1rem 0 0}
-    .legal a{color:#d8a07c}
+    .legal a{color:#ff55d8}
     .below{color:#858585;text-align:center;font-size:.78rem;margin:1.2rem 0 0}
     .below a{color:#c6ff45;text-decoration:none;font-weight:750}
     [hidden]{display:none!important}
@@ -165,7 +165,7 @@
           status.textContent = "You're in. Opening Ash-Fall…";
           window.location.assign("/account.html");
         } catch (error) {
-          status.style.color = "#ffb17f";
+          status.style.color = "#ff8ce6";
           status.textContent = error.message || "Network error. Check your connection and try again.";
           if (endpoint.endsWith("/register") && turnstileEnabled && window.turnstile) window.turnstile.reset();
         } finally {
@@ -194,7 +194,7 @@
         const message = oauthErrors[params.get("oauth_error")] || oauthErrors.sign_in_failed;
         document.getElementById("social-note").textContent = message;
         document.getElementById("login-status").textContent = message;
-        document.getElementById("login-status").style.color = "#ffb17f";
+        document.getElementById("login-status").style.color = "#ff8ce6";
         history.replaceState({}, "", "/index.html");
       }
       if (params.get("mode") === "register") setMode("register");
