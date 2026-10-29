@@ -118,6 +118,7 @@ function statusTick(target){
 let battleVisual=null;
 function showBattleEffect(kind,message){
  battleVisual={kind,message};
+ document.dispatchEvent(new CustomEvent("hell-high-orbit:effect",{detail:{kind,message}}));
  const panel=$("battle-panel");panel.classList.remove("battle-impact","battle-special","battle-evolution");
  void panel.offsetWidth;panel.classList.add(kind==="evolution"?"battle-evolution":kind==="special"?"battle-special":"battle-impact");
  const effect=$("battle-effect");if(effect){effect.textContent=message;effect.hidden=false}
