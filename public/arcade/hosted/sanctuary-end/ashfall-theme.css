@@ -22,3 +22,19 @@ body::after{
   box-shadow:0 0 14px #ff4ebf55;
 }
 @media(max-width:680px){body::after{font-size:8px;top:3px;right:3px;padding:3px 5px}}
+
+/* Ash-Fall character selection: each class has its own unmistakable silhouette. */
+#classPick{display:grid!important;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;max-width:880px;width:100%}
+#classPick .classCard{width:auto;min-width:0;min-height:220px;padding:16px 12px;background:linear-gradient(155deg,#21102e,#100c1c);border:2px solid #58325e;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:7px}
+#classPick .classCard:hover{border-color:#ff4ebf;transform:translateY(-3px)}
+#classPick .classCard.sel{border-color:#b8ff40;box-shadow:0 0 20px #b8ff4050}
+#classPick .classCard .cn{color:#f6e9ff;font:800 19px/1.2 system-ui,sans-serif}
+#classPick .classCard .cb{color:#d2c0df;font:12px/1.5 system-ui,sans-serif}
+#classPick .ashfall-class-emblem{font-size:48px;line-height:1.2;text-shadow:0 0 20px currentColor}
+#classPick .ashfall-class-abilities{margin-top:auto;padding-top:8px;border-top:1px solid #68466b;color:#b8ff40;font:11px/1.5 system-ui,sans-serif}
+#classPick [data-archetype=warrior] .ashfall-class-emblem{color:#ff4ebf}
+#classPick [data-archetype=mage] .ashfall-class-emblem{color:#945aff}
+#classPick [data-archetype=rogue] .ashfall-class-emblem{color:#58f5ef}
+#classPick [data-archetype=barbarian] .ashfall-class-emblem{color:#b8ff40}
+@media(max-width:850px){#classPick{grid-template-columns:repeat(2,minmax(125px,1fr));max-width:500px}#classPick .classCard{min-height:180px}}
+@media(max-width:430px){#classPick{gap:7px}#classPick .classCard{padding:8px 5px;min-height:150px}#classPick .ashfall-class-emblem{font-size:32px}#classPick .classCard .cn{font-size:15px}#classPick .classCard .cb{font-size:10px}#classPick .ashfall-class-abilities{font-size:9px}}
