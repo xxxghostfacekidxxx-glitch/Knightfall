@@ -20,8 +20,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: package-lock.json
       - name: Clone and verify MIT upstream
         run: |
           git clone --depth 1 https://github.com/maxgfr/terravia.git /tmp/terravia
