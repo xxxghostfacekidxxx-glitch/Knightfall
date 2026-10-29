@@ -42,6 +42,7 @@ jobs:
           cp arcade-overrides/sanctuary/ashfall-theme.css "$DEV/ashfall-theme.css"
           cp arcade-overrides/sanctuary/js/03-save.js "$DEV/js/03-save.js"
           cp arcade-overrides/sanctuary/js/02-skills.js "$DEV/js/02-skills.js"
+          cp arcade-overrides/sanctuary/js/22-screens.js "$DEV/js/22-screens.js"
           python3 - <<'PY'
           from pathlib import Path
           original=Path('public/arcade/hosted/sanctuary-original/sanctuary.html')
@@ -68,6 +69,8 @@ jobs:
           test -d public/arcade/hosted/sanctuary-original/vendor
           grep -q "KEY: 'sanctuarys_end_saves'" public/arcade/hosted/sanctuary-original/js/03-save.js
           grep -q "KEY: 'ashfall_sanctuary_dev_saves'" public/arcade/hosted/sanctuary-end/js/03-save.js
+          grep -q "ashfall-class-emblem" public/arcade/hosted/sanctuary-end/js/22-screens.js
+          grep -q "Ash Cleaver" public/arcade/hosted/sanctuary-end/js/02-skills.js
           grep -q "Hellwarden" public/arcade/hosted/sanctuary-end/js/02-skills.js
           grep -q "Hexweaver" public/arcade/hosted/sanctuary-end/js/02-skills.js
           grep -q "Voidstalker" public/arcade/hosted/sanctuary-end/js/02-skills.js
