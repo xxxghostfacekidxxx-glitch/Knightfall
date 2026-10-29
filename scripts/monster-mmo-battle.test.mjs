@@ -36,7 +36,7 @@ test("online battles authorize specials, guarding, switching, statuses and enemy
  assert.match(source,/\["start","encounter-check","attack","special","guard","quick","mend","switch"/);
  assert.match(source,/if\(\["attack","special","guard","quick","mend","switch"\]\.includes\(action\)\)/);
  assert.match(source,/Number\.isInteger\(index\)/);
- assert.match(source,/if\(special&&\(lead\.energy\|\|0\)<2\)/);
+ assert.match(source,/if\(\(special\|\|mend\)&&\(lead\.energy\|\|0\)<2\)/);
  assert.match(source,/const tick=target=>/);
  assert.match(source,/enemySpecial=Math\.random\(\)<\.22/);
  assert.match(source,/member\.energy\|\|0/);
