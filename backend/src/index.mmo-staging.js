@@ -1357,6 +1357,22 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     await audit(env,user,"monster_mmo.action","game_save",user.id,{action,version:nextVersion,battle_active:!!battle});
     return json({ok:true,action,message,battle,save:clean,version:nextVersion,updated_at:now},200,origin);
   }
+  // Hell & High Orbit global chat. Authenticated, bounded and rate-limited.
+  if(url.pathname==="/api/game/global-chat"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to read global chat."},401,origin);
+    const rows=await env.DB.prepare("SELECT gc.id,gc.user_id,u.username,COALESCE(u.display_name,u.username) AS display_name,gc.body,gc.created_at FROM monster_game_global_chat gc JOIN users u ON u.id=gc.user_id WHERE u.status='active' AND NOT EXISTS(SELECT 1 FROM user_blocks b WHERE (b.blocker_id=? AND b.blocked_id=gc.user_id) OR (b.blocked_id=? AND b.blocker_id=gc.user_id)) ORDER BY gc.id DESC LIMIT 60").bind(user.id,user.id).all();
+    return json({messages:(rows.results||[]).reverse()},200,origin);
+  }
+  if(url.pathname==="/api/game/global-chat"&&request.method==="POST"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Sign in to send global chat."},401,origin);
+    if(!(await rateLimit(env,request,"monster-global-chat",12,60,user.id)))return json({error:"Chat rate limit reached. Try again shortly."},429,origin);
+    let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+    const message=typeof body?.body==="string"?body.body.trim():"";
+    if(!message||message.length>500)return json({error:"Messages must be between 1 and 500 characters."},400,origin);
+    const now=new Date().toISOString();
+    await env.DB.prepare("INSERT INTO monster_game_global_chat(user_id,body,created_at) VALUES(?,?,?)").bind(user.id,message,now).run();
+    return json({ok:true},201,origin);
+  }
   // Monster MMO persistent saves. The server canonicalizes creature stats and never trusts client roles/ownership.
   if(url.pathname==="/api/game/save"&&request.method==="GET"){
     const user=await requireUser(request,env);
