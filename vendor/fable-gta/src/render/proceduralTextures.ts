@@ -26,11 +26,14 @@ function noise(ctx: CanvasRenderingContext2D, amount: number, alpha: number) {
 function asphalt(ctx: CanvasRenderingContext2D, base: string) {
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, SIZE, SIZE);
-  noise(ctx, 400, 0.35);
+  noise(ctx, 650, 0.28);
+  ctx.strokeStyle = 'rgba(255,78,191,.16)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(4,4,SIZE-8,SIZE-8);
 }
 
 function dashedLine(ctx: CanvasRenderingContext2D, vertical: boolean) {
-  ctx.strokeStyle = '#d8c84a';
+  ctx.strokeStyle = '#b8ff40';
   ctx.lineWidth = 4;
   ctx.setLineDash([14, 12]);
   ctx.beginPath();
@@ -62,24 +65,30 @@ export function generateTileTexture(tile: TileType): THREE.Texture {
     case 'pavement': {
       ctx.fillStyle = tile.color;
       ctx.fillRect(0, 0, SIZE, SIZE);
-      ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+      ctx.strokeStyle = 'rgba(255,78,191,0.55)';
       ctx.lineWidth = 2;
       for (let i = 0; i <= 2; i++) {
         ctx.strokeRect((i * SIZE) / 2, 0, SIZE / 2, SIZE / 2);
         ctx.strokeRect((i * SIZE) / 2, SIZE / 2, SIZE / 2, SIZE / 2);
       }
-      noise(ctx, 150, 0.2);
+      noise(ctx, 180, 0.2);
+      ctx.fillStyle = 'rgba(184,255,64,.45)';
+      ctx.fillRect(0,0,SIZE,3);
       break;
     }
     case 'grass':
       ctx.fillStyle = tile.color;
       ctx.fillRect(0, 0, SIZE, SIZE);
-      noise(ctx, 500, 0.25);
+      noise(ctx, 650, 0.25);
+      ctx.fillStyle='rgba(184,255,64,.18)';
+      for(let i=0;i<12;i++)ctx.fillRect((i*37)%SIZE,(i*59)%SIZE,7,3);
       break;
     case 'water': {
       const grad = ctx.createLinearGradient(0, 0, SIZE, SIZE);
       grad.addColorStop(0, tile.color);
-      grad.addColorStop(1, '#2a6a96');
+      grad.addColorStop(1, '#3e2078');
+      ctx.strokeStyle='rgba(88,245,239,.4)';
+      for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(0,10+i*27);ctx.bezierCurveTo(30,25+i*27,90,0+i*27,SIZE,10+i*27);ctx.stroke()}
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, SIZE, SIZE);
       break;
@@ -87,10 +96,13 @@ export function generateTileTexture(tile: TileType): THREE.Texture {
     case 'facade': {
       ctx.fillStyle = tile.color;
       ctx.fillRect(0, 0, SIZE, SIZE);
-      ctx.fillStyle = 'rgba(40,50,70,0.85)';
+      ctx.fillStyle = 'rgba(11,10,30,0.93)';
       for (let y = 12; y < SIZE - 12; y += 28) {
         for (let x = 10; x < SIZE - 10; x += 24) {
           ctx.fillRect(x, y, 14, 18);
+          ctx.fillStyle=((x+y)%3===0)?'#b8ff40':'#ff4ebf';
+          ctx.fillRect(x+2,y+2,10,2);
+          ctx.fillStyle='rgba(11,10,30,.93)';
         }
       }
       break;
