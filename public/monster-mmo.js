@@ -61,6 +61,17 @@ const infernalLooks={
  chronoshell:["#9c78e6","#7bffc7",10,"A time-bending gastropod that arrives before it leaves."]
 };
 function monsterPortrait(id,size="small"){
+ // Reuse the original SVG art recovered from the archived monster prototype.
+ const recovered=new Set(["driftfin","embercub","gloamlet","grubruckle","mossbit","mournwing","thornspit","zipfang"]);
+ if(recovered.has(id)){
+  const img=document.createElement("img");
+  img.src="/assets/monster-sprites/"+id+".svg";
+  img.className="monster-portrait "+size;
+  img.alt=(species[id]?.[0]||"Infernal creature")+" portrait";
+  img.decoding="async";
+  img.loading="lazy";
+  return img;
+ }
  const look=infernalLooks[id]||infernalLooks.gloamlet;
  const [skin,accent,shape]=look;
  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
