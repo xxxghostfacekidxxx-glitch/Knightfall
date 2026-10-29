@@ -11,7 +11,7 @@ jobs:
   prune:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete only branches fully contained in main
+      - name: Delete only verified redundant branches
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -37,5 +37,33 @@ jobs:
               continue
             fi
             echo "Deleting fully contained branch: $branch"
+            gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
+          done
+          # These nine historical arcade branches are ancestors of the preserved
+          # progression branch. Never delete that progression branch here.
+          ancestor_of="arcade-progression-saves-round-ten-2026-10-22"
+          redundant=(
+            "arcade-account-saves-round-three-2026-10-22"
+            "arcade-all-games-next-steps-2026-10-21"
+            "arcade-every-game-round-two-2026-10-22"
+            "arcade-fullscreen-refinement-round-six-2026-10-22"
+            "arcade-fullscreen-ui-round-five-2026-10-22"
+            "arcade-game-specific-visuals-round-eight-2026-10-22"
+            "arcade-gameplay-feedback-round-nine-2026-10-22"
+            "arcade-gameplay-safety-round-four-2026-10-22"
+            "arcade-ui-systems-round-seven-2026-10-22"
+          )
+          gh api "repos/$GH_REPO/branches/$ancestor_of" >/dev/null
+          for branch in "${redundant[@]}"; do
+            if ! gh api "repos/$GH_REPO/branches/$branch" >/dev/null 2>&1; then
+              echo "Already absent: $branch"
+              continue
+            fi
+            ahead=$(gh api "repos/$GH_REPO/compare/$ancestor_of...$branch" --jq '.ahead_by')
+            if [[ "$ahead" != "0" ]]; then
+              echo "::warning::Preserving $branch: not fully contained in $ancestor_of"
+              continue
+            fi
+            echo "Deleting redundant ancestor branch: $branch"
             gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
           done
