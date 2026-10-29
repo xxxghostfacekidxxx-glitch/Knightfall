@@ -41,7 +41,7 @@ for(let n=0;n<ids.length;n++)for(let frame=0;frame<4;frame++)sprite(ids[n],frame
 function draw(ctx,id,x,y,size=64,frame=0,back=false){
  const n=ids.indexOf(id);if(n<0)return false;
  ctx.save();ctx.imageSmoothingEnabled=false;
- if(back){ctx.translate(x+size,y);ctx.scale(-1,1);x=0;y=0;}
+ if(back){ctx.translate(x+size,0);ctx.scale(-1,1);x=0;}
  ctx.drawImage(atlas,(Math.floor(frame)%4)*32,n*32,32,32,x,y,size,size);
  ctx.restore();return true;
 }
