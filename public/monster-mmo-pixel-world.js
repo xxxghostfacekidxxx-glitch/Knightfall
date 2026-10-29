@@ -205,6 +205,47 @@
         fill(px+2,py+1,3,3,alien?"#83f4e1":demon?"#ff9ecf":"#b0ed79");
       }
     }
+    // Original layered micro-biomes: little details make routes feel hand-authored.
+    // Deterministic per tile: no flickering when the DOM redraws after movement.
+    if(!path&&!wall&&!stone&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
+      const seed=hash(x/32,y/32,71);
+      if(seed%7===0){
+        // Grass tufts with highlights and a darker footprint.
+        fill(x+7,y+25,18,2,alien?"#1c5667":demon?"#4b2c52":"#365e41");
+        for(let k=0;k<3;k++){
+          const ox=x+7+k*6,oy=y+19-(k%2)*4;
+          fill(ox,oy,2,8,alien?"#74f2e7":demon?"#f87eb7":"#b1e877");
+          fill(ox+2,oy+3,2,5,alien?"#3199b1":demon?"#a64d86":"#6ca75a");
+        }
+      }
+      if(seed%11===0){
+        // Faction-specific mushrooms, crystal clusters and ember flowers.
+        const px=x+17,py=y+14;
+        if(alien){
+          fill(px,py+8,3,9,"#225a73");
+          fill(px-5,py+3,13,7,"#82f5e6");
+          fill(px-2,py,7,4,"#f2a3ed");
+          fill(px+1,py+4,3,3,"#f9f8d6");
+        }else if(demon){
+          fill(px,py+7,3,10,"#49334c");
+          fill(px-4,py+3,11,6,"#f58ab6");
+          fill(px-1,py-1,5,6,"#ffbf82");
+          fill(px+1,py+5,2,3,"#fff1c0");
+        }else{
+          fill(px,py+7,2,11,"#3c7351");
+          for(let k=0;k<4;k++)fill(px+(k%2?3:-3),py+(k>1?7:2),4,4,k%2?"#ffb1e1":"#fff0a4");
+          fill(px,py+4,3,3,"#ff6ac2");
+        }
+      }
+      if(seed%17===0){
+        // A few tiny critter tracks and world-story clues.
+        for(let k=0;k<3;k++){
+          const ox=x+5+k*7,oy=y+7+(k%2)*4;
+          fill(ox,oy,3,2,alien?"#8ad3e3":demon?"#a87393":"#b3b48c");
+          fill(ox+1,oy-2,1,2,alien?"#8ad3e3":demon?"#a87393":"#b3b48c");
+        }
+      }
+    }
     if(t.classList.contains("route-gate")){
       fill(x+4,y+25,24,5,"#273c48");
       fill(x+14,y+9,4,19,"#c8dba1");
