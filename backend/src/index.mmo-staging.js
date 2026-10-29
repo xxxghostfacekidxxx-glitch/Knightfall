@@ -1280,7 +1280,28 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       }
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
-      if(["attack","special","guard","quick","mend","switch"].includes(action)){
+      // Server-authoritative four-slot move table. Never accept client power or type.
+      const moveNames={
+       fire:["Cinder Jab","Spark Rush","Inferno Spit","Meteor Meltdown"],
+       grass:["Root Tap","Vine Lash","Grave Bloom","Cemetery Collapse"],
+       water:["Bubble Bite","Tidal Flick","Abyss Jet","Drowned Moon"],
+       electric:["Static Nip","Volt Dash","Voltage Bite","Blackout Storm"],
+       cosmic:["Orbit Bop","Star Skip","Orbital Glitch","Galactic Eviction"],
+       ghost:["Shadow Poke","Haunt Dash","Nightmare Ping","Eternal Hex"],
+       air:["Gust Peck","Sky Dash","Void Gust","Screaming Cyclone"],
+       thorn:["Briar Jab","Thorn Rush","Briar Hex","Thousand Needles"],
+       stone:["Pebble Bash","Rock Rush","Gravestone Slam","Faultline Fury"]
+      };
+      let chosenMove=null;
+      if(action==="move"){
+       const index=body.index;
+       if(!Number.isInteger(index)||index<0||index>3)return json({error:"Invalid move slot."},400,origin);
+       const levelRequired=[1,1,3,6][index];
+       if((lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
+       chosenMove={name:(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.75,1.65,2.1][index],charge:index>=2?2:0,index};
+       if((lead.energy||0)<chosenMove.charge)return json({error:"Not enough charge."},409,origin);
+      }
+      if(["attack","special","guard","quick","mend","switch","move"].includes(action)){
         if(action==="switch"){
           const index=body.index;
           if(!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return json({error:"Select a healthy reserve creature."},400,origin);
@@ -1288,14 +1309,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           message=save.party[0].name+" switched in. ";
         }else{
           if(lead.hp<=0)return json({error:"Switch to a healthy reserve creature."},409,origin);
-          const special=action==="special",guard=action==="guard",quick=action==="quick",mend=action==="mend";
+          const special=action==="special"||(chosenMove&&chosenMove.index>=2),guard=action==="guard",quick=action==="quick"||(chosenMove&&chosenMove.index===1),mend=action==="mend";
           if((special||mend)&&(lead.energy||0)<2)return json({error:"Special move needs two charge."},409,origin);
           if(special||mend)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+(quick?2:1));if(mend){const healed=Math.min(lead.maxHp-lead.hp,Math.max(3,Math.ceil(lead.maxHp*.3)));lead.hp+=healed;lead.status=null;message=lead.name+" used Second Wind and healed "+healed+" HP. ";}
           if(!guard&&!mend){
             const multiplier=typeMultiplier(lead.type,battle.type);
-            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(special?1.65:quick?.7:1)*multiplier)));
+            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(chosenMove?chosenMove.power:special?1.65:quick?.7:1)*multiplier)));
             battle.hp=Math.max(0,battle.hp-damage);
-            message=lead.name+" used "+(special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+" for "+damage+" damage. ";
+            message=lead.name+" used "+(chosenMove?chosenMove.name:special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+" for "+damage+" damage. ";
             if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
           }else if(guard)message=lead.name+" guarded. ";
         }
