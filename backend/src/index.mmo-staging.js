@@ -1149,7 +1149,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","capture","flee","status","party-lead","rest"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1170,14 +1170,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     if(!Number.isInteger(lead.hp)||lead.hp<0||lead.hp>lead.maxHp)return json({error:"Your active creature has invalid health."},400,origin);
-    const strongAgainst={fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
+    const strongAgainst={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
     const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
     if(action==="rest"){
       if(battle)return json({error:"You cannot rest during a wild battle."},409,origin);
       if(save.x!==4||save.y!==1)return json({error:"Return to the camp at X 04 / Y 01 to rest."},403,origin);
-      save.party=save.party.map(member=>({...member,hp:member.maxHp}));
+      save.party=save.party.map(member=>({...member,hp:member.maxHp,status:null,energy:0}));
       message="The campfire crackles. Your party is fully rested.";
     }else if(action==="party-lead"){
       if(battle)return json({error:"The active creature cannot change during battle."},409,origin);
@@ -1257,7 +1257,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!int(input.x,1,10)||!int(input.y,1,8)||!int(input.steps,0,10000000)||!int(input.encounters,0,1000000)||!int(input.caught,0,1000000)||!int(input.badges,0,16)||!int(input.bag,0,999)||!Array.isArray(input.party)||input.party.length<1||input.party.length>6)return json({error:"Save data is outside the allowed range."},400,origin);
     const isWalkable=(x,y)=>int(x,1,10)&&int(y,1,8)&&!((x===1||x===10)&&y===5)&&!["2,2","9,2","2,7","9,7"].includes(x+","+y);
     if(!isWalkable(input.x,input.y))return json({error:"Trainer position must be on a walkable map tile."},400,origin);
-    if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
+    if(expected>0){const previous=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();if(!previous||Number(previous.version)!==expected)return json({error:"Save changed in another session. Reload cloud progress before saving again.",conflict:true,version:Number(previous?.version)||0},409,origin);let oldSave;try{oldSave=JSON.parse(previous.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}const distance=Math.abs(input.x-oldSave.x)+Math.abs(input.y-oldSave.y);if(distance>1)return json({error:"Trainer movement must be one adjacent tile at a time."},400,origin);if(input.steps<oldSave.steps||input.steps>oldSave.steps+1)return json({error:"Movement counter can only advance with a single step."},400,origin);if(input.encounters!==oldSave.encounters||input.caught!==oldSave.caught||input.badges!==oldSave.badges||input.bag!==oldSave.bag)return json({error:"Progression and inventory can only change through validated game actions."},403,origin);if(input.party.length!==oldSave.party.length||input.party.some((member,index)=>!oldSave.party[index]||member.id!==oldSave.party[index].id||member.level!==oldSave.party[index].level||member.hp!==oldSave.party[index].hp||(member.xp||0)!==(oldSave.party[index].xp||0)||(member.energy||0)!==(oldSave.party[index].energy||0)||(member.status||null)!==(oldSave.party[index].status||null)))return json({error:"Party changes can only be made through validated game actions."},403,origin);}
     const species={
       mossbit:{name:"Mossbit",type:"grass",icon:"✿",hp:14,attack:3},
       embercub:{name:"Embercub",type:"fire",icon:"✹",hp:12,attack:4},
@@ -1272,7 +1272,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     for(const member of input.party){
       if(!member||typeof member!=="object"||!species[member.id]||!int(member.level,1,100)||!int(member.hp,0,500)||!int(member.xp??0,0,999999))return json({error:"Party contains an invalid creature."},400,origin);
       const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
-      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3))});
+      party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3)),energy:int(member.energy??0,0,4)?(member.energy??0):0,status:["burn","shock","poison"].includes(member.status)?member.status:null});
     }
     const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag};
     const now=new Date().toISOString();
