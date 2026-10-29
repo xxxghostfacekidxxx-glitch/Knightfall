@@ -50,6 +50,11 @@ jobs:
           python3 scripts/prepare-selected-game-catalog.py
           grep -q 'href="/arcade/hosted/a-dark-room/index.html"' public/arcade-30-games.html
           grep -q 'href="/arcade/hosted/evolution-of-trust/index.html"' public/arcade-30-games.html
+      - name: Browser smoke tests (mobile Chromium)
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+          node scripts/smoke-selected-open-source-games.mjs
       - name: Push isolated review branch
         env:
           GH_TOKEN: ${{ github.token }}
