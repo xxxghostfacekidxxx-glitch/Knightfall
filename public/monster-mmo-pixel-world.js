@@ -63,6 +63,11 @@
     }
   }
   renderInteriorJournal();
+  document.addEventListener("hell-high-orbit:reset-exploration",()=>{
+    interiorStamps.clear();
+    try{localStorage.removeItem(visitKey)}catch{}
+    renderInteriorJournal();
+  });
   function recordVisit(kind){
     if(interiorStamps.has(kind))return false;
     interiorStamps.add(kind);
@@ -139,9 +144,16 @@
     (heal.hidden?exit:heal).focus();
   });
   heal.addEventListener("click",()=>{
+    if(heal.disabled)return;
+    heal.disabled=true;heal.textContent="✚ Healing…";
     document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal"));
-    heal.textContent="✚ Healing requested";
-    setTimeout(()=>{heal.textContent="✚ Heal Party"},1300);
+  });
+  document.addEventListener("hell-high-orbit:station-heal-result",e=>{
+    heal.disabled=false;
+    heal.textContent=e.detail?.success?"✚ Party Restored":"✚ Retry Healing";
+    if(!station.hidden&&currentInterior==="station"){
+      roomCaption.textContent=e.detail?.success?"FIELD STATION · Your creatures have been restored.":"FIELD STATION · Healing failed. Check the game message and retry.";
+    }
   });
   inspect.addEventListener("click",()=>{
     const first=recordVisit(currentInterior);
@@ -288,6 +300,10 @@
     const stored=JSON.parse(localStorage.getItem(discoveryKey)||"[]");
     if(Array.isArray(stored))explored=new Set(stored.filter(i=>Number.isInteger(i)&&i>=0&&i<W*H));
   }catch{}
+  document.addEventListener("hell-high-orbit:reset-exploration",()=>{
+    explored.clear();lastDiscovered=-1;
+    try{localStorage.removeItem(discoveryKey)}catch{}
+  });
   let lastDiscovered=-1;
   function discover(index){
     if(index<0||index===lastDiscovered)return;
