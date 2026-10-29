@@ -33,7 +33,7 @@ test("online server supports all twenty monsters and six evolutions",()=>{
  assert.match(source,/const grantXp=/);
 });
 test("online battles authorize specials, guarding, switching, statuses and enemy AI",()=>{
- assert.match(source,/\["start","encounter-check","attack","special","guard","quick","mend","switch"/);
+ assert.match(source,/\["start","encounter-check","attack","special","guard","quick","mend","switch","move"/);
  assert.match(source,/if\(\["attack","special","guard","quick","mend","switch"\]\.includes\(action\)\)/);
  assert.match(source,/Number\.isInteger\(index\)/);
  assert.match(source,/if\(\(special\|\|mend\)&&\(lead\.energy\|\|0\)<2\)/);
@@ -73,4 +73,15 @@ test("multiplayer validates tactical recovery and expanded evolution roster",()=
  assert.match(source,/quick\?2:1/);
  assert.match(source,/lead\.status=null/);
  assert.match(source,/const evolutions=/);
+});
+
+test("server validates level, slot, charge and damage for four-move battles",()=>{
+ assert.match(source,/if\(action==="move"\)/);
+ assert.match(source,/Number\.isInteger\(index\)\|\|index<0\|\|index>3/);
+ assert.match(source,/\[1,1,3,6\]\[index\]/);
+ assert.match(source,/lead\.level\|\|1/);
+ assert.match(source,/chosenMove\.charge/);
+ assert.match(source,/chosenMove\?chosenMove\.power/);
+ assert.match(source,/chosenMove\?chosenMove\.name/);
+ assert.doesNotMatch(source,/body\.movePower/);
 });
