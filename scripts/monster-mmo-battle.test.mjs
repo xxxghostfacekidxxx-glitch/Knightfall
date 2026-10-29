@@ -85,3 +85,12 @@ test("server validates level, slot, charge and damage for four-move battles",()=
  assert.match(source,/chosenMove\?chosenMove\.name/);
  assert.doesNotMatch(source,/body\.movePower/);
 });
+
+
+test("server balances experience, rarity and move strength",()=>{
+ assert.match(source,/const xpRequired=level=>Math\.min\(1200,16\+Math\.max\(1,level\)\*7\)/);
+ assert.match(source,/member\.xp>=xpRequired\(member\.level\)/);
+ assert.match(source,/grantXp\(save\.party\[0\],experienceReward\(battle\)\)/);
+ assert.match(source,/enemy\.legendaryId\?1\.75:enemy\.bossId\?1\.4:1/);
+ assert.match(source,/power:\[1,\.8,1\.55,1\.9\]/);
+});
