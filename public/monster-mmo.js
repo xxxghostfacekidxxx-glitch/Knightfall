@@ -380,4 +380,21 @@ async function connect(){if(busy||connected)return;let url;try{url=new URL($("en
 document.querySelectorAll("[data-starter]").forEach(b=>b.addEventListener("click",()=>{if(connected||busy||save.steps!==0||save.encounters!==0||save.caught!==0)return;save=initial(b.dataset.starter);seen=new Set([b.dataset.starter]);persist();render();log("Your journey begins with "+save.party[0].name+".")}));
 $("reset-preview").addEventListener("click",()=>{if(connected||busy){log("Disconnect from staging before resetting your offline preview.");return}if(!confirm("Reset offline creature progress and journal? This cannot be undone."))return;save=initial();seen=new Set();battle=null;persist();render();log("Offline preview reset.");});
 $("world-interact")?.addEventListener("click",()=>{const id=$("world-interact").dataset.npc;if(id&&!document.body.classList.contains("pause-open")&&!document.body.classList.contains("dialogue-open"))speakToNPC(id)});document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>move(b.dataset.move)));document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>b.dataset.moveSlot!==undefined?action("move",{index:Number(b.dataset.moveSlot)}):action(b.dataset.action)));$("rest").addEventListener("click",()=>action("rest"));$("encounter").addEventListener("click",()=>action("start"));$("connect").addEventListener("click",connect);$("disconnect").addEventListener("click",disconnect);
-document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey||document.body.classList.contains("pause-open")||document.body.classList.contains("dialogue-open")||["INPUT","TEXTAREA","BUTTON"].includes(document.activeElement?.tagName))return;const key={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",s:"down",a:"left",d:"right"}[e.key];if(key){e.preventDefault();move(key)}});render();
+document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey||document.body.classList.contains("pause-open")||document.body.classList.contains("dialogue-open")||["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable)return;const key={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",s:"down",a:"left",d:"right",W:"up",S:"down",A:"left",D:"right"}[e.key];if(key){e.preventDefault();move(key)}});
+/* Touchscreen exploration: one tile per swipe, without accidental page scrolling. */
+const gameScreen=document.querySelector(".game-screen");
+if(gameScreen){
+ let swipe=null;
+ gameScreen.addEventListener("pointerdown",e=>{
+  if(e.pointerType==="mouse"||battle||document.body.classList.contains("pause-open")||document.body.classList.contains("dialogue-open"))return;
+  swipe={x:e.clientX,y:e.clientY,id:e.pointerId};
+ },{passive:true});
+ gameScreen.addEventListener("pointerup",e=>{
+  if(!swipe||swipe.id!==e.pointerId)return;
+  const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+  move(Math.abs(dx)>Math.abs(dy)?dx>0?"right":"left":dy>0?"down":"up");
+ },{passive:true});
+ gameScreen.addEventListener("pointercancel",()=>{swipe=null});
+}
+render();
