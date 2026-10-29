@@ -1,0 +1,47 @@
+name: Stage selected open-source games
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/stage-selected-open-source-games.yml'
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  stage-static-games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Import pinned upstream snapshots
+        env:
+          ADR_COMMIT: 1fada4620b6c66bd07bf15a3f1eb8223df8bc1d7
+          TRUST_COMMIT: 6ec45d73befdb922bd40654dd1c1c903a953562f
+        run: bash scripts/import-selected-open-source-games.sh
+      - name: Check imported source and license files
+        run: |
+          test -f public/arcade/hosted/a-dark-room/index.html
+          test -f public/arcade/hosted/a-dark-room/LICENSE.md
+          test -f public/arcade/hosted/a-dark-room/lib/jquery.min.js
+          test -f public/arcade/hosted/evolution-of-trust/index.html
+          test -f public/arcade/hosted/evolution-of-trust/LICENSE
+          test -f public/arcade/hosted/evolution-of-trust/js/main.js
+          ! grep -q 'www.googletagmanager.com/gtag/js' public/arcade/hosted/a-dark-room/index.html
+          python3 scripts/verify-selected-open-source-imports.py
+      - name: Push isolated review branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C staging/selected-open-source-games-14-15
+          git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
+          if git diff --cached --quiet; then
+            echo "No staged import changes"
+            exit 0
+          fi
+          git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
+          git push --force-with-lease origin HEAD:refs/heads/staging/selected-open-source-games-14-15
+          gh pr create --base main --head staging/selected-open-source-games-14-15 --title "Stage A Dark Room and Evolution of Trust for license and gameplay review" --body "Pinned upstream snapshots. Review third-party attribution, all media licenses, local resource loading, mobile gameplay and build before merging to production." || echo "Branch pushed; PR may need to be opened manually"
