@@ -1,0 +1,69 @@
+name: Archive and prune legacy development branches
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/archive-and-prune-legacy-branches.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  archive-and-prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preserve every legacy branch as a verified immutable commit ref before deletion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # These are historical, diverged development branches. No changes
+          # are merged by this job. Archive tags keep all commits recoverable.
+          branches=(
+            "add-chaos-cartridge-games-2026-10-19"
+            "arcade-originality-upgrade-layer-2026-10-21"
+            "arcade-progression-saves-round-ten-2026-10-22"
+            "arcade-save-revision-conflicts-2026-10-20"
+            "chaos-cartridge-mega-expansion-2026-10-19"
+            "ci-trigger-fix-verification"
+            "feat/arcade-save-restore-wave-8"
+            "feat/devil-tools-eight-icons-2026-10-29"
+            "feat/monster-four-move-loadouts"
+            "feature/chaos-cartridge-card-room"
+            "feature/monster-mmo-prototype"
+            "fix/arcade-save-revisions-renumbered-2026-10-23"
+            "fix/arcade-static-audit"
+            "fix/messages-older-history-refresh-2026-10-23"
+            "fix/rebase-save-resume"
+            "opensource-toolkit-import-2026-10-22"
+            "staging/monster-mmo-isolated"
+          )
+          for branch in "${branches[@]}"; do
+            if ! branch_sha=$(gh api "repos/$GH_REPO/git/ref/heads/$branch" --jq '.object.sha' 2>/dev/null); then
+              echo "Already removed: $branch"
+              continue
+            fi
+            archive="archive/knightfall-cleanup-2026-10-29/$branch"
+            if tag_sha=$(gh api "repos/$GH_REPO/git/ref/tags/$archive" --jq '.object.sha' 2>/dev/null); then
+              if [[ "$tag_sha" != "$branch_sha" ]]; then
+                echo "::error::Archive ref exists with different SHA: $archive"
+                exit 1
+              fi
+            else
+              gh api --method POST "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$archive" -f "sha=$branch_sha" >/dev/null
+            fi
+            verified=$(gh api "repos/$GH_REPO/git/ref/tags/$archive" --jq '.object.sha')
+            if [[ "$verified" != "$branch_sha" ]]; then
+              echo "::error::Archive verification failed for $branch"
+              exit 1
+            fi
+            # Lease-like recheck: do not delete if branch advanced after snapshot.
+            latest=$(gh api "repos/$GH_REPO/git/ref/heads/$branch" --jq '.object.sha')
+            if [[ "$latest" != "$branch_sha" ]]; then
+              echo "::warning::Branch advanced during cleanup, preserving $branch"
+              continue
+            fi
+            echo "Archived $branch at $archive ($branch_sha)"
+            gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
+          done
