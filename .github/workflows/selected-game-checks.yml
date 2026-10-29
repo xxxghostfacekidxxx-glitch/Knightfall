@@ -1,0 +1,50 @@
+name: Selected hosted game checks
+on:
+  pull_request:
+    paths:
+      - 'public/arcade/hosted/a-dark-room/**'
+      - 'public/arcade/hosted/evolution-of-trust/**'
+      - 'scripts/import-selected-open-source-games.sh'
+      - 'scripts/patches/a-dark-room-dependencies.patch'
+      - '.github/workflows/selected-game-checks.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/hosted/a-dark-room/**'
+      - 'public/arcade/hosted/evolution-of-trust/**'
+      - 'scripts/import-selected-open-source-games.sh'
+      - 'scripts/patches/a-dark-room-dependencies.patch'
+      - '.github/workflows/selected-game-checks.yml'
+permissions:
+  contents: read
+jobs:
+  verify-selected-games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify dependency lockfile without running install scripts
+        run: npm exec --yes --package=yarn@1.22.22 -- yarn install --frozen-lockfile --ignore-scripts --non-interactive --cwd public/arcade/hosted/a-dark-room
+      - name: Check local resources and regressions
+        run: |
+          python3 scripts/verify-selected-open-source-imports.py
+          node --test scripts/selected-open-source-games.test.mjs scripts/arcade-shelf-dedup.test.mjs
+          bash -n scripts/import-selected-open-source-games.sh
+      - name: Check dependency update remains reproducible
+        run: git apply --reverse --check scripts/patches/a-dark-room-dependencies.patch
+      - name: Verify development server serves the game
+        run: |
+          cd public/arcade/hosted/a-dark-room
+          node dev-server.js > /tmp/adr-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          curl --fail --retry 10 --retry-delay 1 --retry-connrefused http://127.0.0.1:8080/ -o /tmp/adr-index.html
+          cmp index.html /tmp/adr-index.html
+      - name: Exercise both games in mobile Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          npx playwright install --with-deps chromium
+          node scripts/smoke-selected-open-source-games.mjs

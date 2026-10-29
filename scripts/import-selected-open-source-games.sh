@@ -29,6 +29,9 @@ vendor() {
 # Import only pinned, full upstream commit IDs supplied by the staging workflow.
 vendor "a-dark-room" "https://github.com/doublespeakgames/adarkroom.git" "$ADR_COMMIT"
 vendor "evolution-of-trust" "https://github.com/ncase/trust.git" "$TRUST_COMMIT"
+# Keep audited local dependency fixes reproducible after exporting the pinned source.
+git apply --check scripts/patches/a-dark-room-dependencies.patch
+git apply scripts/patches/a-dark-room-dependencies.patch
 python3 - <<'PY'
 from pathlib import Path
 adr=Path("public/arcade/hosted/a-dark-room/index.html")
