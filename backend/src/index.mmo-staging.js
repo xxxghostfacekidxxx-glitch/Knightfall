@@ -1160,7 +1160,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest","contract","npc","commander"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest","contract","npc","commander","legendary"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1188,7 +1188,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       squibmarshal:{name:"Squibmarshal",type:"cosmic",icon:"☄",hp:25,attack:8},
       glorpcannon:{name:"Glorpcannon",type:"electric",icon:"⚙",hp:34,attack:7},
       hexpup:{name:"Hexpup",type:"ghost",icon:"✦",hp:16,attack:6},
-      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5}
+      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5},
+      minionmouse:{name:"Minion Mouse",type:"electric",icon:"🐭",hp:34,attack:11},
+      minivillain:{name:"Mini Villain",type:"ghost",icon:"♛",hp:38,attack:12},
+      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13}
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
@@ -1202,6 +1205,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
     const contracts={microwave:{need:8,reward:2},pigeons:{need:20,reward:3},toaster:{need:35,reward:3},treaty:{need:60,reward:5}};
     const npcs={mox:{x:6,y:3,target:"dish",reward:3},vex:{x:4,y:11,target:"tax",reward:3},quibble:{x:15,y:10,target:"border",reward:4}};
+    const legends={"minionmouse":{"id":"minionmouse","name":"Minion Mouse","icon":"🐭","type":"electric","hp":34,"attack":11,"x":8,"y":8,"steps":25,"level":9},"minivillain":{"id":"minivillain","name":"Mini Villain","icon":"♛","type":"ghost","hp":38,"attack":12,"x":14,"y":7,"steps":40,"level":11},"minieddie":{"id":"minieddie","name":"Mini Eddie","icon":"★","type":"fire","hp":42,"attack":13,"x":9,"y":11,"steps":55,"level":13}};
     const commanders={"squibblex-prime":{species:"squibblex",name:"ADMIRAL SQUIBBLEX PRIME",steps:15,level:5,reward:3},"ember-auditor":{species:"embercub",name:"INFERNAL AUDITOR EMBER-9",steps:30,level:7,reward:4},"glorp-collector":{species:"glorpbot",name:"COLLECTOR GLORPBOT 9000",steps:45,level:9,reward:5}};
     let message="",battleFinished=false;
     if(action==="status")return json({battle,save,version},200,origin);
@@ -1227,6 +1231,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
         if(!save.npcIntroductions.includes(body.id))save.npcIntroductions.push(body.id);
         message="Visit the required landmark, then return to report.";
       }
+    }else if(action==="legendary"){
+      if(battle)return json({error:"Finish your active battle first."},409,origin);
+      const legend=Object.hasOwn(legends,body.id)?legends[body.id]:null;
+      if(!legend||save.steps<legend.steps||Math.abs(save.x-legend.x)+Math.abs(save.y-legend.y)>1||(save.capturedLegendaries||[]).includes(body.id))return json({error:"Legendary shrine locked or already captured."},403,origin);
+      if(lead.hp<=0)return json({error:"Your lead creature has fainted."},409,origin);
+      battle={id:legend.id,legendaryId:legend.id,name:legend.name,type:legend.type,icon:legend.icon,level:legend.level,hp:legend.hp+(legend.level-1)*2,maxHp:legend.hp+(legend.level-1)*2,attack:legend.attack};
+      save.encounters=Math.min(1000000,(save.encounters||0)+1);
+      message="LEGENDARY AWAKENED: "+legend.name+"!";
     }else if(action==="commander"){
       if(battle)return json({error:"Finish the active battle first."},409,origin);
       const commander=commanders[body.id];
@@ -1254,7 +1266,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const onGrass=save.x>=1&&save.x<=16&&save.y>=1&&save.y<=12&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===16)&&save.y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(save.x+","+save.y);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       if(action==="start"||Math.random()<0.22){
-        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly"];const ids=zone==="alien"?alienIds:zone==="demon"?Object.keys(species).filter(id=>!alienIds.includes(id)):Object.keys(species),limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly"];const wildIds=Object.keys(species).filter(id=>!["minionmouse","minivillain","minieddie"].includes(id));const ids=zone==="alien"?alienIds:zone==="demon"?wildIds.filter(id=>!alienIds.includes(id)):wildIds,limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
         battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
         save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
       }
@@ -1295,15 +1307,15 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
         if((save.bag||0)<1)return json({error:"You have no capture supplies left."},409,origin);
         if(save.party.length>=6)return json({error:"Your party is full."},409,origin);
         save.bag--;
-        if(Math.random()<Math.min(.9,.35+(1-battle.hp/battle.maxHp)*.55)){
-          const base=species[battle.id];save.party.push({id:battle.id,name:base.name,type:base.type,icon:base.icon,level:battle.level,hp:battle.maxHp,maxHp:battle.maxHp,attack:battle.attack});
+        if(Math.random()<Math.min(battle.legendaryId?.35:.9,(battle.legendaryId?.08:.35)+(1-battle.hp/battle.maxHp)*(battle.legendaryId?.3:.55))){
+          if(battle.legendaryId){if(!Array.isArray(save.capturedLegendaries))save.capturedLegendaries=[];if(save.capturedLegendaries.includes(battle.legendaryId))return json({error:"Legendary already captured."},409,origin);save.capturedLegendaries.push(battle.legendaryId);}const base=species[battle.id];save.party.push({id:battle.id,name:base.name,type:base.type,icon:base.icon,level:battle.level,hp:battle.maxHp,maxHp:battle.maxHp,attack:battle.attack});
           save.caught=Math.min(1000000,(save.caught||0)+1);battleFinished=true;message=battle.name+" joined your party!";
         }else message=battle.name+" broke free. Capture supplies left: "+save.bag+".";
       }else if(action==="flee"){battleFinished=true;message="You retreated safely.";}
     }
     if(battleFinished)battle=null;
     const now=new Date().toISOString(),nextVersion=version+1;
-    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag,visitedLandmarks:save.visitedLandmarks||[],claimedContracts:save.claimedContracts||[],npcIntroductions:save.npcIntroductions||[],npcQuestsDone:save.npcQuestsDone||[],defeatedCommanders:save.defeatedCommanders||[]};
+    const clean={x:save.x,y:save.y,steps:save.steps,encounters:save.encounters,caught:save.caught,badges:save.badges,party:save.party.slice(0,6),bag:save.bag,visitedLandmarks:save.visitedLandmarks||[],claimedContracts:save.claimedContracts||[],npcIntroductions:save.npcIntroductions||[],npcQuestsDone:save.npcQuestsDone||[],defeatedCommanders:save.defeatedCommanders||[],capturedLegendaries:save.capturedLegendaries||[]};
     const saveUpdate=env.DB.prepare("UPDATE monster_game_saves SET save_json=?,version=?,updated_at=? WHERE user_id=? AND version=?").bind(JSON.stringify(clean),nextVersion,now,user.id,version);
     const battleUpdate=battle
       ? env.DB.prepare("INSERT INTO monster_game_battles (user_id,battle_json,updated_at) SELECT ?,?,? WHERE EXISTS (SELECT 1 FROM monster_game_saves WHERE user_id=? AND version=?) ON CONFLICT(user_id) DO UPDATE SET battle_json=excluded.battle_json,updated_at=excluded.updated_at").bind(user.id,JSON.stringify(battle),now,user.id,nextVersion)
@@ -1356,7 +1368,10 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       squibmarshal:{name:"Squibmarshal",type:"cosmic",icon:"☄",hp:25,attack:8},
       glorpcannon:{name:"Glorpcannon",type:"electric",icon:"⚙",hp:34,attack:7},
       hexpup:{name:"Hexpup",type:"ghost",icon:"✦",hp:16,attack:6},
-      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5}
+      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5},
+      minionmouse:{name:"Minion Mouse",type:"electric",icon:"🐭",hp:34,attack:11},
+      minivillain:{name:"Mini Villain",type:"ghost",icon:"♛",hp:38,attack:12},
+      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13}
     };
     const party=[];
     for(const member of input.party){
@@ -1364,7 +1379,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const base=species[member.id],level=member.level,maxHp=Math.min(500,base.hp+(level-1)*2);
       party.push({id:member.id,name:base.name,type:base.type,icon:base.icon,level,xp:member.xp??0,hp:Math.min(member.hp,maxHp),maxHp,attack:Math.min(100,base.attack+Math.floor((level-1)/3)),energy:int(member.energy??0,0,4)?(member.energy??0):0,status:["burn","shock","poison"].includes(member.status)?member.status:null});
     }
-    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag,visitedLandmarks:previousSave?.visitedLandmarks||[],claimedContracts:previousSave?.claimedContracts||[],npcIntroductions:previousSave?.npcIntroductions||[],npcQuestsDone:previousSave?.npcQuestsDone||[],defeatedCommanders:previousSave?.defeatedCommanders||[]};
+    const clean={x:input.x,y:input.y,steps:input.steps,encounters:input.encounters,caught:input.caught,badges:input.badges,party,bag:input.bag,visitedLandmarks:previousSave?.visitedLandmarks||[],claimedContracts:previousSave?.claimedContracts||[],npcIntroductions:previousSave?.npcIntroductions||[],npcQuestsDone:previousSave?.npcQuestsDone||[],defeatedCommanders:previousSave?.defeatedCommanders||[],capturedLegendaries:previousSave?.capturedLegendaries||[]};
     const now=new Date().toISOString();
     if(expected===0){
       if(input.steps>10000||input.encounters>1000||input.caught>50||input.badges!==0||input.bag>8||input.party.some(member=>member.level>10||member.hp<1))return json({error:"Initial cloud progress exceeds the migration limits."},403,origin);
