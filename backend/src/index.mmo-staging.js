@@ -1381,7 +1381,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
             const missed=chosenMove&&Math.random()*100>=[100,95,90,85][chosenMove.index];
             battle.hp=Math.max(0,battle.hp-(missed?0:damage));
             message=lead.name+" used "+(chosenMove?chosenMove.name:special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+(missed?" but missed! ":" for "+damage+" damage. ");
-            if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
+            if(!missed&&special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
           }else if(guard)message=lead.name+" guarded. ";
         }
         if(battle.hp>0)message+=tick(battle);
