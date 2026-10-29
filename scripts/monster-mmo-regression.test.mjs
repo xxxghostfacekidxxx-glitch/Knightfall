@@ -20,6 +20,8 @@ test("combat is a single viewport rather than a scrolling page",async()=>{
  assert.match(css,/body:has\(#battle-panel:not\(\[hidden\]\)\)\{overflow:hidden/);
  assert.match(css,/#battle-panel:not\(\[hidden\]\)\{\s*position:fixed!important;inset:0!important/);
  assert.match(css,/orientation:landscape/);
+ assert.match(css,/#battle-panel:not\(\[hidden\]\) > #battle\.sr-only/);
+ assert.match(css,/#battle-panel:not\(\[hidden\]\) > \[hidden\]\{display:none!important\}/);
 });
 test("pause menu holds nonessential UI",async()=>{
  const html=await load("public/monster-mmo.html");
