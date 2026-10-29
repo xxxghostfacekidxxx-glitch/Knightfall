@@ -356,3 +356,19 @@ test("map-first pause UI keeps all gameplay panels accessible",()=>{
  assert.match(offline,/replace\(pauseTag/);
  for(const code of [pause,offline]){const parsed=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(parsed.status,0,parsed.stderr);}
 });
+
+
+test("one pause menu and self-contained handheld dialogue are wired",()=>{
+ const dialogue=readFileSync("public/monster-mmo-dialogue.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ assert.doesNotMatch(html,/monster-mmo-compact\.(js|css)/);
+ assert.ok(html.includes('id="field-dialogue"'));
+ assert.ok(html.includes('id="field-dialogue-next"'));
+ assert.match(js,/hell-high-orbit:log/);
+ assert.match(js,/classList\.contains\("dialogue-open"\)/);
+ assert.match(dialogue,/hell-high-orbit:log/);
+ assert.match(offline,/load\("\/monster-mmo-dialogue\.js"\)/);
+ assert.match(offline,/replace\(dialogueTag/);
+ assert.match(css,/\.field-dialogue\[hidden\]/);
+ for(const code of [dialogue,offline]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+});
