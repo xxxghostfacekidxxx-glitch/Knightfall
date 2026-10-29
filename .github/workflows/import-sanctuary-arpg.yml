@@ -77,6 +77,20 @@ jobs:
           grep -q "Ruinborn" public/arcade/hosted/sanctuary-end/js/02-skills.js
           ! grep -q "Hellwarden" public/arcade/hosted/sanctuary-original/js/02-skills.js
           grep -q 'ashfall-theme.css' public/arcade/hosted/sanctuary-end/sanctuary.html
+      - name: Build installable offline app game bundles
+        run: |
+          mkdir -p public/admin-offline/games/original public/admin-offline/games/infernal
+          rsync -a --delete public/arcade/hosted/sanctuary-original/ public/admin-offline/games/original/
+          rsync -a --delete public/arcade/hosted/sanctuary-end/ public/admin-offline/games/infernal/
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('public/admin-offline')
+          files=sorted('/admin-offline/'+str(p.relative_to(root)).replace('\\','/') for p in (root/'games').rglob('*') if p.is_file())
+          (root/'game-assets.json').write_text(json.dumps({'version': 'arpg-v1', 'files': files},indent=2))
+          assert any(p.endswith('original/sanctuary.html') for p in files)
+          assert any(p.endswith('infernal/sanctuary.html') for p in files)
+          PY
       - name: Build downloadable offline game archives
         run: |
           mkdir -p /tmp/ashfall-admin-game-packages
