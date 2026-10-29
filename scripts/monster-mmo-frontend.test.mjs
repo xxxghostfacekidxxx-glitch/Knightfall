@@ -383,3 +383,18 @@ test("battle party switch is accessible and fainting preserves healthy reserves"
  assert.match(js,/if\(save\.party\.some\(\(p,i\)=>i>0&&p\.hp>0\)\)log\(lead\.name\+" fainted! Choose a healthy creature below to continue\."\)/);
  assert.match(css,/#battle-party \.battle-switch/);
 });
+
+
+test("handheld battle commands expose one panel at a time",()=>{
+ const pause=readFileSync("public/monster-mmo-pause-menu.js","utf8");
+ const pixelWorld=readFileSync("public/monster-mmo-pixel-world.js","utf8");
+ for(const tab of ["fight","party","bag"])assert.ok(html.includes('data-battle-tab="'+tab+'"'));
+ for(const section of ["fight","party","bag"])assert.ok(html.includes('data-battle-section="'+section+'"'));
+ assert.match(pause,/function chooseBattleTab\(name\)/);
+ assert.match(pause,/section\.hidden=section\.dataset\.battleSection!==name/);
+ assert.match(pause,/current\.lead\?\.hp<=0/);
+ assert.match(css,/\.battle-command-tabs/);
+ assert.match(css,/#battle-panel \.battle-moves/);
+ assert.match(pixelWorld,/Original faction terrain props/);
+ for(const code of [pause,pixelWorld]){const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+});
