@@ -1165,7 +1165,19 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       thornspit:{name:"Thornspit",type:"thorn",icon:"✥",hp:18,attack:4,description:"A spiteful bramble brute that launches seed-spines when cornered."},
       zipfang:{name:"Zipfang",type:"electric",icon:"ϟ",hp:11,attack:7,description:"A jittery alley-runner that crackles with stolen stormlight."},
       grubruckle:{name:"Grubruckle",type:"stone",icon:"⬟",hp:22,attack:3,description:"A stubborn burrow tank with a shell like broken pavement."},
-      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6,description:"A ragged dusk glider that rides the wind through abandoned places."}
+      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6,description:"A ragged dusk glider that rides the wind through abandoned places."},
+      squibblex:{name:"Squibblex",type:"cosmic",icon:"☄",hp:12,attack:5},
+      glorpbot:{name:"Glorpbot",type:"electric",icon:"⚙",hp:19,attack:4},
+      noodloid:{name:"Noodloid",type:"cosmic",icon:"〰",hp:15,attack:4},
+      blipmoth:{name:"Blipmoth",type:"air",icon:"✧",hp:11,attack:6},
+      ashhorn:{name:"Ashhorn",type:"fire",icon:"♈",hp:21,attack:7},
+      mossreaper:{name:"Mossreaper",type:"grass",icon:"❧",hp:26,attack:6},
+      cryptfin:{name:"Cryptfin",type:"water",icon:"◉",hp:28,attack:5},
+      voltmaw:{name:"Voltmaw",type:"electric",icon:"ϟ",hp:22,attack:10},
+      squibmarshal:{name:"Squibmarshal",type:"cosmic",icon:"☄",hp:25,attack:8},
+      glorpcannon:{name:"Glorpcannon",type:"electric",icon:"⚙",hp:34,attack:7},
+      hexpup:{name:"Hexpup",type:"ghost",icon:"✦",hp:16,attack:6},
+      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5}
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
@@ -1266,7 +1278,19 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       thornspit:{name:"Thornspit",type:"thorn",icon:"✥",hp:18,attack:4},
       zipfang:{name:"Zipfang",type:"electric",icon:"ϟ",hp:11,attack:7},
       grubruckle:{name:"Grubruckle",type:"stone",icon:"⬟",hp:22,attack:3},
-      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6}
+      mournwing:{name:"Mournwing",type:"air",icon:"⌁",hp:13,attack:6},
+      squibblex:{name:"Squibblex",type:"cosmic",icon:"☄",hp:12,attack:5},
+      glorpbot:{name:"Glorpbot",type:"electric",icon:"⚙",hp:19,attack:4},
+      noodloid:{name:"Noodloid",type:"cosmic",icon:"〰",hp:15,attack:4},
+      blipmoth:{name:"Blipmoth",type:"air",icon:"✧",hp:11,attack:6},
+      ashhorn:{name:"Ashhorn",type:"fire",icon:"♈",hp:21,attack:7},
+      mossreaper:{name:"Mossreaper",type:"grass",icon:"❧",hp:26,attack:6},
+      cryptfin:{name:"Cryptfin",type:"water",icon:"◉",hp:28,attack:5},
+      voltmaw:{name:"Voltmaw",type:"electric",icon:"ϟ",hp:22,attack:10},
+      squibmarshal:{name:"Squibmarshal",type:"cosmic",icon:"☄",hp:25,attack:8},
+      glorpcannon:{name:"Glorpcannon",type:"electric",icon:"⚙",hp:34,attack:7},
+      hexpup:{name:"Hexpup",type:"ghost",icon:"✦",hp:16,attack:6},
+      starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5}
     };
     const party=[];
     for(const member of input.party){
