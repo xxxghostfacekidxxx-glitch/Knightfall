@@ -187,3 +187,23 @@ test("expanded evolution families and new tactical moves are visible",()=>{
  assert.match(js,/quick\?2:1/);
  assert.match(js,/Second Wind/);
 });
+
+
+test("original canvas pixel overworld is wired into online and offline builds",()=>{
+ const pixel=readFileSync("public/monster-mmo-pixel-world.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ assert.match(html,/src="\/monster-mmo-pixel-world\.js"/);
+ assert.match(css,/#pixel-overworld/);
+ assert.match(pixel,/new MutationObserver\(schedule\)/);
+ assert.match(pixel,/canvas\.width = TILE \* W/);
+ assert.match(pixel,/const TILE = 32, W = 16, H = 12/);
+ assert.match(pixel,/function ground\(/);
+ assert.match(pixel,/function character\(/);
+ assert.match(pixel,/function npc\(/);
+ assert.match(offline,/load\("\/monster-mmo-pixel-world\.js"\)/);
+ assert.match(offline,/replace\(pixelTag/);
+ const parsed=spawnSync(process.execPath,["--check"],{input:pixel,encoding:"utf8"});
+ assert.equal(parsed.status,0,parsed.stderr);
+ const packaged=spawnSync(process.execPath,["--check"],{input:offline,encoding:"utf8"});
+ assert.equal(packaged.status,0,packaged.stderr);
+});
