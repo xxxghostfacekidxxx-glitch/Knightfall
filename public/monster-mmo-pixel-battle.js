@@ -86,6 +86,15 @@
   fill(0,108,384,100,ground);fill(0,131,384,77,alien?"#69a3a0":infernal?"#a07887":"#86a883");
   for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?(alien?"#88c6b8":infernal?"#bf91aa":"#759d79"):(alien?"#417b82":infernal?"#774c71":"#b5bd91"));
   fill(219,102,140,13,"#355f68");fill(230,93,119,16,"#acc2a2");fill(23,176,149,12,"#395b62");fill(34,164,127,15,"#a3b69b");
+  // Ground contact shadows and rim glints make atlas sprites sit in the arena.
+  // Shadows are drawn before creatures, so silhouettes stay readable at 384px.
+  fill(264,100,63,4,"#233b48");fill(272,98,47,2,"#42606a");
+  fill(58,173,70,5,"#273c47");fill(67,171,51,2,"#526b71");
+  const lightTick=Math.floor(performance.now()/400);
+  for(let k=0;k<5;k++){
+   const lx=248+(k*17)%91,ly=27+(k*13)%67;
+   if((k+lightTick)%3===0)fill(lx,ly,2,2,alien?"#b7fff4":infernal?"#ffb2bf":"#fff2b0");
+  }
   if(!window.HellOrbitSprites?.draw(c,enemy.id,256,28,80,Math.floor(performance.now()/260)%4))creature(260,34,enemy.id,enemy.type);
   if(!window.HellOrbitSprites?.draw(c,lead.id,49,105,80,Math.floor(performance.now()/330)%4,true))creature(58,110,lead.id,lead.type,true);
   fill(8,8,153,40,"#172339");fill(11,11,147,34,"#f7efdc");
