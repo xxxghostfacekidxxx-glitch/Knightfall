@@ -109,3 +109,17 @@ test("legendary creature sprites have individually authored silhouettes",async()
  for(const name of ["minionmouse","minivillain","minieddie"])assert.match(atlas,new RegExp('if\\(id==="'+name+'"\\)'));
  assert.match(atlas,/Hand-authored legendary silhouettes/);
 });
+
+test("all 55 original monster sprites have species-specific visual details",async()=>{
+ const atlas=await load("public/monster-mmo-sprite-atlas.js");
+ assert.match(atlas,/Distinct surface details for every creature/);
+ assert.match(atlas,/const motif=\(n\*2654435761\)>>>0/);
+ assert.match(atlas,/pattern===0/);
+ assert.match(atlas,/pattern===5|segmented cyber/);
+ assert.match(atlas,/if\(!\["minionmouse","minivillain","minieddie"\]\.includes\(id\)\)/);
+});
+test("battle sprites have ground shadows and environmental glints",async()=>{
+ const stage=await load("public/monster-mmo-pixel-battle.js");
+ assert.match(stage,/Ground contact shadows and rim glints/);
+ assert.match(stage,/fill\(264,100,63,4/);
+});
