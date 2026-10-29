@@ -1,0 +1,35 @@
+name: Vendor Phaser for Hell and High Orbit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/install-monster-visual-engine.yml'
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Download pinned Phaser runtime
+        run: |
+          set -euo pipefail
+          mkdir -p public/vendor/phaser
+          npm pack phaser@3.90.0 --pack-destination /tmp --silent
+          tar -xzf /tmp/phaser-3.90.0.tgz -C /tmp
+          cp /tmp/package/dist/phaser.min.js public/vendor/phaser/phaser.min.js
+          cp /tmp/package/LICENSE.md public/vendor/phaser/LICENSE.md
+          test -s public/vendor/phaser/phaser.min.js
+          node -e "const fs=require('fs');const p='public/vendor/phaser/phaser.min.js';console.log('Vendored Phaser',fs.statSync(p).size,'bytes')"
+      - name: Commit runtime to main
+        run: |
+          git add public/vendor/phaser/
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Vendor pinned Phaser 3.90 runtime and MIT license'
+            git push
+          fi
