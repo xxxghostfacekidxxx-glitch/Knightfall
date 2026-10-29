@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/stage-selected-open-source-games.yml'
+      - 'scripts/verify-selected-open-source-imports.py'
 permissions:
   contents: write
   pull-requests: write
