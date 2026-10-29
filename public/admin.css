@@ -54,7 +54,7 @@ tbody tr:hover{background:rgba(211,84,0,.035)}
 
 /* Arcade test-bot fleet */
 .fleet-run{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:.7rem 1rem;border:1px solid var(--kf-accent);border-radius:8px;background:var(--kf-accent-soft);color:#fff;text-decoration:none;font-weight:800;white-space:nowrap}
-.fleet-note{margin:1rem 0;padding:1rem 1.1rem;border:1px solid #3b3027;border-radius:10px;background:rgba(211,84,0,.07);color:#c9c2bc;line-height:1.6}
+.fleet-note{margin:1rem 0;padding:1rem 1.1rem;border:1px solid #291b39;border-radius:10px;background:rgba(211,84,0,.07);color:#c9c2bc;line-height:1.6}
 .test-bot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
 .test-bot-card{display:flex;align-items:center;gap:.85rem;min-width:0;padding:1rem;border:1px solid #2c2926;border-radius:10px;background:linear-gradient(120deg,#141210,#0b0b0b)}
 .test-bot-avatar{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border:1px solid #57351f;border-radius:12px;background:rgba(211,84,0,.12);color:var(--kf-accent-bright);font-weight:900;font-variant-numeric:tabular-nums}
@@ -67,7 +67,7 @@ tbody tr:hover{background:rgba(211,84,0,.035)}
 
 /* Automated Repair Center */
 .repair-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem;margin:1rem 0}
-.repair-flow span{padding:.8rem .65rem;border:1px solid #3b3027;border-radius:8px;background:rgba(211,84,0,.06);color:#d8c4b3;font-size:.78rem;font-weight:800;text-align:center}
+.repair-flow span{padding:.8rem .65rem;border:1px solid #291b39;border-radius:8px;background:rgba(211,84,0,.06);color:#d8c4b3;font-size:.78rem;font-weight:800;text-align:center}
 .repair-queue{display:grid;gap:.7rem}
 .repair-ticket{padding:1rem;border:1px solid #352b24;border-radius:10px;background:linear-gradient(110deg,#151210,#0b0b0b)}
 .repair-ticket-top{display:flex;justify-content:space-between;gap:.75rem;align-items:flex-start}
