@@ -82,3 +82,13 @@
 #pixel-evolution{position:fixed;z-index:9998;top:50%;left:50%;transform:translate(-50%,-50%);width:min(92vw,640px);height:auto;aspect-ratio:4/3;image-rendering:pixelated;border:4px solid #ff65cc;box-shadow:0 0 0 100vmax rgba(6,8,20,.86),0 0 28px #caff61;background:#11162b;pointer-events:none}
 #pixel-evolution[hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){#pixel-evolution{transition:none;animation:none}}
+
+/* Map-first handheld RPG shell: all secondary systems live behind pause. */
+body{background:#090b12}.shell{max-width:920px;padding:8px 12px 20px}.game-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0 12px!important;max-width:none!important}.game-header strong{font:900 clamp(.85rem,2.5vw,1.25rem) ui-monospace,monospace;letter-spacing:.04em;color:#caff45}.game-header a{font-size:.8rem}.game-header button{padding:8px 14px;background:#ff55cc;color:#11121d}.layout{display:block}.world-panel{padding:8px;box-shadow:0 0 0 2px #caff45;background:#11121d}.world-panel .toolbar{margin:0 0 6px;padding:6px 10px;border:0;background:#151a28}.menu-only-status{display:none}.world-panel .territory-status{font-size:.72rem;padding:5px 8px;margin:0 0 6px;max-height:2.6em;overflow:hidden}.pad{margin:10px auto 4px;grid-template-columns:repeat(3,50px);gap:4px}.pad button{min-height:44px;padding:7px}#log{margin:10px 0 0;font-size:.78rem;min-height:0;padding:7px 10px}
+#game-menu-backdrop:not([hidden]){position:fixed;inset:0;z-index:150;background:#05070bc9}
+#game-menu{display:none;position:fixed;z-index:151;inset:4vh max(10px,calc((100vw - 760px)/2));overflow:auto;background:#141723;border:4px solid #caff45;box-shadow:0 12px 40px #000;border-radius:7px;padding:12px}
+#game-menu.is-open{display:block}.pause-heading{display:flex;align-items:center;justify-content:space-between;font:900 1.15rem ui-monospace,monospace;color:#caff45;margin-bottom:10px}.pause-heading button{background:#ff55cc;padding:6px 12px}.pause-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-bottom:12px}.pause-tabs button{background:#292a3a;color:#f6f2fa;border:1px solid #686076;padding:8px 4px;font-size:.78rem}.pause-tabs button[aria-selected=true]{background:#caff45;color:#101322}
+#game-menu>.panel{display:none!important;margin:0 0 10px;padding:10px;box-shadow:none;border:1px solid #55506b;background:#1a1b2a}
+#game-menu>.panel.pause-active{display:block!important}
+#battle-panel:not([hidden]){z-index:300}
+@media(max-width:790px){.shell{padding:5px}.game-header{padding:6px 4px!important}.world-panel{padding:4px}#game-menu{inset:0;border-width:2px;border-radius:0;padding:10px}.pause-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.world-panel .toolbar{font-size:.75rem}}
