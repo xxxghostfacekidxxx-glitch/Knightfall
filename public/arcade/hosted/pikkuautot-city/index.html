@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pikkuautot 3D: City Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Three.js (r160) -->
+    <script src="three.min.js"></script>
+    <!-- Planck.js (Physics) -->
+    <script src="planck.min.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <!-- TOGGLE BUTTON -->
+    <button id="mobile-btn">📱 Fullscreen / Mobile Controls</button>
+
+    <div id="gameContainer">
+        <!-- THE SCREEN: Fixed resolution internal logic (960x720) -->
+        <div id="screen">
+            <!-- START SCREEN -->
+            <div id="startScreen" class="menu-overlay">
+                <h1>PIKKUAUTOT 3D</h1>
+                <h3>CITY EDITION</h3>
+                
+                <div class="section">
+                    <p>Game Mode</p>
+                    <div class="button-group">
+                        <button id="btnMode1P" class="toggle-btn active" onclick="setGameMode('1p')">1 Player</button>
+                        <button id="btnMode2PH" class="toggle-btn" onclick="setGameMode('2ph')">2P (Split Horz)</button>
+                        <button id="btnMode2PV" class="toggle-btn" onclick="setGameMode('2pv')">2P (Split Vert)</button>
+                    </div>
+                </div>
+
+                <div class="section" id="lobbySection">
+                    <p>Device Setup (Press Input to Join) <button onclick="clearDevices()" style="font-size:0.7em; padding:3px;">Reset Inputs</button></p>
+                    <div id="p1DeviceSlot" class="device-slot">P1: Waiting...</div>
+                    <div id="p2DeviceSlot" class="device-slot" style="display:none;">P2: Waiting...</div>
+                </div>
+
+                <div class="section">
+                    <p>Shadow Quality</p>
+                    <div class="button-group">
+                        <select id="mainShadowSelect" style="background:#333; color:#fff; border:1px solid #666; padding: 6px; border-radius: 4px; font-weight: bold; width: 80%; text-align: center;">
+                            <option value="off">Off</option>
+                            <option value="simple">Simple (Fast &amp; Pixelated)</option>
+                            <option value="high" selected>High (Soft &amp; High-Res)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <p>Start Map</p>
+                    <div class="button-group">
+                        <button onclick="startGameWithMap('default')">Highway</button>
+                        <button onclick="startGameWithMap('small')">Small City</button>
+                        <button onclick="startGameWithMap('medium')">Metropolis</button>
+                        <button onclick="startGameWithMap('large')">Megacity</button>
+                    </div>
+                </div>
+                
+                <p class="small-text">Controls: Arrows/WASD, A/RT/LT/X on Gamepad</p>
+            </div>
+
+            <!-- HEADER -->
+            <div id="gameHeader" class="hidden">
+                <h1>Pikkuautot 3D</h1>
+                <div id="headerButtons">
+                    <button id="mapButton">Map (M)</button>
+                    <button id="customizeButton">Customize (C)</button>
+                    <button id="helpButton">Help (H)</button>
+                </div>
+            </div>
+
+            <!-- 3D CANVAS & 2D UI LAYER (For Minimaps) -->
+            <div id="canvas-container"></div>
+            <canvas id="uiCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
+
+            <!-- BOTTOM LEFT OPTIONS HINT -->
+            <div id="optionsHint" class="bottom-left-hint hidden">
+                Press <b>O</b> for Options
+            </div>
+
+            <!-- FULL MAP OVERLAY -->
+            <div id="mapMenu" class="menu-overlay hidden map-container">
+                <div class="map-header">
+                    <h2>City Map</h2>
+                    <span class="map-hint">Drag to pan, Click to set destination route</span>
+                    <button class="close-map">Close (M)</button>
+                </div>
+                <canvas id="fullMapCanvas" class="map-canvas"></canvas>
+            </div>
+
+            <!-- OPTIONS MENU -->
+            <div id="optionsMenu" class="menu-overlay hidden">
+                <h2>Game Options</h2>
+                <div class="setting-group">
+                    <h3>Physics Engine</h3>
+                    <div class="setting-row">
+                        <label>Mode:</label>
+                        <div class="toggle-group">
+                            <button id="physOldBtn" class="toggle-btn">Old (Arcade)</button>
+                            <button id="physNewBtn" class="toggle-btn active">New (Drift)</button>
+                        </div>
+                    </div>
+                    <p class="info-text" id="physInfoText">
+                        New: Drifting, tire marks, spin-outs.<br>Spacebar to Handbrake.
+                    </p>
+                </div>
+                <div class="button-group">
+                    <button class="close-options">Resume</button>
+                </div>
+            </div>
+
+            <!-- HELP MENU -->
+            <div id="helpMenu" class="menu-overlay hidden">
+                <h2>Controls</h2>
+                <p><b>Keyboard:</b> Arrows or WASD (Move), Space/Shift (Handbrake), Ctrl/F (Shoot)</p>
+                <p><b>Gamepad:</b> L-Stick/D-Pad (Steer), A (Gas), LT (Brake/Rev), X/B (Handbrake), RT (Shoot)</p>
+                <hr>
+                <p><b>Goal:</b> Drive, Shoot, Survive.</p>
+                <div class="about-info">
+                    <p>GTA 1 Style remake with Three.js &amp; Planck.js</p>
+                </div>
+                <p class="close-help clickable">(Press H or Click Here to close)</p>
+            </div>
+
+            <!-- CUSTOMIZE MENU -->
+            <div id="customizeMenu" class="menu-overlay hidden">
+                <h2>Customize &amp; Optimize</h2>
+                
+                <!-- Graphics & Optimization -->
+                <div class="setting-group">
+                    <h3>Graphics &amp; Optimization</h3>
+                    <div class="setting-row">
+                        <label>Shadows Mode:</label>
+                        <select id="custShadowSelect" style="background:#333; color:#fff; border:1px solid #666; padding: 2px;">
+                            <option value="off">Off</option>
+                            <option value="simple">Simple (Fast)</option>
+                            <option value="high" selected>High (Soft)</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <label>Headlights (Cars):</label>
+                        <input type="checkbox" id="headlightsToggle">
+                    </div>
+                    <div class="setting-row">
+                        <label>Low Res (GPU):</label>
+                        <input type="checkbox" id="lowResToggle" checked>
+                    </div>
+                    <div class="setting-row">
+                        <label>Lite Physics (CPU):</label>
+                        <input type="checkbox" id="litePhysicsToggle" checked>
+                    </div>
+                    <div class="setting-row">
+                        <label>Simple Materials (Fast):</label>
+                        <input type="checkbox" id="simpleMatToggle">
+                    </div>
+                    <div class="setting-row">
+                        <label>Particles (Explosions):</label>
+                        <input type="checkbox" id="particlesToggle" checked>
+                    </div>
+                </div>
+
+                <!-- Camera Settings -->
+                <div class="setting-group">
+                    <h3>Camera</h3>
+                    <div class="setting-row">
+                        <label>Top Down View:</label>
+                        <input type="checkbox" id="topDownToggle" checked>
+                    </div>
+                    <div class="setting-row">
+                        <label>Rotate w/ Car:</label>
+                        <input type="checkbox" id="camRotateToggle">
+                    </div>
+                    <div class="setting-row">
+                        <label>Height:</label>
+                        <input type="range" id="camHeightSlider" min="20" max="150" step="5" value="60">
+                        <span class="slider-value" id="camHeightValue">60</span>
+                    </div>
+                    <div class="setting-row">
+                        <label>FOV:</label>
+                        <input type="range" id="fovSlider" min="30" max="120" step="1" value="50">
+                        <span class="slider-value" id="fovValue">50</span>
+                    </div>
+                </div>
+
+                <!-- Gameplay Settings -->
+                <div class="setting-group">
+                    <h3>Gameplay</h3>
+                    
+                    <div class="setting-row">
+                        <label>AI Personality:</label>
+                        <select id="aiModeSelect" style="background:#333; color:#fff; border:1px solid #666; padding: 2px;">
+                            <option value="cruiser">Cruiser (Normal)</option>
+                            <option value="aggressive">Aggressive (Mad Max)</option>
+                            <option value="cautious">Cautious (Grandma)</option>
+                            <option value="erratic">Erratic (Drunk)</option>
+                            <option value="racer">Racer (Speed)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label>AI Route Rule:</label>
+                        <select id="aiRouteSelect" style="background:#333; color:#fff; border:1px solid #666; padding: 2px;">
+                            <option value="random">Random Pathfinding</option>
+                            <option value="straight_uturn">Straight &amp; U-Turn</option>
+                            <option value="right_only">Always Turn Right</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-row">
+                        <label>Car Speed:</label>
+                        <input type="range" id="playerSpeedSlider" min="10" max="150" step="5" value="100">
+                        <span class="slider-value" id="playerSpeedValue">100</span>
+                    </div>
+                     <div class="setting-row">
+                        <label>Enemy Speed:</label>
+                        <input type="range" id="enemySpeedSlider" min="10" max="120" step="5" value="70">
+                        <span class="slider-value" id="enemySpeedValue">70</span>
+                    </div>
+                     <div class="setting-row">
+                        <label>Traffic Density:</label>
+                        <input type="range" id="densitySlider" min="5" max="200" step="1" value="40">
+                        <span class="slider-value" id="densityValue">40</span>
+                    </div>
+                </div>
+                <hr>
+                <div class="button-group">
+                    <button id="restartCurrentButton">Restart Match</button>
+                    <button id="newGameButton">Quit to Title</button>
+                </div>
+                <p class="close-customize clickable">(Press C or Click Here to close)</p>
+            </div>
+            
+            <!-- HUD -->
+            <div id="hud" class="hidden">
+                <div id="p1Score">P1 Score: 0</div>
+                <div id="p2Score" style="display:none;">P2 Score: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE TOUCH CONTROLS OVERLAY -->
+    <div id="mobile-controls">
+        <div id="mobile-dpad">
+            <button id="mobile-left" class="mobile-control-btn">◀</button>
+            <button id="mobile-right" class="mobile-control-btn">▶</button>
+        </div>
+        <div id="mobile-action">
+            <button id="mobile-handbrake" class="mobile-control-btn" style="font-size: 18px; font-weight: bold;">HB</button>
+            <button id="mobile-down" class="mobile-control-btn" style="font-size: 24px;">▼</button>
+            <button id="mobile-up" class="mobile-control-btn">▲</button>
+        </div>
+    </div>
+</body>
+</html>
