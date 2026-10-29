@@ -13,26 +13,30 @@
     button.disabled = true;
     status.textContent = "Packaging Hell & High Orbit for offline testing…";
     try {
-      const [html, css, js, pixelWorld] = await Promise.all([
+      const [html, css, js, pixelWorld, pixelBattle] = await Promise.all([
         load("/monster-mmo.html"),
         load("/monster-mmo.css"),
         load("/monster-mmo.js"),
-        load("/monster-mmo-pixel-world.js")
+        load("/monster-mmo-pixel-world.js"),
+        load("/monster-mmo-pixel-battle.js")
       ]);
       const cssTag = '<link rel="stylesheet" href="/monster-mmo.css">';
       const jsTag = '<script type="module" src="/monster-mmo.js"></script>';
       const pixelTag = '<script src="/monster-mmo-pixel-world.js" defer></script>';
-      if (!html.includes(cssTag) || !html.includes(jsTag) || !html.includes(pixelTag)) {
+      const battleTag = pixelTag.replace('pixel-world', 'pixel-battle');
+      if (!html.includes(cssTag) || !html.includes(jsTag) || !html.includes(pixelTag) || !html.includes(battleTag)) {
         throw new Error("Game asset references changed. The offline bundle needs updating.");
       }
       // Inline the entire game so a file:// launch needs no web server.
       // Escape closing tags to prevent asset text from prematurely ending a block.
       const safeCss = css.replace(/<\/style/gi, "<\\/style");
       const safePixel = pixelWorld.replace(/<\/script/gi, "<\\/script");
+      const safeBattle = pixelBattle.replaceAll('</scr' + 'ipt', '<\\/scr' + 'ipt');
       const safeJs = js.replace(/<\/script/gi, "<\\/script");
       let bundled = html.replace(cssTag, "<style>" + safeCss + "</style>")
         .replace(jsTag, "<script>" + safeJs + "</script>")
-        .replace(pixelTag, "<script defer>" + safePixel + "</script>");
+        .replace(pixelTag, "<script defer>" + safePixel + "</script>")
+        .replace(battleTag, '<script defer>' + safeBattle + '</script>');
       // The offline package never attempts staging authentication or multiplayer.
       bundled = bundled.replace(/<section class="panel"><h2>Multiplayer staging<\/h2>[\s\S]*?<\/section>/,
         '<section class="panel"><h2>Offline test build</h2><p class="hint">This self-contained file runs without internet. Progress is stored locally in this browser when storage is available. Cloud saves and multiplayer are disabled.</p><div id="players" hidden></div></section>');
@@ -41,7 +45,7 @@
       // Remove online-only buttons and listeners from the self-contained build.
       bundled = bundled.replace("$(\"connect\").addEventListener(\"click\",connect);$(\"disconnect\").addEventListener(\"click\",disconnect);", "");
       if (bundled.includes('id="connect"') || bundled.includes('src="/monster-mmo.js"') ||
-          bundled.includes('href="/monster-mmo.css"') || bundled.includes('src="/monster-mmo-pixel-world.js"')) {
+          bundled.includes('href="/monster-mmo.css"') || bundled.includes('src="/monster-mmo-pixel-world.js"') || bundled.includes('src="/monster-mmo-pixel-battle.js"')) {
         throw new Error("Offline packaging did not remove all online-only assets.");
       }
       const blob = new Blob([bundled], { type: "text/html;charset=utf-8" });
