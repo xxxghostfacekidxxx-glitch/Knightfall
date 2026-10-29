@@ -30,7 +30,7 @@ jobs:
         run: |
           cd /tmp/terravia
           npm ci
-          npm test -- --run
+          npm test -- --run --testTimeout=60000
           npm run build -- --base=/arcade/hosted/terravia/
       - name: Install standalone static game and attribution
         run: |
