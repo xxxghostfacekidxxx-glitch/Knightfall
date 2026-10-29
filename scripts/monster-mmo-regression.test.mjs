@@ -95,3 +95,17 @@ test("tile boundaries blend adjacent terrain with directional shading",async()=>
  assert.match(world,/sameSurface\(north\)/);
  assert.match(world,/sameSurface\(south\)/);
 });
+
+test("player-follow camera renders the full world to a 12x9 viewport without changing game coordinates",async()=>{
+ const world=await load("public/monster-mmo-pixel-world.js");
+ assert.match(world,/VIEW_W=384,VIEW_H=288/);
+ assert.match(world,/scene\.width=TILE\*W;scene\.height=TILE\*H/);
+ assert.match(world,/screenCtx\.drawImage\(scene,Math\.round\(cameraX\),Math\.round\(cameraY\)/);
+ assert.match(world,/cameraX\+=\(targetX-cameraX\)\*\.34/);
+ assert.match(world,/reducedMotion/);
+});
+test("legendary creature sprites have individually authored silhouettes",async()=>{
+ const atlas=await load("public/monster-mmo-sprite-atlas.js");
+ for(const name of ["minionmouse","minivillain","minieddie"])assert.match(atlas,new RegExp('if\\(id==="'+name+'"\\)'));
+ assert.match(atlas,/Hand-authored legendary silhouettes/);
+});
