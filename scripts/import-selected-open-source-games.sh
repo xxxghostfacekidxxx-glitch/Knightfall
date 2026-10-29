@@ -3,14 +3,19 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 for cmd in git python3; do command -v "$cmd" >/dev/null || { echo "Missing $cmd" >&2; exit 1; }; done
+if [[ ! "${ADR_COMMIT:-}" =~ ^[0-9a-f]{40}$ || ! "${TRUST_COMMIT:-}" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "Set ADR_COMMIT and TRUST_COMMIT to audited 40-character commit hashes before importing." >&2
+  exit 1
+fi
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 vendor() {
   local name="$1" remote="$2" ref="$3" source="$work/$name" target="public/arcade/hosted/$name"
-  git clone --quiet --filter=blob:none --depth=1 "$remote" "$source"
+  git clone --quiet --filter=blob:none "$remote" "$source"
+  git -C "$source" checkout --quiet --detach "$ref"
   local sha
   sha="$(git -C "$source" rev-parse HEAD)"
-  if [[ "$ref" != "latest" && "$sha" != "$ref" ]]; then
+  if [[ "$sha" != "$ref" ]]; then
     echo "Unexpected upstream SHA for $name: $sha (expected $ref)" >&2; exit 1
   fi
   mkdir -p "$target"
@@ -20,8 +25,8 @@ vendor() {
   echo "Imported $name from $sha"
 }
 # For an auditable import, replace latest with an inspected full commit SHA.
-vendor "a-dark-room" "https://github.com/doublespeakgames/adarkroom.git" "${ADR_COMMIT:-latest}"
-vendor "evolution-of-trust" "https://github.com/ncase/trust.git" "${TRUST_COMMIT:-latest}"
+vendor "a-dark-room" "https://github.com/doublespeakgames/adarkroom.git" "$ADR_COMMIT"
+vendor "evolution-of-trust" "https://github.com/ncase/trust.git" "$TRUST_COMMIT"
 python3 - <<'PY'
 from pathlib import Path
 adr=Path("public/arcade/hosted/a-dark-room/index.html")
