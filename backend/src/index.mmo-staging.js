@@ -1160,7 +1160,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     if(!(await rateLimit(env,request,"monster-action",30,60,user.id)))return json({error:"Too many battle actions. Slow down."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const action=body?.action;
-    if(!["start","encounter-check","attack","special","guard","switch","capture","flee","status","party-lead","rest","contract","npc","commander","legendary"].includes(action))return json({error:"Unknown game action."},400,origin);
+    if(!["start","encounter-check","attack","special","guard","quick","mend","switch","capture","flee","status","party-lead","rest","contract","npc","commander","legendary"].includes(action))return json({error:"Unknown game action."},400,origin);
     const row=await env.DB.prepare("SELECT save_json,version FROM monster_game_saves WHERE user_id=?").bind(user.id).first();
     if(!row)return json({error:"Create a cloud save before using online battles."},409,origin);
     let save;try{save=JSON.parse(row.save_json);}catch{return json({error:"Saved game data is unreadable."},500,origin);}
@@ -1280,7 +1280,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       }
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
-      if(["attack","special","guard","switch"].includes(action)){
+      if(["attack","special","guard","quick","mend","switch"].includes(action)){
         if(action==="switch"){
           const index=body.index;
           if(!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return json({error:"Select a healthy reserve creature."},400,origin);
@@ -1288,16 +1288,16 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           message=save.party[0].name+" switched in. ";
         }else{
           if(lead.hp<=0)return json({error:"Switch to a healthy reserve creature."},409,origin);
-          const special=action==="special",guard=action==="guard";
-          if(special&&(lead.energy||0)<2)return json({error:"Special move needs two charge."},409,origin);
-          if(special)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+1);
-          if(!guard){
+          const special=action==="special",guard=action==="guard",quick=action==="quick",mend=action==="mend";
+          if((special||mend)&&(lead.energy||0)<2)return json({error:"Special move needs two charge."},409,origin);
+          if(special||mend)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+(quick?2:1));if(mend){const healed=Math.min(lead.maxHp-lead.hp,Math.max(3,Math.ceil(lead.maxHp*.3)));lead.hp+=healed;lead.status=null;message=lead.name+" used Second Wind and healed "+healed+" HP. ";}
+          if(!guard&&!mend){
             const multiplier=typeMultiplier(lead.type,battle.type);
-            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(special?1.65:1)*multiplier)));
+            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(special?1.65:quick?.7:1)*multiplier)));
             battle.hp=Math.max(0,battle.hp-damage);
-            message=lead.name+" used "+(special?(moves[lead.id]||"Elemental Special"):"Attack")+" for "+damage+" damage. ";
+            message=lead.name+" used "+(special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+" for "+damage+" damage. ";
             if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
-          }else message=lead.name+" guarded. ";
+          }else if(guard)message=lead.name+" guarded. ";
         }
         if(battle.hp>0)message+=tick(battle);
         if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],Math.max(8,battle.level*12));if(battle.bossId&&Object.hasOwn(commanders,battle.bossId)){if(!Array.isArray(save.defeatedCommanders))save.defeatedCommanders=[];if(!save.defeatedCommanders.includes(battle.bossId)){save.defeatedCommanders.push(battle.bossId);save.bag=Math.min(999,(save.bag||0)+commanders[battle.bossId].reward);message+=" Commander reward +"+commanders[battle.bossId].reward+" supplies.";}}battleFinished=true;}
