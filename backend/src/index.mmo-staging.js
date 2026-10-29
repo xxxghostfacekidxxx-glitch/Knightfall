@@ -1354,11 +1354,11 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       };
       const speciesUltimate={embercub:"Ember Tantrum",ashhorn:"Tax-Free Inferno",mossbit:"Grave Sprout",mossreaper:"Cemetery Bloom",driftfin:"Drainpipe Jet",cryptfin:"Haunted Undertow",zipfang:"Outlet Chomp",voltmaw:"Blackout Bite",squibblex:"Pigeon Protocol",squibmarshal:"Admiral's Override",glorpbot:"Expired Coupon",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
       let chosenMove=null;
-      if(action==="move"){
-       const index=body.index;
+      if(["move","attack","quick","special"].includes(action)){
+       const index=action==="move"?body.index:action==="attack"?0:action==="quick"?1:2;
        if(!Number.isInteger(index)||index<0||index>3)return json({error:"Invalid move slot."},400,origin);
        const levelRequired=[1,1,3,6][index];
-       if((lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
+       if(action==="move"&&(lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
        if(battle.movePp[index]<=0)return json({error:"That move has no PP remaining."},409,origin);
        chosenMove={name:index===3?(speciesUltimate[lead.id]||(moveNames[lead.type]||moveNames.cosmic)[index]):(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.8,1.55,1.9][index],charge:index>=2?2:0,index};
        if((lead.energy||0)<chosenMove.charge)return json({error:"Not enough charge."},409,origin);
