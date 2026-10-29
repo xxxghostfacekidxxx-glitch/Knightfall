@@ -253,3 +253,19 @@ test("all 31 original creatures have animated atlas frames and offline packaging
   assert.equal(result.status,0,result.stderr);
  }
 });
+
+test("creature artwork and battle effects remain locally bundled and parseable",()=>{
+ const atlas=readFileSync("public/monster-mmo-sprite-atlas.js","utf8");
+ const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ for(const id of ["embercub","ashhorn","mossbit","mossreaper","driftfin","cryptfin","zipfang","voltmaw","squibblex","squibmarshal","glorpbot","glorpcannon","gloamlet","gloamshade","thornspit","thornmaw","grubruckle","gravruckle","mournwing","doomwing","noodloid","noodlarch","blipmoth","bliporacle","hexpup","hexhound","starjelly","astraljelly","minionmouse","minivillain","minieddie"]){
+  assert.ok(atlas.includes(id),"Missing sprite: "+id);
+ }
+ assert.match(atlas,/features\[id\]\?\.\(\)/);
+ assert.match(battle,/hell-high-orbit:effect/);
+ assert.match(js,/new CustomEvent\("hell-high-orbit:effect"/);
+ assert.doesNotMatch(battle,/\\n function animate/);
+ for(const code of [atlas,battle]){
+  const check=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  assert.equal(check.status,0,check.stderr);
+ }
+});
