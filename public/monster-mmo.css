@@ -290,3 +290,60 @@ body.interior-open #world-interact{pointer-events:none}
 .dex-status{font-size:.62rem;letter-spacing:.04em;color:#c5ff84}
 .dex-entry.is-hidden{opacity:.7}
 @media(max-width:420px){.dex-entry{grid-template-columns:2rem 2.7rem minmax(0,1fr);gap:.3rem}.dex-portrait,.dex-portrait .monster-portrait{width:2.5rem;height:2.5rem}.dex-status{grid-column:3;justify-self:start}}
+
+/* HH&O handheld UI v3: one game screen, a true pause menu, no dashboard. */
+:root{--hho-ink:#172231;--hho-paper:#f8f0db;--hho-lime:#caff45;--hho-pink:#ff65c4}
+body{background:#0c101a}
+.shell{width:min(100%,820px);max-width:820px;margin-inline:auto;padding:6px 10px 20px}
+.layout{display:block!important}
+.game-header{margin-bottom:7px!important;padding:6px 4px!important;border-bottom:0}
+.game-header strong{font-size:clamp(.75rem,2.8vw,1rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-header a{font-size:.72rem;white-space:nowrap}
+#game-menu-toggle{min-height:36px;padding:5px 12px;font-size:.8rem;white-space:nowrap}
+.world-panel{padding:4px!important;margin:0 auto!important}
+.world-panel .toolbar{margin:0!important;padding:4px 9px!important;min-height:28px!important;align-items:center}
+.world-panel .toolbar .zone-emblem{font-size:.75rem}
+.world-panel .toolbar strong{font-size:.73rem;line-height:1.3}
+.world-panel .toolbar .menu-only-status,.world-panel .territory-status{display:none!important}
+.game-screen{width:100%;margin:0 auto}
+#pixel-overworld{width:100%;max-height:min(72dvh,640px);object-fit:contain}
+#world-interact:not([hidden]){margin:6px auto 0;min-height:34px}
+#log{max-width:780px;min-height:38px;max-height:3.3em;overflow:hidden;margin:7px auto 0!important;padding:6px 9px!important;font-size:.75rem;line-height:1.35;border-width:3px}
+.world-panel .pad{margin:6px auto 1px;grid-template-columns:repeat(3,42px);gap:3px}
+.world-panel .pad button{min-height:38px;padding:3px;font-size:1rem}
+#game-menu-backdrop:not([hidden]){background:rgba(5,8,14,.88);backdrop-filter:blur(3px)}
+#game-menu{position:fixed!important;inset:50% auto auto 50%!important;transform:translate(-50%,-50%);width:min(94vw,850px)!important;max-width:850px!important;height:min(86dvh,690px)!important;max-height:690px;overflow:hidden!important;display:none;grid-template-columns:174px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:0!important;padding:0!important;border:5px solid #273d49!important;border-radius:9px!important;background:var(--hho-paper)!important;color:var(--hho-ink)!important;box-shadow:0 0 0 3px var(--hho-lime),0 24px 75px #000c}
+#game-menu.is-open{display:grid!important}
+#game-menu .pause-heading{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin:0!important;padding:9px 14px!important;min-height:50px;background:#243447;color:#f7f1dd;border-bottom:4px solid #172534;font:900 1rem ui-monospace,monospace;letter-spacing:.11em}
+#game-menu .pause-heading strong::before{content:"✦ ";color:var(--hho-lime)}
+#game-menu .pause-heading button{background:var(--hho-pink);color:#172231;border:2px solid #101a27;border-radius:4px;min-height:32px;padding:4px 10px}
+#game-menu .pause-tabs{display:flex!important;flex-direction:column;grid-template-columns:none!important;gap:3px!important;margin:0!important;padding:11px 7px!important;background:#26384b;border-right:4px solid #172534;overflow-y:auto;min-height:0}
+#game-menu .pause-tabs button{flex:0 0 auto;text-align:left;min-height:39px;padding:8px 10px!important;border:2px solid transparent!important;border-radius:5px!important;background:#344b5d!important;color:#f6f2df!important;font:800 .8rem ui-monospace,monospace!important;box-shadow:none}
+#game-menu .pause-tabs button[aria-selected="true"]{background:var(--hho-lime)!important;color:#16232a!important;border-color:#15232e!important;box-shadow:inset 4px 0 var(--hho-pink)}
+#game-menu .pause-tabs button[aria-selected="true"]::before{content:"▸ "}
+#game-menu .pause-tabs button:focus-visible{outline:3px solid var(--hho-pink);outline-offset:-3px}
+#game-menu .pause-content{min-height:0;min-width:0;overflow-y:auto;overscroll-behavior:contain;padding:14px;background:#f3ead8}
+#game-menu .pause-content>.panel{display:none!important;margin:0 0 12px;padding:12px!important;background:#fffaf0!important;color:#27313b!important;border:2px solid #84959a!important;border-radius:5px!important;box-shadow:none!important}
+#game-menu .pause-content>.panel.pause-active{display:block!important}
+#game-menu .pause-content>.panel h2{color:#75345d!important;font-size:1rem!important;margin-bottom:9px}
+#game-menu .pause-content .hint{color:#56636d!important;font-size:.76rem!important;line-height:1.45}
+#game-menu .pause-content button{max-width:100%}
+#game-menu .pause-content input,#game-menu .pause-content select{max-width:100%}
+#game-menu .pause-content .dex-entry{background:#e9e7d9;color:#24303a;border-color:#a2b1a5}
+#game-menu .pause-content .dex-entry p{color:#3c4955}
+#game-menu .pause-content .dex-status{color:#426c39}
+#game-menu .pause-content .dex-entries{max-height:none;overflow:visible}
+body.pause-open .world-panel{pointer-events:none}
+@media(max-width:640px){
+ #game-menu{inset:0!important;transform:none!important;width:100vw!important;height:100dvh!important;max-height:none!important;max-width:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;grid-template-columns:112px minmax(0,1fr)}
+ #game-menu .pause-heading{padding:8px 10px!important;min-height:48px}
+ #game-menu .pause-tabs{padding:8px 4px!important;border-right-width:3px}
+ #game-menu .pause-tabs button{font-size:.7rem!important;padding:9px 5px!important;min-height:42px}
+ #game-menu .pause-content{padding:8px}
+ #game-menu .pause-content>.panel{padding:9px!important}
+ #game-menu .pause-content .buttons{gap:5px}
+ #game-menu .pause-content button{font-size:.73rem}
+ .world-panel .pad{grid-template-columns:repeat(3,44px)}
+}
+@media(max-width:350px){#game-menu{grid-template-columns:94px minmax(0,1fr)}#game-menu .pause-tabs button{font-size:.64rem!important}}
+@media(prefers-reduced-motion:reduce){#game-menu,#game-menu *{scroll-behavior:auto!important}}
