@@ -1,0 +1,21 @@
+name: Monster MMO visual regression
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'public/monster-mmo*'
+      - 'public/vendor/phaser/**'
+      - 'scripts/monster-mmo-regression.test.mjs'
+      - '.github/workflows/monster-visual-regression.yml'
+permissions:
+  contents: read
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate game visual integration and local engine
+        run: node --test scripts/monster-mmo-regression.test.mjs
