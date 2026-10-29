@@ -15,6 +15,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+      - name: Prepare isolated review branch
+        run: |
+          # Start from existing staging branch when present so reruns do not rewrite history.
+          if git ls-remote --exit-code --heads origin staging/selected-open-source-games-14-15 >/dev/null; then
+            git fetch origin staging/selected-open-source-games-14-15
+            git switch -C staging/selected-open-source-games-14-15 FETCH_HEAD
+          else
+            git switch -c staging/selected-open-source-games-14-15
+          fi
       - name: Import pinned upstream snapshots
         env:
           ADR_COMMIT: 1fada4620b6c66bd07bf15a3f1eb8223df8bc1d7
@@ -36,13 +45,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Start from existing staging branch when present so reruns do not rewrite history.
-          if git ls-remote --exit-code --heads origin staging/selected-open-source-games-14-15 >/dev/null; then
-            git fetch origin staging/selected-open-source-games-14-15
-            git switch -C staging/selected-open-source-games-14-15 FETCH_HEAD
-          else
-            git switch -c staging/selected-open-source-games-14-15
-          fi
           git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust
           if git diff --cached --quiet; then
             echo "No staged import changes"
