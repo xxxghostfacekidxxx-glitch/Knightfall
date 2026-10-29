@@ -95,6 +95,32 @@ function sprite(id,frame,back=false){
  features[id]?.();newShapes[id]?.();
  // Species-specific accessories and faces. Legendary creatures receive dedicated shapes.
  if(id==="minionmouse"){r(2,3,10,10,base);r(20,3,10,10,base);r(11,5,10,4,accent);r(14,1,4,4,accent);}
+ // Hand-authored legendary silhouettes, deliberately distinct from the shared body template.
+ // All geometry is original pixel art, including separate front/back animation frames.
+ if(id==="minionmouse"){
+  // Tiny imperial rodent: huge radar ears, royal crown and an electric tail.
+  r(0,4,12,13,ink);r(2,6,8,9,"#c47ac9");r(20,4,12,13,ink);r(22,6,8,9,"#c47ac9");
+  r(5,10,22,16,ink);r(7,11,18,14,"#d8d2e6");r(10,23,12,5,"#8e6fbc");
+  r(12,2,3,7,"#f3d65b");r(17,2,3,7,"#f3d65b");r(14,0,4,5,"#fff09c");
+  r(26,21,5,3,"#e9ed77");r(28,17,3,5,"#e9ed77");
+  if(!back){r(9,15,5,5,ink);r(19,15,5,5,ink);r(11,16,2,2,"#fff");r(21,16,2,2,"#fff");r(15,21,3,3,"#ff7ebf");}
+ }
+ if(id==="minivillain"){
+  // The pocket tyrant: asymmetric horned helmet, floating cape and cyber eye.
+  r(2,13,9,15,"#351b50");r(21,13,9,15,"#351b50");
+  r(5,17,22,11,"#5b3478");r(8,8,16,16,ink);r(10,9,12,13,"#a78bc8");
+  r(9,3,5,10,"#e0f77a");r(20,0,5,13,"#e0f77a");
+  r(12,6,9,4,"#392a55");r(15,12,5,4,"#ff5ba9");
+  if(!back){r(10,16,5,4,"#fff");r(20,15,5,5,"#ff6fa8");r(12,17,2,2,ink);r(22,16,2,2,ink);}
+ }
+ if(id==="minieddie"){
+  // Infernal baby menace: skull mask, serrated collar, two flame horns.
+  r(4,2,6,13,"#f47e70");r(7,0,3,8,"#ffd080");
+  r(22,2,6,13,"#f47e70");r(22,0,3,8,"#ffd080");
+  r(7,9,18,18,ink);r(9,10,14,15,"#f5e5d7");
+  r(5,23,5,5,"#ff6d89");r(11,25,5,5,"#ff6d89");r(17,25,5,5,"#ff6d89");r(23,23,5,5,"#ff6d89");
+  if(!back){r(11,15,4,6,ink);r(19,15,4,6,ink);r(14,22,5,3,ink);r(15,24,2,3,"#f27b80");}
+ }
  if(id==="minivillain"){r(3,11,7,17,"#623a81");r(22,11,7,17,"#623a81");r(11,3,10,7,accent);r(15,0,3,4,accent);}
  if(id==="minieddie"){r(5,4,6,10,accent);r(21,4,6,10,accent);r(13,2,6,8,"#fff1ca");}
  if([3,6,8,12].includes(family)){r(12,14,8,7,shade);r(14,16,4,3,accent);}
