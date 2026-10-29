@@ -19,3 +19,23 @@ test("Devil Tools displays all thirteen icon choices with SVG download and brows
  assert.match(html,/localStorage\.setItem\('knightfall-app-icon-candidate'/);
  assert.match(html,/link\.download=id\+'\.svg'/);
 });
+
+// Recovered from archived feat/devil-tools-eight-icons-2026-10-29.
+test("archived neon icon variants remain visible and downloadable",async()=>{
+ const ids=["toxic-seraph","void-bunny","neon-reaper","chaos-cat","broken-halo","alien-static","heart-hazard","eclipse-fang"];
+ const page=await readFile(new URL("devil-tools.html",root),"utf8");
+ for(const id of ids){
+  assert.ok(page.includes("['"+id+"',"),"Missing gallery entry: "+id);
+  const svg=await readFile(new URL("icons/choices/"+id+".svg",root),"utf8");
+  assert.match(svg,/<svg[^>]+viewBox="0 0 96 96"/);
+  assert.match(svg,/<\\/svg>/);
+  assert.match(svg,/#ff55d8/);
+  assert.match(svg,/#c6ff45/);
+ }
+});
+test("mobile message composer keeps neon styling without mascot overlay",async()=>{
+ const css=await readFile(new URL("section-overhaul.css",root),"utf8");
+ assert.match(css,/\\.messages-shell \\.composer textarea\\{background:#0b0d1b!important/);
+ assert.match(css,/body:has\\(\\.messages-shell\\) \\.gw-character-crew\\{display:none!important\\}/);
+ assert.match(css,/\\.messages-shell \\.composer-actions\\{justify-content:flex-end\\}/);
+});
