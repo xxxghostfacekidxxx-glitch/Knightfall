@@ -16,20 +16,26 @@ async function extractZip(buffer, id, onProgress) {
  const v=new DataView(buffer), bytes=new Uint8Array(buffer), dec=new TextDecoder();
  let eocd=-1;for(let p=buffer.byteLength-22;p>=Math.max(0,buffer.byteLength-65557);p--){if(u32(v,p)===0x06054b50){eocd=p;break;}}
  if(eocd<0)throw Error('Invalid ZIP: central directory missing');
- const total=u16(v,eocd+10),start=u32(v,eocd+16);\n if(start>=buffer.byteLength || total===0)throw Error('Empty or invalid ZIP package');
+ const total=u16(v,eocd+10),start=u32(v,eocd+16);
+ if(start>=buffer.byteLength || total===0)throw Error('Empty or invalid ZIP package');
  if(total>20000)throw Error('Package contains too many files');
  let p=start, entries=[], size=0;
  for(let i=0;i<total;i++){
   if(p+46>buffer.byteLength || u32(v,p)!==0x02014b50)throw Error('Invalid ZIP entry');
   const method=u16(v,p+10),compressed=u32(v,p+20),uncompressed=u32(v,p+24),n=u16(v,p+28),extra=u16(v,p+30),comment=u16(v,p+32),offset=u32(v,p+42);
-  if(p+46+n+extra+comment>buffer.byteLength)throw Error('Truncated ZIP directory');\n  const name=dec.decode(bytes.subarray(p+46,p+46+n));p+=46+n+extra+comment;
-  if(name.endsWith('/'))continue;\n  if(!name || entries.some(e=>e.name===name))throw Error('Duplicate or empty ZIP asset path');
+  if(p+46+n+extra+comment>buffer.byteLength)throw Error('Truncated ZIP directory');
+  const name=dec.decode(bytes.subarray(p+46,p+46+n));p+=46+n+extra+comment;
+  if(name.endsWith('/'))continue;
+  if(!name || entries.some(e=>e.name===name))throw Error('Duplicate or empty ZIP asset path');
   if(!safeName(name))throw Error('Unsafe archive filename');
   if(uncompressed>100*1024*1024)throw Error('Individual asset too large');
   size+=uncompressed;if(size>650*1024*1024)throw Error('Package exceeds 650 MB offline storage limit');
   entries.push({name,method,compressed,uncompressed,offset});
  }
- const cacheName='ashfall-god-game-'+id+'-v1';\n const stagingName='ashfall-god-stage-'+id+'-v1';\n await caches.delete(stagingName);\n const cache=await caches.open(stagingName);
+ const cacheName='ashfall-god-game-'+id+'-v1';
+ const stagingName='ashfall-god-stage-'+id+'-v1';
+ await caches.delete(stagingName);
+ const cache=await caches.open(stagingName);
  try{
   for(let i=0;i<entries.length;i++){
    const e=entries[i],o=e.offset;
@@ -44,7 +50,11 @@ async function extractZip(buffer, id, onProgress) {
    onProgress(Math.round((i+1)/entries.length*100));
   }
   if(!(await cache.match(PREFIX+id+'/sanctuary.html')))throw Error('Game entry point missing');
- }catch(err){await caches.delete('ashfall-god-game-'+id+'-v1');throw err;}
+  const live=await caches.open(cacheName);
+  for(const request of await live.keys())await live.delete(request);
+  for(const request of await cache.keys())await live.put(request,(await cache.match(request)).clone());
+  await caches.delete(stagingName);
+ }catch(err){await caches.delete(stagingName);throw err;}
 }
 async function storageStatus(){
  const el=document.querySelector('#storage-status');if(!el)return;
