@@ -1,0 +1,22 @@
+name: Monster MMO server move checks
+on:
+  push:
+    branches: [main, feat/monster-server-move-pp-2026-10-29]
+    paths:
+      - 'backend/src/index.mmo-staging.js'
+      - 'scripts/monster-mmo-server-moves.test.mjs'
+      - '.github/workflows/monster-mmo-server-moves.yml'
+  pull_request:
+    paths:
+      - 'backend/src/index.mmo-staging.js'
+      - 'scripts/monster-mmo-server-moves.test.mjs'
+      - '.github/workflows/monster-mmo-server-moves.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test scripts/monster-mmo-server-moves.test.mjs
