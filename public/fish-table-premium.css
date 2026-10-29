@@ -1,12 +1,12 @@
 /* Ash-Fall Fish Tables · premium cabinet skin v1
    Shared presentation layer for the three original fish-table games. */
 :root{
-  --ft-accent:#6ce8ff;--ft-accent-rgb:108,232,255;--ft-hot:#ffd68a;--ft-panel:#081421;
+  --ft-accent:#6ce8ff;--ft-accent-rgb:108,232,255;--ft-hot:#e8b5f5;--ft-panel:#081421;
   --ft-line:rgba(151,220,255,.22);--ft-glass:rgba(8,19,33,.88);
 }
-body:has(#trench-wallet-balance){--ft-accent:#64e8ff;--ft-accent-rgb:100,232,255;--ft-hot:#ffd88a}
+body:has(#trench-wallet-balance){--ft-accent:#64e8ff;--ft-accent-rgb:100,232,255;--ft-hot:#e8b5f5}
 body:has(#neon-wallet-balance){--ft-accent:#60ffe1;--ft-accent-rgb:96,255,225;--ft-hot:#ff68df}
-body:has(#magma-wallet-balance){--ft-accent:#ff9a55;--ft-accent-rgb:255,154,85;--ft-hot:#ffe0a0}
+body:has(#magma-wallet-balance){--ft-accent:#e8b5f5;--ft-accent-rgb:255,154,85;--ft-hot:#ffe0a0}
 html{scroll-behavior:smooth}
 body{isolation:isolate;min-height:100vh;background-color:#030812}
 body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 78%)}
