@@ -1337,6 +1337,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       }
     }else{
       if(!battle)return json({error:"There is no active encounter."},409,origin);
+      // Server-owned PP per encounter; never trust client supplied move statistics.
+      const ppLimits=[30,25,15,8];
+      if(!Array.isArray(battle.movePp)||battle.movePp.length!==4)battle.movePp=ppLimits.slice();
       // Server-authoritative four-slot move table. Never accept client power or type.
       const moveNames={
        fire:["Cinder Jab","Spark Rush","Inferno Spit","Meteor Meltdown"],
@@ -1356,6 +1359,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
        if(!Number.isInteger(index)||index<0||index>3)return json({error:"Invalid move slot."},400,origin);
        const levelRequired=[1,1,3,6][index];
        if((lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
+       if(battle.movePp[index]<=0)return json({error:"That move has no PP remaining."},409,origin);
        chosenMove={name:index===3?(speciesUltimate[lead.id]||(moveNames[lead.type]||moveNames.cosmic)[index]):(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.8,1.55,1.9][index],charge:index>=2?2:0,index};
        if((lead.energy||0)<chosenMove.charge)return json({error:"Not enough charge."},409,origin);
       }
@@ -1371,11 +1375,13 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           if((special||mend)&&(lead.energy||0)<2)return json({error:"Special move needs two charge."},409,origin);
           if(special||mend)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+(quick?2:1));if(mend){const healed=Math.min(lead.maxHp-lead.hp,Math.max(3,Math.ceil(lead.maxHp*.3)));lead.hp+=healed;lead.status=null;message=lead.name+" used Second Wind and healed "+healed+" HP. ";}
           if(!guard&&!mend){
+            if(chosenMove)battle.movePp[chosenMove.index]--;
             const multiplier=typeMultiplier(lead.type,battle.type);
             const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(chosenMove?chosenMove.power:special?1.55:quick?.8:1)*multiplier)));
-            battle.hp=Math.max(0,battle.hp-damage);
-            message=lead.name+" used "+(chosenMove?chosenMove.name:special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+" for "+damage+" damage. ";
-            if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
+            const missed=chosenMove&&Math.random()*100>=[100,95,90,85][chosenMove.index];
+            battle.hp=Math.max(0,battle.hp-(missed?0:damage));
+            message=lead.name+" used "+(chosenMove?chosenMove.name:special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+(missed?" but missed! ":" for "+damage+" damage. ");
+            if(!missed&&special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
           }else if(guard)message=lead.name+" guarded. ";
         }
         if(battle.hp>0)message+=tick(battle);
