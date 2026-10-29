@@ -29,7 +29,7 @@ async function extractZip(buffer, id, onProgress) {
   size+=uncompressed;if(size>650*1024*1024)throw Error('Package exceeds 650 MB offline storage limit');
   entries.push({name,method,compressed,uncompressed,offset});
  }
- const cacheName='ashfall-god-game-'+id+'-v1';\n const cache=await caches.open(cacheName);
+ const cacheName='ashfall-god-game-'+id+'-v1';\n const stagingName='ashfall-god-stage-'+id+'-v1';\n await caches.delete(stagingName);\n const cache=await caches.open(stagingName);
  try{
   for(let i=0;i<entries.length;i++){
    const e=entries[i],o=e.offset;
