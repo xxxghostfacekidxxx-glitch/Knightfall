@@ -223,3 +223,15 @@ test("pixel battle renderer is present in both online and offline builds",()=>{
   assert.equal(result.status,0,result.stderr);
  }
 });
+
+test("offline creatures unlock four named moves by level without trusting client moves in staging",()=>{
+ for(let i=0;i<4;i++)assert.ok(html.includes('data-move-slot="'+i+'"'));
+ assert.match(js,/const moveLearnsets=/);
+ assert.match(js,/const moveUnlockLevels=\[1,1,3,6\]/);
+ assert.match(js,/function learnedMoves\(creature\)/);
+ assert.match(js,/if\(name==="move"\)/);
+ assert.match(js,/chosen\.unlocked/);
+ assert.match(js,/extra\.movePower/);
+ assert.match(js,/!connected&&b\.dataset\.moveSlot!==undefined/);
+ assert.match(js,/if\(connected\)\{const data=await request\("\/api\/game\/action"/);
+});
