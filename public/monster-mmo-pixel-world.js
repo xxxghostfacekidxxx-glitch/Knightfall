@@ -131,6 +131,25 @@
     if(variant===1){fill(x+13,y+16,8,6,"#352a4e");fill(x+16,y+18,2,5,"#e8e3b3");}
     if(variant===2){fill(x+10,y+3,13,3,"#2b6675");fill(x+13,y+1,7,3,"#ff81ce");}
   }
+  /* Keep exploration discovery independent of the server's battle/save schema. */
+  const discoveryKey="ashfall:hell-high-orbit:explored-v1";
+  let explored=new Set();
+  try{
+    const stored=JSON.parse(localStorage.getItem(discoveryKey)||"[]");
+    if(Array.isArray(stored))explored=new Set(stored.filter(i=>Number.isInteger(i)&&i>=0&&i<W*H));
+  }catch{}
+  let lastDiscovered=-1;
+  function discover(index){
+    if(index<0||index===lastDiscovered)return;
+    lastDiscovered=index;
+    const x=index%W,y=Math.floor(index/W);
+    for(let oy=-2;oy<=2;oy++)for(let ox=-2;ox<=2;ox++){
+      if(Math.abs(ox)+Math.abs(oy)>3)continue;
+      const px=x+ox,py=y+oy;
+      if(px>=0&&px<W&&py>=0&&py<H)explored.add(py*W+px);
+    }
+    try{localStorage.setItem(discoveryKey,JSON.stringify([...explored]))}catch{}
+  }
   const regionMap=document.getElementById("game-region-map");
   const mapCtx=regionMap?.getContext("2d");
   if(mapCtx)mapCtx.imageSmoothingEnabled=false;
@@ -140,6 +159,11 @@
     mapCtx.clearRect(0,0,384,288);
     for(let i=0;i<cells.length;i++){
       const t=cells[i],x=(i%W)*unit,y=Math.floor(i/W)*unit;
+      if(!explored.has(i)){
+        mapCtx.fillStyle="#172530";mapCtx.fillRect(x,y,unit,unit);
+        mapCtx.fillStyle="#253542";mapCtx.fillRect(x+9,y+9,6,6);
+        continue;
+      }
       const zone=t.classList.contains("zone-alien")?"#397d84":t.classList.contains("zone-demon")?"#9b537d":"#719b66";
       const color=t.classList.contains("wall")?"#263b50":t.classList.contains("rock")?"#70778a":t.classList.contains("path")?"#d6ba8c":zone;
       mapCtx.fillStyle=color;mapCtx.fillRect(x,y,unit,unit);
@@ -172,7 +196,7 @@
       if(dx===1)facing="right";else if(dx===-1)facing="left";else if(dy===1)facing="down";else if(dy===-1)facing="up";
       step++;walkFrame=3;
     }
-    if(playerIndex>=0)previousCell=playerIndex;
+    if(playerIndex>=0){previousCell=playerIndex;discover(playerIndex);}
     renderRegionMap(cells,playerIndex);
     for(let i=0;i<cells.length;i++){
       const t=cells[i],x=(i%W)*TILE,y=Math.floor(i/W)*TILE;
