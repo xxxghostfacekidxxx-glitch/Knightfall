@@ -318,3 +318,18 @@ test("species ultimate attacks and nine elemental battle effects",()=>{
   assert.equal(check.status,0,check.stderr);
  }
 });
+
+test("combat feedback displays real HP deltas, status and final faint frame",()=>{
+ const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
+ assert.match(js,/damage,multiplier,target:"enemy",fainted:battle\.hp===0/);
+ assert.match(js,/previousBattle\.hp-\(battle\?\.hp\?\?0\)/);
+ assert.match(battle,/Number\.isFinite\(effect\.damage\)/);
+ assert.match(battle,/effect\.multiplier>1/);
+ assert.match(battle,/effect\.status/);
+ assert.match(battle,/FAINTED/);
+ assert.match(battle,/else if\(!effect\)current=null/);
+ for(const code of [battle,js]){
+  const result=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});
+  assert.equal(result.status,0,result.stderr);
+ }
+});
