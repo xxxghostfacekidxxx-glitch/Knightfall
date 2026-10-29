@@ -215,6 +215,9 @@
     const prop=hash(x/32,y/32,17)%19;
     if(!path&&!stone&&!wall&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
       if(prop===0||prop===1){
+        // Layered canopy, shadow, and distinct regional vegetation.
+        fill(x+6,y+26,22,4,"#233b39");
+        fill(x+11,y+19,14,6,alien?"#306c74":demon?"#5a3852":"#3f6940");
         const trunk=alien?"#255963":demon?"#493048":"#5b4b38";
         const leaf=alien?"#7ae7d9":demon?"#e87bab":"#9cce6b";
         fill(x+14,y+17,5,12,trunk);fill(x+8,y+10,17,11,leaf);
@@ -260,6 +263,20 @@
       fill(x+13,y+5,6,7,"#caff45");
       fill(x+15,y+3,2,11,"#ff74bf");
       fill(x+11,y+7,10,3,"#caff45");
+      // Regional architectural identity: saucer clinic, demon infirmary or frontier shelter.
+      if(alien){
+        fill(x+2,y+10,28,4,"#66c7d2");fill(x+7,y+6,18,5,"#b0fff1");
+        fill(x+11,y+3,10,4,"#294d67");fill(x+14,y+1,4,4,"#ff78c6");
+        fill(x+6,y+16,7,5,"#173f57");fill(x+20,y+16,6,5,"#173f57");
+      }else if(demon){
+        fill(x+2,y+9,28,5,"#552e52");fill(x+4,y+4,7,7,"#e46d99");
+        fill(x+21,y+4,7,7,"#e46d99");fill(x+13,y+3,6,7,"#ffb0c9");
+        fill(x+15,y+20,3,6,"#ffde9e");
+      }else{
+        fill(x+2,y+9,28,4,"#61435e");fill(x+5,y+6,22,4,"#ff88bc");
+        fill(x+10,y+14,12,3,"#fffae2");
+        fill(x+12,y+16,8,2,"#caff45");
+      }
     }
     if(t.classList.contains("landmark")) {
       if(alien){ // grounded satellite dish
