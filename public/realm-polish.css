@@ -13,7 +13,7 @@
 .listing-grid,.quick-grid{gap:1rem;padding-top:1.5rem;padding-bottom:2.5rem}
 .listing-card,.quick-card{position:relative;isolation:isolate;min-height:300px;border-color:#302a26;background:linear-gradient(145deg,rgba(22,20,19,.98),rgba(10,10,10,.98));box-shadow:0 16px 42px rgba(0,0,0,.2);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
 .listing-card:before,.quick-card:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,85,216,.13),transparent 52%);opacity:.8;pointer-events:none}
-.listing-card:hover,.quick-card:hover{transform:translateY(-4px);border-color:#78401f;box-shadow:0 22px 52px rgba(0,0,0,.32),0 0 28px rgba(255,85,216,.055)}
+.listing-card:hover,.quick-card:hover{transform:translateY(-4px);border-color:#56306b;box-shadow:0 22px 52px rgba(0,0,0,.32),0 0 28px rgba(255,85,216,.055)}
 .listing-symbol{flex-shrink:0;box-shadow:inset 0 0 22px rgba(255,85,216,.08);border-color:#57321e}
 .listing-kicker{letter-spacing:.18em}
 .listing-card h2,.quick-card h2{letter-spacing:-.035em}
@@ -22,7 +22,7 @@
 .primary-button{min-height:44px;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
 .primary-button:hover,.primary-button:focus-visible{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 9px 26px rgba(255,85,216,.17)}
 .quiet-button{transition:border-color .2s ease,background .2s ease}
-.quiet-button:hover,.quiet-button:focus-visible{border-color:#704021;background:#19130f}
+.quiet-button:hover,.quiet-button:focus-visible{border-color:#56306b;background:#19130f}
 .directory-cta{position:relative;isolation:isolate;overflow:hidden;margin-top:1.5rem;border-color:#3b2a20;background:linear-gradient(115deg,#171310,#0d0c0b 70%);box-shadow:0 20px 60px rgba(0,0,0,.2)}
 .directory-cta:after{content:"✳";position:absolute;z-index:-1;right:2rem;top:50%;transform:translateY(-50%);color:rgba(255,85,216,.09);font-size:10rem;line-height:1}
 .directory-cta h2{letter-spacing:-.05em}
@@ -39,11 +39,11 @@
 .community-directory .section-heading h2{font-size:clamp(2.2rem,5vw,3.7rem);letter-spacing:-.06em}
 .community-directory .categories,.community-directory .community-directory-grid{gap:.9rem}
 .community-directory .category{min-height:215px;border-color:#302a26;background:linear-gradient(145deg,rgba(22,20,19,.98),rgba(9,9,9,.98))}
-.community-directory .category-mark{color:#df7130}
+.community-directory .category-mark{color:#ff55d8}
 .community-directory .category h3{font-size:1.5rem;letter-spacing:-.035em}
 .community-directory .threads-panel{margin-top:3rem;padding-top:2.5rem}
 .community-directory .thread-card{border-color:#2d2926;background:linear-gradient(100deg,#121110,#0b0b0b);padding:1.25rem 1.35rem}
-.community-directory .thread-card:hover{border-color:#744020;box-shadow:inset 3px 0 var(--realm-ember),0 12px 30px rgba(0,0,0,.16)}
+.community-directory .thread-card:hover{border-color:#56306b;box-shadow:inset 3px 0 var(--realm-ember),0 12px 30px rgba(0,0,0,.16)}
 .community-directory .thread-card a{line-height:1.4}
 .cartridge-hero{min-height:560px!important;padding-top:clamp(4.5rem,9vw,7rem)!important;padding-bottom:5rem!important}
 .cartridge-title{font-size:clamp(4rem,10vw,8rem)!important;letter-spacing:-.08em!important;line-height:.83!important}
@@ -54,10 +54,10 @@
 .cartridge-cabinet{position:relative;display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:1.45rem;border:1px solid #302a26;border-radius:13px;background:linear-gradient(145deg,#171513,#0b0b0b);overflow:hidden;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
 .cartridge-cabinet:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 100% 0%,var(--glow,rgba(255,85,216,.13)),transparent 56%);pointer-events:none}
 .cartridge-cabinet>*{position:relative}
-.cartridge-cabinet:hover{transform:translateY(-4px);border-color:#704021;box-shadow:0 20px 45px rgba(0,0,0,.28)}
+.cartridge-cabinet:hover{transform:translateY(-4px);border-color:#56306b;box-shadow:0 20px 45px rgba(0,0,0,.28)}
 .cartridge-cabinet h3{margin:.7rem 0 .5rem;font-size:1.65rem;line-height:1.08;letter-spacing:-.04em}
 .cartridge-cabinet p{color:#a49b93;line-height:1.7;font-size:.9rem}
-.cartridge-number{font-size:.59rem;line-height:1.5;letter-spacing:.14em;color:#c36a35;font-weight:900}
+.cartridge-number{font-size:.59rem;line-height:1.5;letter-spacing:.14em;color:#ff55d8;font-weight:900}
 .cartridge-cabinet .status{margin-top:1rem}
 .cartridge-cabinet .button{margin-top:auto!important}
 .cartridge-note{padding-top:.8rem;font-size:.75rem!important}
