@@ -13,3 +13,8 @@ test("offline move PP and misses respect level and charge rules",()=>{
  assert.match(client,/extra\.moveMissed=Math\.random\(\)\*100/);
  assert.match(client,/charged&&!missed\?inflictStatus/);
 });
+
+test("missed moves show a miss instead of misleading damage",()=>{
+ assert.match(client,/missed\?" · MISSED"/);
+ assert.match(client,/damage:missed\?0:damage/);
+});
