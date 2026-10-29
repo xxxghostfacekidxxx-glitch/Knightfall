@@ -1,0 +1,68 @@
+name: Prune fully incorporated historical branches
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/prune-incorporated-branches.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify file-level incorporation before deleting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+          branches=(
+            "add-chaos-cartridge-games-2026-10-19"
+            "arcade-originality-upgrade-layer-2026-10-21"
+            "arcade-progression-saves-round-ten-2026-10-22"
+            "arcade-save-revision-conflicts-2026-10-20"
+            "chaos-cartridge-mega-expansion-2026-10-19"
+            "ci-trigger-fix-verification"
+            "feat/arcade-save-restore-wave-8"
+            "feat/devil-tools-eight-icons-2026-10-29"
+            "feat/monster-four-move-loadouts"
+            "feature/chaos-cartridge-card-room"
+            "feature/monster-mmo-prototype"
+            "fix/arcade-save-revisions-renumbered-2026-10-23"
+            "fix/arcade-static-audit"
+            "fix/messages-older-history-refresh-2026-10-23"
+            "fix/rebase-save-resume"
+            "opensource-toolkit-import-2026-10-22"
+            "staging/monster-mmo-isolated"
+          )
+          for branch in "${branches[@]}"; do
+            ref="refs/remotes/origin/$branch"
+            if ! git show-ref --verify --quiet "$ref"; then
+              echo "Absent: $branch"
+              continue
+            fi
+            base=$(git merge-base origin/main "$ref") || continue
+            preserved=true
+            count=0
+            while IFS= read -r -d '' path; do
+              count=$((count + 1))
+              main_blob=$(git rev-parse "origin/main:$path" 2>/dev/null || true)
+              branch_blob=$(git rev-parse "$ref:$path" 2>/dev/null || true)
+              if [[ "$main_blob" != "$branch_blob" ]]; then
+                preserved=false
+                echo "KEEP $branch: differing path $path"
+                break
+              fi
+            done < <(git diff --name-only -z "$base" "$ref")
+            if [[ "$preserved" == true ]]; then
+              echo "PRUNE $branch: all $count branch-changed paths identical to main"
+              gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$branch"
+            fi
+          done
