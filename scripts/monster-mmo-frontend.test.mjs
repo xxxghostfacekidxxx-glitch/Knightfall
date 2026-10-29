@@ -341,3 +341,18 @@ test("XP curve and rarity rewards are visible in offline progression",()=>{
  assert.ok(js.includes("Evolves Lv "));
  assert.ok(js.includes(" · XP "));
 });
+
+
+test("map-first pause UI keeps all gameplay panels accessible",()=>{
+ const pause=readFileSync("public/monster-mmo-pause-menu.js","utf8");
+ const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
+ for(const id of ["game-menu","game-menu-toggle","game-menu-close","game-menu-backdrop"])assert.ok(html.includes('id="'+id+'"'));
+ for(const tab of ["creatures","bag","missions","bestiary","story","settings"]){assert.ok(html.includes('data-pause-tab="'+tab+'"'));assert.ok(html.includes('data-pause-section="'+tab+'"'));}
+ assert.match(pause,/stopImmediatePropagation/);
+ assert.match(pause,/aria-expanded/);
+ assert.match(pause,/battleActive/);
+ assert.match(css,/#game-menu\.is-open/);
+ assert.match(offline,/load\("\/monster-mmo-pause-menu\.js"\)/);
+ assert.match(offline,/replace\(pauseTag/);
+ for(const code of [pause,offline]){const parsed=spawnSync(process.execPath,["--check"],{input:code,encoding:"utf8"});assert.equal(parsed.status,0,parsed.stderr);}
+});
