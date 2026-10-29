@@ -456,10 +456,15 @@
       label.textContent=(regionNames[regionId]||"Cinder Meadow")+" · Trainer: "+String(x).padStart(2,"0")+", "+String(y).padStart(2,"0")+" · Map discovered: "+Math.round(explored.size/(W*H)*100)+"%";
     }
   }
+  // Presentation-only tween. The DOM remains authoritative for collisions and networking.
+  // Short moves interpolate visually; teleports and region transitions snap immediately.
+  const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches||false;
+  let motion=null;
   function render() {
+    const now=performance.now();
     const current=world.dataset.region||"meadow";
     if(current!==regionId&&/^(meadow|orbit|inferno|border)$/.test(current)){
-      regionId=current;previousCell=-1;walkFrame=0;loadExplored();
+      regionId=current;previousCell=-1;walkFrame=0;motion=null;loadExplored();
     }
     const cells=world.children;
     if(cells.length!==W*H)return;
@@ -469,6 +474,8 @@
       const dx=playerIndex%W-previousCell%W,dy=Math.floor(playerIndex/W)-Math.floor(previousCell/W);
       if(dx===1)facing="right";else if(dx===-1)facing="left";else if(dy===1)facing="down";else if(dy===-1)facing="up";
       step++;walkFrame=3;
+      const distance=Math.abs(dx)+Math.abs(dy);
+      motion=!reducedMotion&&distance===1?{from:previousCell,to:playerIndex,start:now,duration:145}:null;
     }
     if(playerIndex>=0){previousCell=playerIndex;discover(playerIndex);}
     renderRegionMap(cells,playerIndex);
@@ -476,9 +483,22 @@
       const t=cells[i],x=(i%W)*TILE,y=Math.floor(i/W)*TILE;
       if(t.classList.contains("npc"))npc(x,y,t.classList.contains("zone-demon")?1:t.classList.contains("zone-alien")?2:0);
       if(t.classList.contains("other"))character(x,y,1);
-      if(t.classList.contains("player")){fill(x+8,y+29,18,2,"#192b2b");character(x,y,0);}
+      if(t.classList.contains("player")){
+        let px=x,py=y;
+        if(motion&&motion.to===i){
+          const p=Math.min(1,(now-motion.start)/motion.duration);
+          const smooth=p*p*(3-2*p);
+          px=((motion.from%W)*(1-smooth)+(i%W)*smooth)*TILE;
+          py=((Math.floor(motion.from/W))*(1-smooth)+Math.floor(i/W)*smooth)*TILE;
+          if(p>=1)motion=null;
+        }
+        // A soft grounded shadow and a warm rim highlight, drawn below the trainer.
+        fill(px+7,py+28,20,4,"#192a36");
+        fill(px+10,py+29,14,2,"#334c55");
+        character(px,py,0);
+      }
     }
-    if(walkFrame>0){walkFrame--;if(walkFrame>0)requestAnimationFrame(schedule);}
+    if(motion||walkFrame>0){if(walkFrame>0)walkFrame--;requestAnimationFrame(schedule);}
   }
   let pending=false;
   const schedule=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;render();});};
