@@ -4,7 +4,7 @@ self.addEventListener('activate',event=>{event.waitUntil(self.clients.claim())})
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  const u=new URL(event.request.url);if(u.origin!==self.location.origin)return;
- const match=/^\/admin-offline\/play\/(sanctuary-original|ashfall-infernal-reign-dev)\//.exec(u.pathname);
+ const match=/^\/admin-offline\/play\/([a-z0-9-]+)\//.exec(u.pathname);
  if(match){event.respondWith((async()=>{const c=await caches.open('ashfall-god-game-'+match[1]+'-v1');return await c.match(event.request,{ignoreSearch:true})||new Response('This game asset is not installed on this device.',{status:404,headers:{'content-type':'text/plain','cache-control':'no-store'}})})());return;}
  if(SHELL_FILES.includes(u.pathname)){event.respondWith(fetch(event.request).then(r=>r.ok?r:Promise.reject(Error('offline'))).catch(()=>caches.match(event.request).then(r=>r||new Response('App shell unavailable',{status:503}))));}
 });
