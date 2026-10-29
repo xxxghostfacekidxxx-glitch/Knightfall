@@ -171,11 +171,18 @@
       if(index>=0){e.preventDefault();controls[(index+(e.shiftKey?-1:1)+controls.length)%controls.length].focus()}
     }
   },true);
-  const ctx = canvas.getContext("2d", { alpha: false });
-  if (!ctx) { canvas.remove(); return; }
-  const TILE = 32, W = 16, H = 12;
-  canvas.width = TILE * W; canvas.height = TILE * H;
-  ctx.imageSmoothingEnabled = false;
+  // Render the authoritative full map offscreen; present a smaller player-following viewport.
+  // No map geometry, collision rules or multiplayer coordinates are changed.
+  const screenCtx=canvas.getContext("2d",{alpha:false});
+  if(!screenCtx){canvas.remove();return;}
+  const TILE=32,W=16,H=12,VIEW_W=384,VIEW_H=288;
+  const scene=document.createElement("canvas");
+  scene.width=TILE*W;scene.height=TILE*H;
+  const ctx=scene.getContext("2d",{alpha:false});
+  if(!ctx){canvas.remove();return;}
+  canvas.width=VIEW_W;canvas.height=VIEW_H;
+  ctx.imageSmoothingEnabled=false;screenCtx.imageSmoothingEnabled=false;
+  let cameraX=0,cameraY=0;
   const fill = (x,y,w,h,c) => { ctx.fillStyle=c;ctx.fillRect(x,y,w,h); };
   const dot = (x,y,c,s=2) => fill(x,y,s,s,c);
   const hash = (x,y,k=0) => { let n=(x*374761393+y*668265263+k*1442695041)|0; n=Math.imul(n^(n>>>13),1274126177);return (n^(n>>>16))>>>0; };
@@ -507,7 +514,24 @@
         character(px,py,0);
       }
     }
-    if(motion||walkFrame>0){if(walkFrame>0)walkFrame--;requestAnimationFrame(schedule);}
+    // The visible 12x9-tile window follows the trainer while preserving full-map exploration.
+    // Subpixel easing is quantized for sharp pixel edges and predictable low-end mobile performance.
+    if(playerIndex>=0){
+      const ix=playerIndex%W,iy=Math.floor(playerIndex/W);
+      let px=ix*TILE+TILE/2,py=iy*TILE+TILE/2;
+      if(motion&&motion.to===playerIndex){
+        const p=Math.min(1,(now-motion.start)/motion.duration),ease=p*p*(3-2*p);
+        px=((motion.from%W)*(1-ease)+ix*ease)*TILE+TILE/2;
+        py=(Math.floor(motion.from/W)*(1-ease)+iy*ease)*TILE+TILE/2;
+      }
+      const targetX=Math.max(0,Math.min(W*TILE-VIEW_W,px-VIEW_W/2));
+      const targetY=Math.max(0,Math.min(H*TILE-VIEW_H,py-VIEW_H/2));
+      if(reducedMotion){cameraX=targetX;cameraY=targetY;}
+      else{cameraX+=(targetX-cameraX)*.34;cameraY+=(targetY-cameraY)*.34;}
+    }
+    screenCtx.drawImage(scene,Math.round(cameraX),Math.round(cameraY),VIEW_W,VIEW_H,0,0,VIEW_W,VIEW_H);
+    const cameraMoving=playerIndex>=0&&!reducedMotion&&(Math.abs(cameraX-Math.max(0,Math.min(W*TILE-VIEW_W,(playerIndex%W)*TILE+TILE/2-VIEW_W/2)))>0.6||Math.abs(cameraY-Math.max(0,Math.min(H*TILE-VIEW_H,Math.floor(playerIndex/W)*TILE+TILE/2-VIEW_H/2)))>0.6);
+    if(motion||walkFrame>0||cameraMoving){if(walkFrame>0)walkFrame--;requestAnimationFrame(schedule);}
   }
   let pending=false;
   const schedule=()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;render();});};
