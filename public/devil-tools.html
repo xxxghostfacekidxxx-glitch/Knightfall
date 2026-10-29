@@ -120,7 +120,7 @@ if(!Array.isArray(data.games))throw Error('Invalid originals manifest');
 let assets=0;
 for(const game of data.games){
 const card=document.createElement('article');card.style.cssText='padding:.85rem;border:1px solid #ffffff28;border-radius:12px;background:#080b13;display:grid;gap:.55rem';
-const heading=document.createElement('strong');heading.textContent=game.name;heading.style.color='#ffbd80';card.append(heading);
+const heading=document.createElement('strong');heading.textContent=game.name;heading.style.color='#e8b5f5';card.append(heading);
 const info=document.createElement('small');info.textContent=game.genre+' · '+game.status;info.style.color='#b4b2c6';card.append(info);
 const preview=document.createElement('div');preview.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px';
 for(const asset of game.assets||[]){
