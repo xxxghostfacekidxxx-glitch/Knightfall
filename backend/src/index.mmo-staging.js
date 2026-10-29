@@ -1223,14 +1223,38 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       noodlarch:{name:"Noodlarch",type:"cosmic",icon:"〰",hp:31,attack:9},
       bliporacle:{name:"Bliporacle",type:"air",icon:"✧",hp:26,attack:11},
       hexhound:{name:"Hexhound",type:"ghost",icon:"✦",hp:30,attack:10},
-      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9}
+      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9},
+      casketkit:{name:"Casketkit",type:"ghost",icon:"☾",hp:16,attack:5},
+      mausoleopard:{name:"Mausoleopard",type:"ghost",icon:"☾",hp:30,attack:9},
+      impickle:{name:"Impickle",type:"thorn",icon:"✥",hp:17,attack:4},
+      brinebrute:{name:"Brinebrute",type:"thorn",icon:"✥",hp:32,attack:8},
+      cinderling:{name:"Cinderling",type:"fire",icon:"✹",hp:13,attack:5},
+      pyroclast:{name:"Pyroclast",type:"fire",icon:"✹",hp:29,attack:10},
+      screecher:{name:"Screecher",type:"air",icon:"⌁",hp:14,attack:6},
+      sonicrypt:{name:"Sonicrypt",type:"air",icon:"⌁",hp:28,attack:11},
+      puddlegloom:{name:"Puddlegloom",type:"water",icon:"◈",hp:19,attack:3},
+      drownmire:{name:"Drownmire",type:"water",icon:"◈",hp:36,attack:7},
+      fossilimp:{name:"Fossilimp",type:"stone",icon:"⬟",hp:22,attack:3},
+      ossiforge:{name:"Ossiforge",type:"stone",icon:"⬟",hp:42,attack:7},
+      zapgob:{name:"Zapgob",type:"electric",icon:"ϟ",hp:12,attack:7},
+      stormgob:{name:"Stormgob",type:"electric",icon:"ϟ",hp:27,attack:11},
+      moldmunch:{name:"Moldmunch",type:"grass",icon:"✿",hp:20,attack:3},
+      sporelord:{name:"Sporelord",type:"grass",icon:"✿",hp:37,attack:7},
+      quarklet:{name:"Quarklet",type:"cosmic",icon:"☄",hp:14,attack:5},
+      quarkzilla:{name:"Quarkzilla",type:"cosmic",icon:"☄",hp:33,attack:10},
+      saucerpup:{name:"Saucerpup",type:"cosmic",icon:"☄",hp:17,attack:4},
+      orbithound:{name:"Orbithound",type:"cosmic",icon:"☄",hp:35,attack:9},
+      glitchgrub:{name:"Glitchgrub",type:"electric",icon:"ϟ",hp:15,attack:5},
+      bytebeetle:{name:"Bytebeetle",type:"electric",icon:"ϟ",hp:31,attack:9},
+      voidsnail:{name:"Voidsnail",type:"cosmic",icon:"☄",hp:23,attack:3},
+      chronoshell:{name:"Chronoshell",type:"cosmic",icon:"☄",hp:43,attack:7}
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     if(!Number.isInteger(lead.hp)||lead.hp<0||lead.hp>lead.maxHp)return json({error:"Your active creature has invalid health."},400,origin);
     const strongAgainst={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
     const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
-    const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8]};
+    const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8],casketkit:["mausoleopard",7],impickle:["brinebrute",8],cinderling:["pyroclast",7],screecher:["sonicrypt",8],puddlegloom:["drownmire",8],fossilimp:["ossiforge",9],zapgob:["stormgob",8],moldmunch:["sporelord",8],quarklet:["quarkzilla",9],saucerpup:["orbithound",8],glitchgrub:["bytebeetle",8],voidsnail:["chronoshell",9]};
     const moves={ashhorn:"Tax-Free Inferno",mossreaper:"Cemetery Bloom",cryptfin:"Haunted Undertow",voltmaw:"Blackout Bite",squibmarshal:"Admiral's Override",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
     const conditions={fire:"burn",electric:"shock",ghost:"poison",thorn:"poison"};
     const tick=target=>{if(!target.status||target.hp<=0)return "";if(target.status==="shock"&&Math.random()<.25)return target.name+" was stunned. ";const n=Math.max(1,Math.ceil(target.maxHp/12));target.hp=Math.max(0,target.hp-n);return target.name+" took "+n+" "+target.status+" damage. ";};
@@ -1300,7 +1324,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       const onGrass=save.x>=1&&save.x<=16&&save.y>=1&&save.y<=12&&!((save.x===4||save.x===5)&&save.y>=2&&save.y<=6)&&!(save.x===6&&save.y>=5&&save.y<=7)&&!((save.x===1||save.x===16)&&save.y===5)&&!["2,2","9,2","2,7","9,7","12,5","15,8","5,10","11,11"].includes(save.x+","+save.y);
       if(!onGrass)return json({error:"Wild encounters can only begin in tall grass."},403,origin);
       if(action==="start"||Math.random()<0.22){
-        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly"];const wildIds=Object.keys(species).filter(id=>!["minionmouse","minivillain","minieddie"].includes(id));const ids=zone==="alien"?alienIds:zone==="demon"?wildIds.filter(id=>!alienIds.includes(id)):wildIds,limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
+        const zone=save.x>=11&&save.y<=8?"alien":save.y>=9&&save.x<=10?"demon":"mixed";const alienIds=["squibblex","glorpbot","noodloid","blipmoth","squibmarshal","glorpcannon","starjelly","quarklet","quarkzilla","saucerpup","orbithound","glitchgrub","bytebeetle","voidsnail","chronoshell"];const wildIds=Object.keys(species).filter(id=>!["minionmouse","minivillain","minieddie"].includes(id));const ids=zone==="alien"?alienIds:zone==="demon"?wildIds.filter(id=>!alienIds.includes(id)):wildIds,limit=Math.floor(256/ids.length)*ids.length;let randomByte;do{randomByte=crypto.getRandomValues(new Uint8Array(1))[0]}while(randomByte>=limit);const chosen=species[ids[randomByte%ids.length]],id=ids.find(k=>species[k]===chosen),level=1+Math.floor(Math.random()*4);
         battle={id,name:chosen.name,type:chosen.type,icon:chosen.icon,description:chosen.description,level,hp:chosen.hp+(level-1)*2,maxHp:chosen.hp+(level-1)*2,attack:chosen.attack+Math.floor((level-1)/3)};
         save.encounters=Math.min(1000000,(save.encounters||0)+1);message="A wild "+battle.name+" appeared!";
       }
@@ -1451,7 +1475,31 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       noodlarch:{name:"Noodlarch",type:"cosmic",icon:"〰",hp:31,attack:9},
       bliporacle:{name:"Bliporacle",type:"air",icon:"✧",hp:26,attack:11},
       hexhound:{name:"Hexhound",type:"ghost",icon:"✦",hp:30,attack:10},
-      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9}
+      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9},
+      casketkit:{name:"Casketkit",type:"ghost",icon:"☾",hp:16,attack:5},
+      mausoleopard:{name:"Mausoleopard",type:"ghost",icon:"☾",hp:30,attack:9},
+      impickle:{name:"Impickle",type:"thorn",icon:"✥",hp:17,attack:4},
+      brinebrute:{name:"Brinebrute",type:"thorn",icon:"✥",hp:32,attack:8},
+      cinderling:{name:"Cinderling",type:"fire",icon:"✹",hp:13,attack:5},
+      pyroclast:{name:"Pyroclast",type:"fire",icon:"✹",hp:29,attack:10},
+      screecher:{name:"Screecher",type:"air",icon:"⌁",hp:14,attack:6},
+      sonicrypt:{name:"Sonicrypt",type:"air",icon:"⌁",hp:28,attack:11},
+      puddlegloom:{name:"Puddlegloom",type:"water",icon:"◈",hp:19,attack:3},
+      drownmire:{name:"Drownmire",type:"water",icon:"◈",hp:36,attack:7},
+      fossilimp:{name:"Fossilimp",type:"stone",icon:"⬟",hp:22,attack:3},
+      ossiforge:{name:"Ossiforge",type:"stone",icon:"⬟",hp:42,attack:7},
+      zapgob:{name:"Zapgob",type:"electric",icon:"ϟ",hp:12,attack:7},
+      stormgob:{name:"Stormgob",type:"electric",icon:"ϟ",hp:27,attack:11},
+      moldmunch:{name:"Moldmunch",type:"grass",icon:"✿",hp:20,attack:3},
+      sporelord:{name:"Sporelord",type:"grass",icon:"✿",hp:37,attack:7},
+      quarklet:{name:"Quarklet",type:"cosmic",icon:"☄",hp:14,attack:5},
+      quarkzilla:{name:"Quarkzilla",type:"cosmic",icon:"☄",hp:33,attack:10},
+      saucerpup:{name:"Saucerpup",type:"cosmic",icon:"☄",hp:17,attack:4},
+      orbithound:{name:"Orbithound",type:"cosmic",icon:"☄",hp:35,attack:9},
+      glitchgrub:{name:"Glitchgrub",type:"electric",icon:"ϟ",hp:15,attack:5},
+      bytebeetle:{name:"Bytebeetle",type:"electric",icon:"ϟ",hp:31,attack:9},
+      voidsnail:{name:"Voidsnail",type:"cosmic",icon:"☄",hp:23,attack:3},
+      chronoshell:{name:"Chronoshell",type:"cosmic",icon:"☄",hp:43,attack:7}
     };
     const party=[];
     for(const member of input.party){
