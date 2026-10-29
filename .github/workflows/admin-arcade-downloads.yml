@@ -42,7 +42,20 @@ jobs:
           if missing: raise SystemExit('Missing playable entry points: '+', '.join(missing))
           if not built: raise SystemExit('No games packaged')
           print(f'Packaged {built} games')
+          with (out/'manifest.json').open('w') as manifest:
+              json.dump({'count':built,'games':sorted(p.stem for p in out.glob('*.zip'))},manifest,indent=2)
+          for archive in out.glob('*.zip'):
+              with zipfile.ZipFile(archive) as z:
+                  if z.testzip() is not None or 'index.html' not in z.namelist():
+                      raise SystemExit(f'Invalid game ZIP: {archive.name}')
           PY
+      - name: Retain testable game archives as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-arcade-game-zips
+          path: /tmp/ashfall-admin-packages/
+          retention-days: 7
+          if-no-files-found: error
       - name: Publish private packages to Cloudflare R2
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
