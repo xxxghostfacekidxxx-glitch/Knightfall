@@ -33,6 +33,7 @@ jobs:
           rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='dist' /tmp/fable-gta/ vendor/fable-gta/
           cp /tmp/fable-gta-revision.txt vendor/fable-gta/UPSTREAM_COMMIT.txt
           cp arcade-overrides/fable-gta/src/App.tsx vendor/fable-gta/src/App.tsx
+          cp arcade-overrides/fable-gta/src/render/builtinModels.ts vendor/fable-gta/src/render/builtinModels.ts
       - name: Install dependencies and verify TypeScript
         working-directory: vendor/fable-gta
         run: npm ci --no-audit --no-fund
