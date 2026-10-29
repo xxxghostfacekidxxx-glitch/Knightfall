@@ -1191,15 +1191,23 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5},
       minionmouse:{name:"Minion Mouse",type:"electric",icon:"🐭",hp:34,attack:11},
       minivillain:{name:"Mini Villain",type:"ghost",icon:"♛",hp:38,attack:12},
-      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13}
+      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13},
+      gloamshade:{name:"Gloamshade",type:"ghost",icon:"☽",hp:23,attack:9},
+      thornmaw:{name:"Thornmaw",type:"thorn",icon:"✥",hp:32,attack:8},
+      gravruckle:{name:"Gravruckle",type:"stone",icon:"⬟",hp:39,attack:7},
+      doomwing:{name:"Doomwing",type:"air",icon:"⌁",hp:27,attack:10},
+      noodlarch:{name:"Noodlarch",type:"cosmic",icon:"〰",hp:31,attack:9},
+      bliporacle:{name:"Bliporacle",type:"air",icon:"✧",hp:26,attack:11},
+      hexhound:{name:"Hexhound",type:"ghost",icon:"✦",hp:30,attack:10},
+      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9}
     };
     const lead=save.party?.[0];
     if(!Array.isArray(save.party)||!lead||!species[lead.id])return json({error:"Your party save is invalid."},400,origin);
     if(!Number.isInteger(lead.hp)||lead.hp<0||lead.hp>lead.maxHp)return json({error:"Your active creature has invalid health."},400,origin);
     const strongAgainst={cosmic:["ghost","air"],fire:["grass","thorn"],water:["fire","stone"],grass:["water","stone"],electric:["water","air"],stone:["fire","electric"],air:["thorn"],thorn:["water"],ghost:["ghost"]};
     const typeMultiplier=(attacker,defender)=>strongAgainst[attacker]?.includes(defender)?1.5:(strongAgainst[defender]?.includes(attacker)?0.75:1);
-    const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7]};
-    const moves={ashhorn:"Tax-Free Inferno",mossreaper:"Cemetery Bloom",cryptfin:"Haunted Undertow",voltmaw:"Blackout Bite",squibmarshal:"Admiral's Override",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap"};
+    const evolutions={embercub:["ashhorn",5],mossbit:["mossreaper",5],driftfin:["cryptfin",5],zipfang:["voltmaw",6],squibblex:["squibmarshal",6],glorpbot:["glorpcannon",7],gloamlet:["gloamshade",5],thornspit:["thornmaw",6],grubruckle:["gravruckle",6],mournwing:["doomwing",6],noodloid:["noodlarch",7],blipmoth:["bliporacle",7],hexpup:["hexhound",7],starjelly:["astraljelly",8]};
+    const moves={ashhorn:"Tax-Free Inferno",mossreaper:"Cemetery Bloom",cryptfin:"Haunted Undertow",voltmaw:"Blackout Bite",squibmarshal:"Admiral's Override",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
     const conditions={fire:"burn",electric:"shock",ghost:"poison",thorn:"poison"};
     const tick=target=>{if(!target.status||target.hp<=0)return "";if(target.status==="shock"&&Math.random()<.25)return target.name+" was stunned. ";const n=Math.max(1,Math.ceil(target.maxHp/12));target.hp=Math.max(0,target.hp-n);return target.name+" took "+n+" "+target.status+" damage. ";};
     const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
@@ -1371,7 +1379,15 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
       starjelly:{name:"Starjelly",type:"cosmic",icon:"✺",hp:18,attack:5},
       minionmouse:{name:"Minion Mouse",type:"electric",icon:"🐭",hp:34,attack:11},
       minivillain:{name:"Mini Villain",type:"ghost",icon:"♛",hp:38,attack:12},
-      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13}
+      minieddie:{name:"Mini Eddie",type:"fire",icon:"★",hp:42,attack:13},
+      gloamshade:{name:"Gloamshade",type:"ghost",icon:"☽",hp:23,attack:9},
+      thornmaw:{name:"Thornmaw",type:"thorn",icon:"✥",hp:32,attack:8},
+      gravruckle:{name:"Gravruckle",type:"stone",icon:"⬟",hp:39,attack:7},
+      doomwing:{name:"Doomwing",type:"air",icon:"⌁",hp:27,attack:10},
+      noodlarch:{name:"Noodlarch",type:"cosmic",icon:"〰",hp:31,attack:9},
+      bliporacle:{name:"Bliporacle",type:"air",icon:"✧",hp:26,attack:11},
+      hexhound:{name:"Hexhound",type:"ghost",icon:"✦",hp:30,attack:10},
+      astraljelly:{name:"Astraljelly",type:"cosmic",icon:"✺",hp:33,attack:9}
     };
     const party=[];
     for(const member of input.party){
