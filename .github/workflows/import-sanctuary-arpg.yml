@@ -26,22 +26,36 @@ jobs:
           test -f /tmp/sanctuary/sanctuary.html
           grep -q 'MIT License' /tmp/sanctuary/LICENSE
           git -C /tmp/sanctuary rev-parse HEAD > /tmp/sanctuary-revision
-      - name: Copy static game and preserve licenses
+      - name: Copy untouched original and independent Ash-Fall development fork
         run: |
-          mkdir -p public/arcade/hosted/sanctuary-end
-          rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='Server' --exclude='tests' --exclude='.github' --exclude='package-lock.json' --exclude='package.json' --exclude='jsconfig.json' --exclude='biome.json' --exclude='README.md' --exclude='ROADMAP.md' --exclude='CHANGELOG.md' /tmp/sanctuary/ public/arcade/hosted/sanctuary-end/
-          cp /tmp/sanctuary-revision public/arcade/hosted/sanctuary-end/UPSTREAM_COMMIT.txt
-          cp arcade-overrides/sanctuary/ashfall-theme.css public/arcade/hosted/sanctuary-end/ashfall-theme.css
+          ORIGINAL=public/arcade/hosted/sanctuary-original
+          DEV=public/arcade/hosted/sanctuary-end
+          mkdir -p "$ORIGINAL" "$DEV"
+          # Original is a clean upstream snapshot, without Ash-Fall modifications.
+          rsync -a --delete --exclude='.git' --exclude='node_modules' --exclude='Server' --exclude='tests' --exclude='.github' --exclude='package-lock.json' --exclude='package.json' --exclude='jsconfig.json' --exclude='biome.json' --exclude='README.md' --exclude='ROADMAP.md' --exclude='CHANGELOG.md' /tmp/sanctuary/ "$ORIGINAL/"
+          cp /tmp/sanctuary-revision "$ORIGINAL/UPSTREAM_COMMIT.txt"
+          # Create dev copy only once. Never overwrite developer edits on subsequent imports.
+          if [ ! -f "$DEV/sanctuary.html" ]; then
+            cp -a "$ORIGINAL/." "$DEV/"
+            cp /tmp/sanctuary-revision "$DEV/UPSTREAM_COMMIT.txt"
+          fi
+          cp arcade-overrides/sanctuary/ashfall-theme.css "$DEV/ashfall-theme.css"
           python3 - <<'PY'
           from pathlib import Path
-          page = Path('public/arcade/hosted/sanctuary-end/sanctuary.html')
-          html = page.read_text()
+          original=Path('public/arcade/hosted/sanctuary-original/sanctuary.html')
+          dev=Path('public/arcade/hosted/sanctuary-end/sanctuary.html')
+          assert 'ashfall-theme.css' not in original.read_text(), 'Original must remain untouched'
+          html=dev.read_text()
           assert '</head>' in html
-          html = html.replace('</head>', '<link rel="stylesheet" href="./ashfall-theme.css">\n</head>', 1)
-          page.write_text(html)
+          if 'ashfall-theme.css' not in html:
+              html=html.replace('</head>', '<link rel="stylesheet" href="./ashfall-theme.css">\\n</head>', 1)
+              dev.write_text(html)
           PY
       - name: Validate static bundle
         run: |
+          test -s public/arcade/hosted/sanctuary-original/sanctuary.html
+          test -s public/arcade/hosted/sanctuary-original/LICENSE
+          test -s public/arcade/hosted/sanctuary-original/CREDITS.md
           test -s public/arcade/hosted/sanctuary-end/sanctuary.html
           test -s public/arcade/hosted/sanctuary-end/LICENSE
           test -s public/arcade/hosted/sanctuary-end/CREDITS.md
@@ -52,7 +66,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/sanctuary-end
+          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end
           if ! git diff --cached --quiet; then
             git commit -m "vendor(arcade): import Sanctuary's End ARPG with Ash-Fall theme"
             git push
