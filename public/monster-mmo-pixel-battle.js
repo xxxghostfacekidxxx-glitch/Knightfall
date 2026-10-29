@@ -39,8 +39,8 @@
   fill(0,108,384,100,"#648b75");fill(0,131,384,77,"#86a883");
   for(let i=0;i<24;i++)fill((i*59)%384,138+(i*23)%68,7,2,i%2?"#759d79":"#b5bd91");
   fill(219,102,140,13,"#355f68");fill(230,93,119,16,"#acc2a2");fill(23,176,149,12,"#395b62");fill(34,164,127,15,"#a3b69b");
-  creature(260,34,enemy.id,enemy.type);
-  creature(58,110,lead.id,lead.type,true);
+  if(!window.HellOrbitSprites?.draw(c,enemy.id,256,28,80,Math.floor(performance.now()/260)%4))creature(260,34,enemy.id,enemy.type);
+  if(!window.HellOrbitSprites?.draw(c,lead.id,49,105,80,Math.floor(performance.now()/330)%4,true))creature(58,110,lead.id,lead.type,true);
   fill(8,8,153,40,"#172339");fill(11,11,147,34,"#f7efdc");
   fill(219,151,155,46,"#172339");fill(222,154,149,40,"#f7efdc");
   c.font="bold 10px monospace";c.fillStyle="#252238";
@@ -56,5 +56,5 @@
   current=event.detail?.enemy&&event.detail?.lead?event.detail:null;
   canvas.hidden=!current;if(current)refresh();
  });
- canvas.hidden=true;
+ function animate(){if(current&&!panel.hidden)refresh();requestAnimationFrame(animate);}\n requestAnimationFrame(animate);\n canvas.hidden=true;
 })();
