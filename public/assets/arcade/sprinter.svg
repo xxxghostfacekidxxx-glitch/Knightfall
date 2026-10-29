@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
-<defs><linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e0c0a0"/><stop offset=".45" stop-color="#a16a66"/><stop offset="1" stop-color="#4c313e"/></linearGradient><linearGradient id="rags" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4e3443"/><stop offset="1" stop-color="#12121b"/></linearGradient><linearGradient id="bone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0d1"/><stop offset="1" stop-color="#a99577"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="2"/></filter></defs>
+<defs><linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e8b5f5"/><stop offset=".45" stop-color="#a16a66"/><stop offset="1" stop-color="#4c313e"/></linearGradient><linearGradient id="rags" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4e3443"/><stop offset="1" stop-color="#12121b"/></linearGradient><linearGradient id="bone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0d1"/><stop offset="1" stop-color="#a99577"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="2"/></filter></defs>
 <ellipse cx="64" cy="151" rx="27" ry="5" fill="#020207" opacity=".8" filter="url(#shadow)"/>
 <!-- forward-leaning runner limbs -->
 <path d="m43 95-7 19-17 11-7 12 12 5 19-10 14-17 5-15z" fill="#29202b" stroke="#09090f" stroke-width="4" stroke-linejoin="round"/>
 <path d="m73 98 14 17 17 3 11 10-5 8-20-3-20-12-9-14z" fill="#3b2631" stroke="#09090f" stroke-width="4" stroke-linejoin="round"/>
-<path d="m13 133 12-2 7 5-3 8-13 1-6-5zM100 125l13 2 5 8-5 6-15-5z" fill="#0c0c13" stroke="#d96c5f" stroke-width="2"/>
-<path d="m31 126 9-4m52-3 7 3" stroke="#e3b49a" stroke-width="1.4"/>
+<path d="m13 133 12-2 7 5-3 8-13 1-6-5zM100 125l13 2 5 8-5 6-15-5z" fill="#0c0c13" stroke="#ff55d8" stroke-width="2"/>
+<path d="m31 126 9-4m52-3 7 3" stroke="#e8b5f5" stroke-width="1.4"/>
 <!-- outstretched ragged arms -->
 <path d="m44 48-14 6-13 15-1 13 11 8 10-7 11-17M82 49l14 3 15 15 1 12-9 9-11-7-10-16" fill="url(#rags)" stroke="#0b0911" stroke-width="4.5" stroke-linejoin="round"/>
 <path d="m19 69 11 2-1 10-8 5-7-8zM101 67l9 3 1 10-8 6-7-7z" fill="#8e4e4f" stroke="#18101a" stroke-width="2.5"/>
 <!-- exposed tendons and ripped shirt -->
 <path d="m41 45 41-2 12 16-10 40-19 9-23-9-12-36z" fill="url(#rags)" stroke="#0b0911" stroke-width="4.5" stroke-linejoin="round"/>
-<path d="m44 55 10 5-5 30-8-2m37-32-8 7 7 26 7-3" fill="none" stroke="#e56c62" stroke-width="2.5"/>
+<path d="m44 55 10 5-5 30-8-2m37-32-8 7 7 26 7-3" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
 <path d="m55 53 17-1 4 35-11 11-10-9z" fill="#6f414b" stroke="#17101a" stroke-width="3"/>
 <path d="m61 60 8-1 3 24-7 8-7-8z" fill="#17121c"/>
 <path d="m44 71 8 3-3 7-8-3m32-8 8-4" fill="none" stroke="#d4a0a0" stroke-width="1.5"/>
@@ -24,7 +24,7 @@
 <path d="m45 28 16-4-2 7-13 3m19-5 14-3 3 6-16 4z" fill="#26131e"/>
 <!-- feral eyes -->
 <path d="m47 33 12-2-2 7-10 2zM67 32l12-2 2 6-13 3z" fill="#22111a"/>
-<path d="m49 35 7-1" stroke="#ffcf3f" stroke-width="3" stroke-linecap="round"/>
+<path d="m49 35 7-1" stroke="#56306b" stroke-width="3" stroke-linecap="round"/>
 <path d="m69 34 7-1" stroke="#ff4e47" stroke-width="3" stroke-linecap="round"/>
 <path d="m63 31-4 11 4 2" fill="none" stroke="#6e343e" stroke-width="2"/>
 <!-- open jaw, teeth and drool -->
@@ -33,9 +33,9 @@
 <path d="m59 57 3 6 2-6m5-1 2 5" fill="none" stroke="#8ee342" stroke-width="1.7"/>
 <!-- torn collar and warning tape -->
 <path d="m40 51 13 6 6 9-10-4-5-5-5 3-5-8zM80 50l-8 7-5 9 9-3 5-5 5 2 4-7z" fill="#121019" stroke="#7d4654" stroke-width="2"/>
-<path d="m46 62 31 2-2 5-30-2z" fill="#ffcf3f"/>
+<path d="m46 62 31 2-2 5-30-2z" fill="#56306b"/>
 <path d="m49 63 5 4m7-4 5 4m7-4 4 4" stroke="#18131a" stroke-width="2"/>
 <!-- fingers stretched forward -->
 <path d="m15 79-9 4 1 4 9-1 4 4 4-3-3-8zM108 77l10 2 2 5-10 3-3 4-4-4z" fill="#a76c66" stroke="#140d15" stroke-width="2.5"/>
-<path d="m9 84 7 0m99 0 4-1" stroke="#e7c4a4" stroke-width="1.3"/>
+<path d="m9 84 7 0m99 0 4-1" stroke="#e8b5f5" stroke-width="1.3"/>
 </svg>
