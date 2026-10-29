@@ -43,10 +43,10 @@
 .admin-shell .admin-tabs .active{border-color:var(--section-green);box-shadow:0 0 0 1px #c6ff4555}
 .admin-shell .table-wrap{overflow-x:auto;max-width:100%;border-radius:12px}
 .admin-shell :where(.admin-shortcuts,.settings-grid,.test-bot-grid){min-width:0}
-.profile-shell .card{border:1px solid var(--section-stroke);border-radius:18px;background:linear-gradient(145deg,#191426,#0c0d19);box-shadow:0 18px 42px #0006}
-.profile-shell :where(.profile-cover,.avatar){border-color:rgba(255,85,216,.45)}
-.profile-shell :where(.wallet-card,.profile-stats>div,.friend-card){border-radius:14px;box-shadow:0 10px 25px #0004}
-.profile-shell :where(.action,.friend-request-row button){min-height:42px}
+body:not(.profile-custom-theme) .profile-shell .card{border:1px solid var(--section-stroke);border-radius:18px;background:linear-gradient(145deg,#191426,#0c0d19);box-shadow:0 18px 42px #0006}
+body:not(.profile-custom-theme) .profile-shell :where(.profile-cover,.avatar){border-color:rgba(255,85,216,.45)}
+body:not(.profile-custom-theme) .profile-shell :where(.wallet-card,.profile-stats>div,.friend-card){border-radius:14px;box-shadow:0 10px 25px #0004}
+body:not(.profile-custom-theme) .profile-shell :where(.action,.friend-request-row button){min-height:42px}
 .members-page .members-grid{gap:clamp(.65rem,2vw,1.15rem)}
 .members-page .member-card{background:linear-gradient(145deg,#191427,#0d101c);border:1px solid var(--section-stroke);border-radius:15px}
 .foundry :where(.tool-card,.notice,.quick-grid>a),.dt-workspace-nav :where(.dt-section-nav,.metric){border-color:var(--section-stroke);border-radius:14px}
