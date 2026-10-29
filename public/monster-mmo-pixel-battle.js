@@ -51,7 +51,24 @@
   c.fillText("HP "+lead.hp+"/"+lead.maxHp,230,190);
   if(effect){
    const elapsed=performance.now()-effect.started;
-   if(elapsed>=850)effect=null;
+   if(effect.damage!==null&&Number.isFinite(effect.damage)&&effect.damage>=0&&elapsed<1100){
+    const lift=Math.min(24,elapsed/28),x=effect.target==="ally"?80:290,y=(effect.target==="ally"?132:57)-lift;
+    c.font="bold 16px monospace";c.textAlign="center";
+    c.fillStyle="#11162b";c.fillText("-"+effect.damage,x+2,y+2);
+    c.fillStyle=effect.multiplier>1?"#fff46c":effect.multiplier<1?"#9bd5ff":"#ffffff";
+    c.fillText("-"+effect.damage,x,y);c.textAlign="start";
+   }
+   if(effect.fainted&&elapsed<1100){
+    const alpha=Math.max(0,1-elapsed/1100);
+    c.fillStyle="rgba(12,14,30,"+(0.7*alpha)+")";c.fillRect(253,28,82,79);
+    c.font="bold 13px monospace";c.fillStyle="#ff6bcb";c.fillText("FAINTED",260,71);
+   }
+   if(effect.status&&elapsed<1100){
+    const names={burn:"BURN",shock:"SHOCK",poison:"CURSE"};
+    const status=names[effect.status];
+    if(status){c.font="bold 10px monospace";c.fillStyle="#ffe16b";c.fillText(status,258,40);}
+   }
+   if(elapsed>=1100)effect=null;
    else{
     const p=elapsed/850,hit=effect.kind==="attack",special=effect.kind==="special",evolution=effect.kind==="evolution";
     if(hit||special){
@@ -126,7 +143,7 @@
  document.addEventListener("hell-high-orbit:effect",event=>{
   const detail=event.detail||{};
   if(!["attack","special","evolution"].includes(detail.kind))return;
-  effect={kind:detail.kind,type:detail.type,species:detail.species,started:performance.now()};
+  effect={kind:detail.kind,type:detail.type,species:detail.species,damage:Number.isFinite(detail.damage)?detail.damage:null,multiplier:detail.multiplier||1,target:detail.target||"enemy",fainted:!!detail.fainted,status:detail.status||null,started:performance.now()};
   refresh();
  });
  document.addEventListener("hell-high-orbit:battle",event=>{
