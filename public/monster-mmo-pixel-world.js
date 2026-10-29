@@ -61,14 +61,45 @@
         fill(x+15,y+12,3,3,"#22273a");
       }
     }
+    /* Distinct roadside scenery and settlement silhouettes, drawn from original pixels. */
+    if(path&&!t.classList.contains("camp")&&!t.classList.contains("landmark")){
+      const h=hash(x/32,y/32,29);
+      if(h%13===0){ // route signpost
+        fill(x+13,y+10,4,19,"#513d38");
+        fill(x+7,y+8,18,9,"#eee1a9");
+        fill(x+9,y+10,13,2,"#694b4a");
+        fill(x+10,y+13,9,2,"#92705a");
+      }else if(h%17===0){ // trail lamp
+        fill(x+14,y+12,4,17,"#354a50");
+        fill(x+10,y+8,12,7,"#d4ef9e");
+        fill(x+12,y+6,8,3,"#263d48");
+      }
+    }
     if(t.classList.contains("camp")) {
-      fill(x+4,y+23,25,5,"#453a47");fill(x+6,y+15,20,10,"#a83f75");
-      fill(x+9,y+10,14,15,"#ffd987");fill(x+14,y+16,5,9,"#5a3449");
-      fill(x+11,y+8,10,4,"#ff79b5");
+      // Field station: roof, lit door, sign and a healing beacon.
+      fill(x+2,y+25,28,5,"#374653");
+      fill(x+4,y+12,24,15,"#e7d7b8");
+      fill(x+2,y+9,28,6,"#9d4c81");
+      fill(x+6,y+15,7,7,"#75c5d0");
+      fill(x+19,y+15,6,7,"#75c5d0");
+      fill(x+13,y+19,6,8,"#51394e");
+      fill(x+13,y+5,6,7,"#caff45");
+      fill(x+15,y+3,2,11,"#ff74bf");
+      fill(x+11,y+7,10,3,"#caff45");
     }
     if(t.classList.contains("landmark")) {
-      fill(x+9,y+22,15,7,"#1a1a2d");fill(x+12,y+9,9,15,"#d9ff72");
-      fill(x+14,y+5,5,6,"#ff58ce");fill(x+14,y+12,4,8,"#427766");
+      if(alien){ // grounded satellite dish
+        fill(x+8,y+25,18,5,"#27384c");fill(x+14,y+13,4,13,"#8adce0");
+        fill(x+7,y+6,18,10,"#9df2e5");fill(x+10,y+9,13,5,"#305a70");
+        fill(x+16,y+4,3,8,"#ff80d4");
+      }else if(demon){ // infernal courthouse
+        fill(x+4,y+22,24,8,"#302a42");fill(x+6,y+11,20,13,"#bc688f");
+        fill(x+4,y+8,24,5,"#3e304c");fill(x+8,y+4,5,8,"#e87aab");
+        fill(x+20,y+4,5,8,"#e87aab");fill(x+14,y+15,5,9,"#ffe4a8");
+      }else{ // disputed treaty monument
+        fill(x+6,y+23,20,7,"#303d4b");fill(x+11,y+10,11,15,"#e3e8c0");
+        fill(x+14,y+5,5,8,"#ff7cc8");fill(x+12,y+13,7,4,"#caff45");
+      }
     }
   }
   let facing="down", step=0, previousCell=-1, walkFrame=0;
