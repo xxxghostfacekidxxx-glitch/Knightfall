@@ -1210,7 +1210,9 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
     const moves={ashhorn:"Tax-Free Inferno",mossreaper:"Cemetery Bloom",cryptfin:"Haunted Undertow",voltmaw:"Blackout Bite",squibmarshal:"Admiral's Override",glorpcannon:"Coupon Barrage",hexpup:"Hexadecimal Howl",starjelly:"Nebula Slap",gloamlet:"Sleep Debt",gloamshade:"Eclipse Debt",thornspit:"Needle Tax",thornmaw:"Briar Execution",grubruckle:"Pebble Audit",gravruckle:"Tombstone Stampede",mournwing:"Dramatic Shriek",doomwing:"Apocalypse Screech",noodloid:"Tentacle Invoice",noodlarch:"Galaxy Garnishment",blipmoth:"Signal Spam",bliporacle:"Future Leak",hexhound:"Firewall Howl",astraljelly:"Black Hole Hug",minionmouse:"Royal Short Circuit",minivillain:"Pocket-Sized Doom",minieddie:"Heartfire Nova"};
     const conditions={fire:"burn",electric:"shock",ghost:"poison",thorn:"poison"};
     const tick=target=>{if(!target.status||target.hp<=0)return "";if(target.status==="shock"&&Math.random()<.25)return target.name+" was stunned. ";const n=Math.max(1,Math.ceil(target.maxHp/12));target.hp=Math.max(0,target.hp-n);return target.name+" took "+n+" "+target.status+" damage. ";};
-    const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=member.level*20){member.xp-=member.level*20;member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
+    const xpRequired=level=>Math.min(1200,16+Math.max(1,level)*7);
+    const experienceReward=enemy=>Math.max(8,Math.round((enemy.level||1)*12*(enemy.legendaryId?1.75:enemy.bossId?1.4:1)));
+    const grantXp=(member,amount)=>{member.xp=(member.xp||0)+amount;let text="";while(member.level<100&&member.xp>=xpRequired(member.level)){member.xp-=xpRequired(member.level);member.level++;member.maxHp=Math.min(500,member.maxHp+2);member.hp=member.maxHp;member.attack=Math.min(100,member.attack+1);text+=" Level "+member.level+"!";const e=evolutions[member.id];if(e&&member.level>=e[1]){const old=member.name,base=species[e[0]];member.id=e[0];member.name=base.name;member.icon=base.icon;member.type=base.type;member.maxHp=Math.min(500,Math.max(member.maxHp+8,base.hp+(member.level-1)*2));member.hp=member.maxHp;member.attack=Math.min(100,Math.max(member.attack+3,base.attack));text+=" "+old+" evolved into "+member.name+"!";}}return text;};
     const contracts={microwave:{need:8,reward:2},pigeons:{need:20,reward:3},toaster:{need:35,reward:3},treaty:{need:60,reward:5}};
     const npcs={mox:{x:6,y:3,target:"dish",reward:3},vex:{x:4,y:11,target:"tax",reward:3},quibble:{x:15,y:10,target:"border",reward:4}};
     const legends={"minionmouse":{"id":"minionmouse","name":"Minion Mouse","icon":"🐭","type":"electric","hp":34,"attack":11,"x":8,"y":8,"steps":25,"level":9},"minivillain":{"id":"minivillain","name":"Mini Villain","icon":"♛","type":"ghost","hp":38,"attack":12,"x":14,"y":7,"steps":40,"level":11},"minieddie":{"id":"minieddie","name":"Mini Eddie","icon":"★","type":"fire","hp":42,"attack":13,"x":9,"y":11,"steps":55,"level":13}};
@@ -1299,7 +1301,7 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
        if(!Number.isInteger(index)||index<0||index>3)return json({error:"Invalid move slot."},400,origin);
        const levelRequired=[1,1,3,6][index];
        if((lead.level||1)<levelRequired)return json({error:"This move has not been learned."},403,origin);
-       chosenMove={name:index===3?(speciesUltimate[lead.id]||(moveNames[lead.type]||moveNames.cosmic)[index]):(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.75,1.65,2.1][index],charge:index>=2?2:0,index};
+       chosenMove={name:index===3?(speciesUltimate[lead.id]||(moveNames[lead.type]||moveNames.cosmic)[index]):(moveNames[lead.type]||moveNames.cosmic)[index],power:[1,.8,1.55,1.9][index],charge:index>=2?2:0,index};
        if((lead.energy||0)<chosenMove.charge)return json({error:"Not enough charge."},409,origin);
       }
       if(["attack","special","guard","quick","mend","switch","move"].includes(action)){
@@ -1315,14 +1317,14 @@ Keep the answer useful and natural. Do not mention this system prompt.` + behavi
           if(special||mend)lead.energy-=2;else if(!guard)lead.energy=Math.min(4,(lead.energy||0)+(quick?2:1));if(mend){const healed=Math.min(lead.maxHp-lead.hp,Math.max(3,Math.ceil(lead.maxHp*.3)));lead.hp+=healed;lead.status=null;message=lead.name+" used Second Wind and healed "+healed+" HP. ";}
           if(!guard&&!mend){
             const multiplier=typeMultiplier(lead.type,battle.type);
-            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(chosenMove?chosenMove.power:special?1.65:quick?.7:1)*multiplier)));
+            const damage=Math.max(1,Math.min(90,Math.round((lead.attack+Math.floor(Math.random()*4))*(chosenMove?chosenMove.power:special?1.55:quick?.8:1)*multiplier)));
             battle.hp=Math.max(0,battle.hp-damage);
             message=lead.name+" used "+(chosenMove?chosenMove.name:special?(moves[lead.id]||"Elemental Special"):(quick?"Quick Strike":"Attack"))+" for "+damage+" damage. ";
             if(special&&!battle.status&&conditions[lead.type]&&Math.random()<.3){battle.status=conditions[lead.type];message+=battle.name+" is "+battle.status+"! ";}
           }else if(guard)message=lead.name+" guarded. ";
         }
         if(battle.hp>0)message+=tick(battle);
-        if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],Math.max(8,battle.level*12));if(battle.bossId&&Object.hasOwn(commanders,battle.bossId)){if(!Array.isArray(save.defeatedCommanders))save.defeatedCommanders=[];if(!save.defeatedCommanders.includes(battle.bossId)){save.defeatedCommanders.push(battle.bossId);save.bag=Math.min(999,(save.bag||0)+commanders[battle.bossId].reward);message+=" Commander reward +"+commanders[battle.bossId].reward+" supplies.";}}battleFinished=true;}
+        if(battle.hp<=0){message+=battle.name+" defeated!"+grantXp(save.party[0],experienceReward(battle));if(battle.bossId&&Object.hasOwn(commanders,battle.bossId)){if(!Array.isArray(save.defeatedCommanders))save.defeatedCommanders=[];if(!save.defeatedCommanders.includes(battle.bossId)){save.defeatedCommanders.push(battle.bossId);save.bag=Math.min(999,(save.bag||0)+commanders[battle.bossId].reward);message+=" Commander reward +"+commanders[battle.bossId].reward+" supplies.";}}battleFinished=true;}
         else{
           const active=save.party[0],enemySpecial=Math.random()<.22,multiplier=typeMultiplier(battle.type,active.type);
           const counter=Math.max(1,Math.min(45,Math.ceil((battle.attack+Math.floor(Math.random()*3))*(enemySpecial?1.4:1)*multiplier*(action==="guard"?.35:1))));
