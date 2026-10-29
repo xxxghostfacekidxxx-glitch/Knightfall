@@ -1,0 +1,82 @@
+{
+  "generatedBy": "npm run art",
+  "entries": [
+    {
+      "file": "art/font.png",
+      "width": 96,
+      "height": 99,
+      "bytes": 1382,
+      "sha256": "737cb39ed201b210"
+    },
+    {
+      "file": "art/tileset.png",
+      "width": 384,
+      "height": 48,
+      "bytes": 5761,
+      "sha256": "b4241b1d416c4906"
+    },
+    {
+      "file": "art/frame.png",
+      "width": 24,
+      "height": 24,
+      "bytes": 135,
+      "sha256": "6e3b0bb7a8832f59"
+    },
+    {
+      "file": "art/badges.png",
+      "width": 34,
+      "height": 132,
+      "bytes": 766,
+      "sha256": "ae5cae59c13a1681"
+    },
+    {
+      "file": "art/insignes.png",
+      "width": 12,
+      "height": 144,
+      "bytes": 1354,
+      "sha256": "d921f93d89bc2fc2"
+    },
+    {
+      "file": "art/icons.png",
+      "width": 224,
+      "height": 16,
+      "bytes": 1241,
+      "sha256": "6b559d02776cdb9c"
+    },
+    {
+      "file": "art/characters.png",
+      "width": 48,
+      "height": 600,
+      "bytes": 5163,
+      "sha256": "723a2fdfcf4f6118"
+    },
+    {
+      "file": "art/creatures.png",
+      "width": 128,
+      "height": 2560,
+      "bytes": 47703,
+      "sha256": "4228b04990ebb743"
+    },
+    {
+      "file": "icone-32.png",
+      "width": 32,
+      "height": 32,
+      "bytes": 326,
+      "sha256": "ef944d5aa43436b8"
+    },
+    {
+      "file": "icone-180.png",
+      "width": 180,
+      "height": 180,
+      "bytes": 1544,
+      "sha256": "7bf087f353315aab"
+    },
+    {
+      "file": "icone-512.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 4462,
+      "sha256": "8209f0d60618f92f"
+    }
+  ]
+}

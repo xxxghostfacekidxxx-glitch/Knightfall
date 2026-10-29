@@ -1,0 +1,22 @@
+{
+  "width": 16,
+  "height": 20,
+  "frames": 3,
+  "directions": [
+    "sud",
+    "nord",
+    "est"
+  ],
+  "order": [
+    "heros",
+    "professeur",
+    "villageois",
+    "villageoise",
+    "dresseur",
+    "dresseuse",
+    "marchand",
+    "soigneuse",
+    "champion",
+    "randonneur"
+  ]
+}

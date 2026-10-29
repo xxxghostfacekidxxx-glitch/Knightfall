@@ -1,0 +1,30 @@
+{
+  "tileSize": 16,
+  "frameCount": 3,
+  "order": [
+    "herbe",
+    "herbeClaire",
+    "herbesHautes",
+    "fleurs",
+    "chemin",
+    "sable",
+    "eau",
+    "arbre",
+    "buisson",
+    "rocher",
+    "souche",
+    "solGrotte",
+    "gravier",
+    "murGrotte",
+    "cristal",
+    "mur",
+    "toit",
+    "porte",
+    "panneau",
+    "rebord",
+    "solInterieur",
+    "tapis",
+    "comptoir",
+    "vide"
+  ]
+}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <!-- Aligné sur --bg : la barre d'outils de Chrome mobile affichait une couture. -->
+    <meta name="theme-color" content="#0b0f14" />
+    <!-- La langue par défaut du jeu est l'anglais ; `main.ts` corrige `lang` et cette
+         description reste celle que liront les moteurs de recherche. -->
+    <meta
+      name="description"
+      content="Terravia — a creature-collecting RPG in a procedurally generated world. Runs in your browser: no server, no account, no install."
+    />
+    <title>Terravia</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./icone-32.png" />
+    <link rel="apple-touch-icon" href="./icone-180.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+
+    <!-- Le jeu se partage par un lien : sans ces balises, l'aperçu était nu. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Terravia" />
+    <meta
+      property="og:description"
+      content="A creature-collecting RPG in a procedurally generated world. The whole run fits in a seed."
+    />
+    <meta property="og:url" content="https://maxgfr.github.io/terravia/" />
+    <meta property="og:image" content="https://maxgfr.github.io/terravia/icone-512.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Terravia" />
+    <meta
+      name="twitter:description"
+      content="A creature-collecting RPG in a procedurally generated world. The whole run fits in a seed."
+    />
+    <meta name="twitter:image" content="https://maxgfr.github.io/terravia/icone-512.png" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0f14;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior: none;
+        touch-action: none;
+      }
+      /* Colonne : la scène prend toute la place disponible, les contrôles tactiles
+         occupent le bas. Le canvas est ainsi dimensionné d'après l'espace qui lui
+         reste réellement, au lieu de se superposer aux boutons. */
+      /* `inset: 0` dimensionne sur le viewport de **mise en page**, qui inclut la bande
+         masquée par la barre d'adresse d'un navigateur mobile : le bas de la colonne —
+         boîte de dialogue et menu de combat — passait dessous. `100dvh` suit la hauteur
+         réellement visible, y compris quand la barre se rétracte. `100vh` reste en repli
+         pour les navigateurs qui ignorent l'unité dynamique. */
+      #app {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      /* Aucun rembourrage : le canvas se dimensionne sur la place réelle, et quatre
+         pixels de marge se voyaient comme un liseré noir sur téléphone. */
+      #scene {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        place-items: center;
+      }
+      canvas {
+        display: block;
+        image-rendering: pixelated;
+        touch-action: none;
+      }
+
+      /* Écran affiché avant que le JS ne prenne la main, et si le JS échoue. */
+      #boot {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #7d8590;
+        font-size: 14px;
+        letter-spacing: 0.1em;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        /* Le message d'échec tient sur deux lignes : la cause, puis le détail. Sans cette
+           règle, le saut de ligne s'écrasait en simple espace. */
+        white-space: pre-line;
+        text-align: center;
+        padding: 0 1rem;
+      }
+      #boot.gone {
+        opacity: 0;
+      }
+      noscript {
+        color: #e6edf3;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      /* Contrôles tactiles.
+         Ils vivent dans le DOM, pas sur le canvas : ils profitent ainsi de la taille
+         réelle de l'écran plutôt que de la résolution virtuelle de 320 pixels, et
+         restent assez grands pour le pouce. */
+      .tactile {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        /* Les zones sûres tiennent dans le raccourci. Deux règles `padding-left` et
+           `padding-right` le précédaient : ce raccourci les écrasait, si bien que la
+           correction annoncée pour les téléphones à encoche n'avait aucun effet et que
+           le pavé directionnel courait toujours sous le coin arrondi. */
+        padding: 0.5rem max(1rem, env(safe-area-inset-right)) calc(0.75rem + env(safe-area-inset-bottom))
+          max(1rem, env(safe-area-inset-left));
+        pointer-events: none;
+        user-select: none;
+        /* Un appui long sur une touche ouvrait le menu contextuel d'Android en plein jeu. */
+        -webkit-touch-callout: none;
+      }
+      /* On masque les contrôles quand *aucun* pointeur grossier n'existe, et non dès
+         qu'un pointeur fin est disponible : un portable tactile ou un iPad avec trackpad
+         se déclare « fin » et perdait son pavé directionnel alors que l'écran répond au
+         doigt. */
+      @media not all and (any-pointer: coarse) {
+        .tactile {
+          display: none;
+        }
+      }
+      .tactile button {
+        pointer-events: auto;
+        background: rgba(244, 241, 230, 0.14);
+        border: 1px solid rgba(244, 241, 230, 0.28);
+        color: #e6edf3;
+        font: inherit;
+        font-size: 18px;
+        border-radius: 12px;
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        backdrop-filter: blur(4px);
+        transition: background 0.08s;
+      }
+      .tactile button.enfonce {
+        background: rgba(224, 160, 60, 0.5);
+      }
+      .tactile-croix {
+        display: grid;
+        grid-template-columns: repeat(3, 52px);
+        grid-template-rows: repeat(2, 52px);
+        gap: 4px;
+      }
+      .tactile-croix button[data-action='nord'] {
+        grid-area: 1 / 2;
+      }
+      .tactile-croix button[data-action='ouest'] {
+        grid-area: 2 / 1;
+      }
+      .tactile-croix button[data-action='sud'] {
+        grid-area: 2 / 2;
+      }
+      .tactile-croix button[data-action='est'] {
+        grid-area: 2 / 3;
+      }
+      .tactile-boutons {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+      }
+      .tactile-boutons button[data-action='valider'] {
+        width: 62px;
+        height: 62px;
+        background: rgba(126, 231, 178, 0.2);
+      }
+    </style>
+    <script type="module" crossorigin src="/arcade/hosted/terravia/assets/index-CwKrJrf9.js"></script>
+  </head>
+  <body>
+    <div id="app"><div id="scene"></div></div>
+    <div id="boot">TERRAVIA</div>
+    <noscript>
+      <div style="position: fixed; inset: 0; display: grid; place-items: center">
+        Terravia a besoin de JavaScript pour fonctionner.
+      </div>
+    </noscript>
+  </body>
+</html>

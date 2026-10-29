@@ -1,0 +1,4 @@
+Terravia by Maxime Golfier (MIT)
+https://github.com/maxgfr/terravia
+This is the original open-source game, built for hosting on Ash-Fall.
+No Ash-Fall ownership of the original artwork, code, or characters is claimed.

@@ -1,0 +1,57 @@
+{
+  "frameSlice": 8,
+  "badge": {
+    "width": 34,
+    "height": 11,
+    "order": [
+      "neutre",
+      "flamme",
+      "onde",
+      "sylve",
+      "foudre",
+      "givre",
+      "roche",
+      "metal",
+      "vent",
+      "ombre",
+      "lumiere",
+      "toxine"
+    ]
+  },
+  "insigne": {
+    "size": 12,
+    "order": [
+      "neutre",
+      "flamme",
+      "onde",
+      "sylve",
+      "foudre",
+      "givre",
+      "roche",
+      "metal",
+      "vent",
+      "ombre",
+      "lumiere",
+      "toxine"
+    ]
+  },
+  "icons": {
+    "size": 16,
+    "order": [
+      "potion",
+      "superPotion",
+      "panacee",
+      "antidote",
+      "reveil",
+      "prisme",
+      "prismeAncre",
+      "prismeRoyal",
+      "baie",
+      "pierreEvolution",
+      "badge",
+      "piece",
+      "carte",
+      "canne"
+    ]
+  }
+}

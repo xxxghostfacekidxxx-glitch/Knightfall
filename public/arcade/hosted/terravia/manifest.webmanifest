@@ -1,0 +1,16 @@
+{
+  "name": "Terravia",
+  "short_name": "Terravia",
+  "description": "A creature-collecting RPG in a procedurally generated world. No server, no account, no install.",
+  "start_url": "/terravia/",
+  "scope": "/terravia/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "icons": [
+    { "src": "icone-32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "icone-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
