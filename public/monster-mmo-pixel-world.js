@@ -184,6 +184,15 @@
     const path=t.classList.contains("path"), stone=t.classList.contains("rock"), wall=t.classList.contains("wall");
     const base=path?"#bba078":stone?"#646879":wall?"#3a4055":alien?"#276779":demon?"#70405c":"#457c54";
     fill(x,y,32,32,base);
+    // Tile-aware edges: stop the terrain from looking like 192 disconnected squares.
+    const tx=x/32,ty=y/32,cells=world.children;
+    const adjacent=(dx,dy)=>tx+dx>=0&&tx+dx<W&&ty+dy>=0&&ty+dy<H?cells[(ty+dy)*W+tx+dx]:null;
+    const sameSurface=t=>!!t&&(path?t.classList.contains("path"):wall?t.classList.contains("wall"):stone?t.classList.contains("rock"):!t.classList.contains("path")&&!t.classList.contains("wall")&&!t.classList.contains("rock"));
+    const north=adjacent(0,-1),south=adjacent(0,1),west=adjacent(-1,0),east=adjacent(1,0);
+    if(!sameSurface(north)){fill(x,y,32,2,path?"#f2d4a3":wall?"#65718a":stone?"#b6b6c6":alien?"#479ca7":demon?"#a86184":"#79a96b");}
+    if(!sameSurface(south)){fill(x,y+30,32,2,path?"#6e584a":wall?"#181f32":stone?"#353b52":alien?"#1d5068":demon?"#4c2a4d":"#31583d");}
+    if(!sameSurface(west)){fill(x,y,2,32,path?"#ead0a2":wall?"#58677c":stone?"#a1a5b5":alien?"#4b99a7":demon?"#b16b90":"#7bb66e");}
+    if(!sameSurface(east)){fill(x+30,y,2,32,path?"#80694e":wall?"#1c273b":stone?"#3c4259":alien?"#1d4e63":demon?"#4b2a4b":"#31583d");}
     if(path) {
       // Interlocking cobbles and compact path borders make routes read as real terrain.
       fill(x,y,32,2,"#e3c79b");fill(x,y+30,32,2,"#8c755f");
