@@ -47,15 +47,23 @@
       fill(x+14,y+5,5,6,"#ff58ce");fill(x+14,y+12,4,8,"#427766");
     }
   }
+  let facing="down", step=0, previousPosition="", previousCell=-1;
+  document.addEventListener("keydown",e=>{const d={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",w:"up",a:"left",s:"down",d:"right"}[e.key];if(d)facing=d;});
+  document.querySelectorAll("[data-move]").forEach(button=>button.addEventListener("click",()=>{facing=button.dataset.move;}));
   function character(x,y,variant=0) {
     const coat=variant===1?"#65e8f5":variant===2?"#caff45":"#ff58c8";
-    fill(x+8,y+27,7,4,"#131522");fill(x+18,y+27,7,4,"#131522");
+    const stride=variant===0?(step%2?2:0):0;
+    fill(x+8,y+27-stride,7,4,"#131522");fill(x+18,y+27-(2-stride),7,4,"#131522");
     fill(x+9,y+20,6,8,"#30365a");fill(x+18,y+20,6,8,"#30365a");
     fill(x+7,y+12,19,12,"#131525");fill(x+9,y+13,15,10,coat);
     fill(x+4,y+15,5,8,"#f2b69c");fill(x+25,y+15,4,8,"#f2b69c");
     fill(x+9,y+4,16,11,"#f2b69c");fill(x+8,y+3,18,5,"#1b1b30");
     fill(x+6,y+6,5,5,"#1b1b30");fill(x+23,y+6,4,5,"#1b1b30");
-    fill(x+12,y+10,3,2,"#22243a");fill(x+20,y+10,3,2,"#22243a");
+    if(variant!==0||facing!=="up"){
+      if(facing==="left"&&variant===0){fill(x+10,y+10,3,2,"#22243a");}
+      else if(facing==="right"&&variant===0){fill(x+21,y+10,3,2,"#22243a");}
+      else{fill(x+12,y+10,3,2,"#22243a");fill(x+20,y+10,3,2,"#22243a");}
+    }else{fill(x+12,y+7,11,5,"#252039");}
     fill(x+10,y+1,14,3,coat);
   }
   function npc(x,y) {
@@ -67,6 +75,13 @@
     const cells=world.children;
     if(cells.length!==W*H)return;
     for(let i=0;i<cells.length;i++)ground((i%W)*TILE,Math.floor(i/W)*TILE,cells[i]);
+    const playerIndex=Array.from(cells).findIndex(t=>t.classList.contains("player"));
+    if(playerIndex>=0&&previousCell>=0&&playerIndex!==previousCell){
+      const dx=playerIndex%W-previousCell%W,dy=Math.floor(playerIndex/W)-Math.floor(previousCell/W);
+      if(dx===1)facing="right";else if(dx===-1)facing="left";else if(dy===1)facing="down";else if(dy===-1)facing="up";
+      step++;
+    }
+    if(playerIndex>=0)previousCell=playerIndex;
     for(let i=0;i<cells.length;i++){
       const t=cells[i],x=(i%W)*TILE,y=Math.floor(i/W)*TILE;
       if(t.classList.contains("npc"))npc(x,y);
