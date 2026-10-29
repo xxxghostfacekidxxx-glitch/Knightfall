@@ -454,3 +454,14 @@ body:has(#battle-panel:not([hidden])) .shell{margin:0!important;padding:0!import
  #battle-panel .battle-command-tabs button{min-height:30px!important}
  #battle-panel .battle-moves button{min-height:32px!important}
 }
+
+/* Keep assistive live-region content out of the three-row battle grid.
+   Without this, #battle can create an implicit fourth row on small screens. */
+#battle-panel:not([hidden]) > #battle.sr-only{
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:-1px!important;overflow:hidden!important;
+ clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important;
+}
+#battle-panel:not([hidden]) > [hidden]{display:none!important}
+#battle-panel:not([hidden]) .battle-command-content > [hidden]{display:none!important}
+#battle-panel:not([hidden]) .battle-command-content > :not([hidden]){min-height:0}
