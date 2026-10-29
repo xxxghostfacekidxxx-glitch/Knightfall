@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'public/arcade/advanced-imports.json'
+      - 'scripts/smoke-advanced-static-games.mjs'
       - '.github/workflows/verify-advanced-live.yml'
 permissions:
   contents: read
