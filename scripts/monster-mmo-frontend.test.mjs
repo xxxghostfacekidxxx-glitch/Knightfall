@@ -171,3 +171,11 @@ test("online map, missions and bosses are enabled in the shared world",()=>{
  assert.match(js,/save\.visitedLandmarks=data\.player\.visitedLandmarks/);
  assert.match(js,/const width=16,height=12/);
 });
+
+test("three legendary shrines have unique portraits, rarity and one-time captures",()=>{
+ for(const id of ["minionmouse","minivillain","minieddie"]){assert.match(js,new RegExp(id+':\\\\['));assert.ok(html.includes('id="legendary-creatures"'));}
+ assert.match(js,/function summonLegendary\(id\)/);
+ assert.match(js,/legendaryIds\.has\(k\)/);
+ assert.match(js,/save\.capturedLegendaries\.push\(battle\.legendaryId\)/);
+ assert.match(js,/action\("legendary",\{id\}\)/);
+});
