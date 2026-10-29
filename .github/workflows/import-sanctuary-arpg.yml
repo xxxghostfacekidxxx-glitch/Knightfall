@@ -79,18 +79,30 @@ jobs:
           grep -q 'ashfall-theme.css' public/arcade/hosted/sanctuary-end/sanctuary.html
       - name: Build downloadable offline game archives
         run: |
-          mkdir -p public/arcade/downloads
-          (cd public/arcade/hosted/sanctuary-original && zip -q -r ../../downloads/sanctuary-original.zip .)
-          (cd public/arcade/hosted/sanctuary-end && zip -q -r ../../downloads/ashfall-infernal-reign-dev.zip .)
-          unzip -tq public/arcade/downloads/sanctuary-original.zip
-          unzip -tq public/arcade/downloads/ashfall-infernal-reign-dev.zip
-          test -s public/arcade/downloads/sanctuary-original.zip
-          test -s public/arcade/downloads/ashfall-infernal-reign-dev.zip
+          mkdir -p /tmp/ashfall-admin-game-packages
+          (cd public/arcade/hosted/sanctuary-original && zip -q -r /tmp/ashfall-admin-game-packages/sanctuary-original.zip .)
+          (cd public/arcade/hosted/sanctuary-end && zip -q -r /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip .)
+          unzip -tq /tmp/ashfall-admin-game-packages/sanctuary-original.zip
+          unzip -tq /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
+          test -s /tmp/ashfall-admin-game-packages/sanctuary-original.zip
+          test -s /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
+      - name: Upload private admin packages to R2 when credentials are configured
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CF_ACCOUNT_ID" ] || [ -z "$CF_API_TOKEN" ]; then
+            echo "::warning::R2 credentials missing; no private download packages published."
+            exit 0
+          fi
+          for game in sanctuary-original ashfall-infernal-reign-dev; do
+            CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_ID" CLOUDFLARE_API_TOKEN="$CF_API_TOKEN" npx --yes wrangler@4 r2 object put "knightfall-personal-admin-vault/admin-game-builds/$game.zip" --file "/tmp/ashfall-admin-game-packages/$game.zip" --remote
+          done
       - name: Commit playable static game
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end public/arcade/downloads/sanctuary-original.zip public/arcade/downloads/ashfall-infernal-reign-dev.zip
+          git add public/arcade/hosted/sanctuary-original public/arcade/hosted/sanctuary-end /tmp/ashfall-admin-game-packages/sanctuary-original.zip /tmp/ashfall-admin-game-packages/ashfall-infernal-reign-dev.zip
           if ! git diff --cached --quiet; then
             git commit -m "vendor(arcade): import Sanctuary's End ARPG with Ash-Fall theme"
             git push
