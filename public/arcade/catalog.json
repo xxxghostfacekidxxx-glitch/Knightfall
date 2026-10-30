@@ -2195,6 +2195,19 @@
       "notes": "Original local single-player game; no multiplayer.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-checkers",
+      "title": "Cinder Checkers",
+      "route": "/arcade/hosted/cinder-checkers/index.html",
+      "description": "Classic diagonal checkers with mandatory captures, multi-jumps, kings, and a local CPU.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original local single-player implementation; gameplay testing pending.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
