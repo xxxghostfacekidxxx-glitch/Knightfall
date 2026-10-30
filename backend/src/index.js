@@ -1686,7 +1686,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid thread id"},400,origin);
       const thread=await env.DB.prepare("SELECT t.id,t.locked,t.deleted_at,c.slug FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.id=?").bind(id).first();
       if(!thread||thread.deleted_at)return json({error:"Thread not found"},404,origin);
-      if(thread.locked||thread.slug==="adults-only")return json({error:"Thread unavailable for bot replies"},403,origin);
+      if(thread.locked||thread.slug==="adults-only"||thread.slug==="adult"||thread.slug==="18-plus")return json({error:"Thread unavailable for bot replies"},403,origin);
       const result=await env.DB.prepare("INSERT INTO posts(thread_id,user_id,body,created_at,updated_at) VALUES(?,?,?,?,?) RETURNING id").bind(id,bot.user_id,content,now,now).first();
       await audit(env,actor,"god_bot_reply","post",result.id,{bot_key:bot.bot_key,thread_id:id});
       return json({ok:true,id:result.id,thread_id:id},201,origin);
