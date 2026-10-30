@@ -459,12 +459,12 @@
       pingActivity();
       setInterval(pingActivity, 120000);
     }).catch(() => {
+      // A temporary network or JSON failure is not proof that the visitor signed out.
+      // Preserve navigation while leaving privileged links hidden until auth succeeds.
       authResolved = true;
       applyProfileVisibility();
-      nav.querySelector(".kf-personal-bots-link")?.remove();
-      nav.querySelector(".kf-messages-shortcut")?.remove();
-      nav.querySelector(".kf-vault-link")?.remove();
-      nav.querySelector(".kf-profile-link")?.remove();
+      nav.querySelector(".kf-admin-link")?.setAttribute("hidden", "");
+      nav.querySelector(".kf-admin-quick-link")?.setAttribute("hidden", "");
     });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
