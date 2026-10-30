@@ -136,3 +136,12 @@ These items were recovered from additional earlier discussions. Verify against c
 - [ ] Earlier Miss Chaos go-live priority: make the core chat functional at its public URL before expanding advanced personality, quests, voice and other optional features.
 - [ ] Ensure the source toolkit's upstream clone script is clearly distinguished from a deploy/install button: cloning into toolkit/vendor does not host games.
 - [ ] Audit catalog entries for source-code/asset license separation, especially franchise fan games and imported artwork.
+
+## Verification ledger: 2026-10-30
+- [x] Reconcile open pull requests: Mindustry documentation PR #188 merged; unsafe untested Electron major-upgrade PR #187 closed; subsequent search returned zero open PRs.
+- [x] Confirm existing source assets: Original Creations manifest, Gravewave sprite loader, Creator Foundry page and offline launcher exist. Their runtime QA remains open.
+- [x] Improve offline launcher resilience: cached catalog fallback, previously installed games accessible during auth outage, and HTML/JSON package-response rejection committed.
+- [x] Update offline shell cache version to propagate launcher changes.
+- [ ] Verify offline launcher installation and ZIP extraction on Android Chrome with a real authorized account.
+- [ ] Verify Playwright navigation workflow completes successfully, including normal member and admin roles.
+- [ ] Delete leftover closed Dependabot branch after confirming no needed changes; branch deletion unavailable in current connector.
