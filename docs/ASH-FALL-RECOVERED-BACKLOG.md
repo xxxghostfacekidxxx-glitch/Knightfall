@@ -125,3 +125,14 @@ These items were recovered from additional earlier discussions. Verify against c
 - [ ] Review seven earlier space-game candidates and 11 Star Wars/Dragon Ball projects for licensing and runnable demos. Franchise engines and proprietary artwork/data require separate clearance; external demos must never be labeled self-hosted.
 - [ ] Terravia open-source creature RPG was specifically selected for integration; verify current route, license, bundle and Android offline support.
 - [ ] Pico's School historical request resolved toward official external links unless redistributable source/assets are proven.
+
+## Fourth recovery pass: confirmed existing resources and overlooked decisions
+- [ ] **Gravewave game-ready sprite pack** is already present at public/assets/arcade/gravewave/ with 16 named sprites and a canvas loader (public/gravewave-sprites.js). Integrate selectively into first-party arcade games; test the previews, 16 preloads, canvas rotations and mobile rendering. Do not unnecessarily regenerate this pack.
+- [ ] **Original Creations Archive** already has a canonical JSON manifest at public/arcade/original-creations.json, displayed in Devil Tools. Cross-link game statuses and source links to God Mode; keep original games separate from upstream adaptations.
+- [ ] **Creator Foundry** already documents Pixelorama, LibreSprite, Piskel, Krita, Tiled, LDtk, Blender, Godot, Audacity, Kenney, OpenGameArt and itch.io asset packs. Reuse this existing directory instead of installing massive editor binaries into production.
+- [ ] **Open-source toolkit** already contains toolkit/catalog.json, toolkit/sync.mjs, toolkit/LICENSE-REVIEW.md and local-only vendor checkouts. Review the toolkit before finding or importing another duplicate project; vendor assets do not automatically become licensed for hosting.
+- [ ] Recover earlier proposed **offline GPT4All 3B + Flutter + optional cloud synchronization/local cache** prototype as an architectural research option only. Firebase was an earlier proposal; reconcile with the current Cloudflare-first stack and free-tier constraint before deciding.
+- [ ] Audit the old Miss Chaos deployment ambiguity: legacy backend/miss-chaos-backend TypeScript, MEMORY KV, frontend/backend separation, old risefromtheashes Worker and duplicate Wrangler configurations. Compare with current deployed routes and avoid reintroducing broken duplicate configs.
+- [ ] Earlier Miss Chaos go-live priority: make the core chat functional at its public URL before expanding advanced personality, quests, voice and other optional features.
+- [ ] Ensure the source toolkit's upstream clone script is clearly distinguished from a deploy/install button: cloning into toolkit/vendor does not host games.
+- [ ] Audit catalog entries for source-code/asset license separation, especially franchise fan games and imported artwork.
