@@ -317,6 +317,8 @@
   const toggle = header.querySelector(".kf-nav-toggle");
   const installButton = header.querySelector(".kf-install-app");
   const profileGroup = nav.querySelector(".kf-profile-group");
+  // The account group stays discoverable when session checks are delayed or fail.
+  if (profileGroup) profileGroup.hidden = false;
   const badge = nav.querySelector(".kf-notify-badge");
   let installPrompt = null;
 
