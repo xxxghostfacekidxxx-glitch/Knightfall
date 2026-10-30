@@ -13,6 +13,7 @@ on:
       - 'public/arcade/hosted/cinder-battleship/**'
       - 'public/arcade/hosted/fifteen-puzzle/**'
       - 'public/arcade/catalog.json'
+      - 'public/nav.js'
 permissions:
   contents: read
 jobs:
