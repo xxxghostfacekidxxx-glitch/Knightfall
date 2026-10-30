@@ -463,8 +463,7 @@
       // Preserve navigation while leaving privileged links hidden until auth succeeds.
       authResolved = true;
       applyProfileVisibility();
-      nav.querySelector(".kf-admin-link")?.setAttribute("hidden", "");
-      nav.querySelector(".kf-admin-quick-link")?.setAttribute("hidden", "");
+      nav.querySelectorAll(".kf-admin-link,.kf-admin-quick-link,.kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-mod-link,.kf-recovery-link").forEach(link => { link.hidden = true; });
     });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
