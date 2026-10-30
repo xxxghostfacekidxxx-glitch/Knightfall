@@ -1,0 +1,27 @@
+name: Arcade Catalog Doctor
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/catalog.json'
+      - 'scripts/arcade-catalog-doctor.mjs'
+      - 'public/arcade/hosted/**'
+      - 'public/monster-mmo.html'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/arcade-catalog-doctor.mjs --report
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcade-catalog-doctor-report
+          path: arcade-catalog-doctor-report.json
+          retention-days: 14
