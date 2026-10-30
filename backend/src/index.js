@@ -1751,16 +1751,16 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!match||request.method!=="PATCH")return json({error:"Unknown bot route"},404,origin);
     let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
     if(!payload||typeof payload!=="object"||Array.isArray(payload))return json({error:"Invalid payload"},400,origin);
-    const allowed=["display_name","bio","cadence"];
+    const allowed=["display_name","bio","cadence","posting_enabled"];
     if(!Object.keys(payload).length||Object.keys(payload).some(k=>!allowed.includes(k)))return json({error:"Unsupported field"},400,origin);
     const existing=await env.DB.prepare("SELECT * FROM god_bot_profiles WHERE bot_key=?").bind(match[1]).first();
     if(!existing)return json({error:"Unknown bot"},404,origin);
-    const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.cadence;
-    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily"].includes(cadence))return json({error:"Invalid profile fields"},400,origin);
-    await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,cadence=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,match[1]).run();
+    const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.cadence,posting=payload.posting_enabled??existing.posting_enabled;
+    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin);
+    await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,cadence=?,posting_enabled=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,Number(posting),match[1]).run();
     await env.DB.prepare("UPDATE users SET display_name=?,bio=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT user_id FROM god_bot_accounts WHERE bot_key=?)").bind(name.trim(),bio,match[1]).run();
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
-    return json({ok:true,bot_key:match[1],posting_enabled:false},200,origin);
+    return json({ok:true,bot_key:match[1],posting_enabled:Number(posting)===1},200,origin);
   }
   if(url.pathname==="/api/auth/me"&&request.method==="GET")return json({user:await getUser(request,env)},200,origin);
   if(url.pathname==="/api/auth/logout"&&request.method==="POST"){const token=getCookie(request,SESSION_COOKIE);if(token)await env.SESSIONS.delete(`session:${token}`);return json({ok:true},200,origin,{"set-cookie":sessionCookie("",0)});}
