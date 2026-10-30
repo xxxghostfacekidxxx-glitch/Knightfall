@@ -23,6 +23,7 @@ async function extractZip(buffer, id, onProgress) {
  if(eocd<0)throw Error('Invalid ZIP: central directory missing');
  const total=u16(v,eocd+10),start=u32(v,eocd+16);
  if(start>=buffer.byteLength || total===0)throw Error('Empty or invalid ZIP package');
+ if(total===65535 || start===0xffffffff)throw Error('ZIP64 packages are not supported');
  if(total>20000)throw Error('Package contains too many files');
  let p=start, entries=[], size=0;
  for(let i=0;i<total;i++){
