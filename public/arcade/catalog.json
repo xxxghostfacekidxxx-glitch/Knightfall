@@ -2247,6 +2247,32 @@
       "notes": "Original local browser game, no proprietary Battleship artwork; gameplay QA pending.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "sanctuary-ashfall-edition",
+      "title": "Sanctuary's End · Ash-Fall Edition",
+      "route": "/arcade/hosted/sanctuary-end/sanctuary.html",
+      "description": "Knightfall's separately hosted custom edition of the Diablo-style Sanctuary's End action RPG.",
+      "genre": "RPG",
+      "collection": "games",
+      "device": "keyboard",
+      "source": "/arcade/hosted/sanctuary-end/CREDITS.md",
+      "notes": "Separate edition from the original. Existing game files; graphics compatibility and runtime QA pending.",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "city-forge",
+      "title": "City Forge · GTA-Style Workshop",
+      "route": "/arcade/city-forge.html",
+      "description": "City-building and vehicle sandbox workshop with assets intended for Ash-Fall's GTA-style projects.",
+      "genre": "Simulation",
+      "collection": "experiments",
+      "device": "keyboard",
+      "source": "/arcade/city-forge.html",
+      "notes": "Existing workshop page; not represented as a finished GTA game.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
