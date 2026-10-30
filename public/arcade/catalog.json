@@ -2312,6 +2312,32 @@
       "notes": "Upstream README's original live demo; external, not bundled into Knightfall.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "saiyan-cephas-original",
+      "title": "Dragon Ball Z: Saiyan Cephas · Original",
+      "route": "https://leosaiyanx.github.io/dragon_ball_z_saiyan_cephas/",
+      "description": "Developer-hosted 3D Dragon Ball Z fighting game.",
+      "genre": "Fighting",
+      "collection": "external",
+      "device": "touch",
+      "source": "https://github.com/leosaiyanx/dragon_ball_z_saiyan_cephas",
+      "notes": "External original, upstream README play link; no redistribution license verified.",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "jedi-academy-web-original",
+      "title": "Jedi Academy Web · Original",
+      "route": "https://jka.virtastic.app",
+      "description": "Developer-hosted browser port of Jedi Academy, using player-supplied game data or free demo.",
+      "genre": "Action",
+      "collection": "external",
+      "device": "keyboard",
+      "source": "https://github.com/Virtastic/jka-web",
+      "notes": "External original; GPL engine, proprietary game data not bundled.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
