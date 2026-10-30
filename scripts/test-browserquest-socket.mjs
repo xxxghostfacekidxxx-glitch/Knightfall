@@ -1,0 +1,28 @@
+import {readFileSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const source=readFileSync(resolve(root,'public/arcade/hosted/browserquest-solo/knightfall-socket.js'),'utf8');
+const instances=[];
+class FakeWorker{constructor(path){this.path=path;this.messages=[];this.terminated=false;instances.push(this)}postMessage(message){this.messages.push(message)}terminate(){this.terminated=true}emit(data){this.onmessage?.({data})}}
+const context={window:{},Worker:FakeWorker,queueMicrotask,Error};
+vm.runInNewContext(source,context,{filename:'knightfall-socket.js'});
+const Socket=context.window.KnightfallLocalSocket;
+assert.equal(typeof Socket,'function');
+const s=new Socket();const w=instances.at(-1);assert.equal(w.path,'knightfall-world.js');
+s.send('[1,"queued"]');
+let opened=0,received=[],closed=0;
+s.onopen=()=>opened++;s.onmessage=e=>received.push(e.data);s.onclose=()=>closed++;
+await new Promise(resolve=>queueMicrotask(resolve));
+assert.equal(opened,1);assert.equal(s.readyState,1);
+assert.deepEqual(w.messages.map(m=>m.type),['connect','message']);
+assert.equal(w.messages[1].data,'[1,"queued"]');
+s.send('[2,"live"]');assert.equal(w.messages[2].data,'[2,"live"]');
+w.emit('[3,"server"]');assert.deepEqual(received,['[3,"server"]']);
+s.close();assert.equal(s.readyState,3);assert.equal(closed,1);assert.equal(w.terminated,true);
+s.close();assert.equal(closed,1);
+assert.throws(()=>s.send('late'),/closed/);
+const t=new Socket();const worker=instances.at(-1);t.close();await new Promise(resolve=>queueMicrotask(resolve));assert.equal(worker.messages.length,0);
+console.log('BrowserQuest local socket lifecycle, queue, JSON protocol, and shutdown: PASS');
