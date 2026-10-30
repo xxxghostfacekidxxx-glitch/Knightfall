@@ -49,3 +49,6 @@ This register and the God Mode Development Operations panel are the shared worki
 - Original Creations manifest, Gravewave sprite helper, Creator Foundry page and offline admin launcher are present in source. Presence is not gameplay verification.
 - PR #187 Electron 27-to-45 upgrade was closed without merge pending desktop build compatibility testing.
 - Open PR search returned zero after cleanup. Non-main branches may remain until branch deletion is performed with repository permissions.
+
+## Batch handoff rule (2026-10-30)
+Work toward test-ready batches before asking the owner to test individual pages. Each batch needs: committed implementation, a reproducible automated smoke check, known dependencies, and a short Android test script. Do not mark runtime verified based solely on source presence. Current offline launcher fixes cover cached catalog fallback, saved-game access during auth outages, role normalization, install control recovery and invalid archive responses; Android ZIP installation and gameplay remain unverified.
