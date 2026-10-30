@@ -2351,6 +2351,32 @@
       "notes": "MIT source and license preserved; production gameplay verification pending.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-life",
+      "title": "Cinder Life",
+      "route": "/arcade/hosted/cinder-life/index.html",
+      "description": "Draw cells and watch Conway's Game of Life evolve with adjustable speed, random seeds and touch controls.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "Original Ash-Fall implementation; Conway's mathematical rules are public domain",
+      "notes": "Cellular automaton, not a traditional board game",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "roads-of-cinder",
+      "title": "Roads of Cinder",
+      "route": "/arcade/hosted/roads-of-cinder/index.html",
+      "description": "Original two-player life journey: choose careers, earn paychecks, buy property and compete for retirement wealth.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "Original Ash-Fall game",
+      "notes": "Local pass-and-play; no Hasbro assets or branding",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
