@@ -1,0 +1,34 @@
+name: Arcade catalog integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/**'
+      - 'public/arcade-card-board.html'
+      - 'scripts/audit-*.mjs'
+      - 'scripts/build-arcade-catalog.mjs'
+      - '.github/workflows/arcade-catalog-integrity.yml'
+  pull_request:
+    paths:
+      - 'public/arcade/**'
+      - 'scripts/audit-*.mjs'
+      - 'scripts/build-arcade-catalog.mjs'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate arcade catalog routes
+        run: node scripts/audit-arcade-catalog.mjs
+      - name: Validate card and board game routes
+        run: node scripts/audit-card-board.mjs
+      - name: Validate franchise, BrowserQuest and Sanctuary assets
+        run: node scripts/audit-franchise-and-rpg.mjs
+      - name: Regenerate arcade catalog pages
+        run: node scripts/build-arcade-catalog.mjs
+      - name: Confirm generated pages match source
+        run: git diff --exit-code -- public/chaos-cartridge.html public/arcade-30-games.html
