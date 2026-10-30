@@ -2221,6 +2221,19 @@
       "notes": "Original local single-player implementation; live gameplay unverified.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "single-html-space-shooter",
+      "title": "Single HTML Space Shooter",
+      "route": "/arcade/hosted/single-html-space-shooter/index.html",
+      "description": "Original MIT-licensed browser space shooter, preserved from the upstream one-file release.",
+      "genre": "Shooter",
+      "collection": "games",
+      "device": "keyboard",
+      "source": "https://github.com/njecolina/Single-HTML-Space-Shooter",
+      "notes": "Upstream MIT license retained in hosted folder; imported without gameplay modifications.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
