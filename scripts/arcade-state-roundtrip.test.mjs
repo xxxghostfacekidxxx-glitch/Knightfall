@@ -25,6 +25,7 @@ for(const [file,ids] of Object.entries(engines))for(const id of ids)test(id+' re
  assert.equal(sandbox.importSaveState({...save,score:-1}),false);
  assert.equal(sandbox.importSaveState({...save,score:NaN}),false);
  assert.equal(sandbox.importSaveState({score:20,player:{x:10,y:20}}),false,'legacy foreign shape must not corrupt a new engine');
+ if(id==='balance-stack'){const longRun=JSON.parse(JSON.stringify(save));longRun.state.blocks=Array.from({length:101},()=>({x:320}));assert.equal(sandbox.importSaveState(longRun),true,'legitimate long stack must remain resumable');longRun.state.blocks=Array.from({length:2001},()=>({x:320}));assert.equal(sandbox.importSaveState(longRun),false,'oversized stack must be rejected');}
  const mutated=JSON.parse(JSON.stringify(save));if(mutated.board)mutated.board[0]=[];else if(mutated.world)mutated.world.life=0;else if(mutated.ship)mutated.ship.hp=0;else if(mutated.state)mutated.state={};else mutated.player=-1;
  assert.equal(sandbox.importSaveState(mutated),false,'malformed state must be rejected before rendering');
  save.score=999;assert.equal(sandbox.exportSaveState().score,123,'import must own a copy of the snapshot');
