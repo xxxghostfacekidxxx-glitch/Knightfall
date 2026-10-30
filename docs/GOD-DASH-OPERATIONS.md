@@ -43,3 +43,9 @@ This register and the God Mode Development Operations panel are the shared worki
 - Shared navigation logic lives in public/nav.js. Its authorization fallback needs browser regression testing.
 - The original creations manifest is public/arcade/original-creations.json.
 - The recovered historical backlog is docs/ASH-FALL-RECOVERED-BACKLOG.md.
+
+## Backlog reconciliation: 2026-10-30
+- Mindustry browser feasibility: documentation gate merged in PR #188; runtime hosting remains pending.
+- Original Creations manifest, Gravewave sprite helper, Creator Foundry page and offline admin launcher are present in source. Presence is not gameplay verification.
+- PR #187 Electron 27-to-45 upgrade was closed without merge pending desktop build compatibility testing.
+- Open PR search returned zero after cleanup. Non-main branches may remain until branch deletion is performed with repository permissions.
