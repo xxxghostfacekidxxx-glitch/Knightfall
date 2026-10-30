@@ -2338,6 +2338,19 @@
       "notes": "External original; GPL engine, proprietary game data not bundled.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "fifteen-puzzle-upstream",
+      "title": "15 Puzzle · Original MIT Edition",
+      "route": "/arcade/hosted/fifteen-puzzle/index.html",
+      "description": "Classic sliding-number puzzle, upstream files preserved and hosted locally.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "https://github.com/arnisritins/15-Puzzle",
+      "notes": "MIT source and license preserved; production gameplay verification pending.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
