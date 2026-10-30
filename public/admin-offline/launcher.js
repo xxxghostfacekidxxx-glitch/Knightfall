@@ -8,7 +8,7 @@ async function loadCatalog(){
  }catch(e){say('Catalog loading failed: '+e.message)}
 }
 const say=t=>status.textContent=t;
-const safeName=name=>name && !name.startsWith('/') && !name.includes('\\') && name.split('/').every(part=>part!=='.'&&part!=='..') && !name.includes('?') && !name.includes('#');
+const safeName=name=>name && !name.startsWith('/') && !name.includes('\\') && !/[?#%:\u0000-\u001f]/.test(name) && name.split('/').every(part=>part.length>0&&part!=='.'&&part!=='..');
 async function inflate(bytes, method) {
  if(method===0)return bytes;
  if(method!==8)throw Error('Unsupported ZIP compression: '+method);
