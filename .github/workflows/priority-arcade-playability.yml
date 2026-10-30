@@ -14,6 +14,7 @@ on:
       - 'public/arcade/hosted/fifteen-puzzle/**'
       - 'public/arcade/catalog.json'
       - 'public/nav.js'
+      - 'scripts/smoke-navigation.mjs'
 permissions:
   contents: read
 jobs:
