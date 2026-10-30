@@ -1669,6 +1669,37 @@ For complex questions, organize the answer clearly and provide actionable detail
   if(url.pathname==="/api/auth/turnstile-config"&&request.method==="GET")return json({site_key:env.TURNSTILE_SECRET_KEY&&env.TURNSTILE_SITE_KEY?env.TURNSTILE_SITE_KEY:null},200,origin,{"cache-control":"no-store"});
   if(url.pathname==="/api/auth/register"&&request.method==="POST"){if(!(await rateLimit(env,request,"register",5,900)))return json({error:"Too many registration attempts. Try again later."},429,origin);if((await getSetting(env,"registration_enabled"))==="false")return json({error:"Registration is currently closed."},403,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}if(!(await checkTurnstile(env,request,body.turnstile_token)))return json({error:"Security verification failed. Please retry."},403,origin);const username=String(body.username||"").trim().toLowerCase(),email=String(body.email||"").trim().toLowerCase(),displayName=String(body.display_name||"").trim(),password=typeof body.password==="string"?body.password:"";if(!/^[a-z0-9_]{3,24}$/.test(username))return json({error:"Username must be 3-24 characters using letters, numbers, or underscores."},400,origin);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)return json({error:"Enter a valid email address."},400,origin);if(!validText(displayName,80))return json({error:"Display name is required."},400,origin);if(password.length<12||password.length>128)return json({error:"Password must be 12-128 characters."},400,origin);const duplicate=await env.DB.prepare("SELECT id FROM users WHERE username=? OR email=?").bind(username,email).first();if(duplicate)return json({error:"Username or email is already registered."},409,origin);const passwordHash=await hashPassword(password),now=new Date().toISOString(),result=await env.DB.prepare("INSERT INTO users (username,email,password_hash,display_name,role,created_at,updated_at) VALUES (?,?,?,?,?,?,?) RETURNING id").bind(username,email,passwordHash,displayName,"member",now,now).first(),token=await createSession(result.id,env),user=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,cover_url,accent_color,profile_theme,status_message,tagline,interests,favorite_games,favorite_music,favorite_quote,profile_visibility,show_activity,created_at FROM users WHERE id=?").bind(result.id).first();return json({user},201,origin,{"set-cookie":sessionCookie(token)});}
   if(url.pathname==="/api/auth/login"&&request.method==="POST"){if(!(await rateLimit(env,request,"login",12,900)))return json({error:"Too many login attempts. Try again later."},429,origin);let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}const identifier=String(body.identifier||"").trim().toLowerCase(),password=typeof body.password==="string"?body.password:"";if(!identifier||!password)return json({error:"Username/email and password are required."},400,origin);const user=await env.DB.prepare("SELECT * FROM users WHERE username=? OR email=?").bind(identifier,identifier).first();if(!user||user.status!=="active"||!(await verifyPassword(password,user.password_hash)))return json({error:"Invalid username/email or password."},401,origin);const token=await createSession(user.id,env),safeUser=await env.DB.prepare("SELECT id,username,email,display_name,role,bio,avatar_url,website_url,location,pronouns,cover_url,accent_color,profile_theme,status_message,tagline,interests,favorite_games,favorite_music,favorite_quote,profile_visibility,show_activity,created_at FROM users WHERE id=?").bind(user.id).first();return json({user:safeUser},200,origin,{"set-cookie":sessionCookie(token)});}
+  if(url.pathname==="/api/god/bot-publish" && request.method==="POST"){
+    const actor=await requireUser(request,env);
+    if(!actor)return json({error:"Authentication required"},401,origin);
+    if(actor.role!=="god")return json({error:"God role required"},403,origin);
+    if((await getSetting(env,"forum_enabled"))==="false")return json({error:"Forum maintenance"},503,origin);
+    let input;try{input=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
+    if(!input||typeof input!=="object")return json({error:"Invalid payload"},400,origin);
+    const bot=await env.DB.prepare("SELECT p.bot_key,p.display_name,a.user_id FROM god_bot_profiles p JOIN god_bot_accounts a ON a.bot_key=p.bot_key WHERE p.bot_key=?").bind(String(input.bot_key||"")).first();
+    if(!bot)return json({error:"Unknown bot"},404,origin);
+    const content=String(input.body||"").trim();
+    if(!validText(content,10000))return json({error:"Body required (max 10000)"},400,origin);
+    const now=new Date().toISOString();
+    if(input.thread_id!=null){
+      const id=Number(input.thread_id);
+      if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid thread id"},400,origin);
+      const thread=await env.DB.prepare("SELECT t.id,t.locked,t.deleted_at,c.slug FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.id=?").bind(id).first();
+      if(!thread||thread.deleted_at)return json({error:"Thread not found"},404,origin);
+      if(thread.locked||thread.slug==="adults-only")return json({error:"Thread unavailable for bot replies"},403,origin);
+      const result=await env.DB.prepare("INSERT INTO posts(thread_id,user_id,body,created_at,updated_at) VALUES(?,?,?,?,?) RETURNING id").bind(id,bot.user_id,content,now,now).first();
+      await audit(env,actor,"god_bot_reply","post",result.id,{bot_key:bot.bot_key,thread_id:id});
+      return json({ok:true,id:result.id,thread_id:id},201,origin);
+    }
+    const title=String(input.title||"").trim();
+    if(!validText(title,160))return json({error:"Title required (max 160)"},400,origin);
+    const category=await env.DB.prepare("SELECT id,slug FROM categories WHERE slug=?").bind(bot.bot_key==="order-66-6"?"star-wars":"music").first();
+    if(!category)return json({error:"Bot category not deployed"},409,origin);
+    const slug=await uniqueSlug(title,env);
+    const result=await env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) VALUES(?,?,?,?,?,?,?) RETURNING id").bind(category.id,bot.user_id,title,slug,content,now,now).first();
+    await audit(env,actor,"god_bot_thread","thread",result.id,{bot_key:bot.bot_key,category:category.slug});
+    return json({ok:true,id:result.id,slug},201,origin);
+  }
   if(url.pathname.startsWith("/api/god/bots") && ["GET","PATCH"].includes(request.method)){
     const actor=await requireUser(request,env);
     if(!actor)return json({error:"Authentication required"},401,origin);
