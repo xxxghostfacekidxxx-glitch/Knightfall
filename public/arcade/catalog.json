@@ -2231,7 +2231,7 @@
       "collection": "games",
       "device": "keyboard",
       "source": "https://github.com/njecolina/Single-HTML-Space-Shooter",
-      "notes": "Upstream MIT license retained in hosted folder; imported without gameplay modifications.",
+      "notes": "Original upstream MIT license retained in hosted folder. Static, no external asset dependencies; browser QA pending.",
       "links": [],
       "featured": false
     }
