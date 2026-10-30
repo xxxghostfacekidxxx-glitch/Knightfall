@@ -2208,6 +2208,19 @@
       "notes": "Original local single-player implementation; gameplay testing pending.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-mancala",
+      "title": "Cinder Mancala",
+      "route": "/arcade/hosted/cinder-mancala/index.html",
+      "description": "Play Kalah-style Mancala against a local CPU with captures, bonus turns and stone counting.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original local single-player implementation; live gameplay unverified.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
