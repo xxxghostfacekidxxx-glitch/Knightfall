@@ -823,11 +823,11 @@ async function publishScheduledBotNews(env) {
     try{response=await fetch(feed.url,{headers:{"user-agent":"KnightfallNewsCurator/1.0","accept":"application/rss+xml,application/xml,text/xml"},signal:AbortSignal.timeout(8000)});}catch{continue}
     if(!response.ok)continue;
     const xml=(await response.text()).slice(0,300000);
-    const item=xml.match(/<item\\b[^>]*>([\\s\\S]*?)<\\/item>/i)?.[1];
+    const item=xml.match(/<item\b[^>]*>([\s\S]*?)<\/item>/i)?.[1];
     if(!item)continue;
-    const decode=v=>v.replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g,"$1").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();
-    const title=decode(item.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1]||"").slice(0,160);
-    const link=decode(item.match(/<link[^>]*>([\\s\\S]*?)<\\/link>/i)?.[1]||"");
+    const decode=v=>v.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,"<").replace(/&gt;/g,">").trim();
+    const title=decode(item.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||"").slice(0,160);
+    const link=decode(item.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1]||"");
     let parsed;try{parsed=new URL(link)}catch{continue}
     const allowed=feed.key==="order-66-6"?"starwarsnewsnet.com":"billboard.com";
     if(parsed.protocol!=="https:"||!(parsed.hostname===allowed||parsed.hostname.endsWith("."+allowed))||!title)continue;
