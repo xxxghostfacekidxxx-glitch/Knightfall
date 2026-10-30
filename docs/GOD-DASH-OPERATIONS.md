@@ -36,3 +36,10 @@ Never put real credential values in this document or frontend code. Confirm comp
 
 ## Shared reference maintenance policy
 This register and the God Mode Development Operations panel are the shared working reference for the project owner and development assistant. On each relevant Knightfall task, consult them, record newly completed work and newly discovered blockers, and distinguish planned, implemented, tested, deployed and production-verified status. Never silently mark a task done based only on a commit. Add new manual account requirements without storing credential values. Reconcile the dashboard and this document after significant changes. This policy applies while actively working; unattended continuous updates require an explicitly configured automation or CI integration.
+
+## Verified repository inventory
+- The God dashboard has an engineering execution-order panel (commit caec3aa3).
+- Arcade catalog validation exists at scripts/arcade-catalog-doctor.mjs; it has not been certified against production.
+- Shared navigation logic lives in public/nav.js. Its authorization fallback needs browser regression testing.
+- The original creations manifest is public/arcade/original-creations.json.
+- The recovered historical backlog is docs/ASH-FALL-RECOVERED-BACKLOG.md.
