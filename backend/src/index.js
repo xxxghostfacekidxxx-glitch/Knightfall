@@ -1677,7 +1677,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       const rows=await env.DB.prepare("SELECT bot_key,display_name,bio,source_name,source_url,posting_enabled,cadence,updated_at FROM god_bot_profiles ORDER BY bot_key").all();
       return json({bots:rows.results||[]},200,origin);
     }
-    const match=url.pathname.match(/^\\/api\\/god\\/bots\\/([a-z0-9-]+)$/);
+    const match=url.pathname.startsWith("/api/god/bots/") && /^[-a-z0-9]+$/.test(url.pathname.slice(14)) ? [url.pathname,url.pathname.slice(14)] : null;
     if(!match||request.method!=="PATCH")return json({error:"Unknown bot route"},404,origin);
     let payload;try{payload=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
     if(!payload||typeof payload!=="object"||Array.isArray(payload))return json({error:"Invalid payload"},400,origin);
