@@ -1,25 +1,36 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>God Mode | Madhouse Bot Control</title><link rel="stylesheet" href="/theme.css"><style>
 body{background:#090710;color:#f7eafb;font:16px system-ui;margin:0}main{max-width:1050px;margin:auto;padding:2rem 1rem}h1{color:#ff50d2} .panel{background:#191020;border:1px solid #78416e;border-radius:16px;padding:1.2rem;margin:1rem 0}label{display:block;margin:1rem 0 .35rem}input,textarea,select{width:100%;box-sizing:border-box;background:#0c0a13;border:1px solid #845580;border-radius:8px;padding:.7rem;color:white;font:inherit}textarea{min-height:125px}button{background:#e62eaf;color:#140919;border:0;border-radius:9px;padding:.7rem 1rem;font-weight:bold;cursor:pointer;margin:.5rem .5rem .5rem 0}button:disabled{opacity:.45;cursor:not-allowed}.notice{color:#ffcf7b}.muted{color:#b8a7c4}#app{display:none}</style></head>
-<body><header class="kf-header"></header><main><h1>God Mode: Madhouse Bot Control</h1><p class="muted">Character identity and editorial control. Automation remains disabled until server-side provisioning and moderation are complete.</p><p id="status" role="status">Checking authorization…</p><section id="app"><div class="panel"><label for="bot">Controlled account</label><select id="bot"></select><p id="disclosure" class="muted"></p><label for="display">Display name</label><input id="display" maxlength="80"><label for="bio">Profile biography</label><textarea id="bio"></textarea><label for="source">News source</label><input id="source" readonly><label for="frequency">Publishing cadence</label><select id="frequency"><option value="manual">Manual approval only</option><option value="daily">Daily (future)</option><option value="twice-daily">Twice daily (future)</option></select><label><input id="enabled" type="checkbox" disabled style="width:auto"> Enable automated posting (not implemented)</label><p class="notice">Changes below are local drafts only. Saving to production requires a God-authorized API and audit log.</p><button id="export">Export this bot's draft JSON</button><button id="reset">Reset draft</button></div></section></main>
+<body><header class="kf-header"></header><main><h1>God Mode: Madhouse Bot Control</h1><p class="muted">Character identity and editorial control. Automation remains disabled until server-side provisioning and moderation are complete.</p><p id="status" role="status">Checking authorization…</p><section id="app"><div class="panel"><label for="bot">Controlled account</label><select id="bot"></select><p id="disclosure" class="muted"></p><label for="display">Display name</label><input id="display" maxlength="80"><label for="bio">Profile biography</label><textarea id="bio"></textarea><label for="source">News source</label><input id="source" readonly><label for="frequency">Publishing cadence</label><select id="frequency"><option value="manual">Manual approval only</option><option value="daily">Daily (future)</option><option value="twice-daily">Twice daily (future)</option></select><label><input id="enabled" type="checkbox" disabled style="width:auto"> Enable automated posting (not implemented)</label><p class="notice">Save updates the God-only configuration database. Bot forum accounts and automated posting are not yet enabled.</p><button id="save">Save to server</button><button id="export">Export this bot's draft JSON</button><button id="reset">Reset draft</button></div></section></main>
 <script src="/nav.js" defer></script><script type="module">
 const status=document.getElementById('status'),app=document.getElementById('app');let bots=[],active=0;
-function render(){const b=bots[active];document.getElementById('display').value=b.display_name;document.getElementById('bio').value=b.bio.join('\n');document.getElementById('source').value=b.source_name+' — '+b.source_url;document.getElementById('disclosure').textContent='Account type: automated news curator';document.getElementById('frequency').value='manual'}
+function render(){const b=bots[active];document.getElementById('display').value=b.display_name;document.getElementById('bio').value=b.bio.join('\n');document.getElementById('source').value=b.source_name+' — '+b.source_url;document.getElementById('disclosure').textContent='Account type: automated news curator';document.getElementById('frequency').value=b.cadence||'manual'}
 try{
 const auth=await fetch('/api/auth/me',{credentials:'include',headers:{accept:'application/json'},cache:'no-store'});
 if(!auth.ok)throw Error('Authentication required');
 const data=await auth.json();const user=data.user??data;
 if(String(user.role??'').toLowerCase()!=='god')throw Error('God account required');
-const response=await fetch('/bot-identities.json',{cache:'no-store'});
+const response=await fetch('/api/god/bots',{credentials:'include',headers:{accept:'application/json'},cache:'no-store'});
 if(!response.ok)throw Error('Identity registry unavailable');
-const registry=await response.json();bots=registry.bots;
+const registry=await response.json();bots=(registry.bots||[]).map(b=>({...b,username:b.bot_key,bio:String(b.bio||'').split('\\n')}));
 const select=document.getElementById('bot');bots.forEach((b,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=b.display_name;select.append(option)});
 select.addEventListener('change',()=>{active=Number(select.value);render()});
 document.getElementById('reset').addEventListener('click',render);
+document.getElementById('save').addEventListener('click',async()=>{
+ const button=document.getElementById('save');button.disabled=true;status.textContent='Saving profile…';
+ try{
+  const b=bots[active];const payload={display_name:document.getElementById('display').value.trim(),bio:document.getElementById('bio').value,cadence:document.getElementById('frequency').value};
+  const response=await fetch('/api/god/bots/'+encodeURIComponent(b.bot_key),{method:'PATCH',credentials:'include',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify(payload)});
+  const result=await response.json();if(!response.ok)throw Error(result.error||'Save failed');
+  b.display_name=payload.display_name;b.bio=payload.bio.split('\\n');b.cadence=payload.cadence;
+  document.getElementById('bot').options[active].textContent=b.display_name;
+  status.textContent='Profile configuration saved to server. Automated posting remains disabled.';
+ }catch(e){status.textContent='Save failed: '+e.message}finally{button.disabled=false}
+});
 document.getElementById('export').addEventListener('click',()=>{
 const b=bots[active],draft={username:b.username,display_name:document.getElementById('display').value.trim(),bio:document.getElementById('bio').value.split('\n').map(x=>x.trim()).filter(Boolean),cadence:document.getElementById('frequency').value,enabled:false};
 const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(draft,null,2)],{type:'application/json'}));a.href=url;a.download=b.username+'-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
-render();app.style.display='block';status.textContent='God role verified for preview. No production writes enabled.';
+render();app.style.display='block';status.textContent='God role verified. Profile configuration edits are available; posting remains disabled.';
 }catch(e){status.textContent='Access unavailable: '+e.message}
 </script></body></html>
