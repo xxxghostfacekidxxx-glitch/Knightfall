@@ -1675,7 +1675,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(actor.role!=="god")return json({error:"God role required"},403,origin);
     if((await getSetting(env,"forum_enabled"))==="false")return json({error:"Forum maintenance"},503,origin);
     let input;try{input=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
-    if(!input||typeof input!=="object")return json({error:"Invalid payload"},400,origin);
+    if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid payload"},400,origin);
     const bot=await env.DB.prepare("SELECT p.bot_key,p.display_name,a.user_id FROM god_bot_profiles p JOIN god_bot_accounts a ON a.bot_key=p.bot_key WHERE p.bot_key=?").bind(String(input.bot_key||"")).first();
     if(!bot)return json({error:"Unknown bot"},404,origin);
     const content=String(input.body||"").trim();
