@@ -27,6 +27,7 @@ async function extractZip(buffer, id, onProgress) {
  let p=start, entries=[], size=0;
  for(let i=0;i<total;i++){
   if(p+46>buffer.byteLength || u32(v,p)!==0x02014b50)throw Error('Invalid ZIP entry');
+  if(u16(v,p+8)&1)throw Error('Encrypted ZIP packages are not supported');
   const method=u16(v,p+10),compressed=u32(v,p+20),uncompressed=u32(v,p+24),n=u16(v,p+28),extra=u16(v,p+30),comment=u16(v,p+32),offset=u32(v,p+42);
   if(p+46+n+extra+comment>buffer.byteLength)throw Error('Truncated ZIP directory');
   const name=dec.decode(bytes.subarray(p+46,p+46+n));p+=46+n+extra+comment;
