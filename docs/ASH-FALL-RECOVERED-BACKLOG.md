@@ -88,3 +88,40 @@ Treat all unchecked items as **needs verification or unfinished**, not as proof 
 - [ ] Google Play readiness: real-device push, package/application ID, signing, verified app links, privacy contact, account deletion and closed testing.
 - [ ] Existing Creator Foundry's twelve tools and older toolkit proposal: Hextris, A Dark Room, Clumsy Bird, Elevator Saga, Mindustry, Pterodactyl, Pelican, LinuxGSM, GameAP, PufferPanel. Verify prior PR #60 and license/runtime compatibility before integration.
 - [ ] Complete migration off legacy orange/duplicate CSS, with visual regression tests.
+
+## Third historical recovery pass (2026-10-30)
+These items were recovered from additional earlier discussions. Verify against current code and owner-approved changes; old names and architecture may have been superseded.
+
+### Miss Chaos behavior engine and privacy
+- [ ] Seven selectable response modes: Standard, Analytical, Philosophical, Chaos, Supportive, Confrontational, Creative. These are optional AI modes, **not** a reversal of the request to remove philosophy from site marketing.
+- [ ] Seven behavioral rules: Honest Opposition, Contextual Humor, Challenge Without Contempt, Evidence Before Confidence, Emotional Recognition, Intellectual Independence, Practical Completion. Add editable rule priority, conflict handling, test scenarios, version history and rollback.
+- [ ] Private owner-only Chaos Lab with a separate persona and instructions; it can draft public personality changes but requires explicit approval to publish them.
+- [ ] Explicit content boundary: Miss Chaos public host must not produce explicit NSFW; any adult bot content must be gated, labeled and handled separately.
+- [ ] Earlier mood variants: grumpy, sarcastic, neutral, playful and angry. Check whether these belong as transient expressions or conflict with the final persona.
+- [ ] Separate independently scrollable chat history, smart auto-scroll that does not interrupt reading, and footer-safe floating launcher.
+- [ ] Miss Chaos UI visual states: CRT scanlines, RGB split, signal tears, pulsing launcher, idle portrait glitches and speaking/thinking distortion; preserve reduced-motion accessibility.
+- [ ] Owner Private Lab release assistant: planning, troubleshooting, deployment checks, security review, test plans, GitHub task drafts and an explicit approval gate.
+- [ ] Audit old Worker deployment confusion: separate Pages static assets from Workers API; verify /api/chaos vs /chat vs /message compatibility and live route; no reliance on historical Hello World behavior.
+
+### Recovered asset identities and publishing
+- [ ] Five specific icon concepts: Chaos Crown, Skull Signal, Glitch Eye, Hell Heart, Cinder Portal. Four specific mascots: Voltimp, Cryptkoi, Casketpup, Voidsprout. Cross-reference artwork in Devil Tools; avoid generating replacements when originals exist.
+- [ ] Recover previously shared artwork into an owner-approved archive, with provenance and permission review; previous request was to package recoverable conversation images in a ZIP.
+- [ ] Restore an Ash-Fall tagline inventory with displayed/highlighted status and the two explicitly retained phrases: “From chaos, I make my way” and “The world is a beautiful fucking disaster.”
+- [ ] Church codex publishing concept: a 13-book manuscript with appendices, Black Psalms, public versus inner codex, and Miss Chaos marginalia; compare with later Sanctum of Inferno final ranks before publishing.
+- [ ] Earlier church hierarchy proposal (Inferno Initiate, Ash-Bearer, Flame Warden, Ember Lord/Lady, Infernal Ascendant) conflicts with later Ashling/Cinder/Blade/Infernal/Eternal Flame. Preserve as superseded draft, **do not** overwrite current rank scheme.
+- [ ] Website-ready interactive map of church doctrine, hierarchy, commandments, rituals and symbols, if consistent with current branding.
+
+### Architecture and unfinished technical work
+- [ ] Legacy Ash-Fall repo versus Knightfall repo: inspect old backend/risefromtheashes and backend/miss-chaos-backend for missing reusable code, but never redeploy old configs blindly.
+- [ ] Prior site layout included landing index.html, separate homepage.html, homepage.css, and themed Sanctuary/The Ashes/Miss Chaos/Manifesto pages with Embers/Inferno/Char/Smoke categories; treat as archival navigation concepts, not mandatory new routes.
+- [ ] Legacy Worker route /api/* gateway to Miss Chaos backend with per-route rate limits and correct custom-domain mapping; compare to current API before implementation.
+- [ ] Old toolkit PR #60 sync script: inspect whether upstream source fetch and packaging were actually completed.
+- [ ] Game combat feedback: visible hits/damage, reliable pause/restart, account-linked progression, and mobile controls (older PR #56).
+- [ ] Social walls visibility: public, followers-only and private, kept on normal profiles and separate from adult content.
+- [ ] Distinguish AI bot policies for public, personal and adults-only bots; age gating and opt-in are required where relevant.
+- [ ] Owner-only God Mode should expose operations and authorization diagnostics without publishing account secrets or private member data to ordinary users.
+
+### Additional game integration candidates from older searches
+- [ ] Review seven earlier space-game candidates and 11 Star Wars/Dragon Ball projects for licensing and runnable demos. Franchise engines and proprietary artwork/data require separate clearance; external demos must never be labeled self-hosted.
+- [ ] Terravia open-source creature RPG was specifically selected for integration; verify current route, license, bundle and Android offline support.
+- [ ] Pico's School historical request resolved toward official external links unless redistributable source/assets are proven.
