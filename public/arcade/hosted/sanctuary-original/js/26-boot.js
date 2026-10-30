@@ -27,4 +27,4 @@ renderer.init().then(async () => {
   document.getElementById('loading').style.display = 'none';
   show('selectScreen'); startMenu();
   if (_perf) console.log('[Sanctuary] time-to-menu: ' + (performance.now() - _bootT0).toFixed(0) + 'ms'); /* Phase 0 rig: scenario (e) boot metric */
-}).catch(err => { console.error('[Sanctuary] renderer.init() failed:', err); document.getElementById('loadtitle').textContent = 'Renderer init failed - see console. (WebGPU/WebGL2 unavailable?)'; });
+}).catch(err => { console.error('[Sanctuary] renderer.init() failed:', err); const title=document.getElementById('loadtitle');if(title)title.textContent='Graphics initialization failed. Try updating your browser or enabling hardware acceleration.';const loading=document.getElementById('loading');if(loading){loading.setAttribute('role','alert');loading.setAttribute('aria-live','assertive');const retry=document.createElement('button');retry.type='button';retry.textContent='Retry loading';retry.style.cssText='display:block;margin:1rem auto;padding:.8rem 1.3rem;cursor:pointer';retry.addEventListener('click',()=>location.reload());loading.appendChild(retry);} });
