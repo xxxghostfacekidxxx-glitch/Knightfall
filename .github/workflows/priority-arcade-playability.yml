@@ -31,6 +31,7 @@ jobs:
       - name: Browser smoke test shared navigation
         run: node scripts/smoke-navigation.mjs
       - name: Browser smoke test priority arcade games
+        if: success() || failure()
         run: node scripts/smoke-priority-arcade.mjs
       - name: Upload screenshots and failure evidence
         if: always()
