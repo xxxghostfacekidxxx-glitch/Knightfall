@@ -2169,6 +2169,19 @@
       "notes": "Original browser implementation; local single-player, no online multiplayer.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-four",
+      "title": "Cinder Four",
+      "route": "/arcade/hosted/cinder-four/index.html",
+      "description": "Connect four discs vertically, horizontally or diagonally before the local CPU.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original implementation; single-player against local CPU.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
