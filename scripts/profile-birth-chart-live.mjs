@@ -11,7 +11,7 @@ for(const [path,status,validate] of [
   assert.ok(data.categories.some(c=>c.slug==='astrology'),'Astrology category must exist');
   assert.ok(!data.categories.some(c=>c.slug==='adults-only'),'Adult category must not be disclosed to anonymous visitors');
  }],
- ['/api/adult/status',200,data=>assert.equal(data.confirmed,false)]
+ ['/api/adult/status',401,data=>assert.equal(typeof data.error,'string')]
 ]){
  const response=await fetch(base+path,{headers:{accept:'application/json'},signal:AbortSignal.timeout(20000)});
  console.log(path+' HTTP '+response.status);

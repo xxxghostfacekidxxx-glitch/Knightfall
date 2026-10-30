@@ -78,3 +78,6 @@ Work toward test-ready batches before asking the owner to test individual pages.
 - Added four isolated runtime scenarios that execute the production Worker chart handler with test D1/KV storage. They verify calculate/save/publish/hide/delete, account isolation, anonymous/session/origin rejection and invalid inputs. All pass locally; no production records were created.
 - Added an independent Profile Birth Chart Verification workflow with explicit read-only live checks. This can run even when an unrelated arcade suite fails. Real signed-in browser chart lifecycle remains open.
 - Follow-up local MMO run: all 85 monster tests pass after updating superseded assertions and fixing offline package asset coverage.
+
+### Public smoke root cause resolved
+The read-only production checks verified chart access rejects anonymous visitors (401), and categories correctly report the adult gate locked with Astrology present and the adult category hidden. The remaining failure was an outdated expectation: `/api/adult/status` is the authenticated provider-verification endpoint and returns 401 to anonymous visitors. Updated both smoke suites to require that denial; access checks were not relaxed in the Worker. Issue #153's obsolete orange-theme instructions were also corrected to the current neon direction so the backlog cannot reintroduce the retired palette.

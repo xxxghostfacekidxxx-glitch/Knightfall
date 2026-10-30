@@ -137,7 +137,7 @@ jobs:
             echo "$endpoint=$code expected=$expected $(cat "$body" | head -c 250)"
             test "$code" = "$expected"
           done
-          # The adult category stays hidden to anonymous visitors; the API must expose only the self-attestation flow.
+          # The adult category stays hidden; provider-verification status requires a signed-in account.
           categories_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/categories")
           echo "adult-category-check=$categories_code"
           test "$categories_code" = 200
@@ -146,8 +146,8 @@ jobs:
           if grep -q '"slug":"adults-only"' "$body"; then echo "adult category leaked to anonymous visitor"; exit 1; fi
           adult_status_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/adult/status")
           echo "adult-status=$adult_status_code $(cat "$body")"
-          test "$adult_status_code" = 200
-          grep -q '"confirmed":false' "$body"
+          test "$adult_status_code" = 401
+          grep -q '"error":' "$body"
           # Read-only authorization checks: these must never create production records.
           for spec in 'GET /api/admin/overview 403' 'GET /api/admin/audit 403' 'GET /api/admin/account-deletion-requests 403' 'POST /api/account/deletion-request 401' 'GET /api/admin/settings 403' 'GET /api/admin/deleted 403' 'GET /api/admin/chaos-lab/config 403' 'POST /api/admin/chaos-lab/apply-proposal 403' 'GET /api/personal-bots 401' 'GET /api/my-shop 401' 'GET /api/vault/items 401' 'GET /api/vault/summary 401' 'GET /api/notifications 401' 'GET /api/messages/conversations 401' 'GET /api/messages/conversations/1/typing 401' 'GET /api/messages/conversations/1/reactions 401' 'POST /api/messages/1/reactions 401' 'POST /api/messages/groups 401' 'GET /api/messages/conversations/1/members 401' 'POST /api/messages/conversations/1/members 401' 'GET /api/messages/conversations/1/attachments 401' 'POST /api/messages/conversations/1/attachments 401' 'GET /api/messages/attachments/1 401' 'DELETE /api/messages/attachments/1 401' 'GET /api/friends 401' 'POST /api/profile/photos 401' 'DELETE /api/profile/photos/1 401' 'POST /api/chaos/astrology/chart 401' 'GET /api/chaos/memories 401' 'GET /api/die-ary/entries 401'; do
             read -r method endpoint expected <<< "$spec"
