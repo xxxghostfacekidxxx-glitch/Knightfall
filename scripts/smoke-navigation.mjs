@@ -14,7 +14,7 @@ try {
     await page.locator('#kf-primary-nav').waitFor({state:'attached',timeout:10000});
     await page.waitForTimeout(400);
     const toggle=page.locator('.kf-nav-toggle');
-    if(await toggle.count()) { await toggle.click(); await page.waitForTimeout(100); }
+    if(await toggle.count() && await toggle.isVisible()) { await toggle.click(); await page.waitForTimeout(100); }
     const result=await page.evaluate(()=>({header:!!document.querySelector('.kf-header'),account:!!document.querySelector('.kf-profile-group'),members:!!document.querySelector('a[href="/members.html"]'),privilegedVisible:[...document.querySelectorAll('.kf-admin-link,.kf-admin-quick-link,.kf-mod-link')].some(e=>!e.hidden)}));
     if(!result.header||!result.account||!result.members||result.privilegedVisible)throw Error('Missing navigation for auth status '+status+': '+JSON.stringify(result));
     await page.close();
