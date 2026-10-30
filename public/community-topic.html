@@ -48,7 +48,7 @@
     const API="https://api.ash-fall.com";
     const params=new URLSearchParams(location.search);
     const requestedId=params.get("category_id");
-    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"]);
+    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","star wars"]);
     const titleEl=document.getElementById("topic-title"),descriptionEl=document.getElementById("topic-description"),threadsEl=document.getElementById("topic-threads"),messageEl=document.getElementById("topic-message"),createLink=document.getElementById("create-link"),accountNote=document.getElementById("account-note");
     let category=null;
     function esc(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
