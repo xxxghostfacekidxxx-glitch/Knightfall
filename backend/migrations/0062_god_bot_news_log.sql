@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS god_bot_news_log (bot_key TEXT NOT NULL REFERENCES god_bot_profiles(bot_key), slot_key TEXT NOT NULL, article_url TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(bot_key,slot_key));
