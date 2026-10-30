@@ -9,6 +9,10 @@ on:
       - "public/chaos-cartridge-theme.css"
       - "public/arcade-polish.css"
       - "public/arcade-games.html"
+      - "public/arcade-catalog.*"
+      - "public/arcade-cabinet-ui.*"
+      - "public/chaos-cartridge.html"
+      - "scripts/build-arcade-catalog.mjs"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
@@ -59,6 +63,10 @@ on:
       - "public/chaos-cartridge-theme.css"
       - "public/arcade-polish.css"
       - "public/arcade-games.html"
+      - "public/arcade-catalog.*"
+      - "public/arcade-cabinet-ui.*"
+      - "public/chaos-cartridge.html"
+      - "scripts/build-arcade-catalog.mjs"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
@@ -152,7 +160,7 @@ jobs:
           node --check scripts/arcade-browser-smoke.mjs
           node --check scripts/arcade-gameplay-replay.mjs
           node --check scripts/arcade-gameplay-doctor.mjs
-          node --test scripts/arcade-shelf-dedup.test.mjs
+          node --test scripts/arcade-shelf-dedup.test.mjs scripts/arcade-boot-regression.test.mjs scripts/arcade-score-registration.test.mjs
           node --test scripts/arcade-route-integrity.test.mjs
           node scripts/arcade-gameplay-doctor.mjs
           node --check scripts/arcade-asset-doctor.mjs

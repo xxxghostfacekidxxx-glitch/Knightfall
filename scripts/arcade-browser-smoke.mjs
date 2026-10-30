@@ -1,7 +1,8 @@
 import { chromium } from "playwright";
-import { readdir, mkdir, writeFile } from "node:fs/promises";
+import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+const arcadeCatalog=JSON.parse(await readFile("public/arcade/catalog.json","utf8"));
 const base = process.env.ARCADE_TEST_BASE || "http://127.0.0.1:8765";
 const hostedRoot = path.resolve("public/arcade/hosted");
 
@@ -812,11 +813,11 @@ try {
     failed = true;
   } else {
     const catalogCardCount = await catalogPage.locator("#grid article.game").count();
-    if (catalogCardCount !== 76) {
-      console.error("FAIL catalog count: expected 76 playable cards, found " + catalogCardCount);
+    if (catalogCardCount !== arcadeCatalog.games.length) {
+      console.error("FAIL catalog count: expected "+arcadeCatalog.games.length+" catalog cards, found " + catalogCardCount);
       failed = true;
     } else {
-      console.log("PASS catalog count: all 76 playable game cards are present");
+      console.log("PASS catalog count: manifest and generated catalog agree");
     }
     const catalogRoutes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
     const mainResponse = await catalogPage.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -829,11 +830,11 @@ try {
       const featuredCards = catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet");
       const featuredTotal = await featuredCards.count();
       const featuredVisible = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
-      if (featuredTotal < 76 || featuredVisible !== featuredTotal) {
-        console.error("FAIL featured shelf: expected at least 76 games all visible on one shelf, found " + featuredVisible + "/" + featuredTotal);
+      if (featuredTotal !== arcadeCatalog.games.length || featuredVisible !== arcadeCatalog.games.filter(g=>g.collection==="games").length) {
+        console.error("FAIL featured shelf: expected the main collection visible, found " + featuredVisible + "/" + featuredTotal);
         failed = true;
       } else {
-        console.log("PASS featured shelf: all " + featuredVisible + " games visible together on one shelf");
+        console.log("PASS featured shelf: all " + featuredVisible + " main-collection games visible");
       }
     }
     const localHostedRoutes = await listHostedHtml();

@@ -18,7 +18,7 @@ for(const game of pending){
    const src=m[1].match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
    if(src){
     assert.ok(src.startsWith("/")&&!src.startsWith("//"),"Remote script in "+game.id+": "+src);
-    assert.ok(existsSync(resolve(root,"."+src)),"Missing local script "+src);
+    assert.ok(existsSync(resolve(root,"."+src.split(/[?#]/)[0])),"Missing local script "+src);
    }else if(!/type\s*=\s*["']application\/(?:json|ld\+json)/i.test(m[1])){
     assert.doesNotThrow(()=>new Script(m[2],{filename:game.id+" inline "+i}),"Invalid inline script in "+game.id);
    }

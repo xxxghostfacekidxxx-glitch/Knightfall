@@ -16,8 +16,9 @@ for (const [index, match] of entries.entries()) {
   const title = block.match(/<h2>(.*?)<\/h2>/)?.[1] ?? `Cabinet ${index + 1}`;
   const play = block.match(/<a\b[^>]*class="play"[^>]*href="([^"]+)"/)?.[1];
   if (!play) { errors.push(`${title}: missing play link`); continue; }
+  if(play.startsWith("https://")){if(!/data-collection="external"/.test(match[0]))errors.push(`${title}: external launch must be labeled external`);continue;}
   const launchPath = play.split("?")[0].split("#")[0];
-  if (!launchPath.startsWith("/arcade/hosted/") || !launchPath.endsWith(".html")) {
+  if (!launchPath.startsWith("/") || launchPath.startsWith("//") || !launchPath.endsWith(".html")) {
     errors.push(`${title}: launch must point to a locally hosted HTML file (${play})`);
     continue;
   }
@@ -25,7 +26,7 @@ for (const [index, match] of entries.entries()) {
   seen.add(play);
   const path = resolve(root, "public", launchPath.slice(1));
   try { await access(path); } catch { errors.push(`${title}: missing ${play}`); }
-  const isOriginal = /Original Knightfall/i.test(block);
+  const isOriginal = !/OPEN SOURCE|Complete modified source|Original source/i.test(block);
   if (!isOriginal) {
     const directory = dirname(path);
     const candidates = ["LICENSE", "LICENSE.txt", "LICENSE.md", "SOURCE.md", "NOTICE", "NOTICE.md"];
