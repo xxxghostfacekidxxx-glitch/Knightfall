@@ -1,0 +1,39 @@
+name: Stage Permitted Browser Game Sources
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect upstream repositories without publishing copyrighted game assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p upstream-audit
+          repos=(
+            gd4Ark/star-battle
+            njecolina/Single-HTML-Space-Shooter
+            piecioshka/7balls
+            osman144/DragonBall-Z-game
+            AntonovAtanas/Star-Wars-Browser-Game
+            johnchampaign/star-wars-rebellion
+            Virtastic/jka-web
+          )
+          for repo in "${repos[@]}"; do
+            name="${repo##*/}"
+            echo "Inspecting ${repo}"
+            if ! git clone --depth=1 "https://github.com/${repo}.git" "upstream-audit/${name}"; then
+              echo "::warning::Unable to clone ${repo}"
+              continue
+            fi
+            find "upstream-audit/${name}" -maxdepth 3 -iname '*licen*' -o -iname '*copying*' | head -20
+            find "upstream-audit/${name}" -maxdepth 2 -type f \( -name 'index.html' -o -name 'package.json' \) | head -20
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: franchise-upstream-license-audit
+          path: upstream-audit/
+          retention-days: 7
