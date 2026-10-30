@@ -83,7 +83,7 @@ async function auth(){
  say('Administrator verified. Install games to this device.');games.hidden=false;return true;
  }catch(e){
   const installed=await Promise.all(ids.map(async id=>{const c=await caches.open('ashfall-god-game-'+id+'-v1');return !!(await c.match(PREFIX+id+'/'+entry(id)));}));
-  if(!navigator.onLine && installed.some(Boolean)){say('Offline mode: previously installed games available on this device.');games.hidden=false;document.querySelectorAll('[data-install]').forEach(b=>b.disabled=true);return false;}
+  if(installed.some(Boolean)){say('Saved games are available on this device. Reconnect and sign in as an administrator to install more.');games.hidden=false;document.querySelectorAll('[data-install]').forEach(b=>b.disabled=true);return false;}
   say(e.message+'. Online admin login is required to install games.');games.hidden=true;return false;
  }
 }
