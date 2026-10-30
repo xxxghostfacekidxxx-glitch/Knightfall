@@ -73,3 +73,8 @@ Work toward test-ready batches before asking the owner to test individual pages.
 - Refreshed outdated MMO source assertions to cover the current Field Bestiary, camera viewport, eight-frame front/back sprite atlas, battle metadata, slot validation and station interaction. Preserved server authorization, charge, PP and client-power rejection checks.
 - Offline HTML packaging now inlines the shared visual-refresh stylesheet and omits the optional remote Phaser loader. Expanded the packaging test to supply every required game asset and verify that no external script or stylesheet tags remain. Hidden disabled connection placeholders remain for shared initialization.
 - Public API smoke confirmed health, profile photos, bots, shops, categories and threads HTTP 200. A later check failed without identifying its assertion; diagnostics added to report the exact failing line and public response. The authenticated authorization matrix remains unverified.
+
+### Dedicated chart verification
+- Added four isolated runtime scenarios that execute the production Worker chart handler with test D1/KV storage. They verify calculate/save/publish/hide/delete, account isolation, anonymous/session/origin rejection and invalid inputs. All pass locally; no production records were created.
+- Added an independent Profile Birth Chart Verification workflow with explicit read-only live checks. This can run even when an unrelated arcade suite fails. Real signed-in browser chart lifecycle remains open.
+- Follow-up local MMO run: all 85 monster tests pass after updating superseded assertions and fixing offline package asset coverage.

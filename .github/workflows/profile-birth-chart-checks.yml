@@ -1,0 +1,28 @@
+name: Profile Birth Chart Verification
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/profile-birth-chart-runtime.test.mjs'
+      - 'scripts/profile-birth-chart-live.mjs'
+      - 'scripts/profile-birth-chart.test.mjs'
+      - 'backend/src/astrology.js'
+      - '.github/workflows/profile-birth-chart-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install astronomy dependency
+        run: npm install --prefix backend --no-audit --no-fund
+      - name: Exercise Worker chart lifecycle and account isolation with test storage
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/profile-birth-chart-runtime.test.mjs
+      - name: Verify public assets, JSON endpoints, and anonymous privacy in production
+        run: node scripts/profile-birth-chart-live.mjs

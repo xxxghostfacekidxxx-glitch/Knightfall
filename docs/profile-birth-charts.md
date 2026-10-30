@@ -21,3 +21,8 @@ Migration: `backend/migrations/0058_profile_birth_charts.sql`. The table and ind
 Regression tests: `node --test scripts/profile-birth-chart.test.mjs` (included in smoke-test workflow), plus the astrology tests. A successful Worker deployment, static Pages publish, and signed-in browser verification are **not** implied by committing the files or applying the D1 schema.
 
 City lookup requires an internet connection and sends the entered city query to OpenStreetMap Nominatim only when **Find birth city** is pressed. The city search does not send the birth date or time. Users must still enter the correct UTC offset at the time of birth, including historical daylight saving rules; selecting a city does not automatically resolve historical time zones. City lookup may be temporarily unavailable or return ambiguous matches.
+
+## Isolated lifecycle regression coverage (October 30, 2026)
+`node --test scripts/profile-birth-chart-runtime.test.mjs` exercises the production Worker route with isolated test storage: calculate/save hidden, publish, hide, delete; reject anonymous/invalid sessions and cross-origin mutation; ignore supplied user IDs and preserve other owners' charts; reject malformed inputs. All four scenarios passed locally. This is handler-level testing, not signed-in production/browser certification.
+
+The independent **Profile Birth Chart Verification** workflow runs these tests with the astronomy suite, then performs read-only production checks for the public profile assets, JSON authentication and chart endpoints, anonymous chart denial, category existence and adult gating. It creates no production chart records and needs no member credentials.
