@@ -2117,6 +2117,45 @@
       "notes": "Third-party embed; requires external service.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-reversi",
+      "title": "Cinder Reversi",
+      "route": "/arcade/hosted/cinder-reversi/index.html",
+      "description": "Original offline-friendly Reversi against a CPU opponent. Flip discs, capture corners and claim the board.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "",
+      "notes": "",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "chaos-card-room",
+      "title": "Chaos Card Room",
+      "route": "/arcade-card-room.html",
+      "description": "Three playable card tables: Blackjack, Five-Card Draw and War.",
+      "genre": "Card",
+      "collection": "games",
+      "device": "touch",
+      "source": "",
+      "notes": "",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "chaos-card-expansion",
+      "title": "Chaos Card Expansion",
+      "route": "/arcade-card-expansion.html",
+      "description": "Additional browser card and solitaire tables in the Chaos Cartridge collection.",
+      "genre": "Card",
+      "collection": "games",
+      "device": "touch",
+      "source": "",
+      "notes": "",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
