@@ -27,7 +27,7 @@ test("upstream license notices are preserved",async()=>{
 test("arcade catalog links both playable imports without claiming they are original Ash-Fall games",async()=>{
  const html=await read("arcade-30-games.html");
  for(const game of selected)assert.ok(html.includes("/arcade/hosted/"+game+"/index.html"));
- assert.ok(html.includes("Original source"));
+ for(const url of ["https://github.com/doublespeakgames/adarkroom","https://github.com/ncase/trust"])assert.ok(html.includes(url),"upstream source attribution missing: "+url);
 });
 
 test("Progress Knight includes narrow-screen panel stacking and avoids remote CSS dependencies",async()=>{

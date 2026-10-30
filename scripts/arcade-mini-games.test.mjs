@@ -53,7 +53,7 @@ test("Ash Slope retains fractional distance between frames",()=>{
  assert.match(shared,/state\.distance-=gained;setScore\(score\+gained\)/);
 });
 test("Ember Rebound requires multiple hits on reinforced bricks",()=>{
- assert.match(shared,/if\(b\.hp&&state\.x>b\.x[\s\S]*?\{b\.hp--;state\.vy\*=-1;setScore\(score\+10\);break\}/);
+ assert.match(shared,/if\(b\.hp&&state\.x>b\.x[\s\S]*?\{b\.hp--;state\.y=state\.vy>0\?b\.y-10:b\.y\+b\.h\+10;state\.vy\*=-1;setScore\(score\+10\);break\}/);
 });
 
 test("Ash Slope pickups are collected only once and old objects are bounded",()=>{

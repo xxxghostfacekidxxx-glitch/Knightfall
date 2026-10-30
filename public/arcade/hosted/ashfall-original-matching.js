@@ -47,4 +47,11 @@ function draw(){g.fillStyle="#0c0c13";g.fillRect(0,0,640,500);g.font="bold 20px 
 c.addEventListener("pointerdown",e=>{const r=c.getBoundingClientRect();tap((e.clientX-r.left)*640/r.width,(e.clientY-r.top)*500/r.height)});
 $("restart").addEventListener("click",start);document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!active)start()});
 $("best").textContent=best;create();draw();note("Ready · press Start");
+
+function saveNumbers(o,names){return o&&typeof o==="object"&&names.every(k=>Number.isFinite(o[k])&&Math.abs(o[k])<=1000000000)}
+function saveList(a,names,max=100){return Array.isArray(a)&&a.length<=max&&a.every(o=>saveNumbers(o,names))}
+function validSave(d){try{return d&&d.schema===1&&d.game===id&&d.engine==="matching-v1"&&Number.isInteger(d.score)&&d.score>=0&&d.score<=1000000&&Number.isFinite(d.best)&&d.best>=0&&d.best<=1000000&&JSON.stringify(d).length<=30000&&Number.isInteger(d.moves)&&d.moves>0&&d.moves<=25&&Array.isArray(d.board)&&d.board.length===N&&d.board.every(row=>Array.isArray(row)&&row.length===N&&row.every(v=>Number.isInteger(v)&&v>=0&&v<colors.length))}catch{return false}}
+globalThis.exportSaveState=()=>active?JSON.parse(JSON.stringify({schema:1,game:id,engine:"matching-v1",score,best,board,moves})):null;
+globalThis.importSaveState=input=>{let d;try{d=JSON.parse(JSON.stringify(input))}catch{return false}if(!validSave(d))return false;active=true;selected=null;board=d.board;moves=d.moves;score=d.score;best=Math.max(best,d.best,score);$("score").textContent=score;$("best").textContent=best;$("status").textContent="Cloud save restored.";document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));draw();;return true};
+globalThis.isGameActive=()=>active;
 })();

@@ -1,37 +1,10 @@
-/* One flat, fully visible Chaos Cartridge shelf. Genres are labels, never click-through categories. */
-#game-shelf .cartridge-shelf{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;align-items:stretch}
-#game-shelf .cartridge-cabinet{min-width:0;min-height:245px;padding:1.05rem!important}
-#game-shelf .cartridge-cabinet[hidden]{display:none!important}
-#game-shelf .cartridge-cabinet h3{font-size:1.08rem;line-height:1.2;overflow-wrap:anywhere}
-#game-shelf .cartridge-cabinet p{font-size:.82rem;line-height:1.55}
-#game-shelf .cartridge-number{font-size:.58rem;letter-spacing:.08em}
-#game-shelf .cartridge-cabinet .status{font-size:.62rem;padding:.3rem .45rem}
-#game-shelf .cartridge-note{margin:.2rem 0 .6rem;font-size:.7rem;line-height:1.4}
-#game-shelf .flat-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:auto;position:relative;z-index:1}
-#game-shelf .flat-actions .button{font-size:.72rem;padding:.58rem .65rem;white-space:normal}
-#game-shelf .arcade-catalog-toolbar{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:.8rem;margin:1.2rem 0 1.5rem}
-#game-shelf .arcade-search-label{font-size:.78rem;font-weight:900;color:var(--accent-bright,#c6ff45);letter-spacing:.08em}
-#game-shelf .arcade-catalog-toolbar input{width:100%;min-width:0;padding:.8rem .95rem;border:1px solid #ff55d866;border-radius:12px;background:#100d19;color:#fff}
-#game-shelf .arcade-catalog-toolbar input::placeholder{color:#998da2}
-#game-shelf .arcade-search-count{font-size:.76rem;color:#c6ff45;text-align:right;white-space:nowrap}
-#game-shelf .arcade-report-issue{position:relative;z-index:1;display:inline-flex;align-self:flex-start;align-items:center;gap:.35rem;margin-top:.9rem;padding:.35rem 0;color:#c2a8c8;font-size:.72rem;font-weight:750;text-decoration:none;border-bottom:1px dashed #b78ac866}
-#game-shelf .arcade-report-issue:hover,#game-shelf .arcade-report-issue:focus-visible{color:#ff77d9;border-color:#ff77d9;outline-offset:3px}
-@media(max-width:1100px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:760px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}#game-shelf .cartridge-cabinet{padding:.8rem!important;min-height:230px}#game-shelf .cartridge-cabinet h3{font-size:1rem}#game-shelf .cartridge-cabinet p{font-size:.78rem}#game-shelf .arcade-catalog-toolbar{grid-template-columns:1fr;gap:.45rem}#game-shelf .arcade-search-count{text-align:left}}
-@media(max-width:390px){#game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr)}}
-
-/* Consistent card heights, responsive discovery controls and touch targets. */
-#game-shelf{min-width:0}
-#game-shelf .cartridge-shelf{align-items:stretch}
-#game-shelf .cartridge-cabinet{display:flex;flex-direction:column;min-width:0}
-#game-shelf .cartridge-cabinet h3{margin-block:.75rem .45rem;text-wrap:balance}
-#game-shelf .flat-actions{align-items:stretch}
-#game-shelf .flat-actions .button{min-height:44px;flex:1 1 90px;text-align:center;overflow-wrap:anywhere}
-#game-shelf .arcade-catalog-toolbar{min-width:0}
-#game-shelf .arcade-catalog-toolbar input{min-height:44px}
-@media(max-width:540px){
- #game-shelf .cartridge-shelf{grid-template-columns:minmax(0,1fr);gap:.75rem}
- #game-shelf .cartridge-cabinet{min-height:0;padding:1rem!important}
- #game-shelf .cartridge-cabinet p{font-size:.87rem}
- #game-shelf .cartridge-cabinet h3{font-size:1.15rem}
-}
+:root{color-scheme:dark;--arcade-pink:#ff55d8;--arcade-lime:#c6ff45}
+*{box-sizing:border-box}body{background:radial-gradient(ellipse at 8% 0,#281326,transparent 48%),#090b13;color:#f4f1fa;margin:0}
+.arcade-directory{max-width:1300px;margin:auto;padding:2rem 1.2rem 5rem;min-width:0}.cartridge-back{color:#c0b4ca;text-decoration:none;font-size:.85rem}.cartridge-hero{padding:2.5rem 0 1.8rem}.arcade-kicker{color:var(--arcade-pink);font-size:.72rem;letter-spacing:.19em;font-weight:900}.cartridge-hero h1{font-size:clamp(2.4rem,7vw,5.4rem);line-height:.95;letter-spacing:-.06em;margin:.8rem 0 1.2rem}.cartridge-hero h1 span{color:var(--arcade-lime)}.cartridge-hero p{color:#c3b9ce;max-width:800px;line-height:1.6}.arcade-overview{font-size:.85rem}.arcade-license-link{display:inline-block;color:#cab7d2;margin:1rem;font-size:.83rem}
+.cartridge-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}.cartridge-toolbar h2{font-size:1.35rem}#arcade-total-count{color:#b2a3bd;font-size:.8rem}
+#game-shelf .arcade-catalog-toolbar{display:grid;grid-template-columns:minmax(200px,2fr) repeat(3,minmax(120px,1fr));gap:.75rem;margin:1.2rem 0}.arcade-catalog-toolbar label{display:flex;flex-direction:column;gap:.4rem;color:#c7bbd0;font-size:.75rem;font-weight:800}.arcade-catalog-toolbar input,.arcade-catalog-toolbar select{min-width:0;width:100%;min-height:46px;padding:.7rem .85rem;border:1px solid #82618d;border-radius:10px;background:#171320;color:#fff;font:inherit;font-size:.88rem}.arcade-collections{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0}.arcade-collections button,#arcade-clear{background:#191422;border:1px solid #73567e;border-radius:999px;color:#dbd1e2;padding:.65rem 1rem;min-height:44px;font-weight:800;cursor:pointer}.arcade-collections button span{opacity:.65;margin-left:.3rem}.arcade-collections button[aria-pressed=true]{background:var(--arcade-lime);color:#141a07;border-color:var(--arcade-lime)}.arcade-search-count{color:var(--arcade-lime);font-weight:800;font-size:.86rem}#arcade-collection-note{color:#b1a3bc;font-size:.85rem;line-height:1.55;margin:.5rem 0 1.3rem;max-width:800px}
+#game-shelf .cartridge-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;align-items:stretch}#game-shelf article{min-width:0;display:flex;flex-direction:column;gap:.7rem;padding:1.25rem;border:1px solid #75558155;border-radius:16px;background:linear-gradient(145deg,#1a1524,#100f18);position:relative}#game-shelf article[data-featured=true]{border-color:#c6ff4566}#game-shelf article[hidden],[hidden]{display:none!important}.cartridge-number{text-transform:uppercase;letter-spacing:.06em;font-size:.65rem;color:var(--arcade-pink);font-weight:800}#game-shelf article h2,#game-shelf article h3{font-size:1.2rem;line-height:1.2;margin:0;color:#faf5ff;overflow-wrap:anywhere}#game-shelf article p{font-size:.87rem;line-height:1.6;color:#c0b4cb;margin:0}.status{color:#bcafc8;font-size:.7rem}.flat-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:auto;padding-top:.3rem}.flat-actions a,.cartridge-hero .button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:9px;padding:.65rem .85rem;background:var(--arcade-lime);color:#111605;text-decoration:none;font-size:.82rem;font-weight:900;line-height:1.4}.flat-actions .button-ghost,.cartridge-hero .button{background:#23192c;color:#f2eaf7;border:1px solid #b481c3}.arcade-details{font-size:.74rem;color:#b2a0bf}.arcade-details summary{cursor:pointer;min-height:32px;padding:.4rem 0}.arcade-details a{color:#c6b4d2}.arcade-footnote{margin-top:3rem;border-top:1px solid #493252;padding-top:1.2rem;max-width:900px}.arcade-footnote h2{font-size:1.1rem}.arcade-footnote p{font-size:.85rem;line-height:1.7;color:#b5a6c0}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--arcade-pink);outline-offset:4px}.kf-footer{padding:1.5rem;text-align:center;color:#a690b0;font-size:.75rem}
+@media(max-width:950px){#game-shelf .cartridge-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}#game-shelf .arcade-catalog-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}.arcade-catalog-toolbar label:first-child{grid-column:1/-1}}
+@media(max-width:540px){.arcade-directory{padding:1.2rem .85rem 4rem}#game-shelf .cartridge-shelf{grid-template-columns:1fr}#game-shelf .arcade-catalog-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.arcade-catalog-toolbar label:last-child{grid-column:1/-1}.cartridge-hero{padding:1.8rem 0 1rem}.arcade-collections button{font-size:.75rem;padding:.6rem .8rem}.arcade-license-link{margin-left:0}}
+/* Keep the catalog's launch buttons clear of floating character overlays. */
+body:has(.arcade-directory) #miss-chaos-presence,body:has(.arcade-directory) .gw-character-crew{display:none!important}

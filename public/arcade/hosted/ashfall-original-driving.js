@@ -7,7 +7,7 @@ function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function label(t){$("status").textContent=t}
 function points(n){score+=n;best=Math.max(best,score);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-drive-"+id,String(best))}catch{}}
 function end(t){running=false;label(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
-function reset(){generation++;running=true;score=0;steps=0;crossRow=0;crossCooldown=0;elapsed=0;spawn=.6;obstacles=[];player=1;cars=[{lane:0,y:400},{lane:2,y:400}];$("score").textContent="0";last=performance.now();label("DRIVE · avoid hazards");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(t=>loop(t,generation));draw()}
+function reset(){generation++;running=true;score=0;steps=0;crossRow=0;crossCooldown=0;elapsed=0;spawn=.6;obstacles=[];player=1;cars=[{lane:0,y:400},{lane:2,y:400}];$("score").textContent="0";last=performance.now();label("DRIVE · avoid hazards");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));const run=generation;requestAnimationFrame(t=>loop(t,run));draw()}
 function action(direction){
  if(!running)return;
  if(id==="crossy-road"){
@@ -55,4 +55,11 @@ document.addEventListener("keydown",e=>{if(!running&&e.key==="Enter")reset();if(
 let startY=0;c.addEventListener("touchstart",e=>{startY=e.touches[0].clientY},{passive:true});c.addEventListener("touchend",e=>{if(id==="crossy-road"&&startY-e.changedTouches[0].clientY>25)action("up")},{passive:true});
 $("restart").addEventListener("click",reset);document.addEventListener("visibilitychange",()=>{last=performance.now()});
 $("best").textContent=best;draw();label("Ready · press Start");
+
+function saveNumbers(o,names){return o&&typeof o==="object"&&names.every(k=>Number.isFinite(o[k])&&Math.abs(o[k])<=1000000000)}
+function saveList(a,names,max=100){return Array.isArray(a)&&a.length<=max&&a.every(o=>saveNumbers(o,names))}
+function validSave(d){try{return d&&d.schema===1&&d.game===id&&d.engine==="driving-v1"&&Number.isInteger(d.score)&&d.score>=0&&d.score<=1000000&&Number.isFinite(d.best)&&d.best>=0&&d.best<=1000000&&JSON.stringify(d).length<=30000&&saveNumbers(d,["elapsed","spawn","steps","crossRow","crossCooldown"])&&d.elapsed>=0&&d.crossRow>=0&&d.crossRow<=5&&Number.isInteger(d.player)&&d.player>=0&&d.player<=3&&saveList(d.cars,["lane","y"],2)&&d.cars.length===2&&d.cars.every(c=>Number.isInteger(c.lane)&&c.lane>=0&&c.lane<=3)&&saveList(d.obstacles,id==="crossy-road"?["x","y","vx"]:["lane","y","speed"],35)}catch{return false}}
+globalThis.exportSaveState=()=>running?JSON.parse(JSON.stringify({schema:1,game:id,engine:"driving-v1",score,best,elapsed,spawn,obstacles,cars,player,steps,crossRow,crossCooldown})):null;
+globalThis.importSaveState=input=>{let d;try{d=JSON.parse(JSON.stringify(input))}catch{return false}if(!validSave(d))return false;generation++;running=true;({elapsed,spawn,obstacles,cars,player,steps,crossRow,crossCooldown}=d);score=d.score;best=Math.max(best,d.best,score);$("score").textContent=score;$("best").textContent=best;last=performance.now();$("status").textContent="Cloud save restored.";document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));draw();const restored=generation;requestAnimationFrame(t=>loop(t,restored));return true};
+globalThis.isGameActive=()=>running;
 })();

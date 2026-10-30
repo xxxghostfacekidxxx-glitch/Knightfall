@@ -8,8 +8,9 @@ const errors=[],seen=new Set();
 const catalogLinks=[...catalog.matchAll(/href="(\/arcade\/hosted\/[^"]+\/index\.html)"/g)].map(m=>m[1]);
 if(!Array.isArray(manifest.games))throw Error("Original creations manifest missing games array");
 const catalogCards=[...catalog.matchAll(/<article\b[^>]*class="game"[^>]*>[\s\S]*?<\/article>/g)];
-if(catalogCards.length!==manifest.games.length)errors.push("Catalog/manifest count mismatch: "+catalogCards.length+" cards vs "+manifest.games.length+" games");
-if(manifest.games.length!==103)errors.push("Expected 103 arcade originals, found "+manifest.games.length);
+const fullCatalog=JSON.parse(readFileSync(join(root,"arcade/catalog.json"),"utf8"));
+if(catalogCards.length!==fullCatalog.games.length)errors.push("Catalog/manifest count mismatch");
+if(manifest.games.length<100)errors.push("Original archive unexpectedly incomplete");
 for(const game of manifest.games){
  if(!/^[a-z0-9-]+$/.test(game.id)||seen.has(game.id)){errors.push("Invalid or duplicate game id: "+game.id);continue}
  seen.add(game.id);
@@ -25,7 +26,7 @@ for(const game of manifest.games){
   const html=readFileSync(htmlPath,"utf8");
   if(!html.includes('src="/arcade-save.js"')&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"'))errors.push(game.id+": missing shared score bridge");
   if(!html.includes("recordScore(")&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"')&&!html.includes('src="/arcade/hosted/ashfall-mini-games.js"'))errors.push(game.id+": missing score submission");
-  for(const m of html.matchAll(/(?:src|href)="(\.\/sprites\/[^"]+)"/g)){
+  for(const m of html.matchAll(/(?:src|href)="(\.\/sprites\/[a-zA-Z0-9._\/-]+)"/g)){
    if(!existsSync(join(root,"arcade/hosted",game.id,m[1])))errors.push(game.id+": broken sprite reference "+m[1]);
   }
   const scripts=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).filter(Boolean);

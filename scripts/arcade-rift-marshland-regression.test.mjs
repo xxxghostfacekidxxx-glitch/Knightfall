@@ -25,7 +25,7 @@ test("Marshland Marksman uses generation-bound frames and idempotent finish",()=
  const source=getSource("marshland-marksman");
  assert.ok(source);assert.doesNotThrow(()=>new Script(source));
  assert.match(source,/function tick\(now,token\)\{if\(token!==epoch\|\|!active\)return/);
- assert.match(source,/function start\(\)\{epoch\+\+;const token=epoch/);
+ assert.match(source,/function start\(\)\{epoch\+\+;cancelAnimationFrame\(raf\);const token=epoch/);
  assert.match(source,/function end\(\)\{if\(!active\)return/);
  assert.ok(source.includes("ashfall:arcade-started"));
  assert.ok(source.includes("ashfall:arcade-finished"));
