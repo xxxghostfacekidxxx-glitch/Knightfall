@@ -10,7 +10,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844}});
     await page.route('https://api.ash-fall.com/api/auth/me',route=>route.fulfill({status,contentType:status===200?'text/html':'application/json',body:status===200?'<html>bad gateway</html>':'{}'}));
     await page.goto(base+'/index.html',{waitUntil:'domcontentloaded'});
-    await page.addScriptTag({url:base+'/nav.js'});
+    if(!(await page.locator('#kf-primary-nav').count())) await page.addScriptTag({url:base+'/nav.js'});
     await page.waitForTimeout(1200);
     const result=await page.evaluate(()=>({header:!!document.querySelector('.kf-header'),account:!!document.querySelector('.kf-profile-group'),members:!!document.querySelector('a[href="/members.html"]'),privilegedVisible:[...document.querySelectorAll('.kf-admin-link,.kf-admin-quick-link,.kf-mod-link')].some(e=>!e.hidden)}));
     if(!result.header||!result.account||!result.members||result.privilegedVisible)throw Error('Missing navigation for auth status '+status+': '+JSON.stringify(result));
