@@ -2273,6 +2273,45 @@
       "notes": "Existing workshop page; not represented as a finished GTA game.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "dragonball-osman-original",
+      "title": "DragonBall-Z-game · Original Demo",
+      "route": "https://osman144.github.io/DragonBall-Z-game/",
+      "description": "Original developer-hosted Dragon Ball fan game. Opens externally; not bundled into Knightfall.",
+      "genre": "Fighting",
+      "collection": "external",
+      "device": "keyboard",
+      "source": "https://github.com/osman144/DragonBall-Z-game",
+      "notes": "Developer's original GitHub Pages demo. MIT code, franchise imagery may have separate rights.",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "dragonball-7balls-original",
+      "title": "7balls · Original Demo",
+      "route": "https://piecioshka.github.io/7balls/",
+      "description": "Original developer-hosted Dragon Ball-inspired web game. External play link.",
+      "genre": "Adventure",
+      "collection": "external",
+      "device": "keyboard",
+      "source": "https://github.com/piecioshka/7balls",
+      "notes": "Upstream's official GitHub Pages demo; external, not hosted by Knightfall.",
+      "links": [],
+      "featured": false
+    },
+    {
+      "id": "star-wars-browser-original",
+      "title": "Star Wars Browser Game · Original Demo",
+      "route": "https://star-wars-game-1efb4.web.app/",
+      "description": "Original developer-hosted side-scrolling Star Wars space game.",
+      "genre": "Shooter",
+      "collection": "external",
+      "device": "keyboard",
+      "source": "https://github.com/AntonovAtanas/Star-Wars-Browser-Game",
+      "notes": "Upstream README's original live demo; external, not bundled into Knightfall.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
