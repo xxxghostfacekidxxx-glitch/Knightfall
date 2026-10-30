@@ -79,7 +79,7 @@ async function updateButtons(){
 }
 async function auth(){
  try{const r=await fetch('https://api.ash-fall.com/api/auth/me',{credentials:'include',cache:'no-store'});if(!r.ok)throw Error('Login required');
- const data=await r.json();if(!['admin','god'].includes(data.user?.role))throw Error('Administrator access required');
+ const data=await r.json();if(!['admin','god'].includes(String(data.user?.role||'').trim().toLowerCase()))throw Error('Administrator access required');
  say('Administrator verified. Install games to this device.');games.hidden=false;return true;
  }catch(e){
   const installed=await Promise.all(ids.map(async id=>{const c=await caches.open('ashfall-god-game-'+id+'-v1');return !!(await c.match(PREFIX+id+'/'+entry(id)));}));
