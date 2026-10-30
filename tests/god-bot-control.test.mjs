@@ -25,3 +25,8 @@ test('dashboard submits authenticated saves and manual publishing',()=>{
  assert.ok(dashboard.includes("'/api/god/bot-publish'"));
  assert.ok(dashboard.includes("method:'PATCH'"));
 });
+
+test('God bot profile route uses full prefix length rather than a hard-coded offset',()=>{
+ assert.match(backend,/url\.pathname\.slice\("\/api\/god\/bots\/".length\)/);
+ assert.equal('/api/god/bots/'.length,14);
+});
