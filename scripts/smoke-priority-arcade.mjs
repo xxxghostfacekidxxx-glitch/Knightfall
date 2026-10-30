@@ -26,6 +26,11 @@ try {
       if(id==='monster-mmo'){
         await page.locator('#world').waitFor({state:'visible'});
         if(await page.locator('#world').evaluate(e=>e.children.length)===0)throw Error('World grid empty');
+        const initialPosition=await page.locator('#position').textContent();
+        await page.keyboard.press('ArrowRight');
+        await page.waitForTimeout(250);
+        const afterPosition=await page.locator('#position').textContent();
+        if(initialPosition===afterPosition)console.warn('WARN monster-mmo: movement blocked or map tile impassable; manual movement QA needed');
         await page.locator('#game-menu-toggle').click();
         if(await page.locator('#game-menu-toggle').getAttribute('aria-expanded')!=='true')throw Error('Pause menu did not open');
       }
@@ -34,6 +39,11 @@ try {
       }
       if(id==='fifteen-puzzle-upstream'){
         if(await page.locator('script[src*="15-puzzle"]').count()===0)throw Error('Puzzle script missing');
+        await page.locator('#scramble').click();
+        if(await page.locator('#puzzle').evaluate(e=>e.children.length)===0)throw Error('Puzzle grid missing after scramble');
+      }
+      if(id==='single-html-space-shooter'){
+        if(await page.locator('canvas').count()===0)throw Error('Shooter canvas missing');
       }
       if(id==='cinder-fleet'){
         if(await page.locator('#enemy button').count()!==64)throw Error('Enemy grid not initialized');
