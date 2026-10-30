@@ -380,7 +380,7 @@
 
   function refreshNotifications() {
     fetch("https://api.ash-fall.com/api/notifications?unread=true&limit=1", {credentials:"include",cache:"no-store"})
-      .then(r => { if (!r.ok) return null; const type=r.headers.get("content-type")||""; if (!type.includes("application/json")) throw new Error("Auth endpoint returned non-JSON"); return r.json(); })
+      .then(r => { if (r.status===401 || r.status===403) return null; if (!r.ok) throw new Error("Auth temporarily unavailable: "+r.status); const type=r.headers.get("content-type")||""; if (!type.toLowerCase().includes("json")) throw new Error("Auth endpoint returned non-JSON"); return r.json(); })
       .then(d => {
         if (!d || !badge) return;
         const count = Number(d.unread_count || 0);
