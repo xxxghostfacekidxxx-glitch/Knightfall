@@ -1,0 +1,47 @@
+name: Card and Board Game Integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/catalog.json'
+      - 'public/arcade-card-board.html'
+      - 'public/arcade/hosted/cinder-*/**'
+      - 'scripts/build-arcade-catalog.mjs'
+      - '.github/workflows/card-board-integrity.yml'
+  pull_request:
+    paths:
+      - 'public/arcade/catalog.json'
+      - 'public/arcade-card-board.html'
+      - 'public/arcade/hosted/cinder-*/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate card and board launch routes
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const catalog=JSON.parse(fs.readFileSync('public/arcade/catalog.json','utf8'));
+          const tabletop=catalog.games.filter(g=>['Card','Board'].includes(g.genre));
+          if(!tabletop.length)throw Error('No tabletop games registered');
+          for(const game of tabletop){
+            if(!game.route.startsWith('/'))throw Error('External route in local tabletop shelf: '+game.id);
+            const file='public'+game.route;
+            if(!fs.existsSync(file))throw Error('Missing game: '+game.id+' '+file);
+            const html=fs.readFileSync(file,'utf8');
+            if(!html.trim())throw Error('Empty game: '+game.id);
+          }
+          if(!fs.existsSync('public/arcade-card-board.html'))throw Error('Missing category page');
+          console.log('Validated '+tabletop.length+' tabletop launch routes');
+          JS
+      - name: Verify generated arcade directory stays synchronized
+        run: |
+          node scripts/build-arcade-catalog.mjs
+          git diff --exit-code -- public/chaos-cartridge.html public/arcade-30-games.html
