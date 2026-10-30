@@ -380,7 +380,7 @@
 
   function refreshNotifications() {
     fetch("https://api.ash-fall.com/api/notifications?unread=true&limit=1", {credentials:"include",cache:"no-store"})
-      .then(r => r.ok ? r.json() : null)
+      .then(r => { if (!r.ok) return null; const type=r.headers.get("content-type")||""; if (!type.includes("application/json")) throw new Error("Auth endpoint returned non-JSON"); return r.json(); })
       .then(d => {
         if (!d || !badge) return;
         const count = Number(d.unread_count || 0);
