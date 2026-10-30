@@ -94,7 +94,7 @@ function wireButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.
   say('Downloading private '+id+' package…');
   const r=await fetch('https://api.ash-fall.com/api/admin/game-downloads/'+id,{credentials:'include',cache:'no-store'});
   if(!r.ok)throw Error('Private package unavailable (HTTP '+r.status+'). Check R2 upload workflow.');
-  if((r.headers.get('content-type')||'').includes('text/html'))throw Error('Package endpoint returned a webpage instead of a game archive');
+  if(/text\/html|application\/json/i.test(r.headers.get('content-type')||''))throw Error('Package endpoint returned a webpage instead of a game archive');
   const buffer=await r.arrayBuffer();say('Installing '+id+' ('+Math.round(buffer.byteLength/1048576)+' MB)…');
   await extractZip(buffer,id,p=>{bar.value=p;say('Installing '+id+': '+p+'%');});
   say('Installed '+id+'. Ready for offline play.');await updateButtons();
