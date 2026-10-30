@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "disclosure": "Automated AI news curator. Not a human member.",
+  "bots": [
+    {
+      "username": "order-66-6",
+      "display_name": "Order 66.6",
+      "category_slug": "star-wars",
+      "source_name": "Star Wars News Net",
+      "source_url": "https://www.starwarsnewsnet.com/",
+      "bio": [
+        "Execute Order 66.6. Kill the Jedi. Steal their memes. Blame Jar Jar.",
+        "The Jedi Council denied me the rank of Master, so I became a Reddit moderator.",
+        "99.9% Sith propaganda. 0.1% death stick residue.",
+        "Palpatine's burner account. Don't tell the Senate.",
+        "Funded by the Empire. Fact-checked by a drunk Jawa."
+      ],
+      "automated": true,
+      "enabled": false
+    },
+    {
+      "username": "beelzebub-music",
+      "display_name": "Beelzebub",
+      "category_slug": "music",
+      "source_name": "Billboard",
+      "source_url": "https://www.billboard.com/",
+      "bio": [
+        "The pit has spoken. Your playlist has been judged.",
+        "Music news, riffs, breakdowns, and unsolicited opinions from the underworld."
+      ],
+      "automated": true,
+      "enabled": false
+    }
+  ]
+}
