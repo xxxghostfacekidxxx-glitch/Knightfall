@@ -157,3 +157,7 @@ These close specific defects, not the broader unchecked release gates above.
 - [x] Complete reviewed branch cleanup: workflow `41137003212` succeeded; only `main` remains and no open PRs were found.
 - [x] Correct unsupported keyboard metadata on seven arcade listings so desktop filtering includes them; regenerate both directories.
 - [x] Bundle all Hell & High Orbit styles and omit the optional remote visual-engine loader in standalone offline HTML. Packaging regression verifies no external script/style tags remain; Android play remains unverified.
+- [x] Run independent birth-chart verification: workflow `41137836283` passed all 16 tests plus public production assets/API/privacy checks. Signed-in production-browser lifecycle remains open.
+- [x] Verify priority browser batch: workflow `41137498964` passed navigation and priority game checks; MMO, visual regression, card/board integrity, catalog doctor, generated-directory synchronization and core regression CI passed on `e13a5be…`.
+- [x] Rebuild and republish private admin game packages: workflow `41137003043` succeeded. Android installation/play remains open.
+- [x] Full local arcade crawl: 177 launch pages and 138 hosted-asset checks passed. The complete deployed gameplay/fleet gate remains distinct and must not be inferred from this local pass.

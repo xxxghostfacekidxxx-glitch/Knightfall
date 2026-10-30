@@ -5,6 +5,10 @@ on:
       - 'public/arcade/hosted/a-dark-room/**'
       - 'public/arcade/hosted/evolution-of-trust/**'
       - 'scripts/import-selected-open-source-games.sh'
+      - 'public/arcade/catalog.json'
+      - 'scripts/arcade-shelf-dedup.test.mjs'
+      - 'scripts/selected-open-source-games.test.mjs'
+      - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/patches/a-dark-room-dependencies.patch'
       - '.github/workflows/selected-game-checks.yml'
   push:
@@ -13,6 +17,10 @@ on:
       - 'public/arcade/hosted/a-dark-room/**'
       - 'public/arcade/hosted/evolution-of-trust/**'
       - 'scripts/import-selected-open-source-games.sh'
+      - 'public/arcade/catalog.json'
+      - 'scripts/arcade-shelf-dedup.test.mjs'
+      - 'scripts/selected-open-source-games.test.mjs'
+      - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/patches/a-dark-room-dependencies.patch'
       - '.github/workflows/selected-game-checks.yml'
 permissions:
