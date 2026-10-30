@@ -12,8 +12,8 @@ for(const game of catalog.games){
  const paths=[game.route,...(game.links||[]).map(x=>x.route)];
  for(const route of paths){
   if(/^https:\/\//.test(route)){if(game.collection!=='external')warnings.push(game.id+': external link outside external collection');continue}
-  if(!route.startsWith('/')||route.includes('..')||route.includes('?')){errors.push(game.id+': unsafe route '+route);continue}
-  const disk=resolve(root,'.'+route);
+  if(!route.startsWith('/')||route.includes('..')){errors.push(game.id+': unsafe route '+route);continue}
+  const disk=resolve(root,'.'+route.split(/[?#]/)[0]);
   if(!disk.startsWith(root+'/')){errors.push(game.id+': route escapes public');continue}
   if(!existsSync(disk)||!statSync(disk).isFile())errors.push(game.id+': missing '+route);
   if(routes.has(route)&&routes.get(route)!==game.id)warnings.push(game.id+': shares route with '+routes.get(route));
