@@ -812,7 +812,7 @@ async function publishScheduledBotNews(env) {
     {key:"beelzebub-music",url:"https://www.billboard.com/feed/"}
   ];
   for(const feed of feeds){
-    const bot=await env.DB.prepare("SELECT p.bot_key,p.cadence,p.auto_post_enabled AS posting_enabled,a.user_id FROM god_bot_profiles p JOIN god_bot_accounts a ON a.bot_key=p.bot_key WHERE p.bot_key=?").bind(feed.key).first();
+    const bot=await env.DB.prepare("SELECT p.bot_key,p.news_frequency AS cadence,p.auto_post_enabled AS posting_enabled,a.user_id FROM god_bot_profiles p JOIN god_bot_accounts a ON a.bot_key=p.bot_key WHERE p.bot_key=?").bind(feed.key).first();
     if(!bot||bot.posting_enabled!==1||bot.cadence==="manual")continue;
     const day=new Date().toISOString().slice(0,10);
     const slot=bot.cadence==="three-daily"?String(Math.floor(new Date().getUTCHours()/8)):bot.cadence==="twice-daily"?(new Date().getUTCHours()<12?"am":"pm"):"daily";
@@ -1744,7 +1744,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!actor)return json({error:"Authentication required"},401,origin);
     if(actor.role!=="god")return json({error:"God role required"},403,origin);
     if(url.pathname==="/api/god/bots"&&request.method==="GET"){
-      const rows=await env.DB.prepare("SELECT bot_key,display_name,bio,source_name,source_url,auto_post_enabled AS posting_enabled,cadence,updated_at FROM god_bot_profiles ORDER BY bot_key").all();
+      const rows=await env.DB.prepare("SELECT bot_key,display_name,bio,source_name,source_url,auto_post_enabled AS posting_enabled,news_frequency AS cadence,updated_at FROM god_bot_profiles ORDER BY bot_key").all();
       return json({bots:rows.results||[]},200,origin);
     }
     const match=url.pathname.startsWith("/api/god/bots/") && /^[-a-z0-9]+$/.test(url.pathname.slice("/api/god/bots/".length)) ? [url.pathname,url.pathname.slice("/api/god/bots/".length)] : null;
@@ -1755,9 +1755,9 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!Object.keys(payload).length||Object.keys(payload).some(k=>!allowed.includes(k)))return json({error:"Unsupported field"},400,origin);
     const existing=await env.DB.prepare("SELECT * FROM god_bot_profiles WHERE bot_key=?").bind(match[1]).first();
     if(!existing)return json({error:"Unknown bot"},404,origin);
-    const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.cadence,posting=payload.posting_enabled??existing.auto_post_enabled;
+    const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.news_frequency,posting=payload.posting_enabled??existing.auto_post_enabled;
     if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily","three-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin);
-    await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,cadence=?,auto_post_enabled=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,Number(posting),match[1]).run();
+    await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,news_frequency=?,auto_post_enabled=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,Number(posting),match[1]).run();
     await env.DB.prepare("UPDATE users SET display_name=?,bio=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT user_id FROM god_bot_accounts WHERE bot_key=?)").bind(name.trim(),bio,match[1]).run();
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
     return json({ok:true,bot_key:match[1],posting_enabled:Number(posting)===1},200,origin);
