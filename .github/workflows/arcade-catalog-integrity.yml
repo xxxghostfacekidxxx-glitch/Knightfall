@@ -7,6 +7,7 @@ on:
       - 'public/arcade-card-board.html'
       - 'scripts/audit-*.mjs'
       - 'scripts/test-browserquest-socket.mjs'
+      - 'scripts/test-life-games.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - '.github/workflows/arcade-catalog-integrity.yml'
   pull_request:
@@ -31,6 +32,8 @@ jobs:
         run: node scripts/audit-franchise-and-rpg.mjs
       - name: Test BrowserQuest local transport protocol
         run: node scripts/test-browserquest-socket.mjs
+      - name: Validate Life game JavaScript syntax
+        run: node scripts/test-life-games.mjs
       - name: Regenerate arcade catalog pages
         run: node scripts/build-arcade-catalog.mjs
       - name: Confirm generated pages match source
