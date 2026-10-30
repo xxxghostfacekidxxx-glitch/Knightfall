@@ -2182,6 +2182,19 @@
       "notes": "Original implementation; single-player against local CPU.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-gomoku",
+      "title": "Cinder Gomoku",
+      "route": "/arcade/hosted/cinder-gomoku/index.html",
+      "description": "Place five stones in a row on an 11×11 board against a local computer opponent.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original local single-player game; no multiplayer.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
