@@ -1719,6 +1719,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.cadence;
     if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily"].includes(cadence))return json({error:"Invalid profile fields"},400,origin);
     await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,cadence=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,match[1]).run();
+    await env.DB.prepare("UPDATE users SET display_name=?,bio=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT user_id FROM god_bot_accounts WHERE bot_key=?)").bind(name.trim(),bio,match[1]).run();
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
     return json({ok:true,bot_key:match[1],posting_enabled:false},200,origin);
   }
