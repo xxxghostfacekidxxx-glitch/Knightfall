@@ -6,6 +6,7 @@ on:
       - 'public/arcade/**'
       - 'public/arcade-card-board.html'
       - 'scripts/audit-*.mjs'
+      - 'scripts/test-browserquest-socket.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - '.github/workflows/arcade-catalog-integrity.yml'
   pull_request:
@@ -28,6 +29,8 @@ jobs:
         run: node scripts/audit-card-board.mjs
       - name: Validate franchise, BrowserQuest and Sanctuary assets
         run: node scripts/audit-franchise-and-rpg.mjs
+      - name: Test BrowserQuest local transport protocol
+        run: node scripts/test-browserquest-socket.mjs
       - name: Regenerate arcade catalog pages
         run: node scripts/build-arcade-catalog.mjs
       - name: Confirm generated pages match source
