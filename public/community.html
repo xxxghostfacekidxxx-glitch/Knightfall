@@ -44,14 +44,14 @@
     const API="https://api.ash-fall.com";
     const categoriesEl=document.getElementById("categories"),threadsEl=document.getElementById("threads"),statusEl=document.getElementById("api-status"),messageEl=document.getElementById("forum-message");
     const titleEl=document.getElementById("threads-title"),contextEl=document.getElementById("thread-context"),allThreadsButton=document.getElementById("all-threads");
-    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"]);
+    const topicNames=new Set(["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","star wars"]);
     let selectedCategoryId="",categories=[],currentThreads=[];
     function escapeHtml(v){return String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]))}
     function formatDate(v){if(!v)return"";const d=new Date(v);return Number.isNaN(d.getTime())?v:d.toLocaleString()}
     function normalizeCategory(name){return String(name||"").trim().toLowerCase().replace(/\s+/g," ")}
     function renderCategories(){
       const topics=categories.filter(cat=>topicNames.has(normalizeCategory(cat.name)));
-      const order=["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime"];
+      const order=["gaming","mindless scribbling","general discussion","general discussions","art & tattoos","music","philosophy","true crime","star wars"];
       topics.sort((a,b)=>order.indexOf(normalizeCategory(a.name))-order.indexOf(normalizeCategory(b.name)));
       categoriesEl.innerHTML=topics.map((cat,i)=>{
         const name=normalizeCategory(cat.name)==="general discussion"||normalizeCategory(cat.name)==="general discussions"?"General Discussions":cat.name;
