@@ -33,3 +33,6 @@ Android: Verify PWA install, offline cache behavior, package signing and release
 Payments and adult services: Select compliant verification and payment providers, configure their accounts and review policies before enabling services.
 
 Never put real credential values in this document or frontend code. Confirm completion using provider dashboards and live testing.
+
+## Shared reference maintenance policy
+This register and the God Mode Development Operations panel are the shared working reference for the project owner and development assistant. On each relevant Knightfall task, consult them, record newly completed work and newly discovered blockers, and distinguish planned, implemented, tested, deployed and production-verified status. Never silently mark a task done based only on a commit. Add new manual account requirements without storing credential values. Reconcile the dashboard and this document after significant changes. This policy applies while actively working; unattended continuous updates require an explicitly configured automation or CI integration.
