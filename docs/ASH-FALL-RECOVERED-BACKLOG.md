@@ -70,3 +70,21 @@ Review: 2026-10-30. Reconstructed from accessible prior conversations and curren
 
 ## How to use this register
 Treat all unchecked items as **needs verification or unfinished**, not as proof of absence. On every relevant task, inspect current source and live tests, move confirmed items into an evidence-backed completed section, and link commits/CI/deploys. Never copy secrets or sensitive personal data into the dashboard.
+
+## Second recovery pass: smaller forgotten features
+- [ ] Miss Chaos voice input/output, speaking avatar animations, image generation, interactive roleplay, tattoo/music/story writing assistants, horror stories, journal prompts and optional AI-assisted quests. Evaluate consent, cost and provider limits.
+- [ ] Member identity extras: reputation, badges, signatures, polls, journal/Die-ary, saved/favorite chats, customizable AI personality, follow system, profile activity, gallery and tattoo portfolio.
+- [ ] Creator publishing: music, poetry, stories, digital downloads, merchandise and AI credits; separate legal/financial launch requirements from ordinary publishing.
+- [ ] Two-app strategy: Ash-Fall ecosystem app and separate Sanctum of Inferno church app, both with a coherent Miss Chaos integration; bookstore including selected other authors.
+- [ ] Mobile conveniences: camera upload, quick-chat widget, offline notes, 2FA, spam detection and reporting.
+- [ ] Miss Chaos voice and context-aware Chaos Cartridge game commentary; optional notifications and user-controlled speaking behavior.
+- [ ] Arcade player-submitted issue reports and admin triage; achievements, favorites, daily challenges, unlocks and game discovery.
+- [ ] Multiplayer monster trading, cooperative events, persistent teams, reconnect and stale-save protection.
+- [ ] Arcade After Dark expansion, Hextris/HexGL/A Dark Room status and accurate local-vs-prototype labels.
+- [ ] God navigation architecture: Creations groups bots and shops; My Profile groups Die-ary, members, messages, friends, bots, vault, shop and account. Verify header/mobile parity.
+- [ ] Security and operational follow-up: CSP, CSRF tests, per-endpoint authorization, account deletion across all storage, backup/recovery, soft delete, lock/pin, audit and report history.
+- [ ] Push notification coverage for DMs, group chats, friend requests, replies, mentions, follows and account notices; muted categories and private-by-default previews.
+- [ ] Umami-style privacy-conscious analytics for registration, retention, game sessions and errors; do not publish user-sensitive analytics.
+- [ ] Google Play readiness: real-device push, package/application ID, signing, verified app links, privacy contact, account deletion and closed testing.
+- [ ] Existing Creator Foundry's twelve tools and older toolkit proposal: Hextris, A Dark Room, Clumsy Bird, Elevator Saga, Mindustry, Pterodactyl, Pelican, LinuxGSM, GameAP, PufferPanel. Verify prior PR #60 and license/runtime compatibility before integration.
+- [ ] Complete migration off legacy orange/duplicate CSS, with visual regression tests.
