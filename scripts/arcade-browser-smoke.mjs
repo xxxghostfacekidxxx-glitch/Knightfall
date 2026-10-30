@@ -134,7 +134,8 @@ try {
   let routePasses = 0;
   const routeFailures = [];
   for (const route of hostedRoutes) {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+    const desktop=arcadeCatalog.games.find(g=>g.route===route)?.device==="desktop";
+    const page = await browser.newPage({ viewport: desktop?{width:1366,height:768}:{width:390,height:844}, deviceScaleFactor: 1, isMobile: !desktop, hasTouch: !desktop });
     const errors = [];
     const badAssets = [];
     page.on("pageerror", error => errors.push(error.message || String(error)));
@@ -158,7 +159,13 @@ try {
       const startControl = await overlayStart.count() && await overlayStart.isVisible().catch(() => false) ? overlayStart : genericStart;
       if (await startControl.count() && await startControl.isVisible().catch(() => false) && await startControl.isEnabled().catch(() => false)) {
         try {
-          await startControl.tap({ timeout: 1000, force: true });
+          // A selected Play tab (GTA-2W) is navigation, not a start button.
+          // Its game already mounts automatically. Exercise real starts using
+          // the controls advertised by the catalog, allowing asset initialization.
+          const selectedTab=await startControl.evaluate(el=>el.matches('.topbar button.active,[role="tab"][aria-selected="true"]'));
+          if(selectedTab)await page.locator('canvas').first().waitFor({state:"visible",timeout:5000});
+          else if(desktop)await startControl.click({timeout:5000});
+          else await startControl.tap({timeout:5000});
           await page.waitForTimeout(120);
         } catch (error) {
           routeFailures.push(route + ": start/play control failed: " + (error?.message || String(error)));

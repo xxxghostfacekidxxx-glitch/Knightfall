@@ -49,3 +49,9 @@ Regenerate directories with `node scripts/build-arcade-catalog.mjs`. Validate wi
 The user approved pushing and deploying the fixes on 30 October 2026. The first implementation is published through the connected GitHub app in PR #189; its Cloudflare preview deployed successfully. Production rollout and final workflow results are tracked in that PR. Normal Git push cannot authenticate in this workspace, so the connected GitHub app publishes the exact validated file tree instead.
 
 The authorization/ownership workflows cannot complete their authenticated checks because dedicated test-account secrets are absent. Their gates are retained. The repository-wide static audit has the existing findings described above; it is not claimed green.
+
+## Production verification
+
+PR #189 merged as `6e87d6f02ce8fdd4174c222274fb934ae549debe`. Cloudflare Pages deployment `0f2a7069-7fef-4f5b-9fa0-0272f399c244` succeeded; API Worker deployment `d58b4eb3-5659-4cb0-bc45-be20cddd8094` serves version `7ad8ba06-06c6-4f5b-8e80-3f0c8f6417dc` at 100%. The production catalog displays the new collections and filters.
+
+The full browser smoke job passed. Eight of ten fleet jobs also passed; the remaining two timed out tapping GTA-2W's already-selected Play navigation tab after only one second. The audit now distinguishes selected mode tabs from game starts, verifies their visible game canvas, respects desktop control metadata, and gives real start controls five seconds for initialization. This retains runtime/asset error checks instead of treating a navigation tab as a game launch.
