@@ -26,4 +26,11 @@ c.addEventListener("pointerdown",e=>{e.preventDefault();hold=true;jump()});for(c
 document.addEventListener("keydown",e=>{if([" ","ArrowUp"].includes(e.key)){e.preventDefault();if(!keys.has(e.key))jump();keys.add(e.key)}if(e.key==="Enter"&&!running)reset()});
 document.addEventListener("keyup",e=>keys.delete(e.key));$("restart").addEventListener("click",reset);document.addEventListener("visibilitychange",()=>{last=performance.now();keys.clear();hold=false});
 $("best").textContent=best;world={x:110,y:365,life:3,obstacles:[],time:0,speed:190};draw();label("Ready · press Start");
+
+function saveNumbers(o,names){return o&&typeof o==="object"&&names.every(k=>Number.isFinite(o[k])&&Math.abs(o[k])<=1000000000)}
+function saveList(a,names,max=100){return Array.isArray(a)&&a.length<=max&&a.every(o=>saveNumbers(o,names))}
+function validSave(d){try{return d&&d.schema===1&&d.game===id&&d.engine==="runner-v1"&&Number.isInteger(d.score)&&d.score>=0&&d.score<=1000000&&Number.isFinite(d.best)&&d.best>=0&&d.best<=1000000&&JSON.stringify(d).length<=30000&&saveNumbers(d.world,["x","y","vy","ground","spawn","speed","time","life","invuln","flap"])&&d.world.life>0&&d.world.life<=3&&d.world.time>=0&&saveList(d.world.obstacles,["x","y","w","h"],30)&&d.world.obstacles.every(o=>o.w>0&&o.h>0&&typeof o.passed==="boolean")}catch{return false}}
+globalThis.exportSaveState=()=>running?JSON.parse(JSON.stringify({schema:1,game:id,engine:"runner-v1",score,best,world})):null;
+globalThis.importSaveState=input=>{let d;try{d=JSON.parse(JSON.stringify(input))}catch{return false}if(!validSave(d))return false;epoch++;running=true;keys.clear();hold=false;world=d.world;score=d.score;best=Math.max(best,d.best,score);$("score").textContent=score;$("best").textContent=best;last=performance.now();$("status").textContent="Cloud save restored.";document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));draw();const restored=epoch;requestAnimationFrame(t=>loop(t,restored));return true};
+globalThis.isGameActive=()=>running;
 })();

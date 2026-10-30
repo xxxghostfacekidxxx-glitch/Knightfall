@@ -6,17 +6,12 @@ const arcadeCatalog=JSON.parse(await readFile("public/arcade/catalog.json","utf8
 const base = process.env.ARCADE_TEST_BASE || "http://127.0.0.1:8765";
 const hostedRoot = path.resolve("public/arcade/hosted");
 
-async function listHostedHtml(dir = hostedRoot) {
-  const routes = [];
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) routes.push(...await listHostedHtml(full));
-    else if (entry.isFile() && entry.name.endsWith(".html")) {
-      routes.push("/" + path.relative("public", full).split(path.sep).join("/"));
-    }
-  }
-  return routes;
+// Imported screen/component HTML is fetched by a game, not launched on its own.
+// Crawling the actual catalog still catches failed asset requests at their runtime base URL.
+async function listHostedHtml() {
+ return [...new Set(arcadeCatalog.games.filter(g=>g.route.startsWith("/arcade/hosted/")).map(g=>g.route))];
 }
+
 const games = [
   { name: "Neon Drift", path: "/arcade/hosted/ashfall-neon-engine.html?game=neon-drift", start: "#start", pause: false },
   { name: "Cinder Defense", path: "/arcade/hosted/ashfall-neon-engine.html?game=cinder-defense", start: "#start", pause: false },
@@ -33,6 +28,13 @@ const rawNewPage = browser.newPage.bind(browser);
 let evidenceCount = 0;
 browser.newPage = async options => {
   const page = await rawNewPage(options);
+  // Cloud restore cases install a deterministic API stub before navigation.
+  // Rewritten games load arcade-save.js themselves; keep that script from replacing the test stub.
+  await page.route("**/arcade-save.js",async route=>{
+    const injected=await page.evaluate(()=>window.AshFallArcade?.user?.id==="browser-smoke-test");
+    if(injected)await route.fulfill({contentType:"application/javascript",body:"/* deterministic account API supplied by this test */"});
+    else await route.continue();
+  });
   const problems = [];
   page.on("pageerror", error => problems.push({type:"pageerror",message:String(error?.stack || error)}));
   page.on("requestfailed", request => {
@@ -661,7 +663,6 @@ try {
     { name:"Wordlee", path:"/arcade/hosted/wordlee/index.html", gameId:"cabinet-wordlee", data:{serialized:{answer:"ASHEN",row:1,guess:"CLOUD",done:false,guesses:[{word:"GHOST",colors:["absent","absent","absent","absent","absent"]}],keyState:{G:"absent"}}}, check:()=>document.querySelector("#board .tile")?.textContent==="G"&&document.querySelector("#status")?.textContent.includes("Cloud save restored") },
     { name:"Sudoku", path:"/arcade/hosted/sudoku/index.html", gameId:"cabinet-sudoku", data:{serialized:{grid:[[5,0,0,0,0,0,0,1,2],[0,0,0,0,3,5,0,0,0],[0,0,0,0,0,0,4,0,0],[0,5,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,9,0,6,0],[0,0,1,0,0,0,0,0,0],[0,0,0,7,2,0,0,0,0],[6,2,0,0,0,0,0,0,0]],selected:{r:1,c:0},timeLeft:487}}, check:()=>document.querySelector("#board .cell")?.textContent==="5"&&document.querySelector("#timer")?.textContent==="8:07" },
     { name:"Neon Mahjong", path:"/arcade/hosted/neon-mahjong/index.html", gameId:"cabinet-neon-mahjong", data:{serialized:{tiles:Array.from({length:104},(_,i)=>({x:i%12,y:Math.floor(i/12),z:0,id:i,val:["✦","✦","●","●","◆","◆"][i%6],alive:true})),selected:null,moves:13,elapsed:72,history:[],done:0,best:0}}, check:()=>document.querySelector("#moves")?.textContent==="13"&&document.querySelector("#message")?.textContent.includes("Cloud save restored") },
-    { name:"Prism Panic", path:"/arcade/hosted/prism-panic/index.html", gameId:"cabinet-prism-panic", data:{serialized:{level:2,moves:9,best:1,mirrors:[{x:2,y:3,v:"/",base:"/"},{x:2,y:5,v:"/",base:"/"},{x:5,y:5,v:"/",base:"/"},{x:5,y:2,v:"/",base:"/"}],beam:[]}}, check:()=>document.querySelector("#level")?.textContent==="2 / 5"&&document.querySelector("#moves")?.textContent==="9"&&document.querySelector("#message")?.textContent.includes("Cloud save restored") }
   ];
   for(const testCase of puzzleRestoreCases){
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
@@ -675,7 +676,6 @@ try {
   // Verify cloud resume for Hexa Havoc, Bubble Pop, and Rift Wardens.
   const arcadeRestoreCases = [
     { name:"Hexa Havoc", path:"/arcade/hosted/hexa-havoc/index.html", gameId:"cabinet-hexa-havoc", data:{serialized:{cells:Array.from({length:8},(_,y)=>Array.from({length:8},(_,x)=>y===7&&x===0?1:-1)),piece:{col:3,row:1,colors:[0,1,2]},score:70,best:100}}, check:()=>document.querySelector("#score")?.textContent==="70"&&document.querySelector("#best")?.textContent==="100" },
-    { name:"Bubble Pop", path:"/arcade/hosted/bubble-pop/index.html", gameId:"cabinet-bubble-pop", data:{serialized:{board:Array.from({length:8},()=>Array.from({length:9},()=>1)),score:25,time:37,active:true}}, check:()=>document.querySelector("#score")?.textContent==="25"&&document.querySelector("#time")?.textContent==="37"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
     { name:"Rift Wardens", path:"/arcade/hosted/rift-wardens/index.html", gameId:"cabinet-rift-wardens", data:{serialized:{towers:[{x:4,y:1,type:"burst",cool:0.2}],enemies:[{x:0.5,y:3.5,idx:0,hp:44,max:65,speed:0.8,r:11,reward:11}],shots:[],cash:75,lives:8,wave:3,kills:4,selected:"burst",running:true,spawned:2,waveCount:14,high:4,spawnDelay:500}}, check:()=>document.querySelector("#wave")?.textContent==="3"&&document.querySelector("#cash")?.textContent==="75"&&document.querySelector("#lives")?.textContent==="8" }
   ];
   for(const testCase of arcadeRestoreCases){
@@ -687,25 +687,30 @@ try {
     finally{await page.close()}
   }
 
-  // Verify cloud resume for Balance Stack, Doodle Jump, and Stack Tower.
-  const platformRestoreCases = [
-    { name:"Balance Stack",path:"/arcade/hosted/balance-stack/index.html",gameId:"cabinet-balance-stack",data:{serialized:{tilt:0.4,wind:0, time:18,windTimer:0.4,score:60}},check:()=>document.querySelector("#time")?.textContent==="18"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
-    { name:"Doodle Jump",path:"/arcade/hosted/doodle-jump/index.html",gameId:"cabinet-doodle-jump",data:{serialized:{player:{x:190,y:400,vx:0,vy:-200,r:15},plats:[{x:20,y:540,w:80},{x:160,y:470,w:70}],cam:0,score:720}},check:()=>document.querySelector("#score")?.textContent==="720"&&document.querySelector("#state")?.textContent==="Cloud save restored." },
-    { name:"Stack Tower",path:"/arcade/hosted/stack-tower/index.html",gameId:"cabinet-stack-tower",data:{serialized:{blocks:[{x:90,w:240,y:550},{x:110,w:200,y:500}],active:{x:35,w:200,y:450},score:7,dir:1,cam:0}},check:()=>document.querySelector("#score")?.textContent==="7"&&document.querySelector("#state")?.textContent==="Cloud save restored." }
-  ];
-  for(const testCase of platformRestoreCases){
-    const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
-    await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
-    const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
-    catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
-    finally{await page.close()}
+  // Rewritten engines use versioned native saves. Old puzzle/racing editions have
+  // different rules and geometry, so their old fixtures must be rejected, not coerced.
+  const nativeRestoreGames=["prism-panic","neon-vector","bubble-pop","candy-crush","balance-stack","stack-tower","whack-a-bug","doodle-jump","alien-battle","survivor","rusty-sky","slush-rush","car-race","two-cars","crossy-road"];
+  for(const id of nativeRestoreGames){
+    const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    await page.addInitScript(()=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async()=>null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}});
+    try{
+      const response=await page.goto(base+"/arcade/hosted/"+id+"/index.html",{waitUntil:"domcontentloaded",timeout:15000});
+      if(!response?.ok())throw Error("HTTP "+response?.status());
+      await page.locator("#restart").click();
+      const save=await page.evaluate(()=>window.exportSaveState());
+      if(!save||save.schema!==1||save.game!==id)throw Error("native snapshot missing or has the wrong game identity");
+      save.score=123;save.best=150;
+      await page.locator("#restart").click();
+      const result=await page.evaluate(snapshot=>({restored:window.importSaveState(snapshot),rejected:window.importSaveState({...snapshot,game:"different-cabinet"}),score:window.exportSaveState()?.score}),save);
+      if(!result.restored||result.rejected!==false||result.score!==123)throw Error("state roundtrip / foreign-game rejection failed");
+      console.log("PASS native cloud-save contract: "+id+" restores current state and rejects incompatible snapshots");
+    }catch(error){console.error("FAIL native cloud-save contract: "+id+": "+error.message);failed=true;}
+    finally{await page.close();}
   }
 
   // Verify cloud resume for Hexforge Command, Neon Vector, and Cinder Circuit.
   const campaignRestoreCases = [
     {name:"Hexforge Command",path:"/arcade/hosted/hexforge-command/index.html",gameId:"cabinet-hexforge-command",data:{serialized:{tiles:Array.from({length:63},(_,i)=>({q:i%9,r:Math.floor(i/9),blocked:false,terrain:"plain"})),units:[{id:"p0-1",team:"p",q:0,r:1,hp:55,max:55,atk:18,moved:false,acted:false},{id:"p0-3",team:"p",q:0,r:3,hp:48,max:48,atk:22,moved:true,acted:false},{id:"e8-1",team:"e",q:8,r:1,hp:45,max:55,atk:14,moved:false,acted:false}],selected:{id:"p0-1"},mission:2,playerTurn:true,best:2,notice:"Cloud save restored."}},check:()=>document.querySelector("#mission")?.textContent==="2 / 3"&&document.querySelector("#friends")?.textContent==="2"&&document.querySelector("#message")?.textContent==="Cloud save restored. Your squad is ready."},
-    {name:"Neon Vector",path:"/arcade/hosted/neon-vector/index.html",gameId:"cabinet-neon-vector",data:{serialized:{lane:1,speed:0.8,boost:55,distance:1234,best:900,traffic:[{lane:-1,z:0.5,type:"rival",color:"#45d9ff"}],spawnDelay:500,roadOffset:0.2}},check:()=>document.querySelector("#best")?.textContent==="900 m"&&document.querySelector("#boost")?.textContent.includes("55%")&&document.querySelector("#overlay")?.hidden===true},
     {name:"Cinder Circuit",path:"/arcade/hosted/cinder-circuit/index.html",gameId:"cabinet-cinder-circuit",data:{serialized:{angle:1.5,speed:0.8,lane:0.2,lap:1,time:47,boost:60,oldAngle:1.4,playerLaps:1,best:2000,cars:[{name:"Mauve",color:"#ff5edb",a:1.1,v:1.05,l:-0.4},{name:"Volt",color:"#45d9ff",a:2.2,v:1.12,l:0.25},{name:"Ruckus",color:"#ffb15e",a:3.1,v:1,l:0.65}]}},check:()=>document.querySelector("#lap")?.textContent==="1 / 3"&&document.querySelector("#time")?.textContent==="47s"&&document.querySelector("#overlay")?.hidden===true}
   ];
   for(const testCase of campaignRestoreCases){
@@ -719,7 +724,6 @@ try {
 
   // Verify cloud resume for Rusty Sky, Blockfall, and Endless Runner.
   const runnerRestoreCases = [
-    {name:"Rusty Sky",path:"/arcade/hosted/rusty-sky/index.html",gameId:"cabinet-rusty-sky",data:{serialized:{targets:[{x:300,y:210,vx:30,vy:2,size:24,phase:1,color:"#45d9ff",kind:"bird"}],score:60,best:90,ammo:4,time:18,round:2,spawnDelay:400}},check:()=>document.querySelector("#score")?.textContent==="60"&&document.querySelector("#ammo")?.textContent==="4"&&document.querySelector("#overlay")?.hidden===true},
     {name:"Blockfall",path:"/arcade/hosted/blockfall/index.html",gameId:"cabinet-blockfall",data:{serialized:{board:Array.from({length:20},()=>Array(10).fill(0)),currentPiece:{type:"T",rotation:0,x:3,y:4},nextPiece:{type:"I",rotation:0,x:3,y:-1},isPaused:false,started:true,score:240,linesCleared:4,level:1,dropInterval:800,isWin:false,elapsedSinceDrop:100}},check:()=>document.querySelector("#score-val")?.textContent==="240"&&document.querySelector("#lines-val")?.textContent==="4"&&document.querySelector("#status-banner")?.style.display==="none"},
     {name:"Endless Runner",path:"/arcade/hosted/endless-runner/index.html",gameId:"cabinet-endless-runner",data:{serialized:{player:{x:75,y:400,vy:0,w:30,h:38},obs:[{x:320,y:505,w:30,h:35}],score:123,speed:432,spawn:0.8,ground:530}},check:()=>Number(document.querySelector("#score")?.textContent)>=123&&document.querySelector("#state")?.textContent==="Cloud save restored."}
   ];
@@ -734,9 +738,7 @@ try {
 
   // Verify cloud resume for Candy Crush, Bubble Barrage, and Car Race.
   const matchRestoreCases = [
-    {name:"Candy Crush",path:"/arcade/hosted/candy-crush/index.html",gameId:"cabinet-candy-crush",data:{serialized:{board:Array.from({length:8},()=>Array(8).fill(0)),selected:{r:2,c:3},score:250,moves:12}},check:()=>document.querySelector("#score")?.textContent==="250"&&document.querySelector("#moves")?.textContent==="12"&&document.querySelector("#state")?.textContent==="Cloud save restored."},
     {name:"Bubble Barrage",path:"/arcade/hosted/bubble-barrage/index.html",gameId:"cabinet-bubble-barrage",data:{serialized:{grid:[{row:0,col:0,color:"#ff5edb",alive:true},{row:0,col:1,color:"#ff5edb",alive:true},{row:0,col:2,color:"#ff5edb",alive:true}],score:120,shots:4,aimOn:true,shooter:"#a8ff48",best:150,pointer:{x:320,y:150}}},check:()=>document.querySelector("#score")?.textContent==="120"&&document.querySelector("#shots")?.textContent==="4"&&document.querySelector("#best")?.textContent==="150"},
-    {name:"Car Race",path:"/arcade/hosted/car-race/index.html",gameId:"cabinet-car-race",data:{serialized:{lane:2,traffic:[{lane:0,y:100,h:50}],score:345,speed:772,spawn:0.4}},check:()=>Number(document.querySelector("#score")?.textContent)>=345&&document.querySelector("#state")?.textContent==="Cloud save restored."}
   ];
   for(const testCase of matchRestoreCases){
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
@@ -838,7 +840,7 @@ try {
       }
     }
     const localHostedRoutes = await listHostedHtml();
-    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes])];
+    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])];
     console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
     for (const route of routes) {

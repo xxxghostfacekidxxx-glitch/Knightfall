@@ -11,7 +11,7 @@ function stop(t){running=false;note(t+" · "+score+" points");document.dispatchE
 function start(){token++;running=true;score=0;last=performance.now();$("score").textContent="0";
  if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:i===0?265:rand(40,480),y:420-i*55}))};
  else state={x:320,y:id==="survivor"?240:410,hp:id==="survivor"?5:3,enemies:[],shots:[],spawn:0,fire:0,elapsed:0};
- note("RUNNING");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));requestAnimationFrame(t=>loop(t,token));draw()}
+ note("RUNNING");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));const run=token;requestAnimationFrame(t=>loop(t,run));draw()}
 function loop(now,seq){if(!running||seq!==token)return;const dt=Math.min(.04,Math.max(0,(now-last)/1000));last=now;const s=state;
  const dx=(keys.has("ArrowRight")?1:0)-(keys.has("ArrowLeft")?1:0),dy=(keys.has("ArrowDown")?1:0)-(keys.has("ArrowUp")?1:0);
  s.x=Math.max(20,Math.min(620,s.x+dx*260*dt));
@@ -49,4 +49,11 @@ c.addEventListener("pointerdown",e=>{if(!running)return;const r=c.getBoundingCli
 document.addEventListener("keydown",e=>{if(e.key.startsWith("Arrow")){keys.add(e.key);e.preventDefault()}if(e.key==="Enter"&&!running)start()});
 document.addEventListener("keyup",e=>keys.delete(e.key));$("restart").addEventListener("click",start);document.addEventListener("visibilitychange",()=>{last=performance.now();keys.clear()});
 $("best").textContent=best;draw();note("Ready · press Start");
+
+function saveNumbers(o,names){return o&&typeof o==="object"&&names.every(k=>Number.isFinite(o[k])&&Math.abs(o[k])<=1000000000)}
+function saveList(a,names,max=100){return Array.isArray(a)&&a.length<=max&&a.every(o=>saveNumbers(o,names))}
+function validSave(d){try{return d&&d.schema===1&&d.game===id&&d.engine==="action-v1"&&Number.isInteger(d.score)&&d.score>=0&&d.score<=1000000&&Number.isFinite(d.best)&&d.best>=0&&d.best<=1000000&&JSON.stringify(d).length<=30000&&d.state&&saveNumbers(d.state,["x","y"])&&(id==="doodle-jump"?saveNumbers(d.state,["vy"])&&saveList(d.state.platforms,["x","y"],100)&&d.state.platforms.length>0:saveNumbers(d.state,["hp","spawn","fire","elapsed"])&&d.state.hp>0&&d.state.hp<=5&&saveList(d.state.enemies,["x","y"],50)&&saveList(d.state.shots,["x","y","vy"],60)&&d.state.shots.every(b=>b.vx===undefined||Number.isFinite(b.vx)))}catch{return false}}
+globalThis.exportSaveState=()=>running?JSON.parse(JSON.stringify({schema:1,game:id,engine:"action-v1",score,best,state})):null;
+globalThis.importSaveState=input=>{let d;try{d=JSON.parse(JSON.stringify(input))}catch{return false}if(!validSave(d))return false;token++;running=true;keys.clear();state=d.state;score=d.score;best=Math.max(best,d.best,score);$("score").textContent=score;$("best").textContent=best;last=performance.now();$("status").textContent="Cloud save restored.";document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));draw();const restored=token;requestAnimationFrame(t=>loop(t,restored));return true};
+globalThis.isGameActive=()=>running;
 })();

@@ -35,6 +35,17 @@ The two arcade directories now render from `public/arcade/catalog.json`. There a
 
 Regenerate directories with `node scripts/build-arcade-catalog.mjs`. Validate with `node --test scripts/arcade-*.test.mjs scripts/selected-open-source-games.test.mjs`, `node scripts/arcade-originals-audit.mjs`, and `node scripts/arcade-import-audit.mjs`.
 
+## Second pass
+
+- Fixed stale CPU/round/sector callbacks in Connect Four, Ember Echo, Void Sequence and Ash Veil. Restarting or restoring a save invalidates the old work.
+- Added native versioned snapshot export/import for the 15 games using the six replacement engines. Snapshots are checked for game/engine/schema identity, shape, finite values and size before application. Incompatible old-edition saves are rejected rather than interpreted using the wrong rules.
+- Fixed first-frame restart callbacks in vector, action and driving engines so a rapid restart cannot create a second animation loop.
+- Added 19 behavioral regression tests; the arcade/import total is now 177 passing tests.
+- Corrected browser QA to crawl playable catalog entries and their runtime asset requests, rather than opening imported HTML fragments as standalone games. Updated old-edition save fixtures to native roundtrip tests. Test API stubs remain deterministic when a rewritten cabinet also loads arcade-save.js.
+- Browser retests of the four restart repairs and representative vector/balance/driving cabinets found no uncaught errors in the available environment.
+
 ## Publication state
 
-The implementation is committed locally. Automatic approval review rejected the GitHub push, interpreting the request as audit/fix authorization without publication permission. No PR or production deployment was created by this task. Publishing the frontend and API changes requires user approval.
+The user approved pushing and deploying the fixes on 30 October 2026. The first implementation is published through the connected GitHub app in PR #189; its Cloudflare preview deployed successfully. Production rollout and final workflow results are tracked in that PR. Normal Git push cannot authenticate in this workspace, so the connected GitHub app publishes the exact validated file tree instead.
+
+The authorization/ownership workflows cannot complete their authenticated checks because dedicated test-account secrets are absent. Their gates are retained. The repository-wide static audit has the existing findings described above; it is not claimed green.

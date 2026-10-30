@@ -160,7 +160,7 @@ jobs:
           node --check scripts/arcade-browser-smoke.mjs
           node --check scripts/arcade-gameplay-replay.mjs
           node --check scripts/arcade-gameplay-doctor.mjs
-          node --test scripts/arcade-shelf-dedup.test.mjs scripts/arcade-boot-regression.test.mjs scripts/arcade-score-registration.test.mjs
+          node --test scripts/arcade-shelf-dedup.test.mjs scripts/arcade-boot-regression.test.mjs scripts/arcade-score-registration.test.mjs scripts/arcade-state-roundtrip.test.mjs
           node --test scripts/arcade-route-integrity.test.mjs
           node scripts/arcade-gameplay-doctor.mjs
           node --check scripts/arcade-asset-doctor.mjs
