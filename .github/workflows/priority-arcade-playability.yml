@@ -1,0 +1,37 @@
+name: Priority Arcade Playability
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/smoke-priority-arcade.mjs'
+      - 'public/monster-mmo*'
+      - 'public/arcade/hosted/sanctuary-*/**'
+      - 'public/arcade/hosted/browserquest-solo/**'
+      - 'public/arcade/hosted/fable-gta/**'
+      - 'public/arcade/hosted/pikkuautot-city/**'
+      - 'public/arcade/hosted/cinder-battleship/**'
+      - 'public/arcade/hosted/fifteen-puzzle/**'
+      - 'public/arcade/catalog.json'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Browser smoke test priority arcade games
+        run: node scripts/smoke-priority-arcade.mjs
+      - name: Upload screenshots and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: priority-arcade-evidence
+          path: priority-arcade-evidence/
+          retention-days: 7
