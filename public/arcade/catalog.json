@@ -2156,6 +2156,19 @@
       "notes": "",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-eights",
+      "title": "Cinder Eights",
+      "route": "/arcade/hosted/cinder-eights/index.html",
+      "description": "Crazy Eights against a local CPU. Match suit or rank, play wild eights, and empty your hand.",
+      "genre": "Card",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original browser implementation; local single-player, no online multiplayer.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
