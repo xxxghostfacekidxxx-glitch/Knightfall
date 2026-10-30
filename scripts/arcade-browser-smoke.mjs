@@ -78,6 +78,27 @@ try {
       await page.close();
     }
   }
+  // The expanded card room once initialized but crashed on records, selection, and fullscreen controls.
+  {
+    const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const errors=[];page.on('pageerror',error=>errors.push(error.message));
+    try {
+      await page.goto(base+'/arcade-card-expansion.html',{waitUntil:'domcontentloaded'});
+      if(!/games/.test(await page.locator('#all-record').innerText()))throw Error('Card-room records did not initialize');
+      await page.locator('#sol-draw').click();
+      if(await page.locator('#sol-stock-count').innerText()!=='23')throw Error('Solitaire draw did not remove a stock card');
+      await page.locator('#sol-top .playing-card').nth(1).click();
+      if(!/selected/i.test(await page.locator('#sol-status').innerText()))throw Error('Solitaire selection did not update status');
+      await page.locator('#sol-undo').click();
+      for(const [tab,newButton] of [['freecell','fc-new'],['eights','e8-new'],['gin','gin-new'],['holdem','he-new']]) {
+        await page.locator('[data-game="'+tab+'"]').click();
+        await page.locator('#'+newButton).click();
+        if(!await page.locator('#game-'+tab).isVisible())throw Error('Card table did not open: '+tab);
+      }
+      if(errors.length)throw Error(errors.join('; '));
+      console.log('PASS expanded card room: all five tables, records, draw, selection, and new deals');
+    } finally {await page.close();}
+  }
   // Catch layout regressions that leave game canvases invisible or wider than a phone.
   for (const route of ["/arcade/hosted/ashfall-mini-games.html", "/arcade/hosted/arcade-cabinet.html?game=ash-cannon"]) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -847,7 +868,7 @@ try {
       }
     }
     const localHostedRoutes = await listHostedHtml();
-    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])];
+    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])].filter(route=>/\.html?(?:[?#]|$)/i.test(route));
     console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
     for (const route of routes) {

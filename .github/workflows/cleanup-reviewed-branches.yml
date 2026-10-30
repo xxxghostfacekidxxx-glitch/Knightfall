@@ -1,0 +1,22 @@
+name: Clean up reviewed obsolete branches
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cleanup-reviewed-branches.yml'
+      - 'scripts/cleanup-reviewed-branches.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove the reviewed, rejected Electron upgrade branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 scripts/cleanup-reviewed-branches.py

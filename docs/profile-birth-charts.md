@@ -16,7 +16,7 @@ Only derived chart placements, Ascendant/Midheaven sign and degrees, and house n
 
 ## Deployment and verification
 
-Migration: `backend/migrations/0058_profile_birth_charts.sql`. The table and index were also created directly on the production Knightfall D1 database through Cloudflare on October 26, 2026; both operations returned success. The idempotent migration remains in Git for future environments. The normal migration runner still needs to record it as applied.
+Migration: `backend/migrations/0058_profile_birth_charts.sql`. The table and index were also created directly on the production Knightfall D1 database through Cloudflare on October 26, 2026; both operations returned success. The idempotent migration remains in Git for future environments. On October 30, 2026, the production table and visibility index were compared with this migration, and the missing `d1_migrations` record was reconciled with `INSERT OR IGNORE`. The ledger now records `0058_profile_birth_charts.sql`.
 
 Regression tests: `node --test scripts/profile-birth-chart.test.mjs` (included in smoke-test workflow), plus the astrology tests. A successful Worker deployment, static Pages publish, and signed-in browser verification are **not** implied by committing the files or applying the D1 schema.
 

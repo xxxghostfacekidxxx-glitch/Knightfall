@@ -25,6 +25,8 @@ on:
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
       - 'scripts/static-audit.mjs'
+      - 'scripts/html-audit-metadata.py'
+      - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/push-notifications-audit.mjs'
       - 'scripts/account-deletion-audit.mjs'
       - 'scripts/pwa-browser-smoke.mjs'
@@ -56,6 +58,8 @@ jobs:
           node-version: '22'
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
+      - name: Verify birth charts and card-room rules
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
       - name: Audit JavaScript, configs, and local HTML assets
         run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/security-headers.test.mjs scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs scripts/push-navigation.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
 

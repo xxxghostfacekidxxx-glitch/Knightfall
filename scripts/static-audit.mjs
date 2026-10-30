@@ -80,7 +80,7 @@ for (const [label, present] of [
   ["profile fallback retains message", profileScript.includes('data-message-user')],
   ["profile incoming request accepts by ID", profileScript.includes('encodeURIComponent(incoming.id)')],
   ["profile uses neon default accent", profileScript.includes('ember:"#ff55d8"')],
-  ["profile scripts are cache-versioned", profileHtml.includes('profile.js?v=20261028-profile-audit5')]
+  ["profile scripts are cache-versioned", /profile\.js\?v=[^\"'\s]+/.test(profileHtml)]
 ]) {
   if (present) ok(label); else fail(label);
 }
@@ -176,30 +176,30 @@ for (const file of cssFiles) {
   else ok("CSS brace balance: " + rel);
 }
 
+// Imported components and translation dictionaries are fragments, not launch documents.
+const fragmentPage = file => /\/interstellar-armada\/(?:src\/)?data\/(?:components|screens)\//.test(file) || file.endsWith('/evolution-of-trust/words.html');
+const parsed = spawnSync('python3', ['scripts/html-audit-metadata.py'], {input:JSON.stringify(htmlFiles),encoding:'utf8',maxBuffer:32*1024*1024});
+if(parsed.status!==0)throw new Error(parsed.stderr || 'HTML metadata parser failed');
+const metadata = JSON.parse(parsed.stdout);
 for (const file of htmlFiles) {
-  const rel = path.relative(root, file);
-  const html = await readFile(file, "utf8");
-  const ids = [...html.matchAll(/\bid=["']([^"']+)["']/gi)].map(m => m[1]);
-  const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
-  if (duplicates.length) fail(rel + " contains duplicate id(s): " + [...new Set(duplicates)].join(", "));
-  const inlineScripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
-  for (let i = 0; i < inlineScripts.length; i++) {
-    const attrs = inlineScripts[i][1];
-    const code = inlineScripts[i][2];
-    if (/\bsrc=["']/i.test(attrs) || !code.trim()) continue;
-    const isModule = /\btype=["']module["']/i.test(attrs);
-    const result = spawnSync(process.execPath, isModule ? ["--input-type=module", "--check"] : ["--check"], { input: code, encoding: "utf8" });
+  const rel = path.relative(root, file), page = metadata[file];
+  const duplicates = page.ids.filter((id,i,ids)=>ids.indexOf(id)!==i);
+  if (!fragmentPage(file) && duplicates.length) fail(rel + " contains duplicate id(s): " + [...new Set(duplicates)].join(", "));
+  for (const [i,script] of page.scripts.entries()) {
+    if (script.src || !script.code.trim() || !['','module','text/javascript','application/javascript'].includes(script.type)) continue;
+    const result = spawnSync(process.execPath, script.type==='module' ? ["--input-type=module", "--check"] : ["--check"], { input: script.code, encoding: "utf8" });
     if (result.status !== 0) fail("Inline JavaScript syntax error in " + rel + " script #" + (i + 1) + ": " + (result.stderr || result.stdout).trim());
   }
-  if (!/<title>\s*[^<]+<\/title>/i.test(html)) fail(rel + " is missing a non-empty title.");
-  if (!/name=["']viewport["']/i.test(html)) fail(rel + " is missing a viewport meta tag.");
-  const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(m => m[1]);
+  if (!fragmentPage(file) && !page.title.trim()) fail(rel + " is missing a non-empty title.");
+  if (!fragmentPage(file) && !page.viewport) fail(rel + " is missing a viewport meta tag.");
+  const scripts = page.scripts.map(script=>script.src).filter(Boolean);
   const duplicateScripts = scripts.filter((src, i) => scripts.indexOf(src) !== i);
   if (duplicateScripts.length) fail(rel + " loads script(s) more than once: " + [...new Set(duplicateScripts)].join(", "));
-  const refs = [...html.matchAll(/\b(?:href|src)=["']([^"']+)["']/gi)].map(m => m[1]);
-  for (const raw of refs) {
+  for (const raw of page.refs) {
     if (!raw.startsWith("/") || raw.startsWith("//")) continue;
     const pathname = raw.split(/[?#]/, 1)[0];
+    // These documents are generated in a per-game cache by the offline launcher's service worker.
+    if (/^\/admin-offline\/play\/(?:ashfall-infernal-reign-dev|sanctuary-original)\/sanctuary\.html$/.test(pathname)) continue;
     if (!pathname || pathname === "/" || pathname.startsWith("/api/")) continue;
     if (!publicPaths.has(pathname)) fail(rel + " references missing local asset " + pathname);
   }
@@ -216,7 +216,11 @@ for (const entry of manifestEntries) {
   if (!entry.gameId || !/^[a-z0-9-]+$/.test(entry.gameId)) fail("Invalid arcade manifest gameId: " + String(entry.gameId));
   for (const item of entry.files || []) {
     const localPath = item.startsWith("/") ? item : "/" + item;
-    if (!publicPaths.has(localPath)) fail("Manifest entry " + entry.gameId + " lists a missing local file: " + item);
+    const repoRelative = /^(?:\.github|vendor|arcade-overrides)\//.test(item.replace(/^\//,''));
+    if (repoRelative) {
+      try { await access(path.join(root,item.replace(/^\//,''))); }
+      catch { fail("Manifest entry " + entry.gameId + " lists a missing repository source: " + item); }
+    } else if (!publicPaths.has(localPath)) fail("Manifest entry " + entry.gameId + " lists a missing local file: " + item);
   }
   if (entry.status === "imported-adapted" && (!entry.upstream || !entry.license || !(entry.files || []).some(f => /LICENSE|NOTICE|SOURCE-NOTICE/i.test(f)))) {
     fail("Imported adaptation lacks upstream, license, or a bundled notice reference: " + entry.gameId);
@@ -255,7 +259,7 @@ const arcadeCatalog = await readFile(path.join(publicDir,"arcade-30-games.html")
 const shelfIds=[...arcadeShelf.matchAll(/data-game-id="([^"]+)"/g)].map(m=>m[1]);
 if(new Set(shelfIds).size!==shelfIds.length)fail("Duplicate game IDs in main arcade shelf.");
 const catalogCount=(arcadeCatalog.match(/<article class="game"/g)||[]).length;
-if(!arcadeCatalog.includes(`${catalogCount} CABINETS / LOCAL PLAYABLE ENTRIES`))fail("Arcade catalog heading does not match game cards.");
+if(!arcadeCatalog.includes(`${catalogCount} catalog entries`))fail("Arcade catalog heading does not match game cards.");
 for(const retired of ["dino-run","balloon-pop","hanoi"]){if(arcadeShelf.includes('/arcade/hosted/'+retired+'/index.html')||arcadeCatalog.includes('/arcade/hosted/'+retired+'/index.html'))fail("Retired imported game still linked: "+retired);}
 ok("Arcade shelf and catalog counts and retired import routes checked.");
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
@@ -268,6 +272,8 @@ ok("New cabinets are linked from the main arcade and registered in the player re
 
 const apiCandidates = new Set();
 for (const file of [...htmlFiles, ...jsFiles]) {
+  // This upstream solo bundle has its own optional service API, not Knightfall routes.
+  if(/\/arcade\/hosted\/(?:openfront-solo|fable-gta)\//.test(file))continue;
   const source = await readFile(file, "utf8");
   for (const match of source.matchAll(/\/api\/[A-Za-z0-9_/?=&.-]+/g)) {
     const endpoint = match[0].split(/[?#]/, 1)[0];
@@ -275,7 +281,9 @@ for (const file of [...htmlFiles, ...jsFiles]) {
   }
 }
 for (const endpoint of apiCandidates) {
-  if (!worker.includes(endpoint) && !worker.includes(endpoint.replaceAll("/", "\\/"))) {
+  const isStagingRoute=/^\/api\/game\/(?:global-chat|action|save|world)$/.test(endpoint) && stagingWorker.includes(endpoint);
+  const isDownloadRoute=/^\/api\/admin\/game-downloads\/[a-z0-9-]+$/.test(endpoint) && worker.includes('serveAdminGameArchive');
+  if (!isStagingRoute && !isDownloadRoute && !worker.includes(endpoint) && !worker.includes(endpoint.replaceAll("/", "\\/"))) {
     fail("Frontend references an API path not found in the Worker: " + endpoint);
   }
 }

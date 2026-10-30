@@ -5,6 +5,8 @@ on:
     paths:
       - 'public/arcade/catalog.json'
       - 'public/arcade-card-board.html'
+      - 'public/arcade-card-expansion.html'
+      - 'scripts/card-room-runtime.test.mjs'
       - 'public/arcade/hosted/cinder-*/**'
       - 'scripts/build-arcade-catalog.mjs'
       - '.github/workflows/card-board-integrity.yml'
@@ -12,6 +14,8 @@ on:
     paths:
       - 'public/arcade/catalog.json'
       - 'public/arcade-card-board.html'
+      - 'public/arcade-card-expansion.html'
+      - 'scripts/card-room-runtime.test.mjs'
       - 'public/arcade/hosted/cinder-*/**'
   workflow_dispatch:
 permissions:
@@ -24,6 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Exercise card-room rules and controls
+        run: node --test scripts/card-room-runtime.test.mjs
       - name: Validate card and board launch routes
         run: |
           node --input-type=module <<'JS'

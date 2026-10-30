@@ -145,3 +145,12 @@ These items were recovered from additional earlier discussions. Verify against c
 - [ ] Verify offline launcher installation and ZIP extraction on Android Chrome with a real authorized account.
 - [ ] Verify Playwright navigation workflow completes successfully, including normal member and admin roles.
 - [ ] Delete leftover closed Dependabot branch after confirming no needed changes; branch deletion unavailable in current connector.
+
+## Evidence-backed subtask completions: October 30, 2026
+These close specific defects, not the broader unchecked release gates above.
+- [x] Repair Card Room expansion initialization, shared records controls, Solitaire status actions, Ace-low rules, FreeCell occupied foundations, and Gin Ace scoring. Five runtime scenarios pass; mobile browser checks added to smoke CI.
+- [x] Remove legacy injected orange overrides from 19 original arcade games; repair Reversi arcade navigation and OpenFront privacy/terms links.
+- [x] Restore a passing full static audit by parsing real HTML, recognizing imported fragments/import maps, validating source-manifest paths in the repository, and separating staging/upstream APIs from production routes. Local audit passes.
+- [x] Confirm production profile birth-chart schema and visibility index, then reconcile missing migration `0058_profile_birth_charts.sql` in D1 ledger. Authenticated lifecycle testing remains open.
+- [x] Add dedicated astrology/birth-chart/card-room CI step so these tests run before the larger static audit.
+- [ ] Verify this batch's browser CI and Pages deployment, then record final PR/branch inventory. See `docs/GOD-DASH-OPERATIONS.md` for evidence and outstanding gates.
