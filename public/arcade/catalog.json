@@ -2234,6 +2234,19 @@
       "notes": "Original upstream MIT license retained in hosted folder. Static, no external asset dependencies; browser QA pending.",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-fleet",
+      "title": "Cinder Fleet",
+      "route": "/arcade/hosted/cinder-battleship/index.html",
+      "description": "Sink the enemy fleet in a turn-based 8×8 naval guessing game against the CPU.",
+      "genre": "Board",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original local browser game, no proprietary Battleship artwork; gameplay QA pending.",
+      "links": [],
+      "featured": false
     }
   ],
   "retiredListings": [
