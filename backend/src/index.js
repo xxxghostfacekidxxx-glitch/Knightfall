@@ -838,7 +838,7 @@ async function publishScheduledBotNews(env) {
     try{
       const slug=await uniqueSlug(title,env);
       const source=feed.key==="order-66-6"?"Star Wars News Net":"Billboard";
-      await env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)").bind(category.id,bot.user_id,title,slug,"News from "+source+".\\n\\nRead the original article: "+link).run();
+      await env.DB.prepare("INSERT INTO threads(category_id,user_id,title,slug,body,created_at,updated_at) VALUES(?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)").bind(category.id,bot.user_id,title,slug,"News from "+source+".\n\nRead the original article: "+link).run();
     }catch(error){await env.DB.prepare("DELETE FROM god_bot_news_log WHERE bot_key=? AND slot_key=?").bind(bot.bot_key,key).run();throw error}
   }
 }
