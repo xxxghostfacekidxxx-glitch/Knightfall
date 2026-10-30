@@ -1,4 +1,4 @@
-const SHELL='ashfall-god-shell-v6',SHELL_FILES=['/admin-offline/index.html','/admin-offline/launcher.js','/admin-offline/manifest.webmanifest','/arcade/original-creations.json'];
+const SHELL='ashfall-god-shell-v7',SHELL_FILES=['/admin-offline/index.html','/admin-offline/launcher.js','/admin-offline/manifest.webmanifest','/arcade/original-creations.json'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(c=>c.addAll(SHELL_FILES)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith('ashfall-god-shell-')&&key!==SHELL)await caches.delete(key);await self.clients.claim();})())});
 self.addEventListener('fetch',event=>{
