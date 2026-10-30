@@ -47,7 +47,7 @@ test("eight original chibi infernal creature portraits are generated without ext
  assert.match(js,/monsterPortrait\(battle\.id,"large"\)/);
  assert.match(js,/monsterPortrait\(id,"tiny"\)/);
  assert.match(css,/prefers-reduced-motion:reduce/);
- assert.ok(html.includes("Infernal Bestiary"));
+ assert.ok(html.includes("Field Bestiary"));
 });
 
 test("original alien invasion episodes and creature roster exist",()=>{
@@ -94,7 +94,7 @@ test("offline galactic bureau contracts award one-time capture supplies",()=>{
  assert.match(js,/save\.claimedContracts\.includes\(id\)/);
  assert.match(js,/save\.bag=\(save\.bag\|\|0\)\+contract\.reward/);
  assert.match(js,/if\(connected\)\{action\("contract",\{id\}\);return\}/);
- assert.match(js,/function render\(\)\{renderStory\(\);renderBureau\(\);/);
+ assert.match(js,/function render\(\)\{renderDex\(\);renderStory\(\);renderBureau\(\);/);
 });
 
 test("faction commander bosses are playable, uncatchable, and award rewards once",()=>{
@@ -139,7 +139,7 @@ test("twenty original monsters include six evolution lines",()=>{
 test("offline battles support charged specials and guarding without changing staging actions",()=>{
  assert.ok(html.includes('data-action="special"'));
  assert.ok(html.includes('data-action="guard"'));
- assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false\)/);
+ assert.match(js,/function battleStrike\(attacker,defender,special=false,quick=false,movePower=null\)/);
  assert.match(js,/if\(\["attack","special","guard","quick","mend"\]\.includes\(name\)\)/);
  assert.match(js,/lead\.energy-=2/);
  assert.match(js,/guarding\?\.35:1/);
@@ -151,7 +151,7 @@ test("offline battle adds original move names, status damage and accessible visu
  assert.match(js,/const speciesMoves=/);
  assert.match(js,/function inflictStatus\(attacker,defender\)/);
  assert.match(js,/function statusTick\(target\)/);
- assert.match(js,/function showBattleEffect\(kind,message\)/);
+ assert.match(js,/function showBattleEffect\(kind,message,combat=\{\}\)/);
  assert.match(js,/if\(evolutionMessage\.includes\("EVOLVED"\)\)showBattleEffect/);
  assert.match(js,/p\.status=null;p\.energy=0/);
  assert.match(css,/prefers-reduced-motion:reduce/);
@@ -195,8 +195,8 @@ test("original canvas pixel overworld is wired into online and offline builds",(
  assert.match(html,/src="\/monster-mmo-pixel-world\.js"/);
  assert.match(css,/#pixel-overworld/);
  assert.match(pixel,/new MutationObserver\(schedule\)/);
- assert.match(pixel,/canvas\.width = TILE \* W/);
- assert.match(pixel,/const TILE = 32, W = 16, H = 12/);
+ assert.match(pixel,/canvas\.width=VIEW_W;canvas\.height=VIEW_H/);
+ assert.match(pixel,/const TILE=32,W=16,H=12,VIEW_W=384,VIEW_H=288/);
  assert.match(pixel,/function ground\(/);
  assert.match(pixel,/function character\(/);
  assert.match(pixel,/function npc\(/);
@@ -233,14 +233,14 @@ test("offline creatures unlock four named moves by level without trusting client
  assert.match(js,/chosen\.unlocked/);
  assert.match(js,/extra\.movePower/);
  assert.match(js,/b\.dataset\.moveSlot!==undefined/);
- assert.match(js,/if\(connected\)\{const data=await request\("\/api\/game\/action"/);
+ assert.match(js,/if\(connected\)\{const previousLead=[\s\S]*?const data=await request\("\/api\/game\/action"/);
 });
 
-test("all 31 original creatures have animated atlas frames and offline packaging",()=>{
+test("original creatures have front and back animated atlas frames and offline packaging",()=>{
  const atlas=readFileSync("public/monster-mmo-sprite-atlas.js","utf8");
  const offline=readFileSync("public/monster-mmo-offline-download.js","utf8");
  assert.match(html,/monster-mmo-sprite-atlas\.js/);
- assert.match(atlas,/atlas\.width=32\*4/);
+ assert.match(atlas,/atlas\.width=32\*8/);
  assert.match(atlas,/ids\.length/);
  assert.match(atlas,/window\.HellOrbitSprites/);
  assert.match(atlas,/minionmouse minivillain minieddie/);
@@ -287,7 +287,7 @@ test("evolution cinematic uses previous and evolved sprite IDs and responsive ov
 
 test("four-slot battles preserve guard and validate multiplayer evolution animation",()=>{
  const battle=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
- assert.match(html,/data-action="guard">Guard/);
+ assert.match(html,/data-action="guard" data-move-slot="3">Guard/);
  for(let slot=0;slot<4;slot++)assert.ok(html.includes('data-move-slot="'+slot+'"'));
  assert.match(js,/const previousLead=save\.party/);
  assert.match(js,/previousLead\.id!==save\.party\[0\]\.id/);
@@ -392,7 +392,7 @@ test("handheld battle commands expose one panel at a time",()=>{
  for(const section of ["fight","party","bag"])assert.ok(html.includes('data-battle-section="'+section+'"'));
  assert.match(pause,/function chooseBattleTab\(name\)/);
  assert.match(pause,/section\.hidden=section\.dataset\.battleSection!==name/);
- assert.match(pause,/current\.lead\?\.hp<=0/);
+ assert.match(pause,/const lead=current\.lead;[\s\S]*?if\(lead\?\.hp<=0&&battleTabs\.length\)chooseBattleTab\("party"\)/);
  assert.match(css,/\.battle-command-tabs/);
  assert.match(css,/#battle-panel \.battle-moves/);
  assert.match(pixelWorld,/Original faction terrain props/);
@@ -404,7 +404,7 @@ test("overworld interaction and faction battle art remain wired",()=>{
  const battleArt=readFileSync("public/monster-mmo-pixel-battle.js","utf8");
  assert.ok(html.includes('id="world-interact"'));
  assert.match(js,/const interact=\$\("world-interact"\)/);
- assert.match(js,/interact\.dataset\.npc=nearby\?\.id/);
+ assert.match(js,/interact\.dataset\.npc=atStation\|\|atSite\?"":nearby\?\.id\|\|""/);
  assert.match(js,/speakToNPC\(id\)/);
  assert.match(css,/#world-interact:not\(\[hidden\]\)/);
  assert.match(battleArt,/Faction-specific skyline and arena props/);

@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 const read = p => readFileSync("public/" + p, "utf8");
 test("admin can download a complete single-file offline creature game", async () => {
-  const assets = new Map(["monster-mmo.html","monster-mmo.css","monster-mmo.js"].map(p => ["/" + p, read(p)]));
+  const assets = new Map(["monster-mmo.html","monster-mmo.css","monster-mmo.js","monster-mmo-pixel-world.js","monster-mmo-pixel-battle.js","monster-mmo-sprite-atlas.js","monster-mmo-pause-menu.js","monster-mmo-dialogue.js","monster-mmo-social.js","visual-refresh.css"].map(p => ["/" + p, read(p)]));
   let clickHandler, blob, filename;
   const button = { disabled: false, addEventListener(type, handler) { if (type === "click") clickHandler = handler; } };
   const status = { textContent: "" };
@@ -29,7 +29,10 @@ test("admin can download a complete single-file offline creature game", async ()
   assert.ok(html.includes('id="players"'));
   assert.ok(!html.includes('src="/monster-mmo.js"'));
   assert.ok(!html.includes('href="/monster-mmo.css"'));
-  assert.ok(!html.includes('id="connect"'));
+  assert.match(html, /id="connect" type="button" hidden disabled/);
+  assert.ok(!/<script[^>]+src=/.test(html), "No remote game scripts remain");
+  assert.ok(!/<link[^>]+rel="stylesheet"/.test(html), "All game styles are bundled");
+  assert.ok(!html.includes('src="/monster-mmo-engine-bridge.js"'));
   const match = html.match(/<script>([\s\S]*?)<\/script>/);
   assert.ok(match, "Embedded game script must be present");
   assert.doesNotThrow(() => new vm.Script(match[1]));

@@ -154,3 +154,6 @@ These close specific defects, not the broader unchecked release gates above.
 - [x] Confirm production profile birth-chart schema and visibility index, then reconcile missing migration `0058_profile_birth_charts.sql` in D1 ledger. Authenticated lifecycle testing remains open.
 - [x] Add dedicated astrology/birth-chart/card-room CI step so these tests run before the larger static audit.
 - [ ] Verify this batch's browser CI and Pages deployment, then record final PR/branch inventory. See `docs/GOD-DASH-OPERATIONS.md` for evidence and outstanding gates.
+- [x] Complete reviewed branch cleanup: workflow `41137003212` succeeded; only `main` remains and no open PRs were found.
+- [x] Correct unsupported keyboard metadata on seven arcade listings so desktop filtering includes them; regenerate both directories.
+- [x] Bundle all Hell & High Orbit styles and omit the optional remote visual-engine loader in standalone offline HTML. Packaging regression verifies no external script/style tags remain; Android play remains unverified.

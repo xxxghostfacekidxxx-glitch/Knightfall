@@ -65,3 +65,11 @@ Work toward test-ready batches before asking the owner to test individual pages.
 - Browser CI, Pages publication and final branch inventory: pending results for this batch. See GitHub Actions before treating it as production verified.
 - News-bot status checked directly: both profiles still have `posting_enabled=0` and `cadence=manual`; news ledger contains no posts. Do not claim automated posting is active.
 - Remaining release blockers: authenticated owner/admin/moderator/member role matrix, real Android install/download/offline play, production OAuth configuration, complete account deletion, multiplayer and game-specific playability certification.
+
+### First deployment and follow-up findings
+- Commit `90312146b983081ea84117de1e681681892efb2f` published successfully to Cloudflare Pages (deployment `ddd6ed6f-9728-47ab-8dad-8669ed62152d`). Its full static audit, dedicated chart/card tests, card/board integrity, catalog doctor and regression workflow passed.
+- Cleanup run `41137003212` succeeded. GitHub branch inventory returned only `main`; open PR search returned none.
+- Broader CI exposed seven catalog entries using unsupported `device: keyboard`, which made them disappear under the desktop controls filter. Normalized these to `desktop` and regenerated both directories; catalog consistency now passes locally.
+- Refreshed outdated MMO source assertions to cover the current Field Bestiary, camera viewport, eight-frame front/back sprite atlas, battle metadata, slot validation and station interaction. Preserved server authorization, charge, PP and client-power rejection checks.
+- Offline HTML packaging now inlines the shared visual-refresh stylesheet and omits the optional remote Phaser loader. Expanded the packaging test to supply every required game asset and verify that no external script or stylesheet tags remain. Hidden disabled connection placeholders remain for shared initialization.
+- Public API smoke confirmed health, profile photos, bots, shops, categories and threads HTTP 200. A later check failed without identifying its assertion; diagnostics added to report the exact failing line and public response. The authenticated authorization matrix remains unverified.

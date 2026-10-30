@@ -13,7 +13,7 @@
     button.disabled = true;
     status.textContent = "Packaging Hell & High Orbit for offline testing…";
     try {
-      const [html, css, js, pixelWorld, pixelBattle, spriteAtlas, pauseMenu, dialogue, social] = await Promise.all([
+      const [html, css, js, pixelWorld, pixelBattle, spriteAtlas, pauseMenu, dialogue, social, refreshCss] = await Promise.all([
         load("/monster-mmo.html"),
         load("/monster-mmo.css"),
         load("/monster-mmo.js"),
@@ -22,7 +22,8 @@
         load("/monster-mmo-sprite-atlas.js"),
         load("/monster-mmo-pause-menu.js"),
         load("/monster-mmo-dialogue.js"),
-        load("/monster-mmo-social.js")
+        load("/monster-mmo-social.js"),
+        load("/visual-refresh.css")
       ]);
       const cssTag = '<link rel="stylesheet" href="/monster-mmo.css">';
       const jsTag = '<script type="module" src="/monster-mmo.js"></script>';
@@ -45,7 +46,9 @@
       const safeDialogue = dialogue.replace(/<\/script/gi, "<\\/script");
       const safeSocial = social.replace(/<\/script/gi, "<\\/script");
       const safeJs = js.replace(/<\/script/gi, "<\\/script");
-      let bundled = html.replace(cssTag, "<style>" + safeCss + "</style>")
+      let bundled = html.replace(cssTag, () => "<style>" + safeCss + "</style>")
+        .replace(/<link rel="stylesheet" href="\/visual-refresh\.css[^"]*">/, () => "<style>" + refreshCss.replace(/<\/style/gi,"<\\/style") + "</style>")
+        .replace('<script src="/monster-mmo-engine-bridge.js" defer></script>', "")
         .replace(jsTag, "<script>" + safeJs + "</script>")
         .replace(pixelTag, "<script defer>" + safePixel + "</script>")
         .replace(battleTag, '<script defer>' + safeBattle + '</script>')

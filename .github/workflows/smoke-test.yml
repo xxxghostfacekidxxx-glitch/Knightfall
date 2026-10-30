@@ -111,6 +111,7 @@ jobs:
           base='https://api.ash-fall.com'
           body=$(mktemp)
           headers=$(mktemp)
+          trap 'echo "::error::Public API smoke failed at line $LINENO"; head -c 2000 "$body"' ERR
           code=$(curl -sS -o "$body" -w '%{http_code}' "$base/health")
           echo "health=$code $(cat "$body")"
           test "$code" = 200
@@ -138,11 +139,13 @@ jobs:
           done
           # The adult category stays hidden to anonymous visitors; the API must expose only the self-attestation flow.
           categories_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/categories")
+          echo "adult-category-check=$categories_code"
           test "$categories_code" = 200
           grep -q '"adult_category_locked":true' "$body"
           grep -q '"slug":"astrology"' "$body"
           if grep -q '"slug":"adults-only"' "$body"; then echo "adult category leaked to anonymous visitor"; exit 1; fi
           adult_status_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/adult/status")
+          echo "adult-status=$adult_status_code $(cat "$body")"
           test "$adult_status_code" = 200
           grep -q '"confirmed":false' "$body"
           # Read-only authorization checks: these must never create production records.
