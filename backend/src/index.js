@@ -815,7 +815,7 @@ async function publishScheduledBotNews(env) {
     const bot=await env.DB.prepare("SELECT p.bot_key,p.cadence,p.auto_post_enabled AS posting_enabled,a.user_id FROM god_bot_profiles p JOIN god_bot_accounts a ON a.bot_key=p.bot_key WHERE p.bot_key=?").bind(feed.key).first();
     if(!bot||bot.posting_enabled!==1||bot.cadence==="manual")continue;
     const day=new Date().toISOString().slice(0,10);
-    const slot=bot.cadence==="twice-daily"?(new Date().getUTCHours()<12?"am":"pm"):"daily";
+    const slot=bot.cadence==="three-daily"?String(Math.floor(new Date().getUTCHours()/8)):bot.cadence==="twice-daily"?(new Date().getUTCHours()<12?"am":"pm"):"daily";
     const key=day+":"+slot;
     const already=await env.DB.prepare("SELECT 1 FROM god_bot_news_log WHERE bot_key=? AND slot_key=?").bind(bot.bot_key,key).first();
     if(already)continue;
@@ -1756,7 +1756,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const existing=await env.DB.prepare("SELECT * FROM god_bot_profiles WHERE bot_key=?").bind(match[1]).first();
     if(!existing)return json({error:"Unknown bot"},404,origin);
     const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.cadence,posting=payload.posting_enabled??existing.auto_post_enabled;
-    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin);
+    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily","three-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin);
     await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,cadence=?,auto_post_enabled=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,Number(posting),match[1]).run();
     await env.DB.prepare("UPDATE users SET display_name=?,bio=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT user_id FROM god_bot_accounts WHERE bot_key=?)").bind(name.trim(),bio,match[1]).run();
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
