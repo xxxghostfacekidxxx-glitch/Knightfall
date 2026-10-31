@@ -145,7 +145,7 @@ define(['jquery', 'app'], function($, App) {
     		}
     		
     		$('.play div').click(function(event) {
-                var nameFromInput = $('#nameinput').attr('value'),
+                var nameFromInput = $('#nameinput').val().trim(),
                     nameFromStorage = $('#playername').html(),
                     name = nameFromInput || nameFromStorage;
                 
@@ -241,7 +241,8 @@ define(['jquery', 'app'], function($, App) {
 	
             app.initHealthBar();
 	
-            $('#nameinput').attr('value', '');
+            // Keep the character name typed by the player; clearing the attribute can break older jQuery input handling.
+            app.toggleButton();
     		$('#chatbox').attr('value', '');
     		
         	if(game.renderer.mobile || game.renderer.tablet) {
@@ -343,7 +344,7 @@ define(['jquery', 'app'], function($, App) {
 
             $('#nameinput').keypress(function(event) {
                 var $name = $('#nameinput'),
-                    name = $name.attr('value');
+                    name = $name.val().trim();
 
                 if(event.keyCode === 13) {
                     if(name !== '') {
@@ -392,7 +393,7 @@ define(['jquery', 'app'], function($, App) {
                         return false;
                     }
                 } else {
-                    if(key === 13 && game.ready) {
+                    if(key === 13 && game.ready && $('#nameinput:focus').size() === 0) {
                         $chat.focus();
                         return false;
                     }
