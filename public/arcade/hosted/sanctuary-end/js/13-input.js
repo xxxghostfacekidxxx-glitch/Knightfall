@@ -160,6 +160,15 @@ const SKILL_COEF = {
     button.addEventListener('click',()=>{ const code = KEYBINDS[action]?.[0]; if (code) window.dispatchEvent(new KeyboardEvent('keydown',{code,key:code,bubbles:true,cancelable:true})); });
     bar.appendChild(button);
   }
+  for (const [label,delta] of [['Zoom +',-5],['Zoom -',5]]) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = label;
+    button.setAttribute('aria-label',label+' camera');
+    Object.assign(button.style,{minHeight:'44px',padding:'6px',color:'#fff',background:'#392145',border:'1px solid #9af5bf',borderRadius:'8px'});
+    button.addEventListener('click',()=>{ if(!running || anyModal()) return; camDist=clamp(camDist+delta,28,72);camHeight=camDist*0.9; });
+    bar.appendChild(button);
+  }
   document.body.appendChild(bar);
   const update=()=>{bar.style.display=typeof running !== 'undefined' && running && !anyModal()?'flex':'none';bar.style.pointerEvents=bar.style.display==='none'?'none':'auto';};
   update();
