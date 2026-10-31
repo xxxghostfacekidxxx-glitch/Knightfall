@@ -1,4 +1,5 @@
 import {readFileSync,existsSync} from 'node:fs';
+import vm from 'node:vm';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..','public');
@@ -11,7 +12,12 @@ for(const edition of ['sanctuary-original','sanctuary-end']){
  const base='arcade/hosted/'+edition+'/';const html=read(base+'sanctuary.html');
  const scripts=[...html.matchAll(/<script[^>]+src=["'](js\/[^"']+)["']/g)].map(x=>x[1]);
  if(scripts.length<20)errors.push(edition+': missing expected modular scripts');
- for(const src of scripts)if(!existsSync(resolve(root,base,src)))errors.push(edition+': missing '+src);
+ for(const src of scripts) {
+  const filename=resolve(root,base,src);
+  if(!existsSync(filename)){errors.push(edition+': missing '+src);continue}
+  try { new vm.Script(readFileSync(filename,'utf8'),{filename:edition+'/'+src}); }
+  catch(e){errors.push(edition+': invalid JavaScript '+src+': '+e.message)}
+ }
  if(!read(base+'js/26-boot.js').includes('Retry loading'))errors.push(edition+': no renderer recovery');
 }
 const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
