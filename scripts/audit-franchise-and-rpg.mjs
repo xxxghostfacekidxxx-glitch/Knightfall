@@ -22,7 +22,7 @@ for(const edition of ['sanctuary-original','sanctuary-end']){
  if(edition==='sanctuary-end' && !read(base+'js/26-boot.js').includes("searchParams.set('forceWebGL','1')"))errors.push('Infernal Reign: missing WebGL2 recovery option');
 }
 const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
-for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange', 'pointercancel', '!anyModal()']) {
+for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange', 'pointercancel', '!anyModal()', 'camDist+delta', 'Collapse mobile controls']) {
  if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
 }
 const browser=read('arcade/hosted/browserquest-solo/index.html');
