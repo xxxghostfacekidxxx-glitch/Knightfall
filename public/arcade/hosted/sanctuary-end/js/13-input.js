@@ -162,5 +162,6 @@ const SKILL_COEF = {
   const update=()=>{bar.style.display=typeof running !== 'undefined' && running?'flex':'none';};
   update();
   const visibilityTimer = setInterval(update,500);
-  window.addEventListener('pagehide',()=>clearInterval(visibilityTimer),{once:true});
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden){ _touchPointer=null; lmbDown=false; rmbDown=false; } });
+  window.addEventListener('pagehide',()=>{clearInterval(visibilityTimer);_touchPointer=null;lmbDown=false;rmbDown=false;},{once:true});
 })();
