@@ -147,15 +147,15 @@ const SKILL_COEF = {
   bar.id = 'infernalTouchControls';
   bar.setAttribute('aria-label', 'Mobile combat shortcuts');
   Object.assign(bar.style, {position:'fixed',bottom:'max(10px, env(safe-area-inset-bottom))',left:'50%',transform:'translateX(-50%)',zIndex:'40',display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'6px',padding:'7px',maxWidth:'96vw',background:'rgba(20,12,30,.9)',border:'1px solid #ff65d3',borderRadius:'12px'});
-  const actions = [['1','Digit1'],['2','Digit2'],['3','Digit3'],['4','Digit4'],['HP','Space'],['MP','KeyQ'],['Bag','KeyI'],['Skills','KeyK']];
-  for (const [label,code] of actions) {
+  const actions = [['1','skill1'],['2','skill2'],['3','skill3'],['4','skill4'],['HP','hpPotion'],['MP','manaPotion'],['Use','interact'],['Bag','toggleInv'],['Skills','toggleSkill'],['Close','close']];
+  for (const [label,action] of actions) {
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = label;
     button.setAttribute('aria-label',label);
     Object.assign(button.style,{minWidth:'39px',minHeight:'44px',padding:'6px',color:'#fff',background:'#392145',border:'1px solid #9af5bf',borderRadius:'8px'});
     button.addEventListener('pointerdown',e=>e.stopPropagation());
-    button.addEventListener('click',()=>window.dispatchEvent(new KeyboardEvent('keydown',{code,key:code,bubbles:true,cancelable:true})));
+    button.addEventListener('click',()=>{ const code = KEYBINDS[action]?.[0]; if (code) window.dispatchEvent(new KeyboardEvent('keydown',{code,key:code,bubbles:true,cancelable:true})); });
     bar.appendChild(button);
   }
   document.body.appendChild(bar);
