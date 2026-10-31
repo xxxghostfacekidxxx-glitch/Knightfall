@@ -160,5 +160,6 @@ const SKILL_COEF = {
   document.body.appendChild(bar);
   const update=()=>{bar.style.visibility=typeof running !== 'undefined' && running?'visible':'hidden';};
   update();
-  setInterval(update,500);
+  const visibilityTimer = setInterval(update,500);
+  window.addEventListener('pagehide',()=>clearInterval(visibilityTimer),{once:true});
 })();
