@@ -171,11 +171,11 @@
 .chat-topbar{border-bottom-color:#302720;background:linear-gradient(100deg,rgba(255,85,216,.11),transparent 68%)}
 .chaos-avatar{border-color:#56306b!important;background:linear-gradient(145deg,#3b1d0c,#17100b)!important;color:#c6ff45!important;box-shadow:0 0 30px rgba(255,85,216,.12)}
 .chaos-avatar span{color:#ff55d8!important}
-.welcome-card{border-color:#52311d;background:radial-gradient(ellipse at 15% 0%,rgba(255,85,216,.14),transparent 62%),linear-gradient(145deg,#15120f,#0d0d0d);box-shadow:0 20px 55px rgba(0,0,0,.2)}
+.welcome-card{border-color:#56306b;background:radial-gradient(ellipse at 15% 0%,rgba(255,85,216,.14),transparent 62%),linear-gradient(145deg,#15120f,#0d0d0d);box-shadow:0 20px 55px rgba(0,0,0,.2)}
 .welcome-symbol{border-color:rgba(255,85,216,.5)!important;background:rgba(255,85,216,.1);color:#ff55d8!important}
 .welcome-card .eyebrow,.chaos-identity .eyebrow,.sidebar-title .eyebrow{color:#56306b}
 .conversation-item:hover,.conversation-item.active{background:rgba(255,85,216,.12)!important;border-color:#56306b!important;color:#fff}
-.new-chat,.archive-toggle,.memory-save,.admin-pagination button{border-color:#54321d!important;background:linear-gradient(145deg,#21150e,#13100d)!important;color:#f2e8df!important}
+.new-chat,.archive-toggle,.memory-save,.admin-pagination button{border-color:#56306b!important;background:linear-gradient(145deg,#21150e,#13100d)!important;color:#f2e8df!important}
 .new-chat:hover,.archive-toggle:hover,.memory-save:hover,.admin-pagination button:not(:disabled):hover{border-color:#b728a1!important;box-shadow:0 0 22px rgba(255,85,216,.1)}
 .memory-manager,.admin-archive{border-color:#302720!important}
 .memory-card,.admin-chaos-card{border-color:#33271f!important;background:linear-gradient(145deg,#171411,#0d0d0d)!important}
