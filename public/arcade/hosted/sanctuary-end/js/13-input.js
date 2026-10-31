@@ -5,11 +5,12 @@ function pick(ev) {
 /* Mobile gameplay: touch the ground to move or a monster to attack.
    Keep the existing desktop mouse controls unchanged. */
 renderer.domElement.style.touchAction = 'none';
-let _touchPointer = null;
+let _touchPointer = null, _lastTouchAt = 0;
 renderer.domElement.addEventListener('pointerdown', e => {
   if (e.pointerType !== 'touch' || !running || busyPanel() || anyModal()) return;
   e.preventDefault();
   _touchPointer = e.pointerId;
+  _lastTouchAt = performance.now();
   renderer.domElement.setPointerCapture?.(e.pointerId);
   const m = pick(e);
   lmbDown = true;
@@ -29,6 +30,7 @@ renderer.domElement.addEventListener('pointercancel', _endTouch);
 renderer.domElement.addEventListener('lostpointercapture', _endTouch);
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 renderer.domElement.addEventListener('mousedown', e => {
+  if (performance.now() - _lastTouchAt < 700) return;
   if (!running || busyPanel() || anyModal()) return; e.preventDefault(); const m = pick(e);
   if (e.button === 2) { rmbDown = true; if (isCombat()) castActive(character.loadout[1], { x: mouseWorld.x, z: mouseWorld.z }); return; }
   if (e.button === 0) { lmbDown = true; if (m && isCombat()) { target = m; moveTarget = null; } else { _moveTgt.x = mouseWorld.x; _moveTgt.z = mouseWorld.z; moveTarget = _moveTgt; target = null; } }
