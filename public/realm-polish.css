@@ -14,7 +14,7 @@
 .listing-card,.quick-card{position:relative;isolation:isolate;min-height:300px;border-color:#302a26;background:linear-gradient(145deg,rgba(22,20,19,.98),rgba(10,10,10,.98));box-shadow:0 16px 42px rgba(0,0,0,.2);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
 .listing-card:before,.quick-card:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 100% 0%,rgba(255,85,216,.13),transparent 52%);opacity:.8;pointer-events:none}
 .listing-card:hover,.quick-card:hover{transform:translateY(-4px);border-color:#56306b;box-shadow:0 22px 52px rgba(0,0,0,.32),0 0 28px rgba(255,85,216,.055)}
-.listing-symbol{flex-shrink:0;box-shadow:inset 0 0 22px rgba(255,85,216,.08);border-color:#57321e}
+.listing-symbol{flex-shrink:0;box-shadow:inset 0 0 22px rgba(255,85,216,.08);border-color:#56306b}
 .listing-kicker{letter-spacing:.18em}
 .listing-card h2,.quick-card h2{letter-spacing:-.035em}
 .listing-description,.quick-card p{line-height:1.75;color:#a29b95}
