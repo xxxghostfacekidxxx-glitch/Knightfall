@@ -25,6 +25,8 @@ const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
 for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange', 'pointercancel', '!anyModal()', 'camDist+delta', 'Collapse mobile controls']) {
  if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
 }
+const infernalSave=read('arcade/hosted/sanctuary-end/js/03-save.js');
+if(!infernalSave.includes("document.addEventListener('visibilitychange'") || !infernalSave.includes('SAVE._idleH != null'))errors.push('Infernal Reign: pending mobile saves not flushed on background');
 const browser=read('arcade/hosted/browserquest-solo/index.html');
 for(const asset of ['knightfall-socket.js','knightfall-world.js','js/lib/require-jquery.js'])if(!existsSync(resolve(root,'arcade/hosted/browserquest-solo',asset)))errors.push('BrowserQuest missing '+asset);
 if(!browser.includes('knightfall-socket.js'))errors.push('BrowserQuest missing local transport');
