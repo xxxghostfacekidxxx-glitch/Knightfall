@@ -19,6 +19,7 @@ for(const edition of ['sanctuary-original','sanctuary-end']){
   catch(e){errors.push(edition+': invalid JavaScript '+src+': '+e.message)}
  }
  if(!read(base+'js/26-boot.js').includes('Retry loading'))errors.push(edition+': no renderer recovery');
+ if(edition==='sanctuary-end' && !read(base+'js/26-boot.js').includes("searchParams.set('forceWebGL','1')"))errors.push('Infernal Reign: missing WebGL2 recovery option');
 }
 const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
 for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange']) {
