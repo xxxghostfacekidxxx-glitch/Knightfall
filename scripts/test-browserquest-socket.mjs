@@ -33,3 +33,7 @@ assert.match(connectBody,/this\.client\.connect\(false\)/,'solo mode must connec
 assert.doesNotMatch(connectBody,/this\.client\.connect\(true\)/,'solo mode must never use multiplayer dispatcher');
 assert.doesNotMatch(connectBody,/this\.client\.connect\(config\.dispatcher\)/,'solo mode must not use environment dispatcher config');
 console.log('BrowserQuest character-name startup uses direct local connection: PASS');
+
+const clientSource=readFileSync(resolve(root,'public/arcade/hosted/browserquest-solo/js/gameclient.js'),'utf8');
+assert.match(clientSource,/dispatcherMode = false;/,'solo client must force direct local handshake');
+console.log('BrowserQuest game client ignores obsolete dispatcher mode: PASS');
