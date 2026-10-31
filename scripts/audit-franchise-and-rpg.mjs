@@ -14,6 +14,10 @@ for(const edition of ['sanctuary-original','sanctuary-end']){
  for(const src of scripts)if(!existsSync(resolve(root,base,src)))errors.push(edition+': missing '+src);
  if(!read(base+'js/26-boot.js').includes('Retry loading'))errors.push(edition+': no renderer recovery');
 }
+const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
+for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'Digit1', 'Space', 'KeyQ']) {
+ if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
+}
 const browser=read('arcade/hosted/browserquest-solo/index.html');
 for(const asset of ['knightfall-socket.js','knightfall-world.js','js/lib/require-jquery.js'])if(!existsSync(resolve(root,'arcade/hosted/browserquest-solo',asset)))errors.push('BrowserQuest missing '+asset);
 if(!browser.includes('knightfall-socket.js'))errors.push('BrowserQuest missing local transport');
