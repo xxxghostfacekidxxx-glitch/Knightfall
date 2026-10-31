@@ -15,7 +15,7 @@ for(const edition of ['sanctuary-original','sanctuary-end']){
  if(!read(base+'js/26-boot.js').includes('Retry loading'))errors.push(edition+': no renderer recovery');
 }
 const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
-for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'Digit1', 'Space', 'KeyQ']) {
+for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange']) {
  if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
 }
 const browser=read('arcade/hosted/browserquest-solo/index.html');
