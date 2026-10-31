@@ -26,6 +26,7 @@ for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYB
  if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
 }
 const infernalSave=read('arcade/hosted/sanctuary-end/js/03-save.js');
+try { new vm.Script(infernalInput,{filename:'Infernal Reign input'}); new vm.Script(infernalSave,{filename:'Infernal Reign saves'}); } catch(e) { errors.push('Infernal Reign syntax failure: '+e.message); }
 if(!infernalSave.includes("document.addEventListener('visibilitychange'") || !infernalSave.includes('SAVE._idleH != null'))errors.push('Infernal Reign: pending mobile saves not flushed on background');
 const browser=read('arcade/hosted/browserquest-solo/index.html');
 for(const asset of ['knightfall-socket.js','knightfall-world.js','js/lib/require-jquery.js'])if(!existsSync(resolve(root,'arcade/hosted/browserquest-solo',asset)))errors.push('BrowserQuest missing '+asset);
