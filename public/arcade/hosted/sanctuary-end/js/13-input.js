@@ -155,6 +155,8 @@ const SKILL_COEF = {
     button.setAttribute('aria-label',label);
     Object.assign(button.style,{minWidth:'39px',minHeight:'44px',padding:'6px',color:'#fff',background:'#392145',border:'1px solid #9af5bf',borderRadius:'8px'});
     button.addEventListener('pointerdown',e=>e.stopPropagation());
+    button.addEventListener('pointerup',e=>e.stopPropagation());
+    button.addEventListener('pointercancel',e=>e.stopPropagation());
     button.addEventListener('click',()=>{ const code = KEYBINDS[action]?.[0]; if (code) window.dispatchEvent(new KeyboardEvent('keydown',{code,key:code,bubbles:true,cancelable:true})); });
     bar.appendChild(button);
   }
