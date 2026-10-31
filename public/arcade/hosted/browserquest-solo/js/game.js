@@ -716,21 +716,7 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
     
             this.client = new GameClient(this.host, this.port);
             
-            //>>excludeStart("prodHost", pragmas.prodHost);
-            var config = this.app.config.local || this.app.config.dev;
-            if(config) {
-                this.client.connect(config.dispatcher); // false if the client connects directly to a game server
-                connecting = true;
-            }
-            //>>excludeEnd("prodHost");
-            
-            //>>includeStart("prodHost", pragmas.prodHost);
-            if(!connecting) {
-                this.client.connect(true); // always use the dispatcher in production
-            }
-            //>>includeEnd("prodHost");
-            
-            this.client.onDispatched(function(host, port) {
+            // Solo edition connects directly to its in-tab WorldServer Worker.\n            // Never request the original multiplayer dispatcher: it does not exist here.\n            this.client.connect(false);\n            connecting = true;\n\n            this.client.onDispatched(function(host, port) {
                 log.debug("Dispatched to game server "+host+ ":"+port);
                 
                 self.client.host = host;
