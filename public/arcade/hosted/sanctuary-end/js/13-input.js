@@ -160,6 +160,19 @@ const SKILL_COEF = {
     button.addEventListener('click',()=>{ const code = KEYBINDS[action]?.[0]; if (code) window.dispatchEvent(new KeyboardEvent('keydown',{code,key:code,bubbles:true,cancelable:true})); });
     bar.appendChild(button);
   }
+  const saveButton=document.createElement('button');
+  saveButton.type='button';
+  saveButton.textContent='Save';
+  saveButton.setAttribute('aria-label','Save character progress');
+  Object.assign(saveButton.style,{minHeight:'44px',padding:'6px 10px',color:'#fff',background:'#392145',border:'1px solid #9af5bf',borderRadius:'8px'});
+  saveButton.addEventListener('click',()=>{
+    if(!running || currentSlot===null || !character) return;
+    const saved=SAVE.saveCharacter(currentSlot,character);
+    saveButton.textContent=saved?'Saved ✓':'Save failed';
+    saveButton.setAttribute('aria-label',saved?'Character saved':'Save failed; check browser storage');
+    setTimeout(()=>{saveButton.textContent='Save';saveButton.setAttribute('aria-label','Save character progress');},2200);
+  });
+  bar.appendChild(saveButton);
   for (const [label,delta] of [['Zoom +',-5],['Zoom -',5]]) {
     const button = document.createElement('button');
     button.type = 'button';
