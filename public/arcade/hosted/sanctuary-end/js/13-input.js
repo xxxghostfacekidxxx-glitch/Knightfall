@@ -169,6 +169,21 @@ const SKILL_COEF = {
     button.addEventListener('click',()=>{ if(!running || anyModal()) return; camDist=clamp(camDist+delta,28,72);camHeight=camDist*0.9; });
     bar.appendChild(button);
   }
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.textContent = '−';
+  toggle.setAttribute('aria-label','Collapse mobile controls');
+  toggle.setAttribute('aria-expanded','true');
+  Object.assign(toggle.style,{minWidth:'44px',minHeight:'44px',background:'#392145',color:'#fff',border:'1px solid #ff65d3',borderRadius:'8px'});
+  let collapsed = false;
+  toggle.addEventListener('click',()=>{
+    collapsed=!collapsed;
+    for(const child of bar.children) if(child!==toggle) child.style.display=collapsed?'none':'';
+    toggle.textContent=collapsed?'+':'−';
+    toggle.setAttribute('aria-label',collapsed?'Expand mobile controls':'Collapse mobile controls');
+    toggle.setAttribute('aria-expanded',String(!collapsed));
+  });
+  bar.appendChild(toggle);
   document.body.appendChild(bar);
   const update=()=>{bar.style.display=typeof running !== 'undefined' && running && !anyModal()?'flex':'none';bar.style.pointerEvents=bar.style.display==='none'?'none':'auto';};
   update();
