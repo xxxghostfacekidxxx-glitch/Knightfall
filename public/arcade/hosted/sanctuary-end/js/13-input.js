@@ -141,7 +141,7 @@ const SKILL_COEF = {
 
 /* Android combat shortcuts, mounted after the game UI exists. */
 (function installTouchControls() {
-  if (!matchMedia('(pointer: coarse)').matches) return;
+  if (!window.matchMedia || !window.matchMedia('(pointer: coarse)').matches) return;
   const bar = document.createElement('nav');
   bar.id = 'infernalTouchControls';
   bar.setAttribute('aria-label', 'Mobile combat shortcuts');
@@ -158,7 +158,7 @@ const SKILL_COEF = {
     bar.appendChild(button);
   }
   document.body.appendChild(bar);
-  const update=()=>{bar.style.visibility=running?'visible':'hidden';};
+  const update=()=>{bar.style.visibility=typeof running !== 'undefined' && running?'visible':'hidden';};
   update();
   setInterval(update,500);
 })();
