@@ -6,13 +6,13 @@ import assert from 'node:assert/strict';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..','public');
 const htmlFor=game=>readFileSync(resolve(root,'arcade/hosted',game,'index.html'),'utf8');
 const scriptFor=html=>{
- const match=html.match(/<script[^>]*>([\\s\\S]*?)<\\/script>/i);
+ const match=html.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
  assert.ok(match,'inline game script exists');
  return match[1];
 };
 for(const game of ['cinder-life','roads-of-cinder']){
  const html=htmlFor(game);
- assert.equal((html.match(/<\\/html>/gi)||[]).length,1,game+' has exactly one HTML document');
+ assert.equal((html.match(/<\/html>/gi)||[]).length,1,game+' has exactly one HTML document');
  new vm.Script(scriptFor(html),{filename:game+'/index.html'});
  assert.match(html,/viewport/);
  console.log(game+': JavaScript syntax and document structure PASS');
