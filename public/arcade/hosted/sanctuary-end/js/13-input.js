@@ -9,9 +9,10 @@ let _touchPointer = null, _lastTouchAt = 0;
 renderer.domElement.addEventListener('pointerdown', e => {
   if (e.pointerType !== 'touch' || !running || busyPanel() || anyModal()) return;
   e.preventDefault();
+  if (_touchPointer !== null) return;
   _touchPointer = e.pointerId;
   _lastTouchAt = performance.now();
-  renderer.domElement.setPointerCapture?.(e.pointerId);
+  try { renderer.domElement.setPointerCapture?.(e.pointerId); } catch (_) { /* capture may be unavailable */ }
   const m = pick(e);
   lmbDown = true;
   if (m && isCombat()) { target = m; moveTarget = null; }
@@ -158,7 +159,7 @@ const SKILL_COEF = {
     bar.appendChild(button);
   }
   document.body.appendChild(bar);
-  const update=()=>{bar.style.visibility=typeof running !== 'undefined' && running?'visible':'hidden';};
+  const update=()=>{bar.style.display=typeof running !== 'undefined' && running?'flex':'none';};
   update();
   const visibilityTimer = setInterval(update,500);
   window.addEventListener('pagehide',()=>clearInterval(visibilityTimer),{once:true});
