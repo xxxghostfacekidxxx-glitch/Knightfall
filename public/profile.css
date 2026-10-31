@@ -129,7 +129,7 @@
 .profile-photo-image:hover img{transform:scale(1.035)}
 .profile-photo-caption{padding:.65rem .7rem .1rem;color:#e3d8cf;font-size:.84rem;line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
 .profile-photo-meta{display:flex;align-items:center;justify-content:space-between;gap:.45rem;flex-wrap:wrap;padding:.6rem .7rem;color:#8f837a;font-size:.7rem}
-.photo-delete{font-size:.7rem;padding:.35rem .5rem;color:#ffb3a5;border-color:#5c3028}
+.photo-delete{font-size:.7rem;padding:.35rem .5rem;color:#ffb3a5;border-color:#56306b}
 .photo-empty{grid-column:1/-1;padding:1.4rem;border:1px dashed #3c3028;border-radius:10px;text-align:center;color:#94877e;line-height:1.5}
 .photo-upload-form button:disabled,.photo-delete:disabled{opacity:.55;cursor:wait}
 @media(max-width:650px){.profile-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo-gallery-head{align-items:flex-start}.photo-gallery-count{font-size:.7rem}}
@@ -241,7 +241,7 @@
 .profile-photo-meta{flex-wrap:wrap}
 .profile-photo-meta .action{min-height:34px}
 
-.studio-theme-presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.6rem;margin:.6rem 0 1rem}.studio-theme-presets button{border:1px solid #543426;border-radius:12px;background:#171314;color:#f1e8e0;padding:.8rem .6rem;font:inherit;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s}.studio-theme-presets button:hover,.studio-theme-presets button:focus-visible{border-color:#ff55d8;transform:translateY(-2px)}.studio-theme-presets button[data-theme-preset="midnight"]{border-bottom:3px solid #7894ff}.studio-theme-presets button[data-theme-preset="toxic"]{border-bottom:3px solid #9ce84b}.studio-theme-presets button[data-theme-preset="bubblegum"]{border-bottom:3px solid #ff62c7}.studio-theme-presets button[data-theme-preset="mono"]{border-bottom:3px solid #e4e4e4}.studio-theme-presets button[data-theme-preset="ember"]{border-bottom:3px solid #ff55d8}
+.studio-theme-presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.6rem;margin:.6rem 0 1rem}.studio-theme-presets button{border:1px solid #56306b;border-radius:12px;background:#171314;color:#f1e8e0;padding:.8rem .6rem;font:inherit;font-weight:700;cursor:pointer;transition:transform .15s,border-color .15s}.studio-theme-presets button:hover,.studio-theme-presets button:focus-visible{border-color:#ff55d8;transform:translateY(-2px)}.studio-theme-presets button[data-theme-preset="midnight"]{border-bottom:3px solid #7894ff}.studio-theme-presets button[data-theme-preset="toxic"]{border-bottom:3px solid #9ce84b}.studio-theme-presets button[data-theme-preset="bubblegum"]{border-bottom:3px solid #ff62c7}.studio-theme-presets button[data-theme-preset="mono"]{border-bottom:3px solid #e4e4e4}.studio-theme-presets button[data-theme-preset="ember"]{border-bottom:3px solid #ff55d8}
 
 .studio-theme-presets button[aria-pressed="true"]{outline:2px solid #ff55d8;outline-offset:2px;background:#2a1c17;box-shadow:0 0 18px #ff55d825}.studio-field-count{font-size:.75rem;font-weight:500;color:#c4b9d3;margin-left:.5rem}
 
@@ -305,7 +305,7 @@
 
 /* Album selection and lightbox controls */
 .profile-photo-meta .photo-album-choice{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;min-width:0}
-.photo-album-choice select{width:auto;max-width:170px;min-height:42px;padding:.5rem .6rem;border:1px solid #67422b;border-radius:8px;background:#18110d;color:#f4e4d8}
+.photo-album-choice select{width:auto;max-width:170px;min-height:42px;padding:.5rem .6rem;border:1px solid #56306b;border-radius:8px;background:#18110d;color:#f4e4d8}
 .photo-album-choice select:focus-visible{outline:3px solid #ff55d8;outline-offset:2px}
 .ash-photo-lightbox button:disabled{opacity:.35;cursor:not-allowed}
 @media(max-width:600px){.profile-photo-meta .photo-album-choice{flex:1 1 100%;justify-content:space-between}.photo-album-choice select{flex:1;max-width:none}}
