@@ -322,11 +322,11 @@ define(['jquery', 'app'], function($, App) {
                     $chat = $('#chatinput');
 
                 if(key === 13) {
-                    if($chat.attr('value') !== '') {
+                    if($chat.val().trim() !== '') {
                         if(game.player) {
-                            game.say($chat.attr('value'));
+                            game.say($chat.val().trim());
                         }
-                        $chat.attr('value', '');
+                        $chat.val('');
                         app.hideChat();
                         $('#foreground').focus();
                         return false;
