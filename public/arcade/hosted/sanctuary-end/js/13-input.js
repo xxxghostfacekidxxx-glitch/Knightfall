@@ -2,6 +2,31 @@ function pick(ev) {
   ndc.x = (ev.clientX / innerWidth) * 2 - 1; ndc.y = -(ev.clientY / innerHeight) * 2 + 1; ray.setFromCamera(ndc, camera);
   const hit = ray.intersectObject(ground); if (hit.length) mouseWorld.copy(hit[0].point); return monsterAt();
 }
+/* Mobile gameplay: touch the ground to move or a monster to attack.
+   Keep the existing desktop mouse controls unchanged. */
+renderer.domElement.style.touchAction = 'none';
+let _touchPointer = null;
+renderer.domElement.addEventListener('pointerdown', e => {
+  if (e.pointerType !== 'touch' || !running || busyPanel() || anyModal()) return;
+  e.preventDefault();
+  _touchPointer = e.pointerId;
+  renderer.domElement.setPointerCapture?.(e.pointerId);
+  const m = pick(e);
+  lmbDown = true;
+  if (m && isCombat()) { target = m; moveTarget = null; }
+  else { _moveTgt.x = mouseWorld.x; _moveTgt.z = mouseWorld.z; moveTarget = _moveTgt; target = null; }
+}, { passive: false });
+renderer.domElement.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'touch' || e.pointerId !== _touchPointer || !running || busyPanel() || anyModal()) return;
+  e.preventDefault();
+  const m = pick(e);
+  if (m && isCombat()) { target = m; moveTarget = null; }
+  else { _moveTgt.x = mouseWorld.x; _moveTgt.z = mouseWorld.z; moveTarget = _moveTgt; target = null; }
+}, { passive: false });
+function _endTouch(e) { if (e.pointerId === _touchPointer) { _touchPointer = null; lmbDown = false; } }
+renderer.domElement.addEventListener('pointerup', _endTouch);
+renderer.domElement.addEventListener('pointercancel', _endTouch);
+renderer.domElement.addEventListener('lostpointercapture', _endTouch);
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 renderer.domElement.addEventListener('mousedown', e => {
   if (!running || busyPanel() || anyModal()) return; e.preventDefault(); const m = pick(e);
