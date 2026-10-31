@@ -159,7 +159,7 @@ const SKILL_COEF = {
     bar.appendChild(button);
   }
   document.body.appendChild(bar);
-  const update=()=>{bar.style.display=typeof running !== 'undefined' && running && !anyModal()?'flex':'none';};
+  const update=()=>{bar.style.display=typeof running !== 'undefined' && running && !anyModal()?'flex':'none';bar.style.pointerEvents=bar.style.display==='none'?'none':'auto';};
   update();
   const visibilityTimer = setInterval(update,500);
   document.addEventListener('visibilitychange',()=>{ if(document.hidden){ _touchPointer=null; lmbDown=false; rmbDown=false; } });
