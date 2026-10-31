@@ -185,6 +185,9 @@ const SKILL_COEF = {
   });
   bar.appendChild(toggle);
   document.body.appendChild(bar);
+  bar.style.maxHeight='32vh';
+  bar.style.overflowY='auto';
+  bar.style.boxSizing='border-box';
   const update=()=>{bar.style.display=typeof running !== 'undefined' && running && !anyModal()?'flex':'none';bar.style.pointerEvents=bar.style.display==='none'?'none':'auto';};
   update();
   const visibilityTimer = setInterval(update,500);
