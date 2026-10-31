@@ -51,6 +51,8 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             log.info("Trying to connect to server : "+url);
 
             this.connection = new window.KnightfallLocalSocket();
+            // Solo transport always uses the direct local server handshake.
+            dispatcherMode = false;
 
             if(dispatcherMode) {
                 this.connection.onmessage = function(e) {
