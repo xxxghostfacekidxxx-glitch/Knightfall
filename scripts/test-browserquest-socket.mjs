@@ -29,7 +29,7 @@ console.log('BrowserQuest local socket lifecycle, queue, JSON protocol, and shut
 
 const gameSource=readFileSync(resolve(root,'public/arcade/hosted/browserquest-solo/js/game.js'),'utf8');
 const connectBody=gameSource.slice(gameSource.indexOf('connect: function(started_callback) {'),gameSource.indexOf('this.client.onConnected(function()',gameSource.indexOf('connect: function(started_callback) {')));
-assert.match(connectBody,/this\\.client\\.connect\\(false\\)/,'solo mode must connect directly');
-assert.doesNotMatch(connectBody,/this\\.client\\.connect\\(true\\)/,'solo mode must never use multiplayer dispatcher');
-assert.doesNotMatch(connectBody,/this\\.client\\.connect\\(config\\.dispatcher\\)/,'solo mode must not use environment dispatcher config');
+assert.match(connectBody,/this\.client\.connect\(false\)/,'solo mode must connect directly');
+assert.doesNotMatch(connectBody,/this\.client\.connect\(true\)/,'solo mode must never use multiplayer dispatcher');
+assert.doesNotMatch(connectBody,/this\.client\.connect\(config\.dispatcher\)/,'solo mode must not use environment dispatcher config');
 console.log('BrowserQuest character-name startup uses direct local connection: PASS');
