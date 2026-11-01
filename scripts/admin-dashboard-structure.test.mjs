@@ -33,3 +33,13 @@ test("all admin shortcuts have unique destinations",()=>{
  const hrefs=[...html.matchAll(/<a[^>]*class="admin-shortcut"[^>]*href="([^"]+)"/g)].map(x=>x[1]);
  assert.equal(new Set(hrefs).size,hrefs.length,"duplicate shortcut destinations");
 });
+
+test("coverage panel separates verified job verdict from artifact availability",()=>{
+ for(const id of ["arcade-coverage-job","arcade-coverage-state","arcade-coverage-details"])assert.ok(html.includes('id="'+id+'"'),"missing "+id);
+ assert.match(html,/Consolidate ten-bot arcade coverage/);
+});
+test("tool search supports keyboard operation",()=>{
+ assert.match(html,/adminSearch\.addEventListener\("keydown"/);
+ assert.match(html,/event\.key==="Enter"/);
+ assert.match(html,/event\.key==="Escape"/);
+});
