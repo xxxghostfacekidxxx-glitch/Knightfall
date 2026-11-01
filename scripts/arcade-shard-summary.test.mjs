@@ -20,3 +20,7 @@ test("fleet summary emits actionable failed routes",()=>{
  assert.match(source,/failures\.push\(/);
  assert.match(source,/failures,coverageOk/);
 });
+
+test("catalog resolution is independent of the current working directory",()=>{
+ assert.match(source,/new URL\("\.\.\/public\/arcade\/catalog\.json",import\.meta\.url\)/);
+});
