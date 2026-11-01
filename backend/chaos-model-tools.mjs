@@ -23,6 +23,8 @@ export async function runChaosModelCalls(calls,principal) {
 /** First model pass chooses tools; second pass receives their bounded results. */
 export async function inferWithChaosTools({ai,model,messages,principal,max_tokens=950,temperature=0.8}) {
   const options={messages,max_tokens,temperature};
+  const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
+  if(!/(calculate|math|word count|reading time|find|where|navigate|arcade|games)/i.test(latest))return ai.run(model,options);
   let first;
   try { first=await ai.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast",{...options,max_tokens:350,temperature:0.1,tools:CHAOS_MODEL_TOOLS}); }
   catch (error) {
