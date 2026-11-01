@@ -28,3 +28,5 @@ test("catalog resolution is independent of the current working directory",()=>{
 test("failed routes carry screenshot evidence metadata",()=>{
  assert.match(source,/typeof result\.screenshot!=="string"/);
 });
+
+test("failed screenshot files are verified",()=>{assert.ok(source.includes("evidence.size===0"));assert.ok(source.includes("result.screenshotMissing"));});
