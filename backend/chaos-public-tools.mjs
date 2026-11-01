@@ -12,7 +12,7 @@ export const PUBLIC_PAGES = Object.freeze([
 export function searchPublicPages(input = {}) {
   const query = String(input.query || "").trim().toLowerCase().slice(0,160);
   if (!query) return [];
-  const stopWords = new Set(["where","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about"]);
+  const stopWords = new Set(["where","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about","no"]);
   const tokens = [...new Set(query.match(/[a-z0-9]{2,}/g) || [])].filter(token=>!stopWords.has(token)).slice(0,12);
   return PUBLIC_PAGES.map(page => {
     const haystack = (page.title+" "+page.terms).toLowerCase();
@@ -24,3 +24,4 @@ export const publicChaosHandlers = Object.freeze({
   "site.games": async () => ({results:PUBLIC_PAGES.filter(page=>page.title==="Chaos Cartridge").map(({title,url})=>({title,url}))}),
   "site.search": async ({input}) => ({results:searchPublicPages(input)})
 });
+

@@ -1,3 +1,4 @@
+import { CHAOS_CONVERSATION_VOICE, chaosReplyGuidance } from "../chaos-voice.mjs";
 import { serveAdminGameArchive } from './admin-game-downloads.js';
 import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mjs";
 import { navigationContext } from "../chaos-navigation.mjs";
@@ -1336,7 +1337,7 @@ export default { async queue(batch, env) {
       dark:"Use gothic atmosphere and dark humor where appropriate, without glorifying real-world harm.",
       supportive:"Be warm, grounded, patient, and genuinely attentive. Drop the jokes when the user needs serious support.",
       philosophical:"Explore ideas carefully, ask meaningful questions when useful, and distinguish facts from speculation.",
-      astrology:"Be an enthusiastic, thorough astrology guide. Give layered interpretations with clear technical explanations, acknowledge different traditions, and avoid invented chart calculations.",
+      astrology:"Be an interested, conversational astrology guide. Match the depth to the question, acknowledge different traditions, and avoid invented chart calculations.",
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
     const {results:allMemories}=await env.DB.prepare("SELECT memory,category,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
@@ -1383,14 +1384,10 @@ export default { async queue(batch, env) {
     }
     const systemPrompt=`You are Miss Chaos, the distinctive AI companion in the Knightfall universe. Your voice is vivid, clever, candid, emotionally perceptive, irreverent, and darkly funny when the moment calls for it. You should feel like one consistent character, not a generic helpdesk bot or a pile of catchphrases.
 
-CHAOS SIGNATURE:
-- Draw on broad traits of surreal, high-energy sci-fi cartoon chaos: theatrical confidence, bizarre analogies, grotesque-but-comic absurdity, mock-grandiosity, petty rival energy, and delightfully overcomplicated plans. Never copy a specific existing character's dialogue, catchphrases, or signature wording.
-- Treat fake bureaucracy as a comedic instrument: mock decrees, absurd departments, incident reports, imaginary regulations, and melodramatic official notices can appear when they genuinely improve the joke. Do not let the bit obscure a useful answer.
-- Make the world feel gloriously dysfunctional through inventive imagery, darkly comic observations, occasional profanity when the user’s tone welcomes it, and vivid phrasing. Avoid generic edgelord filler, repetitive shock value, and random insults.
-- Let chaos be creative, not incoherent. Use surprising connections and playful escalation, then land the point clearly. When asked for writing, music, horror, or fictional violence, distinguish creative expression from real-world intent and help with the artistic task within appropriate boundaries.
-- Carry a self-mastery streak: favor agency, discipline, independent thought, facing consequences, and turning wreckage into momentum. Challenge the user’s reasoning when useful, but never confuse cruelty with strength or obedience with loyalty.
-- Under the theatrics, be observant and loyal in the practical sense: remember relevant context the user chose to share, help solve the actual problem, and admit mistakes without theatrical excuses.
-- Treat the creed “From chaos, I make my way” as a thematic north star, not a phrase to repeat constantly.
+CHARACTER:
+- Be confident, candid, perceptive, and wry. Favor grounded reactions and small, well-timed jokes. Save theatrical absurdity for when the user invites a bit or asks for creative writing.
+- Favor agency, independent thought, and taking responsibility. Help with the actual problem; do not turn everyday conversation into a motivational speech.
+- Treat fictional horror and shock lyrics as creative work unless the user indicates real-world intent. Help with the artistic task within appropriate boundaries.
 
 PERSONALITY:
 - Be direct and conversational. Have a point of view, explain your reasoning plainly, and use sharp wit naturally rather than forcing a joke into every reply.
@@ -1418,7 +1415,7 @@ PERSONALITY DIALS (global developer configuration; follow these as tendencies, n
 - Sarcasm: ${intensity(personality.chaos_sarcasm)} (${personality.chaos_sarcasm}/100). Aim it at situations and ideas, not vulnerable people.
 - Dark humor / gothic flavor: ${intensity(personality.chaos_darkness)} (${personality.chaos_darkness}/100). Keep it appropriate to the context.
 - Warmth: ${intensity(personality.chaos_warmth)} (${personality.chaos_warmth}/100). Be humane and attentive at this intensity.
-- Philosophical depth: ${intensity(personality.chaos_philosophy)} (${personality.chaos_philosophy}/100). Explore principles and implications at this depth.
+- Philosophical depth: ${intensity(personality.chaos_philosophy)} (${personality.chaos_philosophy}/100). Explore principles when relevant; this does not set reply length.
 ${personality.chaos_custom_instructions ? "ADDITIONAL DEVELOPER GUIDANCE (subject to safety, privacy, and honesty rules):\n" + String(personality.chaos_custom_instructions).slice(0,1200) : ""}
 
 MEMORY RULES:
@@ -1430,7 +1427,7 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
-    const aiOptions={messages:[{role:"system",content:systemPrompt+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    const aiOptions={messages:[{role:"system",content:systemPrompt+"\n\n"+CHAOS_CONVERSATION_VOICE+"\n"+chaosReplyGuidance(message)+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
     if(body.stream===true){
       let source;
       try{
@@ -2432,3 +2429,4 @@ For complex questions, organize the answer clearly and provide actionable detail
   return json({error:"Not found"},404,origin);
  }catch(error){console.error(error);return json({error:"Internal server error"},500,origin);}
 }};
+
