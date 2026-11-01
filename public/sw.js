@@ -75,6 +75,10 @@ self.addEventListener("fetch", event => {
   if (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
+      if (url.pathname === "/personal-bots-offline.html") {
+        const localPage = await caches.match("/personal-bots-offline.html");
+        if (localPage) return localPage;
+      }
       const cached = await caches.match("/offline.html");
       return cached || new Response("You are offline. Reconnect to load Ash-Fall.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     }));
