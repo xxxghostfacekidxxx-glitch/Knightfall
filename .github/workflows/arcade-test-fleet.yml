@@ -277,7 +277,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           if [ ! -f artifacts/arcade-fleet-summary.json ]; then exit 0; fi
-          node -e 'const fs=require("fs");const p="artifacts/arcade-fleet-summary.json";const d=JSON.parse(fs.readFileSync(p));d.sourceRunId=Number(process.env.RUN_ID);for(const t of Object.values(d.targets||{})){t.failures=(t.failures||[]).map(f=>({game:f.game,route:f.route,profile:f.profile,action:f.action,reason:String(f.error||f.reason||"Test failed").slice(0,350),target:f.target}));}fs.mkdirSync("public/arcade",{recursive:true});fs.writeFileSync("public/arcade/arcade-fleet-latest.json",JSON.stringify(d,null,2));'
+          node -e 'const fs=require("fs");const p="artifacts/arcade-fleet-summary.json";const d=JSON.parse(fs.readFileSync(p));d.sourceRunId=Number(process.env.RUN_ID);for(const t of Object.values(d.targets||{})){t.failures=(t.failures||[]).map(f=>({game:f.game,route:f.route,profile:f.profile,action:f.action,reason:String(f.error||f.reason||"Test failed").slice(0,350),target:f.target,screenshot:f.screenshot,networkErrorCount:Array.isArray(f.networkErrors)?f.networkErrors.length:0,browserErrorCount:Array.isArray(f.browserErrors)?f.browserErrors.length:0}));}fs.mkdirSync("public/arcade",{recursive:true});fs.writeFileSync("public/arcade/arcade-fleet-latest.json",JSON.stringify(d,null,2));'
           echo "Dashboard report prepared. Production publication is intentionally separate."
       - name: Upload dashboard JSON report
         if: always()
