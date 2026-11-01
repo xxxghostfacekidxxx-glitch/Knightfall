@@ -1,0 +1,58 @@
+name: Arcade game bug
+description: Report a specific game that crashes, freezes, looks wrong, or cannot be played
+title: "[Arcade] "
+labels: ["bug"]
+body:
+  - type: input
+    id: game
+    attributes:
+      label: Game title
+      placeholder: e.g. BrowserQuest Solo
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Game URL
+      placeholder: https://ash-fall.com/arcade/hosted/...
+    validations:
+      required: true
+  - type: dropdown
+    id: issue
+    attributes:
+      label: What went wrong?
+      options:
+        - Does not load / blank screen
+        - Stuck on title or character selection
+        - Controls do not respond
+        - Cannot start or finish a game
+        - Broken visuals or layout
+        - Sound problem
+        - Save or progress lost
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you click or press, and what happened instead?
+      placeholder: "1. Open game\n2. Press Start\n3. ..."
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Device and browser
+      placeholder: Android Chrome, desktop Firefox, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or error messages
+      description: Attach screenshots or paste console errors if available. Never include passwords or tokens.
