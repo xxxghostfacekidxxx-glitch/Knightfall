@@ -5,6 +5,8 @@
   if(!shelf)return;
   const cards=[...shelf.children],search=document.querySelector('#arcade-game-search'),genre=document.querySelector('#arcade-genre'),device=document.querySelector('#arcade-device'),sort=document.querySelector('#arcade-sort');
   const buttons=[...document.querySelectorAll('[data-collection-filter]')];
+  const countByCollection=new Map();
+  for(const card of cards)countByCollection.set(card.dataset.collection,(countByCollection.get(card.dataset.collection)||0)+1);
   let collection='games';
   const notes={games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
   const params=new URLSearchParams(location.search);
@@ -27,7 +29,7 @@
     if(!card.hidden)visible++;
     shelf.append(card);
    }
-   buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.collectionFilter===collection)));
+   buttons.forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.collectionFilter===collection));b.setAttribute('aria-label',b.textContent.trim()+' collection');});
    document.querySelector('#arcade-results').textContent=visible+' '+(visible===1?'game':'games')+(across?' found across all collections':' in this collection');
    document.querySelector('#arcade-total-count').textContent=visible+' / '+cards.length+' titles';
    document.querySelector('#arcade-empty').hidden=visible>0;
