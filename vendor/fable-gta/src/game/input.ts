@@ -9,12 +9,18 @@ export function initInput() {
     keys.add(e.code);
     pressedOnce.add(e.code);
   };
-  const up = (e: KeyboardEvent) => keys.delete(e.code);
+  const up = (e: KeyboardEvent) => { keys.delete(e.code); pressedOnce.delete(e.code); };
+  const reset = () => { keys.clear(); pressedOnce.clear(); };
+  const onVisibility = () => { if (document.hidden) reset(); };
   window.addEventListener('keydown', down);
   window.addEventListener('keyup', up);
+  window.addEventListener('blur', reset);
+  document.addEventListener('visibilitychange', onVisibility);
   return () => {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
+    window.removeEventListener('blur', reset);
+    document.removeEventListener('visibilitychange', onVisibility);
     keys.clear();
     pressedOnce.clear();
   };
