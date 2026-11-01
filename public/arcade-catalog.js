@@ -14,7 +14,7 @@
   function render(){
    const q=search.value.trim().toLocaleLowerCase(),tokens=q.split(/\s+/).filter(Boolean);
    // Searching across collections makes an exact title discoverable without guessing its shelf.
-   const across=Boolean(q);
+   const across=Boolean(q) && collection==='games' && !genre.value && !device.value;
    const ordered=[...cards].sort((a,b)=>{
     if(sort.value==='featured'&&a.dataset.featured!==b.dataset.featured)return a.dataset.featured==='true'?-1:1;
     if(sort.value==='genre'){const d=a.dataset.category.localeCompare(b.dataset.category);if(d)return d;}
@@ -31,7 +31,7 @@
    document.querySelector('#arcade-results').textContent=visible+' '+(visible===1?'game':'games')+(across?' found across all collections':' in this collection');
    document.querySelector('#arcade-total-count').textContent=visible+' / '+cards.length+' titles';
    document.querySelector('#arcade-empty').hidden=visible>0;
-   document.querySelector('#arcade-collection-note').textContent=across?'Search includes every collection. Each card shows its collection and controls.':notes[collection];
+   document.querySelector('#arcade-collection-note').textContent=across?'Search includes every collection. Select a collection or genre to narrow results.':notes[collection];
    const url=new URL(location.href);
    for(const [key,value] of Object.entries({q:search.value,collection:collection==='games'?'':collection,genre:genre.value,device:device.value,sort:sort.value==='featured'?'':sort.value}))value?url.searchParams.set(key,value):url.searchParams.delete(key);
    history.replaceState(null,'',url.pathname+url.search+url.hash);
