@@ -16,3 +16,8 @@ test("public utilities are discoverable",()=>{
   const names=describeChaosTools(null);
   assert.ok(names.includes("utility.calculate")&&names.includes("utility.word_count"));
 });
+
+test("calculator bounds nesting and malformed expressions",async()=>{
+  await assert.rejects(dispatchChaosTool({name:"utility.calculate",input:{expression:"(".repeat(21)+"1"+")".repeat(21)}}));
+  await assert.rejects(dispatchChaosTool({name:"utility.calculate",input:{expression:"2++"}}));
+});
