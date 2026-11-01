@@ -23,7 +23,13 @@ export async function runChaosModelCalls(calls,principal) {
 /** First model pass chooses tools; second pass receives their bounded results. */
 export async function inferWithChaosTools({ai,model,messages,principal,max_tokens=950,temperature=0.8}) {
   const options={messages,max_tokens,temperature};
-  const first=await ai.run(model,{...options,tools:CHAOS_MODEL_TOOLS});
+  let first;
+  try { first=await ai.run(model,{...options,tools:CHAOS_MODEL_TOOLS}); }
+  catch (error) {
+    // Some deployed AI bindings do not support tool schemas. Preserve normal chat.
+    if (/tool|function|schema|parameter|unsupported|invalid/i.test(String(error?.message||""))) return ai.run(model,options);
+    throw error;
+  }
   const calls=Array.isArray(first?.tool_calls)?first.tool_calls:[];
   if(!calls.length)return first;
   const selected=calls.map(call=>({
