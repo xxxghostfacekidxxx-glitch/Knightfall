@@ -1294,6 +1294,17 @@ export default { async queue(batch, env) {
     if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     return json({capabilities:describeChaosTools({id:user.id,role:user.role})},200,origin);
   }
+  if(url.pathname==="/api/chaos/tools/execute"&&request.method==="POST"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-utility",20,60,user.id)))return json({error:"Too many utility requests."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    if(!["utility.calculate","utility.word_count"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
+    try{
+      const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role}});
+      return json({name:body.name,result},200,origin);
+    }catch(error){return json({error:String(error.message||"Invalid tool input").slice(0,180)},400,origin);}
+  }
   if(url.pathname==="/api/chaos/tools/search"&&request.method==="GET"){
     const user=await requireUser(request,env);
     if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
