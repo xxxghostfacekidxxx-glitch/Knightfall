@@ -1,4 +1,5 @@
 import { serveAdminGameArchive } from './admin-game-downloads.js';
+import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
@@ -1286,6 +1287,20 @@ export default { async queue(batch, env) {
       return json(calculateAstrology(body.utc,location,body.house_system||"equal"),200,origin);
     }
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
+  }
+  if(url.pathname==="/api/chaos/tools"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    return json({capabilities:describeChaosTools({id:user.id,role:user.role})},200,origin);
+  }
+  if(url.pathname==="/api/chaos/tools/search"&&request.method==="GET"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
+    if(!(await rateLimit(env,request,"chaos-search",30,60,user.id)))return json({error:"Too many searches."},429,origin);
+    const query=String(url.searchParams.get("q")||"").trim().slice(0,160);
+    if(!query)return json({error:"Search query required."},400,origin);
+    const result=await dispatchChaosTool({name:"site.search",input:{query},principal:{id:user.id,role:user.role}});
+    return json(result,200,origin);
   }
   if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
     if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);
