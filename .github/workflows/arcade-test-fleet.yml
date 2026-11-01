@@ -194,6 +194,7 @@ jobs:
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
+          ARCADE_TEST_TARGET: local
           ARCADE_SHARD_COUNT: 10
           ARCADE_SHARD_INDEX: ${{ strategy.job-index }}
           ARCADE_TEST_PROFILE: ${{ matrix.profile }}
