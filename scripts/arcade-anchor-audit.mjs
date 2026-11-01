@@ -16,9 +16,8 @@ for(const game of catalog.games){
   if(!cache.has(file))cache.set(file,await readFile(file,"utf8"));
   const html=cache.get(file);
   const id=decodeURIComponent(fragment);
-  const escape=id.replace(/[.*+?^$()|[\]{}]/g,"\\$&");
-  const target=new RegExp("(?:id|name)=[\\\"']"+escape+"[\\\"']");
-  if(!target.test(html))failures.push(game.id+": anchor #"+id+" missing from "+pathname);
+  const found=['id="'+id+'"',"id='"+id+"'",'name="'+id+'"',"name='"+id+"'"].some(marker=>html.includes(marker));
+  if(!found)failures.push(game.id+": anchor #"+id+" missing from "+pathname);
   checked.push(game.id);
  }catch(e){failures.push(game.id+": "+String(e.message).slice(0,120));}
 }
