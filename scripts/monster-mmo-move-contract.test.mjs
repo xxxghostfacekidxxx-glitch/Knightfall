@@ -15,3 +15,9 @@ test("reject unknown or duplicate-equipped move and invalid slots",()=>{
 test("sanitize malformed and untrusted move identifiers",()=>{
  assert.deepEqual(normalizeMoveSlots(["a","<script>","b",null,"a"],[]),["a","b"]);
 });
+
+test("reject malformed move selection payloads",()=>{
+ assert.equal(validateMoveSelection(["a","b"],null,0,"a"),false);
+ assert.equal(validateMoveSelection(["a","b"],{},0,"a"),false);
+ assert.equal(validateMoveSelection(["a","b"],["a"],-1,"b"),false);
+});
