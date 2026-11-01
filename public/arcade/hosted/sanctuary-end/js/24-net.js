@@ -16,7 +16,7 @@ const NET = {
       if (!['ws:', 'wss:'].includes(endpoint.protocol) || !endpoint.hostname || endpoint.username || endpoint.password) throw new Error('Invalid socket endpoint');
       if (securePage && endpoint.protocol !== 'wss:') { this.status('Secure HTTPS pages require a wss:// multiplayer server'); return; }
       if (port && !endpoint.port) endpoint.port = String(port);
-      else if (!endpoint.port && !/^wss?:\/\//i.test(raw) && !raw.includes(':')) endpoint.port = '8787';
+      else if (!endpoint.port && !/^wss?:\/\//i.test(raw) && !raw.includes(':') && !securePage) endpoint.port = '8787';
       this.ws = new WebSocket(endpoint.toString());
     } catch (e) { this.status('Invalid multiplayer address or port'); return; }
     this.status('Connecting…');
