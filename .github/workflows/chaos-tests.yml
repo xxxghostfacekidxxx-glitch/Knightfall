@@ -1,0 +1,20 @@
+name: Miss Chaos and offline bots tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/chaos-*.mjs'
+      - 'backend/offline-bot-cache.test.mjs'
+      - 'public/sw.js'
+      - '.github/workflows/chaos-tests.yml'
+  workflow_dispatch:
+jobs:
+  node-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Miss Chaos and offline cache tests
+        run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
