@@ -57,7 +57,7 @@ define(['jquery', 'storage'], function($, Storage) {
                         } else if(Date.now() - waitStarted > 15000) {
                             clearInterval(watchCanStart);
                             $play.removeClass('loading');
-                            self.$playDiv.off('click').on('click', function() {
+                            self.$playDiv.unbind('click').click(function() {
                                 self.tryStartingGame($('#nameinput').val().trim() || $('#playername').text().trim());
                             });
                             var warning = document.getElementById('knightfall-start-error');
