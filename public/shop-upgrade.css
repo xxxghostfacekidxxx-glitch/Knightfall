@@ -20,3 +20,7 @@
 .seller-stats strong{font-size:clamp(1.5rem,3vw,2.2rem);color:#ff8ae2;font-variant-numeric:tabular-nums}
 .seller-stats span{font-size:.78rem;color:#b9a9b7}
 @media(max-width:520px){.seller-stats{grid-template-columns:1fr}.seller-shortcuts a{flex:1 1 40%;justify-content:center}}
+
+.store-identity{display:flex;align-items:center;gap:1rem;margin:1.4rem 0 .2rem;padding:1rem 1.2rem;border:1px solid #453049;border-radius:14px;background:linear-gradient(120deg,#211025,#111)}
+.store-mark{display:grid;place-items:center;flex:none;width:64px;height:64px;border-radius:14px;background:#ff55d81b;border:1px solid #a3478e;color:#ff87df;font-size:2rem}
+.store-identity .eyebrow{margin:0}.store-category{margin:.3rem 0 0;color:#ddd;font-weight:700;text-transform:capitalize}
