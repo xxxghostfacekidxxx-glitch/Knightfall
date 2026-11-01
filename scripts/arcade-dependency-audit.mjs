@@ -16,6 +16,7 @@ for(const route of paths){
  for(const ref of refs){
   if(!ref||/^(?:https?:|data:|blob:|mailto:|tel:|javascript:|#|\/\/)/i.test(ref))continue;
   const clean=ref.split(/[?#]/)[0];
+  if(/^(?:\{\{|\$\{|<%)/.test(clean))continue;
   if(!clean)continue;
   let decoded;
   try{decoded=decodeURIComponent(clean)}catch{failures.push(route+": malformed URL "+ref);continue;}
