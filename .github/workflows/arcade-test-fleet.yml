@@ -16,6 +16,7 @@ on:
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-sharded-smoke.mjs"
       - "scripts/arcade-shard-summary.mjs"
+      - "scripts/arcade-shard-summary.test.mjs"
       - "scripts/admin-dashboard-structure.test.mjs"
       - "public/admin.html"
       - "public/admin.css"
@@ -167,7 +168,7 @@ jobs:
           exit 1
       - name: Validate bot scripts and repair rules
         run: |
-          node --test scripts/admin-dashboard-structure.test.mjs
+          node --test scripts/admin-dashboard-structure.test.mjs scripts/arcade-shard-summary.test.mjs
           node --check scripts/arcade-shard-summary.mjs
           node --check scripts/arcade-sharded-smoke.mjs
           node --check scripts/arcade-browser-smoke.mjs
