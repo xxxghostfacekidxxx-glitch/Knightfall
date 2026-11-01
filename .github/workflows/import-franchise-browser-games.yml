@@ -13,6 +13,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p upstream-audit
+          : > upstream-audit/report.txt
           repos=(
             gd4Ark/star-battle
             njecolina/Single-HTML-Space-Shooter
@@ -48,8 +49,8 @@ jobs:
               echo
             } >> upstream-audit/report.txt
           done
-          cat upstream-audit/report.txt
           echo "Source availability is not permission to redistribute third-party franchise assets." >> upstream-audit/report.txt
+          cat upstream-audit/report.txt
       - uses: actions/upload-artifact@v4
         with:
           name: franchise-upstream-license-audit
