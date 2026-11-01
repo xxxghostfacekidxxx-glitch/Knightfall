@@ -26,6 +26,7 @@ on:
       - "scripts/arcade-import-audit.test.mjs"
       - "scripts/arcade-inventory.mjs"
       - "scripts/arcade-anchor-audit.mjs"
+      - "scripts/arcade-dependency-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
       - "scripts/arcade-mini-games.test.mjs"
       - "scripts/arcade-original-trio.test.mjs"
@@ -83,6 +84,7 @@ on:
       - "scripts/arcade-import-audit.test.mjs"
       - "scripts/arcade-inventory.mjs"
       - "scripts/arcade-anchor-audit.mjs"
+      - "scripts/arcade-dependency-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
       - "scripts/arcade-mini-games.test.mjs"
       - "scripts/arcade-original-trio.test.mjs"
@@ -264,6 +266,8 @@ jobs:
           pattern: arcade-test-results-*
           path: artifacts/shards
           merge-multiple: false
+      - name: Verify static arcade dependencies
+        run: node scripts/arcade-dependency-audit.mjs
       - name: Verify hash-routed mini-game anchors
         run: node scripts/arcade-anchor-audit.mjs
       - name: Inventory arcade routes and orphan candidates
