@@ -15,3 +15,10 @@ test("franchise directory exposes catalog-backed external games",()=>{
 test("franchise menu does not promise eleven hosted games",()=>{
  assert.doesNotMatch(builder,/Star Wars &amp; Dragon Ball · 11 projects/);
 });
+
+test("franchise directory has no-script fallback for all cataloged fan links",()=>{
+ const external=catalog.games.filter(g=>g.collection==="external"&&/dragon.?ball|saiyan|star.?wars|7balls/i.test([g.id,g.title,g.description].join(" ")));
+ assert.ok(external.length>=4);
+ for(const game of external)assert.ok(html.includes('href="'+game.route+'"'),"Missing static fallback for "+game.id);
+ assert.match(html,/area\.replaceChildren\(\)/);
+});
