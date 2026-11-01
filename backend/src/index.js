@@ -1298,7 +1298,9 @@ export default { async queue(batch, env) {
     const user=await requireUser(request,env);
     if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     if(!(await rateLimit(env,request,"chaos-utility",20,60,user.id)))return json({error:"Too many utility requests."},429,origin);
-    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const declaredSize=Number(request.headers.get("content-length")||0);
+    if(declaredSize>16000)return json({error:"Utility request too large."},413,origin);
+    let body;try{const raw=await request.text();if(raw.length>16000)return json({error:"Utility request too large."},413,origin);body=JSON.parse(raw);}catch{return json({error:"Invalid JSON."},400,origin);}
     if(!["utility.calculate","utility.word_count"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
     try{
       const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role}});
