@@ -71,3 +71,22 @@ jobs:
           name: franchise-upstream-license-audit
           path: upstream-audit/
           retention-days: 7
+
+  check-external-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit creator-site reachability
+        run: node scripts/check-franchise-links.mjs
+      - name: Save link audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: franchise-external-link-audit
+          path: artifacts/franchise-link-audit.json
+          if-no-files-found: warn
+          retention-days: 30
