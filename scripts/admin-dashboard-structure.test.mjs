@@ -70,3 +70,5 @@ test("arcade failure cards expose diagnostic evidence",()=>{
  assert.match(html,/failure\.browserErrorCount/);
  assert.match(html,/failure\.networkErrorCount/);
 });
+
+test("arcade failure cards show evidence counts",()=>{assert.match(html,/failure\.browserErrorCount/);assert.match(html,/failure\.networkErrorCount/);});
