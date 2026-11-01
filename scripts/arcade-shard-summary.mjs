@@ -3,6 +3,7 @@ import path from "node:path";
 const root=path.resolve(process.argv[2]||"artifacts/shards");
 const out=path.resolve(process.argv[3]||"artifacts/arcade-fleet-summary.json");
 const expected=Number(process.env.ARCADE_SHARD_COUNT||10);
+if (!Number.isInteger(expected) || expected < 1) throw Error("Invalid shard count");
 async function find(dir) {
  const found=[];
  for(const entry of await readdir(dir,{withFileTypes:true}).catch(()=>[])) {
