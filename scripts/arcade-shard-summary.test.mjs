@@ -24,3 +24,7 @@ test("fleet summary emits actionable failed routes",()=>{
 test("catalog resolution is independent of the current working directory",()=>{
  assert.match(source,/new URL\("\.\.\/public\/arcade\/catalog\.json",import\.meta\.url\)/);
 });
+
+test("failed routes carry screenshot evidence metadata",()=>{
+ assert.match(source,/typeof result\.screenshot!=="string"/);
+});
