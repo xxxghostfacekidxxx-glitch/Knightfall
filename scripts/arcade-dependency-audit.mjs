@@ -21,9 +21,9 @@ for(const route of paths){
   let decoded;
   try{decoded=decodeURIComponent(clean)}catch{failures.push(route+": malformed URL "+ref);continue;}
   const target=decoded.startsWith("/")?path.resolve(publicRoot,"."+decoded):path.resolve(path.dirname(file),decoded);
-  if(!target.startsWith(publicRoot+path.sep)){failures.push(route+": asset escapes public root "+ref);continue;}
+  if(target!==publicRoot && !target.startsWith(publicRoot+path.sep)){failures.push(route+": asset escapes public root "+ref);continue;}
   checked.add(target);
-  try{if(!(await stat(target)).isFile() && !(decoded.endsWith("/") && (await stat(target)).isDirectory()))failures.push(route+": missing asset "+ref)}
+  try{const entry=await stat(target);if(!entry.isFile() && !entry.isDirectory())failures.push(route+": unsupported asset "+ref)}
   catch{failures.push(route+": missing asset "+ref)}
  }
 }
