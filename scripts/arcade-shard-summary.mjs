@@ -42,7 +42,7 @@ for(const target of targets) {
 }
 if(files.length!==reports.length)process.exitCode=1;
 if(!targets.includes("local")||process.env.ARCADE_REQUIRE_LIVE==="1"&&!targets.includes("live"))process.exitCode=1;
-const summary={generatedAt:new Date().toISOString(),reportsFound:files.length,targets:summaries,passed:!process.exitCode};
+const summary={generatedAt:new Date().toISOString(),reportsFound:files.length,catalogRoutes:routes.length,targets:summaries,passed:!process.exitCode};
 await mkdir(path.dirname(out),{recursive:true});
 await writeFile(out,JSON.stringify(summary,null,2));
 console.log(JSON.stringify({passed:summary.passed,targets:Object.fromEntries(Object.entries(summaries).map(([key,value])=>[key,{reports:value.reports,coveredRoutes:value.coveredRoutes,missingShards:value.missingShards,duplicatedRoutes:value.duplicatedRoutes.length,failures:value.failures.length,coverageOk:value.coverageOk}]))},null,2));
