@@ -57,6 +57,11 @@ jobs:
           grep -q '/arcade/hosted/fable-gta/assets/' public/arcade/hosted/fable-gta/index.html
       - name: Commit import and compiled build
         run: |
+          git fetch origin main
+          if ! git merge --ff-only origin/main; then
+            echo 'Main advanced while the build ran; rerun on the latest commit instead of overwriting other work.'
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add vendor/fable-gta public/arcade/hosted/fable-gta
