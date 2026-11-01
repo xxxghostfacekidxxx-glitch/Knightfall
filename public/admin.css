@@ -87,3 +87,22 @@ tbody tr:hover{background:rgba(255,85,216,.035)}
 .admin-shell :is(.admin-tabs button.active,.admin-tabs button:hover,button.primary,.fleet-run:hover){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#15071b!important}
 .admin-shell :is(input,select,textarea,.search){background:#100f1d!important;border-color:#684171!important;color:#f9f3ff!important}
 .admin-shell :is(.danger,.warning){border-color:#ff55d8!important;color:#ff9de8!important}
+
+/* God Mode workspace navigation, 2026 overhaul */
+.admin-workspace{margin:1.5rem 0 1rem;padding:1.1rem;border:1px solid #6e377a;border-radius:18px;background:linear-gradient(135deg,#191027,#100d1c);box-shadow:0 12px 35px #0005}
+.admin-workspace-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.admin-workspace-head h2{margin:.2rem 0;font-size:clamp(1.35rem,3vw,2rem);color:#f9edff}
+.admin-workspace-head p:not(.eyebrow){color:#bdb1c7;margin:.25rem 0 .7rem}
+.admin-workspace-search{display:grid;gap:.35rem;color:#c6ff45;font-size:.75rem;font-weight:700}
+.admin-workspace-search input{min-width:min(290px,80vw);padding:.75rem .9rem;border:1px solid #7c4987;border-radius:10px;background:#0d0c19;color:#fff}
+.admin-group-nav{display:flex;flex-wrap:wrap;gap:.5rem;padding:.8rem 0;border-bottom:1px solid #503059}
+.admin-group-nav button{border:1px solid #5d3c69;border-radius:999px;background:#1b152b;color:#e4d5ec;font-weight:800}
+.admin-group-nav button.active{background:#ff55d8;color:#19091d;border-color:#ff55d8}
+.admin-workspace .admin-tabs{margin:.8rem 0 .4rem;flex-wrap:wrap;overflow:visible}
+.admin-workspace .admin-tabs button{font-size:.85rem;min-height:40px}
+.admin-workspace .admin-tabs button[hidden]{display:none!important}
+.admin-workspace-count{color:#b9a9c6;font-size:.76rem;margin:.5rem 0 0}
+.admin-shell .admin-panel{scroll-margin-top:5rem}
+.admin-shell .admin-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:.75rem}
+.admin-shell .admin-shortcut{min-width:0}
+@media(max-width:650px){.admin-workspace{padding:.85rem}.admin-group-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-workspace-head{align-items:stretch}.admin-workspace-search,.admin-workspace-search input{width:100%;min-width:0}.admin-workspace .admin-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-workspace .admin-tabs button{white-space:normal;overflow-wrap:anywhere}.admin-shell .hero{flex-direction:column;align-items:flex-start}.admin-shell .health-pill{white-space:normal}}
