@@ -17,7 +17,7 @@ async function find(dir) {
 }
 const files=await find(root), reports=[];
 for(const file of files) {
- try {const report=JSON.parse(await readFile(file,"utf8"));if(Number.isInteger(report.shardIndex)&&Array.isArray(report.assignedRoutes))reports.push({...report,file});}
+ try {const report=JSON.parse(await readFile(file,"utf8"));if(Number.isInteger(report.shardIndex)&&report.shardIndex>=0&&report.shardIndex<expected&&Array.isArray(report.assignedRoutes))reports.push({...report,file});else throw Error("Malformed shard report");}
  catch(error){console.error("Invalid shard report:",file,error.message);process.exitCode=1;}
 }
 const targets=[...new Set(reports.map(r=>r.target))];
@@ -34,11 +34,12 @@ for(const target of targets) {
  const duplicatedShards=[...indexes].filter(([,count])=>count!==1).map(([index,count])=>({index,count}));
  const duplicatedRoutes=[...counts].filter(([,count])=>count!==1).map(([route,count])=>({route,count}));
  const catalogSizes=[...new Set(group.map(r=>r.totalCatalog))];
- const expectedRoutes=catalogSizes.length===1?catalogSizes[0]:null;
- const coverageOk=missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&malformedReports.length===0&&expectedRoutes===counts.size&&failures.length===0;
+ const expectedRoutes=routes.length;
+ const coverageOk=catalogSizes.length===1&&missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&malformedReports.length===0&&expectedRoutes===counts.size&&failures.length===0;
  summaries[target]={reports:group.length,expectedShards:expected,expectedRoutes,coveredRoutes:counts.size,missingShards,duplicatedShards,duplicatedRoutes,malformedReports,failures,coverageOk};
  if(!coverageOk)process.exitCode=1;
 }
+if(files.length!==reports.length)process.exitCode=1;
 if(!targets.includes("local")||process.env.ARCADE_REQUIRE_LIVE==="1"&&!targets.includes("live"))process.exitCode=1;
 const summary={generatedAt:new Date().toISOString(),reportsFound:files.length,targets:summaries,passed:!process.exitCode};
 await mkdir(path.dirname(out),{recursive:true});
