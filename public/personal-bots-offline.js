@@ -21,8 +21,8 @@ async function localReply(bot,message) {
     localSessionPromise = self.LanguageModel.create({
       initialPrompts: [{role:"system",content:("You are "+bot.name+". "+bot.persona).slice(0,4000)}]
     });
-    localSession = await localSessionPromise;
-    localSessionPromise = null;
+    try { localSession = await localSessionPromise; }
+    finally { localSessionPromise = null; }
     localSessionBot = bot.id;
     localSessionPersona = bot.persona;
   }
