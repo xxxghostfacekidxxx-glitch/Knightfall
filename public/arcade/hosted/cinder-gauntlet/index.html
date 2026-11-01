@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Cinder Gauntlet | Ash-Fall</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0c0912;color:#f7e9ff;font:16px system-ui;text-align:center}header{padding:12px;background:#190d22;border-bottom:2px solid #ff3d9e}h1{margin:0;font-size:1.5rem;color:#ff6cb5}a{color:#93ffcb}main{max-width:1020px;margin:auto;padding:10px}#stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px}canvas{width:min(100%,864px);height:auto;aspect-ratio:3/2;background:#130e19;border:2px solid #a84c8e;touch-action:none}button,select{background:#291b3a;color:white;border:1px solid #ff63ae;padding:11px 15px;border-radius:8px;font:inherit;cursor:pointer}button:active{background:#b12c78}#controls{display:flex;gap:12px;justify-content:center;align-items:center;margin:10px auto;touch-action:none}#pad{display:grid;grid-template-columns:repeat(3,58px);gap:4px}#pad button{height:51px;padding:0}#attack{height:110px;width:110px;border-radius:50%;background:#8a1757}#message{min-height:28px;color:#baffdc}footer{font-size:13px;color:#bbb;padding:12px}#help{max-width:700px;margin:8px auto;line-height:1.5}
+</style></head><body><header><h1>CINDER GAUNTLET</h1><small>Original Ash-Fall dungeon crawler · playable alpha</small></header>
+<main><p><a href="/chaos-cartridge.html">← Arcade</a></p><div><label>Hero <select id="hero"><option value="warrior">Warrior</option><option value="mage">Mage</option><option value="ranger">Ranger</option><option value="guardian">Guardian</option></select></label> <button id="start">Start / Restart</button> <button id="pause">Pause</button></div>
+<div id="stats"><span id="hp">HP: 100</span><span id="score">Score: 0</span><span id="level">Floor: 1</span><span id="keys">Keys: 0</span></div>
+<canvas id="game" width="864" height="576" aria-label="Top-down dungeon arena"></canvas><div id="message" role="status">Choose a hero and enter the dungeon.</div>
+<div id="controls"><div id="pad"><span></span><button data-dir="up" aria-label="Up">▲</button><span></span><button data-dir="left" aria-label="Left">◀</button><button data-dir="down" aria-label="Down">▼</button><button data-dir="right" aria-label="Right">▶</button></div><button id="attack">ATTACK</button></div>
+<div id="help">Move: WASD / arrows. Aim: mouse, touch, or last movement direction. Attack: Space, click/touch arena, or ATTACK. Collect keys, food and treasure. Destroy the glowing enemy generators. Reach the green exit to descend. Each floor becomes harder.</div></main><footer>Original code and procedural artwork for Ash-Fall. No Gauntlet franchise assets used.</footer>
+<script>
+(()=>{'use strict';
+const c=document.querySelector('#game'),ctx=c.getContext('2d'),W=c.width,H=c.height,T=36,C=W/T|0,R=H/T|0;
+const $=s=>document.querySelector(s),held=new Set();let game=null,frame=0,last=0;
+const classes={warrior:{hp:150,speed:2.7,dmg:25,rate:18,color:'#ff6689',range:105},mage:{hp:85,speed:2.9,dmg:18,rate:11,color:'#b49aff',range:170},ranger:{hp:95,speed:3.4,dmg:17,rate:9,color:'#a3ff9c',range:195},guardian:{hp:190,speed:2.3,dmg:23,rate:23,color:'#ffda89',range:95}};
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),wall=(x,y)=>!game||game.map[Math.floor(y/T)]?.[Math.floor(x/T)]!==0;
+function makeFloor(n){const map=Array.from({length:R},(_,y)=>Array.from({length:C},(_,x)=>x===0||y===0||x===C-1||y===R-1?1:0));for(let i=0;i<Math.min(25,8+n*2);i++){const x=rand(3,C-4),y=rand(2,R-3);if(x<5&&y<5)continue;map[y][x]=1}for(let y=1;y<4;y++)for(let x=1;x<5;x++)map[y][x]=0;map[R-2][C-2]=0;map[R-3][C-2]=0;map[R-2][C-3]=0;return map}
+function openSpot(min=4){for(let k=0;k<200;k++){const x=rand(2,C-3),y=rand(2,R-3);if(game.map[y][x]===0&&x+y>min)return{x:x*T+T/2,y:y*T+T/2}}return{x:W-2*T,y:H-2*T}}
+function spawnFloor(){game.map=makeFloor(game.floor);game.enemies=[];game.generators=[];game.items=[];game.shots=[];game.exit={x:W-1.5*T,y:H-1.5*T};game.p.x=2*T;game.p.y=2*T;game.p.inv=65;
+for(let i=0;i<Math.min(7,2+game.floor);i++){const q=openSpot(10);game.generators.push({...q,hp:45+game.floor*14,t:rand(20,80)})}
+for(let i=0;i<Math.min(10,4+game.floor);i++){const q=openSpot();game.items.push({...q,type:i===0?'key':i%3===0?'food':'gold'})}
+say('Floor '+game.floor+': break the spawners, grab a key, reach the exit.')}
+function say(s){$('#message').textContent=s}
+function start(){const kind=$('#hero').value,p=classes[kind];game={floor:1,score:0,keys:0,p:{x:72,y:72,hp:p.hp,max:p.hp,kind,face:{x:1,y:0},cool:0,inv:0},paused:false,ended:false};held.clear();spawnFloor();update()}
+function update(){if(!game)return;$('#hp').textContent='HP: '+Math.ceil(Math.max(0,game.p.hp));$('#score').textContent='Score: '+game.score;$('#level').textContent='Floor: '+game.floor;$('#keys').textContent='Keys: '+game.keys}
+function move(o,dx,dy,s){const d=Math.hypot(dx,dy)||1,nx=o.x+dx/d*s,ny=o.y+dy/d*s;if(!wall(nx+Math.sign(dx)*11,o.y)&&!wall(nx-Math.sign(dx)*11,o.y))o.x=nx;if(!wall(o.x,ny+Math.sign(dy)*11)&&!wall(o.x,ny-Math.sign(dy)*11))o.y=ny}
+function attack(){if(!game||game.paused||game.ended)return;const p=game.p,a=classes[p.kind];if(p.cool>0)return;p.cool=a.rate;const d=Math.hypot(p.face.x,p.face.y)||1;game.shots.push({x:p.x,y:p.y,vx:p.face.x/d*8,vy:p.face.y/d*8,life:a.range/8,dmg:a.dmg});}
+function tick(dt){if(!game||game.paused||game.ended)return;const g=game,p=g.p,a=classes[p.kind],k=dt/16.67;let dx=Number(held.has('ArrowRight')||held.has('KeyD')||held.has('right'))-Number(held.has('ArrowLeft')||held.has('KeyA')||held.has('left')),dy=Number(held.has('ArrowDown')||held.has('KeyS')||held.has('down'))-Number(held.has('ArrowUp')||held.has('KeyW')||held.has('up'));if(dx||dy){move(p,dx,dy,a.speed*k);p.face={x:dx,y:dy}}if(held.has('Space')||held.has('attack'))attack();p.cool=Math.max(0,p.cool-k);p.inv=Math.max(0,p.inv-k);
+for(const z of g.generators){z.t-=k;if(z.t<=0&&g.enemies.length<Math.min(45,12+g.floor*4)){g.enemies.push({x:z.x,y:z.y,hp:25+g.floor*6,speed:0.6+g.floor*.065});z.t=Math.max(28,100-g.floor*5)}}
+for(const e of g.enemies){if(dist(e,p)>17)move(e,p.x-e.x,p.y-e.y,e.speed*k);if(dist(e,p)<22&&p.inv<=0){p.hp-=p.kind==='guardian'?6:11;p.inv=40;if(p.hp<=0){g.ended=true;say('The ashes claim you. Score '+g.score+'. Restart to try again.')}}}
+for(const s of g.shots){s.x+=s.vx*k;s.y+=s.vy*k;s.life-=k;if(wall(s.x,s.y))s.life=0;for(const group of [g.enemies,g.generators])for(const e of group){if(s.life>0&&dist(s,e)<20){e.hp-=s.dmg;s.life=0;if(e.hp<=0){group.splice(group.indexOf(e),1);g.score+=group===g.generators?100:15;break}}}}
+g.shots=g.shots.filter(s=>s.life>0);
+for(const it of [...g.items])if(dist(p,it)<24){g.items.splice(g.items.indexOf(it),1);if(it.type==='key'){g.keys++;say('Key acquired!')}else if(it.type==='food'){p.hp=Math.min(p.max,p.hp+40);say('Health restored.')}else{g.score+=50;say('Treasure +50!')}}
+if(dist(p,g.exit)<28){if(g.keys<1)say('The exit requires a key.');else if(g.generators.length)say('Destroy the glowing generators before leaving.');else{g.floor++;g.score+=200;g.keys--;p.hp=Math.min(p.max,p.hp+25);spawnFloor()}}update()}
+function draw(){ctx.fillStyle='#100e18';ctx.fillRect(0,0,W,H);if(!game){ctx.fillStyle='#e9c4f4';ctx.font='bold 30px system-ui';ctx.textAlign='center';ctx.fillText('CINDER GAUNTLET',W/2,H/2);ctx.font='18px system-ui';ctx.fillText('Press Start to descend',W/2,H/2+42);return}
+const g=game,p=g.p;for(let y=0;y<R;y++)for(let x=0;x<C;x++){ctx.fillStyle=g.map[y][x]?'#30233f':(x+y)%2?'#191525':'#1d172b';ctx.fillRect(x*T,y*T,T-1,T-1);if(g.map[y][x]){ctx.fillStyle='#463052';ctx.fillRect(x*T+3,y*T+3,T-6,5)}}
+ctx.fillStyle='#4cff9c';ctx.fillRect(g.exit.x-13,g.exit.y-13,26,26);ctx.fillStyle='#092018';ctx.fillRect(g.exit.x-7,g.exit.y-7,14,14);
+for(const z of g.generators){ctx.fillStyle='#ff4aaf';ctx.beginPath();ctx.arc(z.x,z.y,15+Math.sin(frame/12)*3,0,7);ctx.fill();ctx.fillStyle='#1c0d20';ctx.fillRect(z.x-5,z.y-5,10,10)}
+for(const i of g.items){ctx.fillStyle=i.type==='key'?'#ffe56b':i.type==='food'?'#74fa8c':'#7df4ff';ctx.beginPath();ctx.arc(i.x,i.y,9,0,7);ctx.fill()}
+for(const e of g.enemies){ctx.fillStyle='#eb5769';ctx.fillRect(e.x-10,e.y-10,20,20);ctx.fillStyle='#290e1b';ctx.fillRect(e.x-5,e.y-3,4,4);ctx.fillRect(e.x+2,e.y-3,4,4)}
+for(const s of g.shots){ctx.fillStyle='#ffe8a5';ctx.beginPath();ctx.arc(s.x,s.y,5,0,7);ctx.fill()}
+if(!(p.inv>0&&Math.floor(frame/5)%2)){ctx.fillStyle=classes[p.kind].color;ctx.beginPath();ctx.arc(p.x,p.y,12,0,7);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+p.face.x*18,p.y+p.face.y*18);ctx.stroke()}
+if(g.paused||g.ended){ctx.fillStyle='#090612bb';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 38px system-ui';ctx.textAlign='center';ctx.fillText(g.ended?'GAME OVER':'PAUSED',W/2,H/2)}}
+function loop(t){const dt=Math.min(45,t-last||16.67);last=t;frame++;tick(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+$('#start').onclick=start;$('#pause').onclick=()=>{if(game&&!game.ended){game.paused=!game.paused;say(game.paused?'Paused':'Back to the dungeon.')}};
+document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();held.add(e.code)});document.addEventListener('keyup',e=>held.delete(e.code));window.addEventListener('blur',()=>held.clear());document.addEventListener('visibilitychange',()=>{if(document.hidden)held.clear()});
+for(const b of document.querySelectorAll('[data-dir]')){const key=b.dataset.dir;b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);held.add(key)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>held.delete(key))}
+const ab=$('#attack');ab.addEventListener('pointerdown',e=>{e.preventDefault();ab.setPointerCapture(e.pointerId);held.add('attack');attack()});for(const ev of ['pointerup','pointercancel','lostpointercapture'])ab.addEventListener(ev,()=>held.delete('attack'));
+c.addEventListener('pointerdown',e=>{if(!game)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;game.p.face={x:x-game.p.x,y:y-game.p.y};attack()});
+})();
+</script></body></html>
