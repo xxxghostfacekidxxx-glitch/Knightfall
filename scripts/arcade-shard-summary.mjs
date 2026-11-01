@@ -1,4 +1,4 @@
-import { readdir, readFile, mkdir, writeFile } from "node:fs/promises";
+import { readdir, readFile, mkdir, writeFile, stat } from "node:fs/promises";
 import path from "node:path";
 const root=path.resolve(process.argv[2]||"artifacts/shards");
 const out=path.resolve(process.argv[3]||"artifacts/arcade-fleet-summary.json");
