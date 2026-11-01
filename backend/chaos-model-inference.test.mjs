@@ -32,3 +32,11 @@ test("tool planning executes calculator and returns final answer",async()=>{
  assert.equal(calls[1].model,"fast");
  assert.ok(calls[1].options.messages[0].content.includes('"result":14'));
 });
+
+test("planner returns ordinary reply when no tool selected",async()=>{
+ const calls=[];
+ const ai={run:async (model,options)=>{calls.push(model);return {response:"plain"};}};
+ const result=await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"where are the games"}],principal:{id:"test"}});
+ assert.equal(result.response,"plain");
+ assert.equal(calls.length,2);
+});
