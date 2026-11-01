@@ -7,14 +7,14 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const catalog = await readFile(resolve(root, "public/arcade-30-games.html"), "utf8");
-const entries = [...catalog.matchAll(/<article\b[^>]*class="game"[^>]*>([\s\S]*?)<\/article>/g)];
+const entries = [...catalog.matchAll(/<article\b[^>]*class="[^"]*\\bgame\\b[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
 const errors = [];
 const warnings = [];
 const seen = new Set();
 for (const [index, match] of entries.entries()) {
   const block = match[1];
   const title = block.match(/<h2>(.*?)<\/h2>/)?.[1] ?? `Cabinet ${index + 1}`;
-  const play = block.match(/<a\b[^>]*class="play"[^>]*href="([^"]+)"/)?.[1];
+  const play = block.match(/<a\b[^>]*class="[^"]*\\bplay\\b[^"]*"[^>]*href="([^"]+)"/)?.[1];
   if (!play) { errors.push(`${title}: missing play link`); continue; }
   if(play.startsWith("https://")){if(!/data-collection="external"/.test(match[0]))errors.push(`${title}: external launch must be labeled external`);continue;}
   const launchPath = play.split("?")[0].split("#")[0];
