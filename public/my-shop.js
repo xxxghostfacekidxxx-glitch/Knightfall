@@ -13,7 +13,7 @@ function render(){q("#create-shop-panel").hidden=!!shop;q("#shop-workspace").hid
 q("#export-products")?.addEventListener("click",()=>{
  if(!shop)return;
  const columns=["id","name","description","price_cents","image_url","supplier_url","is_active"];
- const csvCell=value=>'"'+String(value??"").replace(/^[=+@-]/,"'inventorySearch?.addEventListener("input"").replace(/"/g,'""')+'"';
+ const csvCell=value=>'"'+String(value??"").replace(/^\s*[=+@-]/,match=>"'"+match).replace(/"/g,'""')+'"';
  const rows=[columns.join(","),...products.map(p=>columns.map(key=>csvCell(p[key])).join(","))];
  const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"});
  const url=URL.createObjectURL(blob),link=document.createElement("a");
