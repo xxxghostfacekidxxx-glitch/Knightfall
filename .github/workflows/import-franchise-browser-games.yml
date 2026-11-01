@@ -50,7 +50,6 @@ jobs:
           done
           cat upstream-audit/report.txt
           echo "Source availability is not permission to redistribute third-party franchise assets." >> upstream-audit/report.txt
-          done
       - uses: actions/upload-artifact@v4
         with:
           name: franchise-upstream-license-audit
