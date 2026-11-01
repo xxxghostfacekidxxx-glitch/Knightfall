@@ -27,7 +27,7 @@ for(const target of targets) {
   for(const result of r.results||[])if(result.status==="failed")failures.push({shard:r.shardIndex,profile:r.profile,...result});
  }
  const missingShards=Array.from({length:expected},(_,i)=>i).filter(i=>!indexes.has(i));
- const malformedReports=group.filter(r=>r.shardCount!==expected||r.assigned!==r.assignedRoutes.length||r.passed+r.failed!==r.assigned||!Array.isArray(r.results)||r.results.length!==r.assigned||r.results.some(result=>!r.assignedRoutes.includes(result.route))).map(r=>({file:r.file,shard:r.shardIndex}));
+ const malformedReports=group.filter(r=>r.shardCount!==expected||r.assigned!==r.assignedRoutes.length||r.passed+r.failed!==r.assigned||!Array.isArray(r.results)||r.results.length!==r.assigned||new Set(r.assignedRoutes).size!==r.assignedRoutes.length||r.results.some(result=>!r.assignedRoutes.includes(result.route))||new Set(r.results.map(result=>result.route)).size!==r.assignedRoutes.length||r.results.some(result=>result.status!=="passed"&&result.status!=="failed")).map(r=>({file:r.file,shard:r.shardIndex}));
  const duplicatedShards=[...indexes].filter(([,count])=>count!==1).map(([index,count])=>({index,count}));
  const duplicatedRoutes=[...counts].filter(([,count])=>count!==1).map(([route,count])=>({route,count}));
  const catalogSizes=[...new Set(group.map(r=>r.totalCatalog))];
