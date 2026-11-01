@@ -30,5 +30,5 @@ test("tool planning executes calculator and returns final answer",async()=>{
  assert.equal(result.response,"14");
  assert.equal(calls.length,2);
  assert.equal(calls[1].model,"fast");
- assert.ok(calls[1].options.messages.at(-1).content.includes('"result":14'));
+ assert.ok(calls[1].options.messages[0].content.includes('"result":14'));
 });
