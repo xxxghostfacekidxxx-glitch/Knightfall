@@ -50,6 +50,14 @@ jobs:
           mkdir -p public/arcade/hosted/fable-gta
           rsync -a --delete vendor/fable-gta/dist/ public/arcade/hosted/fable-gta/
           cp vendor/fable-gta/LICENSE public/arcade/hosted/fable-gta/LICENSE
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('public/arcade/hosted/fable-gta/index.html')
+          html=p.read_text()
+          html=html.replace('<title>gta-2</title>', '<title>Ash-Fall City | GTA-Style Sandbox</title>')
+          html=html.replace('</title>', '</title>\n    <meta name="description" content="Play Ash-Fall City, an editable browser-based 3D city sandbox." />', 1)
+          p.write_text(html)
+          PY
       - name: Check compiled entry and bundled asset references
         run: |
           test -s public/arcade/hosted/fable-gta/index.html
