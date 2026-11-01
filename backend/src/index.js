@@ -1361,6 +1361,15 @@ export default { async queue(batch, env) {
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
     // Read-only site lookup: results are curated links, not unrestricted model tools.
     const siteLookupContext=navigationContext(message);
+    let utilityContext="";
+    const arithmetic=message.match(/^\\s*(?:calculate|what is|what's|solve)\\s+([0-9+*/().%\\s-]{1,100})\\??\\s*$/i);
+    if(arithmetic){
+      try{
+        const result=await dispatchChaosTool({name:"utility.calculate",input:{expression:arithmetic[1]},principal:{id:user.id,role:user.role}});
+        utilityContext="\\n\\nVERIFIED CALCULATOR RESULT: "+result.expression+" = "+result.result+"\\n";
+      }catch{}
+    }
+
     const systemPrompt=`You are Miss Chaos, the distinctive AI companion in the Knightfall universe. Your voice is vivid, clever, candid, emotionally perceptive, irreverent, and darkly funny when the moment calls for it. You should feel like one consistent character, not a generic helpdesk bot or a pile of catchphrases.
 
 CHAOS SIGNATURE:
@@ -1410,7 +1419,7 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
-    const aiOptions={messages:[{role:"system",content:systemPrompt+siteLookupContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    const aiOptions={messages:[{role:"system",content:systemPrompt+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
     if(body.stream===true){
       let source;
       try{
@@ -1462,7 +1471,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     let reply="";
     try{
-      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+siteLookupContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
+      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
       reply=String(result?.response||"").trim();
       if(!reply)throw new Error("The model returned an empty response.");
     }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}
