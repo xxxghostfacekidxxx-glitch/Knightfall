@@ -25,6 +25,8 @@ export const CAPABILITIES = Object.freeze({
     confirmation: false,
     maxInputBytes: 2048
   }),
+  "utility.calculate": Object.freeze({description:"Calculate arithmetic expressions",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "utility.word_count": Object.freeze({description:"Count words and estimate reading time",scope:"public",mutates:false,confirmation:false,maxInputBytes:13000}),
   "user.memories": Object.freeze({
     description: "Read the current account's approved memories",
     scope: "user",
