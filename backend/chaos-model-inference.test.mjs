@@ -8,7 +8,7 @@ test("no tool call returns initial model response",async()=>{
 });
 test("unsupported tool schema falls back to ordinary chat",async()=>{
   const ai={run:async (_model,opts)=>{if(opts.tools)throw Error("unsupported tool schema");return {response:"fallback"};}};
-  const result=await inferWithChaosTools({ai,model:"test",messages:[],principal:{id:"test"}});
+  const result=await inferWithChaosTools({ai,model:"test",messages:[{role:"user",content:"calculate 1+1"}],principal:{id:"test"}});
   assert.equal(result.response,"fallback");
 });
 
