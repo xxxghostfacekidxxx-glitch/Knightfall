@@ -3048,9 +3048,11 @@
       var WorldServer = require_worldserver();
       var PlayerClass = require_player();
       var listener;
+      var pendingMessages = [];
       var closed = false;
       var connection = { id: 1, listen(fn) {
         listener = fn;
+        while (pendingMessages.length && !closed) listener(pendingMessages.shift());
       }, onClose(fn) {
         this.closed = fn;
       }, send(data) {
@@ -3081,7 +3083,9 @@
           connect();
         } else if (e.data.type === "message" && !closed) {
           try {
-            listener?.(JSON.parse(e.data.data));
+            const message = JSON.parse(e.data.data);
+            if (listener) listener(message);
+            else if (pendingMessages.length < 64) pendingMessages.push(message);
           } catch (error) {
             postMessage({ type: "error", message: error.message });
           }
