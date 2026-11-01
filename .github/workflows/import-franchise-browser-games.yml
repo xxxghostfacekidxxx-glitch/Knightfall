@@ -51,6 +51,19 @@ jobs:
           done
           echo "Source availability is not permission to redistribute third-party franchise assets." >> upstream-audit/report.txt
           cat upstream-audit/report.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path("upstream-audit")
+          projects=[]
+          for folder in sorted(root.iterdir()):
+            if not folder.is_dir(): continue
+            license_files=[str(p.relative_to(folder)) for p in folder.rglob("*") if p.is_file() and p.name.lower().startswith(("license","copying")) and len(p.relative_to(folder).parts)<=3]
+            entrypoints=[str(p.relative_to(folder)) for p in folder.rglob("index.html") if len(p.relative_to(folder).parts)<=4]
+            projects.append({"project":folder.name,"licenseCandidates":license_files[:20],"browserEntrypoints":entrypoints[:20],"status":"manual asset and license review required"})
+          (root/"machine-readable-review.json").write_text(json.dumps({"projects":projects,"automaticallyApprovedForHosting":False},indent=2))
+          print(f"Generated machine-readable review for {len(projects)} fetched projects; none automatically approved")
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: franchise-upstream-license-audit
