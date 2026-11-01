@@ -32,7 +32,7 @@
     button.style.cssText = "border:1px solid #ff2f9270;background:#161019;color:#f8e8f4;border-radius:999px;padding:.4rem .7rem;cursor:pointer;font:inherit;font-size:.78rem";
     button.addEventListener("click", () => {
       if (input.disabled) return;
-      input.value = prompt + (input.value.trim() ? "\\n\\n" + input.value.trim() : "");
+      input.value = prompt + (input.value.trim() ? "\n\n" + input.value.trim() : "");
       input.dispatchEvent(new Event("input", {bubbles:true}));
       input.focus();
     });
