@@ -8,6 +8,7 @@ const id = () => crypto.randomUUID();
 let localSession = null;
 let localSessionBot = "";
 let localSessionPersona = "";
+let localSessionPromise = null;
 async function localReply(bot,message) {
   if (!("LanguageModel" in self) || typeof self.LanguageModel.create !== "function") throw Error("This browser does not provide an on-device language model.");
   if (localSession && (localSessionBot !== bot.id || localSessionPersona !== bot.persona)) {
@@ -17,9 +18,11 @@ async function localReply(bot,message) {
   if (!localSession) {
     const availability = await self.LanguageModel.availability?.();
     if (availability === "unavailable") throw Error("On-device AI is unavailable on this device.");
-    localSession = await self.LanguageModel.create({
+    localSessionPromise = self.LanguageModel.create({
       initialPrompts: [{role:"system",content:("You are "+bot.name+". "+bot.persona).slice(0,4000)}]
     });
+    localSession = await localSessionPromise;
+    localSessionPromise = null;
     localSessionBot = bot.id;
     localSessionPersona = bot.persona;
   }
