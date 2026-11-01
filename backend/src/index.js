@@ -1,6 +1,7 @@
 import { serveAdminGameArchive } from './admin-game-downloads.js';
 import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mjs";
 import { navigationContext } from "../chaos-navigation.mjs";
+import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
@@ -1481,7 +1482,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     let reply="";
     try{
-      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
+      const result=await inferWithChaosTools({ai:env.AI,model:"@cf/meta/llama-3.1-8b-instruct-fast",messages:aiOptions.messages,principal:{id:user.id,role:user.role},max_tokens:aiOptions.max_tokens,temperature:aiOptions.temperature});
       reply=String(result?.response||"").trim();
       if(!reply)throw new Error("The model returned an empty response.");
     }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}
