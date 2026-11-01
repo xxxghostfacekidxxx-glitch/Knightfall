@@ -1,0 +1,13 @@
+/* Shared shop upgrades, compatible with Knightfall's existing design tokens. */
+.shop-filters{display:grid;grid-template-columns:minmax(0,2fr) minmax(170px,1fr);gap:.5rem 1rem;margin:1.25rem 0 0;align-items:end}
+.shop-filters label{font-size:.78rem;font-weight:750;color:#d4d4d4}
+.shop-filters input,.shop-filters select,.store-controls input,.store-controls select{width:100%;min-width:0;padding:.8rem .9rem;border:1px solid #49404c;border-radius:10px;background:#111;color:#fff;font:inherit}
+.shop-filters input:focus-visible,.shop-filters select:focus-visible,.store-controls input:focus-visible,.store-controls select:focus-visible{outline:2px solid #ff55d8;outline-offset:2px}
+.shop-results{font-size:.82rem;color:#aaa;margin:.8rem 0 0}
+.store-controls{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin:1rem 0 0}
+.store-controls input{flex:1 1 220px}.store-controls select{flex:0 1 210px}
+.store-product-image{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.listing-card{transition:border-color .18s ease,transform .18s ease}
+.listing-card:hover{border-color:#b5479a;transform:translateY(-2px)}
+@media(max-width:650px){.shop-filters{grid-template-columns:1fr}.store-controls>*{flex:1 1 100%!important}}
+@media(prefers-reduced-motion:reduce){.listing-card{transition:none}.listing-card:hover{transform:none}}
