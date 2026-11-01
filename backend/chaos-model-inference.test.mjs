@@ -18,3 +18,17 @@ test("ordinary conversation avoids planner model",async()=>{
  await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"hello there"}],principal:{id:"test"}});
  assert.deepEqual(models,["fast"]);
 });
+
+test("tool planning executes calculator and returns final answer",async()=>{
+ const calls=[];
+ const ai={run:async (model,options)=>{
+  calls.push({model,options});
+  if(options.tools)return {tool_calls:[{name:"utility.calculate",arguments:{expression:"2+3*4"}}]};
+  return {response:"14"};
+ }};
+ const result=await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"calculate 2+3*4"}],principal:{id:"test"}});
+ assert.equal(result.response,"14");
+ assert.equal(calls.length,2);
+ assert.equal(calls[1].model,"fast");
+ assert.ok(calls[1].options.messages.at(-1).content.includes('"result":14'));
+});
