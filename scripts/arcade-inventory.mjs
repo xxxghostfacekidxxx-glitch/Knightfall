@@ -7,8 +7,11 @@ const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
 const publicRoot=path.join(repo,"public");
 const hosted=path.join(publicRoot,"arcade/hosted");
 const catalog=JSON.parse(await readFile(path.join(publicRoot,"arcade/catalog.json"),"utf8"));
-const groups=new Map(),missing=[],unsafe=[],external=[],invalid=[];
+const groups=new Map(),missing=[],unsafe=[],external=[],invalid=[],duplicateIds=[];
+const seenIds=new Set();
 for(const game of catalog.games||[]){
+ if(seenIds.has(game.id))duplicateIds.push(game.id);
+ seenIds.add(game.id);
  if(game.collection==="unavailable")continue;
  const route=game.route;
  if(typeof route!=="string"){invalid.push({id:game.id,reason:"missing route"});continue;}
@@ -34,8 +37,8 @@ for(const name of directories){
 const unlistedPlayable=unlisted.filter(item=>item.hasEntrypoint).length;
 const unlistedAssetOnly=unlisted.length-unlistedPlayable;
 const duplicates=[...groups].filter(([,ids])=>ids.length>1).map(([route,ids])=>({route,ids}));
-const report={invalid,generatedAt:new Date().toISOString(),catalogEntries:(catalog.games||[]).length,hostedDirectories:directories.length,unlistedPlayable,unlistedAssetOnly,localRoutes:groups.size,externalLinks:external.length,missing,unsafe,duplicates,unlisted};
+const report={invalid,duplicateIds,generatedAt:new Date().toISOString(),catalogEntries:(catalog.games||[]).length,hostedDirectories:directories.length,unlistedPlayable,unlistedAssetOnly,localRoutes:groups.size,externalLinks:external.length,missing,unsafe,duplicates,unlisted};
 const output=process.argv.find(x=>x.startsWith("--output="))?.slice(9);
 if(output){const file=path.resolve(output);await mkdir(path.dirname(file),{recursive:true});await writeFile(file,JSON.stringify(report,null,2)+"\n");}
 console.log(JSON.stringify(report,null,2));
-if(missing.length||unsafe.length||invalid.length)process.exitCode=1;
+if(missing.length||unsafe.length||invalid.length||duplicateIds.length)process.exitCode=1;
