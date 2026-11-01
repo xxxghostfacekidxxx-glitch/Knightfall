@@ -23,3 +23,13 @@ test("God Mode retains tester, repair and accessibility controls",()=>{
  for(const id of ["test-bot-fleet","arcade-coverage-panel","repair-center-queue","admin-tool-search"])assert.ok(html.includes('id="'+id+'"'),"missing "+id);
  assert.match(css,/\.admin-workspace/);
 });
+
+test("operator overview has live status fields and refresh control",()=>{
+ for(const id of ["command-backend","command-arcade","command-repairs","refresh-command-home"])assert.ok(html.includes('id="'+id+'"'),"missing "+id);
+ assert.match(html,/async function refreshCommandHome\(/);
+ assert.match(css,/\.admin-command-grid/);
+});
+test("all admin shortcuts have unique destinations",()=>{
+ const hrefs=[...html.matchAll(/<a[^>]*class="admin-shortcut"[^>]*href="([^"]+)"/g)].map(x=>x[1]);
+ assert.equal(new Set(hrefs).size,hrefs.length,"duplicate shortcut destinations");
+});
