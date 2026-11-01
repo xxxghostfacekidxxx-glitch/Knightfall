@@ -14,7 +14,7 @@ export function normalizeMoveSlots(known,selected){
 }
 export function validateMoveSelection(known,selected,slot,id){
  if(!Number.isInteger(slot)||slot<0||slot>=MOVE_RULES.maxEquipped)return false;
- if(typeof id!=="string"||!Array.isArray(known)||!known.includes(id))return false;
+ if(typeof id!=="string"||!Array.isArray(known)||!known.includes(id)||!Array.isArray(selected))return false;
  const current=normalizeMoveSlots(known,selected);
  return !current.includes(id)||current[slot]===id;
 }
