@@ -44,7 +44,9 @@ function reply(bot, message) {
   if (/\b(help|what can you do)\b/.test(text)) return "Offline I can keep our conversation and your notes on this device. I cannot search the web or reason like a full AI model yet.";
   if (/\b(thank|thanks)\b/.test(text)) return "You're welcome. I'm still here.";
   if (/\b(note|remember)\b/.test(text)) return "I saved that message in this device's conversation history. I can't reliably interpret or organize memories without a language model.";
-  return "I hear you: " + message.slice(0, 120) + (message.length > 120 ? "…" : "") + "\n\nI'm running in basic offline mode. Your message is saved here for when you're ready to continue.";
+  const persona = bot.persona.toLowerCase();
+  const voice = /warm|gentle|supportive/.test(persona) ? "I'm listening. " : /sarcastic|witty|snark/.test(persona) ? "Well, that's a situation. " : /formal|precise/.test(persona) ? "Message recorded. " : "";
+  return voice + "I hear you: " + message.slice(0, 120) + (message.length > 120 ? "…" : "") + "\n\nI'm running in basic offline mode. Your message is saved here for when you're ready to continue.";
 }
 $("save").addEventListener("click", () => {
   const name = $("name").value.trim().slice(0, 60);
