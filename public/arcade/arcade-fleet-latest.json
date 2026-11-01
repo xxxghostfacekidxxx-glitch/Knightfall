@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T20:02:05.104Z",
+  "generatedAt": "2026-11-01T20:06:29.338Z",
   "reportsFound": 10,
   "catalogRoutes": 141,
   "targets": {
@@ -24,7 +24,7 @@
       "failures": [
         {
           "game": "interstellar-armada-local",
-          "route": "/arcade/hosted/interstellar-armada/index.html#local",
+          "route": "/arcade/hosted/interstellar-armada/index.html",
           "profile": "smallPhone",
           "action": "inspect page",
           "reason": "Error: Empty body\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:36:28",
@@ -60,5 +60,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 41344475704
+  "sourceRunId": 41344930312
 }
