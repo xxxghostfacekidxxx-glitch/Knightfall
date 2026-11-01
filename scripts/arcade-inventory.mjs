@@ -9,6 +9,7 @@ const hosted=path.join(publicRoot,"arcade/hosted");
 const catalog=JSON.parse(await readFile(path.join(publicRoot,"arcade/catalog.json"),"utf8"));
 const groups=new Map(),missing=[],unsafe=[],external=[],invalid=[];
 for(const game of catalog.games||[]){
+ if(game.collection==="unavailable")continue;
  const route=game.route;
  if(typeof route!=="string"){invalid.push({id:game.id,reason:"missing route"});continue;}
  if(/^https:\/\//.test(route)){external.push({id:game.id,route});continue;}
