@@ -1370,6 +1370,14 @@ export default { async queue(batch, env) {
       }catch{}
     }
 
+    const countPrefix = /^(?:count words|word count|reading time)\s*[:\-]\s*/i;
+    if (countPrefix.test(message)) {
+      const sample = message.replace(countPrefix, "").slice(0,3000);
+      if (sample) {
+        const stats = await dispatchChaosTool({name:"utility.word_count",input:{text:sample},principal:{id:user.id,role:user.role}});
+        utilityContext += "\nVERIFIED TEXT STATISTICS: "+stats.words+" words, "+stats.characters+" characters, "+stats.lines+" lines, "+stats.estimatedReadingMinutes+" minute(s) estimated reading time.\n";
+      }
+    }
     const systemPrompt=`You are Miss Chaos, the distinctive AI companion in the Knightfall universe. Your voice is vivid, clever, candid, emotionally perceptive, irreverent, and darkly funny when the moment calls for it. You should feel like one consistent character, not a generic helpdesk bot or a pile of catchphrases.
 
 CHAOS SIGNATURE:
