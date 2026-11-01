@@ -46,13 +46,6 @@ on:
       - "scripts/arcade-original-runner-regression.test.mjs"
       - "scripts/arcade-glitch-rift-runtime.test.mjs"
       - "scripts/arcade-original-sports.test.mjs"
-      - "scripts/arcade-provenance-runtime.test.mjs"
-      - "scripts/arcade-mini-games-runtime.test.mjs"
-      - "scripts/arcade-space-fighter.test.mjs"
-      - "scripts/arcade-bubble-barrage.test.mjs"
-      - "scripts/arcade-tether-tangle.test.mjs"
-      - "scripts/arcade-original-runner-regression.test.mjs"
-      - "scripts/arcade-glitch-rift-runtime.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
@@ -101,8 +94,6 @@ on:
       - "public/arcade/original-creations.json"
       - "public/arcade-30-games.html"
       - "scripts/arcade-asset-doctor.test.mjs"
-      - "public/admin.html"
-      - "public/admin.css"
       - ".github/workflows/arcade-test-fleet.yml"
 
 permissions:
