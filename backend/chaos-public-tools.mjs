@@ -12,7 +12,8 @@ export const PUBLIC_PAGES = Object.freeze([
 export function searchPublicPages(input = {}) {
   const query = String(input.query || "").trim().toLowerCase().slice(0,160);
   if (!query) return [];
-  const tokens = [...new Set(query.match(/[a-z0-9]{2,}/g) || [])].slice(0,12);
+  const stopWords = new Set(["where","what","which","find","page","link","please","the","and","for","are","can","how","site","website","show","me","our","you","your","with","about"]);
+  const tokens = [...new Set(query.match(/[a-z0-9]{2,}/g) || [])].filter(token=>!stopWords.has(token)).slice(0,12);
   return PUBLIC_PAGES.map(page => {
     const haystack = (page.title+" "+page.terms).toLowerCase();
     return {...page,score:tokens.reduce((score,token)=>score+(haystack.includes(token)?1:0),0)};
