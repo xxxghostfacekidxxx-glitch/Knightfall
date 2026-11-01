@@ -31,8 +31,10 @@ for(const name of directories){
   unlisted.push({directory:name,entrypoint:entry,hasEntrypoint,note:"Candidate only; may be a dependency or work in progress"});
  }
 }
+const unlistedPlayable=unlisted.filter(item=>item.hasEntrypoint).length;
+const unlistedAssetOnly=unlisted.length-unlistedPlayable;
 const duplicates=[...groups].filter(([,ids])=>ids.length>1).map(([route,ids])=>({route,ids}));
-const report={invalid,generatedAt:new Date().toISOString(),catalogEntries:(catalog.games||[]).length,hostedDirectories:directories.length,localRoutes:groups.size,externalLinks:external.length,missing,unsafe,duplicates,unlisted};
+const report={invalid,generatedAt:new Date().toISOString(),catalogEntries:(catalog.games||[]).length,hostedDirectories:directories.length,unlistedPlayable,unlistedAssetOnly,localRoutes:groups.size,externalLinks:external.length,missing,unsafe,duplicates,unlisted};
 const output=process.argv.find(x=>x.startsWith("--output="))?.slice(9);
 if(output){const file=path.resolve(output);await mkdir(path.dirname(file),{recursive:true});await writeFile(file,JSON.stringify(report,null,2)+"\n");}
 console.log(JSON.stringify(report,null,2));
