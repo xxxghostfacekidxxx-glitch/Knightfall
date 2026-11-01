@@ -109,10 +109,8 @@
         });
 
         // Enemies
-        if (score % 100 === 0) {
-          // Increase difficulty
-          enemyTimer -= 0.05;
-        }
+        // Difficulty scales through the spawn threshold below; avoid repeatedly
+        // subtracting from the timer while the score stays divisible by 100.
         enemyTimer++;
         if (enemyTimer > Math.max(20, 50 - Math.floor(score / 100))) {
           enemies.push({
