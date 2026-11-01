@@ -40,3 +40,8 @@ test("planner returns ordinary reply when no tool selected",async()=>{
  assert.equal(result.response,"plain");
  assert.equal(calls.length,2);
 });
+
+test("tool selection refuses unknown names",async()=>{
+ const {runChaosModelCalls}=await import("./chaos-model-tools.mjs");
+ await assert.rejects(runChaosModelCalls([{name:"unlisted.action",arguments:{}}],{id:"test"}));
+});
