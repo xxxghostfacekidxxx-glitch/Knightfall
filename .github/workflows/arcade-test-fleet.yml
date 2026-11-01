@@ -169,7 +169,7 @@ jobs:
           exit 1
       - name: Validate bot scripts and repair rules
         run: |
-          node --test scripts/admin-dashboard-structure.test.mjs scripts/arcade-shard-summary.test.mjs scripts/browserquest-name-flow.test.mjs
+          node --test scripts/admin-dashboard-structure.test.mjs scripts/arcade-shard-summary.test.mjs scripts/browserquest-name-flow.test.mjs scripts/arcade-publishing.test.mjs
           node --check scripts/arcade-shard-summary.mjs
           node --check scripts/arcade-sharded-smoke.mjs
           node --check scripts/arcade-browser-smoke.mjs
