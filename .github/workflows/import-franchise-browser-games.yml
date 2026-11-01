@@ -1,6 +1,8 @@
 name: Stage Permitted Browser Game Sources
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '31 7 * * 1'
 permissions:
   contents: read
 jobs:
