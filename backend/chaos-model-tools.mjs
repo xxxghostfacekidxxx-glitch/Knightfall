@@ -24,14 +24,14 @@ export async function runChaosModelCalls(calls,principal) {
 export async function inferWithChaosTools({ai,model,messages,principal,max_tokens=950,temperature=0.8}) {
   const options={messages,max_tokens,temperature};
   let first;
-  try { first=await ai.run(model,{...options,tools:CHAOS_MODEL_TOOLS}); }
+  try { first=await ai.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast",{...options,max_tokens:350,temperature:0.1,tools:CHAOS_MODEL_TOOLS}); }
   catch (error) {
     // Some deployed AI bindings do not support tool schemas. Preserve normal chat.
     if (/tool|function|schema|parameter|unsupported|invalid/i.test(String(error?.message||""))) return ai.run(model,options);
     throw error;
   }
   const calls=Array.isArray(first?.tool_calls)?first.tool_calls:[];
-  if(!calls.length)return first;
+  if(!calls.length)return ai.run(model,options);
   const selected=calls.map(call=>({
     name:call.name||call.function?.name,
     arguments:call.arguments??call.function?.arguments
