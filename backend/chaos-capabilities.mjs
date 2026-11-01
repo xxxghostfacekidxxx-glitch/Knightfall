@@ -18,6 +18,13 @@ export const CAPABILITIES = Object.freeze({
     confirmation: false,
     maxInputBytes: 2048
   }),
+  "site.search": Object.freeze({
+    description: "Search a curated index of public Knightfall documentation",
+    scope: "public",
+    mutates: false,
+    confirmation: false,
+    maxInputBytes: 2048
+  }),
   "user.memories": Object.freeze({
     description: "Read the current account's approved memories",
     scope: "user",
