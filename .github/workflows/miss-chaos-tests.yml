@@ -1,0 +1,15 @@
+name: Miss Chaos Tests
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/chaos-*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
