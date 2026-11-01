@@ -131,3 +131,9 @@ tbody tr:hover{background:rgba(255,85,216,.035)}
 .admin-command-grid article strong{display:block;margin:.5rem 0;font-size:1.25rem;overflow-wrap:anywhere;color:#f9edff}
 .admin-command-grid article small{color:#b3a4c0;overflow-wrap:anywhere}
 @media(max-width:700px){.admin-command-grid{grid-template-columns:1fr}.admin-command-home{padding:.85rem}}
+
+.arcade-failure-list{display:grid;gap:.65rem;margin-top:.8rem}
+.arcade-failure-item{padding:.8rem 1rem;border:1px solid #6e3459;border-left:3px solid #ff5fbb;border-radius:9px;background:#1b1122;overflow-wrap:anywhere}
+.arcade-failure-item strong{display:block;color:#ffe9fa}
+.arcade-failure-item small{display:block;color:#c6ff45;margin-top:.25rem}
+.arcade-failure-item p{white-space:pre-wrap;color:#d9c9e0;font-size:.8rem;margin:.5rem 0 0}
