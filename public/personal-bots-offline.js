@@ -17,6 +17,7 @@ async function localReply(bot,message) {
   }
   if (!localSession) {
     const availability = await self.LanguageModel.availability?.();
+    $("offline-engine-status").textContent = availability === "downloadable" || availability === "downloading" ? "Preparing the on-device model. This may download files and requires internet initially." : "Starting the local AI model…";
     if (availability === "unavailable") throw Error("On-device AI is unavailable on this device.");
     localSessionPromise = self.LanguageModel.create({
       initialPrompts: [{role:"system",content:("You are "+bot.name+". "+bot.persona).slice(0,4000)}]
@@ -26,8 +27,15 @@ async function localReply(bot,message) {
     localSessionBot = bot.id;
     localSessionPersona = bot.persona;
   }
-  const result = await localSession.prompt(message);
+  let result;
+  try { result = await localSession.prompt(message); }
+  catch (error) {
+    try { await localSession?.destroy?.(); } catch {}
+    localSession = null; localSessionBot = ""; localSessionPersona = "";
+    throw error;
+  }
   if (typeof result !== "string" || !result.trim()) throw Error("On-device AI returned an empty response.");
+  $("offline-engine-status").textContent = "On-device AI session ready.";
   return result.slice(0,6000);
 }
 $("offline-engine").addEventListener("change", () => {
