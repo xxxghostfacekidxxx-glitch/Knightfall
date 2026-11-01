@@ -32,7 +32,9 @@ const NET = {
     let r = this.remotes.get(m.id); if (!r) { const mesh = buildHero(); mesh.scale.set(0.96, 0.96, 0.96); mesh.visible = false; scene.add(mesh); r = { mesh }; this.remotes.set(m.id, r); }
     // Coerce every relayed field — the relay forwards peer payloads verbatim, so a NaN/string x/z/dir would
     // poison the scene-graph transform (and the projected nameplate), and an unknown class must not recolor.
-    const nx = +m.x || 0, nz = +m.z || 0; r.tx = nx; r.tz = nz;
+    const nx = Number(m.x), nz = Number(m.z);
+    if (!Number.isFinite(nx) || !Number.isFinite(nz) || Math.abs(nx) > 100000 || Math.abs(nz) > 100000) return;
+    r.tx = nx; r.tz = nz;
     if (r.x === undefined || Math.hypot(nx - r.x, nz - r.z) > 20) { r.x = nx; r.z = nz; } // snap on spawn/teleport; otherwise tick() lerps toward the target so ~9Hz updates don't stutter
     r.dir = +m.dir || 0; r.zone = m.zone; r.depth = +m.depth || 0; r.name = String(m.name || 'Player').slice(0, 24); r.cls = m.cls; r.level = +m.level || 1; r.hp = +m.hp || 0; r.hpMax = +m.hpMax || 1;
     if (r.mesh.userData.cloak && Object.prototype.hasOwnProperty.call(CLASSES, m.cls)) r.mesh.userData.cloak.material.color.setHex(CLASSES[m.cls].col);
