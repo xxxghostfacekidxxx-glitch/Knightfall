@@ -106,3 +106,15 @@ tbody tr:hover{background:rgba(255,85,216,.035)}
 .admin-shell .admin-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:.75rem}
 .admin-shell .admin-shortcut{min-width:0}
 @media(max-width:650px){.admin-workspace{padding:.85rem}.admin-group-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-workspace-head{align-items:stretch}.admin-workspace-search,.admin-workspace-search input{width:100%;min-width:0}.admin-workspace .admin-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-workspace .admin-tabs button{white-space:normal;overflow-wrap:anywhere}.admin-shell .hero{flex-direction:column;align-items:flex-start}.admin-shell .health-pill{white-space:normal}}
+
+/* God Mode 2.0: focused quick actions and categorized creator workspace */
+.admin-quick-actions{margin:1.25rem 0 1.5rem}
+.admin-quick-actions-head{display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap;margin-bottom:.7rem}
+.admin-quick-actions-head h2{font-size:1.05rem;margin:0;color:#f9edff}
+.admin-quick-actions .admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.admin-quick-actions .admin-shortcut{background:linear-gradient(135deg,#171022,#10101b);border:1px solid #62346f;border-radius:13px}
+.admin-panel[data-panel="creation-tools"] .admin-shortcuts{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.admin-panel[data-panel="creation-tools"] .admin-shortcut{background:linear-gradient(135deg,#21122d,#10101b);border:1px solid #673773;border-radius:13px}
+.admin-panel[data-panel="creation-tools"] .admin-shortcut:hover,.admin-quick-actions .admin-shortcut:hover{border-color:#ff55d8;transform:translateY(-1px)}
+.admin-shell button:focus-visible,.admin-shell a:focus-visible,.admin-shell input:focus-visible{outline:3px solid #c6ff45;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.admin-panel[data-panel="creation-tools"] .admin-shortcut:hover,.admin-quick-actions .admin-shortcut:hover{transform:none}}
