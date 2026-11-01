@@ -15,7 +15,13 @@ const $=s=>document.querySelector(s),held=new Set();let game=null,frame=0,last=0
 const classes={warrior:{hp:150,speed:2.7,dmg:25,rate:18,color:'#ff6689',range:105},mage:{hp:85,speed:2.9,dmg:18,rate:11,color:'#b49aff',range:170},ranger:{hp:95,speed:3.4,dmg:17,rate:9,color:'#a3ff9c',range:195},guardian:{hp:190,speed:2.3,dmg:23,rate:23,color:'#ffda89',range:95}};
 const BEST_KEY='ashfall-cinder-gauntlet-best-v1';let best=0;try{best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0)}catch(_){}$('#best').textContent='Best: '+best;
 const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),wall=(x,y)=>!game||game.map[Math.floor(y/T)]?.[Math.floor(x/T)]!==0;
-function makeFloor(n){const map=Array.from({length:R},(_,y)=>Array.from({length:C},(_,x)=>x===0||y===0||x===C-1||y===R-1?1:0));for(let i=0;i<Math.min(25,8+n*2);i++){const x=rand(3,C-4),y=rand(2,R-3);if(x<5&&y<5)continue;map[y][x]=1}for(let y=1;y<4;y++)for(let x=1;x<5;x++)map[y][x]=0;map[R-2][C-2]=0;map[R-3][C-2]=0;map[R-2][C-3]=0;return map}
+function makeFloor(n){const map=Array.from({length:R},(_,y)=>Array.from({length:C},(_,x)=>x===0||y===0||x===C-1||y===R-1?1:0));for(let i=0;i<Math.min(25,8+n*2);i++){const x=rand(3,C-4),y=rand(2,R-3);if(x<5&&y<5)continue;map[y][x]=1}for(let y=1;y<4;y++)for(let x=1;x<5;x++)map[y][x]=0;map[R-2][C-2]=0;map[R-3][C-2]=0;map[R-2][C-3]=0;
+// Keep every walkable cell reachable from the spawn. Random isolated chambers made keys and exits impossible to reach.
+const seen=new Set(['2,2']),queue=[[2,2]];for(let i=0;i<queue.length;i++){const [x,y]=queue[i];for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,key=nx+','+ny;if(map[ny]?.[nx]===0&&!seen.has(key)){seen.add(key);queue.push([nx,ny])}}}
+for(let y=1;y<R-1;y++)for(let x=1;x<C-1;x++)if(map[y][x]===0&&!seen.has(x+','+y))map[y][x]=1;
+// Guarantee the exit corridor connects to the player's region.
+for(let x=2;x<C-1;x++)map[2][x]=0;for(let y=2;y<R-1;y++)map[y][C-2]=0;
+return map}
 function openSpot(min=4){for(let k=0;k<200;k++){const x=rand(2,C-3),y=rand(2,R-3);if(game.map[y][x]===0&&x+y>min)return{x:x*T+T/2,y:y*T+T/2}}return{x:W-2*T,y:H-2*T}}
 function spawnFloor(){game.map=makeFloor(game.floor);game.enemies=[];game.generators=[];game.items=[];game.shots=[];game.exit={x:W-1.5*T,y:H-1.5*T};game.p.x=2*T;game.p.y=2*T;game.p.inv=65;
 for(let i=0;i<Math.min(7,2+game.floor);i++){const q=openSpot(10);game.generators.push({...q,hp:45+game.floor*14,t:rand(20,80)})}
