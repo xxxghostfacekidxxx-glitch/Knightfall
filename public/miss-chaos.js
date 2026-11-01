@@ -12,6 +12,33 @@
   const drafts = new Map();
   function saveDraft() { if (!adminViewing) drafts.set(activeConversation || "new", input.value); }
   function restoreDraft() { input.value = drafts.get(activeConversation || "new") || ""; input.dispatchEvent(new Event("input")); }
+  // Task starters populate the existing composer; they do not claim access to unconfigured tools.
+  const taskStarters = [
+    ["Debug", "Help me debug a problem. Ask for the error and expected behavior, then propose a testable fix."],
+    ["Plan", "Help me plan a project with milestones, dependencies, risks, and actionable next steps."],
+    ["Write", "Help me draft or revise writing for a specific audience and purpose."],
+    ["Research", "Help me research a topic. Clearly distinguish verified sources from your existing knowledge and do not invent citations."],
+    ["Code", "Help me write code with clear setup instructions, tests, and failure handling."]
+  ];
+  const starterBar = document.createElement("div");
+  starterBar.className = "chaos-task-starters";
+  starterBar.setAttribute("aria-label", "Assistant task starters");
+  starterBar.style.cssText = "display:flex;flex-wrap:wrap;gap:.45rem;padding:.55rem .75rem";
+  for (const [name, prompt] of taskStarters) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = name;
+    button.title = prompt;
+    button.style.cssText = "border:1px solid #ff2f9270;background:#161019;color:#f8e8f4;border-radius:999px;padding:.4rem .7rem;cursor:pointer;font:inherit;font-size:.78rem";
+    button.addEventListener("click", () => {
+      if (input.disabled) return;
+      input.value = prompt + (input.value.trim() ? "\\n\\n" + input.value.trim() : "");
+      input.dispatchEvent(new Event("input", {bubbles:true}));
+      input.focus();
+    });
+    starterBar.append(button);
+  }
+  form.parentNode.insertBefore(starterBar, form);
   const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",astrology:"Astrology",custom:"Custom"};
 
   async function request(path, options = {}) {
