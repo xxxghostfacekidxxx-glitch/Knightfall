@@ -24,7 +24,9 @@ for(const game of catalog.games||[]){
  try{if(!(await stat(file)).isFile())missing.push({id:game.id,route});}
  catch{missing.push({id:game.id,route});}
 }
-const directories=(await readdir(hosted,{withFileTypes:true})).filter(x=>x.isDirectory()).map(x=>x.name).sort();
+let directories=[];
+try{directories=(await readdir(hosted,{withFileTypes:true})).filter(x=>x.isDirectory()).map(x=>x.name).sort();}
+catch(error){if(error.code!=="ENOENT")throw error;}
 const unlisted=[];
 for(const name of directories){
  const entry="/arcade/hosted/"+name+"/index.html";
