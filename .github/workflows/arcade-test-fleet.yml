@@ -15,6 +15,7 @@ on:
       - "scripts/build-arcade-catalog.mjs"
       - "scripts/arcade-browser-smoke.mjs"
       - "scripts/arcade-sharded-smoke.mjs"
+      - "scripts/arcade-shard-summary.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
@@ -158,6 +159,7 @@ jobs:
           exit 1
       - name: Validate bot scripts and repair rules
         run: |
+          node --check scripts/arcade-shard-summary.mjs
           node --check scripts/arcade-sharded-smoke.mjs
           node --check scripts/arcade-browser-smoke.mjs
           node --check scripts/arcade-gameplay-replay.mjs
@@ -205,6 +207,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
+          ARCADE_TEST_TARGET: live
           ARCADE_SHARD_COUNT: 10
           ARCADE_SHARD_INDEX: ${{ strategy.job-index }}
           ARCADE_TEST_PROFILE: ${{ matrix.profile }}
@@ -227,6 +230,35 @@ jobs:
             /tmp/arcade-replays/
             /tmp/arcade-gameplay-replay.log
           if-no-files-found: ignore
+          retention-days: 14
+
+  consolidate-coverage:
+    name: Consolidate ten-bot arcade coverage
+    if: always()
+    needs: [browser-bot]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: arcade-test-results-*
+          path: artifacts/shards
+          merge-multiple: false
+      - name: Verify complete local and live catalog coverage
+        env:
+          ARCADE_SHARD_COUNT: 10
+          ARCADE_REQUIRE_LIVE: ${{ github.event_name != 'pull_request' && '1' || '0' }}
+        run: node scripts/arcade-shard-summary.mjs artifacts/shards artifacts/arcade-fleet-summary.json
+      - name: Publish fleet summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-fleet-summary
+          path: artifacts/arcade-fleet-summary.json
+          if-no-files-found: warn
           retention-days: 14
 
   safe-auto-repair:
