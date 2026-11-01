@@ -14,6 +14,7 @@ on:
       - "public/chaos-cartridge.html"
       - "scripts/build-arcade-catalog.mjs"
       - "scripts/arcade-browser-smoke.mjs"
+      - "scripts/arcade-sharded-smoke.mjs"
       - "scripts/arcade-asset-doctor.mjs"
       - "scripts/arcade-import-audit.mjs"
       - "scripts/arcade-originals-audit.mjs"
@@ -106,7 +107,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-    name: "${{ matrix.bot }} · full arcade audit"
+    name: "${{ matrix.bot }} · sharded arcade audit"
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -157,6 +158,7 @@ jobs:
           exit 1
       - name: Validate bot scripts and repair rules
         run: |
+          node --check scripts/arcade-sharded-smoke.mjs
           node --check scripts/arcade-browser-smoke.mjs
           node --check scripts/arcade-gameplay-replay.mjs
           node --check scripts/arcade-gameplay-doctor.mjs
@@ -192,16 +194,22 @@ jobs:
       - name: Run full local arcade browser suite
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
+          ARCADE_SHARD_COUNT: 10
+          ARCADE_SHARD_INDEX: ${{ strategy.job-index }}
+          ARCADE_TEST_PROFILE: ${{ matrix.profile }}
         run: |
           set -o pipefail
-          node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
+          node scripts/arcade-sharded-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
       - name: Run full live-site arcade browser suite
         if: github.event_name != 'pull_request'
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
+          ARCADE_SHARD_COUNT: 10
+          ARCADE_SHARD_INDEX: ${{ strategy.job-index }}
+          ARCADE_TEST_PROFILE: ${{ matrix.profile }}
         run: |
           set -o pipefail
-          node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log
+          node scripts/arcade-sharded-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log
       - name: Save per-bot test evidence
         if: always()
         uses: actions/upload-artifact@v4
