@@ -20,6 +20,12 @@ jobs:
             osman144/DragonBall-Z-game
             AntonovAtanas/Star-Wars-Browser-Game
             johnchampaign/star-wars-rebellion
+            leosaiyanx/dragon_ball_z_saiyan_cephas
+            gald89/super-saiya-densetsu-2
+            kushvr7/DRAGON-BALL-GAME
+            imStav/dbz-js
+            mclol0/dbzfe_open
+            emswann/StarWarsRPG
             Virtastic/jka-web
           )
           for repo in "${repos[@]}"; do
@@ -29,8 +35,21 @@ jobs:
               echo "::warning::Unable to clone ${repo}"
               continue
             fi
-            find "upstream-audit/${name}" -maxdepth 3 -iname '*licen*' -o -iname '*copying*' | head -20
-            find "upstream-audit/${name}" -maxdepth 2 -type f \( -name 'index.html' -o -name 'package.json' \) | head -20
+            # Record actionable licensing/build evidence, not just filenames in job logs.
+            {
+              echo "## ${repo}"
+              echo "Commit: $(git -C "upstream-audit/${name}" rev-parse HEAD)"
+              echo "License candidates:"
+              find "upstream-audit/${name}" -maxdepth 3 -type f \( -iname '*licen*' -o -iname '*copying*' \) -not -path '*/node_modules/*' | head -20
+              echo "Browser entrypoints:"
+              find "upstream-audit/${name}" -maxdepth 3 -type f \( -name 'index.html' -o -name 'package.json' \) -not -path '*/node_modules/*' | head -20
+              echo "Potentially restricted artwork:"
+              find "upstream-audit/${name}" -maxdepth 4 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.webp' -o -iname '*.mp3' \) | head -20
+              echo
+            } >> upstream-audit/report.txt
+          done
+          cat upstream-audit/report.txt
+          echo "Source availability is not permission to redistribute third-party franchise assets." >> upstream-audit/report.txt
           done
       - uses: actions/upload-artifact@v4
         with:
