@@ -70,6 +70,8 @@ on:
       - "public/chaos-cartridge.html"
       - "scripts/build-arcade-catalog.mjs"
       - "scripts/arcade-browser-smoke.mjs"
+      - "scripts/arcade-sharded-smoke.mjs"
+      - "scripts/arcade-shard-summary.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
       - "scripts/arcade-asset-doctor.mjs"
@@ -204,7 +206,7 @@ jobs:
           set -o pipefail
           node scripts/arcade-sharded-smoke.mjs 2>&1 | tee /tmp/arcade-local-results.log
       - name: Run full live-site arcade browser suite
-        if: github.event_name != 'pull_request'
+        if: always() && github.event_name != 'pull_request'
         env:
           ARCADE_TEST_BASE: https://ash-fall.com
           ARCADE_TEST_TARGET: live
