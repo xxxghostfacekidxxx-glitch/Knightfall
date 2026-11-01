@@ -267,6 +267,16 @@ jobs:
           pattern: arcade-test-results-*
           path: artifacts/shards
           merge-multiple: false
+      - name: Inventory arcade routes and orphan candidates
+        run: node scripts/arcade-inventory.mjs --output=artifacts/arcade-inventory.json
+      - name: Upload arcade inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-inventory
+          path: artifacts/arcade-inventory.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Verify complete local and live catalog coverage
         env:
           ARCADE_SHARD_COUNT: 10
