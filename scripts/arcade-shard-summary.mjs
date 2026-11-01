@@ -20,6 +20,7 @@ for(const file of files) {
  try {const report=JSON.parse(await readFile(file,"utf8"));if(Number.isInteger(report.shardIndex)&&report.shardIndex>=0&&report.shardIndex<expected&&Array.isArray(report.assignedRoutes))reports.push({...report,file});else throw Error("Malformed shard report");}
  catch(error){console.error("Invalid shard report:",file,error.message);process.exitCode=1;}
 }
+for(const report of reports){for(const result of report.results||[]){if(result.status!=="failed")continue;const filename=result.screenshot;if(typeof filename!=="string"||!/^\d{3}\.png$/.test(filename)){result.screenshotMissing=true;continue}const evidence=await stat(path.join(path.dirname(report.file),filename)).catch(()=>null);if(!evidence?.isFile()||evidence.size===0)result.screenshotMissing=true;}}
 const targets=[...new Set(reports.map(r=>r.target))];
 if(targets.some(t=>t!=="local"&&t!=="live"))process.exitCode=1;
 const summaries={};
