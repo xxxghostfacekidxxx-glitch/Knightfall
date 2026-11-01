@@ -4,7 +4,7 @@ import {navigationContext} from "./chaos-navigation.mjs";
 test("navigation questions include curated links",()=>{
   const context=navigationContext("where are offline personal bots?");
   assert.match(context,/https:\/\/ash-fall\.com\/personal-bots-offline\.html/);
-  assert.match(context,/not web research/);
+  assert.ok(context.includes("not web research"));
 });
 test("unrelated conversation does not trigger site lookup",()=>{
   assert.equal(navigationContext("tell me a story about a dragon"),"");
