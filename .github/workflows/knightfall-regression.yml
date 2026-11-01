@@ -29,4 +29,5 @@ jobs:
           node --check scripts/selected-open-source-games.test.mjs
       - name: Run focused regression tests
         run: |
+          node --test scripts/admin-offline-paths.test.mjs
           node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs scripts/devil-tools-icon-choices.test.mjs scripts/monster-recovered-sprites.test.mjs scripts/arcade-revision-migration.test.mjs scripts/archived-arcade-features.test.mjs scripts/arcade-bridge-manifest.test.mjs scripts/selected-open-source-games.test.mjs

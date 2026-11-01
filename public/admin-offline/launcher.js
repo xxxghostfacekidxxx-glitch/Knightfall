@@ -105,7 +105,22 @@ function wireButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.
 document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=async()=>{await caches.delete('ashfall-god-game-'+b.dataset.remove+'-v1');say('Local game removed.');await updateButtons();await storageStatus()});
 }
 let promptEvent;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;document.querySelector('#install-app').hidden=false});
-document.querySelector('#install-app').onclick=async()=>{if(promptEvent){await promptEvent.prompt();promptEvent=null}};
-(async()=>{if('serviceWorker' in navigator)try{await navigator.serviceWorker.register('/admin-offline/sw.js',{scope:'/admin-offline/'});await navigator.serviceWorker.ready;}catch(e){say('Offline service worker unavailable: '+e.message)}
+document.querySelector('#install-app').onclick=async()=>{if(promptEvent){try{await promptEvent.prompt();await promptEvent.userChoice;}catch(e){say('App installation failed: '+e.message)}finally{promptEvent=null;document.querySelector('#install-app').hidden=true}}};
+window.addEventListener('appinstalled',()=>{promptEvent=null;document.querySelector('#install-app').hidden=true;say('Offline Arcade app installed. Download games here before disconnecting.');});
+async function prepareOfflineApp(){
+ if(!('serviceWorker' in navigator))throw Error('Open this page in Chrome to install Offline Arcade.');
+ const registration=await navigator.serviceWorker.register('/admin-offline/sw.js',{scope:'/admin-offline/',updateViaCache:'none'});
+ // navigator.serviceWorker.ready can resolve to the main site's worker instead.
+ // Wait for this launcher's worker so generated play paths have an active handler.
+ const worker=registration.installing||registration.waiting||registration.active;
+ if(!worker)throw Error('Offline Arcade worker did not start. Reconnect and reload this page.');
+ if(worker.state!=='activated')await new Promise((resolve,reject)=>{
+  const timer=setTimeout(()=>finish(Error('Offline Arcade setup timed out. Reconnect and reload this page.')),20000);
+  function finish(error){clearTimeout(timer);worker.removeEventListener('statechange',check);error?reject(error):resolve();}
+  function check(){if(worker.state==='activated')finish();else if(worker.state==='redundant')finish(Error('Offline Arcade files could not be saved. Reconnect and reload this page.'));}
+  worker.addEventListener('statechange',check);check();
+ });
+}
+(async()=>{try{await prepareOfflineApp();}catch(e){say(e.message);document.querySelectorAll('[data-install]').forEach(b=>b.disabled=true);return;}
  await loadCatalog();wireButtons();await updateButtons();await storageStatus();await auth();})();
 })();
