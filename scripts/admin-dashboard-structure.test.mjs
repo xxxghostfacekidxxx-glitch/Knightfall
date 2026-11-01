@@ -43,3 +43,10 @@ test("tool search supports keyboard operation",()=>{
  assert.match(html,/event\.key==="Enter"/);
  assert.match(html,/event\.key==="Escape"/);
 });
+
+test("coverage status clears when the consolidation job cannot be read",()=>{
+ assert.match(html,/Coverage consolidation job unavailable/);
+});
+test("single-result tool search retains its filtered state",()=>{
+ assert.match(html,/adminTabs\.forEach\(x=>\{x\.hidden=x!==matches\[0\]\}\)/);
+});
