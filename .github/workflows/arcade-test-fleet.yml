@@ -216,6 +216,14 @@ jobs:
         run: |
           set -o pipefail
           node scripts/arcade-sharded-smoke.mjs 2>&1 | tee /tmp/arcade-live-results.log
+      - name: Run specialized gameplay and cabinet regression suite
+        if: matrix.bot == 'Cabinet Auditor'
+        env:
+          ARCADE_TEST_BASE: http://127.0.0.1:8765
+          ARCADE_TEST_PROFILE: desktop
+        run: |
+          set -o pipefail
+          node scripts/arcade-browser-smoke.mjs 2>&1 | tee /tmp/arcade-specialized-results.log
       - name: Save per-bot test evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -225,6 +233,7 @@ jobs:
             /tmp/knightfall-static.log
             /tmp/arcade-local-results.log
             /tmp/arcade-live-results.log
+            /tmp/arcade-specialized-results.log
             /tmp/arcade-asset-audit.json
             /tmp/arcade-import-audit.log
             artifacts/arcade-provenance.json
