@@ -9,9 +9,18 @@
   let explicitCollection=false;
   const notes={games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
   const params=new URLSearchParams(location.search);
+  const initialCollection=params.get('collection');
   search.value=params.get('q')||'';
-  if(buttons.some(b=>b.dataset.collectionFilter===params.get('collection'))){collection=params.get('collection');explicitCollection=true;}
+  if(buttons.some(b=>b.dataset.collectionFilter===initialCollection)){collection=initialCollection;explicitCollection=true;}
   for(const [node,key] of [[genre,'genre'],[device,'device'],[sort,'sort']])if([...node.options].some(o=>o.value===params.get(key)))node.value=params.get(key);
+  function restoreFromUrl(){
+   const query=new URLSearchParams(location.search);
+   const requested=query.get('collection');
+   explicitCollection=buttons.some(b=>b.dataset.collectionFilter===requested);
+   collection=explicitCollection?requested:'games';
+   search.value=query.get('q')||'';
+   for(const [node,key] of [[genre,'genre'],[device,'device'],[sort,'sort']])node.value=[...node.options].some(o=>o.value===query.get(key))?query.get(key):node.options[0].value;
+  }
   function render(){
    const q=search.value.trim().toLocaleLowerCase(),tokens=q.split(/\s+/).filter(Boolean);
    // Searching across collections makes an exact title discoverable without guessing its shelf.
@@ -41,6 +50,7 @@
   for(const node of [search,genre,device,sort])node.addEventListener(node===search?'input':'change',render);
   buttons.forEach(b=>b.addEventListener('click',()=>{collection=b.dataset.collectionFilter;explicitCollection=true;render()}));
   document.querySelector('#arcade-clear').addEventListener('click',()=>{search.value='';genre.value='';device.value='';sort.value='featured';collection='games';explicitCollection=false;render();search.focus()});
+  window.addEventListener('popstate',()=>{restoreFromUrl();render()});
   render();
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
