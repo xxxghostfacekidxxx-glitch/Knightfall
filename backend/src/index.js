@@ -1347,6 +1347,13 @@ export default { async queue(batch, env) {
     const activeRules=Object.entries(behaviorConfig.rules||{}).filter(([k,v])=>v&&ruleText[k]).map(([k])=>ruleText[k]).join("\n- ");
     const behaviorGuidance="\n\nBEHAVIORAL ARCHITECTURE (developer-controlled):\nCore identity: "+behaviorConfig.coreIdentity+"\nAutonomy: "+(autonomyText[behaviorConfig.autonomy]||autonomyText.guided)+"\nChallenge policy: "+(challengeText[behaviorConfig.challenge]||challengeText.warranted)+"\nEvolution policy: "+(evolutionText[behaviorConfig.evolution]||evolutionText.controlled)+"\nMemory policy: "+behaviorConfig.memoryPolicy+"\nRule conflict priority, highest first:\n"+behaviorConfig.conflictPriority+"\nEnabled modes: "+activeModes+"\nDefault mode: "+effectiveDefaultMode+"; "+(modeText[effectiveDefaultMode]||"Select the best mode from the enabled modes.")+"\nThe selected mode must be one of the enabled modes listed above. If default mode is automatic, select only from enabled modes.\nEnabled rules:\n- "+(activeRules||"Preserve truthfulness, safety, and practical task completion.")+(behaviorConfig.customRules?"\nAdditional owner-defined rules (subject to safety, privacy, truthfulness, and higher-priority instructions):\n"+behaviorConfig.customRules:"")+(behaviorConfig.evaluationScenarios?"\nDeveloper evaluation scenarios (use these as guidance for consistency, not as user requests):\n"+behaviorConfig.evaluationScenarios:"");
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
+    // Read-only site lookup: results are curated links, not unrestricted model tools.
+    const siteLookupRequested=/\\b(where|find|link|page|navigate|offline|personal bots?|arcade|games?|messages|features|website)\\b/i.test(message);
+    let siteLookupContext="";
+    if(siteLookupRequested){
+      const lookup=await dispatchChaosTool({name:"site.search",input:{query:message.slice(0,160)},principal:{id:user.id,role:user.role}});
+      if(lookup.results.length)siteLookupContext="\\n\\nVERIFIED KNIGHTFALL NAVIGATION (curated local index; not live web research):\\n"+lookup.results.map(page=>page.title+": https://ash-fall.com"+page.url).join("\\n")+"\\nUse these links only when relevant. Do not invent site links or imply external research.";
+    }
     const systemPrompt=`You are Miss Chaos, the distinctive AI companion in the Knightfall universe. Your voice is vivid, clever, candid, emotionally perceptive, irreverent, and darkly funny when the moment calls for it. You should feel like one consistent character, not a generic helpdesk bot or a pile of catchphrases.
 
 CHAOS SIGNATURE:
