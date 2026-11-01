@@ -271,6 +271,24 @@ jobs:
           ARCADE_SHARD_COUNT: 10
           ARCADE_REQUIRE_LIVE: ${{ github.event_name != 'pull_request' && '1' || '0' }}
         run: node scripts/arcade-shard-summary.mjs artifacts/shards artifacts/arcade-fleet-summary.json
+      - name: Publish sanitized dashboard report to Cloudflare Pages source
+        if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          if [ ! -f artifacts/arcade-fleet-summary.json ]; then exit 0; fi
+          node -e 'const fs=require("fs");const p="artifacts/arcade-fleet-summary.json";const d=JSON.parse(fs.readFileSync(p));d.sourceRunId=Number(process.env.RUN_ID);for(const t of Object.values(d.targets||{})){t.failures=(t.failures||[]).map(f=>({game:f.game,route:f.route,profile:f.profile,action:f.action,reason:String(f.error||f.reason||"Test failed").slice(0,350),target:f.target}));}fs.mkdirSync("public/arcade",{recursive:true});fs.writeFileSync("public/arcade/arcade-fleet-latest.json",JSON.stringify(d,null,2));'
+          echo "Dashboard report prepared as a workflow artifact. Publication to production requires a separately authorized deployment."
+      - name: Upload dashboard JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-dashboard-report
+          path: public/arcade/arcade-fleet-latest.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Publish fleet summary
         if: always()
         uses: actions/upload-artifact@v4
