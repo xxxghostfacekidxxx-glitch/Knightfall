@@ -2,12 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const source=readFileSync("scripts/arcade-import-audit.mjs","utf8");
-test("arcade import scanner recognizes class tokens",()=>{
- assert.ok(source.includes("game"));
- assert.ok(source.includes("play"));
- assert.ok(source.includes("matchAll"));
+const manifest=JSON.parse(readFileSync("public/arcade/catalog.json","utf8"));
+test("import audit reads canonical catalog",()=>{
+ assert.ok(source.includes("arcade/catalog.json"));
+ assert.ok(!source.includes("matchAll"));
+ assert.ok(source.includes("game.collection"));
 });
-test("arcade import scanner handles both link attribute orders",()=>{
- assert.ok(source.includes("?? block.match"));
- assert.ok(source.includes("href="));
+test("catalog IDs are unique",()=>{
+ const ids=manifest.games.map(game=>game.id);
+ assert.ok(ids.length>0);
+ assert.equal(new Set(ids).size,ids.length);
 });
