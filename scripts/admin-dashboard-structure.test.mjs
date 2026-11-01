@@ -58,3 +58,9 @@ test("arcade failure viewer uses report data and handles missing publication",()
  assert.match(html,/Detailed report not published yet/);
  assert.match(css,/\.arcade-failure-item/);
 });
+
+test("published arcade reports must match the current run",()=>{
+ assert.match(html,/!data\.sourceRunId\|\|String\(data\.sourceRunId\)!==String\(run\.id\)/);
+ assert.match(html,/Number\.isNaN\(Date\.parse\(data\.generatedAt\)\)/);
+ assert.match(html,/typeof data\.passed!=="boolean"/);
+});
