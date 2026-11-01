@@ -7,9 +7,10 @@ const status = message => { $("status").textContent = message; };
 const id = () => crypto.randomUUID();
 let localSession = null;
 let localSessionBot = "";
+let localSessionPersona = "";
 async function localReply(bot,message) {
   if (!("LanguageModel" in self) || typeof self.LanguageModel.create !== "function") throw Error("This browser does not provide an on-device language model.");
-  if (localSession && localSessionBot !== bot.id) {
+  if (localSession && (localSessionBot !== bot.id || localSessionPersona !== bot.persona)) {
     await localSession.destroy?.();
     localSession = null;
   }
@@ -20,6 +21,7 @@ async function localReply(bot,message) {
       initialPrompts: [{role:"system",content:("You are "+bot.name+". "+bot.persona).slice(0,4000)}]
     });
     localSessionBot = bot.id;
+    localSessionPersona = bot.persona;
   }
   const result = await localSession.prompt(message);
   if (typeof result !== "string" || !result.trim()) throw Error("On-device AI returned an empty response.");
@@ -82,6 +84,7 @@ $("save").addEventListener("click", () => {
     if (state.bots.length >= 20) return status("This device's local bot limit is 20.");
     bot = {id:id(), name, persona, history:[]}; state.bots.push(bot); state.selected = bot.id;
   } else { bot.name = name; bot.persona = persona; }
+  if (localSessionBot === bot.id) { localSession?.destroy?.(); localSession = null; localSessionBot = ""; localSessionPersona = ""; }
   if (persist()) status("Saved locally on this device.");
   render();
 });
