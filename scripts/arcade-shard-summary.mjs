@@ -28,7 +28,7 @@ for(const target of targets) {
  for(const r of group) {
   indexes.set(r.shardIndex,(indexes.get(r.shardIndex)||0)+1);
   for(const route of r.assignedRoutes)counts.set(route,(counts.get(route)||0)+1);
-  for(const result of r.results||[])if(result.status==="failed")failures.push({shard:r.shardIndex,profile:r.profile,...result});
+  for(const result of r.results||[])if(result.status==="failed")failures.push({shard:r.shardIndex,profile:r.profile,target,game:result.game,route:result.route,action:result.action,status:result.status,error:result.error,screenshot:result.screenshot,browserErrors:result.browserErrors,networkErrors:result.networkErrors});
  }
  const missingShards=Array.from({length:expected},(_,i)=>i).filter(i=>!indexes.has(i));
  const malformedReports=group.filter(r=>r.shardCount!==expected||r.shardIndex<0||r.shardIndex>=expected||r.totalCatalog!==routes.length||JSON.stringify(r.assignedRoutes)!==JSON.stringify(routes.filter((_,i)=>i%expected===r.shardIndex))||r.assigned!==r.assignedRoutes.length||r.passed!==r.results?.filter(x=>x.status==="passed").length||r.failed!==r.results?.filter(x=>x.status==="failed").length||r.passed+r.failed!==r.assigned||!Array.isArray(r.results)||r.results.length!==r.assigned||new Set(r.assignedRoutes).size!==r.assignedRoutes.length||r.results.some(result=>!r.assignedRoutes.includes(result.route))||new Set(r.results.map(result=>result.route)).size!==r.assignedRoutes.length||r.results.some(result=>result.status!=="passed"&&result.status!=="failed")||r.results.some(result=>result.status==="failed"&&!result.error&&!result.reason)).map(r=>({file:r.file,shard:r.shardIndex}));
