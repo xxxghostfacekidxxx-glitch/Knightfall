@@ -64,3 +64,9 @@ test("published arcade reports must match the current run",()=>{
  assert.match(html,/Number\.isNaN\(Date\.parse\(data\.generatedAt\)\)/);
  assert.match(html,/typeof data\.passed!=="boolean"/);
 });
+
+test("arcade failure cards expose diagnostic evidence",()=>{
+ assert.match(html,/failure\.screenshot/);
+ assert.match(html,/failure\.browserErrorCount/);
+ assert.match(html,/failure\.networkErrorCount/);
+});
