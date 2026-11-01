@@ -17,6 +17,7 @@ on:
       - "scripts/arcade-sharded-smoke.mjs"
       - "scripts/arcade-shard-summary.mjs"
       - "scripts/arcade-shard-summary.test.mjs"
+      - "scripts/browserquest-name-flow.test.mjs"
       - "scripts/admin-dashboard-structure.test.mjs"
       - "public/admin.html"
       - "public/admin.css"
