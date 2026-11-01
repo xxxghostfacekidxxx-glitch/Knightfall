@@ -1362,11 +1362,11 @@ export default { async queue(batch, env) {
     // Read-only site lookup: results are curated links, not unrestricted model tools.
     const siteLookupContext=navigationContext(message);
     let utilityContext="";
-    const arithmetic=message.match(/^\\s*(?:calculate|what is|what's|solve)\\s+([0-9+*/().%\\s-]{1,100})\\??\\s*$/i);
+    const arithmetic=message.match(/^\s*(?:calculate|what is|what's|solve)\s+([0-9+*/().%\s-]{1,100})\??\s*$/i);
     if(arithmetic){
       try{
         const result=await dispatchChaosTool({name:"utility.calculate",input:{expression:arithmetic[1]},principal:{id:user.id,role:user.role}});
-        utilityContext="\\n\\nVERIFIED CALCULATOR RESULT: "+result.expression+" = "+result.result+"\\n";
+        utilityContext="\n\nVERIFIED CALCULATOR RESULT: "+result.expression+" = "+result.result+"\n";
       }catch{}
     }
 
