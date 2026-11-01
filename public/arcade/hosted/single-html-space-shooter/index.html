@@ -41,6 +41,8 @@
       var score = 0;
       var highScore = localStorage.getItem("highScore") || 0;
       var gameover = false;
+      var paused = false;
+      var animationScheduled = false;
       var shootCounter = 0;
       var keys = {};
       var multiplier = 1;
@@ -101,9 +103,9 @@
         shootCounter++;
 
         // Bullets
-        bullets.forEach((bullet, i) => {
+        bullets = bullets.filter((bullet) => {
           bullet.x += bullet.speed;
-          if (bullet.x > width) bullets.splice(i, 1);
+          return bullet.x <= width;
         });
 
         // Enemies
@@ -121,9 +123,9 @@
           });
           enemyTimer = 0;
         }
-        enemies.forEach((enemy, i) => {
+        enemies = enemies.filter((enemy) => {
           enemy.x -= enemy.speed;
-          if (enemy.x < -enemy.size * 10) enemies.splice(i, 1);
+          return enemy.x >= -enemy.size * 10;
         });
 
         // Power-ups
@@ -227,6 +229,10 @@
       function restartGame() {
         score = 0;
         gameover = false;
+        paused = false;
+        enemyTimer = 0;
+        powerUpTimer = 0;
+        shootCounter = 0;
         player = { ...player, x: width / 2, y: height - 100 };
         bullets = [];
         enemies = [];
@@ -236,19 +242,22 @@
       }
 
       function pauseGame() {
-        // This is a simple toggle pause. It does not actually pause but stops or resumes the game loop.
-        gameover = !gameover;
-        if (!gameover) {
-          loop();
-        }
+        if (gameover) return;
+        paused = !paused;
+        if (!paused) loop();
+        else { draw(); drawText('PAUSED - Press P to Resume', width / 2, height / 2, 'center'); }
       }
 
       function loop() {
-        if (!gameover) {
+        if (animationScheduled || gameover || paused) return;
+        animationScheduled = true;
+        requestAnimationFrame(function () {
+          animationScheduled = false;
+          if (gameover || paused) return;
           update();
           draw();
-          requestAnimationFrame(loop);
-        }
+          if (!gameover && !paused) loop();
+        });
       }
 
       loop();
