@@ -303,6 +303,9 @@ jobs:
     if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      group: arcade-dashboard-publish
+      cancel-in-progress: false
     permissions:
       contents: write
       actions: read
@@ -317,6 +320,7 @@ jobs:
       - name: Commit dashboard report to main
         run: |
           test -s /tmp/arcade-dashboard/arcade-fleet-latest.json
+          git pull --ff-only origin main
           cp /tmp/arcade-dashboard/arcade-fleet-latest.json public/arcade/arcade-fleet-latest.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
