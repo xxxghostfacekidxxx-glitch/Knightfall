@@ -5,6 +5,31 @@ const $ = id => document.getElementById(id);
 let state = {bots: [], selected: ""};
 const status = message => { $("status").textContent = message; };
 const id = () => crypto.randomUUID();
+let localSession = null;
+let localSessionBot = "";
+async function localReply(bot,message) {
+  if (!("LanguageModel" in self) || typeof self.LanguageModel.create !== "function") throw Error("This browser does not provide an on-device language model.");
+  if (localSession && localSessionBot !== bot.id) {
+    await localSession.destroy?.();
+    localSession = null;
+  }
+  if (!localSession) {
+    const availability = await self.LanguageModel.availability?.();
+    if (availability === "unavailable") throw Error("On-device AI is unavailable on this device.");
+    localSession = await self.LanguageModel.create({
+      initialPrompts: [{role:"system",content:("You are "+bot.name+". "+bot.persona).slice(0,4000)}]
+    });
+    localSessionBot = bot.id;
+  }
+  const result = await localSession.prompt(message);
+  if (typeof result !== "string" || !result.trim()) throw Error("On-device AI returned an empty response.");
+  return result.slice(0,6000);
+}
+$("offline-engine").addEventListener("change", () => {
+  $("offline-engine-status").textContent = $("offline-engine").value === "local"
+    ? "Experimental on-device AI may require a supported browser, device resources, and a one-time model download."
+    : "Basic offline engine. No model download required.";
+});
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
@@ -66,15 +91,21 @@ $("delete").addEventListener("click", () => {
   state.bots = state.bots.filter(bot => bot.id !== state.selected);
   state.selected = state.bots[0]?.id || ""; persist(); render(); status("Local bot deleted.");
 });
-$("chat").addEventListener("submit", event => {
+$("chat").addEventListener("submit", async event => {
   event.preventDefault();
   const bot = current(), message = $("message").value.trim();
   if (!bot) return status("Save a local bot first.");
   if (!message) return;
-  bot.history.push({role:"user",text:message}, {role:"assistant",text:reply(bot,message)});
-  bot.history = bot.history.slice(-200);
-  if (persist()) { $("message").value = ""; status("Conversation saved locally."); }
-  render();
+  const button = $("chat").querySelector('button[type="submit"]');
+  button.disabled = true;
+  try {
+    const answer = $("offline-engine").value === "local" ? await localReply(bot,message) : reply(bot,message);
+    bot.history.push({role:"user",text:message}, {role:"assistant",text:answer});
+    bot.history = bot.history.slice(-200);
+    if (persist()) { $("message").value = ""; status("Conversation saved locally."); }
+    render();
+  } catch (error) { status(error.message + " Your message was not discarded. Select the basic engine to continue."); }
+  finally { button.disabled = false; }
 });
 $("clear").addEventListener("click", () => {
   const bot = current(); if (!bot || !confirm("Clear this bot's local conversation?")) return;
