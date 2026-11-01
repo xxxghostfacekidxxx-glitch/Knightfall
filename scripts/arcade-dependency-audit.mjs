@@ -23,7 +23,7 @@ for(const route of paths){
   const target=decoded.startsWith("/")?path.resolve(publicRoot,"."+decoded):path.resolve(path.dirname(file),decoded);
   if(!target.startsWith(publicRoot+path.sep)){failures.push(route+": asset escapes public root "+ref);continue;}
   checked.add(target);
-  try{if(!(await stat(target)).isFile())failures.push(route+": missing asset "+ref)}
+  try{if(!(await stat(target)).isFile() && !(decoded.endsWith("/") && (await stat(target)).isDirectory()))failures.push(route+": missing asset "+ref)}
   catch{failures.push(route+": missing asset "+ref)}
  }
 }
