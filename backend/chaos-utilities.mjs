@@ -2,6 +2,7 @@
 export function chaosCalculate({expression}) {
   const input=String(expression||"").trim();
   if(input.length>100 || !/^[0-9+*/().%\s-]+$/.test(input)) throw Error("Use numbers and arithmetic operators only.");
+  if ((input.match(/\(/g)||[]).length>20) throw Error("Expression nesting exceeds limit.");
   const tokens=input.match(/\d+(?:\.\d+)?|[()+*/%-]/g)||[];
   if(tokens.join("")!==input.replace(/\s/g,"")) throw Error("Invalid expression.");
   let pos=0;
