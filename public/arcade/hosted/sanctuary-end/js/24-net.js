@@ -6,7 +6,19 @@ const NET = {
     // remote ghosts leak. Null the handlers before close() so the old socket's onclose can't clobber new state.
     if (this.ws) { try { this.ws.onopen = this.ws.onmessage = this.ws.onclose = this.ws.onerror = null; this.ws.close(); } catch (_) { } }
     this.clearRemotes(); this.connected = false;
-    try { this.ws = new WebSocket('ws://' + host + ':' + (port || 8787)); } catch (e) { this.status('Invalid address'); return; }
+    // HTTPS pages cannot open insecure ws:// connections (mixed content).
+    // Accept bare hostnames, host:port, and complete ws(s) URLs.
+    let endpoint;
+    try {
+      const raw = String(host).trim();
+      const securePage = location.protocol === 'https:';
+      endpoint = new URL(/^wss?:\/\//i.test(raw) ? raw : (securePage ? 'wss://' : 'ws://') + raw);
+      if (!['ws:', 'wss:'].includes(endpoint.protocol) || !endpoint.hostname || endpoint.username || endpoint.password) throw new Error('Invalid socket endpoint');
+      if (securePage && endpoint.protocol !== 'wss:') { this.status('Secure HTTPS pages require a wss:// multiplayer server'); return; }
+      if (port && !endpoint.port) endpoint.port = String(port);
+      else if (!endpoint.port && !/^wss?:\/\//i.test(raw) && !raw.includes(':')) endpoint.port = '8787';
+      this.ws = new WebSocket(endpoint.toString());
+    } catch (e) { this.status('Invalid multiplayer address or port'); return; }
     this.status('Connecting…');
     this.ws.onopen = () => { this.connected = true; this.status('Connected — adventuring together'); this.refreshUI(); };
     this.ws.onclose = () => { this.connected = false; this.clearRemotes(); this.status('Disconnected'); this.refreshUI(); };
