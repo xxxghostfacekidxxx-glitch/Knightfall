@@ -35,7 +35,7 @@ for(const target of targets) {
  const duplicatedRoutes=[...counts].filter(([,count])=>count!==1).map(([route,count])=>({route,count}));
  const catalogSizes=[...new Set(group.map(r=>r.totalCatalog))];
  const expectedRoutes=routes.length;
- const coverageOk=catalogSizes.length===1&&missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&malformedReports.length===0&&expectedRoutes===counts.size&&failures.length===0;
+ const coverageOk=catalogSizes.length===1&&catalogSizes[0]===routes.length&&missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&malformedReports.length===0&&expectedRoutes===counts.size&&failures.length===0;
  summaries[target]={reports:group.length,expectedShards:expected,expectedRoutes,coveredRoutes:counts.size,missingShards,duplicatedShards,duplicatedRoutes,malformedReports,failures,coverageOk};
  if(!coverageOk)process.exitCode=1;
 }
