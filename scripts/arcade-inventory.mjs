@@ -25,7 +25,11 @@ const directories=(await readdir(hosted,{withFileTypes:true})).filter(x=>x.isDir
 const unlisted=[];
 for(const name of directories){
  const entry="/arcade/hosted/"+name+"/index.html";
- if(!groups.has(entry))unlisted.push({directory:name,entrypoint:entry,note:"Candidate only; may be a dependency or work in progress"});
+ if(!groups.has(entry)){
+  let hasEntrypoint=false;
+  try{hasEntrypoint=(await stat(path.join(hosted,name,"index.html"))).isFile()}catch{}
+  unlisted.push({directory:name,entrypoint:entry,hasEntrypoint,note:"Candidate only; may be a dependency or work in progress"});
+ }
 }
 const duplicates=[...groups].filter(([,ids])=>ids.length>1).map(([route,ids])=>({route,ids}));
 const report={invalid,generatedAt:new Date().toISOString(),catalogEntries:(catalog.games||[]).length,hostedDirectories:directories.length,localRoutes:groups.size,externalLinks:external.length,missing,unsafe,duplicates,unlisted};
