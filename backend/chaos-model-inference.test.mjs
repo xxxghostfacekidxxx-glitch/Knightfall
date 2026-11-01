@@ -11,3 +11,10 @@ test("unsupported tool schema falls back to ordinary chat",async()=>{
   const result=await inferWithChaosTools({ai,model:"test",messages:[],principal:{id:"test"}});
   assert.equal(result.response,"fallback");
 });
+
+test("ordinary conversation avoids planner model",async()=>{
+ const models=[];
+ const ai={run:async model=>{models.push(model);return {response:"hello"};}};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"hello there"}],principal:{id:"test"}});
+ assert.deepEqual(models,["fast"]);
+});
