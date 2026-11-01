@@ -1445,7 +1445,7 @@
     {
       "id": "interstellar-armada-local",
       "title": "Interstellar Armada",
-      "route": "/arcade/hosted/interstellar-armada/index.html#local",
+      "route": "/arcade/hosted/interstellar-armada/index.html",
       "description": "WebGL space combat missions and local mission editor. Singleplayer edition; keyboard or touch controls.",
       "genre": "Shooter",
       "collection": "games",
