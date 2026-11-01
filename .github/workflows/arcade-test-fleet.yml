@@ -318,8 +318,14 @@ jobs:
           name: arcade-dashboard-report
           path: /tmp/arcade-dashboard
       - name: Commit dashboard report to main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           test -s /tmp/arcade-dashboard/arcade-fleet-latest.json
+          LATEST=$(gh api "repos/$GH_REPO/actions/workflows/arcade-test-fleet.yml/runs?branch=main&per_page=1" --jq '.workflow_runs[0].id')
+          if [ "$LATEST" != "$RUN_ID" ]; then echo "Skipping stale fleet report from run $RUN_ID; latest is $LATEST"; exit 0; fi
           git pull --ff-only origin main
           cp /tmp/arcade-dashboard/arcade-fleet-latest.json public/arcade/arcade-fleet-latest.json
           git config user.name "github-actions[bot]"
