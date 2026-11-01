@@ -14,7 +14,7 @@ const seen = new Set();
 for (const [index, match] of entries.entries()) {
   const block = match[1];
   const title = block.match(/<h2>(.*?)<\/h2>/)?.[1] ?? `Cabinet ${index + 1}`;
-  const play = block.match(/<a\b[^>]*class="[^"]*\\bplay\\b[^"]*"[^>]*href="([^"]+)"/)?.[1];
+  const play = block.match(/<a\b[^>]*class="[^"]*\\bplay\\b[^"]*"[^>]*href="([^"]+)"/)?.[1] ?? block.match(/<a\\b[^>]*href="([^"]+)"[^>]*class="[^"]*\\bplay\\b[^"]*"/)?.[1];
   if (!play) { errors.push(`${title}: missing play link`); continue; }
   if(play.startsWith("https://")){if(!/data-collection="external"/.test(match[0]))errors.push(`${title}: external launch must be labeled external`);continue;}
   const launchPath = play.split("?")[0].split("#")[0];
