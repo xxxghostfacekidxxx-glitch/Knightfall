@@ -4,7 +4,7 @@ const root=path.resolve(process.argv[2]||"artifacts/shards");
 const out=path.resolve(process.argv[3]||"artifacts/arcade-fleet-summary.json");
 const expected=Number(process.env.ARCADE_SHARD_COUNT||10);
 if (!Number.isInteger(expected) || expected < 1) throw Error("Invalid shard count");
-const catalog=JSON.parse(await readFile("public/arcade/catalog.json","utf8"));
+const catalog=JSON.parse(await readFile(new URL("../public/arcade/catalog.json",import.meta.url),"utf8"));
 const routes=[...new Set(catalog.games.filter(g=>typeof g.route==="string"&&g.route.startsWith("/arcade/hosted/")).map(g=>g.route))].sort((a,b)=>a.localeCompare(b));
 async function find(dir) {
  const found=[];
