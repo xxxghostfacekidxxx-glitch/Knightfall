@@ -34,7 +34,7 @@
    document.querySelector('#arcade-empty').hidden=visible>0;
    document.querySelector('#arcade-collection-note').textContent=across?'Search includes every collection. Select a collection or genre to narrow results.':notes[collection];
    const url=new URL(location.href);
-   for(const [key,value] of Object.entries({q:search.value,collection:collection==='games'?'':collection,genre:genre.value,device:device.value,sort:sort.value==='featured'?'':sort.value}))value?url.searchParams.set(key,value):url.searchParams.delete(key);
+   for(const [key,value] of Object.entries({q:search.value,collection:collection==='games'&&!explicitCollection?'':collection,genre:genre.value,device:device.value,sort:sort.value==='featured'?'':sort.value}))value?url.searchParams.set(key,value):url.searchParams.delete(key);
    history.replaceState(null,'',url.pathname+url.search+url.hash);
   }
   document.querySelector('.arcade-catalog-toolbar').addEventListener('submit',e=>e.preventDefault());
