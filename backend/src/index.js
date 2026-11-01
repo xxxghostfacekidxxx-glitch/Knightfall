@@ -1403,7 +1403,7 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
-    const aiOptions={messages:[{role:"system",content:systemPrompt+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    const aiOptions={messages:[{role:"system",content:systemPrompt+siteLookupContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
     if(body.stream===true){
       let source;
       try{
@@ -1455,7 +1455,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     let reply="";
     try{
-      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
+      const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{messages:[{role:"system",content:systemPrompt+siteLookupContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8});
       reply=String(result?.response||"").trim();
       if(!reply)throw new Error("The model returned an empty response.");
     }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}
