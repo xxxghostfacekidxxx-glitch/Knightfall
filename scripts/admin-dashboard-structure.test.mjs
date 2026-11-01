@@ -50,3 +50,11 @@ test("coverage status clears when the consolidation job cannot be read",()=>{
 test("single-result tool search retains its filtered state",()=>{
  assert.match(html,/adminTabs\.forEach\(x=>\{x\.hidden=x!==matches\[0\]\}\)/);
 });
+
+test("arcade failure viewer uses report data and handles missing publication",()=>{
+ assert.ok(html.includes('id="arcade-failure-list"'));
+ assert.match(html,/async function loadPublishedArcadeFailures\(/);
+ assert.match(html,/sourceRunId/);
+ assert.match(html,/Detailed report not published yet/);
+ assert.match(css,/\.arcade-failure-item/);
+});
