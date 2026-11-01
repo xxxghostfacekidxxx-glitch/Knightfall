@@ -297,6 +297,34 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+  publish-dashboard:
+    name: Publish verified fleet dashboard JSON
+    needs: [consolidate-coverage]
+    if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: arcade-dashboard-report
+          path: /tmp/arcade-dashboard
+      - name: Commit dashboard report to main
+        run: |
+          test -s /tmp/arcade-dashboard/arcade-fleet-latest.json
+          cp /tmp/arcade-dashboard/arcade-fleet-latest.json public/arcade/arcade-fleet-latest.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/arcade/arcade-fleet-latest.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore(arcade): publish sanitized fleet dashboard report [skip ci]"
+          git push origin HEAD:main
+
   safe-auto-repair:
     name: Prepare safe asset repairs for review
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
