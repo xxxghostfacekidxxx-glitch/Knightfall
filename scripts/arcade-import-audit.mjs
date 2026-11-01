@@ -1,46 +1,38 @@
 #!/usr/bin/env node
-// Chaos Cartridge import audit. Run: node scripts/arcade-import-audit.mjs
-// This checks static packaging, not whether a game is fun or playable in a browser.
-import { readFile, access } from "node:fs/promises";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const catalog = await readFile(resolve(root, "public/arcade-30-games.html"), "utf8");
-const entries = [...catalog.matchAll(/<article\b[^>]*class="[^"]*\bgame\b[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
-const errors = [];
-const warnings = [];
-const seen = new Set();
-for (const [index, match] of entries.entries()) {
-  const block = match[1];
-  const title = block.match(/<h2>(.*?)<\/h2>/)?.[1] ?? `Cabinet ${index + 1}`;
-  const play = block.match(/<a\b[^>]*class="[^"]*\bplay\b[^"]*"[^>]*href="([^"]+)"/)?.[1] ?? block.match(/<a\b[^>]*href="([^"]+)"[^>]*class="[^"]*\bplay\b[^"]*"/)?.[1];
-  if (!play) { errors.push(`${title}: missing play link`); continue; }
-  if(play.startsWith("https://")){if(!/data-collection="external"/.test(match[0]))errors.push(`${title}: external launch must be labeled external`);continue;}
-  const launchPath = play.split("?")[0].split("#")[0];
-  if (!launchPath.startsWith("/") || launchPath.startsWith("//") || !launchPath.endsWith(".html")) {
-    errors.push(`${title}: launch must point to a locally hosted HTML file (${play})`);
-    continue;
-  }
-  if (seen.has(play)) warnings.push(`${title}: shares launch URL ${play}`);
-  seen.add(play);
-  const path = resolve(root, "public", launchPath.slice(1));
-  try { await access(path); } catch { errors.push(`${title}: missing ${play}`); }
-  const isOriginal = !/OPEN SOURCE|Complete modified source|Original source/i.test(block);
-  if (!isOriginal) {
-    const directory = dirname(path);
-    const candidates = ["LICENSE", "LICENSE.txt", "LICENSE.md", "SOURCE.md", "NOTICE", "NOTICE.md"];
-    let found = false;
-    for (const filename of candidates) {
-      try { await access(resolve(directory, filename)); found = true; break; } catch {}
-    }
-    if (!found) warnings.push(`${title}: no local license/source record beside game; review manually`);
-  }
+// Read-only packaging audit. The catalog JSON is the source of truth.
+import {readFile,access} from "node:fs/promises";
+import {resolve,dirname} from "node:path";
+import {fileURLToPath} from "node:url";
+const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
+const manifest=JSON.parse(await readFile(resolve(root,"public/arcade/catalog.json"),"utf8"));
+const errors=[],warnings=[],seen=new Map();
+for(const game of manifest.games||[]){
+ const name=game.title||game.id||"Unnamed game";
+ const route=game.route;
+ if(game.collection==="unavailable"){warnings.push(name+": intentionally unavailable");continue;}
+ if(typeof route!=="string"||!route){errors.push(name+": missing launch route");continue;}
+ if(/^https:\/\//i.test(route)){
+  if(game.collection!=="external")errors.push(name+": external launch not marked external");
+  continue;
+ }
+ if(!route.startsWith("/")||route.startsWith("//")||!route.split(/[?#]/)[0].endsWith(".html")){
+  errors.push(name+": invalid local launch "+route);continue;
+ }
+ const file=resolve(root,"public","."+route.split(/[?#]/)[0]);
+ const publicRoot=resolve(root,"public");
+ if(!file.startsWith(publicRoot+"/")){errors.push(name+": path escapes public directory");continue;}
+ try{await access(file)}catch{errors.push(name+": missing "+route)}
+ if(seen.has(route))warnings.push(name+": shares launch URL with "+seen.get(route));
+ else seen.set(route,name);
+ if(/^https:\/\//i.test(game.source||"")){
+  warnings.push(name+": verify third-party license and asset redistribution separately");
+ }else if(!game.source){
+  warnings.push(name+": no source/credits reference in catalog");
+ }
 }
-if (!entries.length) errors.push("No arcade catalog entries found");
-console.log(`Chaos Cartridge import audit: ${entries.length} entries, ${seen.size} unique local launch URLs`);
-for (const warning of warnings) console.warn("WARN:", warning);
-for (const error of errors) console.error("FAIL:", error);
-console.log("Reminder: an import may require upstream copyright/license retention even when the site removes outbound source links.");
-console.log("This audit does not validate runtime controls, originality, assets, or license compatibility.");
-if (errors.length) process.exitCode = 1;
+if(!(manifest.games||[]).length)errors.push("Catalog contains no games");
+console.log("Arcade import audit:",(manifest.games||[]).length,"catalog entries,",seen.size,"distinct local routes");
+for(const warning of warnings)console.warn("WARN:",warning);
+for(const error of errors)console.error("FAIL:",error);
+console.log("Static packaging audit only; gameplay and asset rights need separate verification.");
+if(errors.length)process.exitCode=1;
