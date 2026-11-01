@@ -1,0 +1,64 @@
+{
+  "generatedAt": "2026-11-01T19:40:12.684Z",
+  "reportsFound": 10,
+  "catalogRoutes": 141,
+  "targets": {
+    "live": {
+      "reports": 10,
+      "expectedShards": 10,
+      "expectedRoutes": 141,
+      "coveredRoutes": 141,
+      "missingShards": [],
+      "duplicatedShards": [],
+      "duplicatedRoutes": [],
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-7-Pixel Medic/tmp/arcade-browser-evidence/shard-7/live/report.json",
+          "shard": 7
+        },
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-8-Savekeeper/tmp/arcade-browser-evidence/shard-8/live/report.json",
+          "shard": 8
+        }
+      ],
+      "failures": [
+        {
+          "game": "interstellar-armada-local",
+          "route": "/arcade/hosted/interstellar-armada/index.html#local",
+          "profile": "smallPhone",
+          "action": "inspect page",
+          "reason": "Error: Empty body\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:36:28",
+          "target": "live",
+          "screenshot": "009.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "sanctuary-ashfall-edition",
+          "route": "/arcade/hosted/sanctuary-end/sanctuary.html",
+          "profile": "largePhone",
+          "action": "inspect page",
+          "reason": "locator.innerText: Timeout 3000ms exceeded.\nCall log:\n  - waiting for locator('body')\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:35:42",
+          "target": "live",
+          "screenshot": "011.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "sanctuary-original-sanctuary",
+          "route": "/arcade/hosted/sanctuary-original/sanctuary.html",
+          "profile": "tablet",
+          "action": "inspect page",
+          "reason": "locator.innerText: Timeout 3000ms exceeded.\nCall log:\n  - waiting for locator('body')\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:35:42",
+          "target": "live",
+          "screenshot": "011.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
+    }
+  },
+  "passed": false,
+  "sourceRunId": 41342656319
+}
