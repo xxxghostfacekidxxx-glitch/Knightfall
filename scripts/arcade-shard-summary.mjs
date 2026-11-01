@@ -27,12 +27,13 @@ for(const target of targets) {
   for(const result of r.results||[])if(result.status==="failed")failures.push({shard:r.shardIndex,profile:r.profile,...result});
  }
  const missingShards=Array.from({length:expected},(_,i)=>i).filter(i=>!indexes.has(i));
+ const malformedReports=group.filter(r=>r.shardCount!==expected||r.assigned!==r.assignedRoutes.length||r.passed+r.failed!==r.assigned||!Array.isArray(r.results)||r.results.length!==r.assigned||r.results.some(result=>!r.assignedRoutes.includes(result.route))).map(r=>({file:r.file,shard:r.shardIndex}));
  const duplicatedShards=[...indexes].filter(([,count])=>count!==1).map(([index,count])=>({index,count}));
  const duplicatedRoutes=[...counts].filter(([,count])=>count!==1).map(([route,count])=>({route,count}));
  const catalogSizes=[...new Set(group.map(r=>r.totalCatalog))];
  const expectedRoutes=catalogSizes.length===1?catalogSizes[0]:null;
- const coverageOk=missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&expectedRoutes===counts.size&&failures.length===0;
- summaries[target]={reports:group.length,expectedShards:expected,expectedRoutes,coveredRoutes:counts.size,missingShards,duplicatedShards,duplicatedRoutes,failures,coverageOk};
+ const coverageOk=missingShards.length===0&&duplicatedShards.length===0&&duplicatedRoutes.length===0&&malformedReports.length===0&&expectedRoutes===counts.size&&failures.length===0;
+ summaries[target]={reports:group.length,expectedShards:expected,expectedRoutes,coveredRoutes:counts.size,missingShards,duplicatedShards,duplicatedRoutes,malformedReports,failures,coverageOk};
  if(!coverageOk)process.exitCode=1;
 }
 if(!targets.includes("local")||process.env.ARCADE_REQUIRE_LIVE==="1"&&!targets.includes("live"))process.exitCode=1;
