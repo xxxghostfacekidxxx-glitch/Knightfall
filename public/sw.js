@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v22";
+const CACHE_NAME = "knightfall-shell-v23";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -72,7 +72,8 @@ self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin || url.pathname.startsWith("/api/")) return;
-  if (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault")) return;
+  const offlineBotAsset = url.pathname === "/personal-bots-offline.html" || url.pathname === "/personal-bots-offline.js";
+  if (!offlineBotAsset && (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault"))) return;
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
       if (url.pathname === "/personal-bots-offline.html") {
