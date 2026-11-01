@@ -14,7 +14,7 @@ const profile = process.env.ARCADE_TEST_PROFILE || "phone";
 const profiles = {phone:[390,844],smallPhone:[320,640],largePhone:[430,932],tablet:[820,1180],desktop:[1366,768]};
 if (!profiles[profile]) throw Error("Unknown device profile: " + profile);
 const [width,height] = profiles[profile];
-const evidenceDir = path.resolve(process.env.ARCADE_EVIDENCE_DIR || "/tmp/arcade-browser-evidence", "shard-"+shardIndex);
+const evidenceDir = path.resolve(process.env.ARCADE_EVIDENCE_DIR || "/tmp/arcade-browser-evidence", "shard-"+shardIndex, process.env.ARCADE_TEST_TARGET || "local");
 await mkdir(evidenceDir,{recursive:true});
 const browser = await chromium.launch({headless:true});
 const results=[];
@@ -52,7 +52,7 @@ try {
   } finally {await page.close().catch(()=>{});}
  }
 } finally {await browser.close();}
-const report={shardIndex,shardCount,profile,totalCatalog:unique.length,assigned:assigned.length,passed:results.filter(x=>x.status==="passed").length,failed:results.filter(x=>x.status==="failed").length,results};
+const report={shardIndex,shardCount,profile,target:process.env.ARCADE_TEST_TARGET||"local",totalCatalog:unique.length,assigned:assigned.length,assignedRoutes:assigned.map(x=>x.route),passed:results.filter(x=>x.status==="passed").length,failed:results.filter(x=>x.status==="failed").length,results};
 await writeFile(path.join(evidenceDir,"report.json"),JSON.stringify(report,null,2));
 console.log(JSON.stringify({shardIndex,shardCount,profile,totalCatalog:unique.length,assigned:assigned.length,passed:report.passed,failed:report.failed}));
 if(report.failed)process.exitCode=1;
