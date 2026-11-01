@@ -21,6 +21,7 @@ for(const file of files) {
  catch(error){console.error("Invalid shard report:",file,error.message);process.exitCode=1;}
 }
 const targets=[...new Set(reports.map(r=>r.target))];
+if(targets.some(t=>t!=="local"&&t!=="live"))process.exitCode=1;
 const summaries={};
 for(const target of targets) {
  const group=reports.filter(r=>r.target===target), counts=new Map(), indexes=new Map(), failures=[];
