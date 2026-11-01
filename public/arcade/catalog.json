@@ -2377,6 +2377,19 @@
       "notes": "Local pass-and-play; no Hasbro assets or branding",
       "links": [],
       "featured": false
+    },
+    {
+      "id": "cinder-gauntlet",
+      "title": "Cinder Gauntlet",
+      "route": "/arcade/hosted/cinder-gauntlet/index.html",
+      "description": "Original top-down dungeon crawler: four hero classes, monster generators, treasure, keys, boss-ready floor progression, and touch controls.",
+      "genre": "RPG",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/hosted/cinder-gauntlet/index.html",
+      "notes": "Original Ash-Fall playable alpha. No Gauntlet franchise assets.",
+      "links": [],
+      "featured": true
     }
   ],
   "retiredListings": [
