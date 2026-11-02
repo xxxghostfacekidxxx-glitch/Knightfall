@@ -13,7 +13,7 @@ function newGame(names=["Ash","Ember"],rng=()=>.1){
 test("Roads of Cinder replaces the tiny prototype with a 60-plus-space game board",()=>{
  assert.doesNotThrow(()=>new Script(source));assert.doesNotThrow(()=>new Script(view));
  assert.match(page,/viewport-fit=cover/);assert.match(page,/id="spinner"/);
- assert.match(page,/id="board"/);assert.match(page,/id="player-count"/);
+ assert.match(page,/id="board"/);assert.match(page,/id="player-count"/);assert.match(page,/id="player-names"/);assert.match(view,/function nameFields/);
  const g=newGame();assert.ok(g.constructor===Object.getPrototypeOf(g).constructor);
  assert.equal(g.players.length,2);assert.equal(g.options().length,2);
 });
@@ -58,7 +58,7 @@ test("Not Dead Yet new campaign and reloading systems parse and are wired into c
  const main=scripts.map(x=>x[1]).find(s=>s.includes("function startGame"));
  assert.ok(main&&main.length>40000);assert.doesNotThrow(()=>new Script(main));
  for(const id of ["ammo","touch-reload","campaign-stage","stage-progress","game"])assert.ok(html.includes('id="'+id+'"'),id);
- for(const signature of ["function advanceCampaign()","function spawnCampaignBoss()","function drawExitGate(cam)","function reload()","platforms.push(","player.grounded","campaignBossDefeated","reserveAmmo","ammoHud()"])assert.ok(main.includes(signature),signature);
+ for(const signature of ["function advanceCampaign()","function spawnCampaignBoss()","function drawExitGate(cam)","function retryCampaignStage()","function reload()","platforms.push(","player.grounded","campaignBossDefeated","reserveAmmo","ammoHud()","checkpoint={"])assert.ok(main.includes(signature),signature);
  assert.ok(main.includes("finish(true)"),"campaign must have a real final victory");
  assert.ok(!main.includes("finish(modeKey!=='campaign'||kills>=20)"),"no early kill-count campaign ending");
  assert.match(html,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
