@@ -3,7 +3,7 @@
 const root=document.getElementById('profile');if(!root)return;
 const API='https://api.ash-fall.com';
 let current='',busy=false;
-const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/)?[a-z0-9-]+\.svg$/.test(src)?src:null;
+const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|habitats\/)?[a-z0-9-]+\.svg$/.test(src)?src:null;
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node};
 function displayUser(){
  const text=root.querySelector('.profile-heading .handle')?.textContent||'';
@@ -39,8 +39,12 @@ async function mount(){
   const group=el('div','mascot-profile-grid');
   for(const pet of d.pets){
    const item=el('div','mascot-profile-pet'+(pet.featured?' featured':''));
-   const art=el('div','mascot-profile-art'),url=safeImage(pet.portrait||pet.idle||pet.image);
-   if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-sanctuary6';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
+   const art=el('div','mascot-profile-art'),url=safeImage(pet.idle||pet.image||pet.portrait);
+   const scene=safeImage(pet.habitat?.art);
+   if(scene){const img=el('img','mascot-profile-habitat');img.src=scene+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
+   if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-adventures2';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
+   const decoration=safeImage(pet.habitat?.decoration_art);
+   if(decoration){const img=el('img','mascot-profile-decoration');img.src=decoration+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
    for(const gear of pet.equipment||[]){
     const asset=String(gear.asset||'');const prefix='/assets/devil-tools/neon-nuisances/accessories/';
     if(!asset.startsWith(prefix)||!asset.endsWith('.svg')||asset.includes('..')||asset.slice(prefix.length,-4).includes('/'))continue;
