@@ -52,6 +52,10 @@ await scenario("Not Dead Yet mobile combat controls",{width:390,height:844},asyn
  await page.waitForSelector("#start",{timeout:10000});
  await page.selectOption("#mode","campaign");await page.click("#start");
  assert.ok(await page.locator("#touch-reload").isVisible(),"reload control visible");
+ assert.equal(await page.locator("#mode").isDisabled(),true,"mode locked during active run");
+ assert.equal(await page.locator("#survivor").isDisabled(),true,"survivor locked during active run");
+ const before=await page.locator("#weapon-name").innerText();
+ await page.click("#touch-weapon");assert.notEqual(await page.locator("#weapon-name").innerText(),before,"mobile players can change weapons");
  await page.locator("#touch-fire").dispatchEvent("pointerdown",{pointerId:1,button:0,pointerType:"touch",clientX:120,clientY:400});
  await page.waitForTimeout(150);
  assert.ok((await page.locator("#ammo").innerText()).includes("/"));
