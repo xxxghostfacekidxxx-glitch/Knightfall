@@ -1,0 +1,61 @@
+name: Neon Nuisances mascot art validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/assets/devil-tools/neon-nuisances/**'
+      - 'public/devil-tools.html'
+      - 'scripts/test-mascot-remaster.mjs'
+      - 'scripts/test-mascot-browser.mjs'
+      - '.github/workflows/neon-nuisances-art.yml'
+permissions:
+  contents: read
+jobs:
+  geometry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with: {node-version: '22'}
+      - name: Parse all ten artworks with an XML parser
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          root=Path('public/assets/devil-tools/neon-nuisances')
+          for stem in ('bloop', 'nib'):
+              for pose in ('', '-idle','-blink','-bounce','-mischief'):
+                  path=root/f'{stem}{pose}.svg'
+                  svg=ET.parse(path).getroot()
+                  assert svg.tag=='{http://www.w3.org/2000/svg}svg', path
+                  print('PASS XML',path)
+          PY
+      - name: Check metadata, shape identity, animations and accessibility
+        run: node --test scripts/test-mascot-remaster.mjs
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with: {node-version: '22'}
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Serve mascot art
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/neon-mascot-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/assets/devil-tools/neon-nuisances/manifest.json > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/neon-mascot-http.log
+          exit 1
+      - name: Decode and render ten SVGs in desktop and mobile Chromium
+        run: node scripts/test-mascot-browser.mjs
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/neon-mascot-http.log || true
