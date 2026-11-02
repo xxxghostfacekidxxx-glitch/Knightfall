@@ -146,29 +146,6 @@
       "status": "committed; browser QA pending"
     },
     {
-      "id": "cinder-grid",
-      "name": "Cinder Grid",
-      "genre": "Board",
-      "sprites": [
-        "ember-token.svg",
-        "void-token.svg"
-      ],
-      "notes": "Original ember and void token artwork with a new four-in-a-row engine and CPU opponent.",
-      "engine": "/arcade/hosted/cinder-grid/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-grid",
-      "assets": [
-        {
-          "name": "ember-token.svg",
-          "path": "/arcade/hosted/cinder-grid/sprites/ember-token.svg"
-        },
-        {
-          "name": "void-token.svg",
-          "path": "/arcade/hosted/cinder-grid/sprites/void-token.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
       "id": "crypt-words",
       "name": "Crypt Words",
       "genre": "Word",
@@ -404,29 +381,6 @@
       "status": "committed; browser QA pending"
     },
     {
-      "id": "crypt-breaker",
-      "name": "Crypt Breaker",
-      "genre": "Arcade",
-      "sprites": [
-        "ember-orb.svg",
-        "crypt-brick.svg"
-      ],
-      "notes": "Smash through the crypt walls in an original paddle-and-orb game with progressive waves and score tracking.",
-      "engine": "/arcade/hosted/crypt-breaker/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-breaker",
-      "assets": [
-        {
-          "name": "ember-orb.svg",
-          "path": "/arcade/hosted/crypt-breaker/sprites/ember-orb.svg"
-        },
-        {
-          "name": "crypt-brick.svg",
-          "path": "/arcade/hosted/crypt-breaker/sprites/crypt-brick.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
       "id": "cinder-columns",
       "name": "Cinder Columns",
       "genre": "Puzzle",
@@ -497,13 +451,13 @@
     },
     {
       "id": "cinder-mines",
-      "name": "Cinder Mines",
+      "name": "Chaos Minesweeper",
       "genre": "Puzzle",
       "sprites": [
         "ash-marker.svg",
         "void-mine.svg"
       ],
-      "notes": "Clear a minefield of hidden Void charges with first-click safety and mobile flag controls.",
+      "notes": "Combined Cinder Mines and Minefield of Bad Ideas. Safe first opening, three difficulties, flag controls, number chording and one emergency flare.",
       "engine": "/arcade/hosted/cinder-mines/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-mines",
       "assets": [
@@ -514,29 +468,6 @@
         {
           "name": "void-mine.svg",
           "path": "/arcade/hosted/cinder-mines/sprites/void-mine.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
-      "id": "ember-serpent",
-      "name": "Ember Serpent",
-      "genre": "Arcade",
-      "sprites": [
-        "serpent.svg",
-        "relic.svg"
-      ],
-      "notes": "Original molten-serpent arcade game with swipe steering, relic collection, and growing-tail survival.",
-      "engine": "/arcade/hosted/ember-serpent/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-serpent",
-      "assets": [
-        {
-          "name": "serpent.svg",
-          "path": "/arcade/hosted/ember-serpent/sprites/serpent.svg"
-        },
-        {
-          "name": "relic.svg",
-          "path": "/arcade/hosted/ember-serpent/sprites/relic.svg"
         }
       ],
       "status": "committed; browser QA pending"

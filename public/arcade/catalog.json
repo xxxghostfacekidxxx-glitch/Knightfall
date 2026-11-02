@@ -789,16 +789,16 @@
     },
     {
       "id": "cinder-mines",
-      "title": "Cinder Mines",
+      "title": "Chaos Minesweeper",
       "route": "/arcade/hosted/cinder-mines/index.html",
-      "description": "Clear a minefield of hidden Void charges with first-click safety and mobile flag controls.",
+      "description": "Three neon minefields, safe first openings, touch flags, number chording and one emergency flare. Merges Cinder Mines and Minefield of Bad Ideas.",
       "genre": "Puzzle",
-      "collection": "mini",
+      "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "penalty-shootout",
@@ -1516,19 +1516,6 @@
       "collection": "games",
       "device": "touch",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/new?title=Marshland%20Marksman%20issue",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-vault-vault-mines",
-      "title": "Minefield of Bad Ideas",
-      "route": "/arcade-vault.html#vault-mines",
-      "description": "Clear the hidden mines with deduction, not the traditional method of screaming.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
       "notes": "",
       "links": [],
       "featured": false
@@ -2450,6 +2437,11 @@
       "title": "Sudoku",
       "route": "/arcade/hosted/sudoku/index.html",
       "reason": "Sudoku family consolidated into Chaos Sudoku; standalone variant retired from catalog."
+    },
+    {
+      "title": "Minefield of Bad Ideas",
+      "route": "/arcade-vault.html#vault-mines",
+      "reason": "Minesweeper family consolidated into Chaos Minesweeper; emergency flare preserved and legacy URL forwards to the combined game."
     }
   ]
 }
