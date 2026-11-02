@@ -43,4 +43,23 @@
  <path d="m52 83 6 5 7-4 7 4 7-5" stroke="#fff9e9" stroke-width="2.8" fill="none"/>
  <path d="M45 76q-8-3-11-2m57 0 8-2" stroke="#ff55d8" stroke-width="2.2"/>
  <circle cx="94" cy="70" r="4" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
-</g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff9566" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff9566" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff9566">THE EDDIE</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>
+<g id="deluxe-eddie-armor" stroke-linecap="round" stroke-linejoin="round">
+<path d="m47 19 6-10 6 12m0-10 5-9 6 17m3-10 5-6 3 15" fill="#c6ff45" stroke="#182020" stroke-width="2.6"/>
+<path d="M47 26q17-7 36 0" fill="none" stroke="#f7ffcc" stroke-width="2.3"/>
+<path d="m39 49 8-5m36 0 8 5" stroke="#ff55d8" stroke-width="2.6"/>
+<path d="m44 59 10-5m21 0 10 5" stroke="#fff9dd" stroke-width="2.1"/>
+<path d="m34 81-9 6 7 12m63-18 9 6-7 12" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m42 100 12-5 11 9 10-9 12 5" fill="none" stroke="#ff55d8" stroke-width="2.7"/>
+<path d="M53 99l6 9m12-9-6 9m17-10-5 11" stroke="#ecf5e4" stroke-width="2.3"/>
+<path d="m47 108 6 12m28-12-6 12" stroke="#c6ff45" stroke-width="2.7"/>
+<path d="M45 118h14m17 0h14" stroke="#ff55d8" stroke-width="3"/>
+<path d="M42 73 35 76m58-3 7 3" stroke="#ff55d8" stroke-width="3.1"/>
+<path d="M57 88q9 6 17 0" fill="none" stroke="#79ffe7" stroke-width="2.5"/>
+<path d="M51 35l6 7 8-5 8 5 7-7" fill="none" stroke="#c6ff45" stroke-width="2.3"/>
+<path d="m40 64 5 3m43-3-5 3" stroke="#ff96d5" stroke-width="2.6"/>
+<path d="M42 83q6 10 9 10m34-10q-6 10-9 10" stroke="#fff1dd" stroke-width="2.1"/>
+<circle cx="48" cy="45" r="2.5" fill="#c6ff45"/><circle cx="89" cy="45" r="2.5" fill="#ff55d8"/>
+<path d="m22 62-5-5m100 5 5-5" stroke="#79ffe7" stroke-width="2.8"/>
+<path d="M27 37l-5-8m81 8 5-8" stroke="#c6ff45" stroke-width="3"/>
+<circle cx="114" cy="100" r="3" fill="#ff55d8"/><circle cx="16" cy="86" r="3" fill="#79ffe7"/>
+</g></g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff9566" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff9566" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff9566">THE EDDIE</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>

@@ -44,4 +44,24 @@
  <path d="m59 83 3 5 5-3 5 3" stroke="#f7fff0" stroke-width="2" fill="none"/>
  <circle cx="91" cy="75" r="3" fill="#c6ff45" stroke="#191220" stroke-width="1.5"/>
  <path d="m48 90-6 8m43-8 6 8" stroke="#ff55d8" stroke-width="2.4"/>
-</g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff55d8" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff55d8" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff55d8">MINI VILLAIN</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>
+<g id="deluxe-villain-regalia" stroke-linecap="round" stroke-linejoin="round">
+<path d="m37 29-12 3 10 9m58-12 12 3-10 9" fill="#371828" stroke="#ff55d8" stroke-width="2.5"/>
+<path d="m41 35 5-8 7 8m29 0 7-8 5 8" stroke="#c6ff45" stroke-width="2.5" fill="none"/>
+<path d="m41 48-9 7m63-7 9 7" stroke="#ff9de7" stroke-width="3"/>
+<path d="M40 93q10 12 24 10 14 2 24-10" fill="none" stroke="#f99cce" stroke-width="2.8"/>
+<path d="m38 96-15 7 8 9m59-16 15 7-8 9" fill="none" stroke="#c6ff45" stroke-width="2.4"/>
+<path d="M51 102l13 9 13-9" fill="none" stroke="#d7a8ff" stroke-width="2.4"/>
+<path d="m56 106 8 5 8-5" fill="none" stroke="#fff2fa" stroke-width="2.3"/>
+<path d="M52 33l12-7 12 7-12 8Z" fill="#20243a" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m61 33 3-4 3 4-3 5Z" fill="#ff55d8"/>
+<path d="m41 62 8-4m30 0 8 4" stroke="#ffecff" stroke-width="2.5"/>
+<path d="M43 71q8 6 16 0m10 0q8 6 16 0" fill="none" stroke="#c6ff45" stroke-width="2"/>
+<path d="m24 83-7-7m87 7 7-7" stroke="#ff55d8" stroke-width="3"/>
+<path d="m31 105-5 12m74-12 5 12" stroke="#a4fff3" stroke-width="3"/>
+<path d="M47 110q17-4 34 0" stroke="#ff55d8" stroke-width="3"/>
+<path d="m19 40 6-10m78 10 6-10" stroke="#c6ff45" stroke-width="2.7"/>
+<circle cx="43" cy="46" r="2.8" fill="#ff55d8"/><circle cx="86" cy="46" r="2.8" fill="#79ffe7"/>
+<path d="m30 21 7-8 8 7m46-7 8 8" stroke="#ff55d8" stroke-width="2.7" fill="none"/>
+<circle cx="112" cy="48" r="3" fill="#c6ff45"/><circle cx="17" cy="81" r="2.7" fill="#79ffe7"/>
+<path d="M97 47q20 3 16 21m-5-6 5 6-4 9" stroke="#ff55d8" stroke-width="3.3" fill="none"/>
+</g></g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff55d8" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff55d8" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff55d8">MINI VILLAIN</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>
