@@ -42,7 +42,24 @@ async function mount(){
    const art=el('div','mascot-profile-art'),url=safeImage(pet.portrait||pet.idle||pet.image);
    if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-sanctuary6';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
    for(const gear of pet.equipment||[]){
-    if(!/^\\/assets\\/devil-tools\\/neon-nuisances\\/accessories\\/[a-z0-9_-]+\\.svg$/.test(gear.asset||''))continue;
+    if(!new RegExp('^/assets/devil-tools/neon-nuisances/accessories/[a-z0-9_-]+[.]svg
+    const img=el('img','mascot-profile-layer');
+    img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
+   }
+   item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
+   if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
+   group.append(item);
+  }
+  card.append(group);
+ }catch(error){
+  if(card.isConnected)card.remove();
+ }finally{busy=false}
+}
+const observer=new MutationObserver(()=>{if(root.querySelector('.profile-top'))void mount()});
+observer.observe(root,{childList:true,subtree:false});
+void mount();
+})();
+).test(gear.asset||''))continue;
     const img=el('img','mascot-profile-layer');
     img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
    }
