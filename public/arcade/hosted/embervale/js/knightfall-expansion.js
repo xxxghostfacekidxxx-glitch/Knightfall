@@ -8,7 +8,7 @@ MAPS.overworld.w = 7;
 const lakeside = OVERWORLD['4,1'];
 // The old eastern shoreline now has a three-tile stone causeway.
 lakeside.tiles = lakeside.tiles.map((row, y) =>
-  y >= 4 && y <= 6 ? row.slice(0, 15) + '=' : row
+  y >= 4 && y <= 6 ? row.slice(0, 8) + '========' : row
 );
 
 const EAST_REALMS = [

@@ -429,7 +429,7 @@ function updatePlay() {
     if (id === T.CAVE || id === T.HDOOR || id === T.STAIRS || id === T.RUG || id === T.WWALL || id === T.DFLOOR || id === T.WFLOOR) {
       AudioSys.sfx('stairs');
       startFade(() => {
-        if (warp.map === 'overworld' || warp.map === 'dungeon') G.loadRoom(warp.map, warp.sx, warp.sy, warp.px, warp.py);
+        if (MAPS[warp.map]) G.loadRoom(warp.map, warp.sx, warp.sy, warp.px, warp.py);
         else G.loadRoom(warp.map, 0, 0, warp.px, warp.py);
         G.player.facing = warp.map === 'overworld' ? 'd' : 'u';
         if (G.map !== 'overworld') G.player.facing = 'd';
