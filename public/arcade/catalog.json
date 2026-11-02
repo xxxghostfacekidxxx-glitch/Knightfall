@@ -710,19 +710,6 @@
       "featured": false
     },
     {
-      "id": "cinder-grid",
-      "title": "Cinder Grid",
-      "route": "/arcade/hosted/cinder-grid/index.html",
-      "description": "Drop original ember and void sigils, connect four, and challenge a tactical CPU or a local friend.",
-      "genre": "Board",
-      "collection": "games",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "cinder-hopper",
       "title": "Cinder Hopper",
       "route": "/arcade/hosted/cinder-hopper/index.html",
@@ -906,16 +893,16 @@
     },
     {
       "id": "connect-four",
-      "title": "Connect Four",
+      "title": "Chaos Connect Four",
       "route": "/arcade/hosted/connect-four/index.html",
-      "description": "Play a tactical four-in-a-row match against an AI.",
+      "description": "Neon Connect Four with local two-player matches, three CPU difficulty levels, animated discs, win streaks and undo.",
       "genre": "Arcade",
       "collection": "experiments",
       "device": "touch",
       "source": "",
       "notes": "Legacy prototype; retained separately from the main arcade.",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "crypt-balance",
@@ -2093,19 +2080,6 @@
       "featured": false
     },
     {
-      "id": "cinder-four",
-      "title": "Cinder Four",
-      "route": "/arcade/hosted/cinder-four/index.html",
-      "description": "Connect four discs vertically, horizontally or diagonally before the local CPU.",
-      "genre": "Board",
-      "collection": "games",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "Original implementation; single-player against local CPU.",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "cinder-gomoku",
       "title": "Cinder Gomoku",
       "route": "/arcade/hosted/cinder-gomoku/index.html",
@@ -2474,6 +2448,16 @@
       "title": "Ember Breakout",
       "route": "/arcade-after-dark.html#ember-breakout",
       "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
+    },
+    {
+      "title": "Cinder Grid",
+      "route": "/arcade/hosted/cinder-grid/index.html",
+      "reason": "Connect Four family consolidated into Chaos Connect Four."
+    },
+    {
+      "title": "Cinder Four",
+      "route": "/arcade/hosted/cinder-four/index.html",
+      "reason": "Connect Four family consolidated into Chaos Connect Four."
     }
   ]
 }
