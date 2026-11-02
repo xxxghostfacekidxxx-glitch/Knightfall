@@ -1,21 +1,38 @@
 {
-  "generatedAt": "2026-11-02T12:25:01.098Z",
+  "generatedAt": "2026-11-02T12:44:13.528Z",
   "reportsFound": 10,
-  "catalogRoutes": 135,
+  "catalogRoutes": 134,
   "targets": {
     "live": {
       "reports": 10,
       "expectedShards": 10,
-      "expectedRoutes": 135,
-      "coveredRoutes": 135,
+      "expectedRoutes": 134,
+      "coveredRoutes": 134,
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-3-Maze Warden/tmp/arcade-browser-evidence/shard-3/live/report.json",
+          "shard": 3
+        }
+      ],
+      "failures": [
+        {
+          "game": "sanctuary-original-sanctuary",
+          "route": "/arcade/hosted/sanctuary-original/sanctuary.html",
+          "profile": "tablet",
+          "action": "start game",
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:48:43",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 2,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     }
   },
   "passed": false,
-  "sourceRunId": 41444297036
+  "sourceRunId": 41446924323
 }
