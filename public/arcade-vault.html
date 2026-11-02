@@ -16,15 +16,12 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{display:inline-block;colo
 .hero{padding:1rem 0 2rem}.eyebrow{color:var(--a);font-size:.7rem;font-weight:900;letter-spacing:.2em}.hero h1{font-size:clamp(2.8rem,9vw,6rem);line-height:.9;letter-spacing:-.06em;margin:.5rem 0 1rem}.hero h1 span{color:var(--a)}.lede,.muted{color:#aaa;line-height:1.65;max-width:760px}
 .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}.tabs button,.btn{border:1px solid #393939;border-radius:9px;background:#151515;color:#eee;padding:.75rem 1rem;font:inherit;font-weight:800;cursor:pointer}.tabs button[aria-selected=true],.btn.primary{background:var(--a);border-color:var(--a);color:#180b03}
 .panel{display:none;border:1px solid var(--line);border-radius:14px;background:#101010;padding:clamp(1rem,3vw,2rem);min-height:430px}.panel.active{display:block}.panel h2{font-size:clamp(1.5rem,4vw,2.3rem);margin:.2rem 0 .6rem}.stats{display:flex;gap:1rem;flex-wrap:wrap;color:#aaa;margin:1rem 0}.stats strong{color:var(--a)}.arena{min-height:230px;border:1px solid #292929;border-radius:12px;background:#090909;padding:1rem;display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap}.message{min-height:1.5rem;color:#ddd}.btn:focus-visible,.tabs button:focus-visible,button:focus-visible{outline:2px solid var(--a);outline-offset:3px}
-#snake-board{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));width:min(100%,400px);aspect-ratio:1;background:#111;border:1px solid #303030;touch-action:manipulation}.snake-cell{min-width:0;aspect-ratio:1;background:#101010}.snake-cell.snake{background:#ff55d8;border-radius:3px}.snake-cell.food{background:#a4ff8a;border-radius:50%;transform:scale(.65)}
-.snake-controls{display:grid;grid-template-columns:repeat(3,52px);gap:.35rem;margin-top:1rem;justify-content:center}.snake-controls button{height:42px;border:1px solid #393939;border-radius:8px;background:#181818;color:#eee;font-size:1.2rem}
 #mine-board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;width:min(100%,440px)}.mine-cell{aspect-ratio:1;border:1px solid #393939;border-radius:5px;background:#191919;color:#eee;font-weight:900;font-size:clamp(.8rem,3vw,1.1rem);padding:0}.mine-cell.open{background:#252525;border-color:#333}.mine-cell.flag{color:var(--a)}
 #breakout{width:100%;max-width:700px;aspect-ratio:7/4;background:#080808;border:1px solid #333;border-radius:8px;touch-action:pan-y}
 .actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}.credits{margin-top:2rem;padding:1rem;border-top:1px solid #292929;color:#888;font-size:.82rem;line-height:1.6}
-@media(max-width:540px){.tabs{display:grid;grid-template-columns:1fr}.tabs button{text-align:left}.panel{padding:1rem}.arena{padding:.6rem}.snake-controls{grid-template-columns:repeat(3,48px)}}
+@media(max-width:540px){.tabs{display:grid;grid-template-columns:1fr}.tabs button{text-align:left}.panel{padding:1rem}.arena{padding:.6rem}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
-.snake-cell.volatile{background:#ff55d8!important;box-shadow:0 0 14px #ff55d8,inset 0 0 7px #ffe1a6;animation:volatilePulse .65s infinite alternate}@keyframes volatilePulse{to{filter:brightness(1.8);transform:scale(.84)}}
 </style>
   <link rel="stylesheet" href="/arcade-polish.css?v=20261021-arcade-polish">
 </head>
