@@ -3,7 +3,7 @@
 const root=document.getElementById('profile');if(!root)return;
 const API='https://api.ash-fall.com';
 let current='',busy=false;
-const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/.test(src)?src:null;
+const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/)?[a-z0-9-]+\.svg$/.test(src)?src:null;
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node};
 function displayUser(){
  const text=root.querySelector('.profile-heading .handle')?.textContent||'';
@@ -11,7 +11,7 @@ function displayUser(){
 }
 async function mount(){
  const user=displayUser(),top=root.querySelector('.profile-top');
- if(!user||!top||busy||user===current)return;
+ if(!user||!top||busy||(user===current&&root.querySelector('#mascot-profile-companions')))return;
  current=user;busy=true;
  const old=root.querySelector('#mascot-profile-companions');old?.remove();
  const card=el('section','mascot-profile-panel');card.id='mascot-profile-companions';
@@ -39,8 +39,8 @@ async function mount(){
   const group=el('div','mascot-profile-grid');
   for(const pet of d.pets){
    const item=el('div','mascot-profile-pet'+(pet.featured?' featured':''));
-   const url=safeImage(pet.idle||pet.image);
-   if(url){const img=el('img');img.src=url+'?v=20261102-sanctuary2';img.alt=pet.species_name;img.loading='lazy';item.append(img);}
+   const url=safeImage(pet.portrait||pet.idle||pet.image);
+   if(url){const img=el('img');img.src=url+'?v=20261102-sanctuary3';img.alt=pet.species_name;img.loading='lazy';item.append(img);}
    item.append(el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
    if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
    group.append(item);
