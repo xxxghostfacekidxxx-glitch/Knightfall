@@ -1,0 +1,281 @@
+{
+  "pack": "Devil Tools Visual Asset Library",
+  "version": 1,
+  "updated": "2026-11-02",
+  "count": 39,
+  "assets": [
+    {
+      "id": "arcade-backdrop-corporate-hell-svg",
+      "title": "Backdrop Corporate Hell",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/backdrop-corporate-hell.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-backdrop-mall-of-misery-svg",
+      "title": "Backdrop Mall Of Misery",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/backdrop-mall-of-misery.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-backdrop-ruined-block-svg",
+      "title": "Backdrop Ruined Block",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/backdrop-ruined-block.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-backdrop-toxic-works-svg",
+      "title": "Backdrop Toxic Works",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/backdrop-toxic-works.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-brute-svg",
+      "title": "Brute",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/brute.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-chaos-sprite-atlas-svg",
+      "title": "Chaos Sprite Atlas",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/chaos-sprite-atlas.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-chaos-sprite-sheet-svg",
+      "title": "Chaos Sprite Sheet",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/chaos-sprite-sheet.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-dredge-svg",
+      "title": "Dredge",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/dredge.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-graveyard-runner-svg",
+      "title": "Graveyard Runner",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/graveyard-runner.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-guttermaw-svg",
+      "title": "Guttermaw",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/guttermaw.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-malpractice-svg",
+      "title": "Malpractice",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/malpractice.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-middle-management-svg",
+      "title": "Middle Management",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/middle-management.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-shambler-svg",
+      "title": "Shambler",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/shambler.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-sprinter-svg",
+      "title": "Sprinter",
+      "category": "Arcade Art",
+      "src": "/assets/arcade/sprinter.svg",
+      "remastered": false
+    },
+    {
+      "id": "arcade-gravewave-acid-spikes-svg",
+      "title": "Acid Spikes",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/acid-spikes.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-bone-coin-svg",
+      "title": "Bone Coin",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/bone-coin.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-bone-drone-svg",
+      "title": "Bone Drone",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/bone-drone.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-chaos-shield-svg",
+      "title": "Chaos Shield",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/chaos-shield.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-cinder-heart-svg",
+      "title": "Cinder Heart",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/cinder-heart.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-ghost-key-svg",
+      "title": "Ghost Key",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/ghost-key.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-grave-crate-svg",
+      "title": "Grave Crate",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/grave-crate.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-grave-platform-svg",
+      "title": "Grave Platform",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/grave-platform.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-hex-flame-svg",
+      "title": "Hex Flame",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/hex-flame.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-impact-burst-svg",
+      "title": "Impact Burst",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/impact-burst.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-neon-portal-svg",
+      "title": "Neon Portal",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/neon-portal.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-plasma-bolt-svg",
+      "title": "Plasma Bolt",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/plasma-bolt.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-skull-missile-svg",
+      "title": "Skull Missile",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/skull-missile.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-toxic-turret-svg",
+      "title": "Toxic Turret",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/toxic-turret.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-void-eye-svg",
+      "title": "Void Eye",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/void-eye.svg",
+      "remastered": true
+    },
+    {
+      "id": "arcade-gravewave-warning-skull-svg",
+      "title": "Warning Skull",
+      "category": "Gravewave Effects",
+      "src": "/assets/arcade/gravewave/warning-skull.svg",
+      "remastered": true
+    },
+    {
+      "id": "miss-chaos-miss-chaos-avatar-svg",
+      "title": "Miss Chaos Avatar",
+      "category": "Miss Chaos",
+      "src": "/assets/miss-chaos/miss-chaos-avatar.svg",
+      "remastered": false
+    },
+    {
+      "id": "monster-sprites-driftfin-svg",
+      "title": "Driftfin",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/driftfin.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-embercub-svg",
+      "title": "Embercub",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/embercub.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-gloamlet-svg",
+      "title": "Gloamlet",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/gloamlet.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-grubruckle-svg",
+      "title": "Grubruckle",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/grubruckle.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-mossbit-svg",
+      "title": "Mossbit",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/mossbit.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-mournwing-svg",
+      "title": "Mournwing",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/mournwing.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-thornspit-svg",
+      "title": "Thornspit",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/thornspit.svg",
+      "remastered": true
+    },
+    {
+      "id": "monster-sprites-zipfang-svg",
+      "title": "Zipfang",
+      "category": "Monster Sprites",
+      "src": "/assets/monster-sprites/zipfang.svg",
+      "remastered": true
+    }
+  ]
+}
