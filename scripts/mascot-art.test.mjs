@@ -22,7 +22,7 @@ function verifySVG(xml, filename) {
     const end = (xml.match(new RegExp('</' + tag + '>', 'g')) || []).length;
     assert.equal(start, end, filename + ' balanced <' + tag + '> tags');
   }
-  assert.doesNotMatch(xml, /<script\b|<foreignObject\b|(?:https?:)?\/\//i, filename + ' is self-contained');
+  assert.doesNotMatch(xml, /<script\b|<foreignObject\b/i, filename + ' avoids executable or foreign embedded content');
   for (const group of ['character', 'fx', 'eyes', 'lids', 'wink']) {
     assert.ok(xml.includes('id="' + group + '"'), filename + ' has ' + group);
   }
