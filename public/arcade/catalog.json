@@ -152,9 +152,9 @@
     },
     {
       "id": "afterburn-breakout",
-      "title": "Afterburn Breakout",
+      "title": "Shatterpocalypse",
       "route": "/arcade/hosted/afterburn-breakout/index.html",
-      "description": "Smash a neon wall with a bouncing ball, keep the paddle alive, and clear every brick in this original Knightfall cabinet.",
+      "description": "Neon brick-breaker apocalypse with explosive chain reactions, escalating waves, multiball, lasers, shields, combos, and fullscreen controls.",
       "genre": "Arcade",
       "collection": "games",
       "device": "touch",
