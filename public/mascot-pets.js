@@ -6,7 +6,7 @@ const owned=document.querySelector('#owned-pets'),adopt=document.querySelector('
  slots=document.querySelector('#pet-slots'),balance=document.querySelector('#pet-wallet');
 if(!owned||!adopt||!shop||!message||!slots)return;
 let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=22,
-    cinders=0,level=1,premiumEnabled=false;
+    cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
 const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
@@ -26,7 +26,15 @@ function cardBase(item,image,ownedCard=false){
  if(ownedCard)card.dataset.petId=String(item.id);
  else card.dataset.species=item.id;
  const visual=make('div','pet-art'),src=safeSrc(image);
+ if(ownedCard&&item.habitat?.art){
+  const scene=safeSrc(item.habitat.art);
+  if(scene){const imageBg=make('img','pet-habitat-scene');imageBg.src=scene+'?v=20261102-adventures1';imageBg.alt='';imageBg.setAttribute('aria-hidden','true');visual.append(imageBg)}
+ }
  if(src){const img=make('img','pet-base-image');img.src=src+'?v=20261102-sanctuary5';img.alt=item.name||item.nickname||'Companion';img.loading='lazy';visual.append(img)}
+ if(ownedCard&&item.habitat?.decoration_art){
+  const decor=safeSrc(item.habitat.decoration_art);
+  if(decor){const layer=make('img','pet-habitat-decor');layer.src=decor+'?v=20261102-adventures1';layer.alt='';layer.setAttribute('aria-hidden','true');visual.append(layer)}
+ }
  if(ownedCard)for(const piece of item.equipment||[]){
   const overlay=safeSrc(piece.asset);
   if(overlay){const layer=make('img','pet-overlay pet-overlay-'+piece.slot);layer.src=overlay+'?v=20261102-sanctuary5';layer.alt='';layer.setAttribute('aria-hidden','true');layer.loading='lazy';visual.append(layer)}
@@ -53,7 +61,17 @@ function dressUp(card,pet){
   const save=button('Apply','equip',working);save.dataset.slot=slot;
   row.append(label,select,save);wrap.append(row);
  }
- card.append(wrap);
+ const zone=make('div','pet-habitat-controls');zone.append(make('strong','','⌂ Personal habitat'));
+ for(const [field,options,selected] of [
+  ['theme',habitatThemes,pet.habitat?.theme||'graveyard'],
+  ['decoration',habitatDecorations,pet.habitat?.decoration||'none']]){
+  const row=make('div','pet-equip-row'),label=make('label','',field==='theme'?'Home':'Decor');
+  const select=make('select');select.dataset.habitatField=field;select.setAttribute('aria-label',field+' for '+pet.nickname);
+  for(const opt of options){if(Number(opt.unlock_level||1)>pet.level)continue;const item=make('option','',opt.name);item.value=opt.id;select.append(item)}
+  select.value=selected;row.append(label,select);zone.append(row);
+ }
+ zone.append(button('Save habitat','habitat',working||!habitatThemes.length));
+ card.append(wrap,zone);
 }
 function renderOwned(){
  owned.replaceChildren();
@@ -62,7 +80,7 @@ function renderOwned(){
  if(!signedIn){owned.append(make('p','pet-empty','Sign in to collect pets and keep everything saved to your account.'));return}
  if(!pets.length){owned.append(make('p','pet-empty','Your collection is empty. Your first rescue is free, and you can eventually own all 22 species.'));return}
  for(const pet of pets){
-  const card=cardBase(pet,pet.portrait||pet.idle||pet.image,true),heading=make('div','pet-label');
+  const card=cardBase(pet,pet.idle||pet.image||pet.portrait,true),heading=make('div','pet-label');
   heading.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
   card.append(heading,make('p','pet-type',pet.species_name+' · Lv '+pet.level+' · '+pet.experience+' XP'));
   const bars=make('div','pet-bars');
@@ -127,7 +145,9 @@ async function reload(){
  species=catalog.species||[];accessories=catalog.accessories||[];
  premiumEnabled=!!catalog.premium_enabled;max=catalog.max_owned||22;
  try{updateMe(await api('/api/mascot-pets/me'));signedIn=true;
-  say('First rescue free. Train pets to unlock rarer species, earn Cinders in the arcade, and dress up your whole collection.');
+  const adv=await api('/api/mascot-pets/adventures').catch(()=>null);
+  habitatThemes=adv?.themes||[];habitatDecorations=adv?.decorations||[];
+  say('First rescue free. Complete daily companion quests to earn rescue shells, incubate eggs, and decorate every pet habitat.');
  }catch(error){if(error.status===401){signedIn=false;say('Browse every species and cosmetic here. Sign in to own companions.')}else throw error}
  const checkout=new URLSearchParams(location.search).get('checkout');
  if(checkout==='success')say('Payment returned successfully. Premium items are granted only after Stripe confirms payment. Refresh your wardrobe shortly.');
@@ -138,6 +158,7 @@ async function perform(fn){
  if(working)return;working=true;render();
  try{const result=await fn();say(result?.message||'Your Sanctuary was updated.');
   updateMe(await api('/api/mascot-pets/me'));
+  document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'pets'}}));
  }catch(error){say(error.message)}
  finally{working=false;render()}
 }
@@ -177,12 +198,21 @@ document.addEventListener('click',event=>{
   if(value!==null)perform(()=>api('/api/mascot-pets/'+id+'/nickname',{method:'PATCH',body:JSON.stringify({nickname:value})}));
   return;
  }
+ if(action==='habitat'){
+  const theme=card.querySelector('[data-habitat-field="theme"]')?.value;
+  const decoration=card.querySelector('[data-habitat-field="decoration"]')?.value;
+  perform(()=>api('/api/mascot-pets/'+id+'/habitat',{method:'PUT',body:JSON.stringify({theme,decoration})}));return;
+ }
  if(action==='equip'){
   const slot=b.dataset.slot,sku=card.querySelector('select[data-equip-slot="'+slot+'"]')?.value;
   if(!slot)return;
   if(sku)perform(()=>api('/api/mascot-pets/'+id+'/equipment',{method:'PUT',body:JSON.stringify({slot,sku})}));
   else perform(()=>api('/api/mascot-pets/'+id+'/equipment',{method:'DELETE',body:JSON.stringify({slot})}));
  }
+});
+document.addEventListener('sanctuary-changed',async event=>{
+ if(event.detail?.source!=='adventures')return;
+ try{updateMe(await api('/api/mascot-pets/me'));render()}catch(error){say(error.message)}
 });
 reload().catch(err=>say('Sanctuary unavailable: '+err.message));
 })();
