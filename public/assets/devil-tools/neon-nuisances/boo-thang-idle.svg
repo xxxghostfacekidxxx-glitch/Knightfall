@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Boo Thang, a flirty punk ghost mascot with a neon bow and mischievous smile">
-<title>Boo Thang | Ash-Fall Neon Nuisances</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+<title id="title">Boo Thang · Deluxe Haunted Punk idle</title><desc id="desc">Expressive punk ghost with multi-layered transparent ectoplasm, neon ribbon, eerie jewelry, luminous face and spectral trailing fabric.</desc>
 <defs><radialGradient id="aura"><stop stop-color="#ff55d8" stop-opacity=".38"/><stop offset="1" stop-color="#ff55d8" stop-opacity="0"/></radialGradient><linearGradient id="sheet" x1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".55" stop-color="#b0f9ff"/><stop offset="1" stop-color="#8e80da"/></linearGradient></defs><style>@media (prefers-reduced-motion: no-preference){#mascot{transform-box:fill-box;transform-origin:center}#mascot{animation:float 3.2s ease-in-out infinite}@keyframes float{50%{transform:translateY(-6px) rotate(2deg)}}}</style><g id="mascot">
 <circle cx="80" cy="76" r="72" fill="url(#aura)"/>
 <ellipse cx="80" cy="147" rx="42" ry="6" fill="#79faff" opacity=".26"/>
@@ -19,5 +19,28 @@
 <path d="M65 115q15 14 30 0" stroke="#ff55d8" stroke-width="4" fill="none"/>
 <path d="M80 111v17" stroke="#201327" stroke-width="3"/><path d="m73 127 7-7 7 7-7 8Z" fill="#c6ff45" stroke="#201327" stroke-width="2"/>
 <path d="m122 83 9-6 8 7-7 12-9-2Z" fill="#ff55d8" stroke="#201327" stroke-width="3"/>
-<path d="m133 82 3 6" stroke="#fff" stroke-width="2"/>
+<path d="m133 82 3 6" stroke="#fff" stroke-width="2"/><g id="premium-character-details" stroke-linecap="round" stroke-linejoin="round">
+<path d="M43 52q5-14 21-15m16-6q18-2 31 14" fill="none" stroke="#ffffff" stroke-opacity=".74" stroke-width="3"/>
+<path d="m46 45 9-9 5 7-6 9Z" fill="#ff9ae7" stroke="#201327" stroke-width="2"/>
+<path d="M41 52q-9 26 1 42" fill="none" stroke="#79ffe7" stroke-width="3" opacity=".7"/>
+<path d="M117 51q13 27 3 43" fill="none" stroke="#79ffe7" stroke-width="3" opacity=".7"/>
+<path d="m32 105-11 22 17-6 9 18 11-20m72-14 11 20-17-5-9 18-11-19" fill="none" stroke="#ffb6f2" stroke-width="3"/>
+<path d="m35 91 7 7m76-7-7 7" stroke="#c6ff45" stroke-width="3"/>
+<path d="M50 106q29 16 60 0" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="2.5"/>
+<path d="M58 115q23 8 46 0" fill="none" stroke="#a9eaff" stroke-width="2"/>
+<path d="m62 121 10 9 8-6 9 6 10-9" fill="none" stroke="#ff55d8" stroke-width="2.8"/>
+<path d="m48 88 7-2m51 0 7 2" stroke="#79ffe7" stroke-width="2.6"/>
+<path d="m63 48 4-12 10 11" fill="#c6ff45" stroke="#201327" stroke-width="2"/>
+<path d="m74 42 4-5m-21 5-4-5" stroke="#ffffff" stroke-width="2"/>
+<circle cx="59" cy="48" r="3" fill="#ff55d8" stroke="#251324" stroke-width="1.5"/>
+<path d="M95 100q10-9 16 1" fill="none" stroke="#ff55d8" stroke-width="3"/>
+<path d="M66 76q8 5 14 0" fill="none" stroke="#a7c8f8" stroke-width="2.7"/>
+<circle cx="56" cy="69" r="2.5" fill="#79ffe7"/><circle cx="103" cy="69" r="2.5" fill="#c6ff45"/>
+<path d="m33 66-11 10 14 7m88-17 11 10-14 7" stroke="#ff55d8" stroke-width="2.4" fill="none" opacity=".8"/>
+<path d="M78 103q8 7 17-1" fill="none" stroke="#c6ff45" stroke-width="2.3"/>
+<path d="m63 128 18 17 18-18" fill="none" stroke="#79ffe7" stroke-opacity=".6" stroke-width="2.5"/>
+<path d="m19 35 5-16 4 14 12 7-14 4-6 15-4-15-11-6ZM136 103l5-9 4 9 9 4-9 5-4 9-5-10-9-4Z" fill="#c6ff45" opacity=".9"/>
+<path d="m12 117 6-7m117-88 9-9" stroke="#79ffe7" stroke-width="3"/>
+<circle cx="119" cy="25" r="4" fill="#ff55d8" opacity=".8"/>
+</g>
 </g></g><g id="lids" opacity="0"><path d="M50 68h22m18 0h22" stroke="#201421" stroke-width="6.5" stroke-linecap="round" fill="none"/></g><g id="spark" opacity="0"><path d="M143 20l3-9 3 9-3 9Z" fill="#ff55d8" stroke="#c6ff45" stroke-width="1.5"/></g></svg>
