@@ -1,8 +1,8 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 4,
+  "version": 5,
   "updated": "2026-11-02",
-  "count": 103,
+  "count": 115,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -723,6 +723,90 @@
       "title": "Zipfang",
       "category": "Monster Sprites",
       "src": "/assets/monster-sprites/zipfang.svg",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-arcade-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/arcade.svg",
+      "category": "Pet Habitats",
+      "title": "Arcade",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-cosmic-void-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/cosmic-void.svg",
+      "category": "Pet Habitats",
+      "title": "Cosmic Void",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-crystal-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/crystal.svg",
+      "category": "Pet Habitats",
+      "title": "Crystal",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-graveyard-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/graveyard.svg",
+      "category": "Pet Habitats",
+      "title": "Graveyard",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-lantern-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/lantern.svg",
+      "category": "Pet Habitats",
+      "title": "Lantern",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-neon-city-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/neon-city.svg",
+      "category": "Pet Habitats",
+      "title": "Neon City",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-habitats-toxic-lagoon-svg",
+      "src": "/assets/devil-tools/neon-nuisances/habitats/toxic-lagoon.svg",
+      "category": "Pet Habitats",
+      "title": "Toxic Lagoon",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-eggs-common-svg",
+      "src": "/assets/devil-tools/neon-nuisances/eggs/common.svg",
+      "category": "Rescue Eggs",
+      "title": "Common Egg",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-eggs-fragment-svg",
+      "src": "/assets/devil-tools/neon-nuisances/eggs/fragment.svg",
+      "category": "Rescue Eggs",
+      "title": "Fragment Shell",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-eggs-legendary-svg",
+      "src": "/assets/devil-tools/neon-nuisances/eggs/legendary.svg",
+      "category": "Rescue Eggs",
+      "title": "Legendary Egg",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-eggs-rare-svg",
+      "src": "/assets/devil-tools/neon-nuisances/eggs/rare.svg",
+      "category": "Rescue Eggs",
+      "title": "Rare Egg",
+      "remastered": true
+    },
+    {
+      "id": "assets-devil-tools-neon-nuisances-eggs-uncommon-svg",
+      "src": "/assets/devil-tools/neon-nuisances/eggs/uncommon.svg",
+      "category": "Rescue Eggs",
+      "title": "Uncommon Egg",
       "remastered": true
     }
   ]
