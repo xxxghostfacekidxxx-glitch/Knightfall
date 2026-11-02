@@ -6,7 +6,7 @@ const list=root.querySelector('[data-dt-gallery]'),search=root.querySelector('[d
 if(!list||!search||!filter||!status)return;
 const icon='/assets/devil-tools/art-gallery.json';
 let all=[];
-const safeSource=src=>typeof src==='string'&&/^\/assets\/[a-z0-9/_-]+\.svg$/.test(src);
+const safeSource=src=>typeof src==='string'&&/^\/(?:assets|icons|branding|admin-offline)\/[a-z0-9/_-]+\.svg$/.test(src);
 function render(){
  const needle=search.value.trim().toLowerCase(),cat=filter.value;
  const shown=all.filter(x=>(cat==='all'||x.category===cat)&&(!needle||(x.title+' '+x.category).toLowerCase().includes(needle)));
@@ -14,7 +14,7 @@ function render(){
  const fragment=document.createDocumentFragment();
  for(const asset of shown){
   const card=document.createElement('article');card.className='dt-svg-card';
-  const img=document.createElement('img');img.src=asset.src+'?v=20261102-overhaul1';img.alt=asset.title;img.loading='lazy';img.decoding='async';img.width=128;img.height=128;
+  const img=document.createElement('img');img.src=asset.src+'?v=20261102-overhaul2';img.alt=asset.title;img.loading='lazy';img.decoding='async';img.width=128;img.height=128;
   const title=document.createElement('strong');title.textContent=asset.title;
   const category=document.createElement('small');category.textContent=asset.category;
   const link=document.createElement('a');link.href=asset.src;link.download=asset.src.split('/').at(-1);link.textContent='Download SVG';link.className='dt-svg-download';link.setAttribute('aria-label','Download '+asset.title+' as SVG');
