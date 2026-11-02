@@ -716,7 +716,12 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
     
             this.client = new GameClient(this.host, this.port);
             
-            // Solo edition connects directly to its in-tab WorldServer Worker.\n            // Never request the original multiplayer dispatcher: it does not exist here.\n            this.client.connect(false);\n            connecting = true;\n\n            this.client.onDispatched(function(host, port) {
+            // Solo edition connects directly to its in-tab WorldServer Worker.
+            // Never request the original multiplayer dispatcher: it does not exist here.
+            this.client.connect(false);
+            connecting = true;
+
+            this.client.onDispatched(function(host, port) {
                 log.debug("Dispatched to game server "+host+ ":"+port);
                 
                 self.client.host = host;
