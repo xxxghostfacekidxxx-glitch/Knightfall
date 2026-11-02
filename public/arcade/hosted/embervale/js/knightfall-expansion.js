@@ -116,29 +116,6 @@ P(1,0,{name:'THRONE OF SHARDS',music:'boss',
 MAPS.glasscrypt={grid:PRISM,w:2,h:2,music:'dungeon'};
 DIALOG.get_stormbow='THE STORM BOW! ONE ARROW BECOMES THREE LIGHTNING SHOTS. AIM WITH X.';
 
-class PrismBeast extends CinderWarden {
-  constructor(tx,ty){super(tx,ty);this.hp=20;this.shotTimer=66;}
-  die(){
-    if(this.dead)return;
-    // Separate quest completion, no interaction with the Cinder Warden flag.
-    Enemy.prototype.die.call(this);
-    G.flags.add('prismbeast_defeated');G.flags.add('clear:glasscrypt:1,0');
-    Particles.spawn(this.cx,this.cy,40,{color:['#42e2ff','#ba70ff','#fff','#f4cf4a'],speed:3,life:45,size:3});
-    G.shake=10;AudioSys.sfx('bossHit');G.save();
-  }
-  draw(c){
-    const x=Math.round(this.x),y=Math.round(this.y),pulse=Math.sin(this.t/9);
-    c.save();c.globalAlpha=.22;c.fillStyle='#43efff';
-    c.beginPath();c.arc(x+8,y+8,14+pulse*2,0,6.283);c.fill();
-    c.globalAlpha=1;
-    c.fillStyle=this.flash>0?'#fff':this.phase===2?'#d857ff':'#5f73d2';
-    c.beginPath();c.moveTo(x+8,y-3);c.lineTo(x+18,y+8);c.lineTo(x+8,y+19);c.lineTo(x-2,y+8);c.closePath();c.fill();
-    c.fillStyle='#b6faff';c.fillRect(x+3,y+5,4,3);c.fillRect(x+10,y+5,4,3);
-    c.fillStyle='#f0e3ff';c.fillRect(x+7,y+11,3,3);
-    c.restore();
-  }
-}
-
 
 // Extra enemies are hand-drawn so the DLC brings its own visual identity
 // without borrowing any third-party sprites.
@@ -228,6 +205,29 @@ class CinderWarden extends Enemy {
     c.fillStyle='#ffcc61';c.fillRect(x+4,y+6,3,3);c.fillRect(x+10,y+6,3,3);
     c.fillStyle='#fa742e';c.fillRect(x,y+3,3,4);c.fillRect(x+13,y+3,3,4);
     c.fillStyle='#ffd88b';c.fillRect(x+5,y+12,6,2);
+    c.restore();
+  }
+}
+
+class PrismBeast extends CinderWarden {
+  constructor(tx,ty){super(tx,ty);this.hp=20;this.shotTimer=66;}
+  die(){
+    if(this.dead)return;
+    // Separate quest completion, no interaction with the Cinder Warden flag.
+    Enemy.prototype.die.call(this);
+    G.flags.add('prismbeast_defeated');G.flags.add('clear:glasscrypt:1,0');
+    Particles.spawn(this.cx,this.cy,40,{color:['#42e2ff','#ba70ff','#fff','#f4cf4a'],speed:3,life:45,size:3});
+    G.shake=10;AudioSys.sfx('bossHit');G.save();
+  }
+  draw(c){
+    const x=Math.round(this.x),y=Math.round(this.y),pulse=Math.sin(this.t/9);
+    c.save();c.globalAlpha=.22;c.fillStyle='#43efff';
+    c.beginPath();c.arc(x+8,y+8,14+pulse*2,0,6.283);c.fill();
+    c.globalAlpha=1;
+    c.fillStyle=this.flash>0?'#fff':this.phase===2?'#d857ff':'#5f73d2';
+    c.beginPath();c.moveTo(x+8,y-3);c.lineTo(x+18,y+8);c.lineTo(x+8,y+19);c.lineTo(x-2,y+8);c.closePath();c.fill();
+    c.fillStyle='#b6faff';c.fillRect(x+3,y+5,4,3);c.fillRect(x+10,y+5,4,3);
+    c.fillStyle='#f0e3ff';c.fillRect(x+7,y+11,3,3);
     c.restore();
   }
 }
