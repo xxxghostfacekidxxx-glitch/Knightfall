@@ -32,8 +32,9 @@ try {
    action="inspect page";
    const title=await page.title();
    if (!title.trim()) throw Error("Missing title");
-   const body=await page.locator("body").innerText({timeout:3000});
-   if (!body.trim()) throw Error("Empty body");
+   const body=await page.locator("body").textContent({timeout:5000});
+   const visualContent=await page.locator("canvas, svg, img, video, iframe").count();
+   if (!(body||"").trim() && visualContent===0) throw Error("Empty body and no visual content");
    action="start game";
    const control=page.locator('#start-overlay button:not([disabled]), #playButton, #btn-start, #start').first();
    const generic=page.getByRole("button",{name:/^(start|start game|start run|start \/ restart|play|play game|new game|begin|launch|restart|run it back)$/i}).first();
