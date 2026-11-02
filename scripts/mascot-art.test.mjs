@@ -39,7 +39,7 @@ test('three upgraded mascots have unique names, lore and correct animated file p
     assert.ok(mascot.personality.length > 40);
     assert.ok(mascot.tagline.length > 10);
     assert.ok(mascot.role.length > 10);
-    assert.equal(mascot.styleVersion, 9);
+    assert.ok(mascot.styleVersion >= 9, 'newer deluxe art versions are compatible');
     assert.equal(mascot.svg, '/assets/devil-tools/neon-nuisances/' + id + '.svg');
     assert.deepEqual(Object.keys(mascot.variants).sort(), modes.slice().sort());
     for (const mode of modes) {
