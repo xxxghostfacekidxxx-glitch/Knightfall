@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc"><title id="title">Knightfall adaptive maskable icon</title><desc id="desc">Safe-area Knightfall flame with violet eclipse, pink ember highlights and controlled neon accent stars.</desc>
   <defs>
     <radialGradient id="bg" cx="50%" cy="42%" r="70%">
       <stop offset="0" stop-color="#251008"/>
@@ -16,4 +16,4 @@
     <path d="M256 220c6 36-27 53-27 83 0 29 17 47 38 52-7-25 14-39 21-57 21 39 16 67-8 87-24 20-61 12-73-17-15-37 11-67 31-91 13-16 20-35 18-57Z" fill="#080808"/>
     <path d="M118 355c46 55 102 82 163 72 46-8 81-32 111-70" fill="none" stroke="#ff55d8" stroke-width="8" stroke-linecap="round" opacity=".85"/>
   </g>
-</svg>
+<g id="dt-finishing" stroke-linecap="round"><circle cx="256" cy="256" r="154" fill="none" stroke="#ff55d8" stroke-width="2.5" stroke-dasharray="15 20" opacity=".42"/><path d="m176 365 10 12m150-13 10-12" stroke="#79ffe7" stroke-width="5"/><circle cx="171" cy="181" r="5" fill="#c6ff45"/><circle cx="339" cy="177" r="4" fill="#ff55d8"/></g></svg>
