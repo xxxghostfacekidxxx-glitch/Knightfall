@@ -1,0 +1,32 @@
+import fs from 'node:fs';import path from 'node:path';
+const dir='public/assets/devil-tools/neon-nuisances',m=JSON.parse(fs.readFileSync(dir+'/manifest.json','utf8'));
+const worlds={
+bloop:'ocean',nib:'crypt',glim:'crypt',gravebyte:'cyber',statichex:'cyber',pippa:'fire',emberbun:'fire',rattlepop:'crypt',casket-pup:'crypt',gutterkit:'city',kiki:'city',minion-mouse:'city',mini-villain:'city',mini-eddie:'fire',chunky-monkey:'jungle',boo-thang:'crypt',volt-imp:'storm',crypt-koi:'ocean',void-sprout:'cosmic',moxie:'cosmic',thornriot:'jungle',zuzu:'ocean'};
+const palette={
+ocean:['#79ffe7','#ff55d8'],crypt:['#b78cff','#c6ff45'],cyber:['#79ffe7','#c6ff45'],fire:['#ff9566','#ff55d8'],city:['#ff55d8','#79ffe7'],jungle:['#c6ff45','#ff55d8'],storm:['#c6ff45','#b78cff'],cosmic:['#b78cff','#79ffe7']};
+const scenes={
+ocean:'<path d="M0 359q80-52 170 1t171 0 171 0v110H0Z" fill="#79ffe733"/><path d="M4 356q80-49 167 0t171 0 168 0" stroke="currentColor" stroke-width="7" fill="none"/><circle cx="79" cy="172" r="18" stroke="currentColor" fill="none" stroke-width="3"/><circle cx="425" cy="255" r="12" stroke="currentColor" fill="none" stroke-width="3"/>',
+crypt:'<circle cx="388" cy="127" r="66" fill="#f3eeff" opacity=".17"/><path d="M0 383q120-26 246-9t266 0v110H0Z" fill="#24152f"/><path d="M34 388v-84q0-33 31-33t31 33v84m325 0v-91q0-33 30-33t30 33v91" stroke="currentColor" stroke-width="5" fill="#21152b" opacity=".65"/><path d="M65 287v42m-18-21h36m368-31v42m-18-22h37" stroke="currentColor" stroke-width="3"/>',
+cyber:'<path d="M0 345h512M0 375h512M0 405h512M0 435h512" stroke="currentColor" stroke-width="3" opacity=".3"/><path d="M30 110h100l30 30h90m232-24h-95l-31 32h-87" stroke="currentColor" fill="none" stroke-width="4" opacity=".5"/><circle cx="130" cy="110" r="8" fill="currentColor"/><circle cx="387" cy="116" r="8" fill="currentColor"/>',
+fire:'<path d="M0 406q10-108 89-193-9 101 39 83 47-68 27-137 108 100 61 177 94-29 87-137 96 104 48 183 71-22 92-87 72 92 49 111" fill="#ff55d82b" stroke="currentColor" stroke-width="6"/><path d="m60 380 20-77m360 74-18-66" stroke="#fff0b1" stroke-width="5"/>',
+city:'<path d="M0 362V290h61v-59h42v131h24V196h67v166h21V245h55v117h42V278h66v84h20V211h62v151h52v116H0Z" fill="#0c1021" stroke="currentColor" stroke-width="3" opacity=".58"/><path d="M38 329h18m109-95h18m76 50h17m138-38h17" stroke="currentColor" stroke-width="7" opacity=".65"/>',
+jungle:'<path d="M10 72q109-9 82 143M502 72q-109-9-82 143" stroke="currentColor" fill="none" stroke-width="17" opacity=".3"/><path d="M9 320q104-50 75-149m420 148q-104-50-75-149" stroke="#c6ff45" stroke-width="9" fill="none" opacity=".6"/><path d="M27 321q44-43 84-21-10 39-59 43m433-22q-44-43-84-21 10 39 59 43" fill="#5ca363" stroke="currentColor" stroke-width="3"/>',
+storm:'<path d="M104 90 53 195h40l-33 93 108-129h-54l41-69m265 0-55 104h39l-32 90 110-126h-56l37-68" fill="currentColor" opacity=".26"/><path d="m44 321 22-31m393 31-22-31" stroke="#f9f4b4" stroke-width="6"/>',
+cosmic:'<circle cx="256" cy="225" r="141" stroke="currentColor" stroke-width="7" fill="none" opacity=".55"/><circle cx="256" cy="225" r="105" fill="#0a1221" stroke="#d4b6ff" stroke-width="24" opacity=".33"/><circle cx="256" cy="225" r="91" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="4 16"/>'
+};
+function escape(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;')}
+function dust(seed,a,b){let n=seed.split('').reduce((v,c)=>v*31+c.charCodeAt(0),7)>>>0,t='';for(let i=0;i<36;i++){n=(Math.imul(n,1664525)+1013904223)>>>0;let x=n%490+11;n=(Math.imul(n,1664525)+1013904223)>>>0;let y=n%330+70;t+='<circle cx="'+x+'" cy="'+y+'" r="'+(i%4+1)+'" fill="'+(i%2?a:b)+'" opacity=".44"/>';}return t}
+fs.mkdirSync(dir+'/portraits',{recursive:true});
+for(const mascot of m.characters){
+ const world=worlds[mascot.id]||'cosmic',[a,b]=palette[world],master=fs.readFileSync('public'+mascot.svg,'utf8').trim();
+ if(!master.startsWith('<svg')||!master.endsWith('</svg>'))throw Error('Invalid '+mascot.id);
+ const nested=master.replace(/^<svg\b/,'<svg x="58" y="74" width="396" height="396"');
+ const data='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc"><title id="title">'+escape(mascot.name)+' · Deluxe Sanctuary Portrait</title><desc id="desc">Premium original mascot art in a hand-illustrated neon '+world+' sanctuary.</desc>'+
+ '<defs><linearGradient id="sceneBackground" x2="1" y2="1"><stop stop-color="#28132e"/><stop offset=".5" stop-color="#101421"/><stop offset="1" stop-color="#050910"/></linearGradient><radialGradient id="sceneAura"><stop stop-color="'+a+'" stop-opacity=".46"/><stop offset=".65" stop-color="'+b+'" stop-opacity=".19"/><stop offset="1" stop-color="'+a+'" stop-opacity="0"/></radialGradient><linearGradient id="neonTrim" x2="1" y2="1"><stop stop-color="'+a+'"/><stop offset=".5" stop-color="'+b+'"/><stop offset="1" stop-color="'+a+'"/></linearGradient><filter id="sceneGlow"><feGaussianBlur stdDeviation="12"/></filter><filter id="characterDepth"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#000" flood-opacity=".8"/></filter></defs>'+
+ '<rect width="512" height="512" rx="32" fill="url(#sceneBackground)"/><circle cx="256" cy="224" r="205" fill="url(#sceneAura)" filter="url(#sceneGlow)"/><g style="color:'+a+'">'+scenes[world]+'</g>'+dust(mascot.id,a,b)+'<ellipse cx="256" cy="415" rx="155" ry="25" fill="'+a+'" opacity=".24" filter="url(#sceneGlow)"/><g filter="url(#characterDepth)">'+nested+'</g>'+
+ '<path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/>'+
+ '<rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="'+a+'" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/>'+
+ '<rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="'+a+'" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="'+a+'">'+escape(mascot.name.toUpperCase())+'</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>';
+ fs.writeFileSync(dir+'/portraits/'+mascot.id+'.svg',data);
+}
+console.log('Built '+m.characters.length+' deluxe collectible mascot SVGs.');
