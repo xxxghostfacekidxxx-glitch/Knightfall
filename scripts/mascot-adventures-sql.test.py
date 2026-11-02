@@ -16,7 +16,7 @@ CREATE TABLE wallet_ledger(user_id INTEGER NOT NULL,amount INTEGER NOT NULL,reas
 INSERT INTO users VALUES(1,'alpha','member'),(2,'beta','member');
 INSERT INTO user_wallets VALUES(1,100000,''),(2,100000,'');
 """)
-for name in ['0103_mascot_pets.sql','0104_mascot_economy.sql','0105_mascot_adventures.sql']:
+for name in ['0103_mascot_pets.sql','0104_mascot_economy.sql','0105_mascot_adventures.sql','0106_mascot_egg_reservations.sql']:
     db.executescript((root/'backend/migrations'/name).read_text())
 
 now=datetime.now(timezone.utc)
@@ -56,6 +56,7 @@ must_fail(craft,(1,'mini-eddie','locked',now.isoformat(),ready))
 db.execute(craft,(1,'zuzu','Acid Egg',now.isoformat(),ready))
 egg=count("SELECT id FROM mascot_rescue_eggs WHERE user_id=1 AND species='zuzu'")
 assert count('SELECT fragments FROM mascot_shell_fragments WHERE user_id=1')==0
+must_fail(adopt,(1,'zuzu','paid double',350))
 must_fail(craft,(1,'kiki','no shells',now.isoformat(),ready))
 must_fail("UPDATE mascot_rescue_eggs SET status='hatched' WHERE id=?",(egg,))
 assert count("SELECT COUNT(*) FROM mascot_pets WHERE user_id=1 AND species='zuzu'")==0
