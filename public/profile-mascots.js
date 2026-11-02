@@ -42,7 +42,8 @@ async function mount(){
    const art=el('div','mascot-profile-art'),url=safeImage(pet.portrait||pet.idle||pet.image);
    if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-sanctuary6';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
    for(const gear of pet.equipment||[]){
-    if(!new RegExp('^/assets/devil-tools/neon-nuisances/accessories/[a-z0-9_-]+[.]svg
+    const asset=String(gear.asset||'');const prefix='/assets/devil-tools/neon-nuisances/accessories/';
+    if(!asset.startsWith(prefix)||!asset.endsWith('.svg')||asset.includes('..')||asset.slice(prefix.length,-4).includes('/'))continue;
     const img=el('img','mascot-profile-layer');
     img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
    }
