@@ -14,6 +14,7 @@ on:
       - 'public/mascot-adventures.js'
       - 'scripts/mascot-adventures-sql.test.py'
       - 'public/assets/devil-tools/neon-nuisances/habitats/**'
+      - 'public/assets/devil-tools/neon-nuisances/eggs/**'
       - 'backend/src/mascot-collectibles.js'
       - 'backend/src/member-shop-checkout.js'
       - 'scripts/mascot-economy-sql.test.py'
