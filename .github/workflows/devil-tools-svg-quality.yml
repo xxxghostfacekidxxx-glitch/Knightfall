@@ -1,0 +1,32 @@
+name: Devil Tools SVG Quality
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'public/assets/devil-tools/**'
+      - 'public/assets/arcade/**'
+      - 'public/assets/monster-sprites/**'
+      - 'public/assets/miss-chaos/**'
+      - 'public/arcade/hosted/crypt-pairs/sprites/**'
+      - 'scripts/devil-tools-svg-audit.mjs'
+      - 'scripts/mascot-art.test.mjs'
+      - 'scripts/test-mascot-remaster.mjs'
+      - '.github/workflows/devil-tools-svg-quality.yml'
+
+jobs:
+  svg-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Audit every first-party SVG and mirrored sprite
+        run: node scripts/devil-tools-svg-audit.mjs --write-report
+      - name: Verify mascot references and animation variants
+        run: node --test scripts/mascot-art.test.mjs scripts/test-mascot-remaster.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: devil-tools-svg-audit
+          path: reports/devil-tools-svg-audit.*
+          retention-days: 14
