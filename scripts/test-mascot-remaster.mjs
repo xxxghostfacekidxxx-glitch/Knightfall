@@ -36,7 +36,18 @@ test('Every pose is detailed, standalone, accessible SVG with reduced motion sup
 });
 test('Devil Tools gallery previews latest version of Gillrot and Nocturnib',()=>{
  const gallery=readFileSync('public/devil-tools.html','utf8');
- assert.match(gallery,/\['bloop','nib'\]\.includes\(item\.id\)/);
+ assert.match(gallery,/\['bloop','nib'[^\]]*\]\.includes\(item\.id\)/);
  assert.match(gallery,/item\.variants\.idle/);
  assert.match(gallery,/encodeURIComponent\(data\.version\|\|1\)/);
+});
+
+test('Madhouse Memory uses Gillrot remaster instead of its outdated sprite copy',()=>{
+ assert.equal(readFileSync('public/arcade/hosted/crypt-pairs/sprites/bloop.svg','utf8'),readFileSync(directory+'bloop.svg','utf8'));
+});
+test('Gillrot and Nocturnib remain in homepage visible mascot slots',()=>{
+ const site=readFileSync('public/gravewave-takeover.js','utf8');
+ assert.match(site,/crewGroups=\[\[1,3,/);
+ assert.match(site,/home\?\[1,3,14\]/);
+ const nav=readFileSync('public/nav.js','utf8');
+ assert.match(nav,/gravewave-takeover\.js\?v=20261102-mascot6/);
 });
