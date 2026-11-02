@@ -44,4 +44,4 @@
  <path d="m59 83 3 5 5-3 5 3" stroke="#f7fff0" stroke-width="2" fill="none"/>
  <circle cx="91" cy="75" r="3" fill="#c6ff45" stroke="#191220" stroke-width="1.5"/>
  <path d="m48 90-6 8m43-8 6 8" stroke="#ff55d8" stroke-width="2.4"/>
-</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#eyes{animation:eyes-open 4.2s steps(1,end) infinite}#lids{animation:eyes-shut 4.2s steps(1,end) infinite}@keyframes eyes-open{0%,9%,14%,100%{opacity:1}10%,13%{opacity:0}}@keyframes eyes-shut{0%,9%,14%,100%{opacity:0}10%,13%{opacity:1}}}</style></svg>
+</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#eyes{animation:eyeOpen 5.5s steps(1,end) infinite}#lids{animation:eyeClose 5.5s steps(1,end) infinite}@keyframes eyeOpen{0%,35%,40%,100%{opacity:1}36%,39%{opacity:0}}@keyframes eyeClose{0%,35%,40%,100%{opacity:0}36%,39%{opacity:1}}}</style></svg>
