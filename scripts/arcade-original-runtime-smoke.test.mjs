@@ -4,7 +4,7 @@ import {readFileSync} from "node:fs";
 import {runInNewContext} from "node:vm";
 const root="public/arcade/hosted/";
 const groups={
- "ashfall-original-trio.js":["whack-a-bug","stack-tower","balance-stack"],
+ "ashfall-original-trio.js":["stack-tower","balance-stack"],
  "ashfall-original-sports.js":["basketball","bowling","penalty-shootout"],
  "ashfall-original-driving.js":["car-race","two-cars","crossy-road"],
  "ashfall-original-matching.js":["bubble-pop","candy-crush"],

@@ -561,9 +561,13 @@
       "genre": "Arcade",
       "sprites": [
         "void-wisp.svg",
-        "ember-hammer.svg"
+        "ember-hammer.svg",
+        "glitch.svg",
+        "friend.svg",
+        "ember-target.svg",
+        "bug.svg"
       ],
-      "notes": "Smash rising Void creatures in a 45-second reaction game while avoiding friendly embers.",
+      "notes": "Combined Crypt Smash, Cinder Taps, Crypt Exterminator and both Whack-a-Glitch cabinets. Five distinct modes, combos, friendly decoys, mode records, pause and viewport-fitted expanded view.",
       "engine": "/arcade/hosted/crypt-smash/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-smash",
       "assets": [
@@ -574,6 +578,22 @@
         {
           "name": "ember-hammer.svg",
           "path": "/arcade/hosted/crypt-smash/sprites/ember-hammer.svg"
+        },
+        {
+          "name": "glitch.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/glitch.svg"
+        },
+        {
+          "name": "friend.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/friend.svg"
+        },
+        {
+          "name": "ember-target.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/ember-target.svg"
+        },
+        {
+          "name": "bug.svg",
+          "path": "/arcade/hosted/crypt-smash/sprites/bug.svg"
         }
       ],
       "status": "committed; browser QA pending"
@@ -679,24 +699,6 @@
         {
           "name": "falling-cinder.svg",
           "path": "/arcade/hosted/ash-fallout/sprites/falling-cinder.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
-      "id": "cinder-taps",
-      "name": "Cinder Taps",
-      "genre": "Arcade",
-      "sprites": [
-        "ember-target.svg"
-      ],
-      "notes": "Tap the moving ember across nine furnace vents in a 30-second reflex challenge.",
-      "engine": "/arcade/hosted/cinder-taps/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-taps",
-      "assets": [
-        {
-          "name": "ember-target.svg",
-          "path": "/arcade/hosted/cinder-taps/sprites/ember-target.svg"
         }
       ],
       "status": "committed; browser QA pending"
@@ -1327,24 +1329,6 @@
         {
           "name": "twin-car.svg",
           "path": "/arcade/hosted/two-cars/sprites/twin-car.svg"
-        }
-      ],
-      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
-    },
-    {
-      "id": "whack-a-bug",
-      "name": "Crypt Exterminator",
-      "genre": "Arcade",
-      "sprites": [
-        "exterminator.svg"
-      ],
-      "notes": "Replaced previous game page and JavaScript with new shared Ash-Fall original canvas gameplay engine (ashfall-original-trio.js). Original Ash-Fall emblem retained; runtime browser QA and historical asset provenance still pending.",
-      "engine": "/arcade/hosted/whack-a-bug/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/whack-a-bug",
-      "assets": [
-        {
-          "name": "exterminator.svg",
-          "path": "/arcade/hosted/whack-a-bug/sprites/exterminator.svg"
         }
       ],
       "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"

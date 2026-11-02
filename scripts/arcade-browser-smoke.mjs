@@ -717,7 +717,7 @@ try {
 
   // Rewritten engines use versioned native saves. Old puzzle/racing editions have
   // different rules and geometry, so their old fixtures must be rejected, not coerced.
-  const nativeRestoreGames=["prism-panic","neon-vector","bubble-pop","candy-crush","balance-stack","stack-tower","whack-a-bug","doodle-jump","alien-battle","survivor","rusty-sky","slush-rush","car-race","two-cars","crossy-road"];
+  const nativeRestoreGames=["prism-panic","neon-vector","bubble-pop","candy-crush","balance-stack","stack-tower","doodle-jump","alien-battle","survivor","rusty-sky","slush-rush","car-race","two-cars","crossy-road"];
   for(const id of nativeRestoreGames){
     const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     await page.addInitScript(()=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async()=>null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}});

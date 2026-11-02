@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>if(location.hash==="#game-whack")location.replace("/arcade/hosted/crypt-smash/index.html?mode=classic");</script>
 <script>if(location.hash==="#game-memory")location.replace("/arcade/hosted/crypt-pairs/index.html");</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,7 +44,7 @@ body{margin:0;background:radial-gradient(ellipse at 15% 0%,#ff55d81b,transparent
 <button type="button" role="tab" id="tab-reaction" aria-controls="game-reaction" aria-selected="false" data-game="reaction">04 · Reaction Ritual</button>
 <button type="button" role="tab" id="tab-rps" aria-controls="game-rps" aria-selected="false" data-game="rps">05 · Rock, Paper, Ruin</button>
 <button type="button" role="tab" id="tab-ttt" aria-controls="game-ttt" aria-selected="false" data-game="ttt">06 · Tic-Tac-Toe: Doom Edition</button>
-<button type="button" role="tab" id="tab-whack" aria-controls="game-whack" aria-selected="false" data-game="whack">07 · Whack-a-Glitch</button>
+<button type="button" role="tab" id="tab-whack" aria-controls="game-whack" aria-selected="false" data-game="whack">07 · Crypt Smash</button>
 </div>
 <section class="game-panel active" id="game-cinder" role="tabpanel" aria-labelledby="tab-cinder">
 <p class="eyebrow">REFLEX / 15 SECONDS</p><h2>Cinder Clicker</h2><p class="muted">Click the ember as many times as you can before the timer runs out. An entire civilization built around pressing a glowing circle. Humanity's finest hour.</p>
@@ -73,8 +74,7 @@ body{margin:0;background:radial-gradient(ellipse at 15% 0%,#ff55d81b,transparent
 <div class="score-row"><span>Turn: <strong id="ttt-turn">X</strong></span><span>Score X: <strong id="ttt-x">0</strong></span><span>Score O: <strong id="ttt-o">0</strong></span></div><div class="play-area"><div class="ttt-grid" id="ttt-grid" aria-label="Tic tac toe board"></div></div><p class="message" id="ttt-message" aria-live="polite">X starts. Choose a square.</p><button class="action" id="ttt-reset" type="button">New round</button><button class="action" id="ttt-reset-score" type="button">Reset scores</button>
 </section>
 <section class="game-panel" id="game-whack" role="tabpanel" aria-labelledby="tab-whack">
-<p class="eyebrow">ARCADE / 20 SECONDS</p><h2>Whack-a-Glitch</h2><p class="muted">Glitches are popping up all over the system. Tap the glowing ones before they vanish. This is basically IT support, but with consequences.</p>
-<div class="score-row"><span>Score: <strong id="whack-score">0</strong></span><span>Time: <strong id="whack-time">20</strong>s</span><span>Best: <strong id="whack-best">0</strong></span></div><div class="play-area"><div class="whack-grid" id="whack-grid"></div></div><p class="message" id="whack-message" aria-live="polite">Start when ready. Hit only the glowing glitches.</p><button class="action primary" id="whack-start" type="button">Start purge</button>
+<p class="eyebrow">TAP-TARGET FAMILY / COMBINED EDITION</p><h2>Crypt Smash</h2><p class="muted">Whack-a-Glitch now lives in Crypt Smash. Play the 20-second Classic mode or choose Panic Room, friendly decoys, Ember Chase and Exterminator.</p><a class="action primary" href="/arcade/hosted/crypt-smash/index.html?mode=classic">Play Crypt Smash →</a>
 </section>
 <p class="footnote">Scores are kept only while this page is open. These are original, lightweight mini-games; no tracking or account data is needed.</p>
 </main>
@@ -119,12 +119,7 @@ body{margin:0;background:radial-gradient(ellipse at 15% 0%,#ff55d81b,transparent
   function moveTtt(i){if(tttOver||tttBoard[i])return;tttBoard[i]=tttPlayer;const winner=wins.find(line=>line.every(n=>tttBoard[n]===tttPlayer));if(winner){tttOver=true;tttScores[tttPlayer]++;tttX.textContent=tttScores.X;tttO.textContent=tttScores.O;tttMsg.textContent=tttPlayer+' wins this round!';window.AshFallArcade?.recordScore('tic-tac-toe-doom',tttScores[tttPlayer],{scores:{...tttScores},lastWinner:tttPlayer});}else if(tttBoard.every(Boolean)){tttOver=true;tttMsg.textContent='Draw. Nobody gets bragging rights.';}else{tttPlayer=tttPlayer==='X'?'O':'X';tttMsg.textContent=tttPlayer+"'s turn.";}drawTtt();}
   function resetTtt(){tttBoard=Array(9).fill('');tttPlayer='X';tttOver=false;tttMsg.textContent='X starts. Choose a square.';drawTtt();}
   document.getElementById('ttt-reset').addEventListener('click',resetTtt);document.getElementById('ttt-reset-score').addEventListener('click',()=>{tttScores={X:0,O:0};tttX.textContent='0';tttO.textContent='0';resetTtt();});drawTtt();
-  // Whack-a-Glitch
-  const whackGrid=document.getElementById('whack-grid'),whackScoreEl=document.getElementById('whack-score'),whackTimeEl=document.getElementById('whack-time'),whackBestEl=document.getElementById('whack-best'),whackMsg=document.getElementById('whack-message'),whackStart=document.getElementById('whack-start');let whackScore=0,whackBest=0,whackTime=20,whackTimer=null,whackSpawner=null,whackLive=-1,whackRunning=false;
-  const holes=Array.from({length:9},(_,i)=>{const b=document.createElement('button');b.type='button';b.className='whack-hole';b.textContent='·';b.setAttribute('aria-label','Empty hole '+(i+1));b.addEventListener('click',()=>{if(!whackRunning)return;if(i===whackLive){whackScore++;whackScoreEl.textContent=whackScore;holes[i].classList.remove('live');holes[i].textContent='·';holes[i].style.backgroundImage='';holes[i].style.backgroundSize='';holes[i].style.backgroundPosition='';holes[i].setAttribute('aria-label','Empty hole '+(i+1));whackLive=-1;}});whackGrid.append(b);return b;});
-  function spawnWhack(){holes.forEach((b,i)=>{b.classList.remove('live');b.textContent='·';b.style.backgroundImage='';b.style.backgroundSize='';b.style.backgroundPosition='';b.setAttribute('aria-label','Empty hole '+(i+1));});whackLive=Math.floor(Math.random()*holes.length);const target=holes[whackLive];target.classList.add('live');target.textContent=window.ChaosSprites?.ready()?'':'☠';if(window.ChaosSprites?.css)Object.assign(target.style,window.ChaosSprites.css('glitch'));target.style.backgroundColor='#151020';target.style.boxShadow='0 0 18px #ff55d899';target.setAttribute('aria-label','Glitch! tap to hit');}
-  function endWhack(){clearInterval(whackTimer);clearInterval(whackSpawner);whackRunning=false;whackLive=-1;holes.forEach(b=>{b.classList.remove('live');b.textContent='·';b.style.backgroundImage='';b.style.backgroundSize='';b.style.backgroundPosition='';});whackBest=Math.max(whackBest,whackScore);whackBestEl.textContent=whackBest;whackStart.disabled=false;whackStart.textContent='Run it back';whackMsg.textContent='Purge complete. You cleared '+whackScore+' glitches.';window.AshFallArcade?.recordScore('whack-a-glitch',whackScore,{bestScore:whackBest});}
-  whackStart.addEventListener('click',()=>{clearInterval(whackTimer);clearInterval(whackSpawner);whackScore=0;whackTime=20;whackRunning=true;whackScoreEl.textContent='0';whackTimeEl.textContent='20';whackStart.disabled=true;whackMsg.textContent='PURGE ACTIVE.';spawnWhack();whackSpawner=setInterval(spawnWhack,850);whackTimer=setInterval(()=>{whackTime--;whackTimeEl.textContent=whackTime;if(whackTime<=0)endWhack();},1000);});
+  // Tap-target games now live in the combined Crypt Smash cabinet.
 })();
 </script>
 <script src="/arcade-fullscreen.js?v=20261024" defer></script>

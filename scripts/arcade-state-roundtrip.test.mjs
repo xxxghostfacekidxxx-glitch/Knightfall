@@ -5,7 +5,7 @@ import {runInNewContext} from 'node:vm';
 const engines={
  'ashfall-original-vector.js':['prism-panic','neon-vector'],
  'ashfall-original-matching.js':['bubble-pop','candy-crush'],
- 'ashfall-original-trio.js':['balance-stack','stack-tower','whack-a-bug'],
+ 'ashfall-original-trio.js':['balance-stack','stack-tower'],
  'ashfall-original-action.js':['doodle-jump','alien-battle','survivor'],
  'ashfall-original-runner.js':['rusty-sky','slush-rush'],
  'ashfall-original-driving.js':['car-race','two-cars','crossy-road']
