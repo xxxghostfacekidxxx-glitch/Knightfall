@@ -50,12 +50,15 @@ try {
   } catch(error) {
    const filename=String(position).padStart(3,"0");
    const screenshot=filename+".png";
-   await page.screenshot({path:path.join(evidenceDir,screenshot),fullPage:true,timeout:5000}).catch(()=>{});
-   results.push({game:game.name||game.id||game.route,route:game.route,profile,action,status:"failed",error:String(error?.stack||error),browserErrors:errors,networkErrors:network,screenshot});
+   const screenshotSaved=await page.screenshot({path:path.join(evidenceDir,screenshot),fullPage:true,timeout:5000}).then(()=>true,()=>false);
+   results.push({game:game.name||game.id||game.route,route:game.route,profile,action,status:"failed",error:String(error?.stack||error),browserErrors:errors,networkErrors:network,screenshot:screenshotSaved?screenshot:null});
   } finally {await page.close().catch(()=>{});}
  }
 } finally {await browser.close();}
 const report={shardIndex,shardCount,profile,target:process.env.ARCADE_TEST_TARGET||"local",totalCatalog:unique.length,assigned:assigned.length,assignedRoutes:assigned.map(x=>x.route),passed:results.filter(x=>x.status==="passed").length,failed:results.filter(x=>x.status==="failed").length,results};
 await writeFile(path.join(evidenceDir,"report.json"),JSON.stringify(report,null,2));
 console.log(JSON.stringify({shardIndex,shardCount,profile,totalCatalog:unique.length,assigned:assigned.length,passed:report.passed,failed:report.failed}));
+for (const result of results.filter(item=>item.status==="failed")) {
+ console.error(JSON.stringify({route:result.route,profile:result.profile,action:result.action,error:result.error?.split("\\n")[0],browserErrors:result.browserErrors?.slice(0,3),networkErrors:result.networkErrors?.slice(0,3),screenshot:result.screenshot}));
+}
 if(report.failed)process.exitCode=1;
