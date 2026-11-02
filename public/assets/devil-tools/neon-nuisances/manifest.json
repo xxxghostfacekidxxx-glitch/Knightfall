@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 10,
+  "version": 11,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -16,7 +16,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/moxie-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/moxie-mischief.svg"
       },
-      "description": "Skeletal moth with razor fringe"
+      "description": "Segmented bone-veined neon moth with iridescent wing armor and luminous skeletal chest.",
+      "styleVersion": 11
     },
     {
       "id": "bloop",
@@ -48,7 +49,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/pippa-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/pippa-mischief.svg"
       },
-      "description": "Pumpkin graveyard gremlin"
+      "description": "Engraved pumpkin gremlin with vine grooves, glowing grimace and a haunted stem.",
+      "styleVersion": 11
     },
     {
       "id": "nib",
@@ -97,7 +99,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/zuzu-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/zuzu-mischief.svg"
       },
-      "description": "Mutant toxic sludge metalhead"
+      "description": "Toxic mutant slime with acid bubbles, exposed glowing ribs and dripping neon sludge.",
+      "styleVersion": 11
     },
     {
       "id": "kiki",
@@ -112,7 +115,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/kiki-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/kiki-mischief.svg"
       },
-      "description": "Undead alley cat"
+      "description": "Undead alley cat with torn ears, bone collar, luminous whiskers and fierce cheek markings.",
+      "styleVersion": 11
     },
     {
       "id": "emberbun",
@@ -127,7 +131,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/emberbun-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/emberbun-mischief.svg"
       },
-      "description": "Burnt skeletal bunny"
+      "description": "Scorched undead rabbit with glowing stitches, tattered ears and ember dust.",
+      "styleVersion": 11
     },
     {
       "id": "gravebyte",
@@ -205,9 +210,14 @@
       "accent": "#ff27ce",
       "description": "An electric gremlin with jagged lightning horns, neon dragon wings, split-color eyes and an electrified forked tail.",
       "svg": "/assets/devil-tools/neon-nuisances/volt-imp.svg",
-      "variants": {},
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/volt-imp-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/volt-imp-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/volt-imp-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/volt-imp-mischief.svg"
+      },
       "personality": "Hyperactive and impatient. A walking short circuit who loves to race the lightning.",
-      "styleVersion": 10
+      "styleVersion": 11
     },
     {
       "id": "crypt-koi",
@@ -217,9 +227,14 @@
       "accent": "#ff5eaf",
       "description": "An aquatic spirit fish with transparent fins, exposed luminous fish-bones, neon scales and floating bubbles.",
       "svg": "/assets/devil-tools/neon-nuisances/crypt-koi.svg",
-      "variants": {},
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/crypt-koi-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/crypt-koi-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/crypt-koi-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/crypt-koi-mischief.svg"
+      },
       "personality": "Dreamy, elusive and happiest haunting submerged arcades.",
-      "styleVersion": 10
+      "styleVersion": 11
     },
     {
       "id": "casket-pup",
@@ -229,9 +244,14 @@
       "accent": "#c6ff45",
       "description": "A skeletal coffin hound with floppy spectral ears, glowing ribs, hooked ghost tail and fanged grin.",
       "svg": "/assets/devil-tools/neon-nuisances/casket-pup.svg",
-      "variants": {},
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/casket-pup-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/casket-pup-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/casket-pup-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/casket-pup-mischief.svg"
+      },
       "personality": "A mischievous little graveyard watchdog who follows friendly ghosts home.",
-      "styleVersion": 10
+      "styleVersion": 11
     },
     {
       "id": "void-sprout",
@@ -241,9 +261,14 @@
       "accent": "#c6ff45",
       "description": "A spiked arcane bloom with a single luminous cosmic eye, radiant violet petals and creeping roots.",
       "svg": "/assets/devil-tools/neon-nuisances/void-sprout.svg",
-      "variants": {},
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/void-sprout-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/void-sprout-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/void-sprout-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/void-sprout-mischief.svg"
+      },
       "personality": "Quietly curious; grows stronger wherever the light fails.",
-      "styleVersion": 10
+      "styleVersion": 11
     },
     {
       "id": "minion-mouse",
@@ -306,11 +331,18 @@
     {
       "id": "gutterkit",
       "name": "Gutterkit",
-      "type": "neon mascot",
+      "type": "cat",
       "primary": "#ff27ce",
       "accent": "#c6ff45",
       "svg": "/assets/devil-tools/neon-nuisances/gutterkit.svg",
-      "variants": {}
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/gutterkit-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/gutterkit-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/gutterkit-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/gutterkit-mischief.svg"
+      },
+      "description": "Scrappy undead alley kitten with stitched fur, curled rat tail and luminous collar.",
+      "styleVersion": 11
     },
     {
       "id": "chunky-monkey",
@@ -321,8 +353,12 @@
       "description": "Big-hearted, banana-obsessed chaos gremlin with a leather vest and a tail full of trouble.",
       "svg": "/assets/devil-tools/neon-nuisances/chunky-monkey.svg",
       "variants": {
-        "idle": "/assets/devil-tools/neon-nuisances/chunky-monkey-idle.svg"
-      }
+        "idle": "/assets/devil-tools/neon-nuisances/chunky-monkey-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/chunky-monkey-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/chunky-monkey-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/chunky-monkey-mischief.svg"
+      },
+      "styleVersion": 11
     },
     {
       "id": "boo-thang",
@@ -333,8 +369,12 @@
       "description": "Flirty, mischievous neon ghost with a bright bow, fangs, and a knack for playful hauntings.",
       "svg": "/assets/devil-tools/neon-nuisances/boo-thang.svg",
       "variants": {
-        "idle": "/assets/devil-tools/neon-nuisances/boo-thang-idle.svg"
-      }
+        "idle": "/assets/devil-tools/neon-nuisances/boo-thang-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/boo-thang-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/boo-thang-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/boo-thang-mischief.svg"
+      },
+      "styleVersion": 11
     }
   ],
   "animationVariants": [
