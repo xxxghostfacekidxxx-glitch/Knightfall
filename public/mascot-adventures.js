@@ -5,6 +5,7 @@ const status=document.getElementById('adventure-status'),questRoot=document.getE
  eggRoot=document.getElementById('pet-eggs'),shells=document.getElementById('pet-shells');
 if(!status||!questRoot||!eggRoot||!shells)return;
 let adventures=null,pets=[],species=[],busy=false,guest=false;
+const rarityFor=id=>{const spec=species.find(x=>x.id===id),level=Number(spec?.unlock_level||1);return level>=5?'legendary':level>=3?'rare':level>=2?'uncommon':'common'};
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e};
 const say=message=>{status.textContent=String(message)};
 const button=(caption,action,disabled=false)=>{
@@ -41,6 +42,7 @@ function renderEggs(){
  const fragments=Number(adventures?.shell_fragments||0);
  shells.textContent=fragments+' Rescue Shell'+(fragments===1?'':'s')+' · 3 to craft an egg';
  const hatchery=el('div','pet-egg-workshop');
+ const preview=el('img','pet-egg-craft-preview');preview.src='/assets/devil-tools/neon-nuisances/eggs/fragment.svg?v=20261102-eggs1';preview.alt='Glowing earned Rescue Shell fragment';hatchery.append(preview);
  hatchery.append(el('h3','','Craft a known-species rescue egg'),
    el('p','','Choose exactly which missing mascot you want. Eggs are earned, not random, and never sold for real money.'));
  const options=species.filter(x=>!pets.some(p=>p.species===x.id) &&
@@ -56,7 +58,9 @@ function renderEggs(){
  for(const egg of adventures?.eggs||[]){
   const card=el('article','pet-incubator '+(egg.status==='hatched'?'hatched':''));
   card.dataset.eggId=egg.id;
-  const icon=el('div','pet-egg-icon','🥚');card.append(icon);
+  const icon=el('div','pet-egg-icon'),visual=el('img');
+  visual.src='/assets/devil-tools/neon-nuisances/eggs/'+rarityFor(egg.species)+'.svg?v=20261102-eggs1';
+  visual.alt=rarityFor(egg.species)+' rescue egg';visual.loading='lazy';icon.append(visual);card.append(icon);
   const info=el('div','pet-egg-info');
   info.append(el('strong','',egg.nickname),el('span','',egg.species));
   if(egg.status==='hatched')info.append(el('small','','✓ Hatched and in your collection'));
