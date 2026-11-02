@@ -1,8 +1,8 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 3,
+  "version": 4,
   "updated": "2026-11-02",
-  "count": 91,
+  "count": 103,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -422,6 +422,90 @@
       "title": "Warning Skull",
       "category": "Gravewave Effects",
       "src": "/assets/arcade/gravewave/warning-skull.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-acid_particles",
+      "title": "Acid Particles",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/acid_particles.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-cyber_visor",
+      "title": "Cyber Visor",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/cyber_visor.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-eclipse_aura",
+      "title": "Eclipse Aura",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/eclipse_aura.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-ember_aura",
+      "title": "Ember Aura",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/ember_aura.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-glitch_horns",
+      "title": "Glitch Horns",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/glitch_horns.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-royal_chains",
+      "title": "Royal Chains",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/royal_chains.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-scrap_crown",
+      "title": "Scrap Crown",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/scrap_crown.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-skull_pendant",
+      "title": "Skull Pendant",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/skull_pendant.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-spike_collar",
+      "title": "Spike Collar",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/spike_collar.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-toxic_shades",
+      "title": "Toxic Shades",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/toxic_shades.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-void_eyes",
+      "title": "Void Eyes",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/void_eyes.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-accessory-witch_hat",
+      "title": "Witch Hat",
+      "category": "Mascot Accessories",
+      "src": "/assets/devil-tools/neon-nuisances/accessories/witch_hat.svg",
       "remastered": true
     },
     {
