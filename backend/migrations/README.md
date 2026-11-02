@@ -103,3 +103,5 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 - Quests are limited to three starts and three successful claims per UTC day. A reward pays 75 Cinders plus one Rescue Shell only when a legitimate post-quest care action completes. Three earned shells craft a chosen-species egg with at least 35 minutes of incubation. No paid random eggs or irreversible loss of pets.
 - Habitats and decorative scenes are free level-based unlocks. Habitat ownership is verified against the authenticated user's pet, and both eggs and rewards have D1 triggers guarding against replay and cross-account access.
 - Validate with `python3 scripts/mascot-adventures-sql.test.py` and `node --test backend/src/mascot-adventures.test.mjs`, in addition to the existing Sanctuary suites.
+
+- `0106_mascot_egg_reservations.sql` adds a database-level reservation guard so members cannot spend Cinders rescuing the exact same mascot while its earned egg is incubating. Applied to production D1 after the isolation and integration tests passed. Its migration-ledger entry also requires review before any further Wrangler migrations.
