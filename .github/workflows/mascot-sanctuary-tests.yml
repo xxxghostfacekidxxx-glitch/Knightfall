@@ -9,6 +9,7 @@ on:
       - 'backend/migrations/0103_mascot_pets.sql'
       - 'backend/migrations/0104_mascot_economy.sql'
       - 'backend/migrations/0105_mascot_adventures.sql'
+      - 'backend/migrations/0106_mascot_egg_reservations.sql'
       - 'backend/src/mascot-adventures.js'
       - 'backend/src/mascot-adventures.test.mjs'
       - 'public/mascot-adventures.js'
