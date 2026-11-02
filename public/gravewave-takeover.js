@@ -4,7 +4,12 @@ if(window.__gravewaveTakeoverLoaded)return;
 window.__gravewaveTakeoverLoaded=true;
 const base='/assets/devil-tools/neon-nuisances/';
 const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot','minion-mouse','mini-villain','mini-eddie','gutterkit','chunky-monkey','boo-thang'];
-const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg';
+const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg?v=20261102-mascot5';
+// Rotate fixed-size mascot groups without losing the existing cast or covering mobile controls.
+const home=/^\/(?:index\.html)?$/.test(location.pathname);
+const pageSeed=Array.from(location.pathname).reduce((n,ch)=>n+ch.charCodeAt(0),0);
+const crewGroups=[[12,13,14,16,17,4],[4,8,16,17,14,15],[12,13,14,4,8,15]];
+const crewGroup=crewGroups[home?0:1+pageSeed%2];
 const excluded=/\/(?:checkout|payment|vault|settings)/i.test(location.pathname);
 const privateForm=/\/(?:messages|account|login|register|reset-password|auth)/i.test(location.pathname);
 function mascot(i,cls){const el=document.createElement('img');el.src=src(i);el.alt='';el.setAttribute('aria-hidden','true');el.className=cls;el.loading=cls==='gw-crew-art'?'eager':'lazy';el.decoding='async';el.addEventListener('error',()=>el.remove(),{once:true});return el}
@@ -12,14 +17,14 @@ function mount(){
  // Visible, non-interactive character crew on every public site page.
  if(!excluded&&!document.querySelector('.gw-character-crew')){
   const crew=document.createElement('aside');crew.className='gw-character-crew';crew.setAttribute('aria-label','Ash-Fall original mascot characters');
-  [4,8,16,17,14,15].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
+  crewGroup.forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
   document.body.append(crew);
  }
 
  document.body.classList.add('gravewave-everywhere');
  if(!document.querySelector('.gw-ambient')&&!excluded){
   const ambient=document.createElement('div');ambient.className='gw-ambient';ambient.setAttribute('aria-hidden','true');
-  [4,8,15].forEach(i=>ambient.append(mascot(i,'')));
+  (home?[12,13,14]:[4,8,15]).forEach(i=>ambient.append(mascot(i,'')));
   document.body.prepend(ambient);
  }
  // Do not interfere with private forms, editors, or game canvases.
