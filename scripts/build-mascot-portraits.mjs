@@ -1,7 +1,7 @@
 import fs from 'node:fs';import path from 'node:path';
 const dir='public/assets/devil-tools/neon-nuisances',m=JSON.parse(fs.readFileSync(dir+'/manifest.json','utf8'));
 const worlds={
-bloop:'ocean',nib:'crypt',glim:'crypt',gravebyte:'cyber',statichex:'cyber',pippa:'fire',emberbun:'fire',rattlepop:'crypt',casket-pup:'crypt',gutterkit:'city',kiki:'city',minion-mouse:'city',mini-villain:'city',mini-eddie:'fire',chunky-monkey:'jungle',boo-thang:'crypt',volt-imp:'storm',crypt-koi:'ocean',void-sprout:'cosmic',moxie:'cosmic',thornriot:'jungle',zuzu:'ocean'};
+bloop:'ocean',nib:'crypt',glim:'crypt',gravebyte:'cyber',statichex:'cyber',pippa:'fire',emberbun:'fire',rattlepop:'crypt','casket-pup':'crypt',gutterkit:'city',kiki:'city','minion-mouse':'city','mini-villain':'city','mini-eddie':'fire','chunky-monkey':'jungle','boo-thang':'crypt','volt-imp':'storm','crypt-koi':'ocean','void-sprout':'cosmic',moxie:'cosmic',thornriot:'jungle',zuzu:'ocean'};
 const palette={
 ocean:['#79ffe7','#ff55d8'],crypt:['#b78cff','#c6ff45'],cyber:['#79ffe7','#c6ff45'],fire:['#ff9566','#ff55d8'],city:['#ff55d8','#79ffe7'],jungle:['#c6ff45','#ff55d8'],storm:['#c6ff45','#b78cff'],cosmic:['#b78cff','#79ffe7']};
 const scenes={
