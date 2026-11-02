@@ -38,6 +38,8 @@ test('catalog is freely discoverable but private collection requires authenticat
  const catalog=await invoke('/api/mascot-pets/catalog','GET',null,db,async()=>null);
  assert.equal(catalog.status,200);
  assert.equal(catalog.data.species.length,22);
+ assert.equal(catalog.data.max_owned,22);
+ assert.equal(catalog.data.accessories.length,12);
  const guest=await invoke('/api/mascot-pets/me','GET',null,db,async()=>null);
  assert.equal(guest.status,401);
 });
@@ -50,9 +52,12 @@ test('adoption rejects invalid species and uses authenticated owner, capacity an
  const adopted=await invoke('/api/mascot-pets/adopt','POST',{species:'bloop',nickname:'Gilly'},db);
  assert.equal(adopted.status,201);
  assert.equal(adopted.data.pet.id,5);
- assert.ok(calls[0].sql.includes('COUNT(*)')&&calls[0].sql.includes('NOT EXISTS'));
+ assert.ok(calls[0].sql.includes('COUNT(*)')&&calls[0].sql.includes('MAX(experience)'));
  assert.equal(calls[0].values[0],owner.id);
- assert.equal(calls[0].values[6],6);
+ assert.ok(calls[1].sql.includes('INSERT INTO mascot_acquisitions'));
+ assert.equal(calls[1].values[0],owner.id);
+ assert.equal(calls[1].values[3],0,'first rescue uses zero Cinders');
+ assert.equal(adopted.data.paid_cinders,0);
 });
 
 test('other user pet cannot be cared for or renamed',async()=>{
