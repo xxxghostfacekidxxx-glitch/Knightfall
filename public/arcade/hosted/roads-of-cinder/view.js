@@ -2,6 +2,9 @@
 const {RoadsGame,PATH}=window.RoadsOfCinder,$=id=>document.getElementById(id),key="ashfall:roads-of-cinder:v2";
 const ICONS={start:"🚦",payday:"💰",event:"🎴",career:"🎓",family:"💚",choice:"⚡",expense:"💸",home:"🏡",fork:"🛣️",invest:"📈",tax:"🧾",retire:"🌅"};
 let game=new RoadsGame(),rotation=0,animating=false,turnToken=0;
+const defaults=["Ash","Ember","Ruin","Cinder"];
+function nameFields(){const n=Number($("player-count").value)||2,box=$("player-names");const previous=Array.from(box.querySelectorAll("input"),e=>e.value);box.replaceChildren();for(let i=0;i<n;i++){const label=document.createElement("label");label.textContent="P"+(i+1);const input=document.createElement("input");input.maxLength=24;input.setAttribute("aria-label","Player "+(i+1)+" name");input.value=previous[i]||game.players[i]?.name||defaults[i];label.append(input);box.append(label)}}
+$("player-count").addEventListener("change",nameFields);
 const fmt=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n);
 function save(){try{localStorage.setItem(key,JSON.stringify(game.snapshot()));$("save-status").textContent="Progress saved on this device."}catch{$("save-status").textContent="Browser storage unavailable: this run is temporary."}}
 function render(){
@@ -51,10 +54,10 @@ function render(){
    const detail=document.createElement("div");detail.className="tiny";detail.textContent="Cash "+fmt(pl.cash)+" · Property "+fmt(pl.property)+" · Investments "+fmt(pl.investments)+" · Debt "+fmt(pl.debt);
    row.append(title,detail);result.append(row)})}
 }
-function reset(){const n=Number($("player-count").value)||2;const defaults=["Ash","Ember","Ruin","Cinder"];game=new RoadsGame({names:defaults.slice(0,n)});turnToken++;rotation=0;$("spinner").style.transform="rotate(0deg)";$("wheel-number").textContent="★";save();render()}
+function reset(){const n=Number($("player-count").value)||2;const names=Array.from($("player-names").querySelectorAll("input"),(e,i)=>e.value.trim().slice(0,24)||defaults[i]);game=new RoadsGame({names:names.slice(0,n)});turnToken++;rotation=0;$("spinner").style.transform="rotate(0deg)";$("wheel-number").textContent="★";save();render()}
 $("new-game").addEventListener("click",()=>{if(game.round>0&&!game.finished&&!confirm("Start over and overwrite this saved game?"))return;reset()});
 $("resume").addEventListener("click",()=>{try{const raw=JSON.parse(localStorage.getItem(key)||"null");const candidate=new RoadsGame({names:["Ash","Ember"]});
- if(!candidate.restore(raw))throw Error("No valid saved run");game=candidate;$("player-count").value=String(game.players.length);turnToken++;render();$("save-status").textContent="Saved journey resumed."}catch{$("save-status").textContent="No valid saved journey found."}});
+ if(!candidate.restore(raw))throw Error("No valid saved run");game=candidate;$("player-count").value=String(game.players.length);turnToken++;nameFields();render();$("save-status").textContent="Saved journey resumed."}catch{$("save-status").textContent="No valid saved journey found."}});
 $("spin").addEventListener("click",()=>{
  if(game.pending||game.finished||animating)return;
  const rolled=game.spin();if(rolled===null)return;
@@ -66,5 +69,5 @@ $("spin").addEventListener("click",()=>{
  if(reduced)complete();else setTimeout(complete,900);
 });
 try{const raw=JSON.parse(localStorage.getItem(key)||"null");if(raw&&game.restore(raw)){$("player-count").value=String(game.players.length);$("save-status").textContent="Saved journey restored.";}}catch{}
-render();
+nameFields();render();
 })();
