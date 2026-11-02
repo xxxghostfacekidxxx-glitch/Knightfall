@@ -50,4 +50,4 @@
  <circle cx="65" cy="78" r="3" fill="#ff55d8"/>
  <path d="M51 91q13 8 29-1" stroke="#c6ff45" stroke-width="2" fill="none"/>
  <path d="m37 81-11 0m9 5-10 5m67-11 10-1m-10 8 11 5" fill="none" stroke="#c6ff45" stroke-width="2"/>
-</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#eyes{animation:eyes-open 4.2s steps(1,end) infinite}#lids{animation:eyes-shut 4.2s steps(1,end) infinite}@keyframes eyes-open{0%,9%,14%,100%{opacity:1}10%,13%{opacity:0}}@keyframes eyes-shut{0%,9%,14%,100%{opacity:0}10%,13%{opacity:1}}}</style></svg>
+</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#eyes{animation:eyeOpen 3.1s steps(1,end) infinite}#lids{animation:eyeClose 3.1s steps(1,end) infinite}#character{animation:earTwitch 3.1s ease-in-out infinite}@keyframes eyeOpen{0%,7%,13%,100%{opacity:1}8%,12%{opacity:0}}@keyframes eyeClose{0%,7%,13%,100%{opacity:0}8%,12%{opacity:1}}@keyframes earTwitch{10%{transform:rotate(-3deg)}}}</style></svg>
