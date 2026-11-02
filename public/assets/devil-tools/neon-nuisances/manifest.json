@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 7,
+  "version": 8,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -80,7 +80,9 @@
         "bounce": "/assets/devil-tools/neon-nuisances/glim-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/glim-mischief.svg"
       },
-      "description": "Glowing ghost with exposed ribs"
+      "description": "Cryptglow · mischievous ectoplasm ghost: spectral torn tails, exposed glowing rib cage, mint-green energy, broken chains, dark punk fringe, mismatched eyes and tiny fangs",
+      "personality": "A curious, sardonic poltergeist who collects lost secrets and haunts broken arcade machines. Mischief: winks while the ectoplasm flashes.",
+      "styleVersion": 8
     },
     {
       "id": "zuzu",
@@ -130,7 +132,7 @@
     {
       "id": "gravebyte",
       "name": "Gravebyte",
-      "description": "Cyber skeleton DJ",
+      "description": "Gravebyte · cyber skeleton DJ: chrome jaw, oversized headphones, digital equalizer eyes, glowing robot ribs, pink circuitry and miniature vinyl turntable badge",
       "type": "robot",
       "primary": "#aaff48",
       "accent": "#fc4ca8",
@@ -140,7 +142,9 @@
         "blink": "/assets/devil-tools/neon-nuisances/gravebyte-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/gravebyte-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/gravebyte-mischief.svg"
-      }
+      },
+      "personality": "Cold-sounding but secretly loyal. Talks in glitchy DJ jokes, loves bass drops and rewiring haunted machines. Mischief: LED wink and sparks.",
+      "styleVersion": 8
     },
     {
       "id": "statichex",
