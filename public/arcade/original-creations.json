@@ -2036,6 +2036,24 @@
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-lander",
       "assets": [],
       "status": "original Ash-Fall engine committed; browser QA pending"
+    },
+    {
+      "id": "reaction-ritual",
+      "name": "Reaction Ritual",
+      "genre": "Arcade",
+      "sprites": [
+        "ritual-mark.svg"
+      ],
+      "notes": "Combined original three-round Reaction Ritual and single-round After Dark. Fresh signals after interruption; false-start detection and separate local timing records.",
+      "engine": "/arcade/hosted/reaction-ritual/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/reaction-ritual",
+      "assets": [
+        {
+          "name": "ritual-mark.svg",
+          "path": "/arcade/hosted/reaction-ritual/sprites/ritual-mark.svg"
+        }
+      ],
+      "status": "committed; production user testing pending"
     }
   ]
 }

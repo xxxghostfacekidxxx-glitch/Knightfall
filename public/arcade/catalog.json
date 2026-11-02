@@ -1612,32 +1612,6 @@
       "featured": false
     },
     {
-      "id": "arcade-games-game-reaction",
-      "title": "Reaction Ritual",
-      "route": "/arcade-games.html#game-reaction",
-      "description": "Wait for green, then test your reaction speed across three rounds.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-after-dark-reaction-ritual",
-      "title": "Reaction Ritual: After Dark",
-      "route": "/arcade-after-dark.html#reaction-ritual",
-      "description": "A second reaction-test cabinet with a different presentation from the classic Reaction Ritual.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "rift-wardens",
       "title": "Rift Wardens",
       "route": "/arcade/hosted/rift-wardens/index.html",
@@ -2182,6 +2156,19 @@
       "notes": "Original Ash-Fall playable alpha. No Gauntlet franchise assets.",
       "links": [],
       "featured": true
+    },
+    {
+      "id": "reaction-ritual",
+      "title": "Reaction Ritual",
+      "route": "/arcade/hosted/reaction-ritual/index.html",
+      "description": "One neon reaction cabinet: three-round Classic averages or single-round After Dark. False-start protection, separate records, keyboard/touch play and a fullscreen control deck.",
+      "genre": "Arcade",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "",
+      "links": [],
+      "featured": true
     }
   ],
   "retiredListings": [
@@ -2394,6 +2381,16 @@
       "title": "Whack-a-Glitch: Panic Room",
       "route": "/arcade-after-dark.html#whack-a-glitch-panic-room",
       "reason": "Tap-target family consolidated into Crypt Smash. Classic, Panic Room, friendly decoys, ember chase and bug hunt remain available as distinct modes."
+    },
+    {
+      "title": "Reaction Ritual",
+      "route": "/arcade-games.html#game-reaction",
+      "reason": "Reaction family consolidated into Reaction Ritual; three-round Classic and single-round After Dark remain selectable modes."
+    },
+    {
+      "title": "Reaction Ritual: After Dark",
+      "route": "/arcade-after-dark.html#reaction-ritual",
+      "reason": "Reaction family consolidated into Reaction Ritual; three-round Classic and single-round After Dark remain selectable modes."
     }
   ]
 }
