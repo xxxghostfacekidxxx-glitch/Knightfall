@@ -21,7 +21,7 @@ function cardBase(item,image,ownedCard=false){
  if(item.id!==undefined&&ownedCard)card.dataset.petId=String(item.id);
  if(!ownedCard)card.dataset.species=item.id;
  const visual=make('div','pet-art'),src=safeSrc(image);
- if(src){const img=make('img');img.src=src+'?v=20261102-sanctuary2';img.alt=item.name||item.nickname;img.loading='lazy';visual.append(img)}
+ if(src){const img=make('img');img.src=src+'?v=20261102-sanctuary3';img.alt=item.name||item.nickname;img.loading='lazy';visual.append(img)}
  if(item.featured)visual.append(make('span','pet-badge','✦ PROFILE COMPANION'));
  card.append(visual);return card;
 }
@@ -35,7 +35,7 @@ function renderOwned(){
  if(!signedIn){owned.append(make('p','pet-empty','Sign in to adopt and care for mascot companions. Your pets will be saved to your profile.'));return}
  if(!pets.length){owned.append(make('p','pet-empty','Your sanctuary is empty. Choose any species below to adopt your first companion for free.'));return}
  for(const pet of pets){
-  const card=cardBase(pet,pet.idle||pet.image,true),label=make('div','pet-label');
+  const card=cardBase(pet,pet.portrait||pet.idle||pet.image,true),label=make('div','pet-label');
   label.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
   card.append(label,make('p','pet-type',pet.species_name+' · Level '+pet.level+' · '+pet.experience+' XP'));
   const bars=make('div','pet-bars');for(const [key,caption] of [['hunger','Food'],['joy','Joy'],['energy','Energy']])bars.append(statRow(caption,pet.vitals?.[key]));
@@ -53,7 +53,7 @@ function renderOwned(){
 function renderAdopt(){
  adopt.replaceChildren();
  for(const pet of species){
-  const already=pets.some(x=>x.species===pet.id),full=pets.length>=max,card=cardBase(pet,pet.svg);
+  const already=pets.some(x=>x.species===pet.id),full=pets.length>=max,card=cardBase(pet,pet.portrait||pet.svg);
   const title=make('div','pet-label');title.append(make('strong','',pet.name),make('small','',already?'Adopted':'FREE'));
   card.append(title,make('p','pet-type',pet.type));
   const label=make('label','','Companion nickname');
