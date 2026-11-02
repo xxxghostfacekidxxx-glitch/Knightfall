@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080c17">
+<meta name="description" content="Embervale: A Fox Tale. A complete pixel-art adventure by Nicholas Aryel Ferreira, hosted with permission under the MIT license.">
+<title>EMBERVALE — A Fox Tale</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #0b0d12;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+  }
+  #wrap {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    background: #000;
+    box-shadow: 0 0 0 4px #1d2433, 0 0 60px rgba(80,140,255,.12), 0 24px 60px rgba(0,0,0,.6);
+    border-radius: 2px;
+  }
+  #hint {
+    color: #5a6a8a; font-size: 12px; letter-spacing: 1px; text-align: center;
+    user-select: none;
+  }
+  #hint b { color: #9fb4d8; }
+</style>
+<link rel="stylesheet" href="knightfall.css?v=20261102-1">
+</head>
+<body>
+  <nav id="arcade-nav" aria-label="Arcade actions"><a href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a><button id="full-screen" type="button" aria-label="Toggle fullscreen">⛶ FULLSCREEN</button></nav>
+  <div id="wrap">
+    <canvas id="game" width="256" height="224"></canvas>
+    <div id="hint">
+      <b>ARROWS / WASD</b> move &nbsp;·&nbsp; <b>Z / SPACE</b> sword · talk &nbsp;·&nbsp; <b>X</b> item &nbsp;·&nbsp; <b>ENTER</b> pause · inventory &nbsp;·&nbsp; <b>M</b> mute
+    </div>
+
+    <div id="touch-controls" role="group" aria-label="On-screen game controls">
+      <div class="touch-pad" aria-label="Movement">
+        <button type="button" data-code="ArrowUp" aria-label="Move up" class="direction up">▲</button>
+        <button type="button" data-code="ArrowLeft" aria-label="Move left" class="direction left">◀</button>
+        <button type="button" data-code="ArrowDown" aria-label="Move down" class="direction down">▼</button>
+        <button type="button" data-code="ArrowRight" aria-label="Move right" class="direction right">▶</button>
+      </div>
+      <div class="touch-actions" aria-label="Adventure actions">
+        <button type="button" data-code="KeyZ" class="sword">⚔ SWORD / TALK</button>
+        <button type="button" data-code="KeyX" class="item">✦ ITEM</button>
+        <button type="button" data-code="Enter" class="menu">☷ BAG / PAUSE</button>
+      </div>
+    </div>
+  </div>
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/knightfall-touch.js"></script>
+</body>
+</html>

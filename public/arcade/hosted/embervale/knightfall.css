@@ -1,0 +1,64 @@
+/* Knightfall adaptation of Embervale. Original game and procedural art: Nicholas Aryel Ferreira (MIT). */
+:root { color-scheme: dark; --cinder-pink:#ff4aae; --cinder-lime:#b7ff4b; --cinder-cyan:#59eaff; }
+html,body { min-width:0; overflow:hidden; }
+body {
+  background:
+    radial-gradient(ellipse at 16% 15%,rgba(255,74,174,.18),transparent 38%),
+    radial-gradient(ellipse at 88% 82%,rgba(89,234,255,.14),transparent 38%),#080c17;
+}
+#arcade-nav { position:fixed; top:max(env(safe-area-inset-top),10px); left: max(env(safe-area-inset-left),12px); right:max(env(safe-area-inset-right),12px); z-index:15; display:flex; justify-content:space-between; gap:10px; pointer-events:none; }
+#arcade-nav a,#arcade-nav button {
+  font:700 11px/1.2 system-ui,sans-serif; letter-spacing:.12em; text-decoration:none;
+  background:rgba(13,17,37,.86); color:var(--cinder-cyan); border:1px solid rgba(89,234,255,.45);
+  box-shadow:0 0 18px rgba(44,242,255,.08); border-radius:10px; padding:10px 12px;
+  pointer-events:auto; cursor:pointer; touch-action:manipulation;
+}
+#arcade-nav a:focus-visible,#arcade-nav button:focus-visible,button:focus-visible { outline:3px solid var(--cinder-lime); outline-offset:2px; }
+#arcade-nav a:hover,#arcade-nav button:hover { background:#212345; color:#fff; }
+canvas#game { max-width:100vw; max-height:calc(100dvh - 38px); outline:2px solid rgba(255,74,174,.5); box-shadow:0 0 0 5px #0c1325,0 0 34px rgba(255,74,174,.18),0 0 74px rgba(89,234,255,.12); }
+#hint { color:#b3b9d4; }
+#hint b { color:#d5ff98; }
+#touch-controls { display:none; }
+@media (pointer:coarse),(max-width:700px) {
+  body { align-items:center; justify-content:center; overscroll-behavior:none; }
+  #wrap { gap:8px; max-width:100vw; }
+  #hint { display:none; }
+  #touch-controls {
+    width:min(96vw,430px); padding:2px 4px 5px; box-sizing:border-box;
+    display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center;
+    user-select:none; -webkit-user-select:none; touch-action:none;
+  }
+  #touch-controls button {
+    -webkit-tap-highlight-color:transparent; touch-action:none; cursor:pointer;
+    color:#edfcff; background:linear-gradient(155deg,#28304a,#121525);
+    border:1px solid rgba(89,234,255,.58); border-bottom:3px solid rgba(36,115,140,.78);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 3px 12px rgba(0,0,0,.3);
+    border-radius:13px; font:800 11px/1.1 system-ui,sans-serif; letter-spacing:.03em;
+    min-height:47px;
+  }
+  #touch-controls button:active,#touch-controls button.is-pressed {
+    background:linear-gradient(145deg,#ac286b,#43173b);
+    box-shadow:0 0 14px rgba(255,74,174,.65),inset 0 0 12px rgba(255,74,174,.4);
+    border-color:var(--cinder-pink); transform:scale(.96);
+  }
+  .touch-pad { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,45px); gap:2px; align-items:stretch; }
+  .touch-pad .up { grid-column:2;grid-row:1; }
+  .touch-pad .left { grid-column:1;grid-row:2; }
+  .touch-pad .down { grid-column:2;grid-row:3; }
+  .touch-pad .right { grid-column:3;grid-row:2; }
+  .touch-actions { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  #touch-controls .sword { grid-column:1 / -1; min-height:55px; color:#fff; background:linear-gradient(130deg,#8c225f,#481a48); border-color:var(--cinder-pink); }
+  #touch-controls .item { color:var(--cinder-lime); }
+  #touch-controls .menu { color:var(--cinder-cyan); }
+  #arcade-nav a,#arcade-nav button { font-size:9px; padding:8px 9px; }
+}
+@media (max-height:480px) {
+  #arcade-nav { top:2px; }
+  .touch-pad { grid-template-rows:repeat(3,32px); }
+  #touch-controls button { min-height:32px; font-size:10px; }
+  #touch-controls .sword { min-height:38px; }
+  #wrap { gap:3px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #touch-controls button { transition:none; }
+}
