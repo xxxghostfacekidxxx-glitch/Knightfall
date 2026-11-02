@@ -944,19 +944,6 @@
       "featured": false
     },
     {
-      "id": "crypt-breaker",
-      "title": "Crypt Breaker",
-      "route": "/arcade/hosted/crypt-breaker/index.html",
-      "description": "Smash through the crypt walls in an original paddle-and-orb game with progressive waves and score tracking.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "crypt-caldera",
       "title": "Crypt Caldera",
       "route": "/arcade/hosted/crypt-caldera/index.html",
@@ -1117,32 +1104,6 @@
       "title": "Dumpster Dive",
       "route": "/arcade-fresh-meat.html#dumpster-dive",
       "description": "Scavenge a suspicious dumpster for useful loot and questionable survival.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-vault-vault-breakout",
-      "title": "Ember Breaker",
-      "route": "/arcade-vault.html#vault-breakout",
-      "description": "Break the bricks, steer the ember, and briefly feel in control of something.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-after-dark-ember-breakout",
-      "title": "Ember Breakout",
-      "route": "/arcade-after-dark.html#ember-breakout",
-      "description": "Clear the bricks and keep the ball in play.",
       "genre": "Arcade",
       "collection": "mini",
       "device": "touch",
@@ -2498,6 +2459,21 @@
       "title": "Snake in the Ashes",
       "route": "/arcade-vault.html#vault-snake",
       "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
+    },
+    {
+      "title": "Crypt Breaker",
+      "route": "/arcade/hosted/crypt-breaker/index.html",
+      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
+    },
+    {
+      "title": "Ember Breaker",
+      "route": "/arcade-vault.html#vault-breakout",
+      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
+    },
+    {
+      "title": "Ember Breakout",
+      "route": "/arcade-after-dark.html#ember-breakout",
+      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
     }
   ]
 }
