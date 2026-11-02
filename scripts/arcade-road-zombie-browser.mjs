@@ -72,7 +72,7 @@ await scenario("Not Dead Yet complete campaign, no boss softlock, persistent res
   await route.fulfill({response,body:html.replace(anchor,probe+anchor)});
  });
  await page.goto(base+"/not-dead-yet.html",{waitUntil:"domcontentloaded"});
- await page.click("#start");
+ await page.selectOption("#mode","campaign");await page.click("#start");
  assert.equal((await page.evaluate(()=>window.__zombieProbe.state())).stage,0);
  await page.evaluate(()=>window.__zombieProbe.gate());
  assert.equal((await page.evaluate(()=>window.__zombieProbe.state())).stage,1);
