@@ -8,8 +8,8 @@ const hostedRoot = path.resolve("public/arcade/hosted");
 
 // Imported screen/component HTML is fetched by a game, not launched on its own.
 // Crawling the actual catalog still catches failed asset requests at their runtime base URL.
-async function listHostedHtml() {
- return [...new Set(arcadeCatalog.games.filter(g=>g.route.startsWith("/arcade/hosted/")).map(g=>g.route))];
+function listHostedHtml() {
+ return [...new Set(arcadeCatalog.games.filter(g=>typeof g.route==="string"&&g.route.startsWith("/arcade/hosted/")).map(g=>g.route))];
 }
 
 const games = [
@@ -867,7 +867,7 @@ try {
         console.log("PASS featured shelf: all " + featuredVisible + " main-collection games visible");
       }
     }
-    const localHostedRoutes = await listHostedHtml();
+    const localHostedRoutes = listHostedHtml();
     const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])].filter(route=>/\.html?(?:[?#]|$)/i.test(route));
     console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
