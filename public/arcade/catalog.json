@@ -321,16 +321,16 @@
     },
     {
       "id": "ash-sudoku",
-      "title": "Ash Sudoku",
+      "title": "Chaos Sudoku",
       "route": "/arcade/hosted/ash-sudoku/index.html",
-      "description": "Restore the nine infernal chambers with original, uniquely solvable Sudoku puzzles, hints, and autosave.",
+      "description": "Neon Sudoku with three difficulty levels, hints, mistakes, saved progress, and completion tracking.",
       "genre": "Puzzle",
       "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "ash-tiles",
@@ -1807,19 +1807,6 @@
       "featured": false
     },
     {
-      "id": "sudoku",
-      "title": "Sudoku",
-      "route": "/arcade/hosted/sudoku/index.html",
-      "description": "Solve a 9×9 number grid, from easy warm-up to brain-melting.",
-      "genre": "Arcade",
-      "collection": "experiments",
-      "device": "touch",
-      "source": "",
-      "notes": "Legacy prototype; retained separately from the main arcade.",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "swipe-assassin",
       "title": "Swipe Assassin",
       "route": "/arcade/hosted/swipe-assassin/index.html",
@@ -2458,6 +2445,11 @@
       "title": "Cinder Four",
       "route": "/arcade/hosted/cinder-four/index.html",
       "reason": "Connect Four family consolidated into Chaos Connect Four."
+    },
+    {
+      "title": "Sudoku",
+      "route": "/arcade/hosted/sudoku/index.html",
+      "reason": "Sudoku family consolidated into Chaos Sudoku; standalone variant retired from catalog."
     }
   ]
 }
