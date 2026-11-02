@@ -2052,6 +2052,19 @@
       "notes": "Independent MIT-licensed game. WebGL2 and internet access are currently required for its Three.js CDN.",
       "links": [],
       "featured": true
+    },
+    {
+      "id": "embervale",
+      "title": "Embervale: A Fox Tale",
+      "route": "/arcade/hosted/embervale/index.html",
+      "description": "A complete original top-down fantasy adventure. Explore 20 overworld screens, solve a 12-room dungeon, earn equipment, battle minibosses and reclaim the Verdant Crown.",
+      "genre": "Adventure",
+      "collection": "games",
+      "device": "touch",
+      "source": "https://github.com/NicholasAryelFerreira/embervale",
+      "notes": "MIT-licensed original game by Nicholas Aryel Ferreira. Knightfall adds native mobile controls, neon framing and fullscreen. Fully self-hosted, no CDN.",
+      "links": [],
+      "featured": true
     }
   ],
   "retiredListings": [

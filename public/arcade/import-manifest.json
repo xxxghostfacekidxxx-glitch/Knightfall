@@ -201,6 +201,21 @@
         "/arcade/hosted/neon-surge/LICENSE",
         "/arcade/hosted/neon-surge/SOURCE.md"
       ]
+    },
+    {
+      "gameId": "cabinet-embervale",
+      "title": "Embervale: A Fox Tale",
+      "status": "imported",
+      "upstream": "https://github.com/NicholasAryelFerreira/embervale",
+      "license": "MIT",
+      "notes": "Complete original Zelda-style pixel action adventure; game source, original sprites/audio code and LICENSE retained. Added responsive mobile Pointer Events controls, fullscreen toolbar and Knightfall styling. No external runtime assets; self-hosted and capable of offline play when downloaded completely.",
+      "files": [
+        "/arcade/hosted/embervale/index.html",
+        "/arcade/hosted/embervale/knightfall.css",
+        "/arcade/hosted/embervale/js/",
+        "/arcade/hosted/embervale/LICENSE",
+        "/arcade/hosted/embervale/SOURCE.md"
+      ]
     }
   ],
   "notYetImported": [
