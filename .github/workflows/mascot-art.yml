@@ -1,0 +1,25 @@
+name: Mascot Art Integrity
+
+on:
+  push:
+    paths:
+      - 'public/assets/devil-tools/neon-nuisances/**'
+      - 'public/gravewave-takeover.js'
+      - 'public/gravewave-takeover.css'
+      - 'public/nav.js'
+      - 'public/devil-tools.html'
+      - 'public/arcade/hosted/crypt-pairs/**'
+      - 'scripts/mascot-art.test.mjs'
+      - '.github/workflows/mascot-art.yml'
+  workflow_dispatch:
+
+jobs:
+  mascot-art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check mascot SVGs, gallery and arcade mirrors
+        run: node --test scripts/mascot-art.test.mjs
