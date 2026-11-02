@@ -8,6 +8,7 @@ on:
       - "public/not-dead-yet.html"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
+      - "scripts/arcade-road-zombie-browser.mjs"
       - ".github/workflows/roads-zombie-overhaul.yml"
   pull_request:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - "public/not-dead-yet.html"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
+      - "scripts/arcade-road-zombie-browser.mjs"
 permissions:
   contents: read
 jobs:
@@ -35,3 +37,31 @@ jobs:
         run: |
           node --check public/arcade/hosted/roads-of-cinder/engine.js
           node --check public/arcade/hosted/roads-of-cinder/view.js
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install Chromium for real device smoke checks
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local arcade server
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/road-zombie-http.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/not-dead-yet.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/road-zombie-http.log
+          exit 1
+      - name: Exercise both games on desktop and mobile
+        env:
+          ARCADE_TEST_BASE: http://127.0.0.1:8765
+        run: node scripts/arcade-road-zombie-browser.mjs
+      - name: Collect server log on failure
+        if: failure()
+        run: cat /tmp/road-zombie-http.log || true
