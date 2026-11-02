@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">The Eddie | Ash-Fall Neon Nuisances</title>
+<desc id="desc">The Eddie, a tiny fearless undead punk with a tall lime mohawk, stitched scar, crimson and green mismatched eyes, cracked jacket, skeletal chest, heavy boots and an oversized mischievous grin.</desc>
+<defs>
+ <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e3e3e8"/><stop offset=".5" stop-color="#9baac2"/><stop offset="1" stop-color="#756884"/></linearGradient>
+ <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b314f"/><stop offset=".5" stop-color="#211725"/><stop offset="1" stop-color="#101323"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="64" cy="119" rx="40" ry="5" fill="#c6ff45" opacity=".27"/>
+<circle cx="63" cy="64" r="50" fill="#c6ff45" opacity=".18" filter="url(#halo)"/>
+<g id="fx"><path d="m17 22 3-8 3 8-3 8Zm92 9 4-9 4 9-4 9Z" fill="#ff55d8"/><circle cx="116" cy="92" r="2.5" fill="#c6ff45"/></g>
+<g id="character" stroke-linejoin="round" stroke-linecap="round">
+ <!-- steel-toed boots, slouched rebellious posture -->
+ <path d="m45 103-8 13 23 0 5-12m14 0 8 12 20-2-12-15" fill="#474050" stroke="#111421" stroke-width="4"/>
+ <path d="m29 115 29-5 6 11H26Zm52-4 27 2 3 9H79Z" fill="#13141e" stroke="#c6ff45" stroke-width="2.7"/>
+ <path d="M38 114h19m27 1 19-1" stroke="#ff55d8" stroke-width="2.5"/>
+ <!-- asymmetrical ragged coat with exposed ribbed torso -->
+ <path d="M37 79q19-11 51 0l12 29-17 12H42l-15-13Z" fill="url(#jacket)" stroke="#13111b" stroke-width="4"/>
+ <path d="m40 83 10 0 7 21-9 13-17-9Z M87 83l-12 0-5 21 11 13 16-11Z" fill="#36243c" stroke="#ff55d8" stroke-width="2"/>
+ <path d="M53 91q11-4 22 0l-2 22q-10 6-18 0Z" fill="#101620" stroke="#c6ff45" stroke-width="2.5"/>
+ <path d="M58 95h13m-14 6 14 0m-13 5 12 0M64 89v26" stroke="#d7f9d7" stroke-width="2.5"/>
+ <path d="m33 95-16 12m77-13 17 12" stroke="#aaa9c1" stroke-width="8"/>
+ <path d="m19 107-6 0 0 8 11 0m81-7 8-2 2 9-11 2" fill="#85899d" stroke="#1a1424" stroke-width="3"/>
+ <path d="m37 89 6 6m-6 0 6-6m41 0 6 6m-6 0 6-6" stroke="#c6ff45" stroke-width="2"/>
+ <path d="m83 97 5-4 5 4-5 5Z" fill="#ff55d8"/>
+ <!-- head, scars and iconic jagged mohawk -->
+ <path d="M34 48Q39 25 65 24q30 3 33 26l-4 26q-6 22-28 23-25-1-31-22Z" fill="url(#skin)" stroke="#14121e" stroke-width="4"/>
+ <path d="m38 41 3-16 11 7 7-25 9 16 12-18 4 21 14-4-3 27-16-12-13 9-12-10Z" fill="#c6ff45" stroke="#13141d" stroke-width="3.2"/>
+ <path d="m45 35 14-13m11 11 8-18" stroke="#ecff9c" stroke-width="2.5"/>
+ <path d="m33 52-11-7m75 8 11-6" stroke="#ff55d8" stroke-width="3.2"/>
+ <path d="m42 42 6 11m-9-5 11 3m-10 0 7-5" stroke="#301c33" stroke-width="2.3"/>
+ <path d="M48 57q7-7 16-1m8 0q7-6 15 1" fill="none" stroke="#1b1422" stroke-width="3.5"/>
+ <!-- two different eyes and deliberately jagged sockets -->
+ <g id="eyes">
+  <path d="M43 62q9-12 20 0l-9 11Zm29 0q9-11 18 2l-9 10Z" fill="#191520" stroke="#15121c" stroke-width="2"/>
+  <circle cx="54" cy="63" r="6" fill="#ff55d8"/><circle cx="81" cy="63" r="6" fill="#c6ff45"/>
+  <circle cx="55" cy="61" r="2" fill="#fff"/><circle cx="82" cy="61" r="2" fill="#fff"/>
+ </g>
+ <g id="lids" opacity="0"><path d="m45 64 16 0m13 0 14 0" fill="none" stroke="#1a1621" stroke-width="5"/></g>
+ <g id="wink" opacity="0"><path d="m72 63 15 3" fill="none" stroke="#1a1621" stroke-width="5"/></g>
+ <path d="M57 76q8 3 16-1" stroke="#6d435c" stroke-width="2.3" fill="none"/>
+ <path d="M45 81q20 20 43-1l-6 14-8-6-8 10-9-10-7 5Z" fill="#15131b" stroke="#c6ff45" stroke-width="2.8"/>
+ <path d="m52 83 6 5 7-4 7 4 7-5" stroke="#fff9e9" stroke-width="2.8" fill="none"/>
+ <path d="M45 76q-8-3-11-2m57 0 8-2" stroke="#ff55d8" stroke-width="2.2"/>
+ <circle cx="94" cy="70" r="4" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
+</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:float 3s ease-in-out infinite}#fx{animation:glimmer 3s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-4px) rotate(1.5deg)}}@keyframes glimmer{50%{opacity:.3}}}</style></svg>
