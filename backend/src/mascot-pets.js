@@ -129,6 +129,8 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   if(!species)return respond({error:'Choose an available sanctuary mascot.'},400);
   const nickname=body.nickname===undefined?species.name:nameOf(body.nickname);
   if(!nickname)return respond({error:'Pet names must be 1–28 simple characters.'},400);
+  const pending=await env.DB.prepare("SELECT id FROM mascot_rescue_eggs WHERE user_id=? AND species=? AND status='incubating'").bind(user.id,species.id).first();
+  if(pending)return respond({error:'An egg for this species is incubating. Hatch it instead of spending Cinders.'},409);
   const countRow=await env.DB.prepare('SELECT COUNT(*) AS count,MAX(experience) AS max_xp FROM mascot_pets WHERE user_id=?').bind(user.id).first();
   const count=Number(countRow?.count||0),rank=petLevel(countRow?.max_xp||0);
   if(count>=LIMIT)return respond({error:'All 22 species are already in your collection.'},409);
