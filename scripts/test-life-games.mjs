@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..','public');
 const htmlFor=game=>readFileSync(resolve(root,'arcade/hosted',game,'index.html'),'utf8');
 const scriptFor=html=>{
- const match=html.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+ const match=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)].find(m=>!(/\bsrc\s*=/.test(m[1]))&&m[2].trim());
  assert.ok(match,'inline game script exists');
- return match[1];
+ return match[2];
 };
 for(const game of ['cinder-life','roads-of-cinder']){
  const html=htmlFor(game);
