@@ -1,0 +1,13 @@
+/* Devil Tools original vector library, separate from games and global site nav. */
+#dt-vector-library .dt-svg-controls{display:flex;gap:.65rem;align-items:center;flex-wrap:wrap;margin:.8rem 0 1rem}
+#dt-vector-library .dt-svg-controls input,
+#dt-vector-library .dt-svg-controls select{background:#101321;color:#f5f4ff;border:1px solid #c6ff4588;border-radius:10px;padding:.65rem .8rem;min-width:0;flex:1 1 200px}
+#dt-vector-library .dt-svg-controls :focus-visible{outline:2px solid #ff55d8;outline-offset:2px}
+#dt-vector-library .dt-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.75rem;align-items:stretch}
+#dt-vector-library .dt-svg-card{padding:.7rem;background:linear-gradient(155deg,#1e1630,#090b16 73%);border:1px solid #ff55d844;border-radius:12px;display:flex;flex-direction:column;gap:.35rem;min-width:0;box-shadow:inset 0 1px #ffffff13}
+#dt-vector-library .dt-svg-card img{display:block;width:100%;height:118px;object-fit:contain;background:radial-gradient(circle,#744c8c1c,transparent 72%);filter:drop-shadow(0 2px 7px #ff55d855)}
+#dt-vector-library .dt-svg-card strong{font-size:.84rem;color:#f9f7ff;overflow-wrap:anywhere}
+#dt-vector-library .dt-svg-card small{color:#b9add8;font-size:.72rem}
+#dt-vector-library .dt-svg-download{margin-top:auto;text-align:center;display:block;padding:.52rem .35rem;background:#1b1328;border:1px solid #c6ff4580;border-radius:8px;color:#c6ff45;font-size:.75rem;text-decoration:none;font-weight:700}
+#dt-vector-library .dt-svg-download:hover,#dt-vector-library .dt-svg-download:focus-visible{background:#322342;outline:1px solid #ff55d8}
+@media(max-width:600px){#dt-vector-library .dt-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#dt-vector-library .dt-svg-card img{height:104px}}
