@@ -1,9 +1,51 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 1,
+  "version": 2,
   "updated": "2026-11-02",
-  "count": 39,
+  "count": 69,
   "assets": [
+    {
+      "id": "admin-offline-icon-svg",
+      "title": "Offline Admin",
+      "category": "Admin Icon",
+      "src": "/admin-offline/icon.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-chaos-cartridge-svg",
+      "title": "Chaos Cartridge",
+      "category": "App Icons",
+      "src": "/icons/chaos-cartridge.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-chaos-cartridge-maskable-svg",
+      "title": "Chaos Cartridge Maskable",
+      "category": "App Icons",
+      "src": "/icons/chaos-cartridge-maskable.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-knightfall-svg",
+      "title": "Knightfall",
+      "category": "App Icons",
+      "src": "/icons/knightfall.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-knightfall-maskable-svg",
+      "title": "Knightfall Maskable",
+      "category": "App Icons",
+      "src": "/icons/knightfall-maskable.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-miss-chaos-svg",
+      "title": "Miss Chaos",
+      "category": "App Icons",
+      "src": "/icons/miss-chaos.svg",
+      "remastered": true
+    },
     {
       "id": "arcade-backdrop-corporate-hell-svg",
       "title": "Backdrop Corporate Hell",
@@ -101,6 +143,174 @@
       "category": "Arcade Art",
       "src": "/assets/arcade/sprinter.svg",
       "remastered": false
+    },
+    {
+      "id": "branding-archive-ash-fall-wordmark-svg",
+      "title": "Ash Fall Wordmark",
+      "category": "Branding",
+      "src": "/branding/archive/ash-fall-wordmark.svg",
+      "remastered": true
+    },
+    {
+      "id": "branding-chaos-cartridge-logo-svg",
+      "title": "Chaos Cartridge Logo",
+      "category": "Branding",
+      "src": "/branding/chaos-cartridge-logo.svg",
+      "remastered": true
+    },
+    {
+      "id": "branding-archive-knightfall-ember-svg",
+      "title": "Knightfall Ember",
+      "category": "Branding",
+      "src": "/branding/archive/knightfall-ember.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-alien-static-svg",
+      "title": "Alien Static",
+      "category": "Choice Icons",
+      "src": "/icons/choices/alien-static.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-broken-halo-svg",
+      "title": "Broken Halo",
+      "category": "Choice Icons",
+      "src": "/icons/choices/broken-halo.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-chaos-cat-svg",
+      "title": "Chaos Cat",
+      "category": "Choice Icons",
+      "src": "/icons/choices/chaos-cat.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-chaos-crown-svg",
+      "title": "Chaos Crown",
+      "category": "Choice Icons",
+      "src": "/icons/choices/chaos-crown.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-chaos-heartbeat-svg",
+      "title": "Chaos Heartbeat",
+      "category": "Choice Icons",
+      "src": "/icons/choices/chaos-heartbeat.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-cinder-portal-svg",
+      "title": "Cinder Portal",
+      "category": "Choice Icons",
+      "src": "/icons/choices/cinder-portal.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-eclipse-fang-svg",
+      "title": "Eclipse Fang",
+      "category": "Choice Icons",
+      "src": "/icons/choices/eclipse-fang.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-eclipse-fangs-svg",
+      "title": "Eclipse Fangs",
+      "category": "Choice Icons",
+      "src": "/icons/choices/eclipse-fangs.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-glitch-eye-svg",
+      "title": "Glitch Eye",
+      "category": "Choice Icons",
+      "src": "/icons/choices/glitch-eye.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-heart-hazard-svg",
+      "title": "Heart Hazard",
+      "category": "Choice Icons",
+      "src": "/icons/choices/heart-hazard.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-hell-heart-svg",
+      "title": "Hell Heart",
+      "category": "Choice Icons",
+      "src": "/icons/choices/hell-heart.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-neon-reaper-svg",
+      "title": "Neon Reaper",
+      "category": "Choice Icons",
+      "src": "/icons/choices/neon-reaper.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-orbit-imp-svg",
+      "title": "Orbit Imp",
+      "category": "Choice Icons",
+      "src": "/icons/choices/orbit-imp.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-serrated-grin-svg",
+      "title": "Serrated Grin",
+      "category": "Choice Icons",
+      "src": "/icons/choices/serrated-grin.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-shattered-halo-svg",
+      "title": "Shattered Halo",
+      "category": "Choice Icons",
+      "src": "/icons/choices/shattered-halo.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-skull-signal-svg",
+      "title": "Skull Signal",
+      "category": "Choice Icons",
+      "src": "/icons/choices/skull-signal.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-spectral-reaper-svg",
+      "title": "Spectral Reaper",
+      "category": "Choice Icons",
+      "src": "/icons/choices/spectral-reaper.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-toxic-cassette-svg",
+      "title": "Toxic Cassette",
+      "category": "Choice Icons",
+      "src": "/icons/choices/toxic-cassette.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-toxic-seraph-svg",
+      "title": "Toxic Seraph",
+      "category": "Choice Icons",
+      "src": "/icons/choices/toxic-seraph.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-void-bunny-svg",
+      "title": "Void Bunny",
+      "category": "Choice Icons",
+      "src": "/icons/choices/void-bunny.svg",
+      "remastered": true
+    },
+    {
+      "id": "icons-choices-void-moth-svg",
+      "title": "Void Moth",
+      "category": "Choice Icons",
+      "src": "/icons/choices/void-moth.svg",
+      "remastered": true
     },
     {
       "id": "arcade-gravewave-acid-spikes-svg",
