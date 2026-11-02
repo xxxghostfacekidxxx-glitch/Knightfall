@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Minion Mouse | Ash-Fall Neon Nuisances</title>
+<desc id="desc">A scrappy mischievous cyber-mouse with enormous stitched ears, mint goggles, patchwork vest, a winding mechanical tail and stolen batteries.</desc>
+<defs>
+ <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54476a"/><stop offset="1" stop-color="#191627"/></linearGradient>
+ <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb7e8"/><stop offset=".5" stop-color="#ff4fb9"/><stop offset="1" stop-color="#8b2d79"/></linearGradient>
+ <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4ff98"/><stop offset="1" stop-color="#50d8bf"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="65" cy="118" rx="41" ry="5" fill="#ff55d8" opacity=".28"/>
+<circle cx="64" cy="61" r="50" fill="#c6ff45" opacity=".19" filter="url(#halo)"/>
+<g id="fx"><path d="m14 17 3-8 3 8-3 8Zm94 7 4-9 4 9-4 9Z" fill="#c6ff45"/><circle cx="117" cy="79" r="2.5" fill="#ff55d8"/></g>
+<g id="character" stroke-linecap="round" stroke-linejoin="round">
+ <!-- spring-tail and antenna pack -->
+ <path d="M97 95q23 0 22-19t-15-12q-10 8 1 14" fill="none" stroke="#111321" stroke-width="9"/>
+ <path d="M97 95q23 0 22-19t-15-12q-10 8 1 14" fill="none" stroke="#ff55d8" stroke-width="4"/>
+ <path d="m108 61 6-7m-6 9 10-4" stroke="#c6ff45" stroke-width="2"/>
+ <rect x="85" y="72" width="22" height="24" rx="5" fill="#212130" stroke="#c6ff45" stroke-width="3"/>
+ <path d="M94 78v10m-5-5h10" stroke="#ff55d8" stroke-width="3"/>
+ <!-- giant asymmetrical mouse ears -->
+ <path d="M33 51Q2 49 11 20q9-25 36-9 11 12 3 36M80 43Q76 9 98 5q30-4 30 27-1 19-30 24" fill="url(#fur)" stroke="#10121e" stroke-width="4.5"/>
+ <path d="M36 43Q13 40 21 21q8-13 22-3 5 8-2 22M90 40Q85 16 101 15q19-1 19 16-2 13-21 14" fill="url(#ear)" stroke="#ffc4ee" stroke-width="2"/>
+ <path d="m21 31 12 3m72-13 8 7" stroke="#111321" stroke-width="2.5"/>
+ <path d="M46 16 40 27 49 34M102 47l-8-9-7 8" stroke="#c6ff45" stroke-width="2" fill="none"/>
+ <!-- tiny sneakers and patched jacket -->
+ <path d="M46 99 38 115h20l7-16m14 1 4 15h18L91 98" fill="#342139" stroke="#141421" stroke-width="4"/>
+ <path d="M34 111q16-5 29 0v9H32Zm47 0q14-6 24 1l1 8H80Z" fill="#171522" stroke="#c6ff45" stroke-width="2.5"/>
+ <path d="M37 114h21m28 0h16" stroke="#ff55d8" stroke-width="2"/>
+ <path d="M42 79q19-10 44-1l10 25-14 10H45l-13-11Z" fill="#222034" stroke="#0e111b" stroke-width="4"/>
+ <path d="m55 83 8 25m15-24-8 24" stroke="#ff55d8" stroke-width="2"/>
+ <path d="M42 93 28 104m60-11 16 10" stroke="#7bfbc5" stroke-width="6"/>
+ <circle cx="28" cy="105" r="5.5" fill="#b1a2b1" stroke="#14121d" stroke-width="3"/><circle cx="103" cy="104" r="5.5" fill="#b1a2b1" stroke="#14121d" stroke-width="3"/>
+ <path d="M47 92h13l-1 12H47Z" fill="#171725" stroke="#c6ff45" stroke-width="2"/><path d="m50 98 3-4 3 4-3 4Z" fill="#ff55d8"/>
+ <!-- pointed snout and ratty tuft -->
+ <path d="M36 48Q32 27 61 28q35-5 40 24l-5 28q-8 20-34 18-22 0-27-21Z" fill="url(#fur)" stroke="#11111c" stroke-width="4.5"/>
+ <path d="m49 35 8-16 7 12 9-13 7 15" fill="#c6ff45" stroke="#141421" stroke-width="3"/>
+ <path d="m40 53-12-8m67 7 9-7" stroke="#ff55d8" stroke-width="3"/>
+ <!-- oversized junkyard goggles -->
+ <path d="M39 54q9-8 22-3m8-1q14-4 23 5" fill="none" stroke="#c6ff45" stroke-width="3"/>
+ <g id="eyes">
+  <rect x="39" y="53" width="24" height="20" rx="8" fill="#0c1920" stroke="#f569cf" stroke-width="3"/>
+  <rect x="66" y="51" width="27" height="23" rx="8" fill="#0c1920" stroke="#c6ff45" stroke-width="3"/>
+  <circle cx="52" cy="62" r="6" fill="url(#lens)"/><circle cx="79" cy="62" r="7" fill="#ff55d8"/>
+  <circle cx="54" cy="60" r="2" fill="#fff"/><circle cx="81" cy="59" r="2" fill="#fff"/>
+ </g>
+ <g id="lids" opacity="0"><path d="M43 64h16m11-1h18" stroke="#e9fff3" stroke-width="4" fill="none"/></g>
+ <g id="wink" opacity="0"><path d="m70 63 8 3 9-3" fill="none" stroke="#baff80" stroke-width="4"/></g>
+ <path d="M52 77q12-3 21 3-1 7-12 7Z" fill="#b9a1b7" stroke="#12121d" stroke-width="2.3"/>
+ <path d="M72 80q8-2 15-1-8 14-19 10" fill="#f98ac5" stroke="#13111d" stroke-width="2.3"/>
+ <circle cx="65" cy="78" r="3" fill="#ff55d8"/>
+ <path d="M51 91q13 8 29-1" stroke="#c6ff45" stroke-width="2" fill="none"/>
+ <path d="m37 81-11 0m9 5-10 5m67-11 10-1m-10 8 11 5" fill="none" stroke="#c6ff45" stroke-width="2"/>
+</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:float 3s ease-in-out infinite}#fx{animation:glimmer 3s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-4px) rotate(1.5deg)}}@keyframes glimmer{50%{opacity:.3}}}</style></svg>
