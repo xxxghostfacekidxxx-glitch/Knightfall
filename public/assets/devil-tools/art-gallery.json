@@ -1,8 +1,8 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 2,
+  "version": 3,
   "updated": "2026-11-02",
-  "count": 69,
+  "count": 91,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -422,6 +422,160 @@
       "title": "Warning Skull",
       "category": "Gravewave Effects",
       "src": "/assets/arcade/gravewave/warning-skull.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-boo-thang",
+      "title": "Boo Thang · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/boo-thang.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-casket-pup",
+      "title": "Casket Pup · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/casket-pup.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-chunky-monkey",
+      "title": "Chunky Monkey · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/chunky-monkey.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-emberbun",
+      "title": "Cinderfang · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/emberbun.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-crypt-koi",
+      "title": "Crypt Koi · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/crypt-koi.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-glim",
+      "title": "Cryptglow · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/glim.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-bloop",
+      "title": "Gillrot · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/bloop.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-gravebyte",
+      "title": "Gravebyte · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/gravebyte.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-gutterkit",
+      "title": "Gutterkit · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/gutterkit.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-pippa",
+      "title": "Hexgourd · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/pippa.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-mini-villain",
+      "title": "Mini Villain · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/mini-villain.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-minion-mouse",
+      "title": "Minion Mouse · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/minion-mouse.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-nib",
+      "title": "Nocturnib · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/nib.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-rattlepop",
+      "title": "Rattlepop · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/rattlepop.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-kiki",
+      "title": "Riotpaws · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/kiki.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-zuzu",
+      "title": "Sludgebyte · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/zuzu.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-statichex",
+      "title": "Statichex · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/statichex.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-mini-eddie",
+      "title": "The Eddie · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/mini-eddie.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-thornriot",
+      "title": "Thornriot · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/thornriot.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-moxie",
+      "title": "Vexwing · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/moxie.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-void-sprout",
+      "title": "Void Sprout · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/void-sprout.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-portrait-volt-imp",
+      "title": "Volt Imp · Deluxe Portrait",
+      "category": "Mascot Portraits",
+      "src": "/assets/devil-tools/neon-nuisances/portraits/volt-imp.svg",
       "remastered": true
     },
     {
