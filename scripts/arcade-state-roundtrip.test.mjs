@@ -8,7 +8,7 @@ const engines={
  'ashfall-original-trio.js':['balance-stack','stack-tower'],
  'ashfall-original-action.js':['doodle-jump','alien-battle','survivor'],
  'ashfall-original-runner.js':['rusty-sky','slush-rush'],
- 'ashfall-original-driving.js':['car-race','two-cars','crossy-road']
+ 'ashfall-original-driving.js':['car-race','two-cars']
 };
 for(const [file,ids] of Object.entries(engines))for(const id of ids)test(id+' restores native state and invalidates old first-frame callbacks',()=>{
  const nodes=new Map(),frames=[];const ctx=new Proxy({},{get:()=>()=>{}});

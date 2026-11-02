@@ -9,15 +9,14 @@ const shared=readFileSync(join(root,"ashfall-mini-games.js"),"utf8");
 const cases=[
  ["particle-clicker","Cinder Collider"],
  ["cube-composer","Crypt Conduits"],
- ["skifree","Ash Slope"],
- ["ball-and-wall","Ember Rebound"]
+ ["skifree","Ash Slope"]
 ];
 
 test("shared mini-game engine is syntactically valid",()=>assert.doesNotThrow(()=>new Script(shared)));
-test("mini-game route dispatch matches all four standalone pages",()=>{
+test("mini-game route dispatch matches remaining standalone pages",()=>{
  for(const [id] of cases){
   const route="/arcade/hosted/"+id+"/index.html";
-  assert.equal(route.match(/\/arcade\/hosted\/(particle-clicker|cube-composer|skifree|ball-and-wall)\/index\.html$/)?.[1],id);
+  assert.equal(route.match(/\/arcade\/hosted\/(particle-clicker|cube-composer|skifree)\/index\.html$/)?.[1],id);
  }
 });
 for(const [id,title] of cases){
@@ -52,10 +51,6 @@ test("Ash Slope retains fractional distance between frames",()=>{
  assert.match(shared,/state\.distance=\(Number\(state\.distance\)\|\|0\)\+dt\*\.12/);
  assert.match(shared,/state\.distance-=gained;setScore\(score\+gained\)/);
 });
-test("Ember Rebound requires multiple hits on reinforced bricks",()=>{
- assert.match(shared,/if\(b\.hp&&state\.x>b\.x[\s\S]*?\{b\.hp--;state\.y=state\.vy>0\?b\.y-10:b\.y\+b\.h\+10;state\.vy\*=-1;setScore\(score\+10\);break\}/);
-});
-
 test("Ash Slope pickups are collected only once and old objects are bounded",()=>{
  assert.match(shared,/!t\.collected&&Math\.abs\(t\.x-state\.x\)<25/);
  assert.match(shared,/t\.collected=true;setScore\(score\+10\)/);

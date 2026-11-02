@@ -154,7 +154,7 @@
       "id": "afterburn-breakout",
       "title": "Shatterpocalypse",
       "route": "/arcade/hosted/afterburn-breakout/index.html",
-      "description": "Neon brick-breaker apocalypse with explosive chain reactions, escalating waves, multiball, lasers, shields, combos, and fullscreen controls.",
+      "description": "Shatterpocalypse: explosive neon brick breaking, power-ups, waves and resumable saved runs.",
       "genre": "Arcade",
       "collection": "games",
       "device": "touch",
@@ -208,19 +208,6 @@
       "route": "/arcade/hosted/ash-crateworks/index.html",
       "description": "Push salvage crates onto furnaces through original warehouse puzzles with undo support.",
       "genre": "Puzzle",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "crossy-road",
-      "title": "Ash Crossing",
-      "route": "/arcade/hosted/crossy-road/index.html",
-      "description": "Cross a chaotic roadway and survive.",
-      "genre": "Arcade",
       "collection": "mini",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
@@ -336,7 +323,7 @@
       "id": "ash-tiles",
       "title": "Ash Tiles",
       "route": "/arcade/hosted/ash-tiles/index.html",
-      "description": "Reorder fifteen sliding tiles in an original ash-themed number puzzle.",
+      "description": "Animated sliding tiles with solvable non-backtracking scrambles, undo, saved progress and goal preview.",
       "genre": "Puzzle",
       "collection": "mini",
       "device": "touch",
@@ -515,19 +502,6 @@
       "featured": false
     },
     {
-      "id": "arcade-originals-cinder-2048",
-      "title": "Cinder 2048",
-      "route": "/arcade-originals.html#cinder-2048",
-      "description": "Merge matching embers in this three-turn number puzzle.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "cinder-archer",
       "title": "Cinder Archer",
       "route": "/arcade/hosted/cinder-archer/index.html",
@@ -648,7 +622,7 @@
       "id": "cinder-crossing",
       "title": "Cinder Crossing",
       "route": "/arcade/hosted/cinder-crossing/index.html",
-      "description": "Dodge neon traffic, survive three collisions, and cross the city ten times in this original Knightfall arcade challenge.",
+      "description": "Cross neon traffic in ten-crossing City mode or the accelerating, single-life six-crossing Ash Escape challenge. Keyboard, swipes, edge taps and touch controls.",
       "genre": "Arcade",
       "collection": "games",
       "device": "touch",
@@ -778,7 +752,7 @@
       "id": "cinder-merge",
       "title": "Cinder Merge",
       "route": "/arcade/hosted/cinder-merge/index.html",
-      "description": "Fuse matching embers into a raging inferno. An original Ash-Fall number-merging puzzle with touch, keyboard, undo and local save.",
+      "description": "2048 merging with Cinder Cascade chain bonuses, undo, local and cloud saves, and a control deck.",
       "genre": "Puzzle",
       "collection": "games",
       "device": "touch",
@@ -1038,7 +1012,7 @@
       "id": "crypt-words",
       "title": "Crypt Words",
       "route": "/arcade/hosted/crypt-words/index.html",
-      "description": "Decode the crypt in six guesses. An original infernal word puzzle with rune artwork, on-screen keyboard, and saved streaks.",
+      "description": "Six-guess word decoding with expanded vocabulary, optional open guesses, saved streaks and cloud restore.",
       "genre": "Word",
       "collection": "games",
       "device": "touch",
@@ -1048,17 +1022,17 @@
       "featured": false
     },
     {
-      "id": "arcade-fresh-meat-cursed-circuit",
+      "id": "cursed-circuit",
       "title": "Cursed Circuit",
-      "route": "/arcade-fresh-meat.html#cursed-circuit",
-      "description": "Repeat the reactor's flashing sequence without making one fatal mistake.",
+      "route": "/arcade/hosted/cursed-circuit/index.html",
+      "description": "Classic and reversed patterns, rune signals, adjustable playback, touch/keyboard input and a control deck.",
       "genre": "Arcade",
-      "collection": "mini",
+      "collection": "games",
       "device": "touch",
-      "source": "",
+      "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "arcade-fresh-meat-dumpster-dive",
@@ -1100,19 +1074,6 @@
       "featured": true
     },
     {
-      "id": "ember-echo",
-      "title": "Ember Echo",
-      "route": "/arcade/hosted/ember-echo/index.html",
-      "description": "Repeat growing sequences of colored signals.",
-      "genre": "Puzzle",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "ember-path",
       "title": "Ember Path",
       "route": "/arcade/hosted/ember-path/index.html",
@@ -1130,19 +1091,6 @@
       "title": "Ember Pop",
       "route": "/arcade/hosted/ember-pop/index.html",
       "description": "Catch runaway fire spirits, dodge ash mines, and build combos in an original one-minute arcade challenge.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "ball-and-wall",
-      "title": "Ember Rebound",
-      "route": "/arcade/hosted/ball-and-wall/index.html",
-      "description": "Keep the ember in play, smash the neon wall, and clear increasingly nasty formations.",
       "genre": "Arcade",
       "collection": "mini",
       "device": "touch",
@@ -1404,17 +1352,17 @@
       "featured": false
     },
     {
-      "id": "arcade-after-dark-lights-out-afterburn",
+      "id": "lights-out-afterburn",
       "title": "Lights Out: Afterburn",
-      "route": "/arcade-after-dark.html#lights-out-afterburn",
-      "description": "Switch off every ember with each tap flipping neighboring tiles.",
+      "route": "/arcade/hosted/lights-out-afterburn/index.html",
+      "description": "Solvable lantern puzzles with original artwork, undo, safe hints, saved progress and a control deck.",
       "genre": "Arcade",
-      "collection": "mini",
+      "collection": "games",
       "device": "touch",
-      "source": "",
+      "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "line-trap",
@@ -1794,37 +1742,11 @@
       "featured": false
     },
     {
-      "id": "void-lanterns",
-      "title": "Void Lanterns",
-      "route": "/arcade/hosted/void-lanterns/index.html",
-      "description": "Extinguish the infernal lanterns in an original solvable toggle-grid logic puzzle.",
-      "genre": "Puzzle",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "void-pulse",
       "title": "Void Pulse",
       "route": "/arcade/hosted/void-pulse/index.html",
       "description": "Time ten strikes against a rotating pulse needle.",
       "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "void-sequence",
-      "title": "Void Sequence",
-      "route": "/arcade/hosted/void-sequence/index.html",
-      "description": "Memorize and repeat an expanding pattern of four infernal runes.",
-      "genre": "Puzzle",
       "collection": "mini",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
@@ -1842,19 +1764,6 @@
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
       "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "wordlee",
-      "title": "Wordlee",
-      "route": "/arcade/hosted/wordlee/index.html",
-      "description": "Guess the hidden five-letter word in six attempts.",
-      "genre": "Arcade",
-      "collection": "experiments",
-      "device": "touch",
-      "source": "",
-      "notes": "Legacy prototype; retained separately from the main arcade.",
       "links": [],
       "featured": false
     },
@@ -2076,19 +1985,6 @@
       "device": "desktop",
       "source": "https://github.com/Virtastic/jka-web",
       "notes": "External original; GPL engine, proprietary game data not bundled.",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "fifteen-puzzle-upstream",
-      "title": "15 Puzzle · Original MIT Edition",
-      "route": "/arcade/hosted/fifteen-puzzle/index.html",
-      "description": "Classic sliding-number puzzle, upstream files preserved and hosted locally.",
-      "genre": "Board",
-      "collection": "games",
-      "device": "touch",
-      "source": "https://github.com/arnisritins/15-Puzzle",
-      "notes": "MIT source and license preserved; production gameplay verification pending.",
       "links": [],
       "featured": false
     },
@@ -2375,6 +2271,46 @@
       "title": "Rock, Paper, Ruin",
       "route": "/arcade-games.html#game-rps",
       "reason": "Rock-paper-scissors family consolidated into Rock, Paper, Ruin. Classic first-to-five, Ember Clash first-to-three and five-round four-symbol Ruin remain available as modes."
+    },
+    {
+      "title": "Ash Crossing",
+      "route": "/arcade/hosted/crossy-road/index.html",
+      "reason": "Useful features harvested into cinder-crossing. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Cinder 2048",
+      "route": "/arcade-originals.html#cinder-2048",
+      "reason": "Useful features harvested into cinder-merge. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Ember Echo",
+      "route": "/arcade/hosted/ember-echo/index.html",
+      "reason": "Useful features harvested into cursed-circuit. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Ember Rebound",
+      "route": "/arcade/hosted/ball-and-wall/index.html",
+      "reason": "Useful features harvested into afterburn-breakout. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Void Lanterns",
+      "route": "/arcade/hosted/void-lanterns/index.html",
+      "reason": "Useful features harvested into lights-out-afterburn. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Void Sequence",
+      "route": "/arcade/hosted/void-sequence/index.html",
+      "reason": "Useful features harvested into cursed-circuit. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "Wordlee",
+      "route": "/arcade/hosted/wordlee/index.html",
+      "reason": "Useful features harvested into crypt-words. Duplicate implementation deleted by owner request."
+    },
+    {
+      "title": "15 Puzzle · Original MIT Edition",
+      "route": "/arcade/hosted/fifteen-puzzle/index.html",
+      "reason": "Useful features harvested into ash-tiles. Duplicate implementation deleted by owner request."
     }
   ]
 }

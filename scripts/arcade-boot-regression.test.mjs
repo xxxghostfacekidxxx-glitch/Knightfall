@@ -25,7 +25,7 @@ test('Cinder Dice rolls, banks, alternates turns, and cancels an old CPU after r
  h.get('action').onclick();assert.match(h.get('readout').textContent,/Pot 4/);
 });
 test('Graveyard Shift starts, pauses and resumes while the other cabinets initialize',()=>{
- const h=boot('arcade-fresh-meat.html');assert.equal(typeof h.get('cir-start').onclick,'function');assert.equal(typeof h.get('dump-start').onclick,'function');
+ const h=boot('arcade-fresh-meat.html');assert.equal(typeof h.get('dump-start').onclick,'function');
  h.get('run-start').onclick();assert.equal(h.get('run-pause').disabled,false);h.get('run-pause').onclick();assert.equal(h.get('run-pause').textContent,'RESUME SHIFT');h.get('run-pause').onclick();assert.equal(h.get('run-pause').textContent,'PAUSE SHIFT');
 });
 test('Connect Four rejects old CPU moves after restart and save restoration',()=>{
@@ -38,15 +38,6 @@ test('Connect Four rejects old CPU moves after restart and save restoration',()=
  assert.ok(h.sandbox.window.exportSaveState().board.flat().every(v=>v===0));
 });
 async function stepTimer(h){const [id,fn]=h.timers.entries().next().value||[];assert.ok(fn,'missing playback timer');h.timers.delete(id);fn();await Promise.resolve();await Promise.resolve();}
-for(const id of ['ember-echo','void-sequence'])test(id+' does not advance a new game from an old round callback',async()=>{
- const echo=id==='ember-echo';
- const expose=echo?'globalThis.__game={reset,pick,state:()=>({round,showing,sequence:seq})};':'globalThis.__game={reset,pick:press,state:()=>({round,showing,sequence})};';
- const h=boot('arcade/hosted/'+id+'/index.html',s=>s.replace('})();',expose+'})();'));
- const game=h.sandbox.__game;game.reset();for(let i=0;i<3;i++)await stepTimer(h);
- assert.equal(game.state().showing,false);game.pick(game.state().sequence[0]);
- const advance=[...h.timers.values()][0];assert.ok(advance);
- game.reset();advance();assert.equal(game.state().round,1,'stale round must not append to the restarted sequence');
-});
 test('Ash Veil ignores an old sector transition after restarting',()=>{
  const h=boot('arcade/hosted/ash-veil/index.html',s=>s.replace('})();',';globalThis.__game={setup,move,prepareExit:()=>{keys=[];enemies=[];player={x:6,y:7}},state:()=>({level,won})};})();'));
  const game=h.sandbox.__game;game.prepareExit();game.move(1,0);assert.equal(game.state().won,true);

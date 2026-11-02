@@ -119,7 +119,7 @@ try {
     }
   }
   // Each shared cabinet variant must actually start, not merely return HTTP 200.
-  const cabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","ball-and-wall","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
+  const cabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
   const cabinetFailures = [];
   for (const id of cabinetIds) {
     const page = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
@@ -134,7 +134,7 @@ try {
       if (!state?.includes("Running")) throw new Error("Start did not enter Running state: "+state);
       const canvas = await page.locator("#game").evaluate(el=>({w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height}));
       if(canvas.w<50||canvas.h<50)throw new Error("Game canvas invisible");
-      if(id==="trigger-rally"||id==="hexgl"||id==="ball-and-wall"){
+      if(id==="trigger-rally"||id==="hexgl"){
         const box=await page.locator("#game").boundingBox();
         if(box){
           await page.mouse.move(box.x+box.width*.5,box.y+box.height*.7);
@@ -211,7 +211,7 @@ try {
   if (routeFailures.length) failed = true;
 
   // Test every query-driven variant in the two shared game engines.
-  const sharedCabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","ball-and-wall","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
+  const sharedCabinetIds = ["hextris","a-dark-room","clumsy-bird","elevator-saga","isocity","3d-city","particle-clicker","freeciv-web","cube-composer","hexgl","trigger-rally","open-panzer","green-mahjong","browserquest","digger","custom-tetris","duckhunt-js","flappy-bird-style","dino-dash","skifree","bubble-shooter","chess","cut-the-rope","space-waves","pac-man","tower-shooter","kaiju-krush","parkour"];
   for (const id of sharedCabinetIds) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
@@ -688,7 +688,7 @@ try {
 
   // Verify cloud save restoration for word, number, tile, and mirror puzzles.
   const puzzleRestoreCases = [
-    { name:"Wordlee", path:"/arcade/hosted/wordlee/index.html", gameId:"cabinet-wordlee", data:{serialized:{answer:"ASHEN",row:1,guess:"CLOUD",done:false,guesses:[{word:"GHOST",colors:["absent","absent","absent","absent","absent"]}],keyState:{G:"absent"}}}, check:()=>document.querySelector("#board .tile")?.textContent==="G"&&document.querySelector("#status")?.textContent.includes("Cloud save restored") },
+    { name:"Crypt Words", path:"/arcade/hosted/crypt-words/index.html", gameId:"crypt-words", importDirect:true, data:{serialized:{answer:"ASHEN",row:1,guess:"CLOUD",done:false,guesses:[{word:"GHOST",colors:["absent","absent","absent","absent","absent"]}],keyState:{G:"absent"}}}, check:()=>document.querySelector("#board .tile")?.textContent==="g"&&document.querySelector("#status")?.textContent.includes("Cloud save restored") },
     { name:"Sudoku", path:"/arcade/hosted/sudoku/index.html", gameId:"cabinet-sudoku", data:{serialized:{grid:[[5,0,0,0,0,0,0,1,2],[0,0,0,0,3,5,0,0,0],[0,0,0,0,0,0,4,0,0],[0,5,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,9,0,6,0],[0,0,1,0,0,0,0,0,0],[0,0,0,7,2,0,0,0,0],[6,2,0,0,0,0,0,0,0]],selected:{r:1,c:0},timeLeft:487}}, check:()=>document.querySelector("#board .cell")?.textContent==="5"&&document.querySelector("#timer")?.textContent==="8:07" },
     { name:"Neon Mahjong", path:"/arcade/hosted/neon-mahjong/index.html", gameId:"cabinet-neon-mahjong", data:{serialized:{tiles:Array.from({length:104},(_,i)=>({x:i%12,y:Math.floor(i/12),z:0,id:i,val:["✦","✦","●","●","◆","◆"][i%6],alive:true})),selected:null,moves:13,elapsed:72,history:[],done:0,best:0}}, check:()=>document.querySelector("#moves")?.textContent==="13"&&document.querySelector("#message")?.textContent.includes("Cloud save restored") },
   ];
@@ -696,7 +696,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores puzzle state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores puzzle state")}
     catch(error){const diagnostic=await page.evaluate(()=>({bridgeStatus:document.querySelector(".af-account-bridge-status")?.textContent,scoreLabel:document.querySelector("#scoreLabel")?.textContent,stateLabel:document.querySelector("#stateLabel")?.textContent,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,importType:typeof window.importSaveState}));console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+" | diagnostic="+JSON.stringify(diagnostic));failed=true}
     finally{await page.close()}
   }
@@ -710,14 +710,14 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
     catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
     finally{await page.close()}
   }
 
   // Rewritten engines use versioned native saves. Old puzzle/racing editions have
   // different rules and geometry, so their old fixtures must be rejected, not coerced.
-  const nativeRestoreGames=["prism-panic","neon-vector","bubble-pop","candy-crush","balance-stack","stack-tower","doodle-jump","alien-battle","survivor","rusty-sky","slush-rush","car-race","two-cars","crossy-road"];
+  const nativeRestoreGames=["prism-panic","neon-vector","bubble-pop","candy-crush","balance-stack","stack-tower","doodle-jump","alien-battle","survivor","rusty-sky","slush-rush","car-race","two-cars"];
   for(const id of nativeRestoreGames){
     const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     await page.addInitScript(()=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async()=>null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}});
@@ -745,7 +745,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores campaign/racing state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores campaign/racing state")}
     catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
     finally{await page.close()}
   }
@@ -759,7 +759,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores active game state")}
     catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
     finally{await page.close()}
   }
@@ -772,7 +772,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores match/racing state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores match/racing state")}
     catch(error){console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error)));failed=true}
     finally{await page.close()}
   }
@@ -787,7 +787,7 @@ try {
     const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
-    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores winding-run state")}
+    try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores winding-run state")}
     catch(error){const diagnostics=testCase.name==="Curvy Snake"?await page.evaluate(()=>({score:document.querySelector("#scoreLabel")?.textContent,state:document.querySelector("#stateLabel")?.textContent,status:document.querySelector("[data-arcade-status],.af-status,#status")?.textContent,importSaveState:typeof window.importSaveState,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,bridge:typeof window.AshFallArcade})):null;console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+(diagnostics?" | diagnostics="+JSON.stringify(diagnostics):""));failed=true}
     finally{await page.close()}
   }

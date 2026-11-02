@@ -27,7 +27,7 @@ jobs:
       - name: Validate arcade catalog routes
         run: node scripts/audit-arcade-catalog.mjs
       - name: Test consolidated arcade families and shelves
-        run: node --test scripts/arcade-reaction-ritual.test.mjs scripts/arcade-ruin-duel.test.mjs scripts/arcade-shelf-dedup.test.mjs
+        run: node --test scripts/arcade-reaction-ritual.test.mjs scripts/arcade-ruin-duel.test.mjs scripts/arcade-shelf-dedup.test.mjs scripts/arcade-family-harvest.test.mjs
       - name: Validate card and board game routes
         run: node scripts/audit-card-board.mjs
       - name: Validate franchise, BrowserQuest and Sanctuary assets

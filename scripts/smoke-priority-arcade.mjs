@@ -5,7 +5,7 @@ import { readFile, mkdir, writeFile } from 'node:fs/promises';
 const base=process.env.GAME_BASE_URL||'http://127.0.0.1:18743';
 const server=process.env.GAME_BASE_URL?null:spawn('python3',['-m','http.server','18743','--directory','public'],{stdio:'ignore'});
 const catalog=JSON.parse(await readFile('public/arcade/catalog.json','utf8'));
-const names=['monster-mmo','browserquest-solo','sanctuary-original-sanctuary','sanctuary-ashfall-edition','fable-gta','pikkuautot-city','single-html-space-shooter','fifteen-puzzle-upstream','cinder-fleet'];
+const names=['monster-mmo','browserquest-solo','sanctuary-original-sanctuary','sanctuary-ashfall-edition','fable-gta','pikkuautot-city','single-html-space-shooter','ash-tiles','cinder-fleet'];
 const failures=[];
 await mkdir('priority-arcade-evidence',{recursive:true});
 let browser;
@@ -37,10 +37,9 @@ try {
       if(id==='browserquest-solo'){
         await page.locator('#nameinput').waitFor({state:'visible',timeout:30000});
       }
-      if(id==='fifteen-puzzle-upstream'){
-        if(await page.locator('script[src*="15-puzzle"]').count()===0)throw Error('Puzzle script missing');
-        await page.locator('#scramble').click();
-        if(await page.locator('#puzzle').evaluate(e=>e.children.length)===0)throw Error('Puzzle grid missing after scramble');
+      if(id==='ash-tiles'){
+        await page.locator('#start').click();
+        if(await page.locator('#board button').count()!==15)throw Error('Sliding tile board is incomplete');
       }
       if(id==='single-html-space-shooter'){
         if(await page.locator('canvas').count()===0)throw Error('Shooter canvas missing');

@@ -419,29 +419,6 @@
       "status": "committed; browser QA pending"
     },
     {
-      "id": "void-lanterns",
-      "name": "Void Lanterns",
-      "genre": "Puzzle",
-      "sprites": [
-        "ember-lantern.svg",
-        "void-lantern.svg"
-      ],
-      "notes": "Extinguish the infernal lanterns in an original solvable toggle-grid logic puzzle.",
-      "engine": "/arcade/hosted/void-lanterns/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-lanterns",
-      "assets": [
-        {
-          "name": "ember-lantern.svg",
-          "path": "/arcade/hosted/void-lanterns/sprites/ember-lantern.svg"
-        },
-        {
-          "name": "void-lantern.svg",
-          "path": "/arcade/hosted/void-lanterns/sprites/void-lantern.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
       "id": "crypt-pairs",
       "name": "Madhouse Memory",
       "genre": "Puzzle",
@@ -714,24 +691,6 @@
         {
           "name": "falling-cinder.svg",
           "path": "/arcade/hosted/ash-fallout/sprites/falling-cinder.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
-      "id": "void-sequence",
-      "name": "Void Sequence",
-      "genre": "Puzzle",
-      "sprites": [
-        "rune.svg"
-      ],
-      "notes": "Memorize and repeat an expanding pattern of four infernal runes.",
-      "engine": "/arcade/hosted/void-sequence/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/void-sequence",
-      "assets": [
-        {
-          "name": "rune.svg",
-          "path": "/arcade/hosted/void-sequence/sprites/rune.svg"
         }
       ],
       "status": "committed; browser QA pending"
@@ -1061,24 +1020,6 @@
       "status": "committed; browser QA pending"
     },
     {
-      "id": "ember-echo",
-      "name": "Ember Echo",
-      "genre": "Puzzle",
-      "sprites": [
-        "echo.svg"
-      ],
-      "notes": "Repeat growing sequences of colored signals.",
-      "engine": "/arcade/hosted/ember-echo/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-echo",
-      "assets": [
-        {
-          "name": "echo.svg",
-          "path": "/arcade/hosted/ember-echo/sprites/echo.svg"
-        }
-      ],
-      "status": "committed; browser QA pending"
-    },
-    {
       "id": "crypt-labyrinth",
       "name": "Crypt Labyrinth",
       "genre": "Puzzle",
@@ -1272,24 +1213,6 @@
         {
           "name": "speedway.svg",
           "path": "/arcade/hosted/car-race/sprites/speedway.svg"
-        }
-      ],
-      "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
-    },
-    {
-      "id": "crossy-road",
-      "name": "Ash Crossing",
-      "genre": "Arcade",
-      "sprites": [
-        "crossing.svg"
-      ],
-      "notes": "Replaced previous game page and gameplay JavaScript with new Ash-Fall road-survival canvas engine (ashfall-original-driving.js). Existing original emblem retained; live browser QA pending.",
-      "engine": "/arcade/hosted/crossy-road/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crossy-road",
-      "assets": [
-        {
-          "name": "crossing.svg",
-          "path": "/arcade/hosted/crossy-road/sprites/crossing.svg"
         }
       ],
       "status": "original Ash-Fall engine replacement committed; browser QA and historical provenance review pending"
@@ -2024,24 +1947,6 @@
       "status": "cataloged; code provenance and browser QA pending"
     },
     {
-      "id": "ball-and-wall",
-      "name": "Ember Rebound",
-      "genre": "Arcade",
-      "sprites": [
-        "rebound.svg"
-      ],
-      "notes": "Knightfall-hosted gameplay with Ash-Fall original emblem. Independent code provenance and asset-license audit pending.",
-      "engine": "/arcade/hosted/ball-and-wall/index.html",
-      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ball-and-wall",
-      "assets": [
-        {
-          "name": "rebound.svg",
-          "path": "/arcade/hosted/ball-and-wall/sprites/rebound.svg"
-        }
-      ],
-      "status": "cataloged; code provenance and browser QA pending"
-    },
-    {
       "id": "cinder-lander",
       "name": "Cinder Lander",
       "genre": "Simulation",
@@ -2069,6 +1974,47 @@
         }
       ],
       "status": "committed; production user testing pending"
+    },
+    {
+      "id": "cursed-circuit",
+      "name": "Cursed Circuit",
+      "genre": "Puzzle",
+      "sprites": [
+        "rune.svg"
+      ],
+      "notes": "Consolidated original family cabinet; retained chosen name, harvested useful features and deleted duplicates.",
+      "engine": "/arcade/hosted/cursed-circuit/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cursed-circuit",
+      "assets": [
+        {
+          "name": "rune.svg",
+          "path": "/arcade/hosted/cursed-circuit/sprites/rune.svg"
+        }
+      ],
+      "status": "consolidated; user verification pending"
+    },
+    {
+      "id": "lights-out-afterburn",
+      "name": "Lights Out: Afterburn",
+      "genre": "Puzzle",
+      "sprites": [
+        "ember-lantern.svg",
+        "void-lantern.svg"
+      ],
+      "notes": "Consolidated original family cabinet; retained chosen name, harvested useful features and deleted duplicates.",
+      "engine": "/arcade/hosted/lights-out-afterburn/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/lights-out-afterburn",
+      "assets": [
+        {
+          "name": "ember-lantern.svg",
+          "path": "/arcade/hosted/lights-out-afterburn/sprites/ember-lantern.svg"
+        },
+        {
+          "name": "void-lantern.svg",
+          "path": "/arcade/hosted/lights-out-afterburn/sprites/void-lantern.svg"
+        }
+      ],
+      "status": "consolidated; user verification pending"
     }
   ]
 }

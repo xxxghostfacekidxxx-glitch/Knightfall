@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {runInNewContext,Script} from "node:vm";
 const source=readFileSync("public/arcade/hosted/ashfall-mini-games.js","utf8");
-test("shared four-game engine parses",()=>assert.doesNotThrow(()=>new Script(source)));
-for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
+test("remaining shared mini-game engine parses",()=>assert.doesNotThrow(()=>new Script(source)));
+for(const id of ["particle-clicker","cube-composer","skifree"]){
  test(id+" starts, animates, restarts and keeps a single animation loop",()=>{
   const html=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
   assert.ok(html.includes("/arcade/hosted/ashfall-mini-games.js"));
@@ -31,17 +31,7 @@ for(const id of ["particle-clicker","cube-composer","skifree","ball-and-wall"]){
   assert.equal(frames.length,queued,"stale animation frame must not reschedule after restart");
   assert.equal(elements.get("score").textContent,"0");
   assert.equal(events.filter(e=>e.type==="ashfall:arcade-started").length,2);
-  if(id==="ball-and-wall"){
-   const state=sandbox.__miniTest.getState();
-   state.x=5;state.y=200;state.vx=-3;state.vy=-4;
-   frames.shift()(80);
-   assert.equal(state.x,10,"ball clamps at the left wall");
-   assert.ok(state.vx>0,"ball bounces away from left wall");
-   state.x=state.paddle;state.y=530;state.vy=4;
-   frames.shift()(96);
-   assert.equal(state.y,520,"paddle collision resolves outside paddle");
-   assert.ok(state.vy<0,"paddle reflects the ball upward");
-  }
+
   sandbox.__miniTest.finish("TEST COMPLETE");
   sandbox.__miniTest.finish("TEST COMPLETE");
   assert.equal(events.filter(e=>e.type==="ashfall:arcade-finished").length,1,"a run must emit only one finish event");

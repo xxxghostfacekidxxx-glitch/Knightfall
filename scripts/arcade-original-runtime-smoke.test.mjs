@@ -6,7 +6,7 @@ const root="public/arcade/hosted/";
 const groups={
  "ashfall-original-trio.js":["stack-tower","balance-stack"],
  "ashfall-original-sports.js":["basketball","bowling","penalty-shootout"],
- "ashfall-original-driving.js":["car-race","two-cars","crossy-road"],
+ "ashfall-original-driving.js":["car-race","two-cars"],
  "ashfall-original-matching.js":["bubble-pop","candy-crush"],
  "ashfall-original-action.js":["doodle-jump","survivor","alien-battle"]
 };
