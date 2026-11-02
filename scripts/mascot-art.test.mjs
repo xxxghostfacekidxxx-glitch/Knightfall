@@ -72,9 +72,9 @@ test('site crew has featured trio, preserves other mascots and does not block co
     assert.ok(js.includes("'" + id + "'"), 'crew includes ' + id);
   }
   assert.ok(js.includes('crewGroups'));
-  assert.ok(js.includes('[12,13,14,16,17,4]'), 'home crew features trio');
-  assert.ok(js.includes("'.svg?v=20261102-mascot5'"), 'new artwork is cache-busted');
-  assert.ok(nav.includes('20261102-mascot5'), 'shared nav loads revised assets');
+  assert.ok(js.includes('[1,3,12,13,14,16]'), 'home crew displays Gillrot and Nocturnib ahead of trio');
+  assert.ok(js.includes("'.svg?v=20261102-mascot6'"), 'new artwork is cache-busted');
+  assert.ok(nav.includes('20261102-mascot6'), 'shared nav loads revised assets');
   assert.ok(css.includes('nth-child(n+5){display:none}'), 'mobile crew remains compact');
   assert.ok(css.includes('body:has(canvas)'), 'active games remain unobstructed');
   assert.ok(css.includes('body:has(:fullscreen)'), 'fullscreen views remain unobstructed');
@@ -93,4 +93,26 @@ test('Devil Tools has working per-character previews and a lore section', () => 
 test('Madhouse Memory uses the current The Eddie art without changing the legacy ID', () => {
   assert.equal(read('public/arcade/hosted/crypt-pairs/sprites/mini-eddie.svg'), read(rootDir + '/mini-eddie.svg'));
   assert.ok(read('public/arcade/hosted/crypt-pairs/index.html').includes("'The Eddie'"));
+});
+
+test('Gillrot and Nocturnib upgraded artwork remains visible and all animated variants exist', () => {
+  const gallery = read('public/devil-tools.html');
+  const site = read('public/gravewave-takeover.js');
+  for (const { id, name } of [{ id: 'bloop', name: 'Gillrot' }, { id: 'nib', name: 'Nocturnib' }]) {
+    const mascot = manifest.characters.find(c => c.id === id);
+    assert.ok(mascot, name + ' in catalog');
+    assert.equal(mascot.name, name);
+    assert.ok(mascot.styleVersion >= 7, name + ' upgraded style is preserved');
+    const master = read(rootDir + '/' + id + '.svg');
+    assert.ok(master.includes(name + ' | Ash-Fall Neon Nuisances'), name + ' keeps upgraded master');
+    for (const mode of modes) {
+      assert.equal(mascot.variants[mode], '/assets/devil-tools/neon-nuisances/' + id + '-' + mode + '.svg');
+      const svg = read(rootDir + '/' + id + '-' + mode + '.svg');
+      assert.ok(svg.includes(name + ' · ' + mode + ' | Ash-Fall Neon Nuisances'), name + ' ' + mode + ' is upgraded');
+      assert.ok(svg.includes('prefers-reduced-motion'), name + ' ' + mode + ' supports reduced motion');
+    }
+    assert.ok(gallery.includes("'" + id + "'"), name + ' is spotlighted in Devil Tools');
+    assert.ok(site.includes("'" + id + "'"), name + ' is part of the sitewide mascot array');
+  }
+  assert.ok(site.includes('home?[1,3,14]'), 'both appear in homepage ambient art');
 });
