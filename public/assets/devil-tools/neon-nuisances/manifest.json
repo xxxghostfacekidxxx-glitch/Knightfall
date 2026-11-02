@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 6,
+  "version": 7,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -31,7 +31,9 @@
         "bounce": "/assets/devil-tools/neon-nuisances/bloop-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/bloop-mischief.svg"
       },
-      "description": "Radioactive axolotl with exposed ribs"
+      "description": "Gillrot · radioactive punk axolotl: six feathery gills, toxic mohawk, glowing exposed rib cage, ragged hoodie, split-color eyes and sly serrated grin",
+      "personality": "Chaotic, curious, toxic-puddle scavenger. Mischief: winks and bubbles radioactive slime.",
+      "styleVersion": 7
     },
     {
       "id": "pippa",
@@ -61,7 +63,9 @@
         "bounce": "/assets/devil-tools/neon-nuisances/nib-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/nib-mischief.svg"
       },
-      "description": "Fanged candy-bat punk"
+      "description": "Nocturnib · gothic punk vampire bat: scalloped bone-ribbed wings, pierced ears, swept fringe, fangs and studded jacket",
+      "personality": "Nocturnal, smug, dramatic little menace. Mischief: winks and sparks a pink star.",
+      "styleVersion": 7
     },
     {
       "id": "glim",

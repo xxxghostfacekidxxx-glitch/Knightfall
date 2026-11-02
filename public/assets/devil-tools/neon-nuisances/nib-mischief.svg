@@ -1,1 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="bat original neon mascot"><title>bat neon mascot</title><defs><filter id="halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs><style>@media(prefers-reduced-motion:no-preference){#mascot{transform-origin:64px 85px}@keyframes a{50%{transform:rotate(5deg)}}#mascot{animation:a 2s ease-in-out infinite}@keyframes b{0%,65%,85%,100%{opacity:0}66%,84%{opacity:1}}#extra{animation:b 3s steps(1,end) infinite}}}</style><g id="mascot"><ellipse cx="64" cy="113" rx="34" ry="5" fill="#ff67c6" opacity=".3"/><circle cx="64" cy="64" r="48" fill="#ff67c6" opacity=".13" filter="url(#halo)"/><path d="M39 54 4 33 12 59 3 80 34 79M89 54 124 33 116 59 125 80 94 79" fill="#ff67c6" stroke="#15101f" stroke-width="3.5" stroke-linejoin="round"/><path d="M44 44 37 20 58 38M84 44 91 20 70 38" fill="#b78cff" stroke="#15101f" stroke-width="3.5" stroke-linejoin="round"/> <path d="M30 60 Q30 35 64 34 Q98 35 98 60 L98 84 Q95 102 64 103 Q33 102 30 84Z" fill="#b78cff" stroke="#15101f" stroke-width="3.5" stroke-linejoin="round"/><ellipse cx="64" cy="92" rx="18" ry="8" fill="#fff" opacity=".14"/><ellipse cx="50" cy="61" rx="5" ry="7" fill="#15101f"/><ellipse cx="78" cy="61" rx="5" ry="7" fill="#15101f"/><circle cx="51" cy="58" r="2" fill="#fff"/><circle cx="79" cy="58" r="2" fill="#fff"/><path d="M59 75 Q64 80 69 75" fill="none" stroke="#15101f" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="40" cy="73" rx="7" ry="3.5" fill="#ff67c6" opacity=".7"/><ellipse cx="88" cy="73" rx="7" ry="3.5" fill="#ff67c6" opacity=".7"/><path d="M54 89Q64 96 74 89" stroke="#ff67c6" stroke-width="3" fill="none" stroke-linecap="round"/><g id="extra" opacity="0"><ellipse cx="50" cy="61" rx="8" ry="9" fill="#ff9bdd"/><path d="M44 62q6-5 12 0" fill="none" stroke="#15101f" stroke-width="3"/></g><g aria-hidden="true"><path d="M48 83Q64 75 80 83L76 99Q64 105 52 99Z" fill="#13121d"/><path d="M55 83v15M64 80v22M73 83v15M49 90h30" stroke="#e9f4e6" stroke-width="3"/><path d="M35 45 44 28 50 39 60 23 67 38 80 24 88 44" fill="#15101f" stroke="#ff67c6" stroke-width="2.5"/><path d="M42 78h9l-4 8zM77 78h9l-4 8z" fill="#f3f6e6"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Nocturnib · mischief | Ash-Fall Neon Nuisances</title><desc id="desc">Midnight-violet vampire bat with scalloped bone-ribbed wings, huge pierced ears, heavy black fringe, fang grin and a studded punk jacket. Original Knightfall vector artwork.</desc>
+<defs><linearGradient id="violet" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#e6ceff"/><stop offset=".48" stop-color="#a77bdf"/><stop offset="1" stop-color="#62349b"/></linearGradient><linearGradient id="wing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f47acc"/><stop offset=".55" stop-color="#843ab0"/><stop offset="1" stop-color="#241445"/></linearGradient><filter id="halo" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="5"/></filter></defs>
+<style>@media (prefers-reduced-motion:no-preference){#mascot{animation:smirkTilt 2.7s ease-in-out infinite;transform-origin:64px 72px}#wink{animation:noctwink 2.9s steps(1,end) infinite}#wing-left{animation:batwingL 1.2s ease-in-out infinite;transform-origin:39px 60px}@keyframes smirkTilt{50%{transform:rotate(-6deg) translateY(-2px)}}@keyframes noctwink{0%,64%,82%,100%{opacity:0}65%,81%{opacity:1}}@keyframes batwingL{50%{transform:rotate(12deg)}}}</style>
+<ellipse cx="64" cy="117" rx="33" ry="4" fill="#ff67c6" opacity=".35"/>
+<circle cx="64" cy="65" r="48" fill="#ff67c6" opacity=".17" filter="url(#halo)"/>
+<g id="bubbles" opacity=".88"><circle cx="12" cy="18" r="3" fill="#ff67c6" opacity=".9"/><circle cx="118" cy="96" r="2.5" fill="#b78cff" opacity=".7"/><circle cx="17" cy="10" r="1.8" fill="#c6ff49"/></g>
+<g id="mascot">
+<!-- Scalloped wings with articulated glowing wing bones, not axolotl side frills -->
+<g id="wing-left" stroke="#130b21" stroke-linejoin="round" stroke-width="3.3"><path d="M45 69 Q31 53 6 27 L14 53 2 74 Q18 66 26 86 Q31 74 46 85Z" fill="url(#wing)"/><path d="M43 70 8 31M43 73 12 57M39 79 26 84" stroke="#ff7ad6" stroke-width="2" fill="none" opacity=".9"/><path d="M6 27l8 26-12 21" fill="none" stroke="#3b1b54" stroke-width="2"/></g>
+<g id="wing-right" stroke="#130b21" stroke-linejoin="round" stroke-width="3.3"><path d="M83 69 Q97 53 122 27 L114 53 126 74 Q110 66 102 86 Q97 74 82 85Z" fill="url(#wing)"/><path d="M85 70 120 31M85 73 116 57M89 79 102 84" stroke="#ff7ad6" stroke-width="2" fill="none" opacity=".9"/><path d="M122 27l-8 26 12 21" fill="none" stroke="#3b1b54" stroke-width="2"/></g>
+<path d="M49 97l-7 17 10 4 8-8M78 97l8 17-10 4-8-8" fill="#6a3b9e" stroke="#140b20" stroke-width="3.2" stroke-linejoin="round"/>
+<path d="M41 77Q31 101 48 115Q64 123 81 115Q98 101 87 78Z" fill="url(#violet)" stroke="#160e28" stroke-width="4"/>
+<path d="M43 83l-6 25 13 8 14-10 14 10 14-9-7-26-21 9Z" fill="#171224" stroke="#140d1e" stroke-width="2.8"/>
+<path d="M47 96l16-4 16 4" stroke="#ff73ca" stroke-width="2.5" fill="none"/><path d="M64 91v24" stroke="#d6b3ff" stroke-width="2" stroke-dasharray="3 3"/><path d="M49 104l7 4m23-4-7 4" stroke="#cad1d9" stroke-width="1.8"/>
+<circle cx="49" cy="95" r="2.5" fill="#c6ff49"/><circle cx="79" cy="95" r="2.5" fill="#c6ff49"/>
+<!-- Distinct tall pierced bat ears -->
+<path d="M38 47 32 8 Q50 22 54 39 M74 39 Q80 22 96 8 L90 48" fill="url(#violet)" stroke="#130b20" stroke-width="3.8" stroke-linejoin="round"/>
+<path d="M39 39 37 19 49 39 M79 39 92 19 89 41" fill="#ff7bd5" opacity=".9"/>
+<circle cx="38" cy="25" r="4.1" fill="none" stroke="#dceef4" stroke-width="2"/><circle cx="89" cy="28" r="3.8" fill="none" stroke="#dceef4" stroke-width="2"/>
+<path d="M34 61Q31 38 47 36Q64 25 81 36Q97 39 96 62Q101 85 87 94Q65 104 43 94Q27 82 34 61Z" fill="url(#violet)" stroke="#170d26" stroke-width="3.8"/>
+<path d="M40 44Q47 37 55 36M77 36q9 2 13 10" fill="none" stroke="#edc6ff" opacity=".56" stroke-width="3" stroke-linecap="round"/>
+<!-- Gothic asymmetrical swept fringe -->
+<path d="M36 52Q35 31 57 30L60 20 68 29 79 22 82 36 95 50 76 44 70 53 63 44 53 56 47 46Z" fill="#171127" stroke="#120b20" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M52 40q13-8 25-8" fill="none" stroke="#ff73ca" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M42 58q10-7 18 1M70 59q11-7 19 0" stroke="#1b102a" stroke-width="3.3" fill="none" stroke-linecap="round"/>
+<ellipse cx="51" cy="65" rx="7.2" ry="9.3" fill="#140f27"/><ellipse cx="80" cy="65" rx="6.3" ry="9.4" fill="#140f27"/>
+<ellipse cx="52" cy="64" rx="3.5" ry="6.2" fill="#ffdaef"/><ellipse cx="80" cy="64" rx="3.2" ry="6" fill="#c6ff49"/>
+<circle cx="52" cy="61.5" r="1.5" fill="#fff"/><circle cx="81" cy="61" r="1.5" fill="#fff"/>
+<path d="M63 74q3-4 6 0l-3 5z" fill="#ff89c8" stroke="#220e2b" stroke-width="1.6"/>
+<ellipse cx="42" cy="78" rx="5.5" ry="3" fill="#ff78c6" opacity=".5"/><ellipse cx="90" cy="78" rx="5.5" ry="3" fill="#ff78c6" opacity=".5"/>
+<path d="M50 81Q70 103 89 79" stroke="#1b102c" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+<path d="M51 83l5 11 5-7 5 3 6-4 7 8 4-11" fill="#fff4fa" stroke="#191126" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M43 90Q64 101 87 91" fill="none" stroke="#f494d3" stroke-width="1.7" opacity=".8"/>
+<path d="M87 72l7 3m-54-3-6 3" stroke="#381552" stroke-width="2" stroke-linecap="round"/>
+<path d="M89 83q5 7-1 10" fill="none" stroke="#d5eaff" stroke-width="1.9"/><circle cx="91" cy="88" r="2" fill="#fff"/>
+<g id="lids" opacity="0"><path d="M45 65q7-5 14 0M74 65q7-4 13 0" stroke="#9a6ada" stroke-width="12" fill="none" stroke-linecap="round"/><path d="M46 64l13 2m16-1 12 0" stroke="#271437" stroke-width="2.5" stroke-linecap="round"/></g>
+<g id="wink" opacity="0"><ellipse cx="51" cy="65" rx="11" ry="12" fill="#a477e0"/><path d="M42 65q10-6 17 0" stroke="#21102e" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+</g>
+<g id="mischief-fx"><path d="M106 21l5-11 5 11 9 4-9 4-5 10-5-10-9-4Z" fill="#ff6dcc" opacity=".87"/></g>
+</svg>
