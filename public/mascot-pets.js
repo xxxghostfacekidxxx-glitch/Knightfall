@@ -6,7 +6,7 @@ const owned=document.querySelector('#owned-pets'),adopt=document.querySelector('
  slots=document.querySelector('#pet-slots'),balance=document.querySelector('#pet-wallet');
 if(!owned||!adopt||!shop||!message||!slots)return;
 let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=22,
-    cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[];
+    cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
 const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/|habitats\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
@@ -100,19 +100,19 @@ function renderOwned(){
 function renderAdopt(){
  adopt.replaceChildren();
  for(const pet of species){
-  const already=pets.some(x=>x.species===pet.id),first=pets.length===0;
+  const already=pets.some(x=>x.species===pet.id),incubating=incubatingSpecies.includes(pet.id),first=pets.length===0;
   const unlock=Number(pet.unlock_level||1),locked=!first&&level<unlock,full=pets.length>=max;
   const price=first?0:Number(pet.cost_cinders||0),canAfford=cinders>=price;
   const card=cardBase(pet,pet.portrait||pet.svg),heading=make('div','pet-label');
-  heading.append(make('strong','',pet.name),make('small','',already?'OWNED':price===0?'FREE':'✦ '+price.toLocaleString()));
+  heading.append(make('strong','',pet.name),make('small','',already?'OWNED':incubating?'EGG WAITING':price===0?'FREE':'✦ '+price.toLocaleString()));
   card.append(heading,make('p','pet-type',pet.type+' · Unlock Lv '+unlock));
-  const hint=make('p','pet-cost-note',already?'You have already rescued this species.':locked?'Train any companion to Lv '+unlock+' first.':!first&&!canAfford?'Earn Cinders through arcade and daily rewards.':first?'Your first companion is free.':'Ready to rescue with Cinders.');
+  const hint=make('p','pet-cost-note',already?'You have already rescued this species.':incubating?'Your egg for this mascot is incubating. Hatch that egg instead.':locked?'Train any companion to Lv '+unlock+' first.':!first&&!canAfford?'Earn Cinders through arcade and daily rewards.':first?'Your first companion is free.':'Ready to rescue with Cinders.');
   card.append(hint);
   const field=make('input');field.maxLength=28;field.value=pet.name;field.setAttribute('aria-label','Nickname for '+pet.name);field.dataset.nickname='1';
   card.append(field);
   const actions=make('div','pet-actions');
-  const label=already?'Already rescued':!signedIn?'Sign in to rescue':full?'Full collection':locked?'Locked · Lv '+unlock:price?'Rescue · '+price.toLocaleString()+' ✦':'Free starter rescue';
-  actions.append(button(label,already?'owned':'adopt',already||full||locked||!canAfford||working,!(already||locked||full||!canAfford)));
+  const label=already?'Already rescued':incubating?'Egg incubating · hatch instead':!signedIn?'Sign in to rescue':full?'Full collection':locked?'Locked · Lv '+unlock:price?'Rescue · '+price.toLocaleString()+' ✦':'Free starter rescue';
+  actions.append(button(label,already?'owned':'adopt',already||incubating||full||locked||!canAfford||working,!(already||incubating||locked||full||!canAfford)));
   card.append(actions);adopt.append(card);
  }
 }
@@ -147,6 +147,7 @@ async function reload(){
  try{updateMe(await api('/api/mascot-pets/me'));signedIn=true;
   const adv=await api('/api/mascot-pets/adventures').catch(()=>null);
   habitatThemes=adv?.themes||[];habitatDecorations=adv?.decorations||[];
+  incubatingSpecies=(adv?.eggs||[]).filter(x=>x.status==='incubating').map(x=>x.species);
   say('First rescue free. Complete daily companion quests to earn rescue shells, incubate eggs, and decorate every pet habitat.');
  }catch(error){if(error.status===401){signedIn=false;say('Browse every species and cosmetic here. Sign in to own companions.')}else throw error}
  const checkout=new URLSearchParams(location.search).get('checkout');
@@ -212,7 +213,9 @@ document.addEventListener('click',event=>{
 });
 document.addEventListener('sanctuary-changed',async event=>{
  if(event.detail?.source!=='adventures')return;
- try{updateMe(await api('/api/mascot-pets/me'));render()}catch(error){say(error.message)}
+ try{updateMe(await api('/api/mascot-pets/me'));
+  const a=await api('/api/mascot-pets/adventures');incubatingSpecies=(a.eggs||[]).filter(x=>x.status==='incubating').map(x=>x.species);
+  render()}catch(error){say(error.message)}
 });
 reload().catch(err=>say('Sanctuary unavailable: '+err.message));
 })();
