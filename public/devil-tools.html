@@ -74,7 +74,7 @@ card.append(img,title,type,a);root.append(card);count++}status.textContent=count
 </script>
 <section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
 <h2>Gravewave · Neon Nuisances</h2>
-<p>Sixteen original cute-horror metalhead mascots, including exposed ribs, cyber skeletons, fanged aliens, and coffin ghouls. The original twelve include four animated variants; the four newest characters have editable SVG masters. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
+<p>An expanding collection of original cute-horror metalhead mascots, now including Chunky Monkey and Boo Thang. Browse the editable SVG masters, preview any available animation variants, and download artwork for site graphics, game sprites, or promotions. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
 <p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
 <div id="nuisances-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 <a class="btn" href="/assets/devil-tools/neon-nuisances/manifest.json" target="_blank" rel="noopener noreferrer">View mascot manifest</a>
@@ -90,7 +90,7 @@ const card=document.createElement('article');card.style.cssText='background:#090
 const img=document.createElement('img');img.src=item.svg;img.alt=item.name;img.loading='lazy';img.width=128;img.height=128;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #ff55d855)';
 const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem;min-height:2.5em';
 const a=document.createElement('a');a.href=item.svg;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.45rem;font-size:.7rem';
-const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['original','idle','blink','bounce','mischief']){const option=document.createElement('option');option.value=mode;option.textContent=mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
+const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
 select.addEventListener('change',()=>{const mode=select.value;const url=mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url;a.href=url;a.download=item.id+(mode==='original'?'':'-'+mode)+'.svg'});
 const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';card.append(img,title,desc,select,a);root.append(card);
 }
