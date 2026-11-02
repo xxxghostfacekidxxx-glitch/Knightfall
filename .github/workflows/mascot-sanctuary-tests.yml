@@ -8,6 +8,12 @@ on:
       - 'backend/src/index.js'
       - 'backend/migrations/0103_mascot_pets.sql'
       - 'backend/migrations/0104_mascot_economy.sql'
+      - 'backend/migrations/0105_mascot_adventures.sql'
+      - 'backend/src/mascot-adventures.js'
+      - 'backend/src/mascot-adventures.test.mjs'
+      - 'public/mascot-adventures.js'
+      - 'scripts/mascot-adventures-sql.test.py'
+      - 'public/assets/devil-tools/neon-nuisances/habitats/**'
       - 'backend/src/mascot-collectibles.js'
       - 'backend/src/member-shop-checkout.js'
       - 'scripts/mascot-economy-sql.test.py'
@@ -29,13 +35,15 @@ jobs:
         with:
           node-version: '22'
       - name: Validate adoption rules, routes, ownership and privacy
-        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs
+        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs
       - name: Validate atomic Cinders pet rescues and accessory ownership
-        run: python3 scripts/mascot-economy-sql.test.py
+        run: python3 scripts/mascot-economy-sql.test.py && python3 scripts/mascot-adventures-sql.test.py
       - name: Confirm Worker and browser syntax
         run: |
           node --check backend/src/index.js
           node --check backend/src/mascot-pets.js
+          node --check backend/src/mascot-adventures.js
+          node --check public/mascot-adventures.js
           node --check backend/src/member-shop-checkout.js
           node --check scripts/integrate-mascot-pets.mjs
           node --check public/mascot-pets.js
