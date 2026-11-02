@@ -73,9 +73,9 @@ const a=document.createElement('a');a.href=item.src;a.download=item.id+'.svg';a.
 card.append(img,title,type,a);root.append(card);count++}status.textContent=count+' game-ready sprites available.'}).catch(e=>{status.textContent='Game sprite collection unavailable: '+e.message})})();
 </script>
 <section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
-<h2>Gravewave · Neon Nuisances</h2>
+<h2>Gravewave · Neon Nuisances · Deluxe Collection</h2>
 <p>Meet the original neon-horror character crew. Minion Mouse, Mini Villain, and The Eddie now have distinct hand-authored silhouettes and four animated expressions each. Preview all available variants, read their character lore, and download editable SVG masters.</p>
-<p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
+<p><a class="btn" href="/mascot-pets.html" style="display:inline-block;border-color:#c6ff45;color:#c6ff45">✦ Enter the Sanctuary · Adopt a Profile Pet</a></p><p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
 <div id="nuisances-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 <a class="btn" href="/assets/devil-tools/neon-nuisances/manifest.json" target="_blank" rel="noopener noreferrer">View mascot manifest</a>
 </section>
@@ -91,8 +91,9 @@ const card=document.createElement('article');card.style.cssText='background:#090
 const img=document.createElement('img');img.src=item.svg+'?v='+encodeURIComponent(data.version||1);img.alt=item.name;img.loading='lazy';img.width=128;img.height=128;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #ff55d855)';
 const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem;min-height:2.5em';
 const a=document.createElement('a');a.href=item.svg;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.45rem;font-size:.7rem';
-const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
-select.addEventListener('change',()=>{const mode=select.value;const url=mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url+'?v='+encodeURIComponent(data.version||1);a.href=url;a.download=item.id+(mode==='original'?'':'-'+mode)+'.svg'});if(['bloop','nib','glim','gravebyte','minion-mouse','mini-villain','mini-eddie'].includes(item.id) && item.variants?.idle){card.style.borderColor=item.primary+'88';card.style.boxShadow='0 0 24px '+item.primary+'18';select.value='idle';img.src=item.variants.idle+'?v='+encodeURIComponent(data.version||1);a.href=item.variants.idle;a.download=item.id+'-idle.svg'}
+const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['deluxe','original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='deluxe'?'Deluxe portrait':mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
+select.addEventListener('change',()=>{const mode=select.value;const url=mode==='deluxe'?item.portrait:mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url+'?v='+encodeURIComponent(data.version||1);a.href=url;a.download=item.id+(mode==='original'?'':mode==='deluxe'?'-deluxe':'-'+mode)+'.svg'});if(['bloop','nib','glim','gravebyte','minion-mouse','mini-villain','mini-eddie'].includes(item.id) && item.variants?.idle){card.style.borderColor=item.primary+'88';card.style.boxShadow='0 0 24px '+item.primary+'18';select.value='idle';img.src=item.variants.idle+'?v='+encodeURIComponent(data.version||1);a.href=item.variants.idle;a.download=item.id+'-idle.svg'}
+if(item.portrait && /^\/assets\/devil-tools\/neon-nuisances\/portraits\/[a-z-]+\.svg$/.test(item.portrait)){select.value='deluxe';img.src=item.portrait+'?v='+encodeURIComponent(data.version||1);a.href=item.portrait;a.download=item.id+'-deluxe.svg'}
 const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';const meta=document.createElement('div');meta.style.cssText='font-size:.69rem;line-height:1.5;text-align:left;color:#c9cbdf;margin:.4rem 0';
 if(item.role){const role=document.createElement('strong');role.textContent=item.role;role.style.cssText='display:block;color:#c6ff45';meta.append(role)}
 if(item.tagline){const tag=document.createElement('span');tag.textContent='“'+item.tagline+'”';tag.style.cssText='display:block;color:#ff9ee4;font-style:italic;margin:.2rem 0';meta.append(tag)}
@@ -103,10 +104,10 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 }).catch(e=>{status.textContent='Mascot collection unavailable: '+e.message});
 })();
 </script>
-<link rel="stylesheet" href="/devil-tools-vector-gallery.css?v=20261102-overhaul2">
+<link rel="stylesheet" href="/devil-tools-vector-gallery.css?v=20261102-overhaul3">
 <section class="panel" id="dt-vector-library" style="margin:1rem 0;border-color:#79ffe788">
 <h2>Visual Asset Library · Remastered SVG Icons, Sprites &amp; Artwork</h2>
-<p>Browse 69 original vector assets across Gravewave effects, monster sprites, arcade art, and Miss Chaos. All previews use first-party files, and every asset can be downloaded as an editable SVG. The Neon Nuisances mascot gallery above keeps its own animated previews.</p>
+<p>Browse 91 original vector assets across Gravewave effects, monster sprites, arcade art, and Miss Chaos. All previews use first-party files, and every asset can be downloaded as an editable SVG. The Neon Nuisances mascot gallery above keeps its own animated previews.</p>
 <div class="dt-svg-controls">
 <label for="dt-svg-query">Find artwork</label>
 <input id="dt-svg-query" data-dt-search type="search" placeholder="Search icons, monsters or arcade assets" autocomplete="off">
@@ -116,7 +117,7 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 <p class="small" data-dt-status role="status">Loading original vector assets…</p>
 <div class="dt-gallery-grid" data-dt-gallery aria-label="Downloadable original vector graphics"></div>
 </section>
-<script src="/devil-tools-vector-gallery.js?v=20261102-overhaul2" defer></script>
+<script src="/devil-tools-vector-gallery.js?v=20261102-overhaul3" defer></script>
 <section class="panel" id="original-creations" style="margin:1rem 0;border-color:#ff55d888">
 <h2>Original Creations · Game & Sprite Archive</h2>
 <p>First-party Knightfall games and their original artwork. Every entry links to its playable cabinet, editable SVG source assets, and GitHub implementation. New originals belong in <code>/arcade/original-creations.json</code>; legacy imports are not included.</p>
