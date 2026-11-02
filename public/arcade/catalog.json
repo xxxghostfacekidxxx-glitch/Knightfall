@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-30",
+  "updated": "2026-11-02",
   "games": [
     {
       "id": "a-dark-room",
@@ -1243,19 +1243,6 @@
       "featured": false
     },
     {
-      "id": "ember-serpent",
-      "title": "Ember Serpent",
-      "route": "/arcade/hosted/ember-serpent/index.html",
-      "description": "Original molten-serpent arcade game with swipe steering, relic collection, and growing-tail survival.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "ember-sort",
       "title": "Ember Sort",
       "route": "/arcade/hosted/ember-sort/index.html",
@@ -1768,19 +1755,6 @@
       "featured": false
     },
     {
-      "id": "arcade-after-dark-rift-serpent",
-      "title": "Rift Serpent",
-      "route": "/arcade-after-dark.html#rift-serpent",
-      "description": "Eat embers, grow longer, and avoid your own trail.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "rift-wardens",
       "title": "Rift Wardens",
       "route": "/arcade/hosted/rift-wardens/index.html",
@@ -1880,19 +1854,6 @@
       "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-vault-vault-snake",
-      "title": "Snake in the Ashes",
-      "route": "/arcade-vault.html#vault-snake",
-      "description": "Eat the embers, grow longer, and avoid your own tail. Classic arcade panic.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
       "notes": "",
       "links": [],
       "featured": false
@@ -2522,6 +2483,21 @@
       "title": "Parkour",
       "route": "/arcade/hosted/arcade-cabinet.html?game=parkour",
       "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
+    },
+    {
+      "title": "Ember Serpent",
+      "route": "/arcade/hosted/ember-serpent/index.html",
+      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
+    },
+    {
+      "title": "Rift Serpent",
+      "route": "/arcade-after-dark.html#rift-serpent",
+      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
+    },
+    {
+      "title": "Snake in the Ashes",
+      "route": "/arcade-vault.html#vault-snake",
+      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
     }
   ]
 }
