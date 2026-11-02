@@ -12,14 +12,14 @@ function mount(){
  // Visible, non-interactive character crew on every public site page.
  if(!excluded&&!document.querySelector('.gw-character-crew')){
   const crew=document.createElement('aside');crew.className='gw-character-crew';crew.setAttribute('aria-label','Ash-Fall original mascot characters');
-  [16,17,14,15].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
+  [4,8,16,17,14,15].forEach((i)=>{const figure=document.createElement('span');figure.className='gw-crew-member';figure.append(mascot(i,'gw-crew-art'));crew.append(figure)});
   document.body.append(crew);
  }
 
  document.body.classList.add('gravewave-everywhere');
  if(!document.querySelector('.gw-ambient')&&!excluded){
   const ambient=document.createElement('div');ambient.className='gw-ambient';ambient.setAttribute('aria-hidden','true');
-  [16,17,15].forEach(i=>ambient.append(mascot(i,'')));
+  [4,8,15].forEach(i=>ambient.append(mascot(i,'')));
   document.body.prepend(ambient);
  }
  // Do not interfere with private forms, editors, or game canvases.
