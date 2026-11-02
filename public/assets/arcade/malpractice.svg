@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160" role="img" aria-labelledby="title desc"><title id="title">Malpractice | Knightfall Arcade</title><desc id="desc">Malpractice the grotesque doctor monster with metallic blade glints, clinical green lights and arterial seam scratches.</desc>
 <defs>
  <linearGradient id="j" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#514253"/><stop offset=".24" stop-color="#28202e"/><stop offset=".68" stop-color="#17131e"/><stop offset="1" stop-color="#080a11"/></linearGradient>
  <linearGradient id="skin" x1=".15" y1="0" x2=".75" y2="1"><stop stop-color="#ffe0bd"/><stop offset=".42" stop-color="#d99a83"/><stop offset="1" stop-color="#884c56"/></linearGradient>
@@ -71,4 +71,4 @@
 <!-- hand-painted scuffs and warm rim highlights -->
 <path d="m39 72 3-4m-2 13 3-2m41-6 3 4m-7 14 3 3M46 105l4 1m29-1 4-2" stroke="#ffb477" stroke-width="1.2" opacity=".8"/>
 <path d="m33 65 6-3m-12 17 3-3m62-11 5 4" stroke="#8c7187" stroke-width="1.4"/>
-</svg>
+<g id="dt-remaster-highlights" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="m23 35-8-7m95 13 10-8M19 104l-8 5m99-11 10 6" stroke="#79ffe7" stroke-width="2.4"/><path d="m40 63 7-5m35 4 6-5M44 117l10 3m27-3 9 3" stroke="#ffb5a7" stroke-width="1.9"/><circle cx="14" cy="52" r="2.5" fill="#c6ff45"/><circle cx="112" cy="89" r="2" fill="#ff55d8"/></g></svg>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160" role="img" aria-labelledby="title desc"><title id="title">Shambler | Knightfall Arcade</title><desc id="desc">Shambler undead monster with slime green reflected lights, torn corpse seams, bone glints and graveyard motes.</desc>
 <defs><linearGradient id="rot" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4bb75"/><stop offset=".4" stop-color="#687b50"/><stop offset="1" stop-color="#27372d"/></linearGradient><linearGradient id="cloth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#50433e"/><stop offset="1" stop-color="#171a1a"/></linearGradient><linearGradient id="bone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0e1b8"/><stop offset="1" stop-color="#95856b"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="2"/></filter></defs>
 <ellipse cx="64" cy="150" rx="29" ry="5" fill="#020604" opacity=".8" filter="url(#shadow)"/>
 <!-- crooked, dragging legs -->
@@ -45,4 +45,4 @@
 <!-- reaching claw -->
 <path d="m20 90-7 5 3 5 7-2 4 4 4-3-3-7z" fill="#718553" stroke="#11170f" stroke-width="2.5"/>
 <path d="m98 88 8 1 4 6-4 4-4-3-5 2-3-4z" fill="#718553" stroke="#11170f" stroke-width="2.5"/>
-</svg>
+<g id="dt-remaster-highlights" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="m21 41-8-7m97 8 10-7m-99 79-9 7m98-8 10 8" stroke="#c6ff45" stroke-width="2.5"/><path d="M43 65l7-5m35 5 7-6M45 121l10 3m24-3 10 4" stroke="#ffeecb" stroke-width="2"/><circle cx="15" cy="70" r="3" fill="#ff55d8"/><circle cx="113" cy="96" r="2" fill="#79ffe7"/></g></svg>
