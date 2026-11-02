@@ -74,7 +74,7 @@ card.append(img,title,type,a);root.append(card);count++}status.textContent=count
 </script>
 <section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
 <h2>Gravewave · Neon Nuisances</h2>
-<p>An expanding collection of original cute-horror metalhead mascots, now including Chunky Monkey and Boo Thang. Browse the editable SVG masters, preview any available animation variants, and download artwork for site graphics, game sprites, or promotions. Preview animations and download transparent SVG masters. Select a character to download its editable vector file.</p>
+<p>Meet the original neon-horror character crew. Minion Mouse, Mini Villain, and The Eddie now have distinct hand-authored silhouettes and four animated expressions each. Preview all available variants, read their character lore, and download editable SVG masters.</p>
 <p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
 <div id="nuisances-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 <a class="btn" href="/assets/devil-tools/neon-nuisances/manifest.json" target="_blank" rel="noopener noreferrer">View mascot manifest</a>
@@ -84,15 +84,20 @@ card.append(img,title,type,a);root.append(card);count++}status.textContent=count
 const root=document.getElementById('nuisances-gallery'),status=document.getElementById('nuisances-status');
 fetch('/assets/devil-tools/neon-nuisances/manifest.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{
 if(!Array.isArray(data.characters))throw Error('Invalid mascot manifest');
-for(const item of data.characters){
+const spotlight=new Set(['minion-mouse','mini-villain','mini-eddie']);
+for(const item of [...data.characters].sort((a,b)=>Number(spotlight.has(b.id))-Number(spotlight.has(a.id)))){
 if(!/^\/assets\/devil-tools\/neon-nuisances\/[a-z-]+\.svg$/.test(item.svg))continue;
 const card=document.createElement('article');card.style.cssText='background:#090b15;border:1px solid #ffffff24;border-radius:12px;padding:.65rem;text-align:center';
 const img=document.createElement('img');img.src=item.svg+'?v='+encodeURIComponent(data.version||1);img.alt=item.name;img.loading='lazy';img.width=128;img.height=128;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #ff55d855)';
 const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem;min-height:2.5em';
 const a=document.createElement('a');a.href=item.svg;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.45rem;font-size:.7rem';
 const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
-select.addEventListener('change',()=>{const mode=select.value;const url=mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url+'?v='+encodeURIComponent(data.version||1);a.href=url;a.download=item.id+(mode==='original'?'':'-'+mode)+'.svg'});if(['bloop','nib'].includes(item.id)){card.style.borderColor=item.primary+'88';card.style.boxShadow='0 0 24px '+item.primary+'18';select.value='idle';img.src=item.variants.idle+'?v='+encodeURIComponent(data.version||1);a.href=item.variants.idle;a.download=item.id+'-idle.svg'}
-const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';card.append(img,title,desc,select,a);root.append(card);
+select.addEventListener('change',()=>{const mode=select.value;const url=mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url+'?v='+encodeURIComponent(data.version||1);a.href=url;a.download=item.id+(mode==='original'?'':'-'+mode)+'.svg'});if(['bloop','nib','glim','gravebyte','minion-mouse','mini-villain','mini-eddie'].includes(item.id) && item.variants?.idle){card.style.borderColor=item.primary+'88';card.style.boxShadow='0 0 24px '+item.primary+'18';select.value='idle';img.src=item.variants.idle+'?v='+encodeURIComponent(data.version||1);a.href=item.variants.idle;a.download=item.id+'-idle.svg'}
+const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';const meta=document.createElement('div');meta.style.cssText='font-size:.69rem;line-height:1.5;text-align:left;color:#c9cbdf;margin:.4rem 0';
+if(item.role){const role=document.createElement('strong');role.textContent=item.role;role.style.cssText='display:block;color:#c6ff45';meta.append(role)}
+if(item.tagline){const tag=document.createElement('span');tag.textContent='“'+item.tagline+'”';tag.style.cssText='display:block;color:#ff9ee4;font-style:italic;margin:.2rem 0';meta.append(tag)}
+if(item.personality){const details=document.createElement('details');details.style.cssText='margin:.35rem 0;padding:.4rem;border:1px solid #ffffff24;border-radius:7px';const summary=document.createElement('summary');summary.textContent='Character personality';summary.style.cssText='cursor:pointer;color:#e1dbf5;font-weight:700';const prose=document.createElement('p');prose.textContent=item.personality;prose.style.cssText='margin:.4rem 0 0;color:#c7c6d8';details.append(summary,prose);meta.append(details)}
+card.append(img,title,desc,meta,select,a);root.append(card);
 }
 status.textContent=data.characters.length+' Gravewave mascots · '+data.characters.reduce((n,c)=>n+Object.keys(c.variants||{}).length,0)+' animated SVG variants available.';
 }).catch(e=>{status.textContent='Mascot collection unavailable: '+e.message});
