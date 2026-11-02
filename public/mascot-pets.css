@@ -50,3 +50,36 @@
 .pet-equip-row button:disabled{opacity:.4;cursor:not-allowed}
 .pet-card.accessory-card .pet-art{background:radial-gradient(circle at 50% 52%,#c6ff452c,transparent 63%),linear-gradient(155deg,#27142d,#0b1520)}
 @media(max-width:550px){.pet-card .pet-art img.pet-overlay,.pet-card .pet-art img.pet-accessory-preview{width:114px;height:114px}.pet-equip-row{grid-template-columns:1fr 45px}.pet-equip-row label{grid-column:1/-1}.pet-equip-row select{font-size:.7rem}}
+
+/* Expedition mission board, shell inventory and incubation display. */
+#sanctuary-expeditions{padding-top:8px}
+#adventure-status{border-left:3px solid #ff55d8;color:#d8e8de;background:#ff55d80c;padding:10px 14px;border-radius:7px}
+.pet-quest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:13px}
+.pet-quest-card{border:1px solid #ff55d859;border-radius:14px;background:linear-gradient(148deg,#1f1231,#101422 70%);padding:14px;display:flex;flex-direction:column;gap:9px;min-height:177px}
+.pet-quest-heading{display:flex;justify-content:space-between;gap:9px;align-items:baseline}
+.pet-quest-heading strong{color:#f9eaff;line-height:1.35}.pet-quest-heading span{color:#c6ff45;font-size:.75rem;white-space:nowrap}
+.pet-quest-card p{color:#d5cbdc;line-height:1.45;font-size:.82rem;margin:0}
+.pet-quest-card small{color:#79ffe7;font-size:.77rem}
+.pet-quest-footer{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-top:auto}
+.pet-quest-footer span{font-size:.64rem;color:#bdb1ce}
+.pet-quest-button{cursor:pointer;min-height:37px;padding:8px 12px;border:1px solid #c6ff45;border-radius:9px;background:#202438;color:#c6ff45;font-size:.79rem;font-weight:850;transition:background .2s}
+.pet-quest-button:focus-visible,.pet-quest-button:hover:not(:disabled){outline:2px solid #ff55d8;background:#2d193d}
+.pet-quest-button:disabled{opacity:.5;cursor:not-allowed}
+.pet-egg-grid{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.pet-egg-workshop{display:grid;align-content:start;gap:9px;padding:19px;border:1px solid #c6ff4580;border-radius:15px;background:linear-gradient(135deg,#20312180,#25152d)}
+.pet-egg-workshop h3{margin:0;color:#e9ffb7;font-size:1.07rem}
+.pet-egg-workshop p{margin:0;color:#d5c8e2;font-size:.8rem;line-height:1.5}
+.pet-egg-workshop label{font-size:.75rem;color:#eacff2}
+.pet-egg-workshop input,.pet-egg-workshop select{width:100%;min-width:0;border:1px solid #ff55d885;border-radius:8px;padding:10px;background:#100f22;color:#fff}
+.pet-incubator{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid #ff55d87a;border-radius:13px;padding:13px;background:#191226}
+.pet-egg-icon{font-size:2.6rem;line-height:1;filter:drop-shadow(0 0 12px #c6ff4550)}
+.pet-egg-info{display:flex;flex:1;min-width:110px;flex-direction:column;gap:2px}.pet-egg-info strong{color:#fff}.pet-egg-info span{color:#79ffe7;font-size:.81rem}
+.pet-egg-info small{color:#d5c9da;font-size:.71rem}.pet-incubator.hatched{opacity:.64}
+.pet-art>img.pet-habitat-scene{position:absolute!important;width:100%!important;height:100%!important;inset:0;object-fit:cover;z-index:0;filter:none!important;transform:none!important}
+.pet-art>img.pet-base-image{z-index:1}.pet-art>img.pet-habitat-decor{position:absolute;width:160px;height:160px;z-index:2;pointer-events:none;object-fit:contain;transform:none!important}
+.pet-habitat-controls{border-top:1px solid #c6ff4544;margin-top:7px;padding-top:10px;display:grid;gap:8px}
+.pet-habitat-controls>strong{font-size:.81rem;color:#c6ff45}
+.pet-habitat-controls .pet-equip-row{grid-template-columns:50px minmax(0,1fr)}
+.pet-habitat-controls .pet-quest-button,.pet-habitat-controls>button{justify-self:stretch;cursor:pointer;border:1px solid #79ffe7;border-radius:9px;padding:9px;background:#141c29;color:#79ffe7;font-weight:800}
+@media(max-width:550px){.pet-quest-grid,.pet-egg-grid{grid-template-columns:1fr}.pet-habitat-controls .pet-equip-row{grid-template-columns:45px minmax(0,1fr)}.pet-art>img.pet-habitat-decor{width:114px;height:114px}}
+@media(prefers-reduced-motion:reduce){.pet-quest-button{transition:none}}
