@@ -127,5 +127,63 @@ await scenario("Not Dead Yet simultaneous movement, shoot and manual touch aim",
  assert.equal((await state()).down,false,"pointer cancel must stop firing");
 });
 
+
+await scenario("Not Dead Yet true fullscreen and F keyboard toggle",{width:1280,height:850},async page=>{
+ await page.goto(base+"/not-dead-yet.html",{waitUntil:"domcontentloaded"});
+ await page.selectOption("#mode","campaign");await page.click("#start");
+ await page.click("#toggle-fullscreen");
+ await page.waitForFunction(()=>document.querySelector("#toggle-fullscreen").getAttribute("aria-pressed")==="true");
+ let dimensions=await page.evaluate(()=>{
+  const stage=document.querySelector("#game-stage"),canvas=document.querySelector("#game"),r=stage.getBoundingClientRect(),c=canvas.getBoundingClientRect();
+  return{native:document.fullscreenElement===stage,fallback:stage.classList.contains("immersive-fallback"),width:r.width,height:r.height,canvasWidth:c.width,canvasHeight:c.height,viewportWidth:innerWidth,viewportHeight:innerHeight}
+ });
+ assert.ok(dimensions.native||dimensions.fallback,"browser fullscreen or CSS immersive fallback entered");
+ assert.ok(Math.abs(dimensions.width-dimensions.viewportWidth)<4,"gameplay fullscreen covers viewport width");
+ assert.ok(Math.abs(dimensions.height-dimensions.viewportHeight)<4,"gameplay fullscreen covers viewport height");
+ assert.ok(dimensions.canvasHeight>100,"canvas must be sized in fullscreen");
+ assert.ok(Math.abs(dimensions.canvasWidth/dimensions.canvasHeight-960/540)<.02,"canvas keeps 16:9 aspect");
+ await page.locator("#game").click({position:{x:Math.floor(dimensions.canvasWidth*.65),y:Math.floor(dimensions.canvasHeight*.45)},force:true});
+ await page.click("#toggle-fullscreen");
+ await page.waitForFunction(()=>document.querySelector("#toggle-fullscreen").getAttribute("aria-pressed")==="false");
+ assert.equal(await page.evaluate(()=>document.fullscreenElement===null),true,"native fullscreen properly exited");
+ await page.keyboard.press("f");
+ await page.waitForFunction(()=>document.querySelector("#toggle-fullscreen").getAttribute("aria-pressed")==="true");
+ await page.keyboard.press("f");
+ await page.waitForFunction(()=>document.querySelector("#toggle-fullscreen").getAttribute("aria-pressed")==="false");
+});
+await scenario("Not Dead Yet mobile fullscreen fallback keeps controls on screen",{width:390,height:844},async page=>{
+ await page.goto(base+"/not-dead-yet.html",{waitUntil:"domcontentloaded"});
+ await page.selectOption("#mode","campaign");await page.click("#start");
+ await page.evaluate(()=>document.querySelector("#game-stage").requestFullscreen=()=>Promise.reject(new Error("Unsupported test browser")));
+ await page.click("#toggle-fullscreen");
+ const state=await page.evaluate(()=>{
+  const stage=document.querySelector("#game-stage"),r=stage.getBoundingClientRect(),canvas=document.querySelector("#game").getBoundingClientRect();
+  const touch=document.querySelector(".touch-controls").getBoundingClientRect(),fire=document.querySelector("#touch-fire").getBoundingClientRect();
+  return{fallback:stage.classList.contains("immersive-fallback"),x:r.x,y:r.y,w:r.width,h:r.height,canvasW:canvas.width,canvasH:canvas.height,fireY:fire.bottom,touchY:touch.top,viewportH:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth+3};
+ });
+ assert.equal(state.fallback,true);assert.ok(state.canvasW>100&&state.canvasH>0);
+ assert.ok(state.fireY<=state.viewportH+3,"touch fire button must be visible within viewport");
+ assert.ok(state.touchY>0,"touch controls remain below game and accessible");
+ assert.ok(Math.abs(state.w-390)<3&&Math.abs(state.h-844)<3,"immersive fallback covers phone screen");
+ await page.keyboard.press("Escape");
+ assert.equal(await page.locator("#toggle-fullscreen").getAttribute("aria-pressed"),"false");
+ await page.click("#toggle-fullscreen");
+ await page.click("#toggle-fullscreen");
+ assert.equal(await page.locator("#toggle-fullscreen").getAttribute("aria-pressed"),"false");
+});
+await scenario("Not Dead Yet short landscape fullscreen has visible touch actions",{width:844,height:390},async page=>{
+ await page.goto(base+"/not-dead-yet.html",{waitUntil:"domcontentloaded"});
+ await page.click("#start");
+ await page.evaluate(()=>document.querySelector("#game-stage").requestFullscreen=()=>Promise.reject(new Error("CSS fallback")));
+ await page.click("#toggle-fullscreen");
+ const info=await page.evaluate(()=>{
+  const el=document.querySelector("#touch-fire"),r=el.getBoundingClientRect();
+  return{display:getComputedStyle(el.parentElement).display,visible:r.width>0&&r.bottom<=innerHeight+3,screenHeight:document.querySelector("#game").getBoundingClientRect().height}
+ });
+ assert.equal(info.display,"grid","landscape phones still get touch controls");
+ assert.equal(info.visible,true,"touch fire button stays visible");
+ assert.ok(info.screenHeight>50,"game is still playable in landscape");
+});
+
 await browser.close();
 if(failures.length){console.error(failures.join("\n"));process.exitCode=1}
