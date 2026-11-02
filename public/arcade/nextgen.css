@@ -1,0 +1,54 @@
+/* Knightfall Chaos Cartridge: NextGen visual system. Original game logic remains untouched. */
+:root{--af-vfx-pink:#ff35d5;--af-vfx-lime:#bdff43;--af-vfx-cyan:#4cf4ff;--af-vfx-violet:#8c65ff}
+body.af-nextgen{color-scheme:dark;isolation:isolate}
+body.af-nextgen::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.63;background:radial-gradient(ellipse 52% 48% at 6% 12%,#f025af17,transparent 78%),radial-gradient(ellipse 48% 55% at 98% 76%,#30e3f019,transparent 80%),repeating-linear-gradient(125deg,transparent 0 65px,#ffffff02 66px 67px,transparent 68px 136px)}
+body.af-nextgen main{position:relative;z-index:1}
+.af-nextgen :is(h1,h2){text-wrap:balance}
+.af-nextgen main h1{letter-spacing:-.055em;text-shadow:0 2px 32px #ff35d540,0 0 70px #635cff18}
+.af-nextgen :is(.game-field,.control-deck,.field,.arena,.panel,.game-panel,.arcade-game,.playfield){border-radius:clamp(14px,1.6vw,24px);background-image:linear-gradient(140deg,#252343e6 0%,#101827f2 42%,#141225e8 100%);border-color:#6d79bd85;box-shadow:0 18px 45px #0009,inset 0 1px #ffffff14,0 0 28px #713cf420}
+.af-nextgen :is(.game-field,.field,.arena,.playfield){border-color:#4cf4ff70;box-shadow:0 18px 50px #0009,inset 0 1px #ffffff1c,0 0 34px #4cf4ff1b}
+.af-nextgen :is(.control-deck,.panel){border-color:#ff35d581}
+.af-nextgen :is(.family-board,.board,.game-canvas,.game-area,canvas){max-width:100%}
+.af-nextgen canvas{filter:saturate(1.18) contrast(1.055)}
+.af-nextgen :is(.family-board,.board,.grid,.play-area){box-shadow:inset 0 2px 22px #0007,0 12px 34px #0005,0 0 22px #4cf4ff12;border-color:#4cf4ff70}
+.af-nextgen :is(.tile-button,.tile,.signal,.memory-card,.ttt-cell,.whack-hole,.portal){border-color:#7777c080;box-shadow:inset 0 1px #fff2,0 5px 15px #0004;transition:filter .15s ease,box-shadow .16s ease,border-color .16s ease,transform .14s ease}
+.af-nextgen :is(.tile-button,.signal,.memory-card,.ttt-cell,.whack-hole,.portal):not(:disabled):active{filter:brightness(1.35) saturate(1.2);transform:scale(.967)}
+.af-nextgen :is(.tile-button,.signal,.memory-card,.ttt-cell,.whack-hole,.portal):not(:disabled):focus-visible{outline:3px solid var(--af-vfx-lime);outline-offset:3px}
+.af-nextgen :is(button,.button,.action){-webkit-tap-highlight-color:transparent;transition:filter .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.af-nextgen :is(button,.button,.action):not(:disabled):hover{filter:brightness(1.12);border-color:#4cf4ffb0;box-shadow:0 0 0 1px #4cf4ff24,0 6px 22px #4cf4ff22}
+.af-nextgen :is(button,.button,.action):focus-visible{outline:3px solid var(--af-vfx-lime);outline-offset:3px}
+.af-nextgen .primary{background:linear-gradient(115deg,#ff35d5 0%,#a046ed 72%,#594fe4 100%);border-color:#ff82e9;color:#fff;box-shadow:inset 0 1px #ffffff30,0 5px 18px #ff35d531}
+.af-nextgen :is(.stats>span,.stats>.stat,.scores>div,.stat,.score-row>span){background:linear-gradient(140deg,#172b43e8,#16142eeb);border:1px solid #4cf4ff3d;border-radius:12px;box-shadow:inset 0 1px #ffffff0d}
+.af-nextgen :is(.scores strong,.stats output,.stat strong,.score-row strong){color:var(--af-vfx-lime);font-variant-numeric:tabular-nums;text-shadow:0 0 20px #bdff4330}
+.af-nextgen :is(.control-deck summary,details summary){color:var(--af-vfx-cyan)}
+.af-nextgen .af-vfx-pref{display:flex;gap:.5rem;align-items:center;justify-content:space-between;padding:.45rem 0;margin-top:.35rem;color:#b8c9e8;font:700 .75rem/1.3 system-ui}
+.af-nextgen .af-vfx-pref button{min-height:32px;width:auto!important;padding:.35rem .7rem;border:1px solid #4cf4ff78;border-radius:999px;background:#171b35;color:var(--af-vfx-lime);font:800 .7rem system-ui}
+.af-nextgen .af-vfx-pref button[aria-pressed=false]{color:#aeb3cb;border-color:#6a6881}
+.af-nextgen .af-vfx-flash{animation:af-score-flash .45s ease-out}
+@keyframes af-score-flash{0%{filter:brightness(1.85);text-shadow:0 0 24px #bdff43}100%{filter:brightness(1);text-shadow:initial}}
+#af-vfx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none!important;z-index:2147483000;contain:strict}
+.af-nextgen.af-effects-off #af-vfx-canvas{display:none}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:not([data-v="0"]){color:#fff;background:linear-gradient(148deg,#4d266f,#211d48);border:1px solid #fc70e991;box-shadow:inset 0 2px 2px #ffffff33,inset 0 -7px 16px #0005,0 5px 14px #0006;text-shadow:0 2px 8px #000}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="2"],[data-v="4"]){background:linear-gradient(135deg,#52258a,#13768b)}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="8"],[data-v="16"]){background:linear-gradient(135deg,#c52f9d,#6133c7)}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="32"],[data-v="64"]){background:linear-gradient(135deg,#f85a66,#c539d2)}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="128"],[data-v="256"],[data-v="512"]){background:linear-gradient(135deg,#f39535,#fa3c93);color:#130a22}
+.af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="1024"],[data-v="2048"]){background:linear-gradient(130deg,#e6ff4f,#41e6e9);color:#11172f;box-shadow:0 0 24px #bdff43a8,inset 0 1px #fff9}
+.af-nextgen[data-af-game="ash-tiles"] .sliding{background:linear-gradient(142deg,#9934c5 0%,#2a3e82 52%,#0b6379 100%);color:#effffb;border:1px solid #73f1ff;box-shadow:inset 0 2px #ffffff60,inset 0 -9px 15px #050a496d,0 7px 16px #02031399;text-shadow:0 1px 6px #08102b;transition:left .17s cubic-bezier(.21,.8,.3,1),top .17s cubic-bezier(.21,.8,.3,1)}
+.af-nextgen[data-af-game="cursed-circuit"] .signal{border-width:2px;border-color:#90aff6;background:radial-gradient(circle at 35% 20%,#4d3f8c,#131a37 70%);box-shadow:inset 0 2px #fff3,0 9px 22px #0009,0 0 24px #6b5efd2e}
+.af-nextgen[data-af-game="cursed-circuit"] .signal.flash{background:radial-gradient(circle,#f54bd9,#4238b2 68%,#171633);border-color:#d9ff62;box-shadow:0 0 38px #ff35d5a9,0 0 75px #bdff433e,inset 0 0 14px #fff9;filter:brightness(1.25)}
+.af-nextgen[data-af-game="crypt-smash"] .portal.live{box-shadow:0 0 32px #ff35d5bb,inset 0 0 36px #ff35d56b;border-color:#ff7ce6}
+.af-nextgen[data-af-game="crypt-smash"] .bug{box-shadow:0 0 26px #ff35d5a0,inset 0 0 18px #bdff4340}
+.af-nextgen[data-af-game="afterburn-breakout"] .arena{box-shadow:0 0 42px #ff35d531,0 0 70px #4cf4ff14,inset 0 1px #fff2}
+.af-nextgen[data-af-game="afterburn-breakout"] .arena canvas{filter:saturate(1.42) contrast(1.09)}
+.af-nextgen[data-af-game="crypt-pairs"] .memory-card,.af-nextgen[data-af-game="crypt-pairs"] .card{backface-visibility:hidden}
+.af-nextgen .cartridge-shelf{gap:clamp(12px,1.6vw,24px)!important}
+.af-nextgen #game-shelf article.arcade-flat-card{overflow:hidden;isolation:isolate;border-radius:20px;border-color:#7052b97d;background:linear-gradient(148deg,#21172e,#0a1221 72%);box-shadow:0 12px 25px #0008,inset 0 1px #ffffff17;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.af-nextgen #game-shelf article.arcade-flat-card::before{content:attr(data-af-icon);display:grid;place-items:center;font:clamp(2.2rem,3.7vw,3.4rem)/1 system-ui;min-height:105px;border-radius:14px;border:1px solid #ffffff20;margin-bottom:.2rem;background:radial-gradient(circle at 66% 39%,var(--af-card-a,#9330dd) 0%,transparent 52%),linear-gradient(135deg,#242545,var(--af-card-b,#183748));text-shadow:0 5px 20px #000a;box-shadow:inset 0 1px #fff3}
+.af-nextgen #game-shelf article.arcade-flat-card:hover{transform:translateY(-4px);border-color:#4cf4ff9c;box-shadow:0 20px 35px #000a,0 0 24px #4cf4ff16}
+.af-nextgen #game-shelf article.arcade-flat-card[data-featured=true]{border-color:#bdff437a}
+.af-nextgen .cartridge-hero{position:relative;isolation:isolate;background:radial-gradient(ellipse at 85% 16%,#ff35d51c,transparent 55%),radial-gradient(ellipse at 30% 90%,#4cf4ff13,transparent 70%);border-radius:24px}
+.af-nextgen .arcade-collections button[aria-pressed=true]{box-shadow:0 0 21px #bdff4333}
+@media(max-width:800px){.af-nextgen :is(.game-field,.control-deck,.field,.panel){padding:clamp(10px,2.5vw,18px)}.af-nextgen #game-shelf article.arcade-flat-card::before{min-height:82px}}
+@media(max-width:520px){.af-nextgen :is(.game-field,.control-deck,.field,.panel){border-radius:14px}.af-nextgen #game-shelf article.arcade-flat-card:hover{transform:none}.af-nextgen #game-shelf article.arcade-flat-card::before{min-height:72px;font-size:2.3rem}}
+@media(prefers-reduced-motion:reduce){.af-nextgen *, .af-nextgen *::before,.af-nextgen *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.af-nextgen #game-shelf article.arcade-flat-card:hover{transform:none}#af-vfx-canvas{display:none!important}}
