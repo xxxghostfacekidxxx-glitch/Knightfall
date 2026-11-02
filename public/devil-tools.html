@@ -84,7 +84,7 @@ card.append(img,title,type,a);root.append(card);count++}status.textContent=count
 const root=document.getElementById('nuisances-gallery'),status=document.getElementById('nuisances-status');
 fetch('/assets/devil-tools/neon-nuisances/manifest.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{
 if(!Array.isArray(data.characters))throw Error('Invalid mascot manifest');
-const spotlight=new Set(['minion-mouse','mini-villain','mini-eddie']);
+const spotlight=new Set(['bloop','nib','minion-mouse','mini-villain','mini-eddie','glim','gravebyte']);
 for(const item of [...data.characters].sort((a,b)=>Number(spotlight.has(b.id))-Number(spotlight.has(a.id)))){
 if(!/^\/assets\/devil-tools\/neon-nuisances\/[a-z-]+\.svg$/.test(item.svg))continue;
 const card=document.createElement('article');card.style.cssText='background:#090b15;border:1px solid #ffffff24;border-radius:12px;padding:.65rem;text-align:center';
