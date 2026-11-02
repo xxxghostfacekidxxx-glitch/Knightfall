@@ -17,6 +17,7 @@ const SPECIES = [
  ['chunky-monkey','Chunky Monkey','monkey'],['boo-thang','Boo Thang','ghost'],
 ].map(([id,name,type])=>({id,name,type,
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
+ portrait:'/assets/devil-tools/neon-nuisances/portraits/'+id+'.svg',
  idle:'/assets/devil-tools/neon-nuisances/'+id+'-idle.svg'}));
 export const MASCOT_SPECIES = Object.freeze(SPECIES);
 const BY_ID=new Map(SPECIES.map(species=>[species.id,species]));
@@ -40,7 +41,7 @@ export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
  const experience=Number(pet.experience)||0;
  const base={id:Number(pet.id),species:pet.species,species_name:species?.name||pet.species,
-  nickname:pet.nickname,image:species?.svg||'',idle:species?.idle||'',
+  nickname:pet.nickname,image:species?.svg||'',portrait:species?.portrait||'',idle:species?.idle||'',
   level:petLevel(experience),featured:!!pet.featured,adopted_at:pet.adopted_at};
  return publicView?base:{...base,experience,vitals:petVitals(pet,now),
   next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{
