@@ -59,21 +59,4 @@ async function mount(){
 const observer=new MutationObserver(()=>{if(root.querySelector('.profile-top'))void mount()});
 observer.observe(root,{childList:true,subtree:false});
 void mount();
-})();
-).test(gear.asset||''))continue;
-    const img=el('img','mascot-profile-layer');
-    img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
-   }
-   item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
-   if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
-   group.append(item);
-  }
-  card.append(group);
- }catch(error){
-  if(card.isConnected)card.remove();
- }finally{busy=false}
-}
-const observer=new MutationObserver(()=>{if(root.querySelector('.profile-top'))void mount()});
-observer.observe(root,{childList:true,subtree:false});
-void mount();
-})();
+})()
