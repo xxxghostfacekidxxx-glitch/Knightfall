@@ -48,8 +48,12 @@ for file in files:
     for element in root.iter():
         for key, value in element.attrib.items():
             if key.endswith("}href") or key == "href":
-                if re.match(r"(?i)(?:https?:)?//|data:", value):
+                if re.match(r"(?i)(?:https?:)?//", value):
                     failures.append(f"{short}: external embedded href")
+                elif value.startswith("data:") and not re.match(
+                    r"^data:image/(?:png|jpeg|webp);base64,[a-zA-Z0-9+/=]+$", value
+                ):
+                    failures.append(f"{short}: unsupported or active embedded data URI")
     title = root.find(f"{{{SVG_NS}}}title")
     desc = root.find(f"{{{SVG_NS}}}desc")
     if title is None or not (title.text or "").strip():
