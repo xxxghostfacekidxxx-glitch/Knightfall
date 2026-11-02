@@ -88,7 +88,7 @@ define(['jquery', 'app'], function($, App) {
         	    app.toggleAbout();
         	});
 
-            $('#browserquest-name-form').on('submit', function(event) { event.preventDefault(); var name = $('#nameinput').val().trim(); if(name) app.tryStartingGame(name); return false; });
+            $('#browserquest-name-form').bind('submit', function(event) { event.preventDefault(); var name = $('#nameinput').val().trim(); if(name) app.tryStartingGame(name); return false; });
             $('#nameinput').bind("keyup", function() {
                 app.toggleButton();
             });
