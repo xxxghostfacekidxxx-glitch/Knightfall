@@ -9,6 +9,9 @@ on:
       - 'public/assets/miss-chaos/**'
       - 'public/arcade/hosted/crypt-pairs/sprites/**'
       - 'scripts/devil-tools-svg-audit.mjs'
+      - 'scripts/devil-tools-validate-svg.py'
+      - 'public/assets/devil-tools/art-gallery.json'
+      - 'public/devil-tools-vector-gallery.js'
       - 'scripts/mascot-art.test.mjs'
       - 'scripts/test-mascot-remaster.mjs'
       - '.github/workflows/devil-tools-svg-quality.yml'
@@ -23,6 +26,8 @@ jobs:
           node-version: '22'
       - name: Audit every first-party SVG and mirrored sprite
         run: node scripts/devil-tools-svg-audit.mjs --write-report
+      - name: Parse and validate all first-party SVG assets
+        run: python3 scripts/devil-tools-validate-svg.py
       - name: Verify mascot references and animation variants
         run: node --test scripts/mascot-art.test.mjs scripts/test-mascot-remaster.mjs
       - uses: actions/upload-artifact@v4
