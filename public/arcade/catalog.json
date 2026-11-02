@@ -1023,16 +1023,16 @@
     },
     {
       "id": "crypt-pairs",
-      "title": "Crypt Pairs",
+      "title": "Madhouse Memory",
       "route": "/arcade/hosted/crypt-pairs/index.html",
-      "description": "Reveal matching sigils in an original sixteen-card memory challenge.",
+      "description": "The combined memory matching game: neon mascots or crypt sigils, 6/8/12 pairs, one peek, move records and a responsive control deck.",
       "genre": "Puzzle",
-      "collection": "mini",
+      "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "crypt-shift",
@@ -1465,32 +1465,6 @@
       "device": "touch",
       "source": "",
       "notes": "Legacy prototype; retained separately from the main arcade.",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-after-dark-madhouse-match",
-      "title": "Madhouse Match",
-      "route": "/arcade-after-dark.html#madhouse-match",
-      "description": "Flip tiles and find all eight pairs before your memory files a complaint.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-games-game-memory",
-      "title": "Madhouse Memory",
-      "route": "/arcade-games.html#game-memory",
-      "description": "Match six pairs of cursed symbols. Your brain has been notified of its responsibilities.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
       "links": [],
       "featured": false
     },
@@ -2442,6 +2416,16 @@
       "title": "Minefield of Bad Ideas",
       "route": "/arcade-vault.html#vault-mines",
       "reason": "Minesweeper family consolidated into Chaos Minesweeper; emergency flare preserved and legacy URL forwards to the combined game."
+    },
+    {
+      "title": "Madhouse Match",
+      "route": "/arcade-after-dark.html#madhouse-match",
+      "reason": "Memory matching family consolidated into Madhouse Memory with 6, 8 and 12 pairs, mascot and sigil artwork, and a responsive control deck."
+    },
+    {
+      "title": "Madhouse Memory",
+      "route": "/arcade-games.html#game-memory",
+      "reason": "Memory matching family consolidated into Madhouse Memory with 6, 8 and 12 pairs, mascot and sigil artwork, and a responsive control deck."
     }
   ]
 }

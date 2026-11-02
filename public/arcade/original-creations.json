@@ -428,13 +428,25 @@
     },
     {
       "id": "crypt-pairs",
-      "name": "Crypt Pairs",
+      "name": "Madhouse Memory",
       "genre": "Puzzle",
       "sprites": [
         "ember-sigil.svg",
-        "void-sigil.svg"
+        "void-sigil.svg",
+        "moxie.svg",
+        "rattlepop.svg",
+        "gravebyte.svg",
+        "emberbun.svg",
+        "crypt-koi.svg",
+        "volt-imp.svg",
+        "gutterkit.svg",
+        "mini-eddie.svg",
+        "zuzu.svg",
+        "kiki.svg",
+        "glim.svg",
+        "bloop.svg"
       ],
-      "notes": "Reveal matching sigils in an original sixteen-card memory challenge.",
+      "notes": "Combined Crypt Pairs, Madhouse Memory and Madhouse Match. Preserves six/eight-pair modes, sigils, mascot artwork and best clear tracking; adds twelve pairs and one optional peek.",
       "engine": "/arcade/hosted/crypt-pairs/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-pairs",
       "assets": [
@@ -445,6 +457,54 @@
         {
           "name": "void-sigil.svg",
           "path": "/arcade/hosted/crypt-pairs/sprites/void-sigil.svg"
+        },
+        {
+          "name": "moxie.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/moxie.svg"
+        },
+        {
+          "name": "rattlepop.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/rattlepop.svg"
+        },
+        {
+          "name": "gravebyte.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/gravebyte.svg"
+        },
+        {
+          "name": "emberbun.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/emberbun.svg"
+        },
+        {
+          "name": "crypt-koi.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/crypt-koi.svg"
+        },
+        {
+          "name": "volt-imp.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/volt-imp.svg"
+        },
+        {
+          "name": "gutterkit.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/gutterkit.svg"
+        },
+        {
+          "name": "mini-eddie.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/mini-eddie.svg"
+        },
+        {
+          "name": "zuzu.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/zuzu.svg"
+        },
+        {
+          "name": "kiki.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/kiki.svg"
+        },
+        {
+          "name": "glim.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/glim.svg"
+        },
+        {
+          "name": "bloop.svg",
+          "path": "/arcade/hosted/crypt-pairs/sprites/bloop.svg"
         }
       ],
       "status": "committed; browser QA pending"
