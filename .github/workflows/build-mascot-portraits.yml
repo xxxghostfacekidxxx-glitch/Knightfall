@@ -1,0 +1,37 @@
+name: Build Deluxe Mascot Portraits
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-mascot-portraits.mjs'
+      - '.github/workflows/build-mascot-portraits.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mascot-portraits-main
+  cancel-in-progress: false
+jobs:
+  portraits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/build-mascot-portraits.mjs
+      - run: python3 scripts/devil-tools-validate-svg.py
+      - name: Commit premium vector portraits to main
+        run: |
+          git add public/assets/devil-tools/neon-nuisances/portraits/
+          if git diff --cached --quiet; then
+            echo "All premium portrait assets are already current."
+          else
+            git config user.name "knightfall-synced-automation"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "art(sanctuary): publish 22 premium scene-rendered collectible SVG portraits"
+            git push origin HEAD:main
+          fi
