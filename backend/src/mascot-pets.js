@@ -4,6 +4,7 @@
  * All mutations bind user_id to a validated Knightfall session.
  */
 import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,petMarketPrice,petUnlockLevel} from './mascot-collectibles.js';
+import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -32,9 +33,16 @@ const CARE=Object.freeze({
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
  const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 22').bind(userId).all();
- const gear=await env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all();
+ const [gear,rooms]=await Promise.all([
+  env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
+  env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all()
+ ]);
  return (rows.results||[]).map(p=>({...serializePet(p,Date.now(),publicView),
-  equipment:(gear.results||[]).filter(g=>Number(g.pet_id)===Number(p.id)).map(g=>({slot:g.slot,sku:g.sku,asset:PET_ACCESSORIES[g.sku]?.asset||''}))}));
+  equipment:(gear.results||[]).filter(g=>Number(g.pet_id)===Number(p.id)).map(g=>({slot:g.slot,sku:g.sku,asset:PET_ACCESSORIES[g.sku]?.asset||''})),
+  habitat:(()=>{const room=(rooms.results||[]).find(r=>Number(r.pet_id)===Number(p.id));
+   const theme=HABITAT_THEMES.find(t=>t.id===(room?.theme||'graveyard'))||HABITAT_THEMES[0];
+   const decor=HABITAT_DECORATIONS.find(d=>d.id===(room?.decoration||'none'))||HABITAT_DECORATIONS[0];
+   return {theme:theme.id,art:theme.art,decoration:decor.id,decoration_art:decor.art};})()}));
 }
 async function walletFor(env,user){
  await env.DB.prepare("INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)").bind(user.id,
@@ -102,6 +110,8 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  }
  const user=await getUser(request,env);
  if(!user)return respond({error:'Sign in to use your mascot sanctuary.'},401);
+ const adventureResponse=await handleMascotAdventures(request,env,url,user,{json,rateLimit,origin,petLevel,speciesCatalog:MASCOT_SPECIES});
+ if(adventureResponse)return adventureResponse;
  if(path==='/api/mascot-pets/me'&&request.method==='GET'){
   const [pets,bank,inventory]=await Promise.all([petsFor(env,user.id),walletFor(env,user),
     env.DB.prepare('SELECT sku,acquired_at FROM mascot_wardrobe WHERE user_id=? ORDER BY acquired_at DESC').bind(user.id).all()]);
@@ -193,6 +203,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
    const current=await env.DB.prepare(ownSelect+' WHERE id=? AND user_id=?').bind(id,user.id).first();
    return respond({error:'Your companion needs a short cooldown.',pet:serializePet(current)},429);
   }
+  try{await careQuestProgress(env,user.id,id,kind)}catch(error){console.error('sanctuary_quest_progress',error)}
   return respond({ok:true,pet:serializePet(pet),message:rule.label+'! +'+rule.xp+' XP'});
  }
  return respond({error:'Unsupported pet action.'},405);
