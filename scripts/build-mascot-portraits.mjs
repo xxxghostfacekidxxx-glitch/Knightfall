@@ -1,3 +1,4 @@
+// Deluxe Sanctuary portrait refresh v2: sync remastered Chunky, Boo, Mouse, Villain and Eddie masters.
 import fs from 'node:fs';import path from 'node:path';
 const dir='public/assets/devil-tools/neon-nuisances',m=JSON.parse(fs.readFileSync(dir+'/manifest.json','utf8'));
 const worlds={
