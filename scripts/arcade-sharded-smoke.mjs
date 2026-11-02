@@ -25,7 +25,7 @@ try {
   let action="navigate";
   try {
    page.on("pageerror",error=>errors.push(String(error.stack||error)));
-   page.on("requestfailed",request=>network.push({url:request.url(),error:request.failure()?.errorText||"unknown"}));
+   page.on("requestfailed",request=>{ const url=request.url(); const optionalLocalAuth=base.startsWith("http://127.0.0.1:") && /^https:\/\/api\.ash-fall\.com\/api\/auth\/me(?:[?#]|$)/.test(url); if(!optionalLocalAuth) network.push({url,error:request.failure()?.errorText||"unknown"}); });
    page.on("response",response=>{if(response.url().startsWith(base)&&response.status()>=400)network.push({url:response.url(),status:response.status()});});
    const response=await page.goto(base+game.route,{waitUntil:"domcontentloaded",timeout:12000});
    if (!response?.ok()) throw Error("HTTP "+(response?.status()??"no response"));
