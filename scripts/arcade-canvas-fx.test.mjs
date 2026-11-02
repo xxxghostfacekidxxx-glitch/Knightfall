@@ -37,8 +37,8 @@ test("CanvasFX parses and runs standalone without dependencies",()=>{
  fx.impact(10,10);assert.equal(fx.particles.length,0,"reduced motion must suppress effects");
 });
 
-test("five original canvas games load CanvasFX before their game scripts",()=>{
- const routes=["cinder-drift","cinder-lander","particle-panic","cinder-crossing","space-fighter"];
+test("six original canvas games load CanvasFX before their game scripts",()=>{
+ const routes=["cinder-drift","cinder-lander","particle-panic","cinder-crossing","space-fighter","alien-battle"];
  for(const slug of routes){
   const html=read(root+slug+"/index.html");
   const fx=html.indexOf('src="/arcade/canvas-fx.js?v=20261102-2"');
@@ -46,8 +46,9 @@ test("five original canvas games load CanvasFX before their game scripts",()=>{
   const inline=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)]
    .map(match=>match[1]).filter(text=>text.trim());
   for(const js of inline)assert.doesNotThrow(()=>new Script(js),slug+" inline script");
-  const engine=slug==="cinder-lander"?'src="/arcade/hosted/cinder-lander/game.js"':"<script>";
+  const engine=slug==="cinder-lander"?'src="/arcade/hosted/cinder-lander/game.js"':slug==="alien-battle"?'src="/arcade/hosted/ashfall-original-action.js"':"<script>";
   assert.ok(html.indexOf(engine,fx)>fx,slug+" engine must come after visual helper");
  }
  assert.doesNotThrow(()=>new Script(read(root+"cinder-lander/game.js")));
+ assert.doesNotThrow(()=>new Script(read(root+"ashfall-original-action.js")));
 });
