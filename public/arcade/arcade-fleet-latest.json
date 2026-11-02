@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-11-02T09:58:41.659Z",
+  "generatedAt": "2026-11-02T10:25:10.285Z",
   "reportsFound": 10,
-  "catalogRoutes": 140,
+  "catalogRoutes": 139,
   "targets": {
     "live": {
       "reports": 10,
       "expectedShards": 10,
-      "expectedRoutes": 140,
-      "coveredRoutes": 140,
+      "expectedRoutes": 139,
+      "coveredRoutes": 139,
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
@@ -17,5 +17,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 41424780993
+  "sourceRunId": 41428414169
 }
