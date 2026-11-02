@@ -1,6 +1,6 @@
 (()=>{"use strict";
 const id=location.pathname.split("/").at(-2),c=document.querySelector("canvas"),g=c.getContext("2d"),$=x=>document.getElementById(x),W=640,H=480;
-let state={},running=false,score=0,best=0,last=0,token=0,keys=new Set();
+let state={},running=false,score=0,best=0,last=0,token=0,keys=new Set();const fx=id==="alien-battle"?globalThis.AshFallCanvasFX?.create():null;
 try{best=Number(localStorage.getItem("ash-action-"+id))||0}catch{}
 function rand(a,b){return a+Math.random()*(b-a)}
 function rect(x,y,w,h,color){g.fillStyle=color;g.fillRect(x,y,w,h)}
@@ -8,7 +8,7 @@ function circle(x,y,r,color){g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=color;g.
 function note(t){$("status").textContent=t}
 function award(n){score+=n;best=Math.max(score,best);$("score").textContent=score;$("best").textContent=best;try{localStorage.setItem("ash-action-"+id,String(best))}catch{}}
 function stop(t){running=false;note(t+" · "+score+" points");document.dispatchEvent(new CustomEvent("ashfall:arcade-finished",{detail:{gameId:"cabinet-"+id,score}}))}
-function start(){token++;running=true;score=0;last=performance.now();$("score").textContent="0";
+function start(){fx?.reset();token++;running=true;score=0;last=performance.now();$("score").textContent="0";
  if(id==="doodle-jump")state={x:320,y:350,vy:-360,platforms:Array.from({length:9},(_,i)=>({x:i===0?265:rand(40,480),y:420-i*55}))};
  else state={x:320,y:id==="survivor"?240:410,hp:id==="survivor"?5:3,enemies:[],shots:[],spawn:0,fire:0,elapsed:0};
  note("RUNNING");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:"cabinet-"+id}}));const run=token;requestAnimationFrame(t=>loop(t,run));draw()}
@@ -36,14 +36,14 @@ function loop(now,seq){if(!running||seq!==token)return;const dt=Math.min(.04,Mat
   for(const b of s.shots){b.y+=b.vy*dt;b.x+=(b.vx||0)*dt}
   for(let i=s.enemies.length-1;i>=0;i--){const e=s.enemies[i];if(id==="survivor"){const d=Math.hypot(s.x-e.x,s.y-e.y)||1;e.x+=(s.x-e.x)/d*95*dt;e.y+=(s.y-e.y)/d*95*dt}else e.y+=125*dt;
    const hit=s.shots.findIndex(b=>Math.hypot(e.x-b.x,e.y-b.y)<24);
-   if(hit>=0){s.enemies.splice(i,1);s.shots.splice(hit,1);award(10)}
-   else if(id==="survivor"?Math.hypot(e.x-s.x,e.y-s.y)<26:e.y>460){s.enemies.splice(i,1);s.hp--;if(s.hp<=0)stop("DEFENSE LOST")}}
+   if(hit>=0){fx?.impact(e.x,e.y,"#ff38ce",1.3);s.enemies.splice(i,1);s.shots.splice(hit,1);award(10)}
+   else if(id==="survivor"?Math.hypot(e.x-s.x,e.y-s.y)<26:e.y>460){fx?.impact(e.x,e.y,"#b8ff45",1.5);s.enemies.splice(i,1);s.hp--;if(s.hp<=0)stop("DEFENSE LOST")}}
   s.shots=s.shots.filter(b=>b.y>-30&&b.y<510&&b.x>-30&&b.x<670).slice(-60);s.enemies=s.enemies.slice(-50);
  }
- draw();if(running)requestAnimationFrame(t=>loop(t,seq))}
-function draw(){rect(0,0,W,H,"#0e0c14");for(let x=0;x<W;x+=40)rect(x,0,1,H,"#34252b");
+ fx?.step(dt);draw();if(running)requestAnimationFrame(t=>loop(t,seq))}
+function draw(){if(fx)fx.sky(g,last,W,H,"space");else{rect(0,0,W,H,"#0e0c14");for(let x=0;x<W;x+=40)rect(x,0,1,H,"#34252b");}
  const s=state;if(id==="doodle-jump"){for(const p of s.platforms||[])rect(p.x,p.y,110,12,"#e2a26d");circle(s.x||320,s.y||350,18,"#ffc486")}
- else{for(const e of s.enemies||[])circle(e.x,e.y,17,"#c96252");for(const b of s.shots||[])rect(b.x-3,b.y-10,6,18,"#ffe1a0");circle(s.x||320,s.y||410,20,"#ffba7b")}
+ else{for(const e of s.enemies||[]){g.save();g.shadowColor=fx?"#ff38ce":"#c96252";g.shadowBlur=fx?16:0;circle(e.x,e.y,17,fx?"#ff38ce":"#c96252");g.restore()}for(const b of s.shots||[]){if(fx&&running&&Math.random()<.2)fx.trail(b.x,b.y,0,50,"#4cf4ff",.8);rect(b.x-3,b.y-10,6,18,fx?"#b8ff45":"#ffe1a0")}g.save();if(fx){g.shadowColor="#4cf4ff";g.shadowBlur=22}circle(s.x||320,s.y||410,20,fx?"#4cf4ff":"#ffba7b");g.restore()}fx?.draw(g);
  g.font="bold 18px system-ui";g.fillStyle="#ffe0bd";g.textAlign="center";g.fillText("SCORE "+score+(s.hp?" · HEALTH "+s.hp:""),320,30);g.fillText("ARROW KEYS OR TOUCH TO MOVE",320,465)}
 c.addEventListener("pointerdown",e=>{if(!running)return;const r=c.getBoundingClientRect();state.x=(e.clientX-r.left)*W/r.width;if(id==="survivor")state.y=(e.clientY-r.top)*H/r.height});
 document.addEventListener("keydown",e=>{if(e.key.startsWith("Arrow")){keys.add(e.key);e.preventDefault()}if(e.key==="Enter"&&!running)start()});
