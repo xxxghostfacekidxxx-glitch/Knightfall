@@ -11,7 +11,7 @@ test("Particle Panic parses and has local account bridge",()=>{
 test("Particle Panic saves progress automatically and on page hide",()=>{
  const nodes=new Map(),handlers=new Map(),intervals=[],saved=new Map(),events=[];
  const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",innerHTML:"",append(){},addEventListener:(type,fn)=>handlers.set(k+":"+type,fn)});return nodes.get(k)};
- const canvas={getContext:()=>({clearRect(){},beginPath(){},arc(){},fill(){}})};
+ const canvas={getContext:()=>({clearRect(){},fillRect(){},beginPath(){},arc(){},fill(){},stroke(){},save(){},restore(){},translate(){},rotate(){},moveTo(){},lineTo(){}})};
  nodes.set("particles",canvas);
  const document={getElementById:node,createElement:()=>({append(){},addEventListener(){}}),addEventListener:(type,fn)=>handlers.set("document:"+type,fn),dispatchEvent:e=>events.push(e),hidden:false};
  const window={addEventListener:(type,fn)=>handlers.set("window:"+type,fn)};
