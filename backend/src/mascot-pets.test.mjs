@@ -45,19 +45,28 @@ test('catalog is freely discoverable but private collection requires authenticat
 });
 
 test('adoption rejects invalid species and uses authenticated owner, capacity and unique checks',async()=>{
- const calls=[],db=stub((sql,values)=>{calls.push({sql,values});return sample});
+ const calls=[],db=stub((sql,values)=>{calls.push({sql,values});return sql.includes('FROM mascot_rescue_eggs')?null:sample});
  const invalid=await invoke('/api/mascot-pets/adopt','POST',{species:'../hijack'},db);
  assert.equal(invalid.status,400);
  assert.equal(calls.length,0);
  const adopted=await invoke('/api/mascot-pets/adopt','POST',{species:'bloop',nickname:'Gilly'},db);
  assert.equal(adopted.status,201);
  assert.equal(adopted.data.pet.id,5);
- assert.ok(calls[0].sql.includes('COUNT(*)')&&calls[0].sql.includes('MAX(experience)'));
- assert.equal(calls[0].values[0],owner.id);
- assert.ok(calls[1].sql.includes('INSERT INTO mascot_acquisitions'));
- assert.equal(calls[1].values[0],owner.id);
- assert.equal(calls[1].values[3],0,'first rescue uses zero Cinders');
+ assert.ok(calls[0].sql.includes('FROM mascot_rescue_eggs'),'check already-incubating eggs before charging');
+ const count=calls.find(x=>x.sql.includes('COUNT(*)')&&x.sql.includes('MAX(experience)'));
+ assert.equal(count.values[0],owner.id);
+ const acquisition=calls.find(x=>x.sql.includes('INSERT INTO mascot_acquisitions'));
+ assert.equal(acquisition.values[0],owner.id);
+ assert.equal(acquisition.values[3],0,'first rescue uses zero Cinders');
  assert.equal(adopted.data.paid_cinders,0);
+});
+
+test('rescuing a species with an incubating earned egg cannot spend Cinders',async()=>{
+ const calls=[],db=stub((sql,values)=>{calls.push(sql);return sql.includes('FROM mascot_rescue_eggs')?{id:99}:null});
+ const response=await invoke('/api/mascot-pets/adopt','POST',{species:'bloop',nickname:'Egg thief'},db);
+ assert.equal(response.status,409);
+ assert.match(response.data.error,/incubating/);
+ assert.ok(!calls.some(sql=>sql.includes('INSERT INTO mascot_acquisitions')));
 });
 
 test('other user pet cannot be cared for or renamed',async()=>{
