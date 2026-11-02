@@ -1,1 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="GRAVEBYTE original dark neon mascot"><title>GRAVEBYTE · Cyber skeleton DJ</title><defs><filter id="glow"><feGaussianBlur stdDeviation="4"/></filter></defs><style>@media(prefers-reduced-motion:no-preference){#mascot{transform-origin:64px 86px}@keyframes motion{0%,8%,12%,100%{opacity:0}9%,11%{opacity:1}}#expression{animation:motion 4s steps(1,end) infinite}}</style><circle cx="64" cy="64" r="51" fill="#fc4ca8" opacity=".12" filter="url(#glow)"/><g id="mascot"><path d="M38 30 38 17 52 24M90 30 90 17 76 24" fill="none" stroke="#fc4ca8" stroke-width="6"/><rect x="24" y="31" width="80" height="74" rx="17" fill="#282035" stroke="#aaff48" stroke-width="4"/><rect x="36" y="48" width="56" height="32" rx="8" fill="#080b16" stroke="#fc4ca8" stroke-width="3"/><path d="M43 58h15m12 0h15" stroke="#aaff48" stroke-width="7"/><path d="M47 88h34l-5 11H52Z" fill="#e5f7ee"/><path d="M58 88v11m12-11v11" stroke="#201729" stroke-width="3"/><path d="M31 110l-8 5m74-5 8 5" stroke="#aaff48" stroke-width="4" stroke-linecap="round"/><path id="expression" opacity="0" d="M38 64h52" stroke="#14101f" stroke-width="8"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Gravebyte | Gravewave Neon Nuisances</title>
+<desc id="desc">A cyberpunk skeleton DJ with huge headphones, acid-green audio-reactive eyes, hot pink circuitry, a metal skull, glowing ribs, mechanical arms and a tiny turntable badge.</desc>
+<defs>
+ <linearGradient id="metal" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#615477"/><stop offset=".45" stop-color="#30283c"/><stop offset="1" stop-color="#151525"/></linearGradient>
+ <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9ffff"/><stop offset=".5" stop-color="#94c4c9"/><stop offset="1" stop-color="#76829e"/></linearGradient>
+ <linearGradient id="led" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ecff91"/><stop offset="1" stop-color="#7cec2b"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.5"/></filter>
+</defs>
+<ellipse cx="64" cy="118" rx="38" ry="5" fill="#fc4ca8" opacity=".27"/>
+<circle cx="64" cy="65" r="49" fill="#fc4ca8" opacity=".2" filter="url(#halo)"/>
+<g id="sparks" fill="#c6ff45"><path d="m15 34 4-8 4 8-4 8ZM107 21l4-8 4 8-4 8Z"/><circle cx="14" cy="92" r="2.5" fill="#ff55d8"/><circle cx="116" cy="89" r="3" fill="#fc4ca8"/></g>
+<g id="mascot" stroke-linejoin="round" stroke-linecap="round">
+ <!-- compact robotic torso and hinged bony arms -->
+ <path d="M35 92Q24 88 20 104l11 8 13-10M93 92q12-5 16 13l-11 8-15-10" fill="url(#metal)" stroke="#11131e" stroke-width="4"/>
+ <path d="M20 104l-9 8m98-7 10 7" stroke="#c6ff45" stroke-width="4"/>
+ <circle cx="19" cy="104" r="4" fill="#ff55d8"/><circle cx="109" cy="105" r="4" fill="#ff55d8"/>
+ <path d="M43 85H85l12 26-15 12H46l-15-12Z" fill="url(#metal)" stroke="#11131e" stroke-width="4.5"/>
+ <path d="M49 94q15-7 30 0l-1 18q-14 9-29-1Z" fill="#101620" stroke="#fc4ca8" stroke-width="2.6"/>
+ <path d="M54 96v15m9-18v23m10-20v15M50 103h28" fill="none" stroke="#c6ff45" stroke-width="2.7"/>
+ <circle cx="64" cy="106" r="6" fill="#18121e" stroke="#ff55d8" stroke-width="2.5"/><circle cx="64" cy="106" r="2" fill="#fff"/>
+ <!-- Audio cable, headphones and skull frame -->
+ <path d="M32 54Q28 18 64 16Q100 18 96 54" fill="none" stroke="#13131e" stroke-width="13"/>
+ <path d="M32 53Q29 18 64 19Q99 18 96 53" fill="none" stroke="#c6ff45" stroke-width="4"/>
+ <path d="M31 48V39m66 9V39" stroke="#ff55d8" stroke-width="6"/>
+ <path d="M36 41Q29 42 28 52v21q0 10 10 11l8-6V46Z" fill="#151520" stroke="#c6ff45" stroke-width="3.5"/>
+ <path d="M92 41q7 1 8 11v21q-1 10-10 11l-8-6V46Z" fill="#151520" stroke="#c6ff45" stroke-width="3.5"/>
+ <path d="M32 48v27m64-27v27" stroke="#fc4ca8" stroke-width="3"/>
+ <!-- Skull with panel seams -->
+ <path d="M40 35Q64 27 88 35q10 10 8 29l-5 16-10 8H47L37 78l-5-16q-1-19 8-27Z" fill="url(#metal)" stroke="#11131e" stroke-width="4"/>
+ <path d="M43 39q21-9 43 0" stroke="#aaa0bf" stroke-width="2" fill="none" opacity=".8"/>
+ <path d="m47 41 7-6h20l7 6" fill="none" stroke="#fc4ca8" stroke-width="2"/>
+ <path d="M43 53h42q6 0 6 7v13q0 8-7 8H44q-7 0-7-8V60q0-7 6-7Z" fill="#090e19" stroke="#ff55d8" stroke-width="3"/>
+ <g id="eyes" fill="url(#led)">
+ <path d="M43 66l5-7 7 8-7 3Z"/><path d="m73 67 7-8 5 7-5 4Z"/>
+ <path d="M60 60h7v3h-7Zm0 5h7v3h-7Zm0 5h7v3h-7Z" fill="#fc4ca8"/>
+ </g>
+ <g id="blink-lids" opacity="0"><path d="M43 66h13m17 0h13" stroke="#c6ff45" stroke-width="3.5"/></g>
+ <g id="wink" opacity="0"><path d="M72 66h14" stroke="#c6ff45" stroke-width="4.5"/></g>
+ <path d="M53 79h22l-3 11-9 4-9-4Z" fill="url(#chrome)" stroke="#15131f" stroke-width="2.8"/>
+ <path d="M57 83v7m6-8v11m6-10v7" stroke="#222239" stroke-width="2"/>
+ <path d="M46 87l-2 9m40-9 2 9" stroke="#fc4ca8" stroke-width="2.5"/>
+ <circle cx="41" cy="78" r="2.7" fill="#c6ff45"/><circle cx="87" cy="78" r="2.7" fill="#c6ff45"/>
+ <path d="M55 25 60 11h8l5 14" fill="url(#chrome)" stroke="#17131e" stroke-width="3"/>
+ <circle cx="64" cy="11" r="3.2" fill="#ff55d8"/>
+</g>
+<style>@media (prefers-reduced-motion: no-preference){#mascot{transform-box:fill-box;transform-origin:center}#eyes{animation:eyeopen 4.4s steps(1,end) infinite}#blink-lids{animation:eyeclose 4.4s steps(1,end) infinite}@keyframes eyeopen{0%,8%,12%,100%{opacity:1}9%,11%{opacity:0}}@keyframes eyeclose{0%,8%,12%,100%{opacity:0}9%,11%{opacity:1}}}</style></svg>
