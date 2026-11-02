@@ -170,14 +170,17 @@
     },
     {
       "id": "ember-clash",
-      "name": "Ember Clash",
+      "name": "Rock, Paper, Ruin",
       "genre": "Board",
       "sprites": [
         "ember.svg",
         "blade.svg",
-        "shield.svg"
+        "shield.svg",
+        "rock.svg",
+        "paper.svg",
+        "scissors.svg"
       ],
-      "notes": "Original elemental sigil battle with three bespoke SVG tokens, CPU opponent and local match saves.",
+      "notes": "Combines Rock Paper Scissors, Rock Paper Ruin and Ember Clash as three selectable rule sets. Local match restoration, legacy sigil save migration, separate mode win counts, original neon gesture art and expanded play.",
       "engine": "/arcade/hosted/ember-clash/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-clash",
       "assets": [
@@ -192,6 +195,18 @@
         {
           "name": "shield.svg",
           "path": "/arcade/hosted/ember-clash/sprites/shield.svg"
+        },
+        {
+          "name": "rock.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/rock.svg"
+        },
+        {
+          "name": "paper.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/paper.svg"
+        },
+        {
+          "name": "scissors.svg",
+          "path": "/arcade/hosted/ember-clash/sprites/scissors.svg"
         }
       ],
       "status": "committed; browser QA pending"

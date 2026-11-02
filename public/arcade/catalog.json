@@ -1088,16 +1088,16 @@
     },
     {
       "id": "ember-clash",
-      "title": "Ember Clash",
+      "title": "Rock, Paper, Ruin",
       "route": "/arcade/hosted/ember-clash/index.html",
-      "description": "Battle Miss Chaos with Ember, Blade, and Shield sigils. First to three victories wins.",
+      "description": "Three duels in one neon arena: Classic first-to-five, Ember Clash sigils, and four-symbol Ruin. Match saves, mode win counts, round history and fullscreen controls.",
       "genre": "Board",
-      "collection": "mini",
+      "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
       "notes": "",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "ember-echo",
@@ -1620,32 +1620,6 @@
       "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "rock-paper-scissors",
-      "title": "Rock Paper Scissors",
-      "route": "/arcade/hosted/rock-paper-scissors/index.html",
-      "description": "The classic hand game against the computer.",
-      "genre": "Arcade",
-      "collection": "experiments",
-      "device": "touch",
-      "source": "",
-      "notes": "Legacy prototype; retained separately from the main arcade.",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "arcade-games-game-rps",
-      "title": "Rock, Paper, Ruin",
-      "route": "/arcade-games.html#game-rps",
-      "description": "A best-of-five showdown against the machine. Ancient wisdom, questionable strategy.",
-      "genre": "Arcade",
-      "collection": "mini",
-      "device": "touch",
-      "source": "",
       "notes": "",
       "links": [],
       "featured": false
@@ -2391,6 +2365,16 @@
       "title": "Reaction Ritual: After Dark",
       "route": "/arcade-after-dark.html#reaction-ritual",
       "reason": "Reaction family consolidated into Reaction Ritual; three-round Classic and single-round After Dark remain selectable modes."
+    },
+    {
+      "title": "Rock Paper Scissors",
+      "route": "/arcade/hosted/rock-paper-scissors/index.html",
+      "reason": "Rock-paper-scissors family consolidated into Rock, Paper, Ruin. Classic first-to-five, Ember Clash first-to-three and five-round four-symbol Ruin remain available as modes."
+    },
+    {
+      "title": "Rock, Paper, Ruin",
+      "route": "/arcade-games.html#game-rps",
+      "reason": "Rock-paper-scissors family consolidated into Rock, Paper, Ruin. Classic first-to-five, Ember Clash first-to-three and five-round four-symbol Ruin remain available as modes."
     }
   ]
 }
