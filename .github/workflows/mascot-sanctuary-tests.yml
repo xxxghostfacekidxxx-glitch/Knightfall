@@ -1,0 +1,34 @@
+name: Mascot Sanctuary Integration Tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/src/mascot-pets.js'
+      - 'backend/src/mascot-pets.test.mjs'
+      - 'backend/src/index.js'
+      - 'backend/migrations/0103_mascot_pets.sql'
+      - 'public/mascot-pets.*'
+      - 'public/profile-mascots.*'
+      - 'public/assets/devil-tools/neon-nuisances/portraits/**'
+      - '.github/workflows/mascot-sanctuary-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sanctuary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate adoption rules, routes, ownership and privacy
+        run: node --test backend/src/mascot-pets.test.mjs
+      - name: Confirm Worker and browser syntax
+        run: |
+          node --check backend/src/index.js
+          node --check backend/src/mascot-pets.js
+          node --check public/mascot-pets.js
+          node --check public/profile-mascots.js
+      - name: Check original vector art
+        run: python3 scripts/devil-tools-validate-svg.py
