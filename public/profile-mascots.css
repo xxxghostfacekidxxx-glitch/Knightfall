@@ -1,0 +1,10 @@
+.mascot-profile-panel{margin:18px 0;padding:16px;border:1px solid #c6ff457d;border-radius:16px;background:radial-gradient(ellipse at 8% 0,#ff55d818,transparent 60%),linear-gradient(130deg,#1b152c,#080f1b);box-shadow:0 8px 28px #0005}
+.mascot-profile-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mascot-profile-heading h2{margin:0;color:#fff;font-size:1.2rem}.mascot-profile-link{font-size:.85rem;color:#c6ff45!important;text-decoration:underline!important;font-weight:750}.mascot-profile-status{color:#d6c9da;font-size:.86rem}
+.mascot-profile-grid{display:flex;gap:10px;overflow-x:auto;padding:6px 0 12px;scroll-snap-type:x proximity}
+.mascot-profile-pet{position:relative;flex:0 0 124px;min-height:156px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;border:1px solid #ff55d85e;border-radius:12px;background:linear-gradient(135deg,#2a1c3a,#111423);padding:9px 6px;gap:3px}
+.mascot-profile-pet.featured{border-color:#c6ff45;box-shadow:0 0 16px #c6ff451c}
+.mascot-profile-pet img{width:94px;height:94px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}
+.mascot-profile-pet strong{color:#fff;font-size:.85rem;text-align:center;overflow-wrap:anywhere}
+.mascot-profile-pet small{color:#bfb3da;text-align:center;font-size:.69rem}
+.mascot-profile-featured{color:#c6ff45;font-size:.65rem;font-weight:850;text-align:center;margin-top:auto}
