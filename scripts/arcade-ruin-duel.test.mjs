@@ -30,7 +30,7 @@ test('save restoration verifies history, tallies, match limits and completion or
  const forged=g.export();forged.history[0].player='missing';assert.equal(Game.restore(forged),null);assert.equal(Game.restore({schema:1,mode:'invalid'}),null);
 });
 test('long draw streaks retain bounded history and resume without losing totals',()=>{
- const g=new Game('classic',()=>0);for(let i=0;i<61;i++)g.play('rock');g.play('paper');assert.equal(g.history.length,50);const loaded=Game.restore(g.export());assert.ok(loaded);assert.equal(loaded.total,62);assert.equal(loaded.you,1);assert.equal(loaded.ties,61);loaded.play('paper');assert.equal(loaded.you,2);
+ const g=new Game('classic',()=>0);for(let i=0;i<61;i++)g.play('rock');g.play('paper');assert.equal(g.history.length,50);const loaded=Game.restore(g.export(),()=>0);assert.ok(loaded);assert.equal(loaded.total,62);assert.equal(loaded.you,1);assert.equal(loaded.ties,61);loaded.play('paper');assert.equal(loaded.you,2);
 });
 function harness(initial={},ready=Promise.resolve()){
  const nodes=new Map(),timers=new Map(),events=new Map(),scores=[],storage=new Map(Object.entries(initial));let tid=0;
