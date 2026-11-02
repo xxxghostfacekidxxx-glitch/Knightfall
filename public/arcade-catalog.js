@@ -1,3 +1,9 @@
+/* Load the shared NextGen arcade visuals for the large Chaos Cartridge directory without rewriting generated catalog HTML. */
+(()=>{'use strict';
+const css='/arcade/nextgen.css?v=20261102-1',js='/arcade/nextgen.js?v=20261102-1';
+if(!document.querySelector('link[href*="/arcade/nextgen.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href=css;document.head.appendChild(l)}
+if(!document.querySelector('script[src*="/arcade/nextgen.js"]')){const s=document.createElement('script');s.src=js;s.defer=true;document.head.appendChild(s)}
+})();
 (() => {
  'use strict';
  const boot=()=>{
