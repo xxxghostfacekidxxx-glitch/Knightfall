@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 11,
+  "version": 12,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -17,7 +17,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/moxie-mischief.svg"
       },
       "description": "Segmented bone-veined neon moth with iridescent wing armor and luminous skeletal chest.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/moxie.svg"
     },
     {
       "id": "bloop",
@@ -34,7 +35,8 @@
       },
       "description": "Gillrot · radioactive punk axolotl: six feathery gills, toxic mohawk, glowing exposed rib cage, ragged hoodie, split-color eyes and sly serrated grin",
       "personality": "Chaotic, curious, toxic-puddle scavenger. Mischief: winks and bubbles radioactive slime.",
-      "styleVersion": 7
+      "styleVersion": 7,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/bloop.svg"
     },
     {
       "id": "pippa",
@@ -50,7 +52,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/pippa-mischief.svg"
       },
       "description": "Engraved pumpkin gremlin with vine grooves, glowing grimace and a haunted stem.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/pippa.svg"
     },
     {
       "id": "nib",
@@ -67,7 +70,8 @@
       },
       "description": "Nocturnib · gothic punk vampire bat: scalloped bone-ribbed wings, pierced ears, swept fringe, fangs and studded jacket",
       "personality": "Nocturnal, smug, dramatic little menace. Mischief: winks and sparks a pink star.",
-      "styleVersion": 7
+      "styleVersion": 7,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/nib.svg"
     },
     {
       "id": "glim",
@@ -84,7 +88,8 @@
       },
       "description": "Cryptglow · mischievous ectoplasm ghost: spectral torn tails, exposed glowing rib cage, mint-green energy, broken chains, dark punk fringe, mismatched eyes and tiny fangs",
       "personality": "A curious, sardonic poltergeist who collects lost secrets and haunts broken arcade machines. Mischief: winks while the ectoplasm flashes.",
-      "styleVersion": 8
+      "styleVersion": 8,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/glim.svg"
     },
     {
       "id": "zuzu",
@@ -100,7 +105,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/zuzu-mischief.svg"
       },
       "description": "Toxic mutant slime with acid bubbles, exposed glowing ribs and dripping neon sludge.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/zuzu.svg"
     },
     {
       "id": "kiki",
@@ -116,7 +122,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/kiki-mischief.svg"
       },
       "description": "Undead alley cat with torn ears, bone collar, luminous whiskers and fierce cheek markings.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/kiki.svg"
     },
     {
       "id": "emberbun",
@@ -132,7 +139,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/emberbun-mischief.svg"
       },
       "description": "Scorched undead rabbit with glowing stitches, tattered ears and ember dust.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/emberbun.svg"
     },
     {
       "id": "gravebyte",
@@ -149,7 +157,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/gravebyte-mischief.svg"
       },
       "personality": "Cold-sounding but secretly loyal. Talks in glitchy DJ jokes, loves bass drops and rewiring haunted machines. Mischief: LED wink and sparks.",
-      "styleVersion": 8
+      "styleVersion": 8,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/gravebyte.svg"
     },
     {
       "id": "statichex",
@@ -166,7 +175,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/statichex-mischief.svg"
       },
       "personality": "A fast-talking radio pirate obsessed with signal interference, arcade music and noisy machinery.",
-      "styleVersion": 10
+      "styleVersion": 10,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/statichex.svg"
     },
     {
       "id": "rattlepop",
@@ -183,7 +193,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/rattlepop-mischief.svg"
       },
       "personality": "Overdramatic and sweetly sinister. Keeps snacks in his coffin and treats every jump scare like a birthday surprise.",
-      "styleVersion": 10
+      "styleVersion": 10,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/rattlepop.svg"
     },
     {
       "id": "thornriot",
@@ -200,7 +211,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/thornriot-mischief.svg"
       },
       "personality": "A stubborn garden of chaos, defensive but fiercely protective of smaller creatures.",
-      "styleVersion": 10
+      "styleVersion": 10,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/thornriot.svg"
     },
     {
       "id": "volt-imp",
@@ -217,7 +229,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/volt-imp-mischief.svg"
       },
       "personality": "Hyperactive and impatient. A walking short circuit who loves to race the lightning.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/volt-imp.svg"
     },
     {
       "id": "crypt-koi",
@@ -234,7 +247,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/crypt-koi-mischief.svg"
       },
       "personality": "Dreamy, elusive and happiest haunting submerged arcades.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/crypt-koi.svg"
     },
     {
       "id": "casket-pup",
@@ -251,7 +265,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/casket-pup-mischief.svg"
       },
       "personality": "A mischievous little graveyard watchdog who follows friendly ghosts home.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/casket-pup.svg"
     },
     {
       "id": "void-sprout",
@@ -268,7 +283,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/void-sprout-mischief.svg"
       },
       "personality": "Quietly curious; grows stronger wherever the light fails.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/void-sprout.svg"
     },
     {
       "id": "minion-mouse",
@@ -287,7 +303,8 @@
       "personality": "Quick-witted, shamelessly curious, fiercely loyal to the crew. Steals broken tech and turns it into improbable inventions. Mischief: goggles wink as sparks fly.",
       "role": "The scrapyard inventor",
       "tagline": "If it beeps, I can steal it.",
-      "styleVersion": 9
+      "styleVersion": 12,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/minion-mouse.svg"
     },
     {
       "id": "mini-villain",
@@ -306,7 +323,8 @@
       "personality": "Magnificent in their own mind, hilariously overconfident and secretly protective of the smaller misfits. Mishap expert with a flair for dramatic entrances. Mischief: smug wink with crackling arcane sparks.",
       "role": "The would-be overlord",
       "tagline": "Kneel. Or don't. I'll remember.",
-      "styleVersion": 9
+      "styleVersion": 12,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-villain.svg"
     },
     {
       "id": "mini-eddie",
@@ -326,7 +344,8 @@
       "personality": "Defiant, chaotic and protective. The first into the pit and last to abandon a friend. Mischief: flashes his fanged grin and headbangs hard enough to shake the screen.",
       "role": "The pit guardian",
       "tagline": "Still standing. Still trouble.",
-      "styleVersion": 9
+      "styleVersion": 12,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-eddie.svg"
     },
     {
       "id": "gutterkit",
@@ -342,7 +361,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/gutterkit-mischief.svg"
       },
       "description": "Scrappy undead alley kitten with stitched fur, curled rat tail and luminous collar.",
-      "styleVersion": 11
+      "styleVersion": 11,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/gutterkit.svg"
     },
     {
       "id": "chunky-monkey",
@@ -358,7 +378,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/chunky-monkey-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/chunky-monkey-mischief.svg"
       },
-      "styleVersion": 11
+      "styleVersion": 12,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/chunky-monkey.svg"
     },
     {
       "id": "boo-thang",
@@ -374,7 +395,8 @@
         "bounce": "/assets/devil-tools/neon-nuisances/boo-thang-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/boo-thang-mischief.svg"
       },
-      "styleVersion": 11
+      "styleVersion": 12,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/boo-thang.svg"
     }
   ],
   "animationVariants": [
@@ -383,5 +405,5 @@
     "bounce",
     "mischief"
   ],
-  "artDirection": "Original cute-horror metalhead creatures, skeletal cutaways, neon slime, alien punk and sci-fi graveyard energy."
+  "artDirection": "Deluxe Sanctuary v12: 22 self-contained illustrated world portraits, neon-punk detail passes, four animations and original downloadable vector masters"
 }
