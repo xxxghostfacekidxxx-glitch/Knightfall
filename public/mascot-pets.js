@@ -9,7 +9,7 @@ let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,m
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
-const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
+const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/|habitats\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
 const ownedSku=sku=>wardrobe.some(x=>x.sku===sku);
 async function api(path,options={}){
  const r=await fetch(API+path,{credentials:'include',cache:'no-store',...options,
