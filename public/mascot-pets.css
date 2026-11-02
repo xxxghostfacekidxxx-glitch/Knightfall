@@ -32,3 +32,21 @@
 .pet-empty{padding:24px;border:1px dashed #ff55d87b;border-radius:14px;color:#ddc5e3;grid-column:1/-1}
 @media(prefers-reduced-motion:reduce){.pet-card .pet-art img{transition:none}.pet-card:hover .pet-art img{transform:none}}
 @media(max-width:550px){.pet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.pet-card{padding:9px}.pet-card .pet-art{height:124px}.pet-card .pet-art img{height:114px;width:114px}.pet-card .pet-label strong{font-size:.93rem}.pet-meter{grid-template-columns:43px 1fr 24px;gap:4px;font-size:.65rem}.pet-actions button{flex:1 1 58px;font-size:.69rem;padding:8px 4px}}
+
+/* Collectible economy and profile wardrobe */
+.pet-economy{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:1px solid #c6ff4580;background:linear-gradient(100deg,#26311444,#160c27);border-radius:14px;padding:14px 20px;margin:17px 0;color:#d8d0de}
+.pet-economy strong{font-size:clamp(1rem,2.3vw,1.28rem);color:#c6ff45}.pet-economy span{font-size:.82rem;line-height:1.6}
+.pet-cost-note{color:#cec7de;font-size:.78rem;line-height:1.5;min-height:2.5em}
+.pet-shop-intro{color:#d3bed7;font-size:.95rem;max-width:800px;line-height:1.6;margin:0 0 18px}
+.pet-card .pet-art img.pet-overlay{position:absolute;width:160px;height:160px;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;filter:drop-shadow(0 4px 7px #0007)}
+.pet-card:hover .pet-art img.pet-overlay{transform:translate(-50%,-50%)}
+.pet-card .pet-art img.pet-accessory-preview{width:160px;height:160px}
+.pet-dress-up{border-top:1px solid #a87bba4f;margin-top:4px;padding-top:10px;display:grid;gap:7px}
+.pet-dress-up>strong{color:#79ffe7;letter-spacing:.07em;font-size:.81rem}
+.pet-equip-row{display:grid;grid-template-columns:40px minmax(0,1fr) 50px;gap:5px;align-items:center}
+.pet-equip-row label{color:#ded3ea;font-size:.68rem}
+.pet-equip-row select{min-width:0;width:100%;background:#17172a;border:1px solid #ff55d868;color:#fff;border-radius:7px;font-size:.72rem;padding:8px 3px}
+.pet-equip-row button{border:1px solid #c6ff45;border-radius:7px;color:#c6ff45;background:#16211e;padding:8px 4px;font-size:.65rem;cursor:pointer}
+.pet-equip-row button:disabled{opacity:.4;cursor:not-allowed}
+.pet-card.accessory-card .pet-art{background:radial-gradient(circle at 50% 52%,#c6ff452c,transparent 63%),linear-gradient(155deg,#27142d,#0b1520)}
+@media(max-width:550px){.pet-card .pet-art img.pet-overlay,.pet-card .pet-art img.pet-accessory-preview{width:114px;height:114px}.pet-equip-row{grid-template-columns:1fr 45px}.pet-equip-row label{grid-column:1/-1}.pet-equip-row select{font-size:.7rem}}
