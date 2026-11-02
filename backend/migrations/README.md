@@ -87,3 +87,11 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 ## Arcade save revisions (0029)
 
 `0029_arcade_save_revisions.sql` adds a monotonic revision to each arcade save. Revision-aware clients send `expected_revision`; stale writes receive HTTP 409 and must reload before retrying. Apply the migration before deploying the revision-aware Worker. Test that an update advances the revision and that a stale conditional update changes zero rows. The migration is additive and preserves existing save rows at revision 1.
+
+## Neon Nuisances Sanctuary launch · November 2, 2026
+
+- `0103_mascot_pets.sql` adds persistent member-owned pets and a single featured companion.
+- `0104_mascot_economy.sql` adds all 22 rescue species, level-gated Cinders prices, twelve cosmetics, wardrobe entitlements and equipment slots. Atomic SQLite triggers perform wallet debits and prevent duplicate or unauthorized acquisitions.
+- Both schemas were created in the production D1 database through the authorized Cloudflare API on November 2, 2026 and their tables, indexes, and triggers were subsequently read-verified. **This does not imply that Wrangler's `d1_migrations` ledger records either migration.** Reconcile the ledger using the reviewed Wrangler migration process before the next routine migration. Both files use idempotent table, trigger, index creation and catalog inserts; still inspect actual schema and ledger before applying.
+- No Stripe secrets are configured on the production Worker at launch. Premium cosmetic checkout must remain disabled until `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` are securely configured and the signed webhook endpoint is tested. Never fulfill payment based solely on browser redirect success.
+- Run `python3 scripts/mascot-economy-sql.test.py` and `node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs` before economy or payment changes.
