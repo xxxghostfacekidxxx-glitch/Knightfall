@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Chunky Monkey, a chunky punk monkey mascot with a neon banana and leather vest">
 <title>Chunky Monkey | Ash-Fall Neon Nuisances</title>
-<defs><radialGradient id="halo"><stop stop-color="#c6ff45" stop-opacity=".38"/><stop offset="1" stop-color="#c6ff45" stop-opacity="0"/></radialGradient><linearGradient id="fur" x2="0" y2="1"><stop stop-color="#9f5b85"/><stop offset="1" stop-color="#57334d"/></linearGradient></defs>
+<defs><radialGradient id="halo"><stop stop-color="#c6ff45" stop-opacity=".38"/><stop offset="1" stop-color="#c6ff45" stop-opacity="0"/></radialGradient><linearGradient id="fur" x2="0" y2="1"><stop stop-color="#9f5b85"/><stop offset="1" stop-color="#57334d"/></linearGradient></defs><style>@media (prefers-reduced-motion: no-preference){#mascot{transform-box:fill-box;transform-origin:center}#mascot{animation:float 3.2s ease-in-out infinite}@keyframes float{50%{transform:translateY(-6px) rotate(2deg)}}}</style><g id="mascot">
 <circle cx="80" cy="77" r="72" fill="url(#halo)"/>
 <ellipse cx="80" cy="150" rx="47" ry="6" fill="#ff55d8" opacity=".3"/>
 <g id="chunky-figure" stroke-linejoin="round" stroke-linecap="round">
@@ -25,4 +25,4 @@
 <path d="M65 95q15 16 30 0l-4 10-8 1-5-4-6 4Z" fill="#1c1420"/><path d="m72 100 4 4 5-3 5 3 4-4" fill="none" stroke="#fff1dc" stroke-width="2.5"/>
 <path d="M107 47q13-7 18 7" fill="none" stroke="#ff55d8" stroke-width="4"/>
 <path d="M125 105q12-6 15 4-3 7-14 8" fill="#c6ff45" stroke="#201421" stroke-width="3"/>
-</g><style>@media (prefers-reduced-motion: no-preference){#chunky-figure{transform-box:fill-box;transform-origin:center;animation:mascot-float 2.8s ease-in-out infinite}@keyframes mascot-float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(2deg)}}}</style></svg>
+</g></g><g id="lids" opacity="0"><path d="M60 68h13m17 0h14" stroke="#201421" stroke-width="6.5" stroke-linecap="round" fill="none"/></g><g id="spark" opacity="0"><path d="M147 32l3-9 3 9-3 9Z" fill="#ff55d8" stroke="#c6ff45" stroke-width="1.5"/></g></svg>
