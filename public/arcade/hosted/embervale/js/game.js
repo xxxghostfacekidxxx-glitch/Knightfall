@@ -67,7 +67,7 @@ const G = {
   player: null,
   enemies: [], pickups: [], projectiles: [], bombs: [], chests: [], npcs: [], shopItems: [],
   hp: 3, maxHp: 3, gems: 0, keys: 0,
-  inv: { sword: false, emberblade: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 },
+  inv: { sword: false, emberblade: false, stormbow: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 },
   equipped: null,            // 'bow' | 'bombs'
   flags: new Set(),
   visited: new Set(),
@@ -258,6 +258,7 @@ const G = {
       switch (item) {
         case 'sword': this.inv.sword = true; break;
         case 'emberblade': this.inv.sword = true; this.inv.emberblade = true; break;
+        case 'stormbow': this.inv.bow = true; this.inv.stormbow = true; this.inv.arrows = Math.min(30,this.inv.arrows+15); this.equipped = 'bow'; break;
         case 'bow': this.inv.bow = true; this.inv.arrows = Math.min(30, this.inv.arrows + 10); this.equipped = 'bow'; break;
         case 'lantern': this.inv.lantern = true; break;
         case 'bosskey': this.inv.bosskey = true; break;
@@ -269,9 +270,9 @@ const G = {
       this.save();
     };
     const textKey = 'get_' + item;
-    const big = ['sword', 'emberblade', 'bow', 'lantern', 'bosskey', 'heartcont'].includes(item);
+    const big = ['sword', 'emberblade', 'stormbow', 'bow', 'lantern', 'bosskey', 'heartcont'].includes(item);
     const sprKey = {
-      sword: 'it_sword', emberblade: 'it_sword', bow: 'it_bow', lantern: 'it_lantern', bosskey: 'it_bosskey',
+      sword: 'it_sword', emberblade: 'it_sword', stormbow: 'it_bow', bow: 'it_bow', lantern: 'it_lantern', bosskey: 'it_bosskey',
       heartcont: 'it_heartcont', key: 'key', gems: 'gem_big', bombs: 'bomb_pickup', crown: 'it_crown'
     }[item];
     this.itemGetData = { item, spr: sprKey, t: 0, textKey, applied: false, apply, big };
@@ -305,7 +306,7 @@ const G = {
     this.flags = new Set();
     this.visited = new Set();
     this.hp = 3; this.maxHp = 3; this.gems = 0; this.keys = 0;
-    this.inv = { sword: false, emberblade: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 };
+    this.inv = { sword: false, emberblade: false, stormbow: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 };
     this.equipped = null;
     this.stats = { time: 0, deaths: 0, kills: 0 };
     this.player = new Player();
@@ -590,6 +591,13 @@ function useItem() {
       G.inv.arrows--;
       const v = DIR_VEC[p.facing];
       G.projectiles.push(new Arrow(p.cx - 4 + v[0] * 6, p.cy - 4 + v[1] * 6, v[0] * 2.6, v[1] * 2.6));
+      if (G.inv.stormbow) {
+        // One arrow spent; two additional bolts fan out from the original shot.
+        for (const offset of [-0.62, 0.62]) {
+          G.projectiles.push(new Arrow(p.cx - 4 + v[0] * 6, p.cy - 4 + v[1] * 6,
+            v[0] * 2.6 - v[1] * offset, v[1] * 2.6 + v[0] * offset));
+        }
+      }
       AudioSys.sfx('arrow');
     } else { AudioSys.sfx('denied'); G.toast('OUT OF ARROWS!'); }
   } else if (G.equipped === 'bombs' && G.inv.maxBombs > 0) {
@@ -741,6 +749,7 @@ function renderHUD() {
   // weapon boxes
   drawSlot(ctx, 108, 8, 'Z', G.inv.sword ? 'it_sword' : null);
   if (G.inv.emberblade) FONT.draw(ctx, 'FIRE', 110, 35, '#ff924a');
+  if (G.inv.stormbow) FONT.draw(ctx, 'III', 138, 35, '#67e8ff');
   const itemSpr = G.equipped === 'bow' ? 'it_bow' : G.equipped === 'bombs' ? 'bomb_pickup' : null;
   drawSlot(ctx, 134, 8, 'X', itemSpr);
 
@@ -791,12 +800,12 @@ function heartShape(c, x, y, col) {
 }
 
 function renderMinimap() {
-  const dungeonMap = G.map === 'dungeon' || G.map === 'emberkeep';
+  const dungeonMap = G.map === 'dungeon' || G.map === 'emberkeep' || G.map === 'glasscrypt';
   const mapName = MAPS[G.map] ? G.map : 'overworld';
   const M = MAPS[mapName];
   const cw = dungeonMap ? 8 : 6, chh = dungeonMap ? 7 : 6;
   const ox = 256 - M.w * cw - 8, oy = 10;
-  const mapLabel = G.map === 'emberkeep' ? 'CINDER KEEP' : G.map === 'dungeon' ? 'RUINS' : 'EMBERVALE';
+  const mapLabel = G.map === 'emberkeep' ? 'CINDER KEEP' : G.map === 'glasscrypt' ? 'PRISM' : G.map === 'dungeon' ? 'RUINS' : 'EMBERVALE';
   FONT.draw(ctx, mapLabel, ox + (M.w * cw) / 2 - FONT.width(mapLabel) / 2, 3, '#8a96b0');
   for (let j = 0; j < M.h; j++) {
     for (let i = 0; i < M.w; i++) {
@@ -1050,7 +1059,7 @@ function updatePause() {
 function pauseItems() {
   const list = [];
   if (G.inv.emberblade) list.push({ spr: 'it_sword', label: 'EMBER BLADE', equip: null });
-  if (G.inv.bow) list.push({ spr: 'it_bow', label: 'FERN BOW', equip: 'bow' });
+  if (G.inv.bow) list.push({ spr: 'it_bow', label: G.inv.stormbow ? 'STORM BOW' : 'FERN BOW', equip: 'bow' });
   if (G.inv.maxBombs > 0) list.push({ spr: 'bomb_pickup', label: 'BOMBS', equip: 'bombs' });
   if (G.inv.lantern) list.push({ spr: 'it_lantern', label: 'LANTERN', equip: null });
   if (G.inv.bosskey) list.push({ spr: 'it_bosskey', label: 'GLOOM KEY', equip: null });
@@ -1093,7 +1102,8 @@ function renderPause() {
   else if (!G.inv.bosskey) hint = 'FIND THE GLOOM KEY IN THE EAST WING';
   else if (!G.inv.crown) hint = 'FACE THE GLOOM KNIGHT';
   else if (!G.flags.has('cinderwarden_defeated')) hint = 'EASTERN ROAD: CINDER KEEP';
-  else hint = 'EMBERVALE IS SAVED!';
+  else if (!G.flags.has('prismbeast_defeated')) hint = 'PRISM GLEN: SHARD CATACOMBS';
+  else hint = 'THE EASTERN REALMS ARE SAFE!';
   FONT5.draw(ctx, hint, 128 - FONT5.width(hint) / 2, 128, '#5ad8e8');
 
   // stats

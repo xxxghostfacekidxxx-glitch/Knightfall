@@ -20,7 +20,9 @@ const EAST_REALMS = [
   {x:5,y:2,name:'CINDER KEEP APPROACH',style:'ruins',enemies:[['stoneguard',4,6],['emberwisp',12,7]],
    warps:[{tx:8,ty:2,map:'emberkeep',sx:1,sy:1,px:7,py:8}],
    signs:[{tx:3,ty:4,text:'CINDER KEEP. A FIRE-EATEN FORTRESS. A WARDEN WAITS BELOW.'}]},
-  {x:6,y:2,name:'THE ASHEN GLEN',style:'woods',enemies:[['emberwisp',4,3],['emberwisp',12,7]],
+  {x:6,y:2,name:'PRISM GLEN',style:'woods',enemies:[['emberwisp',4,6],['stoneguard',12,7]],
+   warps:[{tx:8,ty:2,map:'glasscrypt',sx:0,sy:1,px:7,py:8}],
+   signs:[{tx:3,ty:4,text:'PRISM CATACOMBS. A SHARD BEAST CLAIMED THE STORM BOW.'}],
    chests:[{tx:8,ty:8,item:'bombs',n:4,flag:'east_ashen_bombs'}]}
 ];
 function easternTiles(def) {
@@ -92,6 +94,51 @@ K(1,0,{name:'THE CINDER WARDEN',music:'boss',dark:true,
   chests:[{tx:8,ty:3,item:'heartcont',flag:'keep_warden_heart',requiresClear:true}]});
 MAPS.emberkeep={grid:KEEP,w:3,h:2,music:'dungeon'};
 DIALOG.get_emberblade='THE EMBER BLADE! YOUR SWORD NOW DEALS DOUBLE DAMAGE. THE FLAME HAS CHOSEN YOU.';
+
+// The second dungeon branches out of Prism Glen. Its key is found in the
+// mirror vault, and its storm bow can only be claimed after defeating its boss.
+const PRISM = {};
+const P=(x,y,def)=>{PRISM[x+','+y]=def;};
+P(0,1,{name:'PRISM CATACOMBS',tiles:keepTiles({n:'o',e:'o',s:'>',blocks:[[4,6,'A'],[11,6,'A']]}),
+  enemies:[['emberwisp',5,5],['stoneguard',10,7]],
+  warps:[{tx:7,ty:10,map:'overworld',sx:6,sy:2,px:7,py:4},
+         {tx:8,ty:10,map:'overworld',sx:6,sy:2,px:8,py:4}]});
+P(1,1,{name:'SHARD GALLERY',tiles:keepTiles({n:'L',w:'o',blocks:[[3,3,'A'],[12,3,'A']]}),
+  enemies:[['emberwisp',5,4],['emberwisp',11,6]],
+  chests:[{tx:8,ty:3,item:'gems',n:30,flag:'prism_gallery_gems',requiresClear:true}]});
+P(0,0,{name:'THE MIRROR VAULT',tiles:keepTiles({s:'o',blocks:[[5,3,'#'],[10,3,'#'],[5,7,'#'],[10,7,'#']]}),
+  enemies:[['stoneguard',7,6],['emberwisp',11,5]],
+  chests:[{tx:8,ty:3,item:'key',flag:'prism_boss_key',requiresClear:true}]});
+P(1,0,{name:'THRONE OF SHARDS',music:'boss',
+  tiles:keepTiles({s:'G',blocks:[[4,3,'A'],[11,3,'A'],[4,7,'A'],[11,7,'A']]}),
+  enemies:[['prismbeast',7,5]],
+  chests:[{tx:8,ty:3,item:'stormbow',flag:'prism_stormbow',requiresClear:true}]});
+MAPS.glasscrypt={grid:PRISM,w:2,h:2,music:'dungeon'};
+DIALOG.get_stormbow='THE STORM BOW! ONE ARROW BECOMES THREE LIGHTNING SHOTS. AIM WITH X.';
+
+class PrismBeast extends CinderWarden {
+  constructor(tx,ty){super(tx,ty);this.hp=20;this.shotTimer=66;}
+  die(){
+    if(this.dead)return;
+    // Separate quest completion, no interaction with the Cinder Warden flag.
+    Enemy.prototype.die.call(this);
+    G.flags.add('prismbeast_defeated');G.flags.add('clear:glasscrypt:1,0');
+    Particles.spawn(this.cx,this.cy,40,{color:['#42e2ff','#ba70ff','#fff','#f4cf4a'],speed:3,life:45,size:3});
+    G.shake=10;AudioSys.sfx('bossHit');G.save();
+  }
+  draw(c){
+    const x=Math.round(this.x),y=Math.round(this.y),pulse=Math.sin(this.t/9);
+    c.save();c.globalAlpha=.22;c.fillStyle='#43efff';
+    c.beginPath();c.arc(x+8,y+8,14+pulse*2,0,6.283);c.fill();
+    c.globalAlpha=1;
+    c.fillStyle=this.flash>0?'#fff':this.phase===2?'#d857ff':'#5f73d2';
+    c.beginPath();c.moveTo(x+8,y-3);c.lineTo(x+18,y+8);c.lineTo(x+8,y+19);c.lineTo(x-2,y+8);c.closePath();c.fill();
+    c.fillStyle='#b6faff';c.fillRect(x+3,y+5,4,3);c.fillRect(x+10,y+5,4,3);
+    c.fillStyle='#f0e3ff';c.fillRect(x+7,y+11,3,3);
+    c.restore();
+  }
+}
+
 
 // Extra enemies are hand-drawn so the DLC brings its own visual identity
 // without borrowing any third-party sprites.
@@ -195,8 +242,9 @@ class CinderWarden extends Enemy {
     }
   };
   for(const [k,v] of Object.entries(KEEP))check(k,v);
+  for(const [k,v] of Object.entries(PRISM))check(k,v);
   for(const def of EAST_REALMS)check(def.x+','+def.y,OVERWORLD[def.x+','+def.y]);
   if(OVERWORLD['4,1'].tiles[5][15]!=='='||
       KEEP['2,1'].tiles[0].slice(7,10)!=='LLL')throw Error('Cinder Keep disconnected');
-  console.log('[Embervale expansion] six eastern screens and six keep rooms ready');
+  console.log('[Embervale expansion] six eastern screens, six keep rooms, four prism rooms ready');
 })();

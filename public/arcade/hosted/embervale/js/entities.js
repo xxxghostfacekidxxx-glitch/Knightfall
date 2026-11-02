@@ -671,6 +671,7 @@ function makeEnemy(type, tx, ty) {
     case 'emberwisp': return new EmberWisp(tx, ty);
     case 'stoneguard': return new StoneGuard(tx, ty);
     case 'cinderwarden': return new CinderWarden(tx, ty);
+    case 'prismbeast': return new PrismBeast(tx, ty);
   }
   return null;
 }
