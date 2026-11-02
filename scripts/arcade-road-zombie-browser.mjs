@@ -140,7 +140,7 @@ await scenario("Not Dead Yet true fullscreen and F keyboard toggle",{width:1280,
  assert.ok(dimensions.native||dimensions.fallback,"browser fullscreen or CSS immersive fallback entered");
  assert.ok(Math.abs(dimensions.width-dimensions.viewportWidth)<4,"gameplay fullscreen covers viewport width");
  assert.ok(Math.abs(dimensions.height-dimensions.viewportHeight)<4,"gameplay fullscreen covers viewport height");
- assert.ok(dimensions.canvasHeight>100,"canvas must be sized in fullscreen");
+ assert.ok(dimensions.canvasHeight>100,"canvas must be sized in fullscreen: "+JSON.stringify(dimensions));
  assert.ok(Math.abs(dimensions.canvasWidth/dimensions.canvasHeight-960/540)<.02,"canvas keeps 16:9 aspect");
  await page.locator("#game").click({position:{x:Math.floor(dimensions.canvasWidth*.65),y:Math.floor(dimensions.canvasHeight*.45)},force:true});
  await page.click("#toggle-fullscreen");
@@ -161,7 +161,7 @@ await scenario("Not Dead Yet mobile fullscreen fallback keeps controls on screen
   const touch=document.querySelector(".touch-controls").getBoundingClientRect(),fire=document.querySelector("#touch-fire").getBoundingClientRect();
   return{fallback:stage.classList.contains("immersive-fallback"),x:r.x,y:r.y,w:r.width,h:r.height,canvasW:canvas.width,canvasH:canvas.height,fireY:fire.bottom,touchY:touch.top,viewportH:innerHeight,overflow:document.documentElement.scrollWidth>innerWidth+3};
  });
- assert.equal(state.fallback,true);assert.ok(state.canvasW>100&&state.canvasH>0);
+ assert.equal(state.fallback,true);assert.ok(state.canvasW>100&&state.canvasH>0,"mobile canvas metrics: "+JSON.stringify(state));
  assert.ok(state.fireY<=state.viewportH+3,"touch fire button must be visible within viewport");
  assert.ok(state.touchY>0,"touch controls remain below game and accessible");
  assert.ok(Math.abs(state.w-390)<3&&Math.abs(state.h-844)<3,"immersive fallback covers phone screen");
@@ -181,7 +181,7 @@ await scenario("Not Dead Yet short landscape fullscreen has visible touch action
   return{display:getComputedStyle(el.parentElement).display,visible:r.width>0&&r.bottom<=innerHeight+3,screenHeight:document.querySelector("#game").getBoundingClientRect().height}
  });
  assert.equal(info.display,"grid","landscape phones still get touch controls");
- assert.equal(info.visible,true,"touch fire button stays visible");
+ assert.equal(info.visible,true,"touch fire button stays visible: "+JSON.stringify(info));
  assert.ok(info.screenHeight>50,"game is still playable in landscape");
 });
 
