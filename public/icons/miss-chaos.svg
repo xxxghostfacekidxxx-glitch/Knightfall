@@ -27,4 +27,4 @@
 <path d="M188 147L202 139L196 165L211 156" fill="none" stroke="#39ff88" stroke-width="4" stroke-linecap="round"/>
 <path d="M100 128L108 130M154 129L162 127" stroke="#2b1424" stroke-width="2" stroke-linecap="round"/>
 <circle cx="184" cy="174" r="3" fill="#39ff88"/><circle cx="79" cy="175" r="3" fill="#ff168c"/>
-</svg>
+<g id="dt-premium-finish" fill="none" stroke-linecap="round"><path d="M42 60q22-35 59-36M177 35q31 11 41 38" stroke="#ff9be5" stroke-width="3.5" opacity=".72"/><path d="m41 210-9 10m188-19 9 10" stroke="#79ffe7" stroke-width="3.2"/><path d="M115 19 122 8l7 11" stroke="#c6ff45" stroke-width="3"/><circle cx="228" cy="34" r="3.5" fill="#c6ff45"/><circle cx="23" cy="195" r="3" fill="#ff55d8"/></g></svg>
