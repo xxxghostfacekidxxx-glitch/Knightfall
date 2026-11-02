@@ -50,4 +50,22 @@
  <circle cx="65" cy="78" r="3" fill="#ff55d8"/>
  <path d="M51 91q13 8 29-1" stroke="#c6ff45" stroke-width="2" fill="none"/>
  <path d="m37 81-11 0m9 5-10 5m67-11 10-1m-10 8 11 5" fill="none" stroke="#c6ff45" stroke-width="2"/>
-</g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:snatch 1.7s ease-in-out infinite}#wink{animation:wink 2.6s steps(1,end) infinite}#fx{animation:spark .5s steps(2,end) infinite}@keyframes snatch{20%{transform:translateX(-4px) rotate(-7deg)}60%{transform:translateX(3px) rotate(5deg)}}@keyframes wink{0%,50%,72%,100%{opacity:0}51%,71%{opacity:1}}@keyframes spark{50%{opacity:.05}}}</style></svg>
+<g id="deluxe-scavenger-gear" stroke-linecap="round" stroke-linejoin="round">
+<path d="m13 38 13-8 6 9m83-2-13-8-6 9" fill="none" stroke="#d5fff1" stroke-width="2.5"/>
+<path d="m14 25 10-3m81 3-10-3M14 47l10 4m80-3-10 4" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m27 31 6 7m62-7-6 7" stroke="#ff55d8" stroke-width="2.6"/>
+<path d="M34 45q10-8 20-5m24 0q13-3 21 5" stroke="#e6ffff" stroke-opacity=".7" stroke-width="2.2" fill="none"/>
+<path d="m32 61-7-4m75 3 7-5" stroke="#c6ff45" stroke-width="2.4"/>
+<path d="M40 70q7-5 13-3m21 0q8-5 14 3" stroke="#fff9e5" stroke-width="2.5" fill="none"/>
+<path d="m39 96-9 8 11 9m50-17 9 8-11 9" fill="none" stroke="#ff55d8" stroke-width="3"/>
+<path d="M44 101l9-4 7 7 7-7 10 7 9-5" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="M58 106h14l-3 7h-8Z" fill="#19273a" stroke="#79ffe7" stroke-width="2"/>
+<circle cx="65" cy="109" r="2" fill="#c6ff45"/>
+<path d="m30 81-10 3m10 3-10 4m77-10 10 3m-10 3 10 4" stroke="#fff0f6" stroke-width="2"/>
+<path d="M52 115l5 9m18-9-5 9" stroke="#79ffe7" stroke-width="2.4"/>
+<path d="M100 100q17 6 16-13m-7 13 8 3" fill="none" stroke="#ff55d8" stroke-width="4"/>
+<circle cx="114" cy="90" r="3" fill="#c6ff45"/>
+<path d="m62 20 5-8 4 9m-31 5 4-8m48 8-4-8" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m47 55 8-4m20 0 8 4" stroke="#f3ffed" stroke-width="2.3"/>
+<circle cx="42" cy="36" r="2" fill="#ff55d8"/><circle cx="89" cy="37" r="2" fill="#79ffe7"/>
+</g></g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:snatch 1.7s ease-in-out infinite}#wink{animation:wink 2.6s steps(1,end) infinite}#fx{animation:spark .5s steps(2,end) infinite}@keyframes snatch{20%{transform:translateX(-4px) rotate(-7deg)}60%{transform:translateX(3px) rotate(5deg)}}@keyframes wink{0%,50%,72%,100%{opacity:0}51%,71%{opacity:1}}@keyframes spark{50%{opacity:.05}}}</style></svg>
