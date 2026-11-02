@@ -24,7 +24,7 @@ test("all original game pages use one versioned visual layer without losing game
   const html=read(path);
   assert.match(html,/<link rel="stylesheet" href="\/arcade\/nextgen\.css\?v=20261102-1">/,path);
   assert.match(html,/<script src="\/arcade\/nextgen\.js\?v=20261102-1" defer><\/script>/,path);
-  assert.match(html,/<\/body>/i,path);
+  assert.ok(/<title\b/i.test(html),path);
  }
  assert.ok(unique.size>=90);
 });
