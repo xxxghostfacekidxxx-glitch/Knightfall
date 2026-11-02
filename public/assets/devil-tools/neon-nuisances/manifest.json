@@ -199,43 +199,51 @@
     },
     {
       "id": "volt-imp",
-      "name": "Voltimp",
-      "type": "electric imp",
+      "name": "Volt Imp",
+      "type": "electric demon",
       "primary": "#c6ff45",
       "accent": "#ff27ce",
-      "description": "Tiny electric demon with a cracked neon skull and lightning tail",
+      "description": "An electric gremlin with jagged lightning horns, neon dragon wings, split-color eyes and an electrified forked tail.",
       "svg": "/assets/devil-tools/neon-nuisances/volt-imp.svg",
-      "variants": {}
+      "variants": {},
+      "personality": "Hyperactive and impatient. A walking short circuit who loves to race the lightning.",
+      "styleVersion": 10
     },
     {
       "id": "crypt-koi",
-      "name": "Cryptkoi",
-      "type": "undead koi",
+      "name": "Crypt Koi",
+      "type": "spectral koi",
       "primary": "#79f7ff",
       "accent": "#ff5eaf",
-      "description": "Floating ghost koi with bone fins and bubble-gum fangs",
+      "description": "An aquatic spirit fish with transparent fins, exposed luminous fish-bones, neon scales and floating bubbles.",
       "svg": "/assets/devil-tools/neon-nuisances/crypt-koi.svg",
-      "variants": {}
+      "variants": {},
+      "personality": "Dreamy, elusive and happiest haunting submerged arcades.",
+      "styleVersion": 10
     },
     {
       "id": "casket-pup",
-      "name": "Casketpup",
-      "type": "skeletal hellhound",
+      "name": "Casket Pup",
+      "type": "undead dog",
       "primary": "#ff9bcb",
       "accent": "#c6ff45",
-      "description": "Punk hellhound pup with coffin ears and an exposed rib cage",
+      "description": "A skeletal coffin hound with floppy spectral ears, glowing ribs, hooked ghost tail and fanged grin.",
       "svg": "/assets/devil-tools/neon-nuisances/casket-pup.svg",
-      "variants": {}
+      "variants": {},
+      "personality": "A mischievous little graveyard watchdog who follows friendly ghosts home.",
+      "styleVersion": 10
     },
     {
       "id": "void-sprout",
-      "name": "Voidsprout",
-      "type": "carnivorous flower",
+      "name": "Void Sprout",
+      "type": "cosmic plant",
       "primary": "#bd84ff",
       "accent": "#c6ff45",
-      "description": "Smiling carnivorous cosmic flower with glowing bones and razor petals",
+      "description": "A spiked arcane bloom with a single luminous cosmic eye, radiant violet petals and creeping roots.",
       "svg": "/assets/devil-tools/neon-nuisances/void-sprout.svg",
-      "variants": {}
+      "variants": {},
+      "personality": "Quietly curious; grows stronger wherever the light fails.",
+      "styleVersion": 10
     },
     {
       "id": "minion-mouse",
