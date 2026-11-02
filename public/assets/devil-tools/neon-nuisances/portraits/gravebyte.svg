@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="portraitTitle portraitDesc"><title id="portraitTitle">Gravebyte · Deluxe Sanctuary Portrait</title><desc id="portraitDesc">Premium original mascot art in a hand-illustrated neon cyber sanctuary.</desc><defs><linearGradient id="sceneBackground" x2="1" y2="1"><stop stop-color="#28132e"/><stop offset=".5" stop-color="#101421"/><stop offset="1" stop-color="#050910"/></linearGradient><radialGradient id="sceneAura"><stop stop-color="#79ffe7" stop-opacity=".46"/><stop offset=".65" stop-color="#c6ff45" stop-opacity=".19"/><stop offset="1" stop-color="#79ffe7" stop-opacity="0"/></radialGradient><linearGradient id="neonTrim" x2="1" y2="1"><stop stop-color="#79ffe7"/><stop offset=".5" stop-color="#c6ff45"/><stop offset="1" stop-color="#79ffe7"/></linearGradient><filter id="sceneGlow"><feGaussianBlur stdDeviation="12"/></filter><filter id="characterDepth"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#000" flood-opacity=".8"/></filter></defs><rect width="512" height="512" rx="32" fill="url(#sceneBackground)"/><circle cx="256" cy="224" r="205" fill="url(#sceneAura)" filter="url(#sceneGlow)"/><g style="color:#79ffe7"><path d="M0 345h512M0 375h512M0 405h512M0 435h512" stroke="currentColor" stroke-width="3" opacity=".3"/><path d="M30 110h100l30 30h90m232-24h-95l-31 32h-87" stroke="currentColor" fill="none" stroke-width="4" opacity=".5"/><circle cx="130" cy="110" r="8" fill="currentColor"/><circle cx="387" cy="116" r="8" fill="currentColor"/></g><circle cx="78" cy="296" r="1" fill="#c6ff45" opacity=".44"/><circle cx="424" cy="224" r="2" fill="#79ffe7" opacity=".44"/><circle cx="482" cy="200" r="3" fill="#c6ff45" opacity=".44"/><circle cx="306" cy="320" r="4" fill="#79ffe7" opacity=".44"/><circle cx="150" cy="92" r="1" fill="#c6ff45" opacity=".44"/><circle cx="234" cy="282" r="2" fill="#79ffe7" opacity=".44"/><circle cx="184" cy="204" r="3" fill="#c6ff45" opacity=".44"/><circle cx="232" cy="278" r="4" fill="#79ffe7" opacity=".44"/><circle cx="434" cy="268" r="1" fill="#c6ff45" opacity=".44"/><circle cx="356" cy="82" r="2" fill="#79ffe7" opacity=".44"/><circle cx="262" cy="356" r="3" fill="#c6ff45" opacity=".44"/><circle cx="484" cy="398" r="4" fill="#79ffe7" opacity=".44"/><circle cx="62" cy="272" r="1" fill="#c6ff45" opacity=".44"/><circle cx="262" cy="162" r="2" fill="#79ffe7" opacity=".44"/><circle cx="198" cy="158" r="3" fill="#c6ff45" opacity=".44"/><circle cx="446" cy="390" r="4" fill="#79ffe7" opacity=".44"/><circle cx="16" cy="138" r="1" fill="#c6ff45" opacity=".44"/><circle cx="162" cy="136" r="2" fill="#79ffe7" opacity=".44"/><circle cx="182" cy="272" r="3" fill="#c6ff45" opacity=".44"/><circle cx="246" cy="300" r="4" fill="#79ffe7" opacity=".44"/><circle cx="342" cy="382" r="1" fill="#c6ff45" opacity=".44"/><circle cx="38" cy="162" r="2" fill="#79ffe7" opacity=".44"/><circle cx="322" cy="392" r="3" fill="#c6ff45" opacity=".44"/><circle cx="326" cy="374" r="4" fill="#79ffe7" opacity=".44"/><circle cx="378" cy="150" r="1" fill="#c6ff45" opacity=".44"/><circle cx="374" cy="204" r="2" fill="#79ffe7" opacity=".44"/><circle cx="386" cy="240" r="3" fill="#c6ff45" opacity=".44"/><circle cx="358" cy="156" r="4" fill="#79ffe7" opacity=".44"/><circle cx="154" cy="198" r="1" fill="#c6ff45" opacity=".44"/><circle cx="104" cy="196" r="2" fill="#79ffe7" opacity=".44"/><circle cx="258" cy="328" r="3" fill="#c6ff45" opacity=".44"/><circle cx="364" cy="116" r="4" fill="#79ffe7" opacity=".44"/><circle cx="446" cy="378" r="1" fill="#c6ff45" opacity=".44"/><circle cx="498" cy="118" r="2" fill="#79ffe7" opacity=".44"/><circle cx="368" cy="98" r="3" fill="#c6ff45" opacity=".44"/><circle cx="152" cy="202" r="4" fill="#79ffe7" opacity=".44"/><ellipse cx="256" cy="415" rx="155" ry="25" fill="#79ffe7" opacity=".24" filter="url(#sceneGlow)"/><g filter="url(#characterDepth)"><svg x="58" y="74" width="396" height="396" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Gravebyte | Gravewave Neon Nuisances</title>
+<desc id="desc">A cyberpunk skeleton DJ with huge headphones, acid-green audio-reactive eyes, hot pink circuitry, a metal skull, glowing ribs, mechanical arms and a tiny turntable badge.</desc>
+<defs>
+ <linearGradient id="metal" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#615477"/><stop offset=".45" stop-color="#30283c"/><stop offset="1" stop-color="#151525"/></linearGradient>
+ <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9ffff"/><stop offset=".5" stop-color="#94c4c9"/><stop offset="1" stop-color="#76829e"/></linearGradient>
+ <linearGradient id="led" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ecff91"/><stop offset="1" stop-color="#7cec2b"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4.5"/></filter>
+</defs>
+<ellipse cx="64" cy="118" rx="38" ry="5" fill="#fc4ca8" opacity=".27"/>
+<circle cx="64" cy="65" r="49" fill="#fc4ca8" opacity=".2" filter="url(#halo)"/>
+<g id="sparks" fill="#c6ff45"><path d="m15 34 4-8 4 8-4 8ZM107 21l4-8 4 8-4 8Z"/><circle cx="14" cy="92" r="2.5" fill="#ff55d8"/><circle cx="116" cy="89" r="3" fill="#fc4ca8"/></g>
+<g id="mascot" stroke-linejoin="round" stroke-linecap="round">
+ <!-- compact robotic torso and hinged bony arms -->
+ <path d="M35 92Q24 88 20 104l11 8 13-10M93 92q12-5 16 13l-11 8-15-10" fill="url(#metal)" stroke="#11131e" stroke-width="4"/>
+ <path d="M20 104l-9 8m98-7 10 7" stroke="#c6ff45" stroke-width="4"/>
+ <circle cx="19" cy="104" r="4" fill="#ff55d8"/><circle cx="109" cy="105" r="4" fill="#ff55d8"/>
+ <path d="M43 85H85l12 26-15 12H46l-15-12Z" fill="url(#metal)" stroke="#11131e" stroke-width="4.5"/>
+ <path d="M49 94q15-7 30 0l-1 18q-14 9-29-1Z" fill="#101620" stroke="#fc4ca8" stroke-width="2.6"/>
+ <path d="M54 96v15m9-18v23m10-20v15M50 103h28" fill="none" stroke="#c6ff45" stroke-width="2.7"/>
+ <circle cx="64" cy="106" r="6" fill="#18121e" stroke="#ff55d8" stroke-width="2.5"/><circle cx="64" cy="106" r="2" fill="#fff"/>
+ <!-- Audio cable, headphones and skull frame -->
+ <path d="M32 54Q28 18 64 16Q100 18 96 54" fill="none" stroke="#13131e" stroke-width="13"/>
+ <path d="M32 53Q29 18 64 19Q99 18 96 53" fill="none" stroke="#c6ff45" stroke-width="4"/>
+ <path d="M31 48V39m66 9V39" stroke="#ff55d8" stroke-width="6"/>
+ <path d="M36 41Q29 42 28 52v21q0 10 10 11l8-6V46Z" fill="#151520" stroke="#c6ff45" stroke-width="3.5"/>
+ <path d="M92 41q7 1 8 11v21q-1 10-10 11l-8-6V46Z" fill="#151520" stroke="#c6ff45" stroke-width="3.5"/>
+ <path d="M32 48v27m64-27v27" stroke="#fc4ca8" stroke-width="3"/>
+ <!-- Skull with panel seams -->
+ <path d="M40 35Q64 27 88 35q10 10 8 29l-5 16-10 8H47L37 78l-5-16q-1-19 8-27Z" fill="url(#metal)" stroke="#11131e" stroke-width="4"/>
+ <path d="M43 39q21-9 43 0" stroke="#aaa0bf" stroke-width="2" fill="none" opacity=".8"/>
+ <path d="m47 41 7-6h20l7 6" fill="none" stroke="#fc4ca8" stroke-width="2"/>
+ <path d="M43 53h42q6 0 6 7v13q0 8-7 8H44q-7 0-7-8V60q0-7 6-7Z" fill="#090e19" stroke="#ff55d8" stroke-width="3"/>
+ <g id="eyes" fill="url(#led)">
+ <path d="M43 66l5-7 7 8-7 3Z"/><path d="m73 67 7-8 5 7-5 4Z"/>
+ <path d="M60 60h7v3h-7Zm0 5h7v3h-7Zm0 5h7v3h-7Z" fill="#fc4ca8"/>
+ </g>
+ <g id="blink-lids" opacity="0"><path d="M43 66h13m17 0h13" stroke="#c6ff45" stroke-width="3.5"/></g>
+ <g id="wink" opacity="0"><path d="M72 66h14" stroke="#c6ff45" stroke-width="4.5"/></g>
+ <path d="M53 79h22l-3 11-9 4-9-4Z" fill="url(#chrome)" stroke="#15131f" stroke-width="2.8"/>
+ <path d="M57 83v7m6-8v11m6-10v7" stroke="#222239" stroke-width="2"/>
+ <path d="M46 87l-2 9m40-9 2 9" stroke="#fc4ca8" stroke-width="2.5"/>
+ <circle cx="41" cy="78" r="2.7" fill="#c6ff45"/><circle cx="87" cy="78" r="2.7" fill="#c6ff45"/>
+ <path d="M55 25 60 11h8l5 14" fill="url(#chrome)" stroke="#17131e" stroke-width="3"/>
+ <circle cx="64" cy="11" r="3.2" fill="#ff55d8"/>
+</g>
+</svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#79ffe7" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#79ffe7" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#79ffe7">GRAVEBYTE</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg>
