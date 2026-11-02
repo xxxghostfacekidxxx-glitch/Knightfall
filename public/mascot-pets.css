@@ -83,3 +83,5 @@
 .pet-habitat-controls .pet-quest-button,.pet-habitat-controls>button{justify-self:stretch;cursor:pointer;border:1px solid #79ffe7;border-radius:9px;padding:9px;background:#141c29;color:#79ffe7;font-weight:800}
 @media(max-width:550px){.pet-quest-grid,.pet-egg-grid{grid-template-columns:1fr}.pet-habitat-controls .pet-equip-row{grid-template-columns:45px minmax(0,1fr)}.pet-art>img.pet-habitat-decor{width:114px;height:114px}}
 @media(prefers-reduced-motion:reduce){.pet-quest-button{transition:none}}
+
+.pet-egg-icon{width:84px;height:84px;flex:0 0 84px;display:flex;align-items:center;justify-content:center}.pet-egg-icon img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 12px #ff55d855)}.pet-egg-workshop img.pet-egg-craft-preview{width:105px;height:105px;object-fit:contain;justify-self:center;filter:drop-shadow(0 0 15px #c6ff4565)}
