@@ -37,8 +37,8 @@ test("CanvasFX parses and runs standalone without dependencies",()=>{
  fx.impact(10,10);assert.equal(fx.particles.length,0,"reduced motion must suppress effects");
 });
 
-test("four original canvas games load CanvasFX before their game scripts",()=>{
- const routes=["cinder-drift","cinder-lander","particle-panic","cinder-crossing"];
+test("five original canvas games load CanvasFX before their game scripts",()=>{
+ const routes=["cinder-drift","cinder-lander","particle-panic","cinder-crossing","space-fighter"];
  for(const slug of routes){
   const html=read(root+slug+"/index.html");
   const fx=html.indexOf('src="/arcade/canvas-fx.js?v=20261102-2"');
