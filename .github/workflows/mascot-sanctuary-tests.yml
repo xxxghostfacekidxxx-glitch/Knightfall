@@ -7,6 +7,10 @@ on:
       - 'backend/src/mascot-pets.test.mjs'
       - 'backend/src/index.js'
       - 'backend/migrations/0103_mascot_pets.sql'
+      - 'backend/migrations/0104_mascot_economy.sql'
+      - 'backend/src/mascot-collectibles.js'
+      - 'backend/src/member-shop-checkout.js'
+      - 'scripts/mascot-economy-sql.test.py'
       - 'public/mascot-pets.*'
       - 'public/profile-mascots.*'
       - 'public/assets/devil-tools/neon-nuisances/portraits/**'
@@ -24,10 +28,13 @@ jobs:
           node-version: '22'
       - name: Validate adoption rules, routes, ownership and privacy
         run: node --test backend/src/mascot-pets.test.mjs
+      - name: Validate atomic Cinders pet rescues and accessory ownership
+        run: python3 scripts/mascot-economy-sql.test.py
       - name: Confirm Worker and browser syntax
         run: |
           node --check backend/src/index.js
           node --check backend/src/mascot-pets.js
+          node --check backend/src/member-shop-checkout.js
           node --check public/mascot-pets.js
           node --check public/profile-mascots.js
       - name: Check original vector art
