@@ -67,7 +67,7 @@ const G = {
   player: null,
   enemies: [], pickups: [], projectiles: [], bombs: [], chests: [], npcs: [], shopItems: [],
   hp: 3, maxHp: 3, gems: 0, keys: 0,
-  inv: { sword: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 },
+  inv: { sword: false, emberblade: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 },
   equipped: null,            // 'bow' | 'bombs'
   flags: new Set(),
   visited: new Set(),
@@ -257,6 +257,7 @@ const G = {
     const apply = () => {
       switch (item) {
         case 'sword': this.inv.sword = true; break;
+        case 'emberblade': this.inv.sword = true; this.inv.emberblade = true; break;
         case 'bow': this.inv.bow = true; this.inv.arrows = Math.min(30, this.inv.arrows + 10); this.equipped = 'bow'; break;
         case 'lantern': this.inv.lantern = true; break;
         case 'bosskey': this.inv.bosskey = true; break;
@@ -268,9 +269,9 @@ const G = {
       this.save();
     };
     const textKey = 'get_' + item;
-    const big = ['sword', 'bow', 'lantern', 'bosskey', 'heartcont'].includes(item);
+    const big = ['sword', 'emberblade', 'bow', 'lantern', 'bosskey', 'heartcont'].includes(item);
     const sprKey = {
-      sword: 'it_sword', bow: 'it_bow', lantern: 'it_lantern', bosskey: 'it_bosskey',
+      sword: 'it_sword', emberblade: 'it_sword', bow: 'it_bow', lantern: 'it_lantern', bosskey: 'it_bosskey',
       heartcont: 'it_heartcont', key: 'key', gems: 'gem_big', bombs: 'bomb_pickup', crown: 'it_crown'
     }[item];
     this.itemGetData = { item, spr: sprKey, t: 0, textKey, applied: false, apply, big };
@@ -304,7 +305,7 @@ const G = {
     this.flags = new Set();
     this.visited = new Set();
     this.hp = 3; this.maxHp = 3; this.gems = 0; this.keys = 0;
-    this.inv = { sword: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 };
+    this.inv = { sword: false, emberblade: false, bow: false, lantern: false, bosskey: false, crown: false, bombs: 0, maxBombs: 0, arrows: 0 };
     this.equipped = null;
     this.stats = { time: 0, deaths: 0, kills: 0 };
     this.player = new Player();
@@ -360,8 +361,8 @@ function updatePlay() {
     for (const e of G.enemies) {
       if (e.dead) continue;
       if (overlap(hb.x, hb.y, hb.w, hb.h, e.x + e.hx, e.y + e.hy, e.hw, e.hh)) {
-        if (e instanceof Boss) e.hurt(1, p.cx, p.cy, 'sword');
-        else { if (e.hurt(1, p.cx, p.cy)) G.stats.kills++; }
+        if (e instanceof Boss) e.hurt(G.inv.emberblade ? 2 : 1, p.cx, p.cy, 'sword');
+        else { if (e.hurt(G.inv.emberblade ? 2 : 1, p.cx, p.cy)) G.stats.kills++; }
       }
     }
     // cut bushes
@@ -440,7 +441,7 @@ function updatePlay() {
   // (handled via warp tiles at row 10)
 
   // screen edge transitions
-  if (G.map === 'overworld' || G.map === 'dungeon') {
+  if (MAPS[G.map]) {
     const M = MAPS[G.map];
     let dir = null;
     if (p.x + p.hx < 1 && Input.left) dir = 'w';
@@ -739,6 +740,7 @@ function renderHUD() {
 
   // weapon boxes
   drawSlot(ctx, 108, 8, 'Z', G.inv.sword ? 'it_sword' : null);
+  if (G.inv.emberblade) FONT.draw(ctx, 'FIRE', 110, 35, '#ff924a');
   const itemSpr = G.equipped === 'bow' ? 'it_bow' : G.equipped === 'bombs' ? 'bomb_pickup' : null;
   drawSlot(ctx, 134, 8, 'X', itemSpr);
 
@@ -789,11 +791,13 @@ function heartShape(c, x, y, col) {
 }
 
 function renderMinimap() {
-  const M = MAPS[G.map === 'dungeon' ? 'dungeon' : 'overworld'];
-  const mapName = G.map === 'dungeon' ? 'dungeon' : 'overworld';
-  const cw = G.map === 'dungeon' ? 8 : 7, chh = G.map === 'dungeon' ? 7 : 6;
+  const dungeonMap = G.map === 'dungeon' || G.map === 'emberkeep';
+  const mapName = MAPS[G.map] ? G.map : 'overworld';
+  const M = MAPS[mapName];
+  const cw = dungeonMap ? 8 : 6, chh = dungeonMap ? 7 : 6;
   const ox = 256 - M.w * cw - 8, oy = 10;
-  FONT.draw(ctx, G.map === 'dungeon' ? 'RUINS' : 'EMBERVALE', ox + (M.w * cw) / 2 - FONT.width(G.map === 'dungeon' ? 'RUINS' : 'EMBERVALE') / 2, 3, '#8a96b0');
+  const mapLabel = G.map === 'emberkeep' ? 'CINDER KEEP' : G.map === 'dungeon' ? 'RUINS' : 'EMBERVALE';
+  FONT.draw(ctx, mapLabel, ox + (M.w * cw) / 2 - FONT.width(mapLabel) / 2, 3, '#8a96b0');
   for (let j = 0; j < M.h; j++) {
     for (let i = 0; i < M.w; i++) {
       if (!getScreenDef(mapName, i, j)) continue;
@@ -802,10 +806,10 @@ function renderMinimap() {
       ctx.fillRect(ox + i * cw, oy + j * chh, cw - 1, chh - 1);
     }
   }
-  if (G.map === mapName || (G.map !== 'dungeon' && mapName === 'overworld')) {
+  if (G.map === mapName || (!MAPS[G.map] && mapName === 'overworld')) {
     // blink player position (interiors show overworld pos)
     let px = G.sx, py = G.sy;
-    if (G.map !== 'overworld' && G.map !== 'dungeon') { px = 1; py = 2; }
+    if (!MAPS[G.map]) { px = 1; py = 2; }
     if ((G.animT >> 4) % 2 === 0) {
       ctx.fillStyle = '#f2cf4a';
       ctx.fillRect(ox + px * cw + 2, oy + py * chh + 1, cw - 5, chh - 3);
@@ -1045,6 +1049,7 @@ function updatePause() {
 
 function pauseItems() {
   const list = [];
+  if (G.inv.emberblade) list.push({ spr: 'it_sword', label: 'EMBER BLADE', equip: null });
   if (G.inv.bow) list.push({ spr: 'it_bow', label: 'FERN BOW', equip: 'bow' });
   if (G.inv.maxBombs > 0) list.push({ spr: 'bomb_pickup', label: 'BOMBS', equip: 'bombs' });
   if (G.inv.lantern) list.push({ spr: 'it_lantern', label: 'LANTERN', equip: null });
@@ -1064,7 +1069,7 @@ function renderPause() {
     FONT5.draw(ctx, 'NOTHING YET...', 128 - FONT5.width('NOTHING YET...') / 2, 80, '#8a96b0');
   }
   items.forEach((it, i) => {
-    const x = 40 + i * 48, y = 60;
+    const x = 40 + i * 41, y = 60;
     ctx.fillStyle = i === G.pauseCursor ? '#3e4a66' : '#1c2230';
     ctx.fillRect(x - 4, y - 4, 26, 26);
     if (i === G.pauseCursor && (G.animT >> 3) % 2 === 0) {
@@ -1087,6 +1092,7 @@ function renderPause() {
   else if (!G.inv.bow) hint = 'A ROYAL BEAST GUARDS THE BOW';
   else if (!G.inv.bosskey) hint = 'FIND THE GLOOM KEY IN THE EAST WING';
   else if (!G.inv.crown) hint = 'FACE THE GLOOM KNIGHT';
+  else if (!G.flags.has('cinderwarden_defeated')) hint = 'EASTERN ROAD: CINDER KEEP';
   else hint = 'EMBERVALE IS SAVED!';
   FONT5.draw(ctx, hint, 128 - FONT5.width(hint) / 2, 128, '#5ad8e8');
 

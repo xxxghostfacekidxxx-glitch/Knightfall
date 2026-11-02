@@ -819,7 +819,7 @@ const MAPS = {
 };
 
 function getScreenDef(map, sx, sy) {
-  if (map === 'overworld' || map === 'dungeon') return MAPS[map].grid[sx + ',' + sy] || null;
+  if (MAPS[map]) return MAPS[map].grid[sx + ',' + sy] || null;
   return INTERIORS[map] || null;
 }
 

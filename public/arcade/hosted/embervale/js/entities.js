@@ -193,7 +193,7 @@ class Player {
     const t = this.attackT;
     const ext = t > 12 ? 4 : (t > 4 ? 13 : 7);
     const px = Math.round(this.x), py = Math.round(this.y);
-    ctx.fillStyle = '#e8eef4';
+    ctx.fillStyle = G.inv.emberblade ? '#ff773c' : '#e8eef4';
     const hilt = '#b8902a';
     switch (this.facing) {
       case 'd':
@@ -668,6 +668,9 @@ function makeEnemy(type, tx, ty) {
     case 'ghost': return new Ghost(tx, ty);
     case 'bigslime': return new BigSlime(tx, ty);
     case 'boss': return new Boss(tx, ty);
+    case 'emberwisp': return new EmberWisp(tx, ty);
+    case 'stoneguard': return new StoneGuard(tx, ty);
+    case 'cinderwarden': return new CinderWarden(tx, ty);
   }
   return null;
 }
