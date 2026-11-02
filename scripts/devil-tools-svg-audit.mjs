@@ -15,6 +15,9 @@ const SOURCE_DIRS = [
   'public/assets/arcade',
   'public/assets/monster-sprites',
   'public/assets/miss-chaos',
+  'public/icons',
+  'public/branding',
+  'public/admin-offline',
   'public/arcade/hosted/crypt-pairs/sprites',
 ];
 const flags = new Set(process.argv.slice(2));
@@ -54,14 +57,18 @@ function analyze(file) {
   if (!gradients) notes.push('no-gradient-depth-review-visually');
   const ids = [...svg.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
   if (new Set(ids).size !== ids.length) problems.push('duplicate-svg-ids');
-  const category = file.includes('/neon-nuisances/') ? 'mascot'
+  const category = file.includes('/icons/choices/') ? 'choice-icon'
+    : file.startsWith('public/icons/') ? 'app-icon'
+    : file.startsWith('public/branding/') ? 'branding'
+    : file.startsWith('public/admin-offline/') ? 'admin-icon'
+    : file.includes('/neon-nuisances/') ? 'mascot'
     : file.includes('/gravewave/') ? 'arcade-effect'
     : file.includes('/monster-sprites/') ? 'monster-sprite'
     : file.includes('/sprites/') ? 'game-mirror'
     : file.includes('/miss-chaos/') ? 'ai-art'
     : file.includes('/arcade/') ? 'arcade-art' : 'other';
   const hash = crypto.createHash('sha256').update(svg).digest('hex').slice(0, 20);
-  const priorities = { 'arcade-effect': 2, 'monster-sprite': 3, 'mascot': 4, 'game-mirror': 5, 'arcade-art': 6, 'ai-art': 6, other: 7 };
+  const priorities = { 'arcade-effect': 2, 'monster-sprite': 3, 'choice-icon': 3, 'app-icon': 3, 'admin-icon': 3, 'mascot': 4, 'game-mirror': 5, 'arcade-art': 6, 'ai-art': 6, branding: 6, other: 7 };
   const priority = problems.length ? 0 : (notes.length ? priorities[category] : 9);
   return { file, category, priority, bytes: Buffer.byteLength(svg), hash, title, description, viewBox,
     shapes, paths, gradients, animated, problems, notes };
