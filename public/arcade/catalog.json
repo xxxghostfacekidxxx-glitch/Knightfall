@@ -2039,6 +2039,19 @@
       "notes": "",
       "links": [],
       "featured": true
+    },
+    {
+      "id": "neon-surge",
+      "title": "Neon Surge",
+      "route": "/arcade/hosted/neon-surge/index.html",
+      "description": "A spectacular neon twin-stick shooter with a warping 3D grid, bosses, combo scoring, power-ups, dash attacks and bombs.",
+      "genre": "Shooter",
+      "collection": "games",
+      "device": "touch",
+      "source": "https://github.com/nnnnnnnnnke/neon-surge",
+      "notes": "Independent MIT-licensed game. WebGL2 and internet access are currently required for its Three.js CDN.",
+      "links": [],
+      "featured": true
     }
   ],
   "retiredListings": [

@@ -188,6 +188,19 @@
         "/arcade/hosted/sanctuary-end/LICENSE",
         "/arcade/hosted/sanctuary-end/CREDITS.md"
       ]
+    },
+    {
+      "gameId": "cabinet-neon-surge",
+      "title": "Neon Surge",
+      "status": "imported",
+      "upstream": "https://github.com/nnnnnnnnnke/neon-surge",
+      "license": "MIT",
+      "notes": "Original MIT browser game, preserved LICENSE; Knightfall English localization. Three.js and fonts load from CDNs; not yet fully offline. Independent of the Geometry Wars franchise.",
+      "files": [
+        "/arcade/hosted/neon-surge/index.html",
+        "/arcade/hosted/neon-surge/LICENSE",
+        "/arcade/hosted/neon-surge/SOURCE.md"
+      ]
     }
   ],
   "notYetImported": [
@@ -761,5 +774,5 @@
       ]
     }
   ],
-  "auditUpdatedAt": "2026-10-25"
+  "auditUpdatedAt": "2026-11-02"
 }
