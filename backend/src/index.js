@@ -5,6 +5,7 @@ import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
+import { handleMascotPets } from "./mascot-pets.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
@@ -877,6 +878,12 @@ export default { async queue(batch, env) {
   if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
+
+  // Mascot pets: authenticated and privacy-aware D1-backed profile companions.
+  if(url.pathname.startsWith("/api/mascot-pets")){
+   const petResponse=await handleMascotPets(request,env,url,{getUser,json,rateLimit,origin});
+   if(petResponse)return petResponse;
+  }
 
   // Member safety controls: reports and blocks are private to the acting account.
   if(url.pathname==="/api/social/blocks"&&(request.method==="GET"||request.method==="POST")){
