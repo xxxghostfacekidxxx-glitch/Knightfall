@@ -4,11 +4,12 @@ if(window.__gravewaveTakeoverLoaded)return;
 window.__gravewaveTakeoverLoaded=true;
 const base='/assets/devil-tools/neon-nuisances/';
 const names=['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun','gravebyte','statichex','rattlepop','thornriot','minion-mouse','mini-villain','mini-eddie','gutterkit','chunky-monkey','boo-thang'];
-const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg?v=20261102-mascot5';
+const src=i=>base+names[((i%names.length)+names.length)%names.length]+'.svg?v=20261102-mascot6';
 // Rotate fixed-size mascot groups without losing the existing cast or covering mobile controls.
 const home=/^\/(?:index\.html)?$/.test(location.pathname);
 const pageSeed=Array.from(location.pathname).reduce((n,ch)=>n+ch.charCodeAt(0),0);
-const crewGroups=[[12,13,14,16,17,4],[4,8,16,17,14,15],[12,13,14,4,8,15]];
+// Keep Gillrot and Nocturnib in the first two slots on the homepage. Mobile shows the first four mascots only.
+const crewGroups=[[1,3,12,13,14,16],[4,8,16,17,1,3],[12,13,14,1,3,15]];
 const crewGroup=crewGroups[home?0:1+pageSeed%2];
 const excluded=/\/(?:checkout|payment|vault|settings)/i.test(location.pathname);
 const privateForm=/\/(?:messages|account|login|register|reset-password|auth)/i.test(location.pathname);
@@ -24,7 +25,7 @@ function mount(){
  document.body.classList.add('gravewave-everywhere');
  if(!document.querySelector('.gw-ambient')&&!excluded){
   const ambient=document.createElement('div');ambient.className='gw-ambient';ambient.setAttribute('aria-hidden','true');
-  (home?[12,13,14]:[4,8,15]).forEach(i=>ambient.append(mascot(i,'')));
+  (home?[1,3,14]:[4,8,15]).forEach(i=>ambient.append(mascot(i,'')));
   document.body.prepend(ambient);
  }
  // Do not interfere with private forms, editors, or game canvases.
