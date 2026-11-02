@@ -7,7 +7,7 @@ test("eight original icon SVGs are accessible, square and standalone",async()=>{
  for(const id of icons){
   const svg=await readFile(new URL("icons/choices/"+id+".svg",root),"utf8");
   assert.match(svg,/<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 128 128"/);
-  assert.match(svg,/<title>[^<]+<\/title>/);
+  assert.match(svg,/<title\b[^>]*>[^<]+<\/title>/);
   assert.match(svg,/<\/svg>$/);
   assert.ok(!/<script|onload=|href="https?:/i.test(svg));
  }
