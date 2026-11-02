@@ -57,3 +57,15 @@ body:has(canvas) .gw-character-crew,
 body:has(canvas) .gw-ambient,
 body:has(canvas) .gw-panel-mascot{display:none!important}
 body.gravewave-everywhere:has(canvas)::after{display:none!important}
+
+/* Responsive mascot ensemble: six on desktop; four featured on mobile.
+   The existing dialog, form-focus, and active-canvas safeguards still apply. */
+@media (min-width:681px){
+  .gw-character-crew:has(.gw-crew-member:nth-child(6)){max-width:min(56vw,440px)}
+  .gw-character-crew:has(.gw-crew-member:nth-child(6)) .gw-crew-member{width:clamp(55px,5.5vw,76px);height:clamp(66px,7vw,94px)}
+  .gw-crew-member:nth-child(5){animation-delay:-4.4s}
+  .gw-crew-member:nth-child(6){animation-delay:-5.6s}
+}
+@media (max-width:680px){
+  .gw-character-crew .gw-crew-member:nth-child(n+5){display:none}
+}
