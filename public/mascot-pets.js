@@ -7,7 +7,7 @@ if(!owned||!adopt||!message||!slots)return;
 let species=[],pets=[],signedIn=false,working=false,max=6;
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=(text)=>{message.textContent=String(text)};
-const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/.test(src)?src:'';
+const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/)?[a-z0-9-]+\.svg$/.test(src)?src:'';
 async function api(path,options={}){
  const response=await fetch(API+path,{credentials:'include',cache:'no-store',...options,headers:{'content-type':'application/json',...(options.headers||{})}});
  const data=await response.json().catch(()=>({}));
