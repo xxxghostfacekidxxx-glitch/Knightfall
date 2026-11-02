@@ -1,25 +1,13 @@
 {
-  "generatedAt": "2026-11-02T09:40:44.040Z",
-  "reportsFound": 20,
-  "catalogRoutes": 141,
+  "generatedAt": "2026-11-02T09:50:34.561Z",
+  "reportsFound": 10,
+  "catalogRoutes": 140,
   "targets": {
     "live": {
       "reports": 10,
       "expectedShards": 10,
-      "expectedRoutes": 141,
-      "coveredRoutes": 141,
-      "missingShards": [],
-      "duplicatedShards": [],
-      "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
-    },
-    "local": {
-      "reports": 10,
-      "expectedShards": 10,
-      "expectedRoutes": 141,
-      "coveredRoutes": 141,
+      "expectedRoutes": 140,
+      "coveredRoutes": 140,
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
@@ -28,6 +16,6 @@
       "coverageOk": true
     }
   },
-  "passed": true,
-  "sourceRunId": 41421941303
+  "passed": false,
+  "sourceRunId": 41423128272
 }
