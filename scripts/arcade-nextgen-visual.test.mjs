@@ -29,7 +29,11 @@ test("all original game pages use one versioned visual layer without losing game
  assert.ok(unique.size>=90);
 });
 test("cartridge and classic arcade hubs receive matching visual styles",()=>{
- for(const path of ["public/chaos-cartridge.html","public/arcade-games.html","public/arcade-originals.html","public/arcade-card-board.html"]){
+ for(const path of ["public/arcade-games.html","public/arcade-originals.html","public/arcade-card-board.html"]){
   const html=read(path);assert.match(html,/\/arcade\/nextgen\.css\?v=20261102-1/);assert.match(html,/\/arcade\/nextgen\.js\?v=20261102-1/)
  }
+ const directory=read("public/chaos-cartridge.html"),loader=read("public/arcade-catalog.js");
+ assert.match(directory,/arcade-catalog\.js/);
+ assert.match(loader,/\/arcade\/nextgen\.css\?v=20261102-1/);
+ assert.match(loader,/\/arcade\/nextgen\.js\?v=20261102-1/);
 });
