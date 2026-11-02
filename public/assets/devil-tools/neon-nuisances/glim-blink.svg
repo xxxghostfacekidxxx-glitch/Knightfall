@@ -1,1 +1,42 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="ghost original neon mascot"><title>ghost neon mascot</title><defs><filter id="halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs><style>@media(prefers-reduced-motion:no-preference){#mascot{transform-origin:64px 85px}@keyframes a{0%,8%,12%,100%{opacity:0}9%,11%{opacity:1}}#extra{animation:a 4s steps(1,end) infinite}}}</style><g id="mascot"><ellipse cx="64" cy="113" rx="34" ry="5" fill="#79ffba" opacity=".3"/><circle cx="64" cy="64" r="48" fill="#79ffba" opacity=".13" filter="url(#halo)"/><path d="M33 81 30 109 46 101 60 111 75 101 91 109 95 81" fill="#e6faff" stroke="#15101f" stroke-width="3.5" stroke-linejoin="round"/><path d="M20 46 26 41M104 46 110 40" stroke="#79ffba" stroke-width="5" stroke-linecap="round"/><path d="M30 60 Q30 35 64 34 Q98 35 98 60 L98 84 Q95 102 64 103 Q33 102 30 84Z" fill="#e6faff" stroke="#15101f" stroke-width="3.5" stroke-linejoin="round"/><ellipse cx="64" cy="92" rx="18" ry="8" fill="#fff" opacity=".14"/><ellipse cx="50" cy="61" rx="5" ry="7" fill="#15101f"/><ellipse cx="78" cy="61" rx="5" ry="7" fill="#15101f"/><circle cx="51" cy="58" r="2" fill="#fff"/><circle cx="79" cy="58" r="2" fill="#fff"/><path d="M59 75 Q64 80 69 75" fill="none" stroke="#15101f" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="40" cy="73" rx="7" ry="3.5" fill="#79ffba" opacity=".7"/><ellipse cx="88" cy="73" rx="7" ry="3.5" fill="#79ffba" opacity=".7"/><path d="M54 89Q64 96 74 89" stroke="#79ffba" stroke-width="3" fill="none" stroke-linecap="round"/><g id="extra" opacity="0"><path d="M44 61h12m16 0h12" stroke="#15101f" stroke-width="5" stroke-linecap="round"/></g><g aria-hidden="true"><path d="M48 83Q64 75 80 83L76 99Q64 105 52 99Z" fill="#13121d"/><path d="M55 83v15M64 80v22M73 83v15M49 90h30" stroke="#e9f4e6" stroke-width="3"/><path d="M35 45 44 28 50 39 60 23 67 38 80 24 88 44" fill="#15101f" stroke="#79ffba" stroke-width="2.5"/><path d="M42 78h9l-4 8zM77 78h9l-4 8z" fill="#f3f6e6"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Cryptglow | Gravewave Neon Nuisances</title>
+<desc id="desc">A luminous punk ghost with flowing spectral tails, translucent ectoplasm, mint-green skeletal ribs, broken-chain choker, jagged dark fringe, glowing eyes and a mischievous fang grin.</desc>
+<defs>
+ <linearGradient id="ectoplasm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".4" stop-color="#cefcff"/><stop offset=".75" stop-color="#92e6d4"/><stop offset="1" stop-color="#6c9dcc"/></linearGradient>
+ <linearGradient id="mist" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#d3fff5"/><stop offset="1" stop-color="#6c50bc"/></linearGradient>
+ <linearGradient id="soul" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#c6ff45"/><stop offset="1" stop-color="#39fbc3"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="64" cy="116" rx="35" ry="5" fill="#79ffba" opacity=".3"/>
+<circle cx="64" cy="66" r="49" fill="#79ffba" opacity=".2" filter="url(#halo)"/>
+<g id="wisps" fill="none" stroke-linecap="round">
+ <path d="M17 44q-10-6-5-13m100 5q13-3 10-13M13 92q-8 5-7 13" stroke="#76ffe0" stroke-width="3"/>
+ <path d="m20 22 3-8 3 8-3 8zM106 16l3-7 3 7-3 7z" fill="#ff55d8" stroke="none"/>
+ <circle cx="16" cy="69" r="3" fill="#c6ff45" stroke="none"/><circle cx="117" cy="91" r="3" fill="#ff55d8" stroke="none"/>
+</g>
+<g id="mascot">
+ <!-- Transparent ectoplasmic tail curls behind the specter -->
+ <path d="M33 85q-9 11-14 24 14-8 25-4 6 8 17 13 5-14 17-11 13 1 30 11-6-15-11-30" fill="url(#mist)" opacity=".7" stroke="#222037" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M33 72Q29 37 64 30Q99 37 95 72L100 94Q99 109 110 119q-22-5-33-15-13 17-24 15-10-11-23-5 9-18 4-26Z" fill="url(#ectoplasm)" stroke="#171626" stroke-width="3.4" stroke-linejoin="round"/>
+ <path d="M39 98q7 12 15 9m27-3q10 8 18 8" fill="none" stroke="#e8ffff" stroke-opacity=".8" stroke-width="2.2" stroke-linecap="round"/>
+ <!-- Exposed glowing bone cavity -->
+ <path d="M44 85q20-15 40-1l-3 21q-18 12-35-2Z" fill="#171825" stroke="#82ffd5" stroke-width="2.8"/>
+ <path d="M52 89q12-8 24 0M50 96q14 9 28 0M55 103q9 4 18 0M64 84v23" stroke="#baffc9" fill="none" stroke-width="3" stroke-linecap="round"/>
+ <path d="m35 47-9-6m69 6 9-6" stroke="#79ffba" stroke-width="4" stroke-linecap="round"/>
+ <!-- Ragged black punk fringe and tiny spectral crown -->
+ <path d="M33 50Q31 29 48 26L56 15l6 14 9-17 5 16 14-9-4 18q12 4 12 12l-13-7-7 11-9-8-11 10-9-12-14 8Z" fill="#191526" stroke="#8dffda" stroke-width="2.6" stroke-linejoin="round"/>
+ <path d="m49 32 11 8m21-10-7 11" stroke="#ff55d8" stroke-width="2.5" stroke-linecap="round"/>
+ <!-- Face -->
+ <g id="eyes"><path d="M42 64q8-12 19 0-8 14-19 0ZM69 64q10-12 19 0-9 14-19 0Z" fill="#201627"/><circle cx="53" cy="63" r="3" fill="#c6ff45"/><circle cx="80" cy="63" r="3" fill="#ff55d8"/><circle cx="54" cy="61" r="1.2" fill="#fff"/><circle cx="81" cy="61" r="1.2" fill="#fff"/></g>
+ <g id="blink-lids" opacity="0"><path d="M44 65q8 3 15 0M71 65q8 3 15 0" fill="none" stroke="#1c1b2b" stroke-width="4.2" stroke-linecap="round"/></g>
+ <g id="wink" opacity="0"><path d="M71 65q8 5 15-1" fill="none" stroke="#1a1626" stroke-width="4.6" stroke-linecap="round"/></g>
+ <path d="M44 56q8-6 16-1m11 0q8-5 16 1" fill="none" stroke="#201725" stroke-width="2.6" stroke-linecap="round"/>
+ <path d="M53 76q12 13 25 0l-4 10-6-3-4 6-5-6-4 2Z" fill="#1b1423" stroke="#191321" stroke-width="2"/>
+ <path d="m57 78 4 3 3-2 3 2 4-3" fill="none" stroke="#faffff" stroke-width="2" stroke-linejoin="round"/>
+ <ellipse cx="40" cy="74" rx="7" ry="3" fill="#ff55d8" opacity=".45"/><ellipse cx="90" cy="74" rx="7" ry="3" fill="#79ffba" opacity=".65"/>
+ <!-- Chain links and ghost piercing -->
+ <path d="M43 88q-5 4-8-2m12 6-4-4m36 4 4-4m3-4q4 4 7-2" stroke="#ff55d8" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+ <circle cx="94" cy="70" r="4.5" fill="none" stroke="#fc67d9" stroke-width="2.5"/>
+ <path d="m61 111 3-5 3 5-3 4Z" fill="#c6ff45" stroke="#1b1521" stroke-width="1.4"/>
+</g>
+<style>@media (prefers-reduced-motion: no-preference){#mascot{transform-box:fill-box;transform-origin:center}#eyes{animation:eyeopen 4.4s steps(1,end) infinite}#blink-lids{animation:eyeclose 4.4s steps(1,end) infinite}@keyframes eyeopen{0%,8%,12%,100%{opacity:1}9%,11%{opacity:0}}@keyframes eyeclose{0%,8%,12%,100%{opacity:0}9%,11%{opacity:1}}}</style></svg>
