@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 9,
+  "version": 10,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -149,8 +149,8 @@
     {
       "id": "statichex",
       "name": "Statichex",
-      "description": "Antenna-headed alien punk",
-      "type": "alien",
+      "description": "Statichex · cyberpunk alien troublemaker with charged antennae, neon visor eyes, acid highlights and cheek circuitry.",
+      "type": "cyber alien",
       "primary": "#6af9ed",
       "accent": "#f97aff",
       "svg": "/assets/devil-tools/neon-nuisances/statichex.svg",
@@ -159,37 +159,43 @@
         "blink": "/assets/devil-tools/neon-nuisances/statichex-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/statichex-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/statichex-mischief.svg"
-      }
+      },
+      "personality": "A fast-talking radio pirate obsessed with signal interference, arcade music and noisy machinery.",
+      "styleVersion": 10
     },
     {
       "id": "rattlepop",
       "name": "Rattlepop",
-      "description": "Candy-colored coffin ghoul",
-      "type": "coffin",
+      "description": "Rattlepop · lacquered candy-coffin ghoul with dripping neon paint, glowing rivets, engraved coffin armor and a serrated skeletal grin.",
+      "type": "coffin ghoul",
       "primary": "#ffb55b",
-      "accent": "#b4ff58",
+      "accent": "#c6ff45",
       "svg": "/assets/devil-tools/neon-nuisances/rattlepop.svg",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/rattlepop-idle.svg",
         "blink": "/assets/devil-tools/neon-nuisances/rattlepop-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/rattlepop-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/rattlepop-mischief.svg"
-      }
+      },
+      "personality": "Overdramatic and sweetly sinister. Keeps snacks in his coffin and treats every jump scare like a birthday surprise.",
+      "styleVersion": 10
     },
     {
       "id": "thornriot",
       "name": "Thornriot",
-      "description": "Thorny cyclops demon",
-      "type": "cyclops",
-      "primary": "#ff5c83",
-      "accent": "#a9ff45",
+      "description": "Thornriot · botanical cyclops demon with thorn crown, neon-pink armor, luminous layered iris, jagged scarred spikes and fang grin.",
+      "type": "thorn cyclops",
+      "primary": "#a9ff45",
+      "accent": "#ff5c83",
       "svg": "/assets/devil-tools/neon-nuisances/thornriot.svg",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/thornriot-idle.svg",
         "blink": "/assets/devil-tools/neon-nuisances/thornriot-blink.svg",
         "bounce": "/assets/devil-tools/neon-nuisances/thornriot-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/thornriot-mischief.svg"
-      }
+      },
+      "personality": "A stubborn garden of chaos, defensive but fiercely protective of smaller creatures.",
+      "styleVersion": 10
     },
     {
       "id": "volt-imp",
