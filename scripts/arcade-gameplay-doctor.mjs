@@ -29,9 +29,11 @@ const findings=[];
 for(const rule of rules){
  const file=path.join(root,rule.file);
  const source=await readFile(file,"utf8");
- if(source.includes(rule.good) && rule.good!==rule.bad)continue;
  if(rule.bad===rule.good)continue;
+ const goodMatches=source.split(rule.good).length-1;
  const matches=source.split(rule.bad).length-1;
+ if(goodMatches===1 && matches===0)continue;
+ if(goodMatches>0){findings.push({rule:rule.id,status:"manual-review",reason:"Ambiguous existing repair",goodMatches,matches});continue;}
  if(matches!==1){findings.push({rule:rule.id,status:"manual-review",matches});continue}
  if(apply)await writeFile(file,source.replace(rule.bad,rule.good));
  findings.push({rule:rule.id,status:apply?"repaired":"repair-available"});
