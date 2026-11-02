@@ -59,4 +59,4 @@ async function mount(){
 const observer=new MutationObserver(()=>{if(root.querySelector('.profile-top'))void mount()});
 observer.observe(root,{childList:true,subtree:false});
 void mount();
-})()
+})();
