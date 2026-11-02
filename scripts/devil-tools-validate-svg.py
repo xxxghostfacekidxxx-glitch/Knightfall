@@ -17,6 +17,9 @@ SEARCH = (
     "public/assets/arcade",
     "public/assets/monster-sprites",
     "public/assets/miss-chaos",
+    "public/icons",
+    "public/branding",
+    "public/admin-offline",
     "public/arcade/hosted/crypt-pairs/sprites",
 )
 SVG_NS = "http://www.w3.org/2000/svg"
