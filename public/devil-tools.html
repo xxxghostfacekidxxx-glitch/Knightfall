@@ -103,6 +103,20 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 }).catch(e=>{status.textContent='Mascot collection unavailable: '+e.message});
 })();
 </script>
+<link rel="stylesheet" href="/devil-tools-vector-gallery.css?v=20261102-overhaul1">
+<section class="panel" id="dt-vector-library" style="margin:1rem 0;border-color:#79ffe788">
+<h2>Visual Asset Library · Remastered SVG Icons, Sprites &amp; Artwork</h2>
+<p>Browse 39 original vector assets across Gravewave effects, monster sprites, arcade art, and Miss Chaos. All previews use first-party files, and every asset can be downloaded as an editable SVG. The Neon Nuisances mascot gallery above keeps its own animated previews.</p>
+<div class="dt-svg-controls">
+<label for="dt-svg-query">Find artwork</label>
+<input id="dt-svg-query" data-dt-search type="search" placeholder="Search icons, monsters or arcade assets" autocomplete="off">
+<label for="dt-svg-filter">Category</label>
+<select id="dt-svg-filter" data-dt-category><option value="all">All asset categories</option></select>
+</div>
+<p class="small" data-dt-status role="status">Loading original vector assets…</p>
+<div class="dt-gallery-grid" data-dt-gallery aria-label="Downloadable original vector graphics"></div>
+</section>
+<script src="/devil-tools-vector-gallery.js?v=20261102-overhaul1" defer></script>
 <section class="panel" id="original-creations" style="margin:1rem 0;border-color:#ff55d888">
 <h2>Original Creations · Game & Sprite Archive</h2>
 <p>First-party Knightfall games and their original artwork. Every entry links to its playable cabinet, editable SVG source assets, and GitHub implementation. New originals belong in <code>/arcade/original-creations.json</code>; legacy imports are not included.</p>
