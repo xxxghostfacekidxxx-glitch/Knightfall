@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 8,
+  "version": 9,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -234,29 +234,60 @@
     {
       "id": "minion-mouse",
       "name": "Minion Mouse",
-      "type": "neon mascot",
-      "primary": "#ff27ce",
-      "accent": "#c6ff45",
+      "type": "cyberpunk scavenger mouse",
+      "primary": "#c6ff45",
+      "accent": "#ff55d8",
       "svg": "/assets/devil-tools/neon-nuisances/minion-mouse.svg",
-      "variants": {}
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/minion-mouse-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/minion-mouse-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/minion-mouse-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/minion-mouse-mischief.svg"
+      },
+      "description": "Minion Mouse · scrappy gadget-hoarding mouse gremlin with enormous patchwork ears, scavenged goggles, battery backpack, spring-loaded tail and stitched boots.",
+      "personality": "Quick-witted, shamelessly curious, fiercely loyal to the crew. Steals broken tech and turns it into improbable inventions. Mischief: goggles wink as sparks fly.",
+      "role": "The scrapyard inventor",
+      "tagline": "If it beeps, I can steal it.",
+      "styleVersion": 9
     },
     {
       "id": "mini-villain",
       "name": "Mini Villain",
-      "type": "neon mascot",
-      "primary": "#ff27ce",
+      "type": "pocket-sized supervillain",
+      "primary": "#ff55d8",
       "accent": "#c6ff45",
       "svg": "/assets/devil-tools/neon-nuisances/mini-villain.svg",
-      "variants": {}
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/mini-villain-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/mini-villain-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/mini-villain-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/mini-villain-mischief.svg"
+      },
+      "description": "Mini Villain · theatrical tiny gothic tyrant in an enormous tattered magenta cape, towering asymmetric horns, high-collar armor and glowing acid-green scepter.",
+      "personality": "Magnificent in their own mind, hilariously overconfident and secretly protective of the smaller misfits. Mishap expert with a flair for dramatic entrances. Mischief: smug wink with crackling arcane sparks.",
+      "role": "The would-be overlord",
+      "tagline": "Kneel. Or don't. I'll remember.",
+      "styleVersion": 9
     },
     {
       "id": "mini-eddie",
-      "name": "Mini Eddie",
-      "type": "neon mascot",
-      "primary": "#ff27ce",
-      "accent": "#c6ff45",
+      "name": "The Eddie",
+      "type": "undead punk street guardian",
+      "primary": "#c6ff45",
+      "accent": "#ff55d8",
       "svg": "/assets/devil-tools/neon-nuisances/mini-eddie.svg",
-      "variants": {}
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/mini-eddie-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/mini-eddie-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/mini-eddie-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/mini-eddie-mischief.svg"
+      },
+      "legacyName": "Mini Eddie",
+      "description": "The Eddie · undead punk tough-guy with a towering neon-green mohawk, stitched face, mismatched eyes, ripped leather jacket, exposed ribs, heavy boots and serrated grin.",
+      "personality": "Defiant, chaotic and protective. The first into the pit and last to abandon a friend. Mischief: flashes his fanged grin and headbangs hard enough to shake the screen.",
+      "role": "The pit guardian",
+      "tagline": "Still standing. Still trouble.",
+      "styleVersion": 9
     },
     {
       "id": "gutterkit",
