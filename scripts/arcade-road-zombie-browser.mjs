@@ -99,5 +99,33 @@ await scenario("Not Dead Yet complete campaign, no boss softlock, persistent res
  assert.equal(await page.evaluate(()=>localStorage.getItem("af-zombie-campaign-checkpoint:v1")),null,"completed run clears checkpoint");
 });
 
+
+await scenario("Not Dead Yet simultaneous movement, shoot and manual touch aim",{width:390,height:844},async page=>{
+ await page.route("**/not-dead-yet.html",async route=>{
+  const response=await route.fetch(),html=await response.text(),mark="updateResumeButton();draw();";
+  assert.ok(html.includes(mark));
+  await route.fulfill({response,body:html.replace(mark,"window.__touchProbe=()=>({left:held.left,right:held.right,down:pointer.down,autoAim:pointer.autoAim});"+mark)});
+ });
+ await page.goto(base+"/not-dead-yet.html",{waitUntil:"domcontentloaded"});
+ await page.click("#start");
+ const state=()=>page.evaluate(()=>window.__touchProbe());
+ const event=(selector,type,id)=>page.locator(selector).evaluate((el,a)=>el.dispatchEvent(new PointerEvent(a.type,{bubbles:true,pointerId:a.id,pointerType:"touch",clientX:180,clientY:340})),{type,id});
+ await event('[data-hold="left"]',"pointerdown",101);
+ assert.equal((await state()).left,true);
+ await event("#touch-jump","pointerdown",102);
+ await event("#touch-jump","pointerup",102);
+ assert.equal((await state()).left,true,"releasing jump must not cancel held movement");
+ await event("#touch-fire","pointerdown",103);
+ let t=await state();assert.equal(t.down,true);assert.equal(t.autoAim,true);
+ await event('[data-hold="left"]',"pointerup",101);
+ t=await state();assert.equal(t.left,false);assert.equal(t.down,true,"releasing movement must not stop held fire");
+ await event("#touch-fire","pointerup",103);
+ assert.equal((await state()).down,false);
+ await event("#game","pointerdown",104);
+ assert.equal((await state()).autoAim,false,"tapping playfield must retain manual aim");
+ await event("#game","pointercancel",104);
+ assert.equal((await state()).down,false,"pointer cancel must stop firing");
+});
+
 await browser.close();
 if(failures.length){console.error(failures.join("\n"));process.exitCode=1}
