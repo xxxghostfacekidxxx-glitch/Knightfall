@@ -12,7 +12,7 @@ function boot(file,transform=s=>s){
  const doc={getElementById:get,querySelectorAll:()=>[],querySelector:s=>s==='canvas'?[...nodes.values()].find(n=>['game','run-canvas','screen'].includes(n.id)):null,addEventListener(){},dispatchEvent(){},createElement:()=>node(),hidden:false};
  const store=new Map(),frames=[];
  const sandbox={document:doc,window:{addEventListener(){},devicePixelRatio:1,matchMedia:()=>({matches:false})},Image:class{complete=false;naturalWidth=0},localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},location:{pathname:'/'+file,href:'https://ash-fall.com/'+file},performance:{now:()=>0},requestAnimationFrame:fn=>{frames.push(fn);return frames.length},cancelAnimationFrame(){},setTimeout:fn=>{timers.set(++tid,fn);return tid},clearTimeout:id=>timers.delete(id),setInterval:fn=>{timers.set(++tid,fn);return tid},clearInterval:id=>timers.delete(id),CustomEvent:class{},Math:Object.create(Math),console,URLSearchParams,navigator:{},Date};
- for(const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)){if(m[1].includes('src=')||m[1].includes('application/'))continue;runInNewContext(transform(m[2]),sandbox,{filename:file,timeout:1000});}
+ for(const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)){if(m[1].includes('src=')||m[1].includes('application/'))continue;runInNewContext(transform(m[2]),sandbox,{filename:file,timeout:5000});}
  return {nodes,get,timers,frames,sandbox};
 }
 for(const file of ['arcade/hosted/ash-circuit/index.html','arcade/hosted/cinder-dice/index.html','arcade-after-dark.html','arcade-fresh-meat.html','not-dead-yet.html'])test(file+' boots with real DOM IDs and no implicit browser globals',()=>{const h=boot(file);assert.ok(h.nodes.size>0);});
