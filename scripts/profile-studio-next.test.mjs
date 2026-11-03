@@ -15,8 +15,8 @@ test("Profile Studio 2 JavaScript and markup parse and retain all supported fiel
   assert.ok(html.includes('name="'+name+'"'),"Missing profile field "+name);
   assert.ok(backend.includes("body."+name),"API must accept "+name);
  }
- assert.match(html,/profile-studio-next\.js\?v=20261103-studio2/);
- assert.match(html,/profile-studio-next\.css\?v=20261103-studio2/);
+ assert.match(html,/profile-studio-next\.js\?v=20261103-studio3/);
+ assert.match(html,/profile-studio-next\.css\?v=20261103-studio3/);
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(new Set(ids).size,ids.length,"Duplicate profile editor IDs");
 });
