@@ -9,6 +9,7 @@ import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { botAccessPolicy } from "./bot-creator-access.js";
 import { handleMascotPets } from "./mascot-pets.js";
 import { handleMemberMemos } from "./member-memos.js";
+import { handleProfileFeaturedLinks } from "./profile-featured-links.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
@@ -911,6 +912,12 @@ export default { async queue(batch, env) {
   if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
+
+  // Profile featured links: privacy-aware reading and owner-scoped saving (migration 0113).
+  if(url.pathname==="/api/profile/links"){
+   const featuredResponse=await handleProfileFeaturedLinks(request,env,url,{getUser:requireUser,isModerator,rateLimit,json,origin});
+   if(featuredResponse)return featuredResponse;
+  }
 
   // Member Memo Mail stays separate from live DM conversations. D1 migration 0111.
   if(url.pathname==="/api/memo-mail"||/^\/api\/memo-mail\/\d+(?:\/read)?$/.test(url.pathname)){
