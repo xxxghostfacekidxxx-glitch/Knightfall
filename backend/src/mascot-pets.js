@@ -7,6 +7,7 @@ import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,petMarketPrice,petUnlockLevel
 import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
 import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
+import {handleMascotFurniture} from './mascot-furniture.js';
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -121,6 +122,8 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  if(passportResponse)return passportResponse;
  const roomResponse=await handleMascotRoom(request,env,url,user,{json,rateLimit,origin});
  if(roomResponse)return roomResponse;
+ const furnitureResponse=await handleMascotFurniture(request,env,url,user,{json,rateLimit,origin,petLevel});
+ if(furnitureResponse)return furnitureResponse;
  if(path==='/api/mascot-pets/me'&&request.method==='GET'){
   const [pets,bank,inventory]=await Promise.all([petsFor(env,user.id),walletFor(env,user),
     env.DB.prepare('SELECT sku,acquired_at FROM mascot_wardrobe WHERE user_id=? ORDER BY acquired_at DESC').bind(user.id).all()]);
