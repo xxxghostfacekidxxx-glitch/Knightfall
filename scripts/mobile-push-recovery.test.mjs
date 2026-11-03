@@ -105,7 +105,7 @@ test("multi-device queue sends concurrently and retries only the failed phone",(
   assert.match(backend,/delivery\.transient_endpoints\.push\(outcome\.endpoint\)/);
   assert.match(backend,/if\(!endpoint&&result\.accepted>0&&result\.transient_endpoints\?\.length\)/);
   assert.match(backend,/notification:job\.notification,endpoint:failedEndpoint/);
-  assert.match(backend,/const \{transient_endpoints:_internalRetryTargets,\.\.\.publicDelivery\}/);
+  assert.match(backend,/const \{transient_endpoints:_privateEndpoints,\.\.\.delivery\}=result/);
 });
 
 test("only signed-in accounts can inspect and repair their push registration",()=>{
@@ -116,4 +116,19 @@ test("only signed-in accounts can inspect and repair their push registration",()
   assert.match(getRoute,/const user=await requireUser\(request,env\)/);
   assert.match(getRoute,/if\(!user\)return json\(\{error:"Authentication required\."\},401,origin\)/);
   assert.match(getRoute,/WHERE user_id=\?/);
+});
+
+
+test("phone test has a short-lived receipt token only the subscribed worker can acknowledge",()=>{
+  assert.match(backend,/randomToken\(20\)/);
+  assert.match(backend,/push-receipt:"\+testId/);
+  assert.match(backend,/expirationTtl:300/);
+  assert.match(backend,/url\.pathname==="\/api\/push\/receipt"/);
+  assert.match(backend,/url\.pathname==="\/api\/push\/test-status"/);
+  assert.match(backend,/record\.user_id!==user\.id/);
+  assert.match(backend,/receiptToken\?\{receipt_token:receiptToken\}/);
+  assert.match(sw,/\/api\/push\/receipt/);
+  assert.match(sw,/stage:"received"|step of \["received",stage\]/);
+  assert.match(html,/\/api\/push\/test-status\?test_id=/);
+  assert.match(html,/Provider accepted, but this phone has NOT confirmed receipt/);
 });
