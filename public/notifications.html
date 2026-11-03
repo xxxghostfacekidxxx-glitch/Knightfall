@@ -219,7 +219,7 @@ document.querySelector("#test-push").addEventListener("click",async e=>{
   finally{button.disabled=false;}
 });
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
-  if(event.data?.type==="KF_PUSH_RECEIVED"&&Date.now()<pushTestPendingUntil){
+  if(event.data?.type==="KF_PUSH_RECEIVED"&&event.data?.tag==="ashfall-account-test"&&Date.now()<pushTestPendingUntil){
     pushTestReceipt=true;
     if(event.data.stage==="display-failed")
       setPushStatus("This phone received the push but its service worker failed to show a notification. Check Android system notification permissions.");
