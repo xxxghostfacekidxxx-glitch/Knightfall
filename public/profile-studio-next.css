@@ -155,3 +155,19 @@ body:has(#studio-appearance) .profile-shell h1,body:has(#studio-appearance) .pro
 .studio-photo-caption-actions{display:flex;gap:7px;flex-wrap:wrap}
 .studio-photo-caption-actions .studio-photo-button{flex:1 1 95px}
 @media(max-width:580px){.studio-photo-controls{grid-template-columns:1fr}.studio-photo-caption-edit{padding:7px;margin:0 6px 6px}.studio-photo-caption-actions{display:grid;grid-template-columns:1fr}}
+
+/* Native full-size studio photo viewer. Works as a top-layer modal on mobile. */
+.studio-photo-view-button{display:block;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in}
+.studio-photo-view-button img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .16s ease}
+.studio-photo-view-button:hover img{transform:scale(1.035)}
+.studio-photo-view-button:focus-visible{outline:3px solid #c6ff45;outline-offset:-3px}
+.studio-photo-viewer{position:fixed;margin:auto;inset:0;width:min(92vw,970px);max-width:970px;max-height:92dvh;overflow:auto;padding:0;background:#100f1d;color:#f9efff;border:1px solid #9b6cb3;border-radius:14px;box-shadow:0 22px 80px #000b}
+.studio-photo-viewer::backdrop{background:#040610e8;backdrop-filter:blur(8px)}
+.studio-photo-viewer-inner{display:grid;gap:0}
+.studio-photo-viewer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #71558d}
+.studio-photo-viewer-title{font-size:.9rem;line-height:1.5;color:#c6ff45;overflow-wrap:anywhere}
+.studio-photo-viewer-close{width:42px;height:42px;flex:0 0 42px;border-radius:10px;border:1px solid #866096;background:#23182e;color:#fff;font:900 1.5rem system-ui;cursor:pointer}
+.studio-photo-viewer-close:focus-visible{outline:2px solid #79ffe7;outline-offset:2px}
+.studio-photo-viewer-image{display:block;width:100%;height:auto;max-height:calc(92dvh - 67px);object-fit:contain;background:#090b12}
+@media(max-width:570px){.studio-photo-viewer{width:calc(100vw - 14px);max-height:90dvh;border-radius:10px}.studio-photo-viewer-image{max-height:calc(90dvh - 67px)}}
+@media(prefers-reduced-motion:reduce){.studio-photo-view-button img{transition:none}}
