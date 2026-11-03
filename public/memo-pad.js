@@ -13,7 +13,7 @@ const api=async(path,options={})=>{
 function mount(host,{compact=false}={}){
  if(!host||host.dataset.memoMounted)return null;host.dataset.memoMounted='true';host.classList.add('kf-memo-app');if(compact)host.classList.add('compact');
  host.replaceChildren();
- let notes=[],selected=null,dirty=false,saving=false,savePromise=null,saveTimer=0,lookupTimer=0,lookupToken=0,recipient='',recipientName='',isSignedIn=false,account='',rev=0,disposed=false;
+ let notes=[],selected=null,dirty=false,saving=false,savePromise=null,saveTimer=0,lookupTimer=0,lookupToken=0,recipient='',recipientName='',isSignedIn=false,account='',myUsername='',rev=0,disposed=false;
  const h=make('div','memo-heading'),title=make('h2','',compact?'📝 Memo Pad':'THE MEMO PAD'),subtitle=make('p','',compact?'Scratch it down. Send it when you mean it.':'Private notes for your Knightfall account. Quick-send any memo to another member.');
  h.append(title,subtitle);
  const bar=make('div','memo-toolbar'),newButton=make('button','memo-button primary','+ New'),saveButton=make('button','memo-button','Save memo'),refreshButton=make('button','memo-button subtle','↻ Refresh');
@@ -43,7 +43,7 @@ function mount(host,{compact=false}={}){
  auth.append(make('p','','Memo Pad saves private notes to your account and sends through the member inbox.'),signLink);
  host.append(h,bar,status,content,sendBox,auth);
  const say=(msg,err=false)=>{status.textContent=msg;status.dataset.error=err?'true':'false'};
- function updateSend(){const text=body.value.trim(),headline=noteTitle.value.trim()||'Untitled memo',full=headline+'\n\n'+text;
+ function updateSend(){const text=body.value.trim(),headline=noteTitle.value.trim()||'Untitled memo',full='📝 '+headline+'\n\n'+text;
   sendButton.disabled=!isSignedIn||!recipient||!text||full.length>LIMIT||saving;
   counter.textContent=body.value.length.toLocaleString()+' / 4,000 characters';
   if(text&&full.length>LIMIT)chosen.textContent='Shorten your memo: its title and body must total 4,000 characters to send.';
@@ -81,7 +81,7 @@ function mount(host,{compact=false}={}){
    }
    const uid=String(me.user.id||me.user.user_id||me.user.username||'member');
    if(account&&account!==uid){notes=[];selected=null;choose(null)}
-   account=uid;auth.hidden=true;content.hidden=false;bar.hidden=false;sendBox.hidden=false;
+   account=uid;myUsername=String(me.user.username||'').toLowerCase();auth.hidden=true;content.hidden=false;bar.hidden=false;sendBox.hidden=false;
    const data=await api('/api/memos');
    notes=Array.isArray(data.memos)?data.memos:[];
    const current=notes.find(m=>m.id===selected);
@@ -92,10 +92,10 @@ function mount(host,{compact=false}={}){
  async function commit(){
   clearTimeout(saveTimer);saveTimer=0;
   if(!isSignedIn)return false;
-  if(savePromise)return savePromise;
+  if(savePromise){const wasSaved=await savePromise;if(!wasSaved)return false;if(dirty)return commit();return true;}
   if(!dirty){say(selected?'All changes saved.':'Write a memo to save.');return true}
   const titleText=(noteTitle.value.trim()||'Untitled memo'),bodyText=body.value.trimEnd(),localRev=rev,id=selected;
-  if(!bodyText.trim()&&!titleText.trim()){say('Write something before saving.',true);return false}
+  if(!bodyText.trim()&&!noteTitle.value.trim()){say('Write something before saving.',true);return false}
   if(notes.length>=100&&!id){say('Memo limit is 100. Delete one before adding another.',true);return false}
   saving=true;saveButton.disabled=true;updateSend();say('Saving…');
   savePromise=(async()=>{
@@ -152,7 +152,7 @@ function mount(host,{compact=false}={}){
   lookupTimer=setTimeout(async()=>{
    try{const data=await api('/api/discover?q='+encodeURIComponent(q)+'&limit=16');
     if(token!==lookupToken)return;
-    renderMembers((data.users||[]).filter(u=>String(u.username||'').toLowerCase()!==String(account).toLowerCase()));
+    renderMembers((data.users||[]).filter(u=>String(u.username||'').toLowerCase()!==myUsername));
    }catch(e){if(token===lookupToken)results.replaceChildren(make('p','memo-empty',e.message||'Search unavailable'))}
   },300);
  });
@@ -162,6 +162,7 @@ function mount(host,{compact=false}={}){
   const outgoing='📝 '+titleText+'\n\n'+text;
   if(!text||outgoing.length>LIMIT){say('Memo and title must fit within 4,000 characters.',true);return}
   if(dirty&&!await commit())return;
+  if(dirty&&!await commit())return; // Flush edits made during the first in-flight autosave.
   sendButton.disabled=true;say('Sending to @'+name+'…');
   try{
    const convo=await api('/api/messages/conversations',{method:'POST',body:JSON.stringify({username:name})});
