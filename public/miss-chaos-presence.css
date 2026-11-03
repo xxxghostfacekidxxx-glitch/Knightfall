@@ -58,3 +58,61 @@
  #miss-chaos-launcher img{width:44px;height:44px}
  #miss-chaos-window{max-height:calc(100dvh - 95px - var(--mc-footer-clearance,0px))}
 }
+
+
+/* Gravewave floating controls v2026-11-03: less obstruction, memo companion and movable dock. */
+#miss-chaos-presence{--mc-pink:#ff55d8;--mc-green:#c6ff45;--mc-line:#6f437f;--mc-footer-clearance:0px;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));top:auto;left:auto;pointer-events:none;max-width:calc(100vw - 20px)}
+#miss-chaos-presence[hidden],#miss-chaos-presence [hidden]{display:none!important}
+#miss-chaos-presence #mc-dock{display:flex;align-items:center;justify-content:flex-end;gap:5px;width:max-content;max-width:calc(100vw - 20px);padding:5px;border:1px solid #ff55d855;border-radius:999px;background:#110d20e8;backdrop-filter:blur(12px);box-shadow:0 8px 27px #0009,0 0 18px #ff55d81d;pointer-events:auto}
+#miss-chaos-presence #miss-chaos-launcher{width:52px;height:52px;padding:3px;border-radius:50%;justify-content:center;border-color:#ff55d8b3;background:linear-gradient(140deg,#30203f,#161326);flex-shrink:0;box-shadow:0 0 13px #ff55d83d}
+#miss-chaos-presence #miss-chaos-launcher img{width:44px;height:44px;border:2px solid #ff55d8}
+#miss-chaos-presence #miss-chaos-launcher .mc-launch-copy{display:none!important}
+#miss-chaos-presence #miss-chaos-launcher .mc-status-dot{left:35px;top:35px;background:#c6ff45;border-color:#170c25;box-shadow:0 0 10px #c6ff4577}
+#miss-chaos-presence #mc-memo-toggle{height:46px;width:46px;display:inline-grid;place-items:center;font-size:1.35rem;border:1px solid #79ffe789;border-radius:50%;background:linear-gradient(145deg,#20343d,#12182b);color:#e7fff9;cursor:pointer}
+#miss-chaos-presence #mc-memo-toggle[aria-expanded="true"]{border-color:#c6ff45;background:#2b3b29;box-shadow:0 0 16px #c6ff4530}
+#miss-chaos-presence #mc-move,#miss-chaos-presence #mc-minimize,#miss-chaos-presence #mc-restore{display:inline-grid;place-items:center;border:1px solid #67477a;color:#ded2f0;background:#251b34;border-radius:50%;height:26px;width:26px;min-height:26px;min-width:26px;font:900 .94rem system-ui;cursor:pointer}
+#miss-chaos-presence #mc-move:hover,#miss-chaos-presence #mc-minimize:hover{border-color:#c6ff45}
+#miss-chaos-presence #mc-restore{height:34px;width:34px;border-color:#c6ff45;color:#c6ff45}
+#miss-chaos-presence[data-minimized="true"] #mc-dock>:not(#mc-restore){display:none!important}
+#miss-chaos-presence[data-minimized="true"] #mc-dock{padding:3px;border-color:#64456f}
+#miss-chaos-presence :is(button,a,input,select,textarea):focus-visible{outline:2px solid #c6ff45;outline-offset:3px}
+#miss-chaos-presence[data-dock="bl"],#miss-chaos-presence[data-dock="tl"]{right:auto!important;left:max(12px,env(safe-area-inset-left))!important}
+#miss-chaos-presence[data-dock="br"],#miss-chaos-presence[data-dock="tr"]{left:auto!important;right:max(12px,env(safe-area-inset-right))!important}
+#miss-chaos-presence[data-dock="tr"],#miss-chaos-presence[data-dock="tl"]{bottom:auto!important;top:max(12px,env(safe-area-inset-top))!important}
+#miss-chaos-presence[data-dock="br"],#miss-chaos-presence[data-dock="bl"]{top:auto!important;bottom:max(12px,env(safe-area-inset-bottom))!important}
+#miss-chaos-presence #miss-chaos-window,#miss-chaos-presence #mc-memo-panel{position:absolute;right:0;left:auto;top:auto;bottom:calc(100% + 10px);width:min(404px,calc(100vw - 24px));max-height:min(74dvh,650px);border:1px solid #8e50a2;border-radius:16px;box-shadow:0 16px 55px #000c,0 0 30px #ff55d820;background:linear-gradient(145deg,#1b1329,#0c0e19);pointer-events:auto;overflow:hidden}
+#miss-chaos-presence #miss-chaos-window{height:min(550px,calc(100dvh - 115px))}
+#miss-chaos-presence[data-dock="bl"] :is(#miss-chaos-window,#mc-memo-panel),
+#miss-chaos-presence[data-dock="tl"] :is(#miss-chaos-window,#mc-memo-panel){left:0;right:auto}
+#miss-chaos-presence[data-dock="tr"] :is(#miss-chaos-window,#mc-memo-panel),
+#miss-chaos-presence[data-dock="tl"] :is(#miss-chaos-window,#mc-memo-panel){bottom:auto;top:calc(100% + 10px);max-height:calc(100dvh - 95px)}
+#miss-chaos-presence #mc-memo-panel{display:flex;flex-direction:column;max-height:min(80dvh,710px)}
+#miss-chaos-presence .mc-memo-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid #ff55d850;background:linear-gradient(120deg,#ff55d81a,#79ffe70c)}
+#miss-chaos-presence .mc-memo-head strong{font-size:.91rem;color:#f8edff}
+#miss-chaos-presence .mc-memo-head>div{display:flex;gap:9px;align-items:center}
+#miss-chaos-presence .mc-memo-head a{font-size:.75rem;font-weight:900;text-decoration:none;color:#c6ff45}
+#miss-chaos-presence #mc-memo-close{height:30px;width:30px;border:1px solid #704c81;border-radius:8px;background:#1d162e;color:#fff;font-size:1.2rem;cursor:pointer}
+#miss-chaos-presence #mc-memo-host{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:11px}
+#miss-chaos-presence #mc-memo-host .kf-memo-app{font-size:12px}
+#miss-chaos-presence #mc-send{background:linear-gradient(125deg,#c6ff45,#79ffe7);color:#142016}
+#miss-chaos-presence #mc-input:focus{outline-color:#c6ff45}
+#miss-chaos-presence .mc-head{background:linear-gradient(125deg,#ff55d818,#161428)}
+#miss-chaos-presence .mc-head img{border-color:#ff55d8}
+#miss-chaos-presence #mc-mood{background:#1d1429;color:#d4c4df}
+body.zombie-immersive-open #miss-chaos-presence{display:none!important}
+@media(max-width:480px){
+ #miss-chaos-presence{right:max(9px,env(safe-area-inset-right));bottom:max(9px,env(safe-area-inset-bottom))}
+ #miss-chaos-presence[data-dock="bl"],#miss-chaos-presence[data-dock="tl"]{left:max(9px,env(safe-area-inset-left))!important}
+ #miss-chaos-presence[data-dock="br"],#miss-chaos-presence[data-dock="tr"]{right:max(9px,env(safe-area-inset-right))!important}
+ #miss-chaos-presence[data-dock="br"],#miss-chaos-presence[data-dock="bl"]{bottom:max(9px,env(safe-area-inset-bottom))!important}
+ #miss-chaos-presence #miss-chaos-launcher{width:48px;height:48px}
+ #miss-chaos-presence #miss-chaos-launcher img{width:41px;height:41px}
+ #miss-chaos-presence #mc-memo-toggle{height:43px;width:43px}
+ #miss-chaos-presence #mc-dock{gap:4px;padding:4px}
+ #miss-chaos-presence #mc-move,#miss-chaos-presence #mc-minimize{height:24px;width:24px;min-height:24px;min-width:24px}
+ #miss-chaos-presence #miss-chaos-window,#miss-chaos-presence #mc-memo-panel{width:calc(100vw - 18px);border-radius:13px}
+ #miss-chaos-presence #mc-memo-panel{max-height:min(79dvh,670px)}
+ #miss-chaos-presence #miss-chaos-window{height:min(65dvh,570px)}
+ #miss-chaos-presence #mc-memo-host{padding:7px}
+}
+@media(prefers-reduced-motion:reduce){#miss-chaos-presence #mc-dock button{transition:none!important}}
