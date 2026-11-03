@@ -32,6 +32,9 @@ on:
       - 'scripts/profile-link-hub.test.mjs'
       - 'backend/src/profile-links.test.mjs'
       - 'scripts/profile-studio-browser.mjs'
+      - 'backend/src/starter-public-bots.test.mjs'
+      - 'scripts/public-bot-starters.test.mjs'
+      - 'scripts/starter-bots-browser.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
@@ -83,6 +86,12 @@ jobs:
           node --check public/profile-links-editor.js
           node --check public/profile-links-view.js
           node --check backend/src/profile-links.js
+      - name: Verify twelve official public starter bots, safe directory and real AI chat routing
+        run: |
+          node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
+          node --check backend/src/starter-public-bots.js
+          node --check public/bots.js
+          node --check public/bot-public.js
       - name: Verify memo API, floating dock and member quick-send
         run: |
           node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
@@ -126,6 +135,8 @@ jobs:
           cat /tmp/knightfall-static.log
           exit 1
       # Run the Playwright smoke suite for desktop and mobile regressions.
+      - name: Browse starter bots and chat on desktop and Android
+        run: node scripts/starter-bots-browser.mjs
       - name: Exercise Profile Studio desktop and Android editing, crop and save flows
         run: node scripts/profile-studio-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
