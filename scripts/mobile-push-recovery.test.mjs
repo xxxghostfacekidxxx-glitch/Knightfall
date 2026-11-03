@@ -99,3 +99,21 @@ test("service worker confirms receipt and avoids unsupported SVG notification im
   assert.doesNotMatch(from,/icon:\s*"[^"]+\.svg"/);
   assert.doesNotMatch(from,/badge:\s*"[^"]+\.svg"/);
 });
+
+test("multi-device queue sends concurrently and retries only the failed phone",()=>{
+  assert.match(backend,/Promise\.all\(\(results\|\|\[\]\)\.map\(async sub=>/);
+  assert.match(backend,/delivery\.transient_endpoints\.push\(outcome\.endpoint\)/);
+  assert.match(backend,/if\(!endpoint&&result\.accepted>0&&result\.transient_endpoints\?\.length\)/);
+  assert.match(backend,/notification:job\.notification,endpoint:failedEndpoint/);
+  assert.match(backend,/const \{transient_endpoints:_internalRetryTargets,\.\.\.publicDelivery\}/);
+});
+
+test("only signed-in accounts can inspect and repair their push registration",()=>{
+  const start=backend.indexOf('if(url.pathname==="/api/push/subscriptions"&&request.method==="GET")');
+  const end=backend.indexOf('if(url.pathname==="/api/push/subscriptions"&&request.method==="POST")',start);
+  assert.ok(start>=0&&end>start);
+  const getRoute=backend.slice(start,end);
+  assert.match(getRoute,/const user=await requireUser\(request,env\)/);
+  assert.match(getRoute,/if\(!user\)return json\(\{error:"Authentication required\."\},401,origin\)/);
+  assert.match(getRoute,/WHERE user_id=\?/);
+});
