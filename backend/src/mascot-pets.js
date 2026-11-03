@@ -7,7 +7,7 @@ import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,petMarketPrice,petUnlockLevel
 import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
 import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
-import {handleMascotFurniture} from './mascot-furniture.js';
+import {handleMascotFurniture,FURNITURE} from './mascot-furniture.js';
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -36,13 +36,15 @@ const CARE=Object.freeze({
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
  const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 22').bind(userId).all();
- const [gear,rooms,layouts]=await Promise.all([
+ const [gear,rooms,layouts,furniture]=await Promise.all([
   env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
   env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all(),
-  env.DB.prepare('SELECT pet_id,x_percent,y_percent,pose FROM mascot_room_layouts WHERE user_id=?').bind(userId).all()
+  env.DB.prepare('SELECT pet_id,x_percent,y_percent,pose FROM mascot_room_layouts WHERE user_id=?').bind(userId).all(),
+  env.DB.prepare('SELECT pet_id,item_key,x_pct,y_pct,flipped FROM mascot_room_furniture_placements WHERE user_id=?').bind(userId).all()
  ]);
  return (rows.results||[]).map(p=>({...serializePet(p,Date.now(),publicView),
   equipment:(gear.results||[]).filter(g=>Number(g.pet_id)===Number(p.id)).map(g=>({slot:g.slot,sku:g.sku,asset:PET_ACCESSORIES[g.sku]?.asset||''})),
+  furniture:(furniture.results||[]).filter(g=>Number(g.pet_id)===Number(p.id)).map(g=>({key:g.item_key,x:Number(g.x_pct),y:Number(g.y_pct),flipped:!!g.flipped,art:FURNITURE.find(f=>f.key===g.item_key)?.art||''})),
   room:(()=>{const layout=(layouts.results||[]).find(r=>Number(r.pet_id)===Number(p.id));
    return {x:Number(layout?.x_percent??50),y:Number(layout?.y_percent??65),pose:layout?.pose||'idle'};})(),
   habitat:(()=>{const room=(rooms.results||[]).find(r=>Number(r.pet_id)===Number(p.id));
