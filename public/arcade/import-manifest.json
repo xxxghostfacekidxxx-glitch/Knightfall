@@ -787,6 +787,23 @@
       "files": [
         "/arcade/hosted/rooftop-riot/index.html"
       ]
+    },
+    {
+      "gameId": "neon-nuisances-species-trials",
+      "title": "Neon Nuisances · Species Trials",
+      "license": "Original Knightfall implementation; no upstream assets copied",
+      "notes": "Four first-party games for 22 adopted mascot species. Original code and SVG artwork, with verified pet-care cooldowns and no client-controlled Cinders.",
+      "status": "ashfall-original-build",
+      "files": [
+        "/mascot-trials.html",
+        "/mascot-trials.js",
+        "/mascot-trials-engine.mjs",
+        "/mascot-trials.css",
+        "/assets/devil-tools/neon-nuisances/trials/catch.svg",
+        "/assets/devil-tools/neon-nuisances/trials/memory.svg",
+        "/assets/devil-tools/neon-nuisances/trials/runes.svg",
+        "/assets/devil-tools/neon-nuisances/trials/dodge.svg"
+      ]
     }
   ],
   "auditUpdatedAt": "2026-11-02"
