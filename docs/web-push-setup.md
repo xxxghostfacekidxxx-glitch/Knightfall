@@ -56,3 +56,20 @@ Replace placeholders locally. Never commit cookies, endpoint credentials, or sub
 This acceptance test checks API authorization; it does not prove actual device delivery. The final delivery acceptance requires a real browser/device to receive a test push with the page backgrounded and closed, plus a separate message-recipient test.
 
 Quiet-hour values are interpreted as UTC. Browser/device support and permission settings affect whether background notifications can be displayed. In-app notifications remain available regardless of push permission.
+
+
+## 5. Android mobile troubleshooting and device-specific verification
+
+Desktop delivery does **not** prove the Android subscription is healthy. Sign into the same Ash-Fall account on the phone, using Chrome or the installed Ash-Fall PWA, and open `/notifications.html`.
+
+1. If an **Ash-Fall update ready** banner appears, apply it so the new push service worker activates. Close and reopen the app afterward.
+2. Check the **This device** diagnostics: browser permission, local browser subscription, and D1 server registration must all agree. A browser subscription that is missing from D1 is automatically re-registered while permission is granted.
+3. Tap **Repair push on this device** if a subscription expired, credentials changed, or registration still fails. On a fresh installation, use **Enable push notifications**. Permission is requested directly from the button tap, before any awaits or network traffic, to preserve Android's user-gesture requirement.
+4. Tap **Test this device**, not a broad account-wide test. The client includes this subscription's endpoint and the Worker validates it belongs to the current user, then sends only to the matching row. A desktop delivery can no longer make a phone test falsely look successful.
+5. Interpret the stages carefully: *server registration connected* means D1 has the phone; *provider accepted* means the push service accepted the encrypted payload; *service worker received* means the phone's service worker handled the event and `showNotification` resolved. None of these independently prove Android actually displayed a notification banner.
+6. On Android, check Settings → Apps → Chrome (or the installed Ash-Fall app) → Notifications, and Chrome → Settings → Site settings → Notifications → ash-fall.com. Check Do Not Disturb, notification channels, and app background/battery restrictions. If using an embedded browser with no PushManager support, open the site directly in Chrome.
+7. Remember quiet hours (UTC) and per-category preferences can prevent sends. The test endpoint now reports a useful reason for skipped or rejected sends. A mobile push provider's rejection (including expired 404/410 endpoints) no longer gets confused with another device's success.
+
+Server delivery runs concurrently across each account's device subscriptions. If one provider accepts a push and another has a transient failure, queued work retries only the failed device's endpoint, rather than duplicating notifications to the successful devices. Expired devices are removed so the phone can re-register.
+
+**Privacy:** Push endpoints and subscription keys are authentication-like tokens. Do not post them in chat, bug reports, or screenshots. Test output reports provider codes and delivery counts without exposing tokens. Web Push browser/device delivery cannot be conclusively validated from CI alone; acceptance still requires a real phone test.
