@@ -113,7 +113,9 @@ function mount(host,{compact=false}={}){
    }catch(error){say(error.message||'Memo could not be saved.',true);return false}
    finally{saving=false;savePromise=null;saveButton.disabled=false;updateSend()}
   })();
-  return savePromise;
+  const completed=await savePromise;
+  if(completed&&dirty)return commit();
+  return completed;
  }
  function scheduleSave(){clearTimeout(saveTimer);if(isSignedIn&&dirty)saveTimer=setTimeout(()=>{void commit()},DELAY)}
  const edit=()=>{dirty=true;rev++;counter.textContent=body.value.length.toLocaleString()+' / 4,000 characters';updateSend();scheduleSave()};
