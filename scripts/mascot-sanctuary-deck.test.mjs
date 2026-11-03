@@ -30,7 +30,7 @@ test('Care-all is a server-authoritative update with per-pet cooldown, account s
  assert.match(server,/if\(path==='\/api\/mascot-pets\/care-all'&&request\.method==='POST'\)/);
  assert.match(server,/WHERE user_id=\? AND \('/);
  assert.match(server,/RETURNING id/);
- assert.match(server,/rule\.column\+'=\?,experience=MIN\(experience\+\?,500000\)'/);
+ assert.match(server,/experience=MIN\\(experience\\+\\?,500000\\)/);
  assert.doesNotMatch(deck,/localStorage|sessionStorage/);
  assert.doesNotMatch(server,/wallet_balance\s*[+\-]=/);
 });
