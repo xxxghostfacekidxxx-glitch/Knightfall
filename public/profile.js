@@ -325,6 +325,7 @@ function refreshProfileJump(){
   const sections=[
     ["#profile-wallet","Wallet"],
     [".profile-favorites","Interests"],
+    ["#profile-link-hub","Links"],
     [".profile-birth-chart","Birth chart"],
     [".activity-grid","Activity"],
     [".profile-social-panel","Updates"],
@@ -385,6 +386,8 @@ async function load(){
    applyProfileLayout(d.profile_layout);
    try{await loadProfilePhotos(d.user.username,ownProfile)}catch(error){console.warn("Profile photos unavailable",error)}
    applyProfileLayout(d.profile_layout);
+   try{await window.KnightfallRenderProfileLinks?.(d.user.username,root)}catch(error){console.warn("Profile links unavailable",error)}
+   refreshProfileJump();
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{
      const relations=await api("/api/friends"),button=root.querySelector("#friend");
      if(button){
