@@ -14,6 +14,9 @@ on:
       - 'backend/migrations/0108_mascot_room_layouts.sql'
       - 'backend/src/mascot-room.test.mjs'
       - 'public/mascot-room.*'
+      - 'public/mascot-trials.*'
+      - 'public/mascot-trials-engine.mjs'
+      - 'scripts/mascot-trials.test.mjs'
       - 'scripts/mascot-room-sql.test.py'
       - 'backend/src/mascot-passport.js'
       - 'backend/src/mascot-passport.test.mjs'
@@ -49,7 +52,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate adoption rules, routes, ownership and privacy
-        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs scripts/mascot-cinder-catch.test.mjs backend/src/mascot-room.test.mjs
+        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs scripts/mascot-cinder-catch.test.mjs backend/src/mascot-room.test.mjs scripts/mascot-trials.test.mjs
       - name: Validate atomic Cinders pet rescues and accessory ownership
         run: python3 scripts/mascot-economy-sql.test.py && python3 scripts/mascot-adventures-sql.test.py && python3 scripts/mascot-passport-sql.test.py && python3 scripts/mascot-room-sql.test.py
       - name: Confirm Worker and browser syntax
@@ -61,6 +64,8 @@ jobs:
           node --check public/mascot-passport.js
           node --check public/mascot-cinder-catch.js
           node --check public/mascot-room.js
+          node --check public/mascot-trials.js
+          node --check public/mascot-trials-engine.mjs
           node --check public/mascot-adventures.js
           node --check backend/src/member-shop-checkout.js
           node --check scripts/integrate-mascot-pets.mjs
