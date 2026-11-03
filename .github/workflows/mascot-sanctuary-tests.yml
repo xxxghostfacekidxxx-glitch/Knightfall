@@ -14,6 +14,7 @@ on:
       - 'backend/src/mascot-passport.js'
       - 'backend/src/mascot-passport.test.mjs'
       - 'public/mascot-passport.js'
+      - 'public/mascot-cinder-catch.js'
       - 'scripts/mascot-passport-sql.test.py'
       - 'public/assets/devil-tools/neon-nuisances/badges/**'
       - 'backend/src/mascot-adventures.js'
@@ -53,6 +54,7 @@ jobs:
           node --check backend/src/mascot-adventures.js
           node --check backend/src/mascot-passport.js
           node --check public/mascot-passport.js
+          node --check public/mascot-cinder-catch.js
           node --check public/mascot-adventures.js
           node --check backend/src/member-shop-checkout.js
           node --check scripts/integrate-mascot-pets.mjs
