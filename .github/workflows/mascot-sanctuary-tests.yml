@@ -12,6 +12,15 @@ on:
       - 'backend/migrations/0106_mascot_egg_reservations.sql'
       - 'backend/migrations/0107_mascot_passport.sql'
       - 'backend/migrations/0108_mascot_room_layouts.sql'
+      - 'backend/migrations/0109_mascot_furniture.sql'
+      - 'backend/src/mascot-furniture.js'
+      - 'backend/src/mascot-furniture.test.mjs'
+      - 'backend/src/mascot-room-api.js'
+      - 'backend/src/mascot-room-api.test.mjs'
+      - 'public/mascot-room-furniture.js'
+      - 'public/mascot-room-furniture.css'
+      - 'scripts/mascot-furniture-sql.test.py'
+      - 'public/assets/devil-tools/neon-nuisances/furniture/**'
       - 'backend/src/mascot-room.test.mjs'
       - 'public/mascot-room.*'
       - 'public/mascot-trials.*'
@@ -52,13 +61,16 @@ jobs:
         with:
           node-version: '22'
       - name: Validate adoption rules, routes, ownership and privacy
-        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs scripts/mascot-cinder-catch.test.mjs backend/src/mascot-room.test.mjs scripts/mascot-trials.test.mjs
+        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs scripts/mascot-cinder-catch.test.mjs backend/src/mascot-room.test.mjs backend/src/mascot-room-api.test.mjs backend/src/mascot-furniture.test.mjs scripts/mascot-trials.test.mjs
       - name: Validate atomic Cinders pet rescues and accessory ownership
-        run: python3 scripts/mascot-economy-sql.test.py && python3 scripts/mascot-adventures-sql.test.py && python3 scripts/mascot-passport-sql.test.py && python3 scripts/mascot-room-sql.test.py
+        run: python3 scripts/mascot-economy-sql.test.py && python3 scripts/mascot-adventures-sql.test.py && python3 scripts/mascot-passport-sql.test.py && python3 scripts/mascot-room-sql.test.py && python3 scripts/mascot-furniture-sql.test.py
       - name: Confirm Worker and browser syntax
         run: |
           node --check backend/src/index.js
           node --check backend/src/mascot-pets.js
+          node --check backend/src/mascot-room-api.js
+          node --check backend/src/mascot-furniture.js
+          node --check public/mascot-room-furniture.js
           node --check backend/src/mascot-adventures.js
           node --check backend/src/mascot-passport.js
           node --check public/mascot-passport.js
