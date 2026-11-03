@@ -32,7 +32,7 @@ async function scenario({existing=false,registered=false}={}){
     window.__emitPushReceipt=()=>receiptListener?.({data:{type:"KF_PUSH_RECEIVED",tag:"ashfall-account-test"}});
     Object.defineProperty(window,"PushManager",{configurable:true,value:function PushManager(){}});
     Object.defineProperty(window,"Notification",{configurable:true,value:{
-      permission:"default",
+      permission:existing?"granted":"default",
       requestPermission(){window.__pushCalls.push("permission");this.permission="granted";return Promise.resolve("granted");}
     }});
   },{existing,endpoint,key});
