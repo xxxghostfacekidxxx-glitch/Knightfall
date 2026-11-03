@@ -153,6 +153,10 @@ gallery.addEventListener('click',event=>{
  const b=event.target.closest('button[data-action]');
  if(b&&gallery.contains(b))void request(b);
 });
-pick.addEventListener('change',()=>{void reload().catch(e=>tell(e.message))});
-void reload().catch(e=>tell('Furniture unavailable: '+e.message));
+document.addEventListener('sanctuary-room-selected',event=>{
+ if(event.detail?.visitor)return;
+ void reload().catch(error=>tell('Furniture unavailable: '+error.message));
+});
+// Initial load is announced by the room controller after its authenticated fetch.
+if(Number(pick.value)>0)void reload().catch(e=>tell('Furniture unavailable: '+e.message));
 })();
