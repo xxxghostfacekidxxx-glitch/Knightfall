@@ -28,6 +28,7 @@ on:
       - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/profile-navigation.test.mjs'
       - 'scripts/profile-studio-next.test.mjs'
+      - 'scripts/profile-photo-studio.test.mjs'
       - 'scripts/profile-studio-browser.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
@@ -74,8 +75,9 @@ jobs:
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
       - name: Validate rebuilt profile editor and crop/save code
         run: |
-          node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs
+          node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs scripts/profile-photo-studio.test.mjs
           node --check public/profile-studio-next.js
+          node --check public/profile-photo-studio.js
       - name: Verify memo API, floating dock and member quick-send
         run: |
           node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
