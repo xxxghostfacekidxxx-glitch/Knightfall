@@ -1,8 +1,8 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 5,
+  "version": 6,
   "updated": "2026-11-02",
-  "count": 115,
+  "count": 123,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -723,6 +723,62 @@
       "title": "Zipfang",
       "category": "Monster Sprites",
       "src": "/assets/monster-sprites/zipfang.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-complete_crew",
+      "title": "Complete Crew",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/complete_crew.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-fashion_fiend",
+      "title": "Fashion Fiend",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/fashion_fiend.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-first_friend",
+      "title": "First Friend",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/first_friend.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-first_hatch",
+      "title": "First Hatch",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/first_hatch.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-madhouse_ten",
+      "title": "Madhouse Ten",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/madhouse_ten.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-misfit_trio",
+      "title": "Misfit Trio",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/misfit_trio.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-quest_legend",
+      "title": "Quest Legend",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/quest_legend.svg",
+      "remastered": true
+    },
+    {
+      "id": "passport-quest_scout",
+      "title": "Quest Scout",
+      "category": "Passport Medals",
+      "src": "/assets/devil-tools/neon-nuisances/badges/quest_scout.svg",
       "remastered": true
     },
     {
