@@ -73,3 +73,16 @@ Desktop delivery does **not** prove the Android subscription is healthy. Sign in
 Server delivery runs concurrently across each account's device subscriptions. If one provider accepts a push and another has a transient failure, queued work retries only the failed device's endpoint, rather than duplicating notifications to the successful devices. Expired devices are removed so the phone can re-register.
 
 **Privacy:** Push endpoints and subscription keys are authentication-like tokens. Do not post them in chat, bug reports, or screenshots. Test output reports provider codes and delivery counts without exposing tokens. Web Push browser/device delivery cannot be conclusively validated from CI alone; acceptance still requires a real phone test.
+
+## 6. Prove delivery to the phone, not merely acceptance by FCM
+
+The **Test this device** action now creates a random, short-lived 40-character test ID stored in the Worker KV for five minutes. It is restricted to the signed-in account's matching push endpoint. The Worker embeds the ID only in the encrypted test notification, and its service worker calls `POST /api/push/receipt` after handling the push event. The authenticated page polls `GET /api/push/test-status?test_id=...` for the result:
+
+- **Provider accepted, no phone receipt:** the push service accepted the request, but the target browser never confirmed execution. Check browser/PWA installation, device settings, and connection. Do not call this successful delivery.
+- **Worker received:** the phone's service worker handled the push. If a display confirmation has not arrived, check notification permissions.
+- **Display requested:** the browser's `showNotification` promise resolved. Android may still hide the banner due to operating-system app settings, channels, Do Not Disturb, or battery restrictions.
+- **Display failed:** the browser received the push but could not request a notification display.
+
+No endpoint key or auth secret is returned by the diagnostic route. The receipt ID is an unguessable, temporary capability and should not be shared in screenshots. Manual tests bypass category and quiet-hour suppression, while normal pushes continue to honor account preferences.
+
+The messaging inbox no longer treats `Notification.permission === "granted"` as proof of a registered push endpoint, and its hidden-tab fallback uses `ServiceWorkerRegistration.showNotification` on Android instead of the desktop-only `new Notification()` constructor. An updated service worker can now install even if an optional offline shell asset fails to download.
