@@ -69,7 +69,8 @@ function mount(host,{compact=false}={}){
   deleteButton.disabled=!memo;updateSend();
  }
  function disable(disabled){
-  for(const node of [newButton,saveButton,refreshButton,noteTitle,body,deleteButton,search])node.disabled=disabled;
+  for(const element of [newButton,saveButton,refreshButton,noteTitle,body,search])element.disabled=disabled;
+  deleteButton.disabled=disabled||!selected;
   if(disabled)sendButton.disabled=true;else updateSend();
  }
  async function refresh({initial=false}={}){
@@ -86,8 +87,8 @@ function mount(host,{compact=false}={}){
    notes=Array.isArray(data.memos)?data.memos:[];
    const current=notes.find(m=>m.id===selected);
    selected=current?.id??notes[0]?.id??null;
-   choose(current||notes[0]||null);drawList();say(notes.length?'Memos synced to your account.':'Start writing your first memo.');
-  }catch(e){say(e.message||'Could not load memos.',true);if(e.status===401){auth.hidden=false;content.hidden=true;sendBox.hidden=true;bar.hidden=true}}
+   choose(current||notes[0]||null);drawList();disable(false);say(notes.length?'Memos synced to your account.':'Start writing your first memo.');
+  }catch(e){say(e.message||'Could not load memos.',true);disable(false);if(e.status===401){auth.hidden=false;content.hidden=true;sendBox.hidden=true;bar.hidden=true}}
  }
  async function commit(){
   clearTimeout(saveTimer);saveTimer=0;
@@ -177,6 +178,7 @@ function mount(host,{compact=false}={}){
  });
  document.addEventListener('kf:memos-updated',e=>{if(disposed||e.detail?.source===host||dirty||saving)return;void refresh()});
  const controller={refresh:()=>refresh(),dispose:()=>{disposed=true;clearTimeout(saveTimer);clearTimeout(lookupTimer);host.__memoCommsDispose?.()}};
+ disable(true); // Avoid destroying text typed before the initial account load finishes.
  document.dispatchEvent(new CustomEvent('kf:memo-mounted',{detail:{host,compact}}));
  void refresh({initial:true});return controller;
 }
