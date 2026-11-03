@@ -9,12 +9,25 @@ function mock(){
   {badge_id:'first_friend',title:'First Little Monster',description:'Adopt one',metric:'pets',target:1,reward_cinders:100},
   {badge_id:'misfit_trio',title:'Misfit Trio',description:'Collect three',metric:'pets',target:3,reward_cinders:200}
  ];
- return {calls,env:{DB:{prepare(sql){return{bind(...args){calls.push({sql,args});return{
-  first:async()=>sql.includes('COUNT(*)')?{count:sql.includes('FROM mascot_pets')?2:0}:definitions[0],
-  all:async()=>({results:sql.includes('FROM mascot_passport_badges ORDER BY')?definitions:[]}),
-  run:async()=>({meta:{changes:1}})
- }}},all:async()=>({results:definitions})}}}}};
+ const db={
+  prepare(sql){
+   return {
+    all:async()=>({results:definitions}),
+    bind(...args){
+     calls.push({sql,args});
+     return {
+      first:async()=>sql.includes('COUNT(*)')?
+       {count:sql.includes('FROM mascot_pets')?2:0}:definitions[0],
+      all:async()=>({results:[]}),
+      run:async()=>({meta:{changes:1}})
+     };
+    }
+   };
+  }
+ };
+ return {calls,env:{DB:db}};
 }
+
 test('Passport progress comes from authenticated D1 data and matches thresholds',async()=>{
  const {env,calls}=mock();
  const report=await passportOverview(env,9);
