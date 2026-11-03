@@ -59,3 +59,7 @@
 .room-avatar[data-pose="bounce"]>#room-outfit{animation:room-bounce 1.5s ease-in-out infinite}
 .room-avatar[data-pose="mischief"]>#room-outfit{animation:room-mischief 2.1s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.room-avatar[data-pose="bounce"]>#room-outfit,.room-avatar[data-pose="mischief"]>#room-outfit{animation:none!important}}
+
+/* Privacy-checked public profile tours show room furnishings without editing controls. */
+.room-visitor-furniture{position:absolute;inset:0;z-index:3;pointer-events:none}
+.room-visitor-furniture img{position:absolute;width:clamp(60px,15%,150px);height:26%;object-fit:contain;filter:drop-shadow(0 8px 10px #000a);pointer-events:none;user-select:none}
