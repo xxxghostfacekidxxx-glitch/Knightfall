@@ -5,7 +5,7 @@
 <meta name="description" content="Adopt and care for original Neon Nuisances mascot companions on Knightfall.">
 <title>Neon Nuisances Sanctuary | Knightfall</title>
 <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
-<link rel="stylesheet" href="/mascot-pets.css?v=20261102-passport1">
+<link rel="stylesheet" href="/mascot-pets.css?v=20261102-cinder-catch1">
 </head><body class="sanctuary-page">
 <header class="kf-header"></header>
 <main class="sanctuary-shell">
@@ -21,6 +21,14 @@
    <p class="pet-shop-intro">Each mascot has its own story mission. Start up to three every UTC day, then complete the requested real care action to earn 75 Cinders and a Rescue Shell. No paywalls or random rewards.</p>
    <p id="adventure-status" role="status" aria-live="polite">Loading missions…</p>
    <div id="pet-quests" class="pet-quest-grid"></div>
+  </section>
+  <section id="cinder-catch" aria-labelledby="cinder-catch-heading">
+   <div class="sanctuary-section-heading"><h2 id="cinder-catch-heading">🎮 Cinder Catch · Pet Activity</h2><span>Touch · Keyboard · Desktop</span></div>
+   <p class="pet-shop-intro">Help your adopted companion catch twelve glowing Cinders while dodging magenta hazards. Win a regular Play care session, subject to the existing 10-minute cooldown. Scores cannot generate extra currency.</p>
+   <div class="cinder-catch-control-bar"><label for="cinder-catch-pet">Play with companion</label><select id="cinder-catch-pet" aria-label="Choose a companion for Cinder Catch"></select><button id="cinder-catch-start" type="button">▶ Start Cinder Catch</button></div>
+   <canvas id="cinder-catch-canvas" width="720" height="400" tabindex="0" aria-label="Cinder Catch game field. Use left and right arrow keys, A and D, or drag on touch devices. Catch lime crystals and avoid pink hazards."></canvas>
+   <p class="cinder-catch-help">← → or A / D to move. On phones, drag your finger across the game field. Collect 12 crystals before time runs out.</p>
+   <p id="cinder-catch-status" role="status" aria-live="polite">Loading your companion collection…</p>
   </section>
   <section aria-labelledby="hatchery-title">
    <div class="sanctuary-section-heading"><h2 id="hatchery-title">🥚 Rescue Egg Hatchery</h2><span id="pet-shells">0 Rescue Shells</span></div>
@@ -41,4 +49,5 @@
 <script src="/mascot-pets.js?v=20261102-adventures1" defer></script>
 <script src="/mascot-adventures.js?v=20261102-adventures1" defer></script>
 <script src="/mascot-passport.js?v=20261102-passport1" defer></script>
+<script src="/mascot-cinder-catch.js?v=20261102-cinder-catch1" defer></script>
 </body></html>
