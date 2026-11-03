@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#0e0b1e">
+ <meta name="description" content="Private Knightfall Memo Pad. Write and save notes, then quick-send them to Ash-Fall members through secure messaging.">
+ <title>Memo Pad | Knightfall</title>
+ <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
+ <link rel="stylesheet" href="/memo-pad.css?v=20261103-memo1">
+ <style>
+  body{background:radial-gradient(ellipse at 35% 0,#47205366,transparent 44%),radial-gradient(ellipse at 90% 75%,#154e4230,transparent 45%),#090a14;color:#f6efff;font-family:Inter,system-ui,sans-serif;min-height:100vh}
+  .memo-page{max-width:1180px;width:min(96%,1180px);margin:30px auto 60px}
+  .memo-hero{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:10px 0 25px}
+  .memo-hero .eyebrow{color:#c6ff45;letter-spacing:.18em;text-transform:uppercase;font-size:.74rem;font-weight:950}
+  .memo-hero h1{margin:5px 0 0;font-size:clamp(2.4rem,6vw,5rem);line-height:.97;letter-spacing:-.07em;color:#fff}
+  .memo-hero h1 span{color:#ff55d8}
+  .memo-hero p{color:#c3b4d0;max-width:630px;line-height:1.55}
+  .memo-back{border:1px solid #c6ff4590;border-radius:12px;color:#c6ff45;background:#1b1d24;padding:11px 15px;font-weight:900;text-decoration:none}
+  .memo-back:hover{background:#263626}
+  .memo-shell{padding:clamp(14px,2.7vw,28px);border:1px solid #a55ac17b;border-radius:22px;background:radial-gradient(ellipse at 0 0,#ff55d811,transparent 60%),linear-gradient(145deg,#1d152c,#101323);box-shadow:0 24px 70px #0009}
+  .memo-footer{font-size:.79rem;color:#a99aba;margin-top:16px;line-height:1.6}
+  @media(max-width:650px){.memo-page{margin:12px auto 38px}.memo-shell{border-radius:14px;padding:10px}}
+ </style>
+ <script src="/nav.js?v=20261103-memo1" defer></script>
+ <script src="/memo-pad.js?v=20261103-memo1" defer></script>
+</head>
+<body>
+<header class="kf-header"></header>
+<main class="memo-page">
+ <div class="memo-hero">
+  <div><div class="eyebrow">Miss Chaos's Desk · Personal Tools</div>
+   <h1>MEMO <span>PAD.</span></h1>
+   <p>A private notebook for ideas, tasks and whatever needs remembering. Write once, open it from Miss Chaos's bubble anywhere on the site, or send a copy to another member's private inbox.</p>
+  </div>
+  <a href="/messages.html" class="memo-back">↗ Member Inbox</a>
+ </div>
+ <section class="memo-shell" aria-label="Private Memo Pad">
+  <div id="memo-pad-app" aria-live="off"></div>
+ </section>
+ <p class="memo-footer">Memos are visible only to their account owner. A note is never sent automatically. Choosing a member and pressing Send memo sends a copy as an ordinary direct message, subject to the inbox's block, rate-limit and notification protections.</p>
+</main>
+</body>
+</html>
