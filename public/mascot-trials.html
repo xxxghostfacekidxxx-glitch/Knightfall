@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0817"><meta name="description" content="Four original Knightfall Species Trials with individual challenges for all 22 Neon Nuisances companions.">
+<title>Species Trials | Neon Nuisances Sanctuary</title>
+<link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
+<link rel="stylesheet" href="/mascot-trials.css?v=20261102-trials1">
+</head><body class="trials-body">
+<header class="kf-header"></header>
+<main class="trials-shell">
+ <header class="trials-hero"><span class="trials-eyebrow">NEON NUISANCES · THE SANCTUARY ARCADE</span>
+ <h1>SPECIES <span>TRIALS</span></h1>
+ <p>Every misfit has its own challenge. Four different games, twenty-two themed trials, one very questionable collection of tiny monsters.</p>
+ <nav class="trials-links" aria-label="Sanctuary navigation"><a href="/mascot-pets.html">← Sanctuary</a><a href="/mascot-room.html">Companion Rooms</a><a href="/devil-tools.html">Devil Tools</a></nav>
+ </header>
+ <section class="trials-panel" aria-labelledby="choose-title">
+  <div class="trials-choose"><div><h2 id="choose-title">Select your companion</h2><p>These trials use your real adopted pets. Winning awards one ordinary Play session, subject to the existing server cooldown.</p></div>
+   <label for="trial-companion">Your mascot</label><select id="trial-companion" aria-label="Select companion to play a trial"></select>
+  </div>
+  <div class="trials-meta"><img id="trial-portrait" alt="" width="128" height="128">
+   <div><span id="trial-family" class="trials-tag">CHALLENGE</span><h3 id="trial-title">Choose a companion</h3><p id="trial-description">Sign in and adopt a pet to unlock its species trial.</p><span id="trial-level" class="trials-level"></span></div>
+  </div>
+  <div class="trials-stage" id="trials-stage" aria-live="off">
+   <div class="trials-hud"><span id="trial-score">Score 0</span><span id="trial-time">Time 0s</span><span id="trial-lives">♥ ♥ ♥</span></div>
+   <div id="trial-playfield" class="trial-playfield" tabindex="0" aria-label="Species Trials play area"></div>
+   <div id="trial-controls" class="trial-controls"></div>
+  </div>
+  <div class="trials-footer"><button id="trial-start" type="button">▶ Start Species Trial</button><button id="trial-stop" type="button" disabled>End round</button><p id="trial-status" role="status" aria-live="polite">Loading companions…</p></div>
+  <p class="trials-disclaimer">No random paid rewards or client-awarded Cinders. Trial victories use the authenticated Play endpoint and its 10-minute cooldown. You can always care for pets without playing.</p>
+ </section>
+ <section class="trials-guide" aria-labelledby="games-title"><h2 id="games-title">Four original challenge types</h2>
+  <div class="trials-guide-grid">
+   <article><strong>✦ Toxic Catch</strong><p>Catch glowing pickups and avoid traps before the timer runs out. Drag or move with arrows.</p></article>
+   <article><strong>☾ Crypt Memory</strong><p>Uncover matching pairs in a haunted grid. Clear every pair before time runs out.</p></article>
+   <article><strong>◆ Rune Signal</strong><p>Watch a sequence of four runes, memorize the order, then repeat it correctly.</p></article>
+   <article><strong>⚡ Night Dodge</strong><p>Survive waves of moving hazards. Stay alive until your companion reaches the finish.</p></article>
+  </div>
+ </section>
+</main>
+<script src="/nav.js?v=20261102-mascot6" defer></script>
+<script type="module" src="/mascot-trials.js?v=20261102-trials1"></script>
+</body></html>
