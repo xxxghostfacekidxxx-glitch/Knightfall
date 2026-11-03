@@ -12,7 +12,7 @@ const blankUser={
 };
 async function scenario(name,viewport){
  const context=await browser.newContext({viewport}),page=await context.newPage(),errors=[];
- const savedProfiles=[],savedLayouts=[],uploads=[];
+ const savedProfiles=[],savedLayouts=[],uploads=[],gallery=[];
  let user={...blankUser},layout=[{id:"favorites",visible:true},{id:"activity",visible:true},{id:"updates",visible:true},{id:"photos",visible:true}];
  page.on("pageerror",e=>errors.push(e.message));
  page.on("dialog",d=>d.accept());
@@ -32,11 +32,22 @@ async function scenario(name,viewport){
    const values=JSON.parse(r.postData()||"{}");
    savedProfiles.push(values);user={...user,...values,show_activity:values.show_activity?1:0};return respond(200,{user});
   }
+  if(path==="/api/profile/photos"&&method==="GET")return respond(200,{photos:gallery});
   if(path==="/api/profile/photos"&&method==="POST"){
    const raw=r.postDataBuffer(),str=raw?.toString("latin1")||"";
    const kind=str.includes('name="kind"\r\n\r\navatar')?"avatar":"gallery";
    uploads.push(kind);
-   return respond(201,{photo:{url:"https://api.ash-fall.com/api/profile-media/"+(uploads.length+800),kind}});
+   const id=uploads.length+800;
+   const photo={id,url:"https://api.ash-fall.com/api/profile-media/"+id,kind,caption:"Uploaded photo",created_at:new Date().toISOString()};
+   if(kind==="gallery")gallery.unshift(photo);
+   return respond(201,{photo});
+  }
+  if(path.match(/^\/api\/profile\/photos\/\d+$/)&&method==="DELETE"){
+   const id=Number(path.split("/").pop()),ix=gallery.findIndex(p=>p.id===id);
+   if(ix<0)return respond(404,{error:"Photo missing"});
+   const [photo]=gallery.splice(ix,1);
+   if(user.cover_url===photo.url)user.cover_url="";
+   return respond(200,{ok:true});
   }
   if(path==="/api/site-settings")return respond(200,{settings:{site_name:"Knightfall",feature_miss_chaos:"false"}});
   return respond(200,{});
@@ -84,6 +95,22 @@ async function scenario(name,viewport){
   await page.locator('#form button[type="submit"]').click();
   await page.waitForFunction(()=>document.querySelector("#studio-save-indicator")?.dataset.state==="saved");
   assert.ok(uploads.includes("avatar"),"Avatar upload must be preserved");
+  // Gallery management is independent of the main profile save.
+  await page.locator("#studio-photo-file").setInputFiles({name:"memory.png",mimeType:"image/png",buffer:Buffer.from(png,"base64")});
+  await page.locator("#studio-photo-caption").fill("The Neon Roof");
+  await page.locator('#studio-photo-upload button[type="submit"]').click();
+  await page.waitForFunction(()=>document.querySelector("#studio-photo-count")?.textContent.includes("2 / 60"));
+  assert.equal(gallery.length,2);
+  const coverChoice=gallery[0];
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Use as cover'}).click();
+  assert.equal(await page.locator('#form [name="cover_url"]').inputValue(),coverChoice.url);
+  await page.locator('#form button[type="submit"]').click();
+  await page.waitForFunction(()=>document.querySelector("#studio-save-indicator")?.dataset.state==="saved");
+  assert.equal(user.cover_url,coverChoice.url);
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Delete'}).click();
+  await page.waitForFunction(()=>document.querySelector("#studio-photo-count")?.textContent.includes("1 / 60"));
+  assert.equal(user.cover_url,"","Deleting selected gallery cover must also clear published reference");
+  assert.equal(gallery.length,1);
   await page.locator('#form [name="tagline"]').fill("I remain.");
   await page.keyboard.press("Control+s");
   await page.waitForFunction(()=>document.querySelector("#studio-save-indicator")?.dataset.state==="saved");
