@@ -2046,7 +2046,14 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!/^[0-9a-f]{40}$/.test(testId))return json({error:"Invalid test receipt."},400,origin);
     const key="push-receipt:"+testId,record=await env.SESSIONS.get(key,"json");
     if(!record)return json({error:"Test expired."},404,origin);
-    if(record.state!=="received")await env.SESSIONS.put(key,JSON.stringify({...record,state:"received",received_at:new Date().toISOString()}),{expirationTtl:300});
+    const stage=String(body?.stage||"received");
+    const allowed=["received","display-requested","display-failed"];
+    if(!allowed.includes(stage))return json({error:"Invalid receipt stage."},400,origin);
+    // Never regress from a successful showNotification call to an earlier state.
+    const rank={"pending":0,"received":1,"display-failed":2,"display-requested":3};
+    if((rank[stage]||0)>(rank[record.state]||0)){
+      await env.SESSIONS.put(key,JSON.stringify({...record,state:stage,received_at:new Date().toISOString()}),{expirationTtl:300});
+    }
     return json({ok:true},200,origin);
   }
   if(url.pathname==="/api/push/test-status"&&request.method==="GET"){
