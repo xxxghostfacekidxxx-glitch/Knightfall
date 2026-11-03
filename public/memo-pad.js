@@ -29,14 +29,14 @@ function mount(host,{compact=false}={}){
  const editorFoot=make('div','memo-editor-footer');editorFoot.append(counter,deleteButton);
  editor.append(noteTitle,body,editorFoot);content.append(listbox,editor);
  const sendBox=make('section','memo-send-box'),sendHeading=make('h3','','↗ Quick Send to a Member');
- const info=make('p','','Sends a copy as a private message. Your original memo stays private. Only send to someone you select.');
+ const info=make('p','','Sends a copy to their separate Memo Mail inbox, not the live chat. Your saved note stays private until you send it.');
  const recipientLabel=make('label','','Find a member');
  const search=make('input','memo-member-search');search.type='search';search.autocomplete='off';search.placeholder='Search username or display name…';search.maxLength=80;
  recipientLabel.append(search);
  const results=make('div','memo-member-results');results.setAttribute('aria-label','Member search results');
  const chosen=make('div','memo-chosen');const sendButton=make('button','memo-button primary','Send memo →');sendButton.type='button';sendButton.disabled=true;
- const sendFoot=make('div','memo-send-foot'),inboxLink=make('a','memo-inbox-link','Open inbox ↗');
- inboxLink.href='/messages.html';sendFoot.append(sendButton,inboxLink);
+ const sendFoot=make('div','memo-send-foot'),inboxLink=make('a','memo-inbox-link','Open Memo Mail ↗');
+ inboxLink.href='/memo-pad.html?tab=inbox';sendFoot.append(sendButton,inboxLink);
  sendBox.append(sendHeading,info,recipientLabel,results,chosen,sendFoot);
  const auth=make('div','memo-auth');auth.hidden=true;
  const signLink=make('a','memo-button primary','Sign in to use Memo Pad');signLink.href='/auth.html?next='+encodeURIComponent(location.pathname+location.search);
@@ -164,20 +164,20 @@ function mount(host,{compact=false}={}){
   const outgoing='📝 '+titleText+'\n\n'+text;
   if(!text||outgoing.length>LIMIT){say('Memo and title must fit within 4,000 characters.',true);return}
   if(dirty&&!await commit())return;
-  if(dirty&&!await commit())return; // Flush edits made during the first in-flight autosave.
   sendButton.disabled=true;say('Sending to @'+name+'…');
   try{
-   const convo=await api('/api/messages/conversations',{method:'POST',body:JSON.stringify({username:name})});
-   if(!Number.isSafeInteger(Number(convo.id))||Number(convo.id)<1)throw Error('Conversation not available.');
-   await api('/api/messages/conversations/'+convo.id,{method:'POST',body:JSON.stringify({body:outgoing})});
-   inboxLink.href='/messages.html?conversation='+encodeURIComponent(String(convo.id));
-   inboxLink.textContent='View sent message ↗';
-   say('Memo sent to @'+name+'. Your original is still saved privately. ✓');
+   if(!Number.isSafeInteger(Number(selected))||Number(selected)<1)throw Error('Save your memo before sending.');
+   const result=await api('/api/memo-mail',{method:'POST',body:JSON.stringify({memo_id:selected,username:name})});
+   inboxLink.href='/memo-pad.html?tab=inbox';
+   inboxLink.textContent='View Memo Mail ↗';
+   say('Memo delivered to @'+name+' in Memo Mail. Your original is still saved privately. ✓');
+   document.dispatchEvent(new CustomEvent('kf:memo-sent',{detail:{host,recipient:name,id:result.id}}));
    clearRecipient();search.value='';
   }catch(error){say(error.message||'Could not send. The memo was not deleted.',true);updateSend()}
  });
  document.addEventListener('kf:memos-updated',e=>{if(disposed||e.detail?.source===host||dirty||saving)return;void refresh()});
- const controller={refresh:()=>refresh(),dispose:()=>{disposed=true;clearTimeout(saveTimer);clearTimeout(lookupTimer)}};
+ const controller={refresh:()=>refresh(),dispose:()=>{disposed=true;clearTimeout(saveTimer);clearTimeout(lookupTimer);host.__memoCommsDispose?.()}};
+ document.dispatchEvent(new CustomEvent('kf:memo-mounted',{detail:{host,compact}}));
  void refresh({initial:true});return controller;
 }
 window.KnightfallMemoPad={mount};
