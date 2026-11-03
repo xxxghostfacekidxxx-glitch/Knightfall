@@ -55,3 +55,9 @@
 .trials-guide-grid strong{color:#c6ff45}.trials-guide-grid p{color:#cdc0d5;font-size:.84rem;line-height:1.55}
 @media(max-width:650px){.trials-guide-grid{grid-template-columns:1fr}.trials-meta{align-items:flex-start}.trials-meta img{width:75px;height:75px}.trials-hud{font-size:.73rem}.trial-playfield{padding:7px;min-height:280px}.trial-memory-grid{gap:6px}.trial-rune{height:66px}}
 @media(prefers-reduced-motion:reduce){.trial-memory-card{transition:none}}
+
+/* Distinct self-hosted SVG environments for the four original game engines. */
+.trial-playfield[data-mode="memory"]{background-image:linear-gradient(180deg,#0b0d19a8,#0b0d19bc),url('/assets/devil-tools/neon-nuisances/trials/memory.svg');background-size:cover;background-position:center}
+.trial-playfield[data-mode="runes"]{background-image:linear-gradient(180deg,#0b0d19b0,#0b0d19c2),url('/assets/devil-tools/neon-nuisances/trials/runes.svg');background-size:cover;background-position:center}
+.trial-playfield[data-mode="catch"]{background-image:url('/assets/devil-tools/neon-nuisances/trials/catch.svg');background-size:cover;background-position:center}
+.trial-playfield[data-mode="dodge"]{background-image:url('/assets/devil-tools/neon-nuisances/trials/dodge.svg');background-size:cover;background-position:center}
