@@ -229,7 +229,7 @@ if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("messag
 });
 document.querySelector("#read-all").onclick=async()=>{try{await api("/api/notifications/read-all",{method:"POST"});await load()}catch(e){status.textContent=e.message}};
 let lastRefresh=0;
-function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});}
+function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});loadPrefs().catch(()=>{});}
 document.addEventListener("visibilitychange",refreshVisibleNotifications);
 window.addEventListener("focus",refreshVisibleNotifications);
 load();loadPrefs();
