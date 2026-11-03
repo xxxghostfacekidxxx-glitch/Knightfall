@@ -132,3 +132,9 @@ test("phone test has a short-lived receipt token only the subscribed worker can 
   assert.match(html,/\/api\/push\/test-status\?test_id=/);
   assert.match(html,/Provider accepted, but this phone has NOT confirmed receipt/);
 });
+
+
+test("Android service worker installation survives a failed optional offline asset",()=>{
+  assert.match(sw,/Promise\.allSettled\(APP_SHELL\.map\(resource=>cache\.add\(resource\)\)\)/);
+  assert.doesNotMatch(sw,/cache\.addAll\(APP_SHELL\)/);
+});
