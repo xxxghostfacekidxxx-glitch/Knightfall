@@ -27,6 +27,8 @@ on:
       - 'scripts/miss-chaos-stream.test.mjs'
       - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/profile-navigation.test.mjs'
+      - 'scripts/profile-studio-next.test.mjs'
+      - 'scripts/profile-studio-browser.mjs'
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
       - 'wrangler.jsonc'
@@ -70,6 +72,10 @@ jobs:
         run: npm install --prefix backend --no-audit --no-fund
       - name: Verify birth charts and card-room rules
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
+      - name: Validate rebuilt profile editor and crop/save code
+        run: |
+          node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs
+          node --check public/profile-studio-next.js
       - name: Verify memo API, floating dock and member quick-send
         run: |
           node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
@@ -112,9 +118,9 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
-      # Run this on every pull request so mobile overflow regressions block the Android-readiness PR.
-      - name: Exercise Memo Pad and Miss Chaos on desktop and Android viewports
-        run: node scripts/miss-chaos-memo-browser.mjs
+      # Run the Playwright smoke suite for desktop and mobile regressions.
+      - name: Exercise Profile Studio desktop and Android editing, crop and save flows
+        run: node scripts/profile-studio-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
       - name: Exercise Memo Mail and live chat tabs on desktop and Android
