@@ -8,7 +8,8 @@ function mockDB(resolve){
  }}}}};return {env,calls};
 }
 function call(path,method,env,{body={},viewer=member,limit=true,notify}={}){
- return handleMemberMemoMail({method,json:async()=>body},env,{pathname:path,searchParams:new URLSearchParams(path.includes('?')?path.split('?')[1]:'')},{
+ const url=new URL('https://api.ash-fall.com'+path);
+ return handleMemberMemoMail({method,json:async()=>body},env,url,{
   getUser:async()=>viewer,json:(data,status=200)=>({data,status}),rateLimit:async()=>limit,origin:'https://ash-fall.com',createNotification:notify
  });
 }
@@ -23,10 +24,11 @@ test('received and sent folders always scope to requesting account',async()=>{
  const {env,calls}=mockDB(()=>({results:[]}));
  const inbox=await call('/api/memo-mail','GET',env);
  assert.equal(inbox.status,200);assert.equal(inbox.data.box,'inbox');
- const sent=await call('/api/memo-mail','GET',env);
- assert.equal(sent.data.box,'inbox');
+ const sent=await call('/api/memo-mail?box=sent','GET',env);
+ assert.equal(sent.data.box,'sent');
  assert.match(calls[0].sql,/m.recipient_id=\?/);
  assert.equal(calls[0].params[0],member.id);
+ assert.match(calls[1].sql,/m.sender_id=\?/);
  assert.ok(!calls[0].sql.includes('m.body LIKE'));
 });
 test('sending a saved memo enforces ownership, target status and blocking',async()=>{
