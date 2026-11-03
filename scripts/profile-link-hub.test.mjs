@@ -14,8 +14,8 @@ test('Profile Link Hub scripts parse and dedicated editing section is reachable 
  assert.match(editor,/href="#link-studio"/);
  assert.match(editor,/id="studio-link-rows"/);
  assert.match(editor,/id="studio-link-add"/);
- assert.match(editor,/profile-links-editor\.js\?v=20261103-links1/);
- assert.match(editor,/profile-links\.css\?v=20261103-links1/);
+ assert.match(editor,/profile-links-editor\.js\?v=20261103-links2/);
+ assert.match(editor,/profile-links\.css\?v=20261103-links2/);
  assert.match(editor,/window\.KnightfallProfileLinks\.save\(\)/);
 });
 test('Link Hub mutations stay private until confirmed Save profile or intentional discard',()=>{
@@ -34,8 +34,8 @@ test('Profile Link Hub privacy is enforced on backend, not merely hidden in the 
  assert.match(api,/handleProfileLinks\(request,env,url/);
  assert.match(migration,/CREATE TABLE IF NOT EXISTS member_profile_links/);
  assert.match(migration,/PRIMARY KEY\(user_id,position\)/);
- assert.match(publicPage,/profile-links-view\.js\?v=20261103-links1/);
- assert.match(publicPage,/profile-links\.css\?v=20261103-links1/);
+ assert.match(publicPage,/profile-links-view\.js\?v=20261103-links2/);
+ assert.match(publicPage,/profile-links\.css\?v=20261103-links2/);
  assert.match(profile,/await window\.KnightfallRenderProfileLinks\?\.\(d\.user\.username,root\)/);
  assert.match(profile,/\["#profile-link-hub","Links"\]/);
  assert.match(viewer,/new URL\(link\.url\)/);
