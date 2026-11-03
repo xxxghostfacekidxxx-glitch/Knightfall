@@ -12,6 +12,7 @@ on:
       - 'scripts/security-headers.test.mjs'
       - 'scripts/push-navigation.test.mjs'
       - 'scripts/mobile-push-recovery.test.mjs'
+      - 'scripts/mobile-push-browser-smoke.mjs'
       - 'scripts/registration-release.test.mjs'
       - 'scripts/turnstile-ui.test.mjs'
       - 'scripts/notification-queue.test.mjs'
@@ -101,6 +102,8 @@ jobs:
       # Run this on every pull request so mobile overflow regressions block the Android-readiness PR.
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
+      - name: Exercise Android push enablement and subscription recovery
+        run: node scripts/mobile-push-browser-smoke.mjs
       - name: Exercise arcade community leaderboards on desktop and mobile
         run: node scripts/arcade-leaderboard-browser-smoke.mjs
       - name: Exercise hosted arcade cabinets in mobile Chromium
