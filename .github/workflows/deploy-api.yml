@@ -36,7 +36,7 @@ jobs:
         run: node --test scripts/astrology.test.mjs
 
       - name: Check profile photo deletion cleanup
-        run: node --test scripts/profile-photo-studio.test.mjs
+        run: node --test scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
 
       - name: Validate coordinated registration release
         run: node --test scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs
