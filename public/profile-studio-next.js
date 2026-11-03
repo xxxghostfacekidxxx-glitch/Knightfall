@@ -7,7 +7,7 @@ const names=['display_name','bio','avatar_url','website_url','location','pronoun
 const byId=id=>document.getElementById(id),indicator=byId('studio-save-indicator'),hint=byId('studio-save-hint'),summary=byId('studio-save-summary'),discard=byId('studio-discard'),view=byId('studio-view-profile'),status=byId('status');
 const submit=form.querySelector('button[type="submit"]');
 const avatarFile=byId('avatar-file'),coverFile=byId('cover-file');
-let loaded=false,saving=false,error=false,baseline=null,layoutDirty=false,edited=false,pendingMedia=0,lastPublishedUser=null;
+let loaded=false,saving=false,error=false,baseline=null,layoutDirty=false,linksDirty=false,edited=false,pendingMedia=0,lastPublishedUser=null;
 const selections=[...document.querySelectorAll('.studio-jump a')];
 const pretty={public:'Everyone can view your public profile and the details you choose to share.',friends:'Only approved friends can view your full profile. Visitors see restricted information.',private:'Only you and authorized moderators can view your full profile.'};
 const values=()=>Object.fromEntries(names.map(name=>{
@@ -31,7 +31,7 @@ function update(){
  measure();
  const current=snapshot();
  const contentDirty=loaded&&baseline&&Object.keys(current).some(k=>current[k]!==baseline[k]);
- const dirty=!!(contentDirty||layoutDirty);
+ const dirty=!!(contentDirty||layoutDirty||linksDirty);
  discard.disabled=!loaded||saving||pendingMedia>0||!dirty;
  const privacy=form.elements.profile_visibility?.value||'public';
  const show=form.elements.show_activity?.checked;
@@ -41,7 +41,7 @@ function update(){
  if(error){setIndicator('error','⚠ Could not save your changes');summary.textContent='Your edits are still here. Fix the issue and try saving again.';return}
  if(dirty){
   setIndicator('dirty','● Unsaved changes');
-  summary.textContent=layoutDirty?'Profile or section layout has unpublished changes.':'Your edits have not been published.';
+  summary.textContent=linksDirty?'Your Link Hub has unpublished changes.':layoutDirty?'Profile or section layout has unpublished changes.':'Your edits have not been published.';
  }else{
   setIndicator('saved',edited?'✓ All changes saved':'✓ Profile loaded');
   summary.textContent='You are up to date. You can keep editing or view your profile.';
@@ -81,8 +81,8 @@ function restorePreview(){
 function discardChanges(){
  if(!loaded||!baseline||saving)return;
  const changed=Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]);
- if(!changed&&!layoutDirty)return;
- if(!confirm('Discard the unpublished profile and layout changes? Your last saved profile will be restored.'))return;
+ if(!changed&&!layoutDirty&&!linksDirty)return;
+ if(!confirm('Discard unpublished profile, Link Hub, and layout changes? Your last saved profile will be restored.'))return;
  for(const name of names){
   const element=form.elements[name];if(!element)continue;
   if(name==='show_activity')element.checked=!!baseline[name];
@@ -96,7 +96,8 @@ function discardChanges(){
   if(cover._previewUrl){URL.revokeObjectURL(cover._previewUrl);delete cover._previewUrl}
  }
  if(layoutDirty)document.dispatchEvent(new CustomEvent('kf:profile-reset-layout'));
- layoutDirty=false;error=false;edited=false;restorePreview();
+ if(linksDirty)document.dispatchEvent(new CustomEvent('kf:profile-discard-links'));
+ layoutDirty=false;linksDirty=false;error=false;edited=false;restorePreview();
  status.textContent='Draft discarded. Your published profile is unchanged.';
  update();
 }
@@ -109,6 +110,9 @@ for(const eventName of ['input','change'])form.addEventListener(eventName,()=>{
 });
 document.addEventListener('kf:profile-input',()=>{edited=true;error=false;update()});
 document.addEventListener('kf:layout-changed',()=>{layoutDirty=true;edited=true;error=false;update()});
+document.addEventListener('kf:profile-links-changed',e=>{linksDirty=!!e.detail?.dirty;if(linksDirty){edited=true;error=false;}update()});
+document.addEventListener('kf:profile-links-saved',e=>{linksDirty=!!e.detail?.pending;update()});
+document.addEventListener('kf:profile-links-reset',()=>{linksDirty=false;update()});
 document.addEventListener('kf:layout-reset',()=>{layoutDirty=false;update()});
 document.addEventListener('kf:layout-saved',e=>{layoutDirty=!!e.detail?.pending;update()});
 document.addEventListener('kf:profile-loaded',e=>publishBaseline(e.detail?.user));
@@ -142,7 +146,7 @@ document.addEventListener('kf:profile-process-end',()=>{
 const shortcuts=()=>{if(lastPublishedUser?.username)view.href='/profile.html?username='+encodeURIComponent(lastPublishedUser.username)};
 window.addEventListener('beforeunload',event=>{
  if(!loaded||saving)return;
- const dirty=layoutDirty||!!(baseline&&Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]));
+ const dirty=layoutDirty||linksDirty||!!(baseline&&Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]));
  if(dirty){event.preventDefault();event.returnValue=''}
 });
 document.addEventListener('keydown',event=>{
