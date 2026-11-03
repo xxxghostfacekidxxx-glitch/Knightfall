@@ -85,3 +85,27 @@ test("profile actions respect account identity and authenticated God role",()=>{
  assert.match(js,/!signedIn\?/);
  assert.match(js,/button\.onclick=async\(\)=>\{button\.disabled=true;try\{await api\("\/api\/friends\/"/);
 });
+
+
+test("Gravewave profile panels and appearance selector stay neon and responsive",()=>{
+ const profile=readFileSync(new URL("profile.html",root),"utf8");
+ const editor=readFileSync(new URL("profile-edit.html",root),"utf8");
+ assert.match(profile,/profile\.css\?v=20261103-gravewave-profile3/);
+ assert.match(editor,/profile\.css\?v=20261103-gravewave-profile3/);
+ for(const selector of [
+  ".profile-shell .studio-theme-presets button[aria-pressed=\"true\"]",
+  ".profile-shell .studio-layout-presets button",
+  "#profile .profile-stats>div",
+  "#profile dl>div",
+  "#profile .wallet-card",
+  "#profile .friend-card",
+  ".profile-shell .studio-preview-card"
+ ]) assert.ok(css.includes(selector),"Missing themed profile box: "+selector);
+ const colors=[...css.matchAll(/#[0-9a-fA-F]{6}\b/g)].map(match=>match[0]);
+ const retired=colors.filter(hex=>{
+  const [r,g,b]=[1,3,5].map(i=>Number.parseInt(hex.slice(i,i+2),16));
+  return r>=g&&g>=b&&r-b>=10;
+ });
+ assert.deepEqual([...new Set(retired)],[],"Retired brown profile colors returned");
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
