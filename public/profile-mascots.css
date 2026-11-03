@@ -12,3 +12,7 @@
 .mascot-profile-art{position:relative;width:94px;height:94px;flex-shrink:0}.mascot-profile-art img{position:absolute;inset:0;width:94px;height:94px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}.mascot-profile-art img.mascot-profile-layer{z-index:2;pointer-events:none;filter:drop-shadow(0 2px 3px #0007)}
 
 .mascot-profile-art img.mascot-profile-habitat{z-index:0;object-fit:cover;filter:none;border-radius:8px}.mascot-profile-art img.mascot-profile-master{z-index:1}.mascot-profile-art img.mascot-profile-decoration{z-index:2;pointer-events:none;filter:drop-shadow(0 2px 4px #0008)}
+
+.mascot-profile-medals-title{color:#c6ff45;font-size:1rem;margin:14px 0 8px}.mascot-profile-medals{display:flex;gap:8px;flex-wrap:wrap}
+.mascot-profile-medal{display:flex;align-items:center;gap:5px;border:1px solid #79ffe76a;background:#1c1531;border-radius:10px;padding:5px 9px;color:#eee4ff}
+.mascot-profile-medal img{width:40px;height:40px;object-fit:contain}.mascot-profile-medal small{color:#e8d9fa;font-size:.71rem;max-width:110px;line-height:1.3}
