@@ -53,6 +53,10 @@ async function mount(){
    }
    item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
    if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
+   const visit=el('a','mascot-profile-link','⌂ Visit room');
+   visit.href='/mascot-room.html?user='+encodeURIComponent(user)+'&pet='+encodeURIComponent(String(pet.id));
+   visit.setAttribute('aria-label','Visit '+pet.nickname+'\'s room');
+   item.append(visit);
    group.append(item);
   }
   card.append(group);
