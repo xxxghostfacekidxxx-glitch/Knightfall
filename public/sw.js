@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v25";
+const CACHE_NAME = "knightfall-shell-v26";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -19,7 +19,14 @@ const APP_SHELL = [
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
+  // A single optional asset failing over a mobile connection must not prevent
+  // the push service worker from installing. cache.addAll rejected the entire
+  // install when any one of these resources failed to download.
+  event.waitUntil(caches.open(CACHE_NAME).then(async cache => {
+    const results=await Promise.allSettled(APP_SHELL.map(resource=>cache.add(resource)));
+    const failures=results.filter(result=>result.status==="rejected").length;
+    if(failures)console.warn("offline_shell_partial_cache",failures);
+  }));
 });
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") event.waitUntil(self.skipWaiting());
