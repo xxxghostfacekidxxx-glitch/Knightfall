@@ -76,7 +76,7 @@ export async function handleMascotAdventures(request,env,url,user,{json,rateLimi
   return respond(await readAdventures(env,user));
  }
  if(!path.startsWith('/api/mascot-pets/quests/')&&!path.startsWith('/api/mascot-pets/eggs/')
-   &&!/\/habitat$/.test(path))return null;
+   &&!/\/(?:habitat|room)$/.test(path))return null;
  if(request.method!=='POST'&&request.method!=='PUT')return respond({error:'Method not allowed.'},405);
  if(!await rateLimit(env,request,'mascot-adventure-action',20,60,user.id))
   return respond({error:'Adventure actions are temporarily rate limited.'},429);
@@ -121,6 +121,23 @@ export async function handleMascotAdventures(request,env,url,user,{json,rateLimi
   catch{return respond({error:'Egg cannot hatch yet or species is already owned.'},409)}
   if(!egg)return respond({error:'That egg is not ready to hatch.'},409);
   return respond({ok:true,message:egg.nickname+' hatched and joined your Sanctuary!',adventures:await readAdventures(env,user)});
+ }
+ const roomLayout=path.match(/^\/api\/mascot-pets\/(\d+)\/room$/);
+ if(roomLayout&&request.method==='PUT'){
+  const petId=Number(roomLayout[1]),x=body.x,y=body.y,pose=body.pose;
+  if(!Number.isSafeInteger(petId)||petId<=0||
+    !Number.isInteger(x)||x<8||x>92||
+    !Number.isInteger(y)||y<25||y>85||
+    !['idle','bounce','mischief'].includes(pose))
+   return respond({error:'Choose a valid room location and pose.'},400);
+  const owned=await env.DB.prepare('SELECT id FROM mascot_pets WHERE id=? AND user_id=?')
+   .bind(petId,user.id).first();
+  if(!owned)return respond({error:'This is not your pet room.'},404);
+  try{
+   await env.DB.prepare("INSERT INTO mascot_room_layouts(pet_id,user_id,x_percent,y_percent,pose,updated_at) VALUES(?,?,?,?,?,?) ON CONFLICT(pet_id) DO UPDATE SET x_percent=excluded.x_percent,y_percent=excluded.y_percent,pose=excluded.pose,updated_at=excluded.updated_at")
+    .bind(petId,user.id,x,y,pose,new Date().toISOString()).run();
+  }catch{return respond({error:'Room layout could not be saved.'},409)}
+  return respond({ok:true,room:{x,y,pose},message:'Your companion room was saved.'});
  }
  const room=path.match(/^\/api\/mascot-pets\/(\d+)\/habitat$/);
  if(room&&request.method==='PUT'){
