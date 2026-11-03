@@ -92,31 +92,35 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 
 - `0103_mascot_pets.sql` adds persistent member-owned pets and a single featured companion.
 - `0104_mascot_economy.sql` adds all 22 rescue species, level-gated Cinders prices, twelve cosmetics, wardrobe entitlements and equipment slots. Atomic SQLite triggers perform wallet debits and prevent duplicate or unauthorized acquisitions.
-- Both schemas were created in the production D1 database through the authorized Cloudflare API on November 2, 2026 and their tables, indexes, and triggers were subsequently read-verified. **This does not imply that Wrangler's `d1_migrations` ledger records either migration.** Reconcile the ledger using the reviewed Wrangler migration process before the next routine migration. Both files use idempotent table, trigger, index creation and catalog inserts; still inspect actual schema and ledger before applying.
+- Both schemas were created in the production D1 database through the authorized Cloudflare API on November 2, 2026 and their tables, indexes, and triggers were subsequently read-verified. **The `d1_migrations` ledger has since been reconciled for migrations 0103–0108 after complete production schema verification.** Both files use idempotent table, trigger, index creation and catalog inserts; still inspect actual schema and ledger before applying.
 - No Stripe secrets are configured on the production Worker at launch. Premium cosmetic checkout must remain disabled until `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` are securely configured and the signed webhook endpoint is tested. Never fulfill payment based solely on browser redirect success.
 - Run `python3 scripts/mascot-economy-sql.test.py` and `node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs` before economy or payment changes.
 
 ## Sanctuary Expeditions · rescue eggs, species quests, and habitats
 
 - `0105_mascot_adventures.sql` adds per-species daily quests, one-time reward claims, earned shell fragments, exact-species incubating eggs and owner-controlled habitats.
-- Production D1 schema was applied through the authorized Cloudflare API after the in-memory SQLite and Node integration test suites passed. **The Wrangler migration ledger may still need reconciliation** before future routine migration commands. The SQL is additive and uses idempotent CREATE statements, but always inspect ledger and actual schema before applying.
+- Production D1 schema was applied through the authorized Cloudflare API after the in-memory SQLite and Node integration test suites passed. **The migration ledger was reconciled for 0103–0108 after schema verification.** The SQL is additive and uses idempotent CREATE statements, but always inspect ledger and actual schema before applying.
 - Quests are limited to three starts and three successful claims per UTC day. A reward pays 75 Cinders plus one Rescue Shell only when a legitimate post-quest care action completes. Three earned shells craft a chosen-species egg with at least 35 minutes of incubation. No paid random eggs or irreversible loss of pets.
 - Habitats and decorative scenes are free level-based unlocks. Habitat ownership is verified against the authenticated user's pet, and both eggs and rewards have D1 triggers guarding against replay and cross-account access.
 - Validate with `python3 scripts/mascot-adventures-sql.test.py` and `node --test backend/src/mascot-adventures.test.mjs`, in addition to the existing Sanctuary suites.
 
-- `0106_mascot_egg_reservations.sql` adds a database-level reservation guard so members cannot spend Cinders rescuing the exact same mascot while its earned egg is incubating. Applied to production D1 after the isolation and integration tests passed. Its migration-ledger entry also requires review before any further Wrangler migrations.
+- `0106_mascot_egg_reservations.sql` adds a database-level reservation guard so members cannot spend Cinders rescuing the exact same mascot while its earned egg is incubating. Applied to production D1 after the isolation and integration tests passed. Its migration-ledger entry has now been read-verified.
 
 ## Sanctuary Passport and Cinder Catch · November 2, 2026
 
 - `0107_mascot_passport.sql` creates eight lifetime achievements for collecting pets, hatching eggs, finishing quests and equipping cosmetics. Achievements reward a combined maximum of 4,075 Cinders per account, only once per badge. The claim trigger calculates qualification from authenticated account records; client progress, score and requested reward amounts are never trusted.
-- Production D1 was updated through the authorized Cloudflare API and read-verified with eight badge definitions, two protection triggers and no existing claims at migration time. **Wrangler's `d1_migrations` ledger still needs reconciliation** before routine migration runs.
+- Production D1 was updated through the authorized Cloudflare API and read-verified with eight badge definitions, two protection triggers and no existing claims at migration time. **The `d1_migrations` ledger entry is now present and verified.**
 - `public/mascot-cinder-catch.js` is an optional touch/keyboard game; winning calls the already protected `/api/mascot-pets/:id/care` endpoint with `action:play` and its existing 10-minute cooldown. The game never grants wallet currency from client-reported scores. Pets still have the existing care buttons for accessibility.
 - Test with `node --test backend/src/mascot-passport.test.mjs`, `python3 scripts/mascot-passport-sql.test.py`, plus the full Sanctuary workflow.
 
 ## Little Madhouse interactive rooms · November 2, 2026
 
 - `0108_mascot_room_layouts.sql` stores one saved position (8–92% X, 25–85% Y) and one pose (`idle`, `bounce`, or `mischief`) per account-owned pet. Database triggers reject cross-account inserts, owner transfers, and invalid values; room changes award no Cinders.
-- Production D1 room table and both ownership triggers were installed and read-verified through the authorized Cloudflare API. There were zero saved rooms at installation. **Wrangler's migration ledger must be reconciled against migrations 0103–0108 before any routine migration runs**; do not blindly replay them.
+- Production D1 room table and both ownership triggers were installed and read-verified through the authorized Cloudflare API. There were zero saved rooms at installation. **All six Sanctuary migration ledger entries (0103–0108) are present and verified**; do not blindly replay migrations.
 - `/mascot-room.html` supports touch drag, keyboard repositioning, level-locked habitats and decorations, layered account-owned accessories, and the existing protected Feed/Play/Rest actions.
 - The read-only `/mascot-room.html?user=<username>&pet=<id>` mode uses the preexisting `/api/mascot-pets/profile/:username` route. That route enforces private/friends visibility and blocks. Visitors have no write controls; only authenticated owners can call the room update endpoint.
 - Run `python3 scripts/mascot-room-sql.test.py`, `node --test backend/src/mascot-room.test.mjs`, and the full Sanctuary workflow before future room changes.
+
+### Sanctuary D1 migration ledger reconciliation
+
+On November 3, 2026 UTC, the production D1 database was audited and all 36 expected objects from 0103–0108 were confirmed (15 tables, 19 triggers, 2 indexes). All six migration names were absent from `d1_migrations` despite their schemas already being installed by direct API requests. After verifying the objects, the six names were recorded using idempotent `INSERT OR IGNORE` statements. A subsequent read-only query confirmed each ledger entry. This reconciliation applies **only** to Sanctuary migrations 0103–0108; it does not certify unrelated migration files or replace future normal Wrangler migration workflows.
