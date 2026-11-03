@@ -64,3 +64,59 @@
 .kf-memo-app.compact .memo-member-results{max-height:98px}
 @media(max-width:740px){.kf-memo-app:not(.compact) .memo-content{grid-template-columns:1fr}.kf-memo-app:not(.compact) .memo-list{max-height:170px}.kf-memo-app:not(.compact) .memo-send-box{padding:12px}}
 @media(prefers-reduced-motion:reduce){.kf-memo-app .memo-button{transition:none!important}}
+
+
+/* Separate Memo Mail and Live Chat: never combine written notes and chat history. */
+.kf-memo-app .memo-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:5px;border:1px solid #695184;border-radius:13px;background:#110f20}
+.kf-memo-app .memo-tab{flex:1 1 108px;border:1px solid transparent;border-radius:9px;padding:10px 11px;background:transparent;color:#d1bddd;cursor:pointer;min-height:44px;font:850 .86rem/1.3 Inter,system-ui,sans-serif}
+.kf-memo-app .memo-tab[aria-selected="true"]{background:linear-gradient(125deg,#372346,#1b252b);border-color:#c6ff45;color:#c6ff45;box-shadow:0 0 14px #c6ff4511}
+.kf-memo-app .memo-tab:hover:not([aria-selected="true"]){background:#2c2039}
+.kf-memo-app .memo-communications{min-width:0}
+.kf-memo-app .memo-communications>section{display:grid;gap:10px}
+.kf-memo-app .memo-subhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px}
+.kf-memo-app .memo-subhead>strong{font-size:1.02rem;color:#f8eaff}
+.kf-memo-app .memo-switch{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.kf-memo-app .memo-hint{font-size:.79rem;line-height:1.5;color:#bcaec9;margin:0}
+.kf-memo-app .memo-mail-layout,.kf-memo-app .memo-chat-layout{display:grid;grid-template-columns:minmax(160px,.75fr) minmax(0,1.75fr);gap:10px;min-width:0;align-items:stretch}
+.kf-memo-app .memo-mail-list,.kf-memo-app .memo-chat-list{display:grid;align-content:start;gap:7px;min-width:0;max-height:455px;overflow:auto;border:1px solid #71548b70;border-radius:13px;background:#110e20;padding:9px}
+.kf-memo-app .memo-mail-item,.kf-memo-app .memo-chat-contact{display:grid;gap:3px;text-align:left;min-width:0;border:1px solid #634c7b;border-radius:10px;background:#1a152b;color:#eee3fa;padding:10px;font:inherit;font-size:.81rem;cursor:pointer}
+.kf-memo-app .memo-mail-item strong,.kf-memo-app .memo-chat-contact strong{color:#f8ecff;overflow-wrap:anywhere}
+.kf-memo-app .memo-mail-item small,.kf-memo-app .memo-chat-contact small{color:#c3afd2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kf-memo-app .memo-mail-item.unread{border-color:#79ffe7;box-shadow:inset 3px 0 #79ffe7}
+.kf-memo-app .memo-mail-item.active,.kf-memo-app .memo-chat-contact.active{border-color:#c6ff45;background:#22262a}
+.kf-memo-app .memo-mail-detail{min-height:280px;max-height:550px;overflow-y:auto;padding:16px;border:1px solid #a967a577;border-radius:13px;background:radial-gradient(ellipse at 0 0,#ff55d814,transparent 60%),#151222}
+.kf-memo-app .memo-mail-detail h3{font-size:1.24rem;line-height:1.25;margin:0 0 8px;color:#f9e7ff;overflow-wrap:anywhere}
+.kf-memo-app .memo-mail-meta{color:#79ffe7;font-size:.78rem;line-height:1.6;margin:0 0 13px}
+.kf-memo-app .memo-mail-body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.91rem;line-height:1.65}
+.kf-memo-app .memo-mail-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px;padding-top:12px;border-top:1px solid #73548566}
+.kf-memo-app .memo-chat-find{display:grid;gap:5px}
+.kf-memo-app .memo-chat-search{width:100%;border:1px solid #796091;border-radius:10px;padding:10px;background:#121222;color:#fff;font:inherit;min-height:44px}
+.kf-memo-app .memo-chat-results{display:grid;gap:5px;max-height:160px;overflow-y:auto}
+.kf-memo-app .memo-chat-result{min-height:40px;padding:8px 11px;border:1px solid #6e6584;border-radius:9px;background:#21182c;color:#f3e2ff;text-align:left;font:inherit;font-size:.82rem;cursor:pointer}
+.kf-memo-app .memo-chat-result:hover{border-color:#c6ff45}
+.kf-memo-app .memo-chat-thread{display:flex;flex-direction:column;min-width:0;min-height:320px;max-height:510px;overflow:hidden;border:1px solid #8f58a273;border-radius:14px;background:#0f1020}
+.kf-memo-app .memo-chat-title{padding:11px 14px;border-bottom:1px solid #8e5d9266;color:#c6ff45;font-weight:900;font-size:.88rem;overflow:hidden;text-overflow:ellipsis}
+.kf-memo-app .memo-chat-messages{display:flex;flex:1 1 auto;flex-direction:column;gap:8px;min-height:130px;overflow-y:auto;padding:12px}
+.kf-memo-app .memo-chat-bubble{max-width:85%;padding:9px 12px;border:1px solid #754886;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.86rem;line-height:1.55}
+.kf-memo-app .memo-chat-bubble.mine{align-self:flex-end;border-color:#a35eac;background:#41214b}
+.kf-memo-app .memo-chat-bubble.theirs{align-self:flex-start;border-color:#58877b;background:#162b31}
+.kf-memo-app .memo-chat-form{display:flex;align-items:flex-end;gap:7px;padding:10px;border-top:1px solid #6349855c}
+.kf-memo-app .memo-chat-text{flex:1 1 auto;min-width:0;max-height:140px;resize:vertical;border:1px solid #70538d;border-radius:10px;padding:9px 11px;background:#080c19;color:#f9efff;font:inherit;font-size:.85rem;line-height:1.5}
+.kf-memo-app .memo-chat-form .memo-button{flex:0 0 auto;min-height:44px}
+.kf-memo-app .memo-unread{color:#c6ff45!important;font-weight:800}
+.kf-memo-app.compact .memo-tab{min-height:35px;padding:8px 4px;flex-basis:85px;font-size:.71rem}
+.kf-memo-app.compact .memo-subhead{gap:5px}
+.kf-memo-app.compact .memo-subhead>strong{font-size:.85rem}
+.kf-memo-app.compact .memo-hint{font-size:.72rem}
+.kf-memo-app.compact .memo-mail-layout,.kf-memo-app.compact .memo-chat-layout{grid-template-columns:minmax(0,1fr);gap:6px}
+.kf-memo-app.compact .memo-mail-list,.kf-memo-app.compact .memo-chat-list{display:flex;overflow-x:auto;overflow-y:hidden;max-height:88px;min-height:60px}
+.kf-memo-app.compact .memo-mail-item,.kf-memo-app.compact .memo-chat-contact{flex:0 0 135px;width:135px;padding:7px}
+.kf-memo-app.compact .memo-mail-detail{padding:10px;min-height:185px;max-height:340px}
+.kf-memo-app.compact .memo-mail-detail h3{font-size:1rem}
+.kf-memo-app.compact .memo-chat-thread{min-height:250px;max-height:370px}
+.kf-memo-app.compact .memo-chat-messages{min-height:100px;padding:7px}
+.kf-memo-app.compact .memo-chat-bubble{font-size:.76rem;padding:7px 8px}
+.kf-memo-app.compact .memo-chat-form{padding:6px;gap:5px}
+.kf-memo-app.compact .memo-chat-text{font-size:.76rem;padding:7px}
+@media(max-width:740px){.kf-memo-app:not(.compact) .memo-mail-layout,.kf-memo-app:not(.compact) .memo-chat-layout{grid-template-columns:1fr}.kf-memo-app:not(.compact) .memo-mail-list,.kf-memo-app:not(.compact) .memo-chat-list{max-height:160px}.kf-memo-app:not(.compact) .memo-chat-thread{max-height:520px}}
+@media(max-width:420px){.kf-memo-app .memo-tab{font-size:.75rem;padding:8px 6px}.kf-memo-app .memo-subhead .memo-button{padding:6px 9px;font-size:.72rem}.kf-memo-app .memo-chat-messages{padding:8px}}
