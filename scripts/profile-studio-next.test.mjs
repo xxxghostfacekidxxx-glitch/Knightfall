@@ -59,10 +59,10 @@ test("Saving profile and section layout is coordinated and does not force naviga
  assert.doesNotMatch(studio,/\blocalStorage\s*[.\[]/);
 });
 test("Profile Studio sections are accessible and mobile responsive",()=>{
- for(const id of ["studio-save-indicator","studio-completion-percent","studio-completion-track","studio-privacy-guide","studio-discard","studio-avatar-crop","studio-cover-crop","studio-view-profile"]){
+ for(const id of ["studio-save-indicator","studio-completion-percent","studio-completion-track","studio-privacy-guide","studio-discard","studio-avatar-crop","studio-cover-crop","studio-view-profile","studio-save-all-layout"]){
   assert.match(html,new RegExp('id="'+id+'"'),id);
  }
- for(const id of ["studio-appearance","studio-interests","studio-privacy","layout-studio","birth-chart-studio"]){
+ for(const id of ["studio-appearance","studio-interests","studio-privacy","photo-studio","layout-studio","birth-chart-studio"]){
   assert.match(html,new RegExp('id="'+id+'"'));
   assert.match(html,new RegExp('href="#'+id+'"'));
  }
