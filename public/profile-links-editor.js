@@ -67,6 +67,11 @@ function addRow(label=""){
  return true;
 }
 add.addEventListener("click",()=>addRow());
+document.getElementById("studio-link-save")?.addEventListener("click",()=>{
+ const submit=form?.querySelector('button[type="submit"]');
+ if(!loaded||saving||!form||submit?.disabled){msg("Finish loading or preparing your profile before saving.",true);return}
+ form.requestSubmit();
+});
 document.querySelectorAll("[data-studio-link-template]").forEach(b=>b.addEventListener("click",()=>addRow(b.dataset.studioLinkTemplate||"")));
 async function load(){
  if(loading)return;loading=true;const version=++run;msg("Loading saved links…");
