@@ -1,0 +1,24 @@
+/* Interactive draggable décor overlay and the permanent collectible Curio Cabinet. */
+.room-furniture-overlay{position:absolute;inset:0;z-index:3;pointer-events:none}
+.room-furniture-object{position:absolute;pointer-events:auto;left:50%;top:65%;width:clamp(56px,13vw,128px);height:clamp(65px,14vw,130px);border:none;background:transparent;padding:0;transform:translate(-50%,-68%);cursor:grab;touch-action:none;filter:drop-shadow(0 7px 12px #000a)}
+.room-furniture-object:active{cursor:grabbing}.room-furniture-object:focus-visible{outline:3px solid #c6ff45;border-radius:14px}
+.room-furniture-object img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}.room-furniture-object.flipped img{transform:scaleX(-1)}
+.room-furniture-label{position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);color:#d9ffca;background:#120f20e0;border:1px solid #c6ff4580;border-radius:6px;font-size:.61rem;white-space:nowrap;padding:2px 5px;pointer-events:none}
+.room-furniture-shop{border-top:1px solid #ff55d877;margin-top:26px;padding:22px 0 5px}
+.room-furniture-heading h2{margin:0;color:#c6ff45;font-size:clamp(1.45rem,3vw,2rem)}
+.room-furniture-heading p{color:#e1d1e7;font-size:.89rem;line-height:1.55;max-width:800px}
+.room-furniture-status{border-left:3px solid #79ffe7;padding:11px 14px;color:#e6fff5;background:#79ffe712;font-size:.84rem;border-radius:6px}
+.room-furniture-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:13px;margin-top:16px}
+.room-furniture-card{border:1px solid #ff55d87c;border-radius:14px;padding:12px;background:linear-gradient(145deg,#21152e,#0b1823);display:flex;flex-direction:column;gap:7px}
+.room-furniture-card.locked{border-color:#6f5a7a99}.room-furniture-card.locked .room-furniture-preview{filter:grayscale(.3)}
+.room-furniture-preview{height:110px;display:grid;place-items:center;background:radial-gradient(circle,#c6ff451c,transparent 67%)}
+.room-furniture-preview img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 7px 10px #0009)}
+.room-furniture-card h3{color:#fff;margin:0;font-size:.98rem;line-height:1.3}
+.room-furniture-card p{color:#c6ff45;margin:0;font-size:.81rem;font-weight:800}
+.room-furniture-card small{color:#d7c5dc;line-height:1.4;font-size:.72rem;flex:1}
+.room-furniture-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.room-furniture-button{cursor:pointer;background:#27172c;color:#e4ffde;border:1px solid #c6ff45;border-radius:8px;padding:9px 7px;font-weight:800;font-size:.71rem;flex:1}
+.room-furniture-button:disabled{cursor:default;opacity:.42}
+.room-furniture-button:hover:not(:disabled),.room-furniture-button:focus-visible{outline:1px solid #ff55d8;background:#4a2341}
+@media(max-width:550px){.room-furniture-gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.room-furniture-card{padding:8px}.room-furniture-preview{height:82px}.room-furniture-object{width:20%;height:23%}}
+@media(prefers-reduced-motion:reduce){.room-furniture-object{transition:none!important}}
