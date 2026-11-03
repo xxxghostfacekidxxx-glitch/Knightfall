@@ -58,7 +58,7 @@ test('quick send requires a saved memo, member selection and separate Memo Mail 
  assert.match(memo,/JSON\.stringify\(\{memo_id:selected,username:name\}\)/);
  assert.match(memo,/if\(!recipient\|\|!isSignedIn\|\|saving\)return/);
  assert.match(memo,/if\(dirty&&!await commit\(\)\)return/);
- assert.match(memo,/inboxLink\.href='\/memo-pad\.html\?tab=inbox'/);
+ assert.match(memo,/inboxLink\.href='\/memo-pad\.html\?tab=inbox&box=sent'/);
  assert.match(memo,/Your original is still saved privately/);
  assert.doesNotMatch(memo,/await api\('\/api\/messages\/conversations/);
 });
