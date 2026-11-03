@@ -4,10 +4,10 @@
  <meta charset="utf-8">
  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
  <meta name="theme-color" content="#0e0b1e">
- <meta name="description" content="Private Knightfall Memo Pad. Write and save notes, then quick-send them to Ash-Fall members through secure messaging.">
+ <meta name="description" content="Knightfall Memo Pad with private notes, a separate received/sent memo inbox and automatically refreshing live member chat.">
  <title>Memo Pad | Knightfall</title>
  <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
- <link rel="stylesheet" href="/memo-pad.css?v=20261103-memo1">
+ <link rel="stylesheet" href="/memo-pad.css?v=20261103-mail-chat2">
  <style>
   body{background:radial-gradient(ellipse at 35% 0,#47205366,transparent 44%),radial-gradient(ellipse at 90% 75%,#154e4230,transparent 45%),#090a14;color:#f6efff;font-family:Inter,system-ui,sans-serif;min-height:100vh}
   .memo-page{max-width:1180px;width:min(96%,1180px);margin:30px auto 60px}
@@ -23,7 +23,8 @@
   @media(max-width:650px){.memo-page{margin:12px auto 38px}.memo-shell{border-radius:14px;padding:10px}}
  </style>
  <script src="/nav.js?v=20261103-memo1" defer></script>
- <script src="/memo-pad.js?v=20261103-memo1" defer></script>
+ <script src="/memo-pad.js?v=20261103-mail-chat2" defer></script>
+ <script src="/memo-communications.js?v=20261103-mail-chat2" defer></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -31,14 +32,14 @@
  <div class="memo-hero">
   <div><div class="eyebrow">Miss Chaos's Desk · Personal Tools</div>
    <h1>MEMO <span>PAD.</span></h1>
-   <p>A private notebook for ideas, tasks and whatever needs remembering. Write once, open it from Miss Chaos's bubble anywhere on the site, or send a copy to another member's private inbox.</p>
+   <p>A private notebook for ideas, tasks and whatever needs remembering. Write notes, exchange memos through their own inbox, or chat with other members live. Everything is accessible from this page or Miss Chaos's floating bubble.</p>
   </div>
   <a href="/messages.html" class="memo-back">↗ Member Inbox</a>
  </div>
  <section class="memo-shell" aria-label="Private Memo Pad">
   <div id="memo-pad-app" aria-live="off"></div>
  </section>
- <p class="memo-footer">Memos are visible only to their account owner. A note is never sent automatically. Choosing a member and pressing Send memo sends a copy as an ordinary direct message, subject to the inbox's block, rate-limit and notification protections.</p>
+ <p class="memo-footer">Your private notes remain account-owned. Sending one makes a separate copy in the recipient's Memo Mail inbox, while real-time member chat stays in its own conversation history. Account blocks, rate limits and notification safeguards apply.</p>
 </main>
 </body>
 </html>
