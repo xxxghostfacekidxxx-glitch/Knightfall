@@ -26,7 +26,8 @@
 .arcade-lb-stat span{display:block;color:#c9b8d6;font-size:.72rem;font-weight:750;line-height:1.5}
 .arcade-lb-stat strong{display:block;color:#fff;font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;line-height:1.5;overflow-wrap:anywhere}
 .arcade-lb-stat:last-child strong{color:var(--lb-lime);font-size:clamp(1rem,2vw,1.35rem)}
-.arcade-lb-content{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(270px,.85fr);gap:1rem}
+.arcade-lb-content{display:none;grid-template-columns:minmax(0,1.25fr) minmax(270px,.85fr);gap:1rem}
+#arcade-leaderboards.arcade-lb-loaded .arcade-lb-content{display:grid}
 .arcade-lb-board,.arcade-lb-hall{padding:clamp(.9rem,2vw,1.4rem);border:1px solid #8b498c78;border-radius:16px;
  background:linear-gradient(150deg,#171329ef,#0e111feb)}
 .arcade-lb-boardhead{display:flex;justify-content:space-between;align-items:start;gap:.7rem;flex-wrap:wrap}
