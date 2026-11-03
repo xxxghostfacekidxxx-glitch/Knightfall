@@ -48,3 +48,14 @@
 .room-controls p{font-size:.78rem;line-height:1.6;color:#bfb5cd}
 @media(max-width:650px){.room-controls{grid-template-columns:1fr}.room-stage{aspect-ratio:1/1}.room-avatar{width:29%;height:34%}.room-furniture{width:32%}.room-toolbar h2{width:100%}.room-toolbar select{flex:1}}
 @media(prefers-reduced-motion:reduce){.room-avatar img,.room-avatar[data-pose="bounce"] img,.room-avatar[data-pose="mischief"] img,.room-spark{animation:none!important;transition:none}}
+
+/* Public rooms are read-only, with profile visibility controlled by the API. */
+.room-page [hidden]{display:none!important}
+.room-avatar{isolation:isolate}
+.room-avatar>#room-pet-image{position:relative;z-index:1}
+.room-avatar>#room-outfit{position:absolute;left:4%;top:3%;width:92%;height:90%;z-index:2;pointer-events:none;display:block}
+.room-avatar>#room-outfit img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 4px 5px #0008)}
+.room-avatar>#room-pet-label{position:relative;z-index:3}
+.room-avatar[data-pose="bounce"]>#room-outfit{animation:room-bounce 1.5s ease-in-out infinite}
+.room-avatar[data-pose="mischief"]>#room-outfit{animation:room-mischief 2.1s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.room-avatar[data-pose="bounce"]>#room-outfit,.room-avatar[data-pose="mischief"]>#room-outfit{animation:none!important}}
