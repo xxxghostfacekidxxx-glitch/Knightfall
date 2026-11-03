@@ -46,20 +46,30 @@
       try{
         if(!document.querySelector('link[data-memo-pad-css]')){
           const style=document.createElement('link');style.rel='stylesheet';
-          style.href='/memo-pad.css?v=20261103-memo1';style.dataset.memoPadCss='true';document.head.append(style);
+          style.href='/memo-pad.css?v=20261103-mail-chat2';style.dataset.memoPadCss='true';document.head.append(style);
         }
         if(!window.KnightfallMemoPad){
           await new Promise((resolve,reject)=>{
             const script=document.createElement('script');
-            script.src='/memo-pad.js?v=20261103-memo1';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
+            script.src='/memo-pad.js?v=20261103-mail-chat2';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
             document.head.append(script);
           });
         }
         if(!window.KnightfallMemoPad)throw Error('Memo Pad is unavailable.');
         window.KnightfallMemoPad.mount($("#mc-memo-host"),{compact:true});
+        // Separate member chat and Memo Mail load only when this tool opens.
+        if(!window.KnightfallMemoCommunications){
+          await new Promise((resolve,reject)=>{
+            const script=document.createElement('script');
+            script.src='/memo-communications.js?v=20261103-mail-chat2';
+            script.onload=resolve;script.onerror=()=>reject(Error('Member communication tools could not load.'));
+            document.head.append(script);
+          });
+        }
+        window.KnightfallMemoCommunications?.mount($("#mc-memo-host"));
         memoMounted=true;
       }catch(err){$("#mc-memo-host").textContent=err.message||'Memo Pad unavailable. Open the full page instead.'}
-    }else window.KnightfallMemoPad?.mount($("#mc-memo-host"),{compact:true});
+    }else{window.KnightfallMemoPad?.mount($("#mc-memo-host"),{compact:true});window.KnightfallMemoCommunications?.mount($("#mc-memo-host"));}
   }
   memoToggle.addEventListener('click',()=>memoPanel.hidden?openMemo():closeMemo());
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
