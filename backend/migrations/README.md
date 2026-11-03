@@ -112,3 +112,11 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 - Production D1 was updated through the authorized Cloudflare API and read-verified with eight badge definitions, two protection triggers and no existing claims at migration time. **Wrangler's `d1_migrations` ledger still needs reconciliation** before routine migration runs.
 - `public/mascot-cinder-catch.js` is an optional touch/keyboard game; winning calls the already protected `/api/mascot-pets/:id/care` endpoint with `action:play` and its existing 10-minute cooldown. The game never grants wallet currency from client-reported scores. Pets still have the existing care buttons for accessibility.
 - Test with `node --test backend/src/mascot-passport.test.mjs`, `python3 scripts/mascot-passport-sql.test.py`, plus the full Sanctuary workflow.
+
+## Little Madhouse interactive rooms · November 2, 2026
+
+- `0108_mascot_room_layouts.sql` stores one saved position (8–92% X, 25–85% Y) and one pose (`idle`, `bounce`, or `mischief`) per account-owned pet. Database triggers reject cross-account inserts, owner transfers, and invalid values; room changes award no Cinders.
+- Production D1 room table and both ownership triggers were installed and read-verified through the authorized Cloudflare API. There were zero saved rooms at installation. **Wrangler's migration ledger must be reconciled against migrations 0103–0108 before any routine migration runs**; do not blindly replay them.
+- `/mascot-room.html` supports touch drag, keyboard repositioning, level-locked habitats and decorations, layered account-owned accessories, and the existing protected Feed/Play/Rest actions.
+- The read-only `/mascot-room.html?user=<username>&pet=<id>` mode uses the preexisting `/api/mascot-pets/profile/:username` route. That route enforces private/friends visibility and blocks. Visitors have no write controls; only authenticated owners can call the room update endpoint.
+- Run `python3 scripts/mascot-room-sql.test.py`, `node --test backend/src/mascot-room.test.mjs`, and the full Sanctuary workflow before future room changes.
