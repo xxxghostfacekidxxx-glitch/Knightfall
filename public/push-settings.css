@@ -34,3 +34,15 @@
   .quiet-hours > div { flex-basis:100%; }
   .push-actions button { flex:1; }
 }
+
+/* Phone-specific push diagnostics and recovery affordances. */
+.push-device-details{margin:.1rem 0 1rem;padding:.6rem .75rem;background:#171225;border:1px solid #7b418d70;border-radius:9px;color:#e6d8f1!important;font-size:.78rem;line-height:1.6;overflow-wrap:anywhere}
+.push-status{color:#d8c8e2;line-height:1.55;overflow-wrap:anywhere}
+#repair-push{border-color:#c6ff45;color:#c6ff45;background:#152016}
+#repair-push:hover,#repair-push:focus-visible{background:#223323}
+.push-actions button{min-height:44px}
+.push-footnote{color:#b8a8c7!important}
+@media(max-width:700px){.push-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+#repair-push{grid-column:1/-1}.push-actions button{min-width:0}
+}
+@media(max-width:390px){.push-actions{grid-template-columns:1fr}.push-actions button{grid-column:auto!important}}
