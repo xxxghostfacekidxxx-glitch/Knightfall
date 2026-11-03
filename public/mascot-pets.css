@@ -124,3 +124,67 @@
 .pet-trials-promo{padding:19px;margin:24px 0;border:1px solid #ff55d88e;border-radius:17px;background:radial-gradient(circle at 95% 25%,#c6ff4522,transparent 42%),linear-gradient(125deg,#2a183a,#0c1c25)}
 .pet-trials-link{display:inline-block;padding:12px 18px;border-radius:10px;border:1px solid #c6ff45;background:#c6ff45;color:#0d1718!important;font-weight:950;text-decoration:none!important;box-shadow:0 3px 15px #c6ff4530}
 .pet-trials-link:hover,.pet-trials-link:focus-visible{background:#ebffbd;outline:3px solid #ff55d8}
+
+
+/* Neon Nuisances Sanctuary Command Deck v1.
+   Touch-friendly collection controls and low-noise, neon personality cards. */
+.sanctuary-command-deck{border:1px solid #ff55d87a;border-radius:22px;background:radial-gradient(ellipse at 0 0,#ff55d81d,transparent 60%),linear-gradient(145deg,#1b112a,#0d101d 80%);padding:clamp(15px,3vw,25px);margin:1.7rem 0;box-shadow:0 15px 45px #0005}
+.sanctuary-command-deck .sanctuary-section-heading{margin:0 0 16px}
+.sanctuary-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.sanctuary-kpi{position:relative;display:flex;flex-direction:column;gap:5px;min-width:0;padding:16px 13px;border:1px solid #6b3b8875;border-radius:15px;background:linear-gradient(145deg,#291736,#111321);overflow:hidden}
+.sanctuary-kpi-symbol{position:absolute;right:12px;top:6px;font-size:1.8rem;color:#c6ff4555}
+.sanctuary-kpi strong{font-size:clamp(1.15rem,2.5vw,1.9rem);color:#e9ffbd;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.sanctuary-kpi small{font-size:.77rem;color:#c4b7d2;line-height:1.35}
+.sanctuary-care-toolbar{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:15px;padding:15px;border:1px solid #79ffe75e;border-radius:14px;background:#111828}
+.sanctuary-care-toolbar>div{flex:1 1 270px}.sanctuary-care-toolbar strong{font-size:1rem;color:#fff}.sanctuary-care-toolbar p{font-size:.78rem;color:#c7b9d7;line-height:1.55;margin:5px 0 0}
+.sanctuary-care-toolbar label,.pet-filter-bar label{font-size:.73rem;font-weight:800;color:#c6ff45;white-space:nowrap}
+.sanctuary-care-toolbar select,.pet-filter-bar select,.pet-filter-bar input{border:1px solid #72518a;border-radius:10px;background:#131020;color:#f5eeff;font:inherit;font-size:.86rem;min-height:44px;padding:9px 11px;max-width:100%}
+.sanctuary-care-toolbar button{border:1px solid #c6ff45;background:linear-gradient(135deg,#d4ff71,#a8e72a);color:#14191b;border-radius:11px;min-height:44px;padding:10px 16px;cursor:pointer;font-weight:900}
+.sanctuary-care-toolbar button:disabled{opacity:.55;cursor:not-allowed}
+.sanctuary-care-toolbar button:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 4px 18px #c6ff4540}
+.sanctuary-care-toolbar :focus-visible,.pet-filter-bar :focus-visible,.pet-customize summary:focus-visible{outline:2px solid #c6ff45;outline-offset:3px}
+.pet-filter-bar{display:flex;align-items:center;flex-wrap:wrap;gap:9px 12px;margin:0 0 15px;padding:13px;border:1px solid #5d3a755e;border-radius:14px;background:linear-gradient(130deg,#1d122b,#101320)}
+.pet-filter-bar input{flex:1 1 210px;min-width:0}.pet-filter-bar select{flex:1 1 135px;min-width:0}
+.pet-filter-count{color:#79ffe7;font-size:.8rem;font-weight:800;margin-left:auto}
+.pet-grid .pet-card[hidden]{display:none!important}
+.pet-grid .pet-filter-empty{grid-column:1/-1}
+.pet-owned-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.pet-owned-grid .pet-card{gap:11px;padding:16px;border-color:#a45cbd88;background:radial-gradient(ellipse at 50% 0,#ff55d812,transparent 63%),linear-gradient(150deg,#21132e,#11121f 76%)}
+.pet-owned-grid .pet-card.featured{border-color:#c6ff45;box-shadow:0 0 0 1px #c6ff4560,0 14px 32px #0005}
+.pet-mood{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;border:1px solid #73528770;border-radius:10px;background:#1a1129;padding:8px 10px}
+.pet-mood strong{color:#c6ff45;font-size:.77rem}
+.pet-mood small{color:#d1c0e0;font-size:.73rem}
+.pet-mood[data-mood="hungry"] strong,.pet-mood[data-mood="bored"] strong{color:#ff9bdf}
+.pet-mood[data-mood="sleepy"] strong{color:#9baaff}
+.pet-mood[data-mood="radiant"]{border-color:#c6ff4570;background:linear-gradient(110deg,#22302466,#17132a)}
+.pet-xp-progress{display:grid;gap:5px}
+.pet-xp-head{display:flex;justify-content:space-between;gap:10px;color:#c8bed6;font-size:.72rem}
+.pet-xp-head span:last-child{color:#79ffe7;font-variant-numeric:tabular-nums;font-weight:750}
+.pet-xp-track{height:8px;background:#332941;border-radius:99px;overflow:hidden}
+.pet-xp-track i{display:block;height:100%;background:linear-gradient(90deg,#ff55d8,#c6ff45);border-radius:inherit}
+.pet-meter[data-health="low"] .pet-track i{background:linear-gradient(90deg,#e04ea1,#ff82b6)}
+.pet-meter[data-health="medium"] .pet-track i{background:linear-gradient(90deg,#ff55d8,#79ffe7)}
+.pet-personality{margin:0;color:#e9b7f0;font-size:.79rem;line-height:1.5}
+.pet-species-lore{margin:0;color:#b9b0c9;font-size:.79rem;line-height:1.45;min-height:3.5em}
+.pet-customize{margin-top:3px;border:1px solid #6d468277;border-radius:12px;background:#161021;min-width:0;overflow:hidden}
+.pet-customize summary{display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;list-style:none;padding:12px;color:#c6ff45;font-size:.82rem;font-weight:850}
+.pet-customize summary::-webkit-details-marker{display:none}
+.pet-customize summary:after{content:'+';font-size:1.2rem;line-height:1;color:#ff55d8}
+.pet-customize[open] summary:after{content:'−'}
+.pet-customize[open] summary{border-bottom:1px solid #6d468255}
+.pet-customize .pet-dress-up,.pet-customize .pet-habitat-controls{margin:0 11px 11px;padding-top:11px}
+.pet-customize .pet-dress-up{border-top:0}
+.pet-customize .pet-habitat-controls{border-top:1px solid #c6ff4544}
+@media(max-width:850px){.sanctuary-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.pet-owned-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+ .sanctuary-command-deck{padding:13px;border-radius:16px}
+ .sanctuary-overview{gap:8px}
+ .sanctuary-kpi{padding:12px 9px}.sanctuary-kpi-symbol{right:7px;font-size:1.3rem}
+ .sanctuary-care-toolbar{padding:11px;gap:8px}.sanctuary-care-toolbar label{flex-basis:100%}
+ .sanctuary-care-toolbar select{flex:1 1 115px}.sanctuary-care-toolbar button{flex:1 1 165px}
+ .pet-filter-bar{gap:7px;padding:10px}.pet-filter-bar label{flex-basis:100%}.pet-filter-bar input,.pet-filter-bar select{flex:1 1 100%}
+ .pet-owned-grid{grid-template-columns:minmax(0,1fr)}
+ .pet-owned-grid .pet-card{padding:14px}.pet-owned-grid .pet-card .pet-art{height:174px}
+ .pet-owned-grid .pet-card .pet-art img.pet-base-image{height:158px;width:158px}
+}
+@media(prefers-reduced-motion:reduce){.pet-owned-grid .pet-card .pet-art img{transition:none!important}}
