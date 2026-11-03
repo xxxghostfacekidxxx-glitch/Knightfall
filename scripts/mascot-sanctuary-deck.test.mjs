@@ -52,3 +52,14 @@ test('Companion room displays care feedback and never exposes private stats publ
  assert.match(roomJs,/if\(!visitor\)\{/);
  assert.match(roomCss,/\.room-need-tag\[data-state="low"\]/);
 });
+
+test('public profile shows personalities but never private needs or wallet details',()=>{
+ const profile=src('public/profile.html'),client=src('public/profile-mascots.js'),style=src('public/profile-mascots.css');
+ assert.match(profile,/profile-mascots\.js\?v=20261103-sanctuary-showcase1/);
+ assert.match(profile,/profile-mascots\.css\?v=20261103-sanctuary-showcase1/);
+ assert.match(client,/pet\.temperament/);
+ assert.match(client,/pet\.lore/);
+ assert.match(client,/mascot-profile-intro/);
+ assert.doesNotMatch(client,/pet\.vitals|pet\.next_care|wallet_balance/);
+ assert.match(style,/\.mascot-profile-pet\.featured/);
+});
