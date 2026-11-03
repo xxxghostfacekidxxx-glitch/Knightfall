@@ -85,3 +85,21 @@
 @media(prefers-reduced-motion:reduce){.pet-quest-button{transition:none}}
 
 .pet-egg-icon{width:84px;height:84px;flex:0 0 84px;display:flex;align-items:center;justify-content:center}.pet-egg-icon img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 12px #ff55d855)}.pet-egg-workshop img.pet-egg-craft-preview{width:105px;height:105px;object-fit:contain;justify-self:center;filter:drop-shadow(0 0 15px #c6ff4565)}
+
+/* Earnable Sanctuary Passport badges with never-purchased milestone rewards. */
+.passport-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:15px}
+.passport-badge{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-height:310px;padding:15px;border:1px solid #6f60848a;border-radius:16px;background:radial-gradient(circle at 50% 18%,#b78cff20,transparent 60%),linear-gradient(145deg,#1b152b,#111321);box-shadow:0 12px 24px #0004}
+.passport-badge.unlocked{border-color:#c6ff45;box-shadow:0 0 17px #c6ff4523,inset 0 1px #f4ffc355}
+.passport-badge.claimed{border-color:#79ffe797}
+.passport-badge-image{display:grid;place-items:center;width:100%;height:114px}
+.passport-badge-image img{height:112px;width:112px;object-fit:contain;filter:drop-shadow(0 8px 12px #0008)}
+.passport-badge:not(.unlocked):not(.claimed) .passport-badge-image img{filter:grayscale(.62) brightness(.68)}
+.passport-badge>strong{color:#fff;font-size:1rem;line-height:1.35}
+.passport-badge>p{color:#cfc1da;font-size:.78rem;line-height:1.4;flex:1;margin:0}
+.passport-badge-meta{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;font-size:.7rem;color:#a4f5e2;font-weight:750}
+.passport-track{height:7px;border-radius:8px;background:#382d47;overflow:hidden}.passport-fill{height:100%;background:linear-gradient(90deg,#ff55d8,#c6ff45);border-radius:8px}
+.passport-claim{padding:9px 8px;border:1px solid #c6ff4575;border-radius:9px;background:#18221e;color:#d6ffc1;font-size:.79rem;font-weight:800;cursor:pointer}
+.passport-claim:not(:disabled):hover,.passport-claim:not(:disabled):focus-visible{border-color:#ff55d8;background:#392341;outline:1px solid #ff55d8}
+.passport-claim:disabled{cursor:default;opacity:.59}
+#passport-status{border-left:3px solid #79ffe7;padding:8px 12px;color:#d6fff7;background:#79ffe711;border-radius:5px;font-size:.84rem}
+@media(max-width:550px){.passport-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.passport-badge{min-height:300px;padding:9px}.passport-badge-image{height:100px}.passport-badge-image img{height:95px;width:95px}}
