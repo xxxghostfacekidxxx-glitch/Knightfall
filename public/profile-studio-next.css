@@ -136,7 +136,7 @@ body:has(#studio-appearance) .profile-shell h1,body:has(#studio-appearance) .pro
 .studio-photo-details{padding:10px;display:grid;gap:4px;min-width:0}
 .studio-photo-details strong{font-size:.78rem;color:#eaddf2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .studio-photo-details small{font-size:.69rem;color:#b6a5c9}
-.studio-photo-controls{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:9px;border-top:1px solid #614d796b}
+.studio-photo-controls{margin-top:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:9px;border-top:1px solid #614d796b}
 .studio-photo-button{min-height:38px;min-width:0;padding:7px;border:1px solid #795394;background:#261b34;color:#eee2ff;border-radius:8px;font:850 .73rem/1.3 system-ui;cursor:pointer}
 .studio-photo-button.primary{border-color:#c6ff457f;color:#dfffbd;background:#243027}
 .studio-photo-button.danger{border-color:#ff55d875;color:#ffb5de;background:#342036}
@@ -146,3 +146,12 @@ body:has(#studio-appearance) .profile-shell h1,body:has(#studio-appearance) .pro
 .studio-photo-note{font-size:.73rem;line-height:1.5;margin:10px 0 0}
 @media(max-width:900px){#studio-photo-upload{grid-template-columns:repeat(2,minmax(0,1fr))}#studio-photo-upload button{grid-column:1/-1}}
 @media(max-width:580px){#studio-photo-upload{grid-template-columns:1fr}#studio-photo-upload button{grid-column:auto}#studio-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.studio-photo-controls{grid-template-columns:1fr}.studio-photo-button{min-height:37px}.studio-photo-card{border-radius:9px}}
+
+/* In-place gallery caption editing, visually separate from permanent delete. */
+.studio-photo-caption-edit{display:grid;gap:8px;padding:10px;margin:0 9px 9px;border:1px solid #9b64a385;border-radius:10px;background:#151523}
+.studio-photo-caption-edit label{font-size:.72rem;color:#d9cbe8;font-weight:850;display:grid;gap:5px}
+.studio-photo-caption-input{width:100%;min-height:39px;min-width:0;padding:8px 9px;border:1px solid #806298;border-radius:8px;color:#f6edff;background:#090c19;font:inherit;font-size:.8rem}
+.studio-photo-caption-input:focus-visible{outline:2px solid #79ffe7;outline-offset:2px}
+.studio-photo-caption-actions{display:flex;gap:7px;flex-wrap:wrap}
+.studio-photo-caption-actions .studio-photo-button{flex:1 1 95px}
+@media(max-width:580px){.studio-photo-controls{grid-template-columns:1fr}.studio-photo-caption-edit{padding:7px;margin:0 6px 6px}.studio-photo-caption-actions{display:grid;grid-template-columns:1fr}}
