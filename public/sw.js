@@ -47,14 +47,23 @@ self.addEventListener("push", event => {
   const title = String(payload.title || "Ash-Fall alert").slice(0, 120);
   const body = String(payload.body || "You have a new notification.").slice(0, 240);
   const path = safeNotificationPath(payload.url);
-  event.waitUntil(self.registration.showNotification(title, {
-    body,
-    icon: "/icons/chaos-cartridge.svg",
-    badge: "/icons/chaos-cartridge.svg",
-    tag: payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert",
-    renotify: false,
-    data: { url: path }
-  }));
+  const tag = payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert";
+  event.waitUntil((async () => {
+    // Android notifications require browser-supported raster artwork. Do not attach
+    // SVG icon/badge URLs: some mobile notification providers reject the display.
+    await self.registration.showNotification(title, {
+      body,
+      tag,
+      renotify: false,
+      data: { url: path }
+    });
+    // A confirmed service-worker receipt is more useful than a provider's 201/202:
+    // acceptance alone cannot prove that this Android device displayed anything.
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of windows) {
+      client.postMessage({ type: "KF_PUSH_RECEIVED", tag });
+    }
+  })());
 });
 self.addEventListener("notificationclick", event => {
   event.notification.close();
