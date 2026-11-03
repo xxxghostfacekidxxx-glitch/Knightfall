@@ -11,7 +11,7 @@
 <main class="messages-shell">
   <section class="messages-hero">
     <div><p class="eyebrow">PRIVATE CHANNELS</p><h1>THE INBOX<span>.</span></h1><p>Direct conversations between Ash-Fall members. Admins retain supervisory access for moderation and safety.</p></div>
-    <div class="messages-hero-actions"><button id="new-group" class="secondary">New group</button><button id="new-message" class="primary">New message</button></div>
+    <div class="messages-hero-actions"><button id="phone-push-help" class="secondary" type="button">📲 Phone alerts</button><button id="new-group" class="secondary">New group</button><button id="new-message" class="primary">New message</button></div>
   </section>
   <div id="status" class="msg-status" role="status" aria-live="polite"></div>
   <dialog id="compose-dialog" class="compose-dialog" aria-labelledby="compose-title">
@@ -81,8 +81,47 @@ function conversationName(c){return c?.kind==="group"?(c?.group_name||"Group con
 function relativeTime(value){const ms=Date.now()-new Date(value).getTime();if(!Number.isFinite(ms)||ms<0)return "recently";if(ms<60000)return "just now";if(ms<3600000)return Math.floor(ms/60000)+"m ago";if(ms<86400000)return Math.floor(ms/3600000)+"h ago";return new Date(value).toLocaleDateString([], {month:"short",day:"numeric"})}
 function presenceText(c){if(!c)return "● Offline status";if(c.kind==="group")return "● "+Number(c.online_count||0)+" online · "+Number(c.participant_count||0)+" members";if(c.other_is_online)return "● Online now";return c.other_last_seen_at?"Last active "+relativeTime(c.other_last_seen_at):"● Status unavailable"}
 function updatePresenceLabel(){const el=$("#presence-label");if(el)el.textContent=presenceText(activeConversation())}
-function updateNotificationButton(){const b=$("#enable-notifications");if(!b)return;if(!("Notification" in window)){b.textContent="Notifications unsupported";b.disabled=true;return}b.textContent=Notification.permission==="granted"?"Notifications on":Notification.permission==="denied"?"Notifications blocked":"Enable notifications";b.setAttribute("aria-pressed",Notification.permission==="granted"?"true":"false")}
-function maybeNotifyUnread(){const next=new Map(conversations.map(x=>[Number(x.id),Number(x.unread_count||0)]));if(unreadBaselineReady&&"Notification" in window&&Notification.permission==="granted"){for(const conv of conversations){const id=Number(conv.id),before=knownUnreadByConversation.get(id)||0,after=Number(conv.unread_count||0);if(after>before&&id!==Number(currentId)){const note=new Notification("New message · "+conversationName(conv),{body:"You have a new message in Ash-Fall.",tag:"ashfall-conversation-"+id});note.onclick=()=>{window.focus();openConversation(id);note.close()}}}}knownUnreadByConversation=next;unreadBaselineReady=true}
+function updateNotificationButton(){
+ const b=$("#enable-notifications");
+ if(!b)return;
+ const supported="Notification" in window&&"serviceWorker" in navigator&&"PushManager" in window;
+ b.disabled=!supported;
+ // Browser permission is NOT an active push subscription.
+ b.textContent=!supported?"Phone push unavailable":Notification.permission==="denied"?"Phone push blocked":"Phone push settings";
+ b.setAttribute("aria-pressed","false");
+}
+function maybeNotifyUnread(){
+ const next=new Map(conversations.map(x=>[Number(x.id),Number(x.unread_count||0)]));
+ const newUnreads=unreadBaselineReady?conversations.filter(conv=>{
+   const id=Number(conv.id);
+   return id!==Number(currentId)&&Number(conv.unread_count||0)>(knownUnreadByConversation.get(id)||0);
+ }):[];
+ knownUnreadByConversation=next;unreadBaselineReady=true;
+ if(!newUnreads.length||document.visibilityState!=="hidden"||!("Notification" in window)||Notification.permission!=="granted")return;
+ // Do not throw in Android Chrome: its page-level Notification constructor can be
+ // unavailable. Use ServiceWorkerRegistration.showNotification for fallback alerts.
+ // Registered cloud-push devices already receive their server-generated alert.
+ if("serviceWorker" in navigator){
+   navigator.serviceWorker.ready.then(async reg=>{
+     const subscribed=await reg.pushManager?.getSubscription().catch(()=>null);
+     if(subscribed)return;
+     for(const conv of newUnreads){
+       await reg.showNotification("New message · "+conversationName(conv),{
+         body:"You have a new message in Ash-Fall.",
+         tag:"ashfall-conversation-"+Number(conv.id),
+         data:{url:"/messages.html?conversation="+Number(conv.id)}
+       });
+     }
+   }).catch(error=>console.warn("foreground_notification_unavailable",String(error)));
+ }else{
+   // Desktop fallback only. Never let notification UI errors interrupt messaging.
+   try{if(typeof Notification==="function")
+     for(const conv of newUnreads)new Notification("New message · "+conversationName(conv),{
+       body:"You have a new message in Ash-Fall.",tag:"ashfall-conversation-"+Number(conv.id)
+     });
+   }catch(error){console.warn("foreground_notification_unavailable",String(error));}
+ }
+}
 function drawConversations(){
  const q=$("#conversation-search").value.trim().toLowerCase();
  const unreadTotal=conversations.reduce((sum,x)=>sum+Math.max(0,Number(x.unread_count)||0),0);
@@ -175,6 +214,7 @@ $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archiv
 function syncMessagesViewport(){const height=window.visualViewport?.height||window.innerHeight;if(height>0)document.documentElement.style.setProperty("--messages-visible-height",height+"px")}syncMessagesViewport();window.addEventListener("resize",syncMessagesViewport,{passive:true});window.visualViewport?.addEventListener("resize",syncMessagesViewport,{passive:true});
 async function sendActivityPing(){if(document.hidden||Date.now()-lastActivityPing<45000)return;lastActivityPing=Date.now();try{await api("/api/activity/ping",{method:"POST",body:"{}"})}catch(error){console.warn("Presence heartbeat failed",error)}}
 $("#enable-notifications").addEventListener("click",()=>{location.href="/notifications.html"});
+$("#phone-push-help").addEventListener("click",()=>{location.href="/notifications.html"});
 window.addEventListener("beforeunload",()=>{if(pollHandle)clearInterval(pollHandle);if(typingPollHandle)clearInterval(typingPollHandle);if(presenceHandle)clearInterval(presenceHandle);if(memberSearchHandle)clearTimeout(memberSearchHandle);if(archiveSearchHandle)clearTimeout(archiveSearchHandle)});
 </script>
 </body></html>
