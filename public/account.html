@@ -56,7 +56,7 @@
           <div>
             <p class="eyebrow">ACCOUNT</p>
             <h1>${esc(user.display_name || user.username)}</h1>
-            <p class="handle">@${esc(user.username)} · ${esc(user.role || "member")}</p>
+            <p class="handle">@${esc(user.username)} · ${esc(user.public_title || (user.role === "god" ? "God" : user.role === "admin" ? "Administrator" : user.role === "moderator" ? "Moderator" : "Member"))}</p>
           </div>
         </div>
         <div class="account-grid">
