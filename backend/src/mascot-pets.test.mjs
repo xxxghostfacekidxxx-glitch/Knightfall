@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {MASCOT_SPECIES,petLevel,petVitals,serializePet,handleMascotPets} from './mascot-pets.js';
+import {MASCOT_SPECIES,SPECIES_PERSONALITIES,petLevel,petVitals,petMood,petBond,serializePet,handleMascotPets} from './mascot-pets.js';
 
 const owner={id:17,username:'test-user',role:'member'};
 const now=Date.parse('2026-11-02T20:00:00.000Z');
@@ -92,4 +92,53 @@ test('the main Worker route is integrated and generated art is not browser-local
  const client=readFileSync(new URL('../../public/mascot-pets.js',import.meta.url),'utf8');
  assert.match(client,/credentials:'include'/);
  assert.doesNotMatch(client,/localStorage\.setItem\(/);
+});
+
+test('every species has lore and a distinctive temperament with no lost art IDs',()=>{
+ assert.equal(Object.keys(SPECIES_PERSONALITIES).length,MASCOT_SPECIES.length);
+ for(const species of MASCOT_SPECIES){
+  assert.ok(species.temperament&&species.favorite&&species.lore);
+  assert.equal(species.temperament,SPECIES_PERSONALITIES[species.id][0]);
+ }
+});
+test('mood, bond and level progress come from server-owned pet vitals and XP',()=>{
+ const happy=serializePet({...sample,experience:140,adopted_at:new Date(now).toISOString(),fed_at:new Date(now).toISOString(),played_at:new Date(now).toISOString(),rested_at:new Date(now).toISOString()},now);
+ assert.deepEqual(happy.level_progress,{earned:100,needed:120,next_level_xp:160});
+ assert.equal(happy.bond.label,'Getting acquainted');
+ assert.equal(happy.mood.label,'Thriving');
+ assert.equal(petMood({hunger:15,joy:90,energy:95}).id,'hungry');
+ assert.equal(petMood({hunger:90,joy:15,energy:95}).id,'bored');
+ assert.equal(petMood({hunger:90,joy:90,energy:15}).id,'sleepy');
+ assert.equal(petBond(8).id,'inseparable');
+ const outsider=serializePet(sample,now,true);
+ assert.ok(!('mood' in outsider)&&!('level_progress' in outsider)&&!('vitals' in outsider));
+});
+test('care-all rejects invalid actions and missing authentication without database writes',async()=>{
+ const calls=[],db=stub((sql,values)=>{calls.push(sql);return null});
+ const unauth=await invoke('/api/mascot-pets/care-all','POST',{action:'feed'},db,async()=>null);
+ assert.equal(unauth.status,401);
+ const invalid=await invoke('/api/mascot-pets/care-all','POST',{action:'free-coins'},db);
+ assert.equal(invalid.status,400);
+ assert.equal(calls.length,0);
+});
+test('care-all conditionally updates only one owner collection and counts affected pets',async()=>{
+ const calls=[];
+ const db=stub((sql,values,mode)=>{
+  calls.push({sql,values,mode});
+  if(sql.includes('UPDATE mascot_pets')&&sql.includes('RETURNING id'))return {results:[{id:5},{id:7}]};
+  if(sql.includes('UPDATE mascot_quest_runs'))return {success:true};
+  return null;
+ });
+ const result=await invoke('/api/mascot-pets/care-all','POST',{action:'play'},db);
+ assert.equal(result.status,200);
+ assert.equal(result.data.cared_for,2);
+ assert.equal(result.data.xp_awarded,36);
+ const update=calls.find(call=>call.sql.includes('UPDATE mascot_pets'));
+ assert.match(update.sql,/played_at IS NULL OR played_at<=\?/);
+ assert.match(update.sql,/WHERE user_id=\?/);
+ assert.equal(update.values[1],18);
+ assert.equal(update.values[2],owner.id);
+ const questCalls=calls.filter(call=>call.sql.includes('UPDATE mascot_quest_runs'));
+ assert.equal(questCalls.length,2);
+ for(const call of questCalls)assert.equal(call.values[0],owner.id);
 });
