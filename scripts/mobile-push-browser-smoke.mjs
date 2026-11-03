@@ -11,7 +11,8 @@ async function scenario({existing=false,registered=false}={}){
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,userAgent:"Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36"});
   const page=await context.newPage(),errors=[];
   page.on("pageerror",error=>errors.push(String(error)));
-  let onServer=registered,testEndpoint=null;
+  let onServer=registered,testEndpoint=null,workerStage="pending";
+  const testId="a".repeat(40);
   await page.addInitScript(({existing,endpoint,key})=>{
     window.__pushCalls=[];
     const subscription={endpoint,options:{applicationServerKey:Uint8Array.from(atob(key.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-key.length%4)%4)),x=>x.charCodeAt(0)).buffer},
@@ -52,7 +53,12 @@ async function scenario({existing=false,registered=false}={}){
       const body=request.postDataJSON();
       testEndpoint=body.endpoint;
       if(testEndpoint!==endpoint){status=409;data={error:"Wrong device"};}
-      else data={ok:true,delivery:{attempted:1,accepted:1,failed:0}};
+      else data={ok:true,delivery:{attempted:1,accepted:1,failed:0},test_id:testId};
+    }else if(path==="/api/push/test-status"){
+      data={state:workerStage};
+    }else if(path==="/api/push/receipt"){
+      workerStage=request.postDataJSON().stage;
+      data={ok:true};
     }else{status=404;data={error:"Mock API path not found: "+path};}
     await route.fulfill({status,contentType:"application/json",headers:{"access-control-allow-origin":new URL(base).origin,"access-control-allow-credentials":"true"},body:JSON.stringify(data)});
   });
@@ -74,8 +80,15 @@ async function scenario({existing=false,registered=false}={}){
   assert.match(await page.locator("#push-device-details").innerText(),/server registration connected/);
   await page.getByRole("button",{name:"Test this device"}).click();
   assert.equal(testEndpoint,endpoint,"Phone test must not target the PC subscription");
-  await page.evaluate(()=>window.__emitPushReceipt());
-  assert.match(await page.locator("#push-status").innerText(),/service worker received the test/);
+  await page.evaluate(async testId=>{
+    window.__emitPushReceipt();
+    await fetch("https://api.ash-fall.com/api/push/receipt",{
+      method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({test_id:testId,stage:"display-requested"})
+    });
+  },testId);
+  await page.waitForFunction(()=>/service worker received the push|Step 3\/3: The phone's service worker/.test(document.querySelector("#push-status")?.textContent||""),null,{timeout:5000});
+  await page.getByRole("button",{name:"Test this device"}).waitFor({state:"visible"});
   const width=await page.evaluate(()=>({screen:document.documentElement.clientWidth,content:document.documentElement.scrollWidth}));
   assert.ok(width.content<=width.screen+2,"Mobile push settings overflow the phone viewport: "+JSON.stringify(width));
   assert.deepEqual(errors,[],"JavaScript exceptions in mobile notification page");
