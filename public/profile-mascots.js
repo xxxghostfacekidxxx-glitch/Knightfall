@@ -36,6 +36,11 @@ async function mount(){
    card.append(el('p','mascot-profile-status',d.own_profile?'No pets yet. Adopt a Neon Nuisance to make your profile come alive.':'No companions on display yet.'));
    return;
   }
+  const featured=d.pets.find(p=>p.featured)||d.pets[0];
+  const summary=el('div','mascot-profile-intro');
+  summary.append(el('strong','',d.pets.length+' / 22 companions collected'));
+  if(featured)summary.append(el('p','','✦ '+featured.nickname+' · '+(featured.temperament||'Curious')+' · '+(featured.lore||'A misfit with a story worth sharing.')));
+  card.append(summary);
   const group=el('div','mascot-profile-grid');
   for(const pet of d.pets){
    const item=el('div','mascot-profile-pet'+(pet.featured?' featured':''));
@@ -62,6 +67,8 @@ async function mount(){
     img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
    }
    item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
+   if(pet.temperament||pet.favorite)item.append(el('small','mascot-profile-trait',(pet.temperament||'Curious')+' · '+(pet.favorite||'Adventures')));
+   if(pet.lore)item.title=pet.lore;
    if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
    const visit=el('a','mascot-profile-link','⌂ Visit room');
    visit.href='/mascot-room.html?user='+encodeURIComponent(user)+'&pet='+encodeURIComponent(String(pet.id));
