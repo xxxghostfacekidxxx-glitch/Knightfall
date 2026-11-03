@@ -5,6 +5,7 @@
  */
 import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,petMarketPrice,petUnlockLevel} from './mascot-collectibles.js';
 import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
+import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -106,12 +107,14 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
     if(!friend)return respond({error:'Profile unavailable.'},403);
    }
   }
-  return respond({username:owner.username,pets:await petsFor(env,owner.id,!self),own_profile:!!self});
+  return respond({username:owner.username,pets:await petsFor(env,owner.id,!self),badges:await publicPassportBadges(env,owner.id),own_profile:!!self});
  }
  const user=await getUser(request,env);
  if(!user)return respond({error:'Sign in to use your mascot sanctuary.'},401);
  const adventureResponse=await handleMascotAdventures(request,env,url,user,{json,rateLimit,origin,petLevel,speciesCatalog:MASCOT_SPECIES});
  if(adventureResponse)return adventureResponse;
+ const passportResponse=await handleMascotPassport(request,env,url,user,{json,rateLimit,origin});
+ if(passportResponse)return passportResponse;
  if(path==='/api/mascot-pets/me'&&request.method==='GET'){
   const [pets,bank,inventory]=await Promise.all([petsFor(env,user.id),walletFor(env,user),
     env.DB.prepare('SELECT sku,acquired_at FROM mascot_wardrobe WHERE user_id=? ORDER BY acquired_at DESC').bind(user.id).all()]);
