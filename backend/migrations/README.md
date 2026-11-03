@@ -124,3 +124,10 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 ### Sanctuary D1 migration ledger reconciliation
 
 On November 3, 2026 UTC, the production D1 database was audited and all 36 expected objects from 0103–0108 were confirmed (15 tables, 19 triggers, 2 indexes). All six migration names were absent from `d1_migrations` despite their schemas already being installed by direct API requests. After verifying the objects, the six names were recorded using idempotent `INSERT OR IGNORE` statements. A subsequent read-only query confirmed each ledger entry. This reconciliation applies **only** to Sanctuary migrations 0103–0108; it does not certify unrelated migration files or replace future normal Wrangler migration workflows.
+
+## Sanctuary Curio Cabinet furniture · November 3, 2026 UTC
+
+- `0109_mascot_furniture.sql` adds eight deterministic home furnishings, account-wide own-once inventory, Cinders purchases and up to eight per-pet placements. A full catalog has four free and four Cinders-priced items. D1 triggers enforce ownership, price, pet level, and placement limits.
+- Production D1 was updated through the authorized Cloudflare API after Sanctuary's recent test passes. A read-only check verified all eight catalog entries, four tables and four protection triggers. `0109_mascot_furniture.sql` was then recorded in `d1_migrations` and its entry read-verified. This is separate from the earlier 0103–0108 reconciliation.
+- The Curio Cabinet client waits for the interactive room's selected-pet event before loading inventory, preventing the initial empty-selector race. Furnishing arrangements are stored server-side and do not mint XP or Cinders.
+- Tests: `python3 scripts/mascot-furniture-sql.test.py` and `node --test backend/src/mascot-furniture.test.mjs`, plus the Sanctuary workflow.
