@@ -75,6 +75,9 @@ test("Not Dead Yet 1.0 adds melee combat through the same kill reward path as bu
  assert.match(main,/meleeCooldown=\.9/);
  assert.match(main,/z\.hp-=z\.type==='boss'\?2:3/);
  assert.match(main,/meleeFlash>0/);
+ assert.match(main,/function barrelBlast\(prop\)/);
+ assert.match(main,/if\(p\.type==='barrel'\)barrelBlast\(p\)/);
+ assert.match(main,/if\(z\.hp<=0\)finishZombie\(z\)/);
  assert.match(main,/if\(k==='e'&&!e\.repeat\)melee\(\)/);
  assert.match(main,/\$\('touch-melee'\)\.addEventListener/);
  assert.match(html,/id="touch-melee"/);
@@ -93,7 +96,7 @@ test("Not Dead Yet movement repairs preserve character dash stats and forgiving 
 test("Not Dead Yet tactical indicators and collapsible progression panels retain every action",()=>{
  const html=read("public/not-dead-yet.html"),css=read("public/not-dead-yet-overhaul.css");
  for(const id of ["vitality-bar","magazine-bar","dash-bar","melee-bar","combat-objective",
-  "touch-melee","buy-upgrade","buy-barrel","buy-guttermaw","buy-dredge","buy-health",
+  "touch-melee","difficulty","buy-upgrade","buy-barrel","buy-guttermaw","buy-dredge","buy-health",
   "cloud-load","cloud-save","achievement-list","run-leaderboard","resume-checkpoint"]){
   const count=[...html.matchAll(new RegExp('id="'+id+'"','g'))].length;
   assert.equal(count,1,"missing or duplicated "+id);
@@ -104,4 +107,19 @@ test("Not Dead Yet tactical indicators and collapsible progression panels retain
  assert.match(css,/\.zombie-lobby/);
  assert.match(css,/#game-stage:is\(:fullscreen,\.immersive-fallback\)/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+test("Nightmare threats scale actual health, spawn rates, kills and account score metadata",()=>{
+ const html=read("public/not-dead-yet.html");
+ const main=[...html.matchAll(/<script\b(?![^>]*\bsrc\s*=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("function startGame"));
+ assert.match(main,/const difficulties=\{/);
+ assert.match(main,/enemyHealth:1\.65/);
+ assert.match(main,/difficulty\.enemyHealth/);
+ assert.match(main,/difficulty\.health/);
+ assert.match(main,/difficulty\.spawn/);
+ assert.match(main,/difficulty\.score/);
+ assert.match(main,/difficulty:difficultyKey,survived/);
+ assert.match(main,/function pollGamepad\(\)/);
+ assert.match(main,/edge\('melee',pressed\(3\),melee\)/);
+ assert.match(html,/value="nightmare"/);
 });
