@@ -35,7 +35,7 @@ test("Gallery photo can become a profile cover without modifying data before Sav
  assert.match(client,/profileForm\.elements\.cover_url/);
  assert.match(client,/cover\.dispatchEvent\(new Event\('input',\{bubbles:true\}\)\)/);
  assert.match(client,/Save profile to publish it/);
- const handler=client.slice(client.indexOf("use.addEventListener('click'"),client.indexOf("remove.addEventListener('click'"));
+ const handler=client.slice(client.indexOf("use.addEventListener('click'"),client.indexOf("edit.addEventListener('click'"));
  assert.doesNotMatch(handler,/fetch\(/);
  assert.doesNotMatch(handler,/api\(/);
 });
@@ -45,5 +45,20 @@ test("Deleting a cover gallery asset clears the corresponding published cover UR
  assert.match(client,/Delete this photo\? It is your selected cover/);
  assert.match(client,/\/api\/profile\/photos\/'\+p\.id/);
  assert.match(client,/if\(active\)\{/);
+ assert.doesNotMatch(client,/\.innerHTML\s*=/);
+});
+
+test("Photo captions can be edited without uploading new images",()=>{
+ assert.match(client,/edit\.addEventListener\('click'/);
+ assert.match(client,/studio-photo-caption-edit/);
+ assert.match(client,/text\.maxLength=240/);
+ assert.match(client,/method:'PATCH'/);
+ assert.match(client,/Caption updated without re-uploading/);
+ assert.match(api,/profile-photo-caption-edit/);
+ assert.match(api,/captionMatch&&request\.method==="PATCH"/);
+ assert.match(api,/photo\.kind!=="gallery"/);
+ assert.match(api,/Number\(photo\.user_id\)!==Number\(user\.id\)/);
+ assert.match(api,/SET caption=\? WHERE id=\? AND user_id=\?/);
+ assert.match(css,/\.studio-photo-caption-edit/);
  assert.doesNotMatch(client,/\.innerHTML\s*=/);
 });
