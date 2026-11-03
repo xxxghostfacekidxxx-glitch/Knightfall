@@ -39,6 +39,7 @@
  <div id="studio-link-rows" class="studio-link-rows" aria-label="Profile link editor"></div>
  <p id="studio-link-status" role="status" aria-live="polite" class="muted">Loading your profile links…</p>
  <p class="muted studio-link-note">Only links you explicitly save will appear on your profile. Use the up/down controls to change their order.</p>
+ <div class="studio-link-actions"><button type="button" id="studio-link-save" class="action">✓ Save profile &amp; links</button><a class="action" href="#studio-appearance">↑ Back to profile details</a></div>
 </section>
 <section class="studio-section" id="studio-privacy"><div class="studio-section-head"><span class="studio-step">04 / 07</span><div><h2>Privacy & visibility</h2><p class="muted">Decide who gets access to your profile and activity.</p></div></div><div class="studio-privacy-guide" id="studio-privacy-guide" aria-live="polite">Everyone can view your public profile. You can restrict it below.</div>
 <label>Who can view your profile<select name="profile_visibility"><option value="public">Everyone</option><option value="friends">Friends only</option><option value="private">Only me and moderators</option></select></label>
@@ -207,4 +208,4 @@ chartForm.addEventListener("submit",async event=>{
 });
 chartVisible.addEventListener("change",async()=>{const visible=chartVisible.checked;chartVisible.disabled=true;try{const result=await chartApi("PUT",{visible});chartStatus.textContent=result.visible?"Birth chart is now displayed on your profile.":"Birth chart hidden from your profile.";}catch(error){chartVisible.checked=!visible;chartStatus.textContent=error.message;}finally{chartVisible.disabled=false;}});
 document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
-</script><script src="/profile-studio-next.js?v=20261103-studio2" defer></script><script src="/profile-links-editor.js?v=20261103-links1" defer></script><script src="/profile-photo-studio.js?v=20261103-photo2" defer></script></body></html>
+</script><script src="/profile-studio-next.js?v=20261103-studio3" defer></script><script src="/profile-links-editor.js?v=20261103-links1" defer></script><script src="/profile-photo-studio.js?v=20261103-photo2" defer></script></body></html>
