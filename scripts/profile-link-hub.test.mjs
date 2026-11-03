@@ -14,7 +14,7 @@ test('Profile Link Hub scripts parse and dedicated editing section is reachable 
  assert.match(editor,/href="#link-studio"/);
  assert.match(editor,/id="studio-link-rows"/);
  assert.match(editor,/id="studio-link-add"/);
- assert.match(editor,/profile-links-editor\.js\?v=20261103-links2/);
+ assert.match(editor,/profile-links-editor\.js\?v=20261103-links3/);
  assert.match(editor,/profile-links\.css\?v=20261103-links2/);
  assert.match(editor,/window\.KnightfallProfileLinks\.save\(\)/);
 });
