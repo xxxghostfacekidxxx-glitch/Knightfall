@@ -3,11 +3,11 @@
 <body><header class="kf-header"></header><main class="notifications-shell">
 <section class="notifications-hero"><div><p class="eyebrow">COMMUNITY SIGNALS</p><h1>WHAT'S HAPPENING<span>.</span></h1><p>Replies, follows, messages, and other events that actually matter.</p></div><button id="read-all">Mark all read</button></section>
 <section class="push-settings" aria-labelledby="push-title"><div class="push-settings-head"><div><p class="eyebrow">DEVICE ALERTS</p><h2 id="push-title">Push notifications<span>.</span></h2><p>Get alerts even when Ash-Fall is not open, on supported browsers and devices.</p></div><button id="push-toggle" class="push-toggle" type="button">Checking support…</button></div>
-<div id="push-status" class="push-status" role="status" aria-live="polite"></div>
+<div id="push-status" class="push-status" role="status" aria-live="polite"></div><p id="push-device-details" class="push-device-details" aria-live="polite">Checking this device and its server registration…</p>
 <div class="push-preferences"><label><input type="checkbox" id="pref-messages" checked> <span><strong>Messages</strong><small>Direct and group conversations</small></span></label><label><input type="checkbox" id="pref-community" checked> <span><strong>Community</strong><small>Replies, mentions, follows, and friend activity</small></span></label><label><input type="checkbox" id="pref-account" checked> <span><strong>Account and site alerts</strong><small>Important account or moderation notices</small></span></label></div>
 <div class="quiet-hours"><div><strong>Quiet hours (UTC)</strong><small>Optional. Push alerts pause during this window.</small></div><label>Start <input id="quiet-start" type="time"></label><label>End <input id="quiet-end" type="time"></label></div>
-<div class="push-actions"><button id="save-prefs" type="button">Save preferences</button><button id="test-push" type="button" class="secondary-action">Send test notification</button></div>
-<p class="push-footnote">Your choices apply to this account. Browser permission is controlled by your device. You can turn push off here or in your browser settings.</p></section>
+<div class="push-actions"><button id="save-prefs" type="button">Save preferences</button><button id="test-push" type="button" class="secondary-action">Test this device</button><button id="repair-push" type="button" class="secondary-action">Repair push on this device</button></div>
+<p class="push-footnote">On Android: allow notifications for Chrome (or your installed Ash-Fall app) in Settings → Apps → Notifications, and for ash-fall.com in Chrome → Site settings → Notifications. Disable browser/app battery restrictions if background delivery stops. Browser permission alone does not override Android notification settings.</p></section>
 <div id="status" role="status" aria-live="polite"></div><section id="notifications"></section></main>
 <script src="/nav.js?v=20261027-category-nav6"></script><script>
 const API="https://api.ash-fall.com",root=document.querySelector("#notifications"),status=document.querySelector("#status"),pushStatus=document.querySelector("#push-status"),pushToggle=document.querySelector("#push-toggle"),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),fmt=v=>new Date(v).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
@@ -17,17 +17,165 @@ function safeNoticeUrl(value){if(typeof value!=="string"||!value.startsWith("/")
 
 async function load(){try{const d=await api("/api/notifications?limit=100");root.innerHTML=(d.notifications||[]).map(n=>'<article class="notice '+(n.read_at?"read":"unread")+'" data-notice="'+n.id+'"><div class="notice-icon">'+(n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+'</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+(n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+(safeNoticeUrl(n.url)?'<a class="notice-link" href="'+esc(safeNoticeUrl(n.url))+'">Open</a>':"")+'</article>').join("")||'<p class="empty">Nothing new. The silence is almost suspicious.</p>';document.querySelectorAll("[data-notice]").forEach(x=>x.onclick=async()=>{if(!x.classList.contains("unread"))return;try{await api("/api/notifications/"+x.dataset.notice,{method:"PATCH"});x.classList.remove("unread");x.classList.add("read")}catch(e){status.textContent=e.message}});status.textContent=(d.unread_count||0)+" unread";}catch(e){status.textContent=e.message}}
 function getPrefs(){return {push_messages:document.querySelector("#pref-messages").checked,push_community:document.querySelector("#pref-community").checked,push_account:document.querySelector("#pref-account").checked,quiet_start:document.querySelector("#quiet-start").value||null,quiet_end:document.querySelector("#quiet-end").value||null}}
-async function loadPrefs(){try{const d=await api("/api/notification-preferences"),p=d.preferences||{};document.querySelector("#pref-messages").checked=p.push_messages!==false;document.querySelector("#pref-community").checked=p.push_community!==false;document.querySelector("#pref-account").checked=p.push_account!==false;document.querySelector("#quiet-start").value=p.quiet_start||"";document.querySelector("#quiet-end").value=p.quiet_end||"";
-if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){pushToggle.disabled=true;pushToggle.textContent="Not supported";setPushStatus("This browser does not support Web Push. In-app notifications will still work.");return}
-if(!d.push_available){pushToggle.disabled=true;pushToggle.textContent="Setup pending";setPushStatus("Push delivery is not configured on the server yet. Settings are saved, but device alerts cannot activate until the site VAPID secrets are installed.");return}
-const reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();pushToggle.disabled=false;pushToggle.textContent=sub?"Turn off push notifications":"Enable push notifications";setPushStatus(sub?"This device is subscribed to push alerts.":"Push is available. Enable it to receive background alerts.");
-}catch(e){pushToggle.disabled=true;pushToggle.textContent="Sign in required";setPushStatus(e.message)}}
-async function savePrefs(){try{const p=getPrefs();if(!!p.quiet_start!==!!p.quiet_end)throw Error("Choose both quiet-hour times, or clear both.");await api("/api/notification-preferences",{method:"PUT",body:JSON.stringify(p)});setPushStatus("Notification preferences saved.");}catch(e){setPushStatus(e.message)}}
-pushToggle.addEventListener("click",async()=>{if(pushToggle.disabled)return;pushToggle.disabled=true;try{if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window))throw Error("This browser does not support Web Push.");const reg=await navigator.serviceWorker.ready,current=await reg.pushManager.getSubscription();if(current){await api("/api/push/subscriptions",{method:"DELETE",body:JSON.stringify({endpoint:current.endpoint})});await current.unsubscribe();setPushStatus("Push notifications are turned off for this device.");pushToggle.textContent="Enable push notifications";return}
-if(Notification.permission==="denied")throw Error("Notifications are blocked by your browser. Allow them in site settings, then try again.");const permission=await Notification.requestPermission();if(permission!=="granted")throw Error("Permission was not granted. You can enable it in your browser's site settings.");const keyData=await api("/api/push/vapid-public-key"),applicationServerKey=Uint8Array.from(atob(keyData.public_key.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-keyData.public_key.length%4)%4)),c=>c.charCodeAt(0));const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});try{await api("/api/push/subscriptions",{method:"POST",body:JSON.stringify({subscription:sub.toJSON()})})}catch(error){await sub.unsubscribe().catch(()=>{});throw error}await savePrefs();setPushStatus("Push notifications enabled for this device.");pushToggle.textContent="Turn off push notifications";
-}catch(e){setPushStatus(e.message)}finally{if(pushToggle.textContent!=="Setup pending"&&pushToggle.textContent!=="Not supported")pushToggle.disabled=false}});
+let pushTestPendingUntil=0;
+function supportsPush(){return isSecureContext&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;}
+function decodePublicKey(value){const raw=String(value||"").replace(/-/g,"+").replace(/_/g,"/");return Uint8Array.from(atob(raw+"=".repeat((4-raw.length%4)%4)),c=>c.charCodeAt(0));}
+function sameServerKey(subscription,publicKey){
+  const existing=subscription?.options?.applicationServerKey;
+  if(!existing)return true; // Older browsers do not expose the subscription's VAPID key.
+  const expected=decodePublicKey(publicKey),actual=new Uint8Array(existing);
+  return actual.length===expected.length&&actual.every((v,i)=>v===expected[i]);
+}
+async function pushRegistration(){
+  let reg=await navigator.serviceWorker.getRegistration("/");
+  if(!reg||!reg.active)reg=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+  return navigator.serviceWorker.ready;
+}
+function pushDeviceDetails({permission=Notification.permission,local=false,registered=false,keyValid=true}={}){
+  document.querySelector("#push-device-details").textContent=
+    "This device: permission "+permission+" · browser subscription "+(local?"present":"missing")+
+    " · server registration "+(registered?"connected":"missing")+
+    (keyValid?"":" · subscription key changed");
+}
+function setPushButton(mode){
+  pushToggle.dataset.mode=mode;
+  pushToggle.disabled=mode==="unsupported"||mode==="pending";
+  pushToggle.textContent={
+    enable:"Enable push notifications",disable:"Turn off push notifications",
+    repair:"Repair this device's push",blocked:"Notifications blocked in settings",
+    pending:"Server setup pending",unsupported:"Not supported"
+  }[mode]||"Enable push notifications";
+}
+async function syncThisDevice({repairMissing=true}={}){
+  if(!supportsPush()){
+    setPushButton("unsupported");
+    pushDeviceDetails({permission:"not supported"});
+    setPushStatus("This browser cannot use Web Push. On Android use current Chrome or an installed Ash-Fall web app, not an embedded app browser.");
+    return;
+  }
+  const data=await api("/api/notification-preferences"),p=data.preferences||{};
+  document.querySelector("#pref-messages").checked=p.push_messages!==false;
+  document.querySelector("#pref-community").checked=p.push_community!==false;
+  document.querySelector("#pref-account").checked=p.push_account!==false;
+  document.querySelector("#quiet-start").value=p.quiet_start||"";
+  document.querySelector("#quiet-end").value=p.quiet_end||"";
+  if(!data.push_available){
+    setPushButton("pending");
+    pushDeviceDetails();
+    setPushStatus("The push service is not configured yet. Your in-app notifications still work.");
+    return;
+  }
+  const reg=await pushRegistration();
+  const sub=await reg.pushManager.getSubscription();
+  const keyData=sub?await api("/api/push/vapid-public-key"):null;
+  const keyValid=!sub||sameServerKey(sub,keyData.public_key);
+  const listing=await api("/api/push/subscriptions");
+  let registered=!!sub&&(listing.subscriptions||[]).some(row=>row.endpoint===sub.endpoint);
+  if(sub&&keyValid&&!registered&&Notification.permission==="granted"&&repairMissing){
+    // Android may have a valid browser subscription that was never written to D1.
+    // Re-register it with the current signed-in account, without prompting again.
+    try {
+      await api("/api/push/subscriptions",{method:"POST",body:JSON.stringify({subscription:sub.toJSON()})});
+      registered=true;
+    }catch(error){console.warn("push_device_repair_failed",error.message);}
+  }
+  pushDeviceDetails({local:!!sub,registered,keyValid});
+  if(Notification.permission==="denied"){
+    setPushButton("blocked");
+    setPushStatus("Browser notifications are blocked. Allow ash-fall.com in your browser and Android app settings, then reopen this page.");
+  }else if(sub&&registered&&keyValid){
+    setPushButton("disable");
+    setPushStatus("This device is registered with the server. Use Test this device to confirm delivery to this phone, not another signed-in device.");
+  }else if(sub){
+    setPushButton("repair");
+    setPushStatus(keyValid?"This device's subscription is missing on the server. Tap Repair to reconnect it.":"The push subscription uses an outdated server key. Tap Repair to renew it.");
+  }else{
+    setPushButton("enable");
+    setPushStatus("This device is not subscribed. Enable push notifications to receive background alerts.");
+  }
+}
+async function loadPrefs(){
+  try{await syncThisDevice();}
+  catch(error){setPushButton("enable");setPushStatus("Could not check this device: "+error.message);document.querySelector("#push-device-details").textContent="Device registration check failed. You can try Repair push or reload the page.";}
+}
+async function savePrefs(){
+  try{const p=getPrefs();if(!!p.quiet_start!==!!p.quiet_end)throw Error("Choose both quiet-hour times, or clear both.");await api("/api/notification-preferences",{method:"PUT",body:JSON.stringify(p)});setPushStatus("Notification preferences saved.");}
+  catch(e){setPushStatus(e.message);}
+}
+async function enableThisDevice({forceRepair=false}={}){
+  if(!supportsPush())throw Error("Web Push is not supported by this browser. Use Chrome on Android.");
+  if(Notification.permission==="denied")throw Error("Notifications are blocked. Allow them in Android Settings and browser Site settings before trying again.");
+  // This MUST be called from a direct tap, before awaiting registration/fetch:
+  // mobile Chrome may drop transient user activation after an asynchronous step.
+  if(Notification.permission!=="granted"){
+    const permission=await Notification.requestPermission();
+    if(permission!=="granted")throw Error("Notification permission was not granted. Allow it in browser Site settings and try again.");
+  }
+  const keyData=await api("/api/push/vapid-public-key");
+  const reg=await pushRegistration();
+  let current=await reg.pushManager.getSubscription();
+  const keyValid=!current||sameServerKey(current,keyData.public_key);
+  if(current&&(!keyValid||forceRepair)){
+    const oldEndpoint=current.endpoint;
+    const unsubscribed=await current.unsubscribe();
+    if(!unsubscribed)throw Error("Browser could not renew this push subscription. Try clearing site notification permission and enabling it again.");
+    await api("/api/push/subscriptions",{method:"DELETE",body:JSON.stringify({endpoint:oldEndpoint})}).catch(()=>{});
+    current=null;
+  }
+  if(!current){
+    const applicationServerKey=decodePublicKey(keyData.public_key);
+    current=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});
+  }
+  // Always synchronize the browser subscription with D1. This repairs a missing
+  // server registration even when Chrome claims push is already enabled.
+  await api("/api/push/subscriptions",{method:"POST",body:JSON.stringify({subscription:current.toJSON()})});
+  await syncThisDevice({repairMissing:false});
+  setPushStatus("This device is connected. Use Test this device to verify phone delivery.");
+}
+pushToggle.addEventListener("click",async()=>{
+  if(pushToggle.disabled)return;
+  const mode=pushToggle.dataset.mode;
+  pushToggle.disabled=true;
+  try{
+    if(mode==="disable"){
+      const reg=await pushRegistration(),sub=await reg.pushManager.getSubscription();
+      if(sub){
+        const removed=await sub.unsubscribe();
+        if(!removed)throw Error("The browser did not remove this push subscription.");
+        await api("/api/push/subscriptions",{method:"DELETE",body:JSON.stringify({endpoint:sub.endpoint})});
+      }
+      await syncThisDevice({repairMissing:false});
+      setPushStatus("Push disabled for this device. Other devices remain connected.");
+    }else await enableThisDevice({forceRepair:mode==="repair"});
+  }catch(e){setPushStatus(e.message);}
+  finally{if(pushToggle.dataset.mode!=="unsupported"&&pushToggle.dataset.mode!=="pending")pushToggle.disabled=false;}
+});
+document.querySelector("#repair-push").addEventListener("click",async e=>{
+  e.currentTarget.disabled=true;
+  try{await enableThisDevice({forceRepair:true});}
+  catch(error){setPushStatus("Repair failed: "+error.message);}
+  finally{e.currentTarget.disabled=false;}
+});
 document.querySelector("#save-prefs").addEventListener("click",savePrefs);
-document.querySelector("#test-push").addEventListener("click",async()=>{try{const reg=await navigator.serviceWorker.ready;if(!await reg.pushManager.getSubscription())throw Error("Enable push notifications on this device first.");await api("/api/push/test",{method:"POST"});setPushStatus("Push provider accepted the test request. Check your device; display is not yet confirmed.");}catch(e){setPushStatus(e.message)}});
+document.querySelector("#test-push").addEventListener("click",async e=>{
+  e.currentTarget.disabled=true;
+  try{
+    if(!supportsPush())throw Error("Web Push is not supported on this browser.");
+    const reg=await pushRegistration(),sub=await reg.pushManager.getSubscription();
+    if(!sub)throw Error("Enable notifications on this device first.");
+    const response=await api("/api/push/test",{method:"POST",body:JSON.stringify({endpoint:sub.endpoint})});
+    if(!response.delivery?.accepted)throw Error("Push provider did not accept this device's test.");
+    pushTestPendingUntil=Date.now()+30000;
+    setPushStatus("The push provider accepted this device's test. A notification should reach this phone. This does not confirm that Android displayed it; check browser and system notification settings.");
+  }catch(error){setPushStatus("Phone test failed: "+error.message);}
+  finally{e.currentTarget.disabled=false;}
+});
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
+  if(event.data?.type==="KF_PUSH_RECEIVED"&&Date.now()<pushTestPendingUntil){
+    pushTestPendingUntil=0;
+    setPushStatus("✓ This device's service worker received the test and requested Android to display it. If there was no banner, check Android notification channels, Do Not Disturb, and app/browser settings.");
+  }
+});
 document.querySelector("#read-all").onclick=async()=>{try{await api("/api/notifications/read-all",{method:"POST"});await load()}catch(e){status.textContent=e.message}};
 let lastRefresh=0;
 function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});}
