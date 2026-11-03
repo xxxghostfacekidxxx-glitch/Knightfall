@@ -8,6 +8,30 @@ import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATI
 import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
 import {handleMascotFurniture,FURNITURE} from './mascot-furniture.js';
+export const SPECIES_PERSONALITIES=Object.freeze({
+ moxie:['Curious','Moonlight and abandoned lanterns','A velvet-winged scout who finds the beauty in forgotten places.'],
+ bloop:['Mischievous','Shimmering puddles','A gilled little troublemaker who treats every pool as a portal.'],
+ pippa:['Cheerful','Autumn nights','A jack-o-lantern prankster with a heart bigger than its grin.'],
+ nib:['Shy','Quiet corners','This tiny night watcher hears secrets before anyone else.'],
+ glim:['Gentle','Glow-in-the-dark trinkets','A wandering ghost whose lantern always guides friends home.'],
+ zuzu:['Chaotic','Strange experiments','A bouncing puddle of glitches with extremely questionable ideas.'],
+ kiki:['Fearless','Rooftop adventures','A streetwise cat with sharp claws and fierce loyalty.'],
+ emberbun:['Energetic','Warm sparks','A fiery little hopper who races every sunrise.'],
+ gravebyte:['Analytical','Puzzles and signals','A lost machine looking for meaning among the living.'],
+ statichex:['Unpredictable','Cosmic static','An extraterrestrial signal that grew legs and opinions.'],
+ rattlepop:['Playful','Spooky treats','A cheerful coffin ghoul obsessed with ridiculous surprises.'],
+ thornriot:['Stubborn','Untamed gardens','A one-eyed guardian who grows stronger after every storm.'],
+ 'volt-imp':['Hyperactive','Lightning storms','A crackling imp who never walks if it can zip.'],
+ 'crypt-koi':['Serene','Moonlit water','A spectral swimmer that brings calm to the chaos.'],
+ 'casket-pup':['Loyal','Old graveyards','A brave little hound who refuses to leave a friend behind.'],
+ 'void-sprout':['Patient','Eclipses and starlight','A tiny bloom from the dark spaces between stars.'],
+ 'minion-mouse':['Clever','Secret tunnels','A mastermind small enough to fit through your plans.'],
+ 'mini-villain':['Dramatic','Elaborate schemes','A pint-sized schemer whose evil speeches are longer than the schemes.'],
+ 'mini-eddie':['Protective','Midnight patrols','A little guardian who keeps watch when everyone else sleeps.'],
+ gutterkit:['Scrappy','Treasure hunting','An alley cat who can turn yesterday’s junk into tomorrow’s treasure.'],
+ 'chunky-monkey':['Affectionate','Jungle games','A lovable troublemaker who turns every room into a playground.'],
+ 'boo-thang':['Romantic','Ghost stories','A mischievous spirit who is always haunting someone’s heart.']
+});
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -21,6 +45,7 @@ const SPECIES = [
  ['mini-eddie','The Eddie','guardian'],['gutterkit','Gutterkit','alley cat'],
  ['chunky-monkey','Chunky Monkey','monkey'],['boo-thang','Boo Thang','ghost'],
 ].map(([id,name,type])=>({id,name,type,
+  temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
  portrait:'/assets/devil-tools/neon-nuisances/portraits/'+id+'.svg',
@@ -69,13 +94,33 @@ export function petVitals(pet,now=Date.now()){
  const meter=(stamp,loss)=>Math.max(15,Math.min(100,Math.floor(90-ago(stamp)*loss)));
  return {hunger:meter(pet.fed_at,3.4),joy:meter(pet.played_at,4.2),energy:meter(pet.rested_at,2.8)};
 }
+export function petMood(vitals){
+ const food=Number(vitals?.hunger??90),joy=Number(vitals?.joy??90),energy=Number(vitals?.energy??90);
+ if(energy<=40)return {id:'sleepy',label:'Sleepy',tip:'A restful nap would help.'};
+ if(food<=40)return {id:'hungry',label:'Snack hunter',tip:'Ready for a midnight snack.'};
+ if(joy<=40)return {id:'bored',label:'Restless',tip:'Play a game together.'};
+ if(Math.min(food,joy,energy)>=75)return {id:'radiant',label:'Thriving',tip:'Feeling fabulous and full of trouble.'};
+ return {id:'content',label:'Content',tip:'Happy to be hanging out with you.'};
+}
+export function petBond(level){
+ if(level>=8)return {id:'inseparable',label:'Inseparable'};
+ if(level>=5)return {id:'best-friends',label:'Best friends'};
+ if(level>=3)return {id:'trusted',label:'Trusted companion'};
+ if(level>=2)return {id:'familiar',label:'Getting acquainted'};
+ return {id:'new',label:'Newly rescued'};
+}
 export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
  const experience=Number(pet.experience)||0;
  const base={id:Number(pet.id),species:pet.species,species_name:species?.name||pet.species,
   nickname:pet.nickname,image:species?.svg||'',portrait:species?.portrait||'',idle:species?.idle||'',
-  level:petLevel(experience),featured:!!pet.featured,adopted_at:pet.adopted_at};
- return publicView?base:{...base,experience,vitals:petVitals(pet,now),
+  level:petLevel(experience),featured:!!pet.featured,adopted_at:pet.adopted_at,
+  temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
+ const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
+ const vitals=petVitals(pet,now);
+ return publicView?base:{...base,experience,vitals,mood:petMood(vitals),bond:petBond(currentLevel),
+  level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
+
   next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{
    const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
    return [key,Number.isFinite(at)?Math.max(0,at-now):0];
@@ -138,6 +183,23 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   return respond({error:'Your sanctuary needs a moment. Try again shortly.'},429);
  let body={};try{body=await request.json()}catch{return respond({error:'Invalid JSON.'},400);}
  if(!body||typeof body!=='object'||Array.isArray(body))return respond({error:'Invalid pet request.'},400);
+ if(path==='/api/mascot-pets/care-all'&&request.method==='POST'){
+  const kind=typeof body.action==='string'?body.action:'',rule=CARE[kind];
+  if(!rule)return respond({error:'Choose feed, play, or rest for your companions.'},400);
+  const stamp=new Date().toISOString(),cutoff=new Date(Date.now()-rule.seconds*1000).toISOString();
+  // One conditional D1 update for the entire collection: no per-pet browser request
+  // flood, no double XP for cooldowns, and always scoped to the authenticated owner.
+  const updated=await env.DB.prepare(
+   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000) WHERE user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING id'
+  ).bind(stamp,rule.xp,user.id,cutoff).all();
+  const changed=(updated.results||[]).map(row=>Number(row.id)).filter(id=>Number.isSafeInteger(id)&&id>0);
+  for(const id of changed){
+   try{await careQuestProgress(env,user.id,id,kind)}
+   catch(error){console.error('sanctuary_bulk_quest_progress',error)}
+  }
+  return respond({ok:true,action:kind,cared_for:changed.length,xp_awarded:changed.length*rule.xp,
+   message:changed.length?'Cared for '+changed.length+' companions! Each earned '+rule.xp+' XP.':'Everyone is on cooldown for '+kind+'.'});
+ }
  if(path==='/api/mascot-pets/adopt'&&request.method==='POST'){
   const species=typeof body.species==='string'?BY_ID.get(body.species):null;
   if(!species)return respond({error:'Choose an available sanctuary mascot.'},400);
