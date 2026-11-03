@@ -6,8 +6,9 @@ const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const nav=read('public/nav.js'),presence=read('public/miss-chaos-presence.js'),dock=read('public/miss-chaos-dock.js');
 const style=read('public/miss-chaos-presence.css'),memo=read('public/memo-pad.js'),page=read('public/memo-pad.html');
 const backend=read('backend/src/index.js'),handler=read('backend/src/member-memos.js'),migration=read('backend/migrations/0110_member_memos.sql');
+const comms=read('public/memo-communications.js'),mail=read('backend/src/member-memo-mail.js'),mailMigration=read('backend/migrations/0111_member_memo_mail.sql');
 test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
- for(const script of [nav,presence,dock,memo,handler])assert.doesNotThrow(()=>new Script(script.replace(/^export /gm,'')), 'script parser');
+ for(const script of [nav,presence,dock,memo,handler,comms,mail])assert.doesNotThrow(()=>new Script(script.replace(/^export /gm,'')), 'script parser');
  assert.match(nav,/miss-chaos-presence\.js\?v=20261103-memo-dock1/);
  assert.match(presence,/id="mc-memo-toggle"/);
  assert.match(presence,/id="mc-memo-panel"/);
@@ -17,7 +18,7 @@ test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  assert.match(presence,/window\.KnightfallMemoPad\.mount/);
  assert.match(presence,/miss-chaos-dock\.js\?v=20261103-memo-dock1/);
  assert.match(page,/id="memo-pad-app"/);
- assert.match(page,/memo-pad\.js\?v=20261103-memo1/);
+ assert.match(page,/memo-pad\.js\?v=20261103-mail-chat2/);
 });
 test('dock has four corners, automatic control avoidance, minimize, and fullscreen safety',()=>{
  assert.match(dock,/options=\['br','bl','tl','tr'\]/);
@@ -51,15 +52,15 @@ test('notes remain account-owned and never trigger a message on autosave',()=>{
  const save=memo.slice(memo.indexOf('async function commit()'),memo.indexOf('function scheduleSave()'));
  assert.doesNotMatch(save,/\/api\/messages\//);
 });
-test('quick send requires selected member and uses official block-aware private inbox API',()=>{
+test('quick send requires a saved memo, member selection and separate Memo Mail delivery',()=>{
  assert.match(memo,/\/api\/discover\?q=/);
- assert.match(memo,/\/api\/messages\/conversations/);
- assert.match(memo,/method:'POST',body:JSON\.stringify\(\{username:name\}\)/);
- assert.match(memo,/method:'POST',body:JSON\.stringify\(\{body:outgoing\}\)/);
+ assert.match(memo,/\/api\/memo-mail/);
+ assert.match(memo,/JSON\.stringify\(\{memo_id:selected,username:name\}\)/);
  assert.match(memo,/if\(!recipient\|\|!isSignedIn\|\|saving\)return/);
  assert.match(memo,/if\(dirty&&!await commit\(\)\)return/);
- assert.match(memo,/inboxLink\.href='\/messages\.html\?conversation='/);
+ assert.match(memo,/inboxLink\.href='\/memo-pad\.html\?tab=inbox'/);
  assert.match(memo,/Your original is still saved privately/);
+ assert.doesNotMatch(memo,/await api\('\/api\/messages\/conversations/);
 });
 test('memo markup and Worker routing are one-to-one and escaped',()=>{
  const ids=[...page.matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
@@ -69,4 +70,25 @@ test('memo markup and Worker routing are one-to-one and escaped',()=>{
  assert.match(handler,/Number\.isSafeInteger\(id\)/);
  assert.match(handler,/title\.length>100\|\|body\.length>4000/);
  assert.match(style,/#miss-chaos-presence \[hidden\]\{display:none!important\}/);
+});
+
+test('live chat and memo mail use separate routes, tabs and storage',()=>{
+ assert.match(mailMigration,/CREATE TABLE IF NOT EXISTS member_memo_mail/);
+ assert.match(mailMigration,/sender_id INTEGER NOT NULL/);
+ assert.match(mailMigration,/recipient_id INTEGER NOT NULL/);
+ assert.match(backend,/handleMemberMemoMail/);
+ assert.match(mail,/member_memo_mail/);
+ assert.match(mail,/FROM member_memos WHERE id=\? AND user_id=\?/);
+ assert.match(mail,/FROM user_blocks/);
+ assert.match(mail,/createNotification/);
+ assert.match(page,/memo-communications\.js\?v=20261103-mail-chat2/);
+ assert.match(presence,/memo-communications\.js\?v=20261103-mail-chat2/);
+ assert.match(comms,/memo-tabs/);
+ for(const tab of ['notes','inbox','chat'])assert.match(comms,new RegExp("\\['"+tab+"','"));
+ assert.match(comms,/\/api\/memo-mail\?box=/);
+ assert.match(comms,/\/api\/memo-mail\/'\+item\.id\+'\/read/);
+ assert.match(comms,/\/api\/messages\/conversations/);
+ assert.match(comms,/setInterval\(\(\)=>\{if\(alive\(\)/);
+ assert.match(comms,/5000\)/);
+ assert.doesNotMatch(comms,/innerHTML\s*=/);
 });
