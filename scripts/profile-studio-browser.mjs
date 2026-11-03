@@ -12,7 +12,8 @@ const blankUser={
 };
 async function scenario(name,viewport){
  const context=await browser.newContext({viewport}),page=await context.newPage(),errors=[];
- const savedProfiles=[],savedLayouts=[],uploads=[],gallery=[];
+ const savedProfiles=[],savedLayouts=[],savedLinks=[],uploads=[],gallery=[];
+ let profileLinks=[];
  let user={...blankUser},layout=[{id:"favorites",visible:true},{id:"activity",visible:true},{id:"updates",visible:true},{id:"photos",visible:true}];
  page.on("pageerror",e=>errors.push(e.message));
  page.on("dialog",d=>d.accept());
@@ -26,6 +27,11 @@ async function scenario(name,viewport){
   if(path==="/api/profile/layout"&&method==="GET")return respond(200,{layout});
   if(path==="/api/profile/layout"&&method==="PUT"){
    const d=JSON.parse(r.postData()||"{}");layout=d.layout;savedLayouts.push(d);return respond(200,{ok:true,layout});
+  }
+  if(path==="/api/profile/links"&&method==="GET")return respond(200,{links:profileLinks,limit:8});
+  if(path==="/api/profile/links"&&method==="PUT"){
+   const payload=JSON.parse(r.postData()||"{}");profileLinks=payload.links;savedLinks.push(payload);
+   return respond(200,{ok:true,links:profileLinks,limit:8});
   }
   if(path==="/api/profile/birth-chart")return respond(200,{chart:null,visible:false});
   if(path==="/api/profile"&&method==="PUT"){
@@ -115,6 +121,30 @@ async function scenario(name,viewport){
   await page.keyboard.press("Control+s");
   await page.waitForFunction(()=>document.querySelector("#studio-save-indicator")?.dataset.state==="saved");
   assert.equal(user.tagline,"I remain.");
+  // Link Hub is saved separately but coordinated with the main Save profile action.
+  const beforeLinks=savedProfiles.length;
+  await page.locator('[data-studio-link-template="Art portfolio"]').click();
+  await page.locator('#studio-link-rows .studio-link-url').first().fill('http://example.com/unsafe');
+  await page.locator('#form button[type="submit"]').click();
+  assert.equal(savedProfiles.length,beforeLinks,'Unsafe links must block the entire profile save');
+  assert.match(await page.locator('#studio-link-status').innerText(),/HTTPS/);
+  await page.locator('#studio-link-rows .studio-link-url').first().fill('https://example.com/art');
+  await page.locator('#form button[type="submit"]').click();
+  await page.waitForFunction(()=>document.querySelector('#studio-save-indicator')?.dataset.state==="saved");
+  assert.equal(savedProfiles.length,beforeLinks+1);
+  assert.equal(savedLinks.length,1);
+  assert.equal(profileLinks[0].label,'Art portfolio');
+  await page.locator('[data-studio-link-template="Music"]').click();
+  await page.locator('#studio-link-rows .studio-link-url').nth(1).fill('https://example.com/songs');
+  await page.locator('#studio-link-rows .studio-link-row').nth(1).locator('button[title="Move link up"]').click();
+  await page.locator('#studio-save-all-layout').click();
+  await page.waitForFunction(()=>document.querySelector('#studio-save-indicator')?.dataset.state==="saved");
+  assert.equal(profileLinks[0].label,'Music');
+  assert.equal(savedLinks.length,2);
+  await page.locator('#studio-link-rows .studio-link-name').first().fill('Unpublished link');
+  await page.locator('#studio-discard').click();
+  assert.equal(await page.locator('#studio-link-rows .studio-link-name').first().inputValue(),'Music');
+  assert.equal(savedLinks.length,2,'Discard does not publish link edits');
   const widths=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(widths.page<=widths.viewport+2,"Mobile horizontal overflow "+JSON.stringify(widths));
   assert.deepEqual(errors,[],"Uncaught browser errors");
