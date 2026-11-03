@@ -1,0 +1,21 @@
+/* Creator Studio is dark neon, not the deprecated orange palette. */
+.pro-studio[hidden],#limit-progress[hidden]{display:none!important}
+.pro-studio{border:1px solid rgba(255,96,205,.44);border-radius:18px;background:radial-gradient(circle at 95% 0,rgba(168,255,86,.09),transparent 48%),linear-gradient(140deg,#171322,#0e1019);padding:clamp(1rem,3vw,1.6rem);margin:1.4rem 0;color:#f3f0f7;box-shadow:0 16px 50px rgba(0,0,0,.28)}
+.pro-studio-top{display:flex;align-items:start;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(255,255,255,.13);padding-bottom:1rem;margin-bottom:1rem}
+.pro-studio-top h3{font-size:clamp(1.4rem,3vw,2rem);margin:.15rem 0}
+.pro-studio-top p:last-child{max-width:750px;color:#b9b2c6;line-height:1.6;margin:.45rem 0 0}
+.pro-studio-badge{white-space:nowrap;color:#baff84;border:1px solid rgba(186,255,132,.4);background:rgba(186,255,132,.08);padding:.45rem .7rem;border-radius:999px;font-size:.72rem;font-weight:850;letter-spacing:.12em}
+.pro-studio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.pro-studio-textgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;margin-top:1rem}
+.pro-studio label{display:flex;flex-direction:column;gap:.45rem;color:#eee7f4;font-size:.84rem;font-weight:750}
+.pro-studio select,.pro-studio input,.pro-studio textarea{display:block;width:100%;min-width:0;border:1px solid rgba(255,255,255,.21);border-radius:10px;padding:.8rem .85rem;background:#0b0d16;color:#fff;font:inherit;line-height:1.4;outline:0}
+.pro-studio textarea{resize:vertical}
+.pro-studio select:focus-visible,.pro-studio input:focus-visible,.pro-studio textarea:focus-visible{border-color:#ff60cd;box-shadow:0 0 0 3px rgba(255,96,205,.15)}
+.pro-studio-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;margin-top:1.1rem}
+.pro-studio-actions #pro-status{color:#baff84;flex-basis:100%;font-size:.84rem}
+.pro-studio-actions #pro-status[data-type=error]{color:#ff9797}
+.pro-preview{border-top:1px solid rgba(255,255,255,.13);margin-top:1rem;padding-top:1rem}
+.pro-preview summary{cursor:pointer;font-weight:750;color:#ff99df}
+.pro-preview pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.83rem;line-height:1.6;color:#d9d4e4;padding:1rem;background:#080b12;border-radius:10px;max-height:330px;overflow:auto}
+@media(max-width:900px){.pro-studio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.pro-studio-grid,.pro-studio-textgrid{grid-template-columns:1fr}.pro-studio-top{flex-direction:column}.pro-studio-actions .primary-button{width:100%}}
