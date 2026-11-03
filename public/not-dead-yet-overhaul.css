@@ -1,0 +1,90 @@
+/* Not Dead Yet, Asshole! 1.0. Combat-first interface and Gravewave polish. */
+:root{--ember:#ff55d8;--acid:#c6ff45;--violet:#a889ff;--panel:#121023;--line:#483456}
+body{background:radial-gradient(ellipse at 50% -10%,#49206362,transparent 52%),radial-gradient(ellipse at left 60%,#163b3a25,transparent 50%),#080812}
+main{width:min(1430px,96%)}
+.hero{padding:1.1rem 0 .5rem}
+.hero h1{font-size:clamp(2.5rem,7.4vw,6.3rem);line-height:.95;max-width:none;text-shadow:0 7px 35px #ff55d81b}
+.hero h1 span{color:#ff55d8;text-shadow:0 0 35px #ff55d83d}
+.hero .muted{max-width:850px}
+.game-shell{background:linear-gradient(145deg,#1b1228,#0b0d18 70%);border:1px solid #9e54bb78;border-radius:20px;box-shadow:0 28px 88px #0009,inset 0 1px #ffffff10}
+.game-shell:before{background:linear-gradient(90deg,transparent,#ff55d8,#79ffe7,#c6ff45,transparent)}
+.game-shell .stat{border:1px solid #513e5e;color:#d6c9df;border-radius:11px;background:linear-gradient(145deg,#201629,#10121c);box-shadow:inset 0 1px #fff1,0 5px 15px #0003}
+.game-shell .stat b{color:#fff}
+.game-shell .hud{gap:6px;margin:9px 0}
+.game-shell .hud .stat{padding:.52rem .7rem;white-space:normal;line-height:1.35}
+.game-shell .hud .stat:nth-child(1) b{color:#c6ff45}
+.game-shell .hud .stat:nth-child(2) b{color:#ff55d8}
+.game-shell .hud .stat:nth-child(3) b{color:#b4a0ff}
+.game-shell .hud .stat:nth-child(4) b{color:#79ffe7}
+.game-shell .hud .stat:nth-child(5) b{color:#c6ff45}
+.game-shell .hud .stat:nth-child(8) b{color:#79ffe7}
+.loadout{border:1px solid #693e836c;border-radius:14px;padding:11px;background:#110d1edc}
+.loadout .stat{font-size:.71rem;font-weight:900;letter-spacing:.07em;color:#79ffe7}
+.loadout select{background:#151023!important;border:1px solid #654979!important;color:#f4ecff!important;min-height:44px;border-radius:10px!important;font:inherit;letter-spacing:0;font-weight:650}
+.loadout select:focus-visible{outline:3px solid #c6ff45;outline-offset:2px}
+.combat-telemetry{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 4px;align-items:center;padding:9px 12px;border:1px solid #ff55d858;border-radius:12px;background:radial-gradient(ellipse at 0 0,#ff55d816,transparent 60%),#100e1c}
+.combat-gauge{display:grid;grid-template-columns:1fr;gap:5px;min-width:0}
+.combat-gauge>span{font-size:.66rem;font-weight:950;letter-spacing:.14em;color:#e1d1ed}
+.combat-track{height:7px;border-radius:9px;background:#35273d;border:1px solid #79618355;overflow:hidden}
+.combat-track i{display:block;height:100%;width:100%;border-radius:inherit;transition:width .1s linear;background:linear-gradient(90deg,#ff55d8,#c6ff45)}
+.combat-gauge:nth-child(2) i{background:linear-gradient(90deg,#a889ff,#79ffe7)}
+.combat-gauge:nth-child(3) i{background:linear-gradient(90deg,#ff55d8,#c6ff45)}
+.combat-gauge:nth-child(4) i{background:linear-gradient(90deg,#ff55d8,#79ffe7)}
+.combat-objective{grid-column:1/-1;padding:3px 5px 0;color:#c6ff45;font-size:.75rem;font-weight:950;letter-spacing:.1em;text-align:center;white-space:normal}
+.screen{border:1px solid #ff55d84f;box-shadow:0 0 0 2px #080612,0 15px 40px #0009;border-radius:13px;isolation:isolate}
+.screen:after{box-shadow:inset 0 0 55px #05071075}
+.btn{background:linear-gradient(145deg,#281934,#141220);border-color:#72507b;color:#f6eafb;border-radius:10px;box-shadow:0 3px 0 #08070e,inset 0 1px #ffffff10}
+.btn:hover:not(:disabled){border-color:#ff55d8;background:linear-gradient(145deg,#3b2244,#1b172a)}
+.btn.primary{background:linear-gradient(120deg,#d5ff70,#a8ea43);color:#101a16;border-color:#c6ff45;text-shadow:none;box-shadow:0 4px 0 #537120,0 0 20px #c6ff4525}
+.controls{align-items:center;gap:7px}.controls .btn{min-height:44px}
+#status{flex:1 1 270px;min-height:0;color:#c6ff45;font-size:.78rem}
+#campaign-stage{border-color:#b04d9e!important;background:linear-gradient(110deg,#30172c,#131326)!important;color:#f4d8f4;box-shadow:inset 4px 0 #c6ff45}
+.touch-controls{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.touch-controls .btn{padding:.7rem .25rem;min-width:0;touch-action:none;user-select:none;-webkit-user-select:none}
+.touch-controls #touch-fire{border:1px solid #ff55d8;background:linear-gradient(145deg,#5c1e58,#301531);color:#fff}
+.touch-controls #touch-melee{border:1px solid #c6ff45;background:linear-gradient(145deg,#324025,#18251d);color:#d9ffb5}
+.zombie-lobby{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:13px 0}
+.zombie-service-panel{min-width:0;border:1px solid #6d44816b;border-radius:15px;overflow:hidden;background:linear-gradient(145deg,#21152d,#111421);box-shadow:0 12px 26px #0003}
+.zombie-service-panel summary{display:flex;flex-direction:column;gap:3px;padding:15px 16px;cursor:pointer;font-size:.98rem;font-weight:950;color:#eaddf5;list-style:none;position:relative;padding-right:36px}
+.zombie-service-panel summary::-webkit-details-marker{display:none}
+.zombie-service-panel summary:after{content:"+";position:absolute;right:16px;top:17px;color:#c6ff45;font-size:1.35rem}
+.zombie-service-panel[open] summary:after{content:"−"}
+.zombie-service-panel summary span{color:#bdaac9;font-size:.73rem;font-weight:650}
+.zombie-service-panel[open] summary{border-bottom:1px solid #633e7655;background:#2a1937}
+.zombie-service-body{display:grid;gap:10px;padding:14px}
+.zombie-service-body>p{color:#c6b8d1;font-size:.8rem;line-height:1.5;margin:0}
+.zombie-service-body>small{color:#c6ff45}
+.zombie-item{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:11px;border:1px solid #64447a66;border-radius:12px;background:#161020}
+.zombie-item>div{flex:1 1 160px;display:grid;gap:3px}
+.zombie-item strong{color:#fbf3ff;font-size:.87rem}
+.zombie-item small{color:#bfb2cf;font-size:.75rem}
+.zombie-item>span{color:#79ffe7;font-size:.73rem;font-weight:800}
+.zombie-item .btn{min-height:40px;padding:7px 12px}
+.zombie-achievements{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:8px}
+.zombie-service-panel:focus-within{border-color:#c6ff45}
+.zombie-service-panel summary:focus-visible{outline:2px solid #c6ff45;outline-offset:-3px}
+.two section{background:linear-gradient(145deg,#1c1429,#0e101c);border:1px solid #65467566}
+.two h2{color:#c6ff45}
+@media(max-width:900px){.zombie-lobby{grid-template-columns:1fr}}
+@media(max-width:650px){
+ main{width:min(100% - 12px,1430px)}
+ .hero h1{font-size:clamp(2.5rem,10vw,4.1rem)}
+ .game-shell{padding:.45rem;border-radius:13px}
+ .loadout{padding:7px}
+ .game-shell .hud .stat{font-size:.69rem;padding:.45rem .4rem}
+ .combat-telemetry{padding:7px;gap:6px}
+ .combat-gauge>span{font-size:.56rem;letter-spacing:.045em}
+ .combat-objective{font-size:.68rem}
+ .touch-controls{display:grid}
+ .touch-controls .btn{min-height:52px;font-size:.76rem}
+ .controls{gap:5px}.controls .btn{font-size:.75rem;padding:.55rem .5rem}
+ .zombie-service-panel summary{padding:12px}
+}
+#game-stage:is(:fullscreen,.immersive-fallback) .combat-telemetry{flex:none;margin:0;padding:.23rem .5rem;gap:3px}
+#game-stage:is(:fullscreen,.immersive-fallback) .combat-track{height:5px}
+#game-stage:is(:fullscreen,.immersive-fallback) .combat-objective{font-size:clamp(.62rem,1.6vw,.77rem)}
+@media(max-height:480px){
+ #game-stage:is(:fullscreen,.immersive-fallback) .combat-telemetry{display:none}
+ #game-stage:is(:fullscreen,.immersive-fallback) .touch-controls{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.combat-track i{transition:none}}
