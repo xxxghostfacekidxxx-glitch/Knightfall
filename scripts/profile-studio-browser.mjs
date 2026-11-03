@@ -118,6 +118,11 @@ async function scenario(name,viewport){
   await page.locator('#studio-photo-grid .studio-photo-card').first().locator('.studio-photo-caption-input').fill('Updated skyline photograph');
   await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Save caption'}).click();
   await page.waitForFunction(()=>document.querySelector('#studio-photo-grid .studio-photo-card .studio-photo-details')?.textContent.includes('Updated skyline photograph'));
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('.studio-photo-view-button').click();
+  await page.waitForFunction(()=>document.querySelector('#studio-photo-viewer')?.open===true);
+  assert.match(await page.locator('#studio-photo-viewer').innerText(),/Updated skyline photograph/);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(()=>document.querySelector('#studio-photo-viewer')?.open===false);
   assert.equal(gallery[0].caption,'Updated skyline photograph');
   assert.equal(gallery.length,2,'Editing captions must not add new photos');
   const coverChoice=gallery[0];
