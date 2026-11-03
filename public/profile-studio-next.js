@@ -58,7 +58,7 @@ function publishBaseline(profile,submitted){
  }
  // Cover processing may already have emptied the pending blob at this point.
  baseline={...data,__coverPending:false};
- loaded=true;error=false;edited=false;update();
+ loaded=true;form.inert=false;form.removeAttribute('aria-busy');error=false;edited=false;update();
 }
 function restorePreview(){
  const avatar=form.elements.avatar_url.value,cover=form.elements.cover_url.value;
@@ -79,7 +79,7 @@ function restorePreview(){
  if(typeof updateBioCount==='function')updateBioCount();
 }
 function discardChanges(){
- if(!loaded||!baseline||saving)return;
+ if(!loaded||!baseline||saving||pendingMedia)return;
  const changed=Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]);
  if(!changed&&!layoutDirty&&!linksDirty)return;
  if(!confirm('Discard unpublished profile, Link Hub, and layout changes? Your last saved profile will be restored.'))return;
@@ -145,8 +145,8 @@ document.addEventListener('kf:profile-process-end',()=>{
 });
 const shortcuts=()=>{if(lastPublishedUser?.username)view.href='/profile.html?username='+encodeURIComponent(lastPublishedUser.username)};
 window.addEventListener('beforeunload',event=>{
- if(!loaded||saving)return;
- const dirty=layoutDirty||linksDirty||!!(baseline&&Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]));
+ if(!loaded)return;
+ const dirty=saving||pendingMedia>0||layoutDirty||linksDirty||!!(baseline&&Object.keys(snapshot()).some(k=>snapshot()[k]!==baseline[k]));
  if(dirty){event.preventDefault();event.returnValue=''}
 });
 document.addEventListener('keydown',event=>{
@@ -170,6 +170,6 @@ if('IntersectionObserver' in window){
  }
 }
 if(window.__kfProfileStudioUser)publishBaseline(window.__kfProfileStudioUser);
-else{update();setIndicator('loading','◌ Loading your profile…')}
+else{form.inert=true;form.setAttribute('aria-busy','true');update();setIndicator('loading','◌ Loading your profile…')}
 shortcuts();
 })();
