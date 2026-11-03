@@ -1,7 +1,7 @@
 /* Neon Nuisances Passport: all milestone progress and Cinders grants are
  * calculated by D1. No browser scores, no repeat claims, no purchase gating.
  */
-const defsQuery='SELECT badge_id,title,description,metric,target,reward_cinders FROM mascot_passport_badges ORDER BY CASE metric WHEN "pets" THEN 0 WHEN "hatched" THEN 1 WHEN "quests" THEN 2 ELSE 3 END,target';
+const defsQuery='SELECT badge_id,title,description,metric,target,reward_cinders FROM mascot_passport_badges ORDER BY CASE metric WHEN 'pets' THEN 0 WHEN 'hatched' THEN 1 WHEN 'quests' THEN 2 ELSE 3 END,target';
 async function counts(env,userId){
  const [pets,eggs,quests,equipped]=await Promise.all([
   env.DB.prepare('SELECT COUNT(*) AS count FROM mascot_pets WHERE user_id=?').bind(userId).first(),
