@@ -31,6 +31,9 @@ on:
       - 'scripts/account-deletion-audit.mjs'
       - 'scripts/pwa-browser-smoke.mjs'
       - 'scripts/arcade-browser-smoke.mjs'
+      - 'scripts/arcade-leaderboard-browser-smoke.mjs'
+      - 'scripts/arcade-leaderboards.test.mjs'
+      - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
@@ -63,6 +66,8 @@ jobs:
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
       - name: Verify messaging uses neon palette (no retired orange)
         run: node scripts/messaging-theme-audit.mjs
+      - name: Check arcade scoreboard and generated catalog consistency
+        run: node --test scripts/arcade-leaderboards.test.mjs && node --check public/arcade-leaderboards.js && node --check backend/src/index.js
       - name: Audit JavaScript, configs, and local HTML assets
         run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/security-headers.test.mjs scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs scripts/push-navigation.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
 
@@ -93,6 +98,8 @@ jobs:
       # Run this on every pull request so mobile overflow regressions block the Android-readiness PR.
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
+      - name: Exercise arcade community leaderboards on desktop and mobile
+        run: node scripts/arcade-leaderboard-browser-smoke.mjs
       - name: Exercise hosted arcade cabinets in mobile Chromium
         run: node scripts/arcade-browser-smoke.mjs
       - name: Verify deployed arcade in mobile Chromium
