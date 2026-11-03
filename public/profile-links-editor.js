@@ -99,7 +99,10 @@ async function save(){
   const data=await response.json().catch(()=>({}));
   if(!response.ok)throw Error(data.error||"Could not publish your links.");
   lastSaved=(data.links||submitted).map(x=>({...x}));
-  touched=JSON.stringify(snapshot())!==serialized;
+  const changedDuringSave=JSON.stringify(snapshot())!==serialized;
+  if(!changedDuringSave)rows=lastSaved.map(x=>({...x}));
+  touched=changedDuringSave;
+  if(!changedDuringSave)render();
   msg(touched?"Links saved. Your newer edits still need saving.":"Link Hub published ✓");
   document.dispatchEvent(new CustomEvent("kf:profile-links-saved",{detail:{pending:hasChanges()}}));
   return data;
