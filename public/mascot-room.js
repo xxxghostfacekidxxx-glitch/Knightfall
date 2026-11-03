@@ -21,6 +21,25 @@ function img(node,source){
  if(valid){node.src=valid+'?v=20261102-room1';node.hidden=false;}
  else{node.removeAttribute('src');node.hidden=true}
 }
+function renderVisitorFurniture(){
+ let layer=stage.querySelector('.room-visitor-furniture');
+ if(!visitor){layer?.remove();return}
+ if(!layer){
+  layer=document.createElement('div');layer.className='room-visitor-furniture';
+  layer.setAttribute('aria-hidden','true');stage.append(layer);
+ }
+ layer.replaceChildren();
+ for(const item of selected?.furniture||[]){
+  const source=String(item.art||'');
+  if(!source.startsWith('/assets/devil-tools/neon-nuisances/furniture/')||!source.endsWith('.svg')||source.includes('..')||source.slice('/assets/devil-tools/neon-nuisances/furniture/'.length,-4).includes('/'))continue;
+  const image=document.createElement('img');image.alt='';
+  image.src=source+'?v=20261103-public-room1';image.draggable=false;
+  image.style.left=clamp(Number(item.x)||50,8,92)+'%';
+  image.style.top=clamp(Number(item.y)||64,16,85)+'%';
+  image.style.transform='translate(-50%,-50%)'+(item.flipped?' scaleX(-1)':'');
+  layer.append(image);
+ }
+}
 function renderOutfit(){
  outfit.replaceChildren();
  for(const item of selected?.equipment||[]){
@@ -68,7 +87,7 @@ function activate(id){
  choices(decor,decorations,selected.habitat?.decoration||'none',rank);
  pose.value=['idle','bounce','mischief'].includes(selected.room?.pose)?selected.room.pose:'idle';
  picker.value=String(selected.id);
- dirty=false;renderOutfit();draw();
+ dirty=false;renderOutfit();renderVisitorFurniture();draw();
  say(visitor?('Visiting '+selected.nickname+'’s public room. Room changes are only available to its owner.'):
   ('Visiting '+selected.nickname+'. Tap the floor or drag your companion to explore the room.'));
  document.dispatchEvent(new CustomEvent('sanctuary-room-selected',{detail:{petId:selected.id,visitor}}));
