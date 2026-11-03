@@ -3,6 +3,7 @@ import { chromium } from "playwright";
 
 const base = process.env.ARCADE_TEST_BASE || "http://127.0.0.1:8765";
 const now = "2026-11-01T15:00:00.000Z";
+const apiHeaders = { "access-control-allow-origin": new URL(base).origin, "access-control-allow-credentials": "true", "content-type": "application/json" };
 const scores = [
   { game_key: "cursed-circuit", place: 1, player_count: 8, best_score: 95, username: "champ", display_name: "Arcade Queen", is_mine: 0, achieved_at: now },
   { game_key: "cursed-circuit", place: 2, player_count: 8, best_score: 70, username: "two", display_name: "Second Place", is_mine: 0, achieved_at: now },
@@ -19,7 +20,7 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.route("https://api.ash-fall.com/api/arcade/leaderboards", route =>
-      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ viewer_signed_in: true, entries: scores }) }));
+      route.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ viewer_signed_in: true, entries: scores }) }));
     const res = await page.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded" });
     assert.equal(res?.status(), 200);
     await page.locator("#arcade-leaderboards.arcade-lb-loaded").waitFor({ timeout: 15000 });
@@ -48,13 +49,13 @@ try {
     const page = await browser.newPage();
     await page.route("https://api.ash-fall.com/api/arcade/leaderboards", route =>
       route.fulfill(payload
-        ? { status: 200, contentType: "application/json", body: JSON.stringify(payload) }
-        : { status: 503, contentType: "application/json", body: '{"error":"Offline"}' }));
+        ? { status: 200, headers: apiHeaders, body: JSON.stringify(payload) }
+        : { status: 503, headers: apiHeaders, body: '{"error":"Offline"}' }));
     await page.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => {
       const label = document.querySelector("#arcade-lb-status")?.textContent || "";
       return /standings loaded|No community scores yet|Leaderboards are unavailable/.test(label);
-    }, { timeout: 15000 });
+    }, null, { timeout: 15000 });
     const text = kind === "guest"
       ? await page.locator("#arcade-lb-duel").innerText()
       : await page.locator("#arcade-lb-status").innerText();
