@@ -32,6 +32,9 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
 
+      - name: Validate official starter-bot catalog and public chat routing
+        run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
+
       - name: Verify astrology calculations
         run: node --test scripts/astrology.test.mjs
 
