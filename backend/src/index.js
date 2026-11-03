@@ -762,6 +762,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     if (Number(photo.user_id)!==Number(user.id)) return json({error:"You can only delete your own photos."},403,origin);
     await env.DB.prepare("DELETE FROM profile_photos WHERE id=? AND user_id=?").bind(photo.id,user.id).run();
     if (photo.kind==="avatar") await env.DB.prepare("UPDATE users SET avatar_url='',updated_profile_at=? WHERE id=? AND avatar_url=?").bind(new Date().toISOString(),user.id,profilePhotoUrl(photo.id)).run();
+    if (photo.kind==="gallery") await env.DB.prepare("UPDATE users SET cover_url='',updated_profile_at=? WHERE id=? AND cover_url=?").bind(new Date().toISOString(),user.id,profilePhotoUrl(photo.id)).run();
     try { await env.PROFILE_MEDIA.delete(photo.object_key); } catch(error) { console.error("profile_photo_delete_cleanup_failed",error); }
     await audit(env,user,"profile.photo.delete","profile_photo",photo.id,{kind:photo.kind});
     return json({ok:true},200,origin);
