@@ -34,12 +34,15 @@ const CARE=Object.freeze({
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
  const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 22').bind(userId).all();
- const [gear,rooms]=await Promise.all([
+ const [gear,rooms,layouts]=await Promise.all([
   env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
-  env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all()
+  env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all(),
+  env.DB.prepare('SELECT pet_id,x_percent,y_percent,pose FROM mascot_room_layouts WHERE user_id=?').bind(userId).all()
  ]);
  return (rows.results||[]).map(p=>({...serializePet(p,Date.now(),publicView),
   equipment:(gear.results||[]).filter(g=>Number(g.pet_id)===Number(p.id)).map(g=>({slot:g.slot,sku:g.sku,asset:PET_ACCESSORIES[g.sku]?.asset||''})),
+  room:(()=>{const layout=(layouts.results||[]).find(r=>Number(r.pet_id)===Number(p.id));
+   return {x:Number(layout?.x_percent??50),y:Number(layout?.y_percent??65),pose:layout?.pose||'idle'};})(),
   habitat:(()=>{const room=(rooms.results||[]).find(r=>Number(r.pet_id)===Number(p.id));
    const theme=HABITAT_THEMES.find(t=>t.id===(room?.theme||'graveyard'))||HABITAT_THEMES[0];
    const decor=HABITAT_DECORATIONS.find(d=>d.id===(room?.decoration||'none'))||HABITAT_DECORATIONS[0];
