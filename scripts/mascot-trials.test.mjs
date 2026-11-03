@@ -53,6 +53,10 @@ test('browser runs four distinct games but awards XP only through authenticated 
  assert.match(script,/credentials:'include'/);
  assert.match(script,/status===429/);
  assert.match(html,/id="trial-companion"/);
+ assert.match(html,/id="trial-fullscreen"/);
+ assert.match(script,/requestFullscreen/);
+ assert.match(script,/exitFullscreen/);
+ assert.match(script,/fullscreenchange/);
  assert.match(html,/type="module" src="\/mascot-trials\.js/);
  assert.match(script,/new URLSearchParams\(location\.search\)\.get\('pet'\)/);
  const collection=read('public/mascot-pets.js');
