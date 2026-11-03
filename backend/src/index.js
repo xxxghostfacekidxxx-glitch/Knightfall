@@ -88,25 +88,25 @@ async function encryptWebPush(payload,subscription) {
   const recordHeader=new Uint8Array([0,0,16,0,65]);
   return pushJoin(salt,recordHeader,asPublic,cipher);
 }
-async function deliverPushToUser(env,userId,notification,onlyEndpoint=null) {
+async function deliverPushToUser(env,userId,notification,onlyEndpoint=null,receiptToken=null) {
   const delivery={attempted:0,accepted:0,expired:0,failed:0,transient:0};
   try {
     if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT){delivery.skipped="unconfigured";return delivery;}
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
     const kind=String(notification.kind||"");
     const category=kind==="message"?"messages":(["reply","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
-    if(pref && Number(pref["push_"+category])===0){delivery.skipped="category-disabled";return delivery;}
+    if(!receiptToken && pref && Number(pref["push_"+category])===0){delivery.skipped="category-disabled";return delivery;}
     if(pref?.quiet_start&&pref?.quiet_end){
       const now=new Date(),clock=now.toISOString().slice(11,16),start=pref.quiet_start,end=pref.quiet_end;
       const quiet=start<=end?(clock>=start&&clock<end):(clock>=start||clock<end);
-      if(quiet){delivery.skipped="quiet-hours";return delivery;}
+      if(quiet&&!receiptToken){delivery.skipped="quiet-hours";return delivery;}
     }
     const query=onlyEndpoint?env.DB.prepare("SELECT id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id=? AND endpoint=?").bind(userId,onlyEndpoint):env.DB.prepare("SELECT id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id=?").bind(userId);
     const {results}=await query.all();
     const title=String(notification.title||"Ash-Fall alert").slice(0,100);
     const body=String(notification.body||"You have a new notification.").slice(0,180);
     const path=typeof notification.url==="string"&&notification.url.startsWith("/")&&!notification.url.startsWith("//")?notification.url:"/notifications.html";
-    const payload={title,body,url:path,tag:"ashfall-"+String(notification.kind||"alert")+"-"+String(notification.target_id||"new")};
+    const payload={title,body,url:path,tag:"ashfall-"+String(notification.kind||"alert")+"-"+String(notification.target_id||"new"),...(receiptToken?{receipt_token:receiptToken}:{})};
     // Do not let a slow desktop provider block the Android device in the same account.
     // Each destination gets its own timeout and its own delivery outcome.
     const outcomes=await Promise.all((results||[]).map(async sub=>{
@@ -2036,20 +2036,43 @@ For complex questions, organize the answer clearly and provide actionable detail
     await env.DB.prepare("DELETE FROM push_subscriptions WHERE user_id=? AND endpoint=?").bind(user.id,endpoint).run();
     return json({ok:true},200,origin);
   }
+  // A short-lived, random proof of delivery is sent only inside the encrypted push.
+  // The phone's service worker reports receipt after showNotification resolves.
+  // This does NOT prove Android displayed a visible notification banner.
+  if(url.pathname==="/api/push/receipt"&&request.method==="POST"){
+    if(!await rateLimit(env,request,"push-receipt",30,60))return json({error:"Receipt limit reached."},429,origin);
+    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
+    const testId=String(body?.test_id||"");
+    if(!/^[0-9a-f]{40}$/.test(testId))return json({error:"Invalid test receipt."},400,origin);
+    const key="push-receipt:"+testId,record=await env.SESSIONS.get(key,"json");
+    if(!record)return json({error:"Test expired."},404,origin);
+    if(record.state!=="received")await env.SESSIONS.put(key,JSON.stringify({...record,state:"received",received_at:new Date().toISOString()}),{expirationTtl:300});
+    return json({ok:true},200,origin);
+  }
+  if(url.pathname==="/api/push/test-status"&&request.method==="GET"){
+    const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
+    const testId=String(url.searchParams.get("test_id")||"");
+    if(!/^[0-9a-f]{40}$/.test(testId))return json({error:"Invalid test ID."},400,origin);
+    const record=await env.SESSIONS.get("push-receipt:"+testId,"json");
+    if(!record||record.user_id!==user.id)return json({error:"Test not found or expired."},404,origin);
+    return json({state:record.state,received_at:record.received_at||null},200,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname==="/api/push/test"&&request.method==="POST"){
     const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
-    if(!await rateLimit(env,request,"push-test",3,3600,user.id))return json({error:"Please wait before sending another test notification."},429,origin);
+    if(!await rateLimit(env,request,"push-test",12,3600,user.id))return json({error:"Too many phone tests for this account. Try again later."},429,origin);
     let body={};try{body=await request.json()||{};}catch{return json({error:"Invalid JSON."},400,origin);}
-    const endpoint=body.endpoint===undefined?null:body.endpoint;
-    if(endpoint!==null&&(typeof endpoint!=="string"||!endpoint.startsWith("https://")||endpoint.length>2048))return json({error:"Invalid device endpoint."},400,origin);
-    const sub=endpoint
-      ? await env.DB.prepare("SELECT id FROM push_subscriptions WHERE user_id=? AND endpoint=?").bind(user.id,endpoint).first()
-      : await env.DB.prepare("SELECT id FROM push_subscriptions WHERE user_id=? LIMIT 1").bind(user.id).first();
-    if(!sub)return json({error:"This device is not registered to receive push. Repair or enable notifications on this device."},409,origin);
-    const pushAttempt=await deliverPushToUser(env,user.id,{kind:"account",title:"Ash-Fall test alert",body:"Push notifications are connected on this device.",url:"/notifications.html",target_id:"test"},endpoint);
-    const explanation=pushAttempt?.skipped==="quiet-hours"?"Quiet hours are active. Disable quiet hours and try again.":pushAttempt?.skipped==="category-disabled"?"Account alerts are disabled in notification preferences.":pushAttempt?.skipped==="unconfigured"?"The server push credentials are unavailable.":pushAttempt?.expired?"This device's push subscription expired. Use Repair push on this device.":pushAttempt?.provider_status?"Push provider returned HTTP "+pushAttempt.provider_status+". Re-enable push on this device.":"The push provider did not accept this device's test. Check your settings and repair this device's subscription.";
-    const {transient_endpoints:_internalRetryTargets,...publicDelivery}=pushAttempt||{attempted:0,accepted:0,expired:0,failed:0};
-    return json({ok:!!pushAttempt?.accepted,delivery:publicDelivery,...(pushAttempt?.accepted?{}:{error:explanation})},pushAttempt?.accepted?200:503,origin);
+    const endpoint=body.endpoint;
+    if(typeof endpoint!=="string"||!endpoint.startsWith("https://")||endpoint.length>2048)return json({error:"This device must be identified. Reload your notification settings and retry."},400,origin);
+    const sub=await env.DB.prepare("SELECT id FROM push_subscriptions WHERE user_id=? AND endpoint=?").bind(user.id,endpoint).first();
+    if(!sub)return json({error:"This phone is not registered for push. Enable or repair its subscription first."},409,origin);
+    const testId=randomToken(20);
+    await env.SESSIONS.put("push-receipt:"+testId,JSON.stringify({user_id:user.id,state:"pending",created_at:new Date().toISOString()}),{expirationTtl:300});
+    // Explicit diagnostic pushes ignore quiet hours and category preferences.
+    // Regular notifications continue to respect both.
+    const result=await deliverPushToUser(env,user.id,{kind:"account",title:"Ash-Fall test alert",body:"Test notification for this device.",url:"/notifications.html",target_id:"test"},endpoint,testId);
+    const explanation=result.skipped==="unconfigured"?"Push credentials are not configured.":result.expired?"This phone's push subscription has expired. Repair it and try again.":result.provider_status?"The phone's push provider rejected the request with HTTP "+result.provider_status+".":"The phone's push provider did not accept the test. Repair notifications on this device.";
+    const {transient_endpoints:_privateEndpoints,...delivery}=result;
+    return json({ok:delivery.accepted>0,delivery,...(delivery.accepted?{test_id:testId}:{error:explanation})},delivery.accepted?200:503,origin,{"cache-control":"no-store"});
   }
   if(url.pathname==="/api/notification-preferences"&&(request.method==="GET"||request.method==="PUT")){
     const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
