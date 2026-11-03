@@ -2,12 +2,12 @@
 (()=>{'use strict';
 const API='https://api.ash-fall.com',q=id=>document.getElementById(id);
 const stage=q('room-stage'),avatar=q('room-avatar'),background=q('room-background'),furniture=q('room-decoration'),
- photo=q('room-pet-image'),name=q('room-pet-label'),picker=q('room-pet'),level=q('room-level'),
+ photo=q('room-pet-image'),outfit=q('room-outfit'),name=q('room-pet-label'),picker=q('room-pet'),level=q('room-level'),
  theme=q('room-theme'),decor=q('room-decor'),pose=q('room-pose'),save=q('room-save'),status=q('room-message'),sparks=q('room-particles');
 if(!stage||!avatar||!picker||!theme||!decor||!pose||!save)return;
-let pets=[],themes=[],decorations=[],selected=null,point={x:50,y:65},dirty=false,busy=false,drag=null;
+let pets=[],themes=[],decorations=[],selected=null,point={x:50,y:65},dirty=false,busy=false,drag=null,visitor=false;
 const say=text=>{status.textContent=String(text)};
-const safeAsset=url=>/^\/assets\/devil-tools\/neon-nuisances\/(?:habitats\/)?[a-z0-9-]+\.svg$/.test(url||'')?url:'';
+const safeAsset=url=>/^\/assets\/devil-tools\/neon-nuisances\/(?:habitats\/|accessories\/)?[a-z0-9-]+\.svg$/.test(url||'')?url:'';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 async function request(path,options={}){
  const response=await fetch(API+path,{credentials:'include',cache:'no-store',...options,
@@ -21,6 +21,15 @@ function img(node,source){
  if(valid){node.src=valid+'?v=20261102-room1';node.hidden=false;}
  else{node.removeAttribute('src');node.hidden=true}
 }
+function renderOutfit(){
+ outfit.replaceChildren();
+ for(const item of selected?.equipment||[]){
+  const source=safeAsset(item.asset);
+  if(!source)continue;
+  const layer=document.createElement('img');layer.src=source+'?v=20261102-room2';layer.alt='';
+  layer.setAttribute('aria-hidden','true');layer.draggable=false;outfit.append(layer);
+ }
+}
 function draw(){
  avatar.style.left=point.x+'%';avatar.style.top=point.y+'%';
  avatar.dataset.pose=pose.value;
@@ -33,8 +42,8 @@ function draw(){
   img(photo,src);
  }
  const chosenTheme=themes.find(x=>x.id===theme.value),chosenDecor=decorations.find(x=>x.id===decor.value);
- img(background,chosenTheme?.art||selected?.habitat?.art);
- img(furniture,chosenDecor?.art||'');
+ img(background,visitor?selected?.habitat?.art:(chosenTheme?.art||selected?.habitat?.art));
+ img(furniture,visitor?selected?.habitat?.decoration_art:(chosenDecor?.art||selected?.habitat?.decoration_art));
  if(selected)name.textContent=selected.nickname;
  save.disabled=busy||!selected||!dirty;
 }
@@ -59,8 +68,9 @@ function activate(id){
  choices(decor,decorations,selected.habitat?.decoration||'none',rank);
  pose.value=['idle','bounce','mischief'].includes(selected.room?.pose)?selected.room.pose:'idle';
  picker.value=String(selected.id);
- dirty=false;draw();
- say('Visiting '+selected.nickname+'. Tap the floor or drag your companion to explore the room.');
+ dirty=false;renderOutfit();draw();
+ say(visitor?('Visiting '+selected.nickname+'’s public room. Room changes are only available to its owner.'):
+  ('Visiting '+selected.nickname+'. Tap the floor or drag your companion to explore the room.'));
 }
 function coords(event){
  const rect=stage.getBoundingClientRect();
@@ -69,7 +79,7 @@ function coords(event){
 }
 function move(next){point=next;setDirty()}
 stage.addEventListener('pointerdown',event=>{
- if(!selected||busy||event.button>0)return;
+ if(visitor||!selected||busy||event.button>0)return;
  const pos=coords(event);
  if(avatar.contains(event.target)){
   drag={id:event.pointerId};
@@ -77,7 +87,7 @@ stage.addEventListener('pointerdown',event=>{
  }else move(pos);
 });
 avatar.addEventListener('pointermove',event=>{
- if(!drag||drag.id!==event.pointerId||!selected||busy)return;
+ if(visitor||!drag||drag.id!==event.pointerId||!selected||busy)return;
  move(coords(event));
 });
 const release=()=>{drag=null};
@@ -87,7 +97,7 @@ avatar.addEventListener('lostpointercapture',release);
 avatar.addEventListener('keydown',event=>{
  const offsets={ArrowLeft:[-2,0],ArrowRight:[2,0],ArrowUp:[0,-2],ArrowDown:[0,2]};
  const direction=offsets[event.key];
- if(!direction||!selected||busy)return;
+ if(visitor||!direction||!selected||busy)return;
  event.preventDefault();
  move({x:clamp(point.x+direction[0],8,92),y:clamp(point.y+direction[1],25,85)});
 });
@@ -113,7 +123,7 @@ async function reloadPet(petId){
  activate(petId||prev||pets[0]?.id);
 }
 save.addEventListener('click',async()=>{
- if(!selected||!dirty||busy)return;
+ if(visitor||!selected||!dirty||busy)return;
  const id=selected.id,changes={x:point.x,y:point.y,pose:pose.value};
  const home={theme:theme.value,decoration:decor.value};
  busy=true;draw();say('Saving '+selected.nickname+'’s room…');
@@ -135,7 +145,7 @@ function sparkle(text){
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)node.remove();
 }
 document.querySelectorAll('button[data-care]').forEach(button=>button.addEventListener('click',async()=>{
- if(!selected||busy)return;
+ if(visitor||!selected||busy)return;
  const action=button.dataset.care,id=selected.id;
  busy=true;document.querySelectorAll('button[data-care]').forEach(x=>x.disabled=true);
  say('Caring for '+selected.nickname+'…');
@@ -150,8 +160,30 @@ document.querySelectorAll('button[data-care]').forEach(button=>button.addEventLi
 }));
 async function launch(){
  try{
-  const [mine,quests]=await Promise.all([request('/api/mascot-pets/me'),request('/api/mascot-pets/adventures')]);
-  pets=mine.pets||[];themes=quests.themes||[];decorations=quests.decorations||[];
+  const params=new URLSearchParams(location.search),visiting=params.get('user');
+  visitor=!!visiting;
+  if(visitor){
+   if(!/^[a-zA-Z0-9_-]{1,32}$/.test(visiting))throw Error('Invalid visitor profile.');
+   const profile=await request('/api/mascot-pets/profile/'+encodeURIComponent(visiting));
+   pets=profile.pets||[];
+   themes=[{id:'graveyard',name:'Midnight Graveyard',unlock_level:1},
+    {id:'neon-city',name:'Neon Rooftops',unlock_level:1},
+    {id:'toxic-lagoon',name:'Radioactive Lagoon',unlock_level:1},
+    {id:'cosmic-void',name:'Eclipse Observatory',unlock_level:1}];
+   decorations=[{id:'none',name:'No decoration',unlock_level:1},
+    {id:'lantern',name:'Haunted Lantern',unlock_level:1},
+    {id:'arcade',name:'Tiny Arcade Cabinet',unlock_level:1},
+    {id:'crystal',name:'Void Crystal',unlock_level:1}];
+   document.querySelector('.room-controls')?.setAttribute('hidden','');
+   document.querySelector('.room-controls-hint')?.setAttribute('hidden','');
+   avatar.tabIndex=-1;avatar.setAttribute('aria-label','Visiting a companion room, view only');
+   stage.style.cursor='default';
+   document.querySelector('#room-heading').textContent=visiting+'’s companion rooms';
+   picker.setAttribute('aria-label','Choose one of '+visiting+'’s visible companions');
+  }else{
+   const [mine,quests]=await Promise.all([request('/api/mascot-pets/me'),request('/api/mascot-pets/adventures')]);
+   pets=mine.pets||[];themes=quests.themes||[];decorations=quests.decorations||[];
+  }
   if(!pets.length){
    say('Your sanctuary has no pets yet. Rescue one first to give it a room.');
    const option=document.createElement('option');option.textContent='No companions adopted';picker.append(option);
