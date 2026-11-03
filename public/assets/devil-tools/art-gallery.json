@@ -1,8 +1,8 @@
 {
   "pack": "Devil Tools Visual Asset Library",
-  "version": 6,
+  "version": 7,
   "updated": "2026-11-02",
-  "count": 123,
+  "count": 127,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -863,6 +863,34 @@
       "src": "/assets/devil-tools/neon-nuisances/eggs/uncommon.svg",
       "category": "Rescue Eggs",
       "title": "Uncommon Egg",
+      "remastered": true
+    },
+    {
+      "id": "trial-arena-runes",
+      "title": "Arcane Rune Circuit Arcade Background",
+      "category": "Species Trials Arenas",
+      "src": "/assets/devil-tools/neon-nuisances/trials/runes.svg",
+      "remastered": true
+    },
+    {
+      "id": "trial-arena-memory",
+      "title": "Crypt Hall Arcade Background",
+      "category": "Species Trials Arenas",
+      "src": "/assets/devil-tools/neon-nuisances/trials/memory.svg",
+      "remastered": true
+    },
+    {
+      "id": "trial-arena-dodge",
+      "title": "Midnight Rooftop Run Background",
+      "category": "Species Trials Arenas",
+      "src": "/assets/devil-tools/neon-nuisances/trials/dodge.svg",
+      "remastered": true
+    },
+    {
+      "id": "trial-arena-catch",
+      "title": "Toxic Lagoon Arcade Background",
+      "category": "Species Trials Arenas",
+      "src": "/assets/devil-tools/neon-nuisances/trials/catch.svg",
       "remastered": true
     }
   ]
