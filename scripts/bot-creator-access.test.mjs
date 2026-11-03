@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import { botAccessPolicy } from "../backend/src/bot-creator-access.js";
+const normal=botAccessPolicy({role:"member"});assert.deepEqual([normal.limit,normal.unlimited,normal.advanced_builder],[2,false,false]);
+assert.equal(botAccessPolicy({role:"member"},3).limit,5);
+const creator=botAccessPolicy({role:"member"},0,{title:"Bot Creator",unlimited_slots:1,advanced_builder:1});
+assert.deepEqual([creator.limit,creator.unlimited,creator.advanced_builder,creator.title],[null,true,true,"Bot Creator"]);
+assert.deepEqual([botAccessPolicy({role:"admin"}).limit,botAccessPolicy({role:"admin"}).advanced_builder],[10,true]);
+assert.equal(botAccessPolicy({role:"god"}).title,"God");
+assert.equal(botAccessPolicy({role:"moderator"}).limit,5);
+assert.equal(botAccessPolicy({role:"member"},0,{title:"Custom"}).advanced_builder,false);
+console.log("Bot creator access policy verified.");
