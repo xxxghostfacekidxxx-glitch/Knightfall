@@ -425,3 +425,10 @@
  #profile .profile-stats>div,.profile-shell .studio-theme-presets button{transition:none}
  #profile .profile-stats>div:hover,.profile-shell .studio-theme-presets button:hover{transform:none}
 }
+
+
+/* Visible account rank, separate from authority: creator title grants no moderation rights. */
+.profile-title-badge{display:inline-flex;align-items:center;vertical-align:middle;max-width:100%;margin-left:.4rem;padding:.24rem .6rem;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.045);color:#e9e2ef;font-size:.68rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase;line-height:1.45;box-shadow:inset 0 0 18px rgba(255,255,255,.035)}
+.profile-title-badge.creator{color:#ffb4eb;background:linear-gradient(100deg,rgba(255,78,198,.15),rgba(155,74,255,.09));border-color:rgba(255,84,216,.58);box-shadow:0 0 20px rgba(255,78,198,.13)}
+.profile-title-badge.god{color:#bcff88;background:linear-gradient(100deg,rgba(172,255,98,.11),rgba(255,78,198,.12));border-color:rgba(172,255,98,.54);box-shadow:0 0 20px rgba(172,255,98,.12)}
+@media(max-width:440px){.profile-title-badge{margin:.4rem 0 .1rem;display:table;width:max-content}}
