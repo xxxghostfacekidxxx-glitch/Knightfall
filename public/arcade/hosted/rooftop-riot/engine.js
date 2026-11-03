@@ -86,9 +86,14 @@ class Game {
       Math.max(oldX,p.x)+p.w>r.x+5&&Math.min(oldX,p.x)<r.x+r.w-5){
     p.y=r.y-p.h;p.vy=0;p.grounded=true;p.coyote=.12;p.dashReady=true;
     if(r.checkpoint&&r.i>this.checkpoint){this.checkpoint=r.i;this.emit('checkpoint',p.x,p.y,'#c6ff45');}
-    if(r.exit&&p.x>r.x+r.w*.56){this.state='won';this.lastEvent='extraction';this.emit('won',p.x,p.y,'#c6ff45');}
     break;
    }
+  }
+  // Reaching the beacon after an earlier landing also wins: merely walking
+  // onto an exit roof must never trap a player in an unwinnable state.
+  const exit=this.world.roofs.at(-1);
+  if(this.state==='running'&&p.grounded&&p.x+p.w>exit.x+exit.w*.68&&p.x<exit.x+exit.w){
+   this.state='won';this.emit('won',p.x,p.y,'#c6ff45');
   }
   if(p.y>H+165){this.recover();return}
   this.distance=Math.max(this.distance,Math.floor(p.x/10));
