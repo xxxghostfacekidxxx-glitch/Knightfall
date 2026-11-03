@@ -88,7 +88,7 @@ test("existing Android subscription that was lost from the database is repaired 
 test("phone tests cannot accidentally succeed by sending to a desktop device",()=>{
   assert.match(html,/JSON\.stringify\(\{endpoint:sub\.endpoint\}\)/);
   assert.match(backend,/WHERE user_id=\? AND endpoint=\?/);
-  assert.match(backend,/deliverPushToUser\(env,user\.id,[\s\S]*?,endpoint\)/);
+  assert.match(backend,/deliverPushToUser\(env,user\.id,[\s\S]*?,endpoint,testId\)/);
   assert.match(backend,/return json\(\{subscriptions:rows\.results\|\|\[\]\}/);
 });
 
