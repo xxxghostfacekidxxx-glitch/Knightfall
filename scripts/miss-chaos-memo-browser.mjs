@@ -75,6 +75,7 @@ async function run(name,width,height){
   await page.locator('#mc-memo-toggle').waitFor();
   await page.locator('#mc-memo-toggle').click();
   await page.locator('#mc-memo-host .memo-title').waitFor();
+  await page.waitForFunction(()=>document.querySelector('#mc-memo-host .memo-status')?.textContent.includes('Memos synced'));
   assert.equal(await page.locator('#mc-memo-host .memo-title').inputValue(),'Big idea');
   assert.equal(await page.locator('#mc-memo-host [data-tab="chat"]').count(),1);
   assert.equal(await page.locator('#mc-memo-host [data-tab="inbox"]').count(),1);
