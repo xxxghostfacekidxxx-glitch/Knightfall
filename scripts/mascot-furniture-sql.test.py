@@ -24,11 +24,11 @@ other=db.execute("INSERT INTO mascot_pets(user_id,species,nickname,experience) V
 def value(sql,*params):return db.execute(sql,params).fetchone()[0]
 def balance():return value('SELECT balance FROM user_wallets WHERE user_id=1')
 def fails(sql,params):
-    before=balance(),value('SELECT COUNT(*) FROM wallet_ledger'),
+    before=(balance(),value('SELECT COUNT(*) FROM wallet_ledger'))
     try:db.execute(sql,params)
     except sqlite3.IntegrityError:pass
     else:raise AssertionError('Invalid furniture action accepted: '+sql[:100])
-    assert (balance(),value('SELECT COUNT(*) FROM wallet_ledger'))==before[0], 'Failed purchase changed money'
+    assert (balance(),value('SELECT COUNT(*) FROM wallet_ledger'))==before, 'Failed purchase changed money'
 assert value('SELECT COUNT(*) FROM mascot_room_furniture_catalog')==8
 buy='INSERT INTO mascot_room_furniture_purchases(user_id,item_key,cost_cinders) VALUES(?,?,?)'
 place='INSERT INTO mascot_room_furniture_placements(user_id,pet_id,item_key,x_pct,y_pct,flipped) VALUES(?,?,?,?,?,?)'
@@ -38,7 +38,7 @@ fails(place,(1,other,'lantern',50,64,0))
 fails(place,(1,one,'glitch_console',50,64,0))
 fails(place,(1,one,'lantern',5,64,0))
 db.execute(place,(1,one,'lantern',50,64,0))
-assert value("SELECT COUNT(*) FROM mascot_room_furniture_placements WHERE pet_id=?",(one,))==1
+assert value("SELECT COUNT(*) FROM mascot_room_furniture_placements WHERE pet_id=?",one)==1
 fails(place,(1,one,'bone_tree',60,64,0))
 db.execute("UPDATE mascot_pets SET experience=1500 WHERE id=?",(one,))
 db.execute(place,(1,one,'bone_tree',60,64,0))
