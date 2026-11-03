@@ -63,3 +63,20 @@
 /* Privacy-checked public profile tours show room furnishings without editing controls. */
 .room-visitor-furniture{position:absolute;inset:0;z-index:3;pointer-events:none}
 .room-visitor-furniture img{position:absolute;width:clamp(60px,15%,150px);height:26%;object-fit:contain;filter:drop-shadow(0 8px 10px #000a);pointer-events:none;user-select:none}
+
+
+/* Room care readout v1: give each companion a personality and usable cooldowns. */
+.room-companion-summary{display:grid;gap:9px;padding:15px;margin-bottom:15px;border:1px solid #a35cbd7a;border-radius:15px;background:radial-gradient(ellipse at 0 0,#ff55d815,transparent 62%),linear-gradient(140deg,#20132f,#101422);box-shadow:inset 0 1px #fff1}
+.room-pet-identity{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.room-pet-identity strong{font-size:1.15rem;color:#fff}
+.room-pet-identity span{color:#c6ff45;font-size:.83rem;font-weight:850}
+.room-pet-lore{margin:0;color:#d8c8e5;font-size:.85rem;line-height:1.6}
+.room-pet-mood{display:flex;align-items:center;gap:9px;flex-wrap:wrap;border-top:1px solid #ff55d833;padding-top:9px}
+.room-pet-mood strong{color:#ff83e6}.room-pet-mood span{border:1px solid #c6ff4570;border-radius:100px;padding:3px 9px;font-size:.72rem;color:#d9ffb2}
+.room-pet-mood small{color:#bbafd0;font-size:.76rem}
+.room-need-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.room-need-tag{padding:6px 10px;border:1px solid #79ffe767;border-radius:99px;color:#bffbea;background:#79ffe70d;font-size:.76rem;font-weight:800}
+.room-need-tag[data-state="low"]{border-color:#ff55d8;color:#ffc3ed;background:#ff55d815}
+.room-need-tag[data-state="medium"]{border-color:#8b89e4;color:#ddd1ff;background:#8b89e410}
+.room-controls button:disabled{opacity:.52;cursor:not-allowed}
+@media(max-width:620px){.room-companion-summary{padding:12px}.room-pet-identity span{font-size:.76rem}}
