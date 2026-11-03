@@ -3,7 +3,7 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261103-memo-dock1"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261103-memo-dock2"; document.head.append(css);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261026-glitch2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
@@ -46,12 +46,12 @@
       try{
         if(!document.querySelector('link[data-memo-pad-css]')){
           const style=document.createElement('link');style.rel='stylesheet';
-          style.href='/memo-pad.css?v=20261103-mail-chat2';style.dataset.memoPadCss='true';document.head.append(style);
+          style.href='/memo-pad.css?v=20261103-mail-chat3';style.dataset.memoPadCss='true';document.head.append(style);
         }
         if(!window.KnightfallMemoPad){
           await new Promise((resolve,reject)=>{
             const script=document.createElement('script');
-            script.src='/memo-pad.js?v=20261103-mail-chat2';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
+            script.src='/memo-pad.js?v=20261103-mail-chat3';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
             document.head.append(script);
           });
         }
@@ -61,7 +61,7 @@
         if(!window.KnightfallMemoCommunications){
           await new Promise((resolve,reject)=>{
             const script=document.createElement('script');
-            script.src='/memo-communications.js?v=20261103-mail-chat2';
+            script.src='/memo-communications.js?v=20261103-mail-chat3';
             script.onload=resolve;script.onerror=()=>reject(Error('Member communication tools could not load.'));
             document.head.append(script);
           });
@@ -103,6 +103,6 @@
   });
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261103-memo-dock1";
+  dockScript.src="/miss-chaos-dock.js?v=20261103-memo-dock2";
   document.head.append(dockScript);
 })();
