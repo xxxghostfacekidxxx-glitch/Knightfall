@@ -6,7 +6,7 @@ const select=q('trial-companion'),portrait=q('trial-portrait'),family=q('trial-f
  title=q('trial-title'),description=q('trial-description'),level=q('trial-level'),
  playfield=q('trial-playfield'),controls=q('trial-controls'),scoreLabel=q('trial-score'),
  timeLabel=q('trial-time'),livesLabel=q('trial-lives'),start=q('trial-start'),
- stop=q('trial-stop'),status=q('trial-status');
+ stop=q('trial-stop'),fullscreen=q('trial-fullscreen'),stage=q('trials-stage'),status=q('trial-status');
 const info={
  catch:'Catch glowing crystals and avoid pink hazards. Use arrows, A/D, or drag on the game.',
  memory:'Find every matching pair before the haunted clock runs out.',
