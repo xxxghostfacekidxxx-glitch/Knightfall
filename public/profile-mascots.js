@@ -45,6 +45,16 @@ async function mount(){
    if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-adventures2';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
    const decoration=safeImage(pet.habitat?.decoration_art);
    if(decoration){const img=el('img','mascot-profile-decoration');img.src=decoration+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
+   for(const furniture of (pet.furniture||[]).slice(0,4)){
+    const asset=String(furniture.art||''),prefix='/assets/devil-tools/neon-nuisances/furniture/';
+    if(!asset.startsWith(prefix)||!asset.endsWith('.svg')||asset.slice(prefix.length,-4).includes('/'))continue;
+    const img=el('img','mascot-profile-room-furniture');
+    img.src=asset+'?v=20261103-furniture1';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';
+    img.style.left=Math.max(4,Math.min(82,Number(furniture.x)||50))+'%';
+    img.style.top=Math.max(15,Math.min(85,Number(furniture.y)||60))+'%';
+    if(furniture.flipped)img.style.scale='-1 1';
+    art.append(img);
+   }
    for(const gear of pet.equipment||[]){
     const asset=String(gear.asset||'');const prefix='/assets/devil-tools/neon-nuisances/accessories/';
     if(!asset.startsWith(prefix)||!asset.endsWith('.svg')||asset.includes('..')||asset.slice(prefix.length,-4).includes('/'))continue;
