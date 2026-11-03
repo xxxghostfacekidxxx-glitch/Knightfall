@@ -59,7 +59,7 @@ try {
         const style = getComputedStyle(element);
         for (const property of ["backgroundColor", "backgroundImage", "borderColor", "color"]) {
           const value = style[property] || "";
-          for (const match of value.matchAll(/rgba?\\(\\s*(\\d+)[,\\s]+(\\d+)[,\\s]+(\\d+)/gi)) {
+          for (const match of value.matchAll(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/gi)) {
             const [, red, green, blue] = match.map(Number);
             // Old rust/brown surfaces have red > green > blue. Neon pink has blue > green.
             if (red >= green + 6 && green >= blue + 4) {
