@@ -93,6 +93,9 @@ function renderOwned(){
   }
   actions.append(button('✦ Display','feature',working||pet.featured),button('✎ Rename','rename',working));
   card.append(actions);
+  const roomLink=make('a','pet-room-link','⌂ Visit '+pet.nickname+'\'s room');
+  roomLink.href='/mascot-room.html?pet='+encodeURIComponent(String(pet.id));
+  card.append(roomLink);
   dressUp(card,pet);
   owned.append(card);
  }
