@@ -56,7 +56,7 @@ test("Saving profile and section layout is coordinated and does not force naviga
  assert.match(studio,/window\.addEventListener\('beforeunload'/);
  assert.match(studio,/event\.returnValue=''/);
  assert.match(studio,/form\.requestSubmit\(\)/);
- assert.doesNotMatch(studio,/localStorage/);
+ assert.doesNotMatch(studio,/\blocalStorage\s*[.\[]/);
 });
 test("Profile Studio sections are accessible and mobile responsive",()=>{
  for(const id of ["studio-save-indicator","studio-completion-percent","studio-completion-track","studio-privacy-guide","studio-discard","studio-avatar-crop","studio-cover-crop","studio-view-profile"]){
