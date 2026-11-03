@@ -54,5 +54,13 @@ test('browser runs four distinct games but awards XP only through authenticated 
  assert.match(script,/status===429/);
  assert.match(html,/id="trial-companion"/);
  assert.match(html,/type="module" src="\/mascot-trials\.js/);
+ assert.match(script,/new URLSearchParams\(location\.search\)\.get\('pet'\)/);
+ const collection=read('public/mascot-pets.js');
+ assert.match(collection,/mascot-trials\.html\?pet=/);
+ for(const mode of TRIAL_TYPES){
+  const art=read('public/assets/devil-tools/neon-nuisances/trials/'+mode+'.svg');
+  assert.match(art,/<svg[^>]*viewBox="0 0 720 400"/);
+  assert.doesNotMatch(art,/<image\b|<script\b|href="https?:/);
+ }
  assert.doesNotMatch(script,/localStorage\.setItem|UPDATE user_wallets|wallet_ledger|mascot_passport_claims/);
 });
