@@ -2,7 +2,7 @@
   "pack": "Devil Tools Visual Asset Library",
   "version": 7,
   "updated": "2026-11-02",
-  "count": 127,
+  "count": 135,
   "assets": [
     {
       "id": "admin-offline-icon-svg",
@@ -779,6 +779,62 @@
       "title": "Quest Scout",
       "category": "Passport Medals",
       "src": "/assets/devil-tools/neon-nuisances/badges/quest_scout.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-bone_tree",
+      "title": "Bone Tree",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/bone_tree.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-chaos_portal",
+      "title": "Chaos Portal",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/chaos_portal.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-glitch_console",
+      "title": "Glitch Console",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/glitch_console.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-grave_marker",
+      "title": "Grave Marker",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/grave_marker.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-lantern",
+      "title": "Lantern",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/lantern.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-neon_throne",
+      "title": "Neon Throne",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/neon_throne.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-skull_pile",
+      "title": "Skull Pile",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/skull_pile.svg",
+      "remastered": true
+    },
+    {
+      "id": "mascot-furniture-spirit_fountain",
+      "title": "Spirit Fountain",
+      "category": "Pet Furniture",
+      "src": "/assets/devil-tools/neon-nuisances/furniture/spirit_fountain.svg",
       "remastered": true
     },
     {
