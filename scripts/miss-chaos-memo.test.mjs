@@ -9,16 +9,16 @@ const backend=read('backend/src/index.js'),handler=read('backend/src/member-memo
 const comms=read('public/memo-communications.js'),mail=read('backend/src/member-memo-mail.js'),mailMigration=read('backend/migrations/0111_member_memo_mail.sql');
 test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  for(const script of [nav,presence,dock,memo,handler,comms,mail])assert.doesNotThrow(()=>new Script(script.replace(/^export /gm,'')), 'script parser');
- assert.match(nav,/miss-chaos-presence\.js\?v=20261103-memo-dock1/);
+ assert.match(nav,/miss-chaos-presence\.js\?v=20261103-memo-dock2/);
  assert.match(presence,/id="mc-memo-toggle"/);
  assert.match(presence,/id="mc-memo-panel"/);
  assert.match(presence,/id="mc-move"/);
  assert.match(presence,/id="mc-minimize"/);
  assert.match(presence,/id="mc-restore"/);
  assert.match(presence,/window\.KnightfallMemoPad\.mount/);
- assert.match(presence,/miss-chaos-dock\.js\?v=20261103-memo-dock1/);
+ assert.match(presence,/miss-chaos-dock\.js\?v=20261103-memo-dock2/);
  assert.match(page,/id="memo-pad-app"/);
- assert.match(page,/memo-pad\.js\?v=20261103-mail-chat2/);
+ assert.match(page,/memo-pad\.js\?v=20261103-mail-chat3/);
 });
 test('dock has four corners, automatic control avoidance, minimize, and fullscreen safety',()=>{
  assert.match(dock,/options=\['br','bl','tl','tr'\]/);
@@ -81,8 +81,8 @@ test('live chat and memo mail use separate routes, tabs and storage',()=>{
  assert.match(mail,/FROM member_memos WHERE id=\? AND user_id=\?/);
  assert.match(mail,/FROM user_blocks/);
  assert.match(mail,/createNotification/);
- assert.match(page,/memo-communications\.js\?v=20261103-mail-chat2/);
- assert.match(presence,/memo-communications\.js\?v=20261103-mail-chat2/);
+ assert.match(page,/memo-communications\.js\?v=20261103-mail-chat3/);
+ assert.match(presence,/memo-communications\.js\?v=20261103-mail-chat3/);
  assert.match(comms,/memo-tabs/);
  for(const tab of ['notes','inbox','chat'])assert.match(comms,new RegExp("\\['"+tab+"','"));
  assert.match(comms,/\/api\/memo-mail\?box=/);
