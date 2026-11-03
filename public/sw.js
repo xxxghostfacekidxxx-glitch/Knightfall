@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v24";
+const CACHE_NAME = "knightfall-shell-v25";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -49,20 +49,35 @@ self.addEventListener("push", event => {
   const path = safeNotificationPath(payload.url);
   const tag = payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert";
   event.waitUntil((async () => {
-    // Android notifications require browser-supported raster artwork. Do not attach
-    // SVG icon/badge URLs: some mobile notification providers reject the display.
-    await self.registration.showNotification(title, {
-      body,
-      tag,
-      renotify: false,
-      data: { url: path }
-    });
-    // A confirmed service-worker receipt is more useful than a provider's 201/202:
-    // acceptance alone cannot prove that this Android device displayed anything.
-    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    for (const client of windows) {
-      client.postMessage({ type: "KF_PUSH_RECEIVED", tag });
+    const testId=typeof payload.receipt_token==="string"&&/^[0-9a-f]{40}$/.test(payload.receipt_token)?payload.receipt_token:null;
+    let stage="display-requested";
+    try {
+      // Android can reject notification artwork that desktop accepts. Keep the
+      // payload icon-free until raster icons are available.
+      await self.registration.showNotification(title, {
+        body,
+        tag,
+        renotify:false,
+        data:{url:path}
+      });
+    }catch(error){
+      stage="display-failed";
+      console.warn("push_show_notification_failed",String(error));
     }
+    if(testId){
+      // Background acknowledgements work even when no app window is open. The
+      // capability token is delivered only in the encrypted push payload.
+      for(const step of ["received",stage]){
+        try{
+          await fetch("https://api.ash-fall.com/api/push/receipt",{
+            method:"POST",headers:{"content-type":"application/json"},
+            credentials:"omit",body:JSON.stringify({test_id:testId,stage:step})
+          });
+        }catch(error){console.warn("push_receipt_unavailable",String(error));}
+      }
+    }
+    const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    for(const client of windows)client.postMessage({type:"KF_PUSH_RECEIVED",tag,stage});
   })());
 });
 self.addEventListener("notificationclick", event => {
