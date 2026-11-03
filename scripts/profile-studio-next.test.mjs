@@ -30,6 +30,9 @@ test("Image crop framing modifies actual uploaded pixels, not only preview CSS",
  assert.equal(centered.width,320);assert.equal(centered.height,320);
  assert.equal(draw[0][2],200);assert.equal(draw[1][2],0);assert.equal(draw[2][2],400);
  draw.length=0;
+ const wide={width:1200,height:800};crop(wide,320,320,'left');crop(wide,320,320,'right');
+ assert.equal(draw[0][1],0);assert.equal(draw[1][1],400);
+ draw.length=0;
  const cover=crop(bitmap,1600,900,"top");
  assert.equal(cover.width,1600);assert.equal(cover.height,900);
  assert.equal(draw[0][2],0);
@@ -38,6 +41,8 @@ test("Image crop framing modifies actual uploaded pixels, not only preview CSS",
  assert.match(inline,/bitmap\.width\*bitmap\.height>36000000/);
  assert.match(inline,/studioCropBitmap\(bitmap,1600,900/);
  assert.match(inline,/studioCropBitmap\(bitmap,320,320/);
+ assert.match(html,/value="left">Focus left/);
+ assert.match(html,/value="right">Focus right/);
  assert.match(inline,/kf:profile-process-start/);
  assert.match(inline,/kf:profile-process-end/);
 });
