@@ -92,3 +92,25 @@ test("Rooftop hazard damage, fall limit, extraction and score snapshots",()=>{
  g.start();g.recover();g.recover();g.recover();
  assert.equal(g.falls,3);assert.equal(g.state,"lost");
 });
+
+test("all 180 seeded rooftop jumps are physically reachable with normal movement",()=>{
+ let passed=0;
+ for(const seed of [20261104,20261231,991,20261999]){
+  const g=newRoof(seed);g.world.vents.length=0;g.world.drones.length=0;
+  for(let i=0;i<45;i++){
+   g.start();
+   const current=g.world.roofs[i],next=g.world.roofs[i+1],player=g.player;
+   player.x=current.x+current.w-88;player.y=current.y-player.h;
+   player.vx=325;player.vy=0;player.grounded=true;g.input.right=true;g.pressJump();
+   let reached=false;
+   for(let tick=0;tick<115;tick++){
+    g.tick(.012);
+    if(player.grounded&&player.x>next.x&&player.x<next.x+next.w-5){reached=true;break}
+    if(g.state!=="running")break;
+   }
+   assert.ok(reached,"Unreachable rooftop "+i+" -> "+(i+1)+" seed "+seed);
+   passed++;
+  }
+ }
+ assert.equal(passed,180);
+});
