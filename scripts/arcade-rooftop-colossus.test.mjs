@@ -61,7 +61,7 @@ test("Rooftop rooftops are deterministic, have real playable gaps and all four d
   assert.ok(Math.abs(a[i].y-a[i-1].y)<62,"Roof rise should be jumpable "+i);
  }
  const twin=newRoof();
- assert.deepEqual(a.map(x=>[x.x,x.y,x.w]),twin.world.roofs.map(x=>[x.x,x.y,x.w]));
+ assert.equal(JSON.stringify(a.map(x=>[x.x,x.y,x.w])),JSON.stringify(twin.world.roofs.map(x=>[x.x,x.y,x.w])));
 });
 test("Rooftop physics supports jump buffering, dash limits, landing and checkpoints",()=>{
  const g=newRoof();g.start();
