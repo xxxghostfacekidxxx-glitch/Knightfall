@@ -263,6 +263,7 @@
           <a href="/members.html">Member Profiles</a>
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
+          <a href="/memo-pad.html">📝 Memo Pad</a>
           <a href="/friends.html">Friends</a>
           <a class="kf-personal-bots-link" href="/personal-bots.html">Personal Bots</a>
           <a class="kf-vault-link" href="/vault.html">Private Vault</a>
