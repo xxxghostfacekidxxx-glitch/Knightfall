@@ -194,6 +194,30 @@ jobs:
             echo "$endpoint=$code expected=$expected $(cat "$body" | head -c 250)"
             test "$code" = "$expected"
           done
+          # Verify all twelve official starter bots on the deployed API without running AI inference.
+          if [ "$maintenance" = false ]; then
+            starter_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/public-bots")
+            test "$starter_code" = 200
+            python3 - "$body" <<'PY'
+          import json,sys
+          data=json.load(open(sys.argv[1],encoding="utf-8"))
+          bots=[b for b in data.get("bots",[]) if b.get("system_bot") is True]
+          assert len(bots)==12, f"Expected 12 Knightfall Originals, got {len(bots)}"
+          assert len({b["id"] for b in bots})==12
+          assert all(b.get("is_nsfw") is False and b.get("owner_username")=="Knightfall" for b in bots)
+          assert all("system_prompt" not in b for b in bots)
+          print("Public starter catalog verified:",", ".join(b["name"] for b in bots))
+          PY
+            detail_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/public-bots/0000000000000000000000000000b001")
+            test "$detail_code" = 200
+            python3 - "$body" <<'PY'
+          import json,sys
+          item=json.load(open(sys.argv[1],encoding="utf-8"))["bot"]
+          assert item["name"]=="Night Shift" and item["system_bot"] is True
+          assert len(item["starters"])>=3 and "system_prompt" not in item
+          print("Official starter details verified")
+          PY
+          fi
           # The adult category stays hidden; provider-verification status requires a signed-in account.
           categories_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/categories")
           echo "adult-category-check=$categories_code"
