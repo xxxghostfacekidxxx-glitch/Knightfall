@@ -5,7 +5,7 @@ export function normalizeProfileLinks(input){
  for(const entry of input){
   if(!entry||typeof entry!=="object"||typeof entry.label!=="string"||typeof entry.url!=="string")return null;
   const label=entry.label.trim(),raw=entry.url.trim();
-  if(!label||label.length>50||/[[\u0000-\u001f\u007f]/.test(label)||!raw||raw.length>500)return null;
+  if(!label||label.length>50||/[\u0000-\u001f\u007f]/.test(label)||!raw||raw.length>500)return null;
   let normalized;
   try{
    const parsed=new URL(raw);
