@@ -212,7 +212,7 @@ document.addEventListener('click',event=>{
  }
 });
 document.addEventListener('sanctuary-changed',async event=>{
- if(event.detail?.source!=='adventures')return;
+ if(!['adventures','passport','minigame'].includes(event.detail?.source))return;
  try{updateMe(await api('/api/mascot-pets/me'));
   const a=await api('/api/mascot-pets/adventures');incubatingSpecies=(a.eggs||[]).filter(x=>x.status==='incubating').map(x=>x.species);
   render()}catch(error){say(error.message)}
