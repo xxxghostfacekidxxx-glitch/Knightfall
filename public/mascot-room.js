@@ -77,6 +77,39 @@ function choices(select,values,selection,rank){
  const fallback=values.find(x=>x.unlock_level<=rank);
  select.value=values.some(x=>x.id===selection&&x.unlock_level<=rank)?selection:(fallback?.id||'');
 }
+function roomSummary(){
+ const root=q('room-companion-summary');if(!root||!selected)return;
+ root.replaceChildren();
+ const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;node.textContent=String(text);return node};
+ const identity=make('div','room-pet-identity','');
+ identity.append(make('strong','',selected.nickname),make('span','',selected.species_name+' · Lv '+selected.level));
+ root.append(identity);
+ const lore=make('p','room-pet-lore',selected.lore||('Meet '+selected.nickname+'.'));
+ if(selected.temperament||selected.favorite){
+  lore.textContent=(selected.temperament||'Curious')+' · Loves '+(selected.favorite||'adventures')+'. '+(selected.lore||'');
+ }
+ root.append(lore);
+ if(!visitor){
+  const moods=make('div','room-pet-mood',''),mood=selected.mood||{label:'Content',tip:'Care makes your companion happy.'};
+  moods.append(make('strong','','♡ '+mood.label),make('span','',selected.bond?.label||'Newly rescued'),make('small','',mood.tip||''));
+  root.append(moods);
+  const vitals=make('div','room-need-tags','');
+  for(const [key,label] of [['hunger','Food'],['joy','Joy'],['energy','Energy']]){
+   const value=Number(selected.vitals?.[key]??90);
+   const pill=make('span','room-need-tag',label+' '+Math.round(value)+'%');
+   pill.dataset.state=value<40?'low':value<65?'medium':'good';vitals.append(pill);
+  }
+  root.append(vitals);
+ }
+}
+function syncCareButtons(){
+ for(const button of document.querySelectorAll('button[data-care]')){
+  const action=button.dataset.care,delay=Number(selected?.next_care?.[action]||0);
+  button.disabled=visitor||busy||!selected||delay>0;
+  const base={feed:'🍕 Give a snack',play:'🎮 Play together',rest:'🌙 Time to rest'}[action]||action;
+  button.textContent=delay>0?base+' · '+Math.ceil(delay/60000)+'m':base;
+ }
+}
 function activate(id){
  selected=pets.find(p=>String(p.id)===String(id))||pets[0]||null;
  if(!selected)return;
@@ -87,7 +120,7 @@ function activate(id){
  choices(decor,decorations,selected.habitat?.decoration||'none',rank);
  pose.value=['idle','bounce','mischief'].includes(selected.room?.pose)?selected.room.pose:'idle';
  picker.value=String(selected.id);
- dirty=false;renderOutfit();renderVisitorFurniture();draw();
+ dirty=false;renderOutfit();renderVisitorFurniture();draw();roomSummary();syncCareButtons();
  say(visitor?('Visiting '+selected.nickname+'’s public room. Room changes are only available to its owner.'):
   ('Visiting '+selected.nickname+'. Tap the floor or drag your companion to explore the room.'));
  document.dispatchEvent(new CustomEvent('sanctuary-room-selected',{detail:{petId:selected.id,visitor}}));
@@ -176,7 +209,7 @@ document.querySelectorAll('button[data-care]').forEach(button=>button.addEventLi
   say(answer.message||'Your companion enjoyed that.');
   document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'room'}}));
  }catch(err){say(err.message)}
- finally{busy=false;document.querySelectorAll('button[data-care]').forEach(x=>x.disabled=false);draw()}
+ finally{busy=false;syncCareButtons();draw()}
 }));
 async function launch(){
  try{
