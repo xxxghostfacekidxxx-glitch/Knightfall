@@ -12,7 +12,8 @@ for(const [id,names] of Object.entries({
   const game=catalog.games.find(g=>g.id===id);
   assert.ok(game);
   const html=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
-  assert.ok(html.includes("ctx.drawImage("),"sprites must render during gameplay");
+  const gameplaySource=id==="rooftop-riot"?readFileSync("public/arcade/hosted/rooftop-riot/view.js","utf8"):html;
+  assert.ok(gameplaySource.includes("ctx.drawImage("),"sprites must render during gameplay");
   for(const name of names){
    const file="public/arcade/hosted/"+id+"/sprites/"+name;
    assert.ok(existsSync(file),file+" missing");
@@ -22,7 +23,7 @@ for(const [id,names] of Object.entries({
    assert.ok(!/<script|<image|href\s*=|onload\s*=|foreignObject/i.test(svg),"SVG must be self-contained and script-free");
    assert.ok(game.sprites.includes(name));
    assert.ok(game.assets.some(a=>a.path==="/arcade/hosted/"+id+"/sprites/"+name));
-   assert.ok(html.includes(name),"game must actually load "+name);
+   assert.ok(gameplaySource.includes(name),"game must actually load "+name);
   }
   assert.match(game.notes,/provenance/i,"catalog must not claim audited engine ownership");
  });
