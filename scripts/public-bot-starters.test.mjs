@@ -1,0 +1,54 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {Script} from "node:vm";
+const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
+const directoryHtml=read("public/bots.html"),directoryScript=read("public/bots.js"),directoryCss=read("public/bots-starter.css");
+const chatHtml=read("public/bot.html"),chatScript=read("public/bot-public.js"),chatCss=read("public/bot-starter-chat.css");
+test("public directory is fully wired and runs valid JavaScript",()=>{
+ assert.doesNotThrow(()=>new Script(directoryScript,{filename:"bots.js"}));
+ assert.match(directoryHtml,/id="bot-categories"/);
+ assert.match(directoryHtml,/id="bot-feature-count"/);
+ assert.match(directoryHtml,/id="bot-reset-search"/);
+ assert.match(directoryHtml,/id="bot-query"/);
+ assert.match(directoryHtml,/id="public-bots"/);
+ assert.match(directoryHtml,/bots\.js\?v=20261103-starter1/);
+ assert.match(directoryHtml,/bots-starter\.css\?v=20261103-starter1/);
+ assert.match(directoryScript,/\/api\/public-bots/);
+ assert.match(directoryScript,/categoryOptions/);
+ assert.match(directoryScript,/Community-built/);
+ assert.match(directoryScript,/bot\.system_bot/);
+ assert.match(directoryScript,/bot\.is_nsfw/);
+ assert.match(directoryScript,/\/bot\.html\?id=/);
+ assert.doesNotMatch(directoryScript,/\.innerHTML\s*=/);
+});
+test("bots remain discoverable by specialty on mobile with keyboard accessible controls",()=>{
+ assert.match(directoryScript,/aria-pressed/);
+ assert.match(directoryCss,/@media\(max-width:620px\)/);
+ assert.match(directoryCss,/\.bot-category-filter:focus-visible/);
+ assert.match(directoryCss,/overflow-x:auto/);
+ assert.match(directoryCss,/prefers-reduced-motion:reduce/);
+ assert.match(directoryScript,/bot\.category===activeCategory/);
+});
+test("public chat can open 32-character official IDs, display starters, and preserve age gating",()=>{
+ assert.doesNotThrow(()=>new Script(chatScript,{filename:"bot-public.js"}));
+ assert.match(chatHtml,/id="bot-starters"/);
+ assert.match(chatHtml,/id="bot-starter-prompts"/);
+ assert.match(chatHtml,/id="bot-specialty"/);
+ assert.match(chatHtml,/bot-public\.js\?v=20261103-bot-starters1/);
+ assert.match(chatHtml,/bot-starter-chat\.css\?v=20261103-bot-starters1/);
+ assert.match(chatScript,/\/\^\[a-f0-9\]\{32\}\$\//);
+ assert.match(chatScript,/showStarters\(d\.bot\)/);
+ assert.match(chatScript,/input\.value=suggestion/);
+ assert.match(chatScript,/KNIGHTFALL ORIGINAL/);
+ assert.match(chatScript,/\/api\/adult\/status/);
+ assert.match(chatScript,/if\(d\.bot\.is_nsfw\)/);
+ assert.match(chatScript,/\/api\/public-bots\/"?\+id\+"?\/chat/);
+ assert.match(chatCss,/\.bot-starter-suggestion:focus-visible/);
+});
+test("starter bots use existing real AI endpoint, not static canned replies",()=>{
+ assert.match(chatScript,/api\("\/api\/public-bots\/"\+id\+"\/chat"/);
+ assert.match(chatScript,/history\.push\(\{role:"assistant",content:d\.reply\}\)/);
+ assert.match(chatScript,/history:history\.slice\(0,-1\)/);
+ assert.doesNotMatch(chatScript,/fetch\(.+openai\.com/);
+});
