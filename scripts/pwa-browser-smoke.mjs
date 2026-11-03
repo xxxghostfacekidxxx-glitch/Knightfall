@@ -73,7 +73,7 @@ try {
         stylesheet: document.querySelector('link[href*="/messages.css"]')?.getAttribute("href") || ""
       };
     });
-    assert.match(report.stylesheet, /20261103-gravewave-inbox2/, "Messages must load fresh CSS");
+    assert.match(report.stylesheet, /20261103-gravewave-inbox3/, "Messages must load fresh CSS");
     assert.deepEqual(report.legacy, [], "Warm messaging palette leaked into computed browser styles");
   }
   console.log("PWA mobile smoke passed: start page, manifest, icons, shortcuts, privacy/deletion/offline pages, and narrow viewport.");
