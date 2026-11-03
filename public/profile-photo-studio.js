@@ -31,8 +31,8 @@ function show(){
   image.loading='lazy';image.decoding='async';preview.append(image);
   const label=make('div','studio-photo-details');
   label.append(make('strong','',p.caption||'Untitled photo'),make('small','',p.created_at?new Date(p.created_at).toLocaleDateString():'Saved photo'));
-  const controls=make('div','studio-photo-controls'),use=make('button','studio-photo-button primary','Use as cover'),remove=make('button','studio-photo-button danger','Delete');
-  for(const b of [use,remove])b.type='button';
+  const controls=make('div','studio-photo-controls'),use=make('button','studio-photo-button primary','Use as cover'),edit=make('button','studio-photo-button','Caption'),remove=make('button','studio-photo-button danger','Delete');
+  for(const b of [use,edit,remove])b.type='button';
   use.addEventListener('click',()=>{
    const cover=profileForm?.elements?.cover_url;
    if(!cover)return;
@@ -40,6 +40,31 @@ function show(){
    cover.value=url;
    cover.dispatchEvent(new Event('input',{bubbles:true}));
    say('Photo selected as your cover. Save profile to publish it.');document.getElementById('studio-save-indicator')?.scrollIntoView({block:'nearest',behavior:'auto'});
+  });
+  edit.addEventListener('click',()=>{
+   if(working)return;
+   const previous=card.querySelector('.studio-photo-caption-edit');
+   if(previous){previous.remove();return}
+   const editor=make('div','studio-photo-caption-edit'),captionLabel=make('label','','Photo caption');
+   const text=make('input','studio-photo-caption-input');text.type='text';text.maxLength=240;
+   text.placeholder='Describe this photo…';text.value=p.caption||'';
+   captionLabel.append(text);
+   const buttons=make('div','studio-photo-caption-actions');
+   const save=make('button','studio-photo-button primary','Save caption'),cancel=make('button','studio-photo-button','Cancel');
+   save.type=cancel.type='button';
+   cancel.addEventListener('click',()=>editor.remove());
+   save.addEventListener('click',async()=>{
+    if(working)return;working=true;canUpload();save.disabled=true;say('Saving photo caption…');
+    try{
+     const result=await api('/api/profile/photos/'+p.id,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({caption:text.value.trim()})});
+     if(!result.photo||Number(result.photo.id)!==Number(p.id))throw Error('Caption was not confirmed by the server.');
+     p.caption=result.photo.caption||'';
+     show();say('Caption updated without re-uploading your photo. ✓');
+    }catch(error){say(error.message||'Caption could not be saved.',true);save.disabled=false}
+    finally{working=false;canUpload()}
+   });
+   buttons.append(save,cancel);editor.append(captionLabel,buttons);card.append(editor);
+   text.focus({preventScroll:true});text.select();
   });
   remove.addEventListener('click',async()=>{
    if(working)return;
@@ -58,7 +83,7 @@ function show(){
    }catch(error){say(error.message,true);remove.disabled=false;use.disabled=false}
    finally{working=false;canUpload()}
   });
-  controls.append(use,remove);card.append(preview,label,controls);grid.append(card);
+  controls.append(use,edit,remove);card.append(preview,label,controls);grid.append(card);
  }
 }
 async function load(){
