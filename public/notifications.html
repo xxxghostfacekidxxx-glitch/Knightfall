@@ -26,9 +26,20 @@ function sameServerKey(subscription,publicKey){
   const expected=decodePublicKey(publicKey),actual=new Uint8Array(existing);
   return actual.length===expected.length&&actual.every((v,i)=>v===expected[i]);
 }
-async function pushRegistration(){
+async function pushRegistration({activateUpdate=false}={}){
   let reg=await navigator.serviceWorker.getRegistration("/");
   if(!reg||!reg.active)reg=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+  // A user's explicit Enable, Repair or Test tap can activate a waiting worker,
+  // rather than testing a months-old SW that cannot send receipt confirmations.
+  if(activateUpdate&&reg.waiting){
+    const change=new Promise(resolve=>{
+      const onChange=()=>resolve();
+      navigator.serviceWorker.addEventListener("controllerchange",onChange,{once:true});
+      setTimeout(resolve,4500);
+    });
+    reg.waiting.postMessage({type:"SKIP_WAITING"});
+    await change;
+  }
   return navigator.serviceWorker.ready;
 }
 function pushDeviceDetails({permission=Notification.permission,local=false,registered=false,keyValid=true}={}){
@@ -120,7 +131,7 @@ async function enableThisDevice({forceRepair=false}={}){
     if(permission!=="granted")throw Error("Notification permission was not granted. Allow it in browser Site settings and try again.");
   }
   const keyData=await api("/api/push/vapid-public-key");
-  const reg=await pushRegistration();
+  const reg=await pushRegistration({activateUpdate:true});
   let current=await reg.pushManager.getSubscription();
   const keyValid=!current||sameServerKey(current,keyData.public_key);
   if(current&&(!keyValid||forceRepair)){
@@ -167,25 +178,53 @@ document.querySelector("#repair-push").addEventListener("click",async e=>{
 });
 document.querySelector("#save-prefs").addEventListener("click",savePrefs);
 document.querySelector("#test-push").addEventListener("click",async e=>{
-  const button=e.currentTarget;
-  button.disabled=true;
+  const button=e.currentTarget;button.disabled=true;
   try{
-    if(!supportsPush())throw Error("Web Push is not supported on this browser.");
-    const reg=await pushRegistration(),sub=await reg.pushManager.getSubscription();
-    if(!sub)throw Error("Enable notifications on this device first.");
-    pushTestPendingUntil=Date.now()+30000;
-    pushTestReceipt=false;
+    if(!supportsPush())throw Error("This browser does not support background notifications.");
+    const reg=await pushRegistration({activateUpdate:true}),sub=await reg.pushManager.getSubscription();
+    if(!sub)throw Error("No phone push subscription exists. First tap Enable push notifications.");
+    pushTestPendingUntil=Date.now()+30000;pushTestReceipt=false;
+    setPushStatus("Step 1/3: Asking the push provider to deliver directly to this device…");
     const response=await api("/api/push/test",{method:"POST",body:JSON.stringify({endpoint:sub.endpoint})});
-    if(!response.delivery?.accepted)throw Error("Push provider did not accept this device's test.");
-    if(!pushTestReceipt)setPushStatus("The push provider accepted this device's test. A notification should reach this phone. This does not confirm that Android displayed it; check browser and system notification settings.");
-  }catch(error){pushTestPendingUntil=0;setPushStatus("Phone test failed: "+error.message);}
+    if(!response.delivery?.accepted)throw Error("The phone's push provider rejected the notification.");
+    if(pushTestReceipt){
+      setPushStatus("✓ Phone service worker received the test. If Android showed no alert, check the Android app notification channel and Do Not Disturb.");
+      return;
+    }
+    setPushStatus("Step 2/3: Push provider accepted. Checking whether this phone actually received it…");
+    if(!response.test_id){
+      setPushStatus("The provider accepted the push but sent no delivery-tracking ID. Reload this page to get the latest version.");
+      return;
+    }
+    let seen="";
+    for(let n=0;n<12;n++){
+      await new Promise(resolve=>setTimeout(resolve,1500));
+      const proof=await api("/api/push/test-status?test_id="+encodeURIComponent(response.test_id));
+      if(proof.state!=="pending"){
+        seen=proof.state;
+        if(seen==="display-requested")break;
+        if(seen==="display-failed")break;
+      }
+    }
+    pushTestPendingUntil=0;
+    if(seen==="display-requested")
+      setPushStatus("✓ Step 3/3: The phone's service worker received the push and asked Android to show it. If you saw no banner, Android or Chrome is suppressing notifications in its settings.");
+    else if(seen==="display-failed")
+      setPushStatus("The phone received the push, but its browser could not show a notification. Allow Chrome/Ash-Fall notifications in Android Settings and retry.");
+    else if(seen==="received")
+      setPushStatus("The phone's worker received the push, but has not confirmed notification display. Check Android notification permission and retry.");
+    else
+      setPushStatus("Provider accepted, but this phone has NOT confirmed receipt. Check that you are using Chrome or the installed PWA on the same ash-fall.com origin; then try Repair push.");
+  }catch(error){pushTestPendingUntil=0;setPushStatus("Device test failed: "+error.message);}
   finally{button.disabled=false;}
 });
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
   if(event.data?.type==="KF_PUSH_RECEIVED"&&Date.now()<pushTestPendingUntil){
-    pushTestPendingUntil=0;
     pushTestReceipt=true;
-    setPushStatus("✓ This device's service worker received the test and requested Android to display it. If there was no banner, check Android notification channels, Do Not Disturb, and app/browser settings.");
+    if(event.data.stage==="display-failed")
+      setPushStatus("This phone received the push but its service worker failed to show a notification. Check Android system notification permissions.");
+    else
+      setPushStatus("✓ The phone's service worker received the push and requested Android notification display.");
   }
 });
 document.querySelector("#read-all").onclick=async()=>{try{await api("/api/notifications/read-all",{method:"POST"});await load()}catch(e){status.textContent=e.message}};
