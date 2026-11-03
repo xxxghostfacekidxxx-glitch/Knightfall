@@ -23,7 +23,7 @@ for (const selector of [
 }
 assert.match(css, /#ff55d8/i, "Neon pink must remain the messaging accent");
 assert.match(css, /var\(--kf-accent-bright\)/, "Acid green highlight must remain in messaging");
-assert.match(html, /\/messages\.css\?v=20261103-gravewave-inbox2/, "Inbox CSS cache key is stale");
+assert.match(html, /\/messages\.css\?v=20261103-gravewave-inbox3/, "Inbox CSS cache key is stale");
 assert.doesNotMatch(html, /20261027-keyboard-layout/, "Old cached messages stylesheet is still referenced");
 
 console.log(`Messaging theme audit passed: ${colors.length} CSS colors checked, no orange/brown palette.`);
