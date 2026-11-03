@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0916"><meta name="description" content="Visit, decorate and play with your original Knightfall Neon Nuisances companions in their interactive homes.">
+<title>My Companion Rooms | Knightfall Sanctuary</title>
+<link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
+<link rel="stylesheet" href="/mascot-room.css?v=20261102-room1">
+</head><body class="room-page">
+<header class="kf-header"></header>
+<main class="room-shell">
+ <header class="room-intro">
+  <p class="room-eyebrow">✦ NEON NUISANCES · THE SANCTUARY</p>
+  <h1>THE LITTLE <span>MADHOUSE</span></h1>
+  <p>A real room for every rescued misfit. Move them around, give them a home, change their moods, and take care of them. Every room belongs to your account.</p>
+  <nav class="room-links" aria-label="Sanctuary links"><a href="/mascot-pets.html">← Sanctuary</a><a href="/profile.html">My profile</a><a href="/devil-tools.html">Devil Tools</a></nav>
+ </header>
+ <section class="room-workspace" aria-labelledby="room-heading">
+  <div class="room-toolbar">
+    <h2 id="room-heading">My companion's room</h2>
+    <label for="room-pet">Visit companion</label>
+    <select id="room-pet" aria-label="Choose owned companion"></select>
+    <span id="room-level">Lv 1</span>
+  </div>
+  <div class="room-stage-wrap">
+   <div id="room-stage" class="room-stage" tabindex="0" aria-label="Interactive companion room. Click or tap the floor to move your companion; drag the companion or focus it and use arrow keys to reposition it.">
+    <img id="room-background" class="room-background" alt="" aria-hidden="true">
+    <div class="room-vignette" aria-hidden="true"></div>
+    <img id="room-decoration" class="room-furniture" alt="" aria-hidden="true">
+    <button id="room-avatar" type="button" class="room-avatar" aria-label="Move your companion by dragging or using arrow keys">
+     <img id="room-pet-image" alt="">
+     <span id="room-pet-label"></span>
+    </button>
+    <div id="room-particles" aria-hidden="true"></div>
+    <div class="room-floor" aria-hidden="true"></div>
+   </div>
+  </div>
+  <p id="room-message" role="status" aria-live="polite">Fetching your sanctuary rooms…</p>
+  <p class="room-controls-hint">Drag your companion, tap a destination, or use the arrow keys when the companion is focused. Changes save when you press <strong>Save room</strong>.</p>
+  <div class="room-controls">
+   <fieldset><legend>Room styling</legend>
+    <label for="room-theme">Habitat</label><select id="room-theme"></select>
+    <label for="room-decor">Decoration</label><select id="room-decor"></select>
+    <label for="room-pose">Companion mood</label>
+    <select id="room-pose"><option value="idle">Chilling</option><option value="bounce">Excited</option><option value="mischief">Mischievous</option></select>
+    <button id="room-save" type="button">✦ Save room</button>
+   </fieldset>
+   <fieldset><legend>Care & activities</legend>
+    <button type="button" data-care="feed">🍕 Give a snack</button>
+    <button type="button" data-care="play">🎮 Play together</button>
+    <button type="button" data-care="rest">🌙 Time to rest</button>
+    <p>Regular care earns XP, with the same server cooldowns as Sanctuary. Moving and decorating is always free.</p>
+    <a class="room-minigame-link" href="/mascot-pets.html#cinder-catch">Play Cinder Catch</a>
+   </fieldset>
+  </div>
+ </section>
+</main>
+<script src="/nav.js?v=20261102-mascot6" defer></script>
+<script src="/mascot-room.js?v=20261102-room1" defer></script>
+</body></html>
