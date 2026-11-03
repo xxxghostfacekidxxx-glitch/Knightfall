@@ -3,6 +3,28 @@
   "updated": "2026-11-02",
   "games": [
     {
+      "id": "neon-nuisances-species-trials",
+      "title": "Neon Nuisances · Species Trials",
+      "route": "/mascot-trials.html",
+      "description": "Play four original arcade challenges themed for all 22 collectible Neon Nuisances mascots. Haunted Memory, Arcane Runes, Toxic Catch and Night Dodge, with keyboard/touch controls and account-owned pet care rewards.",
+      "genre": "Arcade",
+      "collection": "mini",
+      "device": "touch",
+      "source": "/mascot-trials-engine.mjs",
+      "notes": "Original Knightfall game. Requires sign-in and at least one adopted companion; pet-care rewards follow server cooldowns. No paid random rewards.",
+      "links": [
+        {
+          "title": "Rescue and care for pets",
+          "route": "/mascot-pets.html"
+        },
+        {
+          "title": "My companion rooms",
+          "route": "/mascot-room.html"
+        }
+      ],
+      "featured": true
+    },
+    {
       "id": "a-dark-room",
       "title": "A Dark Room",
       "route": "/arcade/hosted/a-dark-room/index.html",
