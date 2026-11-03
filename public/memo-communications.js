@@ -79,18 +79,19 @@ function mount(host){
   if(tab==='notes'&&host.dataset.memoMounted!=='true')status(mailStatus,'Open the Memo Pad to compose.');
  }
  async function loadMail(){
-  if(mailBusy||active!=='inbox')return;mailBusy=true;
-  const token=++mailSeq;status(mailStatus,'Loading '+(inboxType==='inbox'?'received':'sent')+' notes…');
+  if(active!=='inbox')return;
+  const token=++mailSeq,box=inboxType;mailBusy=true;
+  status(mailStatus,'Loading '+(box==='inbox'?'received':'sent')+' notes…');
   try{
    if(!await auth())return;
-   const result=await request('/api/memo-mail?box='+inboxType);
-   if(token!==mailSeq)return;
+   const result=await request('/api/memo-mail?box='+box);
+   if(token!==mailSeq||box!==inboxType)return;
    mailCache=result.mail||[];
    if(!mailCache.some(x=>x.id===activeMail))activeMail=mailCache[0]?.id||null;
    drawMail();
    status(mailStatus,mailCache.length?mailCache.length+' '+(inboxType==='inbox'?'received':'sent')+' memo'+(mailCache.length===1?'':'s')+(inboxType==='inbox'?' · '+mailCache.filter(x=>!x.read_at).length+' unread':''):'Nothing in this folder yet.');
   }catch(e){status(mailStatus,e.message,true)}
-  finally{mailBusy=false}
+  finally{if(token===mailSeq)mailBusy=false}
  }
  function drawMail(){
   mailList.replaceChildren();
@@ -223,9 +224,9 @@ function mount(host){
  chatTimer=setInterval(()=>{if(alive()&&!chatBusy)void loadConversations()},5000);
  mailTimer=setInterval(()=>{if(active==='inbox'&&!document.hidden&&!host.closest('[hidden]')&&!mailBusy)void loadMail()},20000);
  document.addEventListener('kf:memo-sent',e=>{
-  if(e.detail?.host!==host)return;inboxType='sent';activeMail=null;activate('inbox');
+  if(e.detail?.host!==host)return;inboxType='sent';activeMail=null;
   sentButton.classList.add('primary');inboxButton.classList.remove('primary');
-  void loadMail();
+  activate('inbox');
  });
  const initial=new URLSearchParams(location.search).get('tab');
  if(initial==='inbox'||initial==='chat')activate(initial);
