@@ -116,7 +116,7 @@ body:has(#studio-appearance) .profile-shell h1,body:has(#studio-appearance) .pro
 
 
 /* Profile Studio photo-wall manager and cover selection. */
-#photo-studio{min-width:0}
+#photo-studio{min-width:0;border:1px solid #76518d6d;border-radius:17px;padding:clamp(13px,2.1vw,22px);margin:19px 0;background:linear-gradient(160deg,#191526,#101423);scroll-margin-top:91px}
 #photo-studio .studio-photo-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:9px 1px}
 #studio-photo-count{font-size:.86rem;font-weight:950;color:#c6ff45}
 #studio-photo-refresh{min-height:40px;border-radius:9px;border:1px solid #815c95;color:#def6e7;background:#211a30;font-weight:800}
