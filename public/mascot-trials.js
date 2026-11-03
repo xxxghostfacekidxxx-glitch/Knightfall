@@ -264,6 +264,18 @@ start.addEventListener('click',()=>{
 });
 stop.addEventListener('click',()=>{if(active){void finish(false);say('Trial ended early. No currency or XP was awarded.')}});
 select.addEventListener('change',selectPet);
+if(!stage.requestFullscreen||!document.fullscreenEnabled){fullscreen.disabled=true;fullscreen.title='Fullscreen unavailable in this browser'}
+fullscreen.addEventListener('click',async()=>{
+ if(fullscreen.disabled)return;
+ try{
+  if(document.fullscreenElement===stage)await document.exitFullscreen();
+  else await stage.requestFullscreen();
+ }catch(e){say('Fullscreen unavailable: '+e.message)}
+});
+document.addEventListener('fullscreenchange',()=>{
+ fullscreen.textContent=document.fullscreenElement===stage?'⛶ Exit fullscreen':'⛶ Fullscreen';
+});
+
 window.addEventListener('keydown',event=>{
  if(!active||!['catch','dodge'].includes(challenge?.mode))return;
  if(event.target?.matches?.('select,input,textarea,[contenteditable]'))return;
