@@ -141,7 +141,7 @@ function renderShop(){
   card.append(actions);shop.append(card);
  }
 }
-function render(){renderOwned();renderAdopt();renderShop()}
+function render(){renderOwned();renderAdopt();renderShop();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
 function updateMe(d){
  pets=d.pets||[];wardrobe=d.wardrobe||[];cinders=Number(d.wallet_balance||0);
  level=Number(d.sanctuary_level||1);max=d.max_owned||22;
@@ -218,7 +218,7 @@ document.addEventListener('click',event=>{
  }
 });
 document.addEventListener('sanctuary-changed',async event=>{
- if(!['adventures','passport','minigame'].includes(event.detail?.source))return;
+ if(!['adventures','passport','minigame','bulk'].includes(event.detail?.source))return;
  try{updateMe(await api('/api/mascot-pets/me'));
   const a=await api('/api/mascot-pets/adventures');incubatingSpecies=(a.eggs||[]).filter(x=>x.status==='incubating').map(x=>x.species);
   render()}catch(error){say(error.message)}
