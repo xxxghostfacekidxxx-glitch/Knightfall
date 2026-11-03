@@ -32,12 +32,12 @@ function update(){
  const current=snapshot();
  const contentDirty=loaded&&baseline&&Object.keys(current).some(k=>current[k]!==baseline[k]);
  const dirty=!!(contentDirty||layoutDirty);
- discard.disabled=!loaded||saving||!dirty;
+ discard.disabled=!loaded||saving||pendingMedia>0||!dirty;
  const privacy=form.elements.profile_visibility?.value||'public';
  const show=form.elements.show_activity?.checked;
  byId('studio-privacy-guide').textContent=(pretty[privacy]||pretty.public)+' '+(show?'Recent forum activity is visible to people allowed to view your profile.':'Recent forum activity is hidden from the profile page.');
  if(!loaded){setIndicator('loading','◌ Loading profile…');summary.textContent='Checking your member account…';return}
- if(saving){setIndicator('saving','↻ Saving your profile…');summary.textContent='Uploading and saving. Keep this page open.';return}
+ if(saving||pendingMedia){setIndicator('saving',saving?'↻ Saving your profile…':'◌ Preparing image…');summary.textContent=saving?'Uploading and saving. Keep this page open.':'Preparing a cropped image. Save will be available as soon as it is ready.';return}
  if(error){setIndicator('error','⚠ Could not save your changes');summary.textContent='Your edits are still here. Fix the issue and try saving again.';return}
  if(dirty){
   setIndicator('dirty','● Unsaved changes');
@@ -101,6 +101,8 @@ function discardChanges(){
  update();
 }
 discard.addEventListener('click',discardChanges);
+byId('studio-save-all-layout')?.addEventListener('click',()=>{if(loaded&&!saving&&!pendingMedia&&!submit.disabled)form.requestSubmit()});
+form.addEventListener('submit',event=>{if(pendingMedia){event.preventDefault();event.stopImmediatePropagation();status.textContent='Finish preparing your image before saving.';}},true);
 for(const eventName of ['input','change'])form.addEventListener(eventName,()=>{
  if(!loaded||saving)return;
  error=false;edited=true;update();
@@ -108,14 +110,14 @@ for(const eventName of ['input','change'])form.addEventListener(eventName,()=>{
 document.addEventListener('kf:profile-input',()=>{edited=true;error=false;update()});
 document.addEventListener('kf:layout-changed',()=>{layoutDirty=true;edited=true;error=false;update()});
 document.addEventListener('kf:layout-reset',()=>{layoutDirty=false;update()});
-document.addEventListener('kf:layout-saved',()=>{layoutDirty=false;update()});
+document.addEventListener('kf:layout-saved',e=>{layoutDirty=!!e.detail?.pending;update()});
 document.addEventListener('kf:profile-loaded',e=>publishBaseline(e.detail?.user));
 document.addEventListener('kf:profile-details-saved',e=>publishBaseline(e.detail?.user,e.detail?.submitted));
 document.addEventListener('kf:profile-saving',()=>{saving=true;error=false;update()});
 document.addEventListener('kf:profile-saved',e=>{
- saving=false;error=false;edited=true;
+ saving=false;error=false;
  publishBaseline(e.detail?.user,e.detail?.submitted);
- status.textContent='Profile published. Preview stays available so you can continue editing.';
+ edited=true;status.textContent='Profile published. Preview stays available so you can continue editing.';
  update();
 });
 document.addEventListener('kf:profile-save-error',e=>{
