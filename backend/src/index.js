@@ -107,15 +107,27 @@ async function deliverPushToUser(env,userId,notification,onlyEndpoint=null) {
     const body=String(notification.body||"You have a new notification.").slice(0,180);
     const path=typeof notification.url==="string"&&notification.url.startsWith("/")&&!notification.url.startsWith("//")?notification.url:"/notifications.html";
     const payload={title,body,url:path,tag:"ashfall-"+String(notification.kind||"alert")+"-"+String(notification.target_id||"new")};
-    for(const sub of (results||[])){
-      delivery.attempted++;
+    // Do not let a slow desktop provider block the Android device in the same account.
+    // Each destination gets its own timeout and its own delivery outcome.
+    const outcomes=await Promise.all((results||[]).map(async sub=>{
       try{
         const encrypted=await encryptWebPush(payload,sub),token=await pushVapidToken(sub.endpoint,env);
         const response=await fetch(sub.endpoint,{method:"POST",headers:{"Authorization":"vapid t="+token+", k="+env.VAPID_PUBLIC_KEY,"Content-Encoding":"aes128gcm","Content-Type":"application/octet-stream","TTL":"86400","Urgency":"normal"},body:encrypted,signal:AbortSignal.timeout(8000)});
-        if(response.status===404||response.status===410){delivery.expired++;await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();}
-        else if(!response.ok){delivery.failed++;delivery.provider_status=response.status;if(isTransientPushStatus(response.status))delivery.transient++;console.warn("web_push_delivery_failed",response.status, new URL(sub.endpoint).hostname);}
-        else delivery.accepted++;
-      }catch(error){delivery.failed++;delivery.transient++;console.warn("web_push_subscription_failed",sub.id,String(error));}
+        if(response.status===404||response.status===410){await env.DB.prepare("DELETE FROM push_subscriptions WHERE id=?").bind(sub.id).run();return {expired:true};}
+        if(!response.ok){console.warn("web_push_delivery_failed",response.status,new URL(sub.endpoint).hostname);return {failed:true,transient:isTransientPushStatus(response.status),status:response.status,endpoint:sub.endpoint};}
+        return {accepted:true};
+      }catch(error){console.warn("web_push_subscription_failed",sub.id,String(error));return {failed:true,transient:true,endpoint:sub.endpoint};}
+    }));
+    delivery.transient_endpoints=[];
+    for(const outcome of outcomes){
+      delivery.attempted++;
+      if(outcome.accepted){delivery.accepted++;continue;}
+      if(outcome.expired){delivery.expired++;continue;}
+      if(outcome.failed){
+        delivery.failed++;
+        if(outcome.status)delivery.provider_status=outcome.status;
+        if(outcome.transient){delivery.transient++;delivery.transient_endpoints.push(outcome.endpoint);}
+      }
     }
   } catch(error) { delivery.failed++;delivery.transient++;console.warn("web_push_skipped",String(error)); }
   return delivery;
@@ -858,7 +870,17 @@ export default { async queue(batch, env) {
         message.ack();
         continue;
       }
-      const result = await deliverPushToUser(env, Number(job.userId), job.notification);
+      const endpoint=typeof job.endpoint==="string"&&job.endpoint.startsWith("https://")?job.endpoint:null;
+      const result = await deliverPushToUser(env, Number(job.userId), job.notification, endpoint);
+      // If one device accepted the notification, retry only failed destinations.
+      // Replaying the whole batch would duplicate desktop alerts while still
+      // leaving an intermittently failing mobile device unserved.
+      if(!endpoint&&result.accepted>0&&result.transient_endpoints?.length){
+        for(const failedEndpoint of result.transient_endpoints){
+          try{await env.NOTIFICATION_QUEUE.send({type:"push-notification",userId:job.userId,notification:job.notification,endpoint:failedEndpoint});}
+          catch(error){console.warn("push_retry_enqueue_failed",String(error));}
+        }
+      }
       if (shouldRetryPushDelivery(result)) message.retry();
       else message.ack();
     } catch (error) {
@@ -2026,7 +2048,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!sub)return json({error:"This device is not registered to receive push. Repair or enable notifications on this device."},409,origin);
     const pushAttempt=await deliverPushToUser(env,user.id,{kind:"account",title:"Ash-Fall test alert",body:"Push notifications are connected on this device.",url:"/notifications.html",target_id:"test"},endpoint);
     const explanation=pushAttempt?.skipped==="quiet-hours"?"Quiet hours are active. Disable quiet hours and try again.":pushAttempt?.skipped==="category-disabled"?"Account alerts are disabled in notification preferences.":pushAttempt?.skipped==="unconfigured"?"The server push credentials are unavailable.":pushAttempt?.expired?"This device's push subscription expired. Use Repair push on this device.":pushAttempt?.provider_status?"Push provider returned HTTP "+pushAttempt.provider_status+". Re-enable push on this device.":"The push provider did not accept this device's test. Check your settings and repair this device's subscription.";
-    return json({ok:!!pushAttempt?.accepted,delivery:pushAttempt||{attempted:0,accepted:0,expired:0,failed:0},...(pushAttempt?.accepted?{}:{error:explanation})},pushAttempt?.accepted?200:503,origin);
+    const {transient_endpoints:_internalRetryTargets,...publicDelivery}=pushAttempt||{attempted:0,accepted:0,expired:0,failed:0};
+    return json({ok:!!pushAttempt?.accepted,delivery:publicDelivery,...(pushAttempt?.accepted?{}:{error:explanation})},pushAttempt?.accepted?200:503,origin);
   }
   if(url.pathname==="/api/notification-preferences"&&(request.method==="GET"||request.method==="PUT")){
     const user=await requireUser(request,env);if(!user)return json({error:"Authentication required."},401,origin);
