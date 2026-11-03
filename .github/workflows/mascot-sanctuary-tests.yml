@@ -15,6 +15,7 @@ on:
       - 'backend/src/mascot-passport.test.mjs'
       - 'public/mascot-passport.js'
       - 'public/mascot-cinder-catch.js'
+      - 'scripts/mascot-cinder-catch.test.mjs'
       - 'scripts/mascot-passport-sql.test.py'
       - 'public/assets/devil-tools/neon-nuisances/badges/**'
       - 'backend/src/mascot-adventures.js'
@@ -44,7 +45,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate adoption rules, routes, ownership and privacy
-        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs
+        run: node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs backend/src/mascot-adventures.test.mjs backend/src/mascot-passport.test.mjs scripts/mascot-cinder-catch.test.mjs
       - name: Validate atomic Cinders pet rescues and accessory ownership
         run: python3 scripts/mascot-economy-sql.test.py && python3 scripts/mascot-adventures-sql.test.py && python3 scripts/mascot-passport-sql.test.py
       - name: Confirm Worker and browser syntax
