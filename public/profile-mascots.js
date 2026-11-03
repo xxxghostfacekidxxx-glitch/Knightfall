@@ -56,6 +56,18 @@ async function mount(){
    group.append(item);
   }
   card.append(group);
+  if(Array.isArray(d.badges)&&d.badges.length){
+   const medalTitle=el('h3','mascot-profile-medals-title','✦ Sanctuary Passport');
+   const medals=el('div','mascot-profile-medals');
+   for(const badge of d.badges){
+    if(!/^[a-z_]{3,48}$/.test(badge.badge_id||''))continue;
+    const medal=el('div','mascot-profile-medal');
+    const img=el('img');img.src='/assets/devil-tools/neon-nuisances/badges/'+badge.badge_id+'.svg?v=20261102-passport1';
+    img.alt=badge.title||'Sanctuary medal';img.loading='lazy';
+    medal.append(img,el('small','',badge.title));medals.append(medal);
+   }
+   card.append(medalTitle,medals);
+  }
  }catch(error){
   if(card.isConnected)card.remove();
  }finally{busy=false}
