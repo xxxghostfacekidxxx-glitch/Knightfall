@@ -85,7 +85,7 @@ class Game {
    if(oldBottom<=r.y+8&&p.y+p.h>=r.y&&
       Math.max(oldX,p.x)+p.w>r.x+5&&Math.min(oldX,p.x)<r.x+r.w-5){
     p.y=r.y-p.h;p.vy=0;p.grounded=true;p.coyote=.12;p.dashReady=true;
-    if(r.checkpoint&&r.i>this.checkpoint){this.checkpoint=r.i;this.emit('checkpoint',p.x,p.y,'#c6ff45');}
+    if(r.checkpoint&&r.i>this.checkpoint){this.checkpoint=r.i;this.hp=Math.min(3,this.hp+1);p.inv=Math.max(p.inv,.7);this.emit('checkpoint',p.x,p.y,'#c6ff45');}
     break;
    }
   }
