@@ -48,6 +48,12 @@ async function scenario(name,viewport){
    if(kind==="gallery")gallery.unshift(photo);
    return respond(201,{photo});
   }
+  if(path.match(/^\/api\/profile\/photos\/\d+$/)&&method==="PATCH"){
+   const id=Number(path.split("/").pop()),photo=gallery.find(p=>p.id===id);
+   if(!photo)return respond(404,{error:"Photo missing"});
+   const changes=JSON.parse(r.postData()||"{}");photo.caption=String(changes.caption||"");
+   return respond(200,{photo});
+  }
   if(path.match(/^\/api\/profile\/photos\/\d+$/)&&method==="DELETE"){
    const id=Number(path.split("/").pop()),ix=gallery.findIndex(p=>p.id===id);
    if(ix<0)return respond(404,{error:"Photo missing"});
@@ -107,6 +113,13 @@ async function scenario(name,viewport){
   await page.locator('#studio-photo-upload button[type="submit"]').click();
   await page.waitForFunction(()=>document.querySelector("#studio-photo-count")?.textContent.includes("2 / 60"));
   assert.equal(gallery.length,2);
+  // Metadata-only editing must leave the gallery photo and cover image IDs unchanged.
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Caption'}).click();
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('.studio-photo-caption-input').fill('Updated skyline photograph');
+  await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Save caption'}).click();
+  await page.waitForFunction(()=>document.querySelector('#studio-photo-grid .studio-photo-card .studio-photo-details')?.textContent.includes('Updated skyline photograph'));
+  assert.equal(gallery[0].caption,'Updated skyline photograph');
+  assert.equal(gallery.length,2,'Editing captions must not add new photos');
   const coverChoice=gallery[0];
   await page.locator('#studio-photo-grid .studio-photo-card').first().locator('button').filter({hasText:'Use as cover'}).click();
   assert.equal(await page.locator('#form [name="cover_url"]').inputValue(),coverChoice.url);
