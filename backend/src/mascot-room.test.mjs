@@ -79,3 +79,14 @@ test('room scene preserves the pet and account-owned cosmetic overlay layering',
  assert.match(css,/room-outfit/);
  assert.match(css,/\[hidden\]\{display:none!important\}/);
 });
+
+test('public pet room tours show owner-placed furniture without exposing controls',()=>{
+ const client=read('public/mascot-room.js');
+ const server=read('backend/src/mascot-pets.js');
+ assert.match(client,/renderVisitorFurniture\(\)/);
+ assert.match(client,/selected\?\.furniture/);
+ assert.match(client,/if\(!visitor\)/);
+ assert.match(client,/room-visitor-furniture/);
+ assert.match(server,/mascot_room_furniture_placements WHERE user_id=\?/);
+ assert.match(server,/furniture:\(furniture\.results\|\|\[\]\)/);
+});
