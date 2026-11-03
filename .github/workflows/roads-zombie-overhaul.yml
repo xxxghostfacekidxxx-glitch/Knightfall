@@ -1,4 +1,4 @@
-name: Roads of Cinder & Not Dead Yet Overhaul Tests
+name: Roads, Rooftop Riot & Not Dead Yet Quality Gates
 on:
   workflow_dispatch:
   push:
@@ -6,18 +6,26 @@ on:
     paths:
       - "public/arcade/hosted/roads-of-cinder/**"
       - "public/not-dead-yet.html"
+      - "public/not-dead-yet-overhaul.css"
+      - "public/arcade/hosted/rooftop-riot/**"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
       - "scripts/arcade-road-zombie-browser.mjs"
+      - "scripts/arcade-rooftop-zombie-browser.mjs"
+      - "scripts/arcade-rooftop-colossus.test.mjs"
       - ".github/workflows/roads-zombie-overhaul.yml"
   pull_request:
     branches: [main]
     paths:
       - "public/arcade/hosted/roads-of-cinder/**"
       - "public/not-dead-yet.html"
+      - "public/not-dead-yet-overhaul.css"
+      - "public/arcade/hosted/rooftop-riot/**"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
       - "scripts/arcade-road-zombie-browser.mjs"
+      - "scripts/arcade-rooftop-zombie-browser.mjs"
+      - "scripts/arcade-rooftop-colossus.test.mjs"
 permissions:
   contents: read
 jobs:
@@ -32,11 +40,13 @@ jobs:
       - name: Validate the life-game engine and old Conway distinction
         run: node scripts/test-life-games.mjs
       - name: Run life-board and zombie-campaign regressions
-        run: node --test scripts/arcade-road-zombie-rebuild.test.mjs
+        run: node --test scripts/arcade-road-zombie-rebuild.test.mjs scripts/arcade-rooftop-colossus.test.mjs
       - name: Check scripts for syntax errors
         run: |
           node --check public/arcade/hosted/roads-of-cinder/engine.js
           node --check public/arcade/hosted/roads-of-cinder/view.js
+          node --check public/arcade/hosted/rooftop-riot/engine.js
+          node --check public/arcade/hosted/rooftop-riot/view.js
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 12
@@ -61,7 +71,9 @@ jobs:
       - name: Exercise both games on desktop and mobile
         env:
           ARCADE_TEST_BASE: http://127.0.0.1:8765
-        run: node scripts/arcade-road-zombie-browser.mjs
+        run: |
+          node scripts/arcade-road-zombie-browser.mjs
+          node scripts/arcade-rooftop-zombie-browser.mjs
       - name: Collect server log on failure
         if: failure()
         run: cat /tmp/road-zombie-http.log || true
