@@ -71,6 +71,7 @@ function activate(id){
  dirty=false;renderOutfit();draw();
  say(visitor?('Visiting '+selected.nickname+'’s public room. Room changes are only available to its owner.'):
   ('Visiting '+selected.nickname+'. Tap the floor or drag your companion to explore the room.'));
+ document.dispatchEvent(new CustomEvent('sanctuary-room-selected',{detail:{petId:selected.id,visitor}}));
 }
 function coords(event){
  const rect=stage.getBoundingClientRect();
