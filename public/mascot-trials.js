@@ -58,11 +58,13 @@ async function load(){
  try{
   const data=await api('/api/mascot-pets/me');
   pets=data.pets||[];
+  const requested=new URLSearchParams(location.search).get('pet');
   const selected=select.value;select.replaceChildren();
   for(const entry of pets){
    const option=node('option','',entry.nickname+' · '+entry.species_name);option.value=String(entry.id);select.append(option);
   }
-  if(pets.some(p=>String(p.id)===selected))select.value=selected;
+  if(pets.some(p=>String(p.id)===requested))select.value=requested;
+  else if(pets.some(p=>String(p.id)===selected))select.value=selected;
   else select.value=String(pets.find(p=>p.featured)?.id||pets[0]?.id||'');
   if(!pets.length){start.disabled=true;say('Adopt a mascot before visiting Species Trials.');}
   else {selectPet();say('Select a companion, then begin its species trial. Victories use the normal pet-care cooldown.')}
