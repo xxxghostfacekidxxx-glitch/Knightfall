@@ -60,3 +60,22 @@ test('room UI provides keyboard and pointer controls, real server saves, and sep
  assert.match(html,/id="room-stage"/);
  assert.match(html,/id="room-save"/);
 });
+
+test('public visits use privacy-aware profile endpoint and disable all room editing',()=>{
+ const client=read('public/mascot-room.js'),profile=read('public/profile-mascots.js');
+ assert.match(client,/\/api\/mascot-pets\/profile\//);
+ assert.match(client,/if\(visitor\|\|!selected\|\|busy/);
+ assert.match(client,/document\.querySelector\('\.room-controls'\)/);
+ assert.match(client,/avatar\.tabIndex=-1/);
+ assert.match(profile,/mascot-room\.html\?user=/);
+ assert.match(profile,/pet\.id/);
+});
+test('room scene preserves the pet and account-owned cosmetic overlay layering',()=>{
+ const html=read('public/mascot-room.html'),js=read('public/mascot-room.js'),css=read('public/mascot-room.css');
+ assert.match(html,/id="room-outfit"/);
+ assert.match(js,/renderOutfit\(\)/);
+ assert.match(js,/selected\?\.equipment/);
+ assert.match(js,/accessories/);
+ assert.match(css,/room-outfit/);
+ assert.match(css,/\[hidden\]\{display:none!important\}/);
+});
