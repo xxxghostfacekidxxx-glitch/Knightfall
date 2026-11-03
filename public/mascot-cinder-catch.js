@@ -10,7 +10,7 @@ if(!canvas||!selector||!start||!status)return;
 const ctx=canvas.getContext('2d'),W=720,H=400,GOAL=12,DURATION=35000,API='https://api.ash-fall.com';
 if(!ctx){status.textContent='This browser cannot run the Cinder Catch canvas.';start.disabled=true;return}
 let pets=[],running=false,frame=0,last=0,startAt=0,spawnAt=0,items=[],score=0,lives=3,player=360,pressed={left:false,right:false},
- gamePet=null,memoryBest=0;
+ gamePet=null,memoryBest=0,petAvatar=null;
 const note=value=>{status.textContent=String(value)};
 const rnd=(min,max)=>min+Math.random()*(max-min);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -78,6 +78,12 @@ function drawPlayer(){
  ctx.beginPath();ctx.moveTo(-36,-12);ctx.lineTo(-27,20);ctx.quadraticCurveTo(0,30,27,20);ctx.lineTo(36,-12);ctx.closePath();ctx.fill();ctx.stroke();
  ctx.shadowBlur=0;ctx.strokeStyle='#ff55d8';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-36,-12);ctx.lineTo(36,-12);ctx.stroke();
  ctx.fillStyle='#c6ff45';ctx.beginPath();ctx.arc(0,4,7,0,Math.PI*2);ctx.fill();ctx.restore();
+ if(petAvatar?.complete&&petAvatar.naturalWidth>0){
+  ctx.save();ctx.shadowColor='#ff55d8';ctx.shadowBlur=10;
+  ctx.drawImage(petAvatar,player-30,253,60,65);ctx.restore();
+ }
+ if(gamePet){ctx.save();ctx.textAlign='center';ctx.font='800 11px system-ui,sans-serif';ctx.fillStyle='#eaffec';ctx.fillText(gamePet.nickname.slice(0,22),player,392);ctx.restore()}
+
 }
 function drawOverlay(text,sub){
  ctx.fillStyle='#070817b8';ctx.fillRect(0,90,W,210);
@@ -147,6 +153,10 @@ function tick(t){
 start.addEventListener('click',()=>{
  if(running||!pets.length)return;
  gamePet=pets.find(x=>String(x.id)===selector.value)||pets[0];if(!gamePet)return;
+ petAvatar=null;
+ if(/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/.test(gamePet.idle||'')){
+  petAvatar=new Image();petAvatar.src=gamePet.idle+'?v=20261102-catch-avatar1';
+ }
  running=true;score=0;lives=3;items=[];player=360;pressed.left=false;pressed.right=false;
  start.disabled=true;startAt=performance.now();last=startAt;spawnAt=startAt-550;
  note('Playing with '+gamePet.nickname+'. Catch the lime crystals and dodge magenta hazards.');
