@@ -63,3 +63,45 @@ test("Not Dead Yet new campaign and reloading systems parse and are wired into c
  assert.ok(!main.includes("finish(modeKey!=='campaign'||kills>=20)"),"no early kill-count campaign ending");
  assert.match(html,/grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 });
+
+
+test("Not Dead Yet 1.0 adds melee combat through the same kill reward path as bullets",()=>{
+ const html=read("public/not-dead-yet.html");
+ const main=[...html.matchAll(/<script\b(?![^>]*\bsrc\s*=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("function startGame"));
+ assert.doesNotThrow(()=>new Script(main));
+ assert.match(main,/function melee\(\)/);
+ assert.match(main,/function finishZombie\(z\)/);
+ assert.match(main,/if\(z\.hp<=0\)finishZombie\(z\)/);
+ assert.match(main,/meleeCooldown=\.9/);
+ assert.match(main,/z\.hp-=z\.type==='boss'\?2:3/);
+ assert.match(main,/meleeFlash>0/);
+ assert.match(main,/if\(k==='e'&&!e\.repeat\)melee\(\)/);
+ assert.match(main,/\$\('touch-melee'\)\.addEventListener/);
+ assert.match(html,/id="touch-melee"/);
+});
+test("Not Dead Yet movement repairs preserve character dash stats and forgiving jumps",()=>{
+ const html=read("public/not-dead-yet.html");
+ const main=[...html.matchAll(/<script\b(?![^>]*\bsrc\s*=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("function startGame"));
+ assert.match(main,/jumpBufferTimer=\.14/);
+ assert.match(main,/coyoteTimer>0/);
+ assert.match(main,/if\(player\.grounded&&jumpBufferTimer>0\)jump\(\)/);
+ assert.match(main,/survivor'\)\.value==='dredge'\?3\.55/);
+ assert.match(main,/survivor'\)\.value==='guttermaw'\?3\.35/);
+ assert.match(main,/meleeCooldown=0;meleeFlash=0;coyoteTimer=0;jumpBufferTimer=0/);
+ assert.match(main,/meleeCooldown=0;meleeFlash=0;coyoteTimer=\.12;jumpBufferTimer=0/);
+});
+test("Not Dead Yet tactical indicators and collapsible progression panels retain every action",()=>{
+ const html=read("public/not-dead-yet.html"),css=read("public/not-dead-yet-overhaul.css");
+ for(const id of ["vitality-bar","magazine-bar","dash-bar","melee-bar","combat-objective",
+  "touch-melee","buy-upgrade","buy-barrel","buy-guttermaw","buy-dredge","buy-health",
+  "cloud-load","cloud-save","achievement-list","run-leaderboard","resume-checkpoint"]){
+  const count=[...html.matchAll(new RegExp('id="'+id+'"','g'))].length;
+  assert.equal(count,1,"missing or duplicated "+id);
+ }
+ assert.equal((html.match(/class="zombie-service-panel"/g)||[]).length,4);
+ assert.match(html,/not-dead-yet-overhaul\.css\?v=20261103-combat-rebuild1/);
+ assert.match(css,/\.combat-telemetry/);
+ assert.match(css,/\.zombie-lobby/);
+ assert.match(css,/#game-stage:is\(:fullscreen,\.immersive-fallback\)/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
