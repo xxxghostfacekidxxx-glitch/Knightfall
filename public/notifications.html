@@ -96,7 +96,15 @@ async function syncThisDevice({repairMissing=true}={}){
 }
 async function loadPrefs(){
   try{await syncThisDevice();}
-  catch(error){setPushButton("enable");setPushStatus("Could not check this device: "+error.message);document.querySelector("#push-device-details").textContent="Device registration check failed. You can try Repair push or reload the page.";}
+  catch(error){
+    const needsLogin=/Authentication required|Sign in|401/i.test(error.message);
+    setPushButton(needsLogin?"pending":"enable");
+    if(needsLogin){
+      pushToggle.textContent="Sign in to enable push";
+      setPushStatus("Sign in to Ash-Fall on this phone first. A desktop login cannot authorize mobile push registration.");
+    }else setPushStatus("Could not check this device: "+error.message);
+    document.querySelector("#push-device-details").textContent="Device registration check failed. "+(needsLogin?"Sign in before enabling notifications.":"Use Repair push or reload the page.");
+  }
 }
 async function savePrefs(){
   try{const p=getPrefs();if(!!p.quiet_start!==!!p.quiet_end)throw Error("Choose both quiet-hour times, or clear both.");await api("/api/notification-preferences",{method:"PUT",body:JSON.stringify(p)});setPushStatus("Notification preferences saved.");}
