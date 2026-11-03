@@ -159,14 +159,16 @@ pushToggle.addEventListener("click",async()=>{
   finally{if(pushToggle.dataset.mode!=="unsupported"&&pushToggle.dataset.mode!=="pending")pushToggle.disabled=false;}
 });
 document.querySelector("#repair-push").addEventListener("click",async e=>{
-  e.currentTarget.disabled=true;
+  const button=e.currentTarget;
+  button.disabled=true;
   try{await enableThisDevice({forceRepair:true});}
   catch(error){setPushStatus("Repair failed: "+error.message);}
-  finally{e.currentTarget.disabled=false;}
+  finally{button.disabled=false;}
 });
 document.querySelector("#save-prefs").addEventListener("click",savePrefs);
 document.querySelector("#test-push").addEventListener("click",async e=>{
-  e.currentTarget.disabled=true;
+  const button=e.currentTarget;
+  button.disabled=true;
   try{
     if(!supportsPush())throw Error("Web Push is not supported on this browser.");
     const reg=await pushRegistration(),sub=await reg.pushManager.getSubscription();
@@ -177,7 +179,7 @@ document.querySelector("#test-push").addEventListener("click",async e=>{
     if(!response.delivery?.accepted)throw Error("Push provider did not accept this device's test.");
     if(!pushTestReceipt)setPushStatus("The push provider accepted this device's test. A notification should reach this phone. This does not confirm that Android displayed it; check browser and system notification settings.");
   }catch(error){pushTestPendingUntil=0;setPushStatus("Phone test failed: "+error.message);}
-  finally{e.currentTarget.disabled=false;}
+  finally{button.disabled=false;}
 });
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
   if(event.data?.type==="KF_PUSH_RECEIVED"&&Date.now()<pushTestPendingUntil){
