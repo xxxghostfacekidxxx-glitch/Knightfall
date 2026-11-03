@@ -44,6 +44,10 @@ function cardBase(item,image,ownedCard=false){
 }
 function statRow(label,value){
  const row=make('div','pet-meter'),track=make('div','pet-track'),fill=make('i');
+ const percent=Math.max(0,Math.min(100,Math.round(Number(value)||0)));
+ row.dataset.health=percent<40?'low':percent<65?'medium':'good';
+ track.setAttribute('role','progressbar');track.setAttribute('aria-label',label);
+ track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(percent));
  fill.style.width=Math.max(0,Math.min(100,Number(value)||0))+'%';
  track.append(fill);row.append(make('span','',label),track,make('span','',Math.round(Number(value)||0)+'%'));return row;
 }
