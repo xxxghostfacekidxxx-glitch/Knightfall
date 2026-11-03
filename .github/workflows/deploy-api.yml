@@ -38,6 +38,13 @@ jobs:
       - name: Validate coordinated registration release
         run: node --test scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs
 
+      - name: Verify Memo Pad, separate Memo Mail, and member chat integration
+        run: |
+          node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
+          node --check backend/src/member-memo-mail.js
+          node --check backend/src/member-memos.js
+          node --check backend/src/index.js
+
       - name: Validate discover escaping
         shell: bash
         run: |
