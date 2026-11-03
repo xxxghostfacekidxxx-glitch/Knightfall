@@ -105,3 +105,10 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 - Validate with `python3 scripts/mascot-adventures-sql.test.py` and `node --test backend/src/mascot-adventures.test.mjs`, in addition to the existing Sanctuary suites.
 
 - `0106_mascot_egg_reservations.sql` adds a database-level reservation guard so members cannot spend Cinders rescuing the exact same mascot while its earned egg is incubating. Applied to production D1 after the isolation and integration tests passed. Its migration-ledger entry also requires review before any further Wrangler migrations.
+
+## Sanctuary Passport and Cinder Catch · November 2, 2026
+
+- `0107_mascot_passport.sql` creates eight lifetime achievements for collecting pets, hatching eggs, finishing quests and equipping cosmetics. Achievements reward a combined maximum of 4,075 Cinders per account, only once per badge. The claim trigger calculates qualification from authenticated account records; client progress, score and requested reward amounts are never trusted.
+- Production D1 was updated through the authorized Cloudflare API and read-verified with eight badge definitions, two protection triggers and no existing claims at migration time. **Wrangler's `d1_migrations` ledger still needs reconciliation** before routine migration runs.
+- `public/mascot-cinder-catch.js` is an optional touch/keyboard game; winning calls the already protected `/api/mascot-pets/:id/care` endpoint with `action:play` and its existing 10-minute cooldown. The game never grants wallet currency from client-reported scores. Pets still have the existing care buttons for accessibility.
+- Test with `node --test backend/src/mascot-passport.test.mjs`, `python3 scripts/mascot-passport-sql.test.py`, plus the full Sanctuary workflow.
