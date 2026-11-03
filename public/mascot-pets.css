@@ -120,3 +120,7 @@
 @media(max-width:550px){#cinder-catch{padding:10px}.cinder-catch-control-bar{display:grid;grid-template-columns:1fr}.cinder-catch-control-bar select{max-width:none;min-width:0;width:100%}#cinder-catch-canvas{border-width:1px}}
 
 .pet-room-link{display:block;text-align:center;padding:10px 8px;border:1px solid #79ffe799;border-radius:9px;background:#12232c;color:#79ffe7!important;text-decoration:none!important;font-weight:850;font-size:.81rem}.pet-room-link:hover,.pet-room-link:focus-visible{background:#263345;outline:2px solid #c6ff45}
+
+.pet-trials-promo{padding:19px;margin:24px 0;border:1px solid #ff55d88e;border-radius:17px;background:radial-gradient(circle at 95% 25%,#c6ff4522,transparent 42%),linear-gradient(125deg,#2a183a,#0c1c25)}
+.pet-trials-link{display:inline-block;padding:12px 18px;border-radius:10px;border:1px solid #c6ff45;background:#c6ff45;color:#0d1718!important;font-weight:950;text-decoration:none!important;box-shadow:0 3px 15px #c6ff4530}
+.pet-trials-link:hover,.pet-trials-link:focus-visible{background:#ebffbd;outline:3px solid #ff55d8}
