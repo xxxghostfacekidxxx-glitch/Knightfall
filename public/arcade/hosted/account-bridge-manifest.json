@@ -135,13 +135,6 @@
       "scoreMode": "score"
     },
     {
-      "gameId": "cabinet-wordlee",
-      "title": "Wordlee",
-      "path": "/arcade/hosted/wordlee/index.html",
-      "scoreSelector": "",
-      "scoreMode": "completion"
-    },
-    {
       "gameId": "cabinet-endless-runner",
       "title": "Endless Runner",
       "path": "/arcade/hosted/endless-runner/index.html",
@@ -237,13 +230,6 @@
       "title": "Cinder Chess",
       "path": "/arcade/hosted/cinder-chess/index.html",
       "scoreSelector": "#best",
-      "scoreMode": "score"
-    },
-    {
-      "gameId": "cabinet-crossy-road",
-      "title": "Crossy Road",
-      "path": "/arcade/hosted/crossy-road/index.html",
-      "scoreSelector": "#score",
       "scoreMode": "score"
     },
     {
