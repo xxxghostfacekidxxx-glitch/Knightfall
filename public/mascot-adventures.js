@@ -121,6 +121,6 @@ document.addEventListener('click',event=>{
   perform(()=>api('/api/mascot-pets/eggs/'+Number(b.closest('[data-egg-id]')?.dataset.eggId)+'/hatch',{method:'POST',body:'{}'}));
  }
 });
-document.addEventListener('sanctuary-changed',event=>{if(event.detail?.source==='pets')void refresh()});
+document.addEventListener('sanctuary-changed',event=>{if(['pets','minigame','passport'].includes(event.detail?.source))void refresh()});
 void refresh();
 })();
