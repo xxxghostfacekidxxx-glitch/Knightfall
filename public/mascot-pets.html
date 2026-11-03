@@ -5,7 +5,7 @@
 <meta name="description" content="Adopt and care for original Neon Nuisances mascot companions on Knightfall.">
 <title>Neon Nuisances Sanctuary | Knightfall</title>
 <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
-<link rel="stylesheet" href="/mascot-pets.css?v=20261102-cinder-catch1">
+<link rel="stylesheet" href="/mascot-pets.css?v=20261103-sanctuary-deck1">
 </head><body class="sanctuary-page">
 <header class="kf-header"></header>
 <main class="sanctuary-shell">
@@ -16,6 +16,28 @@
   </header>
   <div class="pet-economy"><strong id="pet-wallet" aria-live="polite">Loading Cinders wallet…</strong><span>Earn Cinders through daily claims and arcade missions. Premium accessories are cosmetic only.</span></div>
   <div role="status" aria-live="polite" id="pet-message">Loading the sanctuary…</div>
+
+  <section class="sanctuary-command-deck" aria-labelledby="sanctuary-command-title">
+   <div class="sanctuary-section-heading"><h2 id="sanctuary-command-title">⚡ Sanctuary Command Deck</h2><span>One home for your whole crew</span></div>
+   <div id="sanctuary-overview" class="sanctuary-overview" aria-live="polite">
+    <p>Checking your companions, their moods and their progress…</p>
+   </div>
+   <div class="sanctuary-care-toolbar">
+    <div><strong>Care for your crew</strong><p>Feed, play or rest every companion whose cooldown has finished. All rewards are checked by the server.</p></div>
+    <label for="sanctuary-care-type">Care action</label>
+    <select id="sanctuary-care-type"><option value="feed">🍕 Feed</option><option value="play">🎮 Play</option><option value="rest">🌙 Rest</option></select>
+    <button id="sanctuary-care-all" type="button" disabled>Loading companions…</button>
+   </div>
+  </section>
+  <section id="my-pets-section" aria-labelledby="my-pets-title">
+   <div class="sanctuary-section-heading"><h2 id="my-pets-title">My companions</h2><span id="pet-slots"></span></div>
+   <div class="pet-filter-bar">
+    <label for="pet-collection-search">Find a companion</label><input id="pet-collection-search" type="search" placeholder="Search your pets…" autocomplete="off">
+    <label for="pet-collection-filter">Show</label><select id="pet-collection-filter"><option value="all">All companions</option><option value="attention">Needs attention</option><option value="ready">Ready to care for</option><option value="featured">Profile companion</option></select>
+    <label for="pet-collection-sort">Order</label><select id="pet-collection-sort"><option value="featured">Featured first</option><option value="level">Highest level</option><option value="needs">Needs first</option><option value="name">Name A–Z</option></select>
+   </div>
+   <div id="owned-pets" class="pet-grid pet-owned-grid"></div>
+  </section>
   <section id="sanctuary-expeditions" aria-labelledby="expeditions-title">
    <div class="sanctuary-section-heading"><h2 id="expeditions-title">✦ Expeditions · Daily Species Quests</h2><span id="quest-slots">3 quests per day</span></div>
    <p class="pet-shop-intro">Each mascot has its own story mission. Start up to three every UTC day, then complete the requested real care action to earn 75 Cinders and a Rescue Shell. No paywalls or random rewards.</p>
@@ -42,12 +64,28 @@
    <p id="passport-status" role="status" aria-live="polite">Your achievement progress is being checked…</p>
    <div id="passport-badges" class="passport-grid"></div>
   </section>
-  <section aria-labelledby="my-pets-title"><div class="sanctuary-section-heading"><h2 id="my-pets-title">My companions</h2><span id="pet-slots"></span></div><div id="owned-pets" class="pet-grid"></div></section>
-  <section aria-labelledby="adopt-title"><div class="sanctuary-section-heading"><h2 id="adopt-title">Adoption gallery</h2><span>22 original species · First rescue free · Later Cinders</span></div><div id="adopt-pets" class="pet-grid"></div></section>
-  <section aria-labelledby="shop-title"><div class="sanctuary-section-heading"><h2 id="shop-title">The Wardrobe · Cosmetic Shop</h2><span>Account-wide accessories · No gameplay advantage</span></div><p class="pet-shop-intro">Unlock accessories with Cinders or use verified payment checkout for premium looks. Every unlocked accessory can be equipped on any pet you own.</p><div id="pet-shop" class="pet-grid"></div></section>
+  <section id="adoption-gallery" aria-labelledby="adopt-title">
+   <div class="sanctuary-section-heading"><h2 id="adopt-title">Adoption gallery</h2><span id="pet-adoption-count">22 species · First rescue free</span></div>
+   <div class="pet-filter-bar">
+    <label for="pet-species-search">Find a species</label><input id="pet-species-search" type="search" placeholder="Name, species or personality…" autocomplete="off">
+    <label for="pet-species-filter">Availability</label><select id="pet-species-filter"><option value="all">All 22</option><option value="available">Not yet owned</option><option value="ready">Ready to rescue</option><option value="locked">Locked</option><option value="owned">Already adopted</option></select>
+    <label for="pet-species-sort">Sort by</label><select id="pet-species-sort"><option value="level">Unlock level</option><option value="name">Name A–Z</option><option value="price">Lowest price</option></select>
+   </div>
+   <div id="adopt-pets" class="pet-grid"></div>
+  </section>
+  <section id="sanctuary-wardrobe" aria-labelledby="shop-title">
+   <div class="sanctuary-section-heading"><h2 id="shop-title">The Wardrobe · Cosmetic Shop</h2><span>Account-wide accessories · No gameplay advantage</span></div>
+   <p class="pet-shop-intro">Unlock cosmetics with earned Cinders or, when configured, purchase premium looks through verified checkout. Owning an accessory lets you equip it on every companion. Paid looks never increase XP or rewards.</p>
+   <div class="pet-filter-bar">
+    <label for="pet-shop-filter">Browse accessories</label>
+    <select id="pet-shop-filter"><option value="all">All looks</option><option value="affordable">Affordable with Cinders</option><option value="owned">My wardrobe</option><option value="cinders">Cinders-only</option><option value="premium">Premium cosmetics</option><option value="head">Head</option><option value="eyes">Eyes</option><option value="neck">Neck</option><option value="aura">Aura</option></select>
+    <span id="pet-shop-count" class="pet-filter-count"></span>
+   </div>
+   <div id="pet-shop" class="pet-grid"></div>
+  </section>
 </main>
 <script src="/nav.js?v=20261102-mascot6" defer></script>
-<script src="/mascot-pets.js?v=20261102-adventures1" defer></script>
+<script src="/mascot-pets.js?v=20261103-sanctuary-deck1" defer></script>
 <script src="/mascot-adventures.js?v=20261102-adventures1" defer></script>
 <script src="/mascot-passport.js?v=20261102-passport1" defer></script>
 <script src="/mascot-cinder-catch.js?v=20261102-cinder-catch2" defer></script>
