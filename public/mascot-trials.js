@@ -184,6 +184,8 @@ function arcadeTrial(){
  playfield.append(canvas);
  const context=canvas.getContext('2d');
  if(!context){void finish(false);return}
+ const backdrop=new Image();
+ backdrop.src='/assets/devil-tools/neon-nuisances/trials/'+mode+'.svg?v=20261102-trials-art1';
  const sprite=new Image();
  const spritePath=safeAvatar(pet.idle||pet.image);
  if(spritePath)sprite.src=spritePath+'?v=20261102-trials-sprite1';
@@ -206,6 +208,7 @@ function arcadeTrial(){
   const gradient=context.createLinearGradient(0,0,0,H);
   gradient.addColorStop(0,'#1c1231');gradient.addColorStop(1,'#090d1a');
   context.fillStyle=gradient;context.fillRect(0,0,W,H);
+  if(backdrop.complete&&backdrop.naturalWidth){context.globalAlpha=.86;context.drawImage(backdrop,0,0,W,H);context.globalAlpha=1}
   context.strokeStyle='#79ffe727';context.lineWidth=1;
   for(let n=0;n<20;n++){context.beginPath();context.moveTo(0,n*24);context.lineTo(W,n*24);context.stroke()}
   if(t-spawn>440){
