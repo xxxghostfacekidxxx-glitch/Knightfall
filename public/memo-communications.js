@@ -25,7 +25,7 @@ function mount(host){
  }
  const heading=host.querySelector('.memo-heading');heading?.after(toolbar);
  host.append(viewport);
- let active='notes',accountId=null,accountName='',inboxType='inbox',mailCache=[],activeMail=null,mailSeq=0,chatSeq=0;
+ let active='notes',accountId=null,accountName='',inboxType=new URLSearchParams(location.search).get('box')==='sent'?'sent':'inbox',mailCache=[],activeMail=null,mailSeq=0,chatSeq=0;
  let convs=[],selectedConv=null,messageItems=[],chatSearchToken=0,chatTimer=0,mailTimer=0,chatBusy=false;
  let sending=false,mailBusy=false;
  const mailHeader=node('div','memo-subhead'),mailButtons=node('div','memo-switch');
@@ -129,7 +129,7 @@ function mount(host){
  inboxButton.addEventListener('click',()=>{inboxType='inbox';activeMail=null;inboxButton.classList.add('primary');sentButton.classList.remove('primary');void loadMail()});
  sentButton.addEventListener('click',()=>{inboxType='sent';activeMail=null;sentButton.classList.add('primary');inboxButton.classList.remove('primary');void loadMail()});
  mailRefresh.addEventListener('click',()=>void loadMail());
- inboxButton.classList.add('primary');
+ (inboxType==='sent'?sentButton:inboxButton).classList.add('primary');
  function drawConversationList(){
   conversationList.replaceChildren();
   if(!convs.length){conversationList.append(node('p','memo-empty','No one-on-one chats yet. Search for a member above.'));return}
