@@ -754,6 +754,23 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
       return json({error:"Photo upload failed. Your profile was not changed."},500,origin);
     }
   }
+  // Update gallery metadata without uploading another image or touching another account.
+  const captionMatch=url.pathname.match(/^\/api\/profile\/photos\/(\d+)$/);
+  if(captionMatch&&request.method==="PATCH"){
+    const user=await requireUser(request,env);
+    if(!user)return json({error:"Authentication required."},401,origin);
+    if(!await rateLimit(env,request,"profile-photo-caption-edit",30,60,user.id))return json({error:"Too many caption edits. Try again shortly."},429,origin);
+    let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
+    if(typeof body?.caption!=="string"||body.caption.length>240)return json({error:"Captions must contain at most 240 characters."},400,origin);
+    const photo=await env.DB.prepare("SELECT id,user_id,kind FROM profile_photos WHERE id=?").bind(Number(captionMatch[1])).first();
+    if(!photo)return json({error:"Photo not found."},404,origin);
+    if(Number(photo.user_id)!==Number(user.id))return json({error:"Only the owner may edit this photo."},403,origin);
+    if(photo.kind!=="gallery")return json({error:"Only gallery captions are editable."},400,origin);
+    const updated=await env.DB.prepare("UPDATE profile_photos SET caption=? WHERE id=? AND user_id=? AND kind='gallery' RETURNING id,caption,created_at").bind(body.caption.trim(),photo.id,user.id).first();
+    if(!updated)return json({error:"Photo no longer exists."},404,origin);
+    await audit(env,user,"profile.photo.caption","profile_photo",photo.id,{caption_length:updated.caption.length});
+    return json({photo:{id:Number(updated.id),caption:updated.caption,created_at:updated.created_at,url:profilePhotoUrl(updated.id)}},200,origin);
+  }
   const deleteMatch=url.pathname.match(/^\/api\/profile\/photos\/(\d+)$/);
   if (deleteMatch && request.method==="DELETE") {
     const user=await requireUser(request,env);
