@@ -47,6 +47,7 @@ function selectPet(){
  family.textContent=challenge.mode.toUpperCase()+' · '+challenge.family.toUpperCase();
  description.textContent=info[challenge.mode];
  level.textContent='Level '+challenge.level+' · Target '+challenge.target;
+ playfield.dataset.mode=challenge.mode;
  portrait.src=safeAvatar(pet.portrait||pet.image)||'';
  portrait.alt=pet.species_name+' original companion';
  start.disabled=false;playfield.replaceChildren();controls.replaceChildren();
@@ -183,6 +184,9 @@ function arcadeTrial(){
  playfield.append(canvas);
  const context=canvas.getContext('2d');
  if(!context){void finish(false);return}
+ const sprite=new Image();
+ const spritePath=safeAvatar(pet.idle||pet.image);
+ if(spritePath)sprite.src=spritePath+'?v=20261102-trials-sprite1';
  let x=W/2,items=[],spawn=0,last=performance.now(),started=last;
  let pointerHeld=false;
  const canvasX=event=>{
@@ -234,6 +238,13 @@ function arcadeTrial(){
   context.beginPath();context.moveTo(x,287);context.lineTo(x-37,341);context.lineTo(x+37,341);
   context.closePath();context.fill();context.stroke();
   context.fillStyle='#c6ff45';context.beginPath();context.arc(x,324,8,0,2*Math.PI);context.fill();
+  if(sprite.complete&&sprite.naturalWidth){
+   context.save();context.shadowColor=mode==='dodge'?'#ff55d8':'#79ffe7';context.shadowBlur=12;
+   context.drawImage(sprite,x-35,251+Math.sin(t/230)*2,70,74);
+   context.restore();
+  }
+  context.font='700 12px system-ui,sans-serif';context.textAlign='center';
+  context.fillStyle='#f3edff';context.fillText(pet.nickname.slice(0,22),x,365);
   raf=requestAnimationFrame(paint);
  }
  raf=requestAnimationFrame(paint);
