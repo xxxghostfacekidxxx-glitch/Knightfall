@@ -12,6 +12,27 @@ function photoUrl(p){
  return Number.isSafeInteger(id)&&id>0?'https://api.ash-fall.com/api/profile-media/'+id:null;
 }
 function canUpload(){uploadButton.disabled=working||items.length>=60;uploadButton.textContent=working?'Uploading…':items.length>=60?'Photo wall full':'↥ Upload to photo wall'}
+// Native dialog keeps full-size viewing accessible without leaving Profile Studio.
+let photoViewer=null;
+function showFullImage(p,url){
+ if(!photoViewer){
+  const dialog=make('dialog','studio-photo-viewer'),frame=make('div','studio-photo-viewer-inner');
+  dialog.id='studio-photo-viewer';dialog.setAttribute('aria-label','Profile photo viewer');
+  const header=make('div','studio-photo-viewer-head'),title=make('strong','studio-photo-viewer-title','Profile photo'),close=make('button','studio-photo-viewer-close','×');
+  close.type='button';close.setAttribute('aria-label','Close photo viewer');close.addEventListener('click',()=>dialog.close());
+  header.append(title,close);
+  const large=make('img','studio-photo-viewer-image');large.alt='Full-size profile photo';
+  frame.append(header,large);dialog.append(frame);document.body.append(dialog);
+  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
+  photoViewer=dialog;
+ }
+ photoViewer.querySelector('.studio-photo-viewer-title').textContent=p.caption||'Gallery photo';
+ const image=photoViewer.querySelector('.studio-photo-viewer-image');
+ image.src=url;image.alt=p.caption?String(p.caption).slice(0,120):'Full-size profile photo';
+ if(typeof photoViewer.showModal==='function')photoViewer.showModal();
+ else window.open(url,'_blank','noopener,noreferrer');
+}
+
 async function api(path,options){
  const response=await fetch(API+path,{credentials:'include',cache:'no-store',...options});
  const data=await response.json().catch(()=>({}));
@@ -28,7 +49,9 @@ function show(){
   const card=make('article','studio-photo-card');
   const preview=make('div','studio-photo-image'),image=make('img');
   image.src=url;image.alt=p.caption?String(p.caption).slice(0,120):'Photo from your gallery';
-  image.loading='lazy';image.decoding='async';preview.append(image);
+  image.loading='lazy';image.decoding='async';
+  const open=make('button','studio-photo-view-button');open.type='button';open.setAttribute('aria-label','View photo: '+(p.caption||'Untitled photo'));
+  open.append(image);preview.append(open);open.addEventListener('click',()=>showFullImage(p,url));
   const label=make('div','studio-photo-details');
   label.append(make('strong','',p.caption||'Untitled photo'),make('small','',p.created_at?new Date(p.created_at).toLocaleDateString():'Saved photo'));
   const controls=make('div','studio-photo-controls'),use=make('button','studio-photo-button primary','Use as cover'),edit=make('button','studio-photo-button','Caption'),remove=make('button','studio-photo-button danger','Delete');
@@ -64,6 +87,7 @@ function show(){
     finally{working=false;canUpload()}
    });
    buttons.append(save,cancel);editor.append(captionLabel,buttons);card.append(editor);
+   text.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();cancel.click()}else if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();save.click()}});
    text.focus({preventScroll:true});text.select();
   });
   remove.addEventListener('click',async()=>{
