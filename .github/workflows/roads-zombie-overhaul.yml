@@ -10,6 +10,7 @@ on:
       - "public/arcade/hosted/rooftop-riot/**"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
+      - "scripts/not-dead-yet-runtime.test.mjs"
       - "scripts/arcade-road-zombie-browser.mjs"
       - "scripts/arcade-rooftop-zombie-browser.mjs"
       - "scripts/arcade-rooftop-colossus.test.mjs"
@@ -23,6 +24,7 @@ on:
       - "public/arcade/hosted/rooftop-riot/**"
       - "scripts/test-life-games.mjs"
       - "scripts/arcade-road-zombie-rebuild.test.mjs"
+      - "scripts/not-dead-yet-runtime.test.mjs"
       - "scripts/arcade-road-zombie-browser.mjs"
       - "scripts/arcade-rooftop-zombie-browser.mjs"
       - "scripts/arcade-rooftop-colossus.test.mjs"
@@ -40,7 +42,7 @@ jobs:
       - name: Validate the life-game engine and old Conway distinction
         run: node scripts/test-life-games.mjs
       - name: Run life-board and zombie-campaign regressions
-        run: node --test scripts/arcade-road-zombie-rebuild.test.mjs scripts/arcade-rooftop-colossus.test.mjs
+        run: node --test scripts/arcade-road-zombie-rebuild.test.mjs scripts/not-dead-yet-runtime.test.mjs scripts/arcade-rooftop-colossus.test.mjs
       - name: Check scripts for syntax errors
         run: |
           node --check public/arcade/hosted/roads-of-cinder/engine.js
