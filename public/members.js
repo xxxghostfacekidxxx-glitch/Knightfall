@@ -30,7 +30,7 @@
         '<span class="member-avatar ' + (online ? "is-online" : "") + '">' + avatar + '</span>' +
         '<span class="member-copy"><strong>' + esc(displayName) + '</strong><span class="member-handle">@' + esc(user.username || "unknown") + '</span>' +
         (bio ? '<span class="member-bio">' + esc(bio) + '</span>' : '<span class="member-bio member-bio-empty">Keeping their lore mysterious.</span>') +
-        '<span class="member-meta"><span class="presence-dot ' + (online ? "online" : "") + '"></span>' + (online ? "Recently active" : "Away") + '<span class="meta-divider">·</span>' + esc(user.role || "member") + '</span>' +
+        '<span class="member-meta"><span class="presence-dot ' + (online ? "online" : "") + '"></span>' + (online ? "Recently active" : "Away") + '<span class="meta-divider">·</span>' + esc(user.public_title || (user.role === "god" ? "God" : user.role === "admin" ? "Administrator" : user.role === "moderator" ? "Moderator" : "Member")) + '</span>' +
       '</span></a>' +
       '<div class="member-card-footer"><span><strong>' + Number(user.followers || 0) + '</strong> followers</span><a href="/profile.html?username=' + encodeURIComponent(user.username || "") + '">View profile <span aria-hidden="true">↗</span></a></div>' +
     '</article>';
