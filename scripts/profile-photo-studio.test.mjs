@@ -14,7 +14,7 @@ test("Photo Studio loads as an owner-side panel and passes JavaScript syntax",()
  assert.match(markup,/id="studio-photo-grid"/);
  assert.match(markup,/id="studio-photo-file"/);
  assert.match(markup,/id="studio-photo-refresh"/);
- assert.match(markup,/profile-photo-studio\.js\?v=20261103-photo1/);
+ assert.match(markup,/profile-photo-studio\.js\?v=20261103-photo2/);
  assert.match(markup,/href="#photo-studio"/);
  assert.match(css,/#studio-photo-grid/);
  assert.match(css,/\.studio-photo-card/);
