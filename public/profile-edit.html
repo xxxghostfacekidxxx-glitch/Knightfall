@@ -111,7 +111,7 @@ coverFile.addEventListener("change",async()=>{
   if(coverFile._previewUrl)URL.revokeObjectURL(coverFile._previewUrl);
   coverFile._compressedBlob=blob;coverFile._previewUrl=URL.createObjectURL(blob);
   previewCover(coverFile._previewUrl);coverUrl.value="";syncLivePreview();
-  coverUrl.dispatchEvent(new Event("input",{bubbles:true}));
+  document.dispatchEvent(new CustomEvent("kf:profile-input",{detail:{field:"cover_url"}}));
   status.textContent="Wide cover ready. Save to publish it.";
  }catch(error){if(version!==studioCoverVersion)return;status.textContent=error.message||"Could not prepare this cover.";coverFile.value="";delete coverFile._compressedBlob;}
 });
