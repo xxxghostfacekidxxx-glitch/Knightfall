@@ -163,6 +163,19 @@ async function scenario(name,viewport){
   await page.locator('#studio-discard').click();
   assert.equal(await page.locator('#studio-link-rows .studio-link-name').first().inputValue(),'Music');
   assert.equal(savedLinks.length,2,'Discard does not publish link edits');
+  // Render the actual public Link Hub using the shared component and verify links stay safe.
+  await page.addScriptTag({url:base+"/profile-links-view.js?v=20261103-links2"});
+  const publicLinks=await page.evaluate(async()=>{
+   const target=document.createElement("div");target.id="profile-link-view-smoke";document.body.append(target);
+   const ready=await window.KnightfallRenderProfileLinks("profile_tester",target);
+   return {ready,count:target.querySelectorAll(".profile-link-card").length,
+    cards:[...target.querySelectorAll(".profile-link-card")].map(a=>({href:a.href,rel:a.rel,target:a.target,label:a.querySelector(".profile-link-label")?.textContent})),
+    rawHtmlLeak:!!target.querySelector(".profile-link-card img")};
+  });
+  assert.equal(publicLinks.ready,true);
+  assert.equal(publicLinks.count,2);
+  assert.ok(publicLinks.cards.every(x=>x.href.startsWith("https://")&&x.rel.includes("noopener")&&x.target==="_blank"));
+  assert.equal(publicLinks.rawHtmlLeak,false);
   const widths=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(widths.page<=widths.viewport+2,"Mobile horizontal overflow "+JSON.stringify(widths));
   assert.deepEqual(errors,[],"Uncaught browser errors");
