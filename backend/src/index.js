@@ -1573,6 +1573,47 @@ For complex questions, organize the answer clearly and provide actionable detail
     const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();const layoutRow=await env.DB.prepare("SELECT layout_json FROM profile_layouts WHERE user_id=?").bind(user.id).first();
     return json({ok:true,action,amount,balance:Number(wallet?.balance||0)},200,origin,{"cache-control":"no-store"});
   }
+  // Ranked, per-game community boards for the Chaos Cartridge homepage.
+  // Scores from different games are never compared against each other.
+  if(url.pathname==="/api/arcade/leaderboards"&&request.method==="GET"){
+    const viewer=await requireUser(request,env);
+    const viewerId=viewer?.id??-1;
+    const rows=await env.DB.prepare(`
+      WITH featured AS (
+        SELECT s.game_key
+        FROM arcade_high_scores s JOIN users u ON u.id=s.user_id
+        WHERE u.status='active'
+        GROUP BY s.game_key
+        ORDER BY COUNT(*) DESC, MAX(s.updated_at) DESC, s.game_key ASC
+        LIMIT 24
+      ),
+      tracked AS (
+        SELECT game_key FROM featured
+        UNION SELECT game_key FROM arcade_high_scores WHERE user_id=?
+      ),
+      ranked AS (
+        SELECT s.user_id,s.game_key,s.best_score,s.runs,s.achieved_at,s.updated_at,
+               u.username,u.display_name,
+               ROW_NUMBER() OVER (
+                 PARTITION BY s.game_key
+                 ORDER BY s.best_score DESC,s.achieved_at ASC,s.user_id ASC
+               ) AS place,
+               COUNT(*) OVER (PARTITION BY s.game_key) AS player_count,
+               MAX(s.updated_at) OVER (PARTITION BY s.game_key) AS last_played_at
+        FROM arcade_high_scores s
+        JOIN users u ON u.id=s.user_id
+        JOIN tracked t ON t.game_key=s.game_key
+        WHERE u.status='active'
+      )
+      SELECT game_key,best_score,runs,achieved_at,updated_at,username,display_name,
+             place,player_count,last_played_at,
+             CASE WHEN user_id=? THEN 1 ELSE 0 END AS is_mine
+      FROM ranked WHERE place<=3 OR user_id=?
+      ORDER BY player_count DESC,last_played_at DESC,game_key ASC,place ASC
+      LIMIT 700
+    `).bind(viewerId,viewerId,viewerId).all();
+    return json({entries:rows.results||[],viewer_signed_in:Boolean(viewer)},200,origin,{"cache-control":"no-store"});
+  }
   if(url.pathname==="/api/arcade/scores"&&request.method==="GET"){
     const game=String(url.searchParams.get("game")||"");
     const limit=boundedInt(url.searchParams.get("limit"),10,1,50);
