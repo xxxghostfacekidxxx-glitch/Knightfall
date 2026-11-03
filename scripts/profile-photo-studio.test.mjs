@@ -62,3 +62,14 @@ test("Photo captions can be edited without uploading new images",()=>{
  assert.match(css,/\.studio-photo-caption-edit/);
  assert.doesNotMatch(client,/\.innerHTML\s*=/);
 });
+
+test("Gallery photos open in an accessible native dialog and captions support keyboard editing",()=>{
+ assert.match(client,/function showFullImage\(p,url\)/);
+ assert.match(client,/photoViewer\.showModal\(\)/);
+ assert.match(client,/dialog\.addEventListener\('click'/);
+ assert.match(client,/\.setAttribute\('aria-label','View photo:/);
+ assert.match(client,/event\.key==='Escape'/);
+ assert.match(client,/event\.key==='Enter'&&!event\.shiftKey/);
+ assert.match(css,/\.studio-photo-viewer::backdrop/);
+ assert.match(css,/\.studio-photo-viewer-close:focus-visible/);
+});
