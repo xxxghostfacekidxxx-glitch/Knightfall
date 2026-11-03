@@ -96,6 +96,9 @@ function renderOwned(){
   const roomLink=make('a','pet-room-link','⌂ Visit '+pet.nickname+'\'s room');
   roomLink.href='/mascot-room.html?pet='+encodeURIComponent(String(pet.id));
   card.append(roomLink);
+  const trialLink=make('a','pet-room-link pet-trial-shortcut','⚡ '+pet.nickname+'\'s Species Trial');
+  trialLink.href='/mascot-trials.html?pet='+encodeURIComponent(String(pet.id));
+  card.append(trialLink);
   dressUp(card,pet);
   owned.append(card);
  }
