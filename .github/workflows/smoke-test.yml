@@ -22,6 +22,7 @@ on:
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/miss-chaos-ux.test.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
+      - 'backend/src/member-memo-mail.test.mjs'
       - 'scripts/miss-chaos-memo-browser.mjs'
       - 'scripts/miss-chaos-stream.test.mjs'
       - 'scripts/pwa-update-audit.test.mjs'
@@ -71,11 +72,13 @@ jobs:
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
       - name: Verify memo API, floating dock and member quick-send
         run: |
-          node --test backend/src/member-memos.test.mjs scripts/miss-chaos-memo.test.mjs
+          node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
           node --check public/memo-pad.js
+          node --check public/memo-communications.js
           node --check public/miss-chaos-dock.js
           node --check public/miss-chaos-presence.js
           node --check backend/src/member-memos.js
+          node --check backend/src/member-memo-mail.js
       - name: Verify messaging uses neon palette (no retired orange)
         run: node scripts/messaging-theme-audit.mjs
       - name: Check arcade scoreboard and generated catalog consistency
@@ -114,6 +117,8 @@ jobs:
         run: node scripts/miss-chaos-memo-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
+      - name: Exercise Memo Mail and live chat tabs on desktop and Android
+        run: node scripts/miss-chaos-memo-browser.mjs
       - name: Exercise Android push enablement and subscription recovery
         run: node scripts/mobile-push-browser-smoke.mjs
       - name: Exercise arcade community leaderboards on desktop and mobile
