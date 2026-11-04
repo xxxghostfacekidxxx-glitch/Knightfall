@@ -59,6 +59,21 @@ export async function handlePersonalAvatars(request,env,url,{getUser,json,rateLi
   return send({slots,free_slots:2,extra_slots:Number(ent?.extra_slots||0),max_extra_slots:20,wallet_balance:balance,products:PRODUCTS});
  }
  if(!await rateLimit(env,request,'personal-avatar-write',20,60,user.id))return send({error:'Too many avatar changes. Try again shortly.'},429);
+ if(path==='/api/avatars/active'&&request.method==='PATCH'){
+  let body;try{body=await request.json()}catch{return send({error:'Invalid JSON.'},400);}
+  if(!body||typeof body!=='object'||Array.isArray(body))return send({error:'Invalid avatar selection.'},400);
+  if(body.slot_no===null){
+   await env.DB.prepare('UPDATE personal_avatars SET is_active=0 WHERE user_id=? AND is_active=1').bind(user.id).run();
+   return send({ok:true,slots:await slotsFor(env,user.id),active_slot:null,message:'Your profile is using its regular picture again.'});
+  }
+  const slot=Number(body.slot_no);
+  if(!Number.isInteger(slot)||slot<1||slot>22)return send({error:'Choose a valid saved misfit slot.'},400);
+  const avatarRow=await env.DB.prepare('SELECT avatar_json FROM personal_avatars WHERE user_id=? AND slot_no=?').bind(user.id,slot).first();
+  const avatar=(()=>{try{return avatarRow?cleanAvatar(JSON.parse(avatarRow.avatar_json)):null}catch{return null}})();
+  if(!avatar)return send({error:'Save a misfit in that slot before using it on your profile.'},404);
+  await env.DB.prepare('UPDATE personal_avatars SET is_active=CASE WHEN slot_no=? THEN 1 ELSE 0 END WHERE user_id=?').bind(slot,user.id).run();
+  return send({ok:true,slots:await slotsFor(env,user.id),active_slot:slot,message:'Your misfit is now representing you on your profile.'});
+ }
  const deleteMatch=path.match(/^\/api\/avatars\/(\d+)$/);
  if(deleteMatch&&request.method==='DELETE'){
   const slot=Number(deleteMatch[1]);
