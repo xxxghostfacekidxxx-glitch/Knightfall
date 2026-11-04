@@ -77,6 +77,23 @@ function dressUp(card,pet){
  zone.append(button('Save habitat','habitat',working||!habitatThemes.length));
  card.append(wrap,zone);
 }
+function renderMoments(pet){
+ const list=Array.isArray(pet.last_moments)?pet.last_moments:[];
+ const details=make('details','pet-moments'),summary=make('summary','','▸ Recent moments');
+ details.append(summary);
+ if(!list.length){details.append(make('p','pet-moments-empty','Your first little moment is waiting.'));return details}
+ const labels={rescued:'Found each other',fed:'Shared a snack',played:'Played together',rested:'Rested',talked:'Had a chat',cuddled:'Shared a cuddle',groomed:'Got spruced up'};
+ const ul=make('ul','');
+ for(const moment of list){
+  const parsed=Date.parse(moment.at);if(!Number.isFinite(parsed))continue;
+  const li=make('li',''),strong=make('strong','',labels[moment.kind]||'Spent time together'),time=make('time','');
+  const elapsed=Math.max(0,Date.now()-parsed),minutes=Math.floor(elapsed/60000);
+  time.dateTime=moment.at;
+  time.textContent=minutes<1?'just now':minutes<60?minutes+'m ago':minutes<1440?Math.floor(minutes/60)+'h ago':Math.floor(minutes/1440)+'d ago';
+  li.append(strong,time);ul.append(li);
+ }
+ details.append(ul);return details;
+}
 function renderOwned(){
  owned.replaceChildren();
  slots.textContent=pets.length+' / '+max+' companions';
@@ -94,7 +111,7 @@ function renderOwned(){
   const moodCard=make('div','pet-mood');moodCard.dataset.mood=mood.id;
   moodCard.append(make('strong','','♡ '+mood.label),make('small','',mood.tip||''));card.append(moodCard);
   const personality=make('p','pet-personality',(pet.temperament||'Curious')+' · Loves '+(pet.favorite||'mischief'));
-  card.append(personality);
+  card.append(personality,renderMoments(pet));
   const relationship=pet.relationship||{label:'New little friend',experience:0,progress:0};
   const bond=make('div','pet-relationship');
   const bondHead=make('div','pet-relationship-head');bondHead.append(make('strong','','♡ '+relationship.label),make('small','',Number(relationship.experience||0)+' bond'));
