@@ -74,6 +74,7 @@
 .room-pet-mood{display:flex;align-items:center;gap:9px;flex-wrap:wrap;border-top:1px solid #ff55d833;padding-top:9px}
 .room-pet-mood strong{color:#ff83e6}.room-pet-mood span{border:1px solid #c6ff4570;border-radius:100px;padding:3px 9px;font-size:.72rem;color:#d9ffb2}
 .room-pet-mood small{color:#bbafd0;font-size:.76rem}
+.room-bond-progress{display:grid;gap:6px}.room-bond-progress small{color:#79ffe7;font-size:.73rem}
 .room-need-tags{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .room-need-tag{padding:6px 10px;border:1px solid #79ffe767;border-radius:99px;color:#bffbea;background:#79ffe70d;font-size:.76rem;font-weight:800}
 .room-need-tag[data-state="low"]{border-color:#ff55d8;color:#ffc3ed;background:#ff55d815}

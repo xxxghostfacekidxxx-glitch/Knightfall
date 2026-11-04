@@ -93,6 +93,10 @@ function roomSummary(){
   const moods=make('div','room-pet-mood',''),mood=selected.mood||{label:'Content',tip:'Care makes your companion happy.'};
   moods.append(make('strong','','♡ '+mood.label),make('span','',selected.bond?.label||'Newly rescued'),make('small','',mood.tip||''));
   root.append(moods);
+  const bond=selected.bond||{experience:0,progress:0};
+  const relationship=make('div','room-bond-progress','');
+  const track=make('div','room-bond-track'),fill=make('i');fill.style.width=Math.max(0,Math.min(100,Number(bond.progress)||0))+'%';track.append(fill);
+  relationship.append(make('small','',(Number(bond.experience)||0)+' bond · grows through little rituals'),track);root.append(relationship);
   const vitals=make('div','room-need-tags','');
   for(const [key,label] of [['hunger','Food'],['joy','Joy'],['energy','Energy']]){
    const value=Number(selected.vitals?.[key]??90);
@@ -104,9 +108,10 @@ function roomSummary(){
 }
 function syncCareButtons(){
  for(const button of document.querySelectorAll('button[data-care]')){
-  const action=button.dataset.care,delay=Number(selected?.next_care?.[action]||0);
+  const action=button.dataset.care,ritual=['talk','cuddle','groom'].includes(action);
+  const delay=Number((ritual?selected?.next_interaction:selected?.next_care)?.[action]||0);
   button.disabled=visitor||busy||!selected||delay>0;
-  const base={feed:'🍕 Give a snack',play:'🎮 Play together',rest:'🌙 Time to rest'}[action]||action;
+  const base={feed:'🍕 Give a snack',play:'🎮 Play together',rest:'🌙 Time to rest',talk:'💬 Talk it out',cuddle:'🫂 Cozy cuddle',groom:'🪮 Brush the chaos'}[action]||action;
   button.textContent=delay>0?base+' · '+Math.ceil(delay/60000)+'m':base;
  }
 }
@@ -203,7 +208,8 @@ document.querySelectorAll('button[data-care]').forEach(button=>button.addEventLi
  busy=true;document.querySelectorAll('button[data-care]').forEach(x=>x.disabled=true);
  say('Caring for '+selected.nickname+'…');
  try{
-  const answer=await request('/api/mascot-pets/'+id+'/care',{method:'POST',body:JSON.stringify({action})});
+  const ritual=['talk','cuddle','groom'].includes(action);
+  const answer=await request('/api/mascot-pets/'+id+(ritual?'/interact':'/care'),{method:'POST',body:JSON.stringify({action})});
   sparkle(action==='feed'?'♥':action==='rest'?'☾':'✦');
   await reloadPet(id);
   say(answer.message||'Your companion enjoyed that.');

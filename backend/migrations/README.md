@@ -131,3 +131,16 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - Production D1 was updated through the authorized Cloudflare API after Sanctuary's recent test passes. A read-only check verified all eight catalog entries, four tables and four protection triggers. `0109_mascot_furniture.sql` was then recorded in `d1_migrations` and its entry read-verified. This is separate from the earlier 0103–0108 reconciliation.
 - The Curio Cabinet client waits for the interactive room's selected-pet event before loading inventory, preventing the initial empty-selector race. Furnishing arrangements are stored server-side and do not mint XP or Cinders.
 - Tests: `python3 scripts/mascot-furniture-sql.test.py` and `node --test backend/src/mascot-furniture.test.mjs`, plus the Sanctuary workflow.
+
+
+## Personal Misfit Avatars · November 3, 2026
+
+- `0113_personal_misfit_avatars.sql` adds saved member avatar designs, two free slots per member, and up to 20 extra slots. Fixed Cinders products cost 600 for one slot or 1,500 for three.
+- D1 triggers check the server-defined price, wallet balance, slot cap, slot ownership, and single active profile avatar. The browser sends only a product ID; it cannot set prices or increase slot counts.
+- `/avatar-studio.html` provides the big-head Misfit Maker with saved slots, quick-look archetypes, random generation, expanded eyes/expressions/markings/piercings, distinct garment designs, separate headwear/eyewear/neckwear/aura layers, background patterns, 768-by-768 PNG export, and owner-confirmed slot clearing. Public profile avatar reads enforce profile visibility and existing member block rules. The profile header only uses an avatar after a member explicitly saves it as their active look. The SVG builder uses a strict server-validated choice set; added traits require no schema migration.
+- On November 4, 2026 UTC, this additive migration was applied to production D1 through the authorized Cloudflare API after confirming its ledger entry was absent and reviewing the SQL. Read-only verification confirmed the three tables, two indexes, four triggers, and migration ledger entry. The guarded GitHub workflow was unavailable through the connected GitHub integration; schema and ledger were updated together in one D1 batch.
+
+## Neon Nuisances bond and daily rituals · November 4, 2026
+
+- `0114_mascot_bond_interactions.sql` adds a separate, non-decaying relationship XP track and timestamps for Talk, Cuddle, and Groom. The actions have server-side cooldowns, add bond only, and grant no Cinders or pet XP. Missing days never remove bond.
+- On November 4, 2026 UTC, `0114_mascot_bond_interactions.sql` was applied after 0113 through the authorized Cloudflare API. Read-only verification confirmed all four new columns and both migration ledger rows. Both changes were additive, and the SQL and matching ledger entries were applied in one ordered D1 batch because the guarded GitHub workflow was unavailable through the connected GitHub integration.

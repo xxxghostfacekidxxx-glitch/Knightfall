@@ -165,6 +165,13 @@
 .pet-meter[data-health="low"] .pet-track i{background:linear-gradient(90deg,#e04ea1,#ff82b6)}
 .pet-meter[data-health="medium"] .pet-track i{background:linear-gradient(90deg,#ff55d8,#79ffe7)}
 .pet-personality{margin:0;color:#e9b7f0;font-size:.79rem;line-height:1.5}
+.pet-relationship{display:grid;gap:6px;border:1px solid #79ffe733;background:#111a22;border-radius:10px;padding:8px 10px}
+.pet-relationship-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pet-relationship-head strong{color:#79ffe7;font-size:.78rem}.pet-relationship-head small{color:#c8bed6;font-size:.7rem}
+.pet-relationship-track,.room-bond-track{height:7px;overflow:hidden;border-radius:99px;background:#332941}
+.pet-relationship-track i,.room-bond-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#79ffe7,#c6ff45);transition:width .35s ease}
+.pet-rituals{padding-top:2px;border-top:1px solid #8d69a433}
+.pet-rituals button{background:#191a2a;border-color:#79ffe74d}
 .pet-species-lore{margin:0;color:#b9b0c9;font-size:.79rem;line-height:1.45;min-height:3.5em}
 .pet-customize{margin-top:3px;border:1px solid #6d468277;border-radius:12px;background:#161021;min-width:0;overflow:hidden}
 .pet-customize summary{display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;list-style:none;padding:12px;color:#c6ff45;font-size:.82rem;font-weight:850}

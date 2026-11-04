@@ -58,7 +58,12 @@ const CARE=Object.freeze({
  play:{column:'played_at',seconds:10*60,xp:18,label:'Played a little chaotic game'},
  rest:{column:'rested_at',seconds:20*60,xp:10,label:'Tucked in for an eerie nap'}
 });
-const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured FROM mascot_pets';
+const INTERACTIONS=Object.freeze({
+ talk:{column:'talked_at',seconds:20*60,bond:8},
+ cuddle:{column:'cuddled_at',seconds:45*60,bond:12},
+ groom:{column:'groomed_at',seconds:3*60*60,bond:15}
+});
+const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured,bond_experience,talked_at,cuddled_at,groomed_at FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
  const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 22').bind(userId).all();
  const [gear,rooms,layouts,furniture]=await Promise.all([
@@ -109,6 +114,18 @@ export function petBond(level){
  if(level>=2)return {id:'familiar',label:'Getting acquainted'};
  return {id:'new',label:'Newly rescued'};
 }
+export function petRelationship(experience){
+ const xp=Math.max(0,Number(experience)||0);
+ const stages=[
+  {id:'new',label:'New little friend',floor:0,next:60},
+  {id:'familiar',label:'Familiar face',floor:60,next:220},
+  {id:'trusted',label:'Trusted buddy',floor:220,next:600},
+  {id:'best-friends',label:'Best friends',floor:600,next:1500},
+  {id:'inseparable',label:'Inseparable',floor:1500,next:null}
+ ];
+ const stage=[...stages].reverse().find(item=>xp>=item.floor)||stages[0];
+ return {id:stage.id,label:stage.label,experience:xp,progress:stage.next===null?100:Math.min(100,Math.floor((xp-stage.floor)/(stage.next-stage.floor)*100)),next_at:stage.next};
+}
 export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
  const experience=Number(pet.experience)||0;
@@ -118,10 +135,13 @@ export function serializePet(pet,now=Date.now(),publicView=false){
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
  const vitals=petVitals(pet,now);
- return publicView?base:{...base,experience,vitals,mood:petMood(vitals),bond:petBond(currentLevel),
+ return publicView?{...base,bond:petRelationship(pet.bond_experience)}:{...base,experience,vitals,mood:petMood(vitals),bond:petRelationship(pet.bond_experience),level_bond:petBond(currentLevel),
   level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
 
   next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{
+   const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
+   return [key,Number.isFinite(at)?Math.max(0,at-now):0];
+  })),next_interaction:Object.fromEntries(Object.entries(INTERACTIONS).map(([key,rule])=>{
    const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
    return [key,Number.isFinite(at)?Math.max(0,at-now):0];
   }))};
@@ -250,12 +270,28 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   catch{return respond({error:'Unlock this accessory in your wardrobe before equipping it.'},409)}
   return respond({ok:true,message:item.name+' equipped.'});
  }
- const match=path.match(/^\/api\/mascot-pets\/(\d+)\/(care|nickname|feature)$/);
+ const match=path.match(/^\/api\/mascot-pets\/(\d+)\/(care|interact|nickname|feature)$/);
  if(!match)return respond({error:'Unknown pet action.'},404);
  const id=Number(match[1]);if(!Number.isSafeInteger(id)||id<=0)return respond({error:'Invalid pet.'},400);
  const existing=await env.DB.prepare(ownSelect+' WHERE id=? AND user_id=?').bind(id,user.id).first();
  if(!existing)return respond({error:'Your mascot was not found.'},404);
  const action=match[2];
+ if(action==='interact'&&request.method==='POST'){
+  const kind=String(body.action||''),rule=INTERACTIONS[kind];
+  if(!rule)return respond({error:'Choose talk, cuddle, or groom.'},400);
+  const now=Date.now(),stamp=new Date(now).toISOString(),cutoff=new Date(now-rule.seconds*1000).toISOString();
+  const pet=await env.DB.prepare(
+   'UPDATE mascot_pets SET bond_experience=MIN(bond_experience+? ,500000),'+rule.column+'=? WHERE id=? AND user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING *'
+  ).bind(rule.bond,stamp,id,user.id,cutoff).first();
+  if(!pet){
+   const current=await env.DB.prepare(ownSelect+' WHERE id=? AND user_id=?').bind(id,user.id).first();
+   return respond({error:'That little ritual needs a breather.',pet:serializePet(current)},429);
+  }
+  const personality=SPECIES_PERSONALITIES[pet.species]||['Curious','adventures'];
+  const name=pet.nickname||BY_ID.get(pet.species)?.name||'Your companion';
+  const messages={talk:name+' leans in to hear you. '+personality[0]+' minds can always find something to say about '+personality[1]+'.',cuddle:name+' accepts a cozy squeeze, then immediately resumes being a tiny menace.',groom:name+' is all fluffed up and ready for more '+personality[1]+'.'};
+  return respond({ok:true,pet:serializePet(pet),bond_awarded:rule.bond,message:messages[kind]+' +'+rule.bond+' bond'});
+ }
  if(action==='nickname'&&request.method==='PATCH'){
   const nickname=nameOf(body.nickname);
   if(!nickname)return respond({error:'Pet names must be 1–28 simple characters.'},400);

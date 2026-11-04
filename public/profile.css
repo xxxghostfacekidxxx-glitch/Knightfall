@@ -432,3 +432,4 @@
 .profile-title-badge.creator{color:#ffb4eb;background:linear-gradient(100deg,rgba(255,78,198,.15),rgba(155,74,255,.09));border-color:rgba(255,84,216,.58);box-shadow:0 0 20px rgba(255,78,198,.13)}
 .profile-title-badge.god{color:#bcff88;background:linear-gradient(100deg,rgba(172,255,98,.11),rgba(255,78,198,.12));border-color:rgba(172,255,98,.54);box-shadow:0 0 20px rgba(172,255,98,.12)}
 @media(max-width:440px){.profile-title-badge{margin:.4rem 0 .1rem;display:table;width:max-content}}
+.personal-avatar{width:96px;height:100px;flex:0 0 96px;display:grid;place-items:center;overflow:hidden;border:1px solid #4c3154;border-radius:22px;background:radial-gradient(circle at 50% 40%,#4c265333,transparent 70%),#100d16;box-shadow:0 0 24px #ff55d81c}.personal-avatar svg{width:108px;height:124px;max-width:none}

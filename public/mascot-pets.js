@@ -90,11 +90,27 @@ function renderOwned(){
   const bars=make('div','pet-bars');
   for(const [key,label] of [['hunger','Food'],['joy','Joy'],['energy','Energy']])bars.append(statRow(label,pet.vitals?.[key]));
   card.append(bars);
+  const mood=pet.mood||{id:'content',label:'Content',tip:'Happy to be hanging out with you.'};
+  const moodCard=make('div','pet-mood');moodCard.dataset.mood=mood.id;
+  moodCard.append(make('strong','','♡ '+mood.label),make('small','',mood.tip||''));card.append(moodCard);
+  const personality=make('p','pet-personality',(pet.temperament||'Curious')+' · Loves '+(pet.favorite||'mischief'));
+  card.append(personality);
+  const relationship=pet.bond||{label:'New little friend',experience:0,progress:0};
+  const bond=make('div','pet-relationship');
+  const bondHead=make('div','pet-relationship-head');bondHead.append(make('strong','','♡ '+relationship.label),make('small','',Number(relationship.experience||0)+' bond'));
+  const bondTrack=make('div','pet-relationship-track'),bondFill=make('i');bondFill.style.width=Math.max(0,Math.min(100,Number(relationship.progress)||0))+'%';bondTrack.append(bondFill);bond.append(bondHead,bondTrack);card.append(bond);
   const actions=make('div','pet-actions');
   for(const [action,label] of [['feed','🍕 Feed'],['play','🎮 Play'],['rest','🌙 Rest']]){
    const delay=Number(pet.next_care?.[action]||0);
    actions.append(button(delay?label+' '+Math.ceil(delay/60000)+'m':label,action,working||delay>0));
   }
+  const rituals=make('div','pet-actions pet-rituals');
+  for(const [action,label] of [['talk','💬 Talk'],['cuddle','🫂 Cuddle'],['groom','🪮 Groom']]){
+   const delay=Number(pet.next_interaction?.[action]||0);
+   const b=button(delay?label+' '+Math.ceil(delay/60000)+'m':label,'interact',working||delay>0);
+   b.dataset.interaction=action;rituals.append(b);
+  }
+  card.append(rituals);
   actions.append(button('✦ Display','feature',working||pet.featured),button('✎ Rename','rename',working));
   card.append(actions);
   const roomLink=make('a','pet-room-link','⌂ Visit '+pet.nickname+'\'s room');
@@ -202,6 +218,9 @@ document.addEventListener('click',event=>{
  if(!signedIn||!Number.isSafeInteger(id)||id<=0)return;
  if(['feed','play','rest'].includes(action)){
   perform(()=>api('/api/mascot-pets/'+id+'/care',{method:'POST',body:JSON.stringify({action})}));return;
+ }
+ if(action==='interact'){
+  perform(()=>api('/api/mascot-pets/'+id+'/interact',{method:'POST',body:JSON.stringify({action:b.dataset.interaction})}));return;
  }
  if(action==='feature'){perform(()=>api('/api/mascot-pets/'+id+'/feature',{method:'PUT',body:'{}'}));return}
  if(action==='rename'){
