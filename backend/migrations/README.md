@@ -91,7 +91,7 @@ Migration 0026_message_reactions.sql adds per-user emoji reactions to messages. 
 ## Neon Nuisances Sanctuary launch · November 2, 2026
 
 - `0103_mascot_pets.sql` adds persistent member-owned pets and a single featured companion.
-- `0104_mascot_economy.sql` adds all 22 rescue species, level-gated Cinders prices, twelve cosmetics, wardrobe entitlements and equipment slots. Atomic SQLite triggers perform wallet debits and prevent duplicate or unauthorized acquisitions.
+- `0104_mascot_economy.sql` adds all 28 rescue species, level-gated Cinders prices, twelve cosmetics, wardrobe entitlements and equipment slots. Atomic SQLite triggers perform wallet debits and prevent duplicate or unauthorized acquisitions.
 - Both schemas were created in the production D1 database through the authorized Cloudflare API on November 2, 2026 and their tables, indexes, and triggers were subsequently read-verified. **The `d1_migrations` ledger has since been reconciled for migrations 0103–0108 after complete production schema verification.** Both files use idempotent table, trigger, index creation and catalog inserts; still inspect actual schema and ledger before applying.
 - No Stripe secrets are configured on the production Worker at launch. Premium cosmetic checkout must remain disabled until `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` are securely configured and the signed webhook endpoint is tested. Never fulfill payment based solely on browser redirect success.
 - Run `python3 scripts/mascot-economy-sql.test.py` and `node --test backend/src/mascot-pets.test.mjs backend/src/mascot-payments.test.mjs` before economy or payment changes.
@@ -144,3 +144,10 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 
 - `0114_mascot_bond_interactions.sql` adds a separate, non-decaying relationship XP track and timestamps for Talk, Cuddle, and Groom. The actions have server-side cooldowns, add bond only, and grant no Cinders or pet XP. Missing days never remove bond.
 - On November 4, 2026 UTC, `0114_mascot_bond_interactions.sql` was applied after 0113 through the authorized Cloudflare API. Read-only verification confirmed all four new columns and both migration ledger rows. Both changes were additive, and the SQL and matching ledger entries were applied in one ordered D1 batch because the guarded GitHub workflow was unavailable through the connected GitHub integration.
+
+
+## Neon Nuisances expansion · 0115
+
+- `0115_mascot_species_expansion.sql` adds six original rescue species (Lydibug, Sootsnoot, Rumblefluff, Glittergob, Craggle and Prismare), expands adoption and egg-hatch capacity to 28, and moves the full-collection passport milestone to 28. Existing pets and claimed rewards remain intact.
+- The matching SVG artwork is original Knightfall art recorded in the Neon Nuisances asset manifest. Lydibug is a cheerful star-spotted garden beetle designed as a symbolic tribute, without using personal photos or likeness.
+- Apply the D1 migration before deploying the Worker code that offers the six species.
