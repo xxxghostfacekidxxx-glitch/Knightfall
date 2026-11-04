@@ -14,6 +14,7 @@ import { handleMemberMemos } from "./member-memos.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
 import { handleProfileLinks } from "./profile-links.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
+import { handleArcadeTurnMatches } from "./arcade-turn-matches.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 100000;
@@ -1648,6 +1649,15 @@ For complex questions, organize the answer clearly and provide actionable detail
     await env.DB.prepare("INSERT INTO wallet_ledger (user_id,amount,reason,created_at) VALUES (?,?,?,?)").bind(user.id,action==="spend"?-amount:amount,gameLabels[game]+(action==="spend"?" shot cost":" catch payout"),now).run();
     const wallet=await env.DB.prepare("SELECT balance FROM user_wallets WHERE user_id=?").bind(user.id).first();const layoutRow=await env.DB.prepare("SELECT layout_json FROM profile_layouts WHERE user_id=?").bind(user.id).first();
     return json({ok:true,action,amount,balance:Number(wallet?.balance||0)},200,origin,{"cache-control":"no-store"});
+  }
+  if(url.pathname.startsWith("/api/arcade/turn-matches")){
+    try{
+      const turnMatchResponse=await handleArcadeTurnMatches(request,env,url,{getUser:requireUser,json,rateLimit,origin,createNotification});
+      if(turnMatchResponse)return turnMatchResponse;
+    }catch(error){
+      if(/no such table: arcade_turn_(matches|moves)/i.test(String(error?.message||error)))return json({error:"Async matches are being set up. Try again shortly."},503,origin,{"retry-after":"60"});
+      throw error;
+    }
   }
   // Ranked, per-game community boards for the Chaos Cartridge homepage.
   // Scores from different games are never compared against each other.

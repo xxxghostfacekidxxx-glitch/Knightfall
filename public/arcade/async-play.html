@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090a12">
+  <meta name="description" content="Challenge an Ash-Fall friend to an async arcade match. Take your turn whenever you're ready.">
+  <title>Async Arcade Matches | Chaos Cartridge</title>
+  <link rel="stylesheet" href="/arcade/async-play.css?v=20261104-1">
+  <script src="/arcade-save.js" defer></script>
+  <script src="/arcade/async-play.js?v=20261104-1" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <a class="back" href="/chaos-cartridge.html">← Chaos Cartridge</a>
+    <header class="hero">
+      <p class="eyebrow">PLAY AT YOUR PACE</p>
+      <h1>ASYNC <span>ARCADE</span></h1>
+      <p>Challenge a friend. Take your turn now, later, or when life gives you a minute. Matches stay saved until you come back.</p>
+      <div class="promise"><span>NO TURN TIMER</span><span>FRIENDS ONLY</span><span>YOUR MOVES SAVE AUTOMATICALLY</span></div>
+    </header>
+
+    <div class="layout">
+      <section class="column-main" aria-label="Your matches">
+        <section class="panel active-panel" id="match-panel" hidden>
+          <div class="panel-head">
+            <div><p class="eyebrow">CURRENT MATCH</p><h2 id="match-title">Connect Four</h2></div>
+            <button class="button quiet" id="close-match" type="button">Back to matches</button>
+          </div>
+          <p class="match-status" id="match-status" role="status" aria-live="polite"></p>
+          <div class="player-strip" id="player-strip"></div>
+          <div class="async-board" id="async-board" aria-label="Connect Four board"></div>
+          <p class="board-note" id="board-note">Drop a disc in any open column when it’s your turn. All six rows are visible to both players.</p>
+          <div class="match-actions" id="match-actions"></div>
+          <details class="move-history"><summary>Move history</summary><ol id="move-history"></ol></details>
+        </section>
+
+        <section class="panel match-list-panel">
+          <div class="panel-head">
+            <div><p class="eyebrow">YOUR GAMES</p><h2>Matches</h2></div>
+            <button class="button quiet" id="refresh-matches" type="button">Refresh</button>
+          </div>
+          <p class="hint" id="list-hint">Invitations and active games appear here. We’ll let you know when it’s your turn.</p>
+          <div class="match-list" id="match-list" aria-live="polite"></div>
+          <p class="empty-state" id="empty-matches" hidden>No matches yet. Challenge a friend to start one.</p>
+        </section>
+      </section>
+
+      <aside class="column-side" aria-label="Start a new match">
+        <section class="panel challenge-panel">
+          <p class="eyebrow">START A MATCH</p>
+          <h2>Challenge a friend</h2>
+      <p>They accept whenever they’re ready. Then you take the first turn.</p>
+          <form id="challenge-form">
+            <label for="friend-select">Your friend</label>
+            <select id="friend-select" required disabled><option value="">Loading friends…</option></select>
+            <label for="game-select">Game</label>
+            <select id="game-select"><option value="connect-four">Chaos Connect Four</option></select>
+            <button class="button primary" id="challenge-button" type="submit" disabled>Send challenge</button>
+          </form>
+          <p class="form-status" id="challenge-status" role="status" aria-live="polite"></p>
+          <div class="account-status" id="arcade-account-status" role="status" aria-live="polite">Checking your account…</div>
+        </section>
+        <section class="panel how-panel">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <ol>
+            <li>Pick an accepted friend and send a challenge.</li>
+            <li>They accept when they’re ready, then you start the match.</li>
+            <li>Each move saves to the match. Your friend gets a notification for their turn.</li>
+          </ol>
+          <p class="fine-print">There’s no clock and no need to stay online together. Come back whenever you want to continue.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
