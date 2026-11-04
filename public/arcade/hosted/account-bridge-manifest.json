@@ -156,10 +156,10 @@
       "scoreMode": "score"
     },
     {
-      "gameId": "cabinet-sudoku",
-      "title": "Sudoku",
-      "path": "/arcade/hosted/sudoku/index.html",
-      "scoreSelector": "",
+      "gameId": "ash-sudoku",
+      "title": "Chaos Sudoku",
+      "path": "/arcade/hosted/ash-sudoku/index.html",
+      "scoreSelector": "#solved",
       "scoreMode": "completion"
     },
     {
