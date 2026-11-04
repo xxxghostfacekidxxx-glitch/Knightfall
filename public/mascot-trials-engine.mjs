@@ -18,7 +18,13 @@ export const SPECIES_TRIALS=Object.freeze({
  'mini-eddie':['dodge','The Eddie Grave Guard','guardian'],
  gutterkit:['dodge','Gutterkit Alley Escape','cat'],
  'chunky-monkey':['catch','Chunky Monkey Jungle Catch','monkey'],
- 'boo-thang':['memory','Boo Thang Haunted Hearts','ghost']
+ 'boo-thang':['memory','Boo Thang Haunted Hearts','ghost'],
+ 'lydibug':['runes','Lydibug Starlight Circuit','beetle'],
+ 'sootsnoot':['catch','Sootsnoot Ember Burrow','badger'],
+ 'rumblefluff':['dodge','Rumblefluff Thunder Roll','lamb'],
+ 'glittergob':['memory','Glittergob Crystal Cache','goblin'],
+ 'craggle':['dodge','Craggle Moonstone Climb','gargoyle'],
+ 'prismare':['memory','Prismare Prism Tide','jelly']
 });
 export const TRIAL_TYPES=Object.freeze(['catch','memory','runes','dodge']);
 export function challengeFor(species,level=1){
