@@ -792,7 +792,7 @@
       "gameId": "neon-nuisances-species-trials",
       "title": "Neon Nuisances · Species Trials",
       "license": "Original Knightfall implementation; no upstream assets copied",
-      "notes": "Four first-party games for 22 adopted mascot species. Original code and SVG artwork, with verified pet-care cooldowns and no client-controlled Cinders.",
+      "notes": "Four first-party games for 28 adopted mascot species. Original code and SVG artwork, with verified pet-care cooldowns and no client-controlled Cinders.",
       "status": "ashfall-original-build",
       "files": [
         "/mascot-trials.html",
