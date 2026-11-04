@@ -15,7 +15,7 @@ const invoke=(path,method,body,env,getUser=async()=>owner)=>handleMascotPets(req
 
 test('all mascot IDs are unique, safe, first-party and match the real art catalog',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../../public/assets/devil-tools/neon-nuisances/manifest.json',import.meta.url),'utf8'));
- assert.equal(MASCOT_SPECIES.length,22);
+ assert.equal(MASCOT_SPECIES.length,28);
  assert.deepEqual(new Set(MASCOT_SPECIES.map(x=>x.id)),new Set(manifest.characters.map(x=>x.id)));
  for(const pet of MASCOT_SPECIES)assert.match(pet.svg,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
 });
