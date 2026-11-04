@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<svg data-starborn-ready="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
 <title id="title">Minion Mouse | Ash-Fall Neon Nuisances</title>
-<desc id="desc">A scrappy mischievous cyber-mouse with enormous stitched ears, mint goggles, patchwork vest, a winding mechanical tail and stolen batteries.</desc>
+<desc id="desc">A clever little lady mouse with giant stitched ears, mint goggles, a lucky ladybug patch and a pink bow, built for secret tunnels and bigger plans.</desc>
 <defs>
  <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54476a"/><stop offset="1" stop-color="#191627"/></linearGradient>
  <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb7e8"/><stop offset=".5" stop-color="#ff4fb9"/><stop offset="1" stop-color="#8b2d79"/></linearGradient>
@@ -68,4 +68,4 @@
 <path d="m62 20 5-8 4 9m-31 5 4-8m48 8-4-8" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
 <path d="m47 55 8-4m20 0 8 4" stroke="#f3ffed" stroke-width="2.3"/>
 <circle cx="42" cy="36" r="2" fill="#ff55d8"/><circle cx="89" cy="37" r="2" fill="#79ffe7"/>
-</g></g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:scurry 2.3s ease-in-out infinite}#fx{animation:blinkSpark 1.9s ease-in-out infinite}@keyframes scurry{0%,100%{transform:translate(0,0) rotate(-1deg)}32%{transform:translate(-2px,-3px) rotate(-3deg)}68%{transform:translate(2px,-2px) rotate(2deg)}}@keyframes blinkSpark{50%{opacity:.2}}}</style></svg>
+</g></g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:scurry 2.3s ease-in-out infinite}#fx{animation:blinkSpark 1.9s ease-in-out infinite}@keyframes scurry{0%,100%{transform:translate(0,0) rotate(-1deg)}32%{transform:translate(-2px,-3px) rotate(-3deg)}68%{transform:translate(2px,-2px) rotate(2deg)}}@keyframes blinkSpark{50%{opacity:.2}}}</style><g stroke-linejoin="round" stroke-linecap="round"><path d="m20 18q10-10 18 0l-9 8Zm18 0q10-10 18 0L47 26Z" fill="#ff55d8" stroke="#161421" stroke-width="2.8"/><circle cx="38" cy="18" r="3.5" fill="#c6ff45" stroke="#161421" stroke-width="2"/><path d="M27 92q8-7 16 0l-2 10-7 5-8-6Z" fill="#ec4b72" stroke="#171421" stroke-width="2.5"/><circle cx="32" cy="95" r="1.8" fill="#fff1c6"/><circle cx="39" cy="98" r="1.8" fill="#fff1c6"/><path d="m31 90 3-5m5 6 4-4" stroke="#c6ff45" stroke-width="1.8"/></g></svg>

@@ -13,6 +13,11 @@
 .pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
 .pet-card{min-width:0;border:1px solid #a355c46b;border-radius:18px;padding:14px;background:linear-gradient(152deg,#23162e,#0d111c 67%);box-shadow:inset 0 1px #ffffff15,0 15px 30px #0005;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
 .pet-card.featured{border-color:#c6ff45;box-shadow:0 0 0 1px #c6ff4580,0 12px 45px #c6ff451c}
+.pet-card.starborn{border-color:#f0c86b;box-shadow:inset 0 1px #fff2,0 0 0 1px #f0c86b55,0 18px 40px #f0c86b12}
+.pet-card.starborn .pet-art{background:radial-gradient(circle at 50% 50%,#f0c86b35,transparent 68%),linear-gradient(#211b28,#0d0e19)}
+.pet-evolution{display:flex;flex-direction:column;gap:5px;padding:9px 11px;border:1px solid #e2b75a62;border-radius:10px;background:linear-gradient(120deg,#e2b75a12,#ff55d80a);color:#f5d68d}
+.pet-evolution small{color:#d9cbe0;font-size:.74rem;line-height:1.45}
+.pet-evolution.evolved{border-color:#f0c86b;background:linear-gradient(120deg,#e2b75a26,#79ffe710);box-shadow:inset 0 0 16px #e2b75a0c}
 .pet-card .pet-art{position:relative;display:grid;place-items:center;height:184px;border-radius:13px;background:radial-gradient(circle at 50% 50%,#ff55d838,transparent 70%),linear-gradient(#141220,#0d0e19);overflow:hidden}
 .pet-card .pet-art:before{content:'';position:absolute;width:130px;height:130px;border:1px dashed #c6ff4560;border-radius:50%;box-shadow:0 0 30px #c6ff4513}
 .pet-card .pet-art img{position:relative;width:160px;height:160px;object-fit:contain;filter:drop-shadow(0 9px 9px #0009);transition:transform .25s}

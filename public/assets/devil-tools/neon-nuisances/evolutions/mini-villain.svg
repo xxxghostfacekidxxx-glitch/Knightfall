@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Supreme Mini Villain evolved Starborn companion"><defs><radialGradient id="evolveAura"><stop stop-color="#b78cff" stop-opacity=".3"/><stop offset="1" stop-color="#ff55d8" stop-opacity="0"/></radialGradient><filter id="evolveGlow"><feGaussianBlur stdDeviation="8"/></filter></defs><svg x="0" y="0" width="512" height="512" viewBox="0 0 512 512"><title id="portraitTitle">Mini Villain · Deluxe Sanctuary Portrait</title><desc id="portraitDesc">Premium original mascot art in a hand-illustrated neon city sanctuary.</desc><defs><linearGradient id="sceneBackground" x2="1" y2="1"><stop stop-color="#28132e"/><stop offset=".5" stop-color="#101421"/><stop offset="1" stop-color="#050910"/></linearGradient><radialGradient id="sceneAura"><stop stop-color="#ff55d8" stop-opacity=".46"/><stop offset=".65" stop-color="#79ffe7" stop-opacity=".19"/><stop offset="1" stop-color="#ff55d8" stop-opacity="0"/></radialGradient><linearGradient id="neonTrim" x2="1" y2="1"><stop stop-color="#ff55d8"/><stop offset=".5" stop-color="#79ffe7"/><stop offset="1" stop-color="#ff55d8"/></linearGradient><filter id="sceneGlow"><feGaussianBlur stdDeviation="12"/></filter><filter id="characterDepth"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#000" flood-opacity=".8"/></filter></defs><rect width="512" height="512" rx="32" fill="url(#sceneBackground)"/><circle cx="256" cy="224" r="205" fill="url(#sceneAura)" filter="url(#sceneGlow)"/><g style="color:#ff55d8"><path d="M0 362V290h61v-59h42v131h24V196h67v166h21V245h55v117h42V278h66v84h20V211h62v151h52v116H0Z" fill="#0c1021" stroke="currentColor" stroke-width="3" opacity=".58"/><path d="M38 329h18m109-95h18m76 50h17m138-38h17" stroke="currentColor" stroke-width="7" opacity=".65"/></g><circle cx="36" cy="298" r="1" fill="#79ffe7" opacity=".44"/><circle cx="382" cy="198" r="2" fill="#ff55d8" opacity=".44"/><circle cx="304" cy="288" r="3" fill="#79ffe7" opacity=".44"/><circle cx="418" cy="122" r="4" fill="#ff55d8" opacity=".44"/><circle cx="352" cy="366" r="1" fill="#79ffe7" opacity=".44"/><circle cx="388" cy="238" r="2" fill="#ff55d8" opacity=".44"/><circle cx="310" cy="228" r="3" fill="#79ffe7" opacity=".44"/><circle cx="326" cy="132" r="4" fill="#ff55d8" opacity=".44"/><circle cx="296" cy="290" r="1" fill="#79ffe7" opacity=".44"/><circle cx="232" cy="198" r="2" fill="#ff55d8" opacity=".44"/><circle cx="280" cy="206" r="3" fill="#79ffe7" opacity=".44"/><circle cx="20" cy="222" r="4" fill="#ff55d8" opacity=".44"/><circle cx="96" cy="284" r="1" fill="#79ffe7" opacity=".44"/><circle cx="300" cy="208" r="2" fill="#ff55d8" opacity=".44"/><circle cx="354" cy="98" r="3" fill="#79ffe7" opacity=".44"/><circle cx="378" cy="384" r="4" fill="#ff55d8" opacity=".44"/><circle cx="106" cy="90" r="1" fill="#79ffe7" opacity=".44"/><circle cx="430" cy="256" r="2" fill="#ff55d8" opacity=".44"/><circle cx="214" cy="274" r="3" fill="#79ffe7" opacity=".44"/><circle cx="298" cy="84" r="4" fill="#ff55d8" opacity=".44"/><circle cx="400" cy="354" r="1" fill="#79ffe7" opacity=".44"/><circle cx="274" cy="94" r="2" fill="#ff55d8" opacity=".44"/><circle cx="362" cy="188" r="3" fill="#79ffe7" opacity=".44"/><circle cx="106" cy="288" r="4" fill="#ff55d8" opacity=".44"/><circle cx="456" cy="206" r="1" fill="#79ffe7" opacity=".44"/><circle cx="224" cy="308" r="2" fill="#ff55d8" opacity=".44"/><circle cx="380" cy="140" r="3" fill="#79ffe7" opacity=".44"/><circle cx="456" cy="150" r="4" fill="#ff55d8" opacity=".44"/><circle cx="368" cy="70" r="1" fill="#79ffe7" opacity=".44"/><circle cx="12" cy="126" r="2" fill="#ff55d8" opacity=".44"/><circle cx="288" cy="272" r="3" fill="#79ffe7" opacity=".44"/><circle cx="360" cy="336" r="4" fill="#ff55d8" opacity=".44"/><circle cx="492" cy="348" r="1" fill="#79ffe7" opacity=".44"/><circle cx="156" cy="368" r="2" fill="#ff55d8" opacity=".44"/><circle cx="236" cy="114" r="3" fill="#79ffe7" opacity=".44"/><circle cx="174" cy="292" r="4" fill="#ff55d8" opacity=".44"/><ellipse cx="256" cy="415" rx="155" ry="25" fill="#ff55d8" opacity=".24" filter="url(#sceneGlow)"/><g filter="url(#characterDepth)"><svg x="58" y="74" width="396" height="396" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">Mini Villain | Ash-Fall Neon Nuisances</title>
+<desc id="desc">A smug pocket-sized gothic supervillain, wearing a dramatic asymmetrical horned crown, massive magenta cape, spiked armor and a glowing green arcane scepter.</desc>
+<defs>
+ <linearGradient id="cape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff76d5"/><stop offset=".5" stop-color="#8c2676"/><stop offset="1" stop-color="#321942"/></linearGradient>
+ <linearGradient id="mask" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9b8cbb"/><stop offset=".5" stop-color="#49314d"/><stop offset="1" stop-color="#252339"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="63" cy="118" rx="42" ry="5" fill="#ff55d8" opacity=".26"/>
+<circle cx="64" cy="65" r="50" fill="#ff27ce" opacity=".18" filter="url(#halo)"/>
+<g id="fx"><path d="m14 21 3-9 4 9-4 9Zm97 65 3-8 4 8-4 9Z" fill="#c6ff45"/><circle cx="105" cy="18" r="3" fill="#ff55d8"/></g>
+<g id="character" stroke-linejoin="round" stroke-linecap="round">
+ <!-- cape and wildly oversized collar, not the same silhouette as the mouse -->
+ <path d="M44 67Q21 60 14 106L7 118q25-10 40-3 18 14 36 0 19-5 37 5l-8-29q-7-21-29-25" fill="url(#cape)" stroke="#181221" stroke-width="4"/>
+ <path d="m32 81 5 20 16 10m42-30-6 20-14 10" fill="none" stroke="#ffa0ed" stroke-width="2.5"/>
+ <path d="M46 77 21 53l14 3-2-24 24 38M83 72l15-41-2 24 14-6-24 31" fill="#27172b" stroke="#ff55d8" stroke-width="3"/>
+ <!-- floating scepter with orbiting energy -->
+ <path d="M106 104 111 52" stroke="#17111b" stroke-width="8"/><path d="M106 104 111 52" stroke="#c6ff45" stroke-width="3"/>
+ <path d="m111 51-11-12 12-13 10 12Z" fill="#c6ff45" stroke="#221629" stroke-width="3"/>
+ <path d="m98 37-7-7m27 4 8-7m-15 0V16" stroke="#ff55d8" stroke-width="3"/>
+ <!-- tiny boots with flared armor -->
+ <path d="M44 97 36 112l19 4 10-13m13 0 9 14 19-4-12-16" fill="#241b2b" stroke="#13111a" stroke-width="4"/>
+ <path d="M32 112q15-5 28 2l-2 7H29Zm48 3q15-9 27 0l-1 7H81Z" fill="#111421" stroke="#ff55d8" stroke-width="2.5"/>
+ <path d="M39 82q25-15 46 0l9 26-15 8H48l-14-10Z" fill="url(#mask)" stroke="#15101d" stroke-width="4"/>
+ <path d="M55 83 64 97l10-14-3 30H57Z" fill="#1c1727" stroke="#c6ff45" stroke-width="2.5"/>
+ <path d="m63 92 5 0-2 12-5-7Z" fill="#ff55d8"/>
+ <path d="m39 91-17 7m66-6 12 9" stroke="#383047" stroke-width="8"/>
+ <path d="m21 96-7 1 3 9 10 1m74-8 6 0-1 10-8 0" fill="#211929" stroke="#c6ff45" stroke-width="3"/>
+ <!-- tall asymmetric horns and crown -->
+ <path d="M41 54 23 12q22 8 29 23l6-19 13 18 24-25-4 33 14-8-11 27" fill="#262032" stroke="#13101e" stroke-width="4"/>
+ <path d="m33 22 13 31m40-5 6-25" stroke="#ff55d8" stroke-width="3"/>
+ <path d="M38 47q6-19 27-22 24 3 28 22l1 27q-6 22-29 23-28-3-32-26Z" fill="url(#mask)" stroke="#13101d" stroke-width="4"/>
+ <path d="M42 42q23-13 46-2l-7 11-14-7-16 9Z" fill="#1a1625" stroke="#ff55d8" stroke-width="2.5"/>
+ <!-- theatrical masked eyes -->
+ <g id="eyes">
+  <path d="M40 62q10-13 24 0l-12 10Zm27 0q11-12 22 1L77 73Z" fill="#0c141b" stroke="#ff55d8" stroke-width="2"/>
+  <path d="M44 63l12 3-5 4Zm29 3 12-3-8 7Z" fill="#c6ff45"/>
+  <circle cx="54" cy="65" r="1.6" fill="#fff"/><circle cx="80" cy="65" r="1.6" fill="#fff"/>
+ </g>
+ <g id="lids" opacity="0"><path d="m43 64 18 3m11 0 16-3" stroke="#c6ff45" stroke-width="4" fill="none"/></g>
+ <g id="wink" opacity="0"><path d="m70 65 15-3" stroke="#ff55d8" stroke-width="4"/></g>
+ <path d="m50 56 10-5m14 0 10 5" stroke="#151322" stroke-width="3"/>
+ <path d="M52 81q14 13 26-1l-7 12-7-5-6 4Z" fill="#11111c" stroke="#ff55d8" stroke-width="2"/>
+ <path d="m59 83 3 5 5-3 5 3" stroke="#f7fff0" stroke-width="2" fill="none"/>
+ <circle cx="91" cy="75" r="3" fill="#c6ff45" stroke="#191220" stroke-width="1.5"/>
+ <path d="m48 90-6 8m43-8 6 8" stroke="#ff55d8" stroke-width="2.4"/>
+<g id="deluxe-villain-regalia" stroke-linecap="round" stroke-linejoin="round">
+<path d="m37 29-12 3 10 9m58-12 12 3-10 9" fill="#371828" stroke="#ff55d8" stroke-width="2.5"/>
+<path d="m41 35 5-8 7 8m29 0 7-8 5 8" stroke="#c6ff45" stroke-width="2.5" fill="none"/>
+<path d="m41 48-9 7m63-7 9 7" stroke="#ff9de7" stroke-width="3"/>
+<path d="M40 93q10 12 24 10 14 2 24-10" fill="none" stroke="#f99cce" stroke-width="2.8"/>
+<path d="m38 96-15 7 8 9m59-16 15 7-8 9" fill="none" stroke="#c6ff45" stroke-width="2.4"/>
+<path d="M51 102l13 9 13-9" fill="none" stroke="#d7a8ff" stroke-width="2.4"/>
+<path d="m56 106 8 5 8-5" fill="none" stroke="#fff2fa" stroke-width="2.3"/>
+<path d="M52 33l12-7 12 7-12 8Z" fill="#20243a" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m61 33 3-4 3 4-3 5Z" fill="#ff55d8"/>
+<path d="m41 62 8-4m30 0 8 4" stroke="#ffecff" stroke-width="2.5"/>
+<path d="M43 71q8 6 16 0m10 0q8 6 16 0" fill="none" stroke="#c6ff45" stroke-width="2"/>
+<path d="m24 83-7-7m87 7 7-7" stroke="#ff55d8" stroke-width="3"/>
+<path d="m31 105-5 12m74-12 5 12" stroke="#a4fff3" stroke-width="3"/>
+<path d="M47 110q17-4 34 0" stroke="#ff55d8" stroke-width="3"/>
+<path d="m19 40 6-10m78 10 6-10" stroke="#c6ff45" stroke-width="2.7"/>
+<circle cx="43" cy="46" r="2.8" fill="#ff55d8"/><circle cx="86" cy="46" r="2.8" fill="#79ffe7"/>
+<path d="m30 21 7-8 8 7m46-7 8 8" stroke="#ff55d8" stroke-width="2.7" fill="none"/>
+<circle cx="112" cy="48" r="3" fill="#c6ff45"/><circle cx="17" cy="81" r="2.7" fill="#79ffe7"/>
+<path d="M97 47q20 3 16 21m-5-6 5 6-4 9" stroke="#ff55d8" stroke-width="3.3" fill="none"/>
+</g></g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff55d8" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff55d8" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff55d8">MINI VILLAIN</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg><circle cx="256" cy="148" r="108" fill="url(#evolveAura)" filter="url(#evolveGlow)"/><path d="m185 147 17-50 24 31 30-62 29 62 24-31 18 50Z" fill="#b78cff" stroke="#f4dcff" stroke-width="6"/><path d="M192 177q64 24 128 0v56l-29-14-35 28-35-28-29 14Z" fill="#5d327c" fill-opacity=".87" stroke="#ff55d8" stroke-width="5"/><circle cx="256" cy="143" r="9" fill="#c6ff45"/><rect x="28" y="28" width="456" height="456" rx="23" fill="none" stroke="#b78cff" stroke-width="4" opacity=".92"/><rect x="33" y="33" width="446" height="446" rx="19" fill="none" stroke="#ff55d8" stroke-width="1.5" stroke-dasharray="4 12" opacity=".8"/><path d="M59 66 65 50l6 16 16 6-16 6-6 16-6-16-16-6Zm376 0 6-16 6 16 16 6-16 6-6 16-6-16-16-6Z" fill="#b78cff"/><rect x="127" y="405" width="258" height="36" rx="18" fill="#090d19" stroke="#b78cff" stroke-width="2"/><text x="256" y="429" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="900" letter-spacing="2" fill="#b78cff">✦ STARBORN EVOLVED ✦</text></svg>

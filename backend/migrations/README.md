@@ -151,3 +151,9 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - `0115_mascot_species_expansion.sql` adds six original rescue species (Lydibug, Sootsnoot, Rumblefluff, Glittergob, Craggle and Prismare), expands adoption and egg-hatch capacity to 28, preserves the original 22-species passport milestone, and adds a separate 28-species completion reward. Existing pets and claimed rewards remain intact.
 - The matching SVG artwork is original Knightfall art recorded in the Neon Nuisances asset manifest. Lydibug is a cheerful star-spotted garden beetle designed as a symbolic tribute, without using personal photos or likeness.
 - Apply the D1 migration before deploying the Worker code that offers the six species.
+
+## Neon Nuisances Starborn forms · 0116
+
+- `0116_starborn_evolutions.sql` raises the rescue level and Cinders costs for Lydibug, Minion Mouse, Mini Villain, The Eddie and Boo Thang, and narrows the zero-cost first rescue to the eight original starter species. The database trigger checks the starter restriction and server-set rescue cost.
+- Starborn evolved art is unlocked from pet XP level plus non-decaying bond milestones; forms appear in collection cards, public profile companions and personal rooms. The five evolutions are Lydibloom (Lv 9 / 500 bond), Minion Mouse: Mastermind (Lv 10 / 650 bond), Supreme Mini Villain (Lv 11 / 750 bond), Everguard Eddie (Lv 11 / 850 bond), and Boo Thang: Heartlight (Lv 10 / 800 bond).
+- `scripts/build-mascot-starforms.mjs` adds bespoke details to Minion Mouse, Chunky Monkey and Boo Thang animation states, and generates the five deluxe evolved portraits. Run it after `scripts/build-mascot-portraits.mjs` when regenerating the full art pack.

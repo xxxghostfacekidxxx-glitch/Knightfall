@@ -7,6 +7,7 @@
 .mascot-profile-pet img{width:94px;height:94px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}
 .mascot-profile-pet strong{color:#fff;font-size:.85rem;text-align:center;overflow-wrap:anywhere}
 .mascot-profile-pet small{color:#bfb3da;text-align:center;font-size:.69rem}
+.mascot-profile-pet .mascot-profile-evolved{color:#f1cd7c;font-weight:800}
 .mascot-profile-featured{color:#c6ff45;font-size:.65rem;font-weight:850;text-align:center;margin-top:auto}
 
 .mascot-profile-art{position:relative;width:94px;height:94px;flex-shrink:0}.mascot-profile-art img{position:absolute;inset:0;width:94px;height:94px;object-fit:contain;filter:drop-shadow(0 4px 7px #0008)}.mascot-profile-art img.mascot-profile-layer{z-index:2;pointer-events:none;filter:drop-shadow(0 2px 3px #0007)}

@@ -3,7 +3,7 @@
  * Requires D1 migration 0103_mascot_pets.sql.
  * All mutations bind user_id to a validated Knightfall session.
  */
-import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,petMarketPrice,petUnlockLevel} from './mascot-collectibles.js';
+import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,FREE_STARTER_SPECIES,petMarketPrice,petUnlockLevel} from './mascot-collectibles.js';
 import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
 import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
@@ -25,12 +25,12 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  'crypt-koi':['Serene','Moonlit water','A spectral swimmer that brings calm to the chaos.'],
  'casket-pup':['Loyal','Old graveyards','A brave little hound who refuses to leave a friend behind.'],
  'void-sprout':['Patient','Eclipses and starlight','A tiny bloom from the dark spaces between stars.'],
- 'minion-mouse':['Clever','Secret tunnels','A mastermind small enough to fit through your plans.'],
+ 'minion-mouse':['Inventive','Secret tunnels, lucky beetle spots and tiny gadgets','A Lydia-inspired little lady with giant ears, a lucky ladybug patch and plans three tunnels ahead.'],
  'mini-villain':['Dramatic','Elaborate schemes','A pint-sized schemer whose evil speeches are longer than the schemes.'],
  'mini-eddie':['Protective','Midnight patrols','A little guardian who keeps watch when everyone else sleeps.'],
  gutterkit:['Scrappy','Treasure hunting','An alley cat who can turn yesterday’s junk into tomorrow’s treasure.'],
- 'chunky-monkey':['Affectionate','Jungle games','A lovable troublemaker who turns every room into a playground.'],
- 'boo-thang':['Romantic','Ghost stories','A mischievous spirit who is always haunting someone’s heart.'],
+ 'chunky-monkey':['Affectionate','Jungle games, flower clips and shiny hoops','A big-hearted punk monkey girl who turns every room into a playground and every bad day into a laugh.'],
+ 'boo-thang':['Romantic','Ghost stories and moonlit mixtapes','A sweetly spooky ghost girl who is always haunting someone’s heart with a mischievous smile.'],
  lydibug:['Sunny','Garden lanterns and star stickers','A bright little beetle whose spotted wings glow like tiny lanterns.'],
  sootsnoot:['Resourceful','Warm stones and lost buttons','A soot-soft badger who turns scraps and cinders into clever little treasures.'],
  rumblefluff:['Bouncy','Thunderstorms and soft blankets','A cloud-wool lamb who stores gentle thunder in its curled horns.'],
@@ -38,6 +38,15 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  craggle:['Steadfast','Moonlit rooftops and old stone','A small gargoyle guardian with a brave heart and glowing runic freckles.'],
  prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.']
 });
+export const STAR_FORMS=Object.freeze({
+ lydibug:{name:'Lydibloom',level:9,bond:500,tagline:'A little light that learned to lead the whole garden.'},
+ 'minion-mouse':{name:'Minion Mouse: Mastermind',level:10,bond:650,tagline:'Every tiny tunnel now leads exactly where she planned.'},
+ 'mini-villain':{name:'Supreme Mini Villain',level:11,bond:750,tagline:'The grand scheme was friendship all along. Obviously.'},
+ 'mini-eddie':{name:'Everguard Eddie',level:11,bond:850,tagline:'A steadfast little protector, brave because his people are near.'},
+ 'boo-thang':{name:'Boo Thang: Heartlight',level:10,bond:800,tagline:'A beloved little haunting with a heart bright enough to guide ghosts home.'}
+});
+const STAR_IDS=new Set(Object.keys(STAR_FORMS));
+const evolvedAsset=id=>'/assets/devil-tools/neon-nuisances/evolutions/'+id+'.svg';
 // Six tiny, species-specific responses make the same care action feel different
 // across the collection. These are flavor only; rewards remain server-defined below.
 const SPECIES_REACTIONS=Object.freeze({
@@ -57,7 +66,7 @@ const SPECIES_REACTIONS=Object.freeze({
  'crypt-koi':['takes the snack with one serene, gliding nibble','weaves a moonlit figure-eight around your playtime','floats in a still pool and lets the whole room quiet','shares a calm thought that seems to slow the night','drifts against you like a warm current','shimmers as you brush away a few spectral scales'],
  'casket-pup':['takes the treat gently, then checks that you have one too','bounds after you like the bravest little graveyard guard','circles twice and curls up with a contented sigh','listens closely, loyal eyes fixed on yours','leans its whole undead-puppy heart into the cuddle','holds still while you brush its ears back into place'],
  'void-sprout':['sips the snack like a drop of eclipse dew','grows a tiny leaf mid-game and acts like it planned it','folds its petals for a patient little night’s rest','shares a slow thought from the quiet between stars','leans its soft leaves against your hand','lets you straighten its leaves one by one'],
- 'minion-mouse':['stores the snack in a secret tunnel for later','outsmarts your next move and celebrates quietly','curls up inside an imaginary blueprint tube','whispers a tiny scheme that ends with both of you winning','squeezes into your palm like a trusted co-conspirator','dusts its tiny toolkit before putting everything away'],
+ 'minion-mouse':['stores the snack in a secret tunnel for later','outsmarts your next move and celebrates quietly','curls up inside an imaginary blueprint tube','whispers a tiny scheme that ends with both of you winning','squeezes into your palm like a trusted co-conspirator','dusts her tiny toolkit before putting everything away'],
  'mini-villain':['accepts the snack as a tribute to its brilliance','announces an elaborate game plan, then improvises wildly','sleeps beneath a cape like a defeated but dramatic genius','delivers a speech about its feelings with excellent posture','allows a royal cuddle, but only after a grand bow','checks its outfit for lint before the next dramatic entrance'],
  'mini-eddie':['takes a bite, then checks that the perimeter is secure','turns playtime into a brave midnight patrol','rests with one protective eye on the doorway','reports that everything is safe because you are here','tucks in beside you like your tiny night watch','lets you brush its armor until it catches the moonlight'],
  gutterkit:['finds the best crumb and declares it reclaimed treasure','turns a cardboard scrap into an entire alley adventure','curls up in a rescued blanket nest','shares a secret map to the best forgotten corners','nudges your hand like you are part of its little crew','gives its whiskers a proud, scrappy little tidy-up'],
@@ -88,6 +97,8 @@ const SPECIES = [
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
+  rarity:STAR_IDS.has(id)?'Starborn':'Misfit',rarity_label:STAR_IDS.has(id)?'✦ Starborn':'Misfit',
+  first_rescue_free:FREE_STARTER_SPECIES.includes(id),featured:STAR_IDS.has(id),evolution:STAR_FORMS[id]||null,
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
  portrait:'/assets/devil-tools/neon-nuisances/portraits/'+id+'.svg',
  idle:'/assets/devil-tools/neon-nuisances/'+id+'-idle.svg'}));
@@ -191,9 +202,13 @@ function petActionReply(pet,action,points=0,unit='XP'){
 export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
  const experience=Number(pet.experience)||0;
+ const bondExperience=Number(pet.bond_experience)||0,evolution=STAR_FORMS[pet.species]||null;
+ const evolved=!!evolution&&petLevel(experience)>=evolution.level&&bondExperience>=evolution.bond;
  const base={id:Number(pet.id),species:pet.species,species_name:species?.name||pet.species,
-  nickname:pet.nickname,image:species?.svg||'',portrait:species?.portrait||'',idle:species?.idle||'',
+  nickname:pet.nickname,image:evolved?evolvedAsset(pet.species):(species?.svg||''),portrait:evolved?evolvedAsset(pet.species):(species?.portrait||''),idle:evolved?evolvedAsset(pet.species):(species?.idle||''),
   level:petLevel(experience),featured:!!pet.featured,adopted_at:pet.adopted_at,
+  rarity:species?.rarity||'Misfit',rarity_label:species?.rarity_label||'Misfit',
+  evolution:evolution?{name:evolution.name,level:evolution.level,bond_required:evolution.bond,bond_experience:publicView?undefined:bondExperience,progress:publicView?undefined:Math.min(100,Math.floor(Math.min(petLevel(experience)/evolution.level,bondExperience/evolution.bond)*100)),evolved,tagline:evolution.tagline,art:evolvedAsset(pet.species)}:null,
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
  const vitals=petVitals(pet,now);
@@ -296,6 +311,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   const countRow=await env.DB.prepare('SELECT COUNT(*) AS count,MAX(experience) AS max_xp FROM mascot_pets WHERE user_id=?').bind(user.id).first();
   const count=Number(countRow?.count||0),rank=petLevel(countRow?.max_xp||0);
   if(count>=LIMIT)return respond({error:'All '+LIMIT+' species are already in your collection.'},409);
+  if(count===0&&!FREE_STARTER_SPECIES.includes(species.id))return respond({error:'Choose one of the eight free starter companions for your first rescue.'},409);
   if(count>0&&rank<species.unlock_level)return respond({error:'Train a companion to level '+species.unlock_level+' before this rescue.'},409);
   const price=petMarketPrice(species.id,count);
   if(price>0&&await walletFor(env,user)<price)return respond({error:'Not enough Cinders. Earn more in the arcade or daily wallet rewards.'},409);

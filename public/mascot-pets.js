@@ -9,7 +9,7 @@ let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,m
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
-const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/|habitats\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
+const safeSrc=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|accessories\/|habitats\/|evolutions\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
 const ownedSku=sku=>wardrobe.some(x=>x.sku===sku);
 async function api(path,options={}){
  const r=await fetch(API+path,{credentials:'include',cache:'no-store',...options,
@@ -22,7 +22,7 @@ function button(label,action,disabled=false,primary=false){
  const b=make('button',primary?'primary':'',label);b.type='button';b.dataset.action=action;b.disabled=disabled;return b;
 }
 function cardBase(item,image,ownedCard=false){
- const card=make('article','pet-card'+(item.featured?' featured':''));
+ const card=make('article','pet-card'+(item.featured?' featured':'')+(item.rarity==='Starborn'?' starborn':''));
  if(ownedCard)card.dataset.petId=String(item.id);
  else card.dataset.species=item.id;
  const visual=make('div','pet-art'),src=safeSrc(image);
@@ -30,16 +30,16 @@ function cardBase(item,image,ownedCard=false){
   const scene=safeSrc(item.habitat.art);
   if(scene){const imageBg=make('img','pet-habitat-scene');imageBg.src=scene+'?v=20261102-adventures1';imageBg.alt='';imageBg.setAttribute('aria-hidden','true');visual.append(imageBg)}
  }
- if(src){const img=make('img','pet-base-image');img.src=src+'?v=20261102-sanctuary5';img.alt=item.name||item.nickname||'Companion';img.loading='lazy';visual.append(img)}
+ if(src){const img=make('img','pet-base-image');img.src=src+'?v=20261104-starborn1';img.alt=item.name||item.nickname||'Companion';img.loading='lazy';visual.append(img)}
  if(ownedCard&&item.habitat?.decoration_art){
   const decor=safeSrc(item.habitat.decoration_art);
   if(decor){const layer=make('img','pet-habitat-decor');layer.src=decor+'?v=20261102-adventures1';layer.alt='';layer.setAttribute('aria-hidden','true');visual.append(layer)}
  }
  if(ownedCard)for(const piece of item.equipment||[]){
   const overlay=safeSrc(piece.asset);
-  if(overlay){const layer=make('img','pet-overlay pet-overlay-'+piece.slot);layer.src=overlay+'?v=20261102-sanctuary5';layer.alt='';layer.setAttribute('aria-hidden','true');layer.loading='lazy';visual.append(layer)}
+  if(overlay){const layer=make('img','pet-overlay pet-overlay-'+piece.slot);layer.src=overlay+'?v=20261104-starborn1';layer.alt='';layer.setAttribute('aria-hidden','true');layer.loading='lazy';visual.append(layer)}
  }
- if(item.featured)visual.append(make('span','pet-badge','✦ PROFILE COMPANION'));
+ if(item.featured)visual.append(make('span','pet-badge',ownedCard?'✦ PROFILE COMPANION':'✦ STARBORN'));
  card.append(visual);return card;
 }
 function statRow(label,value){
@@ -103,7 +103,14 @@ function renderOwned(){
  for(const pet of pets){
   const card=cardBase(pet,pet.idle||pet.image||pet.portrait,true),heading=make('div','pet-label');
   heading.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
+  if(pet.rarity==='Starborn')heading.lastChild.textContent=pet.featured?'✦ Starborn · Featured':'✦ Starborn';
   card.append(heading,make('p','pet-type',pet.species_name+' · Lv '+pet.level+' · '+pet.experience+' XP'));
+  if(pet.evolution){
+   const ev=pet.evolution,box=make('div','pet-evolution'+(ev.evolved?' evolved':''));
+   box.append(make('strong','',ev.evolved?'✧ '+ev.name:'✧ Starborn evolution · '+ev.name));
+   box.append(make('small','',ev.evolved?(ev.tagline||'A new form, earned together.'):'Reach Lv '+ev.level+' and '+ev.bond_required+' bond · '+Math.min(100,ev.progress||0)+'%'));
+   card.append(box);
+  }
   const bars=make('div','pet-bars');
   for(const [key,label] of [['hunger','Food'],['joy','Joy'],['energy','Energy']])bars.append(statRow(label,pet.vitals?.[key]));
   card.append(bars);
@@ -143,18 +150,19 @@ function renderOwned(){
 function renderAdopt(){
  adopt.replaceChildren();
  for(const pet of species){
-  const already=pets.some(x=>x.species===pet.id),incubating=incubatingSpecies.includes(pet.id),first=pets.length===0;
-  const unlock=Number(pet.unlock_level||1),locked=!first&&level<unlock,full=pets.length>=max;
-  const price=first?0:Number(pet.cost_cinders||0),canAfford=cinders>=price;
+  const already=pets.some(x=>x.species===pet.id),incubating=incubatingSpecies.includes(pet.id),first=pets.length===0,free=first&&!!pet.first_rescue_free;
+  const unlock=Number(pet.unlock_level||1),locked=first?!pet.first_rescue_free:level<unlock,full=pets.length>=max;
+  const price=free?0:Number(pet.cost_cinders||0),canAfford=cinders>=price;
   const card=cardBase(pet,pet.portrait||pet.svg),heading=make('div','pet-label');
-  heading.append(make('strong','',pet.name),make('small','',already?'OWNED':incubating?'EGG WAITING':price===0?'FREE':'✦ '+price.toLocaleString()));
-  card.append(heading,make('p','pet-type',pet.type+' · Unlock Lv '+unlock));
-  const hint=make('p','pet-cost-note',already?'You have already rescued this species.':incubating?'Your egg for this mascot is incubating. Hatch that egg instead.':locked?'Train any companion to Lv '+unlock+' first.':!first&&!canAfford?'Earn Cinders through arcade and daily rewards.':first?'Your first companion is free.':'Ready to rescue with Cinders.');
+  heading.append(make('strong','',pet.name),make('small','',already?'OWNED':incubating?'EGG WAITING':free?'FREE':'✦ '+price.toLocaleString()));
+  card.append(heading,make('p','pet-type',pet.type+' · '+(pet.rarity_label||'Misfit')+' · Unlock Lv '+unlock));
+  if(pet.evolution)card.append(make('p','pet-cost-note','Starborn signature form: '+pet.evolution.name+' · Lv '+pet.evolution.level+' + '+pet.evolution.bond+' bond'));
+  const hint=make('p','pet-cost-note',already?'You have already rescued this species.':incubating?'Your egg for this mascot is incubating. Hatch that egg instead.':locked?first?'Your first rescue must be one of the eight starter misfits.':'Train any companion to Lv '+unlock+' first.':!canAfford?'Earn Cinders through arcade and daily rewards.':free?'Your first starter companion is free.':'Ready to rescue with Cinders.');
   card.append(hint);
   const field=make('input');field.maxLength=28;field.value=pet.name;field.setAttribute('aria-label','Nickname for '+pet.name);field.dataset.nickname='1';
   card.append(field);
   const actions=make('div','pet-actions');
-  const label=already?'Already rescued':incubating?'Egg incubating · hatch instead':!signedIn?'Sign in to rescue':full?'Full collection':locked?'Locked · Lv '+unlock:price?'Rescue · '+price.toLocaleString()+' ✦':'Free starter rescue';
+  const label=already?'Already rescued':incubating?'Egg incubating · hatch instead':!signedIn?'Sign in to rescue':full?'Full collection':locked?first?'Starter required':'Locked · Lv '+unlock:price?'Rescue · '+price.toLocaleString()+' ✦':'Free starter rescue';
   actions.append(button(label,already?'owned':'adopt',already||incubating||full||locked||!canAfford||working,!(already||incubating||locked||full||!canAfford)));
   card.append(actions);adopt.append(card);
  }
@@ -165,7 +173,7 @@ function renderShop(){
   const card=make('article','pet-card accessory-card');
   card.dataset.sku=item.sku;
   const visual=make('div','pet-art'),src=safeSrc(item.asset);
-  if(src){const img=make('img','pet-accessory-preview');img.src=src+'?v=20261102-sanctuary5';img.alt=item.name;img.loading='lazy';visual.append(img)}
+  if(src){const img=make('img','pet-accessory-preview');img.src=src+'?v=20261104-starborn1';img.alt=item.name;img.loading='lazy';visual.append(img)}
   const own=ownedSku(item.sku);
   const h=make('div','pet-label');h.append(make('strong','',item.name),make('small','',own?'OWNED':item.premium?'PREMIUM':'CINDERS'));
   card.append(visual,h,make('p','pet-type',item.slot+' slot · cosmetic only'));

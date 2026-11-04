@@ -7,7 +7,7 @@ const stage=q('room-stage'),avatar=q('room-avatar'),background=q('room-backgroun
 if(!stage||!avatar||!picker||!theme||!decor||!pose||!save)return;
 let pets=[],themes=[],decorations=[],selected=null,point={x:50,y:65},dirty=false,busy=false,drag=null,visitor=false,currentReaction=null,reactionTimer=0;
 const say=text=>{status.textContent=String(text)};
-const safeAsset=url=>/^\/assets\/devil-tools\/neon-nuisances\/(?:habitats\/|accessories\/)?[a-z0-9-]+\.svg$/.test(url||'')?url:'';
+const safeAsset=url=>/^\/assets\/devil-tools\/neon-nuisances\/(?:habitats\/|accessories\/|evolutions\/)?[a-z0-9-]+\.svg$/.test(url||'')?url:'';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 async function request(path,options={}){
  const response=await fetch(API+path,{credentials:'include',cache:'no-store',...options,

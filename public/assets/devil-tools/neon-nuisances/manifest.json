@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 13,
+  "version": 14,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -299,12 +299,13 @@
         "bounce": "/assets/devil-tools/neon-nuisances/minion-mouse-bounce.svg",
         "mischief": "/assets/devil-tools/neon-nuisances/minion-mouse-mischief.svg"
       },
-      "description": "Minion Mouse · scrappy gadget-hoarding mouse gremlin with enormous patchwork ears, scavenged goggles, battery backpack, spring-loaded tail and stitched boots.",
+      "description": "Lydia-inspired clever little lady mouse with giant stitched ears, mint goggles, a lucky ladybug patch and a pink bow.",
       "personality": "Quick-witted, shamelessly curious, fiercely loyal to the crew. Steals broken tech and turns it into improbable inventions. Mischief: goggles wink as sparks fly.",
       "role": "The scrapyard inventor",
       "tagline": "If it beeps, I can steal it.",
       "styleVersion": 12,
-      "portrait": "/assets/devil-tools/neon-nuisances/portraits/minion-mouse.svg"
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/minion-mouse.svg",
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/minion-mouse.svg"
     },
     {
       "id": "mini-villain",
@@ -324,7 +325,8 @@
       "role": "The would-be overlord",
       "tagline": "Kneel. Or don't. I'll remember.",
       "styleVersion": 12,
-      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-villain.svg"
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-villain.svg",
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-villain.svg"
     },
     {
       "id": "mini-eddie",
@@ -345,7 +347,8 @@
       "role": "The pit guardian",
       "tagline": "Still standing. Still trouble.",
       "styleVersion": 12,
-      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-eddie.svg"
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/mini-eddie.svg",
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/mini-eddie.svg"
     },
     {
       "id": "gutterkit",
@@ -370,7 +373,7 @@
       "type": "punk monkey",
       "primary": "#c6ff45",
       "accent": "#ff55d8",
-      "description": "Big-hearted, banana-obsessed chaos gremlin with a leather vest and a tail full of trouble.",
+      "description": "Big-hearted punk monkey girl with bright cheeky eyes, flower clip, tiny hoop earrings, bandana and trusty banana blade.",
       "svg": "/assets/devil-tools/neon-nuisances/chunky-monkey.svg",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/chunky-monkey-idle.svg",
@@ -387,7 +390,7 @@
       "type": "punk ghost",
       "primary": "#b0f9ff",
       "accent": "#ff55d8",
-      "description": "Flirty, mischievous neon ghost with a bright bow, fangs, and a knack for playful hauntings.",
+      "description": "Sweetly spooky ghost girl with moonlit veil, heart-shaped spectral glow and playful punk sparkle.",
       "svg": "/assets/devil-tools/neon-nuisances/boo-thang.svg",
       "variants": {
         "idle": "/assets/devil-tools/neon-nuisances/boo-thang-idle.svg",
@@ -396,7 +399,8 @@
         "mischief": "/assets/devil-tools/neon-nuisances/boo-thang-mischief.svg"
       },
       "styleVersion": 12,
-      "portrait": "/assets/devil-tools/neon-nuisances/portraits/boo-thang.svg"
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/boo-thang.svg",
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/boo-thang.svg"
     },
     {
       "id": "lydibug",
@@ -410,7 +414,8 @@
       },
       "description": "A star-spotted garden beetle with glowing lantern wings and a tiny bow.",
       "styleVersion": 13,
-      "portrait": "/assets/devil-tools/neon-nuisances/portraits/lydibug.svg"
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/lydibug.svg",
+      "evolved": "/assets/devil-tools/neon-nuisances/evolutions/lydibug.svg"
     },
     {
       "id": "sootsnoot",
@@ -489,5 +494,5 @@
     "bounce",
     "mischief"
   ],
-  "artDirection": "Deluxe Sanctuary v13: 28 original world portraits, neon-punk detail passes, animated idle forms and downloadable vector masters"
+  "artDirection": "Deluxe Sanctuary v14: 28 original world portraits, expanded signature character design and five earned Starborn evolutions"
 }

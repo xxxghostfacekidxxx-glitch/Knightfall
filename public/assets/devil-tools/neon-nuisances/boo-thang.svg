@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
-<title id="title">Boo Thang · Deluxe Haunted Punk</title><desc id="desc">Expressive punk ghost with multi-layered transparent ectoplasm, neon ribbon, eerie jewelry, luminous face and spectral trailing fabric.</desc>
+<svg data-starborn-ready="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+<title id="title">Boo Thang · Deluxe Haunted Punk</title><desc id="desc">A sweetly spooky ghost girl with a moonlit veil, heart-shaped spectral glow and playful punk sparkle, haunting only the people she loves.</desc>
 <defs><radialGradient id="aura"><stop stop-color="#ff55d8" stop-opacity=".38"/><stop offset="1" stop-color="#ff55d8" stop-opacity="0"/></radialGradient><linearGradient id="sheet" x1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".55" stop-color="#b0f9ff"/><stop offset="1" stop-color="#8e80da"/></linearGradient></defs>
 <circle cx="80" cy="76" r="72" fill="url(#aura)"/>
 <ellipse cx="80" cy="147" rx="42" ry="6" fill="#79faff" opacity=".26"/>
@@ -43,4 +43,4 @@
 <path d="m12 117 6-7m117-88 9-9" stroke="#79ffe7" stroke-width="3"/>
 <circle cx="119" cy="25" r="4" fill="#ff55d8" opacity=".8"/>
 </g>
-</g></svg>
+</g><g stroke-linecap="round" stroke-linejoin="round"><path d="M51 33q-7-14 4-19l8 9 9-14 7 15 11-10q9 10 0 20" fill="#f7c7fa" stroke="#25142b" stroke-width="3"/><path d="M28 112q22 14 41 4m33 0q17 9 34-3" fill="none" stroke="#fff4ff" stroke-width="2.7" opacity=".8"/><path d="M76 107q4-8 9 0 5-8 9 0 0 9-9 14-9-5-9-14Z" fill="#ff55d8" stroke="#27152b" stroke-width="2"/><circle cx="87" cy="111" r="2" fill="#fff"/><path d="m36 71-4-7m97 9 5-7" stroke="#c6ff45" stroke-width="2.5"/></g></svg>

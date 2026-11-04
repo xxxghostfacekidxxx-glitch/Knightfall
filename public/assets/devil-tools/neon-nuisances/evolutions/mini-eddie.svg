@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Everguard Eddie evolved Starborn companion"><defs><radialGradient id="evolveAura"><stop stop-color="#c6ff45" stop-opacity=".3"/><stop offset="1" stop-color="#79ffe7" stop-opacity="0"/></radialGradient><filter id="evolveGlow"><feGaussianBlur stdDeviation="8"/></filter></defs><svg x="0" y="0" width="512" height="512" viewBox="0 0 512 512"><title id="portraitTitle">The Eddie · Deluxe Sanctuary Portrait</title><desc id="portraitDesc">Premium original mascot art in a hand-illustrated neon fire sanctuary.</desc><defs><linearGradient id="sceneBackground" x2="1" y2="1"><stop stop-color="#28132e"/><stop offset=".5" stop-color="#101421"/><stop offset="1" stop-color="#050910"/></linearGradient><radialGradient id="sceneAura"><stop stop-color="#ff9566" stop-opacity=".46"/><stop offset=".65" stop-color="#ff55d8" stop-opacity=".19"/><stop offset="1" stop-color="#ff9566" stop-opacity="0"/></radialGradient><linearGradient id="neonTrim" x2="1" y2="1"><stop stop-color="#ff9566"/><stop offset=".5" stop-color="#ff55d8"/><stop offset="1" stop-color="#ff9566"/></linearGradient><filter id="sceneGlow"><feGaussianBlur stdDeviation="12"/></filter><filter id="characterDepth"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#000" flood-opacity=".8"/></filter></defs><rect width="512" height="512" rx="32" fill="url(#sceneBackground)"/><circle cx="256" cy="224" r="205" fill="url(#sceneAura)" filter="url(#sceneGlow)"/><g style="color:#ff9566"><path d="M0 406q10-108 89-193-9 101 39 83 47-68 27-137 108 100 61 177 94-29 87-137 96 104 48 183 71-22 92-87 72 92 49 111" fill="#ff55d82b" stroke="currentColor" stroke-width="6"/><path d="m60 380 20-77m360 74-18-66" stroke="#fff0b1" stroke-width="5"/></g><circle cx="36" cy="322" r="1" fill="#ff55d8" opacity=".44"/><circle cx="378" cy="374" r="2" fill="#ff9566" opacity=".44"/><circle cx="182" cy="174" r="3" fill="#ff55d8" opacity=".44"/><circle cx="158" cy="370" r="4" fill="#ff9566" opacity=".44"/><circle cx="72" cy="322" r="1" fill="#ff55d8" opacity=".44"/><circle cx="332" cy="394" r="2" fill="#ff9566" opacity=".44"/><circle cx="156" cy="326" r="3" fill="#ff55d8" opacity=".44"/><circle cx="158" cy="240" r="4" fill="#ff9566" opacity=".44"/><circle cx="260" cy="266" r="1" fill="#ff55d8" opacity=".44"/><circle cx="204" cy="132" r="2" fill="#ff9566" opacity=".44"/><circle cx="230" cy="210" r="3" fill="#ff55d8" opacity=".44"/><circle cx="200" cy="262" r="4" fill="#ff9566" opacity=".44"/><circle cx="70" cy="386" r="1" fill="#ff55d8" opacity=".44"/><circle cx="12" cy="256" r="2" fill="#ff9566" opacity=".44"/><circle cx="354" cy="320" r="3" fill="#ff55d8" opacity=".44"/><circle cx="90" cy="290" r="4" fill="#ff9566" opacity=".44"/><circle cx="486" cy="144" r="1" fill="#ff55d8" opacity=".44"/><circle cx="58" cy="198" r="2" fill="#ff9566" opacity=".44"/><circle cx="304" cy="266" r="3" fill="#ff55d8" opacity=".44"/><circle cx="480" cy="262" r="4" fill="#ff9566" opacity=".44"/><circle cx="440" cy="386" r="1" fill="#ff55d8" opacity=".44"/><circle cx="52" cy="194" r="2" fill="#ff9566" opacity=".44"/><circle cx="392" cy="174" r="3" fill="#ff55d8" opacity=".44"/><circle cx="230" cy="104" r="4" fill="#ff9566" opacity=".44"/><circle cx="466" cy="136" r="1" fill="#ff55d8" opacity=".44"/><circle cx="354" cy="130" r="2" fill="#ff9566" opacity=".44"/><circle cx="208" cy="358" r="3" fill="#ff55d8" opacity=".44"/><circle cx="26" cy="70" r="4" fill="#ff9566" opacity=".44"/><circle cx="448" cy="106" r="1" fill="#ff55d8" opacity=".44"/><circle cx="316" cy="260" r="2" fill="#ff9566" opacity=".44"/><circle cx="290" cy="292" r="3" fill="#ff55d8" opacity=".44"/><circle cx="448" cy="198" r="4" fill="#ff9566" opacity=".44"/><circle cx="228" cy="90" r="1" fill="#ff55d8" opacity=".44"/><circle cx="162" cy="282" r="2" fill="#ff9566" opacity=".44"/><circle cx="66" cy="298" r="3" fill="#ff55d8" opacity=".44"/><circle cx="346" cy="84" r="4" fill="#ff9566" opacity=".44"/><ellipse cx="256" cy="415" rx="155" ry="25" fill="#ff9566" opacity=".24" filter="url(#sceneGlow)"/><g filter="url(#characterDepth)"><svg x="58" y="74" width="396" height="396" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+<title id="title">The Eddie | Ash-Fall Neon Nuisances</title>
+<desc id="desc">The Eddie, a tiny fearless undead punk with a tall lime mohawk, stitched scar, crimson and green mismatched eyes, cracked jacket, skeletal chest, heavy boots and an oversized mischievous grin.</desc>
+<defs>
+ <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e3e3e8"/><stop offset=".5" stop-color="#9baac2"/><stop offset="1" stop-color="#756884"/></linearGradient>
+ <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b314f"/><stop offset=".5" stop-color="#211725"/><stop offset="1" stop-color="#101323"/></linearGradient>
+ <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<ellipse cx="64" cy="119" rx="40" ry="5" fill="#c6ff45" opacity=".27"/>
+<circle cx="63" cy="64" r="50" fill="#c6ff45" opacity=".18" filter="url(#halo)"/>
+<g id="fx"><path d="m17 22 3-8 3 8-3 8Zm92 9 4-9 4 9-4 9Z" fill="#ff55d8"/><circle cx="116" cy="92" r="2.5" fill="#c6ff45"/></g>
+<g id="character" stroke-linejoin="round" stroke-linecap="round">
+ <!-- steel-toed boots, slouched rebellious posture -->
+ <path d="m45 103-8 13 23 0 5-12m14 0 8 12 20-2-12-15" fill="#474050" stroke="#111421" stroke-width="4"/>
+ <path d="m29 115 29-5 6 11H26Zm52-4 27 2 3 9H79Z" fill="#13141e" stroke="#c6ff45" stroke-width="2.7"/>
+ <path d="M38 114h19m27 1 19-1" stroke="#ff55d8" stroke-width="2.5"/>
+ <!-- asymmetrical ragged coat with exposed ribbed torso -->
+ <path d="M37 79q19-11 51 0l12 29-17 12H42l-15-13Z" fill="url(#jacket)" stroke="#13111b" stroke-width="4"/>
+ <path d="m40 83 10 0 7 21-9 13-17-9Z M87 83l-12 0-5 21 11 13 16-11Z" fill="#36243c" stroke="#ff55d8" stroke-width="2"/>
+ <path d="M53 91q11-4 22 0l-2 22q-10 6-18 0Z" fill="#101620" stroke="#c6ff45" stroke-width="2.5"/>
+ <path d="M58 95h13m-14 6 14 0m-13 5 12 0M64 89v26" stroke="#d7f9d7" stroke-width="2.5"/>
+ <path d="m33 95-16 12m77-13 17 12" stroke="#aaa9c1" stroke-width="8"/>
+ <path d="m19 107-6 0 0 8 11 0m81-7 8-2 2 9-11 2" fill="#85899d" stroke="#1a1424" stroke-width="3"/>
+ <path d="m37 89 6 6m-6 0 6-6m41 0 6 6m-6 0 6-6" stroke="#c6ff45" stroke-width="2"/>
+ <path d="m83 97 5-4 5 4-5 5Z" fill="#ff55d8"/>
+ <!-- head, scars and iconic jagged mohawk -->
+ <path d="M34 48Q39 25 65 24q30 3 33 26l-4 26q-6 22-28 23-25-1-31-22Z" fill="url(#skin)" stroke="#14121e" stroke-width="4"/>
+ <path d="m38 41 3-16 11 7 7-25 9 16 12-18 4 21 14-4-3 27-16-12-13 9-12-10Z" fill="#c6ff45" stroke="#13141d" stroke-width="3.2"/>
+ <path d="m45 35 14-13m11 11 8-18" stroke="#ecff9c" stroke-width="2.5"/>
+ <path d="m33 52-11-7m75 8 11-6" stroke="#ff55d8" stroke-width="3.2"/>
+ <path d="m42 42 6 11m-9-5 11 3m-10 0 7-5" stroke="#301c33" stroke-width="2.3"/>
+ <path d="M48 57q7-7 16-1m8 0q7-6 15 1" fill="none" stroke="#1b1422" stroke-width="3.5"/>
+ <!-- two different eyes and deliberately jagged sockets -->
+ <g id="eyes">
+  <path d="M43 62q9-12 20 0l-9 11Zm29 0q9-11 18 2l-9 10Z" fill="#191520" stroke="#15121c" stroke-width="2"/>
+  <circle cx="54" cy="63" r="6" fill="#ff55d8"/><circle cx="81" cy="63" r="6" fill="#c6ff45"/>
+  <circle cx="55" cy="61" r="2" fill="#fff"/><circle cx="82" cy="61" r="2" fill="#fff"/>
+ </g>
+ <g id="lids" opacity="0"><path d="m45 64 16 0m13 0 14 0" fill="none" stroke="#1a1621" stroke-width="5"/></g>
+ <g id="wink" opacity="0"><path d="m72 63 15 3" fill="none" stroke="#1a1621" stroke-width="5"/></g>
+ <path d="M57 76q8 3 16-1" stroke="#6d435c" stroke-width="2.3" fill="none"/>
+ <path d="M45 81q20 20 43-1l-6 14-8-6-8 10-9-10-7 5Z" fill="#15131b" stroke="#c6ff45" stroke-width="2.8"/>
+ <path d="m52 83 6 5 7-4 7 4 7-5" stroke="#fff9e9" stroke-width="2.8" fill="none"/>
+ <path d="M45 76q-8-3-11-2m57 0 8-2" stroke="#ff55d8" stroke-width="2.2"/>
+ <circle cx="94" cy="70" r="4" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
+<g id="deluxe-eddie-armor" stroke-linecap="round" stroke-linejoin="round">
+<path d="m47 19 6-10 6 12m0-10 5-9 6 17m3-10 5-6 3 15" fill="#c6ff45" stroke="#182020" stroke-width="2.6"/>
+<path d="M47 26q17-7 36 0" fill="none" stroke="#f7ffcc" stroke-width="2.3"/>
+<path d="m39 49 8-5m36 0 8 5" stroke="#ff55d8" stroke-width="2.6"/>
+<path d="m44 59 10-5m21 0 10 5" stroke="#fff9dd" stroke-width="2.1"/>
+<path d="m34 81-9 6 7 12m63-18 9 6-7 12" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
+<path d="m42 100 12-5 11 9 10-9 12 5" fill="none" stroke="#ff55d8" stroke-width="2.7"/>
+<path d="M53 99l6 9m12-9-6 9m17-10-5 11" stroke="#ecf5e4" stroke-width="2.3"/>
+<path d="m47 108 6 12m28-12-6 12" stroke="#c6ff45" stroke-width="2.7"/>
+<path d="M45 118h14m17 0h14" stroke="#ff55d8" stroke-width="3"/>
+<path d="M42 73 35 76m58-3 7 3" stroke="#ff55d8" stroke-width="3.1"/>
+<path d="M57 88q9 6 17 0" fill="none" stroke="#79ffe7" stroke-width="2.5"/>
+<path d="M51 35l6 7 8-5 8 5 7-7" fill="none" stroke="#c6ff45" stroke-width="2.3"/>
+<path d="m40 64 5 3m43-3-5 3" stroke="#ff96d5" stroke-width="2.6"/>
+<path d="M42 83q6 10 9 10m34-10q-6 10-9 10" stroke="#fff1dd" stroke-width="2.1"/>
+<circle cx="48" cy="45" r="2.5" fill="#c6ff45"/><circle cx="89" cy="45" r="2.5" fill="#ff55d8"/>
+<path d="m22 62-5-5m100 5 5-5" stroke="#79ffe7" stroke-width="2.8"/>
+<path d="M27 37l-5-8m81 8 5-8" stroke="#c6ff45" stroke-width="3"/>
+<circle cx="114" cy="100" r="3" fill="#ff55d8"/><circle cx="16" cy="86" r="3" fill="#79ffe7"/>
+</g></g></svg></g><path d="M22 125V52Q22 22 52 22h74M386 22h74q30 0 30 30v73M490 386v74q0 30-30 30h-74M126 490H52q-30 0-30-30v-74" stroke="url(#neonTrim)" stroke-width="9" stroke-linecap="round" fill="none"/><rect x="37" y="37" width="438" height="438" rx="18" fill="none" stroke="#ff9566" stroke-width="2" stroke-dasharray="5 13" opacity=".62"/><rect x="52" y="435" width="408" height="52" rx="10" fill="#0a0e1e" stroke="#ff9566" stroke-width="2.5"/><text x="256" y="457" text-anchor="middle" font-family="sans-serif" font-size="17" font-weight="900" letter-spacing="1.5" fill="#ff9566">THE EDDIE</text><text x="256" y="477" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#fff">NEON NUISANCES · KNIGHTFALL</text></svg><circle cx="256" cy="148" r="108" fill="url(#evolveAura)" filter="url(#evolveGlow)"/><path d="M256 94 289 112v30q-1 34-33 51-32-17-33-51v-30Z" fill="#182637" fill-opacity=".9" stroke="#c6ff45" stroke-width="7"/><path d="m256 112 8 15 17 2-13 11 4 17-16-9-16 9 4-17-13-11 17-2Z" fill="#ffe38a" stroke="#fff" stroke-width="2"/><path d="M189 170q-33 28-16 57m150-57q33 28 16 57" fill="none" stroke="#79ffe7" stroke-width="7" stroke-linecap="round"/><rect x="28" y="28" width="456" height="456" rx="23" fill="none" stroke="#c6ff45" stroke-width="4" opacity=".92"/><rect x="33" y="33" width="446" height="446" rx="19" fill="none" stroke="#79ffe7" stroke-width="1.5" stroke-dasharray="4 12" opacity=".8"/><path d="M59 66 65 50l6 16 16 6-16 6-6 16-6-16-16-6Zm376 0 6-16 6 16 16 6-16 6-6 16-6-16-16-6Z" fill="#c6ff45"/><rect x="127" y="405" width="258" height="36" rx="18" fill="#090d19" stroke="#c6ff45" stroke-width="2"/><text x="256" y="429" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="900" letter-spacing="2" fill="#c6ff45">✦ STARBORN EVOLVED ✦</text></svg>

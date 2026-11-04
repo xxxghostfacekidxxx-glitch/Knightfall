@@ -3,7 +3,7 @@
 const root=document.getElementById('profile');if(!root)return;
 const API='https://api.ash-fall.com';
 let current='',busy=false;
-const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|habitats\/)?[a-z0-9-]+\.svg$/.test(src)?src:null;
+const safeImage=src=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|habitats\/|evolutions\/)?[a-z0-9-]+\.svg$/.test(src)?src:null;
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=String(text);return node};
 function displayUser(){
  const text=root.querySelector('.profile-heading .handle')?.textContent||'';
@@ -47,7 +47,7 @@ async function mount(){
    const art=el('div','mascot-profile-art'),url=safeImage(pet.idle||pet.image||pet.portrait);
    const scene=safeImage(pet.habitat?.art);
    if(scene){const img=el('img','mascot-profile-habitat');img.src=scene+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
-   if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261102-adventures2';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
+   if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261104-starborn1';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
    const decoration=safeImage(pet.habitat?.decoration_art);
    if(decoration){const img=el('img','mascot-profile-decoration');img.src=decoration+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
    for(const furniture of (pet.furniture||[]).slice(0,4)){
@@ -67,6 +67,7 @@ async function mount(){
     img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
    }
    item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
+   if(pet.evolution?.evolved)item.append(el('small','mascot-profile-evolved','✧ '+pet.evolution.name));
    if(pet.temperament||pet.favorite)item.append(el('small','mascot-profile-trait',(pet.temperament||'Curious')+' · '+(pet.favorite||'Adventures')));
    if(pet.lore)item.title=pet.lore;
    if(pet.featured)item.append(el('span','mascot-profile-featured','✦ Profile companion'));
