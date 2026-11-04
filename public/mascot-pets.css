@@ -213,3 +213,11 @@
 .sanctuary-owner-misfit>a:hover{background:#c6ff4517}
 @media(max-width:520px){.sanctuary-owner-misfit{align-items:flex-start;gap:.7rem;padding:.75rem}.sanctuary-owner-misfit-art{flex-basis:58px;width:58px;height:68px}.sanctuary-owner-misfit>a{align-self:center;padding:.55rem;font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.pet-card.pet-reacted .pet-art{animation:none}}
+
+.pet-moments{margin:.65rem 0;border:1px solid #393044;border-radius:10px;background:#0d0b12;padding:.15rem .7rem}
+.pet-moments summary{min-height:40px;display:flex;align-items:center;cursor:pointer;color:#79ffe7;font-size:.75rem;font-weight:850;letter-spacing:.02em}
+.pet-moments[open] summary{border-bottom:1px solid #30283a}
+.pet-moments ul{list-style:none;margin:.2rem 0 .45rem;padding:0;display:grid;gap:.35rem}
+.pet-moments li{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;color:#ddd4e5;font-size:.73rem}
+.pet-moments li time{color:#a99caf;font-size:.68rem;white-space:nowrap}
+.pet-moments-empty{color:#a99caf;font-size:.75rem}
