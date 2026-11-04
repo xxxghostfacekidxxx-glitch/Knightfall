@@ -148,6 +148,6 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 
 ## Neon Nuisances expansion · 0115
 
-- `0115_mascot_species_expansion.sql` adds six original rescue species (Lydibug, Sootsnoot, Rumblefluff, Glittergob, Craggle and Prismare), expands adoption and egg-hatch capacity to 28, and moves the full-collection passport milestone to 28. Existing pets and claimed rewards remain intact.
+- `0115_mascot_species_expansion.sql` adds six original rescue species (Lydibug, Sootsnoot, Rumblefluff, Glittergob, Craggle and Prismare), expands adoption and egg-hatch capacity to 28, preserves the original 22-species passport milestone, and adds a separate 28-species completion reward. Existing pets and claimed rewards remain intact.
 - The matching SVG artwork is original Knightfall art recorded in the Neon Nuisances asset manifest. Lydibug is a cheerful star-spotted garden beetle designed as a symbolic tribute, without using personal photos or likeness.
 - Apply the D1 migration before deploying the Worker code that offers the six species.
