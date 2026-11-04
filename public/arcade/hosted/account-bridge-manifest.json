@@ -289,13 +289,6 @@
       "scoreMode": "wave"
     },
     {
-      "gameId": "cabinet-whack-a-bug",
-      "title": "Whack-a-Bug",
-      "path": "/arcade/hosted/whack-a-bug/index.html",
-      "scoreSelector": "#score",
-      "scoreMode": "score"
-    },
-    {
       "gameId": "cabinet-words-of-wonder",
       "title": "Words of Wonder",
       "path": "/arcade/hosted/words-of-wonder/index.html",
