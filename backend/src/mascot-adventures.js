@@ -27,7 +27,10 @@ const worldNames={
  'void-sprout':'Void Sprout Eclipse Bloom','minion-mouse':'Minion Mouse Tunnel Hunt',
  'mini-villain':'Mini Villain’s Evil Scheme','mini-eddie':'The Eddie’s Bone Guard',
  gutterkit:'Gutterkit Alley Scavenge','chunky-monkey':'Chunky Monkey Jungle Jam',
- 'boo-thang':'Boo Thang’s Ghostly Date'
+ 'boo-thang':'Boo Thang’s Ghostly Date',
+ lydibug:'Lydibug’s Starlit Garden',sootsnoot:'Sootsnoot’s Ash Trail',
+ rumblefluff:'Rumblefluff’s Thunder Nap',glittergob:'Glittergob’s Shiny Scheme',
+ craggle:'Craggle’s Moonwall Watch',prismare:'Prismare’s Lantern Drift'
 };
 export const QUEST_TITLES=Object.freeze(worldNames);
 export const todayUTC=(at=new Date())=>at.toISOString().slice(0,10);
