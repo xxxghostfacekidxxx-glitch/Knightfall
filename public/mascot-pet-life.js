@@ -1,7 +1,7 @@
 /* Tamagotchi-style companion reactions + Misfit/avatar sanctuary pairing. */
 (()=>{'use strict';
 const API='https://api.ash-fall.com';
-const life={lastAction:null,confirmed:null};
+const life={lastAction:null,confirmed:null,expiry:null};
 const speciesLines={
  moxie:'I found a moonlit shortcut. Want to see?',
  bloop:'I discovered a puddle that is probably a portal.',
@@ -64,10 +64,11 @@ function rememberAction(event){
  const card=b.closest('.pet-card[data-pet-id]'),action=b.dataset.action;
  if(!card||!['feed','play','rest','interact'].includes(action))return;
  life.lastAction={id:Number(card.dataset.petId),action:action==='interact'?b.dataset.interaction:action};
+ const pending=life.lastAction;clearTimeout(life.expiry);life.expiry=setTimeout(()=>{if(life.lastAction===pending)life.lastAction=null},15000);
 }
 document.addEventListener('click',rememberAction,true);
 document.addEventListener('sanctuary-changed',event=>{
- if(event.detail?.source==='pets'&&life.lastAction){life.confirmed=life.lastAction;life.lastAction=null}
+ if(event.detail?.source==='pets'&&life.lastAction){clearTimeout(life.expiry);life.confirmed=life.lastAction;life.lastAction=null}
 });
 document.addEventListener('sanctuary-rendered',event=>renderThoughts(event.detail));
 
