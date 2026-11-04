@@ -137,6 +137,10 @@ export function serializePet(pet,now=Date.now(),publicView=false){
  const vitals=petVitals(pet,now);
  return publicView?{...base,bond:petBond(currentLevel)}:{...base,experience,vitals,mood:petMood(vitals),bond:petBond(currentLevel),relationship:petRelationship(pet.bond_experience),
   level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
+  // Last known moments reuse existing care timestamps; this is private owner data.
+  last_moments:[['rescued',pet.adopted_at],['fed',pet.fed_at],['played',pet.played_at],['rested',pet.rested_at],['talked',pet.talked_at],['cuddled',pet.cuddled_at],['groomed',pet.groomed_at]]
+   .filter(([,at])=>typeof at==='string'&&Number.isFinite(Date.parse(at)))
+   .map(([kind,at])=>({kind,at})).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).slice(0,5),
 
   next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{
    const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
