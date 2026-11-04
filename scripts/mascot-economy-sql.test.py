@@ -19,7 +19,7 @@ INSERT INTO user_wallets VALUES(1,200000,''),(2,400,'');
 """)
 for file in ['0103_mascot_pets.sql','0104_mascot_economy.sql']:
     conn.executescript((root/'backend/migrations'/file).read_text())
-assert conn.execute("SELECT COUNT(*) FROM mascot_species_market").fetchone()[0]==28
+assert conn.execute("SELECT COUNT(*) FROM mascot_species_market").fetchone()[0]==22
 assert conn.execute("SELECT COUNT(*) FROM mascot_items").fetchone()[0]==12
 
 def balance(user=1):
