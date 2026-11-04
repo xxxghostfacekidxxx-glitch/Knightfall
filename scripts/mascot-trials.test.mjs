@@ -8,7 +8,7 @@ test('all 28 original mascot species have distinct themed trial identities',()=>
  const expected=new Set(manifest.characters.map(x=>x.id));
  const actual=new Set(Object.keys(SPECIES_TRIALS));
  assert.deepEqual(actual,expected);
- assert.equal(actual.size,22);
+ assert.equal(actual.size,28);
  for(const id of actual){
   const c=challengeFor(id,1);
   assert.equal(c.species,id);
