@@ -5,7 +5,7 @@ const owned=document.querySelector('#owned-pets'),adopt=document.querySelector('
  shop=document.querySelector('#pet-shop'),message=document.querySelector('#pet-message'),
  slots=document.querySelector('#pet-slots'),balance=document.querySelector('#pet-wallet');
 if(!owned||!adopt||!shop||!message||!slots)return;
-let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=22,
+let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=28,
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
@@ -99,7 +99,7 @@ function renderOwned(){
  slots.textContent=pets.length+' / '+max+' companions';
  if(balance)balance.textContent=signedIn?'✦ '+cinders.toLocaleString()+' Cinders · Sanctuary Level '+level:'Sign in to view your Cinders balance';
  if(!signedIn){owned.append(make('p','pet-empty','Sign in to collect pets and keep everything saved to your account.'));return}
- if(!pets.length){owned.append(make('p','pet-empty','Your collection is empty. Your first rescue is free, and you can eventually own all 22 species.'));return}
+ if(!pets.length){owned.append(make('p','pet-empty','Your collection is empty. Your first rescue is free, and you can eventually own all 28 species.'));return}
  for(const pet of pets){
   const card=cardBase(pet,pet.idle||pet.image||pet.portrait,true),heading=make('div','pet-label');
   heading.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
@@ -181,12 +181,12 @@ function renderShop(){
 function render(){renderOwned();renderAdopt();renderShop();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
 function updateMe(d){
  pets=d.pets||[];wardrobe=d.wardrobe||[];cinders=Number(d.wallet_balance||0);
- level=Number(d.sanctuary_level||1);max=d.max_owned||22;
+ level=Number(d.sanctuary_level||1);max=d.max_owned||28;
 }
 async function reload(){
  const catalog=await api('/api/mascot-pets/catalog');
  species=catalog.species||[];accessories=catalog.accessories||[];
- premiumEnabled=!!catalog.premium_enabled;max=catalog.max_owned||22;
+ premiumEnabled=!!catalog.premium_enabled;max=catalog.max_owned||28;
  try{updateMe(await api('/api/mascot-pets/me'));signedIn=true;
   const adv=await api('/api/mascot-pets/adventures').catch(()=>null);
   habitatThemes=adv?.themes||[];habitatDecorations=adv?.decorations||[];
