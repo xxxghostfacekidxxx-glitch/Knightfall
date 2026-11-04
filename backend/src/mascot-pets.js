@@ -74,7 +74,7 @@ const INTERACTIONS=Object.freeze({
 });
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured,bond_experience,talked_at,cuddled_at,groomed_at FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
- const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 22').bind(userId).all();
+ const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 28').bind(userId).all();
  const [gear,rooms,layouts,furniture]=await Promise.all([
   env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
   env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all(),
