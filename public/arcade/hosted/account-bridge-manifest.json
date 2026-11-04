@@ -149,13 +149,6 @@
       "scoreMode": "score"
     },
     {
-      "gameId": "cabinet-rock-paper-scissors",
-      "title": "Rock Paper Scissors",
-      "path": "/arcade/hosted/rock-paper-scissors/index.html",
-      "scoreSelector": "#playerScore",
-      "scoreMode": "score"
-    },
-    {
       "gameId": "ash-sudoku",
       "title": "Chaos Sudoku",
       "path": "/arcade/hosted/ash-sudoku/index.html",

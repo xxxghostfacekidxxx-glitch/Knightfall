@@ -47,8 +47,8 @@ test('UI mode switching, pause, visibility and completion preserve one submissio
  h.nodes.get('pause').onclick();h.advance(100);assert.equal(h.game().remaining,remaining-100);h.document.hidden=true;h.events.get('visibilitychange')();assert.equal(h.game().paused,true);h.advance(2000);h.document.hidden=false;h.nodes.get('pause').onclick();h.advance(50000);await new Promise(resolve=>setImmediate(resolve));assert.equal(h.scores.length,1);assert.equal(h.scores[0][0],'crypt-smash');assert.equal(h.scores[0][2].mode,'chase');assert.equal(h.intervals.size,0);
  h.nodes.get('mode').value='hunt';h.nodes.get('mode').onchange();assert.equal(h.game().mode,'hunt');assert.equal(h.game().phase,'ready');assert.equal(h.game().score,0);
 });
-test('combined catalog has one entry, legacy routes forward to matching modes, and artwork is local',()=>{
+test('Crypt Smash is the sole tap-target cabinet and retired copies are removed',()=>{
  const c=JSON.parse(readFileSync('public/arcade/catalog.json'));assert.equal(c.games.find(g=>g.id==='crypt-smash').title,'Crypt Smash');for(const id of ['cinder-taps','whack-a-bug','arcade-games-game-whack','arcade-after-dark-whack-a-glitch-panic-room'])assert.ok(!c.games.some(g=>g.id===id));
- for(const [slug,mode] of [['cinder-taps','chase'],['whack-a-bug','hunt']])assert.ok(readFileSync('public/arcade/hosted/'+slug+'/index.html','utf8').includes('crypt-smash/index.html?mode='+mode));
+ for(const slug of ['cinder-taps','whack-a-bug'])assert.equal(existsSync('public/arcade/hosted/'+slug+'/index.html'),false,'duplicate route remains: '+slug);
  for(const name of ['glitch.svg','friend.svg','ember-target.svg','bug.svg','void-wisp.svg'])assert.ok(existsSync('public/arcade/hosted/crypt-smash/sprites/'+name));
 });

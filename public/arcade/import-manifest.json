@@ -6,10 +6,10 @@
     {
       "gameId": "classic-2048",
       "title": "2048",
-      "status": "imported",
+      "status": "removed",
       "upstream": "https://github.com/gabrielecirulli/2048",
       "license": "MIT",
-      "notes": "Existing local import; retain upstream license and attribution."
+      "notes": "Retired duplicate after useful mechanics were incorporated into Cinder Merge; original imported files have been removed. MIT provenance retained."
     },
     {
       "gameId": "ashes-asteroids",

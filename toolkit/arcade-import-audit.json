@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-10-24",
+  "updated": "2026-11-04",
   "policy": {
     "verifyCodeAndAssetsSeparately": true,
     "preserveLicenses": true,
@@ -13,7 +13,7 @@
       "id": "2048",
       "repository": "https://github.com/gabrielecirulli/2048",
       "license": "MIT",
-      "status": "self-hosted-import",
+      "status": "removed-merged",
       "path": "public/arcade/hosted/2048/",
       "upstreamCommit": "478b6ec346e3787f589e4af751378d06ded4cbbc",
       "assets": {
@@ -27,16 +27,14 @@
         "browser localStorage"
       ],
       "limitations": [
-        "local browser save only",
-        "no account sync",
-        "no Cinders or server leaderboard integration"
+        "Retired duplicate; useful merge mechanics live in Cinder Merge. Source and license provenance retained."
       ]
     },
     {
       "id": "sudoku",
       "repository": "https://github.com/sausi-7/games",
       "license": "MIT",
-      "status": "self-hosted-adaptation",
+      "status": "removed-merged",
       "path": "public/arcade/hosted/sudoku/",
       "sourcePath": "games/puzzle/sudoku/index.html",
       "assets": {
@@ -57,9 +55,7 @@
         "no account tokens or Cinders access"
       ],
       "limitations": [
-        "fixed puzzle source build",
-        "local timer only",
-        "no account save or leaderboard"
+        "Retired standalone; Chaos Sudoku is the canonical game. Source and license provenance retained."
       ]
     },
     {

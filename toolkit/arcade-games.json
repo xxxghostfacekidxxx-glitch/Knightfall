@@ -1,21 +1,8 @@
 {
   "schemaVersion": 2,
-  "updated": "2026-10-24",
+  "updated": "2026-11-04",
   "purpose": "Discovery and launch index for browser-playable games. External play URLs are not hosted by Knightfall; source repositories are linked for review. Import status is tracked per game; code has not been imported unless sourceImported is true.",
   "games": [
-    {
-      "id": "2048",
-      "name": "2048",
-      "category": "Puzzle",
-      "description": "Slide, merge, and chase the 2048 tile.",
-      "playUrl": "/arcade/hosted/2048/index.html",
-      "repository": "https://github.com/gabrielecirulli/2048",
-      "license": "MIT",
-      "launchMode": "self-hosted",
-      "sourceImported": true,
-      "importedPath": "public/arcade/hosted/2048/",
-      "integrationNote": "Self-hosted MIT import; audit documented in toolkit/arcade-import-audit.json and public/arcade/hosted/2048/SOURCE.md. Browser-local saves only."
-    },
     {
       "id": "hextris",
       "name": "Hexa Havoc",
@@ -374,34 +361,6 @@
       "integrationNote": "Original downhill survival game using broad skiing-game mechanics only; no upstream code, characters, or assets copied. Browser-local best distance."
     },
     {
-      "id": "rock-paper-scissors",
-      "name": "Rock Paper Scissors",
-      "category": "Board",
-      "description": "The classic hand game against the computer.",
-      "playUrl": "/arcade/hosted/rock-paper-scissors/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false,
-      "sourcePath": "games/board/rock-paper-scissors/index.html",
-      "importedPath": "public/arcade/hosted/rock-paper-scissors/",
-      "integrationNote": "Fresh local implementation after reviewing the Phaser-based upstream build; no third-party assets or runtime dependencies."
-    },
-    {
-      "id": "sudoku",
-      "name": "Sudoku",
-      "category": "Puzzle",
-      "description": "Solve a 9×9 number grid, from easy warm-up to brain-melting.",
-      "playUrl": "/arcade/hosted/sudoku/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "launchMode": "self-hosted",
-      "sourceImported": true,
-      "sourcePath": "games/puzzle/sudoku/index.html",
-      "importedPath": "public/arcade/hosted/sudoku/",
-      "integrationNote": "Self-hosted single-file adaptation; upstream config fetch removed, no external assets or runtime dependencies."
-    },
-    {
       "id": "alien-battle",
       "name": "Alien Battle",
       "category": "Shooter",
@@ -540,20 +499,6 @@
       "integrationNote": "Original local chess implementation and move-selection AI; no upstream code or piece assets copied. Omits castling and en passant; wins/best streak stored locally."
     },
     {
-      "id": "road-riot",
-      "name": "Road Riot",
-      "category": "Arcade",
-      "description": "Hop across moving traffic and survive a chaotic road crossing.",
-      "playUrl": "/arcade/hosted/crossy-road/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false,
-      "sourcePath": "games/arcade/crossy-road/index.html",
-      "importedPath": "public/arcade/hosted/crossy-road/",
-      "integrationNote": "Renamed generic crossing game; upstream Three.js and separate script were not imported."
-    },
-    {
       "id": "cut-the-rope",
       "name": "Tether Tangle",
       "category": "Puzzle",
@@ -676,20 +621,6 @@
       "sourcePath": "games/shooter/tower-shooter/index.html",
       "importedPath": "public/arcade/hosted/rift-wardens/",
       "integrationNote": "Original canvas tower-defense game using broad genre mechanics only; no upstream source or assets copied. Best defeated count stored locally."
-    },
-    {
-      "id": "whack-a-bug",
-      "name": "Whack-a-Bug",
-      "category": "Arcade",
-      "description": "Smash bugs as they pop up and race the clock.",
-      "playUrl": "/arcade/hosted/whack-a-bug/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false,
-      "sourcePath": "games/arcade/whack-a-bug/index.html",
-      "importedPath": "public/arcade/hosted/whack-a-bug/",
-      "integrationNote": "Fresh native click/tap game; upstream listed path mismatched to Jet Fighter."
     },
     {
       "id": "wordlee",
