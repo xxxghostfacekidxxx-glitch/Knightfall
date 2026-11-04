@@ -30,7 +30,13 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  'mini-eddie':['Protective','Midnight patrols','A little guardian who keeps watch when everyone else sleeps.'],
  gutterkit:['Scrappy','Treasure hunting','An alley cat who can turn yesterday’s junk into tomorrow’s treasure.'],
  'chunky-monkey':['Affectionate','Jungle games','A lovable troublemaker who turns every room into a playground.'],
- 'boo-thang':['Romantic','Ghost stories','A mischievous spirit who is always haunting someone’s heart.']
+ 'boo-thang':['Romantic','Ghost stories','A mischievous spirit who is always haunting someone’s heart.'],
+ lydibug:['Sunny','Garden lanterns and star stickers','A bright little beetle whose spotted wings glow like tiny lanterns.'],
+ sootsnoot:['Resourceful','Warm stones and lost buttons','A soot-soft badger who turns scraps and cinders into clever little treasures.'],
+ rumblefluff:['Bouncy','Thunderstorms and soft blankets','A cloud-wool lamb who stores gentle thunder in its curled horns.'],
+ glittergob:['Mischievous','Shiny rocks and secret pockets','A pocket-sized crystal goblin who collects bright things and shares the best ones.'],
+ craggle:['Steadfast','Moonlit rooftops and old stone','A small gargoyle guardian with a brave heart and glowing runic freckles.'],
+ prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.']
 });
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
@@ -44,6 +50,9 @@ const SPECIES = [
  ['minion-mouse','Minion Mouse','punk mouse'],['mini-villain','Mini Villain','villain'],
  ['mini-eddie','The Eddie','guardian'],['gutterkit','Gutterkit','alley cat'],
  ['chunky-monkey','Chunky Monkey','monkey'],['boo-thang','Boo Thang','ghost'],
+ ['lydibug','Lydibug','starlight beetle'],['sootsnoot','Sootsnoot','ember badger'],
+ ['rumblefluff','Rumblefluff','storm lamb'],['glittergob','Glittergob','crystal goblin'],
+ ['craggle','Craggle','moonstone gargoyle'],['prismare','Prismare','prism jelly'],
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
@@ -233,7 +242,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   if(pending)return respond({error:'An egg for this species is incubating. Hatch it instead of spending Cinders.'},409);
   const countRow=await env.DB.prepare('SELECT COUNT(*) AS count,MAX(experience) AS max_xp FROM mascot_pets WHERE user_id=?').bind(user.id).first();
   const count=Number(countRow?.count||0),rank=petLevel(countRow?.max_xp||0);
-  if(count>=LIMIT)return respond({error:'All 22 species are already in your collection.'},409);
+  if(count>=LIMIT)return respond({error:'All '+LIMIT+' species are already in your collection.'},409);
   if(count>0&&rank<species.unlock_level)return respond({error:'Train a companion to level '+species.unlock_level+' before this rescue.'},409);
   const price=petMarketPrice(species.id,count);
   if(price>0&&await walletFor(env,user)<price)return respond({error:'Not enough Cinders. Earn more in the arcade or daily wallet rewards.'},409);
