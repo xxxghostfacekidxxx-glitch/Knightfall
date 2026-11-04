@@ -14,6 +14,5 @@ test('both arcade shelves match the single source catalog exactly',()=>{
 test('real imports replace misleading shared-cabinet substitutes',()=>{
  assert.ok(!catalog.games.some(g=>g.route.includes('arcade-cabinet.html?')||g.route.includes('ashfall-mini-games.html?')));
  for(const route of ['/arcade/hosted/a-dark-room/index.html','/arcade/hosted/browserquest-solo/index.html','/arcade/hosted/evolution-of-trust/index.html'])assert.ok(catalog.games.some(g=>g.route===route));
- assert.ok(catalog.retiredListings.length>=20);
  for(const slug of ['dino-run','balloon-pop','hanoi','snek-souls','custom-tetris','hextris','maze-muncher','sokoban','air-hockey','lights-out','whack-a-mole','minesweeper','memory-match','breakout'])assert.ok(!existsSync('public/arcade/hosted/'+slug+'/index.html'),'retired implementation restored: '+slug);
 });

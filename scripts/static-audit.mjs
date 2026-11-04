@@ -29,6 +29,17 @@ for (const file of jsFiles) {
   else ok("JavaScript syntax: " + path.relative(root, file));
 }
 const worker = await readFile(path.join(root, "backend/src/index.js"), "utf8");
+const workerApiSurface = worker + "\n" + await Promise.all([
+  "mascot-pets.js",
+  "mascot-adventures.js",
+  "mascot-passport.js",
+  "mascot-furniture.js",
+  "personal-avatars.js",
+  "member-memos.js",
+  "member-memo-mail.js",
+  "profile-links.js",
+  "arcade-turn-matches.js"
+].map(file => readFile(path.join(root, "backend/src", file), "utf8"))).then(sources => sources.join("\n"));
 const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8");
 const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: worker, encoding: "utf8" });
 if (workerCheck.status !== 0) fail("Worker module syntax error: " + (workerCheck.stderr || workerCheck.stdout).trim());
@@ -283,7 +294,7 @@ for (const file of [...htmlFiles, ...jsFiles]) {
 for (const endpoint of apiCandidates) {
   const isStagingRoute=/^\/api\/game\/(?:global-chat|action|save|world)$/.test(endpoint) && stagingWorker.includes(endpoint);
   const isDownloadRoute=/^\/api\/admin\/game-downloads\/[a-z0-9-]+$/.test(endpoint) && worker.includes('serveAdminGameArchive');
-  if (!isStagingRoute && !isDownloadRoute && !worker.includes(endpoint) && !worker.includes(endpoint.replaceAll("/", "\\/"))) {
+  if (!isStagingRoute && !isDownloadRoute && !workerApiSurface.includes(endpoint) && !workerApiSurface.includes(endpoint.replaceAll("/", "\\/"))) {
     fail("Frontend references an API path not found in the Worker: " + endpoint);
   }
 }
@@ -309,7 +320,6 @@ ok("City of Cinders game, controls, records, and score API registration checked.
 
 const feedbackPages = [
   "public/arcade-games.html",
-  "public/arcade-vault.html",
   "public/arcade-after-dark.html",
   "public/arcade-originals.html",
   "public/arcade-fresh-meat.html",

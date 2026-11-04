@@ -212,7 +212,7 @@
       "files": [
         "/arcade/hosted/embervale/index.html",
         "/arcade/hosted/embervale/knightfall.css",
-        "/arcade/hosted/embervale/js/",
+        "/arcade/hosted/embervale/js/game.js",
         "/arcade/hosted/embervale/LICENSE",
         "/arcade/hosted/embervale/SOURCE.md"
       ]

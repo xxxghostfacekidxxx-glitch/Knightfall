@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync,existsSync} from "node:fs";
-import {resolve} from "node:path";
+import {dirname,resolve,sep} from "node:path";
 import {Script} from "node:vm";
 const root=resolve("public");
 const manifest=JSON.parse(readFileSync(resolve(root,"arcade/original-creations.json"),"utf8"));
@@ -17,8 +17,10 @@ for(const game of pending){
   for(const [i,m] of scripts.entries()){
    const src=m[1].match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
    if(src){
-    assert.ok(src.startsWith("/")&&!src.startsWith("//"),"Remote script in "+game.id+": "+src);
-    assert.ok(existsSync(resolve(root,"."+src.split(/[?#]/)[0])),"Missing local script "+src);
+    assert.ok(!/^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(src)&&!/^[a-z][a-z0-9+.-]*:/i.test(src),"Remote script in "+game.id+": "+src);
+    const scriptPath=src.startsWith("/")?resolve(root,"."+src.split(/[?#]/)[0]):resolve(dirname(page),src.split(/[?#]/)[0]);
+    assert.ok(scriptPath.startsWith(root+sep),"Script escapes public assets in "+game.id+": "+src);
+    assert.ok(existsSync(scriptPath),"Missing local script "+src);
    }else if(!/type\s*=\s*["']application\/(?:json|ld\+json)/i.test(m[1])){
     assert.doesNotThrow(()=>new Script(m[2],{filename:game.id+" inline "+i}),"Invalid inline script in "+game.id);
    }

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b17">
+  <meta name="description" content="A pass-and-play comedy card game with original prompts and answers. Locally hosted and playable on phones or desktop.">
+  <title>Cards Against Chaos · Chaos Cartridge</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1">
+  <script src="/arcade/nextgen.js?v=20261102-1" defer></script>
+  <style>
+    :root{color-scheme:dark;--ink:#f7f2ff;--muted:#b9acc9;--panel:#181220;--line:#45334f;--pink:#ff56d5;--lime:#b8ff70;--gold:#ffe185}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#482455 0,transparent 55%),#0d0a12;color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+    main{width:min(1120px,100%);margin:auto;padding:clamp(1rem,4vw,2.5rem)}a{color:var(--lime)}button,input,select{font:inherit}button{cursor:pointer;color:var(--ink);background:#281d32;border:1px solid #765187;border-radius:12px;padding:.75rem 1rem;font-weight:750}button:hover:not(:disabled){border-color:var(--pink);transform:translateY(-1px)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--lime);outline-offset:2px}button:disabled{opacity:.46;cursor:not-allowed}.back{display:inline-block;margin-bottom:1rem}.hero{text-align:center;padding:1.2rem 0 1.8rem}.kicker{color:var(--lime);letter-spacing:.16em;font-size:.76rem;font-weight:900}.hero h1{font-size:clamp(2.5rem,9vw,5rem);line-height:.98;margin:.45rem 0;color:var(--pink);text-shadow:0 0 30px #ff56d555}.hero p{color:var(--muted);max-width:680px;margin:.75rem auto}.panel{background:linear-gradient(145deg,#1d1625,#131019);border:1px solid var(--line);border-radius:20px;padding:clamp(1rem,3vw,1.7rem);box-shadow:0 15px 50px #0005}.setup{max-width:640px;margin:auto}.setup h2,.panel h2{margin:.1rem 0 .8rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.field{display:grid;gap:.35rem}.field.full{grid-column:1/-1}.field label,.hint{color:var(--muted);font-size:.92rem}.field input,.field select{width:100%;padding:.72rem .8rem;color:var(--ink);background:#0e0b13;border:1px solid #594765;border-radius:10px}.player-inputs{display:grid;gap:.55rem;margin:.8rem 0 1.2rem}.primary{background:linear-gradient(120deg,#ff55d5,#ba55ff);border:0;color:#17091c}.secondary{background:#241c2c}.game{display:grid;gap:1rem}.topline{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}.scoreboard{display:flex;gap:.45rem;flex-wrap:wrap}.score{background:#21182a;border:1px solid #473653;border-radius:999px;padding:.35rem .7rem;font-size:.88rem}.score.current{border-color:var(--gold);color:var(--gold)}.prompt-card{background:#09090c;border:1px solid #55505a;border-radius:16px;padding:1.25rem;min-height:155px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:clamp(1.25rem,4vw,2rem);font-weight:800}.prompt-card small{display:block;font-size:.73rem;letter-spacing:.13em;color:var(--pink);margin-bottom:.5rem}.status{color:var(--lime);font-weight:800;min-height:1.5rem}.instruction{color:var(--muted);margin:.2rem 0}.hand{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.7rem;margin:1rem 0}.answer-card{min-height:120px;text-align:left;background:linear-gradient(145deg,#fbf8ff,#e7ddec);color:#17111b;border:2px solid #d0c4d6;border-radius:13px;padding:.9rem;font-weight:850;box-shadow:0 6px 18px #0004}.answer-card.selected{border-color:var(--pink);box-shadow:0 0 0 3px #ff56d544}.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:.75rem;margin:1rem 0}.answer-choice{background:#f3edf6;color:#17111b;text-align:left;min-height:130px;font-size:1.06rem}.answer-choice span{display:block;color:#74417f;text-transform:uppercase;font-size:.68rem;letter-spacing:.12em;margin-bottom:.5rem}.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.winner{color:var(--gold)}.note{font-size:.82rem;color:#a99bad;margin:1rem auto 0;max-width:760px}.hidden{display:none!important}.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:600px){main{padding:1rem}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.topline{align-items:flex-start}.hand{grid-template-columns:repeat(2,minmax(0,1fr))}.answer-card{min-height:115px;padding:.7rem}}
+  </style>
+</head>
+<body>
+<main>
+  <a class="back" href="/arcade-card-board.html">← Card &amp; Board Games</a>
+  <header class="hero"><div class="kicker">KNIGHTFALL ORIGINAL · PASS AND PLAY</div><h1>CARDS<br>AGAINST CHAOS</h1><p>One prompt. A stack of ridiculous answers. The table decides who gets the point. Hand the device around and keep your cards secret.</p></header>
+  <section class="panel setup" id="setup" aria-labelledby="setup-title">
+    <h2 id="setup-title" tabindex="-1">Set up the table</h2>
+    <div class="fields"><div class="field"><label for="player-count">Players</label><select id="player-count"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div><div class="field"><label for="win-score">Points to win</label><select id="win-score"><option>5</option><option>7</option><option>10</option></select></div></div>
+    <div class="player-inputs" id="player-inputs"></div>
+    <button id="start" class="primary">Deal the first hand</button>
+    <p class="hint">This local party version supports 3–8 people sharing one screen. It saves no player names or scores to an account.</p>
+  </section>
+  <section class="game hidden" id="game" aria-live="polite">
+    <div class="panel topline"><div><div class="kicker">ROUND <span id="round-number">1</span></div><div class="status" id="status"></div></div><div class="scoreboard" id="scoreboard" aria-label="Scores"></div></div>
+    <section class="panel" id="prompt-panel"><div class="prompt-card"><div><small>THE PROMPT</small><span id="prompt-text"></span></div></div><p class="instruction" id="instruction"></p><div class="hand" id="hand"></div><div class="toolbar"><button id="hide-hand" class="secondary hidden">Hide hand and pass device</button><button id="reveal" class="primary hidden">Reveal the answers</button><button id="next-round" class="primary hidden">Deal next round</button><button id="new-game" class="secondary">New table</button></div></section>
+    <section class="panel hidden" id="judging-panel"><h2>Pick the winning answer</h2><p class="instruction" id="judge-instruction"></p><div class="answers" id="answers"></div></section>
+  </section>
+  <p class="note">Original Knightfall code and original card writing, released under the MIT License. This is an independent party game and is not affiliated with Cards Against Humanity. Keep it playful; skip any card that is not fun for your table.</p>
+</main>
+<script>
+(()=>{'use strict';
+const BLACK=[
+ 'My therapist says I need to stop filling every silence with ___.',
+ 'The official explanation for the crater was ___.',
+ 'The town council has voted to replace the statue with ___.',
+ 'The secret ingredient in the mayor’s famous chili is ___.',
+ 'I knew the date was going badly when they said, “I brought ___.”',
+ 'The new workplace wellness program begins with ___.',
+ 'What did the ship’s captain find behind the locked door?',
+ 'The prophecy said a stranger would arrive carrying ___.',
+ 'The museum’s newest exhibit is simply titled “___.”',
+ 'The robot uprising was delayed because the machines could not agree on ___.',
+ 'Our family tradition is to pass down ___ from generation to generation.',
+ 'The dragon demanded tribute. We offered ___.',
+ 'Breaking news: local raccoon elected chair of ___.',
+ 'The worst thing to hear from your GPS is “Proceed directly to ___.”',
+ 'The magician pulled ___ out of the hat and immediately retired.',
+ 'The secret password to the underground club is ___.',
+ 'The school talent show was going fine until somebody brought ___.',
+ 'The ghost only haunts people who have recently purchased ___.',
+ 'The company’s new slogan is “We put the ___ in customer service.”',
+ 'The alien ambassador’s first request was ___.',
+ 'The reason the moon looks different tonight is ___.',
+ 'Instead of a trophy, the winner receives ___.',
+ 'The knight returned from the quest with ___ and a suspiciously clean sword.',
+ 'The instructions say not to combine ___ with the emergency button.',
+ 'The neighborhood watch has one rule: report all sightings of ___.',
+ 'The chef’s tasting menu ends with a tiny serving of ___.',
+ 'At the end of the tunnel, there was light, a folding chair, and ___.',
+ 'My campaign promise is free public transit and one ___.',
+ 'What ruined the haunted house’s reputation?',
+ 'The new app can organize your calendar, your pantry, and ___.',
+ 'The monster under the bed is afraid of ___.',
+ 'The final round of the game show is called “Name That ___.”',
+ 'The royal family’s most closely guarded secret is ___.',
+ 'The emergency meeting was called to discuss ___.',
+ 'The first thing I would do with a time machine is return ___.',
+ 'The cult’s welcome basket includes a candle, a map, and ___.',
+ 'The world’s most confusing vending machine dispenses ___.',
+ 'The wizard’s spell failed because someone substituted ___ for eye of newt.',
+ 'The new museum rule: absolutely no touching ___.',
+ 'Our band’s rider asks for room temperature water and ___.',
+ 'The detective solved the case by following a trail of ___.',
+ 'The new planet is mostly ocean, with a small island shaped like ___.',
+ 'The restaurant’s one-star review mentioned ___.',
+ 'The city’s emergency siren now plays ___.',
+ 'The villain’s master plan depended on one overlooked detail: ___.',
+ 'I would apologize, but I am currently busy with ___.',
+ 'The office printer has developed a strange appetite for ___.',
+ 'The best part of the apocalypse is finally having time for ___.',
+ 'The tiny sign on the door reads: “Beware of ___.”',
+ 'The museum guard was fired after trying to teach ___ to the visitors.'
+];
+const WHITE=[
+ 'A possum with a clipboard','An aggressively average wizard','A haunted label maker','The world’s dampest sandwich','Three raccoons in a raincoat','A suspiciously polite fog','An unpaid intern with a prophecy','A tiny horse with big plans','A bucket of ceremonial glitter','A very loud little spoon','A vending machine full of secrets','One extremely confident pigeon','A moon made of stale crackers','A committee of nervous ghosts','An accordion playing itself','The last clean sock','A dramatic reading of the warranty','A jar labeled “probably fine”','A goose with diplomatic immunity','A small but important waffle','A council of basement spiders','A motivational poster for worms','A tasteful amount of chaos','An inflatable throne','A legally distinct space pirate','An escape room for houseplants','A wet cardboard crown','A trapdoor to the gift shop','A tiny parade with no permit','A suspiciously warm snowman','A pigeon-sized business plan','A cursed coupon for soup','A wizard who forgot the password','A sentient pile of laundry','A raccoon doing taxes','An extremely slow chase scene','A bag of decorative rocks','A meeting that could have been a nap','A lobster with stage fright','A committee-approved scream','A haunted Roomba','The world’s least reliable oracle','A very small thunderstorm','A dramatic amount of cheese','A moonlit trip to the hardware store','A suspiciously talented turnip','A suitcase full of tiny hats','A dragon with a side hustle','A sandwich with boundary issues','A ceremonial traffic cone','The wrong kind of confetti','A ghost who loves spreadsheets','A haunted bounce house','A suspicious number of spoons','A tiny unmarked button','A choir of confused frogs','A llama with a library card','A fog machine set to “mysterious”','A folding chair of destiny','A deeply inconvenient trumpet','A lizard in a tiny vest','An ancient snack receipt','A pillow fort with zoning permits','A very serious kazoo','The world’s smallest parade','A moody lighthouse','A gallon of ambitious gravy','A goose wearing reading glasses','A map drawn by a confused moth','An emotional support anvil','A cactus with excellent manners','A sword made of bread','A hot tub full of marbles','A skeleton holding a clipboard','A raccoon’s side project','A wizard’s rejected résumé','An awkwardly long high-five','A disco ball in a cave','A tiny ceremonial ladder','A jar of unearned confidence','A lighthouse for lost sandwiches','A flock of judgmental ducks','A badly timed kazoo solo','A suspiciously official stamp','A dramatic reading of a menu','A sock puppet with tenure','A very small victory dance','An abandoned treasure map','A dragon-shaped desk lamp','A goose at the help desk','A haunted bowl of cereal','A polite but firm curse','An extremely sticky situation','A marching band of one','A fake mustache with ambition','A pocket-sized thunder god','A loaf of bread with secrets','A polite swarm of moths','A bucket of perfectly normal keys','A tiny lawyer for ghosts','A deeply haunted beanbag','The world’s shortest parade route','A wizard’s lunch break','A ceremonial emergency snack','A raccoon with a tiny briefcase','A foghorn in a library','A rubber duck with a title','A very suspicious casserole','A haunted karaoke machine','A dramatic pause with shoes','A tiny union of garden gnomes','A map to the nearest nap','A soft pretzel of destiny','A bowl of extremely confident soup','A raccoon’s unpaid parking ticket','An emotionally complicated lamp','A tiny throne made of receipts','A goose with a five-year plan','A group chat with no context','A polite army of garden snails','A mysterious bag of buttons','A cactus in formalwear','A side quest about proper storage','A very old cookie','A penguin carrying tiny paperwork','The world’s most dramatic doorstop','An alarming amount of glitter glue','A moonbeam with a parking ticket','A wizard on their lunch break','A very brave paperclip','A haunted blanket fort','A sandwich that knows too much','A mildly enchanted shovel','A pigeon with a tiny megaphone','A trumpet solo from the pantry','An apology written in frosting','A tiny parade marshal','A bucket of unsorted feelings','A suspiciously fancy potato','A meeting chaired by a fern','A haunted jar of buttons','A goose with a tiny passport','A very determined dust bunny','An emergency tuba','A secret tunnel to the pantry','A tiny detective with a magnifying glass','A legally questionable amount of soup','A polite ghost at the door','A jar of absolutely no bees','The world’s most dramatic crouton'
+];
+const $=id=>document.getElementById(id);let players=[],black=[],white=[],round=0,czar=0,phase='setup',submissions=[],selection=0,winScore=5;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function refill(deck,source,count){while(deck.length<count)deck.push(...shuffle([...source]));return deck.splice(0,count)}
+function playerFields(){const n=Number($('player-count').value),box=$('player-inputs');box.replaceChildren();for(let i=0;i<n;i++){const label=document.createElement('label');label.className='field';label.textContent='Player '+(i+1)+' name';const input=document.createElement('input');input.maxLength=20;input.autocomplete='off';input.placeholder='Player '+(i+1);input.dataset.player=String(i);label.append(input);box.append(label)}}
+function renderScores(){const box=$('scoreboard');box.replaceChildren();players.forEach((p,i)=>{const pill=document.createElement('span');pill.className='score'+(i===czar?' current':'');pill.textContent=(i===czar?'★ ':'')+p.name+' · '+p.score;box.append(pill)})}
+function beginRound(){round++;czar=(round-1)%players.length;submissions=[];selection=0;phase='submit';const prompt=refill(black,BLACK,1)[0];$('round-number').textContent=String(round);$('prompt-text').textContent=prompt;$('status').textContent=players[czar].name+' is the judge this round.';$('instruction').textContent='Pass the device to each player. The judge sits out this round; everyone else secretly chooses one answer.';$('judging-panel').classList.add('hidden');$('reveal').classList.add('hidden');$('next-round').classList.add('hidden');$('hand').replaceChildren();renderScores();nextSubmitter()}
+function nextSubmitter(){if(submissions.length===players.length-1){phase='judge';$('status').textContent='All answers are in. '+players[czar].name+' chooses the winner.';$('instruction').textContent='The answers are shuffled and shown without player names.';$('hide-hand').classList.add('hidden');$('reveal').classList.remove('hidden');$('reveal').textContent='Reveal anonymous answers';$('reveal').onclick=showAnswers;return}const index=(czar+1+submissions.length) % players.length;const player=players[index];phase='submit';$('status').textContent='Pass the device to '+player.name+'.';$('instruction').textContent='Only '+player.name+' should look. Pick one answer card, then hide your hand before passing the device.';$('hand').replaceChildren();const hand=player.hand;hand.forEach((card,i)=>{const b=document.createElement('button');b.type='button';b.className='answer-card';b.textContent=card;b.setAttribute('aria-label','Choose answer: '+card);b.addEventListener('click',()=>chooseCard(index,i));$('hand').append(b)});$('hide-hand').classList.add('hidden')}
+function chooseCard(playerIndex,cardIndex){if(phase!=='submit')return;const card=players[playerIndex].hand.splice(cardIndex,1)[0];submissions.push({player:playerIndex,card});players[playerIndex].hand.push(...refill(white,WHITE,1));$('hand').replaceChildren();if(submissions.length<players.length-1){$('status').textContent='Answer locked in. Keep it secret.';$('instruction').textContent='Tap below to hide the hand and pass the device.';$('hide-hand').classList.remove('hidden');$('hide-hand').onclick=nextSubmitter}else nextSubmitter()}
+function showAnswers(){if(phase!=='judge')return;phase='select';$('reveal').classList.add('hidden');$('judging-panel').classList.remove('hidden');$('judge-instruction').textContent='Judge: '+players[czar].name+'. Pick the funniest answer.';const answers=$('answers');answers.replaceChildren();shuffle([...submissions]).forEach((s,i)=>{const b=document.createElement('button');b.className='answer-choice';b.type='button';const label=document.createElement('span');label.textContent='Answer '+(i+1);const text=document.createElement('strong');text.textContent=s.card;b.append(label,text);b.addEventListener('click',()=>award(s));answers.append(b)});$('prompt-panel').scrollIntoView({behavior:'smooth',block:'start'})}
+function award(winner){if(phase!=='select')return;phase='result';players[winner.player].score++;renderScores();$('status').innerHTML='';const msg=document.createElement('span');msg.className='winner';msg.textContent='Round '+round+' goes to '+players[winner.player].name+'!';$('status').append(msg);$('judge-instruction').textContent='Winning answer: “'+winner.card+'”';$('answers').replaceChildren();$('next-round').textContent=players.some(p=>p.score>=winScore)?'Finish game':'Deal next round';$('next-round').classList.remove('hidden');$('next-round').onclick=()=>{if(players.some(p=>p.score>=winScore))endGame();else beginRound()};if(players.some(p=>p.score>=winScore))$('status').textContent='🏆 '+players.filter(p=>p.score>=winScore).map(p=>p.name).join(', ')+' won the table!'}
+function endGame(){phase='done';$('instruction').textContent='Final scores are above. Start a new table whenever you are ready.';$('next-round').classList.add('hidden');$('judging-panel').classList.add('hidden')}
+function start(){players=[...$('player-inputs').querySelectorAll('input')].map((input,i)=>({name:input.value.trim()||'Player '+(i+1),score:0,hand:refill(white,WHITE,10)}));black=shuffle([...BLACK]);white=shuffle([...WHITE]);round=0;winScore=Number($('win-score').value);phase='game';$('setup').classList.add('hidden');$('game').classList.remove('hidden');beginRound()}
+function reset(){phase='setup';players=[];$('game').classList.add('hidden');$('setup').classList.remove('hidden');playerFields();$('setup-title').focus()}
+$('player-count').addEventListener('change',playerFields);$('start').addEventListener('click',start);$('new-game').addEventListener('click',reset);playerFields();
+})();
+</script>
+</body>
+</html>

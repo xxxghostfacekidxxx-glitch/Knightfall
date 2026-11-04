@@ -4,7 +4,6 @@ Reviewed 2026-10-29. These are **candidates, not imports**. License labels were 
 
 | # | Game | Upstream | Repository license | Integration notes |
 |---|---|---|---|---|
-| 11 | 2048 | [gabrielecirulli/2048](https://github.com/gabrielecirulli/2048) | MIT | static HTML/JS; easy |
 | 12 | Hextris | [Hextris/hextris](https://github.com/Hextris/hextris) | GPL-3.0 | static browser game; preserve source and license |
 | 13 | Clumsy Bird | [ellisonleao/clumsy-bird](https://github.com/ellisonleao/clumsy-bird) | GPL-3.0 | browser game; inspect MelonJS dependencies/assets |
 | 14 | A Dark Room | [doublespeakgames/adarkroom](https://github.com/doublespeakgames/adarkroom) | MPL-2.0 | browser incremental; preserve source notices |

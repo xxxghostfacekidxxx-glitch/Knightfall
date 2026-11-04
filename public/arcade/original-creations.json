@@ -180,7 +180,7 @@
         "paper.svg",
         "scissors.svg"
       ],
-      "notes": "Combines Rock Paper Scissors, Rock Paper Ruin and Ember Clash as three selectable rule sets. Local match restoration, legacy sigil save migration, separate mode win counts, original neon gesture art and expanded play.",
+      "notes": "Three selectable rule sets, local match restoration, separate mode win counts, original neon gesture art, and expanded play.",
       "engine": "/arcade/hosted/ember-clash/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/ember-clash",
       "assets": [
@@ -438,7 +438,7 @@
         "glim.svg",
         "bloop.svg"
       ],
-      "notes": "Combined Crypt Pairs, Madhouse Memory and Madhouse Match. Preserves six/eight-pair modes, sigils, mascot artwork and best clear tracking; adds twelve pairs and one optional peek.",
+      "notes": "Six, eight, or twelve pairs; two artwork sets; best-clear tracking; optional peek.",
       "engine": "/arcade/hosted/crypt-pairs/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-pairs",
       "assets": [
@@ -509,7 +509,7 @@
         "ash-marker.svg",
         "void-mine.svg"
       ],
-      "notes": "Combined Cinder Mines and Minefield of Bad Ideas. Safe first opening, three difficulties, flag controls, number chording and one emergency flare.",
+      "notes": "Three difficulties with a safe first opening, flag controls, number chording, and one emergency flare.",
       "engine": "/arcade/hosted/cinder-mines/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cinder-mines",
       "assets": [
@@ -559,7 +559,7 @@
         "ember-target.svg",
         "bug.svg"
       ],
-      "notes": "Combined Crypt Smash, Cinder Taps, Crypt Exterminator and both Whack-a-Glitch cabinets. Five distinct modes, combos, friendly decoys, mode records, pause and viewport-fitted expanded view.",
+      "notes": "Five distinct modes, combos, friendly decoys, mode records, pause, and viewport-fitted expanded view.",
       "engine": "/arcade/hosted/crypt-smash/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/crypt-smash",
       "assets": [
@@ -1964,7 +1964,7 @@
       "sprites": [
         "ritual-mark.svg"
       ],
-      "notes": "Combined original three-round Reaction Ritual and single-round After Dark. Fresh signals after interruption; false-start detection and separate local timing records.",
+      "notes": "Three-round play, fresh signals after interruption, false-start detection, and separate local timing records.",
       "engine": "/arcade/hosted/reaction-ritual/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/reaction-ritual",
       "assets": [
@@ -1982,7 +1982,7 @@
       "sprites": [
         "rune.svg"
       ],
-      "notes": "Consolidated original family cabinet; retained chosen name, harvested useful features and deleted duplicates.",
+      "notes": "Original Ash-Fall cabinet with a unified ruleset, polished presentation, and expanded play options.",
       "engine": "/arcade/hosted/cursed-circuit/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/cursed-circuit",
       "assets": [
@@ -2001,7 +2001,7 @@
         "ember-lantern.svg",
         "void-lantern.svg"
       ],
-      "notes": "Consolidated original family cabinet; retained chosen name, harvested useful features and deleted duplicates.",
+      "notes": "Original Ash-Fall cabinet with a unified ruleset, polished presentation, and expanded play options.",
       "engine": "/arcade/hosted/lights-out-afterburn/index.html",
       "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/lights-out-afterburn",
       "assets": [

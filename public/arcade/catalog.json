@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-11-02",
+  "updated": "2026-11-04",
   "games": [
     {
       "id": "neon-nuisances-species-trials",
@@ -774,7 +774,7 @@
       "id": "cinder-merge",
       "title": "Cinder Merge",
       "route": "/arcade/hosted/cinder-merge/index.html",
-      "description": "2048 merging with Cinder Cascade chain bonuses, undo, local and cloud saves, and a control deck.",
+      "description": "Tile merging with Cinder Cascade chain bonuses, undo, local and cloud saves, and a control deck.",
       "genre": "Puzzle",
       "collection": "games",
       "device": "touch",
@@ -787,7 +787,7 @@
       "id": "cinder-mines",
       "title": "Chaos Minesweeper",
       "route": "/arcade/hosted/cinder-mines/index.html",
-      "description": "Three neon minefields, safe first openings, touch flags, number chording and one emergency flare. Merges Cinder Mines and Minefield of Bad Ideas.",
+      "description": "Three neon minefields with safe first openings, touch flags, number chording, and a one-time emergency flare.",
       "genre": "Puzzle",
       "collection": "games",
       "device": "touch",
@@ -878,13 +878,18 @@
       "id": "connect-four",
       "title": "Chaos Connect Four",
       "route": "/arcade/hosted/connect-four/index.html",
-      "description": "Neon Connect Four with local two-player matches, three CPU difficulty levels, animated discs, win streaks and undo.",
+      "description": "Neon Connect Four with local two-player matches, three CPU difficulty levels, and saved async friend challenges where each player takes a turn when ready.",
       "genre": "Arcade",
       "collection": "experiments",
       "device": "touch",
       "source": "",
-      "notes": "Legacy prototype; retained separately from the main arcade.",
-      "links": [],
+      "notes": "Async friend matches require a signed-in account and an accepted friendship.",
+      "links": [
+        {
+          "title": "Challenge a friend asynchronously",
+          "route": "/arcade/async-play.html?game=connect-four"
+        }
+      ],
       "featured": true
     },
     {
@@ -995,7 +1000,7 @@
       "id": "crypt-pairs",
       "title": "Madhouse Memory",
       "route": "/arcade/hosted/crypt-pairs/index.html",
-      "description": "The combined memory matching game: neon mascots or crypt sigils, 6/8/12 pairs, one peek, move records and a responsive control deck.",
+      "description": "Memory matching with neon mascots or crypt sigils, 6/8/12 pairs, one peek, move records and a responsive control deck.",
       "genre": "Puzzle",
       "collection": "games",
       "device": "touch",
@@ -1855,6 +1860,19 @@
       "featured": false
     },
     {
+      "id": "cards-against-chaos",
+      "title": "Cards Against Chaos",
+      "route": "/arcade/hosted/cards-against-chaos/index.html",
+      "description": "An original fill-in-the-blank comedy card game for 3–8 people. Pass one device around, secretly play an answer, then let the rotating judge pick a winner.",
+      "genre": "Card",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/hosted/cards-against-chaos/SOURCE.md",
+      "notes": "Original Knightfall code and card text under MIT. Local pass-and-play; no CAH text, artwork, or branding.",
+      "links": [],
+      "featured": true
+    },
+    {
       "id": "cinder-gomoku",
       "title": "Cinder Gomoku",
       "route": "/arcade/hosted/cinder-gomoku/index.html",
@@ -2087,278 +2105,6 @@
       "notes": "MIT-licensed original game by Nicholas Aryel Ferreira. Knightfall adds native mobile controls, neon framing and fullscreen. Fully self-hosted, no CDN.",
       "links": [],
       "featured": true
-    }
-  ],
-  "retiredListings": [
-    {
-      "title": "A Dark Room",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=a-dark-room",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Clumsy Bird",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=clumsy-bird",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Elevator Saga",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=elevator-saga",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "IsoCity",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=isocity",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "3D City",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=3d-city",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Particle Clicker",
-      "route": "/arcade/hosted/ashfall-mini-games.html?game=particle-clicker",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Freeciv Web",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=freeciv-web",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Cube Composer",
-      "route": "/arcade/hosted/ashfall-mini-games.html?game=cube-composer",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "HexGL",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=hexgl",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Trigger Rally",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=trigger-rally",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Open Panzer",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=open-panzer",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Green Mahjong",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=green-mahjong",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "BrowserQuest",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=browserquest",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Digger",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=digger",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Ball and Wall",
-      "route": "/arcade/hosted/ashfall-mini-games.html?game=ball-and-wall",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "DuckHunt JS",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=duckhunt-js",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Dino Dash",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=dino-dash",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "SkiFree",
-      "route": "/arcade/hosted/ashfall-mini-games.html?game=skifree",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Bubble Shooter",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=bubble-shooter",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Chess",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=chess",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Cut the Rope",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=cut-the-rope",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Space Waves",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=space-waves",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Pac-Man",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=pac-man",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Tower Shooter",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=tower-shooter",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Kaiju Krush",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=kaiju-krush",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Parkour",
-      "route": "/arcade/hosted/arcade-cabinet.html?game=parkour",
-      "reason": "Misleading upstream title or duplicate shared-engine substitute; replaced by separately named original / real import."
-    },
-    {
-      "title": "Ember Serpent",
-      "route": "/arcade/hosted/ember-serpent/index.html",
-      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
-    },
-    {
-      "title": "Rift Serpent",
-      "route": "/arcade-after-dark.html#rift-serpent",
-      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
-    },
-    {
-      "title": "Snake in the Ashes",
-      "route": "/arcade-vault.html#vault-snake",
-      "reason": "Snake family consolidated into the remastered Ash Serpent; legacy listing retired."
-    },
-    {
-      "title": "Crypt Breaker",
-      "route": "/arcade/hosted/crypt-breaker/index.html",
-      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
-    },
-    {
-      "title": "Ember Breaker",
-      "route": "/arcade-vault.html#vault-breakout",
-      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
-    },
-    {
-      "title": "Ember Breakout",
-      "route": "/arcade-after-dark.html#ember-breakout",
-      "reason": "Brick-breaker family consolidated into Shatterpocalypse; legacy implementation retired."
-    },
-    {
-      "title": "Cinder Grid",
-      "route": "/arcade/hosted/cinder-grid/index.html",
-      "reason": "Connect Four family consolidated into Chaos Connect Four."
-    },
-    {
-      "title": "Cinder Four",
-      "route": "/arcade/hosted/cinder-four/index.html",
-      "reason": "Connect Four family consolidated into Chaos Connect Four."
-    },
-    {
-      "title": "Sudoku",
-      "route": "/arcade/hosted/sudoku/index.html",
-      "reason": "Sudoku family consolidated into Chaos Sudoku; standalone variant retired from catalog."
-    },
-    {
-      "title": "Minefield of Bad Ideas",
-      "route": "/arcade-vault.html#vault-mines",
-      "reason": "Minesweeper family consolidated into Chaos Minesweeper; emergency flare preserved and legacy URL forwards to the combined game."
-    },
-    {
-      "title": "Madhouse Match",
-      "route": "/arcade-after-dark.html#madhouse-match",
-      "reason": "Memory matching family consolidated into Madhouse Memory with 6, 8 and 12 pairs, mascot and sigil artwork, and a responsive control deck."
-    },
-    {
-      "title": "Madhouse Memory",
-      "route": "/arcade-games.html#game-memory",
-      "reason": "Memory matching family consolidated into Madhouse Memory with 6, 8 and 12 pairs, mascot and sigil artwork, and a responsive control deck."
-    },
-    {
-      "title": "Cinder Taps",
-      "route": "/arcade/hosted/cinder-taps/index.html",
-      "reason": "Tap-target family consolidated into Crypt Smash. Classic, Panic Room, friendly decoys, ember chase and bug hunt remain available as distinct modes."
-    },
-    {
-      "title": "Crypt Exterminator",
-      "route": "/arcade/hosted/whack-a-bug/index.html",
-      "reason": "Tap-target family consolidated into Crypt Smash. Classic, Panic Room, friendly decoys, ember chase and bug hunt remain available as distinct modes."
-    },
-    {
-      "title": "Whack-a-Glitch",
-      "route": "/arcade-games.html#game-whack",
-      "reason": "Tap-target family consolidated into Crypt Smash. Classic, Panic Room, friendly decoys, ember chase and bug hunt remain available as distinct modes."
-    },
-    {
-      "title": "Whack-a-Glitch: Panic Room",
-      "route": "/arcade-after-dark.html#whack-a-glitch-panic-room",
-      "reason": "Tap-target family consolidated into Crypt Smash. Classic, Panic Room, friendly decoys, ember chase and bug hunt remain available as distinct modes."
-    },
-    {
-      "title": "Reaction Ritual",
-      "route": "/arcade-games.html#game-reaction",
-      "reason": "Reaction family consolidated into Reaction Ritual; three-round Classic and single-round After Dark remain selectable modes."
-    },
-    {
-      "title": "Reaction Ritual: After Dark",
-      "route": "/arcade-after-dark.html#reaction-ritual",
-      "reason": "Reaction family consolidated into Reaction Ritual; three-round Classic and single-round After Dark remain selectable modes."
-    },
-    {
-      "title": "Rock Paper Scissors",
-      "route": "/arcade/hosted/rock-paper-scissors/index.html",
-      "reason": "Rock-paper-scissors family consolidated into Rock, Paper, Ruin. Classic first-to-five, Ember Clash first-to-three and five-round four-symbol Ruin remain available as modes."
-    },
-    {
-      "title": "Rock, Paper, Ruin",
-      "route": "/arcade-games.html#game-rps",
-      "reason": "Rock-paper-scissors family consolidated into Rock, Paper, Ruin. Classic first-to-five, Ember Clash first-to-three and five-round four-symbol Ruin remain available as modes."
-    },
-    {
-      "title": "Ash Crossing",
-      "route": "/arcade/hosted/crossy-road/index.html",
-      "reason": "Useful features harvested into cinder-crossing. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Cinder 2048",
-      "route": "/arcade-originals.html#cinder-2048",
-      "reason": "Useful features harvested into cinder-merge. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Ember Echo",
-      "route": "/arcade/hosted/ember-echo/index.html",
-      "reason": "Useful features harvested into cursed-circuit. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Ember Rebound",
-      "route": "/arcade/hosted/ball-and-wall/index.html",
-      "reason": "Useful features harvested into afterburn-breakout. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Void Lanterns",
-      "route": "/arcade/hosted/void-lanterns/index.html",
-      "reason": "Useful features harvested into lights-out-afterburn. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Void Sequence",
-      "route": "/arcade/hosted/void-sequence/index.html",
-      "reason": "Useful features harvested into cursed-circuit. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "Wordlee",
-      "route": "/arcade/hosted/wordlee/index.html",
-      "reason": "Useful features harvested into crypt-words. Duplicate implementation deleted by owner request."
-    },
-    {
-      "title": "15 Puzzle · Original MIT Edition",
-      "route": "/arcade/hosted/fifteen-puzzle/index.html",
-      "reason": "Useful features harvested into ash-tiles. Duplicate implementation deleted by owner request."
     }
   ]
 }

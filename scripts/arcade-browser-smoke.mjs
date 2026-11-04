@@ -777,10 +777,8 @@ try {
     finally{await page.close()}
   }
 
-  // Verify cloud resume for Curvy Snake, Slush Rush, and Tether Tangle.
-  const windingRestoreCases = [
-    {name:"Curvy Snake",path:"/arcade/hosted/curvy-snake/index.html",gameId:"cabinet-curvy-snake-arcade",data:{serialized:{headX:300,headY:300,angle:0,turnDir:0,trail:Array.from({length:36},(_,i)=>i<22?({x:100+i*10,y:900}):({x:320-(i-22)*(20/13),y:900-(i-22)*(600/13)})),snakeLength:36,foodX:700,foodY:400,particles:[],shakeMag:0,score:4,globalTime:8}},check:()=>document.querySelector("#scoreLabel")?.textContent.includes("4/10")&&document.querySelector("#stateLabel")?.textContent==="Cloud save restored."},
-    {name:"Slush Rush Original",path:"/arcade/hosted/slush-rush-original/index.html",gameId:"cabinet-slush-rush-original",data:{serialized:{player:{x:480,y:470,dx:0,jump:0},hazards:[{x:300,y:120,size:24,type:"tree",passed:false}],distance:1234,best:800,near:2,speed:5.9,spawnDelay:400,particles:[],tilt:0}},check:()=>Number.parseInt(document.querySelector("#distance")?.textContent)>=1234&&document.querySelector("#best")?.textContent==="800 m"&&document.querySelector("#overlay")?.hidden===true},
+  // Verify cloud resume for Slush Rush and Tether Tangle.
+  const windingRestoreCases = [    {name:"Slush Rush Original",path:"/arcade/hosted/slush-rush-original/index.html",gameId:"cabinet-slush-rush-original",data:{serialized:{player:{x:480,y:470,dx:0,jump:0},hazards:[{x:300,y:120,size:24,type:"tree",passed:false}],distance:1234,best:800,near:2,speed:5.9,spawnDelay:400,particles:[],tilt:0}},check:()=>Number.parseInt(document.querySelector("#distance")?.textContent)>=1234&&document.querySelector("#best")?.textContent==="800 m"&&document.querySelector("#overlay")?.hidden===true},
     {name:"Tether Tangle",path:"/arcade/hosted/tether-tangle/index.html",gameId:"cabinet-tether-tangle",data:{serialized:{level:1,anchor:{x:750,y:65},ball:{x:720,y:180,vx:12,vy:5,r:16},goal:{x:520,y:458,r:29},stars:[{x:730,y:270,taken:true},{x:630,y:345,taken:false}],rope:false,score:1,collectedThis:1,best:2,elapsed:3.2}},check:()=>document.querySelector("#level")?.textContent==="2 / 5"&&document.querySelector("#stars")?.textContent==="1 / 2"&&document.querySelector("#overlay")?.hidden===true}
   ];
   for(const testCase of windingRestoreCases){
@@ -788,7 +786,7 @@ try {
     await page.addInitScript(save=>{window.AshFallArcade={ready:Promise.resolve(),user:{id:"browser-smoke-test"},loadProgress:async gameId=>gameId===save.gameId?save.data:null,saveProgress:async()=>({revision:2}),recordScore:async()=>({saved:true})}}, {gameId:testCase.gameId,data:testCase.data});
     const response=await page.goto(base+testCase.path,{waitUntil:"domcontentloaded",timeout:30000});
     try{if(!response||response.status()!==200)throw new Error("page did not return HTTP 200");if(testCase.importDirect)await page.evaluate(d=>window.importSaveState(d),testCase.data);await page.waitForFunction(testCase.check,null,{timeout:6000});console.log("PASS cloud save restore: "+testCase.name+" restores winding-run state")}
-    catch(error){const diagnostics=testCase.name==="Curvy Snake"?await page.evaluate(()=>({score:document.querySelector("#scoreLabel")?.textContent,state:document.querySelector("#stateLabel")?.textContent,status:document.querySelector("[data-arcade-status],.af-status,#status")?.textContent,importSaveState:typeof window.importSaveState,active:typeof window.isGameActive==="function"?window.isGameActive():null,gameOver:typeof window.isGameOver==="function"?window.isGameOver():null,bridge:typeof window.AshFallArcade})):null;console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+(diagnostics?" | diagnostics="+JSON.stringify(diagnostics):""));failed=true}
+    catch(error){const diagnostics=null;console.error("FAIL cloud save restore: "+testCase.name+": "+(error?.message||String(error))+(diagnostics?" | diagnostics="+JSON.stringify(diagnostics):""));failed=true}
     finally{await page.close()}
   }
 

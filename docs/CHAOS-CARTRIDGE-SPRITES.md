@@ -17,8 +17,9 @@ Sprite names: `imp`, `skull`, `glitch`, `heart`, `coin`, `bolt`, `boom`, `fish`,
 - `arcade-originals.html`: rocket sprite for Ashes of the Void.
 - `arcade-fresh-meat.html`: scrap pickups in Graveyard Shift.
 - `arcade-after-dark.html`: snake head/food, Breakout ball, and Pong ball.
-- `arcade-vault.html`: Ember Breaker orb.
-- `arcade-games.html`: Cinder Clicker flame and original sprite pairs in Madhouse Memory; the Whack-a-Glitch target uses the glitch sprite.
+- `arcade-after-dark.html`: Ember Breaker orb, snake head and food, plus Pong ball.
+- `arcade/hosted/crypt-pairs/index.html`: original sprite pairs in Madhouse Memory.
+- `crypt-smash.html`: the glitch target uses the shared sprite.
 - `abyssal-arsenal.html`, `neon-kelp-reef-rush.html`, and `magma-trench-relic-hunt.html`: fish/boss sprite badges.
 - `not-dead-yet.html`: medkit, shield, and scrap pickup sprites; its dedicated character and enemy artwork remains in place.
 - `city-of-cinders.html`: character flame accent.

@@ -128,13 +128,6 @@
       "scoreMode": "score"
     },
     {
-      "gameId": "cabinet-curvy-snake-arcade",
-      "title": "Curvy Snake",
-      "path": "/arcade/hosted/curvy-snake/index.html",
-      "scoreSelector": "#scoreLabel,.score-big",
-      "scoreMode": "score"
-    },
-    {
       "gameId": "cabinet-endless-runner",
       "title": "Endless Runner",
       "path": "/arcade/hosted/endless-runner/index.html",

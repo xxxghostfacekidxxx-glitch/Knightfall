@@ -233,6 +233,6 @@ Updated: 2026-11-02
 
 ## Change scope reference
 
-Arcade hub pages refreshed: `/arcade-games.html`, `/arcade-originals.html`, `/arcade-card-board.html`, `/arcade-card-room.html`, `/arcade-fresh-meat.html`, `/arcade-card-expansion.html`, `/arcade-open-source.html`, `/arcade-after-dark.html`, `/arcade-vault.html`; plus the two generated catalog pages via the shared catalog loader.
+Arcade hub pages refreshed: `/arcade-games.html`, `/arcade-originals.html`, `/arcade-card-board.html`, `/arcade-card-room.html`, `/arcade-fresh-meat.html`, `/arcade-card-expansion.html`, `/arcade-open-source.html`, `/arcade-after-dark.html`; plus the two generated catalog pages via the shared catalog loader.
 
 Source repository: `xxxghostfacekidxxx-glitch/Knightfall`. Do not use this coverage report as proof that every game has new sprites, new 3D assets, or full playthrough certification.

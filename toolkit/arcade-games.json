@@ -258,17 +258,6 @@
       "integrationNote": "Original Knightfall shooting gallery; no upstream code/assets copied. Browser-local high score."
     },
     {
-      "id": "snake",
-      "name": "Curvy Snake",
-      "category": "Arcade",
-      "description": "Steer a glowing trail through the wreckage. One wrong turn and your tail becomes your own worst enemy.",
-      "playUrl": "/arcade/hosted/curvy-snake/index.html",
-      "repository": "https://github.com/emjay045/browser-games",
-      "license": "MIT; local adaptation audited in toolkit/arcade-import-audit.json",
-      "launchMode": "self-hosted",
-      "sourceImported": true
-    },
-    {
       "id": "pong",
       "name": "Pong of No Return",
       "category": "Arcade",
@@ -298,17 +287,6 @@
       "category": "Arcade",
       "description": "Bounce the ember and clear the bricks in Knightfall's original breakout cabinet.",
       "playUrl": "/arcade-after-dark.html#ember-breakout",
-      "repository": "https://github.com/emjay045/browser-games",
-      "license": "Original Knightfall implementation; upstream code/assets not copied",
-      "launchMode": "self-hosted-native",
-      "sourceImported": false
-    },
-    {
-      "id": "minesweeper",
-      "name": "Minefield of Regret",
-      "category": "Puzzle",
-      "description": "Read the clues, mark the mines, and survive the grid in a local Knightfall puzzle.",
-      "playUrl": "/arcade-vault.html#vault-mines",
       "repository": "https://github.com/emjay045/browser-games",
       "license": "Original Knightfall implementation; upstream code/assets not copied",
       "launchMode": "self-hosted-native",
@@ -745,19 +723,6 @@
       "sourceImported": true,
       "importedPath": "public/arcade/hosted/hex-puzzle/",
       "integrationNote": "Self-hosted single-file adaptation; config is local and external audio assets are disabled."
-    },
-    {
-      "id": "curvy-snake",
-      "name": "Curvy Snake",
-      "category": "Arcade",
-      "description": "Steer a glowing snake, collect orbs, and avoid your own trail.",
-      "playUrl": "/arcade/hosted/curvy-snake/index.html",
-      "repository": "https://github.com/sausi-7/games",
-      "license": "MIT",
-      "launchMode": "self-hosted",
-      "sourceImported": true,
-      "importedPath": "public/arcade/hosted/curvy-snake/",
-      "integrationNote": "Self-hosted single-file adaptation; local config and original inline SVG artwork; audio disabled."
     },
     {
       "id": "swipe-assassin",

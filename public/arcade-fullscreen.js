@@ -3,9 +3,7 @@
   "use strict";
   const page = location.pathname.split("/").pop();
   const selectors = {
-    "arcade-games.html": ".game-panel",
-    "arcade-vault.html": ".panel",
-    "arcade-after-dark.html": ".game",
+    "arcade-games.html": ".game-panel",    "arcade-after-dark.html": ".game",
     "arcade-originals.html": ".cabinet",
     "arcade-fresh-meat.html": ".cabinet",
     "city-of-cinders.html": "main",
