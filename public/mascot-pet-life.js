@@ -51,9 +51,9 @@ function renderThoughts(detail){
   const action=life.confirmed&&life.confirmed.id===Number(pet.id)?life.confirmed.action:null;
   const mood=pet.mood?.id||'content';
   thought.dataset.tone=mood;
-  const lines=action?reactions[action]:moodLines[mood]||moodLines.content;
   const unique=speciesLines[pet.species]||'I am glad we found each other.';
-  thought.textContent=action?choose(lines,pet.id+action+Math.floor(Date.now()/3000)):choose([...lines,unique],pet.id+mood+new Date().getUTCDay());
+  const lines=action==='talk'?[unique]:action?reactions[action]:moodLines[mood]||moodLines.content;
+  thought.textContent=action==='talk'?'“'+unique+'”':action?choose(lines,pet.id+action+Math.floor(Date.now()/3000)):choose([...lines,unique],pet.id+mood+new Date().getUTCDay());
   if(action){card.classList.remove('pet-reacted');void card.offsetWidth;card.classList.add('pet-reacted')}
  }
  if(life.confirmed)setTimeout(()=>{life.confirmed=null},2500);
