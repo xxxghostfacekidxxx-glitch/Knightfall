@@ -37,8 +37,8 @@ test('catalog is freely discoverable but private collection requires authenticat
  const db=stub(()=>{throw Error('Catalog/auth must not query database')});
  const catalog=await invoke('/api/mascot-pets/catalog','GET',null,db,async()=>null);
  assert.equal(catalog.status,200);
- assert.equal(catalog.data.species.length,22);
- assert.equal(catalog.data.max_owned,22);
+ assert.equal(catalog.data.species.length,28);
+ assert.equal(catalog.data.max_owned,28);
  assert.equal(catalog.data.accessories.length,12);
  const guest=await invoke('/api/mascot-pets/me','GET',null,db,async()=>null);
  assert.equal(guest.status,401);
