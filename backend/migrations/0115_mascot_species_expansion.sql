@@ -57,5 +57,7 @@ BEGIN
 END;
 
 UPDATE mascot_passport_badges
- SET title='All 28, No Mercy',description='Complete the full 28-species collection.',target=28,reward_cinders=2500
+ SET title='Original Crew',description='Complete the original 22-species collection.',target=22
  WHERE badge_id='complete_crew';
+INSERT OR IGNORE INTO mascot_passport_badges(badge_id,title,description,metric,target,reward_cinders)
+ VALUES('full_menagerie','Full Misfit Menagerie','Collect all 28 original companions.','pets',28,2500);
