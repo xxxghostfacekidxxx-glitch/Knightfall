@@ -95,7 +95,7 @@ function renderOwned(){
   moodCard.append(make('strong','','♡ '+mood.label),make('small','',mood.tip||''));card.append(moodCard);
   const personality=make('p','pet-personality',(pet.temperament||'Curious')+' · Loves '+(pet.favorite||'mischief'));
   card.append(personality);
-  const relationship=pet.bond||{label:'New little friend',experience:0,progress:0};
+  const relationship=pet.relationship||{label:'New little friend',experience:0,progress:0};
   const bond=make('div','pet-relationship');
   const bondHead=make('div','pet-relationship-head');bondHead.append(make('strong','','♡ '+relationship.label),make('small','',Number(relationship.experience||0)+' bond'));
   const bondTrack=make('div','pet-relationship-track'),bondFill=make('i');bondFill.style.width=Math.max(0,Math.min(100,Number(relationship.progress)||0))+'%';bondTrack.append(bondFill);bond.append(bondHead,bondTrack);card.append(bond);

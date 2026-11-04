@@ -135,7 +135,7 @@ export function serializePet(pet,now=Date.now(),publicView=false){
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
  const vitals=petVitals(pet,now);
- return publicView?{...base,bond:petRelationship(pet.bond_experience)}:{...base,experience,vitals,mood:petMood(vitals),bond:petRelationship(pet.bond_experience),level_bond:petBond(currentLevel),
+ return publicView?{...base,bond:petBond(currentLevel)}:{...base,experience,vitals,mood:petMood(vitals),bond:petBond(currentLevel),relationship:petRelationship(pet.bond_experience),
   level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
 
   next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{

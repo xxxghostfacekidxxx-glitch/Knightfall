@@ -93,7 +93,7 @@ function roomSummary(){
   const moods=make('div','room-pet-mood',''),mood=selected.mood||{label:'Content',tip:'Care makes your companion happy.'};
   moods.append(make('strong','','♡ '+mood.label),make('span','',selected.bond?.label||'Newly rescued'),make('small','',mood.tip||''));
   root.append(moods);
-  const bond=selected.bond||{experience:0,progress:0};
+  const bond=selected.relationship||{experience:0,progress:0};
   const relationship=make('div','room-bond-progress','');
   const track=make('div','room-bond-track'),fill=make('i');fill.style.width=Math.max(0,Math.min(100,Number(bond.progress)||0))+'%';track.append(fill);
   relationship.append(make('small','',(Number(bond.experience)||0)+' bond · grows through little rituals'),track);root.append(relationship);
