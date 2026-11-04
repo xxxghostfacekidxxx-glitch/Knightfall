@@ -1,31 +1,26 @@
 {
-  "generatedAt": "2026-11-04T17:08:28.645Z",
+  "generatedAt": "2026-11-04T18:53:51.762Z",
   "reportsFound": 10,
-  "catalogRoutes": 131,
+  "catalogRoutes": 132,
   "targets": {
     "live": {
       "reports": 10,
       "expectedShards": 10,
-      "expectedRoutes": 131,
-      "coveredRoutes": 131,
+      "expectedRoutes": 132,
+      "coveredRoutes": 132,
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [
-        {
-          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-3-Maze Warden/tmp/arcade-browser-evidence/shard-3/live/report.json",
-          "shard": 3
-        }
-      ],
+      "malformedReports": [],
       "failures": [
         {
           "game": "neon-surge",
           "route": "/arcade/hosted/neon-surge/index.html",
-          "profile": "tablet",
+          "profile": "desktop",
           "action": "start game",
-          "reason": "locator.tap: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting tap action\n    - waiting fo",
+          "reason": "locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting click action\n    - waitin",
           "target": "live",
-          "screenshot": null,
+          "screenshot": "009.png",
           "networkErrorCount": 0,
           "browserErrorCount": 0
         }
@@ -34,5 +29,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 41872817183
+  "sourceRunId": 41891334802
 }
