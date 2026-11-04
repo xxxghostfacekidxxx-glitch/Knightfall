@@ -2,10 +2,10 @@
 (()=>{'use strict';
 const API='https://api.ash-fall.com',q=id=>document.getElementById(id);
 const stage=q('room-stage'),avatar=q('room-avatar'),background=q('room-background'),furniture=q('room-decoration'),
- photo=q('room-pet-image'),outfit=q('room-outfit'),name=q('room-pet-label'),picker=q('room-pet'),level=q('room-level'),
+ photo=q('room-pet-image'),outfit=q('room-outfit'),name=q('room-pet-label'),reactionBubble=q('room-reaction-bubble'),picker=q('room-pet'),level=q('room-level'),
  theme=q('room-theme'),decor=q('room-decor'),pose=q('room-pose'),save=q('room-save'),status=q('room-message'),sparks=q('room-particles');
 if(!stage||!avatar||!picker||!theme||!decor||!pose||!save)return;
-let pets=[],themes=[],decorations=[],selected=null,point={x:50,y:65},dirty=false,busy=false,drag=null,visitor=false;
+let pets=[],themes=[],decorations=[],selected=null,point={x:50,y:65},dirty=false,busy=false,drag=null,visitor=false,currentReaction=null,reactionTimer=0;
 const say=text=>{status.textContent=String(text)};
 const safeAsset=url=>/^\/assets\/devil-tools\/neon-nuisances\/(?:habitats\/|accessories\/)?[a-z0-9-]+\.svg$/.test(url||'')?url:'';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -51,12 +51,14 @@ function renderOutfit(){
 }
 function draw(){
  avatar.style.left=point.x+'%';avatar.style.top=point.y+'%';
- avatar.dataset.pose=pose.value;
+ const visiblePose=currentReaction?.pose||pose.value;
+ avatar.dataset.pose=visiblePose;avatar.dataset.bondStage=currentReaction?.bond_stage||selected?.relationship?.id||'new';
+ if(reactionBubble){reactionBubble.textContent=currentReaction?.emote||'';reactionBubble.hidden=!currentReaction}
  if(selected){
   const base=selected.idle||selected.image;
   let src=base;
-  if(pose.value!=='idle'&&/[-]idle[.]svg$/.test(base||'')){
-   src=base.replace(/-idle\.svg$/, '-'+pose.value+'.svg');
+  if(visiblePose!=='idle'&&/[-]idle[.]svg$/.test(base||'')){
+   src=base.replace(/-idle\.svg$/, '-'+visiblePose+'.svg');
   }
   img(photo,src);
  }
@@ -116,6 +118,7 @@ function syncCareButtons(){
  }
 }
 function activate(id){
+ if(reactionTimer)clearTimeout(reactionTimer);reactionTimer=0;currentReaction=null;
  selected=pets.find(p=>String(p.id)===String(id))||pets[0]||null;
  if(!selected)return;
  point={x:clamp(Number(selected.room?.x??50),8,92),y:clamp(Number(selected.room?.y??65),25,85)};
@@ -202,6 +205,13 @@ function sparkle(text){
  sparks.append(node);node.addEventListener('animationend',()=>node.remove(),{once:true});
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)node.remove();
 }
+function showReaction(reaction){
+ if(visitor||!reaction)return;
+ currentReaction=reaction;draw();
+ if(reactionTimer)clearTimeout(reactionTimer);
+ const duration=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1100:2200;
+ reactionTimer=window.setTimeout(()=>{currentReaction=null;reactionTimer=0;draw()},duration);
+}
 document.querySelectorAll('button[data-care]').forEach(button=>button.addEventListener('click',async()=>{
  if(visitor||!selected||busy)return;
  const action=button.dataset.care,id=selected.id;
@@ -210,8 +220,9 @@ document.querySelectorAll('button[data-care]').forEach(button=>button.addEventLi
  try{
   const ritual=['talk','cuddle','groom'].includes(action);
   const answer=await request('/api/mascot-pets/'+id+(ritual?'/interact':'/care'),{method:'POST',body:JSON.stringify({action})});
-  sparkle(action==='feed'?'♥':action==='rest'?'☾':'✦');
+  sparkle(answer.reaction?.emote||(action==='feed'?'♥':action==='rest'?'☾':'✦'));
   await reloadPet(id);
+  showReaction(answer.reaction);
   say(answer.message||'Your companion enjoyed that.');
   document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'room'}}));
  }catch(err){say(err.message)}

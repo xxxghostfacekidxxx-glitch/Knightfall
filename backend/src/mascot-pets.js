@@ -38,6 +38,38 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  craggle:['Steadfast','Moonlit rooftops and old stone','A small gargoyle guardian with a brave heart and glowing runic freckles.'],
  prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.']
 });
+// Six tiny, species-specific responses make the same care action feel different
+// across the collection. These are flavor only; rewards remain server-defined below.
+const SPECIES_REACTIONS=Object.freeze({
+ moxie:['sniffs the snack like a clue from a moonlit lantern','loops a velvet wing around the room on a scout’s patrol','folds into a soft wing-cocoon for a moonbeam nap','shares a careful little thought about forgotten places','tucks close beneath a wing, safe as a lantern glow','smooths every wing edge with mothlike precision'],
+ bloop:['scoops up the treat as if it fell through a puddle portal','splash-skips after you, leaving tiny ripples everywhere','settles into a wobbling puddle and lets the ripples fade','gurgles a story from the other side of the puddle','melts happily into a cool, squishy cuddle','polishes each frill until it gleams like rainwater'],
+ pippa:['crunches the snack with a bright pumpkin grin','turns playtime into an autumn-night prank parade','curls up like a lantern waiting for dusk','whispers a spooky story with a very sweet ending','bumps your shoulder like a little pumpkin hug','brushes off a few imaginary leaves and looks proud'],
+ nib:['nibbles quietly, then saves one crumb for later','peeks from a corner before swooping into a tiny game','tucks into the quietest corner for a bat nap','answers in a tiny secret only you can hear','rests a shy wing against you for one brave second','lets you gently straighten a ruffled bit of fur'],
+ glim:['holds the treat up like a tiny guiding lantern','drifts after the glow of your next move','dims to a warm night-light and settles down','glows softly while telling you where the lost things go','floats close enough to share its gentle light','shines brighter as you brush away a little ghost dust'],
+ zuzu:['gulps the snack before it can become an experiment','bounces through a very questionable slime-science game','puddles into a comfy blob for a recharge','offers a new theory about why snacks taste better upside down','wobbles against you like a happy glitchy bean','shakes off the dust in three delightfully chaotic splats'],
+ kiki:['snatches the bite with a street-cat victory purr','launches into a rooftop chase and sticks every landing','curls into a compact cat loaf with one eye still open','tells you which rooftop is best for watching the rain','leans against you like you are the safest alley in town','gives one paw a careful polish, then the other'],
+ emberbun:['nibbles fast enough to leave a tiny spark trail','does three fiery hops before you can count to one','tucks its warm ears in and settles beside the embers','chatters excitedly about the next sunrise race','presses its warm cheek against you and stays there','grooms away the soot, leaving a few harmless sparks'],
+ gravebyte:['scans the snack, approves it, and files it as excellent','turns play into a puzzle with an extremely smug solution','enters low-power mode with one tiny status light blinking','translates its signal into a surprisingly thoughtful answer','leans in with a quiet, reassuring mechanical hum','runs a tidy maintenance check and shines like new'],
+ statichex:['catches the snack between two crackles of static','zips in a jagged orbit that almost resembles a game','fizzes down to a soft cosmic hum','transmits a thought from somewhere beyond the stars','lets its signal settle beside your heartbeat','shakes off a small thundercloud of cosmic dust'],
+ rattlepop:['crunches the treat like a spooky little snack critic','rattles its coffin lid and starts a ridiculous surprise game','settles into its tiny coffin for a perfectly cozy rest','shares a ghost story and performs every sound effect','scoots closer with a happy clack-clack-clack','dusts off its coffin with dramatic ghoul-level care'],
+ thornriot:['accepts the snack like a truce with the garden','charges into a backyard obstacle course of its own design','rests beneath an imaginary leaf after a long patrol','tells you exactly which weeds have been acting suspicious','leans in carefully, thorny armor and all','lets you brush a leaf from its one very watchful eye'],
+ 'volt-imp':['sparks once, then devours the snack at lightning speed','turns one playful lap into a full-speed thunder sprint','powers down with a faintly crackling purr','buzzes out a story in quick little bursts of lightning','zaps the air once, then nestles safely at your side','smooths its static until the sparks behave for a moment'],
+ 'crypt-koi':['takes the snack with one serene, gliding nibble','weaves a moonlit figure-eight around your playtime','floats in a still pool and lets the whole room quiet','shares a calm thought that seems to slow the night','drifts against you like a warm current','shimmers as you brush away a few spectral scales'],
+ 'casket-pup':['takes the treat gently, then checks that you have one too','bounds after you like the bravest little graveyard guard','circles twice and curls up with a contented sigh','listens closely, loyal eyes fixed on yours','leans its whole undead-puppy heart into the cuddle','holds still while you brush its ears back into place'],
+ 'void-sprout':['sips the snack like a drop of eclipse dew','grows a tiny leaf mid-game and acts like it planned it','folds its petals for a patient little night’s rest','shares a slow thought from the quiet between stars','leans its soft leaves against your hand','lets you straighten its leaves one by one'],
+ 'minion-mouse':['stores the snack in a secret tunnel for later','outsmarts your next move and celebrates quietly','curls up inside an imaginary blueprint tube','whispers a tiny scheme that ends with both of you winning','squeezes into your palm like a trusted co-conspirator','dusts its tiny toolkit before putting everything away'],
+ 'mini-villain':['accepts the snack as a tribute to its brilliance','announces an elaborate game plan, then improvises wildly','sleeps beneath a cape like a defeated but dramatic genius','delivers a speech about its feelings with excellent posture','allows a royal cuddle, but only after a grand bow','checks its outfit for lint before the next dramatic entrance'],
+ 'mini-eddie':['takes a bite, then checks that the perimeter is secure','turns playtime into a brave midnight patrol','rests with one protective eye on the doorway','reports that everything is safe because you are here','tucks in beside you like your tiny night watch','lets you brush its armor until it catches the moonlight'],
+ gutterkit:['finds the best crumb and declares it reclaimed treasure','turns a cardboard scrap into an entire alley adventure','curls up in a rescued blanket nest','shares a secret map to the best forgotten corners','nudges your hand like you are part of its little crew','gives its whiskers a proud, scrappy little tidy-up'],
+ 'chunky-monkey':['grabs the snack with both hands and a joyful squeak','makes a whole jungle gym out of the room and your attention','flops into the softest blanket like a sleepy jungle king','chatters about a new game and invites you to be captain','wraps you in a full-body monkey hug','carefully picks a leaf from your hair, then looks accomplished'],
+ 'boo-thang':['floats the treat to its mouth with a lovestruck grin','haunts you playfully around the room, leaving heart-shaped wisps','drifts into a soft ghost nap near your shoulder','shares a romantic ghost story with a very happy ending','passes through the air into a gentle, misty cuddle','smooths its translucent edges until they shimmer'],
+ lydibug:['nibbles the treat, then saves a tiny crumb for a friend','flutters through a garden-lantern game, lucky spots flashing','folds her spotted wings for a warm clover nap','shares a bright little thought and a star sticker','settles close enough to share her tiny lantern glow','shines her lucky spots while you brush away a bit of pollen'],
+ sootsnoot:['sniffs the treat, checks for crumbs, and keeps the best one','digs up a lost button and turns it into a treasure hunt','curls up on a warm stone with its nose tucked in','shares a clever secret about where the best scraps hide','leans into you like a very loyal little badger','brushes the cinders from its fur until it looks freshly forged'],
+ rumblefluff:['munches the treat with a tiny rumble of thunder','bounces through the room on soft cloud-wool hooves','curls beneath an imaginary storm cloud and snoozes','hums a weather report predicting a cozy day with you','rests its fluffy head against you with a quiet thunder-purr','fluffs its cloud-wool until it looks like a tiny storm puff'],
+ glittergob:['pockets one bite and shares the next like a tiny host','starts a shiny-rock scavenger hunt and keeps the best find for you','settles on a crystal pile that sparkles like a night-light','whispers the secret location of its favorite bright pebble','offers you its very best shiny rock as a cuddle token','polishes its crystal freckles until each one catches the light'],
+ craggle:['takes the snack from its rooftop perch like a tiny guardian','leads a daring rooftop game with glowing runic freckles','rests on an old stone ledge, safe and watchful','shares a brave little thought beneath the moon','leans its sturdy gargoyle shoulder against yours','lets you wipe the moonstone dust from its little wings'],
+ prismare:['tastes the snack and sends a ribbon of color drifting by','paints a deep-sea-light game across the room','floats into a slow, rainbow-colored daydream','shares a dreamy thought that shifts color as it speaks','wraps a soft ribbon of light around your hand','polishes its glassy fins until the room catches rainbows']
+});
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
  ['pippa','Hexgourd','pumpkin'],['nib','Nocturnib','bat'],
@@ -136,6 +168,25 @@ export function petRelationship(experience){
  ];
  const stage=[...stages].reverse().find(item=>xp>=item.floor)||stages[0];
  return {id:stage.id,label:stage.label,experience:xp,progress:stage.next===null?100:Math.min(100,Math.floor((xp-stage.floor)/(stage.next-stage.floor)*100)),next_at:stage.next};
+}
+const BOND_REACTION_LINES=Object.freeze({
+ new:'This is one more small moment in a brand-new friendship.',
+ familiar:'They recognize your routine and meet you halfway.',
+ trusted:'There is easy trust in the way they settle with you.',
+ 'best-friends':'Best friends have a language made of little rituals.',
+ inseparable:'Your favorite shadow stays close, completely at ease.'
+});
+const ACTION_REACTIONS=Object.freeze({
+ feed:{pose:'bounce',emote:'♥'},play:{pose:'mischief',emote:'✦'},rest:{pose:'blink',emote:'☾'},
+ talk:{pose:'blink',emote:'…'},cuddle:{pose:'bounce',emote:'♡'},groom:{pose:'mischief',emote:'✧'}
+});
+function petActionReply(pet,action,points=0,unit='XP'){
+ const species=SPECIES_REACTIONS[pet.species];
+ const line=species?.[action]||'shares a little moment with you';
+ const name=pet.nickname||BY_ID.get(pet.species)?.name||'Your companion';
+ const bond=petRelationship(pet.bond_experience).id;
+ const reward=points?' +'+points+' '+unit+'.':'';
+ return {message:name+' '+line+'. '+BOND_REACTION_LINES[bond]+reward,reaction:{...ACTION_REACTIONS[action],action,bond_stage:bond}};
 }
 export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
@@ -302,10 +353,8 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
    const current=await env.DB.prepare(ownSelect+' WHERE id=? AND user_id=?').bind(id,user.id).first();
    return respond({error:'That little ritual needs a breather.',pet:serializePet(current)},429);
   }
-  const personality=SPECIES_PERSONALITIES[pet.species]||['Curious','adventures'];
-  const name=pet.nickname||BY_ID.get(pet.species)?.name||'Your companion';
-  const messages={talk:name+' leans in to hear you. '+personality[0]+' minds can always find something to say about '+personality[1]+'.',cuddle:name+' accepts a cozy squeeze, then immediately resumes being a tiny menace.',groom:name+' is all fluffed up and ready for more '+personality[1]+'.'};
-  return respond({ok:true,pet:serializePet(pet),bond_awarded:rule.bond,message:messages[kind]+' +'+rule.bond+' bond'});
+  const reply=petActionReply(pet,kind,rule.bond,'bond');
+  return respond({ok:true,pet:serializePet(pet),bond_awarded:rule.bond,...reply});
  }
  if(action==='nickname'&&request.method==='PATCH'){
   const nickname=nameOf(body.nickname);
@@ -333,7 +382,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
    return respond({error:'Your companion needs a short cooldown.',pet:serializePet(current)},429);
   }
   try{await careQuestProgress(env,user.id,id,kind)}catch(error){console.error('sanctuary_quest_progress',error)}
-  return respond({ok:true,pet:serializePet(pet),message:rule.label+'! +'+rule.xp+' XP'});
+  return respond({ok:true,pet:serializePet(pet),...petActionReply(pet,kind,rule.xp,'XP')});
  }
  return respond({error:'Unsupported pet action.'},405);
 }

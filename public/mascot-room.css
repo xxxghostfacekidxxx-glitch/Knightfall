@@ -28,6 +28,11 @@
 .room-avatar:focus-visible{outline:3px solid #c6ff45;border-radius:12px}
 .room-avatar[data-pose="bounce"] img{animation:room-bounce 1.5s ease-in-out infinite}
 .room-avatar[data-pose="mischief"] img{animation:room-mischief 2.1s ease-in-out infinite}
+.room-avatar[data-pose="blink"] img{animation:room-bounce .48s ease-out 1}
+.room-avatar[data-bond-stage="inseparable"] .room-reaction-bubble{box-shadow:0 0 18px #ff70c688}
+.room-reaction-bubble{position:absolute!important;z-index:5;right:-5%;top:3%;display:grid;place-items:center;min-width:34px;height:34px;padding:0 7px!important;border:1px solid #ff70c6!important;border-radius:999px!important;background:#28162feF!important;color:#ffe8fa!important;font-size:19px!important;font-weight:900!important;line-height:1;box-shadow:0 0 16px #ff55d855;animation:room-reaction-pop .24s cubic-bezier(.2,.9,.3,1.2) both}
+.room-reaction-bubble[hidden]{display:none}
+@keyframes room-reaction-pop{from{opacity:0;transform:translateY(8px) scale(.55)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes room-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 @keyframes room-mischief{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(7deg)}}
 #room-particles{position:absolute;inset:0;pointer-events:none;z-index:8}
@@ -47,7 +52,7 @@
 .room-controls #room-save{color:#101419;background:#c6ff45}
 .room-controls p{font-size:.78rem;line-height:1.6;color:#bfb5cd}
 @media(max-width:650px){.room-controls{grid-template-columns:1fr}.room-stage{aspect-ratio:1/1}.room-avatar{width:29%;height:34%}.room-furniture{width:32%}.room-toolbar h2{width:100%}.room-toolbar select{flex:1}}
-@media(prefers-reduced-motion:reduce){.room-avatar img,.room-avatar[data-pose="bounce"] img,.room-avatar[data-pose="mischief"] img,.room-spark{animation:none!important;transition:none}}
+@media(prefers-reduced-motion:reduce){.room-avatar img,.room-avatar[data-pose="bounce"] img,.room-avatar[data-pose="mischief"] img,.room-avatar[data-pose="blink"] img,.room-reaction-bubble,.room-spark{animation:none!important;transition:none}}
 
 /* Public rooms are read-only, with profile visibility controlled by the API. */
 .room-page [hidden]{display:none!important}
