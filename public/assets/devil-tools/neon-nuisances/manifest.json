@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 12,
+  "version": 13,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -397,6 +397,90 @@
       },
       "styleVersion": 12,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/boo-thang.svg"
+    },
+    {
+      "id": "lydibug",
+      "name": "Lydibug",
+      "type": "starlight beetle",
+      "primary": "#ff62d7",
+      "accent": "#c6ff45",
+      "svg": "/assets/devil-tools/neon-nuisances/lydibug.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/lydibug-idle.svg"
+      },
+      "description": "A star-spotted garden beetle with glowing lantern wings and a tiny bow.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/lydibug.svg"
+    },
+    {
+      "id": "sootsnoot",
+      "name": "Sootsnoot",
+      "type": "ember badger",
+      "primary": "#202634",
+      "accent": "#ff9a42",
+      "svg": "/assets/devil-tools/neon-nuisances/sootsnoot.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/sootsnoot-idle.svg"
+      },
+      "description": "A soot-soft badger with ember cheeks, aqua ash-stripes and a fearless little nose.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/sootsnoot.svg"
+    },
+    {
+      "id": "rumblefluff",
+      "name": "Rumblefluff",
+      "type": "storm lamb",
+      "primary": "#b58bff",
+      "accent": "#79ffe7",
+      "svg": "/assets/devil-tools/neon-nuisances/rumblefluff.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/rumblefluff-idle.svg"
+      },
+      "description": "A storm-cloud lamb with curled lightning horns, soft wool and bright rain-speck eyes.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/rumblefluff.svg"
+    },
+    {
+      "id": "glittergob",
+      "name": "Glittergob",
+      "type": "crystal goblin",
+      "primary": "#baff38",
+      "accent": "#ff55d8",
+      "svg": "/assets/devil-tools/neon-nuisances/glittergob.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/glittergob-idle.svg"
+      },
+      "description": "A playful crystal goblin with a jagged gem crown, oversized ears and a pocket full of shine.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/glittergob.svg"
+    },
+    {
+      "id": "craggle",
+      "name": "Craggle",
+      "type": "moonstone gargoyle",
+      "primary": "#8798b7",
+      "accent": "#79ffe7",
+      "svg": "/assets/devil-tools/neon-nuisances/craggle.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/craggle-idle.svg"
+      },
+      "description": "A moonstone rooftop guardian with chunky wings, pink runes and a brave little grin.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/craggle.svg"
+    },
+    {
+      "id": "prismare",
+      "name": "Prismare",
+      "type": "prism jelly",
+      "primary": "#79ffe7",
+      "accent": "#ff55d8",
+      "svg": "/assets/devil-tools/neon-nuisances/prismare.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/prismare-idle.svg"
+      },
+      "description": "A floating jelly spirit with a translucent rainbow bell and long glowing ribbons.",
+      "styleVersion": 13,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/prismare.svg"
     }
   ],
   "animationVariants": [
