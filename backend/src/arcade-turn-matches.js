@@ -84,7 +84,12 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
       FROM arcade_turn_matches m
       JOIN users p1 ON p1.id=m.player_one_id
       JOIN users p2 ON p2.id=m.player_two_id
-      WHERE m.player_one_id=? OR m.player_two_id=?
+      WHERE (m.player_one_id=? OR m.player_two_id=?)
+        AND NOT EXISTS (
+          SELECT 1 FROM user_blocks b
+          WHERE (b.blocker_id=m.player_one_id AND b.blocked_id=m.player_two_id)
+             OR (b.blocker_id=m.player_two_id AND b.blocked_id=m.player_one_id)
+        )
       ORDER BY CASE WHEN m.status='active' AND m.current_player_id=? THEN 0
                     WHEN m.status='pending' AND m.player_two_id=? THEN 0 ELSE 1 END,
                m.updated_at DESC
@@ -150,6 +155,10 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
   if (Number(row.player_one_id) !== Number(user.id) && Number(row.player_two_id) !== Number(user.id)) {
     return json({ error: "This match belongs to other members." }, 403, origin);
   }
+  const blocked = await env.DB.prepare(
+    "SELECT 1 FROM user_blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?) LIMIT 1"
+  ).bind(row.player_one_id, row.player_two_id, row.player_two_id, row.player_one_id).first();
+  if (blocked) return json({ error: "This match is unavailable." }, 404, origin);
 
   if (!action && request.method === "GET") {
     const moveRows = await env.DB.prepare(`
@@ -173,12 +182,13 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
       WHERE id=? AND player_two_id=? AND status='pending'
     `).bind(accepted ? "active" : "declined", accepted ? row.player_one_id : null, now, id, user.id).run();
     if (Number(result.meta?.changes || 0) !== 1) return json({ error: "This invitation changed. Refresh your matches." }, 409, origin);
-    if (accepted) {
-      await createNotification(env, {
-        userId: Number(row.player_one_id), actorId: user.id, kind: "arcade_turn_accepted", targetType: "arcade_match",
-        title: "Challenge accepted", body: "@" + user.username + " accepted your Connect Four challenge. You're up first.", url: matchUrl(id)
-      });
-    }
+    await createNotification(env, {
+      userId: Number(row.player_one_id), actorId: user.id,
+      kind: accepted ? "arcade_turn_accepted" : "arcade_turn_declined", targetType: "arcade_match",
+      title: accepted ? "Challenge accepted" : "Challenge declined",
+      body: accepted ? "@" + user.username + " accepted your Connect Four challenge. You're up first." : "@" + user.username + " declined your Connect Four challenge.",
+      url: matchUrl(id)
+    });
     return json({ match: publicMatch(await loadMatch(env, id), user.id) }, 200, origin);
   }
 
@@ -188,6 +198,10 @@ export async function handleArcadeTurnMatches(request, env, url, { getUser, json
     const now = new Date().toISOString();
     const result = await env.DB.prepare("UPDATE arcade_turn_matches SET status='cancelled',updated_at=? WHERE id=? AND created_by=? AND status='pending'").bind(now, id, user.id).run();
     if (Number(result.meta?.changes || 0) !== 1) return json({ error: "This invitation changed. Refresh your matches." }, 409, origin);
+    await createNotification(env, {
+      userId: Number(row.player_two_id), actorId: user.id, kind: "arcade_turn_cancelled", targetType: "arcade_match",
+      title: "Challenge cancelled", body: "@" + user.username + " cancelled their Connect Four challenge.", url: matchUrl(id)
+    });
     return json({ match: publicMatch(await loadMatch(env, id), user.id) }, 200, origin);
   }
 
