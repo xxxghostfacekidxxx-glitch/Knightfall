@@ -16,6 +16,32 @@
  async function api(path,options={}){const r=await fetch(API+path,{credentials:'include',cache:'no-store',...options,headers:{'content-type':'application/json',...(options.headers||{})}}),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Avatar request failed.');return d;}
  function selectedSlot(){return state.slots.find(s=>Number(s.slot_no)===selected)||null;}
  function updatePreview(){byId('avatar-preview').innerHTML=kit.render(avatar);}
+ async function loadBuddy(){
+  const root=byId('avatar-buddy');if(!root)return;
+  try{
+   const data=await api('/api/mascot-pets/me'),pets=Array.isArray(data.pets)?data.pets:[];
+   root.replaceChildren();root.hidden=false;
+   const title=document.createElement('strong');title.textContent='✦ Traveling companion';
+   const copy=document.createElement('p');copy.className='avatar-buddy-copy';
+   if(!pets.length){
+    copy.textContent='Your Misfit can bring a pet along. Rescue your first companion in the Sanctuary.';
+    root.append(title,copy);
+   }else{
+    const pet=pets.find(x=>x.featured)||pets[0];
+    const line=document.createElement('div');line.className='avatar-buddy-line';
+    const image=document.createElement('img');
+    const src=pet.portrait||pet.image||'';
+    image.src=/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/)?[a-z0-9_-]+\.svg$/.test(src)?src:'';
+    image.alt='';image.setAttribute('aria-hidden','true');image.loading='lazy';
+    const text=document.createElement('span');
+    const name=document.createElement('b');name.textContent=pet.nickname||pet.species_name||'Companion';
+    const detail=document.createElement('small');detail.textContent=(pet.featured?'Profile companion':'Your first companion')+' · Lv '+Number(pet.level||1);
+    text.append(name,detail);line.append(image,text);
+    const link=document.createElement('a');link.href='/mascot-pets.html';link.textContent='Visit the Sanctuary';
+    root.append(title,line,link);
+   }
+  }catch{const root=byId('avatar-buddy');if(root)root.hidden=true}
+}
  function paintSlots(){const root=byId('slot-list');root.replaceChildren();for(const slot of state.slots){const b=document.createElement('button');b.type='button';b.className='slot-card'+(selected===Number(slot.slot_no)?' active':'');b.setAttribute('aria-pressed',String(selected===Number(slot.slot_no)));const icon=slot.avatar?kit.render(slot.avatar):kit.render(kit.defaults);const n=slot.name?esc(slot.name):'Empty slot';b.innerHTML='<span class="tiny-avatar">'+icon+'</span><strong>Slot '+slot.slot_no+'</strong><small>'+n+(slot.is_active?' · Profile look':'')+'</small>';b.addEventListener('click',()=>loadSlot(slot.slot_no));root.append(b);}const slot=selectedSlot();byId('clear-avatar').hidden=!slot||slot.empty;byId('slot-note').textContent='Slot '+selected+' of '+state.slots.length+' · '+(slot?.is_active?'This is your active profile look.':slot?.empty?'Ready for a new misfit.':'Saved look is private until you choose it for your profile.');byId('wallet-note').textContent='✦ '+Number(state.wallet||0).toLocaleString()+' Cinders';}
  function loadSlot(slotNo){selected=Number(slotNo);const slot=selectedSlot();avatar=kit.safeAvatar(slot?.avatar||kit.defaults);byId('avatar-name').value=slot?.name||('Misfit '+selected);paintSlots();paintControls();updatePreview();}
  function paintControls(){const root=byId('controls');root.replaceChildren();const groups=[['face','Face & hair'],['features','Face details'],['fit','Outfit & accessories'],['scene','Background & effects']];for(const [group,title] of groups){const own=fields.filter(field=>field[2]===group);const box=document.createElement('fieldset');box.className='control-group';const legend=document.createElement('legend');legend.textContent=title;const grid=document.createElement('div');grid.className='control-group-fields';for(const [key,labelText] of own){const label=document.createElement('label');label.className='control';const titleEl=document.createElement('span');titleEl.textContent=labelText;const select=document.createElement('select');select.setAttribute('aria-label',labelText);for(const choice of kit.choices[key]){const option=document.createElement('option');option.value=choice;option.textContent=labels[choice]||choice;select.append(option);}select.value=avatar[key];select.addEventListener('change',()=>{avatar[key]=select.value;updatePreview();});label.append(titleEl,select);grid.append(label);}box.append(legend,grid);root.append(box);}}
@@ -29,4 +55,5 @@
  byId('download-avatar').addEventListener('click',downloadPng);
  byId('new-avatar').addEventListener('click',()=>{const empty=state.slots.find(s=>s.empty);if(!empty){status.textContent='All unlocked slots are in use. Purchase more slots to make another misfit.';return;}loadSlot(empty.slot_no);status.textContent='New misfit ready to customize.';});byId('save-avatar').addEventListener('click',()=>save(false));byId('set-active').addEventListener('click',()=>save(true));byId('clear-avatar').addEventListener('click',clearSlot);byId('randomize-avatar').addEventListener('click',()=>{for(const [key,values] of Object.entries(kit.choices)){const pool=values.filter(value=>value!==avatar[key]);avatar[key]=pool[Math.floor(Math.random()*pool.length)];}paintControls();updatePreview();status.textContent='A fresh misfit has materialized. Save it when you like the look.';});
  paintControls();paintPresets();updatePreview();reload().then(()=>{const active=state.slots.find(s=>s.is_active),first=active||state.slots[0];if(first)loadSlot(first.slot_no);}).catch(error=>{status.textContent=error.message;byId('slot-note').textContent='Sign in to use your personal misfit slots.';});
+ loadBuddy();
 })();
