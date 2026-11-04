@@ -1,8 +1,11 @@
 const SKIN=new Set(['porcelain','peach','honey','olive','cocoa','violet']);
+const FACE_SHAPE=new Set(['round','soft_square','heart_face','long']);
 const HAIR=new Set(['shag','spikes','bob','mohawk','horns','buns','flop']);
 const HAIR_COLOR=new Set(['ink','plum','pink','acid','silver','copper','blue']);
 const EYES=new Set(['doe','sleepy','mischief','star','spiral']);
 const EYE_COLOR=new Set(['violet','green','blue','pink','gold','red']);
+const BROW_STYLE=new Set(['none','soft','raised','bold','sleepy']);
+const EYE_GLIMMER=new Set(['none','star','double','heart']);
 const EXPRESSION=new Set(['smile','grin','pout','fang','frown','tongue']);
 const FACE_MARK=new Set(['none','freckles','stars','stitches','lightning','heart']);
 const PIERCING=new Set(['none','septum','brow','lip','ear']);
@@ -15,8 +18,8 @@ const HEADWEAR=new Set(['none','witch_hat','tiara','antenna','headphones','flowe
 const EYEWEAR=new Set(['none','star_shades','round_specs','visor','monocle','eyepatch']);
 const NECKWEAR=new Set(['none','spike_choker','chain','bandana','scarf']);
 const AURA=new Set(['none','ghost_flames','spark_ring','glow','moon']);
-const FIELDS={skin:SKIN,hair:HAIR,hair_color:HAIR_COLOR,eyes:EYES,eye_color:EYE_COLOR,expression:EXPRESSION,face_mark:FACE_MARK,piercing:PIERCING,outfit:OUTFIT,outfit_color:OUTFIT_COLOR,headwear:HEADWEAR,eyewear:EYEWEAR,neckwear:NECKWEAR,aura:AURA,accessory:ACCESSORY,background:BACKGROUND,pattern:PATTERN};
-const DEFAULTS={skin:'peach',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles'};
+const FIELDS={skin:SKIN,face_shape:FACE_SHAPE,hair:HAIR,hair_color:HAIR_COLOR,eyes:EYES,eye_color:EYE_COLOR,brow_style:BROW_STYLE,eye_glimmer:EYE_GLIMMER,expression:EXPRESSION,face_mark:FACE_MARK,piercing:PIERCING,outfit:OUTFIT,outfit_color:OUTFIT_COLOR,headwear:HEADWEAR,eyewear:EYEWEAR,neckwear:NECKWEAR,aura:AURA,accessory:ACCESSORY,background:BACKGROUND,pattern:PATTERN};
+const DEFAULTS={skin:'peach',face_shape:'round',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',brow_style:'soft',eye_glimmer:'none',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles'};
 const PRODUCTS=Object.freeze([{id:'avatar_slot',slots:1,cost_cinders:600,label:'One extra misfit slot'},
  {id:'avatar_slots_3',slots:3,cost_cinders:1500,label:'Misfit trio bundle'}]);
 const respond=(json,value,status=200,origin)=>json(value,status,origin);

@@ -1,11 +1,14 @@
 (()=>{
- const defaults={skin:'peach',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles'};
+ const defaults={skin:'peach',face_shape:'round',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',brow_style:'soft',eye_glimmer:'none',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles'};
  const choices={
   skin:['porcelain','peach','honey','olive','cocoa','violet'],
+  face_shape:['round','soft_square','heart_face','long'],
   hair:['shag','spikes','bob','mohawk','horns','buns','flop'],
   hair_color:['ink','plum','pink','acid','silver','copper','blue'],
   eyes:['doe','sleepy','mischief','star','spiral'],
   eye_color:['violet','green','blue','pink','gold','red'],
+  brow_style:['none','soft','raised','bold','sleepy'],
+  eye_glimmer:['none','star','double','heart'],
   expression:['smile','grin','pout','fang','frown','tongue'],
   face_mark:['none','freckles','stars','stitches','lightning','heart'],
   piercing:['none','septum','brow','lip','ear'],
@@ -81,6 +84,9 @@
  };
  function render(input={}){
   const a=safeAvatar(input),skin=palettes.skin[a.skin],hair=palettes.hair_color[a.hair_color],bg=palettes.background[a.background],cloth=palettes.outfit_color[a.outfit_color],eye=palettes.eye_color[a.eye_color],accent=a.background==='toxic'?'#c6ff45':a.background==='bubblegum'?'#ff62c7':'#79ffe7';
+  const headShape={round:'<circle cx="112" cy="113" r="68"/>',soft_square:'<path d="M48 88Q48 45 88 45H136Q176 45 176 88V128Q176 177 112 181Q48 177 48 128Z"/>',heart_face:'<path d="M112 181Q98 171 61 132Q38 108 45 79Q53 48 83 48Q103 48 112 69Q121 48 141 48Q171 48 179 79Q186 108 163 132Q126 171 112 181Z"/>',long:'<ellipse cx="112" cy="112" rx="58" ry="76"/>'}[a.face_shape];
+  const brows={none:'',soft:'<path d="M68 101q14-8 28 0m34 0q14-8 28 0"/>',raised:'<path d="M68 98q14-14 28-5m34-2q14-8 28 5"/>',bold:'<path d="M67 100q15-12 31-3m31 0q16-9 31 3" stroke-width="8"/>',sleepy:'<path d="M68 99q14-2 28 3m34-3q14-2 28 3"/>'}[a.brow_style];
+  const glimmer={none:'',star:'<path d="M82 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z M145 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/>',double:'<circle cx="77" cy="115" r="2" fill="#fff"/><circle cx="88" cy="128" r="2" fill="#fff"/><circle cx="140" cy="115" r="2" fill="#fff"/><circle cx="151" cy="128" r="2" fill="#fff"/>',heart:'<path d="M73 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z M136 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z" fill="#fff"/>'}[a.eye_glimmer];
   const pupils=a.eyes==='sleepy'?'':`<ellipse cx="84" cy="124" rx="6" ry="9" fill="${eye}"/><ellipse cx="143" cy="124" rx="6" ry="9" fill="${eye}"/><circle cx="85" cy="123" r="2.5" fill="#211528"/><circle cx="144" cy="123" r="2.5" fill="#211528"/>`;
   const garments={
    hoodie:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M83 194 Q70 184 78 174 Q91 178 99 190 M141 190 Q151 177 164 175 Q171 185 158 197" fill="${cloth}" stroke="#20172a" stroke-width="5"/><path d="M95 194l-3 23h40l-4-23 M105 193l-3 12m18-12 3 12" fill="none" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`,
@@ -116,7 +122,7 @@
    glow:'<circle cx="112" cy="113" r="76" fill="none" stroke="#ff55d8" stroke-width="9" opacity=".35"/><circle cx="112" cy="113" r="83" fill="none" stroke="#ff55d8" stroke-width="3" opacity=".6"/>',
    moon:'<path d="M175 152a30 30 0 1 1-28-46 25 25 0 1 0 28 46z" fill="#f4dc83" stroke="#30243a" stroke-width="3"/><circle cx="44" cy="103" r="5" fill="#c6ff45"/><circle cx="184" cy="190" r="5" fill="#ff62c7"/>'
   };
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Cute chaotic big-head misfit avatar"><rect width="224" height="256" rx="36" fill="${bg}"/>${patterns[a.pattern]}${auras[a.aura]}<ellipse cx="112" cy="235" rx="62" ry="9" fill="#0007"/><path d="M83 184 Q75 201 76 217 M141 184 Q150 200 148 216" fill="none" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>${garments[a.outfit]}${neckwear[a.neckwear]}<ellipse cx="50" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><ellipse cx="174" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><circle cx="112" cy="113" r="68" fill="${skin}" stroke="#241629" stroke-width="6"/><g fill="${hair}" stroke="#241629" stroke-width="4" stroke-linejoin="round">${hairstyles[a.hair]}</g>${accessories[a.accessory]}${headwear[a.headwear]}${eyeShapes[a.eyes]}${pupils}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${mouths[a.expression]}${piercings[a.piercing]}<path d="M199 40 l4 9 9 4 -9 4 -4 9 -4-9 -9-4 9-4z" fill="${accent}"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Cute chaotic big-head misfit avatar"><rect width="224" height="256" rx="36" fill="${bg}"/>${patterns[a.pattern]}${auras[a.aura]}<ellipse cx="112" cy="235" rx="62" ry="9" fill="#0007"/><path d="M83 184 Q75 201 76 217 M141 184 Q150 200 148 216" fill="none" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>${garments[a.outfit]}${neckwear[a.neckwear]}<ellipse cx="50" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><ellipse cx="174" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><g fill="${skin}" stroke="#241629" stroke-width="6">${headShape}</g><g fill="${hair}" stroke="#241629" stroke-width="4" stroke-linejoin="round">${hairstyles[a.hair]}</g>${accessories[a.accessory]}${headwear[a.headwear]}<g fill="none" stroke="#39283b" stroke-width="4" stroke-linecap="round">${brows}</g>${eyeShapes[a.eyes]}${pupils}${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${mouths[a.expression]}${piercings[a.piercing]}<path d="M199 40 l4 9 9 4 -9 4 -4 9 -4-9 -9-4 9-4z" fill="${accent}"/></svg>`;
  }
  window.KnightfallMisfitAvatars={defaults,safeAvatar,render,choices};
 })();

@@ -157,6 +157,8 @@
 .pet-mood[data-mood="hungry"] strong,.pet-mood[data-mood="bored"] strong{color:#ff9bdf}
 .pet-mood[data-mood="sleepy"] strong{color:#9baaff}
 .pet-mood[data-mood="radiant"]{border-color:#c6ff4570;background:linear-gradient(110deg,#22302466,#17132a)}
+.pet-mood[data-mood="affectionate"]{border-color:#ff70c677;background:linear-gradient(110deg,#3b173255,#17132a)}
+.pet-mood[data-mood="devoted"]{border-color:#ff70c6;background:linear-gradient(110deg,#49203b88,#20203a);box-shadow:0 0 18px #ff70c622}
 .pet-xp-progress{display:grid;gap:5px}
 .pet-xp-head{display:flex;justify-content:space-between;gap:10px;color:#c8bed6;font-size:.72rem}
 .pet-xp-head span:last-child{color:#79ffe7;font-variant-numeric:tabular-nums;font-weight:750}

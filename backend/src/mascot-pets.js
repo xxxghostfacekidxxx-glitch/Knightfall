@@ -108,11 +108,13 @@ export function petVitals(pet,now=Date.now()){
  const meter=(stamp,loss)=>Math.max(15,Math.min(100,Math.floor(90-ago(stamp)*loss)));
  return {hunger:meter(pet.fed_at,3.4),joy:meter(pet.played_at,4.2),energy:meter(pet.rested_at,2.8)};
 }
-export function petMood(vitals){
+export function petMood(vitals,bondExperience=0){
  const food=Number(vitals?.hunger??90),joy=Number(vitals?.joy??90),energy=Number(vitals?.energy??90);
  if(energy<=40)return {id:'sleepy',label:'Sleepy',tip:'A restful nap would help.'};
  if(food<=40)return {id:'hungry',label:'Snack hunter',tip:'Ready for a midnight snack.'};
  if(joy<=40)return {id:'bored',label:'Restless',tip:'Play a game together.'};
+ if(Math.min(food,joy,energy)>=75&&Number(bondExperience)>=1500)return {id:'devoted',label:'Velcro sidekick',tip:'Thriving, and keeping your favorite human within paw’s reach.'};
+ if(Math.min(food,joy,energy)>=75&&Number(bondExperience)>=600)return {id:'affectionate',label:'Favorite human',tip:'This little menace saved you the best seat in the room.'};
  if(Math.min(food,joy,energy)>=75)return {id:'radiant',label:'Thriving',tip:'Feeling fabulous and full of trouble.'};
  return {id:'content',label:'Content',tip:'Happy to be hanging out with you.'};
 }
@@ -144,7 +146,7 @@ export function serializePet(pet,now=Date.now(),publicView=false){
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
  const vitals=petVitals(pet,now);
- return publicView?{...base,bond:petBond(currentLevel)}:{...base,experience,vitals,mood:petMood(vitals),bond:petBond(currentLevel),relationship:petRelationship(pet.bond_experience),
+ return publicView?{...base,bond:petBond(currentLevel)}:{...base,experience,vitals,mood:petMood(vitals,pet.bond_experience),bond:petBond(currentLevel),relationship:petRelationship(pet.bond_experience),
   level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
   // Last known moments reuse existing care timestamps; this is private owner data.
   last_moments:[['rescued',pet.adopted_at],['fed',pet.fed_at],['played',pet.played_at],['rested',pet.rested_at],['talked',pet.talked_at],['cuddled',pet.cuddled_at],['groomed',pet.groomed_at]]
