@@ -2,7 +2,7 @@
 
 ## Release scope
 
-The original Knightfall Species Trials arcade is accessible at `/mascot-trials.html` and listed as `neon-nuisances-species-trials` in `public/arcade/catalog.json`. It uses all 22 canonical species listed in `public/assets/devil-tools/neon-nuisances/manifest.json`, with four original game engines:
+The original Knightfall Species Trials arcade is accessible at `/mascot-trials.html` and listed as `neon-nuisances-species-trials` in `public/arcade/catalog.json`. It uses all 28 canonical species listed in `public/assets/devil-tools/neon-nuisances/manifest.json`, with four original game engines:
 
 - **Toxic Catch:** timed falling-crystal collection, pink hazard avoidance, pet avatar movement
 - **Crypt Memory:** animated hidden matching card grid
