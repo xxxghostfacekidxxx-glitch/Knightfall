@@ -24,7 +24,13 @@ const speciesLines={
  'mini-eddie':'I am on watch. You can rest.',
  gutterkit:'I found a treasure. It is shiny and slightly sticky.',
  'chunky-monkey':'I made the room more fun. You are welcome.',
- 'boo-thang':'I missed you in the most romantic haunting way.'
+ 'boo-thang':'I missed you in the most romantic haunting way.',
+ lydibug:'Look what I found under the starlit leaves. I saved the shiniest one for you.',
+ sootsnoot:'I found a lost button and turned it into treasure. Pretty good, right?',
+ rumblefluff:'I caught a tiny rumble in my wool. It sounds like a happy day.',
+ glittergob:'This crystal is for you. I only picked it up three times first.',
+ craggle:'I kept watch over your little corner. Everything is safe.',
+ prismare:'I brought you a ribbon of color from the quiet part of the deep.'
 };
 const reactions={
  feed:['Finally, excellent snack timing.','That was delicious. I am filing it under “excellent decisions.”','Snack secured. I have returned to peak menace.'],
