@@ -38,7 +38,7 @@ async function mount(){
   }
   const featured=d.pets.find(p=>p.featured)||d.pets[0];
   const summary=el('div','mascot-profile-intro');
-  summary.append(el('strong','',d.pets.length+' / 22 companions collected'));
+  summary.append(el('strong','',d.pets.length+' / 28 companions collected'));
   if(featured)summary.append(el('p','','✦ '+featured.nickname+' · '+(featured.temperament||'Curious')+' · '+(featured.lore||'A misfit with a story worth sharing.')));
   card.append(summary);
   const group=el('div','mascot-profile-grid');
