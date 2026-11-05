@@ -179,3 +179,14 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - Existing `0118` two-member table and `0117` Connect Four tables are **not modified or removed**. The old card table was verified empty before the migration. No saved match was discarded.
 - The production `knightfall-forum` D1 migration was applied and verified on **2026-11-05**, and recorded in `d1_migrations` as **ID 65** after confirming the table, four indexes, optional invited-member columns and old match count. Time Travel bookmark recovery was checked before applying it. Do not rerun an already-recorded migration.
 - Full cross-account/device acceptance, mobile turn notifications and CI test results require separate verification; successful schema writes alone are not a claim of complete runtime certification.
+
+
+## Skunk Riot Sanctuary expansion · 0121 (November 5, 2026)
+
+- `0121_skunk_riot_pet.sql` registers the original `skunk-riot` species at **2,000 Cinders**, Sanctuary level **4**.
+- The three existing ownership, rescue and egg guards were recreated with the maximum collection count **31**. Their starter restriction, unlock-level calculation, wallet debit, duplication prevention and incubation restrictions were carried forward.
+- The `full_menagerie` badge now requires collecting **31** original companions.
+- Applied to production D1 `knightfall-forum` on November 5, 2026 through the authorized Cloudflare D1 query API, after confirming a D1 Time Travel recovery bookmark. Verified species row, all three 31-slot guards, maintained starter and wallet safety checks, and completion-badge target with production readbacks.
+- The successful applied migration was then recorded in `d1_migrations` as ledger **ID 66**. Do not rerun this migration through Wrangler while the entry is present.
+- New first-party assets: `public/assets/devil-tools/neon-nuisances/skunk-riot.svg`, idle/blink/bounce/mischief variants and `portraits/skunk-riot.svg`. The mascot also appears in Pet Life, Species Trials, legacy pet activities, owner profiles and the Sanctuary catalog.
+- Code and deployment evidence do not replace a member-account adoption and visual acceptance test.
