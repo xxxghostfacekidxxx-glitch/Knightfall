@@ -12,5 +12,7 @@ test("BrowserQuest starts locally from name form and Enter",()=>{
  assert.match(js,/browserquest-name-form/);
  assert.match(js,/event\.preventDefault\(\)/);
  assert.match(js,/app\.tryStartingGame\(name\)/);
- assert.match(js,/nameinput'\)\.keypress/);
+ assert.doesNotMatch(js,/nameinput'\)\.keypress/, "Enter must not invoke a second startup path");
+ assert.match(js,/\$\('#browserquest-name-form'\)\.bind\('submit'/);
+ assert.match(js,/\$name\.blur\(\)/);
 });
