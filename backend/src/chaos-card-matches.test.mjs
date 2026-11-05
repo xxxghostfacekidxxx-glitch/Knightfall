@@ -23,10 +23,10 @@ test("two humans and Lydibug, Butters, Eddie form five seats",()=>{
  assert.equal(visibleChaosMatch(row(s),17).can_play,false,"judge must not submit an answer");
 });
 test("private hands and anonymous answer attribution remain server-only",()=>{
- const s=seeded();s.hands[0]=["SECRET_FIRST",...s.hands[0].slice(1)];s.hands[1]=["SECRET_SECOND",...s.hands[1].slice(1)];
+ const s=seeded();s.hands[0]=["SECRET_FIRST",...s.hands[0].slice(1)];s.hands[1]=["PLAYED_FROM_SECOND","SECRET_SECOND",...s.hands[1].slice(2)];
  beginChaosRound(s);
  const second=visibleChaosMatch(row(s),24);
- assert.equal(second.hand[0],"SECRET_SECOND");
+ assert.equal(second.hand[1],"SECRET_SECOND");
  assert.ok(!JSON.stringify(second).includes("SECRET_FIRST"),"second user must never receive first hand");
  assert.ok(playChaosCard(s,1,0));assert.equal(s.phase,"judge");
  const first=visibleChaosMatch(row(s),17);
