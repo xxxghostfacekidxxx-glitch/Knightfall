@@ -10,7 +10,7 @@ for(const id of ["neon-vector","prism-panic"])test(id+" boots, runs, restarts wi
  assert.ok(page.includes("ashfall-original-vector.js"));
  const listeners=new Map(),frames=[],nodes=new Map();
  const node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:"",addEventListener:(name,fn)=>listeners.set(id+":"+name,fn)});return nodes.get(id)};
- const ctx={fillRect(){},beginPath(){},arc(){},fill(){},fillText(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},stroke(){}};
+ const ctx={fillRect(){},beginPath(){},arc(){},fill(){},fillText(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},stroke(){},createLinearGradient(){return {addColorStop(){}}}};
  const canvas={getContext:()=>ctx,addEventListener:(name,fn)=>listeners.set("canvas:"+name,fn),getBoundingClientRect:()=>({left:0,top:0,width:640,height:480})};
  const doc={querySelector:()=>canvas,getElementById:node,addEventListener:(name,fn)=>listeners.set("document:"+name,fn),dispatchEvent(){}};
  runInNewContext(source,{document:doc,location:{pathname:"/arcade/hosted/"+id+"/index.html"},Math,Number,Set,CustomEvent:class{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
