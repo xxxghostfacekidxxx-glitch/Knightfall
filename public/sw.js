@@ -87,6 +87,26 @@ self.addEventListener("push", event => {
     for(const client of windows)client.postMessage({type:"KF_PUSH_RECEIVED",tag,stage});
   })());
 });
+// Android/Chromium can rotate subscriptions while the app is not open.
+// A browser-provided replacement is safe to register; a null replacement may
+// represent a deliberate opt-out, so never silently subscribe again.
+self.addEventListener("pushsubscriptionchange", event => {
+  const sub=event.newSubscription;
+  if(!sub)return;
+  event.waitUntil((async()=>{
+    try{
+      const data=sub.toJSON();
+      if(!data?.endpoint||!data?.keys?.p256dh||!data?.keys?.auth)return;
+      const response=await fetch("https://api.ash-fall.com/api/push/subscriptions",{
+        method:"POST",credentials:"include",cache:"no-store",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({subscription:data})
+      });
+      if(!response.ok)console.warn("push_subscription_rotation_not_registered",response.status);
+    }catch(error){console.warn("push_subscription_rotation_unavailable",String(error))}
+  })());
+});
+
 self.addEventListener("notificationclick", event => {
   event.notification.close();
   const path = safeNotificationPath(event.notification.data?.url);
