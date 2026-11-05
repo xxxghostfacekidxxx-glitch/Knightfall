@@ -37,3 +37,9 @@ test('path repair preserves installed games and their cache-busting asset URLs',
  const missing=await sw.get('/admin-offline/play/sanctuary-original/missing.js');assert.equal(missing.status,404);
  assert.equal(await sw.get('/api/auth/me'),undefined);
 });
+
+test('admin dashboard links directly to the offline install path',()=>{
+ const admin=read('public/admin.html');
+ assert.match(admin,/href="\/admin-offline\/"/,'God dashboard must launch the canonical directory URL');
+ assert.doesNotMatch(admin,/href="\/admin-offline\/index\.html"/,'Do not reintroduce a redirect during Android installation');
+});
