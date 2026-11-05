@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 14,
+  "version": 15,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -486,6 +486,42 @@
       "description": "A floating jelly spirit with a translucent rainbow bell and long glowing ribbons.",
       "styleVersion": 13,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/prismare.svg"
+    },
+    {
+      "id": "butters",
+      "name": "Butters",
+      "type": "cream ferret",
+      "primary": "#fff0be",
+      "accent": "#b987e5",
+      "description": "Butters · bashful cream ferret with huge rose-pink ears, soft vanilla fur, lavender scarf and little paws tucked in close.",
+      "personality": "Reserved and shy. Loves quiet spaces and slow introductions, and grows deeply attached to friends who are gentle with him.",
+      "svg": "/assets/devil-tools/neon-nuisances/butters.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/butters-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/butters-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/butters-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/butters-mischief.svg"
+      },
+      "styleVersion": 15,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/butters.svg"
+    },
+    {
+      "id": "trouble",
+      "name": "Trouble",
+      "type": "raccoon",
+      "primary": "#aab1bc",
+      "accent": "#73ffcd",
+      "description": "Trouble · punk raccoon with a dramatic black eye mask, ringed tail, neon green eyes, pink jacket and a suspiciously acquired bottle cap.",
+      "personality": "Curious, crafty, playful little scavenger. Hoards treasures, arranges harmless pranks and eventually shares his loot with friends.",
+      "svg": "/assets/devil-tools/neon-nuisances/trouble.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/trouble-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/trouble-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/trouble-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/trouble-mischief.svg"
+      },
+      "styleVersion": 15,
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/trouble.svg"
     }
   ],
   "animationVariants": [
