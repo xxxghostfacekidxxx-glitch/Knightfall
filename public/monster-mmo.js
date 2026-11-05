@@ -133,6 +133,16 @@ const moveLearnsets={
  stone:["Pebble Bash","Rock Rush","Gravestone Slam","Faultline Fury"]
 };
 const moveUnlockLevels=[1,1,3,6];
+const OFFLINE_MOVE_PP_LIMITS=[30,25,15,8];
+function ensureOfflineMovePp(creature){
+ if(!creature)return [...OFFLINE_MOVE_PP_LIMITS];
+ if(!Array.isArray(creature.movePp)||creature.movePp.length!==4){
+  creature.movePp=[...OFFLINE_MOVE_PP_LIMITS];
+ }else{
+  creature.movePp=creature.movePp.map((value,index)=>Number.isInteger(value)?Math.max(0,Math.min(OFFLINE_MOVE_PP_LIMITS[index],value)):OFFLINE_MOVE_PP_LIMITS[index]);
+ }
+ return creature.movePp;
+}
 function learnedMoves(creature){
  const names=moveLearnsets[creature?.type]||moveLearnsets.cosmic;
  return names.map((name,index)=>({name:index===3?(speciesMoves[creature?.id]||name):name,level:moveUnlockLevels[index],unlocked:(creature?.level||1)>=moveUnlockLevels[index],charge:index>=2?2:0,power:[1,.8,1.55,1.9][index]}));
@@ -493,7 +503,7 @@ for(const [label,done] of [["Explore 20 tiles",save.steps>=20],["Discover 3 spec
  const index=Number(b.dataset.moveSlot);
  if(Number.isInteger(index)&&index>=0&&index<4){
   const move=learnedMoves(save.party[0])[index];
-  const pp=Array.isArray(battle?.movePp)?battle.movePp[index]:null;
+  const pp=connected?(Array.isArray(battle?.movePp)?battle.movePp[index]:null):(battle?ensureOfflineMovePp(save.party[0])[index]:null);
   b.textContent=move.name+(move.unlocked?(move.charge?" · "+move.charge+" charge":""):" · Lv "+move.level)+(pp===null?"":" · PP "+pp+"/"+[30,25,15,8][index]);
   b.disabled=busy||!battle||save.party[0]?.hp<=0||!move.unlocked||(save.party[0]?.energy||0)<move.charge||(pp!==null&&pp<=0);
  }else{
@@ -504,16 +514,16 @@ for(const [label,done] of [["Explore 20 tiles",save.steps>=20],["Discover 3 spec
 });$("encounter").disabled=busy||!!battle||!grass(save.x,save.y);$("rest").disabled=busy||!!battle||save.x!==4||save.y!==1;$("connection").textContent=connected?"Staging online":"Offline preview";document.body.dataset.gameApiOrigin=connected?api:"";$("players").textContent=connected?"Trainers in meadow: "+(players.size+1):"No live multiplayer connection"}
 async function request(path,method="GET",body){const response=await fetch(api+path,{method,credentials:"include",headers:{"content-type":"application/json"},body:body?JSON.stringify(body):undefined});let data;try{data=await response.json()}catch{throw Error("Unexpected server response ("+response.status+")")}if(!response.ok)throw Error(data.error||"Request failed ("+response.status+")");return data}
 async function action(name,extra={}){if(busy)return false;busy=true;render();let succeeded=false;try{if(connected){const previousLead=save.party?.[0]?{id:save.party[0].id,name:save.party[0].name}:null;const previousBattle=battle?{id:battle.id,hp:battle.hp,status:battle.status}:null;const data=await request("/api/game/action","POST",{action:name,expected_version:version,...extra});save=data.save;version=data.version;battle=data.battle;if(previousLead&&save.party?.[0]&&previousLead.id!==save.party[0].id&&name!=="switch"){document.dispatchEvent(new CustomEvent("hell-high-orbit:evolution",{detail:{from:previousLead.id,to:save.party[0].id,previous:previousLead.name,name:save.party[0].name}}));}if(battle?.id)seen.add(battle.id);if(data.message?.includes("evolved into"))showBattleEffect("evolution",data.message);else if(["attack","special","quick","move"].includes(name))showBattleEffect(name==="special"||(name==="move"&&extra.index>=2)?"special":"attack",data.message||"Battle action completed",{damage:previousBattle&&(!battle||battle.id===previousBattle.id)?Math.max(0,previousBattle.hp-(battle?.hp??0)):null,target:"enemy",fainted:!!previousBattle&&!battle,status:battle?.status||null});log(data.message||"Action completed");succeeded=true}else{offlineAction(name,extra);succeeded=true}}catch(e){log(e.message);if(connected&&/version|conflict|session/i.test(e.message))await sync().catch(()=>{})}finally{busy=false;persist();render();if(name==="rest")document.dispatchEvent(new CustomEvent("hell-high-orbit:station-heal-result",{detail:{success:succeeded}}))}return succeeded}
-function offlineAction(name,extra){const lead=save.party[0];if(name==="rest"){if(currentRegion()!=="meadow"||save.x!==4||save.y!==1||battle)return;save.party.forEach(p=>{p.hp=p.maxHp;p.status=null;p.energy=0});log("Your party rested at the campfire.");return}if(name==="switch"){const index=extra.index;if(!battle||!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return;[save.party[0],save.party[index]]=[save.party[index],save.party[0]];if(lead.hp<=0){log(save.party[0].name+" enters the battle!");return}const counter=Math.max(1,battle.attack+Math.floor(Math.random()*3));save.party[0].hp=Math.max(0,save.party[0].hp-counter);log(save.party[0].name+" switched in and took "+counter+" damage.");if(!save.party.some(p=>p.hp>0)){battle=null;log("Your party fainted.")}return}if(name==="party-lead"){if(battle||save.party[extra.index]?.hp<=0)return;const [p]=save.party.splice(extra.index,1);save.party.unshift(p);log(p.name+" now leads your party.");return}if(name==="start"||name==="encounter-check"){if(battle||!grass(save.x,save.y)||lead.hp<=0)return;if(name==="encounter-check"&&Math.random()>.22)return;const zone=territory(save.x,save.y).type;const wildIds=Object.keys(species).filter(k=>!legendaryIds.has(k));const keys=currentRegion()==="meadow"?(zone==="alien"?wildIds.filter(k=>infernalLooks[k][2]>=8):zone==="demon"?wildIds.filter(k=>infernalLooks[k][2]<8):wildIds):regionEncounterPool(currentRegion());
+function offlineAction(name,extra){const lead=save.party[0];if(name==="rest"){if(currentRegion()!=="meadow"||save.x!==4||save.y!==1||battle)return;save.party.forEach(p=>{p.hp=p.maxHp;p.status=null;p.energy=0;ensureOfflineMovePp(p);p.movePp=[...OFFLINE_MOVE_PP_LIMITS]});log("Your party rested at the campfire.");return}if(name==="switch"){const index=extra.index;if(!battle||!Number.isInteger(index)||index<1||index>=save.party.length||save.party[index].hp<=0)return;[save.party[0],save.party[index]]=[save.party[index],save.party[0]];if(lead.hp<=0){log(save.party[0].name+" enters the battle!");return}const counter=Math.max(1,battle.attack+Math.floor(Math.random()*3));save.party[0].hp=Math.max(0,save.party[0].hp-counter);log(save.party[0].name+" switched in and took "+counter+" damage.");if(!save.party.some(p=>p.hp>0)){battle=null;log("Your party fainted.")}return}if(name==="party-lead"){if(battle||save.party[extra.index]?.hp<=0)return;const [p]=save.party.splice(extra.index,1);save.party.unshift(p);log(p.name+" now leads your party.");return}if(name==="start"||name==="encounter-check"){if(battle||!grass(save.x,save.y)||lead.hp<=0)return;if(name==="encounter-check"&&Math.random()>.22)return;const zone=territory(save.x,save.y).type;const wildIds=Object.keys(species).filter(k=>!legendaryIds.has(k));const keys=currentRegion()==="meadow"?(zone==="alien"?wildIds.filter(k=>infernalLooks[k][2]>=8):zone==="demon"?wildIds.filter(k=>infernalLooks[k][2]<8):wildIds):regionEncounterPool(currentRegion());
  const id=pickWild(keys),profile=regionEncounters[currentRegion()];
  const level=profile?profile.levelMin+Math.floor(Math.random()*(profile.levelMax-profile.levelMin+1)):1+Math.floor(Math.random()*4);battle=make(id,level);battleVisual=null;seen.add(id);save.encounters++;log((infernalLooks[id][2]>=8?"ALIEN INVASION! ":"HELLSPAWN ALERT! ")+"A wild "+battle.name+" appeared!");return}if(!battle)return;if(name==="flee"){battle=null;log("You retreated safely.");return}if(name==="capture"){if(battle.bossId){log("Commanders are contractually uncatchable. Defeat them instead.");return}if(save.bag<1||save.party.length>=6){log("You need capture supplies and an open party slot.");return}save.bag--;if(Math.random()<Math.min(battle.legendaryId?.35:.9,(battle.legendaryId?.08:.35)+(1-battle.hp/battle.maxHp)*(battle.legendaryId?.3:.55))){if(battle.legendaryId){save.capturedLegendaries||=[];save.capturedLegendaries.push(battle.legendaryId)}save.party.push({...battle,legendaryId:undefined});registerCapture(battle.id);save.caught++;log(battle.name+" joined your party!");battle=null}else log("The creature broke free.");return}if(name==="move"){
  const index=extra.index;
  const chosen=Number.isInteger(index)&&index>=0&&index<4?learnedMoves(lead)[index]:null;
  if(!Number.isInteger(index)||index<0||index>3||!chosen||!chosen.unlocked){log("That move is not unlocked yet.");return}
- if(!Array.isArray(battle.movePp)||battle.movePp.length!==4)battle.movePp=[30,25,15,8];
- if(battle.movePp[index]<=0){log("That move has no PP remaining.");return}
+ const pp=ensureOfflineMovePp(lead);
+ if(pp[index]<=0){log("That move has no PP remaining.");return}
  if(index>=2&&(lead.energy||0)<2){log("Not enough charge.");return}
- battle.movePp[index]--;
+ pp[index]--;
  extra.moveMissed=Math.random()*100>=[100,95,90,85][index];
  name=index===0?"attack":index===1?"quick":"special";
  extra.moveName=chosen.name;extra.movePower=chosen.power;
