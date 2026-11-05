@@ -138,3 +138,23 @@ test("Android service worker installation survives a failed optional offline ass
   assert.match(sw,/Promise\.allSettled\(APP_SHELL\.map\(resource=>cache\.add\(resource\)\)\)/);
   assert.doesNotMatch(sw,/cache\.addAll\(APP_SHELL\)/);
 });
+
+test("push rotation re-registers only browser-provided replacements",async()=>{
+ const listeners={};const requests=[];
+ const context={
+  self:{location:{origin:"https://ash-fall.com"},addEventListener(type,fn){listeners[type]=fn}},
+  fetch:async (url,options)=>{requests.push({url,options});return {ok:true,status:201}},
+  console:{warn(){}}
+ };
+ vm.runInNewContext(sw,context,{timeout:1000});
+ assert.equal(typeof listeners.pushsubscriptionchange,"function");
+ const sample={endpoint:"https://fcm.googleapis.com/fcm/send/replacement",keys:{p256dh:"a".repeat(87),auth:"b".repeat(22)}};
+ let pending;
+ listeners.pushsubscriptionchange({newSubscription:{toJSON:()=>sample},waitUntil(p){pending=p}});
+ await pending;
+ assert.equal(requests.length,1);
+ assert.equal(requests[0].options.credentials,"include");
+ assert.equal(JSON.parse(requests[0].options.body).subscription.endpoint,sample.endpoint);
+ listeners.pushsubscriptionchange({newSubscription:null,waitUntil(){throw Error("Must not resubscribe after opt-out")}});
+ assert.equal(requests.length,1,"revoked subscriptions must not be recreated");
+});
