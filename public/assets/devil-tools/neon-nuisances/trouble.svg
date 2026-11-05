@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+<title id="title">Trouble the raccoon base</title><desc id="desc">Original Knightfall pet art: rogue masked raccoon with ringed tail, neon green eyes, tiny magenta jacket and pilfered bottle cap.</desc>
+<defs><radialGradient id="bg"><stop stop-color="#294c55"/><stop offset="1" stop-color="#101122"/></radialGradient><linearGradient id="fur" x2=".5" y2="1"><stop stop-color="#c1b7b4"/><stop offset="1" stop-color="#625e77"/></linearGradient><linearGradient id="jacket" x2="0" y2="1"><stop stop-color="#ff67d1"/><stop offset="1" stop-color="#822a87"/></linearGradient></defs>
+<rect width="320" height="320" rx="36" fill="url(#bg)"/><circle cx="159" cy="136" r="122" fill="#67ffcf" opacity=".06"/><path d="M48 282h224" stroke="#64ffd2" stroke-width="5" opacity=".18"/>
+<g transform="translate(0 0) rotate(-4 160 183)">
+<path d="M212 243q53-11 62 20q17 36-20 40" stroke="#333747" stroke-width="35" fill="none" stroke-linecap="round"/><path d="M258 250q12 10 13 22m-33-17q12 18 12 36" stroke="#c3b7a6" stroke-width="16" fill="none"/>
+<ellipse cx="158" cy="228" rx="91" ry="73" fill="url(#fur)" stroke="#36374f" stroke-width="6"/>
+<path d="M82 211q73 13 156-7l12 56q-75 29-183 0Z" fill="url(#jacket)" stroke="#462d57" stroke-width="5"/>
+<path d="M150 219v58" stroke="#ffb2f0" stroke-width="4"/><circle cx="151" cy="234" r="4" fill="#f6edff"/><circle cx="150" cy="253" r="4" fill="#f6edff"/>
+<path d="M93 93L66 40Q105 35 131 80M188 82Q215 32 253 38L226 99" fill="#5c6072" stroke="#323448" stroke-width="7"/>
+<path d="M88 84L79 55L120 86M206 85L241 53L232 96" fill="#f397c9" opacity=".78"/>
+<ellipse cx="159" cy="145" rx="100" ry="87" fill="url(#fur)" stroke="#36374f" stroke-width="7"/>
+<path d="M62 135q33-44 91-14l7 40q-50 46-95 9zM163 122q54-42 92 14l-5 35q-53 31-92-9z" fill="#333345"/>
+<path d="M144 177q16-15 32 0l-16 15Z" fill="#2c293b"/><ellipse cx="159" cy="199" rx="39" ry="21" fill="#ded7c6"/>
+<ellipse cx="124" cy="159" rx="8" ry="12" fill="#f7e8d0"/><ellipse cx="199" cy="159" rx="8" ry="12" fill="#f7e8d0"/><circle cx="127" cy="158" r="4" fill="#8bffce"/><circle cx="202" cy="158" r="4" fill="#8bffce"/><path d="M150 192q10 8 19 0" fill="none" stroke="#313146" stroke-width="4" stroke-linecap="round"/>
+<path d="M95 216l-15 13q-22-11-15-25M221 221l16 11q20-15 13-28" fill="none" stroke="#b8adab" stroke-width="15" stroke-linecap="round"/>
+<path d="M96 269q-8 18 12 21m110-21q12 18-12 21" fill="none" stroke="#b8adab" stroke-width="17" stroke-linecap="round"/>
+<circle cx="68" cy="215" r="11" fill="#b5dfc8" stroke="#2d7778" stroke-width="4"/><path d="M64 214l4-5 6 5" stroke="#346e68" fill="none" stroke-width="2"/>
+</g><g fill="#6effc9" opacity=".73"><path d="M40 91l4 6-4 6-4-6z"/><path d="M280 72l5 9-5 9-5-9z"/></g></svg>
