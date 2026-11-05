@@ -8,6 +8,9 @@
   <title>Cards Against Chaos · Chaos Cartridge</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1">
+  <link rel="stylesheet" href="./online.css?v=20261105-1">
+  <script src="/arcade-save.js" defer></script>
+  <script src="./online.js?v=20261105-1" defer></script>
   <script src="/arcade/nextgen.js?v=20261102-1" defer></script>
   <style>
     :root{color-scheme:dark;--ink:#f7f2ff;--muted:#b9acc9;--panel:#181220;--line:#45334f;--pink:#ff56d5;--lime:#b8ff70;--gold:#ffe185}
@@ -19,7 +22,31 @@
 <body>
 <main>
   <a class="back" href="/arcade-card-board.html">← Card &amp; Board Games</a>
-  <header class="hero"><div class="kicker">KNIGHTFALL ORIGINAL · PASS AND PLAY</div><h1>CARDS<br>AGAINST CHAOS</h1><p>One prompt. A stack of ridiculous answers. The table decides who gets the point. Hand the device around and keep your cards secret.</p></header>
+  <header class="hero"><div class="kicker">KNIGHTFALL ORIGINAL · PASS AND PLAY</div><h1>CARDS<br>AGAINST CHAOS</h1><p>Original dark-comedy card chaos, now with a private two-friend online table, three personality-driven AI seats, and the classic local pass-and-play mode.</p></header>
+  <section class="panel cards-online" id="cards-online" aria-labelledby="cards-online-title">
+    <div class="cards-online-heading"><div><div class="kicker">TWO FRIENDS · THREE AI PLAYERS · NO TURN TIMER</div><h2 id="cards-online-title">🃏 Play through messages</h2>
+      <p>Challenge one Ash-Fall friend. Lydibug, Butters and Eddie fill the remaining seats, choose answers and take turns judging. Your seven-card hand is private, and the match is saved between visits.</p></div>
+      <a href="/messages.html">Open messages ↗</a></div>
+    <p id="cards-online-account" class="hint">Checking your account…</p>
+    <form id="cards-online-form" class="cards-online-invite"><label for="cards-online-friend">Friend to challenge</label>
+      <select id="cards-online-friend" required><option value="">Loading accepted friends…</option></select>
+      <button id="cards-online-challenge" class="primary" type="submit" disabled>Invite to the table</button></form>
+    <div class="cards-online-saved"><h3>Your online tables</h3><button type="button" id="cards-online-refresh" class="secondary">Refresh</button></div>
+    <div class="cards-online-list" id="cards-online-list" aria-live="polite"></div>
+    <p id="cards-online-status" class="hint" role="status" aria-live="polite"></p>
+    <section id="cards-online-table" class="cards-online-table" hidden aria-label="Online Cards Against Chaos">
+      <div class="cards-online-saved"><h3>Round <span id="cards-online-round">1</span></h3><button type="button" class="secondary" id="cards-online-close">Close table</button></div>
+      <div id="cards-online-scores" class="cards-online-scores" aria-label="Five player scores"></div>
+      <div class="prompt-card"><div><small>YOUR ROUND PROMPT</small><span id="cards-online-prompt"></span></div></div>
+      <p id="cards-online-turn" class="status"></p>
+      <div id="cards-online-hand" class="cards-online-hand" aria-label="Your private answer cards"></div>
+      <div id="cards-online-choices" class="cards-online-hand" aria-label="Anonymous choices for judging"></div>
+      <p id="cards-online-result" class="cards-online-result"></p>
+      <div id="cards-online-actions" class="toolbar"></div>
+      <p class="hint">Match link: <a id="cards-online-share" href="/arcade/hosted/cards-against-chaos/index.html">Open this table</a>. Invitations and turns also appear in Ash-Fall notifications.</p>
+    </section>
+  </section>
+  <div class="cards-local-separator" role="separator"><span>OR PLAY LOCAL PASS-AND-PLAY</span></div>
   <section class="panel setup" id="setup" aria-labelledby="setup-title">
     <h2 id="setup-title" tabindex="-1">Set up the table</h2>
     <div class="fields"><div class="field"><label for="player-count">Players</label><select id="player-count"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div><div class="field"><label for="win-score">Points to win</label><select id="win-score"><option>5</option><option>7</option><option>10</option></select></div></div>
