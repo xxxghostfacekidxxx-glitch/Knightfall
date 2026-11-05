@@ -1,70 +1,103 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {BLACK,WHITE} from "./chaos-card-deck.js";
-import {newChaosState,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches} from "./chaos-card-matches.js";
+import {CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches} from "./chaos-card-matches.js";
 
-const row=(s,status="active")=>({
- id:"00000000-0000-4000-8000-000000000001",player_one_id:17,player_two_id:24,
- first_username:"first",first_display_name:"First Human",second_username:"second",second_display_name:"Second Human",
- version:2,status,state_json:JSON.stringify(s),created_at:"2026-11-05T00:00:00Z",updated_at:"2026-11-05T00:00:00Z"
+const ids=[17,24,31,44];
+const row=(state,status="active")=>({
+ id:"00000000-0000-4000-8000-000000000001",
+ player_one_id:ids[0],player_two_id:state.members[1],player_three_id:state.members[2],player_four_id:state.members[3],
+ first_username:"alice",first_display_name:"Alice",second_username:"bob",second_display_name:"Bob",
+ third_username:"charlie",third_display_name:"Charlie",fourth_username:"delta",fourth_display_name:"Delta",
+ status,version:2,state_json:JSON.stringify(state),created_at:"2026-11-05T00:00:00Z",updated_at:"2026-11-05T00:00:00Z"
 });
-const seeded=()=>{const s=newChaosState();s.hands=[WHITE.slice(0,7),WHITE.slice(7,14)];return s;};
-test("original card deck remains substantial, independent Knightfall writing",()=>{
+function table(humans){const state=newChaosState(ids[0],ids.slice(1,humans));state.invite_status=state.invite_status.map(v=>v==="pending"?"accepted":v);assert.equal(startChaosTable(state),true);return state;}
+test("original Knightfall deck stays independent and substantial",()=>{
  assert.ok(BLACK.length>=45);assert.ok(WHITE.length>=140);
- assert.ok(BLACK.every(x=>typeof x==="string"&&x.length>10));
- assert.ok(WHITE.every(x=>typeof x==="string"&&x.length>8));
+ assert.equal(CHAOS_CARD_BOTS.length,3);
+ assert.deepEqual(CHAOS_CARD_BOTS.map(bot=>bot.name),["Lydibug","Butters","Eddie"]);
 });
-test("two humans and Lydibug, Butters, Eddie form five seats",()=>{
- const s=beginChaosRound(seeded());const match=visibleChaosMatch(row(s),24);
- assert.deepEqual(match.seats.map(p=>p.name),["First Human","Second Human","Lydibug","Butters","Eddie"]);
- assert.deepEqual(match.seats.map(p=>p.kind),["human","human","ai","ai","ai"]);
- assert.equal(match.judge,0);assert.equal(match.submitted_count,3);
- assert.equal(match.hand.length,7);assert.equal(match.can_play,true);
- assert.equal(visibleChaosMatch(row(s),17).can_play,false,"judge must not submit an answer");
+test("always four seats for every valid combination of human and AI players",()=>{
+ const names=[
+ ["Alice","Lydibug","Butters","Eddie"],
+ ["Alice","Bob","Lydibug","Butters"],
+ ["Alice","Bob","Charlie","Lydibug"],
+ ["Alice","Bob","Charlie","Delta"]
+ ];
+ for(let humans=1;humans<=4;humans++){
+  const state=table(humans),match=visibleChaosMatch(row(state),ids[0]);
+  assert.equal(match.seats.length,4);
+  assert.deepEqual(match.seats.map(seat=>seat.name),names[humans-1]);
+  assert.equal(match.seats.filter(seat=>seat.kind==="human").length,humans);
+  assert.equal(match.seats.filter(seat=>seat.kind==="ai").length,4-humans);
+  assert.equal(match.submitted_count,3-(humans-1),"AI players submit automatically when first human judges");
+  assert.equal(match.can_judge,humans===1,"single human initially judges the three bots");
+ }
 });
-test("private hands and anonymous answer attribution remain server-only",()=>{
- const s=seeded();s.hands[0]=["SECRET_FIRST",...s.hands[0].slice(1)];s.hands[1]=["PLAYED_FROM_SECOND","SECRET_SECOND",...s.hands[1].slice(2)];
- beginChaosRound(s);
- const second=visibleChaosMatch(row(s),24);
- assert.equal(second.hand[1],"SECRET_SECOND");
- assert.ok(!JSON.stringify(second).includes("SECRET_FIRST"),"second user must never receive first hand");
- assert.ok(playChaosCard(s,1,0));assert.equal(s.phase,"judge");
- const first=visibleChaosMatch(row(s),17);
- assert.equal(first.choices.length,4);
- assert.ok(first.choices.every(choice=>Object.keys(choice).sort().join(",")==="card,index"),"judging must not reveal author seat");
- assert.ok(!JSON.stringify(first).includes("SECRET_SECOND"),"judge may see played answer but must not see the opponent's untouched hand");
- assert.equal(visibleChaosMatch(row(s),24).choices.length,0,"non-judge must not see judging choices");
- assert.ok(judgeChaosCard(s,0,0));
- assert.equal(s.phase,"results");
- assert.ok(s.result&&s.scores.reduce((a,b)=>a+b,0)===1);
+test("invited humans remain AI placeholders until accepted; host may start early",()=>{
+ const state=newChaosState(17,[24,31,44]);
+ assert.equal(state.phase,"lobby");assert.equal(state.invite_status.filter(s=>s==="pending").length,3);
+ const lobby=visibleChaosMatch(row(state,"lobby"),24);
+ assert.equal(lobby.can_accept,true);
+ assert.deepEqual(lobby.seats.map(s=>s.kind),["human","ai","ai","ai"]);
+ state.invite_status[1]="accepted";
+ assert.ok(startChaosTable(state));
+ assert.deepEqual(state.invite_status,["accepted","accepted","expired","expired"]);
+ const started=visibleChaosMatch(row(state),24);
+ assert.deepEqual(started.seats.map(s=>s.name),["Alice","Bob","Lydibug","Butters"]);
+ assert.throws(()=>visibleChaosMatch(row(state),31),/not a table participant/);
 });
-test("AI judges rotate after two human rounds and award the third automatically",()=>{
- const s=beginChaosRound(seeded());
- assert.ok(playChaosCard(s,1,0));assert.ok(judgeChaosCard(s,0,0));
- beginChaosRound(s);
- assert.equal(s.judge,1);assert.ok(playChaosCard(s,0,0));assert.equal(s.phase,"judge");
- assert.ok(judgeChaosCard(s,1,0));
- beginChaosRound(s);
- assert.equal(s.judge,2);assert.equal(s.phase,"submit");
- assert.ok(playChaosCard(s,0,0));assert.ok(playChaosCard(s,1,0));
- assert.equal(s.phase,"results","Lydibug should judge and finish after both human cards arrive");
- assert.equal(s.result.judge,2);
+test("private hands and three anonymous submissions remain protected",()=>{
+ const state=newChaosState(17,[24]);state.invite_status[1]="accepted";
+ state.hands[0]=[];state.hands[1]=[];startChaosTable(state);
+ state.hands[0]=["SECRET_ALICE",...state.hands[0].slice(1)];
+ state.hands[1]=["PLAYED_BOB","SECRET_BOB",...state.hands[1].slice(2)];
+ const bob=visibleChaosMatch(row(state),24);
+ assert.equal(bob.hand[1],"SECRET_BOB");
+ assert.ok(!JSON.stringify(bob).includes("SECRET_ALICE"));
+ assert.equal(playChaosCard(state,1,0),true);assert.equal(state.phase,"judge");
+ const alice=visibleChaosMatch(row(state),17);
+ assert.equal(alice.choices.length,3);
+ assert.ok(alice.choices.every(c=>Object.keys(c).sort().join(",")==="card,index"));
+ assert.ok(!JSON.stringify(alice).includes("SECRET_BOB"));
+ assert.equal(visibleChaosMatch(row(state),24).choices.length,0);
+ assert.ok(judgeChaosCard(state,0,0));
+ assert.equal(state.phase,"results");
 });
-test("out-of-turn, invalid and duplicate submissions cannot consume cards",()=>{
- const s=beginChaosRound(seeded());
- const hand=s.hands[1].slice();
- assert.equal(playChaosCard(s,0,0),false);
- assert.equal(playChaosCard(s,1,999),false);
- assert.deepEqual(s.hands[1],hand);
- assert.equal(playChaosCard(s,1,0),true);
- assert.equal(playChaosCard(s,1,1),false);
- assert.equal(judgeChaosCard(s,1,0),false);
- assert.throws(()=>visibleChaosMatch(row(s),777),/not a table participant/);
+test("each of the four human counts completes a valid match, rotating AI judges",()=>{
+ for(let humans=1;humans<=4;humans++){
+  const state=table(humans);
+  for(let attempts=0;attempts<110&&state.phase!=="finished";attempts++){
+   if(state.phase==="results")assert.equal(beginChaosRound(state),true);
+   if(state.phase==="submit"){
+    for(let seat=0;seat<humans;seat++)if(seat!==state.judge&&state.submitted[seat]===undefined)
+     assert.ok(playChaosCard(state,seat,0));
+   }
+   if(state.phase==="judge"){
+    assert.ok(state.judge<humans,"AI must judge automatically");
+    assert.ok(judgeChaosCard(state,state.judge,0));
+   }
+  }
+  assert.equal(state.phase,"finished",humans+" human participants should finish");
+  assert.equal(state.scores.length,4);
+  assert.ok(Math.max(...state.scores)>=5);
+ }
 });
-test("anonymous unauthenticated players cannot access card API or any private hands",async()=>{
- const response=await handleChaosCardMatches({method:"GET"},null,new URL("https://api.ash-fall.com/api/arcade/chaos-cards"),{
+test("illegal, repeated and out-of-turn moves are rejected",()=>{
+ const state=table(2),before=state.hands[1].slice();
+ assert.equal(playChaosCard(state,0,0),false);
+ assert.equal(playChaosCard(state,1,999),false);
+ assert.deepEqual(state.hands[1],before);
+ assert.ok(playChaosCard(state,1,0));
+ assert.equal(playChaosCard(state,1,0),false);
+ assert.equal(judgeChaosCard(state,1,0),false);
+ assert.throws(()=>visibleChaosMatch(row(state),999),/not a table participant/);
+ assert.throws(()=>newChaosState(17,[24,31,44,55]),/One to four/);
+});
+test("account required before exposing private game data",async()=>{
+ const result=await handleChaosCardMatches({method:"GET"},null,new URL("https://api.ash-fall.com/api/arcade/chaos-cards"),{
  getUser:async()=>null,json:(data,status)=>({data,status}),rateLimit:async()=>true,origin:"https://ash-fall.com",createNotification:async()=>{}
  });
- assert.equal(response.status,401);
- assert.ok(!JSON.stringify(response).includes("hands"));
+ assert.equal(result.status,401);
+ assert.ok(!JSON.stringify(result).includes("hands"));
 });
