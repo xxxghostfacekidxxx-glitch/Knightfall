@@ -30,7 +30,10 @@ const speciesLines={
  rumblefluff:'I caught a tiny rumble in my wool. It sounds like a happy day.',
  glittergob:'This crystal is for you. I only picked it up three times first.',
  craggle:'I kept watch over your little corner. Everything is safe.',
- prismare:'I brought you a ribbon of color from the quiet part of the deep.'
+ prismare:'I brought you a ribbon of color from the quiet part of the deep.',
+ butters:'Can we stay somewhere quiet? I think I like being next to you.',
+ trouble:'That bottle cap? Never seen it. Want to go look for treasure?',
+ 'skunk-riot':'Turn the amps up! But after the show, can we hang out together?'
 };
 const reactions={
  feed:['Finally, excellent snack timing.','That was delicious. I am filing it under “excellent decisions.”','Snack secured. I have returned to peak menace.'],
