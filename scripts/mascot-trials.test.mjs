@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {SPECIES_TRIALS,TRIAL_TYPES,challengeFor,memoryDeck,runeSequence,RUNES,seededRng,shuffle} from '../public/mascot-trials-engine.mjs';
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
-test('all 30 original mascot species have distinct themed trial identities',()=>{
+test('all 31 original mascot species have distinct themed trial identities',()=>{
  const manifest=JSON.parse(read('public/assets/devil-tools/neon-nuisances/manifest.json'));
  const expected=new Set(manifest.characters.map(x=>x.id));
  const actual=new Set(Object.keys(SPECIES_TRIALS));
  assert.deepEqual(actual,expected);
- assert.equal(actual.size,30);
+ assert.equal(actual.size,31);
  for(const id of actual){
   const c=challengeFor(id,1);
   assert.equal(c.species,id);
