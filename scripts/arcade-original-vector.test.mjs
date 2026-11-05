@@ -20,3 +20,20 @@ for(const id of ["neon-vector","prism-panic"])test(id+" boots, runs, restarts wi
  listeners.get("canvas:pointerdown")({clientX:320,clientY:240});
  assert.equal(nodes.get("score").textContent,"0");
 });
+
+test("vector cabinet metadata stays synchronized after the game-family rewrite",()=>{
+ const catalog=JSON.parse(readFileSync("public/arcade/catalog.json","utf8")).games;
+ const manifest=JSON.parse(readFileSync("public/arcade/hosted/account-bridge-manifest.json","utf8")).games;
+ for(const [id,title] of [["neon-vector","Cinder Vector"],["prism-panic","Prism Siege"]]){
+  const cabinet=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
+  const entry=catalog.find(g=>g.id===id);
+  const bridge=manifest.find(g=>g.gameId==="cabinet-"+id);
+  assert.equal(entry?.title,title);
+  assert.equal(entry?.genre,"Shooter");
+  assert.equal(bridge?.title,title);
+  assert.equal(bridge?.scoreSelector,"#score");
+  assert.equal(bridge?.scoreMode,"score");
+  assert.match(cabinet,/href="\/chaos-cartridge\.html"/);
+  assert.match(cabinet,/vector-neon\.css/);
+ }
+});
