@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-05T12:14:45.023Z",
-  "reportsFound": 10,
+  "generatedAt": "2026-11-05T12:29:26.394Z",
+  "reportsFound": 20,
   "catalogRoutes": 132,
   "targets": {
     "live": {
@@ -12,16 +12,39 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
+      "failures": [],
+      "coverageOk": true
+    },
+    "local": {
+      "reports": 10,
+      "expectedShards": 10,
+      "expectedRoutes": 132,
+      "coveredRoutes": 132,
+      "missingShards": [],
+      "duplicatedShards": [],
+      "duplicatedRoutes": [],
+      "malformedReports": [],
       "failures": [
         {
-          "game": "neon-surge",
-          "route": "/arcade/hosted/neon-surge/index.html",
-          "profile": "desktop",
+          "game": "cinder-reversi",
+          "route": "/arcade/hosted/cinder-reversi/index.html",
+          "profile": "tablet",
           "action": "start game",
-          "reason": "locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting click action\n    - waitin",
-          "target": "live",
-          "screenshot": "009.png",
-          "networkErrorCount": 0,
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:84:43",
+          "target": "local",
+          "screenshot": "005.png",
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "bubble-barrage",
+          "route": "/arcade/hosted/bubble-barrage/index.html",
+          "profile": "phone",
+          "action": "start game",
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:84:43",
+          "target": "local",
+          "screenshot": "002.png",
+          "networkErrorCount": 1,
           "browserErrorCount": 0
         }
       ],
@@ -29,5 +52,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 42025297462
+  "sourceRunId": 42026617412
 }
