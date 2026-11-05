@@ -30,7 +30,8 @@ const worldNames={
  'boo-thang':'Boo Thang’s Ghostly Date',
  lydibug:'Lydibug’s Starlit Garden',sootsnoot:'Sootsnoot’s Ash Trail',
  rumblefluff:'Rumblefluff’s Thunder Nap',glittergob:'Glittergob’s Shiny Scheme',
- craggle:'Craggle’s Moonwall Watch',prismare:'Prismare’s Lantern Drift'
+ craggle:'Craggle’s Moonwall Watch',prismare:'Prismare’s Lantern Drift',
+ butters:'Butters’ Quiet-Corner Quest',trouble:'Trouble’s Midnight Treasure Hunt'
 };
 export const QUEST_TITLES=Object.freeze(worldNames);
 export const todayUTC=(at=new Date())=>at.toISOString().slice(0,10);
