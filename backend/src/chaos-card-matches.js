@@ -305,5 +305,6 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
    "@"+user.username+" "+(action==="accept"?"accepted.":action==="decline"?"declined.":"cancelled the table."),user.id);
  }
  await notifyTurns(env,createNotification,fresh,user.id);
+ if(action==="decline")return reply({closed:true,message:"Invitation declined."});
  return reply({match:visibleChaosMatch(fresh,user.id)});
 }
