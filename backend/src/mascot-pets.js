@@ -38,7 +38,8 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  craggle:['Steadfast','Moonlit rooftops and old stone','A small gargoyle guardian with a brave heart and glowing runic freckles.'],
  prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.'],
  butters:['Reserved','Soft blankets and safe quiet spaces','A buttercream ferret who peeks out from behind an oversized scarf. Shy at first, devoted once trust is earned.'],
- trouble:['Mischievous','Moonlight scavenger hunts and shiny treasures','A masked raccoon prankster with nimble paws, relentless curiosity and a habit of leaving tiny surprises behind.']
+ trouble:['Mischievous','Moonlight scavenger hunts and shiny treasures','A masked raccoon prankster with nimble paws, relentless curiosity and a habit of leaving tiny surprises behind.'],
+ 'skunk-riot':['Rebellious and loyal','Midnight punk shows, distorted guitars and neon graffiti','A cheeky skunk with a glowing magenta mohawk, a studded leather vest and a harmless prank-stink. Loud on stage, surprisingly cuddly after the encore.']
 });
 export const STAR_FORMS=Object.freeze({
  lydibug:{name:'Lydibloom',level:9,bond:500,tagline:'A little light that learned to lead the whole garden.'},
@@ -81,7 +82,8 @@ const SPECIES_REACTIONS=Object.freeze({
  craggle:['takes the snack from its rooftop perch like a tiny guardian','leads a daring rooftop game with glowing runic freckles','rests on an old stone ledge, safe and watchful','shares a brave little thought beneath the moon','leans its sturdy gargoyle shoulder against yours','lets you wipe the moonstone dust from its little wings'],
  prismare:['tastes the snack and sends a ribbon of color drifting by','paints a deep-sea-light game across the room','floats into a slow, rainbow-colored daydream','shares a dreamy thought that shifts color as it speaks','wraps a soft ribbon of light around your hand','polishes its glassy fins until the room catches rainbows'],
  butters:['sniffs the snack from inside his scarf, then timidly accepts it','takes one cautious step into the game before trying a tiny happy hop','curling into his soft scarf, finally safe enough to sleep','whispers a few shy words and waits for a kind reply','leans his cheek against your hand after checking that it is safe','lets you straighten his oversized scarf and smooth his cream-colored fur'],
- trouble:['snatches the snack with both clever paws and an unapologetic grin','starts a treasure hunt and hides your prize under his striped tail','naps in a pile of allegedly borrowed shiny objects','chitters the complicated story of his latest harmless prank','offers you a stolen bottle cap as his highest form of affection','washes his paws dramatically, pretending he had nothing to do with the mess']
+ trouble:['snatches the snack with both clever paws and an unapologetic grin','starts a treasure hunt and hides your prize under his striped tail','naps in a pile of allegedly borrowed shiny objects','chitters the complicated story of his latest harmless prank','offers you a stolen bottle cap as his highest form of affection','washes his paws dramatically, pretending he had nothing to do with the mess'],
+ 'skunk-riot':['sniffs the snack, gives an approving rock-star nod and chomps it with gusto','leaps into a tiny mosh pit and spins its striped tail like a stage spotlight','curls that enormous tail around itself and dreams of an encore','chitters a defiant punk chorus, then asks you to sing along','pretends to be too tough for hugs before snuggling under your arm','lets you comb its neon mohawk and polish the spikes on its jacket']
 });
 const SPECIES = [
  ['moxie','Vexwing','moth'],['bloop','Gillrot','axolotl'],
@@ -99,6 +101,7 @@ const SPECIES = [
  ['rumblefluff','Rumblefluff','storm lamb'],['glittergob','Glittergob','crystal goblin'],
  ['craggle','Craggle','moonstone gargoyle'],['prismare','Prismare','prism jelly'],
  ['butters','Butters','cream ferret'],['trouble','Trouble','masked raccoon'],
+ ['skunk-riot','Skunk Riot','punk skunk'],
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
@@ -122,7 +125,7 @@ const INTERACTIONS=Object.freeze({
 });
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured,bond_experience,talked_at,cuddled_at,groomed_at FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
- const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 30').bind(userId).all();
+ const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 31').bind(userId).all();
  const [gear,rooms,layouts,furniture]=await Promise.all([
   env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
   env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all(),
