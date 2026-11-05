@@ -45,6 +45,8 @@ function makeControl(label,action,body={},primary=false){
 function renderMatch(){
  const panel=$("cards-online-table"),box=$("cards-online-actions"),hand=$("cards-online-hand"),votes=$("cards-online-choices"),score=$("cards-online-scores");
  panel.hidden=!selected;if(!selected)return;
+ const link=$("cards-online-share");
+ link.href=location.origin+"/arcade/hosted/cards-against-chaos/index.html?match="+escapeURL(selected.id);
  box.replaceChildren();hand.replaceChildren();votes.replaceChildren();score.replaceChildren();
  text("cards-online-round",selected.round||"Invitation");
  text("cards-online-prompt",selected.prompt||"Your original prompt appears when the invitation is accepted.");
@@ -76,7 +78,7 @@ function renderMatch(){
  }
  if(selected.can_next)box.append(makeControl("Deal the next round","next",{},true));
  if(selected.phase==="finished")box.append(document.createTextNode("🏆 "+seatName(selected,selected.winner)+" wins the table."));
- const link=$("cards-online-share");link.href=location.origin+"/arcade/hosted/cards-against-chaos/index.html?match="+escapeURL(selected.id);
+
 }
 async function openMatch(id){
  try{status("Loading card table…");const data=await call(root+"/"+escapeURL(id));
@@ -87,7 +89,7 @@ async function openMatch(id){
 async function refresh(openCurrent=true){
  if(!me)return;
  try{const data=await call(root);matches=data.matches||[];renderList();if(openCurrent&&selected)await openMatch(selected.id);
- else if(!selected&&params.has("match"))await openMatch(params.get("match"));
+ else if(!selected&&new URLSearchParams(location.search).has("match"))await openMatch(new URLSearchParams(location.search).get("match"));
  }catch(error){status(error.message||"Could not load saved tables.");}
 }
 async function mutate(action,body={}){
