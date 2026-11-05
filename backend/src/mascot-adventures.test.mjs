@@ -6,7 +6,7 @@ import {HABITAT_THEMES,HABITAT_DECORATIONS,QUEST_TITLES,questFor,todayUTC,careQu
 
 test('every mascot has an original, deterministic story quest',()=>{
  const ids=MASCOT_SPECIES.map(x=>x.id);
- assert.equal(ids.length,30);
+ assert.equal(ids.length,31);
  assert.deepEqual(new Set(Object.keys(QUEST_TITLES)),new Set(ids));
  for(const id of ids){
   const q=questFor(id,'2026-11-02');
