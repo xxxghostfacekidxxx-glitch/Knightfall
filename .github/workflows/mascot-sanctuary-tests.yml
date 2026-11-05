@@ -14,6 +14,7 @@ on:
       - 'backend/migrations/0108_mascot_room_layouts.sql'
       - 'backend/migrations/0109_mascot_furniture.sql'
       - 'backend/migrations/0119_butters_trouble_pets.sql'
+      - 'backend/migrations/0121_skunk_riot_pet.sql'
       - 'public/assets/devil-tools/neon-nuisances/*'
       - 'backend/src/mascot-furniture.js'
       - 'backend/src/mascot-furniture.test.mjs'
