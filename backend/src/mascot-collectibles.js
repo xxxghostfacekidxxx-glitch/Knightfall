@@ -5,7 +5,7 @@ rattlepop:[750,2],gutterkit:[750,2],"volt-imp":[750,2],"casket-pup":[750,2],"chu
 "crypt-koi":[1400,3],"void-sprout":[1400,3],"minion-mouse":[4500,7],gravebyte:[1400,3],thornriot:[1400,3],
 statichex:[2500,5],"mini-villain":[5500,9],"mini-eddie":[6000,9],
 lydibug:[4500,7],sootsnoot:[750,2],rumblefluff:[1400,3],glittergob:[750,2],craggle:[1400,3],prismare:[2500,5],"boo-thang":[5000,8],
-butters:[1400,3],trouble:[1750,4]
+butters:[1400,3],trouble:[1750,4],"skunk-riot":[2000,4]
 });
 const entries=[
 ["scrap_crown","Scrap Crown","head",450,null],["witch_hat","Midnight Witch Hat","head",550,null],["glitch_horns","Glitch Horns","head",null,299],
@@ -14,7 +14,7 @@ const entries=[
 ["ember_aura","Ember Aura","aura",650,null],["acid_particles","Acid Sparks","aura",900,null],["eclipse_aura","Eclipse Aura","aura",null,399]
 ];
 export const PET_ACCESSORIES = Object.freeze(Object.fromEntries(entries.map(([sku,name,slot,cinders_price,price_cents])=>[sku,Object.freeze({sku,name,slot,cinders_price,price_cents,asset:'/assets/devil-tools/neon-nuisances/accessories/'+sku+'.svg',premium:price_cents!==null})])));
-export const MAX_PET_SPECIES=30;
+export const MAX_PET_SPECIES=31;
 export const FREE_STARTER_SPECIES=Object.freeze(['moxie','bloop','pippa','nib','glim','zuzu','kiki','emberbun']);
 export const petMarketPrice=(species,adoptedCount)=>adoptedCount===0&&FREE_STARTER_SPECIES.includes(species)?0:(PET_MARKET[species]?.[0]??null);
 export const petUnlockLevel=species=>PET_MARKET[species]?.[1]??null;
