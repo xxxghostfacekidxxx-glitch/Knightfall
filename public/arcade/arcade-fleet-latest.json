@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T06:59:24.663Z",
+  "generatedAt": "2026-11-05T12:10:21.781Z",
   "reportsFound": 10,
   "catalogRoutes": 132,
   "targets": {
@@ -12,22 +12,10 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [
-        {
-          "game": "neon-surge",
-          "route": "/arcade/hosted/neon-surge/index.html",
-          "profile": "desktop",
-          "action": "start game",
-          "reason": "locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting click action\n    - waitin",
-          "target": "live",
-          "screenshot": "009.png",
-          "networkErrorCount": 0,
-          "browserErrorCount": 0
-        }
-      ],
-      "coverageOk": false
+      "failures": [],
+      "coverageOk": true
     }
   },
   "passed": false,
-  "sourceRunId": 41983898923
+  "sourceRunId": 42024390296
 }
