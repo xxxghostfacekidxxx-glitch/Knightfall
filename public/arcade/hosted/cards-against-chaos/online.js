@@ -122,7 +122,7 @@ async function create(event){
   status("Invitation sent! Your friend can accept from their notifications or this table.");
  }catch(error){
   status(error.message||"Could not send the invitation.");
-  if(error.match_id)await openMatch(error.match_id);
+  if(error.data?.match_id)await openMatch(error.data.match_id);
  }finally{busy=false;$("cards-online-challenge").disabled=!friends.length;}
 }
 async function boot(){
