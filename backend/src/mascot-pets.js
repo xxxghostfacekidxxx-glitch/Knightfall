@@ -36,7 +36,9 @@ export const SPECIES_PERSONALITIES=Object.freeze({
  rumblefluff:['Bouncy','Thunderstorms and soft blankets','A cloud-wool lamb who stores gentle thunder in its curled horns.'],
  glittergob:['Mischievous','Shiny rocks and secret pockets','A pocket-sized crystal goblin who collects bright things and shares the best ones.'],
  craggle:['Steadfast','Moonlit rooftops and old stone','A small gargoyle guardian with a brave heart and glowing runic freckles.'],
- prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.']
+ prismare:['Dreamy','Rainbows and deep-sea lights','A floating prism jelly who paints the dark with shifting ribbons of color.'],
+ butters:['Reserved','Soft blankets and safe quiet spaces','A buttercream ferret who peeks out from behind an oversized scarf. Shy at first, devoted once trust is earned.'],
+ trouble:['Mischievous','Moonlight scavenger hunts and shiny treasures','A masked raccoon prankster with nimble paws, relentless curiosity and a habit of leaving tiny surprises behind.']
 });
 export const STAR_FORMS=Object.freeze({
  lydibug:{name:'Lydibloom',level:9,bond:500,tagline:'A little light that learned to lead the whole garden.'},
@@ -94,6 +96,7 @@ const SPECIES = [
  ['lydibug','Lydibug','starlight beetle'],['sootsnoot','Sootsnoot','ember badger'],
  ['rumblefluff','Rumblefluff','storm lamb'],['glittergob','Glittergob','crystal goblin'],
  ['craggle','Craggle','moonstone gargoyle'],['prismare','Prismare','prism jelly'],
+ ['butters','Butters','cream ferret'],['trouble','Trouble','masked raccoon'],
 ].map(([id,name,type])=>({id,name,type,
   temperament:SPECIES_PERSONALITIES[id][0],favorite:SPECIES_PERSONALITIES[id][1],lore:SPECIES_PERSONALITIES[id][2],
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
@@ -117,7 +120,7 @@ const INTERACTIONS=Object.freeze({
 });
 const ownSelect='SELECT id,user_id,species,nickname,adopted_at,fed_at,played_at,rested_at,experience,featured,bond_experience,talked_at,cuddled_at,groomed_at FROM mascot_pets';
 async function petsFor(env,userId,publicView=false){
- const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 28').bind(userId).all();
+ const rows=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY featured DESC,adopted_at DESC,id DESC LIMIT 30').bind(userId).all();
  const [gear,rooms,layouts,furniture]=await Promise.all([
   env.DB.prepare('SELECT pet_id,slot,sku FROM mascot_equipment WHERE user_id=?').bind(userId).all(),
   env.DB.prepare('SELECT pet_id,theme,decoration FROM mascot_habitats WHERE user_id=?').bind(userId).all(),
