@@ -664,3 +664,9 @@
  .composer textarea{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){.conversation{transition:none}.conversation:hover{transform:none}}
+
+/* Friend-only Cards Against Chaos entry point in messaging header. */
+.chaos-card-chat-invite{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:.5rem .7rem;border:1px solid #ff55d8;border-radius:10px;color:#ffe2f6!important;background:#311638;text-decoration:none;font-weight:850;font-size:.82rem;white-space:nowrap}
+.chaos-card-chat-invite:hover,.chaos-card-chat-invite:focus-visible{background:#4a214f;border-color:#c6ff45}
+.chaos-card-chat-invite[hidden]{display:none!important}
+@media(max-width:650px){.chaos-card-chat-invite{min-height:40px;padding:.48rem .6rem;font-size:.75rem}}
