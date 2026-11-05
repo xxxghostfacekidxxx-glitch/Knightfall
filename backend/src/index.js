@@ -1656,8 +1656,8 @@ For complex questions, organize the answer clearly and provide actionable detail
       const response=await handleChaosCardMatches(request,env,url,{getUser:requireUser,json,rateLimit,origin,createNotification});
       if(response)return response;
     }catch(error){
-      if(/no such table: arcade_chaos_card_matches/i.test(String(error?.message||error)))
-        return json({error:"Cards Against Chaos online mode is awaiting its D1 migration."},503,origin,{"retry-after":"60"});
+      if(/no such table: arcade_chaos_four_matches/i.test(String(error?.message||error)))
+        return json({error:"Four-player Cards Against Chaos is awaiting D1 migration 0120."},503,origin,{"retry-after":"60"});
       throw error;
     }
   }
