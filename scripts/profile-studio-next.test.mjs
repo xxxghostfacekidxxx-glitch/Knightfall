@@ -96,3 +96,13 @@ test("Privacy stays explicit, no public autosave and no unsafe remote image uplo
  assert.match(inline,/studioCoverVersion\+\+/);
  assert.match(inline,/URL\.revokeObjectURL/);
 });
+
+test("public member profile applies chosen theme and accent beyond tiny badges",()=>{
+ const profile=read("public/profile.js");
+ const theme=read("public/profile-theme-library.css");
+ assert.match(profile,/root\.dataset\.theme=/);
+ assert.match(profile,/root\.style\.setProperty\("--profile-accent"/);
+ assert.match(theme,/#profile\[data-theme="gravewave"\]/);
+ assert.match(theme,/#profile \.profile-heading h1\{color:color-mix\(in srgb,var\(--profile-accent/);
+ assert.match(theme,/border:1px solid color-mix\(in srgb,var\(--pf-border\) 55%,var\(--profile-accent/);
+});
