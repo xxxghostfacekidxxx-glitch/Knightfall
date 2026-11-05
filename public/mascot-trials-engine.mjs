@@ -24,7 +24,9 @@ export const SPECIES_TRIALS=Object.freeze({
  'rumblefluff':['dodge','Rumblefluff Thunder Roll','lamb'],
  'glittergob':['memory','Glittergob Crystal Cache','goblin'],
  'craggle':['dodge','Craggle Moonstone Climb','gargoyle'],
- 'prismare':['memory','Prismare Prism Tide','jelly']
+ 'prismare':['memory','Prismare Prism Tide','jelly'],
+ 'butters':['memory','Butters’ Cozy Scarf Search','ferret'],
+ 'trouble':['catch','Trouble’s Raccoon Loot Dash','raccoon']
 });
 export const TRIAL_TYPES=Object.freeze(['catch','memory','runes','dodge']);
 export function challengeFor(species,level=1){
