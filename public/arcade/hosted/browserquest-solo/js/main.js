@@ -88,7 +88,12 @@ define(['jquery', 'app'], function($, App) {
         	    app.toggleAbout();
         	});
 
-            $('#browserquest-name-form').bind('submit', function(event) { event.preventDefault(); var name = $('#nameinput').val().trim(); if(name) app.tryStartingGame(name); return false; });
+            $('#browserquest-name-form').bind('submit', function(event) {
+                event.preventDefault();
+                var $name = $('#nameinput'), name = $name.val().trim();
+                if(name) app.tryStartingGame(name, function() { $name.blur(); });
+                return false;
+            });
             $('#nameinput').bind("keyup", function() {
                 app.toggleButton();
             });
@@ -343,22 +348,8 @@ define(['jquery', 'app'], function($, App) {
                 }
             });
 
-            $('#nameinput').keypress(function(event) {
-                var $name = $('#nameinput'),
-                    name = $name.val().trim();
+            // Form submit owns Enter; no competing name-input keypress startup.
 
-                if(event.keyCode === 13) {
-                    if(name !== '') {
-                        app.tryStartingGame(name, function() {
-                            $name.blur(); // exit keyboard on mobile
-                        });
-                        return false; // prevent form submit
-                    } else {
-                        return false; // prevent form submit
-                    }
-                }
-            });
-            
             $('#mutebutton').click(function() {
                 game.audioManager.toggle();
             });
