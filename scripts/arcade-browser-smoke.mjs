@@ -17,7 +17,7 @@ const games = [
   { name: "Cinder Defense", path: "/arcade/hosted/ashfall-neon-engine.html?game=cinder-defense", start: "#start", pause: false },
   { name: "Marshland Marksman", path: "/arcade/hosted/marshland-marksman/index.html", start: "#start", pause: false },
   { name: "Cinder Crossing", path: "/arcade/hosted/cinder-crossing/index.html", start: "#start", pause: true },
-  { name: "Afterburn Breakout", path: "/arcade/hosted/afterburn-breakout/index.html", start: "#start", pause: true },
+  { name: "Shatterpocalypse", path: "/arcade/hosted/afterburn-breakout/index.html", start: "#overlay-start", pause: true },
   { name: "Colossus Clash", path: "/arcade/hosted/colossus-clash/index.html", start: "#start", pause: false },
 ];
 
@@ -442,67 +442,70 @@ try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
     const errors = [];
     page.on("pageerror", error => errors.push(error.stack || error.message));
-    const response = await page.goto(base + game.path, { waitUntil: "networkidle", timeout: 30000 });
-    if (!response || response.status() !== 200) {
-      console.error(`FAIL ${game.name}: page returned ${response?.status() ?? "no response"}`);
-      failed = true;
-      await page.close();
-      continue;
-    }
-    const canvas = page.locator("canvas").first();
-    let pixels = 0;
-    let boardVisible = false;
-    if (game.canvas === false) {
-      const board = page.locator(game.board || "svg").first();
-      if (await board.count() < 1) {
-        console.error(`FAIL ${game.name}: expected a visible game board`);
+    try {
+      const response = await page.goto(base + game.path, { waitUntil: "networkidle", timeout: 30000 });
+      if (!response || response.status() !== 200) {
+        console.error(`FAIL ${game.name}: page returned ${response?.status() ?? "no response"}`);
         failed = true;
-        await page.close();
         continue;
       }
-    } else if (await canvas.count() !== 1) {
-      console.error(`FAIL ${game.name}: expected exactly one game canvas`);
+      const canvas = page.locator("canvas").first();
+      let pixels = 0;
+      let boardVisible = false;
+      if (game.canvas === false) {
+        const board = page.locator(game.board || "svg").first();
+        if (await board.count() < 1) {
+          console.error(`FAIL ${game.name}: expected a visible game board`);
+          failed = true;
+            continue;
+        }
+      } else if (await canvas.count() !== 1) {
+        console.error(`FAIL ${game.name}: expected exactly one game canvas`);
+        failed = true;
+        continue;
+      }
+      await page.locator(game.start).click();
+      await page.waitForTimeout(350);
+      if (game.canvas === false) {
+        boardVisible = await page.locator(game.board || "svg").first().isVisible();
+        if (!boardVisible) {
+          console.error(`FAIL ${game.name}: game board is not visible after starting`);
+          failed = true;
+        }
+      } else {
+        pixels = await canvas.evaluate(el => {
+          const c = el.getContext("2d");
+          if (!c) return 0;
+          const data = c.getImageData(0, 0, el.width, el.height).data;
+          let count = 0;
+          for (let i = 3; i < data.length; i += 4) if (data[i] > 0) count++;
+          return count;
+        });
+        if (pixels < 1000) {
+          console.error(`FAIL ${game.name}: canvas appears blank after starting (${pixels} painted pixels)`);
+          failed = true;
+        }
+      }
+      if (game.pause) {
+        const pause = page.locator("#pause");
+        await pause.click();
+        if (!(await pause.innerText()).toLowerCase().includes("resume")) {
+          console.error(`FAIL ${game.name}: pause button did not enter paused state`);
+          failed = true;
+        }
+        await pause.click();
+      }
+      if (errors.length) {
+        console.error(`FAIL ${game.name}: browser errors: ${errors.join(" | ")}`);
+        failed = true;
+      }
+      if (!errors.length && (game.canvas === false ? boardVisible : pixels >= 1000)) console.log(`PASS ${game.name}: mobile viewport, start interaction, ${game.canvas === false ? "visible SVG board" : "rendered canvas"}${game.pause ? ", pause/resume" : ""}`);
+    } catch (error) {
+      console.error(`FAIL ${game.name}: ${error.message}`);
       failed = true;
+    } finally {
       await page.close();
-      continue;
     }
-    await page.locator(game.start).click();
-    await page.waitForTimeout(350);
-    if (game.canvas === false) {
-      boardVisible = await page.locator(game.board || "svg").first().isVisible();
-      if (!boardVisible) {
-        console.error(`FAIL ${game.name}: game board is not visible after starting`);
-        failed = true;
-      }
-    } else {
-      pixels = await canvas.evaluate(el => {
-        const c = el.getContext("2d");
-        if (!c) return 0;
-        const data = c.getImageData(0, 0, el.width, el.height).data;
-        let count = 0;
-        for (let i = 3; i < data.length; i += 4) if (data[i] > 0) count++;
-        return count;
-      });
-      if (pixels < 1000) {
-        console.error(`FAIL ${game.name}: canvas appears blank after starting (${pixels} painted pixels)`);
-        failed = true;
-      }
-    }
-    if (game.pause) {
-      const pause = page.locator("#pause");
-      await pause.click();
-      if (!(await pause.innerText()).toLowerCase().includes("resume")) {
-        console.error(`FAIL ${game.name}: pause button did not enter paused state`);
-        failed = true;
-      }
-      await pause.click();
-    }
-    if (errors.length) {
-      console.error(`FAIL ${game.name}: browser errors: ${errors.join(" | ")}`);
-      failed = true;
-    }
-    if (!errors.length && (game.canvas === false ? boardVisible : pixels >= 1000)) console.log(`PASS ${game.name}: mobile viewport, start interaction, ${game.canvas === false ? "visible SVG board" : "rendered canvas"}${game.pause ? ", pause/resume" : ""}`);
-    await page.close();
   }
 
   // Exercise account score submission on a real bridged game page using a fake API.
