@@ -23,3 +23,14 @@
 .cards-online-score{display:inline-flex;align-items:center;gap:.4rem;min-height:42px}
 .cards-online-score img{width:36px;height:36px;object-fit:cover;border-radius:50%;background:#1c1129;border:1px solid #aa68c0;box-shadow:0 0 0 2px #ffffff10}
 .cards-online-score.czar img{border-color:#d2ff83}
+
+/* Four-seat lobby: clean multi-friend selection on narrow screens. */
+.cards-online-friend-field{display:grid;gap:.3rem;flex:1 1 220px;min-width:0}
+.cards-online-friend-field[hidden]{display:none!important}
+.cards-online-friend-field label{color:#d6c7e1;font-size:.85rem}
+.cards-online-friend-field select{width:100%;min-width:0}
+#cards-online-human-count{flex:1 1 100%;min-width:0}
+#cards-online-preview{flex:1 1 100%;margin:.1rem 0;color:#c6ff83}
+.cards-online-score{flex-wrap:wrap}
+.cards-online-score small{flex-basis:100%;color:#d3b5e5;font-size:.72rem}
+@media(max-width:640px){.cards-online-friend-field{flex-basis:100%}.cards-online-score{flex:1 1 45%;max-width:none;justify-content:center;text-align:center}.cards-online-score small{flex-basis:100%}}
