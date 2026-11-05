@@ -53,8 +53,16 @@ function renderMatch(){
  text("cards-online-turn",turnNote(selected));
  selected.seats.forEach((seat,i)=>{
   const el=document.createElement("span");el.className="cards-online-score"+(i===selected.judge&&selected.status==="active"?" czar":"");
-  el.textContent=(i===selected.judge&&selected.status==="active"?"★ ":"")+seat.name+(seat.kind==="ai"?" 🤖":"")+" · "+selected.scores[i];
-  score.append(el);
+  if(seat.kind==="ai"){
+   const avatar=document.createElement("img");
+   const petId=seat.id==="eddie"?"mini-eddie":seat.id;
+   avatar.src="/assets/devil-tools/neon-nuisances/portraits/"+petId+".svg";
+   avatar.alt="";avatar.loading="lazy";avatar.width=36;avatar.height=36;
+   el.append(avatar);
+  }
+  const label=document.createElement("span");
+  label.textContent=(i===selected.judge&&selected.status==="active"?"★ ":"")+seat.name+(seat.kind==="ai"?" · AI":"")+" · "+selected.scores[i];
+  el.append(label);score.append(el);
  });
  const other=selected.seats[1-selected.viewer_seat];
  if(selected.status==="pending"){
