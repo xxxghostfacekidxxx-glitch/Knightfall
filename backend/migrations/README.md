@@ -171,3 +171,11 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - The three existing rescue/egg guards were rebuilt with the new 30-pet ceiling; the starter restriction, unlock levels, ownership checks, wallet debit rules and egg timing rules were preserved.
 - **Production D1 `knightfall-forum` was updated November 5, 2026 through Cloudflare's authorized D1 query API**, because no GitHub workflow-dispatch action was available in this session. A D1 time-travel recovery bookmark was checked before these writes. Both SQL migrations returned success, their table, pet market entries, guards, and badge target were read back, and migration ledger entries `63` and `64` were inserted and verified *after* those checks. Do not rerun these migrations in the production migration workflow.
 - Runtime acceptance is still needed for two-device async card matches, real notification delivery, pet rescues, and the newly rendered pet artwork. Deployed source or matching D1 rows do not prove gameplay works end to end.
+
+## Four-seat Cards Against Chaos · 0120 (November 5, 2026)
+
+- `0120_four_seat_chaos_cards.sql` creates `arcade_chaos_four_matches` with **exactly four in-game seats**, one required owner and up to three optional human account IDs. The remaining game seats are scripted Lydibug, Butters and Eddie AI opponents.
+- The online invite lobby lets accepted friends join before play begins. The host can start early, at which point pending invites expire and their seats become AI for that match. Game and invitation mutations use version-checked D1 writes; each member's hand is scoped to their authenticated view.
+- Existing `0118` two-member table and `0117` Connect Four tables are **not modified or removed**. The old card table was verified empty before the migration. No saved match was discarded.
+- The production `knightfall-forum` D1 migration was applied and verified on **2026-11-05**, and recorded in `d1_migrations` as **ID 65** after confirming the table, four indexes, optional invited-member columns and old match count. Time Travel bookmark recovery was checked before applying it. Do not rerun an already-recorded migration.
+- Full cross-account/device acceptance, mobile turn notifications and CI test results require separate verification; successful schema writes alone are not a claim of complete runtime certification.
