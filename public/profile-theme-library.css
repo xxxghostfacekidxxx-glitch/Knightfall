@@ -8,7 +8,7 @@
  background:radial-gradient(circle at 12% 0%,var(--pf-spot),transparent 38%),
  radial-gradient(circle at 95% 68%,var(--pf-spot-alt),transparent 48%),
  linear-gradient(157deg,var(--pf-surface),var(--pf-surface-deep) 81%);
- border:1px solid var(--pf-border);box-shadow:0 24px 70px #0009,inset 0 1px #ffffff10;
+ border:1px solid color-mix(in srgb,var(--pf-border) 55%,var(--profile-accent,#ff55d8) 45%);box-shadow:0 24px 70px #0009,inset 0 1px #ffffff10;
 }
 #profile[data-theme="ember"]{--pf-surface:#221326;--pf-surface-deep:#100f1c;--pf-border:#854a81;--pf-spot:rgba(255,85,216,.20);--pf-spot-alt:rgba(255,120,173,.06)}
 #profile[data-theme="midnight"]{--pf-surface:#141a3b;--pf-surface-deep:#080f23;--pf-border:#526ba3;--pf-spot:rgba(98,127,255,.19);--pf-spot-alt:rgba(121,232,255,.08)}
@@ -23,7 +23,7 @@
 #profile[data-theme="bloodmoon"] .profile-cover{background:radial-gradient(circle at 75% 34%,#ff667746 0 13%,transparent 14%),linear-gradient(125deg,#481627,#100d18)}
 #profile[data-theme="spectral"] .profile-cover{background:radial-gradient(ellipse at 20% 20%,#c59cff4d,transparent 52%),linear-gradient(125deg,#22193b,#0b1526)}
 #profile[data-theme="void"] .profile-cover{background:radial-gradient(ellipse at 60% 30%,#a9c8eb42,transparent 42%),linear-gradient(120deg,#202d42,#070c13)}
-#profile .profile-heading h1{color:var(--pf-heading);text-shadow:0 0 28px color-mix(in srgb,var(--profile-accent,#ff55d8) 18%,transparent);overflow-wrap:anywhere}
+#profile .profile-heading h1{color:color-mix(in srgb,var(--profile-accent,#ff55d8) 65%,#fff 35%);text-shadow:0 0 28px color-mix(in srgb,var(--profile-accent,#ff55d8) 18%,transparent);overflow-wrap:anywhere}
 #profile .profile-heading .handle,#profile .profile-tagline,#profile .muted{color:var(--pf-dim)}
 #profile .profile-actions-wrap .action,#profile :is(.friends-panel,.profile-photo-card,.profile-favorites,.profile-social-panel,.profile-birth-chart,.profile-album-tools,.activity-card){
  border-color:color-mix(in srgb,var(--pf-border) 65%,var(--profile-accent,#ff55d8) 35%);
