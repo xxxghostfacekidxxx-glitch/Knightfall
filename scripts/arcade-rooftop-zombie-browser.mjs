@@ -48,6 +48,9 @@ try{
   const value=await page.locator('#melee-bar').evaluate(el=>parseFloat(el.style.width));
   assert.ok(value>=0&&value<100,'Melee attack must enter cooldown: '+value);
   await page.click('#pause');assert.match(await page.locator('#pause').innerText(),/Resume/);
+  await page.click('#pause');
+  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+  assert.match(await page.locator('#pause').innerText(),/Resume/,'Switching apps should automatically pause');
   await page.click('#pause');await page.click('#restart');
   assert.equal(await page.locator('#difficulty').isDisabled(),true);
   assert.match(await page.locator('#combat-objective').innerText(),/NIGHTMARE/i);
