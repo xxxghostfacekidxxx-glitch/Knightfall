@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+<title id="title">Skunk Riot · punk skunk portrait</title>
+<desc id="desc">Original Knightfall Skunk Riot mascot, a mischievous black-and-white skunk with a hot-pink and toxic-green mohawk, a huge arched stripe tail, pierced ears and a studded leather jacket.</desc>
+<defs>
+<radialGradient id="bg"><stop stop-color="#4a245d"/><stop offset=".6" stop-color="#1f1836"/><stop offset="1" stop-color="#0d1021"/></radialGradient>
+<linearGradient id="fur" x2="0" y2="1"><stop stop-color="#4c455f"/><stop offset=".48" stop-color="#252337"/><stop offset="1" stop-color="#111522"/></linearGradient>
+<linearGradient id="stripe" x2=".8" y2="1"><stop stop-color="#fff7ff"/><stop offset=".5" stop-color="#dfd3ed"/><stop offset="1" stop-color="#adabc5"/></linearGradient>
+<linearGradient id="mohawk" x2="0" y2="1"><stop stop-color="#ffb4ec"/><stop offset=".4" stop-color="#ff41c8"/><stop offset="1" stop-color="#a5229c"/></linearGradient>
+<linearGradient id="leather" x2="1" y2="1"><stop stop-color="#3b3645"/><stop offset="1" stop-color="#10111c"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+</defs>
+<rect width="320" height="320" rx="38" fill="url(#bg)"/>
+<circle cx="254" cy="65" r="37" fill="#f75ad8" opacity=".14"/>
+<path d="M24 267q130-16 266 0" fill="none" stroke="#ff5edb" stroke-width="4" opacity=".22"/>
+<g transform="translate(0 3) rotate(2 163 180)">
+<!-- upright skunk tail, with broad white sweeping stripe -->
+<path d="M105 246Q10 222 20 112Q30 47 97 72Q144 96 137 162Q117 217 125 252Z" fill="url(#fur)" stroke="#0d1221" stroke-width="6"/>
+<path d="M99 244Q16 210 40 111Q53 74 81 87Q128 114 118 160Q101 204 115 249Z" fill="url(#stripe)" stroke="#bfb7d5" stroke-width="2"/>
+<path d="M36 96q18-32 50-18" fill="none" stroke="#ff52d9" stroke-width="6" stroke-linecap="round"/>
+<path d="M66 239q21 13 36 8" fill="none" stroke="#f95cd8" stroke-width="6" stroke-linecap="round"/>
+<!-- neon crown on tail -->
+<path d="M48 172l5-19 10 10 8-17 8 14 9-7-3 21Z" fill="none" stroke="#b7ff54" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M59 177v9m13-11v7" stroke="#b7ff54" stroke-width="3" opacity=".9"/>
+<!-- thick paws -->
+<ellipse cx="133" cy="270" rx="34" ry="21" fill="#151825" stroke="#090d1b" stroke-width="5"/>
+<ellipse cx="207" cy="270" rx="36" ry="22" fill="#151825" stroke="#090d1b" stroke-width="5"/>
+<path d="M115 269l6 5m12-5 5 5m53-4 6 5m11-6 7 5" stroke="#9d8ba6" stroke-width="3" stroke-linecap="round"/>
+<!-- torso -->
+<ellipse cx="169" cy="225" rx="75" ry="63" fill="url(#fur)" stroke="#0e1223" stroke-width="6"/>
+<path d="M149 185q-27 20-21 62q18 14 33 21q23-31 19-72Z" fill="url(#stripe)"/>
+<!-- studded sleeveless punk jacket -->
+<path d="M121 193q-22 8-31 35l27 30 20-16-9-44m89-6q23 9 31 37l-21 30-22-18 5-43" fill="url(#leather)" stroke="#10101c" stroke-width="5"/>
+<path d="M146 188q-13 13-13 29l17 16m46-44q14 13 16 32l-16 14" fill="none" stroke="#ff54d1" stroke-width="4"/>
+<path d="M148 223l-6 34m55-38 5 41" stroke="#c8c0d5" stroke-width="3" stroke-dasharray="4 5"/>
+<path d="M112 213l6-8 7 9-8 4Zm112-1 6-10 7 10-10 6Z" fill="#eaeaf7" stroke="#554f66" stroke-width="2"/>
+<path d="M102 235l7-10 7 10-8 4Zm125-1 7-10 6 10-8 4Z" fill="#e9e8fa" stroke="#554f66" stroke-width="2"/>
+<path d="M184 219l15 7-12 7Z" fill="#b7ff55"/>
+<path d="M185 244l11-7-5 12-6-4" fill="#fa49c2"/>
+<!-- head and piercings -->
+<path d="M120 117Q93 81 112 75Q128 72 145 97M197 100Q217 67 239 80Q252 103 214 130" fill="#303044" stroke="#111426" stroke-width="6"/>
+<path d="M116 107q-6-21 3-22l15 17m72 0q20-26 28-11l-12 24" fill="#ed9fcb"/>
+<circle cx="111" cy="95" r="8" fill="none" stroke="#d8d9f2" stroke-width="3"/>
+<circle cx="236" cy="98" r="7" fill="none" stroke="#d8d9f2" stroke-width="3"/>
+<circle cx="107" cy="113" r="5" fill="#fff1ff" stroke="#ba4ead" stroke-width="2"/>
+<ellipse cx="171" cy="151" rx="71" ry="67" fill="url(#fur)" stroke="#101426" stroke-width="6"/>
+<path d="M148 99q25-11 44 1q-8 22-10 40q-13 21-26 8q4-26-8-49" fill="url(#stripe)"/>
+<path d="M107 165q23 8 37 27q24 11 40 0q21-24 51-23q-5 34-50 46q-48 14-78-20Z" fill="url(#stripe)" stroke="#a29bb8" stroke-width="2"/>
+<path d="M122 126q14-9 35-5M185 121q15-5 26 6" stroke="#10111c" stroke-width="7" fill="none" stroke-linecap="round"/>
+<ellipse cx="147" cy="142" rx="9" ry="13" fill="#fff0fd"/><ellipse cx="194" cy="143" rx="10" ry="13" fill="#fceaff"/><ellipse cx="150" cy="141" rx="4.5" ry="8" fill="#eb43c5"/><ellipse cx="196" cy="141" rx="5" ry="8" fill="#eb43c5"/><circle cx="151" cy="137" r="2.2" fill="#fff"/><circle cx="197" cy="138" r="2.4" fill="#fff"/>
+<path d="M161 178q12-11 24 0q-11 14-24 0Z" fill="#ed4bb0" stroke="#2b172e" stroke-width="3"/>
+<path d="M163 181q11 6 20 0" fill="none" stroke="#f7abd9" stroke-width="3" stroke-linecap="round"/>
+<!-- sweeping magenta mohawk with a single acid-green streak -->
+<path d="M115 113Q105 76 96 64Q124 78 133 85Q127 48 126 37Q153 62 160 76Q161 36 172 20Q194 49 188 79Q208 57 222 54Q223 80 210 99Q168 81 115 113Z" fill="url(#mohawk)" stroke="#32132f" stroke-width="5" stroke-linejoin="round"/>
+<path d="M165 78Q176 44 182 34Q190 55 183 78Q198 59 211 63Q198 80 192 88" fill="#b5ff56" stroke="#2e4e1c" stroke-width="2"/>
+<path d="M135 70q9 13 9 23" stroke="#ffb8e9" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+<!-- studded collar and charm -->
+<path d="M111 198q58 22 117 0l-2 18q-54 25-112 0Z" fill="#191927" stroke="#070a15" stroke-width="4"/>
+<path d="M131 205l5-10 6 12Zm29 4 5-11 7 11Zm31-1 5-11 7 9Zm24-5 4-8 6 9Z" fill="#f7e8fb" stroke="#777086" stroke-width="1.5"/>
+<circle cx="175" cy="216" r="10" fill="none" stroke="#f5e4fc" stroke-width="4"/>
+<path d="M168 240l8-12 8 12-8 7Z" fill="#b9ff55" stroke="#223a2c" stroke-width="2"/>
+</g>
+
+<g fill="#ff77dd" opacity=".6"><circle cx="269" cy="105" r="3"/><circle cx="45" cy="45" r="2"/></g>
+</svg>
