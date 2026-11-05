@@ -454,7 +454,7 @@
  .conversation-list{max-height:34dvh;overflow:auto}
  .chat-panel{display:none;height:auto;min-height:0;max-height:none}
  .message-layout.show-chat .conversation-panel{display:none}
- .message-layout.show-chat .chat-panel{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:calc(100dvh - 155px);min-height:360px;max-height:calc(100dvh - 155px)}
+ .message-layout.show-chat .chat-panel{display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto auto;height:calc(100dvh - 155px);min-height:360px;max-height:calc(100dvh - 155px)}
  .message-layout.show-chat #typing-indicator,.message-layout.show-chat #load-older{grid-row:auto}
  .chat-head{position:relative;padding:.65rem;gap:.5rem}
  .chat-tools{gap:.35rem}
