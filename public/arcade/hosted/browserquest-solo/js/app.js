@@ -46,29 +46,16 @@ define(['jquery', 'storage'], function($, Storage) {
                         $play.addClass('loading');
                     }
                     this.$playDiv.unbind('click');
-                    // The original loop could spin forever when map assets fail to load.
-                    // Keep the play control recoverable and surface a useful error.
-                    var waitStarted = Date.now();
                     var watchCanStart = setInterval(function() {
-                        if(self.ready && self.canStartGame()) {
+                        log.debug("waiting...");
+                        if(self.canStartGame()) {
+                            setTimeout(function() {
+                                if(!self.isMobile) {
+                                    $play.removeClass('loading');
+                                }
+                            }, 1500);
                             clearInterval(watchCanStart);
-                            $play.removeClass('loading');
                             self.startGame(username, starting_callback);
-                        } else if(Date.now() - waitStarted > 15000) {
-                            clearInterval(watchCanStart);
-                            $play.removeClass('loading');
-                            self.$playDiv.unbind('click').click(function() {
-                                self.tryStartingGame($('#nameinput').val().trim() || $('#playername').text().trim());
-                            });
-                            var warning = document.getElementById('knightfall-start-error');
-                            if(!warning) {
-                                warning = document.createElement('p');
-                                warning.id = 'knightfall-start-error';
-                                warning.setAttribute('role', 'alert');
-                                warning.style.cssText = 'color:#a31d4c;font-weight:bold;text-align:center;margin:10px';
-                                $play.after(warning);
-                            }
-                            warning.textContent = 'The world is taking too long to load. Check your connection and tap Play to retry.';
                         }
                     }, 100);
                 } else {

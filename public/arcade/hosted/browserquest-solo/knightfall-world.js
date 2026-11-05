@@ -4,9 +4,9 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/lib/class.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/lib/class.js
   var require_class = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/lib/class.js"(exports) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/lib/class.js"(exports) {
       var initializing = false;
       var fnTest = /xyz/.test(function() {
         xyz;
@@ -544,9 +544,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/shared/js/gametypes.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/shared/js/gametypes.js
   var require_gametypes = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/shared/js/gametypes.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/shared/js/gametypes.js"(exports, module) {
       Types = {
         Messages: {
           HELLO: 0,
@@ -826,9 +826,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/utils.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/utils.js
   var require_utils = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/utils.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/utils.js"(exports, module) {
       var Utils2 = {};
       var sanitizer = require_sanitizer();
       var Types2 = require_gametypes();
@@ -885,9 +885,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/message.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/message.js
   var require_message = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/message.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/message.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Utils2 = require_utils();
@@ -1105,9 +1105,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/entity.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/entity.js
   var require_entity = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/entity.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/entity.js"(exports, module) {
       var cls = require_class();
       var Messages = require_message();
       var Utils2 = require_utils();
@@ -1164,9 +1164,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/properties.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/properties.js
   var require_properties = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/properties.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/properties.js"(exports, module) {
       var Types2 = require_gametypes();
       var Properties = {
         rat: {
@@ -1335,9 +1335,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/character.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/character.js
   var require_character = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/character.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/character.js"(exports, module) {
       var cls = require_class();
       var Messages = require_message();
       var Utils2 = require_utils();
@@ -1413,9 +1413,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/mob.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/mob.js
   var require_mob = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/mob.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/mob.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Messages = require_message();
@@ -1560,9 +1560,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/checkpoint.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/checkpoint.js
   var require_checkpoint = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/checkpoint.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/checkpoint.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Utils2 = require_utils();
@@ -1585,9 +1585,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/map.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/map.js
   var require_map = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/map.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/map.js"(exports, module) {
       var cls = require_class();
       path = require_path(), fs = require_fs(), _ = require_underscore(), Utils = require_utils(), Checkpoint = require_checkpoint();
       module.exports = Map = cls.Class.extend({
@@ -1758,9 +1758,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/npc.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/npc.js
   var require_npc = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/npc.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/npc.js"(exports, module) {
       module.exports = Npc = Entity.extend({
         init: function(id, kind, x, y) {
           this._super(id, "npc", kind, x, y);
@@ -1769,9 +1769,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/formulas.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/formulas.js
   var require_formulas = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/formulas.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/formulas.js"(exports, module) {
       var Utils2 = require_utils();
       var Formulas = {};
       Formulas.dmg = function(weaponLevel, armorLevel) {
@@ -1792,9 +1792,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/format.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/format.js
   var require_format = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/format.js"(exports) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/format.js"(exports) {
       var _2 = require_underscore();
       var Types2 = require_gametypes();
       (function() {
@@ -1835,9 +1835,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/player.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/player.js
   var require_player = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/player.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/player.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Messages = require_message();
@@ -2141,9 +2141,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/item.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/item.js
   var require_item = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/item.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/item.js"(exports, module) {
       module.exports = Item = Entity.extend({
         init: function(id, kind, x, y) {
           this._super(id, "item", kind, x, y);
@@ -2183,9 +2183,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/area.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/area.js
   var require_area = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/area.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/area.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Utils2 = require_utils();
@@ -2248,9 +2248,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/mobarea.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/mobarea.js
   var require_mobarea = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/mobarea.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/mobarea.js"(exports, module) {
       var Area2 = require_area();
       var _2 = require_underscore();
       var Types2 = require_gametypes();
@@ -2306,9 +2306,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/chestarea.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/chestarea.js
   var require_chestarea = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/chestarea.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/chestarea.js"(exports, module) {
       var Area2 = require_area();
       var _2 = require_underscore();
       var Types2 = require_gametypes();
@@ -2330,9 +2330,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/chest.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/chest.js
   var require_chest = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/chest.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/chest.js"(exports, module) {
       var Utils2 = require_utils();
       var Types2 = require_gametypes();
       module.exports = Chest = Item.extend({
@@ -2353,9 +2353,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/worldserver.js
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/worldserver.js
   var require_worldserver = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/server/js/worldserver.js"(exports, module) {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/server/js/worldserver.js"(exports, module) {
       var cls = require_class();
       var _2 = require_underscore();
       var Log = require_log();
@@ -3036,9 +3036,9 @@
     }
   });
 
-  // ../../../../../tmp/tmp.u3lvraXU9P/browserquest/knightfall-worker.cjs
+  // ../../../../../tmp/tmp.9mj4Hak9sV/browserquest/knightfall-worker.cjs
   var require_knightfall_worker = __commonJS({
-    "../../../../../tmp/tmp.u3lvraXU9P/browserquest/knightfall-worker.cjs"() {
+    "../../../../../tmp/tmp.9mj4Hak9sV/browserquest/knightfall-worker.cjs"() {
       var log2 = { info: function() {
       }, debug: function() {
       }, error: function() {
@@ -3048,11 +3048,9 @@
       var WorldServer = require_worldserver();
       var PlayerClass = require_player();
       var listener;
-      var pendingMessages = [];
       var closed = false;
       var connection = { id: 1, listen(fn) {
         listener = fn;
-        while (pendingMessages.length && !closed) listener(pendingMessages.shift());
       }, onClose(fn) {
         this.closed = fn;
       }, send(data) {
@@ -3083,9 +3081,7 @@
           connect();
         } else if (e.data.type === "message" && !closed) {
           try {
-            const message = JSON.parse(e.data.data);
-            if (listener) listener(message);
-            else if (pendingMessages.length < 64) pendingMessages.push(message);
+            listener?.(JSON.parse(e.data.data));
           } catch (error) {
             postMessage({ type: "error", message: error.message });
           }

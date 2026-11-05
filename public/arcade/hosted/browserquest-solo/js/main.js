@@ -88,12 +88,6 @@ define(['jquery', 'app'], function($, App) {
         	    app.toggleAbout();
         	});
 
-            $('#browserquest-name-form').bind('submit', function(event) {
-                event.preventDefault();
-                var $name = $('#nameinput'), name = $name.val().trim();
-                if(name) app.tryStartingGame(name, function() { $name.blur(); });
-                return false;
-            });
             $('#nameinput').bind("keyup", function() {
                 app.toggleButton();
             });
@@ -151,7 +145,7 @@ define(['jquery', 'app'], function($, App) {
     		}
     		
     		$('.play div').click(function(event) {
-                var nameFromInput = $('#nameinput').val().trim(),
+                var nameFromInput = $('#nameinput').attr('value'),
                     nameFromStorage = $('#playername').html(),
                     name = nameFromInput || nameFromStorage;
                 
@@ -247,8 +241,7 @@ define(['jquery', 'app'], function($, App) {
 	
             app.initHealthBar();
 	
-            // Keep the character name typed by the player; clearing the attribute can break older jQuery input handling.
-            app.toggleButton();
+            $('#nameinput').attr('value', '');
     		$('#chatbox').attr('value', '');
     		
         	if(game.renderer.mobile || game.renderer.tablet) {
@@ -328,11 +321,11 @@ define(['jquery', 'app'], function($, App) {
                     $chat = $('#chatinput');
 
                 if(key === 13) {
-                    if($chat.val().trim() !== '') {
+                    if($chat.attr('value') !== '') {
                         if(game.player) {
-                            game.say($chat.val().trim());
+                            game.say($chat.attr('value'));
                         }
-                        $chat.val('');
+                        $chat.attr('value', '');
                         app.hideChat();
                         $('#foreground').focus();
                         return false;
@@ -348,8 +341,22 @@ define(['jquery', 'app'], function($, App) {
                 }
             });
 
-            // Form submit owns Enter; no competing name-input keypress startup.
+            $('#nameinput').keypress(function(event) {
+                var $name = $('#nameinput'),
+                    name = $name.attr('value');
 
+                if(event.keyCode === 13) {
+                    if(name !== '') {
+                        app.tryStartingGame(name, function() {
+                            $name.blur(); // exit keyboard on mobile
+                        });
+                        return false; // prevent form submit
+                    } else {
+                        return false; // prevent form submit
+                    }
+                }
+            });
+            
             $('#mutebutton').click(function() {
                 game.audioManager.toggle();
             });
@@ -385,7 +392,7 @@ define(['jquery', 'app'], function($, App) {
                         return false;
                     }
                 } else {
-                    if(key === 13 && game.ready && $('#nameinput:focus').size() === 0) {
+                    if(key === 13 && game.ready) {
                         $chat.focus();
                         return false;
                     }
