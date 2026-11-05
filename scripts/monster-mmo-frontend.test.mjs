@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {spawnSync} from "node:child_process";
+import {runInNewContext} from "node:vm";
 const js=readFileSync("public/monster-mmo.js","utf8");
 const html=readFileSync("public/monster-mmo.html","utf8");
 const css=readFileSync("public/monster-mmo.css","utf8");
@@ -424,4 +425,22 @@ test("game social menu and offline bundle are wired",()=>{
  assert.match(social,/\/api\/friends\/request/);
  assert.match(offline,/safeSocial/);
  for(const code of [social,offline]){const check=spawnSync(process.execPath,["--input-type=module","--check"],{input:code,encoding:"utf8"});assert.equal(check.status,0,check.stderr);}
+});
+
+test("offline four-move PP belongs to each creature and survives switches",()=>{
+ const helper=js.match(/const OFFLINE_MOVE_PP_LIMITS=\[30,25,15,8\];[\s\S]*?\n\}/)?.[0];
+ assert.ok(helper,"offline move PP helper must be present");
+ const {ensureOfflineMovePp}=runInNewContext(helper+";({ensureOfflineMovePp})");
+ const first={id:"minieddie"},second={id:"minionmouse"};
+ const a=ensureOfflineMovePp(first),b=ensureOfflineMovePp(second);
+ assert.equal(a.length,4);assert.equal(b.length,4);
+ a[2]=3;
+ assert.equal(ensureOfflineMovePp(first)[2],3,"PP must be preserved on the original creature");
+ assert.equal(ensureOfflineMovePp(second)[2],15,"other party members retain their PP");
+ first.movePp=[999,-4,"bad",7];
+ assert.equal(Array.from(ensureOfflineMovePp(first)).join(","),"30,0,15,7");
+ assert.match(js,/const pp=ensureOfflineMovePp\(lead\)/);
+ assert.match(js,/pp\[index\]--/);
+ assert.doesNotMatch(js,/battle\.movePp\[index\]--/,"encounter must not own the attacking creature's PP");
+ assert.match(js,/p\.movePp=\[\.\.\.OFFLINE_MOVE_PP_LIMITS\]/,"camp rest must restore all four slots");
 });
