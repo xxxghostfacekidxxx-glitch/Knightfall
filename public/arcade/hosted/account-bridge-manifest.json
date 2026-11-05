@@ -299,7 +299,7 @@
       "gameId": "cabinet-rooftop-riot",
       "title": "Rooftop Riot",
       "path": "/arcade/hosted/rooftop-riot/index.html",
-      "scoreSelector": "#best",
+      "scoreSelector": "#shards",
       "scoreMode": "score"
     },
     {
