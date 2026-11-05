@@ -163,3 +163,11 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - `0117_async_arcade_matches.sql` adds account-owned async matches and an ordered move log. The first supported game is Connect Four; only accepted friends can challenge each other, and turns do not expire.
 - Match actions are validated by the Worker. Board state is never accepted from the browser; each move is written against the expected player and turn number, and the other player receives the normal in-app/push notification.
 - Applied to production D1 on November 4, 2026 UTC. Read-only verification confirmed both match tables, all four indexes and the `d1_migrations` ledger entry before the Worker was deployed.
+
+## Cards Against Chaos + Butters/Trouble, 0118 and 0119 (November 5, 2026)
+
+- `0118_chaos_card_matches.sql` adds `arcade_chaos_card_matches` as a separate, account-owned, versioned async match table. Connect Four's `0117` data and constraints are unchanged.
+- `0119_butters_trouble_pets.sql` adds Butters and Trouble to `mascot_species_market` (1,400 Cinders at level 3 and 1,750 Cinders at level 4), raises the maximum collection to 30, and updates the complete-collection badge target.
+- The three existing rescue/egg guards were rebuilt with the new 30-pet ceiling; the starter restriction, unlock levels, ownership checks, wallet debit rules and egg timing rules were preserved.
+- **Production D1 `knightfall-forum` was updated November 5, 2026 through Cloudflare's authorized D1 query API**, because no GitHub workflow-dispatch action was available in this session. A D1 time-travel recovery bookmark was checked before these writes. Both SQL migrations returned success, their table, pet market entries, guards, and badge target were read back, and migration ledger entries `63` and `64` were inserted and verified *after* those checks. Do not rerun these migrations in the production migration workflow.
+- Runtime acceptance is still needed for two-device async card matches, real notification delivery, pet rescues, and the newly rendered pet artwork. Deployed source or matching D1 rows do not prove gameplay works end to end.
