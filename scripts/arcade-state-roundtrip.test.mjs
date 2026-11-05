@@ -11,7 +11,7 @@ const engines={
  'ashfall-original-driving.js':['car-race','two-cars']
 };
 for(const [file,ids] of Object.entries(engines))for(const id of ids)test(id+' restores native state and invalidates old first-frame callbacks',()=>{
- const nodes=new Map(),frames=[];const ctx=new Proxy({},{get:()=>()=>{}});
+ const nodes=new Map(),frames=[];const ctx=new Proxy({createLinearGradient:()=>({addColorStop(){}})},{get:(target,key)=>key in target?target[key]:()=>{}});
  const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:'',addEventListener(t,fn){this['on'+t]=fn},getContext:()=>ctx,getBoundingClientRect:()=>({left:0,top:0,width:640,height:500})});return nodes.get(k)};
  const sandbox={document:{getElementById:node,querySelector:()=>node('canvas'),addEventListener(){},dispatchEvent(){}},location:{pathname:'/arcade/hosted/'+id+'/index.html'},localStorage:{getItem:()=>null,setItem(){}},CustomEvent:class{},performance:{now:()=>0},requestAnimationFrame:fn=>{frames.push(fn);return frames.length},Math,Number,Set,console};
  runInNewContext(readFileSync('public/arcade/hosted/'+file,'utf8'),sandbox,{timeout:1000});
