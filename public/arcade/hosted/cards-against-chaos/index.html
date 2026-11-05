@@ -8,9 +8,9 @@
   <title>Cards Against Chaos · Chaos Cartridge</title>
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1">
-  <link rel="stylesheet" href="./online.css?v=20261105-1">
+  <link rel="stylesheet" href="./online.css?v=20261105-2">
   <script src="/arcade-save.js" defer></script>
-  <script src="./online.js?v=20261105-1" defer></script>
+  <script src="./online.js?v=20261105-2" defer></script>
   <script src="/arcade/nextgen.js?v=20261102-1" defer></script>
   <style>
     :root{color-scheme:dark;--ink:#f7f2ff;--muted:#b9acc9;--panel:#181220;--line:#45334f;--pink:#ff56d5;--lime:#b8ff70;--gold:#ffe185}
@@ -22,37 +22,43 @@
 <body>
 <main>
   <a class="back" href="/arcade-card-board.html">← Card &amp; Board Games</a>
-  <header class="hero"><div class="kicker">KNIGHTFALL ORIGINAL · PASS AND PLAY</div><h1>CARDS<br>AGAINST CHAOS</h1><p>Original dark-comedy card chaos, now with a private two-friend online table, three personality-driven AI seats, and the classic local pass-and-play mode.</p></header>
+  <header class="hero"><div class="kicker">KNIGHTFALL ORIGINAL · FOUR-SEAT PARTY CARDS</div><h1>CARDS<br>AGAINST CHAOS</h1><p>Every game has exactly four players. Bring one to four humans; Lydibug, Butters and Eddie automatically fill the empty seats. Play with friends across devices or locally on one screen.</p></header>
   <section class="panel cards-online" id="cards-online" aria-labelledby="cards-online-title">
-    <div class="cards-online-heading"><div><div class="kicker">TWO FRIENDS · THREE AI PLAYERS · NO TURN TIMER</div><h2 id="cards-online-title">🃏 Play through messages</h2>
-      <p>Challenge one Ash-Fall friend. Lydibug, Butters and Eddie fill the remaining seats, choose answers and take turns judging. Your seven-card hand is private, and the match is saved between visits.</p></div>
+    <div class="cards-online-heading"><div><div class="kicker">FOUR SEATS · 1–4 HUMAN PLAYERS · AI FILLS THE REST</div><h2 id="cards-online-title">🃏 Play through messages</h2>
+      <p>Start solo or invite up to three accepted friends through messaging. Every vacant seat is filled by Lydibug, Butters or Eddie. Private hands, rotating judges and saved turns work on every device.</p></div>
       <a href="/messages.html">Open messages ↗</a></div>
     <p id="cards-online-account" class="hint">Checking your account…</p>
-    <form id="cards-online-form" class="cards-online-invite"><label for="cards-online-friend">Friend to challenge</label>
-      <select id="cards-online-friend" required><option value="">Loading accepted friends…</option></select>
-      <button id="cards-online-challenge" class="primary" type="submit" disabled>Invite to the table</button></form>
+    <form id="cards-online-form" class="cards-online-invite">
+      <label for="cards-online-human-count">Human players (including you)</label>
+      <select id="cards-online-human-count"><option value="1">1 human + 3 AI</option><option value="2">2 humans + 2 AI</option><option value="3">3 humans + 1 AI</option><option value="4">4 humans + 0 AI</option></select>
+      <div class="cards-online-friend-field" id="cards-online-friend-wrap-1" hidden><label for="cards-online-friend-1">Friend 2</label><select id="cards-online-friend-1" disabled><option value="">Choose an accepted friend</option></select></div>
+      <div class="cards-online-friend-field" id="cards-online-friend-wrap-2" hidden><label for="cards-online-friend-2">Friend 3</label><select id="cards-online-friend-2" disabled><option value="">Choose an accepted friend</option></select></div>
+      <div class="cards-online-friend-field" id="cards-online-friend-wrap-3" hidden><label for="cards-online-friend-3">Friend 4</label><select id="cards-online-friend-3" disabled><option value="">Choose an accepted friend</option></select></div>
+      <p id="cards-online-preview" class="hint" aria-live="polite">1 human player + 3 AI players = four seats</p>
+      <button id="cards-online-challenge" class="primary" type="submit" disabled>Start solo against 3 AI</button>
+    </form>
     <div class="cards-online-saved"><h3>Your online tables</h3><button type="button" id="cards-online-refresh" class="secondary">Refresh</button></div>
     <div class="cards-online-list" id="cards-online-list" aria-live="polite"></div>
     <p id="cards-online-status" class="hint" role="status" aria-live="polite"></p>
     <section id="cards-online-table" class="cards-online-table" hidden aria-label="Online Cards Against Chaos">
       <div class="cards-online-saved"><h3>Round <span id="cards-online-round">1</span></h3><button type="button" class="secondary" id="cards-online-close">Close table</button></div>
-      <div id="cards-online-scores" class="cards-online-scores" aria-label="Five player scores"></div>
+      <div id="cards-online-scores" class="cards-online-scores" aria-label="Four player scores"></div>
       <div class="prompt-card"><div><small>YOUR ROUND PROMPT</small><span id="cards-online-prompt"></span></div></div>
       <p id="cards-online-turn" class="status"></p>
       <div id="cards-online-hand" class="cards-online-hand" aria-label="Your private answer cards"></div>
       <div id="cards-online-choices" class="cards-online-hand" aria-label="Anonymous choices for judging"></div>
       <p id="cards-online-result" class="cards-online-result"></p>
       <div id="cards-online-actions" class="toolbar"></div>
-      <p class="hint">Match link: <a id="cards-online-share" href="/arcade/hosted/cards-against-chaos/index.html">Open this table</a>. Invitations and turns also appear in Ash-Fall notifications.</p>
+      <p class="hint">Table link: <a id="cards-online-share" href="/arcade/hosted/cards-against-chaos/index.html">Open this table</a>. Invitations and turns also appear in Ash-Fall notifications.</p>
     </section>
   </section>
-  <div class="cards-local-separator" role="separator"><span>OR PLAY LOCAL PASS-AND-PLAY</span></div>
+  <div class="cards-local-separator" role="separator"><span>OR PLAY FOUR-SEAT LOCAL PARTY MODE</span></div>
   <section class="panel setup" id="setup" aria-labelledby="setup-title">
     <h2 id="setup-title" tabindex="-1">Set up the table</h2>
-    <div class="fields"><div class="field"><label for="player-count">Players</label><select id="player-count"><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div><div class="field"><label for="win-score">Points to win</label><select id="win-score"><option>5</option><option>7</option><option>10</option></select></div></div>
+    <div class="fields"><div class="field"><label for="player-count">Human players</label><select id="player-count"><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="field"><label for="win-score">Points to win</label><select id="win-score"><option>5</option><option>7</option><option>10</option></select></div></div>
     <div class="player-inputs" id="player-inputs"></div>
     <button id="start" class="primary">Deal the first hand</button>
-    <p class="hint">This local party version supports 3–8 people sharing one screen. It saves no player names or scores to an account.</p>
+    <p class="hint">Local mode always seats four players: 1–4 people sharing one device, with Lydibug, Butters and Eddie filling empty seats. Local names and scores are not saved to an account.</p>
   </section>
   <section class="game hidden" id="game" aria-live="polite">
     <div class="panel topline"><div><div class="kicker">ROUND <span id="round-number">1</span></div><div class="status" id="status"></div></div><div class="scoreboard" id="scoreboard" aria-label="Scores"></div></div>
