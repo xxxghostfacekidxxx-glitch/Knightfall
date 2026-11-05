@@ -26,6 +26,8 @@ for(const id of ["neon-vector","prism-panic"])test(id+" boots, runs, restarts wi
 test("vector cabinet metadata stays synchronized after the game-family rewrite",()=>{
  const catalog=JSON.parse(readFileSync("public/arcade/catalog.json","utf8")).games;
  const manifest=JSON.parse(readFileSync("public/arcade/hosted/account-bridge-manifest.json","utf8")).games;
+ const originals=JSON.parse(readFileSync("public/arcade/original-creations.json","utf8")).games;
+ const shelves=["public/chaos-cartridge.html","public/arcade-30-games.html"].map(p=>readFileSync(p,"utf8"));
  for(const [id,title] of [["neon-vector","Cinder Vector"],["prism-panic","Prism Siege"]]){
   const cabinet=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
   const entry=catalog.find(g=>g.id===id);
@@ -35,6 +37,11 @@ test("vector cabinet metadata stays synchronized after the game-family rewrite",
   assert.equal(bridge?.title,title);
   assert.equal(bridge?.scoreSelector,"#score");
   assert.equal(bridge?.scoreMode,"score");
+  assert.equal(originals.find(g=>g.id===id)?.genre,"Shooter");
+  for(const shelf of shelves){
+   assert.ok(shelf.includes('data-game-id="'+id+'" data-category="Shooter"'),"wrong shelf genre: "+id);
+   assert.ok(shelf.includes(entry.description),"shelf stale description for "+id);
+  }
   assert.match(cabinet,/href="\/chaos-cartridge\.html"/);
   assert.match(cabinet,/vector-neon\.css/);
  }
