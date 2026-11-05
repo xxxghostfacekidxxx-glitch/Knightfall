@@ -7,7 +7,7 @@
 .message-layout{min-height:680px;max-height:calc(100dvh - 250px);height:680px}
 .conversation-panel{min-height:0;overflow:auto}
 .conversation-list{max-height:calc(100% - 76px);overflow:auto;align-content:start}
-.chat-panel{min-height:0;grid-template-rows:auto auto minmax(0,1fr) auto}
+.chat-panel{min-height:0;grid-template-rows:auto auto auto minmax(0,1fr) auto auto}
 .chat-head{position:sticky;top:0;z-index:2}
 .messages-list{min-height:0;max-height:none;overscroll-behavior:contain;scroll-behavior:smooth}
 .message{overflow-wrap:anywhere}
@@ -270,7 +270,7 @@
     width:100%;
     height:100%;
     min-height:0;
-    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-rows:auto auto auto minmax(0,1fr) auto auto;
     overflow:hidden;
   }
   .message-layout.show-chat .messages-list{
@@ -292,6 +292,18 @@
   .message-layout.show-chat{height:calc(var(--messages-visible-height, 100dvh) - 150px)}
 }
 
+
+
+/* Keep transcript as the single flexible grid track. The typing line, history
+   button, restriction warning and composer are separate siblings, not overlays.
+   This prevents the Android keyboard from pushing the composer below the panel. */
+.chat-panel>#chat-head{grid-row:1}
+.chat-panel>#typing-indicator{grid-row:2}
+.chat-panel>#load-older{grid-row:3;justify-self:center}
+.chat-panel>#messages{grid-row:4;min-height:0}
+.chat-panel>#conversation-restricted{grid-row:5}
+.chat-panel>#composer{grid-row:6}
+.chat-panel>:is(#typing-indicator,#load-older,#conversation-restricted,#composer)[hidden]{display:none!important}
 
 /* Clear, non-destructive feedback when either participant has blocked the other. */
 .blocked-tag{display:inline-block;margin-top:.3rem;color:#e8b5f5;font-size:.58rem;font-weight:900;letter-spacing:.08em}
