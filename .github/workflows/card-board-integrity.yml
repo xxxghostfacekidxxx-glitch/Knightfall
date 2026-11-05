@@ -7,6 +7,7 @@ on:
       - 'public/arcade-card-board.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
+      - 'scripts/chaos-cards-integration.test.mjs'
       - 'backend/src/chaos-card-*.js'
       - 'backend/src/chaos-card-*.mjs'
       - 'backend/migrations/0118_chaos_card_matches.sql'
@@ -21,6 +22,7 @@ on:
       - 'public/arcade-card-board.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
+      - 'scripts/chaos-cards-integration.test.mjs'
       - 'backend/src/chaos-card-*.js'
       - 'backend/src/chaos-card-*.mjs'
       - 'backend/migrations/0118_chaos_card_matches.sql'
@@ -42,7 +44,7 @@ jobs:
         run: node --test scripts/card-room-runtime.test.mjs
       - name: Exercise authenticated five-seat card rules and secrecy
         run: |
-          node --test backend/src/chaos-card-matches.test.mjs
+          node --test backend/src/chaos-card-matches.test.mjs scripts/chaos-cards-integration.test.mjs
           node --check backend/src/chaos-card-matches.js
           node --check public/arcade/hosted/cards-against-chaos/online.js
       - name: Validate card and board launch routes
