@@ -7,7 +7,7 @@ const browser=await chromium.launch({headless:true});
 const key=Buffer.from(Uint8Array.from({length:65},(_,i)=>i===0?4:7)).toString("base64url");
 const endpoint="https://fcm.googleapis.com/fcm/send/test-device-only";
 
-async function scenario({existing=false,registered=false}={}){
+async function scenario({existing=false,registered=false,stage="display-requested"}={}){
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,userAgent:"Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36"});
   const page=await context.newPage(),errors=[];
   page.on("pageerror",error=>errors.push(String(error)));
@@ -30,7 +30,7 @@ async function scenario({existing=false,registered=false}={}){
       register:async()=>reg,
       addEventListener:(event,fn)=>{if(event==="message")receiptListener=fn;}
     }});
-    window.__emitPushReceipt=()=>receiptListener?.({data:{type:"KF_PUSH_RECEIVED",tag:"ashfall-account-test"}});
+    window.__emitPushReceipt=stage=>receiptListener?.({data:{type:"KF_PUSH_RECEIVED",tag:"ashfall-account-test",stage}});
     Object.defineProperty(window,"PushManager",{configurable:true,value:function PushManager(){}});
     Object.defineProperty(window,"Notification",{configurable:true,value:{
       permission:existing?"granted":"default",
@@ -80,14 +80,16 @@ async function scenario({existing=false,registered=false}={}){
   assert.match(await page.locator("#push-device-details").innerText(),/server registration connected/);
   await page.getByRole("button",{name:"Test this device"}).click();
   assert.equal(testEndpoint,endpoint,"Phone test must not target the PC subscription");
-  await page.evaluate(async testId=>{
-    window.__emitPushReceipt();
+  await page.evaluate(async ({testId,stage})=>{
+    window.__emitPushReceipt(stage);
     await fetch("https://api.ash-fall.com/api/push/receipt",{
       method:"POST",headers:{"content-type":"application/json"},
-      body:JSON.stringify({test_id:testId,stage:"display-requested"})
+      body:JSON.stringify({test_id:testId,stage})
     });
-  },testId);
-  await page.waitForFunction(()=>/service worker received the push|Step 3\/3: The phone's service worker/.test(document.querySelector("#push-status")?.textContent||""),null,{timeout:5000});
+  },{testId,stage});
+  await page.waitForFunction(expected=>document.querySelector("#push-status")?.textContent.includes(expected),stage==="display-failed"?"could not show a notification":"service worker received the push",{timeout:5000});
+  await page.waitForFunction(()=>!document.querySelector("#test-push").disabled);
+  if(stage==="display-failed")assert.match(await page.locator("#push-status").innerText(),/could not show a notification/);
   await page.getByRole("button",{name:"Test this device"}).waitFor({state:"visible"});
   const width=await page.evaluate(()=>({screen:document.documentElement.clientWidth,content:document.documentElement.scrollWidth}));
   assert.ok(width.content<=width.screen+2,"Mobile push settings overflow the phone viewport: "+JSON.stringify(width));
@@ -97,5 +99,6 @@ async function scenario({existing=false,registered=false}={}){
 try{
   await scenario({existing:false,registered:false});
   await scenario({existing:true,registered:false});
+  await scenario({existing:true,registered:true,stage:"display-failed"});
   console.log("Android push browser smoke passed: tap permission, device registration, silent recovery, targeted test and worker receipt.");
 }finally{await browser.close();}

@@ -17,7 +17,7 @@ function safeNoticeUrl(value){if(typeof value!=="string"||!value.startsWith("/")
 
 async function load(){try{const d=await api("/api/notifications?limit=100");root.innerHTML=(d.notifications||[]).map(n=>'<article class="notice '+(n.read_at?"read":"unread")+'" data-notice="'+n.id+'"><div class="notice-icon">'+(n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+'</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+(n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+(safeNoticeUrl(n.url)?'<a class="notice-link" href="'+esc(safeNoticeUrl(n.url))+'">Open</a>':"")+'</article>').join("")||'<p class="empty">Nothing new. The silence is almost suspicious.</p>';document.querySelectorAll("[data-notice]").forEach(x=>x.onclick=async()=>{if(!x.classList.contains("unread"))return;try{await api("/api/notifications/"+x.dataset.notice,{method:"PATCH"});x.classList.remove("unread");x.classList.add("read")}catch(e){status.textContent=e.message}});status.textContent=(d.unread_count||0)+" unread";}catch(e){status.textContent=e.message}}
 function getPrefs(){return {push_messages:document.querySelector("#pref-messages").checked,push_community:document.querySelector("#pref-community").checked,push_account:document.querySelector("#pref-account").checked,quiet_start:document.querySelector("#quiet-start").value||null,quiet_end:document.querySelector("#quiet-end").value||null}}
-let pushTestPendingUntil=0, pushTestReceipt=false;
+let pushTestPendingUntil=0, pushTestReceipt=null;
 function supportsPush(){return isSecureContext&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;}
 function decodePublicKey(value){const raw=String(value||"").replace(/-/g,"+").replace(/_/g,"/");return Uint8Array.from(atob(raw+"=".repeat((4-raw.length%4)%4)),c=>c.charCodeAt(0));}
 function sameServerKey(subscription,publicKey){
@@ -177,18 +177,25 @@ document.querySelector("#repair-push").addEventListener("click",async e=>{
   finally{button.disabled=false;}
 });
 document.querySelector("#save-prefs").addEventListener("click",savePrefs);
+function showPushReceipt(stage){
+  if(stage==="display-failed"){
+    setPushStatus("The phone received the push, but its browser could not show a notification. Allow Chrome/Ash-Fall notifications in Android Settings and retry.");
+  }else{
+    setPushStatus("✓ Step 3/3: The phone's service worker received the push and asked Android to show it. If you saw no banner, check notification settings on this device.");
+  }
+}
 document.querySelector("#test-push").addEventListener("click",async e=>{
   const button=e.currentTarget;button.disabled=true;
   try{
     if(!supportsPush())throw Error("This browser does not support background notifications.");
     const reg=await pushRegistration({activateUpdate:true}),sub=await reg.pushManager.getSubscription();
     if(!sub)throw Error("No phone push subscription exists. First tap Enable push notifications.");
-    pushTestPendingUntil=Date.now()+30000;pushTestReceipt=false;
+    pushTestPendingUntil=Date.now()+30000;pushTestReceipt=null;
     setPushStatus("Step 1/3: Asking the push provider to deliver directly to this device…");
     const response=await api("/api/push/test",{method:"POST",body:JSON.stringify({endpoint:sub.endpoint})});
     if(!response.delivery?.accepted)throw Error("The phone's push provider rejected the notification.");
     if(pushTestReceipt){
-      setPushStatus("✓ Phone service worker received the test. If Android showed no alert, check the Android app notification channel and Do Not Disturb.");
+      showPushReceipt(pushTestReceipt);
       return;
     }
     setPushStatus("Step 2/3: Push provider accepted. Checking whether this phone actually received it…");
@@ -199,6 +206,7 @@ document.querySelector("#test-push").addEventListener("click",async e=>{
     let seen="";
     for(let n=0;n<12;n++){
       await new Promise(resolve=>setTimeout(resolve,1500));
+      if(pushTestReceipt){seen=pushTestReceipt;break;}
       const proof=await api("/api/push/test-status?test_id="+encodeURIComponent(response.test_id));
       if(proof.state!=="pending"){
         seen=proof.state;
@@ -207,24 +215,21 @@ document.querySelector("#test-push").addEventListener("click",async e=>{
       }
     }
     pushTestPendingUntil=0;
-    if(seen==="display-requested")
-      setPushStatus("✓ Step 3/3: The phone's service worker received the push and asked Android to show it. If you saw no banner, Android or Chrome is suppressing notifications in its settings.");
-    else if(seen==="display-failed")
-      setPushStatus("The phone received the push, but its browser could not show a notification. Allow Chrome/Ash-Fall notifications in Android Settings and retry.");
+    seen=pushTestReceipt||seen;
+    if(seen==="display-requested"||seen==="display-failed")showPushReceipt(seen);
     else if(seen==="received")
       setPushStatus("The phone's worker received the push, but has not confirmed notification display. Check Android notification permission and retry.");
     else
       setPushStatus("Provider accepted, but this phone has NOT confirmed receipt. Check that you are using Chrome or the installed PWA on the same ash-fall.com origin; then try Repair push.");
   }catch(error){pushTestPendingUntil=0;setPushStatus("Device test failed: "+error.message);}
-  finally{button.disabled=false;}
+  finally{pushTestPendingUntil=0;button.disabled=false;}
 });
 if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
   if(event.data?.type==="KF_PUSH_RECEIVED"&&event.data?.tag==="ashfall-account-test"&&Date.now()<pushTestPendingUntil){
-    pushTestReceipt=true;
-    if(event.data.stage==="display-failed")
-      setPushStatus("This phone received the push but its service worker failed to show a notification. Check Android system notification permissions.");
-    else
-      setPushStatus("✓ The phone's service worker received the push and requested Android notification display.");
+    const stage=event.data.stage;
+    if(stage!=="display-requested"&&stage!=="display-failed")return;
+    pushTestReceipt=stage;
+    showPushReceipt(stage);
   }
 });
 document.querySelector("#read-all").onclick=async()=>{try{await api("/api/notifications/read-all",{method:"POST"});await load()}catch(e){status.textContent=e.message}};
