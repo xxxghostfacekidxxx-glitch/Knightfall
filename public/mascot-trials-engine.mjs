@@ -26,7 +26,8 @@ export const SPECIES_TRIALS=Object.freeze({
  'craggle':['dodge','Craggle Moonstone Climb','gargoyle'],
  'prismare':['memory','Prismare Prism Tide','jelly'],
  'butters':['memory','Butters’ Cozy Scarf Search','ferret'],
- 'trouble':['catch','Trouble’s Raccoon Loot Dash','raccoon']
+ 'trouble':['catch','Trouble’s Raccoon Loot Dash','raccoon'],
+ 'skunk-riot':['dodge','Skunk Riot’s Backstage Blitz','skunk']
 });
 export const TRIAL_TYPES=Object.freeze(['catch','memory','runes','dodge']);
 export function challengeFor(species,level=1){
