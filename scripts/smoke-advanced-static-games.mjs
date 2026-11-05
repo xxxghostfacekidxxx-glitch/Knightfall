@@ -16,9 +16,22 @@ try{
    const response=await page.goto(`${base}/arcade/hosted/${slug}/index.html${slug==='interstellar-armada'?'#local':''}`,{waitUntil:'domcontentloaded',timeout:60000});
    if(!response.ok())throw Error(`HTTP ${response.status()}`);
    if(slug==='browserquest-solo'){
+    const expectedPath='/arcade/hosted/browserquest-solo/index.html',wrongPages=[];
+    page.on('framenavigated',frame=>{
+      if(frame!==page.mainFrame())return;
+      const path=new URL(frame.url()).pathname;
+      if(path!==expectedPath)wrongPages.push(path);
+    });
     await page.locator('#nameinput').fill('Knightfall');
     await page.locator('#createcharacter .play:not(.disabled)').click({timeout:60000});
-    await page.waitForFunction(()=>document.body.classList.contains('started'),null,{timeout:60000});
+    try{await page.waitForFunction(()=>document.body.classList.contains('started'),null,{timeout:60000})}
+    catch(error){
+      const message=await page.locator('#knightfall-start-error').textContent().catch(()=>'');
+      throw Error('Character did not enter game; current path: '+new URL(page.url()).pathname+
+        (wrongPages.length?'; unexpected navigation: '+wrongPages.join(', '):'')+
+        (message?'; startup warning: '+message.trim():'')+'; '+error.message);
+    }
+    if(wrongPages.length)throw Error('Character creation unexpectedly navigated away: '+wrongPages.join(', '));
     await page.locator('body').click({position:{x:640,y:400}});
     await page.locator('#foreground').click({position:{x:450,y:230}});
     if(!await page.locator('canvas').count())throw Error('World canvas missing');
