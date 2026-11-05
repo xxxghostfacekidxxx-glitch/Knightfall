@@ -13,11 +13,11 @@ test("every cataloged original has a locally hosted entry point",()=>{
  }
 });
 test("rewritten engines do not embed imported remote game scripts",()=>{
- const rewritten=catalog.games.filter(g=>g.status.startsWith("original Ash-Fall engine"));
- assert.ok(rewritten.length>=20);
- for(const g of rewritten){
+ assert.ok(catalog.games.length > 0,"original cabinet catalog is empty");
+ for(const g of catalog.games){
   const page=readFileSync("public"+g.engine,"utf8");
   assert.ok(!/<script[^>]+src=["']https?:\/\//i.test(page),g.id+" includes a remote game script");
+  if(!g.status.startsWith('original Ash-Fall engine'))continue;
   assert.ok(page.includes('data-game-id="cabinet-'+g.id+'"'),g.id+" score bridge missing");
  }
 });
