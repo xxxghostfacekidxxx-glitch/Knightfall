@@ -114,3 +114,12 @@ test("all 180 seeded rooftop jumps are physically reachable with normal movement
  }
  assert.equal(passed,180);
 });
+
+test("Rooftop Riot bridge reads current run score, not historical best",()=>{
+ const bridge=JSON.parse(readFileSync("public/arcade/hosted/account-bridge-manifest.json","utf8"));
+ const entry=bridge.games.find(game=>game.gameId==="cabinet-rooftop-riot");
+ assert.equal(entry?.scoreSelector,"#shards");
+ assert.equal(entry?.scoreMode,"score");
+ assert.match(roofHtml,/id="shards"/);
+ assert.match(roofView,/setText\('shards',String\(s\.score\)\)/);
+});
