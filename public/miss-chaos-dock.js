@@ -6,7 +6,7 @@ if(!root||root.dataset.dockReady)return;
 root.dataset.dockReady='true';
 const button=id=>root.querySelector('#'+id),move=button('mc-move'),mini=button('mc-minimize'),restore=button('mc-restore');
 const options=['br','bl','tl','tr'],descriptions={br:'bottom right',bl:'bottom left',tl:'top left',tr:'top right'};
-let preference='auto',frame=0,current='br';
+let preference='auto',frame=0,current='br',headerBottom=0;
 try{const saved=localStorage.getItem('kf:miss-chaos:dock');if(options.includes(saved))preference=saved;}catch{}
 function overlap(a,b){
  const x=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
@@ -40,7 +40,7 @@ function anchorBox(position,width,height){
  const widthWindow=Math.max(280,window.innerWidth),heightWindow=Math.max(360,window.innerHeight);
  const gap=window.innerWidth<500?10:16;
  const left=position.endsWith('r')?widthWindow-width-gap:gap;
- const top=position.startsWith('b')?heightWindow-height-gap:gap;
+ const top=position.startsWith('b')?heightWindow-height-gap:headerBottom+gap;
  return {left,top,right:left+width,bottom:top+height,width,height};
 }
 function score(position,width,height,blocked){
@@ -61,12 +61,16 @@ function activePanel(){
 }
 function recalculate(){
  frame=0;
+ const header=document.querySelector('body > .kf-header');
+ const bounds=header?.getBoundingClientRect();
+ headerBottom=bounds && bounds.top<=1 ? Math.max(0,bounds.bottom) : 0;
+ root.style.setProperty('--mc-header-bottom',headerBottom+'px');
  if(preference!=='auto'){apply(preference);return}
  if(activePanel())return;
  const dock=button('mc-dock');if(!dock)return;
  const oldPosition=root.dataset.dock||'br';
- const bounds=dock.getBoundingClientRect();
- const width=Math.max(30,bounds.width),height=Math.max(24,bounds.height);
+ const dockBounds=dock.getBoundingClientRect();
+ const width=Math.max(30,dockBounds.width),height=Math.max(24,dockBounds.height);
  const blocked=obstacles();
  let winner='br',best=Infinity;
  for(const candidate of options){
@@ -103,6 +107,8 @@ document.addEventListener('fullscreenchange',()=>{
  root.hidden=!!document.fullscreenElement;schedule();
 });
 window.addEventListener('pageshow',schedule,{passive:true});
+const header=document.querySelector('body > .kf-header');
+if(header && window.ResizeObserver)new ResizeObserver(schedule).observe(header);
 // Observe newly mounted sticky bars and footers without changing page layout.
 if(window.MutationObserver){
  const observer=new MutationObserver(records=>{
@@ -111,5 +117,5 @@ if(window.MutationObserver){
  observer.observe(document.body,{childList:true,subtree:false});
 }
 root.dataset.minimized='false';root.dataset.dock='br';
-if(preference!=='auto')apply(preference);else schedule();
+schedule();
 })();
