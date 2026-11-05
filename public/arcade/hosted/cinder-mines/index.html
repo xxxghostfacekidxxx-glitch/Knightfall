@@ -4,38 +4,40 @@
 <style>
 *{box-sizing:border-box}body{margin:0;padding:20px;background:radial-gradient(ellipse at 10% 0%,#67215966,transparent 48%),radial-gradient(ellipse at 100% 90%,#09697755,transparent 45%),#090b1c!important;color:#fff;font:16px system-ui}main{max-width:1180px}a{font-size:.85rem}header{margin:22px 0}.eyebrow{color:#baff38;font-size:.72rem;letter-spacing:.25em;font-weight:900}h1{font-size:clamp(2.3rem,6vw,4.6rem);line-height:1;margin:10px 0;text-transform:uppercase;font-style:italic;text-shadow:0 0 36px #ff38cf77}header p{max-width:640px;line-height:1.5}.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}.field{min-width:0;background:linear-gradient(135deg,#171c38,#0d1024);border:1px solid #4af2ff77;border-radius:20px;padding:20px;box-shadow:0 0 40px #4af2ff15}.field-top{display:flex;justify-content:space-between;gap:10px;font-size:.7rem;letter-spacing:.14em;font-weight:900;color:#4af2ff;margin-bottom:18px}.board-scroll{overflow:auto;padding:4px}.board{max-width:min(100%,max(300px,calc(100dvh - 360px)));margin:auto}.board{display:grid;grid-template-columns:repeat(var(--size),minmax(0,1fr));gap:5px;min-width:var(--normal-board-min,260px)}.tile{aspect-ratio:1;min-width:0;padding:0;border:1px solid #75579d;border-radius:8px;background:linear-gradient(145deg,#323659,#1a1b36);color:#fff;font:900 clamp(14px,3vw,25px) system-ui;cursor:pointer;box-shadow:inset 0 2px 0 #ffffff0b;transition:background .12s,transform .12s}.tile:hover{border-color:#4af2ff;transform:translateY(-1px);box-shadow:0 0 15px #4af2ff44}.tile.open{background:#11172b;border-color:#29354e;box-shadow:none}.tile.flagged{background:#3d194e;border-color:#ff38cf}.tile.mine{background:#6c174b;border-color:#ff38cf;box-shadow:0 0 20px #ff38cf66}.tile img{width:65%;height:65%;vertical-align:middle}.tile[data-n="1"]{color:#4af2ff}.tile[data-n="2"]{color:#baff38}.tile[data-n="3"]{color:#ff6bce}.tile[data-n="4"]{color:#be9eff}.tile[data-n="5"],.tile[data-n="6"],.tile[data-n="7"],.tile[data-n="8"]{color:#ffcf65}.tile:focus-visible{outline:3px solid #baff38;outline-offset:-3px}.deck{display:block;min-width:0;border:1px solid #ff38cf88;border-radius:20px;background:linear-gradient(155deg,#271732,#101a30);padding:20px;box-shadow:0 0 35px #ff38cf15}.deck h2{margin:5px 0 18px;font-size:1.5rem}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stat{background:#0b1022;border:1px solid #4af2ff33;border-radius:10px;padding:12px}.stat span{display:block;font-size:.65rem;letter-spacing:.1em;color:#a6b5d4}.stat output{display:block;font-size:1.4rem;font-weight:900;color:#baff38;margin-top:5px}.controls{display:grid;gap:9px;margin-top:18px}.controls label{font-size:.8rem;color:#c2cce1}.controls select{width:100%;margin-top:6px}button,select{font:800 .9rem system-ui;color:#fff;border:1px solid #ff38cf77;background:#221b3d;border-radius:9px;padding:11px;cursor:pointer;min-height:44px}.controls button{background:#221b3d;border-color:#ff38cf77}.controls button.primary{background:linear-gradient(120deg,#c12bba,#6537b8)}.controls button[aria-pressed=true]{background:#baff38;color:#111528;box-shadow:0 0 20px #baff3844}.deck p{font-size:.8rem;line-height:1.6}.deck summary{cursor:pointer;min-height:44px;padding:16px 0;color:#4af2ff;font-size:.75rem;font-weight:900;letter-spacing:.1em}.deck h3{font-size:.75rem;color:#4af2ff;letter-spacing:.1em;margin-top:22px}#status{min-height:48px;font-weight:700;line-height:1.6;margin-bottom:0}.field.won{border-color:#baff38;box-shadow:0 0 45px #baff3844}.field.lost{animation:blast .45s ease-out}.progress{height:5px;background:#222940;border-radius:9px;margin-top:18px;overflow:hidden}.progress div{height:100%;background:linear-gradient(90deg,#ff38cf,#4af2ff,#baff38);transition:width .2s}@keyframes blast{30%{box-shadow:0 0 80px #ff38cf;transform:translateX(-4px)}60%{transform:translateX(4px)}}.cabinet-view-controls{display:none}@media(max-width:800px){.layout{grid-template-columns:1fr}.deck{order:-1;display:grid;grid-template-columns:1fr 1fr;gap:0 16px}.deck>h2,.deck>.eyebrow{grid-column:1/-1}.controls{margin-top:0}.help{grid-column:1/-1}.stats{align-content:start}.tile{border-radius:5px}.field{padding:12px}}@media(max-width:440px){body{padding:12px}.deck{padding:14px;gap:0 10px}.stat{padding:9px}.stat output{font-size:1.15rem}.controls button,select{font-size:.78rem;padding:9px}.board{gap:3px}.field-top{font-size:.6rem}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.tile:hover{transform:none}}
 
+body:has(main.expanded) { overflow:hidden }
+body.af-nextgen main.expanded, main.expanded { position:fixed; inset:0; z-index:1000; width:100%; height:100dvh; max-width:none; margin:0; box-sizing:border-box }
 /* Fit the board to the space left after the controls and status take their share. */
-main:fullscreen { padding:8px; overflow:hidden; background:#090b1c }
-main:fullscreen > :is(a,header) { display:none }
-main:fullscreen .layout {
+main:is(:fullscreen,.expanded) { padding:8px; overflow:hidden; background:#090b1c }
+main:is(:fullscreen,.expanded) > :is(a,header) { display:none }
+main:is(:fullscreen,.expanded) .layout {
   height:100%; min-height:0; grid-template-columns:minmax(0,1fr) minmax(190px,26%);
   grid-template-rows:minmax(0,1fr); align-items:stretch; gap:8px;
 }
-main:fullscreen .field {
+main:is(:fullscreen,.expanded) .field {
   display:grid; grid-template-rows:auto minmax(0,1fr) auto auto;
   min-height:0; padding:8px;
 }
-main:fullscreen .field-top, main:fullscreen .progress { margin:4px 0 }
-main:fullscreen #status { min-height:0; margin:4px 0 0; font-size:.8rem; line-height:1.3 }
-main:fullscreen .board-scroll {
+main:is(:fullscreen,.expanded) .field-top, main:is(:fullscreen,.expanded) .progress { margin:4px 0 }
+main:is(:fullscreen,.expanded) #status { min-height:0; margin:4px 0 0; font-size:.8rem; line-height:1.3 }
+main:is(:fullscreen,.expanded) .board-scroll {
   container-type:size; display:grid; place-items:center; min-height:0; padding:2px;
 }
-main:fullscreen #board {
+main:is(:fullscreen,.expanded) #board {
   width:min(100cqw,100cqh); aspect-ratio:1; min-width:0; max-width:none;
   grid-template-rows:repeat(var(--size),minmax(0,1fr)); gap:clamp(1px,.25vmin,4px);
 }
-main:fullscreen .tile { min-height:0; aspect-ratio:auto; font-size:clamp(10px,2.8cqmin,22px); line-height:1 }
-main:fullscreen .deck { display:flex; flex-direction:column; gap:6px; order:0; padding:8px; overflow:auto }
-main:fullscreen .deck > :is(h2,.eyebrow) { display:none }
-main:fullscreen .controls { order:-1; margin:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px }
-main:fullscreen .controls label { grid-column:1/-1 }
-main:fullscreen .controls :is(button,select) { padding:4px; font-size:.8rem }
-main:fullscreen .stat { padding:4px }
-main:fullscreen .stat output { font-size:.9rem; margin:0 }
+main:is(:fullscreen,.expanded) .tile { min-height:0; aspect-ratio:auto; font-size:clamp(10px,2.8cqmin,22px); line-height:1 }
+main:is(:fullscreen,.expanded) .deck { display:flex; flex-direction:column; gap:6px; order:0; padding:8px; overflow:auto }
+main:is(:fullscreen,.expanded) .deck > :is(h2,.eyebrow) { display:none }
+main:is(:fullscreen,.expanded) .controls { order:-1; margin:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px }
+main:is(:fullscreen,.expanded) .controls label { grid-column:1/-1 }
+main:is(:fullscreen,.expanded) .controls :is(button,select) { padding:4px; font-size:.8rem }
+main:is(:fullscreen,.expanded) .stat { padding:4px }
+main:is(:fullscreen,.expanded) .stat output { font-size:.9rem; margin:0 }
 @media (orientation:portrait) {
-  main:fullscreen .layout { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto }
-  main:fullscreen .deck { max-height:42dvh }
-  main:fullscreen .stats { grid-template-columns:repeat(4,minmax(0,1fr)) }
+  main:is(:fullscreen,.expanded) .layout { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto }
+  main:is(:fullscreen,.expanded) .deck { max-height:42dvh }
+  main:is(:fullscreen,.expanded) .stats { grid-template-columns:repeat(4,minmax(0,1fr)) }
 }
 </style><link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1"><script src="/arcade/nextgen.js?v=20261102-1" defer></script></head><body><main><a href="/chaos-cartridge.html">← Chaos Cartridge</a><header><span class="eyebrow">DEDUCTION / DANGER / QUESTIONABLE DECISIONS</span><h1>Chaos Minesweeper</h1><p>Read the numbers. Flag the charges. Keep the whole field from becoming a very colorful mistake.</p></header><div class="layout"><section class="field" id="field" aria-label="Minefield"><div class="field-top"><span id="field-label">SECTOR 08 × 08</span><span>FIRST OPENING PROTECTED</span></div><div class="board-scroll"><div class="board" id="board" role="group" aria-label="Minesweeper board"></div></div><div class="progress" aria-hidden="true"><div id="progress"></div></div><p id="status" role="status" aria-live="polite">Choose a tile. Your first opening and its neighbors are safe.</p></section><aside class="deck" aria-label="Minesweeper controls and statistics"><span class="eyebrow">FIELD COMMAND</span><h2>CONTROL DECK</h2><div class="stats"><div class="stat"><span>CHARGES LEFT*</span><output id="remaining">10</output></div><div class="stat"><span>TIME</span><output id="time">00:00</output></div><div class="stat"><span>SAFE TILES</span><output id="cleared">0 / 54</output></div><div class="stat"><span>BEST SCORE</span><output id="best">0</output></div></div><div class="controls"><label>Difficulty<select id="difficulty"><option value="easy">Easy · 8 × 8 · 10 mines</option><option value="medium">Medium · 12 × 12 · 24 mines</option><option value="hard">Hard · 16 × 16 · 48 mines</option></select></label><button class="primary" id="restart">New minefield</button><button id="mode" aria-pressed="false">Flag mode: OFF</button><button id="flare">Emergency flare · 1</button><button id="full">Fullscreen</button></div><div class="help"><details><summary>HOW TO SURVIVE</summary><p>A number counts mines in the eight neighboring tiles. Right-click to flag, or turn on Flag mode for touch. Click an open number with enough neighboring flags to clear the remaining neighbors; wrong flags can still detonate a mine.</p><p>One flare opens a safe tile per field and costs 200 points. *Charges left means mines minus flags, not confirmed danger. On small screens, scroll larger boards sideways.</p></details><p id="arcade-account-status">Local play available.</p></div></aside></div></main><script src="/arcade-save.js"></script><script src="./engine.js"></script><script>
 (()=>{'use strict';
@@ -45,6 +47,27 @@ function reset(){game=new ChaosMines($('difficulty').value);seconds=0;flagMode=f
 function complete(){if(!game.result||submitted)return;submitted=true;if(game.result==='won'){const points=Math.max(100,({easy:1200,medium:2400,hard:4000}[game.level])-seconds*2-(game.flareUsed?200:0));best=Math.max(best,points);try{localStorage.setItem('ashfall:cinder-mines:best',String(best))}catch{}$('status').textContent='FIELD CLEARED. Suspiciously competent. '+points+' points.';if(window.AshFallArcade?.recordScore)Promise.resolve(window.AshFallArcade.ready).then(()=>window.AshFallArcade.recordScore('cinder-mines',points,{game:'cinder-mines',score:points,difficulty:game.level,seconds,flareUsed:game.flareUsed})).catch(()=>{})}else $('status').textContent='DETONATION. The field has filed a complaint against your decisions. Start a new field.';$('field').className='field '+game.result}
 function act(i,flag=false){if(flag)game.flag(i);else game.reveal(i);complete();render(i)}
 function render(focus){const board=$('board');board.style.setProperty('--size',game.size);board.style.setProperty('--normal-board-min',(game.size===16?464:game.size===12?350:260)+'px');board.replaceChildren();game.cells.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='tile'+(c.open?' open':'')+(c.flag?' flagged':'')+(c.open&&c.mine?' mine':'');b.dataset.n=c.n;b.setAttribute('aria-label','Row '+(Math.floor(i/game.size)+1)+', column '+(i%game.size+1)+': '+(c.open?(c.mine?'Mine':c.n+' adjacent mines'):c.flag?'Flagged':'Hidden'));b.disabled=!!game.result;b.innerHTML=c.open?(c.mine?'<img src="./sprites/void-mine.svg" alt="">':c.n||''):c.flag?'<img src="./sprites/ash-marker.svg" alt="">':'';b.onclick=()=>act(i,flagMode);b.oncontextmenu=e=>{e.preventDefault();act(i,true)};b.onkeydown=e=>{if(e.key.toLowerCase()==='f'){e.preventDefault();act(i,true)}else{const step={ArrowUp:-game.size,ArrowDown:game.size,ArrowLeft:-1,ArrowRight:1}[e.key];if(step){e.preventDefault();board.children[Math.max(0,Math.min(game.cells.length-1,i+step))].focus({preventScroll:true})}}};board.append(b)});if(focus!==undefined&&!game.result)board.children[focus]?.focus({preventScroll:true});$('remaining').textContent=game.mines-game.flags;$('cleared').textContent=game.cleared+' / '+(game.cells.length-game.mines);$('best').textContent=best;$('time').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');$('mode').textContent='Flag mode: '+(flagMode?'ON':'OFF');$('mode').setAttribute('aria-pressed',String(flagMode));$('mode').disabled=!!game.result;$('flare').disabled=game.flareUsed||!!game.result;$('flare').textContent=game.flareUsed?'Flare spent':'Emergency flare · 1';$('field-label').textContent='SECTOR '+game.size+' × '+game.size+' / '+game.mines+' CHARGES';$('progress').style.width=(100*game.cleared/(game.cells.length-game.mines))+'%'}
-$('restart').onclick=reset;$('difficulty').onchange=reset;$('mode').onclick=()=>{flagMode=!flagMode;render()};$('flare').onclick=()=>{if(game.flare())$('status').textContent='Emergency flare deployed. Safe tile exposed.';else if(!game.result)$('status').textContent='Unflag a hidden tile to deploy the flare.';complete();render()};$('full').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('main').requestFullscreen()}catch{$('status').textContent='Fullscreen unavailable in this browser. Controls remain available here.'}};document.addEventListener('fullscreenchange',()=>{$('full').textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen'});setInterval(()=>{if(game.started&&!game.result&&!document.hidden){seconds++;$('time').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}},1000);reset();
+$('restart').onclick=reset;$('difficulty').onchange=reset;$('mode').onclick=()=>{flagMode=!flagMode;render()};$('flare').onclick=()=>{if(game.flare())$('status').textContent='Emergency flare deployed. Safe tile exposed.';else if(!game.result)$('status').textContent='Unflag a hidden tile to deploy the flare.';complete();render()};const cabinet=document.querySelector('main');
+function updateViewButton(){
+  const expanded=document.fullscreenElement===cabinet||cabinet.classList.contains('expanded');
+  $('full').textContent=expanded?'Exit fullscreen':'Fullscreen';
+  $('full').setAttribute('aria-pressed',String(expanded));
+}
+function exitExpandedView(){
+  cabinet.classList.remove('expanded');
+  updateViewButton();
+}
+$('full').onclick=async()=>{
+  if(cabinet.classList.contains('expanded'))return exitExpandedView();
+  if(document.fullscreenElement===cabinet){await document.exitFullscreen();return}
+  try{await cabinet.requestFullscreen()}
+  catch{cabinet.classList.add('expanded');updateViewButton()}
+};
+document.addEventListener('fullscreenchange',updateViewButton);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&cabinet.classList.contains('expanded'))exitExpandedView();
+});
+updateViewButton();
+setInterval(()=>{if(game.started&&!game.result&&!document.hidden){seconds++;$('time').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}},1000);reset();
 })();
 </script></body></html>
