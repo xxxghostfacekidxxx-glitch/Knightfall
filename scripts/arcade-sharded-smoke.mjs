@@ -17,6 +17,38 @@ const [width,height] = profiles[profile];
 const evidenceDir = path.resolve(process.env.ARCADE_EVIDENCE_DIR || "/tmp/arcade-browser-evidence", "shard-"+shardIndex, process.env.ARCADE_TEST_TARGET || "local");
 await mkdir(evidenceDir,{recursive:true});
 const browser = await chromium.launch({headless:true});
+async function verifyMinesweeperView(page) {
+  const previousViewport = page.viewportSize();
+  const board = page.locator("#board");
+  for (const viewport of [{width:390,height:844},{width:844,height:390}]) {
+    await page.setViewportSize(viewport);
+    await page.locator("#difficulty").selectOption("hard");
+    await page.getByRole("button", {name:"Fullscreen",exact:true}).click();
+    await page.getByRole("button", {name:"Exit fullscreen",exact:true}).waitFor();
+    const geometry = await board.evaluate(board => {
+      const main = board.closest("main");
+      const scroller = board.parentElement;
+      const first = board.firstElementChild.getBoundingClientRect();
+      const last = board.lastElementChild.getBoundingClientRect();
+      return {
+        count:board.children.length,
+        inside:first.width > 0 && first.top >= 0 && first.left >= 0 &&
+          last.bottom <= innerHeight + 1 && last.right <= innerWidth + 1,
+        fits:[main, scroller].every(el => el.scrollHeight <= el.clientHeight + 1 &&
+          el.scrollWidth <= el.clientWidth + 1)
+      };
+    });
+    if (geometry.count !== 256 || !geometry.inside || !geometry.fits) {
+      throw Error("Hard minefield overflows " + JSON.stringify({viewport,geometry}));
+    }
+    await page.locator("#mode").click();
+    await board.locator("button").last().click();
+    await board.getByRole("button",{name:"Row 16, column 16: Flagged",exact:true}).waitFor();
+    await page.getByRole("button",{name:"Exit fullscreen",exact:true}).click();
+    await page.getByRole("button",{name:"Fullscreen",exact:true}).waitFor();
+  }
+  await page.setViewportSize(previousViewport);
+}
 const results=[];
 try {
  for (const [position,game] of assigned.entries()) {
@@ -44,6 +76,10 @@ try {
    if (await button.isVisible().catch(()=>false) && await button.isEnabled().catch(()=>false)) {
     if(profile==="desktop") await button.click({timeout:4000}); else await button.tap({timeout:4000});
     await page.waitForTimeout(150);
+   }
+   if (game.id === "cinder-mines" && process.env.ARCADE_TEST_TARGET === "local") {
+    action = "verify fullscreen board and corner input";
+    await verifyMinesweeperView(page);
    }
    if(errors.length||network.length)throw Error("Browser errors or failed assets");
    results.push({game:game.name||game.id||game.route,route:game.route,profile,action,status:"passed"});

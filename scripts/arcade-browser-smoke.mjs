@@ -283,8 +283,10 @@ try {
       const response = await page.goto(base + "/arcade/hosted/arcade-cabinet.html?game=freeciv-web", { waitUntil: "domcontentloaded", timeout: 10000 });
       if (!response || response.status() !== 200) throw new Error("HTTP " + (response?.status() ?? "no response"));
       await page.locator("#start").tap();
-      for (let i = 0; i < 20; i++) {
-        const col = i % 10, row = Math.floor(i / 10);
+      // The rival can occupy a square before the player taps it. Visit fresh
+      // squares until the game confirms victory, bounded by the actual board.
+      for (let i = 0; i < 12 * 8; i++) {
+        const col = i % 12, row = Math.floor(i / 12);
         const position = await page.locator("#game").evaluate((canvas, logical) => {
           const rect = canvas.getBoundingClientRect();
           return { x: (logical.x / canvas.width) * rect.width, y: (logical.y / canvas.height) * rect.height };
@@ -294,7 +296,7 @@ try {
         if (/Territory won/i.test(state)) break;
       }
       const state = await page.locator("#game-state").innerText();
-      if (!/Territory won/i.test(state)) throw new Error("20 claimed tiles did not trigger victory: " + state);
+      if (!/Territory won/i.test(state)) throw new Error("Territory board exhausted without victory: " + state);
       if (errors.length) throw new Error("browser exception: " + errors.join(" | "));
       console.log("PASS Freeciv-inspired cabinet territory victory condition");
     } catch (error) {
@@ -736,7 +738,7 @@ try {
     finally{await page.close();}
   }
 
-  // Verify cloud resume for Hexforge Command, Neon Vector, and Cinder Circuit.
+  // Verify cloud resume for Hexforge Command and Cinder Circuit.
   const campaignRestoreCases = [
     {name:"Hexforge Command",path:"/arcade/hosted/hexforge-command/index.html",gameId:"cabinet-hexforge-command",data:{serialized:{tiles:Array.from({length:63},(_,i)=>({q:i%9,r:Math.floor(i/9),blocked:false,terrain:"plain"})),units:[{id:"p0-1",team:"p",q:0,r:1,hp:55,max:55,atk:18,moved:false,acted:false},{id:"p0-3",team:"p",q:0,r:3,hp:48,max:48,atk:22,moved:true,acted:false},{id:"e8-1",team:"e",q:8,r:1,hp:45,max:55,atk:14,moved:false,acted:false}],selected:{id:"p0-1"},mission:2,playerTurn:true,best:2,notice:"Cloud save restored."}},check:()=>document.querySelector("#mission")?.textContent==="2 / 3"&&document.querySelector("#friends")?.textContent==="2"&&document.querySelector("#message")?.textContent==="Cloud save restored. Your squad is ready."},
     {name:"Cinder Circuit",path:"/arcade/hosted/cinder-circuit/index.html",gameId:"cabinet-cinder-circuit",data:{serialized:{angle:1.5,speed:0.8,lane:0.2,lap:1,time:47,boost:60,oldAngle:1.4,playerLaps:1,best:2000,cars:[{name:"Mauve",color:"#ff5edb",a:1.1,v:1.05,l:-0.4},{name:"Volt",color:"#45d9ff",a:2.2,v:1.12,l:0.25},{name:"Ruckus",color:"#ffb15e",a:3.1,v:1,l:0.65}]}},check:()=>document.querySelector("#lap")?.textContent==="1 / 3"&&document.querySelector("#time")?.textContent==="47s"&&document.querySelector("#overlay")?.hidden===true}

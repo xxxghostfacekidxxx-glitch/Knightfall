@@ -30,9 +30,9 @@ test('Graveyard Shift starts, pauses and resumes while the other cabinets initia
 });
 test('Connect Four rejects old CPU moves after restart and save restoration',()=>{
  const h=boot('arcade/hosted/connect-four/index.html');
- h.get('mode').value='cpu';h.sandbox.fresh();h.sandbox.move(3);const old=[...h.timers.values()][0];assert.ok(old);
- h.sandbox.fresh();old();assert.ok(h.sandbox.window.exportSaveState().board.flat().every(v=>v===0));
- h.sandbox.move(2);const pending=[...h.timers.values()][0];assert.ok(pending);
+ h.get('mode').value='cpu';h.get('mode').onchange();h.get('board').children[3].onclick();const old=[...h.timers.values()][0];assert.ok(old);
+ h.get('restart').onclick();old();assert.ok(h.sandbox.window.exportSaveState().board.flat().every(v=>v===0));
+ h.get('board').children[2].onclick();const pending=[...h.timers.values()][0];assert.ok(pending);
  const restored={board:Array.from({length:6},()=>Array(7).fill(0)),history:[],turn:1,mode:'cpu'};
  assert.equal(h.sandbox.window.importSaveState(restored),true);pending();
  assert.ok(h.sandbox.window.exportSaveState().board.flat().every(v=>v===0));
