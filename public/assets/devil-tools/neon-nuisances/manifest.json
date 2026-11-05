@@ -1,6 +1,6 @@
 {
   "pack": "Devil Tools: Neon Nuisances · Gravewave",
-  "version": 15,
+  "version": 16,
   "license": "Original artwork for Ash-Fall / Knightfall",
   "characters": [
     {
@@ -522,6 +522,24 @@
       },
       "styleVersion": 15,
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/trouble.svg"
+    },
+    {
+      "id": "skunk-riot",
+      "name": "Skunk Riot",
+      "type": "punk skunk",
+      "primary": "#ff4bd0",
+      "accent": "#b8ff55",
+      "description": "Skunk Riot · cheeky punk skunk with hot-pink-and-lime mohawk, oversized black-and-white curled tail, pierced ears, spiked collar and studded leather vest.",
+      "personality": "Defiant, loyal and playfully theatrical. Loves loud guitars, rooftop shows and harmless stink-cloud pranks. Secretly melts for affection.",
+      "svg": "/assets/devil-tools/neon-nuisances/skunk-riot.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/skunk-riot-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/skunk-riot-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/skunk-riot-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/skunk-riot-mischief.svg"
+      },
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/skunk-riot.svg",
+      "styleVersion": 16
     }
   ],
   "animationVariants": [
