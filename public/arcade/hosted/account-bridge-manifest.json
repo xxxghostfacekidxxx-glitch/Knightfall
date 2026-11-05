@@ -66,16 +66,16 @@
     },
     {
       "gameId": "cabinet-prism-panic",
-      "title": "Prism Panic",
+      "title": "Prism Siege",
       "path": "/arcade/hosted/prism-panic/index.html",
-      "scoreSelector": "#moves",
-      "scoreMode": "moves"
+      "scoreSelector": "#score",
+      "scoreMode": "score"
     },
     {
       "gameId": "cabinet-neon-vector",
-      "title": "Neon Vector",
+      "title": "Cinder Vector",
       "path": "/arcade/hosted/neon-vector/index.html",
-      "scoreSelector": "#distance",
+      "scoreSelector": "#score",
       "scoreMode": "score"
     },
     {
