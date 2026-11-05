@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+<title id="title">Butters the shy buttercream ferret idle</title><desc id="desc">Original Knightfall pet art: bashful cream-colored ferret with a lavender scarf, oversized ears, rosy cheeks and shy eyes.</desc>
+<defs><radialGradient id="back"><stop stop-color="#35294d"/><stop offset="1" stop-color="#0e0b1b"/></radialGradient><linearGradient id="coat" x2="0" y2="1"><stop stop-color="#fff3c3"/><stop offset=".65" stop-color="#f6cb79"/><stop offset="1" stop-color="#df985b"/></linearGradient><linearGradient id="scarf" x2="0" y2="1"><stop stop-color="#db9bfc"/><stop offset="1" stop-color="#6d5aaf"/></linearGradient></defs>
+<rect width="320" height="320" rx="36" fill="url(#back)"/><circle cx="160" cy="136" r="125" fill="#e5c5ff" opacity=".07"/><path d="M37 280q121-12 244 0" stroke="#a07ed3" stroke-width="5" fill="none" opacity=".25"/>
+<g transform="translate(0 0) rotate(3 160 180)">
+<path d="M222 236q55 33 37 59" fill="none" stroke="#dca35f" stroke-width="24" stroke-linecap="round"/>
+<ellipse cx="161" cy="228" rx="91" ry="74" fill="url(#coat)" stroke="#68476c" stroke-width="6"/>
+<ellipse cx="103" cy="267" rx="28" ry="17" fill="#f9d798" stroke="#654266" stroke-width="5"/><ellipse cx="216" cy="267" rx="28" ry="17" fill="#f9d798" stroke="#654266" stroke-width="5"/>
+<path d="M93 84Q63 6 95 22Q131 24 144 92M178 92Q198 20 224 17Q255 25 225 105" fill="#f4cc85" stroke="#5f476e" stroke-width="6"/><path d="M103 76Q87 37 100 35L130 91M191 89Q217 33 225 34L215 92" fill="#f2aab4" opacity=".75"/>
+<ellipse cx="160" cy="151" rx="92" ry="84" fill="url(#coat)" stroke="#654766" stroke-width="6"/>
+<ellipse cx="160" cy="182" rx="58" ry="34" fill="#fff5d6" opacity=".83"/>
+<ellipse cx="109" cy="171" rx="14" ry="8" fill="#f29daf" opacity=".64"/><ellipse cx="212" cy="171" rx="14" ry="8" fill="#f29daf" opacity=".64"/>
+<ellipse cx="133" cy="149" rx="8" ry="12" fill="#20182d"/><ellipse cx="189" cy="149" rx="8" ry="12" fill="#20182d"/><circle cx="136" cy="145" r="3" fill="#fff"/><circle cx="192" cy="145" r="3" fill="#fff"/><path d="M151 177Q160 186 169 177Q160 167 151 177" fill="#8a566e"/><path d="M154 188q6 6 12 0" stroke="#62405c" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M80 201Q156 220 243 201L230 242Q162 266 88 234Z" fill="url(#scarf)" stroke="#4b3569" stroke-width="6"/>
+<path d="M208 224q25 26 18 53l-29-8-6-37" fill="#9869cb" stroke="#4b3569" stroke-width="5"/>
+<path d="M111 225q8 10 18 3m58-1q7 9 14 2" stroke="#fff4f8" stroke-width="4" fill="none" opacity=".7"/>
+<path d="M107 244q-6 22 16 24M212 243q3 21-12 25" stroke="#f4c17e" stroke-width="14" stroke-linecap="round" fill="none"/>
+</g><g fill="#dcaefb" opacity=".85"><circle cx="46" cy="83" r="3"/><circle cx="272" cy="108" r="3"/><circle cx="244" cy="39" r="2"/></g></svg>
