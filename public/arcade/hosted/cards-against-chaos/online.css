@@ -19,3 +19,7 @@
 .cards-local-separator{text-align:center;color:#a99ab4;letter-spacing:.14em;font-size:.76rem;font-weight:900;margin:1rem 0}
 @media(max-width:560px){.cards-online{padding:1rem}.cards-online-invite{padding:.75rem}.cards-online-invite button{width:100%}.cards-online-hand{grid-template-columns:repeat(2,minmax(0,1fr))}.cards-online-answer{min-height:110px;padding:.8rem}.cards-online-scores{gap:.3rem}.cards-online-score{font-size:.75rem;padding:.38rem .5rem}}
 @media(prefers-reduced-motion:reduce){.cards-online *{scroll-behavior:auto!important;transition:none!important}}
+
+.cards-online-score{display:inline-flex;align-items:center;gap:.4rem;min-height:42px}
+.cards-online-score img{width:36px;height:36px;object-fit:cover;border-radius:50%;background:#1c1129;border:1px solid #aa68c0;box-shadow:0 0 0 2px #ffffff10}
+.cards-online-score.czar img{border-color:#d2ff83}
