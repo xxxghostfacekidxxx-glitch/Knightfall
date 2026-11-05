@@ -1,147 +1,207 @@
-/* Cards Against Chaos · two real Ash-Fall friends + three locally scripted bot seats.
- * All game mutations go through the signed-in Knightfall Worker. */
+/* Four-seat Cards Against Chaos. One to four real friends, AI fills every vacancy. */
 (()=>{
 "use strict";
-const $=id=>document.getElementById(id),api=()=>window.AshFallArcade;
-const params=new URLSearchParams(location.search);
+const $=id=>document.getElementById(id);
+const arcade=()=>window.AshFallArcade;
+const root="/api/arcade/chaos-cards",params=new URLSearchParams(location.search);
 let me=null,friends=[],matches=[],selected=null,busy=false;
-const root="/api/arcade/chaos-cards";
-const name=seat=>seat?.name||"Player";
-const escapeURL=value=>encodeURIComponent(String(value));
-const text=(id,value)=>{$(id).textContent=String(value||"")};
-const call=(path,options)=>api().request(path,options||{});
-const status=(message)=>text("cards-online-status",message);
-const button=(label,act,kind="")=>{const b=document.createElement("button");b.type="button";b.textContent=label;b.className=kind;b.disabled=busy;b.addEventListener("click",act);return b;};
-function signInNote(){
- const s=$("cards-online-account");s.replaceChildren();
- if(me){s.textContent="Signed in as "+(me.display_name||me.username)+". Your hand remains private from your friend.";return;}
- s.append("Sign in to challenge a friend. ");
- const a=document.createElement("a");a.href="/auth.html?next="+escapeURL(location.pathname+location.search);a.textContent="Sign in";s.append(a);
+const enc=value=>encodeURIComponent(String(value));
+const display=player=>player?.display_name||player?.username||"Friend";
+const text=(id,value)=>{$(id).textContent=String(value??"");};
+const call=(path,options)=>arcade().request(path,options||{});
+const status=message=>text("cards-online-status",message);
+const button=(label,action,kind="secondary")=>{
+ const element=document.createElement("button");
+ element.type="button";element.textContent=label;element.className=kind;
+ element.disabled=busy;element.addEventListener("click",action);
+ return element;
+};
+const humanName=(match,index)=>match.seats[index]?.name||"Player";
+function accountStatus(){
+ const target=$("cards-online-account");target.replaceChildren();
+ if(me){target.textContent="Signed in as "+display(me)+". Your hand stays private from the other human players.";return;}
+ target.append("Sign in to create saved four-player tables. ");
+ const a=document.createElement("a");a.href="/auth.html?next="+enc(location.pathname+location.search);a.textContent="Sign in";
+ target.append(a);
 }
-function seatName(match,i){return name(match.seats?.[i]);}
+function refreshFriendInputs(){
+ const count=Number($("cards-online-human-count").value);
+ for(let index=1;index<=3;index++){
+  const box=$("cards-online-friend-wrap-"+index),select=$("cards-online-friend-"+index);
+  const visible=index<count;box.hidden=!visible;select.disabled=!visible;select.required=visible;
+ }
+ const button=$("cards-online-challenge");
+ button.textContent=count===1?"Start solo against 3 AI":count===2?"Invite 1 friend":`Invite ${count-1} friends`;
+ button.disabled=!me||busy||(count>1&&friends.length<count-1);
+ const preview=$("cards-online-preview");
+ preview.textContent=count+" human "+(count===1?"player":"players")+" + "+(4-count)+" AI "+((4-count)===1?"player":"players")+" = four seats";
+}
+function fillFriendChoices(){
+ for(let i=1;i<=3;i++){
+  const select=$("cards-online-friend-"+i);select.replaceChildren(new Option("Choose an accepted friend",""));
+  for(const friend of friends)select.add(new Option(display(friend)+" (@"+friend.username+")",String(friend.user_id)));
+ }
+ const invited=(params.get("invite")||"").toLowerCase();
+ if(invited){
+  const found=friends.find(friend=>(friend.username||"").toLowerCase()===invited);
+  if(found){$("cards-online-human-count").value="2";$("cards-online-friend-1").value=String(found.user_id);}
+ }
+ refreshFriendInputs();
+}
 function turnNote(match){
- if(match.status==="pending")return match.viewer_seat===1?"Your friend challenged you. Accept to deal the first hand.":"Challenge sent. Waiting for your friend.";
- if(match.status==="declined")return "Challenge declined.";
- if(match.status==="cancelled")return "Invitation cancelled.";
- if(match.phase==="finished")return "Match finished. The score is final.";
- if(match.phase==="results")return "Round complete. One of you can deal the next hand.";
- if(match.can_judge)return "You are Card Czar. Pick the funniest anonymous answer.";
- if(match.can_play)return "Your turn: choose one card from your private hand.";
- if(match.phase==="judge")return "Waiting for "+seatName(match,match.judge)+" to judge the answers.";
- return "Waiting for your friend to choose a card.";
+ if(match.status==="lobby"){
+  if(match.can_accept)return "You have an invitation. Accept it to replace an AI player.";
+  if(match.can_start)return "Waiting for invited friends. Start whenever you're ready: anyone absent becomes AI.";
+  return "Waiting for the host to start the four-player game.";
+ }
+ if(match.status==="cancelled")return "This invitation was cancelled.";
+ if(match.phase==="finished")return "Four-player match finished. Final scores are saved.";
+ if(match.phase==="results")return "Round finished. Deal a new round when you're ready.";
+ if(match.can_judge)return "You're the judge. Select your favorite anonymous answer.";
+ if(match.can_play)return "Choose one card from your private hand.";
+ if(match.phase==="judge")return "Waiting for "+humanName(match,match.judge)+" to judge the answers.";
+ return "Waiting for another human to finish their turn.";
 }
 function renderList(){
- const host=$("cards-online-list");host.replaceChildren();
+ const container=$("cards-online-list");container.replaceChildren();
  for(const match of matches){
-  const opponent=seatName(match,1-match.viewer_seat);
-  const b=button("🃏 "+opponent+" · "+(match.status==="pending"?"invitation":match.status==="active"?"round "+match.round:match.status)+(match.needs_action?" · YOUR MOVE":""),()=>openMatch(match.id),match.needs_action?"primary":"secondary");
-  b.classList.add("cards-online-match");b.setAttribute("aria-current",selected?.id===match.id?"true":"false");host.append(b);
+  const humans=match.seats.filter(seat=>seat.kind==="human").map(seat=>seat.name);
+  const label="🃏 "+humans.join(" + ")+" · "+(match.status==="lobby"?"INVITATION":
+   match.status==="active"?"Round "+match.round:match.status)+
+   (match.needs_action?" · YOUR MOVE":"");
+  const b=button(label,()=>openMatch(match.id),match.needs_action?"primary":"secondary");
+  b.classList.add("cards-online-match");b.setAttribute("aria-current",selected?.id===match.id?"true":"false");
+  container.append(b);
  }
- if(!matches.length)host.textContent="No tables yet. Pick a friend to invite.";
+ if(!matches.length)container.textContent="No saved tables yet. Start solo or invite up to three friends.";
 }
-function makeControl(label,action,body={},primary=false){
- return button(label,()=>mutate(action,body),primary?"primary":"secondary");
+function actionButton(label,action,options={},primary=false){
+ return button(label,()=>mutate(action,options),primary?"primary":"secondary");
 }
 function renderMatch(){
- const panel=$("cards-online-table"),box=$("cards-online-actions"),hand=$("cards-online-hand"),votes=$("cards-online-choices"),score=$("cards-online-scores");
+ const panel=$("cards-online-table"),actions=$("cards-online-actions"),hand=$("cards-online-hand"),
+  choices=$("cards-online-choices"),score=$("cards-online-scores");
  panel.hidden=!selected;if(!selected)return;
- const link=$("cards-online-share");
- link.href=location.origin+"/arcade/hosted/cards-against-chaos/index.html?match="+escapeURL(selected.id);
- box.replaceChildren();hand.replaceChildren();votes.replaceChildren();score.replaceChildren();
- text("cards-online-round",selected.round||"Invitation");
- text("cards-online-prompt",selected.prompt||"Your original prompt appears when the invitation is accepted.");
+ $("cards-online-share").href=location.origin+"/arcade/hosted/cards-against-chaos/index.html?match="+enc(selected.id);
+ actions.replaceChildren();hand.replaceChildren();choices.replaceChildren();score.replaceChildren();
+ text("cards-online-round",selected.round||"Lobby");
+ text("cards-online-prompt",selected.prompt||"The first prompt appears when the table begins.");
  text("cards-online-turn",turnNote(selected));
- selected.seats.forEach((seat,i)=>{
-  const el=document.createElement("span");el.className="cards-online-score"+(i===selected.judge&&selected.status==="active"?" czar":"");
+ selected.seats.forEach((seat,index)=>{
+  const pill=document.createElement("span");pill.className="cards-online-score"+
+   (index===selected.judge&&selected.status==="active"?" czar":"");
   if(seat.kind==="ai"){
-   const avatar=document.createElement("img");
-   const petId=seat.id==="eddie"?"mini-eddie":seat.id;
-   avatar.src="/assets/devil-tools/neon-nuisances/portraits/"+petId+".svg";
-   avatar.alt="";avatar.loading="lazy";avatar.width=36;avatar.height=36;
-   el.append(avatar);
+   const image=document.createElement("img");
+   image.src="/assets/devil-tools/neon-nuisances/portraits/"+
+    (seat.id==="eddie"?"mini-eddie":seat.id)+".svg";
+   image.alt="";image.loading="lazy";image.width=36;image.height=36;pill.append(image);
   }
-  const label=document.createElement("span");
-  label.textContent=(i===selected.judge&&selected.status==="active"?"★ ":"")+seat.name+(seat.kind==="ai"?" · AI":"")+" · "+selected.scores[i];
-  el.append(label);score.append(el);
+  const name=document.createElement("span");
+  name.textContent=(index===selected.judge&&selected.status==="active"?"★ ":"")+
+   seat.name+(seat.kind==="ai"?" · AI":"")+" · "+selected.scores[index];
+  pill.append(name);
+  if(seat.pending_invite){const sub=document.createElement("small");sub.textContent="Invited: "+seat.pending_invite;pill.append(sub);}
+  score.append(pill);
  });
- const other=selected.seats[1-selected.viewer_seat];
- if(selected.status==="pending"){
-  if(selected.viewer_seat===1){box.append(makeControl("Accept challenge","accept",{},true),makeControl("Decline","decline"));}
-  else box.append(makeControl("Cancel invitation","cancel"));
-  text("cards-online-result","Two human players, three AI players. The bots play automatically when their seats come up.");
+ if(selected.status==="lobby"){
+  if(selected.can_accept){
+   actions.append(actionButton("Join game","accept",{},true),actionButton("Decline","decline"));
+  }
+  if(selected.can_start){
+   actions.append(actionButton("Start with current players","start",{},true),actionButton("Cancel table","cancel"));
+  }
+  text("cards-online-result","Always four seats. Any unclaimed seats become Lydibug, Butters or Eddie when the game starts.");
   return;
  }
  const result=selected.result;
- text("cards-online-result",result?"Round "+result.round+": "+seatName(selected,result.seat)+" won with “"+result.card+".”":
-  selected.phase==="finished"?"Table finished.":"");
+ text("cards-online-result",result?
+   "Round "+result.round+": "+humanName(selected,result.seat)+" won with “"+result.card+".”":
+   selected.phase==="finished"?"Match complete.":"");
  if(selected.can_play){
   selected.hand.forEach((card,index)=>{
-   const b=button(card,()=>mutate("play",{card_index:index}),"cards-online-answer");b.setAttribute("aria-label","Play card: "+card);hand.append(b);
+   const b=button(card,()=>mutate("play",{card_index:index}),"cards-online-answer");
+   b.setAttribute("aria-label","Play card: "+card);hand.append(b);
   });
  }
  if(selected.can_judge){
   selected.choices.forEach(choice=>{
-   const b=button(choice.card,()=>mutate("judge",{choice_index:choice.index}),"cards-online-answer");b.setAttribute("aria-label","Award round to answer: "+choice.card);votes.append(b);
+   const b=button(choice.card,()=>mutate("judge",{choice_index:choice.index}),"cards-online-answer");
+   b.setAttribute("aria-label","Choose winning card: "+choice.card);choices.append(b);
   });
  }
- if(selected.can_next)box.append(makeControl("Deal the next round","next",{},true));
- if(selected.phase==="finished")box.append(document.createTextNode("🏆 "+seatName(selected,selected.winner)+" wins the table."));
-
+ if(selected.can_next)actions.append(actionButton("Deal next round","next",{},true));
+ if(selected.phase==="finished")actions.append(document.createTextNode("🏆 "+humanName(selected,selected.winner)+" wins!"));
 }
 async function openMatch(id){
- try{status("Loading card table…");const data=await call(root+"/"+escapeURL(id));
- selected=data.match;history.replaceState(null,"",location.pathname+"?match="+escapeURL(id));
- renderMatch();renderList();status("Table synced. Your hand never appears on your friend's screen.");
- }catch(e){status(e.message||"Could not open card table.");}
+ try{
+  status("Loading saved four-player table…");
+  const data=await call(root+"/"+enc(id));
+  selected=data.match;
+  history.replaceState(null,"",location.pathname+"?match="+enc(id));
+  renderMatch();renderList();status("Table synced. Private hands stay private.");
+ }catch(error){status(error.message||"Unable to open this card table.");}
 }
 async function refresh(openCurrent=true){
  if(!me)return;
- try{const data=await call(root);matches=data.matches||[];renderList();if(openCurrent&&selected)await openMatch(selected.id);
- else if(!selected&&new URLSearchParams(location.search).has("match"))await openMatch(new URLSearchParams(location.search).get("match"));
- }catch(error){status(error.message||"Could not load saved tables.");}
-}
-async function mutate(action,body={}){
- if(!selected||busy)return;busy=true;renderMatch();
  try{
-  const data=await call(root+"/"+escapeURL(selected.id)+"/"+action,{method:"POST",body:JSON.stringify({...body,version:selected.version})});
-  selected=data.match;renderMatch();await refresh(false);status("Move saved. The table is ready for its next turn.");
+  const data=await call(root);matches=data.matches||[];renderList();
+  if(openCurrent&&selected)await openMatch(selected.id);
+  else if(!selected&&new URLSearchParams(location.search).has("match"))
+   await openMatch(new URLSearchParams(location.search).get("match"));
+ }catch(error){status(error.message||"Unable to load saved card tables.");}
+}
+async function mutate(action,options={}){
+ if(!selected||busy)return;
+ busy=true;renderMatch();
+ try{
+  const data=await call(root+"/"+enc(selected.id)+"/"+action,{
+   method:"POST",body:JSON.stringify({...options,version:selected.version})
+  });
+  if(data.match){selected=data.match;renderMatch();}
+  else {selected=null;$("cards-online-table").hidden=true;history.replaceState(null,"",location.pathname);}
+  await refresh(false);
+  status(action==="decline"?"Invitation declined.":"Turn saved. All four seats are accounted for.");
  }catch(error){
-  status(error.message||"That move could not be saved. Refresh to try again.");
-  if(/updated|changed|refresh|version/i.test(String(error.message)))await openMatch(selected.id);
+  status(error.message||"Move not saved. Refresh before trying again.");
+  if(error.status===409&&selected)await openMatch(selected.id);
  }finally{busy=false;renderMatch();}
 }
 async function create(event){
  event.preventDefault();if(busy||!me)return;
- const id=Number($("cards-online-friend").value);
- if(!Number.isSafeInteger(id)||id<1){status("Choose an accepted friend.");return;}
- busy=true;$("cards-online-challenge").disabled=true;
+ const count=Number($("cards-online-human-count").value);
+ const ids=[];
+ for(let index=1;index<count;index++){
+  const id=Number($("cards-online-friend-"+index).value);
+  if(!Number.isSafeInteger(id)||id<1){status("Choose an accepted friend for each human seat.");return;}
+  ids.push(id);
+ }
+ if(new Set(ids).size!==ids.length){status("Every human seat must belong to a different friend.");return;}
+ busy=true;refreshFriendInputs();
  try{
-  const data=await call(root,{method:"POST",body:JSON.stringify({opponent_id:id})});
-  selected=data.match;renderMatch();await refresh(false);
-  history.replaceState(null,"",location.pathname+"?match="+escapeURL(selected.id));
-  status("Invitation sent! Your friend can accept from their notifications or this table.");
- }catch(error){
-  status(error.message||"Could not send the invitation.");
-  if(error.data?.match_id)await openMatch(error.data.match_id);
- }finally{busy=false;$("cards-online-challenge").disabled=!friends.length;}
+  const response=await call(root,{method:"POST",body:JSON.stringify({opponent_ids:ids})});
+  selected=response.match;
+  history.replaceState(null,"",location.pathname+"?match="+enc(selected.id));
+  renderMatch();await refresh(false);
+  status(ids.length?"Invitations sent. Start when ready; unfilled seats become AI.":"Solo game started with three AI opponents.");
+ }catch(error){status(error.message||"Unable to create a card table.");}
+ finally{busy=false;refreshFriendInputs();}
 }
 async function boot(){
- if(!api())return status("Account tools unavailable. Refresh to reconnect.");
+ if(!arcade())return status("Account tools did not load. Refresh this page.");
  try{
-  await api().refreshUser();me=api().user;signInNote();
-  if(!me){$("cards-online-challenge").disabled=true;status("Sign in to challenge a friend.");return;}
+  await arcade().refreshUser();me=arcade().user;accountStatus();
+  if(!me){refreshFriendInputs();return status("Sign in to play saved four-player card games.");}
   const response=await call("/api/friends");friends=response.friends||[];
-  const select=$("cards-online-friend");select.replaceChildren(new Option(friends.length?"Choose a friend":"Add an accepted friend first",""));
-  friends.forEach(f=>select.add(new Option((f.display_name||f.username)+" (@"+f.username+")",String(f.user_id))));
-  const invited=(params.get("invite")||"").toLowerCase();
-  if(invited){const friend=friends.find(f=>(f.username||"").toLowerCase()===invited);if(friend)select.value=String(friend.user_id);}
-  $("cards-online-challenge").disabled=!friends.length;
-  await refresh();status("Ready. Invite a friend or reopen a saved match.");
- }catch(error){status(error.message||"Could not load account and friend list.");}
+  fillFriendChoices();await refresh();status("Ready: select one to four humans. The rest are AI.");
+ }catch(error){status(error.message||"Could not load account or friends.");}
 }
+$("cards-online-human-count").addEventListener("change",refreshFriendInputs);
 $("cards-online-form").addEventListener("submit",create);
 $("cards-online-refresh").addEventListener("click",()=>refresh(true));
-$("cards-online-close").addEventListener("click",()=>{selected=null;$("cards-online-table").hidden=true;history.replaceState(null,"",location.pathname);renderList();});
+$("cards-online-close").addEventListener("click",()=>{
+ selected=null;$("cards-online-table").hidden=true;
+ history.replaceState(null,"",location.pathname);renderList();
+});
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh(true);});
 setInterval(()=>{if(!document.hidden&&!busy)refresh(!!selected);},30000);
 boot();
