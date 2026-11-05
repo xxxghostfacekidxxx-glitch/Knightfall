@@ -44,6 +44,10 @@ async function verifyMinesweeperView(page) {
     await page.locator("#mode").click();
     await board.locator("button").last().click();
     await board.getByRole("button",{name:"Row 16, column 16: Flagged",exact:true}).waitFor();
+    await page.locator("#restart").click();
+    await board.locator("button").first().evaluate(button=>button.dispatchEvent(new PointerEvent("pointerdown",{bubbles:true,pointerType:"touch",pointerId:27,clientX:10,clientY:10})));
+    await page.waitForTimeout(560);
+    await board.getByRole("button",{name:"Row 1, column 1: Flagged",exact:true}).waitFor();
     await page.getByRole("button",{name:"Exit fullscreen",exact:true}).click();
     await page.getByRole("button",{name:"Fullscreen",exact:true}).waitFor();
   }
