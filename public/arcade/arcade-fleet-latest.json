@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-06T19:39:01.019Z",
-  "reportsFound": 10,
+  "generatedAt": "2026-11-06T21:48:33.312Z",
+  "reportsFound": 20,
   "catalogRoutes": 132,
   "targets": {
     "live": {
@@ -11,22 +11,29 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [
-        {
-          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-4-Tower Keeper/tmp/arcade-browser-evidence/shard-4/live/report.json",
-          "shard": 4
-        }
-      ],
+      "malformedReports": [],
+      "failures": [],
+      "coverageOk": true
+    },
+    "local": {
+      "reports": 10,
+      "expectedShards": 10,
+      "expectedRoutes": 132,
+      "coveredRoutes": 132,
+      "missingShards": [],
+      "duplicatedShards": [],
+      "duplicatedRoutes": [],
+      "malformedReports": [],
       "failures": [
         {
-          "game": "neon-surge",
-          "route": "/arcade/hosted/neon-surge/index.html",
-          "profile": "desktop",
+          "game": "cinder-reversi",
+          "route": "/arcade/hosted/cinder-reversi/index.html",
+          "profile": "tablet",
           "action": "start game",
-          "reason": "locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting click action\n    - waitin",
-          "target": "live",
-          "screenshot": null,
-          "networkErrorCount": 0,
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:88:43",
+          "target": "local",
+          "screenshot": "005.png",
+          "networkErrorCount": 1,
           "browserErrorCount": 0
         }
       ],
@@ -34,5 +41,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 42280101367
+  "sourceRunId": 42296298378
 }
