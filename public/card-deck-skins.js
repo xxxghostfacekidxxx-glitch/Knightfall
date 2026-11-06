@@ -24,27 +24,121 @@
  const read=(key)=>{try{return window.localStorage.getItem(key)}catch{return null}};
  const write=(key,value)=>{try{window.localStorage.setItem(key,value);return true}catch{return false}};
  const root=document.documentElement;
- let deals=Math.min(100000,Math.max(0,Number.parseInt(read(PROGRESS_KEY)||"0",10)||0));
- const allowed=skin=>skin?.kind==="free"||(skin?.kind==="unlock"&&deals>=skin.deals);
+ let localDeals=Math.min(100000,Math.max(0,Number.parseInt(read(PROGRESS_KEY)||"0",10)||0));
+ let deals=localDeals;
+ const account={ready:false,userId:null,revision:0,owned:new Set(),imported:false,status:"Checking account sync…"};
+ const API="https://api.ash-fall.com/api/arcade/deck-locker";
+ const allowed=skin=>skin?.kind==="free"||(skin?.kind==="unlock"&&deals>=skin.deals)
+  ||(skin?.kind==="premium"&&account.ready&&account.owned.has(skin.id));
  let chosen=read(STORAGE_KEY)||"ash-classic";
  if(!allowed(skinMap.get(chosen)))chosen="ash-classic";
  const updateDocument=()=>{root.dataset.kfDeckSkin=chosen;root.style.colorScheme="dark"};
  updateDocument();
- let locker=null,renderCardList=null;
+ let locker=null,renderCardList=null,mutations=Promise.resolve(),syncing=null;
+ const request=async(method="GET",body=null)=>{
+  const response=await window.fetch(API,{
+   method,credentials:"include",cache:"no-store",
+   headers:body?{"content-type":"application/json"}:undefined,
+   body:body?JSON.stringify(body):undefined
+  });
+  const data=await response.json().catch(()=>({error:"Account sync did not return JSON."}));
+  if(!response.ok){
+   const error=new Error(data.error||"Deck Locker sync unavailable.");
+   error.status=response.status;error.data=data;throw error;
+  }
+  return data;
+ };
+ function applyAccount(data){
+  if(!data||!data.profile||!Number.isSafeInteger(Number(data.user_id)))throw Error("Invalid Deck Locker account response.");
+  account.ready=true;account.userId=Number(data.user_id);
+  account.revision=Math.max(0,Math.floor(Number(data.profile.revision)||0));
+  account.imported=!!data.profile.local_imported;
+  account.owned=new Set((Array.isArray(data.owned_skin_ids)?data.owned_skin_ids:[])
+   .filter(id=>skinMap.get(id)?.kind==="premium"));
+  deals=Math.min(100000,Math.max(0,Math.floor(Number(data.profile.earned_deals)||0)));
+  const selected=data.profile.equipped_skin;
+  chosen=allowed(skinMap.get(selected))?selected:"ash-classic";
+  write(STORAGE_KEY,chosen);updateDocument();
+  account.status="✓ Synced to your Knightfall account";
+  if(renderCardList)renderCardList();
+ }
+ async function syncNow(){
+  if(typeof window.fetch!=="function")return false;
+  if(syncing)return syncing;
+  account.status="Checking Knightfall account…";
+  if(renderCardList)renderCardList();
+  syncing=(async()=>{
+   try{applyAccount(await request());return true}
+   catch(error){
+    if(error.status===401){
+     account.ready=false;account.userId=null;account.owned.clear();
+     deals=localDeals;
+     const local=read(STORAGE_KEY)||"ash-classic";
+     chosen=allowed(skinMap.get(local))?local:"ash-classic";updateDocument();
+     account.status="Guest · sign in to sync skins across devices";
+    }else{
+     // Never trust a cached premium selection while the API is unavailable.
+     if(!account.ready) {
+      deals=localDeals;
+      if(!allowed(skinMap.get(chosen)))chosen="ash-classic";
+      updateDocument();
+     }
+     account.status="Offline · local styles still work. Account sync unavailable.";
+    }
+    if(renderCardList)renderCardList();
+    return false;
+   }finally{syncing=null}
+  })();
+  return syncing;
+ }
+ function enqueue(operation){
+  mutations=mutations.then(operation,operation).catch(error=>{
+   account.status="Sync paused: "+String(error?.message||error).slice(0,100);
+   if(error?.status===401){account.ready=false;account.owned.clear();deals=localDeals;
+    if(!allowed(skinMap.get(chosen)))chosen="ash-classic";updateDocument();}
+   if(renderCardList)renderCardList();
+  });
+  return mutations;
+ }
  function chooseSkin(id){
   const skin=skinMap.get(id);
   if(!allowed(skin))return false;
   chosen=id;write(STORAGE_KEY,id);updateDocument();
   if(renderCardList)renderCardList();
   window.dispatchEvent(new CustomEvent("ashfall:deck-skin-change",{detail:{id}}));
+  if(account.ready){
+   enqueue(async()=>{
+    let data;
+    try{data=await request("PUT",{skin_id:id,revision:account.revision})}
+    catch(error){
+     if(error.status===409){
+      await syncNow();
+      if(account.ready&&allowed(skinMap.get(id)))
+       data=await request("PUT",{skin_id:id,revision:account.revision});
+     }else throw error;
+    }
+    if(data)applyAccount(data);
+   });
+  }
   return true;
  }
  function recordDeal(gameKey){
   if(typeof gameKey!=="string"||!/^[a-z0-9-]{3,64}$/.test(gameKey))return deals;
-  deals=Math.min(100000,deals+1);
-  write(PROGRESS_KEY,String(deals));
+  localDeals=Math.min(100000,localDeals+1);
+  write(PROGRESS_KEY,String(localDeals));
+  if(!account.ready)deals=localDeals;
   if(renderCardList)renderCardList();
+  if(account.ready){
+   const eventId=typeof crypto!=="undefined"&&crypto.randomUUID?crypto.randomUUID():
+    "deck-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
+   enqueue(async()=>{applyAccount(await request("POST",{action:"deal",game_key:gameKey,event_id:eventId}))});
+  }
   return deals;
+ }
+ function importLegacy(){
+  if(!account.ready||account.imported||localDeals<=deals)return false;
+  enqueue(async()=>{applyAccount(await request("POST",{action:"import",legacy_deals:Math.min(50,localDeals)}))});
+  return true;
  }
  function make(tag,className,text){
   const el=document.createElement(tag);
@@ -58,9 +152,23 @@
   const heading=make("div","kf-deck-intro");
   const intro=make("div");
   intro.append(make("strong",null,"CHOOSE YOUR CARD FINISH"),make("p",null,"One wardrobe across every card table. Cosmetic only; game rules stay unchanged."));
-  const prog=make("div","kf-deck-progress",deals+" hands / deals played on this device");
+  const prog=make("div","kf-deck-progress",deals+" recorded deals"+(account.ready?" · account":" · device"));
   heading.append(intro,prog);
   locker.append(heading);
+  const syncStatus=make("div","kf-deck-sync-status");
+  const message=make("span","kf-deck-status-text",account.status);
+  syncStatus.append(message);
+  if(account.ready&&!account.imported&&localDeals>deals){
+   const importer=make("button","kf-deck-import","Import up to 50 legacy device deals");
+   importer.type="button";
+   importer.title="One-time import of existing device-only cosmetic progress. This is not proof of a completed game.";
+   importer.addEventListener("click",importLegacy);
+   syncStatus.append(importer);
+  }
+  const refresh=make("button","kf-deck-refresh","↻ Sync");
+  refresh.type="button";refresh.addEventListener("click",syncNow);
+  syncStatus.append(refresh);
+  locker.append(syncStatus);
   const grid=make("div","kf-deck-grid");
   for(const skin of SKINS){
    const available=allowed(skin),premium=skin.kind==="premium";
@@ -89,7 +197,9 @@
    grid.append(item);
   }
   locker.append(grid);
-  const note=make("p","kf-deck-disclaimer","Earned skins use local device progress for now, not account-verified achievements. Paid designs are previews only; checkout and ownership unlocks are not live.");
+  const note=make("p","kf-deck-disclaimer",account.ready
+   ?"Skins and cosmetic play progress are saved to your account. Local game activity is rate-limited, not independently game-verified. Premium ownership requires server-issued entitlements; checkout is not live."
+   :"Guest progress stays on this device. Sign in to save earned styles across devices; premium checkout remains disabled.");
   locker.append(note);
  }
  function init(){
@@ -110,17 +220,25 @@
   shell.addEventListener("toggle",()=>{if(shell.open)renderCardList()});
   renderCardList();
   if(location.hash==="#kf-deck-wardrobe")shell.open=true;
+  // Never block arcade gameplay on account availability or an offline connection.
+  void syncNow();
  }
  const onStorage=e=>{
-  if(e.key===PROGRESS_KEY){const value=Number.parseInt(e.newValue||"0",10)||0;deals=Math.min(100000,Math.max(0,value))}
-  if(e.key===STORAGE_KEY){const next=e.newValue||"ash-classic";chosen=allowed(skinMap.get(next))?next:"ash-classic";updateDocument()}
+  if(e.key===PROGRESS_KEY){const value=Number.parseInt(e.newValue||"0",10)||0;
+   localDeals=Math.min(100000,Math.max(0,value));if(!account.ready)deals=localDeals;}
+  if(e.key===STORAGE_KEY){const next=e.newValue||"ash-classic";chosen=allowed(skinMap.get(next))?next:"ash-classic";updateDocument();
+   if(account.ready)void syncNow();}
   if(renderCardList)renderCardList();
  };
  window.addEventListener("storage",onStorage);
  window.AshFallDeckSkins=Object.freeze({
-  skins:SKINS,recordDeal,chooseSkin,
+  skins:SKINS,recordDeal,chooseSkin,refresh:syncNow,importLegacy,
   get current(){return chosen},
   get localDeals(){return deals},
+  get deviceDeals(){return localDeals},
+  get accountSynced(){return account.ready},
+  get accountId(){return account.userId},
+  get ownedPremium(){return [...account.owned]},
   isAvailable:id=>allowed(skinMap.get(id))
  });
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
