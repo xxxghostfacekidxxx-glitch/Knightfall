@@ -110,3 +110,12 @@ This pass carried forward the first group of master-list tasks rather than marki
 - [Core regression run 42314315467](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42314315467), card/board integrity and Monster MMO checks passed. In addition to the 21 focused local tests, 32 existing regression tests passed locally.
 - SVG CI uncovered a stale 22-character assertion against the 31-character roster. The gallery test now validates unique current IDs and all registered files, retaining four-pose requirements except for the six explicitly idle-only additions. All 17 mascot/gallery regression tests pass locally.
 - Repository inventory at release: only `main`, zero open pull requests.
+
+### Neon Surge follow-up and final handoff
+
+- The fresh fleet `42314315398` reproduced the Neon Surge desktop START timeout on both local and live pages. The earlier passing fleet did not establish durable responsiveness; this gate is reopened.
+- Commit `57a224c854217441f9ba974f0057bb3ad38090a6` stops expensive WebGL frame submission on title, pause and game-over screens while retaining DOM title animation and normal gameplay rendering. Launch initialization yields briefly after the click. An executable frame-loop regression proves idle screens submit no frames and gameplay still updates/renders.
+- Cloudflare Pages deployment `f58aa6c5-8f10-4078-a091-737f2ca60a38` successfully deployed that commit to ash-fall.com and www.ash-fall.com. Core regression, arcade catalog integrity and Catalog Doctor passed.
+- New fleet `42314696398` was pending at the final check; runtime smoke `42314696685` was in progress. The preceding broad browser job was cancelled by the new push after the offline-specific browser step had passed. Do not label the new full fleet or Neon Surge browser acceptance successful until those results are available.
+- The mascot correction's SVG workflow `42314525808` and core regression `42314525911` passed. Local checks total 71 distinct tests across this run, plus syntax/palette checks.
+- Next actionable priorities: verify Neon Surge desktop START and complete fleet; Android real-account offline/push acceptance; Deck Locker two-device acceptance; Hell & High Orbit and fish-table networking. Account/provider-dependent gates remain open.
