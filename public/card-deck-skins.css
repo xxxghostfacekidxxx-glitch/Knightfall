@@ -98,6 +98,9 @@ html[data-kf-deck-skin] :is(.playing-card:not(.back):not(.backside),#hand button
 html[data-kf-deck-skin] .playing-card.red:not(.back):not(.backside){
  color:var(--kf-deck-red)!important
 }
+/* Cinder Eights uses semantic card buttons rather than .playing-card elements. */
+html[data-kf-deck-skin] #hand button.af-deck-card.red{color:var(--kf-deck-red)!important}
+
 html[data-kf-deck-skin] .playing-card:is(.back,.backside){
  background:var(--kf-deck-back)!important;
  border:2px solid var(--kf-deck-stroke)!important;
