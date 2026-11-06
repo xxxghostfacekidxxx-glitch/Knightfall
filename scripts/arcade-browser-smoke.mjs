@@ -57,6 +57,55 @@ browser.newPage = async options => {
 };
 let failed = false;
 try {
+  // Deck Locker: one selected finish must follow the player across all four card-game
+  // routes and visibly change both playing-card faces and Cards Against Chaos answers.
+  {
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const cardRoutes=[
+      "/arcade/hosted/cards-against-chaos/index.html",
+      "/arcade-card-room.html",
+      "/arcade-card-expansion.html",
+      "/arcade/hosted/cinder-eights/index.html"
+    ];
+    try{
+      for(const [index,route] of cardRoutes.entries()){
+        const page=await context.newPage();
+        const errors=[];page.on("pageerror",err=>errors.push(String(err.message||err)));
+        try{
+          const response=await page.goto(base+route,{waitUntil:"domcontentloaded",timeout:12000});
+          if(!response?.ok())throw Error("Deck Locker route failed: "+route+" "+response?.status());
+          await page.locator("#kf-deck-wardrobe summary").click();
+          if(await page.locator("#kf-deck-wardrobe .kf-deck-item").count()!==12)throw Error(route+": expected twelve wardrobe finishes");
+          if(index===0){
+            await page.locator("#kf-deck-wardrobe .kf-deck-item").nth(1).locator("button").click();
+            await page.locator("#start").click();
+          }
+          const state=await page.evaluate(()=>{
+            const skin=window.AshFallDeckSkins;
+            const card=document.querySelector(".cac-shell .answer-card,.playing-card:not(.back):not(.backside),#hand button.af-deck-card");
+            const style=card?getComputedStyle(card):null;
+            return {
+              chosen:skin?.current,
+              root:document.documentElement.dataset.kfDeckSkin,
+              face:style?.backgroundImage||"",
+              border:style?.borderTopColor||"",
+              deals:skin?.localDeals,
+              premiumLocked:skin?.isAvailable("holo-wraith")===false,
+              scroll:document.documentElement.scrollWidth,
+              screen:innerWidth
+            };
+          });
+          if(state.chosen!=="neon-riot"||state.root!=="neon-riot")throw Error(route+": skin preference did not sync: "+JSON.stringify(state));
+          if(!state.premiumLocked)throw Error(route+": premium preview was incorrectly unlocked");
+          if(!state.face.includes("gradient")||!state.border.includes("255, 80, 214"))
+            throw Error(route+": visible cards did not take selected neon skin: "+JSON.stringify(state));
+          if(state.scroll>state.screen+3)throw Error(route+": wardrobe causes horizontal overflow: "+JSON.stringify(state));
+          if(errors.length)throw Error(route+" browser errors: "+errors.join(" | "));
+        }finally{await page.close();}
+      }
+      console.log("PASS Deck Locker: 12 cosmetics, selection and visual card skins persist across four mobile card-game entry points");
+    }finally{await context.close();}
+  }
   // Regression guard: the arcade theme must never restore the retired orange palette.
   // Exercise the actual CSS cascade rather than checking source text alone.
   for (const route of ["/chaos-cartridge.html", "/arcade-games.html", "/arcade-30-games.html"]) {
