@@ -5,14 +5,22 @@ on:
     paths:
       - 'public/arcade/**'
       - 'public/arcade-card-board.html'
+      - 'public/arcade-games.html'
+      - 'public/arcade-after-dark.html'
       - 'scripts/audit-*.mjs'
       - 'scripts/test-browserquest-socket.mjs'
       - 'scripts/test-life-games.mjs'
+      - 'scripts/arcade-reaction-ritual.test.mjs'
+      - 'scripts/arcade-ruin-duel.test.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - '.github/workflows/arcade-catalog-integrity.yml'
   pull_request:
     paths:
       - 'public/arcade/**'
+      - 'public/arcade-games.html'
+      - 'public/arcade-after-dark.html'
+      - 'scripts/arcade-reaction-ritual.test.mjs'
+      - 'scripts/arcade-ruin-duel.test.mjs'
       - 'scripts/audit-*.mjs'
       - 'scripts/build-arcade-catalog.mjs'
   workflow_dispatch:
