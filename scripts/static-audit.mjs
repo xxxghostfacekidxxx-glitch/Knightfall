@@ -212,7 +212,11 @@ for (const file of htmlFiles) {
     // These documents are generated in a per-game cache by the offline launcher's service worker.
     if (/^\/admin-offline\/play\/(?:ashfall-infernal-reign-dev|sanctuary-original)\/sanctuary\.html$/.test(pathname)) continue;
     if (!pathname || pathname === "/" || pathname.startsWith("/api/")) continue;
-    if (!publicPaths.has(pathname)) fail(rel + " references missing local asset " + pathname);
+    // A directory URL is a real Pages route when it has an index.html.
+    // Keep flagging nonexistent folders; don't treat valid PWA start URLs as missing assets.
+    const pointsToIndex = pathname.endsWith("/") && publicPaths.has(pathname + "index.html");
+    if (!publicPaths.has(pathname) && !pointsToIndex)
+      fail(rel + " references missing local asset " + pathname);
   }
   ok("HTML structure and local assets: " + rel);
 }
