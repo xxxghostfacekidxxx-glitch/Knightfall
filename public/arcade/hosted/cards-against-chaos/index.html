@@ -135,7 +135,20 @@ function refill(deck,source,count){
  return deck.splice(0,count);
 }
 function playerFields(){const n=Number($('player-count').value),box=$('player-inputs');box.replaceChildren();for(let i=0;i<n;i++){const label=document.createElement('label');label.className='field';label.textContent='Player '+(i+1)+' name';const input=document.createElement('input');input.maxLength=20;input.autocomplete='off';input.placeholder='Player '+(i+1);input.dataset.player=String(i);label.append(input);box.append(label)}}
-function renderScores(){const box=$('scoreboard');box.replaceChildren();players.forEach((p,i)=>{const pill=document.createElement('span');pill.className='score'+(i===czar?' current':'');pill.textContent=(i===czar?'★ ':'')+p.name+' · '+p.score;box.append(pill)})}
+function renderScores(){
+ const box=$('scoreboard');box.replaceChildren();
+ players.forEach((p,i)=>{
+  const pill=document.createElement('span');pill.className='score'+(i===czar?' current':'');
+  pill.setAttribute('aria-label',p.name+(p.ai?' AI':' human')+', '+p.score+' points'+(i===czar+', judge':''));
+  const emblem=document.createElement('span');emblem.className='cac-score-emblem';emblem.setAttribute('aria-hidden','true');emblem.textContent=i===czar?'★':p.ai?'✦':'♠';
+  const info=document.createElement('span');info.className='cac-score-info';
+  const name=document.createElement('span');name.className='cac-score-name';name.textContent=p.name;
+  const meta=document.createElement('small');meta.className='cac-score-meta';meta.textContent=i===czar?'JUDGE':p.ai?'AI PLAYER':'HUMAN PLAYER';
+  info.append(name,meta);
+  const count=document.createElement('strong');count.className='cac-score-points';count.textContent=String(p.score);
+  pill.append(emblem,info,count);box.append(pill);
+ });
+}
 function beginRound(){round++;czar=(round-1)%players.length;submissions=[];selection=0;phase='submit';const prompt=refill(black,BLACK,1)[0];$('round-number').textContent=String(round);$('prompt-text').textContent=prompt;$('status').textContent=players[czar].name+' is the judge this round.';$('instruction').textContent='Pass the device to each player. The judge sits out this round; everyone else secretly chooses one answer.';$('judging-panel').classList.add('hidden');$('reveal').classList.add('hidden');$('next-round').classList.add('hidden');$('hand').replaceChildren();renderScores();nextSubmitter()}
 function nextSubmitter(){if(submissions.length===players.length-1){phase='judge';$('status').textContent='All answers are in. '+players[czar].name+' chooses the winner.';$('instruction').textContent='The answers are shuffled and shown without player names.';$('hide-hand').classList.add('hidden');$('reveal').classList.remove('hidden');$('reveal').textContent='Reveal anonymous answers';$('reveal').onclick=showAnswers;
 if(players[czar].ai){showAnswers();const winner=submissions[aiPick(submissions.map(entry=>entry.card),players[czar].style)];setTimeout(()=>{if(phase==='select')award(winner)},500)}return}
@@ -145,8 +158,8 @@ $('status').textContent='Pass the device to '+player.name+'.';$('instruction').t
 function chooseCard(playerIndex,cardIndex){if(phase!=='submit')return;const card=players[playerIndex].hand.splice(cardIndex,1)[0];submissions.push({player:playerIndex,card});players[playerIndex].hand.push(...refill(white,WHITE,1));$('hand').replaceChildren();if(submissions.length<players.length-1){$('status').textContent='Answer locked in. Keep it secret.';$('instruction').textContent='Tap below to hide the hand and pass the device.';$('hide-hand').classList.remove('hidden');$('hide-hand').onclick=nextSubmitter;
 if(players.filter(player=>!player.ai).length===1){$('hide-hand').classList.add('hidden');nextSubmitter()}
 }else nextSubmitter()}
-function showAnswers(){if(phase!=='judge')return;phase='select';$('reveal').classList.add('hidden');$('judging-panel').classList.remove('hidden');$('judge-instruction').textContent='Judge: '+players[czar].name+'. Pick the funniest answer.';const answers=$('answers');answers.replaceChildren();shuffle([...submissions]).forEach((s,i)=>{const b=document.createElement('button');b.className='answer-choice';b.type='button';const label=document.createElement('span');label.textContent='Answer '+(i+1);const text=document.createElement('strong');text.textContent=s.card;b.append(label,text);b.addEventListener('click',()=>award(s));answers.append(b)});$('prompt-panel').scrollIntoView({behavior:'smooth',block:'start'})}
-function award(winner){if(phase!=='select')return;phase='result';players[winner.player].score++;renderScores();$('status').innerHTML='';const msg=document.createElement('span');msg.className='winner';msg.textContent='Round '+round+' goes to '+players[winner.player].name+'!';$('status').append(msg);$('judge-instruction').textContent='Winning answer: “'+winner.card+'”';$('answers').replaceChildren();$('next-round').textContent=players.some(p=>p.score>=winScore)?'Finish game':'Deal next round';$('next-round').classList.remove('hidden');$('next-round').onclick=()=>{if(players.some(p=>p.score>=winScore))endGame();else beginRound()};if(players.some(p=>p.score>=winScore))$('status').textContent='🏆 '+players.filter(p=>p.score>=winScore).map(p=>p.name).join(', ')+' won the table!'}
+function showAnswers(){if(phase!=='judge')return;phase='select';$('reveal').classList.add('hidden');$('judging-panel').classList.remove('hidden');$('judge-instruction').textContent='Judge: '+players[czar].name+'. Pick the funniest answer.';const answers=$('answers');answers.replaceChildren();shuffle([...submissions]).forEach((s,i)=>{const b=document.createElement('button');b.className='answer-choice';b.type='button';const label=document.createElement('span');label.textContent='Answer '+(i+1);const text=document.createElement('strong');text.textContent=s.card;b.append(label,text);b.addEventListener('click',()=>award(s));answers.append(b)});$('judging-panel').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function award(winner){if(phase!=='select')return;phase='result';players[winner.player].score++;renderScores();$('status').innerHTML='';const msg=document.createElement('span');msg.className='winner';msg.textContent='Round '+round+' goes to '+players[winner.player].name+'!';$('status').append(msg);window.AshFallVisuals?.burst?.(innerWidth*.5,Math.min(innerHeight*.46,320),1.7);$('judge-instruction').textContent='Winning answer: “'+winner.card+'”';$('answers').replaceChildren();$('next-round').textContent=players.some(p=>p.score>=winScore)?'Finish game':'Deal next round';$('next-round').classList.remove('hidden');$('next-round').onclick=()=>{if(players.some(p=>p.score>=winScore))endGame();else beginRound()};if(players.some(p=>p.score>=winScore))$('status').textContent='🏆 '+players.filter(p=>p.score>=winScore).map(p=>p.name).join(', ')+' won the table!'}
 function endGame(){phase='done';$('instruction').textContent='Final scores are above. Start a new table whenever you are ready.';$('next-round').classList.add('hidden');$('judging-panel').classList.add('hidden')}
 function start(){
  const chosen=[...document.querySelectorAll('[data-card-pack-mode="local"]:checked')].map(input=>input.value);
@@ -161,8 +174,8 @@ function start(){
  players=[...$('player-inputs').querySelectorAll('input')].map((input,i)=>({name:input.value.trim()||'Player '+(i+1),score:0,ai:false,hand:refill(white,WHITE,10)}));
 for(const bot of AI_LABELS.slice(0,4-players.length))players.push({name:bot.name,style:bot.style,ai:true,score:0,hand:refill(white,WHITE,10)});
 if(players.length!==4)throw Error('Card table must have exactly four players');
-round=0;winScore=Number($('win-score').value);phase='game';$('setup').classList.add('hidden');$('game').classList.remove('hidden');beginRound()}
-function reset(){phase='setup';players=[];$('game').classList.add('hidden');$('setup').classList.remove('hidden');playerFields();$('setup-title').focus()}
+round=0;winScore=Number($('win-score').value);phase='game';$('setup').classList.add('hidden');$('game').classList.remove('hidden');window.CACCabinet?.setPlaying(true);beginRound();$('game').scrollIntoView({behavior:'smooth',block:'start'})}
+function reset(){phase='setup';players=[];window.CACCabinet?.setPlaying(false);$('game').classList.add('hidden');$('setup').classList.remove('hidden');playerFields();$('setup-title').focus({preventScroll:true});$('setup').scrollIntoView({behavior:'smooth',block:'start'})}
 document.querySelectorAll('[data-card-pack-mode="local"]').forEach(input=>input.addEventListener('change',()=>{
  $('local-adult-label').hidden=![...document.querySelectorAll('[data-card-pack-mode="local"]:checked')].some(node=>EXPANSION_PACKS[node.value]?.min_age>=18);
 }));
