@@ -9,6 +9,9 @@ on:
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/chaos-cards-integration.test.mjs'
       - 'scripts/cards-cabinet-ui.test.mjs'
+      - 'scripts/deck-locker-integrity.test.mjs'
+      - 'public/card-deck-skins.js'
+      - 'public/card-deck-skins.css'
       - 'backend/src/chaos-card-*.js'
       - 'backend/src/chaos-card-*.mjs'
       - 'backend/migrations/0118_chaos_card_matches.sql'
@@ -26,6 +29,9 @@ on:
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/chaos-cards-integration.test.mjs'
       - 'scripts/cards-cabinet-ui.test.mjs'
+      - 'scripts/deck-locker-integrity.test.mjs'
+      - 'public/card-deck-skins.js'
+      - 'public/card-deck-skins.css'
       - 'backend/src/chaos-card-*.js'
       - 'backend/src/chaos-card-*.mjs'
       - 'backend/migrations/0118_chaos_card_matches.sql'
@@ -48,7 +54,7 @@ jobs:
         run: node --test scripts/card-room-runtime.test.mjs
       - name: Exercise authenticated four-seat card rules and secrecy
         run: |
-          node --test backend/src/chaos-card-matches.test.mjs scripts/chaos-cards-integration.test.mjs scripts/cards-cabinet-ui.test.mjs
+          node --test backend/src/chaos-card-matches.test.mjs scripts/chaos-cards-integration.test.mjs scripts/cards-cabinet-ui.test.mjs scripts/deck-locker-integrity.test.mjs
           node --check public/arcade/hosted/cards-against-chaos/cabinet.js
           node --check backend/src/chaos-card-matches.js
           node --check public/arcade/hosted/cards-against-chaos/online.js
