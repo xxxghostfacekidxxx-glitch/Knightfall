@@ -13,7 +13,7 @@ for(const id of ["neon-vector","prism-panic"])test(id+" boots, runs, restarts wi
  const ctx={fillRect(){},beginPath(){},arc(){},fill(){},fillText(){},moveTo(){},lineTo(){},closePath(){},save(){},restore(){},translate(){},stroke(){},createLinearGradient(){return {addColorStop(){}}}};
  const captures=new Set();const canvas={getContext:()=>ctx,addEventListener:(name,fn)=>listeners.set("canvas:"+name,fn),getBoundingClientRect:()=>({left:0,top:0,width:640,height:480}),setPointerCapture:id=>captures.add(id),hasPointerCapture:id=>captures.has(id)};
  const doc={querySelector:()=>canvas,getElementById:node,addEventListener:(name,fn)=>listeners.set("document:"+name,fn),dispatchEvent(){}};
- runInNewContext(source,{document:doc,location:{pathname:"/arcade/hosted/"+id+"/index.html"},Math,Number,Set,CustomEvent:class{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
+ runInNewContext(source,{document:doc,window:{addEventListener:(name,fn)=>listeners.set("window:"+name,fn)},location:{pathname:"/arcade/hosted/"+id+"/index.html"},Math,Number,Set,CustomEvent:class{},localStorage:{getItem:()=>null,setItem(){}},performance:{now:()=>0},requestAnimationFrame:fn=>frames.push(fn)},{timeout:1000});
  listeners.get("restart:click")();
  for(let i=0;i<6;i++){const frame=frames.shift();assert.ok(frame);frame((i+1)*16)}
  const stale=frames.shift();listeners.get("restart:click")();const count=frames.length;stale(1000);assert.equal(frames.length,count);
