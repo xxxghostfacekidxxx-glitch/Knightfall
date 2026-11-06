@@ -29,11 +29,13 @@ test('Devil Tools indexes all original non-mascot vector groups without broken p
  }
 });
 
-test('All 22 mascots have valid original artwork and four local animation files',()=>{
- assert.equal(mascots.characters.length,22);
- assert.equal(new Set(mascots.characters.map(x=>x.id)).size,22);
+test('Every registered mascot has valid artwork and its supported local animation files',()=>{
+ assert.ok(mascots.characters.length>=31,'expanded mascot roster must not lose characters');
+ assert.equal(new Set(mascots.characters.map(x=>x.id)).size,mascots.characters.length);
+ // These six additions currently ship one idle pose; all other characters retain four.
+ const idleOnly=new Set(['lydibug','sootsnoot','rumblefluff','glittergob','craggle','prismare']);
  for(const item of mascots.characters){
-  assert.deepEqual(Object.keys(item.variants||{}).sort(),['blink','bounce','idle','mischief']);
+  assert.deepEqual(Object.keys(item.variants||{}).sort(),idleOnly.has(item.id)?['idle']:['blink','bounce','idle','mischief'],item.id);
   for(const path of [item.svg,...Object.values(item.variants)]){
    assert.match(path,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
    const file='public'+path;assert.ok(existsSync(resolve(root,file)),file);

@@ -102,3 +102,11 @@ This pass carried forward the first group of master-list tasks rather than marki
 - Local verification: 21 focused installer, worker-path, messaging-race, history and Android notification tests pass; messaging palette audit and JavaScript syntax pass.
 - Added these regressions to CI plus a controlled mobile Chromium ZIP installation/offline playback check. Local Chromium execution was blocked by workspace process/socket restrictions; CI browser result must be checked separately.
 - Still open: real Android installation, real-account cross-device messaging/push, Deck Locker acceptance, role-test credentials, fish-table networking, Hell & High Orbit, OAuth/provider setup and Stripe configuration.
+
+### Release verification follow-up
+
+- Implementation commit `6bfb044ad34a05fa4fdfe1306af050ef3ffaf0d5` is deployed: Cloudflare Pages deployment `a4115bad-7b55-4aed-b84a-c88832a1f7e1` succeeded with ash-fall.com and www.ash-fall.com aliases.
+- [Runtime smoke run 42314315419](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42314315419): new controlled offline installation/disconnected-playback browser step passed; static and public API smoke jobs passed. Full arcade-browser job and fleet were still running at this follow-up.
+- [Core regression run 42314315467](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42314315467), card/board integrity and Monster MMO checks passed. In addition to the 21 focused local tests, 32 existing regression tests passed locally.
+- SVG CI uncovered a stale 22-character assertion against the 31-character roster. The gallery test now validates unique current IDs and all registered files, retaining four-pose requirements except for the six explicitly idle-only additions. All 17 mascot/gallery regression tests pass locally.
+- Repository inventory at release: only `main`, zero open pull requests.
