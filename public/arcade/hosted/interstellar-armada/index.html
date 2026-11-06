@@ -19,7 +19,13 @@
         <title>Interstellar Armada</title>
 
         <link href="css/general.css" rel="stylesheet" type="text/css"/>
-    <style>[id$="mainMenu.multiplayer"],[id$="singlePlayer.communityMissions"]{display:none!important}</style></head>
+    <style>
+[id$="mainMenu.multiplayer"],[id$="singlePlayer.communityMissions"]{display:none!important}
+#ashfall-armada-guide{position:fixed;right:12px;bottom:12px;z-index:16;max-width:calc(100vw - 24px);padding:7px 10px;border:1px solid #745b8c;border-radius:10px;background:#10101ce9;color:#e5caff;font:750 12px/1.3 system-ui,sans-serif;text-align:right;box-shadow:0 5px 18px #0009}
+#ashfall-armada-guide a{color:#baff75;text-decoration:underline;text-underline-offset:3px}
+#ashfall-armada-guide a:focus-visible{outline:2px solid #baff75;outline-offset:3px}
+@media (max-width:480px){#ashfall-armada-guide{font-size:11px;right:8px;bottom:8px}}
+</style></head>
     <body ondragstart="return false;" ondrop="return false;">
         <div id="splashBackground">
             <div id="splashContainer" class="horizontallyCentered contentWide outerContainer pageContainer">
@@ -36,6 +42,10 @@
         </div>
         <script data-main="js/main.js" src="assets/libs/require.min.js"></script>
         <img class="orientation" src="assets/images/orientation.png" alt="Rotate or resize your screen to landscape orientation">
+        <nav id="ashfall-armada-guide" aria-label="Interstellar Armada arcade navigation">
+          Interstellar Armada · single-player WebGL
+          <a href="/chaos-cartridge.html" aria-label="Return to Chaos Cartridge">↩ Back to arcade</a>
+        </nav>
         <div id="gameVersion" class="gameVersion"></div>
     </body>
 </html>
