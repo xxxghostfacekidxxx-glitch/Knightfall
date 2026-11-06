@@ -7,6 +7,7 @@ on:
       - 'public/arcade-card-board.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
+      - 'scripts/cinder-eights-runtime.test.mjs'
       - 'scripts/chaos-cards-integration.test.mjs'
       - 'scripts/cards-cabinet-ui.test.mjs'
       - 'scripts/deck-locker-integrity.test.mjs'
@@ -31,6 +32,7 @@ on:
       - 'public/arcade-card-board.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
+      - 'scripts/cinder-eights-runtime.test.mjs'
       - 'scripts/chaos-cards-integration.test.mjs'
       - 'scripts/cards-cabinet-ui.test.mjs'
       - 'scripts/deck-locker-integrity.test.mjs'
@@ -58,8 +60,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Exercise card-room rules and controls
-        run: node --test scripts/card-room-runtime.test.mjs
+      - name: Exercise card-room and modern Cinder Eights rules and controls
+        run: node --test scripts/card-room-runtime.test.mjs scripts/cinder-eights-runtime.test.mjs
       - name: Exercise authenticated four-seat card rules and secrecy
         run: |
           node --test backend/src/chaos-card-matches.test.mjs scripts/chaos-cards-integration.test.mjs scripts/cards-cabinet-ui.test.mjs scripts/deck-locker-integrity.test.mjs backend/src/arcade-deck-locker.test.mjs scripts/deck-locker-account-sync.test.mjs
