@@ -7,6 +7,9 @@ const server=read("backend/src/index.js");
 const game=read("public/arcade/hosted/cards-against-chaos/index.html");
 const client=read("public/arcade/hosted/cards-against-chaos/online.js");
 const serverDeck=read("backend/src/chaos-card-deck.js");
+const expansionDeck=read("public/arcade/hosted/cards-against-chaos/expansion-packs.js");
+const mixer=read("public/arcade/hosted/cards-against-chaos/deck-mixer.js");
+const cinderShop=read("public/cinder-shop.html");
 const baseDeck=read("public/arcade/hosted/cards-against-chaos/base-deck.js");
 const messaging=read("public/messages.html");
 const lobby=read("public/arcade/async-play.html");
@@ -20,6 +23,26 @@ test("local arcade and backend Worker import the exact same base deck",()=>{
  assert.doesNotMatch(game,/const BLACK=\[/);
  assert.doesNotMatch(game,/const WHITE=\[/);
  assert.match(game,/2,000-CARD BASE DECK/);
+});
+test("After Hours preview is linked from the Cinder Shop and both game modes",()=>{
+ assert.match(cinderShop,/id="madhouse-after-hours"/);
+ assert.match(cinderShop,/Madhouse After Hours/);
+ assert.match(cinderShop,/Real-money checkout coming soon/);
+ assert.match(cinderShop,/button disabled/);
+ assert.match(cinderShop,/arcade\/hosted\/cards-against-chaos\/index\.html/);
+ assert.match(game,/href="\/cinder-shop\.html#madhouse-after-hours"/);
+ assert.match(game,/data-card-pack-mode="online"/);
+ assert.match(game,/data-card-pack-mode="local"/);
+ assert.match(game,/I confirm I am 18 or older/);
+ assert.match(game,/drawThemedCard\(poolState/);
+ assert.match(client,/expansion_ids:expansionIds/);
+ assert.match(client,/age_confirmed/);
+ assert.match(backend,/age_confirmed!==true/);
+ assert.match(backend,/validatedPacks\(body\.expansion_ids/);
+ assert.match(expansionDeck,/MADHOUSE_BLACK/);
+ assert.match(expansionDeck,/MADHOUSE_WHITE/);
+ assert.match(mixer,/THEME_DRAW_SHARE=0\.75/);
+ assert.match(mixer,/Math\.random\(\)<THEME_DRAW_SHARE/);
 });
 test("four-seat table reachable from arcade and direct messages",()=>{
  assert.match(messaging,/id="chaos-card-chat-invite"/);
