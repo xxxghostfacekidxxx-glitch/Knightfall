@@ -48,6 +48,7 @@ on:
       - "scripts/arcade-provenance-runtime.test.mjs"
       - "scripts/arcade-mini-games-runtime.test.mjs"
       - "scripts/arcade-neon-engine.test.mjs"
+      - "scripts/arcade-neon-surge.test.mjs"
       - "scripts/arcade-shelf-dedup.test.mjs"
       - "scripts/arcade-route-integrity.test.mjs"
       - "scripts/arcade-space-fighter.test.mjs"
@@ -185,6 +186,7 @@ jobs:
           node --check scripts/arcade-browser-smoke.mjs
           node --check scripts/arcade-gameplay-replay.mjs
           node --check scripts/arcade-gameplay-doctor.mjs
+          node --test scripts/arcade-neon-surge.test.mjs
           node --test scripts/arcade-shelf-dedup.test.mjs scripts/arcade-boot-regression.test.mjs scripts/arcade-score-registration.test.mjs scripts/arcade-state-roundtrip.test.mjs scripts/arcade-fish-table-controls.test.mjs
           node --test scripts/arcade-route-integrity.test.mjs scripts/cinder-eights-runtime.test.mjs scripts/cinder-reversi-runtime.test.mjs
           node scripts/arcade-gameplay-doctor.mjs

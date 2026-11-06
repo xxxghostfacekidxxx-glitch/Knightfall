@@ -17,3 +17,17 @@ test('Neon Surge is licensed and listed exactly once on both arcade shelves',()=
  assert.equal(imports.imports.find(g=>g.gameId==='cabinet-neon-surge').license,'MIT');
  for(const file of ['chaos-cartridge.html','arcade-30-games.html'])assert.equal((read('public/'+file).match(/data-game-id="neon-surge"/g)||[]).length,1);
 });
+
+test('Neon Surge title loop yields idle frames and keeps START clickable under WebGL load',()=>{
+ const html=read('public/arcade/hosted/neon-surge/index.html');
+ assert.match(html,/\.screen\.title #startBtn \{[^}]*pointer-events: auto; touch-action: manipulation;/);
+ assert.match(html,/let launchQueued = false;/);
+ assert.match(html,/if \(launchQueued \|\| G\.state !== 'title'\) return;/);
+ assert.match(html,/setTimeout\(\(\) => \{\s*launchQueued = false;\s*if \(G\.state === 'title'\) startGame\(\);/);
+ assert.match(html,/const idle = G\.state === 'title' \|\| G\.state === 'paused' \|\| G\.state === 'over';/);
+ assert.match(html,/if \(idle && now - last < 1000 \/ 24\) return;/);
+ assert.match(html,/if \(!idle\) trackPerf\(rdt\);/);
+ assert.match(html,/if \(!innerWidth \|\| !innerHeight \|\| document\.hidden\) \{ last = now; return; \}/);
+ // Gameplay remains unconstrained by title-screen throttling.
+ assert.match(html,/G\.state = 'playing';\s*showScreen\(null\)/);
+});

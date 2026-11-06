@@ -372,6 +372,8 @@
     min-width: 11em;
   }
   .btn.primary:hover { background: #8ff8ff; }
+  /* Keep the launch control above title decoration, with direct mouse/touch hit testing. */
+  .screen.title #startBtn { position: relative; z-index: 2; pointer-events: auto; touch-action: manipulation; }
   .btn.ghost { font-size: 12px; padding: 12px 16px 12px calc(16px + 0.3em); color: var(--ink-dim); }
   .best {
     margin: 0;
@@ -3027,7 +3029,16 @@ function toggleAutoFire() {
   hud.autoNote.textContent = input.autoFire ? 'AUTO FIRE ON · F' : 'AUTO FIRE OFF · F';
   if (G.state === 'playing') popup(player.x, player.z, input.autoFire ? 'AUTO FIRE ON' : 'AUTO FIRE OFF', '#ecf7ff', 1.1);
 }
-$('startBtn').addEventListener('click', () => startGame());
+// Defer WebGL scene initialization until after the button click is dispatched.
+let launchQueued = false;
+$('startBtn').addEventListener('click', () => {
+  if (launchQueued || G.state !== 'title') return;
+  launchQueued = true;
+  setTimeout(() => {
+    launchQueued = false;
+    if (G.state === 'title') startGame();
+  }, 0);
+});
 $('titleSound').addEventListener('click', toggleMute);
 $('soundBtn').addEventListener('click', toggleMute);
 $('pauseBtn').addEventListener('click', () => (G.state === 'playing' ? pauseGame() : resumeGame()));
@@ -3381,11 +3392,15 @@ addEventListener('resize', onResize);
 let last = performance.now();
 function frame(now) {
   requestAnimationFrame(frame);
+  if (!innerWidth || !innerHeight || document.hidden) { last = now; return; }
+  // Title, pause and game-over are attract screens, not a 60fps benchmark.
+  // Yield the main thread so START and other controls stay responsive under WebGL load.
+  const idle = G.state === 'title' || G.state === 'paused' || G.state === 'over';
+  if (idle && now - last < 1000 / 24) return;
   const rdt = Math.min(Math.max((now - last) / 1000, 0), 0.05);
   last = now;
-  if (!innerWidth || !innerHeight) return;           // hidden frame: nothing to draw into
   if (innerWidth !== sizedW || innerHeight !== sizedH) onResize();
-  trackPerf(rdt);
+  if (!idle) trackPerf(rdt);
   update(rdt);
   composer.render(rdt);
 }
