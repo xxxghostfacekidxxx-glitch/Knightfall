@@ -1,4 +1,7 @@
 (() => {
+  // Offline/local previews must not fetch a real member session, production
+  // site settings, or notification counts. Live Ash-Fall retains all API behavior.
+  const cloudAccountAvailable = ["ash-fall.com", "www.ash-fall.com"].includes(String(location.hostname || "").toLowerCase());
   // Late-mounted shared polish wins over legacy page skins without changing navigation logic.
   if (!document.querySelector('link[data-visual-refresh]')) {
     const polish=document.createElement('link');
@@ -384,6 +387,7 @@
   }));
 
   function refreshNotifications() {
+    if (!cloudAccountAvailable) return;
     fetch("https://api.ash-fall.com/api/notifications?unread=true&limit=1", {credentials:"include",cache:"no-store"})
       .then(r => { if (r.status===401 || r.status===403) return null; if (!r.ok) throw new Error("Auth temporarily unavailable: "+r.status); const type=r.headers.get("content-type")||""; if (!type.toLowerCase().includes("json")) throw new Error("Auth endpoint returned non-JSON"); return r.json(); })
       .then(d => {
@@ -394,8 +398,8 @@
       }).catch(() => {});
   }
 
-  fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include",cache:"no-store"})
-    .then(r => r.ok ? r.json() : null)
+  (cloudAccountAvailable ? fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include",cache:"no-store"}) : Promise.resolve(null))
+    .then(r => r?.ok ? r.json() : null)
     .then(d => {
       siteSettings = d?.settings || null;
       if (!siteSettings) return;
@@ -419,8 +423,8 @@
       }
     }).catch(() => {});
 
-  fetch("https://api.ash-fall.com/api/auth/me", {credentials:"include",cache:"no-store"})
-    .then(r => r.ok ? r.json() : null)
+  (cloudAccountAvailable ? fetch("https://api.ash-fall.com/api/auth/me", {credentials:"include",cache:"no-store"}) : Promise.resolve(null))
+    .then(r => r?.ok ? r.json() : null)
     .then(d => {
       if (!d?.user) {
         authResolved = true;
