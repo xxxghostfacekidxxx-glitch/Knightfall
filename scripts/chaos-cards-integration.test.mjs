@@ -13,12 +13,12 @@ const lobby=read("public/arcade/async-play.html");
 const schema=read("backend/migrations/0120_four_seat_chaos_cards.sql");
 const manifest=JSON.parse(read("public/assets/devil-tools/neon-nuisances/manifest.json"));
 test("local arcade and backend Worker import the exact same base deck",()=>{
- assert.match(game,/<script type="module">\\s*import \\{BLACK, WHITE\\} from "\\.\\/base-deck\\.js"/);
- assert.match(serverDeck,/export \\{BLACK,WHITE\\} from "\\.\\.\\/\\.\\.\\/public\\/arcade\\/hosted\\/cards-against-chaos\\/base-deck\\.js"/);
- assert.match(baseDeck,/export const BLACK=\\[/);
- assert.match(baseDeck,/export const WHITE=\\[/);
- assert.doesNotMatch(game,/const BLACK=\\[/);
- assert.doesNotMatch(game,/const WHITE=\\[/);
+ assert.match(game,/<script type="module">\s*import \{BLACK, WHITE\} from "\.\/base-deck\.js"/);
+ assert.match(serverDeck,/export \{BLACK,WHITE\} from "\.\.\/\.\.\/public\/arcade\/hosted\/cards-against-chaos\/base-deck\.js"/);
+ assert.match(baseDeck,/export const BLACK=\[/);
+ assert.match(baseDeck,/export const WHITE=\[/);
+ assert.doesNotMatch(game,/const BLACK=\[/);
+ assert.doesNotMatch(game,/const WHITE=\[/);
  assert.match(game,/2,000-CARD BASE DECK/);
 });
 test("four-seat table reachable from arcade and direct messages",()=>{
