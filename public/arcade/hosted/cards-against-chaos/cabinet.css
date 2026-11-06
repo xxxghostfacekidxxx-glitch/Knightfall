@@ -325,3 +325,21 @@ body.cac-page .cac-shell #cac-fullscreen[aria-pressed=true]{border-color:var(--c
  html{scroll-behavior:auto}
  .cac-shell *,.cac-shell *::before,.cac-shell *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Once a match has started the cards, not the marketing hero, own the screen. */
+body.cac-playing .cac-hero{display:none}
+body.cac-playing .cac-mode-switch{margin-top:18px}
+.cac-shell .cac-online-score-info{display:grid;grid-template-columns:1fr auto;gap:2px 6px;min-width:0;flex:1;align-items:center}
+.cac-shell .cac-online-score-info .cac-score-name{font-size:.82rem;grid-column:1/2;overflow-wrap:anywhere;white-space:normal}
+.cac-shell .cac-online-score-info .cac-score-meta{grid-column:1;display:block!important;font-size:.62rem;color:#b4a3c5;line-height:1.2}
+.cac-shell .cac-online-points{grid-column:2;grid-row:1/3;font-size:1.5rem;font-weight:950;font-variant-numeric:tabular-nums;color:var(--cac-lime);text-align:right}
+.cac-shell .cards-online-score.czar .cac-online-points{color:var(--cac-lime)}
+.cac-shell .cac-judge-stage:not(.hidden){scroll-margin-top:12px}
+.cac-shell .cac-game{scroll-margin-top:12px}
+.cac-shell .cards-online-table .cac-answer-title:has(+.cards-online-hand:empty){display:none}
+.cac-shell .cards-online-table .cards-online-hand:empty{display:none}
+.cac-shell .cac-online-lobby[hidden]{display:none!important}
+.cac-shell .cards-online-score{flex-wrap:nowrap}
+.cac-shell .cards-online-score>small{display:block;flex-basis:100%}
+.cac-shell .cac-play-intro .cac-eyebrow{flex:none}
+@media(max-width:500px){.cac-shell .cac-online-points{font-size:1.1rem}.cac-shell .cac-online-score-info .cac-score-name{font-size:.69rem}.cac-shell .cac-online-score-info .cac-score-meta{font-size:.52rem}}
