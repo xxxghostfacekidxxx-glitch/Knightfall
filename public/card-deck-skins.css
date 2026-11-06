@@ -178,3 +178,13 @@ html[data-kf-deck-skin] .cac-shell .prompt-card small{color:var(--kf-deck-waterm
 @media(max-width:640px){.kf-deck-toggle{padding:10px}.kf-deck-current{font-size:.59rem}.kf-deck-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kf-deck-item{padding:8px}.kf-deck-intro{display:block}.kf-deck-progress{display:inline-block;margin-top:7px}.kf-deck-preview{height:87px}.kf-deck-choice{font-size:.58rem!important}}
 @media(max-width:350px){.kf-deck-grid{grid-template-columns:1fr}.kf-deck-toggle-label small{display:none}.kf-deck-current{display:none}}
 @media(prefers-reduced-motion:reduce){.kf-deck-wardrobe *,html[data-kf-deck-skin] .playing-card{animation:none!important;transition:none!important}}
+
+/* Account sync lives inside the wardrobe; no floating overlay or blocking spinner. */
+.kf-deck-sync-status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 15px;padding:10px 12px;
+ border-radius:11px;background:linear-gradient(110deg,#172020,#1b1426);border:1px solid #8b6aa361;color:#def8eb}
+.kf-deck-status-text{flex:1;min-width:165px;font-weight:750;font-size:.75rem;line-height:1.35}
+.kf-deck-import,.kf-deck-refresh{padding:.43rem .64rem!important;min-height:34px!important;border:1px solid #bbff82a6!important;
+ background:#203629!important;color:#daffb1!important;font:800 .7rem system-ui!important;border-radius:8px!important;cursor:pointer}
+.kf-deck-import{border-color:#e997dfac!important;background:#351d3c!important;color:#ffcaed!important}
+.kf-deck-import:hover:not(:disabled),.kf-deck-refresh:hover:not(:disabled){filter:brightness(1.13)}
+@media(max-width:600px){.kf-deck-sync-status{padding:9px;gap:6px}.kf-deck-status-text{width:100%;flex-basis:100%}.kf-deck-import{max-width:100%}}
