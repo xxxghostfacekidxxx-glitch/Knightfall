@@ -107,6 +107,34 @@ try {
       console.log("PASS Deck Locker: 12 cosmetics, selection and visual card skins persist across four mobile card-game entry points");
     }finally{await context.close();}
   }
+  // Cinder Eights: exercise the playable module after its modern cabinet overhaul.
+  for(const viewport of [{width:390,height:844},{width:1366,height:768}]){
+    const page=await browser.newPage({viewport,isMobile:viewport.width<600,hasTouch:viewport.width<600});
+    const errors=[];page.on("pageerror",error=>errors.push(error.message||String(error)));
+    try{
+      const response=await page.goto(base+"/arcade/hosted/cinder-eights/index.html",{waitUntil:"domcontentloaded",timeout:12000});
+      if(!response?.ok())throw Error("Cinder Eights failed HTTP "+response?.status());
+      await page.locator("#hand button.af-deck-card").first().waitFor({timeout:7000});
+      if(await page.locator("#hand button.af-deck-card").count()!==7)throw Error("Cinder Eights failed to deal 7 human cards");
+      if(await page.locator("#cpu-hand .playing-card.back").count()!==7)throw Error("Cinder Eights CPU hidden hand missing");
+      if((await page.locator("#count-deck").textContent())!=="37")throw Error("Cinder Eights deck count incorrect");
+      await page.locator("#full").click();
+      await page.waitForFunction(()=>document.querySelector("#full")?.getAttribute("aria-pressed")==="true",{timeout:4500});
+      await page.locator("#full").click();
+      await page.waitForFunction(()=>document.querySelector("#full")?.getAttribute("aria-pressed")==="false",{timeout:4500});
+      await page.locator("#draw").click();
+      await page.waitForFunction(()=>document.querySelector("#turn-indicator")?.textContent!=="CPU THINKING",{timeout:6000});
+      if(await page.locator("#round-moves").textContent()==="0")throw Error("Cinder Eights did not process draw/CPU turn");
+      await page.locator("#new").click();
+      if((await page.locator("#count-deck").textContent())!=="37")throw Error("Cinder Eights new game did not reset deck");
+      if(await page.locator("#hand button.af-deck-card").count()!==7)throw Error("Cinder Eights did not restore seven cards after restart");
+      const view=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,skin:window.AshFallDeckSkins?.current}));
+      if(view.scrollWidth>view.width+3)throw Error("Cinder Eights overflows phone: "+JSON.stringify(view));
+      if(!view.skin)throw Error("Cinder Eights did not mount universal Deck Locker");
+      if(errors.length)throw Error("Cinder Eights runtime errors: "+errors.join(" | "));
+      console.log("PASS Cinder Eights redesigned cabinet, fullscreen, draw/CPU and restart ("+viewport.width+"px)");
+    }finally{await page.close();}
+  }
   // Regression guard: the arcade theme must never restore the retired orange palette.
   // Exercise the actual CSS cascade rather than checking source text alone.
   for (const route of ["/chaos-cartridge.html", "/arcade-games.html", "/arcade-30-games.html"]) {
