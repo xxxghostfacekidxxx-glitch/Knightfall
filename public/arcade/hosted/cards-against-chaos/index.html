@@ -14,6 +14,8 @@
   <script src="./online.js?v=20261106-a" defer></script>
   <script src="/arcade/nextgen.js?v=20261102-1" defer></script>
   <link rel="stylesheet" href="./cabinet.css?v=20261106-a">
+<link rel="stylesheet" href="/card-deck-skins.css?v=20261106-1">
+<script src="/card-deck-skins.js?v=20261106-1" defer></script>
 </head>
 <body class="cac-page">
 <main id="cac-shell" class="cac-shell">
@@ -174,6 +176,7 @@ function start(){
  players=[...$('player-inputs').querySelectorAll('input')].map((input,i)=>({name:input.value.trim()||'Player '+(i+1),score:0,ai:false,hand:refill(white,WHITE,10)}));
 for(const bot of AI_LABELS.slice(0,4-players.length))players.push({name:bot.name,style:bot.style,ai:true,score:0,hand:refill(white,WHITE,10)});
 if(players.length!==4)throw Error('Card table must have exactly four players');
+window.AshFallDeckSkins?.recordDeal('cards-against-chaos');
 round=0;winScore=Number($('win-score').value);phase='game';$('setup').classList.add('hidden');$('game').classList.remove('hidden');window.CACCabinet?.setPlaying(true);beginRound();$('game').scrollIntoView({behavior:'smooth',block:'start'})}
 function reset(){phase='setup';players=[];window.CACCabinet?.setPlaying(false);$('game').classList.add('hidden');$('setup').classList.remove('hidden');playerFields();$('setup-title').focus({preventScroll:true});$('setup').scrollIntoView({behavior:'smooth',block:'start'})}
 document.querySelectorAll('[data-card-pack-mode="local"]').forEach(input=>input.addEventListener('change',()=>{
