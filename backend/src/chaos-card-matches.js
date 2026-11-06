@@ -1,6 +1,8 @@
 // Cards Against Chaos: four seats, always. 1-4 real members; bots fill vacancies.
 // All hands, AI decisions, invitations and scoring are Worker-owned.
 import {BLACK,WHITE} from "./chaos-card-deck.js";
+import {EXPANSION_PACKS} from "../../public/arcade/hosted/cards-against-chaos/expansion-packs.js";
+import {drawThemedCard,putBackThemedCard,validatedPacks,THEME_DRAW_SHARE} from "../../public/arcade/hosted/cards-against-chaos/deck-mixer.js";
 
 export const CHAOS_CARD_BOTS=Object.freeze([
  {id:"lydibug",name:"Lydibug",style:"bright"},
@@ -29,9 +31,7 @@ function shuffle(list){
 // Persist shuffled card indices, not 2,000 duplicated strings per match.
 // Existing saved matches with string decks remain playable and migrate as drawn.
 function draw(state,key,source){
- if(!state.decks[key].length)state.decks[key]=shuffle(source.map((_,index)=>index));
- const card=state.decks[key].pop();
- return Number.isInteger(card)?source[card]:card;
+ return drawThemedCard(state,key,source,EXPANSION_PACKS);
 }
 function memberIds(row){
  return [row.player_one_id,row.player_two_id,row.player_three_id,row.player_four_id]
@@ -63,12 +63,12 @@ function seatsFor(row,state){
    pending_invite:state.invite_status[seat]==="pending"?memberName(row,seat):null};
  });
 }
-export function newChaosState(ownerId=1,invited=[]){
+export function newChaosState(ownerId=1,invited=[],expansionIds=[]){
  if(!Array.isArray(invited)||invited.length>3)throw Error("One to four human seats only");
  const members=[Number(ownerId),...invited.map(Number)];
  while(members.length<SEAT_COUNT)members.push(null);
  const invite_status=members.map((id,index)=>index===0?"accepted":id==null?"bot":"pending");
- return {members,invite_status,round:0,phase:"lobby",judge:0,prompt:"",
+ return {members,invite_status,active_packs:validatedPacks(expansionIds,EXPANSION_PACKS),round:0,phase:"lobby",judge:0,prompt:"",
  scores:[0,0,0,0],hands:[[],[],[],[]],submitted:{},choices:[],result:null,
  decks:{black:shuffle(BLACK.map((_,index)=>index)),white:shuffle(WHITE.map((_,index)=>index))}};
 }
@@ -80,7 +80,7 @@ function aiCard(state,bot){
  const matches=offer.filter(card=>preferred.test(card));
  const source=matches.length?matches:offer;
  const chosen=source[Math.floor(Math.random()*source.length)];
- state.decks.white.push(...offer.filter((_,i)=>offer.indexOf(chosen)!==i).map(card=>WHITE.indexOf(card)));
+ for(const card of offer.filter((_,i)=>offer.indexOf(chosen)!==i))putBackThemedCard(state,"white",card,WHITE,EXPANSION_PACKS);
  return chosen;
 }
 function winnerChoice(state,index){
@@ -152,6 +152,7 @@ export function visibleChaosMatch(row,viewerId){
   id:row.id,status:row.status,version:Number(row.version),created_at:row.created_at,updated_at:row.updated_at,
   seats:seatsFor(row,state),viewer_seat:viewer,human_count:state.invite_status.filter(x=>x==="accepted").length,
   round:state.round,phase:state.phase,judge:state.judge,prompt:state.prompt,
+  active_packs:state.active_packs||[],theme_draw_share:(state.active_packs||[]).length?THEME_DRAW_SHARE:0,
   scores:state.scores,submitted_count:Object.keys(state.submitted).length,
   submitted_by_me:state.submitted[viewer]!==undefined,
   hand:canPlay?[...state.hands[viewer]]:[],
@@ -259,7 +260,14 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
    if(await blockedPair(env,invited[a],invited[b]))
     return reply({error:"Invited players have a block restriction between them."},403);
   }
-  const state=newChaosState(user.id,invited);
+  let selectedPacks;
+  try{selectedPacks=validatedPacks(body.expansion_ids,EXPANSION_PACKS)}
+  catch{return reply({error:"Invalid or unavailable card expansion."},400);}
+  // This is explicitly a pre-checkout public preview. Introduce entitlement checks
+  // here before launching paid access, including for all invited players.
+  if(selectedPacks.some(id=>EXPANSION_PACKS[id].min_age>=18)&&body.age_confirmed!==true)
+   return reply({error:"Confirm that you are 18 or older to start an After Hours game."},400);
+  const state=newChaosState(user.id,invited,selectedPacks);
   const solo=invited.length===0;
   if(solo)startChaosTable(state);
   const id=crypto.randomUUID(),now=new Date().toISOString();
@@ -292,6 +300,8 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
  if(action==="accept"||action==="decline"){
   if(status!=="lobby"||state.invite_status[viewer]!=="pending")
    return reply({error:"This invitation can no longer be accepted."},409);
+  if(action==="accept"&&(state.active_packs||[]).some(id=>EXPANSION_PACKS[id]?.min_age>=18)&&body.age_confirmed!==true)
+   return reply({error:"Confirm you are 18 or older to join this After Hours table."},400);
   state.invite_status[viewer]=action==="accept"?"accepted":"declined";
   const otherPending=state.invite_status.includes("pending");
   if(!otherPending){startChaosTable(state);status="active";}
