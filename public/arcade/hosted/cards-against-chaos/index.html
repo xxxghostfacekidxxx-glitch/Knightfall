@@ -139,7 +139,7 @@ function renderScores(){
  const box=$('scoreboard');box.replaceChildren();
  players.forEach((p,i)=>{
   const pill=document.createElement('span');pill.className='score'+(i===czar?' current':'');
-  pill.setAttribute('aria-label',p.name+(p.ai?' AI':' human')+', '+p.score+' points'+(i===czar+', judge':''));
+  pill.setAttribute('aria-label',p.name+(p.ai?' AI':' human')+', '+p.score+' points'+(i===czar?', judge':''));
   const emblem=document.createElement('span');emblem.className='cac-score-emblem';emblem.setAttribute('aria-hidden','true');emblem.textContent=i===czar?'★':p.ai?'✦':'♠';
   const info=document.createElement('span');info.className='cac-score-info';
   const name=document.createElement('span');name.className='cac-score-name';name.textContent=p.name;
