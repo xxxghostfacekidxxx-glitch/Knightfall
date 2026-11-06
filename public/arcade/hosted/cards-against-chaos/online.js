@@ -8,6 +8,12 @@ let me=null,friends=[],matches=[],selected=null,busy=false;
 const enc=value=>encodeURIComponent(String(value));
 const display=player=>player?.display_name||player?.username||"Friend";
 const text=(id,value)=>{$(id).textContent=String(value??"");};
+const packTitles={"madhouse-after-hours":"Madhouse After Hours"};
+const chosenPacks=()=>[...document.querySelectorAll('[data-card-pack-mode="online"]:checked')].map(input=>input.value);
+function refreshAdultNotice(){
+ $("online-adult-label").hidden=!chosenPacks().includes("madhouse-after-hours");
+}
+const labelPacks=ids=>(ids||[]).length?(ids||[]).map(id=>packTitles[id]||id).join(" + ")+" · 75% themed draws":"Base deck only";
 const call=(path,options)=>arcade().request(path,options||{});
 const status=message=>text("cards-online-status",message);
 const button=(label,action,kind="secondary")=>{
@@ -68,6 +74,7 @@ function renderList(){
   const humans=match.seats.filter(seat=>seat.kind==="human").map(seat=>seat.name);
   const label="🃏 "+humans.join(" + ")+" · "+(match.status==="lobby"?"INVITATION":
    match.status==="active"?"Round "+match.round:match.status)+
+   ((match.active_packs||[]).length?" · 🌙 AFTER HOURS":"")+
    (match.needs_action?" · YOUR MOVE":"");
   const b=button(label,()=>openMatch(match.id),match.needs_action?"primary":"secondary");
   b.classList.add("cards-online-match");b.setAttribute("aria-current",selected?.id===match.id?"true":"false");
@@ -87,6 +94,7 @@ function renderMatch(){
  text("cards-online-round",selected.round||"Lobby");
  text("cards-online-prompt",selected.prompt||"The first prompt appears when the table begins.");
  text("cards-online-turn",turnNote(selected));
+ text("cards-online-active-packs",labelPacks(selected.active_packs));
  selected.seats.forEach((seat,index)=>{
   const pill=document.createElement("span");pill.className="cards-online-score"+
    (index===selected.judge&&selected.status==="active"?" czar":"");
@@ -105,7 +113,16 @@ function renderMatch(){
  });
  if(selected.status==="lobby"){
   if(selected.can_accept){
-   actions.append(actionButton("Join game","accept",{},true),actionButton("Decline","decline"));
+   if((selected.active_packs||[]).includes("madhouse-after-hours")){
+    const consent=document.createElement("label");
+    consent.className="cards-age-confirm";
+    const check=document.createElement("input");check.type="checkbox";
+    consent.append(check," I confirm I am 18 or older and agree to this After Hours table.");
+    const join=actionButton("Join After Hours table","accept",{age_confirmed:true},true);
+    join.disabled=true;
+    check.addEventListener("change",()=>{join.disabled=!check.checked||busy;});
+    actions.append(consent,join,actionButton("Decline","decline"));
+   }else actions.append(actionButton("Join game","accept",{},true),actionButton("Decline","decline"));
   }
   if(selected.can_start){
    actions.append(actionButton("Start with current players","start",{},true),actionButton("Cancel table","cancel"));
@@ -176,9 +193,15 @@ async function create(event){
   ids.push(id);
  }
  if(new Set(ids).size!==ids.length){status("Every human seat must belong to a different friend.");return;}
+ const expansionIds=chosenPacks();
+ if(expansionIds.length&&!$("cards-online-adult").checked){
+  return status("Confirm you are 18 or older before starting an After Hours table.");
+ }
  busy=true;refreshFriendInputs();
  try{
-  const response=await call(root,{method:"POST",body:JSON.stringify({opponent_ids:ids})});
+  const response=await call(root,{method:"POST",body:JSON.stringify({
+   opponent_ids:ids,expansion_ids:expansionIds,age_confirmed:$("cards-online-adult").checked
+  })});
   selected=response.match;
   history.replaceState(null,"",location.pathname+"?match="+enc(selected.id));
   renderMatch();await refresh(false);
@@ -195,6 +218,8 @@ async function boot(){
   fillFriendChoices();await refresh();status("Ready: select one to four humans. The rest are AI.");
  }catch(error){status(error.message||"Could not load account or friends.");}
 }
+document.querySelectorAll('[data-card-pack-mode="online"]').forEach(input=>input.addEventListener("change",refreshAdultNotice));
+refreshAdultNotice();
 $("cards-online-human-count").addEventListener("change",refreshFriendInputs);
 $("cards-online-form").addEventListener("submit",create);
 $("cards-online-refresh").addEventListener("click",()=>refresh(true));
