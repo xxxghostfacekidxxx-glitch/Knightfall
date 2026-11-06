@@ -135,6 +135,35 @@ try {
       console.log("PASS Cinder Eights redesigned cabinet, fullscreen, draw/CPU and restart ("+viewport.width+"px)");
     }finally{await page.close();}
   }
+  // Cinder Reversi: real mobile/desktop board, native/fallback fullscreen, AI turn and undo.
+  for(const viewport of [{width:390,height:844},{width:1366,height:768}]){
+    const page=await browser.newPage({viewport,isMobile:viewport.width<600,hasTouch:viewport.width<600});
+    const errors=[];page.on("pageerror",error=>errors.push(error.message||String(error)));
+    try{
+      const response=await page.goto(base+"/arcade/hosted/cinder-reversi/index.html",{waitUntil:"domcontentloaded",timeout:12000});
+      if(!response?.ok())throw Error("Cinder Reversi failed HTTP "+response?.status());
+      await page.locator("#board .rev-cell").first().waitFor({timeout:7000});
+      if(await page.locator("#board .rev-cell").count()!==64)throw Error("Cinder Reversi did not display 64 tiles");
+      if(await page.locator("#board .rev-cell.legal").count()!==4)throw Error("Cinder Reversi opening should have four legal moves");
+      await page.locator("#full").click();
+      await page.waitForFunction(()=>document.querySelector("#full")?.getAttribute("aria-pressed")==="true",{timeout:5000});
+      await page.locator("#full").click();
+      await page.waitForFunction(()=>document.querySelector("#full")?.getAttribute("aria-pressed")==="false",{timeout:5000});
+      await page.locator("#board .rev-cell.legal").first().click();
+      await page.waitForFunction(()=>Number(document.querySelector("#moves")?.textContent)>=2,{timeout:6500});
+      await page.locator("#undo").click();
+      await page.waitForFunction(()=>document.querySelector("#moves")?.textContent==="0",{timeout:4500});
+      await page.locator("#difficulty").selectOption("expert");
+      await page.locator("#hint").click();
+      if(!/Hint:/.test(await page.locator("#status").innerText()))throw Error("Cinder Reversi hints failed");
+      await page.locator("#reset").click();
+      if(await page.locator("#board .rev-cell.legal").count()!==4)throw Error("Cinder Reversi restart failed");
+      const layout=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
+      if(layout.scrollWidth>layout.width+3)throw Error("Cinder Reversi viewport overflow: "+JSON.stringify(layout));
+      if(errors.length)throw Error("Cinder Reversi JavaScript errors: "+errors.join(" | "));
+      console.log("PASS Cinder Reversi AI, undo, fullscreen, hint and mobile board ("+viewport.width+"px)");
+    }finally{await page.close();}
+  }
   // Regression guard: the arcade theme must never restore the retired orange palette.
   // Exercise the actual CSS cascade rather than checking source text alone.
   for (const route of ["/chaos-cartridge.html", "/arcade-games.html", "/arcade-30-games.html"]) {
