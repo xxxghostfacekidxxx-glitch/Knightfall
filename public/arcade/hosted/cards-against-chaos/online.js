@@ -88,7 +88,7 @@ function actionButton(label,action,options={},primary=false){
 function renderMatch(){
  const panel=$("cards-online-table"),actions=$("cards-online-actions"),hand=$("cards-online-hand"),
   choices=$("cards-online-choices"),score=$("cards-online-scores");
- panel.hidden=!selected;if(!selected)return;
+ panel.hidden=!selected;window.CACCabinet?.showMatch(Boolean(selected));if(!selected)return;
  $("cards-online-share").href=location.origin+"/arcade/hosted/cards-against-chaos/index.html?match="+enc(selected.id);
  actions.replaceChildren();hand.replaceChildren();choices.replaceChildren();score.replaceChildren();
  text("cards-online-round",selected.round||"Lobby");
@@ -104,9 +104,13 @@ function renderMatch(){
     (seat.id==="eddie"?"mini-eddie":seat.id)+".svg";
    image.alt="";image.loading="lazy";image.width=36;image.height=36;pill.append(image);
   }
-  const name=document.createElement("span");
-  name.textContent=(index===selected.judge&&selected.status==="active"?"★ ":"")+
-   seat.name+(seat.kind==="ai"?" · AI":"")+" · "+selected.scores[index];
+  const name=document.createElement("span");name.className="cac-online-score-info";
+  const identity=document.createElement("strong");identity.className="cac-score-name";
+  identity.textContent=(index===selected.judge&&selected.status==="active"?"★ ":"")+seat.name;
+  const kind=document.createElement("small");kind.className="cac-score-meta";
+  kind.textContent=(index===selected.judge&&selected.status==="active"?"JUDGE · ":"")+(seat.kind==="ai"?"AI PLAYER":"HUMAN PLAYER");
+  const points=document.createElement("strong");points.className="cac-online-points";points.textContent=String(selected.scores[index]);
+  name.append(identity,kind,points);
   pill.append(name);
   if(seat.pending_invite){const sub=document.createElement("small");sub.textContent="Invited: "+seat.pending_invite;pill.append(sub);}
   score.append(pill);
@@ -175,7 +179,7 @@ async function mutate(action,options={}){
    method:"POST",body:JSON.stringify({...options,version:selected.version})
   });
   if(data.match){selected=data.match;renderMatch();}
-  else {selected=null;$("cards-online-table").hidden=true;history.replaceState(null,"",location.pathname);}
+  else {selected=null;$("cards-online-table").hidden=true;window.CACCabinet?.showMatch(false);history.replaceState(null,"",location.pathname);}
   await refresh(false);
   status(action==="decline"?"Invitation declined.":"Turn saved. All four seats are accounted for.");
  }catch(error){
@@ -224,7 +228,7 @@ $("cards-online-human-count").addEventListener("change",refreshFriendInputs);
 $("cards-online-form").addEventListener("submit",create);
 $("cards-online-refresh").addEventListener("click",()=>refresh(true));
 $("cards-online-close").addEventListener("click",()=>{
- selected=null;$("cards-online-table").hidden=true;
+ selected=null;$("cards-online-table").hidden=true;window.CACCabinet?.showMatch(false);
  history.replaceState(null,"",location.pathname);renderList();
 });
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh(true);});
