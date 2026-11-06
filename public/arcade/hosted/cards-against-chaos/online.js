@@ -207,6 +207,7 @@ async function create(event){
    opponent_ids:ids,expansion_ids:expansionIds,age_confirmed:$("cards-online-adult").checked
   })});
   selected=response.match;
+  window.AshFallDeckSkins?.recordDeal('cards-against-chaos');
   history.replaceState(null,"",location.pathname+"?match="+enc(selected.id));
   renderMatch();await refresh(false);
   status(ids.length?"Invitations sent. Start when ready; unfilled seats become AI.":"Solo game started with three AI opponents.");
