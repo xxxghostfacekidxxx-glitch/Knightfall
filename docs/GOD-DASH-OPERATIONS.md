@@ -91,3 +91,13 @@ The read-only production checks verified chart access rejects anonymous visitors
 - Production Pages deployment `66fc1172-e667-40c2-b280-f671348861f8` successfully published feature commit `e13a5be…`; subsequent test/documentation commits have their own deployment records.
 - Selected-game checks now watch the catalog and shared tests they depend on, so a control-metadata regression cannot avoid those checks merely because an upstream game directory did not change.
 - Complete live arcade/browser fleet and latest Runtime Smoke results are independent workflows; consult current Actions results. Do not interpret source tests, local browser checks, or successful ZIP publication as full gameplay or Android certification.
+
+## Reliability batch: November 6, 2026
+
+- Verified prior arcade fleet run [42304170461](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42304170461): all ten shards and consolidated local/live catalog coverage passed on `83d86a2`. Runtime smoke [42304170344](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42304170344) also passed. These certify the automated scenarios, not every real-device interaction.
+- Offline installer now publishes a complete game cache through a single installation pointer. Quota errors and malformed packages leave the previous game playable; legacy caches remain readable. Installs are serialized, failed authorization keeps install buttons disabled, and HTML auth responses have an actionable error.
+- Messaging now retains separate in-memory text drafts across conversations, scopes send completion to its original conversation, rejects duplicate pending sends, and discards uploads completing after a conversation switch (including switching away and back).
+- Older-history attachments and reactions are no longer cleared when the refresh request only covers newer messages. Stale history requests cannot unlock another conversation's active history load.
+- Local verification: 21 focused installer, worker-path, messaging-race, history and Android notification tests pass; messaging palette audit and JavaScript syntax pass.
+- Added these regressions to CI plus a controlled mobile Chromium ZIP installation/offline playback check. Local Chromium execution was blocked by workspace process/socket restrictions; CI browser result must be checked separately.
+- Still open: real Android installation, real-account cross-device messaging/push, Deck Locker acceptance, role-test credentials, fish-table networking, Hell & High Orbit, OAuth/provider setup and Stripe configuration.

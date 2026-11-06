@@ -1,4 +1,4 @@
-const SHELL='ashfall-god-shell-v10';
+const SHELL='ashfall-god-shell-v11';
 const START='/admin-offline/';
 const SHELL_FILES=[START,'/admin-offline/launcher.js','/admin-offline/manifest.webmanifest','/admin-offline/icon-192.png','/admin-offline/icon-512.png','/arcade/original-creations.json'];
 self.addEventListener('install',event=>{
@@ -15,7 +15,7 @@ self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  const u=new URL(event.request.url);if(u.origin!==self.location.origin)return;
  const match=/^\/admin-offline\/play\/([a-z0-9-]+)\//.exec(u.pathname);
- if(match){event.respondWith((async()=>{const c=await caches.open('ashfall-god-game-'+match[1]+'-v1');return await c.match(event.request,{ignoreSearch:true})||new Response('This game asset is not installed on this device.',{status:404,headers:{'content-type':'text/plain','cache-control':'no-store'}})})());return;}
+ if(match){event.respondWith((async()=>{const index=await caches.open('ashfall-god-installed-v1');const record=await index.match('/admin-offline/play/'+match[1]+'/__installed__');const name=record?await record.text():'ashfall-god-game-'+match[1]+'-v1';const c=await caches.open(name);return await c.match(event.request,{ignoreSearch:true})||new Response('This game asset is not installed on this device.',{status:404,headers:{'content-type':'text/plain','cache-control':'no-store'}})})());return;}
  const path=u.pathname==='/admin-offline/index.html'||u.pathname==='/admin-offline'?START:u.pathname;
  if(SHELL_FILES.includes(path)){
   event.respondWith((async()=>{

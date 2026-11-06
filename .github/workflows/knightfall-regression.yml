@@ -50,5 +50,5 @@ jobs:
           node --test scripts/arcade-neon-surge.test.mjs
           node --test scripts/arcade-embervale.test.mjs
           node --test scripts/arcade-embervale-expansion.test.mjs
-          node --test scripts/admin-offline-paths.test.mjs
+          node --test scripts/admin-offline-paths.test.mjs scripts/admin-offline-install.test.mjs scripts/messages-composer-races.test.mjs
           node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs scripts/devil-tools-icon-choices.test.mjs scripts/monster-recovered-sprites.test.mjs scripts/arcade-revision-migration.test.mjs scripts/archived-arcade-features.test.mjs scripts/arcade-bridge-manifest.test.mjs scripts/selected-open-source-games.test.mjs

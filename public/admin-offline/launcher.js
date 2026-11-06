@@ -2,6 +2,12 @@
 'use strict';
 const status=document.querySelector('#status'), games=document.querySelector('#games'), bar=document.querySelector('#progress');
 const ids=['sanctuary-original','ashfall-infernal-reign-dev'], PREFIX='/admin-offline/play/';
+let installing=false,authorized=false;
+const INDEX='ashfall-god-installed-v1';
+const indexKey=id=>PREFIX+id+'/__installed__';
+async function installedCacheName(id){const record=await (await caches.open(INDEX)).match(indexKey(id));return record?await record.text():'ashfall-god-game-'+id+'-v1';}
+async function installedCache(id){return caches.open(await installedCacheName(id));}
+function lockInstallButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.disabled=installing||!authorized);document.querySelectorAll('[data-remove]').forEach(b=>{if(installing)b.disabled=true;});}
 const entry=id=>ids.slice(0,2).includes(id)?'sanctuary.html':'index.html';
 async function loadCatalog(){
  try{let r=await fetch('/arcade/original-creations.json',{cache:'no-store'}).catch(()=>null);if(!r?.ok)r=await caches.match('/arcade/original-creations.json');if(!r?.ok)throw Error('Catalog unavailable');const catalog=await r.json();const container=document.querySelector('#catalog-games');for(const game of catalog.games||[]){if(!/^[a-z0-9-]+$/.test(game.id)||game.engine!== '/arcade/hosted/'+game.id+'/index.html'||ids.includes(game.id))continue;ids.push(game.id);const card=document.createElement('div');card.className='game';const heading=document.createElement('h2');heading.textContent=game.name;card.append(heading);const install=document.createElement('button');install.dataset.install=game.id;install.textContent='Install for offline play';const play=document.createElement('a');play.className='action';play.dataset.play=game.id;play.href=PREFIX+game.id+'/index.html';play.textContent='Play offline';play.hidden=true;const remove=document.createElement('button');remove.dataset.remove=game.id;remove.textContent='Remove local copy';card.append(install,play,remove);container.append(card);}
@@ -39,9 +45,8 @@ async function extractZip(buffer, id, onProgress) {
   size+=uncompressed;if(size>650*1024*1024)throw Error('Package exceeds 650 MB offline storage limit');
   entries.push({name,method,compressed,uncompressed,offset});
  }
- const cacheName='ashfall-god-game-'+id+'-v1';
- const stagingName='ashfall-god-stage-'+id+'-v1';
- await caches.delete(stagingName);
+ const previousName=await installedCacheName(id);
+ const stagingName='ashfall-god-game-'+id+'-'+crypto.randomUUID();
  const cache=await caches.open(stagingName);
  try{
   for(let i=0;i<entries.length;i++){
@@ -57,10 +62,10 @@ async function extractZip(buffer, id, onProgress) {
    onProgress(Math.round((i+1)/entries.length*100));
   }
   if(!(await cache.match(PREFIX+id+'/'+entry(id))))throw Error('Game entry point missing');
-  const live=await caches.open(cacheName);
-  for(const request of await live.keys())await live.delete(request);
-  for(const request of await cache.keys())await live.put(request,(await cache.match(request)).clone());
-  await caches.delete(stagingName);
+  // Publish one small pointer only after every file has been written and checked.
+  // Quota/download failures leave the previous installation fully playable.
+  await (await caches.open(INDEX)).put(indexKey(id),new Response(stagingName));
+  try{await caches.delete(previousName);}catch{} // cleanup must not roll back a committed install
  }catch(err){await caches.delete(stagingName);throw err;}
 }
 async function storageStatus(){
@@ -73,7 +78,7 @@ async function storageStatus(){
 }
 async function updateButtons(){
  for(const id of ids){
-  const cache=await caches.open('ashfall-god-game-'+id+'-v1');
+  const cache=await installedCache(id);
   const installed=!!(await cache.match(PREFIX+id+'/'+entry(id)));
   document.querySelector('[data-play="'+id+'"]').hidden=!installed;
   document.querySelector('[data-remove="'+id+'"]').disabled=!installed;
@@ -81,16 +86,19 @@ async function updateButtons(){
 }
 async function auth(){
  try{const r=await fetch('https://api.ash-fall.com/api/auth/me',{credentials:'include',cache:'no-store'});if(!r.ok)throw Error('Login required');
+ if(!/application\/json/i.test(r.headers.get('content-type')||''))throw Error('Sign-in service returned a webpage. Reconnect and sign in from the main site');
  const data=await r.json();if(!['admin','god'].includes(String(data.user?.role||'').trim().toLowerCase()))throw Error('Administrator access required');
- say('Administrator verified. Install games to this device.');games.hidden=false;document.querySelectorAll('[data-install]').forEach(b=>b.disabled=false);return true;
+ say('Administrator verified. Install games to this device.');games.hidden=false;authorized=true;lockInstallButtons();return true;
  }catch(e){
-  const installed=await Promise.all(ids.map(async id=>{const c=await caches.open('ashfall-god-game-'+id+'-v1');return !!(await c.match(PREFIX+id+'/'+entry(id)));}));
+  authorized=false;lockInstallButtons();
+  const installed=await Promise.all(ids.map(async id=>{const c=await installedCache(id);return !!(await c.match(PREFIX+id+'/'+entry(id)));}));
   if(installed.some(Boolean)){say('Saved games are available on this device. Reconnect and sign in as an administrator to install more.');games.hidden=false;document.querySelectorAll('[data-install]').forEach(b=>b.disabled=true);return false;}
   say(e.message+'. Online admin login is required to install games.');games.hidden=true;return false;
  }
 }
 function wireButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.onclick=async()=>{
- const id=b.dataset.install;b.disabled=true;bar.hidden=false;bar.value=0;
+ if(installing)return;installing=true;lockInstallButtons();
+ const id=b.dataset.install;bar.hidden=false;bar.value=0;
  try{
   if(!await auth())throw Error('Online admin verification required');
   say('Downloading private '+id+' package…');
@@ -100,9 +108,9 @@ function wireButtons(){document.querySelectorAll('[data-install]').forEach(b=>b.
   const buffer=await r.arrayBuffer();say('Installing '+id+' ('+Math.round(buffer.byteLength/1048576)+' MB)…');
   await extractZip(buffer,id,p=>{bar.value=p;say('Installing '+id+': '+p+'%');});
   say('Installed '+id+'. Ready for offline play.');await updateButtons();
- }catch(e){say('Install failed: '+e.message)}finally{b.disabled=false;bar.hidden=true;}
+ }catch(e){say('Install failed: '+e.message)}finally{installing=false;lockInstallButtons();bar.hidden=true;await updateButtons();await storageStatus();}
 });
-document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=async()=>{await caches.delete('ashfall-god-game-'+b.dataset.remove+'-v1');say('Local game removed.');await updateButtons();await storageStatus()});
+document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=async()=>{if(installing)return;const id=b.dataset.remove;await caches.delete(await installedCacheName(id));await (await caches.open(INDEX)).delete(indexKey(id));say('Local game removed.');await updateButtons();await storageStatus()});
 }
 let promptEvent;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;document.querySelector('#install-app').hidden=false});
 document.querySelector('#install-app').onclick=async()=>{if(promptEvent){try{await promptEvent.prompt();await promptEvent.userChoice;}catch(e){say('App installation failed: '+e.message)}finally{promptEvent=null;document.querySelector('#install-app').hidden=true}}};

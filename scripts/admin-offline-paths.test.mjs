@@ -43,3 +43,12 @@ test('admin dashboard links directly to the offline install path',()=>{
  assert.match(admin,/href="\/admin-offline\/"/,'God dashboard must launch the canonical directory URL');
  assert.doesNotMatch(admin,/href="\/admin-offline\/index\.html"/,'Do not reintroduce a redirect during Android installation');
 });
+
+ test('worker serves the committed replacement cache instead of the legacy copy',async()=>{
+ const sw=worker();await sw.install();
+ const pointer=await sw.caches.open('ashfall-god-installed-v1');
+ await pointer.put('/admin-offline/play/example/__installed__',new Response('ashfall-god-game-example-generation'));
+ const game=await sw.caches.open('ashfall-god-game-example-generation');
+ await game.put('/admin-offline/play/example/index.html',new Response('replacement'));
+ sw.offline();assert.equal(await (await sw.get('/admin-offline/play/example/index.html')).text(),'replacement');
+ });
