@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T16:07:58.698Z",
+  "generatedAt": "2026-11-06T19:39:01.019Z",
   "reportsFound": 10,
   "catalogRoutes": 132,
   "targets": {
@@ -11,7 +11,12 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [],
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-4-Tower Keeper/tmp/arcade-browser-evidence/shard-4/live/report.json",
+          "shard": 4
+        }
+      ],
       "failures": [
         {
           "game": "neon-surge",
@@ -20,7 +25,7 @@
           "action": "start game",
           "reason": "locator.click: Timeout 4000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /^(start|start game|start run|start \\/ restart|play|play game|new game|begin|launch|restart|run it back)$/i }).first()\n    - locator resolved to <button type=\"button\" id=\"startBtn\" class=\"btn primary\">START</button>\n  - attempting click action\n    - waitin",
           "target": "live",
-          "screenshot": "009.png",
+          "screenshot": null,
           "networkErrorCount": 0,
           "browserErrorCount": 0
         }
@@ -29,5 +34,5 @@
     }
   },
   "passed": false,
-  "sourceRunId": 42247273456
+  "sourceRunId": 42280101367
 }
