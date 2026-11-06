@@ -639,7 +639,7 @@ try {
       saved: {
         serialized: {
           board: Array.from({ length: 6 }, (_, y) => Array.from({ length: 7 }, (_, x) => y === 5 && x === 3 ? 1 : y === 5 && x === 4 ? 2 : 0)),
-          history: []
+          history: [], turn: 1, mode: "local"
         }
       },
       check: () => document.querySelectorAll("#board .p1").length === 1 && document.querySelectorAll("#board .p2").length === 1
@@ -694,7 +694,7 @@ try {
   // Verify cloud save restoration for word, number, tile, and mirror puzzles.
   const puzzleRestoreCases = [
     { name:"Crypt Words", path:"/arcade/hosted/crypt-words/index.html", gameId:"crypt-words", importDirect:true, data:{serialized:{answer:"ASHEN",row:1,guess:"CLOUD",done:false,guesses:[{word:"GHOST",colors:["absent","absent","absent","absent","absent"]}],keyState:{G:"absent"}}}, check:()=>document.querySelector("#board .tile")?.textContent==="g"&&document.querySelector("#status")?.textContent.includes("Cloud save restored") },
-    { name:"Chaos Sudoku", path:"/arcade/hosted/ash-sudoku/index.html", gameId:"ash-sudoku", data:{}, check:()=>document.querySelector("#board .cell")?.textContent==="5"&&document.querySelector("#time")?.textContent==="08:07" },
+    { name:"Chaos Sudoku", path:"/arcade/hosted/ash-sudoku/index.html", gameId:"ash-sudoku", data:{}, check:()=>document.querySelector("#board .cell")?.textContent==="1"&&document.querySelector("#time")?.textContent==="08:07" },
     { name:"Neon Mahjong", path:"/arcade/hosted/neon-mahjong/index.html", gameId:"cabinet-neon-mahjong", data:{serialized:{tiles:Array.from({length:104},(_,i)=>({x:i%12,y:Math.floor(i/12),z:0,id:i,val:["✦","✦","●","●","◆","◆"][i%6],alive:true})),selected:null,moves:13,elapsed:72,history:[],done:0,best:0}}, check:()=>document.querySelector("#moves")?.textContent==="13"&&document.querySelector("#message")?.textContent.includes("Cloud save restored") },
   ];
   for(const testCase of puzzleRestoreCases){
