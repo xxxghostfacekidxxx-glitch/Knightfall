@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {BLACK,WHITE} from "./chaos-card-deck.js";
-import {CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches} from "./chaos-card-matches.js";
+import {CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
 
 const ids=[17,24,31,44];
 const row=(state,status="active")=>({
@@ -94,6 +94,33 @@ test("illegal, repeated and out-of-turn moves are rejected",()=>{
  assert.throws(()=>visibleChaosMatch(row(state),999),/not a table participant/);
  assert.throws(()=>newChaosState(17,[24,31,44,55]),/One to four/);
 });
+test("card turn notifications only fire on new actions, not every opponent move",()=>{
+ const state=newChaosState(17,[24,31]);
+ state.invite_status[1]="accepted";
+ state.invite_status[2]="accepted";
+ assert.equal(startChaosTable(state),true);
+ const before=structuredClone(state);
+ assert.equal(chaosCardTurnAction(state,1),"Choose your answer");
+ assert.equal(chaosCardTurnAction(state,2),"Choose your answer");
+ assert.equal(shouldNotifyChaosCardTurn(null,state,1),true);
+ assert.equal(playChaosCard(state,1,0),true);
+ assert.equal(shouldNotifyChaosCardTurn(before,state,1),false,"already-played member must not be notified");
+ assert.equal(shouldNotifyChaosCardTurn(before,state,2),false,"still-waiting member must not get duplicate alert");
+ assert.equal(playChaosCard(state,2,0),true);
+ assert.equal(state.phase,"judge");
+ assert.equal(shouldNotifyChaosCardTurn(before,state,0),true,"judge just became actionable");
+ assert.equal(shouldNotifyChaosCardTurn(before,state,1),false);
+ const judging=structuredClone(state);
+ assert.equal(judgeChaosCard(state,0,0),true);
+ assert.equal(state.phase,"results");
+ assert.equal(shouldNotifyChaosCardTurn(judging,state,1),true,"round-result alert is new");
+ assert.equal(shouldNotifyChaosCardTurn(state,state,1),false,"same results must not alert again");
+ const results=structuredClone(state);
+ assert.equal(beginChaosRound(state),true);
+ assert.equal(shouldNotifyChaosCardTurn(results,state,0),false,"next round judge cannot submit");
+ assert.equal(shouldNotifyChaosCardTurn(results,state,2),true,"new round allows a fresh notification");
+});
+
 test("account required before exposing private game data",async()=>{
  const result=await handleChaosCardMatches({method:"GET"},null,new URL("https://api.ash-fall.com/api/arcade/chaos-cards"),{
  getUser:async()=>null,json:(data,status)=>({data,status}),rateLimit:async()=>true,origin:"https://ash-fall.com",createNotification:async()=>{}
