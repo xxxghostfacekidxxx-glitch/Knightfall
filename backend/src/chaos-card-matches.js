@@ -26,9 +26,12 @@ function shuffle(list){
  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
  return a;
 }
+// Persist shuffled card indices, not 2,000 duplicated strings per match.
+// Existing saved matches with string decks remain playable and migrate as drawn.
 function draw(state,key,source){
- if(!state.decks[key].length)state.decks[key]=shuffle(source);
- return state.decks[key].pop();
+ if(!state.decks[key].length)state.decks[key]=shuffle(source.map((_,index)=>index));
+ const card=state.decks[key].pop();
+ return Number.isInteger(card)?source[card]:card;
 }
 function memberIds(row){
  return [row.player_one_id,row.player_two_id,row.player_three_id,row.player_four_id]
@@ -67,7 +70,7 @@ export function newChaosState(ownerId=1,invited=[]){
  const invite_status=members.map((id,index)=>index===0?"accepted":id==null?"bot":"pending");
  return {members,invite_status,round:0,phase:"lobby",judge:0,prompt:"",
  scores:[0,0,0,0],hands:[[],[],[],[]],submitted:{},choices:[],result:null,
- decks:{black:shuffle(BLACK),white:shuffle(WHITE)}};
+ decks:{black:shuffle(BLACK.map((_,index)=>index)),white:shuffle(WHITE.map((_,index)=>index))}};
 }
 function aiCard(state,bot){
  const offer=Array.from({length:4},()=>draw(state,"white",WHITE));
@@ -77,7 +80,7 @@ function aiCard(state,bot){
  const matches=offer.filter(card=>preferred.test(card));
  const source=matches.length?matches:offer;
  const chosen=source[Math.floor(Math.random()*source.length)];
- state.decks.white.push(...offer.filter((_,i)=>offer.indexOf(chosen)!==i));
+ state.decks.white.push(...offer.filter((_,i)=>offer.indexOf(chosen)!==i).map(card=>WHITE.indexOf(card)));
  return chosen;
 }
 function winnerChoice(state,index){
