@@ -78,6 +78,50 @@ try {
       await page.close();
     }
   }
+  // Cards Against Chaos must feel like an actual cabinet on both phones and desktops.
+  // These checks exercise the browser, not just source-string or route assertions.
+  for(const size of [{width:390,height:844},{width:1366,height:850}]){
+    const mobile=size.width<600;
+    const page=await browser.newPage({viewport:size,isMobile:mobile,hasTouch:mobile});
+    const errors=[];page.on("pageerror",error=>errors.push(error.message));
+    try{
+      const response=await page.goto(base+"/arcade/hosted/cards-against-chaos/index.html",{waitUntil:"domcontentloaded",timeout:12000});
+      if(!response?.ok())throw Error("Cards Against Chaos failed HTTP "+response?.status());
+      await page.locator("#cac-tab-online").click();
+      if(await page.locator("#cac-tab-online").getAttribute("aria-selected")!=="true")throw Error("Online tab did not activate");
+      if(!await page.locator("#cards-online-form").isVisible())throw Error("Online table setup is hidden");
+      if(await page.locator("#setup").isVisible())throw Error("Local setup leaked into online mode");
+      await page.locator("#cac-tab-local").click();
+      if(!await page.locator("#setup").isVisible())throw Error("Local table setup did not restore");
+      await page.locator("#cac-fullscreen").click();
+      if(await page.locator("#cac-fullscreen").getAttribute("aria-pressed")!=="true")throw Error("Fullscreen/focus mode failed");
+      await page.locator("#cac-fullscreen").click();
+      if(await page.locator("#cac-fullscreen").getAttribute("aria-pressed")!=="false")throw Error("Fullscreen did not exit");
+      const layout=await page.evaluate(()=>({
+        scrollWidth:document.documentElement.scrollWidth,
+        viewport:window.innerWidth,
+        mode:window.CACCabinet?.mode,
+        background:getComputedStyle(document.body).backgroundColor
+      }));
+      if(layout.scrollWidth>layout.viewport+3)throw Error("Card cabinet causes horizontal scrolling: "+JSON.stringify(layout));
+      if(layout.mode!=="local")throw Error("Mode toggle did not restore local");
+      await page.locator("#start").click();
+      if(!await page.locator("#game").isVisible())throw Error("Local match failed to begin");
+      if(await page.locator("#scoreboard .score").count()!==4)throw Error("Four-player scoreboard missing");
+      if(await page.locator("#prompt-text").textContent()==="")throw Error("Black prompt never dealt");
+      if(await page.locator("#setup").isVisible())throw Error("Setup not hidden after play starts");
+      await page.locator("#reveal").click();
+      if(await page.locator("#answers .answer-choice").count()!==3)throw Error("Judging panel missing 3 secret answers");
+      await page.locator("#answers .answer-choice").first().click();
+      if(!await page.locator("#next-round").isVisible())throw Error("Next round controls were lost");
+      await page.locator("#next-round").click();
+      if(await page.locator("#round-number").textContent()!=="2")throw Error("Second round failed to start");
+      await page.locator("#new-game").click();
+      if(!await page.locator("#setup").isVisible())throw Error("New table did not return to setup");
+      if(errors.length)throw Error("Cards Against Chaos browser errors: "+errors.join(" | "));
+      console.log("PASS Cards Against Chaos cabinet: tabs, fullscreen, mobile fit, four seats, judging, next round, reset ("+size.width+"px)");
+    }finally{await page.close()}
+  }
   // The expanded card room once initialized but crashed on records, selection, and fullscreen controls.
   {
     const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
