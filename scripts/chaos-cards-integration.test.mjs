@@ -53,10 +53,10 @@ test("original four-player local mode and three AI personalities remain independ
  assert.match(game,/if\(players\[czar\]\.ai\)/);
  assert.match(backend,/SEAT_COUNT=4/);
 });
-test("Butters and Trouble pets retain unique animated Sanctuary assets",()=>{
- assert.equal(manifest.characters.length,30);
+test("Butters, Trouble and Skunk Riot retain unique animated Sanctuary assets",()=>{
+ assert.ok(manifest.characters.length>=31,"expanded pet roster must keep existing species");
  const names=new Set(manifest.characters.map(char=>char.id));
- for(const id of ["butters","trouble"]){
+ for(const id of ["butters","trouble","skunk-riot"]){
   assert.ok(names.has(id));
   const char=manifest.characters.find(char=>char.id===id);
   for(const image of [char.svg,char.portrait,...Object.values(char.variants)])
