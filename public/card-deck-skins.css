@@ -1,0 +1,180 @@
+/* Knightfall shared deck wardrobe. Card faces stay legible in every theme.
+   Imported AFTER individual games' regular styles. No network fonts or imagery. */
+:root[data-kf-deck-skin]{
+ --kf-deck-face:linear-gradient(145deg,#fff,#e9e3f2);
+ --kf-deck-ink:#201628;--kf-deck-red:#b5275b;
+ --kf-deck-stroke:#e6d6ed;--kf-deck-glow:#ff5ed133;
+ --kf-deck-back:repeating-linear-gradient(45deg,#22162d 0 7px,#742a8e 7px 12px,#22162d 12px 18px);
+ --kf-deck-prompt:linear-gradient(145deg,#23132f,#080a10);--kf-deck-prompt-ink:#fff;
+ --kf-deck-watermark:#fd79e1;--kf-deck-label:"ASH / FALL";--kf-deck-corner:12px;
+}
+:root[data-kf-deck-skin="neon-riot"]{
+ --kf-deck-face:radial-gradient(circle at 95% 0,#c3ff72 0 15%,transparent 52%),linear-gradient(145deg,#ffb7ec,#ffeefb 48%,#c2f8f7);
+ --kf-deck-ink:#300a38;--kf-deck-red:#d10a5a;--kf-deck-stroke:#ff50d6;--kf-deck-glow:#ff48d55c;
+ --kf-deck-back:repeating-linear-gradient(132deg,#181328 0 8px,#ff45d3 8px 11px,#1b1428 11px 24px,#baff5f 24px 26px);
+ --kf-deck-prompt:linear-gradient(120deg,#6b1c81,#19113b 65%,#051921);
+ --kf-deck-watermark:#d2ff6b;--kf-deck-label:"RIOT / 01";--kf-deck-corner:16px
+}
+:root[data-kf-deck-skin="bone-white"]{
+ --kf-deck-face:linear-gradient(145deg,#fcf8ea,#e8dfce);
+ --kf-deck-ink:#231e1b;--kf-deck-red:#8f343b;--kf-deck-stroke:#9f9686;--kf-deck-glow:#c1b39b33;
+ --kf-deck-back:repeating-radial-gradient(circle at center,#232327 0 3px,#e3d8bc 3px 4px,#232327 4px 13px);
+ --kf-deck-prompt:linear-gradient(135deg,#38322f,#111113);
+ --kf-deck-watermark:#ded0b7;--kf-deck-label:"BONE / 02";--kf-deck-corner:6px
+}
+:root[data-kf-deck-skin="grave-velvet"]{
+ --kf-deck-face:linear-gradient(145deg,#d8c8e6,#f5e8f3 60%,#b49aca);
+ --kf-deck-ink:#2a163e;--kf-deck-red:#ad2368;--kf-deck-stroke:#9676ad;--kf-deck-glow:#ab61dd66;
+ --kf-deck-back:repeating-linear-gradient(45deg,#30183f 0 7px,#a88dbc 7px 8px,#31163f 8px 15px);
+ --kf-deck-prompt:linear-gradient(140deg,#4d2567,#120c1f 70%);
+ --kf-deck-watermark:#d5bbec;--kf-deck-label:"VELVET / 03";--kf-deck-corner:18px
+}
+:root[data-kf-deck-skin="glitch-circuit"]{
+ --kf-deck-face:repeating-linear-gradient(0deg,#e6ffff 0 7px,#d9e3f0 7px 9px,#f5e9ff 9px 17px);
+ --kf-deck-ink:#07283b;--kf-deck-red:#bd1c73;--kf-deck-stroke:#34d6ee;--kf-deck-glow:#45ddff6c;
+ --kf-deck-back:repeating-linear-gradient(90deg,#091a27 0 14px,#2be8ef 14px 16px,#190f28 16px 25px,#ed42d5 25px 27px);
+ --kf-deck-prompt:linear-gradient(145deg,#102947,#25113b 85%);
+ --kf-deck-watermark:#61f8fe;--kf-deck-label:"GLITCH / 04";--kf-deck-corner:4px
+}
+:root[data-kf-deck-skin="ghost-orchid"]{
+ --kf-deck-face:radial-gradient(circle at 90% 10%,#c7f5e1 0 17%,transparent 60%),linear-gradient(145deg,#d8dcff,#f5f3ff);
+ --kf-deck-ink:#233048;--kf-deck-red:#a13f9a;--kf-deck-stroke:#c3b5f9;--kf-deck-glow:#b3f7eb4e;
+ --kf-deck-back:repeating-radial-gradient(ellipse at 50% 50%,#152d37 0 10px,#70cdb9 11px 12px,#233348 12px 20px);
+ --kf-deck-prompt:linear-gradient(140deg,#293e58,#18202e 65%);
+ --kf-deck-watermark:#a8f1de;--kf-deck-label:"ORCHID / 05";--kf-deck-corner:20px
+}
+:root[data-kf-deck-skin="infernal-foil"]{
+ --kf-deck-face:linear-gradient(110deg,#ffe4a4,#fff5dd 45%,#efaf62);
+ --kf-deck-ink:#44210d;--kf-deck-red:#aa2624;--kf-deck-stroke:#d98c33;--kf-deck-glow:#ffa44988;
+ --kf-deck-back:repeating-linear-gradient(120deg,#35101b 0 10px,#d48b38 10px 13px,#8f2a1d 13px 20px);
+ --kf-deck-prompt:linear-gradient(130deg,#602619,#120e16);
+ --kf-deck-watermark:#ffc668;--kf-deck-label:"INFERNO / 06";--kf-deck-corner:10px
+}
+:root[data-kf-deck-skin="void-royalty"]{
+ --kf-deck-face:linear-gradient(145deg,#d3b6fa,#f9eaff 60%,#a899d0);
+ --kf-deck-ink:#200a4e;--kf-deck-red:#a6205f;--kf-deck-stroke:#5e26b1;--kf-deck-glow:#c386ff81;
+ --kf-deck-back:repeating-linear-gradient(45deg,#090713 0 14px,#8c48c5 14px 16px,#161122 16px 29px);
+ --kf-deck-prompt:linear-gradient(145deg,#251052,#0c0a17);
+ --kf-deck-watermark:#d6adff;--kf-deck-label:"ROYAL / P1";--kf-deck-corner:18px
+}
+:root[data-kf-deck-skin="crimson-rite"]{
+ --kf-deck-face:linear-gradient(145deg,#f7ded7,#f7e8e5 48%,#d7a7b0);
+ --kf-deck-ink:#4c1222;--kf-deck-red:#a4102d;--kf-deck-stroke:#aa384c;--kf-deck-glow:#ff385a6c;
+ --kf-deck-back:repeating-radial-gradient(circle at center,#400d20 0 12px,#a4284a 12px 14px,#250c19 14px 24px);
+ --kf-deck-prompt:linear-gradient(145deg,#4b142b,#13090e);
+ --kf-deck-watermark:#ff8f91;--kf-deck-label:"RITE / P2";--kf-deck-corner:9px
+}
+:root[data-kf-deck-skin="holo-wraith"]{
+ --kf-deck-face:linear-gradient(120deg,#cdfbfe 0%,#fff4fb 28%,#d8cbff 53%,#e7ffe3 75%,#bfe9ff 100%);
+ --kf-deck-ink:#15234a;--kf-deck-red:#be2f99;--kf-deck-stroke:#74baf0;--kf-deck-glow:#70f9e47d;
+ --kf-deck-back:linear-gradient(125deg,#1f145a 0%,#49b3de 24%,#c769d8 49%,#aaedb4 71%,#24164b 100%);
+ --kf-deck-prompt:linear-gradient(125deg,#12374b,#2c1445,#213a45);
+ --kf-deck-watermark:#b6fff2;--kf-deck-label:"HOLO / P3";--kf-deck-corner:16px
+}
+:root[data-kf-deck-skin="toxic-pop"]{
+ --kf-deck-face:linear-gradient(130deg,#ecffa5,#f6ffe5 60%,#a4f668);
+ --kf-deck-ink:#143719;--kf-deck-red:#aa2a75;--kf-deck-stroke:#74bb11;--kf-deck-glow:#b7ff50a0;
+ --kf-deck-back:repeating-linear-gradient(50deg,#202c11 0 14px,#baff49 14px 22px,#1b4d2b 22px 28px);
+ --kf-deck-prompt:linear-gradient(135deg,#153a1a,#101421);
+ --kf-deck-watermark:#b7ff5e;--kf-deck-label:"TOXIC / P4";--kf-deck-corner:4px
+}
+:root[data-kf-deck-skin="eclipse-noir"]{
+ --kf-deck-face:linear-gradient(145deg,#bac0d4,#f5f2f2 51%,#a2a2b3);
+ --kf-deck-ink:#11131e;--kf-deck-red:#8a2447;--kf-deck-stroke:#3b4056;--kf-deck-glow:#ccd4ee55;
+ --kf-deck-back:repeating-linear-gradient(45deg,#0a0c12 0 10px,#26293b 10px 12px,#11131b 12px 20px);
+ --kf-deck-prompt:linear-gradient(145deg,#282b36,#05070a);
+ --kf-deck-watermark:#d0d6e1;--kf-deck-label:"ECLIPSE / P5";--kf-deck-corner:10px
+}
+/* One shared appearance applied only to the four actual card-game entry points,
+   which import this CSS. Does not affect unrelated board-game buttons or tiles. */
+html[data-kf-deck-skin] :is(.playing-card:not(.back):not(.backside),#hand button.af-deck-card,.cac-shell .answer-card,.cac-shell .answer-choice,.cac-shell .cards-online-answer){
+ background:var(--kf-deck-face)!important;
+ border:2px solid var(--kf-deck-stroke)!important;
+ border-radius:var(--kf-deck-corner)!important;
+ color:var(--kf-deck-ink)!important;
+ box-shadow:0 7px 21px #0005,0 0 14px var(--kf-deck-glow)!important;
+ background-clip:padding-box!important;
+}
+html[data-kf-deck-skin] .playing-card.red:not(.back):not(.backside){
+ color:var(--kf-deck-red)!important
+}
+html[data-kf-deck-skin] .playing-card:is(.back,.backside){
+ background:var(--kf-deck-back)!important;
+ border:2px solid var(--kf-deck-stroke)!important;
+ color:transparent!important;border-radius:var(--kf-deck-corner)!important;
+ box-shadow:0 7px 21px #0006,0 0 14px var(--kf-deck-glow)!important
+}
+html[data-kf-deck-skin] .playing-card:is(.back,.backside) :is(.pip,span){visibility:hidden}
+html[data-kf-deck-skin] .cac-shell .answer-choice>strong,
+html[data-kf-deck-skin] .cac-shell .answer-choice>span,
+html[data-kf-deck-skin] .cac-shell .answer-card,
+html[data-kf-deck-skin] .cac-shell .cards-online-answer{color:var(--kf-deck-ink)!important}
+html[data-kf-deck-skin] .cac-shell .prompt-card{
+ background:var(--kf-deck-prompt)!important;border-color:var(--kf-deck-stroke)!important;
+ border-radius:var(--kf-deck-corner)!important;
+ box-shadow:0 10px 35px #0008,0 0 21px var(--kf-deck-glow)!important;color:var(--kf-deck-prompt-ink)!important
+}
+html[data-kf-deck-skin] .cac-shell .prompt-card small{color:var(--kf-deck-watermark)!important}
+/* Wardrobe: inline details, never a floating assistant-style overlay over controls. */
+.kf-deck-wardrobe{display:block;clear:both;width:100%;max-width:100%;margin:10px 0 18px;
+ border-radius:18px;border:1px solid #7a5e967c;background:linear-gradient(130deg,#21152a,#11131d);
+ box-shadow:0 10px 24px #0005;color:#faf2ff;font:14px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif}
+.kf-deck-wardrobe *{box-sizing:border-box}
+.kf-deck-wardrobe[open]{border-color:#dc6bd89e;box-shadow:0 14px 36px #0007,0 0 24px #ff4bd815}
+.kf-deck-toggle{list-style:none;display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px 17px;min-height:58px;outline-offset:2px}
+.kf-deck-toggle::-webkit-details-marker{display:none}
+.kf-deck-toggle::after{content:"⌄";margin-left:8px;color:#c3f67a;font-weight:900;font-size:1.4rem}
+.kf-deck-wardrobe[open] .kf-deck-toggle::after{content:"⌃"}
+.kf-deck-toggle-mark{flex:none;display:grid;place-items:center;width:39px;height:39px;border-radius:11px;
+ color:#141118;background:linear-gradient(135deg,#ff6fdf,#c7ff73);font-size:24px;font-weight:900}
+.kf-deck-toggle-label{flex:1;min-width:0;line-height:1.25}
+.kf-deck-toggle-label strong{display:block;font-weight:950;font-size:.95rem;color:#fff}
+.kf-deck-toggle-label small{display:block;color:#b7a6c7;font-weight:600;font-size:.72rem}
+.kf-deck-current{flex:none;color:#c9ff81;border:1px solid #a8eb7099;background:#25351f5e;border-radius:99px;
+ font-size:.7rem;letter-spacing:.05em;font-weight:900;padding:.34rem .62rem;white-space:nowrap}
+.kf-deck-panel{padding:0 clamp(12px,2vw,24px) 19px}
+.kf-deck-intro{display:flex;justify-content:space-between;align-items:center;gap:14px;border-top:1px solid #ffffff1b;padding:15px 2px}
+.kf-deck-intro strong{font-size:.76rem;letter-spacing:.15em;font-weight:950;color:#ff91e9}
+.kf-deck-intro p{margin:2px 0;color:#bbacc6;font-size:.79rem}
+.kf-deck-progress{border:1px solid #6c567e;border-radius:99px;padding:.45rem .7rem;color:#ceff8f;
+ font-size:.72rem;font-weight:800;white-space:nowrap}
+.kf-deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,185px),1fr));gap:12px}
+.kf-deck-item{display:flex;flex-direction:column;gap:8px;background:linear-gradient(155deg,#302039,#18151f);
+ border:1px solid #806a9866;border-radius:15px;padding:12px;min-width:0}
+.kf-deck-item.is-selected{border-color:#c3ff79;box-shadow:0 0 0 1px #baff7033}
+.kf-deck-item.is-locked{border-color:#654f6f99}
+.kf-deck-preview{height:105px;min-width:0;border:2px solid #a580c9;border-radius:11px;
+ background:linear-gradient(130deg,#24142e,#43245b);display:flex;flex-direction:column;align-items:center;
+ justify-content:center;position:relative;overflow:hidden;isolation:isolate;box-shadow:inset 0 1px #ffffff3b}
+.kf-deck-preview::before{content:"";position:absolute;inset:10px;border:1px solid #ffffff52;border-radius:6px;pointer-events:none}
+.kf-deck-preview-star{font-size:2.6rem;font-weight:900;text-shadow:0 0 18px currentColor;line-height:1}
+.kf-deck-preview-mark{font-weight:900;letter-spacing:.2em;font-size:.54rem;margin-top:8px}
+.kf-deck-preview--ash-classic{color:#f7a4e7;background:repeating-linear-gradient(45deg,#26122c 0 12px,#5d2676 12px 14px)}
+.kf-deck-preview--neon-riot{color:#bdff61;background:repeating-linear-gradient(120deg,#271227 0 15px,#e743d5 15px 19px,#1a1430 19px 26px)}
+.kf-deck-preview--bone-white{color:#f7ecdb;background:repeating-radial-gradient(circle at center,#29242b 0 10px,#8b8578 10px 12px)}
+.kf-deck-preview--grave-velvet{color:#ede0ff;background:linear-gradient(135deg,#4a235d,#251335)}
+.kf-deck-preview--glitch-circuit{color:#72fbfc;background:repeating-linear-gradient(90deg,#082333 0 13px,#f44cbf 13px 16px,#031726 16px 24px)}
+.kf-deck-preview--ghost-orchid{color:#b0ffe6;background:radial-gradient(circle at 50% 50%,#577992,#152b46 65%)}
+.kf-deck-preview--infernal-foil{color:#ffeaa0;background:linear-gradient(135deg,#54211b,#ba7232 50%,#3d1921)}
+.kf-deck-preview--void-royalty{color:#e4bfff;background:linear-gradient(135deg,#1d0c35,#6e32a9,#12091e)}
+.kf-deck-preview--crimson-rite{color:#ffb1ba;background:radial-gradient(circle at center,#8b2141,#240c18)}
+.kf-deck-preview--holo-wraith{color:#fff;background:linear-gradient(120deg,#2c316c,#64accb,#d477db,#94d9a0)}
+.kf-deck-preview--toxic-pop{color:#baff63;background:repeating-linear-gradient(120deg,#204a2c 0 17px,#8ec632 17px 23px)}
+.kf-deck-preview--eclipse-noir{color:#dbddea;background:linear-gradient(130deg,#080b12,#3d4251,#10121a)}
+.kf-deck-item-copy{flex:1;min-height:51px}
+.kf-deck-item-copy strong{display:block;color:#fff;font-weight:950;font-size:.84rem}
+.kf-deck-item-copy small{display:block;color:#bfb1cd;font-size:.7rem;line-height:1.45}
+.kf-deck-item-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kf-deck-kind{font-size:.59rem;letter-spacing:.08em;font-weight:950;color:#c3ff82}
+.kf-deck-item.is-locked .kf-deck-kind{color:#f0b8d5}
+.kf-deck-choice{min-height:32px!important;padding:5px 9px!important;margin-left:auto!important;border-radius:8px!important;
+ color:#1d1125!important;background:#e28adb!important;border:0!important;font:900 .68rem system-ui!important;cursor:pointer}
+.kf-deck-choice:disabled{background:#342b3d!important;color:#a9a0b6!important;cursor:default}
+.kf-deck-item.is-selected .kf-deck-choice{background:#bfff81!important;color:#141c0f!important}
+.kf-deck-premium-link{display:block;width:100%;padding:5px;color:#ffaae8!important;font-size:.7rem;font-weight:900;text-decoration:underline!important}
+.kf-deck-progress-mini{color:#b2a7bd;font-size:.66rem;width:100%;text-align:right}
+.kf-deck-disclaimer{font-size:.73rem;color:#ab9cb8;line-height:1.5;margin:14px 2px 0}
+.kf-deck-wardrobe :is(button,summary,a):focus-visible{outline:3px solid #b9ff70;outline-offset:3px}
+@media(max-width:640px){.kf-deck-toggle{padding:10px}.kf-deck-current{font-size:.59rem}.kf-deck-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kf-deck-item{padding:8px}.kf-deck-intro{display:block}.kf-deck-progress{display:inline-block;margin-top:7px}.kf-deck-preview{height:87px}.kf-deck-choice{font-size:.58rem!important}}
+@media(max-width:350px){.kf-deck-grid{grid-template-columns:1fr}.kf-deck-toggle-label small{display:none}.kf-deck-current{display:none}}
+@media(prefers-reduced-motion:reduce){.kf-deck-wardrobe *,html[data-kf-deck-skin] .playing-card{animation:none!important;transition:none!important}}
