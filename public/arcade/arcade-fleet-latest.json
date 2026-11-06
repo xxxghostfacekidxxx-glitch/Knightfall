@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T21:48:33.312Z",
+  "generatedAt": "2026-11-06T22:48:09.159Z",
   "reportsFound": 20,
   "catalogRoutes": 132,
   "targets": {
@@ -24,22 +24,10 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [
-        {
-          "game": "cinder-reversi",
-          "route": "/arcade/hosted/cinder-reversi/index.html",
-          "profile": "tablet",
-          "action": "start game",
-          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:88:43",
-          "target": "local",
-          "screenshot": "005.png",
-          "networkErrorCount": 1,
-          "browserErrorCount": 0
-        }
-      ],
-      "coverageOk": false
+      "failures": [],
+      "coverageOk": true
     }
   },
-  "passed": false,
-  "sourceRunId": 42296298378
+  "passed": true,
+  "sourceRunId": 42304170461
 }
