@@ -39,5 +39,30 @@ else:
     if api(refpath, allow_missing=True) is not None: raise SystemExit('Branch deletion was not verified.')
     print('Deleted reviewed obsolete Electron upgrade branch; PR 187 preserves its proposal.')
 
+# The static-games staging commit was reconciled into main as an additional
+# merge parent (strategy: ours), preserving provenance without reverting newer fixes.
+staging_branch = 'staging/advanced-static-games'
+staging_expected = 'a333f82ea495302f13c2bb69153146fc89d40b06'
+staging_refpath = 'git/refs/heads/' + staging_branch
+staging = api(staging_refpath, allow_missing=True)
+if staging is None:
+    print('Reconciled advanced-game staging branch is already absent.')
+else:
+    if staging['object']['sha'] != staging_expected:
+        raise SystemExit('Advanced-game staging changed; refusing deletion.')
+    comparison = api('compare/' + staging_expected + '...main')
+    if comparison.get('merge_base_commit', {}).get('sha') != staging_expected:
+        raise SystemExit('Advanced-game staging has not been preserved in main history; refusing deletion.')
+    owner = repo.split('/')[0]
+    open_prs = api('pulls?state=open&head=' + urllib.parse.quote(owner + ':' + staging_branch, safe=''))
+    if open_prs:
+        raise SystemExit('Advanced-game staging has an open PR; refusing deletion.')
+    if api(staging_refpath)['object']['sha'] != staging_expected:
+        raise SystemExit('Advanced-game staging changed during review; refusing deletion.')
+    api(staging_refpath, method='DELETE')
+    if api(staging_refpath, allow_missing=True) is not None:
+        raise SystemExit('Advanced-game staging deletion could not be verified.')
+    print('Deleted reconciled advanced-game staging; commit is retained in main merge history.')
+
 branches = api('branches?per_page=100')
 print('Remaining branches:', ', '.join(item['name'] for item in branches))
