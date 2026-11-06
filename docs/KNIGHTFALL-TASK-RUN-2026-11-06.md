@@ -34,3 +34,40 @@ This report records checked repository and production evidence. **Present in cod
 - [Recovered complete backlog](./ASH-FALL-RECOVERED-BACKLOG.md)
 
 **Guardrails:** do not invent test outcomes; do not merge obsolete game snapshots over current stable source; do not manually mutate production game rows to fabricate successful sessions.
+
+## Continuation: arcade reliability and Cinder Eights (November 6, 2026, evening)
+
+This pass carried forward the first group of master-list tasks rather than marking all remaining arcade work complete.
+
+### Implemented in `main`
+
+- [x] Repair the **Cinder Vector / Prism Siege regression harness**: its Node VM lacked the `window.addEventListener` stub required by the active browser engine. Change: `scripts/arcade-original-vector.test.mjs`, commit `7098331a`. The older ten-bot fleet had failed all shards at this common validation step.
+- [x] Restore **legacy access links** from `/arcade-games.html` to Reaction Ritual Classic and Rock, Paper, Ruin variants, and from `/arcade-after-dark.html` to Reaction Ritual one-round mode. Commits `b43f3db` and `f107ebc`. The obsolete duplicate games were *not* re-added. Catalog tests that previously asserted these links are now meaningful again.
+- [x] Prevent the shared **Deck Locker** from contacting the production account API on localhost or offline/test hosts; retain local/guest progress. Commit `8c7bf3e`; account-sync localhost regression added in `scripts/deck-locker-account-sync.test.mjs` commit `d3843a1`. An earlier local fleet shard had failed on unneeded `https://api.ash-fall.com/api/arcade/deck-locker` fetches, while that shard's live-site run passed.
+- [x] Fix a **blank-accessible-body issue** on the imported Interstellar Armada WebGL splash and add a visible escape route back to Chaos Cartridge. Commit `55c7fe4`; the page's WebGL gameplay still requires a fresh browser-play test.
+- [x] Update **Arcade Catalog Integrity** triggers so editing legacy arcade pages or their mode-routing tests invokes the catalog suite. Commit `e893021`.
+- [x] Prevent the scheduled **arcade asset doctor** from creating review branches and pull requests. It now uploads a reviewed repair patch artifact. Commit `292481c`. No auto-created feature branch is expected from that workflow anymore.
+- [x] Replace the basic **Cinder Eights** page with a modern 2-player, 1-human-vs-CPU, mobile-responsive neon tabletop: real fullscreen with focus fallback, suit and turn HUD, selectable wild suit, selectable playing-card finishes, swipeable hand, keyboard shortcuts, local win tracking. Rules refactored into `public/arcade/hosted/cinder-eights/engine.mjs` with CPU moves, shuffled 52-card deck, reshuffled discards, and a draw on two blocked no-draw turns. Frontend `game.js` and visual `game.css` added. Commits from `b9f7d9d` through `a947300`.
+- [x] Add Cinder Eights deterministic gameplay rules and accessibility assertions in `scripts/cinder-eights-runtime.test.mjs` and require them in Card & Board Integrity and the ten-bot fleet. Update Deck Locker regression after refactoring card rendering into `game.js`. The dedicated card integrity workflow on commit `2948f1d`, run [42296180299](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42296180299), passed.
+- [x] Add a Playwright **Cinder Eights end-to-end acceptance case** to `scripts/arcade-browser-smoke.mjs`: verifies deal, hidden CPU cards, fullscreen, a draw and CPU turn, restart, global Deck Locker presence, and mobile overflow. Commit `31d6fa9`. This browser run is **not yet certified passing**.
+
+### Most recent evidence checked
+
+- [x] [Arcade Catalog Integrity run 42294904446](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42294904446) passed after restoring legacy game-family links.
+- [x] [Card & Board Integrity run 42296180299](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42296180299) passed after the Cinder Eights refactor and stale selector assertion repair.
+- [x] **Only branch `main` and zero open pull requests** when checked during this pass.
+- [ ] [Ten-bot fleet run 42296113289](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42296113289) was still in progress during the last review; do not close until consolidated coverage and current revision pass.
+- [ ] [Latest specialized runtime smoke run](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions) must complete after the new Cinder Eights browser assertions.
+- [ ] **Pages production**: some commits were queued in Cloudflare Pages after the latest verified successful alias. Confirm the exact final commit deployed before claiming the newly redesigned Cinder Eights is live on `ash-fall.com`.
+- [ ] **Deck Locker two-device acceptance**: verified backend migration `0122` and automated account tests exist. Still require two real signed-in test accounts/devices to validate persistent wardrobe and server ownership end to end.
+- [ ] **God/admin authorization and ownership audits**: production workflows report missing dedicated role-test GitHub secrets (six values, test accounts only). This is a setup blocker, not proof of a security test passing.
+- [ ] **Full live arcade playability**: still requires all ten shards, mobile touch QA, Cinder Eights browser gameplay, legacy cabinet behavior and provenance check.
+
+### Next execution order
+
+1. Finish the current fleet and Chromium evidence checks; fix concrete failed routes before opening new features.
+2. Confirm Cloudflare Pages latest production deployment and two-account Deck Locker synchronization.
+3. Continue card/board quality, Android push and messaging, offline installation, missing sidebars/theme, priority broken games, and Hell & High Orbit.
+4. Finish Store Stripe setup and secure premium unlocks **only after** the user connects/configures real-money payments.
+
+**Release principle:** signed-off implementation is not the same as tested on real phones. No fabricated completed multiplayer matches, store purchases, or signed-in acceptance results.
