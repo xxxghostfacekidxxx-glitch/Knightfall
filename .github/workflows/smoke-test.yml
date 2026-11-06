@@ -11,6 +11,7 @@ on:
       - 'scripts/cloudflare-free-config.test.mjs'
       - 'scripts/security-headers.test.mjs'
       - 'scripts/push-navigation.test.mjs'
+      - 'scripts/nav-offline-api.test.mjs'
       - 'scripts/mobile-push-recovery.test.mjs'
       - 'scripts/mobile-message-notification.test.mjs'
       - 'scripts/mobile-push-browser-smoke.mjs'
@@ -76,8 +77,8 @@ jobs:
           node-version: '22'
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
-      - name: Verify birth charts and card-room rules
-        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs
+      - name: Verify birth charts, card-room rules and offline navigation
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
       - name: Validate rebuilt profile editor and crop/save code
         run: |
           node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
