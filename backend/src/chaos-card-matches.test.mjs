@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {BLACK,WHITE} from "./chaos-card-deck.js";
+import {EXPANSION_PACKS} from "../../public/arcade/hosted/cards-against-chaos/expansion-packs.js";
+import {THEME_DRAW_SHARE,validatedPacks,drawThemedCard,putBackThemedCard} from "../../public/arcade/hosted/cards-against-chaos/deck-mixer.js";
 import {CHAOS_CARD_BOTS,newChaosState,startChaosTable,beginChaosRound,playChaosCard,judgeChaosCard,visibleChaosMatch,handleChaosCardMatches,chaosCardTurnAction,shouldNotifyChaosCardTurn} from "./chaos-card-matches.js";
 
 const ids=[17,24,31,44];
@@ -39,6 +41,53 @@ test("deck snapshots are compact numeric IDs and original cards remain compatibl
  assert.equal(startChaosTable(legacy),true);
  assert.equal(legacy.prompt,BLACK[0]);
  assert.ok(Object.values(legacy.submitted).every(card=>WHITE.includes(card)));
+});
+test("Madhouse After Hours is a unique 50+150 opt-in adult theme",()=>{
+ const pack=EXPANSION_PACKS["madhouse-after-hours"];
+ assert.equal(pack.min_age,18);
+ assert.equal(pack.black.length,50);
+ assert.equal(pack.white.length,150);
+ assert.equal(new Set(pack.black.map(x=>x.toLowerCase())).size,50);
+ assert.equal(new Set(pack.white.map(x=>x.toLowerCase())).size,150);
+ assert.ok(pack.black.every(card=>!BLACK.includes(card)));
+ assert.ok(pack.white.every(card=>!WHITE.includes(card)));
+ assert.equal(THEME_DRAW_SHARE,.75);
+ assert.deepEqual(validatedPacks(["madhouse-after-hours"],EXPANSION_PACKS),["madhouse-after-hours"]);
+ assert.throws(()=>validatedPacks(["madhouse-after-hours","madhouse-after-hours"],EXPANSION_PACKS),/Duplicate/);
+ assert.throws(()=>validatedPacks(["not-real"],EXPANSION_PACKS),/Unknown/);
+ assert.throws(()=>newChaosState(17,[],["unknown-expansion"]),/Unknown/);
+ const state=newChaosState(17,[],["madhouse-after-hours"]);
+ assert.deepEqual(state.active_packs,["madhouse-after-hours"]);
+ assert.equal(startChaosTable(state),true);
+ assert.deepEqual(visibleChaosMatch(row(state),17).active_packs,["madhouse-after-hours"]);
+});
+test("chosen expansion bubbles dominate draws and multiple themes share the weighted pool",()=>{
+ const base=["Base"];const catalog={a:{black:["After hours A"]},b:{black:["After hours B"]}};
+ const state={active_packs:["a","b"],decks:{black:[],white:[]}};
+ const previous=Math.random;
+ try{
+  const sequence=[.1,.1,.1,.9,.99];
+  Math.random=()=>sequence.shift()??.5;
+  assert.equal(drawThemedCard(state,"black",base,catalog),"After hours A");
+  assert.equal(drawThemedCard(state,"black",base,catalog),"After hours B");
+  assert.equal(drawThemedCard(state,"black",base,catalog),"Base");
+ }finally{Math.random=previous;}
+ assert.ok(Array.isArray(state.decks["black:a"]));
+ assert.ok(Array.isArray(state.decks["black:b"]));
+ putBackThemedCard(state,"black","After hours B",base,catalog);
+ assert.deepEqual(state.decks["black:b"],[0]);
+});
+test("online themed tables require host adult confirmation before any DB write",async()=>{
+ const user={id:17,username:"alice"};
+ const env={DB:{prepare:()=>{throw Error("Database should not be touched before host opt-in")}}};
+ const options={getUser:async()=>user,json:(data,status)=>({data,status}),rateLimit:async()=>true,origin:"https://ash-fall.com",createNotification:async()=>{}};
+ const request=new Request("https://api.ash-fall.com/api/arcade/chaos-cards",{
+  method:"POST",headers:{"content-type":"application/json"},
+  body:JSON.stringify({opponent_ids:[],expansion_ids:["madhouse-after-hours"],age_confirmed:false})
+ });
+ const result=await handleChaosCardMatches(request,env,new URL(request.url),options);
+ assert.equal(result.status,400);
+ assert.match(result.data.error,/18 or older/);
 });
 test("always four seats for every valid combination of human and AI players",()=>{
  const names=[
