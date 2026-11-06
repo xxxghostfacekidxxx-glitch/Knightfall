@@ -94,9 +94,9 @@ try {
       await page.locator("#cac-tab-local").click();
       if(!await page.locator("#setup").isVisible())throw Error("Local table setup did not restore");
       await page.locator("#cac-fullscreen").click();
-      if(await page.locator("#cac-fullscreen").getAttribute("aria-pressed")!=="true")throw Error("Fullscreen/focus mode failed");
+      await page.waitForFunction(()=>document.querySelector("#cac-fullscreen")?.getAttribute("aria-pressed")==="true",{timeout:5000}).catch(()=>{throw Error("Fullscreen/focus mode failed");});
       await page.locator("#cac-fullscreen").click();
-      if(await page.locator("#cac-fullscreen").getAttribute("aria-pressed")!=="false")throw Error("Fullscreen did not exit");
+      await page.waitForFunction(()=>document.querySelector("#cac-fullscreen")?.getAttribute("aria-pressed")==="false",{timeout:5000}).catch(()=>{throw Error("Fullscreen did not exit");});
       const layout=await page.evaluate(()=>({
         scrollWidth:document.documentElement.scrollWidth,
         viewport:window.innerWidth,
