@@ -20,7 +20,9 @@ main{width:min(1120px,94%);margin:2rem auto 5rem}.back{color:#bbb;text-decoratio
 </style>
 <link rel="stylesheet" href="/arcade-polish.css?v=20261023-arcade-overhaul">
 <script src="/arcade-polish.js?v=20261023-arcade-overhaul" defer></script>
-<link rel="stylesheet" href="/chaos-cartridge-theme.css?v=20261023-arcade-overhaul"><link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1"><script src="/arcade/nextgen.js?v=20261102-1" defer></script></head>
+<link rel="stylesheet" href="/chaos-cartridge-theme.css?v=20261023-arcade-overhaul"><link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1"><script src="/arcade/nextgen.js?v=20261102-1" defer></script><link rel="stylesheet" href="/card-deck-skins.css?v=20261106-1">
+<script src="/card-deck-skins.js?v=20261106-1" defer></script>
+</head>
 <body>
 <main>
 <a class="back" href="/arcade-games.html">← Back to Chaos Cartridge</a>
@@ -70,7 +72,7 @@ function bjRender(reveal=false){renderHand('bj-player-hand',bjP);renderHand('bj-
 function bjFinish(msg){bjLive=false;const p=total(bjP),d=total(bjD);if(p>21)bjLoss++;else if(d>21||p>d)bjWins++;else if(p<d)bjLoss++;else bjPush++;$('bj-status').textContent=msg+'  Final: '+p+' vs '+d+'.';bjRender(true);save('chaos-blackjack',bjWins,{wins:bjWins,losses:bjLoss,pushes:bjPush});$('bj-hit').disabled=$('bj-stand').disabled=true;}
 function bjStart(){bjDeck=freshDeck();bjP=[bjDeck.pop(),bjDeck.pop()];bjD=[bjDeck.pop(),bjDeck.pop()];bjLive=true;$('bj-hit').disabled=$('bj-stand').disabled=false;$('bj-status').textContent='Your move.';bjRender();if(total(bjP===null?[]:bjP)===21)bjStand();}
 function bjStand(){if(!bjLive)return;while(total(bjD)<17)bjD.push(bjDeck.pop());const p=total(bjP),d=total(bjD);bjFinish(p>21?'Bust. The house collects':d>21?'Dealer busts. You win':p>d?'You win':p<d?'House wins':'Push. Nobody wins');}
-$('bj-new').onclick=bjStart;$('bj-hit').onclick=()=>{if(!bjLive)return;bjP.push(bjDeck.pop());if(total(bjP)>21)bjFinish('Bust. The house collects');else if(total(bjP)===21)bjStand();else bjRender();};$('bj-stand').onclick=bjStand;bjStart();
+$('bj-new').onclick=()=>{window.AshFallDeckSkins?.recordDeal('chaos-blackjack');bjStart()};$('bj-hit').onclick=()=>{if(!bjLive)return;bjP.push(bjDeck.pop());if(total(bjP)>21)bjFinish('Bust. The house collects');else if(total(bjP)===21)bjStand();else bjRender();};$('bj-stand').onclick=bjStand;bjStart();
 // Five-card draw
 let drawDeck=[],drawP=[],drawH=[],held=new Set(),drawStage=0,drawW=0,drawL=0,drawT=0;
 function handRank(hand){const vals=hand.map(c=>c.v).sort((a,b)=>b-a),counts={};vals.forEach(v=>counts[v]=(counts[v]||0)+1);const groups=Object.entries(counts).map(([v,n])=>({v:Number(v),n})).sort((a,b)=>b.n-a.n||b.v-a.v),flush=hand.every(c=>c.s===hand[0].s),uniq=[...new Set(vals)].sort((a,b)=>a-b),wheel=uniq.length===5&&uniq.join(',')==='2,3,4,5,14',straight=uniq.length===5&&(uniq[4]-uniq[0]===4||wheel),straightHigh=wheel?5:uniq[4];if(flush&&straight)return [8,straightHigh];if(groups[0].n===4)return [7,groups[0].v,groups[1].v];if(groups[0].n===3&&groups[1]?.n===2)return [6,groups[0].v,groups[1].v];if(flush)return [5,...vals];if(straight)return [4,straightHigh];if(groups[0].n===3)return [3,groups[0].v,...groups.slice(1).map(g=>g.v).sort((a,b)=>b-a)];if(groups[0].n===2&&groups[1]?.n===2)return [2,Math.max(groups[0].v,groups[1].v),Math.min(groups[0].v,groups[1].v),groups[2].v];if(groups[0].n===2)return [1,groups[0].v,...groups.slice(1).map(g=>g.v).sort((a,b)=>b-a)];return [0,...vals];}
