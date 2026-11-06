@@ -64,6 +64,15 @@
  }
  async function syncNow(){
   if(typeof window.fetch!=="function")return false;
+  // Offline previews and local test servers must never call the production
+  // account API. This also prevents failed cross-origin requests from being
+  // misreported as game launch failures in the arcade fleet.
+  const host=window.location?.hostname;
+  if(host&&host!=="ash-fall.com"&&host!=="www.ash-fall.com"){
+   account.status="Local preview · play and unlock skins here; cloud sync is available on ash-fall.com";
+   if(renderCardList)renderCardList();
+   return false;
+  }
   if(syncing)return syncing;
   account.status="Checking Knightfall account…";
   if(renderCardList)renderCardList();
