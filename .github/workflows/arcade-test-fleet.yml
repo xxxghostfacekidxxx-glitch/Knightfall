@@ -357,8 +357,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -390,27 +389,25 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
           ARCADE_TEST_BASE=http://127.0.0.1:8766 ARCADE_TEST_PROFILE=phone node scripts/arcade-gameplay-replay.mjs
-      - name: Create reviewable repair PR only when files changed
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          RUN_ID: ${{ github.run_id }}
+      - name: Export verified arcade repairs for review without creating a branch
+        shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet -- public/arcade; then
             echo "No safe repairs needed"
             exit 0
           fi
-          BRANCH="bot/arcade-asset-doctor"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -C "$BRANCH"
-          git add public/arcade
-          git commit -m "fix(arcade): apply verified asset and gameplay regression repairs"
-          git push --force-with-lease origin "$BRANCH"
-          if gh pr list --repo "$GH_REPO" --head "$BRANCH" --state open --json number --jq 'length' | grep -qx '0'; then
-            gh pr create --repo "$GH_REPO" --base main --head "$BRANCH" --title "fix(arcade): automated asset and gameplay regression repairs" --body "Deterministic repairs only: existing-file asset URL corrections and known Kaiju hitbox regression signature. Review required. Source: https://github.com/$GH_REPO/actions/runs/$RUN_ID"
-          fi
+          git diff --binary -- public/arcade > /tmp/arcade-reviewed-repairs.patch
+          test -s /tmp/arcade-reviewed-repairs.patch
+          echo "Safe repair proposal exported as artifact. Only explicit owner-approved changes are committed to main."
+      - name: Upload safe repair patch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-reviewed-repairs
+          path: /tmp/arcade-reviewed-repairs.patch
+          if-no-files-found: ignore
+          retention-days: 14
 
   report-failure:
     if: github.event_name != 'pull_request' && always() && needs.browser-bot.result == 'failure'
