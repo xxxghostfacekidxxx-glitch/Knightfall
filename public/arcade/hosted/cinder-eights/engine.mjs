@@ -23,7 +23,7 @@ export class CinderEightsGame {
   this.hands=[[],[]];
   this.pile=[];
   this.suit=null;this.turn=0;this.over=false;this.winner=null;this.awaitingSuit=false;
-  this.round=0;this.moves=0;
+  this.round=0;this.moves=0;this.stalled=0;
   for(let i=0;i<7;i++){this.drawFor(0);this.drawFor(1);}
   const pos=this.deck.findIndex(c=>c.r!=="8");
   if(pos<0)throw Error("Cinder Eights cannot choose opening discard");
@@ -50,7 +50,7 @@ export class CinderEightsGame {
   if(!Number.isInteger(index)||index<0||index>=hand.length)return {ok:false,reason:"No such card"};
   const card=hand[index];
   if(!this.canPlay(card))return {ok:false,reason:"That card cannot be played"};
-  hand.splice(index,1);this.pile.push(card);this.suit=card.s;this.moves++;
+  hand.splice(index,1);this.pile.push(card);this.suit=card.s;this.moves++;this.stalled=0;
   if(!hand.length){
    this.over=true;this.winner=player;
    return {ok:true,kind:"win",card,winner:player};
@@ -76,6 +76,8 @@ export class CinderEightsGame {
   if(this.over||this.turn!==0||this.awaitingSuit)return {ok:false,reason:"Cannot draw right now"};
   const card=this.drawFor(0);
   this.turn=1;this.moves++;
+  this.stalled=card?0:this.stalled+1;
+  if(this.stalled>=2){this.over=true;this.winner=null;return {ok:true,kind:"draw",card:null};}
   return {ok:true,kind:card?"drawn":"passed",card};
  }
  cpuMove(){
@@ -93,6 +95,8 @@ export class CinderEightsGame {
    return {...result,drawn};
   }
   this.turn=0;this.moves++;
+  this.stalled=drawn?0:this.stalled+1;
+  if(this.stalled>=2){this.over=true;this.winner=null;return {ok:true,kind:"draw",drawn};}
   return {ok:true,kind:"passed",drawn};
  }
  checkIntegrity(){
