@@ -22,7 +22,7 @@ test("local arcade and backend Worker import the exact same base deck",()=>{
  assert.match(baseDeck,/export const WHITE=\[/);
  assert.doesNotMatch(game,/const BLACK=\[/);
  assert.doesNotMatch(game,/const WHITE=\[/);
- assert.match(game,/2,000-CARD BASE DECK/);
+ assert.match(game,/2,000 BASE CARDS/);
 });
 test("After Hours preview is linked from the Cinder Shop and both game modes",()=>{
  assert.match(cinderShop,/id="madhouse-after-hours"/);
