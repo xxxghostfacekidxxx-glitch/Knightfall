@@ -117,7 +117,7 @@ test("card turn notifications only fire on new actions, not every opponent move"
  assert.equal(shouldNotifyChaosCardTurn(state,state,1),false,"same results must not alert again");
  const results=structuredClone(state);
  assert.equal(beginChaosRound(state),true);
- assert.equal(shouldNotifyChaosCardTurn(results,state,0),false,"next round judge cannot submit");
+ assert.equal(shouldNotifyChaosCardTurn(results,state,1),false,"next round judge cannot submit");
  assert.equal(shouldNotifyChaosCardTurn(results,state,2),true,"new round allows a fresh notification");
 });
 
