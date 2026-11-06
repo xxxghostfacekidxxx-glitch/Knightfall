@@ -13,9 +13,32 @@ const row=(state,status="active")=>({
 });
 function table(humans){const state=newChaosState(ids[0],ids.slice(1,humans));state.invite_status=state.invite_status.map(v=>v==="pending"?"accepted":v);assert.equal(startChaosTable(state),true);return state;}
 test("original Knightfall deck stays independent and substantial",()=>{
- assert.ok(BLACK.length>=45);assert.ok(WHITE.length>=140);
+ assert.equal(BLACK.length,500);assert.equal(WHITE.length,1500);
+ assert.equal(new Set(BLACK.map(x=>x.normalize("NFKC").trim().toLowerCase())).size,BLACK.length,"black prompts are unique");
+ assert.equal(new Set(WHITE.map(x=>x.normalize("NFKC").trim().toLowerCase())).size,WHITE.length,"white answers are unique");
+ assert.ok(BLACK.every(card=>typeof card==="string"&&card.length>=15&&card.length<=180));
+ assert.ok(WHITE.every(card=>typeof card==="string"&&card.length>=5&&card.length<=180));
  assert.equal(CHAOS_CARD_BOTS.length,3);
  assert.deepEqual(CHAOS_CARD_BOTS.map(bot=>bot.name),["Lydibug","Butters","Eddie"]);
+});
+test("deck snapshots are compact numeric IDs and original cards remain compatible",()=>{
+ const state=newChaosState(17);
+ assert.equal(state.decks.black.length,500);
+ assert.equal(state.decks.white.length,1500);
+ assert.ok(state.decks.black.every(Number.isInteger));
+ assert.ok(state.decks.white.every(Number.isInteger));
+ assert.ok(JSON.stringify(state).length<18000,"saved match must not duplicate 2,000 strings in D1");
+ assert.equal(startChaosTable(state),true);
+ assert.ok(BLACK.includes(state.prompt));
+ assert.ok(state.decks.white.every(Number.isInteger));
+ assert.ok(Object.values(state.submitted).every(card=>WHITE.includes(card)));
+ // A state from the original 200-card release may still have strings on its decks.
+ const legacy=newChaosState(17);
+ legacy.decks.black=[BLACK[0]];
+ legacy.decks.white=[WHITE[0],WHITE[1],...legacy.decks.white];
+ assert.equal(startChaosTable(legacy),true);
+ assert.equal(legacy.prompt,BLACK[0]);
+ assert.ok(Object.values(legacy.submitted).every(card=>WHITE.includes(card)));
 });
 test("always four seats for every valid combination of human and AI players",()=>{
  const names=[
