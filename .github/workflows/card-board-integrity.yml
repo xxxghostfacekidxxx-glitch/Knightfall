@@ -44,7 +44,7 @@ jobs:
           node-version: '22'
       - name: Exercise card-room rules and controls
         run: node --test scripts/card-room-runtime.test.mjs
-      - name: Exercise authenticated five-seat card rules and secrecy
+      - name: Exercise authenticated four-seat card rules and secrecy
         run: |
           node --test backend/src/chaos-card-matches.test.mjs scripts/chaos-cards-integration.test.mjs
           node --check backend/src/chaos-card-matches.js
