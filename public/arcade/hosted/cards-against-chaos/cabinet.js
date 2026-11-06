@@ -25,10 +25,13 @@
  }
  function setPlaying(value){localPlaying=Boolean(value);updatePlaying();}
  function showMatch(value){
+  const wasOpen=onlineMatchOpen;
   onlineMatchOpen=Boolean(value);
   const lobby=$("cac-online-lobby");
   if(lobby)lobby.hidden=onlineMatchOpen;
-  if(onlineMatchOpen)activateMode("online");
+  // A fresh or deep-linked match selects online. Background 30-second refreshes
+  // must not steal focus after someone deliberately switches to local play.
+  if(onlineMatchOpen&&!wasOpen)activateMode("online");
   updatePlaying();
  }
  function updateFullscreen(){
