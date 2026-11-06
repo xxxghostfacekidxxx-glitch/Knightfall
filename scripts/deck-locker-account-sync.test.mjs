@@ -47,6 +47,28 @@ function client(userId,storage=new Map(),log=[]){
 }
 const settled=()=>new Promise(resolve=>setTimeout(resolve,15));
 
+test("local and offline game previews never contact the production account API",async()=>{
+ const log=[];
+ // In a browser the hostname is always set; Node VM tests omit it by default.
+ // Re-evaluate the shared module with a local hostname to simulate the test fleet.
+ const root={dataset:{},style:{}},listeners=new Map(),storage=new Map();
+ const window={
+  location:{hostname:"127.0.0.1"},
+  localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,String(v))},
+  fetch:simulateAPI(910,log),
+  addEventListener:(n,fn)=>listeners.set(n,fn),
+  dispatchEvent(){}
+ };
+ const document={documentElement:root,readyState:"loading",addEventListener:(n,fn)=>listeners.set(n,fn)};
+ vm.runInNewContext(script,{window,document,CustomEvent:class{}},{timeout:1500});
+ const local=window.AshFallDeckSkins;
+ assert.equal(await local.refresh(),false);
+ assert.equal(log.length,0,"local games must not hit live API");
+ assert.equal(local.chooseSkin("neon-riot"),true);
+ assert.equal(local.recordDeal("chaos-blackjack"),1);
+ assert.equal(local.accountSynced,false);
+ assert.equal(log.length,0);
+});
 test("account A syncs an equipped skin to phone B but not account C",async()=>{
  dataStore.profiles.clear();dataStore.premium.clear();
  const a=client(100),b=client(100),c=client(101);
