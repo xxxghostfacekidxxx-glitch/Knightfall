@@ -2,7 +2,7 @@ import {CinderEightsGame,SUITS,cardLabel} from "./engine.mjs";
 const $=id=>document.getElementById(id);
 const main=$("eights-root"),status=$("status"),hand=$("hand"),choose=$("choose");
 const KEY="ashfall:cinder-eights:record:v2";
-let game=new CinderEightsGame(),timer=null,generation=0,playingRound=false,focusMode=false;
+let game=null,timer=null,generation=0,playingRound=false,focusMode=false;
 let record={you:0,cpu:0};
 try{
  const raw=JSON.parse(localStorage.getItem(KEY)||"{}");
@@ -20,7 +20,7 @@ function wins(){
  $("cpu-wins").textContent=record.cpu;
 }
 function scoreRound(){
- if(!game.over)return;
+ if(!game.over||game.winner===null)return;
  const who=game.winner===0?"you":"cpu";
  record[who]=Math.min(1000000,record[who]+1);
  try{localStorage.setItem(KEY,JSON.stringify(record))}catch{}
@@ -79,7 +79,7 @@ function render(note){
  }
  $("draw").disabled=game.over||game.turn!==0||game.awaitingSuit;
  if(note)announce(note);
- else if(game.over)announce(game.winner===0?"YOU WIN! The CPU's ego has been legally declared missing.":"CPU WINS. Its smugness is almost unbearable.");
+ else if(game.over)announce(game.winner===null?"DRAW. No cards left to draw and neither player can move.":game.winner===0?"YOU WIN! The CPU's ego has been legally declared missing.":"CPU WINS. Its smugness is almost unbearable.");
  else if(game.awaitingSuit)announce("Eight played. Choose a suit to make the CPU miserable.");
  else if(game.turn===0)announce("Match the suit or rank. Eights are wild. Swipe your hand to see all cards.");
  else announce("CPU is choosing its next terrible idea…");
@@ -91,7 +91,7 @@ function queueCpu(){
   timer=null;if(token!==generation||game.over||game.turn!==1)return;
   const move=game.cpuMove();
   if(move.kind==="win")scoreRound();
-  render(move.kind==="win"?"CPU played "+name(move.card)+" and emptied its hand.":move.kind==="passed"?"CPU passed. Your turn.":"CPU played "+name(move.card)+(move.card.r==="8"?", switched to "+game.suit:"")+".");
+  render(move.kind==="draw"?"DRAW. Neither player can make another move.":move.kind==="win"?"CPU played "+name(move.card)+" and emptied its hand.":move.kind==="passed"?"CPU passed. Your turn.":"CPU played "+name(move.card)+(move.card.r==="8"?", switched to "+game.suit:"")+".");
  },460);
 }
 function humanPlay(index){
@@ -112,8 +112,8 @@ function draw(){
  const move=game.drawHuman();
  if(!move.ok)return;
  registerProgress();
- render(move.kind==="drawn"?"You drew one card and passed.":"No cards left to draw; your turn passes.");
- queueCpu();
+ render(move.kind==="draw"?"DRAW. Neither player can make another move.":move.kind==="drawn"?"You drew one card and passed.":"No cards left to draw; your turn passes.");
+ if(!game.over)queueCpu();
 }
 function newGame(){
  clearTimeout(timer);timer=null;generation++;playingRound=false;
