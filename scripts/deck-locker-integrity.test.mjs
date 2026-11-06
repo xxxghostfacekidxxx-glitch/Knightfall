@@ -81,7 +81,8 @@ test("every catalogued card-game entry imports the same asset pipeline",()=>{
  }
  assert.match(read("public/arcade-card-room.html"),/recordDeal\('chaos-war'\)/);
  assert.match(read("public/arcade-card-expansion.html"),/recordDeal\('chaos-freecell'\)/);
- assert.match(read("public/arcade/hosted/cinder-eights/index.html"),/classList\.add\('af-deck-card'\)/);
+ assert.match(read("public/arcade/hosted/cinder-eights/game.js"),/className="af-deck-card "/);
+ assert.match(read("public/arcade/hosted/cinder-eights/index.html"),/game\.js\?v=/);
  assert.match(read("public/arcade/hosted/cards-against-chaos/index.html"),/recordDeal\('cards-against-chaos'\)/);
  assert.match(read("public/arcade/hosted/cards-against-chaos/online.js"),/recordDeal\('cards-against-chaos'\)/);
 });
