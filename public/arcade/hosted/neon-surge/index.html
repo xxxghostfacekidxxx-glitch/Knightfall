@@ -3037,7 +3037,7 @@ $('startBtn').addEventListener('click', () => {
   setTimeout(() => {
     launchQueued = false;
     if (G.state === 'title') startGame();
-  }, 0);
+  }, 80);
 });
 $('titleSound').addEventListener('click', toggleMute);
 $('soundBtn').addEventListener('click', toggleMute);
@@ -3393,10 +3393,10 @@ let last = performance.now();
 function frame(now) {
   requestAnimationFrame(frame);
   if (!innerWidth || !innerHeight || document.hidden) { last = now; return; }
-  // Title, pause and game-over are attract screens, not a 60fps benchmark.
-  // Yield the main thread so START and other controls stay responsive under WebGL load.
+  // Keep title and paused controls responsive even with software WebGL.
+  // The DOM title animates independently; retain the last game frame behind pause/game-over.
   const idle = G.state === 'title' || G.state === 'paused' || G.state === 'over';
-  if (idle && now - last < 1000 / 24) return;
+  if (idle) { last = now; return; }
   const rdt = Math.min(Math.max((now - last) / 1000, 0), 0.05);
   last = now;
   if (innerWidth !== sizedW || innerHeight !== sizedH) onResize();
