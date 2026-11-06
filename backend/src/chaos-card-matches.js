@@ -183,17 +183,31 @@ async function notify(env,createNotification,row,userId,title,body,actorId=null)
    title,body,url:matchURL(row.id)});
  }catch(error){console.warn("chaos_card_notice_failed",String(error));}
 }
-async function notifyTurns(env,createNotification,row,actorId){
+// Expose one pure turn-action rule for both notifications and regression tests.
+export function chaosCardTurnAction(state,seat){
+ if(state.invite_status[seat]!=="accepted")return null;
+ if(state.phase==="submit"&&state.judge!==seat&&state.submitted[seat]===undefined)return "Choose your answer";
+ if(state.phase==="judge"&&state.judge===seat)return "Judge the cards";
+ if(state.phase==="results")return "See the round winner";
+ if(state.phase==="finished")return "See the final scores";
+ return null;
+}
+export function shouldNotifyChaosCardTurn(previous,state,seat){
+ const action=chaosCardTurnAction(state,seat);
+ if(!action)return false;
+ // A turn is news only when the action changes, or a new round starts.
+ return !previous||previous.round!==state.round||chaosCardTurnAction(previous,seat)!==action;
+}
+async function notifyTurns(env,createNotification,row,actorId,previous=null){
  if(row.status!=="active"&&row.status!=="completed")return;
  const state=JSON.parse(row.state_json);
  for(let seat=0;seat<SEAT_COUNT;seat++){
-  if(state.invite_status[seat]!=="accepted")continue;
+  if(!shouldNotifyChaosCardTurn(previous,state,seat))continue;
   const id=state.members[seat];if(Number(id)===Number(actorId))continue;
-  const action=state.phase==="submit"&&state.judge!==seat&&state.submitted[seat]===undefined?"Choose your answer":
-   state.phase==="judge"&&state.judge===seat?"Judge the cards":
-   state.phase==="results"?"See the round winner":
-   state.phase==="finished"?"See the final scores":null;
-  if(action)await notify(env,createNotification,row,id,"Cards Against Chaos · "+action,
+  const action=chaosCardTurnAction(state,seat);
+  await notify(env,createNotification,row,id,"Cards Against Chaos · "+action,
+   action==="See the round winner"||action==="See the final scores"?
+   "Your four-player card table has an update to review.":
    "Your four-player card table is ready. Take your turn whenever you like.",actorId);
  }
 }
@@ -304,7 +318,7 @@ export async function handleChaosCardMatches(request,env,url,{getUser,json,rateL
   await notify(env,createNotification,fresh,row.player_one_id,title,
    "@"+user.username+" "+(action==="accept"?"accepted.":action==="decline"?"declined.":"cancelled the table."),user.id);
  }
- await notifyTurns(env,createNotification,fresh,user.id);
+ await notifyTurns(env,createNotification,fresh,user.id,JSON.parse(row.state_json));
  if(action==="decline")return reply({closed:true,message:"Invitation declined."});
  return reply({match:visibleChaosMatch(fresh,user.id)});
 }
