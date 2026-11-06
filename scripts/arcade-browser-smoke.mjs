@@ -89,6 +89,7 @@ try {
               root:document.documentElement.dataset.kfDeckSkin,
               face:style?.backgroundImage||"",
               border:style?.borderTopColor||"",
+              stroke:getComputedStyle(document.documentElement).getPropertyValue("--kf-deck-stroke").trim(),
               deals:skin?.localDeals,
               premiumLocked:skin?.isAvailable("holo-wraith")===false,
               scroll:document.documentElement.scrollWidth,
@@ -97,7 +98,7 @@ try {
           });
           if(state.chosen!=="neon-riot"||state.root!=="neon-riot")throw Error(route+": skin preference did not sync: "+JSON.stringify(state));
           if(!state.premiumLocked)throw Error(route+": premium preview was incorrectly unlocked");
-          if(!state.face.includes("gradient")||!state.border.includes("255, 80, 214"))
+          if(!state.face.includes("gradient")||state.stroke!=="#ff50d6")
             throw Error(route+": visible cards did not take selected neon skin: "+JSON.stringify(state));
           if(state.scroll>state.screen+3)throw Error(route+": wardrobe causes horizontal overflow: "+JSON.stringify(state));
           if(errors.length)throw Error(route+" browser errors: "+errors.join(" | "));
