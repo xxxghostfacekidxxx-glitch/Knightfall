@@ -9,6 +9,8 @@ on:
       - "public/chaos-cartridge-theme.css"
       - "public/arcade-polish.css"
       - "public/arcade-games.html"
+      - "public/nav.js"
+      - "scripts/nav-offline-api.test.mjs"
       - "public/arcade-catalog.*"
       - "public/arcade-cabinet-ui.*"
       - "public/chaos-cartridge.html"
@@ -70,6 +72,8 @@ on:
       - "public/chaos-cartridge-theme.css"
       - "public/arcade-polish.css"
       - "public/arcade-games.html"
+      - "public/nav.js"
+      - "scripts/nav-offline-api.test.mjs"
       - "public/arcade-catalog.*"
       - "public/arcade-cabinet-ui.*"
       - "public/chaos-cartridge.html"
@@ -173,7 +177,7 @@ jobs:
           exit 1
       - name: Validate bot scripts and repair rules
         run: |
-          node --test scripts/admin-dashboard-structure.test.mjs scripts/arcade-shard-summary.test.mjs scripts/browserquest-name-flow.test.mjs scripts/arcade-publishing.test.mjs scripts/franchise-directory.test.mjs scripts/arcade-import-audit.test.mjs
+          node --test scripts/admin-dashboard-structure.test.mjs scripts/arcade-shard-summary.test.mjs scripts/browserquest-name-flow.test.mjs scripts/arcade-publishing.test.mjs scripts/franchise-directory.test.mjs scripts/arcade-import-audit.test.mjs scripts/nav-offline-api.test.mjs
           node --check scripts/arcade-shard-summary.mjs
           node --check scripts/arcade-sharded-smoke.mjs
           node --check scripts/arcade-browser-smoke.mjs
