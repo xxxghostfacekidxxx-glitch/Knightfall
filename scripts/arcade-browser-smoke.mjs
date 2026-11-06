@@ -82,7 +82,7 @@ try {
           }
           const state=await page.evaluate(()=>{
             const skin=window.AshFallDeckSkins;
-            const card=document.querySelector(".cac-shell .answer-card,.playing-card:not(.back):not(.backside),#hand button.af-deck-card");
+            const card=document.querySelector(".cac-shell .prompt-card,.cac-shell .answer-card,.playing-card:not(.back):not(.backside),#hand button.af-deck-card");
             const style=card?getComputedStyle(card):null;
             return {
               chosen:skin?.current,
