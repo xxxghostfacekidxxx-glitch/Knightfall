@@ -71,3 +71,24 @@ This pass carried forward the first group of master-list tasks rather than marki
 4. Finish Store Stripe setup and secure premium unlocks **only after** the user connects/configures real-money payments.
 
 **Release principle:** signed-off implementation is not the same as tested on real phones. No fabricated completed multiplayer matches, store purchases, or signed-in acceptance results.
+
+## Continuation: local navigation, Reversi and Neon Surge (November 6, 2026)
+
+### Completed and merged into the only branch, \`main\`
+
+- [x] **Offline-safe shared navigation** (\`228e530\`): local, preview, or offline pages no longer attempt live member authentication, site-settings or notification API requests. Production Ash-Fall domains retain the full behavior. Regression test \`scripts/nav-offline-api.test.mjs\` and CI coverage were added. This targets the last failed Maze Warden shard (Cinder Reversi on localhost had attempted the real \`/api/site-settings\` request).
+- [x] **Cinder Reversi rebuilt** (\`4f667b8\`): extracted original 8×8 rules into \`engine.mjs\`; responsive neon board, mouse/touch legal-move hints, 3 CPU modes, saved local session, undo that also rolls back credited wins, local records, fullscreen and focus fallback, keyboard shortcuts, pause/resume on tab visibility. No new paid unlocks or data collection.
+- [x] **Reversi verification**: \`scripts/cinder-reversi-runtime.test.mjs\` exercises initial positions, 80 deterministic full games, CPU rules, undo, persistence and UI controls; included in Card & Board Integrity and the ten-bot fleet. Latest completed Card & Board Integrity, Arcade Catalog Integrity, Catalog Doctor and main regression suites on \`4f667b8\` passed.
+- [x] **Cinder Reversi production deployment confirmed**: Cloudflare Pages successfully served the \`4f667b8\` revision with aliases \`https://ash-fall.com\` and \`https://www.ash-fall.com\`.
+- [x] **Neon Surge start-button responsiveness improvement** (\`83d86a2\`): button hit-testing, deferred heavy WebGL initialization after click dispatch, and max ~24 FPS on idle/title screens while gameplay remains unconstrained. A source-regression test was added to the arcade fleet.
+- [x] **One branch, no PRs**: confirmed on GitHub when this round of work was performed.
+
+### Not yet certified
+
+- [ ] **Ten-bot arcade fleet:** The earlier \`42302620780\` run had 9 successful game shards and a Tower Keeper failure on Neon Surge where the START button was visible but the WebGL-heavy page failed to accept a Playwright click. Fix \`83d86a2\` is committed but must pass a fresh live and local desktop shard before marking closed.
+- [ ] **Reversi live browser acceptance:** in-depth mobile/desktop Chromium play, undo, fullscreen and reset steps were added to \`scripts/arcade-browser-smoke.mjs\`. The \`4f667b8\` browser job was cancelled after the subsequent Neon Surge push; a current passing run is required.
+- [ ] **Neon Surge production deployment:** verify the \`83d86a2\` Cloudflare Pages alias and its desktop click regression before signing off.
+- [ ] **Cloud account acceptance:** Deck Locker signed-in two-device manual testing remains blocked on test accounts; admin authorization and ownership audits still need dedicated role-test secrets.
+- [ ] **Other queued work:** mobile push delivery, messaging, Android offline installer, underperforming games, fish-table networking, Hell & High Orbit, and remaining visual upgrades.
+
+**No future work is presumed complete merely because a CI job is queued.**
