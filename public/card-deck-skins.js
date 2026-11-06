@@ -109,6 +109,7 @@
   renderCardList=()=>{current.textContent=skinMap.get(chosen).name;render()};
   shell.addEventListener("toggle",()=>{if(shell.open)renderCardList()});
   renderCardList();
+  if(location.hash==="#kf-deck-wardrobe")shell.open=true;
  }
  const onStorage=e=>{
   if(e.key===PROGRESS_KEY){const value=Number.parseInt(e.newValue||"0",10)||0;deals=Math.min(100000,Math.max(0,value))}
