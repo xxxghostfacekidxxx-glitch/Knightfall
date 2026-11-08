@@ -22,6 +22,7 @@ const characters=[
 ['rumblefluff','echo','Rumblefluff Thunder Choir','#79ffe7'],['glittergob','pairs','Glittergob Gems','#ff55d8'],
 ['craggle','circuit','Craggle Moonstone Switch','#c6ff45'],['prismare','pairs','Prismare Color Twins','#79ffe7'],
 ['butters','pairs','Butters Cozy Scarf Pairs','#b78cff'],['trouble','hunt','Trouble Moonlit Loot','#c6ff45'],
+['crush','echo','Crush Swell Rhythm','#64e6ce'],
 ['skunk-riot','hunt','Skunk Riot Stage Dive','#ff55d8']
 ];
 export const SPECIES_CHALLENGES=Object.freeze(Object.fromEntries(characters.map(([id,mode,title,color])=>[id,Object.freeze({

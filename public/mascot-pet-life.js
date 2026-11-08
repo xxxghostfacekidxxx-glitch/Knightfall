@@ -33,6 +33,7 @@ const speciesLines={
  prismare:'I brought you a ribbon of color from the quiet part of the deep.',
  butters:'Can we stay somewhere quiet? I think I like being next to you.',
  trouble:'That bottle cap? Never seen it. Want to go look for treasure?',
+ crush:'Dude, see that bump way out back? Paddle now. That one’s yours.',
  'skunk-riot':'Turn the amps up! But after the show, can we hang out together?'
 };
 const reactions={

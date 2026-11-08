@@ -540,6 +540,24 @@
       },
       "portrait": "/assets/devil-tools/neon-nuisances/portraits/skunk-riot.svg",
       "styleVersion": 16
+    },
+    {
+      "id": "crush",
+      "name": "Crush",
+      "type": "surfer sea turtle",
+      "primary": "#64e6ce",
+      "accent": "#ff518c",
+      "description": "A reef surfer with sea-glass beads in his dreadlocks and a wax-scarred pink swallowtail board.",
+      "personality": "Patient enough to float through a whole flat set. Always gives a friend first pick of the waves.",
+      "svg": "/assets/devil-tools/neon-nuisances/crush.svg",
+      "variants": {
+        "idle": "/assets/devil-tools/neon-nuisances/crush-idle.svg",
+        "blink": "/assets/devil-tools/neon-nuisances/crush-blink.svg",
+        "bounce": "/assets/devil-tools/neon-nuisances/crush-bounce.svg",
+        "mischief": "/assets/devil-tools/neon-nuisances/crush-mischief.svg"
+      },
+      "portrait": "/assets/devil-tools/neon-nuisances/portraits/crush.svg",
+      "styleVersion": 16
     }
   ],
   "animationVariants": [

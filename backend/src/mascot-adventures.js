@@ -32,6 +32,7 @@ const worldNames={
  rumblefluff:'Rumblefluff’s Thunder Nap',glittergob:'Glittergob’s Shiny Scheme',
  craggle:'Craggle’s Moonwall Watch',prismare:'Prismare’s Lantern Drift',
  butters:'Butters’ Quiet-Corner Quest',trouble:'Trouble’s Midnight Treasure Hunt',
+ crush:'Crush’s Dawn Patrol',
  'skunk-riot':'Skunk Riot’s Midnight Mosh Pit'
 };
 export const QUEST_TITLES=Object.freeze(worldNames);

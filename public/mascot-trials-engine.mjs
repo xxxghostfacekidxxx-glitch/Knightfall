@@ -27,6 +27,7 @@ export const SPECIES_TRIALS=Object.freeze({
  'prismare':['memory','Prismare Prism Tide','jelly'],
  'butters':['memory','Butters’ Cozy Scarf Search','ferret'],
  'trouble':['catch','Trouble’s Raccoon Loot Dash','raccoon'],
+ crush:['dodge','Crush’s Reef Run','turtle'],
  'skunk-riot':['dodge','Skunk Riot’s Backstage Blitz','skunk']
 });
 export const TRIAL_TYPES=Object.freeze(['catch','memory','runes','dodge']);
