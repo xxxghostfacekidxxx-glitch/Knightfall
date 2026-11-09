@@ -1,4 +1,4 @@
-.josh-page{margin:0;background:radial-gradient(ellipse at 85% 3%,#38242a,transparent 520px),#131118;color:#fbefdf;font-family:Georgia,serif}
+.josh-page{margin:0;background-color:#131118;background-image:linear-gradient(90deg,rgba(16,12,18,.12),rgba(16,12,18,.78) 34%,rgba(16,12,18,.78) 66%,rgba(16,12,18,.12)),url('/assets/josh/collection-slate.webp');background-size:100% auto;background-position:center top;background-repeat:repeat-y;color:#fbefdf;font-family:Georgia,serif}
 .josh-page *{box-sizing:border-box}.josh-page main{max-width:1200px;margin:auto;padding:0 clamp(18px,5vw,68px)}.josh-page img{max-width:100%;display:block}.josh-page a{color:inherit}.josh-page a:focus-visible,.josh-page button:focus-visible{outline:3px solid #ffe6ae;outline-offset:4px}
 .josh-nav{display:flex;gap:1.3rem;align-items:center;padding:1.2rem 0;border-bottom:1px solid #524443;font:600 .9rem system-ui}.josh-nav a:first-child{margin-right:auto}.josh-nav a{text-decoration:none}
 .josh-hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4%;padding:clamp(30px,5vw,72px) 0}.josh-hero img{width:100%;height:auto;border-radius:5px}.josh-kicker{color:#e2ba8f;font:.78rem system-ui;text-transform:uppercase;letter-spacing:.18em}.josh-hero h1{font:normal clamp(3rem,6.4vw,6.7rem)/.98 Georgia,serif;letter-spacing:-.055em;margin:1rem 0}.josh-hero i{color:#e8c19d}.josh-hero blockquote{font:italic clamp(1.15rem,2vw,1.6rem)/1.5 Georgia,serif;margin:1.8rem 0;max-width:28ch}.josh-hero a,.josh-foot a{font:600 .95rem system-ui;text-underline-offset:4px}
@@ -17,3 +17,6 @@
 .josh-letter article{max-width:56ch;margin:auto}
 @media(max-width:800px){.josh-hero{grid-template-columns:1fr;gap:20px}.josh-hero img{width:min(100%,440px)}.josh-hero h1{font-size:clamp(2.5rem,8vw,4rem)}}
 @media(max-width:600px){.josh-layout{grid-template-columns:44px minmax(0,1fr) 44px;gap:9px;padding-block:1rem}.josh-nav{padding-inline:4px}.josh-letter article{font-size:1rem;line-height:1.65}.josh-hero blockquote{font-size:1.1rem;margin:1rem 0}.josh-letter h2{font-size:1.8rem}.josh-rail{justify-content:space-around}.josh-controls{font-size:.85rem}}
+
+.josh-hero>div,.josh-letter article{text-shadow:0 1px 4px #100c12}
+.josh-nav,.josh-foot{background-color:rgba(19,17,24,.85)}
