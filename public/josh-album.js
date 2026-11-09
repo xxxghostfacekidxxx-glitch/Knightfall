@@ -9,6 +9,12 @@ function showPhoto(index) {
   document.querySelector('#caption').textContent = (current + 1) + ' / ' + photos.length;
 }
 if (typeof viewer.showModal === 'function') {
+  document.querySelector('#open-album').addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    showPhoto(0);
+    viewer.showModal();
+  });
   photos.forEach((link, index) => link.addEventListener('click', event => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
@@ -23,3 +29,4 @@ if (typeof viewer.showModal === 'function') {
     if (event.key === 'ArrowRight') showPhoto(current + 1);
   });
 }
+
