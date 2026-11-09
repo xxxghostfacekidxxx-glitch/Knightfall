@@ -238,6 +238,7 @@
   }
   header.innerHTML = `
     <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
+    <a href="/remembering-josh.html" aria-label="In memory of Josh ‘Crush’ Van Patten" title="Remembering Josh ‘Crush’ Van Patten" style="flex:none;line-height:0"><img src="/assets/josh/arise-small.webp" width="42" height="42" alt=""></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <a class="kf-nav-primary" href="/homepage.html">Explore</a>
