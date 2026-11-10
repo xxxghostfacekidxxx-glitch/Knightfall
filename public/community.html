@@ -21,6 +21,7 @@
         <p class="eyebrow">ASH-FALL / THE MADHOUSE</p>
         <h1 style="font-size:clamp(3rem,8vw,6rem)">THE<br><span>MADHOUSE.</span></h1>
         <p class="hero-lede">A gathering of lunatics, insane ramblings, unfiltered thoughts, and unhinged conversations. Bring your strange ideas, your dark humor, your art, your obsessions, and whatever the hell is on your mind.</p>
+        <div class="hero-actions"><a class="button button-primary" href="/create-thread.html">Start a conversation</a><a class="button button-ghost" href="#threads-title">Read recent threads ↓</a></div>
       </div>
     </section>
     <section class="section" aria-labelledby="community-topics-title" style="padding-top:3rem">
@@ -88,7 +89,10 @@
       if(!r.ok)throw Error("Category service returned "+r.status);
       const d=await r.json();categories=d.categories||[];renderCategories();
     }
+    let threadRequest=0;
     async function loadThreads(categoryId=""){
+      const request=++threadRequest;
+      currentThreads=[];
       messageEl.hidden=true;threadsEl.innerHTML='<p class="empty-state">Loading threads…</p>';
       try{
         const communityIds=categories.filter(cat=>topicNames.has(normalizeCategory(cat.name))).map(cat=>String(cat.id));
@@ -98,17 +102,25 @@
           if(!r.ok)throw Error("Thread service returned "+r.status);
           const d=await r.json();threads=d.threads||[];
         }else{
-          const results=await Promise.all(communityIds.map(async id=>{
+          const results=await Promise.allSettled(communityIds.map(async id=>{
             const r=await fetch(API+"/api/threads?category_id="+encodeURIComponent(id),{credentials:"include",cache:"no-store"});
             if(!r.ok)throw Error("Thread service returned "+r.status);
             const d=await r.json();return d.threads||[];
           }));
+          if(request!==threadRequest)return;
+          const available=results.filter(result=>result.status==="fulfilled");
+          if(results.length && !available.length)throw Error("No topics available");
+          if(available.length<results.length){
+            messageEl.textContent="Some topics could not load. Refresh to try them again.";
+            messageEl.hidden=false;
+          }
           const unique=new Map();
-          results.flat().forEach(thread=>unique.set(String(thread.id),thread));
+          available.flatMap(result=>result.value).forEach(thread=>unique.set(String(thread.id),thread));
           threads=[...unique.values()].sort((a,b)=>Number(b.pinned)-Number(a.pinned)||new Date(b.updated_at)-new Date(a.updated_at)).slice(0,25);
         }
+        if(request!==threadRequest)return;
         renderThreads(threads);
-      }catch(e){threadsEl.innerHTML="";messageEl.textContent="The community threads could not load. Please try Refresh in a moment.";messageEl.hidden=false}
+      }catch(e){if(request!==threadRequest)return;threadsEl.innerHTML="";messageEl.textContent="The community threads could not load. Please try Refresh in a moment.";messageEl.hidden=false}
     }
     function showAllThreads(){
       selectedCategoryId="";
@@ -120,7 +132,7 @@
     allThreadsButton.addEventListener("click",showAllThreads);
     document.getElementById("refresh-threads").addEventListener("click",()=>loadThreads(selectedCategoryId));
     async function initialize(){
-      try{await loadCategories();await loadThreads();statusEl.textContent="The Madhouse is open";statusEl.classList.add("online")}
+      try{await loadCategories();await loadThreads();statusEl.textContent=messageEl.hidden?"The Madhouse is open":"Partially available";statusEl.classList.toggle("online",messageEl.hidden)}
       catch(e){statusEl.textContent="Partially unavailable";messageEl.textContent="Some community features could not load. Try refreshing the page.";messageEl.hidden=false}
     }
     initialize();

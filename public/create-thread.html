@@ -66,15 +66,17 @@
         headers: { "content-type": "application/json", ...(options.headers || {}) }
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Request failed (" + response.status + ").");
+      if (!response.ok) throw Object.assign(new Error(data.error || "Request failed (" + response.status + ")."), {status:response.status});
       return data;
     }
     async function initialize() {
       try {
-        const me = await api("/api/auth/me");
+        const me = await api("/api/auth/me").catch(error => { if (error.status === 401) return {}; throw error; });
         if (!me.user) {
           showStatus("Sign in first to create a thread. Taking you to the account page…");
-          setTimeout(() => location.href = "/auth.html?next=" + encodeURIComponent("/create-thread.html"), 900);
+          const category = new URLSearchParams(location.search).get("category_id");
+          const next = "/create-thread.html" + (/^\d+$/.test(category || "") ? "?category_id=" + category : "");
+          location.replace("/index.html?next=" + encodeURIComponent(next));
           return;
         }
         const data = await api("/api/categories");

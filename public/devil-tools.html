@@ -212,7 +212,8 @@ async function boot(){
     const session = await request('/api/auth/me');
     user = session.user;
     if (!user) throw Error('Sign in to open Devil Tools.');
-    const administrator = ['admin','god'].includes(user.role);
+    const isGod = String(user.role||'').toLowerCase()==='god';
+    const administrator = isGod || String(user.role||'').toLowerCase()==='admin';
     // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
     const digitalCreator = Number(user.id) === 216;
     if (!administrator && !digitalCreator) throw Error('Workshop access required.');
@@ -223,7 +224,7 @@ async function boot(){
       back.textContent = '← My account';
       $('#creator-handoff').hidden = false;
     }
-    $('#access-level').textContent = administrator ? (user.role === 'god' ? 'God Account' : 'Administrator') : 'Digital Creator';
+    $('#access-level').textContent = administrator ? (isGod ? 'God Account' : 'Administrator') : 'Digital Creator';
     workshop.classList.remove('hidden');
     note('Signed in as @' + user.username + '.', true);
     setup();

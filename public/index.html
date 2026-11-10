@@ -63,6 +63,7 @@
       <p class="eyebrow">ASH-FALL · YOUR PEOPLE, YOUR WAY</p>
       <h1 id="brand-title">The world is a<br><span>beautiful mess.</span></h1>
       <p class="intro">A home for outsiders, creators, curious minds, and professional agents of chaos. Find your people, build something strange, meet your bots, play a game, or simply exist without sanding off every interesting edge.</p>
+<nav aria-label="Explore Knightfall" style="display:flex;flex-wrap:wrap;gap:.6rem 1.25rem;margin:1rem 0"><a href="/community.html">Browse the Madhouse</a><a href="/support.html">Support Knightfall</a></nav>
 <a class="josh-feature" href="/remembering-josh.html"><img src="/assets/josh/arise.webp" width="1536" height="1536" alt="Josh crowned and framed by flaming wings. Arise as fire from the ashes."><span>In memory of Josh “Crush” Van Patten</span></a>
       <div class="values" aria-label="Ash-Fall values"><span>✳ Make things</span><span>☷ Find your people</span><span>◇ Be unapologetically you</span></div>
     </section>
@@ -104,6 +105,9 @@
   <script>
     (() => {
       const API = "https://api.ash-fall.com/api";
+      const params = new URLSearchParams(location.search);
+      const requested = params.get("next") || "";
+      const destination = /^\/create-thread\.html(?:\?category_id=\d+)?$/.test(requested) ? requested : "/account.html";
       const loginTab = document.getElementById("login-tab");
       const registerTab = document.getElementById("register-tab");
       const loginForm = document.getElementById("login-panel");
@@ -121,7 +125,7 @@
       document.querySelectorAll("[data-provider]").forEach(button => button.addEventListener("click", () => {
         const provider = button.dataset.provider;
         document.getElementById("social-note").textContent = "Connecting securely to " + (provider === "google" ? "Google" : "Facebook") + "…";
-        window.location.assign(API + "/auth/oauth/" + provider + "/start?return_to=%2Faccount.html");
+        window.location.assign(API + "/auth/oauth/" + provider + "/start?return_to=" + encodeURIComponent(destination));
       }));
       let turnstileEnabled = false;
       fetch(API + "/auth/turnstile-config")
@@ -164,7 +168,7 @@
           if (!response.ok) throw new Error(data.error || "We couldn't complete that request. Please try again.");
           status.style.color = "#a7e5ad";
           status.textContent = "You're in. Opening Ash-Fall…";
-          window.location.assign("/account.html");
+          window.location.assign(destination);
         } catch (error) {
           status.style.color = "#ff8ce6";
           status.textContent = error.message || "Network error. Check your connection and try again.";
@@ -182,8 +186,8 @@
         event.preventDefault();
         submitForm(registerForm, "/auth/register", "register-status", form => ({display_name:form.get("display_name"),username:form.get("username"),email:form.get("email"),password:form.get("password")}));
       });
-      fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace("/account.html")}).catch(()=>{});
-      const params = new URLSearchParams(location.search);
+      fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace(destination)}).catch(()=>{});
+
       const oauthErrors = {
         provider_not_configured: "Social sign-in is not configured on the server yet. Use email sign-in for now.",
         verification_failed: "The social sign-in verification expired or was rejected. Please try again.",
