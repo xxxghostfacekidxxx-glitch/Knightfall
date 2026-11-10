@@ -69,3 +69,9 @@
 ## Release rule
 
 Green static tests are valuable; they do not prove real-device use. Do not label a feature complete until code, tests, deployed version and (where relevant) authenticated/manual user acceptance all pass.
+
+## Creator-access follow-up (2026-11-10)
+
+- Production D1 shows two distinct Alexx profiles: `alexmayfield_0213` (existing Digital Creator title, member role) and `alexxmayfield_1302` (member role, title not yet granted at initial audit).
+- Devil Tools previously accepted only numeric account ID `216`. It now checks the authenticated backend's `public_title === 'Digital Creator'`; admins and God retain their separate access. This is a local workshop gate and does **not** authorize creators to publish arbitrary server assets. The Worker still requires an administrator for `/api/devil-tools/assets`.
+- Added CI regression to prevent single-ID creator gating from returning. Production title assignment for the second account is a separate D1 operation and must be verified after writing. No unlimited bot slots or admin powers are granted by the creator title.

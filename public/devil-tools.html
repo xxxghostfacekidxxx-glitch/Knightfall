@@ -215,7 +215,7 @@ async function boot(){
     const isGod = String(user.role||'').toLowerCase()==='god';
     const administrator = isGod || String(user.role||'').toLowerCase()==='admin';
     // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
-    const digitalCreator = Number(user.id) === 216;
+    const digitalCreator = String(user.public_title || '').trim() === 'Digital Creator';
     if (!administrator && !digitalCreator) throw Error('Workshop access required.');
     if (!administrator) {
       $('#release-simulator').remove();
