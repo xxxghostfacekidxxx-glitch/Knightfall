@@ -31,5 +31,9 @@ test("shop previews never expose enabled checkout while payment setup is pending
   assert.match(html, /support\.html/);
   const buttons = [...html.matchAll(/<button\b[^>]*>/gi)].map(x=>x[0]);
   assert.ok(buttons.length >= 1);
-  for (const button of buttons) assert.match(button, /\bdisabled\b/i);
+  // Order-status lookup is an account action, not a purchase; keep it usable.
+  assert.ok(buttons.some(button => /id="check-orders"/.test(button)));
+  for (const button of buttons.filter(button => !/id="check-orders"/.test(button))) {
+    assert.match(button, /\bdisabled\b/i);
+  }
 });
