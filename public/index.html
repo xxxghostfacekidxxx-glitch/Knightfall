@@ -107,7 +107,8 @@
       const API = "https://api.ash-fall.com/api";
       const params = new URLSearchParams(location.search);
       const requested = params.get("next") || "";
-      const destination = /^\/create-thread\.html(?:\?category_id=\d+)?$/.test(requested) ? requested : "/account.html";
+      const forumReturn = /^(?:\/create-thread\.html(?:\?category_id=\d+)?|\/cinder-shop\.html#orders-heading|\/thread\.html\?id=\d+(?:#reply-form)?)$/;
+      const destination = forumReturn.test(requested) ? requested : "/account.html";
       const loginTab = document.getElementById("login-tab");
       const registerTab = document.getElementById("register-tab");
       const loginForm = document.getElementById("login-panel");

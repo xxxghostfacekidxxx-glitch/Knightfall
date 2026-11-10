@@ -39,4 +39,46 @@
  <button type="button" disabled aria-label="Eclipse Noir deck skin checkout is not available yet">Checkout coming soon</button>
 </article></div>
  <p style="margin-top:1rem"><a href="/arcade-card-board.html">Browse all card games and open your Deck Locker ↗</a></p>
-</section><p><a href="/account.html">Return to your account</a></p></main><script src="/nav.js" defer></script></body></html>
+</section><section aria-labelledby="orders-heading">
+<h2 id="orders-heading">Your shop orders</h2>
+<button type="button" id="check-orders">Check order status</button>
+<p id="order-status" role="status"></p><ul id="order-list"></ul>
+</section><p><a href="/account.html">Return to your account</a></p></main><script>
+(() => {
+  const button = document.getElementById("check-orders");
+  const status = document.getElementById("order-status");
+  const list = document.getElementById("order-list");
+  async function checkOrders() {
+    if (button.disabled) return;
+    button.disabled = true;
+    list.replaceChildren();
+    status.textContent = "Checking your account…";
+    try {
+      const response = await fetch("https://api.ash-fall.com/api/member-shop/orders", {credentials:"include", cache:"no-store"});
+      if (response.status === 401) {
+        const link = document.createElement("a");
+        link.href = "/index.html?next=%2Fcinder-shop.html%23orders-heading";
+        link.textContent = "Sign in to see your orders";
+        status.replaceChildren(link);
+        return;
+      }
+      if (!response.ok) throw Error();
+      const {orders} = await response.json();
+      if (!Array.isArray(orders)) throw Error();
+      status.textContent = orders.length ? "Recent orders on this account" : "You have no shop orders.";
+      for (const order of orders) {
+        const item = document.createElement("li");
+        const name = order.sku === "bot_slot_1" ? "1 bot slot" : order.sku === "bot_slot_5" ? "5 bot slots" : String(order.sku).replaceAll("_"," ");
+        item.textContent = [name, order.status, new Intl.NumberFormat(undefined,{style:"currency",currency:order.currency}).format(order.amount_cents/100)].join(" · ");
+        list.append(item);
+      }
+    } catch {
+      status.textContent = "Your orders could not load. Try again.";
+    } finally {
+      button.disabled = false;
+    }
+  }
+  button.addEventListener("click", checkOrders);
+  if (new URLSearchParams(location.search).has("checkout") || location.hash === "#orders-heading") checkOrders();
+})();
+</script><script src="/nav.js" defer></script></body></html>
