@@ -86,3 +86,8 @@ Green static tests are valuable; they do not prove real-device use. Do not label
 - Existing verified deletion-request route and public assistance route bypass site-maintenance blocking, so members can continue privacy requests while forums are offline.
 - Refreshed privacy/account instructions, neon admin styling and CI regression tests. No emails are sent automatically and no Stripe, Turnstile or Android store setup was claimed complete.
 - Still blocking #150: complete validated cross-store D1/KV/R2 erasure and retention review, actual staff follow-up and authenticated user/device acceptance, plus external provider/legal compliance review.
+
+## Mascot acceptance cleanup (2026-11-10)
+
+- GitHub Mascot Sanctuary Integration Tests run `42871346031` initially failed four tests because the assertions still expected **31** pets after the verified roster had expanded to **32** (including Crush and Skunk Riot). No runtime pet defect was shown in the failure logs. Refreshed the count assertions to track the catalog and safeguard both newer mascot IDs; do not remove the newer pets to satisfy an old test.
+- Re-run the sanctuary workflow after this commit and record its actual result before marking the integration green. This is a test-maintenance fix, not physical-device acceptance.

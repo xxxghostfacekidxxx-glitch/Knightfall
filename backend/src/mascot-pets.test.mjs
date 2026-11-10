@@ -15,7 +15,10 @@ const invoke=(path,method,body,env,getUser=async()=>owner)=>handleMascotPets(req
 
 test('all mascot IDs are unique, safe, first-party and match the real art catalog',()=>{
  const manifest=JSON.parse(readFileSync(new URL('../../public/assets/devil-tools/neon-nuisances/manifest.json',import.meta.url),'utf8'));
- assert.equal(MASCOT_SPECIES.length,31);
+ assert.ok(MASCOT_SPECIES.length>=32,'Keep the newest memorial and punk-skunk species');
+ assert.equal(MASCOT_SPECIES.length,manifest.characters.length);
+ assert.ok(MASCOT_SPECIES.some(x=>x.id==='crush'));
+ assert.ok(MASCOT_SPECIES.some(x=>x.id==='skunk-riot'));
  assert.deepEqual(new Set(MASCOT_SPECIES.map(x=>x.id)),new Set(manifest.characters.map(x=>x.id)));
  for(const pet of MASCOT_SPECIES)assert.match(pet.svg,/^\/assets\/devil-tools\/neon-nuisances\/[a-z0-9-]+\.svg$/);
 });
@@ -37,8 +40,8 @@ test('catalog is freely discoverable but private collection requires authenticat
  const db=stub(()=>{throw Error('Catalog/auth must not query database')});
  const catalog=await invoke('/api/mascot-pets/catalog','GET',null,db,async()=>null);
  assert.equal(catalog.status,200);
- assert.equal(catalog.data.species.length,31);
- assert.equal(catalog.data.max_owned,31);
+ assert.equal(catalog.data.species.length,MASCOT_SPECIES.length);
+ assert.equal(catalog.data.max_owned,MASCOT_SPECIES.length);
  assert.equal(catalog.data.accessories.length,12);
  const guest=await invoke('/api/mascot-pets/me','GET',null,db,async()=>null);
  assert.equal(guest.status,401);

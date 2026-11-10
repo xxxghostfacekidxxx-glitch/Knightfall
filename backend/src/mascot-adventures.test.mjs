@@ -6,7 +6,9 @@ import {HABITAT_THEMES,HABITAT_DECORATIONS,QUEST_TITLES,questFor,todayUTC,careQu
 
 test('every mascot has an original, deterministic story quest',()=>{
  const ids=MASCOT_SPECIES.map(x=>x.id);
- assert.equal(ids.length,31);
+ assert.ok(ids.length>=32,'The Crush and Skunk Riot additions must remain in the species roster');
+ assert.ok(ids.includes('crush')&&ids.includes('skunk-riot'));
+ assert.equal(new Set(ids).size,ids.length);
  assert.deepEqual(new Set(Object.keys(QUEST_TITLES)),new Set(ids));
  for(const id of ids){
   const q=questFor(id,'2026-11-02');
