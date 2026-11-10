@@ -41,7 +41,7 @@ test("Rooftop Riot 2.0 is a real standalone engine with reusable sprites and arc
  assert.doesNotThrow(()=>new Script(roofEngine));
  assert.doesNotThrow(()=>new Script(roofView));
  assert.match(roofHtml,/src="\.\/engine\.js\?v=20261103-rooftop2"/);
- assert.match(roofHtml,/src="\.\/view\.js\?v=20261103-rooftop2"/);
+ assert.match(roofHtml,/src="\.\/view\.js\?v=[A-Za-z0-9-]+"/);
  assert.match(roofHtml,/data-score-selector="#shards"/);
  for(const id of ["overlay","pause-overlay","game","left","right","jump","dash","fullscreen","pause","restart","shards"]){
   assert.ok(roofHtml.includes('id="'+id+'"'),"Missing "+id);

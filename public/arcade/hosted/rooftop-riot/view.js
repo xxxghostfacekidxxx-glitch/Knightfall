@@ -11,7 +11,7 @@ for(const [key,src] of Object.entries({runner:'./sprites/ash-runner.svg',shard:'
 let game=new Engine.Game(),paused=false,runId=0,frameId=0,last=0,finished=false,sound=false,audio=null,fullscreenFallback=false,fxTime=0,screenShake=0;
 let best=0;try{best=Math.max(0,Number(localStorage.getItem('rooftop-riot-v2-best'))||0)}catch{}
 const colors=['#ff55d8','#79ffe7','#c6ff45','#a889ff'],reduced=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||false;
-const setText=(id,t)=>{const node=byId(id);if(node)node.textContent=String(t)};
+const setText=(id,t)=>{const node=byId(id);if(node&&node.textContent!==String(t))node.textContent=String(t)};
 function sfx(type){
  if(!sound)return;
  try{
@@ -42,25 +42,31 @@ function syncPause(){
 function start(){
  cancelAnimationFrame(frameId);runId++;const token=runId;
  game=new Engine.Game({seed:20261103+runId*127});game.start();paused=false;finished=false;last=performance.now();screenShake=0;
- byId('overlay').hidden=true;byId('pause-overlay').hidden=true;setText('start','Start run');syncPause();paintHud();draw();
+ byId('overlay').hidden=true;canvas.focus({preventScroll:true});setText('toast','');byId('pause-overlay').hidden=true;setText('start','Start run');syncPause();paintHud();draw();
  document.dispatchEvent(new CustomEvent('ashfall:arcade-started',{detail:{gameId:'cabinet-rooftop-riot'}}));
  frameId=requestAnimationFrame(t=>loop(t,token));
 }
 function pause(){
  if(game.state!=='running'||finished)return;paused=!paused;
  game.input.left=false;game.input.right=false;syncPause();
- if(!paused){last=performance.now();const token=runId;frameId=requestAnimationFrame(t=>loop(t,token));}
+ if(!paused){canvas.focus({preventScroll:true});last=performance.now();const token=runId;frameId=requestAnimationFrame(t=>loop(t,token));}
  else{cancelAnimationFrame(frameId);frameId=0;}
 }
 function loop(now,token){
  if(token!==runId||paused||game.state!=='running')return;
  const dt=Math.min(.045,Math.max(0,(now-last)/1000));last=now;fxTime+=dt;
+ const previousHp=game.hp,previousFalls=game.falls,previousShards=game.shards;
  const prev=game.lastEvent;game.tick(dt);
- if(game.lastEvent!==prev){
+ if(game.lastEvent!==prev||game.shards!==previousShards){
   if(['shard','checkpoint','jump','hit','fall','won'].includes(game.lastEvent))sfx(game.lastEvent);
-  if(game.lastEvent==='hit'||game.lastEvent==='fall')screenShake=8;
+  
   if(game.lastEvent==='checkpoint')setText('toast','CHECKPOINT SECURED · FALLS REMAIN '+(3-game.falls));
   if(game.lastEvent==='shard')setText('toast',game.combo>1?'COMBO ×'+game.combo+' · KEEP MOVING':'CRYSTAL ACQUIRED');
+ }
+ if(game.falls>previousFalls){
+  screenShake=8;sfx('fall');setText('toast','FALL · '+(3-game.falls)+' remaining');
+ }else if(game.hp<previousHp){
+  screenShake=8;sfx('hit');setText('toast',game.lastEvent==='steam'?'STEAM BURN · clear the vent':'DRONE HIT · move clear');
  }
  screenShake=Math.max(0,screenShake-dt*22);
  draw();paintHud();
@@ -92,7 +98,9 @@ function buildings(cam,rate,color,blocks,topVariance,windowAlpha){
  }
 }
 function drawBackground(cam){
- const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#080719');sky.addColorStop(.45,'#211339');sky.addColorStop(1,'#263146');
+ const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#080719');const district=game.world.roofs.findLast(roof=>roof.x<=game.player.x)?.district||0;
+ const horizons=[['#211339','#263146'],['#102938','#274958'],['#351938','#553045'],['#231a48','#40456b']];
+ sky.addColorStop(.45,horizons[district][0]);sky.addColorStop(1,horizons[district][1]);
  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
  const moon=ctx.createRadialGradient(753,105,6,753,105,175);
  moon.addColorStop(0,'#a98dff44');moon.addColorStop(1,'#8855ff00');ctx.fillStyle=moon;ctx.fillRect(580,-60,350,340);
@@ -227,10 +235,14 @@ byId('pause').addEventListener('click',pause);
 byId('resume').addEventListener('click',pause);
 byId('fullscreen').addEventListener('click',fullscreen);
 document.addEventListener('fullscreenchange',syncFull);
-byId('sound').addEventListener('click',()=>{sound=!sound;setText('sound',sound?'♫ Sound on':'♪ Sound off');if(sound)sfx('checkpoint')});
+byId('sound').addEventListener('click',()=>{sound=!sound;setText('sound',sound?'♫ Sound on':'♪ Sound off');byId('sound').setAttribute('aria-pressed',String(sound));if(sound)sfx('checkpoint')});
 function down(e){
  if(e.target.closest('input,select,textarea,[contenteditable]'))return;
- const code=e.code;if(['ArrowLeft','ArrowRight','ArrowUp','Space','ShiftLeft','ShiftRight'].includes(code))e.preventDefault();
+ const code=e.code;
+ if(e.altKey||e.metaKey||e.ctrlKey)return;
+ if((code==='Space'||code==='Enter')&&e.target.closest('button,a'))return;
+ if(paused&& !['KeyP','Escape','KeyF','KeyR'].includes(code))return;
+ if(['ArrowLeft','ArrowRight','ArrowUp','Space','ShiftLeft','ShiftRight'].includes(code))e.preventDefault();
  if(['ArrowLeft','KeyA'].includes(code))game.input.left=true;
  if(['ArrowRight','KeyD'].includes(code))game.input.right=true;
  if(['ArrowUp','KeyW','Space'].includes(code)&&!e.repeat)game.pressJump();

@@ -11,6 +11,7 @@ async function scenario(name,viewport,fn){
  finally{await page.close()}
 }
 await scenario("Roads of Cinder desktop four-player flow",{width:1280,height:850},async page=>{
+ await page.addInitScript(()=>{Math.random=()=>.31});
  await page.goto(base+"/arcade/hosted/roads-of-cinder/index.html",{waitUntil:"domcontentloaded"});
  await page.waitForSelector("#board .tile",{timeout:10000});
  assert.ok(await page.locator("#board .tile").count()>=60);
@@ -19,7 +20,10 @@ await scenario("Roads of Cinder desktop four-player flow",{width:1280,height:850
  assert.match(await page.locator("#players .player:first-child strong").innerText(),/Rook/);
  for(let i=0;i<4;i++){await page.locator("#choice-list button").first().click();await page.locator("#choice-list button").first().click()}
  assert.equal(await page.locator("#spin").isDisabled(),false);
- await page.click("#spin");await page.waitForTimeout(1100);
+ await page.click("#spin");
+ const decision=page.locator("#choice-list button").first();
+ await decision.click();
+ assert.equal(await page.locator("#spin").isEnabled(),true,"The next player can spin after a landing decision");
  assert.ok((await page.locator("#spin-result").innerText()).match(/^\d+$/));
  await page.reload({waitUntil:"domcontentloaded"});
  assert.equal(await page.locator("#players .player").count(),4);

@@ -11,6 +11,21 @@ if(!document.querySelector('script[src*="/arcade/nextgen.js"]')){const s=documen
   if(!shelf)return;
   const cards=[...shelf.children],search=document.querySelector('#arcade-game-search'),genre=document.querySelector('#arcade-genre'),device=document.querySelector('#arcade-device'),sort=document.querySelector('#arcade-sort');
   const buttons=[...document.querySelectorAll('[data-collection-filter]')];
+  const index=new Map(cards.map(card=>{
+   const title=card.querySelector('h2,h3').textContent.trim();
+   const description=card.querySelector('p')?.textContent||'';
+   return [card,{title,normalized:title.toLocaleLowerCase(),text:[title,description,card.dataset.category].join(' ').toLocaleLowerCase()}];
+  }));
+  const hero=document.querySelector('.cartridge-hero');
+  if(hero){
+   const browse=document.createElement('a');
+   browse.className='button button-primary arcade-browse';
+   browse.href='#game-shelf';
+   browse.textContent='Browse games ↓';
+   browse.addEventListener('click',()=>search.focus({preventScroll:true}));
+   const firstLink=hero.querySelector('a');
+   hero.insertBefore(browse,firstLink);
+  }
   let collection='games';
   let explicitCollection=false;
   const notes={games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
@@ -30,24 +45,35 @@ if(!document.querySelector('script[src*="/arcade/nextgen.js"]')){const s=documen
   function render(){
    const q=search.value.trim().toLocaleLowerCase(),tokens=q.split(/\s+/).filter(Boolean);
    // Searching across collections makes an exact title discoverable without guessing its shelf.
-   const across=Boolean(q) && !explicitCollection && collection==='games' && !genre.value && !device.value;
+   const across=Boolean(q) && !explicitCollection && collection==='games';
+   const relevance=card=>{
+    const title=index.get(card).normalized;
+    if(title===q)return 0;
+    if(title.startsWith(q))return 1;
+    if(title.includes(q))return 2;
+    return 3;
+   };
    const ordered=[...cards].sort((a,b)=>{
+    if(q&&sort.value==='featured'){
+     const diff=relevance(a)-relevance(b);
+     if(diff)return diff;
+    }
     if(sort.value==='featured'&&a.dataset.featured!==b.dataset.featured)return a.dataset.featured==='true'?-1:1;
     if(sort.value==='genre'){const d=a.dataset.category.localeCompare(b.dataset.category);if(d)return d;}
-    return a.querySelector('h2,h3').textContent.localeCompare(b.querySelector('h2,h3').textContent);
+    return index.get(a).title.localeCompare(index.get(b).title);
    });
    let visible=0;
-   for(const card of ordered){
-    const text=card.textContent.toLocaleLowerCase();
+   for(const [position,card] of ordered.entries()){
+    const text=index.get(card).text;
     card.hidden=!((across||collection==='all'||card.dataset.collection===collection)&&(!genre.value||card.dataset.category===genre.value)&&(!device.value||card.dataset.device===device.value)&&tokens.every(t=>text.includes(t)));
     if(!card.hidden)visible++;
-    shelf.append(card);
+    if(shelf.children[position]!==card)shelf.insertBefore(card,shelf.children[position]);
    }
-   buttons.forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.collectionFilter===collection));b.setAttribute('aria-label',b.textContent.trim()+' collection');});
+   buttons.forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.collectionFilter===(across?'all':collection)));b.setAttribute('aria-label',b.textContent.trim()+' collection');});
    document.querySelector('#arcade-results').textContent=visible+' '+(visible===1?'game':'games')+(across?' found across all collections':' in this collection');
    document.querySelector('#arcade-total-count').textContent=visible+' / '+cards.length+' titles';
    document.querySelector('#arcade-empty').hidden=visible>0;
-   document.querySelector('#arcade-collection-note').textContent=across?'Search includes every collection. Select a collection or genre to narrow results.':notes[collection];
+   document.querySelector('#arcade-collection-note').textContent=across?'Search includes every collection. Choose a collection to limit your search.':notes[collection];
    const url=new URL(location.href);
    for(const [key,value] of Object.entries({q:search.value,collection:collection==='games'&&!explicitCollection?'':collection,genre:genre.value,device:device.value,sort:sort.value==='featured'?'':sort.value}))value?url.searchParams.set(key,value):url.searchParams.delete(key);
    history.replaceState(null,'',url.pathname+url.search+url.hash);

@@ -35,6 +35,13 @@ button.primary{background:linear-gradient(120deg,#f532b9,#8153e9);border-color:#
 @media(max-width:680px){.board{grid-template-columns:repeat(5,minmax(0,1fr))}.tile{min-height:78px;padding:5px}.tile .label{font-size:.64rem}.tile:after{display:none}.side{grid-template-columns:1fr}.players{grid-template-columns:repeat(2,minmax(0,1fr))}.board-title{font-size:.84rem}}
 @media(max-width:400px){.board{grid-template-columns:repeat(4,minmax(0,1fr))}.tile{min-height:72px}.pawns{left:2px;right:auto}.pawn{width:18px;height:18px;font-size:9px}main{width:98%}}
 @media(prefers-reduced-motion:reduce){.spinner{transition:none}.tile{transition:none}}
+/* Draw the road from each space toward the next turn. */
+.board .tile[data-exit]::after{display:block;left:auto;right:-6px;top:50%;width:6px;height:3px;background:#8ca5bc;z-index:1}
+.board .tile[data-exit=left]::after{left:-6px;right:auto}
+.board .tile[data-exit=down]::after{left:50%;right:auto;top:100%;width:3px;height:8px}
+.board .tile[data-exit=end]::after{display:none}
+
+@media(prefers-reduced-motion:reduce){.spinner{transition:none}}
 </style><script src="/arcade/nextgen.js?v=20261102-1" defer></script></head>
 <body><main><header><a class="back" href="/arcade-card-board.html">← Chaos Cartridge / Board Games</a><div class="eyebrow">PASS-AND-PLAY · ORIGINAL LIFE-JOURNEY GAME</div><h1>ROADS OF <em>CINDER</em></h1><p class="sub">Spin through the beautiful disaster called adulthood. Choose a career, build a family, buy a home, risk your savings, and race toward retirement. Wealth is everything. Except the bits that aren't.</p></header>
 <div class="setup panel"><label for="player-count">Players</label><select id="player-count"><option value="2">2 players</option><option value="3">3 players</option><option value="4">4 players</option></select><div id="player-names" class="name-fields" aria-label="Player names"></div><button id="new-game">New game</button><button id="resume">Resume saved game</button><span class="tiny" id="save-status" role="status">Saved locally after each turn.</span></div>
