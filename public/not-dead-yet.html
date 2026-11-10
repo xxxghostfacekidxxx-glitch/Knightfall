@@ -69,7 +69,11 @@ body.zombie-immersive-open{overflow:hidden!important}
 <style>
 #combat-pause:not([hidden]){position:absolute;inset:0;z-index:5;display:grid;place-content:center;justify-items:center;gap:.6rem;background:#0c0a17d9;color:#fff}
 #combat-pause h2{margin:0;font-size:clamp(1.3rem,4vw,2.4rem)}
-@media(max-width:650px){.hero .stat{display:none}.game-shell .loadout{grid-template-columns:repeat(2,minmax(0,1fr))!important}.loadout select{max-width:100%}}
+@media(max-width:650px){
+html,body{max-width:100%;overflow-x:clip}
+main{max-width:calc(100% - 12px)}
+.game-shell .loadout label{min-width:0}
+.hero .stat{display:none}.game-shell .loadout{grid-template-columns:repeat(2,minmax(0,1fr))!important}.loadout select{max-width:100%}}
 </style></head>
 <body><header class="kf-header"></header><main>
 <a class="back" href="/zombie-diary.html">← Back to Zombie Lab</a>
