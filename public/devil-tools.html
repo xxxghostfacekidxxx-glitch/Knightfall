@@ -9,8 +9,9 @@
 </style></head><body><header class="kf-header"></header><main>
 <a class="back" href="/admin.html">← God Mode</a>
 <section class="hero"><p class="eyebrow">CHAOS CARTRIDGE / PRIVATE WORKSHOP</p><h1>DEVIL <span>TOOLS</span></h1><p class="lede">The arcade's sprite lab: original pixel-art assets, quick animation previews, sprite-sheet inspection, contrast and scanline checks, plus a local upload/export bench. Built for the people allowed to break things, with a polite little fence around everyone else.</p></section>
-<div id="status" class="status" role="status" aria-live="polite">Verifying administrator credentials…</div>
+<div id="status" class="status" role="status" aria-live="polite">Checking workshop access…</div>
 <div id="workshop" class="hidden">
+<div id="creator-handoff" hidden><h2>Submit artwork for review</h2><p>Save your sprite as a PNG, then attach it in a message to @Knightfall. Include the game or character name and what you’d like reviewed.</p><a class="btn" href="/messages.html">Open messages</a></div>
 <nav class="dt-workspace-nav" aria-label="Devil Tools workspace">
   <div class="dt-workspace-heading"><strong>Workshop directory</strong><span id="dt-section-count" aria-live="polite"></span></div>
   <label class="dt-search-label" for="dt-tool-search">Find a tool or asset collection</label>
@@ -206,7 +207,35 @@ function setupReleaseSimulator(){const stage=$('#stage-release'),publish=$('#sim
 
 function setupWorkspaceDirectory(){const workshop=$('#workshop'),nav=$('#dt-section-nav'),search=$('#dt-tool-search'),count=$('#dt-section-count');if(!workshop||!nav||!search)return;const panels=[...workshop.querySelectorAll('section.panel')];const sections=panels.map((panel,index)=>{const title=panel.querySelector('h2')?.textContent.trim()||'Workshop '+(index+1);if(!panel.id)panel.id='dt-workspace-'+(index+1);panel.dataset.dtSection='true';const button=document.createElement('button');button.type='button';button.textContent=title;button.dataset.target=panel.id;button.addEventListener('click',()=>select(panel,true));nav.append(button);return{panel,button,title};});let focused=true;let selected=sections.find(item=>item.panel.id==='brand-library')||sections[0];function update(){workshop.classList.toggle('dt-focused',focused);for(const item of sections){item.panel.classList.toggle('dt-selected',item===selected);item.button.setAttribute('aria-current',String(focused&&item===selected));}count.textContent=focused?'One section open · '+sections.length+' available':sections.length+' sections visible';}function select(panel,scroll){selected=sections.find(item=>item.panel===panel)||selected;focused=true;update();if(scroll)selected?.panel.scrollIntoView({behavior:'smooth',block:'start'});}$('#dt-show-all').addEventListener('click',()=>{focused=false;update();});$('#dt-show-first').addEventListener('click',()=>{focused=true;update();});search.addEventListener('input',()=>{const query=search.value.trim().toLowerCase();let matches=0;for(const item of sections){const hit=!query||item.title.toLowerCase().includes(query)||item.panel.textContent.toLowerCase().includes(query);item.button.hidden=!hit;if(hit)matches++;}count.textContent=matches+' matching sections';if(query&&matches===1){const match=sections.find(item=>!item.button.hidden);if(match)select(match.panel,false);}});update();}
 function setup(){setupWorkspaceDirectory();buildCatalog();updateRuntimeStatus();setupReleaseSimulator();if(window.ChaosSprites?.image)window.ChaosSprites.image.addEventListener('load',updateRuntimeStatus,{once:true});$('#sheet').addEventListener('load',()=>diagnostics());$('#scanlines').onchange=()=>$('#stage').classList.toggle('scanlines',$('#scanlines').checked);$('#glow').onchange=()=>$('#stage').classList.toggle('glow',$('#glow').checked);$('#auto').onchange=()=>$('#auto').checked?startAnimation():stopAnimation();$('#animate').onclick=()=>animTimer?stopAnimation():startAnimation();$('#speed').onchange=()=>{if(animTimer)startAnimation()};$('#scale').oninput=()=>$('#sheet').style.transform='scale('+Number($('#scale').value)/100+')';$('#background').onchange=()=>$('#stage').style.backgroundColor=$('#background').value;$('#reset').onclick=()=>{stopAnimation();if(localUrl){URL.revokeObjectURL(localUrl);localUrl=null}$('#sheet').src=assetPath();$('#stage').style.backgroundColor='#080b13';$('#stage').classList.add('glow');$('#stage').classList.toggle('scanlines',$('#scanlines').checked);$('#sheet').style.filter='';$('#scale').value='100';$('#metrics').textContent='Preview reset.';log('Preview reset. No files or production settings changed.')};$('#diagnostics').onclick=diagnostics;$('#download').onclick=()=>{const a=document.createElement('a');a.href=assetPath();a.download=safeName()+'.svg';a.click();log('SVG export started.')};$('#download-png').onclick=drawPng;$('#download-selected').onclick=exportSelected;$('#upload').onchange=e=>{const f=e.target.files?.[0];if(!f)return;if(localUrl)URL.revokeObjectURL(localUrl);localUrl=URL.createObjectURL(f);$('#sheet').src=localUrl;stopAnimation();log('Loaded local file: '+f.name+' ('+Math.round(f.size/1024)+' KB). File stays in this browser session.')};$('#copy-path').onclick=async()=>{try{await navigator.clipboard.writeText(assetPath());log('Copied '+assetPath())}catch{log('Clipboard blocked by browser. Asset path: '+assetPath())}};$('#check-image').onclick=()=>{const img=$('#sheet');log('Image '+(img.complete&&img.naturalWidth>0?'loaded':'not loaded')+' · '+img.naturalWidth+'×'+img.naturalHeight+' · '+(img.naturalWidth===768&&img.naturalHeight===384?'dimensions OK':'dimensions differ from master sheet'))};selectSprite(0);$('#stage').classList.toggle('scanlines',$('#scanlines').checked)}
-async function boot(){try{const d=await request('/api/auth/me');user=d.user||null;if(!user)throw Error('Sign in as an administrator to use Devil Tools.');if(!['admin','god'].includes(String(user.role||'').trim().toLowerCase()))throw Error('Administrator access required.');$('#access-level').textContent=String(user.role||'').toLowerCase()==='god'?'God Account':'Administrator';workshop.classList.remove('hidden');note('Authenticated as @'+user.username+'. Private workshop unlocked.',true);setup()}catch(e){note(e.message||'Access denied.');const b=document.createElement('a');b.className='btn';b.href='/';b.textContent='Return to Ash-Fall sign in';status.append(' ',b)}}
+async function boot(){
+  try {
+    const session = await request('/api/auth/me');
+    user = session.user;
+    if (!user) throw Error('Sign in to open Devil Tools.');
+    const administrator = ['admin','god'].includes(user.role);
+    // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
+    const digitalCreator = Number(user.id) === 216;
+    if (!administrator && !digitalCreator) throw Error('Workshop access required.');
+    if (!administrator) {
+      $('#release-simulator').remove();
+      const back = document.querySelector('a.back');
+      back.href = '/account.html';
+      back.textContent = '← My account';
+      $('#creator-handoff').hidden = false;
+    }
+    $('#access-level').textContent = administrator ? (user.role === 'god' ? 'God Account' : 'Administrator') : 'Digital Creator';
+    workshop.classList.remove('hidden');
+    note('Signed in as @' + user.username + '.', true);
+    setup();
+  } catch (error) {
+    note(error.message || 'Access denied.');
+    const link = document.createElement('a');
+    link.className = 'btn';
+    link.href = '/';
+    link.textContent = 'Return to Knightfall';
+    status.append(' ', link);
+  }
+}
 boot();
 })();
 </script></body></html>
