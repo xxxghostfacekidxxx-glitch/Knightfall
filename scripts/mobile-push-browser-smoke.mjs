@@ -78,7 +78,10 @@ async function scenario({existing=false,registered=false,stage="display-requeste
   }
   assert.equal(onServer,true,"Phone must be registered on the server");
   assert.match(await page.locator("#push-device-details").innerText(),/server registration connected/);
-  await page.getByRole("button",{name:"Test this device"}).click();
+  await Promise.all([
+    page.waitForResponse(response=>response.url()==="https://api.ash-fall.com/api/push/test" && response.request().method()==="POST"),
+    page.getByRole("button",{name:"Test this device"}).click()
+  ]);
   assert.equal(testEndpoint,endpoint,"Phone test must not target the PC subscription");
   await page.evaluate(async ({testId,stage})=>{
     window.__emitPushReceipt(stage);
