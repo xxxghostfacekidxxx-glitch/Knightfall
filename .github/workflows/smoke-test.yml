@@ -44,6 +44,8 @@ on:
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/push-notifications-audit.mjs'
       - 'scripts/account-deletion-audit.mjs'
+      - 'scripts/privacy-assistance.test.mjs'
+      - 'scripts/privacy-assistance-browser.mjs'
       - 'scripts/admin-offline-browser-smoke.cjs'
       - 'scripts/pwa-browser-smoke.mjs'
       - 'scripts/arcade-browser-smoke.mjs'
@@ -143,6 +145,8 @@ jobs:
         run: node scripts/profile-studio-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
+      - name: Exercise public privacy assistance and staff queue at phone/desktop widths
+        run: node scripts/privacy-assistance-browser.mjs
       - name: Verify offline installation and disconnected game playback
         run: node scripts/admin-offline-browser-smoke.cjs
       - name: Exercise Memo Mail and live chat tabs on desktop and Android
