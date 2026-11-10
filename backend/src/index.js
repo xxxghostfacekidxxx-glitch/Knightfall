@@ -17,6 +17,7 @@ import { calculateAstrology, calculateTransits } from "./astrology.js";
 import { handleArcadeTurnMatches } from "./arcade-turn-matches.js";
 import { handleChaosCardMatches } from "./chaos-card-matches.js";
 import { handleArcadeDeckLocker } from "./arcade-deck-locker.js";
+import { handlePrivacyAssistance } from "./privacy-assistance.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 const PBKDF2_ITERATIONS = 100000;
@@ -937,9 +938,15 @@ export default { async queue(batch, env) {
   const requestOrigin=request.headers.get("Origin");
   if(!["GET","HEAD","OPTIONS"].includes(request.method)&&requestOrigin&&!ALLOWED_ORIGINS.has(requestOrigin))return json({error:"Origin not allowed."},403,origin);
   if(url.pathname==="/health"&&request.method==="GET"){const check=await env.DB.prepare("SELECT 1 AS ok").first();return json({ok:check?.ok===1,service:"knightfall-api",database:true},200,origin);}
-  if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
+  if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&url.pathname!=="/api/privacy/deletion-assistance"&&url.pathname!=="/api/account/deletion-request"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/")||url.pathname.startsWith("/api/avatars/profile/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
+
+  // Public privacy assistance is available even if login is unavailable or forums are under maintenance.
+  if(url.pathname==="/api/privacy/deletion-assistance"||url.pathname==="/api/admin/privacy-assistance"||/^\/api\/admin\/privacy-assistance\/[0-9a-f]{32}$/.test(url.pathname)){
+    const assistance=await handlePrivacyAssistance(request,env,url,{getUser:requireUser,json,rateLimit,isAdmin,origin,createNotification});
+    if(assistance)return assistance;
+  }
 
   // Member Memo Mail stays separate from live DM conversations. D1 migration 0111.
   if(url.pathname==="/api/memo-mail"||/^\/api\/memo-mail\/\d+(?:\/read)?$/.test(url.pathname)){
@@ -1987,7 +1994,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     const password=body&&typeof body.password==="string"?body.password:"",confirmation=body&&typeof body.confirmation_username==="string"?body.confirmation_username.trim().toLowerCase():"";
     if(password.length>128)return json({error:"Password is too long."},400,origin);
     if(confirmation!==String(user.username).toLowerCase())return json({error:"Enter your exact username to confirm this request."},403,origin);
-    if(password){const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();if(!credential||!(await verifyPassword(password,credential.password_hash)))return json({error:"The current password was not accepted."},403,origin);}
+    const credential=await env.DB.prepare("SELECT password_hash FROM users WHERE id=? AND status='active'").bind(user.id).first();
+    if(!credential?.password_hash||!password||!(await verifyPassword(password,credential.password_hash)))return json({error:"Enter your current password to verify this deletion request. If you cannot sign in, use the public account-deletion assistance form."},403,origin);
     const existing=await env.DB.prepare("SELECT id,status,requested_at FROM account_deletion_requests WHERE user_id=? AND status IN ('pending','in_progress') ORDER BY id DESC LIMIT 1").bind(user.id).first();
     if(existing)return json({ok:true,already_pending:true,status:existing.status,requested_at:existing.requested_at,message:existing.status==="in_progress"?"Your account deletion request is already being processed.":"A deletion request is already pending review."},200,origin);
     const now=new Date().toISOString(),deadline=new Date(Date.now()+30*24*60*60*1000).toISOString();

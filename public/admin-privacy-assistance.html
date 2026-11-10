@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Knightfall | Privacy Assistance</title><link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/admin.css"><style>
+.privacy-shell{width:min(1050px,94%);margin:2rem auto 5rem}.privacy-ticket{border:1px solid #8754a5;border-radius:13px;padding:1.2rem;margin:1rem 0;background:#130e1c;overflow-wrap:anywhere}.privacy-ticket h2{color:#e8b5f5}.privacy-ticket label{display:block;margin:.6rem 0}.privacy-ticket textarea{display:block;width:100%;min-height:4.5rem;padding:.7rem;border-radius:8px;background:#07070c;border:1px solid #8754a5;color:#fff;box-sizing:border-box}.privacy-ticket button,.privacy-shell button{border-radius:8px;border:1px solid #b573cb;padding:.7rem 1rem;color:#fff;background:#241333;cursor:pointer}.privacy-ticket button:hover{border-color:#c6ff45}.privacy-ticket select{padding:.6rem;background:#151020;color:#fff;border:1px solid #8754a5}.hint{color:#bbb}.status{min-height:1.3rem;color:#c6ff45}
+</style></head><body><header class="kf-header"></header><main class="privacy-shell">
+<p class="eyebrow">KNIGHTFALL / PRIVACY OPERATIONS</p><h1>Deletion assistance requests</h1>
+<p class="hint">These requests are <strong>unverified</strong> and are not account-deletion authorizations. Never delete an account solely because somebody submits an email address here. Verify identity through the account recovery process before starting deletion.</p>
+<p class="hint">The short-lived support records expire after 90 days. No automated reply is sent, so a staff member must follow up using the contact email.</p>
+<button id="refresh" type="button">Refresh queue</button><p id="status" role="status" aria-live="polite">Checking permissions…</p>
+<div id="tickets"></div><button id="next-page" hidden type="button">Load more</button>
+<p><a href="/admin-deletion-requests.html">Verified account deletion queue</a></p>
+</main><script src="/nav.js" defer></script><script>
+const API='https://api.ash-fall.com', statusEl=document.querySelector('#status'),list=document.querySelector('#tickets'),next=document.querySelector('#next-page');
+let cursor=null;
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(path,options={}){const r=await fetch(API+path,{credentials:'include',cache:'no-store',...options,headers:{'content-type':'application/json',...(options.headers||{})}}),p=await r.json().catch(()=>({}));if(!r.ok)throw Error(p.error||'Request failed');return p}
+function render(t){
+ const div=document.createElement('article');div.className='privacy-ticket';
+ div.innerHTML='<h2>Ticket '+esc(t.request_id)+'</h2><p><strong>Contact:</strong> '+esc(t.email)+'<br><strong>Account hint:</strong> '+esc(t.username_hint||'Not given')+'<br><strong>State:</strong> '+esc(t.status)+'<br><strong>Submitted:</strong> '+esc(t.created_at)+'</p><label>Staff note<textarea maxlength="500" placeholder="Identity checks, follow-up status"></textarea></label><label>Review status <select><option value="reviewing">Reviewing</option><option value="awaiting_verification">Awaiting verification</option><option value="closed">Closed (does not mean deleted)</option></select></label><button type="button">Save review status</button>';
+ div.querySelector('textarea').value=t.operator_note||'';div.querySelector('select').value=['reviewing','awaiting_verification','closed'].includes(t.status)?t.status:'reviewing';
+ div.querySelector('button').addEventListener('click',async()=>{const button=div.querySelector('button');button.disabled=true;try{await api('/api/admin/privacy-assistance/'+encodeURIComponent(t.request_id),{method:'PATCH',body:JSON.stringify({status:div.querySelector('select').value,operator_note:div.querySelector('textarea').value})});statusEl.textContent='Review state saved for '+t.request_id+'.';}catch(e){statusEl.textContent=e.message}finally{button.disabled=false}});
+ list.append(div);
+}
+async function load(reset=false){if(reset){cursor=null;list.replaceChildren();}statusEl.textContent='Loading assistance tickets…';try{const user=(await api('/api/auth/me')).user;if(!user||!['admin','god'].includes(user.role)){statusEl.textContent='Administrator access required.';return;}const result=await api('/api/admin/privacy-assistance'+(cursor?'?cursor='+encodeURIComponent(cursor):''));for(const ticket of result.tickets||[])render(ticket);cursor=result.next_cursor||null;next.hidden=!cursor;statusEl.textContent='Showing '+list.children.length+' assistance ticket(s). Manual verification still required.';}catch(e){statusEl.textContent=e.message}}
+document.querySelector('#refresh').addEventListener('click',()=>load(true));next.addEventListener('click',()=>load(false));load(true);
+</script></body></html>

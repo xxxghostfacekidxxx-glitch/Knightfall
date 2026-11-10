@@ -77,3 +77,12 @@ Green static tests are valuable; they do not prove real-device use. Do not label
 - Added CI regression to prevent single-ID creator gating from returning. Production title assignment for the second account is a separate D1 operation and must be verified after writing. No unlimited bot slots or admin powers are granted by the creator title.
 
 - [x] Production D1 grant confirmed: both `alexxmayfield_1302` and `alexmayfield_0213` now have `Digital Creator` public title, remain ordinary `member` accounts, and have `unlimited_slots=0` and `advanced_builder=0`. The title allows the signed-in local Devil Tools workshop; server-side publication remains admin-only. The new title-gate regression passed in [run 42868955300](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/42868955300). A separate logged-in mobile acceptance check is still pending.
+
+## Release-blocker progress: privacy and account recovery (2026-11-10)
+
+- Hardened logged-in account-deletion requests: the Worker must validate the **current password**, not just an active session and username confirmation. Admin/God account exceptions still use separate owner-controlled review. Existing deletion requests remain operator-processed; no bulk deletion was attempted.
+- Added a **public locked-out-member deletion-assistance form** with email/optional username, explicit disclosure that identity must be verified, anti-bot honeypot, origin check, per-IP rate limiting, small request limits and a 90-day expiring KV ticket. It never trusts an email address as proof of account ownership.
+- Added the separate God/admin assistance queue with paginated staff review and status notes, linked from the existing verified-deletion request dashboard. Closing a ticket does **not** delete an account or certify deletion.
+- Existing verified deletion-request route and public assistance route bypass site-maintenance blocking, so members can continue privacy requests while forums are offline.
+- Refreshed privacy/account instructions, neon admin styling and CI regression tests. No emails are sent automatically and no Stripe, Turnstile or Android store setup was claimed complete.
+- Still blocking #150: complete validated cross-store D1/KV/R2 erasure and retention review, actual staff follow-up and authenticated user/device acceptance, plus external provider/legal compliance review.

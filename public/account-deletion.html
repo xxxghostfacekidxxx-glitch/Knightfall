@@ -3,5 +3,47 @@
     *,*::before,*::after{box-sizing:border-box}
     html,body{max-width:100%;overflow-x:clip}
     body{margin:0}
-.delete-page{width:min(820px,92%);margin:clamp(2rem,6vw,5rem) auto;color:#ddd;line-height:1.75}.delete-page h1{font-size:clamp(2.4rem,7vw,4rem);line-height:1;letter-spacing:-.05em}.delete-page h2{margin-top:2rem;color:#e8b5f5}.delete-page p,.delete-page li{color:#bbb}.delete-page a{color:#a8ff3e}.delete-page .notice{padding:1rem;border:1px solid #8855a5;border-radius:10px;background:#1b1024}</style></head>
-<body><header class="kf-header"></header><main class="delete-page"><p class="eyebrow">ASH-FALL / ACCOUNT CONTROL</p><h1>Account deletion</h1><p>This page is available outside the Android app so account holders can find the deletion process from a browser.</p><h2>How to submit a request</h2><ol><li><a href="/auth.html?next=%2Faccount.html">Sign in to Ash-Fall</a> with the account you want deleted.</li><li>Open <a href="/account.html">Account settings</a>.</li><li>Under “Delete your account,” type your exact username to confirm. If you use password sign-in, you can also enter your current password; Google and Facebook sign-ins can use the username confirmation while signed in.</li><li>Keep a copy of the on-screen confirmation. The request is due for completion within 30 days.</li></ol><div class="notice"><strong>Important status:</strong> Submitting a request records it for operator processing. It does not immediately erase your account or associated data. The service operator must complete the deletion within the stated period. Do not treat the account as deleted until you receive confirmation.</div><h2>What deletion should cover</h2><p>The operator must review account profile data, sessions, push subscriptions, private messages and attachments, journal entries, AI conversations and memories, bot configurations, game saves and balances, shop data, public posts, and related personal data. Some records may be retained only where required for security, legal obligations, or legitimate moderation needs, with the retention basis documented.</p><h2>Need help?</h2><p>If you cannot sign in or cannot access account settings, use the site's currently available support/contact channel. The operator must publish and monitor a dedicated privacy contact before Google Play submission. This page is not a substitute for that contact method.</p><p><a href="/privacy.html">Privacy policy</a> · <a href="/index.html">Return to Ash-Fall</a></p></main><script src="/nav.js" defer></script></body></html>
+.delete-page{width:min(820px,92%);margin:clamp(2rem,6vw,5rem) auto;color:#ddd;line-height:1.75}.delete-page h1{font-size:clamp(2.4rem,7vw,4rem);line-height:1;letter-spacing:-.05em}.delete-page h2{margin-top:2rem;color:#e8b5f5}.delete-page p,.delete-page li{color:#bbb}.delete-page a{color:#a8ff3e}.delete-page .notice{padding:1rem;border:1px solid #8855a5;border-radius:10px;background:#1b1024}.privacy-help-form{display:grid;gap:.8rem;margin:1.3rem 0;border:1px solid #8855a5;border-radius:12px;padding:1.2rem;background:#141020}
+.privacy-help-form label{font-weight:650}.privacy-help-form input:not([type=checkbox]){padding:.7rem;border:1px solid #8855a5;background:#0c0c13;color:#fff;border-radius:8px;font:inherit;width:100%;box-sizing:border-box}
+.privacy-help-form button{padding:.85rem 1rem;border-radius:10px;background:#c6ff45;color:#101010;border:0;font-weight:900;cursor:pointer}.privacy-help-form button:disabled{opacity:.65;cursor:wait}
+.privacy-help-ack{display:flex;gap:.6rem;align-items:flex-start;font-size:.95rem}.privacy-help-ack input{margin-top:.4rem}
+.privacy-help-trap{position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
+#privacy-help-status{min-height:1.3rem}
+</style></head>
+<body><header class="kf-header"></header><main class="delete-page"><p class="eyebrow">ASH-FALL / ACCOUNT CONTROL</p><h1>Account deletion</h1><p>This page is available outside the Android app so account holders can find the deletion process from a browser.</p><h2>How to submit a request</h2><ol><li><a href="/auth.html?next=%2Faccount.html">Sign in to Ash-Fall</a> with the account you want deleted.</li><li>Open <a href="/account.html">Account settings</a>.</li><li>Under “Delete your account,” type your exact username to confirm. Enter your current password and username to confirm your request.</li><li>Keep a copy of the on-screen confirmation. The request is due for completion within 30 days.</li></ol><div class="notice"><strong>Important status:</strong> Submitting a request records it for operator processing. It does not immediately erase your account or associated data. The service operator must complete the deletion within the stated period. Do not treat the account as deleted until you receive confirmation.</div><h2>What deletion should cover</h2><p>The operator must review account profile data, sessions, push subscriptions, private messages and attachments, journal entries, AI conversations and memories, bot configurations, game saves and balances, shop data, public posts, and related personal data. Some records may be retained only where required for security, legal obligations, or legitimate moderation needs, with the retention basis documented.</p><h2>Can't sign in? Ask for deletion assistance</h2>
+<p>Use this form if you cannot access your account. Staff can review a request made through the public website. <strong>This is not identity verification and does not itself delete your account.</strong> You may need to confirm ownership through another method before staff can process deletion. Only provide the contact email for the affected account; do not enter passwords, government IDs, or other sensitive details.</p>
+<form id="privacy-help-form" class="privacy-help-form">
+<label for="privacy-help-email">Account contact email</label>
+<input id="privacy-help-email" type="email" maxlength="254" autocomplete="email" required>
+<label for="privacy-help-username">Account username (optional)</label>
+<input id="privacy-help-username" type="text" maxlength="24" autocomplete="username" pattern="[A-Za-z0-9_]{3,24}">
+<div class="privacy-help-trap" aria-hidden="true"><label for="privacy-help-website">Website</label><input id="privacy-help-website" name="website" tabindex="-1" autocomplete="off"></div>
+<label class="privacy-help-ack"><input type="checkbox" id="privacy-help-ack" required> I understand staff must verify account ownership, and submitting this form does not delete an account.</label>
+<button id="privacy-help-submit" type="submit">Request privacy assistance</button>
+<p id="privacy-help-status" role="status" aria-live="polite"></p>
+</form>
+<p>Assistance tickets are kept for up to 90 days, then expire automatically. A staff member must review the queue. Until a request has been identity-verified, it cannot authorize account deletion. This page is not yet proof that the entire deletion and app-store compliance process is complete.</p><p><a href="/privacy.html">Privacy policy</a> · <a href="/index.html">Return to Ash-Fall</a></p></main><script src="/nav.js" defer></script><script>
+(() => {
+  const form=document.querySelector('#privacy-help-form');
+  if(!form)return;
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const button=document.querySelector('#privacy-help-submit'),status=document.querySelector('#privacy-help-status');
+    if(!form.reportValidity())return;
+    button.disabled=true;status.textContent='Sending assistance request…';
+    try{
+      const response=await fetch('https://api.ash-fall.com/api/privacy/deletion-assistance',{method:'POST',mode:'cors',cache:'no-store',headers:{'content-type':'application/json'},body:JSON.stringify({
+        email:document.querySelector('#privacy-help-email').value,
+        username:document.querySelector('#privacy-help-username').value,
+        website:document.querySelector('#privacy-help-website').value,
+        acknowledged:document.querySelector('#privacy-help-ack').checked
+      })});
+      const payload=await response.json().catch(()=>({}));
+      if(!response.ok)throw Error(payload.error||'Unable to send your request.');
+      status.textContent=payload.message||'Request received for staff review.';
+      form.reset();
+    }catch(error){status.textContent=error.message||'Unable to send the request.';}
+    finally{button.disabled=false;}
+  });
+})();
+</script></body></html>
