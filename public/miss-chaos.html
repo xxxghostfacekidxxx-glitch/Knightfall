@@ -63,7 +63,12 @@
           </select>
         </label>
       </div>
-      <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div><form id="astro-chart-form" class="astro-chart-form">
+      <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div>
+<div class="astro-compare-row"><label>Compare with a member who shares a birth chart
+<input id="astro-compare-username" type="text" autocomplete="off" maxlength="40" placeholder="@username"></label>
+<button type="button" id="astro-compare">Compare charts</button></div>
+<p class="astro-help">Compatibility only uses your saved chart and placements the other member has chosen to publish to a profile you may view. No private chart is retrieved from someone else.</p>
+<form id="astro-chart-form" class="astro-chart-form">
   <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
   <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
   <label>Birth-place time zone (optional, recommended) <input id="astro-timezone" class="cosmic-timezone-select" type="text" autocomplete="off" placeholder="e.g. America/Chicago"></label>
