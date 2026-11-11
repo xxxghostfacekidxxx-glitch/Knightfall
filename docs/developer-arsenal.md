@@ -49,6 +49,24 @@ The private admin command center supports selecting `developer-arsenal-summary.j
 
 The backend now defines `god.audit_summary` as a read-only, God-only capability. A separate, server-owned `createChaosAuditSummaryHandler({loadReport})` validates a trusted counts-only document before returning it. The handler **is not connected** to a report store, GitHub Actions, or the deployed Worker router yet. This boundary deliberately avoids giving the model tokens, network access, or repository write permissions. Tests run in the Developer Arsenal CI job.
 
+## Signed diagnostic synchronization (implemented, activation requires shared secret)
+
+The GitHub Actions Developer Arsenal workflow generates a counts-only report and, on `main`, invokes `scripts/developer-arsenal-upload.mjs` to post the report to `https://api.ash-fall.com/api/internal/developer-audit`. The publisher signs the timestamp and exact JSON request body using HMAC-SHA256. It does not transmit source snippets, repository credentials or GitHub API tokens.
+
+The existing `knightfall-api` Worker uses `backend/src/developer-audit-ingest.js` to check the signature, reject reports older than five minutes, validate exact count fields and source revision, reject older/replayed run IDs, and store the counts-only report in the existing `SESSIONS` KV with a 30-day TTL. Cloudflare KV is eventually consistent; this is suitable for diagnostic snapshots, not transaction guarantees.
+
+God-account users can read `GET /api/god/developer-audit` using their existing session. The existing `POST /api/chaos/tools/execute` can also execute the `god.audit_summary` read-only capability via a trusted server-owned loader. The private admin command center includes a **Load latest verified report (God)** button that reads the endpoint and populates the message composer without automatically sending a prompt. Ordinary members and administrators are denied by the Worker.
+
+### Activation required
+
+1. Generate one random, high-entropy secret of at least 32 characters using a trusted password manager or random generator. **Never commit it.**
+2. In GitHub repository Settings → Secrets and variables → Actions → New repository secret, set `KNIGHTFALL_DIAGNOSTICS_INGEST_KEY` to that value.
+3. On Cloudflare, set the `DIAGNOSTICS_INGEST_KEY` **Worker secret** for `knightfall-api` to the exact same value. Example: from the `backend` directory, run `npx wrangler secret put DIAGNOSTICS_INGEST_KEY` with the connected account.
+4. Confirm the `Deploy Knightfall API` workflow is successful. Then manually dispatch the `Devil's Toolkit code and security audit` workflow from `main`. Only successful diagnostics runs with the configured key upload reports.
+5. Sign in with the God account and use **Load latest verified report (God)** in the private command center. It should fill the composer with aggregate counts. An unauthenticated GET must return 401 and admin/member sessions must return 403.
+
+Without the matching Worker and GitHub secret configuration, **automated synchronization is not active**, even though the code is committed. The publisher skips when the GitHub secret is absent and never reports that an upload occurred. Avoid using live user tokens to test the endpoint. No migrations, new databases or paid services are required.
+
 ## Next engineering milestones
 
 - Introduce testable, least-privilege actions for Miss Chaos (read logs, open issue, propose patch, run targeted tests).
