@@ -16,6 +16,7 @@ import { handleMoonJournal } from "./moon-journal.js";
 import { handleShadowJournal } from "./shadow-journal.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
 import { handleProfileLinks } from "./profile-links.js";
+import { handleProfileWall } from "./profile-wall.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 import { handleArcadeTurnMatches } from "./arcade-turn-matches.js";
 import { handleChaosCardMatches } from "./chaos-card-matches.js";
@@ -1040,6 +1041,9 @@ export default { async queue(batch, env) {
     await audit(env,viewer,"social.safety.report","safety_report",result.meta?.last_row_id,{object_type:objectType,reported_user_id:reportedUserId});
     return json({ok:true,report_id:result.meta?.last_row_id,note:"Your report has been submitted for review."},201,origin);
   }
+
+  const profileWallResponse=await handleProfileWall(request,env,url,{requireUser,json,origin,rateLimit,audit,isModerator,isAdmin});
+  if(profileWallResponse)return profileWallResponse;
 
   // Elgg-inspired activity stream, interest groups, adult gate, creator memberships, and dating foundation.
   if(url.pathname==="/api/social/activity"&&(request.method==="GET"||request.method==="POST")){
