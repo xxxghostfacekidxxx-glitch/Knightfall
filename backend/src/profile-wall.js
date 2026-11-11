@@ -64,6 +64,25 @@ export async function handleProfileWall(request,env,url,helpers){
   if(path!=="/api/profile-wall"&&!path.startsWith("/api/profile-wall/"))return null;
   const {json,requireUser,rateLimit,audit,origin}=helpers;
   const viewer=await requireUser(request,env);
+  if(path==="/api/profile-wall/saved"&&request.method==="GET"){
+    if(!viewer)return fail(helpers,origin,401,"Sign in to view saved updates.");
+    // Use the server's visibility, follow/friend and block rules. Saving a post
+    // never grants permanent access to it after its owner changes privacy.
+    const sql="SELECT a.id,a.user_id,a.body,a.visibility,a.created_at,a.updated_at,u.username,u.display_name,b.created_at AS saved_at "+
+      "FROM social_bookmarks b JOIN social_activity a ON a.id=CAST(b.object_id AS INTEGER) "+
+      "JOIN users u ON u.id=a.user_id "+
+      "WHERE b.user_id=? AND b.object_type='activity' AND a.activity_type='status' AND a.deleted_at IS NULL AND u.status='active' "+
+      "AND (a.user_id=? OR ((u.profile_visibility='public' OR "+
+      "(u.profile_visibility='friends' AND EXISTS (SELECT 1 FROM friend_requests fr WHERE fr.status='accepted' AND ((fr.requester_id=? AND fr.addressee_id=a.user_id) OR (fr.addressee_id=? AND fr.requester_id=a.user_id)))) "+
+      "AND (a.visibility='public' OR "+
+      "(a.visibility='followers' AND EXISTS (SELECT 1 FROM follows f WHERE f.follower_id=? AND f.following_id=a.user_id)) OR "+
+      "(a.visibility='friends' AND EXISTS (SELECT 1 FROM friend_requests fr WHERE fr.status='accepted' AND ((fr.requester_id=? AND fr.addressee_id=a.user_id) OR (fr.addressee_id=? AND fr.requester_id=a.user_id))))))) "+
+      "AND NOT EXISTS (SELECT 1 FROM user_blocks bl WHERE (bl.blocker_id=? AND bl.blocked_id=a.user_id) OR (bl.blocker_id=a.user_id AND bl.blocked_id=?)) "+
+      "ORDER BY b.created_at DESC,a.id DESC LIMIT 30";
+    const id=viewer.id;
+    const rows=await env.DB.prepare(sql).bind(id,id,id,id,id,id,id,id,id).all();
+    return json({posts:rows.results||[],limit:30},200,origin);
+  }
   if(path==="/api/profile-wall"&&request.method==="GET"){
     const username=String(url.searchParams.get("username")||"").trim();
     if(!PROFILE_NAME.test(username))return fail(helpers,origin,400,"Provide a valid member username.");
@@ -80,15 +99,16 @@ export async function handleProfileWall(request,env,url,helpers){
       "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='fire') AS fire_count,"+
       "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='heart') AS heart_count,"+
       "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='skull') AS skull_count,"+
-      "(SELECT r.reaction FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.user_id=?) AS my_reaction "+
+      "(SELECT r.reaction FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.user_id=?) AS my_reaction,"+
+      "EXISTS(SELECT 1 FROM social_bookmarks b WHERE b.user_id=? AND b.object_type='activity' AND b.object_id=CAST(a.id AS TEXT)) AS is_saved "+
       "FROM social_activity a JOIN users u ON u.id=a.user_id WHERE a.user_id=? AND a.activity_type='status' AND a.deleted_at IS NULL AND a.id<? AND a.visibility IN ("+marks+") ORDER BY a.id DESC LIMIT ?";
-    const rows=await env.DB.prepare(sql).bind(viewer?.id||0,owner.id,before,...visible,POST_LIMIT+1).all();
+    const rows=await env.DB.prepare(sql).bind(viewer?.id||0,viewer?.id||0,owner.id,before,...visible,POST_LIMIT+1).all();
     const all=rows.results||[];
     const more=all.length>POST_LIMIT;
     const posts=all.slice(0,POST_LIMIT);
     return json({posts,has_more:more,next_before:more?posts[posts.length-1]?.id:null,can_post:viewer?.id===owner.id,viewer_id:viewer?.id||null},200,origin);
   }
-  const postMatch=path.match(/^\/api\/profile-wall\/posts\/([1-9][0-9]*)(?:\/(reactions|comments))?$/);
+  const postMatch=path.match(/^\/api\/profile-wall\/posts\/([1-9][0-9]*)(?:\/(reactions|comments|bookmark))?$/);
   if(postMatch){
     const postId=idFrom(postMatch[1]),part=postMatch[2]||"";
     if(!postId)return fail(helpers,origin,400,"Invalid update ID.");
@@ -110,6 +130,17 @@ export async function handleProfileWall(request,env,url,helpers){
       await env.DB.prepare("UPDATE social_activity SET body=?,visibility=?,updated_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(body.body.trim(),body.visibility,now,postId,viewer.id).run();
       await audit(env,viewer,"profile.wall.post.edit","social_activity",postId,{visibility:body.visibility});
       return json({ok:true,id:postId,updated_at:now},200,origin);
+    }
+    if(part==="bookmark"&&(request.method==="POST"||request.method==="DELETE")){
+      if(!viewer)return fail(helpers,origin,401,"Sign in to save updates.");
+      if(!await rateLimit(env,request,"profile-wall-bookmark",60,300,viewer.id))
+        return fail(helpers,origin,429,"Too many saved-update changes. Try later.");
+      if(request.method==="DELETE"){
+        await env.DB.prepare("DELETE FROM social_bookmarks WHERE user_id=? AND object_type='activity' AND object_id=?").bind(viewer.id,String(postId)).run();
+        return json({ok:true,saved:false},200,origin);
+      }
+      await env.DB.prepare("INSERT OR IGNORE INTO social_bookmarks(user_id,object_type,object_id,created_at) VALUES (?,'activity',?,?)").bind(viewer.id,String(postId),new Date().toISOString()).run();
+      return json({ok:true,saved:true},200,origin);
     }
     if(part==="reactions"&&(request.method==="POST"||request.method==="DELETE")){
       if(!viewer)return fail(helpers,origin,401,"Sign in to react.");
