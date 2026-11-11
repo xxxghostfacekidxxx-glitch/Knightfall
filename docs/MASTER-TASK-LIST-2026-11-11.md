@@ -71,6 +71,15 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Re-read committed files and independently confirmed the required test reference, matching invariant and race guards are present.
 - [ ] Obtain a fresh passing arcade-fleet run for these commits; the last published run 43106340803 remains failed with full local browser coverage absent. CI, production and physical-device acceptance remain separate.
 
+## Sanctuary's End import-map recovery — November 11, 2026
+
+- [x] Examined arcade run [43109837240](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43109837240): all ten local shards covered 132/132 routes with no errors; live coverage was 132/132 but one route failed (`sanctuary-original/sanctuary.html`), so fleet still failed.
+- [x] Tower Keeper log captured the live root symptom: `Failed to resolve module specifier "three/webgpu"`, followed by `THREE is not defined` in legacy render/wild scripts. No network errors were recorded in that route result.
+- [x] Cloudflare Pages project `knightfall` was reachable; its latest recorded deployment revision was `065960fa8de163771328740dca1b0a4c00c06f47` and the `ash-fall.com` domain was assigned. Zone Rocket Loader was verified off.
+- [x] Identified that Sanctuary's End placed its import map after early Three.js modulepreload requests; moved the existing map into the document head before preloads without changing the imports or game logic ([deeea7f](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/deeea7fe69f0155fd149b42e25e69fa7f551da6b)). This is a plausible mitigation, not yet a proven production repair.
+- [x] Added `scripts/sanctuary-importmap.test.mjs` to validate map count, ordering and Three.js mappings ([1cb9dbe](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/1cb9dbeb2d0a486c447b7f6da41b279b46ac3ac9)); wired it into ten-shard fleet validation ([720edf5](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/720edf5bc876e214c58809cfb9d6d41e74730d2f)).
+- [ ] Verify production deploy includes these commits and that a new live browser fleet run succeeds for Sanctuary's End. Preserve failed screenshot and diagnostic logs until resolved; keep issue #192 open.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
