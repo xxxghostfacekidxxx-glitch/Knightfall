@@ -69,6 +69,17 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
         location.href="/miss-chaos.html?astro=profile";
       });
       section.append(reading);
+      if(!ownProfile&&!adminView&&/^[a-zA-Z0-9_.-]{2,40}$/.test(String(u.username||""))){
+        const comparison=document.createElement("button");
+        comparison.type="button";comparison.className="cosmic-compare-button";
+        comparison.textContent="⇄ Compare my chart with @"+u.username;
+        comparison.addEventListener("click",()=>{
+          try{sessionStorage.setItem("knightfall:cosmic-compare-user",u.username);}
+          catch{window.alert("Temporary browser storage is unavailable. Open Miss Chaos and enter this member's username manually.");return;}
+          location.href="/miss-chaos.html?astro=compare";
+        });
+        section.append(comparison);
+      }
     }else section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
   }
