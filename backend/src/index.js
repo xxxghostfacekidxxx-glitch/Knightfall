@@ -2082,7 +2082,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       try{
         // With no reliable birth time we use a provisional noon-UTC sample, never invent an Ascendant or houses.
         // The client supplies noon UTC for an unknown-time date; do not trust client-supplied houses or angles.
-        if(timeUnknown&&!/^\\d{4}-\\d{2}-\\d{2}T12:00:00(?:\\.000)?Z$/.test(body.utc))return json({error:"Unknown-time charts must use 12:00 UTC on the provided birth date."},400,origin);
+        if(timeUnknown&&!/^\d{4}-\d{2}-\d{2}T12:00:00(?:\.000)?Z$/.test(body.utc))return json({error:"Unknown-time charts must use 12:00 UTC on the provided birth date."},400,origin);
         const result=calculateAstrology(body.utc,timeUnknown?null:{latitude:body.latitude,longitude:body.longitude},timeUnknown?"equal":body.house_system);
         // Deliberately omit UTC birth timestamp and exact birth coordinates from the public card.
         stored=JSON.stringify({zodiac:result.zodiac,time_precision:timeUnknown?"unknown":"provided",house_system:result.angles?.house_system||"Not calculated",ascendant_sign:result.angles?.ascendant_sign||null,ascendant_degree:result.angles?Number((result.angles.ascendant%30).toFixed(1)):null,midheaven_sign:result.angles?.midheaven_sign||null,bodies:Object.fromEntries(Object.entries(result.bodies).map(([name,p])=>[name,{sign:p.sign,degree:Number(p.degree_in_sign.toFixed(1)),retrograde:p.retrograde}])),house_placements:result.house_placements});
