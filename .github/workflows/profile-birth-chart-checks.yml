@@ -8,6 +8,8 @@ on:
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/cosmic-chart.test.mjs'
       - 'scripts/cosmic-atlas.test.mjs'
+      - 'scripts/cosmic-lexicon.test.mjs'
+      - 'public/cosmic-lexicon.js'
       - 'scripts/cosmic-geo-timezone.test.mjs'
       - 'public/cosmic-place-timezone.js'
       - 'public/vendor/tz-lookup.js'
@@ -37,6 +39,6 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Exercise Worker chart lifecycle and account isolation with test storage
-        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/profile-birth-chart-runtime.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/cosmic-geo-timezone.test.mjs
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/profile-birth-chart-runtime.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/cosmic-lexicon.test.mjs scripts/cosmic-geo-timezone.test.mjs
       - name: Verify public assets, JSON endpoints, and anonymous privacy in production
         run: node scripts/profile-birth-chart-live.mjs
