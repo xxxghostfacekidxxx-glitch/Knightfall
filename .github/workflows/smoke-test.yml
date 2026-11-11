@@ -38,6 +38,7 @@ on:
       - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/profile-navigation.test.mjs'
       - 'scripts/profile-community-overhaul.test.mjs'
+      - 'scripts/profile-community-browser.mjs'
       - 'scripts/profile-studio-next.test.mjs'
       - 'scripts/profile-photo-studio.test.mjs'
       - 'scripts/profile-link-hub.test.mjs'
@@ -162,6 +163,8 @@ jobs:
         run: node scripts/starter-bots-browser.mjs
       - name: Exercise Profile Studio desktop and Android editing, crop and save flows
         run: node scripts/profile-studio-browser.mjs
+      - name: Exercise member profile hub owner and visitor on Android and desktop
+        run: node scripts/profile-community-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
       - name: Exercise public privacy assistance and staff queue at phone/desktop widths
