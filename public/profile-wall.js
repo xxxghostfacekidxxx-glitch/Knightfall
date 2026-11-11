@@ -174,6 +174,7 @@ async function mount(member,own,root,signedIn){
   function createPost(post){
     const article=el("article","profile-wall-post");
     article.dataset.activityId=String(post.id);
+    article.id="profile-wall-post-"+post.id;
     const head=el("div","profile-wall-post-head");
     const identity=el("div","profile-wall-post-identity");
     const name=el("strong","",member.display_name||member.username);
@@ -406,6 +407,26 @@ async function mount(member,own,root,signedIn){
     return article;
   }
   await load(true);
+  const target=location.hash.match(/^#profile-wall-post-([1-9][0-9]*)$/);
+  if(target){
+    const id=Number(target[1]);
+    if(Number.isSafeInteger(id)){
+      let card=timeline.querySelector("#profile-wall-post-"+id);
+      if(!card){
+        try{
+          const response=await api("/api/profile-wall/posts/"+id);
+          if(response.post&&String(response.post.username).toLowerCase()===String(member.username).toLowerCase()){
+            const placeholder=timeline.querySelector(".profile-wall-empty");
+            placeholder?.remove();
+            card=createPost(response.post);
+            timeline.prepend(card);
+          }
+        }catch(error){/* A deleted or private post must not be surfaced by a deep link. */}
+      }
+      card?.scrollIntoView({block:"center",behavior:"auto"});
+      if(card){card.classList.add("profile-wall-post-target");card.setAttribute("tabindex","-1");card.focus({preventScroll:true});}
+    }
+  }
   if(own){
     await loadSaved();
     if(location.hash==="#profile-saved")savedSection?.scrollIntoView({block:"start",behavior:"auto"});
