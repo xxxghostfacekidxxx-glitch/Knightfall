@@ -7,7 +7,7 @@ import {readFileSync} from 'node:fs';
 const workerUrl=new URL('../backend/src/index.js',import.meta.url);
 const source=readFileSync(workerUrl,'utf8')
  .replace("import { serveAdminGameArchive } from './admin-game-downloads.js';", "const serveAdminGameArchive=()=>{throw Error('Archive handler is outside this test')};")
- .replace(/from "(\.\/[^"]+)"/g,(_,file)=>'from '+JSON.stringify(new URL(file,workerUrl).href));
+ .replace(/from (["'])(\\.{1,2}\\/[^"']+)\\1/g,(_,quote,file)=>'from '+JSON.stringify(new URL(file,workerUrl).href));
 const {default:worker}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 
 // Exercise the real Worker handler with isolated test storage; no production accounts or records.
