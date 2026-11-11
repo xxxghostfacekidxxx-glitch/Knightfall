@@ -42,6 +42,7 @@ function makeDOM(){
 function mount(){
  const {document,Option,Element}=makeDOM(),window={};
  const context={window,document,Option,Math,Number,Object,Array,Date,console};
+ runInNewContext(read("public/cosmic-lexicon.js"),context);
  runInNewContext(read("public/cosmic-insights.js"),context);
  runInNewContext(read("public/cosmic-chart.js"),context);
  return {window,document,Element};
@@ -130,6 +131,21 @@ test("transit-only view never displays fabricated natal houses or rising labels"
  assert.match(svg.attributes["aria-label"],/transit sky/);
  assert.equal(svg.querySelectorAll("[data-transit-planet]").length,0);
  assert.ok(!find(target,node=>String(node.textContent||"").startsWith("Rising ·")));
+});
+test("planet explorer renders nuanced sign and house interpretations with question prompts",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ window.KnightfallCosmic.render(target,sample);
+ const selector=find(target,node=>node.tagName==="select");
+ assert.ok(selector);
+ selector.value="Sun";selector.listeners.change();
+ const reading=find(target,node=>String(node.className)==="cosmic-interpretation-reading");
+ const question=find(target,node=>String(node.className)==="cosmic-reflection-question");
+ const house=find(target,node=>String(node.className)==="cosmic-house-guide");
+ assert.ok(reading);
+ assert.match(reading.textContent,/traditional tropical astrology/);
+ assert.ok(question);
+ assert.ok(house);
+ assert.equal(house.children.filter(n=>String(n.className)==="cosmic-house-entry").length,12);
 });
 test("All three pages load the Chart Atlas before the chart renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
