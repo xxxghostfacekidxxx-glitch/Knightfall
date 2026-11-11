@@ -49,23 +49,23 @@ The private admin command center supports selecting `developer-arsenal-summary.j
 
 The backend now defines `god.audit_summary` as a read-only, God-only capability. A separate, server-owned `createChaosAuditSummaryHandler({loadReport})` validates a trusted counts-only document before returning it. The handler **is not connected** to a report store, GitHub Actions, or the deployed Worker router yet. This boundary deliberately avoids giving the model tokens, network access, or repository write permissions. Tests run in the Developer Arsenal CI job.
 
-## Signed diagnostic synchronization (implemented, activation requires shared secret)
+## Live diagnostic synchronization using GitHub Actions OIDC
 
-The GitHub Actions Developer Arsenal workflow generates a counts-only report and, on `main`, invokes `scripts/developer-arsenal-upload.mjs` to post the report to `https://api.ash-fall.com/api/internal/developer-audit`. The publisher signs the timestamp and exact JSON request body using HMAC-SHA256. It does not transmit source snippets, repository credentials or GitHub API tokens.
+The Developer Arsenal workflow produces a counts-only report, then requests a **short-lived GitHub Actions OIDC token** for the dedicated `https://api.ash-fall.com/api/internal/developer-audit` audience. This requires `id-token: write` in the workflow but does not grant repository write access or require storing a long-lived secret.
 
-The existing `knightfall-api` Worker uses `backend/src/developer-audit-ingest.js` to check the signature, reject reports older than five minutes, validate exact count fields and source revision, reject older/replayed run IDs, and store the counts-only report in the existing `SESSIONS` KV with a 30-day TTL. Cloudflare KV is eventually consistent; this is suitable for diagnostic snapshots, not transaction guarantees.
+The `knightfall-api` Worker validates GitHub's RSA-signed JWT using the official issuer's JWKS. It pins the issuer, audience, repository name and immutable repository ID, default branch, exact workflow reference, event type, run ID, revision SHA, issue time, not-before time, expiry and signature. A verified report is sanitized and stored in existing `SESSIONS` KV for 30 days, with stale and replayed run IDs rejected. No scanner source snippets or credentials enter this storage.
 
-God-account users can read `GET /api/god/developer-audit` using their existing session. The existing `POST /api/chaos/tools/execute` can also execute the `god.audit_summary` read-only capability via a trusted server-owned loader. The private admin command center includes a **Load latest verified report (God)** button that reads the endpoint and populates the message composer without automatically sending a prompt. Ordinary members and administrators are denied by the Worker.
+The Worker exposes `GET /api/god/developer-audit` and `god.audit_summary` through its existing verified-session and capability authorization. The private command center's **Load latest verified report (God)** button fetches aggregate counts and fills the composer, but does not automatically send the message.
 
-### Activation required
+### Operational verification
 
-1. Generate one random, high-entropy secret of at least 32 characters using a trusted password manager or random generator. **Never commit it.**
-2. In GitHub repository Settings → Secrets and variables → Actions → New repository secret, set `KNIGHTFALL_DIAGNOSTICS_INGEST_KEY` to that value.
-3. On Cloudflare, set the `DIAGNOSTICS_INGEST_KEY` **Worker secret** for `knightfall-api` to the exact same value. Example: from the `backend` directory, run `npx wrangler secret put DIAGNOSTICS_INGEST_KEY` with the connected account.
-4. Confirm the `Deploy Knightfall API` workflow is successful. Then manually dispatch the `Devil's Toolkit code and security audit` workflow from `main`. Only successful diagnostics runs with the configured key upload reports.
-5. Sign in with the God account and use **Load latest verified report (God)** in the private command center. It should fill the composer with aggregate counts. An unauthenticated GET must return 401 and admin/member sessions must return 403.
+1. Confirm `Deploy Knightfall API` succeeded with the OIDC verifier code.
+2. Run the Developer Arsenal workflow on `main`; confirm that **Publish sanitized counts to private Worker storage** completed successfully. The workflow's OIDC token is never printed.
+3. Log in as God and select **Load latest verified report (God)**.
+4. Confirm unauthenticated requests are rejected with 401 and member/admin requests with 403.
+5. If the workflow reports an upload error, inspect the status code, GitHub OIDC permissions and Worker deployment; never paste or log the OIDC bearer token.
 
-Without the matching Worker and GitHub secret configuration, **automated synchronization is not active**, even though the code is committed. The publisher skips when the GitHub secret is absent and never reports that an upload occurred. Avoid using live user tokens to test the endpoint. No migrations, new databases or paid services are required.
+An optional legacy HMAC shared-secret fallback remains supported by `DIAGNOSTICS_INGEST_KEY` (Cloudflare Worker secret) and `KNIGHTFALL_DIAGNOSTICS_INGEST_KEY` (GitHub Actions secret) for trusted environments that cannot obtain OIDC, but is **not required** for standard GitHub Actions. GitHub Actions OIDC is preferred. The feature uses existing Cloudflare KV, not a new database or paid service. Cloudflare KV is eventually consistent, so this is a monitoring snapshot rather than a transactional ledger.
 
 ## Next engineering milestones
 
