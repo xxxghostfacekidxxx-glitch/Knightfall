@@ -109,6 +109,7 @@ test("only the author can edit or delete a status",async()=>{
  const remove=await f.call(path,"DELETE",{id:11});
  assert.equal(remove.status,200);
  assert.match(f.state.writes[1].sql,/SET deleted_at=/);
+ assert.match(f.state.writes[2].sql,/DELETE FROM social_bookmarks/);
 });
 test("comments have bounded length and owner/moderator removal rights",async()=>{
  const path="/api/profile-wall/posts/23/comments";
