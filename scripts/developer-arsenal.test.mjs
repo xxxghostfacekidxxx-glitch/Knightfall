@@ -74,3 +74,20 @@ test("admin diagnostic import accepts only counts and does not auto-send", async
   assert.match(source, /Review and send when ready/);
   assert.doesNotMatch(source, /fetch\(.*developer-arsenal-summary/);
 });
+
+test("signed diagnostic endpoints use existing Worker role and tool authorization", async () => {
+  const worker = await load("backend/src/index.js");
+  const protocol = await load("backend/src/developer-audit-ingest.js");
+  const publisher = await load("scripts/developer-arsenal-upload.mjs");
+  const workflow = await load(".github/workflows/developer-arsenal-audit.yml");
+  assert.match(worker, /\/api\/internal\/developer-audit/);
+  assert.match(worker, /\/api\/god\/developer-audit/);
+  assert.match(worker, /actor\.role!=="god"/);
+  assert.match(worker, /storeAuditUpload\(/);
+  assert.match(worker, /name:"god\.audit_summary"/);
+  assert.match(protocol, /verifyAuditUpload\(/);
+  assert.match(protocol, /createChaosAuditSummaryHandler\(/);
+  assert.match(publisher, /KNIGHTFALL_DIAGNOSTICS_INGEST_KEY/);
+  assert.match(workflow, /secrets\.KNIGHTFALL_DIAGNOSTICS_INGEST_KEY/);
+  assert.doesNotMatch(publisher, /GITHUB_TOKEN|Authorization: Bearer/i);
+});
