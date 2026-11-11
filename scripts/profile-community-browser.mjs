@@ -25,6 +25,13 @@ const activity={
 async function scenario(title,viewport,own){
   const context=await browser.newContext({viewport});
   const page=await context.newPage(),errors=[];
+  let wallPosts=[{id:55,user_id:77,username:"nebula",display_name:"Nebula Maker",
+    body:"An original pixel-art project is almost ready.",visibility:"public",
+    created_at:"2026-11-10T18:00:00Z",updated_at:"2026-11-10T18:00:00Z",
+    comment_count:1,fire_count:0,heart_count:0,skull_count:0,my_reaction:null}];
+  let wallComments=[{id:12,activity_id:55,user_id:88,username:"outsider",display_name:"Outsider",
+    body:"Love the pixel art!",created_at:"2026-11-11T11:00:00Z",updated_at:"2026-11-11T11:00:00Z"}];
+
   page.on("pageerror",e=>errors.push(e.message));
   page.on("dialog",dialog=>dialog.accept());
   await page.route("https://api.ash-fall.com/**",async route=>{
@@ -41,6 +48,36 @@ async function scenario(title,viewport,own){
     if(path==="/api/auth/me")return answer(200,{user:own?member:{id:88,username:"outsider",role:"member"}});
     if(path==="/api/users/nebula")return answer(200,activity);
     if(path==="/api/avatars/profile/nebula")return answer(200,{avatar:null});
+    if(path==="/api/profile-wall"&&request.method()==="GET")
+      return answer(200,{posts:wallPosts,has_more:false,next_before:null,can_post:own,viewer_id:own?77:88});
+    if(path==="/api/profile-wall/posts/55/reactions"){
+      if(request.method()==="DELETE"){wallPosts[0].my_reaction=null;return answer(200,{ok:true,reaction:null});}
+      return answer(200,{ok:true,reaction:JSON.parse(request.postData()||"{}").reaction});
+    }
+    if(path==="/api/profile-wall/posts/55/comments"){
+      if(request.method()==="GET")return answer(200,{comments:wallComments,has_more:false,next_before:null});
+      if(request.method()==="POST"){
+        const body=JSON.parse(request.postData()||"{}").body;
+        wallComments=[{id:13,activity_id:55,user_id:own?77:88,username:own?"nebula":"outsider",
+          display_name:own?"Nebula Maker":"Outsider",body,created_at:"2026-11-11T12:00:00Z"},...wallComments];
+        return answer(201,{ok:true,id:13});
+      }
+    }
+    if(path==="/api/profile-wall/comments/12"&&request.method()==="DELETE"){
+      wallComments=wallComments.filter(item=>item.id!==12);
+      return answer(200,{ok:true});
+    }
+    if(path==="/api/profile-wall/posts/55"&&request.method()==="PATCH"){
+      const body=JSON.parse(request.postData()||"{}");
+      wallPosts[0].body=body.body;wallPosts[0].visibility=body.visibility;
+      return answer(200,{ok:true,id:55,updated_at:"2026-11-11T12:00:00Z"});
+    }
+    if(path==="/api/social/activity"&&request.method()==="POST"){
+      const body=JSON.parse(request.postData()||"{}");
+      wallPosts=[{...wallPosts[0],id:56,body:body.body,visibility:body.visibility,
+        comment_count:0,fire_count:0,heart_count:0,skull_count:0,my_reaction:null},...wallPosts];
+      return answer(201,{ok:true,id:56});
+    }
     if(path==="/api/social/activity")return answer(200,{activities:[{id:1,body:"Trying a new drawing style",created_at:"2026-11-08T14:00:00Z",visibility:"public"}]});
     if(path==="/api/profile/photos")return answer(200,{photos:[]});
     if(path==="/api/profile/links")return answer(200,{links:[],limit:8});
@@ -67,6 +104,26 @@ async function scenario(title,viewport,own){
       assert.ok(await nav.locator('a[href="/mascot-room.html?user=nebula"]').isVisible());
       assert.ok(await page.locator('#friend').isVisible());
     }
+
+    await page.locator(".profile-wall-post").first().waitFor({timeout:12000});
+    assert.match(await page.locator(".profile-wall-post-body").first().textContent(),/pixel-art project/);
+    if(own){
+      assert.ok(await page.locator("#profile-wall-body").isVisible());
+      await page.locator("#profile-wall-body").fill("Testing our newly rebuilt social wall");
+      await page.locator('#profile-update-form button[type="submit"]').click();
+      await page.locator(".profile-wall-post").first().getByText("Testing our newly rebuilt social wall").waitFor();
+    }else{
+      assert.equal(await page.locator("#profile-wall-body").count(),0,"Visitor cannot publish on owner's wall");
+      assert.equal(await page.locator(".profile-wall-owner-actions button").count(),0);
+    }
+    const original=page.locator('.profile-wall-post[data-activity-id="55"]');
+    await original.locator('.profile-wall-reaction').first().click();
+    assert.equal(await original.locator('.profile-wall-reaction').first().getAttribute("aria-pressed"),"true");
+    await original.locator(".profile-wall-comments-toggle").click();
+    await original.getByText("Love the pixel art!").waitFor();
+    await original.locator(".profile-wall-comment-form textarea").fill("Nice work on this!");
+    await original.locator('.profile-wall-comment-form button[type="submit"]').click();
+    await original.getByText("Nice work on this!").waitFor();
     await page.locator('.profile-activity-filters [data-view="threads"]').click();
     assert.equal(await page.locator(".profile-activity-deck").getAttribute("data-view"),"threads");
     assert.ok(await page.locator(".profile-activity-deck>section").first().isVisible());
