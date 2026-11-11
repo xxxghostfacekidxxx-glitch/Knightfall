@@ -53,7 +53,7 @@ test("notification deep links load the exact post without bypassing server priva
  assert.match(ui,/\/api\/profile-wall\/posts\/"/);
  assert.match(ui,/profile-wall-post-target/);
  assert.match(css,/\.profile-wall-post-target/);
- assert.match(wallApi,/if\(!part&&request\.method==="GET"\)/);
+ assert.match(wallApiSource,/if\(!part&&request\.method==="GET"\)/);
 });
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
