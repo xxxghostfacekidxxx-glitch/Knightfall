@@ -92,7 +92,7 @@ async function mount(member,own,root,signedIn){
   footer.append(more);
   section.append(timeline,footer);
   root.append(section);
-  let before=null,hasMore=true,loading=false;
+  let before=null,hasMore=true,loading=false,viewerId=null;
   async function load(reset=false){
     if(loading)return;
     if(!reset&&!hasMore)return;
@@ -101,6 +101,7 @@ async function mount(member,own,root,signedIn){
     if(!reset&&before)params.set("before",String(before));
     try{
       const data=await api("/api/profile-wall?"+params);
+      viewerId=data.viewer_id??null;
       if(reset){timeline.replaceChildren();before=null;hasMore=true;}
       const posts=Array.isArray(data.posts)?data.posts:[];
       for(const post of posts)timeline.append(createPost(post));
@@ -216,7 +217,7 @@ async function mount(member,own,root,signedIn){
           const time=el("small","",date(c.created_at));
           const copy=el("p","",c.body);
           item.append(link,time,copy);
-          if(signedIn&&(own||String(c.user_id)===String(member.viewer_id))){
+          if(signedIn&&(own||String(c.user_id)===String(viewerId))){
             const remove=button("Remove","profile-wall-subtle",async()=>{
               if(!window.confirm("Remove this comment?"))return;
               remove.disabled=true;
@@ -267,7 +268,8 @@ async function mount(member,own,root,signedIn){
       if(!window.confirm("Delete this update and hide all of its comments?"))return;
       try{
         await api("/api/profile-wall/posts/"+post.id,{method:"DELETE"});
-        article.remove();note.textContent="Update deleted.";
+        article.remove();listStatus.textContent="Update deleted.";
+        if(!timeline.children.length)timeline.append(el("p","profile-wall-empty","No updates to show yet."));
       }catch(error){showError(note,error);}
     }
     return article;
