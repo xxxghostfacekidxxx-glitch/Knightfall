@@ -43,6 +43,12 @@ This document distinguishes **tool links**, **repository CI checks**, and **inst
 
 Miss Chaos may review the generated `developer-arsenal-summary.json` after it is supplied by an authorized human or trusted backend. The counts-only summary does not grant access to GitHub APIs and is not evidence that a vulnerability has been fixed. Actual source-code remediation requires reviewing original findings in an appropriately restricted environment, preparing a patch, passing tests and receiving approval. Never publish or send original Semgrep snippets or possible matches for secrets to public chat, issue bodies, or telemetry.
 
+## Usable local report import and guarded backend capability
+
+The private admin command center supports selecting `developer-arsenal-summary.json` from the user's own device. The browser validates totals and inserts only numeric findings and severity counts into Miss Chaos's composer. It does **not** upload the selected file or automatically submit a message.
+
+The backend now defines `god.audit_summary` as a read-only, God-only capability. A separate, server-owned `createChaosAuditSummaryHandler({loadReport})` validates a trusted counts-only document before returning it. The handler **is not connected** to a report store, GitHub Actions, or the deployed Worker router yet. This boundary deliberately avoids giving the model tokens, network access, or repository write permissions. Tests run in the Developer Arsenal CI job.
+
 ## Next engineering milestones
 
 - Introduce testable, least-privilege actions for Miss Chaos (read logs, open issue, propose patch, run targeted tests).
