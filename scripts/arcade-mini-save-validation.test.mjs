@@ -135,3 +135,16 @@ test('Save Progress captures a snapshot before awaiting cloud readiness', async 
  assert.equal(saves[0][1].score,9);
  assert.deepEqual(messages,[]);
 });
+
+test('gameplay doctor accepts race-protected Resume and rejects the old unsafe shape', () => {
+  const doctor = readFileSync(fileURLToPath(new URL('./arcade-gameplay-doctor.mjs', import.meta.url)), 'utf8');
+  const invariantLine = doctor.split('\\n').find(line => line.includes('id:"async-resume-syntax"'));
+  assert.ok(invariantLine, 'doctor must retain an async resume invariant');
+  const definition = invariantLine.match(/pattern:(\\/.*\\/)\\}/);
+  assert.ok(definition, 'doctor resume invariant must have an inspectable regular expression');
+  const pattern = Function('return ' + definition[1])();
+  assert.match(source, pattern, 'doctor must accept the guarded source in main');
+  assert.doesNotMatch('async function resume(){try{await window.AshFallArcade.ready}', pattern, 'unsafe legacy resume must not pass the invariant');
+  assert.match(source, /if\\(!stillCurrent\\(\\)\\)return;const s=await window\\.AshFallArcade/, 'race guard must precede cloud load');
+  assert.match(source, /if\\(!stillCurrent\\(\\)\\)return;if\\(s&&s\\.schema/, 'race guard must follow cloud load');
+});
