@@ -15,6 +15,8 @@ on:
       - 'backend/src/developer-audit-ingest.js'
       - 'backend/src/developer-audit-ingest.test.mjs'
       - 'backend/src/index.js'
+      - 'backend/src/developer-audit-oidc.js'
+      - 'backend/src/developer-audit-oidc.test.mjs'
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -22,6 +24,7 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
+  id-token: write
 jobs:
   diagnostics:
     runs-on: ubuntu-24.04
@@ -39,10 +42,11 @@ jobs:
           node --check backend/chaos-tool-dispatch.mjs
           node --check backend/chaos-audit-summary.mjs
           node --check backend/src/developer-audit-ingest.js
+          node --check backend/src/developer-audit-oidc.js
       - name: Run existing permission and security audits
         run: |
           node scripts/security-surface-inventory.mjs
-          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs
+          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
@@ -106,7 +110,7 @@ jobs:
             echo ""
             echo "- Offline regression and mobile browser fixtures run in the diagnostics job."
             echo "- Biome findings are advisory. Semgrep must complete and produce valid JSON; its findings still require review."
-            echo "- Diagnostics upload uses an optional scoped HMAC ingestion secret; no deployment permissions are granted."
+            echo "- Diagnostics upload uses an short-lived GitHub OIDC identity (or optional HMAC fallback); no deployment permissions are granted."
             echo ""
             echo "### Report files"
             for file in biome-report.txt semgrep-report.json; do
