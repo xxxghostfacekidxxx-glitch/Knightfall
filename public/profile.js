@@ -422,7 +422,7 @@ async function loadProfilePhotos(username,ownProfile){
     panel.querySelector("#profile-photo-upload").addEventListener("submit",async event=>{
       event.preventDefault();const form=event.currentTarget,file=form.elements.file.files?.[0],button=form.querySelector('button[type="submit"]');
       if(!file)return;if(file.size>8*1024*1024){status.textContent="Choose a photo smaller than 8 MB.";return;}if(!["image/jpeg","image/png","image/gif","image/webp"].includes(file.type)){status.textContent="Choose a JPG, PNG, GIF, or WebP image.";return;}button.disabled=true;status.textContent="Uploading photo…";
-      try{const data=new FormData();data.append("file",file);data.append("caption",form.elements.caption.value);data.append("kind","gallery");const response=await fetch(API+"/api/profile/photos",{method:"POST",credentials:"include",body:data});const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||"Photo upload failed.");form.reset();status.textContent="Photo uploaded.";await refresh();}
+      try{const data=new FormData();data.append("file",file);data.append("caption",form.elements.caption.value);data.append("kind","gallery");const response=await fetch(API+"/api/profile/photos",{method:"POST",credentials:"include",body:data});const result=await response.json().catch(()=>({}));if(!response.ok)throw Error(result.error||"Photo upload failed.");form.reset();status.textContent="Photo uploaded.";await refresh();await window.KnightfallProfileHighlights?.refresh?.();}
       catch(error){status.textContent=error.message}
       finally{button.disabled=false;}
     });
@@ -430,7 +430,7 @@ async function loadProfilePhotos(username,ownProfile){
       const button=event.target.closest("[data-photo-delete]");if(!button)return;
       if(!confirm("Delete this photo from your profile?"))return;
       button.disabled=true;
-      try{await api("/api/profile/photos/"+encodeURIComponent(button.dataset.photoDelete),{method:"DELETE"});await refresh();status.textContent="Photo deleted."}
+      try{await api("/api/profile/photos/"+encodeURIComponent(button.dataset.photoDelete),{method:"DELETE"});await refresh();await window.KnightfallProfileHighlights?.refresh?.();status.textContent="Photo deleted."}
       catch(error){status.textContent=error.message;button.disabled=false}
     });
   }
@@ -488,6 +488,8 @@ function refreshProfileJump(){
     [".activity-grid","Activity"],
     [".profile-social-panel","Updates"],
     ["#profile-saved","Saved"],
+    ["#profile-featured","Creations"],
+    ["#profile-achievements","Achievements"],
     ["#profile-photo-gallery","Photos"]
   ];
   const jump=document.createElement("nav");jump.className="profile-jump";jump.setAttribute("aria-label","Profile sections");
@@ -546,6 +548,7 @@ async function load(){
    applyProfileLayout(d.profile_layout);
    try{await loadProfilePhotos(d.user.username,ownProfile)}catch(error){console.warn("Profile photos unavailable",error)}
    applyProfileLayout(d.profile_layout);
+   try{await window.KnightfallProfileHighlights?.mount(root,d.user,ownProfile)}catch(error){console.warn("Profile highlights unavailable",error)}
    try{await window.KnightfallRenderProfileLinks?.(d.user.username,root)}catch(error){console.warn("Profile links unavailable",error)}
    refreshProfileJump();
    if(me.user&&String(me.user.id)!==String(d.user.id)){try{
