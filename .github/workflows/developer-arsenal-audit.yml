@@ -34,6 +34,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify scoped OIDC identity before diagnostics
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: node scripts/developer-arsenal-oidc-diagnostic.mjs
       - name: Validate key JavaScript modules
         run: |
           node --check public/open-source-arsenal.js
