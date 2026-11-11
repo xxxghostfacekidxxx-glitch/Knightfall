@@ -26,3 +26,33 @@
 .astro-compare-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin:.7rem 0}
 .astro-compare-row label{flex:1 1 190px;min-width:0}
 .astro-compare-row input{max-width:100%}
+
+/* Cosmic Atlas: high contrast, keyboard-usable tools on mobile and desktop. */
+.cosmic-atlas{display:grid;gap:.75rem;border-top:1px solid #a4ffe345;padding-top:.9rem;margin-top:.35rem}
+.cosmic-atlas h3{margin:0;color:#ff9be1;font-size:1.14rem;letter-spacing:.025em}
+.cosmic-atlas h4{margin:0 0 .35rem;color:#c5ffed;font-size:1rem}
+.cosmic-atlas-intro{margin:0;font-size:.81rem;line-height:1.55;color:#c9bfd1}
+.cosmic-atlas-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(154px,1fr));gap:.48rem}
+.cosmic-atlas-stat{display:flex;flex-direction:column;gap:.2rem;min-width:0;padding:.63rem .7rem;border:1px solid #c18cff4d;border-radius:11px;background:linear-gradient(135deg,#d264e215,#8cfde40a)}
+.cosmic-atlas-stat span{font-size:.68rem;text-transform:uppercase;letter-spacing:.065em;color:#c0bbd5}
+.cosmic-atlas-stat strong{font-size:.97rem;color:#fce8fa;overflow-wrap:anywhere}
+.cosmic-atlas-stat small{font-size:.72rem;color:#b5eddf;line-height:1.4}
+.cosmic-focus{border:1px solid #ff8bd15b;border-radius:13px;padding:.72rem;background:#100e1dd9;min-width:0}
+.cosmic-focus-label{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.78rem;color:#d9cede}
+.cosmic-focus-select{min-width:0;max-width:100%;flex:1 1 130px;border-radius:8px;padding:.48rem;color:#f8efff;background:#151b28;border:1px solid #a6ffe38c}
+.cosmic-focus-select:focus-visible,.cosmic-reset-focus:focus-visible{outline:2px solid #b1ffe9;outline-offset:3px}
+.cosmic-focus-detail{padding:.6rem 0 .25rem;color:#ddd1e7;font-size:.8rem;line-height:1.55}
+.cosmic-focus-detail strong{color:#fff4f8}
+.cosmic-focus-detail p{margin:.3rem 0}
+.cosmic-focus-detail ul{padding-left:1.25rem;margin:.5rem 0}
+.cosmic-focus-detail li{margin-bottom:.3rem}
+.cosmic-reset-focus{margin-top:.3rem;padding:.43rem .7rem;border-radius:8px;border:1px solid #a6ffe364;background:#a6ffe315;color:#d9fff5;cursor:pointer}
+.cosmic-distribution{border:1px solid #a6ffe346;border-radius:11px;padding:.6rem .75rem}
+.cosmic-distribution summary{cursor:pointer;color:#d5fff2;font-size:.84rem;font-weight:700}
+.cosmic-distribution-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin-top:.65rem}
+.cosmic-distribution-grid strong{font-size:.73rem;color:#f7e4fa}
+.cosmic-bar{display:grid;grid-template-columns:1fr 48px;gap:.4rem;align-items:center;padding:.18rem 0}
+.cosmic-bar span{font-size:.7rem;color:#d2c7d8}
+.cosmic-bar-track{height:6px;border-radius:10px;background:#ffffff23;overflow:hidden}
+.cosmic-bar-track i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#ff77cf,#a6ffe4)}
+@media (max-width:380px){.cosmic-atlas-stats{grid-template-columns:1fr}.cosmic-focus-label{flex-wrap:wrap}.cosmic-focus-select{width:100%;flex-basis:100%}}
