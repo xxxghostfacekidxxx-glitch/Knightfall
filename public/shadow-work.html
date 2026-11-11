@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Explore guided Shadow Work prompts and keep a private reflection journal on Ash-Fall.">
+  <title>Shadow Work | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/moonology.css">
+  <link rel="stylesheet" href="/shadow-work.css">
+  <script src="/nav.js?v=20261111-shadow" defer></script>
+  <script type="module" src="/shadow-work.mjs"></script>
+</head>
+<body class="shadow-work-page">
+  <header class="kf-header"></header>
+  <main class="moon-shell shadow-shell">
+    <header class="moon-intro">
+      <h1>Shadow Work</h1>
+      <p>Look closer at the reactions, needs, and strengths you tend to push aside. Start with one moment you can describe in your own words.</p>
+      <a class="moon-button" href="#prompts">Explore prompts</a>
+      <a class="moon-button" href="#journal">Open Shadow Journal</a>
+    </header>
+    <section class="moon-panel" aria-labelledby="shadow-guide-title">
+      <h2 id="shadow-guide-title">A way to begin</h2>
+      <p>In Jungian psychology, the shadow includes traits and feelings we have trouble recognizing in ourselves. That can include strengths we learned to hide.</p>
+      <ol class="shadow-steps">
+        <li><strong>Describe.</strong> Write down what actually happened and what you noticed in yourself.</li>
+        <li><strong>Get curious.</strong> Ask what you needed, feared, or assumed. Leave room for more than one explanation.</li>
+        <li><strong>Choose one step.</strong> Name something small you could try, such as asking for time to think or practicing a boundary.</li>
+      </ol>
+      <p class="moon-muted">Use this as a self-reflection practice. You can skip a prompt or stop at any point.</p>
+    </section>
+    <section id="prompts" class="moon-panel shadow-anchor" aria-labelledby="shadow-prompts-title">
+      <h2 id="shadow-prompts-title">Guided prompts</h2>
+      <div id="shadow-prompts" class="moon-guide shadow-prompts"></div>
+    </section>
+    <section id="journal" class="moon-panel" aria-labelledby="shadow-journal-title">
+      <h2 id="shadow-journal-title">Shadow Journal</h2>
+      <p class="moon-muted">Keep one private entry per date. Entries sync to your Ash-Fall account.</p>
+      <p id="shadow-journal-status" role="status">Checking your session…</p>
+      <a id="shadow-sign-in" href="/index.html" hidden>Sign in to Ash-Fall</a>
+      <button id="shadow-journal-retry" type="button" hidden>Try again</button>
+      <fieldset id="shadow-journal-controls" hidden>
+        <legend class="moon-sr-only">Write and manage Shadow Journal entries</legend>
+        <form id="shadow-journal-form">
+          <div class="moon-section-head moon-journal-fields">
+            <label>Entry date <input id="shadow-entry-date" type="date" min="1900-01-01" max="2100-12-31" required></label>
+            <label>Title <input id="shadow-entry-title" type="text" maxlength="100" placeholder="Optional"></label>
+          </div>
+          <label>Reflection prompt <select id="shadow-entry-prompt"><option value="">Free writing</option></select></label>
+          <p id="shadow-journal-prompt" class="moon-muted" aria-live="polite"></p>
+          <label>Entry <textarea id="shadow-entry-body" required maxlength="8000" rows="7"></textarea></label>
+          <div class="moon-actions">
+            <button type="submit">Save entry</button>
+            <button id="shadow-delete-entry" type="button" hidden>Delete entry</button>
+          </div>
+        </form>
+        <h3>Past entries</h3>
+        <p id="shadow-journal-history-status" role="status"></p>
+        <ul id="shadow-history" class="moon-history"></ul>
+        <button id="shadow-older" type="button" hidden>Load older entries</button>
+      </fieldset>
+    </section>
+    <section class="moon-panel moon-resources" aria-labelledby="shadow-resources-title">
+      <h2 id="shadow-resources-title">Further reading and exercises</h2>
+      <ul>
+        <li><a href="https://www.thesap.org.uk/articles-on-jungian-psychology-2/about-analysis-and-therapy/the-shadow/">The Jungian Shadow</a> from the Society of Analytical Psychology.</li>
+        <li><a href="https://iaap.org/jung-analytical-psychology/short-articles-on-analytical-psychology/the-shadow/">The Shadow</a> from the International Association for Analytical Psychology.</li>
+        <li><a href="https://www.cci.health.wa.gov.au/Resources/Looking-After-Yourself/Self-Compassion">Building Self-Compassion</a> exercises and worksheets from the Centre for Clinical Interventions.</li>
+      </ul>
+      <a href="/moonology.html">Explore Moonology</a>
+    </section>
+  </main>
+</body>
+</html>

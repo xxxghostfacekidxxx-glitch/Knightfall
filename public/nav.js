@@ -255,6 +255,7 @@
           <a href="/shops.html">Shops</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
           <a href="/moonology.html">Moonology</a>
+          <a href="/shadow-work.html">Shadow Work</a>
           <a href="/open-source-arsenal.html">Open Source</a>
           <a href="/social.html">Groups &amp; Activity</a>
           <a href="/members.html">Find Members</a>
@@ -269,6 +270,7 @@
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
           <a href="/moonology.html#journal">Moon Journal</a>
+          <a href="/shadow-work.html#journal">Shadow Journal</a>
           <a href="/memo-pad.html">📝 Memo Pad</a>
           <a href="/memo-pad.html?tab=inbox">✉ Memo Mail</a>
           <a href="/memo-pad.html?tab=chat">💬 Live Chat</a>

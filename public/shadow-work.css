@@ -1,0 +1,22 @@
+.shadow-work-page { background: #110b14; color: #f7effb; }
+.shadow-shell .moon-intro { background: radial-gradient(ellipse at 88% 12%, #4d2348, #27152e 55%, #140e1d); }
+.shadow-shell .moon-button { margin-inline-end: .4rem; }
+.shadow-steps { margin: .75rem 0; padding-inline-start: 1.3rem; }
+.shadow-steps li { padding-block: .28rem; }
+.shadow-prompts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.shadow-prompts .moon-phase-card { display: flex; flex-direction: column; gap: .25rem; }
+.shadow-prompts .moon-phase-card a { margin-top: auto; padding-top: .4rem; }
+.shadow-anchor { scroll-margin-top: 150px; }
+.shadow-shell select {
+  max-width: 100%;
+  color: #f8efff;
+  background: #241632;
+  border: 1px solid #986bb2;
+  border-radius: 8px;
+  padding: .55rem .7rem;
+  font: inherit;
+  color-scheme: dark;
+}
+.shadow-shell select:focus-visible { outline: 2px solid #e4b8ff; outline-offset: 3px; }
+@media (max-width: 680px) { .shadow-prompts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .shadow-prompts { grid-template-columns: 1fr; } }
