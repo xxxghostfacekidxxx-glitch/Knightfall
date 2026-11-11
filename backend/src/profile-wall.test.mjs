@@ -87,6 +87,18 @@ test("a post's author, not its post number, controls relationship checks",async(
  const ownResult=await own.call("/api/profile-wall/posts/23/comments","GET",{id:11});
  assert.equal(ownResult.status,200);
 });
+test("direct notification link returns only an authorized status and its reactions",async()=>{
+ const publicWall=fixture();
+ const r=await publicWall.call("/api/profile-wall/posts/23","GET",{id:22});
+ assert.equal(r.status,200);
+ assert.equal(r.data.post.id,23);
+ const query=publicWall.state.requests.find(x=>x.sql.includes("AS comment_count"));
+ assert.ok(query);
+ assert.deepEqual(query.params,[22,22,23]);
+ assert.equal((await fixture({privacy:"private"}).call("/api/profile-wall/posts/23","GET",{id:22})).status,404);
+ assert.equal((await fixture({blocked:true}).call("/api/profile-wall/posts/23","GET",{id:22})).status,404);
+ assert.equal((await fixture({postVisibility:"followers"}).call("/api/profile-wall/posts/23","GET",{id:22})).status,404);
+});
 test("reactions require an account and accept only supported choices",async()=>{
  const path="/api/profile-wall/posts/23/reactions";
  assert.equal((await fixture().call(path,"POST",null,{reaction:"fire"})).status,401);
