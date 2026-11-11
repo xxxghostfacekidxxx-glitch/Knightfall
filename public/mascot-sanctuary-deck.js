@@ -4,9 +4,10 @@
  const API='https://api.ash-fall.com',get=id=>document.getElementById(id);
  const make=(tag,cls,txt)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=String(txt);return el};
  const careActions=['feed','play','rest'];
+ const clock=window.KnightfallPetCare;
  const expanded=new Set();
  let state=null,busy=false;
- const ready=(p,a)=>Number(p?.next_care?.[a]||0)<=0;
+ const ready=(p,a)=>a==='needed'?!!clock.recommended(p):clock.remaining(p,a)<=0;
  const lowValue=p=>Math.min(...['hunger','joy','energy'].map(k=>Number(p?.vitals?.[k]??90)));
  const attention=p=>lowValue(p)<65;
  const search=id=>(get(id)?.value||'').trim().toLocaleLowerCase();
@@ -15,7 +16,7 @@
   if(!state)return false;
   const {pets,incubatingSpecies,cinders,level,max}=state,first=pets.length===0;
   return !pets.some(p=>p.species===species.id)&&!incubatingSpecies.includes(species.id)
-   &&pets.length<max&&(first||level>=Number(species.unlock_level||1))
+   &&pets.length<max&&(first?!!species.first_rescue_free:level>=Number(species.unlock_level||1))
    &&cinders>=(first?0:Number(species.cost_cinders||0));
  };
  const matchText=(terms,q)=>!q||terms.some(s=>String(s||'').toLocaleLowerCase().includes(q));
@@ -28,7 +29,7 @@
    [pets.length+' / '+max,'Rescued species','✦'],
    [pets.filter(attention).length,'Need attention','♡'],
    [pets.filter(p=>careActions.some(a=>ready(p,a))).length,'Care available','⚡'],
-   ['Lv '+level,'Top bond level','★']
+   ['Lv '+level,'Highest pet level','★']
   ];
   for(const [number,label,sign] of tiles){
    const tile=make('div','sanctuary-kpi');
@@ -37,7 +38,7 @@
   }
   const action=value('sanctuary-care-type','feed'),n=pets.filter(p=>ready(p,action)).length;
   button.disabled=busy||working||signedIn&&n===0;
-  button.textContent=busy?'Caring for everyone…':!signedIn?'Sign in to care for pets':!pets.length?'Adopt a companion first':n?'Care for '+n+' companions':'Everyone is cooling down';
+  button.textContent=busy?'Caring for everyone…':!signedIn?'Sign in to care for pets':!pets.length?'Adopt a companion first':n?'Care for '+n+' companions':action==='needed'?'No low needs ready':'Everyone is cooling down';
  }
  function bar(label,earned,needed){
   const value=Math.max(0,Math.min(needed,earned));
@@ -127,6 +128,7 @@
   const shopLabel=get('pet-shop-count');if(shopLabel)shopLabel.textContent=(shopCount??0)+' looks';
  }
  function render(){if(!state)return;overview();decorateOwned();decorateAdoption();filters()}
+ setInterval(()=>{if(!document.hidden)overview()},5000);
  document.addEventListener('sanctuary-rendered',event=>{state=event.detail;render()});
  for(const id of ['pet-collection-search','pet-species-search'])get(id)?.addEventListener('input',render);
  for(const id of ['pet-collection-filter','pet-collection-sort','pet-species-filter','pet-species-sort','pet-shop-filter','sanctuary-care-type'])get(id)?.addEventListener('change',render);
@@ -134,7 +136,7 @@
   if(!state||busy)return;
   if(!state.signedIn){location.href='/auth.html?next=%2Fmascot-pets.html';return}
   const action=value('sanctuary-care-type','feed');
-  if(!careActions.includes(action)||!state.pets.some(p=>ready(p,action)))return;
+  if(![...careActions,'needed'].includes(action)||!state.pets.some(p=>ready(p,action)))return;
   busy=true;overview();
   try{
    const res=await fetch(API+'/api/mascot-pets/care-all',{
@@ -143,10 +145,10 @@
    });
    const data=await res.json().catch(()=>({}));
    if(!res.ok)throw Error(data.error||'Unable to care for your companions.');
-   const info=get('pet-message');if(info)info.textContent=data.message||'Care session complete.';
+   const info=get('sanctuary-care-result');if(info)info.textContent=(data.message||'Care session complete.')+(data.cared_for?' +'+data.xp_awarded+' XP · +'+(data.bond_awarded||0)+' bond total':'');
    document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'bulk'}}));
    document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'pets'}}));
-  }catch(error){const info=get('pet-message');if(info)info.textContent=error.message;}
+  }catch(error){const info=get('sanctuary-care-result');if(info)info.textContent=error.message;}
   finally{busy=false;overview()}
  });
 })();

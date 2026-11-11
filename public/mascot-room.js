@@ -1,5 +1,6 @@
 /* Neon Nuisances personal rooms. No local-storage ownership or rewards. */
 (()=>{'use strict';
+const clock=window.KnightfallPetCare;
 const API='https://api.ash-fall.com',q=id=>document.getElementById(id);
 const stage=q('room-stage'),avatar=q('room-avatar'),background=q('room-background'),furniture=q('room-decoration'),
  photo=q('room-pet-image'),outfit=q('room-outfit'),name=q('room-pet-label'),reactionBubble=q('room-reaction-bubble'),picker=q('room-pet'),level=q('room-level'),
@@ -56,11 +57,7 @@ function draw(){
  if(reactionBubble){reactionBubble.textContent=currentReaction?.emote||'';reactionBubble.hidden=!currentReaction}
  if(selected){
   const base=selected.idle||selected.image;
-  let src=base;
-  if(visiblePose!=='idle'&&/[-]idle[.]svg$/.test(base||'')){
-   src=base.replace(/-idle\.svg$/, '-'+visiblePose+'.svg');
-  }
-  img(photo,src);
+  img(photo,clock.poseAsset(base,visiblePose));
  }
  const chosenTheme=themes.find(x=>x.id===theme.value),chosenDecor=decorations.find(x=>x.id===decor.value);
  img(background,visitor?selected?.habitat?.art:(chosenTheme?.art||selected?.habitat?.art));
@@ -110,13 +107,15 @@ function roomSummary(){
 }
 function syncCareButtons(){
  for(const button of document.querySelectorAll('button[data-care]')){
-  const action=button.dataset.care,ritual=['talk','cuddle','groom'].includes(action);
-  const delay=Number((ritual?selected?.next_interaction:selected?.next_care)?.[action]||0);
+  const action=button.dataset.care;
+  const delay=clock.remaining(selected,action);
   button.disabled=visitor||busy||!selected||delay>0;
   const base={feed:'🍕 Give a snack',play:'🎮 Play together',rest:'🌙 Time to rest',talk:'💬 Talk it out',cuddle:'🫂 Cozy cuddle',groom:'🪮 Brush the chaos'}[action]||action;
-  button.textContent=delay>0?base+' · '+Math.ceil(delay/60000)+'m':base;
+  const label=delay>0?base+' · '+clock.label(delay):base;
+  if(button.textContent!==label)button.textContent=label;
  }
 }
+setInterval(()=>{if(!document.hidden&&selected&&!visitor)syncCareButtons()},1000);
 function activate(id){
  if(reactionTimer)clearTimeout(reactionTimer);reactionTimer=0;currentReaction=null;
  selected=pets.find(p=>String(p.id)===String(id))||pets[0]||null;
@@ -173,7 +172,7 @@ picker.addEventListener('change',()=>{
 });
 async function reloadPet(petId){
  const mine=await request('/api/mascot-pets/me');
- pets=mine.pets||[];
+ pets=mine.pets||[];pets.forEach(pet=>clock.remember(pet));
  const prev=selected?.id;
  picker.replaceChildren();
  for(const pet of pets){
@@ -252,7 +251,7 @@ async function launch(){
    picker.setAttribute('aria-label','Choose one of '+visiting+'’s visible companions');
   }else{
    const [mine,quests]=await Promise.all([request('/api/mascot-pets/me'),request('/api/mascot-pets/adventures')]);
-   pets=mine.pets||[];themes=quests.themes||[];decorations=quests.decorations||[];
+   pets=mine.pets||[];pets.forEach(pet=>clock.remember(pet));themes=quests.themes||[];decorations=quests.decorations||[];
   }
   if(!pets.length){
    say('Your sanctuary has no pets yet. Rescue one first to give it a room.');

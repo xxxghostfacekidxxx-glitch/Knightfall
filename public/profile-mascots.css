@@ -31,3 +31,15 @@
 .mascot-profile-pet .mascot-profile-link{margin-top:auto;text-align:center;padding:6px 8px;border:1px solid #79ffe76e;border-radius:9px;text-decoration:none!important}
 .mascot-profile-pet .mascot-profile-link:hover,.mascot-profile-pet .mascot-profile-link:focus-visible{border-color:#c6ff45;background:#24302455;outline-offset:2px}
 @media(max-width:620px){.mascot-profile-pet{flex-basis:144px;min-height:209px}.mascot-profile-intro{padding:10px}}
+
+.mascot-profile-pet {
+  background:radial-gradient(ellipse at 50% 28%,#6c4a9980,transparent 62%),linear-gradient(165deg,#252139,#121725);
+  border-color:#655781;
+  border-radius:16px;
+}
+.mascot-profile-pet img {
+  width:104px;height:104px;
+  filter:drop-shadow(0 7px 10px #070712) drop-shadow(0 0 12px #bb96ef50);
+}
+.mascot-profile-pet.featured { border-color:#d0ac68;box-shadow:0 0 18px #c7a45c22; }
+.mascot-profile-pet .mascot-profile-link { min-height:44px;display:grid;place-items:center; }

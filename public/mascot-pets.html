@@ -6,27 +6,43 @@
 <title>Neon Nuisances Sanctuary | Knightfall</title>
 <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
 <link rel="stylesheet" href="/mascot-pets.css?v=20261103-sanctuary-deck1&rev=20261104-bond1">
+<link rel="stylesheet" href="/mascot-sanctuary-refresh.css?v=20261111">
 </head><body class="sanctuary-page">
 <header class="kf-header"></header>
 <main class="sanctuary-shell">
-  <header class="sanctuary-header"><span class="eyebrow">DEVIL TOOLS · NEON NUISANCES</span>
-  <h1>THE SANCTUARY <span>✦</span></h1>
-  <p>Rescue all 31 species, level up to unlock rarer companions, earn Cinders for new rescues, and customize each pet's own habitat with collectible accessories. Your first rescue is free. No pet dies when you miss a day.</p>
-  <div class="sanctuary-links"><a href="/mascot-room.html">✦ Interactive Pet Rooms</a><a href="/profile.html">My profile</a><a href="/devil-tools.html">Devil Tools art gallery</a><a href="/mascot-trials.html">🎮 Species Trials</a></div>
+  <header class="sanctuary-header">
+  <h1>Neon Nuisances</h1>
+  <p>Rescue a misfit, make it a home, and see what your friendship grows into.</p>
+  <div class="sanctuary-links"><a href="#companion-spotlight">Care for a pet</a><a href="#adoption-gallery">Find a companion</a></div>
   </header>
+  <nav class="sanctuary-directory" aria-label="Sanctuary sections">
+    <a href="#my-pets-section">Collection</a><a href="#adoption-gallery">Adoption</a>
+    <a href="/mascot-room.html">Pet rooms</a><a href="#sanctuary-expeditions">Expeditions</a>
+    <a href="#sanctuary-hatchery">Hatchery</a><a href="#sanctuary-wardrobe">Wardrobe</a>
+    <a href="/mascot-trials.html">Trials</a><a href="#cinder-catch">Cinder Catch</a><a href="#sanctuary-passport">Passport</a>
+  </nav>
   <div class="pet-economy"><strong id="pet-wallet" aria-live="polite">Loading Cinders wallet…</strong><span>Earn Cinders through daily claims and arcade missions. Premium accessories are cosmetic only.</span></div>
   <div role="status" aria-live="polite" id="pet-message">Loading the sanctuary…</div>
 
+  <section id="companion-spotlight" aria-labelledby="spotlight-title">
+    <div class="sanctuary-section-heading"><h2 id="spotlight-title">Companion care</h2>
+      <label id="spotlight-picker-label" hidden>Choose companion <select id="spotlight-picker"></select></label>
+    </div>
+    <div id="spotlight-card"><p class="pet-empty">Loading your companions…</p></div>
+    <p id="spotlight-result" role="status"></p>
+  </section>
+
   <section class="sanctuary-command-deck" aria-labelledby="sanctuary-command-title">
-   <div class="sanctuary-section-heading"><h2 id="sanctuary-command-title">⚡ Sanctuary Command Deck</h2><span>One home for your whole crew</span></div>
+   <div class="sanctuary-section-heading"><h2 id="sanctuary-command-title">Crew care</h2></div>
    <div id="sanctuary-overview" class="sanctuary-overview" aria-live="polite">
     <p>Checking your companions, their moods and their progress…</p>
    </div>
    <div class="sanctuary-care-toolbar">
-    <div><strong>Care for your crew</strong><p>Feed, play or rest every companion whose cooldown has finished. All rewards are checked by the server.</p></div>
+    <div><strong>Care for your crew</strong><p>Care by need gives each eligible pet one action for its lowest meter below 65%.</p></div>
     <label for="sanctuary-care-type">Care action</label>
-    <select id="sanctuary-care-type"><option value="feed">🍕 Feed</option><option value="play">🎮 Play</option><option value="rest">🌙 Rest</option></select>
+    <select id="sanctuary-care-type"><option value="needed">Care by need</option><option value="feed">🍕 Feed</option><option value="play">🎮 Play</option><option value="rest">🌙 Rest</option></select>
     <button id="sanctuary-care-all" type="button" disabled>Loading companions…</button>
+    <output id="sanctuary-care-result" role="status"></output>
    </div>
   </section>
   <section id="my-pets-section" aria-labelledby="my-pets-title">
@@ -52,10 +68,10 @@
    <p class="cinder-catch-help">← → or A / D to move. On phones, drag your finger across the game field. Collect 12 crystals before time runs out.</p>
    <p id="cinder-catch-status" role="status" aria-live="polite">Loading your companion collection…</p>
   </section>
-  <section aria-labelledby="species-trials-title" class="pet-trials-promo"><div class="sanctuary-section-heading"><h2 id="species-trials-title">✦ 31 Species Trials</h2><span>Four full minigame modes</span></div><p class="pet-shop-intro">Every owned mascot has a challenge designed for its species. Play Crypt Memory, Rune Signal, Toxic Catch, or Night Dodge, with touch and keyboard support.</p><a href="/mascot-trials.html" class="pet-trials-link">Open Species Trials Arcade</a></section>
-  <section aria-labelledby="hatchery-title">
+  <section aria-labelledby="species-trials-title" class="pet-trials-promo"><div class="sanctuary-section-heading"><h2 id="species-trials-title">Species Trials</h2><span>Four full minigame modes</span></div><p class="pet-shop-intro">Every owned mascot has a challenge designed for its species. Play Crypt Memory, Rune Signal, Toxic Catch, or Night Dodge, with touch and keyboard support.</p><a href="/mascot-trials.html" class="pet-trials-link">Open Species Trials Arcade</a></section>
+  <section id="sanctuary-hatchery" aria-labelledby="hatchery-title">
    <div class="sanctuary-section-heading"><h2 id="hatchery-title">🥚 Rescue Egg Hatchery</h2><span id="pet-shells">0 Rescue Shells</span></div>
-   <p class="pet-shop-intro">Complete three quests to craft a species-specific egg, then incubate it for 35 minutes. Hatchlings join your existing 31-species collection. No blind boxes, no paid egg roulette.</p>
+   <p class="pet-shop-intro">Complete three quests to craft a species-specific egg, then incubate it for 35 minutes. Hatchlings join your collection. No blind boxes, no paid egg roulette.</p>
    <div id="pet-eggs" class="pet-egg-grid"></div>
   </section>
   <section id="sanctuary-passport" aria-labelledby="passport-title">
@@ -65,10 +81,10 @@
    <div id="passport-badges" class="passport-grid"></div>
   </section>
   <section id="adoption-gallery" aria-labelledby="adopt-title">
-   <div class="sanctuary-section-heading"><h2 id="adopt-title">Adoption gallery</h2><span id="pet-adoption-count">31 species · First rescue free</span></div>
+   <div class="sanctuary-section-heading"><h2 id="adopt-title">Adoption gallery</h2><span id="pet-adoption-count">First rescue free</span></div>
    <div class="pet-filter-bar">
     <label for="pet-species-search">Find a species</label><input id="pet-species-search" type="search" placeholder="Name, species or personality…" autocomplete="off">
-    <label for="pet-species-filter">Availability</label><select id="pet-species-filter"><option value="all">All 31</option><option value="available">Not yet owned</option><option value="ready">Ready to rescue</option><option value="locked">Locked</option><option value="owned">Already adopted</option></select>
+    <label for="pet-species-filter">Availability</label><select id="pet-species-filter"><option value="all">All species</option><option value="available">Not yet owned</option><option value="ready">Ready to rescue</option><option value="locked">Locked</option><option value="owned">Already adopted</option></select>
     <label for="pet-species-sort">Sort by</label><select id="pet-species-sort"><option value="level">Unlock level</option><option value="name">Name A–Z</option><option value="price">Lowest price</option></select>
    </div>
    <div id="adopt-pets" class="pet-grid"></div>
@@ -85,10 +101,11 @@
   </section>
 </main>
 <script src="/nav.js?v=20261102-mascot6" defer></script>
-<script src="/mascot-pets.js?v=20261105-roster28" defer></script>
+<script src="/mascot-care-clock.js?v=20261111" defer></script>
+<script src="/mascot-pets.js?v=20261111-sanctuary" defer></script>
 <script src="/misfit-avatar.js?v=20261105-avatar3" defer></script>
-<script src="/mascot-pet-life.js?v=20261105-life1" defer></script>
-<script src="/mascot-sanctuary-deck.js?v=20261103-sanctuary-deck1" defer></script>
+<script src="/mascot-pet-life.js?v=20261111" defer></script>
+<script src="/mascot-sanctuary-deck.js?v=20261103-sanctuary-deck1&rev=20261111" defer></script>
 <script src="/mascot-adventures.js?v=20261102-adventures1" defer></script>
 <script src="/mascot-passport.js?v=20261102-passport1" defer></script>
 <script src="/mascot-cinder-catch.js?v=20261102-cinder-catch2" defer></script>

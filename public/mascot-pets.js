@@ -2,9 +2,12 @@
 (()=>{'use strict';
 const API='https://api.ash-fall.com';
 const owned=document.querySelector('#owned-pets'),adopt=document.querySelector('#adopt-pets'),
- shop=document.querySelector('#pet-shop'),message=document.querySelector('#pet-message'),
+ shop=document.querySelector('#pet-shop'),spotlight=document.querySelector('#spotlight-card'),picker=document.querySelector('#spotlight-picker'),message=document.querySelector('#pet-message'),
  slots=document.querySelector('#pet-slots'),balance=document.querySelector('#pet-wallet');
 if(!owned||!adopt||!shop||!message||!slots)return;
+const clock=window.KnightfallPetCare;
+let spotlightId=null;
+const openDetails=new Map();
 let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=31,
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
@@ -25,6 +28,7 @@ function cardBase(item,image,ownedCard=false){
  const card=make('article','pet-card'+(item.featured?' featured':'')+(item.rarity==='Starborn'?' starborn':''));
  if(ownedCard)card.dataset.petId=String(item.id);
  else card.dataset.species=item.id;
+ card.dataset.rarity=item.rarity||'Misfit';
  const visual=make('div','pet-art'),src=safeSrc(image);
  if(ownedCard&&item.habitat?.art){
   const scene=safeSrc(item.habitat.art);
@@ -75,7 +79,8 @@ function dressUp(card,pet){
   select.value=selected;row.append(label,select);zone.append(row);
  }
  zone.append(button('Save habitat','habitat',working||!habitatThemes.length));
- card.append(wrap,zone);
+ const details=detailsFor(pet.id,'style','Wardrobe & habitat');
+ details.append(wrap,zone);card.append(details);
 }
 function renderMoments(pet){
  const list=Array.isArray(pet.last_moments)?pet.last_moments:[];
@@ -94,12 +99,84 @@ function renderMoments(pet){
  }
  details.append(ul);return details;
 }
+function detailsFor(id,key,label){
+ const stateKey=id+'-'+key,details=make('details','pet-customize');
+ details.open=openDetails.get(stateKey)===true;
+ details.append(make('summary','',label));
+ details.addEventListener('toggle',()=>{if(details.isConnected)openDetails.set(stateKey,details.open)});
+ return details;
+}
+const actionLabels={feed:'Feed',play:'Play',rest:'Rest',talk:'Talk',cuddle:'Cuddle',groom:'Groom'};
+function careButtons(pet,ritual=false){
+ const list=make('div','pet-actions'+(ritual?' pet-rituals':''));
+ for(const action of ritual?['talk','cuddle','groom']:['feed','play','rest']){
+  const b=button(actionLabels[action],ritual?'interact':action,working);
+  if(ritual)b.dataset.interaction=action;
+  b.dataset.petCare=action;
+  list.append(b);
+ }
+ return list;
+}
+function tickCare(){
+ const petsById=new Map(pets.map(pet=>[String(pet.id),pet]));
+ for(const b of document.querySelectorAll('button[data-pet-care]')){
+  const pet=petsById.get(b.closest('[data-pet-id]')?.dataset.petId);
+  if(!pet)continue;
+  const action=b.dataset.petCare,delay=clock.remaining(pet,action);
+  const label=actionLabels[action]+(delay?' · '+clock.label(delay):'');
+  if(b.textContent!==label)b.textContent=label;
+  b.disabled=working||delay>0;
+ }
+}
+function renderSpotlight(){
+ if(!spotlight||!picker)return;
+ spotlight.replaceChildren();
+ const pet=pets.find(item=>item.id===spotlightId)||pets.find(item=>item.featured)||pets[0];
+ picker.parentElement.hidden=!pet;
+ if(!pet){
+  const starters=make('div','spotlight-starters');
+  for(const item of species.filter(item=>item.first_rescue_free).slice(0,4)){
+   const image=make('img');image.src=safeSrc(item.idle||item.svg);image.alt='';starters.append(image);
+  }
+  const panel=make('div','spotlight-empty');
+  panel.append(starters,make('h3','','Your first rescue is free'),make('p','','Choose a starter in the adoption gallery to meet your first companion.'));
+  const link=make('a','pet-room-link','Meet the starters');link.href='#adoption-gallery';panel.append(link);
+  spotlight.append(panel);
+  return;
+ }
+ spotlightId=pet.id;
+ picker.replaceChildren(...pets.map(item=>{const option=make('option','',item.nickname);option.value=String(item.id);return option}));
+ picker.value=String(pet.id);
+ const card=cardBase({...pet,habitat:null},pet.idle||pet.image||pet.portrait,true);
+ card.classList.add('spotlight-card');
+ const info=make('div','spotlight-info');
+ info.append(make('p','spotlight-species',pet.species_name+' · Lv '+pet.level),make('h3','',pet.nickname),
+  make('p','spotlight-lore',pet.lore||pet.mood?.tip||''),make('p','pet-personality',(pet.temperament||'Curious')+' · Loves '+(pet.favorite||'adventures')));
+ const bars=make('div','pet-bars');
+ for(const [key,label] of [['hunger','Food'],['joy','Joy'],['energy','Energy']])bars.append(statRow(label,pet.vitals?.[key]));
+ const bond=pet.relationship;
+ const status=make('p','spotlight-status',[pet.mood?.label,bond?.label,bond&&bond.experience+' bond'].filter(Boolean).join(' · '));
+ const note=make('p','spotlight-recommendation');
+ const actions=careButtons(pet);
+ const room=make('a','pet-room-link','Visit room');room.href='/mascot-room.html?pet='+encodeURIComponent(pet.id);
+ info.append(bars,status,note,actions,careButtons(pet,true),room);
+ card.append(info);spotlight.append(card);
+}
+function updateSpotlightNote(){
+ const pet=pets.find(item=>item.id===spotlightId),note=spotlight?.querySelector('.spotlight-recommendation');
+ if(!pet||!note)return;
+ const action=clock.recommended(pet),label=action?('Suggested care · '+actionLabels[action]):'Your companion can rest here between visits.';
+ if(note.textContent!==label)note.textContent=label;
+ spotlight.querySelectorAll('[data-pet-care]').forEach(button=>button.classList.toggle('primary',button.dataset.petCare===action));
+}
+if(picker)picker.addEventListener('change',()=>{spotlightId=Number(picker.value);document.querySelector('#spotlight-result').textContent='';renderSpotlight();tickCare();updateSpotlightNote()});
+setInterval(()=>{if(!document.hidden){tickCare();updateSpotlightNote()}},1000);
 function renderOwned(){
  owned.replaceChildren();
  slots.textContent=pets.length+' / '+max+' companions';
  if(balance)balance.textContent=signedIn?'✦ '+cinders.toLocaleString()+' Cinders · Sanctuary Level '+level:'Sign in to view your Cinders balance';
  if(!signedIn){owned.append(make('p','pet-empty','Sign in to collect pets and keep everything saved to your account.'));return}
- if(!pets.length){owned.append(make('p','pet-empty','Your collection is empty. Your first rescue is free, and you can eventually own all 31 species.'));return}
+ if(!pets.length){owned.append(make('p','pet-empty','Your collection is empty. Your first rescue is free, and you can eventually rescue every species.'));return}
  for(const pet of pets){
   const card=cardBase(pet,pet.idle||pet.image||pet.portrait,true),heading=make('div','pet-label');
   heading.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
@@ -123,26 +200,19 @@ function renderOwned(){
   const bond=make('div','pet-relationship');
   const bondHead=make('div','pet-relationship-head');bondHead.append(make('strong','','♡ '+relationship.label),make('small','',Number(relationship.experience||0)+' bond'));
   const bondTrack=make('div','pet-relationship-track'),bondFill=make('i');bondFill.style.width=Math.max(0,Math.min(100,Number(relationship.progress)||0))+'%';bondTrack.append(bondFill);bond.append(bondHead,bondTrack);card.append(bond);
-  const actions=make('div','pet-actions');
-  for(const [action,label] of [['feed','🍕 Feed'],['play','🎮 Play'],['rest','🌙 Rest']]){
-   const delay=Number(pet.next_care?.[action]||0);
-   actions.append(button(delay?label+' '+Math.ceil(delay/60000)+'m':label,action,working||delay>0));
-  }
-  const rituals=make('div','pet-actions pet-rituals');
-  for(const [action,label] of [['talk','💬 Talk'],['cuddle','🫂 Cuddle'],['groom','🪮 Groom']]){
-   const delay=Number(pet.next_interaction?.[action]||0);
-   const b=button(delay?label+' '+Math.ceil(delay/60000)+'m':label,'interact',working||delay>0);
-   b.dataset.interaction=action;rituals.append(b);
-  }
-  card.append(rituals);
-  actions.append(button('✦ Display','feature',working||pet.featured),button('✎ Rename','rename',working));
-  card.append(actions);
-  const roomLink=make('a','pet-room-link','⌂ Visit '+pet.nickname+'\'s room');
+  const quick=make('div','pet-actions');
+  quick.append(button('Open care','spotlight',false,true));
+  const roomLink=make('a','pet-room-link','Visit room');
   roomLink.href='/mascot-room.html?pet='+encodeURIComponent(String(pet.id));
-  card.append(roomLink);
-  const trialLink=make('a','pet-room-link pet-trial-shortcut','⚡ '+pet.nickname+'\'s Species Trial');
+  quick.append(roomLink);card.append(quick);
+  const more=detailsFor(pet.id,'care','More care & profile options');
+  more.append(careButtons(pet),careButtons(pet,true));
+  const actions=make('div','pet-actions');
+  actions.append(button('Display on profile','feature',working||pet.featured),button('Rename','rename',working));
+  more.append(actions);
+  const trialLink=make('a','pet-room-link pet-trial-shortcut','Species Trial');
   trialLink.href='/mascot-trials.html?pet='+encodeURIComponent(String(pet.id));
-  card.append(trialLink);
+  more.append(trialLink);card.append(more);
   dressUp(card,pet);
   owned.append(card);
  }
@@ -186,9 +256,9 @@ function renderShop(){
   card.append(actions);shop.append(card);
  }
 }
-function render(){renderOwned();renderAdopt();renderShop();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
+function render(){renderOwned();renderSpotlight();renderAdopt();renderShop();tickCare();updateSpotlightNote();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
 function updateMe(d){
- pets=d.pets||[];wardrobe=d.wardrobe||[];cinders=Number(d.wallet_balance||0);
+ pets=d.pets||[];pets.forEach(pet=>clock.remember(pet));wardrobe=d.wardrobe||[];cinders=Number(d.wallet_balance||0);
  level=Number(d.sanctuary_level||1);max=d.max_owned||31;
 }
 async function reload(){
@@ -206,17 +276,19 @@ async function reload(){
  if(checkout==='cancelled')say('Checkout cancelled. No new item was granted.');
  render();
 }
-async function perform(fn){
- if(working)return;working=true;render();
- try{const result=await fn();say(result?.message||'Your Sanctuary was updated.');
+async function perform(fn,localStatus){
+ if(working)return;
+ working=true;tickCare();
+ const feedback=text=>{say(text);if(localStatus)localStatus.textContent=text};
+ try{const result=await fn();feedback(result?.message||'Your Sanctuary was updated.');
   updateMe(await api('/api/mascot-pets/me'));
   document.dispatchEvent(new CustomEvent('sanctuary-changed',{detail:{source:'pets'}}));
- }catch(error){say(error.message)}
+ }catch(error){feedback(error.message)}
  finally{working=false;render()}
 }
 document.addEventListener('click',event=>{
  const b=event.target.closest('button[data-action]');
- if(!b||!([owned,adopt,shop].some(root=>root.contains(b))))return;
+ if(!b||working||!([owned,adopt,shop,spotlight].some(root=>root?.contains(b))))return;
  const action=b.dataset.action,card=b.closest('.pet-card');if(!card||action==='owned')return;
  if(action==='adopt'){
   if(!signedIn){location.href='/auth.html?next=%2Fmascot-pets.html';return}
@@ -241,11 +313,18 @@ document.addEventListener('click',event=>{
  }
  const id=Number(card.dataset.petId);
  if(!signedIn||!Number.isSafeInteger(id)||id<=0)return;
+ if(action==='spotlight'){
+  spotlightId=id;document.querySelector('#spotlight-result').textContent='';renderSpotlight();tickCare();updateSpotlightNote();
+  picker.focus({preventScroll:true});
+  spotlight.closest('section').scrollIntoView({block:'start'});
+  return;
+ }
+ const localStatus=spotlight?.contains(card)?document.querySelector('#spotlight-result'):null;
  if(['feed','play','rest'].includes(action)){
-  perform(()=>api('/api/mascot-pets/'+id+'/care',{method:'POST',body:JSON.stringify({action})}));return;
+  perform(()=>api('/api/mascot-pets/'+id+'/care',{method:'POST',body:JSON.stringify({action})}),localStatus);return;
  }
  if(action==='interact'){
-  perform(()=>api('/api/mascot-pets/'+id+'/interact',{method:'POST',body:JSON.stringify({action:b.dataset.interaction})}));return;
+  perform(()=>api('/api/mascot-pets/'+id+'/interact',{method:'POST',body:JSON.stringify({action:b.dataset.interaction})}),localStatus);return;
  }
  if(action==='feature'){perform(()=>api('/api/mascot-pets/'+id+'/feature',{method:'PUT',body:'{}'}));return}
  if(action==='rename'){

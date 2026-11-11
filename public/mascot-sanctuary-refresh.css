@@ -1,0 +1,133 @@
+/* Sanctuary and room presentation share the conservatory artwork and controls. */
+.sanctuary-page,.room-page {
+  --pet-ink:#0c101b;
+  --pet-panel:#151828;
+  --pet-line:#3b4059;
+  --pet-mint:#abf6da;
+  --pet-muted:#c3c2d6;
+  --pet-conservatory:url('/assets/devil-tools/neon-nuisances/habitats/moonlit-conservatory.webp');
+  color:#faf1fd;
+  background:#0c101b;
+}
+.sanctuary-header,.room-intro {
+  border:1px solid #5d526f;
+  border-radius:24px;
+  background:#15182b linear-gradient(90deg,#0c0e19f2 0%,#0c0e19b8 56%,#0c0e194f 100%);
+  background-image:linear-gradient(90deg,#0c0e19f2 0%,#0c0e19ac 53%,#0c0e1942 100%),var(--pet-conservatory);
+  background-position:center,center 46%;
+  background-size:cover;
+  padding:clamp(24px,5vw,58px);
+  box-shadow:0 24px 52px #05060e88;
+}
+.sanctuary-header::before { content:none; }
+.sanctuary-header h1,.room-intro h1 {
+  font-size:clamp(2.35rem,7vw,5.4rem);
+  letter-spacing:-.055em;
+  font-weight:850;
+  text-shadow:0 4px 24px #080c18e0;
+}
+.sanctuary-header p,.room-intro>p { max-width:43ch; margin:.85rem 0; color:#eadff4; }
+.sanctuary-links,.room-links { gap:.6rem; margin-top:1rem; }
+.sanctuary-links a,.sanctuary-directory a,.room-links a,.spotlight-card .pet-room-link,.spotlight-empty .pet-room-link {
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  border:1px solid #826b9d;border-radius:10px;background:#211932ee;
+  padding:.5rem .8rem;color:#f8edff;text-decoration:none;font-weight:750;
+}
+.sanctuary-links a:first-child,.spotlight-empty .pet-room-link { color:#14231f;background:var(--pet-mint);border-color:var(--pet-mint); }
+.sanctuary-directory { display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1rem; }
+.sanctuary-directory a { background:#161b2a;border-color:#3b4059;font-size:.82rem; }
+.sanctuary-directory a:hover,.room-links a:hover { border-color:#abf6da; }
+.sanctuary-shell section[id] { scroll-margin-top:140px; }
+.sanctuary-shell [hidden],.room-shell [hidden] { display:none!important; }
+.sanctuary-shell :is(button,select,a):focus-visible,.room-shell :is(button,select,a):focus-visible {
+  outline:2px solid #abf6da;outline-offset:3px;
+}
+#spotlight-picker-label { display:flex;align-items:center;flex-wrap:wrap;gap:.45rem;color:var(--pet-muted);font-size:.88rem; }
+#spotlight-picker { min-height:44px;max-width:100%;color:white;background:#19182b;border:1px solid #77658e;border-radius:10px;padding:.45rem .65rem;font:inherit; }
+#spotlight-card .spotlight-card {
+  --pet-aura:#a189d9;
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:stretch;
+  padding:0;border-color:#695581;gap:0;background:var(--pet-panel);border-radius:20px;
+}
+#spotlight-card .spotlight-card.starborn { --pet-aura:#f4cf83;border-color:#aa8551; }
+#spotlight-card .spotlight-card .pet-art {
+  height:auto;min-height:340px;border-radius:0;
+  background-image:linear-gradient(180deg,#0e122333 0%,#14122617 52%,#090b17b8 100%),var(--pet-conservatory);
+  background-size:cover;background-position:center;
+}
+#spotlight-card .spotlight-card .pet-art::before {
+  width:56%;height:19%;top:74%;border:1px solid var(--pet-aura);
+  transform:rotateX(58deg);box-shadow:0 0 35px #b28bde8a,inset 0 0 42px #8d79bd66;
+  background:radial-gradient(ellipse,#ae97e255,transparent 66%);
+}
+#spotlight-card .spotlight-card .pet-art img {
+  width:clamp(164px,24vw,275px);height:clamp(164px,24vw,275px);
+}
+#spotlight-card .spotlight-card .pet-art .pet-base-image { filter:drop-shadow(0 14px 11px #030612) drop-shadow(0 0 16px #9fa4f059); }
+#spotlight-card .spotlight-card:hover .pet-art img.pet-base-image { transform:none; }
+#spotlight-card .pet-reacted .pet-art { animation:none; }
+#spotlight-card .pet-reacted .pet-base-image { animation:pet-happy-hop .58s ease-out; }
+#spotlight-card .pet-reacted[data-reaction="rest"] .pet-base-image { animation:pet-settle .7s ease-out; }
+#spotlight-card .pet-reacted[data-reaction="play"] .pet-base-image { animation:pet-play .65s ease-out; }
+@keyframes pet-settle { 50% { transform:translateY(8px) scale(.96); } }
+@keyframes pet-play { 28% { transform:translate(-10px,-15px) rotate(-7deg); } 65% { transform:translate(8px,-5px) rotate(5deg); } }
+.spotlight-info { min-width:0;display:grid;gap:.65rem;align-content:center;padding:clamp(15px,3.5vw,32px); }
+.spotlight-info h3 { margin:0;font-size:clamp(1.65rem,3.7vw,2.5rem);line-height:1.04;overflow-wrap:anywhere; }
+.spotlight-info p { margin:0; }
+.spotlight-species,.spotlight-status { color:#abf6da;font-size:.82rem;font-weight:750; }
+.spotlight-lore { color:var(--pet-muted);font-size:.87rem;line-height:1.5; }
+.spotlight-recommendation { color:#ead3f4;font-size:.81rem; }
+.spotlight-info .pet-actions { display:grid;grid-template-columns:repeat(3,minmax(0,1fr)); }
+.spotlight-info .pet-room-link { justify-self:start; }
+.spotlight-empty {
+  min-height:250px;padding:1.2rem;text-align:center;border:1px solid #695581;border-radius:20px;
+  background:#161827 linear-gradient(180deg,#10122143,#101221e8);
+  background-image:linear-gradient(180deg,#10122152,#101221ed),var(--pet-conservatory);
+  background-size:cover;background-position:center;
+}
+.spotlight-empty h3 { margin:.35rem 0; }
+.spotlight-empty p { color:var(--pet-muted);margin:.45rem 0 .8rem; }
+.spotlight-starters { display:flex;justify-content:center;gap:.35rem; }
+.spotlight-starters img { width:min(22%,96px);height:auto;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 4px 9px #000); }
+#spotlight-result,#sanctuary-care-result { color:#abf6da;font-size:.9rem; }
+#spotlight-result:empty,#sanctuary-care-result:empty { display:none; }
+#sanctuary-care-result { flex-basis:100%; }
+.sanctuary-command-deck,.pet-filter-bar,.pet-economy {
+  background:#151828;border-color:#3b4059;
+}
+.sanctuary-kpi { border-color:#3b4059;background:#1b1e30; }
+.sanctuary-shell .pet-owned-grid .pet-card,.sanctuary-shell #adopt-pets .pet-card,.sanctuary-shell #pet-shop .pet-card {
+  border-radius:16px;border-color:#46465e;background:linear-gradient(150deg,#222033,#151828);
+}
+.sanctuary-shell .pet-owned-grid .pet-card.featured,.sanctuary-shell #adopt-pets .pet-card.starborn { border-color:#c3a464; }
+.sanctuary-shell .pet-card:not(.spotlight-card) .pet-art {
+  background:radial-gradient(ellipse at 50% 66%,#63509a8a,transparent 68%),linear-gradient(180deg,#20182f,#101828);
+}
+.sanctuary-shell .pet-card.starborn:not(.spotlight-card) .pet-art {
+  background:radial-gradient(ellipse at 50% 66%,#d3a35063,transparent 65%),linear-gradient(180deg,#282236,#151729);
+}
+.sanctuary-shell .pet-card:not(.spotlight-card) .pet-art::before { border:1px solid #9784b253;box-shadow:0 0 26px #aa79df39; }
+.sanctuary-shell .pet-card .pet-art .pet-habitat-scene { opacity:.7; }
+.sanctuary-shell .pet-card .pet-art img.pet-base-image { transition:filter .22s; }
+.sanctuary-shell .pet-card:hover .pet-art img.pet-base-image { transform:none;filter:drop-shadow(0 7px 10px #0009) drop-shadow(0 0 10px #b88df04d); }
+.sanctuary-shell .pet-card .pet-actions :is(button,a),.room-shell .room-controls button { min-height:44px; }
+.sanctuary-shell .pet-customize>.pet-actions { margin:.5rem; }
+.sanctuary-shell .pet-customize>.pet-room-link { margin:.5rem; }
+.sanctuary-shell .pet-actions button.primary { background:#abf6da;border-color:#abf6da;color:#152420; }
+.sanctuary-shell .pet-actions button { font-variant-numeric:tabular-nums; }
+.room-intro h1 span { color:#abf6da; }
+.room-workspace { background:#141727;border-color:#454765; }
+.room-stage-wrap { border:1px solid #75628d;border-radius:18px;box-shadow:0 18px 45px #070612af; }
+.room-stage { background-image:linear-gradient(#11152733,#0c101b96),var(--pet-conservatory);background-size:cover;background-position:center; }
+.room-vignette { background:radial-gradient(ellipse at 50% 48%,transparent 26%,#080a1580 100%),linear-gradient(0deg,#080b1366,transparent 28%); }
+.room-floor { background:linear-gradient(90deg,transparent,#b5f2db72,transparent);box-shadow:none; }
+.room-avatar>#room-pet-image { filter:drop-shadow(0 13px 9px #04050beb) drop-shadow(0 0 10px #9b85cd69); }
+.room-shell .room-controls fieldset,.room-companion-summary { border-color:#4e4968;background:#1a1c2d; }
+@media(max-width:650px) {
+  #spotlight-card .spotlight-card { grid-template-columns:minmax(0,1fr); }
+  #spotlight-card .spotlight-card .pet-art { min-height:238px; }
+  .sanctuary-shell,.room-shell { padding-inline:12px; }
+  .sanctuary-directory { gap:.3rem; }
+  .sanctuary-directory a { padding-inline:.55rem; }
+}
+@media(prefers-reduced-motion:reduce) { #spotlight-card .pet-reacted .pet-base-image { animation:none!important; } }

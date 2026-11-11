@@ -54,17 +54,30 @@ const moodLines={
 function choose(list,seed){let h=0;for(let i=0;i<String(seed).length;i++)h=(h*31+String(seed).charCodeAt(i))|0;return list[Math.abs(h)%list.length]}
 function renderThoughts(detail){
  for(const pet of detail?.pets||[]){
-  const card=document.querySelector('.pet-card[data-pet-id="'+Number(pet.id)+'"]');
-  if(!card)continue;
-  let thought=card.querySelector('.pet-thought');
-  if(!thought){thought=document.createElement('p');thought.className='pet-thought';thought.setAttribute('role','status');thought.setAttribute('aria-live','polite');card.querySelector('.pet-personality')?.after(thought)}
-  const action=life.confirmed&&life.confirmed.id===Number(pet.id)?life.confirmed.action:null;
-  const mood=pet.mood?.id||'content';
-  thought.dataset.tone=mood;
-  const unique=speciesLines[pet.species]||'I am glad we found each other.';
-  const lines=action==='talk'?[unique]:action?reactions[action]:moodLines[mood]||moodLines.content;
-  thought.textContent=action==='talk'?'“'+unique+'”':action?choose(lines,pet.id+action+Math.floor(Date.now()/3000)):choose([...lines,unique],pet.id+mood+new Date().getUTCDay());
-  if(action){card.classList.remove('pet-reacted');void card.offsetWidth;card.classList.add('pet-reacted')}
+  const cards=document.querySelectorAll('.pet-card[data-pet-id="'+Number(pet.id)+'"]');
+  for(const card of cards){
+   let thought=card.querySelector('.pet-thought');
+   if(!thought){thought=document.createElement('p');thought.className='pet-thought';thought.setAttribute('role','status');thought.setAttribute('aria-live','polite');card.querySelector('.pet-personality')?.after(thought)}
+   const action=life.confirmed&&life.confirmed.id===Number(pet.id)?life.confirmed.action:null;
+   const mood=pet.mood?.id||'content';
+   thought.dataset.tone=mood;
+   const unique=speciesLines[pet.species]||'I am glad we found each other.';
+   const lines=action==='talk'?[unique]:action?reactions[action]:moodLines[mood]||moodLines.content;
+   thought.textContent=action==='talk'?'“'+unique+'”':action?choose(lines,pet.id+action+Math.floor(Date.now()/3000)):choose([...lines,unique],pet.id+mood+new Date().getUTCDay());
+   if(action){
+    card.classList.remove('pet-reacted');
+    void card.offsetWidth;
+    card.classList.add('pet-reacted');
+    card.dataset.reaction=action;
+    const portrait=card.querySelector('.pet-base-image'),original=portrait?.getAttribute('src');
+    const pose={feed:'bounce',play:'mischief',rest:'blink',talk:'blink',cuddle:'bounce',groom:'mischief'}[action];
+    const reaction=window.KnightfallPetCare.poseAsset(original,pose);
+    if(reaction&&reaction!==original){
+     portrait.src=reaction;
+     setTimeout(()=>{if(portrait.getAttribute('src')===reaction)portrait.src=original},1500);
+    }
+   }
+  }
  }
  if(life.confirmed)setTimeout(()=>{life.confirmed=null},2500);
 }

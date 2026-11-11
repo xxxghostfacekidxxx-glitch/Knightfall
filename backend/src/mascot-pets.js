@@ -117,9 +117,9 @@ export const MASCOT_SPECIES = Object.freeze(SPECIES);
 const BY_ID=new Map(SPECIES.map(species=>[species.id,species]));
 const LIMIT=MAX_PET_SPECIES;
 const CARE=Object.freeze({
- feed:{column:'fed_at',seconds:15*60,xp:12,label:'Fed a tasty midnight snack'},
- play:{column:'played_at',seconds:10*60,xp:18,label:'Played a little chaotic game'},
- rest:{column:'rested_at',seconds:20*60,xp:10,label:'Tucked in for an eerie nap'}
+ feed:{column:'fed_at',seconds:15*60,xp:12,bond:2,need:'hunger',label:'Fed a tasty midnight snack'},
+ play:{column:'played_at',seconds:10*60,xp:18,bond:3,need:'joy',label:'Played a little chaotic game'},
+ rest:{column:'rested_at',seconds:20*60,xp:10,bond:2,need:'energy',label:'Tucked in for an eerie nap'}
 });
 const INTERACTIONS=Object.freeze({
  talk:{column:'talked_at',seconds:20*60,bond:8},
@@ -210,6 +210,42 @@ function petActionReply(pet,action,points=0,unit='XP'){
  const reward=points?' +'+points+' '+unit+'.':'';
  return {message:name+' '+line+'. '+BOND_REACTION_LINES[bond]+reward,reaction:{...ACTION_REACTIONS[action],action,bond_stage:bond}};
 }
+function cooldowns(pet,rules,now){
+ return Object.fromEntries(Object.entries(rules).map(([kind,rule])=>{
+  const at=Date.parse(pet[rule.column])+rule.seconds*1000;
+  return [kind,Number.isFinite(at)?Math.max(0,at-now):0];
+ }));
+}
+
+function suggestedCare(vitals,delays){
+ return Object.keys(CARE).filter(kind=>!delays[kind]&&vitals[CARE[kind].need]<65)
+  .sort((left,right)=>vitals[CARE[left].need]-vitals[CARE[right].need])[0]||null;
+}
+
+async function advanceCareQuests(env,ownerId,changes){
+ await Promise.all(changes.map(async ({id,kind})=>{
+  try{await careQuestProgress(env,ownerId,id,kind)}
+  catch(error){console.error('sanctuary_quest_progress',error)}
+ }));
+}
+
+async function careByNeed(env,ownerId,now){
+ const {results}=await env.DB.prepare(ownSelect+' WHERE user_id=? ORDER BY id LIMIT ?').bind(ownerId,LIMIT).all();
+ const stamp=new Date(now).toISOString();
+ const updates=[];
+ for(const pet of results||[]){
+  const kind=suggestedCare(petVitals(pet,now),cooldowns(pet,CARE,now));
+  if(!kind)continue;
+  const rule=CARE[kind],cutoff=new Date(now-rule.seconds*1000).toISOString();
+  updates.push({id:pet.id,kind,statement:env.DB.prepare(
+   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000),bond_experience=MIN(bond_experience+?,500000) WHERE id=? AND user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING id'
+  ).bind(stamp,rule.xp,rule.bond,pet.id,ownerId,cutoff)});
+ }
+ if(!updates.length)return [];
+ const committed=await env.DB.batch(updates.map(update=>update.statement));
+ return updates.filter((_,i)=>committed[i]?.results?.length).map(({id,kind})=>({id,kind}));
+}
+
 export function serializePet(pet,now=Date.now(),publicView=false){
  const species=BY_ID.get(pet.species);
  const experience=Number(pet.experience)||0;
@@ -222,7 +258,7 @@ export function serializePet(pet,now=Date.now(),publicView=false){
   evolution:evolution?{name:evolution.name,level:evolution.level,bond_required:evolution.bond,bond_experience:publicView?undefined:bondExperience,progress:publicView?undefined:Math.min(100,Math.floor(Math.min(petLevel(experience)/evolution.level,bondExperience/evolution.bond)*100)),evolved,tagline:evolution.tagline,art:evolvedAsset(pet.species)}:null,
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
- const vitals=petVitals(pet,now);
+ const vitals=petVitals(pet,now),nextCare=publicView?null:cooldowns(pet,CARE,now);
  return publicView?{...base,bond:petBond(currentLevel)}:{...base,experience,vitals,mood:petMood(vitals,pet.bond_experience),bond:petBond(currentLevel),relationship:petRelationship(pet.bond_experience),
   level_progress:{earned:Math.max(0,experience-previousXP),needed:nextXP-previousXP,next_level_xp:nextXP},
   // Last known moments reuse existing care timestamps; this is private owner data.
@@ -230,13 +266,7 @@ export function serializePet(pet,now=Date.now(),publicView=false){
    .filter(([,at])=>typeof at==='string'&&Number.isFinite(Date.parse(at)))
    .map(([kind,at])=>({kind,at})).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).slice(0,5),
 
-  next_care:Object.fromEntries(Object.entries(CARE).map(([key,rule])=>{
-   const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
-   return [key,Number.isFinite(at)?Math.max(0,at-now):0];
-  })),next_interaction:Object.fromEntries(Object.entries(INTERACTIONS).map(([key,rule])=>{
-   const at=pet[rule.column]?Date.parse(pet[rule.column])+rule.seconds*1000:0;
-   return [key,Number.isFinite(at)?Math.max(0,at-now):0];
-  }))};
+  recommended_care:suggestedCare(vitals,nextCare),next_care:nextCare,next_interaction:cooldowns(pet,INTERACTIONS,now)};
 }
 function nameOf(value){
  if(typeof value!=='string')return null;
@@ -296,21 +326,29 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  let body={};try{body=await request.json()}catch{return respond({error:'Invalid JSON.'},400);}
  if(!body||typeof body!=='object'||Array.isArray(body))return respond({error:'Invalid pet request.'},400);
  if(path==='/api/mascot-pets/care-all'&&request.method==='POST'){
-  const kind=typeof body.action==='string'?body.action:'',rule=CARE[kind];
-  if(!rule)return respond({error:'Choose feed, play, or rest for your companions.'},400);
+  const kind=typeof body.action==='string'?body.action:'';
+  if(kind==='needed'){
+   const changes=await careByNeed(env,user.id,Date.now());
+   await advanceCareQuests(env,user.id,changes);
+   const breakdown=Object.fromEntries(Object.keys(CARE).map(action=>[action,changes.filter(change=>change.kind===action).length]));
+   const summary=Object.entries(breakdown).filter(([,count])=>count).map(([action,count])=>({feed:'Fed',play:'Played with',rest:'Settled to rest'}[action]+' '+count)).join(' · ');
+   return respond({ok:true,action:kind,cared_for:changes.length,breakdown,
+    xp_awarded:changes.reduce((total,change)=>total+CARE[change.kind].xp,0),
+    bond_awarded:changes.reduce((total,change)=>total+CARE[change.kind].bond,0),
+    message:summary?summary+'.':'Nobody has a low need with care available right now.'});
+  }
+  if(!Object.hasOwn(CARE,kind))return respond({error:'Choose feed, play, rest, or care by need.'},400);
+  const rule=CARE[kind];
   const stamp=new Date().toISOString(),cutoff=new Date(Date.now()-rule.seconds*1000).toISOString();
   // One conditional D1 update for the entire collection: no per-pet browser request
   // flood, no double XP for cooldowns, and always scoped to the authenticated owner.
   const updated=await env.DB.prepare(
-   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000) WHERE user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING id'
+   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000),bond_experience=MIN(bond_experience+'+rule.bond+',500000) WHERE user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING id'
   ).bind(stamp,rule.xp,user.id,cutoff).all();
   const changed=(updated.results||[]).map(row=>Number(row.id)).filter(id=>Number.isSafeInteger(id)&&id>0);
-  for(const id of changed){
-   try{await careQuestProgress(env,user.id,id,kind)}
-   catch(error){console.error('sanctuary_bulk_quest_progress',error)}
-  }
+  await advanceCareQuests(env,user.id,changed.map(id=>({id,kind})));
   return respond({ok:true,action:kind,cared_for:changed.length,xp_awarded:changed.length*rule.xp,
-   message:changed.length?'Cared for '+changed.length+' companions! Each earned '+rule.xp+' XP.':'Everyone is on cooldown for '+kind+'.'});
+   bond_awarded:changed.length*rule.bond,message:changed.length?'Cared for '+changed.length+' companions. Each earned '+rule.xp+' XP and '+rule.bond+' bond.':'Everyone is on cooldown for '+kind+'.'});
  }
  if(path==='/api/mascot-pets/adopt'&&request.method==='POST'){
   const species=typeof body.species==='string'?BY_ID.get(body.species):null;
@@ -370,8 +408,9 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  if(!existing)return respond({error:'Your mascot was not found.'},404);
  const action=match[2];
  if(action==='interact'&&request.method==='POST'){
-  const kind=String(body.action||''),rule=INTERACTIONS[kind];
-  if(!rule)return respond({error:'Choose talk, cuddle, or groom.'},400);
+  const kind=String(body.action||'');
+  if(!Object.hasOwn(INTERACTIONS,kind))return respond({error:'Choose talk, cuddle, or groom.'},400);
+  const rule=INTERACTIONS[kind];
   const now=Date.now(),stamp=new Date(now).toISOString(),cutoff=new Date(now-rule.seconds*1000).toISOString();
   const pet=await env.DB.prepare(
    'UPDATE mascot_pets SET bond_experience=MIN(bond_experience+? ,500000),'+rule.column+'=? WHERE id=? AND user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING *'
@@ -398,18 +437,20 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
   return respond({ok:true,pet:serializePet(pet)});
  }
  if(action==='care'&&request.method==='POST'){
-  const kind=String(body.action||''),rule=CARE[kind];
-  if(!rule)return respond({error:'Choose feed, play, or rest.'},400);
+  const kind=String(body.action||'');
+  if(!Object.hasOwn(CARE,kind))return respond({error:'Choose feed, play, or rest.'},400);
+  const rule=CARE[kind];
   const now=Date.now(),stamp=new Date(now).toISOString(),cutoff=new Date(now-rule.seconds*1000).toISOString();
   const pet=await env.DB.prepare(
-   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000) WHERE id=? AND user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING *'
+   'UPDATE mascot_pets SET '+rule.column+'=?,experience=MIN(experience+?,500000),bond_experience=MIN(bond_experience+'+rule.bond+',500000) WHERE id=? AND user_id=? AND ('+rule.column+' IS NULL OR '+rule.column+'<=?) RETURNING *'
   ).bind(stamp,rule.xp,id,user.id,cutoff).first();
   if(!pet){
    const current=await env.DB.prepare(ownSelect+' WHERE id=? AND user_id=?').bind(id,user.id).first();
    return respond({error:'Your companion needs a short cooldown.',pet:serializePet(current)},429);
   }
   try{await careQuestProgress(env,user.id,id,kind)}catch(error){console.error('sanctuary_quest_progress',error)}
-  return respond({ok:true,pet:serializePet(pet),...petActionReply(pet,kind,rule.xp,'XP')});
+  const reply=petActionReply(pet,kind,rule.xp,'XP');
+  return respond({ok:true,pet:serializePet(pet),...reply,bond_awarded:rule.bond,message:reply.message+' +'+rule.bond+' bond.'});
  }
  return respond({error:'Unsupported pet action.'},405);
 }

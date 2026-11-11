@@ -145,3 +145,39 @@ test('care-all conditionally updates only one owner collection and counts affect
  assert.equal(questCalls.length,2);
  for(const call of questCalls)assert.equal(call.values[0],owner.id);
 });
+
+test('care by need selects the lowest ready meter, skips healthy pets, and counts only committed updates',async()=>{
+ const recent=new Date().toISOString();
+ const old=new Date(Date.now()-86400000).toISOString();
+ const hungry={...sample,id:5,adopted_at:old,played_at:recent,rested_at:recent};
+ const bored={...sample,id:6,adopted_at:old,fed_at:recent,rested_at:recent};
+ const rested={...sample,id:7,adopted_at:recent};
+ const calls=[];
+ const db=stub((sql,values)=>{
+  calls.push({sql,values});
+  if(sql.startsWith('SELECT'))return {results:[hungry,bored,rested]};
+  if(sql.includes('UPDATE mascot_pets'))return {results:sql.includes('SET fed_at')?[{id:5}]:[]};
+  return {success:true};
+ });
+ db.DB.batch=async statements=>Promise.all(statements.map(statement=>statement.all()));
+ const response=await invoke('/api/mascot-pets/care-all','POST',{action:'needed'},db);
+ assert.equal(response.status,200);
+ assert.deepEqual(response.data.breakdown,{feed:1,play:0,rest:0});
+ assert.equal(response.data.bond_awarded,2);
+ assert.equal(response.data.xp_awarded,12);
+ const updates=calls.filter(call=>call.sql.includes('UPDATE mascot_pets'));
+ assert.equal(updates.length,2);
+ for(const [index,kind] of ['fed_at','played_at'].entries()){
+  const {sql,values}=updates[index];
+  assert.match(sql,new RegExp('SET '+kind+'='));
+  assert.match(sql,new RegExp(kind+'<=\\?'));
+  assert.match(sql,/WHERE id=\? AND user_id=\?/);
+  assert.equal(values[4],owner.id);
+ }
+ const progress=calls.filter(call=>call.sql.includes('UPDATE mascot_quest_runs'));
+ assert.equal(progress.length,1);
+ assert.equal(progress[0].values[1],5);
+ assert.equal(progress[0].values[3],'feed');
+ assert.equal(serializePet(hungry).recommended_care,'feed');
+ assert.equal(serializePet(hungry,Date.now(),true).recommended_care,undefined);
+});
