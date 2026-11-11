@@ -92,6 +92,62 @@ async function mount(member,own,root,signedIn){
   footer.append(more);
   section.append(timeline,footer);
   root.append(section);
+  let savedSection=null,savedFeed=null,savedStatus=null,savedLoading=false;
+  if(own){
+    savedSection=el("section","profile-wall profile-wall-saved");
+    savedSection.id="profile-saved";
+    const top=el("div","profile-wall-heading");
+    const heading=el("div");
+    heading.append(el("p","eyebrow","PRIVATE COLLECTION"),el("h2","","Saved updates"),
+      el("p","profile-wall-description","Posts you've bookmarked. Only you can see this collection."));
+    const refresh=button("↻ Refresh saved","action",()=>loadSaved());
+    top.append(heading,refresh);
+    savedFeed=el("div","profile-wall-saved-list");
+    savedFeed.setAttribute("aria-live","polite");
+    savedStatus=makeStatus(savedSection);
+    savedSection.append(top,savedFeed);
+    root.append(savedSection);
+  }
+  async function loadSaved(){
+    if(!savedFeed||savedLoading)return;
+    savedLoading=true;savedStatus.textContent="Loading saved updates…";
+    try{
+      const data=await api("/api/profile-wall/saved");
+      savedFeed.replaceChildren();
+      const entries=Array.isArray(data.posts)?data.posts:[];
+      for(const entry of entries){
+        const card=el("article","profile-wall-saved-item");
+        const head=el("div","profile-wall-saved-top");
+        const link=el("a","profile-wall-saved-author",entry.display_name||entry.username);
+        link.href="/profile.html?username="+encodeURIComponent(entry.username)+"#profile-wall";
+        link.append(el("small",""," @"+entry.username));
+        const remove=button("Remove saved","profile-wall-subtle",async()=>{
+          remove.disabled=true;
+          try{
+            await api("/api/profile-wall/posts/"+entry.id+"/bookmark",{method:"DELETE"});
+            card.remove();
+            savedStatus.textContent="Removed from saved updates.";
+            if(!savedFeed.children.length)savedFeed.append(el("p","profile-wall-empty","Nothing saved yet."));
+            for(const element of timeline.querySelectorAll("[data-bookmark-for]")){
+              if(element.dataset.bookmarkFor===String(entry.id)){
+                element.textContent="🔖 Save";
+                element.setAttribute("aria-pressed","false");
+              }
+            }
+          }catch(error){showError(savedStatus,error);}
+          finally{remove.disabled=false;}
+        });
+        head.append(link,remove);
+        const body=el("p","profile-wall-post-body",entry.body);
+        const when=el("small","profile-wall-saved-date","Saved "+date(entry.saved_at));
+        card.append(head,body,when);
+        savedFeed.append(card);
+      }
+      if(!entries.length)savedFeed.append(el("p","profile-wall-empty","No saved updates yet. Bookmark something worth keeping."));
+      savedStatus.textContent=entries.length===30?"Showing your 30 most recent visible saved updates.":"";
+    }catch(error){showError(savedStatus,error);}
+    finally{savedLoading=false;}
+  }
   let before=null,hasMore=true,loading=false,viewerId=null;
   async function load(reset=false){
     if(loading)return;
@@ -197,6 +253,27 @@ async function mount(member,own,root,signedIn){
     discussion.append(commentsList,older,commentComposer);
     const controls=el("div","profile-wall-post-controls");
     controls.append(reactionsRow,discussionButton);
+    if(signedIn){
+      const bookmark=button(post.is_saved?"🔖 Saved":"🔖 Save","profile-wall-save",async()=>{
+        bookmark.disabled=true;
+        const alreadySaved=!!post.is_saved;
+        try{
+          const result=await api("/api/profile-wall/posts/"+post.id+"/bookmark",{
+            method:alreadySaved?"DELETE":"POST"
+          });
+          post.is_saved=!!result.saved;
+          bookmark.textContent=post.is_saved?"🔖 Saved":"🔖 Save";
+          bookmark.setAttribute("aria-pressed",String(post.is_saved));
+          note.textContent=post.is_saved?"Added to your saved updates.":"Removed from saved updates.";
+          if(own)await loadSaved();
+        }catch(error){showError(note,error);}
+        finally{bookmark.disabled=false;}
+      });
+      bookmark.dataset.bookmarkFor=String(post.id);
+      bookmark.setAttribute("aria-pressed",String(!!post.is_saved));
+      bookmark.setAttribute("aria-label",post.is_saved?"Remove saved update":"Save update");
+      controls.append(bookmark);
+    }
     let reportForm=null;
     if(signedIn&&!own){
       const reportToggle=button("⚑ Report","profile-wall-report-toggle",()=>{
@@ -327,6 +404,7 @@ async function mount(member,own,root,signedIn){
     return article;
   }
   await load(true);
+  if(own)await loadSaved();
 }
 window.KnightfallProfileWall={mount};
 })();
