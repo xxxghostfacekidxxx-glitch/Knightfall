@@ -98,3 +98,15 @@ test('a late cloud response cannot replace a newer run', async () => {
   assert.equal(reads,0);
   assert.equal(events,0);
 });
+
+test('offline device resume normalizes legacy prices before restoring', () => {
+  const resumeStart=source.indexOf('async function resume(){');
+  const resumeEnd=source.indexOf('function newPuzzle()',resumeStart);
+  assert.ok(resumeStart>=0&&resumeEnd>resumeStart);
+  const resumeSource=source.slice(resumeStart,resumeEnd);
+  assert.match(resumeSource,/localStorage\.getItem\("af-mini-"\+id\)/);
+  assert.match(resumeSource,/if\(s&&validSavedState\(s\.state\)\)\{state=normalizeSavedState\(s\.state\)/);
+});
+test('late cloud save hint cannot overwrite a running game or changed resume selection', () => {
+  assert.match(source,/s\.schema===1&&s\.game===id&&validSavedState\(s\.state\)&&!running&&resumeRequest===0\)status\("Cloud save available/);
+});
