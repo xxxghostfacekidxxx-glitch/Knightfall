@@ -406,7 +406,10 @@ async function mount(member,own,root,signedIn){
     return article;
   }
   await load(true);
-  if(own)await loadSaved();
+  if(own){
+    await loadSaved();
+    if(location.hash==="#profile-saved")savedSection?.scrollIntoView({block:"start",behavior:"auto"});
+  }
 }
 window.KnightfallProfileWall={mount};
 })();
