@@ -13,7 +13,7 @@ $("report").href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues
 let score=0,best=0,running=false,over=false,last=0,frame=0,state={},cloudReady=false,loopGeneration=0;
 const colors=["#ef9a63","#ffcf8d","#8cc7c0","#c56d4b","#c2a8a0"];
 function status(t){$("status").textContent=t}
-function loadLocal(){try{const x=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(x&&validSavedState(x.state)){state=x.state;score=Math.max(0,Number(x.score)||0);best=Math.max(score,Number(x.best)||0)}}catch{}}
+function loadLocal(){try{const x=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(x&&validSavedState(x.state)){state=normalizeSavedState(x.state);score=Math.max(0,Number(x.score)||0);best=Math.max(score,Number(x.best)||0)}}catch{}}
 function saveLocal(){try{localStorage.setItem("af-mini-"+id,JSON.stringify({score,best,state,frame}))}catch{}}
 function snapshot(){return {schema:1,game:id,score,best,state,frame}}
 function drawBase(){ctx.fillStyle="#080b12";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle="#252b3b";ctx.lineWidth=1;for(let x=0;x<canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}for(let y=0;y<canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}}
@@ -27,7 +27,24 @@ function finish(msg){if(!running)return;running=false;over=true;status(msg+" · 
 function submit(force){saveLocal();if(!window.AshFallArcade){if(force)status("Score saved locally · sign in to sync");return}const completedScore=score,completedSnapshot=snapshot();Promise.resolve(window.AshFallArcade.ready).then(()=>window.AshFallArcade.recordScore(d.key,completedScore,completedSnapshot)).then(r=>{if(r&&r.saved)status("Score synced · "+score);else if(force)status("Score saved locally · sign in to sync")}).catch(()=>{if(force)status("Score saved locally · sign in to sync")})}
 async function saveCloud(){saveLocal();if(!window.AshFallArcade){status("Saved on this device");return}try{await window.AshFallArcade.ready;await window.AshFallArcade.saveProgress(d.key,snapshot(),"autosave",1);status("Progress synced to your account")}catch{status("Saved locally · sign in to sync across devices")}}
 function validSavedState(saved){if(!saved||typeof saved!=="object"||Array.isArray(saved))return false;if(id==="cube-composer")return Array.isArray(saved.grid)&&saved.grid.length===5&&saved.grid.every(row=>Array.isArray(row)&&row.length===5);if(id==="skifree")return Number.isFinite(saved.x)&&Number.isFinite(saved.y)&&Array.isArray(saved.obstacles)&&Array.isArray(saved.tokens)&&Number.isFinite(saved.lives);if(id==="particle-clicker")return Number.isFinite(saved.particles)&&Number.isFinite(saved.rate)&&Number.isFinite(saved.scientists);return false}
-async function resume(){try{await window.AshFallArcade?.ready;const s=await window.AshFallArcade?.loadProgress(d.key,"autosave");if(s&&s.schema===1&&s.game===id&&validSavedState(s.state)){state=s.state;score=Number(s.score)||0;best=Math.max(best,Number(s.best)||0);frame=Number(s.frame)||0;running=true;over=false;last=performance.now();setScore(score);status("Cloud save resumed");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:d.key,resumed:true}}));draw();loopGeneration++;requestAnimationFrame((generation=>now=>loop(now,generation))(loopGeneration));return}}catch{}try{const s=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(s&&validSavedState(s.state)){state=s.state;score=Number(s.score)||0;best=Math.max(best,Number(s.best)||0);frame=Math.max(0,Number(s.frame)||0);running=true;over=false;last=performance.now();setScore(score);status("Device save resumed");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:d.key,resumed:true}}));draw();loopGeneration++;requestAnimationFrame((generation=>now=>loop(now,generation))(loopGeneration));return}}catch{}status("No saved run found yet")}
+function normalizeSavedState(saved){
+ if(id!=="particle-clicker")return saved;
+ // Older saves predate purchase-price fields. Preserve progress while rebuilding
+ // a safe, usable price schedule from the number of purchases already made.
+ const upgrades=Math.max(0,Math.floor(Number(saved.upgrades)||0));
+ const scientists=Math.max(0,Math.floor(Number(saved.scientists)||0));
+ const price=(value,base,count,multiplier)=>{
+  const fallback=Math.ceil(base*Math.pow(multiplier,Math.min(count,100)));
+  return Number.isFinite(value)&&value>0?value:fallback;
+ };
+ return {...saved,
+  upgrades,scientists,
+  clicks:Math.max(0,Math.floor(Number(saved.clicks)||0)),
+  ratePrice:price(saved.ratePrice,50,upgrades,1.65),
+  autoPrice:price(saved.autoPrice,120,scientists,1.8)
+ };
+}
+async function resume(){try{await window.AshFallArcade?.ready;const s=await window.AshFallArcade?.loadProgress(d.key,"autosave");if(s&&s.schema===1&&s.game===id&&validSavedState(s.state)){state=normalizeSavedState(s.state);score=Number(s.score)||0;best=Math.max(best,Number(s.best)||0);frame=Number(s.frame)||0;running=true;over=false;last=performance.now();setScore(score);status("Cloud save resumed");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:d.key,resumed:true}}));draw();loopGeneration++;requestAnimationFrame((generation=>now=>loop(now,generation))(loopGeneration));return}}catch{}try{const s=JSON.parse(localStorage.getItem("af-mini-"+id)||"null");if(s&&validSavedState(s.state)){state=s.state;score=Number(s.score)||0;best=Math.max(best,Number(s.best)||0);frame=Math.max(0,Number(s.frame)||0);running=true;over=false;last=performance.now();setScore(score);status("Device save resumed");document.dispatchEvent(new CustomEvent("ashfall:arcade-started",{detail:{gameId:d.key,resumed:true}}));draw();loopGeneration++;requestAnimationFrame((generation=>now=>loop(now,generation))(loopGeneration));return}}catch{}status("No saved run found yet")}
 function newPuzzle(){const n=5;state={n,grid:Array.from({length:n},()=>Array.from({length:n},()=>Math.random()<.34?1:0)),moves:0,level:(state.level||1),target:{x:4,y:4},cursor:{x:0,y:0}};state.grid[0][0]=1;state.grid[4][4]=0}
 function circuitConnected(grid){
  if(!Array.isArray(grid)||grid.length!==5||!grid[0]?.[0]||!grid[4]?.[4])return false;
@@ -47,7 +64,7 @@ function updateClickerControls(){
  const controls=$("clicker-controls");if(!controls)return;
  controls.hidden=id!=="particle-clicker";
  if(id!=="particle-clicker")return;
- const particles=Math.floor(Number(state.particles)||0),ratePrice=Math.max(0,Number(state.ratePrice)||50),autoPrice=Math.max(0,Number(state.autoPrice)||120);
+ const particles=Math.floor(Number(state.particles)||0),ratePrice=state.ratePrice,autoPrice=state.autoPrice;
  $("clicker-generate").textContent="Generate particles (+"+(1+(Number(state.upgrades)||0))+")";
  $("clicker-boost").textContent="Research boost · "+ratePrice;
  $("clicker-scientist").textContent="Recruit scientist · "+autoPrice;
