@@ -50,6 +50,25 @@ jobs:
         continue-on-error: true
         run: |
           python3 -m semgrep scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
+      - name: Explain audit evidence
+        if: always()
+        run: |
+          {
+            echo "## Devil's Toolkit Developer Arsenal"
+            echo ""
+            echo "- Offline regression and mobile browser fixtures run in the diagnostics job."
+            echo "- Biome and Semgrep are advisory; review their logs and artifacts before treating findings as fixed."
+            echo "- No production API credentials or deployment permissions are used."
+            echo ""
+            echo "### Report files"
+            for file in biome-report.txt semgrep-report.json; do
+              if [ -s "$file" ]; then
+                echo "- $file generated"
+              else
+                echo "- $file unavailable (check preceding steps)"
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Store audit reports
         if: always()
         uses: actions/upload-artifact@v4
