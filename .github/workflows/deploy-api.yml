@@ -7,6 +7,8 @@ on:
       - 'backend/src/**'
       - 'backend/package.json'
       - 'backend/migrations/**'
+      - 'backend/src/profile-wall.test.mjs'
+      - 'scripts/profile-wall-ui.test.mjs'
       - 'backend/wrangler.jsonc'
       - 'public/index.html'
       - 'public/arcade/catalog.json'
@@ -51,6 +53,12 @@ jobs:
           node --test backend/src/profile-wall.test.mjs scripts/profile-wall-ui.test.mjs
           node --check backend/src/profile-wall.js
           node --check public/profile-wall.js
+      - name: Gate Worker deployment on member profile wall privacy and permissions
+        run: |
+          node --test backend/src/profile-wall.test.mjs scripts/profile-wall-ui.test.mjs
+          node --check backend/src/profile-wall.js
+          node --check public/profile-wall.js
+
       - name: Validate coordinated registration release
         run: node --test scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs
 
