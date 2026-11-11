@@ -27,6 +27,7 @@ const checks={
     now<claims.exp&&claims.nbf<=now+30&&claims.iat<=now+30&&now-claims.iat<=300&&claims.exp-claims.iat<=1200,
 };
 const valid=await verifyGitHubAuditToken({token,runId:Number(process.env.GITHUB_RUN_ID),sha:process.env.GITHUB_SHA});
+console.log("OIDC signed subject (public workflow identity): "+String(claims.sub||"").slice(0,260).replace(/[\r\n]/g,""));
 console.log("OIDC expected-claim checks (booleans only): "+JSON.stringify(checks));
 console.log("OIDC cryptographic verifier: "+(valid?"PASS":"FAIL"));
 // Never log the token, signing keys, or a claim payload.
