@@ -190,3 +190,13 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - The successful applied migration was then recorded in `d1_migrations` as ledger **ID 66**. Do not rerun this migration through Wrangler while the entry is present.
 - New first-party assets: `public/assets/devil-tools/neon-nuisances/skunk-riot.svg`, idle/blink/bounce/mischief variants and `portraits/skunk-riot.svg`. The mascot also appears in Pet Life, Species Trials, legacy pet activities, owner profiles and the Sanctuary catalog.
 - Code and deployment evidence do not replace a member-account adoption and visual acceptance test.
+
+## Profile wall reactions and comments · 0126 (November 11, 2026)
+
+- `0126_profile_wall_interactions.sql` adds account-scoped `profile_wall_reactions` (one fire/heart/skull reaction per user per status update) and soft-deletable `profile_wall_comments` (one level, 1–1,000 characters).
+- Existing `social_activity` rows and member profiles are preserved. Comments and reactions reference existing user and update IDs with `ON DELETE CASCADE`. Indexes support paginated comments and account queries.
+- Production `knightfall-forum` D1 was inspected, and a Time Travel recovery bookmark was confirmed before applying the reviewed additive SQL through the connected D1 query API. Both tables, their foreign-key relationships, and all three named indexes were read back successfully.
+- The applied SQL was subsequently recorded under `d1_migrations` **ID 71** with filename `0126_profile_wall_interactions.sql` on **November 11, 2026**. **Do not rerun this migration through Wrangler while the ledger entry remains present.**
+- Backend `/api/profile-wall` routes enforce public/followers/friends/private visibility, accepted friendships, active accounts, blocking, owner-only post editing, signed-in reactions, and comment removal by author/profile owner/moderator. A separate hardening change protects the legacy `/api/social/activity` feed from exposing private-profile updates.
+- Deployment checks: `node --test backend/src/profile-wall.test.mjs`, mobile and desktop profile browser smoke, Worker deployment success, and real authenticated cross-account acceptance remain separate gates. A database migration alone does not make the feature live.
+
