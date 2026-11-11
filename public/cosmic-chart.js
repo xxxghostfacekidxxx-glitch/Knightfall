@@ -99,11 +99,12 @@
     svg.append(svgEl("text",{x:210,y:222,"text-anchor":"middle",fill:"#c8bfdb","font-size":11},"COSMIC CHART"));
     return svg;
   }
-  function prompt(chart){
+  function prompt(chart,subject="me"){
     const entries=points(chart);
     const placements=entries.map(({name,body})=>name+": "+body.sign+" "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"+(chart?.house_placements?.[name]?" in house "+chart.house_placements[name]:"")+(body.retrograde?" retrograde":"")).join("; ");
     const aspectSummary=aspects(chart).slice(0,14).map(a=>a.a+" "+a.type.toLowerCase()+" "+a.b+" (orb "+a.orb+"°)").join("; ");
-    return ("Interpret my calculated tropical natal chart as a symbolic, reflective reading, not a scientific prediction. Explain my Sun, Moon, Rising, house themes, strongest aspects, emotional patterns, strengths, tensions, and practical prompts for self-reflection. Do not invent missing birth details, transits, or houses. "+
+    const lead=subject==="member"?"Interpret this member\u0027s shared tropical natal chart, not my own, as a symbolic reflective reading rather than a scientific prediction. Explain their Sun, Moon, Rising, houses, aspects, strengths and tensions without claiming to know their private life. ":"Interpret my calculated tropical natal chart as a symbolic, reflective reading, not a scientific prediction. Explain my Sun, Moon, Rising, house themes, strongest aspects, emotional patterns, strengths, tensions, and practical prompts for self-reflection. ";
+    return (lead+"Do not invent missing birth details, transits, or houses. "+
       "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+".").slice(0,3900);
   }
   function render(target,chart){
