@@ -122,7 +122,7 @@
         if(!natal||!moving)continue;
         const n=polar(natal.longitude,95,a),m=polar(moving.longitude,76,a);
         const color=link.type==="Trine"||link.type==="Sextile"?"#aaffec":"#ff89d5";
-        const line=svgEl("line",{x1:n.x,y1:n.y,x2:m.x,y2:m.y,stroke:color,"stroke-opacity":".65","stroke-width":"1.1","data-overlay-aspect":link.type});
+        const line=svgEl("line",{x1:n.x,y1:n.y,x2:m.x,y2:m.y,stroke:color,"stroke-opacity":".65","stroke-width":"1.1","data-overlay-aspect":link.type,"data-overlay-moving":link.transit,"data-overlay-natal":link.natal});
         line.append(svgEl("title",{},"Transit "+link.transit+" "+link.type.toLowerCase()+" natal "+link.natal+"; "+link.orb.toFixed(1)+"° orb"));
         svg.append(line);
       }
@@ -187,11 +187,49 @@
       const box=el("details","cosmic-overlay-aspects");
       box.open=true;
       box.append(el("summary","","Transit-to-natal connections · "+transitLinks.length));
-      const list=el("ul","");
-      for(const aspect of transitLinks.slice(0,16))
-        list.append(el("li","","Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal+" · "+aspect.orb.toFixed(1)+"° orb"));
+      const filterRow=el("label","cosmic-transit-filter","Explore a moving planet ");
+      const filter=el("select","cosmic-transit-select");
+      filter.setAttribute("aria-label","Filter transit-to-natal connections by moving planet");
+      filter.append(new Option("All moving planets",""));
+      const transitNames=[...new Set(transitLinks.map(item=>item.transit))];
+      for(const name of transitNames)filter.append(new Option(name,name));
+      filterRow.append(filter);box.append(filterRow);
+      const count=el("p","cosmic-transit-count","");
+      count.setAttribute("aria-live","polite");
+      box.append(count);
+      const list=el("ul","cosmic-transit-connections");
+      for(const aspect of transitLinks.slice(0,60)){
+        const guide=window.KnightfallCosmicLexicon?.transitGuide?.(chart,options.transitChart,aspect);
+        const item=el("li","cosmic-transit-connection");
+        item.setAttribute("data-transit-moving",aspect.transit);
+        if(guide){
+          const expandable=el("details","cosmic-transit-detail");
+          expandable.append(el("summary","",guide.title+" · "+aspect.orb.toFixed(1)+"° orb"));
+          expandable.append(el("p","",guide.summary));
+          expandable.append(el("p","cosmic-transit-reflection","Reflect: "+guide.reflection));
+          item.append(expandable);
+        }else item.textContent="Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal+" · "+aspect.orb.toFixed(1)+"° orb";
+        list.append(item);
+      }
       if(!transitLinks.length)list.append(el("li","","No major transit-to-natal aspects inside the 2° orb."));
-      box.append(list);reading.append(box);
+      box.append(list);
+      const updateFocus=()=>{
+        const name=filter.value;
+        let visible=0;
+        for(const item of list.children){
+          const matches=!name||item.getAttribute("data-transit-moving")===name;
+          item.hidden=!matches;
+          if(matches)visible++;
+        }
+        count.textContent=name?"Showing "+visible+" strongest connections for "+name+".":"Showing "+visible+" of "+transitLinks.length+" connections.";
+        for(const node of graphic.querySelectorAll("[data-transit-planet]"))
+          node.style.opacity=!name||node.getAttribute("data-transit-planet")===name?"1":".2";
+        for(const node of graphic.querySelectorAll("[data-overlay-moving]"))
+          node.style.opacity=!name||node.getAttribute("data-overlay-moving")===name?"1":".08";
+      };
+      filter.addEventListener("change",updateFocus);
+      updateFocus();
+      reading.append(box);
     }
     if(options.kind==="transit")reading.prepend(el("p","cosmic-muted","Geocentric transit sky · houses and rising sign not calculated for this view."));
     if(chart.time_precision==="unknown")reading.prepend(el("p","cosmic-uncertain","Birth time unknown: provisional noon-UTC placements only. Do not rely on houses or Rising; the Moon and sign-cusp placements may differ at birth."));
