@@ -12,7 +12,7 @@ test("member wall scripts parse, load in order and expose a graceful mount",()=>
  assert.doesNotThrow(()=>new Script(ui,{filename:"profile-wall.js"}));
  assert.match(ui,/window\.KnightfallProfileWall=\{mount\}/);
  assert.ok(html.indexOf("/profile-wall.js?")<html.indexOf("/profile.js?"));
- assert.match(html,/profile-wall\.css\?v=20261111-wall2/);
+ assert.match(html,/profile-wall\.css\?v=20261111-wall3/);
  assert.match(file("profile.js"),/if\(window\.KnightfallProfileWall\?\.mount\)/);
 });
 test("real reactions and comments use authenticated API and text-safe rendering",()=>{
@@ -45,8 +45,15 @@ test("signed-in members can bookmark posts and review a private saved shelf",()=
  assert.match(ui,/function loadSaved\(\)/);
  assert.match(ui,/node\.textContent=String\(content\)/);
  assert.match(file("profile.js"),/\["#profile-saved","Saved"\]/);
- assert.match(html,/profile-wall\.js\?v=20261111-wall2/);
+ assert.match(html,/profile-wall\.js\?v=20261111-wall3/);
  assert.match(css,/#profile \.profile-wall-saved/);
+});
+test("notification deep links load the exact post without bypassing server privacy",()=>{
+ assert.match(ui,/article\.id="profile-wall-post-"\+post\.id/);
+ assert.match(ui,/\/api\/profile-wall\/posts\/"/);
+ assert.match(ui,/profile-wall-post-target/);
+ assert.match(css,/\.profile-wall-post-target/);
+ assert.match(wallApi,/if\(!part&&request\.method==="GET"\)/);
 });
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
