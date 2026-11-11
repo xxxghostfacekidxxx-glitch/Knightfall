@@ -2,7 +2,7 @@
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Edit your Ash-Fall profile and decide what the rest of the internet gets to see."><title>Ash-Fall | Edit Profile</title><link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/profile.css?v=20261103-gravewave-profile3&rev=20261105-profile5">
-  <link rel="stylesheet" href="/profile-layout-repair.css?v=20261027-layout1"><link rel="stylesheet" href="/profile-studio-next.css?v=20261103-studio3"><link rel="stylesheet" href="/profile-theme-library.css?v=20261103-theme3"><link rel="stylesheet" href="/profile-links.css?v=20261103-links2"></head>
+  <link rel="stylesheet" href="/profile-layout-repair.css?v=20261027-layout1"><link rel="stylesheet" href="/profile-studio-next.css?v=20261103-studio3"><link rel="stylesheet" href="/profile-theme-library.css?v=20261103-theme3"><link rel="stylesheet" href="/profile-links.css?v=20261103-links2"><link rel="stylesheet" href="/cosmic-chart.css?v=20261111-cosmic1"></head>
 <body><header class="kf-header"></header><main class="profile-shell"><section class="card"><div class="studio-page-lead"><div><p class="studio-overline">KNIGHTFALL · MEMBER CUSTOMIZATION</p><h1>PROFILE <span>STUDIO.</span></h1><p class="handle">Make this corner of the Madhouse your own. You control the style, what people see, and what stays private.</p></div><nav class="studio-top-links" aria-label="Profile and account shortcuts"><a id="studio-view-profile" href="/profile.html">↗ My Profile</a><a href="/avatar-studio.html">☻ Misfit Avatar Studio</a><a href="/mascot-pets.html">✦ My Pets</a><a href="/friends.html">♡ Friends</a><a href="/account.html">⚙ Account</a></nav></div><form id="form" class="profile-studio-form"><div class="studio-intro"><div><p class="eyebrow">YOUR CORNER OF THE MADHOUSE</p><h2>Make it unmistakably yours</h2><p class="muted">Pick your look, add your story, and control your audience. Your changes stay unpublished until you save.</p></div><div class="studio-progress-shell"><span id="studio-completion-label">Profile setup</span><strong id="studio-completion-percent">0%</strong><div id="studio-completion-track" class="studio-completion-track" role="progressbar" aria-label="Profile completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="studio-completion-fill"></i></div></div></div>
 <nav class="studio-jump" aria-label="Profile editor sections"><a href="#studio-appearance">✦ Appearance</a><a href="#studio-interests">♡ Interests</a><a href="#link-studio">↗ Links</a><a href="#studio-privacy">◈ Privacy</a><a href="#photo-studio">▣ Photos</a><a href="#layout-studio">▦ Layout</a><a href="#birth-chart-studio">☼ Birth chart</a></nav><div class="studio-feedback" id="studio-feedback" role="status" aria-live="polite"><span id="studio-save-indicator" data-state="loading">◌ Loading your profile…</span><span id="studio-save-hint">Everything syncs to your account when saved.</span></div>
 <section class="studio-live-preview" aria-labelledby="studio-preview-title">
@@ -65,7 +65,10 @@
 <p class="muted">Your birth chart is <strong>hidden by default</strong>. Only zodiac placements and houses are shown if you choose to publish it. Your birth date, time and coordinates are not stored in the profile chart record.</p>
 <form id="birth-chart-form" class="profile-studio-form">
 <label>Birth date and local time<input id="birth-chart-local" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
-<label>UTC offset at birth (including daylight saving)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
+<label>UTC offset at birth (manual fallback)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
+<label>Birth-place time zone (recommended)<input id="birth-chart-timezone" type="text" class="cosmic-timezone-select" placeholder="e.g. America/Chicago" autocomplete="off"></label>
+<label>Repeated daylight-saving hour<select id="birth-chart-fold"><option value="earlier">First occurrence</option><option value="later">Second occurrence</option></select></label>
+<p class="cosmic-timezone-help">Choose the historical time zone for your birthplace, not your device's current location. The correct offset is then calculated from your birth date and time. Leave blank only if you know the historical offset.</p>
 <label>Birth city (city, state/region, country)<input id="birth-chart-city" type="text" autocomplete="off" placeholder="e.g. Des Moines, Iowa, USA" required></label>
 <div class="profile-actions"><button type="button" id="birth-chart-city-search" class="action">Find birth city</button></div>
 <label>Choose matching city<select id="birth-chart-city-results" required disabled><option value="">Search for your birth city first</option></select></label>
@@ -75,9 +78,13 @@
 <label class="studio-toggle"><input type="checkbox" id="birth-chart-visible"><span><strong>Display my birth chart on my profile</strong><small>Off by default. Turn it on only if you want other people to see your chart placements.</small></span></label>
 <div class="profile-actions"><button type="submit">Calculate and save chart</button><button type="button" id="birth-chart-remove" class="action">Delete saved chart</button></div>
 <p id="birth-chart-status" class="muted" role="status" aria-live="polite">Loading saved chart settings…</p>
+<div id="birth-chart-preview" class="cosmic-preview" hidden aria-label="Your saved natal chart"></div>
+<div class="profile-actions"><button type="button" id="birth-chart-read" class="cosmic-read-button" hidden>✦ Explore this chart with Miss Chaos</button></div>
 </form>
 </section></section></main>
 <script src="/nav.js?v=20261103-profile-studio1" defer></script>
+<script src="/cosmic-chart.js?v=20261111-cosmic1" defer></script>
+<script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
 <script>
 const API="https://api.ash-fall.com",form=document.querySelector("#form"),status=document.querySelector("#status");
 const fields=["display_name","bio","avatar_url","website_url","location","pronouns","cover_url","accent_color","profile_theme","status_message","tagline","interests","favorite_games","favorite_music","favorite_quote","profile_visibility","show_activity"];
