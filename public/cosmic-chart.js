@@ -55,10 +55,11 @@
     const degree=Number(chart?.ascendant_degree);
     return index>=0&&Number.isFinite(degree)?mod(index*30+degree):0;
   }
-  function wheel(chart,kind="natal"){
+  function wheel(chart,kind="natal",transitChart=null){
+    const overlay=kind==="overlay"&&!!transitChart?.bodies;
     const transit=kind==="transit";
-    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":transit?"Tropical transit sky positions, signs and aspects":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
-    svg.append(svgEl("title",{},transit?"Tropical planetary sky positions":"Tropical zodiac natal chart"));
+    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":overlay?"Natal and transit zodiac wheel, natal planets in pink and transiting planets in mint":transit?"Tropical transit sky positions, signs and aspects":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
+    svg.append(svgEl("title",{},overlay?"Tropical natal and transit planetary overlay":transit?"Tropical planetary sky positions":"Tropical zodiac natal chart"));
     const a=ascendant(chart);
     svg.append(svgEl("circle",{cx:210,cy:210,r:203,fill:"#10101c",stroke:"#ff67d6","stroke-width":2}));
     for(const r of [193,160,125,101])svg.append(svgEl("circle",{cx:210,cy:210,r,fill:"none",stroke:r===125?"#a5ffdd66":"#ffffff33","stroke-width":r===193?1.5:1}));
@@ -97,6 +98,35 @@
       labelNode.append(svgEl("title",{},item.name+" in "+item.body.sign));
       svg.append(labelNode);
     }
+    if(overlay){
+      // Inner mint ring: moving sky; pink rim: natal positions. Transit aspects
+      // link precisely located ecliptic longitudes rather than house midpoints.
+      svg.append(svgEl("circle",{cx:210,cy:210,r:126,fill:"none",stroke:"#a3ffe88c","stroke-width":1.3,"stroke-dasharray":"3 5"}));
+      const current=points(transitChart).filter(p=>!p.name.includes("Node")).sort((a,b)=>a.longitude-b.longitude);
+      let prev=-1000,lane=0;
+      for(const item of current){
+        lane=item.longitude-prev<9?(lane+1)%3:0;prev=item.longitude;
+        const label=polar(item.longitude,127-lane*12,a),marker=polar(item.longitude,137,a);
+        const ring=svgEl("circle",{cx:label.x,cy:label.y,r:10,fill:"#071d20","fill-opacity":".97",stroke:"#9cffe4","stroke-width":".75","data-transit-planet":item.name});
+        ring.append(svgEl("title",{},"Transit "+item.name+" in "+item.body.sign));
+        svg.append(ring);
+        svg.append(svgEl("circle",{cx:marker.x,cy:marker.y,r:2.1,fill:"#a9ffea"}));
+        const glyph=svgEl("text",{x:label.x,y:label.y+5,"text-anchor":"middle",fill:"#b9ffe9","font-size":16,"font-weight":700,"data-transit-planet":item.name},PLANET_GLYPHS[item.name]||item.name[0]);
+        glyph.append(svgEl("title",{},"Transit "+item.name+" in "+item.body.sign));
+        svg.append(glyph);
+      }
+      const links=transitAspects(transitChart,chart).slice(0,20);
+      for(const link of links){
+        const natal=points(chart).find(p=>p.name===link.natal);
+        const moving=points(transitChart).find(p=>p.name===link.transit);
+        if(!natal||!moving)continue;
+        const n=polar(natal.longitude,95,a),m=polar(moving.longitude,76,a);
+        const color=link.type==="Trine"||link.type==="Sextile"?"#aaffec":"#ff89d5";
+        const line=svgEl("line",{x1:n.x,y1:n.y,x2:m.x,y2:m.y,stroke:color,"stroke-opacity":".65","stroke-width":"1.1","data-overlay-aspect":link.type});
+        line.append(svgEl("title",{},"Transit "+link.transit+" "+link.type.toLowerCase()+" natal "+link.natal+"; "+link.orb.toFixed(1)+"° orb"));
+        svg.append(line);
+      }
+    }
     svg.append(svgEl("circle",{cx:210,cy:210,r:38,fill:"#101320",stroke:"#adffde88"}));
     svg.append(svgEl("text",{x:210,y:205,"text-anchor":"middle",fill:"#ff80d2","font-size":12,"font-weight":700},"KNIGHTFALL"));
     svg.append(svgEl("text",{x:210,y:222,"text-anchor":"middle",fill:"#c8bfdb","font-size":11},"COSMIC CHART"));
@@ -123,7 +153,7 @@
     const all=points(chart);
     if(!all.length){target.append(el("p","cosmic-muted","No calculated placements to display."));return;}
     const shell=el("div","cosmic-blueprint"),graphic=el("div","cosmic-wheel"),reading=el("div","cosmic-reading");
-    graphic.append(wheel(chart,options.kind==="transit"?"transit":"natal"));
+    graphic.append(wheel(chart,options.kind==="transit"?"transit":options.kind==="overlay"?"overlay":"natal",options.transitChart));
     const balance=el("div","cosmic-balance");
     const classical=all.filter(p=>["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"].includes(p.name));
     const top=(groups)=>Object.entries(groups).map(([name,signs])=>({name,count:classical.filter(p=>signs.includes(p.body.sign)).length})).sort((a,b)=>b.count-a.count);
@@ -132,6 +162,21 @@
     const modeLabel=modes[0]?.count===modes[1]?.count?"Mixed modalities":modes[0]?.name+" emphasis";
     balance.append(el("span","cosmic-pill","✧ "+elementLabel),el("span","cosmic-pill","✧ "+modeLabel));
     reading.append(balance);
+    if(options.kind==="overlay"&&options.transitChart?.bodies){
+      const legend=el("div","cosmic-overlay-legend");
+      legend.append(el("span","cosmic-legend-natal","● Natal placements"),
+        el("span","cosmic-legend-transit","● Transiting planets"));
+      reading.prepend(legend);
+      const transitLinks=transitAspects(options.transitChart,chart);
+      const box=el("details","cosmic-overlay-aspects");
+      box.open=true;
+      box.append(el("summary","","Transit-to-natal connections · "+transitLinks.length));
+      const list=el("ul","");
+      for(const aspect of transitLinks.slice(0,16))
+        list.append(el("li","","Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal+" · "+aspect.orb.toFixed(1)+"° orb"));
+      if(!transitLinks.length)list.append(el("li","","No major transit-to-natal aspects inside the 2° orb."));
+      box.append(list);reading.append(box);
+    }
     if(options.kind==="transit")reading.prepend(el("p","cosmic-muted","Geocentric transit sky · houses and rising sign not calculated for this view."));
     if(chart.time_precision==="unknown")reading.prepend(el("p","cosmic-uncertain","Birth time unknown: provisional noon-UTC placements only. Do not rely on houses or Rising; the Moon and sign-cusp placements may differ at birth."));
     const three=el("div","cosmic-three");
