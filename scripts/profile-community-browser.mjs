@@ -29,6 +29,7 @@ async function scenario(title,viewport,own){
     body:"An original pixel-art project is almost ready.",visibility:"public",
     created_at:"2026-11-10T18:00:00Z",updated_at:"2026-11-10T18:00:00Z",
     comment_count:1,fire_count:0,heart_count:0,skull_count:0,my_reaction:null}];
+  let savedPosts=[];
   let wallComments=[{id:12,activity_id:55,user_id:88,username:"outsider",display_name:"Outsider",
     body:"Love the pixel art!",created_at:"2026-11-11T11:00:00Z",updated_at:"2026-11-11T11:00:00Z"}];
 
@@ -48,6 +49,17 @@ async function scenario(title,viewport,own){
     if(path==="/api/auth/me")return answer(200,{user:own?member:{id:88,username:"outsider",role:"member"}});
     if(path==="/api/users/nebula")return answer(200,activity);
     if(path==="/api/avatars/profile/nebula")return answer(200,{avatar:null});
+    if(path==="/api/profile-wall/saved"&&request.method()==="GET")
+      return answer(200,{posts:savedPosts,limit:30});
+    if(path==="/api/profile-wall/posts/55/bookmark"){
+      if(request.method()==="DELETE"){
+        savedPosts=[];wallPosts.forEach(post=>{if(post.id===55)post.is_saved=false});
+        return answer(200,{ok:true,saved:false});
+      }
+      savedPosts=[{...wallPosts.find(post=>post.id===55),saved_at:"2026-11-11T12:00:00Z"}];
+      wallPosts.forEach(post=>{if(post.id===55)post.is_saved=true});
+      return answer(200,{ok:true,saved:true});
+    }
     if(path==="/api/profile-wall"&&request.method()==="GET")
       return answer(200,{posts:wallPosts,has_more:false,next_before:null,can_post:own,viewer_id:own?77:88});
     if(path==="/api/profile-wall/posts/55/reactions"){
@@ -120,6 +132,15 @@ async function scenario(title,viewport,own){
       assert.equal(await page.locator(".profile-wall-owner-actions button").count(),0);
     }
     const original=page.locator('.profile-wall-post[data-activity-id="55"]');
+    if(own){
+      assert.ok(await page.locator("#profile-saved").isVisible());
+      await original.locator('.profile-wall-save').click();
+      await page.locator("#profile-saved .profile-wall-saved-item").first().waitFor();
+      await page.locator("#profile-saved .profile-wall-saved-item button").first().click();
+      assert.equal(await page.locator("#profile-saved .profile-wall-saved-item").count(),0);
+    }else{
+      assert.equal(await page.locator("#profile-saved").count(),0);
+    }
     await original.locator('.profile-wall-reaction').first().click();
     assert.equal(await original.locator('.profile-wall-reaction').first().getAttribute("aria-pressed"),"true");
     await original.locator(".profile-wall-comments-toggle").click();
