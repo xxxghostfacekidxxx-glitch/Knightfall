@@ -132,6 +132,7 @@ async function mount(member,own,root,signedIn){
               if(element.dataset.bookmarkFor===String(entry.id)){
                 element.textContent="🔖 Save";
                 element.setAttribute("aria-pressed","false");
+                element.setAttribute("aria-label","Save update");
               }
             }
           }catch(error){showError(savedStatus,error);}
@@ -256,7 +257,7 @@ async function mount(member,own,root,signedIn){
     if(signedIn){
       const bookmark=button(post.is_saved?"🔖 Saved":"🔖 Save","profile-wall-save",async()=>{
         bookmark.disabled=true;
-        const alreadySaved=!!post.is_saved;
+        const alreadySaved=bookmark.getAttribute("aria-pressed")==="true";
         try{
           const result=await api("/api/profile-wall/posts/"+post.id+"/bookmark",{
             method:alreadySaved?"DELETE":"POST"
@@ -264,6 +265,7 @@ async function mount(member,own,root,signedIn){
           post.is_saved=!!result.saved;
           bookmark.textContent=post.is_saved?"🔖 Saved":"🔖 Save";
           bookmark.setAttribute("aria-pressed",String(post.is_saved));
+          bookmark.setAttribute("aria-label",post.is_saved?"Remove saved update":"Save update");
           note.textContent=post.is_saved?"Added to your saved updates.":"Removed from saved updates.";
           if(own)await loadSaved();
         }catch(error){showError(note,error);}
