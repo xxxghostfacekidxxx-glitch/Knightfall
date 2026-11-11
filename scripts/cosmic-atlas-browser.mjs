@@ -50,6 +50,10 @@ try{
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),{bodies:data.bodies},{kind:"transit"}),chart);
   assert.match(await page.locator(".cosmic-wheel svg").getAttribute("aria-label"),/transit sky/i);
   assert.equal(await page.locator(".cosmic-focus-select").count(),1);
+  assert.match(await page.locator(".cosmic-atlas h3").textContent(),/Transit Sky Atlas/);
+  await page.locator(".cosmic-focus-select").selectOption("Sun");
+  assert.match(await page.locator(".cosmic-transit-context").textContent(),/not a person.s natal character/);
+  assert.equal(await page.locator(".cosmic-house-entry").count(),0,label+": sky-only chart must not show birth houses");
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),data,
     {kind:"overlay",transitChart:{bodies:{
       Mars:{sign:"Libra",degree_in_sign:10.1},
