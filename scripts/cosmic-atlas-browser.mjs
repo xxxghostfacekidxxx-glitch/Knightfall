@@ -23,11 +23,13 @@ try{
   await page.goto(base+"/cosmic-chart.css",{waitUntil:"domcontentloaded"});
   await page.setContent('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#0d1018;color:white"><main style="padding:10px;max-width:960px;margin:auto"><div id="chart" class="cosmic-preview"></div></main></body></html>');
   await page.addStyleTag({url:base+"/cosmic-chart.css"});
+  await page.addScriptTag({url:base+"/cosmic-lexicon.js"});
   await page.addScriptTag({url:base+"/cosmic-insights.js"});
   await page.addScriptTag({url:base+"/cosmic-chart.js"});
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),data),chart);
   assert.equal(await page.locator(".cosmic-wheel svg").count(),1,label+": missing chart");
   assert.equal(await page.locator(".cosmic-atlas").count(),1,label+": missing atlas");
+  assert.equal(await page.locator(".cosmic-house-entry").count(),12,label+": missing 12-house explorer");
   const downloadPromise=page.waitForEvent("download",{timeout:12000});
   await page.locator(".cosmic-export-button").click();
   const downloaded=await downloadPromise;
@@ -39,6 +41,8 @@ try{
   assert.ok(metrics.width<=metrics.viewport+2,label+": horizontal overflow "+JSON.stringify(metrics));
   assert.ok(metrics.height>180,label+": diagram too small "+JSON.stringify(metrics));
   await page.locator(".cosmic-focus-select").selectOption("Sun");
+  assert.match(await page.locator(".cosmic-interpretation-reading").textContent(),/traditional tropical astrology/);
+  assert.equal(await page.locator(".cosmic-reflection-question").count(),1);
   assert.ok(await page.locator('[data-planet="Moon"]').first().evaluate(el=>getComputedStyle(el).opacity<.5),label+": planet focus didn't dim others");
   assert.ok(await page.locator('[data-planet="Sun"]').first().evaluate(el=>getComputedStyle(el).opacity>.9),label+": selected planet not highlighted");
   await page.locator(".cosmic-reset-focus").click();
@@ -63,6 +67,7 @@ try{
       {time_precision:"unknown",bodies:{Sun:data.bodies.Sun,Moon:data.bodies.Moon}});
   },chart);
   assert.match(await page.locator(".cosmic-uncertain").textContent(),/Birth time unknown/);
+  assert.equal(await page.locator(".cosmic-house-entry").count(),0,label+": uncertain birth time must not invent houses");
   assert.equal(await page.locator(".cosmic-three .cosmic-key").count(),2,label+": unknown time should omit Rising");
   console.log(label+": natal, planet focus, transit and unknown-time layout PASS");
   await page.close();
