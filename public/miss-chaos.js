@@ -356,6 +356,15 @@
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
   let latestNatalUtc = null,latestSavedChart=null,latestChartSubject="me",astroCityVersion=0;
+  const astroUnknown=$("#astro-time-unknown"),astroDateOnly=$("#astro-date-only");
+  const syncUnknownAstroTime=()=>{
+    $("#astro-date-only-label").hidden=!astroUnknown.checked;
+    astroDateOnly.required=astroUnknown.checked;
+    $("#astro-birth-time").required=!astroUnknown.checked;
+    $("#astro-utc-offset").required=!astroUnknown.checked;
+  };
+  astroUnknown.addEventListener("change",syncUnknownAstroTime);
+  syncUnknownAstroTime();
   window.KnightfallBirthTime?.populate("astro-timezone");
   const astroPreview=$("#astro-preview");
   function prepareCosmicReading(chart,message,subject="me"){
@@ -444,6 +453,22 @@
     event.preventDefault();
     const status = $("#astro-chart-status");
     const button = event.currentTarget.querySelector('button[type="submit"]');
+    if(astroUnknown.checked){
+      const date=astroDateOnly.value.trim();
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){status.textContent="Select a valid date for a provisional chart.";return;}
+      const instant=new Date(date+"T12:00:00Z");
+      if(!Number.isFinite(instant.getTime())||instant.toISOString().slice(0,10)!==date||instant.getUTCFullYear()<1900||instant.getUTCFullYear()>2100){status.textContent="Enter a date between 1900 and 2100.";return;}
+      button.disabled=true;status.textContent="Calculating provisional planetary positions at noon UTC…";
+      try{
+        const chart=await request("/api/chaos/astrology/chart",{method:"POST",body:JSON.stringify({utc:instant.toISOString()})});
+        chart.time_precision="unknown";
+        latestNatalUtc=null;latestSavedChart=chart;latestChartSubject="me";
+        $("#astro-natal-back").hidden=true;
+        prepareCosmicReading(chart,"Provisional chart calculated. Review before sending. Moon and any cusp signs may differ; Rising and houses are unavailable.");
+      }catch(error){status.textContent=error.message||"Provisional calculation failed.";}
+      finally{button.disabled=false;}
+      return;
+    }
     const local = $("#astro-birth-time").value;
     const offset = Number($("#astro-utc-offset").value);
     const parts = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
