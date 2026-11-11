@@ -98,5 +98,44 @@
     (chart?.time_precision==="unknown"?". Birth time unknown: exclude Rising, Midheaven and houses; Moon or cusp signs could vary.":"")+
     " Connect these themes through choices, context, and grounded reflection.").slice(0,1250);
  }
- window.KnightfallCosmicLexicon=Object.freeze({PLANETS,SIGNS,HOUSES,placement,houseGuide,angles,brief});
+ const TRANSIT_ASPECTS={
+  Conjunction:{relationship:"an intensified meeting of both themes",question:"Where do these themes reinforce or complicate one another?"},
+  Sextile:{relationship:"an opportunity to practice a cooperative response",question:"What small action could help the themes work together?"},
+  Square:{relationship:"a potential tension inviting attention rather than avoidance",question:"Which adjustment would reduce friction without denying either need?"},
+  Trine:{relationship:"themes that may support one another with relative ease",question:"How can a strength become a useful practice rather than an assumption?"},
+  Opposition:{relationship:"two perspectives that can be held in productive balance",question:"What middle ground respects both priorities?"}
+ };
+ function transitGuide(natalChart,transitChart,aspect){
+  if(!aspect||!TRANSIT_ASPECTS[aspect.type])return null;
+  const moving=PLANETS[aspect.transit],birth=PLANETS[aspect.natal];
+  const movingPlacement=transitChart?.bodies?.[aspect.transit],natalPlacement=natalChart?.bodies?.[aspect.natal];
+  if(!moving||!birth||!movingPlacement||!natalPlacement)return null;
+  const orb=Number(aspect.orb);
+  if(!Number.isFinite(orb)||orb<0||orb>2)return null;
+  const house=validHouse(natalChart.house_placements?.[aspect.natal])&&natalChart.time_precision!=="unknown"?
+   natalChart.house_placements[aspect.natal]:null;
+  const detail=TRANSIT_ASPECTS[aspect.type],movingSign=SIGNS[movingPlacement.sign],natalSign=SIGNS[natalPlacement.sign];
+  const houseText=house?" Natal house "+house+" draws attention to "+HOUSES[house-1].context.toLowerCase()+".":"";
+  const unknown=natalChart.time_precision==="unknown"?" Because birth time is unknown, natal Moon and sign-cusp positions may be uncertain, and houses are omitted.":"";
+  return {
+   transit:aspect.transit,natal:aspect.natal,type:aspect.type,orb:Number(orb.toFixed(2)),house,
+   title:"Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal,
+   summary:"Moving "+aspect.transit+" concerns "+moving.scope.toLowerCase()+"; natal "+aspect.natal+
+    " concerns "+birth.scope.toLowerCase()+". In traditional astrology, a "+
+    aspect.type.toLowerCase()+" represents "+detail.relationship+". "+
+    (movingSign?"The transiting planet is in "+movingPlacement.sign+", associated with "+movingSign.style+". ":"")+
+    (natalSign?"The natal planet is in "+natalPlacement.sign+", associated with "+natalSign.style+". ":"")+
+    houseText+unknown,
+   reflection:detail.question+" "+birth.reflection,
+   disclaimer:"This is a symbolic interpretation of the selected sky positions, not an event prediction or evidence about a person's life."
+  };
+ }
+ function transitBrief(natalChart,transitChart,aspects){
+  if(!Array.isArray(aspects))return "";
+  const interpretations=aspects.slice(0,6).map(x=>transitGuide(natalChart,transitChart,x)).filter(Boolean);
+  if(!interpretations.length)return "No major transit-to-natal aspects inside the selected 2° orb; do not invent connections.";
+  return ("Use these traditional reflective themes, not deterministic claims: "+
+    interpretations.map(x=>x.title+" ("+x.orb+"°): "+x.summary+" Reflection: "+x.reflection).join("; ")).slice(0,1850);
+ }
+ window.KnightfallCosmicLexicon=Object.freeze({PLANETS,SIGNS,HOUSES,placement,houseGuide,angles,brief,transitGuide,transitBrief});
 })();
