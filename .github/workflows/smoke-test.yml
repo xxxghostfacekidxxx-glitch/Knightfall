@@ -64,6 +64,7 @@ on:
       - 'scripts/arcade-browser-smoke.mjs'
       - 'scripts/arcade-leaderboard-browser-smoke.mjs'
       - 'scripts/arcade-leaderboards.test.mjs'
+      - 'scripts/arcade-mini-save-validation.test.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
@@ -127,6 +128,8 @@ jobs:
         run: node scripts/messaging-theme-audit.mjs
       - name: Guard unified neon/yellow design system and protected surfaces
         run: node scripts/site-theme-audit.mjs
+      - name: Validate mini-game save snapshots
+        run: node --test scripts/arcade-mini-save-validation.test.mjs
       - name: Check arcade scoreboard and generated catalog consistency
         run: node --test scripts/arcade-leaderboards.test.mjs && node --check public/arcade-leaderboards.js && node --check backend/src/index.js
       - name: Reproduce and prevent Android push registration failures
