@@ -62,3 +62,12 @@
 .astro-unknown-time input{width:auto}
 
 #birth-chart-date-only-label[hidden],#astro-date-only-label[hidden],#astro-natal-back[hidden]{display:none!important}
+
+/* Dual-ring natal/transit visualization */
+.cosmic-overlay-legend{display:flex;flex-wrap:wrap;gap:.4rem .75rem;padding:.5rem .7rem;border:1px solid #c4ffed44;border-radius:9px;background:#05141ad9;font-size:.77rem;font-weight:700}
+.cosmic-legend-natal{color:#ff91dd}.cosmic-legend-transit{color:#b2ffe9}
+.cosmic-overlay-aspects{padding:.66rem .75rem;border:1px solid #a1ffe275;border-radius:10px;background:#a2ffe40c}
+.cosmic-overlay-aspects summary{cursor:pointer;color:#c4fff1;font-weight:750;font-size:.85rem}
+.cosmic-overlay-aspects ul{max-height:235px;overflow:auto;margin:.7rem 0 .15rem;padding-left:1.25rem;color:#eee1f2;font-size:.78rem;line-height:1.58}
+.cosmic-overlay-aspects li{padding-bottom:.2rem}
+#astro-overlay[hidden],#astro-transit-only[hidden]{display:none!important}
