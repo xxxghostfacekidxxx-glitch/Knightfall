@@ -110,3 +110,28 @@ test('offline device resume normalizes legacy prices before restoring', () => {
 test('late cloud save hint cannot overwrite a running game or changed resume selection', () => {
   assert.match(source,/s\.schema===1&&s\.game===id&&validSavedState\(s\.state\)&&!running&&resumeRequest===0\)status\("Cloud save available/);
 });
+
+test('Save Progress captures a snapshot before awaiting cloud readiness', async () => {
+ const begin=source.indexOf('async function saveCloud(){');
+ const end=source.indexOf('function validSavedState(saved)',begin);
+ assert.ok(begin>=0&&end>begin);
+ let release;
+ const ready=new Promise(resolve=>{release=resolve});
+ const saves=[],messages=[];
+ const context={
+  window:{AshFallArcade:{ready,saveProgress:async(...args)=>saves.push(args)}},
+  snapshot:()=>({score:9,state:{particles:9}}),
+  saveLocal:()=>{},
+  status:v=>messages.push(v),
+  d:{key:'cabinet-particle-clicker'}
+ };
+ runInNewContext(`let loopGeneration=0,resumeRequest=0;${source.slice(begin,end)}globalThis.harness={saveCloud,changeRun:()=>loopGeneration++};`,context);
+ const pending=context.harness.saveCloud();
+ context.snapshot=()=>({score:100,state:{particles:100}});
+ context.harness.changeRun();
+ release();
+ await pending;
+ assert.equal(saves.length,1);
+ assert.equal(saves[0][1].score,9);
+ assert.deepEqual(messages,[]);
+});
