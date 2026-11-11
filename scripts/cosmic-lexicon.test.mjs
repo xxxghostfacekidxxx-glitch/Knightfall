@@ -142,6 +142,16 @@ test("Miss Chaos uses measured transit-to-natal aspects for its reading draft",(
  assert.match(chat,/latestChartSubject==="member"/);
  assert.doesNotMatch(read("public/cosmic-lexicon.js"),/fetch\s*\(|new WebSocket/);
 });
+test("public member profile comparison handoff transfers username only and waits for explicit click",()=>{
+ const profile=read("public/profile.js"),chaos=read("public/miss-chaos.js");
+ assert.match(profile,/if\(!ownProfile&&!adminView/);
+ assert.match(profile,/sessionStorage\.setItem\("knightfall:cosmic-compare-user",u\.username\)/);
+ assert.match(chaos,/sessionStorage\.getItem\("knightfall:cosmic-compare-user"\)/);
+ assert.match(chaos,/sessionStorage\.removeItem\("knightfall:cosmic-compare-user"\)/);
+ assert.match(chaos,/astro-compare-username"\)\.value=member/);
+ assert.match(chaos,/const own=await request\("\/api\/profile\/birth-chart"\)/);
+ assert.match(chaos,/const member=await request\("\/api\/users\/"\+encodeURIComponent\(username\)\)/);
+});
 test("pages load lexicon before atlas and renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
   const html=read(path);
