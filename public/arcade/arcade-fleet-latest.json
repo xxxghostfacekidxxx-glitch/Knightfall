@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-11T17:45:58.570Z",
+  "generatedAt": "2026-11-11T19:46:10.428Z",
   "reportsFound": 20,
   "catalogRoutes": 132,
   "targets": {
@@ -24,10 +24,22 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "failures": [
+        {
+          "game": "sanctuary-original-sanctuary",
+          "route": "/arcade/hosted/sanctuary-original/sanctuary.html",
+          "profile": "desktop",
+          "action": "start game",
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:88:43",
+          "target": "local",
+          "screenshot": "011.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 13
+        }
+      ],
+      "coverageOk": false
     }
   },
-  "passed": true,
-  "sourceRunId": 43070156621
+  "passed": false,
+  "sourceRunId": 43089507885
 }
