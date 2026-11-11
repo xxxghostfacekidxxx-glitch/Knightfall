@@ -64,6 +64,13 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Full arcade CI remains red for run 43106340803: local shards were never executed because validation exited early, so fleet summary `passed` is false despite 132/132 live route coverage.
 - [ ] Await a new complete run of all ten local and live shards, specialized tests and coverage consolidation before resolving #192. A green summary and mobile acceptance are distinct requirements.
 
+## Arcade CI regression hardening — November 11, 2026
+
+- [x] Added a regression assertion in `scripts/arcade-mini-save-validation.test.mjs` ensuring the gameplay-doctor `async-resume-syntax` pattern accepts guarded cloud Resume, rejects legacy unguarded Resume, and preserves pre/post-cloud race checks (commits dc88ea9 and c96d6a3).
+- [x] Added the focused mini-game save/resume regression test to the arcade-fleet validation step before the gameplay-doctor audit ([6001989](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/6001989d9fbdb8875ba05832ba7d0bd6f8c6704d)).
+- [x] Re-read committed files and independently confirmed the required test reference, matching invariant and race guards are present.
+- [ ] Obtain a fresh passing arcade-fleet run for these commits; the last published run 43106340803 remains failed with full local browser coverage absent. CI, production and physical-device acceptance remain separate.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
