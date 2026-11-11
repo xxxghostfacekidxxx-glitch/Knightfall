@@ -28,6 +28,11 @@ try{
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),data),chart);
   assert.equal(await page.locator(".cosmic-wheel svg").count(),1,label+": missing chart");
   assert.equal(await page.locator(".cosmic-atlas").count(),1,label+": missing atlas");
+  const downloadPromise=page.waitForEvent("download",{timeout:12000});
+  await page.locator(".cosmic-export-button").click();
+  const downloaded=await downloadPromise;
+  assert.match(downloaded.suggestedFilename(),/knightfall-cosmic-chart\.svg$/);
+  assert.match(await page.locator(".cosmic-export-status").textContent(),/saved locally/);
   assert.equal(await page.locator(".cosmic-focus-select").count(),1,label+": missing planet dropdown");
   assert.equal(await page.locator(".cosmic-atlas-stat").count()>0,true,label+": empty insights");
   const metrics=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth,height:document.querySelector(".cosmic-wheel svg").getBoundingClientRect().height}));
