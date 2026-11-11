@@ -9,6 +9,9 @@
   --af-ember:#ff55d8;
   --af-ember-light:#c6ff45;
   --af-ember-soft:rgba(255,85,216,.15);
+  /* A small third accent, never a substitute for primary pink / acid green. */
+  --af-yellow:#ffe36b;
+  --af-yellow-soft:rgba(255,227,107,.13);
   --af-radius-sm:9px;
   --af-radius-md:14px;
   --af-radius-lg:18px;
