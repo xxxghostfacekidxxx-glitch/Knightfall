@@ -368,6 +368,32 @@
     $("#astro-chart-status").textContent=message;
     input.focus();
   }
+  $("#astro-compare").addEventListener("click",async event=>{
+    const button=event.currentTarget,status=$("#astro-chart-status");
+    const username=$("#astro-compare-username").value.trim().replace(/^@/,"");
+    if(!/^[a-zA-Z0-9_.-]{2,40}$/.test(username)){status.textContent="Enter a valid member username.";return;}
+    button.disabled=true;status.textContent="Checking published member chart…";
+    try{
+      if(!latestSavedChart?.bodies){
+        const own=await request("/api/profile/birth-chart");
+        if(!own.chart)throw Error("Create your own profile birth chart before comparing.");
+        latestSavedChart=own.chart;
+      }
+      const member=await request("/api/users/"+encodeURIComponent(username));
+      if(!member?.birth_chart?.bodies)throw Error("This member has no birth chart available to you. They may choose to publish one in Profile Studio.");
+      const other=member.birth_chart;
+      const aspects=window.KnightfallCosmic.synastry(latestSavedChart,other).slice(0,24);
+      const top=aspects.map(a=>"My "+a.first+" "+a.type.toLowerCase()+" their "+a.second+" (orb "+a.orb+"°)").join("; ");
+      const describe=c=>"Sun "+(c.bodies?.Sun?.sign||"unknown")+", Moon "+(c.bodies?.Moon?.sign||"unknown")+", Rising "+(c.angles?.ascendant_sign||c.ascendant_sign||"unknown");
+      moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
+      input.value=("Explore the traditional symbolic astrological compatibility between my chart and @"+username+"'s explicitly published profile chart. Do not predict relationship outcomes or prescribe decisions. Compare communication, emotional needs, attractions, tensions, and personal agency. My Big Three: "+describe(latestSavedChart)+". Their Big Three: "+describe(other)+". Exact chart-to-chart aspects: "+top+". Address missing information honestly.").slice(0,3900);
+      input.dispatchEvent(new Event("input"));
+      astroPreview.hidden=false;window.KnightfallCosmic.render(astroPreview,latestSavedChart);
+      status.textContent="Found "+aspects.length+" chart-to-chart aspects (showing strongest 24). Comparison prepared for review before Send.";
+      input.focus();
+    }catch(error){status.textContent=error.message||"Unable to compare these charts.";}
+    finally{button.disabled=false;}
+  });
   $("#astro-saved-chart").addEventListener("click",async event=>{
     const button=event.currentTarget;button.disabled=true;
     $("#astro-chart-status").textContent="Loading your saved chart…";
