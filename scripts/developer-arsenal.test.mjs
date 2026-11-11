@@ -29,3 +29,14 @@ test("developer tools guide differentiates installed tools from candidates", asy
   assert.match(guide, /no MCP runtime provisioned/i);
   assert.match(guide, /GlitchTip/);
 });
+
+test("browser-role smoke test uses fixtures instead of live credentials", async () => {
+  const script = await load("scripts/developer-arsenal-browser.mjs");
+  assert.match(script, /role: "member"/);
+  assert.match(script, /role: "admin"/);
+  assert.match(script, /role: "god"/);
+  assert.match(script, /route\.fulfill\(/);
+  assert.doesNotMatch(script, /process\.env\.(?:KNIGHTFALL_.*PASSWORD|ADMIN_TOKEN)/);
+  const flow = await load(".github/workflows/developer-arsenal-audit.yml");
+  assert.match(flow, /node scripts\/developer-arsenal-browser\.mjs/);
+});
