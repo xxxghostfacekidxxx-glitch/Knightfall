@@ -1,42 +1,27 @@
-# Miss Chaos astrology calculations
+# Miss Chaos astrology: Cosmic Blueprint
 
-Miss Chaos has an Astrology mood with a birth-chart calculator and a current-transits button.
+## Current features (November 2026)
 
-## Using it
+Miss Chaos has a calculated natal-chart experience, an SVG zodiac wheel, major aspects, house display, the Sun/Moon/Rising trio, elements/modalities, current transits, and chart-to-chart comparison against another member's permissioned published chart. Member profiles and Profile Studio share the same responsive chart visualizer. Members can load their own private saved profile chart into Miss Chaos without supplying the original birth details again. No reading is automatically sent: the user reviews the drafted interpretation before sending.
 
-1. Sign in and open `/miss-chaos.html`, then select **Astrology**.
-2. Enter the birth date and **local clock time**, plus the **historical UTC offset at birth** (including daylight saving time). For example, UTC−4 is `-4`, UTC+5:30 is `5.5`.
-3. Select **Calculate placements**. The site converts the local clock time to UTC and calls `POST /api/chaos/astrology/chart`. The response prepares a draft for interpretation; the user reviews it before sending.
-4. Select **Calculate today's transits** for current planetary positions. If a natal chart has been calculated in the current page session, the API compares transiting planets with natal positions. Otherwise it shows current positions and aspects.
+Birth-place search uses Nominatim to select coordinates; it sends a city query but not the birth date/time. An optional IANA time-zone field uses browser Intl time-zone history to determine the UTC offset at the birth date. The manual offset field remains for verified fallback. DST gaps are rejected, and overlapping fall-back hours can use the first or second occurrence. Choosing a city does not automatically identify its historical time zone: the member must choose the appropriate zone. Historical data can be incomplete or include sub-minute offsets.
 
-## Calculation method and limits
+## Astronomical basis and honest limits
 
-`backend/src/astrology.js` computes **approximate** geocentric ecliptic longitudes from low-precision orbital elements (Paul Schlyter's published algorithms). The tropical zodiac is divided into twelve 30-degree signs. Major aspects use a 4-degree orb for single charts and 2 degrees for natal-transit comparisons. Retrograde is estimated by comparing the positions one day before and after the target date.
+Backend astronomy uses the MIT-licensed Astronomy Engine 2.1.19 for geocentric Sun, Moon, and Mercury-through-Pluto tropical longitudes. Planetary retrogrades use a day-to-day longitude estimate. Mean lunar nodes, Ascendant and Midheaven angles remain approximate. Equal and whole-sign houses are supported, NOT Placidus. Birth coordinates are required for houses, with supported latitudes -66° to +66°. The supported UTC birth date range is 1900–2100. It is not a Swiss Ephemeris implementation.
 
-This is **not a high-precision Swiss Ephemeris or JPL ephemeris**. It currently includes the Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus and Neptune. It does not compute Pluto, lunar nodes, Ascendant, houses, topocentric positions, precession-sensitive sidereal placements, or exact electional timing. Calculations support 1900–2100 UTC, and the Moon and outer-planet approximations may deviate materially from professional chart software. The user's birth city is not used; it will be needed for future Ascendant and house calculations.
+The profile visualizer has five major aspect types; its visual convention uses a 6-degree orb when Sun or Moon is involved and a 4-degree orb for other bodies. The backend natal result uses a 4-degree orb; natal transit matching uses 2 degrees.
 
-The API requires an authenticated session, is rate limited, and does not persist chart data. Chat messages prepared from results are saved in the user's normal Miss Chaos conversation if sent. Users should avoid sharing birth data they do not want stored in conversation history.
+Astrology here is a symbolic tradition for reflection and entertainment, not a scientifically established predictor of traits, health, fate, or compatibility. Miss Chaos should describe themes and options, not invent uncalculated placements or deterministic outcomes.
 
-## Engineering checks
+## Privacy and access
 
-Run `node --test scripts/astrology.test.mjs` and `node scripts/static-audit.mjs`. The backend deployment workflow runs the astrology tests and triggers for changes anywhere under `backend/src/`. Live deployment still depends on configured Cloudflare credentials and passing GitHub Actions.
+Saved profile charts are hidden by default, can be published/hidden/deleted by their owner, and save derived chart data rather than raw birth timestamp or coordinates. The permission-aware public user API decides whether another member's chart may be accessed. The synastry feature does not bypass that rule. The one-time cross-page chart transfer uses browser session storage for derived placements, is consumed once, and does not post to chat automatically. A user who sends the reading stores its text in their normal Miss Chaos conversation.
 
-## Location-based Ascendant and houses
+## Verification
 
-The calculator now accepts optional birth latitude and longitude (north/east positive, south/west negative). When both are supplied, it calculates an **approximate Ascendant** from local sidereal time and mean obliquity, then uses twelve **equal houses** spaced 30 degrees from the Ascendant. It does **not** calculate Placidus or whole-sign houses, and limits latitude to -66 through +66 degrees. The city and historical UTC offset must be determined by the user; the calculator does not perform geocoding or timezone lookup.
+- Node tests: scripts/astrology.test.mjs, scripts/profile-birth-chart.test.mjs, scripts/profile-birth-chart-runtime.test.mjs, scripts/cosmic-chart.test.mjs.
+- Static syntax and audit: public/cosmic-chart.js, public/cosmic-timezone.js, public/profile.js, public/miss-chaos.js, and scripts/static-audit.mjs.
+- Required manual checks: Android and desktop layout; normal/ambiguous/invalid historical time; city selection; profile-public/friends/private visibility; published member comparison; personal chart loading; current transit drafts.
 
-This remains a **low-precision** planetary ephemeris. Pluto and lunar nodes are absent, and exact birth-time rectification, professional-grade ephemerides and sidereal charts are not implemented. Location input is not separately persisted by the calculator; if the user sends the prepared interpretation prompt, the chart information enters their normal chat history.
-
-## Additional celestial points and house systems
-
-The chart now includes **Pluto** from a low-precision heliocentric series, and **mean North and South lunar nodes**. The nodes are approximate and are not the oscillating/true nodes. It also calculates an approximate **Midheaven** from local sidereal time. With coordinates, the user may choose **equal houses** or **whole-sign houses**; Placidus remains unsupported. These approximations must not be represented as professional-grade ephemeris data, especially close to sign or house cusps.
-
-## Accuracy and deployment gate
-
-Do not label these calculations Swiss Ephemeris or JPL precision. Before promoting them as production-verified, confirm `node --test scripts/astrology.test.mjs`, the static audit, the backend deployment workflow, and an authenticated browser check of the chart and transit controls. Existing CI status is not proof of a successful live deployment until a run completes successfully.
-
-## Higher-accuracy planetary engine (October 2026)
-
-The backend now imports **Astronomy Engine 2.1.19**, an MIT-licensed astronomical calculation library, to compute the geocentric Sun, Moon, Mercury through Pluto, converted to the true ecliptic of date. This replaces the original low-precision planetary orbital-element approximations. Planetary retrograde flags are still estimated from daily longitude differences. Mean lunar nodes remain an approximate secular model; equal/whole-sign houses and Midheaven use approximate angle formulas, and the user's historical UTC offset must still be supplied accurately.
-
-The backend declares the dependency in `backend/package.json`; GitHub deployment and smoke-test workflows install it before executing `node --test scripts/astrology.test.mjs`. The API's anonymous-access check is also included in the live smoke workflow. **No production verification is implied by the commit alone.** Do not describe this implementation as Swiss Ephemeris or claim verified Placidus houses.
+GitHub commits and Pages deployments are not proof of authenticated browser verification. Verify live workflows and real signed-in sessions separately.
