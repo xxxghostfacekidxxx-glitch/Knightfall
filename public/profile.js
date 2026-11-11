@@ -436,7 +436,8 @@ async function loadProfilePhotos(username,ownProfile){
   }
 }
 
-async function loadMemberActivity(member,own){
+async function loadMemberActivity(member,own,signedIn=true){
+ if(window.KnightfallProfileWall?.mount)return window.KnightfallProfileWall.mount(member,own,root,signedIn);
  const section=document.createElement("section");section.className="profile-social-panel";
  section.innerHTML='<h2>Member updates</h2><p class="muted">Regular social updates appear here. Adult content stays separate.</p>'+(own?'<form id="profile-update-form"><textarea maxlength="5000" rows="3" placeholder="Share an update" required></textarea><select aria-label="Update visibility"><option value="public">Public</option><option value="followers">Followers</option><option value="private">Private</option></select><button class="action primary">Publish</button><p role="status"></p></form>':'')+'<div id="member-update-list"></div>';
  root.append(section);
@@ -540,7 +541,7 @@ async function load(){
    const me=await api("/api/auth/me").catch(()=>({user:null}));
    const ownProfile=!!me.user&&String(me.user.id)===String(d.user.id);render(d,false,ownProfile,!!me.user);try{const personal=await api("/api/avatars/profile/"+encodeURIComponent(d.user.username));if(personal.avatar){const avatarNode=root.querySelector('.profile-top .avatar-img,.profile-top .avatar');if(avatarNode){const frame=document.createElement('div');frame.className='personal-avatar-frame';frame.setAttribute('aria-label',(personal.name||'Personal misfit avatar')+' is the personal representation for '+(d.user.display_name||d.user.username));const misfit=document.createElement('div');misfit.className='personal-avatar';misfit.setAttribute('aria-hidden','true');misfit.innerHTML=window.KnightfallMisfitAvatars.render(personal.avatar);const label=document.createElement('span');label.className='personal-avatar-label';label.textContent=personal.name||'Personal misfit';frame.append(misfit,label);avatarNode.replaceWith(frame);}}}catch(error){console.warn("Personal avatar unavailable",error)}refreshProfileJump();applyProfileLayout(d.profile_layout);
    // Optional modules must not make an otherwise valid public profile disappear.
-   try{await loadMemberActivity(d.user,ownProfile)}catch(error){console.warn("Profile activity unavailable",error)}
+   try{await loadMemberActivity(d.user,ownProfile,!!me.user)}catch(error){console.warn("Profile activity unavailable",error)}
    applyProfileLayout(d.profile_layout);
    try{await loadProfilePhotos(d.user.username,ownProfile)}catch(error){console.warn("Profile photos unavailable",error)}
    applyProfileLayout(d.profile_layout);
