@@ -221,7 +221,7 @@ async function scenario(name,viewport){
   assert.equal("latitude" in provisional,false);
   assert.equal("longitude" in provisional,false);
   await page.locator("#birth-chart-visible").check();
-  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("published")||document.querySelector("#birth-chart-status")?.textContent.includes("visible"));
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("displayed on your profile"));
   assert.equal(birthVisible,true);
   await page.locator("#birth-chart-visible").uncheck();
   await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("hidden")||document.querySelector("#birth-chart-status")?.textContent.includes("private"));
