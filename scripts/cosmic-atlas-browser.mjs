@@ -41,6 +41,18 @@ try{
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),{bodies:data.bodies},{kind:"transit"}),chart);
   assert.match(await page.locator(".cosmic-wheel svg").getAttribute("aria-label"),/transit sky/i);
   assert.equal(await page.locator(".cosmic-focus-select").count(),1);
+  await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),data,
+    {kind:"overlay",transitChart:{bodies:{
+      Mars:{sign:"Libra",degree_in_sign:10.1},
+      Venus:{sign:"Aries",degree_in_sign:10.1},
+      Jupiter:{sign:"Cancer",degree_in_sign:3}
+    }}}),chart);
+  assert.match(await page.locator(".cosmic-wheel svg").getAttribute("aria-label"),/Natal and transit/);
+  assert.ok(await page.locator("[data-transit-planet]").count()>=3,label+": missing transit ring");
+  assert.ok(await page.locator("[data-overlay-aspect]").count()>=1,label+": missing inter-chart aspects");
+  assert.equal(await page.locator(".cosmic-overlay-legend").count(),1,label+": missing dual-ring legend");
+  const dualSize=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:innerWidth}));
+  assert.ok(dualSize.scroll<=dualSize.viewport+2,label+": overlay overflow "+JSON.stringify(dualSize));
   await page.evaluate(data=>{
     window.KnightfallCosmic.render(document.querySelector("#chart"),
       {time_precision:"unknown",bodies:{Sun:data.bodies.Sun,Moon:data.bodies.Moon}});
