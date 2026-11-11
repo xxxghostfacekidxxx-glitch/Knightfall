@@ -84,6 +84,10 @@ test("Cosmic UI is wired to public and private profile surfaces with no automati
   assert.match(chaosJs,/\/api\/profile\/birth-chart/);
   assert.match(chaosJs,/astro-city-search/);
   assert.match(chaosJs,/Review the interpretation draft before sending/);
+  assert.match(editor,/id="birth-chart-time-unknown"/);
+  assert.match(chaos,/id="astro-time-unknown"/);
+  assert.match(editor,/time_unknown:true/);
+  assert.match(chaosJs,/time_precision="unknown"/);
   for(const js of ["public/cosmic-chart.js","public/cosmic-timezone.js","public/profile.js","public/miss-chaos.js"])
     assert.doesNotThrow(()=>new Script(file(js),{filename:js}));
 });
