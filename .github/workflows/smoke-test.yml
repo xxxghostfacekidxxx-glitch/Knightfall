@@ -62,6 +62,7 @@ on:
       - 'scripts/arcade-leaderboards.test.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
+      - 'scripts/site-theme-audit.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
   workflow_run:
@@ -116,6 +117,8 @@ jobs:
           node --check backend/src/member-memo-mail.js
       - name: Verify messaging uses neon palette (no retired orange)
         run: node scripts/messaging-theme-audit.mjs
+      - name: Guard unified neon/yellow design system and protected surfaces
+        run: node scripts/site-theme-audit.mjs
       - name: Check arcade scoreboard and generated catalog consistency
         run: node --test scripts/arcade-leaderboards.test.mjs && node --check public/arcade-leaderboards.js && node --check backend/src/index.js
       - name: Reproduce and prevent Android push registration failures
