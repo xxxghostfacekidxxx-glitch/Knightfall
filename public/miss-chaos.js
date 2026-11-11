@@ -415,6 +415,7 @@
   const astroCityInput=$("#astro-city"),astroCitySearch=$("#astro-city-search"),astroCityResults=$("#astro-city-results"),astroCityStatus=$("#astro-city-status");
   function clearAstroCity(){
     astroCityVersion++;
+    window.KnightfallGeoTimezone?.clearAuto($("#astro-timezone"));
     $("#astro-latitude").value="";$("#astro-longitude").value="";
     astroCityResults.replaceChildren(new Option("Search for a city first",""));astroCityResults.disabled=true;
   }
@@ -423,6 +424,10 @@
     const place=astroCityResults.selectedOptions[0];
     $("#astro-latitude").value=place?.dataset.lat||"";
     $("#astro-longitude").value=place?.dataset.lon||"";
+    if($("#astro-latitude").value&&$("#astro-longitude").value){
+      const suggestion=window.KnightfallGeoTimezone?.setSuggestion($("#astro-timezone"),$("#astro-latitude").value,$("#astro-longitude").value);
+      $("#astro-timezone-status").textContent=suggestion?.message||"Time-zone suggestion unavailable. Enter one manually.";
+    }
     astroCityStatus.textContent=$("#astro-latitude").value?"Selected: "+place.textContent:"Choose a matching location.";
   });
   astroCitySearch.addEventListener("click",async()=>{
