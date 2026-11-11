@@ -69,6 +69,7 @@
 <label>Birth date and local time<input id="birth-chart-local" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
 <label>UTC offset at birth (manual fallback)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
 <label>Birth-place time zone (recommended)<input id="birth-chart-timezone" type="text" class="cosmic-timezone-select" placeholder="e.g. America/Chicago" autocomplete="off"></label>
+<p id="birth-chart-timezone-status" class="cosmic-timezone-help" role="status">Select your birth city for an offline estimated time zone. Confirm it against historical records; the estimate may be incorrect near borders.</p>
 <label>Repeated daylight-saving hour<select id="birth-chart-fold"><option value="earlier">First occurrence</option><option value="later">Second occurrence</option></select></label>
 <p class="cosmic-timezone-help">Choose the historical time zone for your birthplace, not your device's current location. The correct offset is then calculated from your birth date and time. Leave blank only if you know the historical offset.</p>
 <label>Birth city (city, state/region, country)<input id="birth-chart-city" type="text" autocomplete="off" placeholder="e.g. Des Moines, Iowa, USA" required></label>
@@ -87,6 +88,8 @@
 <script src="/nav.js?v=20261103-profile-studio1" defer></script>
 <script src="/cosmic-insights.js?v=20261111-atlas1" defer></script>
 <script src="/cosmic-chart.js?v=20261111-atlas2" defer></script>
+<script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
+<script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
 <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
 <script>
 const API="https://api.ash-fall.com",form=document.querySelector("#form"),status=document.querySelector("#status");
@@ -216,9 +219,13 @@ async function chartApi(method,body){const response=await fetch(API+"/api/profil
 chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;timeUnknown.checked=data.chart?.time_precision==="unknown";syncUnknownBirthTime();showBirthChart(data.chart);chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
 const birthCityInput=document.querySelector("#birth-chart-city"),birthCitySearch=document.querySelector("#birth-chart-city-search"),birthCityResults=document.querySelector("#birth-chart-city-results"),birthCityStatus=document.querySelector("#birth-chart-city-status"),birthLat=document.querySelector("#birth-chart-lat"),birthLon=document.querySelector("#birth-chart-lon");
 let citySearchVersion=0;
-function clearBirthCity(){birthLat.value="";birthLon.value="";birthCityResults.replaceChildren(new Option("Search for your birth city first",""));birthCityResults.disabled=true;citySearchVersion++;}
+function clearBirthCity(){window.KnightfallGeoTimezone?.clearAuto(document.querySelector("#birth-chart-timezone"));birthLat.value="";birthLon.value="";birthCityResults.replaceChildren(new Option("Search for your birth city first",""));birthCityResults.disabled=true;citySearchVersion++;}
 birthCityInput.addEventListener("input",()=>{clearBirthCity();birthCityStatus.textContent="Find your city, then select the correct result.";});
-birthCityResults.addEventListener("change",()=>{const option=birthCityResults.selectedOptions[0];birthLat.value=option?.dataset.lat||"";birthLon.value=option?.dataset.lon||"";birthCityStatus.textContent=birthLat.value&&birthLon.value?"Selected: "+option.textContent:"Choose a matching city.";});
+birthCityResults.addEventListener("change",()=>{const option=birthCityResults.selectedOptions[0];birthLat.value=option?.dataset.lat||"";birthLon.value=option?.dataset.lon||"";if(birthLat.value&&birthLon.value){
+  const suggestion=window.KnightfallGeoTimezone?.setSuggestion(document.querySelector("#birth-chart-timezone"),birthLat.value,birthLon.value);
+  document.querySelector("#birth-chart-timezone-status").textContent=suggestion?.message||"Time-zone suggestion is unavailable; enter the zone manually.";
+ }
+ birthCityStatus.textContent=birthLat.value&&birthLon.value?"Selected: "+option.textContent:"Choose a matching city.";});
 birthCitySearch.addEventListener("click",async()=>{
  const query=birthCityInput.value.trim();if(query.length<3){birthCityStatus.textContent="Enter at least 3 characters, including the country for best results.";return;}
  clearBirthCity();const version=citySearchVersion;birthCitySearch.disabled=true;birthCityStatus.textContent="Searching cities…";
