@@ -130,7 +130,7 @@ jobs:
       contents: read
       actions: read
     name: "${{ matrix.bot }} · sharded arcade audit"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -168,7 +168,7 @@ jobs:
       - name: Install Playwright and Chromium
         run: |
           npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
       - name: Start local static site
         run: |
           python3 -m http.server 8765 --directory public > /tmp/knightfall-static.log 2>&1 &
@@ -268,7 +268,7 @@ jobs:
     name: Consolidate ten-bot arcade coverage
     if: always()
     needs: [browser-bot]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       actions: read
@@ -327,7 +327,7 @@ jobs:
     name: Publish verified fleet dashboard JSON
     needs: [consolidate-coverage]
     if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
       group: arcade-dashboard-publish
@@ -364,7 +364,7 @@ jobs:
   safe-auto-repair:
     name: Prepare safe asset repairs for review
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
       contents: read
@@ -397,7 +397,7 @@ jobs:
             sleep 1
           done
           npm install --no-save playwright
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
           ARCADE_TEST_BASE=http://127.0.0.1:8766 ARCADE_TEST_PROFILE=phone node scripts/arcade-gameplay-replay.mjs
       - name: Export verified arcade repairs for review without creating a branch
         shell: bash
@@ -423,7 +423,7 @@ jobs:
     if: github.event_name != 'pull_request' && always() && needs.browser-bot.result == 'failure'
     name: Create or update repair ticket
     needs: [browser-bot]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       actions: read
