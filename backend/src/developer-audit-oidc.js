@@ -7,7 +7,10 @@ const AUDIENCE = "https://api.ash-fall.com/api/internal/developer-audit";
 const REPO = "xxxghostfacekidxxx-glitch/Knightfall";
 const REPO_ID = "1301740258";
 const WORKFLOW_REF = REPO + "/.github/workflows/developer-arsenal-audit.yml@refs/heads/main";
-const SUBJECT = "repo:" + REPO + ":ref:refs/heads/main";
+const SUBJECTS = new Set([
+  "repo:" + REPO + ":ref:refs/heads/main",
+  "repo:xxxghostfacekidxxx-glitch@252952996/Knightfall@1301740258:ref:refs/heads/main"
+]);
 
 function decodeBase64Url(value) {
   if (typeof value !== "string" || !/^[A-Za-z0-9_-]+$/.test(value) || value.length > 16384) {
@@ -36,7 +39,7 @@ export async function verifyGitHubAuditToken({token, runId, sha, now = Date.now(
     const claims = tokenPart(encodedClaims);
     if (header?.alg !== "RS256" || typeof header.kid !== "string" || !header.kid) return false;
     const seconds = Math.floor(now / 1000);
-    if (claims.iss !== ISSUER || claims.aud !== AUDIENCE || claims.sub !== SUBJECT) return false;
+    if (claims.iss !== ISSUER || claims.aud !== AUDIENCE || !SUBJECTS.has(claims.sub)) return false;
     if (claims.repository !== REPO || String(claims.repository_id) !== REPO_ID ||
         claims.workflow_ref !== WORKFLOW_REF || claims.ref !== "refs/heads/main") return false;
     if (!["push","workflow_dispatch"].includes(claims.event_name)) return false;
