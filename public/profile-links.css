@@ -43,3 +43,30 @@
 @media(prefers-reduced-motion:reduce){#profile-link-hub .profile-link-card{transition:none}#profile-link-hub .profile-link-card:hover{transform:none}}
 
 .studio-link-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:13px 0 0}.studio-link-actions .action{min-height:43px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid #795c95;border-radius:10px;padding:10px 14px;background:#261a36;color:#e5def4;text-decoration:none;font-weight:850}.studio-link-actions #studio-link-save{border-color:#c6ff45;background:linear-gradient(110deg,#c6ff45,#79ffe7);color:#122016}.studio-link-actions .action:hover{filter:brightness(1.13)}@media(max-width:580px){.studio-link-actions{display:grid;grid-template-columns:1fr}.studio-link-actions .action{width:100%}}
+
+/* Featured work/link is the member's first saved Link Hub entry, no new permissions. */
+#profile-link-hub .profile-link-card.profile-link-featured{
+ grid-column:1/-1;min-height:94px;padding:clamp(14px,2vw,22px);
+ border:1px solid color-mix(in srgb,var(--profile-accent,#ff55d8) 65%,#ffe36b);
+ background:radial-gradient(circle at 95% 12%,rgba(255,227,107,.09),transparent 35%),
+ linear-gradient(120deg,var(--pf-surface,#201627),var(--pf-surface-deep,#0d1120));
+ box-shadow:0 15px 34px #0006,inset 0 1px #ffffff16;
+}
+#profile-link-hub .profile-link-featured .profile-link-symbol{
+ flex-basis:53px;width:53px;height:53px;font-size:1.7rem;
+ color:var(--profile-accent,#ff55d8);
+ border-color:rgba(255,227,107,.42);
+ background:rgba(255,227,107,.05);
+}
+#profile-link-hub .profile-link-featured .profile-link-main{display:grid;gap:.25rem;min-width:0}
+#profile-link-hub .profile-link-feature-label{
+ font-size:.62rem;color:#ffe36b;letter-spacing:.12em;font-weight:950;text-transform:uppercase;
+}
+#profile-link-hub .profile-link-featured .profile-link-label{
+ font-size:clamp(1rem,2.6vw,1.4rem);letter-spacing:-.035em;
+}
+#profile-link-hub .profile-link-featured:hover{border-color:#ffe36b}
+@media(max-width:610px){
+ #profile-link-hub .profile-link-featured .profile-link-symbol{width:43px;height:43px;flex-basis:43px;font-size:1.25rem}
+ #profile-link-hub .profile-link-card.profile-link-featured{min-height:78px;padding:12px}
+}
