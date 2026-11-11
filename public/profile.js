@@ -8,16 +8,87 @@ const safeExternalUrl = value => { try { const url=new URL(String(value||""),loc
 
 const api = async (path,opts={}) => { const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}}); const d=await r.json().catch(()=>({})); if(!r.ok){const error=new Error(d.error||"Request failed.");error.status=r.status;throw error;} return d; };
 
+function renderProfileQuickLinks(member,ownProfile,adminView){
+  const nav=document.querySelector("#profile-quick-links");
+  if(!nav)return;
+  nav.replaceChildren();
+  const destinations=adminView
+    ? [["← Members","/members.html"]]
+    : ownProfile
+      ? [["✦ Profile Studio","/profile-edit.html"],["☻ Avatar Studio","/avatar-studio.html"],["♡ My Sanctuary","/mascot-pets.html"],["⌂ Pet Rooms","/mascot-room.html"],["◈ Friends","/friends.html"],["✎ My Die-ary","/die-ary.html"]]
+      : [["← Members","/members.html"]];
+  if(!ownProfile&&!adminView&&/^[a-zA-Z0-9_-]{1,32}$/.test(String(member.username||""))){
+    destinations.push(["⌂ Public pet rooms","/mascot-room.html?user="+encodeURIComponent(member.username)]);
+  }
+  for(const [label,href] of destinations){
+    const link=document.createElement("a");
+    link.href=href;link.textContent=label;nav.append(link);
+  }
+  nav.hidden=false;
+}
+
+function upgradeProfileActivity(){
+  const grid=root.querySelector(".activity-grid");
+  if(!grid)return;
+  grid.classList.add("profile-activity-deck");
+  grid.setAttribute("aria-label","Member forum activity");
+  const toolbar=document.createElement("div");
+  toolbar.className="profile-activity-toolbar";
+  const title=document.createElement("div");
+  title.innerHTML='<p class="eyebrow">THE PAPER TRAIL</p><h2>Community activity</h2>';
+  const filters=document.createElement("div");
+  filters.className="profile-activity-filters";
+  filters.setAttribute("role","group");
+  filters.setAttribute("aria-label","Filter forum activity");
+  for(const [view,label] of [["all","All"],["threads","Threads"],["replies","Replies"]]){
+    const button=document.createElement("button");
+    button.type="button";button.textContent=label;button.dataset.view=view;
+    button.setAttribute("aria-pressed",String(view==="all"));
+    button.addEventListener("click",()=>{
+      grid.dataset.view=view;
+      filters.querySelectorAll("button").forEach(item=>item.setAttribute("aria-pressed",String(item===button)));
+    });
+    filters.append(button);
+  }
+  toolbar.append(title,filters);
+  grid.prepend(toolbar);
+  grid.dataset.view="all";
+}
+
 function render(d,adminView=false,ownProfile=false,signedIn=true){
-  root.onclick=async event=>{const button=event.target.closest("#share-profile");if(!button)return;const link=new URL("/profile.html",location.origin);link.searchParams.set("username",d.user.username);try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(link.href);button.textContent="Link copied ✓";}else{window.prompt("Copy profile link:",link.href);}}catch{window.prompt("Copy profile link:",link.href);}};
+  renderProfileQuickLinks(d.user,ownProfile,adminView);
+  root.onclick=async event=>{
+    const button=event.target.closest("#share-profile");
+    if(!button)return;
+    const link=new URL("/profile.html",location.origin);
+    link.searchParams.set("username",d.user.username);
+    const status=root.querySelector("#profile-share-status");
+    if(navigator.share){
+      try{
+        await navigator.share({title:(d.user.display_name||d.user.username)+" on Knightfall",url:link.href});
+        if(status)status.textContent="Profile shared.";
+        return;
+      }catch(error){
+        if(error.name==="AbortError")return;
+      }
+    }
+    try{
+      if(!navigator.clipboard?.writeText)throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(link.href);
+      if(status)status.textContent="Profile link copied to clipboard.";
+    }catch{
+      window.prompt("Copy profile link:",link.href);
+      if(status)status.textContent="Copy the link from the dialog.";
+    }
+  };
 
   const u=d.user;
   const avatar=safeExternalUrl(u.avatar_url)?'<img class="avatar-img" src="'+esc(safeExternalUrl(u.avatar_url))+'" alt="Profile picture of '+esc(u.display_name||u.username)+'" loading="lazy" referrerpolicy="no-referrer">':'<div class="avatar" aria-hidden="true">'+esc((u.display_name||u.username).slice(0,1).toUpperCase())+'</div>';
   const safeWebsite = safeExternalUrl(u.website_url);const online=u.is_online?'<span class="presence online">● online</span>':'<span class="presence">● offline</span>';
   const actions=adminView?'<span class="admin-view">READ-ONLY ADMIN INSPECTION</span>':ownProfile?'<div class="profile-actions"><a class="action" href="/profile-edit.html">Edit profile</a><a class="action primary" href="/avatar-studio.html">Design my misfit</a><a class="action" href="/die-ary.html">Open my Die-ary</a><a class="action" href="/friends.html">Manage friends</a></div>':!signedIn?'<div class="profile-actions"><a class="action primary" href="/auth.html?next=%2Fprofile.html">Sign in to connect</a></div>':'<div class="profile-actions"><button id="friend" class="action primary">Add friend</button><button id="follow" class="action">'+(u.is_following?"Following":"Follow")+'</button><button id="block" class="action">'+(u.is_blocked?"Unblock":"Block")+'</button><button class="action" data-message-user="'+esc(u.username)+'">Message</button></div>';
   root.innerHTML='<div class="profile-top">'+avatar+'<div class="profile-heading"><p class="eyebrow">COMMUNITY MEMBER</p><h1>'+esc(u.display_name)+'</h1><p class="handle">@'+esc(u.username)+' <span class="profile-title-badge '+(u.role==="god"?"god":u.public_title==="Bot Creator"?"creator":"standard")+'">'+esc(u.public_title||(u.role==="god"?"God":u.role==="admin"?"Administrator":u.role==="moderator"?"Moderator":"Member"))+'</span></p>'+(ownProfile && u.public_title === "Digital Creator" ? '<a class="action" href="/devil-tools.html">Open Devil Tools</a>' : '')+online+'</div></div>'+
-    '<section class="wallet-card" id="profile-wallet"><div class="wallet-main"><span class="wallet-kicker">ASH-FALL ARCADE WALLET</span><strong class="wallet-balance">✦ '+Number(u.credits??500).toLocaleString()+' <small>CINDERS</small></strong><p>One shared, fictional currency for arcade perks and future game unlocks.</p></div>'+(ownProfile?'<div class="wallet-claims"><button class="action primary" id="claim-daily" type="button">Claim daily · +250</button><button class="action" id="claim-online" type="button">Online bonus · +50</button><button class="action" id="claim-quest" type="button">Daily arcade mission · +100</button><p id="wallet-status" role="status" aria-live="polite">Loading reward availability…</p></div>':'<p class="wallet-public-note">Member balance</p>')+'</section>'+'<div class="profile-stats"><div><b>'+(u.thread_count||0)+'</b><span>Threads</span></div><div><b>'+(u.post_count||0)+'</b><span>Replies</span></div><div><b>'+(u.followers||0)+'</b><span>Followers</span></div><div><b>'+(u.following_count||0)+'</b><span>Following</span></div><div><b id="profile-friend-stat">'+(u.friend_count||0)+'</b><span>Friends</span></div></div>'+
-    '<div class="profile-actions-wrap">'+actions+'<button type="button" class="action" id="share-profile">Copy profile link</button></div>'+
+    '<section class="wallet-card" id="profile-wallet"><div class="wallet-main"><span class="wallet-kicker">ASH-FALL ARCADE WALLET</span><strong class="wallet-balance">✦ '+(u.credits==null?"—":Number(u.credits).toLocaleString())+' <small>CINDERS</small></strong><p>One shared, fictional currency for arcade perks and future game unlocks.</p></div>'+(ownProfile?'<div class="wallet-claims"><button class="action primary" id="claim-daily" type="button">Claim daily · +250</button><button class="action" id="claim-online" type="button">Online bonus · +50</button><button class="action" id="claim-quest" type="button">Daily arcade mission · +100</button><p id="wallet-status" role="status" aria-live="polite">Loading reward availability…</p></div>':'<p class="wallet-public-note">Member balance</p>')+'</section>'+'<div class="profile-stats"><div><b>'+(u.thread_count||0)+'</b><span>Threads</span></div><div><b>'+(u.post_count||0)+'</b><span>Replies</span></div><div><b>'+(u.followers||0)+'</b><span>Followers</span></div><div><b>'+(u.following_count||0)+'</b><span>Following</span></div><div><b id="profile-friend-stat">'+(u.friend_count||0)+'</b><span>Friends</span></div></div>'+
+    '<div class="profile-actions-wrap">'+actions+'<button type="button" class="action profile-share" id="share-profile">Share profile</button><span class="profile-share-status" id="profile-share-status" role="status" aria-live="polite"></span></div>'+
     (u.bio?'<p class="bio">'+esc(u.bio)+'</p>':"")+
     '<dl><div><dt>Member since</dt><dd>'+fmt(u.created_at)+'</dd></div>'+
     (u.location?'<div><dt>Location</dt><dd>'+esc(u.location)+'</dd></div>':"")+
@@ -32,6 +103,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
   const themeColors={ember:"#ff55d8",midnight:"#7894ff",toxic:"#9ce84b",bubblegum:"#ff62c7",mono:"#e4e4e4",gravewave:"#79ffe7",bloodmoon:"#ff6677",spectral:"#c59cff",void:"#e0f4ff"};root.dataset.theme=Object.hasOwn(themeColors,u.profile_theme)?u.profile_theme:"ember";root.style.setProperty("--profile-accent",/^#[0-9a-fA-F]{6}$/.test(u.accent_color||"")?u.accent_color:themeColors[root.dataset.theme]);
   if (safeExternalUrl(u.cover_url)) { const c=document.createElement("div"),img=document.createElement("img"); c.className="profile-cover"; img.setAttribute("src",safeExternalUrl(u.cover_url)); img.setAttribute("alt",""); img.loading="lazy"; c.append(img); root.prepend(c); }
   if (u.show_activity === 0) root.querySelector(".activity-grid")?.remove();
+  else upgradeProfileActivity();
   const heading=root.querySelector(".profile-heading");
   for (const [field,cls] of [["status_message","profile-status-message"],["tagline","profile-tagline"]]) if (heading && u[field]) { const p=document.createElement("p"); p.className=cls; p.textContent=u[field]; heading.append(p); }
   if (u.favorite_quote) { const q=document.createElement("blockquote"); q.className="profile-quote"; q.textContent="“"+u.favorite_quote+"”"; root.querySelector(".profile-actions-wrap")?.after(q); }
@@ -83,6 +155,33 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
     }else section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
   }
+  // Consolidate the existing bio and public details into a single readable
+  // About section without exposing any additional fields to visitors.
+  const about=document.createElement("section");
+  about.className="profile-about";
+  about.id="profile-about";
+  const aboutLead=document.createElement("div");
+  aboutLead.className="profile-about-heading";
+  const aboutKicker=document.createElement("p");
+  aboutKicker.className="eyebrow";
+  aboutKicker.textContent="BEHIND THE HANDLE";
+  const aboutTitle=document.createElement("h2");
+  aboutTitle.textContent="About "+(u.display_name||u.username);
+  aboutLead.append(aboutKicker,aboutTitle);
+  about.append(aboutLead);
+  const biography=root.querySelector(".bio");
+  if(biography)about.append(biography);
+  else {
+    const empty=document.createElement("p");
+    empty.className="profile-about-empty";
+    empty.textContent=ownProfile?"Your story hasn't been written yet. Add a bio in Profile Studio.":"This member hasn't shared a bio yet.";
+    about.append(empty);
+  }
+  const details=root.querySelector("dl");
+  if(details)about.append(details);
+  const stats=root.querySelector(".profile-stats");
+  if(stats)stats.after(about);
+  else root.append(about);
   const walletPanel=document.querySelector("#profile-wallet");
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
@@ -349,6 +448,7 @@ async function loadMemberActivity(member,own){
 function refreshProfileJump(){
   const old=root.querySelector(".profile-jump");
   const sections=[
+    ["#profile-about","About"],
     ["#profile-wallet","Wallet"],
     [".profile-favorites","Interests"],
     ["#profile-link-hub","Links"],
