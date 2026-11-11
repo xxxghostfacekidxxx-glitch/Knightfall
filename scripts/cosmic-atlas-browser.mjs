@@ -66,7 +66,7 @@ try{
   assert.ok(await page.locator('[data-overlay-moving="Venus"]').first().evaluate(node=>Number(getComputedStyle(node).opacity)<.2),label+": unrelated transit aspect not dimmed");
   const visible=await page.locator('.cosmic-transit-connection:visible').count();
   assert.ok(visible>=1,label+": selected moving planet has no visible links");
-  await page.locator(".cosmic-transit-detail summary").first().click();
+  await page.locator(".cosmic-transit-connection:visible .cosmic-transit-detail summary").first().click();
   assert.ok(await page.locator(".cosmic-transit-reflection:visible").count()>0,label+": transit reflection missing");
   await page.locator(".cosmic-transit-select").selectOption("");
   assert.ok(await page.locator('.cosmic-transit-connection:visible').count()>=visible,label+": reset failed");
