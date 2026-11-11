@@ -64,6 +64,8 @@
 <h2 id="birth-chart-title">✦ Birth chart · Optional profile feature</h2>
 <p class="muted">Your birth chart is <strong>hidden by default</strong>. Only zodiac placements and houses are shown if you choose to publish it. Your birth date, time and coordinates are not stored in the profile chart record.</p>
 <form id="birth-chart-form" class="profile-studio-form">
+<label class="studio-toggle"><input id="birth-chart-time-unknown" type="checkbox"><span><strong>I don't know my birth time</strong><small>Calculate a provisional noon-UTC chart without a Rising sign, Midheaven, or houses.</small></span></label>
+<label id="birth-chart-date-only-label" hidden>Birth date (time unknown)<input id="birth-chart-date-only" type="date" min="1900-01-01" max="2100-12-31"></label>
 <label>Birth date and local time<input id="birth-chart-local" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
 <label>UTC offset at birth (manual fallback)<input id="birth-chart-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
 <label>Birth-place time zone (recommended)<input id="birth-chart-timezone" type="text" class="cosmic-timezone-select" placeholder="e.g. America/Chicago" autocomplete="off"></label>
@@ -184,6 +186,17 @@ document.addEventListener("kf:profile-reset-layout",()=>{
 });
 const chartForm=document.querySelector("#birth-chart-form"),chartStatus=document.querySelector("#birth-chart-status"),chartVisible=document.querySelector("#birth-chart-visible");
 const chartPreview=document.querySelector("#birth-chart-preview"),chartRead=document.querySelector("#birth-chart-read");
+const timeUnknown=document.querySelector("#birth-chart-time-unknown"),dateOnly=document.querySelector("#birth-chart-date-only");
+function syncUnknownBirthTime(){
+ const unknown=timeUnknown.checked;
+ document.querySelector("#birth-chart-date-only-label").hidden=!unknown;
+ dateOnly.required=unknown;
+ for(const field of ["#birth-chart-local","#birth-chart-offset","#birth-chart-city","#birth-chart-city-results"]){
+  document.querySelector(field).required=!unknown;
+ }
+}
+timeUnknown.addEventListener("change",syncUnknownBirthTime);
+syncUnknownBirthTime();
 let memberSavedChart=null;
 document.addEventListener("DOMContentLoaded",()=>window.KnightfallBirthTime?.populate("birth-chart-timezone"));
 function showBirthChart(chart){
@@ -200,7 +213,7 @@ chartRead.addEventListener("click",()=>{
  location.href="/miss-chaos.html?astro=profile";
 });
 async function chartApi(method,body){const response=await fetch(API+"/api/profile/birth-chart",{method,credentials:"include",cache:"no-store",headers:{"content-type":"application/json"},...(body?{body:JSON.stringify(body)}:{})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Chart request failed.");return data;}
-chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;showBirthChart(data.chart);chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
+chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;timeUnknown.checked=data.chart?.time_precision==="unknown";syncUnknownBirthTime();showBirthChart(data.chart);chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
 const birthCityInput=document.querySelector("#birth-chart-city"),birthCitySearch=document.querySelector("#birth-chart-city-search"),birthCityResults=document.querySelector("#birth-chart-city-results"),birthCityStatus=document.querySelector("#birth-chart-city-status"),birthLat=document.querySelector("#birth-chart-lat"),birthLon=document.querySelector("#birth-chart-lon");
 let citySearchVersion=0;
 function clearBirthCity(){birthLat.value="";birthLon.value="";birthCityResults.replaceChildren(new Option("Search for your birth city first",""));birthCityResults.disabled=true;citySearchVersion++;}
@@ -222,6 +235,20 @@ birthCitySearch.addEventListener("click",async()=>{
 });
 chartForm.addEventListener("submit",async event=>{
  event.preventDefault();
+ if(timeUnknown.checked){
+   const button=chartForm.querySelector('button[type="submit"]'),day=dateOnly.value.trim();
+   if(!/^\d{4}-\d{2}-\d{2}$/.test(day)){chartStatus.textContent="Enter a valid birth date for the approximate chart.";return;}
+   const instant=new Date(day+"T12:00:00Z");
+   if(!Number.isFinite(instant.getTime())||instant.toISOString().slice(0,10)!==day||instant.getUTCFullYear()<1900||instant.getUTCFullYear()>2100){chartStatus.textContent="Birth date must be valid and within 1900 to 2100.";return;}
+   button.disabled=true;chartStatus.textContent="Calculating a provisional date-only chart…";
+   try{
+     const result=await chartApi("PUT",{utc:instant.toISOString(),time_unknown:true,visible:chartVisible.checked});
+     showBirthChart(result.chart);
+     chartStatus.textContent="Provisional chart saved "+(result.visible?"and displayed.":"privately.")+" No Ascendant or houses; Moon and cusp placements may change with your actual birth time.";
+   }catch(error){chartStatus.textContent=error.message;}
+   finally{button.disabled=false;}
+   return;
+ }
  const button=chartForm.querySelector('button[type="submit"]'),local=document.querySelector("#birth-chart-local").value,offset=Number(document.querySelector("#birth-chart-offset").value),latitude=Number(document.querySelector("#birth-chart-lat").value),longitude=Number(document.querySelector("#birth-chart-lon").value);
  const match=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(local);
  if(!match||!Number.isFinite(offset)||offset < -12||offset > 14||!birthCityResults.value||!birthLat.value||!birthLon.value||!Number.isFinite(latitude)||Math.abs(latitude)>66||!Number.isFinite(longitude)||Math.abs(longitude)>180){chartStatus.textContent="Enter valid birth details and select a birth city from the search results.";return;}
@@ -241,5 +268,5 @@ chartForm.addEventListener("submit",async event=>{
  try{const result=await chartApi("PUT",{utc,latitude,longitude,house_system:document.querySelector("#birth-chart-houses").value,visible:chartVisible.checked});showBirthChart(result.chart);chartStatus.textContent="Chart saved. "+(result.visible?"Displayed on your profile.":"Private and hidden.");}catch(error){chartStatus.textContent=error.message;}finally{button.disabled=false;}
 });
 chartVisible.addEventListener("change",async()=>{const visible=chartVisible.checked;chartVisible.disabled=true;try{const result=await chartApi("PUT",{visible});chartStatus.textContent=result.visible?"Birth chart is now displayed on your profile.":"Birth chart hidden from your profile.";}catch(error){chartVisible.checked=!visible;chartStatus.textContent=error.message;}finally{chartVisible.disabled=false;}});
-document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");showBirthChart(null);chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
+document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");showBirthChart(null);chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();syncUnknownBirthTime();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
 </script><script src="/misfit-avatar.js?v=20261105-avatar5" defer></script><script src="/profile-misfit-editor.js?v=20261105-avatar5" defer></script><script src="/profile-studio-next.js?v=20261103-studio3" defer></script><script src="/profile-links-editor.js?v=20261103-links3" defer></script><script src="/profile-photo-studio.js?v=20261103-photo2" defer></script></body></html>
