@@ -7,11 +7,13 @@ const branch = process.env.GITHUB_REF;
 const runId = Number(process.env.GITHUB_RUN_ID);
 const sha = process.env.GITHUB_SHA;
 
-if (!secret) {
-  console.log("Diagnostics ingest secret is not configured; private synchronization skipped.");
+const audience = "https://api.ash-fall.com/api/internal/developer-audit";
+const hasOidc = !!(process.env.ACTIONS_ID_TOKEN_REQUEST_URL && process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN);
+if (!hasOidc && !secret) {
+  console.log("Neither GitHub OIDC nor an ingestion secret is available. Synchronization skipped.");
   process.exit(0);
 }
-if (secret.length < 32) throw new Error("Diagnostics ingest key must contain at least 32 characters.");
+if (!hasOidc && secret.length < 32) throw new Error("Diagnostics ingest key must contain at least 32 characters.");
 if (branch !== "refs/heads/main") {
   console.log("Only main branch reports may be uploaded.");
   process.exit(0);
@@ -26,13 +28,29 @@ const summary = JSON.parse(await readFile("developer-arsenal-summary.json", "utf
 const body = JSON.stringify({runId,sha,summary});
 if (Buffer.byteLength(body) > 16384) throw new Error("Audit report exceeds upload limit.");
 const timestamp = String(Date.now());
-const signature = createHmac("sha256", secret).update(timestamp + "." + body).digest("hex");
+const headers = {"content-type":"application/json"};
+if (hasOidc) {
+  const requestUrl = new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL);
+  requestUrl.searchParams.set("audience", audience);
+  const issueResponse = await fetch(requestUrl, {
+    headers: {Authorization:"Bearer " + process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN},
+    redirect:"error"
+  });
+  if (!issueResponse.ok) throw new Error("GitHub OIDC token issue failed: HTTP " + issueResponse.status);
+  const idToken = (await issueResponse.json()).value;
+  if (typeof idToken !== "string" || !idToken) throw new Error("GitHub OIDC token missing.");
+  headers.authorization = "Bearer " + idToken;
+} else {
+  const signature = createHmac("sha256", secret).update(timestamp + "." + body).digest("hex");
+  headers["x-kf-audit-time"] = timestamp;
+  headers["x-kf-audit-signature"] = signature;
+}
 const controller = new AbortController();
 const timer = setTimeout(() => controller.abort(), 15000);
 try {
   const result = await fetch(endpoint, {
     method: "POST",
-    headers: {"content-type":"application/json","x-kf-audit-time":timestamp,"x-kf-audit-signature":signature},
+    headers,
     body,
     signal:controller.signal,
     redirect:"error"
