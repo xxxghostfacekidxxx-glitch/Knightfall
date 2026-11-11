@@ -56,10 +56,11 @@
     return index>=0&&Number.isFinite(degree)?mod(index*30+degree):0;
   }
   function wheel(chart,kind="natal",transitChart=null){
-    const overlay=kind==="overlay"&&!!transitChart?.bodies;
+    const comparison=kind==="synastry";
+    const overlay=(kind==="overlay"||comparison)&&!!transitChart?.bodies;
     const transit=kind==="transit";
-    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":overlay?"Natal and transit zodiac wheel, natal planets in pink and transiting planets in mint":transit?"Tropical transit sky positions, signs and aspects":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
-    svg.append(svgEl("title",{},overlay?"Tropical natal and transit planetary overlay":transit?"Tropical planetary sky positions":"Tropical zodiac natal chart"));
+    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":comparison?"Two shared natal charts: primary planets pink, compared member planets mint":overlay?"Natal and transit zodiac wheel, natal planets in pink and transiting planets in mint":transit?"Tropical transit sky positions, signs and aspects":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
+    svg.append(svgEl("title",{},comparison?"Tropical natal chart comparison":overlay?"Tropical natal and transit planetary overlay":transit?"Tropical planetary sky positions":"Tropical zodiac natal chart"));
     const a=ascendant(chart);
     svg.append(svgEl("circle",{cx:210,cy:210,r:203,fill:"#10101c",stroke:"#ff67d6","stroke-width":2}));
     for(const r of [193,160,125,101])svg.append(svgEl("circle",{cx:210,cy:210,r,fill:"none",stroke:r===125?"#a5ffdd66":"#ffffff33","stroke-width":r===193?1.5:1}));
@@ -108,14 +109,14 @@
         lane=item.longitude-prev<9?(lane+1)%3:0;prev=item.longitude;
         const label=polar(item.longitude,127-lane*12,a),marker=polar(item.longitude,137,a);
         const ring=svgEl("circle",{cx:label.x,cy:label.y,r:10,fill:"#071d20","fill-opacity":".97",stroke:"#9cffe4","stroke-width":".75","data-transit-planet":item.name});
-        ring.append(svgEl("title",{},"Transit "+item.name+" in "+item.body.sign));
+        ring.append(svgEl("title",{},(comparison?"Compared member ":"Transit ")+item.name+" in "+item.body.sign));
         svg.append(ring);
         svg.append(svgEl("circle",{cx:marker.x,cy:marker.y,r:2.1,fill:"#a9ffea"}));
         const glyph=svgEl("text",{x:label.x,y:label.y+5,"text-anchor":"middle",fill:"#b9ffe9","font-size":16,"font-weight":700,"data-transit-planet":item.name},PLANET_GLYPHS[item.name]||item.name[0]);
-        glyph.append(svgEl("title",{},"Transit "+item.name+" in "+item.body.sign));
+        glyph.append(svgEl("title",{},(comparison?"Compared member ":"Transit ")+item.name+" in "+item.body.sign));
         svg.append(glyph);
       }
-      const links=transitAspects(transitChart,chart).slice(0,20);
+      const links=(comparison?synastry(chart,transitChart).map(a=>({transit:a.second,natal:a.first,type:a.type,orb:a.orb})):transitAspects(transitChart,chart)).slice(0,20);
       for(const link of links){
         const natal=points(chart).find(p=>p.name===link.natal);
         const moving=points(transitChart).find(p=>p.name===link.transit);
@@ -123,7 +124,7 @@
         const n=polar(natal.longitude,95,a),m=polar(moving.longitude,76,a);
         const color=link.type==="Trine"||link.type==="Sextile"?"#aaffec":"#ff89d5";
         const line=svgEl("line",{x1:n.x,y1:n.y,x2:m.x,y2:m.y,stroke:color,"stroke-opacity":".65","stroke-width":"1.1","data-overlay-aspect":link.type,"data-overlay-moving":link.transit,"data-overlay-natal":link.natal});
-        line.append(svgEl("title",{},"Transit "+link.transit+" "+link.type.toLowerCase()+" natal "+link.natal+"; "+link.orb.toFixed(1)+"° orb"));
+        line.append(svgEl("title",{},comparison?"First "+link.natal+" "+link.type.toLowerCase()+" second "+link.transit+"; "+link.orb.toFixed(1)+"° orb":"Transit "+link.transit+" "+link.type.toLowerCase()+" natal "+link.natal+"; "+link.orb.toFixed(1)+"° orb"));
         svg.append(line);
       }
     }
