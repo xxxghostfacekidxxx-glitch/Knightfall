@@ -1,0 +1,180 @@
+/* Knightfall visual system | 2026-11-11.
+   Same Gravewave identity, tighter spacing and surfaces, a small electric-yellow signal.
+   Keep custom profile skins, game canvases, private inputs, and embedded apps intact. */
+:root {
+  --kf-yellow:#ffe36b;
+  --kf-yellow-soft:rgba(255,227,107,.13);
+  --kf-yellow-line:rgba(255,227,107,.38);
+  --kf-neon-pink:#ff55d8;
+  --kf-neon-lime:#c6ff45;
+  --kf-ink:#070710;
+  --kf-ink-raised:#191329;
+  --kf-chrome-line:rgba(255,85,216,.30);
+  --kf-chrome-shadow:0 16px 42px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
+  --af-yellow:var(--kf-yellow);
+  --af-v2-yellow:var(--kf-yellow);
+  --gw-yellow:var(--kf-yellow);
+}
+
+/* Dark stays dark. Yellow is a glint, never the base or a replacement for lime. */
+body:not(.profile-custom-theme) {
+  background-color:var(--kf-ink)!important;
+  background-image:
+    radial-gradient(ellipse at 10% 4%,rgba(255,85,216,.135),transparent 40%),
+    radial-gradient(ellipse at 90% 75%,rgba(198,255,69,.075),transparent 41%),
+    radial-gradient(ellipse at 96% 2%,rgba(255,227,107,.034),transparent 24%)!important;
+}
+body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu,.kf-nav-more-menu) {
+  font-synthesis:none;
+}
+.kf-header {
+  isolation:isolate;
+  border-bottom:1px solid var(--kf-chrome-line)!important;
+  box-shadow:0 12px 35px #0008,0 1px 0 rgba(255,227,107,.06)!important;
+}
+.kf-header::after {
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,85,216,.72) 24%,rgba(198,255,69,.65) 65%,rgba(255,227,107,.82) 92%,transparent 100%);
+  pointer-events:none;opacity:.78;
+}
+.kf-brand {letter-spacing:.105em;text-wrap:nowrap}
+.kf-brand::after {
+  width:74%;
+  background:linear-gradient(90deg,var(--kf-neon-pink),var(--kf-neon-lime) 72%,var(--kf-yellow),transparent)!important;
+}
+.kf-nav :where(a,.kf-nav-group>summary,.kf-nav-more summary,.kf-nav-toggle) {
+  border-radius:10px;
+}
+.kf-nav :where(a,.kf-nav-group>summary):focus-visible,
+.kf-nav-toggle:focus-visible {
+  outline:2px solid var(--kf-neon-lime)!important;outline-offset:3px;
+}
+.kf-nav a[aria-current="page"],
+.kf-nav .kf-nav-section-current {
+  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
+}
+.kf-nav-group:has(a[aria-current="page"])>summary {
+  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
+}
+.kf-nav-menu,.kf-nav-more-menu {
+  border:1px solid var(--kf-chrome-line)!important;
+  border-radius:14px!important;
+  box-shadow:0 20px 44px #000b,0 0 22px rgba(255,85,216,.08)!important;
+}
+.kf-nav .kf-install-app {
+  border-radius:11px!important;
+  box-shadow:0 0 0 1px rgba(198,255,69,.24),0 0 22px rgba(198,255,69,.16),inset 0 1px rgba(255,227,107,.40)!important;
+}
+.kf-announcement strong {color:var(--kf-yellow)!important}
+
+/* Use one rhythm for major Knightfall surfaces; do not alter the game viewport. */
+body:not(.profile-custom-theme) :where(
+  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
+  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
+  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,
+  .wallet-card,.public-chat-panel,.memo-panel
+) {
+  border-radius:clamp(12px,1.5vw,19px);
+  box-shadow:var(--kf-chrome-shadow);
+}
+body:not(.profile-custom-theme) :where(
+  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
+  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
+  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,
+  .public-chat-panel
+) {
+  background-image:
+    radial-gradient(ellipse at 97% 0%,rgba(255,227,107,.038),transparent 40%),
+    linear-gradient(145deg,rgba(255,85,216,.055),transparent 52%)!important;
+}
+body:not(.profile-custom-theme) :where(
+  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
+  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
+  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card
+):focus-within {
+  border-color:rgba(198,255,69,.55);
+}
+@media(hover:hover) and (pointer:fine) {
+  body:not(.profile-custom-theme) :where(
+    .friend-card,.member-card,.admin-shortcut,.tool-card,
+    .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card
+  ):hover {
+    box-shadow:var(--kf-chrome-shadow),0 0 22px rgba(255,85,216,.12),0 0 1px var(--kf-yellow-line);
+  }
+}
+
+/* Form controls: visible labels, generous hit targets, no decorative intrusion. */
+body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select) {
+  min-width:0;max-width:100%;
+  border-radius:10px;
+}
+body:not(.profile-custom-theme) :where(input,textarea,select)::placeholder {
+  color:#a89ab7;opacity:1;
+}
+body:not(.profile-custom-theme) :where(input,textarea,select):focus-visible {
+  outline:2px solid var(--kf-neon-lime)!important;outline-offset:2px;
+}
+body:not(.profile-custom-theme) :where(button,.btn,.button,.action,[role="button"]):not(:disabled) {
+  -webkit-tap-highlight-color:rgba(255,227,107,.12);
+}
+body:not(.profile-custom-theme) :where(.primary,.af-button-primary,button[type="submit"]:not(.danger)) {
+  box-shadow:0 8px 20px rgba(255,85,216,.19),inset 0 1px rgba(255,227,107,.18);
+}
+body:not(.profile-custom-theme) :where(.primary,.af-button-primary,button[type="submit"]:not(.danger)):focus-visible {
+  outline:2px solid var(--kf-yellow)!important;
+}
+body:not(.profile-custom-theme) :where(.status.good,.success,[role="status"].success) {
+  color:var(--kf-neon-lime);
+}
+
+/* Yellow is reserved for small details: labels, active rails and selected marks. */
+:where(.kf-theme-spark,.kf-yellow-signal) {color:var(--kf-yellow)!important}
+:where(.kf-theme-spark,.kf-yellow-signal)::selection {background:var(--kf-yellow);color:#080812}
+body:not(.profile-custom-theme) :where(.eyebrow,.genre,.tag,.pill,.license) {
+  text-underline-offset:.2em;
+}
+body:not(.profile-custom-theme) :where(.messages-shell .conversation.active,
+  .admin-shell .admin-tabs .active,.community-directory .category:focus-within,
+  .cartridge-shelf .cartridge-cabinet:focus-within) {
+  border-color:rgba(198,255,69,.50)!important;
+}
+body:not(.profile-custom-theme) .messages-shell .conversation.active {
+  box-shadow:inset 3px 0 var(--kf-neon-pink),inset 0 -2px 0 var(--kf-yellow-soft);
+}
+body:not(.profile-custom-theme) .admin-shell .admin-tabs .active {
+  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
+}
+body:not(.profile-custom-theme) .cartridge-shelf .cartridge-number {
+  color:var(--kf-yellow)!important;
+}
+
+/* The same frame across public shop, arcade, community and creation tools. */
+body:not(.profile-custom-theme) :where(
+  .community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,
+  .members-page,.friends-page,.cartridge-shelf,.dt-workspace-nav,.memo-page
+) {min-width:0}
+body:not(.profile-custom-theme) :where(.section-title,.panel-head h2,.chat-heading h2) {
+  letter-spacing:-.025em;
+}
+#ashfall-support-footer {
+  border-top:1px solid var(--kf-chrome-line)!important;
+  box-shadow:inset 0 1px 0 var(--kf-yellow-soft);
+}
+#ashfall-support-footer a:focus-visible {
+  outline:2px solid var(--kf-yellow)!important;outline-offset:3px;
+}
+@media(max-width:760px) {
+  .kf-header {min-height:64px}
+  .kf-nav-menu,.kf-nav-more-menu {box-shadow:none!important}
+  body:not(.profile-custom-theme) :where(.entry-card,.panel,.card,.arcade-card,.game-card) {
+    border-radius:14px;
+  }
+  body:not(.profile-custom-theme) :where(input,textarea,select) {font-size:16px}
+}
+@media(prefers-reduced-motion:reduce) {
+  body:not(.profile-custom-theme) :where(button,.btn,.button,.action,.card,.game-card,.arcade-card) {
+    transition:none!important;animation:none!important;
+  }
+}
+/* Embedded games and custom profile palettes always retain their own art and colors. */
+body.profile-custom-theme :where(.profile-shell,#profile) {color:inherit}
