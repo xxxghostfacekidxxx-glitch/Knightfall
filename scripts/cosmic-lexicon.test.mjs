@@ -134,6 +134,11 @@ test("Miss Chaos uses measured transit-to-natal aspects for its reading draft",(
  const chat=read("public/miss-chaos.js");
  assert.match(chat,/KnightfallCosmicLexicon\?\.transitBrief\?\./);
  assert.match(chat,/transitMeanings/);
+ assert.match(chat,/KnightfallCosmicLexicon\?\.synastryBrief\?\./);
+ assert.match(chat,/kind:"synastry"/);
+ assert.match(chat,/member\.birth_chart\?\.bodies/);
+ assert.match(chat,/request\("\/api\/users\/"\+encodeURIComponent\(username\)\)/);
+
  assert.match(chat,/latestChartSubject==="member"/);
  assert.doesNotMatch(read("public/cosmic-lexicon.js"),/fetch\s*\(|new WebSocket/);
 });
