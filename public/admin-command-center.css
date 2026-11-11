@@ -16,3 +16,11 @@
 .command-center-check.complete span{color:#8eaa91;text-decoration:line-through;text-decoration-thickness:1px}
 .command-center-progress{margin:.5rem 0 .7rem;color:#e78cdb;font-size:.76rem;font-variant-numeric:tabular-nums}
 @media(max-width:520px){.command-center-actions{grid-template-columns:1fr}.command-center-action{min-height:0}}
+
+/* Sanitized, local-only audit import for private Miss Chaos. */
+.command-center-audit-import{margin-top:1rem;padding:1rem;border:1px solid #c6ff4550;border-radius:10px;background:#0b1110}
+.command-center-audit-import h4{margin:0 0 .4rem;color:#c6ff45;font-size:.91rem}
+.command-center-audit-import p{margin:.45rem 0;color:#b9b4cb;font-size:.79rem;line-height:1.5}
+.command-center-audit-import input[type=file]{display:block;width:100%;min-height:42px;margin-top:.7rem;color:#f3eaf7;font:inherit;font-size:.8rem}
+.command-center-audit-import input[type=file]::file-selector-button{padding:.55rem .7rem;margin-right:.65rem;border:1px solid #ff55d8;border-radius:8px;background:#25152c;color:#fff;cursor:pointer}
+.command-center-audit-import [role=status]{color:#d7eea2}
