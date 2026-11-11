@@ -18,14 +18,19 @@ try {
     });
     await context.route("https://api.ash-fall.com/**", async route => {
       const url = new URL(route.request().url());
+      const cors = {
+        "access-control-allow-origin": new URL(base).origin,
+        "access-control-allow-credentials": "true"
+      };
       if (url.pathname === "/api/auth/me") {
         return route.fulfill({
           status: 200,
           contentType: "application/json",
+          headers: cors,
           body: JSON.stringify({ user: { id: 1234, username: "fixture", role: role.role, public_title: role.title } })
         });
       }
-      return route.fulfill({ status: 403, contentType: "application/json", body: '{"error":"Fixture API denied"}' });
+      return route.fulfill({ status: 403, contentType: "application/json", headers: cors, body: '{"error":"Fixture API denied"}' });
     });
     const page = await context.newPage();
     const errors = [];
