@@ -7,7 +7,7 @@ function fixture(options={}){
  const owner={id:11,username:"artist",display_name:"Artist",status:"active",profile_visibility:options.privacy||"public"};
  const post={...owner,id:23,user_id:11,body:"An original drawing",visibility:options.postVisibility||"public",
   created_at:"2026-11-10T12:00:00Z",updated_at:"2026-11-10T12:00:00Z"};
- const state={owner,post,writes:[],requests:[],audits:[]};
+ const state={owner,post,writes:[],requests:[],audits:[],notifications:[]};
  const db={prepare(sql){
    const statement={sql,params:[],bind(...args){this.params=args;return this},
     async first(){
@@ -18,6 +18,8 @@ function fixture(options={}){
      if(sql.includes("FROM friend_requests"))return options.friends?{id:1}:null;
      if(sql.includes("FROM follows"))return options.following?{id:1}:null;
      if(sql.includes("FROM profile_wall_comments c JOIN social_activity"))return {id:77,user_id:22,profile_owner_id:11};
+     if(sql.includes("SELECT reaction FROM profile_wall_reactions"))return options.hadReaction?{reaction:"fire"}:null;
+     if(sql.includes("SELECT 1 FROM notifications"))return options.alreadyNotified?{id:1}:null;
      return null;
     },
     async all(){
@@ -39,7 +41,8 @@ function fixture(options={}){
   isModerator:user=>["moderator","admin","god"].includes(user?.role),
   isAdmin:user=>["admin","god"].includes(user?.role),
   rateLimit:async()=>!options.rateLimited,
-  audit:async (_env,user,action,type,id)=>{state.audits.push({user,action,type,id})}
+  audit:async (_env,user,action,type,id)=>{state.audits.push({user,action,type,id})},
+  createNotification:async (_env,n)=>{state.notifications.push(n)}
  };
  const call=(path,method="GET",viewer=null,body)=>handleProfileWall(
   {method,viewer,json:async()=>body},env,new URL("https://api.ash-fall.com"+path),helpers);
@@ -122,6 +125,40 @@ test("comments have bounded length and owner/moderator removal rights",async()=>
  assert.equal((await fixture().call("/api/profile-wall/comments/77","DELETE",{id:99})).status,403);
  assert.equal((await f.call("/api/profile-wall/comments/77","DELETE",{id:11})).status,200);
  assert.match(f.state.writes[1].sql,/SET deleted_at=/);
+});
+test("social reactions notify post authors only on new reactions with deduplication",async()=>{
+ const f=fixture();
+ const path="/api/profile-wall/posts/23/reactions";
+ const first=await f.call(path,"POST",{id:22,username:"fan"},{reaction:"heart"});
+ assert.equal(first.status,200);
+ assert.equal(f.state.notifications.length,1);
+ assert.deepEqual({recipient:f.state.notifications[0].userId,actor:f.state.notifications[0].actorId,kind:f.state.notifications[0].kind},{recipient:11,actor:22,kind:"reaction"});
+ assert.match(f.state.notifications[0].url,/#profile-wall-post-23$/);
+ assert.equal(f.state.notifications[0].targetId,23);
+ assert.equal((await fixture({hadReaction:true}).call(path,"POST",{id:22,username:"fan"},{reaction:"heart"})).status,200);
+ assert.equal(fixture({hadReaction:true}).state.notifications.length,0);
+ const existing=fixture({hadReaction:true});
+ await existing.call(path,"POST",{id:22,username:"fan"},{reaction:"heart"});
+ assert.equal(existing.state.notifications.length,0);
+ const dedup=fixture({alreadyNotified:true});
+ await dedup.call(path,"POST",{id:22,username:"fan"},{reaction:"heart"});
+ assert.equal(dedup.state.notifications.length,0);
+ const self=fixture();
+ await self.call(path,"POST",{id:11,username:"artist"},{reaction:"fire"});
+ assert.equal(self.state.notifications.length,0);
+});
+test("new comments notify authors but never notify the member about their own reply",async()=>{
+ const path="/api/profile-wall/posts/23/comments";
+ const comment=fixture();
+ const result=await comment.call(path,"POST",{id:22,username:"fan"},{body:"Outstanding creation!"});
+ assert.equal(result.status,201);
+ assert.equal(comment.state.notifications.length,1);
+ assert.equal(comment.state.notifications[0].kind,"reply");
+ assert.equal(comment.state.notifications[0].userId,11);
+ assert.match(comment.state.notifications[0].url,/profile-wall-post-23$/);
+ const self=fixture();
+ await self.call(path,"POST",{id:11,username:"artist"},{body:"Creator response"});
+ assert.equal(self.state.notifications.length,0);
 });
 test("bookmarks are owner-only and reuse the existing private saved-post table",async()=>{
  const path="/api/profile-wall/posts/23/bookmark";
