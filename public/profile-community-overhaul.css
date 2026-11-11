@@ -143,7 +143,7 @@
 #profile .profile-activity-filters button{
   min-height:40px;min-width:70px;padding:.5rem .8rem;
   border:1px solid transparent;border-radius:9px;background:transparent;
-  color:#d6c6e5;font:800 .78rem/1.2 inherit;cursor:pointer;
+  color:#d6c6e5;font-family:inherit;font-weight:800;font-size:.78rem;line-height:1.2;cursor:pointer;
 }
 #profile .profile-activity-filters button[aria-pressed="true"]{
   color:#080a12;background:#c6ff45;border-color:#c6ff45;
