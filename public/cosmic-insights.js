@@ -133,8 +133,19 @@
     detail.append(elt("strong","",name+" in "+body.sign+" · "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"));
     if(Number.isInteger(house)&&house>=1&&house<=12)
      detail.append(elt("p","","House "+house+": "+HOUSE_THEMES[house-1]+"."));
-    if(body.retrograde)detail.append(elt("p","","Marked retrograde in the calculation."));
-    detail.append(elt("p","",THEMES[name]||"A traditional symbolic natal chart point"));
+    const interpretation=window.KnightfallCosmicLexicon?.placement?.(chart,name);
+    if(interpretation){
+     detail.append(elt("p","cosmic-interpretation-reading",interpretation.reading));
+     if(interpretation.houseReading)detail.append(elt("p","cosmic-interpretation-house",interpretation.houseReading));
+     if(interpretation.retrograde)detail.append(elt("p","cosmic-interpretation-retrograde",interpretation.retrograde));
+     detail.append(elt("p","cosmic-interpretation-tension",interpretation.tension));
+     const question=elt("div","cosmic-reflection-question");
+     question.append(elt("strong","","Reflection prompt"),elt("p","",interpretation.question));
+     detail.append(question);
+    }else{
+     if(body.retrograde)detail.append(elt("p","","Marked retrograde in the calculation."));
+     detail.append(elt("p","",THEMES[name]||"A traditional symbolic natal chart point"));
+    }
     const links=aspectNotes(aspects.filter(a=>a.a===name||a.b===name).slice(0,4));
     if(links.length){
      const ul=elt("ul","");
@@ -152,6 +163,34 @@
    reset.addEventListener("click",()=>{selector.value="";show();selector.focus();});
    panel.append(reset);
    atlas.append(panel);
+  }
+  const lexical=window.KnightfallCosmicLexicon;
+  const angleDescriptions=lexical?.angles?.(chart)||[];
+  if(angleDescriptions.length){
+   const anglePanel=elt("details","cosmic-angle-guide");
+   anglePanel.append(elt("summary","","Rising sign and Midheaven interpretation"));
+   for(const angle of angleDescriptions){
+    const section=elt("article","cosmic-angle-card");
+    section.append(elt("strong","",angle.name+" · "+angle.sign),elt("p","",angle.description));
+    anglePanel.append(section);
+   }
+   atlas.append(anglePanel);
+  }
+  const houses=lexical?.houseGuide?.(chart)||[];
+  if(houses.length){
+   const housePanel=elt("details","cosmic-house-guide");
+   housePanel.append(elt("summary","","Explore all 12 houses"));
+   const note=elt("p","cosmic-atlas-intro","House signs and occupants use your recorded Ascendant and house system. These are symbolic interpretations.");
+   housePanel.append(note);
+   for(const house of houses){
+    const entry=elt("details","cosmic-house-entry");
+    entry.append(elt("summary","","House "+house.number+" · "+house.sign+" · "+house.title));
+    entry.append(elt("p","",house.context+"."));
+    entry.append(elt("p","",house.occupants.length?"Placements: "+house.occupants.join(", ")+".":"No recorded bodies in this house; an empty house is not a missing part of life."));
+    entry.append(elt("p","cosmic-house-question","Reflection: "+house.question));
+    housePanel.append(entry);
+   }
+   atlas.append(housePanel);
   }
   const counts=elt("details","cosmic-distribution"),summary=elt("summary","","Element and modality distribution");
   const list=elt("div","cosmic-distribution-grid");
