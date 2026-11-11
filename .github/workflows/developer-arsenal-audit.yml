@@ -10,6 +10,9 @@ on:
       - 'docs/developer-arsenal.md'
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: developer-arsenal-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
