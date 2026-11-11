@@ -237,11 +237,11 @@
     for(const [name,sign] of [["Sun",chart.bodies?.Sun?.sign],["Moon",chart.bodies?.Moon?.sign],["Rising",chart.angles?.ascendant_sign||chart.ascendant_sign]]){
       if(!sign)continue;
       const card=el("article","cosmic-key"),heading=el("strong","",name+" · "+sign);
-      card.append(heading,el("p","",name+" represents "+MEANINGS[name]+" in traditional astrology."));
+      card.append(heading,el("p","",options.kind==="transit"?"Moving "+name+" is currently in "+sign+"; this describes the selected sky, not a birth personality.":name+" represents "+MEANINGS[name]+" in traditional astrology."));
       three.append(card);
     }
     reading.append(three);
-    const aspectsPanel=el("details","cosmic-aspects"),summary=el("summary","", "Major aspects · "+aspects(chart).length);
+    const aspectsPanel=el("details","cosmic-aspects"),summary=el("summary","", (options.kind==="transit"?"Current-sky aspects · ":"Major aspects · ")+aspects(chart).length);
     const list=el("ul","");
     for(const aspect of aspects(chart).slice(0,12)){
       const item=el("li","",aspect.a+" "+aspect.type.toLowerCase()+" "+aspect.b+" · "+aspect.orb.toFixed(1)+"° orb");
@@ -249,7 +249,7 @@
     }
     if(!list.children.length)list.append(el("li","","No major aspects inside the displayed orb limits."));
     aspectsPanel.append(summary,list);reading.append(aspectsPanel);
-    window.KnightfallCosmicInsights?.render?.(reading,chart);
+    window.KnightfallCosmicInsights?.render?.(reading,chart,{kind:options.kind||"natal"});
     const download=el("button","cosmic-export-button","↓ Save wheel as SVG");
     download.type="button";
     download.setAttribute("aria-label","Download this zodiac chart image as SVG");
