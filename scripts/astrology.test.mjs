@@ -33,6 +33,8 @@ test("transit comparisons include actual calculated positions and bounded aspect
 test("location-based ascendant and equal houses remain consistent",()=>{
  const utc="2000-01-01T12:00:00Z";
  const angles=calculateAngles(utc,40,-74);
+ assert.ok(angles.true_obliquity_degrees>23.3&&angles.true_obliquity_degrees<23.5);
+ assert.match(angles.limitations,/true obliquity/);
  assert.equal(angles.houses.length,12);
  assert.ok(angles.ascendant>=0&&angles.ascendant<360);
  for(let i=0;i<12;i++)assert.ok(Math.abs(angles.houses[i]-((angles.ascendant+i*30)%360))<0.002);
