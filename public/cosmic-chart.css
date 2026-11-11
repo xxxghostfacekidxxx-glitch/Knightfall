@@ -114,3 +114,9 @@
 
 /* Voluntarily shared chart-to-chart comparison */
 .cosmic-compare-disclaimer{padding:.66rem .75rem;border:1px solid #ffb4df75;border-radius:10px;background:#ff80cd10;color:#f3d4ea;font-size:.78rem;line-height:1.55;margin:.35rem 0}
+
+/* Member-profile handoff into privacy-aware shared chart comparison */
+.cosmic-compare-button{display:inline-flex;align-items:center;gap:.4rem;margin:.55rem .4rem .7rem 0;border:1px solid #bbffe4;background:linear-gradient(110deg,#8efedb18,#ff85d41a);color:#effff9;border-radius:9px;padding:.67rem .85rem;font-weight:750;font-size:.83rem;cursor:pointer;max-width:100%;text-align:center;white-space:normal}
+.cosmic-compare-button:hover{background:linear-gradient(110deg,#8efedb32,#ff85d42d)}
+.cosmic-compare-button:focus-visible{outline:2px solid #ff97db;outline-offset:3px}
+@media(max-width:400px){.cosmic-compare-button{display:flex;width:100%;justify-content:center;margin-left:0}}
