@@ -35,7 +35,7 @@ test("member reports are authenticated, text-safe and reach the existing staff q
  assert.match(ui,/if\(reportForm\)article\.append\(reportForm\)/);
  assert.doesNotMatch(ui,/\.innerHTML\s*=/);
  assert.match(css,/\.profile-wall-report-form\[hidden\]/);
- assert.match(backend,/if\(url\.pathname==="/api\/social\/report"&&request\.method==="POST"\)/);
+ assert.ok(backend.includes('if(url.pathname==="/api/social/report"&&request.method==="POST")'));
 });
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
