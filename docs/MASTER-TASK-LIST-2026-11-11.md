@@ -18,6 +18,13 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Confirm fresh CI is green, Pages deployment includes these commits, and the task link works in an authenticated admin browser.
 - [ ] Live-game retests remain open; site could not be independently browsed through the available web connection during this batch.
 
+## Continued quick fixes — November 11, 2026
+
+- [x] **Cinder Collider legacy-save repair:** restore missing research/scientist purchase-price fields when resuming old local/cloud snapshots, preserving particles and purchased boosts. This prevents the controls showing a price that the purchase handler cannot use.
+- [x] **Regression coverage:** added test cases for older missing-price saves and current saves with existing prices; kept the mini-game tests in the Runtime Smoke workflow.
+- [ ] Validate the new tests in CI and verify a legacy save's upgrade controls in mobile Chromium and physical Android. Do not close the historical Particle Clicker issue as a verified gameplay fix without deployed acceptance.
+- [ ] Check current Cloudflare Pages deployment against the new commits; the public site fetch from this environment was unavailable.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
@@ -28,7 +35,7 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Verify security and privacy for adult-gated content, creator uploads, public/personal bots, admin panels and all account ownership paths.
 
 ## P1 — Arcade, games and creative systems
-- [ ] Investigate current reports [Tetris controls #147](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/147), [Particle Clicker upgrades #144](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/144), [Freeciv Web #145](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/145) and [#146](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/146); close only after reproducible verification.
+- [ ] Retest previously reported [Tetris controls #147](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/147), [Particle Clicker upgrades #144](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/144), [Freeciv Web #145](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/145) and [#146](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/146); close only after reproducible verification.
 - [ ] Certify each arcade cabinet beyond HTTP 200: real controls, startup, pause/fullscreen, mobile portrait/landscape, score persistence, asset loading, accessible touch targets and truthful hosted/prototype labels.
 - [ ] Continue original arcade consolidation and modern graphics: Ash Serpent, Shattershot, Chaos Connect Four, Madhouse Memory, Crypt Smash, Cursed Circuit, Cinder Merge, Ash Tiles, Afterburn, Crypt Words, Cinder Crossing, Neon Surge, Cinder Eights and remaining cabinets. Avoid deleting distinct playable versions without review.
 - [ ] Fish tables: Trench Bounty, Neon Kelp and Magma Trench; four independent seats, hold-to-fire, multi-touch, server-authoritative rooms and credit/score fairness. No cash gambling.
