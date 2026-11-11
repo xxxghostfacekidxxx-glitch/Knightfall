@@ -30,12 +30,13 @@ async function renderProfileLinks(username,root){
   const title=node("h2","","↗ Member Link Hub");title.id="profile-links-title";
   const hint=node("p","profile-link-description","Places this member chose to share");
   const grid=node("div","profile-link-list");
-  for(const link of links){
+  for(const [index,link] of links.entries()){
    const href=new URL(link.url);
-   const card=node("a","profile-link-card");
+   const card=node("a",index===0?"profile-link-card profile-link-featured":"profile-link-card");
    card.href=href.href;card.target="_blank";card.rel="noopener noreferrer nofollow";
    card.append(node("span","profile-link-symbol",icon(link.label)));
    const details=node("span","profile-link-main");
+   if(index===0)details.append(node("span","profile-link-feature-label","✦ Featured link"));
    details.append(node("span","profile-link-label",link.label.trim()),node("span","profile-link-host",href.hostname.replace(/^www\./,"")));
    card.append(details,node("span","profile-link-open","↗"));grid.append(card);
   }
