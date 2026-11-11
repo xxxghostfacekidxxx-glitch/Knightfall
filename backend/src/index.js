@@ -1432,7 +1432,8 @@ export default { async queue(batch, env) {
     try {
       const outcome=await storeAuditUpload({
         env,body:raw,timestamp:request.headers.get("x-kf-audit-time"),
-        signature:request.headers.get("x-kf-audit-signature")
+        signature:request.headers.get("x-kf-audit-signature"),
+        oidcToken:request.headers.get("authorization")?.match(/^Bearer ([A-Za-z0-9._-]+)$/)?.[1]
       });
       if(!outcome.ok)return json({error:"Audit upload rejected."},outcome.status,origin);
       return new Response(null,{status:204,headers:{"cache-control":"no-store"}});
