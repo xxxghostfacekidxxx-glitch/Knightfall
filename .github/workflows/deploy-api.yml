@@ -45,6 +45,11 @@ jobs:
       - name: Check profile photo deletion cleanup
         run: node --test scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
 
+      - name: Validate profile wall access, reactions, comments and D1 schema
+        run: |
+          node --test backend/src/profile-wall.test.mjs
+          node --check backend/src/profile-wall.js
+          node --check public/profile-wall.js
       - name: Validate coordinated registration release
         run: node --test scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs
 
