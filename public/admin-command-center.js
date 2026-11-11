@@ -35,6 +35,16 @@
       prompt: "Review the current public Miss Chaos behavior and personality configuration supplied in your context. Identify conflicts, ambiguous rules, unintended side effects, and missing evaluation scenarios. Recommend the smallest useful changes and explain trade-offs. Do not change anything or create a proposal unless I explicitly ask."
     },
     {
+      title: "Triage Developer Arsenal scan",
+      detail: "Sort Biome and Semgrep findings into actual fixes and false positives.",
+      prompt: "Review my Knightfall Developer Arsenal CI results. Work only from logs or artifacts I supply. Classify findings into syntax problems, security concerns, style-only warnings, and false positives. Propose the smallest verified patch for each actionable finding. Do not claim a CI run passed without evidence, and do not deploy."
+    },
+    {
+      title: "Investigate a browser bug",
+      detail: "Prepare a reproducible Playwright and DevTools test.",
+      prompt: "Help reproduce a Knightfall browser issue using an isolated Playwright test. Describe page route, viewport, actions, expected state, selectors, screenshot evidence, JavaScript console errors, and failed requests. Never paste credentials into screenshots or logs. Identify whether an MCP browser connection is actually available before suggesting direct agent execution."
+    },
+    {
       title: "Draft a GitHub task",
       detail: "Produce a ready-to-file issue or pull request brief.",
       prompt: "Help me turn my next Knightfall/Ash-Fall change into a GitHub-ready task. Ask for the missing feature or bug details if needed, then draft a concise title, problem statement, acceptance criteria, implementation notes, security considerations, and test plan. Do not claim to have created an issue or changed repository files."
