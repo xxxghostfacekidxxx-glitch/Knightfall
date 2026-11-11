@@ -148,7 +148,6 @@
       }
     });
     importSection.append(importTitle, importHint, fileInput, importStatus);
-    section.append(importSection);
 
     const checklistSection = document.createElement("div");
     checklistSection.className = "command-center-checklist";
@@ -202,7 +201,7 @@
       updateProgress();
     });
     checklistSection.append(checklistTitle, checklistHelp, list, progress, reset);
-    section.append(heading, grid, checklistSection);
+    section.append(heading, grid, importSection, checklistSection);
 
     const capabilities = chat.querySelector(".lab-assistant-capabilities");
     if (capabilities) chat.insertBefore(section, capabilities);
