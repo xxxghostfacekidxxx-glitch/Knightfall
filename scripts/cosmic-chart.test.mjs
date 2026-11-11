@@ -63,6 +63,14 @@ test("saved derived natal placements support personalized current transit aspect
   assert.ok(events.some(a=>a.transit==="Venus"&&a.natal==="Sun"&&a.type==="Conjunction"));
   assert.ok(events.every(a=>a.orb<=2));
 });
+test("synastry only compares supplied derived charts and reports grounded aspect orbs",()=>{
+  const cosmic=load("public/cosmic-chart.js").KnightfallCosmic;
+  const partner={bodies:{Sun:{sign:"Libra",degree:10},Moon:{sign:"Leo",degree:10}}};
+  const links=cosmic.synastry(sample,partner);
+  assert.ok(links.some(a=>a.first==="Sun"&&a.second==="Sun"&&a.type==="Opposition"));
+  assert.ok(links.every(a=>a.orb<=4));
+  assert.ok(links.length>0);
+});
 test("Cosmic UI is wired to public and private profile surfaces with no automatic send",()=>{
   const profile=file("public/profile.html"),editor=file("public/profile-edit.html"),chaos=file("public/miss-chaos.html");
   const profileJs=file("public/profile.js"),chaosJs=file("public/miss-chaos.js");
