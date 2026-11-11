@@ -65,6 +65,14 @@ jobs:
         run: |
           "$HOME/.local/bin/semgrep" scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
           test -s semgrep-report.json
+      - name: Produce privacy-safe security summary
+        if: always()
+        run: |
+          if [ -s semgrep-report.json ]; then
+            node scripts/developer-arsenal-summary.mjs semgrep-report.json biome-report.txt
+          else
+            echo "Semgrep report unavailable; no scan results can be summarized." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Explain audit evidence
         if: always()
         run: |
@@ -72,7 +80,7 @@ jobs:
             echo "## Devil's Toolkit Developer Arsenal"
             echo ""
             echo "- Offline regression and mobile browser fixtures run in the diagnostics job."
-            echo "- Biome and Semgrep are advisory; review their logs and artifacts before treating findings as fixed."
+            echo "- Biome findings are advisory. Semgrep must complete and produce valid JSON; its findings still require review."
             echo "- No production API credentials or deployment permissions are used."
             echo ""
             echo "### Report files"
@@ -90,7 +98,7 @@ jobs:
         with:
           name: developer-arsenal-audit
           path: |
+            developer-arsenal-summary.json
             biome-report.txt
-            semgrep-report.json
           if-no-files-found: ignore
           retention-days: 7
