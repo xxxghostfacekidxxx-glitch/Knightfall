@@ -113,6 +113,13 @@ test("the interpretive code does not network, track, or store raw birth records"
  assert.ok(summary.length<=1250);
  assert.doesNotMatch(summary,/latitude|longitude|UTC:|birth timestamp/);
 });
+test("Miss Chaos uses measured transit-to-natal aspects for its reading draft",()=>{
+ const chat=read("public/miss-chaos.js");
+ assert.match(chat,/KnightfallCosmicLexicon\?\.transitBrief\?\./);
+ assert.match(chat,/transitMeanings/);
+ assert.match(chat,/latestChartSubject==="member"/);
+ assert.doesNotMatch(read("public/cosmic-lexicon.js"),/fetch\s*\(|new WebSocket/);
+});
 test("pages load lexicon before atlas and renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
   const html=read(path);
