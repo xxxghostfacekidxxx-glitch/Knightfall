@@ -48,6 +48,14 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Run the new CI and inspect fleet failure artifacts/logs to isolate an actionable first failure. Do not close #192 based on artifact presence.
 - [ ] Confirm the latest post-fix Pages deployment and authenticated real-browser gameplay; browser requests to ash-fall.com remain blocked here.
 
+## CI infrastructure diagnosis and mitigation — November 11, 2026
+
+- [x] Inspected arcade fleet run [43041879660](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43041879660), job steps and Cinder Scout's full log.
+- [x] Confirmed first failure: Playwright's system dependency installer on Ubuntu 26.04 encountered DNS resolution failures against Ubuntu apt mirrors. The later live browser step failed because Chromium was missing. The game browser tests did not successfully run.
+- [x] Committed [d13cb61](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/d13cb61d0b91f9742eaf046be2d52b7dfae27f8f) on main: pin all five fleet jobs to Ubuntu 24.04 and avoid the apt-dependent Chromium bootstrap in both browser fleet and safe repair steps.
+- [ ] Verify new fleet run installs Chromium and passes all ten shards; diagnose any missing Linux shared libraries separately.
+- [ ] Retest actual local/live game behavior before closing [#192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192). Mobile device acceptance still outstanding.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
