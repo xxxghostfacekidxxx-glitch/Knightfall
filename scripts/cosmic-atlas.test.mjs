@@ -18,6 +18,7 @@ function makeDOM(){
  class Element{
   constructor(tag){this.tagName=tag;this.children=[];this.parentNode=null;this.attributes={};this.style={};this.textContent="";this.value="";this.listeners={};}
   append(...items){for(const node of items){this.children.push(node);if(node&&typeof node==="object")node.parentNode=this;}}
+  prepend(...items){this.children.unshift(...items);for(const node of items)if(node&&typeof node==="object")node.parentNode=this;}
   replaceChildren(...items){this.children=[];this.append(...items);}
   setAttribute(key,val){this.attributes[key]=String(val);}
   getAttribute(key){return this.attributes[key]??null;}
@@ -92,6 +93,18 @@ test("Chart prompts include genuinely derived phases, rulers and clusters, not p
  assert.match(p,/Planet clusters: 3 in Aries/);
  assert.ok(p.length<=3900);
  assert.doesNotMatch(p,/latitude|longitude|1990-01-01/);
+});
+test("unknown birth time never fabricates rising, houses or certainty",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ const chart={time_precision:"unknown",bodies:{Sun:{sign:"Gemini",degree:11},Moon:{sign:"Virgo",degree:7}}};
+ window.KnightfallCosmic.render(target,chart);
+ const note=find(target,node=>String(node.className||"").includes("cosmic-uncertain"));
+ assert.ok(note);
+ assert.match(note.textContent,/Birth time unknown/);
+ assert.equal(window.KnightfallCosmicInsights.summarize(chart).ruler,null);
+ const draft=window.KnightfallCosmic.prompt(chart);
+ assert.match(draft,/provisional noon-UTC chart/);
+ assert.match(draft,/Do not infer Ascendant/);
 });
 test("All three pages load the Chart Atlas before the chart renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
