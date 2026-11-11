@@ -137,5 +137,30 @@
   return ("Use these traditional reflective themes, not deterministic claims: "+
     interpretations.map(x=>x.title+" ("+x.orb+"°): "+x.summary+" Reflection: "+x.reflection).join("; ")).slice(0,1850);
  }
- window.KnightfallCosmicLexicon=Object.freeze({PLANETS,SIGNS,HOUSES,placement,houseGuide,angles,brief,transitGuide,transitBrief});
+ function synastryGuide(firstChart,secondChart,aspect){
+  if(!aspect||!TRANSIT_ASPECTS[aspect.type])return null;
+  const a=PLANETS[aspect.first],b=PLANETS[aspect.second];
+  const first=firstChart?.bodies?.[aspect.first],second=secondChart?.bodies?.[aspect.second];
+  const orb=Number(aspect.orb);
+  if(!a||!b||!first||!second||!Number.isFinite(orb)||orb<0||orb>4)return null;
+  const meaning=TRANSIT_ASPECTS[aspect.type];
+  return {
+   first:aspect.first,second:aspect.second,type:aspect.type,orb:Number(orb.toFixed(2)),
+   title:"First chart "+aspect.first+" "+aspect.type.toLowerCase()+" second chart "+aspect.second,
+   summary:"The first person's "+aspect.first+" represents "+a.scope.toLowerCase()+
+    " (in "+first.sign+"); the second person's "+aspect.second+" represents "+
+    b.scope.toLowerCase()+" (in "+second.sign+"). This "+aspect.type.toLowerCase()+
+    " traditionally suggests "+meaning.relationship+". It does not measure real-world compatibility or consent.",
+   reflection:meaning.question+" What helps both people communicate their own needs?",
+   disclaimer:"Comparing voluntarily shared natal placements is symbolic, not a judgment of either person or a prediction of relationship outcomes."
+  };
+ }
+ function synastryBrief(firstChart,secondChart,aspects){
+  if(!Array.isArray(aspects))return "";
+  const guides=aspects.slice(0,8).map(x=>synastryGuide(firstChart,secondChart,x)).filter(Boolean);
+  if(!guides.length)return "No major chart-to-chart aspects fall within the displayed 4° orb; do not invent connections.";
+  return ("Use these explicit symbolic chart comparisons, not relationship predictions: "+
+   guides.map(x=>x.title+" (orb "+x.orb+"°): "+x.summary+" Reflection: "+x.reflection).join("; ")).slice(0,2000);
+ }
+ window.KnightfallCosmicLexicon=Object.freeze({PLANETS,SIGNS,HOUSES,placement,houseGuide,angles,brief,transitGuide,transitBrief,synastryGuide,synastryBrief});
 })();
