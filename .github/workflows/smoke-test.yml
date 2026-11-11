@@ -37,6 +37,7 @@ on:
       - 'scripts/miss-chaos-stream.test.mjs'
       - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/profile-navigation.test.mjs'
+      - 'scripts/profile-community-overhaul.test.mjs'
       - 'scripts/profile-studio-next.test.mjs'
       - 'scripts/profile-photo-studio.test.mjs'
       - 'scripts/profile-link-hub.test.mjs'
@@ -92,6 +93,8 @@ jobs:
         run: npm install --prefix backend --no-audit --no-fund
       - name: Verify birth charts, card-room rules and offline navigation
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/cosmic-lexicon.test.mjs scripts/cosmic-geo-timezone.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
+      - name: Verify public profile hub, privacy, and custom themes
+        run: node --test scripts/profile-community-overhaul.test.mjs
       - name: Validate rebuilt profile editor and crop/save code
         run: |
           node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
