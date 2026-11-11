@@ -392,12 +392,16 @@
       const other=member.birth_chart;
       const aspects=window.KnightfallCosmic.synastry(latestSavedChart,other).slice(0,24);
       const top=aspects.map(a=>"My "+a.first+" "+a.type.toLowerCase()+" their "+a.second+" (orb "+a.orb+"°)").join("; ");
+      const sharedThemes=window.KnightfallCosmicLexicon?.synastryBrief?.(latestSavedChart,other,aspects)||"";
       const describe=c=>"Sun "+(c.bodies?.Sun?.sign||"unknown")+", Moon "+(c.bodies?.Moon?.sign||"unknown")+", Rising "+(c.angles?.ascendant_sign||c.ascendant_sign||"unknown");
       moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
-      input.value=("Explore the traditional symbolic astrological compatibility between my chart and @"+username+"'s explicitly published profile chart. Do not predict relationship outcomes or prescribe decisions. Compare communication, emotional needs, attractions, tensions, and personal agency. My Big Three: "+describe(latestSavedChart)+". Their Big Three: "+describe(other)+". Exact chart-to-chart aspects: "+top+". Address missing information honestly.").slice(0,3900);
+      input.value=("Explore the traditional symbolic astrological compatibility between my chart and @"+username+"'s explicitly published profile chart. Do not predict relationship outcomes or prescribe decisions. Compare communication, emotional needs, attractions, tensions, and personal agency. My Big Three: "+describe(latestSavedChart)+". Their Big Three: "+describe(other)+". Exact chart-to-chart aspects: "+top+". "+sharedThemes+" Address missing information honestly.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
-      astroPreview.hidden=false;window.KnightfallCosmic.render(astroPreview,latestSavedChart);
-      status.textContent="Found "+aspects.length+" chart-to-chart aspects (showing strongest 24). Comparison prepared for review before Send.";
+      astroPreview.hidden=false;
+      window.KnightfallCosmic.render(astroPreview,latestSavedChart,{kind:"synastry",comparisonChart:other,comparisonLabel:"@"+username+"'s published chart"});
+      $("#astro-natal-back").hidden=false;
+      $("#astro-overlay").hidden=true;$("#astro-transit-only").hidden=true;
+      status.textContent="Comparing your chart with @"+username+"'s published chart: "+aspects.length+" calculated aspects. Explore both planet rings and review the draft before Send.";
       input.focus();
     }catch(error){status.textContent=error.message||"Unable to compare these charts.";}
     finally{button.disabled=false;}
