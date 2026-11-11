@@ -14,6 +14,6 @@ export async function dispatchChaosTool({name,input,principal,handlers={},approv
 export function describeChaosTools(principal) {
   const publicTools = ["site.help","site.games","site.search","utility.calculate","utility.word_count"];
   if (principal?.id) publicTools.push("user.memories");
-  if (principal?.id && principal.role==="god") publicTools.push("god.diagnostics","god.propose_change");
+  if (principal?.id && principal.role==="god") publicTools.push("god.diagnostics","god.audit_summary","god.propose_change");
   return publicTools;
 }
