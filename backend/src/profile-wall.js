@@ -115,6 +115,20 @@ export async function handleProfileWall(request,env,url,helpers){
     const found=await readPost(env,postId,viewer,helpers);
     if(found.status)return fail(helpers,origin,found.status,found.error);
     const post=found.post;
+    if(!part&&request.method==="GET"){
+      const id=viewer?.id||0;
+      const row=await env.DB.prepare("SELECT a.id,a.user_id,a.body,a.visibility,a.created_at,a.updated_at,u.username,u.display_name,"+
+        "(SELECT COUNT(*) FROM profile_wall_comments c WHERE c.activity_id=a.id AND c.deleted_at IS NULL) AS comment_count,"+
+        "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='fire') AS fire_count,"+
+        "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='heart') AS heart_count,"+
+        "(SELECT COUNT(*) FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.reaction='skull') AS skull_count,"+
+        "(SELECT r.reaction FROM profile_wall_reactions r WHERE r.activity_id=a.id AND r.user_id=?) AS my_reaction,"+
+        "EXISTS(SELECT 1 FROM social_bookmarks b WHERE b.user_id=? AND b.object_type='activity' AND b.object_id=CAST(a.id AS TEXT)) AS is_saved "+
+        "FROM social_activity a JOIN users u ON u.id=a.user_id WHERE a.id=? AND a.activity_type='status' AND a.deleted_at IS NULL LIMIT 1")
+        .bind(id,id,postId).first();
+      if(!row)return fail(helpers,origin,404,"Update not found.");
+      return json({post:row,viewer_id:viewer?.id||null},200,origin);
+    }
     if(!part&&(request.method==="PATCH"||request.method==="DELETE")){
       if(!viewer||viewer.id!==post.user_id)return fail(helpers,origin,403,"Only the author can edit or remove this update.");
       if(!await rateLimit(env,request,"profile-wall-post-edit",20,300,viewer.id))return fail(helpers,origin,429,"Too many updates. Try again later.");
