@@ -75,6 +75,7 @@
   <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
   <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
   <label>Birth-place time zone (optional, recommended) <input id="astro-timezone" class="cosmic-timezone-select" type="text" autocomplete="off" placeholder="e.g. America/Chicago"></label>
+  <p id="astro-timezone-status" class="astro-help" role="status">Selecting a city suggests its present geographic time zone; verify historical rules and border cases.</p>
   <label>Repeated DST hour <select id="astro-fold"><option value="earlier">First occurrence</option><option value="later">Second occurrence</option></select></label>
   <p class="astro-help cosmic-timezone-help">Choose the time zone used at your birthplace, not necessarily your current one. If provided, it determines the historical UTC offset automatically. The offset field above is the fallback for verified manual entry.</p>
   <label>Birth city (optional; city, region, country) <input id="astro-city" type="text" placeholder="e.g. Des Moines, Iowa, USA"></label>
@@ -105,6 +106,8 @@
   <script src="/nav.js?v=20261027-category-nav6" defer></script>
   <script src="/cosmic-insights.js?v=20261111-atlas1" defer></script>
 <script src="/cosmic-chart.js?v=20261111-atlas2" defer></script>
+  <script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
+  <script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
   <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
   <script src="/miss-chaos.js?v=20261111-atlas2" defer></script>
 </body>
