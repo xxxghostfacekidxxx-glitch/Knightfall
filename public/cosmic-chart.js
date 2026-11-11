@@ -137,6 +137,7 @@
     const placements=entries.map(({name,body})=>name+": "+body.sign+" "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"+(chart?.house_placements?.[name]?" in house "+chart.house_placements[name]:"")+(body.retrograde?" retrograde":"")).join("; ");
     const aspectSummary=aspects(chart).slice(0,14).map(a=>a.a+" "+a.type.toLowerCase()+" "+a.b+" (orb "+a.orb+"°)").join("; ");
     const uncertainty=chart?.time_precision==="unknown"?" Birth time was not provided. This is a provisional noon-UTC chart. Do not infer Ascendant, houses, or an exact Moon placement; sign-cusp positions may change.":"";
+    const lexiconSummary=window.KnightfallCosmicLexicon?.brief?.(chart)||"";
     const insight=window.KnightfallCosmicInsights?.summarize?.(chart);
     const patternInfo=insight?[
       insight.ruler?"Traditional chart ruler: "+insight.ruler.traditional+(insight.ruler.modern?"; modern co-ruler "+insight.ruler.modern:"")+".":"",
@@ -145,7 +146,7 @@
     ].filter(Boolean).join(" "):"";
     const lead=subject==="member"?"Interpret this member\u0027s shared tropical natal chart, not my own, as a symbolic reflective reading rather than a scientific prediction. Explain their Sun, Moon, Rising, houses, aspects, strengths and tensions without claiming to know their private life. ":"Interpret my calculated tropical natal chart as a symbolic, reflective reading, not a scientific prediction. Explain my Sun, Moon, Rising, house themes, strongest aspects, emotional patterns, strengths, tensions, and practical prompts for self-reflection. ";
     return (lead+"Do not invent missing birth details, transits, or houses. "+
-      "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+". "+patternInfo+uncertainty).slice(0,3900);
+      "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+". "+patternInfo+uncertainty+" "+lexiconSummary).slice(0,3900);
   }
   function downloadSvg(svg,filename="knightfall-cosmic-chart.svg"){
     if(!svg)throw Error("Chart image is unavailable.");
