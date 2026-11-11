@@ -1,0 +1,50 @@
+# Ash-Fall / Knightfall master task list — 2026-11-11
+
+Status convention: **Implemented** means present in source; **CI verified** means a named automated check passed; **production verified** and **device accepted** require separate evidence. Unchecked entries must not be described as absent.
+
+## P0 — Immediate reliability and release blockers
+- [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
+- [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
+- [ ] Complete account deletion across D1/KV/R2, session/push revocation, retention, staff processing and off-app request flow. Current password check and public assistance ticket exist; completion remains open [#150](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/150).
+- [ ] Verify current production Pages and Worker versions, /api/auth/me JSON response, login, registration, password recovery, protected media, rate limits and CSRF/Turnstile; configure Google/Meta OAuth providers only with correct callback and consent setup.
+- [ ] Real Android and desktop acceptance: message composer, older history, inbox switches, attachments, friends, profiles, themes, push background/closed-app delivery, notification click and permissions [#153](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/153).
+- [ ] Test admin offline launcher, authenticated ZIP retrieval, storage quota rollback, service worker cache and offline gameplay on physical Android.
+- [ ] Verify security and privacy for adult-gated content, creator uploads, public/personal bots, admin panels and all account ownership paths.
+
+## P1 — Arcade, games and creative systems
+- [ ] Investigate current reports [Tetris controls #147](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/147), [Particle Clicker upgrades #144](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/144), [Freeciv Web #145](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/145) and [#146](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/146); close only after reproducible verification.
+- [ ] Certify each arcade cabinet beyond HTTP 200: real controls, startup, pause/fullscreen, mobile portrait/landscape, score persistence, asset loading, accessible touch targets and truthful hosted/prototype labels.
+- [ ] Continue original arcade consolidation and modern graphics: Ash Serpent, Shattershot, Chaos Connect Four, Madhouse Memory, Crypt Smash, Cursed Circuit, Cinder Merge, Ash Tiles, Afterburn, Crypt Words, Cinder Crossing, Neon Surge, Cinder Eights and remaining cabinets. Avoid deleting distinct playable versions without review.
+- [ ] Fish tables: Trench Bounty, Neon Kelp and Magma Trench; four independent seats, hold-to-fire, multi-touch, server-authoritative rooms and credit/score fairness. No cash gambling.
+- [ ] Hell & High Orbit: [four equipped moves #166](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/166), level learnsets, PP, evolution, capture, creature switching, mobile battle UI, offline save migration, secure multiplayer and reconnect. Stage first.
+- [ ] Verify Sanctuary's End editions, City of Cinders, The Descent, original zombie/space games and city-building prototypes before marketing as playable.
+- [ ] Audit open-source game licensing, attribution and runtime feasibility; review Mindustry, Terravia, BrowserQuest, Freeciv, card/board games, and requested Star Wars/DBZ references without distributing unlicensed assets.
+- [ ] Verify Deck Locker across two accounts/devices; card rooms with human players and bots; achievements, rewards and anti-duplicate scores.
+- [ ] Complete Gravewave sprite integration, mascot sanctuary roster/tests, Devil Tools/Creator Foundry asset archive, icons and modern responsive artwork.
+
+## P1 — Community, AI and operations
+- [ ] Confirm shared navigation on category, arcade, profile and admin pages; eliminate legacy orange overrides and Miss Chaos overlay collisions.
+- [ ] Test profile customization, friend requests, activity feed, groups, reporting, blocking, private journal, birth chart city picker and privacy boundaries.
+- [ ] Verify member bot limits and owner/admin tools; finish Miss Chaos continuity, memory consent/clear, human conversational behavior, site knowledge and optional voice without claiming unsupported offline AI.
+- [ ] Check forum news bots and game test fleet schedules, failure routing and God dashboard telemetry. Never describe disabled posting as active.
+- [ ] Review D1 migration ledger and backups, R2 storage permissions, Worker/Pages deploy status, CI workflows, staging and rollback procedures.
+- [ ] Test creator workshop permissions, catalog publishing and media ownership; keep public bot NSFW gating distinct from public Miss Chaos.
+
+## P2 — Monetization and longer-range releases
+- [ ] Verify donation links and clearly distinguish shop catalogs from active checkout.
+- [ ] Configure merchant provider, tax/order/refund workflow, signed payment webhooks, entitlements, creator payouts and fulfillment before enabling sales.
+- [ ] Complete PWA/Android release: signing, verified links, privacy and account deletion policies, Data safety and real-device acceptance.
+- [ ] Expand creator marketplace, digital publishing, church codex/store and separate app only after core platform is stable.
+- [ ] Consider Cloudflare Queues, Durable Objects, analytics and optional voice features only with cost, privacy and free-tier review.
+
+## Evidence and references
+- [November 10 audit](KNIGHTFALL-TASK-RUN-2026-11-10.md) records last confirmed deployment/migration/test facts, including partial privacy improvements and outstanding device checks.
+- [Recovered backlog](ASH-FALL-RECOVERED-BACKLOG.md) retains older requests and superseded concepts for cross-checking.
+- [God operations register](GOD-DASH-OPERATIONS.md) records operational requirements.
+- [GitHub issues](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues) are issue-level records; not every historical report is an open, reproducible defect.
+- Site panel: `public/admin.html`. This update is repository-side; live availability depends on Pages deployment.
+
+## Owner-only acceptance needed
+- [ ] Dedicated CI test identities and provider configuration, with secrets kept outside source.
+- [ ] Android signed-in tests for push, messaging, offline launcher and priority games.
+- [ ] Payment, age verification and app-store accounts only when ready to launch those services.
