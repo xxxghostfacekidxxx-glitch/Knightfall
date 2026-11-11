@@ -18,6 +18,7 @@ import { handleShadowJournal } from "./shadow-journal.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
 import { handleProfileLinks } from "./profile-links.js";
 import { handleProfileWall } from "./profile-wall.js";
+import { handleProfileShowcase } from "./profile-showcase.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 import { handleArcadeTurnMatches } from "./arcade-turn-matches.js";
 import { handleChaosCardMatches } from "./chaos-card-matches.js";
@@ -109,7 +110,7 @@ async function deliverPushToUser(env,userId,notification,onlyEndpoint=null,recei
     if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT){delivery.skipped="unconfigured";return delivery;}
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
     const kind=String(notification.kind||"");
-    const category=kind==="message"?"messages":(["reply","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
+    const category=kind==="message"?"messages":(["reply","reaction","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
     if(!receiptToken && pref && Number(pref["push_"+category])===0){delivery.skipped="category-disabled";return delivery;}
     if(pref?.quiet_start&&pref?.quiet_end){
       const now=new Date(),clock=now.toISOString().slice(11,16),start=pref.quiet_start,end=pref.quiet_end;
@@ -1043,7 +1044,9 @@ export default { async queue(batch, env) {
     return json({ok:true,report_id:result.meta?.last_row_id,note:"Your report has been submitted for review."},201,origin);
   }
 
-  const profileWallResponse=await handleProfileWall(request,env,url,{requireUser,json,origin,rateLimit,audit,isModerator,isAdmin});
+  const showcaseResponse=await handleProfileShowcase(request,env,url,{requireUser,json,origin,rateLimit,isModerator,isAdmin});
+  if(showcaseResponse)return showcaseResponse;
+  const profileWallResponse=await handleProfileWall(request,env,url,{requireUser,json,origin,rateLimit,audit,isModerator,isAdmin,createNotification});
   if(profileWallResponse)return profileWallResponse;
 
   // Elgg-inspired activity stream, interest groups, adult gate, creator memberships, and dating foundation.
