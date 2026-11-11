@@ -320,6 +320,16 @@
       statusEl.textContent = health?.ok ? "Connected · AI model availability checked on send" : "API connection needs attention";
       if (conversations.length) await openConversation(conversations[0].id);
       else showWelcome();
+      // A published or owner-authorized derived chart is transferred only by a click;
+      // no raw birth date, UTC timestamp, or coordinates enter session storage.
+      try {
+        const transfer=sessionStorage.getItem("knightfall:cosmic-reading");
+        if(transfer){
+          sessionStorage.removeItem("knightfall:cosmic-reading");
+          const chart=JSON.parse(transfer)?.chart;
+          if(chart?.bodies)prepareCosmicReading(chart,"Chart loaded from profile. Review the draft before sending.");
+        }
+      }catch(error){console.warn("Cosmic chart transfer unavailable",error);}
     } catch (error) {
       statusEl.textContent = "Connection unavailable";
       showError(error.message || "Couldn't load Miss Chaos. Please refresh and try again.");
@@ -345,7 +355,67 @@
   moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
-  let latestNatalUtc = null;
+  let latestNatalUtc = null,latestSavedChart=null,astroCityVersion=0;
+  window.KnightfallBirthTime?.populate("astro-timezone");
+  const astroPreview=$("#astro-preview");
+  function prepareCosmicReading(chart,message){
+    if(!chart?.bodies||!window.KnightfallCosmic)throw Error("Chart visualization is unavailable. Refresh the page.");
+    latestSavedChart=chart;
+    moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
+    astroPreview.hidden=false;window.KnightfallCosmic.render(astroPreview,chart);
+    input.value=window.KnightfallCosmic.prompt(chart);
+    input.dispatchEvent(new Event("input"));
+    $("#astro-chart-status").textContent=message;
+    input.focus();
+  }
+  $("#astro-saved-chart").addEventListener("click",async event=>{
+    const button=event.currentTarget;button.disabled=true;
+    $("#astro-chart-status").textContent="Loading your saved chart…";
+    try{
+      const data=await request("/api/profile/birth-chart");
+      if(!data.chart)throw Error("No saved profile chart yet. Create one in Profile Studio.");
+      latestNatalUtc=null;
+      prepareCosmicReading(data.chart,"Your "+(data.visible?"published":"private")+" profile chart is ready. Review the interpretation draft before sending.");
+    }catch(error){$("#astro-chart-status").textContent=error.message;}
+    finally{button.disabled=false;}
+  });
+  const astroCityInput=$("#astro-city"),astroCitySearch=$("#astro-city-search"),astroCityResults=$("#astro-city-results"),astroCityStatus=$("#astro-city-status");
+  function clearAstroCity(){
+    astroCityVersion++;
+    $("#astro-latitude").value="";$("#astro-longitude").value="";
+    astroCityResults.replaceChildren(new Option("Search for a city first",""));astroCityResults.disabled=true;
+  }
+  astroCityInput.addEventListener("input",()=>{clearAstroCity();astroCityStatus.textContent="Search, then choose the correct city.";});
+  astroCityResults.addEventListener("change",()=>{
+    const place=astroCityResults.selectedOptions[0];
+    $("#astro-latitude").value=place?.dataset.lat||"";
+    $("#astro-longitude").value=place?.dataset.lon||"";
+    astroCityStatus.textContent=$("#astro-latitude").value?"Selected: "+place.textContent:"Choose a matching location.";
+  });
+  astroCitySearch.addEventListener("click",async()=>{
+    const query=astroCityInput.value.trim();
+    if(query.length<3){astroCityStatus.textContent="Enter a city and country, at least 3 characters.";return;}
+    clearAstroCity();
+    const version=astroCityVersion;astroCitySearch.disabled=true;
+    astroCityStatus.textContent="Searching birthplaces…";
+    try{
+      const params=new URLSearchParams({q:query,format:"jsonv2",addressdetails:"1",limit:"8"});
+      const response=await fetch("https://nominatim.openstreetmap.org/search?"+params,{headers:{Accept:"application/json"}});
+      if(!response.ok)throw Error("City search is temporarily unavailable.");
+      const results=await response.json();
+      if(version!==astroCityVersion)return;
+      astroCityResults.replaceChildren(new Option("Select your birth city",""));
+      for(const result of Array.isArray(results)?results:[]){
+        const lat=Number(result.lat),lon=Number(result.lon);
+        if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>66||Math.abs(lon)>180)continue;
+        const option=new Option(result.display_name,String(result.place_id));
+        option.dataset.lat=String(lat);option.dataset.lon=String(lon);astroCityResults.add(option);
+      }
+      astroCityResults.disabled=astroCityResults.options.length<2;
+      astroCityStatus.textContent=astroCityResults.disabled?"No supported city found; try a different spelling.":"Choose the correct city from the results.";
+    }catch(error){if(version===astroCityVersion)astroCityStatus.textContent=error.message;}
+    finally{astroCitySearch.disabled=false;}
+  });
   $("#astro-chart-form").addEventListener("submit", async event => {
     event.preventDefault();
     const status = $("#astro-chart-status");
@@ -357,7 +427,15 @@
     const [year, month, day, hour, minute] = parts.slice(1).map(Number);
     const clock = new Date(Date.UTC(year, month - 1, day, hour, minute));
     if (clock.getUTCFullYear() !== year || clock.getUTCMonth() !== month - 1 || clock.getUTCDate() !== day || clock.getUTCHours() !== hour || clock.getUTCMinutes() !== minute) { status.textContent = "That calendar date or time is invalid."; return; }
-    const utc = new Date(clock.getTime() - offset * 3600000).toISOString().replace(".000Z","Z");
+    let utc = new Date(clock.getTime() - offset * 3600000).toISOString().replace(".000Z","Z");
+    const timezone=$("#astro-timezone").value.trim();
+    if(timezone){
+      try{
+        const resolved=window.KnightfallBirthTime.resolve(local,timezone,$("#astro-fold").value);
+        utc=resolved.chosen.utc;
+        $("#astro-utc-offset").value=resolved.chosen.offset;
+      }catch(error){status.textContent=error.message;return;}
+    }
     const latText = $("#astro-latitude").value.trim();
     const lonText = $("#astro-longitude").value.trim();
     if (Boolean(latText) !== Boolean(lonText)) { status.textContent = "Enter both birth coordinates or neither."; return; }
@@ -370,11 +448,13 @@
     try {
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(chartRequest)});
       latestNatalUtc = utc;
+      latestSavedChart=chart;
+      astroPreview.hidden=false;window.KnightfallCosmic?.render(astroPreview,chart);
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
       const houseInfo = chart.angles ? " Ascendant: " + chart.angles.ascendant_sign + " " + (chart.angles.ascendant % 30).toFixed(1) + " degrees. Midheaven: " + chart.angles.midheaven_sign + " " + (chart.angles.midheaven % 30).toFixed(1) + " degrees. House system: " + chart.angles.house_system + ". Planetary houses: "  + Object.entries(chart.house_placements || {}).map(([name,house]) => name + " house " + house).join("; ") + "." : " Ascendant and houses unavailable without birth coordinates.";
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = "Please interpret my approximate Western tropical birth chart in depth. UTC: " + chart.utc + ". Placements: " + placements + ". Major aspects (up to 4° orb): " + aspects + ". Explain strengths, challenges, patterns, and the chart as a whole. " + houseInfo + " Treat astrology as symbolic interpretation, and clearly state the limitations of these approximate calculations.";
+      input.value = window.KnightfallCosmic?.prompt(chart) || ("Interpret this calculated tropical chart symbolically: "+placements+". Aspects: "+aspects+". "+houseInfo);
       input.dispatchEvent(new Event("input"));
       status.textContent = "Calculated " + Object.keys(chart.bodies || {}).length + " planetary positions and " + (chart.aspects || []).length + " major aspects. Reading prepared below; review and press Send.";
       input.focus();
@@ -390,11 +470,12 @@
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(body)});
       const positions = chart.transit_bodies || chart.bodies || {};
       const placements = Object.entries(positions).map(([name,p]) => name + " " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " Rx" : "")).join("; ");
-      const aspects = (chart.transit_aspects || chart.aspects || []).slice(0,22).map(a => chart.transit_aspects ? a.transit + " " + a.type + " natal " + a.natal + " (orb " + a.orb + "°)" : a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
+      const links=chart.transit_aspects || (latestSavedChart&&window.KnightfallCosmic?window.KnightfallCosmic.transitAspects({bodies:positions},latestSavedChart):null);
+      const aspects=(links||chart.aspects||[]).slice(0,22).map(a=>links?a.transit+" "+a.type+" natal "+a.natal+" (orb "+a.orb+"°)":a.a+" "+a.type+" "+a.b+" (orb "+a.orb+"°)").join("; ");
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = "Interpret these approximate planetary transits in depth as symbolic astrology, not scientific predictions. UTC: " + utc + ". Transit positions: " + placements + ". " + (latestNatalUtc ? "Birth UTC: " + latestNatalUtc + ". Transit-to-natal aspects: " : "Current planetary aspects: ") + aspects + ". Please explain themes, timing uncertainty, and practical reflection without making deterministic predictions or claiming exact ephemeris accuracy.";
+      input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
-      status.textContent = latestNatalUtc ? "Natal transit comparison prepared. Review and Send." : "Current planetary transit reading prepared. Calculate your natal chart first for personal transit aspects.";
+      status.textContent = links ? "Personal transit comparison prepared. Review and Send." : "Current planetary transit reading prepared. Calculate or load a natal chart for personal transit aspects.";
       input.focus();
     } catch (error) { status.textContent = error.message || "Transit calculation failed."; }
     finally { button.disabled = false; }
