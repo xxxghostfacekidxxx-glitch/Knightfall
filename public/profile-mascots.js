@@ -21,6 +21,7 @@ async function mount(){
  card.append(header,status);
  const after=root.querySelector('.profile-actions-wrap')||top;
  after.insertAdjacentElement('afterend',card);
+ root.dispatchEvent(new Event('kf:profile-section-mounted'));
  try{
   const url='/api/mascot-pets/profile/'+encodeURIComponent(user);
   const r=await fetch(API+url,{credentials:'include',cache:'no-store'});
@@ -91,7 +92,7 @@ async function mount(){
    card.append(medalTitle,medals);
   }
  }catch(error){
-  if(card.isConnected)card.remove();
+  if(card.isConnected){card.remove();root.dispatchEvent(new Event('kf:profile-section-mounted'));}
  }finally{busy=false}
 }
 const observer=new MutationObserver(()=>{if(root.querySelector('.profile-top'))void mount()});
