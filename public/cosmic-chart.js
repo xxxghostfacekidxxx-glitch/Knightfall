@@ -147,6 +147,21 @@
     return (lead+"Do not invent missing birth details, transits, or houses. "+
       "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+". "+patternInfo+uncertainty).slice(0,3900);
   }
+  function downloadSvg(svg,filename="knightfall-cosmic-chart.svg"){
+    if(!svg)throw Error("Chart image is unavailable.");
+    // Clone only the drawn SVG, without birth date, coordinates or chat history.
+    const artwork=svg.cloneNode(true);
+    artwork.setAttribute("xmlns",NS);
+    artwork.setAttribute("width","840");
+    artwork.setAttribute("height","840");
+    const content=new XMLSerializer().serializeToString(artwork);
+    const blob=new Blob([content],{type:"image/svg+xml;charset=utf-8"});
+    const url=URL.createObjectURL(blob),link=document.createElement("a");
+    link.href=url;link.download=filename;
+    document.body.append(link);
+    link.click();link.remove();
+    window.setTimeout(()=>URL.revokeObjectURL(url),10000);
+  }
   function render(target,chart,options={}){
     if(!target)return;
     target.replaceChildren();
@@ -196,6 +211,18 @@
     if(!list.children.length)list.append(el("li","","No major aspects inside the displayed orb limits."));
     aspectsPanel.append(summary,list);reading.append(aspectsPanel);
     window.KnightfallCosmicInsights?.render?.(reading,chart);
+    const download=el("button","cosmic-export-button","↓ Save wheel as SVG");
+    download.type="button";
+    download.setAttribute("aria-label","Download this zodiac chart image as SVG");
+    const exportStatus=el("span","cosmic-export-status","");
+    exportStatus.setAttribute("role","status");
+    download.addEventListener("click",()=>{
+      try{downloadSvg(graphic.querySelector("svg"));exportStatus.textContent="Image saved locally. No birth data uploaded.";}
+      catch(error){exportStatus.textContent="Chart export is unavailable: "+error.message;}
+    });
+    const exportArea=el("div","cosmic-export");
+    exportArea.append(download,exportStatus);
+    reading.append(exportArea);
     shell.append(graphic,reading);target.append(shell);
   }
   function transitAspects(transitChart,natalChart){
