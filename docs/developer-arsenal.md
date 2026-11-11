@@ -37,7 +37,11 @@ This document distinguishes **tool links**, **repository CI checks**, and **inst
 
 ## CI behavior
 
-`developer-arsenal-audit.yml` runs on PRs or manual dispatch. JavaScript syntax and existing security audits block its job on failure. Biome and Semgrep are advisory while the repo's baseline is being assessed. Reports are retained as GitHub Actions artifacts for seven days. No production release is performed by this workflow.
+`developer-arsenal-audit.yml` runs on relevant pushes to `main`, pull requests, and manual dispatch. JavaScript syntax, offline regression tests, browser role fixtures, and Semgrep scanner execution must succeed. Semgrep findings and Biome lint results remain advisory until triaged. GitHub Actions uploads a **sanitized counts-only JSON summary** and Biome output, but not the raw Semgrep source-finding JSON, as seven-day artifacts. No production release is performed by this workflow. The diagnostic workflow uses Ubuntu 24.04 for Playwright compatibility.
+
+## Miss Chaos triage contract
+
+Miss Chaos may review the generated `developer-arsenal-summary.json` after it is supplied by an authorized human or trusted backend. The counts-only summary does not grant access to GitHub APIs and is not evidence that a vulnerability has been fixed. Actual source-code remediation requires reviewing original findings in an appropriately restricted environment, preparing a patch, passing tests and receiving approval. Never publish or send original Semgrep snippets or possible matches for secrets to public chat, issue bodies, or telemetry.
 
 ## Next engineering milestones
 
