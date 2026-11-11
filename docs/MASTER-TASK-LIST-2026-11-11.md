@@ -8,6 +8,16 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Added `scripts/arcade-mini-save-validation.test.mjs` covering valid and malformed save snapshots and linked it into the GitHub Runtime Smoke Test workflow.
 - [ ] Confirm the new CI job passes on main, then verify save/resume and Particle Clicker upgrades in the deployed mobile browser before closing related gameplay reports. Source changes are not physical-device certification.
 
+## Cleanup batch — 2026-11-11
+
+- [x] **Repository hygiene:** GitHub branch search returned only `main` (pagination checked); open pull-request search returned zero. No branch deletion or PR closure was necessary. This is a point-in-time audit.
+- [x] **Historical arcade issue reconciliation:** #144 (Particle Clicker), #145/#146 (Freeciv Web), and #147 (Tetris) were absent from the open-issue search. Preserve historical reports as evidence; verify live gameplay before claiming their underlying defects fixed.
+- [x] **Admin navigation:** added an admin-only `Master Task List` link targeting `/admin.html#master-task-list`. The shortcut stays hidden from signed-out/non-admin visitors; it follows the existing admin link's reveal/error handling, not a new authorization mechanism.
+- [x] **God Mode task visibility:** gave the task section a stable anchor, added a link to PRs, refreshed historical arcade wording, and displayed the dated branch/PR snapshot.
+- [x] Added `scripts/admin-task-navigation.test.mjs` and registered it in Runtime Smoke Test workflow.
+- [ ] Confirm fresh CI is green, Pages deployment includes these commits, and the task link works in an authenticated admin browser.
+- [ ] Live-game retests remain open; site could not be independently browsed through the available web connection during this batch.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
