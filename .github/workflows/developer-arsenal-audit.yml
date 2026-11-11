@@ -65,7 +65,7 @@ jobs:
       - name: Run Semgrep advisory scan
         continue-on-error: true
         run: |
-          python3 -m semgrep scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
+          "$HOME/.local/bin/semgrep" scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
       - name: Explain audit evidence
         if: always()
         run: |
