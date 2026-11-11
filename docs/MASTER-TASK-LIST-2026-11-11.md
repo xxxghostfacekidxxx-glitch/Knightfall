@@ -25,6 +25,13 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Validate the new tests in CI and verify a legacy save's upgrade controls in mobile Chromium and physical Android. Do not close the historical Particle Clicker issue as a verified gameplay fix without deployed acceptance.
 - [ ] Check current Cloudflare Pages deployment against the new commits; the public site fetch from this environment was unavailable.
 
+## Arcade reliability batch — November 11, 2026 (continued)
+
+- [x] **Cancelled stale cloud resumes:** a pending resume no longer overwrites a freshly started game; overlapping resumes use a request token and generation guard.
+- [x] **Added async race regression coverage:** requests aborted before loading or while a cloud response is pending must not read local saves or restore stale game state.
+- [ ] Verify the runtime smoke test results and manual restart-versus-resume behavior on a deployed mobile browser. Tests committed in source are not a CI pass.
+- [ ] Confirm exact deployed Pages revision before changing live status.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
