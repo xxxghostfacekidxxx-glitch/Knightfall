@@ -40,3 +40,26 @@ test("browser-role smoke test uses fixtures instead of live credentials", async 
   const flow = await load(".github/workflows/developer-arsenal-audit.yml");
   assert.match(flow, /node scripts\/developer-arsenal-browser\.mjs/);
 });
+
+test("sanitized security summary excludes source snippets and paths", async () => {
+  const { summarizeAudit } = await import("./developer-arsenal-summary.mjs");
+  const summary = summarizeAudit({
+    semgrep: {
+      results: [
+        { path: "private/test.js", extra: { severity: "ERROR", lines: "SECRET_EXAMPLE", message: "sensitive" } },
+        { path: "src/other.js", extra: { severity: "WARNING", lines: "PRIVATE_CONTENT" } }
+      ],
+      errors: []
+    },
+    biomeText: "Found 2 errors and 3 warnings.\\nSecret content must not leak"
+  });
+  assert.equal(summary.semgrep.findings, 2);
+  assert.equal(summary.semgrep.severity.ERROR, 1);
+  assert.equal(summary.semgrep.severity.WARNING, 1);
+  assert.equal(summary.biome.reportedErrors, 2);
+  assert.equal(summary.biome.reportedWarnings, 3);
+  const serialized = JSON.stringify(summary);
+  for (const sensitive of ["SECRET_EXAMPLE", "PRIVATE_CONTENT", "private/test.js", "sensitive", "Secret content"]) {
+    assert.equal(serialized.includes(sensitive), false);
+  }
+});
