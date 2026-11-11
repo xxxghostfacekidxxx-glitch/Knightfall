@@ -220,3 +220,11 @@
   #profile .profile-wall-saved-top{align-items:stretch}
   #profile .profile-wall-saved-top button{flex:1 1 100%}
 }
+
+/* Highlight the precise post opened from a notification, even when older than page one. */
+#profile .profile-wall-post-target{
+  outline:2px solid #ffe36b;outline-offset:3px;
+  box-shadow:0 0 0 5px #ffe36b22,0 12px 32px #0008;
+  scroll-margin-top:7rem;
+}
+#profile .profile-wall-post-target:focus{outline:2px solid #ffe36b}
