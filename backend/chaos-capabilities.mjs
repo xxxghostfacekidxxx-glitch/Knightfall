@@ -41,6 +41,13 @@ export const CAPABILITIES = Object.freeze({
     confirmation: false,
     maxInputBytes: 1024
   }),
+  "god.audit_summary": Object.freeze({
+    description: "Read a validated, counts-only Developer Arsenal audit summary via trusted backend",
+    scope: "god",
+    mutates: false,
+    confirmation: false,
+    maxInputBytes: 128
+  }),
   "god.propose_change": Object.freeze({
     description: "Prepare an administrative change for approval",
     scope: "god",
