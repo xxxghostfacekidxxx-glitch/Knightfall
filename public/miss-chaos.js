@@ -330,6 +330,21 @@
           if(chart?.bodies)prepareCosmicReading(chart,payload?.from==="member-profile"?"Published member chart loaded. Review the draft before sending.":"Your profile chart loaded. Review the draft before sending.",payload?.from==="member-profile"?"member":"me");
         }
       }catch(error){console.warn("Cosmic chart transfer unavailable",error);}
+      // A profile comparison click only transfers the public username.
+      // The user's own chart and the other member's published chart are
+      // both fetched through the existing authenticated permissions on click.
+      try{
+        const pending=sessionStorage.getItem("knightfall:cosmic-compare-user");
+        if(pending){
+          sessionStorage.removeItem("knightfall:cosmic-compare-user");
+          const member=String(pending).replace(/^@/,"").trim();
+          if(/^[a-zA-Z0-9_.-]{2,40}$/.test(member)){
+            $("#astro-compare-username").value=member;
+            moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
+            $("#astro-chart-status").textContent="Ready to compare your natal chart with @"+member+"'s published chart. Choose Compare published member charts when you're ready.";
+          }
+        }
+      }catch(error){console.warn("Profile comparison handoff unavailable",error);}
     } catch (error) {
       statusEl.textContent = "Connection unavailable";
       showError(error.message || "Couldn't load Miss Chaos. Please refresh and try again.");
