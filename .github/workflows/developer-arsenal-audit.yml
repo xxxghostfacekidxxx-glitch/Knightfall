@@ -60,12 +60,11 @@ jobs:
           npx --yes @biomejs/biome@2.2.6 lint public/open-source-arsenal.js public/admin-command-center.js backend/chaos-tool-dispatch.mjs > biome-report.txt 2>&1
           cat biome-report.txt
       - name: Install Semgrep
-        continue-on-error: true
         run: python3 -m pip install --user 'semgrep>=1.90,<2'
       - name: Run Semgrep advisory scan
-        continue-on-error: true
         run: |
           "$HOME/.local/bin/semgrep" scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
+          test -s semgrep-report.json
       - name: Explain audit evidence
         if: always()
         run: |
