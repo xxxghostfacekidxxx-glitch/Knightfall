@@ -28,6 +28,7 @@ on:
       - 'public/cosmic-place-timezone.js'
       - 'public/vendor/tz-lookup.js'
       - 'scripts/cosmic-atlas-browser.mjs'
+      - 'scripts/cosmic-member-browser.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/miss-chaos-ux.test.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
@@ -148,6 +149,8 @@ jobs:
           exit 1
       - name: Exercise Cosmic Atlas on Android and desktop (natal, focus, transits)
         run: node scripts/cosmic-atlas-browser.mjs
+      - name: Verify profile-to-Miss-Chaos published-chart comparison and privacy on mobile
+        run: node scripts/cosmic-member-browser.mjs
       # Run the Playwright smoke suite for desktop and mobile regressions.
       - name: Browse starter bots and chat on desktop and Android
         run: node scripts/starter-bots-browser.mjs
