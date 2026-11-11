@@ -41,7 +41,13 @@ try{
   await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),{bodies:data.bodies},{kind:"transit"}),chart);
   assert.match(await page.locator(".cosmic-wheel svg").getAttribute("aria-label"),/transit sky/i);
   assert.equal(await page.locator(".cosmic-focus-select").count(),1);
-  console.log(label+": natal, focus/reset and transit layout PASS");
+  await page.evaluate(data=>{
+    window.KnightfallCosmic.render(document.querySelector("#chart"),
+      {time_precision:"unknown",bodies:{Sun:data.bodies.Sun,Moon:data.bodies.Moon}});
+  },chart);
+  assert.match(await page.locator(".cosmic-uncertain").textContent(),/Birth time unknown/);
+  assert.equal(await page.locator(".cosmic-three .cosmic-key").count(),2,label+": unknown time should omit Rising");
+  console.log(label+": natal, planet focus, transit and unknown-time layout PASS");
   await page.close();
  }
  assert.equal(errors,0,"Unexpected browser page errors");
