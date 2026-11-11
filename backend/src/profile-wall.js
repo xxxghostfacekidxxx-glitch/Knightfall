@@ -120,6 +120,7 @@ export async function handleProfileWall(request,env,url,helpers){
       if(!await rateLimit(env,request,"profile-wall-post-edit",20,300,viewer.id))return fail(helpers,origin,429,"Too many updates. Try again later.");
       if(request.method==="DELETE"){
         await env.DB.prepare("UPDATE social_activity SET deleted_at=?,updated_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),new Date().toISOString(),postId,viewer.id).run();
+        await env.DB.prepare("DELETE FROM social_bookmarks WHERE object_type='activity' AND object_id=?").bind(String(postId)).run();
         await audit(env,viewer,"profile.wall.post.delete","social_activity",postId,{});
         return json({ok:true},200,origin);
       }
