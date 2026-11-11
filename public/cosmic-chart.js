@@ -81,7 +81,9 @@
     for(const aspect of chartAspects){
       const p1=polar(aspect.from,98,a),p2=polar(aspect.to,98,a);
       const stroke=aspect.type==="Trine"||aspect.type==="Sextile"?"#a5ffe9":"#ff77c4";
-      svg.append(svgEl("line",{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke,"stroke-opacity":.3,"stroke-width":1.1}));
+      const link=svgEl("line",{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke,"stroke-opacity":.3,"stroke-width":1.1,"data-aspect-a":aspect.a,"data-aspect-b":aspect.b});
+      link.append(svgEl("title",{},aspect.a+" "+aspect.type.toLowerCase()+" "+aspect.b+"; "+aspect.orb.toFixed(1)+"° orb"));
+      svg.append(link);
     }
     const bodies=points(chart).filter(p=>!p.name.includes("Node")).sort((x,y)=>x.longitude-y.longitude);
     let previous=-1000,layer=0;
@@ -89,8 +91,8 @@
       if(item.longitude-previous<9)layer=(layer+1)%3;else layer=0;
       previous=item.longitude;
       const dot=polar(item.longitude,156,a),label=polar(item.longitude,144-layer*13,a);
-      svg.append(svgEl("circle",{cx:dot.x,cy:dot.y,r:3.5,fill:"#ff81d8"}));
-      const labelNode=svgEl("text",{x:label.x,y:label.y+5,"text-anchor":"middle",fill:"#fff","font-size":20,"font-weight":700},PLANET_GLYPHS[item.name]||item.name[0]);
+      svg.append(svgEl("circle",{cx:dot.x,cy:dot.y,r:3.5,fill:"#ff81d8","data-planet":item.name}));
+      const labelNode=svgEl("text",{x:label.x,y:label.y+5,"text-anchor":"middle",fill:"#fff","font-size":20,"font-weight":700,"data-planet":item.name},PLANET_GLYPHS[item.name]||item.name[0]);
       labelNode.append(svgEl("title",{},item.name+" in "+item.body.sign));
       svg.append(labelNode);
     }
@@ -103,9 +105,15 @@
     const entries=points(chart);
     const placements=entries.map(({name,body})=>name+": "+body.sign+" "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"+(chart?.house_placements?.[name]?" in house "+chart.house_placements[name]:"")+(body.retrograde?" retrograde":"")).join("; ");
     const aspectSummary=aspects(chart).slice(0,14).map(a=>a.a+" "+a.type.toLowerCase()+" "+a.b+" (orb "+a.orb+"°)").join("; ");
+    const insight=window.KnightfallCosmicInsights?.summarize?.(chart);
+    const patternInfo=insight?[
+      insight.ruler?"Traditional chart ruler: "+insight.ruler.traditional+(insight.ruler.modern?"; modern co-ruler "+insight.ruler.modern:"")+".":"",
+      insight.phase?"Approximate Moon phase: "+insight.phase.name+" ("+insight.phase.elongation+"° Sun–Moon difference).":"",
+      insight.clusters?.length?"Planet clusters: "+insight.clusters.map(c=>c.names.length+" in "+c.sign).join(", ")+".":""
+    ].filter(Boolean).join(" "):"";
     const lead=subject==="member"?"Interpret this member\u0027s shared tropical natal chart, not my own, as a symbolic reflective reading rather than a scientific prediction. Explain their Sun, Moon, Rising, houses, aspects, strengths and tensions without claiming to know their private life. ":"Interpret my calculated tropical natal chart as a symbolic, reflective reading, not a scientific prediction. Explain my Sun, Moon, Rising, house themes, strongest aspects, emotional patterns, strengths, tensions, and practical prompts for self-reflection. ";
     return (lead+"Do not invent missing birth details, transits, or houses. "+
-      "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+".").slice(0,3900);
+      "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+". "+patternInfo).slice(0,3900);
   }
   function render(target,chart){
     if(!target)return;
@@ -138,6 +146,7 @@
     }
     if(!list.children.length)list.append(el("li","","No major aspects inside the displayed orb limits."));
     aspectsPanel.append(summary,list);reading.append(aspectsPanel);
+    window.KnightfallCosmicInsights?.render?.(reading,chart);
     shell.append(graphic,reading);target.append(shell);
   }
   function transitAspects(transitChart,natalChart){
