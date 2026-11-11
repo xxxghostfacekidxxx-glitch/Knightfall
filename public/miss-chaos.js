@@ -485,21 +485,41 @@
     } catch (error) { status.textContent = error.message || "Chart calculation failed."; }
     finally { button.disabled = false; }
   });
+  $("#astro-natal-back").addEventListener("click",()=>{
+    if(!latestSavedChart?.bodies){$("#astro-chart-status").textContent="Calculate or load your natal chart first.";return;}
+    window.KnightfallCosmic.render(astroPreview,latestSavedChart);
+    $("#astro-chart-status").textContent="Natal wheel restored. Chart data remains in this browser session.";
+    $("#astro-natal-back").hidden=true;
+  });
   $("#astro-transits").addEventListener("click", async event => {
     const button = event.currentTarget, status = $("#astro-chart-status");
     button.disabled = true; status.textContent = "Calculating current planetary transits…";
     try {
-      const utc = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+      const chosen=$("#astro-transit-day").value.trim();
+      let utc=new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+      if(chosen){
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(chosen))throw Error("Choose a valid transit date.");
+        const moment=new Date(chosen+"T12:00:00Z");
+        if(!Number.isFinite(moment.getTime())||moment.toISOString().slice(0,10)!==chosen)throw Error("Transit date is invalid.");
+        const year=moment.getUTCFullYear();
+        if(year<1900||year>2100)throw Error("Transit dates must be between 1900 and 2100.");
+        utc=moment.toISOString().replace(".000Z","Z");
+      }
       const body = latestNatalUtc ? {utc,natal_utc:latestNatalUtc} : {utc};
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(body)});
       const positions = chart.transit_bodies || chart.bodies || {};
+      if(window.KnightfallCosmic){
+        astroPreview.hidden=false;
+        window.KnightfallCosmic.render(astroPreview,{bodies:positions},{kind:"transit"});
+        $("#astro-natal-back").hidden=!latestSavedChart?.bodies;
+      }
       const placements = Object.entries(positions).map(([name,p]) => name + " " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " Rx" : "")).join("; ");
       const links=chart.transit_aspects || (latestSavedChart&&window.KnightfallCosmic?window.KnightfallCosmic.transitAspects({bodies:positions},latestSavedChart):null);
       const aspects=(links||chart.aspects||[]).slice(0,22).map(a=>links?a.transit+" "+a.type+" natal "+a.natal+" (orb "+a.orb+"°)":a.a+" "+a.type+" "+a.b+" (orb "+a.orb+"°)").join("; ");
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
       input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. "+(latestChartSubject==="member"?"These are transits to another member\u0027s publicly shared natal placements, not mine. ":"")+"UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
-      status.textContent = links ? "Personal transit comparison prepared. Review and Send." : "Current planetary transit reading prepared. Calculate or load a natal chart for personal transit aspects.";
+      status.textContent = (chosen?"Transit view for "+chosen+" at 12:00 UTC. ":"Live transit view. ")+(links?"Natal aspects compared. Review and Send.":"Calculate or load a natal chart for personal aspects.");
       input.focus();
     } catch (error) { status.textContent = error.message || "Transit calculation failed."; }
     finally { button.disabled = false; }
