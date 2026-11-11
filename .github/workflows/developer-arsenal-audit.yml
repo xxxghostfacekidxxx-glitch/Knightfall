@@ -12,6 +12,9 @@ on:
       - 'backend/chaos-audit-summary*.mjs'
       - 'backend/chaos-capabilities.mjs'
       - 'backend/chaos-tool-dispatch.mjs'
+      - 'backend/src/developer-audit-ingest.js'
+      - 'backend/src/developer-audit-ingest.test.mjs'
+      - 'backend/src/index.js'
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -35,10 +38,11 @@ jobs:
           node --check public/nav.js
           node --check backend/chaos-tool-dispatch.mjs
           node --check backend/chaos-audit-summary.mjs
+          node --check backend/src/developer-audit-ingest.js
       - name: Run existing permission and security audits
         run: |
           node scripts/security-surface-inventory.mjs
-          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs
+          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
@@ -81,6 +85,17 @@ jobs:
           else
             echo "Semgrep report unavailable; no scan results can be summarized." >> "$GITHUB_STEP_SUMMARY"
           fi
+      - name: Publish sanitized counts to private Worker storage
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          KNIGHTFALL_DIAGNOSTICS_INGEST_KEY: ${{ secrets.KNIGHTFALL_DIAGNOSTICS_INGEST_KEY }}
+          KNIGHTFALL_DIAGNOSTICS_INGEST_URL: https://api.ash-fall.com/api/internal/developer-audit
+        run: |
+          if [ ! -s developer-arsenal-summary.json ]; then
+            echo "No summary available; upload skipped."
+            exit 0
+          fi
+          node scripts/developer-arsenal-upload.mjs
       - name: Explain audit evidence
         if: always()
         run: |
