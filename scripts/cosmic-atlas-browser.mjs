@@ -20,7 +20,7 @@ try{
  for(const [label,width,height] of [["android-small",320,700],["android",390,844],["desktop",1280,900]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
   page.on("pageerror",error=>{console.error(label+" page error:",error.message);errors++});
-  await page.goto(base+"/",{waitUntil:"domcontentloaded"});
+  await page.goto(base+"/cosmic-chart.css",{waitUntil:"domcontentloaded"});
   await page.setContent('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#0d1018;color:white"><main style="padding:10px;max-width:960px;margin:auto"><div id="chart" class="cosmic-preview"></div></main></body></html>');
   await page.addStyleTag({url:base+"/cosmic-chart.css"});
   await page.addScriptTag({url:base+"/cosmic-insights.js"});
