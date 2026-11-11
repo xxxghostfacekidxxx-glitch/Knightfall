@@ -197,6 +197,57 @@ async function mount(member,own,root,signedIn){
     discussion.append(commentsList,older,commentComposer);
     const controls=el("div","profile-wall-post-controls");
     controls.append(reactionsRow,discussionButton);
+    if(signedIn&&!own){
+      const reportToggle=button("⚑ Report","profile-wall-report-toggle",()=>{
+        const expanded=reportToggle.getAttribute("aria-expanded")==="true";
+        reportToggle.setAttribute("aria-expanded",String(!expanded));
+        reportForm.hidden=expanded;
+        if(!expanded)reportReason.focus();
+      });
+      reportToggle.setAttribute("aria-expanded","false");
+      const reportForm=el("form","profile-wall-report-form");
+      reportForm.hidden=true;
+      const heading=el("strong","","Report this update to moderators");
+      const reasonLabel=el("label","","Reason");
+      const reportReason=el("select");
+      reportReason.required=true;
+      for(const [value,label] of [["","Choose a reason"],["Spam","Spam or advertising"],["Harassment","Harassment or bullying"],["Hateful content","Hateful content"],["Impersonation","Impersonation"],["Other","Other concern"]]){
+        const option=el("option","",label);option.value=value;reportReason.append(option);
+      }
+      reasonLabel.append(reportReason);
+      const detailsLabel=el("label","","More details (optional)");
+      const details=el("textarea");details.maxLength=1000;details.rows=2;
+      details.placeholder="Describe the issue without repeating private information…";
+      detailsLabel.append(details);
+      const reportSend=el("button","action","Send report");reportSend.type="submit";
+      const reportCancel=button("Cancel","profile-wall-subtle",()=>{
+        reportForm.hidden=true;reportToggle.setAttribute("aria-expanded","false");
+      });
+      const reportActions=el("div","profile-wall-report-actions");
+      reportActions.append(reportSend,reportCancel);
+      const reportStatus=makeStatus(reportForm);
+      reportForm.append(heading,reasonLabel,detailsLabel,reportActions);
+      reportForm.append(reportStatus);
+      reportForm.addEventListener("submit",async event=>{
+        event.preventDefault();
+        if(!reportReason.value)return;
+        reportSend.disabled=true;reportStatus.textContent="Sending report…";
+        try{
+          await api("/api/social/report",{
+            method:"POST",
+            body:JSON.stringify({
+              object_type:"activity",object_id:String(post.id),
+              reported_user_id:Number(post.user_id),reason:reportReason.value,details:details.value.trim()
+            })
+          });
+          reportStatus.textContent="Report received by Knightfall moderators.";
+          reportSend.hidden=true;reportCancel.textContent="Close";
+        }catch(error){showError(reportStatus,error);}
+        finally{reportSend.disabled=false;}
+      });
+      controls.append(reportToggle);
+      discussion.after(reportForm);
+    }
     article.append(head,body,controls,discussion);
     article.append(note);
     renderReactions();
