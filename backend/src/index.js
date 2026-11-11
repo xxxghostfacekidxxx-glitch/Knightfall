@@ -1,3 +1,4 @@
+import { arcadePicks, moonBrief, shadowBrief, radarContext } from "./chaos-radar.js";
 import { CHAOS_CONVERSATION_VOICE, chaosReplyGuidance } from "../chaos-voice.mjs";
 import { serveAdminGameArchive } from './admin-game-downloads.js';
 import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mjs";
@@ -1407,6 +1408,18 @@ export default { async queue(batch, env) {
     }
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
+  if(url.pathname==="/api/chaos/radar"&&request.method==="GET"){
+    if(!(await rateLimit(env,request,"chaos-radar",40,60)))return json({error:"Too many Radar requests. Try again shortly."},429,origin);
+    const kind=url.searchParams.get("kind"),query=url.searchParams.get("q")||"";
+    const device=url.searchParams.get("device")||"",length=url.searchParams.get("length")||"";
+    if(query.length>120||!["","touch","desktop"].includes(device)||!["","games","mini"].includes(length)){
+      return json({error:"Choose supported Radar filters."},400,origin);
+    }
+    if(kind==="arcade")return json(arcadePicks({query,device,length}),200,origin);
+    if(kind==="moon")return json(moonBrief(),200,origin);
+    if(kind==="shadow")return json(shadowBrief(query),200,origin);
+    return json({error:"Choose Arcade, Moon or Shadow Work."},400,origin);
+  }
   if(url.pathname==="/api/chaos/tools"&&request.method==="GET"){
     const user=await requireUser(request,env);
     if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
@@ -1480,7 +1493,7 @@ export default { async queue(batch, env) {
     const behaviorGuidance="\n\nBEHAVIORAL ARCHITECTURE (developer-controlled):\nCore identity: "+behaviorConfig.coreIdentity+"\nAutonomy: "+(autonomyText[behaviorConfig.autonomy]||autonomyText.guided)+"\nChallenge policy: "+(challengeText[behaviorConfig.challenge]||challengeText.warranted)+"\nEvolution policy: "+(evolutionText[behaviorConfig.evolution]||evolutionText.controlled)+"\nMemory policy: "+behaviorConfig.memoryPolicy+"\nRule conflict priority, highest first:\n"+behaviorConfig.conflictPriority+"\nEnabled modes: "+activeModes+"\nDefault mode: "+effectiveDefaultMode+"; "+(modeText[effectiveDefaultMode]||"Select the best mode from the enabled modes.")+"\nThe selected mode must be one of the enabled modes listed above. If default mode is automatic, select only from enabled modes.\nEnabled rules:\n- "+(activeRules||"Preserve truthfulness, safety, and practical task completion.")+(behaviorConfig.customRules?"\nAdditional owner-defined rules (subject to safety, privacy, truthfulness, and higher-priority instructions):\n"+behaviorConfig.customRules:"")+(behaviorConfig.evaluationScenarios?"\nDeveloper evaluation scenarios (use these as guidance for consistency, not as user requests):\n"+behaviorConfig.evaluationScenarios:"");
     const intensity = (value) => { const n = Math.max(0, Math.min(100, Number(value) || 0)); return n < 20 ? "very subtle" : n < 40 ? "low" : n < 60 ? "moderate" : n < 80 ? "strong" : "very strong"; };
     // Read-only site lookup: results are curated links, not unrestricted model tools.
-    const siteLookupContext=navigationContext(message);
+    const siteLookupContext=navigationContext(message)+radarContext(message);
     let utilityContext="";
     const arithmetic=message.match(/^\s*(?:calculate|what is|what's|solve)\s+([0-9+*/().%\s-]{1,100})\??\s*$/i);
     if(arithmetic){

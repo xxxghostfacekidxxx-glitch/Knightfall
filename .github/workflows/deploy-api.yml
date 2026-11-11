@@ -9,6 +9,9 @@ on:
       - 'backend/migrations/**'
       - 'backend/wrangler.jsonc'
       - 'public/index.html'
+      - 'public/arcade/catalog.json'
+      - 'public/lunar-phases.mjs'
+      - 'public/shadow-prompts.mjs'
       - 'scripts/registration-release.test.mjs'
       - 'scripts/turnstile.test.mjs'
       - 'scripts/turnstile-ui.test.mjs'
@@ -37,7 +40,7 @@ jobs:
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
 
       - name: Verify astrology calculations
-        run: node --test scripts/astrology.test.mjs
+        run: node --test scripts/astrology.test.mjs backend/src/chaos-radar.test.mjs
 
       - name: Check profile photo deletion cleanup
         run: node --test scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs

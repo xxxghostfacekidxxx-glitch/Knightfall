@@ -1,0 +1,31 @@
+.chaos-radar-trigger {
+  align-self:flex-start; flex-shrink:0; margin:.5rem 1rem 0; min-height:40px;
+  background:#241329; color:#f7d9fa; border:1px solid #a45a99; border-radius:10px;
+  padding:.45rem .75rem; font:inherit; font-size:.86rem; cursor:pointer;
+}
+.chaos-radar {
+  box-sizing:border-box; width:min(640px,calc(100% - 1.5rem)); max-height:86dvh; overflow:auto;
+  padding:clamp(.75rem,3vw,1.35rem); border:1px solid #a45a99; border-radius:17px;
+  background:#16101f; color:#f5eaf8; font:normal 1rem/1.5 system-ui,sans-serif;
+  box-shadow:0 20px 70px #000a; color-scheme:dark;
+}
+.chaos-radar::backdrop { background:#08050ac9; }
+.chaos-radar header,.chaos-radar nav,.chaos-radar form { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; }
+.chaos-radar header { justify-content:space-between; margin-bottom:.75rem; }
+.chaos-radar h2,.chaos-radar h3 { margin:0; }
+.chaos-radar form { align-items:end; margin-top:.8rem; }
+.chaos-radar form[hidden] { display:none; }
+.chaos-radar label { display:grid; gap:.2rem; min-width:0; font-size:.83rem; }
+.chaos-radar label:first-child { flex:1 1 150px; }
+.chaos-radar :is(button,input,select) {
+  box-sizing:border-box; min-height:44px; min-width:0; max-width:100%; padding:.4rem .6rem;
+  border:1px solid #795b86; border-radius:8px; background:#21162d; color:#f5eaf8; font:inherit;
+}
+.chaos-radar button { cursor:pointer; font-size:.84rem; }
+.chaos-radar button[aria-pressed="true"],.chaos-radar form button { background:#e9b9ec; border-color:#e9b9ec; color:#221328; }
+.chaos-radar :focus-visible,.chaos-radar-trigger:focus-visible { outline:2px solid #c6ff45; outline-offset:3px; }
+.chaos-radar #radar-results { display:grid; gap:.55rem; }
+.chaos-radar article { background:#21182c; border:1px solid #61446e; border-radius:11px; padding:.7rem .85rem; }
+.chaos-radar p { margin:.45rem 0; }
+.chaos-radar article a,.chaos-radar article button { display:inline-flex; margin:.35rem .65rem 0 0; }
+.chaos-radar a,.chaos-page .message-content a { color:#eabaff; overflow-wrap:anywhere; text-underline-offset:3px; }

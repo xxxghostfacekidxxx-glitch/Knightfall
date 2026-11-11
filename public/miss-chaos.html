@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/miss-chaos.css?v=20261026-stream1">
   <link rel="stylesheet" href="/cosmic-chart.css?v=20261111-handoff4">
+  <link rel="stylesheet" href="/miss-chaos-radar.css?v=20261111">
 </head>
 <body class="chaos-page">
   <header class="kf-header"></header>
@@ -91,6 +92,7 @@
 <p id="astro-chart-status" role="status" class="astro-help"></p>
 <div id="astro-preview" class="cosmic-preview" hidden aria-label="Calculated natal chart preview"></div>
 <p class="astro-help">Western tropical astrology is a symbolic, reflective tradition, not a scientifically proven predictor of personality or events. Planetary positions use Astronomy Engine; house angles and lunar nodes remain approximate. The reading draft is yours to review before sending. Sending it stores the chart text in your conversation.</p></section>
+      <button id="chaos-radar-open" class="chaos-radar-trigger" type="button" aria-haspopup="dialog">✦ Open Chaos Radar</button>
       <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
         <div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me. Try not to break anything important. I just got here.</h2><p>I'm Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that's useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p></div>
       </div>
@@ -103,13 +105,39 @@
       <p class="privacy-note">Miss Chaos is a general-audience companion and does not generate explicit NSFW content. For adult content, use a public bot explicitly labeled NSFW or your personal bot after confirming 18+. AI can make mistakes. Authorized administrators may review conversations; archive access is logged. Don't share passwords or highly sensitive information.</p>
     </section>
   </main>
-  <script src="/nav.js?v=20261111-moonology" defer></script>
+  <dialog id="chaos-radar" class="chaos-radar" aria-labelledby="chaos-radar-title">
+    <header><h2 id="chaos-radar-title">Chaos Radar</h2><button type="button" id="chaos-radar-close">Close</button></header>
+    <nav aria-label="Radar mode">
+      <button type="button" data-radar-mode="arcade" aria-pressed="true">Arcade picks</button>
+      <button type="button" data-radar-mode="moon" aria-pressed="false">Moon now</button>
+      <button type="button" data-radar-mode="shadow" aria-pressed="false">Shadow Work</button>
+    </nav>
+    <form id="radar-arcade-form">
+      <label>Game or genre <input name="q" maxlength="120" placeholder="Try puzzle or racing"></label>
+      <label>Controls <select name="device"><option value="">Any</option><option value="touch">Touch</option><option value="desktop">Desktop</option></select></label>
+      <label>Session <select name="length"><option value="">Any length</option><option value="mini">Mini game</option><option value="games">Full game</option></select></label>
+      <button type="submit">Find games</button>
+    </form>
+    <form id="radar-shadow-form" hidden>
+      <label>Reflection topic <select name="q">
+        <option value="">Daily prompt</option><option value="reactions">Strong reactions</option>
+        <option value="assumptions">Assumptions</option><option value="boundaries">Boundaries</option>
+        <option value="inner-critic">Inner critic</option><option value="hidden-strengths">Hidden strengths</option>
+        <option value="repair">Accountability and repair</option>
+      </select></label>
+      <button type="submit">Get prompt</button>
+    </form>
+    <p id="radar-status" role="status"></p>
+    <div id="radar-results"></div>
+  </dialog>
+  <script src="/nav.js?v=20261111-radar" defer></script>
   <script src="/cosmic-lexicon.js?v=20261111-handoff4" defer></script>
 <script src="/cosmic-insights.js?v=20261111-handoff4" defer></script>
 <script src="/cosmic-chart.js?v=20261111-handoff4" defer></script>
   <script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
   <script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
   <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
-  <script src="/miss-chaos.js?v=20261111-handoff4" defer></script>
+  <script src="/miss-chaos.js?v=20261111-handoff4&rev=radar" defer></script>
+  <script src="/miss-chaos-radar.js?v=20261111" defer></script>
 </body>
 </html>

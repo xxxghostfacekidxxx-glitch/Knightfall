@@ -58,6 +58,18 @@
   }
   function showError(message) { errorEl.textContent = message; errorEl.hidden = !message; }
   function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
+  function renderReplyText(node, content) {
+    node.replaceChildren();
+    const links = /https:\/\/ash-fall\.com\/[a-z0-9/_-]+(?:\.html)?(?:#[a-z0-9_-]+)?(?=$|[\s).,!?])/gi;
+    let end = 0;
+    for (const match of content.matchAll(links)) {
+      const link = document.createElement("a");
+      link.href = match[0]; link.textContent = match[0];
+      node.append(content.slice(end, match.index), link);
+      end = match.index + match[0].length;
+    }
+    node.append(content.slice(end));
+  }
   function addMessage(role, content, label) {
     const welcome = messagesEl.querySelector(".welcome-card");
     if (welcome) welcome.remove();
@@ -69,7 +81,8 @@
     heading.textContent = label || (role === "user" ? "You" : "Miss Chaos");
     const text = document.createElement("div");
     text.className = "message-content";
-    text.textContent = content;
+    if (role === "user") text.textContent = content;
+    else renderReplyText(text,content);
     const actions = document.createElement("div");
     actions.className = "message-actions";
     const copy = document.createElement("button");
@@ -654,7 +667,7 @@
       });
       typing.remove();
       if(!streamedArticle)addMessage("assistant",result.reply,"Miss Chaos · "+(moodNames[result.mood]||"Default"));
-      else streamedArticle.querySelector(".message-content").textContent=result.reply;
+      else renderReplyText(streamedArticle.querySelector(".message-content"),result.reply);
       statusEl.textContent = "Connected · Miss Chaos is listening";
       if (speakReplies && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
