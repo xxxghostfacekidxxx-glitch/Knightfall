@@ -32,6 +32,8 @@ test("GitHub OIDC JWT verifies only with the exact trusted claims and signature"
   assert.equal(await verifyGitHubAuditToken({token:good.token,runId:401,sha,keyProvider:async()=>good.keys}),false);
   assert.equal(await verifyGitHubAuditToken({token:good.token,runId:400,sha:"b".repeat(40),keyProvider:async()=>good.keys}),false);
   assert.equal(await verifyGitHubAuditToken({token:good.token+"x",runId:400,sha,keyProvider:async()=>good.keys}),false);
+  const immutable=await tokenFixture({sub:"repo:xxxghostfacekidxxx-glitch@252952996/Knightfall@1301740258:ref:refs/heads/main"});
+  assert.equal(await verifyGitHubAuditToken({token:immutable.token,runId:400,sha,keyProvider:async()=>immutable.keys}),true);
   const bad=await tokenFixture({ref:"refs/heads/not-main"});
   assert.equal(await verifyGitHubAuditToken({token:bad.token,runId:400,sha,keyProvider:async()=>bad.keys}),false);
   const pr=await tokenFixture({event_name:"pull_request"});
