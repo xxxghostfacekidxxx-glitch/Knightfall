@@ -152,7 +152,17 @@ export async function handleProfileWall(request,env,url,helpers){
       }
       const body=await payload(request);
       if(!body||!VALID_REACTIONS.has(body.reaction))return fail(helpers,origin,400,"Choose fire, heart, or skull.");
+      const previous=await env.DB.prepare("SELECT reaction FROM profile_wall_reactions WHERE activity_id=? AND user_id=?").bind(postId,viewer.id).first();
       await env.DB.prepare("INSERT INTO profile_wall_reactions(activity_id,user_id,reaction,created_at) VALUES (?,?,?,?) ON CONFLICT(activity_id,user_id) DO UPDATE SET reaction=excluded.reaction").bind(postId,viewer.id,body.reaction,new Date().toISOString()).run();
+      if(!previous&&post.user_id!==viewer.id&&helpers.createNotification){
+        const alreadyNotified=await env.DB.prepare("SELECT 1 FROM notifications WHERE user_id=? AND actor_id=? AND kind='reaction' AND target_type='activity' AND target_id=? AND datetime(created_at)>datetime('now','-1 hour') LIMIT 1").bind(post.user_id,viewer.id,postId).first();
+        if(!alreadyNotified)await helpers.createNotification(env,{
+          userId:post.user_id,actorId:viewer.id,kind:"reaction",targetType:"activity",targetId:postId,
+          title:"Someone reacted to your update",
+          body:"@"+viewer.username+" reacted to your update.",
+          url:"/profile.html?username="+encodeURIComponent(post.username)+"#profile-wall-post-"+postId
+        });
+      }
       return json({ok:true,reaction:body.reaction},200,origin);
     }
     if(part==="comments"&&request.method==="GET"){
@@ -170,6 +180,14 @@ export async function handleProfileWall(request,env,url,helpers){
       const now=new Date().toISOString();
       const result=await env.DB.prepare("INSERT INTO profile_wall_comments(activity_id,user_id,body,created_at,updated_at) VALUES (?,?,?,?,?)").bind(postId,viewer.id,body.body.trim(),now,now).run();
       await audit(env,viewer,"profile.wall.comment.create","profile_wall_comments",result.meta?.last_row_id,{activity_id:postId});
+      if(post.user_id!==viewer.id&&helpers.createNotification){
+        await helpers.createNotification(env,{
+          userId:post.user_id,actorId:viewer.id,kind:"reply",targetType:"activity",targetId:postId,
+          title:"New comment on your update",
+          body:"@"+viewer.username+" commented on your update.",
+          url:"/profile.html?username="+encodeURIComponent(post.username)+"#profile-wall-post-"+postId
+        });
+      }
       return json({ok:true,id:result.meta?.last_row_id},201,origin);
     }
     return fail(helpers,origin,405,"Unsupported profile wall operation.");
