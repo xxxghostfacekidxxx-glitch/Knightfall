@@ -26,6 +26,6 @@ test("developer tools guide differentiates installed tools from candidates", asy
   const guide = await load("docs/developer-arsenal.md");
   assert.match(guide, /Playwright MCP/);
   assert.match(guide, /Chrome DevTools MCP/);
-  assert.match(guide, /not.*MCP runtime provisioned/i);
+  assert.match(guide, /no MCP runtime provisioned/i);
   assert.match(guide, /GlitchTip/);
 });
