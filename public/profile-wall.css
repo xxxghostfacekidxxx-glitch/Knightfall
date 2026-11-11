@@ -169,3 +169,54 @@
  #profile .profile-wall-report-toggle{margin-left:0;flex:1 1 100%}
  #profile .profile-wall-report-actions>*{flex:1 1 125px}
 }
+
+/* Private member bookmark shelf */
+#profile .profile-wall-save{
+  min-height:40px;padding:.5rem .75rem;
+  border:1px solid color-mix(in srgb,var(--profile-accent,#ff55d8) 38%,#504060);
+  border-radius:10px;background:#1a1629;color:#e4d9f3;
+  font-family:inherit;font-size:.75rem;font-weight:850;cursor:pointer;
+}
+#profile .profile-wall-save[aria-pressed="true"]{
+  background:#29231b;border-color:#ffe36b;color:#ffe36b;
+}
+#profile .profile-wall-save:hover{border-color:#c6ff45;color:#c6ff45}
+#profile .profile-wall-saved{
+  border-color:color-mix(in srgb,var(--profile-accent,#ff55d8) 20%,#ffe36b);
+}
+#profile .profile-wall-saved-list{display:grid;gap:.7rem;min-width:0}
+#profile .profile-wall-saved-item{
+  display:grid;gap:.55rem;min-width:0;padding:.95rem;
+  border:1px solid #524062;border-radius:12px;
+  background:linear-gradient(150deg,#171427,#101120);
+}
+#profile .profile-wall-saved-top{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.65rem;
+}
+#profile .profile-wall-saved-author{
+  color:#c6ff45;text-decoration:none;font-weight:900;overflow-wrap:anywhere;
+}
+#profile .profile-wall-saved-author small{
+  display:block;color:#bcaed0;font-size:.7rem;font-weight:600;
+}
+#profile .profile-wall-saved-date{
+  color:#b4a6c2;font-size:.7rem;
+}
+#profile .profile-wall-saved-list .profile-wall-subtle{
+  min-height:42px;border:1px solid #675073;border-radius:9px;
+  background:#1f1930;color:#f2e5f7;padding:.5rem .75rem;
+  font-family:inherit;font-size:.76rem;font-weight:800;cursor:pointer;
+}
+#profile .profile-wall-saved-list .profile-wall-subtle:hover{
+  color:#ffe36b;border-color:#ffe36b;
+}
+#profile .profile-wall-saved-list a:focus-visible,
+#profile .profile-wall-saved-list button:focus-visible{
+  outline:2px solid #ffe36b;outline-offset:3px;
+}
+#profile .profile-wall-saved [aria-live="polite"]{color:#c6ff45}
+@media(max-width:660px){
+  #profile .profile-wall-save{flex:1 1 100%}
+  #profile .profile-wall-saved-top{align-items:stretch}
+  #profile .profile-wall-saved-top button{flex:1 1 100%}
+}
