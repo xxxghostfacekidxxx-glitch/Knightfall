@@ -106,6 +106,31 @@ test("unknown birth time never fabricates rising, houses or certainty",()=>{
  assert.match(draft,/provisional noon-UTC chart/);
  assert.match(draft,/Do not infer Ascendant/);
 });
+test("dual-ring overlay keeps natal ASC and houses, adds transit symbols and computed connections",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ const transits={bodies:{Mars:{sign:"Libra",degree_in_sign:10},Venus:{sign:"Aries",degree_in_sign:10},Jupiter:{sign:"Leo",degree_in_sign:17}}};
+ window.KnightfallCosmic.render(target,sample,{kind:"overlay",transitChart:transits});
+ const svg=target.querySelector("svg");
+ assert.ok(svg);
+ assert.match(svg.attributes["aria-label"],/Natal and transit/);
+ assert.ok(svg.querySelectorAll("[data-planet]").length>0);
+ assert.ok(svg.querySelectorAll("[data-transit-planet]").length>=3);
+ const inter=svg.querySelectorAll("[data-overlay-aspect]");
+ assert.ok(inter.length>=1);
+ assert.ok(inter.some(x=>x.attributes["data-overlay-aspect"]==="Opposition"||x.attributes["data-overlay-aspect"]==="Conjunction"));
+ const legend=find(target,node=>String(node.className||"")==="cosmic-overlay-legend");
+ assert.ok(legend);
+ const aspectDetails=find(target,node=>String(node.className||"")==="cosmic-overlay-aspects");
+ assert.ok(aspectDetails);
+});
+test("transit-only view never displays fabricated natal houses or rising labels",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ window.KnightfallCosmic.render(target,{bodies:{Mars:{sign:"Aries",degree:2},Venus:{sign:"Libra",degree:2}}},{kind:"transit"});
+ const svg=target.querySelector("svg");
+ assert.match(svg.attributes["aria-label"],/transit sky/);
+ assert.equal(svg.querySelectorAll("[data-transit-planet]").length,0);
+ assert.ok(!find(target,node=>String(node.textContent||"").startsWith("Rising ·")));
+});
 test("All three pages load the Chart Atlas before the chart renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
   const source=read(path);
