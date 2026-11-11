@@ -183,6 +183,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
   if(stats)stats.after(about);
   else root.append(about);
   const walletPanel=document.querySelector("#profile-wallet");
+  if(walletPanel)about.after(walletPanel);
   if(walletPanel&&ownProfile&&!adminView){
     const daily=walletPanel.querySelector("#claim-daily"),online=walletPanel.querySelector("#claim-online"),quest=walletPanel.querySelector("#claim-quest"),status=walletPanel.querySelector("#wallet-status"),balance=walletPanel.querySelector(".wallet-balance");
     const refreshWallet=async()=>{try{const w=await api("/api/economy");balance.innerHTML="✦ "+Number(w.balance).toLocaleString()+" <small>CINDERS</small>";daily.disabled=!w.daily_ready;daily.textContent=w.daily_ready?"Claim daily · +250":"Daily claimed ✓";online.disabled=!w.online_ready;online.textContent=w.online_ready?"Online bonus · +50":"Online bonus cooling down";quest.disabled=!w.quest_ready;quest.textContent=w.quest_ready?"Daily arcade mission · +100":w.quest_played?"Mission claimed ✓":"Play a game · +100";const left=w.online_next_at?Math.max(0,new Date(w.online_next_at).getTime()-Date.now()):0;const mins=Math.ceil(left/60000);status.textContent=(w.daily_ready?"Daily reward ready. ":"Daily reward claimed. ")+(w.online_ready?"Online bonus ready.":"Next online bonus in "+mins+" minute"+(mins===1?"":"s")+".")+(w.quest_ready?" Daily arcade mission ready.":w.quest_played?" Daily mission claimed.":" Play and submit a score to unlock today’s mission.");}catch(e){status.textContent=e.message;daily.disabled=true;online.disabled=true;quest.disabled=true;}};
@@ -445,6 +446,35 @@ async function loadMemberActivity(member,own){
  if(own)section.querySelector("form").addEventListener("submit",async e=>{e.preventDefault();const form=e.currentTarget,button=form.querySelector("button"),status=form.querySelector('[role="status"]');button.disabled=true;try{await api("/api/social/activity",{method:"POST",body:JSON.stringify({body:form.querySelector("textarea").value,visibility:form.querySelector("select").value})});form.querySelector("textarea").value="";status.textContent="Published.";await refresh()}catch(err){status.textContent=err.message}finally{button.disabled=false}});
 }
 
+let profileJumpObserver=null;
+function connectProfileJump(jump){
+  profileJumpObserver?.disconnect();
+  profileJumpObserver=null;
+  const links=[...jump.querySelectorAll('a[href^="#"]')];
+  const activate=id=>{
+    for(const link of links){
+      const active=link.getAttribute("href")==="#"+id;
+      if(active)link.setAttribute("aria-current","location");
+      else link.removeAttribute("aria-current");
+    }
+  };
+  for(const link of links){
+    link.addEventListener("click",()=>activate(link.hash.slice(1)));
+  }
+  const initial=links.find(link=>link.hash===location.hash)||links[0];
+  if(initial)activate(initial.hash.slice(1));
+  if(!("IntersectionObserver" in window))return;
+  profileJumpObserver=new IntersectionObserver(entries=>{
+    const visible=entries.filter(entry=>entry.isIntersecting);
+    if(!visible.length)return;
+    visible.sort((a,b)=>Math.abs(a.boundingClientRect.top-120)-Math.abs(b.boundingClientRect.top-120));
+    activate(visible[0].target.id);
+  },{rootMargin:"-110px 0px -64% 0px",threshold:0});
+  for(const link of links){
+    const target=root.querySelector(link.hash);
+    if(target)profileJumpObserver.observe(target);
+  }
+}
 function refreshProfileJump(){
   const old=root.querySelector(".profile-jump");
   const sections=[
@@ -468,7 +498,8 @@ function refreshProfileJump(){
   if(jump.children.length>1){
     if(old)old.replaceWith(jump);
     else root.querySelector(".profile-actions-wrap")?.after(jump);
-  }else old?.remove();
+    connectProfileJump(jump);
+  }else {profileJumpObserver?.disconnect();profileJumpObserver=null;old?.remove();}
 }
 
 function applyProfileLayout(layout){if(!Array.isArray(layout)){refreshProfileJump();return;}const selectors={favorites:".profile-favorites",activity:".activity-grid",updates:".profile-social-panel",photos:"#profile-photo-gallery"};for(const item of layout){if(!item||typeof item.id!=="string"||typeof item.visible!=="boolean"||!Object.hasOwn(selectors,item.id))continue;const section=root.querySelector(selectors[item.id]);if(!section)continue;section.hidden=item.visible===false;root.append(section);}refreshProfileJump();}
