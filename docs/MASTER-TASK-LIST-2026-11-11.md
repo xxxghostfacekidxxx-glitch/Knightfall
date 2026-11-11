@@ -2,6 +2,12 @@
 
 Status convention: **Implemented** means present in source; **CI verified** means a named automated check passed; **production verified** and **device accepted** require separate evidence. Unchecked entries must not be described as absent.
 
+## Completed in repository — 2026-11-11 quick-fix batch
+
+- [x] Corrected mini-game saved-state validation to return a synchronous boolean for Cinder Collider (Particle Clicker), Crypt Conduits and Ash Slope. Previously the async validator returned a truthy Promise, which could bypass corruption checks.
+- [x] Added `scripts/arcade-mini-save-validation.test.mjs` covering valid and malformed save snapshots and linked it into the GitHub Runtime Smoke Test workflow.
+- [ ] Confirm the new CI job passes on main, then verify save/resume and Particle Clicker upgrades in the deployed mobile browser before closing related gameplay reports. Source changes are not physical-device certification.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
