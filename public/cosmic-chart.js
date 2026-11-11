@@ -139,5 +139,18 @@
     aspectsPanel.append(summary,list);reading.append(aspectsPanel);
     shell.append(graphic,reading);target.append(shell);
   }
-  window.KnightfallCosmic=Object.freeze({render,prompt,aspects});
+  function transitAspects(transitChart,natalChart){
+    const traveling=points(transitChart).filter(p=>!p.name.includes("Node"));
+    const natal=points(natalChart).filter(p=>!p.name.includes("Node"));
+    const matches=[];
+    for(const moving of traveling)for(const birth of natal){
+      const raw=Math.abs(moving.longitude-birth.longitude),separation=Math.min(raw,360-raw);
+      for(const [type,angle] of ASPECTS){
+        const orb=Math.abs(separation-angle);
+        if(orb<=2)matches.push({transit:moving.name,natal:birth.name,type,orb:Number(orb.toFixed(2))});
+      }
+    }
+    return matches.sort((a,b)=>a.orb-b.orb);
+  }
+  window.KnightfallCosmic=Object.freeze({render,prompt,aspects,transitAspects});
 })();
