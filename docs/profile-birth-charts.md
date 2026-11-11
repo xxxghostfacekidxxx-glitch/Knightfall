@@ -26,3 +26,14 @@ City lookup requires an internet connection and sends the entered city query to 
 `node --test scripts/profile-birth-chart-runtime.test.mjs` exercises the production Worker route with isolated test storage: calculate/save hidden, publish, hide, delete; reject anonymous/invalid sessions and cross-origin mutation; ignore supplied user IDs and preserve other owners' charts; reject malformed inputs. All four scenarios passed locally. This is handler-level testing, not signed-in production/browser certification.
 
 The independent **Profile Birth Chart Verification** workflow runs these tests with the astronomy suite, then performs read-only production checks for the public profile assets, JSON authentication and chart endpoints, anonymous chart denial, category existence and adult gating. It creates no production chart records and needs no member credentials.
+
+
+## Cosmic Blueprint upgrade (November 11, 2026)
+
+Profile Studio and published member profiles render an accessible responsive zodiac wheel and aspect summaries from the saved *derived* chart data. Miss Chaos can load the owner's saved chart (including charts hidden from the public) for an unsent interpretation draft. A click from either profile view can transfer the derived chart into that same browser session; no raw birth timestamp or coordinates are transferred.
+
+A birth-place IANA timezone (such as America/Chicago) can resolve historical UTC offset and handle DST gaps and overlaps. A city selection supplies coordinates but does not infer the historical time zone. The member must select/verify that separately; manual UTC offset is retained for difficult historical cases.
+
+A second member's chart is used in compatibility only when the standard permission-checked public profile response already includes a published chart. See docs/miss-chaos-astrology.md for accuracy boundaries and test instructions.
+
+New regression coverage: scripts/cosmic-chart.test.mjs in dedicated birth-chart and runtime smoke workflows.
