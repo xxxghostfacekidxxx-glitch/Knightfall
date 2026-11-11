@@ -69,6 +69,9 @@
 <button type="button" id="astro-compare">Compare charts</button></div>
 <p class="astro-help">Compatibility only uses your saved chart and placements the other member has chosen to publish to a profile you may view. No private chart is retrieved from someone else.</p>
 <form id="astro-chart-form" class="astro-chart-form">
+  <label class="astro-unknown-time"><input type="checkbox" id="astro-time-unknown"> I don't know the birth time</label>
+  <label id="astro-date-only-label" hidden>Birth date (time unknown) <input id="astro-date-only" type="date" min="1900-01-01" max="2100-12-31"></label>
+  <p class="astro-help">When birth time is unknown, use a provisional 12:00 UTC chart. Rising sign and houses are omitted, and the Moon or placements near sign cusps may differ at the actual time.</p>
   <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
   <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
   <label>Birth-place time zone (optional, recommended) <input id="astro-timezone" class="cosmic-timezone-select" type="text" autocomplete="off" placeholder="e.g. America/Chicago"></label>
