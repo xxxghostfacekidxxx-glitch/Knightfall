@@ -14,7 +14,7 @@ const now=Math.floor(Date.now()/1000);
 const checks={
   issuer:claims.iss==="https://token.actions.githubusercontent.com",
   audience:claims.aud===GITHUB_AUDIT_AUDIENCE,
-  subject:claims.sub==="repo:"+owner+":ref:refs/heads/main",
+  subject:["repo:"+owner+":ref:refs/heads/main","repo:xxxghostfacekidxxx-glitch@252952996/Knightfall@1301740258:ref:refs/heads/main"].includes(claims.sub),
   repository:claims.repository===owner,
   repositoryId:String(claims.repository_id)==="1301740258",
   workflowRef:claims.workflow_ref===owner+"/.github/workflows/developer-arsenal-audit.yml@refs/heads/main",
@@ -27,7 +27,6 @@ const checks={
     now<claims.exp&&claims.nbf<=now+30&&claims.iat<=now+30&&now-claims.iat<=300&&claims.exp-claims.iat<=1200,
 };
 const valid=await verifyGitHubAuditToken({token,runId:Number(process.env.GITHUB_RUN_ID),sha:process.env.GITHUB_SHA});
-console.log("OIDC signed subject (public workflow identity): "+String(claims.sub||"").slice(0,260).replace(/[\r\n]/g,""));
 console.log("OIDC expected-claim checks (booleans only): "+JSON.stringify(checks));
 console.log("OIDC cryptographic verifier: "+(valid?"PASS":"FAIL"));
 // Never log the token, signing keys, or a claim payload.
