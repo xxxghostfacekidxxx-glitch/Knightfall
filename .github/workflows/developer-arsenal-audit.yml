@@ -1,0 +1,46 @@
+name: Devil's Toolkit code and security audit
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate key JavaScript modules
+        run: |
+          node --check public/open-source-arsenal.js
+          node --check public/admin-command-center.js
+          node --check public/nav.js
+          node --check backend/chaos-tool-dispatch.mjs
+      - name: Run existing permission and security audits
+        run: |
+          node scripts/security-surface-inventory.mjs
+          node scripts/authorization-audit.mjs
+      - name: Run Biome advisory scan
+        continue-on-error: true
+        run: |
+          npx --yes @biomejs/biome@2.2.6 lint public/open-source-arsenal.js public/admin-command-center.js backend/chaos-tool-dispatch.mjs > biome-report.txt 2>&1
+          cat biome-report.txt
+      - name: Install Semgrep
+        run: python3 -m pip install --user 'semgrep>=1.90,<2'
+      - name: Run Semgrep advisory scan
+        continue-on-error: true
+        run: |
+          python3 -m semgrep scan --config p/javascript --config p/secrets --metrics=off --json --output semgrep-report.json public backend
+      - name: Store audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: developer-arsenal-audit
+          path: |
+            biome-report.txt
+            semgrep-report.json
+          if-no-files-found: ignore
+          retention-days: 7
