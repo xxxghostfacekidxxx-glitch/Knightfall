@@ -8,6 +8,9 @@ on:
       - 'public/devil-tools.html'
       - 'public/admin-command-center.js'
       - 'docs/developer-arsenal.md'
+      - 'backend/chaos-audit-summary*.mjs'
+      - 'backend/chaos-capabilities.mjs'
+      - 'backend/chaos-tool-dispatch.mjs'
   pull_request:
   workflow_dispatch:
 concurrency:
@@ -30,10 +33,11 @@ jobs:
           node --check public/admin-command-center.js
           node --check public/nav.js
           node --check backend/chaos-tool-dispatch.mjs
+          node --check backend/chaos-audit-summary.mjs
       - name: Run existing permission and security audits
         run: |
           node scripts/security-surface-inventory.mjs
-          node --test scripts/developer-arsenal.test.mjs
+          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
