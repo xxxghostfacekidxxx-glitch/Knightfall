@@ -292,6 +292,7 @@
           <a href="/user-agreement.html">Terms &amp; Policies</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
+          <a class="kf-admin-tasks-link" href="/admin.html#master-task-list" hidden>Master Task List</a>
           <a class="kf-admin-toolkit-link" href="/devil-tools.html" hidden>Devil’s Toolkit</a>
           <a class="kf-admin-foundry-link" href="/dev-toolkit.html" hidden>Creator Foundry</a>
           <a class="kf-admin-arsenal-link" href="/open-source-arsenal.html" hidden>Open Source Arsenal</a>
@@ -478,7 +479,7 @@
         if (quickLink) quickLink.hidden = false;
         const adminLink = nav.querySelector(".kf-admin-link");
         if (adminLink) adminLink.hidden = false;
-        nav.querySelectorAll(".kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link").forEach(link => { link.hidden = false; });
+        nav.querySelectorAll(".kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-admin-tasks-link").forEach(link => { link.hidden = false; });
       }
       if (["admin","moderator","god"].includes(normalizedRole)) {
         const modLink = nav.querySelector(".kf-mod-link");
@@ -498,7 +499,7 @@
       // Preserve navigation while leaving privileged links hidden until auth succeeds.
       authResolved = true;
       applyProfileVisibility();
-      nav.querySelectorAll(".kf-admin-link,.kf-admin-quick-link,.kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-mod-link,.kf-recovery-link").forEach(link => { link.hidden = true; });
+      nav.querySelectorAll(".kf-admin-link,.kf-admin-quick-link,.kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-admin-tasks-link,.kf-mod-link,.kf-recovery-link").forEach(link => { link.hidden = true; });
     });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
