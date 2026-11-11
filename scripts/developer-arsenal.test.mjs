@@ -63,3 +63,14 @@ test("sanitized security summary excludes source snippets and paths", async () =
     assert.equal(serialized.includes(sensitive), false);
   }
 });
+
+test("admin diagnostic import accepts only counts and does not auto-send", async () => {
+  const source = await load("public/admin-command-center.js");
+  assert.match(source, /command-center-audit-import/);
+  assert.match(source, /developer-arsenal-summary\.json/);
+  assert.match(source, /Number\.isSafeInteger/);
+  assert.match(source, /Object\.values\(severity\)/);
+  assert.match(source, /chatInput\.value = "Interpret this verified-format/);
+  assert.match(source, /Review and send when ready/);
+  assert.doesNotMatch(source, /fetch\(.*developer-arsenal-summary/);
+});
