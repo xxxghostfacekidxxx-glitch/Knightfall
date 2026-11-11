@@ -152,5 +152,18 @@
     }
     return matches.sort((a,b)=>a.orb-b.orb);
   }
-  window.KnightfallCosmic=Object.freeze({render,prompt,aspects,transitAspects});
+  function synastry(first,second){
+    const a=points(first).filter(p=>!p.name.includes("Node"));
+    const b=points(second).filter(p=>!p.name.includes("Node"));
+    const results=[];
+    for(const one of a)for(const two of b){
+      const raw=Math.abs(one.longitude-two.longitude),sep=Math.min(raw,360-raw);
+      for(const [type,angle] of ASPECTS){
+        const orb=Math.abs(sep-angle);
+        if(orb<=4)results.push({first:one.name,second:two.name,type,orb:Number(orb.toFixed(2))});
+      }
+    }
+    return results.sort((x,y)=>x.orb-y.orb);
+  }
+  window.KnightfallCosmic=Object.freeze({render,prompt,aspects,transitAspects,synastry});
 })();
