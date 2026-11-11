@@ -26,17 +26,22 @@ function positions(date){
 export function calculateAngles(iso, latitude, longitude, houseSystem="equal"){
  const lat=Number(latitude),lon=Number(longitude),time=new Date(iso);
  if(!Number.isFinite(time.getTime())||!Number.isFinite(lat)||!Number.isFinite(lon)||lat < -66||lat > 66||lon < -180||lon > 180)throw Error("Provide a valid UTC date and coordinates (latitude -66 to 66, longitude -180 to 180).");
- const jd=time.getTime()/86400000+2440587.5,T=(jd-2451545)/36525;
- const gmst=norm(Astronomy.SiderealTime(time)*15);
- const lst=norm(gmst+lon);
- const obliquity=23.439291111-0.013004167*T-0.0000001639*T*T+0.0000005036*T*T*T;
+ // Astronomy Engine's apparent sidereal time already includes equinox/nutation.
+ // Match it with the true obliquity obtained from the same true ecliptic-of-date
+ // rotation used for planetary longitudes, avoiding an inconsistent mean tilt.
+ const apparentSidereal=norm(Astronomy.SiderealTime(time)*15);
+ const lst=norm(apparentSidereal+lon);
+ const eqdPole=new Astronomy.Vector(0,0,1,new Astronomy.AstroTime(time));
+ const eclipticPole=Astronomy.RotateVector(Astronomy.Rotation_EQD_ECT(time),eqdPole);
+ const obliquity=Math.atan2(Math.abs(eclipticPole.y),eclipticPole.z)*deg;
+ if(!Number.isFinite(obliquity)||obliquity<22||obliquity>25)throw Error("True ecliptic tilt calculation failed.");
  const theta=lst*rad,eps=obliquity*rad,phi=lat*rad;
  const asc=norm(Math.atan2(-Math.cos(theta),Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))*deg);
  if(!["equal","whole-sign"].includes(houseSystem))throw Error("Choose equal or whole-sign houses.");
  const firstCusp=houseSystem==="whole-sign"?Math.floor(asc/30)*30:asc;
  const houses=Array.from({length:12},(_,i)=>Number(norm(firstCusp+i*30).toFixed(3)));
  const midheaven=norm(Math.atan2(Math.sin(theta),Math.cos(theta)*Math.cos(eps))*deg);
- return {ascendant:Number(asc.toFixed(3)),ascendant_sign:signs[Math.floor(asc/30)],midheaven:Number(midheaven.toFixed(3)),midheaven_sign:signs[Math.floor(midheaven/30)],houses,house_system:houseSystem==="whole-sign"?"Whole sign":"Equal houses (Ascendant-based)",latitude:lat,longitude:lon,limitations:"Approximate sidereal time and mean obliquity; no nutation/refraction corrections. Neither equal nor whole-sign houses are Placidus. Extreme latitudes are not supported."};
+ return {ascendant:Number(asc.toFixed(3)),ascendant_sign:signs[Math.floor(asc/30)],midheaven:Number(midheaven.toFixed(3)),midheaven_sign:signs[Math.floor(midheaven/30)],houses,house_system:houseSystem==="whole-sign"?"Whole sign":"Equal houses (Ascendant-based)",latitude:lat,longitude:lon,limitations:"Apparent sidereal time and true obliquity from Astronomy Engine; geometric horizon, without atmospheric refraction or topocentric correction. Equal and whole-sign houses only, not Placidus; extreme latitudes unsupported."};
 }
 export function calculateAstrology(iso,location,houseSystem="equal"){
  const time=new Date(iso);
@@ -53,7 +58,7 @@ export function calculateAstrology(iso,location,houseSystem="equal"){
  }
  const angles=location ? calculateAngles(time.toISOString(),location.latitude,location.longitude,houseSystem) : null;
  const housePlacements=angles ? Object.fromEntries(Object.entries(bodies).map(([name,body])=>[name,Math.floor(norm(body.longitude-angles.houses[0])/30)+1])) : null;
- return {angles,house_placements:housePlacements,utc:time.toISOString(),zodiac:"tropical (true ecliptic of date)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Planet positions use Astronomy Engine geocentric apparent vectors and true ecliptic of date. Mean lunar nodes and the house-angle formula remain approximate. Equal and whole-sign houses are supported, not Placidus. Retrograde is estimated from daily positions. Birth time and historic UTC offset affect Ascendant accuracy."};
+ return {angles,house_placements:housePlacements,utc:time.toISOString(),zodiac:"tropical (true ecliptic of date)",coordinate_system:"geocentric ecliptic longitude",bodies,aspects:aspects.sort((a,b)=>a.orb-b.orb),limitations:"Planet positions use Astronomy Engine geocentric apparent vectors and true ecliptic of date. Mean lunar nodes remain approximate. House angles use true ecliptic tilt and apparent sidereal time; equal and whole-sign houses are supported, not Placidus. Retrograde is estimated from daily positions. Birth time and historic UTC offset affect Ascendant accuracy."};
 }
 
 export function calculateTransits(natalUtc,transitUtc){
