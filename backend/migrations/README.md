@@ -200,3 +200,13 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - Backend `/api/profile-wall` routes enforce public/followers/friends/private visibility, accepted friendships, active accounts, blocking, owner-only post editing, signed-in reactions, and comment removal by author/profile owner/moderator. A separate hardening change protects the legacy `/api/social/activity` feed from exposing private-profile updates.
 - Deployment checks: `node --test backend/src/profile-wall.test.mjs`, mobile and desktop profile browser smoke, Worker deployment success, and real authenticated cross-account acceptance remain separate gates. A database migration alone does not make the feature live.
 
+
+
+## Member profile wall · 0126 (November 11, 2026)
+
+- `0126_profile_wall_interactions.sql` adds account-owned `profile_wall_reactions` and `profile_wall_comments` with foreign keys, moderation-safe soft deletion, unique per-member reactions and query indexes.
+- **Applied to production** `knightfall-forum` on November 11, 2026, after confirming a Cloudflare D1 Time Travel recovery bookmark. Production read-back confirmed both tables, all three indexes, and foreign keys.
+- D1 `d1_migrations` records `0126_profile_wall_interactions.sql` as **ID 71**, applied at `2026-11-11 18:24:41` UTC. **Do not rerun this migration.**
+- The interactive wall uses existing `social_activity` for status posts, `social_bookmarks` (migration 0033) for private saved posts, and `safety_reports` for user reports. These existing tables are unchanged by 0126.
+- Server rules scope edits to post authors; reaction and comment writes require session authentication and view permission; author/profile-owner/moderator privileges apply to comment removal. Hidden, blocked and restricted posts remain protected even when saved.
+- Re-run `node --test backend/src/profile-wall.test.mjs scripts/profile-wall-ui.test.mjs`, the Profile Studio/Android browser smoke suite and a real two-account acceptance test after deploying. A D1 schema read-back is not proof of interactive production correctness.
