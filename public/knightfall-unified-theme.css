@@ -85,7 +85,8 @@ body:not(.profile-custom-theme) :where(
 ) {
   background-image:
     radial-gradient(ellipse at 97% 0%,rgba(255,227,107,.038),transparent 40%),
-    linear-gradient(145deg,rgba(255,85,216,.055),transparent 52%)!important;
+    linear-gradient(145deg,rgba(255,85,216,.055),transparent 52%),
+    linear-gradient(145deg,#181125,#0b0b17 88%)!important;
 }
 body:not(.profile-custom-theme) :where(
   .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
