@@ -55,9 +55,10 @@
     const degree=Number(chart?.ascendant_degree);
     return index>=0&&Number.isFinite(degree)?mod(index*30+degree):0;
   }
-  function wheel(chart){
-    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
-    svg.append(svgEl("title",{},"Tropical zodiac natal chart"));
+  function wheel(chart,kind="natal"){
+    const transit=kind==="transit";
+    const svg=svgEl("svg",{viewBox:"0 0 420 420",role:"img","aria-label":transit?"Tropical transit sky positions, signs and aspects":"Natal zodiac wheel showing signs, planets, houses, and major aspects"});
+    svg.append(svgEl("title",{},transit?"Tropical planetary sky positions":"Tropical zodiac natal chart"));
     const a=ascendant(chart);
     svg.append(svgEl("circle",{cx:210,cy:210,r:203,fill:"#10101c",stroke:"#ff67d6","stroke-width":2}));
     for(const r of [193,160,125,101])svg.append(svgEl("circle",{cx:210,cy:210,r,fill:"none",stroke:r===125?"#a5ffdd66":"#ffffff33","stroke-width":r===193?1.5:1}));
@@ -115,13 +116,13 @@
     return (lead+"Do not invent missing birth details, transits, or houses. "+
       "Rising: "+(chart?.angles?.ascendant_sign||chart?.ascendant_sign||"unavailable")+". House system: "+(chart?.angles?.house_system||chart?.house_system||"unavailable")+". Placements: "+placements+". Major aspects: "+(aspectSummary||"none within the displayed orbs")+". "+patternInfo).slice(0,3900);
   }
-  function render(target,chart){
+  function render(target,chart,options={}){
     if(!target)return;
     target.replaceChildren();
     const all=points(chart);
     if(!all.length){target.append(el("p","cosmic-muted","No calculated placements to display."));return;}
     const shell=el("div","cosmic-blueprint"),graphic=el("div","cosmic-wheel"),reading=el("div","cosmic-reading");
-    graphic.append(wheel(chart));
+    graphic.append(wheel(chart,options.kind==="transit"?"transit":"natal"));
     const balance=el("div","cosmic-balance");
     const classical=all.filter(p=>["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"].includes(p.name));
     const top=(groups)=>Object.entries(groups).map(([name,signs])=>({name,count:classical.filter(p=>signs.includes(p.body.sign)).length})).sort((a,b)=>b.count-a.count);
@@ -130,6 +131,7 @@
     const modeLabel=modes[0]?.count===modes[1]?.count?"Mixed modalities":modes[0]?.name+" emphasis";
     balance.append(el("span","cosmic-pill","✧ "+elementLabel),el("span","cosmic-pill","✧ "+modeLabel));
     reading.append(balance);
+    if(options.kind==="transit")reading.prepend(el("p","cosmic-muted","Geocentric transit sky · houses and rising sign not calculated for this view."));
     const three=el("div","cosmic-three");
     for(const [name,sign] of [["Sun",chart.bodies?.Sun?.sign],["Moon",chart.bodies?.Moon?.sign],["Rising",chart.angles?.ascendant_sign||chart.ascendant_sign]]){
       if(!sign)continue;
