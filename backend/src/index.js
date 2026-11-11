@@ -1409,7 +1409,6 @@ export default { async queue(batch, env) {
     catch(e){return json({error:e.message||"Invalid chart date."},400,origin);}
   }
   if(url.pathname==="/api/chaos/radar"&&request.method==="GET"){
-    if(!(await rateLimit(env,request,"chaos-radar",40,60)))return json({error:"Too many Radar requests. Try again shortly."},429,origin);
     const kind=url.searchParams.get("kind"),query=url.searchParams.get("q")||"";
     const device=url.searchParams.get("device")||"",length=url.searchParams.get("length")||"";
     if(query.length>120||!["","touch","desktop"].includes(device)||!["","games","mini"].includes(length)){
