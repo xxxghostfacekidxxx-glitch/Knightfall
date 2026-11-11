@@ -227,6 +227,25 @@ document.querySelectorAll('button[data-care]').forEach(button=>button.addEventLi
  }catch(err){say(err.message)}
  finally{busy=false;syncCareButtons();draw()}
 }));
+function showEmptyRoom(message,linkText,href){
+ q('room-companion-summary').hidden=true;
+ q('room-level').hidden=true;
+ picker.disabled=true;
+ avatar.hidden=true;
+ stage.tabIndex=-1;
+ stage.setAttribute('aria-label','Moonlit conservatory');
+ stage.style.cursor='default';
+ document.querySelector('.room-controls').hidden=true;
+ document.querySelector('.room-controls-hint').hidden=true;
+ const cabinet=document.querySelector('.room-furniture-shop');
+ if(cabinet)cabinet.hidden=true;
+ say(message);
+ if(linkText){
+  const link=document.createElement('a');
+  link.href=href;link.textContent=linkText;
+  status.append(' ',link);
+ }
+}
 async function launch(){
  try{
   const params=new URLSearchParams(location.search),visiting=params.get('user');
@@ -254,9 +273,9 @@ async function launch(){
    pets=mine.pets||[];pets.forEach(pet=>clock.remember(pet));themes=quests.themes||[];decorations=quests.decorations||[];
   }
   if(!pets.length){
-   say('Your sanctuary has no pets yet. Rescue one first to give it a room.');
-   const option=document.createElement('option');option.textContent='No companions adopted';picker.append(option);
-   save.disabled=true;return;
+   if(visitor)showEmptyRoom('This profile has no visible companion rooms.');
+   else showEmptyRoom('Rescue a companion to open your first room.','Browse the adoption gallery','/mascot-pets.html#adoption-gallery');
+   return;
   }
   for(const pet of pets){
    const option=document.createElement('option');option.value=String(pet.id);
@@ -265,8 +284,8 @@ async function launch(){
   const wanted=new URLSearchParams(location.search).get('pet');
   activate(wanted);
  }catch(error){
-  say(error.status===401?'Sign in to visit your companion rooms.':'Room service unavailable: '+error.message);
-  save.disabled=true;
+  if(error.status===401)showEmptyRoom('Sign in to visit your companion rooms.','Sign in','/auth.html?next=%2Fmascot-room.html');
+  else showEmptyRoom('Room service unavailable: '+error.message);
  }
 }
 void launch();
