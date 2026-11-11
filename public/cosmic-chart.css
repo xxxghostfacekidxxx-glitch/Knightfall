@@ -1,0 +1,24 @@
+/* Knightfall Cosmic Blueprint: no external fonts or remote resources. */
+.cosmic-blueprint{display:grid;grid-template-columns:minmax(225px,1fr) minmax(220px,1fr);align-items:center;gap:1.1rem;padding:.85rem 0;color:#f7efff}
+.cosmic-wheel{min-width:0;max-width:475px;width:100%;margin-inline:auto;filter:drop-shadow(0 0 18px #ff57cf24)}
+.cosmic-wheel svg{width:100%;height:auto;display:block;overflow:visible}
+.cosmic-reading{display:grid;gap:.75rem;min-width:0}
+.cosmic-balance{display:flex;flex-wrap:wrap;gap:.4rem}
+.cosmic-pill{font-size:.76rem;border:1px solid #a6ffe36b;color:#b7ffeb;padding:.3rem .55rem;border-radius:999px;background:#a6ffe30c}
+.cosmic-three{display:grid;gap:.55rem}
+.cosmic-key{padding:.66rem .85rem;border:1px solid #ff81d750;border-radius:12px;background:linear-gradient(120deg,#ff66c90e,#a6ffe309)}
+.cosmic-key strong{font-size:.93rem;color:#ffe5f7}
+.cosmic-key p{font-size:.81rem;margin:.27rem 0 0;color:#cdc2d7;line-height:1.5}
+.cosmic-aspects{border:1px solid #a6ffe34d;padding:.72rem;border-radius:11px;background:#080d1a99}
+.cosmic-aspects summary{cursor:pointer;font-size:.89rem;font-weight:750;color:#a9ffed}
+.cosmic-aspects ul{padding-left:1.25rem;max-height:220px;overflow:auto;font-size:.82rem;line-height:1.6;color:#eee4f6}
+.cosmic-muted{color:#c9bbd5}
+.cosmic-read-button{display:inline-flex;align-items:center;justify-content:center;margin-top:.8rem;padding:.65rem .9rem;border:1px solid #ff81d7;border-radius:11px;background:#ff81d71c;color:#ffe4f7;font-weight:800;cursor:pointer;text-decoration:none}
+.cosmic-read-button:hover,.cosmic-read-button:focus-visible{background:#ff81d737;outline:2px solid #a6ffe355}
+.cosmic-preview{padding:.65rem;border:1px solid #ff81d752;border-radius:12px;margin:.8rem 0;background:#0a101e}
+.cosmic-preview[hidden]{display:none}
+.cosmic-preview .cosmic-blueprint{grid-template-columns:minmax(200px,1fr) minmax(230px,1fr)}
+.cosmic-timezone-help{font-size:.8rem;color:#c6bbd2}
+.cosmic-timezone-select{max-width:100%}
+@media(max-width:750px){.cosmic-blueprint,.cosmic-preview .cosmic-blueprint{grid-template-columns:1fr}.cosmic-wheel{max-width:390px}.cosmic-reading{padding:.2rem}.cosmic-three{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}}
+@media(max-width:350px){.cosmic-wheel{width:100%}.cosmic-blueprint{padding:.35rem 0}}
