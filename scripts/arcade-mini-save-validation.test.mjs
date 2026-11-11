@@ -53,3 +53,48 @@ test('new purchase prices survive save normalization without being reset', () =>
   assert.equal(result.ratePrice, 138);
   assert.equal(result.autoPrice, 216);
 });
+
+test('a new run cancels a pending cloud resume before the save loads', async () => {
+  const begin=source.indexOf('async function resume(){');
+  const end=source.indexOf('function newPuzzle()',begin);
+  assert.ok(begin>=0&&end>begin);
+  assert.match(source,/function start\(\)\{resumeRequest\+\+;loopGeneration\+\+;/);
+  let release;
+  const ready=new Promise(resolve=>{release=resolve});
+  let loads=0,localReads=0;
+  const context={
+    window:{AshFallArcade:{ready,loadProgress:async()=>{loads++;return null}}},
+    localStorage:{getItem:()=>{localReads++;return null}},
+    status:()=>{}
+  };
+  runInNewContext(`let resumeRequest=0,loopGeneration=0; ${source.slice(begin,end)}
+    globalThis.harness={resume,replaceRun:()=>{resumeRequest++;loopGeneration++;}};`,context);
+  const pending=context.harness.resume();
+  context.harness.replaceRun();
+  release();
+  await pending;
+  assert.equal(loads,0);
+  assert.equal(localReads,0);
+});
+test('a late cloud response cannot replace a newer run', async () => {
+  const begin=source.indexOf('async function resume(){');
+  const end=source.indexOf('function newPuzzle()',begin);
+  let release;
+  const pendingCloud=new Promise(resolve=>{release=resolve});
+  let reads=0,events=0;
+  const context={
+    window:{AshFallArcade:{ready:Promise.resolve(),loadProgress:()=>pendingCloud}},
+    localStorage:{getItem:()=>{reads++;return null}},
+    document:{dispatchEvent:()=>{events++}},
+    status:()=>{}
+  };
+  runInNewContext(`let resumeRequest=0,loopGeneration=0; ${source.slice(begin,end)}
+    globalThis.harness={resume,replaceRun:()=>{resumeRequest++;loopGeneration++;}};`,context);
+  const pending=context.harness.resume();
+  await Promise.resolve();
+  context.harness.replaceRun();
+  release({schema:1,game:'particle-clicker',state:{particles:50,rate:0,scientists:0}});
+  await pending;
+  assert.equal(reads,0);
+  assert.equal(events,0);
+});
