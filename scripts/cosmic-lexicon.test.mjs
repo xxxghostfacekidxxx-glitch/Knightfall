@@ -136,7 +136,7 @@ test("Miss Chaos uses measured transit-to-natal aspects for its reading draft",(
  assert.match(chat,/transitMeanings/);
  assert.match(chat,/KnightfallCosmicLexicon\?\.synastryBrief\?\./);
  assert.match(chat,/kind:"synastry"/);
- assert.match(chat,/member\.birth_chart\?\.bodies/);
+ assert.match(chat,/member\?\.birth_chart\?\.bodies/);
  assert.match(chat,/request\("\/api\/users\/"\+encodeURIComponent\(username\)\)/);
 
  assert.match(chat,/latestChartSubject==="member"/);
