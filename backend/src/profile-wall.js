@@ -84,7 +84,7 @@ export async function handleProfileWall(request,env,url,helpers){
     const all=rows.results||[];
     const more=all.length>POST_LIMIT;
     const posts=all.slice(0,POST_LIMIT);
-    return json({posts,has_more:more,next_before:more?posts[posts.length-1]?.id:null,can_post:viewer?.id===owner.id},200,origin);
+    return json({posts,has_more:more,next_before:more?posts[posts.length-1]?.id:null,can_post:viewer?.id===owner.id,viewer_id:viewer?.id||null},200,origin);
   }
   const postMatch=path.match(/^\/api\/profile-wall\/posts\/([1-9][0-9]*)(?:\/(reactions|comments))?$/);
   if(postMatch){
