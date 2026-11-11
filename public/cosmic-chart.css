@@ -22,3 +22,7 @@
 .cosmic-timezone-select{max-width:100%}
 @media(max-width:750px){.cosmic-blueprint,.cosmic-preview .cosmic-blueprint{grid-template-columns:1fr}.cosmic-wheel{max-width:390px}.cosmic-reading{padding:.2rem}.cosmic-three{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}}
 @media(max-width:350px){.cosmic-wheel{width:100%}.cosmic-blueprint{padding:.35rem 0}}
+
+.astro-compare-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin:.7rem 0}
+.astro-compare-row label{flex:1 1 190px;min-width:0}
+.astro-compare-row input{max-width:100%}
