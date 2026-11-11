@@ -60,3 +60,5 @@
 .cosmic-uncertain{border:1px solid #ffd0788c;border-radius:10px;background:#ffc45c13;color:#ffe7ad;padding:.7rem .8rem;margin:.2rem 0;font-size:.8rem;line-height:1.55}
 .astro-unknown-time{display:flex;align-items:center;gap:.5rem;font-weight:700}
 .astro-unknown-time input{width:auto}
+
+#birth-chart-date-only-label[hidden],#astro-date-only-label[hidden],#astro-natal-back[hidden]{display:none!important}
