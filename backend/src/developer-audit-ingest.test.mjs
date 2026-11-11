@@ -42,5 +42,5 @@ test("reject older runs and forged fields",async()=>{
  const env={SESSIONS:fakeStorage(),DIAGNOSTICS_INGEST_KEY:secret};
  assert.equal((await storeAuditUpload({env,...signed({runId:20,sha:"b".repeat(40),summary})})).status,204);
  assert.equal((await storeAuditUpload({env,...signed({runId:19,sha:"a".repeat(40),summary})})).status,409);
- await assert.rejects(storeAuditUpload({env,...signed({runId:22,sha:"a".repeat(40),summary:{...summary,semgrep:{...summary.semgrep,findings:22}}})}),/Inconsistent/);
+ assert.equal((await storeAuditUpload({env,...signed({runId:22,sha:"a".repeat(40),summary:{...summary,semgrep:{...summary.semgrep,findings:22}}})})).status,400);
 });
