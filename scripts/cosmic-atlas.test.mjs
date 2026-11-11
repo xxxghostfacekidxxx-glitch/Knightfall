@@ -35,7 +35,7 @@ function makeDOM(){
   }
  }
  const document={createElement:tag=>new Element(tag),createElementNS:(_,tag)=>new Element(tag)};
- const Option=(label,value)=>{const x=new Element("option");x.textContent=label;x.value=value;return x;};
+ function Option(label,value){const x=new Element("option");x.textContent=label;x.value=value;return x;}
  return {document,Option,Element};
 }
 function mount(){
