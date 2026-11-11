@@ -54,7 +54,22 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
       const item=document.createElement("p"),strong=document.createElement("strong");
       strong.textContent=name;item.append(strong,document.createTextNode(" "+body.sign+" "+body.degree+"°"+(body.retrograde?" ℞":"")+(chart.house_placements?.[name]?" · House "+chart.house_placements[name]:"")));grid.append(item);
     }
-    details.append(summary,grid);section.append(heading,detail,bigThree,details);
+    details.append(summary,grid);
+    const chartWheel=document.createElement("div");
+    chartWheel.className="profile-cosmic-wheel";
+    if(window.KnightfallCosmic){
+      window.KnightfallCosmic.render(chartWheel,chart);
+      section.append(heading,detail,chartWheel,details);
+      const reading=document.createElement("button");
+      reading.type="button";reading.className="cosmic-read-button";
+      reading.textContent="✦ Explore this chart with Miss Chaos";
+      reading.addEventListener("click",()=>{
+        try{sessionStorage.setItem("knightfall:cosmic-reading",JSON.stringify({chart,from:"profile"}));}
+        catch{window.alert("Your browser blocked temporary chart transfer. You can still open Miss Chaos and load your own saved chart.");return;}
+        location.href="/miss-chaos.html?astro=profile";
+      });
+      section.append(reading);
+    }else section.append(heading,detail,bigThree,details);
     const bio=root.querySelector(".bio");(bio||root.querySelector(".profile-actions-wrap"))?.after(section);
   }
   const walletPanel=document.querySelector("#profile-wallet");
