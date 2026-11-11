@@ -5,8 +5,8 @@ import {handleProfileWall} from "./profile-wall.js";
 
 function fixture(options={}){
  const owner={id:11,username:"artist",display_name:"Artist",status:"active",profile_visibility:options.privacy||"public"};
- const post={id:23,user_id:11,body:"An original drawing",visibility:options.postVisibility||"public",
-  created_at:"2026-11-10T12:00:00Z",updated_at:"2026-11-10T12:00:00Z",...owner};
+ const post={...owner,id:23,user_id:11,body:"An original drawing",visibility:options.postVisibility||"public",
+  created_at:"2026-11-10T12:00:00Z",updated_at:"2026-11-10T12:00:00Z"};
  const state={owner,post,writes:[],requests:[],audits:[]};
  const db={prepare(sql){
    const statement={sql,params:[],bind(...args){this.params=args;return this},
@@ -71,6 +71,18 @@ test("followers-only update is not available without follow relationship",async(
  const path="/api/profile-wall/posts/23/comments";
  assert.equal((await fixture({postVisibility:"followers"}).call(path,"GET",{id:24})).status,404);
  assert.equal((await fixture({postVisibility:"followers",following:true}).call(path,"GET",{id:24})).status,200);
+});
+test("a post's author, not its post number, controls relationship checks",async()=>{
+ const f=fixture({postVisibility:"followers",following:true});
+ const result=await f.call("/api/profile-wall/posts/23/comments","GET",{id:22});
+ assert.equal(result.status,200);
+ const followLookup=f.state.requests.find(item=>item.sql.includes("FROM follows"));
+ assert.ok(followLookup);
+ assert.deepEqual(followLookup.params,[22,11]);
+ assert.ok(!followLookup.params.includes(23));
+ const own=fixture({privacy:"private",postVisibility:"private"});
+ const ownResult=await own.call("/api/profile-wall/posts/23/comments","GET",{id:11});
+ assert.equal(ownResult.status,200);
 });
 test("reactions require an account and accept only supported choices",async()=>{
  const path="/api/profile-wall/posts/23/reactions";
