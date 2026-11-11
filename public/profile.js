@@ -478,6 +478,7 @@ function connectProfileJump(jump){
 function refreshProfileJump(){
   const old=root.querySelector(".profile-jump");
   const sections=[
+    ["#mascot-profile-companions","Pets"],
     ["#profile-about","About"],
     ["#profile-wallet","Wallet"],
     [".profile-favorites","Interests"],
@@ -561,4 +562,5 @@ async function load(){
    if(me.user?.role==="god"&&ownProfile)renderDeveloperControls();
  }catch(error){root.innerHTML="<h1>Profile temporarily unavailable</h1><p>"+esc(error.message)+"</p><p>Profile data could not be loaded. Your profile has not been deleted.</p><div class=\"profile-actions\"><button class=\"action primary\" type=\"button\" id=\"retry-profile\">Retry profile</button><a class=\"action\" href=\"/members.html\">Browse members</a><a class=\"action\" href=\"/account.html\">Account settings</a></div>";root.querySelector("#retry-profile")?.addEventListener("click",()=>{root.innerHTML="<p>Loading profile…</p>";load();},{once:true});}
 }
+root.addEventListener("kf:profile-section-mounted",refreshProfileJump);
 load();
