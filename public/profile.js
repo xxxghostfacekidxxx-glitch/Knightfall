@@ -64,7 +64,7 @@ function render(d,adminView=false,ownProfile=false,signedIn=true){
       reading.type="button";reading.className="cosmic-read-button";
       reading.textContent="✦ Explore this chart with Miss Chaos";
       reading.addEventListener("click",()=>{
-        try{sessionStorage.setItem("knightfall:cosmic-reading",JSON.stringify({chart,from:"profile"}));}
+        try{sessionStorage.setItem("knightfall:cosmic-reading",JSON.stringify({chart,from:ownProfile?"my-profile":"member-profile",member:u.username}));}
         catch{window.alert("Your browser blocked temporary chart transfer. You can still open Miss Chaos and load your own saved chart.");return;}
         location.href="/miss-chaos.html?astro=profile";
       });
