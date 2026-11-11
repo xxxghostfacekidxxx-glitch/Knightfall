@@ -2,7 +2,9 @@
 
 ## Scope
 
-- `public/design-system.css`: canonical pink and acid-green design tokens.
+- `public/design-system.css`: canonical hot-pink and acid-green tokens plus an optional electric-yellow detail token.
+- `public/knightfall-unified-theme.css`: shared final chrome/spacing layer. Yellow `#ffe36b` is only a small highlight on active rails, header signal, card glints, and arcade numbering; pink and green stay dominant.
+- `scripts/site-theme-audit.mjs`: dependency-free theme, nav, and offline asset regression check.
 - `public/neon-global.css`: shared neon overrides for legacy orange page styles.
 - `public/nav.js`: loads neon CSS and Gravewave decoration script for pages that use shared navigation.
 - `public/gravewave-decor.js`: adds decorative original SVGs to the shared footer, public headings, and supported game cards.
@@ -12,7 +14,7 @@
 
 ## Visual behavior
 
-The theme uses neon pink `#ff55d8`, acid green `#c6ff45`, dark purple-black `#070710`, and accessible light text. Decorative assets use local static files, are `aria-hidden`, do not accept pointer events, and respect reduced-motion settings. Only selected public pages receive heading/card decorations. Private messaging, accounts, admin, moderation, adult, vault, and editing paths are excluded from those decorations; shared footers may still display mascots.
+The theme uses neon pink `#ff55d8`, acid green `#c6ff45`, a restrained yellow `#ffe36b`, dark purple-black `#070710`, and accessible light text. Decorative assets use local static files, are `aria-hidden`, do not accept pointer events, and respect reduced-motion settings. Only selected public pages receive heading/card decorations. Private messaging, accounts, admin, moderation, adult, vault, and editing paths are excluded from those decorations; shared footers may still display mascots.
 
 No game logic or player state is modified. Existing game sprites continue to work; the new assets can be integrated into game canvases through `GravewaveSprites.draw`.
 
@@ -25,7 +27,7 @@ No game logic or player state is modified. Existing game sprites continue to wor
 5. Verify gameplay canvas remains unobstructed, and reduced-motion works.
 6. If Cloudflare Pages is deployed from the default branch, confirm the build and cache have updated before declaring the live site complete.
 
-The shared styling is intentionally a broad pass, not a guarantee that every legacy inline color or independently styled page has been converted.
+The shared styling is intentionally a broad pass, not a guarantee that every legacy inline color or independently styled game has been converted. The service worker precaches the unified stylesheet for installed/offline use; existing active game canvases and user-created profile skins remain independently styled.
 
 ## Site-wide mascot takeover and signal glitch
 
