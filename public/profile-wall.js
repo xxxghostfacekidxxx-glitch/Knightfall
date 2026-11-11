@@ -197,6 +197,7 @@ async function mount(member,own,root,signedIn){
     discussion.append(commentsList,older,commentComposer);
     const controls=el("div","profile-wall-post-controls");
     controls.append(reactionsRow,discussionButton);
+    let reportForm=null;
     if(signedIn&&!own){
       const reportToggle=button("⚑ Report","profile-wall-report-toggle",()=>{
         const expanded=reportToggle.getAttribute("aria-expanded")==="true";
@@ -205,7 +206,7 @@ async function mount(member,own,root,signedIn){
         if(!expanded)reportReason.focus();
       });
       reportToggle.setAttribute("aria-expanded","false");
-      const reportForm=el("form","profile-wall-report-form");
+      reportForm=el("form","profile-wall-report-form");
       reportForm.hidden=true;
       const heading=el("strong","","Report this update to moderators");
       const reasonLabel=el("label","","Reason");
@@ -246,9 +247,9 @@ async function mount(member,own,root,signedIn){
         finally{reportSend.disabled=false;}
       });
       controls.append(reportToggle);
-      discussion.after(reportForm);
     }
     article.append(head,body,controls,discussion);
+    if(reportForm)article.append(reportForm);
     article.append(note);
     renderReactions();
     let commentsBefore=null,commentsBusy=false;
