@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v26";
+const CACHE_NAME = "knightfall-shell-v27";
 const APP_SHELL = [
   "/index.html",
   "/offline.html",
@@ -9,6 +9,13 @@ const APP_SHELL = [
   "/neon-global.css",
   "/gravewave-consistency.css",
   "/nav.js",
+  "/moonology.html",
+  "/moonology.css",
+  "/moonology.mjs",
+  "/moon-strip.css",
+  "/moon-widget.mjs",
+  "/lunar-phases.mjs",
+  "/vendor/astronomy-engine-2.1.19.min.js",
   "/gravewave-takeover.css",
   "/gravewave-takeover.js",
   "/assets/devil-tools/neon-nuisances/moxie.svg",

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Track all eight Moon phases, explore the lunar calendar, and keep a private Moon Journal on Ash-Fall.">
+  <title>Moonology | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/moonology.css">
+  <script src="/nav.js" defer></script>
+  <script type="module" src="/moonology.mjs"></script>
+</head>
+<body class="moonology-page">
+  <header class="kf-header"></header>
+  <main class="moon-shell">
+    <header class="moon-intro">
+      <h1>Moonology</h1>
+      <p>Follow the lunar cycle and keep a record of what changes in yours.</p>
+      <a class="moon-button" href="#journal">Open Moon Journal</a>
+    </header>
+    <div class="moon-overview">
+      <section class="moon-panel moon-current" aria-labelledby="moon-now-title">
+        <div id="moon-now-icon" class="moon-hero-icon" aria-hidden="true"></div>
+        <div>
+          <h2 id="moon-now-title">The Moon now</h2>
+          <p id="moon-now-phase" class="moon-phase-name">Calculating the current phase…</p>
+          <p id="moon-now-details" class="moon-muted"></p>
+        </div>
+      </section>
+      <section class="moon-panel" aria-labelledby="moon-upcoming-title">
+        <h2 id="moon-upcoming-title">Upcoming primary phases</h2>
+        <p id="moon-time-zone" class="moon-muted"></p>
+        <ul id="moon-upcoming" class="moon-upcoming"></ul>
+      </section>
+    </div>
+    <section class="moon-panel" aria-labelledby="moon-calendar-title">
+      <div class="moon-section-head">
+        <div>
+          <h2 id="moon-calendar-title">Lunar calendar</h2>
+          <p class="moon-muted">Daily phases are sampled at noon in your device’s time zone.</p>
+        </div>
+        <label>Month <input id="moon-month" type="month" min="1900-01" max="2100-12"></label>
+      </div>
+      <div id="moon-calendar" class="moon-calendar" role="group" aria-label="Calendar dates"></div>
+      <p id="moon-selected" class="moon-muted" role="status">Select a date to see its phase.</p>
+      <a id="moon-write-date" href="#journal" hidden>Journal for this date</a>
+    </section>
+    <section class="moon-panel" aria-labelledby="moon-guide-title">
+      <h2 id="moon-guide-title">The eight phases</h2>
+      <p class="moon-muted">Use these symbolic themes as reflection prompts alongside the astronomical phase.</p>
+      <div id="moon-guide" class="moon-guide"></div>
+    </section>
+    <section id="journal" class="moon-panel" aria-labelledby="moon-journal-title">
+      <h2 id="moon-journal-title">Moon Journal</h2>
+      <p class="moon-muted">Keep one private entry per date. Entries sync to your Ash-Fall account.</p>
+      <p id="moon-journal-status" role="status">Checking your session…</p>
+      <a id="moon-sign-in" href="/index.html" hidden>Sign in to Ash-Fall</a>
+      <button id="moon-journal-retry" type="button" hidden>Try again</button>
+      <fieldset id="moon-journal-controls" hidden>
+        <legend class="moon-sr-only">Write and manage Moon Journal entries</legend>
+        <form id="moon-journal-form">
+          <div class="moon-section-head moon-journal-fields">
+            <label>Entry date <input id="moon-entry-date" type="date" min="1900-01-01" max="2100-12-31" required></label>
+            <label>Title <input id="moon-entry-title" type="text" maxlength="100" placeholder="Optional"></label>
+          </div>
+          <p id="moon-journal-prompt" class="moon-muted"></p>
+          <label>Entry <textarea id="moon-entry-body" required maxlength="8000" rows="7"></textarea></label>
+          <div class="moon-actions">
+            <button type="submit">Save entry</button>
+            <button id="moon-delete-entry" type="button" hidden>Delete entry</button>
+          </div>
+        </form>
+        <h3>Past entries</h3>
+        <p id="moon-journal-history-status" role="status"></p>
+        <ul id="moon-history" class="moon-history"></ul>
+        <button id="moon-older" type="button" hidden>Load older entries</button>
+      </fieldset>
+    </section>
+    <section class="moon-panel moon-resources" aria-labelledby="moon-resources-title">
+      <h2 id="moon-resources-title">Lunar resources</h2>
+      <ul>
+        <li><a href="https://science.nasa.gov/moon/moon-phases/">NASA’s guide to Moon phases</a> explains what you see in the sky.</li>
+        <li><a href="https://aa.usno.navy.mil/data/MoonPhases">U.S. Naval Observatory phase tables</a> give exact primary-phase times in Universal Time.</li>
+        <li><a href="https://github.com/cosinekitty/astronomy">Astronomy Engine</a> calculates the phases and illumination shown here.</li>
+        <li><a href="https://www.yasminboland.com/books/moonology-diary/">Yasmin Boland’s Moonology Diary</a> explores lunar journaling as a spiritual practice.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

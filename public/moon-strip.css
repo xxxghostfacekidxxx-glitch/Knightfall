@@ -1,0 +1,40 @@
+html body > .kf-header { flex-wrap: wrap !important; }
+html body > .kf-header .kf-lunar-strip {
+  flex: 0 0 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.45rem, 2vw, 1rem);
+  min-height: 34px;
+  box-sizing: border-box;
+  padding-top: .3rem;
+  border-top: 1px solid #a884c14d;
+  color: #f4ddff;
+  text-decoration: none;
+  font: 600 .78rem/1.2 system-ui, sans-serif;
+}
+.kf-lunar-strip:focus-visible { outline: 2px solid #d8b1ff; outline-offset: 2px; }
+.kf-lunar-disks { display: inline-flex; gap: clamp(2px, 1vw, 12px); }
+.kf-lunar-disk {
+  display: grid;
+  place-items: center;
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  opacity: .61;
+  font-size: .91rem;
+}
+.kf-lunar-disk.is-current {
+  opacity: 1;
+  background: #d8b1ff36;
+  border-color: #edceff;
+  box-shadow: 0 0 9px #d9aaffcf;
+}
+@media (max-width: 360px) {
+  .kf-lunar-disk { inline-size: 1.12rem; block-size: 1.12rem; font-size: .8rem; }
+  .kf-lunar-label { max-width: 7rem; }
+}
+@media (max-width: 1080px) {
+  html body > .kf-header .kf-nav.open { max-height: calc(100dvh - 125px) !important; }
+}

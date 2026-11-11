@@ -11,6 +11,7 @@ import { getStarterPublicBot, listStarterPublicBots, starterPublicSummary } from
 import { handleMascotPets } from "./mascot-pets.js";
 import { handlePersonalAvatars } from "./personal-avatars.js";
 import { handleMemberMemos } from "./member-memos.js";
+import { handleMoonJournal } from "./moon-journal.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
 import { handleProfileLinks } from "./profile-links.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
@@ -958,6 +959,10 @@ export default { async queue(batch, env) {
   if(url.pathname==="/api/memos"||/^\/api\/memos\/\d+$/.test(url.pathname)){
    const memoResponse=await handleMemberMemos(request,env,url,{getUser:requireUser,json,rateLimit,origin});
    if(memoResponse)return memoResponse;
+  }
+
+  if (/^\/api\/moon-journal(?:\/[^/]+)?$/.test(url.pathname)) {
+    return await handleMoonJournal(request, env, url, {getUser:requireUser, json, rateLimit, origin});
   }
 
   // Mascot pets: authenticated and privacy-aware D1-backed profile companions.

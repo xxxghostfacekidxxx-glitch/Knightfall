@@ -254,6 +254,7 @@
           <a href="/bots.html">Public Bots</a>
           <a href="/shops.html">Shops</a>
           <a href="/miss-chaos.html">Miss Chaos</a>
+          <a href="/moonology.html">Moonology</a>
           <a href="/open-source-arsenal.html">Open Source</a>
           <a href="/social.html">Groups &amp; Activity</a>
           <a href="/members.html">Find Members</a>
@@ -267,6 +268,7 @@
           <a href="/members.html">Member Profiles</a>
           <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
           <a href="/die-ary.html">Die-ary</a>
+          <a href="/moonology.html#journal">Moon Journal</a>
           <a href="/memo-pad.html">📝 Memo Pad</a>
           <a href="/memo-pad.html?tab=inbox">✉ Memo Mail</a>
           <a href="/memo-pad.html?tab=chat">💬 Live Chat</a>
@@ -289,7 +291,19 @@
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>
       <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
-    </nav>`;
+    </nav>
+    <a class="kf-lunar-strip" href="/moonology.html">
+      <span class="kf-lunar-disks" aria-hidden="true"></span>
+      <span class="kf-lunar-label">Moonology</span>
+    </a>`;
+  if (!document.querySelector('link[data-moon-strip]')) {
+    const sheet = document.createElement('link');
+    sheet.rel = 'stylesheet';
+    sheet.href = '/moon-strip.css';
+    sheet.dataset.moonStrip = 'true';
+    document.head.append(sheet);
+  }
+  import('/moon-widget.mjs').then(({mountMoonStrip}) => mountMoonStrip(header.querySelector('.kf-lunar-strip'))).catch(() => {});
 
   const nav = header.querySelector(".kf-nav");
   // Keep orientation clear across the many sections of Ash-Fall.
@@ -299,8 +313,8 @@
   };
   const currentPath = normalizedPath(location.pathname);
   nav.querySelectorAll('a[href^="/"]').forEach(link => {
-    const destination = normalizedPath(new URL(link.getAttribute("href"), location.origin).pathname);
-    if (destination === currentPath) link.setAttribute("aria-current", "page");
+    const destination = new URL(link.getAttribute("href"), location.origin);
+    if (normalizedPath(destination.pathname) === currentPath && !destination.hash) link.setAttribute("aria-current", "page");
   });
   // Indicate which grouped section contains the current page.
   nav.querySelectorAll(".kf-nav-group").forEach(group => {
