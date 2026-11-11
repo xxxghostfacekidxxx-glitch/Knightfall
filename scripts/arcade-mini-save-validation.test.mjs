@@ -31,3 +31,25 @@ test('invalid nested or non-finite fields fail', () => {
   assert.equal(check('cube-composer', {grid:[[1,2,3]]}), false);
   assert.equal(check('skifree', {x:NaN,y:120,obstacles:[],tokens:[],lives:3}), false);
 });
+
+test('legacy Cinder Collider saves rebuild missing upgrade prices', () => {
+  const begin = source.indexOf('function normalizeSavedState(saved){');
+  const end = source.indexOf('async function resume()', begin);
+  assert.ok(begin >= 0 && end > begin, 'normalization must exist before resume');
+  const normalize = source.slice(begin, end);
+  const legacy = {particles:500, rate:0, scientists:2, upgrades:1, clicks:100};
+  const result = runInNewContext(`const id = "particle-clicker"; ${normalize}; normalizeSavedState(saved);`, {saved:legacy});
+  assert.equal(result.particles, 500, 'progress must be preserved');
+  assert.equal(result.upgrades, 1);
+  assert.equal(result.scientists, 2);
+  assert.equal(result.ratePrice, Math.ceil(50 * 1.65));
+  assert.equal(result.autoPrice, Math.ceil(120 * 1.8 ** 2));
+});
+test('new purchase prices survive save normalization without being reset', () => {
+  const begin = source.indexOf('function normalizeSavedState(saved){');
+  const end = source.indexOf('async function resume()', begin);
+  const normalize = source.slice(begin, end);
+  const result = runInNewContext(`const id = "particle-clicker"; ${normalize}; normalizeSavedState(saved);`, {saved:{particles:500, rate:0, scientists:1, upgrades:2, ratePrice:138, autoPrice:216}});
+  assert.equal(result.ratePrice, 138);
+  assert.equal(result.autoPrice, 216);
+});
