@@ -12,7 +12,7 @@ test("member wall scripts parse, load in order and expose a graceful mount",()=>
  assert.doesNotThrow(()=>new Script(ui,{filename:"profile-wall.js"}));
  assert.match(ui,/window\.KnightfallProfileWall=\{mount\}/);
  assert.ok(html.indexOf("/profile-wall.js?")<html.indexOf("/profile.js?"));
- assert.match(html,/profile-wall\.css\?v=20261111-wall1/);
+ assert.match(html,/profile-wall\.css\?v=20261111-wall2/);
  assert.match(file("profile.js"),/if\(window\.KnightfallProfileWall\?\.mount\)/);
 });
 test("real reactions and comments use authenticated API and text-safe rendering",()=>{
@@ -36,6 +36,17 @@ test("member reports are authenticated, text-safe and reach the existing staff q
  assert.doesNotMatch(ui,/\.innerHTML\s*=/);
  assert.match(css,/\.profile-wall-report-form\[hidden\]/);
  assert.ok(backend.includes('if(url.pathname==="/api/social/report"&&request.method==="POST")'));
+});
+test("signed-in members can bookmark posts and review a private saved shelf",()=>{
+ assert.match(ui,/\/api\/profile-wall\/saved/);
+ assert.match(ui,/\/bookmark/);
+ assert.match(ui,/is_saved/);
+ assert.match(ui,/savedSection\.id="profile-saved"/);
+ assert.match(ui,/function loadSaved\(\)/);
+ assert.match(ui,/node\.textContent=String\(content\)/);
+ assert.match(file("profile.js"),/\["#profile-saved","Saved"\]/);
+ assert.match(html,/profile-wall\.js\?v=20261111-wall2/);
+ assert.match(css,/#profile \.profile-wall-saved/);
 });
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
