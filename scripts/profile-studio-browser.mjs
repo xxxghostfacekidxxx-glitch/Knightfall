@@ -13,6 +13,8 @@ const blankUser={
 async function scenario(name,viewport){
  const context=await browser.newContext({viewport}),page=await context.newPage(),errors=[];
  const savedProfiles=[],savedLayouts=[],savedLinks=[],uploads=[],gallery=[];
+ const chartWrites=[];
+ let birthChart=null,birthVisible=false;
  let profileLinks=[];
  let user={...blankUser},layout=[{id:"favorites",visible:true},{id:"activity",visible:true},{id:"updates",visible:true},{id:"photos",visible:true}];
  page.on("pageerror",e=>errors.push(e.message));
@@ -33,7 +35,35 @@ async function scenario(name,viewport){
    const payload=JSON.parse(r.postData()||"{}");profileLinks=payload.links;savedLinks.push(payload);
    return respond(200,{ok:true,links:profileLinks,limit:8});
   }
-  if(path==="/api/profile/birth-chart")return respond(200,{chart:null,visible:false});
+  if(path==="/api/profile/birth-chart"){
+   if(method==="GET")return respond(200,{chart:birthChart,visible:birthVisible});
+   if(method==="DELETE"){birthChart=null;birthVisible=false;chartWrites.push({method});return respond(200,{ok:true});}
+   if(method==="PUT"){
+    const payload=JSON.parse(r.postData()||"{}");chartWrites.push({method,payload});
+    if(Object.keys(payload).length===1&&typeof payload.visible==="boolean"){
+      birthVisible=payload.visible;
+      return respond(200,{chart:birthChart,visible:birthVisible});
+    }
+    birthVisible=payload.visible===true;
+    birthChart={
+      zodiac:"tropical",time_precision:payload.time_unknown===true?"unknown":"provided",
+      house_system:payload.time_unknown?"Not calculated":"Equal houses (Ascendant-based)",
+      ascendant_sign:payload.time_unknown?null:"Cancer",
+      ascendant_degree:payload.time_unknown?null:13,
+      bodies:{
+       Sun:{sign:"Aries",degree:11,retrograde:false},
+       Moon:{sign:"Libra",degree:13,retrograde:false},
+       Mercury:{sign:"Taurus",degree:7,retrograde:true},
+       Venus:{sign:"Gemini",degree:15,retrograde:false},
+       Mars:{sign:"Leo",degree:17,retrograde:false},
+       Jupiter:{sign:"Sagittarius",degree:23,retrograde:false},
+       Saturn:{sign:"Capricorn",degree:5,retrograde:false}
+      },
+      house_placements:payload.time_unknown?null:{Sun:10,Moon:4,Mercury:11,Venus:12,Mars:2,Jupiter:6,Saturn:7}
+    };
+    return respond(200,{chart:birthChart,visible:birthVisible});
+   }
+  }
   if(path==="/api/profile"&&method==="PUT"){
    const values=JSON.parse(r.postData()||"{}");
    savedProfiles.push(values);user={...user,...values,show_activity:values.show_activity?1:0};return respond(200,{user});
@@ -176,6 +206,53 @@ async function scenario(name,viewport){
   assert.equal(publicLinks.count,2);
   assert.ok(publicLinks.cards.every(x=>x.href.startsWith("https://")&&x.rel.includes("noopener")&&x.target==="_blank"));
   assert.equal(publicLinks.rawHtmlLeak,false);
+  // Real signed-in page UI, mocked owner-session API: date-only private lifecycle.
+  await page.locator("#birth-chart-time-unknown").check();
+  await page.locator("#birth-chart-date-only").fill("1994-04-15");
+  await page.locator('#birth-chart-form button[type="submit"]').click();
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("Provisional chart saved"));
+  assert.equal(birthChart.time_precision,"unknown");
+  assert.equal(birthVisible,false,"Chart must remain private by default");
+  assert.equal(birthChart.ascendant_sign,null);
+  assert.equal(await page.locator(".cosmic-house-entry").count(),0,"Unknown time must not fabricate house readings");
+  const provisional=chartWrites.at(-1).payload;
+  assert.equal(provisional.time_unknown,true);
+  assert.equal(provisional.utc,"1994-04-15T12:00:00.000Z");
+  assert.equal("latitude" in provisional,false);
+  assert.equal("longitude" in provisional,false);
+  await page.locator("#birth-chart-visible").check();
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("published")||document.querySelector("#birth-chart-status")?.textContent.includes("visible"));
+  assert.equal(birthVisible,true);
+  await page.locator("#birth-chart-visible").uncheck();
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("hidden")||document.querySelector("#birth-chart-status")?.textContent.includes("private"));
+  assert.equal(birthVisible,false);
+  await page.locator("#birth-chart-remove").click();
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("deleted"));
+  assert.equal(birthChart,null);
+
+  // Precise-time chart with local geographic zone suggestion and 12 houses.
+  await page.locator("#birth-chart-local").fill("1994-04-15T12:15");
+  await page.locator("#birth-chart-city").fill("Des Moines, Iowa, USA");
+  await page.evaluate(()=>{
+   const sel=document.querySelector("#birth-chart-city-results");
+   const opt=new Option("Des Moines, Iowa, United States","test-city");
+   opt.dataset.lat="41.5868";opt.dataset.lon="-93.625";
+   sel.add(opt);sel.disabled=false;sel.value="test-city";
+   sel.dispatchEvent(new Event("change",{bubbles:true}));
+  });
+  assert.equal(await page.locator("#birth-chart-timezone").inputValue(),"America/Chicago");
+  await page.locator('#birth-chart-form button[type="submit"]').click();
+  await page.waitForFunction(()=>document.querySelector("#birth-chart-status")?.textContent.includes("Chart saved."));
+  assert.equal(birthChart.time_precision,"provided");
+  assert.equal(await page.locator(".cosmic-house-entry").count(),12);
+  assert.equal(await page.locator(".cosmic-interpretation-reading").count(),0,"Planet detail remains collapsed until selected");
+  await page.locator(".cosmic-focus-select").selectOption("Sun");
+  assert.match(await page.locator(".cosmic-interpretation-reading").textContent(),/traditional tropical astrology/);
+  assert.equal(chartWrites.at(-1).payload.utc,"1994-04-15T17:15:00.000Z");
+  assert.equal(chartWrites.at(-1).payload.latitude,41.5868);
+  assert.equal(chartWrites.at(-1).payload.longitude,-93.625);
+  assert.equal(birthVisible,false,"Detailed chart must not auto-publish");
+
   const widths=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(widths.page<=widths.viewport+2,"Mobile horizontal overflow "+JSON.stringify(widths));
   assert.deepEqual(errors,[],"Uncaught browser errors");
