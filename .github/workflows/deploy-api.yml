@@ -12,6 +12,7 @@ on:
       - 'scripts/registration-release.test.mjs'
       - 'scripts/turnstile.test.mjs'
       - 'scripts/turnstile-ui.test.mjs'
+      - '.github/workflows/deploy-api.yml'
   workflow_dispatch:
 
 permissions:
@@ -72,10 +73,42 @@ jobs:
       - name: Confirm migration separation
         run: echo 'Production D1 schema changes require the reviewed migration workflow.'
 
-      - name: Deploy Worker
+      # A deploy can fail while Cloudflare generates an existing D1 binding
+      # (validation error 10021) even if the database exists and all tests pass.
+      # Retry the identical safe deployment, never re-create or migrate D1.
+      - name: Deploy Worker (first attempt)
+        id: deploy_first
+        continue-on-error: true
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: backend
           command: deploy
+
+      - name: Retry Worker deploy (second attempt)
+        id: deploy_retry
+        if: steps.deploy_first.outcome == 'failure'
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy
+
+      - name: Final Worker deploy attempt
+        id: deploy_final
+        if: steps.deploy_first.outcome == 'failure' && steps.deploy_retry.outcome == 'failure'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy
+
+      - name: Explain persistent Cloudflare binding failure
+        if: always() && steps.deploy_first.outcome == 'failure' && steps.deploy_retry.outcome == 'failure' && steps.deploy_final.outcome == 'failure'
+        run: |
+          echo '::error::Cloudflare Worker deployment failed after three attempts. Inspect the Wrangler errors and verify the account, D1 database ID, and Cloudflare platform health. Do not delete production D1 data to bypass a binding error.'
+          exit 1
