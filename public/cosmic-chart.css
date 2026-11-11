@@ -71,3 +71,8 @@
 .cosmic-overlay-aspects ul{max-height:235px;overflow:auto;margin:.7rem 0 .15rem;padding-left:1.25rem;color:#eee1f2;font-size:.78rem;line-height:1.58}
 .cosmic-overlay-aspects li{padding-bottom:.2rem}
 #astro-overlay[hidden],#astro-transit-only[hidden]{display:none!important}
+
+.cosmic-export{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding-top:.45rem}
+.cosmic-export-button{border:1px solid #b1ffe4;background:#a9ffdf13;color:#d2ffef;padding:.58rem .85rem;border-radius:9px;font-weight:750;cursor:pointer;font-size:.81rem}
+.cosmic-export-button:hover,.cosmic-export-button:focus-visible{background:#a9ffdf30;outline:2px solid #ff91de;outline-offset:2px}
+.cosmic-export-status{color:#c8bedd;font-size:.73rem;line-height:1.4}
