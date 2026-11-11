@@ -71,6 +71,40 @@ test("unknown birth time never yields fabricated angles, house descriptions, or 
  assert.match(summary,/exclude Rising, Midheaven and houses/);
  assert.doesNotMatch(summary,/Angles:/);
 });
+test("transit spotlight combines calculated moving/natal aspects with distinct symbolic themes",()=>{
+ const lib=load();
+ const moving={bodies:{
+  Mars:{sign:"Libra",degree_in_sign:10},
+  Venus:{sign:"Aries",degree_in_sign:10}
+ }};
+ const a={transit:"Mars",natal:"Sun",type:"Opposition",orb:0.18};
+ const guide=lib.transitGuide(sample,moving,a);
+ assert.equal(guide.title,"Transit Mars opposition natal Sun");
+ assert.equal(guide.house,10);
+ assert.match(guide.summary,/Mars concerns energy, action/);
+ assert.match(guide.summary,/natal Sun concerns identity/);
+ assert.match(guide.summary,/house 10/);
+ assert.match(guide.reflection,/middle ground/);
+ assert.match(guide.disclaimer,/not an event prediction/);
+ const conjunct=lib.transitGuide(sample,moving,{transit:"Venus",natal:"Sun",type:"Conjunction",orb:1.1});
+ assert.ok(conjunct.summary.includes("intensified"));
+ assert.notEqual(guide.summary,conjunct.summary);
+});
+test("transit explanations protect uncertain birth time and reject nonexistent or over-orb aspects",()=>{
+ const lib=load();
+ const moving={bodies:{Mars:{sign:"Libra",degree_in_sign:10}}};
+ const a={transit:"Mars",natal:"Sun",type:"Opposition",orb:0};
+ const uncertain={...sample,time_precision:"unknown"};
+ const g=lib.transitGuide(uncertain,moving,a);
+ assert.equal(g.house,null);
+ assert.match(g.summary,/birth time is unknown/);
+ assert.doesNotMatch(g.summary,/house 10/);
+ assert.equal(lib.transitGuide(sample,moving,{...a,orb:2.1}),null);
+ assert.equal(lib.transitGuide(sample,moving,{...a,type:"Unicorn"}),null);
+ assert.equal(lib.transitGuide(sample,moving,{...a,transit:"Missing"}),null);
+ assert.match(lib.transitBrief(sample,moving,[a]),/Mars opposition natal Sun/);
+ assert.match(lib.transitBrief(sample,moving,[]),/No major transit-to-natal aspects/);
+});
 test("the interpretive code does not network, track, or store raw birth records",()=>{
  const source=read("public/cosmic-lexicon.js");
  assert.doesNotThrow(()=>new Script(source));
