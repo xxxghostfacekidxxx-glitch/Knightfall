@@ -76,7 +76,7 @@ export async function handleProfileWall(request,env,url,helpers){
       "(u.profile_visibility='friends' AND EXISTS (SELECT 1 FROM friend_requests fr WHERE fr.status='accepted' AND ((fr.requester_id=? AND fr.addressee_id=a.user_id) OR (fr.addressee_id=? AND fr.requester_id=a.user_id)))) "+
       "AND (a.visibility='public' OR "+
       "(a.visibility='followers' AND EXISTS (SELECT 1 FROM follows f WHERE f.follower_id=? AND f.following_id=a.user_id)) OR "+
-      "(a.visibility='friends' AND EXISTS (SELECT 1 FROM friend_requests fr WHERE fr.status='accepted' AND ((fr.requester_id=? AND fr.addressee_id=a.user_id) OR (fr.addressee_id=? AND fr.requester_id=a.user_id))))))) "+
+      "(a.visibility='friends' AND EXISTS (SELECT 1 FROM friend_requests fr WHERE fr.status='accepted' AND ((fr.requester_id=? AND fr.addressee_id=a.user_id) OR (fr.addressee_id=? AND fr.requester_id=a.user_id)))))))) "+
       "AND NOT EXISTS (SELECT 1 FROM user_blocks bl WHERE (bl.blocker_id=? AND bl.blocked_id=a.user_id) OR (bl.blocker_id=a.user_id AND bl.blocked_id=?)) "+
       "ORDER BY b.created_at DESC,a.id DESC LIMIT 30";
     const id=viewer.id;
