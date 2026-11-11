@@ -21,6 +21,13 @@
 .profile-shell .profile-quick-links a:focus-visible{
   color:#c6ff45;border-color:#c6ff45;background:#211a33;
 }
+/* Recover per-member theme backgrounds from earlier generic !important card rules. */
+body #profile.card{
+  background:
+    radial-gradient(circle at 12% 0%,var(--pf-spot,rgba(255,85,216,.16)),transparent 38%),
+    radial-gradient(circle at 95% 68%,var(--pf-spot-alt,rgba(121,255,231,.08)),transparent 48%),
+    linear-gradient(157deg,var(--pf-surface,#171323),var(--pf-surface-deep,#0d0f1b) 81%)!important;
+}
 #profile{
   --profile-glint:#ffe36b;
   --profile-ink:#0c0d19;
