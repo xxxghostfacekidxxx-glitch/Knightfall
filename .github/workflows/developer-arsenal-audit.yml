@@ -1,5 +1,13 @@
 name: Devil's Toolkit code and security audit
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/developer-arsenal-audit.yml'
+      - 'scripts/developer-arsenal*.mjs'
+      - 'public/devil-tools.html'
+      - 'public/admin-command-center.js'
+      - 'docs/developer-arsenal.md'
   pull_request:
   workflow_dispatch:
 permissions:
@@ -38,6 +46,14 @@ jobs:
           exit 1
       - name: Exercise Devil Tools in mobile browser fixtures
         run: node scripts/developer-arsenal-browser.mjs
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: developer-arsenal-browser-evidence
+          path: /tmp/developer-arsenal-browser-evidence/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run Biome advisory scan
         continue-on-error: true
         run: |
