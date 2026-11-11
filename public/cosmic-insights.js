@@ -70,12 +70,12 @@
    note:ASPECT_THEMES[a.type]||"A symbolic relationship between planetary themes"
   }));
  }
- function useAtlas(target,chart){
+ function useAtlas(target,chart,options={}){
   if(!target)return;
-  const data=summarize(chart);
+  const data=summarize(chart),isTransit=options.kind==="transit";
   const atlas=elt("section","cosmic-atlas");
-  const heading=elt("h3","","✧ Chart Atlas");
-  const intro=elt("p","cosmic-atlas-intro","Explore placements and patterns. Astrology is a symbolic tradition, not a scientifically proven personality test.");
+  const heading=elt("h3","",isTransit?"✧ Transit Sky Atlas":"✧ Chart Atlas");
+  const intro=elt("p","cosmic-atlas-intro",isTransit?"These are moving sky positions, not your birth chart. Explore the symbolic themes of the moment without treating them as predictions.":"Explore placements and patterns. Astrology is a symbolic tradition, not a scientifically proven personality test.");
   atlas.append(heading,intro);
   const stats=elt("div","cosmic-atlas-stats");
   if(data.ruler){
@@ -108,10 +108,10 @@
   const placementNames=Object.keys(chart?.bodies||{}).filter(name=>position(chart.bodies[name])!==null);
   if(placementNames.length){
    const panel=elt("section","cosmic-focus");
-   panel.append(elt("h4","","Focus a planet"));
+   panel.append(elt("h4","",isTransit?"Focus a moving planet":"Focus a planet"));
    const label=elt("label","cosmic-focus-label","Planet or point ");
    const selector=elt("select","cosmic-focus-select");
-   selector.setAttribute("aria-label","Choose a natal placement to explore");
+   selector.setAttribute("aria-label",isTransit?"Choose a transiting planet to explore":"Choose a natal placement to explore");
    selector.append(new Option("All placements",""));
    for(const name of placementNames)selector.append(new Option(name,name));
    label.append(selector);panel.append(label);
@@ -126,15 +126,20 @@
      for(const item of svg.querySelectorAll("[data-aspect-a]"))item.style.opacity=!name||item.getAttribute("data-aspect-a")===name||item.getAttribute("data-aspect-b")===name?"1":".07";
     }
     if(!name){
-      detail.append(elt("p","","Choose a planet to see its sign, house, major aspects and symbolic themes."));
+      detail.append(elt("p","",isTransit?"Choose a moving planet to see its current sign and major sky aspects. This is not a natal personality reading.":"Choose a planet to see its sign, house, major aspects and symbolic themes."));
       return;
     }
     const body=chart.bodies[name],house=chart.house_placements?.[name];
-    detail.append(elt("strong","",name+" in "+body.sign+" · "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"));
+    detail.append(elt("strong","",(isTransit?"Transiting ":"")+name+" in "+body.sign+" · "+Number(body.degree_in_sign??body.degree).toFixed(1)+"°"));
     if(Number.isInteger(house)&&house>=1&&house<=12)
      detail.append(elt("p","","House "+house+": "+HOUSE_THEMES[house-1]+"."));
-    const interpretation=window.KnightfallCosmicLexicon?.placement?.(chart,name);
-    if(interpretation){
+    const lexicon=window.KnightfallCosmicLexicon,interpretation=!isTransit?lexicon?.placement?.(chart,name):null;
+    if(isTransit){
+      const scope=lexicon?.PLANETS?.[name]?.scope||THEMES[name]||"a traditional planetary theme";
+      const style=lexicon?.SIGNS?.[body.sign]?.style||"a symbolic zodiac style";
+      detail.append(elt("p","cosmic-transit-context","This transiting planet is currently associated with "+scope.toLowerCase()+" and is in "+body.sign+", traditionally described as "+style+". It describes the chosen sky, not a person's natal character."));
+      if(body.retrograde)detail.append(elt("p","cosmic-interpretation-retrograde","Retrograde in the calculated sky: apparent backward motion from Earth, not evidence of future events."));
+    }else if(interpretation){
      detail.append(elt("p","cosmic-interpretation-reading",interpretation.reading));
      if(interpretation.houseReading)detail.append(elt("p","cosmic-interpretation-house",interpretation.houseReading));
      if(interpretation.retrograde)detail.append(elt("p","cosmic-interpretation-retrograde",interpretation.retrograde));
