@@ -65,6 +65,7 @@ async function mount(root,member,own){
    const instruction=node("p","","Select up to three creations. Your selection order determines the display order.");
    const list=node("div","profile-showcase-picker");
    const actions=node("div","profile-showcase-actions");
+   let selected=[];
    const save=button("Save featured creations",async()=>{
     save.disabled=true;feedback.textContent="Saving showcase…";
     try{
@@ -80,7 +81,7 @@ async function mount(root,member,own){
    let photos=[];
    try{const d=await api("/api/profile/photos?username="+encodeURIComponent(member.username));photos=(d.photos||[]).slice(0,60)}catch(e){feedback.textContent=e.message;return}
    const current=await api("/api/profile-showcase?username="+encodeURIComponent(member.username));
-   let selected=current.featured.map(p=>p.photo_id);
+   selected=current.featured.map(p=>p.photo_id);
    const redraw=()=>{
     list.replaceChildren();
     if(!photos.length)list.append(node("p","profile-showcase-empty","Upload a gallery photo first, then feature it here."));
