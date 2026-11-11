@@ -41,7 +41,7 @@ export function calculateAngles(iso, latitude, longitude, houseSystem="equal"){
  const firstCusp=houseSystem==="whole-sign"?Math.floor(asc/30)*30:asc;
  const houses=Array.from({length:12},(_,i)=>Number(norm(firstCusp+i*30).toFixed(3)));
  const midheaven=norm(Math.atan2(Math.sin(theta),Math.cos(theta)*Math.cos(eps))*deg);
- return {ascendant:Number(asc.toFixed(3)),ascendant_sign:signs[Math.floor(asc/30)],midheaven:Number(midheaven.toFixed(3)),midheaven_sign:signs[Math.floor(midheaven/30)],houses,house_system:houseSystem==="whole-sign"?"Whole sign":"Equal houses (Ascendant-based)",latitude:lat,longitude:lon,limitations:"Apparent sidereal time and true obliquity from Astronomy Engine; geometric horizon, without atmospheric refraction or topocentric correction. Equal and whole-sign houses only, not Placidus; extreme latitudes unsupported."};
+ return {ascendant:Number(asc.toFixed(3)),ascendant_sign:signs[Math.floor(asc/30)],true_obliquity_degrees:Number(obliquity.toFixed(6)),midheaven:Number(midheaven.toFixed(3)),midheaven_sign:signs[Math.floor(midheaven/30)],houses,house_system:houseSystem==="whole-sign"?"Whole sign":"Equal houses (Ascendant-based)",latitude:lat,longitude:lon,limitations:"Apparent sidereal time and true obliquity from Astronomy Engine; geometric horizon, without atmospheric refraction or topocentric correction. Equal and whole-sign houses only, not Placidus; extreme latitudes unsupported."};
 }
 export function calculateAstrology(iso,location,houseSystem="equal"){
  const time=new Date(iso);
