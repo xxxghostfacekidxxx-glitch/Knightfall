@@ -56,6 +56,14 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Verify new fleet run installs Chromium and passes all ten shards; diagnose any missing Linux shared libraries separately.
 - [ ] Retest actual local/live game behavior before closing [#192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192). Mobile device acceptance still outstanding.
 
+## Arcade fleet follow-up — November 11, 2026
+
+- [x] Reviewed new [run 43106340803](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43106340803) after pinning Ubuntu 24.04: Chromium installed and launched; all ten live shards covered 132/132 hosted routes with zero reported live route failures.
+- [x] Identified the shared new CI failure: gameplay doctor `async-resume-syntax` invariant expected the older unguarded `async function resume(){try{await...` shape; newer source correctly adds `resumeRequest` and `loopGeneration` guards.
+- [x] Corrected the invariant in [96b14f9](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/96b14f9bba358006562a0235268ba3e0ad9979d7) without altering arcade gameplay. Re-read both repository files and checked the new regex matches protected Resume and rejects legacy unguarded Resume.
+- [ ] Full arcade CI remains red for run 43106340803: local shards were never executed because validation exited early, so fleet summary `passed` is false despite 132/132 live route coverage.
+- [ ] Await a new complete run of all ten local and live shards, specialized tests and coverage consolidation before resolving #192. A green summary and mobile acceptance are distinct requirements.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
