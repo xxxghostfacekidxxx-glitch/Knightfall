@@ -50,7 +50,9 @@ function canReadPost(post,viewer,relationship){
 async function readPost(env,postId,viewer,helpers){
   const post=await env.DB.prepare("SELECT a.id,a.user_id,a.body,a.visibility,a.created_at,a.updated_at,a.deleted_at,u.username,u.display_name,u.profile_visibility,u.status FROM social_activity a JOIN users u ON u.id=a.user_id WHERE a.id=? AND a.activity_type='status' AND a.deleted_at IS NULL LIMIT 1").bind(postId).first();
   if(!post)return {status:404,error:"Update not found."};
-  const relationship=await memberAccess(env,post,viewer,helpers);
+  // A status id and its author's user id are not interchangeable.
+  // Use the actual author for friend, follow, block and privacy checks.
+  const relationship=await memberAccess(env,{...post,id:post.user_id},viewer,helpers);
   if(relationship.status||!canReadPost(post,viewer,relationship))return {status:404,error:"Update not available."};
   return {post,relationship};
 }
