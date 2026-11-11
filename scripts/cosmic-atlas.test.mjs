@@ -124,6 +124,34 @@ test("dual-ring overlay keeps natal ASC and houses, adds transit symbols and com
  const aspectDetails=find(target,node=>String(node.className||"")==="cosmic-overlay-aspects");
  assert.ok(aspectDetails);
 });
+test("interactive transit filter focuses moving planet, dims unrelated SVG aspects, and shows meanings",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ const moving={bodies:{
+  Mars:{sign:"Libra",degree_in_sign:10},
+  Venus:{sign:"Aries",degree_in_sign:10},
+  Jupiter:{sign:"Leo",degree_in_sign:17}
+ }};
+ window.KnightfallCosmic.render(target,sample,{kind:"overlay",transitChart:moving});
+ const filter=find(target,x=>x.tagName==="select"&&String(x.className)==="cosmic-transit-select");
+ assert.ok(filter);
+ assert.equal(filter.attributes["aria-label"],"Filter transit-to-natal connections by moving planet");
+ const details=find(target,x=>String(x.className)==="cosmic-transit-detail");
+ assert.ok(details);
+ const interpretation=find(target,x=>String(x.className)==="cosmic-transit-reflection");
+ assert.ok(interpretation);
+ assert.match(interpretation.textContent,/Reflect:/);
+ filter.value="Mars";filter.listeners.change();
+ const lines=target.querySelectorAll("[data-overlay-moving]");
+ assert.ok(lines.some(l=>l.getAttribute("data-overlay-moving")==="Mars"&&l.style.opacity==="1"));
+ assert.ok(lines.some(l=>l.getAttribute("data-overlay-moving")!=="Mars"&&l.style.opacity===".08"));
+ const symbols=target.querySelectorAll("[data-transit-planet]");
+ assert.ok(symbols.some(p=>p.getAttribute("data-transit-planet")==="Venus"&&p.style.opacity===".2"));
+ const items=[];const collect=node=>{if(String(node.className)==="cosmic-transit-connection")items.push(node);for(const c of node.children||[])collect(c);};collect(target);
+ assert.ok(items.some(x=>x.getAttribute("data-transit-moving")==="Mars"&&x.hidden===false));
+ assert.ok(items.some(x=>x.getAttribute("data-transit-moving")!=="Mars"&&x.hidden===true));
+ filter.value="";filter.listeners.change();
+ assert.ok(items.every(x=>x.hidden===false));
+});
 test("transit-only view never displays fabricated natal houses or rising labels",()=>{
  const {window,document}=mount(),target=document.createElement("main");
  window.KnightfallCosmic.render(target,{bodies:{Mars:{sign:"Aries",degree:2},Venus:{sign:"Libra",degree:2}}},{kind:"transit"});
