@@ -122,6 +122,33 @@ test("comments have bounded length and owner/moderator removal rights",async()=>
  assert.equal((await f.call("/api/profile-wall/comments/77","DELETE",{id:11})).status,200);
  assert.match(f.state.writes[1].sql,/SET deleted_at=/);
 });
+test("bookmarks are owner-only and reuse the existing private saved-post table",async()=>{
+ const path="/api/profile-wall/posts/23/bookmark";
+ assert.equal((await fixture().call("/api/profile-wall/saved")).status,401);
+ assert.equal((await fixture().call(path,"POST")).status,401);
+ const f=fixture();
+ const created=await f.call(path,"POST",{id:22});
+ assert.equal(created.status,200);
+ assert.equal(created.data.saved,true);
+ assert.match(f.state.writes[0].sql,/INSERT OR IGNORE INTO social_bookmarks/);
+ assert.deepEqual(f.state.writes[0].params.slice(0,2),[22,"23"]);
+ const removed=await f.call(path,"DELETE",{id:22});
+ assert.equal(removed.status,200);
+ assert.equal(removed.data.saved,false);
+ assert.match(f.state.writes[1].sql,/DELETE FROM social_bookmarks/);
+});
+test("saved updates do not bypass private profiles, followers or blocked authors",async()=>{
+ const f=fixture();
+ const r=await f.call("/api/profile-wall/saved","GET",{id:22});
+ assert.equal(r.status,200);
+ const query=f.state.requests.find(item=>item.kind==="all");
+ assert.ok(query);
+ assert.match(query.sql,/u.profile_visibility='friends'/);
+ assert.match(query.sql,/u.profile_visibility='public'/);
+ assert.match(query.sql,/a.visibility='followers'/);
+ assert.match(query.sql,/NOT EXISTS \(SELECT 1 FROM user_blocks/);
+ assert.equal((query.sql.match(/\?/g)||[]).length,query.params.length);
+});
 test("rate limit blocks writes before database changes",async()=>{
  const f=fixture({rateLimited:true});
  const r=await f.call("/api/profile-wall/posts/23/reactions","POST",{id:22},{reaction:"fire"});
