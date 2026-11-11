@@ -76,3 +76,23 @@
 .cosmic-export-button{border:1px solid #b1ffe4;background:#a9ffdf13;color:#d2ffef;padding:.58rem .85rem;border-radius:9px;font-weight:750;cursor:pointer;font-size:.81rem}
 .cosmic-export-button:hover,.cosmic-export-button:focus-visible{background:#a9ffdf30;outline:2px solid #ff91de;outline-offset:2px}
 .cosmic-export-status{color:#c8bedd;font-size:.73rem;line-height:1.4}
+
+/* Nuanced symbolic chart interpretation library */
+.cosmic-interpretation-reading,.cosmic-interpretation-house,.cosmic-interpretation-retrograde,.cosmic-interpretation-tension{font-size:.81rem;line-height:1.57}
+.cosmic-interpretation-reading{color:#eee6f7}
+.cosmic-interpretation-house{color:#bcfce8}
+.cosmic-interpretation-retrograde{color:#efd8ff}
+.cosmic-interpretation-tension{color:#eac5df}
+.cosmic-reflection-question{margin-top:.65rem;padding:.65rem .75rem;border-radius:9px;background:#a4ffe310;border:1px solid #a4ffe370}
+.cosmic-reflection-question strong{color:#b9ffec;font-size:.78rem}
+.cosmic-reflection-question p{color:#e1f6ee;margin:.24rem 0;font-size:.79rem}
+.cosmic-angle-guide,.cosmic-house-guide{border:1px solid #ff99d85b;border-radius:12px;padding:.7rem .8rem;background:#101322}
+.cosmic-angle-guide>summary,.cosmic-house-guide>summary{cursor:pointer;color:#ffd1ef;font-size:.89rem;font-weight:750}
+.cosmic-angle-card{padding:.65rem .25rem;border-bottom:1px solid #ffffff19}
+.cosmic-angle-card strong{color:#f4e8ff;font-size:.85rem}
+.cosmic-angle-card p{color:#cfd2e2;font-size:.79rem;line-height:1.5;margin:.22rem 0}
+.cosmic-house-entry{padding:.55rem .35rem;margin:.27rem 0;border-bottom:1px solid #aaffdd22}
+.cosmic-house-entry summary{cursor:pointer;color:#c0ffe7;font-size:.81rem;font-weight:700;line-height:1.35}
+.cosmic-house-entry p{font-size:.77rem;color:#ddd1e8;line-height:1.5;margin:.45rem 0}
+.cosmic-house-entry .cosmic-house-question{color:#f3cfe8}
+@media(max-width:350px){.cosmic-angle-guide,.cosmic-house-guide{padding:.55rem .5rem}.cosmic-house-entry summary{font-size:.77rem}}
