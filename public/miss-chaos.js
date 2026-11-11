@@ -355,7 +355,7 @@
   moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
-  let latestNatalUtc = null,latestSavedChart=null,latestChartSubject="me",astroCityVersion=0;
+  let latestNatalUtc = null,latestSavedChart=null,latestTransitChart=null,latestChartSubject="me",astroCityVersion=0;
   const astroUnknown=$("#astro-time-unknown"),astroDateOnly=$("#astro-date-only");
   const syncUnknownAstroTime=()=>{
     $("#astro-date-only-label").hidden=!astroUnknown.checked;
@@ -369,7 +369,8 @@
   const astroPreview=$("#astro-preview");
   function prepareCosmicReading(chart,message,subject="me"){
     if(!chart?.bodies||!window.KnightfallCosmic)throw Error("Chart visualization is unavailable. Refresh the page.");
-    latestSavedChart=chart;latestChartSubject=subject;
+    latestSavedChart=chart;latestTransitChart=null;latestChartSubject=subject;
+    $("#astro-overlay").hidden=true;$("#astro-transit-only").hidden=true;$("#astro-natal-back").hidden=true;
     moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
     astroPreview.hidden=false;window.KnightfallCosmic.render(astroPreview,chart);
     input.value=window.KnightfallCosmic.prompt(chart,subject);
@@ -385,7 +386,7 @@
     try{
       const own=await request("/api/profile/birth-chart");
       if(!own.chart)throw Error("Create your own profile birth chart before comparing.");
-      latestSavedChart=own.chart;latestChartSubject="me";
+      latestSavedChart=own.chart;latestTransitChart=null;latestChartSubject="me";
       const member=await request("/api/users/"+encodeURIComponent(username));
       if(!member?.birth_chart?.bodies)throw Error("This member has no birth chart available to you. They may choose to publish one in Profile Studio.");
       const other=member.birth_chart;
@@ -502,7 +503,8 @@
     try {
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(chartRequest)});
       latestNatalUtc = utc;
-      latestSavedChart=chart;latestChartSubject="me";
+      latestSavedChart=chart;latestTransitChart=null;latestChartSubject="me";
+      $("#astro-overlay").hidden=true;$("#astro-transit-only").hidden=true;$("#astro-natal-back").hidden=true;
       astroPreview.hidden=false;window.KnightfallCosmic?.render(astroPreview,chart);
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
@@ -515,11 +517,31 @@
     } catch (error) { status.textContent = error.message || "Chart calculation failed."; }
     finally { button.disabled = false; }
   });
+  function showTransitView(view){
+    if(!window.KnightfallCosmic||!latestTransitChart?.bodies)throw Error("Calculate transits before changing chart views.");
+    if(view==="overlay"&&latestSavedChart?.bodies){
+      window.KnightfallCosmic.render(astroPreview,latestSavedChart,{kind:"overlay",transitChart:latestTransitChart});
+    }else if(view==="natal"&&latestSavedChart?.bodies){
+      window.KnightfallCosmic.render(astroPreview,latestSavedChart);
+    }else{
+      window.KnightfallCosmic.render(astroPreview,latestTransitChart,{kind:"transit"});
+      view="transit";
+    }
+    astroPreview.hidden=false;
+    $("#astro-overlay").hidden=!latestSavedChart?.bodies||view==="overlay";
+    $("#astro-transit-only").hidden=view==="transit"||!latestSavedChart?.bodies;
+    $("#astro-natal-back").hidden=view==="natal"||!latestSavedChart?.bodies;
+  }
+  $("#astro-overlay").addEventListener("click",()=>{try{showTransitView("overlay");}catch(error){$("#astro-chart-status").textContent=error.message;}});
+  $("#astro-transit-only").addEventListener("click",()=>{try{showTransitView("transit");}catch(error){$("#astro-chart-status").textContent=error.message;}});
   $("#astro-natal-back").addEventListener("click",()=>{
     if(!latestSavedChart?.bodies){$("#astro-chart-status").textContent="Calculate or load your natal chart first.";return;}
-    window.KnightfallCosmic.render(astroPreview,latestSavedChart);
-    $("#astro-chart-status").textContent="Natal wheel restored. Chart data remains in this browser session.";
-    $("#astro-natal-back").hidden=true;
+    if(latestTransitChart?.bodies)showTransitView("natal");
+    else{
+      window.KnightfallCosmic.render(astroPreview,latestSavedChart);
+      $("#astro-natal-back").hidden=true;
+    }
+    $("#astro-chart-status").textContent="Natal wheel restored. Derived chart data stays in this browser session.";
   });
   $("#astro-transits").addEventListener("click", async event => {
     const button = event.currentTarget, status = $("#astro-chart-status");
@@ -538,10 +560,9 @@
       const body = latestNatalUtc ? {utc,natal_utc:latestNatalUtc} : {utc};
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(body)});
       const positions = chart.transit_bodies || chart.bodies || {};
+      latestTransitChart={bodies:positions};
       if(window.KnightfallCosmic){
-        astroPreview.hidden=false;
-        window.KnightfallCosmic.render(astroPreview,{bodies:positions},{kind:"transit"});
-        $("#astro-natal-back").hidden=!latestSavedChart?.bodies;
+        showTransitView(latestSavedChart?.bodies?"overlay":"transit");
       }
       const placements = Object.entries(positions).map(([name,p]) => name + " " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " Rx" : "")).join("; ");
       const links=chart.transit_aspects || (latestSavedChart&&window.KnightfallCosmic?window.KnightfallCosmic.transitAspects({bodies:positions},latestSavedChart):null);
@@ -549,7 +570,7 @@
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
       input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. "+(latestChartSubject==="member"?"These are transits to another member\u0027s publicly shared natal placements, not mine. ":"")+"UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
-      status.textContent = (chosen?"Transit view for "+chosen+" at 12:00 UTC. ":"Live transit view. ")+(links?"Natal aspects compared. Review and Send.":"Calculate or load a natal chart for personal aspects.");
+      status.textContent = (chosen?"Transit view for "+chosen+" at 12:00 UTC. ":"Live transit view. ")+(links?"Natal aspect overlay displayed in mint and pink. Review and Send.":"Load a natal chart to add overlay comparisons.");
       input.focus();
     } catch (error) { status.textContent = error.message || "Transit calculation failed."; }
     finally { button.disabled = false; }
