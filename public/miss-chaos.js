@@ -567,8 +567,9 @@
       const placements = Object.entries(positions).map(([name,p]) => name + " " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " Rx" : "")).join("; ");
       const links=chart.transit_aspects || (latestSavedChart&&window.KnightfallCosmic?window.KnightfallCosmic.transitAspects({bodies:positions},latestSavedChart):null);
       const aspects=(links||chart.aspects||[]).slice(0,22).map(a=>links?a.transit+" "+a.type+" natal "+a.natal+" (orb "+a.orb+"°)":a.a+" "+a.type+" "+a.b+" (orb "+a.orb+"°)").join("; ");
+      const transitMeanings=latestSavedChart?.bodies&&Array.isArray(links)?window.KnightfallCosmicLexicon?.transitBrief?.(latestSavedChart,{bodies:positions},links)||"":".";
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. "+(latestChartSubject==="member"?"These are transits to another member\u0027s publicly shared natal placements, not mine. ":"")+"UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
+      input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. "+(latestChartSubject==="member"?"These are transits to another member\u0027s publicly shared natal placements, not mine. ":"")+"UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". "+transitMeanings+" Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
       status.textContent = (chosen?"Transit view for "+chosen+" at 12:00 UTC. ":"Live transit view. ")+(links?"Natal aspect overlay displayed in mint and pink. Review and Send.":"Load a natal chart to add overlay comparisons.");
       input.focus();
