@@ -2075,12 +2075,17 @@ For complex questions, organize the answer clearly and provide actionable detail
     let stored=previous?.chart_json||"";
     if(body.utc!==undefined){
       if(typeof body.utc!=="string"||body.utc.length>40||!/^\d{4}-\d{2}-\d{2}T/.test(body.utc))return json({error:"Valid UTC birth time required."},400,origin);
-      if(!Number.isFinite(body.latitude)||!Number.isFinite(body.longitude)||body.latitude < -66||body.latitude > 66||body.longitude < -180||body.longitude > 180)return json({error:"Valid birth latitude and longitude are required."},400,origin);
-      if(!["equal","whole-sign"].includes(body.house_system))return json({error:"Unsupported house system."},400,origin);
+      if(body.time_unknown!==undefined&&typeof body.time_unknown!=="boolean")return json({error:"Invalid birth-time precision flag."},400,origin);
+      const timeUnknown=body.time_unknown===true;
+      if(!timeUnknown&&(!Number.isFinite(body.latitude)||!Number.isFinite(body.longitude)||body.latitude < -66||body.latitude > 66||body.longitude < -180||body.longitude > 180))return json({error:"Valid birth latitude and longitude are required."},400,origin);
+      if(!timeUnknown&&(!["equal","whole-sign"].includes(body.house_system)))return json({error:"Unsupported house system."},400,origin);
       try{
-        const result=calculateAstrology(body.utc,{latitude:body.latitude,longitude:body.longitude},body.house_system);
+        // With no reliable birth time we use a provisional noon-UTC sample, never invent an Ascendant or houses.
+        // The client supplies noon UTC for an unknown-time date; do not trust client-supplied houses or angles.
+        if(timeUnknown&&!/^\\d{4}-\\d{2}-\\d{2}T12:00:00(?:\\.000)?Z$/.test(body.utc))return json({error:"Unknown-time charts must use 12:00 UTC on the provided birth date."},400,origin);
+        const result=calculateAstrology(body.utc,timeUnknown?null:{latitude:body.latitude,longitude:body.longitude},timeUnknown?"equal":body.house_system);
         // Deliberately omit UTC birth timestamp and exact birth coordinates from the public card.
-        stored=JSON.stringify({zodiac:result.zodiac,house_system:result.angles.house_system,ascendant_sign:result.angles.ascendant_sign,ascendant_degree:Number((result.angles.ascendant%30).toFixed(1)),midheaven_sign:result.angles.midheaven_sign,bodies:Object.fromEntries(Object.entries(result.bodies).map(([name,p])=>[name,{sign:p.sign,degree:Number(p.degree_in_sign.toFixed(1)),retrograde:p.retrograde}])),house_placements:result.house_placements});
+        stored=JSON.stringify({zodiac:result.zodiac,time_precision:timeUnknown?"unknown":"provided",house_system:result.angles?.house_system||"Not calculated",ascendant_sign:result.angles?.ascendant_sign||null,ascendant_degree:result.angles?Number((result.angles.ascendant%30).toFixed(1)):null,midheaven_sign:result.angles?.midheaven_sign||null,bodies:Object.fromEntries(Object.entries(result.bodies).map(([name,p])=>[name,{sign:p.sign,degree:Number(p.degree_in_sign.toFixed(1)),retrograde:p.retrograde}])),house_placements:result.house_placements});
       }catch(error){return json({error:error.message||"Unable to calculate birth chart."},400,origin)}
     }
     if(!stored)return json({error:"Calculate a chart before changing its visibility."},400,origin);
