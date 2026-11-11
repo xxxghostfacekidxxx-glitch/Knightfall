@@ -111,3 +111,6 @@
 .cosmic-transit-detail p{font-size:.76rem;line-height:1.55;color:#d9cfe2;margin:.55rem 0 .2rem}
 .cosmic-transit-detail p.cosmic-transit-reflection{color:#f4c5e7;border-top:1px solid #ffffff16;padding-top:.45rem}
 @media(max-width:360px){.cosmic-transit-filter{display:block}.cosmic-transit-select{width:100%;margin-top:.35rem;min-width:0}.cosmic-overlay-aspects .cosmic-transit-connections{max-height:260px}}
+
+/* Voluntarily shared chart-to-chart comparison */
+.cosmic-compare-disclaimer{padding:.66rem .75rem;border:1px solid #ffb4df75;border-radius:10px;background:#ff80cd10;color:#f3d4ea;font-size:.78rem;line-height:1.55;margin:.35rem 0}
