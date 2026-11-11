@@ -12,7 +12,7 @@ test("the profile scripts parse and keep identity context server-owned",()=>{
   assert.doesNotThrow(()=>new Script(mascots,{filename:"profile-mascots.js"}));
   assert.match(profile,/const ownProfile=!!me\.user&&String\(me\.user\.id\)===String\(d\.user\.id\)/);
   assert.match(profile,/if\(primaryError\.status===401\|\|primaryError\.status===403\|\|primaryError\.status===404\)throw primaryError/);
-  assert.match(profile,/if\(u\.show_activity === 0\) root\.querySelector\("\.activity-grid"\)\?\.remove\(\)/);
+  assert.match(profile,/if\s*\(u\.show_activity\s*===\s*0\)\s*root\.querySelector\("\.activity-grid"\)\?\.remove\(\)/);
 });
 test("context-aware owner and visitor navigation replaces static misleading links",()=>{
   assert.match(page,/id="profile-quick-links"/);
