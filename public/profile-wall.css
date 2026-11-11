@@ -139,3 +139,33 @@
 @media(prefers-reduced-motion:reduce){
  #profile .profile-wall *{animation:none!important;transition:none!important}
 }
+
+/* Member-submitted reports enter the existing staff safety queue. */
+#profile .profile-wall-report-toggle{
+ min-height:40px;padding:.5rem .7rem;margin-left:auto;
+ border:1px solid #5b415f;border-radius:10px;background:#1a1726;
+ color:#ddcbdc;font-family:inherit;font-size:.75rem;line-height:1.25;font-weight:800;cursor:pointer;
+}
+#profile .profile-wall-report-toggle:hover{
+ color:#ffe36b;border-color:#ffe36b;
+}
+#profile .profile-wall-report-form{
+ display:grid;gap:.75rem;margin:0;padding:1rem;
+ border:1px solid #79506b;border-radius:12px;
+ background:linear-gradient(140deg,#1f1629,#10111e);
+}
+#profile .profile-wall-report-form[hidden]{display:none!important}
+#profile .profile-wall-report-form>strong{font-size:.9rem;color:#fff0fa}
+#profile .profile-wall-report-form label{
+ display:grid;gap:.38rem;font-size:.77rem;font-weight:800;color:#d5c8e5;
+}
+#profile .profile-wall-report-form textarea{min-height:68px}
+#profile .profile-wall-report-actions{
+ display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+}
+#profile .profile-wall-report-actions>*{min-height:44px}
+#profile .profile-wall-report-form button[hidden]{display:none!important}
+@media(max-width:660px){
+ #profile .profile-wall-report-toggle{margin-left:0;flex:1 1 100%}
+ #profile .profile-wall-report-actions>*{flex:1 1 125px}
+}
