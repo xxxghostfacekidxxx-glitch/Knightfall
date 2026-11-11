@@ -6,6 +6,7 @@ import {Script} from "node:vm";
 const file=path=>readFileSync(new URL("../public/"+path,import.meta.url),"utf8");
 const ui=file("profile-wall.js"),css=file("profile-wall.css"),html=file("profile.html");
 const links=file("profile-links-view.js"),linkCss=file("profile-links.css");
+const wallApiSource=readFileSync(new URL("../backend/src/profile-wall.js",import.meta.url),"utf8");
 const editor=file("profile-edit.html"),backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
 
 test("member wall scripts parse, load in order and expose a graceful mount",()=>{
