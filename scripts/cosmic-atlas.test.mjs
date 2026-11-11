@@ -175,6 +175,34 @@ test("planet explorer renders nuanced sign and house interpretations with questi
  assert.ok(house);
  assert.equal(house.children.filter(n=>String(n.className)==="cosmic-house-entry").length,12);
 });
+test("published member comparison renders two natal rings with individualized aspect explanations",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ const other={bodies:{
+  Venus:{sign:"Aries",degree:10},
+  Mars:{sign:"Libra",degree:10},
+  Moon:{sign:"Capricorn",degree:20}
+ }};
+ window.KnightfallCosmic.render(target,sample,{kind:"synastry",comparisonChart:other,comparisonLabel:"@member_2"});
+ const svg=target.querySelector("svg");
+ assert.match(svg.attributes["aria-label"],/Two shared natal charts/);
+ assert.ok(svg.querySelectorAll("[data-planet]").length>0);
+ assert.ok(svg.querySelectorAll("[data-transit-planet]").length>0);
+ assert.ok(svg.querySelectorAll("[data-overlay-moving]").length>0);
+ const notice=find(target,x=>String(x.className)==="cosmic-compare-disclaimer");
+ assert.match(notice.textContent,/voluntarily shared natal charts/);
+ const legend=find(target,x=>String(x.className)==="cosmic-legend-transit");
+ assert.match(legend.textContent,/@member_2/);
+ const filter=find(target,x=>String(x.className)==="cosmic-transit-select");
+ assert.equal(filter.attributes["aria-label"],"Filter natal comparisons by other member’s planet");
+ const guide=find(target,x=>String(x.className)==="cosmic-transit-reflection");
+ assert.match(guide.textContent,/Reflect:/);
+ const head=find(target,x=>String(x.className)==="cosmic-transit-detail");
+ assert.match(head.children[0].textContent,/First chart/);
+ filter.value="Venus";filter.listeners.change();
+ const moving=svg.querySelectorAll("[data-transit-planet]");
+ assert.ok(moving.some(x=>x.getAttribute("data-transit-planet")==="Mars"&&x.style.opacity===".2"));
+ assert.ok(moving.some(x=>x.getAttribute("data-transit-planet")==="Venus"&&x.style.opacity==="1"));
+});
 test("transit-only explorer avoids treating moving planets as someone's natal character",()=>{
  const {window,document}=mount(),target=document.createElement("main");
  const moving={bodies:{Sun:{sign:"Libra",degree:14},Mars:{sign:"Cancer",degree:7,retrograde:true},Moon:{sign:"Sagittarius",degree:4}}};
