@@ -48,6 +48,31 @@ test('owner calculates, saves privately, publishes, hides, and deletes a chart',
  assert.equal((await request('PUT',{visible:false})).data.visible,false);
  assert.equal((await request('DELETE')).status,200);assert.equal(charts.size,0);assert.equal((await request()).data.chart,null);
 });
+test('unknown birth time stores a provisional chart without location-derived angles',async()=>{
+ const {request,charts}=fixture();
+ const dateOnly={visible:false,utc:'1990-06-15T12:00:00.000Z',time_unknown:true};
+ const saved=await request('PUT',dateOnly);
+ assert.equal(saved.status,200,JSON.stringify(saved.data));
+ assert.equal(saved.data.chart.time_precision,'unknown');
+ assert.equal(saved.data.chart.ascendant_sign,null);
+ assert.equal(saved.data.chart.midheaven_sign,null);
+ assert.equal(saved.data.chart.house_placements,null);
+ assert.ok(saved.data.chart.bodies.Sun);
+ assert.ok(saved.data.chart.bodies.Moon);
+ const stored=JSON.parse(charts.get(1).chart_json);
+ for(const key of ['utc','latitude','longitude'])assert.equal(key in stored,false);
+ assert.equal((await request('PUT',{visible:true})).data.visible,true);
+ assert.equal((await request('PUT',{visible:false})).data.visible,false);
+ assert.equal((await request('DELETE')).status,200);
+ assert.equal(charts.size,0);
+});
+test('provisional charts reject false exact-time claims and invalid precision flags',async()=>{
+ const {request,charts}=fixture();
+ const base={visible:false,utc:'1990-06-15T12:00:00Z',time_unknown:true};
+ assert.equal((await request('PUT',{...base,utc:'1990-06-15T06:00:00Z'})).status,400);
+ assert.equal((await request('PUT',{...base,time_unknown:'yes'})).status,400);
+ assert.equal(charts.size,0);
+});
 test('anonymous, expired, and cross-origin requests cannot mutate charts',async()=>{
  const {request,charts}=fixture();
  for(const method of ['GET','PUT','DELETE'])assert.equal((await request(method,method==='PUT'?input:undefined,null)).status,401);
