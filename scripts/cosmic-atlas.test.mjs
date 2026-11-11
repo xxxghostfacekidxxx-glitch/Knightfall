@@ -175,6 +175,29 @@ test("planet explorer renders nuanced sign and house interpretations with questi
  assert.ok(house);
  assert.equal(house.children.filter(n=>String(n.className)==="cosmic-house-entry").length,12);
 });
+test("transit-only explorer avoids treating moving planets as someone's natal character",()=>{
+ const {window,document}=mount(),target=document.createElement("main");
+ const moving={bodies:{Sun:{sign:"Libra",degree:14},Mars:{sign:"Cancer",degree:7,retrograde:true},Moon:{sign:"Sagittarius",degree:4}}};
+ window.KnightfallCosmic.render(target,moving,{kind:"transit"});
+ const atlas=find(target,node=>String(node.className)==="cosmic-atlas");
+ assert.ok(atlas);
+ const name=find(atlas,node=>node.tagName==="h3");
+ assert.match(name.textContent,/Transit Sky Atlas/);
+ const selector=find(target,node=>node.tagName==="select"&&String(node.className)==="cosmic-focus-select");
+ assert.equal(selector.attributes["aria-label"],"Choose a transiting planet to explore");
+ selector.value="Mars";selector.listeners.change();
+ const context=find(target,node=>String(node.className)==="cosmic-transit-context");
+ assert.ok(context);
+ assert.match(context.textContent,/not a person's natal character/);
+ const retro=find(target,node=>String(node.className)==="cosmic-interpretation-retrograde");
+ assert.match(retro.textContent,/apparent backward motion/);
+ const boxes=[];
+ const collect=node=>{if(String(node.className||"")==="cosmic-house-entry")boxes.push(node);for(const c of node.children||[])collect(c);};
+ collect(target);
+ assert.equal(boxes.length,0);
+ const key=find(target,node=>String(node.className)==="cosmic-key");
+ assert.match(key.children[1].textContent,/selected sky, not a birth personality/);
+});
 test("All three pages load the Chart Atlas before the chart renderer",()=>{
  for(const path of ["public/profile.html","public/profile-edit.html","public/miss-chaos.html"]){
   const source=read(path);
