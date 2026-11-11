@@ -27,6 +27,16 @@ test("real reactions and comments use authenticated API and text-safe rendering"
  assert.doesNotMatch(ui,/localStorage|sessionStorage/);
  assert.match(ui,/window\.confirm\("Delete this update/);
 });
+test("member reports are authenticated, text-safe and reach the existing staff queue",()=>{
+ assert.match(ui,/if\(signedIn&&!own\)/);
+ assert.match(ui,/\/api\/social\/report/);
+ assert.match(ui,/object_type:"activity"/);
+ assert.match(ui,/reported_user_id:Number\(post\.user_id\)/);
+ assert.match(ui,/if\(reportForm\)article\.append\(reportForm\)/);
+ assert.doesNotMatch(ui,/\.innerHTML\s*=/);
+ assert.match(css,/\.profile-wall-report-form\[hidden\]/);
+ assert.match(backend,/if\(url\.pathname==="/api\/social\/report"&&request\.method==="POST"\)/);
+});
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
  assert.match(css,/var\(--profile-accent/);
