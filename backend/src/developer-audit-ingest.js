@@ -1,3 +1,4 @@
+import { verifyGitHubAuditToken } from "./developer-audit-oidc.js";
 import { normalizeChaosAuditSummary, createChaosAuditSummaryHandler } from "../chaos-audit-summary.mjs";
 
 const REPORT_KEY = "developer-arsenal:latest:v1";
@@ -35,12 +36,16 @@ function sanitizeEnvelope(payload) {
   const summary = normalizeChaosAuditSummary(payload.summary);
   return {runId,sha,summary,createdAt:new Date().toISOString()};
 }
-export async function storeAuditUpload({env, body, timestamp, signature, now = Date.now()}) {
+export async function storeAuditUpload({env, body, timestamp, signature, oidcToken, now = Date.now(), keyProvider}) {
   if (!env?.SESSIONS?.put || !env?.SESSIONS?.get) throw new Error("Audit storage unavailable.");
-  if (!(await verifyAuditUpload({secret:env.DIAGNOSTICS_INGEST_KEY,timestamp,signature,body,now}))) {
-    return {ok:false,status:401};
-  }
-  const payload = sanitizeEnvelope(JSON.parse(body));
+  if (typeof body !== "string" || enc.encode(body).length > MAX_BYTES) return {ok:false,status:413};
+  let payload;
+  try { payload = sanitizeEnvelope(JSON.parse(body)); }
+  catch { return {ok:false,status:400}; }
+  const identityValid = oidcToken
+    ? await verifyGitHubAuditToken({token:oidcToken,runId:payload.runId,sha:payload.sha,now,keyProvider})
+    : await verifyAuditUpload({secret:env.DIAGNOSTICS_INGEST_KEY,timestamp,signature,body,now});
+  if (!identityValid) return {ok:false,status:401};
   // A replay cannot extend its life or overwrite the newest report.
   const replayKey = "developer-arsenal:run:" + payload.runId;
   if (await env.SESSIONS.get(replayKey)) return {ok:false,status:409};
