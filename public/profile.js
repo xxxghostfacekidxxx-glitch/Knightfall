@@ -15,7 +15,7 @@ function renderProfileQuickLinks(member,ownProfile,adminView){
   const destinations=adminView
     ? [["← Members","/members.html"]]
     : ownProfile
-      ? [["✦ Profile Studio","/profile-edit.html"],["☻ Avatar Studio","/avatar-studio.html"],["♡ My Sanctuary","/mascot-pets.html"],["⌂ Pet Rooms","/mascot-room.html"],["◈ Friends","/friends.html"],["✎ My Die-ary","/die-ary.html"]]
+      ? [["✦ Profile Studio","/profile-edit.html"],["☻ Avatar Studio","/avatar-studio.html"],["♡ My Sanctuary","/mascot-pets.html"],["⌂ Pet Rooms","/mascot-room.html"],["◈ Friends","/friends.html"],["🔖 Saved updates","/profile.html?username="+encodeURIComponent(member.username)+"#profile-saved"],["✎ My Die-ary","/die-ary.html"]]
       : [["← Members","/members.html"]];
   if(!ownProfile&&!adminView&&/^[a-zA-Z0-9_-]{1,32}$/.test(String(member.username||""))){
     destinations.push(["⌂ Public pet rooms","/mascot-room.html?user="+encodeURIComponent(member.username)]);
@@ -487,6 +487,7 @@ function refreshProfileJump(){
     [".profile-birth-chart","Birth chart"],
     [".activity-grid","Activity"],
     [".profile-social-panel","Updates"],
+    ["#profile-saved","Saved"],
     ["#profile-photo-gallery","Photos"]
   ];
   const jump=document.createElement("nav");jump.className="profile-jump";jump.setAttribute("aria-label","Profile sections");
