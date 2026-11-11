@@ -182,8 +182,24 @@ document.addEventListener("kf:profile-reset-layout",()=>{
  document.dispatchEvent(new CustomEvent("kf:layout-reset"));
 });
 const chartForm=document.querySelector("#birth-chart-form"),chartStatus=document.querySelector("#birth-chart-status"),chartVisible=document.querySelector("#birth-chart-visible");
+const chartPreview=document.querySelector("#birth-chart-preview"),chartRead=document.querySelector("#birth-chart-read");
+let memberSavedChart=null;
+document.addEventListener("DOMContentLoaded",()=>window.KnightfallBirthTime?.populate("birth-chart-timezone"));
+function showBirthChart(chart){
+ memberSavedChart=chart||null;
+ chartPreview.hidden=!chart;
+ chartRead.hidden=!chart;
+ if(chart&&window.KnightfallCosmic)window.KnightfallCosmic.render(chartPreview,chart);
+ else chartPreview.replaceChildren();
+}
+chartRead.addEventListener("click",()=>{
+ if(!memberSavedChart)return;
+ try{sessionStorage.setItem("knightfall:cosmic-reading",JSON.stringify({chart:memberSavedChart,from:"profile-editor"}));}
+ catch{chartStatus.textContent="Unable to transfer chart in this browser session.";return;}
+ location.href="/miss-chaos.html?astro=profile";
+});
 async function chartApi(method,body){const response=await fetch(API+"/api/profile/birth-chart",{method,credentials:"include",cache:"no-store",headers:{"content-type":"application/json"},...(body?{body:JSON.stringify(body)}:{})});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Chart request failed.");return data;}
-chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
+chartApi("GET").then(data=>{chartVisible.checked=!!data.visible;showBirthChart(data.chart);chartStatus.textContent=data.chart?"Saved chart found. "+(data.visible?"Visible on your profile.":"Hidden from your profile."):"No birth chart saved. Your profile will not display one.";}).catch(error=>{chartStatus.textContent=error.message;});
 const birthCityInput=document.querySelector("#birth-chart-city"),birthCitySearch=document.querySelector("#birth-chart-city-search"),birthCityResults=document.querySelector("#birth-chart-city-results"),birthCityStatus=document.querySelector("#birth-chart-city-status"),birthLat=document.querySelector("#birth-chart-lat"),birthLon=document.querySelector("#birth-chart-lon");
 let citySearchVersion=0;
 function clearBirthCity(){birthLat.value="";birthLon.value="";birthCityResults.replaceChildren(new Option("Search for your birth city first",""));birthCityResults.disabled=true;citySearchVersion++;}
@@ -210,10 +226,19 @@ chartForm.addEventListener("submit",async event=>{
  if(!match||!Number.isFinite(offset)||offset < -12||offset > 14||!birthCityResults.value||!birthLat.value||!birthLon.value||!Number.isFinite(latitude)||Math.abs(latitude)>66||!Number.isFinite(longitude)||Math.abs(longitude)>180){chartStatus.textContent="Enter valid birth details and select a birth city from the search results.";return;}
  const [year,month,day,hour,minute]=match.slice(1).map(Number),clock=new Date(Date.UTC(year,month-1,day,hour,minute));
  if(clock.getUTCFullYear()!==year||clock.getUTCMonth()!==month-1||clock.getUTCDate()!==day||clock.getUTCHours()!==hour||clock.getUTCMinutes()!==minute){chartStatus.textContent="Invalid birth date.";return;}
- const utc=new Date(clock.getTime()-offset*3600000).toISOString();
+ let utc=new Date(clock.getTime()-offset*3600000).toISOString();
+ const timezone=document.querySelector("#birth-chart-timezone").value.trim();
+ if(timezone){
+  try{
+   const time=window.KnightfallBirthTime.resolve(local,timezone,document.querySelector("#birth-chart-fold").value);
+   utc=time.chosen.utc;
+   document.querySelector("#birth-chart-offset").value=time.chosen.offset;
+   if(time.ambiguous)chartStatus.textContent="Repeated DST hour detected. Using "+document.querySelector("#birth-chart-fold").value+" occurrence.";
+  }catch(error){chartStatus.textContent=error.message;return;}
+ }
  button.disabled=true;chartStatus.textContent="Calculating your chart…";
- try{const result=await chartApi("PUT",{utc,latitude,longitude,house_system:document.querySelector("#birth-chart-houses").value,visible:chartVisible.checked});chartStatus.textContent="Chart saved. "+(result.visible?"Displayed on your profile.":"Private and hidden.");}catch(error){chartStatus.textContent=error.message;}finally{button.disabled=false;}
+ try{const result=await chartApi("PUT",{utc,latitude,longitude,house_system:document.querySelector("#birth-chart-houses").value,visible:chartVisible.checked});showBirthChart(result.chart);chartStatus.textContent="Chart saved. "+(result.visible?"Displayed on your profile.":"Private and hidden.");}catch(error){chartStatus.textContent=error.message;}finally{button.disabled=false;}
 });
 chartVisible.addEventListener("change",async()=>{const visible=chartVisible.checked;chartVisible.disabled=true;try{const result=await chartApi("PUT",{visible});chartStatus.textContent=result.visible?"Birth chart is now displayed on your profile.":"Birth chart hidden from your profile.";}catch(error){chartVisible.checked=!visible;chartStatus.textContent=error.message;}finally{chartVisible.disabled=false;}});
-document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
+document.querySelector("#birth-chart-remove").addEventListener("click",async()=>{if(!confirm("Delete your saved birth chart from your profile?"))return;try{await chartApi("DELETE");showBirthChart(null);chartVisible.checked=false;chartStatus.textContent="Birth chart deleted.";chartForm.reset();clearBirthCity();birthCityStatus.textContent="Find your birth city to calculate another chart.";}catch(error){chartStatus.textContent=error.message;}});
 </script><script src="/misfit-avatar.js?v=20261105-avatar5" defer></script><script src="/profile-misfit-editor.js?v=20261105-avatar5" defer></script><script src="/profile-studio-next.js?v=20261103-studio3" defer></script><script src="/profile-links-editor.js?v=20261103-links3" defer></script><script src="/profile-photo-studio.js?v=20261103-photo2" defer></script></body></html>
