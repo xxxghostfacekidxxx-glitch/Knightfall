@@ -75,6 +75,21 @@ try{
   await page.locator(".cosmic-transit-select").selectOption("");
   assert.ok(await page.locator('.cosmic-transit-connection:visible').count()>=visible,label+": reset failed");
 
+  await page.evaluate(data=>window.KnightfallCosmic.render(document.querySelector("#chart"),data,
+    {kind:"synastry",comparisonLabel:"@profile_friend",comparisonChart:{bodies:{
+      Venus:{sign:"Aries",degree:10.1},
+      Mars:{sign:"Libra",degree:10.1},
+      Moon:{sign:"Capricorn",degree:20}
+    }}}),chart);
+  assert.match(await page.locator(".cosmic-wheel svg").getAttribute("aria-label"),/Two shared natal charts/);
+  assert.match(await page.locator(".cosmic-legend-transit").textContent(),/@profile_friend/);
+  assert.match(await page.locator(".cosmic-compare-disclaimer").textContent(),/voluntarily shared natal charts/);
+  assert.ok(await page.locator("[data-overlay-moving]").count()>=1,label+": missing shared chart connections");
+  await page.locator(".cosmic-transit-select").selectOption("Venus");
+  assert.match(await page.locator(".cosmic-transit-count").textContent(),/Venus/);
+  assert.ok(await page.locator('.cosmic-transit-connection:visible').count()>=1);
+  const pairWidth=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:innerWidth}));
+  assert.ok(pairWidth.scroll<=pairWidth.viewport+2,label+": member comparison overflow "+JSON.stringify(pairWidth));
   const dualSize=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(dualSize.scroll<=dualSize.viewport+2,label+": overlay overflow "+JSON.stringify(dualSize));
   await page.evaluate(data=>{
