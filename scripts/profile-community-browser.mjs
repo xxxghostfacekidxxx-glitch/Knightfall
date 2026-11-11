@@ -80,7 +80,7 @@ async function scenario(title,viewport,own){
     }
     if(path==="/api/social/activity")return answer(200,{activities:[{id:1,body:"Trying a new drawing style",created_at:"2026-11-08T14:00:00Z",visibility:"public"}]});
     if(path==="/api/profile/photos")return answer(200,{photos:[]});
-    if(path==="/api/profile/links")return answer(200,{links:[],limit:8});
+    if(path==="/api/profile/links")return answer(200,{links:[{label:"Pixel art portfolio",url:"https://example.com/portfolio"},{label:"My writing",url:"https://example.com/writing"}],limit:8});
     if(path==="/api/mascot-pets/profile/nebula")return answer(200,{pets:[],own_profile:own,badges:[]});
     if(path==="/api/friends")return answer(200,{friends:[],incoming:[],outgoing:[]});
     if(path==="/api/economy")return answer(200,{balance:950,daily_ready:false,online_ready:false,quest_ready:false,quest_played:false,online_next_at:null});
@@ -105,6 +105,9 @@ async function scenario(title,viewport,own){
       assert.ok(await page.locator('#friend').isVisible());
     }
 
+    await page.locator(".profile-link-featured").waitFor({timeout:12000});
+    assert.match(await page.locator(".profile-link-featured").textContent(),/Featured link/);
+    assert.equal(await page.locator(".profile-link-featured").getAttribute("href"),"https://example.com/portfolio");
     await page.locator(".profile-wall-post").first().waitFor({timeout:12000});
     assert.match(await page.locator(".profile-wall-post-body").first().textContent(),/pixel-art project/);
     if(own){
