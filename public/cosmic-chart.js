@@ -170,7 +170,9 @@
     const all=points(chart);
     if(!all.length){target.append(el("p","cosmic-muted","No calculated placements to display."));return;}
     const shell=el("div","cosmic-blueprint"),graphic=el("div","cosmic-wheel"),reading=el("div","cosmic-reading");
-    graphic.append(wheel(chart,options.kind==="transit"?"transit":options.kind==="overlay"?"overlay":"natal",options.transitChart));
+    const comparison=options.kind==="synastry";
+    const secondary=comparison?options.comparisonChart:options.transitChart;
+    graphic.append(wheel(chart,comparison?"synastry":options.kind==="transit"?"transit":options.kind==="overlay"?"overlay":"natal",secondary));
     const balance=el("div","cosmic-balance");
     const classical=all.filter(p=>["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"].includes(p.name));
     const top=(groups)=>Object.entries(groups).map(([name,signs])=>({name,count:classical.filter(p=>signs.includes(p.body.sign)).length})).sort((a,b)=>b.count-a.count);
@@ -179,19 +181,20 @@
     const modeLabel=modes[0]?.count===modes[1]?.count?"Mixed modalities":modes[0]?.name+" emphasis";
     balance.append(el("span","cosmic-pill","✧ "+elementLabel),el("span","cosmic-pill","✧ "+modeLabel));
     reading.append(balance);
-    if(options.kind==="overlay"&&options.transitChart?.bodies){
+    if((options.kind==="overlay"||comparison)&&secondary?.bodies){
       const legend=el("div","cosmic-overlay-legend");
-      legend.append(el("span","cosmic-legend-natal","● Natal placements"),
-        el("span","cosmic-legend-transit","● Transiting planets"));
+      legend.append(el("span","cosmic-legend-natal",comparison?"● My natal chart":"● Natal placements"),
+        el("span","cosmic-legend-transit",comparison?"● "+(options.comparisonLabel||"Member's shared natal chart"):"● Transiting planets"));
+      if(comparison)reading.prepend(el("p","cosmic-compare-disclaimer","Comparing voluntarily shared natal charts is symbolic. It does not measure real-world compatibility, consent, or relationship outcomes."));
       reading.prepend(legend);
-      const transitLinks=transitAspects(options.transitChart,chart);
+      const transitLinks=comparison?synastry(chart,secondary).map(a=>({transit:a.second,natal:a.first,type:a.type,orb:a.orb})):transitAspects(secondary,chart);
       const box=el("details","cosmic-overlay-aspects");
       box.open=true;
-      box.append(el("summary","","Transit-to-natal connections · "+transitLinks.length));
-      const filterRow=el("label","cosmic-transit-filter","Explore a moving planet ");
+      box.append(el("summary","",(comparison?"Shared chart connections · ":"Transit-to-natal connections · ")+transitLinks.length));
+      const filterRow=el("label","cosmic-transit-filter",comparison?"Explore the other member’s planet ":"Explore a moving planet ");
       const filter=el("select","cosmic-transit-select");
-      filter.setAttribute("aria-label","Filter transit-to-natal connections by moving planet");
-      filter.append(new Option("All moving planets",""));
+      filter.setAttribute("aria-label",comparison?"Filter natal comparisons by other member’s planet":"Filter transit-to-natal connections by moving planet");
+      filter.append(new Option(comparison?"All compared planets":"All moving planets",""));
       const transitNames=[...new Set(transitLinks.slice(0,60).map(item=>item.transit))];
       for(const name of transitNames)filter.append(new Option(name,name));
       filterRow.append(filter);box.append(filterRow);
@@ -200,7 +203,8 @@
       box.append(count);
       const list=el("ul","cosmic-transit-connections");
       for(const aspect of transitLinks.slice(0,60)){
-        const guide=window.KnightfallCosmicLexicon?.transitGuide?.(chart,options.transitChart,aspect);
+        const guide=comparison?window.KnightfallCosmicLexicon?.synastryGuide?.(chart,secondary,{first:aspect.natal,second:aspect.transit,type:aspect.type,orb:aspect.orb}):
+          window.KnightfallCosmicLexicon?.transitGuide?.(chart,secondary,aspect);
         const item=el("li","cosmic-transit-connection");
         item.setAttribute("data-transit-moving",aspect.transit);
         if(guide){
@@ -209,10 +213,10 @@
           expandable.append(el("p","",guide.summary));
           expandable.append(el("p","cosmic-transit-reflection","Reflect: "+guide.reflection));
           item.append(expandable);
-        }else item.textContent="Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal+" · "+aspect.orb.toFixed(1)+"° orb";
+        }else item.textContent=(comparison?"My "+aspect.natal+" "+aspect.type.toLowerCase()+" their "+aspect.transit:"Transit "+aspect.transit+" "+aspect.type.toLowerCase()+" natal "+aspect.natal)+" · "+aspect.orb.toFixed(1)+"° orb";
         list.append(item);
       }
-      if(!transitLinks.length)list.append(el("li","","No major transit-to-natal aspects inside the 2° orb."));
+      if(!transitLinks.length)list.append(el("li","",comparison?"No major shared chart aspects inside the 4° orb.":"No major transit-to-natal aspects inside the 2° orb."));
       box.append(list);
       const updateFocus=()=>{
         const name=filter.value;
