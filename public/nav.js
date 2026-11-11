@@ -36,6 +36,15 @@
   if (!document.querySelector('script[data-gravewave-takeover],script[src*="/gravewave-takeover.js"]')) {
     const art=document.createElement('script');art.src='/gravewave-takeover.js?v=20261102-mascot6';art.defer=true;art.dataset.gravewaveTakeover='true';document.head.append(art);
   }
+  // Final site-wide visual system. Insert after the legacy styles so every
+  // shared-navigation page gets the same pink/lime/yellow chrome.
+  if (!document.querySelector('link[data-knightfall-unified-theme]')) {
+    const unified=document.createElement("link");
+    unified.rel="stylesheet";
+    unified.href="/knightfall-unified-theme.css?v=20261111-yellow1";
+    unified.dataset.knightfallUnifiedTheme="true";
+    document.head.append(unified);
+  }
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
   if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
     if (document.body) document.body.classList.add("chaos-glitch-arcade");
