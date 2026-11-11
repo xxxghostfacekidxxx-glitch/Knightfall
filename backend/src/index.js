@@ -2,6 +2,7 @@ import { arcadePicks, moonBrief, shadowBrief, radarContext } from "./chaos-radar
 import { CHAOS_CONVERSATION_VOICE, chaosReplyGuidance } from "../chaos-voice.mjs";
 import { serveAdminGameArchive } from './admin-game-downloads.js';
 import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mjs";
+import { storeAuditUpload, readGodAuditSummary } from "./developer-audit-ingest.js";
 import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
@@ -1423,6 +1424,34 @@ export default { async queue(batch, env) {
     if(kind==="shadow")return json(shadowBrief(query),200,origin);
     return json({error:"Choose Arcade, Moon or Shadow Work."},400,origin);
   }
+  if(url.pathname==="/api/internal/developer-audit"&&request.method==="POST"){
+    if(request.headers.get("origin"))return json({error:"Browser uploads not permitted."},403,origin);
+    if(Number(request.headers.get("content-length")||0)>16384)return json({error:"Payload too large."},413,origin);
+    const raw=await request.text();
+    if(new TextEncoder().encode(raw).length>16384)return json({error:"Payload too large."},413,origin);
+    try {
+      const outcome=await storeAuditUpload({
+        env,body:raw,timestamp:request.headers.get("x-kf-audit-time"),
+        signature:request.headers.get("x-kf-audit-signature")
+      });
+      if(!outcome.ok)return json({error:"Audit upload rejected."},outcome.status,origin);
+      return new Response(null,{status:204,headers:{"cache-control":"no-store"}});
+    }catch(error){console.error("developer_audit_ingest_error",String(error?.message||error).slice(0,140));return json({error:"Audit upload invalid."},400,origin);}
+  }
+  if(url.pathname==="/api/god/developer-audit"&&request.method==="GET"){
+    const actor=await requireUser(request,env);
+    if(!actor)return json({error:"Sign in required."},401,origin);
+    if(actor.role!=="god")return json({error:"God role required."},403,origin);
+    if(!(await rateLimit(env,request,"god-audit-summary",30,60,actor.id)))return json({error:"Rate limited."},429,origin);
+    try {
+      const result=await dispatchChaosTool({
+        name:"god.audit_summary",input:{},
+        principal:{id:actor.id,role:actor.role},
+        handlers:{"god.audit_summary":async ({principal})=>readGodAuditSummary({env,principal})}
+      });
+      return json({result},200,origin);
+    }catch{return json({error:"Verified report unavailable."},503,origin);}
+  }
   if(url.pathname==="/api/chaos/tools"&&request.method==="GET"){
     const user=await requireUser(request,env);
     if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
@@ -1435,9 +1464,9 @@ export default { async queue(batch, env) {
     const declaredSize=Number(request.headers.get("content-length")||0);
     if(declaredSize>16000)return json({error:"Utility request too large."},413,origin);
     let body;try{const raw=await request.text();if(raw.length>16000)return json({error:"Utility request too large."},413,origin);body=JSON.parse(raw);}catch{return json({error:"Invalid JSON."},400,origin);}
-    if(!["utility.calculate","utility.word_count"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
+    if(!["utility.calculate","utility.word_count","god.audit_summary"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
     try{
-      const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role}});
+      const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role},handlers:{"god.audit_summary":async ({principal})=>readGodAuditSummary({env,principal})}});
       return json({name:body.name,result},200,origin);
     }catch(error){return json({error:String(error.message||"Invalid tool input").slice(0,180)},400,origin);}
   }
