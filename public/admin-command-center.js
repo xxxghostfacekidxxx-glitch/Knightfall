@@ -37,7 +37,7 @@
     {
       title: "Triage Developer Arsenal scan",
       detail: "Sort Biome and Semgrep findings into actual fixes and false positives.",
-      prompt: "Review my Knightfall Developer Arsenal CI results. Work only from logs or artifacts I supply. Classify findings into syntax problems, security concerns, style-only warnings, and false positives. Propose the smallest verified patch for each actionable finding. Do not claim a CI run passed without evidence, and do not deploy."
+      prompt: "Review the Knightfall developer-arsenal-summary.json from GitHub Actions when provided. It contains only counts and severity totals. Explain what those numbers do and do not establish, identify scanner failures separately from code findings, and propose a prioritized investigation. Do not invent source files, finding descriptions, fixes, or repository access. Never request raw potential secret matches pasted into chat. A patch requires separately verified evidence and approval."
     },
     {
       title: "Investigate a browser bug",
