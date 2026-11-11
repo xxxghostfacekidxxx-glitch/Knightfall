@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 
 const base = process.env.DEV_TOOLS_TEST_BASE || "http://127.0.0.1:8765";
 const browser = await chromium.launch({ headless: true });
@@ -56,6 +58,21 @@ try {
       }
       assert.deepEqual(errors, [], "Page JavaScript errors for role " + role.role);
       console.log("PASS Devil Tools role fixture:", role.role, role.title || "(no title)");
+    } catch (error) {
+      // Only mocked accounts and a local HTTP server are used in these tests.
+      // Capture UI evidence; never store session cookies or request headers.
+      const dir = "/tmp/developer-arsenal-browser-evidence";
+      const safeName = role.role + (role.title ? "-creator" : "");
+      await mkdir(dir, { recursive: true });
+      await writeFile(path.join(dir, safeName + ".json"), JSON.stringify({
+        fixtureRole: role.role,
+        fixtureTitle: role.title,
+        error: String(error?.message || error),
+        pageErrors: errors.slice(0, 10),
+        route: "/devil-tools.html"
+      }, null, 2));
+      await page.screenshot({ path: path.join(dir, safeName + ".png"), fullPage: false, timeout: 4000 }).catch(() => {});
+      throw error;
     } finally {
       await context.close();
     }
