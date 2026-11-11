@@ -39,6 +39,15 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Added targeted regression assertions for offline resume normalization and stale cloud-save hints, extending the smoke workflow's existing mini-game test suite.
 - [ ] Run fresh GitHub Actions smoke checks and verify these changes on the deployed mobile site. Public GitHub Actions and ash-fall.com browsing were unavailable to this session; no CI or production success is claimed.
 
+## Verification retry and cloud-save polish — November 11, 2026
+
+- [x] Confirmed Cloudflare Pages production deployment `29e3b5a8-c582-4108-bf28-bcfa695aec71` succeeded at commit `a5f66986f53a0ec0b07f3b010384d21d598bbd0f`, with `main` as source. This is deployment confirmation, not browser/device acceptance.
+- [x] Retrieved artifact inventory for Arcade Test Bot Fleet run `43041879660` (ten sharded result archives plus summary/dashboard artifacts), proving evidence was uploaded. Full job logs and ZIP content could not be read due to connector timeout; root cause is not established.
+- [x] Save Progress now captures its exact game snapshot before waiting for cloud readiness, avoiding accidental capture of later game state; stale save completion messages cannot replace a newer run's status.
+- [x] Added targeted regression coverage for snapshot timing and stale status handling; existing runtime smoke workflow includes the mini-game test suite.
+- [ ] Run the new CI and inspect fleet failure artifacts/logs to isolate an actionable first failure. Do not close #192 based on artifact presence.
+- [ ] Confirm the latest post-fix Pages deployment and authenticated real-browser gameplay; browser requests to ash-fall.com remain blocked here.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
