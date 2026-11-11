@@ -191,7 +191,7 @@
       const filter=el("select","cosmic-transit-select");
       filter.setAttribute("aria-label","Filter transit-to-natal connections by moving planet");
       filter.append(new Option("All moving planets",""));
-      const transitNames=[...new Set(transitLinks.map(item=>item.transit))];
+      const transitNames=[...new Set(transitLinks.slice(0,60).map(item=>item.transit))];
       for(const name of transitNames)filter.append(new Option(name,name));
       filterRow.append(filter);box.append(filterRow);
       const count=el("p","cosmic-transit-count","");
@@ -219,7 +219,7 @@
         for(const item of list.children){
           const matches=!name||item.getAttribute("data-transit-moving")===name;
           item.hidden=!matches;
-          if(matches)visible++;
+          if(matches&&item.getAttribute("data-transit-moving"))visible++;
         }
         count.textContent=name?"Showing "+visible+" strongest connections for "+name+".":"Showing "+visible+" of "+transitLinks.length+" connections.";
         for(const node of graphic.querySelectorAll("[data-transit-planet]"))
