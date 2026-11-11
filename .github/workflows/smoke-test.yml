@@ -39,6 +39,7 @@ on:
       - 'scripts/profile-navigation.test.mjs'
       - 'scripts/profile-community-overhaul.test.mjs'
       - 'scripts/profile-community-browser.mjs'
+      - 'backend/src/profile-wall.test.mjs'
       - 'scripts/profile-studio-next.test.mjs'
       - 'scripts/profile-photo-studio.test.mjs'
       - 'scripts/profile-link-hub.test.mjs'
@@ -96,6 +97,8 @@ jobs:
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/cosmic-lexicon.test.mjs scripts/cosmic-geo-timezone.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
       - name: Verify public profile hub, privacy, and custom themes
         run: node --test scripts/profile-community-overhaul.test.mjs
+      - name: Check profile wall data access, reactions and comment moderation
+        run: node --test backend/src/profile-wall.test.mjs && node --check public/profile-wall.js
       - name: Validate rebuilt profile editor and crop/save code
         run: |
           node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
