@@ -118,36 +118,60 @@
     fileInput.setAttribute("aria-label", "Select sanitized Developer Arsenal summary JSON");
     const importStatus = document.createElement("p");
     importStatus.setAttribute("role", "status");
+    function fillAuditComposer(raw) {
+      if (raw?.schemaVersion !== 1 || raw?.tool !== "knightfall-developer-arsenal") throw Error("Not a Knightfall sanitized summary.");
+      const count = value => {
+        if (!Number.isSafeInteger(value) || value < 0 || value > 1000000) throw Error("Invalid summary count.");
+        return value;
+      };
+      const severity = {};
+      for (const level of ["ERROR", "WARNING", "INFO", "UNKNOWN"]) severity[level] = count(raw.semgrep?.severity?.[level]);
+      const total = count(raw.semgrep?.findings);
+      if (Object.values(severity).reduce((a, b) => a + b, 0) !== total) throw Error("Severity totals do not match findings.");
+      if (typeof raw.biome?.hasOutput !== "boolean") throw Error("Invalid Biome report.");
+      const clean = {
+        semgrep: { findings: total, severity, scannerErrors: count(raw.semgrep?.scannerErrors) },
+        biome: { hasOutput: raw.biome.hasOutput, reportedErrors: count(raw.biome.reportedErrors), reportedWarnings: count(raw.biome.reportedWarnings) }
+      };
+      chatInput.value = "Interpret this verified-format, counts-only Knightfall Developer Arsenal summary. Distinguish scanner errors from findings. Do not invent affected files or fixes. Recommend next evidence-gathering steps only. Summary: " + JSON.stringify(clean);
+      chatInput.focus();
+      importStatus.textContent = "Sanitized counts inserted into the assistant composer. Review and send when ready.";
+    }
     fileInput.addEventListener("change", async () => {
       const file = fileInput.files?.[0];
       if (!file) return;
       try {
         if (file.size > 16384) throw Error("File exceeds the 16 KB sanitized-summary limit.");
         const raw = JSON.parse(await file.text());
-        if (raw?.schemaVersion !== 1 || raw?.tool !== "knightfall-developer-arsenal") throw Error("Not a Knightfall sanitized summary.");
-        const count = value => {
-          if (!Number.isSafeInteger(value) || value < 0 || value > 1000000) throw Error("Invalid summary count.");
-          return value;
-        };
-        const severity = {};
-        for (const level of ["ERROR", "WARNING", "INFO", "UNKNOWN"]) severity[level] = count(raw.semgrep?.severity?.[level]);
-        const total = count(raw.semgrep?.findings);
-        if (Object.values(severity).reduce((a, b) => a + b, 0) !== total) throw Error("Severity totals do not match findings.");
-        if (typeof raw.biome?.hasOutput !== "boolean") throw Error("Invalid Biome report.");
-        const clean = {
-          semgrep: { findings: total, severity, scannerErrors: count(raw.semgrep?.scannerErrors) },
-          biome: { hasOutput: raw.biome.hasOutput, reportedErrors: count(raw.biome.reportedErrors), reportedWarnings: count(raw.biome.reportedWarnings) }
-        };
-        chatInput.value = "Interpret this verified-format, counts-only Knightfall Developer Arsenal summary. Distinguish scanner errors from findings. Do not invent affected files or fixes. Recommend next evidence-gathering steps only. Summary: " + JSON.stringify(clean);
-        chatInput.focus();
-        importStatus.textContent = "Sanitized counts inserted into the assistant composer. Review and send when ready.";
+        fillAuditComposer(raw);
       } catch (error) {
         importStatus.textContent = "Import rejected: " + String(error?.message || error);
       } finally {
         fileInput.value = "";
       }
     });
-    importSection.append(importTitle, importHint, fileInput, importStatus);
+    const loadLatest = document.createElement("button");
+    loadLatest.type = "button";
+    loadLatest.className = "action";
+    loadLatest.textContent = "Load latest verified report (God)";
+    loadLatest.addEventListener("click", async () => {
+      loadLatest.disabled = true;
+      importStatus.textContent = "Checking private report…";
+      try {
+        const response = await fetch("https://api.ash-fall.com/api/god/developer-audit", {
+          method: "GET", credentials: "include", cache: "no-store"
+        });
+        if (!response.ok) throw Error(response.status === 401 || response.status === 403
+          ? "God-account access required." : "No verified report is available. Check CI and ingest-secret setup.");
+        const data = await response.json();
+        fillAuditComposer(data.result);
+      } catch (error) {
+        importStatus.textContent = String(error?.message || "Diagnostic retrieval failed.");
+      } finally {
+        loadLatest.disabled = false;
+      }
+    });
+    importSection.append(importTitle, importHint, loadLatest, fileInput, importStatus);
 
     const checklistSection = document.createElement("div");
     checklistSection.className = "command-center-checklist";
