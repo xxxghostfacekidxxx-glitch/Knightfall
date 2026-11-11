@@ -15,6 +15,7 @@ on:
       - 'scripts/registration-release.test.mjs'
       - 'scripts/turnstile.test.mjs'
       - 'scripts/turnstile-ui.test.mjs'
+      - 'scripts/profile-wall-ui.test.mjs'
       - '.github/workflows/deploy-api.yml'
   workflow_dispatch:
 
@@ -47,7 +48,7 @@ jobs:
 
       - name: Validate profile wall access, reactions, comments and D1 schema
         run: |
-          node --test backend/src/profile-wall.test.mjs
+          node --test backend/src/profile-wall.test.mjs scripts/profile-wall-ui.test.mjs
           node --check backend/src/profile-wall.js
           node --check public/profile-wall.js
       - name: Validate coordinated registration release
