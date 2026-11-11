@@ -25,6 +25,19 @@
   <div id="dt-section-nav" class="dt-section-nav"></div>
 </nav><section class="grid-tools" style="margin-bottom:1rem"><div class="metric"><small>Asset pack</small><strong>24 sprites</strong></div><div class="metric"><small>Style</small><strong>Neon pixel</strong></div><div class="metric"><small>Palette</small><strong>Pink + slime</strong></div><div class="metric"><small>Access</small><strong id="access-level">Admin</strong></div></section>
 <section class="panel" style="margin:1rem 0;border-color:#ff55d866"><h2>Game Engine & Build Bench</h2><p>Sprite tools are only half the workshop. Open the Creator Foundry for browser engines, 2D/3D rendering libraries, tile-map editors, and source links selected for the Chaos Cartridge pipeline.</p><div class="actions"><a class="primary" href="/dev-toolkit.html">Open game development toolchain ↗</a><a href="/arcade/hosted/marshland-marksman/index.html">Open Marshland Marksman test cabinet ↗</a><a href="/arcade/import-manifest.json" target="_blank" rel="noopener noreferrer">View arcade import manifest ↗</a></div></section>
+<section class="panel" id="developer-arsenal-ci" data-dt-section aria-labelledby="developer-arsenal-title" style="margin:1rem 0;border-color:#c6ff4570">
+  <h2 id="developer-arsenal-title">God Mode / Developer Arsenal</h2>
+  <p>Repository diagnostics and automation sources for administrators. Tool source links are <strong>not</strong> installed agent integrations. The GitHub Actions audit runs only on pull requests or manual dispatch and never deploys production code.</p>
+  <div class="dt-open-source-grid">
+    <article><h3>CI Diagnostics</h3><p class="small">Knightfall · Active workflow</p><p>Syntax checks, existing security audits, advisory Biome lint and Semgrep scans. Review reports in GitHub Actions.</p><div class="actions"><a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/developer-arsenal-audit.yml" target="_blank" rel="noopener noreferrer">View audit workflow</a></div></article>
+    <article><h3>Playwright MCP</h3><p class="small">Browser automation · Agent-host setup needed</p><p>Potential browser control for visual reproduction, navigation, and UI tests. Existing Playwright CI is separate from MCP.</p><div class="actions"><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Source and setup</a></div></article>
+    <article><h3>Chrome DevTools MCP</h3><p class="small">Performance and network diagnostics · Not connected</p><p>Browser console, request inspection, performance profiling and screenshot capture through a permitted MCP host.</p><div class="actions"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp" target="_blank" rel="noopener noreferrer">Source and setup</a></div></article>
+    <article><h3>Biome</h3><p class="small">Linting · Advisory CI</p><p>Fast JavaScript diagnostics; report problems without rewriting existing project files.</p><div class="actions"><a href="https://github.com/biomejs/biome" target="_blank" rel="noopener noreferrer">Source and license</a></div></article>
+    <article><h3>Semgrep</h3><p class="small">Static security analysis · Advisory CI</p><p>Scan code patterns and potential secrets with a report for human review. Scanner findings are not automatically fixes.</p><div class="actions"><a href="https://github.com/semgrep/semgrep" target="_blank" rel="noopener noreferrer">Source and license</a></div></article>
+    <article><h3>GlitchTip</h3><p class="small">Error monitoring · Candidate, not deployed</p><p>Potential centralized error reports and release regression signals; requires privacy, retention and hosting review.</p><div class="actions"><a href="https://github.com/glitchtip/glitchtip" target="_blank" rel="noopener noreferrer">Source and license</a></div></article>
+  </div>
+  <p class="foot">Implementation inventory: <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/developer-arsenal.md" target="_blank" rel="noopener noreferrer">Developer Arsenal Guide</a>. Production and repository write access remain separately authorized.</p>
+</section>
 <section class="panel" id="open-source-tools">
   <h2>Open-source creator tools</h2>
   <p>Find source code, licenses, and official project links for sprite work, levels, audio, animation, and storytelling.</p>
@@ -297,6 +310,7 @@ async function boot(){
     const digitalCreator = String(user.public_title || '').trim() === 'Digital Creator';
     if (!administrator && !digitalCreator) throw Error('Workshop access required.');
     if (!administrator) {
+      $('#developer-arsenal-ci').remove();
       $('#release-simulator').remove();
       const back = document.querySelector('a.back');
       back.href = '/account.html';
