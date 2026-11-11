@@ -326,8 +326,8 @@
         const transfer=sessionStorage.getItem("knightfall:cosmic-reading");
         if(transfer){
           sessionStorage.removeItem("knightfall:cosmic-reading");
-          const chart=JSON.parse(transfer)?.chart;
-          if(chart?.bodies)prepareCosmicReading(chart,"Chart loaded from profile. Review the draft before sending.");
+          const payload=JSON.parse(transfer),chart=payload?.chart;
+          if(chart?.bodies)prepareCosmicReading(chart,payload?.from==="member-profile"?"Published member chart loaded. Review the draft before sending.":"Your profile chart loaded. Review the draft before sending.",payload?.from==="member-profile"?"member":"me");
         }
       }catch(error){console.warn("Cosmic chart transfer unavailable",error);}
     } catch (error) {
@@ -355,15 +355,15 @@
   moodSelect.value = [...moodSelect.options].some(option => option.value === savedMood) ? savedMood : "default";
   updateAstrologyTools();
   moodSelect.addEventListener("change", () => { localStorage.setItem("missChaosMood", moodSelect.value); updateAstrologyTools(); });
-  let latestNatalUtc = null,latestSavedChart=null,astroCityVersion=0;
+  let latestNatalUtc = null,latestSavedChart=null,latestChartSubject="me",astroCityVersion=0;
   window.KnightfallBirthTime?.populate("astro-timezone");
   const astroPreview=$("#astro-preview");
-  function prepareCosmicReading(chart,message){
+  function prepareCosmicReading(chart,message,subject="me"){
     if(!chart?.bodies||!window.KnightfallCosmic)throw Error("Chart visualization is unavailable. Refresh the page.");
-    latestSavedChart=chart;
+    latestSavedChart=chart;latestChartSubject=subject;
     moodSelect.value="astrology";moodSelect.dispatchEvent(new Event("change"));
     astroPreview.hidden=false;window.KnightfallCosmic.render(astroPreview,chart);
-    input.value=window.KnightfallCosmic.prompt(chart);
+    input.value=window.KnightfallCosmic.prompt(chart,subject);
     input.dispatchEvent(new Event("input"));
     $("#astro-chart-status").textContent=message;
     input.focus();
@@ -374,11 +374,9 @@
     if(!/^[a-zA-Z0-9_.-]{2,40}$/.test(username)){status.textContent="Enter a valid member username.";return;}
     button.disabled=true;status.textContent="Checking published member chart…";
     try{
-      if(!latestSavedChart?.bodies){
-        const own=await request("/api/profile/birth-chart");
-        if(!own.chart)throw Error("Create your own profile birth chart before comparing.");
-        latestSavedChart=own.chart;
-      }
+      const own=await request("/api/profile/birth-chart");
+      if(!own.chart)throw Error("Create your own profile birth chart before comparing.");
+      latestSavedChart=own.chart;latestChartSubject="me";
       const member=await request("/api/users/"+encodeURIComponent(username));
       if(!member?.birth_chart?.bodies)throw Error("This member has no birth chart available to you. They may choose to publish one in Profile Studio.");
       const other=member.birth_chart;
@@ -474,13 +472,13 @@
     try {
       const chart = await request("/api/chaos/astrology/chart", {method:"POST",body:JSON.stringify(chartRequest)});
       latestNatalUtc = utc;
-      latestSavedChart=chart;
+      latestSavedChart=chart;latestChartSubject="me";
       astroPreview.hidden=false;window.KnightfallCosmic?.render(astroPreview,chart);
       const placements = Object.entries(chart.bodies || {}).map(([name,p]) => name + ": " + p.sign + " " + p.degree_in_sign.toFixed(1) + "°" + (p.retrograde ? " (retrograde)" : "")).join("; ");
       const aspects = (chart.aspects || []).slice(0,18).map(a => a.a + " " + a.type + " " + a.b + " (orb " + a.orb + "°)").join("; ");
       const houseInfo = chart.angles ? " Ascendant: " + chart.angles.ascendant_sign + " " + (chart.angles.ascendant % 30).toFixed(1) + " degrees. Midheaven: " + chart.angles.midheaven_sign + " " + (chart.angles.midheaven % 30).toFixed(1) + " degrees. House system: " + chart.angles.house_system + ". Planetary houses: "  + Object.entries(chart.house_placements || {}).map(([name,house]) => name + " house " + house).join("; ") + "." : " Ascendant and houses unavailable without birth coordinates.";
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = window.KnightfallCosmic?.prompt(chart) || ("Interpret this calculated tropical chart symbolically: "+placements+". Aspects: "+aspects+". "+houseInfo);
+      input.value = window.KnightfallCosmic?.prompt(chart,"me") || ("Interpret this calculated tropical chart symbolically: "+placements+". Aspects: "+aspects+". "+houseInfo);
       input.dispatchEvent(new Event("input"));
       status.textContent = "Calculated " + Object.keys(chart.bodies || {}).length + " planetary positions and " + (chart.aspects || []).length + " major aspects. Reading prepared below; review and press Send.";
       input.focus();
@@ -499,7 +497,7 @@
       const links=chart.transit_aspects || (latestSavedChart&&window.KnightfallCosmic?window.KnightfallCosmic.transitAspects({bodies:positions},latestSavedChart):null);
       const aspects=(links||chart.aspects||[]).slice(0,22).map(a=>links?a.transit+" "+a.type+" natal "+a.natal+" (orb "+a.orb+"°)":a.a+" "+a.type+" "+a.b+" (orb "+a.orb+"°)").join("; ");
       moodSelect.value = "astrology"; moodSelect.dispatchEvent(new Event("change"));
-      input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
+      input.value = ("Interpret these calculated tropical transits symbolically, not as scientific predictions. "+(latestChartSubject==="member"?"These are transits to another member\u0027s publicly shared natal placements, not mine. ":"")+"UTC: "+utc+". Transit positions: "+placements+". "+(links?"Transit-to-natal aspects: ":"Current aspects: ")+aspects+". Discuss timing uncertainty and grounded reflection; do not claim fixed outcomes.").slice(0,3900);
       input.dispatchEvent(new Event("input"));
       status.textContent = links ? "Personal transit comparison prepared. Review and Send." : "Current planetary transit reading prepared. Calculate or load a natal chart for personal transit aspects.";
       input.focus();
