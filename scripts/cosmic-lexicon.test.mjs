@@ -105,6 +105,23 @@ test("transit explanations protect uncertain birth time and reject nonexistent o
  assert.match(lib.transitBrief(sample,moving,[a]),/Mars opposition natal Sun/);
  assert.match(lib.transitBrief(sample,moving,[]),/No major transit-to-natal aspects/);
 });
+test("two shared natal charts produce respectful, explicit synastry themes",()=>{
+ const lib=load();
+ const second={bodies:{Venus:{sign:"Aries",degree:10},Moon:{sign:"Capricorn",degree:20},Mars:{sign:"Libra",degree:10}}};
+ const aspect={first:"Sun",second:"Venus",type:"Conjunction",orb:.4};
+ const guide=lib.synastryGuide(sample,second,aspect);
+ assert.ok(guide);
+ assert.equal(guide.title,"First chart Sun conjunction second chart Venus");
+ assert.match(guide.summary,/first person.s Sun represents identity/);
+ assert.match(guide.summary,/second person.s Venus represents affection/);
+ assert.match(guide.summary,/does not measure real-world compatibility or consent/);
+ assert.match(guide.disclaimer,/not a judgment of either person/);
+ assert.match(lib.synastryBrief(sample,second,[aspect]),/First chart Sun conjunction second chart Venus/);
+ assert.match(lib.synastryBrief(sample,second,[]),/No major chart-to-chart aspects/);
+ assert.equal(lib.synastryGuide(sample,second,{...aspect,orb:4.1}),null);
+ assert.equal(lib.synastryGuide(sample,second,{...aspect,second:"Unlisted"}),null);
+ assert.equal(lib.synastryGuide(sample,second,{...aspect,type:"Unspecified"}),null);
+});
 test("the interpretive code does not network, track, or store raw birth records",()=>{
  const source=read("public/cosmic-lexicon.js");
  assert.doesNotThrow(()=>new Script(source));
