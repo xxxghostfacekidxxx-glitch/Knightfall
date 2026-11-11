@@ -6,6 +6,15 @@ on:
       - 'scripts/profile-birth-chart-runtime.test.mjs'
       - 'scripts/profile-birth-chart-live.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
+      - 'scripts/cosmic-chart.test.mjs'
+      - 'public/cosmic-chart.js'
+      - 'public/cosmic-timezone.js'
+      - 'public/cosmic-chart.css'
+      - 'public/profile.js'
+      - 'public/profile.html'
+      - 'public/profile-edit.html'
+      - 'public/miss-chaos.js'
+      - 'public/miss-chaos.html'
       - 'backend/src/astrology.js'
       - '.github/workflows/profile-birth-chart-checks.yml'
   workflow_dispatch:
@@ -23,6 +32,6 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Exercise Worker chart lifecycle and account isolation with test storage
-        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/profile-birth-chart-runtime.test.mjs
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/profile-birth-chart-runtime.test.mjs scripts/cosmic-chart.test.mjs
       - name: Verify public assets, JSON endpoints, and anonymous privacy in production
         run: node scripts/profile-birth-chart-live.mjs
