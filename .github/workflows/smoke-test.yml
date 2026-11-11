@@ -21,6 +21,7 @@ on:
       - 'scripts/push-retry-policy.test.mjs'
       - 'scripts/astrology.test.mjs'
       - 'scripts/cosmic-chart.test.mjs'
+      - 'scripts/cosmic-atlas.test.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/miss-chaos-ux.test.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
@@ -82,7 +83,7 @@ jobs:
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
       - name: Verify birth charts, card-room rules and offline navigation
-        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/cosmic-chart.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
+        run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
       - name: Validate rebuilt profile editor and crop/save code
         run: |
           node --test scripts/profile-navigation.test.mjs scripts/profile-studio-next.test.mjs scripts/profile-photo-studio.test.mjs scripts/profile-link-hub.test.mjs backend/src/profile-links.test.mjs
@@ -113,7 +114,7 @@ jobs:
       - name: Reproduce and prevent Android push registration failures
         run: node --check public/sw.js && node --test scripts/mobile-push-recovery.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs scripts/push-retry-policy.test.mjs
       - name: Audit JavaScript, configs, and local HTML assets
-        run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check public/cosmic-chart.js && node --check public/cosmic-timezone.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/security-headers.test.mjs scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs scripts/push-navigation.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
+        run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check public/cosmic-chart.js && node --check public/cosmic-insights.js && node --check public/cosmic-timezone.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/security-headers.test.mjs scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs scripts/push-navigation.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
 
   arcade-browser-smoke:
     if: github.event_name != 'workflow_run'
