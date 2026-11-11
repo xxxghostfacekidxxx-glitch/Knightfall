@@ -32,6 +32,13 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Verify the runtime smoke test results and manual restart-versus-resume behavior on a deployed mobile browser. Tests committed in source are not a CI pass.
 - [ ] Confirm exact deployed Pages revision before changing live status.
 
+## Additional arcade save polish — November 11, 2026
+
+- [x] Local-only Resume now applies the same missing-price legacy save normalization as cloud Resume for Cinder Collider, without resetting particles, boosts or scientists.
+- [x] The asynchronous cloud-save availability hint now checks schema/game, saved-state validity and whether a run or resume attempt has already started before updating the status.
+- [x] Added targeted regression assertions for offline resume normalization and stale cloud-save hints, extending the smoke workflow's existing mini-game test suite.
+- [ ] Run fresh GitHub Actions smoke checks and verify these changes on the deployed mobile site. Public GitHub Actions and ash-fall.com browsing were unavailable to this session; no CI or production success is claimed.
+
 ## P0 — Immediate reliability and release blockers
 - [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
