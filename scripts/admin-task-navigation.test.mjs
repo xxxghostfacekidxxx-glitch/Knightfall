@@ -19,3 +19,11 @@ test('task panel links to canonical backlog and does not claim continuous GitHub
   assert.match(admin, /docs\/MASTER-TASK-LIST-2026-11-11\.md/);
   assert.match(admin, /point-in-time findings, not a live GitHub status feed/);
 });
+
+test('God Mode task register separates green arcade CI from device acceptance', () => {
+  assert.match(admin, /run #43111248176/);
+  assert.match(admin, /132 local and 132 live hosted routes/);
+  assert.match(admin, /issue #192<\/a> closed/);
+  assert.doesNotMatch(admin, /Investigate ten-shard arcade fleet failure/);
+  assert.match(admin, /real Android acceptance remain pending/);
+});
