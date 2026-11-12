@@ -38,15 +38,53 @@ try {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     try {
-      const response = await page.goto(base + "/devil-tools.html", { waitUntil: "domcontentloaded" });
-      assert.equal(response?.status(), 200, "Devil Tools should serve over local static HTTP");
+      const response = await page.goto(base + "/dev-toolkit.html?from=bookmark#tools", { waitUntil: "domcontentloaded" });
+      assert.equal(response?.status(), 200, "The legacy Foundry page should serve over local static HTTP");
+      await page.waitForURL("**/devil-tools.html?from=bookmark#tools");
+      assert.match(await page.title(), /Creator Foundry/);
       if (role.allowed) {
         await page.locator("#workshop:not(.hidden)").waitFor({ timeout: 8000 });
         const developer = page.locator("#developer-arsenal-ci");
         assert.equal(await developer.count(), role.developer ? 1 : 0,
           role.role + " " + role.title + " developer section access");
-        const toolbox = await page.locator("#dt-section-nav button").count();
-        assert.ok(toolbox > 1, "Workshop navigation should be initialized");
+        const catalog = page.locator("#foundry-catalog");
+        assert.equal(await catalog.locator("[data-group]:visible").count(), 4);
+        assert.equal(await catalog.getByRole("heading", { name: "Pixelorama", exact: true }).count(), role.developer ? 1 : 0);
+        assert.equal(await page.locator("#release-simulator").count(), role.developer ? 1 : 0);
+        assert.equal(await page.locator("#creator-handoff:visible").count(), role.developer ? 0 : 1);
+
+        const search = catalog.getByRole("searchbox", { name: "Find a tool" });
+        await catalog.getByRole("button", { name: "Game Development" }).click();
+        assert.equal(await catalog.locator("[data-group]:visible").count(), 1);
+        await search.fill(role.developer ? "phaser" : "trenchbroom");
+        const result = catalog.locator(".foundry-card:visible");
+        assert.equal(await result.count(), 1);
+        assert.match(await result.locator("h3").textContent(), role.developer ? /^Phaser$/ : /^TrenchBroom$/);
+        await search.fill("zz-no-such-tool");
+        await catalog.getByText("No tools match.", { exact: false }).waitFor();
+
+        await catalog.getByRole("button", { name: "Art & Assets" }).click();
+        await search.fill("sprite workshop");
+        await catalog.getByRole("link", { name: "Open sprite workshop" }).click();
+        await page.locator("#sprite-workshop").waitFor();
+        assert.equal(await page.locator("#sprite-catalog .asset").count(), 24);
+        await page.locator("#sprite-catalog .asset").nth(1).click();
+        assert.match(await page.locator("#metrics").textContent(), /Selected: SKULL/);
+        const downloadPromise = page.waitForEvent("download");
+        await page.getByRole("button", { name: /Export selected sprite/ }).click();
+        const download = await downloadPromise;
+        assert.match(download.suggestedFilename(), /-skull\.svg$/);
+        await page.getByRole("link", { name: "Back to catalog" }).click();
+        await catalog.waitFor();
+        assert.equal(await search.inputValue(), "sprite workshop");
+        assert.equal(await catalog.getByRole("button", { name: "Art & Assets" }).getAttribute("aria-pressed"), "true");
+
+        await page.goto(base + "/devil-tools.html#brand-library");
+        await page.locator("#brand-library").waitFor();
+        assert.equal(await page.locator("#foundry-catalog:visible").count(), 0);
+        await page.goto(base + "/dev-toolkit.html#release-simulator");
+        await page.waitForURL("**/devil-tools.html#release-simulator");
+        await page.locator(role.developer ? "#release-simulator" : "#foundry-catalog").waitFor();
         const size = await page.evaluate(() => ({
           viewport: document.documentElement.clientWidth,
           content: document.documentElement.scrollWidth
@@ -57,7 +95,7 @@ try {
         assert.equal(await page.locator("#workshop:not(.hidden)").count(), 0);
       }
       assert.deepEqual(errors, [], "Page JavaScript errors for role " + role.role);
-      console.log("PASS Devil Tools role fixture:", role.role, role.title || "(no title)");
+      console.log("PASS Creator Foundry role fixture:", role.role, role.title || "(no title)");
     } catch (error) {
       // Only mocked accounts and a local HTTP server are used in these tests.
       // Capture UI evidence; never store session cookies or request headers.
