@@ -110,6 +110,22 @@ test('colored eye details and rear hair silhouette remain distinct',()=>{
  }
 });
 
+test('distinctive hair silhouettes and ear styles preserve saved-avatar compatibility',()=>{
+ const kit=loadRenderer(),validate=loadApiValidator();
+ for(const hair of ["wolfcut","coils","braids","long_messy","buzzcut","slickback"]){
+  assert.ok(kit.choices.hair.includes(hair));
+  assert.ok(validate({...kit.defaults,hair}));
+  assert.match(kit.render({...kit.defaults,hair}),/data-hair-depth="rear"/);
+ }
+ for(const ear_style of ["human","elf","bat","cyber","demon"]){
+  const avatar={...kit.defaults,ear_style};
+  assert.ok(validate(avatar));
+  assert.ok(kit.render(avatar).includes('data-ear-style="'+ear_style+'"'));
+ }
+ const old={...kit.defaults};delete old.ear_style;
+ assert.equal(validate(old).ear_style,'human');
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
