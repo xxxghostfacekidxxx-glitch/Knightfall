@@ -87,11 +87,14 @@ export async function handlePrivacyAssistance(request, env, url, { getUser, json
     try { payload = await request.json(); } catch { return reply({ error: 'Invalid JSON.' }, 400); }
     const status = String(payload?.status || '');
     if (!['reviewing','awaiting_verification','closed'].includes(status)) return reply({ error: 'Invalid assistance status.' }, 400);
-    const note = typeof payload?.operator_note === 'string' ? payload.operator_note.trim() : '';
-    if (note.length > 500 || (status === 'closed' && !note)) return reply({ error: 'Add a brief staff note (500 characters maximum) before closing.' }, 400);
+    const suppliedNote = typeof payload?.operator_note === 'string' ? payload.operator_note.trim() : null;
+    if (suppliedNote !== null && suppliedNote.length > 500) return reply({ error: 'Staff note must be 500 characters or fewer.' }, 400);
     const key = PRIVACY_HELP_PREFIX + detail[1];
     const existing = await env.SESSIONS.get(key, 'json');
     if (!existing) return reply({ error: 'Request not found or expired.' }, 404);
+    // Status-only updates must not silently erase an earlier staff verification note.
+    const note = suppliedNote === null ? (typeof existing.operator_note === 'string' ? existing.operator_note : '') : suppliedNote;
+    if (status === 'closed' && !note) return reply({ error: 'Add a brief staff note (500 characters maximum) before closing.' }, 400);
     // A staff edit must not restart the original 90-day privacy retention period.
     const expiresAt = privacyTicketExpiry(existing.created_at);
     if (!expiresAt) return reply({ error: 'Request expired or invalid. Submit a new assistance request.' }, 410);
