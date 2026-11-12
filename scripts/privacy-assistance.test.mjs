@@ -135,3 +135,27 @@ test('staff notes survive status-only edits and require an explanation before cl
  assert.equal(denied.status,400,'closing without a note must still fail');
  assert.equal(f.store.get(key).status,'reviewing');
 });
+
+test('public assistance limits actual body bytes when Content-Length is absent',async()=>{
+ const f=fixture();
+ const req=new Request('https://api.ash-fall.com/api/privacy/deletion-assistance',{
+  method:'POST',headers:{Origin:'https://ash-fall.com','content-type':'application/json'},
+  body:JSON.stringify({...good,website:'x'.repeat(3000)})
+ });
+ assert.equal(req.headers.get('content-length'),null);
+ const rejected=await handlePrivacyAssistance(req,f.env,new URL(req.url),f.deps);
+ assert.equal(rejected.status,413);
+ assert.equal(f.store.size,0);
+ const valid=await f.route('/api/privacy/deletion-assistance','POST',good);
+ assert.equal(valid.status,202,'ordinary small requests must still work');
+});
+test('malformed JSON on public assistance route fails without storing a ticket',async()=>{
+ const f=fixture();
+ const req=new Request('https://api.ash-fall.com/api/privacy/deletion-assistance',{
+  method:'POST',headers:{Origin:'https://ash-fall.com','content-type':'application/json'},
+  body:'{"email":'
+ });
+ const response=await handlePrivacyAssistance(req,f.env,new URL(req.url),f.deps);
+ assert.equal(response.status,400);
+ assert.equal(f.store.size,0);
+});
