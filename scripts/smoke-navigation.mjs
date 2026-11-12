@@ -41,8 +41,8 @@ try {
       return route.fulfill({ headers, json: { unread_count: 3, settings: {} } });
     });
 
+    const page = await context.newPage();
     try {
-      const page = await context.newPage();
       const auth = page.waitForResponse("https://api.ash-fall.com/api/auth/me");
       await page.goto(origin + "/homepage#ecosystem", { waitUntil: "domcontentloaded" });
       await auth;
@@ -77,7 +77,7 @@ try {
         if (isStaff) {
           await staff.click();
           await nav.getByRole("link", { name: "Account Recovery" }).waitFor();
-          assert.equal(await nav.getByRole("link", { name: "Settings & Tools" }).isVisible(), false);
+          await nav.getByRole("link", { name: "Settings & Tools" }).waitFor({ state: "hidden" });
           assert.equal(await nav.getByRole("link", { name: "Admin Dashboard" }).isVisible(), admin);
         } else {
           await nav.getByRole("link", { name: "Settings & Tools" }).click();
@@ -92,6 +92,12 @@ try {
       const size = await page.evaluate(() => [document.documentElement.clientWidth, document.documentElement.scrollWidth]);
       assert.ok(size[1] <= size[0] + 3, "Page overflows viewport: " + size);
       console.log("PASS navigation", session.name, mobile ? "mobile" : "desktop");
+    } catch (error) {
+      const message = (session.name + " " + (mobile ? "mobile" : "desktop") + ": " + error.message).replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+      console.error("::error::" + message);
+      await import("node:fs/promises").then(fs => fs.mkdir("priority-arcade-evidence", { recursive: true }));
+      await page.screenshot({ path: "priority-arcade-evidence/navigation-failure.png", timeout: 3000 }).catch(() => {});
+      throw error;
     } finally {
       await context.close();
     }
