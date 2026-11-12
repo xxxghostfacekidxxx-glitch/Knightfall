@@ -98,6 +98,7 @@ test('privacy assistance ticket expiry stays anchored to creation, never staff e
  const second=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'awaiting_verification'});
  assert.equal(second.status,200);
  assert.equal(f.expirations.get(key).expiration,originalExpiration);
+ assert.equal(f.store.get(key).operator_note,'Identity verification pending','status-only edits must preserve prior staff note');
 });
 test('expired and corrupt ticket timestamps cannot be refreshed', async () => {
  const f=fixture();
@@ -111,4 +112,26 @@ test('expired and corrupt ticket timestamps cannot be refreshed', async () => {
   assert.equal(response.status,410);
  }
  assert.equal(f.expirations.get(key).expirationTtl,90*86400,'no expired edit may refresh TTL');
+});
+
+test('staff notes survive status-only edits and require an explanation before closing', async () => {
+ const f=fixture();
+ const created=await f.route('/api/privacy/deletion-assistance','POST',good);
+ const id=(await created.json()).request_id;
+ const key=PRIVACY_HELP_PREFIX+id;
+ f.deps.getUser=async()=>({id:1,role:'admin'});
+ const first=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'reviewing',operator_note:'Waiting for ownership evidence'});
+ assert.equal(first.status,200);
+ const next=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'awaiting_verification'});
+ assert.equal(next.status,200);
+ assert.equal(f.store.get(key).operator_note,'Waiting for ownership evidence');
+ const closed=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'closed'});
+ assert.equal(closed.status,200);
+ assert.equal(f.store.get(key).operator_note,'Waiting for ownership evidence');
+ const cleared=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'reviewing',operator_note:''});
+ assert.equal(cleared.status,200);
+ assert.equal(f.store.get(key).operator_note,'','an explicitly blank note clears it');
+ const denied=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'closed'});
+ assert.equal(denied.status,400,'closing without a note must still fail');
+ assert.equal(f.store.get(key).status,'reviewing');
 });
