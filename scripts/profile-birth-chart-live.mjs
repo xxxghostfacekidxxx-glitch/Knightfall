@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 const base=process.env.KNIGHTFALL_API||'https://api.ash-fall.com';
 for(const [path,status,validate] of [
- ['/health',200,data=>assert.equal(data.database,true)],
+ ['/health',200,data=>{assert.equal(data.database,true);assert.equal(data.deletion_requests_ready,true,'account deletion request migration must be installed')}],
  ['/api/auth/me',200,data=>assert.equal(data.user,null)],
  ['/api/profile/birth-chart',401,data=>assert.equal(typeof data.error,'string')],
  ['/api/categories',200,data=>{
