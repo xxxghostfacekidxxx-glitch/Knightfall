@@ -1,0 +1,69 @@
+.directory-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: .8rem;
+  margin-block: 1rem;
+}
+
+.directory-group {
+  min-width: 0;
+  padding: .9rem 1rem;
+  border: 1px solid #593b70;
+  border-radius: .8rem;
+  background: #130f20;
+}
+
+.directory-group h2,
+.directory-group h3 {
+  margin: 0 0 .35rem;
+  font-size: 1.05rem;
+  color: #f8f1ff;
+}
+
+.directory-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.directory-group li + li {
+  border-top: 1px solid #f1dfff18;
+}
+
+.directory-group a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: .4rem;
+  color: #eacaf4;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+
+.directory-group a:hover,
+.directory-group a:focus-visible {
+  color: #c6ff45;
+}
+
+.directory-group [hidden] {
+  display: none !important;
+}
+
+#ecosystem,
+#account-tools,
+#game-shelf,
+#arcade-leaderboards {
+  scroll-margin-top: 8rem;
+}
+
+.arcade-directory-links {
+  max-width: 36rem;
+  margin-top: 1rem;
+}
+
+.arcade-directory-links summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+  font-weight: 700;
+}

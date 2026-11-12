@@ -38,6 +38,8 @@ const workerApiSurface = worker + "\n" + await Promise.all([
   "member-memos.js",
   "member-memo-mail.js",
   "profile-links.js",
+  "profile-wall.js",
+  "profile-showcase.js",
   "arcade-turn-matches.js"
 ].map(file => readFile(path.join(root, "backend/src", file), "utf8"))).then(sources => sources.join("\n"));
 const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8");
@@ -113,12 +115,13 @@ for (const [label, present] of [
 ]) {
   if (present) ok(label); else fail(label);
 }
-const devilTools = await readFile(path.join(publicDir, "devil-tools.html"), "utf8");
+const foundry = await readFile(path.join(publicDir, "devil-tools.html"), "utf8");
+const foundryScript = await readFile(path.join(publicDir, "creator-foundry.js"), "utf8");
 for (const [label, present] of [
-  ["Devil Tools searchable workspace directory", devilTools.includes('id="dt-tool-search"')],
-  ["Devil Tools focused sections", devilTools.includes("setupWorkspaceDirectory();buildCatalog()")],
-  ["Devil Tools show-all option", devilTools.includes('id="dt-show-all"')],
-  ["Devil Tools role-based God badge", devilTools.includes("String(user.role||'').toLowerCase()==='god'")]
+  ["Creator Foundry searchable catalog", foundry.includes('id="foundry-search"')],
+  ["Creator Foundry workspace routing", foundryScript.includes("target?.closest(\"[data-workspace]\")")],
+  ["Creator Foundry all-tools filter", foundry.includes('data-category="all"')],
+  ["Creator Foundry role gate", foundry.includes("const administrator = isGod || role === 'admin'")]
 ]) {
   if (present) ok(label); else fail(label);
 }

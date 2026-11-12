@@ -6,14 +6,12 @@ import { fileURLToPath } from 'node:url';
 const nav = readFileSync(fileURLToPath(new URL('../public/nav.js', import.meta.url)), 'utf8');
 const admin = readFileSync(fileURLToPath(new URL('../public/admin.html', import.meta.url)), 'utf8');
 
-test('master task list shortcut targets an existing admin-page anchor', () => {
-  assert.match(nav, /class="kf-admin-tasks-link" href="\/admin\.html#master-task-list" hidden/);
-  assert.match(admin, /id="master-task-list"/);
-});
-test('task shortcut is enabled only with the other admin shortcuts and hidden after authentication errors', () => {
-  const selector = '.kf-admin-toolkit-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-admin-tasks-link';
-  assert.ok(nav.includes(selector), 'admin task list must be part of the admin-only reveal selector');
-  assert.match(nav, /\.kf-admin-tasks-link,\.kf-mod-link,\.kf-recovery-link/);
+test('staff menu links to the dashboard and old task bookmarks still open the register', () => {
+  assert.match(nav, /class="kf-admin-link" href="\/admin\.html" hidden/);
+  assert.match(nav, /querySelector\("\.kf-admin-link"\)\.hidden = !admin/);
+  assert.doesNotMatch(nav, /href="\/admin\.html#master-task-list"/);
+  assert.match(admin, /<details id="master-task-list"/);
+  assert.match(admin, /location.hash === "#master-task-list".*open = true/);
 });
 test('task panel links to canonical backlog and does not claim continuous GitHub monitoring', () => {
   assert.match(admin, /docs\/MASTER-TASK-LIST-2026-11-11\.md/);

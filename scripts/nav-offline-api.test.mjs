@@ -19,9 +19,30 @@ test("account and settings bootstrap never make production network requests on l
  assert.match(source,/function refreshNotifications\(\) \{\s*if \(!cloudAccountAvailable\) return;/);
  assert.match(source,/Promise\.resolve\(null\)/);
 });
-test("navigation still shows signed-out fallback and keeps privileged links hidden",()=>{
- assert.match(source,/if \(!d\?\.user\) \{/);
- assert.match(source,/authResolved = true;/);
- assert.match(source,/\.kf-admin-link,.kf-admin-quick-link/);
- assert.match(source,/nav\.querySelector\("\.kf-profile-link"\)\?\.remove\(\)/);
+test("navigation exposes one route per destination and starts signed out",()=>{
+ const markup = source.split("header.innerHTML = `")[1].split("`")[0];
+ const nav = markup.split('<nav id="kf-primary-nav"')[1].split("</nav>")[0];
+ const routes = [...nav.matchAll(/href="([^"]+)"/g)].map(match=>match[1]);
+ assert.equal(routes.length,new Set(routes).size);
+ assert.ok(routes.length<=15);
+ assert.match(nav,/class="kf-nav-group kf-profile-group" hidden/);
+ assert.match(nav,/class="kf-nav-group kf-staff-group" hidden/);
+ assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/index.html"/);
+ assert.match(source,/if \(!user\) return;/);
+});
+
+test("consolidated navigation destinations exist, including deep links",()=>{
+ const files = ["nav.js", "homepage.html", "account.html", "shops.html"];
+ const disk = path=>readFileSync("public"+path,"utf8");
+ for (const file of files) {
+  for (const [,path,fragment] of disk("/"+file).matchAll(/href="(\/[^"#?\$]+)(?:#([^"]+))?"/g)) {
+   const contents = disk(path);
+   if (fragment) assert.ok(contents.includes('id="'+fragment+'"'),path+"#"+fragment);
+  }
+ }
+ for (const file of ["chaos-cartridge.html","arcade-30-games.html"]) {
+  const html = disk("/"+file);
+  assert.match(html,/href="#game-shelf"/);
+  assert.doesNotMatch(html,/href="Original Ash-Fall/);
+ }
 });

@@ -32,7 +32,7 @@ test("push click never navigates away from an unrelated open chat or game",()=>{
 test("mobile navigation closes on Escape and outside interaction",()=>{
  assert.match(nav,/event\.key !== "Escape"/);
  assert.match(nav,/document\.addEventListener\("pointerdown"/);
- assert.match(nav,/window\.addEventListener\("popstate", closeMobileMenu\)/);
+ assert.match(nav,/window\.addEventListener\("popstate", \(\) => setDrawer\(false\)\)/);
 });
 test("service worker does not contain escaped newline syntax errors",()=>{
  assert.ok(!sw.includes(String.raw`\\n  if (event.data`));

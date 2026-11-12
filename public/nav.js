@@ -57,27 +57,17 @@
       document.head.append(glitch);
     }
   }
-  // The shop preview is available to all members, without enabling checkout.
-  const mountShopLink = () => {
-    if (document.getElementById("ashfall-shop-link") || location.pathname==="/cinder-shop.html") return;
-    const link=document.createElement("a");
-    link.id="ashfall-shop-link";link.href="/cinder-shop.html";link.textContent="🔥 Cinder Shop";
-    link.style.cssText="display:inline-block;margin:.5rem 0 0;color:#c6ff45;font-weight:700;text-decoration:underline;text-underline-offset:3px";
-    const footer=document.getElementById("ashfall-support-footer");
-    if(footer)footer.append(document.createElement("br"),link);
-  };
   // Shared donation footer. Payment destination is configured on the support page.
   const mountSupportFooter = () => {
     if (document.getElementById("ashfall-support-footer")) return;
     const footer = document.createElement("footer");
     footer.id = "ashfall-support-footer";
     footer.setAttribute("aria-label", "Support Ash-Fall");
-    footer.innerHTML = '<span>Enjoying the chaos? Help keep Ash-Fall running.</span> <a href="/support.html">❤️ Support Ash-Fall</a>';
+    footer.innerHTML = '<a href="/support.html">Support Ash-Fall</a> <a href="/user-agreement.html">Terms &amp; Policies</a>';
     const css = document.createElement("style");
     css.textContent = '#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ff55d8;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#c6ff45;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #c6ff45;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
     document.head.append(css);
     document.body.append(footer);
-    mountShopLink();
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",mountSupportFooter,{once:true});
   else mountSupportFooter();
@@ -246,58 +236,36 @@
     document.head.append(stable);
   }
   header.innerHTML = `
-    <a class="kf-brand" href="/index.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
-    <a href="/remembering-josh.html" aria-label="In memory of Josh ‘Crush’ Van Patten" title="Remembering Josh ‘Crush’ Van Patten" style="flex:none;line-height:0"><img src="/assets/josh/arise-small.webp" width="42" height="42" alt=""></a>
+    <a class="kf-brand" href="/homepage.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
-      <a class="kf-nav-primary" href="/homepage.html">Explore</a>
-      <a class="kf-nav-primary" href="/community.html">Forums</a>
-      <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
-       <a class="kf-nav-primary" href="/members.html">Profiles</a>
-       <a class="kf-nav-primary" href="/friends.html">Friends</a>
-       <a class="kf-nav-primary kf-admin-quick-link" href="/admin.html" hidden>God Mode</a>
-      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
+      <a class="kf-nav-primary" href="/homepage.html#ecosystem">Explore</a>
       <details class="kf-nav-group">
-        <summary>Discover <span aria-hidden="true">⌄</span></summary>
+        <summary>Community <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
-          <a href="/bots.html">Public Bots</a>
-          <a href="/shops.html">Shops</a>
-          <a href="/miss-chaos.html">Miss Chaos</a>
-          <a href="/moonology.html">Moonology</a>
-          <a href="/shadow-work.html">Shadow Work</a>
-          <a href="/open-source-arsenal.html">Open Source</a>
+          <a href="/community.html">Forums</a>
+          <a href="/members.html">Member Directory</a>
           <a href="/social.html">Groups &amp; Activity</a>
-          <a href="/members.html">Find Members</a>
-          <a href="/adults.html">Adults Only (18+)</a>
-          <a href="/dating.html">Dating Realm (18+)</a>
         </div>
       </details>
-      <details class="kf-nav-group kf-profile-group">
+      <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
+      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
+      <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
-        <div class="kf-nav-menu kf-profile-menu">
-          <a href="/members.html">Member Profiles</a>
-          <a class="kf-profile-link" href="/profile-edit.html">Edit Profile</a>
-          <a href="/die-ary.html">Die-ary</a>
-          <a href="/moonology.html#journal">Moon Journal</a>
-          <a href="/shadow-work.html#journal">Shadow Journal</a>
-          <a href="/memo-pad.html">📝 Memo Pad</a>
-          <a href="/memo-pad.html?tab=inbox">✉ Memo Mail</a>
-          <a href="/memo-pad.html?tab=chat">💬 Live Chat</a>
-          <a href="/friends.html">Friends</a>
-          <a class="kf-personal-bots-link" href="/personal-bots.html">Personal Bots</a>
-          <a class="kf-vault-link" href="/vault.html">Private Vault</a>
-          <a href="/my-shop.html">My Shop</a>
-          <a class="kf-account-link" href="/account.html">Account Settings</a>
-          <a href="/support.html">Support Ash-Fall</a>
-          <a href="/user-agreement.html">Terms &amp; Policies</a>
-          <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
-          <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
-          <a class="kf-admin-tasks-link" href="/admin.html#master-task-list" hidden>Master Task List</a>
-          <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
-          <a class="kf-admin-arsenal-link" href="/open-source-arsenal.html" hidden>Open Source Arsenal</a>
-          <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
-          <a class="kf-recovery-link" href="/moderation-accounts.html" hidden>Account Recovery</a>
+        <div class="kf-nav-menu">
           <a class="kf-my-profile-link" href="/profile.html">My Profile</a>
+          <a href="/friends.html">Friends</a>
+          <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
+          <a class="kf-account-link" href="/account.html">Settings &amp; Tools</a>
+          <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
+        </div>
+      </details>
+      <details class="kf-nav-group kf-staff-group" hidden>
+        <summary>Staff <span aria-hidden="true">⌄</span></summary>
+        <div class="kf-nav-menu">
+          <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
+          <a class="kf-mod-link" href="/moderation.html">Moderation</a>
+          <a class="kf-recovery-link" href="/moderation-accounts.html">Account Recovery</a>
         </div>
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>
@@ -317,40 +285,29 @@
   import('/moon-widget.mjs').then(({mountMoonStrip}) => mountMoonStrip(header.querySelector('.kf-lunar-strip'))).catch(() => {});
 
   const nav = header.querySelector(".kf-nav");
-  // Keep orientation clear across the many sections of Ash-Fall.
-  const normalizedPath = path => {
-    const clean = path.endsWith("/") ? path.slice(0, -1) || "/" : path;
-    return clean === "/" ? "/index.html" : clean;
-  };
-  const currentPath = normalizedPath(location.pathname);
-  nav.querySelectorAll('a[href^="/"]').forEach(link => {
-    const destination = new URL(link.getAttribute("href"), location.origin);
-    if (normalizedPath(destination.pathname) === currentPath && !destination.hash) link.setAttribute("aria-current", "page");
-  });
-  // Indicate which grouped section contains the current page.
-  nav.querySelectorAll(".kf-nav-group").forEach(group => {
-    if (group.querySelector('a[aria-current="page"]')) {
-      group.querySelector("summary")?.classList.add("kf-nav-section-current");
-    }
-  });
+  // Pages serves both extensionless routes and their original .html links.
+  const normalizedPath = path => path.replace(/\/$/, "").replace(/\.html$/, "") || "/index";
+  function markCurrentPage() {
+    const currentPath = normalizedPath(location.pathname);
+    nav.querySelectorAll('a[href^="/"]').forEach(link => {
+      const destination = new URL(link.href);
+      const samePage = normalizedPath(destination.pathname) === currentPath;
+      if (samePage && (!destination.hash || destination.hash === location.hash || currentPath === "/homepage")) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
+  markCurrentPage();
   nav.querySelectorAll(".kf-nav-group").forEach(group => {
     group.addEventListener("toggle", () => {
       if (group.open) nav.querySelectorAll(".kf-nav-group").forEach(other => { if (other !== group) other.open = false; });
     });
   });
-  let siteSettings = null, currentUser = null, authResolved = false;
-  // Auth and feature settings arrive independently. Wait for both before removing
-  // profile links, otherwise a slow auth response can hide privileged navigation.
-  function applyProfileVisibility() {
-    // Profiles are a core route. Never erase navigation links because a
-    // stale feature flag or an unavailable settings request says otherwise.
-    return;
-  }
   const toggle = header.querySelector(".kf-nav-toggle");
   const installButton = header.querySelector(".kf-install-app");
   const profileGroup = nav.querySelector(".kf-profile-group");
-  // The account group stays discoverable when session checks are delayed or fail.
-  if (profileGroup) profileGroup.hidden = false;
   const badge = nav.querySelector(".kf-notify-badge");
   let installPrompt = null;
 
@@ -369,48 +326,35 @@
     if (choice?.outcome === "accepted") installButton.innerHTML = "✓ <span>Install requested</span>";
   });
   window.addEventListener("appinstalled", () => { installPrompt = null; if (installButton) { installButton.innerHTML = "✓ <span>App Installed</span>"; installButton.setAttribute("aria-label","Ash-Fall is installed"); } });
-  toggle.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    toggle.setAttribute("aria-label", open ? "Open navigation" : "Close navigation");
-    nav.classList.toggle("open", !open);
-  });
-  // Keep the mobile menu navigable by keyboard and dismissible without hunting for the tiny toggle.
-  const closeMobileMenu = () => {
-    if (!nav.classList.contains("open")) return;
-    nav.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-label", "Open navigation");
-    nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.removeAttribute("open"));
+  const closeGroups = () => {
+    nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
   };
+  function setDrawer(open) {
+    nav.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    if (!open) closeGroups();
+  }
+  toggle.addEventListener("click", () => setDrawer(!nav.classList.contains("open")));
   document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
-    if (nav.classList.contains("open")) {
-      closeMobileMenu();
+    const openGroup = nav.querySelector(".kf-nav-group[open]");
+    if (openGroup) {
+      openGroup.open = false;
+      openGroup.querySelector("summary").focus();
+    } else if (nav.classList.contains("open")) {
+      setDrawer(false);
       toggle.focus();
-    } else {
-      const openGroup = nav.querySelector(".kf-nav-group[open]");
-      if (openGroup) { openGroup.removeAttribute("open"); openGroup.querySelector("summary")?.focus(); }
     }
   });
   document.addEventListener("pointerdown", event => {
-    if (!header.contains(event.target)) {
-      closeMobileMenu();
-      nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
-    }
+    if (!header.contains(event.target)) setDrawer(false);
   });
-  // Do not close the menu on focusout: tapping nested mobile dropdowns moves
-  // focus between summary and links, which otherwise collapses the drawer.
-  // Outside pointerdown and Escape remain the intentional dismissal paths.
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 1080) closeMobileMenu();
+  window.matchMedia("(max-width: 1080px)").addEventListener("change", () => setDrawer(false));
+  window.addEventListener("popstate", () => setDrawer(false));
+  nav.addEventListener("click", event => {
+    if (event.target.closest("a")) setDrawer(false);
   });
-  window.addEventListener("popstate", closeMobileMenu);
-  nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-    nav.querySelectorAll(".kf-nav-group").forEach(group => group.removeAttribute("open"));
-    nav.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
-  }));
 
   function refreshNotifications() {
     if (!cloudAccountAvailable) return;
@@ -427,10 +371,9 @@
   (cloudAccountAvailable ? fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include",cache:"no-store"}) : Promise.resolve(null))
     .then(r => r?.ok ? r.json() : null)
     .then(d => {
-      siteSettings = d?.settings || null;
+      const siteSettings = d?.settings;
       if (!siteSettings) return;
-      if (siteSettings.feature_miss_chaos === "false") nav.querySelector('a[href="/miss-chaos.html"]')?.remove();
-      applyProfileVisibility();
+      if (siteSettings.feature_miss_chaos === "false") document.querySelector("[data-miss-chaos-directory]")?.setAttribute("hidden", "");
       if (siteSettings.announcements_enabled === "true" && (siteSettings.announcement_title || siteSettings.announcement_body)) {
         const banner = document.createElement("aside");
         banner.className = "kf-announcement";
@@ -452,58 +395,25 @@
   (cloudAccountAvailable ? fetch("https://api.ash-fall.com/api/auth/me", {credentials:"include",cache:"no-store"}) : Promise.resolve(null))
     .then(r => r?.ok ? r.json() : null)
     .then(d => {
-      if (!d?.user) {
-        authResolved = true;
-        applyProfileVisibility();
-        // Signed-out visitors still see the grouped destinations, but not private tools.
-        nav.querySelector(".kf-personal-bots-link")?.remove();
-        nav.querySelector(".kf-messages-shortcut")?.remove();
-        nav.querySelector(".kf-vault-link")?.remove();
-        nav.querySelector(".kf-profile-link")?.remove();
-        return;
-      }
+      const user = d?.user;
+      if (!user) return;
       profileGroup.hidden = false;
-      const messageShortcut=nav.querySelector(".kf-messages-shortcut");
-      if(messageShortcut) messageShortcut.hidden=false;
-      nav.querySelector(".kf-sign-in-link")?.remove();
-      currentUser = d.user;
-      authResolved = true;
-      applyProfileVisibility();
-      const user = currentUser;
-      if (user.status === "suspended" || user.status === "banned") nav.querySelector(".kf-personal-bots-link")?.remove();
-      const normalizedRole = String(user.role || "").trim().toLowerCase();
-      if (!(["admin","god"].includes(normalizedRole) && user.username === "knightfall")) nav.querySelector(".kf-vault-link")?.remove();
-      if (["admin","god"].includes(normalizedRole) || String(user.public_title || "").trim() === "Digital Creator") {
-        const foundry = nav.querySelector(".kf-admin-foundry-link");
-        if (foundry) foundry.hidden = false;
-      }
-      if (["admin","god"].includes(normalizedRole)) {
-        const quickLink = nav.querySelector(".kf-admin-quick-link");
-        if (quickLink) quickLink.hidden = false;
-        const adminLink = nav.querySelector(".kf-admin-link");
-        if (adminLink) adminLink.hidden = false;
-        nav.querySelectorAll(".kf-admin-arsenal-link,.kf-admin-tasks-link").forEach(link => { link.hidden = false; });
-      }
-      if (["admin","moderator","god"].includes(normalizedRole)) {
-        const modLink = nav.querySelector(".kf-mod-link");
-        const recoveryLink = nav.querySelector(".kf-recovery-link");
-        if (modLink) modLink.hidden = false;
-        if (recoveryLink) recoveryLink.hidden = false;
-      }
-      const myProfile = nav.querySelector(".kf-my-profile-link");
-      if (myProfile) myProfile.href = "/profile.html?username=" + encodeURIComponent(user.username);
+      nav.querySelector(".kf-messages-shortcut").hidden = false;
+      nav.querySelector(".kf-sign-in-link").hidden = true;
+      const role = String(user.role || "").trim().toLowerCase();
+      const admin = role === "admin" || role === "god";
+      const staff = admin || role === "moderator";
+      const creator = String(user.public_title || "").trim() === "Digital Creator";
+      nav.querySelector(".kf-admin-foundry-link").hidden = !admin && !creator;
+      nav.querySelector(".kf-staff-group").hidden = !staff;
+      nav.querySelector(".kf-admin-link").hidden = !admin;
+      nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
       const pingActivity = () => fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"}).catch(() => {});
       pingActivity();
       setInterval(pingActivity, 120000);
-    }).catch(() => {
-      // A temporary network or JSON failure is not proof that the visitor signed out.
-      // Preserve navigation while leaving privileged links hidden until auth succeeds.
-      authResolved = true;
-      applyProfileVisibility();
-      nav.querySelectorAll(".kf-admin-link,.kf-admin-quick-link,.kf-admin-foundry-link,.kf-admin-arsenal-link,.kf-admin-tasks-link,.kf-mod-link,.kf-recovery-link").forEach(link => { link.hidden = true; });
-    });
+    }).catch(() => {});
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeNavigation, {once:true});
   else initializeNavigation();

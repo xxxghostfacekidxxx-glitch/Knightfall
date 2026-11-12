@@ -7,6 +7,7 @@
   <title>Ash-Fall | Account</title>
   <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
   <link rel="stylesheet" href="/account.css?v=20261026-layout-pass2">
+  <link rel="stylesheet" href="/section-directory.css">
   <style>
     .account-deletion{margin-top:2rem;padding:1.1rem;border:1px solid #9652a6;border-radius:12px;background:#1b1024}
     .account-deletion h2{margin:.2rem 0 .7rem;color:#ffb0ed;font-size:1.25rem}
@@ -43,12 +44,14 @@
         <h1>YOUR CORNER OF THE CHAOS</h1>
         <p class="lead">Your Ash-Fall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
         <div class="account-actions">
-          <a class="button primary" href="/auth.html">Sign in / Register</a>
-          <a class="button secondary" href="/index.html">Return to sign in</a>
+          <a class="button primary" href="/index.html">Sign in or register</a>
         </div>`;
     }
 
     function renderUser(user) {
+      const role = String(user.role || "").trim().toLowerCase();
+      const ownerVault = ["admin", "god"].includes(role) && user.username === "knightfall";
+      const personalBots = !["banned", "suspended"].includes(user.status);
       const initials = (user.display_name || user.username || "?").slice(0,1).toUpperCase();
       root.innerHTML = `
         <div class="account-top">
@@ -69,9 +72,29 @@
         <div class="account-actions">
           <a class="button primary" href="/profile.html?username=${encodeURIComponent(user.username)}">View profile</a>
           <a class="button secondary" href="/profile-edit.html">Edit profile</a>
-          <a class="button secondary" href="/index.html">Return to sign in</a>
-          ${["moderator","admin"].includes(user.role) ? '<a class="button secondary" href="/moderation.html">Moderation</a><a class="button secondary" href="/moderation-accounts.html">Account recovery</a>' + (user.role === "admin" ? '<a class="button primary" href="/admin.html">Administrator</a>' : "") : ""}
         </div>
+        <section id="account-tools" aria-labelledby="account-tools-heading">
+          <h2 id="account-tools-heading">Your tools</h2>
+          <div class="directory-groups">
+            <section class="directory-group">
+              <h3>Notes &amp; Journals</h3>
+              <ul>
+                <li><a href="/memo-pad.html">Memo Pad, Mail &amp; Live Chat</a></li>
+                <li><a href="/die-ary.html">The Die-ary</a></li>
+                <li><a href="/moonology.html#journal">Moon Journal</a></li>
+                <li><a href="/shadow-work.html#journal">Shadow Journal</a></li>
+              </ul>
+            </section>
+            <section class="directory-group">
+              <h3>Bots &amp; Shops</h3>
+              <ul>
+                ${personalBots ? '<li><a href="/personal-bots.html">Personal Bots</a></li>' : ""}
+                <li><a href="/my-shop.html">My Shop</a></li>
+                ${ownerVault ? '<li><a href="/vault.html">Private Vault</a></li>' : ""}
+              </ul>
+            </section>
+          </div>
+        </section>
         <button id="logout" class="logout" type="button">Log out</button>
         ${["admin","god"].includes(user.role) ? "" : '<section class="account-deletion" aria-labelledby="delete-account-title"><h2 id="delete-account-title">Delete your account</h2><p>Submit a permanent deletion request by confirming your exact username and current Ash-Fall password. For security, the signed-in request form requires both. If you use Google or Facebook without an Ash-Fall password, or cannot access your password, <a href="/account-deletion.html#deletion-assistance">request deletion assistance</a> instead. Staff must verify account ownership before processing. A valid request is due for operator processing within 30 days; submitting it does not erase data immediately.</p><form id="delete-account-form"><label for="delete-account-password">Current password (required to confirm deletion)</label><input id="delete-account-password" name="password" type="password" autocomplete="current-password" maxlength="128" required><label for="delete-account-username">Type your username to confirm</label><input id="delete-account-username" name="confirmation_username" autocomplete="username" required maxlength="24" placeholder="Your exact username"><label class="delete-confirm"><input id="delete-account-confirm" type="checkbox" required> I understand this requests permanent account deletion.</label><button class="logout" type="submit">Request account deletion</button></form><div id="deletion-request-status" role="status" aria-live="polite"></div><button id="cancel-deletion-request" class="logout" type="button" hidden>Cancel pending request</button><p><a href="/account-deletion.html">Read the deletion policy</a></p></section>'}
         <p id="account-status" class="account-status" role="status" aria-live="polite"></p>`;
