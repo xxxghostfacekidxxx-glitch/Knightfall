@@ -40,6 +40,10 @@ assert.match(adminTransition, /WHERE id=\? AND status IN \('pending','in_progres
 assert.match(adminTransition, /Number\(updated\.meta\?\.changes\|\|0\)!==1/, "concurrent admin status updates must fail closed");
 assert.match(adminTransition, /from:row\.status,to:status/, "audit must retain the transition's previous state");
 
+assert.match(adminTransition, /SELECT id,status,user_id,operator_note FROM account_deletion_requests/, "staff updates must load the previous note");
+assert.match(adminTransition, /typeof body\.operator_note==="string"\?body\.operator_note\.trim\(\)\.slice\(0,1000\):String\(row\.operator_note\|\|""\)/, "status-only updates must preserve prior staff notes");
+
+
 assert.match(homepage, /rel="manifest" href="\/manifest\.webmanifest"/);
 assert.match(account, /id="delete-account-form"/);
 assert.match(account, /id="delete-account-confirm"/);
