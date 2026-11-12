@@ -27,6 +27,19 @@ assert.match(backend, /url:"\/admin-deletion-requests\.html"/);
 assert.match(backend, /if\(url\.pathname==="\/api\/admin\/account-deletion-requests"&&request\.method==="GET"\)/);
 assert.match(backend, /if\(deletionRequestMatch&&request\.method==="PATCH"\)/);
 assert.match(backend, /\["in_progress","rejected"\]\.includes\(status\)/);
+
+const cancellation=backend.split('if(url.pathname==="/api/account/deletion-request"&&request.method==="DELETE"){')[1]?.split('const deletionRequestMatch=')[0];
+const adminTransition=backend.split('if(deletionRequestMatch&&request.method==="PATCH"){')[1]?.split('if(url.pathname.startsWith("/api/admin/safety-reports/")')[0];
+assert.ok(cancellation && adminTransition, "deletion request handlers must exist");
+assert.match(cancellation, /WHERE id=\? AND user_id=\? AND status='pending'/, "cancellation must update only its owner's pending request");
+assert.match(cancellation, /Number\(cancelled\.meta\?\.changes\|\|0\)!==1/, "cancellation must not report success if a concurrent status change won");
+assert.match(cancellation, /409,origin/, "stale cancellation returns conflict");
+assert.match(adminTransition, /!\["pending","in_progress"\]\.includes\(row\.status\)/, "terminal deletion requests cannot reopen");
+assert.match(adminTransition, /status==="rejected"&&!note/, "rejecting a request requires a documented reason");
+assert.match(adminTransition, /WHERE id=\? AND status IN \('pending','in_progress'\)/, "admin writes must be conditionally guarded at database level");
+assert.match(adminTransition, /Number\(updated\.meta\?\.changes\|\|0\)!==1/, "concurrent admin status updates must fail closed");
+assert.match(adminTransition, /from:row\.status,to:status/, "audit must retain the transition's previous state");
+
 assert.match(homepage, /rel="manifest" href="\/manifest\.webmanifest"/);
 assert.match(account, /id="delete-account-form"/);
 assert.match(account, /id="delete-account-confirm"/);
