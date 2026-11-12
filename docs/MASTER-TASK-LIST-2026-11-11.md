@@ -136,6 +136,16 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Full CI suite and live Worker deployment verification remain pending. No existing deletion requests, accounts or records were modified by this source change.
 - [ ] Full verified D1/KV/R2 erasure, session invalidation and staff identity-verification procedure remain open under #150.
 
+## Deletion request concurrent staff updates — November 11, 2026
+
+- [x] Identified that admin status PATCH previously guarded only by `status IN ('pending','in_progress')`, which could overwrite a newer staff note or decision after reading a stale row.
+- [x] Changed the account-deletion request update into a compare-and-swap matching the exact previous status **and** operator note. Changed rows produce HTTP 409 rather than silently overwriting evidence ([ca91bba](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/ca91bbab65f8cb6ab9147c48a4e8030ecfc206f9)).
+- [x] Corrected the admin deletion queue to omit `operator_note` entirely for untouched note fields rather than explicitly submitting an empty string ([7e69bd8](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/7e69bd8c8157d1a99fa2586b771aeedd58277efa)).
+- [x] Extended account-deletion regression assertions for conditional SQL, snapshot binding and frontend omitted-note behavior ([150dec3](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/150dec390233c4989ed7ad25aa999ef163709713)).
+- [ ] Execute CI and authenticated concurrent-admin acceptance tests. Source review is not a deployed functional test.
+- [ ] The create-request path still needs a database-enforced uniqueness strategy for duplicate concurrent requests; do not introduce a unique index without auditing existing records and migrations.
+- [ ] Actual account erasure and retention cleanup across D1/KV/R2 are still P0 (#150).
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
