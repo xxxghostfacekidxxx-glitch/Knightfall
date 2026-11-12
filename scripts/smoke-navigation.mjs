@@ -40,6 +40,12 @@ try {
           "access-control-allow-methods": "GET, POST, OPTIONS"
         } });
       }
+      if (url.pathname === "/api/auth/register") {
+        return route.fulfill({ headers, status: 202, json: { verification_required: true } });
+      }
+      if (url.pathname === "/api/auth/verify-email") {
+        return route.fulfill({ headers, json: { verified: true, next: "/account.html?from=verified" } });
+      }
       if (url.pathname === "/api/auth/me") {
         if (session.user) return route.fulfill({ headers, json: { user: { username: "fixture", ...session.user } } });
         if (session.status === 200) return route.fulfill({ headers, contentType: "text/html", body: "<p>Bad gateway</p>" });
@@ -118,11 +124,24 @@ try {
         await page.goto(origin + "/index.html?mode=register&next=" + encodeURIComponent(next));
         await page.waitForURL(url => url.pathname === "/auth.html" && url.searchParams.get("next") === next);
         await page.getByRole("heading", { name: "Create an Ash-Fall account" }).waitFor();
+        assert.equal(await page.locator("[data-provider]").count(), 0);
+        await page.getByLabel("Display name").fill("Fixture");
+        await page.locator("#register-username").fill("fixture");
+        await page.getByLabel("Email address").fill("fixture@example.test");
+        await page.locator("#register-password").fill("fixture-password");
+        await page.getByRole("button", { name: "Create my account" }).click();
+        await page.getByText(/Check your email for a verification link/).waitFor();
+        assert.equal(new URL(page.url()).pathname, "/auth.html");
+
         await page.getByRole("tab", { name: "Log in" }).click();
         await page.getByLabel("Username or email").fill("fixture");
         await page.getByLabel("Password", { exact: true }).fill("fixture-password");
         await page.getByRole("button", { name: "Log in to Ash-Fall" }).click();
         await page.waitForURL(origin + next);
+        await page.goto(origin + "/verify-email.html#token=" + "a".repeat(64));
+        await page.getByLabel("Password").fill("fixture-password");
+        await page.getByRole("button", { name: "Verify and sign in" }).click();
+        await page.waitForURL(origin + "/account.html?from=verified");
       }
       console.log("PASS navigation", session.name, mobile ? "mobile" : "desktop");
     } catch (error) {

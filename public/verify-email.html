@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Verify your email | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/auth.css">
+  <style>[hidden]{display:none!important}</style>
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <a class="back" href="/">← Ash-Fall</a>
+      <h1>Verify your email</h1>
+      <form id="verify-form" hidden>
+        <p class="muted">Enter the password you chose when you signed up.</p>
+        <label for="verify-password">Password</label>
+        <input id="verify-password" type="password" autocomplete="current-password" minlength="12" maxlength="128" required>
+        <button class="primary" type="submit">Verify and sign in</button>
+      </form>
+      <p class="status" id="verify-status" role="status" aria-live="polite">Open the verification link from your signup email.</p>
+      <p><a href="/auth.html?mode=register">Request a new link</a> · <a href="/auth.html">Sign in</a></p>
+    </section>
+  </main>
+  <script type="module">
+    import {authDestination} from "/auth-destination.mjs";
+
+    const token = new URLSearchParams(location.hash.slice(1)).get("token");
+    const form = document.getElementById("verify-form");
+    const status = document.getElementById("verify-status");
+    if (token && /^[a-f0-9]{64}$/.test(token)) {
+      form.hidden = false;
+      status.textContent = "";
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const password = document.getElementById("verify-password");
+      const button = form.querySelector("button");
+      button.disabled = true;
+      status.textContent = "Verifying…";
+      try {
+        const response = await fetch("https://api.ash-fall.com/api/auth/verify-email", {
+          method: "POST",
+          credentials: "include",
+          headers: {"content-type":"application/json"},
+          body: JSON.stringify({token, password: password.value})
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || data.verified !== true) throw Error(data.error || "Verification is temporarily unavailable.");
+        password.value = "";
+        location.replace(authDestination(data.next, location.origin));
+      } catch (error) {
+        status.textContent = error.message;
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -8,6 +8,9 @@
       "17 3,11,19 * * *"
     ]
   },
+  "vars": {
+    "PASSWORD_RESET_FROM": "Ash-Fall <accounts@notify.ash-fall.com>"
+  },
   "observability": {
     "enabled": true
   },
