@@ -2650,10 +2650,11 @@ For complex questions, organize the answer clearly and provide actionable detail
     const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Administrator access required."},403,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const status=String(body.status||"");if(!["in_progress","rejected"].includes(status))return json({error:"Only in-progress or rejected statuses can be set here. Completion requires verified data deletion."},400,origin);
-    const id=Number(deletionRequestMatch[1]),row=await env.DB.prepare("SELECT id,status,user_id FROM account_deletion_requests WHERE id=?").bind(id).first();
+    const id=Number(deletionRequestMatch[1]),row=await env.DB.prepare("SELECT id,status,user_id,operator_note FROM account_deletion_requests WHERE id=?").bind(id).first();
     if(!row)return json({error:"Deletion request not found."},404,origin);
     if(!["pending","in_progress"].includes(row.status))return json({error:"Completed or rejected deletion requests cannot be reopened or changed."},409,origin);
-    const note=typeof body.operator_note==="string"?body.operator_note.trim().slice(0,1000):"";
+    // Omitted notes preserve prior staff evidence; explicit replacement is deliberate.
+    const note=typeof body.operator_note==="string"?body.operator_note.trim().slice(0,1000):String(row.operator_note||"");
     if(status==="rejected"&&!note)return json({error:"A documented reason is required before rejecting a deletion request."},400,origin);
     const updated=await env.DB.prepare("UPDATE account_deletion_requests SET status=?,processed_by=?,operator_note=? WHERE id=? AND status IN ('pending','in_progress')").bind(status,user.id,note,id).run();
     if(Number(updated.meta?.changes||0)!==1)return json({error:"The request status changed during this update. Refresh and try again."},409,origin);
