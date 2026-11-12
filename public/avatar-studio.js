@@ -11,11 +11,53 @@
   {name:'Tiny Villain',avatar:{skin:'cocoa',hair:'horns',hair_color:'plum',eyes:'mischief',eye_color:'violet',expression:'grin',face_mark:'lightning',piercing:'septum',outfit:'dress',outfit_color:'red',headwear:'tiara',eyewear:'star_shades',neckwear:'chain',aura:'spark_ring',accessory:'crown',background:'lavender',pattern:'hearts'}}
  ];
  let state={slots:[],wallet:0,products:[],extra:0,max:20},selected=1,avatar={...kit.defaults},busy=false;
+ let activeGroup='face',history=[],historyIndex=0,savedSnapshot='',savedName='',comparing=false;
+ const groups=[{key:'face',name:'Face & hair',icon:'✦'},{key:'features',name:'Expression',icon:'◉'},{key:'fit',name:'Style & gear',icon:'⚡'},{key:'scene',name:'World & aura',icon:'☾'}];
+ const colorFields=new Set(['skin','hair_color','eye_color','outfit_color','background']);
  const byId=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const status=byId('studio-status');
  async function api(path,options={}){const r=await fetch(API+path,{credentials:'include',cache:'no-store',...options,headers:{'content-type':'application/json',...(options.headers||{})}}),d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Avatar request failed.');return d;}
  function selectedSlot(){return state.slots.find(s=>Number(s.slot_no)===selected)||null;}
- function updatePreview(){byId('avatar-preview').innerHTML=kit.render(avatar);}
+ function updatePreview(){
+  const stage=byId('avatar-preview');stage.innerHTML=kit.render(comparing&&selectedSlot()?.avatar?selectedSlot().avatar:avatar);
+  stage.classList.toggle('is-comparing',comparing);
+  stage.setAttribute('aria-label',comparing?'Last saved Misfit appearance':'Live Misfit character preview');
+  syncDirty();
+ }
+ function syncDirty(){
+  const dirty=JSON.stringify(avatar)!==savedSnapshot||byId('avatar-name').value!==savedName;
+  const badge=byId('unsaved-indicator');if(badge){badge.classList.toggle('dirty',dirty);badge.textContent=dirty?'● Unsaved changes':'✓ All changes saved';}
+  byId('undo-avatar').disabled=historyIndex<=0;byId('redo-avatar').disabled=historyIndex>=history.length-1;
+  byId('preview-compare').disabled=!selectedSlot()?.avatar;
+  return dirty;
+ }
+ function resetHistory(){
+  history=[JSON.stringify(avatar)];historyIndex=0;
+  savedSnapshot=JSON.stringify(avatar);savedName=byId('avatar-name').value;
+  comparing=false;syncDirty();
+ }
+ function applyAvatar(next,message){
+  const safe=kit.safeAvatar(next),snapshot=JSON.stringify(safe);
+  if(snapshot!==JSON.stringify(avatar)){
+   history=history.slice(0,historyIndex+1);history.push(snapshot);
+   if(history.length>45)history.shift();historyIndex=history.length-1;avatar=safe;
+  }
+  paintControls();updatePreview();if(message)status.textContent=message;
+ }
+ function moveHistory(delta){
+  const target=historyIndex+delta;if(target<0||target>=history.length||busy)return;
+  historyIndex=target;avatar=kit.safeAvatar(JSON.parse(history[target]));paintControls();updatePreview();
+ }
+ function paintTabs(){
+  const nav=byId('category-tabs');nav.replaceChildren();
+  for(const group of groups){
+   const tab=document.createElement('button');tab.type='button';tab.className='category-tab';
+   tab.setAttribute('aria-selected',String(group.key===activeGroup));tab.setAttribute('aria-controls','controls');
+   tab.innerHTML='<span class="tab-icon" aria-hidden="true">'+group.icon+'</span><span>'+group.name+'</span>';
+   tab.addEventListener('click',()=>{activeGroup=group.key;paintControls();});
+   nav.append(tab);
+  }
+ }
  async function loadBuddy(){
   const root=byId('avatar-buddy');if(!root)return;
   try{
@@ -43,18 +85,122 @@
   }catch{const root=byId('avatar-buddy');if(root)root.hidden=true}
 }
  function paintSlots(){const root=byId('slot-list');root.replaceChildren();for(const slot of state.slots){const b=document.createElement('button');b.type='button';b.className='slot-card'+(selected===Number(slot.slot_no)?' active':'');b.setAttribute('aria-pressed',String(selected===Number(slot.slot_no)));const icon=slot.avatar?kit.render(slot.avatar):kit.render(kit.defaults);const n=slot.name?esc(slot.name):'Empty slot';b.innerHTML='<span class="tiny-avatar">'+icon+'</span><strong>Slot '+slot.slot_no+'</strong><small>'+n+(slot.is_active?' · Profile look':'')+'</small>';b.addEventListener('click',()=>loadSlot(slot.slot_no));root.append(b);}const slot=selectedSlot();byId('clear-avatar').hidden=!slot||slot.empty;byId('remove-active-avatar').hidden=!state.slots.some(item=>item.is_active);byId('slot-note').textContent='Slot '+selected+' of '+state.slots.length+' · '+(slot?.is_active?'This is your active profile look.':slot?.empty?'Ready for a new misfit.':'Saved look is private until you choose it for your profile.');byId('wallet-note').textContent='✦ '+Number(state.wallet||0).toLocaleString()+' Cinders';}
- function loadSlot(slotNo){selected=Number(slotNo);const slot=selectedSlot();avatar=kit.safeAvatar(slot?.avatar||kit.defaults);byId('avatar-name').value=slot?.name||('Misfit '+selected);paintSlots();paintControls();updatePreview();}
- function paintControls(){const root=byId('controls');root.replaceChildren();const groups=[['face','Face & hair'],['features','Face details'],['fit','Outfit & accessories'],['scene','Background & effects']];for(const [group,title] of groups){const own=fields.filter(field=>field[2]===group);const box=document.createElement('fieldset');box.className='control-group';const legend=document.createElement('legend');legend.textContent=title;const grid=document.createElement('div');grid.className='control-group-fields';for(const [key,labelText] of own){const label=document.createElement('label');label.className='control';const titleEl=document.createElement('span');titleEl.textContent=labelText;const select=document.createElement('select');select.setAttribute('aria-label',labelText);for(const choice of kit.choices[key]){const option=document.createElement('option');option.value=choice;option.textContent=labels[choice]||choice;select.append(option);}select.value=avatar[key];select.addEventListener('change',()=>{avatar[key]=select.value;updatePreview();});label.append(titleEl,select);grid.append(label);}box.append(legend,grid);root.append(box);}}
- function paintPresets(){const root=byId('preset-list');root.replaceChildren();for(const preset of presets){const b=document.createElement('button');b.type='button';b.className='preset-chip';b.textContent=preset.name;b.addEventListener('click',()=>{avatar=kit.safeAvatar(preset.avatar);paintControls();updatePreview();status.textContent=preset.name+' look loaded. Save it to keep this design.';});root.append(b);}}
+ function loadSlot(slotNo){
+  if(Number(slotNo)!==selected&&syncDirty()&&!window.confirm('Discard unsaved changes and switch to another Misfit?'))return;
+  selected=Number(slotNo);const slot=selectedSlot();avatar=kit.safeAvatar(slot?.avatar||kit.defaults);
+  byId('avatar-name').value=slot?.name||('Misfit '+selected);
+  resetHistory();paintSlots();paintControls();updatePreview();
+ }
+ function paintControls(){
+  paintTabs();const root=byId('controls');root.replaceChildren();
+  const own=fields.filter(field=>field[2]===activeGroup);
+  for(const [key,label] of own){
+   const box=document.createElement('fieldset');box.className='control-group';
+   const legend=document.createElement('legend');legend.textContent=label;box.append(legend);
+   const row=document.createElement('div');row.className='trait-options';row.setAttribute('role','group');row.setAttribute('aria-label',label);
+   for(const choice of kit.choices[key]){
+    const button=document.createElement('button');button.type='button';button.className='trait-option';
+    const choiceLabel=labels[choice]||choice.replace(/_/g,' '),picked=avatar[key]===choice;
+    button.setAttribute('aria-pressed',String(picked));button.setAttribute('aria-label',label+': '+choiceLabel);
+    const image=document.createElement('span');
+    if(colorFields.has(key)){
+     image.className='trait-swatch';image.style.background=kit.palettes?.[key]?.[choice]||'#4f4059';
+    }else{
+     image.className='trait-thumbnail';image.innerHTML=kit.render({...avatar,[key]:choice});
+    }
+    const caption=document.createElement('span');caption.textContent=choiceLabel;
+    button.append(image,caption);
+    button.addEventListener('click',()=>applyAvatar({...avatar,[key]:choice}));
+    row.append(button);
+   }
+   box.append(row);root.append(box);
+  }
+ }
+ function paintPresets(){
+  const root=byId('preset-list');root.replaceChildren();
+  for(const preset of presets){
+   const button=document.createElement('button');button.type='button';button.className='preset-chip';
+   const thumbnail=document.createElement('span');thumbnail.className='look-avatar';
+   thumbnail.innerHTML=kit.render(preset.avatar);
+   const title=document.createElement('span');title.textContent=preset.name;button.append(thumbnail,title);
+   button.addEventListener('click',()=>applyAvatar(preset.avatar,preset.name+' look loaded. Keep customizing or save it.'));
+   root.append(button);
+  }
+ }
  function paintProducts(){const root=byId('slot-products');root.replaceChildren();for(const product of state.products){const card=document.createElement('div');card.className='product';const label=document.createElement('div');label.innerHTML='<strong>'+esc(product.label)+'</strong><small>✦ '+Number(product.cost_cinders).toLocaleString()+' Cinders</small>';const button=document.createElement('button');button.type='button';button.className='button secondary';button.textContent='Unlock';button.disabled=state.wallet<product.cost_cinders||busy||(product.slots>state.max-state.extra);button.addEventListener('click',()=>buy(product.id,button));card.append(label,button);root.append(card);}}
  async function reload(){const data=await api('/api/avatars/me');state={slots:data.slots||[],wallet:Number(data.wallet_balance||0),products:data.products||[],extra:Number(data.extra_slots||0),max:Number(data.max_extra_slots||20)};paintSlots();paintProducts();}
- async function save(active){if(busy)return;busy=true;const button=active?byId('set-active'):byId('save-avatar');button.disabled=true;status.textContent='Saving your misfit…';try{const data=await api('/api/avatars/save',{method:'PUT',body:JSON.stringify({slot_no:selected,name:byId('avatar-name').value,avatar,active})});state.slots=data.slots||state.slots;paintSlots();status.textContent=data.message||'Misfit saved.';}catch(error){status.textContent=error.message;}finally{busy=false;button.disabled=false;paintProducts();}}
+ async function save(active){
+  if(busy)return;busy=true;const button=active?byId('set-active'):byId('save-avatar');
+  button.disabled=true;status.textContent='Saving your Misfit…';
+  try{
+   const shouldBeActive=active||Boolean(selectedSlot()?.is_active);
+   const data=await api('/api/avatars/save',{method:'PUT',body:JSON.stringify({slot_no:selected,name:byId('avatar-name').value,avatar,active:shouldBeActive})});
+   state.slots=data.slots||state.slots;paintSlots();resetHistory();syncDirty();
+   status.textContent=data.message||'Misfit saved.';
+  }catch(error){status.textContent=error.message;}
+  finally{busy=false;button.disabled=false;paintProducts();}
+ }
  async function useProfilePhoto(){if(busy)return;busy=true;const button=byId('remove-active-avatar');button.disabled=true;status.textContent='Switching back to your profile photo…';try{const data=await api('/api/avatars/active',{method:'PATCH',body:JSON.stringify({slot_no:null})});state.slots=data.slots||state.slots;paintSlots();status.textContent=data.message||'Your profile photo is active again.';}catch(error){status.textContent=error.message;}finally{busy=false;button.disabled=false;}}
- async function clearSlot(){const slot=selectedSlot();if(!slot||slot.empty||busy)return;if(!window.confirm('Clear '+(slot.name||'this misfit')+' from slot '+selected+'? This removes the saved design.'))return;busy=true;byId('clear-avatar').disabled=true;status.textContent='Clearing this slot…';try{const data=await api('/api/avatars/'+selected,{method:'DELETE'});state.slots=data.slots||state.slots;paintSlots();avatar=kit.safeAvatar(kit.defaults);byId('avatar-name').value='Misfit '+selected;paintControls();updatePreview();status.textContent=data.message||'Misfit cleared.';}catch(error){status.textContent=error.message;}finally{busy=false;byId('clear-avatar').disabled=false;}}
- async function buy(productId,button){if(busy)return;busy=true;button.disabled=true;status.textContent='Unlocking your slots…';try{const data=await api('/api/avatars/purchase',{method:'POST',body:JSON.stringify({product:productId})});state.slots=data.slots||state.slots;state.wallet=Number(data.wallet_balance||state.wallet);state.extra=Number(data.extra_slots||state.extra);const next=state.slots.find(s=>s.empty);selected=Number(next?.slot_no||state.slots.length);avatar=kit.safeAvatar(next?.avatar||kit.defaults);byId('avatar-name').value=next?.name||('Misfit '+selected);paintSlots();paintProducts();paintControls();updatePreview();status.textContent=data.message||'New avatar slots unlocked.';}catch(error){status.textContent=error.message;}finally{busy=false;paintProducts();}}
+ async function clearSlot(){
+  const slot=selectedSlot();if(!slot||slot.empty||busy)return;
+  if(!window.confirm('Clear '+(slot.name||'this misfit')+' from slot '+selected+'? This removes the saved design.'))return;
+  busy=true;byId('clear-avatar').disabled=true;status.textContent='Clearing this slot…';
+  try{
+   const data=await api('/api/avatars/'+selected,{method:'DELETE'});
+   state.slots=data.slots||state.slots;avatar=kit.safeAvatar(kit.defaults);byId('avatar-name').value='Misfit '+selected;
+   resetHistory();paintSlots();paintControls();updatePreview();status.textContent=data.message||'Misfit cleared.';
+  }catch(error){status.textContent=error.message;}
+  finally{busy=false;byId('clear-avatar').disabled=false;}
+ }
+ async function buy(productId,button){
+  if(busy)return;busy=true;button.disabled=true;status.textContent='Unlocking your slots…';
+  try{
+   const data=await api('/api/avatars/purchase',{method:'POST',body:JSON.stringify({product:productId})});
+   state.slots=data.slots||state.slots;state.wallet=Number(data.wallet_balance??state.wallet);state.extra=Number(data.extra_slots??state.extra);
+   const next=state.slots.find(s=>s.empty);selected=Number(next?.slot_no||state.slots.length);
+   avatar=kit.safeAvatar(next?.avatar||kit.defaults);byId('avatar-name').value=next?.name||('Misfit '+selected);
+   resetHistory();paintSlots();paintProducts();paintControls();updatePreview();
+   status.textContent=data.message||'New slot unlocked.';
+  }catch(error){status.textContent=error.message;}
+  finally{busy=false;button.disabled=false;paintProducts();}
+ }
  async function downloadPng(){const button=byId('download-avatar');button.disabled=true;status.textContent='Rendering your misfit as a PNG…';let svgUrl='';try{const blob=new Blob([kit.render(avatar)],{type:'image/svg+xml;charset=utf-8'});svgUrl=URL.createObjectURL(blob);const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(Error('Could not render this misfit.'));image.src=svgUrl;});const canvas=document.createElement('canvas');canvas.width=768;canvas.height=768;const context=canvas.getContext('2d');if(!context)throw Error('PNG export is unavailable in this browser.');context.clearRect(0,0,768,768);context.drawImage(image,48,0,672,768);const png=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!png)throw Error('PNG export failed.');const safeName=(byId('avatar-name').value||'misfit').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'misfit';const link=document.createElement('a');link.href=URL.createObjectURL(png);link.download=safeName+'-knightfall-avatar.png';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);status.textContent='PNG downloaded at 768 × 768.';}catch(error){status.textContent=error.message;}finally{if(svgUrl)URL.revokeObjectURL(svgUrl);button.disabled=false;}}
  byId('download-avatar').addEventListener('click',downloadPng);byId('remove-active-avatar').addEventListener('click',useProfilePhoto);
- byId('new-avatar').addEventListener('click',()=>{const empty=state.slots.find(s=>s.empty);if(!empty){status.textContent='All unlocked slots are in use. Purchase more slots to make another misfit.';return;}loadSlot(empty.slot_no);status.textContent='New misfit ready to customize.';});byId('save-avatar').addEventListener('click',()=>save(false));byId('set-active').addEventListener('click',()=>save(true));byId('clear-avatar').addEventListener('click',clearSlot);byId('randomize-avatar').addEventListener('click',()=>{for(const [key,values] of Object.entries(kit.choices)){const pool=values.filter(value=>value!==avatar[key]);avatar[key]=pool[Math.floor(Math.random()*pool.length)];}paintControls();updatePreview();status.textContent='A fresh misfit has materialized. Save it when you like the look.';});
+ byId('new-avatar').addEventListener('click',()=>{
+  const empty=state.slots.find(s=>s.empty);
+  if(!empty){status.textContent='All unlocked slots are in use. Unlock more in the shop below.';return;}
+  loadSlot(empty.slot_no);status.textContent='New Misfit ready. Make it yours.';
+ });
+ byId('save-avatar').addEventListener('click',()=>save(false));
+ byId('set-active').addEventListener('click',()=>save(true));
+ byId('clear-avatar').addEventListener('click',clearSlot);
+ byId('randomize-avatar').addEventListener('click',()=>{
+  const next={...avatar};
+  for(const [key,values] of Object.entries(kit.choices)){
+   const pool=values.filter(value=>value!==next[key]);next[key]=pool[Math.floor(Math.random()*pool.length)]||next[key];
+  }
+  applyAvatar(next,'Remixed! Keep adjusting until the look is yours.');
+ });
+ byId('undo-avatar').addEventListener('click',()=>moveHistory(-1));
+ byId('redo-avatar').addEventListener('click',()=>moveHistory(1));
+ byId('reset-avatar').addEventListener('click',()=>applyAvatar(kit.defaults,'Back to the blank canvas. Your saved look is untouched.'));
+ byId('avatar-name').addEventListener('input',syncDirty);
+ const compare=byId('preview-compare');
+ function setComparing(value){comparing=Boolean(value)&&Boolean(selectedSlot()?.avatar);updatePreview();}
+ compare.addEventListener('pointerdown',event=>{if(!compare.disabled){setComparing(true);compare.setPointerCapture?.(event.pointerId);}});
+ for(const type of ['pointerup','pointercancel','pointerleave','blur'])compare.addEventListener(type,()=>setComparing(false));
+ compare.addEventListener('keydown',event=>{if(event.key===' '||event.key==='Enter'){event.preventDefault();setComparing(true);}});
+ compare.addEventListener('keyup',()=>setComparing(false));
+ document.addEventListener('keydown',event=>{
+  if(!(event.ctrlKey||event.metaKey)||event.key.toLowerCase()!=='z'||event.target.closest('input,textarea,[contenteditable="true"]'))return;
+  event.preventDefault();moveHistory(event.shiftKey?1:-1);
+ });
+ byId('download-svg').addEventListener('click',()=>{
+  const name=(byId('avatar-name').value||'misfit').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'misfit';
+  const url=URL.createObjectURL(new Blob([kit.render(avatar)],{type:'image/svg+xml;charset=utf-8'}));
+  const a=document.createElement('a');a.href=url;a.download=name+'-knightfall-avatar.svg';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1200);status.textContent='Your crisp, scalable SVG is ready.';
+ });
  paintControls();paintPresets();updatePreview();reload().then(()=>{const active=state.slots.find(s=>s.is_active),first=active||state.slots[0];if(first)loadSlot(first.slot_no);}).catch(error=>{status.textContent=error.message;byId('slot-note').textContent='Sign in to use your personal misfit slots.';});
  loadBuddy();
 })();
