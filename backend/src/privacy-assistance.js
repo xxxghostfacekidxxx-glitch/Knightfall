@@ -2,6 +2,14 @@
 // Stores minimal, unverified contacts in expiring KV; only staff can view tickets.
 export const PRIVACY_HELP_PREFIX = 'privacy-help:v1:';
 const RETENTION_SECONDS = 60 * 60 * 24 * 90;
+export function privacyTicketExpiry(createdAt, now = Date.now()) {
+  const createdMs = Date.parse(createdAt);
+  if (!Number.isFinite(createdMs) || createdMs > now) return null;
+  const expiryMs = createdMs + RETENTION_SECONDS * 1000;
+  if (expiryMs <= now) return null;
+  return Math.ceil(expiryMs / 1000);
+}
+
 
 export function validatePrivacyAssistance(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { error: 'Invalid request.' };
@@ -83,8 +91,11 @@ export async function handlePrivacyAssistance(request, env, url, { getUser, json
     const key = PRIVACY_HELP_PREFIX + detail[1];
     const existing = await env.SESSIONS.get(key, 'json');
     if (!existing) return reply({ error: 'Request not found or expired.' }, 404);
+    // A staff edit must not restart the original 90-day privacy retention period.
+    const expiresAt = privacyTicketExpiry(existing.created_at);
+    if (!expiresAt) return reply({ error: 'Request expired or invalid. Submit a new assistance request.' }, 410);
     const updated = { ...existing, status, operator_note: note, updated_at: new Date().toISOString() };
-    await env.SESSIONS.put(key, JSON.stringify(updated), { expirationTtl: RETENTION_SECONDS });
+    await env.SESSIONS.put(key, JSON.stringify(updated), { expiration: expiresAt });
     return reply({ ok:true,status });
   }
   return reply({ error: 'Method not allowed.' }, 405);
