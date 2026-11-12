@@ -77,7 +77,7 @@
         document.getElementById("topic-threads-heading").textContent=displayName+" Threads";
         const user=me.user||null;
         if(user){createLink.hidden=false;createLink.href="/create-thread.html?category_id="+encodeURIComponent(category.id);accountNote.textContent="Signed in as "+(user.display_name||user.username)+". Your thread can join this conversation."}
-        else{createLink.hidden=true;accountNote.innerHTML='You can read the discussions without an account. <a href="/index.html?next='+encodeURIComponent("/create-thread.html?category_id="+category.id)+'">Sign in or create an account</a> to start a thread.'}
+        else{createLink.hidden=true;accountNote.innerHTML='You can read the discussions without an account. <a href="/auth.html?next='+encodeURIComponent("/create-thread.html?category_id="+category.id)+'">Sign in or create an account</a> to start a thread.'}
         await loadThreads();
       }catch(e){titleEl.textContent="Topic unavailable";descriptionEl.textContent=e.message||"This community topic could not be loaded.";threadsEl.innerHTML="";messageEl.textContent=e.message||"Topic unavailable.";messageEl.hidden=false;accountNote.textContent="";createLink.hidden=true}
     }

@@ -44,7 +44,7 @@
         <h1>YOUR CORNER OF THE CHAOS</h1>
         <p class="lead">Your Ash-Fall identity lives here. Sign in to manage your profile, create threads, reply, and keep your session across the community.</p>
         <div class="account-actions">
-          <a class="button primary" href="/index.html">Sign in or register</a>
+          <a class="button primary" href="/auth.html">Sign in or register</a>
         </div>`;
     }
 
@@ -152,7 +152,7 @@
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || "Unable to sign out.");
         status.textContent = "Signed out. Returning to the community…";
-        setTimeout(() => location.href = "/index.html", 450);
+        setTimeout(() => location.href = "/", 450);
       } catch (error) {
         status.textContent = error.message;
       }
@@ -164,7 +164,7 @@
         if (user) renderUser(user);
         else renderSignedOut();
       } catch (error) {
-        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>ACCOUNT UNAVAILABLE</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/index.html">Return to sign in</a></div>`;
+        root.innerHTML = `<p class="eyebrow">ACCOUNT</p><h1>ACCOUNT UNAVAILABLE</h1><p class="lead">${esc(error.message)}</p><div class="account-actions"><a class="button secondary" href="/auth.html">Return to sign in</a></div>`;
       }
     })();
   </script>

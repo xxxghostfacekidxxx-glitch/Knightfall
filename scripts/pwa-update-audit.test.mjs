@@ -20,7 +20,7 @@ test("private messages, profiles, and adult content are never cached",()=>{
 });
 test("app provides offline shell and quick Miss Chaos launch",()=>{
  assert.ok(sw.includes('"/offline.html"'));
- assert.ok(sw.includes('"/homepage.html"'));
+ assert.ok(sw.includes('"/",'));
  assert.ok(manifest.shortcuts.some(s=>s.url.startsWith("/miss-chaos.html")));
 });
 

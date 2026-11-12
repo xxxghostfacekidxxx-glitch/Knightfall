@@ -57,7 +57,7 @@
       const response = await fetch("https://api.ash-fall.com/api/member-shop/orders", {credentials:"include", cache:"no-store"});
       if (response.status === 401) {
         const link = document.createElement("a");
-        link.href = "/index.html?next=%2Fcinder-shop.html%23orders-heading";
+        link.href = "/auth.html?next=%2Fcinder-shop.html%23orders-heading";
         link.textContent = "Sign in to see your orders";
         status.replaceChildren(link);
         return;

@@ -236,10 +236,10 @@
     document.head.append(stable);
   }
   header.innerHTML = `
-    <a class="kf-brand" href="/homepage.html" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
+    <a class="kf-brand" href="/" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
-      <a class="kf-nav-primary" href="/homepage.html#ecosystem">Explore</a>
+      <a class="kf-nav-primary" href="/#ecosystem">Explore</a>
       <details class="kf-nav-group">
         <summary>Community <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -267,7 +267,7 @@
           <a class="kf-mod-link" href="/moderation.html">Moderation</a>
         </div>
       </details>
-      <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>
+      <a class="kf-nav-primary kf-sign-in-link" href="/auth.html">Sign In</a>
       <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>
     <a class="kf-lunar-strip" href="/moonology.html">
@@ -285,13 +285,13 @@
 
   const nav = header.querySelector(".kf-nav");
   // Pages serves both extensionless routes and their original .html links.
-  const normalizedPath = path => path.replace(/\/$/, "").replace(/\.html$/, "") || "/index";
+  const normalizedPath = path => path.replace(/\/$/, "").replace(/\.html$/, "").replace(/^\/index$/, "") || "/";
   function markCurrentPage() {
     const currentPath = normalizedPath(location.pathname);
     nav.querySelectorAll('a[href^="/"]').forEach(link => {
       const destination = new URL(link.href);
       const samePage = normalizedPath(destination.pathname) === currentPath;
-      if (samePage && (!destination.hash || destination.hash === location.hash || currentPath === "/homepage")) {
+      if (samePage && (!destination.hash || destination.hash === location.hash || currentPath === "/")) {
         link.setAttribute("aria-current", "page");
       } else {
         link.removeAttribute("aria-current");
@@ -399,6 +399,7 @@
       profileGroup.hidden = false;
       nav.querySelector(".kf-messages-shortcut").hidden = false;
       nav.querySelector(".kf-sign-in-link").hidden = true;
+      document.querySelector("[data-home-sign-in]")?.setAttribute("hidden", "");
       const role = String(user.role || "").trim().toLowerCase();
       const admin = role === "admin" || role === "god";
       const staff = admin || role === "moderator";

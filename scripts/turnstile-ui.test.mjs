@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const html = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+const html = readFileSync(new URL("../public/auth.html", import.meta.url), "utf8");
 
 test("Turnstile loads only when server supplies a site key", () => {
   assert.match(html, /if \(!data\.site_key\) return;/);

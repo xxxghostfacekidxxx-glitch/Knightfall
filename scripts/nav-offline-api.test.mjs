@@ -27,16 +27,16 @@ test("navigation exposes one route per destination and starts signed out",()=>{
  assert.ok(routes.length<=15);
  assert.match(nav,/class="kf-nav-group kf-profile-group" hidden/);
  assert.match(nav,/class="kf-nav-group kf-staff-group" hidden/);
- assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/index.html"/);
+ assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/auth.html"/);
  assert.match(source,/if \(!user\) return;/);
 });
 
 test("consolidated navigation destinations exist, including deep links",()=>{
- const files = ["nav.js", "homepage.html", "account.html", "shops.html"];
+ const files = ["nav.js", "index.html", "account.html", "shops.html"];
  const disk = path=>readFileSync("public"+path,"utf8");
  for (const file of files) {
   for (const [,path,fragment] of disk("/"+file).matchAll(/href="(\/[^"#?\$]+)(?:#([^"]+))?"/g)) {
-   const contents = disk(path);
+   const contents = disk(path === "/" ? "/index.html" : path);
    if (fragment) assert.ok(contents.includes('id="'+fragment+'"'),path+"#"+fragment);
   }
  }

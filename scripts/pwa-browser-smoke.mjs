@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 
 const base = process.env.PWA_TEST_BASE || "http://127.0.0.1:8765";
 const browser = await chromium.launch({ headless: true });
-const pages = ["/homepage.html", "/privacy.html", "/account-deletion.html", "/offline.html"];
+const pages = ["/", "/privacy.html", "/account-deletion.html", "/offline.html"];
 try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
   for (const path of pages) {
@@ -19,12 +19,12 @@ try {
       assert.ok(width.content <= width.viewport + 1, path + " should not overflow horizontally on a 390px viewport. Offenders: " + JSON.stringify(offenders));
     }
   }
-  await page.goto(base + "/homepage.html", { waitUntil: "domcontentloaded" });
+  await page.goto(base + "/", { waitUntil: "domcontentloaded" });
   assert.equal(await page.locator('link[rel="manifest"]').getAttribute("href"), "/manifest.webmanifest");
   const manifestResponse = await page.request.get(base + "/manifest.webmanifest");
   assert.equal(manifestResponse.status(), 200);
   const manifest = await manifestResponse.json();
-  assert.ok(manifest.name && manifest.start_url === "/homepage.html?source=pwa" && manifest.scope === "/");
+  assert.ok(manifest.name && manifest.start_url === "/?source=pwa" && manifest.scope === "/");
   assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg" && icon.purpose === "maskable"));
   for (const icon of manifest.icons) assert.equal((await page.request.get(base + icon.src)).status(), 200, icon.src);
   for (const shortcut of manifest.shortcuts || []) assert.equal((await page.request.get(base + new URL(shortcut.url, base).pathname)).status(), 200, shortcut.url);

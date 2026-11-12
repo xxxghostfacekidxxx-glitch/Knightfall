@@ -1,124 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ash-Fall | Account</title>
-  <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/auth.css?v=20261021-auth-polish">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Sign in to Ash-Fall or create an account.">
+  <meta name="theme-color" content="#080808">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Sign in or create an account | Ash-Fall</title>
+  <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
+  <link rel="stylesheet" href="/visual-refresh.css?v=20261029-v2">
+  <link rel="stylesheet" href="/gravewave-takeover.css?v=20261026-visibility3"><script src="/gravewave-takeover.js?v=20261026-visibility3" defer></script><script src="/nav.js?v=20261112-home" defer></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 18% 15%,rgba(255,85,216,.13),transparent 38%),radial-gradient(ellipse at 88% 90%,rgba(198,255,69,.08),transparent 34%),#070710;color:#eee;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:radial-gradient(circle,rgba(255,255,255,.6) 0 1px,transparent 1.4px);background-size:151px 163px}
+    .entry-layout{position:relative;width:min(calc(100% - 2rem),32rem);margin:clamp(1.2rem,4vw,3rem) auto}
+    .entry-card{border:1px solid #303030;border-radius:18px;background:linear-gradient(155deg,rgba(22,22,22,.98),rgba(10,10,10,.98));padding:clamp(1.25rem,3vw,2rem);box-shadow:0 25px 90px #0008}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.3rem;border:1px solid #292929;border-radius:10px;background:#090909;margin-bottom:1.4rem}
+    .tab{border:0;border-radius:7px;background:transparent;color:#999;padding:.8rem;font:inherit;font-size:.88rem;font-weight:750;cursor:pointer}
+    .tab[aria-selected="true"]{background:#25132e;color:#c6ff45;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
+    #auth-title{font-size:clamp(1.5rem,5vw,2rem);margin:0 0 1rem;letter-spacing:-.025em}
+    .social-stack{display:grid;gap:.65rem}
+    .social{display:flex;align-items:center;justify-content:center;gap:.7rem;min-height:46px;padding:.7rem 1rem;border:1px solid #383838;border-radius:9px;background:#121212;color:#eee;font:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s}
+    .social:hover{background:#191919;border-color:#774783}
+    .social-mark{width:20px;height:20px;display:grid;place-items:center;font-size:1rem;font-weight:900}
+    .social-note{margin:.7rem 0 0;color:#777;font-size:.72rem;line-height:1.5;text-align:center}
+    .separator{display:flex;align-items:center;gap:.8rem;color:#777;font-size:.72rem;margin:1.3rem 0}
+    .separator:before,.separator:after{content:"";height:1px;background:#292929;flex:1}
+    .field{display:grid;gap:.42rem;margin-bottom:.9rem}
+    label{font-size:.78rem;font-weight:750;color:#d0d0d0}
+    input{width:100%;min-height:45px;border:1px solid #343434;border-radius:8px;background:#090909;color:#f5f5f5;padding:.75rem .85rem;font:inherit;font-size:.9rem}
+    input:focus{outline:2px solid #a8ff3e;outline-offset:1px;border-color:#a8ff3e}
+    input::placeholder{color:#696969}
+    .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #a8ff3e;border-radius:9px;background:linear-gradient(180deg,#ff55d8,#b728a1);color:#180a20;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #ff55d826}
+    .primary:hover{filter:brightness(1.1)}
+    .primary:disabled{opacity:.6;cursor:wait}
+    .status{min-height:1.2rem;margin:.7rem 0 0;color:#ff8ce6;font-size:.8rem;line-height:1.5}
+    .legal{color:#777;font-size:.72rem;line-height:1.6;text-align:center;margin:1rem 0 0}
+    .legal a{color:#ff55d8}
+    .below{color:#858585;text-align:center;font-size:.78rem;margin:1.2rem 0 0}
+    .below a{color:#c6ff45;text-decoration:none;font-weight:750}
+    [hidden]{display:none!important}
+
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
 </head>
 <body>
-  <main class="auth-shell">
-    <section class="auth-card" aria-labelledby="auth-title">
-      <a class="back" href="/homepage.html">← Back to community</a>
-      <h1 id="auth-title">YOUR WAY IN.</h1>
-      <p class="muted">Create an account or return to the community.</p>
-
-      <div class="tabs" role="tablist">
-        <button class="tab active" id="login-tab" type="button" role="tab" aria-selected="true">Sign in</button>
-        <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false">Register</button>
+  <header class="kf-header"></header>
+  <main class="entry-layout">
+    <section class="entry-card" aria-labelledby="auth-title">
+      <h1 id="auth-title">Sign in to Ash-Fall</h1>
+      <div class="tabs" role="tablist" aria-label="Account action">
+        <button class="tab" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-panel">Log in</button>
+        <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-panel">Create account</button>
       </div>
-
-      <form id="login-form" novalidate>
-        <label>Username or email<input name="identifier" autocomplete="username" required></label>
-        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-        <button class="primary" type="submit">Sign in</button>
+      <div class="social-stack">
+        <button class="social" type="button" data-provider="google"><span class="social-mark" aria-hidden="true">G</span> Continue with Google</button>
+        <button class="social" type="button" data-provider="facebook"><span class="social-mark" aria-hidden="true">f</span> Continue with Facebook</button>
+      </div>
+      <p class="social-note" id="social-note">Sign in securely with Google or Facebook, or use your email.</p>
+      <div class="separator">OR USE YOUR EMAIL</div>
+      <form id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+        <div class="field"><label for="login-identifier">Username or email</label><input id="login-identifier" name="identifier" autocomplete="username" required placeholder="Your username or email"></div>
+        <div class="field"><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Your password"></div>
+        <button class="primary" type="submit">Log in to Ash-Fall ↗</button>
+        <p class="status" id="login-status" role="status" aria-live="polite"></p>
+        <p class="below"><a href="/reset-password.html">Forgot your password?</a></p>
       </form>
-
-      <p style="margin:.2rem 0 1rem;text-align:right;font-size:.9rem"><a style="color:#ff55d8" href="/reset-password.html">Forgot your password?</a></p>
-
-      <form id="register-form" class="hidden" novalidate>
-        <label>Username<input name="username" autocomplete="username" minlength="3" maxlength="24" required></label>
-        <label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
-        <label>Display name<input name="display_name" autocomplete="nickname" maxlength="60" required></label>
-        <label>Password<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label>
-        <small>Password must be at least 12 characters.</small>
-        <button class="primary" type="submit">Create account</button>
+      <form id="register-panel" role="tabpanel" aria-labelledby="register-tab" hidden>
+        <div class="field"><label for="register-display">Display name</label><input id="register-display" name="display_name" autocomplete="name" required maxlength="80" placeholder="What people call you"></div>
+        <div class="field"><label for="register-username">Username</label><input id="register-username" name="username" autocomplete="username" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" title="3–24 letters, numbers, or underscores" placeholder="letters_numbers_underscores"></div>
+        <div class="field"><label for="register-email">Email address</label><input id="register-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></div>
+        <div class="field"><label for="register-password">Password <span style="color:#888;font-weight:500">(12 characters minimum)</span></label><input id="register-password" name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="128" placeholder="Create a strong password"></div>
+        <div id="register-turnstile"></div>
+        <button class="primary" type="submit">Create my account ↗</button>
+        <p class="status" id="register-status" role="status" aria-live="polite"></p>
+        <p class="legal">By creating an account, you agree to the <a href="/user-agreement.html">terms and policies</a>.</p>
       </form>
-
-      <p id="status" class="status" role="status" aria-live="polite"></p>
     </section>
   </main>
-  <script>
-    const API = "https://api.ash-fall.com";
-    const loginForm = document.querySelector("#login-form");
-    const registerForm = document.querySelector("#register-form");
-    const status = document.querySelector("#status");
-    const loginTab = document.querySelector("#login-tab");
-    const registerTab = document.querySelector("#register-tab");
+  <script type="module">
+    import {authDestination} from "/auth-destination.mjs";
 
-    function show(message, error = false) {
-      status.textContent = message;
-      status.className = `status ${error ? "error" : "success"}`;
-    }
-
-    function setMode(register) {
-      loginForm.classList.toggle("hidden", register);
-      registerForm.classList.toggle("hidden", !register);
-      loginTab.classList.toggle("active", !register);
-      registerTab.classList.toggle("active", register);
-      loginTab.setAttribute("aria-selected", String(!register));
-      registerTab.setAttribute("aria-selected", String(register));
-      show("");
-    }
-
-    loginTab.addEventListener("click", () => setMode(false));
-    registerTab.addEventListener("click", () => setMode(true));
-
-    function redirectAfterAuth() {
-      const requested = new URLSearchParams(location.search).get("next") || "/homepage.html";
-      try {
-        const target = new URL(requested, location.origin);
-        if (target.origin !== location.origin) throw new Error("External redirect blocked");
-        location.href = target.pathname + target.search + target.hash;
-      } catch {
-        location.href = "/homepage.html";
+    (() => {
+      const API = "https://api.ash-fall.com/api";
+      const params = new URLSearchParams(location.search);
+      const destination = authDestination(params.get("next"), location.origin);
+      const loginTab = document.getElementById("login-tab");
+      const registerTab = document.getElementById("register-tab");
+      const loginForm = document.getElementById("login-panel");
+      const registerForm = document.getElementById("register-panel");
+      function setMode(mode) {
+        const registering = mode === "register";
+        document.getElementById("auth-title").textContent = registering ? "Create an Ash-Fall account" : "Sign in to Ash-Fall";
+        loginTab.setAttribute("aria-selected", String(!registering));
+        registerTab.setAttribute("aria-selected", String(registering));
+        loginForm.hidden = registering;
+        registerForm.hidden = !registering;
+        (registering ? document.getElementById("register-display") : document.getElementById("login-identifier")).focus({preventScroll:true});
       }
-    }
-
-    async function submit(path, data) {
-      const response = await fetch(`${API}${path}`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(data)
+      loginTab.addEventListener("click", () => setMode("login"));
+      registerTab.addEventListener("click", () => setMode("register"));
+      document.querySelectorAll("[data-provider]").forEach(button => button.addEventListener("click", () => {
+        const provider = button.dataset.provider;
+        document.getElementById("social-note").textContent = "Connecting securely to " + (provider === "google" ? "Google" : "Facebook") + "…";
+        window.location.assign(API + "/auth/oauth/" + provider + "/start?return_to=" + encodeURIComponent(destination));
+      }));
+      let turnstileEnabled = false;
+      fetch(API + "/auth/turnstile-config")
+        .then(r => r.json())
+        .then(data => {
+          if (!data.site_key) return;
+          turnstileEnabled = true;
+          const script = document.createElement("script");
+          script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+          script.onload = () => {
+            let rendered = false;
+            const render = () => {
+              if (rendered || registerForm.hidden || !window.turnstile) return;
+              rendered = true;
+              window.turnstile.render("#register-turnstile", {sitekey:data.site_key,action:"register"});
+            };
+            render();
+            registerTab.addEventListener("click", () => queueMicrotask(render));
+            // Registration can also open via ?mode=register before Turnstile loads.
+            // Observe the panel rather than relying solely on a tab click.
+            new MutationObserver(render).observe(registerForm, {attributes:true,attributeFilter:["hidden"]});
+          };
+          script.onerror = () => {
+            document.getElementById("register-status").textContent = "Security verification could not load. Check your connection and refresh.";
+          };
+          document.head.append(script);
+        }).catch(() => {});
+      async function submitForm(form, endpoint, statusId, payloadBuilder) {
+        const status = document.getElementById(statusId);
+        const submit = form.querySelector('button[type="submit"]');
+        status.textContent = "";
+        submit.disabled = true;
+        submit.textContent = "Working…";
+        try {
+          const response = await fetch(API + endpoint, {
+            method: "POST", credentials: "include", headers: {"Content-Type":"application/json"},
+            body: JSON.stringify(Object.assign(payloadBuilder(new FormData(form)), endpoint.endsWith("/register") && turnstileEnabled ? {turnstile_token: form.querySelector('[name="cf-turnstile-response"]')?.value || ""} : {}))
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || "We couldn't complete that request. Please try again.");
+          status.style.color = "#a7e5ad";
+          status.textContent = "You're in. Opening Ash-Fall…";
+          window.location.assign(destination);
+        } catch (error) {
+          status.style.color = "#ff8ce6";
+          status.textContent = error.message || "Network error. Check your connection and try again.";
+          if (endpoint.endsWith("/register") && turnstileEnabled && window.turnstile) window.turnstile.reset();
+        } finally {
+          submit.disabled = false;
+          submit.textContent = endpoint.endsWith("/login") ? "Log in to Ash-Fall ↗" : "Create my account ↗";
+        }
+      }
+      loginForm.addEventListener("submit", event => {
+        event.preventDefault();
+        submitForm(loginForm, "/auth/login", "login-status", form => ({identifier:form.get("identifier"), password:form.get("password")}));
       });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || "Request failed.");
-      return payload;
-    }
+      registerForm.addEventListener("submit", event => {
+        event.preventDefault();
+        submitForm(registerForm, "/auth/register", "register-status", form => ({display_name:form.get("display_name"),username:form.get("username"),email:form.get("email"),password:form.get("password")}));
+      });
+      fetch(API + "/auth/me", {credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{if(d?.user)window.location.replace(destination)}).catch(()=>{});
 
-    loginForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      show("Signing in…");
-      try {
-        const data = Object.fromEntries(new FormData(loginForm));
-        await submit("/api/auth/login", data);
-        show("Signed in. Returning to the community…");
-        setTimeout(redirectAfterAuth, 500);
-      } catch (error) { show(error.message, true); }
-    });
-
-    fetch(API + "/api/site-settings", { credentials: "include", cache: "no-store" })
-      .then(response => response.ok ? response.json() : null)
-      .then(data => {
-        if (data?.settings?.registration_enabled !== "false") return;
-        registerTab.hidden = true;
-        registerForm.hidden = true;
-        setMode(false);
-        show("New account registration is currently closed. Existing accounts can still sign in.", true);
-      })
-      .catch(() => {});
-
-    registerForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      show("Creating your account…");
-      try {
-        const data = Object.fromEntries(new FormData(registerForm));
-        await submit("/api/auth/register", data);
-        show("Account created. Welcome to Ash-Fall.");
-        setTimeout(redirectAfterAuth, 700);
-      } catch (error) { show(error.message, true); }
-    });
+      const oauthErrors = {
+        provider_not_configured: "Social sign-in is not configured on the server yet. Use email sign-in for now.",
+        verification_failed: "The social sign-in verification expired or was rejected. Please try again.",
+        account_unavailable: "This account is suspended or unavailable. Contact an administrator.",
+        registration_closed: "New registrations are currently closed.",
+        sign_in_failed: "Social sign-in could not be completed. Please try again or use email sign-in."
+      };
+      if (params.has("oauth_error")) {
+        const message = oauthErrors[params.get("oauth_error")] || oauthErrors.sign_in_failed;
+        document.getElementById("social-note").textContent = message;
+        document.getElementById("login-status").textContent = message;
+        document.getElementById("login-status").style.color = "#ff8ce6";
+        const clean = new URL(location.href);
+        clean.searchParams.delete("oauth_error");
+        history.replaceState({}, "", clean);
+      }
+      if (params.get("mode") === "register") setMode("register");
+    })();
   </script>
 </body>
 </html>

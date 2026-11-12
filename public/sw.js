@@ -1,11 +1,11 @@
-const CACHE_NAME = "knightfall-shell-v30";
+const CACHE_NAME = "knightfall-shell-v31";
 const APP_SHELL = [
-  "/index.html",
+  "/",
   "/offline.html",
   "/personal-bots-offline.html",
   "/personal-bots-offline.js",
-  "/homepage.html",
   "/theme.css",
+  "/homepage.css",
   "/design-system.css",
   "/section-overhaul.css",
   "/section-directory.css",
@@ -147,6 +147,10 @@ self.addEventListener("fetch", event => {
       if (url.pathname === "/personal-bots-offline.html") {
         const localPage = await caches.match("/personal-bots-offline.html");
         if (localPage) return localPage;
+      }
+      if (url.pathname === "/" || url.pathname === "/index.html" || url.pathname === "/homepage" || url.pathname === "/homepage.html") {
+        const home = await caches.match("/");
+        if (home) return home;
       }
       const cached = await caches.match("/offline.html");
       return cached || new Response("You are offline. Reconnect to load Ash-Fall.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });

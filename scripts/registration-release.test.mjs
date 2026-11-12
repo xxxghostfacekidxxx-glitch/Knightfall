@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const frontend = readFileSync(new URL("../public/index.html", import.meta.url), "utf8");
+const frontend = readFileSync(new URL("../public/auth.html", import.meta.url), "utf8");
 const backend = readFileSync(new URL("../backend/src/turnstile.js", import.meta.url), "utf8");
 const api = readFileSync(new URL("../backend/src/index.js", import.meta.url), "utf8");
 

@@ -4,7 +4,7 @@
   "short_name": "Ash-Fall",
   "description": "A beautifully unhinged community for outsiders, creators, dark humor, strange ideas, and Miss Chaos. From chaos, I make my way.",
   "lang": "en-US",
-  "start_url": "/homepage.html?source=pwa",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": [
@@ -23,7 +23,7 @@
     {
       "name": "Explore Ash-Fall",
       "short_name": "Explore",
-      "url": "/homepage.html?source=app-shortcut",
+      "url": "/?source=app-shortcut#ecosystem",
       "icons": [
         {
           "src": "/icons/chaos-cartridge-maskable.svg",

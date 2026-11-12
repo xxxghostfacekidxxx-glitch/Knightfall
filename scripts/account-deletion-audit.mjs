@@ -6,7 +6,7 @@ const backend = read("../backend/src/index.js");
 const migration = read("../backend/migrations/0033_account_deletion_requests.sql");
 const uniqueMigration = read("../backend/migrations/0128_account_deletion_requests_unique.sql");
 const account = read("../public/account.html");
-const homepage = read("../public/homepage.html");
+const homepage = read("../public/index.html");
 const publicPage = read("../public/account-deletion.html");
 const adminPage = read("../public/admin-deletion-requests.html");
 const privacy = read("../public/privacy.html");
@@ -80,7 +80,7 @@ assert.doesNotMatch(adminPage, /data-action="completed"/);
 assert.match(adminPage, /JSON\.stringify\(note\?\{status:button\.dataset\.action,operator_note:note\}:\{status:button\.dataset\.action\}\)/, "admin frontend must omit blank notes rather than clearing existing evidence");
 assert.match(privacy, /does not itself erase the account/i);
 assert.ok(manifest.shortcuts.length >= 3, "PWA must retain its three core shortcuts");
-for (const url of ["/homepage.html", "/chaos-cartridge.html", "/messages.html"]) assert.ok(manifest.shortcuts.some(item => item.url.startsWith(url)), `Missing core shortcut: ${url}`);
+for (const url of ["/?source=app-shortcut#ecosystem", "/chaos-cartridge.html", "/messages.html"]) assert.ok(manifest.shortcuts.some(item => item.url.startsWith(url)), `Missing core shortcut: ${url}`);
 assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg"));
 assert.ok(existsSync(new URL("../public/icons/chaos-cartridge-maskable.svg", import.meta.url)));
 

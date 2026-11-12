@@ -520,7 +520,7 @@ async function load(){
    let targetUsername=username;
    if(!targetUsername){
      const session=await api("/api/auth/me").catch(()=>({user:null}));
-     if(!session.user?.username){root.innerHTML='<h1>Sign in to view your profile</h1><p>Open a member profile from the directory, or sign in to view your own.</p><p><a class="action primary" href="/index.html">Sign in</a> <a class="action" href="/members.html">Browse members</a></p>';return;}
+     if(!session.user?.username){root.innerHTML='<h1>Sign in to view your profile</h1><p>Open a member profile from the directory, or sign in to view your own.</p><p><a class="action primary" href="/auth.html">Sign in</a> <a class="action" href="/members.html">Browse members</a></p>';return;}
      targetUsername=session.user.username;
      const url=new URL(location.href);url.searchParams.set("username",targetUsername);history.replaceState(null,"",url);
    }

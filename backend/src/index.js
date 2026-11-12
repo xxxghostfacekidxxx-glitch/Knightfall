@@ -1,3 +1,4 @@
+import { authDestination } from "../../public/auth-destination.mjs";
 import { arcadePicks, moonBrief, shadowBrief, radarContext } from "./chaos-radar.js";
 import { CHAOS_CONVERSATION_VOICE, chaosReplyGuidance } from "../chaos-voice.mjs";
 import { serveAdminGameArchive } from './admin-game-downloads.js';
@@ -1922,13 +1923,18 @@ For complex questions, organize the answer clearly and provide actionable detail
     const provider=oauthMatch[1],stage=oauthMatch[2];
     const providerConfig=provider==="google"?{clientId:env.GOOGLE_CLIENT_ID,clientSecret:env.GOOGLE_CLIENT_SECRET,redirect:"https://api.ash-fall.com/api/auth/oauth/google/callback"}:{clientId:env.FACEBOOK_CLIENT_ID,clientSecret:env.FACEBOOK_CLIENT_SECRET,redirect:"https://api.ash-fall.com/api/auth/oauth/facebook/callback"};
     const site="https://ash-fall.com";
+    function oauthFailure(reason, requested) {
+      const params = new URLSearchParams({ oauth_error: reason });
+      const destination = authDestination(requested, site);
+      if (destination !== "/account.html") params.set("next", destination);
+      return Response.redirect(site + "/auth.html?" + params, 302);
+    }
     if(!providerConfig.clientId||!providerConfig.clientSecret){
-      if(stage==="start")return Response.redirect(site+"/index.html?oauth_error=provider_not_configured",302);
-      return Response.redirect(site+"/index.html?oauth_error=provider_not_configured",302);
+      return oauthFailure("provider_not_configured", url.searchParams.get("return_to"));
     }
     if(stage==="start"&&request.method==="GET"){
       const state=randomToken(32);
-      const returnTo=url.searchParams.get("return_to")==="/account.html"?"/account.html":"/account.html";
+      const returnTo=authDestination(url.searchParams.get("return_to"), site);
       await env.SESSIONS.put("oauth_state:"+state,JSON.stringify({provider,return_to:returnTo,created_at:Date.now()}),{expirationTtl:600});
       const authorize=new URL(provider==="google"?"https://accounts.google.com/o/oauth2/v2/auth":"https://www.facebook.com/v19.0/dialog/oauth");
       authorize.searchParams.set("client_id",providerConfig.clientId);
@@ -1944,7 +1950,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       const stateKey="oauth_state:"+state;
       const saved=state?await env.SESSIONS.get(stateKey,"json"):null;
       if(state)await env.SESSIONS.delete(stateKey);
-      if(!saved||saved.provider!==provider||Date.now()-Number(saved.created_at||0)>10*60*1000||!code||url.searchParams.has("error"))return Response.redirect(site+"/index.html?oauth_error=verification_failed",302);
+      if(!saved||saved.provider!==provider||Date.now()-Number(saved.created_at||0)>10*60*1000||!code||url.searchParams.has("error"))return oauthFailure("verification_failed", saved?.return_to);
       try{
         let tokenResponse,accessToken,identity;
         if(provider==="google"){
@@ -1968,9 +1974,9 @@ For complex questions, organize the answer clearly and provide actionable detail
         const displayName=String(identity.name||identity.given_name||email.split("@")[0]).trim().slice(0,80);
         if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)throw new Error("Provider email invalid");
         let user=await env.DB.prepare("SELECT id,username,email,display_name,role,status FROM users WHERE email=?").bind(email).first();
-        if(user&&user.status!=="active")return Response.redirect(site+"/index.html?oauth_error=account_unavailable",302);
+        if(user&&user.status!=="active")return oauthFailure("account_unavailable", saved?.return_to);
         if(!user){
-          if((await getSetting(env,"registration_enabled"))==="false")return Response.redirect(site+"/index.html?oauth_error=registration_closed",302);
+          if((await getSetting(env,"registration_enabled"))==="false")return oauthFailure("registration_closed", saved?.return_to);
           let base=String(identity.preferred_username||email.split("@")[0]).toLowerCase().replace(/[^a-z0-9_]/g,"_").replace(/^_+|_+$/g,"").slice(0,20);
           if(base.length<3)base="member_"+base;
           let username=base,suffix=1;
@@ -1984,10 +1990,10 @@ For complex questions, organize the answer clearly and provide actionable detail
           await audit(env,user,"auth.oauth.register","user",user.id,{provider});
         }
         const sessionToken=await createSession(user.id,env);
-        return new Response(null,{status:302,headers:{"location":site+(saved.return_to==="/account.html"?saved.return_to:"/account.html"),"set-cookie":sessionCookie(sessionToken),"cache-control":"no-store","referrer-policy":"no-referrer"}});
+        return new Response(null,{status:302,headers:{"location":site+authDestination(saved.return_to, site),"set-cookie":sessionCookie(sessionToken),"cache-control":"no-store","referrer-policy":"no-referrer"}});
       }catch(error){
         console.error("oauth_callback_failed",provider,error);
-        return Response.redirect(site+"/index.html?oauth_error=sign_in_failed",302);
+        return oauthFailure("sign_in_failed", saved?.return_to);
       }
     }
     return json({error:"Method not allowed."},405,origin,{"allow":"GET"});

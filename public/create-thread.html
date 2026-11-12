@@ -41,7 +41,7 @@
         <p class="helper">Title: up to 160 characters. Post: up to 10,000 characters.</p>
         <div class="create-actions">
           <button id="submit-thread" type="submit">Publish thread</button>
-          <a href="/homepage.html">Cancel</a>
+          <a href="/">Cancel</a>
         </div>
         <p id="form-status" role="status" aria-live="polite"></p>
       </form>
@@ -76,7 +76,7 @@
           showStatus("Sign in first to create a thread. Taking you to the account page…");
           const category = new URLSearchParams(location.search).get("category_id");
           const next = "/create-thread.html" + (/^\d+$/.test(category || "") ? "?category_id=" + category : "");
-          location.replace("/index.html?next=" + encodeURIComponent(next));
+          location.replace("/auth.html?next=" + encodeURIComponent(next));
           return;
         }
         const data = await api("/api/categories");

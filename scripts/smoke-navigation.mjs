@@ -27,12 +27,19 @@ try {
     await context.route("**/*", async route => {
       const url = new URL(route.request().url());
       if (url.origin === origin) {
-        const requested = resolve(publicDir, "." + url.pathname);
+        const requested = resolve(publicDir, "." + (url.pathname === "/" ? "/index.html" : url.pathname));
         const path = (await stat(requested).catch(() => null))?.isFile() ? requested : requested + ".html";
         return route.fulfill({ path }).catch(() => route.fulfill({ status: 404 }));
       }
       if (url.origin !== "https://api.ash-fall.com") return route.abort();
       const headers = { "access-control-allow-origin": origin, "access-control-allow-credentials": "true" };
+      if (route.request().method() === "OPTIONS") {
+        return route.fulfill({ status: 204, headers: {
+          ...headers,
+          "access-control-allow-headers": "content-type",
+          "access-control-allow-methods": "GET, POST, OPTIONS"
+        } });
+      }
       if (url.pathname === "/api/auth/me") {
         if (session.user) return route.fulfill({ headers, json: { user: { username: "fixture", ...session.user } } });
         if (session.status === 200) return route.fulfill({ headers, contentType: "text/html", body: "<p>Bad gateway</p>" });
@@ -44,7 +51,7 @@ try {
     const page = await context.newPage();
     try {
       const auth = page.waitForResponse("https://api.ash-fall.com/api/auth/me");
-      await page.goto(origin + "/homepage#ecosystem", { waitUntil: "domcontentloaded" });
+      await page.goto(origin + "/#ecosystem", { waitUntil: "domcontentloaded" });
       await auth;
       const nav = page.getByRole("navigation", { name: "Primary navigation" });
       const toggle = page.getByRole("button", { name: "Open navigation" });
@@ -102,6 +109,21 @@ try {
       }
       const size = await page.evaluate(() => [document.documentElement.clientWidth, document.documentElement.scrollWidth]);
       assert.ok(size[1] <= size[0] + 3, "Page overflows viewport: " + size);
+      if (session.name === "guest") {
+        await page.goto(origin + "/homepage.html?source=legacy#memorial");
+        await page.waitForURL(origin + "/?source=legacy#memorial");
+        await page.locator("#memorial a[href='/remembering-josh.html']").waitFor();
+
+        const next = "/account.html?from=legacy#account-tools";
+        await page.goto(origin + "/index.html?mode=register&next=" + encodeURIComponent(next));
+        await page.waitForURL(url => url.pathname === "/auth.html" && url.searchParams.get("next") === next);
+        await page.getByRole("heading", { name: "Create an Ash-Fall account" }).waitFor();
+        await page.getByRole("tab", { name: "Log in" }).click();
+        await page.getByLabel("Username or email").fill("fixture");
+        await page.getByLabel("Password", { exact: true }).fill("fixture-password");
+        await page.getByRole("button", { name: "Log in to Ash-Fall" }).click();
+        await page.waitForURL(origin + next);
+      }
       console.log("PASS navigation", session.name, mobile ? "mobile" : "desktop");
     } catch (error) {
       const message = (session.name + " " + (mobile ? "mobile" : "desktop") + ": " + error.message).replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
