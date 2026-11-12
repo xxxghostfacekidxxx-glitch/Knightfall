@@ -147,6 +147,16 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] The create-request path still needs a database-enforced uniqueness strategy for duplicate concurrent requests; do not introduce a unique index without auditing existing records and migrations.
 - [ ] Actual account erasure and retention cleanup across D1/KV/R2 are still P0 (#150).
 
+## Production D1 account-deletion request repair — November 11, 2026
+
+- [x] **Found production blocker:** `account_deletion_requests` did not exist in production D1 `knightfall-forum`. Its earlier `0033_account_deletion_requests.sql` source file had not been recorded as applied; a different migration occupied the 0033 ledger slot. This explains why the website could display a request form but the backend could fail on SQL.
+- [x] Confirmed a D1 Time Travel bookmark before the additive database change. Created `backend/migrations/0128_account_deletion_requests_unique.sql` to install the absent table, two indexes and a partial UNIQUE index guaranteeing one `pending`/`in_progress` request per user ([31fd8a0](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/31fd8a0ecd3af69047464bbda0544e38f59be256)).
+- [x] **Applied and read-verified in production:** zero existing requests, all three indexes including the active-user partial unique constraint, both `users` foreign keys and ledger ID **73** (`0128_account_deletion_requests_unique.sql`, applied `2026-11-12 03:54:02` UTC). No member accounts or request records were deleted.
+- [x] Changed the authenticated request insert to `INSERT OR IGNORE` with affected-row checking and an existing-active-request lookup, avoiding duplicate notifications/audit events when two valid submissions race ([90eb834](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/90eb8341367c4091e32ea8e56d4f5b98e8a6b4a9)).
+- [x] Added in-memory SQLite tests of uniqueness, active transitions, terminal historical requests and replay safety ([bdcb4e3](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/bdcb4e37679f139cb6adb0a419718d1379305b73)); wired them into the main smoke workflow ([68426ca](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/68426ca9a1ba717c407b150e7d52b4fde34b0653)) and extended static backend auditing ([fb70f50](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/fb70f50c6bb9fed2160ac3ce7323daa1d3d16909)).
+- [ ] Verify fresh GitHub Actions CI and exact Worker deployed revision, then perform an authenticated disposable-account request/create/duplicate/cancel test. No real member data should be touched during acceptance.
+- [ ] Full account erasure, cross-store retention/revocation and independent social-account identity verification remain unresolved in [#150](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/150).
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
