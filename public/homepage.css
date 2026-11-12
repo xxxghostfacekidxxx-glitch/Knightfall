@@ -283,3 +283,8 @@ nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.25rem}nav a{paddin
 
 .home-memorial a:hover span,
 .home-memorial a:focus-visible span { text-decoration: underline; }
+
+/* One canonical home footer: avoid a second stacked support bar. */
+.site-footer .footer-links{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.site-footer .footer-links a{display:inline-flex;align-items:center;min-height:44px;padding:.4rem .5rem;color:#c6ff45;font-size:.8rem;font-weight:750;text-underline-offset:.2em}
+.site-footer .footer-links a:hover,.site-footer .footer-links a:focus-visible{color:#fff}
