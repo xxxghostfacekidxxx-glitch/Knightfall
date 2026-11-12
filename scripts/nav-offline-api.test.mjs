@@ -46,3 +46,20 @@ test("consolidated navigation destinations exist, including deep links",()=>{
   assert.doesNotMatch(html,/href="Original Ash-Fall/);
  }
 });
+
+
+test("canonical home retains one support footer and retired directories point to current hubs",()=>{
+ const home=readFileSync("public/index.html","utf8");
+ const nav=readFileSync("public/nav.js","utf8");
+ const vault=readFileSync("public/arcade-vault.html","utf8");
+ const redirects=readFileSync("public/_redirects","utf8");
+ assert.match(home,/class="site-footer"/);
+ assert.match(home,/href="\/support\.html"/);
+ assert.match(home,/href="\/user-agreement\.html"/);
+ assert.match(nav,/document\.querySelector\("\.site-footer"\)/);
+ assert.match(home,/id="ecosystem"/);
+ assert.match(vault,/\/chaos-cartridge\.html/);
+ for(const legacy of ["#vault-mines","#vault-breakout","#vault-snake"])
+  assert.ok(vault.includes(legacy),"Legacy arcade bookmark lost: "+legacy);
+ assert.match(redirects,/\/homepage\.html \/ 301/);
+});
