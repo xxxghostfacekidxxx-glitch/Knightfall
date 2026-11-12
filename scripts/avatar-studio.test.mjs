@@ -26,7 +26,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'download-svg','download-avatar','save-avatar','set-active','studio-status',
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro3'),path+' cache token missing');
+ for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro4'),path+' cache token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -126,6 +126,18 @@ test('distinctive hair silhouettes and ear styles preserve saved-avatar compatib
  assert.equal(validate(old).ear_style,'human');
 });
 
+test('four new cinematic starter looks are available with distinct silhouettes',()=>{
+ const code=read('public/avatar-studio.js'),kit=loadRenderer(),clean=loadApiValidator();
+ for(const name of ['Cinder Witch','Chrome Wraith','Night Howl','Velvet Hex']){
+  assert.ok(code.includes("name:'"+name+"'"));
+ }
+ for(const hair of ['wolfcut','coils','braids','buzzcut']){
+  const avatar={...kit.defaults,hair};
+  assert.ok(clean(avatar));
+  assert.ok(kit.render(avatar).includes('<svg'));
+ }
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
@@ -140,7 +152,7 @@ test('renderer has unique gradient namespaces for simultaneous gallery previews'
 
 test('profile and mascot pages load the refreshed renderer',()=>{
  for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro3/,page+' has stale artwork');
+  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro4/,page+' has stale artwork');
  }
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');

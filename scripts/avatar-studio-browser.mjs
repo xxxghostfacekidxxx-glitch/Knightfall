@@ -44,7 +44,7 @@ async function scenario(label,viewport){
   assert.equal(response?.status(),200);
   await page.waitForFunction(()=>document.getElementById("slot-note")?.textContent?.includes("Slot 1 of 2"));
   assert.equal(await page.locator("#category-tabs .category-tab").count(),4);
-  assert.equal(await page.locator("#preset-list .preset-chip").count(),9);
+  assert.equal(await page.locator("#preset-list .preset-chip").count(),13);
   assert.ok((await page.locator("#avatar-preview svg").count())===1);
   await page.getByRole("tab",{name:/Expression/}).click();
   const tattoo=page.locator("fieldset.control-group").filter({has:page.locator("legend",{hasText:"Face tattoo"})});
