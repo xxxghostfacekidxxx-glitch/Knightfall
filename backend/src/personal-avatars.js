@@ -18,6 +18,24 @@ const HEADWEAR=new Set(['none','witch_hat','tiara','antenna','headphones','flowe
 const EYEWEAR=new Set(['none','star_shades','round_specs','visor','monocle','eyepatch']);
 const NECKWEAR=new Set(['none','spike_choker','chain','bandana','scarf']);
 const AURA=new Set(['none','ghost_flames','spark_ring','glow','moon']);
+for(const value of ["frost","ashen","infernal"])SKIN.add(value);
+for(const value of ["angular","oval"])FACE_SHAPE.add(value);
+for(const value of ["undercut","waves","locs"])HAIR.add(value);
+for(const value of ["white","crimson","teal"])HAIR_COLOR.add(value);
+for(const value of ["cat","cyber","hollow"])EYES.add(value);
+for(const value of ["ice","amber"])EYE_COLOR.add(value);
+for(const value of ["smirk","snarl"])EXPRESSION.add(value);
+for(const value of ["scar","runes"])FACE_MARK.add(value);
+for(const value of ["nose"])PIERCING.add(value);
+for(const value of ["armor","punk","techwear"])OUTFIT.add(value);
+for(const value of ["teal","gold"])OUTFIT_COLOR.add(value);
+for(const value of ["safety_pin"])ACCESSORY.add(value);
+for(const value of ["eclipse","neon_city","storm"])BACKGROUND.add(value);
+for(const value of ["runes","shards"])PATTERN.add(value);
+for(const value of ["spiked_cap"])HEADWEAR.add(value);
+for(const value of ["cyber_lens"])EYEWEAR.add(value);
+for(const value of ["pendant"])NECKWEAR.add(value);
+for(const value of ["lightning"])AURA.add(value);
 const FIELDS={skin:SKIN,face_shape:FACE_SHAPE,hair:HAIR,hair_color:HAIR_COLOR,eyes:EYES,eye_color:EYE_COLOR,brow_style:BROW_STYLE,eye_glimmer:EYE_GLIMMER,expression:EXPRESSION,face_mark:FACE_MARK,piercing:PIERCING,outfit:OUTFIT,outfit_color:OUTFIT_COLOR,headwear:HEADWEAR,eyewear:EYEWEAR,neckwear:NECKWEAR,aura:AURA,accessory:ACCESSORY,background:BACKGROUND,pattern:PATTERN};
 const DEFAULTS={skin:'peach',face_shape:'round',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',brow_style:'soft',eye_glimmer:'none',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles'};
 const PRODUCTS=Object.freeze([{id:'avatar_slot',slots:1,cost_cinders:600,label:'One extra misfit slot'},
