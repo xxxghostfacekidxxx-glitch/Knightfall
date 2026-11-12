@@ -80,8 +80,17 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Added `scripts/sanctuary-importmap.test.mjs` to validate map count, ordering and Three.js mappings ([1cb9dbe](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/1cb9dbeb2d0a486c447b7f6da41b279b46ac3ac9)); wired it into ten-shard fleet validation ([720edf5](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/720edf5bc876e214c58809cfb9d6d41e74730d2f)).
 - [ ] Verify production deploy includes these commits and that a new live browser fleet run succeeds for Sanctuary's End. Preserve failed screenshot and diagnostic logs until resolved; keep issue #192 open.
 
+## Verified full arcade fleet recovery — November 11, 2026
+
+- [x] **Arcade Test Bot Fleet green:** [GitHub Actions run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176) completed all ten named browser-bot jobs successfully; the consolidated coverage step and dashboard publication also succeeded.
+- [x] **Complete route coverage:** all ten local shards and all ten live shards covered 132/132 hosted routes apiece, with zero missing/duplicate/malformed reports or failed routes. Published `public/arcade/arcade-fleet-latest.json` reports `passed: true` and `sourceRunId: 43111248176`.
+- [x] **Sanctuary's End:** the formerly failing live route passed in the subsequent full fleet after the import-map order correction. This verifies the browser-test path, not every physical-device interaction or online save.
+- [x] Closed [issue #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192) as completed with linked success evidence.
+- [x] Updated God Mode's on-site master task panel to show the resolved CI issue and shift remaining acceptance tasks to real devices and authenticated saves.
+- [ ] Retain device/browser signoff: Android touchscreen and fullscreen, logged-in cloud saves, notification/resume behavior, and production API ownership remain distinct from the public arcade route audit.
+
 ## P0 — Immediate reliability and release blockers
-- [ ] Triage [arcade fleet failure #192](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/192), inspect failed artifacts and latest run, reproduce, fix root cause, rerun all ten shards and smoke tests. Prior fleet green does not override newer failure.
+- [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
 - [ ] Complete account deletion across D1/KV/R2, session/push revocation, retention, staff processing and off-app request flow. Current password check and public assistance ticket exist; completion remains open [#150](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues/150).
 - [ ] Verify current production Pages and Worker versions, /api/auth/me JSON response, login, registration, password recovery, protected media, rate limits and CSRF/Turnstile; configure Google/Meta OAuth providers only with correct callback and consent setup.
