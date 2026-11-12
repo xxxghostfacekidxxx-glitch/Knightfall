@@ -82,6 +82,7 @@
   frown:'<path d="M101 154 Q112 145 123 154" fill="none" stroke="#9a4d65" stroke-width="4" stroke-linecap="round"/>',
   tongue:'<path d="M100 146 Q112 157 124 146 Q122 161 112 161 Q102 159 100 146Z" fill="#7f304d"/><path d="M112 156 Q111 168 120 165 Q126 162 120 157" fill="#f06b9a" stroke="#9a4d65" stroke-width="2"/>'
  };
+ let renderSequence=0;
  function render(input={}){
   const a=safeAvatar(input),skin=palettes.skin[a.skin],hair=palettes.hair_color[a.hair_color],bg=palettes.background[a.background],cloth=palettes.outfit_color[a.outfit_color],eye=palettes.eye_color[a.eye_color],accent=a.background==='toxic'?'#c6ff45':a.background==='bubblegum'?'#ff62c7':'#79ffe7';
   const headShape={round:'<circle cx="112" cy="113" r="68"/>',soft_square:'<path d="M48 88Q48 45 88 45H136Q176 45 176 88V128Q176 177 112 181Q48 177 48 128Z"/>',heart_face:'<path d="M112 181Q98 171 61 132Q38 108 45 79Q53 48 83 48Q103 48 112 69Q121 48 141 48Q171 48 179 79Q186 108 163 132Q126 171 112 181Z"/>',long:'<ellipse cx="112" cy="112" rx="58" ry="76"/>'}[a.face_shape];
@@ -122,7 +123,52 @@
    glow:'<circle cx="112" cy="113" r="76" fill="none" stroke="#ff55d8" stroke-width="9" opacity=".35"/><circle cx="112" cy="113" r="83" fill="none" stroke="#ff55d8" stroke-width="3" opacity=".6"/>',
    moon:'<path d="M175 152a30 30 0 1 1-28-46 25 25 0 1 0 28 46z" fill="#f4dc83" stroke="#30243a" stroke-width="3"/><circle cx="44" cy="103" r="5" fill="#c6ff45"/><circle cx="184" cy="190" r="5" fill="#ff62c7"/>'
   };
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Cute chaotic big-head misfit avatar"><rect width="224" height="256" rx="36" fill="${bg}"/>${patterns[a.pattern]}${auras[a.aura]}<ellipse cx="112" cy="235" rx="62" ry="9" fill="#0007"/><path d="M83 184 Q75 201 76 217 M141 184 Q150 200 148 216" fill="none" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>${garments[a.outfit]}${neckwear[a.neckwear]}<ellipse cx="50" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><ellipse cx="174" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/><g fill="${skin}" stroke="#241629" stroke-width="6">${headShape}</g><g fill="${hair}" stroke="#241629" stroke-width="4" stroke-linejoin="round">${hairstyles[a.hair]}</g>${accessories[a.accessory]}${headwear[a.headwear]}<g fill="none" stroke="#39283b" stroke-width="4" stroke-linecap="round">${brows}</g>${eyeShapes[a.eyes]}${pupils}${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${mouths[a.expression]}${piercings[a.piercing]}<path d="M199 40 l4 9 9 4 -9 4 -4 9 -4-9 -9-4 9-4z" fill="${accent}"/></svg>`;
+   const uid='kf-misfit-'+(++renderSequence);
+   const shapeGlow=a.background==='toxic'?'#c6ff45':a.background==='ember'?'#ff986b':a.background==='bubblegum'?'#ff7de2':'#78efec';
+   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar">
+ <defs>
+  <radialGradient id="${uid}-ambient" cx="51%" cy="35%" r="79%"><stop stop-color="${shapeGlow}" stop-opacity=".46"/><stop offset=".45" stop-color="${bg}" stop-opacity=".10"/><stop offset="1" stop-color="#05030a" stop-opacity=".82"/></radialGradient>
+  <linearGradient id="${uid}-skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7ed" stop-opacity=".34"/><stop offset=".27" stop-color="${skin}"/><stop offset=".7" stop-color="${skin}"/><stop offset="1" stop-color="#3d2438" stop-opacity=".54"/></linearGradient>
+  <linearGradient id="${uid}-hair" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fff7ff" stop-opacity=".38"/><stop offset=".18" stop-color="${hair}"/><stop offset=".7" stop-color="${hair}"/><stop offset="1" stop-color="#160c1d"/></linearGradient>
+  <linearGradient id="${uid}-cloth" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff" stop-opacity=".23"/><stop offset=".21" stop-color="${cloth}"/><stop offset=".76" stop-color="${cloth}"/><stop offset="1" stop-color="#110c19"/></linearGradient>
+  <radialGradient id="${uid}-shine"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <filter id="${uid}-shadow" x="-35%" y="-35%" width="170%" height="190%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#05030c" flood-opacity=".54"/></filter>
+ </defs>
+ <rect width="224" height="256" rx="35" fill="${bg}"/>
+ <rect width="224" height="256" rx="35" fill="url(#${uid}-ambient)"/>
+ <g opacity=".27" stroke="${shapeGlow}" fill="none">
+   <circle cx="112" cy="124" r="100" stroke-width=".8"/><circle cx="112" cy="124" r="90" stroke-dasharray="3 7" stroke-width="1"/>
+   <path d="M16 206L62 160M165 31l40 39M17 28h26m139 196h20" stroke-width="1.5"/>
+ </g>
+ <path d="M12 65v-27q0-24 24-24h24m152 159v41q0 28-28 28h-28" fill="none" stroke="${shapeGlow}" stroke-width="2" opacity=".5"/>
+ <circle cx="112" cy="117" r="102" fill="url(#${uid}-shine)"/>
+ ${patterns[a.pattern]}${auras[a.aura]}
+ <ellipse cx="112" cy="240" rx="71" ry="10" fill="#07030a" opacity=".48"/>
+ <g filter="url(#${uid}-shadow)">
+  <path d="M83 184Q75 201 76 217M141 184Q150 200 148 216" fill="none" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>
+  ${garments[a.outfit].replaceAll('fill="' + cloth + '"','fill="url(#' + uid + '-cloth)"')}
+  <path d="M60 234q20-13 31-12m45 0q17-2 32 12" fill="none" stroke="#fff" stroke-width="1.5" opacity=".24"/>
+  ${neckwear[a.neckwear]}
+  <ellipse cx="50" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/>
+  <ellipse cx="174" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/>
+  <path d="M48 99q-13 12-3 28m134-28q13 12 3 28" fill="none" stroke="#fff5e9" stroke-width="2" opacity=".35"/>
+  <g fill="url(#${uid}-skin)" stroke="#241629" stroke-width="5" stroke-linejoin="round">${headShape}</g>
+  <ellipse cx="90" cy="81" rx="44" ry="28" fill="#fff" opacity=".075"/>
+  <ellipse cx="73" cy="146" rx="19" ry="9" fill="#ff607e" opacity=".16"/>
+  <ellipse cx="152" cy="146" rx="19" ry="9" fill="#ff607e" opacity=".16"/>
+  <path d="M110 133q-4 9 2 10m3-9q3 9-2 10" fill="none" stroke="#673e46" stroke-width="1.8" opacity=".36" stroke-linecap="round"/>
+  <g fill="url(#${uid}-hair)" stroke="#241629" stroke-width="4" stroke-linejoin="round">${hairstyles[a.hair]}</g>
+  <path d="M61 71Q82 41 120 49m15 3q15 7 23 19" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".19"/>
+  ${accessories[a.accessory]}${headwear[a.headwear]}
+  <g fill="none" stroke="#39283b" stroke-width="4" stroke-linecap="round">${brows}</g>
+  ${eyeShapes[a.eyes]}${pupils}
+  <path d="M68 139q14 5 26 0m38 0q15 5 26 0" fill="none" stroke="#673e57" stroke-width="1.5" opacity=".33"/>
+  ${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${mouths[a.expression]}${piercings[a.piercing]}
+ </g>
+ <path d="M199 38l3 8 9 3-9 3-3 8-3-8-9-3 9-3z" fill="${accent}"/>
+ <path d="M29 198l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${shapeGlow}" opacity=".85"/>
+ <path d="M31 230h33m96-207h32" fill="none" stroke="${shapeGlow}" stroke-width="2" opacity=".65"/>
+ </svg>`;
  }
- window.KnightfallMisfitAvatars={defaults,safeAvatar,render,choices};
+ window.KnightfallMisfitAvatars={defaults,safeAvatar,render,choices,palettes};
 })();
