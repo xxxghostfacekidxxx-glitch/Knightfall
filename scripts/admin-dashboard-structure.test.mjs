@@ -47,8 +47,10 @@ test("tool search supports keyboard operation",()=>{
 test("coverage status clears when the consolidation job cannot be read",()=>{
  assert.match(html,/Coverage consolidation job unavailable/);
 });
-test("single-result tool search retains its filtered state",()=>{
- assert.match(html,/adminTabs\.forEach\(x=>\{x\.hidden=x!==matches\[0\]\}\)/);
+test("tool search keeps the filter while users choose a result",()=>{
+ assert.match(html,/adminSearch\.addEventListener\("input", filterAdminTools\)/);
+ assert.match(html,/tab\.hidden = !matches\.includes\(tab\)/);
+ assert.match(html,/selectAdminTab\(first\.dataset\.tab, true\)/);
 });
 
 test("arcade failure viewer uses report data and handles missing publication",()=>{
@@ -75,6 +77,6 @@ test("arcade failure cards show evidence counts",()=>{assert.match(html,/failure
 
 test("Creation Tools shortcuts open their named tools, not an arcade cabinet",()=>{
  assert.match(html,/<a class="admin-shortcut" href="\/open-source-arsenal\.html">[\s\S]*?<strong>Open Source Arsenal<\/strong>/);
- assert.match(html,/<a class="admin-shortcut" href="\/devil-tools\.html">[\s\S]*?<strong>Devil Tools<\/strong>/);
+ assert.match(html,/<a class="admin-shortcut" href="\/devil-tools\.html">[\s\S]*?<strong>Creator Foundry<\/strong>/);
  assert.doesNotMatch(html,/href="\/abyssal-arsenal\.html">[\s\S]{0,100}<strong>Open Source Arsenal<\/strong>/);
 });

@@ -137,3 +137,8 @@ tbody tr:hover{background:rgba(255,85,216,.035)}
 .arcade-failure-item strong{display:block;color:#ffe9fa}
 .arcade-failure-item small{display:block;color:#c6ff45;margin-top:.25rem}
 .arcade-failure-item p{white-space:pre-wrap;color:#d9c9e0;font-size:.8rem;margin:.5rem 0 0}
+
+.admin-shell [hidden] { display: none !important; }
+.admin-overview { margin-block: 1rem; }
+.admin-overview > summary { cursor: pointer; color: var(--kf-accent-bright); padding-block: .6rem; }
+.admin-tool-section { border-top: 1px solid #633978; margin-top: 1.1rem; padding-top: 1rem; }

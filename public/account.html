@@ -50,7 +50,7 @@
 
     function renderUser(user) {
       const role = String(user.role || "").trim().toLowerCase();
-      const ownerVault = ["admin", "god"].includes(role) && user.username === "knightfall";
+      const ownerVault = role === "god" || (role === "admin" && user.username === "knightfall");
       const personalBots = !["banned", "suspended"].includes(user.status);
       const initials = (user.display_name || user.username || "?").slice(0,1).toUpperCase();
       root.innerHTML = `

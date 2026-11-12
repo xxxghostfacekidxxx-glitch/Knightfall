@@ -265,7 +265,6 @@
         <div class="kf-nav-menu">
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
           <a class="kf-mod-link" href="/moderation.html">Moderation</a>
-          <a class="kf-recovery-link" href="/moderation-accounts.html">Account Recovery</a>
         </div>
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/index.html">Sign In</a>

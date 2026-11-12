@@ -11,7 +11,7 @@ test('staff menu links to the dashboard and old task bookmarks still open the re
   assert.match(nav, /querySelector\("\.kf-admin-link"\)\.hidden = !admin/);
   assert.doesNotMatch(nav, /href="\/admin\.html#master-task-list"/);
   assert.match(admin, /<details id="master-task-list"/);
-  assert.match(admin, /location.hash === "#master-task-list".*open = true/);
+  assert.match(admin, /location.hash === "#master-task-list"[\s\S]{0,125}open = true/);
 });
 test('task panel links to canonical backlog and does not claim continuous GitHub monitoring', () => {
   assert.match(admin, /docs\/MASTER-TASK-LIST-2026-11-11\.md/);

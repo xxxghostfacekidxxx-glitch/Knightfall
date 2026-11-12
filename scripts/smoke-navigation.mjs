@@ -76,9 +76,20 @@ try {
         assert.equal(await staff.isVisible(), isStaff);
         if (isStaff) {
           await staff.click();
-          await nav.getByRole("link", { name: "Account Recovery" }).waitFor();
+          await nav.getByRole("link", { name: "Moderation" }).waitFor();
           await nav.getByRole("link", { name: "Settings & Tools" }).waitFor({ state: "hidden" });
           assert.equal(await nav.getByRole("link", { name: "Admin Dashboard" }).isVisible(), admin);
+          if (admin) {
+            await page.goto(origin + "/admin.html#master-task-list");
+            const taskList = page.locator("#master-task-list[open]");
+            await taskList.waitFor();
+            const search = page.getByRole("textbox", { name: "Find a tool" }).or(page.getByRole("searchbox", { name: "Find a tool" }));
+            await search.fill("privacy recovery");
+            await search.press("Enter");
+            const reports = page.locator('[data-panel="message-reports"].active');
+            await reports.getByRole("link", { name: "Account Recovery" }).waitFor();
+            assert.equal(new URL(page.url()).searchParams.get("tool"), "message-reports");
+          }
         } else {
           await nav.getByRole("link", { name: "Settings & Tools" }).click();
           await page.locator("#account-tools").waitFor();

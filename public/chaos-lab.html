@@ -13,11 +13,12 @@ body{background:radial-gradient(ellipse at 80% 0%,#ff2f9214,transparent 38%),rad
 <link rel="stylesheet" href="/arcade-polish.css?v=20261022-controls2">
 </head>
 <body><header class="kf-header"></header><main class="lab">
-<section class="hero"><div><p class="eyebrow">ASH-FALL / OWNER ACCESS ONLY</p><h1>CHAOS <span>LAB</span></h1><p class="muted">Tune the public character, govern her behavioral architecture, and consult your private administrator entity. Three systems, one control room, no mystery switches.</p></div><a class="btn" href="/admin.html">← God Mode</a></section>
-<p id="status" class="status">Verifying owner access…</p>
-<nav class="tabs" aria-label="Chaos systems"><button class="active" data-tab="personality">01 · Public Personality</button><button data-tab="behavior">02 · Behavioral Rules</button><button data-tab="private">03 · Private Entity</button></nav>
+<section class="hero"><div><p class="eyebrow">ASH-FALL / ADMIN TOOLS</p><h1>CHAOS <span>LAB</span></h1><p class="muted">Manage the public Miss Chaos personality and behavior. The private assistant is available to the owner.</p></div><a class="btn" href="/admin.html">← Admin Dashboard</a></section>
+<p id="status" class="status">Verifying administrator access…</p>
+<div id="lab-controls" class="hidden">
+<nav class="tabs" aria-label="Chaos systems"><button class="active" data-tab="personality">Public Personality</button><button data-tab="behavior">Behavioral Rules</button><button data-tab="private" class="hidden">Private Assistant</button></nav>
 <section class="panel active" data-panel="personality">
-<p class="eyebrow">PUBLIC MISS CHAOS</p><h2>Personality Console</h2><p class="muted">These dials shape the public chatbot. Save to make changes live after the backend deploy containing this interface is available.</p>
+<p class="eyebrow">PUBLIC MISS CHAOS</p><h2>Personality Console</h2><p class="muted">These dials shape the public chatbot. Save to make changes live for the public chatbot.</p>
 <div class="grid" id="dials"></div>
 <div class="field" style="margin-top:1rem"><label for="public-guidance">Additional character guidance</label><small>Extra instructions for public Miss Chaos. Keep it under 1,200 characters.</small><textarea id="public-guidance" maxlength="1200" rows="5" placeholder="Voice, comedic motifs, creative preferences…"></textarea></div>
 <div class="actions"><button class="btn primary" id="save-personality">Save public personality</button><button class="btn" id="reload-personality">Reload saved values</button></div>
@@ -56,7 +57,7 @@ body{background:radial-gradient(ellipse at 80% 0%,#ff2f9214,transparent 38%),rad
 <div class="chat"><div id="chat-log" class="chat-log" aria-live="polite"><div class="bubble system">Private lab session. Messages in this test chat are not saved as long-term memories.</div></div><form id="chat-form" class="chat-form"><input id="chat-message" class="chat-input" maxlength="4000" required placeholder="Review the current rules for contradictions…"><button class="btn primary" type="submit">Consult</button></form></div>
 <div id="proposal" class="proposal hidden"><strong>Proposed public configuration</strong><p class="muted">Review the proposed changes before applying them. Approval validates and saves the proposal in one server-side transaction. Behavioral changes create a rollback snapshot.</p><pre id="proposal-preview"></pre><div class="actions"><button class="btn primary" id="approve-proposal">Approve and apply proposal</button><button class="btn" id="reject-proposal">Discard proposal</button></div></div>
 </section>
-</main><script src="/nav.js" defer></script><script>
+</div></main><script src="/nav.js" defer></script><script>
 const API="https://api.ash-fall.com",q=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 async function api(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed ("+r.status+").");return d}
 function status(text,good=false){q("#status").textContent=text;q("#status").classList.toggle("good",good)}
@@ -87,6 +88,22 @@ q("#save-behavior").onclick=()=>saveBehavior().catch(e=>status(e.message));q("#r
 q("#save-private").onclick=()=>savePrivate().catch(e=>status(e.message));q("#reload-private").onclick=()=>loadPrivate().then(()=>status("Private settings reloaded.",true)).catch(e=>status(e.message));
 q("#chat-form").onsubmit=async e=>{e.preventDefault();const input=q("#chat-message"),message=input.value.trim();if(!message)return;input.value="";const submit=q('#chat-form button');submit.disabled=true;try{await consult(message)}catch(err){addBubble("system",err.message);status(err.message)}finally{submit.disabled=false;input.focus()}};
 q("#approve-proposal").onclick=()=>applyProposal().catch(e=>status(e.message));q("#reject-proposal").onclick=()=>{showProposal(null);status("Proposal discarded. No public settings changed.",true)};
-(async()=>{try{const me=await api("/api/auth/me");if(me.user?.username!=="knightfall"||me.user?.role!=="admin")throw Error("Owner-only access. Sign in with the site owner account.");await Promise.all([loadPersonality(),loadBehavior(),loadPrivate()]);status("Owner verified. All three systems are connected.",true)}catch(e){status(e.message);document.querySelectorAll(".tabs button").forEach(b=>b.disabled=true)}})();
+(async () => {
+  try {
+    const {user} = await api("/api/auth/me");
+    if (!["admin", "god"].includes(user?.role)) throw Error("Administrator access required.");
+    const owner = user.role === "god" || user.username === "knightfall";
+    await Promise.all([loadPersonality(), loadBehavior()]);
+    q("#lab-controls").classList.remove("hidden");
+    status("Public settings ready.", true);
+    if (owner) {
+      await loadPrivate();
+      q('[data-tab="private"]').classList.remove("hidden");
+      status("Public and private settings ready.", true);
+    }
+  } catch (error) {
+    status(error.message);
+  }
+})();
 </script><script src="/arcade-polish.js?v=20261022-controls2" defer></script>
 </body></html>

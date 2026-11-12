@@ -323,7 +323,7 @@
       statusEl.textContent = "Checking connection…";
       const me = await request("/api/auth/me");
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
-      isAdmin = me.user.role === "admin";
+      isAdmin = ["admin", "god"].includes(me.user.role);
       if (isAdmin) { $("#admin-chaos-archive").hidden = false; await refreshAdminArchive(); }
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
