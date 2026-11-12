@@ -137,11 +137,13 @@ async function scenario(title,viewport,own){
       await original.locator('.profile-wall-save').click();
       await page.locator("#profile-saved .profile-wall-saved-item").first().waitFor();
       await page.locator("#profile-saved .profile-wall-saved-item button").first().click();
+      await page.locator("#profile-saved .profile-wall-saved-item").first().waitFor({state:"detached",timeout:5000});
       assert.equal(await page.locator("#profile-saved .profile-wall-saved-item").count(),0);
     }else{
       assert.equal(await page.locator("#profile-saved").count(),0);
     }
     await original.locator('.profile-wall-reaction').first().click();
+    await page.waitForFunction(() => document.querySelector('.profile-wall-post[data-activity-id="55"] .profile-wall-reaction')?.getAttribute("aria-pressed") === "true");
     assert.equal(await original.locator('.profile-wall-reaction').first().getAttribute("aria-pressed"),"true");
     await original.locator(".profile-wall-comments-toggle").click();
     await original.getByText("Love the pixel art!").waitFor();
