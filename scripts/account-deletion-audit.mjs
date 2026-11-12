@@ -36,7 +36,8 @@ assert.match(cancellation, /Number\(cancelled\.meta\?\.changes\|\|0\)!==1/, "can
 assert.match(cancellation, /409,origin/, "stale cancellation returns conflict");
 assert.match(adminTransition, /!\["pending","in_progress"\]\.includes\(row\.status\)/, "terminal deletion requests cannot reopen");
 assert.match(adminTransition, /status==="rejected"&&!note/, "rejecting a request requires a documented reason");
-assert.match(adminTransition, /WHERE id=\? AND status IN \('pending','in_progress'\)/, "admin writes must be conditionally guarded at database level");
+assert.match(adminTransition, /WHERE id=\? AND status=\? AND operator_note=\?/, "admin writes must compare original status and note to prevent lost updates");
+assert.match(adminTransition, /\.bind\(status,user\.id,note,id,row\.status,String\(row\.operator_note\|\|""\)\)/, "conditional write must bind values read from the ticket");
 assert.match(adminTransition, /Number\(updated\.meta\?\.changes\|\|0\)!==1/, "concurrent admin status updates must fail closed");
 assert.match(adminTransition, /from:row\.status,to:status/, "audit must retain the transition's previous state");
 
@@ -61,6 +62,7 @@ assert.match(publicPage, /account-deletion\.html|Account deletion/i);
 assert.match(publicPage, /does not immediately erase/i);
 assert.match(adminPage, /does not erase account data/i);
 assert.doesNotMatch(adminPage, /data-action="completed"/);
+assert.match(adminPage, /JSON\.stringify\(note\?\{status:button\.dataset\.action,operator_note:note\}:\{status:button\.dataset\.action\}\)/, "admin frontend must omit blank notes rather than clearing existing evidence");
 assert.match(privacy, /does not itself erase the account/i);
 assert.ok(manifest.shortcuts.length >= 3, "PWA must retain its three core shortcuts");
 for (const url of ["/homepage.html", "/chaos-cartridge.html", "/messages.html"]) assert.ok(manifest.shortcuts.some(item => item.url.startsWith(url)), `Missing core shortcut: ${url}`);
