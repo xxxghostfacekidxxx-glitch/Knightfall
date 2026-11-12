@@ -99,6 +99,14 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Perform authenticated/unauthenticated end-to-end recovery tests after configuration, including 30-minute expiry, one-time token invalidation and generic response for unknown accounts.
 - [ ] Public API HTTP fetches from this session were unavailable; a binding audit alone cannot certify `/api/auth/me` JSON behavior or email delivery.
 
+## Account deletion UX accuracy — November 11, 2026
+
+- [x] Compared the actual deletion POST handler against the member account form and public deletion instructions. The backend requires the current account password plus username for every signed-in request; it does **not** accept username-only social login confirmation.
+- [x] Fixed `public/account.html` to clearly explain the password requirement and link Google/Facebook-only or locked-out accounts to the public assistance form. Password verification was not relaxed ([752a1d6](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/752a1d6f1e70d28e75cc28c692228adfe0244c74)).
+- [x] Corrected `public/account-deletion.html` public instructions and added a stable `#deletion-assistance` anchor ([9db9d8f](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/9db9d8f0299b352d7c393aff0bdd9fd4b9bb5b05)).
+- [x] Extended account deletion static audit to ensure the social-login assistance route is present and that password verification remains enforced ([6ebc68b](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/6ebc68bdd281501d04342e54092547666b891461)).
+- [ ] Full erasure across D1/KV/R2, authenticated social sign-in deletion acceptance, and staff identity-verification workflow remain release blockers under #150. Public assistance requests do not automatically erase an account.
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
