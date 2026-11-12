@@ -69,9 +69,10 @@ async function scenario(label,viewport){
   assert.equal(writes.length,2);assert.equal(writes[1].active,true);
   assert.equal(slots[0].is_active,true);
   const comparison=page.locator("#preview-compare");
-  await comparison.dispatchEvent("pointerdown",{pointerId:1,pointerType:"mouse"});
+  await comparison.hover();
+  await page.mouse.down();
   assert.equal(await page.locator("#avatar-preview").getAttribute("aria-label"),"Last saved Misfit appearance");
-  await comparison.dispatchEvent("pointerup",{pointerId:1,pointerType:"mouse"});
+  await page.mouse.up();
   assert.equal(await page.locator("#avatar-preview").getAttribute("aria-label"),"Live Misfit character preview");
   const svgDownload=page.waitForEvent("download");
   await page.locator("#download-svg").click();
