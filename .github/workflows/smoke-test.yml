@@ -217,6 +217,8 @@ jobs:
           test "$code" = 200
           grep -q '"ok":true' "$body"
           grep -q '"database":true' "$body"
+          # Prevent a healthy D1 connection from masking a missing release-critical migration.
+          grep -q '"deletion_requests_ready":true' "$body"
           settings_code=$(curl -sS -o "$body" -w '%{http_code}' "$base/api/site-settings")
           test "$settings_code" = 200
           maintenance=false
