@@ -2638,7 +2638,9 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!await rateLimit(env,request,"account-deletion-cancel",5,3600,user.id))return json({error:"Too many cancellation attempts. Try again later."},429,origin);
     const pending=await env.DB.prepare("SELECT id FROM account_deletion_requests WHERE user_id=? AND status='pending' ORDER BY requested_at DESC LIMIT 1").bind(user.id).first();
     if(!pending)return json({error:"No cancellable pending request was found. Contact the operator if processing has already started."},409,origin);
-    const now=new Date().toISOString();await env.DB.prepare("UPDATE account_deletion_requests SET status='rejected',operator_note='Cancelled by account holder on ' || ? WHERE id=? AND user_id=? AND status='pending'").bind(now,pending.id,user.id).run();
+    const now=new Date().toISOString();
+    const cancelled=await env.DB.prepare("UPDATE account_deletion_requests SET status='rejected',operator_note='Cancelled by account holder on ' || ? WHERE id=? AND user_id=? AND status='pending'").bind(now,pending.id,user.id).run();
+    if(Number(cancelled.meta?.changes||0)!==1)return json({error:"The deletion request changed while cancellation was being processed. Refresh its status."},409,origin);
     await audit(env,user,"account.deletion.request.cancel","account_deletion_request",pending.id,{});
     return json({ok:true,message:"Your pending deletion request was cancelled."},200,origin);
   }
@@ -2650,10 +2652,12 @@ For complex questions, organize the answer clearly and provide actionable detail
     const status=String(body.status||"");if(!["in_progress","rejected"].includes(status))return json({error:"Only in-progress or rejected statuses can be set here. Completion requires verified data deletion."},400,origin);
     const id=Number(deletionRequestMatch[1]),row=await env.DB.prepare("SELECT id,status,user_id FROM account_deletion_requests WHERE id=?").bind(id).first();
     if(!row)return json({error:"Deletion request not found."},404,origin);
-    if(row.status==="completed")return json({error:"Completed requests cannot be changed."},409,origin);
+    if(!["pending","in_progress"].includes(row.status))return json({error:"Completed or rejected deletion requests cannot be reopened or changed."},409,origin);
     const note=typeof body.operator_note==="string"?body.operator_note.trim().slice(0,1000):"";
-    await env.DB.prepare("UPDATE account_deletion_requests SET status=?,processed_by=?,operator_note=? WHERE id=?").bind(status,user.id,note,id).run();
-    await audit(env,user,"account.deletion.request.update","account_deletion_request",id,{status,has_note:!!note});
+    if(status==="rejected"&&!note)return json({error:"A documented reason is required before rejecting a deletion request."},400,origin);
+    const updated=await env.DB.prepare("UPDATE account_deletion_requests SET status=?,processed_by=?,operator_note=? WHERE id=? AND status IN ('pending','in_progress')").bind(status,user.id,note,id).run();
+    if(Number(updated.meta?.changes||0)!==1)return json({error:"The request status changed during this update. Refresh and try again."},409,origin);
+    await audit(env,user,"account.deletion.request.update","account_deletion_request",id,{from:row.status,to:status,has_note:!!note});
     return json({ok:true,status},200,origin);
   }
 
