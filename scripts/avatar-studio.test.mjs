@@ -73,6 +73,19 @@ test('fine-detail layers and remix locks have matching controls',()=>{
  for(const detail of ['#784758','#392432','#26192d','#d460e9','#ff55d8','translate(144 219)'])assert.ok(svg.includes(detail),'Missing visual detail '+detail);
 });
 
+test('every background renders an actual scene, not only a color swatch',()=>{
+ const kit=loadRenderer();
+ const seen=new Set();
+ for(const background of kit.choices.background){
+  const svg=kit.render({...kit.defaults,background});
+  assert.ok(svg.includes('data-scene="'+background+'"'),background+' scene missing');
+  const scene=svg.match(/<g data-scene="[^"]+">([\\s\\S]*?)<\\/g>/)?.[1]||'';
+  assert.ok(scene.length>=110,background+' scene has insufficient detail');
+  seen.add(scene);
+ }
+ assert.equal(seen.size,kit.choices.background.length,'Different background choices must render different scenes');
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
