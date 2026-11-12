@@ -79,7 +79,8 @@ test('every background renders an actual scene, not only a color swatch',()=>{
  for(const background of kit.choices.background){
   const svg=kit.render({...kit.defaults,background});
   assert.ok(svg.includes('data-scene="'+background+'"'),background+' scene missing');
-  const scene=svg.match(/<g data-scene="[^"]+">([\\s\\S]*?)<\\/g>/)?.[1]||'';
+  const begin=svg.indexOf('<g data-scene="'+background+'">');
+  const scene=svg.slice(begin,svg.indexOf('</g>',begin));
   assert.ok(scene.length>=110,background+' scene has insufficient detail');
   seen.add(scene);
  }
