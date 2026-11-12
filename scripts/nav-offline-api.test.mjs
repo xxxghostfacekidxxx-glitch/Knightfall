@@ -63,3 +63,13 @@ test("canonical home retains one support footer and retired directories point to
   assert.ok(vault.includes(legacy),"Legacy arcade bookmark lost: "+legacy);
  assert.match(redirects,/\/homepage\.html \/ 301/);
 });
+
+
+test("arcade directory keeps one browse action without invalid nested-node insertions",()=>{
+ const page=readFileSync("public/chaos-cartridge.html","utf8");
+ const script=readFileSync("public/arcade-catalog.js","utf8");
+ const hero=page.match(/<section class="cartridge-hero">([\s\S]*?)<\/section>/)?.[1];
+ assert.ok(hero,"Arcade hero must exist");
+ assert.equal([...hero.matchAll(/<a\b[^>]*href="#game-shelf"/g)].length,1);
+ assert.doesNotMatch(script,/hero\.insertBefore\(/,"Arcade catalog must not insert before a nested descendant");
+});
