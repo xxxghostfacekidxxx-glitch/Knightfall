@@ -107,6 +107,15 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Extended account deletion static audit to ensure the social-login assistance route is present and that password verification remains enforced ([6ebc68b](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/6ebc68bdd281501d04342e54092547666b891461)).
 - [ ] Full erasure across D1/KV/R2, authenticated social sign-in deletion acceptance, and staff identity-verification workflow remain release blockers under #150. Public assistance requests do not automatically erase an account.
 
+## Privacy assistance retention hardening — November 11, 2026
+
+- [x] Audited public deletion assistance tickets stored in Cloudflare KV. Newly created tickets used a 90-day TTL, but staff PATCH updates incorrectly reset that 90-day TTL each time.
+- [x] Fixed `backend/src/privacy-assistance.js` to use an absolute KV expiration based on the ticket's original `created_at` time, rather than extending retention on every staff status edit ([83e1bbf](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/83e1bbf1d2e4dddb964fb964d917f5952d8d9fdb)).
+- [x] Expired, invalid-date, and future-dated assistance records now fail closed on PATCH with HTTP 410 rather than refreshing retention.
+- [x] Added regression tests verifying original expiration after multiple staff edits, old tickets nearing 90 days, and rejection of invalid/expired dates ([53fe3a3](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/53fe3a334b7f506041912b194462c503a8cb53ae)).
+- [ ] CI execution, Worker deployment and live ticket behavior need independent verification. No pre-existing ticket data or staff notes were manually accessed or deleted.
+- [ ] Full verified account deletion across D1/KV/R2 still pending (#150); expiring assistance tickets do not complete erasure of member accounts.
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
