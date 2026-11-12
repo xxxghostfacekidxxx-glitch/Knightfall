@@ -29,7 +29,7 @@ test("dictation has stop control and memory search is private client-side filter
 test("copy and voice playback always use current streamed message content",()=>{
  assert.match(ui,/clipboard\.writeText\(text\.textContent\)/);
  assert.match(ui,/new SpeechSynthesisUtterance\(text\.textContent\)/);
- assert.match(ui,/else streamedArticle\.querySelector\("\.message-content"\)\.textContent=result\.reply/);
+ assert.match(ui,/else renderReplyText\(streamedArticle\.querySelector\("\.message-content"\),result\.reply\)/);
 });
 test("dictation rebuilds from complete recognition results rather than duplicating partial text",()=>{
  assert.match(ui,/for\(let i=0;i<event\.results\.length;i\+\+\)/);
