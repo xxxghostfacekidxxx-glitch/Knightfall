@@ -119,3 +119,21 @@
 @media(max-width:600px){.avatar-studio{width:calc(100% - 24px);padding-top:15px}.avatar-studio .studio-intro{padding:24px 20px;border-radius:17px}.avatar-studio .studio-intro h1{font-size:clamp(40px,10vw,56px)}.avatar-studio .intro-features{gap:5px}.avatar-studio .intro-features span{font-size:9px}.avatar-studio .preview-card,.avatar-studio .builder-card{border-radius:16px;padding:15px}.avatar-studio .avatar-stage{min-height:230px;aspect-ratio:1.15/1}.avatar-studio .stage-bottom{font-size:8px}.avatar-studio .slot-list{grid-template-columns:repeat(2,minmax(0,1fr))}.avatar-studio .category-tabs{gap:5px}.avatar-studio .category-tab{font-size:10px;min-height:67px}.avatar-studio .category-tab .tab-icon{font-size:18px}.avatar-studio .preset-list{gap:6px}.avatar-studio .preset-chip{min-height:125px;font-size:10px}.avatar-studio .preset-chip .look-avatar{height:85px}.avatar-studio .products{grid-template-columns:1fr}.avatar-studio .preview-tools{grid-template-columns:1.5fr .7fr .7fr}.avatar-studio .preview-tools .button{font-size:10px;padding:8px 5px}}
 @media(max-width:370px){.avatar-studio .category-tab{font-size:9px}.avatar-studio .preset-list{grid-template-columns:repeat(2,minmax(0,1fr))}.avatar-studio .slot-head .button{width:100%}.avatar-studio .preview-signal{display:none}}
 @media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{animation:none}.avatar-studio .button,.avatar-studio .slot-card,.avatar-studio .trait-option,.avatar-studio .preset-chip{transition:none}}
+
+
+/* Character Studio II: custom trait toolbars, precise touch selection, and locked remix controls. */
+.avatar-studio .trait-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-4px 0 9px}
+.avatar-studio .trait-toolbar>small{color:#aeb1b7;font-size:12px;text-transform:capitalize}
+.avatar-studio .trait-actions{display:flex;align-items:center;gap:6px}
+.avatar-studio .trait-tool{min-height:34px;min-width:75px;padding:7px 10px;border:1px solid #564063;border-radius:9px;background:#1d1725;color:#dcd0e5;font-size:11px;font-weight:850;cursor:pointer}
+.avatar-studio .trait-tool:hover:not(:disabled){border-color:var(--misfit-cyan);background:#2e203a}
+.avatar-studio .trait-tool[aria-pressed="true"]{border-color:#c6ff45;color:#dfffad;background:#263121}
+.avatar-studio .trait-tool:disabled{opacity:.4;cursor:not-allowed}
+.avatar-studio .trait-options{scroll-snap-type:x proximity;scroll-padding-inline:6px;touch-action:pan-x;scrollbar-gutter:stable}
+.avatar-studio .trait-option{scroll-snap-align:start;user-select:none;-webkit-tap-highlight-color:transparent}
+.avatar-studio .trait-option[aria-pressed="true"]{box-shadow:0 0 0 2px #c6ff4528,0 0 22px #c6ff4510}
+.avatar-studio .category-tabs{position:relative}
+.avatar-studio .trait-option .trait-swatch{position:relative}
+.avatar-studio .trait-option .trait-swatch:after{content:"";position:absolute;inset:7px;border-radius:50%;background:linear-gradient(145deg,#fff9,transparent 48%,#0004);pointer-events:none}
+@media(max-width:600px){.avatar-studio .trait-option{min-width:89px;min-height:104px}.avatar-studio .trait-options{grid-auto-columns:90px;scroll-padding-inline:8px}.avatar-studio .trait-toolbar{align-items:flex-start}.avatar-studio .trait-actions{margin-left:auto}.avatar-studio .trait-tool{min-width:67px;padding:7px 8px}.avatar-studio .category-tabs{margin-bottom:12px}}
+@media(prefers-reduced-motion:reduce){.avatar-studio .trait-option{scroll-behavior:auto}}
