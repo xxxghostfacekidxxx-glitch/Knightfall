@@ -17,6 +17,7 @@ assert.match(migration, /user_id INTEGER REFERENCES users\(id\) ON DELETE SET NU
 assert.match(migration, /scheduled_for TEXT NOT NULL/);
 assert.match(uniqueMigration, /CREATE TABLE IF NOT EXISTS account_deletion_requests/, "additive migration must install missing request table");
 assert.match(uniqueMigration, /CREATE UNIQUE INDEX IF NOT EXISTS idx_account_deletion_requests_one_active_user/);
+assert.match(backend, /deletion_requests_ready:deletionSchema\?\.ready===1/, "health must expose production deletion request schema readiness");
 assert.match(uniqueMigration, /WHERE status IN \('pending','in_progress'\) AND user_id IS NOT NULL/, "only active deletion requests should be unique");
 assert.match(backend, /if\(url\.pathname==="\/api\/account\/deletion-request"&&request\.method==="POST"\)/);
 assert.match(backend, /requireUser\(request,env\)/);
