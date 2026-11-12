@@ -2058,7 +2058,14 @@ For complex questions, organize the answer clearly and provide actionable detail
     const existing=await env.DB.prepare("SELECT id,status,requested_at FROM account_deletion_requests WHERE user_id=? AND status IN ('pending','in_progress') ORDER BY id DESC LIMIT 1").bind(user.id).first();
     if(existing)return json({ok:true,already_pending:true,status:existing.status,requested_at:existing.requested_at,message:existing.status==="in_progress"?"Your account deletion request is already being processed.":"A deletion request is already pending review."},200,origin);
     const now=new Date().toISOString(),deadline=new Date(Date.now()+30*24*60*60*1000).toISOString();
-    await env.DB.prepare("INSERT INTO account_deletion_requests (user_id,username_snapshot,email_snapshot,status,requested_at,scheduled_for) VALUES (?,?,?,'pending',?,?)").bind(user.id,user.username,user.email,now,deadline).run();
+    const inserted=await env.DB.prepare("INSERT OR IGNORE INTO account_deletion_requests (user_id,username_snapshot,email_snapshot,status,requested_at,scheduled_for) VALUES (?,?,?,'pending',?,?)").bind(user.id,user.username,user.email,now,deadline).run();
+    if(Number(inserted.meta?.changes||0)!==1){
+      // Two verified submissions can race. D1's partial UNIQUE index chooses one;
+      // return the already-recorded request, without duplicate staff notifications.
+      const current=await env.DB.prepare("SELECT id,status,requested_at,scheduled_for FROM account_deletion_requests WHERE user_id=? AND status IN ('pending','in_progress') ORDER BY id DESC LIMIT 1").bind(user.id).first();
+      if(current)return json({ok:true,already_pending:true,status:current.status,requested_at:current.requested_at,scheduled_for:current.scheduled_for,message:"An account deletion request is already active."},200,origin);
+      return json({error:"Could not record the request. Refresh and try again."},409,origin);
+    }
     await audit(env,user,"account.deletion.request","account",user.id,{scheduled_for:deadline});
     const admins=await env.DB.prepare("SELECT id FROM users WHERE role IN ('admin','god') AND status='active'").all();
     for(const admin of (admins.results||[]))await createNotification(env,{userId:admin.id,actorId:user.id,kind:"account_deletion_request",targetType:"account",targetId:user.id,title:"Account deletion request",body:"A member submitted an account deletion request due by "+deadline.slice(0,10)+".",url:"/admin-deletion-requests.html"});
