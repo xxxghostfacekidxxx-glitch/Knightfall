@@ -59,7 +59,9 @@
   }
   // Shared donation footer. Payment destination is configured on the support page.
   const mountSupportFooter = () => {
-    if (document.getElementById("ashfall-support-footer")) return;
+    // The canonical home page already has its own footer with support and legal links.
+    // Avoid stacking two separate footers and repeating the same navigation.
+    if (document.getElementById("ashfall-support-footer") || document.querySelector(".site-footer")) return;
     const footer = document.createElement("footer");
     footer.id = "ashfall-support-footer";
     footer.setAttribute("aria-label", "Support Ash-Fall");
