@@ -1,9 +1,9 @@
 import test from 'node:test';
-import test from 'node:test';
-import test from 'node:test';
-import test from 'node:test';
-import test from 'node:test';
-import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const read=file=>readFileSync(resolve(root,file),'utf8');
 
