@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { handlePrivacyAssistance, validatePrivacyAssistance, PRIVACY_HELP_PREFIX } from '../backend/src/privacy-assistance.js';
+import { handlePrivacyAssistance, validatePrivacyAssistance, privacyTicketExpiry, PRIVACY_HELP_PREFIX } from '../backend/src/privacy-assistance.js';
 const page=readFileSync(new URL('../public/account-deletion.html',import.meta.url),'utf8');
 const account=readFileSync(new URL('../public/account.html',import.meta.url),'utf8');
 const backend=readFileSync(new URL('../backend/src/index.js',import.meta.url),'utf8');
 
 function fixture({admin=false,allowed=true,rate=true}={}){
- const store=new Map();
+ const store=new Map(), expirations=new Map();
  const env={
   SESSIONS:{
-   async put(k,v){store.set(k,JSON.parse(v))},async get(k){return store.get(k)||null},
+   async put(k,v,options){store.set(k,JSON.parse(v));expirations.set(k,options)},async get(k){return store.get(k)||null},
    async list({prefix,limit}){return {keys:[...store.keys()].filter(x=>x.startsWith(prefix)).slice(0,limit).map(name=>({name})),list_complete:true};}
   },
   DB:{prepare(){return {all:async()=>({results:[]})}}}
@@ -26,7 +26,7 @@ function fixture({admin=false,allowed=true,rate=true}={}){
    const req=new Request('https://api.ash-fall.com'+path,{method,headers:{Origin:origin,...(data?{'content-type':'application/json'}:{})},...(data?{body:JSON.stringify(data)}:{})});
    return handlePrivacyAssistance(req,env,new URL(req.url),deps);
  };
- return {route,store,env,deps};
+ return {route,store,expirations,env,deps};
 }
 const good={email:'Person@Example.COM',username:'member_3',acknowledged:true,website:''};
 test('public form requires email and explicit verification warning',()=>{
@@ -73,10 +73,42 @@ test('staff queue requires administrator, supports notes, and cannot mark data a
  const save=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'awaiting_verification',operator_note:'Requested identity evidence through approved support process.'});
  assert.equal(save.status,200);
  assert.equal(f.store.get(PRIVACY_HELP_PREFIX+id).status,'awaiting_verification');
+ assert.equal(f.expirations.get(PRIVACY_HELP_PREFIX+id).expiration,privacyTicketExpiry(f.store.get(PRIVACY_HELP_PREFIX+id).created_at));
 });
 test('authenticated deletion requires a password, not just a stolen browser session',()=>{
  assert.match(backend,/if\(!credential\?\.password_hash\|\|!password\|\|!\(await verifyPassword\(password,credential\.password_hash\)\)\)/);
  assert.match(account,/Current password \(required to confirm deletion\)/);
  assert.match(account,/name="password" type="password" autocomplete="current-password" maxlength="128" required/);
  assert.doesNotMatch(page,/social sign-ins can use the username confirmation/i);
+});
+
+test('privacy assistance ticket expiry stays anchored to creation, never staff edits', async () => {
+ const f=fixture();
+ const result=await f.route('/api/privacy/deletion-assistance','POST',good);
+ const id=(await result.json()).request_id;
+ const key=PRIVACY_HELP_PREFIX+id;
+ f.deps.getUser=async()=>({id:1,role:'admin'});
+ const createdAt=new Date(Date.now()-89*86400*1000).toISOString();
+ f.store.get(key).created_at=createdAt;
+ const edit=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'reviewing',operator_note:'Identity verification pending'});
+ assert.equal(edit.status,200);
+ const originalExpiration=privacyTicketExpiry(createdAt);
+ assert.equal(f.expirations.get(key).expiration,originalExpiration);
+ assert.ok(originalExpiration*1000-Date.now()<2*86400*1000,'staff edit must not give a fresh 90-day retention period');
+ const second=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'awaiting_verification'});
+ assert.equal(second.status,200);
+ assert.equal(f.expirations.get(key).expiration,originalExpiration);
+});
+test('expired and corrupt ticket timestamps cannot be refreshed', async () => {
+ const f=fixture();
+ const result=await f.route('/api/privacy/deletion-assistance','POST',good);
+ const key=PRIVACY_HELP_PREFIX+(await result.json()).request_id;
+ const id=key.slice(PRIVACY_HELP_PREFIX.length);
+ f.deps.getUser=async()=>({id:1,role:'admin'});
+ for(const createdAt of [new Date(Date.now()-91*86400*1000).toISOString(),'not-a-date',new Date(Date.now()+86400*1000).toISOString()]){
+  f.store.get(key).created_at=createdAt;
+  const response=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'reviewing'});
+  assert.equal(response.status,410);
+ }
+ assert.equal(f.expirations.get(key).expirationTtl,90*86400,'no expired edit may refresh TTL');
 });
