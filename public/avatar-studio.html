@@ -2,19 +2,79 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Build your own big-headed, cutesy chaotic Knightfall misfit avatar.">
-<title>Misfit Avatar Studio · Knightfall</title>
-<link rel="stylesheet" href="/theme.css?v=20261105-avatar4"><link rel="stylesheet" href="/avatar-studio.css?v=20261105-avatar4">
+<meta name="theme-color" content="#100b19">
+<meta name="description" content="Create your own Knightfall Misfit with a live visual character editor, collectible looks, neon styles and profile-ready avatars.">
+<title>Misfit Studio | Knightfall</title>
+<link rel="stylesheet" href="/theme.css?v=20261111-misfit-pro">
+<link rel="stylesheet" href="/avatar-studio.css?v=20261111-misfit-pro">
 </head>
-<body><header class="kf-header"></header><main class="avatar-studio">
-<nav class="studio-nav"><a href="/profile.html">← Back to profile</a><a href="/mascot-pets.html">My Mascot Sanctuary</a></nav>
-<header class="studio-intro"><p class="eyebrow">THE MISFIT MAKER</p><h1>Make a little chaos.</h1><p>Build a big-headed pocket version of yourself. Save different looks in separate slots and pick the one that represents you on your profile.</p></header>
-<section class="studio-grid">
-<aside class="preview-card"><div class="avatar-stage" id="avatar-preview" aria-live="polite"></div><section id="avatar-buddy" class="avatar-buddy" aria-live="polite" hidden></section><button type="button" id="download-avatar" class="button secondary download-button">↓ Download PNG</button><label class="name-field">Misfit name<input id="avatar-name" maxlength="32" value="Pocket Chaos" autocomplete="off"></label><p class="slot-note" id="slot-note">Loading your misfit slots…</p><p class="wallet-note" id="wallet-note"></p></aside>
-<section class="builder-card"><div class="slot-head"><div><p class="eyebrow">YOUR COLLECTION</p><h2>Avatar slots</h2></div><button type="button" id="new-avatar" class="button secondary">＋ New misfit</button></div><div id="slot-list" class="slot-list" aria-label="Saved avatar slots"></div>
-<section class="quick-looks" aria-labelledby="quick-look-title"><div><p class="eyebrow">QUICK START</p><h3 id="quick-look-title">Pick a little attitude</h3></div><div id="preset-list" class="preset-list"></div><button type="button" id="randomize-avatar" class="button secondary">🎲 Surprise me</button></section>
-<div id="controls" class="controls"></div><div class="studio-actions"><button type="button" id="save-avatar" class="button primary">Save misfit</button><button type="button" id="set-active" class="button secondary">Save &amp; use on profile</button><button type="button" id="remove-active-avatar" class="button danger" hidden>Use my profile photo</button><button type="button" id="clear-avatar" class="button danger" hidden>Clear this slot</button></div><p id="studio-status" role="status" aria-live="polite"></p>
-<section class="slot-shop"><div><p class="eyebrow">MORE ROOM FOR MISFITS</p><h2>Unlock more slots</h2><p>Two slots come free. Extra slots are yours permanently.</p></div><div id="slot-products" class="products"></div></section></section>
-</section></main>
-<script src="/nav.js?v=20261105-avatar4" defer></script><script src="/misfit-avatar.js?v=20261105-avatar4" defer></script><script src="/avatar-studio.js?v=20261105-avatar4" defer></script>
-</body></html>
+<body>
+<header class="kf-header"></header>
+<main class="avatar-studio">
+<nav class="studio-nav" aria-label="Avatar studio navigation">
+ <a href="/profile.html">← Back to profile</a>
+ <a href="/mascot-pets.html">✦ Mascot Sanctuary</a>
+</nav>
+<header class="studio-intro">
+ <div class="intro-copy">
+  <p class="eyebrow"><span class="live-dot"></span> KNIGHTFALL CHARACTER LAB / MISFIT STUDIO</p>
+  <h1>MAKE YOUR <em>MARK.</em></h1>
+  <p>Not another generic profile picture. Build a one-of-a-kind Misfit with attitude, details, outfits and a whole lot of personality.</p>
+  <div class="intro-features"><span>✦ Visual creator</span><span>✦ Live preview</span><span>✦ Collect your looks</span></div>
+ </div>
+ <div class="intro-number" aria-hidden="true">01<span> / CREATE YOUR CHAOS</span></div>
+</header>
+<section class="studio-grid" aria-label="Misfit avatar creator">
+ <aside class="preview-card">
+  <div class="preview-heading"><div><p class="eyebrow">THE LOOK</p><h2>Live preview <span class="preview-signal">● LIVE</span></h2></div><span class="preview-issue">KF // 01</span></div>
+  <div class="avatar-stage" id="avatar-preview" aria-label="Live Misfit character preview"></div>
+  <div class="stage-bottom"><span>ORIGINAL MISFIT</span><span>✦ KNIGHTFALL EDITION</span></div>
+  <div class="preview-tools">
+   <button type="button" id="preview-compare" class="button secondary" title="Hold to compare with your last saved version">◉ Hold to compare</button>
+   <button type="button" id="download-avatar" class="button secondary download-button">↓ PNG</button>
+   <button type="button" id="download-svg" class="button secondary download-button">↓ SVG</button>
+  </div>
+  <label class="name-field" for="avatar-name"><span>CHARACTER NAME</span><input id="avatar-name" maxlength="32" value="Pocket Chaos" autocomplete="off" spellcheck="false" placeholder="Name your Misfit"></label>
+  <p class="slot-note" id="slot-note">Loading avatar slots…</p>
+  <p class="wallet-note" id="wallet-note"></p>
+  <section id="avatar-buddy" class="avatar-buddy" aria-live="polite" hidden></section>
+ </aside>
+ <section class="builder-card" aria-label="Appearance editor">
+  <div class="slot-head">
+   <div><p class="eyebrow">01 / YOUR COLLECTION</p><h2>Saved identities</h2><p class="section-description">Switch between designs. Two spaces are free.</p></div>
+   <button type="button" id="new-avatar" class="button secondary">＋ New look</button>
+  </div>
+  <div id="slot-list" class="slot-list" aria-label="Saved avatar slots"></div>
+  <section class="quick-looks" aria-labelledby="quick-look-title">
+   <div class="quick-looks-header"><div><p class="eyebrow">02 / LOOKBOOK</p><h2 id="quick-look-title">Start with a vibe</h2><p class="section-description">Pick a starting point, then make it yours.</p></div>
+   <button type="button" id="randomize-avatar" class="button secondary">⚄ Remix everything</button></div>
+   <div id="preset-list" class="preset-list"></div>
+  </section>
+  <section class="customize" aria-labelledby="customize-title">
+   <div class="customize-top">
+    <div><p class="eyebrow">03 / THE DETAILS</p><h2 id="customize-title">Make it unmistakably yours</h2><p class="section-description">Tap a style to see it instantly. Every choice is reversible.</p></div>
+    <div class="history-tools" aria-label="Edit history"><button id="undo-avatar" type="button" class="icon-button" title="Undo last change" aria-label="Undo last change">↶</button><button id="redo-avatar" type="button" class="icon-button" title="Redo last change" aria-label="Redo last change">↷</button><button id="reset-avatar" type="button" class="icon-button" title="Reset appearance to original" aria-label="Reset appearance">↺</button></div>
+   </div>
+   <nav id="category-tabs" class="category-tabs" aria-label="Appearance categories"></nav>
+   <div id="controls" class="controls"></div>
+  </section>
+  <div class="studio-actions">
+   <span id="unsaved-indicator" class="unsaved-indicator" role="status">All changes saved</span>
+   <button type="button" id="save-avatar" class="button primary">✦ Save this look</button>
+   <button type="button" id="set-active" class="button secondary action-publish">Use on profile ↗</button>
+   <button type="button" id="remove-active-avatar" class="button secondary" hidden>Switch to profile photo</button>
+   <button type="button" id="clear-avatar" class="button danger" hidden>Delete saved look</button>
+  </div>
+  <p id="studio-status" role="status" aria-live="polite"></p>
+  <section class="slot-shop">
+   <div><p class="eyebrow">THE COLLECTION GROWS</p><h2>Need more alter egos?</h2><p>Keep two Misfits free. Unlock more permanent slots with Cinders.</p></div>
+   <div id="slot-products" class="products"></div>
+  </section>
+ </section>
+</section>
+</main>
+<script src="/nav.js?v=20261111-misfit-pro" defer></script>
+<script src="/misfit-avatar.js?v=20261111-misfit-pro" defer></script>
+<script src="/avatar-studio.js?v=20261111-misfit-pro" defer></script>
+</body>
+</html>
