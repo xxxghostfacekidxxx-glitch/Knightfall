@@ -210,3 +210,13 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - The interactive wall uses existing `social_activity` for status posts, `social_bookmarks` (migration 0033) for private saved posts, and `safety_reports` for user reports. These existing tables are unchanged by 0126.
 - Server rules scope edits to post authors; reaction and comment writes require session authentication and view permission; author/profile-owner/moderator privileges apply to comment removal. Hidden, blocked and restricted posts remain protected even when saved.
 - Re-run `node --test backend/src/profile-wall.test.mjs scripts/profile-wall-ui.test.mjs`, the Profile Studio/Android browser smoke suite and a real two-account acceptance test after deploying. A D1 schema read-back is not proof of interactive production correctness.
+
+## Account-deletion request infrastructure · 0128 (November 11, 2026 CDT)
+
+- Production D1 `knightfall-forum` was inspected before migration: `account_deletion_requests` was **missing**, and the older `0033_account_deletion_requests.sql` was not present in the D1 migration ledger (the original 0033 ledger entry belongs to `0033_social_adult_dating.sql`).
+- Checked the D1 Time Travel recovery bookmark before making any change. Applied the additive `0128_account_deletion_requests_unique.sql` to create the request table, two standard indexes, and one **partial UNIQUE index on `user_id` for pending/in-progress requests**. No account/user records were modified.
+- Production read-back verified **0 existing requests**, all three indexes (including the partial unique condition), and both `users` foreign keys. Recorded and verified ledger entry **ID 73**, `0128_account_deletion_requests_unique.sql`, at `2026-11-12 03:54:02` UTC.
+- **Do not reapply manually** while this ledger entry exists. Other environments should use the regular migration process. The original un-applied 0033 request-table SQL remains as historical source, but **0128 is the canonical installed production migration**.
+- The API's insert uses `INSERT OR IGNORE` plus a D1 affected-row check. A concurrent submission that loses to the UNIQUE index returns the existing request and does not duplicate audit/notification fanout.
+- `scripts/account-deletion-migration.test.py` tests uniqueness across statuses, transition to in-progress, historical terminal requests, and migration idempotency; the runtime smoke workflow runs it.
+- Source changes and schema installation do **not** prove authenticated end-to-end deletion request submission, actual account erasure or mobile acceptance. Issue #150 stays open.
