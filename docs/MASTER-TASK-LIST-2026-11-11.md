@@ -120,6 +120,13 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] CI execution, Worker deployment and live ticket behavior need independent verification. No pre-existing ticket data or staff notes were manually accessed or deleted.
 - [ ] Full verified account deletion across D1/KV/R2 still pending (#150); expiring assistance tickets do not complete erasure of member accounts.
 
+## Public deletion-assistance request-size validation — November 11, 2026
+
+- [x] **Backend size-limit fix:** The public `POST /api/privacy/deletion-assistance` handler previously relied on an optional `Content-Length` header to enforce its 2,048-byte limit. It now reads and limits the actual streamed request bytes and rejects oversized bodies even when no length header is supplied ([86f3111](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/86f3111e07546f4a686c93b67152594c596eebb5)).
+- [x] Added tests for a 3,000-character payload with no `Content-Length`, ordinary valid requests, and malformed JSON without saving a ticket ([55a823e](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/55a823e69bcf6a92e6e09df8044d4e5295059e0e)).
+- [ ] Execute regression suite in CI and verify Worker deployment plus live request-size enforcement. Source changes do not prove production behavior.
+- [ ] Full account-erasure implementation, verification and processing across D1/KV/R2 still remain P0 (#150).
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
