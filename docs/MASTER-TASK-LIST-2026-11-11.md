@@ -127,6 +127,14 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Execute regression suite in CI and verify Worker deployment plus live request-size enforcement. Source changes do not prove production behavior.
 - [ ] Full account-erasure implementation, verification and processing across D1/KV/R2 still remain P0 (#150).
 
+## Account deletion state-transition hardening — November 11, 2026
+
+- [x] Prevent false-positive cancellation: `DELETE /api/account/deletion-request` now checks D1 `meta.changes===1` after its conditional owner-only pending update, and returns HTTP 409 for a concurrent state change ([2cf5b36](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/2cf5b36595c50d3dad641726c1685e6e1bbad3f9)).
+- [x] Protect terminal requests: admin PATCH rejects requests already marked `rejected` or `completed`, requires a reason when rejecting, and updates only rows still in `pending` or `in_progress`; zero affected rows produce a conflict rather than a success or misleading audit event.
+- [x] Added source regression assertions for owner-specific cancellation, affected-row guards, terminal-state rejection, admin conditional updates and change history in audit records ([9ecb0e3](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/9ecb0e38d480d81be59f4c3a1b9c574c07f54c43)).
+- [ ] Full CI suite and live Worker deployment verification remain pending. No existing deletion requests, accounts or records were modified by this source change.
+- [ ] Full verified D1/KV/R2 erasure, session invalidation and staff identity-verification procedure remain open under #150.
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
