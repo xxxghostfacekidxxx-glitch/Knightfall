@@ -27,7 +27,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'download-svg','download-avatar','save-avatar','set-active','studio-status',
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro'),path+' cache token missing');
+ for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro2'),path+' cache token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -59,6 +59,20 @@ test('existing looks stay valid, with all designer choices accepted on server',(
  assert.equal(kit.safeAvatar({skin:'illegal'}).skin,defaults.skin,'client must sanitize invalid values');
 });
 
+test('fine-detail layers and remix locks have matching controls',()=>{
+ const kit=loadRenderer();
+ for(const key of ['nose','facial_hair','makeup','tattoo','hair_highlight','outfit_patch']){
+  assert.ok(kit.choices[key]?.length>=4,key+' not registered');
+  assert.match(read('public/avatar-studio.js'),new RegExp("\\['"+key+"','"),key+' missing from editor');
+ }
+ const source=read('public/avatar-studio.js');
+ for(const marker of ['lockedTraits=new Set','lockedTraits.has(key)','trait-toolbar','trait-tool','previousScroll','dataset.choice','window.addEventListener(\'beforeunload\'']){
+  assert.ok(source.includes(marker),'missing editor behavior: '+marker);
+ }
+ const svg=kit.render({...kit.defaults,nose:'sharp',facial_hair:'goatee',makeup:'winged',tattoo:'neon_sigil',hair_highlight:'pink',outfit_patch:'skull'});
+ for(const detail of ['#784758','#392432','#26192d','#d460e9','#ff55d8','translate(144 219)'])assert.ok(svg.includes(detail),'Missing visual detail '+detail);
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
@@ -73,7 +87,7 @@ test('renderer has unique gradient namespaces for simultaneous gallery previews'
 
 test('profile and mascot pages load the refreshed renderer',()=>{
  for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro/,page+' has stale artwork');
+  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro2/,page+' has stale artwork');
  }
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');
