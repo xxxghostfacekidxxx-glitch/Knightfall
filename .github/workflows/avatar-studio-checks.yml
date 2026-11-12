@@ -13,6 +13,7 @@ on:
       - 'public/mascot-pets.html'
       - 'backend/src/personal-avatars.js'
       - 'scripts/avatar-studio.test.mjs'
+      - 'scripts/avatar-studio-browser.mjs'
       - '.github/workflows/avatar-studio-checks.yml'
   workflow_dispatch:
 
@@ -35,3 +36,34 @@ jobs:
           node --check backend/src/personal-avatars.js
       - name: Verify rendering, editor, profile and server choice compatibility
         run: node --test scripts/avatar-studio.test.mjs
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test runner
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Serve Knightfall public assets
+        run: |
+          python3 -m http.server 8765 --directory public >/tmp/avatar-static.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/avatar-studio.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/avatar-static.log
+          exit 1
+      - name: Playwright desktop and Android avatar acceptance
+        run: node scripts/avatar-studio-browser.mjs
+      - name: Attach failed screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: avatar-studio-browser-failure
+          path: /tmp/avatar-studio-*.png
+          if-no-files-found: ignore
