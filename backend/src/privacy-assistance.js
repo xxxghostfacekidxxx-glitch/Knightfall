@@ -6,7 +6,8 @@ export function privacyTicketExpiry(createdAt, now = Date.now()) {
   const createdMs = Date.parse(createdAt);
   if (!Number.isFinite(createdMs) || createdMs > now) return null;
   const expiryMs = createdMs + RETENTION_SECONDS * 1000;
-  if (expiryMs <= now) return null;
+  // KV requires absolute expirations at least 60 seconds in the future.
+  if (expiryMs - now <= 60 * 1000) return null;
   return Math.ceil(expiryMs / 1000);
 }
 
