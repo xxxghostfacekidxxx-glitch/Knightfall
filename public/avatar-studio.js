@@ -1,8 +1,8 @@
 (()=>{
  const API='https://api.ash-fall.com',kit=window.KnightfallMisfitAvatars;
- const fields=[['skin','Skin tone','face'],['face_shape','Face shape','face'],['hair','Hair shape','face'],['hair_color','Hair color','face'],['headwear','Headwear','face'],['eyes','Eye style','features'],['eye_color','Eye color','features'],['brow_style','Brow style','features'],['eye_glimmer','Eye glimmer','features'],['expression','Expression','features'],['face_mark','Face markings','features'],['piercing','Piercing','features'],['eyewear','Eyewear','features'],['outfit','Outfit','fit'],['outfit_color','Outfit color','fit'],['neckwear','Neckwear','fit'],['accessory','Extra chaos','fit'],['background','Backdrop','scene'],['pattern','Backdrop pattern','scene'],['aura','Aura effect','scene']];
+ const fields=[['skin','Skin tone','face'],['face_shape','Face shape','face'],['nose','Nose shape','features'],['hair','Hair shape','face'],['hair_color','Hair color','face'],['hair_highlight','Hair streak','face'],['headwear','Headwear','face'],['eyes','Eye style','features'],['eye_color','Eye color','features'],['brow_style','Brow style','features'],['eye_glimmer','Eye glimmer','features'],['makeup','Eye makeup','features'],['expression','Expression','features'],['face_mark','Face markings','features'],['tattoo','Face tattoo','features'],['facial_hair','Facial hair','features'],['piercing','Piercing','features'],['eyewear','Eyewear','features'],['outfit','Outfit','fit'],['outfit_color','Outfit color','fit'],['outfit_patch','Outfit patch','fit'],['neckwear','Neckwear','fit'],['accessory','Extra chaos','fit'],['background','Backdrop','scene'],['pattern','Backdrop pattern','scene'],['aura','Aura effect','scene']];
  const labels={round:'Round',soft_square:'Soft square',heart_face:'Heart shaped',long:'Long',soft:'Soft brows',raised:'Raised brows',bold:'Bold brows',sleepy:'Sleepy brows',double:'Double glimmer',porcelain:'Porcelain',peach:'Peach',honey:'Honey',olive:'Olive',cocoa:'Cocoa',violet:'Lavender',shag:'Shaggy',spikes:'Spiky',bob:'Bob cut',mohawk:'Mohawk',horns:'Little horns',buns:'Double buns',flop:'Floppy fringe',ink:'Ink black',plum:'Plum',pink:'Hot pink',acid:'Acid green',silver:'Silver',copper:'Copper',blue:'Electric blue',witch_hat:'Witch hat',tiara:'Misfit tiara',antenna:'Glitch antenna',headphones:'Oversized headphones',flower:'Hair flower',star_shades:'Star shades',round_specs:'Round specs',visor:'Neon visor',monocle:'Tiny monocle',eyepatch:'Pirate patch',spike_choker:'Spike choker',chain:'Skull chain',bandana:'Bandana',scarf:'Cozy scarf',ghost_flames:'Ghost-flame aura',spark_ring:'Orbit ring',glow:'Neon glow',moon:'Crescent moon',doe:'Big doe eyes',sleepy:'Sleepy eyes',mischief:'Mischief eyes',star:'Star eyes',spiral:'Hypno eyes',green:'Green',gold:'Gold',red:'Cherry red',smile:'Soft grin',grin:'Big grin',pout:'Pout',fang:'Tiny fangs',frown:'Grumpy',tongue:'Silly tongue',freckles:'Freckles',stars:'Star freckles',stitches:'Stitches',lightning:'Lightning marks',heart:'Heart marks',septum:'Septum ring',brow:'Brow studs',lip:'Lip ring',ear:'Double ear studs',hoodie:'Hoodie',jacket:'Patch jacket',overalls:'Overalls',dress:'Chaos dress',sweater:'Comfy sweater',cape:'Tiny cape',none:'None',halo:'Glitch halo',bow:'Big bow',beanie:'Slouch beanie',crown:'Tiny crown',bandage:'Bandage patch',void:'Midnight void',bubblegum:'Bubblegum',toxic:'Toxic garden',gravewave:'Gravewave',ember:'Ember glow',lavender:'Haunted lavender',sky:'Night sky',sparkles:'Sparkles',static:'Neon static',bats:'Tiny bats',hearts:'Floaty hearts',black:'Ink black'};
- Object.assign(labels,{frost:'Frost',ashen:'Ashen',infernal:'Infernal red',angular:'Angular',oval:'Oval',undercut:'Undercut',waves:'Long waves',locs:'Locs',white:'Arctic white',crimson:'Crimson',teal:'Cyber teal',cat:'Cat eyes',cyber:'Cyber eyes',hollow:'Void eyes',ice:'Ice blue',amber:'Amber',smirk:'Side smirk',snarl:'Snarl',scar:'Battle scar',runes:'Arcane runes',nose:'Nose stud',armor:'Dark armor',punk:'Street punk',techwear:'Techwear',gold:'Gold',safety_pin:'Safety pin',eclipse:'Total eclipse',neon_city:'Neon city',shards:'Glass shards',lightning:'Electric storm',cyber_lens:'Cyber lens',spiked_cap:'Spiked cap',pendant:'Crystal pendant'});
+ Object.assign(labels,{button:'Button nose',sharp:'Sharp bridge',hooked:'Hooked',minimal:'Minimal',stubble:'Stubble',mustache:'Mustache',goatee:'Goatee',full_beard:'Full beard',smoky:'Smoky shadow',winged:'Winged liner',corpse:'Corpsepaint',glitter:'Neon glitter',teardrop:'Teardrop',neon_sigil:'Neon sigil',cracks:'Cracked',serpent:'Serpent',skull:'Skull',cinder:'Cinder flame',frost:'Frost',ashen:'Ashen',infernal:'Infernal red',angular:'Angular',oval:'Oval',undercut:'Undercut',waves:'Long waves',locs:'Locs',white:'Arctic white',crimson:'Crimson',teal:'Cyber teal',cat:'Cat eyes',cyber:'Cyber eyes',hollow:'Void eyes',ice:'Ice blue',amber:'Amber',smirk:'Side smirk',snarl:'Snarl',scar:'Battle scar',runes:'Arcane runes',nose:'Nose stud',armor:'Dark armor',punk:'Street punk',techwear:'Techwear',gold:'Gold',safety_pin:'Safety pin',eclipse:'Total eclipse',neon_city:'Neon city',shards:'Glass shards',lightning:'Electric storm',cyber_lens:'Cyber lens',spiked_cap:'Spiked cap',pendant:'Crystal pendant'});
  const presets=[
   {name:'Gutter Goth',avatar:{skin:'porcelain',hair:'mohawk',hair_color:'ink',eyes:'mischief',eye_color:'red',expression:'fang',face_mark:'stitches',piercing:'brow',outfit:'jacket',outfit_color:'black',headwear:'headphones',eyewear:'eyepatch',neckwear:'spike_choker',aura:'ghost_flames',accessory:'bandage',background:'gravewave',pattern:'static'}},
   {name:'Bubblegum Gremlin',avatar:{skin:'violet',hair:'buns',hair_color:'pink',eyes:'star',eye_color:'pink',expression:'tongue',face_mark:'heart',piercing:'septum',outfit:'hoodie',outfit_color:'pink',headwear:'flower',eyewear:'round_specs',neckwear:'scarf',aura:'glow',accessory:'bow',background:'bubblegum',pattern:'hearts'}},
@@ -16,6 +16,7 @@
  ];
  let state={slots:[],wallet:0,products:[],extra:0,max:20},selected=1,avatar={...kit.defaults},busy=false;
  let activeGroup='face',history=[],historyIndex=0,savedSnapshot='',savedName='',comparing=false;
+ const lockedTraits=new Set();
  const groups=[{key:'face',name:'Face & hair',icon:'✦'},{key:'features',name:'Expression',icon:'◉'},{key:'fit',name:'Style & gear',icon:'⚡'},{key:'scene',name:'World & aura',icon:'☾'}];
  const colorFields=new Set(['skin','hair_color','eye_color','outfit_color','background']);
  const byId=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -53,7 +54,9 @@
   historyIndex=target;avatar=kit.safeAvatar(JSON.parse(history[target]));paintControls();updatePreview();
  }
  function paintTabs(){
-  const nav=byId('category-tabs');nav.replaceChildren();
+  const nav=byId('category-tabs');
+  if(nav.children.length===groups.length){Array.from(nav.children).forEach((button,index)=>button.setAttribute('aria-selected',String(groups[index].key===activeGroup)));return;}
+  nav.replaceChildren();
   for(const group of groups){
    const tab=document.createElement('button');tab.type='button';tab.className='category-tab';
    tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(group.key===activeGroup));tab.setAttribute('aria-controls','controls');
@@ -95,20 +98,51 @@
   byId('avatar-name').value=slot?.name||('Misfit '+selected);
   resetHistory();paintSlots();paintControls();updatePreview();
  }
+ function updateRemixLabel(){
+  const button=byId('randomize-avatar');if(!button)return;
+  button.textContent=lockedTraits.size?'⚄ Remix unlocked ('+lockedTraits.size+' locked)':'⚄ Remix everything';
+  button.title=lockedTraits.size?'Locked traits stay unchanged during remix.':'Shuffle every character trait.';
+ }
  function paintControls(){
-  paintTabs();const root=byId('controls');root.replaceChildren();
+  const root=byId('controls');
+  const previousScroll=new Map(Array.from(root.querySelectorAll('.trait-options')).map(el=>[el.dataset.trait,el.scrollLeft]));
+  const prior=document.activeElement,focusField=root.contains(prior)?prior?.dataset?.trait:null;
+  const focusChoice=focusField?prior?.dataset?.choice:null;
+  paintTabs();root.replaceChildren();
   const own=fields.filter(field=>field[2]===activeGroup);
   for(const [key,label] of own){
    const box=document.createElement('fieldset');box.className='control-group';
    const legend=document.createElement('legend');legend.textContent=label;box.append(legend);
-   const row=document.createElement('div');row.className='trait-options';row.setAttribute('role','group');row.setAttribute('aria-label',label);
+   const tools=document.createElement('div');tools.className='trait-toolbar';
+   const description=document.createElement('small');description.textContent=labels[avatar[key]]||avatar[key].replace(/_/g,' ');
+   const actions=document.createElement('div');actions.className='trait-actions';
+   const dice=document.createElement('button');dice.type='button';dice.className='trait-tool';
+   dice.setAttribute('aria-label','Shuffle '+label);dice.title='Shuffle just this trait';dice.textContent='⚄ Shuffle';
+   dice.disabled=lockedTraits.has(key);
+   dice.addEventListener('click',()=>{
+    const pool=kit.choices[key].filter(value=>value!==avatar[key]);
+    if(pool.length)applyAvatar({...avatar,[key]:pool[Math.floor(Math.random()*pool.length)]});
+   });
+   const lock=document.createElement('button');lock.type='button';lock.className='trait-tool lock-tool';
+   const syncLock=()=>{
+    const isLocked=lockedTraits.has(key);lock.setAttribute('aria-pressed',String(isLocked));
+    lock.setAttribute('aria-label',(isLocked?'Unlock ':'Lock ')+label+' during remix');
+    lock.textContent=isLocked?'🔒 Locked':'🔓 Lock';dice.disabled=isLocked;
+   };
+   lock.addEventListener('click',()=>{if(lockedTraits.has(key))lockedTraits.delete(key);else lockedTraits.add(key);syncLock();updateRemixLabel();});
+   syncLock();actions.append(dice,lock);tools.append(description,actions);box.append(tools);
+   const row=document.createElement('div');row.className='trait-options';row.dataset.trait=key;
+   row.setAttribute('role','group');row.setAttribute('aria-label',label);
    for(const choice of kit.choices[key]){
     const button=document.createElement('button');button.type='button';button.className='trait-option';
-    const choiceLabel=labels[choice]||choice.replace(/_/g,' '),picked=avatar[key]===choice;
-    button.setAttribute('aria-pressed',String(picked));button.setAttribute('aria-label',label+': '+choiceLabel);
+    const choiceLabel=labels[choice]||choice.replace(/_/g,' ');
+    button.dataset.trait=key;button.dataset.choice=choice;
+    button.setAttribute('aria-pressed',String(avatar[key]===choice));
+    button.setAttribute('aria-label',label+': '+choiceLabel);
     const image=document.createElement('span');
-    if(colorFields.has(key)){
-     image.className='trait-swatch';image.style.background=kit.palettes?.[key]?.[choice]||'#4f4059';
+    if(colorFields.has(key)||key==='hair_highlight'){
+     image.className='trait-swatch';
+     image.style.background=choice==='none'?'repeating-linear-gradient(45deg,#24172e 0 6px,#54415c 6px 12px)':kit.palettes?.[key==='hair_highlight'?'hair_color':key]?.[choice]||'#4f4059';
     }else{
      image.className='trait-thumbnail';image.innerHTML=kit.render({...avatar,[key]:choice});
     }
@@ -118,7 +152,13 @@
     row.append(button);
    }
    box.append(row);root.append(box);
+   row.scrollLeft=previousScroll.get(key)||0;
   }
+  if(focusField&&focusChoice){
+   const candidate=Array.from(root.querySelectorAll('.trait-option')).find(b=>b.dataset.trait===focusField&&b.dataset.choice===focusChoice);
+   candidate?.focus({preventScroll:true});
+  }
+  updateRemixLabel();
  }
  function paintPresets(){
   const root=byId('preset-list');root.replaceChildren();
@@ -181,6 +221,7 @@
  byId('randomize-avatar').addEventListener('click',()=>{
   const next={...avatar};
   for(const [key,values] of Object.entries(kit.choices)){
+   if(lockedTraits.has(key))continue;
    const pool=values.filter(value=>value!==next[key]);next[key]=pool[Math.floor(Math.random()*pool.length)]||next[key];
   }
   applyAvatar(next,'Remixed! Keep adjusting until the look is yours.');
@@ -195,6 +236,7 @@
  for(const type of ['pointerup','pointercancel','pointerleave','blur'])compare.addEventListener(type,()=>setComparing(false));
  compare.addEventListener('keydown',event=>{if(event.key===' '||event.key==='Enter'){event.preventDefault();setComparing(true);}});
  compare.addEventListener('keyup',()=>setComparing(false));
+ window.addEventListener('beforeunload',event=>{if(savedSnapshot&&syncDirty()){event.preventDefault();event.returnValue='';}});
  document.addEventListener('keydown',event=>{
   if(!(event.ctrlKey||event.metaKey)||event.key.toLowerCase()!=='z'||event.target.closest('input,textarea,[contenteditable="true"]'))return;
   event.preventDefault();moveHistory(event.shiftKey?1:-1);
