@@ -96,13 +96,23 @@
  Object.assign(piercings,extraArt.piercing);
  Object.assign(accessories,extraArt.accessory);
  Object.assign(patterns,extraArt.pattern);
+ const rearHair={"shag":"<path d=\"M55 96Q33 130 37 160l-9 26 26-14 14 18 15-36m87-55q20 32 16 62l11 25-30-14-13 18-13-36Z\"/>","bob":"<path d=\"M58 88Q34 118 43 178l18 19 20-31m85-76q23 30 15 89l-18 18-20-32Z\"/>","flop":"<path d=\"M54 101Q35 130 45 175l17 15 11-38M164 102q28 37 17 78l-20 11-11-39Z\"/>","waves":"<path d=\"M53 89Q26 116 37 169l-12 44 39-14 16-31m93-77q26 26 15 77l15 45-39-16-17-32Z\"/>","locs":"<path d=\"M55 107q-26 34-11 100m24-105q-12 49-6 111m107-108q26 34 11 100m-24-103q12 49 6 111\" fill=\"none\" stroke-width=\"15\" stroke-linecap=\"round\"/>"};
  let renderSequence=0;
  function render(input={}){
   const a=safeAvatar(input),skin=palettes.skin[a.skin],hair=palettes.hair_color[a.hair_color],bg=palettes.background[a.background],cloth=palettes.outfit_color[a.outfit_color],eye=palettes.eye_color[a.eye_color],accent=a.background==='toxic'?'#c6ff45':a.background==='bubblegum'?'#ff62c7':'#79ffe7';
   const headShape={angular:'<path d="M56 58Q112 24 166 58L173 126 147 170 112 183 76 170 51 125Z"/>',oval:'<ellipse cx="112" cy="114" rx="60" ry="73"/>',round:'<circle cx="112" cy="113" r="68"/>',soft_square:'<path d="M48 88Q48 45 88 45H136Q176 45 176 88V128Q176 177 112 181Q48 177 48 128Z"/>',heart_face:'<path d="M112 181Q98 171 61 132Q38 108 45 79Q53 48 83 48Q103 48 112 69Q121 48 141 48Q171 48 179 79Q186 108 163 132Q126 171 112 181Z"/>',long:'<ellipse cx="112" cy="112" rx="58" ry="76"/>'}[a.face_shape];
   const brows={none:'',soft:'<path d="M68 101q14-8 28 0m34 0q14-8 28 0"/>',raised:'<path d="M68 98q14-14 28-5m34-2q14-8 28 5"/>',bold:'<path d="M67 100q15-12 31-3m31 0q16-9 31 3" stroke-width="8"/>',sleepy:'<path d="M68 99q14-2 28 3m34-3q14-2 28 3"/>'}[a.brow_style];
   const glimmer={none:'',star:'<path d="M82 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z M145 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/>',double:'<circle cx="77" cy="115" r="2" fill="#fff"/><circle cx="88" cy="128" r="2" fill="#fff"/><circle cx="140" cy="115" r="2" fill="#fff"/><circle cx="151" cy="128" r="2" fill="#fff"/>',heart:'<path d="M73 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z M136 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z" fill="#fff"/>'}[a.eye_glimmer];
-  const pupils=(a.eyes==='sleepy'||a.eyes==='hollow')?'':`<ellipse cx="84" cy="124" rx="6" ry="9" fill="${eye}"/><ellipse cx="143" cy="124" rx="6" ry="9" fill="${eye}"/><circle cx="85" cy="123" r="2.5" fill="#211528"/><circle cx="144" cy="123" r="2.5" fill="#211528"/>`;
+  const pupils={
+  doe:`<ellipse cx="82" cy="125" rx="8" ry="11" fill="${eye}" stroke="#342337" stroke-width="1"/><ellipse cx="145" cy="125" rx="8" ry="11" fill="${eye}" stroke="#342337" stroke-width="1"/><ellipse cx="82" cy="126" rx="4" ry="7" fill="#1e162b"/><ellipse cx="145" cy="126" rx="4" ry="7" fill="#1e162b"/><circle cx="78" cy="120" r="3" fill="#fff"/><circle cx="141" cy="120" r="3" fill="#fff"/>`,
+  sleepy:'',
+  mischief:`<ellipse cx="82" cy="121" rx="6" ry="9" fill="${eye}"/><ellipse cx="145" cy="121" rx="6" ry="9" fill="${eye}"/><path d="M82 115v13m63-13v13" stroke="#1d1427" stroke-width="3"/>`,
+  cat:`<ellipse cx="82" cy="120" rx="7" ry="9" fill="${eye}"/><ellipse cx="145" cy="120" rx="7" ry="9" fill="${eye}"/><path d="M82 113v14m63-14v14" stroke="#1b1423" stroke-width="3"/>`,
+  cyber:`<path d="M75 115h16v15H75zM137 115h16v15h-16z" fill="${eye}" opacity=".85"/><path d="M82 114v19m63-19v19M70 123h26m35 0h27" stroke="#142938" stroke-width="2"/>`,
+  hollow:`<circle cx="82" cy="121" r="8" fill="none" stroke="${eye}" stroke-width="3"/><circle cx="145" cy="121" r="8" fill="none" stroke="${eye}" stroke-width="3"/><circle cx="82" cy="121" r="4" fill="${eye}"/><circle cx="145" cy="121" r="4" fill="${eye}"/>`,
+  star:`<circle cx="82" cy="122" r="5.5" fill="${eye}"/><circle cx="145" cy="122" r="5.5" fill="${eye}"/>`,
+  spiral:`<circle cx="82" cy="121" r="6" fill="${eye}" opacity=".75"/><circle cx="145" cy="121" r="6" fill="${eye}" opacity=".75"/>`
+ }[a.eyes];
   const garments={
    hoodie:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M83 194 Q70 184 78 174 Q91 178 99 190 M141 190 Q151 177 164 175 Q171 185 158 197" fill="${cloth}" stroke="#20172a" stroke-width="5"/><path d="M95 194l-3 23h40l-4-23 M105 193l-3 12m18-12 3 12" fill="none" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`,
    jacket:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M94 187l18 20 18-20-8 48h-20z" fill="#17131f" stroke="${accent}" stroke-width="3"/><path d="M92 189l20 20-9 5-17-19m46-6-20 20 9 5 17-19" fill="${cloth}" stroke="#20172a" stroke-width="3"/><path d="M112 207v35" stroke="#e7d5ed" stroke-width="2"/><circle cx="112" cy="218" r="2" fill="${accent}"/><circle cx="112" cy="230" r="2" fill="${accent}"/>`,
@@ -177,6 +187,7 @@
   ${fineArt.outfit_patch[a.outfit_patch]}
   <path d="M60 234q20-13 31-12m45 0q17-2 32 12" fill="none" stroke="#fff" stroke-width="1.5" opacity=".24"/>
   ${neckwear[a.neckwear]}
+  <g data-hair-depth="rear" fill="url(#${uid}-hair)" stroke="#241629" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${rearHair[a.hair]||''}</g>
   <ellipse cx="50" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/>
   <ellipse cx="174" cy="113" rx="15" ry="24" fill="${skin}" stroke="#241629" stroke-width="5"/>
   <path d="M48 99q-13 12-3 28m134-28q13 12 3 28" fill="none" stroke="#fff5e9" stroke-width="2" opacity=".35"/>
@@ -192,6 +203,7 @@
   <g fill="none" stroke="#39283b" stroke-width="4" stroke-linecap="round">${brows}</g>
   ${fineArt.makeup[a.makeup]}${eyeShapes[a.eyes]}${pupils}
   <path d="M68 139q14 5 26 0m38 0q15 5 26 0" fill="none" stroke="#673e57" stroke-width="1.5" opacity=".33"/>
+  <g data-face-sculpt="true" fill="none" stroke="#462a42" stroke-width="1.6" opacity=".3"><path d="M67 148q-5 10 3 17m87-17q5 10-3 17M90 167q22 7 43-1"/></g>
   ${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${fineArt.tattoo[a.tattoo]}${mouths[a.expression]}${fineArt.facial_hair[a.facial_hair]}${piercings[a.piercing]}
  </g>
  <path d="M199 38l3 8 9 3-9 3-3 8-3-8-9-3 9-3z" fill="${accent}"/>

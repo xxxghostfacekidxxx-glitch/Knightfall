@@ -95,6 +95,21 @@ test('single-trait edits use fast updates without rebuilding entire SVG gallerie
  assert.match(read('public/avatar-studio.css'),/position:sticky;bottom:8px/);
 });
 
+test('colored eye details and rear hair silhouette remain distinct',()=>{
+ const kit=loadRenderer();
+ for(const eyes of ['doe','mischief','cat','cyber','hollow','star','spiral']){
+  const blue=kit.render({...kit.defaults,eyes,eye_color:'blue'});
+  const red=kit.render({...kit.defaults,eyes,eye_color:'red'});
+  assert.notEqual(blue,red,'Eye color not rendered for '+eyes);
+  assert.ok(blue.includes(kit.palettes.eye_color.blue));
+  assert.ok(red.includes(kit.palettes.eye_color.red));
+ }
+ for(const hair of ['shag','bob','waves','locs','flop']){
+  const svg=kit.render({...kit.defaults,hair});
+  assert.match(svg,/data-hair-depth="rear"/);
+ }
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
