@@ -113,6 +113,8 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Fixed `backend/src/privacy-assistance.js` to use an absolute KV expiration based on the ticket's original `created_at` time, rather than extending retention on every staff status edit ([83e1bbf](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/83e1bbf1d2e4dddb964fb964d917f5952d8d9fdb)).
 - [x] Expired, invalid-date, and future-dated assistance records now fail closed on PATCH with HTTP 410 rather than refreshing retention.
 - [x] Added regression tests verifying original expiration after multiple staff edits, old tickets nearing 90 days, and rejection of invalid/expired dates ([53fe3a3](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/53fe3a334b7f506041912b194462c503a8cb53ae)).
+- [x] Guarded the final 60 seconds before expiry because Cloudflare KV rejects expiration timestamps too close to the current time ([f893b68](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/f893b68474e46c8c3d13573507762131ad4a9b55)); added a final-minute regression test ([8267546](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/82675463c157206de17807216036bd33164ae41b)).
+- [x] Directly evaluated the committed deadline helper against fresh, 89-day-old, final-minute, expired and future-dated timestamps; all five source-level checks matched expectations.
 - [ ] CI execution, Worker deployment and live ticket behavior need independent verification. No pre-existing ticket data or staff notes were manually accessed or deleted.
 - [ ] Full verified account deletion across D1/KV/R2 still pending (#150); expiring assistance tickets do not complete erasure of member accounts.
 
