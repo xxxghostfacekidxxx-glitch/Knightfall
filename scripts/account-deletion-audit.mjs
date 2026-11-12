@@ -32,6 +32,13 @@ assert.match(account, /id="delete-account-form"/);
 assert.match(account, /id="delete-account-confirm"/);
 assert.match(account, /autocomplete="current-password"/);
 assert.match(account, /id="delete-account-username"/);
+
+assert.match(account, /request deletion assistance<\/a> instead/);
+assert.match(account, /href="\/account-deletion\.html#deletion-assistance"/);
+assert.match(publicPage, /id="deletion-assistance"/);
+assert.match(publicPage, /Social-login users who have no Ash-Fall password/);
+assert.match(backend, /if\(!credential\?\.password_hash\|\|!password\|\|!\(await verifyPassword\(password,credential\.password_hash\)\)\)/, "signed-in deletion requests must retain password verification");
+
 assert.match(account, /cancel-deletion-request/);
 assert.match(publicPage, /account-deletion\.html|Account deletion/i);
 assert.match(publicPage, /does not immediately erase/i);
