@@ -2067,8 +2067,15 @@ For complex questions, organize the answer clearly and provide actionable detail
       return json({error:"Could not record the request. Refresh and try again."},409,origin);
     }
     await audit(env,user,"account.deletion.request","account",user.id,{scheduled_for:deadline});
-    const admins=await env.DB.prepare("SELECT id FROM users WHERE role IN ('admin','god') AND status='active'").all();
-    for(const admin of (admins.results||[]))await createNotification(env,{userId:admin.id,actorId:user.id,kind:"account_deletion_request",targetType:"account",targetId:user.id,title:"Account deletion request",body:"A member submitted an account deletion request due by "+deadline.slice(0,10)+".",url:"/admin-deletion-requests.html"});
+    // A staff notification failure must not turn an already-persisted request into a misleading HTTP 500.
+    // The admin deletion queue is authoritative; log notification failures for follow-up.
+    try {
+      const admins=await env.DB.prepare("SELECT id FROM users WHERE role IN ('admin','god') AND status='active'").all();
+      const results=await Promise.allSettled((admins.results||[]).map(admin=>createNotification(env,{userId:admin.id,actorId:user.id,kind:"account_deletion_request",targetType:"account",targetId:user.id,title:"Account deletion request",body:"A member submitted an account deletion request due by "+deadline.slice(0,10)+".",url:"/admin-deletion-requests.html"})));
+      if(results.some(result=>result.status==="rejected"))console.warn("account_deletion_staff_notification_failed");
+    } catch {
+      console.warn("account_deletion_staff_notification_failed");
+    }
     return json({ok:true,requested_at:now,scheduled_for:deadline,message:"Your account deletion request has been recorded. The operator must complete deletion within 30 days. This request is not yet completed."},202,origin);
   }
   if(url.pathname==="/api/site-settings"&&request.method==="GET"){const keys=["site_name","maintenance_mode","registration_enabled","forum_enabled","announcements_enabled","announcement_title","announcement_body","feature_miss_chaos","feature_profiles"],settings={};for(const key of keys)settings[key]=await getSetting(env,key);return json({settings},200,origin);}
