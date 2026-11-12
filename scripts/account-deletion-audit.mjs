@@ -35,7 +35,7 @@ assert.match(cancellation, /WHERE id=\? AND user_id=\? AND status='pending'/, "c
 assert.match(cancellation, /Number\(cancelled\.meta\?\.changes\|\|0\)!==1/, "cancellation must not report success if a concurrent status change won");
 assert.match(cancellation, /409,origin/, "stale cancellation returns conflict");
 assert.match(adminTransition, /!\["pending","in_progress"\]\.includes\(row\.status\)/, "terminal deletion requests cannot reopen");
-assert.match(adminTransition, /status==="rejected"&&!note/, "rejecting a request requires a documented reason");
+assert.match(adminTransition, /status==="rejected"&&!\(typeof body\.operator_note==="string"&&body\.operator_note\.trim\(\)\)/, "rejecting a request requires an explicitly supplied new reason, not a stale note");
 assert.match(adminTransition, /WHERE id=\? AND status=\? AND operator_note=\?/, "admin writes must compare original status and note to prevent lost updates");
 assert.match(adminTransition, /\.bind\(status,user\.id,note,id,row\.status,String\(row\.operator_note\|\|""\)\)/, "conditional write must bind values read from the ticket");
 assert.match(adminTransition, /Number\(updated\.meta\?\.changes\|\|0\)!==1/, "concurrent admin status updates must fail closed");
