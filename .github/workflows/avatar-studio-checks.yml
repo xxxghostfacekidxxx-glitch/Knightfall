@@ -1,0 +1,37 @@
+name: Misfit Avatar Studio Regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/misfit-avatar.js'
+      - 'public/avatar-studio.js'
+      - 'public/avatar-studio.html'
+      - 'public/avatar-studio.css'
+      - 'public/profile.html'
+      - 'public/profile-edit.html'
+      - 'public/mascot-pets.html'
+      - 'backend/src/personal-avatars.js'
+      - 'scripts/avatar-studio.test.mjs'
+      - '.github/workflows/avatar-studio-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify syntax of the renderer, builder and backend
+        run: |
+          node --check public/misfit-avatar.js
+          node --check public/avatar-studio.js
+          node --check backend/src/personal-avatars.js
+      - name: Verify rendering, editor, profile and server choice compatibility
+        run: node --test scripts/avatar-studio.test.mjs
