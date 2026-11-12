@@ -89,6 +89,16 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [x] Updated God Mode's on-site master task panel to show the resolved CI issue and shift remaining acceptance tasks to real devices and authenticated saves.
 - [ ] Retain device/browser signoff: Android touchscreen and fullscreen, logged-in cloud saves, notification/resume behavior, and production API ownership remain distinct from the public arcade route audit.
 
+## Verified production auth/email configuration — November 11, 2026
+
+- [x] Read the active `knightfall-api` Cloudflare Worker version settings and secret-name inventory without retrieving secret values.
+- [x] Confirmed Worker has bound D1 `DB`, KV `SESSIONS`, R2 media buckets and three Web Push VAPID secret bindings. This confirms bindings exist, not that every flow works.
+- [x] **Email setup blocker:** no `RESEND_API_KEY` secret or `PASSWORD_RESET_FROM` sender-address variable appears on the production `knightfall-api` Worker. `backend/README.md` says both are required for Resend password-recovery email.
+- [ ] Verify a sender domain with Resend, set `RESEND_API_KEY` as a Cloudflare Worker secret and `PASSWORD_RESET_FROM` to a sender on that verified domain. Never put keys in Git or log their values.
+- [ ] Verify provider setup and callbacks for Google/Meta separately; current Worker binding inventory does not show OAuth credential bindings, but do not infer actual provider coverage from variable names alone.
+- [ ] Perform authenticated/unauthenticated end-to-end recovery tests after configuration, including 30-minute expiry, one-time token invalidation and generic response for unknown accounts.
+- [ ] Public API HTTP fetches from this session were unavailable; a binding audit alone cannot certify `/api/auth/me` JSON behavior or email delivery.
+
 ## P0 — Immediate reliability and release blockers
 - [x] Arcade fleet #192 triaged and closed; full ten-agent local/live route sweep passed in [run 43111248176](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43111248176). Physical-device and authenticated gameplay acceptance remain separately open.
 - [ ] Set up six dedicated member/mod/admin CI identity secrets and pass authorization, cross-account ownership and God Mode server-enforced role tests. Never store credentials in Git.
