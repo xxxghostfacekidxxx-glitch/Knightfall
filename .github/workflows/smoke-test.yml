@@ -57,6 +57,7 @@ on:
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/push-notifications-audit.mjs'
       - 'scripts/account-deletion-audit.mjs'
+      - 'scripts/account-deletion-migration.test.py'
       - 'scripts/privacy-assistance.test.mjs'
       - 'scripts/privacy-assistance-browser.mjs'
       - 'scripts/admin-offline-browser-smoke.cjs'
@@ -137,6 +138,8 @@ jobs:
         run: node --test scripts/arcade-leaderboards.test.mjs && node --check public/arcade-leaderboards.js && node --check backend/src/index.js
       - name: Reproduce and prevent Android push registration failures
         run: node --check public/sw.js && node --test scripts/mobile-push-recovery.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs scripts/push-retry-policy.test.mjs
+      - name: Test D1 account deletion request migration and uniqueness
+        run: python3 -m unittest discover -s scripts -p 'account-deletion-migration.test.py' -v
       - name: Audit JavaScript, configs, and local HTML assets
         run: node --check public/sw.js && node --check public/nav.js && node --check public/miss-chaos.js && node --check public/cosmic-chart.js && node --check public/cosmic-lexicon.js && node --check public/cosmic-insights.js && node --check public/cosmic-place-timezone.js && node --check public/vendor/tz-lookup.js && node --check public/cosmic-timezone.js && node --check backend/src/index.js && node scripts/static-audit.mjs && node --test scripts/security-headers.test.mjs scripts/registration-release.test.mjs scripts/turnstile.test.mjs scripts/turnstile-ui.test.mjs scripts/notification-queue.test.mjs scripts/push-retry-policy.test.mjs scripts/cloudflare-free-config.test.mjs scripts/push-navigation.test.mjs && node scripts/push-notifications-audit.mjs && node scripts/account-deletion-audit.mjs && node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/miss-chaos-ux.test.mjs scripts/miss-chaos-stream.test.mjs scripts/pwa-update-audit.test.mjs scripts/profile-navigation.test.mjs
 
