@@ -12,6 +12,31 @@ export function privacyTicketExpiry(createdAt, now = Date.now()) {
 }
 
 
+async function parseLimitedPrivacyJson(request, maxBytes = 2048) {
+  const reader = request.body?.getReader();
+  if (!reader) return { error: 'Invalid JSON.', status: 400 };
+  let bytes = 0, body = '';
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > maxBytes) {
+        await reader.cancel().catch(() => {});
+        return { error: 'Request is too large.', status: 413 };
+      }
+      body += decoder.decode(value, { stream: true });
+    }
+    body += decoder.decode();
+    return { value: JSON.parse(body) };
+  } catch {
+    return { error: 'Invalid JSON.', status: 400 };
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 export function validatePrivacyAssistance(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { error: 'Invalid request.' };
   const email = typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : '';
@@ -40,8 +65,10 @@ export async function handlePrivacyAssistance(request, env, url, { getUser, json
     }
     if (Number(request.headers.get('content-length') || 0) > 2048) return reply({ error: 'Request is too large.' }, 413);
     if (!await rateLimit(env, request, 'privacy-help', 3, 86400)) return reply({ error: 'Too many requests from this connection. Try again tomorrow.' }, 429);
-    let payload;
-    try { payload = await request.json(); } catch { return reply({ error: 'Invalid JSON.' }, 400); }
+    // Content-Length may be missing or forged: enforce the limit on streamed bytes.
+    const parsed = await parseLimitedPrivacyJson(request);
+    if (parsed.error) return reply({ error: parsed.error }, parsed.status);
+    const payload = parsed.value;
     if (payload?.website) return reply({ ok: true, message: 'Your assistance request was received.' }, 202);
     const checked = validatePrivacyAssistance(payload);
     if (checked.error) return reply({ error: checked.error }, 400);
