@@ -41,13 +41,26 @@
   savedSnapshot=JSON.stringify(avatar);savedName=byId('avatar-name').value;
   comparing=false;syncDirty();
  }
- function applyAvatar(next,message){
-  const safe=kit.safeAvatar(next),snapshot=JSON.stringify(safe);
-  if(snapshot!==JSON.stringify(avatar)){
-   history=history.slice(0,historyIndex+1);history.push(snapshot);
-   if(history.length>45)history.shift();historyIndex=history.length-1;avatar=safe;
+ function refreshSelectedTrait(key){
+  const root=byId('controls');
+  const row=Array.from(root.querySelectorAll('.trait-options')).find(el=>el.dataset.trait===key);
+  if(!row)return false;
+  for(const button of row.querySelectorAll('.trait-option')){
+   button.setAttribute('aria-pressed',String(button.dataset.choice===avatar[key]));
   }
-  paintControls();updatePreview();if(message)status.textContent=message;
+  const caption=row.closest('.control-group')?.querySelector('.trait-toolbar>small');
+  if(caption)caption.textContent=labels[avatar[key]]||avatar[key].replace(/_/g,' ');
+  return true;
+ }
+ function applyAvatar(next,message){
+  if(busy)return;
+  const safe=kit.safeAvatar(next),changed=Object.keys(kit.defaults).filter(key=>safe[key]!==avatar[key]);
+  if(!changed.length)return;
+  history=history.slice(0,historyIndex+1);history.push(JSON.stringify(safe));
+  if(history.length>45)history.shift();historyIndex=history.length-1;avatar=safe;
+  const field=changed[0],category=fields.find(item=>item[0]===field)?.[2];
+  if(changed.length!==1||category!==activeGroup||!refreshSelectedTrait(field))paintControls();
+  updatePreview();if(message)status.textContent=message;
  }
  function moveHistory(delta){
   const target=historyIndex+delta;if(target<0||target>=history.length||busy)return;
@@ -93,6 +106,7 @@
 }
  function paintSlots(){const root=byId('slot-list');root.replaceChildren();for(const slot of state.slots){const b=document.createElement('button');b.type='button';b.className='slot-card'+(selected===Number(slot.slot_no)?' active':'');b.setAttribute('aria-pressed',String(selected===Number(slot.slot_no)));const icon=slot.avatar?kit.render(slot.avatar):kit.render(kit.defaults);const n=slot.name?esc(slot.name):'Empty slot';b.innerHTML='<span class="tiny-avatar">'+icon+'</span><strong>Slot '+slot.slot_no+'</strong><small>'+n+(slot.is_active?' · Profile look':'')+'</small>';b.addEventListener('click',()=>loadSlot(slot.slot_no));root.append(b);}const slot=selectedSlot();byId('clear-avatar').hidden=!slot||slot.empty;byId('remove-active-avatar').hidden=!state.slots.some(item=>item.is_active);byId('slot-note').textContent='Slot '+selected+' of '+state.slots.length+' · '+(slot?.is_active?'This is your active profile look.':slot?.empty?'Ready for a new misfit.':'Saved look is private until you choose it for your profile.');byId('wallet-note').textContent='✦ '+Number(state.wallet||0).toLocaleString()+' Cinders';}
  function loadSlot(slotNo){
+  if(busy){status.textContent='Finish the current save or slot action first.';return;}
   if(savedSnapshot&&Number(slotNo)!==selected&&syncDirty()&&!window.confirm('Discard unsaved changes and switch to another Misfit?'))return;
   selected=Number(slotNo);const slot=selectedSlot();avatar=kit.safeAvatar(slot?.avatar||kit.defaults);
   byId('avatar-name').value=slot?.name||('Misfit '+selected);
@@ -144,7 +158,7 @@
      image.className='trait-swatch';
      image.style.background=choice==='none'?'repeating-linear-gradient(45deg,#24172e 0 6px,#54415c 6px 12px)':kit.palettes?.[key==='hair_highlight'?'hair_color':key]?.[choice]||'#4f4059';
     }else{
-     image.className='trait-thumbnail';image.innerHTML=kit.render({...avatar,[key]:choice});
+     image.className='trait-thumbnail';image.innerHTML=kit.render({...kit.defaults,[key]:choice});
     }
     const caption=document.createElement('span');caption.textContent=choiceLabel;
     button.append(image,caption);
@@ -238,8 +252,8 @@
  compare.addEventListener('keyup',()=>setComparing(false));
  window.addEventListener('beforeunload',event=>{if(savedSnapshot&&syncDirty()){event.preventDefault();event.returnValue='';}});
  document.addEventListener('keydown',event=>{
-  if(!(event.ctrlKey||event.metaKey)||event.key.toLowerCase()!=='z'||event.target.closest('input,textarea,[contenteditable="true"]'))return;
-  event.preventDefault();moveHistory(event.shiftKey?1:-1);
+  if(!(event.ctrlKey||event.metaKey)||!['z','y'].includes(event.key.toLowerCase())||event.target?.closest?.('input,textarea,[contenteditable="true"]'))return;
+  event.preventDefault();moveHistory(event.shiftKey||event.key.toLowerCase()==='y'?1:-1);
  });
  byId('download-svg').addEventListener('click',()=>{
   const name=(byId('avatar-name').value||'misfit').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'misfit';

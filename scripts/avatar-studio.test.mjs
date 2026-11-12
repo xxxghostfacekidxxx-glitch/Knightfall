@@ -1,10 +1,9 @@
 import test from 'node:test';
-import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import vm from 'node:vm';
-
+import test from 'node:test';
+import test from 'node:test';
+import test from 'node:test';
+import test from 'node:test';
+import test from 'node:test';
 const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
 const read=file=>readFileSync(resolve(root,file),'utf8');
 
@@ -27,7 +26,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'download-svg','download-avatar','save-avatar','set-active','studio-status',
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro2'),path+' cache token missing');
+ for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261111-misfit-pro3'),path+' cache token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -87,6 +86,15 @@ test('every background renders an actual scene, not only a color swatch',()=>{
  assert.equal(seen.size,kit.choices.background.length,'Different background choices must render different scenes');
 });
 
+test('single-trait edits use fast updates without rebuilding entire SVG galleries',()=>{
+ const code=read('public/avatar-studio.js');
+ assert.match(code,/function refreshSelectedTrait/);
+ assert.match(code,/changed\.length!==1\|\|category!==activeGroup/);
+ assert.match(code,/kit\.render\(\{\.\.\.kit\.defaults,\[key\]:choice\}\)/);
+ assert.match(code,/if\(busy\)\{status\.textContent='Finish the current save/);
+ assert.match(read('public/avatar-studio.css'),/position:sticky;bottom:8px/);
+});
+
 test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
  const kit=loadRenderer();
  const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
@@ -101,7 +109,7 @@ test('renderer has unique gradient namespaces for simultaneous gallery previews'
 
 test('profile and mascot pages load the refreshed renderer',()=>{
  for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro2/,page+' has stale artwork');
+  assert.match(read(page),/\/misfit-avatar\.js\?v=20261111-misfit-pro3/,page+' has stale artwork');
  }
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');

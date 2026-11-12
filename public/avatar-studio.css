@@ -137,3 +137,13 @@
 .avatar-studio .trait-option .trait-swatch:after{content:"";position:absolute;inset:7px;border-radius:50%;background:linear-gradient(145deg,#fff9,transparent 48%,#0004);pointer-events:none}
 @media(max-width:600px){.avatar-studio .trait-option{min-width:89px;min-height:104px}.avatar-studio .trait-options{grid-auto-columns:90px;scroll-padding-inline:8px}.avatar-studio .trait-toolbar{align-items:flex-start}.avatar-studio .trait-actions{margin-left:auto}.avatar-studio .trait-tool{min-width:67px;padding:7px 8px}.avatar-studio .category-tabs{margin-bottom:12px}}
 @media(prefers-reduced-motion:reduce){.avatar-studio .trait-option{scroll-behavior:auto}}
+
+
+/* Mobile-safe floating action dock: Save/Publish stays reachable while editing long trait lists. */
+@media(max-width:850px){
+ .avatar-studio .studio-actions{position:sticky;bottom:8px;z-index:20;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:11px;border:1px solid #8d6a91;border-radius:15px;background:linear-gradient(135deg,#1c1324ef,#12111eee);backdrop-filter:blur(16px);box-shadow:0 12px 35px #000b,0 0 18px #ff55d816}
+ .avatar-studio .studio-actions .unsaved-indicator{grid-column:1/-1;flex:none}
+ .avatar-studio .studio-actions #save-avatar,.avatar-studio .studio-actions #set-active{grid-row:2;min-width:0;min-height:47px;padding:9px 7px}
+ .avatar-studio .studio-actions #remove-active-avatar,.avatar-studio .studio-actions #clear-avatar{grid-column:1/-1;min-height:35px}
+}
+@media(max-width:390px){.avatar-studio .studio-actions .button{font-size:11px}}
