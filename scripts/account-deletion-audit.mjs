@@ -26,6 +26,13 @@ assert.match(backend, /status IN \(\x27pending\x27,\x27in_progress\x27\)/, "dupl
 assert.match(backend, /INSERT OR IGNORE INTO account_deletion_requests/, "duplicate submission must not throw after unique-index contention");
 assert.match(backend, /Number\(inserted\.meta\?\.changes\|\|0\)!==1/, "only the winning insert should notify staff");
 assert.match(backend, /if\(current\)return json\(\{ok:true,already_pending:true/, "duplicate must return the existing active request");
+
+const creation=backend.split('if(url.pathname==="/api/account/deletion-request"&&request.method==="POST"){')[1]?.split('if(url.pathname==="/api/site-settings"')[0];
+assert.ok(creation, "authenticated deletion request creation route must exist");
+assert.match(creation, /await Promise\.allSettled\(\(admins\.results\|\|\[\]\)\.map\(admin=>createNotification/, "a single failed admin notice cannot abort a persisted request");
+assert.match(creation, /catch \{\s*console\.warn\("account_deletion_staff_notification_failed"\);/, "notification lookup failure must not discard the saved request");
+assert.match(creation, /return json\(\{ok:true,requested_at:now,scheduled_for:deadline/, "the persisted request must still return a confirmation");
+
 assert.match(backend, /request\.method==="DELETE"/);
 assert.match(backend, /rateLimit\(env,request,"account-deletion-request"/);
 assert.match(backend, /account\.deletion\.request/);
