@@ -1,1 +1,29 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arcade Vault · Games consolidated</title><style>body{background:#090b1c;color:#fff;font:18px system-ui;padding:40px;max-width:700px;margin:auto}a{color:#baff38}li{margin:20px 0}</style><link rel="stylesheet" href="/arcade/nextgen.css?v=20261102-1"><script src="/arcade/nextgen.js?v=20261102-1" defer></script></head><body><h1>The Vault games have evolved.</h1><p>The best features now live in the combined editions:</p><ul><li><a href="/arcade/hosted/cinder-mines/index.html">Chaos Minesweeper — includes the emergency flare</a></li><li><a href="/arcade/hosted/afterburn-breakout/index.html">Shatterpocalypse — the combined brick breaker</a></li><li><a href="/arcade/hosted/ash-serpent/index.html">Ash Serpent — the combined snake game</a></li></ul><p><a href="/chaos-cartridge.html">Browse Chaos Cartridge</a></p><script>const routes={'#vault-mines':'cinder-mines','#vault-breakout':'afterburn-breakout','#vault-snake':'ash-serpent'};if(routes[location.hash])location.replace('/arcade/hosted/'+routes[location.hash]+'/index.html');</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>Arcade Vault moved | Chaos Cartridge</title>
+  <link rel="canonical" href="https://ash-fall.com/chaos-cartridge.html">
+  <script>
+    // Preserve old shared vault bookmarks while retiring the extra directory page.
+    (() => {
+      const migratedGames = {
+        "#vault-mines": "/arcade/hosted/cinder-mines/index.html",
+        "#vault-breakout": "/arcade/hosted/afterburn-breakout/index.html",
+        "#vault-snake": "/arcade/hosted/ash-serpent/index.html"
+      };
+      const game = migratedGames[location.hash];
+      location.replace((game || "/chaos-cartridge.html") + location.search + (game ? "" : "#game-shelf"));
+    })();
+  </script>
+</head>
+<body>
+  <main>
+    <h1>The Arcade Vault has moved</h1>
+    <p>All current games are organized in Chaos Cartridge.</p>
+    <p><a href="/chaos-cartridge.html#game-shelf">Open Chaos Cartridge</a></p>
+  </main>
+</body>
+</html>
