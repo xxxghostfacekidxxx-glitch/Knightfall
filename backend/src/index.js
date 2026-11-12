@@ -2656,7 +2656,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     // Omitted notes preserve prior staff evidence; explicit replacement is deliberate.
     const note=typeof body.operator_note==="string"?body.operator_note.trim().slice(0,1000):String(row.operator_note||"");
     if(status==="rejected"&&!note)return json({error:"A documented reason is required before rejecting a deletion request."},400,origin);
-    const updated=await env.DB.prepare("UPDATE account_deletion_requests SET status=?,processed_by=?,operator_note=? WHERE id=? AND status IN ('pending','in_progress')").bind(status,user.id,note,id).run();
+    // Compare-and-swap both status and note: concurrent staff edits must not overwrite new evidence.
+    const updated=await env.DB.prepare("UPDATE account_deletion_requests SET status=?,processed_by=?,operator_note=? WHERE id=? AND status=? AND operator_note=?").bind(status,user.id,note,id,row.status,String(row.operator_note||"")).run();
     if(Number(updated.meta?.changes||0)!==1)return json({error:"The request status changed during this update. Refresh and try again."},409,origin);
     await audit(env,user,"account.deletion.request.update","account_deletion_request",id,{from:row.status,to:status,has_note:!!note});
     return json({ok:true,status},200,origin);
