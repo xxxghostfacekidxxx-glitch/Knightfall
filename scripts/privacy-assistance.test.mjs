@@ -105,7 +105,7 @@ test('expired and corrupt ticket timestamps cannot be refreshed', async () => {
  const key=PRIVACY_HELP_PREFIX+(await result.json()).request_id;
  const id=key.slice(PRIVACY_HELP_PREFIX.length);
  f.deps.getUser=async()=>({id:1,role:'admin'});
- for(const createdAt of [new Date(Date.now()-91*86400*1000).toISOString(),'not-a-date',new Date(Date.now()+86400*1000).toISOString()]){
+ for(const createdAt of [new Date(Date.now()-91*86400*1000).toISOString(),new Date(Date.now()-90*86400*1000+30000).toISOString(),'not-a-date',new Date(Date.now()+86400*1000).toISOString()]){
   f.store.get(key).created_at=createdAt;
   const response=await f.route('/api/admin/privacy-assistance/'+id,'PATCH',{status:'reviewing'});
   assert.equal(response.status,410);
