@@ -16,16 +16,8 @@ if(!document.querySelector('script[src*="/arcade/nextgen.js"]')){const s=documen
    const description=card.querySelector('p')?.textContent||'';
    return [card,{title,normalized:title.toLocaleLowerCase(),text:[title,description,card.dataset.category].join(' ').toLocaleLowerCase()}];
   }));
-  const hero=document.querySelector('.cartridge-hero');
-  if(hero){
-   const browse=document.createElement('a');
-   browse.className='button button-primary arcade-browse';
-   browse.href='#game-shelf';
-   browse.textContent='Browse games ↓';
-   browse.addEventListener('click',()=>search.focus({preventScroll:true}));
-   const firstLink=hero.querySelector('a');
-   hero.insertBefore(browse,firstLink);
-  }
+  // The canonical arcade hero already links to #game-shelf. Keep that single
+  // Browse games action instead of inserting a duplicate next to nested links.
   let collection='games';
   let explicitCollection=false;
   const notes={games:'Full games and longer sessions. Choose a genre or controls to narrow the shelf.',mini:'Short, lightweight arcade challenges and puzzles.',experiments:'Development editions and legacy prototypes. Expect rough edges; these are kept separate from the main games.',external:'These titles use another service and require a connection. They are not hosted offline games.',all:'The complete collection, including quick mini games, development builds and external titles.',unavailable:'These builds are not currently available to launch.'};
