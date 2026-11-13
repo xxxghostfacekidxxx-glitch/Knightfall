@@ -5,7 +5,8 @@
 - New responsive sanctuary art compositor: type-specific environment illustration, shadows, surface grain, restrained light, growth treatment, and preserved animated pet illustrations/owned equipment/habitat art. Heavy WebGL and external script dependencies are deliberately avoided for Android support.
 - Bestiary with serial numbers, discovery counts, affinity filter, search, saved ownership derived from the authenticated pet endpoint, silhouettes for missing creatures, species lore, and earned growth-chain requirements.
 - Three growth stages for every species, calculated **server-side** from existing experience level and bond XP. Five existing Starborn signature forms retain their original higher requirements and original evolved images.
-- Rooms display type and current form and use a matching type accent.
+- Rooms, member profile showcases, and Species Trials display type and current form with matching type accents.
+- Updated the stale 28/31 species counts in the Trials and profile pages.
 - No new currency, paid evolution, pet resets or D1 migrations.
 
 ## Artwork caveat and next art pass

@@ -15,7 +15,7 @@ const info={
 };
 const node=(tag,cls,content)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(content!==undefined)el.textContent=String(content);return el};
 const say=text=>{status.textContent=String(text)};
-const safeAvatar=s=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/)?[a-z0-9-]+\.svg$/.test(s)?s:'';
+const safeAvatar=s=>/^\/assets\/devil-tools\/neon-nuisances\/(?:portraits\/|evolutions\/)?[a-z0-9-]+\.svg$/.test(s)?s:'';
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 let pets=[],pet=null,challenge=null,active=false,roundId=0,deadline=0,ticker=0,raf=0,
  score=0,lives=3,timers=[],run=null,pressed={left:false,right:false};
@@ -46,9 +46,10 @@ function selectPet(){
  title.textContent=challenge.title;
  family.textContent=challenge.mode.toUpperCase()+' · '+challenge.family.toUpperCase();
  description.textContent=info[challenge.mode];
- level.textContent='Level '+challenge.level+' · Target '+challenge.target;
+ level.textContent=(pet.affinity_label||'Feral')+' · '+(pet.growth?.label||'First Form')+' · Level '+challenge.level+' · Target '+challenge.target;
+ document.querySelector('.trials-meta')?.setAttribute('data-affinity',pet.affinity||window.KnightfallPetRenderer?.typeFor(pet.species)||'feral');
  playfield.dataset.mode=challenge.mode;
- portrait.src=safeAvatar(pet.portrait||pet.image)||'';
+ portrait.src=safeAvatar(pet.idle||pet.image||pet.portrait)||'';
  portrait.alt=pet.species_name+' original companion';
  start.disabled=false;playfield.replaceChildren();controls.replaceChildren();
  playfield.append(node('p','trial-ready','✦ '+challenge.title+' · '+info[challenge.mode]));

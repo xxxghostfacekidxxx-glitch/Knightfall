@@ -60,3 +60,18 @@
 .room-avatar[data-form="3"] #room-pet-image{filter:drop-shadow(0 0 10px var(--creature-mid)) drop-shadow(0 12px 8px #03040c)!important}
 @media(max-width:550px){.bestiary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.bestiary-grid .pet-card{padding:8px}.bestiary-grid .pet-card .pet-art{height:116px}.bestiary-grid .pet-card .pet-art .pet-base-image{width:110px;height:110px}}
 @media(prefers-reduced-motion:reduce){.pet-render-v2 img.pet-base-image,.pet-world-light{animation:none!important;transition:none!important}}
+
+/* Species Trials preview follows each companion's earned type. */
+.trials-meta[data-affinity="wildwood"]{--creature-sky:#293e33;--creature-floor:#182b25;--creature-mid:#74956e;--creature-light:#d0d6a1}
+.trials-meta[data-affinity="tidal"]{--creature-sky:#254959;--creature-floor:#142f3d;--creature-mid:#72adb3;--creature-light:#d6e4dd}
+.trials-meta[data-affinity="ember"]{--creature-sky:#482c34;--creature-floor:#32242a;--creature-mid:#d39162;--creature-light:#f3c899}
+.trials-meta[data-affinity="dusk"]{--creature-sky:#252b46;--creature-floor:#1a2035;--creature-mid:#8a91b2;--creature-light:#d8d8e8}
+.trials-meta[data-affinity="spectral"]{--creature-sky:#333248;--creature-floor:#252738;--creature-mid:#9c96b4;--creature-light:#e6ddeb}
+.trials-meta[data-affinity="stone"]{--creature-sky:#48444e;--creature-floor:#34363c;--creature-mid:#ae9c82;--creature-light:#e7d7b8}
+.trials-meta[data-affinity="storm"]{--creature-sky:#38465a;--creature-floor:#252f40;--creature-mid:#899bab;--creature-light:#d8daca}
+.trials-meta[data-affinity="celestial"]{--creature-sky:#312a48;--creature-floor:#24223a;--creature-mid:#a59dc3;--creature-light:#ead7e1}
+.trials-meta[data-affinity="feral"]{--creature-sky:#483b3d;--creature-floor:#332e31;--creature-mid:#baa07b;--creature-light:#ecddbd}
+.trials-meta[data-affinity="toxic"]{--creature-sky:#374838;--creature-floor:#293a31;--creature-mid:#95ae74;--creature-light:#d6dcad}
+.trials-meta[data-affinity="neon"]{--creature-sky:#2a1d38;--creature-floor:#1c202d;--creature-mid:#f25ca7;--creature-light:#b3f0be}
+.trials-meta[data-affinity]{border-color:var(--creature-mid);background:linear-gradient(120deg,var(--creature-sky),var(--creature-floor))}
+.trials-meta[data-affinity] .trials-level{color:var(--creature-light)}
