@@ -59,7 +59,7 @@ on:
       - "scripts/arcade-original-sports.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
-      - "public/arcade-30-games.html"
+      - "public/chaos-cartridge.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - "scripts/arcade-gameplay-replay.mjs"
       - "scripts/arcade-gameplay-doctor.mjs"
@@ -112,7 +112,7 @@ on:
       - "scripts/arcade-original-sports.test.mjs"
       - "scripts/arcade-provenance-audit.mjs"
       - "public/arcade/original-creations.json"
-      - "public/arcade-30-games.html"
+      - "public/chaos-cartridge.html"
       - "scripts/arcade-asset-doctor.test.mjs"
       - ".github/workflows/arcade-test-fleet.yml"
 

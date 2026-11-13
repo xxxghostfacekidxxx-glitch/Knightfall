@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths:
       - 'public/arcade/**'
-      - 'public/arcade-card-board.html'
+      - 'public/chaos-cartridge.html'
       - 'public/arcade-games.html'
       - 'public/arcade-after-dark.html'
       - 'scripts/audit-*.mjs'
