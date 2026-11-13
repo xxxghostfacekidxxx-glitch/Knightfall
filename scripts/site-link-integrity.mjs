@@ -34,10 +34,12 @@ let checked = 0;
 for (const file of files) {
   const body = (await readFile(join(root, file), "utf8"))
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
-  const links = [...body.matchAll(/<a\b([^>]*)>/gi)].map(match =>
-    match[1].match(/\bhref\s*=\s*["']([^"']+)["']/i)?.[1]).filter(Boolean);
+  const links = [...body.matchAll(/<a\b([^>]*)>/gi)].map(match => ({
+    href: match[1].match(/\bhref\s*=\s*["']([^"']+)["']/i)?.[1],
+    hidden: /\s+hidden(?:\s|=|$)/i.test(match[1])
+  })).filter(link => Boolean(link.href));
   const counts = new Map();
-  for (const href of links) {
+  for (const { href, hidden } of links) {
     if (!href.startsWith("/") || href.startsWith("//") || href.includes("${")) continue;
     const path = href.split(/[?#]/)[0];
     if (!path) continue;
@@ -46,7 +48,8 @@ for (const file of files) {
       failures.push(`${file}: retired directory link ${href}`);
     if (!validPath(path) && !redirects.has(path))
       failures.push(`${file}: missing target ${href}`);
-    counts.set(href, (counts.get(href) || 0) + 1);
+    // Hidden preview buttons are often replaced with a per-shop URL at runtime.
+    if (!hidden) counts.set(href, (counts.get(href) || 0) + 1);
   }
   // All static same-URL anchors on one page are a duplicate route to the same place.
   for (const [href, count] of counts) {
