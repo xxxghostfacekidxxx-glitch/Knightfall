@@ -7,7 +7,7 @@ const manifest=JSON.parse(readFileSync(join(root,"arcade/original-creations.json
 const errors=[],seen=new Set();
 const catalogLinks=[...catalog.matchAll(/href="(\/arcade\/hosted\/[^"]+\/index\.html)"/g)].map(m=>m[1]);
 if(!Array.isArray(manifest.games))throw Error("Original creations manifest missing games array");
-const catalogCards=[...catalog.matchAll(/<article\b[^>]*class="game"[^>]*>[\s\S]*?<\/article>/g)];
+const catalogCards=[...catalog.matchAll(/<article\b[^>]*class="cartridge-cabinet arcade-flat-card"[^>]*>[\s\S]*?<\/article>/g)];
 const fullCatalog=JSON.parse(readFileSync(join(root,"arcade/catalog.json"),"utf8"));
 if(catalogCards.length!==fullCatalog.games.length)errors.push("Catalog/manifest count mismatch");
 // Consolidation intentionally reduces totals; validate each listed game below.
