@@ -27,3 +27,17 @@ test('form unlock requires BOTH earned level and bond, including legacy Starborn
  assert.equal(growthFor('crush','Crush',2,0).next.progress,0);
  assert.equal(growthFor('crush','Crush',9,500).next,null);
 });
+
+test('the compositor and bestiary are wired to sanctuary page before the main script',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const {resolve}=await import('node:path');
+ const page=readFileSync(resolve(import.meta.dirname,'../public/mascot-pets.html'),'utf8');
+ const ui=readFileSync(resolve(import.meta.dirname,'../public/mascot-pets.js'),'utf8');
+ const engine=readFileSync(resolve(import.meta.dirname,'../public/mascot-renderer.js'),'utf8');
+ assert.ok(page.includes('id="companion-bestiary"'));
+ assert.ok(page.indexOf('/mascot-renderer.js')<page.indexOf('/mascot-pets.js'));
+ assert.ok(ui.includes('renderBestiary()'));
+ assert.ok(ui.includes('window.KnightfallPetRenderer?.decorate(visual,item)'));
+ assert.ok(ui.indexOf('card.append(visual);')<ui.indexOf('window.KnightfallPetRenderer?.decorate(visual,item)'));
+ assert.ok(engine.includes("const landscapes="));
+});

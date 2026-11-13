@@ -44,8 +44,9 @@ function cardBase(item,image,ownedCard=false){
   if(overlay){const layer=make('img','pet-overlay pet-overlay-'+piece.slot);layer.src=overlay+'?v=20261104-starborn1';layer.alt='';layer.setAttribute('aria-hidden','true');layer.loading='lazy';visual.append(layer)}
  }
  if(item.featured)visual.append(make('span','pet-badge',ownedCard?'✦ PROFILE COMPANION':'✦ STARBORN'));
+ card.append(visual);
  window.KnightfallPetRenderer?.decorate(visual,item);
- card.append(visual);return card;
+ return card;
 }
 function statRow(label,value){
  const row=make('div','pet-meter'),track=make('div','pet-track'),fill=make('i');
