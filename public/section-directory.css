@@ -56,14 +56,3 @@
   scroll-margin-top: 8rem;
 }
 
-.arcade-directory-links {
-  max-width: 36rem;
-  margin-top: 1rem;
-}
-
-.arcade-directory-links summary {
-  min-height: 44px;
-  align-content: center;
-  cursor: pointer;
-  font-weight: 700;
-}

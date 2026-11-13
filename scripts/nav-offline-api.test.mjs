@@ -73,3 +73,15 @@ test("arcade directory keeps one browse action without invalid nested-node inser
  assert.equal([...hero.matchAll(/<a\b[^>]*href="#game-shelf"/g)].length,1);
  assert.doesNotMatch(script,/hero\.insertBefore\(/,"Arcade catalog must not insert before a nested descendant");
 });
+
+test("one public arcade directory with safe redirects and no duplicate browse menu",()=>{
+ const redirects=readFileSync("public/_redirects","utf8");
+ const primary=readFileSync("public/chaos-cartridge.html","utf8");
+ const stylesheet=readFileSync("public/section-directory.css","utf8");
+ assert.match(redirects,/\/arcade-30-games\.html \/chaos-cartridge\.html 301/);
+ assert.match(redirects,/\/arcade-card-board\.html \/chaos-cartridge\.html 301/);
+ assert.doesNotMatch(primary,/arcade-directory-links|href="\/arcade-card-board\.html"/);
+ assert.doesNotMatch(stylesheet,/\.arcade-directory-links/);
+ assert.match(primary,/href="\/arcade\/async-play\.html"/);
+ assert.match(primary,/href="\/arcade\/arcade-license-guide\.html"/);
+});
