@@ -19,7 +19,7 @@
   ,{name:'Velvet Hex',avatar:{"skin":"cocoa","ear_style":"bat","hair":"coils","hair_color":"plum","eyes":"star","eye_color":"gold","expression":"pout","makeup":"glitter","piercing":"septum","outfit":"dress","outfit_color":"gold","background":"bubblegum","pattern":"hearts","aura":"glow"}}
  ];
  let state={slots:[],wallet:0,products:[],extra:0,max:20},selected=1,avatar={...kit.defaults},busy=false;
- let activeGroup='face',history=[],historyIndex=0,savedSnapshot='',savedName='',comparing=false;
+ let activeGroup='face',history=[],historyIndex=0,savedSnapshot='',savedName='',comparing=false,portraitFocus=false;
  const lockedTraits=new Set();
  const groups=[{key:'face',name:'Face & hair',icon:'✦'},{key:'features',name:'Expression',icon:'◉'},{key:'fit',name:'Style & gear',icon:'⚡'},{key:'scene',name:'World & aura',icon:'☾'}];
  const colorFields=new Set(['skin','hair_color','eye_color','outfit_color','background']);
@@ -30,7 +30,11 @@
  function updatePreview(){
   const stage=byId('avatar-preview');stage.innerHTML=kit.render(comparing&&selectedSlot()?.avatar?selectedSlot().avatar:avatar);
   stage.classList.toggle('is-comparing',comparing);
-  stage.setAttribute('aria-label',comparing?'Last saved Misfit appearance':'Live Misfit character preview');
+  stage.dataset.framing=portraitFocus?'portrait':'full';
+  stage.setAttribute('aria-label',(comparing?'Last saved Misfit appearance':'Live Misfit character preview')+(portraitFocus?', face detail':''));
+  for(const [id,key] of [['look-hair','hair'],['look-expression','expression'],['look-outfit','outfit']]){
+   const readout=byId(id);if(readout)readout.textContent=labels[avatar[key]]||String(avatar[key]).replaceAll('_',' ');
+  }
   syncDirty();
  }
  function syncDirty(){
@@ -162,7 +166,7 @@
      image.className='trait-swatch';
      image.style.background=choice==='none'?'repeating-linear-gradient(45deg,#24172e 0 6px,#54415c 6px 12px)':kit.palettes?.[key==='hair_highlight'?'hair_color':key]?.[choice]||'#4f4059';
     }else{
-     image.className='trait-thumbnail';image.innerHTML=kit.render({...kit.defaults,[key]:choice});
+     image.className='trait-thumbnail';image.innerHTML=kit.render({...avatar,[key]:choice});
     }
     const caption=document.createElement('span');caption.textContent=choiceLabel;
     button.append(image,caption);
@@ -227,6 +231,14 @@
   finally{busy=false;button.disabled=false;paintProducts();}
  }
  async function downloadPng(){const button=byId('download-avatar');button.disabled=true;status.textContent='Rendering your misfit as a PNG…';let svgUrl='';try{const blob=new Blob([kit.render(avatar)],{type:'image/svg+xml;charset=utf-8'});svgUrl=URL.createObjectURL(blob);const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(Error('Could not render this misfit.'));image.src=svgUrl;});const canvas=document.createElement('canvas');canvas.width=768;canvas.height=768;const context=canvas.getContext('2d');if(!context)throw Error('PNG export is unavailable in this browser.');context.clearRect(0,0,768,768);context.drawImage(image,48,0,672,768);const png=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!png)throw Error('PNG export failed.');const safeName=(byId('avatar-name').value||'misfit').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'misfit';const link=document.createElement('a');link.href=URL.createObjectURL(png);link.download=safeName+'-knightfall-avatar.png';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);status.textContent='PNG downloaded at 768 × 768.';}catch(error){status.textContent=error.message;}finally{if(svgUrl)URL.revokeObjectURL(svgUrl);button.disabled=false;}}
+ function setPreviewFraming(mode){
+  portraitFocus=mode==='portrait';
+  byId('preview-full').setAttribute('aria-pressed',String(!portraitFocus));
+  byId('preview-portrait').setAttribute('aria-pressed',String(portraitFocus));
+  updatePreview();
+ }
+ byId('preview-full').addEventListener('click',()=>setPreviewFraming('full'));
+ byId('preview-portrait').addEventListener('click',()=>setPreviewFraming('portrait'));
  byId('download-avatar').addEventListener('click',downloadPng);byId('remove-active-avatar').addEventListener('click',useProfilePhoto);
  byId('new-avatar').addEventListener('click',()=>{
   const empty=state.slots.find(s=>s.empty);
