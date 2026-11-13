@@ -24,10 +24,13 @@ test("app provides offline shell and quick Miss Chaos launch",()=>{
  assert.ok(manifest.shortcuts.some(s=>s.url.startsWith("/miss-chaos.html")));
 });
 
-test("push click never navigates away from an unrelated open chat or game",()=>{
- assert.match(sw,/clients\.find\(client => client\.url === target\)/);
+test("push click reuses the exact inbox, but never hijacks an unrelated game or page",()=>{
+ assert.match(sw,/const chat=windows\.find\(client=>/);
+ assert.match(sw,/url\.pathname==="\/messages\.html"/);
+ assert.match(sw,/if\(chat\.url!==target&&typeof chat\.navigate==="function"\)/);
+ assert.match(sw,/const exact=windows\.find\(client=>client\.url===target\)/);
+ assert.match(sw,/self\.clients\.openWindow\(target\)/);
  assert.doesNotMatch(sw,/existing\.navigate\(target\)/);
- assert.match(sw,/clients\.openWindow\(target\)/);
 });
 test("mobile navigation closes on Escape and outside interaction",()=>{
  assert.match(nav,/event\.key !== "Escape"/);
