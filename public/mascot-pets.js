@@ -8,7 +8,7 @@ if(!owned||!adopt||!shop||!message||!slots)return;
 const clock=window.KnightfallPetCare;
 let spotlightId=null;
 const openDetails=new Map();
-let species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=31,
+let affinities=[],species=[],pets=[],accessories=[],wardrobe=[],signedIn=false,working=false,max=31,
     cinders=0,level=1,premiumEnabled=false,habitatThemes=[],habitatDecorations=[],incubatingSpecies=[];
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);return el};
 const say=text=>{message.textContent=String(text)};
@@ -44,6 +44,7 @@ function cardBase(item,image,ownedCard=false){
   if(overlay){const layer=make('img','pet-overlay pet-overlay-'+piece.slot);layer.src=overlay+'?v=20261104-starborn1';layer.alt='';layer.setAttribute('aria-hidden','true');layer.loading='lazy';visual.append(layer)}
  }
  if(item.featured)visual.append(make('span','pet-badge',ownedCard?'✦ PROFILE COMPANION':'✦ STARBORN'));
+ window.KnightfallPetRenderer?.decorate(visual,item);
  card.append(visual);return card;
 }
 function statRow(label,value){
@@ -182,7 +183,14 @@ function renderOwned(){
   heading.append(make('strong','',pet.nickname),make('small','',pet.featured?'✦ Featured':'Lv '+pet.level));
   if(pet.rarity==='Starborn')heading.lastChild.textContent=pet.featured?'✦ Starborn · Featured':'✦ Starborn';
   card.append(heading,make('p','pet-type',pet.species_name+' · Lv '+pet.level+' · '+pet.experience+' XP'));
-  if(pet.evolution){
+  card.append(make('span','pet-affinity-chip',pet.affinity_label||'Feral'));
+  if(pet.growth){
+   const g=pet.growth,box=make('div','pet-growth-track');
+   box.append(make('strong','',g.label+' · '+g.name));
+   box.append(make('small','',g.next?'Next: '+g.next.name+' · Lv '+g.next.level+' and '+g.next.bond+' bond':'Final form reached through care and friendship'));
+   if(g.next){const bar=make('progress');bar.max=100;bar.value=g.next.progress||0;bar.setAttribute('aria-label','Growth toward '+g.next.name);box.append(bar)}
+   card.append(box);
+  }else if(pet.evolution){
    const ev=pet.evolution,box=make('div','pet-evolution'+(ev.evolved?' evolved':''));
    box.append(make('strong','',ev.evolved?'✧ '+ev.name:'✧ Starborn evolution · '+ev.name));
    box.append(make('small','',ev.evolved?(ev.tagline||'A new form, earned together.'):'Reach Lv '+ev.level+' and '+ev.bond_required+' bond · '+Math.min(100,ev.progress||0)+'%'));
@@ -223,9 +231,9 @@ function renderAdopt(){
   const already=pets.some(x=>x.species===pet.id),incubating=incubatingSpecies.includes(pet.id),first=pets.length===0,free=first&&!!pet.first_rescue_free;
   const unlock=Number(pet.unlock_level||1),locked=first?!pet.first_rescue_free:level<unlock,full=pets.length>=max;
   const price=free?0:Number(pet.cost_cinders||0),canAfford=cinders>=price;
-  const card=cardBase(pet,pet.portrait||pet.svg),heading=make('div','pet-label');
+  const card=cardBase(pet,pet.idle||pet.svg),heading=make('div','pet-label');
   heading.append(make('strong','',pet.name),make('small','',already?'OWNED':incubating?'EGG WAITING':free?'FREE':'✦ '+price.toLocaleString()));
-  card.append(heading,make('p','pet-type',pet.type+' · '+(pet.rarity_label||'Misfit')+' · Unlock Lv '+unlock));
+  card.append(heading,make('p','pet-type',(pet.affinity_label||'Feral')+' affinity · '+pet.type+' · Unlock Lv '+unlock));
   if(pet.evolution)card.append(make('p','pet-cost-note','Starborn signature form: '+pet.evolution.name+' · Lv '+pet.evolution.level+' + '+pet.evolution.bond+' bond'));
   const hint=make('p','pet-cost-note',already?'You have already rescued this species.':incubating?'Your egg for this mascot is incubating. Hatch that egg instead.':locked?first?'Your first rescue must be one of the eight starter misfits.':'Train any companion to Lv '+unlock+' first.':!canAfford?'Earn Cinders through arcade and daily rewards.':free?'Your first starter companion is free.':'Ready to rescue with Cinders.');
   card.append(hint);
@@ -236,6 +244,51 @@ function renderAdopt(){
   actions.append(button(label,already?'owned':'adopt',already||incubating||full||locked||!canAfford||working,!(already||incubating||locked||full||!canAfford)));
   card.append(actions);adopt.append(card);
  }
+}
+function renderBestiary(){
+ const grid=document.querySelector('#pet-bestiary-grid'),counter=document.querySelector('#pet-bestiary-count');
+ if(!grid)return;
+ const found=new Map(pets.map(p=>[p.species,p]));
+ const query=(document.querySelector('#pet-bestiary-search')?.value||'').trim().toLowerCase();
+ const type=document.querySelector('#pet-bestiary-type')?.value||'all';
+ const status=document.querySelector('#pet-bestiary-status')?.value||'all';
+ grid.replaceChildren();
+ let visible=0;
+ for(let i=0;i<species.length;i++){
+  const item=species[i],mine=found.get(item.id),discovered=!!mine;
+  if(type!=='all'&&item.affinity!==type)continue;
+  if(status==='found'&&!discovered||status==='missing'&&discovered)continue;
+  if(query&&!(item.name+' '+item.type+' '+item.affinity_label+' '+item.id).toLowerCase().includes(query))continue;
+  visible++;
+  const entry=cardBase({...item,growth:mine?.growth},item.idle||item.svg);
+  entry.classList.add('bestiary-entry');
+  if(!discovered)entry.classList.add('is-undiscovered');
+  const heading=make('div','pet-label');
+  heading.append(make('strong','',discovered?item.name:'Undiscovered'),make('small','',String(i+1).padStart(3,'0')));
+  entry.append(heading,make('span','pet-affinity-chip',item.affinity_label||'Feral'));
+  if(discovered){
+   const g=mine.growth,detail=make('details'),summary=make('summary','','View field notes and evolution');
+   detail.append(summary,make('p','',item.lore||''));
+   const stages=make('ol');
+   for(const s of item.growth_stages||g?.stages||[]){
+    const label=s.name+' · Lv '+s.level+(s.bond?' / '+s.bond+' bond':'');
+    const li=make('li','',label);
+    if(g?.stage>=s.stage)li.append(make('strong','',' ✓'));
+    stages.append(li);
+   }
+   detail.append(stages);
+   entry.append(make('p','pet-cost-note',mine.nickname+' · '+(g?.label||'First Form')),detail);
+  }else{
+   entry.append(make('p','pet-cost-note','Rescue unlock: Lv '+item.unlock_level+'. A new companion to discover.'));
+  }
+  grid.append(entry);
+ }
+ if(counter)counter.textContent=found.size+' / '+species.length+' discovered · '+visible+' shown';
+ if(!visible)grid.append(make('p','pet-empty','No creatures match these filters.'));
+}
+for(const id of ['pet-bestiary-search','pet-bestiary-type','pet-bestiary-status']){
+ const filter=document.getElementById(id);
+ if(filter)filter.addEventListener(id.includes('search')?'input':'change',renderBestiary);
 }
 function renderShop(){
  shop.replaceChildren();
@@ -256,14 +309,16 @@ function renderShop(){
   card.append(actions);shop.append(card);
  }
 }
-function render(){renderOwned();renderSpotlight();renderAdopt();renderShop();tickCare();updateSpotlightNote();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
+function render(){renderOwned();renderSpotlight();renderAdopt();renderBestiary();renderShop();tickCare();updateSpotlightNote();document.dispatchEvent(new CustomEvent('sanctuary-rendered',{detail:{pets,species,accessories,wardrobe,cinders,level,max,signedIn,working,incubatingSpecies}}))}
 function updateMe(d){
  pets=d.pets||[];pets.forEach(pet=>clock.remember(pet));wardrobe=d.wardrobe||[];cinders=Number(d.wallet_balance||0);
  level=Number(d.sanctuary_level||1);max=d.max_owned||31;
 }
 async function reload(){
  const catalog=await api('/api/mascot-pets/catalog');
- species=catalog.species||[];accessories=catalog.accessories||[];
+ species=catalog.species||[];affinities=catalog.affinities||[];accessories=catalog.accessories||[];
+ const typeSelect=document.querySelector('#pet-bestiary-type');
+ if(typeSelect&&typeSelect.options.length===1){for(const type of affinities){const option=make('option','',type.name);option.value=type.id;typeSelect.append(option)}}
  premiumEnabled=!!catalog.premium_enabled;max=catalog.max_owned||31;
  try{updateMe(await api('/api/mascot-pets/me'));signedIn=true;
   const adv=await api('/api/mascot-pets/adventures').catch(()=>null);

@@ -7,6 +7,7 @@ import {PET_MARKET,PET_ACCESSORIES,MAX_PET_SPECIES,FREE_STARTER_SPECIES,petMarke
 import {handleMascotAdventures,careQuestProgress,HABITAT_THEMES,HABITAT_DECORATIONS} from './mascot-adventures.js';
 import {handleMascotPassport,publicPassportBadges} from './mascot-passport.js';
 import {handleMascotRoom} from './mascot-room-api.js';
+import {PET_AFFINITIES,affinityFor,stagesFor,growthFor} from './mascot-lineages.js';
 import {handleMascotFurniture,FURNITURE} from './mascot-furniture.js';
 export const SPECIES_PERSONALITIES=Object.freeze({
  moxie:['Curious','Moonlight and abandoned lanterns','A velvet-winged scout who finds the beauty in forgotten places.'],
@@ -110,6 +111,7 @@ const SPECIES = [
  cost_cinders:PET_MARKET[id][0],unlock_level:PET_MARKET[id][1],
   rarity:STAR_IDS.has(id)?'Starborn':'Misfit',rarity_label:STAR_IDS.has(id)?'✦ Starborn':'Misfit',
   first_rescue_free:FREE_STARTER_SPECIES.includes(id),featured:STAR_IDS.has(id),evolution:STAR_FORMS[id]||null,
+  affinity:affinityFor(id).id,affinity_label:affinityFor(id).name,growth_stages:stagesFor(id,name,STAR_FORMS[id]),
  svg:'/assets/devil-tools/neon-nuisances/'+id+'.svg',
  portrait:'/assets/devil-tools/neon-nuisances/portraits/'+id+'.svg',
  idle:'/assets/devil-tools/neon-nuisances/'+id+'-idle.svg'}));
@@ -255,6 +257,8 @@ export function serializePet(pet,now=Date.now(),publicView=false){
   nickname:pet.nickname,image:evolved?evolvedAsset(pet.species):(species?.svg||''),portrait:evolved?evolvedAsset(pet.species):(species?.portrait||''),idle:evolved?evolvedAsset(pet.species):(species?.idle||''),
   level:petLevel(experience),featured:!!pet.featured,adopted_at:pet.adopted_at,
   rarity:species?.rarity||'Misfit',rarity_label:species?.rarity_label||'Misfit',
+  affinity:species?.affinity||'feral',affinity_label:species?.affinity_label||'Feral',
+  growth:growthFor(pet.species,species?.name||pet.species,petLevel(experience),bondExperience,evolution),
   evolution:evolution?{name:evolution.name,level:evolution.level,bond_required:evolution.bond,bond_experience:publicView?undefined:bondExperience,progress:publicView?undefined:Math.min(100,Math.floor(Math.min(petLevel(experience)/evolution.level,bondExperience/evolution.bond)*100)),evolved,tagline:evolution.tagline,art:evolvedAsset(pet.species)}:null,
   temperament:species?.temperament||'Curious',favorite:species?.favorite||'',lore:species?.lore||''};
  const currentLevel=base.level,previousXP=40*(currentLevel-1)**2,nextXP=40*currentLevel**2;
@@ -279,7 +283,7 @@ export async function handleMascotPets(request,env,url,{getUser,json,rateLimit,o
  if(!path.startsWith('/api/mascot-pets'))return null;
  const respond=(v,s=200)=>json(v,s,origin);
  if(path==='/api/mascot-pets/catalog'&&request.method==='GET')
-  return respond({species:MASCOT_SPECIES,max_owned:LIMIT,accessories:shop,premium_enabled:!!(env.STRIPE_SECRET_KEY&&env.STRIPE_WEBHOOK_SECRET),starter_price:0});
+  return respond({species:MASCOT_SPECIES,affinities:Object.values(PET_AFFINITIES),max_owned:LIMIT,accessories:shop,premium_enabled:!!(env.STRIPE_SECRET_KEY&&env.STRIPE_WEBHOOK_SECRET),starter_price:0});
  const pub=path.match(/^\/api\/mascot-pets\/profile\/([a-zA-Z0-9_-]{1,32})$/);
  if(pub&&request.method==='GET'){
   const owner=await env.DB.prepare(

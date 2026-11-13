@@ -2,21 +2,22 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0817">
-<meta name="description" content="Adopt and care for original Neon Nuisances mascot companions on Knightfall.">
-<title>Neon Nuisances Sanctuary | Knightfall</title>
+<meta name="description" content="Discover, rescue, evolve and care for creatures of every affinity in the Knightfall Sanctuary.">
+<title>Knightfall Creature Sanctuary & Bestiary</title>
 <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
 <link rel="stylesheet" href="/mascot-pets.css?v=20261103-sanctuary-deck1&rev=20261104-bond1">
 <link rel="stylesheet" href="/mascot-sanctuary-refresh.css?v=20261111">
+<link rel="stylesheet" href="/mascot-visuals.css?v=20261113-lineages1">
 </head><body class="sanctuary-page">
 <header class="kf-header"></header>
 <main class="sanctuary-shell">
   <header class="sanctuary-header">
-  <h1>Neon Nuisances</h1>
+  <h1>Knightfall Creatures</h1>
   <p>Rescue a misfit, make it a home, and see what your friendship grows into.</p>
   <div class="sanctuary-links"><a href="#companion-spotlight">Care for a pet</a><a href="#adoption-gallery">Find a companion</a></div>
   </header>
   <nav class="sanctuary-directory" aria-label="Sanctuary sections">
-    <a href="#my-pets-section">Collection</a><a href="#adoption-gallery">Adoption</a>
+    <a href="#my-pets-section">Collection</a><a href="#companion-bestiary">Bestiary</a><a href="#adoption-gallery">Adoption</a>
     <a href="/mascot-room.html">Pet rooms</a><a href="#sanctuary-expeditions">Expeditions</a>
     <a href="#sanctuary-hatchery">Hatchery</a><a href="#sanctuary-wardrobe">Wardrobe</a>
     <a href="#species-trials-title">Trials</a><a href="#cinder-catch">Cinder Catch</a><a href="#sanctuary-passport">Passport</a>
@@ -80,6 +81,15 @@
    <p id="passport-status" role="status" aria-live="polite">Your achievement progress is being checked…</p>
    <div id="passport-badges" class="passport-grid"></div>
   </section>
+  <section id="companion-bestiary" aria-labelledby="pet-bestiary-title">
+   <div class="pet-bestiary-head"><div><h2 id="pet-bestiary-title">Creature Bestiary</h2><p>Track every discovered creature, its natural affinity and its three earned forms. Undiscovered entries stay silhouetted until rescued.</p></div><strong id="pet-bestiary-count" class="bestiary-counter">0 discovered</strong></div>
+   <div class="pet-filter-bar">
+    <label for="pet-bestiary-search">Search</label><input id="pet-bestiary-search" type="search" placeholder="Name, creature or affinity…" autocomplete="off">
+    <label for="pet-bestiary-type">Affinity</label><select id="pet-bestiary-type"><option value="all">All types</option></select>
+    <label for="pet-bestiary-status">Discovery</label><select id="pet-bestiary-status"><option value="all">All entries</option><option value="found">Discovered</option><option value="missing">Undiscovered</option></select>
+   </div>
+   <div id="pet-bestiary-grid" class="bestiary-grid" aria-live="polite"></div>
+  </section>
   <section id="adoption-gallery" aria-labelledby="adopt-title">
    <div class="sanctuary-section-heading"><h2 id="adopt-title">Adoption gallery</h2><span id="pet-adoption-count">First rescue free</span></div>
    <div class="pet-filter-bar">
@@ -102,7 +112,8 @@
 </main>
 <script src="/nav.js?v=20261111-sanctuary2" defer></script>
 <script src="/mascot-care-clock.js?v=20261111" defer></script>
-<script src="/mascot-pets.js?v=20261111-sanctuary" defer></script>
+<script src="/mascot-renderer.js?v=20261113-lineages1" defer></script>
+<script src="/mascot-pets.js?v=20261113-lineages1" defer></script>
 <script src="/misfit-avatar.js?v=20261113-misfit-ink5" defer></script>
 <script src="/mascot-pet-life.js?v=20261111" defer></script>
 <script src="/mascot-sanctuary-deck.js?v=20261103-sanctuary-deck1&rev=20261111" defer></script>

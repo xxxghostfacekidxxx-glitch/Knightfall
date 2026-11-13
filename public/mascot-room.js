@@ -56,6 +56,7 @@ function draw(){
  avatar.dataset.pose=visiblePose;avatar.dataset.bondStage=currentReaction?.bond_stage||selected?.relationship?.id||'new';
  if(reactionBubble){reactionBubble.textContent=currentReaction?.emote||'';reactionBubble.hidden=!currentReaction}
  if(selected){
+  avatar.dataset.affinity=selected.affinity||'feral';avatar.dataset.form=String(selected.growth?.stage||1);
   const base=selected.idle||selected.image;
   img(photo,clock.poseAsset(base,visiblePose));
  }
@@ -81,7 +82,7 @@ function roomSummary(){
  root.replaceChildren();
  const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;node.textContent=String(text);return node};
  const identity=make('div','room-pet-identity','');
- identity.append(make('strong','',selected.nickname),make('span','',selected.species_name+' · Lv '+selected.level));
+ identity.append(make('strong','',selected.nickname),make('span','',selected.species_name+' · '+(selected.affinity_label||'Feral')+' · '+(selected.growth?.label||'First Form')+' · Lv '+selected.level));
  root.append(identity);
  const lore=make('p','room-pet-lore',selected.lore||('Meet '+selected.nickname+'.'));
  if(selected.temperament||selected.favorite){
