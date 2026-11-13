@@ -2,7 +2,7 @@
   'use strict';
   const $=id=>document.getElementById(id),api=()=>window.AshFallArcade;
   const query=new URLSearchParams(location.search);
-  let me=null,friends=[],matches=[],selectedId=query.get('match')||'',selectedMoves=[],selectedMatch=null,moving=false;
+  let me=null,friends=[],matches=[],selectedId=query.get('match')||'',selectedMoves=[],selectedMatch=null,moving=false,focusInvite=!!query.get('match');
   const nameOf=player=>player?.display_name||player?.username||'Friend';
   const showError=(error,target=$('challenge-status'))=>{target.textContent=error?.message||'The arcade service is unavailable. Try again shortly.'};
   function showAccount(user){
@@ -88,6 +88,7 @@
     try{
       const data=await call('/api/arcade/turn-matches/'+encodeURIComponent(id));selectedMatch=data.match;selectedMoves=data.moves||[];
       $('match-title').textContent='Chaos Connect Four';renderPlayers(selectedMatch);renderBoard(selectedMatch);renderActions(selectedMatch);renderHistory(selectedMoves);renderMatches();
+      if(focusInvite){focusInvite=false;requestAnimationFrame(()=>$('match-panel').scrollIntoView({behavior:'instant',block:'start'}));}
     }catch(error){showError(error,$('match-status'));}
   }
   async function refreshMatches(openSelected=false){
@@ -126,8 +127,10 @@
       await api().refreshUser();me=api().user;
       showAccount(me);
       if(!me){$('friend-select').replaceChildren(new Option('Sign in to challenge friends',''));$('challenge-status').textContent='Sign in to challenge a friend.';return;}
-      const [friendData]=await Promise.all([call('/api/friends'),refreshMatches(false)]);friends=friendData.friends||[];inviteSelect();
+      // A deep-linked invitation must open even when friend discovery is slow or offline.
       if(selectedId)await openMatch(selectedId);
+      try{const friendData=await call('/api/friends');friends=friendData.friends||[];}catch(error){console.warn('turn_game_friend_picker_unavailable',String(error));}
+      inviteSelect();await refreshMatches(false);
     }catch(error){showError(error);}
   }
   $('challenge-form').addEventListener('submit',challenge);

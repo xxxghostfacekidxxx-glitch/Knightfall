@@ -1,0 +1,61 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import vm from "node:vm";
+import {readFileSync} from "node:fs";
+const read=path=>readFileSync(new URL("../"+path,import.meta.url),"utf8");
+const html=read("public/messages.html");
+const inline=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).at(-1);
+const bubbles=read("public/chat-bubbles.js");
+const css=read("public/messages.css"),bubbleCss=read("public/chat-bubbles.css");
+const cards=read("public/arcade/hosted/cards-against-chaos/online.js");
+const cabinet=read("public/arcade/hosted/cards-against-chaos/cabinet.js");
+const turns=read("public/arcade/async-play.js");
+test("all changed browser controllers remain parseable",()=>{
+ for(const src of [inline,bubbles,cards,cabinet,turns])assert.doesNotThrow(()=>new vm.Script(src));
+});
+test("avatars only accept image URLs and render a fallback",()=>{
+ const start=inline.indexOf("function safeMessageAvatar(c){");
+ const end=inline.indexOf("function conversationAvatar(c,",start);
+ assert.ok(start>0&&end>start);
+ const context=vm.createContext({});
+ vm.runInContext(inline.slice(start,end),context);
+ assert.equal(context.safeMessageAvatar({other_avatar_url:"javascript:alert(1)"}),"");
+ assert.equal(context.safeMessageAvatar({other_avatar_url:"data:text/html;base64,PHNjcmlwdD4="}),"");
+ assert.equal(context.safeMessageAvatar({other_avatar_url:"https://example.com/avatar.png"}),"https://example.com/avatar.png");
+ assert.equal(context.safeMessageAvatar({other_avatar_url:"data:image/png;base64,aGVsbG8="}),"data:image/png;base64,aGVsbG8=");
+ assert.match(inline,/conversationAvatar\(x\)/);
+ assert.match(inline,/conversationAvatar\(c,"chat-avatar"\)/);
+ assert.match(inline,/avatar-letter/);
+ assert.match(bubbles,/open\.append\(avatarContent\(c\)\)/);
+ assert.match(bubbles,/avatar\.append\(avatarContent\(c\)\)/);
+ assert.match(bubbleCss,/\.kf-chat-photo-img/);
+});
+test("send locks release before any optional history refresh",()=>{
+ const send=inline.slice(inline.indexOf('$("#composer").onsubmit='),inline.indexOf("\nfunction drawPendingAttachments"));
+ const unlock=send.indexOf("sendingConversation=null;");
+ const refresh=send.indexOf("await loadConversations({openSelected:false})");
+ assert.ok(unlock>0&&refresh>unlock,"release send lock before refreshing inbox");
+ assert.match(send,/void sendTypingState\(false,conversationId\)/);
+ assert.match(send,/if\(field\.value===draft\)/);
+ const bubbleSend=bubbles.slice(bubbles.indexOf('composer.addEventListener("submit"'),bubbles.indexOf('input.addEventListener("keydown"'));
+ assert.ok(bubbleSend.indexOf("state.sending=false")<bubbleSend.indexOf("await refreshThread()"));
+});
+test("incoming game invitations route to existing matches, not new-game setup",()=>{
+ assert.match(inline,/match\.can_accept&&Number\(match\.seats\?\.\[0\]\?\.id\)/);
+ assert.match(inline,/cards-against-chaos\/index\.html\?match=/);
+ assert.match(inline,/async-play\.html\?match=/);
+ assert.match(inline,/cards-against-chaos\/index\.html\?challenge=/);
+ assert.match(cabinet,/params\.has\("challenge"\)/);
+ assert.ok(cards.indexOf('if(matchId)await openMatch(matchId)')<cards.indexOf('call("/api/friends")'),"open exact invitation before friend discovery");
+ assert.ok(turns.indexOf("if(selectedId)await openMatch(selectedId)")<turns.indexOf("call('/api/friends')"),"Connect Four invite opens before friend discovery");
+});
+test("mobile chat stays inside the visual viewport with a scrollable transcript",()=>{
+ assert.match(inline,/--messages-chat-height/);
+ assert.match(inline,/visualViewport\?\.addEventListener\("resize"/);
+ assert.match(css,/position:fixed!important/);
+ assert.match(css,/height:var\(--messages-chat-height/);
+ assert.match(css,/\.chat-panel>#jump-latest\{grid-row:3\}/);
+ assert.match(css,/\.chat-panel>#messages\{grid-row:5/);
+ assert.match(css,/overflow-y:auto!important/);
+ assert.match(bubbleCss,/max-height:max\(170px,calc\(100dvh - 155px\)\)/);
+});

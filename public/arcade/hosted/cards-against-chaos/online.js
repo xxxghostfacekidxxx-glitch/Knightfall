@@ -47,7 +47,7 @@ function fillFriendChoices(){
   const select=$("cards-online-friend-"+i);select.replaceChildren(new Option("Choose an accepted friend",""));
   for(const friend of friends)select.add(new Option(display(friend)+" (@"+friend.username+")",String(friend.user_id)));
  }
- const invited=(params.get("invite")||"").toLowerCase();
+ const invited=(params.get("challenge")||params.get("invite")||"").toLowerCase();
  if(invited){
   const found=friends.find(friend=>(friend.username||"").toLowerCase()===invited);
   if(found){$("cards-online-human-count").value="2";$("cards-online-friend-1").value=String(found.user_id);}
@@ -159,8 +159,9 @@ async function openMatch(id){
   const data=await call(root+"/"+enc(id));
   selected=data.match;
   history.replaceState(null,"",location.pathname+"?match="+enc(id));
-  renderMatch();renderList();status("Table synced. Private hands stay private.");
- }catch(error){status(error.message||"Unable to open this card table.");}
+  renderMatch();renderList();status(selected.can_accept?"Invitation ready: choose Join game to take your seat.":"Table synced. Private hands stay private.");
+  return true;
+ }catch(error){status(error.message||"Unable to open this card table.");return false;}
 }
 async function refresh(openCurrent=true){
  if(!me)return;
@@ -169,6 +170,10 @@ async function refresh(openCurrent=true){
   if(openCurrent&&selected)await openMatch(selected.id);
   else if(!selected&&new URLSearchParams(location.search).has("match"))
    await openMatch(new URLSearchParams(location.search).get("match"));
+   else if(!selected&&params.has("invite")){
+    const candidate=matches.find(match=>match.can_accept);
+    if(candidate)await openMatch(candidate.id);
+   }
  }catch(error){status(error.message||"Unable to load saved card tables.");}
 }
 async function mutate(action,options={}){
@@ -218,11 +223,27 @@ async function boot(){
  if(!arcade())return status("Account tools did not load. Refresh this page.");
  try{
   await arcade().refreshUser();me=arcade().user;accountStatus();
-  if(!me){refreshFriendInputs();return status("Sign in to play saved four-player card games.");}
-  const response=await call("/api/friends");friends=response.friends||[];
-  fillFriendChoices();await refresh();status("Ready: select one to four humans. The rest are AI.");
- }catch(error){status(error.message||"Could not load account or friends.");}
+  if(!me){refreshFriendInputs();return status("Sign in to join or create online card games.");}
+  // Invitation links are existing table IDs. Open them directly, without
+  // requiring the optional friend-list / create-table setup to finish first.
+  const matchId=params.get("match");
+  if(matchId)await openMatch(matchId);
+  try{
+   const response=await call("/api/friends");friends=response.friends||[];
+   fillFriendChoices();
+  }catch(error){
+   refreshFriendInputs();
+   if(!selected)console.warn("card_friend_picker_unavailable",String(error));
+  }
+  if(!selected){
+   if(!matchId){await refresh();if(!selected)status("Ready: join a pending invitation or start a new table.");}
+  }else{
+   // The join button is already visible and usable even if listing fails.
+   void refresh(false);
+  }
+ }catch(error){status(error.message||"Could not load your card invitation.");}
 }
+
 document.querySelectorAll('[data-card-pack-mode="online"]').forEach(input=>input.addEventListener("change",refreshAdultNotice));
 refreshAdultNotice();
 $("cards-online-human-count").addEventListener("change",refreshFriendInputs);

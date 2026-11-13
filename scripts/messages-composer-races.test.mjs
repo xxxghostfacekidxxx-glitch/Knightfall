@@ -43,3 +43,19 @@ test('reactions refresh leaves older history reactions intact outside its reques
  const start=html.indexOf('async function refreshReactions()');vm.runInContext(html.slice(start,html.indexOf('\n',start)),c);await c.refreshReactions();
  assert.equal(nodes[0].box.innerHTML,'saved-0');assert.equal(nodes[4].box.innerHTML,'saved-4');assert.equal(nodes[5].box.innerHTML,'');
 });
+
+test('second message can send before slow inbox refresh completes',async()=>{
+ const h=harness();
+ const refresh=deferred();
+ h.c.loadConversations=()=>refresh.promise;
+ h.$('#body').value='first';
+ const first=h.$('#composer').onsubmit({preventDefault(){}});
+ h.request.resolve({});
+ await first;
+ assert.equal(h.c.sendingConversation,null,'send lock must release after POST, not refresh');
+ h.$('#body').value='second';
+ const second=h.$('#composer').onsubmit({preventDefault(){}});
+ await second;
+ assert.equal(h.posts.length,2,'same conversation accepts consecutive messages without leaving');
+ refresh.resolve();
+});

@@ -27,6 +27,23 @@
   const validId=value=>Number.isSafeInteger(Number(value))&&Number(value)>0?Number(value):null;
   const nameOf=c=>c?.kind==="group"?(c.group_name||"Group chat"):(c?.other_display_name||c?.other_username||"Conversation");
   const initialOf=c=>(nameOf(c).trim().charAt(0)||"✦").toUpperCase();
+  function avatarUrl(c){
+    const value=String(c?.other_avatar_url||"");
+    if(c?.kind==="group"||value.length>200000)return "";
+    return /^(https:\/\/|\/[^/])/i.test(value)||/^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/=]+$/i.test(value)?value:"";
+  }
+  function avatarContent(c){
+    const holder=el("span","kf-chat-avatar-content");
+    const fallback=el("span","kf-chat-photo-fallback",initialOf(c));
+    const url=avatarUrl(c);
+    if(url){
+      const img=el("img","kf-chat-photo-img");
+      img.src=url;img.alt="";img.loading="lazy";img.decoding="async";
+      fallback.hidden=true;img.addEventListener("error",()=>{img.hidden=true;fallback.hidden=false;},{once:true});
+      holder.append(img);
+    }
+    holder.append(fallback);return holder;
+  }
   const el=(tag,className,text)=>{
     const node=document.createElement(tag);
     if(className)node.className=className;
@@ -48,6 +65,19 @@
   dock.setAttribute("aria-label","Floating conversations");
   dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Recent conversations</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open conversations" aria-expanded="false" aria-controls="kf-chat-panel"><span aria-hidden="true">💬</span><b id="kf-chat-unread" hidden></b></button>';
   document.body.append(dock);
+  function syncBubbleViewport(){
+    const viewport=window.visualViewport,layoutHeight=window.innerHeight;
+    const visibleHeight=viewport?.height||layoutHeight;
+    const bottom=(viewport?.offsetTop||0)+visibleHeight;
+    const keyboardInset=Math.max(0,layoutHeight-bottom);
+    dock.style.setProperty("--kf-chat-keyboard-offset",keyboardInset+"px");
+    dock.style.setProperty("--kf-chat-visible-height",visibleHeight+"px");
+    dock.style.setProperty("--kf-chat-dock-base-bottom",visibleHeight<520?"12px":"80px");
+  }
+  syncBubbleViewport();
+  window.addEventListener("resize",syncBubbleViewport,{passive:true});
+  window.visualViewport?.addEventListener("resize",syncBubbleViewport,{passive:true});
+  window.visualViewport?.addEventListener("scroll",syncBubbleViewport,{passive:true});
   const $=selector=>dock.querySelector(selector);
   const panel=$("#kf-chat-panel"),recent=$("#kf-chat-list"),thread=$("#kf-chat-thread"),composer=$("#kf-chat-compose"),input=$("#kf-chat-input"),status=$("#kf-chat-status");
   function announce(message){status.textContent=message||"";}
@@ -93,7 +123,7 @@
     for(const id of state.heads){
       const c=getConversation(id);if(!c)continue;
       const item=el("div","kf-chat-head");
-      const open=el("button","kf-chat-head-open",initialOf(c));
+      const open=el("button","kf-chat-head-open");open.append(avatarContent(c));
       open.type="button";open.setAttribute("aria-label","Chat with "+nameOf(c));open.title=nameOf(c);
       open.setAttribute("aria-pressed",String(state.visible&&state.active===id));
       if(Number(c.unread_count)>0){
@@ -124,7 +154,7 @@
     for(const c of filtered.slice(0,25)){
       const button=el("button","kf-chat-recent-item");
       button.type="button";
-      const avatar=el("span","kf-chat-recent-avatar",initialOf(c));
+      const avatar=el("span","kf-chat-recent-avatar");avatar.append(avatarContent(c));
       const copy=el("span","kf-chat-recent-copy");
       copy.append(el("strong","",nameOf(c)),el("small","",String(c.last_body||"Open conversation").slice(0,105)));
       button.append(avatar,copy);
@@ -225,16 +255,21 @@
       sent=true;
       if(drafts.get(id)===original)rememberDraft(id,"");
       if(state.active===id&&input.value===original){input.value="";rememberDraft(id,"");}
-      try{
-        if(state.active===id)await refreshThread();
-        await refreshConversations({force:true});
-        announce("Message sent.");
-      }catch(error){announce("Message sent, but chat refresh failed. Reopen the conversation to update it.");}
-    }catch(error){
-      if(!sent)announce(error.message+" Your unsent reply has been kept.");
-    }finally{
+      announce("Message sent.");
+    }catch(error){announce(error.message+" Your unsent reply has been kept.");}
+    finally{
+      // Never hold the Send button hostage during the optional inbox refresh.
       state.sending=false;
       $("#kf-chat-send").disabled=!!Number(getConversation(state.active)?.messaging_blocked);
+      if(state.active===id&&state.visible&&!document.hidden)input.focus({preventScroll:true});
+    }
+    if(sent){
+      void (async()=>{
+        try{
+          if(state.active===id)await refreshThread();
+          await refreshConversations({force:true});
+        }catch(error){announce("Message sent, but chat refresh failed. New messages still work.");console.warn("floating_chat_post_send_refresh_failed",String(error));}
+      })();
     }
   });
   input.addEventListener("keydown",event=>{

@@ -760,3 +760,57 @@
  .history-search-controls #history-search-input{flex-basis:100%}
  .history-search-controls button{width:100%}
 }
+
+/* Messaging viewport and portrait fixes: one transcript track, no stacked phantom rows. */
+.messages-shell .avatar{overflow:hidden;position:relative;flex-shrink:0}
+.messages-shell .message-avatar-img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.messages-shell .avatar-letter:not([hidden]){display:grid;place-items:center;width:100%;height:100%}
+.chat-panel{grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto}
+.chat-panel>#chat-head{grid-row:1}
+.chat-panel>#typing-indicator{grid-row:2}
+.chat-panel>#jump-latest{grid-row:3}
+.chat-panel>#load-older{grid-row:4}
+.chat-panel>#messages{grid-row:5;min-height:0;max-height:none}
+.chat-panel>#conversation-restricted{grid-row:6}
+.chat-panel>#composer{grid-row:7}
+.chat-panel>:is(#typing-indicator,#jump-latest,#load-older,#conversation-restricted,#composer)[hidden]{display:none!important}
+
+@media(max-width:850px){
+ /* Fixed to the *visible* viewport, not 100dvh minus conflicting page offsets.
+    The top position and available height are measured after the Android keyboard
+    opens, with the site's sticky navigation kept visible above the chat. */
+ .message-layout.show-chat{
+  display:block!important;position:fixed!important;
+  top:var(--messages-chat-top,62px)!important;left:0!important;right:0!important;
+  bottom:auto!important;width:100%!important;
+  height:var(--messages-chat-height,calc(100dvh - 62px))!important;
+  min-height:0!important;max-height:none!important;margin:0!important;
+  border-radius:0!important;overflow:hidden!important;z-index:2147482200;
+ }
+ .message-layout.show-chat>.chat-panel{
+  display:grid!important;grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto!important;
+  height:100%!important;max-height:none!important;min-height:0!important;
+  width:100%;overflow:hidden!important;
+ }
+ .message-layout.show-chat .chat-head{
+  position:relative;top:auto;display:flex;flex-direction:column;
+  align-items:stretch;justify-content:flex-start;gap:.45rem;
+  flex-shrink:0;min-height:0;max-height:none;padding:.5rem .7rem;
+ }
+ .message-layout.show-chat .chat-identity{min-width:0}
+ .message-layout.show-chat .chat-tools{
+  display:flex;flex-wrap:nowrap!important;justify-content:flex-start;
+  width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;
+  gap:.4rem;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+ }
+ .message-layout.show-chat .chat-tools>*{flex:0 0 auto;white-space:nowrap}
+ .message-layout.show-chat .messages-list{
+  grid-row:5!important;min-height:0!important;height:auto!important;
+  max-height:none!important;overflow-y:auto!important;overscroll-behavior-y:contain;
+ }
+ .message-layout.show-chat .composer{
+  grid-row:7!important;min-height:0;max-height:min(36vh,230px);
+  overflow-y:auto;flex-shrink:0;padding:.55rem .7rem max(.55rem,env(safe-area-inset-bottom));
+ }
+ .message-layout.show-chat .composer textarea{min-height:40px;max-height:min(18vh,130px)}
+}

@@ -90,7 +90,7 @@
  document.addEventListener("visibilitychange",()=>{if(document.hidden&&focusMode)updateFullscreen();});
  // Direct table and invite URLs must land in the correct mode, not the local menu.
  const params=new URLSearchParams(location.search);
- activateMode(params.has("match")||params.has("invite")?"online":"local");
+ activateMode(params.has("match")||params.has("invite")||params.has("challenge")?"online":"local");
  window.CACCabinet=Object.freeze({activateMode,showMatch,setPlaying,get mode(){return currentMode;}});
  updateFullscreen();
 })();

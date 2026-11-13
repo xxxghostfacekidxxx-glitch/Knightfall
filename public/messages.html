@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Your Ash-Fall inbox. Messages, conversations, and whatever the hell is happening.">
 <title>Ash-Fall | Messages</title>
-<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-messaging3">
+<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-messaging4">
 </head>
 <body>
 <header class="kf-header"></header>
@@ -64,7 +64,7 @@
       <div id="conversations" class="conversation-list"></div>
     </aside>
     <section class="chat-panel">
-      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></div>
+      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></div>
       <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
         <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button>
@@ -122,6 +122,14 @@ let pendingAttachments=[],attachmentUploads=0,loadingOlder=false;let conversatio
 async function api(path,opts={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts,headers:{"content-type":"application/json",...(opts.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Request failed.");return d}
 function status(t,good=false){$("#status").textContent=t;$("#status").className="msg-status "+(good?"good":"")}
 function conversationName(c){return c?.kind==="group"?(c?.group_name||"Group conversation"):(c?.other_display_name||c?.other_username||"Conversation")}
+function safeMessageAvatar(c){
+ const url=String(c?.other_avatar_url||"");
+ return c?.kind!=="group"&&url.length<200000&&(/^(https:\/\/|\/[^/])/i.test(url)||/^data:image\/(?:png|jpeg|gif|webp);base64,[a-z0-9+/=]+$/i.test(url))?url:"";
+}
+function conversationAvatar(c,extra=""){
+ const url=safeMessageAvatar(c),initial=esc((conversationName(c).trim()[0]||"?").toUpperCase());
+ return '<span class="avatar '+extra+'">'+(url?'<img class="message-avatar-img" src="'+esc(url)+'" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="avatar-letter" hidden>'+initial+'</span>':'<span class="avatar-letter">'+initial+'</span>')+'</span>';
+}
 function relativeTime(value){const ms=Date.now()-new Date(value).getTime();if(!Number.isFinite(ms)||ms<0)return "recently";if(ms<60000)return "just now";if(ms<3600000)return Math.floor(ms/60000)+"m ago";if(ms<86400000)return Math.floor(ms/3600000)+"h ago";return new Date(value).toLocaleDateString([], {month:"short",day:"numeric"})}
 function presenceText(c){if(!c)return "● Offline status";if(c.kind==="group")return "● "+Number(c.online_count||0)+" online · "+Number(c.participant_count||0)+" members";if(c.other_is_online)return "● Online now";return c.other_last_seen_at?"Last active "+relativeTime(c.other_last_seen_at):"● Status unavailable"}
 function updatePresenceLabel(){const el=$("#presence-label");if(el)el.textContent=presenceText(activeConversation())}
@@ -182,7 +190,7 @@ function drawConversations(){
  const unreadButton=document.querySelector("[data-inbox-filter=\"unread\"]");
  if(unreadButton)unreadButton.textContent=unreadTotal?"Unread ("+unreadTotal+")":"Unread";
  const list=conversations.filter(x=>(String(x.group_name||"")+" "+String(x.other_username||"")+" "+String(x.other_display_name||"")+" "+String(x.last_body||"")).toLowerCase().includes(q)&&(inboxFilter!=="unread"||Number(x.unread_count)>0));
- $("#conversations").innerHTML=list.map(x=>'<button class="conversation '+(Number(x.id)===Number(currentId)?"active":"")+'" aria-current="'+(Number(x.id)===Number(currentId)?"true":"false")+'" data-conversation="'+x.id+'"><span class="avatar">'+esc((x.other_display_name||x.other_username||"?").slice(0,1).toUpperCase())+'</span><span class="conversation-copy"><strong>'+esc(conversationName(x))+'</strong><small>'+(x.kind==="group"?"GROUP · "+Number(x.participant_count||0)+" members":"@"+esc(x.other_username||""))+'</small><em>'+(conversationDrafts.get(Number(x.id))?'<b class="draft-marker">Draft · </b>'+esc((conversationDrafts.get(Number(x.id))||"").trim().slice(0,60)):esc(x.last_body||"Start a conversation"))+'</em></span><span class="conversation-tail">'+(x.last_message_at?'<time>'+esc(new Date(x.last_message_at).toLocaleDateString([], {month:"short",day:"numeric"}))+'</time>':"")+(x.muted_until&&new Date(x.muted_until)>new Date()?'<small class="muted-tag" aria-label="Notifications muted">MUTED</small>':"")+(x.messaging_blocked?'<small class="blocked-tag" aria-label="Messaging restricted">PAUSED</small>':"")+(Number(x.unread_count)>0?'<b class="unread" aria-label="'+Number(x.unread_count)+' unread messages">'+Number(x.unread_count)+'</b>':"")+"</span></button>").join("")||'<div class="empty inbox-empty"><span>✦</span><strong>Nothing here yet</strong><small>Try another search or start a new conversation.</small></div>'
+ $("#conversations").innerHTML=list.map(x=>'<button class="conversation '+(Number(x.id)===Number(currentId)?"active":"")+'" aria-current="'+(Number(x.id)===Number(currentId)?"true":"false")+'" data-conversation="'+x.id+'">'+conversationAvatar(x)+'<span class="conversation-copy"><strong>'+esc(conversationName(x))+'</strong><small>'+(x.kind==="group"?"GROUP · "+Number(x.participant_count||0)+" members":"@"+esc(x.other_username||""))+'</small><em>'+(conversationDrafts.get(Number(x.id))?'<b class="draft-marker">Draft · </b>'+esc((conversationDrafts.get(Number(x.id))||"").trim().slice(0,60)):esc(x.last_body||"Start a conversation"))+'</em></span><span class="conversation-tail">'+(x.last_message_at?'<time>'+esc(new Date(x.last_message_at).toLocaleDateString([], {month:"short",day:"numeric"}))+'</time>':"")+(x.muted_until&&new Date(x.muted_until)>new Date()?'<small class="muted-tag" aria-label="Notifications muted">MUTED</small>':"")+(x.messaging_blocked?'<small class="blocked-tag" aria-label="Messaging restricted">PAUSED</small>':"")+(Number(x.unread_count)>0?'<b class="unread" aria-label="'+Number(x.unread_count)+' unread messages">'+Number(x.unread_count)+'</b>':"")+"</span></button>").join("")||'<div class="empty inbox-empty"><span>✦</span><strong>Nothing here yet</strong><small>Try another search or start a new conversation.</small></div>'
 }
 function messageMarkup(m){const mine=Number(m.sender_id)===Number(currentUser.id),conversation=activeConversation(),read=mine&&(conversation?.other_last_read_message_id!=null?Number(conversation.other_last_read_message_id)>=Number(m.id):conversation?.other_last_read_at&&new Date(conversation.other_last_read_at)>=new Date(m.created_at)),delivery=mine&&Number(m.id)===Number(lastOwnMessageId)?(read?"Seen":"Sent"):"";return '<article class="message '+(mine?"mine":"theirs")+' '+(m.deleted_at?"deleted":"") + '" data-message="'+m.id+'" data-created-at="'+esc(m.created_at)+'"><div class="message-meta"><strong>'+esc(m.display_name||m.username||"Member")+'</strong><small>'+esc(fmt(m.created_at))+(m.edited_at?" · edited":"")+(delivery?' · <span class="message-delivery" aria-label="Message status">'+delivery+'</span>':"")+(read&&!delivery?" · seen":"")+'</small></div><p>'+esc(m.deleted_at?"[Message deleted]":m.body).replace(/\n/g,"<br>")+'</p>'+(!m.deleted_at?'<div class="message-attachments" data-attachments-for="'+m.id+'"></div><div class="message-reactions" data-reactions-for="'+m.id+'"><button class="reaction-add" data-reaction-picker="'+m.id+'" aria-label="React to message">＋ React</button><span class="reaction-options" data-reaction-options="'+m.id+'" hidden><button data-react="'+m.id+'" data-emoji="👍">👍</button><button data-react="'+m.id+'" data-emoji="❤️">❤️</button><button data-react="'+m.id+'" data-emoji="😂">😂</button><button data-react="'+m.id+'" data-emoji="😮">😮</button><button data-react="'+m.id+'" data-emoji="😢">😢</button><button data-react="'+m.id+'" data-emoji="😡">😡</button><button data-react="'+m.id+'" data-emoji="🔥">🔥</button><button data-react="'+m.id+'" data-emoji="🎉">🎉</button></span><span class="reaction-summary" data-reaction-summary="'+m.id+'"></span></div><div class="message-actions"><button type="button" data-copy-message="'+m.id+'" aria-label="Copy message text">Copy</button><button type="button" data-link-message="'+m.id+'" aria-label="Copy link to message">Link</button>'+(mine?'<button data-edit-message="'+m.id+'">Edit</button><button data-delete-message="'+m.id+'">Delete</button>':'<button data-report-message="'+m.id+'">Report</button>')+'</div>':"")+'</article>'}
 function activeConversation(){return conversations.find(x=>Number(x.id)===Number(currentId))}
@@ -202,6 +210,25 @@ async function loadConversations({openSelected=true}={}){const token=++inboxLoad
  conversations=d.conversations||[];
  if(selected&&!conversations.some(c=>Number(c.id)===Number(currentId)))conversations.push(selected);
  maybeNotifyUnread();drawConversations();updatePresenceLabel();if(openSelected&&currentId&&conversations.some(x=>Number(x.id)===Number(currentId)))await openConversation(currentId,{scroll:false});else if(!currentId){const requested=new URLSearchParams(location.search).get("conversation");if(requested&&conversations.some(x=>Number(x.id)===Number(requested))&&!new URLSearchParams(location.search).has("message"))await openConversation(Number(requested));}}
+async function refreshGameInvitesForConversation(c,token){
+ const cardLink=$("#chaos-card-chat-invite"),turnLink=$("#connect-four-chat-invite");
+ if(!c||c.kind==="group"||!Number.isSafeInteger(Number(c.other_user_id))||Number(c.other_user_id)<1)return;
+ const [cards,turns]=await Promise.allSettled([
+  api("/api/arcade/chaos-cards"),api("/api/arcade/turn-matches")
+ ]);
+ if(token!==conversationLoadToken||Number(currentId)!==Number(c.id))return;
+ if(cards.status==="fulfilled"){
+  const pending=(cards.value.matches||[]).find(match=>match.can_accept&&Number(match.seats?.[0]?.id)===Number(c.other_user_id));
+  if(pending&&cardLink){
+   cardLink.href="/arcade/hosted/cards-against-chaos/index.html?match="+encodeURIComponent(pending.id);
+   cardLink.textContent="🃏 Join Cards invite";cardLink.title="Join the Cards Against Chaos table you were invited to";
+  }
+ }
+ if(turns.status==="fulfilled"&&turnLink){
+  const pending=(turns.value.matches||[]).find(match=>match.status==="pending"&&Number(match.created_by)===Number(c.other_user_id)&&Number(match.player_two?.id)===Number(currentUser.id));
+  if(pending){turnLink.hidden=false;turnLink.href="/arcade/async-play.html?match="+encodeURIComponent(pending.id);}
+ }
+}
 async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMessageId=null}={}){
  const previousId=Number(currentId);const token=++conversationLoadToken;oldestId=null;loadingOlder=false;latestRenderedFingerprint=null;latestRenderedConversation=null;
  historyPinnedConversationId=beforeMessageId?Number(id):null;
@@ -212,14 +239,16 @@ async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMe
   $("#body").value=conversationDrafts.get(Number(id))||"";
   $("#body").style.height="auto";
   $("#character-count").textContent=$("#body").value.length.toLocaleString()+" / 4,000";
- }loading=true;currentId=Number(id);$("#typing-indicator").hidden=true;$("#typing-indicator").textContent="";lastTypingSentAt=0;$(".message-layout").classList.add("show-chat");drawConversations();const c=activeConversation();
+ }loading=true;currentId=Number(id);$("#typing-indicator").hidden=true;$("#typing-indicator").textContent="";lastTypingSentAt=0;$(".message-layout").classList.add("show-chat");syncMessagesViewport();drawConversations();const c=activeConversation();
  const cardLink=$("#chaos-card-chat-invite");
+ $("#connect-four-chat-invite").hidden=true;
  if(cardLink){
    const direct=c&&c.kind!=="group"&&c.other_username;
    cardLink.hidden=!direct;
-   if(direct)cardLink.href="/arcade/hosted/cards-against-chaos/index.html?invite="+encodeURIComponent(c.other_username);
+   if(direct){cardLink.href="/arcade/hosted/cards-against-chaos/index.html?challenge="+encodeURIComponent(c.other_username);cardLink.textContent="🃏 Challenge to Cards";cardLink.title="Create a Cards Against Chaos match and invite this friend";}
  }
- $("#chat-head").querySelector(".chat-identity").innerHTML='<span class="avatar chat-avatar">'+(c?.kind==="group"?"✦":esc((c?.other_display_name||c?.other_username||"?").slice(0,1).toUpperCase()))+'</span><span><strong>'+esc(conversationName(c))+'</strong><small>'+(c?.kind==="group"?"GROUP · "+Number(c?.participant_count||0)+" members":"@"+esc(c?.other_username||"")+" · "+(Number(c?.unread_count)>0?Number(c.unread_count)+" unread":"Direct message"))+'</small></span>';
+ if(c?.kind!=="group")void refreshGameInvitesForConversation(c,token);
+ $("#chat-head").querySelector(".chat-identity").innerHTML=conversationAvatar(c,"chat-avatar")+'<span><strong>'+esc(conversationName(c))+'</strong><small>'+(c?.kind==="group"?"GROUP · "+Number(c?.participant_count||0)+" members":"@"+esc(c?.other_username||"")+" · "+(Number(c?.unread_count)>0?Number(c.unread_count)+" unread":"Direct message"))+'</small></span>';
  $("#manage-group").hidden=c?.kind!=="group";updatePresenceLabel();$("#mute-chat").hidden=false;const muted=!!(c?.muted_until&&new Date(c.muted_until)>new Date());$("#mute-chat").dataset.muted=muted?"1":"0";$("#mute-chat").textContent=muted?"Unmute conversation":"Mute for "+({"60":"1h","480":"8h","1440":"24h","10080":"7d","43200":"30d"}[String($("#mute-duration").value)]||"24h");const restricted=!!Number(c?.messaging_blocked);$("#conversation-restricted").hidden=!restricted;$("#composer").hidden=restricted;$("#body").disabled=restricted||sendingConversation===Number(id);$("#body").placeholder="Message "+conversationName(c)+"…";$("#load-older").hidden=true;$("#jump-latest").hidden=!beforeMessageId;$("#messages").innerHTML='<div class="empty">Loading conversation…</div>';
  try{const initialPath="/api/messages/conversations/"+Number(id)+"?limit="+MESSAGE_PAGE_SIZE+
     (Number.isSafeInteger(Number(beforeMessageId))&&Number(beforeMessageId)>0?"&before="+encodeURIComponent(Number(beforeMessageId)+1):"");
@@ -294,31 +323,45 @@ $("#composer").onsubmit=async e=>{
  e.preventDefault();if(!currentId||sendingConversation!==null||Number(activeConversation()?.messaging_blocked))return;
  const conversationId=Number(currentId),field=$("#body"),draft=field.value,body=draft.trim(),attachment_ids=pendingAttachments.map(x=>Number(x.id));
  if(!body&&!attachment_ids.length)return;
- if(attachmentUploads){status("Wait for the current upload to finish.");return}
+ if(attachmentUploads){status("Wait for the current upload to finish.");return;}
  sendingConversation=conversationId;sendingAttachmentIds=new Set(attachment_ids);
- const send=e.submitter;field.disabled=true;if(send){send.disabled=true;send.innerHTML="<span>Sending…</span>"}
+ const send=e.submitter||$("#composer .primary");
+ if(send){send.disabled=true;send.innerHTML="<span>Sending…</span>";}
  let sent=false;
  try{
-  clearTimeout(typingHandle);await sendTypingState(false,conversationId);
-  await api("/api/messages/conversations/"+conversationId,{method:"POST",body:JSON.stringify({body,attachment_ids})});sent=true;
+  // Typing cleanup is best effort, never a prerequisite for sending.
+  clearTimeout(typingHandle);void sendTypingState(false,conversationId);
+  await api("/api/messages/conversations/"+conversationId,{method:"POST",body:JSON.stringify({body,attachment_ids})});
+  sent=true;
   if(conversationDrafts.get(conversationId)===draft){conversationDrafts.delete(conversationId);persistConversationDrafts();}
   if(Number(currentId)===conversationId){
    pendingAttachments=pendingAttachments.filter(x=>!sendingAttachmentIds.has(Number(x.id)));drawPendingAttachments();
    if(field.value===draft){field.value="";field.style.height="auto";$("#character-count").textContent="0 / 4,000";}
    status("Message sent.",true);
   }
-  try{await loadConversations({openSelected:false});if(Number(currentId)===conversationId){
-    if(historyPinnedConversationId===conversationId)await openConversation(conversationId);
-    else await refreshCurrent();
-   }}
-  catch{if(Number(currentId)===conversationId)status("Message sent, but the inbox could not refresh. Use Refresh to update it.")}
- }catch(x){if(Number(currentId)===conversationId)status(x.message+(sent?"":" Your draft has been kept."));else status("Message to the previous conversation failed. Its text draft has been kept.")}
- finally{
-  sendingConversation=null;sendingAttachmentIds.clear();field.disabled=!!Number(activeConversation()?.messaging_blocked);
-  if(send){send.disabled=false;send.innerHTML='<span>Send</span> <span aria-hidden="true">↗</span>'}
-  if(Number(currentId)===conversationId)field.focus();
+ }catch(error){
+  if(Number(currentId)===conversationId)status(error.message+" Your unsent draft has been kept.");
+  else status("Message to the previous conversation failed. Its draft has been kept.");
+ }finally{
+  // Unlock immediately after POST: slow refresh must not block the second send.
+  sendingConversation=null;sendingAttachmentIds.clear();
+  field.disabled=!!Number(activeConversation()?.messaging_blocked);
+  if(send){send.disabled=false;send.innerHTML='<span>Send</span> <span aria-hidden="true">↗</span>';}
+  if(Number(currentId)===conversationId)field.focus({preventScroll:true});
+ }
+ if(sent){
+  void (async()=>{
+   try{
+    await loadConversations({openSelected:false});
+    if(Number(currentId)===conversationId){
+     if(historyPinnedConversationId===conversationId)await openConversation(conversationId);
+     else await refreshCurrent();
+    }
+   }catch(error){console.warn("message_post_send_refresh_failed",String(error));}
+  })();
  }
 };
+
 function drawPendingAttachments(){const box=$("#pending-attachments");if(!pendingAttachments.length){box.hidden=true;box.innerHTML="";return}box.hidden=false;box.innerHTML=pendingAttachments.map(a=>'<span class="pending-attachment"><span>📎 '+esc(a.filename)+' · '+(Number(a.byte_size)/1048576).toFixed(1)+' MB</span><button type="button" data-pending-remove="'+Number(a.id)+'" aria-label="Remove '+esc(a.filename)+'">×</button></span>').join("")}
 async function uploadAttachment(file,conversationId){const form=new FormData();form.append("file",file);const response=await fetch(API+"/api/messages/conversations/"+conversationId+"/attachments",{method:"POST",credentials:"include",cache:"no-store",body:form});const data=await response.json().catch(()=>({}));if(!response.ok)throw Error(data.error||"Upload failed.");return data}
 async function deletePendingAttachment(id){try{await api("/api/messages/attachments/"+id,{method:"DELETE"})}catch(e){console.warn("Could not remove pending attachment",e.message)}}
@@ -541,7 +584,23 @@ $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archiv
  if(new URLSearchParams(location.search).has("message"))await followNotificationConversation();
  startMessageLive();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight||document.hidden)return;pollInFlight=true;try{await loadConversations({openSelected:false});await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)liveRefresh()},12000);
  typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
-function syncMessagesViewport(){const height=window.visualViewport?.height||window.innerHeight;if(height>0)document.documentElement.style.setProperty("--messages-visible-height",height+"px")}syncMessagesViewport();window.addEventListener("resize",syncMessagesViewport,{passive:true});window.visualViewport?.addEventListener("resize",syncMessagesViewport,{passive:true});
+function syncMessagesViewport(){
+ const viewport=window.visualViewport,visibleHeight=viewport?.height||window.innerHeight;
+ const offsetTop=viewport?.offsetTop||0,header=document.querySelector(".kf-header");
+ const headerBottom=header?.getBoundingClientRect().bottom||0;
+ const top=Math.max(offsetTop,Math.min(headerBottom,offsetTop+visibleHeight-140));
+ const available=Math.max(140,offsetTop+visibleHeight-top);
+ const root=document.documentElement;
+ root.style.setProperty("--messages-visible-height",visibleHeight+"px");
+ root.style.setProperty("--messages-chat-top",top+"px");
+ root.style.setProperty("--messages-chat-height",available+"px");
+}
+syncMessagesViewport();
+window.addEventListener("resize",syncMessagesViewport,{passive:true});
+window.addEventListener("scroll",syncMessagesViewport,{passive:true});
+window.visualViewport?.addEventListener("resize",syncMessagesViewport,{passive:true});
+window.visualViewport?.addEventListener("scroll",syncMessagesViewport,{passive:true});
+if(typeof ResizeObserver==="function"){const header=document.querySelector(".kf-header");if(header)new ResizeObserver(syncMessagesViewport).observe(header);}
 async function sendActivityPing(){if(document.hidden||Date.now()-lastActivityPing<45000)return;lastActivityPing=Date.now();try{await api("/api/activity/ping",{method:"POST",body:"{}"})}catch(error){console.warn("Presence heartbeat failed",error)}}
 $("#enable-notifications").addEventListener("click",()=>{location.href="/notifications.html"});
 $("#phone-push-help").addEventListener("click",()=>{location.href="/notifications.html"});
