@@ -670,3 +670,7 @@
 .chaos-card-chat-invite:hover,.chaos-card-chat-invite:focus-visible{background:#4a214f;border-color:#c6ff45}
 .chaos-card-chat-invite[hidden]{display:none!important}
 @media(max-width:650px){.chaos-card-chat-invite{min-height:40px;padding:.48rem .6rem;font-size:.75rem}}
+
+/* Saved-message drafts are distinguishable without disguising new-message alerts. */
+.messages-shell .draft-marker{font-size:.72rem;font-weight:900;color:#d9ff51}
+.messages-shell .conversation:not(.active) .draft-marker{color:#ff9fe5}

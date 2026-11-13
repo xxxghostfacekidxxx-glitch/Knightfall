@@ -38,8 +38,9 @@
   };
   async function openMemo(){
     // Keep one floating panel open at a time, so page controls stay accessible.
-    close();
+    close({restoreFocus:false});
     memoPanel.hidden=false;memoPanel.setAttribute("aria-hidden","false");
+    window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"memo-pad"}}));
     memoToggle.setAttribute("aria-expanded","true");
     memoToggle.setAttribute("aria-label","Close Memo Pad");
     if(!memoMounted){
@@ -81,8 +82,14 @@
   const key=id=>"missChaosPresenceConversation:"+String(id);
   const draftKey="missChaosPresenceDraft";
   try{input.value=sessionStorage.getItem(draftKey)||"";}catch(_){}
-  function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");input.focus({preventScroll:true});}
-  function close(){try{sessionStorage.setItem(draftKey,input.value);}catch(_){} panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");launcher.focus({preventScroll:true});}
+  function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));input.focus({preventScroll:true});}
+  function close({restoreFocus=true}={}){try{sessionStorage.setItem(draftKey,input.value);}catch(_){} panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
+  window.addEventListener("kf:floating-panel-open",event=>{
+    if(event.detail?.panel==="member-chat"){
+      if(!panel.hidden)close({restoreFocus:false});
+      if(!memoPanel.hidden)closeMemo();
+    }
+  });
   function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);messages.scrollTop=messages.scrollHeight;return el;}
   async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
   async function ensureAccount(){if(userId)return true;let d;try{d=await request("/api/auth/me");}catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}if(!d.user){if(!messages.querySelector("[data-mc-signin]")){add("system","Sign in to save your conversations and chat with me.");const link=document.createElement("a");link.dataset.mcSignin="true";link.href="/auth.html?next="+encodeURIComponent(location.pathname+location.search);link.textContent=" Sign in to Ash-Fall ↗";messages.append(link);messages.scrollTop=messages.scrollHeight;}return false;}userId=d.user.id||d.user.user_id||d.user.username||"member";conversationId=sessionStorage.getItem(key(userId))||"";return true;}
