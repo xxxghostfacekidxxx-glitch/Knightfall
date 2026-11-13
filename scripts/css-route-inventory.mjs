@@ -45,6 +45,17 @@ const cssReferences = css.sort().map(path => {
   return { css: path, references: dependents.length, users: dependents.slice(0, 8) };
 });
 const orphanCandidates = cssReferences.filter(entry => entry.references === 0).map(entry => entry.css);
+
+// Include CSS deep inside hosted games. Files named "style.css" can be referenced
+// by relative paths, so use source filenames as a conservative safety signal.
+const nestedCss = [...publicPaths].filter(path => path.includes("/") && path.endsWith(".css")).sort();
+const nestedUnused = nestedCss.filter(path => {
+  const filename = basename(path);
+  return !sources.some(source => source.path !== path && source.body.includes(filename));
+});
+console.log("NESTED CSS FILES: " + nestedCss.length);
+console.log("NESTED CSS ZERO-REFERENCE CANDIDATES (MANUAL REVIEW): " + JSON.stringify(nestedUnused));
+
 console.log("ROOT CSS FILES: " + css.length);
 console.log("APP SOURCE FILES SCANNED: " + sources.length);
 console.log("CSS FILES WITH ZERO APP REFERENCES (REVIEW BEFORE DELETE): " + JSON.stringify(orphanCandidates));
