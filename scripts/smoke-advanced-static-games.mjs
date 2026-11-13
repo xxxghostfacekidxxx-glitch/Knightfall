@@ -6,7 +6,7 @@ const failures=[];
 const server=process.env.GAME_BASE_URL?null:spawn('python3',['-m','http.server','18741','--directory','public'],{stdio:'ignore'});
 let browser;await mkdir('advanced-game-evidence',{recursive:true});
 try{
- for(let i=0;i<40;i++){try{if((await fetch(base+'/arcade-30-games.html')).ok)break}catch{}await new Promise(r=>setTimeout(r,250))}
+ for(let i=0;i<40;i++){try{if((await fetch(base+'/chaos-cartridge.html')).ok)break}catch{}await new Promise(r=>setTimeout(r,250))}
  browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  for(const slug of ['browserquest-solo','interstellar-armada','openfront-solo']){
   const page=await browser.newPage({viewport:{width:1280,height:800}});const errors=[];

@@ -42,11 +42,11 @@ import re
 html=re.sub(r'<script>\s*if\(!window\.jQuery\).*?</script>', '', html, flags=re.S)
 html=re.sub(r'<script[^>]*src="https://www\.googletagmanager\.com/gtag/js[^"]*"[^>]*></script>', '', html)
 html=re.sub(r'<script>\s*window\.dataLayer.*?</script>', '', html, flags=re.S)
-html=html.replace('<body>', '<body><nav style="padding:10px;background:#15111a"><a style="color:#a8ff48" href="/arcade-30-games.html">← Chaos Cartridge</a> · <a style="color:#ff5edb" href="LICENSE.md">MPL 2.0</a></nav>', 1)
+html=html.replace('<body>', '<body><nav style="padding:10px;background:#15111a"><a style="color:#a8ff48" href="/chaos-cartridge.html">← Chaos Cartridge</a> · <a style="color:#ff5edb" href="LICENSE.md">MPL 2.0</a></nav>', 1)
 adr.write_text(html)
 trust=Path("public/arcade/hosted/evolution-of-trust/index.html")
 html=trust.read_text()
-html=html.replace('<body>', '<body><nav style="position:relative;z-index:100;padding:10px;background:#15111a"><a style="color:#a8ff48" href="/arcade-30-games.html">← Chaos Cartridge</a> · <a style="color:#ff5edb" href="LICENSE">CC0</a></nav>', 1)
+html=html.replace('<body>', '<body><nav style="position:relative;z-index:100;padding:10px;background:#15111a"><a style="color:#a8ff48" href="/chaos-cartridge.html">← Chaos Cartridge</a> · <a style="color:#ff5edb" href="LICENSE">CC0</a></nav>', 1)
 trust.write_text(html)
 # Upstream's effects include BY-NC and Sampling+ material. Substitute the
 # explicitly credited CC0 coin-get effect for every non-music effect so no

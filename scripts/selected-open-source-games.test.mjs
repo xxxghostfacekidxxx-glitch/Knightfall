@@ -14,7 +14,7 @@ test("both imported open-source games have complete local script and stylesheet 
    if(ref.startsWith("/")){if(ref.startsWith("/arcade/"))await access(new URL(ref.slice(1),root));continue;}
    await access(new URL(base+ref,root));
   }
-  assert.ok(html.includes("/arcade-30-games.html"),game+" missing arcade navigation");
+  assert.ok(html.includes("/chaos-cartridge.html"),game+" missing arcade navigation");
  }
 });
 test("upstream license notices are preserved",async()=>{

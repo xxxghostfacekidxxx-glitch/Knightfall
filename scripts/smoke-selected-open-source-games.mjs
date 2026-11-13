@@ -10,7 +10,7 @@ let browser;
 try {
   for (let i = 0; i < 40; i++) {
     try {
-      const res = await fetch(`http://127.0.0.1:${port}/arcade-30-games.html`);
+      const res = await fetch(`http://127.0.0.1:${port}/chaos-cartridge.html`);
       if (res.ok) break;
     } catch {}
     await sleep(250);

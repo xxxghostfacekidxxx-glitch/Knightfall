@@ -50,3 +50,4 @@ console.log("HTML LINKS TO RETIRED ARCADE DIRECTORIES: " + JSON.stringify(pageLi
 for (const record of cssReferences.filter(entry => entry.references <= 1)) {
   console.log("LOW-REFERENCE CSS: " + JSON.stringify(record));
 }
+\nif (orphanCandidates.length || pageLinks.length) {\n  console.error("Navigation/CSS release guard failed: unused stylesheets or retired arcade links remain.");\n  process.exitCode = 1;\n}\n
