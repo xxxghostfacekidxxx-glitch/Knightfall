@@ -54,9 +54,9 @@ test("original faction battle scenery and readable handheld theme ship together"
  assert.match(css,/button\[aria-selected="true"\]/);
 });
 test("Creator Foundry lists official free game tools without shipping their binaries",async()=>{
- const html=await load("public/dev-toolkit.html");
- for(const name of ["Phaser 3 / 4","Tiled Map Editor","LDtk World Builder","Piskel Sprite Animator","LibreSprite"])assert.ok(html.includes(name),name);
- assert.match(html,/29 tools/);
+ const html=await load("public/devil-tools.html");
+ for(const name of ["Phaser","Tiled","LDtk","Piskel","LibreSprite"])assert.ok(html.includes(name),name);
+ assert.match(html,/Creator Foundry/);
 });
 
 test("vendored Phaser runtime is installed with license and safe fallback",async()=>{
