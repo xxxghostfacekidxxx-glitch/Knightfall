@@ -145,7 +145,7 @@ body:has(#studio-appearance) .profile-shell h1,body:has(#studio-appearance) .pro
 .studio-photo-empty{grid-column:1/-1;margin:0;padding:26px 18px;border:1px dashed #79608d;border-radius:12px;text-align:center;color:#baadc9;font-size:.83rem}
 .studio-photo-note{font-size:.73rem;line-height:1.5;margin:10px 0 0}
 @media(max-width:900px){#studio-photo-upload{grid-template-columns:repeat(2,minmax(0,1fr))}#studio-photo-upload button{grid-column:1/-1}}
-@media(max-width:580px){#studio-photo-upload{grid-template-columns:1fr}#studio-photo-upload button{grid-column:auto}#studio-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.studio-photo-controls{grid-template-columns:1fr}.studio-photo-button{min-height:37px}.studio-photo-card{border-radius:9px}}
+@media(max-width:580px){#studio-photo-upload{grid-template-columns:1fr}#studio-photo-upload button{grid-column:auto}#studio-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.studio-photo-button{min-height:37px}.studio-photo-card{border-radius:9px}}
 
 /* In-place gallery caption editing, visually separate from permanent delete. */
 .studio-photo-caption-edit{display:grid;gap:8px;padding:10px;margin:0 9px 9px;border:1px solid #9b64a385;border-radius:10px;background:#151523}

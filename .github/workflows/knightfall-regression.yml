@@ -47,7 +47,7 @@ jobs:
       - name: Inventory live stylesheet references and duplicate arcade entry links
         run: node scripts/css-route-inventory.mjs
       - name: Inventory exact CSS rule duplication
-        run: node scripts/css-rule-dedup.mjs
+        run: node scripts/css-rule-dedup.mjs --check
       - name: Run focused regression tests
         run: |
           node --test scripts/public-legal-and-shop-theme.test.mjs
