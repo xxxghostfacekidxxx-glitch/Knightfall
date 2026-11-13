@@ -24,7 +24,7 @@ body:not(.profile-custom-theme) {
     radial-gradient(ellipse at 90% 75%,rgba(198,255,69,.075),transparent 41%),
     radial-gradient(ellipse at 96% 2%,rgba(255,227,107,.034),transparent 24%)!important;
 }
-body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu,.kf-nav-more-menu) {
+body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu) {
   font-synthesis:none;
 }
 .kf-header {
@@ -42,7 +42,7 @@ body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu,.kf-nav-m
   width:74%;
   background:linear-gradient(90deg,var(--kf-neon-pink),var(--kf-neon-lime) 72%,var(--kf-yellow),transparent)!important;
 }
-.kf-nav :where(a,.kf-nav-group>summary,.kf-nav-more summary,.kf-nav-toggle) {
+.kf-nav :where(a,.kf-nav-group>summary,.kf-nav-toggle) {
   border-radius:10px;
 }
 .kf-nav :where(a,.kf-nav-group>summary):focus-visible,
@@ -56,7 +56,7 @@ body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu,.kf-nav-m
 .kf-nav-group:has(a[aria-current="page"])>summary {
   box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
 }
-.kf-nav-menu,.kf-nav-more-menu {
+.kf-nav-menu {
   border:1px solid var(--kf-chrome-line)!important;
   border-radius:14px!important;
   box-shadow:0 20px 44px #000b,0 0 22px rgba(255,85,216,.08)!important;
@@ -162,7 +162,7 @@ body:not(.profile-custom-theme) :where(.section-title,.panel-head h2,.chat-headi
 }
 @media(max-width:760px) {
   .kf-header {min-height:64px}
-  .kf-nav-menu,.kf-nav-more-menu {box-shadow:none!important}
+  .kf-nav-menu {box-shadow:none!important}
   body:not(.profile-custom-theme) :where(.entry-card,.panel,.card,.arcade-card,.game-card) {
     border-radius:14px;
   }
