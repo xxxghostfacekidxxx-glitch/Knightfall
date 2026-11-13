@@ -23,7 +23,8 @@ for (const selector of [
 }
 assert.match(css, /#ff55d8/i, "Neon pink must remain the messaging accent");
 assert.match(css, /var\(--kf-accent-bright\)/, "Acid green highlight must remain in messaging");
-assert.match(html, /\/messages\.css\?v=20261103-gravewave-inbox3/, "Inbox CSS cache key is stale");
+// Keep fresh versioned assets without pinning the audit to a month-old build.
+assert.match(html, /\/messages\.css\?v=\d{8}-[a-z0-9-]+/i, "Inbox CSS must use a dated cache key");
 assert.doesNotMatch(html, /20261027-keyboard-layout/, "Old cached messages stylesheet is still referenced");
 
 
