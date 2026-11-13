@@ -1,5 +1,9 @@
 /homepage / 301
 /homepage.html / 301
+/arcade-30-games /chaos-cartridge 301
+/arcade-30-games.html /chaos-cartridge.html 301
+/arcade-card-board /chaos-cartridge 301
+/arcade-card-board.html /chaos-cartridge.html 301
 /arcade/hosted/ball-and-wall/index.html /arcade/hosted/afterburn-breakout/index.html 301
 /arcade/hosted/ember-echo/index.html /arcade/hosted/cursed-circuit/index.html 301
 /arcade/hosted/void-sequence/index.html /arcade/hosted/cursed-circuit/index.html 301
