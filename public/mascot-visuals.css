@@ -75,3 +75,17 @@
 .trials-meta[data-affinity="neon"]{--creature-sky:#2a1d38;--creature-floor:#1c202d;--creature-mid:#f25ca7;--creature-light:#b3f0be}
 .trials-meta[data-affinity]{border-color:var(--creature-mid);background:linear-gradient(120deg,var(--creature-sky),var(--creature-floor))}
 .trials-meta[data-affinity] .trials-level{color:var(--creature-light)}
+
+/* Color-grade inherited legacy character art so Neon alone stays fluorescent.
+ * The original silhouettes remain readable while the non-Neon types are muted. */
+.pet-render-v2[data-affinity]:not([data-affinity="neon"])>img.pet-base-image {
+ filter:saturate(.72) contrast(1.07) drop-shadow(0 14px 8px #06060bcc) drop-shadow(0 0 3px color-mix(in srgb,var(--creature-light),transparent 62%))!important
+}
+.pet-render-v2[data-affinity="wildwood"]>img.pet-base-image{filter:saturate(.7) sepia(.12) contrast(1.08) drop-shadow(0 14px 8px #06060bcc)!important}
+.pet-render-v2[data-affinity="tidal"]>img.pet-base-image{filter:saturate(.76) hue-rotate(-7deg) contrast(1.08) drop-shadow(0 14px 8px #06060bcc)!important}
+.pet-render-v2[data-affinity="stone"]>img.pet-base-image{filter:saturate(.46) contrast(1.12) drop-shadow(0 14px 8px #06060bcc)!important}
+.pet-render-v2[data-affinity="feral"]>img.pet-base-image{filter:saturate(.61) sepia(.11) contrast(1.08) drop-shadow(0 14px 8px #06060bcc)!important}
+.pet-render-v2[data-affinity="spectral"]>img.pet-base-image{filter:saturate(.66) contrast(1.03) drop-shadow(0 14px 8px #06060bcc)!important}
+.pet-render-v2[data-affinity="neon"]>img.pet-base-image{filter:saturate(1.14) drop-shadow(0 13px 8px #06060bcc) drop-shadow(0 0 11px #f25ca75a)!important}
+.room-avatar[data-affinity]:not([data-affinity="neon"])>#room-pet-image{filter:saturate(.75) contrast(1.07) drop-shadow(0 13px 9px #04050beb)!important}
+.mascot-profile-pet[data-affinity]:not([data-affinity="neon"]) .mascot-profile-master{filter:saturate(.75) contrast(1.07) drop-shadow(0 8px 7px #0009)!important}
