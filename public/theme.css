@@ -37,7 +37,6 @@
   .kf-nav a{transition:none}
 }
 .kf-announcement,.kf-maintenance{position:relative;z-index:35;display:flex;gap:.7rem;align-items:center;justify-content:center;padding:.7rem 1rem;border-bottom:1px solid rgba(255,85,216,.35);background:#0d0d0d;color:#ddd;text-align:center;font-size:.78rem}.kf-announcement strong{color:var(--kf-accent-bright)}.kf-announcement span{color:#aaa}.kf-maintenance{background:rgba(255,85,216,.12);color:#c6ff45}@media(max-width:700px){.kf-announcement,.kf-maintenance{align-items:flex-start;flex-direction:column;gap:.2rem;text-align:left}}
-.kf-install-app{margin-left:.25rem;padding:.5rem .75rem;border:1px solid rgba(168,255,62,.55);border-radius:7px;background:rgba(255,85,216,.14);color:#c6ff45;font:inherit;font-size:.78rem;cursor:pointer}.kf-install-app:hover{background:rgba(255,85,216,.25);color:#fff}.kf-install-app[hidden]{display:none}@media(max-width:760px){.kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}}
 
 
 /* Compact secondary navigation keeps the main paths visible without turning the header into a sitemap. */
@@ -70,7 +69,6 @@
 .kf-nav-menu .kf-notify-badge[hidden]{display:none}
 .kf-profile-menu{min-width:230px;max-height:min(70vh,560px);overflow-y:auto}
 .kf-nav-menu .kf-admin-link:not([hidden]),.kf-nav-menu .kf-mod-link:not([hidden]),.kf-nav-menu .kf-recovery-link:not([hidden]){color:var(--kf-accent-bright)}
-.kf-install-app{white-space:nowrap}
 @media(max-width:900px) and (min-width:761px){
  .kf-header{gap:.5rem;padding:.7rem 1rem}
  .kf-brand{letter-spacing:.1em}
@@ -86,7 +84,6 @@
  .kf-nav-group{width:100%}
  .kf-nav-menu,.kf-profile-menu{position:static;min-width:0;width:100%;max-height:none;overflow:visible;margin:.15rem 0 .45rem;padding:.35rem;background:#070707;border-color:#242424;box-shadow:none;backdrop-filter:none}
  .kf-nav-menu a{white-space:normal;padding:.75rem .8rem}
- .kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}
 }
 @media(prefers-reduced-motion:reduce){.kf-nav-primary,.kf-nav-menu a{transition:none}}
 
@@ -97,17 +94,10 @@
 .kf-brand{ text-shadow:0 0 24px rgba(255,85,216,.18) }
 .kf-nav a:hover,.kf-nav a:focus-visible{box-shadow:0 0 18px rgba(255,85,216,.07)}
 .kf-announcement,.kf-maintenance{border-bottom-color:rgba(255,85,216,.35)}
-.kf-install-app{background:rgba(255,85,216,.14);color:#e8b5f5}
-.kf-install-app:hover{background:rgba(255,85,216,.25)}
 .kf-nav-menu .kf-notify-badge{background:var(--kf-accent);color:#100804}
 
-/* High-visibility install action: always present, not hidden until the browser offers a prompt. */
-.kf-nav .kf-install-app{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:44px;padding:.7rem 1rem;margin-left:.35rem;border:1px solid #c6ff45;border-radius:10px;background:linear-gradient(125deg,#c6ff45 0%,#9cff38 45%,#ff2f92 145%);color:#090909;font-size:.82rem;font-weight:950;letter-spacing:.015em;box-shadow:0 0 0 1px #c6ff4544,0 0 20px #c6ff4530,0 0 24px #ff2f9220;text-shadow:none;animation:kf-install-pulse 2.8s ease-in-out infinite}
-.kf-nav .kf-install-app:hover,.kf-nav .kf-install-app:focus-visible{border-color:#fff;background:linear-gradient(125deg,#e3ff9e,#c6ff45 45%,#ff62ad 145%);color:#000;transform:translateY(-1px);box-shadow:0 0 0 2px #c6ff4555,0 0 28px #c6ff4566,0 0 34px #ff2f9244}
-.kf-nav .kf-install-app[hidden]{display:none}
-@keyframes kf-install-pulse{0%,100%{box-shadow:0 0 0 1px #c6ff4533,0 0 14px #c6ff4522,0 0 18px #ff2f9218}50%{box-shadow:0 0 0 2px #c6ff4566,0 0 24px #c6ff4544,0 0 26px #ff2f9230}}
-@media(max-width:760px){.kf-nav .kf-install-app{width:100%;justify-content:center;min-height:48px;margin:.45rem 0;padding:.85rem;font-size:.9rem}}
-@media(prefers-reduced-motion:reduce){.kf-nav .kf-install-app{animation:none}}
+
+
 
 /* Shared navigation and content rhythm, 2026-10-26. */
 .kf-header{min-height:70px;padding-block:.65rem}
@@ -125,7 +115,6 @@ img,video,iframe{max-width:100%}
  .kf-brand{letter-spacing:.08em}
  .kf-nav{gap:.1rem}
  .kf-nav-primary,.kf-nav-group>summary{padding:.5rem .55rem;font-size:.74rem}
- .kf-nav .kf-install-app{padding:.6rem .65rem;margin-left:.1rem}
 }
 @media(max-width:760px){
  .kf-header{position:sticky;top:0;min-height:64px}
@@ -148,7 +137,6 @@ img,video,iframe{max-width:100%}
  .kf-nav-group{width:100%}
  .kf-nav-menu,.kf-profile-menu{position:static;width:100%;max-width:none;min-width:0;max-height:none;overflow:visible;margin:.15rem 0 .45rem;padding:.35rem;background:#070707;border-color:#242424;box-shadow:none}
  .kf-nav-menu a{white-space:normal}
- .kf-nav .kf-install-app{width:100%;margin:.3rem 0;justify-content:center}
 }
 
 /* Honor authenticated navigation visibility even when flex/grid rules apply. */
@@ -180,7 +168,6 @@ main:focus{outline:none}
  .kf-nav-group{width:100%}
  .kf-nav-menu,.kf-profile-menu{position:static;min-width:0;width:100%;max-height:none;overflow:visible;margin:.15rem 0 .45rem;padding:.35rem;background:#070707;border-color:#242424;box-shadow:none;backdrop-filter:none}
  .kf-nav-menu a{white-space:normal;padding:.75rem .8rem}
- .kf-install-app{width:100%;margin:.25rem 0;text-align:left;padding:.75rem}
 }
 
 

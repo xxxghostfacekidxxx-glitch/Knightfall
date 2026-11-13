@@ -28,7 +28,6 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 .kf-brand{color:#fff!important;text-shadow:0 0 16px rgba(255,85,216,.3)!important}
 .kf-brand b{color:#c6ff45!important}
 .kf-nav a:hover,.kf-nav-group[open]>summary,.kf-nav-primary:hover{color:#c6ff45!important;border-color:#ff55d8!important;background:rgba(255,85,216,.1)!important}
-.kf-install-app{background:rgba(198,255,69,.12)!important;color:#c6ff45!important;border-color:#c6ff45!important}
 .kf-announcement,.kf-maintenance{border-bottom-color:#ff55d8!important;background:#160e22!important;color:#f8dafa!important}
 #ashfall-support-footer{background:#0f0c1b!important;border-top:1px solid #ff55d8!important;color:#d8cde0!important}
 #ashfall-support-footer a,#ashfall-shop-link{color:#c6ff45!important}
@@ -75,7 +74,6 @@ body{background-color:#070710!important;background-image:radial-gradient(ellipse
 body:not(.profile-custom-theme) :is(.kf-header,.kf-nav-menu,.kf-nav-more-menu,.kf-nav.open){border-color:#65316f!important;background-color:#100c1c!important}
 body:not(.profile-custom-theme) :is(.kf-nav-toggle,.kf-nav-group>summary,.kf-nav-more summary){border-color:#65316f!important;color:#f9f3ff!important}
 body:not(.profile-custom-theme) :is(.kf-nav a[aria-current="page"],.kf-nav-section-current,.kf-nav-group[open]>summary){color:#c6ff45!important;background:rgba(255,85,216,.15)!important;border-color:#ff55d8!important}
-body:not(.profile-custom-theme) :is(.kf-install-app,.kf-nav .kf-install-app){color:#090911!important;border-color:#c6ff45!important;background:linear-gradient(125deg,#c6ff45,#9cff38)!important}
 body:not(.profile-custom-theme) :is(.tab[aria-selected="true"],.tabs .active){background:rgba(255,85,216,.18)!important;color:#c6ff45!important;border-color:#ff55d8!important}
 body:not(.profile-custom-theme) :is(.primary,.af-button-primary,button[type="submit"]:not(.danger)){background:linear-gradient(135deg,#ff55d8,#b728a1)!important;border-color:#ff55d8!important;color:#15071b!important}
 body:not(.profile-custom-theme) :is(.entry-card,.card,.panel,.game-card,.arcade-card,.cabinet){border-color:#65316f!important}

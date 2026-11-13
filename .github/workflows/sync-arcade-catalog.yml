@@ -1,4 +1,4 @@
-name: Sync Generated Arcade Directories
+name: Sync Canonical Arcade Directory
 on:
   push:
     branches: [main]
@@ -22,16 +22,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Generate both arcade directories
+      - name: Generate canonical Chaos Cartridge directory
         run: node scripts/build-arcade-catalog.mjs
       - name: Commit generated pages when changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/chaos-cartridge.html public/arcade-30-games.html
+          git add public/chaos-cartridge.html
           if git diff --cached --quiet; then
-            echo "Catalog pages already synchronized"
+            echo "Catalog page already synchronized"
           else
-            git commit -m "Sync generated arcade directories with catalog"
+            git commit -m "Sync canonical arcade directory with catalog"
             git push origin HEAD:main
           fi

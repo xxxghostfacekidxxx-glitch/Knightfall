@@ -270,7 +270,6 @@
         </div>
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/auth.html">Sign In</a>
-      <button class="kf-install-app" type="button" aria-label="Install Ash-Fall app">⬇ <span>Install App</span></button>
     </nav>
     <a class="kf-lunar-strip" href="/moonology.html">
       <span class="kf-lunar-disks" aria-hidden="true"></span>
@@ -307,26 +306,8 @@
     });
   });
   const toggle = header.querySelector(".kf-nav-toggle");
-  const installButton = header.querySelector(".kf-install-app");
   const profileGroup = nav.querySelector(".kf-profile-group");
   const badge = nav.querySelector(".kf-notify-badge");
-  let installPrompt = null;
-
-  window.addEventListener("beforeinstallprompt", event => {
-    event.preventDefault(); installPrompt = event;
-    if (installButton) { installButton.hidden = false; installButton.innerHTML = "⬇ <span>Install Ash-Fall</span>"; }
-  });
-  installButton?.addEventListener("click", async () => {
-    if (!installPrompt) {
-      alert("To install Ash-Fall, open your browser menu (⋮ on Android/Chrome or Share on iPhone), then choose Install app or Add to Home Screen. If Ash-Fall is already installed, open it from your home screen.");
-      return;
-    }
-    installPrompt.prompt();
-    const choice = await installPrompt.userChoice.catch(() => null);
-    installPrompt = null;
-    if (choice?.outcome === "accepted") installButton.innerHTML = "✓ <span>Install requested</span>";
-  });
-  window.addEventListener("appinstalled", () => { installPrompt = null; if (installButton) { installButton.innerHTML = "✓ <span>App Installed</span>"; installButton.setAttribute("aria-label","Ash-Fall is installed"); } });
   const closeGroups = () => {
     nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
   };

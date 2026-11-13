@@ -90,4 +90,4 @@ jobs:
       - name: Verify generated arcade directory stays synchronized
         run: |
           node scripts/build-arcade-catalog.mjs
-          git diff --exit-code -- public/chaos-cartridge.html public/arcade-30-games.html
+          git diff --exit-code -- public/chaos-cartridge.html

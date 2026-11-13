@@ -47,4 +47,4 @@ jobs:
       - name: Regenerate arcade catalog pages
         run: node scripts/build-arcade-catalog.mjs
       - name: Confirm generated pages match source
-        run: git diff --exit-code -- public/chaos-cartridge.html public/arcade-30-games.html
+        run: git diff --exit-code -- public/chaos-cartridge.html

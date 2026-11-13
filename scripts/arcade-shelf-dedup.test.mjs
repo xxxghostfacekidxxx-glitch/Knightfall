@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {renderPage} from './build-arcade-catalog.mjs';
 const catalog=JSON.parse(readFileSync('public/arcade/catalog.json','utf8'));
-test('both arcade shelves match the single source catalog exactly',()=>{
- for(const [file,secondary] of [['chaos-cartridge.html',false],['arcade-30-games.html',true]])assert.equal(readFileSync('public/'+file,'utf8'),renderPage(secondary),file+' is stale; run node scripts/build-arcade-catalog.mjs');
+test('only Chaos Cartridge is generated from the single source catalog',()=>{
+ assert.equal(readFileSync('public/chaos-cartridge.html','utf8'),renderPage(false),'Canonical catalog is stale; run node scripts/build-arcade-catalog.mjs');
+ assert.ok(!existsSync('public/arcade-30-games.html'),'Legacy catalog must not be served as a second page');
  const routes=catalog.games.map(g=>g.route),ids=catalog.games.map(g=>g.id);
  assert.equal(new Set(routes).size,routes.length,'duplicate launch targets');
  assert.equal(new Set(ids).size,ids.length,'duplicate game identities');

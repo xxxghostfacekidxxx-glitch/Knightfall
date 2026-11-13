@@ -61,10 +61,6 @@ body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu,.kf-nav-m
   border-radius:14px!important;
   box-shadow:0 20px 44px #000b,0 0 22px rgba(255,85,216,.08)!important;
 }
-.kf-nav .kf-install-app {
-  border-radius:11px!important;
-  box-shadow:0 0 0 1px rgba(198,255,69,.24),0 0 22px rgba(198,255,69,.16),inset 0 1px rgba(255,227,107,.40)!important;
-}
 .kf-announcement strong {color:var(--kf-yellow)!important}
 
 /* Use one rhythm for major Knightfall surfaces; do not alter the game viewport. */

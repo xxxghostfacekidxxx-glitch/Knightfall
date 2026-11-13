@@ -26,6 +26,6 @@ ${secondary?'':arcadeLeaderboardSection}
 <section class="arcade-footnote"><h2>The workshop</h2><p>Development editions and older prototypes have their own shelf. External titles open another service; they are not included in Ash-Fall offline downloads. A keyboard badge means a phone alone may not provide all the controls.</p><p>BrowserQuest and OpenFront are solo editions. Account saves, online multiplayer and offline downloads are separate features; availability varies by game.</p><p class="arcade-resource-links">Play with friends using <a href="/arcade/async-play.html">turn-based matches</a>, or visit <a href="/arcade/arcade-license-guide.html">sources and credits</a> and <a href="/arcade/franchise-imports.html">external fan-project information</a>.</p></section></main><footer class="kf-footer"><p>CHAOS CARTRIDGE / ASH-FALL</p></footer></body></html>\n`;
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
- for(const [file,secondary] of [['chaos-cartridge.html',false],['arcade-30-games.html',true]])writeFileSync(new URL('../public/'+file,import.meta.url),renderPage(secondary));
- console.log('Generated both catalogs from '+manifest.games.length+' unique entries.');
+ writeFileSync(new URL('../public/chaos-cartridge.html',import.meta.url),renderPage(false));
+ console.log('Generated canonical Chaos Cartridge catalog from '+manifest.games.length+' unique entries.');
 }

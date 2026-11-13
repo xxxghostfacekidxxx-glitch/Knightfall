@@ -991,38 +991,30 @@ try {
   // Crawl every playable cabinet linked by the catalog. This catches dead routes and
   // page-start exceptions before the owner has to manually test the entire collection.
   const catalogPage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
-  const catalogResponse = await catalogPage.goto(base + "/arcade-30-games.html", { waitUntil: "domcontentloaded", timeout: 30000 });
+  const catalogResponse = await catalogPage.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded", timeout: 30000 });
   if (!catalogResponse || catalogResponse.status() !== 200) {
-    console.error("FAIL catalog crawl: catalog page did not return HTTP 200");
+    console.error("FAIL catalog crawl: Chaos Cartridge did not return HTTP 200");
     failed = true;
   } else {
-    const catalogCardCount = await catalogPage.locator("#grid article.game").count();
+    const cards = catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet");
+    const catalogCardCount = await cards.count();
     if (catalogCardCount !== arcadeCatalog.games.length) {
-      console.error("FAIL catalog count: expected "+arcadeCatalog.games.length+" catalog cards, found " + catalogCardCount);
+      console.error("FAIL catalog count: expected " + arcadeCatalog.games.length + " catalog cards, found " + catalogCardCount);
       failed = true;
     } else {
-      console.log("PASS catalog count: manifest and generated catalog agree");
+      console.log("PASS catalog count: manifest and single Chaos Cartridge directory agree");
     }
-    const catalogRoutes = await catalogPage.locator('#grid article.game a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
-    const mainResponse = await catalogPage.goto(base + "/chaos-cartridge.html", { waitUntil: "domcontentloaded", timeout: 30000 });
-    let mainRoutes = [];
-    if (!mainResponse || mainResponse.status() !== 200) {
-      console.error("FAIL main arcade crawl: main shelf did not return HTTP 200");
+    const catalogRoutes = await cards.locator('a.button-primary[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))]);
+    const featuredVisible = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
+    const expectedFeatured = arcadeCatalog.games.filter(g => g.collection === "games").length;
+    if (featuredVisible !== expectedFeatured) {
+      console.error("FAIL featured shelf: expected " + expectedFeatured + " games visible, found " + featuredVisible);
       failed = true;
     } else {
-      mainRoutes = await catalogPage.locator('.cartridge-shelf a[href^="/arcade/hosted/"]').evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href")))] );
-      const featuredCards = catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet");
-      const featuredTotal = await featuredCards.count();
-      const featuredVisible = await catalogPage.locator("#game-shelf .cartridge-shelf > .cartridge-cabinet:visible").count();
-      if (featuredTotal !== arcadeCatalog.games.length || featuredVisible !== arcadeCatalog.games.filter(g=>g.collection==="games").length) {
-        console.error("FAIL featured shelf: expected the main collection visible, found " + featuredVisible + "/" + featuredTotal);
-        failed = true;
-      } else {
-        console.log("PASS featured shelf: all " + featuredVisible + " main-collection games visible");
-      }
+      console.log("PASS featured shelf: all " + featuredVisible + " main-collection games visible");
     }
     const localHostedRoutes = listHostedHtml();
-    const routes = [...new Set([...catalogRoutes, ...mainRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])].filter(route=>/\.html?(?:[?#]|$)/i.test(route));
+    const routes = [...new Set([...catalogRoutes, ...localHostedRoutes,...arcadeCatalog.games.filter(g=>g.route.startsWith("/")).map(g=>g.route)])].filter(route=>/\.html?(?:[?#]|$)/i.test(route));
     console.log(`INFO arcade crawl: checking ${routes.length} locally hosted game routes`);
     const routeFailures = [];
     for (const route of routes) {
@@ -1050,7 +1042,7 @@ try {
             routeFailures.push(`${route}: account-bridged game is missing the Ash-Fall navigation shell`);
           } else {
             const links = await nav.locator("a").evaluateAll(nodes => nodes.map(node => node.getAttribute("href")));
-            if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade-30-games.html") || !links.includes("/arcade/arcade-license-guide.html")) {
+            if (!links.includes("/chaos-cartridge.html") || !links.includes("/arcade/arcade-license-guide.html")) {
               routeFailures.push(`${route}: Ash-Fall navigation shell is missing arcade or license navigation links`);
             }
           }
