@@ -21,6 +21,8 @@ jobs:
           node --check public/personal-bots.js
           node --check public/bot-creator-pro.js
           node --check public/profile.js
+          node --check public/sw.js
+          node --check public/chat-bubbles.js
           node --check backend/src/bot-creator-access.js
           node --check backend/src/index.js
           node --check backend/src/privacy-assistance.js
@@ -52,6 +54,7 @@ jobs:
         run: |
           node --test scripts/public-legal-and-shop-theme.test.mjs
           node --test scripts/digital-creator-access.test.mjs
+          node --test scripts/chat-notification-routing.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs
           node --test scripts/privacy-assistance.test.mjs
           node --test scripts/bot-creator-access.test.mjs
           node --test scripts/arcade-nextgen-visual.test.mjs

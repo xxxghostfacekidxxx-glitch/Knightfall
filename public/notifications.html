@@ -15,7 +15,37 @@ async function api(p,o={}){const r=await fetch(API+p,{credentials:"include",cach
 function setPushStatus(message){pushStatus.textContent=message}
 function safeNoticeUrl(value){if(typeof value!=="string"||!value.startsWith("/")||value.startsWith("//")||/[\\\\\x00-\x1f]/.test(value))return null;try{const url=new URL(value,location.origin);return url.origin===location.origin?url.pathname+url.search+url.hash:null}catch{return null}}
 
-async function load(){try{const d=await api("/api/notifications?limit=100");root.innerHTML=(d.notifications||[]).map(n=>'<article class="notice '+(n.read_at?"read":"unread")+'" data-notice="'+n.id+'"><div class="notice-icon">'+(n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+'</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+(n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+(safeNoticeUrl(n.url)?'<a class="notice-link" href="'+esc(safeNoticeUrl(n.url))+'">Open</a>':"")+'</article>').join("")||'<p class="empty">Nothing new. The silence is almost suspicious.</p>';document.querySelectorAll("[data-notice]").forEach(x=>x.onclick=async()=>{if(!x.classList.contains("unread"))return;try{await api("/api/notifications/"+x.dataset.notice,{method:"PATCH"});x.classList.remove("unread");x.classList.add("read")}catch(e){status.textContent=e.message}});status.textContent=(d.unread_count||0)+" unread";}catch(e){status.textContent=e.message}}
+function noticeDestination(n){
+ const id=Number(n.target_id);
+ if(n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(id)&&id>0)return "/messages.html?conversation="+id;
+ return safeNoticeUrl(n.url);
+}
+async function load(){
+ try{
+  const d=await api("/api/notifications?limit=100");
+  root.innerHTML=(d.notifications||[]).map(n=>{
+   const destination=noticeDestination(n);
+   return '<article class="notice '+(n.read_at?"read":"unread")+'" data-notice="'+Number(n.id)+'"'+(destination?' data-target="'+esc(destination)+'"':"")+'><div class="notice-icon">'+(n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+'</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+(n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+(destination?'<a class="notice-link" href="'+esc(destination)+'">Open</a>':"")+'</article>';
+  }).join("")||'<p class="empty">Nothing new. The silence is almost suspicious.</p>';
+  root.querySelectorAll("[data-notice]").forEach(item=>{
+   const target=item.dataset.target;
+   if(target){item.style.cursor="pointer";item.title="Open notification";}
+   item.addEventListener("click",async event=>{
+    // The actual link already navigates; its click must never be cancelled.
+    if(event.target.closest("a"))return;
+    if(item.classList.contains("unread")){
+     try{
+      await api("/api/notifications/"+item.dataset.notice,{method:"PATCH"});
+      item.classList.remove("unread");item.classList.add("read");
+     }catch(error){status.textContent=error.message;}
+    }
+    if(target)location.assign(target);
+   });
+  });
+  status.textContent=(d.unread_count||0)+" unread";
+ }catch(error){status.textContent=error.message;}
+}
+
 function getPrefs(){return {push_messages:document.querySelector("#pref-messages").checked,push_community:document.querySelector("#pref-community").checked,push_account:document.querySelector("#pref-account").checked,quiet_start:document.querySelector("#quiet-start").value||null,quiet_end:document.querySelector("#quiet-end").value||null}}
 let pushTestPendingUntil=0, pushTestReceipt=null;
 function supportsPush(){return isSecureContext&&"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;}

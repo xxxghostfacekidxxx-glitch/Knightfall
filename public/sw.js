@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v31";
+const CACHE_NAME = "knightfall-shell-v32";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -65,25 +65,49 @@ function safeNotificationPath(value) {
   }
 }
 
+
+function messageConversationId(path) {
+  const safe=safeNotificationPath(path);
+  try {
+    const url=new URL(safe,self.location.origin);
+    if(url.pathname!=="/messages.html")return null;
+    const raw=url.searchParams.get("conversation");
+    if(!raw||!/^[1-9][0-9]*$/.test(raw))return null;
+    const id=Number(raw);
+    return Number.isSafeInteger(id)?id:null;
+  }catch{return null;}
+}
+
 self.addEventListener("push", event => {
   let payload = {};
   try { payload = event.data ? event.data.json() : {}; } catch { payload = { title: "Ash-Fall alert", body: "You have a new notification." }; }
   const title = String(payload.title || "Ash-Fall alert").slice(0, 120);
   const body = String(payload.body || "You have a new notification.").slice(0, 240);
   const path = safeNotificationPath(payload.url);
+  const conversationId = messageConversationId(path);
   const tag = payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert";
   event.waitUntil((async () => {
     const testId=typeof payload.receipt_token==="string"&&/^[0-9a-f]{40}$/.test(payload.receipt_token)?payload.receipt_token:null;
     let stage="display-requested";
     try {
-      // Android can reject notification artwork that desktop accepts. Keep the
-      // payload icon-free until raster icons are available.
-      await self.registration.showNotification(title, {
-        body,
-        tag,
-        renotify:false,
-        data:{url:path}
-      });
+      // Raster-free notification for Android; message actions gracefully downgrade
+      // when the browser cannot display Chromium's inline text reply control.
+      const options={body,tag,renotify:false,data:{url:path,conversationId}};
+      if(conversationId){
+        try {
+          await self.registration.showNotification(title,{
+            ...options,actions:[{action:"reply",title:"Reply",type:"text",placeholder:"Write a reply…"}]
+          });
+        }catch{
+          try {
+            await self.registration.showNotification(title,{
+              ...options,actions:[{action:"reply",title:"Reply"}]
+            });
+          }catch{
+            await self.registration.showNotification(title,options);
+          }
+        }
+      }else await self.registration.showNotification(title,options);
     }catch(error){
       stage="display-failed";
       console.warn("push_show_notification_failed",String(error));
@@ -126,14 +150,53 @@ self.addEventListener("pushsubscriptionchange", event => {
 
 self.addEventListener("notificationclick", event => {
   event.notification.close();
-  const path = safeNotificationPath(event.notification.data?.url);
-  const target = new URL(path, self.location.origin).href;
-  event.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
-    // Never hijack a different chat, game, or unfinished form just because it shares our origin.
-    const existing = clients.find(client => client.url === target);
-    if (existing) return existing.focus();
+  const path=safeNotificationPath(event.notification.data?.url);
+  const conversationId=messageConversationId(path);
+  const wantsReply=event.action==="reply";
+  event.waitUntil((async()=>{
+    if(wantsReply&&conversationId&&typeof event.reply==="string"&&event.reply.trim()){
+      const body=event.reply.trim().slice(0,4000);
+      try{
+        const sent=await fetch("https://api.ash-fall.com/api/messages/conversations/"+conversationId,{
+          method:"POST",credentials:"include",cache:"no-store",
+          headers:{"content-type":"application/json"},body:JSON.stringify({body})
+        });
+        if(sent.ok)return; // The server enforces membership and blocked-message checks.
+      }catch(error){console.warn("notification_reply_unavailable",String(error));}
+      // Do not claim a failed inline reply was sent.
+      try{
+        await self.registration.showNotification("Reply not sent",{
+          body:"Open your conversation to try again.",
+          tag:"knightfall-reply-failed-"+conversationId,
+          data:{url:"/messages.html?conversation="+conversationId,conversationId},
+          actions:[{action:"reply",title:"Open chat"}]
+        });
+      }catch(error){console.warn("notification_reply_feedback_unavailable",String(error));}
+    }
+    const destination=new URL(path,self.location.origin);
+    if(wantsReply&&conversationId)destination.searchParams.set("reply","1");
+    const target=destination.href;
+    const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    if(conversationId){
+      const chat=windows.find(client=>{
+        try{const url=new URL(client.url);return url.origin===self.location.origin&&url.pathname==="/messages.html";}catch{return false;}
+      });
+      if(chat){
+        try{
+          if(chat.url!==target&&typeof chat.navigate==="function"){
+            const navigated=await chat.navigate(target);
+            if(navigated)return navigated.focus();
+          }else if(chat.url===target){
+            chat.postMessage({type:"KF_OPEN_CONVERSATION",conversationId,reply:wantsReply});
+            return chat.focus();
+          }
+        }catch(error){console.warn("notification_chat_navigation_unavailable",String(error));}
+      }
+    }
+    const exact=windows.find(client=>client.url===target);
+    if(exact)return exact.focus();
     return self.clients.openWindow(target);
-  }));
+  })());
 });
 
 self.addEventListener("fetch", event => {

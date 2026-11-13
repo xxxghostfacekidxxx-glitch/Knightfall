@@ -409,6 +409,21 @@
       nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
+      // Load lightweight chat heads only for signed-in accounts, using the inbox API.
+      if (location.pathname !== "/messages.html") {
+        if (!document.querySelector('link[data-kf-chat-bubbles]')) {
+          const sheet=document.createElement("link");
+          sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261113-1";
+          sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
+        }
+        if (!document.querySelector('script[data-kf-chat-bubbles]')) {
+          const bubbles=document.createElement("script");
+          bubbles.src="/chat-bubbles.js?v=20261113-1";
+          bubbles.dataset.kfChatBubbles="true";
+          bubbles.dataset.userId=String(user.id);
+          document.body.append(bubbles);
+        }
+      }
       const pingActivity = () => fetch("https://api.ash-fall.com/api/activity/ping", {method:"POST",credentials:"include"}).catch(() => {});
       pingActivity();
       setInterval(pingActivity, 120000);

@@ -108,11 +108,20 @@ function maybeNotifyUnread(){
      const subscribed=await reg.pushManager?.getSubscription().catch(()=>null);
      if(subscribed)return;
      for(const conv of newUnreads){
-       await reg.showNotification("New message · "+conversationName(conv),{
+       const options={
          body:"You have a new message in Ash-Fall.",
          tag:"ashfall-conversation-"+Number(conv.id),
-         data:{url:"/messages.html?conversation="+Number(conv.id)}
-       });
+         data:{url:"/messages.html?conversation="+Number(conv.id),conversationId:Number(conv.id)}
+       };
+       try{
+         await reg.showNotification("New message · "+conversationName(conv),{
+           ...options,actions:[{action:"reply",title:"Reply",type:"text",placeholder:"Write a reply…"}]
+         });
+       }catch{
+         try{await reg.showNotification("New message · "+conversationName(conv),{
+           ...options,actions:[{action:"reply",title:"Reply"}]
+         });}catch{await reg.showNotification("New message · "+conversationName(conv),options);}
+       }
      }
    }).catch(error=>console.warn("foreground_notification_unavailable",String(error)));
  }else{
@@ -160,6 +169,36 @@ async function openConversation(id,{scroll=true}={}){
  catch(e){if(token===conversationLoadToken)status(e.message)}
  finally{if(token===conversationLoadToken)loading=false}
 }
+function focusNotificationReply(){
+ const field=$("#body");
+ if(currentId&&field&&!field.disabled&&!$("#composer").hidden)field.focus({preventScroll:true});
+}
+async function followNotificationConversation({reply=false}={}){
+ const raw=new URLSearchParams(location.search).get("conversation");
+ if(!raw||!/^[1-9][0-9]*$/.test(raw))return;
+ const id=Number(raw);
+ if(!Number.isSafeInteger(id))return;
+ if(!conversations.some(c=>Number(c.id)===id))await loadConversations({openSelected:false});
+ if(!conversations.some(c=>Number(c.id)===id)){status("This conversation isn't available to your account.");return;}
+ if(Number(currentId)!==id)await openConversation(id);
+ if(reply)focusNotificationReply();
+}
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
+ const data=event.data;
+ if(data?.type!=="KF_OPEN_CONVERSATION")return;
+ const id=Number(data.conversationId);
+ if(!Number.isSafeInteger(id)||id<1)return;
+ const url=new URL(location.href);
+ url.searchParams.set("conversation",String(id));
+ if(data.reply)url.searchParams.set("reply","1");else url.searchParams.delete("reply");
+ history.replaceState({},"",url.pathname+url.search);
+ followNotificationConversation({reply:data.reply===true}).catch(error=>status(error.message));
+});
+window.addEventListener("popstate",()=>followNotificationConversation({reply:new URLSearchParams(location.search).has("reply")}).catch(error=>status(error.message)));
+window.addEventListener("pageshow",event=>{
+ if(event.persisted)followNotificationConversation({reply:new URLSearchParams(location.search).has("reply")}).catch(error=>status(error.message));
+});
+
 $("#mobile-inbox-back").addEventListener("click",()=>{$(".message-layout").classList.remove("show-chat");$("#conversation-search").focus({preventScroll:true})});
 $("#conversations").addEventListener("click",e=>{const b=e.target.closest("[data-conversation]");if(b)openConversation(Number(b.dataset.conversation))});
 async function refreshCurrent(){if(!currentId||loading||loadingOlder)return;const requestedId=Number(currentId),token=conversationLoadToken,refreshToken=++currentRefreshToken;try{const box=$("#messages"),nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<100,visible=[...box.querySelectorAll("[data-message]")].find(el=>{const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();return r.bottom>b.top&&r.top<b.bottom}),anchorId=visible?.dataset.message,anchorOffset=visible?visible.getBoundingClientRect().top-box.getBoundingClientRect().top:0;const d=await api("/api/messages/conversations/"+requestedId+"?limit="+MESSAGE_PAGE_SIZE);if(Number(currentId)!==requestedId||token!==conversationLoadToken||refreshToken!==currentRefreshToken)return;const incoming=d.messages||[];const existingNodes=[...box.querySelectorAll("[data-message]")];if(!incoming.length&&existingNodes.length)return;const firstIncoming=Number(incoming[0]?.id||Infinity);const preservedNodes=existingNodes.filter(el=>Number(el.dataset.message)<firstIncoming);const preservedOlder=preservedNodes.map(el=>el.outerHTML).join("");const preservedOldestId=preservedNodes[0]?.dataset.message||null;renderMessages(incoming,false,false);if(preservedOlder){box.insertAdjacentHTML("afterbegin",preservedOlder);oldestId=Number(preservedOldestId)||oldestId;}if(nearBottom)box.scrollTop=box.scrollHeight;else if(anchorId){const anchor=box.querySelector('[data-message="'+anchorId+'"]');if(anchor)box.scrollTop+=anchor.getBoundingClientRect().top-box.getBoundingClientRect().top-anchorOffset;}const c=activeConversation();if(c){c.unread_count=0;}drawConversations();}catch(e){if(Number(currentId)===requestedId&&token===conversationLoadToken&&refreshToken===currentRefreshToken)status(e.message)}}
@@ -250,7 +289,7 @@ async function loadAdmin(){if(!admin)return;$("#admin-archive").hidden=false;try
 async function archive(){if(!admin)return;const token=++archiveLoadToken,cid=$("#archive-conversation").value,q=encodeURIComponent($("#archive-search").value.trim());try{const conversationFilter=Number(cid)>0?"&conversation_id="+encodeURIComponent(cid):"";const d=await api("/api/admin/messages?limit=500"+conversationFilter+"&q="+q);if(token!==archiveLoadToken)return;$("#archive").innerHTML=(d.messages||[]).map(m=>'<article class="archive-row '+(m.deleted_at?"deleted":"")+'"><div><strong>#'+m.id+' · conversation #'+m.conversation_id+'</strong><small>@'+esc(m.sender_username)+' · '+esc(fmt(m.created_at))+(m.deleted_at?" · SOFT-DELETED":"")+'</small><p>'+esc(m.body).replace(/\n/g,"<br>")+'</p></div><div class="row-actions"><button data-admin-message="'+m.id+'" data-action="'+(m.deleted_at?"restore":"delete")+'">'+(m.deleted_at?"Restore":"Soft delete")+'</button><button class="danger" data-admin-message="'+m.id+'" data-action="purge" '+(!m.deleted_at?'disabled title="Soft-delete this message before purging it"':'')+'>Purge</button></div></article>').join("")||'<div class="empty">No messages found.</div>'}catch(e){if(token!==archiveLoadToken)return;$("#archive").innerHTML='<div class="empty">Archive request failed: '+esc(e.message)+'</div>'}}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action==="purge"&&(b.disabled||!confirm("Permanently purge this soft-deleted message and its reports? This cannot be undone.")))return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
-(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=["admin","god"].includes(me.user.role);await sendActivityPing();await loadConversations();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight)return;pollInFlight=true;try{await loadConversations({openSelected:false});if(!document.hidden){await refreshCurrent();updatePresenceLabel();if(admin&&!$("#admin-archive").hidden)await archive()}}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(liveRefresh,4000);typingPollHandle=setInterval(refreshTyping,2200);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
+(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=["admin","god"].includes(me.user.role);await sendActivityPing();await loadConversations();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight)return;pollInFlight=true;try{await loadConversations({openSelected:false});if(!document.hidden){await refreshCurrent();updatePresenceLabel();if(admin&&!$("#admin-archive").hidden)await archive()}}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(liveRefresh,4000);typingPollHandle=setInterval(refreshTyping,2200);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
 function syncMessagesViewport(){const height=window.visualViewport?.height||window.innerHeight;if(height>0)document.documentElement.style.setProperty("--messages-visible-height",height+"px")}syncMessagesViewport();window.addEventListener("resize",syncMessagesViewport,{passive:true});window.visualViewport?.addEventListener("resize",syncMessagesViewport,{passive:true});
 async function sendActivityPing(){if(document.hidden||Date.now()-lastActivityPing<45000)return;lastActivityPing=Date.now();try{await api("/api/activity/ping",{method:"POST",body:"{}"})}catch(error){console.warn("Presence heartbeat failed",error)}}
 $("#enable-notifications").addEventListener("click",()=>{location.href="/notifications.html"});
