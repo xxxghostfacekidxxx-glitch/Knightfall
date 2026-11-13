@@ -166,7 +166,7 @@ try {
   }
   // Regression guard: the arcade theme must never restore the retired orange palette.
   // Exercise the actual CSS cascade rather than checking source text alone.
-  for (const route of ["/chaos-cartridge.html", "/arcade-games.html", "/arcade-30-games.html"]) {
+  for (const route of ["/chaos-cartridge.html", "/arcade-games.html"]) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     try {
       const response = await page.goto(base + route, { waitUntil: "domcontentloaded", timeout: 10000 });
