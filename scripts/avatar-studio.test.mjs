@@ -90,7 +90,8 @@ test('single-trait edits use fast updates without rebuilding entire SVG gallerie
  const code=read('public/avatar-studio.js');
  assert.match(code,/function refreshSelectedTrait/);
  assert.match(code,/changed\.length!==1\|\|category!==activeGroup/);
- assert.match(code,/kit\.render\(\{\.\.\.kit\.defaults,\[key\]:choice\}\)/);
+ assert.match(code,/kit\.render\(\{\.\.\.avatar,\[key\]:choice\}\)/,
+  'Trait thumbnails should reflect the character being edited rather than the generic defaults');
  assert.match(code,/if\(busy\)\{status\.textContent='Finish the current save/);
  assert.match(read('public/avatar-studio.css'),/position:sticky;bottom:8px/);
 });
