@@ -43,3 +43,18 @@
 }
 .mascot-profile-pet.featured { border-color:#d0ac68;box-shadow:0 0 18px #c7a45c22; }
 .mascot-profile-pet .mascot-profile-link { min-height:44px;display:grid;place-items:center; }
+
+/* Sanctuary lineages: native type palettes in member profile showcases. */
+.mascot-profile-pet[data-affinity]{border-color:var(--creature-mid);background:linear-gradient(165deg,var(--creature-sky),var(--creature-floor))}
+.mascot-profile-pet[data-affinity] .mascot-profile-trait{color:var(--creature-light)}
+.mascot-profile-pet .mascot-profile-affinity{color:var(--creature-light);font-size:.68rem;font-weight:800}
+.mascot-profile-art.pet-render-v2{width:100%;height:130px;border-radius:12px;overflow:hidden;border:1px solid var(--creature-mid);background:radial-gradient(circle at 48% 55%,var(--creature-mid),transparent 85%),var(--creature-sky);isolation:isolate}
+.mascot-profile-art.pet-render-v2 img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}
+.mascot-profile-art.pet-render-v2 .mascot-profile-master{z-index:4;filter:drop-shadow(0 8px 7px #0009)}
+.mascot-profile-art.pet-render-v2 .mascot-profile-habitat{z-index:1;opacity:.65}
+.mascot-profile-art.pet-render-v2 .mascot-profile-decoration{z-index:6}
+.mascot-profile-art.pet-render-v2 .mascot-profile-room-furniture{z-index:6;width:38px;height:38px;inset:auto}
+.mascot-profile-art.pet-render-v2 .mascot-profile-layer{z-index:7}
+.mascot-profile-art.pet-render-v2 .pet-growth-crown{z-index:3}
+.mascot-profile-art.pet-render-v2[data-form="3"] .mascot-profile-master{filter:drop-shadow(0 0 8px var(--creature-mid)) drop-shadow(0 8px 7px #000a)}
+@media(max-width:620px){.mascot-profile-art.pet-render-v2{height:116px}}

@@ -34,17 +34,19 @@ async function mount(){
    link.href='/mascot-pets.html';header.append(link);
   }
   if(!d.pets?.length){
-   card.append(el('p','mascot-profile-status',d.own_profile?'No pets yet. Adopt a Neon Nuisance to make your profile come alive.':'No companions on display yet.'));
+   card.append(el('p','mascot-profile-status',d.own_profile?'No pets yet. Rescue a Knightfall creature to make your profile come alive.':'No companions on display yet.'));
    return;
   }
   const featured=d.pets.find(p=>p.featured)||d.pets[0];
   const summary=el('div','mascot-profile-intro');
-  summary.append(el('strong','',d.pets.length+' / 31 companions collected'));
+  summary.append(el('strong','',d.pets.length+' / '+(d.max_owned||32)+' companions collected'));
   if(featured)summary.append(el('p','','✦ '+featured.nickname+' · '+(featured.temperament||'Curious')+' · '+(featured.lore||'A misfit with a story worth sharing.')));
   card.append(summary);
   const group=el('div','mascot-profile-grid');
   for(const pet of d.pets){
    const item=el('div','mascot-profile-pet'+(pet.featured?' featured':''));
+   item.dataset.affinity=pet.affinity||window.KnightfallPetRenderer?.typeFor(pet.species)||'feral';
+   item.dataset.form=String(pet.growth?.stage||1);
    const art=el('div','mascot-profile-art'),url=safeImage(pet.idle||pet.image||pet.portrait);
    const scene=safeImage(pet.habitat?.art);
    if(scene){const img=el('img','mascot-profile-habitat');img.src=scene+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
@@ -68,6 +70,8 @@ async function mount(){
     img.src=gear.asset+'?v=20261102-sanctuary6';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);
    }
    item.append(art,el('strong','',pet.nickname),el('small','',pet.species_name+' · Lv '+pet.level));
+   window.KnightfallPetRenderer?.decorate(art,pet);
+   item.append(el('small','mascot-profile-affinity',(pet.affinity_label||'Feral')+' · '+(pet.growth?.label||'First Form')));
    if(pet.evolution?.evolved)item.append(el('small','mascot-profile-evolved','✧ '+pet.evolution.name));
    if(pet.temperament||pet.favorite)item.append(el('small','mascot-profile-trait',(pet.temperament||'Curious')+' · '+(pet.favorite||'Adventures')));
    if(pet.lore)item.title=pet.lore;
