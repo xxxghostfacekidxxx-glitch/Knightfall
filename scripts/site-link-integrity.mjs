@@ -6,7 +6,7 @@ import { readFile, readdir } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("../public/", import.meta.url));
+const root = resolve(fileURLToPath(new URL("../public/", import.meta.url)));
 const redirects = new Map(
   (await readFile(join(root, "_redirects"), "utf8")).split(/\r?\n/)
     .map(line => line.trim())
