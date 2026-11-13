@@ -25,6 +25,7 @@ jobs:
           node --check public/chat-bubbles.js
           node --check public/message-live.js
           node --check backend/src/message-search.js
+          node --check backend/src/message-conversation-summary.js
           node --check backend/src/messaging-live.js
           node --check public/miss-chaos-presence.js
           node --check backend/src/bot-creator-access.js
@@ -60,6 +61,7 @@ jobs:
           node --test scripts/digital-creator-access.test.mjs
           node --test scripts/chat-notification-routing.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs scripts/messaging-quality.test.mjs
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
+          node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs
           node --test scripts/privacy-assistance.test.mjs
           node --test scripts/bot-creator-access.test.mjs
           node --test scripts/arcade-nextgen-visual.test.mjs

@@ -7,7 +7,7 @@ function deferred(){let resolve,reject;const promise=new Promise((a,b)=>{resolve
 function harness(){
  const nodes=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){}});return nodes.get(s)};
  const request=deferred(),posts=[],deleted=[];
- const c={$ ,currentId:1,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),conversationDrafts:new Map(),persistConversationDrafts:()=>{},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,
+ const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),conversationDrafts:new Map(),persistConversationDrafts:()=>{},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,
  activeConversation:()=>({}),status(){},drawPendingAttachments(){},sendTypingState:async()=>{},loadConversations:async()=>{},refreshCurrent:async()=>{},
  api:async(path,opts)=>{posts.push({path,opts});return request.promise},uploadAttachment:async()=>request.promise,deletePendingAttachment:async id=>deleted.push(id)};
  vm.createContext(c);vm.runInContext(html.slice(html.indexOf('$("#composer").onsubmit='),html.indexOf('\nfunction drawPendingAttachments')),c);

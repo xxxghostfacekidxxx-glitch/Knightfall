@@ -27,6 +27,7 @@ import { handleChaosCardMatches } from "./chaos-card-matches.js";
 import { handleArcadeDeckLocker } from "./arcade-deck-locker.js";
 import { handlePrivacyAssistance } from "./privacy-assistance.js";
 import { handleMessageSearch } from "./message-search.js";
+import { handleMessageSummary } from "./message-conversation-summary.js";
 import { handleMessageLive, publishMessageLive, notifyConversationLive } from "./messaging-live.js";
 export { MessageLiveRoom } from "./messaging-live.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
@@ -2389,6 +2390,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     return json({ok:true,removed:true},200,origin);
   }
   if(url.pathname==="/api/discover"&&request.method==="GET"){const user=await requireUser(request,env);const q=String(url.searchParams.get("q")||"").trim().slice(0,80);const limit=boundedInt(url.searchParams.get("limit"),24,1,50);const offset=boundedInt(url.searchParams.get("offset"),0,0,1000000);const like="%"+q.replace(/[%_]/g,"\\$&")+"%";const params=user?[user.id,like,like,like,like,limit,offset]:[like,like,like,like,limit,offset];const sql="SELECT u.id,u.username,u.display_name,u.role,(SELECT title FROM member_bot_creator_privileges WHERE user_id=u.id) AS public_title,u.bio,u.avatar_url,u.location,u.pronouns,u.created_at,u.last_seen_at,(SELECT COUNT(*) FROM follows f WHERE f.following_id=u.id) AS followers FROM users u "+(user?"LEFT JOIN user_blocks b ON b.blocker_id=? AND b.blocked_id=u.id WHERE b.blocked_id IS NULL AND ":"WHERE ")+"u.status='active' AND (u.username LIKE ? ESCAPE '\\' OR u.display_name LIKE ? ESCAPE '\\' OR COALESCE(u.bio,'') LIKE ? ESCAPE '\\' OR COALESCE(u.location,'') LIKE ? ESCAPE '\\') ORDER BY u.created_at DESC LIMIT ? OFFSET ?";const {results}=await env.DB.prepare(sql).bind(...params).all();return json({users:results},200,origin);}
+  const messageSummary=await handleMessageSummary(request,env,url,{getUser:requireUser,json,origin});
+  if(messageSummary)return messageSummary;
   const messageSearch=await handleMessageSearch(request,env,url,{getUser:requireUser,json,origin,rateLimit});
   if(messageSearch)return messageSearch;
   const messageLive=await handleMessageLive(request,env,url,{
