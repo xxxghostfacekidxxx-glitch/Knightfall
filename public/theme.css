@@ -5,7 +5,7 @@
 /* Shared final polish for pages with or without nav.js. */
 @import url("/knightfall-unified-theme.css?v=20261111-yellow1");
 :root{color-scheme:dark}
-::selection{background:rgba(255,85,216,.45);color:#fff}
+
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
 ::-webkit-scrollbar{width:10px}
 ::-webkit-scrollbar-track{background:#080808}
@@ -132,9 +132,9 @@ img,video,iframe{max-width:100%}
  .kf-header{position:sticky;top:0;flex-wrap:wrap}
  .kf-nav-toggle{display:flex;align-items:center;gap:.45rem;min-height:44px;padding:.55rem .75rem;font-weight:750}
  .kf-nav{display:none;position:absolute;left:1rem;right:1rem;top:calc(100% + .2rem);grid-template-columns:1fr;align-items:stretch;gap:.25rem;max-height:calc(100dvh - 85px);overflow-y:auto;overscroll-behavior:contain;padding:.65rem;border:1px solid #303030;border-radius:12px;background:rgba(9,9,9,.99);box-shadow:0 20px 55px #000c}
- .kf-nav.open{display:grid}
- .kf-nav-primary,.kf-nav-group>summary{width:100%;min-height:44px;padding:.75rem .85rem}
- .kf-nav-group{width:100%}
+ 
+ 
+ 
  .kf-nav-menu,.kf-profile-menu{position:static;width:100%;max-width:none;min-width:0;max-height:none;overflow:visible;margin:.15rem 0 .45rem;padding:.35rem;background:#070707;border-color:#242424;box-shadow:none}
  .kf-nav-menu a{white-space:normal}
 }
