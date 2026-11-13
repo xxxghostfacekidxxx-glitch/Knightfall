@@ -1,9 +1,27 @@
+# Knightfall route aliases. Public links should point straight to the canonical pages.
+# Keep homepage.html as a local/offline fallback; Pages handles these HTTP redirects.
 /homepage / 301
 /homepage.html / 301
-/arcade-30-games /chaos-cartridge 301
+/landing / 301
+/landing.html / 301
+
+# One public arcade directory: Chaos Cartridge.
+# Do not redirect playable game pages, the progress page, or the active card rooms.
+/arcade /chaos-cartridge.html 301
+/arcade/ /chaos-cartridge.html 301
+/arcade.html /chaos-cartridge.html 301
+/games /chaos-cartridge.html 301
+/games.html /chaos-cartridge.html 301
+/arcade-30-games /chaos-cartridge.html 301
 /arcade-30-games.html /chaos-cartridge.html 301
-/arcade-card-board /chaos-cartridge 301
+/arcade-card-board /chaos-cartridge.html 301
 /arcade-card-board.html /chaos-cartridge.html 301
+
+# Extensionless Arcade Vault links still use the existing HTML bookmark mapper,
+# which supports #vault-mines, #vault-breakout and #vault-snake.
+/arcade-vault /arcade-vault.html 301
+
+# Retired cabinet filenames must lead directly to their playable successors.
 /arcade/hosted/ball-and-wall/index.html /arcade/hosted/afterburn-breakout/index.html 301
 /arcade/hosted/ember-echo/index.html /arcade/hosted/cursed-circuit/index.html 301
 /arcade/hosted/void-sequence/index.html /arcade/hosted/cursed-circuit/index.html 301
