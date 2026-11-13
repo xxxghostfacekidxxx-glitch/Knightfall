@@ -55,11 +55,27 @@ test('Companion room displays care feedback and never exposes private stats publ
 
 test('public profile shows personalities but never private needs or wallet details',()=>{
  const profile=src('public/profile.html'),client=src('public/profile-mascots.js'),style=src('public/profile-mascots.css');
- assert.match(profile,/profile-mascots\.js\?v=20261105-roster28/);
- assert.match(profile,/profile-mascots\.css\?v=20261103-sanctuary-showcase1/);
+ assert.match(profile,/profile-mascots\\.js\\?v=20261113-lineages2/);
+ assert.match(profile,/profile-mascots\\.css\\?v=20261113-lineages2/);
+ assert.match(profile,/mascot-renderer\\.js\\?v=20261113-lineages2/);
+ assert.ok(profile.indexOf('/mascot-renderer.js')<profile.indexOf('/profile-mascots.js'),'type renderer loads before profile companions');
  assert.match(client,/pet\.temperament/);
  assert.match(client,/pet\.lore/);
  assert.match(client,/mascot-profile-intro/);
  assert.doesNotMatch(client,/pet\.vitals|pet\.next_care|wallet_balance/);
  assert.match(style,/\.mascot-profile-pet\.featured/);
+});
+
+test('Creature Bestiary preserves ownership, filters and all affinities from trusted API',()=>{
+ const lineage=src('backend/src/mascot-lineages.js'),engine=src('public/mascot-renderer.js');
+ assert.match(page,/id="companion-bestiary"/);
+ for(const id of ['pet-bestiary-grid','pet-bestiary-search','pet-bestiary-type','pet-bestiary-status'])assert.match(page,new RegExp('id="'+id+'"'));
+ assert.match(pets,/function renderBestiary\(\)/);
+ assert.match(pets,/new Map\(pets\.map\(p=>\[p\.species,p\]\)\)/);
+ assert.match(pets,/pet\.growth/);
+ assert.match(server,/growth:growthFor\(/);
+ assert.match(server,/affinity:affinityFor\(id\)\.id/);
+ assert.match(lineage,/neon:\{id:'neon'/);
+ assert.match(engine,/window\.KnightfallPetRenderer/);
+ assert.ok(page.indexOf('/mascot-renderer.js')<page.indexOf('/mascot-pets.js'));
 });
