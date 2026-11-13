@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Your Ash-Fall inbox. Messages, conversations, and whatever the hell is happening.">
 <title>Ash-Fall | Messages</title>
-<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-drafts2">
+<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-realtime2">
 </head>
 <body>
 <header class="kf-header"></header>
@@ -45,16 +45,27 @@
     <div id="manage-group-members" class="member-results"><p class="empty">Loading members…</p></div>
     <section id="manage-group-add-section" class="manage-group-add" hidden><label for="manage-group-search">Add a member</label><input id="manage-group-search" class="search" type="search" autocomplete="off" placeholder="Search members…"><div id="manage-group-results" class="member-results"><p class="empty">Type at least two characters.</p></div></section>
   </dialog>
+  <dialog id="history-search-dialog" class="compose-dialog history-search-dialog" aria-labelledby="history-search-title">
+    <div class="compose-dialog-head"><div><p class="eyebrow">FIND THE RECEIPTS</p><h2 id="history-search-title">Search your messages</h2></div><button id="history-search-close" type="button" class="icon-button" aria-label="Close message search">×</button></div>
+    <form id="history-search-form" class="history-search-form">
+      <label for="history-search-input">Search message text across your conversations</label>
+      <div class="history-search-controls"><input id="history-search-input" class="search" type="search" maxlength="120" autocomplete="off" placeholder="A word, phrase, or memory…" required minlength="2"><button class="primary" type="submit">Search</button></div>
+      <label class="history-search-scope"><input id="history-search-current" type="checkbox"> Only this conversation</label>
+    </form>
+    <div id="history-search-feedback" class="history-search-feedback" role="status" aria-live="polite">Type at least two characters to search.</div>
+    <div id="history-search-results" class="history-search-results"></div>
+    <button id="history-search-more" type="button" class="secondary" hidden>Load more matches</button>
+  </dialog>
   <section class="message-layout">
     <aside class="conversation-panel">
-      <div class="panel-title"><div><p class="eyebrow">YOUR SPACE</p><strong>Messages</strong></div><button id="refresh" aria-label="Refresh conversations" title="Refresh">↻</button></div>
+      <div class="panel-title"><div><p class="eyebrow">YOUR SPACE</p><strong>Messages</strong></div><div class="inbox-toolbar"><button id="search-all-messages" type="button" title="Search message history" aria-label="Search all messages">⌕</button><button id="refresh" aria-label="Refresh conversations" title="Refresh">↻</button></div></div>
       <input id="conversation-search" class="search" type="search" placeholder="Search conversations" aria-label="Search conversations">
       <div class="inbox-filters" role="group" aria-label="Filter conversations"><button type="button" class="inbox-filter active" data-inbox-filter="all" aria-pressed="true">All</button><button type="button" class="inbox-filter" data-inbox-filter="unread" aria-pressed="false">Unread</button></div>
       <div id="conversations" class="conversation-list"></div>
     </aside>
     <section class="chat-panel">
-      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></div>
-      <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
+      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></div>
+      <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
         <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button>
         <div><small id="composer-hint">Enter to send · Shift + Enter for a new line</small><span class="composer-actions"><small id="character-count">0 / 4,000</small><button class="primary"><span>Send</span> <span aria-hidden="true">↗</span></button></span></div>
@@ -68,6 +79,7 @@
   </section>
 </main>
 <script src="/nav.js?v=20261027-category-nav6"></script>
+<script src="/message-live.js?v=20261113-realtime1"></script>
 <script>
 const API="https://api.ash-fall.com";
 const $=s=>document.querySelector(s);
@@ -176,7 +188,7 @@ function renderMessages(messages,append=false,autoScroll=true){const box=$("#mes
 async function refreshReactions(){const id=Number(currentId);if(!id)return;const articles=[...$("#messages").querySelectorAll("[data-message]")].filter(el=>!el.classList.contains("deleted")).slice(-50);if(!articles.length)return;const ids=articles.map(el=>el.dataset.message).slice(-50);try{const d=await api("/api/messages/conversations/"+id+"/reactions?ids="+ids.join(","));if(Number(currentId)!==id)return;const grouped={};for(const r of d.reactions||[]){(grouped[r.message_id]??=[]).push(r)}for(const article of articles){const summary=article.querySelector("[data-reaction-summary]");if(!summary)continue;summary.innerHTML=(grouped[article.dataset.message]||[]).map(r=>'<button class="reaction-chip '+(Number(r.reacted_by_me)?"mine-reaction":"")+'" data-react="'+article.dataset.message+'" data-emoji="'+esc(r.emoji)+'" aria-pressed="'+(Number(r.reacted_by_me)?"true":"false")+'">'+esc(r.emoji)+' <span>'+Number(r.count)+'</span></button>').join("")}}catch(error){console.warn("Could not refresh message reactions",error)}}
 
 async function loadConversations({openSelected=true}={}){const token=++inboxLoadToken;const d=await api("/api/messages/conversations");if(token!==inboxLoadToken)return;conversations=d.conversations||[];maybeNotifyUnread();drawConversations();updatePresenceLabel();if(openSelected&&currentId&&conversations.some(x=>Number(x.id)===Number(currentId)))await openConversation(currentId,{scroll:false});else if(!currentId){const requested=new URLSearchParams(location.search).get("conversation");if(requested&&conversations.some(x=>Number(x.id)===Number(requested)))await openConversation(Number(requested));}}
-async function openConversation(id,{scroll=true}={}){
+async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMessageId=null}={}){
  const previousId=Number(currentId);const token=++conversationLoadToken;oldestId=null;loadingOlder=false;if(previousId!==Number(id)){
   if(previousId)rememberConversationDraft(previousId,$("#body").value);
   composerEpoch++;clearTimeout(typingHandle);
@@ -192,8 +204,11 @@ async function openConversation(id,{scroll=true}={}){
    if(direct)cardLink.href="/arcade/hosted/cards-against-chaos/index.html?invite="+encodeURIComponent(c.other_username);
  }
  $("#chat-head").querySelector(".chat-identity").innerHTML='<span class="avatar chat-avatar">'+(c?.kind==="group"?"✦":esc((c?.other_display_name||c?.other_username||"?").slice(0,1).toUpperCase()))+'</span><span><strong>'+esc(conversationName(c))+'</strong><small>'+(c?.kind==="group"?"GROUP · "+Number(c?.participant_count||0)+" members":"@"+esc(c?.other_username||"")+" · "+(Number(c?.unread_count)>0?Number(c.unread_count)+" unread":"Direct message"))+'</small></span>';
- $("#manage-group").hidden=c?.kind!=="group";updatePresenceLabel();$("#mute-chat").hidden=false;const muted=!!(c?.muted_until&&new Date(c.muted_until)>new Date());$("#mute-chat").dataset.muted=muted?"1":"0";$("#mute-chat").textContent=muted?"Unmute conversation":"Mute for "+({"60":"1h","480":"8h","1440":"24h","10080":"7d","43200":"30d"}[String($("#mute-duration").value)]||"24h");const restricted=!!Number(c?.messaging_blocked);$("#conversation-restricted").hidden=!restricted;$("#composer").hidden=restricted;$("#body").disabled=restricted||sendingConversation===Number(id);$("#body").placeholder="Message "+conversationName(c)+"…";$("#load-older").hidden=true;$("#messages").innerHTML='<div class="empty">Loading conversation…</div>';
- try{const d=await api("/api/messages/conversations/"+currentId+"?limit="+MESSAGE_PAGE_SIZE);if(token!==conversationLoadToken)return;renderMessages(d.messages||[],false);$("#load-older").hidden=(d.messages||[]).length<MESSAGE_PAGE_SIZE;if(c)c.unread_count=0;drawConversations();const subtitle=$("#chat-head .chat-identity small");if(subtitle)subtitle.textContent=c?.kind==="group"?"GROUP · "+Number(c?.participant_count||0)+" members":"@"+(c?.other_username||"")+" · Direct message";if(scroll)$("#messages").scrollTop=$("#messages").scrollHeight;const u=new URL(location.href);u.searchParams.set("conversation",currentId);history.replaceState({}, "",u.pathname+u.search)}
+ $("#manage-group").hidden=c?.kind!=="group";updatePresenceLabel();$("#mute-chat").hidden=false;const muted=!!(c?.muted_until&&new Date(c.muted_until)>new Date());$("#mute-chat").dataset.muted=muted?"1":"0";$("#mute-chat").textContent=muted?"Unmute conversation":"Mute for "+({"60":"1h","480":"8h","1440":"24h","10080":"7d","43200":"30d"}[String($("#mute-duration").value)]||"24h");const restricted=!!Number(c?.messaging_blocked);$("#conversation-restricted").hidden=!restricted;$("#composer").hidden=restricted;$("#body").disabled=restricted||sendingConversation===Number(id);$("#body").placeholder="Message "+conversationName(c)+"…";$("#load-older").hidden=true;$("#jump-latest").hidden=!beforeMessageId;$("#messages").innerHTML='<div class="empty">Loading conversation…</div>';
+ try{const initialPath="/api/messages/conversations/"+currentId+"?limit="+MESSAGE_PAGE_SIZE+
+    (Number.isSafeInteger(Number(beforeMessageId))&&Number(beforeMessageId)>0?"&before="+encodeURIComponent(Number(beforeMessageId)+1):"");
+  const d=await api(initialPath);if(token!==conversationLoadToken)return;renderMessages(d.messages||[],false);$("#load-older").hidden=(d.messages||[]).length<MESSAGE_PAGE_SIZE;if(c)c.unread_count=0;drawConversations();const subtitle=$("#chat-head .chat-identity small");if(subtitle)subtitle.textContent=c?.kind==="group"?"GROUP · "+Number(c?.participant_count||0)+" members":"@"+(c?.other_username||"")+" · Direct message";if(highlightMessageId){const hit=$("#messages").querySelector('[data-message="'+Number(highlightMessageId)+'"]');if(hit){hit.classList.add("history-hit");hit.scrollIntoView({block:"center",behavior:"auto"});}}
+  else if(scroll)$("#messages").scrollTop=$("#messages").scrollHeight;const u=new URL(location.href);u.searchParams.set("conversation",currentId);history.replaceState({}, "",u.pathname+u.search)}
  catch(e){if(token===conversationLoadToken)status(e.message)}
  finally{if(token===conversationLoadToken)loading=false}
 }
@@ -227,6 +242,7 @@ window.addEventListener("pageshow",event=>{
  if(event.persisted)followNotificationConversation({reply:new URLSearchParams(location.search).has("reply")}).catch(error=>status(error.message));
 });
 
+$("#jump-latest").addEventListener("click",()=>{if(currentId)openConversation(currentId).catch(e=>status(e.message));});
 $("#mobile-inbox-back").addEventListener("click",()=>{$(".message-layout").classList.remove("show-chat");$("#conversation-search").focus({preventScroll:true})});
 $("#conversations").addEventListener("click",e=>{const b=e.target.closest("[data-conversation]");if(b)openConversation(Number(b.dataset.conversation))});
 async function refreshCurrent(){if(!currentId||loading||loadingOlder)return;const requestedId=Number(currentId),token=conversationLoadToken,refreshToken=++currentRefreshToken;try{const box=$("#messages"),nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<100,visible=[...box.querySelectorAll("[data-message]")].find(el=>{const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();return r.bottom>b.top&&r.top<b.bottom}),anchorId=visible?.dataset.message,anchorOffset=visible?visible.getBoundingClientRect().top-box.getBoundingClientRect().top:0;const d=await api("/api/messages/conversations/"+requestedId+"?limit="+MESSAGE_PAGE_SIZE);if(Number(currentId)!==requestedId||token!==conversationLoadToken||refreshToken!==currentRefreshToken)return;const incoming=d.messages||[];const existingNodes=[...box.querySelectorAll("[data-message]")];if(!incoming.length&&existingNodes.length)return;const firstIncoming=Number(incoming[0]?.id||Infinity);const preservedNodes=existingNodes.filter(el=>Number(el.dataset.message)<firstIncoming);const preservedOlder=preservedNodes.map(el=>el.outerHTML).join("");const preservedOldestId=preservedNodes[0]?.dataset.message||null;renderMessages(incoming,false,false);if(preservedOlder){box.insertAdjacentHTML("afterbegin",preservedOlder);oldestId=Number(preservedOldestId)||oldestId;}if(nearBottom)box.scrollTop=box.scrollHeight;else if(anchorId){const anchor=box.querySelector('[data-message="'+anchorId+'"]');if(anchor)box.scrollTop+=anchor.getBoundingClientRect().top-box.getBoundingClientRect().top-anchorOffset;}const c=activeConversation();if(c){c.unread_count=0;}drawConversations();}catch(e){if(Number(currentId)===requestedId&&token===conversationLoadToken&&refreshToken===currentRefreshToken)status(e.message)}}
@@ -308,6 +324,130 @@ composeDialog.addEventListener("click",e=>{if(e.target===composeDialog)composeDi
 memberSearch.oninput=()=>{clearTimeout(memberSearchHandle);const token=++memberSearchToken,term=memberSearch.value.trim();if(term.length<2){memberResults.innerHTML='<p class="empty">Type at least two characters.</p>';return}memberResults.innerHTML='<p class="empty">Searching members…</p>';memberSearchHandle=setTimeout(async()=>{try{const d=await api("/api/discover?q="+encodeURIComponent(term)+"&limit=30");if(token!==memberSearchToken||term!==memberSearch.value.trim())return;const matches=(d.users||[]).filter(u=>Number(u.id)!==Number(currentUser.id));const people=await api("/api/friends");if(token!==memberSearchToken||term!==memberSearch.value.trim())return;const all=[...(people.friends||[]).map(x=>({...x,friend_status:"accepted"})),...(people.outgoing||[]).map(x=>({...x,friend_status:"outgoing"})),...(people.incoming||[]).map(x=>({...x,friend_status:"incoming"}))];const byName=new Map(all.map(x=>[x.username,x]));memberResults.innerHTML=matches.map(u=>personRow({...u,...(byName.get(u.username)||{})},"discover")).join("")||'<p class="empty">No active members matched that search.</p>'}catch(e){if(token===memberSearchToken)memberResults.innerHTML='<p class="empty">'+esc(e.message)+'</p>'}},250)};
 memberResults.addEventListener("click",async e=>{const add=e.target.closest("[data-friend-add]"),msg=e.target.closest("[data-message-user]");try{if(add){if(add.textContent.trim()==="Accept request"){const row=friendData.incoming.find(x=>x.username===add.dataset.friendAdd);if(row)await api("/api/friends/"+row.id,{method:"PATCH",body:JSON.stringify({action:"accept"})});}else await api("/api/friends/request",{method:"POST",body:JSON.stringify({username:add.dataset.friendAdd})});await loadFriends();memberSearch.dispatchEvent(new Event("input"));status("Friend list updated.",true)}else if(msg){const d=await api("/api/messages/conversations",{method:"POST",body:JSON.stringify({username:msg.dataset.messageUser})});composeDialog.close();const newId=Number(d.id);await loadConversations({openSelected:false});await openConversation(newId);status("Private conversation ready.",true)}}catch(x){status(x.message)}});
 $("#compose-form").addEventListener("submit",e=>e.preventDefault());
+
+/* Search the entire stored message history, not just the currently loaded page. */
+const historyDialog=$("#history-search-dialog"),historyForm=$("#history-search-form");
+const historyQuery=$("#history-search-input"),historyResults=$("#history-search-results");
+const historyFeedback=$("#history-search-feedback"),historyMore=$("#history-search-more");
+const historyScope=$("#history-search-current");
+let historyEpoch=0,historyCursor=null,historyDelay=0;
+function clearHistoryResults(label="Type at least two characters to search."){
+ historyEpoch++;historyCursor=null;historyResults.replaceChildren();
+ historyMore.hidden=true;historyFeedback.textContent=label;
+}
+function openHistorySearch(){
+ historyScope.disabled=!currentId;
+ if(!currentId)historyScope.checked=false;
+ historyDialog.showModal();
+ historyQuery.focus({preventScroll:true});
+}
+$("#search-all-messages").addEventListener("click",openHistorySearch);
+$("#history-search-open").addEventListener("click",openHistorySearch);
+$("#history-search-close").addEventListener("click",()=>historyDialog.close());
+historyDialog.addEventListener("click",e=>{if(e.target===historyDialog)historyDialog.close()});
+async function searchHistory(more=false){
+ const q=historyQuery.value.trim();
+ if(q.length<2){clearHistoryResults();return}
+ const scope=historyScope.checked&&currentId?Number(currentId):0;
+ const cursor=more?historyCursor:null;
+ if(more&&(!cursor||historyMore.hidden))return;
+ const token=++historyEpoch;
+ if(!more){historyCursor=null;historyResults.replaceChildren()}
+ historyFeedback.textContent="Searching your messages…";
+ historyMore.disabled=true;
+ try{
+  const params=new URLSearchParams({q,limit:"25"});
+  if(scope)params.set("conversation_id",String(scope));
+  if(cursor)params.set("before",String(cursor));
+  const d=await api("/api/messages/search?"+params.toString());
+  if(token!==historyEpoch)return;
+  const messages=d.messages||[];
+  const fragment=document.createDocumentFragment();
+  for(const m of messages){
+   const hit=document.createElement("button");
+   hit.type="button";hit.className="history-search-hit";
+   hit.dataset.messageId=String(m.id);
+   hit.dataset.conversationId=String(m.conversation_id);
+   hit.dataset.conversationName=String(m.conversation_name||"Conversation");
+   hit.dataset.kind=String(m.kind||"direct");
+   hit.dataset.groupName=String(m.group_name||"");
+   const meta=document.createElement("span");meta.className="history-search-hit-meta";
+   const who=document.createElement("strong");
+   who.textContent=(m.display_name||m.username||"Member")+" · "+(m.conversation_name||"Conversation");
+   const when=document.createElement("time");when.textContent=fmt(m.created_at);
+   meta.append(who,when);
+   const snippet=document.createElement("span");snippet.className="history-search-hit-body";
+   snippet.textContent=String(m.body||"").slice(0,260);
+   hit.append(meta,snippet);fragment.append(hit);
+  }
+  historyResults.append(fragment);
+  historyCursor=d.has_more?Number(d.next_before):null;
+  historyMore.hidden=!d.has_more||!Number.isSafeInteger(historyCursor);
+  historyFeedback.textContent=historyResults.childElementCount?
+    historyResults.childElementCount+" match"+(historyResults.childElementCount===1?"":"es")+
+      (d.has_more?" · More available":"")+
+      (scope?" in this conversation":" across your conversations"):
+    "No messages matched. Try another phrase.";
+ }catch(error){
+  if(token===historyEpoch)historyFeedback.textContent="Search failed: "+error.message;
+ }finally{
+  if(token===historyEpoch)historyMore.disabled=false;
+ }
+}
+historyForm.addEventListener("submit",e=>{e.preventDefault();clearTimeout(historyDelay);searchHistory()});
+historyQuery.addEventListener("input",()=>{
+ clearTimeout(historyDelay);clearHistoryResults(historyQuery.value.trim().length<2?
+  "Type at least two characters to search.":"Ready to search…");
+ if(historyQuery.value.trim().length>=2)historyDelay=setTimeout(()=>searchHistory(),350);
+});
+historyScope.addEventListener("change",()=>{clearTimeout(historyDelay);searchHistory()});
+historyMore.addEventListener("click",()=>searchHistory(true));
+historyResults.addEventListener("click",async e=>{
+ const hit=e.target.closest("[data-message-id][data-conversation-id]");
+ if(!hit)return;
+ const id=Number(hit.dataset.conversationId),mid=Number(hit.dataset.messageId);
+ if(!Number.isSafeInteger(id)||id<1||!Number.isSafeInteger(mid)||mid<1)return;
+ // Search results have already been membership-checked by the Worker. The
+ // inbox list is capped at 100, so an older conversation may need a stub row.
+ if(!conversations.some(c=>Number(c.id)===id)){
+  conversations.unshift({id,kind:hit.dataset.kind,group_name:hit.dataset.groupName||null,
+    other_display_name:hit.dataset.conversationName||"Conversation",other_username:"",unread_count:0});
+ }
+ historyDialog.close();
+ try{
+  await openConversation(id,{scroll:false,beforeMessageId:mid,highlightMessageId:mid});
+  status("Showing the matching message. Use Jump to latest to return to recent messages.",true);
+ }catch(error){status("Could not open matching message: "+error.message)}
+});
+
+/* Live WebSocket events trigger a lightweight D1 refresh only when something changes. */
+let liveInboxDelay=0;
+function scheduleLiveInboxUpdate(){
+ clearTimeout(liveInboxDelay);
+ liveInboxDelay=setTimeout(async()=>{
+  if(document.hidden)return;
+  try{await loadConversations({openSelected:false});if(currentId)await refreshCurrent()}
+  catch(error){console.warn("live_message_refresh_failed",String(error))}
+ },120);
+}
+function startMessageLive(){
+ const channel=window.KnightfallLive;
+ if(!channel)return;
+ channel.subscribe(event=>{
+  if(event.type==="status"){
+   const label=$("#message-live-state");
+   label.textContent=event.connected?"● Live":"● Auto refresh";
+   label.dataset.connected=event.connected?"true":"false";
+   if(event.connected)scheduleLiveInboxUpdate(); // Resync across reconnect gaps.
+   return;
+  }
+  if(event.type!=="message-event"||document.hidden)return;
+  if(event.kind==="typing"){if(Number(currentId)===event.conversationId)refreshTyping();return;}
+  if(event.kind==="reaction"){if(Number(currentId)===event.conversationId)refreshReactions();return;}
+  scheduleLiveInboxUpdate();
+ });
+}
+
 $("#refresh").onclick=async()=>{const button=$("#refresh");if(button.disabled)return;button.disabled=true;button.setAttribute("aria-busy","true");try{await loadConversations({openSelected:false});if(currentId)await refreshCurrent();status("Inbox refreshed.",true)}catch(e){status(e.message)}finally{button.disabled=false;button.removeAttribute("aria-busy")}};$("#conversation-search").oninput=drawConversations;
 $("#mute-duration").onchange=()=>{if($("#mute-chat").dataset.muted!=="1")$("#mute-chat").textContent="Mute for "+({"60":"1h","480":"8h","1440":"24h","10080":"7d","43200":"30d"}[String($("#mute-duration").value)]||"24h")};
 $("#mute-chat").onclick=async()=>{if(!currentId)return;const muted=$("#mute-chat").dataset.muted==="1",minutes=muted?0:Number($("#mute-duration").value||1440);try{await api("/api/messages/conversations/mute",{method:"POST",body:JSON.stringify({conversation_id:currentId,minutes})});await loadConversations({openSelected:false});await openConversation(currentId,{scroll:false});status(muted?"Conversation unmuted.":"Conversation muted for "+({"60":"1 hour","480":"8 hours","1440":"24 hours","10080":"7 days","43200":"30 days"}[String(minutes)]||"the selected duration")+".",true)}catch(e){status(e.message)}};
@@ -317,7 +457,8 @@ async function loadAdmin(){if(!admin)return;$("#admin-archive").hidden=false;try
 async function archive(){if(!admin)return;const token=++archiveLoadToken,cid=$("#archive-conversation").value,q=encodeURIComponent($("#archive-search").value.trim());try{const conversationFilter=Number(cid)>0?"&conversation_id="+encodeURIComponent(cid):"";const d=await api("/api/admin/messages?limit=500"+conversationFilter+"&q="+q);if(token!==archiveLoadToken)return;$("#archive").innerHTML=(d.messages||[]).map(m=>'<article class="archive-row '+(m.deleted_at?"deleted":"")+'"><div><strong>#'+m.id+' · conversation #'+m.conversation_id+'</strong><small>@'+esc(m.sender_username)+' · '+esc(fmt(m.created_at))+(m.deleted_at?" · SOFT-DELETED":"")+'</small><p>'+esc(m.body).replace(/\n/g,"<br>")+'</p></div><div class="row-actions"><button data-admin-message="'+m.id+'" data-action="'+(m.deleted_at?"restore":"delete")+'">'+(m.deleted_at?"Restore":"Soft delete")+'</button><button class="danger" data-admin-message="'+m.id+'" data-action="purge" '+(!m.deleted_at?'disabled title="Soft-delete this message before purging it"':'')+'>Purge</button></div></article>').join("")||'<div class="empty">No messages found.</div>'}catch(e){if(token!==archiveLoadToken)return;$("#archive").innerHTML='<div class="empty">Archive request failed: '+esc(e.message)+'</div>'}}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-admin-message]");if(!b)return;if(b.dataset.action==="purge"&&(b.disabled||!confirm("Permanently purge this soft-deleted message and its reports? This cannot be undone.")))return;try{await api("/api/admin/messages/"+b.dataset.adminMessage,{method:"PATCH",body:JSON.stringify({action:b.dataset.action})});await archive();status("Admin message action completed.",true)}catch(x){status(x.message)}});
 $("#archive-conversation").onchange=archive;$("#refresh-archive").onclick=archive;$("#archive-search").oninput=()=>{clearTimeout(archiveSearchHandle);archiveSearchHandle=setTimeout(archive,300)};
-(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=["admin","god"].includes(me.user.role);loadConversationDrafts();await sendActivityPing();await loadConversations();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight)return;pollInFlight=true;try{await loadConversations({openSelected:false});if(!document.hidden){await refreshCurrent();updatePresenceLabel();if(admin&&!$("#admin-archive").hidden)await archive()}}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(liveRefresh,4000);typingPollHandle=setInterval(refreshTyping,2200);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
+(async()=>{try{const me=await api("/api/auth/me");if(!me.user)throw Error("Sign in to use private messages.");currentUser=me.user;admin=["admin","god"].includes(me.user.role);loadConversationDrafts();await sendActivityPing();await loadConversations();startMessageLive();if(new URLSearchParams(location.search).has("reply"))focusNotificationReply();await loadAdmin();status("Inbox ready.",true);let pollInFlight=false;const liveRefresh=async()=>{if(pollInFlight)return;pollInFlight=true;try{await loadConversations({openSelected:false});if(!document.hidden){await refreshCurrent();updatePresenceLabel();if(admin&&!$("#admin-archive").hidden)await archive()}}catch(e){console.warn("Live inbox refresh failed",e)}finally{pollInFlight=false}};pollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)liveRefresh()},12000);
+ typingPollHandle=setInterval(()=>{if(!window.KnightfallLive?.connected)refreshTyping()},5000);presenceHandle=setInterval(sendActivityPing,60000);document.addEventListener("visibilitychange",async()=>{if(document.hidden)return;try{await sendActivityPing();await loadConversations({openSelected:false});if(currentId)await refreshCurrent();updatePresenceLabel()}catch(e){console.warn("Inbox resume refresh failed",e)}});updateNotificationButton()}catch(e){status(e.message)}})();
 function syncMessagesViewport(){const height=window.visualViewport?.height||window.innerHeight;if(height>0)document.documentElement.style.setProperty("--messages-visible-height",height+"px")}syncMessagesViewport();window.addEventListener("resize",syncMessagesViewport,{passive:true});window.visualViewport?.addEventListener("resize",syncMessagesViewport,{passive:true});
 async function sendActivityPing(){if(document.hidden||Date.now()-lastActivityPing<45000)return;lastActivityPing=Date.now();try{await api("/api/activity/ping",{method:"POST",body:"{}"})}catch(error){console.warn("Presence heartbeat failed",error)}}
 $("#enable-notifications").addEventListener("click",()=>{location.href="/notifications.html"});

@@ -69,6 +69,13 @@ jobs:
           node --check backend/src/member-memos.js
           node --check backend/src/index.js
 
+      - name: Validate authenticated realtime messaging and member-only history search
+        run: |
+          node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
+          node --check backend/src/messaging-live.js
+          node --check backend/src/message-search.js
+          node --check public/message-live.js
+
       - name: Validate discover escaping
         shell: bash
         run: |

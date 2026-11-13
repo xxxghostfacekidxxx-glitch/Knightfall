@@ -674,3 +674,36 @@
 /* Saved-message drafts are distinguishable without disguising new-message alerts. */
 .messages-shell .draft-marker{font-size:.72rem;font-weight:900;color:#d9ff51}
 .messages-shell .conversation:not(.active) .draft-marker{color:#ff9fe5}
+
+
+/* Realtime + history search. Search results are member-scoped and text-only. */
+.messages-shell .inbox-toolbar{display:flex;align-items:center;gap:6px}
+.messages-shell .inbox-toolbar button{min-width:38px;min-height:38px;border:1px solid #6d427e;border-radius:10px;background:#24142f;color:#e9f9bd;cursor:pointer}
+.messages-shell .inbox-toolbar button:hover,.messages-shell .inbox-toolbar button:focus-visible{border-color:#c6ff45}
+.messages-shell .message-live-state{display:inline-flex;align-items:center;color:#e4b2da;font-size:.73rem;font-weight:800;white-space:nowrap}
+.messages-shell .message-live-state[data-connected="true"]{color:#c6ff45}
+.messages-shell .jump-latest{display:block;margin:5px auto;border:1px solid #c6ff45;background:#23202a;color:#d9ff65;border-radius:10px;font-weight:800;padding:8px 14px;cursor:pointer}
+.messages-shell .jump-latest[hidden]{display:none}
+.messages-shell .message.history-hit{outline:2px solid #c6ff45;outline-offset:3px;animation:kf-history-halo 1.2s ease-out 1}
+@keyframes kf-history-halo{0%{box-shadow:0 0 0 9px #c6ff4544}100%{box-shadow:none}}
+.history-search-dialog{box-sizing:border-box;width:min(790px,calc(100vw - 24px));max-width:790px;max-height:min(85dvh,860px);overflow:auto;border:1px solid #75458d;border-radius:20px;background:linear-gradient(145deg,#20142e,#0e0b19);color:#f6eafa;padding:clamp(14px,2vw,24px)}
+.history-search-dialog::backdrop{background:#05030bbc;backdrop-filter:blur(3px)}
+.history-search-form{display:grid;gap:10px;margin:12px 0}
+.history-search-form>label{font-size:.9rem;font-weight:800;color:#e9d4f2}
+.history-search-controls{display:flex;gap:8px}
+.history-search-controls #history-search-input{min-width:0;flex:1;font-size:16px;border-radius:11px;border:1px solid #704480;background:#0b0915;color:#fff;padding:10px 12px}
+.history-search-controls button{padding:9px 16px;border-radius:10px}
+.history-search-form .history-search-scope{display:flex;align-items:center;gap:10px;font-size:.8rem;font-weight:700;color:#d4c2e2;cursor:pointer}
+.history-search-scope input{width:17px;height:17px;accent-color:#c6ff45}
+.history-search-feedback{font-size:.84rem;color:#c3b4d3;min-height:24px}
+.history-search-results{display:grid;gap:8px;max-height:min(50dvh,440px);overflow:auto;scrollbar-color:#7c518f transparent}
+.history-search-hit{display:grid;gap:7px;text-align:left;width:100%;border:1px solid #4e345b;border-radius:12px;background:#181122;padding:12px 13px;color:#f5eaf9;cursor:pointer;overflow-wrap:anywhere}
+.history-search-hit:hover,.history-search-hit:focus-visible{border-color:#c6ff45;background:#291832;outline-offset:2px}
+.history-search-hit-meta{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 14px}
+.history-search-hit-meta strong{font-weight:850;color:#ffc1f0;font-size:.84rem}
+.history-search-hit-meta time{font-size:.72rem;color:#c5b3d1}
+.history-search-hit-body{font-size:.9rem;white-space:pre-wrap;line-height:1.5;color:#eee4f3}
+#history-search-more{margin-top:10px;border:1px solid #c6ff45;border-radius:10px;background:#22212b;color:#dfff7f;padding:9px 14px;cursor:pointer}
+#history-search-more[hidden]{display:none}
+@media(max-width:600px){.history-search-dialog{max-height:88dvh;padding:12px;border-radius:13px}.history-search-hit{padding:10px}.messages-shell .message-live-state{font-size:.68rem}}
+@media(prefers-reduced-motion:reduce){.messages-shell .message.history-hit{animation:none}}

@@ -256,7 +256,20 @@
       if(state.active&&state.visible)await refreshThread();
     }catch(error){if(state.visible)announce("Chat could not refresh. "+error.message);}
   }
+  let bubbleLiveDelay=0;
+  if(window.KnightfallLive)window.KnightfallLive.subscribe(event=>{
+    if(event.type==="status"){if(event.connected)tick().catch(()=>{});return;}
+    if(event.type!=="message-event"||document.hidden)return;
+    if(event.kind==="typing"||event.kind==="read")return;
+    clearTimeout(bubbleLiveDelay);
+    bubbleLiveDelay=setTimeout(async()=>{
+      try{
+        await refreshConversations({force:true});
+        if(state.visible&&state.active===event.conversationId)await refreshThread();
+      }catch(error){if(state.visible)announce("Live chat update failed. "+error.message);}
+    },120);
+  });
   tick();
-  const timer=setInterval(()=>{if(!document.hidden)tick();},10000);
+  const timer=setInterval(()=>{if(!document.hidden&&!window.KnightfallLive?.connected)tick();},15000);
   window.addEventListener("pagehide",event=>{if(!event.persisted)clearInterval(timer);});
 })();
