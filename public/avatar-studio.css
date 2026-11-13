@@ -147,3 +147,41 @@
  .avatar-studio .studio-actions #remove-active-avatar,.avatar-studio .studio-actions #clear-avatar{grid-column:1/-1;min-height:35px}
 }
 @media(max-width:390px){.avatar-studio .studio-actions .button{font-size:11px}}
+
+
+/* Misfit Studio III: editorial character art direction and responsive inspection. */
+.avatar-studio{--panel:#120e1c;--line:#6a496f;--muted:#beb1cc;--ink:#fff9ff}
+.avatar-studio .studio-intro{background:radial-gradient(ellipse at 89% 15%,#b8ff6140 0,transparent 33%),radial-gradient(ellipse at 12% 100%,#fb399751 0,transparent 45%),linear-gradient(127deg,#2b142f,#10101c 66%,#161725);border-color:#8b528e;box-shadow:inset 0 1px #ffffff36,0 28px 64px #0008,0 0 60px #fa48c51a}
+.avatar-studio .studio-intro h1{font-size:clamp(42px,6.9vw,92px);letter-spacing:-.075em;text-shadow:0 4px 35px #0009}
+.avatar-studio .preview-card,.avatar-studio .builder-card{background:linear-gradient(151deg,#25152f 0,#15131e 40%,#090b13 100%);border-color:#764a7b;box-shadow:inset 0 1px #ffffff25,0 26px 65px #0009}
+.avatar-studio .avatar-stage{aspect-ratio:1/1.04;min-height:340px;border-radius:22px;border:1px solid #9563a0;background:radial-gradient(ellipse at 50% 39%,#72385d,#30203e 52%,#0b0c18 90%);box-shadow:0 0 0 3px #a354a019,inset 0 0 90px #0007,0 20px 45px #0009}
+.avatar-studio .avatar-stage:before{opacity:.56;background:repeating-linear-gradient(0deg,transparent 0 25px,#ffffff13 26px),repeating-linear-gradient(90deg,transparent 0 25px,#ffffff13 26px),radial-gradient(circle at 50% 45%,transparent 35%,#080510a8 94%);mask-image:linear-gradient(#000,transparent)}
+.avatar-studio .avatar-stage:after{height:34px;bottom:6px;background:linear-gradient(90deg,#ff55d885,#c6ff4599);filter:blur(29px)}
+.avatar-studio .avatar-stage svg{width:min(94%,490px);max-height:495px;filter:drop-shadow(0 18px 24px #000b) drop-shadow(0 0 18px #ff55d829);transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s}
+.avatar-studio .avatar-stage[data-framing="portrait"] svg{transform:scale(1.55) translateY(12%);animation:none;filter:drop-shadow(0 14px 24px #000b)}
+.avatar-studio .preview-signal{font-size:10px}
+.avatar-studio .stage-bottom{color:#d2b9da;letter-spacing:.12em}
+.avatar-studio .framing-controls{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0 0;padding:5px;border:1px solid #65436c;background:#100c18;border-radius:13px}
+.avatar-studio .framing-button{min-height:43px;border:1px solid transparent;border-radius:9px;background:transparent;color:#cdbbd4;font-size:12px;font-weight:850;cursor:pointer;transition:background .18s,border-color .18s}
+.avatar-studio .framing-button[aria-pressed="true"]{border-color:#b9fa6e;background:linear-gradient(120deg,#baf06b,#7abfa3);color:#111a18;box-shadow:0 2px 12px #c6ff4528}
+.avatar-studio .framing-button:hover:not([aria-pressed="true"]){background:#2d2037;color:#fff}
+.avatar-studio .framing-button:focus-visible{outline:3px solid #73eee6;outline-offset:2px}
+.avatar-studio .framing-hint{margin:7px 4px 13px;font-size:11px;line-height:1.45;color:#afa1bc}
+.avatar-studio .character-ticket{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 14px}
+.avatar-studio .character-ticket>div{display:grid;align-content:center;gap:4px;min-height:62px;padding:10px;border:1px solid #6b426e;border-radius:10px;background:linear-gradient(155deg,#321a3d,#141221);min-width:0}
+.avatar-studio .character-ticket span{font-size:9px;letter-spacing:.15em;font-weight:950;color:#c6ff45}
+.avatar-studio .character-ticket strong{font-size:12px;font-weight:850;color:#f9edff;overflow-wrap:anywhere}
+.avatar-studio .slot-card{border-color:#67416b;background:linear-gradient(147deg,#32203b,#15111f)}
+.avatar-studio .slot-card.active{border-color:#baff64;box-shadow:0 0 0 1px #baff6480,0 12px 23px #0009}
+.avatar-studio .preset-chip{border-color:#654269;background:linear-gradient(150deg,#39223e,#12141f);min-height:173px}
+.avatar-studio .preset-chip .look-avatar{height:130px;border:1px solid #684b71;border-radius:11px;background:radial-gradient(circle at 50% 35%,#704467,#130e20 80%)}
+.avatar-studio .preset-chip .look-avatar svg{height:100%;width:auto}
+.avatar-studio .trait-option{border-color:#715074;background:linear-gradient(155deg,#2e1e36,#11101b);min-height:108px}
+.avatar-studio .trait-option .trait-thumbnail{width:64px;height:75px;border-radius:10px;background:#231a2e;box-shadow:0 3px 10px #0005}
+.avatar-studio .trait-option .trait-thumbnail svg{width:100%;height:100%;object-fit:contain}
+.avatar-studio .trait-option[aria-pressed="true"]{border-color:#c6ff45;box-shadow:0 0 0 2px #c6ff4544,0 0 20px #c6ff4522}
+.avatar-studio .category-tab{border-color:#695071;background:linear-gradient(155deg,#251b31,#10111c)}
+.avatar-studio .category-tab[aria-selected="true"]{background:linear-gradient(132deg,#c9ff70,#84d8b1);box-shadow:0 8px 24px #c6ff4533}
+@media(max-width:850px){.avatar-studio .avatar-stage{min-height:310px}.avatar-studio .avatar-stage svg{width:min(88%,395px)}}
+@media(max-width:600px){.avatar-studio .avatar-stage{min-height:260px;aspect-ratio:1.19/1}.avatar-studio .avatar-stage[data-framing="portrait"] svg{transform:scale(1.44) translateY(13%)}.avatar-studio .character-ticket>div{padding:8px 6px;min-height:57px}.avatar-studio .character-ticket strong{font-size:10px}.avatar-studio .preset-chip{min-height:143px}.avatar-studio .preset-chip .look-avatar{height:97px}.avatar-studio .trait-option .trait-thumbnail{width:58px;height:69px}}
+@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{transition:none;animation:none}.avatar-studio .framing-button{transition:none}}
