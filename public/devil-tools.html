@@ -11,7 +11,9 @@
 
 </style>
 <link rel="stylesheet" href="/creator-foundry.css">
+<link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
 <script src="/creator-foundry.js" defer></script>
+<script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
 <a class="back" href="/admin.html">← God Mode</a>
 <section class="hero"><h1>Creator <span>Foundry</span></h1><p class="lede">Browse artwork, build games, and open Knightfall’s creator workspaces from one catalog.</p></section>
@@ -35,7 +37,12 @@
   <section class="foundry-group" data-group="art" aria-labelledby="foundry-art">
     <h2 id="foundry-art">Art &amp; Assets</h2>
     <div class="foundry-grid">
-    <article class="foundry-card" data-search="pixel atlas CRT scanlines contrast render diagnostics PNG SVG upload developer bench">
+    <article class="foundry-card" data-search="piskel pixelorama free tex packer tiled pixel editor sprite animation texture atlas tile map level design offline native">
+  <h3>Creator Production Lab</h3><p>Three working local-first tools: 32px pixel-art editor with frames, PNG sprite atlas packer with JSON metadata, and Tiled-style level painter and exports.</p>
+  <p class="foundry-meta">Built-in tools · inspired by Piskel, FreeTexPacker &amp; Tiled workflows · no server upload</p>
+  <div class="actions"><a class="primary" href="#production-workbench" data-workspace-search>Open Production Lab</a></div>
+</article>
+<article class="foundry-card" data-search="pixel atlas CRT scanlines contrast render diagnostics PNG SVG upload developer bench">
       <h3>Sprite Workshop</h3>
       <p>Preview and animate arcade sprites, inspect local images, and export sheets or individual sprites.</p>
       <div class="actions"><a class="primary" href="#sprite-workshop">Open sprite workshop</a></div>
@@ -478,6 +485,47 @@ observer.observe(document.getElementById('workshop'),{attributes:true,attributeF
 if(!document.getElementById('workshop').classList.contains('hidden')){observer.disconnect();refresh()}
 })();
 </script>
+<section id="production-workbench" data-workspace hidden class="panel" aria-labelledby="lab-title">
+ <h2 id="lab-title">Creator Production Lab</h2>
+ <p>Paint pixel sprites, pack texture atlases and build 2D maps entirely in your browser. These are native Knightfall tools modeled on open-source workflows, <strong>not copies of the upstream applications</strong>.</p>
+ <div class="lab-tabs" role="tablist" aria-label="Creative editor">
+  <button type="button" role="tab" data-lab-tab="pixels" aria-selected="true">Pixel Studio</button>
+  <button type="button" role="tab" data-lab-tab="atlas" aria-selected="false">Atlas Packer</button>
+  <button type="button" role="tab" data-lab-tab="maps" aria-selected="false">Tilemap Forge</button>
+ </div>
+ <section data-lab-panel="pixels" aria-label="Pixel Studio">
+  <div class="lab-grid"><div class="lab-canvas-wrap"><canvas id="lab-pixel-canvas" width="32" height="32" aria-label="32 by 32 editable pixel art canvas; drag or tap to draw"></canvas></div>
+  <div class="lab-controls"><h3>Pixel Studio · 32×32</h3>
+   <p>Browser-based sprite editing with frame duplication, eyedropper, bucket fill and undo. Import raster art and export PNG frames.</p>
+   <label>Brush color <input id="lab-pixel-color" type="color" value="#92d3b3"></label>
+   <div class="lab-tools" role="group" aria-label="Pixel tools"><button type="button" data-pixel-tool="draw" aria-pressed="true">✎ Pencil</button><button type="button" data-pixel-tool="erase" aria-pressed="false">Eraser</button><button type="button" data-pixel-tool="fill" aria-pressed="false">Fill</button><button type="button" data-pixel-tool="pick" aria-pressed="false">Picker</button></div>
+   <div class="lab-tools"><button type="button" id="lab-pixel-undo">↶ Undo</button><button type="button" id="lab-pixel-clear">Clear frame</button></div>
+   <div class="lab-tools"><button type="button" id="lab-pixel-previous">← Frame</button><button type="button" id="lab-pixel-new">＋ Duplicate</button><button type="button" id="lab-pixel-next">Frame →</button><button type="button" id="lab-pixel-remove">Remove</button></div>
+   <label class="lab-upload">Import PNG / JPEG / WebP <input id="lab-pixel-import" type="file" accept="image/png,image/jpeg,image/webp"></label>
+   <div class="lab-tools"><button type="button" id="lab-pixel-export">Export PNG</button><button type="button" id="lab-pixel-strip">Frame strip PNG</button><button type="button" id="lab-pixel-metadata">Frame JSON</button></div>
+   <p class="lab-status" id="lab-pixel-info" role="status"></p>
+  </div></div></section>
+ <section data-lab-panel="atlas" hidden aria-label="Atlas Packer">
+  <div class="lab-grid"><div class="lab-canvas-wrap"><canvas id="lab-atlas-canvas" width="1" height="1" aria-label="Packed sprite atlas preview"></canvas></div>
+  <div class="lab-controls"><h3>Atlas Packer</h3><p>Combine up to 48 sprites into one transparent PNG atlas, then export matching coordinate JSON. Maximum 2048×2048.</p>
+   <label class="lab-upload">Choose local raster sprites <input id="lab-atlas-input" type="file" accept="image/png,image/jpeg,image/webp" multiple></label>
+   <ul id="lab-atlas-list" aria-label="Imported atlas sprites"></ul>
+   <div class="lab-tools"><button type="button" id="lab-atlas-pack">Pack sprites</button><button type="button" id="lab-atlas-clear">Clear</button></div>
+   <div class="lab-tools"><button type="button" id="lab-atlas-png">Export atlas PNG</button><button type="button" id="lab-atlas-json">Export atlas JSON</button></div>
+   <p id="lab-atlas-status" class="lab-status" role="status">Choose PNG, JPEG or WebP images.</p>
+  </div></div></section>
+ <section data-lab-panel="maps" hidden aria-label="Tilemap Forge">
+  <div class="lab-grid"><div class="lab-canvas-wrap"><canvas id="lab-tile-canvas" width="640" height="384" aria-label="Tilemap editor; drag or tap to paint grid cells"></canvas></div>
+  <div class="lab-controls"><h3>Tilemap Forge</h3><p>Paint ground, walls, hazards and one spawn point. Export orthogonal Tiled-style JSON with a matching prototype PNG tileset.</p>
+   <div class="lab-tools"><label>Width <input id="lab-map-width" type="number" min="4" max="40" value="20"></label><label>Height <input id="lab-map-height" type="number" min="4" max="30" value="12"></label></div>
+   <label>Paint tile <select id="lab-tile-brush"><option value="0">Empty</option><option value="1" selected>Ground</option><option value="2">Wall</option><option value="3">Hazard</option><option value="4">Spawn</option></select></label>
+   <button type="button" id="lab-tile-reset">New blank map</button>
+   <label class="lab-upload">Import compatible Tiled JSON <input id="lab-tile-import" type="file" accept="application/json,.json"></label>
+   <div class="lab-tools"><button type="button" id="lab-tile-json">Export level JSON</button><button type="button" id="lab-tile-tileset">Export tileset PNG</button><button type="button" id="lab-tile-png">Export preview PNG</button></div>
+   <p class="lab-status" id="lab-tile-info" role="status"></p><p class="lab-status" id="lab-tile-status" role="status">Save the JSON and tileset PNG in the same directory.</p>
+  </div></div></section>
+ <p id="lab-status" class="lab-note" role="status">Local-only: no uploads, automatic publishing, or backend writes. Import files you own or are licensed to use.</p>
+</section>
 <section id="sprite-workshop" data-workspace hidden aria-label="Sprite Workshop">
 <div class="layout"><div>
 <section class="panel" id="sprite-preview"><h2>Sprite Sheet Preview</h2><p>Original SVG pixel-art sheet for the Chaos Cartridge arcade. Choose a sprite below to spotlight it, or upload a local image to inspect it without sending the file to the server.</p><div id="stage" class="sprite-stage glow"><img id="sheet" src="/assets/arcade/chaos-sprite-sheet.svg" alt="Twenty-four original neon arcade sprites" decoding="async"><div id="spotlight" class="spotlight" aria-label="Selected sprite preview"></div></div>
