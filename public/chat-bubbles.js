@@ -181,6 +181,7 @@
     if(c&&Number(c.unread_count)>0){
       c.unread_count=0;updateUnreadBadge();renderHeads();
       if(!state.active)renderRecent();
+      window.dispatchEvent(new Event("kf:notifications-changed"));
     }
   }
   async function refreshThread(){

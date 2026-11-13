@@ -7,6 +7,8 @@ const sw=readFileSync(new URL("../public/sw.js",import.meta.url),"utf8");
 const messages=readFileSync(new URL("../public/messages.html",import.meta.url),"utf8");
 const bubbles=readFileSync(new URL("../public/chat-bubbles.js",import.meta.url),"utf8");
 const navigation=readFileSync(new URL("../public/nav.js",import.meta.url),"utf8");
+const notifications=readFileSync(new URL("../public/notifications.html",import.meta.url),"utf8");
+const backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
 for(const source of [sw,bubbles,navigation])new vm.Script(source);
 const inline=[...messages.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).pop();
 new vm.Script(inline);
@@ -98,4 +100,19 @@ test("push tap acknowledges its exact notification record",async()=>{
 test("invalid notification IDs cannot trigger read updates",async()=>{
   const h=harness();await h.click({notificationId:"0"});
   assert.equal(h.fetchCalls.length,0);
+});
+
+test("notification link awaits read receipt before navigating; badge listens for updates",()=>{
+  assert.match(notifications,/if\(link\)event\.preventDefault\(\)/);
+  assert.match(notifications,/await api\("\/api\/notifications\/"\+item\.dataset\.notice,\{method:"PATCH"\}\)/);
+  assert.match(notifications,/announceReadChange\(\)/);
+  assert.match(navigation,/window\.addEventListener\("kf:notifications-changed", refreshNotifications\)/);
+  assert.match(navigation,/requestVersion!==notificationRefreshVersion/);
+  assert.match(bubbles,/window\.dispatchEvent\(new Event\("kf:notifications-changed"\)\)/);
+  assert.match(messages,/const hadUnread=Number\(c\.unread_count\)>0/);
+});
+test("opening a conversation only clears existing alerts for the signed-in member",()=>{
+  assert.match(backend,/UPDATE notifications SET read_at=\? WHERE user_id=\? AND target_type='conversation' AND target_id=\? AND kind IN \('message','mention'\) AND read_at IS NULL AND created_at<=\?/);
+  assert.match(backend,/\.bind\(openedAt,user\.id,conversationId,openedAt\)\.run\(\)/);
+  assert.match(backend,/notification\.id=Number\(inserted\.meta\?\.last_row_id\)/);
 });
