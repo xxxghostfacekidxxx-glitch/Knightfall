@@ -46,6 +46,15 @@ async function scenario(label,viewport){
   assert.equal(await page.locator("#category-tabs .category-tab").count(),4);
   assert.equal(await page.locator("#preset-list .preset-chip").count(),13);
   assert.ok((await page.locator("#avatar-preview svg").count())===1);
+  assert.equal(await page.locator("#avatar-preview [data-art-pass]").count(),6,
+    "The enhanced six-layer illustration should render in the live preview");
+  await page.locator("#preview-portrait").click();
+  assert.equal(await page.locator("#avatar-preview").getAttribute("data-framing"),"portrait");
+  assert.equal(await page.locator("#preview-portrait").getAttribute("aria-pressed"),"true");
+  assert.equal(await page.locator("#avatar-preview").getAttribute("aria-label"),"Live Misfit character preview, face detail");
+  await page.locator("#preview-full").click();
+  assert.equal(await page.locator("#avatar-preview").getAttribute("data-framing"),"full");
+  assert.equal(await page.locator("#preview-full").getAttribute("aria-pressed"),"true");
   await page.getByRole("tab",{name:/Expression/}).click();
   const tattoo=page.locator("fieldset.control-group").filter({has:page.locator("legend",{hasText:"Face tattoo"})});
   await tattoo.getByRole("button",{name:"Face tattoo: Neon sigil"}).click();
