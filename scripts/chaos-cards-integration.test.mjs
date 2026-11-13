@@ -46,7 +46,9 @@ test("After Hours preview is linked from the Cinder Shop and both game modes",()
 });
 test("four-seat table reachable from arcade and direct messages",()=>{
  assert.match(messaging,/id="chaos-card-chat-invite"/);
- assert.match(messaging,/cardLink\.href="\/arcade\/hosted\/cards-against-chaos\/index\.html\?invite="/);
+ assert.match(messaging,/cardLink\.href="\/arcade\/hosted\/cards-against-chaos\/index\.html\?challenge="/);
+  assert.match(messaging,/cardLink\.href="\/arcade\/hosted\/cards-against-chaos\/index\.html\?match="/);
+  assert.match(messaging,/turnLink\.href="\/arcade\/async-play\.html\?match="/);
  assert.match(lobby,/href="\/arcade\/hosted\/cards-against-chaos\/index\.html"/);
  assert.match(game,/id="cards-online-table"/);
  assert.match(game,/src="\.\/online\.js/);

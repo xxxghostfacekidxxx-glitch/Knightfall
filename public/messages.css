@@ -297,8 +297,6 @@
 /* Keep transcript as the single flexible grid track. The typing line, history
    button, restriction warning and composer are separate siblings, not overlays.
    This prevents the Android keyboard from pushing the composer below the panel. */
-.chat-panel>#chat-head{grid-row:1}
-.chat-panel>#typing-indicator{grid-row:2}
 .chat-panel>#load-older{grid-row:3;justify-self:center}
 .chat-panel>#messages{grid-row:4;min-height:0}
 .chat-panel>#conversation-restricted{grid-row:5}
