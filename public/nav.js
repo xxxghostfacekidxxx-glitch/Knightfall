@@ -241,7 +241,6 @@
     <a class="kf-brand" href="/" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
-      <a class="kf-nav-primary" href="/#ecosystem">Explore</a>
       <details class="kf-nav-group">
         <summary>Community <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -289,6 +288,12 @@
   const normalizedPath = path => path.replace(/\/$/, "").replace(/\.html$/, "").replace(/^\/index$/, "") || "/";
   function markCurrentPage() {
     const currentPath = normalizedPath(location.pathname);
+    // The brand is the sole global route to home. Avoid a duplicate Explore link.
+    const brand = header.querySelector(".kf-brand");
+    if (brand) {
+      if (currentPath === "/") brand.setAttribute("aria-current", "page");
+      else brand.removeAttribute("aria-current");
+    }
     const sectionAliases = new Map([
       ["/profile-edit", "/profile"],
       ["/thread", "/community"],
