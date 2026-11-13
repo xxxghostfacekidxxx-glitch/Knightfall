@@ -191,7 +191,7 @@ async function refreshReactions(){const id=Number(currentId);if(!id)return;const
 async function loadConversations({openSelected=true}={}){const token=++inboxLoadToken;const d=await api("/api/messages/conversations");if(token!==inboxLoadToken)return;const selected=conversations.find(c=>Number(c.id)===Number(currentId)&&c.fromSearch===true);
  conversations=d.conversations||[];
  if(selected&&!conversations.some(c=>Number(c.id)===Number(currentId)))conversations.push(selected);
- maybeNotifyUnread();drawConversations();updatePresenceLabel();if(openSelected&&currentId&&conversations.some(x=>Number(x.id)===Number(currentId)))await openConversation(currentId,{scroll:false});else if(!currentId){const requested=new URLSearchParams(location.search).get("conversation");if(requested&&conversations.some(x=>Number(x.id)===Number(requested)))await openConversation(Number(requested));}}
+ maybeNotifyUnread();drawConversations();updatePresenceLabel();if(openSelected&&currentId&&conversations.some(x=>Number(x.id)===Number(currentId)))await openConversation(currentId,{scroll:false});else if(!currentId){const requested=new URLSearchParams(location.search).get("conversation");if(requested&&conversations.some(x=>Number(x.id)===Number(requested))&&!new URLSearchParams(location.search).has("message"))await openConversation(Number(requested));}}
 async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMessageId=null}={}){
  const previousId=Number(currentId);const token=++conversationLoadToken;oldestId=null;loadingOlder=false;
  historyPinnedConversationId=beforeMessageId?Number(id):null;
@@ -252,6 +252,7 @@ if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("messag
  if(!Number.isSafeInteger(id)||id<1)return;
  const url=new URL(location.href);
  url.searchParams.set("conversation",String(id));
+ url.searchParams.delete("message"); // New notifications must not inherit an older permalink.
  if(data.reply)url.searchParams.set("reply","1");else url.searchParams.delete("reply");
  history.replaceState({},"",url.pathname+url.search);
  followNotificationConversation({reply:data.reply===true}).catch(error=>status(error.message));

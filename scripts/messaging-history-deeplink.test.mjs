@@ -74,3 +74,24 @@ test("search keyboard shortcut and closing dialog cancel stale results",()=>{
  assert.match(inline,/historyDialog\.addEventListener\("close",\(\)=>\{clearTimeout\(historyDelay\);historyEpoch\+\+;/);
  assert.match(inline,/if\(token!==historyEpoch\)return/);
 });
+
+test("initial inbox load preserves a message permalink until its exact target opens",async()=>{
+ const calls=[];
+ const ctx=vm.createContext({
+  inboxLoadToken:0,currentId:null,conversations:[],historyPinnedConversationId:null,
+  api:async()=>({conversations:[{id:712}]}),
+  location:{search:"?conversation=712&message=33"},URLSearchParams,Number,
+  maybeNotifyUnread(){},drawConversations(){},updatePresenceLabel(){},
+  openConversation:async(id)=>calls.push(id)
+ });
+ vm.runInContext(extract("async function loadConversations","\nasync function openConversation"),ctx);
+ await ctx.loadConversations();
+ assert.equal(calls.length,0,"do not delete message=33 by opening the default recent thread first");
+ ctx.location.search="?conversation=712";
+ await ctx.loadConversations();
+ assert.deepEqual(calls,[712],"normal inbox links still open their conversation");
+});
+test("push notification routing clears stale message permalinks",()=>{
+ assert.match(inline,/url\.searchParams\.delete\("message"\); \/\/ New notifications/);
+ assert.match(inline,/KF_OPEN_CONVERSATION/);
+});
