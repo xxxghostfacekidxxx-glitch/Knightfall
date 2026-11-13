@@ -38,7 +38,7 @@ test('Creator Foundry exposes one authenticated local production workspace',()=>
  const page=read('public/devil-tools.html'),script=read('public/creator-production-lab.js');
  assert.match(page,/id="production-workbench" data-workspace hidden/);
  for(const id of ['lab-pixel-canvas','lab-atlas-canvas','lab-tile-canvas','lab-atlas-input','lab-tile-import'])assert.match(page,new RegExp('id="'+id+'"'));
- assert.match(page,/src="\/creator-production-lab.js"/);
+ assert.match(page,/src="\/creator-production-lab\.js\?v=/);
  assert.match(script,/packAtlas\(/);assert.match(script,/makeTiledMap\(/);
  assert.doesNotMatch(script,/fetch\(|localStorage|sessionStorage/,'artwork remains local-only');
  const foundry=read('public/creator-foundry.js');assert.match(foundry,/showLocation\(/);

@@ -56,7 +56,8 @@ jobs:
       - name: Run existing permission and security audits
         run: |
           node scripts/security-surface-inventory.mjs
-          node --test scripts/creator-production-lab.test.mjs scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
+          node --test scripts/creator-production-lab.test.mjs
+          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
