@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { Script } from "node:vm";
 const root=resolve("public");
-const catalog=readFileSync(join(root,"arcade-30-games.html"),"utf8");
+const catalog=readFileSync(join(root,"chaos-cartridge.html"),"utf8");
 const manifest=JSON.parse(readFileSync(join(root,"arcade/original-creations.json"),"utf8"));
 const errors=[],seen=new Set();
 const catalogLinks=[...catalog.matchAll(/href="(\/arcade\/hosted\/[^"]+\/index\.html)"/g)].map(m=>m[1]);

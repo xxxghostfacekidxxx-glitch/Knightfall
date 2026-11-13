@@ -40,7 +40,7 @@ test("consolidated navigation destinations exist, including deep links",()=>{
    if (fragment) assert.ok(contents.includes('id="'+fragment+'"'),path+"#"+fragment);
   }
  }
- for (const file of ["chaos-cartridge.html","arcade-30-games.html"]) {
+ for (const file of ["chaos-cartridge.html"]) {
   const html = disk("/"+file);
   assert.match(html,/href="#game-shelf"/);
   assert.doesNotMatch(html,/href="Original Ash-Fall/);

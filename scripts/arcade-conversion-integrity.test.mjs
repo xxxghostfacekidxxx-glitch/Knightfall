@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync,existsSync} from "node:fs";
 const catalog=JSON.parse(readFileSync("public/arcade/original-creations.json","utf8"));
-const shelf=readFileSync("public/arcade-30-games.html","utf8");
+const shelf=readFileSync("public/chaos-cartridge.html","utf8");
 test("every cataloged original has a locally hosted entry point",()=>{
  const ids=new Set();
  for(const g of catalog.games){

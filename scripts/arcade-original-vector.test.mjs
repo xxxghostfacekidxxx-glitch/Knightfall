@@ -27,7 +27,7 @@ test("vector cabinet metadata stays synchronized after the game-family rewrite",
  const catalog=JSON.parse(readFileSync("public/arcade/catalog.json","utf8")).games;
  const manifest=JSON.parse(readFileSync("public/arcade/hosted/account-bridge-manifest.json","utf8")).games;
  const originals=JSON.parse(readFileSync("public/arcade/original-creations.json","utf8")).games;
- const shelves=["public/chaos-cartridge.html","public/arcade-30-games.html"].map(p=>readFileSync(p,"utf8"));
+ const shelves=["public/chaos-cartridge.html"].map(p=>readFileSync(p,"utf8"));
  for(const [id,title] of [["neon-vector","Cinder Vector"],["prism-panic","Prism Siege"]]){
   const cabinet=readFileSync("public/arcade/hosted/"+id+"/index.html","utf8");
   const entry=catalog.find(g=>g.id===id);

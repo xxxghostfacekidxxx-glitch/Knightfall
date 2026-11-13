@@ -16,7 +16,7 @@ test('Neon Surge is licensed and listed exactly once on both arcade shelves',()=
  assert.equal(cat.games.filter(g=>g.id==='neon-surge').length,1);
  const imports=JSON.parse(read('public/arcade/import-manifest.json'));
  assert.equal(imports.imports.find(g=>g.gameId==='cabinet-neon-surge').license,'MIT');
- for(const file of ['chaos-cartridge.html','arcade-30-games.html'])assert.equal((read('public/'+file).match(/data-game-id="neon-surge"/g)||[]).length,1);
+ for(const file of ['chaos-cartridge.html'])assert.equal((read('public/'+file).match(/data-game-id="neon-surge"/g)||[]).length,1);
 });
 
 test('Neon Surge title loop yields idle frames and keeps START clickable under WebGL load',()=>{

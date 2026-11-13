@@ -247,7 +247,7 @@ for (const entry of manifestEntries) {
 const marksman = await readFile(path.join(publicDir, "arcade/hosted/marshland-marksman/index.html"), "utf8");
 if (!marksman.includes("cabinet-marshland-marksman") || !marksman.includes("recordScore")) fail("Marshland Marksman is missing account leaderboard integration.");
 if (!worker.includes('"cabinet-marshland-marksman"') || !worker.includes('"cabinet-marshland-marksman":1000')) fail("Marshland Marksman is not allowlisted with a bounded score cap.");
-const openSourceCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
+const openSourceCatalog = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 if (!openSourceCatalog.includes('href="/arcade/hosted/marshland-marksman/index.html"')) fail("Marshland Marksman is missing from the arcade catalog.");
 ok("Arcade manifest paths, provenance records, and Marshland Marksman account integration checked.");
 if (!openSourceCatalog.includes('href="/arcade/hosted/cinder-crossing/index.html"')) fail("Cinder Crossing is missing from the arcade catalog.");
@@ -260,10 +260,9 @@ const afterburnGame = await readFile(path.join(publicDir, "arcade/hosted/afterbu
 if (!afterburnGame.includes("cabinet-afterburn-breakout") || !afterburnGame.includes("recordScore")) fail("Afterburn Breakout is missing account leaderboard integration.");
 if (!worker.includes('"cabinet-afterburn-breakout"') || !worker.includes('"cabinet-afterburn-breakout":1000')) fail("Afterburn Breakout is not allowlisted with a bounded score cap.");
 if (!manifest.ashFallOriginalBuilds.some(entry => entry.gameId === "cabinet-afterburn-breakout")) fail("Afterburn Breakout is missing from the arcade manifest.");
-const afterburnCatalog = await readFile(path.join(publicDir, "arcade-30-games.html"), "utf8");
 const afterburnCartridge = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const afterburnRecords = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");
-if (!afterburnCatalog.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnCartridge.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnRecords.includes('"cabinet-afterburn-breakout":"Afterburn Breakout"')) fail("Afterburn Breakout is missing from a public arcade surface.");
+if (!afterburnCartridge.includes('href="/arcade/hosted/afterburn-breakout/index.html"') || !afterburnRecords.includes('"cabinet-afterburn-breakout":"Afterburn Breakout"')) fail("Afterburn Breakout is missing from a public arcade surface.");
 ok("Afterburn Breakout catalog, account integration, score cap, and manifest registration checked.");
 const colossusGame = await readFile(path.join(publicDir, "arcade/hosted/colossus-clash/index.html"), "utf8");
 if (!colossusGame.includes("cabinet-colossus-clash") || !colossusGame.includes("recordScore")) fail("Colossus Clash is missing account leaderboard integration.");
@@ -273,12 +272,12 @@ const colossusRecordsPage = await readFile(path.join(publicDir, "arcade-progress
 if (!colossusRecordsPage.includes('"cabinet-colossus-clash":"Colossus Clash"')) fail("Colossus Clash is missing from player records.");
 ok("Colossus Clash controls, account integration, score cap, and provenance checked.");
 const arcadeShelf = await readFile(path.join(publicDir,"chaos-cartridge.html"),"utf8");
-const arcadeCatalog = await readFile(path.join(publicDir,"arcade-30-games.html"),"utf8");
+const arcadeCatalog = arcadeShelf;
 const shelfIds=[...arcadeShelf.matchAll(/data-game-id="([^"]+)"/g)].map(m=>m[1]);
 if(new Set(shelfIds).size!==shelfIds.length)fail("Duplicate game IDs in main arcade shelf.");
-const catalogCount=(arcadeCatalog.match(/<article class="game"/g)||[]).length;
+const catalogCount=(arcadeCatalog.match(/<article class="cartridge-cabinet arcade-flat-card"/g)||[]).length;
 if(!arcadeCatalog.includes(`${catalogCount} catalog entries`))fail("Arcade catalog heading does not match game cards.");
-for(const retired of ["dino-run","balloon-pop","hanoi"]){if(arcadeShelf.includes('/arcade/hosted/'+retired+'/index.html')||arcadeCatalog.includes('/arcade/hosted/'+retired+'/index.html'))fail("Retired imported game still linked: "+retired);}
+for(const retired of ["dino-run","balloon-pop","hanoi"]){if(arcadeShelf.includes('/arcade/hosted/'+retired+'/index.html'))fail("Retired imported game still linked: "+retired);}
 ok("Arcade shelf and catalog counts and retired import routes checked.");
 const mainCartridgeAudit = await readFile(path.join(publicDir, "chaos-cartridge.html"), "utf8");
 const recordsPageAudit = await readFile(path.join(publicDir, "arcade-progress.html"), "utf8");

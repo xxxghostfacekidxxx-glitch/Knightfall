@@ -25,7 +25,7 @@ test("upstream license notices are preserved",async()=>{
  assert.ok(unlicense.includes("public domain"));
 });
 test("arcade catalog links both playable imports without claiming they are original Ash-Fall games",async()=>{
- const html=await read("arcade-30-games.html");
+ const html=await read("chaos-cartridge.html");
  for(const game of selected)assert.ok(html.includes("/arcade/hosted/"+game+"/index.html"));
  for(const url of ["https://github.com/doublespeakgames/adarkroom","https://github.com/ncase/trust"])assert.ok(html.includes(url),"upstream source attribution missing: "+url);
 });

@@ -36,7 +36,7 @@ for(const game of manifest.games){
  const notices=files.filter(f=>/(?:^|\/)(?:LICENSE|NOTICE|COPYING|SOURCE|CREDITS)(?:\.[^/]*)?$/i.test(f)).map(f=>relative(root,f).replaceAll("\\","/"));
  evidence.push({id:game.id,engine:game.engine,files:files.length,media:sources.length,notices,flags,review:"unverified",conclusion:"No ownership or license clearance established by automated scanning"});
 }
-const catalog=await readFile(join(root,"arcade-30-games.html"),"utf8");
+const catalog=await readFile(join(root,"chaos-cartridge.html"),"utf8");
 const external=[...catalog.matchAll(/<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>/g)].map(m=>m[1]);
 const duplicateMedia=[...mediaHashes.entries()].filter(([,files])=>files.length>1).map(([sha256,files])=>({sha256,files}));
 const statusCounts={};

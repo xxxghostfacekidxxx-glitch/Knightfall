@@ -1,82 +1,24 @@
-name: Stage selected open-source games
+name: Verify existing selected open-source games
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - '.github/workflows/stage-selected-open-source-games.yml'
-      - 'scripts/import-selected-open-source-games.sh'
-      - 'scripts/prepare-selected-game-catalog.py'
+      - 'public/arcade/hosted/a-dark-room/**'
+      - 'public/arcade/hosted/evolution-of-trust/**'
+      - 'scripts/selected-open-source-games.test.mjs'
 permissions:
-  contents: write
-  pull-requests: write
-concurrency:
-  group: stage-selected-open-source-games
-  cancel-in-progress: false
+  contents: read
 jobs:
-  stage-static-games:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+  verify:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          persist-credentials: true
-      - name: Prepare isolated review branch
+          node-version: '22'
+      - name: Validate existing imports without creating branches or PRs
         run: |
-          # Start from existing staging branch when present so reruns do not rewrite history.
-          if git ls-remote --exit-code --heads origin staging/selected-open-source-games-14-15 >/dev/null; then
-            git fetch origin staging/selected-open-source-games-14-15
-            git switch -C staging/selected-open-source-games-14-15 FETCH_HEAD
-            git fetch origin main
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" merge --no-edit origin/main || { echo "Staging merge conflict; refusing force-push. Reconcile manually." >&2; exit 1; }
-          else
-            git switch -c staging/selected-open-source-games-14-15
-          fi
-      - name: Import pinned upstream snapshots
-        env:
-          ADR_COMMIT: 1fada4620b6c66bd07bf15a3f1eb8223df8bc1d7
-          TRUST_COMMIT: 6ec45d73befdb922bd40654dd1c1c903a953562f
-        run: bash scripts/import-selected-open-source-games.sh
-      - name: Check imported source and license files
-        run: |
-          test -f public/arcade/hosted/a-dark-room/index.html
-          test -f public/arcade/hosted/a-dark-room/LICENSE.md
-          test -f public/arcade/hosted/a-dark-room/lib/jquery.min.js
-          test -f public/arcade/hosted/evolution-of-trust/index.html
-          test -f public/arcade/hosted/evolution-of-trust/LICENSE
-          test -f public/arcade/hosted/evolution-of-trust/js/main.js
-          ! grep -q 'www.googletagmanager.com/gtag/js' public/arcade/hosted/a-dark-room/index.html
           python3 scripts/verify-selected-open-source-imports.py
-          python3 -m py_compile scripts/verify-selected-open-source-imports.py
-          bash -n scripts/import-selected-open-source-games.sh
-          python3 scripts/prepare-selected-game-catalog.py
-          grep -q 'href="/arcade/hosted/a-dark-room/index.html"' public/arcade-30-games.html
-          grep -q 'href="/arcade/hosted/evolution-of-trust/index.html"' public/arcade-30-games.html
-      - name: Browser smoke tests (mobile Chromium)
-        run: |
-          npm install --no-save --ignore-scripts playwright@1.58.2
-          npx playwright install --with-deps chromium
-          node scripts/smoke-selected-open-source-games.mjs
-      - name: Push isolated review branch
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/arcade/hosted/a-dark-room public/arcade/hosted/evolution-of-trust public/arcade-30-games.html
-          # A staging branch may already have a clean merge from main; push that update too.
-          if git diff --cached --quiet; then
-            echo "No staged import changes."
-            if ! gh pr list --head staging/selected-open-source-games-14-15 --base main --state open --json number --jq "length" | grep -qx 0; then
-              echo "Existing review PR retained."
-            fi
-            exit 0
-          else
-            git commit -m "feat(arcade): stage pinned A Dark Room and Evolution of Trust source"
-          fi
-          git push origin HEAD:refs/heads/staging/selected-open-source-games-14-15
-          if gh pr list --head staging/selected-open-source-games-14-15 --base main --state open --json number --jq "length" | grep -qx 0; then
-            gh pr create --base main --head staging/selected-open-source-games-14-15 --title "Stage A Dark Room and Evolution of Trust for license and gameplay review" --body "Pinned upstream snapshots. Review third-party attribution, all media licenses, local resource loading, mobile gameplay and build before merging to production."
-          else
-            echo "Existing review PR retained; no duplicate created."
-          fi
+          node --test scripts/selected-open-source-games.test.mjs

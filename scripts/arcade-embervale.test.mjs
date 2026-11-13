@@ -28,6 +28,6 @@ test('Embervale appears once in both generated catalogs and preserves source att
  assert.equal(c.games.find(g=>g.id==='embervale').device,'touch');
  const m=JSON.parse(r('public/arcade/import-manifest.json'));
  assert.equal(m.imports.find(g=>g.gameId==='cabinet-embervale').license,'MIT');
- for(const page of ['chaos-cartridge.html','arcade-30-games.html'])
+ for(const page of ['chaos-cartridge.html'])
    assert.equal((r('public/'+page).match(/data-game-id="embervale"/g)||[]).length,1);
 });
