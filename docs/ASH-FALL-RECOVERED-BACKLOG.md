@@ -1,6 +1,15 @@
 # Recovered Ash-Fall / Ash-Fall and PC / Miss Chaos project backlog
 Review: 2026-10-30. Reconstructed from accessible prior conversations and current Knightfall context. **Historical request does not prove implementation**. Verify repo, CI, API and production before closing. This is a living recovery register, not an exhaustive transcript export.
 
+## November 13 Creator Arsenal reconciliation
+
+- [x] Native Pixel Studio workflow with painting, undo, frames, local image import and PNG/metadata export is present in Creator Foundry; not an upstream Pixelorama/Piskel installation.
+- [x] Native Atlas Packer with local image ingest and PNG/JSON output is present; not a FreeTexPacker source import.
+- [x] Native Tilemap Forge with tile painting and Tiled-style JSON/tileset export is present; not the Tiled desktop application.
+- [x] Developer Arsenal CI passed on main ([run 43409139644](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43409139644)); physical mobile/device approval remains open.
+- [ ] Full advanced sprite/animation/audio/SVG editor workflows and imports from original upstream repositories are still candidates until reviewed and built.
+- [ ] Real creator account acceptance, asset ownership rights and publishing to production R2 are separate gates.
+
 ## P0: broken experiences and release blockers
 - [ ] Production God dashboard access and role permissions: test owner, admin, moderator, member and unauthenticated matrix; ensure God account protections are enforced on backend, not merely hidden in UI. Previous authorization audit explicitly not runtime-certified; controlled test identities needed.
 - [ ] Navigation disappearing inside categories; missing admin options; broken profile viewing, friends, add-friend; old orange theme bleeding through profile/admin/category pages; Miss Chaos overlay obstructing donation/shop. Test Android.

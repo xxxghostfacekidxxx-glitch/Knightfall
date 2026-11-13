@@ -79,7 +79,7 @@ The existing authenticated Creator Foundry now has one `#production-workbench` w
 
 These are original Knightfall implementations inspired by the listed open-source **workflows**, not copies of Piskel, FreeTexPacker, Pixelorama or Tiled and not new server capabilities. They do not claim cross-compatibility with every upstream project format. Keep external upstream links and license notices when separately importing third-party code. The tool never uploads source media, owns no paid entitlement and cannot bypass server authorization.
 
-Source modules: `public/creator-production-{lab.js,lab.css,core.mjs}`; automated rules: `scripts/creator-production-lab.test.mjs`; mobile role fixture extended through `scripts/developer-arsenal-browser.mjs`. CI/device verification is a separate acceptance milestone.
+Source modules: `public/creator-production-{lab.js,lab.css,core.mjs}`; automated rules: `scripts/creator-production-lab.test.mjs`; mobile role fixture extended through `scripts/developer-arsenal-browser.mjs`. CI verification: [Developer Arsenal audit run 43409139644](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43409139644) passed the source checks, browser role fixtures, and security pipeline. Real Android hardware acceptance remains open.
 
 ## Next engineering milestones
 
