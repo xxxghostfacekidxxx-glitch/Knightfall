@@ -46,6 +46,8 @@ jobs:
           node --check public/arcade/hosted/embervale/js/knightfall-touch.js
       - name: Inventory live stylesheet references and duplicate arcade entry links
         run: node scripts/css-route-inventory.mjs
+      - name: Inventory exact CSS rule duplication
+        run: node scripts/css-rule-dedup.mjs
       - name: Run focused regression tests
         run: |
           node --test scripts/public-legal-and-shop-theme.test.mjs

@@ -25,7 +25,7 @@ const walk = async dir => {
       if (ext === ".css" && dirname(path) === ".") css.push(path);
       if (ext === ".html") {
         for (const [,href] of body.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["']/gi)) {
-          if (/\/(?:arcade-vault|arcade-30-games)\.html(?:[?#]|$)/.test(href))
+          if (/\/(?:arcade-vault|arcade-30-games|arcade-card-board)\.html(?:[?#]|$)/.test(href))
             pageLinks.push({path,href});
         }
       }
@@ -58,7 +58,12 @@ const topLevelDuplicates = [], invalidTopLevelLinks = [];
 const redirectFile = await readFile(join(publicDir, "_redirects"), "utf8");
 const redirectAliases = new Set(redirectFile.split(/\r?\n/).map(x=>x.split(/\s+/)[0].replace(/^\//,"")));
 for (const {path,body} of sources.filter(x=>/^[^/]+\.html$/.test(x.path))) {
-  const links = [...body.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["']/gi)].map(m=>m[1]);
+  // Inline scripts can contain mutually exclusive templates; hidden anchors are not visible duplicates.
+  const staticHtml=body.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"");
+  const links=[...staticHtml.matchAll(/<a\b([^>]*)>/gi)]
+    .filter(m=>!/\bhidden(?:\s|=|$)/i.test(m[1]))
+    .map(m=>m[1].match(/\bhref\s*=\s*["']([^"']+)["']/i)?.[1])
+    .filter(Boolean);
   const counts = new Map();
   for (const link of links) {
     if (!link.startsWith("/") || link.startsWith("//")) continue;
@@ -74,7 +79,7 @@ for (const {path,body} of sources.filter(x=>/^[^/]+\.html$/.test(x.path))) {
 console.log("TOP-LEVEL REPEATED LOCAL LINKS (REVIEW): " + JSON.stringify(topLevelDuplicates));
 console.log("TOP-LEVEL MISSING LOCAL TARGETS (REVIEW): " + JSON.stringify(invalidTopLevelLinks));
 
-if (orphanCandidates.length || pageLinks.length) {
-  console.error("Navigation/CSS release guard failed: unused stylesheets or retired arcade links remain.");
+if (orphanCandidates.length || pageLinks.length || invalidTopLevelLinks.length || topLevelDuplicates.length) {
+  console.error("Navigation/CSS release guard failed: unused stylesheets, invalid destinations, duplicate visible links, or retired arcade links remain.");
   process.exitCode = 1;
 }
