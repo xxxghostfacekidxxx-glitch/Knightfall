@@ -215,19 +215,26 @@
   $("#kf-chat-minimize").addEventListener("click",()=>setVisible(false));
   composer.addEventListener("submit",async event=>{
     event.preventDefault();
-    const id=state.active,body=input.value.trim();
+    const id=state.active,original=input.value,body=original.trim();
     if(!id||!body||state.sending)return;
-    state.sending=true;$("#kf-chat-send").disabled=true;announce("");
+    state.sending=true;$("#kf-chat-send").disabled=true;announce("Sending…");
+    let sent=false;
     try{
       await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
-      if(drafts.get(id)===body)rememberDraft(id,"");
-      if(state.active===id){
-        if(input.value.trim()===body){input.value="";rememberDraft(id,"");}
-        await refreshThread();
-      }
-      await refreshConversations({force:true});
-    }catch(error){announce(error.message+" Your unsent reply is still here.");}
-    finally{state.sending=false;$("#kf-chat-send").disabled=!!Number(getConversation(state.active)?.messaging_blocked);}
+      sent=true;
+      if(drafts.get(id)===original)rememberDraft(id,"");
+      if(state.active===id&&input.value===original){input.value="";rememberDraft(id,"");}
+      try{
+        if(state.active===id)await refreshThread();
+        await refreshConversations({force:true});
+        announce("Message sent.");
+      }catch(error){announce("Message sent, but chat refresh failed. Reopen the conversation to update it.");}
+    }catch(error){
+      if(!sent)announce(error.message+" Your unsent reply has been kept.");
+    }finally{
+      state.sending=false;
+      $("#kf-chat-send").disabled=!!Number(getConversation(state.active)?.messaging_blocked);
+    }
   });
   input.addEventListener("keydown",event=>{
     if(event.key==="Enter"&&!event.shiftKey&&!event.isComposing){
