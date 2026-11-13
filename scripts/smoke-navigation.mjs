@@ -61,7 +61,15 @@ try {
       await auth;
       const nav = page.getByRole("navigation", { name: "Primary navigation" });
       const toggle = page.getByRole("button", { name: "Open navigation" });
-      if (mobile) await toggle.click();
+      if (mobile) {
+        await toggle.click();
+        assert.equal(await page.locator("body").evaluate(body => body.classList.contains("kf-navigation-open")), true,
+          "Opening the mobile menu must lock background page scrolling");
+        await page.keyboard.press("Escape");
+        assert.equal(await page.locator("body").evaluate(body => body.classList.contains("kf-navigation-open")), false,
+          "Escape must restore normal page scrolling");
+        await page.getByRole("button", { name: "Open navigation" }).click();
+      }
       await nav.waitFor();
       assert.equal(await page.getByRole("link", { name: "Ash-Fall home" }).getAttribute("aria-current"), "page");
       assert.equal(await nav.getByRole("link", { name: "Explore", exact: true }).count(), 0);
