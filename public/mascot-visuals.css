@@ -1,18 +1,18 @@
 /* 2026-11 Knightfall creature artwork direction. Types define palettes, not rarity. */
-.pet-card[data-affinity],.pet-render-v2,.room-avatar[data-affinity]{
+.pet-card[data-affinity],.pet-render-v2,.room-avatar[data-affinity],.mascot-profile-pet[data-affinity]{
  --creature-ink:#181924;--creature-mid:#675c6f;--creature-light:#baadbf;--creature-sky:#252238;--creature-floor:#1e2131;
 }
-:is(.pet-card,.room-avatar)[data-affinity="wildwood"],.pet-render-v2[data-affinity="wildwood"]{--creature-ink:#1d3328;--creature-mid:#74956e;--creature-light:#d0d6a1;--creature-sky:#293e33;--creature-floor:#182b25}
-:is(.pet-card,.room-avatar)[data-affinity="tidal"],.pet-render-v2[data-affinity="tidal"]{--creature-ink:#153342;--creature-mid:#72adb3;--creature-light:#d6e4dd;--creature-sky:#254959;--creature-floor:#142f3d}
-:is(.pet-card,.room-avatar)[data-affinity="ember"],.pet-render-v2[data-affinity="ember"]{--creature-ink:#472c28;--creature-mid:#d39162;--creature-light:#f3c899;--creature-sky:#482c34;--creature-floor:#32242a}
-:is(.pet-card,.room-avatar)[data-affinity="dusk"],.pet-render-v2[data-affinity="dusk"]{--creature-ink:#232c46;--creature-mid:#8a91b2;--creature-light:#d8d8e8;--creature-sky:#252b46;--creature-floor:#1a2035}
-:is(.pet-card,.room-avatar)[data-affinity="spectral"],.pet-render-v2[data-affinity="spectral"]{--creature-ink:#37344c;--creature-mid:#9c96b4;--creature-light:#e6ddeb;--creature-sky:#333248;--creature-floor:#252738}
-:is(.pet-card,.room-avatar)[data-affinity="stone"],.pet-render-v2[data-affinity="stone"]{--creature-ink:#423e3d;--creature-mid:#ae9c82;--creature-light:#e7d7b8;--creature-sky:#48444e;--creature-floor:#34363c}
-:is(.pet-card,.room-avatar)[data-affinity="storm"],.pet-render-v2[data-affinity="storm"]{--creature-ink:#283648;--creature-mid:#899bab;--creature-light:#d8daca;--creature-sky:#38465a;--creature-floor:#252f40}
-:is(.pet-card,.room-avatar)[data-affinity="celestial"],.pet-render-v2[data-affinity="celestial"]{--creature-ink:#37314f;--creature-mid:#a59dc3;--creature-light:#ead7e1;--creature-sky:#312a48;--creature-floor:#24223a}
-:is(.pet-card,.room-avatar)[data-affinity="feral"],.pet-render-v2[data-affinity="feral"]{--creature-ink:#44372e;--creature-mid:#baa07b;--creature-light:#ecddbd;--creature-sky:#483b3d;--creature-floor:#332e31}
-:is(.pet-card,.room-avatar)[data-affinity="toxic"],.pet-render-v2[data-affinity="toxic"]{--creature-ink:#374334;--creature-mid:#95ae74;--creature-light:#d6dcad;--creature-sky:#374838;--creature-floor:#293a31}
-:is(.pet-card,.room-avatar)[data-affinity="neon"],.pet-render-v2[data-affinity="neon"]{--creature-ink:#362039;--creature-mid:#f25ca7;--creature-light:#b3f0be;--creature-sky:#2a1d38;--creature-floor:#1c202d}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="wildwood"],.pet-render-v2[data-affinity="wildwood"]{--creature-ink:#1d3328;--creature-mid:#74956e;--creature-light:#d0d6a1;--creature-sky:#293e33;--creature-floor:#182b25}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="tidal"],.pet-render-v2[data-affinity="tidal"]{--creature-ink:#153342;--creature-mid:#72adb3;--creature-light:#d6e4dd;--creature-sky:#254959;--creature-floor:#142f3d}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="ember"],.pet-render-v2[data-affinity="ember"]{--creature-ink:#472c28;--creature-mid:#d39162;--creature-light:#f3c899;--creature-sky:#482c34;--creature-floor:#32242a}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="dusk"],.pet-render-v2[data-affinity="dusk"]{--creature-ink:#232c46;--creature-mid:#8a91b2;--creature-light:#d8d8e8;--creature-sky:#252b46;--creature-floor:#1a2035}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="spectral"],.pet-render-v2[data-affinity="spectral"]{--creature-ink:#37344c;--creature-mid:#9c96b4;--creature-light:#e6ddeb;--creature-sky:#333248;--creature-floor:#252738}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="stone"],.pet-render-v2[data-affinity="stone"]{--creature-ink:#423e3d;--creature-mid:#ae9c82;--creature-light:#e7d7b8;--creature-sky:#48444e;--creature-floor:#34363c}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="storm"],.pet-render-v2[data-affinity="storm"]{--creature-ink:#283648;--creature-mid:#899bab;--creature-light:#d8daca;--creature-sky:#38465a;--creature-floor:#252f40}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="celestial"],.pet-render-v2[data-affinity="celestial"]{--creature-ink:#37314f;--creature-mid:#a59dc3;--creature-light:#ead7e1;--creature-sky:#312a48;--creature-floor:#24223a}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="feral"],.pet-render-v2[data-affinity="feral"]{--creature-ink:#44372e;--creature-mid:#baa07b;--creature-light:#ecddbd;--creature-sky:#483b3d;--creature-floor:#332e31}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="toxic"],.pet-render-v2[data-affinity="toxic"]{--creature-ink:#374334;--creature-mid:#95ae74;--creature-light:#d6dcad;--creature-sky:#374838;--creature-floor:#293a31}
+:is(.pet-card,.room-avatar,.mascot-profile-pet)[data-affinity="neon"],.pet-render-v2[data-affinity="neon"]{--creature-ink:#362039;--creature-mid:#f25ca7;--creature-light:#b3f0be;--creature-sky:#2a1d38;--creature-floor:#1c202d}
 .sanctuary-shell .pet-card .pet-art.pet-render-v2{
  isolation:isolate;overflow:hidden;border:1px solid color-mix(in srgb,var(--creature-mid),transparent 48%);
  background:radial-gradient(ellipse at 50% 44%,color-mix(in srgb,var(--creature-mid),transparent 67%),transparent 67%),linear-gradient(175deg,var(--creature-sky),var(--creature-floor))!important;
