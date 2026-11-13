@@ -67,6 +67,23 @@ function safeNotificationPath(value) {
 }
 
 
+function notificationRecordId(value) {
+  const id=Number(value);
+  return Number.isSafeInteger(id)&&id>0?id:null;
+}
+
+async function acknowledgeNotification(id) {
+  if(!id)return;
+  try{
+    const response=await fetch("https://api.ash-fall.com/api/notifications/"+id,{
+      method:"PATCH",credentials:"include",cache:"no-store"
+    });
+    if(!response.ok)return;
+    const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
+    for(const client of windows)client.postMessage({type:"KF_NOTIFICATIONS_CHANGED"});
+  }catch(error){console.warn("notification_read_ack_unavailable",String(error));}
+}
+
 function messageConversationId(path) {
   const safe=safeNotificationPath(path);
   try {
@@ -93,7 +110,7 @@ self.addEventListener("push", event => {
     try {
       // Raster-free notification for Android; message actions gracefully downgrade
       // when the browser cannot display Chromium's inline text reply control.
-      const options={body,tag,renotify:false,data:{url:path,conversationId}};
+      const options={body,tag,renotify:false,data:{url:path,conversationId,notificationId:notificationRecordId(payload.notification_id)}};
       if(conversationId){
         try {
           await self.registration.showNotification(title,{
@@ -153,8 +170,10 @@ self.addEventListener("notificationclick", event => {
   event.notification.close();
   const path=safeNotificationPath(event.notification.data?.url);
   const conversationId=messageConversationId(path);
+  const notificationId=notificationRecordId(event.notification.data?.notificationId);
   const wantsReply=event.action==="reply";
   event.waitUntil((async()=>{
+    await acknowledgeNotification(notificationId);
     if(wantsReply&&conversationId&&typeof event.reply==="string"&&event.reply.trim()){
       const body=event.reply.trim().slice(0,4000);
       try{

@@ -366,6 +366,19 @@
       }).catch(() => {});
   }
 
+  // Read receipts, other browser tabs, and push clicks must refresh the badge.
+  window.addEventListener("kf:notifications-changed", refreshNotifications);
+  window.addEventListener("storage", event => {
+    if (event.key === "kf:notifications-changed") refreshNotifications();
+  });
+  window.addEventListener("focus", refreshNotifications);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshNotifications();
+  });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.addEventListener("message", event => {
+    if (event.data?.type === "KF_NOTIFICATIONS_CHANGED") refreshNotifications();
+  });
+
   (cloudAccountAvailable ? fetch("https://api.ash-fall.com/api/site-settings", {credentials:"include",cache:"no-store"}) : Promise.resolve(null))
     .then(r => r?.ok ? r.json() : null)
     .then(d => {

@@ -25,12 +25,12 @@ function harness({noTextAction=false,sendOk=true,windows=[]}={}){
     fetchCalls.push({url,options});return {ok:sendOk,status:sendOk?201:403};
   }};
   vm.runInNewContext(sw,context);
-  async function push(url="/messages.html?conversation=42"){
-    let pending;listeners.push({data:{json(){return {title:"New message",body:"Message received",url};}},waitUntil(p){pending=p;}});
+  async function push(url="/messages.html?conversation=42",notificationId){
+    let pending;listeners.push({data:{json(){return {title:"New message",body:"Message received",url,notification_id:notificationId};}},waitUntil(p){pending=p;}});
     await pending;
   }
-  async function click({url="/messages.html?conversation=42",action="",reply}={}){
-    let pending;listeners.notificationclick({action,reply,notification:{data:{url},close(){}},waitUntil(p){pending=p;}});
+  async function click({url="/messages.html?conversation=42",action="",reply,notificationId}={}){
+    let pending;listeners.notificationclick({action,reply,notification:{data:{url,notificationId},close(){}},waitUntil(p){pending=p;}});
     await pending;
   }
   return {push,click,shown,opened,fetchCalls};
@@ -83,4 +83,19 @@ test("chat bubbles use canonical inbox routes and escape untrusted messages thro
   assert.match(bubbles,/\/api\/messages\/conversations/);
   assert.match(bubbles,/textContent=/);
   assert.match(navigation,/dataset\.userId=String\(user\.id\)/);
+});
+
+test("push tap acknowledges its exact notification record",async()=>{
+  const h=harness();await h.push("/messages.html?conversation=42",123);
+  assert.equal(h.shown[0].options.data.notificationId,123);
+  await h.click({notificationId:123});
+  assert.equal(h.fetchCalls.length,1);
+  assert.equal(h.fetchCalls[0].url,"https://api.ash-fall.com/api/notifications/123");
+  assert.equal(h.fetchCalls[0].options.method,"PATCH");
+  assert.equal(h.fetchCalls[0].options.credentials,"include");
+  assert.equal(h.opened[0],"https://ash-fall.com/messages.html?conversation=42");
+});
+test("invalid notification IDs cannot trigger read updates",async()=>{
+  const h=harness();await h.click({notificationId:"0"});
+  assert.equal(h.fetchCalls.length,0);
 });
