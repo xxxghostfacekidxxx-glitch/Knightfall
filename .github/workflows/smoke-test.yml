@@ -67,6 +67,7 @@ on:
       - 'scripts/arcade-leaderboards.test.mjs'
       - 'scripts/arcade-mini-save-validation.test.mjs'
       - 'scripts/admin-task-navigation.test.mjs'
+      - 'scripts/navigation-redirects.test.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
@@ -132,6 +133,8 @@ jobs:
         run: node scripts/site-theme-audit.mjs
       - name: Verify admin task navigation and permissions contract
         run: node --test scripts/admin-task-navigation.test.mjs
+      - name: Verify canonical URLs and redirect targets
+        run: node --test scripts/navigation-redirects.test.mjs
       - name: Validate mini-game save snapshots
         run: node --test scripts/arcade-mini-save-validation.test.mjs
       - name: Check arcade scoreboard and generated catalog consistency
