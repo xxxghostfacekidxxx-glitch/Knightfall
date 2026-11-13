@@ -12,13 +12,15 @@ function positiveInteger(raw) {
   return Number.isSafeInteger(n)?n:null;
 }
 
-export async function handleMessageSearch(request,env,url,{getUser,json,origin}) {
+export async function handleMessageSearch(request,env,url,{getUser,json,origin,rateLimit}) {
   if (url.pathname!=="/api/messages/search") return null;
   if (request.method!=="GET") return json({error:"Method not allowed."},405,origin);
   const user=await getUser(request,env);
   if (!user) return json({error:"Authentication required."},401,origin);
   const query=String(url.searchParams.get("q")||"").trim().slice(0,120);
   if(query.length<2) return json({error:"Search for at least two characters."},400,origin);
+  if(rateLimit&&!await rateLimit(env,request,"message-history-search",60,60,user.id))
+    return json({error:"Too many searches. Try again in a moment."},429,origin);
   const requestedConversation=url.searchParams.get("conversation_id");
   const conversationId=requestedConversation===null?0:positiveInteger(requestedConversation);
   if(conversationId===null)return json({error:"Invalid conversation."},400,origin);

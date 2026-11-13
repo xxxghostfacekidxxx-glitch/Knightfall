@@ -5,7 +5,7 @@ import {handleMessageSearch,messageSearchPattern} from "./message-search.js";
 
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{"content-type":"application/json"}});
 
-function setup({user={id:17},member=true,rows=[]}={}){
+function setup({user={id:17},member=true,rows=[],rateAllowed=true}={}){
  const calls=[];
  const env={DB:{prepare(sql){const call={sql,args:[]};calls.push(call);return {
    bind(...args){call.args=args;return {
@@ -16,7 +16,7 @@ function setup({user={id:17},member=true,rows=[]}={}){
  async function find(params="/api/messages/search?q=hello"){
    const request=new Request("https://api.ash-fall.com"+params);
    const response=await handleMessageSearch(request,env,new URL(request.url),{
-     getUser:async()=>user,json,origin:"https://ash-fall.com"
+     getUser:async()=>user,json,origin:"https://ash-fall.com",rateLimit:async()=>rateAllowed
    });
    return {status:response.status,body:await response.json()};
  }
@@ -81,4 +81,11 @@ test("frontend and backend use the same authenticated search endpoint",()=>{
  assert.match(html,/searchHistory\(true\)/);
  assert.match(html,/highlightMessageId/);
  assert.match(html,/Jump to latest/);
+});
+
+test("member message-history search is rate-limited before querying D1",async()=>{
+ const h=setup({rateAllowed:false});
+ const response=await h.find("/api/messages/search?q=hello");
+ assert.equal(response.status,429);
+ assert.equal(h.calls.length,0);
 });
