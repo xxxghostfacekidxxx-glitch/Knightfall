@@ -158,3 +158,25 @@ test('profile and mascot pages load the refreshed renderer',()=>{
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');
 });
+
+test('Misfit Ink 5 adds detail without changing saved avatar data',()=>{
+ const kit=loadRenderer();
+ const variants=[kit.defaults,
+  {...kit.defaults,skin:'cocoa',hair:'coils',background:'eclipse',outfit:'armor'},
+  {...kit.defaults,skin:'frost',hair:'waves',background:'neon_city',aura:'lightning'}];
+ const layers=['cinematic-background','face-paint','garment-ink','hair-ink','eye-structure','collector-frame'];
+ for(const variant of variants){
+  const markup=kit.render(variant);
+  for(const layer of layers)assert.ok(markup.includes('data-art-pass="'+layer+'"'),'Missing art pass: '+layer);
+  assert.match(markup,/clip-path="url\(#kf-misfit-\d+-face-clip\)"/);
+  assert.match(markup,/id="kf-misfit-\d+-dot-grain"/);
+  assert.equal((markup.match(/<g(?:\s|>)/g)||[]).length,(markup.match(/<\/g>/g)||[]).length,'Unclosed illustration layer');
+  assert.ok(markup.endsWith('</svg>'));
+ }
+ const html=read('public/avatar-studio.html'),js=read('public/avatar-studio.js'),css=read('public/avatar-studio.css');
+ for(const id of ['preview-full','preview-portrait','look-hair','look-expression','look-outfit'])assert.ok(html.includes('id="'+id+'"'));
+ assert.match(js,/kit\.render\(\{\.\.\.avatar,\[key\]:choice\}\)/);
+ assert.match(js,/stage\.dataset\.framing=portraitFocus\?'portrait':'full'/);
+ assert.match(css,/data-framing="portrait"/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
