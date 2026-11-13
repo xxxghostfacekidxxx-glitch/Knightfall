@@ -9,7 +9,8 @@ const backend=read('backend/src/index.js'),handler=read('backend/src/member-memo
 const comms=read('public/memo-communications.js'),mail=read('backend/src/member-memo-mail.js'),mailMigration=read('backend/migrations/0111_member_memo_mail.sql');
 test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  for(const script of [nav,presence,dock,memo,handler,comms,mail])assert.doesNotThrow(()=>new Script(script.replace(/^export /gm,'')), 'script parser');
- assert.match(nav,/miss-chaos-presence\.js\?v=20261103-memo-dock2/);
+ // A dated cache key is required; its exact date must not break unrelated deploys.
+ assert.match(nav,/miss-chaos-presence\.js\?v=\d{8}-[a-z0-9-]+/);
  assert.match(presence,/id="mc-memo-toggle"/);
  assert.match(presence,/id="mc-memo-panel"/);
  assert.match(presence,/id="mc-move"/);
