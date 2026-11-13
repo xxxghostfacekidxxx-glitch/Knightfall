@@ -99,3 +99,19 @@ test("global navigation exposes only one arcade directory", () => {
   assert.ok(hrefs.every(href => !["/arcade-games.html", "/arcade-vault.html", "/arcade-30-games.html", "/arcade-card-board.html"].includes(href)),
     "Retired arcade discovery page reappeared in navigation");
 });
+
+test("mobile drawer toggles scroll lock and keeps section context", () => {
+  const theme = readFileSync(join(publicDir, "theme.css"), "utf8");
+  const neon = readFileSync(join(publicDir, "neon-global.css"), "utf8");
+  const unified = readFileSync(join(publicDir, "knightfall-unified-theme.css"), "utf8");
+  assert.match(nav, /const mobileNavViewport = window\.matchMedia\("\(max-width: 1080px\)"\)/);
+  assert.match(nav, /document\.body\.classList\.toggle\("kf-navigation-open", visible\)/);
+  assert.match(theme, /body\.kf-navigation-open\{overflow:hidden\}/);
+  for (const stylesheet of [theme, neon, unified]) {
+    assert.ok(!stylesheet.includes(".kf-nav-more"), "Retired dropdown rules reappeared");
+  }
+  for (const route of ["/profile-edit", "/thread", "/community-topic", "/create-thread"]) {
+    assert.ok(nav.includes(`["${route}", `), "Section breadcrumb missing: " + route);
+  }
+  assert.match(nav, /currentPath\.startsWith\("\/arcade\/"/);
+});
