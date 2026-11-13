@@ -289,10 +289,18 @@
   const normalizedPath = path => path.replace(/\/$/, "").replace(/\.html$/, "").replace(/^\/index$/, "") || "/";
   function markCurrentPage() {
     const currentPath = normalizedPath(location.pathname);
+    const sectionAliases = new Map([
+      ["/profile-edit", "/profile"],
+      ["/thread", "/community"],
+      ["/community-topic", "/community"],
+      ["/create-thread", "/community"]
+    ]);
+    const sectionPath = sectionAliases.get(currentPath) ||
+      (currentPath.startsWith("/arcade/") || currentPath.startsWith("/arcade-") ? "/chaos-cartridge" : currentPath);
     nav.querySelectorAll('a[href^="/"]').forEach(link => {
       const destination = new URL(link.href);
-      const samePage = normalizedPath(destination.pathname) === currentPath;
-      if (samePage && (!destination.hash || destination.hash === location.hash || currentPath === "/")) {
+      const samePage = normalizedPath(destination.pathname) === sectionPath;
+      if (samePage && (!destination.hash || destination.hash === location.hash || sectionPath === "/")) {
         link.setAttribute("aria-current", "page");
       } else {
         link.removeAttribute("aria-current");
@@ -311,11 +319,14 @@
   const closeGroups = () => {
     nav.querySelectorAll(".kf-nav-group[open]").forEach(group => group.open = false);
   };
+  const mobileNavViewport = window.matchMedia("(max-width: 1080px)");
   function setDrawer(open) {
-    nav.classList.toggle("open", open);
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    if (!open) closeGroups();
+    const visible = Boolean(open && mobileNavViewport.matches);
+    nav.classList.toggle("open", visible);
+    document.body.classList.toggle("kf-navigation-open", visible);
+    toggle.setAttribute("aria-expanded", String(visible));
+    toggle.setAttribute("aria-label", visible ? "Close navigation" : "Open navigation");
+    if (!visible) closeGroups();
   }
   toggle.addEventListener("click", () => setDrawer(!nav.classList.contains("open")));
   document.addEventListener("keydown", event => {
@@ -332,7 +343,7 @@
   document.addEventListener("pointerdown", event => {
     if (!header.contains(event.target)) setDrawer(false);
   });
-  window.matchMedia("(max-width: 1080px)").addEventListener("change", () => setDrawer(false));
+  mobileNavViewport.addEventListener("change", () => setDrawer(false));
   window.addEventListener("popstate", () => setDrawer(false));
   nav.addEventListener("click", event => {
     if (event.target.closest("a")) setDrawer(false);
