@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T08:18:14.000Z",
+  "generatedAt": "2026-11-13T10:29:30.109Z",
   "reportsFound": 20,
   "catalogRoutes": 132,
   "targets": {
@@ -12,8 +12,20 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "failures": [
+        {
+          "game": "ashen-blocks",
+          "route": "/arcade/hosted/ashen-blocks/index.html",
+          "profile": "smallPhone",
+          "action": "start game",
+          "reason": "Error: Browser errors or failed assets\n    at file:///home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:88:43",
+          "target": "live",
+          "screenshot": "001.png",
+          "networkErrorCount": 2,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     },
     "local": {
       "reports": 10,
@@ -28,6 +40,6 @@
       "coverageOk": true
     }
   },
-  "passed": true,
-  "sourceRunId": 43391196203
+  "passed": false,
+  "sourceRunId": 43408905968
 }
