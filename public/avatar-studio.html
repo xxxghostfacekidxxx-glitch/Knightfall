@@ -27,8 +27,18 @@
 <section class="studio-grid" aria-label="Misfit avatar creator">
  <aside class="preview-card">
   <div class="preview-heading"><div><p class="eyebrow">THE LOOK</p><h2>Live preview <span class="preview-signal">● LIVE</span></h2></div><span class="preview-issue">KF // 01</span></div>
-  <div class="avatar-stage" id="avatar-preview" aria-label="Live Misfit character preview"></div>
-  <div class="stage-bottom"><span>ORIGINAL MISFIT</span><span>✦ KNIGHTFALL EDITION</span></div>
+  <div class="avatar-stage" id="avatar-preview" data-framing="full" aria-label="Live Misfit character preview"></div>
+  <div class="stage-bottom"><span>ILLUSTRATED CHARACTER ART · SERIES 02</span><span>✦ KNIGHTFALL EDITION</span></div>
+  <div class="framing-controls" role="group" aria-label="Avatar preview framing">
+   <button type="button" id="preview-full" class="framing-button" aria-pressed="true">◈ Full look</button>
+   <button type="button" id="preview-portrait" class="framing-button" aria-pressed="false">◎ Face detail</button>
+  </div>
+  <p class="framing-hint">Face detail enlarges the live preview only. Your saved design and downloads stay full size.</p>
+  <div class="character-ticket" aria-label="Current character features">
+   <div><span>HAIR</span><strong id="look-hair">Shaggy</strong></div>
+   <div><span>EXPRESSION</span><strong id="look-expression">Soft grin</strong></div>
+   <div><span>WARDROBE</span><strong id="look-outfit">Hoodie</strong></div>
+  </div>
   <div class="preview-tools">
    <button type="button" id="preview-compare" class="button secondary" title="Hold to compare with your last saved version">◉ Hold to compare</button>
    <button type="button" id="download-avatar" class="button secondary download-button">↓ PNG</button>
