@@ -23,6 +23,7 @@ test("search result and external permalink both open the exact message",async()=
  const calls=[];
  const ctx=vm.createContext({
   location:{search:"?conversation=712&message=33"},
+  currentId:null,historyPinnedConversationId:null,
   URLSearchParams,Number,conversations:[],
   loadConversations:async()=>{},
   api:async path=>{calls.push(path);return{conversation:{id:712,other_username:"crew22"}}},
