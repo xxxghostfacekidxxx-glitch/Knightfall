@@ -40,7 +40,10 @@ const workerApiSurface = worker + "\n" + await Promise.all([
   "profile-links.js",
   "profile-wall.js",
   "profile-showcase.js",
-  "arcade-turn-matches.js"
+  "arcade-turn-matches.js",
+  "message-search.js",
+  "messaging-live.js",
+  "message-conversation-summary.js"
 ].map(file => readFile(path.join(root, "backend/src", file), "utf8"))).then(sources => sources.join("\n"));
 const saveScript = await readFile(path.join(publicDir, "arcade-save.js"), "utf8");
 const workerCheck = spawnSync(process.execPath, ["--input-type=module", "--check"], { input: worker, encoding: "utf8" });
