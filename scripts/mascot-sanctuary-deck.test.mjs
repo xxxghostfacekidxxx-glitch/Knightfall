@@ -55,9 +55,9 @@ test('Companion room displays care feedback and never exposes private stats publ
 
 test('public profile shows personalities but never private needs or wallet details',()=>{
  const profile=src('public/profile.html'),client=src('public/profile-mascots.js'),style=src('public/profile-mascots.css');
- assert.match(profile,/profile-mascots\\.js\\?v=20261113-lineages2/);
- assert.match(profile,/profile-mascots\\.css\\?v=20261113-lineages2/);
- assert.match(profile,/mascot-renderer\\.js\\?v=20261113-lineages2/);
+ assert.match(profile,/profile-mascots\.js\?v=20261113-lineages2/);
+ assert.match(profile,/profile-mascots\.css\?v=20261113-lineages2/);
+ assert.match(profile,/mascot-renderer\.js\?v=20261113-lineages2/);
  assert.ok(profile.indexOf('/mascot-renderer.js')<profile.indexOf('/profile-mascots.js'),'type renderer loads before profile companions');
  assert.match(client,/pet\.temperament/);
  assert.match(client,/pet\.lore/);
