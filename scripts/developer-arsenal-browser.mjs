@@ -79,6 +79,34 @@ try {
         assert.equal(await search.inputValue(), "sprite workshop");
         assert.equal(await catalog.getByRole("button", { name: "Art & Assets" }).getAttribute("aria-pressed"), "true");
 
+        // Browser-native tools work for the authorized roles without third-party scripts or uploads.
+        await search.fill("production lab");
+        await catalog.getByRole("link", { name: "Open Production Lab" }).click();
+        await page.locator("#production-workbench:visible").waitFor();
+        await page.locator("#lab-pixel-canvas").click({ position: { x: 25, y: 25 } });
+        assert.ok(await page.locator("#lab-pixel-info").textContent().then(text => /Frame 1 \/ 1/.test(text)));
+        const drawn = await page.evaluate(() => [...document.getElementById("lab-pixel-canvas").getContext("2d").getImageData(2, 2, 1, 1).data]);
+        assert.equal(drawn[3], 255, "pixel editor paints opaque pixels on touch-sized viewport");
+        const spritePng = await page.evaluate(() => document.getElementById("lab-pixel-canvas").toDataURL("image/png").split(",")[1]);
+        await page.getByRole("button", { name: "＋ Duplicate" }).click();
+        assert.match(await page.locator("#lab-pixel-info").textContent(), /Frame 2 \/ 2/);
+        await page.getByRole("tab", { name: "Atlas Packer" }).click();
+        await page.locator("#lab-atlas-input").setInputFiles({name:"fixture.png",mimeType:"image/png",buffer:Buffer.from(spritePng,"base64")});
+        await page.locator("#lab-atlas-list li").first().waitFor();
+        await page.getByRole("button", { name: "Pack sprites" }).click();
+        assert.match(await page.locator("#lab-atlas-status").textContent(), /Packed 1 sprites/);
+        const atlasDownload = page.waitForEvent("download");
+        await page.getByRole("button", { name: "Export atlas JSON" }).click();
+        assert.equal((await atlasDownload).suggestedFilename(), "knightfall-atlas.json");
+        await page.getByRole("tab", { name: "Tilemap Forge" }).click();
+        await page.locator("#lab-tile-canvas").click({position:{x:25,y:25}});
+        assert.match(await page.locator("#lab-tile-info").textContent(), /1 painted/);
+        const mapDownload = page.waitForEvent("download");
+        await page.getByRole("button", { name: "Export level JSON" }).click();
+        assert.equal((await mapDownload).suggestedFilename(), "knightfall-map.json");
+        await page.getByRole("link", { name: "Back to catalog" }).click();
+        await catalog.waitFor();
+
         await page.goto(base + "/devil-tools.html#brand-library");
         await page.locator("#brand-library").waitFor();
         assert.equal(await page.locator("#foundry-catalog:visible").count(), 0);

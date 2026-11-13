@@ -15,7 +15,9 @@ This document distinguishes **tool links**, **repository CI checks**, and **inst
 
 | Software | Role | Current integration | Next step |
 | --- | --- | --- | --- |
-| Piskel | Browser pixel art | External creator link already present | Evaluate self-hosting and asset license |
+| Piskel | Browser pixel art | External creator link remains; **built-in Pixel Studio implemented** (original code) | Verify desktop/mobile UX; upstream Piskel itself remains external |
+| FreeTexPacker workflow | Browser sprite atlas | **Built-in Atlas Packer implemented** with transparent PNG + coordinate JSON | Validate import into target arcade engine; not the upstream application |
+| Tiled workflow | 2D map building | **Built-in Tilemap Forge implemented** with paint, JSON roundtrip and companion prototype tileset | Verify import into real Tiled/LDtk pipelines; not the upstream application |
 | Excalidraw | Whiteboards and flow diagrams | External creator link in Devil Tools | Embed only after bundle/security review |
 | SVG-Edit | SVG editing | External creator link | Validate sanitized upload/export pipeline |
 | Playwright | Real browser smoke tests | Present in existing nightly workflow | Expand auth, accessibility and mobile test coverage |
@@ -66,6 +68,18 @@ The Worker exposes `GET /api/god/developer-audit` and `god.audit_summary` throug
 5. If the workflow reports an upload error, inspect the status code, GitHub OIDC permissions and Worker deployment; never paste or log the OIDC bearer token.
 
 An optional legacy HMAC shared-secret fallback remains supported by `DIAGNOSTICS_INGEST_KEY` (Cloudflare Worker secret) and `KNIGHTFALL_DIAGNOSTICS_INGEST_KEY` (GitHub Actions secret) for trusted environments that cannot obtain OIDC, but is **not required** for standard GitHub Actions. GitHub Actions OIDC is preferred. The feature uses existing Cloudflare KV, not a new database or paid service. Cloudflare KV is eventually consistent, so this is a monitoring snapshot rather than a transactional ledger.
+
+## Creator Production Lab (November 13, 2026)
+
+The existing authenticated Creator Foundry now has one `#production-workbench` workspace, with three **working, client-only** production helpers:
+
+- Pixel Studio: a 32×32 PNG-based sprite editor with transparent pixels, pen, erase, fill, color-pick, 40 undo steps, 12-frame horizontal strip export, and frame JSON.
+- Atlas Packer: combine up to 48 local PNG/JPEG/WebP images into one 2048px-limited texture atlas with JSON frame coordinates, 2px padding and no external files fetched.
+- Tilemap Forge: draw orthogonal rooms, walls, hazards and a unique spawn marker; import/export validated Tiled-style JSON and export the matching prototype tile-sheet PNG.
+
+These are original Knightfall implementations inspired by the listed open-source **workflows**, not copies of Piskel, FreeTexPacker, Pixelorama or Tiled and not new server capabilities. They do not claim cross-compatibility with every upstream project format. Keep external upstream links and license notices when separately importing third-party code. The tool never uploads source media, owns no paid entitlement and cannot bypass server authorization.
+
+Source modules: `public/creator-production-{lab.js,lab.css,core.mjs}`; automated rules: `scripts/creator-production-lab.test.mjs`; mobile role fixture extended through `scripts/developer-arsenal-browser.mjs`. CI/device verification is a separate acceptance milestone.
 
 ## Next engineering milestones
 

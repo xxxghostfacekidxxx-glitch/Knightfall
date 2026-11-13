@@ -202,6 +202,17 @@ Status convention: **Implemented** means present in source; **CI verified** mean
 - [ ] Expand creator marketplace, digital publishing, church codex/store and separate app only after core platform is stable.
 - [ ] Consider Cloudflare Queues, Durable Objects, analytics and optional voice features only with cost, privacy and free-tier review.
 
+## Creator Arsenal implementation batch — November 13, 2026
+
+- [x] **Pixel Studio:** original local 32×32 pixel art editor integrated into Creator Foundry (brush, erase, fill, picker, undo, up to 12 frames, PNG import, frame-strip PNG and frame metadata exports). Functionality replaces the **missing in-site pixel editor workflow**, not upstream Pixelorama/Piskel.
+- [x] **Atlas Packer:** local browser sprite-sheet packing (max 48 images, 2048px dimension, PNG atlas and JSON frames); inspired by FreeTexPacker but implemented natively to avoid unreviewed upstream code/assets.
+- [x] **Tilemap Forge:** editable 2D tile painter with wall/hazard/spawn tokens, Tiled-style map import/export, prototype tileset PNG, preview PNG; original code, no Tiled or LDtk binaries installed.
+- [x] Kept one user-facing authoring route (`/devil-tools.html#production-workbench`) rather than creating duplicate tool pages. Updated public Arsenal feature status and the on-site God dashboard task summary.
+- [x] Added source tests for atlas packing, flood fill and map schema; registered source tests and mobile creator/admin/god browser checks in existing Developer Arsenal workflow. **Source integration complete; CI pass must be observed separately.**
+- [ ] Verify Android touch drawing, multi-image atlas imports, map exports in actual Tiled and browser downloads across devices. Review accessibility and file size limits before publishing assets.
+- [ ] Continue native SVG authoring and animation editor or integrate audited upstream modules where redistribution licensing/asset provenance is verified. These desktop/advanced tools remain external candidates.
+- [ ] Complete remaining Gravewave sprites, pet evolution-specific drawings, production asset publishing permissions and cross-account review; these were not completed by the lab.
+
 ## Evidence and references
 - [November 10 audit](KNIGHTFALL-TASK-RUN-2026-11-10.md) records last confirmed deployment/migration/test facts, including partial privacy improvements and outstanding device checks.
 - [Recovered backlog](ASH-FALL-RECOVERED-BACKLOG.md) retains older requests and superseded concepts for cross-checking.

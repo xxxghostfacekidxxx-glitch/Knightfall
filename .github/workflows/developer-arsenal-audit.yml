@@ -6,6 +6,11 @@ on:
       - '.github/workflows/developer-arsenal-audit.yml'
       - 'scripts/developer-arsenal*.mjs'
       - 'public/devil-tools.html'
+      - 'public/creator-production-lab.js'
+      - 'public/creator-production-lab.css'
+      - 'public/creator-production-core.mjs'
+      - 'scripts/creator-production-lab.test.mjs'
+      - 'public/open-source-arsenal.html'
       - 'public/admin-command-center.js'
       - 'public/admin-command-center.css'
       - 'docs/developer-arsenal.md'
@@ -40,6 +45,8 @@ jobs:
       - name: Validate key JavaScript modules
         run: |
           node --check public/open-source-arsenal.js
+          node --check public/creator-production-lab.js
+          node --check public/creator-production-core.mjs
           node --check public/admin-command-center.js
           node --check public/nav.js
           node --check backend/chaos-tool-dispatch.mjs
@@ -49,7 +56,7 @@ jobs:
       - name: Run existing permission and security audits
         run: |
           node scripts/security-surface-inventory.mjs
-          node --test scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
+          node --test scripts/creator-production-lab.test.mjs scripts/developer-arsenal.test.mjs backend/chaos-audit-summary.test.mjs backend/chaos-capabilities.test.mjs backend/src/developer-audit-ingest.test.mjs backend/src/developer-audit-oidc.test.mjs
       - name: Install browser test tooling
         run: |
           npm install --no-save playwright@1.56.1
