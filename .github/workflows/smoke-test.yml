@@ -68,6 +68,8 @@ on:
       - 'scripts/arcade-mini-save-validation.test.mjs'
       - 'scripts/admin-task-navigation.test.mjs'
       - 'scripts/navigation-redirects.test.mjs'
+      - 'scripts/site-link-integrity.mjs'
+      - 'scripts/smoke-navigation.mjs'
       - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
@@ -135,6 +137,8 @@ jobs:
         run: node --test scripts/admin-task-navigation.test.mjs
       - name: Verify canonical URLs and redirect targets
         run: node --test scripts/navigation-redirects.test.mjs
+      - name: Audit internal links across first-party public pages
+        run: node scripts/site-link-integrity.mjs
       - name: Validate mini-game save snapshots
         run: node --test scripts/arcade-mini-save-validation.test.mjs
       - name: Check arcade scoreboard and generated catalog consistency
@@ -170,6 +174,8 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      - name: Exercise navigation, login roles and legacy bookmarks on mobile and desktop
+        run: node scripts/smoke-navigation.mjs
       - name: Exercise Cosmic Atlas on Android and desktop (natal, focus, transits)
         run: node scripts/cosmic-atlas-browser.mjs
       - name: Verify profile-to-Miss-Chaos published-chart comparison and privacy on mobile
