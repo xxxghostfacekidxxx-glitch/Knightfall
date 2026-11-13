@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths:
       - 'public/arcade/catalog.json'
-      - 'public/arcade-card-board.html'
+      - 'public/chaos-cartridge.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/cinder-eights-runtime.test.mjs'
@@ -30,7 +30,7 @@ on:
   pull_request:
     paths:
       - 'public/arcade/catalog.json'
-      - 'public/arcade-card-board.html'
+      - 'public/chaos-cartridge.html'
       - 'public/arcade-card-expansion.html'
       - 'scripts/card-room-runtime.test.mjs'
       - 'scripts/cinder-eights-runtime.test.mjs'
@@ -84,7 +84,7 @@ jobs:
             const html=fs.readFileSync(file,'utf8');
             if(!html.trim())throw Error('Empty game: '+game.id);
           }
-          if(!fs.existsSync('public/arcade-card-board.html'))throw Error('Missing category page');
+          if(!fs.existsSync('public/chaos-cartridge.html'))throw Error('Missing category page');
           console.log('Validated '+tabletop.length+' tabletop launch routes');
           JS
       - name: Verify generated arcade directory stays synchronized

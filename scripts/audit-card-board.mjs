@@ -14,6 +14,6 @@ for(const game of games){
  const pathname=game.route.split(/[?#]/)[0];
  if(!existsSync(resolve(root,'.'+pathname)))errors.push(game.id+': missing '+pathname);
 }
-for(const page of ['arcade-card-board.html','arcade-card-room.html','arcade-card-expansion.html'])if(!existsSync(resolve(root,page)))errors.push('Missing '+page);
+for(const page of ['chaos-cartridge.html','arcade-card-room.html','arcade-card-expansion.html'])if(!existsSync(resolve(root,page)))errors.push('Missing '+page);
 console.log(JSON.stringify({cardAndBoardEntries:games.length,errors,warnings},null,2));
 if(errors.length)process.exitCode=1;

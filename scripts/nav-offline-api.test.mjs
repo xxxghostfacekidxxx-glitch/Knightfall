@@ -85,3 +85,11 @@ test("one public arcade directory with safe redirects and no duplicate browse me
  assert.match(primary,/href="\/arcade\/async-play\.html"/);
  assert.match(primary,/href="\/arcade\/arcade-license-guide\.html"/);
 });
+
+
+test('retired arcade category page routes through canonical Chaos Cartridge',()=>{
+ const redirect=readFileSync('public/_redirects','utf8');
+ assert.match(redirect,/\/arcade-card-board\.html \/chaos-cartridge\.html 301/);
+ assert.match(redirect,/\/arcade-30-games\.html \/chaos-cartridge\.html 301/);
+ assert.doesNotMatch(readFileSync('public/chaos-cartridge.html','utf8'),/href="\/arcade-card-board\.html"/);
+});
