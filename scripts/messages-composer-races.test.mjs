@@ -5,9 +5,9 @@ import {readFileSync} from 'node:fs';
 const html=readFileSync('public/messages.html','utf8');
 function deferred(){let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b});return {promise,resolve,reject}}
 function harness(){
- const nodes=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){},dispatchEvent(){},hidden:false,disabled:false});return nodes.get(s)};
+ const nodes=new Map(),drafts=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){},dispatchEvent(){},hidden:false,disabled:false});return nodes.get(s)};
  const request=deferred(),posts=[],deleted=[];
- const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),messageSendQueues:new Map(),conversationDrafts:new Map(),persistConversationDrafts:()=>{},rememberConversationDraft(id,value){if(value)this.conversationDrafts.set(id,value);else this.conversationDrafts.delete(id);},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,Event,document:{hidden:false},console,
+ const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),messageSendQueues:new Map(),conversationDrafts:drafts,persistConversationDrafts:()=>{},rememberConversationDraft:(id,value)=>{if(value)drafts.set(id,value);else drafts.delete(id);},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,Event,document:{hidden:false},console,
  activeConversation:()=>({}),status(){},drawPendingAttachments(){},sendTypingState:async()=>{},loadConversations:async()=>{},refreshCurrent:async()=>{},
  api:async(path,opts)=>{posts.push({path,opts});return request.promise},uploadAttachment:async()=>request.promise,deletePendingAttachment:async id=>deleted.push(id)};
  vm.createContext(c);vm.runInContext(html.slice(html.indexOf('$("#composer").onsubmit='),html.indexOf('\nfunction drawPendingAttachments')),c);

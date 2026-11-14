@@ -34,6 +34,7 @@ on:
       - 'scripts/miss-chaos-memo.test.mjs'
       - 'backend/src/member-memo-mail.test.mjs'
       - 'scripts/miss-chaos-memo-browser.mjs'
+      - 'scripts/messaging-consecutive-browser.mjs'
       - 'scripts/miss-chaos-stream.test.mjs'
       - 'scripts/pwa-update-audit.test.mjs'
       - 'scripts/profile-navigation.test.mjs'
@@ -195,6 +196,8 @@ jobs:
         run: node scripts/admin-offline-browser-smoke.cjs
       - name: Exercise Memo Mail and live chat tabs on desktop and Android
         run: node scripts/miss-chaos-memo-browser.mjs
+      - name: Send two consecutive messages in an open inbox and floating chat on Android and desktop
+        run: node scripts/messaging-consecutive-browser.mjs
       - name: Exercise Android push enablement and subscription recovery
         run: node scripts/mobile-push-browser-smoke.mjs
       - name: Exercise arcade community leaderboards on desktop and mobile
