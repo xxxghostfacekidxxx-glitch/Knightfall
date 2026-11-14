@@ -812,3 +812,108 @@
  }
  .message-layout.show-chat .composer textarea{min-height:40px;max-height:min(18vh,130px)}
 }
+
+
+/* Adaptive inbox v5: give the transcript the space, not the toolbar. */
+.messages-shell .message-layout{
+  height:clamp(420px,calc(100dvh - 160px),960px);
+  min-height:0;max-height:none;
+  grid-template-columns:clamp(230px,27vw,315px) minmax(0,1fr);
+}
+.messages-shell .conversation-panel{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.messages-shell .conversation-list{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto}
+.messages-shell .chat-panel{
+  min-width:0;min-height:0;overflow:hidden;
+  grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto;
+}
+.messages-shell .chat-head{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;
+  min-width:0;gap:.65rem;padding:.6rem .8rem;z-index:10;
+}
+.messages-shell .chat-identity{flex:1 1 auto;min-width:0;overflow:hidden}
+.messages-shell .chat-identity>span:last-child{min-width:0;overflow:hidden}
+.messages-shell .chat-identity :is(strong,small){display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.messages-shell .chat-tools{flex:0 0 auto;min-width:0;width:auto;overflow:visible}
+.messages-shell .chat-more{position:relative;flex:0 0 auto;min-width:0}
+.messages-shell .chat-more>summary{
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  min-height:40px;min-width:87px;padding:.4rem .65rem;
+  border:1px solid #6d427e;border-radius:10px;
+  color:#f2d8f5;background:#24142f;font-size:.8rem;font-weight:850;
+  cursor:pointer;list-style:none;user-select:none;
+}
+.messages-shell .chat-more>summary::-webkit-details-marker{display:none}
+.messages-shell .chat-more>summary:hover,.messages-shell .chat-more>summary:focus-visible{
+  color:#c6ff45;border-color:#c6ff45;outline-offset:2px
+}
+.messages-shell .chat-more-panel{
+  position:absolute;top:calc(100% + 7px);right:0;z-index:30;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;
+  gap:.5rem;padding:.85rem;width:min(400px,calc(100vw - 28px));
+  max-height:min(50dvh,390px);overflow-y:auto;
+  border:1px solid #96549c;border-radius:14px;
+  background:#1b1228;box-shadow:0 14px 40px #000c;
+}
+.messages-shell .chat-more:not([open]) .chat-more-panel{display:none}
+.messages-shell .chat-more-panel :is(button,a,select){max-width:100%;min-height:38px}
+.messages-shell .chat-more-panel .message-live-state{white-space:normal}
+.messages-shell .chat-panel>#messages{min-height:0;overflow:auto;overscroll-behavior:contain}
+.messages-shell .chat-panel>#composer{min-height:0}
+@media(max-width:850px){
+  .messages-shell .message-layout:not(.show-chat){
+    display:flex;flex-direction:column;height:min(78dvh,760px);min-height:340px;
+  }
+  .messages-shell .message-layout:not(.show-chat)>.conversation-panel{
+    display:flex;flex:1 1 auto;max-height:none;min-height:0;
+    border-right:0!important;padding:.7rem;
+  }
+  .messages-shell .message-layout:not(.show-chat) .conversation-list{
+    flex:1 1 auto;max-height:none;min-height:0;
+  }
+  .messages-shell .message-layout.show-chat{
+    display:block!important;position:fixed!important;
+    top:var(--messages-chat-top,62px)!important;left:0!important;right:0!important;
+    height:var(--messages-chat-height,calc(100dvh - 62px))!important;
+    width:100%!important;min-height:0!important;max-height:none!important;
+  }
+  .messages-shell .message-layout.show-chat>.chat-panel{
+    display:grid!important;height:100%!important;min-height:0!important;
+    grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto!important;
+  }
+  .messages-shell .message-layout.show-chat .chat-head{
+    display:flex;flex-direction:row;align-items:center;justify-content:space-between;
+    flex-wrap:nowrap;min-height:0;max-height:70px;gap:.5rem;
+    padding:.45rem .65rem;overflow:visible;
+  }
+  .messages-shell .message-layout.show-chat .chat-identity{flex:1 1 auto;min-width:0}
+  .messages-shell .message-layout.show-chat .chat-identity .chat-avatar{width:34px;height:34px}
+  .messages-shell .message-layout.show-chat .chat-tools{
+    width:auto;max-width:48%;display:flex;align-items:center;
+    flex:0 0 auto;flex-wrap:nowrap!important;overflow:visible;
+    gap:.35rem;
+  }
+  .messages-shell .message-layout.show-chat .chat-tools>*{flex:0 0 auto}
+  .messages-shell .message-layout.show-chat .mobile-inbox-back{min-height:38px}
+  .messages-shell .message-layout.show-chat .messages-list{
+    grid-row:5!important;height:auto!important;min-height:0!important;
+    overflow-y:auto!important;
+  }
+  .messages-shell .message-layout.show-chat .composer{
+    grid-row:7!important;min-height:0;max-height:min(30dvh,185px);
+    overflow-y:auto;padding:.5rem .65rem max(.5rem,env(safe-area-inset-bottom))!important;
+  }
+  .messages-shell .message-layout.show-chat .composer textarea{min-height:38px;max-height:min(18dvh,115px)}
+}
+@media(max-width:480px){
+  .messages-shell .message-layout.show-chat .chat-head{padding:.4rem .5rem;gap:.3rem}
+  .messages-shell .chat-more>summary{min-width:40px;padding:.35rem .45rem}
+  .messages-shell .chat-more>summary span{display:none}
+  .messages-shell .message-layout.show-chat .mobile-inbox-back{padding:.35rem .45rem;font-size:.7rem}
+  .messages-shell .message-layout.show-chat .chat-tools{max-width:45%}
+  .messages-shell .message-layout.show-chat .chat-more-panel{right:0}
+}
+@media(max-height:440px) and (max-width:850px){
+  .messages-shell .message-layout.show-chat .chat-identity small{display:none}
+  .messages-shell .message-layout.show-chat .composer{max-height:32dvh}
+  .messages-shell .message-layout.show-chat .composer textarea{min-height:34px;max-height:12dvh}
+}
