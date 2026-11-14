@@ -112,7 +112,7 @@
   async function loadArtSprites(){
     const area=document.getElementById('kf-art-sprite-gallery');if(!area)return;
     try{
-      const response=await fetch('/assets/knightfall/manifest.json');
+      const response=await fetch('/assets/knightfall/manifest.json?v=20261114-relics2');
       if(!response.ok)throw Error('Art manifest is unavailable.');
       const manifest=await response.json();
       const sheet=new Image();sheet.decoding='async';
@@ -136,7 +136,7 @@
   async function loadRelicIcons(){
     const area=document.getElementById('kf-art-relic-gallery');if(!area)return;
     try{
-      const response=await fetch('/assets/knightfall/manifest.json');
+      const response=await fetch('/assets/knightfall/manifest.json?v=20261114-relics2');
       if(!response.ok)throw Error('Artwork manifest did not load.');
       const manifest=await response.json();
       const sheet=new Image();sheet.decoding='async';
