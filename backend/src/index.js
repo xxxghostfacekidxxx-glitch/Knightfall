@@ -28,6 +28,7 @@ import { handleArcadeDeckLocker } from "./arcade-deck-locker.js";
 import { handlePrivacyAssistance } from "./privacy-assistance.js";
 import { handleMessageSearch } from "./message-search.js";
 import { handleMessageSummary } from "./message-conversation-summary.js";
+import { handleCreatorArtSubmissions } from "./creator-art-submissions.js";
 import { handleMessageLive, publishMessageLive, notifyConversationLive } from "./messaging-live.js";
 export { MessageLiveRoom } from "./messaging-live.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
@@ -1269,6 +1270,8 @@ export default { async queue(batch, env) {
   if (mediaAlbumResponse) return mediaAlbumResponse;
   const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
   if (profilePhotoResponse) return profilePhotoResponse;
+  const creatorArtResponse = await handleCreatorArtSubmissions(request,env,url,{requireUser,isAdmin,rateLimit,randomToken,json,audit,origin});
+  if(creatorArtResponse)return creatorArtResponse;
   const publicAssetResponse = await handlePublicAssetRequest(request, env, origin, url);
   if (publicAssetResponse) return publicAssetResponse;
   const shopResponse = await handleShopRequest(request, env, origin, url);
