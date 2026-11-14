@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Your Ash-Fall inbox. Messages, conversations, and whatever the hell is happening.">
 <title>Ash-Fall | Messages</title>
-<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-messaging4">
+<link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/messages.css?v=20261113-adaptive5">
 </head>
 <body>
 <header class="kf-header"></header>
@@ -64,7 +64,7 @@
       <div id="conversations" class="conversation-list"></div>
     </aside>
     <section class="chat-panel">
-      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></div>
+      <div id="chat-head" class="chat-head"><div class="chat-identity"><span class="avatar chat-avatar">✦</span><span><strong>Select a conversation</strong><small>Your private corner of Ash-Fall.</small></span></div><div class="chat-tools"><button id="mobile-inbox-back" class="mobile-inbox-back" type="button" aria-label="Back to conversations">← Inbox</button><details id="chat-more" class="chat-more"><summary aria-label="More conversation options">⋯ <span>Options</span></summary><div class="chat-more-panel"><button id="manage-group" type="button" hidden>Members</button><a id="chaos-card-chat-invite" class="chaos-card-chat-invite" href="/arcade/hosted/cards-against-chaos/index.html" hidden title="Challenge this friend in Cards Against Chaos">🃏 Play Cards</a><a id="connect-four-chat-invite" class="chaos-card-chat-invite" href="/arcade/async-play.html" hidden title="Join this friend's Connect Four challenge">🎮 Join Connect Four</a><button id="history-search-open" type="button" title="Search message history">⌕ Search</button><button id="enable-notifications" type="button" title="Configure real push notifications">Push settings</button><span id="message-live-state" class="message-live-state" role="status" aria-live="polite">Connecting…</span><span id="presence-label" class="presence-label">● Checking status</span><span class="secure-label">PRIVATE</span><label class="mute-duration-label" for="mute-duration">Mute</label><select id="mute-duration" aria-label="Mute duration"><option value="60">1 hour</option><option value="480">8 hours</option><option value="1440" selected>24 hours</option><option value="10080">7 days</option><option value="43200">30 days</option></select><button id="mute-chat" hidden>Mute</button></div></details></div></div>
       <div id="typing-indicator" class="typing-indicator" role="status" aria-live="polite" hidden></div><button id="jump-latest" class="jump-latest" type="button" hidden>↓ Jump to latest</button><button id="load-older" class="load-older" hidden>Load older messages</button><div id="messages" class="messages-list"><div class="empty">Choose a conversation to begin.</div></div><div id="conversation-restricted" class="conversation-restricted" role="status" hidden>Messaging is paused because one of these accounts has blocked the other. Existing messages remain available to read.</div>
       <form id="composer" class="composer" hidden>
         <div class="composer-main"><textarea id="body" maxlength="4000" rows="1" placeholder="Write a message..." aria-label="Message text"></textarea><div id="pending-attachments" class="pending-attachments" aria-live="polite" hidden></div></div><input id="attachment-input" type="file" hidden multiple accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><button id="attach-file" type="button" class="attach-file" aria-label="Attach photo or file" title="Attach photo or file">＋</button>
@@ -309,6 +309,11 @@ window.addEventListener("pageshow",event=>{
 
 $("#jump-latest").addEventListener("click",()=>{if(currentId)openConversation(currentId).catch(e=>status(e.message));});
 $("#mobile-inbox-back").addEventListener("click",()=>{$(".message-layout").classList.remove("show-chat");$("#conversation-search").focus({preventScroll:true})});
+ const chatMore=$("#chat-more");
+ chatMore.addEventListener("click",e=>{if(e.target.closest(".chat-more-panel button,.chat-more-panel a"))chatMore.open=false;});
+ document.addEventListener("pointerdown",e=>{if(chatMore.open&&!chatMore.contains(e.target))chatMore.open=false;});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&chatMore.open){chatMore.open=false;chatMore.querySelector("summary").focus({preventScroll:true});}});
+
 $("#conversations").addEventListener("click",e=>{const b=e.target.closest("[data-conversation]");if(b)openConversation(Number(b.dataset.conversation))});
 async function refreshCurrent(){if(!currentId||loading||loadingOlder)return;
  if(historyPinnedConversationId===Number(currentId))return;const requestedId=Number(currentId),token=conversationLoadToken,refreshToken=++currentRefreshToken;try{const box=$("#messages"),nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<100,visible=[...box.querySelectorAll("[data-message]")].find(el=>{const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();return r.bottom>b.top&&r.top<b.bottom}),anchorId=visible?.dataset.message,anchorOffset=visible?visible.getBoundingClientRect().top-box.getBoundingClientRect().top:0;const d=await api("/api/messages/conversations/"+requestedId+"?limit="+MESSAGE_PAGE_SIZE);if(Number(currentId)!==requestedId||token!==conversationLoadToken||refreshToken!==currentRefreshToken)return;const incoming=d.messages||[];
@@ -608,7 +613,7 @@ function syncMessagesViewport(){
  const viewport=window.visualViewport,visibleHeight=viewport?.height||window.innerHeight;
  const offsetTop=viewport?.offsetTop||0,header=document.querySelector(".kf-header");
  const headerBottom=header?.getBoundingClientRect().bottom||0;
- const top=Math.max(offsetTop,Math.min(headerBottom,offsetTop+visibleHeight-140));
+ const top=Math.max(offsetTop,Math.min(headerBottom,offsetTop+72,offsetTop+visibleHeight*0.22));
  const available=Math.max(140,offsetTop+visibleHeight-top);
  const root=document.documentElement;
  root.style.setProperty("--messages-visible-height",visibleHeight+"px");
