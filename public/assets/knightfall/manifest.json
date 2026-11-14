@@ -1,0 +1,289 @@
+{
+  "id": "knightfall-original-art",
+  "version": "2026-11-14",
+  "origin": "Original AI-assisted concept artwork produced specifically for the Knightfall project; no licensed franchise character art is included.",
+  "status": "approved-originals",
+  "notes": "Original character designs inspired by sci-fi and horror genres, not reproductions of protected franchise assets. These are static sprites; animation requires additional frames.",
+  "categories": [
+    "galactic-warriors",
+    "horror-figures",
+    "skeletal-animals",
+    "gothic-relics",
+    "site-branding"
+  ],
+  "crest": {
+    "small": "/icons/knightfall-crest-192.png",
+    "large": "/icons/knightfall-crest-512.png",
+    "use": [
+      "favicon",
+      "PWA icon",
+      "shared navigation",
+      "Creator Foundry"
+    ]
+  },
+  "uiReference": {
+    "image": "/assets/knightfall/creator-theme-concept.png",
+    "purpose": "design direction; not interactive UI artwork"
+  },
+  "collections": [
+    {
+      "id": "horror-space-characters",
+      "title": "The Nightfall Roster",
+      "image": "/assets/knightfall/horror-space-characters.png",
+      "atlasWidth": 1448,
+      "atlasHeight": 1086,
+      "pack": "/assets/knightfall/knightfall-character-sprites.zip",
+      "usage": "Concept previews and separate transparent sprite files"
+    },
+    {
+      "id": "relics-and-icons",
+      "title": "Relics of the Eclipse",
+      "image": "/assets/knightfall/relics-and-icons.png",
+      "atlasWidth": 1086,
+      "atlasHeight": 815,
+      "usage": "Icon and prop concept sheet. Crop and inspect each item before using as gameplay UI."
+    }
+  ],
+  "sprites": [
+    {
+      "id": "crimson-void-knight",
+      "name": "Crimson Void Knight",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 1,
+        "y": 0,
+        "width": 270,
+        "height": 429
+      },
+      "downloadName": "crimson-void-knight.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "moonbound-oracle",
+      "name": "Moonbound Oracle",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 268,
+        "y": 5,
+        "width": 249,
+        "height": 416
+      },
+      "downloadName": "moonbound-oracle.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "iron-wraith-ranger",
+      "name": "Iron Wraith Ranger",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 494,
+        "y": 33,
+        "width": 244,
+        "height": 392
+      },
+      "downloadName": "iron-wraith-ranger.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "thorn-queen",
+      "name": "Thorn Queen",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 722,
+        "y": 0,
+        "width": 244,
+        "height": 426
+      },
+      "downloadName": "thorn-queen.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "plague-gunslinger",
+      "name": "Plague Gunslinger",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 949,
+        "y": 13,
+        "width": 237,
+        "height": 410
+      },
+      "downloadName": "plague-gunslinger.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "starfall-templar",
+      "name": "Starfall Templar",
+      "collection": "horror-space-characters",
+      "category": "galactic-warriors",
+      "atlasRect": {
+        "x": 1174,
+        "y": 1,
+        "width": 274,
+        "height": 423
+      },
+      "downloadName": "starfall-templar.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "iron-butcher",
+      "name": "Iron Butcher",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 9,
+        "y": 424,
+        "width": 254,
+        "height": 371
+      },
+      "downloadName": "iron-butcher.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "marsh-hunter",
+      "name": "Marsh Hunter",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 279,
+        "y": 429,
+        "width": 182,
+        "height": 366
+      },
+      "downloadName": "marsh-hunter.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "hollow-shroud",
+      "name": "Hollow Shroud",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 466,
+        "y": 430,
+        "width": 257,
+        "height": 365
+      },
+      "downloadName": "hollow-shroud.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "carnival-ghoul",
+      "name": "Carnival Ghoul",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 718,
+        "y": 426,
+        "width": 208,
+        "height": 369
+      },
+      "downloadName": "carnival-ghoul.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "chainbound-revenant",
+      "name": "Chainbound Revenant",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 922,
+        "y": 430,
+        "width": 245,
+        "height": 365
+      },
+      "downloadName": "chainbound-revenant.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "antler-cultist",
+      "name": "Antler Cultist",
+      "collection": "horror-space-characters",
+      "category": "horror-figures",
+      "atlasRect": {
+        "x": 1167,
+        "y": 422,
+        "width": 278,
+        "height": 373
+      },
+      "downloadName": "antler-cultist.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "bone-raccoon",
+      "name": "Bone Raccoon",
+      "collection": "horror-space-characters",
+      "category": "skeletal-animals",
+      "atlasRect": {
+        "x": 17,
+        "y": 864,
+        "width": 305,
+        "height": 187
+      },
+      "downloadName": "bone-raccoon.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "spectral-wolf",
+      "name": "Spectral Wolf",
+      "collection": "horror-space-characters",
+      "category": "skeletal-animals",
+      "atlasRect": {
+        "x": 335,
+        "y": 804,
+        "width": 385,
+        "height": 257
+      },
+      "downloadName": "spectral-wolf.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "cursed-cat",
+      "name": "Cursed Cat",
+      "collection": "horror-space-characters",
+      "category": "skeletal-animals",
+      "atlasRect": {
+        "x": 737,
+        "y": 804,
+        "width": 327,
+        "height": 252
+      },
+      "downloadName": "cursed-cat.png",
+      "scaleMode": "smooth",
+      "animated": false
+    },
+    {
+      "id": "grave-raven",
+      "name": "Grave Raven",
+      "collection": "horror-space-characters",
+      "category": "skeletal-animals",
+      "atlasRect": {
+        "x": 1083,
+        "y": 812,
+        "width": 336,
+        "height": 258
+      },
+      "downloadName": "grave-raven.png",
+      "scaleMode": "smooth",
+      "animated": false
+    }
+  ]
+}
