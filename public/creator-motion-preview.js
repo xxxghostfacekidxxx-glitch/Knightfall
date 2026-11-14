@@ -76,6 +76,7 @@ if(root){
   });
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else if(playing)request();else render()});
   window.addEventListener('pagehide',()=>{stop();observer.disconnect()},{once:true});
+  void (async()=>{
   try{
     art=await loadKnightfallArt();
     sprite.replaceChildren();
@@ -90,4 +91,5 @@ if(root){
     note('Motion preview unavailable: '+error.message);
     play.disabled=true;exportButton.disabled=true;
   }
+  })();
 }
