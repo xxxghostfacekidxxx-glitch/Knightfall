@@ -85,17 +85,19 @@
   // Movable and resizable messenger, with per-account placement persistence.
   const layoutKey="kf-chat-layout-"+userId;
   const clamp=(n,a,b)=>Math.max(a,Math.min(n,b));
-  let customPosition=null;
+  let customPosition=null,preferredPosition=null,desiredSize=null;
   function bounds(){
     const v=window.visualViewport,l=v?.offsetLeft||0,t=v?.offsetTop||0;
     return {left:l,top:t,right:l+(v?.width||innerWidth),bottom:t+(v?.height||innerHeight)};
   }
-  function setSize(w,h){
+  function setSize(w,h,remember=true){
+    if(remember)desiredSize={width:w,height:h};
     const b=bounds(),maxW=Math.max(160,b.right-b.left-16),maxH=Math.max(130,b.bottom-b.top-95);
     panel.style.width=clamp(w,Math.min(260,maxW),maxW)+"px";
     panel.style.height=clamp(h,Math.min(180,maxH),maxH)+"px";
   }
-  function placeDock(x,y){
+  function placeDock(x,y,remember=true){
+    if(remember)preferredPosition={x,y};
     const b=bounds();
     dock.classList.add("kf-chat-positioned");
     dock.style.setProperty("--kf-chat-left",x+"px");
@@ -111,15 +113,19 @@
     const r=panel.getBoundingClientRect();
     const width=r.width||parseFloat(panel.style.width)||375,height=r.height||parseFloat(panel.style.height)||480;
     try{localStorage.setItem(layoutKey,JSON.stringify({
-      x:customPosition?.x??null,y:customPosition?.y??null,width:Math.round(width),height:Math.round(height)
+      x:preferredPosition?.x??customPosition?.x??null,y:preferredPosition?.y??customPosition?.y??null,
+      width:Math.round(desiredSize?.width??width),height:Math.round(desiredSize?.height??height)
     }));}catch{}
   }
   function fitDock(){
-    if(panel.style.width||panel.style.height){
+    if(desiredSize)setSize(desiredSize.width,desiredSize.height,false);
+    else if(panel.style.width||panel.style.height){
       const r=panel.getBoundingClientRect();
-      setSize(r.width||parseFloat(panel.style.width)||375,r.height||parseFloat(panel.style.height)||480);
+      setSize(r.width||parseFloat(panel.style.width)||375,r.height||parseFloat(panel.style.height)||480,false);
     }
-    if(customPosition)placeDock(customPosition.x,customPosition.y);
+    if(preferredPosition||customPosition){
+      const p=preferredPosition||customPosition;placeDock(p.x,p.y,false);
+    }
   }
   function draggable(handle,ignoreControls=false){
     let drag=null,blockClickUntil=0;
@@ -170,7 +176,7 @@
   grip.addEventListener("pointermove",e=>{
     if(!sizing||sizing.id!==e.pointerId)return;
     setSize(sizing.w-(e.clientX-sizing.x),sizing.h+(e.clientY-sizing.y));
-    if(customPosition)placeDock(customPosition.x,customPosition.y);
+    if(customPosition)placeDock(customPosition.x,customPosition.y,false);
     e.preventDefault();
   });
   const endSize=e=>{if(sizing&&sizing.id===e.pointerId){sizing=null;saveLayout();}};
