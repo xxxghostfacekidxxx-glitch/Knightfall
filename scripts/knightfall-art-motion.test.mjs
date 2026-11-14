@@ -70,4 +70,9 @@ test('Creator studio loads original motion renderer with functional PNG export a
  assert.match(studio,/canvas\.toBlob\(/);
  assert.match(studio,/IntersectionObserver/);
  assert.match(studio,/prefers-reduced-motion/);
+ assert.match(foundry,/id="kf-pose-sheet"/);
+ assert.match(foundry,/id="kf-pose-json"/);
+ assert.match(studio,/cfg\.frameW\*cfg\.count/);
+ assert.match(studio,/8frames\.png/);
+ assert.match(studio,/8frames\.json/);
 });
