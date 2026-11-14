@@ -26,3 +26,23 @@
 .kf-art-item :is(button,a):focus-visible{outline:2px solid #e3bc88;outline-offset:2px}
 .kf-art-item button:disabled{opacity:.5;cursor:wait}
 @media(max-width:550px){.kf-art-heading{align-items:flex-start}.kf-art-heading img{width:74px}.kf-art-drop{min-height:140px}.kf-art-card img{aspect-ratio:5/4}}
+
+
+.kf-art-gallery .kf-art-brand img{aspect-ratio:4/3;object-fit:contain;padding:clamp(8px,1.6vw,20px)}
+.kf-collection-actions{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+.kf-collection-actions a{font-size:.78rem}
+.kf-collection-subtitle{font-size:1.18rem;margin:1.4rem 0 .3rem;color:#f0d8ea}
+.kf-art-sprite-gallery{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));
+ gap:.65rem;margin:1rem 0 1.3rem
+}
+.kf-art-sprite-card{
+ min-width:0;display:flex;flex-direction:column;align-items:center;gap:.25rem;
+ padding:.55rem;border:1px solid #70546d;border-radius:12px;
+ background:linear-gradient(150deg,#261a2f,#11121b)
+}
+.kf-art-sprite-card canvas{display:block;width:100%;max-width:144px;aspect-ratio:144/164;object-fit:contain}
+.kf-art-sprite-card strong{font-size:.76rem;color:#f2e6f2;text-align:center;line-height:1.3}
+.kf-art-sprite-card small{font-size:.65rem;color:#bba5bc;text-transform:capitalize}
+.kf-art-item .kf-art-submit{border-color:#b18d6f;color:#f9d6a6;background:#30202f}
+.kf-art-uploader :is(.kf-art-staged,#kf-art-review) p{color:#cbb8c9;font-size:.84rem}
