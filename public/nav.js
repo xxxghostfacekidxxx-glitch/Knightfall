@@ -41,7 +41,7 @@
   if (!document.querySelector('link[data-knightfall-unified-theme]')) {
     const unified=document.createElement("link");
     unified.rel="stylesheet";
-    unified.href="/knightfall-unified-theme.css?v=20261111-yellow1";
+    unified.href="/knightfall-unified-theme.css?v=20261114-gothic1";
     unified.dataset.knightfallUnifiedTheme="true";
     document.head.append(unified);
   }
@@ -113,9 +113,9 @@
   else mountDevilToolsStamps();
   // Shared PWA setup and global Chaos Cartridge favicon.
   const iconLinks = [
-    { rel: "icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
-    { rel: "shortcut icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1", type: "image/svg+xml" },
-    { rel: "apple-touch-icon", href: "/icons/chaos-cartridge.svg?v=20261026-brand1" }
+    { rel: "icon", href: "/icons/knightfall-crest-192.png?v=20261114", type: "image/png" },
+    { rel: "shortcut icon", href: "/icons/knightfall-crest-192.png?v=20261114", type: "image/png" },
+    { rel: "apple-touch-icon", href: "/icons/knightfall-crest-512.png?v=20261114" }
   ];
   iconLinks.forEach(spec => {
     let link = document.head.querySelector('link[rel="' + spec.rel + '"]');
@@ -131,7 +131,7 @@
   }
   let themeColor = document.querySelector('meta[name="theme-color"]');
   if (!themeColor) { themeColor = document.createElement("meta"); themeColor.name = "theme-color"; document.head.append(themeColor); }
-  themeColor.content = "#080808";
+  themeColor.content = "#17101f";
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {}), { once: true });
   }
@@ -238,7 +238,7 @@
     document.head.append(stable);
   }
   header.innerHTML = `
-    <a class="kf-brand" href="/" aria-label="Ash-Fall home"><span>ASH</span><b>-FALL</b></a>
+    <a class="kf-brand" href="/" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <details class="kf-nav-group">
