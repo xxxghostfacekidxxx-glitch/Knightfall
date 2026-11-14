@@ -16,7 +16,7 @@ const lobby=read("public/arcade/async-play.html");
 const schema=read("backend/migrations/0120_four_seat_chaos_cards.sql");
 const manifest=JSON.parse(read("public/assets/devil-tools/neon-nuisances/manifest.json"));
 test("local arcade and backend Worker import the exact same base deck",()=>{
- assert.match(game,/<script type="module">\s*import \{BLACK, WHITE\} from "\.\/base-deck\.js"/);
+ assert.match(game,/<script type="module">\s*import \{BLACK, WHITE\} from "\.\/base-deck\.js\?v=20261113-variety1"/);
  assert.match(serverDeck,/export \{BLACK,WHITE\} from "\.\.\/\.\.\/public\/arcade\/hosted\/cards-against-chaos\/base-deck\.js"/);
  assert.match(baseDeck,/export const BLACK=\[/);
  assert.match(baseDeck,/export const WHITE=\[/);

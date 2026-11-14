@@ -15,6 +15,9 @@ on:
       - 'backend/wrangler.jsonc'
       - 'public/index.html'
       - 'public/arcade/catalog.json'
+      - 'public/arcade/hosted/cards-against-chaos/base-deck.js'
+      - 'public/arcade/hosted/cards-against-chaos/expansion-packs.js'
+      - 'scripts/chaos-deck-variety.test.mjs'
       - 'public/lunar-phases.mjs'
       - 'public/shadow-prompts.mjs'
       - 'scripts/registration-release.test.mjs'
@@ -44,6 +47,9 @@ jobs:
 
       - name: Validate official starter-bot catalog and public chat routing
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
+
+      - name: Verify Cards Against Chaos deck counts and variety
+        run: node --test scripts/chaos-deck-variety.test.mjs
 
       - name: Verify astrology calculations
         run: node --test scripts/astrology.test.mjs backend/src/chaos-radar.test.mjs
