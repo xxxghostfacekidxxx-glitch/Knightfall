@@ -55,7 +55,7 @@ function draw(){
  ctx.save();ctx.strokeStyle='#b8ff457e';ctx.lineWidth=2;
  ctx.beginPath();ctx.arc(px,py,22+2*Math.sin(elapsed*7),0,Math.PI*2);ctx.stroke();
  const hasPremium=runner!=='orb'&&premiumArt?.has(runner)&&
-   premiumArt.draw(ctx,runner,px-24,py-21,48,42,{alpha:1});
+   premiumArt.draw(ctx,runner,px-26,py-18,52,36,{alpha:1});
  if(!hasPremium){
    ctx.shadowColor='#a8ff48';ctx.shadowBlur=18;ctx.fillStyle='#a8ff48';
    ctx.beginPath();ctx.arc(px,py,17,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
