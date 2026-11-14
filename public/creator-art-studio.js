@@ -5,7 +5,7 @@
   if(!root)return;
   const API='https://api.ash-fall.com',MAX=2*1024*1024,INCOMING=8*1024*1024;
   const drop=document.getElementById('kf-art-drop'),fileInput=document.getElementById('kf-art-input');
-  const staged=document.getElementById('kf-art-staged'),published=document.getElementById('kf-art-published');
+  const staged=document.getElementById('kf-art-staged'),published=document.getElementById('kf-art-published'),review=document.getElementById('kf-art-review');
   const status=document.getElementById('kf-art-upload-status'),items=new Set();
   const report=text=>{status.textContent=text};
   const button=(label,onClick,cls='')=>{const el=document.createElement('button');el.type='button';el.className=cls;el.textContent=label;el.addEventListener('click',onClick);return el};
@@ -55,6 +55,84 @@
     }catch(error){report(item.name+': '+error.message)}
     finally{action.disabled=false}
   }
+
+  async function submit(item){
+    const action=item.node.querySelector('.kf-art-submit');if(!action)return;
+    action.disabled=true;report('Submitting '+item.name+' for review…');
+    try{
+      const form=new FormData();form.append('name',item.name);form.append('file',item.blob,item.name+'.png');
+      const res=await fetch(API+'/api/devil-tools/asset-submissions',{method:'POST',credentials:'include',cache:'no-store',body:form});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok)throw Error(data.error||'Submission failed.');
+      action.replaceWith(label('span','✓ Pending review'));
+      report('Submitted '+item.name+'. It is private until an administrator approves it.');
+      await loadReview();
+    }catch(error){report('Submission failed: '+error.message)}
+    finally{action.disabled=false}
+  }
+  async function reviewDecision(entry,verb){
+    if(!root.dataset.canPublish||root.dataset.canPublish!=='true')return;
+    if(verb==='reject'&&!confirm('Reject '+entry.asset_name+' and remove its pending artwork?'))return;
+    const res=await fetch(API+'/api/devil-tools/asset-submissions/'+entry.id+'/'+verb,{
+      method:'POST',credentials:'include',cache:'no-store'});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw Error(data.error||'Review failed.');
+    report(entry.asset_name+' '+(verb==='approve'?'approved and published.':'rejected.'));
+    await Promise.all([loadReview(),loadPublished()]);
+  }
+  async function loadReview(){
+    if(!review)return;
+    review.replaceChildren(label('p','Checking private submissions…'));
+    try{
+      const res=await fetch(API+'/api/devil-tools/asset-submissions',{credentials:'include',cache:'no-store'});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok)throw Error(data.error||'Could not load submissions.');
+      review.replaceChildren();
+      if(!data.assets?.length){review.append(label('p','No artwork waiting for review.'));return}
+      for(const entry of data.assets){
+        if(!/^[a-f0-9]{32}$/.test(entry.id))continue;
+        const card=document.createElement('article');card.className='kf-art-item';
+        const img=document.createElement('img');img.src=API+entry.preview_url;img.alt=entry.asset_name+' pending preview';img.loading='lazy';
+        const title=label('strong',entry.asset_name),meta=label('small',Math.ceil(Number(entry.size_bytes)/1024)+' KB · pending · '+new Date(entry.created_at).toLocaleDateString());
+        const actions=document.createElement('div');actions.className='kf-art-item-actions';
+        if(data.can_approve){
+          for(const [verb,text] of [['approve','Approve & publish'],['reject','Reject']]){
+            const b=button(text,async()=>{
+              b.disabled=true;
+              try{await reviewDecision(entry,verb)}catch(error){report('Review failed: '+error.message)}
+              finally{b.disabled=false}
+            },verb==='approve'?'kf-art-publish':'');
+            actions.append(b);
+          }
+        }else actions.append(label('small','Awaiting staff review'));
+        card.append(img,title,meta,actions);review.append(card);
+      }
+    }catch(error){review.replaceChildren(label('p',error.message))}
+  }
+  async function loadArtSprites(){
+    const area=document.getElementById('kf-art-sprite-gallery');if(!area)return;
+    try{
+      const response=await fetch('/assets/knightfall/manifest.json');
+      if(!response.ok)throw Error('Art manifest is unavailable.');
+      const manifest=await response.json();
+      const sheet=new Image();sheet.decoding='async';
+      sheet.src='/assets/knightfall/horror-space-characters.png';
+      await new Promise((ok,bad)=>{sheet.onload=ok;sheet.onerror=()=>bad(Error('Character atlas could not load'))});
+      area.replaceChildren();
+      for(const art of manifest.sprites||[]){
+        const r=art.atlasRect;if(!r)continue;
+        const card=document.createElement('article');card.className='kf-art-sprite-card';card.setAttribute('role','listitem');
+        const canvas=document.createElement('canvas');canvas.width=144;canvas.height=164;
+        canvas.setAttribute('aria-label',art.name+' concept art');
+        const ctx=canvas.getContext('2d');if(!ctx)continue;
+        ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+        const scale=Math.min(126/r.width,146/r.height),w=r.width*scale,h=r.height*scale;
+        ctx.drawImage(sheet,r.x,r.y,r.width,r.height,(144-w)/2,(164-h)/2,w,h);
+        card.append(canvas,label('strong',art.name),label('small',art.category.replaceAll('-',' ')));
+        area.append(card);
+      }
+    }catch(error){area.replaceChildren(label('p','Sprite previews unavailable: '+error.message))}
+  }
   async function addFiles(list){
     const files=Array.from(list||[]).slice(0,12);
     if(!files.length)return;
@@ -74,6 +152,7 @@
         actions.append(remove);
         const publishBtn=button('Publish to site',()=>publish(item),'kf-art-publish');
         // Editors without publishing rights may prepare and download their images.
+        actions.append(button('Submit for review',()=>submit(item),'kf-art-submit'));
         if(root.dataset.canPublish==='true')actions.append(publishBtn);
         node.append(img,heading,meta,actions);staged.append(node);items.add(item);
       }catch(error){report(file.name+': '+error.message)}
@@ -116,14 +195,14 @@
       }
     }catch(error){published.replaceChildren(label('p',error.message))}
   }
-  document.getElementById('kf-art-refresh').addEventListener('click',()=>{void loadPublished()});
+  document.getElementById('kf-art-refresh').addEventListener('click',()=>{void Promise.all([loadPublished(),loadReview()])});
   // Access remains authoritative in the Worker; the DOM flag only controls UI.
   const activate=()=>{
     const statusText=document.getElementById('status')?.textContent||'';
     if(statusText.includes('Signed in as @')){
       const isAdmin=!document.getElementById('release-simulator') ? false : true;
-      root.dataset.canPublish=String(isAdmin);void loadPublished();
-      if(!isAdmin)report('Digital Creator workspace: prepare and save your artwork for administrator review.');
+      root.dataset.canPublish=String(isAdmin);void Promise.all([loadPublished(),loadReview(),loadArtSprites()]);
+      if(!isAdmin)report('Digital Creator workspace: submit images for administrator review or save PNG copies.');
     }
   };
   document.getElementById('workshop')?.addEventListener('foundry:ready',activate);
