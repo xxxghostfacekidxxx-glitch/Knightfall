@@ -11,8 +11,10 @@
 
 </style>
 <link rel="stylesheet" href="/creator-foundry.css">
+<link rel="stylesheet" href="/creator-art-studio.css?v=20261114-newart1">
 <link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
 <script src="/creator-foundry.js" defer></script>
+<script src="/creator-art-studio.js?v=20261114-newart1" defer></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
 <a class="back" href="/admin.html">← God Mode</a>
@@ -37,6 +39,11 @@
   <section class="foundry-group" data-group="art" aria-labelledby="foundry-art">
     <h2 id="foundry-art">Art &amp; Assets</h2>
     <div class="foundry-grid">
+    <article class="foundry-card" data-search="upload photos images PNG JPG WebP artwork game sprites icons collections horror skeleton space assets">
+      <h3>Artwork Collections & Upload Studio</h3>
+      <p>Preview Knightfall's new crest, character concepts, relics and Creator design. Convert and publish approved PNG files to the real site-asset store.</p>
+      <div class="actions"><a class="primary" href="#knightfall-art-collection" data-workspace-search>Open artwork studio</a></div>
+    </article>
     <article class="foundry-card" data-search="piskel pixelorama free tex packer tiled pixel editor sprite animation texture atlas tile map level design offline native">
   <h3>Creator Production Lab</h3><p>Three working local-first tools: 32px pixel-art editor with frames, PNG sprite atlas packer with JSON metadata, and Tiled-style level painter and exports.</p>
   <p class="foundry-meta">Built-in tools · inspired by Piskel, FreeTexPacker &amp; Tiled workflows · no server upload</p>
@@ -329,6 +336,29 @@
   </details>
 </section>
 <a id="foundry-back" class="btn" href="#foundry-catalog" hidden>← Back to catalog</a>
+<section class="panel kf-art-studio" id="knightfall-art-collection" data-workspace hidden aria-labelledby="kf-art-title">
+  <header class="kf-art-heading"><div><p class="eyebrow">KNIGHTFALL • CREATOR COLLECTIONS</p><h2 id="kf-art-title">Artwork Vault & Asset Publisher</h2><p>Original artwork for the site, character concepts, horror, skeletal creatures, relics and game graphics. Concept sheets are references, not automatic animation frames.</p></div>
+    <img src="/icons/knightfall-crest.svg" width="110" height="110" alt="Knightfall skull and eclipse emblem"></header>
+  <div class="kf-art-gallery" id="kf-art-gallery">
+    <article class="kf-art-card"><img src="/assets/knightfall/creator-theme-concept.webp" alt="Creator page gothic visual reference" loading="lazy"><h3>Creator Visual Direction</h3><p>Sitewide colors, polished panel surfaces, metallic edges, atmospheric eclipse styling.</p><a href="/assets/knightfall/creator-theme-concept.webp" download>Save concept</a></article>
+    <article class="kf-art-card"><img src="/assets/knightfall/horror-space-characters.webp" alt="Horror and sci-fi inspired original characters and skeletal animals" loading="lazy"><h3>Dark Character Collection</h3><p>Bone beasts, masked antagonists, cosmic knights, and horror-inspired original characters.</p><a href="/assets/knightfall/horror-space-characters.webp" download>Save character sheet</a></article>
+    <article class="kf-art-card"><img src="/assets/knightfall/relics-and-icons.webp" alt="Gothic cards, badges, crystals, weapons and inventory icons" loading="lazy"><h3>Relics & Game Icon Collection</h3><p>Game props, card artwork, interface tokens, collectibles, chests, weapons and symbols.</p><a href="/assets/knightfall/relics-and-icons.webp" download>Save asset sheet</a></article>
+  </div>
+  <section class="kf-art-uploader" aria-label="Upload game and site art">
+    <h3>Upload photos & artwork for site use</h3>
+    <p>Drag PNG, JPEG or WebP artwork here, or select up to 12 files. The editor converts files to optimized PNG, previews them and lets administrators publish intentionally. Digital Creators can preview and prepare downloads for review; publishing requires administrator access.</p>
+    <div id="kf-art-drop" class="kf-art-drop" tabindex="0" role="button" aria-label="Choose artwork to upload">
+      <span aria-hidden="true">⬆</span><strong>Drop photos, sprites & graphics</strong><small>PNG · JPEG · WebP • up to 8 MB each</small>
+      <input type="file" id="kf-art-input" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    </div>
+    <div class="kf-art-actions"><button class="btn" type="button" id="kf-art-choose">Choose files</button><button class="btn" type="button" id="kf-art-clear">Clear preview</button><button class="btn" type="button" id="kf-art-refresh">Refresh published library</button></div>
+    <p class="small" id="kf-art-upload-status" role="status" aria-live="polite">Select assets to prepare. Nothing publishes without pressing Publish.</p>
+    <div id="kf-art-staged" class="kf-art-staged"></div>
+    <h3>Published site assets</h3>
+    <p class="small">Approved files receive a permanent /public-assets/ URL backed by R2. Use these URLs in games or pages only after reviewing size, transparency and licensing.</p>
+    <div id="kf-art-published" class="kf-art-staged"><p class="small">Loading asset inventory…</p></div>
+  </section>
+</section>
 <section class="panel" id="developer-arsenal-ci" data-workspace hidden aria-labelledby="developer-arsenal-title" style="margin:1rem 0;border-color:#c6ff4570">
   <h2 id="developer-arsenal-title">God Mode / Developer Arsenal</h2>
   <p>Repository diagnostics and automation sources for administrators. Tool source links are <strong>not</strong> installed agent integrations. The GitHub Actions audit publishes diagnostic reports.</p>
