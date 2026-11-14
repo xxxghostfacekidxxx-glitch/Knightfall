@@ -64,7 +64,7 @@
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
   dock.setAttribute("aria-label","Floating conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Recent conversations</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open conversations" aria-expanded="false" aria-controls="kf-chat-panel"><span aria-hidden="true">💬</span><b id="kf-chat-unread" hidden></b></button>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Recent conversations</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open conversations" aria-expanded="false" aria-controls="kf-chat-panel"><span aria-hidden="true">💬</span><b id="kf-chat-unread" hidden></b></button>';
   document.body.append(dock);
   function syncBubbleViewport(){
     const viewport=window.visualViewport,layoutHeight=window.innerHeight;
@@ -81,6 +81,116 @@
   window.visualViewport?.addEventListener("scroll",syncBubbleViewport,{passive:true});
   const $=selector=>dock.querySelector(selector);
   const panel=$("#kf-chat-panel"),recent=$("#kf-chat-list"),thread=$("#kf-chat-thread"),composer=$("#kf-chat-compose"),input=$("#kf-chat-input"),status=$("#kf-chat-status");
+
+  // Movable and resizable messenger, with per-account placement persistence.
+  const layoutKey="kf-chat-layout-"+userId;
+  const clamp=(n,a,b)=>Math.max(a,Math.min(n,b));
+  let customPosition=null;
+  function bounds(){
+    const v=window.visualViewport,l=v?.offsetLeft||0,t=v?.offsetTop||0;
+    return {left:l,top:t,right:l+(v?.width||innerWidth),bottom:t+(v?.height||innerHeight)};
+  }
+  function setSize(w,h){
+    const b=bounds(),maxW=Math.max(160,b.right-b.left-16),maxH=Math.max(130,b.bottom-b.top-95);
+    panel.style.width=clamp(w,Math.min(260,maxW),maxW)+"px";
+    panel.style.height=clamp(h,Math.min(180,maxH),maxH)+"px";
+  }
+  function placeDock(x,y){
+    const b=bounds();
+    dock.classList.add("kf-chat-positioned");
+    dock.style.setProperty("--kf-chat-left",x+"px");
+    dock.style.setProperty("--kf-chat-top",y+"px");
+    const r=dock.getBoundingClientRect();
+    x=clamp(x,b.left+6,Math.max(b.left+6,b.right-r.width-6));
+    y=clamp(y,b.top+6,Math.max(b.top+6,b.bottom-r.height-6));
+    dock.style.setProperty("--kf-chat-left",x+"px");
+    dock.style.setProperty("--kf-chat-top",y+"px");
+    customPosition={x,y};
+  }
+  function saveLayout(){
+    const r=panel.getBoundingClientRect();
+    try{localStorage.setItem(layoutKey,JSON.stringify({
+      x:customPosition?.x??null,y:customPosition?.y??null,width:Math.round(r.width),height:Math.round(r.height)
+    }));}catch{}
+  }
+  function fitDock(){
+    if(panel.style.width||panel.style.height){
+      const r=panel.getBoundingClientRect();setSize(r.width,r.height);
+    }
+    if(customPosition)placeDock(customPosition.x,customPosition.y);
+  }
+  function draggable(handle,ignoreControls=false){
+    let drag=null,blockClickUntil=0;
+    handle.addEventListener("pointerdown",e=>{
+      if(e.button!==0||e.isPrimary===false||
+         (ignoreControls&&e.target.closest("button,a,input,textarea,select")))return;
+      const r=dock.getBoundingClientRect();
+      drag={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top,moved:false};
+      handle.setPointerCapture?.(e.pointerId);
+    });
+    handle.addEventListener("pointermove",e=>{
+      if(!drag||drag.id!==e.pointerId)return;
+      const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+      if(!drag.moved&&Math.hypot(dx,dy)<7)return;
+      drag.moved=true;e.preventDefault();
+      placeDock(drag.left+dx,drag.top+dy);
+    });
+    const end=e=>{
+      if(!drag||drag.id!==e.pointerId)return;
+      if(drag.moved){blockClickUntil=Date.now()+300;saveLayout();}
+      drag=null;
+    };
+    handle.addEventListener("pointerup",end);
+    handle.addEventListener("pointercancel",end);
+    handle.addEventListener("click",e=>{
+      if(Date.now()<blockClickUntil){e.preventDefault();e.stopImmediatePropagation();}
+    },true);
+  }
+  try{
+    const saved=JSON.parse(localStorage.getItem(layoutKey)||"null");
+    if(saved&&Number.isFinite(saved.width)&&Number.isFinite(saved.height))
+      setSize(saved.width,saved.height);
+    if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y))
+      placeDock(saved.x,saved.y);
+  }catch{}
+  window.addEventListener("resize",fitDock,{passive:true});
+  window.visualViewport?.addEventListener("resize",fitDock,{passive:true});
+  window.visualViewport?.addEventListener("scroll",fitDock,{passive:true});
+  const grip=$("#kf-chat-resize");
+  let sizing=null;
+  grip.addEventListener("pointerdown",e=>{
+    if(e.button!==0||e.isPrimary===false)return;
+    const r=panel.getBoundingClientRect(),d=dock.getBoundingClientRect();
+    placeDock(d.left,d.top);
+    sizing={id:e.pointerId,x:e.clientX,y:e.clientY,w:r.width,h:r.height};
+    grip.setPointerCapture?.(e.pointerId);e.preventDefault();
+  });
+  grip.addEventListener("pointermove",e=>{
+    if(!sizing||sizing.id!==e.pointerId)return;
+    setSize(sizing.w-(e.clientX-sizing.x),sizing.h+(e.clientY-sizing.y));
+    if(customPosition)placeDock(customPosition.x,customPosition.y);
+    e.preventDefault();
+  });
+  const endSize=e=>{if(sizing&&sizing.id===e.pointerId){sizing=null;saveLayout();}};
+  grip.addEventListener("pointerup",endSize);
+  grip.addEventListener("pointercancel",endSize);
+  grip.addEventListener("keydown",e=>{
+    if(!/^Arrow(Left|Right|Up|Down)$/.test(e.key))return;
+    e.preventDefault();const r=panel.getBoundingClientRect(),step=e.shiftKey?40:16;
+    setSize(r.width+(e.key==="ArrowLeft"?step:e.key==="ArrowRight"?-step:0),
+      r.height+(e.key==="ArrowDown"?step:e.key==="ArrowUp"?-step:0));
+    fitDock();saveLayout();
+  });
+  draggable($("#kf-chat-launcher"));
+  draggable($("#kf-chat-move"));
+  draggable($("#kf-chat-panel .kf-chat-panel-header"),true);
+  $("#kf-chat-move").addEventListener("keydown",e=>{
+    if(!/^Arrow(Left|Right|Up|Down)$/.test(e.key))return;
+    e.preventDefault();const r=dock.getBoundingClientRect(),step=e.shiftKey?40:16;
+    placeDock(r.left+(e.key==="ArrowLeft"?-step:e.key==="ArrowRight"?step:0),
+      r.top+(e.key==="ArrowUp"?-step:e.key==="ArrowDown"?step:0));
+    saveLayout();
+  });
   function announce(message){status.textContent=message||"";}
   function saveHeads(){try{sessionStorage.setItem(storeKey,JSON.stringify(state.heads));}catch{}}
   function getConversation(id){return state.conversations.find(c=>Number(c.id)===id);}
@@ -89,6 +199,7 @@
     state.visible=!!value;
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
+    if(customPosition)requestAnimationFrame(fitDock);
     $("#kf-chat-launcher").setAttribute("aria-expanded",String(state.visible));
     if(opening)window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));
     if(state.visible){
@@ -131,6 +242,7 @@
         const badge=el("span","kf-chat-head-badge",String(Math.min(99,Number(c.unread_count))));
         open.append(badge);
       }
+      draggable(open);
       open.addEventListener("click",()=>{if(state.visible&&state.active===id)setVisible(false);else openConversation(id)});
       const close=el("button","kf-chat-head-close","×");
       close.type="button";close.setAttribute("aria-label","Unpin "+nameOf(c));
