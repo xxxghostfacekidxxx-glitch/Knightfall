@@ -133,6 +133,41 @@
       }
     }catch(error){area.replaceChildren(label('p','Sprite previews unavailable: '+error.message))}
   }
+  async function loadRelicIcons(){
+    const area=document.getElementById('kf-art-relic-gallery');if(!area)return;
+    try{
+      const response=await fetch('/assets/knightfall/manifest.json');
+      if(!response.ok)throw Error('Artwork manifest did not load.');
+      const manifest=await response.json();
+      const sheet=new Image();sheet.decoding='async';
+      sheet.src='/assets/knightfall/relics-and-icons.png';
+      await new Promise((ok,bad)=>{sheet.onload=ok;sheet.onerror=()=>bad(Error('Relic art sheet did not load.'))});
+      area.replaceChildren();
+      for(const relic of manifest.relics||[]){
+        const r=relic.atlasRect;
+        if(!r||r.width<=0||r.height<=0||r.x<0||r.y<0||
+          r.x+r.width>sheet.naturalWidth||r.y+r.height>sheet.naturalHeight)continue;
+        const card=document.createElement('article');
+        card.className='kf-art-sprite-card kf-relic-card';card.setAttribute('role','listitem');
+        const preview=document.createElement('canvas');preview.width=144;preview.height=144;
+        preview.setAttribute('aria-label',relic.name+' image preview');
+        const ctx=preview.getContext('2d');if(!ctx)continue;
+        ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+        const scale=Math.min(128/r.width,128/r.height),w=r.width*scale,h=r.height*scale;
+        ctx.drawImage(sheet,r.x,r.y,r.width,r.height,(144-w)/2,(144-h)/2,w,h);
+        const exportButton=button('Export PNG',()=>{
+          const pad=8,output=document.createElement('canvas');output.width=r.width+pad*2;output.height=r.height+pad*2;
+          const out=output.getContext('2d');if(!out)return report('Canvas export is unavailable.');
+          out.clearRect(0,0,output.width,output.height);
+          out.drawImage(sheet,r.x,r.y,r.width,r.height,pad,pad,r.width,r.height);
+          output.toBlob(blob=>blob?download(blob,relic.id+'.png'):report('Relic export failed.'),'image/png');
+        },'kf-relic-export');
+        card.append(preview,label('strong',relic.name),label('small',relic.category),exportButton);
+        area.append(card);
+      }
+      if(!area.children.length)area.append(label('p','No relic icon crops are available yet.'));
+    }catch(error){area.replaceChildren(label('p','Relic previews unavailable: '+error.message))}
+  }
   async function addFiles(list){
     const files=Array.from(list||[]).slice(0,12);
     if(!files.length)return;
@@ -201,7 +236,7 @@
     const statusText=document.getElementById('status')?.textContent||'';
     if(statusText.includes('Signed in as @')){
       const isAdmin=!document.getElementById('release-simulator') ? false : true;
-      root.dataset.canPublish=String(isAdmin);void Promise.all([loadPublished(),loadReview(),loadArtSprites()]);
+      root.dataset.canPublish=String(isAdmin);void Promise.all([loadPublished(),loadReview(),loadArtSprites(),loadRelicIcons()]);
       if(!isAdmin)report('Digital Creator workspace: submit images for administrator review or save PNG copies.');
     }
   };
