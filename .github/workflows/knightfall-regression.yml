@@ -59,6 +59,7 @@ jobs:
         run: |
           node --test scripts/public-legal-and-shop-theme.test.mjs
           node --test scripts/password-reset-security.test.mjs
+          node --test scripts/message-native-limit.test.mjs
           node --test scripts/digital-creator-access.test.mjs
           node --test scripts/chat-notification-routing.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs scripts/messaging-quality.test.mjs
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
