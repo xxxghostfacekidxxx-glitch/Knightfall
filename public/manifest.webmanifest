@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Ash-Fall | Beautifully Unhinged",
-  "short_name": "Ash-Fall",
-  "description": "A beautifully unhinged community for outsiders, creators, dark humor, strange ideas, and Miss Chaos. From chaos, I make my way.",
+  "name": "Knightfall | From Ruin, We Endure",
+  "short_name": "Knightfall",
+  "description": "The Knightfall community, Chaos Cartridge arcade, Creator Foundry, and Miss Chaos.",
   "lang": "en-US",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -12,8 +12,8 @@
     "minimal-ui"
   ],
   "orientation": "any",
-  "background_color": "#080808",
-  "theme_color": "#080808",
+  "background_color": "#100c17",
+  "theme_color": "#17101f",
   "categories": [
     "social",
     "lifestyle",
@@ -26,9 +26,9 @@
       "url": "/?source=app-shortcut#ecosystem",
       "icons": [
         {
-          "src": "/icons/chaos-cartridge-maskable.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -38,9 +38,9 @@
       "url": "/chaos-cartridge.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/chaos-cartridge-maskable.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -50,9 +50,9 @@
       "url": "/messages.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/chaos-cartridge-maskable.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -62,24 +62,30 @@
       "url": "/miss-chaos.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/chaos-cartridge-maskable.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
   ],
   "icons": [
     {
-      "src": "/icons/chaos-cartridge.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/knightfall-crest-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/chaos-cartridge-maskable.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icons/knightfall-crest-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
