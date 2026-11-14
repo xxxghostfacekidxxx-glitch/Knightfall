@@ -29,6 +29,13 @@
       "id": "dd5b7be732cc4a4585aed60a9980b0b3"
     }
   ],
+  "ratelimits": [
+    {
+      "name": "MESSAGE_RATE_LIMITER",
+      "namespace_id": "65017",
+      "simple": {"limit": 60, "period": 60}
+    }
+  ],
   "ai": {
     "binding": "AI"
   },
