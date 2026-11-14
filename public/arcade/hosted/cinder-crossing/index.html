@@ -33,7 +33,8 @@ const lanes=[{row:1,speed:105,color:'#ff5c8a',width:1.45},{row:2,speed:-145,colo
 let player={col:5,row:8};
  // Character visuals only: movement, scoring and hitboxes are unchanged.
  const runnerChoices=new Set(['bone-raccoon','cursed-cat','spectral-wolf','grave-raven','orb']);
- let premiumArt=null,runner='bone-raccoon';
+ let premiumArt=null,runner='bone-raccoon',lastRunnerStep=-10;
+ const prefersReducedArt=!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
  try{const saved=localStorage.getItem('kf-cinder-runner-v1');if(runnerChoices.has(saved))runner=saved;}catch{}
  $('runner-art').value=runner;
  $('runner-art').addEventListener('change',()=>{
@@ -55,7 +56,10 @@ function draw(){
  ctx.save();ctx.strokeStyle='#b8ff457e';ctx.lineWidth=2;
  ctx.beginPath();ctx.arc(px,py,22+2*Math.sin(elapsed*7),0,Math.PI*2);ctx.stroke();
  const hasPremium=runner!=='orb'&&premiumArt?.has(runner)&&
-   premiumArt.draw(ctx,runner,px-26,py-18,52,36,{alpha:1});
+   premiumArt.drawMotion(ctx,runner,px-26,py-18,52,36,{
+     time:elapsed,state:active&&elapsed-lastRunnerStep<.32?'run':'idle',
+     reducedMotion:prefersReducedArt
+   });
  if(!hasPremium){
    ctx.shadowColor='#a8ff48';ctx.shadowBlur=18;ctx.fillStyle='#a8ff48';
    ctx.beginPath();ctx.arc(px,py,17,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
@@ -72,8 +76,8 @@ function finish(won=false){active=false;paused=false;cancelAnimationFrame(raf);$
 function collision(){const left=player.col*C+12,right=player.col*C+48;for(const car of cars){if(car.row!==player.row)continue;for(const x of [car.x,car.x-W,car.x+W])if(right>x+5&&left<x+car.w-5)return true}return false}
 function queueFrame(){const token=generation;raf=requestAnimationFrame(now=>tick(now,token))}
 function tick(now,token){if(!active||paused||token!==generation)return;const dt=Math.min(.04,(now-last)/1000||0);fx?.step(dt);last=now;elapsed+=dt;moveCooldown=Math.max(0,moveCooldown-dt);const acceleration=challenge==="escape"?Math.min(2,1+elapsed/90):1;for(const car of cars){car.x+=car.speed*dt*acceleration;if(car.speed>0&&car.x>W+car.w)car.x=-car.w;if(car.speed<0&&car.x<-car.w)car.x=W+car.w}if(collision()){fx?.impact(player.col*C+30,player.row*C+30,'#ff38ce',1.5);lives--;resetPlayer();updateHud();if(lives<=0){draw();finish(false);return}}draw();queueFrame()}
-function move(dir){if(!active||paused||moveCooldown>0)return;if(challenge==="escape")moveCooldown=.12;if(dir==='up')player.row=Math.max(0,player.row-1);if(dir==='down')player.row=Math.min(8,player.row+1);if(dir==='left')player.col=Math.max(0,player.col-1);if(dir==='right')player.col=Math.min(COLS-1,player.col+1);if(player.row===0){fx?.impact(player.col*C+30,player.row*C+30,'#b8ff45',2);crossings++;score=Math.min(1000,crossings*100);best=Math.max(best,score);try{localStorage.setItem(BEST_KEY,String(best))}catch{}if(crossings>=targetCrossings){updateHud();draw();finish(true);return}resetPlayer()}if(collision()){fx?.impact(player.col*C+30,player.row*C+30,'#ff38ce',1.5);lives--;resetPlayer();if(lives<=0){updateHud();draw();finish(false);return}}updateHud();draw()}
-function start(){fx?.reset();generation++;cancelAnimationFrame(raf);challenge=$("challenge").value;targetCrossings=challenge==="escape"?6:10;elapsed=0;moveCooldown=0;active=true;paused=false;score=0;crossings=0;lives=challenge==="escape"?1:3;runRecorded=false;resetPlayer();resetCars();last=performance.now();$('overlay').hidden=true;$('pause').disabled=false;$('pause').textContent='Ⅱ Pause';updateHud();draw();queueFrame()}
+function move(dir){if(!active||paused||moveCooldown>0)return;lastRunnerStep=elapsed;if(challenge==="escape")moveCooldown=.12;if(dir==='up')player.row=Math.max(0,player.row-1);if(dir==='down')player.row=Math.min(8,player.row+1);if(dir==='left')player.col=Math.max(0,player.col-1);if(dir==='right')player.col=Math.min(COLS-1,player.col+1);if(player.row===0){fx?.impact(player.col*C+30,player.row*C+30,'#b8ff45',2);crossings++;score=Math.min(1000,crossings*100);best=Math.max(best,score);try{localStorage.setItem(BEST_KEY,String(best))}catch{}if(crossings>=targetCrossings){updateHud();draw();finish(true);return}resetPlayer()}if(collision()){fx?.impact(player.col*C+30,player.row*C+30,'#ff38ce',1.5);lives--;resetPlayer();if(lives<=0){updateHud();draw();finish(false);return}}updateHud();draw()}
+function start(){fx?.reset();lastRunnerStep=-10;generation++;cancelAnimationFrame(raf);challenge=$("challenge").value;targetCrossings=challenge==="escape"?6:10;elapsed=0;moveCooldown=0;active=true;paused=false;score=0;crossings=0;lives=challenge==="escape"?1:3;runRecorded=false;resetPlayer();resetCars();last=performance.now();$('overlay').hidden=true;$('pause').disabled=false;$('pause').textContent='Ⅱ Pause';updateHud();draw();queueFrame()}
 document.addEventListener('keydown',e=>{const map={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};const dir=map[e.key];if(dir){e.preventDefault();move(dir)}});
 document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.dir)));
 canvas.addEventListener('pointerdown',e=>{pointerStart={x:e.clientX,y:e.clientY}});
