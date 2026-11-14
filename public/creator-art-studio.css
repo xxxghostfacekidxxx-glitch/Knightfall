@@ -46,3 +46,9 @@
 .kf-art-sprite-card small{font-size:.65rem;color:#bba5bc;text-transform:capitalize}
 .kf-art-item .kf-art-submit{border-color:#b18d6f;color:#f9d6a6;background:#30202f}
 .kf-art-uploader :is(.kf-art-staged,#kf-art-review) p{color:#cbb8c9;font-size:.84rem}
+
+/* Production crop library: icon previews do not inherit pixelated scaling. */
+.kf-relic-card canvas{width:100%;max-width:144px;aspect-ratio:1;background:radial-gradient(circle,#292735,#11121a 76%);image-rendering:auto;border-radius:9px}
+.kf-art-sprite-card .kf-relic-export{margin-top:auto;min-height:40px;width:100%;padding:.5rem .6rem;border:1px solid #bc9477;border-radius:9px;background:linear-gradient(145deg,#403044,#24202e);color:#f9e8d3;font:800 .72rem system-ui,sans-serif;cursor:pointer}
+.kf-art-sprite-card .kf-relic-export:hover,.kf-art-sprite-card .kf-relic-export:focus-visible{border-color:#ebd2ae;outline-offset:2px}
+.kf-relic-gallery{grid-template-columns:repeat(auto-fill,minmax(min(100%,146px),1fr))}
