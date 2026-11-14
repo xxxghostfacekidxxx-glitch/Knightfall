@@ -2,7 +2,7 @@
  * Does not modify existing game sprites. To use: import {loadKnightfallArt} from '/knightfall-art-runtime.js';
  * const art=await loadKnightfallArt(); art.draw(ctx,'bone-raccoon',x,y,w,h);
  */
-const MANIFEST='/assets/knightfall/manifest.json';
+const MANIFEST='/assets/knightfall/manifest.json?v=20261114-relics2';
 let loader=null;
 function imageReady(src){
  return new Promise((resolve,reject)=>{
