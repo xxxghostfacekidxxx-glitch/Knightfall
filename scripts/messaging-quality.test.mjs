@@ -65,8 +65,8 @@ test("floating chats retain per-conversation drafts and do not overwrite newer e
   assert.match(bubbles,/const draftKey="kf-chat-drafts-"\+userId/);
   assert.match(bubbles,/if\(state\.active\)rememberDraft\(state\.active,input\.value\)/);
   assert.match(bubbles,/if\(state\.active===id&&input\.value===original\)/);
-  assert.match(bubbles,/let sent=false/);
-  assert.match(bubbles,/Message sent, but chat refresh failed/);
+  assert.match(bubbles,/messageSendQueues\.set\(id,queued\)/);
+  assert.match(bubbles,/Message not sent:/);
   assert.match(bubbles,/if\(state\.active===id\)/);
   assert.match(bubbles,/textContent=text/);
 });

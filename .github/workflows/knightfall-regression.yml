@@ -61,7 +61,7 @@ jobs:
           node --test scripts/digital-creator-access.test.mjs
           node --test scripts/chat-notification-routing.test.mjs scripts/mobile-message-notification.test.mjs scripts/push-navigation.test.mjs scripts/messaging-quality.test.mjs
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
-          node --test scripts/messaging-refresh-performance.test.mjs scripts/messaging-mobile-invites.test.mjs
+          node --test scripts/messaging-refresh-performance.test.mjs scripts/messaging-mobile-invites.test.mjs scripts/messaging-repeat-send.test.mjs
           node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs
           node --test scripts/privacy-assistance.test.mjs
           node --test scripts/bot-creator-access.test.mjs

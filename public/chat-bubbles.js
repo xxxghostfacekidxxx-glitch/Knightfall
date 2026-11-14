@@ -24,6 +24,7 @@
     try{sessionStorage.setItem(draftKey,JSON.stringify([...drafts.entries()].slice(-20)));}catch{}
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
+  const messageSendQueues=new Map();
   const validId=value=>Number.isSafeInteger(Number(value))&&Number(value)>0?Number(value):null;
   const nameOf=c=>c?.kind==="group"?(c.group_name||"Group chat"):(c?.other_display_name||c?.other_username||"Conversation");
   const initialOf=c=>(nameOf(c).trim().charAt(0)||"✦").toUpperCase();
@@ -176,7 +177,7 @@
     if(!selected){renderRecent();return;}
     const blocked=!!Number(selected.messaging_blocked);
     input.disabled=blocked;
-    $("#kf-chat-send").disabled=blocked||state.sending;
+    $("#kf-chat-send").disabled=blocked;
     if(blocked)announce("Messaging is unavailable in this conversation.");
   }
   function renderMessages(messages,conversationId){
@@ -228,7 +229,12 @@
     state.loading=true;
     try{
       const data=await api("/api/messages/conversations");
+      // A temporarily truncated inbox list must not kick the user out of an
+      // already open conversation after sending its first message.
+      const selected=getConversation(state.active);
       state.conversations=data.conversations||[];
+      if(selected&&!state.conversations.some(c=>Number(c.id)===Number(selected.id)))
+        state.conversations.push(selected);
       lastListRefresh=Date.now();
       updateUnreadBadge();
       const valid=new Set(state.conversations.map(c=>Number(c.id)));
@@ -247,30 +253,51 @@
   composer.addEventListener("submit",async event=>{
     event.preventDefault();
     const id=state.active,original=input.value,body=original.trim();
-    if(!id||!body||state.sending)return;
-    state.sending=true;$("#kf-chat-send").disabled=true;announce("Sending…");
-    let sent=false;
-    try{
-      await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
-      sent=true;
-      if(drafts.get(id)===original)rememberDraft(id,"");
-      if(state.active===id&&input.value===original){input.value="";rememberDraft(id,"");}
-      announce("Message sent.");
-    }catch(error){announce(error.message+" Your unsent reply has been kept.");}
-    finally{
-      // Never hold the Send button hostage during the optional inbox refresh.
-      state.sending=false;
-      $("#kf-chat-send").disabled=!!Number(getConversation(state.active)?.messaging_blocked);
-      if(state.active===id&&state.visible&&!document.hidden)input.focus({preventScroll:true});
+    if(!id||!body||Number(getConversation(id)?.messaging_blocked))return;
+    // Accept consecutive sends immediately; the network can finish each in
+    // order without locking the textarea or making the member reopen the chat.
+    if(state.active===id&&input.value===original){
+      input.value="";rememberDraft(id,"");
     }
-    if(sent){
-      void (async()=>{
-        try{
-          if(state.active===id)await refreshThread();
-          await refreshConversations({force:true});
-        }catch(error){announce("Message sent, but chat refresh failed. New messages still work.");console.warn("floating_chat_post_send_refresh_failed",String(error));}
-      })();
-    }
+    announce("Sending message…");
+    const previous=messageSendQueues.get(id)||Promise.resolve();
+    const queued=previous.catch(()=>{}).then(async()=>{
+      state.sending=true;
+      try{
+        await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
+        announce("Message sent.");
+        void (async()=>{
+          try{
+            if(state.active===id)await refreshThread();
+            await refreshConversations({force:true});
+          }catch(error){
+            console.warn("floating_chat_post_send_refresh_failed",String(error));
+          }
+        })();
+      }catch(error){
+        const old=drafts.get(id)||"";
+        if(state.active===id){
+          input.value=input.value?original+"\n"+input.value:original;
+          rememberDraft(id,input.value);
+          input.focus({preventScroll:true});
+        }else rememberDraft(id,old?original+"\n"+old:original);
+        announce("Message not sent: "+error.message+" Draft restored.");
+      }finally{
+        state.sending=false;
+        if(state.active===id&&state.visible){
+          // Network refreshes may update conversation metadata, never close a
+          // live chat or leave its composer disabled.
+          renderPanel();
+          composer.hidden=false;
+          input.disabled=!!Number(getConversation(id)?.messaging_blocked);
+          $("#kf-chat-send").disabled=!!Number(getConversation(id)?.messaging_blocked);
+        }
+      }
+    });
+    messageSendQueues.set(id,queued);
+    void queued.finally(()=>{if(messageSendQueues.get(id)===queued)messageSendQueues.delete(id);});
+    if(state.active===id&&state.visible&&!document.hidden)input.focus({preventScroll:true});
+    return queued;
   });
   input.addEventListener("keydown",event=>{
     if(event.key==="Enter"&&!event.shiftKey&&!event.isComposing){

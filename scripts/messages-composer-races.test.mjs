@@ -5,9 +5,9 @@ import {readFileSync} from 'node:fs';
 const html=readFileSync('public/messages.html','utf8');
 function deferred(){let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b});return {promise,resolve,reject}}
 function harness(){
- const nodes=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){}});return nodes.get(s)};
+ const nodes=new Map();const $=s=>{if(!nodes.has(s))nodes.set(s,{value:'',style:{},addEventListener(type,fn){this[type]=fn},focus(){},dispatchEvent(){},hidden:false,disabled:false});return nodes.get(s)};
  const request=deferred(),posts=[],deleted=[];
- const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),conversationDrafts:new Map(),persistConversationDrafts:()=>{},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,
+ const c={$ ,currentId:1,historyPinnedConversationId:null,composerEpoch:1,sendingConversation:null,sendingAttachmentIds:new Set(),messageSendQueues:new Map(),conversationDrafts:new Map(),persistConversationDrafts:()=>{},rememberConversationDraft(id,value){if(value)this.conversationDrafts.set(id,value);else this.conversationDrafts.delete(id);},pendingAttachments:[],attachmentUploads:0,typingHandle:null,clearTimeout,Set,Number,JSON,Event,document:{hidden:false},console,
  activeConversation:()=>({}),status(){},drawPendingAttachments(){},sendTypingState:async()=>{},loadConversations:async()=>{},refreshCurrent:async()=>{},
  api:async(path,opts)=>{posts.push({path,opts});return request.promise},uploadAttachment:async()=>request.promise,deletePendingAttachment:async id=>deleted.push(id)};
  vm.createContext(c);vm.runInContext(html.slice(html.indexOf('$("#composer").onsubmit='),html.indexOf('\nfunction drawPendingAttachments')),c);
@@ -15,9 +15,9 @@ function harness(){
  return {c,$,request,posts,deleted};
 }
 test('late send keeps another conversation draft and attachments intact',async()=>{
- const h=harness();h.$('#body').value='first draft';h.c.pendingAttachments=[{id:5}];
+ const h=harness();h.$('#body').value='first draft';h.c.conversationDrafts.set(1,'first draft');h.c.pendingAttachments=[{id:5}];
  const send=h.$('#composer').onsubmit({preventDefault(){}});await Promise.resolve();
- h.c.conversationDrafts.set(1,'first draft');h.c.currentId=2;h.$('#body').value='second draft';h.c.pendingAttachments=[{id:6}];
+ h.c.currentId=2;h.$('#body').value='second draft';h.c.pendingAttachments=[{id:6}];
  h.request.resolve({});await send;
  assert.equal(h.$('#body').value,'second draft');assert.equal(h.c.pendingAttachments[0].id,6);assert.equal(h.c.conversationDrafts.has(1),false);assert.equal(h.posts.length,1);assert.match(h.posts[0].path,/\/1$/);
 });

@@ -434,7 +434,7 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261113-messaging4";
+            bubbles.src="/chat-bubbles.js?v=20261113-repeat-send5";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             document.body.append(bubbles);

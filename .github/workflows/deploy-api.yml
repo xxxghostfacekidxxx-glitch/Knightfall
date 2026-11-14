@@ -81,7 +81,7 @@ jobs:
       - name: Validate authenticated realtime messaging and member-only history search
         run: |
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
-          node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs
+          node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs scripts/messaging-repeat-send.test.mjs
           node --check backend/src/messaging-live.js
           node --check backend/src/message-search.js
           node --check backend/src/message-conversation-summary.js

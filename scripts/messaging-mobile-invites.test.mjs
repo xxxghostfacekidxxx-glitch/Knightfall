@@ -30,15 +30,18 @@ test("avatars only accept image URLs and render a fallback",()=>{
  assert.match(bubbles,/avatar\.append\(avatarContent\(c\)\)/);
  assert.match(bubbleCss,/\.kf-chat-photo-img/);
 });
-test("send locks release before any optional history refresh",()=>{
+test("consecutive sends queue immediately without locking either composer",()=>{
  const send=inline.slice(inline.indexOf('$("#composer").onsubmit='),inline.indexOf("\nfunction drawPendingAttachments"));
- const unlock=send.indexOf("sendingConversation=null;");
- const refresh=send.indexOf("await loadConversations({openSelected:false})");
- assert.ok(unlock>0&&refresh>unlock,"release send lock before refreshing inbox");
+ assert.match(send,/messageSendQueues.get\(conversationId\)/);
+ assert.match(send,/messageSendQueues.set\(conversationId,queued\)/);
+ assert.match(send,/if\(field.value===draft\)/);
  assert.match(send,/void sendTypingState\(false,conversationId\)/);
- assert.match(send,/if\(field\.value===draft\)/);
+ assert.doesNotMatch(send,/if\(!currentId\|\|sendingConversation!==null/);
  const bubbleSend=bubbles.slice(bubbles.indexOf('composer.addEventListener("submit"'),bubbles.indexOf('input.addEventListener("keydown"'));
- assert.ok(bubbleSend.indexOf("state.sending=false")<bubbleSend.indexOf("await refreshThread()"));
+ assert.match(bubbleSend,/messageSendQueues.get\(id\)/);
+ assert.match(bubbleSend,/messageSendQueues.set\(id,queued\)/);
+ assert.match(bubbleSend,/input.value="";rememberDraft\(id,""\)/);
+ assert.doesNotMatch(bubbleSend,/state.sending\)return/);
 });
 test("incoming game invitations route to existing matches, not new-game setup",()=>{
  assert.match(inline,/match\.can_accept&&Number\(match\.seats\?\.\[0\]\?\.id\)/);
