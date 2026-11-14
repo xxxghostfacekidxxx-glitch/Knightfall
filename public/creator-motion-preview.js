@@ -74,6 +74,64 @@ if(root){
       note('Transparent pose PNG exported. Animated motion still requires the site renderer.');
     },'image/png');
   });
+  // A transparent 8-frame pose strip can be imported by engines that use PNG atlases.
+  // Frames are procedural transforms of still art, not new hand-drawn animation cels.
+  const sheetButton=$('kf-pose-sheet'),jsonButton=$('kf-pose-json');
+  function sheetSpec(){
+    if(!art)return null;
+    const def=art.list().find(x=>x.id===sprite.value);if(!def)return null;
+    const frameW=200,frameH=260,count=8;
+    const frequency={idle:2.5,walk:9,run:13,jump:2.5,attack:11,hurt:2.5}[state.value]||2.5;
+    const durationMs=Math.round((Math.PI*2/frequency)*1000/count);
+    const name='knightfall-'+def.id+'-'+state.value;
+    return {def,frameW,frameH,count,frequency,durationMs,name};
+  }
+  function downloadFile(blob,name){
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1800);
+  }
+  sheetButton.addEventListener('click',()=>{
+    const cfg=sheetSpec();if(!cfg)return note('No character is loaded yet.');
+    const sheet=document.createElement('canvas');sheet.width=cfg.frameW*cfg.count;sheet.height=cfg.frameH;
+    const context=sheet.getContext('2d');if(!context)return note('Canvas sprite export is unavailable.');
+    context.clearRect(0,0,sheet.width,sheet.height);
+    const {width,height}=cfg.def.atlasRect;
+    const scale=Math.min(170/width,218/height),w=width*scale,h=height*scale;
+    for(let i=0;i<cfg.count;i++){
+      const time=(i/cfg.count)*Math.PI*2/cfg.frequency;
+      art.drawMotion(context,cfg.def.id,i*cfg.frameW+(cfg.frameW-w)/2,cfg.frameH-14-h,w,h,{
+        time,state:state.value,flipX:flip.checked,reducedMotion:false
+      });
+    }
+    sheet.toBlob(blob=>{
+      if(!blob)return note('Could not create the sprite strip PNG.');
+      downloadFile(blob,cfg.name+'-8frames.png');
+      note('Exported 8-frame PNG sprite strip. Export Frame JSON for timing and coordinates.');
+    },'image/png');
+  });
+  jsonButton.addEventListener('click',()=>{
+    const cfg=sheetSpec();if(!cfg)return note('No character is loaded yet.');
+    const frames=Array.from({length:cfg.count},(_,i)=>({
+      filename:cfg.name+'-'+String(i+1).padStart(2,'0'),
+      frame:{x:i*cfg.frameW,y:0,w:cfg.frameW,h:cfg.frameH},
+      rotated:false,trimmed:false,
+      duration:cfg.durationMs
+    }));
+    const payload={
+      frames,
+      meta:{
+        app:'Knightfall Creator Foundry',version:'1',
+        image:cfg.name+'-8frames.png',size:{w:cfg.frameW*cfg.count,h:cfg.frameH},
+        format:'RGBA8888',scale:'1',
+        originalArt:'Knightfall character concept; frames are pose transforms of a static illustration',
+        character:cfg.def.id,motion:state.value,flipX:flip.checked,
+        loopDurationMs:cfg.durationMs*cfg.count
+      }
+    };
+    downloadFile(new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json'}),cfg.name+'-8frames.json');
+    note('Frame JSON exported with coordinates and '+cfg.durationMs+' ms frame timing.');
+  });
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else if(playing)request();else render()});
   window.addEventListener('pagehide',()=>{stop();observer.disconnect()},{once:true});
   void (async()=>{
