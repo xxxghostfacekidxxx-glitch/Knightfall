@@ -63,6 +63,7 @@ jobs:
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
           node --test scripts/messaging-refresh-performance.test.mjs scripts/messaging-mobile-invites.test.mjs scripts/messaging-repeat-send.test.mjs
           node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs
+          node --test backend/src/date-journal.test.mjs
           node --test scripts/privacy-assistance.test.mjs
           node --test scripts/bot-creator-access.test.mjs
           node --test scripts/arcade-nextgen-visual.test.mjs
