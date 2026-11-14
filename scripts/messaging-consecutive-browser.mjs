@@ -1,5 +1,7 @@
 import {chromium} from "playwright";
 import assert from "node:assert/strict";
+import {stat} from "node:fs/promises";
+import {resolve} from "node:path";
 
 const BASE=process.env.KNIGHTFALL_BROWSER_BASE||"http://127.0.0.1:8765";
 const deferred=()=>{
@@ -11,12 +13,21 @@ const withTimeout=(promise,label)=>Promise.race([
 ]);
 const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
 const failures=[];
+const PUBLIC_DIR=resolve("public");
 async function exercise(name,viewport,mode){
  const context=await browser.newContext({viewport,serviceWorkers:"block"});
  const page=await context.newPage(),errors=[];
  page.on("pageerror",error=>errors.push(error.message));
  const firstStarted=deferred(),firstRelease=deferred(),secondStarted=deferred();
  const posts=[],messages=[];
+ // Account-only chat heads are intentionally disabled on localhost. Serve
+ // the same local assets through the production origin for a truthful UI test.
+ await page.route("https://ash-fall.com/**",async route=>{
+  const url=new URL(route.request().url());
+  const requested=resolve(PUBLIC_DIR,"."+url.pathname);
+  const path=(await stat(requested).catch(()=>null))?.isFile()?requested:requested+".html";
+  return route.fulfill({path}).catch(()=>route.fulfill({status:404}));
+ });
  await page.route("https://api.ash-fall.com/**",async route=>{
   const request=route.request(),path=new URL(request.url()).pathname,method=request.method();
   const origin=request.headers().origin||BASE;
@@ -79,7 +90,7 @@ async function exercise(name,viewport,mode){
    assert.equal(await field.isEnabled(),true);
    assert.equal(new URL(page.url()).pathname,"/messages.html");
   }else{
-   await page.goto(BASE+"/privacy.html",{waitUntil:"domcontentloaded"});
+   await page.goto("https://ash-fall.com/privacy.html",{waitUntil:"domcontentloaded"});
    await page.locator("#kf-chat-launcher").waitFor({state:"visible",timeout:15000});
    await page.locator("#kf-chat-launcher").click();
    await page.locator("#kf-chat-list .kf-chat-recent-item").first().waitFor({timeout:10000});
