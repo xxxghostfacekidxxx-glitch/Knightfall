@@ -12,7 +12,8 @@
     "PASSWORD_RESET_FROM": "Ash-Fall <accounts@notify.ash-fall.com>"
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
+    "redact_query_string": true
   },
   "d1_databases": [
     {
