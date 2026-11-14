@@ -1892,7 +1892,7 @@ For complex questions, organize the answer clearly and provide actionable detail
       if(target&&env.RESEND_API_KEY&&env.PASSWORD_RESET_FROM){
         const token=randomToken(32),digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
         await env.SESSIONS.put("password-reset:"+digest,JSON.stringify({user_id:target.id,created_at:Date.now()}),{expirationTtl:1800});
-        const resetUrl="https://ash-fall.com/reset-password.html?token="+encodeURIComponent(token);
+        const resetUrl="https://ash-fall.com/reset-password.html#token="+encodeURIComponent(token);
         const sent=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.PASSWORD_RESET_FROM,to:[target.email],subject:"Reset your Ash-Fall password",text:"A password reset was requested for your Ash-Fall account. This link expires in 30 minutes and can only be used once. If you did not request this, ignore this email.\n\n"+resetUrl,html:"<p>A password reset was requested for your Ash-Fall account.</p><p>This link expires in 30 minutes and can only be used once.</p><p><a href=\""+resetUrl+"\">Reset my password</a></p><p>If you did not request this, ignore this email.</p>"})});
         if(!sent.ok){await env.SESSIONS.delete("password-reset:"+digest);console.error("password_reset_email_delivery_failed",sent.status);}
       } else if(target) console.error("password_reset_email_not_configured");
@@ -1928,7 +1928,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(!(await rateLimit(env,request,"staff-password-reset",10,900,actor.id)))return json({error:"Too many password reset actions. Try again later."},429,origin);
     const token=randomToken(32),digestBytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(token)),digest=[...new Uint8Array(digestBytes)].map(b=>b.toString(16).padStart(2,"0")).join("");
     await env.SESSIONS.put("password-reset:"+digest,JSON.stringify({user_id:target.id,created_at:Date.now()}),{expirationTtl:1800});
-    const resetUrl="https://ash-fall.com/reset-password.html?token="+encodeURIComponent(token);
+    const resetUrl="https://ash-fall.com/reset-password.html#token="+encodeURIComponent(token);
     const sent=await fetch("https://api.resend.com/emails",{method:"POST",headers:{"authorization":"Bearer "+env.RESEND_API_KEY,"content-type":"application/json"},body:JSON.stringify({from:env.PASSWORD_RESET_FROM,to:[target.email],subject:"Ash-Fall account password reset",text:"A moderator or administrator initiated password recovery for your Ash-Fall account. The link expires in 30 minutes and can only be used once. If you did not expect this, contact the site team.\n\n"+resetUrl,html:"<p>A moderator or administrator initiated password recovery for your Ash-Fall account.</p><p>This link expires in 30 minutes and can only be used once.</p><p><a href=\""+resetUrl+"\">Choose a new password</a></p><p>If you did not expect this, contact the site team.</p>"})});
     if(!sent.ok){await env.SESSIONS.delete("password-reset:"+digest);console.error("staff_password_reset_email_failed",sent.status);return json({error:"The reset email could not be sent. Check the email provider configuration."},502,origin);}
     await audit(env,actor,"user.password_reset.initiated","user",target.id,{method:isAdminReset?"admin":"moderator"});
