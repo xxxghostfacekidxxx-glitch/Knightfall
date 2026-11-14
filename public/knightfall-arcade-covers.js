@@ -29,7 +29,8 @@ const PALETTE=Object.freeze({
   moon:['#26324a','#131923','#9daeca'],
   bronze:['#352c25','#17181e','#d4b783']
 });
-function makePortrait(art,card,sprite,theme){
+const BADGES={bone:'star-key',moss:'poison-crystal',ember:'blood-eclipse',plum:'chained-heart',moon:'ashen-crescent',bronze:'grave-chest'};
+function makePortrait(art,card,sprite,theme,relicSheet){
   const canvas=document.createElement('canvas');
   canvas.width=352;canvas.height=148;canvas.className='kf-arcade-cover';
   canvas.setAttribute('aria-hidden','true');
@@ -53,6 +54,15 @@ function makePortrait(art,card,sprite,theme){
   const height=132,width=Math.min(230,height*ratio);
   const x=256-width/2,y=13+(132-height);
   art.draw(ctx,sprite,x,y,width,height);
+  // Relic badges make the second original collection useful across the arcade.
+  const relic=art.manifest.relics?.find(item=>item.id===BADGES[theme]);
+  if(relicSheet?.naturalWidth&&relic?.atlasRect){
+    const r=relic.atlasRect;
+    ctx.save();ctx.fillStyle='#09080eaa';
+    ctx.beginPath();ctx.roundRect(12,24,66,75,13);ctx.fill();
+    ctx.drawImage(relicSheet,r.x,r.y,r.width,r.height,17,28,56,67);
+    ctx.restore();
+  }
   const label=document.createElement('span');label.className='kf-arcade-cover-label';label.textContent='KNIGHTFALL ORIGINAL ART';
   const wrap=document.createElement('div');wrap.className='kf-arcade-cover-frame';
   wrap.append(canvas,label);
@@ -68,9 +78,16 @@ async function init(){
   if(!candidates.length)return;
   try{
     const art=await loadKnightfallArt();
+    const relicSheet=new Image();relicSheet.decoding='async';
+    const relicReady=new Promise(resolve=>{
+      relicSheet.onload=()=>resolve(relicSheet);
+      relicSheet.onerror=()=>resolve(null);
+      relicSheet.src='/assets/knightfall/relics-and-icons.png';
+    });
+    const relic=await relicReady;
     for(const {card,look} of candidates){
       if(!art.has(look[0]))continue;
-      makePortrait(art,card,...look);
+      makePortrait(art,card,...look,relic);
     }
   }catch(error){
     console.warn('Knightfall cabinet cover artwork unavailable; original cards retained.',String(error));
