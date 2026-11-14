@@ -62,3 +62,27 @@ test("mobile chat stays inside the visual viewport with a scrollable transcript"
  assert.match(css,/overflow-y:auto!important/);
  assert.match(bubbleCss,/max-height:max\(170px,calc\(100dvh - 155px\)\)/);
 });
+
+
+test("inbox keeps one adaptive transcript and secondary options in an overflow menu",()=>{
+ assert.match(html,/id="chat-more" class="chat-more"/);
+ assert.match(html,/class="chat-more-panel"/);
+ assert.match(html,/id="mobile-inbox-back"/);
+ assert.match(inline,/chatMore\.open=false/);
+ assert.match(inline,/--messages-chat-height/);
+ assert.match(css,/\.messages-shell \.message-layout\.show-chat \.chat-head\{/);
+ assert.match(css,/grid-template-rows:auto auto auto auto minmax\(0,1fr\) auto auto!important/);
+ assert.match(css,/\.messages-shell \.chat-more-panel/);
+});
+test("floating conversation heads can be moved and chat windows resized",()=>{
+ assert.match(bubbles,/draggable\(\$\("#kf-chat-launcher"\)\)/);
+ assert.match(bubbles,/draggable\(open\)/);
+ assert.match(bubbles,/id="kf-chat-resize"/);
+ assert.match(bubbles,/grip\.addEventListener\("pointermove"/);
+ assert.match(bubbles,/grip\.addEventListener\("keydown"/);
+ assert.match(bubbles,/localStorage\.setItem\(layoutKey/);
+ assert.match(bubbles,/visualViewport\?\.addEventListener\("resize",fitDock/);
+ assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-positioned/);
+ assert.match(bubbleCss,/#kf-chat-heads #kf-chat-resize/);
+ assert.match(bubbleCss,/touch-action:none/);
+});
