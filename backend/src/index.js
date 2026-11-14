@@ -675,12 +675,13 @@ async function handlePublicAssetRequest(request, env, origin, url) {
   if (url.pathname !== "/api/devil-tools/assets") return null;
   const user = await requireUser(request, env);
   if (!user) return json({ error: "Sign in before publishing assets." }, 401, origin);
-  if (!isAdmin(user)) return json({ error: "Administrator access required to publish game assets." }, 403, origin);
+  if (!isAdmin(user) && String(user.public_title || "").trim() !== "Digital Creator") return json({ error: "Creator Foundry access required." }, 403, origin);
   if (request.method === "GET") {
     const rows = await env.DB.prepare("SELECT id,asset_name,content_type,size_bytes,created_at,etag FROM public_asset_releases ORDER BY created_at DESC LIMIT 100").all();
     return json({ assets: (rows.results || []).map(row => ({ ...row, url: "/public-assets/" + row.id, size_bytes: Number(row.size_bytes) })) }, 200, origin);
   }
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, origin, { allow: "GET, POST" });
+  if (!isAdmin(user)) return json({ error: "Administrator approval required to publish game assets." }, 403, origin);
   if (!await rateLimit(env, request, "public-asset-publish", 12, 60, user.id)) return json({ error: "Too many asset releases. Wait a minute and try again." }, 429, origin);
   let form;
   try { form = await request.formData(); } catch { return json({ error: "Upload form could not be read." }, 400, origin); }
