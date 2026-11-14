@@ -6,9 +6,9 @@ const backend = readFileSync(new URL("../backend/src/index.js", import.meta.url)
 const page = readFileSync(new URL("../public/reset-password.html", import.meta.url), "utf8");
 
 test("both password recovery email paths send fragment tokens", () => {
-  const issued=(backend.match(/reset-password\\.html#token=/g)||[]).length;
+  const issued=(backend.match(/reset-password\.html#token=/g)||[]).length;
   assert.equal(issued,2,"normal and staff recovery links must use URL fragments");
-  assert.doesNotMatch(backend,/reset-password\\.html\\?token=/);
+  assert.doesNotMatch(backend,/reset-password\.html\?token=/);
 });
 
 test("password reset document blocks referrer leaks before external resources", () => {
