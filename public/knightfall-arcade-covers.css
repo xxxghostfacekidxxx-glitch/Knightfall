@@ -1,0 +1,7 @@
+/* Premium covers on selected original Knightfall arcade cabinets. */
+#game-shelf .kf-arcade-cover-frame{position:relative;display:block;overflow:hidden;isolation:isolate;width:100%;margin:.55rem 0 .8rem;border:1px solid #71616b;border-radius:12px;background:#171824;box-shadow:0 6px 24px #0007}
+#game-shelf .kf-arcade-cover{display:block;width:100%;height:auto;aspect-ratio:352/148;object-fit:contain;image-rendering:auto}
+#game-shelf .kf-arcade-cover-label{position:absolute;left:10px;bottom:9px;max-width:75%;font:800 .62rem/1.2 system-ui,sans-serif;letter-spacing:.1em;color:#e9d6c8;text-shadow:0 2px 4px #080610}
+#game-shelf .kf-arcade-cover-frame:after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #ffffff12;border-radius:inherit;box-shadow:inset 0 0 35px #07061077}
+#game-shelf .cartridge-cabinet:focus-within .kf-arcade-cover-frame{border-color:#c8b5a1}
+@media(max-width:550px){#game-shelf .kf-arcade-cover-frame{margin:.45rem 0 .65rem}}
