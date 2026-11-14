@@ -429,7 +429,7 @@
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261113-messaging4";
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261113-drag5";
             sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
