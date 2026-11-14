@@ -7,6 +7,7 @@ const html=read("public/messages.html");
 const bubbles=read("public/chat-bubbles.js");
 const backend=read("backend/src/index.js");
 const deferred=()=>{let resolve,reject;const promise=new Promise((ok,no)=>{resolve=ok;reject=no});return {promise,resolve,reject};};
+const flush=async()=>{for(let i=0;i<10;i++)await Promise.resolve();};
 
 function inbox(){
  const nodes=new Map();
@@ -45,9 +46,9 @@ test("full inbox sends twice in the same open chat even when first POST is pendi
  h.$("#body").value="second";
  const two=h.$("#composer").onsubmit(event);
  assert.equal(h.$("#body").value,"","second draft clears without a chat switch");
- await Promise.resolve();
+ await flush();
  assert.equal(h.sent.length,1,"second POST queues behind the first");
- h.requests[0].resolve({id:101});await one;await Promise.resolve();
+ h.requests[0].resolve({id:101});await one;await flush();
  assert.equal(h.sent.length,2,"second POST starts after first accepts");
  assert.equal(h.sent[0].body.body,"first");assert.equal(h.sent[1].body.body,"second");
  h.requests[1].resolve({id:102});await two;
@@ -60,7 +61,7 @@ test("failed first send restores its draft and does not trap the composer",async
  const h=inbox(),event={preventDefault(){}};
  h.$("#body").value="recover me";
  const one=h.$("#composer").onsubmit(event);
- await Promise.resolve();
+ await flush();
  h.requests[0].reject(Error("network"));
  await one;
  assert.equal(h.$("#body").value,"recover me");
@@ -68,7 +69,7 @@ test("failed first send restores its draft and does not trap the composer",async
  assert.equal(h.$("#composer").hidden,false);
  h.$("#body").value="another attempt";
  const two=h.$("#composer").onsubmit(event);
- await Promise.resolve();
+ await flush();
  assert.equal(h.sent.length,2);
  h.requests[1].resolve({id:303});await two;
 });
@@ -100,9 +101,9 @@ test("floating bubble accepts a second message while remaining open",async()=>{
  assert.equal(h.input.value,"");
  h.input.value="second bubble";
  const two=h.composer.submit(event);
- await Promise.resolve();
+ await flush();
  assert.equal(h.sent.length,1);
- h.requests[0].resolve({id:11});await one;await Promise.resolve();
+ h.requests[0].resolve({id:11});await one;await flush();
  assert.equal(h.sent.length,2);
  h.requests[1].resolve({id:12});await two;
  assert.deepEqual(h.sent.map(x=>x.body.body),["first bubble","second bubble"]);

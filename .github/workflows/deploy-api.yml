@@ -12,6 +12,7 @@ on:
       - 'scripts/miss-chaos-memo.test.mjs'
       - 'scripts/message-realtime-client.test.mjs'
       - 'scripts/messaging-history-deeplink.test.mjs'
+      - 'scripts/messaging-repeat-send.test.mjs'
       - 'backend/wrangler.jsonc'
       - 'public/index.html'
       - 'public/arcade/catalog.json'
