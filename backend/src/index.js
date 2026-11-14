@@ -65,7 +65,17 @@ function randomSalt() { return randomToken(16); }
 function hexToBytes(hex) { const bytes = new Uint8Array(hex.length / 2); for (let i = 0; i < bytes.length; i++) bytes[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16); return bytes; }
 async function hashPassword(password, saltHex = randomSalt()) { const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]); const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: hexToBytes(saltHex), iterations: PBKDF2_ITERATIONS, hash: "SHA-256" }, key, 256); return `${PBKDF2_ITERATIONS}:${saltHex}:${[...new Uint8Array(bits)].map((b) => b.toString(16).padStart(2, "0")).join("")}`; }
 async function verifyPassword(password, stored) { const [iterations, salt, expected] = String(stored || "").split(":"); if (!iterations || !salt || !expected || Number(iterations) !== PBKDF2_ITERATIONS) return false; const actual = (await hashPassword(password, salt)).split(":")[2]; if (actual.length !== expected.length) return false; let diff = 0; for (let i = 0; i < actual.length; i++) diff |= actual.charCodeAt(i) ^ expected.charCodeAt(i); return diff === 0; }
-async function rateLimit(env, request, bucket, limit, windowSeconds, subject = null) { const identity=subject!==null&&subject!==undefined ? "user:"+String(subject) : "ip:"+(request.headers.get("CF-Connecting-IP") || "unknown"); const key="rate:"+bucket+":"+identity; const now=Date.now(); const current=await env.SESSIONS.get(key,"json"); if(!current || current.reset_at<=now){await env.SESSIONS.put(key,JSON.stringify({count:1,reset_at:now+windowSeconds*1000}),{expirationTtl:windowSeconds});return true;} if(current.count>=limit)return false; await env.SESSIONS.put(key,JSON.stringify({count:current.count+1,reset_at:current.reset_at}),{expirationTtl:Math.max(1,Math.ceil((current.reset_at-now)/1000))}); return true; }
+async function rateLimit(env, request, bucket, limit, windowSeconds, subject = null) {
+  if (bucket === "message" && subject !== null && subject !== undefined && env.MESSAGE_RATE_LIMITER?.limit) {
+    try {
+      const outcome = await env.MESSAGE_RATE_LIMITER.limit({key:"member:"+String(subject)});
+      return outcome.success === true;
+    } catch {
+      // Retain existing protection if the platform limiter is temporarily unavailable.
+      console.warn("native_message_rate_limit_fallback");
+    }
+  }
+  const identity=subject!==null&&subject!==undefined ? "user:"+String(subject) : "ip:"+(request.headers.get("CF-Connecting-IP") || "unknown"); const key="rate:"+bucket+":"+identity; const now=Date.now(); const current=await env.SESSIONS.get(key,"json"); if(!current || current.reset_at<=now){await env.SESSIONS.put(key,JSON.stringify({count:1,reset_at:now+windowSeconds*1000}),{expirationTtl:windowSeconds});return true;} if(current.count>=limit)return false; await env.SESSIONS.put(key,JSON.stringify({count:current.count+1,reset_at:current.reset_at}),{expirationTtl:Math.max(1,Math.ceil((current.reset_at-now)/1000))}); return true; }
 function getCookie(request, name) { const cookies = request.headers.get("Cookie") || ""; for (const part of cookies.split(";")) { const [key, ...value] = part.trim().split("="); if (key === name) return value.join("="); } return null; }
 function sessionCookie(token, maxAge = SESSION_TTL_SECONDS) { return `${SESSION_COOKIE}=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`; }
 async function createSession(userId, env) { const token = randomToken(32); await env.SESSIONS.put(`session:${token}`, JSON.stringify({ user_id: userId, expires_at: Date.now() + SESSION_TTL_SECONDS * 1000 }), { expirationTtl: SESSION_TTL_SECONDS }); return token; }
