@@ -83,7 +83,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/knightfall-crest-512.png",
+      "src": "/icons/knightfall-crest-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
