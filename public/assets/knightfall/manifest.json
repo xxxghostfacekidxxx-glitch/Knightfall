@@ -292,10 +292,10 @@
       "name": "Eclipse Arcana",
       "category": "cards",
       "atlasRect": {
-        "x": 16,
-        "y": 8,
-        "width": 119,
-        "height": 155
+        "x": 4,
+        "y": 0,
+        "width": 146,
+        "height": 171
       },
       "scaleMode": "smooth",
       "animated": false
@@ -305,10 +305,10 @@
       "name": "Shrouded Arcana",
       "category": "cards",
       "atlasRect": {
-        "x": 146,
-        "y": 8,
-        "width": 125,
-        "height": 155
+        "x": 145,
+        "y": 0,
+        "width": 144,
+        "height": 170
       },
       "scaleMode": "smooth",
       "animated": false
@@ -331,10 +331,10 @@
       "name": "Ashen Crescent",
       "category": "emblems",
       "atlasRect": {
-        "x": 1128,
-        "y": 14,
-        "width": 124,
-        "height": 146
+        "x": 1112,
+        "y": 0,
+        "width": 178,
+        "height": 171
       },
       "scaleMode": "smooth",
       "animated": false
@@ -398,7 +398,7 @@
       "atlasRect": {
         "x": 712,
         "y": 382,
-        "width": 99,
+        "width": 92,
         "height": 129
       },
       "scaleMode": "smooth",
@@ -410,9 +410,9 @@
       "category": "treasure",
       "atlasRect": {
         "x": 14,
-        "y": 930,
+        "y": 944,
         "width": 168,
-        "height": 151
+        "height": 138
       },
       "scaleMode": "smooth",
       "animated": false
@@ -422,10 +422,10 @@
       "name": "Star Key",
       "category": "keys",
       "atlasRect": {
-        "x": 23,
-        "y": 394,
-        "width": 73,
-        "height": 123
+        "x": 20,
+        "y": 396,
+        "width": 70,
+        "height": 119
       },
       "scaleMode": "smooth",
       "animated": false
