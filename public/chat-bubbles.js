@@ -109,13 +109,15 @@
   }
   function saveLayout(){
     const r=panel.getBoundingClientRect();
+    const width=r.width||parseFloat(panel.style.width)||375,height=r.height||parseFloat(panel.style.height)||480;
     try{localStorage.setItem(layoutKey,JSON.stringify({
-      x:customPosition?.x??null,y:customPosition?.y??null,width:Math.round(r.width),height:Math.round(r.height)
+      x:customPosition?.x??null,y:customPosition?.y??null,width:Math.round(width),height:Math.round(height)
     }));}catch{}
   }
   function fitDock(){
     if(panel.style.width||panel.style.height){
-      const r=panel.getBoundingClientRect();setSize(r.width,r.height);
+      const r=panel.getBoundingClientRect();
+      setSize(r.width||parseFloat(panel.style.width)||375,r.height||parseFloat(panel.style.height)||480);
     }
     if(customPosition)placeDock(customPosition.x,customPosition.y);
   }
