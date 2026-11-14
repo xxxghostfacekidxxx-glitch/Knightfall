@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
 <script src="/creator-foundry.js" defer></script>
 <script src="/creator-art-studio.js?v=20261114-newart1" defer></script>
+<script type="module" src="/creator-motion-preview.js?v=20261114-motion1"></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
 <a class="back" href="/admin.html">← God Mode</a>
@@ -346,6 +347,20 @@
     <article class="kf-art-card"><img src="/assets/knightfall/relics-and-icons.png" alt="Gothic cards, badges, crystals, weapons and inventory icons" loading="lazy"><h3>Relics & Game Icon Collection</h3><p>Game props, card artwork, interface tokens, collectibles, chests, weapons and symbols.</p><div class="kf-collection-actions"><a href="/assets/knightfall/relics-and-icons.png" download>Save asset sheet</a><a href="/assets/knightfall/manifest.json" target="_blank" rel="noopener">Asset manifest</a></div></article>
   </div>
   <h3 class="kf-collection-subtitle">Reusable sprite preview</h3><p class="small">Browse 16 named static sprites. Download the ZIP for clean transparent, individual files. These are concept art assets, not animation frames.</p><div id="kf-art-sprite-gallery" class="kf-art-sprite-gallery" role="list"></div>
+<section class="kf-pose-lab" id="kf-pose-lab" aria-labelledby="kf-pose-title">
+    <div class="kf-pose-intro"><h3 id="kf-pose-title">Character Motion Studio</h3><p class="small">Preview breathing, running, jumping, attacks and damage reactions. Motion is calculated from still artwork, not a multi-frame animation sheet. Export a transparent PNG of the current pose.</p></div>
+    <div class="kf-pose-layout">
+      <div class="kf-pose-stage"><canvas id="kf-pose-canvas" width="400" height="320" aria-label="Animated character pose preview"></canvas></div>
+      <div class="kf-pose-controls">
+        <label for="kf-pose-sprite">Character<select id="kf-pose-sprite"><option>Loading roster…</option></select></label>
+        <label for="kf-pose-state">Motion<select id="kf-pose-state"><option value="idle">Idle / breathe</option><option value="walk">Walk</option><option value="run">Run</option><option value="jump">Jump</option><option value="attack">Attack</option><option value="hurt">Hurt</option></select></label>
+        <label for="kf-pose-speed">Animation speed<input type="range" min="25" max="200" step="25" value="100" id="kf-pose-speed"></label>
+        <label class="kf-pose-check"><input type="checkbox" id="kf-pose-flip"> Face left</label>
+        <div class="kf-pose-buttons"><button type="button" id="kf-pose-play" class="btn" aria-pressed="true">Pause motion</button><button type="button" class="btn primary" id="kf-pose-export">Export PNG pose</button></div>
+        <p id="kf-pose-status" class="small" role="status" aria-live="polite">Preparing character renderer…</p>
+      </div>
+    </div>
+  </section>
   <h3 class="kf-collection-subtitle">Relics &amp; interface icons</h3>
   <p class="small">Twelve individual reusable crops from the original relic collection. Preview and export PNGs for inventory, HUDs, cards and game menus. Use these as static graphics, not animated sprites.</p>
   <div id="kf-art-relic-gallery" class="kf-art-sprite-gallery kf-relic-gallery" role="list" aria-label="Knightfall relic icons"></div>
