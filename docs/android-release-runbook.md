@@ -82,18 +82,20 @@ adb shell am start -W -n com.ashfall.knightfall/com.google.androidbrowserhelper.
 
 If Android still opens a Custom Tab rather than a verified TWA, inspect the exact `assetlinks.json`, the signing certificate, browser version, redirects, and app-link verification. Never mark hardware testing complete based solely on CI or a screenshot.
 
-## Stage 3: Release the Android APK, after testing
+## Stage 3: Publish the **exact APK that was tested**
 
-Manually rerun the signed release workflow with **stage_asset_links=true**, **publish_public_release=true**, and **physical_test_confirmation=ANDROID_VERIFIED** only after testing that exact signing identity and version on real hardware. Use a new increasing version code and unique version name when publishing a new release. The workflow:
+Do **not** rebuild the APK during promotion. Different signing timestamps or toolchain states can change the output, even if the source is unchanged. Knightfall now publishes the **exact signed candidate artifact** tested on the Android phone.
 
-1. Requires all four protected signing secrets and validates version numbers.
-2. Builds and cryptographically verifies the release APK and AAB.
-3. Publishes or verifies the matching Digital Asset Links file on `main`.
-4. Polls the official site until it serves the exact certificate fingerprint.
-5. Creates an official GitHub release containing signed `app-release.apk`, `app-release.aab`, and checksum files.
-6. **Only after the release exists**, updates `public/android-release.json` to enable the site's official APK link.
+1. In the successful [signed-candidate workflow](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/knightfall-android-release.yml), record the numeric GitHub **run ID** from the URL and download the `knightfall-signed-release-candidate` ZIP. It contains `app-release.apk`, `app-release.aab`, `app-release.apk.sha256`, `assetlinks.json`, and `android-release-candidate.json`.
+2. Verify the SHA-256 of the extracted `app-release.apk` against `app-release.apk.sha256`. Android device testing must use **this extracted signed candidate APK**, not a debug APK or a newly rebuilt APK. Record the exact 64-character SHA-256 hash as `tested_apk_sha256`.
+3. Verify sign-in, chat during games, touch navigation, real background push, Android Back, browser-chrome-free TWA verification, account recovery, and update install on actual hardware. The browser-only and emulator checks do not replace these checks. Record the phone model/Android version and the test results.
+4. Rerun the **signed Android release workflow** from `main` with the **same** `version_name` and `version_code` as the candidate, set **candidate_run_id** to the successful candidate run ID, **tested_apk_sha256** to the exact verified candidate hash, **stage_asset_links=true**, **publish_public_release=true**, and **physical_test_confirmation=ANDROID_VERIFIED**.
+5. The workflow verifies that the candidate run was a successful manual signing run on `main`, retrieves its original GitHub Actions artifact, confirms its version and package identity, checks the file SHA-256 against the phone-tested fingerprint, verifies its APK signature against the protected release keystore, and only then publishes that **same file** on the official GitHub Release. It does **not** rebuild the APK for promotion.
+6. The workflow compares the deployed Digital Asset Links to the real signing fingerprint on `https://ash-fall.com/.well-known/assetlinks.json`. It only enables the site's public download link after the GitHub Release contains the signed APK.
 
-A site or repository deployment failure leaves the public download disabled until a subsequent verified release step. The GitHub release workflow needs `contents: write` permission and permission to push `main`; branch protections or Cloudflare access rules may block this operation. If it fails, fix the specific permissions or deployment issue before proceeding.
+**Publication fails closed** if the run ID is missing/incorrect, artifact expired, APK hash differs, certificate does not match, required physical test confirmation is missing, or live domain verification fails. Candidate artifacts expire after seven days by default; create a new signed candidate and retest if the artifact is no longer available. Never use `ANDROID_VERIFIED` unless you actually completed the hardware acceptance tests.
+
+A GitHub Actions publication has `contents:write` scope and requires permission to push `main`. If branch protection or Cloudflare deployment fails, resolve that blocker rather than forcing an unverified download. The Play Store path additionally requires policy, privacy and account-deletion work; a GitHub APK release is not Play Console approval.
 
 ## Threat and ownership notes
 
