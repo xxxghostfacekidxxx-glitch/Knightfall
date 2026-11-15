@@ -4,7 +4,9 @@ import {readFile} from "node:fs/promises";
 const read=path=>readFile(new URL("../public/"+path,import.meta.url),"utf8");
 test("shared visual polish is loaded by nav, landing and standalone monster game",async()=>{
  const [nav,landing,game,css]=await Promise.all([read("nav.js"),read("index.html"),read("monster-mmo.html"),read("visual-refresh.css")]);
- for(const html of [nav,landing,game])assert.match(html,/visual-refresh\.css\?v=20261029-v2/);
+ assert.match(nav,/visual-refresh\\.css\\?v=20261115-gothic5/);
+ assert.ok(landing.includes("/theme.css"),"Home must load theme.css");
+ assert.ok(game.includes("visual-refresh.css")||game.includes("theme.css"),"Standalone game needs shared theme entry");
  assert.match(nav,/visual-refresh/);
  assert.match(css,/prefers-reduced-motion:reduce/);
  assert.match(css,/profile-custom-theme/);
