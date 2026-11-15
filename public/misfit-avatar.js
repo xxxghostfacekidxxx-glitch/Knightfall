@@ -164,7 +164,7 @@
    Object.assign(auras,extraArt.aura);
    const uid='kf-misfit-'+(++renderSequence);
    const shapeGlow=a.background==='toxic'?'#c6ff45':a.background==='ember'?'#ff986b':a.background==='bubblegum'?'#ff7de2':'#78efec';
-   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar" data-render-style="storybook-comic-v3">
+   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar" data-render-style="neon-noir-illustration-v4">
  <defs>
 <clipPath id="${uid}-face-clip">${headShape}</clipPath>
 <linearGradient id="${uid}-edge-light" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${shapeGlow}" stop-opacity=".9"/><stop offset=".45" stop-color="#f3c4fd" stop-opacity=".18"/><stop offset="1" stop-color="${accent}" stop-opacity=".8"/></linearGradient>
@@ -202,11 +202,22 @@
   ${fineArt.outfit_patch[a.outfit_patch]}
 <g data-art-pass="garment-ink" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M65 227q7-14 17-20m60 0q13 11 18 21M93 241q19-5 38 0" stroke="#fff" stroke-width="2.6" opacity=".15"/><path d="M68 222l8-5m-5 12 8-5m69-7 8 8m-9 4 6 5" stroke="#0a0c19" stroke-width="2.8" opacity=".6"/><path d="M87 228l-1 16m53-16 1 16" stroke="${accent}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".58"/></g>
   <path d="M60 234q20-13 31-12m45 0q17-2 32 12" fill="none" stroke="#fff" stroke-width="1.5" opacity=".24"/>
+  <g data-art-pass="noir-tailoring" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M72 202q14 7 22 19m58-19q-14 7-22 19M82 239q30 8 60 0" stroke="#fff4ff" stroke-width="1.5" opacity=".22"/>
+   <path d="M87 196l12 12m38-12-12 12M75 218l10 4m64-4-10 4" stroke="${accent}" stroke-width="1.7" opacity=".48"/>
+   <path d="M111 211v27" stroke="#080711" stroke-width="2.5" opacity=".42"/>
+  </g>
   ${neckwear[a.neckwear]}
   <g data-hair-depth="rear" fill="url(#${uid}-hair)" stroke="#241629" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${silhouetteArt.rear[a.hair]||rearHair[a.hair]||''}</g>
   <g data-ear-style="${a.ear_style}">${silhouetteArt.ears[a.ear_style].replaceAll("@skin",skin)}</g>
   <g fill="url(#${uid}-skin)" stroke="#241629" stroke-width="5" stroke-linejoin="round">${headShape}</g>
 <g data-art-pass="face-paint" clip-path="url(#${uid}-face-clip)"><ellipse cx="112" cy="94" rx="66" ry="85" fill="url(#${uid}-portrait-light)"/><path d="M55 77 Q49 130 75 170" fill="none" stroke="#351e38" stroke-width="8" opacity=".13"/><path d="M170 75 Q180 126 151 170" fill="none" stroke="#1a1532" stroke-width="8" opacity=".23"/><path d="M75 161 Q111 186 149 160" fill="none" stroke="#fff7fb" stroke-width="2.8" opacity=".18"/><path d="M60 117q-3 17 6 26m92-26q7 14 1 27" fill="none" stroke="#fff" stroke-width="2" opacity=".23"/><ellipse cx="75" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/><ellipse cx="151" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/></g>
+  <g data-art-pass="noir-face-sculpt" clip-path="url(#${uid}-face-clip)" fill="none" stroke-linecap="round">
+   <path d="M57 106q-5 25 8 49m102-49q5 25-8 49" stroke="#382038" stroke-width="5" opacity=".16"/>
+   <path d="M77 158q13 9 26 5m18 0q13 4 26-5" stroke="#fff3fa" stroke-width="2.1" opacity=".19"/>
+   <path d="M108 128q-3 10 1 16m7-16q4 9 1 15" stroke="#784a59" stroke-width="1.5" opacity=".22"/>
+   <path d="M96 169q16 8 32 0" stroke="#5a3447" stroke-width="1.6" opacity=".2"/>
+  </g>
   <ellipse cx="90" cy="81" rx="44" ry="28" fill="#fff" opacity=".075"/>
   <g data-art-pass="comic-blush">
     <ellipse cx="73" cy="146" rx="23" ry="12" fill="#f27591" opacity=".19"/>
@@ -216,6 +227,12 @@
   ${fineArt.nose[a.nose]}
   <g fill="url(#${uid}-hair)" stroke="#241629" stroke-width="4" stroke-linejoin="round">${silhouetteArt.front[a.hair]||hairstyles[a.hair]}</g>
   ${a.hair_highlight==="none"?"":`<path d="M71 68q17-18 36-17m17 0q18 4 27 19" fill="none" stroke="${palettes.hair_color[a.hair_highlight]}" stroke-width="6" stroke-linecap="round" opacity=".8"/>`}
+  <g data-art-pass="noir-hair-detail" fill="none" stroke-linecap="round">
+   <path d="M63 82Q83 47 119 50M126 51Q151 52 165 84" stroke="#fff" stroke-width="2.7" opacity=".28"/>
+   <path d="M70 91Q85 67 103 65M137 63q16 8 20 23" stroke="${palettes.hair_color[a.hair_highlight]||'#fff'}" stroke-width="2.2" opacity="${a.hair_highlight==='none'?'.16':'.78'}"/>
+   <path d="M59 102q-5 18 0 35m107-35q5 18 0 35" stroke="#090711" stroke-width="2.2" opacity=".34"/>
+   <path d="M83 56q18-10 35-5m8 1q13 2 21 11" stroke="#fff" stroke-width="1.1" opacity=".32"/>
+  </g>
   <path d="M61 71Q82 41 120 49m15 3q15 7 23 19" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".19"/>
 <g data-art-pass="hair-ink" fill="none" stroke-linecap="round"><path d="M72 62Q98 43 123 52M126 52q17 6 25 20" stroke="#fff" stroke-width="2.2" opacity=".17"/><path d="M61 94q-5 18-1 34m107-35q5 14 1 34" stroke="#090710" stroke-width="2.8" opacity=".42"/><path d="M82 52l-7 13m17-19-4 11m55-6 6 14" stroke="${accent}" stroke-width="1.3" opacity=".4"/></g>
   ${accessories[a.accessory]}${headwear[a.headwear]}
@@ -225,6 +242,12 @@
     <path d="M64 114q18-15 36 1m27-1q18-16 36 1"/>
   </g>
   ${fineArt.makeup[a.makeup]}${eyeShapes[a.eyes]}${pupils}
+  <g data-art-pass="noir-eye-detail" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M65 112q17-14 35 0m27 0q18-14 35 0" stroke="#160f20" stroke-width="2.2" opacity=".78"/>
+   <path d="M69 108l-5-5m12 2-2-6m14 5 2-5m47 4 2-5m9 7 4-6m5 8 5-4" stroke="#241629" stroke-width="1.8" opacity=".7"/>
+   <path d="M70 136q12 5 23 1m40 0q12 4 23-1" stroke="#fff1fa" stroke-width="1.6" opacity=".34"/>
+   <circle cx="77" cy="118" r="2.4" fill="#fff" stroke="none" opacity=".9"/><circle cx="140" cy="118" r="2.4" fill="#fff" stroke="none" opacity=".9"/>
+  </g>
   <path d="M68 139q14 5 26 0m38 0q15 5 26 0" fill="none" stroke="#673e57" stroke-width="1.5" opacity=".33"/>
   <g data-face-sculpt="true" fill="none" stroke="#462a42" stroke-width="1.6" opacity=".3"><path d="M67 148q-5 10 3 17m87-17q5 10-3 17M90 167q22 7 43-1"/></g>
   ${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${fineArt.tattoo[a.tattoo]}${mouths[a.expression]}${fineArt.facial_hair[a.facial_hair]}${piercings[a.piercing]}
