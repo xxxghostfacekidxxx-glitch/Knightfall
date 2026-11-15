@@ -10,7 +10,7 @@
       ["visual-refresh", "/visual-refresh.css?v=20261115-gothic9"],
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
-      ["knightfall-artwork", "/knightfall-artwork.css?v=20261115-art2"]
+      ["knightfall-artwork", "/knightfall-artwork.css?v=20261115-art3"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -30,6 +30,48 @@
   } else {
     mountApprovedTheme();
   }
+
+  // Original section illustrations: site chrome only, not gameplay or personal themes.
+  const mountRealmArtwork = () => {
+    const path = location.pathname.toLowerCase();
+    if (/^\/(?:arcade\/hosted\/|casino\/|games\/)/.test(path)) return;
+    let realm = "general";
+    if (path === "/" || path === "/index.html") realm = "home";
+    else if (/^\/(?:community(?:-topic)?|homepage|thread|create-thread|forums|madhouse)(?:[./]|$)/.test(path)) realm = "madhouse";
+    else if (/^\/(?:chaos-cartridge|chaos-lab|arcade(?:-|\/)|arcade-vault)(?:[./]|$)/.test(path)) realm = "arcade";
+    else if (/^\/(?:devil-tools|dev-toolkit|creator-|open-source-arsenal|cinderwild|cinderwind)(?:[./]|$)/.test(path)) realm = "foundry";
+    else if (/^\/(?:messages|ruinwire|social|friends|notifications)(?:[./]|$)/.test(path)) realm = "messages";
+    else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:[./]|$)/.test(path)) realm = "moon";
+    else if (/^\/(?:shops|shop-builder|store|support|billing|stripe-invoicing)(?:[./]|$)/.test(path)) realm = "market";
+    else if (/^\/(?:members|profile|account|auth|login|register)(?:[./]|$)/.test(path)) realm = "members";
+    else if (/^\/(?:admin(?:-|\.)|eye-of-chaos|eye-of-horus|god-|moderation)(?:[./]|$)/.test(path)) realm = "god";
+    else if (/^\/(?:mascot|pet|companion)(?:[./]|$)/.test(path)) realm = "pets";
+    else if (/^\/(?:die-ary|memo-pad|vault|diary)(?:[./]|$)/.test(path)) realm = "diary";
+    const main = document.querySelector("main");
+    if (!main) return;
+    document.body.dataset.kfRealm = realm;
+    if (realm === "home") return; // Homepage has its own illustrated cathedral hero.
+    const selectors = {
+      madhouse: ".community-directory > .hero, .forum-hero, main > .hero",
+      arcade: ".arcade-directory > .cartridge-hero, .lab > .hero, main > .hero",
+      foundry: "main > .hero, .foundry-hero, .creator-hero",
+      messages: ".messages-shell > .messages-hero, .rw-install-hero, .social-hero, .friends-hero",
+      moon: ".moon-shell > .moon-intro, .moon-hero",
+      market: ".directory-shell > .directory-hero, .market-hero, main > .hero",
+      members: ".members-page > .members-hero, .profile-hero, .account-hero",
+      god: ".admin-shell > .hero, .chaos-shell > .chaos-hero, main > .hero",
+      pets: ".room-intro, .trials-hero, .mascot-hero",
+      diary: ".diary-shell > .diary-hero, .memo-hero, .vault-hero",
+      general: "main > .hero, main > .page-hero"
+    };
+    const hero = document.querySelector(selectors[realm]);
+    if (hero && main.contains(hero)) hero.dataset.kfArtHero = realm;
+    else main.dataset.kfArtBackdrop = realm; // Subtle backdrop on utility pages.
+  };
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", mountRealmArtwork, {once:true});
+  else mountRealmArtwork();
+
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
   if (location.pathname.startsWith("/arcade/hosted/")) {
     if (document.body) document.body.classList.add("chaos-glitch-arcade");
