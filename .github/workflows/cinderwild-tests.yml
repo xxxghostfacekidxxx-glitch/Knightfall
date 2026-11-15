@@ -1,0 +1,24 @@
+name: Cinderwild RPG checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/hosted/cinderwild/**'
+      - 'public/arcade/catalog.json'
+      - 'public/chaos-cartridge.html'
+      - 'scripts/cinderwild-audit.mjs'
+      - '.github/workflows/cinderwild-tests.yml'
+  workflow_dispatch:
+jobs:
+  cinderwild-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: node --check public/arcade/hosted/cinderwild/game.js
+      - name: Creature RPG smoke tests
+        run: node scripts/cinderwild-audit.mjs
