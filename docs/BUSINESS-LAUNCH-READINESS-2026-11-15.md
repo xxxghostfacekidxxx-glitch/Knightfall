@@ -56,7 +56,8 @@ Additional verification:
 - [ ] Measure the first-step funnel and validate flagship path: **Chaos Cartridge or Cinderwild -> member account -> messaging/community -> safe premium perks**. No individual visitor tracking added yet.
 - [ ] Test acquisition with unpaid creator collaboration, owned social channels, game showcases and personal referrals before purchasing ads.
 - [ ] Run one pricing experiment with defined eligibility, conversion count, refund rate and cancellation tracking.
-- [ ] Publish a monthly, date-stamped KPI report with source definitions and a reconciliation to actual deposits.
+- [x] Add non-personal source-dated CSV KPI snapshot export to the admin dashboard (record totals only).
+- [ ] Publish a monthly KPI report with a separate reconciliation to real bank/processor deposits and expenses.
 
 **Traction gate:** positive evidence of returning external users and paid demand, not just registrations or page hits.
 
