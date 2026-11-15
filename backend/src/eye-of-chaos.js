@@ -47,9 +47,13 @@ const formatName=name=>String(name||"").trim();
 const list=async(env,sql,...bind)=>(await env.DB.prepare(sql).bind(...bind).all()).results||[];
 async function schemaReady(env){
  try{
-  const row=await env.DB.prepare("SELECT 1 AS ready FROM sqlite_master WHERE type='table' AND name='eye_chaos_missions'").first();
-  return row?.ready===1;
+  const row=await env.DB.prepare("SELECT COUNT(*) AS ready FROM sqlite_master WHERE type='table' AND name IN ('eye_chaos_missions','eye_chaos_drafts','eye_chaos_controls')").first();
+  return row?.ready===3;
  }catch{return false}
+}
+async function isExecutionPaused(env){
+ const state=await env.DB.prepare("SELECT paused FROM eye_chaos_controls WHERE id=1").first();
+ return state?.paused!==0; // no state row means execution is locked
 }
 const event=(env,actor,kind,id,action)=>env.DB.prepare("INSERT INTO eye_chaos_events(actor_id,object_type,object_id,action) VALUES(?,?,?,?)").bind(actor,kind,id,action).run();
 
@@ -115,6 +119,7 @@ export async function runSourceResearch(env,mission){
   source_url:link};
 }
 async function executeResearch(env,mission,actorId){
+ if(await isExecutionPaused(env))return {error:"Eye of Chaos is paused by GOD.",status:423};
  if(mission.division!=="agents"||mission.kind!=="research"||!Object.hasOwn(CHAOS_SOURCES,mission.source_key))
   return {error:"Automated execution is available only for research missions with an approved source.",status:409};
  const old=await env.DB.prepare("UPDATE eye_chaos_missions SET status='in_progress',updated_at=? WHERE id=? AND status IN ('queued','ready','failed') AND (last_run_at IS NULL OR last_run_at<?)")
@@ -141,6 +146,7 @@ async function executeResearch(env,mission,actorId){
 }
 export async function runEyeChaosScheduledResearch(env){
  if(!await schemaReady(env))return {executed:0,reason:"migration_pending"};
+ if(await isExecutionPaused(env))return {executed:0,reason:"god_paused"};
  // Never publish. Due research only produces pending, source-linked review drafts.
  const jobs=await list(env,"SELECT * FROM eye_chaos_missions WHERE division='agents' AND kind='research' AND cadence IN ('daily','weekly') AND status='queued' AND next_run_at<=? ORDER BY next_run_at LIMIT 2",timestamp());
  let completed=0;
@@ -166,7 +172,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
  const ready=await schemaReady(env);
  if(url.pathname===API+"/status"&&request.method==="GET"){
   const f=await fleet(env);
-  return respond({...f,schema_ready:ready,publishing_enabled:false,research_scheduler:ready?"available":"pending_migration"});
+  return respond({...f,schema_ready:ready,execution_paused:ready?await isExecutionPaused(env):true,publishing_enabled:false,research_scheduler:ready?"available":"pending_migration"});
  }
  if(url.pathname===API+"/sources"&&request.method==="GET")
   return respond({sources:Object.entries(CHAOS_SOURCES).map(([key,value])=>({key,...value}))});
@@ -190,12 +196,23 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
   }catch{return respond({verified:false,message:"GitHub could not be reached. Check the workflow directly."})}
  }
 
- if(!ready)return respond({error:"Eye of Chaos storage migration 0142 has not been applied. Controls remain read-only.",schema_ready:false},503);
+ if(!ready)return respond({error:"Eye of Chaos migrations 0142 and 0143 are required. Controls remain read-only.",schema_ready:false},503);
  async function body(){
   if(Number(request.headers.get("content-length")||0)>15500)throw Error("Too large");
   const raw=await request.text();if(raw.length>15000)throw Error("Too large");
   const v=JSON.parse(raw);if(!v||typeof v!=="object"||Array.isArray(v))throw Error("Invalid JSON");
   return v;
+ }
+ if(url.pathname===API+"/control"){
+  if(request.method==="GET")return respond({paused:await isExecutionPaused(env)});
+  if(request.method==="POST"){
+   let payload;try{payload=await body()}catch{return respond({error:"Invalid JSON."},400)}
+   if(typeof payload.paused!=="boolean")return respond({error:"Paused must be a boolean."},400);
+   await env.DB.prepare("UPDATE eye_chaos_controls SET paused=?,updated_by=?,updated_at=? WHERE id=1").bind(payload.paused?1:0,user.id,timestamp()).run();
+   await event(env,user.id,"system","all",payload.paused?"master_pause":"master_resume");
+   return respond({ok:true,paused:payload.paused});
+  }
+  return respond({error:"Method not allowed."},405);
  }
  const matchMission=url.pathname.match(/^\/api\/god\/chaos\/missions\/([0-9a-f-]{36})(?:\/(run|pause|resume|cancel|draft))?$/);
  const matchDraft=url.pathname.match(/^\/api\/god\/chaos\/drafts\/([0-9a-f-]{36})(?:\/(approve|reject))?$/);
@@ -239,6 +256,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
    // No private account contents enter the model prompt.
    if(mission.division==="arcade"||mission.status==="cancelled")
     return respond({error:"Only active content and forum missions can generate drafts."},409);
+   if(await isExecutionPaused(env))return respond({error:"Eye of Chaos is paused by GOD."},423);
    if(!env.AI||typeof env.AI.run!=="function")return respond({error:"Knightfall AI is unavailable."},503);
    if(typeof rateLimit==="function"&&!(await rateLimit(env,request,"eye-chaos-generate",10,3600)))
     return respond({error:"AI mission limit reached. Try again later."},429);
