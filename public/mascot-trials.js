@@ -50,7 +50,7 @@ function selectPet(){
  document.querySelector('.trials-meta')?.setAttribute('data-affinity',pet.affinity||window.KnightfallPetRenderer?.typeFor(pet.species)||'feral');
  playfield.dataset.mode=challenge.mode;
  const portraitSrc=safeAvatar(pet.idle||pet.image||pet.portrait);
- portrait.src=portraitSrc?portraitSrc+'?v=20261115-storybook1':'';
+ portrait.src=portraitSrc?portraitSrc+(portraitSrc.includes('/evolutions/')?'?v=20261115-starforms1':'?v=20261115-storybook1'):'';
  portrait.alt=pet.species_name+' original companion';
  start.disabled=false;playfield.replaceChildren();controls.replaceChildren();
  playfield.append(node('p','trial-ready','✦ '+challenge.title+' · '+info[challenge.mode]));

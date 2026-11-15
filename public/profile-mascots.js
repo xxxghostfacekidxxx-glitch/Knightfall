@@ -50,7 +50,7 @@ async function mount(){
    const art=el('div','mascot-profile-art'),url=safeImage(pet.idle||pet.image||pet.portrait);
    const scene=safeImage(pet.habitat?.art);
    if(scene){const img=el('img','mascot-profile-habitat');img.src=scene+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
-   if(url){const img=el('img','mascot-profile-master');img.src=url+'?v=20261115-storybook1';img.alt=pet.species_name;img.loading='lazy';art.append(img);}
+   if(url){const img=el('img','mascot-profile-master');img.src=url+(url.includes('/evolutions/')?'?v=20261115-starforms1':'?v=20261115-storybook1');img.alt=pet.species_name;img.loading='lazy';art.append(img);}
    const decoration=safeImage(pet.habitat?.decoration_art);
    if(decoration){const img=el('img','mascot-profile-decoration');img.src=decoration+'?v=20261102-adventures2';img.alt='';img.setAttribute('aria-hidden','true');img.loading='lazy';art.append(img);}
    for(const furniture of (pet.furniture||[]).slice(0,4)){
