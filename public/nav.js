@@ -7,9 +7,9 @@
   // were parsed, allowing old neon/page CSS to override the approved theme.
   const mountApprovedTheme = () => {
     const styles = [
-      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic4"],
-      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic4"],
-      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic4"]
+      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic5"],
+      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic5"],
+      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic5"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -171,44 +171,17 @@
   if (header.dataset.kfNavMounted === "true" && header.querySelector("#kf-primary-nav") && header.querySelector(".kf-nav-toggle")) return;
   header.dataset.kfNavMounted = "true";
   header.setAttribute("aria-label", "Ash-Fall site navigation");
-  // Keep the mobile navigation above ambient glitch layers and floating mascots.
-  if (!document.getElementById("kf-pwa-navigation-recovery")) {
-    const recoveryStyle = document.createElement("style");
-    recoveryStyle.id = "kf-pwa-navigation-recovery";
-    recoveryStyle.textContent = `html body .kf-header{z-index:1000!important;isolation:isolate}html body .kf-header .kf-nav-toggle{position:relative;z-index:1002;visibility:visible;opacity:1;pointer-events:auto}html body .kf-header .kf-nav{z-index:1001}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important}@media(max-width:1080px){html body .kf-header{display:flex!important;align-items:center;justify-content:space-between;min-height:60px}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;min-height:44px!important}html body .kf-header .kf-nav:not(.open){display:none!important}html body .kf-header .kf-nav.open{display:grid!important;position:absolute!important;top:100%!important;left:.5rem!important;right:.5rem!important;max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:#100c1c!important;border:1px solid #ff55d8!important;box-shadow:0 12px 36px #000c!important;padding:.7rem!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{min-height:44px}html body .kf-header .kf-nav-group[open] .kf-nav-menu{position:static!important;max-height:none!important}}`;
-    document.head.append(recoveryStyle);
-  }
-  // A global install shortcut and staff notices are part of one canonical header.
-  if(!document.getElementById("kf-shared-header-ext-css")){
-    const style=document.createElement("style");style.id="kf-shared-header-ext-css";
-    style.textContent='.kf-header:has(>.kf-shared-announcement),.kf-header:has(>.kf-shared-maintenance){flex-wrap:wrap!important}.kf-header .kf-shared-announcement,.kf-header .kf-shared-maintenance{position:relative!important;order:99;flex:1 0 100%!important;display:flex;justify-content:center;gap:.5rem;align-items:center;min-height:35px;box-sizing:border-box;margin:0!important;padding:6px 12px!important;border:1px solid #7e556d;border-radius:8px;background:#251927;color:#f9e8ef;font:700 12px/1.4 system-ui,sans-serif;text-align:center}.kf-header .kf-shared-announcement strong{color:#ffe29f}.kf-header .kf-install-pill,.kf-header .kf-admin-quick-link{display:inline-flex;align-items:center;justify-content:center;flex:none;gap:4px;min-height:38px;padding:5px 9px;border:1px solid #b18a89;border-radius:9px;background:linear-gradient(115deg,#392638,#171c2a);color:#fceccc!important;text-decoration:none!important;font:800 12px/1.2 system-ui,sans-serif;white-space:nowrap}.kf-header .kf-admin-quick-link{border-color:#ca7bc3;color:#f5e3f4!important}.kf-header :is(.kf-install-pill,.kf-admin-quick-link):focus-visible{outline:2px solid #ffe36b;outline-offset:2px}.kf-header :is(.kf-install-pill,.kf-admin-quick-link)[hidden]{display:none!important}@media(max-width:490px){.kf-header .kf-install-pill{min-width:67px;padding:5px 7px}.kf-header .kf-install-pill span{display:inline}.kf-header .kf-admin-quick-link{padding:5px 7px;font-size:11px}}';
-    document.head.append(style);
-  }
-  // Shared keyboard shortcut to bypass the site-wide navigation.
-  const mainContent=document.querySelector("main");
-  if(mainContent && !document.querySelector(".kf-skip-link")){
-    if(!mainContent.id) mainContent.id="main-content";
-    const skip=document.createElement("a");
-    skip.className="kf-skip-link";
-    skip.href="#"+mainContent.id;
-    skip.textContent="Skip to content";
-    header.before(skip);
-  }
-  // Inline emergency chrome so navigation survives delayed or cached theme CSS.
-  if (!document.getElementById("kf-nav-emergency-css")) {
-    const emergency=document.createElement("style");emergency.id="kf-nav-emergency-css";
-    emergency.textContent='html body .kf-header{display:flex!important;align-items:center!important;gap:12px!important;position:sticky!important;top:0!important;z-index:2147482000!important;min-height:62px!important;padding:8px 14px!important;background:#100c1c!important;border-bottom:2px solid #ff55d8!important;visibility:visible!important;opacity:1!important}html body .kf-header .kf-brand{display:inline-flex!important;flex-shrink:0!important;color:white!important;font-weight:900!important}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:76px!important;min-height:44px!important;background:#22132d!important;color:#c6ff45!important;border:1px solid #ff55d8!important;border-radius:10px!important}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important;display:grid!important;position:absolute!important;top:100%!important;left:8px!important;right:8px!important;z-index:2147482001!important;max-height:calc(100dvh - 75px)!important;overflow:auto!important;padding:12px!important;background:#100c1c!important;border:1px solid #ff55d8!important;border-radius:12px!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{visibility:visible!important;opacity:1!important;color:#f9f3ff!important}@media(min-width:1081px){html body .kf-header .kf-nav{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;flex-wrap:wrap!important}html body .kf-header .kf-nav-toggle{display:none!important}}@media(max-width:1080px){html body .kf-header .kf-nav:not(.open){display:none!important}}';
-    document.head.append(emergency);
-  }
-  // Legacy category pages sometimes wrap the header in transformed or clipped
-  // containers. Move the shared chrome directly under body before mounting.
+  // CSS for the shared header lives in knightfall-unified-theme.css.
+  // The former four injected emergency/recovery layers forced retired neon colors
+  // with !important and overrode the approved site-wide identity.
   if (header.parentElement !== document.body) document.body.prepend(header);
-  // One consistent layer, above mascots and the persistent chat widget.
-  if (!document.getElementById("kf-nav-stability-css")) {
-    const stable=document.createElement("style");
-    stable.id="kf-nav-stability-css";
-    stable.textContent=`html body>.kf-header{position:sticky!important;top:0!important;z-index:2147483001!important;overflow:visible!important;transform:none!important;filter:none!important;isolation:isolate!important;width:100%!important;box-sizing:border-box!important}html body>.kf-header .kf-nav-toggle{cursor:pointer!important;pointer-events:auto!important}html body>.kf-header .kf-nav.open{z-index:2147483002!important;pointer-events:auto!important}html body>.kf-header .kf-nav-menu{z-index:2147483003!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{display:grid!important}html body>.kf-header .kf-nav a{pointer-events:auto!important}html body>.kf-header .kf-nav [hidden]{display:none!important}@media(max-width:1080px){html body>.kf-header .kf-nav.open{max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:static!important;overflow:visible!important;max-height:none!important}}@media(min-width:1081px){html body>.kf-header .kf-nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important}html body>.kf-header .kf-nav-group[open]>.kf-nav-menu{position:absolute!important}}`;
-    document.head.append(stable);
+  // Keep the keyboard skip link while leaving all appearance to shared CSS.
+  const mainContent=document.querySelector("main");
+  if (mainContent && !document.querySelector(".kf-skip-link")) {
+    if (!mainContent.id) mainContent.id="main-content";
+    const skip=document.createElement("a");
+    skip.className="kf-skip-link";skip.href="#"+mainContent.id;
+    skip.textContent="Skip to content";header.before(skip);
   }
   header.innerHTML = `
     <a class="kf-brand" href="/" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
