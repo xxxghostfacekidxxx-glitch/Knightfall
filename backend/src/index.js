@@ -10,6 +10,7 @@ import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
+import { handleShopCommerce } from "./shop-commerce.js";
 import { botAccessPolicy } from "./bot-creator-access.js";
 import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities.js";
 import { handleEyeOfHorus } from "./eye-of-horus.js";
@@ -433,6 +434,15 @@ async function handleVaultRequest(request, env, origin, url) {
 
 async function handleShopRequest(request,env,origin,url){
  const path=url.pathname;
+ const shopCommerceRoute=path==="/api/my-shop/business"||path==="/api/my-shop/variants"||path==="/api/my-shop/orders"||
+   /^\/api\/my-shop\/variants\/[a-f0-9]{32}$/.test(path)||
+   /^\/api\/shops\/[a-z0-9-]{1,80}\/(business|variants)$/.test(path);
+ if(shopCommerceRoute){
+   const isPublic=path.startsWith("/api/shops/");
+   const owner=isPublic?null:await requireUser(request,env);
+   if(!isPublic&&!owner)return json({error:"Sign in to manage your shop."},401,origin);
+   return handleShopCommerce(request,env,origin,url,owner,{json,randomToken,rateLimit,audit});
+ }
  const publicItem=path.match(/^\/api\/shops\/([a-z0-9-]{1,80})$/);
  const productItem=path.match(/^\/api\/my-shop\/products\/([a-f0-9]{32})$/);
  if(path!=="/api/shops"&&!publicItem&&path!=="/api/my-shop"&&path!=="/api/my-shop/products"&&!productItem)return null;
