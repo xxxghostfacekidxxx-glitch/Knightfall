@@ -68,3 +68,12 @@ assert.doesNotMatch(arcadeHub,/chaos-cartridge-theme\.css/,"Hub must not load pe
 assert.match(arcadeHub,/arcade-catalog\.css\?v=20261115-gothic7/);
 
 assert.ok(!foundryPage.includes('href="/arcade-polish.css'),"Creator Foundry must not load neon arcade game skin");
+
+const sharedGothicFiles=["support.html","reset-password.html","auth.css","members.css","members.html",
+  "shop-upgrade.css","shops.html","memo-pad.css","memo-pad.html","push-settings.css"];
+for(const filename of sharedGothicFiles){
+ const src=read("../public/"+filename);
+ assert.doesNotMatch(src,/#ff55d8|#c6ff45|rgba\\(255,85,216/i,"Legacy neon must not revive in "+filename);
+}
+assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic8"),"Support page must load the approved shared theme");
+assert.ok(read("../public/memo-pad.html").includes("/memo-pad.css?v=20261115-gothic8"),"Memo Pad styles must be cache busted");
