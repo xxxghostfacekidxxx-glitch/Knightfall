@@ -39,7 +39,8 @@ export function eyeReviewQuery(category,limit,offset,userId) {
   }
   if(userId!==null){conditions.push(filterColumn+"=?");parameters.push(userId)}
   const where=conditions.length?" WHERE "+conditions.join(" AND "):"";
-  return {sql:select+where+" ORDER BY "+(category==="bot_definitions"?"b.created_at":"m.created_at")+ " DESC LIMIT ? OFFSET ?",parameters:[...parameters,limit,offset]};
+  const orderColumn=category==="bot_definitions"?"b.created_at":category==="profile_photos"?"p.created_at":category==="message_attachments"?"a.created_at":"m.created_at";
+  return {sql:select+where+" ORDER BY "+orderColumn+" DESC, id DESC LIMIT ? OFFSET ?",parameters:[...parameters,limit,offset]};
 }
 
 function sessionKey(cookie){return "eye:unlock:"+cookie}
@@ -130,8 +131,8 @@ export async function handleEyeOfHorus(request,env,url,{requireUser,json,origin,
     const allowedMedia=category==="profile_photos"||category==="message_attachments"
       ?{category,ids:items.filter(x=>IMAGE_TYPES.has(x.content_type)).map(x=>Number(x.id))} : null;
     // No content is written to session or access logs. Only authorization context.
-    await env.SESSIONS.put(purpose,JSON.stringify({user_id:user.id,reason,allowed_media:allowedMedia,expires_at:current.expires_at}),{expirationTtl:Math.max(1,Math.ceil((current.expires_at-Date.now())/1000))});
     await recordAccess(env,user,"review",category,reason,{userId,count:items.length});
+    await env.SESSIONS.put(purpose,JSON.stringify({user_id:user.id,reason,allowed_media:allowedMedia,expires_at:current.expires_at}),{expirationTtl:Math.max(1,Math.ceil((current.expires_at-Date.now())/1000))});
     return noStore({items,category,limit,offset,has_more:items.length===limit,review_reason:reason},json,origin);
   }
 
