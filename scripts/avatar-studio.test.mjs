@@ -55,3 +55,14 @@ test('every display surface loads Forge2D and waits until ready',()=>{
  assert.match(read('public/profile.js'),/await window\.KnightfallMisfitAvatars\.ready/);
  assert.match(read('public/mascot-pet-life.js'),/await kit\.ready/);
 });
+
+test('Misfit Studio searches all 27 traits and defers offscreen thumbnails',()=>{
+ const markup=read('public/avatar-studio.html'),editor=read('public/avatar-studio.js'),styles=read('public/avatar-studio.css');
+ assert.match(markup,/id="trait-search-input"/);
+ assert.match(markup,/id="trait-search-count"/);
+ assert.match(editor,/kit\.choices\[key\]/);
+ assert.match(editor,/IntersectionObserver/);
+ assert.match(editor,/thumbObserver\.observe\(image\)/);
+ assert.match(editor,/thumbnailCache\.size>120/);
+ assert.match(styles,/trait-no-results/);
+});
