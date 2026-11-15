@@ -93,12 +93,13 @@ try {
         await nav.getByRole("link", { name: /Notifications.*3/ }).waitFor();
         const foundry = nav.getByRole("link", { name: "Creator Foundry" });
         const admin = ["admin", "god"].includes(session.user.role);
-        assert.equal(await foundry.isVisible(), admin || session.name === "creator");
-        const isStaff = admin || session.name === "moderator";
+        const isStaff = admin || session.name === "moderator" || session.name === "creator";
         assert.equal(await staff.isVisible(), isStaff);
         if (isStaff) {
           await staff.click();
-          await nav.getByRole("link", { name: "Moderation" }).waitFor();
+          assert.equal(await foundry.isVisible(), admin || session.name === "creator");
+          assert.equal(await nav.getByRole("link", { name: "Moderation" }).isVisible(), admin || session.name === "moderator");
+          assert.equal(await nav.getByRole("link", { name: "Eye of Horus" }).isVisible(), session.name === "owner");
           await nav.getByRole("link", { name: "Settings & Tools" }).waitFor({ state: "hidden" });
           assert.equal(await nav.getByRole("link", { name: "Admin Dashboard" }).isVisible(), admin);
           if (admin) {
