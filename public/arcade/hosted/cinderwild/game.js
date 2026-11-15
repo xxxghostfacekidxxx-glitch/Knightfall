@@ -57,9 +57,9 @@ const SHRINES=[{id:"minionmouse",x:54,y:18,level:25,name:"Spark Shrine"},{id:"mi
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),pick=a=>a[Math.floor(Math.random()*a.length)],sp=id=>SPECIES[id],name=id=>sp(id)?.[0]||"Unknown";
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fresh=()=>({x:8,y:18,steps:0,coins:150,party:[],box:[],seen:[],caught:[],items:{orbs:8,superOrbs:2,potions:5,revives:1},badges:[],defeated:[],wins:0,story:[],complete:false});
-function load(){
+function load(rawSource){
  try{
-  const raw=JSON.parse(localStorage.getItem(KEY));if(!raw||!Number.isInteger(raw.x)||!Array.isArray(raw.party))return fresh();
+  const raw=rawSource===undefined?JSON.parse(localStorage.getItem(KEY)):rawSource;if(!raw||!Number.isInteger(raw.x)||!Array.isArray(raw.party))return fresh();
   const t=fresh();
   for(const k of ["x","y","steps","coins","wins"])if(Number.isFinite(raw[k]))t[k]=clamp(Math.floor(raw[k]),0,k==="x"?W-1:k==="y"?H-1:10000000);
   for(const k of ["party","box"])t[k]=(Array.isArray(raw[k])?raw[k]:[]).slice(0,k==="party"?6:200).filter(c=>c&&sp(c.id)).map(c=>{
@@ -79,7 +79,7 @@ function load(){
  }catch{return fresh();}
 }
 let state=load(),battle=null,modal="",logLines=[],lastStep=0;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{notify("Storage unavailable. Progress may not persist.");}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));document.dispatchEvent(new CustomEvent("cinderwild:local-save"));}catch{notify("Storage unavailable. Progress may not persist.");}}
 function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;const unit={id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[],status:null};unit.pp=moves(unit).map(m=>m.pp);return unit;}
 function moves(c){
  const type=sp(c.id)[1],pair=SPECIAL[type],lvl=c.level;
@@ -484,5 +484,23 @@ function initialize(){
  });
  window.addEventListener("pagehide",save);
 }
+// Cloud progress is a backup of the local single-player save. It is not trusted PvP state.
+window.CinderwildGame = Object.freeze({
+ snapshot(){return JSON.parse(JSON.stringify(state));},
+ isBusy(){return Boolean(battle||modal);},
+ restore(raw){
+  if(battle||modal||!raw||typeof raw!=="object"||!Array.isArray(raw.party)||!Array.isArray(raw.box))return false;
+  if(raw.party.some(c=>!c||!sp(c.id))||raw.box.some(c=>!c||!sp(c.id)))return false;
+  if(raw.party.length>6||raw.box.length>200)return false;
+  const restored=load(raw);
+  if(restored.party.length!==raw.party.length||restored.box.length!==raw.box.length)return false;
+  state=restored;
+  $("starter").hidden=state.party.length>0;
+  save();
+  render();
+  if(!state.party.length)firstRun();
+  return true;
+ }
+});
 initialize();
 })();
