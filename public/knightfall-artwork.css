@@ -11,3 +11,20 @@
 .home-page .kf-start-card h3,.home-page .kf-start-card p,.home-page .kf-start-card a{position:relative}
 @media(max-width:640px){.home-page .home-intro{min-height:510px;background-position:54% center;padding:1.4rem}.home-page .home-intro h1{font-size:clamp(2.2rem,10vw,3.3rem)}.home-page .home-intro-actions{width:100%}}
 @media(prefers-reduced-motion:reduce){.home-page .home-intro{scroll-behavior:auto}}
+
+/* Shared illustration system. Applied only to site chrome, never game canvases or private profile themes. */
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade){--kf-illustration:url('/assets/knightfall/eclipse-cathedral.svg')}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero,.directory-hero,.arcade-hero,.page-hero,.section-hero){
+ position:relative;isolation:isolate;overflow:hidden;border:1px solid #9b7f71!important;border-radius:20px!important;
+ background:linear-gradient(90deg,#111319f2 0%,#15141bd9 46%,#15141b55 100%),var(--kf-illustration) center 43%/cover no-repeat!important;
+ box-shadow:0 20px 55px #0009,inset 0 0 0 1px #c7a77c28!important;
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero,.directory-hero,.arcade-hero,.page-hero,.section-hero) :is(h1,h2,p,a,button){position:relative;z-index:1;text-shadow:0 2px 12px #000c}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.directory-group,.arcade-card,.cartridge-cabinet,.tool-card,.kf-start-card,.entry-card,.quick-card,.game-card){
+ background-image:radial-gradient(circle at 95% 0%,#82617c24,transparent 46%),linear-gradient(145deg,#29232c,#13171b)!important;
+ border-color:#a48a755c!important;box-shadow:0 14px 36px #0007,inset 0 1px #e1c4a317!important;
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.directory-group,.arcade-card,.tool-card,.quick-card,.game-card)::before{pointer-events:none}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory,.foundry,.members-page,.cartridge-shelf,.admin-shell,.messages-shell) :is(h1,h2){font-family:Georgia,'Times New Roman',serif;letter-spacing:-.025em}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) .kf-header{background:linear-gradient(100deg,#1e1922f5,#101317f5),var(--kf-illustration) center 24%/cover no-repeat!important}
+@media(max-width:680px){body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero,.directory-hero,.arcade-hero,.page-hero,.section-hero){background-position:center,55% center!important}}
