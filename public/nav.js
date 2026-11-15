@@ -265,7 +265,7 @@
         </div>
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
-      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Messages</a>
+      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Ruinwire</a>
       <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
