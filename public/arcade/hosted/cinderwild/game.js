@@ -273,7 +273,7 @@ function changeLead(i,duringBattle=false){
  if(!Number.isInteger(i)||i<0||i>=state.party.length||state.party[i].hp<=0)return;
  if(duringBattle&&(!battle||i===0))return;
  const selected=state.party.splice(i,1)[0];state.party.unshift(selected);
- notify(name(selected.id)+" leads the team.");if(duringBattle){enemyTurn();if(battle)renderBattle();}else openMenu("party");save();
+ notify(name(selected.id)+" leads the team.");if(duringBattle){enemyTurn();if(battle)renderBattle();}else openMenu("party");render();save();
 }
 function buy(id,price){
  if(state.coins<price){notify("Not enough cinders.");return;}
@@ -358,12 +358,22 @@ function draw(now=globalThis.performance?.now()||0){
  }
  for(const shrine of SHRINES){
   const px=(shrine.x-ox)*t,py=(shrine.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
-  const cleared=state.caught.includes(shrine.id);rect(px+4,py+22,24,7,"#3f355d");rect(px+8,py+11,16,17,cleared?"#63737b":state.complete?"#ff8bca":"#61778a");rect(px+12,py+6,8,11,cleared?"#8e9a9e":"#c7f274");
+  const cleared=state.caught.includes(shrine.id);
+  if(renderer?.shrine(ctx,px,py,t,state.complete,cleared))continue;
+  rect(px+4,py+22,24,7,"#3f355d");rect(px+8,py+11,16,17,cleared?"#63737b":state.complete?"#ff8bca":"#61778a");rect(px+12,py+6,8,11,cleared?"#8e9a9e":"#c7f274");
  }
  for(const npc of NPCS){
   const px=(npc.x-ox)*t,py=(npc.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
   const gym=npc.kind==="gym";
-  if(renderer?.actor(ctx,"warden",px,py,t)){rect(px+12,py+1,8,2,gym?"#ef93c2":"#ffdd81");continue;}
+  if(renderer?.actor(ctx,gym?"warden":npc.kind==="heal"?"nurse":"merchant",px,py,t)){
+   if(Math.abs(state.x-npc.x)+Math.abs(state.y-npc.y)<=3&&py>17){
+    ctx.font="bold 11px system-ui";ctx.textAlign="center";
+    const labelWidth=Math.ceil(ctx.measureText(npc.name).width)+12;
+    rect(px+t/2-labelWidth/2,py-19,labelWidth,15,"#201e19ed");
+    ctx.fillStyle=gym?"#f9bddc":"#ffdfa7";ctx.fillText(npc.name,px+t/2,py-8);
+   }else rect(px+14,py-13,4,4,gym?"#dfa7db":"#ffe0a0");
+   continue;
+  }
   rect(px+9,py+8,14,18,gym?"#302b60":"#e3e4a7");rect(px+9,py+2,14,12,gym?"#ff74c8":"#e8b787");
   rect(px+11,py+8,3,3,"#24313a");rect(px+19,py+8,3,3,"#24313a");
   rect(px+7,py,18,3,gym?"#d6fa67":"#f8d97e");
@@ -373,7 +383,7 @@ function draw(now=globalThis.performance?.now()||0){
   if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
   const direction=["down","up","left","right"].indexOf(visitor.facing);
   if(!renderer?.actor(ctx,"warden",px,py,t,Math.max(0,direction)))rect(px+9,py+7,14,19,"#78ccf2");
-  ctx.font="bold 10px sans-serif";ctx.textAlign="center";
+  ctx.font="bold 11px system-ui";ctx.textAlign="center";
   const label=String(visitor.display_name||visitor.username||"Trainer").slice(0,13);
   const width=Math.min(118,Math.max(44,label.length*6+6));
   const tx=px+16,ty=py-5;
@@ -389,7 +399,7 @@ function drawFieldMap(){
  const canvas=$("field-map");if(!canvas)return;
  const ctx=canvas.getContext("2d");if(!ctx)return;
  const p=8;canvas.height=H*p;
- const colors={town:"#d7b995",path:"#d1ad82",grass:"#74b777",field:"#92c88c",tree:"#265f55",water:"#348dad",house:"#aa696b",roof:"#82516e",ruin:"#545440",wall:"#202f34"};
+ const colors={town:"#8e856a",path:"#b19066",grass:"#4c684f",field:"#62795c",tree:"#263b38",water:"#427786",house:"#bd8861",roof:"#85667e",ruin:"#5d5964",wall:"#202f34"};
  for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.fillStyle=colors[tile(x,y)]||colors.wall;ctx.fillRect(x*p,y*p,p,p);}
  for(const npc of NPCS){
   const cleared=npc.kind==="gym"&&state.badges.includes(npc.id);
@@ -427,6 +437,10 @@ function sprite(id,canvasId,frame=0){
  if(window.HellOrbitSprites?.draw)window.HellOrbitSprites.draw(ctx,id,0,0,cvs.width,frame,canvasId==="ally-sprite");
  else{ctx.font="64px system-ui";ctx.fillText(sp(id)?.[0]?.[0]||"?",20,72);}
 }
+function portrait(id){
+ const appearance=renderer?.portraitStyle(id);
+ return appearance?'<span class="creature-portrait" style="'+esc(appearance)+'" aria-hidden="true"></span>':'';
+}
 function renderBattle(){
  if(!battle)return;
  const b=battle.enemy,a=lead();if(!a){blackout();return;}
@@ -437,7 +451,7 @@ function renderBattle(){
  $("ally-name").textContent=name(a.id)+" · Lv."+a.level;
  $("ally-hp").innerHTML=hpbar(a)+"<small>"+a.hp+" / "+a.maxHp+" HP</small>";
  $("battle-notes").replaceChildren(...battle.lines.map(s=>{const p=document.createElement("p");p.textContent=s;return p;}));
- $("battle-buttons").innerHTML=choices.map((m,i)=>'<button data-move="'+i+'" '+(Math.min(a.pp[i],m.pp)<=0?"disabled":"")+'><strong>'+esc(m.name)+'</strong><span>'+esc(m.type.toUpperCase())+' · '+Math.min(a.pp[i],m.pp)+' PP</span></button>').join("");
+ $("battle-buttons").innerHTML=choices.map((m,i)=>'<button data-element="'+esc(m.type)+'" data-move="'+i+'" '+(Math.min(a.pp[i],m.pp)<=0?"disabled":"")+'><strong>'+esc(m.name)+'</strong><span>'+esc(m.type.toUpperCase())+' · '+Math.min(a.pp[i],m.pp)+' PP</span></button>').join("");
  const healing=state.party.map((c,i)=>{
   const potion=c.hp>0&&c.hp<c.maxHp?'<button data-battle-heal="'+i+'" '+(!state.items.potions?"disabled":"")+'>Potion: '+esc(name(c.id))+' · '+c.hp+'/'+c.maxHp+' HP</button>':"";
   const revive=c.hp<=0?'<button data-battle-revive="'+i+'" '+(!state.items.revives?"disabled":"")+'>Revive: '+esc(name(c.id))+'</button>':"";
@@ -452,6 +466,12 @@ function render(){
  $("money").textContent=state.coins;$("badges").textContent=state.badges.length+" / 3 Crests";
  $("party-summary").textContent=state.party.length?state.party.map(c=>name(c.id)+" Lv."+c.level+(c.hp?"":" ✕")).join(" · "):"Choose a starter to begin";
  $("progress").textContent="Seen "+state.seen.length+" / "+Object.keys(SPECIES).length+" · Captured "+state.caught.length;
+ const portrait=$("lead-portrait");
+ const appearance=state.party[0]&&renderer?.portraitStyle(state.party[0].id);
+ if(portrait?.setAttribute){
+  portrait.hidden=!appearance;
+  if(appearance)portrait.setAttribute("style",appearance);
+ }
  draw();
 }
 function openMenu(type){
@@ -459,12 +479,21 @@ function openMenu(type){
  modal=type;$("menu").hidden=false;$("menu-title").textContent={party:"Creature Party",box:"Storage Box",dex:"Field Bestiary",map:"World Map",shop:"Supply Shop",guide:"Adventure Journal"}[type]||"Menu";
  const area=$("menu-body");
  if(type==="party"){
-  area.innerHTML=state.party.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+esc(sp(c.id)[1])+' · '+c.hp+'/'+c.maxHp+' HP · XP '+c.xp+'/'+expreq(c.level)+'</small>'+hpbar(c)+'<div class="inline-actions"><button data-lead="'+i+'" '+(i===0||c.hp<=0?"disabled":"")+'>Lead</button><button data-potion="'+i+'" '+(!state.items.potions||c.hp===c.maxHp||c.hp===0?"disabled":"")+'>Potion</button><button data-revive="'+i+'" '+(!state.items.revives||c.hp?"disabled":"")+'>Revive</button><button data-store="'+i+'" '+(state.party.length<=1?"disabled":"")+'>Store</button></div></div>').join("")||"<p>No creatures yet.</p>";
+  area.innerHTML=state.party.map((c,i)=>'<div class="creature-line">'+portrait(c.id)+'<strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+esc(sp(c.id)[1])+' · '+c.hp+'/'+c.maxHp+' HP · XP '+c.xp+'/'+expreq(c.level)+'</small>'+hpbar(c)+'<div class="inline-actions"><button data-lead="'+i+'" '+(i===0||c.hp<=0?"disabled":"")+'>Lead</button><button data-potion="'+i+'" '+(!state.items.potions||c.hp===c.maxHp||c.hp===0?"disabled":"")+'>Potion</button><button data-revive="'+i+'" '+(!state.items.revives||c.hp?"disabled":"")+'>Revive</button><button data-store="'+i+'" '+(state.party.length<=1?"disabled":"")+'>Store</button></div></div>').join("")||"<p>No creatures yet.</p>";
   area.innerHTML+='<p>Potions: '+state.items.potions+' · Revives: '+state.items.revives+'</p>';
  }else if(type==="box"){
-  area.innerHTML='<p>Stored '+state.box.length+' / 200 creatures. Captures overflow here when your six-member party is full. Legendary creatures cannot be released.</p>'+(state.box.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+c.hp+'/'+c.maxHp+' HP</small><div class="inline-actions"><button data-withdraw="'+i+'" '+(state.party.length>=6?"disabled":"")+'>Add to party</button><button data-release="'+i+'" '+(SHRINES.some(shrine=>shrine.id===c.id)?"disabled":"")+'>Release</button></div></div>').join("")||"<p>Storage is empty.</p>");
+  area.innerHTML='<p>Stored '+state.box.length+' / 200 creatures. Captures overflow here when your six-member party is full. Legendary creatures cannot be released.</p>'+(state.box.map((c,i)=>'<div class="creature-line">'+portrait(c.id)+'<strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+c.hp+'/'+c.maxHp+' HP</small><div class="inline-actions"><button data-withdraw="'+i+'" '+(state.party.length>=6?"disabled":"")+'>Add to party</button><button data-release="'+i+'" '+(SHRINES.some(shrine=>shrine.id===c.id)?"disabled":"")+'>Release</button></div></div>').join("")||"<p>Storage is empty.</p>");
  }else if(type==="dex"){
-  area.innerHTML='<p>'+state.caught.length+' captured · '+state.seen.length+' seen of '+Object.keys(SPECIES).length+' original species.</p><div class="dex-controls"><label>Search known creatures<input id="dex-search" type="search" placeholder="Name or bestiary number" autocomplete="off"></label><label>Collection<select id="dex-status-filter"><option value="all">All creatures</option><option value="seen">Discovered</option><option value="caught">Captured</option><option value="missing">Undiscovered</option></select></label></div><p id="dex-count" role="status" aria-live="polite"></p><div id="dex-entries" class="dex-list">'+Object.keys(SPECIES).map((id,i)=>'<div data-dex-id="'+id+'" data-dex-number="'+String(i+1).padStart(3,"0")+'" class="'+(state.caught.includes(id)?"caught":state.seen.includes(id)?"seen":"unknown")+'"><span>#'+String(i+1).padStart(3,"0")+'</span><strong>'+esc(state.seen.includes(id)||state.caught.includes(id)?name(id):"????????")+'</strong><small>'+(state.caught.includes(id)?"Captured":state.seen.includes(id)?"Seen":"Unknown")+'</small></div>').join("")+'</div>';
+  const entries=Object.keys(SPECIES).map((id,i)=>{
+   const caught=state.caught.includes(id),known=caught||state.seen.includes(id);
+   const art=known?portrait(id):'<span class="creature-portrait mystery-portrait" aria-hidden="true">?</span>';
+   return '<div data-dex-id="'+id+'" data-dex-number="'+String(i+1).padStart(3,"0")+
+    '" class="'+(caught?"caught":known?"seen":"unknown")+'">'+art+
+    '<span class="entry-number">#'+String(i+1).padStart(3,"0")+'</span><strong>'+esc(known?name(id):"Undiscovered")+
+    '</strong><small>'+(caught?"Captured":known?"Seen":"Unknown")+'</small></div>';
+  }).join("");
+  area.innerHTML='<p>'+state.caught.length+' captured · '+state.seen.length+' seen of '+Object.keys(SPECIES).length+
+   ' original species.</p><div class="dex-controls"><label>Search known creatures<input id="dex-search" type="search" placeholder="Name or bestiary number" autocomplete="off"></label><label>Collection<select id="dex-status-filter"><option value="all">All creatures</option><option value="seen">Discovered</option><option value="caught">Captured</option><option value="missing">Undiscovered</option></select></label></div><p id="dex-count" role="status" aria-live="polite"></p><div id="dex-entries" class="dex-list">'+entries+'</div>';
  }else if(type==="shop"){
   const rows=[["orbs","Capture Orb",30],["superOrbs","Prism Orb",80],["potions","Potion",22],["revives","Revive",65]];
   area.innerHTML='<p>Cinders: '+state.coins+'</p>'+rows.map(row=>'<div class="shop-row"><span><strong>'+row[1]+'</strong> · owned '+state.items[row[0]]+'</span><button data-buy="'+row[0]+'" '+(state.coins<row[2]?"disabled":"")+'>Buy · '+row[2]+'</button></div>').join("");

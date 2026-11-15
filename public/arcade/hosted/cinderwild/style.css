@@ -358,3 +358,177 @@ footer a { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Cinderwild's field guide uses iron, brass, and the colors of the local terrain. */
+:root {
+  --bg: #111211;
+  --panel: #25251c;
+  --surface: #292920;
+  --line: #57513d;
+  --ink: #faf0da;
+  --muted: #c5bea9;
+  --gold: #ffd096;
+  --mint: #b6d49f;
+}
+body {
+  background: radial-gradient(ellipse at center top, #4a3a27 0, #251f19 38rem, #121210 86rem);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .42em;
+  color: #fee5ae;
+  font-variant: small-caps;
+  letter-spacing: .035em;
+  text-shadow: 0 2px #110f0d, 0 0 24px #dd904869;
+}
+.brand span {
+  display: grid;
+  place-items: center;
+  width: 1.38em;
+  aspect-ratio: 1;
+  border: 1px solid #9d774a;
+  border-radius: .2em;
+  background: radial-gradient(#684b2c, #2a2219);
+}
+.hud {
+  border-color: #817354;
+  background: linear-gradient(166deg, #403724, #26261c 85%);
+  box-shadow: inset 0 1px #d4b27c44, 0 3px 8px #0a090765;
+}
+.hud .region {
+  border-radius: .65rem 0 0 .65rem;
+  background: linear-gradient(125deg, #6a4e2d80, #302b2222);
+}
+.hud small { color: #c6b59a; }
+.hud strong { color: var(--ink); font-size: clamp(.72rem, 1.7vw, 1rem); }
+.hud .region strong { font-family: "Instrument Serif", Georgia, serif; font-size: clamp(.85rem, 2.1vw, 1.24rem); }
+.screen-frame {
+  border-color: #927853;
+  box-shadow: 0 0 0 2px #282518, 0 .85rem 1.6rem #100c0995;
+}
+.screen-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 1.25rem #070e0eb3, inset 0 0 0 1px #dec48442;
+}
+.trainer-panel {
+  background: linear-gradient(145deg, #3d3627, #28271e 74%);
+  border-color: #786648;
+  box-shadow: inset 0 1px #ad8a5c55, 0 8px 24px #090a0777;
+}
+.trainer-summary {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-width: 0;
+  padding: .35rem .45rem;
+  border: 1px solid #77634a;
+  border-radius: .52rem;
+  background: #241f19;
+}
+.trainer-summary h2, .trainer-summary p { margin: 0; }
+.trainer-summary > div:last-child { min-width: 0; }
+.creature-portrait {
+  display: block;
+  width: 3.4rem;
+  flex: 0 0 auto;
+  aspect-ratio: 1;
+  border-radius: .42rem;
+  background-color: #100f123d;
+  background-image: var(--portrait);
+  background-size: var(--atlas);
+  background-position: var(--portrait-pos);
+}
+.quickbar button, .dpad button, .trainer-services, #fullscreen {
+  background: linear-gradient(#3f3c2d, #29291f);
+  border-color: #716647;
+  box-shadow: inset 0 1px #c3a67132;
+}
+.trainer-services summary { color: #e9cba2; }
+button:hover:not(:disabled) { border-color: #bba172; }
+.interact {
+  background: linear-gradient(#556646, #384632);
+  border-color: #8c9a69;
+  color: #f5efcc;
+  box-shadow: inset 0 1px #e2edaa33, 0 .13rem .35rem #191b15;
+}
+.interact small { color: #deddb9; }
+.field-notice { color: #e8d6ac; }
+.shell:is(:fullscreen, .is-expanded), .shell:is(:fullscreen, .is-expanded) .topbar { background: #201d17; }
+.window, .window-top {
+  background: #2d2a22;
+  color: var(--ink);
+}
+.window {
+  border-color: #967f56;
+  box-shadow: inset 0 1px #e9c18945, 0 1rem 4rem #000c;
+}
+.window h2 { color: #ffdaa3; }
+.starter-window {
+  background: linear-gradient(#211b1bb8, #231e1aec), url("art/twilight-clearing.webp") center 55% / cover;
+}
+.starter-window h2 {
+  font-size: clamp(1.35rem, 5vw, 2.2rem);
+  text-align: center;
+  text-shadow: 0 2px #190d0a;
+}
+.starter-options button {
+  background: radial-gradient(var(--element), #272322 72%) !important;
+  border: 1px solid var(--element);
+  box-shadow: inset 0 0 0 2px #e6d1b12c;
+}
+[data-element="grass"], [data-element="thorn"] { --element: #77965b; }
+[data-element="fire"] { --element: #b87950; }
+[data-element="water"] { --element: #5d9baf; }
+[data-element="ghost"], [data-element="cosmic"] { --element: #aa8bc5; }
+[data-element="electric"] { --element: #c5aa64; }
+[data-element="stone"], [data-element="normal"] { --element: #93816b; }
+[data-element="air"] { --element: #82a6ad; }
+.starter-portrait { width: min(100%, 8.85rem); filter: drop-shadow(0 7px 5px #171318); }
+.starter-options small { color: #fff0d3; text-transform: uppercase; letter-spacing: .11em; }
+.battle-stage { border-color: #ad9363; }
+.battle-stage[data-biome="marsh"] { background-image: url("art/lantern-marsh.webp"); }
+.battle-stage[data-biome="ridge"] { background-image: url("art/eclipse-ridge.webp"); }
+.battle-stage[data-biome="marsh"]::after, .battle-stage[data-biome="ridge"]::after { background: linear-gradient(transparent, #0509143b); }
+.battle-label {
+  border-color: #af9b73;
+  background: #201e19ef;
+  box-shadow: 0 2px 6px #110e0e95;
+}
+.battle-stage canvas { width: clamp(4.3rem, min(26vw, 23svh), 12rem); }
+.move-grid button {
+  background: linear-gradient(150deg, #383327, #29251c);
+  border-color: var(--element);
+}
+.battle-notes { background: #211e18; }
+.creature-line:has(.creature-portrait) { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.creature-line .creature-portrait { grid-row: span 2; }
+.creature-line .health, .creature-line .inline-actions { grid-column: 1 / -1; }
+.dex-list > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .2rem .55rem;
+  color: var(--ink);
+  background: #252218;
+}
+.dex-list .creature-portrait { grid-row: span 3; }
+.dex-list .entry-number { font-size: .64rem; color: #c3b38b; }
+.mystery-portrait {
+  display: grid;
+  place-items: center;
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 1.8rem;
+  color: #90836b;
+}
+@media (max-width: 550px) {
+  .dex-list { grid-template-columns: minmax(0, 1fr); }
+  .trainer-summary { padding: .27rem .4rem; }
+  .trainer-summary .creature-portrait { width: 2rem; }
+  .brand { letter-spacing: 0; }
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .battle-stage canvas { width: clamp(3.5rem, 22svh, 8.5rem); }
+}

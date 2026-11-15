@@ -1,172 +1,258 @@
-/* Cache the terrain at native pixel resolution. Actors are composed at draw time. */
+/* World materials and scenery are baked once. Actors and light are composed in the viewport. */
 (() => {
-  const native = 16;
-  const assetRoot = new URL("art/", document.currentScript.src);
-  const artwork = {}, portraits = {};
-  const colors = { field: "#8ea64d", grass: "#82993f", town: "#c7ae74", path: "#c29460",
-    tree: "#425e3b", water: "#36768a", house: "#917050", roof: "#6c5d45", ruin: "#646748", wall: "#24362e" };
+  const tileSize = 32;
+  const artUrl = new URL("art/", document.currentScript.src);
+  const materials = ["forest", "marsh", "slate", "road", "cobbles", "pool"];
+  const colors = ["#4f6443", "#355b51", "#4c465b", "#7b6247", "#666a59", "#274f55"];
+  const props = {
+    pine: 0, oak: 1, willow: 2, slate: 3, infirmary: 4, shop: 5, ruin: 6, sign: 7,
+    rocks: 8, flowers: 9, fern: 10, lantern: 11, shrine: 12, reeds: 13, logs: 14, grass: 15
+  };
+  const roster = [
+    ["mossbit", "mossreaper", "embercub", "ashhorn", "driftfin", "cryptfin", "zipfang", "voltmaw",
+      "gloamlet", "gloamshade", "thornspit", "thornmaw", "grubruckle", "gravruckle", "mournwing", "doomwing"],
+    ["squibblex", "squibmarshal", "hexpup", "hexhound", "starjelly", "astraljelly", "minionmouse", "minivillain", "minieddie"]
+  ];
+  const files = ["bestiary-common.webp", "bestiary-rare.webp"];
+  const portraits = new Map(roster.flatMap((ids, sheet) => ids.map((id, index) => [id, { sheet, index, columns: sheet ? 3 : 4 }])));
+  const cast = { trainer: 0, nurse: 1, merchant: 2, warden: 3 };
+  const art = {};
   let terrain;
-  const water = [];
+  let waters = [], lights = [], fireflies = [];
 
-  function atlas(ctx, image, x, y, width, height, dx, dy, dw = width, dh = height) {
-    if (image) ctx.drawImage(image, x * native, y * native, width, height, dx, dy, dw, dh);
+  function sheetCell(ctx, image, index, columns, rows, x, y, width, height = width) {
+    const sw = image.width / columns, sh = image.height / rows;
+    ctx.drawImage(image, (index % columns) * sw, Math.floor(index / columns) * sh, sw, sh, x, y, width, height);
+  }
+
+  function drawProp(ctx, name, x, y, width, height = width) {
+    if (!art.scenery) return false;
+    sheetCell(ctx, art.scenery, props[name], 4, 4, x - width / 2, y - height, width, height);
+    return true;
+  }
+
+  function shadows(ctx, x, y, width, depth) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, width, depth, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#10191b68";
+    ctx.fill();
   }
 
   function build(width, height, tileAt, hash, village) {
+    const n = tileSize;
     const canvas = document.createElement("canvas");
-    canvas.width = width * native;
-    canvas.height = height * native;
+    canvas.width = width * n;
+    canvas.height = height * n;
     const ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
-    const houses = [], trees = [];
-    water.length = 0;
-    const isRoad = (x, y) => {
-      const tile = tileAt(x, y);
-      return tile === "path" || (tile === "town" && y === 16 && (x === 4 || x === 11));
-    };
+    waters = []; lights = []; fireflies = [];
+    const shapes = materials.map(() => new Path2D());
+    const objects = [];
+    const roadAt = (x, y) => tileAt(x, y) === "path" || (tileAt(x, y) === "town" && y === 16 && (x === 4 || x === 11));
+    const settlement = (x, y) => x >= 2 && x <= 13 && y >= 16 && y <= 20;
+
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const dx = x * native, dy = y * native, tile = tileAt(x, y), variant = hash(x, y) % 13;
-        ctx.fillStyle = colors[tile];
-        ctx.fillRect(dx, dy, native, native);
-        if (tile === "water") {
-          water.push({ x, y, variant });
-          ctx.fillStyle = variant < 8 ? "#366968" : "#397471";
-          ctx.fillRect(dx, dy, native, native);
-          for (const [mx, my, sx, sy, sw, sh] of [
-            [-1, 0, 0, 0, 2, 16], [1, 0, 14, 0, 2, 16], [0, -1, 0, 0, 16, 2], [0, 1, 0, 14, 16, 2]
-          ]) {
-            if (tileAt(x + mx, y + my) !== "water") {
-              ctx.fillStyle = "#85a687";
-              ctx.fillRect(dx + sx, dy + sy, sw, sh);
-            }
-          }
-          continue;
-        }
-        const marsh = x >= 32 && x < 51;
-        let floor = [variant < 5 ? 3 : 2, 12];
-        if (isRoad(x, y)) {
-          const column = !isRoad(x - 1, y) ? 0 : !isRoad(x + 1, y) ? 2 : 1;
-          const row = !isRoad(x, y - 1) ? 7 : !isRoad(x, y + 1) ? 9 : 8;
-          floor = column === 1 && row === 8 && variant < 2 ? [5, 8] : [column, row];
-        }
-        atlas(ctx, artwork.terrain, floor[0] + (marsh ? 11 : 0), floor[1], native, native, dx, dy);
-        if (tile === "grass") {
-          ctx.fillStyle = variant < 6 ? "#5c782e" : "#768a33";
-          for (const offset of [2 + variant % 4, 10]) {
-            ctx.fillRect(dx + offset, dy + 7, 1, 4);
-            ctx.fillRect(dx + offset + 1, dy + 9, 2, 2);
-          }
-        }
-        if (tile === "field" && variant < 2) atlas(ctx, artwork.props, 5, 11, native, native, dx, dy);
-        if (tile === "tree" && (!village || y < village.y || x < village.x || x >= village.x + village.width)) {
-          trees.push({ dx, dy, variant, y });
-        }
-        if (tile === "house") houses.push({ x: dx, y: dy });
-      }
-    }
-    for (const { dx, dy, variant, y } of trees) {
-      if (!artwork.props) {
-        ctx.fillStyle = colors.tree;
-        ctx.fillRect(dx + 2, dy, 12, 16);
-        continue;
-      }
-      ctx.fillStyle = "#233b2f60";
-      ctx.fillRect(dx + 2, dy + 11, 15, 4);
-      const size = 17 + variant % 6;
-      atlas(ctx, artwork.props, 4, (y > 31 || variant > 9) ? 9 : 6, native * 2, native * 2,
-        dx + Math.floor((native - size) / 2), dy + 15 - size, size, size);
-    }
-    for (const { x, y } of houses) {
-      if (!artwork.props) {
-        ctx.fillStyle = colors.house;
-        ctx.fillRect(x, y - native, native, native * 2);
-      } else {
-        atlas(ctx, artwork.props, 11, 0, 48, 48, x - 6, y - 17, 28, 32);
-      }
-      ctx.fillStyle = x < 100 ? "#f1d483" : "#e7a6ba";
-      ctx.fillRect(x + 6, y + 4, 4, 2);
-    }
-    if (village && artwork.village) ctx.drawImage(artwork.village, village.x * native, village.y * native);
+        const kind = tileAt(x, y), v = hash(x, y);
+        const dx = x * n, dy = y * n;
+        const marsh = x >= 32 && x < 51, ridge = x >= 51;
+        const villageTile = village && x >= village.x && x < village.x + village.width && y >= village.y && y < village.y + village.height;
+        shapes[ridge ? 2 : marsh ? 1 : 0].rect(dx, dy, n, n);
 
-    // A cached grade gives each region its own palette while retaining the source sprite edges.
-    ctx.globalCompositeOperation = "multiply";
-    const grade = ctx.createLinearGradient(0, 0, width * native, 0);
-    for (const [stop, color] of [[0, "#cae3bb"], [.2, "#cae3bb"], [.37, "#9ed6b9"],
-      [.57, "#9eccc9"], [.73, "#8ac2ce"], [.87, "#a4b2d9"], [1, "#afafd9"]]) grade.addColorStop(stop, color);
-    ctx.fillStyle = grade;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = "source-over";
+        if (kind === "water") {
+          shapes[5].rect(dx, dy, n, n);
+          waters.push({ x, y, v, shore: [tileAt(x, y - 1), tileAt(x + 1, y), tileAt(x, y + 1), tileAt(x - 1, y)].map(t => t !== "water") });
+        } else if (roadAt(x, y) || settlement(x, y)) {
+          const inset = settlement(x, y) ? 0 : 2 + v % 5;
+          const shape = shapes[settlement(x, y) ? 4 : 3];
+          const left = roadAt(x - 1, y) || settlement(x - 1, y) ? 0 : inset;
+          const right = roadAt(x + 1, y) || settlement(x + 1, y) ? 0 : inset;
+          const top = roadAt(x, y - 1) || settlement(x, y - 1) ? 0 : inset;
+          const bottom = roadAt(x, y + 1) || settlement(x, y + 1) ? 0 : inset;
+          shape.roundRect(dx + left, dy + top, n - left - right, n - top - bottom,
+            [left && top, right && top, right && bottom, left && bottom].map(edge => edge ? inset : 0));
+        }
+
+        if (kind === "tree") {
+          const tree = ridge ? (v % 3 ? "slate" : "pine") : marsh ? "willow" : (v % 4 === 0 ? "pine" : "oak");
+          objects.push({ name: tree, x: dx + n / 2, y: dy + n * .91, size: n * (1.54 + (v % 7) * .085), shadow: .29 });
+        } else if (kind === "house") {
+          const px = dx + n * .5, py = dy + n;
+          objects.push({ name: x === 4 ? "infirmary" : "shop", x: px, y: py, size: n * 2.95, shadow: .31 });
+          lights.push({ x: px, y: py - n * .45, radius: n * 1.15, hue: "242,164,76" });
+        } else if (kind === "ruin" && villageTile) {
+          objects.push({ name: v % 3 === 0 ? "ruin" : "rocks", x: dx + n / 2, y: dy + n * .87, size: n * (1.04 + (v % 5) * .13), shadow: .24 });
+        } else if (kind === "grass" && v % 7 < 4) {
+          const leaf = v % 9 < 2 ? "flowers" : marsh ? "reeds" : (v % 4 ? "grass" : "fern");
+          objects.push({ name: leaf, x: dx + 8 + v % 16, y: dy + 17 + v % 14, size: n * (.41 + (v % 9) * .035) });
+          if (v % 29 === 0) fireflies.push({ x: dx + n / 2, y: dy + n / 2, seed: v });
+        } else if (kind === "field" && v % 12 === 0) {
+          objects.push({ name: v % 24 ? "rocks" : "logs", x: dx + n / 2, y: dy + n * .82, size: n * .93 });
+        }
+
+        if (y === 16 && (x === 2 || x === 13 || x === 30 || x === 49 || x === 53)) {
+          objects.push({ name: "lantern", x: dx + n / 2, y: dy + n * .88, size: n * 1.16, shadow: .19 });
+          lights.push({ x: dx + n / 2, y: dy + n * .30, radius: n * 1.34, hue: "255,180,87" });
+        }
+        if (y === 20 && (x === 13 || x === 31 || x === 50)) {
+          objects.push({ name: "sign", x: dx + n / 2, y: dy + n * .83, size: n, shadow: .12 });
+        }
+      }
+    }
+
+    for (const [index, shape] of shapes.entries()) {
+      ctx.fillStyle = colors[index];
+      if (art.ground) {
+        const swatch = document.createElement("canvas");
+        swatch.width = swatch.height = 96;
+        const sample = swatch.getContext("2d");
+        sample.imageSmoothingEnabled = false;
+        sheetCell(sample, art.ground, index, 3, 2, 0, 0, 96);
+        ctx.fillStyle = ctx.createPattern(swatch, "repeat") || colors[index];
+      }
+      ctx.fill(shape);
+    }
+
+    // Broad patches of canopy shadow break up the repeating materials on long routes.
+    const shade = document.createElement("canvas");
+    shade.width = Math.ceil(width * n / 4);
+    shade.height = Math.ceil(height * n / 4);
+    const shadeCtx = shade.getContext("2d");
+    for (let y = 2; y < height; y += 5) {
+      for (let x = 2; x < width; x += 6) {
+        const seed = hash(x, y);
+        const centerX = (x + (seed % 6) * .32) * n / 4;
+        const centerY = (y + (seed % 9) * .24) * n / 4;
+        const radius = 15 + seed % 19;
+        paintLight(shadeCtx, centerX, centerY, radius,
+          seed % 3 === 0 ? "210,189,112" : x >= 32 && x < 51 ? "9,35,42" : "13,23,28", seed % 3 === 0 ? .16 : .28);
+      }
+    }
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(shade, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+
+    for (const { x, y, shore } of waters) {
+      const dx = x * n, dy = y * n;
+      const edges = [[dx, dy, n, 3], [dx + n - 3, dy, 3, n], [dx, dy + n - 3, n, 3], [dx, dy, 3, n]];
+      ctx.fillStyle = "#abd0a168";
+      shore.forEach((edge, i) => { if (edge) ctx.fillRect(...edges[i]); });
+    }
+
+    for (const item of objects.sort((a, b) => a.y - b.y)) {
+      if (item.shadow) shadows(ctx, item.x + 2, item.y - 2, item.size * item.shadow, item.size * .075);
+      if (!drawProp(ctx, item.name, item.x, item.y, item.size) && item.shadow) {
+        ctx.fillStyle = "#53654a";
+        ctx.fillRect(item.x - item.size * .2, item.y - item.size * .44, item.size * .4, item.size * .44);
+      }
+    }
     return canvas;
+  }
+
+  function paintLight(ctx, x, y, radius, hue, opacity) {
+    const light = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    light.addColorStop(0, "rgba(" + hue + "," + opacity + ")");
+    light.addColorStop(1, "rgba(" + hue + ",0)");
+    ctx.fillStyle = light;
+    ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
   }
 
   globalThis.CinderwildRenderer = Object.freeze({
     load(onReady) {
-      const fetchImage = (collection, name, url) => new Promise(resolve => {
+      const images = {
+        ground: "ground-materials.webp", scenery: "world-scenery.webp", cast: "field-cast.webp",
+        common: files[0], rare: files[1], trainer: "trainer.png", warden: "warden.png"
+      };
+      for (const [key, file] of Object.entries(images)) {
         const image = new Image();
-        image.onload = () => { collection[name] = image; resolve(); };
-        image.onerror = () => resolve();
-        image.src = url;
-      });
-      const tiles = ["terrain", "props", "village", "trainer", "warden"];
-      const creatures = ["mossbit", "embercub", "driftfin", "zipfang", "gloamlet", "thornspit", "grubruckle", "mournwing"];
-      Promise.all(tiles.map(name => fetchImage(artwork, name, new URL(name + ".png", assetRoot))))
-        .then(() => { terrain = null; onReady(); });
-      Promise.all(creatures.map(name => fetchImage(portraits, name, "/assets/monster-sprites/" + name + ".svg")))
-        .then(onReady);
+        image.onload = () => {
+          art[key] = image;
+          if (key === "ground" || key === "scenery") terrain = null;
+          onReady();
+        };
+        image.src = new URL(file, artUrl);
+      }
     },
-    world(ctx, originX, originY, viewWidth, viewHeight, tileSize, width, height, tileAt, hash, village, time) {
+    world(ctx, originX, originY, viewWidth, viewHeight, t, width, height, tileAt, hash, village, time) {
       terrain ??= build(width, height, tileAt, hash, village);
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(terrain, originX * native, originY * native, viewWidth * native, viewHeight * native,
-        0, 0, viewWidth * tileSize, viewHeight * tileSize);
-      const unit = tileSize / native;
-      for (const { x, y, variant } of water) {
-        const px = (x - originX) * tileSize, py = (y - originY) * tileSize;
-        if (px + tileSize < 0 || py + tileSize < 0 || px >= ctx.canvas.width || py >= ctx.canvas.height) continue;
-        const drift = (variant + Math.floor(time / 340)) % 8;
-        ctx.fillStyle = variant < 6 ? "#addcbd67" : "#addcbd43";
-        ctx.fillRect(px + (drift + 2) * unit, py + (4 + variant % 6) * unit, 5 * unit, unit);
+      ctx.drawImage(terrain, originX * tileSize, originY * tileSize, viewWidth * tileSize, viewHeight * tileSize,
+        0, 0, viewWidth * t, viewHeight * t);
+      const visible = (x, y) => x >= -t && y >= -t && x <= ctx.canvas.width + t && y <= ctx.canvas.height + t;
+      for (const { x, y, v } of waters) {
+        const dx = (x - originX) * t, dy = (y - originY) * t;
+        if (!visible(dx, dy)) continue;
+        const drift = (v % 17 + Math.floor(time / 240)) % 17;
+        ctx.fillStyle = "#b8ead54b";
+        ctx.fillRect((dx + drift * t / 32) | 0, dy + (v % 16 + 7) * t / 32, .28 * t, 1);
       }
-      const glow = ctx.createRadialGradient(ctx.canvas.width * .47, ctx.canvas.height * .4, 0,
-        ctx.canvas.width * .47, ctx.canvas.height * .4, Math.hypot(ctx.canvas.width, ctx.canvas.height) * .53);
-      glow.addColorStop(0, "#e9edc10d");
-      glow.addColorStop(.72, "#1c283400");
-      glow.addColorStop(1, "#19273264");
-      ctx.fillStyle = glow;
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      if (time) {
-        for (let i = 0; i < 14; i++) {
-          const x = Math.floor(originX / 5) * 5 + i * 2;
-          const y = Math.floor(originY / 5) * 5 + hash(i, 20) % (viewHeight + 5);
-          if (tileAt(x, y) !== "grass") continue;
-          const flicker = Math.sin((time + hash(x, y) % 4000) / 510);
-          if (flicker < .15) continue;
-          const px = Math.round((x - originX) * tileSize + 8 + flicker * 4);
-          const py = Math.round((y - originY) * tileSize + 14 + flicker * 6);
-          ctx.fillStyle = "#feeeb33c";
-          ctx.fillRect(px - 2, py - 2, 7, 7);
-          ctx.fillStyle = "#f7e6a0";
-          ctx.fillRect(px, py, 2, 2);
+      for (const lamp of lights) {
+        const x = (lamp.x / tileSize - originX) * t, y = (lamp.y / tileSize - originY) * t;
+        if (visible(x, y)) paintLight(ctx, x, y, lamp.radius * t / tileSize, lamp.hue, .43 + (time ? Math.sin(time / 440 + lamp.x) * .075 : 0));
+      }
+      if (originX + viewWidth >= 34 && originX < 46 && originY + viewHeight > 4 && originY < 14) {
+        for (let i = 0; i < 3; i++) {
+          const drift = time ? Math.sin(time / 3400 + i) * .9 : 0;
+          const x = (38 + i * 3 + drift - originX) * t;
+          const y = (6 + i * 2 - originY) * t;
+          if (visible(x, y)) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(1, .32);
+            paintLight(ctx, 0, 0, t * 3.5, "172,216,210", .24);
+            ctx.restore();
+          }
         }
       }
+      for (const fly of fireflies) {
+        const x = (fly.x / tileSize - originX) * t + Math.sin(time / 780 + fly.seed) * 5;
+        const y = (fly.y / tileSize - originY) * t + Math.cos(time / 960 + fly.seed) * 8;
+        const bright = .25 + Math.sin(time / 540 + fly.seed) * .22;
+        if (!visible(x, y) || bright < .13) continue;
+        paintLight(ctx, x, y, 7, "255,225,137", bright);
+        ctx.fillStyle = "#ffeca5";
+        ctx.fillRect(Math.round(x), Math.round(y), 2, 2);
+      }
+    },
+    shrine(ctx, x, y, t, active, cleared) {
+      if (!art.scenery) return false;
+      shadows(ctx, x + t / 2, y + t * .84, t * .36, t * .10);
+      drawProp(ctx, "shrine", x + t / 2, y + t * .89, t * 1.28);
+      if (!cleared) paintLight(ctx, x + t * .49, y + t * .30, t * .41, active ? "222,144,255" : "109,143,208", active ? .76 : .26);
+      return true;
     },
     creature(ctx, id, size, frame, mirrored) {
-      if (!portraits[id]) return false;
+      const slot = portraits.get(id);
+      const sheet = slot && art[slot.sheet ? "rare" : "common"];
+      if (!sheet) return false;
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       if (mirrored) { ctx.translate(size, 0); ctx.scale(-1, 1); }
-      ctx.drawImage(portraits[id], 1, 1 + [0, 2, 0, -1][frame], size - 2, size - 4);
+      sheetCell(ctx, sheet, slot.index, slot.columns, slot.columns, 0, [0, 2, 0, -1][frame], size);
       ctx.restore();
       return true;
     },
+    portraitStyle(id) {
+      const slot = portraits.get(id);
+      if (!slot) return "";
+      const n = slot.columns;
+      const x = (slot.index % n) * 100 / (n - 1), y = Math.floor(slot.index / n) * 100 / (n - 1);
+      return "--portrait:url('" + new URL(files[slot.sheet], artUrl).pathname + "');--atlas:" + (n * 100) +
+        "%;--portrait-pos:" + x + "% " + y + "%";
+    },
     actor(ctx, name, x, y, size, facing = 0, frame = 0) {
-      if (!artwork[name]) return false;
-      ctx.fillStyle = "#231f2970";
-      ctx.beginPath();
-      ctx.ellipse(x + size / 2, y + size * .83, size * .36, size * .13, 0, 0, Math.PI * 2);
-      ctx.fill();
-      atlas(ctx, artwork[name], facing, frame, native, native, x + 2, y - 2, size - 4, size);
+      const sheet = art.cast || art[name === "trainer" ? "trainer" : "warden"];
+      if (!sheet) return false;
+      ctx.imageSmoothingEnabled = false;
+      shadows(ctx, x + size / 2, y + size * .87, size * .27, size * .115);
+      if (art.cast) {
+        const side = size * 1.38;
+        const step = frame ? (frame === 1 ? -2 : 1) : 0;
+        sheetCell(ctx, sheet, cast[name] * 4 + facing, 4, 4, x + (size - side) / 2, y + size * .93 - side + step, side);
+      } else {
+        sheetCell(ctx, sheet, frame * 4 + facing, 4, 4, x + 2, y - 2, size - 4, size);
+      }
       return true;
     }
   });

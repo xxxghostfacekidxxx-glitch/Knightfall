@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#121b1b">
+<meta name="theme-color" content="#171710">
 <meta name="description" content="Cinderwild: an original handheld-style creature catching adventure. Explore, battle, evolve, collect and challenge three Wardens.">
 <title>Cinderwild | Knightfall Chaos Cartridge</title>
-<link rel="stylesheet" href="./style.css?v=20261115-cabinet1">
+<link rel="stylesheet" href="./style.css?v=20261115-field-art1">
 <script src="/monster-mmo-sprite-atlas.js" defer></script>
 <script src="/arcade-save.js" defer></script>
-<script src="./village-layout.js?v=20261115-cabinet1" defer></script>
-<script src="./world-renderer.js?v=20261115-cabinet1" defer></script>
-<script src="./game.js?v=20261115-cabinet1" defer></script>
-<script src="./cabinet.js?v=20261115-cabinet1" defer></script>
+<script src="./village-layout.js?v=20261115-field-art1" defer></script>
+<script src="./world-renderer.js?v=20261115-field-art1" defer></script>
+<script src="./game.js?v=20261115-field-art1" defer></script>
+<script src="./cabinet.js?v=20261115-field-art1" defer></script>
 <script src="./cloud-sync.js?v=20261115-cloud1" defer></script>
 <script src="./online-world.js?v=20261115-online1" defer></script>
 </head>
@@ -20,7 +20,7 @@
 <main id="game-shell" class="shell">
 <header class="topbar">
  <a class="back" href="/chaos-cartridge.html">‹ <span>Arcade</span></a>
- <h1 class="brand"><span aria-hidden="true">✦</span> Cinderwild</h1>
+ <h1 class="brand"><span aria-hidden="true">✦</span>Cinderwild</h1>
  <button id="fullscreen" type="button" aria-pressed="false"><span aria-hidden="true">⛶</span> <span id="fullscreen-label">Fullscreen</span></button>
 </header>
 <div class="cabinet-layout">
@@ -37,7 +37,10 @@
   <p id="notice" class="field-notice" role="status" aria-live="polite">Choose a starter to begin your journey.</p>
  </section>
  <aside class="trainer-panel" aria-label="Trainer controls">
-  <div class="trainer-summary"><h2>Field party</h2><p id="party-summary">Choose a starter</p><small id="progress">Field Bestiary</small></div>
+  <div class="trainer-summary">
+   <div id="lead-portrait" class="creature-portrait" aria-hidden="true"></div>
+   <div><h2>Field party</h2><p id="party-summary">Choose a starter</p><small id="progress">Field Bestiary</small></div>
+  </div>
   <div id="controls" class="play-controls">
    <div class="movement-controls">
     <div class="dpad" aria-label="Touch movement">
@@ -94,9 +97,9 @@
  <div class="window starter-window">
   <h2 id="starter-title">Choose your first companion</h2>
   <div id="starter-options" class="starter-options">
-   <button data-starter="mossbit"><canvas class="starter-portrait" id="starter-mossbit" width="112" height="112" aria-hidden="true"></canvas><strong>Mossbit</strong><small>GRASS · The stubborn sprout</small></button>
-   <button data-starter="embercub"><canvas class="starter-portrait" id="starter-embercub" width="112" height="112" aria-hidden="true"></canvas><strong>Embercub</strong><small>FIRE · The little troublemaker</small></button>
-   <button data-starter="driftfin"><canvas class="starter-portrait" id="starter-driftfin" width="112" height="112" aria-hidden="true"></canvas><strong>Driftfin</strong><small>WATER · The quiet fighter</small></button>
+   <button data-starter="mossbit" data-element="grass"><canvas class="starter-portrait" id="starter-mossbit" width="112" height="112" aria-hidden="true"></canvas><strong>Mossbit</strong><small>Grass</small></button>
+   <button data-starter="embercub" data-element="fire"><canvas class="starter-portrait" id="starter-embercub" width="112" height="112" aria-hidden="true"></canvas><strong>Embercub</strong><small>Fire</small></button>
+   <button data-starter="driftfin" data-element="water"><canvas class="starter-portrait" id="starter-driftfin" width="112" height="112" aria-hidden="true"></canvas><strong>Driftfin</strong><small>Water</small></button>
   </div>
 
  </div>

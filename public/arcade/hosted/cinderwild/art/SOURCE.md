@@ -9,3 +9,11 @@ The village layout and art are adapted from [Ninja Adventure](https://github.com
 [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/)
 
 `twilight-clearing.webp` is an original generated illustration for Cinderwild's battle arena.
+
+The current overworld and roster use original generated artwork packed into runtime atlases.
+
+- `ground-materials.webp` contains six repeating forest, marsh, slate, trail, cobblestone, and water materials.
+- `world-scenery.webp` contains trees, town buildings, ruins, shrine stones, and smaller scenery.
+- `field-cast.webp` contains four views each of the ranger, nurse, merchant, and Warden.
+- `bestiary-common.webp` and `bestiary-rare.webp` cover all 25 Cinderwild species.
+- `lantern-marsh.webp` and `eclipse-ridge.webp` are the Storm Marsh and Eclipse Ridge battle scenes.
