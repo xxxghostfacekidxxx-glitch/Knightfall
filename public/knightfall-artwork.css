@@ -28,3 +28,57 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitc
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory,.foundry,.members-page,.cartridge-shelf,.admin-shell,.messages-shell) :is(h1,h2){font-family:Georgia,'Times New Roman',serif;letter-spacing:-.025em}
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) .kf-header{background:linear-gradient(100deg,#1e1922f5,#101317f5),var(--kf-illustration) center 24%/cover no-repeat!important}
 @media(max-width:680px){body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) :is(.community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,.members-page .members-hero,.foundry .foundry-hero,.directory-hero,.arcade-hero,.page-hero,.section-hero){background-position:center,55% center!important}}
+
+/* v3: distinct Gothic art for every core realm. Never cover canvases or member-created work. */
+body[data-kf-realm="home"],body[data-kf-realm="general"]{--kf-art-image:url('/assets/knightfall/eclipse-cathedral.svg')}
+body[data-kf-realm="madhouse"]{--kf-art-image:url('/assets/knightfall/realm-madhouse.svg')}
+body[data-kf-realm="arcade"]{--kf-art-image:url('/assets/knightfall/realm-arcade.svg')}
+body[data-kf-realm="foundry"]{--kf-art-image:url('/assets/knightfall/realm-foundry.svg')}
+body[data-kf-realm="messages"]{--kf-art-image:url('/assets/knightfall/realm-messages.svg')}
+body[data-kf-realm="moon"]{--kf-art-image:url('/assets/knightfall/realm-moon.svg')}
+body[data-kf-realm="market"]{--kf-art-image:url('/assets/knightfall/realm-market.svg')}
+body[data-kf-realm="members"]{--kf-art-image:url('/assets/knightfall/realm-members.svg')}
+body[data-kf-realm="god"]{--kf-art-image:url('/assets/knightfall/realm-god.svg')}
+body[data-kf-realm="pets"]{--kf-art-image:url('/assets/knightfall/realm-pets.svg')}
+body[data-kf-realm="diary"]{--kf-art-image:url('/assets/knightfall/realm-diary.svg')}
+
+/* Artwork for core section intros, with enough shadow to keep headline legible. */
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) [data-kf-art-hero]{
+ position:relative!important;isolation:isolate;overflow:hidden;border:1px solid #ac8e79!important;
+ border-radius:20px!important;min-height:clamp(210px,23vw,310px);padding:clamp(1.4rem,3vw,2.6rem)!important;
+ background-color:#171820!important;
+ background-image:linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
+ background-size:cover,cover!important;background-position:center,center!important;background-repeat:no-repeat!important;
+ box-shadow:0 21px 58px #000a,inset 0 0 0 1px #e0c4a71f!important;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(h1,h2,p,a,button,.eyebrow){position:relative;z-index:1;text-shadow:0 2px 12px #050408de}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] h1{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.04em;line-height:1.05;color:#f1e3d2!important}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(.lede,p){max-width:70ch;color:#eadccc}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]{position:relative;isolation:isolate}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{
+ content:"";pointer-events:none;position:absolute;inset:0 0 auto auto;width:min(76%,800px);height:clamp(150px,26vw,300px);z-index:-1;
+ background:var(--kf-art-image) right top/cover no-repeat;opacity:.31;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);
+ mask-image:linear-gradient(90deg,transparent,#000 55%);
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade) .kf-header{
+ background-color:#14171d!important;
+ background-image:linear-gradient(90deg,#17161def,#11151bf2 68%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
+ background-size:cover!important;background-position:center 43%!important;
+ border-bottom-color:#ad8d756e!important;box-shadow:0 8px 35px #0008!important;
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-header .kf-brand{color:#ece1d3!important;text-shadow:0 3px 20px #000!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card){
+ border-color:#967a7059!important;
+ background-image:radial-gradient(circle at 95% 0%,#82617c30,transparent 45%),linear-gradient(140deg,#28232c,#14171b)!important;
+ box-shadow:inset 0 1px #e5c9a318,0 14px 31px #0006;
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card):focus-within{outline:2px solid #c7a77c;outline-offset:3px}
+@media(max-width:700px){
+ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero]{
+  min-height:210px;background-position:center,68% center!important;
+  background-image:linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),var(--kf-art-image)!important;
+ }
+ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{width:100%;opacity:.18}
+}
+@media(prefers-reduced-motion:reduce){body[data-kf-realm] [data-kf-art-hero]{animation:none!important;transition:none!important}}
