@@ -78,7 +78,7 @@ function load(rawSource){
   return t;
  }catch{return fresh();}
 }
-let state=load(),battle=null,modal="",logLines=[],lastStep=0;
+let state=load(),battle=null,modal="",logLines=[],lastStep=0,onlinePeers=[];
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));document.dispatchEvent(new CustomEvent("cinderwild:local-save"));}catch{notify("Storage unavailable. Progress may not persist.");}}
 function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;const unit={id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[],status:null};unit.pp=moves(unit).map(m=>m.pp);return unit;}
 function moves(c){
@@ -272,6 +272,10 @@ function interact(){
  if(battle||modal)return;
  const npc=NPCS.find(n=>Math.abs(state.x-n.x)+Math.abs(state.y-n.y)<=2);
  if(!npc){notify("There's nobody to talk to here. Tall grass hides wild creatures.");return;}
+ if(window.CinderwildOnline?.connected){
+  const target=npc.kind==="heal"?"nurse_ember":npc.kind==="shop"?"supply_keeper":npc.id==="bramble"?"warden_briar":null;
+  if(target)window.CinderwildOnline.recordNpc(target);
+ }
  if(npc.kind==="heal"){healAll();notify("Nurse Ember restored your creatures and all move charges.");return;}
  if(npc.kind==="shop"){openMenu("shop");return;}
  const g=GYMS.find(x=>x.id===npc.id);if(!g)return;
@@ -283,12 +287,16 @@ function interact(){
  const roster=g.team.slice(1);
  startBattle(make(g.team[0][0],g.team[0][1]),g,roster);
 }
-function step(dx,dy){
- if(battle||modal||!state.party.length)return;
- const now=Date.now();if(now-lastStep<90)return;lastStep=now;
+function step(dx,dy,serverPosition=null){
+ if(battle||modal||!state.party.length)return false;
+ if(!serverPosition&&window.CinderwildOnline?.connected){window.CinderwildOnline.requestMove(dx,dy);return true;}
+ const now=Date.now();if(now-lastStep<90&&!serverPosition)return false;lastStep=now;
  const x=state.x+dx,y=state.y+dy;
- if(x>=32&&!state.badges.includes("bramble")){notify("The Bramble Crest opens the Storm Marsh crossing.");return;}
- if(x>=51&&!state.badges.includes("storm")){notify("The Storm Crest opens the Eclipse Ridge crossing.");return;}
+ if(serverPosition&&(serverPosition.x!==x||serverPosition.y!==y)){
+  state.x=serverPosition.x;state.y=serverPosition.y;save();render();return true;
+ }
+ if(!serverPosition&&x>=32&&!state.badges.includes("bramble")){notify("The Bramble Crest opens the Storm Marsh crossing.");return;}
+ if(!serverPosition&&x>=51&&!state.badges.includes("storm")){notify("The Storm Crest opens the Eclipse Ridge crossing.");return;}
  if(!walkable(x,y)){const npc=NPCS.find(n=>n.x===x&&n.y===y);if(npc)interact();return;}
  state.x=x;state.y=y;state.steps++;
  const shrine=SHRINES.find(s=>s.x===x&&s.y===y);
@@ -297,8 +305,8 @@ function step(dx,dy){
   else{notify("The "+shrine.name+" awakens!");startBattle(make(shrine.id,shrine.level));}
  }
  if(!shrine&&tile(x,y)==="grass"&&Math.random()<.13)startBattle(generateWild());
- if(state.steps%5===0)save();
- render();
+ if(state.steps%5===0||serverPosition)save();
+ render();return true;
 }
 function draw(){
  const canvas=$("world"),ctx=canvas.getContext("2d");if(!ctx)return;
@@ -326,6 +334,21 @@ function draw(){
   const gym=npc.kind==="gym";rect(px+9,py+8,14,18,gym?"#302b60":"#e3e4a7");rect(px+9,py+2,14,12,gym?"#ff74c8":"#e8b787");
   rect(px+11,py+8,3,3,"#24313a");rect(px+19,py+8,3,3,"#24313a");
   rect(px+7,py,18,3,gym?"#d6fa67":"#f8d97e");
+ }
+ for(const visitor of onlinePeers){
+  const px=(visitor.x-ox)*t,py=(visitor.y-oy)*t;
+  if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
+  rect(px+7,py+24,18,5,"#1c333b99");
+  rect(px+9,py+13,14,15,"#285667");
+  rect(px+10,py+7,12,12,"#e9b69a");
+  rect(px+7,py+4,18,7,"#78ccf2");
+  rect(px+12,py+2,10,5,"#d1eefb");
+  ctx.font="bold 10px sans-serif";ctx.textAlign="center";
+  const label=String(visitor.display_name||visitor.username||"Trainer").slice(0,13);
+  const width=Math.min(118,Math.max(44,label.length*6+6));
+  const tx=px+16,ty=py-5;
+  rect(tx-width/2,Math.max(0,ty-13),width,13,"#142631e0");
+  ctx.fillStyle="#e2f8ff";ctx.fillText(label,tx,Math.max(10,ty-3),width-4);
  }
  const px=(state.x-ox)*t,py=(state.y-oy)*t;
  rect(px+8,py+24,18,5,"#24342d66");rect(px+9,py+13,14,15,"#34354b");rect(px+10,py+7,12,12,"#f2c0a0");
@@ -486,6 +509,14 @@ function initialize(){
 }
 // Cloud progress is a backup of the local single-player save. It is not trusted PvP state.
 window.CinderwildGame = Object.freeze({
+ hasStarter(){return state.party.length>0;},
+ position(){return {x:state.x,y:state.y};},
+ setOnlinePeers(players){onlinePeers=Array.isArray(players)?players.slice(0,40).filter(p=>Number.isInteger(p?.x)&&Number.isInteger(p?.y)):[];render();},
+ syncOnlinePosition(position){
+  if(!position||!Number.isInteger(position.x)||!Number.isInteger(position.y)||!walkable(position.x,position.y)||battle||modal)return false;
+  state.x=position.x;state.y=position.y;save();render();return true;
+ },
+ applyOnlineMove(dx,dy,position){return step(dx,dy,position);},
  snapshot(){return JSON.parse(JSON.stringify(state));},
  isBusy(){return Boolean(battle||modal);},
  restore(raw){
