@@ -13,6 +13,16 @@ on:
       - 'public/arcade/hosted/cinder-battleship/**'
       - 'public/arcade/hosted/fifteen-puzzle/**'
       - 'public/arcade/catalog.json'
+      - 'public/arcade/hosted/arcade-playback-assist.js'
+      - 'public/arcade/hosted/radius-raid/index.html'
+      - 'public/arcade/hosted/terravia/index.html'
+      - 'public/arcade/hosted/interstellar-armada/index.html'
+      - 'public/arcade/hosted/single-html-space-shooter/index.html'
+      - 'public/arcade/hosted/cinder-life/index.html'
+      - 'public/arcade/hosted/cinder-slots/index.html'
+      - 'public/arcade/hosted/openfront-solo/index.html'
+      - 'scripts/arcade-playback-assist.test.mjs'
+      - 'scripts/smoke-arcade-playback-assist.mjs'
       - 'public/nav.js'
       - 'scripts/smoke-navigation.mjs'
       - '.github/workflows/priority-arcade-playability.yml'
@@ -35,6 +45,12 @@ jobs:
       - name: Browser smoke test priority arcade games
         if: success() || failure()
         run: node scripts/smoke-priority-arcade.mjs
+      - name: Validate arcade fullscreen and loading-recovery wiring
+        if: success() || failure()
+        run: node --test scripts/arcade-playback-assist.test.mjs
+      - name: Exercise fullscreen and game recovery on actual browser pages
+        if: success() || failure()
+        run: node scripts/smoke-arcade-playback-assist.mjs
       - name: Upload screenshots and failure evidence
         if: always()
         uses: actions/upload-artifact@v4
