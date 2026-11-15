@@ -44,10 +44,11 @@ test('Devil Tools gallery previews latest version of Gillrot and Nocturnib',()=>
 test('Madhouse Memory uses Gillrot remaster instead of its outdated sprite copy',()=>{
  assert.equal(readFileSync('public/arcade/hosted/crypt-pairs/sprites/bloop.svg','utf8'),readFileSync(directory+'bloop.svg','utf8'));
 });
-test('Gillrot and Nocturnib remain in homepage visible mascot slots',()=>{
+test('Gillrot and Nocturnib art remains available without replacing the approved Gothic site theme',()=>{
  const site=readFileSync('public/gravewave-takeover.js','utf8');
  assert.match(site,/crewGroups=\[\[1,3,/);
  assert.match(site,/home\?\[1,3,14\]/);
  const nav=readFileSync('public/nav.js','utf8');
- assert.match(nav,/gravewave-takeover\.js\?v=20261102-mascot6/);
+ assert.doesNotMatch(nav,/gravewave-takeover\.js\?v=20261102-mascot6/);
+ assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic2/);
 });

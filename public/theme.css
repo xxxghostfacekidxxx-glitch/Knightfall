@@ -1,6 +1,6 @@
 @import url("/design-system.css?v=20261026-foundation1");
 /* Shared neon styling also applies on pages that omit nav.js. */
-@import url("/section-overhaul.css?v=20261029-sections1");
+@import url("/section-overhaul.css?v=20261115-gothic2");
 /* Shared final polish for pages with or without nav.js. */
 @import url("/knightfall-unified-theme.css?v=20261115-gothic2");
 :root{color-scheme:dark}

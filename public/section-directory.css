@@ -8,16 +8,16 @@
 .directory-group {
   min-width: 0;
   padding: .9rem 1rem;
-  border: 1px solid #593b70;
+  border: 1px solid #827076;
   border-radius: .8rem;
-  background: #130f20;
+  background: #201d24;
 }
 
 .directory-group h2,
 .directory-group h3 {
   margin: 0 0 .35rem;
   font-size: 1.05rem;
-  color: #f8f1ff;
+  color: #ece1d3;
 }
 
 .directory-group ul {
@@ -42,7 +42,7 @@
 
 .directory-group a:hover,
 .directory-group a:focus-visible {
-  color: #c6ff45;
+  color: #c7a77c;
 }
 
 .directory-group [hidden] {
