@@ -81,7 +81,7 @@ try {
         await page.getByRole("button", { name: /Export selected sprite/ }).click();
         const download = await downloadPromise;
         assert.match(download.suggestedFilename(), /-skull\.svg$/);
-        await page.getByRole("link", { name: "Back to catalog" }).click();
+        await page.locator("#foundry-back:visible").click();
         await catalog.waitFor();
         assert.equal(await search.inputValue(), "sprite workshop");
         assert.equal(await catalog.locator('[data-category="games"]').getAttribute("aria-pressed"), "true");
@@ -111,7 +111,7 @@ try {
         const mapDownload = page.waitForEvent("download");
         await page.getByRole("button", { name: "Export level JSON" }).click();
         assert.equal((await mapDownload).suggestedFilename(), "knightfall-map.json");
-        await page.getByRole("link", { name: "Back to catalog" }).click();
+        await page.locator("#foundry-back:visible").click();
         await catalog.waitFor();
 
         await page.goto(base + "/devil-tools.html#brand-library");
