@@ -1026,7 +1026,7 @@ export default { async queue(batch, env) {
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/")||url.pathname.startsWith("/api/avatars/profile/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 
-  const chaosResponse=await handleEyeOfChaos(request,env,url,{requireUser,json,origin});
+  const chaosResponse=await handleEyeOfChaos(request,env,url,{requireUser,json,origin,rateLimit});
   if(chaosResponse)return chaosResponse;
   const eyeResponse=await handleEyeOfHorus(request,env,url,{requireUser,json,origin});
   if(eyeResponse)return eyeResponse;
