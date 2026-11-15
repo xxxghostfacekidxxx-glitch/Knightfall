@@ -5,7 +5,7 @@ document.documentElement.classList.add("ruinwire-mode");
 document.title="Ruinwire | Knightfall Messenger";
 const m=document.createElement("link");m.rel="manifest";m.href="/ruinwire.webmanifest";document.head.append(m);
 const icon=document.createElement("link");icon.rel="icon";icon.type="image/svg+xml";icon.href="/icons/ruinwire.svg";document.head.append(icon);
-const style=document.createElement("link");style.rel="stylesheet";style.href="/ruinwire.css?v=20261115-gothic5";document.head.append(style);
+const style=document.createElement("link");style.rel="stylesheet";style.href="/ruinwire.css?v=20261115-gothic6";document.head.append(style);
 function init(){
 const shell=document.querySelector(".messages-shell");if(!shell)return;
 const bar=document.createElement("div");bar.className="rw-appbar";bar.setAttribute("role","banner");
