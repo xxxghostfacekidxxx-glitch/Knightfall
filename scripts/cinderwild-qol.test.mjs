@@ -27,7 +27,7 @@ function gameHarness() {
   const document = {getElementById: id => nodes[id] ?? null};
   const code = js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, 'globalThis.__game = {drawFieldMap,filterBestiary,state,SPECIES,make,moves};})();');
   assert.notEqual(code, js, 'test harness must intercept game initialization');
-  const sandbox = {document, localStorage: {getItem: () => null}};
+  const sandbox = {window: {}, document, localStorage: {getItem: () => null}};
   vm.runInNewContext(code, sandbox, {timeout: 1000});
   return {game: sandbox.__game, drawing, nodes, rows};
 }
