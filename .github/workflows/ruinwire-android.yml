@@ -1,0 +1,62 @@
+name: Ruinwire Android debug test APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'android/ruinwire/**'
+      - 'android/settings.gradle'
+      - '.github/workflows/ruinwire-android.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ruinwire-android-debug
+  cancel-in-progress: true
+
+jobs:
+  debug-apk:
+    name: Build Ruinwire debug APK (not a public release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Configure Android SDK API 36
+        shell: bash
+        run: |
+          SDK_ROOT="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" --install "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Install Ruinwire launcher icon
+        run: |
+          test -s public/icons/knightfall-crest-512.png
+          mkdir -p android/ruinwire/src/main/res/drawable-nodpi
+          cp public/icons/knightfall-crest-512.png android/ruinwire/src/main/res/drawable-nodpi/ruinwire_icon.png
+      - name: Compile Ruinwire test app
+        run: gradle --project-dir android :ruinwire:assembleDebug --no-daemon --stacktrace
+      - name: Verify APK and checksum
+        run: |
+          test -s android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk || test -s android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk
+          sha256sum android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk | tee android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk.sha256
+          echo "Internal TEST build only; public release requires stable signing, asset links, and real-device verification." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ruinwire-android-debug-apk
+          path: |
+            android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk
+            android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 7
