@@ -4,7 +4,7 @@
   "short_name": "Ruinwire",
   "description": "Private chats, group messages, replies and notifications for Knightfall members.",
   "lang": "en-US",
-  "start_url": "/messages.html?app=ruinwire",
+  "start_url": "/messages?app=ruinwire",
   "scope": "/",
   "display": "standalone",
   "display_override": [
@@ -48,7 +48,7 @@
     {
       "name": "Inbox",
       "short_name": "Chats",
-      "url": "/messages.html?app=ruinwire",
+      "url": "/messages?app=ruinwire",
       "icons": [
         {
           "src": "/icons/knightfall-crest-192.png",
