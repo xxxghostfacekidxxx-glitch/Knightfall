@@ -7,6 +7,7 @@
   const loader = document.currentScript;
   const targetSelector = loader?.dataset.target || 'body';
   const existingFullscreen = loader?.dataset.fullscreen === 'existing';
+  const theaterOnly = loader?.dataset.theaterOnly === 'true';
   const readyGlobal = loader?.dataset.ready || '';
   const rootId = 'kf-arcade-view-toggle';
   let root, button, theater = false, errorShown = false;
@@ -110,6 +111,8 @@
         } catch { theater=true; setState(true); }
         return;
       }
+      // For legacy graphics-heavy games, keep the canvas alive without native fullscreen transitions.
+      if(theaterOnly){theater=true;setState(true);return;}
       const request=nativeFullscreen();
       if(request) {
         try {
