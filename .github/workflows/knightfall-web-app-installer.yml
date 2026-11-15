@@ -1,0 +1,52 @@
+name: Knightfall Web App Installer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/install.html'
+      - 'public/install.js'
+      - 'public/install.css'
+      - 'public/install-health.js'
+      - 'public/manifest.webmanifest'
+      - 'public/nav.js'
+      - 'public/sw.js'
+      - 'public/_redirects'
+      - 'scripts/pwa-installer-browser-smoke.mjs'
+      - 'scripts/knightfall-android-shell.test.mjs'
+      - '.github/workflows/knightfall-web-app-installer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check safe install state and Android release gating
+        run: |
+          node --check public/install.js
+          node --test scripts/knightfall-android-shell.test.mjs
+      - name: Install Chromium test browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Start local Knightfall website
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/knightfall-installer.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/install.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/knightfall-installer.log
+          exit 1
+      - name: Click web app installer on Android, iPhone and embedded browsers
+        run: node scripts/pwa-installer-browser-smoke.mjs
