@@ -2,26 +2,32 @@
   // Offline/local previews must not fetch a real member session, production
   // site settings, or notification counts. Live Ash-Fall retains all API behavior.
   const cloudAccountAvailable = ["ash-fall.com", "www.ash-fall.com"].includes(String(location.hostname || "").toLowerCase());
-  // Late-mounted shared polish wins over legacy page skins without changing navigation logic.
-  if (!document.querySelector('link[data-visual-refresh]')) {
-    const polish=document.createElement('link');
-    polish.rel='stylesheet';polish.href='/visual-refresh.css?v=20261115-gothic3';
-    polish.dataset.visualRefresh='true';document.head.append(polish);
-  }
-  // Page-specific visual refresh is late-mounted so legacy inline styles cannot override it.
-  if (!document.querySelector('link[data-section-overhaul]')) {
-    const sections=document.createElement('link');sections.rel='stylesheet';
-    sections.href='/section-overhaul.css?v=20261115-gothic3';
-    sections.dataset.sectionOverhaul='true';document.head.append(sections);
-  }
-  // Approved Gothic Creator shell loads after legacy page styles. Old neon
-  // mascots, scanlines and global Gravewave layers are intentionally retired.
-  if (!document.querySelector('link[data-knightfall-unified-theme]')) {
-    const unified=document.createElement("link");
-    unified.rel="stylesheet";
-    unified.href="/knightfall-unified-theme.css?v=20261115-gothic3";
-    unified.dataset.knightfallUnifiedTheme="true";
-    document.head.append(unified);
+  // Apply shared Gothic chrome AFTER every page-specific and inline stylesheet.
+  // The previous eager injection could run in <head> before later stylesheets
+  // were parsed, allowing old neon/page CSS to override the approved theme.
+  const mountApprovedTheme = () => {
+    const styles = [
+      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic4"],
+      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic4"],
+      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic4"]
+    ];
+    for (const [id, href] of styles) {
+      const selector = 'link[data-' + id + ']';
+      let link = document.querySelector(selector);
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.dataset[id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = "true";
+      }
+      link.href = href;
+      // Reposition existing links as well, so page styling cannot trail them.
+      document.head.appendChild(link);
+    }
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mountApprovedTheme, {once:true});
+  } else {
+    mountApprovedTheme();
   }
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
   if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
