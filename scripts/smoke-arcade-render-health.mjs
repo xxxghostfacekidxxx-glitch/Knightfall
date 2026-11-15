@@ -17,7 +17,7 @@ const titles=[
  {id:'rooftop-riot',route:'/arcade/hosted/rooftop-riot/index.html',target:'#game',ready:'window.Engine && document.querySelector("#game")?.width>500'},
  {id:'cinder-life',route:'/arcade/hosted/cinder-life/index.html',target:'#board',ready:'document.querySelector("#board")?.width>500'},
  {id:'cinder-chess',route:'/arcade/hosted/cinder-chess/index.html',target:'#board',ready:'document.querySelector("#board")?.children.length>20'},
- {id:'browserquest-solo',route:'/arcade/hosted/browserquest-solo/index.html',target:'#intro',ready:'document.querySelector("#intro")?.getBoundingClientRect().width>100'},
+ {id:'browserquest-solo',route:'/arcade/hosted/browserquest-solo/index.html',target:'#parchment',ready:'document.querySelector("#parchment")?.getBoundingClientRect().width>100'},
 ];
 const findings=[];
 let browser;
@@ -55,7 +55,11 @@ try{
        return {target:box&&{width:Math.round(box.width),height:Math.round(box.height)},canvases:visible,bodyText:document.body?.innerText?.trim().slice(0,130),recovery:!!document.querySelector('#kf-arcade-recovery'),boot:document.querySelector('#boot')?.textContent?.trim()||'',titleVisible:!!(document.querySelector('#startBtn')?.getBoundingClientRect().width)};
      },v.target);
      if(errors.length||failed.length){state='runtime-failure';reason=JSON.stringify({errors:errors.slice(0,3),failed:failed.slice(0,4)});}
-     else if(!visual.target||visual.target.width<25||visual.target.height<20){state='blank-surface';reason='Game root has no usable dimensions';}
+     else if(!visual.target||visual.target.width<25||visual.target.height<20){
+       const welcome=v.id==='interstellar-armada'&&await page.evaluate(()=>Boolean(document.querySelector('#gameVersion')?.textContent?.trim() && /Welcome!|Start/i.test(document.body?.innerText||'')));
+       if(welcome){state='healthy';reason='Visible first-run game welcome panel (splash was dismissed)';}
+       else {state='blank-surface';reason='Game root has no usable dimensions and no verified welcome panel';}
+     }
      else if(v.id==='neon-surge'&&!await page.evaluate(()=>!!window.__NS)){state='boot-not-ready';reason='3D engine did not initialize';}
      else if(v.id==='openfront-solo'&&!await page.evaluate(()=>!!customElements.get('o-button'))){state='boot-not-ready';reason='Main game bundle did not register controls';}
      else if(v.id==='terravia'&&!await page.evaluate(()=>document.querySelector('#scene')?.children.length>0)){state='boot-not-ready';reason='Scene container remained empty';}
