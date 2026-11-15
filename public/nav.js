@@ -273,14 +273,15 @@
           <a href="/friends.html">Friends</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-account-link" href="/account.html">Settings &amp; Tools</a>
-          <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
         </div>
       </details>
       <details class="kf-nav-group kf-staff-group" hidden>
         <summary>Staff <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
-          <a class="kf-mod-link" href="/moderation.html">Moderation</a>
+          <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
+          <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
+          <a class="kf-god-eye-link" href="/eye-of-horus.html" hidden>𓂀 Eye of Horus</a>
         </div>
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/auth.html">Sign In</a>
@@ -435,9 +436,13 @@
       document.querySelector("[data-home-sign-in]")?.setAttribute("hidden", "");
       const role = String(user.role || "").trim().toLowerCase();
       const admin = role === "admin" || role === "god";
-      const staff = admin || role === "moderator";
-      const creator = String(user.public_title || "").trim() === "Digital Creator";
-      nav.querySelector(".kf-admin-foundry-link").hidden = !admin && !creator;
+      const rights = user.staff_access || {};
+      const canModerate = admin || role === "moderator";
+      const canCreate = admin || (role === "member" && String(user.public_title || "").trim() === "Digital Creator");
+      const staff = canModerate || canCreate;
+      nav.querySelector(".kf-admin-foundry-link").hidden = !canCreate;
+      nav.querySelector(".kf-mod-link").hidden = !canModerate;
+      nav.querySelector(".kf-god-eye-link").hidden = role !== "god" || rights.can_eye_of_horus === false;
       nav.querySelector(".kf-staff-group").hidden = !staff;
       nav.querySelector(".kf-admin-link").hidden = !admin;
       header.querySelector(".kf-admin-quick-link").hidden=!admin;
