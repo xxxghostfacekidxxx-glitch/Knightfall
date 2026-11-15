@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billing & Invoices | Knightfall</title>
+<meta name="description" content="Manage your Knightfall premium membership, Stripe subscriptions and invoices.">
+<link rel="stylesheet" href="/theme.css?v=20261115-gothic6">
+<style>
+body{margin:0;background:#0d1013;color:#ece1d3;font:16px/1.6 system-ui,sans-serif}
+main{max-width:900px;margin:clamp(24px,5vw,60px) auto;padding:0 18px 80px}
+h1,h2{font-family:Georgia,serif;letter-spacing:.015em}
+h1{font-size:clamp(2rem,6vw,3.6rem)}
+p{color:#bcb7b0}.panel{border:1px solid #74666a;border-radius:16px;padding:clamp(17px,4vw,28px);margin:20px 0;background:linear-gradient(145deg,#242027,#15171c)}
+button,.action{display:inline-flex;align-items:center;justify-content:center;background:#c7a77c;color:#14151a;border:1px solid #dbc7aa;border-radius:10px;min-height:44px;padding:10px 18px;margin:5px 8px 5px 0;font:800 15px system-ui;cursor:pointer}
+button:disabled{opacity:.6;cursor:not-allowed}.secondary{background:#29252c;color:#ece1d3;border-color:#887474}
+a{color:#dfbc8c}button:focus-visible,a:focus-visible{outline:2px solid #dfbc8c;outline-offset:3px}
+.state{display:inline-flex;border:1px solid #817164;border-radius:99px;padding:4px 12px;color:#dec9af;font-size:13px;font-weight:800}
+#billing-status{min-height:2em}small{color:#bdb2a8}
+</style></head><body><header class="kf-header"></header><main>
+<p><a href="/cinder-shop.html">← Cinder Shop</a></p>
+<h1>Billing &amp; Invoices</h1>
+<p>Membership payments and billing records are managed securely by Stripe. Knightfall never stores your card number.</p>
+<section class="panel" aria-labelledby="membership-heading"><h2 id="membership-heading">Premium membership</h2>
+<p><span class="state" id="membership-state">Checking membership…</span></p>
+<p>Premium membership is optional. The community and free Deck Atelier skins remain available without subscribing.</p>
+<button type="button" id="join" disabled>Start premium membership</button>
+<button type="button" class="secondary" id="manage" disabled>Manage billing &amp; invoices</button>
+<p id="billing-status" role="status" aria-live="polite"></p>
+</section>
+<section class="panel"><h2>Invoice history</h2>
+<p>When billing is active, use <strong>Manage billing &amp; invoices</strong> for Stripe-hosted receipts, invoices, payment-method updates, and subscription cancellation. For individual business invoices, use the <a href="https://dashboard.stripe.com/invoices">Stripe Invoicing Dashboard</a> if you're a Knightfall billing administrator.</p>
+<p><small>Creating a subscription or an invoice never automatically changes your community permissions. Membership access is granted only after Stripe confirms the subscription state through a verified webhook.</small></p>
+</section>
+</main><script src="/nav.js" defer></script>
+<script>
+(()=>{
+ const base="https://api.ash-fall.com/api/stripe/billing/";
+ const state=document.getElementById("membership-state"),status=document.getElementById("billing-status");
+ const join=document.getElementById("join"),manage=document.getElementById("manage");
+ const safeUrl=(url,type)=>{try{const u=new URL(url);return u.protocol==="https:"&&u.hostname===(type==="portal"?"billing.stripe.com":"checkout.stripe.com")?u.href:null}catch{return null}};
+ async function refresh(){
+  try{
+   const r=await fetch(base+"status",{credentials:"include",cache:"no-store"});
+   const data=await r.json().catch(()=>({}));
+   if(r.status===401){state.textContent="Sign in required";status.innerHTML='Please <a href="/auth.html?next=%2Fbilling.html">sign in</a> to manage your membership.';return}
+   if(!r.ok)throw Error(data.error||"Billing status unavailable.");
+   state.textContent=data.premium?"Premium active":"Standard member";
+   join.disabled=!data.configured||data.premium;
+   manage.disabled=!data.configured;
+   status.textContent=data.configured?"Select an option above to continue securely with Stripe.":"Stripe subscription checkout is not active yet. No charges can be started.";
+  }catch{state.textContent="Unavailable";status.textContent="Could not load billing status."}
+ }
+ async function act(which){
+  const btn=which==="portal"?manage:join;btn.disabled=true;status.textContent="Opening secure Stripe page…";
+  try{
+   const r=await fetch(base+(which==="portal"?"portal":"checkout"),{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:"{}"});
+   const data=await r.json().catch(()=>({}));
+   if(!r.ok)throw Error(data.error||"Billing is unavailable.");
+   const href=safeUrl(data.url,which);if(!href)throw Error("Invalid billing destination.");
+   window.location.assign(href);
+  }catch(error){status.textContent=String(error.message||"Billing is unavailable.");btn.disabled=false}
+ }
+ join.addEventListener("click",()=>act("checkout"));manage.addEventListener("click",()=>act("portal"));
+ void refresh();
+})();
+</script></body></html>
