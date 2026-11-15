@@ -19,7 +19,7 @@
 // Mobile GPUs struggle with dozens of glowing bricks plus hundreds of explosion fragments.
 const mobileFx=!!window.matchMedia?.('(pointer: coarse)')?.matches||
  !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches||
- Number(navigator.hardwareConcurrency||8)<=4;
+ Number((typeof navigator==='undefined'?8:navigator.hardwareConcurrency)||8)<=4;
 let fxQuality=mobileFx?.45:1,slowFrames=0;
 const backdrop=document.createElement('canvas');backdrop.width=W;backdrop.height=H;
 const bg=backdrop.getContext('2d');
