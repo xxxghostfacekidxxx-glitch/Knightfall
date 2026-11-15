@@ -64,3 +64,19 @@ test('additional full-game pages expose fallback fullscreen without modifying ga
     assert.equal((html.match(/arcade-playback-assist\.js/g)||[]).length,1,file+' duplicate fallback');
   }
 });
+
+test('portrait Interstellar Armada has readable guidance rather than a silent black screen',()=>{
+ const html=read('public/arcade/hosted/interstellar-armada/index.html');
+ assert.match(html,/id="kf-armada-rotate-help"/);
+ assert.match(html,/Rotate your phone sideways/);
+ assert.match(html,/@media \(orientation:portrait\)/);
+ assert.match(html,/landscape screen/);
+});
+test('shared first-party fullscreen toolbar works without native fullscreen support',()=>{
+ const src=read('public/arcade-cabinet-ui.js');
+ assert.match(src,/document\.fullscreenEnabled/);
+ assert.match(src,/main\.webkitRequestFullscreen/);
+ assert.match(src,/kf-cabinet-theater/);
+ assert.match(src,/event\.key==='Escape'&&theater/);
+ assert.match(src,/main\.querySelector\('#full,#fullscreen,#toggle-fullscreen/);
+});
