@@ -27,7 +27,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
  for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261113-misfit-ink5'),path+' cache token missing');
- for(const path of ['avatar-cartoon.css','misfit-avatar.js'])assert.ok(html.includes('/'+path+'?v=20261114-book3'),path+' cartoon token missing');
+ for(const path of ['avatar-cartoon.css','misfit-avatar.js'])assert.ok(html.includes('/'+path+'?v=20261115-noir4'),path+' cartoon token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -154,7 +154,7 @@ test('renderer has unique gradient namespaces for simultaneous gallery previews'
 
 test('profile and mascot pages load the refreshed renderer',()=>{
  for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261114-book3/,page+' has stale artwork');
+  assert.match(read(page),/\/misfit-avatar\.js\?v=20261115-noir4/,page+' has stale artwork');
  }
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');
@@ -185,13 +185,13 @@ test('Misfit Ink 5 adds detail without changing saved avatar data',()=>{
 test('Misfit preview and exported SVG render with storybook comic ink without changing customization keys',()=>{
  const kit=loadRenderer();
  const svg=kit.render({background:'eclipse',expression:'fang',eyes:'doe'});
- assert.match(svg,/data-render-style="storybook-comic-v3"/);
+ assert.match(svg,/data-render-style="neon-noir-illustration-v4"/);
  assert.match(svg,/data-art-pass="storybook-frame"/);
  assert.match(svg,/data-art-pass="comic-blush"/);
  assert.match(svg,/data-art-pass="comic-eye-ink"/);
  assert.ok(svg.includes('viewBox="0 0 224 256"'));
- assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261114-book3'));
- assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
+ assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261115-noir4'));
+ assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261115-noir4'));
 });
 
 \ntest('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
@@ -205,4 +205,16 @@ test('Misfit preview and exported SVG render with storybook comic ink without ch
  assert.match(js,/event\.key==='End'/);
  assert.match(js,/aria-labelledby/);
  assert.match(css,/\.category-tab:focus-visible/);
+});
+
+ 
+test('Noir 4 renderer adds layered portrait sculpting, hair finish, eye detail and garment tailoring',()=>{
+ const kit=loadRenderer();
+ const svg=kit.render({...kit.defaults,hair_highlight:'teal',background:'neon_city',outfit:'jacket'});
+ for(const layer of ['noir-face-sculpt','noir-hair-detail','noir-eye-detail','noir-tailoring']){
+  assert.ok(svg.includes('data-art-pass="'+layer+'"'),'Missing premium render layer '+layer);
+ }
+ assert.match(svg,/radialGradient/);
+ assert.match(svg,/linearGradient/);
+ assert.match(svg,/data-render-style="neon-noir-illustration-v4"/);
 });
