@@ -116,7 +116,7 @@ try {
 
         await page.goto(base + "/devil-tools.html#brand-library");
         await page.locator("#brand-library").waitFor();
-        assert.equal(await page.locator("#foundry-catalog:visible").count(), 1, "non-workspace brand library bookmarks keep catalog visible");
+        assert.equal(await page.locator("#brand-library:visible").count(), 1, "brand library deep link must reveal the requested collection");
         await page.goto(base + "/dev-toolkit.html#release-simulator");
         await page.waitForURL("**/devil-tools.html#release-simulator");
         await page.locator(role.developer ? "#release-simulator" : "#foundry-catalog").waitFor();
