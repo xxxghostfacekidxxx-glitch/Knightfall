@@ -193,3 +193,16 @@ test('Misfit preview and exported SVG render with storybook comic ink without ch
  assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261114-book3'));
  assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
 });
+
+\ntest('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
+ const html=read('public/avatar-studio.html'),js=read('public/avatar-studio.js'),css=read('public/avatar-studio.css');
+ assert.match(html,/id="category-tabs"[^>]*role="tablist"/);
+ assert.match(html,/id="controls"[^>]*role="tabpanel"/);
+ assert.match(js,/tab\.tabIndex=group\.key===activeGroup\?0:-1/);
+ assert.match(js,/event\.key==='ArrowRight'/);
+ assert.match(js,/event\.key==='ArrowLeft'/);
+ assert.match(js,/event\.key==='Home'/);
+ assert.match(js,/event\.key==='End'/);
+ assert.match(js,/aria-labelledby/);
+ assert.match(css,/\.category-tab:focus-visible/);
+});
