@@ -31,6 +31,10 @@ jobs:
           node --check backend/src/bot-creator-access.js
           node --check backend/src/staff-capabilities.js
           node --check backend/src/eye-of-horus.js
+          node --check backend/src/god-trash.js
+          node --check backend/src/date-journal.js
+          node --check backend/src/member-memos.js
+          node --check backend/src/member-memo-mail.js
           node --check public/eye-of-horus.js
           node --check backend/src/home-activity-feed.js
           node --check public/home-activity.js
@@ -72,7 +76,7 @@ jobs:
           node --test backend/src/message-conversation-summary.test.mjs scripts/messaging-history-deeplink.test.mjs
           node --test backend/src/date-journal.test.mjs
           node --test scripts/privacy-assistance.test.mjs
-          node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs backend/src/staff-capabilities.test.mjs backend/src/eye-of-horus.test.mjs
+          node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs backend/src/staff-capabilities.test.mjs backend/src/eye-of-horus.test.mjs backend/src/god-trash.test.mjs
           python3 scripts/test_eye_of_horus_sql.py
           python3 scripts/test_home_bot_tiers_sql.py
           node --test scripts/knightfall-art-rollout.test.mjs
