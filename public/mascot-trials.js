@@ -49,7 +49,8 @@ function selectPet(){
  level.textContent=(pet.affinity_label||'Feral')+' · '+(pet.growth?.label||'First Form')+' · Level '+challenge.level+' · Target '+challenge.target;
  document.querySelector('.trials-meta')?.setAttribute('data-affinity',pet.affinity||window.KnightfallPetRenderer?.typeFor(pet.species)||'feral');
  playfield.dataset.mode=challenge.mode;
- portrait.src=(safeAvatar(pet.idle||pet.image||pet.portrait)||'')+'?v=20261115-storybook1';
+ const portraitSrc=safeAvatar(pet.idle||pet.image||pet.portrait);
+ portrait.src=portraitSrc?portraitSrc+'?v=20261115-storybook1':'';
  portrait.alt=pet.species_name+' original companion';
  start.disabled=false;playfield.replaceChildren();controls.replaceChildren();
  playfield.append(node('p','trial-ready','✦ '+challenge.title+' · '+info[challenge.mode]));

@@ -46,7 +46,7 @@ test('Owned, adoption and wardrobe filters are usable and remain hidden on mobil
 });
 test('Companion room displays care feedback and never exposes private stats publicly',()=>{
  assert.match(room,/id="room-companion-summary"/);
- assert.match(room,/mascot-room\.js\?v=20261103-room-care1/);
+ assert.match(room,/mascot-room\.js\?v=20261115-storybook1/);
  assert.match(roomJs,/function syncCareButtons\(\)/);
  assert.match(roomJs,/button\.disabled=visitor\|\|busy\|\|!selected\|\|delay>0/);
  assert.match(roomJs,/if\(!visitor\)\{/);
@@ -55,7 +55,7 @@ test('Companion room displays care feedback and never exposes private stats publ
 
 test('public profile shows personalities but never private needs or wallet details',()=>{
  const profile=src('public/profile.html'),client=src('public/profile-mascots.js'),style=src('public/profile-mascots.css');
- assert.match(profile,/profile-mascots\.js\?v=20261113-lineages2/);
+ assert.match(profile,/profile-mascots\.js\?v=20261115-storybook1/);
  assert.match(profile,/profile-mascots\.css\?v=20261113-lineages2/);
  assert.match(profile,/mascot-renderer\.js\?v=20261114-book3/);
  assert.ok(profile.indexOf('/mascot-renderer.js')<profile.indexOf('/profile-mascots.js'),'type renderer loads before profile companions');
