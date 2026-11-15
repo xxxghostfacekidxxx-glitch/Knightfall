@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-11-04",
+  "updated": "2026-11-15",
   "games": [
     {
       "id": "neon-nuisances-species-trials",
@@ -131,6 +131,19 @@
           "route": "/arcade/hosted/sanctuary-end/sanctuary.html"
         }
       ],
+      "featured": true
+    },
+    {
+      "id": "cinderwild",
+      "title": "Cinderwild · Creature Adventure",
+      "route": "/arcade/hosted/cinderwild/index.html",
+      "description": "A full original monster-catching RPG: explore towns and wild routes, pick a starter, capture and evolve 25 creatures, train a six-creature party, use supplies, fill your Bestiary and earn three Warden crests.",
+      "genre": "RPG",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/hosted/cinderwild/index.html",
+      "notes": "Original Knightfall gameplay and sprite art. Offline browser saves; no account or paid purchases required.",
+      "links": [],
       "featured": true
     },
     {
