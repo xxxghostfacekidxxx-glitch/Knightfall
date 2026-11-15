@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "platform": "android",
+  "status": "not_released",
+  "applicationId": "com.ashfall.knightfall",
+  "versionName": null,
+  "apkUrl": null,
+  "apkSha256": null,
+  "signedReleaseVerified": false,
+  "notes": "The official APK link is disabled until a signed, tested release is uploaded and its checksum is verified. GitHub Actions debug artifacts are not public releases."
+}
