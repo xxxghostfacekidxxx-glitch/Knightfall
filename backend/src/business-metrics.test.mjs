@@ -5,10 +5,10 @@ import {handleBusinessMetrics} from "./business-metrics.js";
 function mock(user, options={}) {
   const reads=[];
   const samples=[
-    {accounts:12,active_accounts:10,registrations_30d:9,seen_30d:8},
-    {threads:97,authors:4,threads_30d:96},
-    {messages:140,senders:6},
-    {score_records:40,players:3,recorded_games:32,score_reported_runs:67},
+    {accounts:12,active_accounts:10,registrations_30d:9,seen_30d:8,member_role_accounts:8,active_member_role_accounts:7,member_role_seen_30d:5,member_role_registrations_30d:6,staff_role_accounts:4},
+    {threads:97,authors:4,member_role_authors:2,threads_30d:96},
+    {messages:140,senders:6,member_role_senders:3},
+    {score_records:40,players:3,member_role_players:2,recorded_games:32,score_reported_runs:67},
     {shops:0,shop_products:0,shop_order_records:0,active_premium_entitlements:0,creator_subscription_records:0}
   ];
   const env={DB:{prepare(sql){reads.push(sql);return {first:async()=>options.fail?null:samples[reads.length-1]}}}};
@@ -35,8 +35,13 @@ test("admin GET returns aggregate-only records with explicit data limitations",a
   const data=await res.json();
   assert.equal(data.metrics.members.accounts,12);
   assert.equal(data.metrics.messaging.senders,6);
+  assert.equal(data.metrics.members.member_role_accounts,8);
+  assert.equal(data.metrics.members.member_role_seen_30d,5);
+  assert.equal(data.metrics.members.staff_role_accounts,4);
+  assert.equal(data.metrics.arcade.member_role_players,2);
+  assert.match(x.reads.join(" "),/role='member'/);
   assert.equal(data.metrics.commerce.shop_order_records,0);
-  assert.match(data.limitations,/test activity/);
+  assert.match(data.limitations,/test accounts/);
   assert.equal(x.reads.length,5);
   assert.equal(JSON.stringify(data).includes("email"),false);
 });

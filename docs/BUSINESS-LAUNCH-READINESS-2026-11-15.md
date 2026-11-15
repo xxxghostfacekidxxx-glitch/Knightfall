@@ -50,8 +50,10 @@ Additional verification:
 - [ ] Confirm privacy-conscious first-party or Cloudflare Web Analytics, privacy disclosures and consent requirements.
 - [x] Add a staff-only, read-only D1 aggregate business metrics panel under Admin > System. It displays records, not verified customers or revenue.
 - [ ] Track weekly active users (WAU), monthly active users (MAU), four-week returning members, activation, engagement by major module and outages.
+- [x] Surface member-role and staff-role activity separately in the read-only business dashboard. Member-role accounts may still include development/test accounts.
 - [ ] Split internal/staff/test activity from genuine external users.
-- [ ] Select flagship conversion path: **Chaos Cartridge or Cinderwild -> member account -> messaging/community -> safe premium perks**.
+- [x] Add a public homepage first-step funnel: free arcade -> Madhouse community -> pet/profile exploration, with direct account creation and no paid claims.
+- [ ] Measure the first-step funnel and validate flagship path: **Chaos Cartridge or Cinderwild -> member account -> messaging/community -> safe premium perks**. No individual visitor tracking added yet.
 - [ ] Test acquisition with unpaid creator collaboration, owned social channels, game showcases and personal referrals before purchasing ads.
 - [ ] Run one pricing experiment with defined eligibility, conversion count, refund rate and cancellation tracking.
 - [ ] Publish a monthly, date-stamped KPI report with source definitions and a reconciliation to actual deposits.

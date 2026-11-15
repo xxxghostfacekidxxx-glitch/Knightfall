@@ -4,16 +4,24 @@ const QUERY = {
   members: `SELECT COUNT(*) AS accounts,
     COALESCE(SUM(CASE WHEN status='active' THEN 1 ELSE 0 END),0) AS active_accounts,
     COALESCE(SUM(CASE WHEN datetime(created_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS registrations_30d,
-    COALESCE(SUM(CASE WHEN datetime(last_seen_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS seen_30d
+    COALESCE(SUM(CASE WHEN datetime(last_seen_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS seen_30d,
+    COALESCE(SUM(CASE WHEN role='member' THEN 1 ELSE 0 END),0) AS member_role_accounts,
+    COALESCE(SUM(CASE WHEN role='member' AND status='active' THEN 1 ELSE 0 END),0) AS active_member_role_accounts,
+    COALESCE(SUM(CASE WHEN role='member' AND datetime(last_seen_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS member_role_seen_30d,
+    COALESCE(SUM(CASE WHEN role='member' AND datetime(created_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS member_role_registrations_30d,
+    COALESCE(SUM(CASE WHEN role IN ('god','admin','moderator') THEN 1 ELSE 0 END),0) AS staff_role_accounts
     FROM users`,
-  forum: `SELECT COUNT(*) AS threads, COUNT(DISTINCT user_id) AS authors,
-    COALESCE(SUM(CASE WHEN datetime(created_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS threads_30d
-    FROM threads WHERE deleted_at IS NULL`,
-  messaging: `SELECT COUNT(*) AS messages, COUNT(DISTINCT sender_id) AS senders
-    FROM messages WHERE deleted_at IS NULL`,
-  arcade: `SELECT COUNT(*) AS score_records, COUNT(DISTINCT user_id) AS players,
-    COUNT(DISTINCT game_key) AS recorded_games, COALESCE(SUM(runs),0) AS score_reported_runs
-    FROM arcade_high_scores`,
+  forum: `SELECT COUNT(*) AS threads, COUNT(DISTINCT t.user_id) AS authors,
+    COUNT(DISTINCT CASE WHEN u.role='member' THEN t.user_id END) AS member_role_authors,
+    COALESCE(SUM(CASE WHEN datetime(t.created_at)>=datetime('now','-30 days') THEN 1 ELSE 0 END),0) AS threads_30d
+    FROM threads t JOIN users u ON u.id=t.user_id WHERE t.deleted_at IS NULL`,
+  messaging: `SELECT COUNT(*) AS messages, COUNT(DISTINCT m.sender_id) AS senders,
+    COUNT(DISTINCT CASE WHEN u.role='member' THEN m.sender_id END) AS member_role_senders
+    FROM messages m JOIN users u ON u.id=m.sender_id WHERE m.deleted_at IS NULL`,
+  arcade: `SELECT COUNT(*) AS score_records, COUNT(DISTINCT a.user_id) AS players,
+    COUNT(DISTINCT CASE WHEN u.role='member' THEN a.user_id END) AS member_role_players,
+    COUNT(DISTINCT a.game_key) AS recorded_games, COALESCE(SUM(a.runs),0) AS score_reported_runs
+    FROM arcade_high_scores a JOIN users u ON u.id=a.user_id`,
   commerce: `SELECT
     (SELECT COUNT(*) FROM shops) AS shops,
     (SELECT COUNT(*) FROM shop_products) AS shop_products,
@@ -53,6 +61,6 @@ export async function handleBusinessMetrics(request,env,url,{requireUser,json,or
     generated_at:new Date().toISOString(),
     source:"Cloudflare D1 aggregate records",
     metrics,
-    limitations:"Counts include staff/test activity. Records do not prove external customer growth, completed payments, profit or active website traffic."
+    limitations:"Member-role excludes admin, GOD and moderator roles but can still include test accounts. Last-seen is not verified retention. Orders, entitlements and scores are not proof of collected revenue or distinct customers."
   });
 }

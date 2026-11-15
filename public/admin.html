@@ -7,7 +7,7 @@
 <div class="panel-head"><div><p class="eyebrow">OPERATIONS / GROWTH</p><h2>Business Metrics</h2><small>Read-only activity and commerce counts from production D1. Administrators and GOD only.</small></div><button type="button" id="refresh-business-metrics">Refresh counts</button></div>
 <p id="business-metrics-status" class="fleet-note" role="status" aria-live="polite">Open this panel to load live counts.</p>
 <section id="business-metrics" class="stats" aria-label="Business record counts"></section>
-<p class="fleet-note">These numbers include staff and test records. Scores are not unique visitors, store orders are not verified sales, and active website traffic requires separate privacy-conscious web analytics.</p>
+<p class="fleet-note">Member-role accounts exclude GOD, administrators and moderators, but may still contain test accounts or Digital Creators. The last-seen field is not verified retention. No score, order, subscription, or shop record proves collected revenue. Use separate privacy-conscious website analytics and reconciled payment statements.</p>
 <p><a class="fleet-run" href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BUSINESS-LAUNCH-READINESS-2026-11-15.md" target="_blank" rel="noopener noreferrer">Open business launch checklist</a></p>
 </section>
 <section class="admin-panel" data-panel="creation-tools"><div class="panel-head"><div><p class="eyebrow">BUILD / DESIGN / AUTOMATE</p><h2>AI &amp; Creation</h2><small>All authoring tools in one workspace. Existing editors remain on their dedicated pages.</small></div></div><div class="admin-shortcuts" aria-label="AI and creation tools"><a class="admin-shortcut" href="/personal-bots.html"><span class="shortcut-icon">✳</span><span><strong>Personal Bots</strong><small>Manage personal AI assistants</small></span></a><a class="admin-shortcut" href="/chaos-lab.html"><span class="shortcut-icon">⚡</span><span><strong>Chaos Lab</strong><small>Miss Chaos personality and AI configuration</small></span></a><a class="admin-shortcut" href="/devil-tools.html"><span class="shortcut-icon">🎨</span><span><strong>Creator Foundry</strong><small>Art, game development, and publishing tools</small></span></a><a class="admin-shortcut" href="/open-source-arsenal.html"><span class="shortcut-icon">⚙</span><span><strong>Open Source Arsenal</strong><small>Open-source integrations and resources</small></span></a></div></section>
@@ -47,11 +47,15 @@ async function businessMetrics(){
  try{
   const data=await api("/api/admin/business-metrics"),m=data.metrics;
   const rows=[
-   ["Account records",m.members.accounts],["Active-status accounts",m.members.active_accounts],
-   ["Accounts seen, 30d",m.members.seen_30d],["Registrations, 30d",m.members.registrations_30d],
-   ["Forum threads",m.forum.threads],["Forum authors",m.forum.authors],
-   ["Messages recorded",m.messaging.messages],["Message senders",m.messaging.senders],
-   ["High-score players",m.arcade.players],["Games with scores",m.arcade.recorded_games],
+   ["All account records",m.members.accounts],["Member-role accounts",m.members.member_role_accounts],
+   ["Member-role seen, 30d",m.members.member_role_seen_30d],
+   ["Member-role registrations, 30d",m.members.member_role_registrations_30d],
+   ["Staff-role accounts",m.members.staff_role_accounts],
+   ["All accounts seen, 30d",m.members.seen_30d],
+   ["Forum threads",m.forum.threads],["Member-role thread authors",m.forum.member_role_authors],
+   ["Messages recorded",m.messaging.messages],["Member-role message senders",m.messaging.member_role_senders],
+   ["High-score players",m.arcade.players],["Member-role arcade players",m.arcade.member_role_players],
+   ["Games with scores",m.arcade.recorded_games],
    ["Shops",m.commerce.shops],["Products",m.commerce.shop_products],
    ["Shop order records",m.commerce.shop_order_records],
    ["Active Premium entitlements",m.commerce.active_premium_entitlements],

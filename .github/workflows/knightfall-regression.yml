@@ -71,6 +71,7 @@ jobs:
         run: node scripts/css-rule-dedup.mjs --check
       - name: Run focused regression tests
         run: |
+          node --test scripts/home-start.test.mjs backend/src/business-metrics.test.mjs
           node --test scripts/public-legal-and-shop-theme.test.mjs
           node --test scripts/cinderwild-qol.test.mjs
           node --test scripts/cinderwild-cloud-sync.test.mjs
