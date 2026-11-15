@@ -68,7 +68,7 @@ try {
         assert.equal(await result.count(), 1);
         assert.match(await result.locator("h3").textContent(), role.developer ? /^Phaser$/ : /^TrenchBroom$/);
         await search.fill("zz-no-such-tool");
-        await catalog.getByText("No tools match.", { exact: false }).waitFor();
+        await page.getByText("No workspaces or tools match this search.", { exact: true }).waitFor();
 
         await catalog.locator('[data-category="games"]').click();
         await search.fill("sprite workshop");
