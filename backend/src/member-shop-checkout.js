@@ -22,6 +22,9 @@ export async function handleBotSlotShop(request,env,url,user){
  if(path==="/api/member-shop/checkout"){
   if(request.method!=="POST")return respond({error:"Method not allowed"},405);
   if(!user)return respond({error:"Sign in first"},401);
+  // Explicit launch gate: credentials alone never activate a public purchase flow.
+  // Leave this disabled until verified end-to-end payment, fulfillment and refund testing.
+  if(env.MEMBER_SHOP_CHECKOUT_ENABLED!=="true")return respond({error:"Checkout is not available yet"},503);
   if(!env.STRIPE_SECRET_KEY||!env.STRIPE_WEBHOOK_SECRET)return respond({error:"Checkout is not configured"},503);
   let data;try{data=await request.json()}catch{return respond({error:"Invalid JSON"},400)}
   const product=Object.prototype.hasOwnProperty.call(BOT_SLOT_PRODUCTS,data?.sku)?BOT_SLOT_PRODUCTS[data.sku]:(PET_ACCESSORIES[data?.sku]?.premium?PET_ACCESSORIES[data.sku]:null);
