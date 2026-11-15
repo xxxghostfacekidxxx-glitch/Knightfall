@@ -57,6 +57,27 @@ try {
       await writeFile('priority-arcade-evidence/assist-'+id+'.txt',[err.stack,...scriptErrors].join('\n'));
     }finally{await context.close();}
   }
+  // Neon Surge requires remote Three.js modules; a failed resource must never leave a silent blank screen.
+  {
+    const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+    const page=await context.newPage();
+    try {
+      const response=await page.goto(origin+'/arcade/hosted/neon-surge/index.html',{waitUntil:'domcontentloaded',timeout:30000});
+      if(!response?.ok())throw Error('Neon Surge returned '+response?.status());
+      await page.locator('#fsBtn').waitFor({state:'attached',timeout:10000});
+      const hasNative=await page.evaluate(()=>Boolean(document.fullscreenEnabled||document.webkitFullscreenEnabled));
+      const count=await page.locator('#kf-arcade-view-toggle').count();
+      if(hasNative && count!==0)throw Error('Duplicate fullscreen button in Neon Surge');
+      await page.evaluate(()=>{const script=document.createElement('script');script.src='/arcade/hosted/neon-surge/__missing_test_graphics__.js';document.head.append(script)});
+      await page.locator('#kf-arcade-recovery a[href="/chaos-cartridge.html"]').waitFor({state:'visible',timeout:10000});
+      console.log('PASS neon-surge | existing fullscreen retained and failed graphics import is recoverable');
+    }catch(err){
+      failures.push('neon-surge: '+err.message);
+      console.error('FAIL neon-surge: '+err.message);
+      try{await page.screenshot({path:'priority-arcade-evidence/assist-neon-surge.png',timeout:10000})}catch{}
+      await writeFile('priority-arcade-evidence/assist-neon-surge.txt',err.stack);
+    }finally{await context.close();}
+  }
 } finally {
   if(browser)await browser.close();
   if(server)server.kill();
