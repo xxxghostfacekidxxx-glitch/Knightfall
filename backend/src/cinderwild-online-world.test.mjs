@@ -106,6 +106,7 @@ test("only server-confirmed exploration or NPC proximity completes quests",async
  const f=fixture();await f.call("join");
  const denied=await f.call("interact",f.users.get(1),{target:"warden_briar"});
  assert.equal(denied.httpStatus,403);
+ f.players.get(1).x=7; // Step next to the Nurse before attempting a verified interaction.
  const welcome=await f.call("interact",f.users.get(1),{target:"nurse_ember"});
  assert.equal(welcome.httpStatus,200);
  assert.ok(welcome.quests.some(q=>q.id==="nurse_ember"&&q.completed));
