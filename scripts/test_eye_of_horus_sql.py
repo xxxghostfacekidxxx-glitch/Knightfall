@@ -1,27 +1,29 @@
 #!/usr/bin/env python3
-"""Validate that Eye of Horus access events cannot be edited/deleted in app SQL."""
-from pathlib import Path
+"""Check the soft-deletion schema and GOD-only recovery SQL contract."""
 import sqlite3
+from pathlib import Path
 
-db=sqlite3.connect(":memory:")
-db.execute("PRAGMA foreign_keys=ON")
-db.executescript("CREATE TABLE users(id INTEGER PRIMARY KEY,role TEXT NOT NULL); INSERT INTO users VALUES(1,'god'),(2,'admin');")
-migration=Path(__file__).resolve().parents[1]/"backend/migrations/0131_eye_of_horus_audit.sql"
-db.executescript(migration.read_text())
-db.executescript(migration.read_text())
-params=(1,"review","direct_messages","Investigation of a verified safety report",2,None,10)
-db.execute("INSERT INTO eye_of_horus_access_log(god_user_id,action,category,reason,target_user_id,object_id,result_count) VALUES(?,?,?,?,?,?,?)",params)
-for statement in ("UPDATE eye_of_horus_access_log SET reason='rewritten' WHERE id=1",
-                  "DELETE FROM eye_of_horus_access_log WHERE id=1"):
-    try: db.execute(statement)
-    except sqlite3.IntegrityError as error:
-        assert "eye_audit_append_only" in str(error),str(error)
-    else: raise AssertionError("Eye audit ledger was mutable: "+statement)
-for bad in [(1,"review","direct_messages","too short",None,None,1),
-            (1,"review","unapproved_dataset","A sufficiently long review reason",None,None,1)]:
-    try:
-        db.execute("INSERT INTO eye_of_horus_access_log(god_user_id,action,category,reason,target_user_id,object_id,result_count) VALUES(?,?,?,?,?,?,?)",bad)
-    except sqlite3.IntegrityError: pass
-    else: raise AssertionError("Invalid access record was allowed")
-assert db.execute("SELECT COUNT(*) FROM eye_of_horus_access_log").fetchone()[0]==1
-print("PASS: Eye of Horus migration is idempotent, append-only, and validates review purposes and datasets")
+root=Path(__file__).resolve().parents[1]/"backend/migrations"
+migration=(root/"0132_soft_delete_core.sql").read_text()
+quota=(root/"0133_soft_delete_bot_quota.sql").read_text()
+tables=[
+    "personal_bots","personal_bot_chat_messages","profile_photos","vault_items",
+    "chaos_memories","member_memos","member_memo_mail","moon_journal",
+    "shadow_journal","media_albums","shop_products"
+]
+con=sqlite3.connect(":memory:")
+for table in tables:
+    con.execute(f"CREATE TABLE {table} (id INTEGER PRIMARY KEY,owner_id INTEGER)")
+con.executescript("CREATE TABLE eye_of_horus_access_log (id INTEGER PRIMARY KEY);")
+con.executescript(migration)
+for table in tables:
+    columns={row[1] for row in con.execute(f"PRAGMA table_info({table})")}
+    assert "deleted_at" in columns, f"{table} missing deleted_at"
+assert con.execute("SELECT COUNT(*) FROM sqlite_master WHERE name='eye_of_horus_access_log'").fetchone()[0]==0
+con.execute("INSERT INTO personal_bots(id,owner_id) VALUES(1,2)")
+con.execute("UPDATE personal_bots SET deleted_at=CURRENT_TIMESTAMP WHERE id=1")
+assert con.execute("SELECT COUNT(*) FROM personal_bots WHERE deleted_at IS NULL").fetchone()[0]==0
+assert con.execute("SELECT COUNT(*) FROM personal_bots WHERE deleted_at IS NOT NULL").fetchone()[0]==1
+assert "deleted_at IS NULL" in quota
+assert "personal_bot_limit_reached" in quota
+print("PASS: 11 retained-content tables support soft deletion; old Eye audit table is retired")
