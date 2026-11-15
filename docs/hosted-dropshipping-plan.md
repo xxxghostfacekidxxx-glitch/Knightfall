@@ -9,7 +9,8 @@ Updated: 2026-11-15
 - D1 tables: `shops` and `shop_products` from migration `0012_shops.sql`.
 - Seller data is scoped to the authenticated shop owner. Public storefront API intentionally omits supplier URLs.
 - Catalog exports and batches of up to 10 product CSV imports are supported. CSV import does not automate supplier sync or fulfill orders.
-- **No live checkout, orders, Stripe Connect onboarding, supplier connections, shipping/tax engine, or automated fulfillment.** Do not enable money collection without the release checks below.
+- Seller business profiles, private supplier SKU/cost variants, public safe variant previews, and dormant order/event tables were added in production migration `0136_shop_commerce_foundation.sql` on 2026-11-15. Seller UI supports editing business policies, shipping timing and variants; orders remain read-only.
+- **No live checkout, Stripe Connect onboarding, supplier account connections, tax engine, or automated fulfillment.** Do not enable money collection without the release checks below.
 
 ## Recommended commercial model
 Knightfall provides storefront software, seller tools and a community directory; independent sellers are merchants of record for **their own** physical product sales. Start with a single-seller cart per checkout. Do not offer one payment split across multiple stores at first.
@@ -38,17 +39,17 @@ Reference: https://docs.stripe.com/connect/saas and https://docs.stripe.com/conn
 - Queues / Workflows: retryable order dispatch and shipping updates; do not perform fulfillment solely in client redirects or in a fragile single HTTP request.
 - Keep platform API secrets in Worker secret bindings. Encrypt per-seller supplier tokens at rest using a server-only key management scheme. Never store API secrets in `supplier_url`, browser local storage, or public product JSON.
 
-## Proposed future D1 resources (not yet migrated)
-- `shop_settings`: business contact, policies, legal seller identity, allowed sales regions, shipping origin.
+## D1 resources (foundation applied; additional integrations pending)
+- **Implemented:** `shop_business_profiles` stores seller support contact, delivery/return policies, and expected processing range. Legal seller identity, verified contact, allowed sales regions and tax details remain pending.
 - `shop_payment_accounts`: shop ID, connected account reference, onboarding and capability status. No banking credentials.
 - `shop_supplier_connections`: shop ID, provider, provider store reference, encrypted credentials/token reference, connection state.
-- `shop_product_variants`: product and supplier variant mapping, SKU, stock policy, supplier cost snapshot, weight, options, processing and shipping estimates.
-- `shop_orders`: id, shop ID, buyer/contact references, order status, currency, immutable totals, checkout/payment IDs, addresses protected according to privacy policy.
-- `shop_order_items`: SKU, quantity, unit price and tax/shipping snapshots, fulfillment provider reference.
+- **Implemented:** `shop_product_variants` stores product/SKU/label/price/private supplier SKU/private cost and seller-reported stock status. Automated stock/price sync, weight and supplier-assured shipping estimates are pending.
+- **Schema only:** `shop_orders` includes shop association, state, immutable financial totals and optional Stripe identifiers. No checkout creates orders; address handling and buyer privacy implementation remain pending.
+- **Schema only:** `shop_order_items` stores item snapshot, quantity and unit price; shipment and fulfillment references are pending.
 - `shop_shipments`: supplier order ID, carrier, tracking, status updates and dates.
-- `shop_webhook_events`: provider + unique event ID, receive/process status, retry and error details.
+- **Schema only:** `shop_webhook_events` stores provider+event unique keys and processing status. No webhook handler is connected.
 
-Use a new numbered migration (after the repository's latest migration) *only* when implementing these routes. Deploy migration and Worker together and test an existing seller shop for backward compatibility.
+Migration `0136_shop_commerce_foundation.sql` was applied to the production D1 database after verifying the ledger was current through `0135`. All five tables were confirmed and the migration ledger was updated. The new API responds with an explicit 503 if the migration is missing in a different environment. Future changes must use new numbered migrations and verify deployment and schema separately.
 
 ## Transaction state machine
 1. Seller creates a shop and verifies legal/payment and supplier prerequisites. Store stays **catalog only** until all prerequisites pass.
@@ -70,8 +71,8 @@ Use a new numbered migration (after the repository's latest migration) *only* wh
 - Provide clear merchant/customer support, privacy, returns, and seller terms. Obtain legal/tax review for the precise merchant-of-record model and marketplace obligations.
 
 ## Immediate next engineering order
-1. Seller storefront identity, shipping/returns policy editor and product variants.
-2. Stripe Connect sandbox seller onboarding and one-seller Checkout, webhook and order ledger.
+1. **Completed (foundation):** Seller support/shipping/returns policy editor, SKUs and product variants, read-only order center, public policy display and public safe options preview.
+2. **Next:** Stripe Connect sandbox seller onboarding and single-seller Checkout, signed webhook validation and guarded order creation.
 3. Printful multi-seller OAuth + test-mode order/fulfillment/tracking adapter.
 4. Operational dashboard (orders, cancellations, supplier costs, stock sync, customer support).
 5. Real-money enablement only after all required checks pass and the chosen Stripe account is live-ready.
