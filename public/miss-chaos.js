@@ -324,7 +324,8 @@
       const me = await request("/api/auth/me");
       if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
       isAdmin = ["admin", "god"].includes(me.user.role);
-      if (isAdmin) { $("#admin-chaos-archive").hidden = false; await refreshAdminArchive(); }
+      // Unreported member AI chats are reviewed only in the God-only Eye of Horus.
+      if (isAdmin) $("#admin-chaos-archive").hidden = true;
       const [health, conversations] = await Promise.all([
         fetch(API + "/health", {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
         refreshConversations(),
