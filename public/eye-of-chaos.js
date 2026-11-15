@@ -25,6 +25,7 @@ function openSection(name){
  if(name==="missions")loadMissions();
  if(name==="approvals")loadDrafts();
  if(name==="history")loadEvents();
+ if(name==="qa")loadQA();
 }
 const names={
  agents:()=>state.fleet?.agents||[],
@@ -153,6 +154,36 @@ function renderDrafts(){
   card.append(controls);panel.append(card);
  }
 }
+async function loadQA(){
+ const status=$("chaos-qa-state"),results=$("chaos-qa-results");results.replaceChildren();
+ status.textContent="Checking actual GitHub Actions evidence…";
+ try{
+  const data=await api("/qa");
+  if(!data.verified){status.textContent=data.message||"Current QA state unverified.";return}
+  const run=data.run;
+  status.textContent="Run #"+run.id+" · "+run.status+
+   (run.conclusion?(" · "+run.conclusion.toUpperCase()):" · still running");
+  const card=node("article","chaos-mission"),head=node("h4","","GitHub workflow revision "+String(run.sha||"").slice(0,8));
+  card.append(head,metaLine(["Started "+fmtTime(run.created_at),"Run "+run.id]));
+  if(typeof run.url==="string"&&run.url.startsWith("https://github.com/")){
+   const link=node("a","","Open verified run and artifacts");
+   link.href=run.url;link.target="_blank";link.rel="noopener noreferrer";card.append(link);
+  }
+  results.append(card);
+  if(!data.jobs_verified){results.append(node("p","chaos-empty","Individual worker jobs not yet verified."));return}
+  for(const job of data.jobs){
+   const item=node("article","chaos-mission"),row=node("div","chaos-item-heading");
+   row.append(node("h4","",job.name));
+   const badge=node("span","chaos-state",job.conclusion||job.status||"unknown");
+   badge.dataset.state=job.conclusion||job.status||"unknown";row.append(badge);item.append(row);
+   if(job.url?.startsWith("https://github.com/")){
+    const a=node("a","","View worker job");a.href=job.url;a.rel="noopener noreferrer";a.target="_blank";item.append(a);
+   }
+   results.append(item);
+  }
+  if(!data.jobs.length)results.append(node("p","chaos-empty","No individual worker results returned for this run."));
+ }catch(error){status.textContent="GitHub QA status unavailable: "+error.message}
+}
 async function loadEvents(){
  if(!state.ready)return;
  try{
@@ -173,6 +204,7 @@ $("chaos-draft-division").addEventListener("change",refreshDraftAssignee);
 $("chaos-mission-refresh").addEventListener("click",loadMissions);
 $("chaos-draft-refresh").addEventListener("click",loadDrafts);
 $("chaos-history-refresh").addEventListener("click",loadEvents);
+$("chaos-qa-refresh").addEventListener("click",loadQA);
 $("chaos-draft-cancel").addEventListener("click",resetDraftEditor);
 $("chaos-mission-form").addEventListener("submit",async e=>{
  e.preventDefault();if(!state.ready)return;
