@@ -32,7 +32,7 @@ assert.ok(js.includes("data-withdraw"),"Creature box supports withdrawals");
 assert.ok(js.includes("data-starter"),"Starter selection available");
 assert.ok(js.endsWith("})();\n"),"Executable game entrypoint intact");
 assert.doesNotMatch(js+" "+html,/\b(Pikachu|Charmander|Bulbasaur|Squirtle|Nintendo|Game Freak)\b/i,"No protected franchise characters or credits implied");
-const injected=js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, "globalThis.__test = {SPECIES,GYMS,make,moves,tile,walkable,addXP,expreq,STRONG,fresh,hash,zone,rollDamage};\n})();");
+const injected=js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, "globalThis.__test = {SPECIES,GYMS,SHRINES,make,moves,tile,walkable,addXP,expreq,STRONG,fresh,hash,zone,rollDamage};\n})();");
 assert.notEqual(injected,js,"Test injection matched the game bootstrap");
 const context={Math,Date,Number,Object,Array,Set,JSON,Map,String,Boolean,console};
 vm.runInNewContext(injected,context,{timeout:2000,filename:"cinderwild-game.js"});
@@ -40,6 +40,8 @@ const g=context.__test;
 assert.ok(g,"Game mechanics loaded in sandbox");
 assert.equal(Object.keys(g.SPECIES).length,25,"Original 25 species");
 assert.equal(g.GYMS.length,3,"Three Warden challenges");
+assert.equal(g.SHRINES.length,3,"Three postgame legendary shrines");
+for(const shrine of g.SHRINES){assert.ok(g.SPECIES[shrine.id],"Legendary species exists");assert.equal(g.walkable(shrine.x,shrine.y),true,"Shrine can be reached on foot");}
 assert.equal(g.zone(8),"Cinder Town");
 assert.equal(g.zone(24),"Bramble Trail");
 assert.equal(g.zone(43),"Storm Marsh");
