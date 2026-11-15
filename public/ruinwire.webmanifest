@@ -1,0 +1,61 @@
+{
+  "id": "/ruinwire",
+  "name": "Ruinwire | Knightfall Messenger",
+  "short_name": "Ruinwire",
+  "description": "Private chats, group messages, replies and notifications for Knightfall members.",
+  "lang": "en-US",
+  "start_url": "/messages.html?app=ruinwire",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#090912",
+  "theme_color": "#130c20",
+  "categories": [
+    "social",
+    "communication"
+  ],
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/ruinwire.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Inbox",
+      "short_name": "Chats",
+      "url": "/messages.html?app=ruinwire",
+      "icons": [
+        {
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
