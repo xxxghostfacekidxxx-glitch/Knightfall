@@ -128,6 +128,10 @@ try {
       const button=page.locator('#kf-arcade-view-toggle');
       await button.waitFor({state:'visible',timeout:15000});
       if(await page.locator('script[src*="arcade-playback-assist.js"]').getAttribute('data-target')!==target)throw Error('Game root mismatch');
+      if(id==='sanctuary-original'){
+        const hit=await page.evaluate(()=>{const b=document.getElementById('kf-arcade-view-toggle');const r=b.getBoundingClientRect();const el=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return {buttonRect:[r.left,r.top,r.width,r.height].map(Math.round),hitTag:el?.tagName,hitId:el?.id||'',hitClass:String(el?.className||'').slice(0,80),buttonZ:getComputedStyle(b).zIndex,pointerEvents:getComputedStyle(b).pointerEvents,visible:!!r.width&&!!r.height};});
+        console.log('SANCTUARY_FULLSCREEN_HIT_TEST '+JSON.stringify(hit));
+      }
       await button.click({timeout:10000});
       await page.waitForFunction(()=>document.querySelector('#kf-arcade-view-toggle')?.getAttribute('aria-pressed')==='true',{timeout:8000});
       await button.click({timeout:10000});
