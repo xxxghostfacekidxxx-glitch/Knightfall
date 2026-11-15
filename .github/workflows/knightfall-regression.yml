@@ -20,6 +20,8 @@ jobs:
           node --check public/monster-mmo.js
           node --check public/arcade/hosted/cinderwild/game.js
           node --check public/arcade/hosted/cinderwild/cloud-sync.js
+          node --check public/arcade/hosted/cinderwild/online-world.js
+          node --check backend/src/cinderwild-online-world.js
           node --check backend/src/cinderwild-world-rules.mjs
           node --check public/personal-bots.js
           node --check public/bot-creator-pro.js
@@ -73,6 +75,7 @@ jobs:
           node --test scripts/cinderwild-qol.test.mjs
           node --test scripts/cinderwild-cloud-sync.test.mjs
           node --test scripts/cinderwild-world-rules.test.mjs
+          node --test backend/src/cinderwild-online-world.test.mjs
           node --test scripts/password-reset-security.test.mjs
           node --test scripts/message-native-limit.test.mjs
           node --test scripts/digital-creator-access.test.mjs
