@@ -154,7 +154,7 @@ test('renderer has unique gradient namespaces for simultaneous gallery previews'
 
 test('profile and mascot pages load the refreshed renderer',()=>{
  for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261113-misfit-ink5/,page+' has stale artwork');
+  assert.match(read(page),/\/misfit-avatar\.js\?v=20261114-book3/,page+' has stale artwork');
  }
  const css=read('public/avatar-studio.css');
  for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');
