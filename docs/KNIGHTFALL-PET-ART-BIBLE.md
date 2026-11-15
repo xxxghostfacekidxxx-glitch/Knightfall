@@ -22,7 +22,7 @@ Creature illustrations use a common 512×512 scalable SVG composition with the i
 
 These are first-form, production-ready SVG illustrations. They deliberately reuse all three existing asset entrypoints per species: `<id>.svg`, `<id>-idle.svg`, and `portraits/<id>.svg`, so existing API objects, account ownership, care actions, room furniture, profile display and compatibility paths stay unchanged. The same master art is copied to all three entrypoints to eliminate inconsistent appearance.
 
-**Evolution state remains controlled by the server:** signature evolutions earned with levels and bond continue to load `/evolutions/<id>.svg`. These files and their gameplay requirements are *not* overwritten by the first-form redraw. The seven new first forms stay visually consistent during room care actions; other creatures keep their existing pose sheets. Evolved variants and the remainder of the 32-species roster are a **separate next art phase**.
+**Evolution state remains controlled by the server:** signature evolutions earned with levels and bond continue to load `/evolutions/<id>.svg`. These files and their gameplay requirements are *not* overwritten by the first-form redraw. The seven new first forms stay visually consistent during room care actions; other creatures keep their existing pose sheets. The five earned Starborn evolution assets have now been repainted into the same storybook family, with distinctive wings, capes, wards, tools and spirit effects. The remaining species are the next art phase.
 
 ## Implementation and validation
 
@@ -33,4 +33,18 @@ These are first-form, production-ready SVG illustrations. They deliberately reus
 - `python3 scripts/devil-tools-validate-svg.py` parses first-party SVG XML and rejects broken markup, duplicate IDs, active scripts and external dependencies.
 - Maintain one canonical `main` branch, without PRs or temporary release branches.
 
-Future artwork goal: 3-form illustrations for signature species plus distinct idle/reaction poses that preserve silhouettes and props. After the core pets, give the remaining Sanctuary species their own natural affinity palettes; do not flatten the roster into a single Neon style.
+Future artwork goal: fully illustrated intermediate forms for signature species plus distinct idle/reaction poses that preserve silhouettes and props. After the core pets, give the remaining Sanctuary species their own natural affinity palettes; do not flatten the roster into a single Neon style.
+
+## Evolved storybook portraits · November 15, 2026
+
+All **five existing earned Starborn forms** now use the corresponding first-form character as the consistent silhouette, embellished with unique, manually authored SVG art layers behind and in front of the character. They replace the legacy neon-jungle illustrations, not the progression or server-granted unlocks. SVGs remain 512×512, self-contained, accessible, and without baked-in text.
+
+| Evolution | Illustration changes |
+| --- | --- |
+| Lydibloom | Four fairy-petal wings, golden garden lantern buds and shell flourishes |
+| Supreme Mini Villain | Large royal bat wings, velvet cape, crooked scepter and dusk sparkles |
+| Everguard Eddie | Ancient protective shield, warding runes, lantern stars and chest crest |
+| Minion Mouse: Mastermind | Moon-map compass, paper tunnel charts and tiny brass clockwork pieces |
+| Boo Thang: Heartlight | Moon veil, translucent ribbon wings and softly shining heart talisman |
+
+Chunky Monkey and Crush keep their new first-form artwork; neither has a server-authorized Starborn evolution yet, so no unauthorized game unlock or economy changes were made. Run `node --test scripts/pet-storybook-evolutions.test.mjs` to validate the new evolution source assets.
