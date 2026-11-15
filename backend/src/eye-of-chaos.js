@@ -127,6 +127,7 @@ async function executeResearch(env,mission,actorId){
  if(Number(old.meta?.changes||0)!==1)return {error:"Mission is paused, busy, or recently executed.",status:409};
  try{
   const finding=await runSourceResearch(env,mission),id=uuid(),now=timestamp();
+  if(await isExecutionPaused(env))throw Error("GOD master pause interrupted research before saving.");
   // Never requeue the same story for the same mission on every cron run.
   const existing=await env.DB.prepare("SELECT id FROM eye_chaos_drafts WHERE mission_id=? AND source_url=? LIMIT 1")
    .bind(mission.id,finding.source_url).first();
@@ -208,7 +209,8 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
   if(request.method==="POST"){
    let payload;try{payload=await body()}catch{return respond({error:"Invalid JSON."},400)}
    if(typeof payload.paused!=="boolean")return respond({error:"Paused must be a boolean."},400);
-   await env.DB.prepare("UPDATE eye_chaos_controls SET paused=?,updated_by=?,updated_at=? WHERE id=1").bind(payload.paused?1:0,user.id,timestamp()).run();
+   const changed=await env.DB.prepare("UPDATE eye_chaos_controls SET paused=?,updated_by=?,updated_at=? WHERE id=1").bind(payload.paused?1:0,user.id,timestamp()).run();
+   if(Number(changed.meta?.changes||0)!==1)return respond({error:"Execution controls could not be updated; fleet remains locked."},503);
    await event(env,user.id,"system","all",payload.paused?"master_pause":"master_resume");
    return respond({ok:true,paused:payload.paused});
   }
@@ -282,6 +284,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
     if(!validText(generated.title,120)||!validText(generated.body,3000))
      throw Error("Model returned an invalid draft.");
    }catch(error){console.warn("eye_chaos_draft_generation_failed",String(error));return respond({error:"The AI could not produce a valid draft. Nothing was published."},502)}
+   if(await isExecutionPaused(env))return respond({error:"GOD paused the fleet before the draft was saved."},423);
    const id=uuid(),now=timestamp();
    await env.DB.prepare("INSERT INTO eye_chaos_drafts(id,mission_id,author_key,title,body,source_url,destination,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)")
     .bind(id,mission.id,mission.agent_key,generated.title,generated.body,"",mission.destination,now,now).run();
