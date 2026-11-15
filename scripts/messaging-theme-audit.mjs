@@ -7,7 +7,7 @@ const css = readFileSync(new URL("../public/messages.css", import.meta.url), "ut
 const html = readFileSync(new URL("../public/messages.html", import.meta.url), "utf8");
 
 const colors = [...css.matchAll(/#[0-9a-fA-F]{6}\b/g)].map(match => match[0]);
-const retired = /#(?:ff55d8|ff45b5|ba36c1|c6ff45|e8b5f5)\\b|rgba\\(\\s*255\\s*,\\s*85\\s*,\\s*216\\s*,/i;
+const retired = /#(?:ff55d8|ff45b5|ba36c1|c6ff45|e8b5f5)\b|rgba\(\s*255\s*,\s*85\s*,\s*216\s*,/i;
 assert.doesNotMatch(css,retired,"Retired neon colors must not return to messaging");
 assert.match(css,/#b25b68/i,"Approved muted crimson must appear in messaging");
 assert.match(css,/#c7a77c/i,"Approved antique bronze must appear in messaging");
@@ -20,7 +20,7 @@ for (const selector of [
   assert.ok(css.includes(selector), `Missing messaging surface ${selector}`);
 }
 assert.doesNotMatch(css, /#ff55d8/i, "Retired neon pink must not be the messaging accent");
-assert.match(css, /var\(--kf-accent-bright\)/, "Acid green highlight must remain in messaging");
+assert.match(css, /var\(--kf-accent-bright\)/, "Gothic bronze highlight must remain in messaging");
 // Keep fresh versioned assets without pinning the audit to a month-old build.
 assert.match(html, /\/messages\.css\?v=\d{8}-[a-z0-9-]+/i, "Inbox CSS must use a dated cache key");
 assert.doesNotMatch(html, /20261027-keyboard-layout/, "Old cached messages stylesheet is still referenced");
@@ -34,4 +34,4 @@ for(const slot of ["chat-head","typing-indicator","load-older","messages","conve
  assert.ok(css.includes(".chat-panel>#"+slot+"{grid-row:"), "Missing dedicated chat grid slot: "+slot);
 }
 
-console.log(`Messaging theme audit passed: ${colors.length} CSS colors checked, no orange/brown palette.`);
+console.log(`Messaging theme audit passed: ${colors.length} CSS colors checked, approved Gothic palette.`);
