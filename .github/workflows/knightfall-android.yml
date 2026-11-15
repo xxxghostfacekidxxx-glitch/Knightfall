@@ -93,24 +93,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          script: |
-            set -euo pipefail
-            mkdir -p emulator-evidence
-            adb install -r android-test/app-debug.apk
-            adb shell pm path com.ashfall.knightfall
-            adb shell am start -W -n com.ashfall.knightfall/com.google.androidbrowserhelper.trusted.LauncherActivity | tee emulator-evidence/launch.txt
-            sleep 12
-            adb shell dumpsys activity activities > emulator-evidence/activities.txt
-            adb logcat -d -t 2000 > emulator-evidence/logcat.txt
-            if grep -A 12 -E 'FATAL EXCEPTION' emulator-evidence/logcat.txt | grep -F 'com.ashfall.knightfall'; then
-              echo 'Knightfall launcher crashed on Android emulator.' >&2
-              exit 1
-            fi
-            adb shell screencap -p /sdcard/knightfall-launch.png
-            adb pull /sdcard/knightfall-launch.png emulator-evidence/launch.png
-            test -s emulator-evidence/launch.png
-            echo 'Emulator app installation and launcher smoke passed.' >> "$GITHUB_STEP_SUMMARY"
-            echo 'Note: this does not verify signing/domain association, login, chat, push, or real device behavior.' >> "$GITHUB_STEP_SUMMARY"
+          script: bash scripts/knightfall-emulator-smoke.sh
       - name: Upload emulator evidence
         if: always()
         uses: actions/upload-artifact@v4
