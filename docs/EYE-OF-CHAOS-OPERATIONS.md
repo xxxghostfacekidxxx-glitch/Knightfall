@@ -56,14 +56,17 @@ GOD-only access is enforced by the Worker with an authenticated session and the 
 - **Curated external feeds:** music, science, unusual science, space, technology, horror, entertainment and Star Wars. External requests are limited to fixed HTTPS sources; redirects are forbidden; source links are checked against the originating host.
 - **Manual AI draft generation:** GOD clicks *AI draft* on a content or forum mission. Uses the existing Cloudflare Workers AI `@cf/meta/llama-3.1-8b-instruct-fast` binding. The prompt contains the named agent's identity, specialty and mission instructions, **not private member content**. A per-operator rate limit applies; invalid output fails closed; generated text is pending and must be reviewed and approved.
 - **Game QA:** live results are read from public GitHub Actions endpoints using no browser token. Unreachable or missing evidence displays as unverified, not passed. Test execution and artifacts remain with GitHub.
+- **Master pause:** GOD can pause and resume all manual research, scheduled research and AI generation from the Command Deck. D1 `eye_chaos_controls` enforces the switch on the server, and jobs recheck after fetching/inference before writing drafts. Existing drafts and GOD review remain accessible during pause. If the control row or migration is missing, execution fails closed.
 
 ## Deployment and migration notes
 
 The additive D1 table statements in migration `0142_eye_of_chaos.sql` were applied using Cloudflare D1's query API on November 15, 2026. All three tables were independently verified to exist and initially contained **zero rows**. This does not touch users, messages, prior D1 tables, Stripe, or arcade saves.
 
-**Important:** The separate Wrangler-managed `d1_migrations` history still last reported migration `0137` at the time of that verification. The pending `0141` premium deck migration was **not** applied as part of Eye of Chaos. The new `0142` migration is idempotent (`CREATE TABLE/INDEX IF NOT EXISTS`) and remains in the repository so it can be reconciled by the existing reviewed migrations workflow later. Do not manually mark Wrangler migrations applied without verifying which migrations have actually executed.
+Migration `0143_eye_chaos_controls.sql` was also applied and verified in production. The singleton controls row exists with `paused=0`, all Eye of Chaos mission/draft/event tables still held zero rows, and the readiness table count was 3. A value of 0 permits explicitly scheduled or GOD-launched execution; 1 halts execution.
 
-The GOD dashboard should report `schema_ready:true` when production's D1 binding sees the new tables. If unavailable, the fleet registry still renders but mission and approval forms remain disabled.
+**Important:** The separate Wrangler-managed `d1_migrations` history still last reported migration `0137` at the time of that verification. The pending `0141` premium deck migration was **not** applied as part of Eye of Chaos. The new `0142` and `0143` migrations are idempotent (`CREATE TABLE/INDEX IF NOT EXISTS`) and remains in the repository so it can be reconciled by the existing reviewed migrations workflow later. Do not manually mark Wrangler migrations applied without verifying which migrations have actually executed.
+
+The GOD dashboard should report `schema_ready:true` when production's D1 binding sees the missions, drafts and master controls tables. If unavailable, the fleet registry still renders but mission and approval forms remain disabled.
 
 ## Release validation checklist
 
@@ -73,11 +76,11 @@ The GOD dashboard should report `schema_ready:true` when production's D1 binding
 - [x] Source allowlist, no-site-private-data research, manual and scheduled pending review drafts
 - [x] Legacy scheduler posting call disabled and legacy configuration rejects auto-posting
 - [x] GitHub QA results are independently verified rather than inferred from a workflow link
-- [x] D1 additive schema applied and tables independently verified
+- [x] D1 additive schema and GOD pause settings applied and independently verified
 - [ ] Authenticated production GOD UI acceptance on real member session
 - [ ] End-to-end source execution and Workers AI draft generation on production
 - [ ] Full current-main regression suite and mobile UI QA
 - [ ] Destination-specific GOD-approved publishing integration, if desired
-- [ ] Reconciliation of additive 0142 schema with Wrangler-managed D1 migration history
+- [ ] Reconciliation of additive 0142/0143 schemas with Wrangler-managed D1 migration history
 
 **Never simulate publication success from an approval response. Never schedule automated forum publication without a new explicit owner decision and updated access model.**
