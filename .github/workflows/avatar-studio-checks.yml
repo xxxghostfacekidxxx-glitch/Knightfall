@@ -1,6 +1,19 @@
 name: Misfit Avatar Studio Regression
 
 on:
+  pull_request:
+    paths:
+      - 'public/misfit-avatar.js'
+      - 'public/avatar-studio.js'
+      - 'public/avatar-studio.html'
+      - 'public/avatar-studio.css'
+      - 'public/profile.html'
+      - 'public/profile-edit.html'
+      - 'public/mascot-pets.html'
+      - 'backend/src/personal-avatars.js'
+      - 'scripts/avatar-studio.test.mjs'
+      - 'scripts/avatar-studio-browser.mjs'
+      - '.github/workflows/avatar-studio-checks.yml'
   push:
     branches: [main]
     paths:
