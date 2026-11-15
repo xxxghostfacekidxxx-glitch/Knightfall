@@ -19,7 +19,7 @@ export async function handleDateJournal(request, env, url, {getUser, json, rateL
     const before = url.searchParams.get('before');
     if (before !== null && !validDay(before)) return respond({error: 'Invalid journal page.'}, 400);
     const {results} = await env.DB.prepare(`SELECT ${fields} FROM ${table}
-      WHERE user_id = ? AND entry_date < ? ORDER BY entry_date DESC LIMIT 21`)
+      WHERE user_id = ? AND deleted_at IS NULL AND entry_date < ? ORDER BY entry_date DESC LIMIT 21`)
       .bind(user.id, before ?? '2101-01-01').all();
     const entries = results.slice(0, 20);
     return respond({entries, next: results.length > 20 ? entries.at(-1).entry_date : null});
@@ -27,7 +27,7 @@ export async function handleDateJournal(request, env, url, {getUser, json, rateL
 
   if (!day || !['GET', 'PUT', 'DELETE'].includes(request.method)) return respond({error: 'Unsupported method.'}, 405);
   if (request.method === 'GET') {
-    const entry = await env.DB.prepare(`SELECT ${fields} FROM ${table} WHERE user_id = ? AND entry_date = ?`)
+    const entry = await env.DB.prepare(`SELECT ${fields} FROM ${table} WHERE user_id = ? AND entry_date = ? AND deleted_at IS NULL`)
       .bind(user.id, day).first();
     return respond({entry});
   }
@@ -42,7 +42,7 @@ export async function handleDateJournal(request, env, url, {getUser, json, rateL
   }
   const conflict = () => respond({error: 'This entry changed elsewhere. Copy any unsaved text before reopening the date.'}, 409);
   if (request.method === 'DELETE') {
-    const result = await env.DB.prepare(`DELETE FROM ${table} WHERE user_id = ? AND entry_date = ? AND version = ?`)
+    const result = await env.DB.prepare(`UPDATE ${table} SET deleted_at=CURRENT_TIMESTAMP WHERE user_id = ? AND entry_date = ? AND version = ? AND deleted_at IS NULL`)
       .bind(user.id, day, expected).run();
     return result.meta?.changes ? respond({ok: true}) : conflict();
   }
@@ -60,7 +60,7 @@ export async function handleDateJournal(request, env, url, {getUser, json, rateL
   if (expected) {
     const updates = updateMetadata ? metadata.map(column => column + ' = ?, ').join('') : '';
     entry = await env.DB.prepare(`UPDATE ${table} SET ${updates}title = ?, body = ?, updated_at = ?, version = ?
-      WHERE user_id = ? AND entry_date = ? AND version = ? RETURNING ${fields}`)
+      WHERE user_id = ? AND entry_date = ? AND version = ? AND deleted_at IS NULL RETURNING ${fields}`)
       .bind(...extra, title, body, now, version, user.id, day, expected).first();
   } else {
     const values = [user.id, day, ...extra, title, body, now, now, version];
