@@ -200,3 +200,16 @@
 .avatar-studio .trait-option[aria-pressed="true"] .trait-thumbnail{box-shadow:0 0 18px #c6ff4540,inset 0 0 16px #c6ff451c}
 .avatar-studio .preset-chip .look-avatar{background:radial-gradient(ellipse at 50% 30%,#88527c,#21152e 62%,#100d19);box-shadow:inset 0 0 28px #0008}
 @media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{animation:none;transition:none}}
+
+/* Misfit Studio discovery and responsive feature browser */
+.avatar-studio .trait-search{margin:1rem 0;padding:clamp(12px,2vw,18px);border:1px solid var(--kf-chrome-line,#827076);background:#1c1b22;border-radius:14px}
+.avatar-studio .trait-search label{display:block;margin-bottom:.55rem;color:#ece1d3;font-weight:800;font-size:.88rem}
+.avatar-studio .trait-search-row{display:flex;align-items:stretch;gap:.55rem;min-width:0}
+.avatar-studio .trait-search input{flex:1 1 auto;min-width:0;width:100%;min-height:44px;padding:.7rem .85rem;border:1px solid #827076;border-radius:9px;background:#101217;color:#ece1d3;font-size:16px}
+.avatar-studio .trait-search input:focus-visible{outline:2px solid #c7a77c;outline-offset:2px}
+.avatar-studio .trait-search .button{flex:none;min-height:44px;color:#ece1d3;border-color:#827076}
+.avatar-studio .trait-search .button[hidden]{display:none}
+.avatar-studio .trait-search-count{margin:.55rem 0 0;color:#c5b9b0;font-size:.8rem}
+.avatar-studio .trait-no-results{padding:1.5rem;border:1px dashed #827076;border-radius:12px;color:#ece1d3;text-align:center}
+.avatar-studio .trait-thumbnail:empty{min-height:55px;background:linear-gradient(125deg,#211e27,#363039,#211e27);background-size:220% 100%}
+@media(max-width:480px){.avatar-studio .trait-search-row{gap:.35rem}.avatar-studio .trait-search .button{padding-inline:.65rem}}
