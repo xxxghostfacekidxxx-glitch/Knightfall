@@ -26,6 +26,14 @@ assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
 for(const old of ["/gravewave-takeover.js","/gravewave-decor.js","/neon-global.css","/gravewave-consistency.css"])
  assert.ok(!nav.includes(old),"Nav reintroduces legacy neon theme: "+old);
 assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
+for (const path of ["auth.html","community.html"]) {
+ const page=read("../public/"+path);
+ assert.doesNotMatch(page,/gravewave-takeover\\.(js|css)/,"Retired Gravewave must not load on "+path);
+ assert.match(page,/\\/theme\\.css\\?v=20261115-gothic7/,"Gothic theme must be versioned on "+path);
+ assert.match(page,/\\/nav\\.js\\?v=20261115-gothic7/,"Current navigation must be versioned on "+path);
+}
+assert.doesNotMatch(read("../public/auth.html"),/#ff55d8|#c6ff45|#a8ff3e/i,"Neon auth styling must not return");
+assert.doesNotMatch(read("../public/realm-polish.css"),/inset:0 -4vw auto/,"Directory decorations must not overflow mobile viewport");
 assert.match(css,/knightfall-crest-192\.png/);
 assert.match(css,/knightfall-crest-512\.png/);
 assert.match(css,/body:not\(\.profile-custom-theme\)/);
