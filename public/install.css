@@ -23,3 +23,14 @@
 @media(max-width:560px){.kf-install-hero{grid-template-columns:1fr}.kf-install-icon{width:145px;margin:auto}.kf-install-hero h1{font-size:2.15rem}}
 
 #kf-apk-download[hidden]{display:none!important}
+
+/* Manual Android hardware QA. Only verified tests count toward release acceptance. */
+.kf-android-test-checklist{margin-top:1.25rem}
+.kf-android-test-checklist fieldset{min-width:0;display:grid;gap:.45rem;margin:1rem 0;padding:1rem;border:1px solid #826473;border-radius:12px}
+.kf-android-test-checklist legend{padding:0 .4rem;color:#f4d4c1;font-size:.89rem;font-weight:850}
+.kf-android-test-checklist label{display:flex;align-items:flex-start;gap:.65rem;padding:.5rem .25rem;line-height:1.4;color:#eee0e6}
+.kf-android-test-checklist input[type=checkbox]{margin-top:2px;min-width:20px;width:20px;height:20px;accent-color:#b9f477}
+.kf-android-test-actions{display:flex;flex-wrap:wrap;gap:.7rem}
+.kf-release-owner-details{margin-top:1rem;padding:.9rem;border:1px solid #806b7b;border-radius:10px}
+.kf-release-owner-details summary{cursor:pointer;color:#e8d8bc;font-weight:850}
+.kf-release-owner-details a{color:#c4f9a1}
