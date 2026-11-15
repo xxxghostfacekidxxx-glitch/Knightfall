@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invoicing | Knightfall</title><link rel="stylesheet" href="/theme.css?v=20261115-gothic6">
+<style>
+body{margin:0;background:#0d1013;color:#ece1d3;font:16px/1.6 system-ui}main{max-width:780px;margin:48px auto;padding:16px 20px 70px}
+h1{font-family:Georgia,serif;font-size:clamp(2rem,6vw,3rem)}.panel{border:1px solid #77656a;border-radius:14px;background:#201e24;padding:clamp(16px,3vw,28px)}
+label{display:block;font-weight:750;margin:12px 0 5px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:11px;border:1px solid #8d7b77;border-radius:8px;background:#111419;color:#ece1d3;font:inherit;min-height:44px}
+textarea{min-height:90px}button{padding:10px 17px;min-height:44px;border:1px solid #dfbd99;background:#c7a77c;color:#19171c;font:850 15px system-ui;border-radius:8px;cursor:pointer;margin-top:14px}
+button:disabled{opacity:.55;cursor:wait}a{color:#ddbd93}p{color:#bcb5b0}
+.notice{padding:12px 15px;border-left:4px solid #c7a77c;background:#29262a;margin:18px 0}small{color:#bcb5b0}
+</style></head><body><header class="kf-header"></header><main>
+<p><a href="/billing.html">← Billing &amp; Invoices</a></p><h1>Draft an invoice</h1>
+<p>Staff-only Stripe invoicing for Knightfall business customers. Creating a draft does <strong>not</strong> email anyone or charge any card. Review and send it from your Stripe Dashboard.</p>
+<div class="notice">This form remains disabled on the backend until <code>STRIPE_INVOICING_ENABLED=true</code> and a Stripe secret key are configured.</div>
+<form class="panel" id="form"><label for="email">Customer email</label><input id="email" type="email" autocomplete="email" required maxlength="254" placeholder="customer@example.com">
+<label for="description">Invoice description</label><textarea id="description" required minlength="3" maxlength="400" placeholder="Example: Knightfall sponsored community placement"></textarea>
+<label for="amount">Amount (USD)</label><input id="amount" type="number" min="1" max="5000" step="0.01" value="25.00" required>
+<label for="days">Payment terms</label><select id="days"><option value="7">7 days</option><option value="14">14 days</option><option value="30" selected>30 days</option><option value="60">60 days</option></select>
+<button id="make" type="submit">Create unsent draft in Stripe</button>
+<p id="status" role="status" aria-live="polite"></p></form>
+<p><a href="https://dashboard.stripe.com/invoices">Open Stripe Invoices Dashboard</a></p>
+</main><script src="/nav.js" defer></script><script>
+(()=>{
+ const form=document.getElementById("form"),button=document.getElementById("make"),status=document.getElementById("status");
+ form.addEventListener("submit",async e=>{
+  e.preventDefault();if(button.disabled)return;
+  const dollars=Number(document.getElementById("amount").value);
+  const cents=Math.round(dollars*100);
+  if(!Number.isFinite(dollars)||Math.abs(cents/100-dollars)>0.00001||cents<100||cents>500000){status.textContent="Enter an amount from $1 to $5,000 with no more than two decimal places.";return}
+  button.disabled=true;status.textContent="Preparing draft…";
+  try{
+   const r=await fetch("https://api.ash-fall.com/api/stripe/invoices/draft",{method:"POST",credentials:"include",headers:{"content-type":"application/json"},body:JSON.stringify({email:document.getElementById("email").value,description:document.getElementById("description").value,amount_cents:cents,due_days:Number(document.getElementById("days").value)})});
+   const data=await r.json().catch(()=>({}));
+   if(!r.ok)throw Error(data.error||"Could not prepare invoice.");
+   status.replaceChildren();
+   status.append(document.createTextNode("Unsent draft "+data.invoice_id+" created. "));
+   const link=document.createElement("a");link.href="https://dashboard.stripe.com/invoices";link.textContent="Review and send in Stripe";status.append(link);
+  }catch(err){status.textContent=String(err.message||"Invoicing unavailable.");}
+  finally{button.disabled=false}
+ });
+})();
+</script></body></html>
