@@ -13,10 +13,12 @@ for(const color of ["#0d1013","#ece1d3","#b25b68","#c7a77c","#92a18a"])
 assert.match(tokens,/--af-bg:#0d1013/);
 assert.match(tokens,/--af-ember:#b25b68/);
 assert.match(tokens,/--af-ember-light:#c7a77c/);
-assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic3/);
+assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic4/);
 assert.doesNotMatch(theme,/@import url\("\/neon-global\.css/);
-assert.match(nav,/data-knightfall-unified-theme/);
-assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic3/);
+assert.match(nav,/knightfall-unified-theme/);
+assert.match(nav,/DOMContentLoaded[^\\n]*mountApprovedTheme/,"Approved theme must mount after page styles");
+assert.match(nav,/document\\.head\\.appendChild\\(link\\)/,"Approved theme must be last in cascade");
+assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic4/);
 for(const old of ["/gravewave-takeover.js","/gravewave-decor.js","/neon-global.css","/gravewave-consistency.css"])
  assert.ok(!nav.includes(old),"Nav reintroduces legacy neon theme: "+old);
 assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
@@ -30,7 +32,7 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v41";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v42";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
