@@ -53,3 +53,16 @@ assert.ok(manifest.icons.some(i=>i.src==="/icons/knightfall-crest-maskable.png")
 let depth=0;for(const c of css){if(c==="{")depth++;if(c==="}")depth--;assert.ok(depth>=0)}
 assert.equal(depth,0,"Invalid CSS nesting");
 console.log("Approved Gothic Creator theme, crest, and offline refresh verified.");
+
+const foundryCSS=read("../public/creator-foundry.css");
+const foundryPage=read("../public/devil-tools.html");
+const catalogCSS=read("../public/arcade-catalog.css");
+const leaderboardsCSS=read("../public/arcade-leaderboards.css");
+const arcadeHub=read("../public/chaos-cartridge.html");
+assert.doesNotMatch(foundryCSS,/#c6ff45|#ff55d8/i,"Foundry CSS must use the Gothic color system");
+const foundryStyle=foundryPage.match(/<style>([\\s\\S]*?)<\\/style>/)?.[1]||"";
+assert.doesNotMatch(foundryStyle,/#c6ff45|#ff55d8/i,"Foundry inline chrome must not revive neon");
+assert.doesNotMatch(catalogCSS,/#c6ff45|#ff55d8/i,"Arcade catalog must use Gothic color system");
+assert.doesNotMatch(leaderboardsCSS,/#c6ff45|#ff55d8/i,"Leaderboards must use Gothic color system");
+assert.doesNotMatch(arcadeHub,/chaos-cartridge-theme\\.css/,"Hub must not load per-game neon skins");
+assert.match(arcadeHub,/arcade-catalog\\.css\\?v=20261115-gothic7/);
