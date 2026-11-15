@@ -1,0 +1,148 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {webcrypto} from "node:crypto";
+import {CHAOS_AGENTS,CHAOS_QA_FLEET,CHAOS_SOURCES,handleEyeOfChaos,runEyeChaosScheduledResearch} from "./eye-of-chaos.js";
+if(!globalThis.crypto)globalThis.crypto=webcrypto;
+
+function fixture(role="god",ready=true){
+ const missions=new Map(),drafts=new Map(),events=[],queries=[];
+ const db={prepare(sql){
+  const q={sql,args:[],bind(...v){this.args=v;return this},
+   async first(){
+    queries.push({sql,args:this.args});
+    if(sql.includes("sqlite_master"))return ready?{ready:1}:null;
+    if(sql.includes("FROM eye_chaos_missions WHERE id="))return missions.get(this.args[0])||null;
+    if(sql.includes("FROM eye_chaos_drafts WHERE id="))return drafts.get(this.args[0])||null;
+    if(sql.includes("FROM eye_chaos_drafts WHERE mission_id=")){
+     return [...drafts.values()].find(x=>x.mission_id===this.args[0]&&x.source_url===this.args[1])||null;
+    }
+    return null;
+   },
+   async all(){
+    queries.push({sql,args:this.args});
+    if(sql.includes("FROM god_bot_profiles"))return {results:[{bot_key:"beelzebub-music",display_name:"Beelzebub",user_id:101}]};
+    if(sql.includes("FROM eye_chaos_missions"))return {results:[...missions.values()]};
+    if(sql.includes("FROM eye_chaos_drafts"))return {results:[...drafts.values()]};
+    if(sql.includes("FROM eye_chaos_events"))return {results:events};
+    return {results:[]};
+   },
+   async run(){
+    queries.push({sql,args:this.args});
+    const a=this.args;
+    if(sql.startsWith("INSERT INTO eye_chaos_missions")){
+     missions.set(a[0],{id:a[0],created_by:a[1],agent_key:a[2],division:a[3],kind:a[4],instructions:a[5],
+      source_key:a[6],destination:a[7],cadence:a[8],status:a[9],next_run_at:a[10],created_at:a[11],updated_at:a[12],last_run_at:null});
+    }else if(sql.startsWith("INSERT INTO eye_chaos_drafts")){
+     drafts.set(a[0],{id:a[0],mission_id:a[1],author_key:a[2],title:a[3],body:a[4],
+      source_url:a[5],destination:a[6],version:1,status:"pending",approved_by:null,approved_at:null,approved_version:null,created_at:a[7]});
+    }else if(sql.startsWith("INSERT INTO eye_chaos_events")){
+     events.push({object_type:a[1],object_id:a[2],action:a[3]});
+    }else if(sql.startsWith("UPDATE eye_chaos_drafts SET title=")){
+     const d=drafts.get(a[5]);if(!d||d.version!==a[6])return {meta:{changes:0}};
+     Object.assign(d,{title:a[0],body:a[1],source_url:a[2],destination:a[3],version:d.version+1,status:"pending",approved_by:null,approved_at:null,approved_version:null});
+    }else if(sql.startsWith("UPDATE eye_chaos_drafts SET status='approved'")){
+     const d=drafts.get(a[3]);if(!d||d.version!==a[4]||!["pending","rejected"].includes(d.status))return {meta:{changes:0}};
+     Object.assign(d,{status:"approved",approved_by:a[0],approved_at:a[1],approved_version:d.version});
+    }else if(sql.startsWith("UPDATE eye_chaos_drafts SET status='rejected'")){
+     const d=drafts.get(a[1]);if(!d||d.version!==a[2]||!["pending","approved"].includes(d.status))return {meta:{changes:0}};
+     Object.assign(d,{status:"rejected",approved_by:null,approved_at:null,approved_version:null});
+    }else if(sql.startsWith("UPDATE eye_chaos_missions SET status=?")){
+     const d=missions.get(a[2]);if(!d||d.status!==a[3])return {meta:{changes:0}};
+     d.status=a[0];
+    }else if(sql.startsWith("UPDATE eye_chaos_missions SET status='in_progress'")){
+     const d=missions.get(a[1]);if(!d||!["queued","ready","failed"].includes(d.status))return {meta:{changes:0}};
+     d.status="in_progress";
+    }else if(sql.startsWith("UPDATE eye_chaos_missions SET status='failed'")){
+     missions.get(a[1]).status="failed";
+    }else if(sql.startsWith("UPDATE eye_chaos_missions SET status=?,last_run_at=")){
+     const d=missions.get(a[4]);Object.assign(d,{status:a[0],last_run_at:a[1],next_run_at:a[2]});
+    }
+    return {meta:{changes:1}};
+   }};
+  return q;
+ }};
+ const deps={requireUser:async()=>role==="guest"?null:{id:11,role,status:"active"},
+  json:(data,status=200,origin,headers={})=>new Response(JSON.stringify(data),{status,headers}),origin:"https://ash-fall.com"};
+ function call(path,method="GET",payload=null,from="https://ash-fall.com"){
+  const options={method,headers:{origin:from,...(method!=="GET"?{"content-type":"application/json"}:{})}};
+  if(method!=="GET")options.body=JSON.stringify(payload||{});
+  const request=new Request("https://api.ash-fall.com"+path,options);
+  return handleEyeOfChaos(request,{DB:db},new URL(request.url),deps);
+ }
+ return {call,missions,drafts,queries,events,env:{DB:db}};
+}
+const base="/api/god/chaos";
+test("the approved roster is exactly 20, Pop Morgue is #18, and the real QA matrix has ten workers",()=>{
+ assert.equal(CHAOS_AGENTS.length,20);
+ assert.equal(new Set(CHAOS_AGENTS.map(a=>a.name)).size,20);
+ assert.equal(CHAOS_AGENTS[17].name,"Pop Morgue");
+ assert.equal(CHAOS_AGENTS[19].name,"Nihil Nova");
+ assert.equal(CHAOS_QA_FLEET.length,10);
+ assert.ok(CHAOS_QA_FLEET.some(a=>a.name==="Ash Sentinel"));
+ assert.ok(CHAOS_QA_FLEET.every(a=>a.kind==="github-action"));
+});
+test("GOD alone may see fleet data: guest, member, moderator and admin are denied before database reads",async()=>{
+ for(const role of ["guest","member","moderator","admin"]){
+  const f=fixture(role);
+  const response=await f.call(base+"/status");
+  assert.equal(response.status,role==="guest"?401:403);
+  assert.equal(f.queries.length,0);
+ }
+ const f=fixture();
+ const response=await f.call(base+"/status"),data=await response.json();
+ assert.equal(response.status,200);
+ assert.equal(data.agents.length,20);
+ assert.equal(data.arcade.length,10);
+ assert.equal(data.forums[0].name,"Beelzebub");
+ assert.equal(data.publication_locked,true);
+ assert.equal(data.schema_ready,true);
+ assert.match(response.headers.get("cache-control"),/no-store/);
+});
+test("migration absent never authorizes mission writes or misreports activation",async()=>{
+ const f=fixture("god",false);
+ const status=await f.call(base+"/status");
+ assert.equal((await status.json()).schema_ready,false);
+ const mission=await f.call(base+"/missions","POST",{agent_key:"chaos-01",division:"agents",kind:"research",instructions:"Look for news"});
+ assert.equal(mission.status,503);
+ assert.equal(f.missions.size,0);
+});
+test("mission schedule needs GOD, an approved source and known agent identity",async()=>{
+ const f=fixture();
+ const data={division:"agents",agent_key:"chaos-01",kind:"research",instructions:"Find new music headlines for review",cadence:"daily",source_key:"music"};
+ assert.equal((await f.call(base+"/missions","POST",data,"https://evil.example")).status,403);
+ assert.equal((await f.call(base+"/missions","POST",{...data,agent_key:"not-registered"})).status,400);
+ assert.equal((await f.call(base+"/missions","POST",{...data,source_key:"http://localhost"})).status,400);
+ assert.equal((await f.call(base+"/missions","POST",{...data,kind:"qa"})).status,400);
+ const response=await f.call(base+"/missions","POST",data),v=await response.json();
+ assert.equal(response.status,201);assert.equal(f.missions.get(v.id).status,"queued");
+ assert.ok(Date.parse(f.missions.get(v.id).next_run_at)>Date.now());
+ assert.equal((await f.call(base+"/missions/"+v.id+"/pause","POST")).status,200);
+ assert.equal(f.missions.get(v.id).status,"paused");
+ assert.equal((await f.call(base+"/missions/"+v.id+"/resume","POST")).status,200);
+ assert.equal(f.missions.get(v.id).status,"queued");
+});
+test("GOD approval applies only to exact draft versions; edits invalidate approvals, and no publication endpoint exists",async()=>{
+ const f=fixture(),draft={division:"agents",author_key:"chaos-18",title:"Cult classic roundup",body:"An original draft with a verified public link.",source_url:"https://www.billboard.com/feed/",destination:"Madhouse / Entertainment"};
+ const start=await f.call(base+"/drafts","POST",draft),id=(await start.json()).id;
+ assert.equal(start.status,201);
+ assert.equal((await f.call(base+"/drafts/"+id+"/approve","POST")).status,200);
+ assert.equal(f.drafts.get(id).approved_version,1);
+ assert.equal(f.drafts.get(id).approved_by,11);
+ assert.equal((await f.call(base+"/drafts/"+id+"/approve","POST")).status,409);
+ const edit=await f.call(base+"/drafts/"+id,"PATCH",{...draft,body:"Revised source-backed draft."});
+ assert.equal(edit.status,200);
+ assert.equal(f.drafts.get(id).status,"pending");
+ assert.equal(f.drafts.get(id).approved_by,null);
+ assert.equal(f.drafts.get(id).version,2);
+ assert.equal((await f.call(base+"/drafts/"+id+"/approve","POST")).status,200);
+ assert.equal(f.drafts.get(id).approved_version,2);
+ assert.equal((await f.call(base+"/drafts/"+id+"/reject","POST")).status,200);
+ assert.equal(f.drafts.get(id).approved_at,null);
+ assert.equal((await f.call(base+"/drafts/"+id+"/publish","POST")).status,404);
+ assert.equal(f.events.filter(x=>x.action==="approve").length,2);
+});
+test("scheduled research never invokes publication; only registered sources are allowed",async()=>{
+ const f=fixture();assert.deepEqual(Object.keys(CHAOS_SOURCES),["music","scifi"]);
+ const result=await runEyeChaosScheduledResearch(f.env);
+ assert.deepEqual(result,{executed:0});
+});
