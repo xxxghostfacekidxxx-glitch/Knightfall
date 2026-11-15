@@ -53,10 +53,10 @@ test('featured artwork is cache refreshed in Sanctuary, rooms, member profiles a
   'public/profile-mascots.js':'?v=20261115-storybook1',
   'public/mascot-room.js':'?v=20261115-storybook1',
   'public/mascot-trials.js':'?v=20261115-storybook1',
-  'public/mascot-pets.html':'/mascot-pets.js?v=20261115-storybook1',
-  'public/mascot-room.html':'/mascot-room.js?v=20261115-storybook1',
-  'public/mascot-trials.html':'/mascot-trials.js?v=20261115-storybook1',
-  'public/profile.html':'/profile-mascots.js?v=20261115-storybook1'
+  'public/mascot-pets.html':'/mascot-pets.js?v=20261115-starforms1',
+  'public/mascot-room.html':'/mascot-room.js?v=20261115-starforms1',
+  'public/mascot-trials.html':'/mascot-trials.js?v=20261115-starforms1',
+  'public/profile.html':'/profile-mascots.js?v=20261115-starforms1'
  };
- for(const [path,expected] of Object.entries(checks))assert.ok(read(path).includes(expected),path+' must load storybook pet art');
+ for(const [path,expected] of Object.entries(checks))assert.ok(read(path).includes(expected),path+' must load refreshed storybook pet art');
 });
