@@ -16,7 +16,8 @@
       location.replace("/auth.html" + location.search + location.hash);
     }
   </script>
-  <link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/homepage.css?v=20261112-home"><link rel="stylesheet" href="/section-directory.css"><link rel="stylesheet" href="/gravewave-takeover.css?v=20261026-visibility3"><script src="/gravewave-takeover.js?v=20261026-visibility3" defer></script><script src="/nav.js?v=20261112-home" defer></script>
+  <link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/homepage.css?v=20261112-home"><link rel="stylesheet" href="/home-activity.css?v=20261114-1"><link rel="stylesheet" href="/section-directory.css"><link rel="stylesheet" href="/gravewave-takeover.css?v=20261026-visibility3"><script src="/gravewave-takeover.js?v=20261026-visibility3" defer></script><script src="/nav.js?v=20261112-home" defer></script>
+  <script src="/home-activity.js?v=20261114-1" defer></script>
 </head>
 <body id="top" class="home-page">
   <div class="ambient" aria-hidden="true"></div>
@@ -27,6 +28,24 @@
       <h1 id="home-title">The world is a <span>beautiful fucking disaster.</span></h1>
       <p>A home for outsiders, creators, and curious minds. Find your people, make something strange, or play for a while.</p>
       <a class="home-sign-in" data-home-sign-in href="/auth.html">Sign in or create an account</a>
+    </section>
+
+    <section id="home-activity" class="home-activity" aria-labelledby="home-activity-title">
+      <div class="activity-heading">
+        <div><p class="activity-eyebrow">THE KNIGHTFALL WIRE / STAFF UPDATES</p>
+          <h2 id="home-activity-title">Activity &amp; announcements</h2>
+          <p>News, events, updates, and whatever the staff are cooking up. Everyone can read; only staff can publish.</p>
+        </div>
+      </div>
+      <form id="home-activity-composer" class="activity-form" hidden>
+        <strong>Publish a staff update</strong>
+        <label>Headline <input name="title" maxlength="120" required placeholder="What's happening at Knightfall?"></label>
+        <label>Category <select name="category"><option value="update">Update</option><option value="announcement">Announcement</option><option value="event">Event</option></select></label>
+        <label>Details <textarea name="body" maxlength="2000" rows="4" required placeholder="Tell the community what's new…"></textarea></label>
+        <button type="submit">Publish to homepage</button>
+      </form>
+      <div id="home-activity-list" class="activity-stream" aria-live="polite"></div>
+      <div class="activity-footer"><p id="home-activity-status" role="status">Loading staff updates…</p><button type="button" id="home-activity-more" hidden>Older updates</button></div>
     </section>
 
     <section id="ecosystem" class="section ecosystem-section" aria-labelledby="ecosystem-title">
