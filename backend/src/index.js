@@ -10,6 +10,7 @@ import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
+import { handleStripeBilling } from "./stripe-billing.js";
 import { handleShopCommerce } from "./shop-commerce.js";
 import { botAccessPolicy } from "./bot-creator-access.js";
 import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities.js";
@@ -1081,6 +1082,14 @@ export default { async queue(batch, env) {
    if(avatarResponse)return avatarResponse;
   }
 
+  // Stripe Billing: authenticated hosted subscription Checkout and customer portal.
+  if(url.pathname.startsWith("/api/stripe/billing/")){
+   const user=await requireUser(request,env);
+   if(user&&request.method==="POST"&&!await rateLimit(env,request,"stripe-billing",6,3600,user.id))
+    return json({error:"Billing rate limit reached."},429,origin);
+   const result=await handleStripeBilling(request,env,url,user);
+   if(result)return json(await result.json(),result.status,origin,{"cache-control":"private, no-store"});
+  }
   // Signed payment webhooks and account-owned member shop. Never fulfill from a browser redirect.
   if(url.pathname==="/api/member-shop/checkout"||url.pathname==="/api/member-shop/orders"||url.pathname==="/api/member-shop/stripe-webhook"){
    const webhook=url.pathname==="/api/member-shop/stripe-webhook";
