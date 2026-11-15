@@ -1,12 +1,10 @@
-/* Deck Locker: private, account-scoped profile and server-owned premium cosmetics.
+/* Deck Locker: private account-scoped cosmetic profile. All current skins free.
  * 0122_deck_locker_accounts.sql must be applied before activating these endpoints.
  * Local arcade play claims are rate-limited cosmetic achievements, NOT security proofs.
  */
-export const DECK_FREE_SKINS=Object.freeze(["ash-classic","neon-riot","bone-white"]);
-export const DECK_EARNED_SKINS=Object.freeze({
- "grave-velvet":3,"glitch-circuit":10,"ghost-orchid":25,"infernal-foil":50
-});
-export const DECK_PREMIUM_SKINS=Object.freeze(["void-royalty","crimson-rite","holo-wraith","toxic-pop","eclipse-noir"]);
+export const DECK_FREE_SKINS=Object.freeze(["ash-classic","neon-riot","bone-white","grave-velvet","glitch-circuit","ghost-orchid","infernal-foil","void-royalty","crimson-rite","holo-wraith","toxic-pop","eclipse-noir"]);
+export const DECK_EARNED_SKINS=Object.freeze({}); // Existing finishes no longer require deals.
+export const DECK_PREMIUM_SKINS=Object.freeze([]); // Existing cosmetic finishes are free.
 export const DECK_ACTIVITY_GAMES=Object.freeze([
  "cards-against-chaos","chaos-blackjack","chaos-five-card-draw","chaos-war",
  "chaos-klondike","chaos-freecell","chaos-crazy-eights","chaos-gin-rummy",
@@ -22,10 +20,7 @@ const DEFAULT_PROFILE=Object.freeze({equipped_skin:"ash-classic",earned_deals:0,
 const timestamp=()=>new Date().toISOString();
 const changes=result=>Number(result?.meta?.changes||0);
 export function canEquipDeckSkin(skinId,deals=0,ownedPremium=[]){
- if(!ALL.has(skinId))return false;
- if(DECK_FREE_SKINS.includes(skinId))return true;
- if(Object.hasOwn(DECK_EARNED_SKINS,skinId))return Number(deals)>=DECK_EARNED_SKINS[skinId];
- return DECK_PREMIUM_SKINS.includes(skinId)&&ownedPremium.includes(skinId);
+ return ALL.has(skinId); // Every current finish is universally equipable.
 }
 function originAllowed(request){
  const origin=request.headers.get("Origin");
@@ -47,7 +42,7 @@ async function readAccount(env,userId){
   revision:Number(row.revision||0)
  }:{...DEFAULT_PROFILE,local_imported:false};
  if(!canEquipDeckSkin(profile.equipped_skin,profile.earned_deals,owned))
-  profile.equipped_skin="ash-classic"; // refund/revocation must not display a premium finish
+  profile.equipped_skin="ash-classic"; // unknown or retired finishes fall back safely
  return {ok:true,user_id:Number(userId),profile,owned_skin_ids:owned};
 }
 async function ensureProfile(env,userId){
@@ -78,7 +73,7 @@ export async function handleArcadeDeckLocker(request,env,url,{getUser,json,rateL
   if(!Number.isSafeInteger(body.revision)||body.revision<0)return send({error:"Expected account wardrobe revision."},400);
   const current=await readAccount(env,userId);
   if(!canEquipDeckSkin(skin,current.profile.earned_deals,current.owned_skin_ids))
-   return send({error:"This deck skin is not unlocked or owned.",...current},403);
+   return send({error:"Unknown or unavailable deck skin.",...current},403);
   await ensureProfile(env,userId);
   const updated=await env.DB.prepare(`UPDATE arcade_deck_profiles
    SET equipped_skin=?,revision=revision+1,updated_at=?
