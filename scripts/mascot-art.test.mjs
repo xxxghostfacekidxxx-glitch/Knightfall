@@ -17,14 +17,17 @@ const manifest = JSON.parse(read(rootDir + '/manifest.json'));
 function verifySVG(xml, filename) {
   assert.match(xml, /^<svg\b[^>]+>/, filename + ' is an SVG');
   assert.match(xml.trimEnd(), /<\/svg>$/, filename + ' closes cleanly');
-  for (const tag of ['svg', 'g', 'defs', 'linearGradient', 'filter', 'title', 'desc', 'style']) {
+  for (const tag of ['svg', 'g', 'defs', 'linearGradient', 'radialGradient', 'filter', 'title', 'desc', 'style']) {
     const start = (xml.match(new RegExp('<' + tag + '(?=[\\s>])', 'g')) || []).length;
     const end = (xml.match(new RegExp('</' + tag + '>', 'g')) || []).length;
     assert.equal(start, end, filename + ' balanced <' + tag + '> tags');
   }
-  assert.doesNotMatch(xml, /<script\b|<foreignObject\b/i, filename + ' avoids executable or foreign embedded content');
-  for (const group of ['character', 'fx', 'eyes', 'lids', 'wink']) {
-    assert.ok(xml.includes('id="' + group + '"'), filename + ' has ' + group);
+  assert.doesNotMatch(xml, /<script\b|<foreignObject\b|<image\b/i, filename + ' avoids unsafe embedded content');
+  if(xml.includes('class="creature"')){
+    assert.match(xml, /<title id="[a-z0-9-]+-title">/, filename + ' has accessible storybook title');
+    assert.match(xml, /<desc id="[a-z0-9-]+-desc">/, filename + ' has storybook description');
+  }else{
+    for (const group of ['character', 'fx', 'eyes', 'lids', 'wink']) assert.ok(xml.includes('id="' + group + '"'), filename + ' has legacy ' + group);
   }
 }
 
@@ -49,17 +52,20 @@ test('three upgraded mascots have unique names, lore and correct animated file p
 });
 
 for (const { id, name } of characters) {
-  test(name + ' source and all four character animations remain valid and reduced-motion aware', () => {
+  test(name + ' keeps its storybook master and functional legacy animated variants', () => {
     const base = read(rootDir + '/' + id + '.svg');
     verifySVG(base, id + '.svg');
-    assert.ok(base.includes('<title id="title">' + name + ' |'), 'master has correct accessible name');
+    assert.ok(base.includes('<title id="' + id + '-title">'), 'master has storybook name');
+    assert.match(base, /Knightfall Storybook Edition/);
     for (const mode of modes) {
       const file = id + '-' + mode + '.svg';
       const xml = read(rootDir + '/' + file);
       verifySVG(xml, file);
-      assert.ok(xml.includes('prefers-reduced-motion: no-preference'), file + ' respects reduced motion');
-      assert.ok(xml.includes('@keyframes'), file + ' has animation frames');
-      assert.ok(xml.startsWith(base.slice(0, 100)), file + ' uses the same art master');
+      if(mode === 'idle') assert.equal(xml, base, file + ' retains the canonical illustrated idle pose');
+      else {
+        assert.ok(xml.includes('prefers-reduced-motion: no-preference'), file + ' respects reduced motion');
+        assert.ok(xml.includes('@keyframes'), file + ' has animation frames');
+      }
     }
   });
 }

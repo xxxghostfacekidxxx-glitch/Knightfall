@@ -21,8 +21,8 @@ test('earned pet evolutions use matching storybook characters with individual ar
   assert.match(evolved,/<g class="evolution-details"/);
   assert.ok(evolved.length>normal.length+600,'evolution must add illustrated details: '+id);
   assert.ok(evolved.includes(normal.match(/<g class="creature"[^>]*>/)[0]),'same silhouette entry point: '+id);
-  assert.doesNotMatch(evolved,/<script\\b|<foreignObject\\b|<image\\b|data:image\\/|<text\\b|https?:\\/\\/(?!www\\.w3\\.org\\/2000\\/svg)/i);
-  signatures.add(evolved.match(/<g class="evolution-details"[^>]*>([\\s\\S]*?)<\\/g>/)?.[1]);
+  assert.doesNotMatch(evolved,/<script\b|<foreignObject\b|<image\b|data:image\/|<text\b|https?:\/\/(?!www\.w3\.org\/2000\/svg)/i);
+  signatures.add(evolved.match(/<g class="evolution-details"[^>]*>([\s\S]*?)<\/g>/)?.[1]);
  }
  assert.equal(signatures.size,ids.length,'each species must have bespoke art');
 });
@@ -32,5 +32,5 @@ test('Starborn unlocks and asset URLs remain server controlled',()=>{
  assert.match(server,/const STAR_FORMS=Object.freeze/);
  for(const id of ids)assert.ok(server.includes("'"+id+"':{") || server.includes(id+':{'),'server retains '+id);
  assert.match(server,/const evolvedAsset=id=>/);
- assert.match(server,/\\/evolutions\\//);
+ assert.match(server,/\/evolutions\//);
 });
