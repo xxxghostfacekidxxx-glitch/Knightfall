@@ -1,0 +1,226 @@
+name: Knightfall signed Android release candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: Version, such as 0.2.0
+        type: string
+        required: true
+      version_code:
+        description: Integer Android versionCode, increasing on every release
+        type: string
+        required: true
+      stage_asset_links:
+        description: Publish the REAL public signing fingerprint to the live web domain
+        type: boolean
+        default: false
+      publish_public_release:
+        description: Publish a GitHub Release and enable official APK after checks
+        type: boolean
+        default: false
+      physical_test_confirmation:
+        description: Enter ANDROID_VERIFIED only after signed APK is tested on a real Android device
+        type: string
+        default: NOT_TESTED
+
+permissions:
+  contents: write
+
+concurrency:
+  group: knightfall-signed-android-main
+  cancel-in-progress: false
+
+jobs:
+  release-candidate:
+    if: github.ref == 'refs/heads/main'
+    name: Verify release signing and build Android APK + AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      VERSION_NAME: ${{ inputs.version_name }}
+      VERSION_CODE: ${{ inputs.version_code }}
+      STAGE_ASSET_LINKS: ${{ inputs.stage_asset_links }}
+      PUBLISH_RELEASE: ${{ inputs.publish_public_release }}
+      DEVICE_CONFIRMATION: ${{ inputs.physical_test_confirmation }}
+      KNIGHTFALL_ANDROID_KEYSTORE_BASE64: ${{ secrets.KNIGHTFALL_ANDROID_KEYSTORE_BASE64 }}
+      KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD }}
+      KNIGHTFALL_ANDROID_KEY_ALIAS: ${{ secrets.KNIGHTFALL_ANDROID_KEY_ALIAS }}
+      KNIGHTFALL_ANDROID_KEY_PASSWORD: ${{ secrets.KNIGHTFALL_ANDROID_KEY_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - name: Fail closed unless release input and protected signing secrets exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$VERSION_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]] || { echo "::error::Invalid version_name"; exit 1; }
+          [[ "$VERSION_CODE" =~ ^[1-9][0-9]*$ ]] || { echo "::error::version_code must be positive"; exit 1; }
+          for secret in KNIGHTFALL_ANDROID_KEYSTORE_BASE64 KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD KNIGHTFALL_ANDROID_KEY_ALIAS KNIGHTFALL_ANDROID_KEY_PASSWORD; do
+            if [[ -z "${!secret}" ]]; then
+              echo "::error::Missing protected GitHub Actions signing secret $secret"
+              exit 1
+            fi
+          done
+          if [[ "$PUBLISH_RELEASE" == true && "$STAGE_ASSET_LINKS" != true ]]; then
+            echo "::error::Public release requires staging and checking Digital Asset Links"
+            exit 1
+          fi
+          if [[ "$PUBLISH_RELEASE" == true && "$DEVICE_CONFIRMATION" != ANDROID_VERIFIED ]]; then
+            echo "::error::Public release requires explicit REAL Android device testing confirmation"
+            exit 1
+          fi
+          if [[ "$PUBLISH_RELEASE" == true ]]; then
+            if gh release view "v$VERSION_NAME" >/dev/null 2>&1; then
+              echo "::error::Version v$VERSION_NAME already has a release; use a new version."
+              exit 1
+            fi
+          fi
+      - name: Configure JDK and Android SDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Android SDK 36 using runner's installed command-line tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          test -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Load release signing certificate privately
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s' "$KNIGHTFALL_ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/knightfall-release.jks"
+          test -s "$RUNNER_TEMP/knightfall-release.jks"
+          keytool -list -keystore "$RUNNER_TEMP/knightfall-release.jks" -alias "$KNIGHTFALL_ANDROID_KEY_ALIAS" -storepass:env KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD >/dev/null
+          echo "KNIGHTFALL_ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/knightfall-release.jks" >> "$GITHUB_ENV"
+      - name: Insert Knightfall app icon
+        run: |
+          mkdir -p android/app/src/main/res/drawable-nodpi
+          cp public/icons/knightfall-crest-512.png android/app/src/main/res/drawable-nodpi/knightfall_icon.png
+      - name: Build release-signed APK and Google Play bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle --project-dir android :app:assembleRelease :app:bundleRelease --no-daemon \
+            "-PknightfallVersionCode=$VERSION_CODE" "-PknightfallVersionName=$VERSION_NAME"
+      - name: Verify release signatures and generate exact Digital Asset Links
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -s "$APK" && test -s "$AAB"
+          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/35.0.0/apksigner"
+          test -x "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs "$APK" > "$RUNNER_TEMP/apk-verification.txt"
+          APK_CERT_SHA="$(awk -F': ' '/Signer #1 certificate SHA-256 digest:/ {print $2; exit}' "$RUNNER_TEMP/apk-verification.txt")"
+          [[ "$APK_CERT_SHA" =~ ^[a-f0-9]{64}$ ]] || { echo "::error::APK signing fingerprint unavailable"; exit 1; }
+          STORE_CERT_SHA="$(keytool -exportcert -keystore "$KNIGHTFALL_ANDROID_KEYSTORE_FILE" -alias "$KNIGHTFALL_ANDROID_KEY_ALIAS" -storepass:env KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD | openssl dgst -sha256 | sed 's/.*= //')"
+          [[ "$STORE_CERT_SHA" == "$APK_CERT_SHA" ]] || { echo "::error::APK signer does not match protected release keystore"; exit 1; }
+          jarsigner -verify "$AAB" >/dev/null || { echo "::error::App Bundle signature verification failed"; exit 1; }
+          FINGERPRINT="$(printf %s "$APK_CERT_SHA" | sed 's/../&:/g;s/:$//' | tr '[:lower:]' '[:upper:]')"
+          OUT="$RUNNER_TEMP/knightfall-candidate"
+          mkdir -p "$OUT"
+          node scripts/android-release-assets.mjs --apk "$APK" --fingerprint "$FINGERPRINT" --version "$VERSION_NAME" --out "$OUT"
+          cp "$APK" "$AAB" "$OUT/"
+          sha256sum "$AAB" > "$OUT/app-release.aab.sha256"
+          printf 'Release signing certificate SHA-256: %s\n' "$FINGERPRINT" >> "$GITHUB_STEP_SUMMARY"
+          echo "This is signed with the protected release keystore. Test on real Android hardware before distribution." >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload reviewable release candidate, fingerprint and domain association
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-signed-release-candidate
+          path: ${ runner.temp }/knightfall-candidate/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Stage matching Digital Asset Links on the existing main branch
+        if: inputs.stage_asset_links
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "knightfall-release-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout -B main origin/main
+          mkdir -p public/.well-known
+          cp "$RUNNER_TEMP/knightfall-candidate/assetlinks.json" public/.well-known/assetlinks.json
+          git add public/.well-known/assetlinks.json
+          if ! git diff --cached --quiet; then
+            git commit -m "android: publish real SHA-256 release certificate association [skip ci]"
+            git push origin HEAD:main
+          fi
+      - name: Require production website to serve exact verified fingerprint
+        if: inputs.stage_asset_links
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERIFIED=0
+          for attempt in $(seq 1 45); do
+            if curl -fsSL --connect-timeout 10 --max-time 15 \
+                 "https://ash-fall.com/.well-known/assetlinks.json?check=$GITHUB_RUN_ID" \
+                 -o "$RUNNER_TEMP/live-assetlinks.json" \
+               && cmp -s "$RUNNER_TEMP/live-assetlinks.json" "$RUNNER_TEMP/knightfall-candidate/assetlinks.json"; then
+               VERIFIED=1
+               break
+            fi
+            sleep 10
+          done
+          if [[ "$VERIFIED" != 1 ]]; then
+            echo "::error::Domain association is not serving the exact signing fingerprint. No public release will be published."
+            exit 1
+          fi
+          echo "Digital Asset Links confirmed on https://ash-fall.com/.well-known/assetlinks.json" >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish Android APK / AAB to official GitHub Release
+        if: inputs.publish_public_release
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release create "v$VERSION_NAME" \
+            "$RUNNER_TEMP/knightfall-candidate/app-release.apk" \
+            "$RUNNER_TEMP/knightfall-candidate/app-release.aab" \
+            "$RUNNER_TEMP/knightfall-candidate/app-release.apk.sha256" \
+            "$RUNNER_TEMP/knightfall-candidate/app-release.aab.sha256" \
+            --target main --title "Knightfall Android v$VERSION_NAME" \
+            --notes "Release-signed Knightfall Android Trusted Web Activity. The matching Digital Asset Links certificate is verified on ash-fall.com. APK SHA-256 is included; use only official release downloads."
+          gh release view "v$VERSION_NAME" --json assets --jq '.assets[].name' | grep -Fx 'app-release.apk'
+      - name: Enable verified APK download on the site after GitHub Release exists
+        if: inputs.publish_public_release
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const entry=JSON.parse(readFileSync(process.env.RUNNER_TEMP+'/knightfall-candidate/android-release-candidate.json','utf8'));
+          const version=process.env.VERSION_NAME;
+          entry.apkUrl='https://github.com/'+process.env.GITHUB_REPOSITORY+'/releases/download/v'+version+'/app-release.apk';
+          entry.status='released';
+          entry.signedReleaseVerified=true;
+          entry.notes='Official release-signed APK. Certificate association has been verified on ash-fall.com; test on supported Android hardware.';
+          writeFileSync('public/android-release.json',JSON.stringify(entry,null,2)+'\n');
+          NODE
+          git add public/android-release.json
+          git commit -m "android: enable verified official APK v$VERSION_NAME in shared install link"
+          git push origin HEAD:main
+      - name: Wipe temporary signing material
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$RUNNER_TEMP/knightfall-release.jks" ]]; then
+            shred -u "$RUNNER_TEMP/knightfall-release.jks" || rm -f "$RUNNER_TEMP/knightfall-release.jks"
+          fi
