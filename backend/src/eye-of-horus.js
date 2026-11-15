@@ -37,7 +37,13 @@ export function eyeReviewQuery(category,limit,offset,userId) {
       select="SELECT b.id,b.owner_id AS user_id,u.username,b.name,b.description,b.system_prompt,b.is_public,b.is_nsfw,b.created_at FROM personal_bots b JOIN users u ON u.id=b.owner_id";
       filterColumn="b.owner_id";break;
   }
-  if(userId!==null){conditions.push(filterColumn+"=?");parameters.push(userId)}
+  if(userId!==null){
+    // A conversation participant may have received the message without sending it.
+    const filter=category==="direct_messages"
+      ?"EXISTS (SELECT 1 FROM conversation_members member_filter WHERE member_filter.conversation_id=m.conversation_id AND member_filter.user_id=?)"
+      :filterColumn+"=?";
+    conditions.push(filter);parameters.push(userId);
+  }
   const where=conditions.length?" WHERE "+conditions.join(" AND "):"";
   const orderColumn=category==="bot_definitions"?"b.created_at":category==="profile_photos"?"p.created_at":category==="message_attachments"?"a.created_at":"m.created_at";
   return {sql:select+where+" ORDER BY "+orderColumn+" DESC, "+orderColumn.split(".")[0]+".id DESC LIMIT ? OFFSET ?",parameters:[...parameters,limit,offset]};
