@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import vm from "node:vm";
 const script=readFileSync("public/card-deck-skins.js","utf8");
-const dataStore={profiles:new Map(),premium:new Map()};
+const dataStore={profiles:new Map(),premium:new Map(),cinders:new Map(),vip:new Set(),balance:new Map()};
 function mockResponse(status,data){
  return {ok:status>=200&&status<300,status,async json(){return data}};
 }
@@ -17,12 +17,25 @@ function simulateAPI(userId,log){
   let profile=dataStore.profiles.get(userId);
   if(!profile){profile={equipped_skin:"ash-classic",earned_deals:0,revision:0,local_imported:false};dataStore.profiles.set(userId,profile)}
   const owned=dataStore.premium.get(userId)||[];
+  const ownedCinders=dataStore.cinders.get(userId)||[];
+  if(!dataStore.balance.has(userId))dataStore.balance.set(userId,2000);
   if(method==="PUT"){
    if(body.revision!==profile.revision)return mockResponse(409,{error:"Conflict"});
    // Premium cosmetics require server-issued ownership even if local storage is forged.
    if(body.skin_id==="obsidian-cathedral"&&!owned.includes(body.skin_id))return mockResponse(403,{error:"Not owned"});
+   if(body.skin_id==="ashen-baroque"&&!ownedCinders.includes(body.skin_id))return mockResponse(403,{error:"Not owned"});
+   if(body.skin_id==="infernal-covenant"&&(!ownedCinders.includes(body.skin_id)||!dataStore.vip.has(userId)))return mockResponse(403,{error:"VIP required"});
    profile={...profile,equipped_skin:body.skin_id,revision:profile.revision+1};
    dataStore.profiles.set(userId,profile);
+  }else if(method==="POST"&&body.action==="buy_cinders"){
+   const prices={"ashen-baroque":300,"infernal-covenant":1200};
+   const cost=prices[body.skin_id];
+   if(!cost)return mockResponse(400,{error:"Unknown Cinders skin"});
+   if(ownedCinders.includes(body.skin_id))return mockResponse(409,{error:"Already owned"});
+   if(body.skin_id==="infernal-covenant"&&!dataStore.vip.has(userId))return mockResponse(403,{error:"VIP required"});
+   if(dataStore.balance.get(userId)<cost)return mockResponse(409,{error:"Not enough Cinders"});
+   dataStore.balance.set(userId,dataStore.balance.get(userId)-cost);
+   dataStore.cinders.set(userId,[...ownedCinders,body.skin_id]);
   }else if(method==="POST"&&body.action==="deal"){
    profile={...profile,earned_deals:profile.earned_deals+1,revision:profile.revision+1};
    dataStore.profiles.set(userId,profile);
@@ -30,7 +43,7 @@ function simulateAPI(userId,log){
    profile={...profile,earned_deals:Math.max(profile.earned_deals,body.legacy_deals),local_imported:true,revision:profile.revision+1};
    dataStore.profiles.set(userId,profile);
   }
-  return mockResponse(200,{ok:true,user_id:userId,profile,owned_skin_ids:owned});
+  return mockResponse(method==="POST"&&body.action==="buy_cinders"?201:200,{ok:true,user_id:userId,profile,owned_skin_ids:owned,owned_cinder_skin_ids:dataStore.cinders.get(userId)||[],vip_active:dataStore.vip.has(userId),wallet_balance:dataStore.balance.get(userId)});
  };
 }
 function client(userId,storage=new Map(),log=[]){
@@ -148,4 +161,33 @@ test("new collector skins require ownership and persist only for the purchasing 
  dataStore.premium.delete(501);
  await a.api.refresh();
  assert.equal(a.api.current,"ash-classic");
+});
+
+test("Cinders ownership follows account and VIP use expires without forfeiting the purchase",async()=>{
+ dataStore.profiles.clear();dataStore.premium.clear();dataStore.cinders.clear();dataStore.vip.clear();dataStore.balance.clear();
+ const a=client(810),b=client(811);
+ await a.api.refresh();await b.api.refresh();
+ assert.equal(a.api.walletBalance,2000);
+ assert.equal(a.api.isAvailable("ashen-baroque"),false);
+ assert.equal(await a.api.purchaseCinderSkin("ashen-baroque"),true);
+ assert.equal(a.api.walletBalance,1700);
+ assert.equal(a.api.isAvailable("ashen-baroque"),true);
+ assert.equal(b.api.isAvailable("ashen-baroque"),false);
+ assert.equal(await a.api.purchaseCinderSkin("ashen-baroque"),false);
+ assert.equal(dataStore.balance.get(810),1700);
+ assert.equal(await a.api.purchaseCinderSkin("infernal-covenant"),false);
+ dataStore.vip.add(810);
+ await a.api.refresh();
+ assert.equal(await a.api.purchaseCinderSkin("infernal-covenant"),true);
+ assert.equal(a.api.walletBalance,500);
+ assert.equal(a.api.chooseSkin("infernal-covenant"),true);
+ await settled();
+ dataStore.vip.delete(810);
+ await a.api.refresh();
+ assert.equal(a.api.isAvailable("infernal-covenant"),false);
+ assert.equal(a.api.current,"ash-classic");
+ assert.equal(a.api.ownedCinders.includes("infernal-covenant"),true);
+ dataStore.vip.add(810);
+ await a.api.refresh();
+ assert.equal(a.api.isAvailable("infernal-covenant"),true);
 });
