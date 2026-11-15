@@ -7,9 +7,9 @@
   // were parsed, allowing old neon/page CSS to override the approved theme.
   const mountApprovedTheme = () => {
     const styles = [
-      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic5"],
-      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic5"],
-      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic5"]
+      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic6"],
+      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic6"],
+      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic6"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
