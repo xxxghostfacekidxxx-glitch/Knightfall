@@ -26,7 +26,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'download-svg','download-avatar','save-avatar','set-active','studio-status',
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v='+(path==='avatar-studio.css'?'20261115-noir4':'20261113-misfit-ink5')),path+' cache token missing');
+ for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v='+(path==='avatar-studio.css'?'20261115-noir4':'20261115-a11y1')),path+' cache token missing');
  assert.ok(html.includes('/avatar-cartoon.css?v=20261114-book3'),'cartoon stylesheet token missing');
  assert.ok(html.includes('/misfit-avatar.js?v=20261115-noir4'),'renderer cache token missing');
  const js=read('public/avatar-studio.js');
