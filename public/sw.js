@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v37";
+const CACHE_NAME = "knightfall-shell-v38";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -15,6 +15,12 @@ const APP_SHELL = [
   "/gravewave-consistency.css",
   "/nav.js",
   "/install.html",
+  "/ruinwire.html",
+  "/ruinwire.webmanifest",
+  "/icons/ruinwire.svg",
+  "/ruinwire.css",
+  "/ruinwire-install.js",
+  "/ruinwire-app.js",
   "/install.css",
   "/install.js",
   "/install-health.js",
