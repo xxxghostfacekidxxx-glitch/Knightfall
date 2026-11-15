@@ -75,3 +75,11 @@ test('battle recovery permits selected ally potions and revives', () => {
   assert.match(js, /state\.party\.map\(\(c,i\)=>/);
   assert.match(css, /\.battle-healing/);
 });
+
+test('storage never discards the 201st creature and protects shrine legends from release', () => {
+  assert.match(js, /state\.party\.length>=6&&state\.box\.length>=200/);
+  assert.match(js, /state\.box\.length>=200/);
+  assert.match(js, /data-release/);
+  assert.match(js, /SHRINES\.some\(shrine=>shrine\.id===creature\.id\)/);
+  assert.match(js, /Storage is empty/);
+});
