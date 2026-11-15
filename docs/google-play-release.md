@@ -1,6 +1,6 @@
 # Google Play release plan for Ash-Fall / Knightfall
 
-Status: preparation only. No Google Play developer account is registered, and no Android release artifact has been built or signed.
+Status: Android debug APK has been built in GitHub Actions; emulator smoke, permanent release signing, domain verification, physical-phone acceptance, and Google Play enrollment remain separate gates. No production signed APK or AAB has been released.
 
 ## Product direction
 
@@ -83,3 +83,13 @@ Before retrying deployment, configure/verify GitHub Actions secrets `CLOUDFLARE_
 - `public/android-release.json` blocks an APK link until it specifies the exact official GitHub release URL, SHA-256 checksum and verified release status. This is a publication guard, not proof that signing succeeded.
 - An Android GitHub Actions artifact may be debug-signed with a temporary certificate that changes between runners. It must **never** replace the permanent distribution signature.
 - Digital Asset Links `/.well-known/assetlinks.json` still requires the real production signing fingerprint; until configured, the TWA uses a Custom Tab fallback. Real-device testing, certificate persistence, Google Play enrollment and release-specific privacy review are still open.
+
+## Signed APK and domain-verification pipeline · November 14, 2026
+
+- **Implemented:** `android/app/build.gradle` supports a protected, owner-controlled release keystore only when the complete signing environment is provided. Debug builds never substitute for a permanent signing identity.
+- **Implemented:** `.github/workflows/knightfall-android-release.yml` has an owner-initiated candidate build, APK/AAB signature verification, certificate-derived Digital Asset Links, optional commit to `public/.well-known/assetlinks.json`, production HTTP verification, and a **separately gated** public GitHub Release and app install-link update.
+- **Implemented:** `scripts/android-release-assets.mjs` and unit tests generate deterministic Digital Asset Links from the **actual certificate SHA-256 fingerprint**, not from the APK checksum.
+- **Implemented:** `scripts/android-signing-smoke.sh` tests Gradle release-signing with a disposable CI key, with no key or test release uploaded for distribution.
+- **Implemented:** `scripts/knightfall-emulator-smoke.sh` runs a CI emulator boot/install/launch/crash/screenshot check. This validates a narrow Android journey only, not actual push delivery or all interactive site pages.
+- **Owner setup blocked:** the GitHub connection cannot manage Actions secrets. A secure persistent keystore and the four documented `KNIGHTFALL_ANDROID_*` secrets must be configured by the repository owner, then the release-candidate workflow must be dispatched manually. See [Android release runbook](android-release-runbook.md).
+- **Public release still blocked:** a signed candidate installed and verified on real Android hardware, then explicit owner approval to publish. There is no legitimate fingerprint to put in `assetlinks.json` until that certificate exists.
