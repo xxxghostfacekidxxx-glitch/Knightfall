@@ -33,7 +33,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-padding-top:5rem}
-body{min-width:0}
+body{min-width:0;margin:0}
 main,section,article,aside{min-width:0}
 img,svg,video,canvas{max-width:100%}
 :where(input,textarea,select){font:inherit}
