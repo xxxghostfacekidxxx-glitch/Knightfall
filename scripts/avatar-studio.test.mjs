@@ -27,7 +27,7 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
  for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261113-misfit-ink5'),path+' cache token missing');
- for(const path of ['avatar-cartoon.css','misfit-avatar.js'])assert.ok(html.includes('/'+path+'?v=20261115-noir4'),path+' cartoon token missing');
+ assert.ok(html.includes('/avatar-cartoon.css?v=20261114-book3'),'cartoon stylesheet token missing');\n assert.ok(html.includes('/misfit-avatar.js?v=20261115-noir4'),'renderer cache token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -190,8 +190,8 @@ test('Misfit preview and exported SVG render with storybook comic ink without ch
  assert.match(svg,/data-art-pass="comic-blush"/);
  assert.match(svg,/data-art-pass="comic-eye-ink"/);
  assert.ok(svg.includes('viewBox="0 0 224 256"'));
- assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261115-noir4'));
- assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261115-noir4'));
+ assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261114-book3'));
+ assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
 });
 
 \ntest('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
