@@ -69,4 +69,59 @@ assert.ok(message.includes("evolved"),"Evolution message emitted");
 assert.ok(evolve.hp>0,"Evolution maintains health");
 const raw=catalog.games.find(g=>g.id==="cinderwild");
 assert.ok(raw.description.includes("25 creatures"));
-console.log("Cinderwild audit passed: playable route, 25 species, 3 crests, type moves, evolution, maps, responsive controls and local saves.");
+// Headless interaction smoke: run real event handlers through the starter, wild capture,
+// three chained Warden teams and the three postgame legendary encounters.
+const ui=new Map();
+const canvasContext={fillRect(){},strokeRect(){},clearRect(){},drawImage(){},fillText(){}};
+const element=id=>{
+ if(!ui.has(id))ui.set(id,{
+  id,width:0,height:0,hidden:["starter","menu","fight"].includes(id),
+  textContent:"",innerHTML:"",classList:{add(){},remove(){}},listeners:{},
+  getContext(){return canvasContext},replaceChildren(){},addEventListener(event,fn){this.listeners[event]=fn}
+ });
+ return ui.get(id);
+};
+const browserDocument={
+ getElementById:element,
+ querySelectorAll(){return[];},
+ createElement(tag){return{textContent:"",tagName:tag}},
+ body:{classList:{contains(){return false}}}
+};
+const persisted=new Map();
+const fakeStorage={getItem:key=>persisted.get(key)||null,setItem:(key,value)=>persisted.set(key,value),removeItem:key=>persisted.delete(key)};
+const predictableMath=Object.create(Math);predictableMath.random=()=>0.01;
+const runner=js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, "globalThis.__run={state,startBattle,make,capture,interact,victory,step,getBattle:()=>battle,resetThrottle:()=>lastStep=0};initialize();})();");
+assert.notEqual(runner,js,"Runtime test injects game hook at boot");
+const scene={
+ document:browserDocument,window:{addEventListener(){},HellOrbitSprites:null},
+ localStorage:fakeStorage,Math:predictableMath,confirm:()=>true
+};
+vm.runInNewContext(runner,scene,{timeout:5000,filename:"cinderwild-playthrough.js"});
+const run=scene.__run;
+assert.equal(element("world").width,576,"Overworld canvas bootstraps");
+element("starter-options").listeners.click({target:{closest:()=>({dataset:{starter:"embercub"}})}});
+assert.equal(run.state.party[0].id,"embercub","Starter selection launches game");
+run.startBattle(run.make("mossbit",2));
+assert.ok(run.getBattle(),"Wild encounter launches");
+run.capture("superOrbs");
+assert.equal(run.state.party.length,2,"Wild capture joins party");
+assert.ok(run.state.caught.includes("mossbit"),"Capture adds Bestiary record");
+assert.equal(run.getBattle(),null,"Capture exits battle");
+for(const [x,rounds,badge] of [[24,2,"bramble"],[43,2,"storm"],[57,3,"eclipse"]]){
+ run.state.x=x;run.state.y=18;run.interact();
+ assert.ok(run.getBattle(),badge+" Warden challenge launches");
+ for(let i=0;i<rounds;i++)run.victory();
+ assert.ok(run.state.badges.includes(badge),badge+" Warden crest awarded");
+ assert.equal(run.getBattle(),null,badge+" Warden team fully defeated");
+}
+assert.equal(run.state.complete,true,"All crests unlock postgame");
+for(const [x,id] of [[54,"minionmouse"],[59,"minivillain"],[62,"minieddie"]]){
+ run.state.x=x-1;run.state.y=18;run.resetThrottle();run.step(1,0);
+ assert.equal(run.getBattle()?.enemy.id,id,"Walking on shrine triggers "+id);
+ run.capture("superOrbs");
+ assert.ok(run.state.caught.includes(id),"Legendary "+id+" captured");
+ assert.equal(run.getBattle(),null,"Legendary capture closes battle");
+}
+assert.ok(persisted.has("knightfall:cinderwild:save:v1"),"Full campaign progress persisted");
+
+console.log("Cinderwild audit passed: playable route, 25 species, 3 crests, type moves, evolution, maps, responsive controls local saves and full interactive storyline.");
