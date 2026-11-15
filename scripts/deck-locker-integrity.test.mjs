@@ -30,11 +30,11 @@ function startWardrobe(memory=new Map()){
 
 test("all twelve current skins are immediately free",()=>{
  const {api,root}=startWardrobe();
- assert.equal(api.skins.length,12);
- assert.equal(new Set(api.skins.map(s=>s.id)).size,12);
+ assert.equal(api.skins.length,24);
+ assert.equal(new Set(api.skins.map(s=>s.id)).size,24);
  assert.equal(api.skins.filter(s=>s.kind==="free").length,12);
  assert.equal(api.skins.filter(s=>s.kind==="unlock").length,0);
- assert.equal(api.skins.filter(s=>s.kind==="premium").length,0);
+ assert.equal(api.skins.filter(s=>s.kind==="premium").length,12);
  assert.equal(api.current,"ash-classic");
  assert.equal(root.dataset.kfDeckSkin,"ash-classic");
  assert.equal(api.chooseSkin("neon-riot"),true);
@@ -42,7 +42,11 @@ test("all twelve current skins are immediately free",()=>{
  assert.equal(api.chooseSkin("not-a-real-skin"),false);
  assert.equal(api.chooseSkin("void-royalty"),true,"former premium finishes must now be free");
  assert.equal(api.isAvailable("holo-wraith"),true);
- for(const skin of api.skins)assert.equal(api.isAvailable(skin.id),true,skin.id+" must be free");
+ for(const skin of api.skins.filter(s=>s.kind==="free"))assert.equal(api.isAvailable(skin.id),true,skin.id+" must be free");
+ for(const skin of api.skins.filter(s=>s.kind==="premium")){
+  assert.equal(api.isAvailable(skin.id),false,skin.id+" requires purchase");
+  assert.ok(skin.price_cents>=100&&skin.price_cents<=199,skin.id+" must cost $1.00-$1.99");
+ }
 });
 
 test("free skins persist across games; deal counters remain cosmetic stats",()=>{
@@ -88,13 +92,14 @@ test("every catalogued card-game entry imports the same asset pipeline",()=>{
  assert.match(read("public/arcade/hosted/cards-against-chaos/online.js"),/recordDeal\('cards-against-chaos'\)/);
 });
 
-test("all twelve bespoke faces and backs render, with no paid skin checkout",()=>{
+test("all 24 bespoke faces and backs render, with existing 12 permanently free",()=>{
  for(const skin of startWardrobe().api.skins){
   assert.ok(css.includes('data-kf-deck-skin="'+skin.id+'"'),skin.id+" missing skin selector");
   assert.ok(css.includes('.kf-deck-preview--'+skin.id),skin.id+" missing matching face preview");
-  assert.equal(skin.kind,"free");
+  assert.ok(["free","premium"].includes(skin.kind));
   assert.ok(typeof skin.symbol==="string"&&skin.symbol.length>0);
-  assert.ok(!shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must not appear for sale");
+  if(skin.kind==="free")assert.ok(!shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must not appear for sale");
+  else assert.ok(shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must have a shop listing");
  }
  assert.match(css,/--kf-art-sigil/);
  assert.match(css,/\.kf-card-mini-back/);
