@@ -92,7 +92,8 @@
   function init() {
     css();
     root=(targetSelector==='body'?document.body:document.querySelector(targetSelector))||document.body;
-    if(!existingFullscreen){
+    // Keep a game's own fullscreen button, except when browser fullscreen is disabled.
+    if(!existingFullscreen || !(document.fullscreenEnabled || document.webkitFullscreenEnabled)){
     button=document.createElement('button');
     button.id=rootId;
     button.type='button';
