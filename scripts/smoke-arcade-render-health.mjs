@@ -12,7 +12,7 @@ const titles=[
  {id:'neon-surge',route:'/arcade/hosted/neon-surge/index.html',target:'#startBtn',ready:'window.__NS || document.querySelector("#kf-arcade-recovery")'},
  {id:'terravia',route:'/arcade/hosted/terravia/index.html',target:'#app',ready:'document.querySelector("#app")?.childElementCount>1 || document.querySelector("#scene")?.childElementCount>0 || document.querySelector("#kf-arcade-recovery")'},
  {id:'radius-raid',route:'/arcade/hosted/radius-raid/index.html',target:'#wrap',ready:'document.querySelector("#cfg")?.width>100 || document.querySelector("#kf-arcade-recovery")'},
- {id:'interstellar-armada',route:'/arcade/hosted/interstellar-armada/index.html',target:'#splashContainer',ready:'document.querySelector("#gameVersion")?.textContent?.trim() || document.querySelector("#splashProgress")?.textContent?.trim() || document.querySelector("#kf-arcade-recovery")'},
+ {id:'interstellar-armada',route:'/arcade/hosted/interstellar-armada/index.html',target:'body',ready:'document.querySelector("#gameVersion")?.textContent?.trim() || document.querySelector("#kf-arcade-recovery")'},
  {id:'openfront-solo',route:'/arcade/hosted/openfront-solo/index.html',target:'#single-player',ready:'customElements.get("o-button") || document.querySelector("#kf-arcade-recovery")'},
  {id:'rooftop-riot',route:'/arcade/hosted/rooftop-riot/index.html',target:'#game',ready:'window.Engine && document.querySelector("#game")?.width>500'},
  {id:'cinder-life',route:'/arcade/hosted/cinder-life/index.html',target:'#board',ready:'document.querySelector("#board")?.width>500'},
@@ -27,7 +27,8 @@ try{
  if(!served)throw Error('Static site not reachable');
  browser=await chromium.launch({headless:true,args:['--disable-dev-shm-usage','--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
  for(const v of titles){
-   const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+   const desktopOnly=['interstellar-armada','browserquest-solo'].includes(v.id);
+   const context=await browser.newContext(desktopOnly ? {viewport:{width:1366,height:768},deviceScaleFactor:1,isMobile:false,hasTouch:false} : {viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
    const page=await context.newPage();
    const errors=[],failed=[];
    page.on('pageerror',e=>errors.push(String(e.message||e).slice(0,280)));
@@ -62,7 +63,7 @@ try{
      else {state='healthy';reason='Visible game root and no tracked JS/asset errors';}
      findings.push({id:v.id,route:v.route,state,reason,visual});
      console.log(state.toUpperCase()+' '+v.id+' '+reason.slice(0,320));
-     if(state!=='healthy')await page.screenshot({path:output+'/'+v.id+'.png',timeout:10000}).catch(()=>{});
+     if(state!=='healthy'||desktopOnly)await page.screenshot({path:output+'/'+v.id+'-desktop.png',timeout:10000}).catch(()=>{});
    }catch(e){
      state='navigation-failure';reason=String(e.stack||e);
      findings.push({id:v.id,route:v.route,state,reason,errors,failed});
@@ -70,6 +71,26 @@ try{
      await page.screenshot({path:output+'/'+v.id+'.png',timeout:10000}).catch(()=>{});
    }finally{await context.close();}
  }
+  // Portrait-only orientation UI is intentional for these desktop/landscape-first games.
+  for(const [id,route,selector] of [
+    ['browserquest-phone','/arcade/hosted/browserquest-solo/index.html','#tilt'],
+    ['interstellar-armada-phone','/arcade/hosted/interstellar-armada/index.html','#kf-armada-rotate-help']
+  ]){
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    const page=await context.newPage();
+    try{
+      const response=await page.goto(origin+route,{waitUntil:'domcontentloaded',timeout:22000});
+      if(!response?.ok())throw Error('HTTP '+response?.status());
+      const visible=await page.locator(selector).isVisible({timeout:7500});
+      if(!visible)throw Error('Portrait orientation message missing');
+      findings.push({id,state:'healthy',reason:'Readable portrait rotate guidance'});
+      console.log('HEALTHY '+id+' portrait orientation guidance visible');
+    }catch(e){
+      findings.push({id,state:'orientation-warning-missing',reason:String(e.message||e)});
+      console.error('ORIENTATION-WARNING-MISSING '+id+' '+e.message);
+      await page.screenshot({path:output+'/'+id+'.png',timeout:10000}).catch(()=>{});
+    }finally{await context.close();}
+  }
 }finally{if(browser)await browser.close();if(server)server.kill();}
 await writeFile(output+'/report.json',JSON.stringify({created:new Date().toISOString(),findings},null,2));
 const unhealthy=findings.filter(x=>x.state!=='healthy');
