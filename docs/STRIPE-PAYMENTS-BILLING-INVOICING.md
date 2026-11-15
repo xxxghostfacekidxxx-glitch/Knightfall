@@ -69,6 +69,15 @@ node --test backend/src/stripe-billing.test.mjs backend/src/stripe-invoicing.tes
 ```
 GitHub Actions `.github/workflows/stripe-integration-tests.yml` runs these on `main`.
 
+## Live launch readiness, verified November 15, 2026
+
+- **Stripe account Ash-Fall** (`acct_1SrVGlBG2dX8uA8q`) currently reports `charges_enabled=false`, `payouts_enabled=false`, `details_submitted=false`, with `requirements.pending_verification`. The account holder must complete onboarding in the Stripe Dashboard. The connected app contexts are test-mode only.
+- **Cloudflare Worker:** no `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, or launch flags were present when checked. Do not set launch flags until keys, webhooks, deployment and end-to-end tests all pass.
+- **D1 security migration:** `0146_stripe_subscription_event_cursor.sql` was applied to production and recorded as `d1_migrations` ID **86**. Do not reapply it manually.
+- Webhook order protection now rejects stale subscription state updates and refuses premium grants without a valid future expiration. Stripe events must include a valid event ID and creation timestamp.
+- **Deployment is not payment activation.** Public pages may be visible while real checkout remains intentionally disabled.
+- Stripe access/authorization must be completed through the Stripe OAuth consent flow; real secret keys must be installed through Cloudflare's encrypted Worker secrets, never committed to the repository.
+
 ## Before live payment acceptance
 - Verify Stripe account identity/business onboarding, payouts, support address, and business descriptors.
 - Decide Premium monthly/yearly subscription prices and cancellation/refund policy; publish them before taking a subscription.
