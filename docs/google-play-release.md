@@ -74,3 +74,12 @@ Before retrying deployment, configure/verify GitHub Actions secrets `CLOUDFLARE_
 - Existing ownership/authorization CI workflows can skip their authenticated tests when dedicated credentials are missing; a green workflow with a skipped test is not an end-to-end pass.
 - No Google Play developer account, Android package ID, signing certificate, assetlinks statement, signed AAB, store listing, or tester cohort has been established.
 - Account deletion requests can now be recorded and reviewed, but automated or verified full data deletion is NOT implemented. The admin queue intentionally cannot mark a request completed. A monitored privacy contact is still missing and must be configured.
+
+## Android packaging progress · November 2026
+
+- The Gradle-based Android Browser Helper launcher and GitHub Actions debug build now exist in `android/` and `.github/workflows/knightfall-android.yml`. This is a technical test build, not a finished public APK.
+- The provisional package ID is `com.ashfall.knightfall`; confirm its long-term identity before release signing.
+- `public/install.html` gives the site an honest **Install** route: PWA installation now, future verified signed APK only when the release metadata is updated.
+- `public/android-release.json` blocks an APK link until it specifies the exact official GitHub release URL, SHA-256 checksum and verified release status. This is a publication guard, not proof that signing succeeded.
+- An Android GitHub Actions artifact may be debug-signed with a temporary certificate that changes between runners. It must **never** replace the permanent distribution signature.
+- Digital Asset Links `/.well-known/assetlinks.json` still requires the real production signing fingerprint; until configured, the TWA uses a Custom Tab fallback. Real-device testing, certificate persistence, Google Play enrollment and release-specific privacy review are still open.
