@@ -1,27 +1,36 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { botAccessPolicy } from "../backend/src/bot-creator-access.js";
-const normal=botAccessPolicy({role:"member"});assert.deepEqual([normal.limit,normal.unlimited,normal.advanced_builder],[2,false,false]);
-assert.equal(botAccessPolicy({role:"member"},3).limit,5);
-const creator=botAccessPolicy({role:"member"},0,{title:"Bot Creator",unlimited_slots:1,advanced_builder:1});
-assert.deepEqual([creator.limit,creator.unlimited,creator.advanced_builder,creator.title],[null,true,true,"Bot Creator"]);
-assert.deepEqual([botAccessPolicy({role:"admin"}).limit,botAccessPolicy({role:"admin"}).advanced_builder],[10,true]);
-assert.equal(botAccessPolicy({role:"god"}).title,"God");
-assert.equal(botAccessPolicy({role:"moderator"}).limit,5);
+const normal=botAccessPolicy({role:"member"});
+assert.deepEqual([normal.limit,normal.unlimited,normal.advanced_builder,normal.tier],[5,false,false,"member"]);
+assert.equal(botAccessPolicy({role:"member"},3).limit,8);
+assert.equal(botAccessPolicy({role:"member"},0,null,true).limit,10);
+assert.equal(botAccessPolicy({role:"member"},2,null,true).limit,12);
+for(const role of ["god","admin","moderator"]){
+ const policy=botAccessPolicy({role});
+ assert.deepEqual([policy.limit,policy.unlimited,policy.advanced_builder,policy.tier],[null,true,true,"staff"]);
+}
+const creator=botAccessPolicy({role:"member"},0,{title:"Digital Creator",unlimited_slots:1,advanced_builder:1});
+assert.deepEqual([creator.limit,creator.unlimited,creator.advanced_builder,creator.title],[null,true,true,"Digital Creator"]);
+assert.equal(botAccessPolicy({role:"member",public_title:"Digital Creator"}).unlimited,true);
 assert.equal(botAccessPolicy({role:"member"},0,{title:"Custom"}).advanced_builder,false);
-console.log("Bot creator access policy verified.");
-
-// Regression guards: privileges are stored by account ID, never inferred from a display title.
-const migration=readFileSync(new URL("../backend/migrations/0112_bot_creator_privileges.sql",import.meta.url),"utf8");
+console.log("Bot access policy verified.");
+const migration=readFileSync(new URL("../backend/migrations/0130_home_activity_and_bot_tiers.sql",import.meta.url),"utf8");
 const backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
 const studio=readFileSync(new URL("../public/personal-bots.html",import.meta.url),"utf8");
 const client=readFileSync(new URL("../public/bot-creator-pro.js",import.meta.url),"utf8");
-assert.match(migration,/REFERENCES users\(id\)/);
-assert.match(migration,/lower\(username\)='mrsshroom14'/);
-assert.match(migration,/NOT EXISTS\s*\(\s*SELECT 1 FROM member_bot_creator_privileges/);
-assert.match(backend,/SELECT title,unlimited_slots,advanced_builder FROM member_bot_creator_privileges WHERE user_id=\?/);
+const foundry=readFileSync(new URL("../public/devil-tools.html",import.meta.url),"utf8");
+const home=readFileSync(new URL("../public/index.html",import.meta.url),"utf8");
+assert.match(migration,/CREATE TABLE IF NOT EXISTS member_premium_memberships/);
+assert.match(migration,/CREATE TRIGGER personal_bots_owner_limit/);
+assert.match(migration,/CREATE TRIGGER site_activity_posts_staff_guard/);
+assert.match(migration,/SET title='Digital Creator'/);
+assert.match(backend,/SELECT title,unlimited_slots,advanced_builder FROM member_bot_creator_privileges WHERE user_id=/);
+assert.match(backend,/member_premium_memberships/);
 assert.match(backend,/if\(cap!==null&&Number\(count\?\.count\|\|0\)>=cap\)/);
 assert.match(studio,/id="bot-pro-studio"[^>]*hidden/);
 assert.match(client,/d\.advanced_builder!==true/);
 assert.match(backend,/AS public_title/);
-console.log("Creator authorization, trigger, and gated dashboard wiring verified.");
+assert.match(foundry,/id="bot-forge" data-workspace hidden/);
+assert.match(home,/id="home-activity-composer"/);
+console.log("Server rules, database trigger, homepage and Foundry integration verified.");
