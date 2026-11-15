@@ -21,6 +21,7 @@ on:
       - 'public/arcade/hosted/cinder-life/index.html'
       - 'public/arcade/hosted/cinder-slots/index.html'
       - 'public/arcade/hosted/openfront-solo/index.html'
+      - 'public/arcade/hosted/neon-surge/index.html'
       - 'scripts/arcade-playback-assist.test.mjs'
       - 'scripts/smoke-arcade-playback-assist.mjs'
       - 'public/nav.js'
