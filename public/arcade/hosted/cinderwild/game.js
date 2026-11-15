@@ -349,6 +349,20 @@ function drawFieldMap(){
  ctx.fillStyle="#fffaff";ctx.fillRect(state.x*p,state.y*p,p,p);
  ctx.fillStyle="#e14f8c";ctx.fillRect(state.x*p+2,state.y*p+2,p-4,p-4);
 }
+function filterBestiary(){
+ const list=$("dex-entries"),count=$("dex-count");if(!list||!count)return;
+ const query=($("dex-search")?.value||"").trim().toLowerCase().replace(/^#/,"");
+ const filter=$("dex-status-filter")?.value||"all";
+ let matching=0;
+ for(const row of list.querySelectorAll("[data-dex-id]")){
+  const id=row.dataset.dexId,seen=state.seen.includes(id)||state.caught.includes(id),caught=state.caught.includes(id);
+  const byStatus=filter==="all"||(filter==="seen"&&seen)||(filter==="caught"&&caught)||(filter==="missing"&&!seen);
+  const byName=!query||(seen&&name(id).toLowerCase().includes(query))||row.dataset.dexNumber.includes(query);
+  row.hidden=!(byStatus&&byName);
+  if(!row.hidden)matching++;
+ }
+ count.textContent=matching+" matching bestiary entries";
+}
 function hpbar(c){const ratio=clamp(c.hp/c.maxHp,0,1);return '<span class="health"><span style="width:'+(ratio*100)+'%;background:'+(ratio>.5?"#7ae4a0":ratio>.2?"#e9d575":"#ff737f")+'"></span></span>';}
 function sprite(id,canvasId){
  const cvs=$(canvasId);if(!cvs)return;
@@ -388,7 +402,7 @@ function openMenu(type){
  }else if(type==="box"){
   area.innerHTML='<p>Up to 6 creatures in your team. Captures overflow here automatically.</p>'+state.box.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+c.hp+'/'+c.maxHp+' HP</small><button data-withdraw="'+i+'" '+(state.party.length>=6?"disabled":"")+'>Add to party</button></div>').join("")||"<p>Storage is empty.</p>";
  }else if(type==="dex"){
-  area.innerHTML='<p>'+state.caught.length+' captured · '+state.seen.length+' seen of '+Object.keys(SPECIES).length+' original species.</p><div class="dex-list">'+Object.keys(SPECIES).map((id,i)=>'<div class="'+(state.caught.includes(id)?"caught":state.seen.includes(id)?"seen":"unknown")+'"><span>#'+String(i+1).padStart(3,"0")+'</span><strong>'+esc(state.seen.includes(id)?name(id):"????????")+'</strong><small>'+(state.caught.includes(id)?"Captured":state.seen.includes(id)?"Seen":"Unknown")+'</small></div>').join("")+'</div>';
+  area.innerHTML='<p>'+state.caught.length+' captured · '+state.seen.length+' seen of '+Object.keys(SPECIES).length+' original species.</p><div class="dex-controls"><label>Search known creatures<input id="dex-search" type="search" placeholder="Name or bestiary number" autocomplete="off"></label><label>Collection<select id="dex-status-filter"><option value="all">All creatures</option><option value="seen">Discovered</option><option value="caught">Captured</option><option value="missing">Undiscovered</option></select></label></div><p id="dex-count" role="status" aria-live="polite"></p><div id="dex-entries" class="dex-list">'+Object.keys(SPECIES).map((id,i)=>'<div data-dex-id="'+id+'" data-dex-number="'+String(i+1).padStart(3,"0")+'" class="'+(state.caught.includes(id)?"caught":state.seen.includes(id)?"seen":"unknown")+'"><span>#'+String(i+1).padStart(3,"0")+'</span><strong>'+esc(state.seen.includes(id)||state.caught.includes(id)?name(id):"????????")+'</strong><small>'+(state.caught.includes(id)?"Captured":state.seen.includes(id)?"Seen":"Unknown")+'</small></div>').join("")+'</div>';
  }else if(type==="shop"){
   const rows=[["orbs","Capture Orb",30],["superOrbs","Prism Orb",80],["potions","Potion",22],["revives","Revive",65]];
   area.innerHTML='<p>Cinders: '+state.coins+'</p>'+rows.map(row=>'<div class="shop-row"><span><strong>'+row[1]+'</strong> · owned '+state.items[row[0]]+'</span><button data-buy="'+row[0]+'" '+(state.coins<row[2]?"disabled":"")+'>Buy · '+row[2]+'</button></div>').join("");
@@ -398,6 +412,7 @@ function openMenu(type){
   area.innerHTML='<p>You are a field trainer. Choose one of three starter creatures, wander into tall grass for wild encounters, capture and train a party of six, challenge all three Wardens, and fill the Bestiary.</p><p>Controls: arrow keys or WASD to walk, E/Space to interact, M for menu, and touch controls on mobile.</p><p>Three crests: '+state.badges.map(id=>esc(GYMS.find(g=>g.id===id).badge)).join(", ")+'</p><p>Battle victories: '+state.wins+' · Steps: '+state.steps+'</p><div class="inline-actions"><button id="export-save">Export save</button><button id="reset-save">Erase local save</button></div><p class="hint">Offline save is stored only in this browser. Export a backup before clearing site data.</p>';
  }
  if(type==="map")drawFieldMap();
+ if(type==="dex")filterBestiary();
 }
 function closeMenu(){modal="";$("menu").hidden=true;}
 function firstRun(){
@@ -420,6 +435,8 @@ function initialize(){
   else if(b.dataset.switch!==undefined)changeLead(Number(b.dataset.switch),true);
   else if(b.dataset.battleHeal!==undefined)usePotion(Number(b.dataset.battleHeal),true);
  });
+ $("menu-body").addEventListener("input",e=>{if(e.target.id==="dex-search")filterBestiary();});
+ $("menu-body").addEventListener("change",e=>{if(e.target.id==="dex-status-filter")filterBestiary();});
  $("menu").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   const val=k=>Number(b.dataset[k]);
