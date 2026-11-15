@@ -1,0 +1,28 @@
+plugins {
+    id 'com.android.application'
+}
+android {
+    namespace 'com.ashfall.ruinwire'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'com.ashfall.ruinwire'
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName '0.1.0-test'
+    }
+    buildTypes {
+        release {
+            // Ruinwire public release signing is deliberately not configured.
+            // Do not distribute a debug certificate as a permanent public release.
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.7.4'
+}
