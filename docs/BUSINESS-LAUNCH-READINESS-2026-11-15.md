@@ -38,6 +38,7 @@ Additional verification:
 
 ## Priority 1: the first legitimate revenue
 - [ ] Choose *one* launch offer before pricing a large catalog (candidate: Premium cosmetic/profile perks or first-party original merchandise).
+- [x] Keep public shop directories explicitly labeled browse-only until tested checkout and fulfillment exist.
 - [ ] Confirm processor eligibility, live account onboarding, tax/merchant obligations, payout ownership and payment descriptor.
 - [ ] Implement server-priced products, hosted Checkout and verified signed webhooks, with idempotent fulfillment, reconciliation, refunds and dispute handling.
 - [ ] Run sandbox end-to-end tests including duplicates, forged webhooks, cancellations, retries, refunds and failed fulfillment.

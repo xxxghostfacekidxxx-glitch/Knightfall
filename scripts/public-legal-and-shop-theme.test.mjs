@@ -37,3 +37,14 @@ test("shop previews never expose enabled checkout while payment setup is pending
     assert.match(button, /\bdisabled\b/i);
   }
 });
+
+test("public community shop directory cannot imply live payment processing",()=>{
+ const directory=readFileSync(new URL("../public/shops.html",import.meta.url),"utf8");
+ const workspace=readFileSync(new URL("../public/my-shop.html",import.meta.url),"utf8");
+ const api=readFileSync(new URL("../backend/src/shop-commerce.js",import.meta.url),"utf8");
+ assert.match(directory,/Browse-only preview:/);
+ assert.match(directory,/do not accept customer checkout or online payments yet/i);
+ assert.doesNotMatch(directory,/LIVE COMMUNITY CATALOGS/);
+ assert.match(workspace,/Live checkout and automatic supplier fulfillment are not enabled yet/i);
+ assert.match(api,/checkout_enabled:false/);
+});
