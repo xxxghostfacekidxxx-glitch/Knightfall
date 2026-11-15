@@ -433,7 +433,7 @@
 
 
 </section>
-<section class="panel" id="developer-arsenal-ci" data-workspace hidden aria-labelledby="developer-arsenal-title" style="margin:1rem 0;border-color:#c6ff4570">
+<section class="panel" id="developer-arsenal-ci" data-workspace hidden aria-labelledby="developer-arsenal-title" style="margin:1rem 0;border-color:#c7a77c70">
   <h2 id="developer-arsenal-title">God Mode / Developer Arsenal</h2>
   <p>Repository diagnostics and automation sources for administrators. Tool source links are <strong>not</strong> installed agent integrations. The GitHub Actions audit publishes diagnostic reports.</p>
   <div class="dt-open-source-grid">
@@ -450,7 +450,7 @@
   </div>
   <p class="foot">Implementation inventory: <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/developer-arsenal.md" target="_blank" rel="noopener noreferrer">Developer Arsenal Guide</a>. Production and repository write access remain separately authorized.</p>
 </section>
-<section class="panel" style="margin:1rem 0;border-color:#ff55d866" id="brand-library">
+<section class="panel" style="margin:1rem 0;border-color:#b25b6866" id="brand-library">
 <h2>Chaos Cartridge Brand Vault</h2>
 <p>Shared logo and icon masters for the arcade, app, browser tabs, game pages, promo art, and future Ash-Fall projects. The previous ember logo is archived here rather than overwritten.</p>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem">
@@ -459,17 +459,17 @@
 <article style="padding:.75rem;border:1px solid #ffffff22;border-radius:10px;background:#080b13"><img src="/branding/archive/knightfall-ember.svg" alt="Archived original Knightfall ember icon" style="display:block;width:100%;max-height:220px;object-fit:contain;background:#07070b;border-radius:8px"><strong style="display:block;margin:.6rem 0">Archived original ember icon</strong><a class="btn" href="/branding/archive/knightfall-ember.svg" download>Download old icon SVG</a></article>
 </div>
 <article style="margin-top:1rem;padding:.75rem;border:1px solid #ffffff22;border-radius:10px;background:#080b13"><img src="/branding/archive/ash-fall-wordmark.svg" alt="Archived original Ash-Fall wordmark" style="display:block;width:100%;max-height:120px;object-fit:contain;background:#07070b;border-radius:8px"><strong style="display:block;margin:.6rem 0">Archived original Ash-Fall logo / wordmark</strong><a class="btn" href="/branding/archive/ash-fall-wordmark.svg" download>Download old logo SVG</a></article>
-<p class="small">Palette: hot pink #ff27ce · acid green #c6ff45 · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
+<p class="small">Palette: hot pink #ff27ce · acid green #c7a77c · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
 </section>
-<section class="panel" id="original-icon-crops" style="margin:1rem 0;border-color:#c6ff4588">
+<section class="panel" id="original-icon-crops" style="margin:1rem 0;border-color:#c7a77c88">
 <h2>Original Artwork · 24 Exact Icon Crops</h2>
 <p>This gallery displays the exact PNG artwork, not SVG redraws. Once the PNG files are published under <code>/assets/devil-tools/original-icons/</code>, they load automatically for everyone. Until then, administrators can preview the complete original collection by selecting the 24 PNG files from the icon pack on this device.</p>
 <div class="bar"><label class="btn primary" for="original-icon-import">Import original PNG crops</label><input class="hidden" id="original-icon-import" type="file" accept="image/png" multiple><button class="btn" type="button" id="original-icon-clear">Clear local preview</button></div>
 <p class="small" id="original-icon-status" role="status">Checking published original icon assets…</p>
 <div id="original-icon-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 </section><script src="/original-icon-crops.js?v=20261028-1" defer></script>
-<section class="panel" id="gravewave-icon-collection" style="margin:1rem 0;border-color:#ff55d888"><h2>Gravewave · 24 Neon Site Icons</h2><p>Complete original neon icon set for Ash-Fall, Forums, Messages, Friends, Profiles, Creator Foundry, Arcade, Shop, Donate, Adults 18+, Dating, Bots, Miss Chaos, Church, Library, Open Source Arsenal, Media Vault, Games, Settings, Ranks, Calendar, Astrology, Help, and Admin. Each SVG can be downloaded individually. These are vector reinterpretations of the concept sheet, not pixel-for-pixel crops.</p><p class="small" id="gravewave-icon-status" role="status">Loading icon library…</p></section><script src="/gravewave-site-icons.js?v=20261028-1" defer></script>
-<section class="panel" id="app-icon-choices" style="margin:1rem 0;border-color:#c6ff4588">
+<section class="panel" id="gravewave-icon-collection" style="margin:1rem 0;border-color:#b25b6888"><h2>Gravewave · 24 Neon Site Icons</h2><p>Complete original neon icon set for Ash-Fall, Forums, Messages, Friends, Profiles, Creator Foundry, Arcade, Shop, Donate, Adults 18+, Dating, Bots, Miss Chaos, Church, Library, Open Source Arsenal, Media Vault, Games, Settings, Ranks, Calendar, Astrology, Help, and Admin. Each SVG can be downloaded individually. These are vector reinterpretations of the concept sheet, not pixel-for-pixel crops.</p><p class="small" id="gravewave-icon-status" role="status">Loading icon library…</p></section><script src="/gravewave-site-icons.js?v=20261028-1" defer></script>
+<section class="panel" id="app-icon-choices" style="margin:1rem 0;border-color:#c7a77c88">
 <h2>21 App Icon Candidates · 16 New Designs</h2>
 <p>Choose a visual candidate for the Ash-Fall app. These are downloadable original SVG masters. The currently installed app icon changes only after its manifest is updated and the app is reinstalled or refreshed by the operating system.</p>
 <div id="app-icon-choice-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.8rem"></div>
@@ -481,11 +481,11 @@ const choices=[['chaos-crown','Chaos Crown'],['skull-signal','Skull Signal'],['g
 const gallery=document.getElementById('app-icon-choice-gallery'),status=document.getElementById('app-icon-choice-status');
 gallery.setAttribute('aria-label','Choose from 21 Ash-Fall app icon designs');
 let selected='';try{selected=localStorage.getItem('knightfall-app-icon-candidate')||''}catch{}
-for(const [id,name] of choices){const url='/icons/choices/'+id+'.svg',card=document.createElement('article');card.style.cssText='background:linear-gradient(150deg,#1c1430,#090b15);border:1px solid #ff55d855;border-radius:14px;padding:.8rem;text-align:center;box-shadow:0 10px 24px #0005';const img=document.createElement('img');img.src=url;img.alt=name;img.width=112;img.height=112;img.loading='lazy';img.style.cssText='width:112px;height:112px;display:block;margin:auto;filter:drop-shadow(0 8px 14px #0008)';const title=document.createElement('strong');title.textContent=name;title.style.display='block';const choose=document.createElement('button');choose.type='button';choose.className='btn';choose.textContent='Preview this icon';choose.addEventListener('click',()=>{selected=id;try{localStorage.setItem('knightfall-app-icon-candidate',id)}catch{}update()});const link=document.createElement('a');link.href=url;link.download=id+'.svg';link.textContent='Download SVG';link.style.cssText='display:block;margin-top:.4rem;color:#c6ff45';card.dataset.iconChoice=id;card.append(img,title,choose,link);gallery.append(card)}
-function update(){for(const card of gallery.children){const active=card.dataset.iconChoice===selected;card.style.borderColor=active?'#c6ff45':'#ffffff33';card.querySelector('button').textContent=active?'Selected for preview':'Preview this icon'}const match=choices.find(x=>x[0]===selected);status.textContent=match?'Preview selected: '+match[1]+'. This is a browser-only preference, not the installed app icon.':'Choose a design to preview and download.'}update();
+for(const [id,name] of choices){const url='/icons/choices/'+id+'.svg',card=document.createElement('article');card.style.cssText='background:linear-gradient(150deg,#1c1430,#090b15);border:1px solid #b25b6855;border-radius:14px;padding:.8rem;text-align:center;box-shadow:0 10px 24px #0005';const img=document.createElement('img');img.src=url;img.alt=name;img.width=112;img.height=112;img.loading='lazy';img.style.cssText='width:112px;height:112px;display:block;margin:auto;filter:drop-shadow(0 8px 14px #0008)';const title=document.createElement('strong');title.textContent=name;title.style.display='block';const choose=document.createElement('button');choose.type='button';choose.className='btn';choose.textContent='Preview this icon';choose.addEventListener('click',()=>{selected=id;try{localStorage.setItem('knightfall-app-icon-candidate',id)}catch{}update()});const link=document.createElement('a');link.href=url;link.download=id+'.svg';link.textContent='Download SVG';link.style.cssText='display:block;margin-top:.4rem;color:#c7a77c';card.dataset.iconChoice=id;card.append(img,title,choose,link);gallery.append(card)}
+function update(){for(const card of gallery.children){const active=card.dataset.iconChoice===selected;card.style.borderColor=active?'#c7a77c':'#ffffff33';card.querySelector('button').textContent=active?'Selected for preview':'Preview this icon'}const match=choices.find(x=>x[0]===selected);status.textContent=match?'Preview selected: '+match[1]+'. This is a browser-only preference, not the installed app icon.':'Choose a design to preview and download.'}update();
 })();
 </script>
-<section class="panel" id="gravewave-game-sprites" style="margin:1rem 0;border-color:#c6ff4577">
+<section class="panel" id="gravewave-game-sprites" style="margin:1rem 0;border-color:#c7a77c77">
 <h2>Gravewave · Game-Ready Neon Sprites</h2>
 <p>Enemies, projectiles, pickups, hazards, terrain, effects, and UI icons. Sixteen original transparent SVG assets, sized for arcade games. Use <code>/gravewave-sprites.js</code> to preload and draw them on canvas.</p>
 <p id="gravewave-game-status" class="small" role="status">Loading game sprites…</p>
@@ -497,16 +497,16 @@ function update(){for(const card of gallery.children){const active=card.dataset.
 fetch('/assets/arcade/gravewave/manifest.json').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(data=>{if(!Array.isArray(data.sprites))throw Error('Invalid sprite manifest');
 let count=0;for(const item of data.sprites){if(!/^[a-z]+(?:-[a-z]+)*$/.test(item.id)||item.src!=='/assets/arcade/gravewave/'+item.id+'.svg')continue;
 const card=document.createElement('article');card.style.cssText='border:1px solid #ffffff24;background:#090b15;border-radius:12px;padding:.65rem;text-align:center';
-const img=document.createElement('img');img.src=item.src;img.alt=item.name;img.loading='lazy';img.width=96;img.height=96;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #c6ff4566)';
+const img=document.createElement('img');img.src=item.src;img.alt=item.name;img.loading='lazy';img.width=96;img.height=96;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #c7a77c66)';
 const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem';
 const type=document.createElement('small');type.textContent=item.category;type.style.cssText='display:block;color:#b6b5cb';
 const a=document.createElement('a');a.href=item.src;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.5rem;font-size:.7rem';
 card.append(img,title,type,a);root.append(card);count++}status.textContent=count+' game-ready sprites available.'}).catch(e=>{status.textContent='Game sprite collection unavailable: '+e.message})})();
 </script>
-<section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
+<section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#b25b6877">
 <h2>Gravewave · Neon Nuisances · Deluxe Collection</h2>
 <p>Meet the original neon-horror character crew. Minion Mouse, Mini Villain, and The Eddie now have distinct hand-authored silhouettes and four animated expressions each. Preview all available variants, read their character lore, and download editable SVG masters.</p>
-<p><a class="btn" href="/mascot-pets.html" style="display:inline-block;border-color:#c6ff45;color:#c6ff45">✦ Enter the Sanctuary · Adopt a Profile Pet</a></p><p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
+<p><a class="btn" href="/mascot-pets.html" style="display:inline-block;border-color:#c7a77c;color:#c7a77c">✦ Enter the Sanctuary · Adopt a Profile Pet</a></p><p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
 <div id="nuisances-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 <a class="btn" href="/assets/devil-tools/neon-nuisances/manifest.json" target="_blank" rel="noopener noreferrer">View mascot manifest</a>
 </section>
@@ -519,14 +519,14 @@ const spotlight=new Set(['bloop','nib','minion-mouse','mini-villain','mini-eddie
 for(const item of [...data.characters].sort((a,b)=>Number(spotlight.has(b.id))-Number(spotlight.has(a.id)))){
 if(!/^\/assets\/devil-tools\/neon-nuisances\/[a-z-]+\.svg$/.test(item.svg))continue;
 const card=document.createElement('article');card.style.cssText='background:#090b15;border:1px solid #ffffff24;border-radius:12px;padding:.65rem;text-align:center';
-const img=document.createElement('img');img.src=item.svg+'?v='+encodeURIComponent(data.version||1);img.alt=item.name;img.loading='lazy';img.width=128;img.height=128;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #ff55d855)';
+const img=document.createElement('img');img.src=item.svg+'?v='+encodeURIComponent(data.version||1);img.alt=item.name;img.loading='lazy';img.width=128;img.height=128;img.style.cssText='display:block;width:100%;aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 8px #b25b6855)';
 const title=document.createElement('strong');title.textContent=item.name;title.style.cssText='display:block;font-size:.78rem;min-height:2.5em';
 const a=document.createElement('a');a.href=item.svg;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.45rem;font-size:.7rem';
-const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c6ff4566;border-radius:7px';for(const mode of ['deluxe','original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='deluxe'?'Deluxe portrait':mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
+const select=document.createElement('select');select.setAttribute('aria-label','Animation for '+item.name);select.style.cssText='width:100%;padding:.5rem;margin:.35rem 0;background:#121525;color:#fff;border:1px solid #c7a77c66;border-radius:7px';for(const mode of ['deluxe','original',...Object.keys(item.variants||{})]){const option=document.createElement('option');option.value=mode;option.textContent=mode==='deluxe'?'Deluxe portrait':mode==='original'?'Original still':mode.charAt(0).toUpperCase()+mode.slice(1);select.append(option)}
 select.addEventListener('change',()=>{const mode=select.value;const url=mode==='deluxe'?item.portrait:mode==='original'?item.svg:item.variants?.[mode];if(!url)return;img.src=url+'?v='+encodeURIComponent(data.version||1);a.href=url;a.download=item.id+(mode==='original'?'':mode==='deluxe'?'-deluxe':'-'+mode)+'.svg'});if(['bloop','nib','glim','gravebyte','minion-mouse','mini-villain','mini-eddie'].includes(item.id) && item.variants?.idle){card.style.borderColor=item.primary+'88';card.style.boxShadow='0 0 24px '+item.primary+'18';select.value='idle';img.src=item.variants.idle+'?v='+encodeURIComponent(data.version||1);a.href=item.variants.idle;a.download=item.id+'-idle.svg'}
 if(item.portrait && /^\/assets\/devil-tools\/neon-nuisances\/portraits\/[a-z-]+\.svg$/.test(item.portrait)){select.value='deluxe';img.src=item.portrait+'?v='+encodeURIComponent(data.version||1);a.href=item.portrait;a.download=item.id+'-deluxe.svg'}
 const desc=document.createElement('small');desc.textContent=item.description||'';desc.style.cssText='display:block;color:#b5aec7;min-height:2.8em;font-size:.68rem';const meta=document.createElement('div');meta.style.cssText='font-size:.69rem;line-height:1.5;text-align:left;color:#c9cbdf;margin:.4rem 0';
-if(item.role){const role=document.createElement('strong');role.textContent=item.role;role.style.cssText='display:block;color:#c6ff45';meta.append(role)}
+if(item.role){const role=document.createElement('strong');role.textContent=item.role;role.style.cssText='display:block;color:#c7a77c';meta.append(role)}
 if(item.tagline){const tag=document.createElement('span');tag.textContent='“'+item.tagline+'”';tag.style.cssText='display:block;color:#ff9ee4;font-style:italic;margin:.2rem 0';meta.append(tag)}
 if(item.personality){const details=document.createElement('details');details.style.cssText='margin:.35rem 0;padding:.4rem;border:1px solid #ffffff24;border-radius:7px';const summary=document.createElement('summary');summary.textContent='Character personality';summary.style.cssText='cursor:pointer;color:#e1dbf5;font-weight:700';const prose=document.createElement('p');prose.textContent=item.personality;prose.style.cssText='margin:.4rem 0 0;color:#c7c6d8';details.append(summary,prose);meta.append(details)}
 card.append(img,title,desc,meta,select,a);root.append(card);
@@ -549,7 +549,7 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 <div class="dt-gallery-grid" data-dt-gallery aria-label="Downloadable original vector graphics"></div>
 </section>
 <script src="/devil-tools-vector-gallery.js?v=20261102-overhaul7" defer></script>
-<section class="panel" id="original-creations" style="margin:1rem 0;border-color:#ff55d888">
+<section class="panel" id="original-creations" style="margin:1rem 0;border-color:#b25b6888">
 <h2>Original Creations · Game & Sprite Archive</h2>
 <p>First-party Knightfall games and their original artwork. Every entry links to its playable cabinet, editable SVG source assets, and GitHub implementation. New originals belong in <code>/arcade/original-creations.json</code>; legacy imports are not included.</p>
 <div class="bar"><a class="btn" href="/arcade/original-creations.json" target="_blank" rel="noopener noreferrer">View source manifest</a><button type="button" class="btn" id="refresh-originals">Refresh archive</button></div>
@@ -560,7 +560,7 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 (function(){
 'use strict';
 const gallery=document.getElementById('originals-gallery'),status=document.getElementById('originals-status');
-function link(label,url,download){const a=document.createElement('a');a.href=url;a.textContent=label;a.style.color='#c6ff45';a.style.fontSize='.78rem';a.style.overflowWrap='anywhere';if(download)a.download='';if(url.startsWith('https://')){a.target='_blank';a.rel='noopener noreferrer'}return a}
+function link(label,url,download){const a=document.createElement('a');a.href=url;a.textContent=label;a.style.color='#c7a77c';a.style.fontSize='.78rem';a.style.overflowWrap='anywhere';if(download)a.download='';if(url.startsWith('https://')){a.target='_blank';a.rel='noopener noreferrer'}return a}
 async function refresh(){
 status.textContent='Loading original creations…';gallery.replaceChildren();
 try{
@@ -571,7 +571,7 @@ if(!Array.isArray(data.games))throw Error('Invalid originals manifest');
 let assets=0;
 for(const game of data.games){
 const card=document.createElement('article');card.style.cssText='padding:.85rem;border:1px solid #ffffff28;border-radius:12px;background:#080b13;display:grid;gap:.55rem';
-const heading=document.createElement('strong');heading.textContent=game.name;heading.style.color='#e8b5f5';card.append(heading);
+const heading=document.createElement('strong');heading.textContent=game.name;heading.style.color='#ece1d3';card.append(heading);
 const info=document.createElement('small');info.textContent=game.genre+' · '+game.status;info.style.color='#b4b2c6';card.append(info);
 const preview=document.createElement('div');preview.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px';
 for(const asset of game.assets||[]){
@@ -696,7 +696,7 @@ function assetPath(){return '/assets/arcade/chaos-sprite-sheet.svg'}
 function selectSprite(i){selected=(i+names.length)%names.length;document.querySelectorAll('.asset').forEach((b,j)=>b.setAttribute('aria-pressed',String(j===selected)));const x=(selected%12)*64,y=Math.floor(selected/12)*64;const posX=(selected%12)*100/11,posY=Math.floor(selected/12)*100;$('#spotlight').style.backgroundPosition=posX+'% '+posY+'%';$('#spotlight').setAttribute('aria-label','Selected sprite: '+names[selected]);$('#sheet').style.objectPosition='';$('#sheet').style.transform='scale('+Number($('#scale').value)/100+')';$('#sheet').style.objectFit='contain';$('#metrics').textContent='Selected: '+names[selected]+'\\nSheet cell: column '+((selected%12)+1)+', row '+(Math.floor(selected/12)+1)+'\\nCell bounds: x='+x+', y='+y+', size=64×64';}
 function buildCatalog(){const img='/assets/arcade/chaos-sprite-atlas.svg?v=20261023-6';$('#assets').innerHTML=names.map((n,i)=>'<button class="asset" type="button" data-index="'+i+'" aria-pressed="'+(i===selected)+'"><span class="asset-thumb" aria-hidden="true" style="background-image:url('+img+');background-position:'+((i%12)*100/11)+'% '+(Math.floor(i/12)*100)+'%"></span><span>'+n+'</span></button>').join('');document.querySelectorAll('.asset').forEach(b=>b.addEventListener('click',()=>{selectSprite(Number(b.dataset.index));log('Selected '+names[selected]+'. The catalog is a preview, not a live game-asset replacement.')}))}
 function stopAnimation(){if(animTimer)clearInterval(animTimer);animTimer=null;$('#animate').textContent='▶ Preview animation'}
-function startAnimation(){stopAnimation();$('#animate').textContent='Ⅱ Stop animation';animTimer=setInterval(()=>{frame=(frame+1)%names.length;selectSprite(frame);$('#sheet').style.filter='hue-rotate('+(frame*17%360)+'deg) drop-shadow(0 0 12px #ff55d888)';},Number($('#speed').value))}
+function startAnimation(){stopAnimation();$('#animate').textContent='Ⅱ Stop animation';animTimer=setInterval(()=>{frame=(frame+1)%names.length;selectSprite(frame);$('#sheet').style.filter='hue-rotate('+(frame*17%360)+'deg) drop-shadow(0 0 12px #b25b6888)';},Number($('#speed').value))}
 async function exportSelected(){try{const response=await fetch('/assets/arcade/chaos-sprite-atlas.svg',{cache:'no-store'});if(!response.ok)throw Error('Sprite atlas could not be loaded.');const source=await response.text(),defs=source.match(/<defs>[\s\S]*?<\/defs>/)?.[0];if(!defs)throw Error('Sprite definitions were not found.');const svg='<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">'+defs+'<use href="#'+names[selected].toLowerCase()+'" x="4" y="4"/></svg>';const blob=new Blob([svg],{type:'image/svg+xml'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=safeName()+'-'+names[selected].toLowerCase()+'.svg';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);log('Exported individual sprite: '+names[selected]+'. SVG remains transparent and scalable.')}catch(e){log('Sprite export failed: '+e.message)}}
 function drawPng(){const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{const c=document.createElement('canvas');c.width=768;c.height=384;const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(img,0,0,768,384);c.toBlob(blob=>{if(!blob){log('PNG export failed: canvas did not produce an image.');return}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=safeName()+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);log('Exported PNG preview. Original SVG remains the crisp master asset.')},'image/png')};img.onerror=()=>log('PNG export failed. Use the SVG export or check the asset path.');img.src=assetPath()+'?v=20261023'}
 function diagnostics(){const img=$('#sheet');const lines=['Session role: '+(user?.role||'unknown'),'God account: '+(String(user?.role||'').toLowerCase()==='god'?'yes':'no'),'Sprite image loaded: '+(img.complete&&img.naturalWidth>0?'yes':'no'),'Natural dimensions: '+img.naturalWidth+' × '+img.naturalHeight,'Expected sheet: 768 × 384','Catalog entries: '+document.querySelectorAll('.asset').length,'Local preview upload: '+(localUrl?'loaded (browser only)':'none'),'Animation: '+(animTimer?'running':'stopped'),'Renderer: '+(img.complete&&img.naturalWidth===768?'OK':'CHECK')];$('#metrics').textContent=lines.join('\n');log('Diagnostics finished. No backend writes were made.')}
