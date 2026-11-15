@@ -87,3 +87,17 @@ test('install center uses current Android workflow instead of expiring build art
  assert.match(read('public/sw.js'),/knightfall-shell-v36/);
  assert.match(read('public/sw.js'),/\/install-health\.js/);
 });
+
+test('Android phone QA is tied to the candidate version, GitHub run and exact APK checksum',()=>{
+ const qa=read('public/android-device-check.js');
+ assert.doesNotThrow(()=>new vm.Script(qa));
+ for(const id of ['kf-qa-build-version','kf-qa-run-id','kf-qa-apk-sha256','kf-qa-device']){
+   assert.match(installPage,new RegExp('id="'+id+'"'));
+   assert.match(qa,new RegExp(id));
+ }
+ assert.match(qa,/kf-android-physical-qa-v2/);
+ assert.match(qa,/\\^\\[a-f0-9\\]\\{64\\}\\$/);
+ assert.match(qa,/Build identity changed: old test checkmarks were cleared/);
+ assert.match(qa,/checks\.forEach\(x=>x\.checked=false\)/);
+ assert.doesNotMatch(qa,/fetch\(|https?:\/\//);
+});

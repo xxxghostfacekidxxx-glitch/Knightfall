@@ -46,6 +46,13 @@
 <h2>Android device testing checklist</h2>
 <p>After installing the <strong>release-signed candidate</strong>, check each item on your actual Android phone. A checked box is a human observation, not an automated verification. No passwords or messages are collected.</p>
 <form id="kf-android-test-form">
+<div class="kf-device-qa-metadata">
+<label>Signed APK version <input id="kf-qa-build-version" name="buildVersion" type="text" autocomplete="off" maxlength="48" placeholder="e.g. 0.2.0"></label>
+<label>Signed candidate run ID <input id="kf-qa-run-id" name="candidateRunId" type="text" inputmode="numeric" autocomplete="off" maxlength="20" placeholder="Successful GitHub run ID"></label>
+<label>Tested APK SHA-256 <input id="kf-qa-apk-sha256" name="apkSha256" type="text" autocomplete="off" spellcheck="false" maxlength="64" placeholder="64-digit hex checksum"></label>
+<label>Android phone model (optional) <input id="kf-qa-device" name="device" type="text" autocomplete="off" maxlength="90" placeholder="e.g. Pixel 9, Android 16"></label>
+</div>
+<p class="kf-qa-explain">Use the <code>app-release.apk.sha256</code> file from the signed candidate artifact. Testing a different APK requires fresh checks. These details remain on this device unless you copy the report.</p>
 <fieldset>
 <legend>Verify the app's essential features</legend>
 <label><input type="checkbox" name="launch"> Signed APK installs and launches without crashing</label>

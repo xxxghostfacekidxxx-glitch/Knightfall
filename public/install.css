@@ -44,3 +44,12 @@
 .kf-install-check-results .kf-install-check-attention{border-inline-start:4px solid #ffae73}
 .kf-install-check-results .kf-install-check-info{border-inline-start:4px solid #d7a1eb}
 #kf-install-check-copy[hidden]{display:none!important}
+
+/* Keep manual device QA bound to its tested APK, never inherited from an old build. */
+.kf-device-qa-metadata{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem;margin:.9rem 0}
+.kf-device-qa-metadata label{display:grid!important;gap:.35rem;min-width:0;color:#e9dbf3;font-size:.84rem;font-weight:750}
+.kf-device-qa-metadata input{display:block;min-width:0;width:100%;max-width:100%;padding:.7rem .75rem;background:#110e1d;color:#fff3ff;border:1px solid #9a779e;border-radius:.55rem;overflow:hidden}
+.kf-device-qa-metadata input:focus-visible{outline:2px solid #c6fb64;outline-offset:2px}
+.kf-device-qa-metadata input::placeholder{color:#9d91a6;opacity:1}
+.kf-qa-explain{font-size:.82rem}
+@media(max-width:680px){.kf-device-qa-metadata{grid-template-columns:1fr}}
