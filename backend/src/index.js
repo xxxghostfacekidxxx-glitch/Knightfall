@@ -283,7 +283,7 @@ async function handleVaultRequest(request, env, origin, url) {
     return json({ summary: await vaultSummary(env) }, 200, origin);
   }
   if (url.pathname === "/api/vault/folders" && request.method === "GET") {
-    const folders = await env.DB.prepare("SELECT f.id,f.name,f.created_at,COUNT(i.object_key) AS item_count FROM vault_folders f LEFT JOIN vault_folder_items i ON i.folder_id=f.id GROUP BY f.id ORDER BY f.name COLLATE NOCASE LIMIT 200").all();
+    const folders = await env.DB.prepare("SELECT f.id,f.name,f.created_at,COUNT(i.object_key) AS item_count FROM vault_folders f LEFT JOIN vault_folder_items i ON i.folder_id=f.id WHERE f.deleted_at IS NULL GROUP BY f.id ORDER BY f.name COLLATE NOCASE LIMIT 200").all();
     return json({ folders: folders.results || [] }, 200, origin);
   }
   if (url.pathname === "/api/vault/folders" && request.method === "POST") {
@@ -302,8 +302,7 @@ async function handleVaultRequest(request, env, origin, url) {
   if (folderMatch && (request.method==="PATCH" || request.method==="DELETE")) {
     const id=Number(folderMatch[1]);
     if (request.method==="DELETE") {
-      await env.DB.prepare("DELETE FROM vault_folder_items WHERE folder_id=?").bind(id).run();
-      const result=await env.DB.prepare("DELETE FROM vault_folders WHERE id=?").bind(id).run();
+      const result=await env.DB.prepare("UPDATE vault_folders SET deleted_at=? WHERE id=? AND deleted_at IS NULL").bind(new Date().toISOString(),id).run();
       if (!result.meta?.changes) return json({error:"Folder not found."},404,origin);
       await audit(env,user,"vault.folder.delete","vault_folder",id);
       return json({ok:true},200,origin);
@@ -326,7 +325,7 @@ async function handleVaultRequest(request, env, origin, url) {
     const item=await env.DB.prepare("SELECT object_key FROM vault_items WHERE object_key=?").bind(key).first();
     if (!item) return json({error:"File not found."},404,origin);
     if (folderId!==null) {
-      const folder=await env.DB.prepare("SELECT id FROM vault_folders WHERE id=?").bind(folderId).first();
+      const folder=await env.DB.prepare("SELECT id FROM vault_folders WHERE id=? AND deleted_at IS NULL").bind(folderId).first();
       if (!folder) return json({error:"Folder not found."},404,origin);
       await env.DB.prepare("INSERT INTO vault_folder_items(object_key,folder_id,added_at) VALUES(?,?,?) ON CONFLICT(object_key) DO UPDATE SET folder_id=excluded.folder_id,added_at=excluded.added_at").bind(key,folderId,new Date().toISOString()).run();
     } else await env.DB.prepare("DELETE FROM vault_folder_items WHERE object_key=?").bind(key).run();
@@ -1269,7 +1268,7 @@ export default { async queue(batch, env) {
     }
     if(url.pathname==="/api/creator/posts"&&(request.method==="GET"||request.method==="POST")){
       if(request.method==="GET"){
-        const rows=await env.DB.prepare("SELECT id,title,description,content_rating,visibility,price_cents,status,published_at,created_at,updated_at FROM creator_posts WHERE creator_id=? ORDER BY created_at DESC LIMIT 100").bind(user.id).all();
+        const rows=await env.DB.prepare("SELECT id,title,description,content_rating,visibility,price_cents,status,published_at,created_at,updated_at FROM creator_posts WHERE creator_id=? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 100").bind(user.id).all();
         return json({posts:rows.results||[]},200,origin);
       }
       let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
@@ -2190,7 +2189,7 @@ For complex questions, organize the answer clearly and provide actionable detail
   // Die-ary: private journal entries. Every query is scoped to the authenticated owner; admin roles do not bypass this boundary.
   if(url.pathname==="/api/die-ary/entries"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to access your Die-ary."},401,origin);
-    const {results}=await env.DB.prepare("SELECT id,title,body,created_at,updated_at FROM die_ary_entries WHERE user_id=? ORDER BY updated_at DESC,id DESC LIMIT 300").bind(user.id).all();
+    const {results}=await env.DB.prepare("SELECT id,title,body,created_at,updated_at FROM die_ary_entries WHERE user_id=? AND deleted_at IS NULL ORDER BY updated_at DESC,id DESC LIMIT 300").bind(user.id).all();
     return json({entries:results||[],limit:300},200,origin);
   }
   if(url.pathname==="/api/die-ary/entries"&&request.method==="POST"){
@@ -2202,7 +2201,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const body=typeof payload.body==="string"?payload.body.trim():"";
     if(title.length>120)return json({error:"Titles must be 120 characters or fewer."},400,origin);
     if(!body||body.length>20000)return json({error:"An entry must contain 1-20,000 characters."},400,origin);
-    const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM die_ary_entries WHERE user_id=?").bind(user.id).first();
+    const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM die_ary_entries WHERE user_id=? AND deleted_at IS NULL").bind(user.id).first();
     if(Number(count?.count||0)>=300)return json({error:"Your Die-ary has reached its 300-entry limit. Delete an old entry before adding another."},409,origin);
     const now=new Date().toISOString();
     const entry=await env.DB.prepare("INSERT INTO die_ary_entries (user_id,title,body,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id,title,body,created_at,updated_at").bind(user.id,title||"Untitled entry",body,now,now).first();
@@ -2214,10 +2213,10 @@ For complex questions, organize the answer clearly and provide actionable detail
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to access your Die-ary."},401,origin);
     if(!(await rateLimit(env,request,"die-ary-write",30,60)))return json({error:"Too many journal changes. Please wait a minute."},429,origin);
     const id=Number(dieAryEntryId);if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid entry id."},400,origin);
-    const existing=await env.DB.prepare("SELECT id,title,body,created_at,updated_at FROM die_ary_entries WHERE id=? AND user_id=?").bind(id,user.id).first();
+    const existing=await env.DB.prepare("SELECT id,title,body,created_at,updated_at FROM die_ary_entries WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(id,user.id).first();
     if(!existing)return json({error:"Journal entry not found."},404,origin);
     if(request.method==="DELETE"){
-      await env.DB.prepare("DELETE FROM die_ary_entries WHERE id=? AND user_id=?").bind(id,user.id).run();
+      await env.DB.prepare("UPDATE die_ary_entries SET deleted_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),id,user.id).run();
       return json({ok:true},200,origin);
     }
     let payload;try{payload=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
@@ -2229,7 +2228,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     if(title.length>120)return json({error:"Titles must be 120 characters or fewer."},400,origin);
     if(!body||body.length>20000)return json({error:"An entry must contain 1-20,000 characters."},400,origin);
     const now=new Date().toISOString();
-    const entry=await env.DB.prepare("UPDATE die_ary_entries SET title=?,body=?,updated_at=? WHERE id=? AND user_id=? RETURNING id,title,body,created_at,updated_at").bind(title,body,now,id,user.id).first();
+    const entry=await env.DB.prepare("UPDATE die_ary_entries SET title=?,body=?,updated_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL RETURNING id,title,body,created_at,updated_at").bind(title,body,now,id,user.id).first();
     return json({entry},200,origin);
   }
   // Birth chart is private by default. Only the owner can create, publish, hide, or delete it.
