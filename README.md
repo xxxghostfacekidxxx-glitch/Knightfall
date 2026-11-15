@@ -36,6 +36,8 @@ The public website and backend/API are intentionally kept separate. The frontend
 
 ## Community features
 
+- Staff hierarchy: **God (Level 3)** inherits all capabilities and alone may unlock the reauthenticated **Eye of Horus** private-data review; **Administrator (Level 2)** inherits both Level-1 staff tracks; **Moderator** and **Digital Creator** share **Level 1** but have independent powers. Moderators handle reports and receive unlimited basic bot ownership, without Creator Foundry or advanced bot-builder access. Digital Creators have Creator Foundry and professional bot-building access, without moderation. All privileged reads are server-gated; private archive searches were retired in favor of the audited Eye.
+- Eye of Horus is read-only, God-only, password-confirmed for ten minutes, and requires a written review purpose. Its append-only D1 ledger records each dataset review and image preview, but never copied content. Only retained records are retrievable. The God console is `/eye-of-horus.html`; message reports remain usable by authorized staff.
 - The homepage staff activity wire uses the public read-only `GET /api/home/activity` feed and authenticated `POST /api/home/activity` and `DELETE /api/home/activity/:id` routes. Only God, admin, moderator and Digital Creator accounts can publish; Digital Creators remove their own posts and moderator/admin/God can remove any. The D1 `site_activity_posts_staff_guard` also enforces create authorization.
 
 - `public/bots.html` lists public personal bots; `public/personal-bots.html` is the signed-in personal bot workshop for every member; Digital Creators and staff get advanced bot tools, also available inside Creator Foundry.
