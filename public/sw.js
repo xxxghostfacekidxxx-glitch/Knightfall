@@ -101,7 +101,7 @@ function messageConversationId(path) {
   const safe=safeNotificationPath(path);
   try {
     const url=new URL(safe,self.location.origin);
-    if(url.pathname!=="/messages.html")return null;
+    if(!["/messages","/messages.html"].includes(url.pathname))return null;
     const raw=url.searchParams.get("conversation");
     if(!raw||!/^[1-9][0-9]*$/.test(raw))return null;
     const id=Number(raw);
@@ -212,7 +212,7 @@ self.addEventListener("notificationclick", event => {
     const windows=await self.clients.matchAll({type:"window",includeUncontrolled:true});
     if(conversationId){
       const chat=windows.find(client=>{
-        try{const url=new URL(client.url);return url.origin===self.location.origin&&url.pathname==="/messages.html";}catch{return false;}
+        try{const url=new URL(client.url);return url.origin===self.location.origin&&["/messages","/messages.html"].includes(url.pathname);}catch{return false;}
       });
       if(chat){
         try{
