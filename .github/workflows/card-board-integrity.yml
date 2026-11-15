@@ -15,6 +15,10 @@ on:
       - 'scripts/deck-locker-integrity.test.mjs'
       - 'scripts/deck-locker-account-sync.test.mjs'
       - 'backend/src/arcade-deck-locker.js'
+      - 'backend/src/deck-cinder-products.js'
+      - 'backend/migrations/0142_deck_cinders_vip.sql'
+      - 'scripts/test_deck_cinders_sql.py'
+      - 'public/cinder-shop.html'
       - 'backend/src/arcade-deck-locker.test.mjs'
       - 'backend/migrations/0122_deck_locker_accounts.sql'
       - 'public/card-deck-skins.js'
@@ -42,6 +46,10 @@ on:
       - 'scripts/deck-locker-integrity.test.mjs'
       - 'scripts/deck-locker-account-sync.test.mjs'
       - 'backend/src/arcade-deck-locker.js'
+      - 'backend/src/deck-cinder-products.js'
+      - 'backend/migrations/0142_deck_cinders_vip.sql'
+      - 'scripts/test_deck_cinders_sql.py'
+      - 'public/cinder-shop.html'
       - 'backend/src/arcade-deck-locker.test.mjs'
       - 'backend/migrations/0122_deck_locker_accounts.sql'
       - 'public/card-deck-skins.js'
@@ -72,6 +80,8 @@ jobs:
           node --check public/arcade/hosted/cards-against-chaos/cabinet.js
           node --check backend/src/chaos-card-matches.js
           node --check public/arcade/hosted/cards-against-chaos/online.js
+      - name: Verify atomic Cinders spending and VIP enforcement in SQLite
+        run: python3 scripts/test_deck_cinders_sql.py
       - name: Validate card and board launch routes
         run: |
           node --input-type=module <<'JS'
