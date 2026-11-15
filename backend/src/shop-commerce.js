@@ -74,7 +74,7 @@ export async function handleShopCommerce(request,env,origin,url,user,{json,rando
   if(!shop)return json({error:"Create a shop before managing commerce details."},404,origin);
   if(path==="/api/my-shop/business") {
    if(method==="GET"){
-    const profile=await env.DB.prepare("SELECT "+PROFILE_FIELDS.join(",")+" FROM shop_business_profiles WHERE shop_id=?").bind(shop.id).first();
+    const profile=await env.DB.prepare("SELECT "+PROFILE_FIELDS.join(",")+",updated_at FROM shop_business_profiles WHERE shop_id=?").bind(shop.id).first();
     return json({business:profile||null},200,origin);
    }
    if(method!=="PUT")return json({error:"Method not allowed."},405,origin);
