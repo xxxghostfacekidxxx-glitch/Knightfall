@@ -8,6 +8,7 @@ import vm from "node:vm";
 const root=resolve(fileURLToPath(new URL("..",import.meta.url)));
 const local=name=>resolve(root,name);
 const js=readFileSync(local("public/arcade/hosted/cinderwild/game.js"),"utf8");
+const village=readFileSync(local("public/arcade/hosted/cinderwild/village-layout.js"),"utf8");
 const html=readFileSync(local("public/arcade/hosted/cinderwild/index.html"),"utf8");
 const css=readFileSync(local("public/arcade/hosted/cinderwild/style.css"),"utf8");
 const catalog=JSON.parse(readFileSync(local("public/arcade/catalog.json"),"utf8"));
@@ -34,7 +35,8 @@ assert.ok(js.endsWith("})();\n"),"Executable game entrypoint intact");
 assert.doesNotMatch(js+" "+html,/\b(Pikachu|Charmander|Bulbasaur|Squirtle|Nintendo|Game Freak)\b/i,"No protected franchise characters or credits implied");
 const injected=js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, "globalThis.__test = {SPECIES,GYMS,SHRINES,make,moves,tile,walkable,addXP,expreq,STRONG,fresh,hash,zone,rollDamage};\n})();");
 assert.notEqual(injected,js,"Test injection matched the game bootstrap");
-const context={Math,Date,Number,Object,Array,Set,JSON,Map,String,Boolean,console};
+const context={window:{},Math,Date,Number,Object,Array,Set,JSON,Map,String,Boolean,console};
+vm.runInNewContext(village,context);
 vm.runInNewContext(injected,context,{timeout:2000,filename:"cinderwild-game.js"});
 const g=context.__test;
 assert.ok(g,"Game mechanics loaded in sandbox");
@@ -53,6 +55,19 @@ assert.equal(g.walkable(40,8),false,"Cannot walk through water");
 assert.equal(g.tile(25,18),"path","Main path connects the Bramble Trail");
 assert.equal(g.tile(42,18),"path","Main path connects the Storm Marsh");
 assert.equal(g.tile(58,18),"path","Main path connects Eclipse Ridge");
+const frontier=[[8,18]], visited=new Set(["8,18"]);
+for(let i=0;i<frontier.length;i++){
+ const [col,row]=frontier[i];
+ for(const [x,y] of [[col+1,row],[col-1,row],[col,row+1],[col,row-1]]){
+  const key=x+","+y;
+  if(x>=32||visited.has(key)||!g.walkable(x,y))continue;
+  visited.add(key);
+  frontier.push([x,y]);
+ }
+}
+assert.ok(visited.has("8,38"),"Village entrance is reachable from Cinder Town before earning crests");
+assert.ok(frontier.filter(([,y])=>y>=38).length>200,"Imported paths connect the village interior");
+assert.equal(g.walkable(11,43),false,"Village ruins block movement");
 const starter=g.make("mossbit",5);
 assert.equal(starter.level,5);
 assert.ok(starter.hp>0);
@@ -82,7 +97,7 @@ const element=id=>{
  return ui.get(id);
 };
 const browserDocument={
- getElementById:element,
+ getElementById:element,dispatchEvent(){},
  querySelectorAll(){return[];},
  createElement(tag){return{textContent:"",tagName:tag}},
  body:{classList:{contains(){return false}}}
@@ -94,8 +109,9 @@ const runner=js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, "globalThis.__run={st
 assert.notEqual(runner,js,"Runtime test injects game hook at boot");
 const scene={
  document:browserDocument,window:{addEventListener(){},HellOrbitSprites:null},
- localStorage:fakeStorage,Math:predictableMath,confirm:()=>true
+ CustomEvent:class {},localStorage:fakeStorage,Math:predictableMath,confirm:()=>true
 };
+vm.runInNewContext(village,scene);
 vm.runInNewContext(runner,scene,{timeout:5000,filename:"cinderwild-playthrough.js"});
 const run=scene.__run;
 assert.equal(element("world").width,576,"Overworld canvas bootstraps");

@@ -1,7 +1,7 @@
 /* Creator Foundry photo/art preparation. Real publication uses the existing admin-only API. */
 (() => {
   'use strict';
-  const root=document.getElementById('knightfall-art-collection');
+  const root=document.getElementById('site-image-library');
   if(!root)return;
   const API='https://api.ash-fall.com',MAX=2*1024*1024,INCOMING=8*1024*1024;
   const drop=document.getElementById('kf-art-drop'),fileInput=document.getElementById('kf-art-input');
@@ -206,15 +206,23 @@
     for(const item of items)URL.revokeObjectURL(item.url);
     items.clear();staged.replaceChildren();report('Local previews cleared. Published assets were not deleted.');
   });
-  async function loadPublished(){
-    published.replaceChildren(label('p','Checking approved assets…'));
+  const imageSearch=document.getElementById('kf-art-search'), imageMore=document.getElementById('kf-art-more');
+  let searchTimer, nextOffset, inventoryRequest=0;
+  async function loadPublished(append=false){
+    const requestId=++inventoryRequest;
+    imageMore.disabled=true;
+    if(!append)published.replaceChildren(label('p','Checking approved assets…'));
     try{
-      const res=await fetch(API+'/api/devil-tools/assets',{credentials:'include',cache:'no-store'});
+      const query=new URLSearchParams({q:imageSearch.value.trim(),limit:'24',offset:String(append?nextOffset:0)});
+      const res=await fetch(API+'/api/devil-tools/assets?'+query,{credentials:'include',cache:'no-store'});
       const data=await res.json().catch(()=>({}));
       if(!res.ok)throw Error(data.error||'Cannot read the published assets.');
-      published.replaceChildren();
-      if(!data.assets?.length){published.append(label('p','No approved artwork published yet.'));return}
-      for(const asset of data.assets.slice(0,30)){
+      if(requestId!==inventoryRequest)return;
+      if(!append)published.replaceChildren();
+      nextOffset=data.next_offset;
+      imageMore.hidden=!Number.isSafeInteger(nextOffset);
+      if(!append&&!data.assets?.length){published.append(label('p',query.get('q')?'No images match this search.':'No approved images yet.'));return}
+      for(const asset of data.assets||[]){
         if(!/^\/public-assets\/[a-f0-9]{32}$/.test(asset.url||''))continue;
         const card=document.createElement('article');card.className='kf-art-item';
         const img=document.createElement('img');img.src=API+asset.url;img.alt=asset.asset_name||'Published artwork';img.loading='lazy';
@@ -228,18 +236,35 @@
         }));
         card.append(img,title,meta,actions);published.append(card);
       }
-    }catch(error){published.replaceChildren(label('p',error.message))}
+    }catch(error){
+      if(requestId===inventoryRequest){
+        if(append)report(error.message);
+        else { published.replaceChildren(label('p',error.message)); imageMore.hidden=true; }
+      }
+    }finally{if(requestId===inventoryRequest)imageMore.disabled=false;}
   }
+  imageSearch.addEventListener('input',()=>{
+    clearTimeout(searchTimer);
+    imageMore.hidden=true;
+    searchTimer=setTimeout(()=>void loadPublished(),220);
+  });
+  imageMore.addEventListener('click',()=>void loadPublished(true));
   document.getElementById('kf-art-refresh').addEventListener('click',()=>{void Promise.all([loadPublished(),loadReview()])});
-  // Access remains authoritative in the Worker; the DOM flag only controls UI.
-  const activate=()=>{
-    const statusText=document.getElementById('status')?.textContent||'';
-    if(statusText.includes('Signed in as @')){
-      const isAdmin=!document.getElementById('release-simulator') ? false : true;
-      root.dataset.canPublish=String(isAdmin);void Promise.all([loadPublished(),loadReview(),loadArtSprites(),loadRelicIcons()]);
-      if(!isAdmin)report('Digital Creator workspace: submit images for administrator review or save PNG copies.');
-    }
+  const workshop=document.getElementById('workshop');
+  const openLibrary=()=>{
+    root.dataset.canPublish=workshop.dataset.canPublish;
+    void Promise.all([loadPublished(),loadReview()]);
   };
-  document.getElementById('workshop')?.addEventListener('foundry:ready',activate);
+  root.addEventListener('foundry:open',openLibrary);
+  if(!workshop.classList.contains('hidden')&&!root.hidden)openLibrary();
+  const gallery=document.getElementById('creation-gallery');
+  let galleryLoaded=false;
+  function loadGalleries(){
+    if(galleryLoaded)return;
+    galleryLoaded=true;
+    void Promise.all([loadArtSprites(),loadRelicIcons()]);
+  }
+  gallery.addEventListener('foundry:open',loadGalleries);
+  if(!workshop.classList.contains('hidden')&&!gallery.hidden)loadGalleries();
   window.addEventListener('pagehide',()=>{for(const item of items)URL.revokeObjectURL(item.url)});
 })();

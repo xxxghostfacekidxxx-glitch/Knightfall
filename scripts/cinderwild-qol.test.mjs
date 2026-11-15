@@ -35,8 +35,8 @@ function gameHarness() {
 test('Cinderwild scripts parse and are linked from the arcade game', () => {
   const syntax = spawnSync(process.execPath, ['--check'], {input: js, encoding: 'utf8'});
   assert.equal(syntax.status, 0, syntax.stderr);
-  assert.match(html, /src="\.\/game\.js\?v=20261115-online1"/);
-  assert.match(html, /src="\.\/style\.css\?v=20261115-online1"/);
+  assert.match(html, /src="\.\/game\.js\?v=[^"]+"/);
+  assert.match(html, /href="\.\/style\.css\?v=[^"]+"/);
 });
 
 test('field map draws every tile, town services, Wardens, three shrines, and player', () => {

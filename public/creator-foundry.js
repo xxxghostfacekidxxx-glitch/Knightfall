@@ -65,11 +65,11 @@
 
       catalog.hidden = Boolean(active);
       back.hidden = !active;
-      document.getElementById("creator-handoff").classList.toggle("hidden", Boolean(active));
       for (const workspace of workspaces) workspace.hidden = workspace !== active;
+      active?.dispatchEvent(new Event("foundry:open"));
 
       if (active) {
-        const heading = target.querySelector("h2, h3") || active.querySelector("h2");
+        const heading = target.querySelector("h2, h3") || active.querySelector("h2, h3");
         if (heading) {
           heading.tabIndex = -1;
           heading.focus({ preventScroll: true });

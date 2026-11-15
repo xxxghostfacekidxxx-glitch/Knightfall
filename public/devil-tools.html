@@ -10,102 +10,66 @@
 .dt-open-source-grid .actions{margin-top:auto;padding-top:.55rem}
 
 </style>
-<link rel="stylesheet" href="/creator-foundry.css">
+<link rel="stylesheet" href="/creator-foundry.css?v=20261115-workspaces1">
 <link rel="stylesheet" href="/creator-motion-preview.css?v=20261114-motion1">
 <link rel="stylesheet" href="/creator-art-studio.css?v=20261114-newart1">
 <link rel="stylesheet" href="/creator-production-lab.css?v=20261113-creator1">
-<script src="/creator-foundry.js" defer></script>
-<script src="/creator-art-studio.js?v=20261114-newart1" defer></script>
+<script src="/creator-foundry.js?v=20261115-workspaces1" defer></script>
+<script src="/creator-art-studio.js?v=20261115-workspaces1" defer></script>
+<script type="module" src="/creator-foundry-workspaces.js?v=20261115-workspaces1"></script>
 <script type="module" src="/creator-motion-preview.js?v=20261114-motion1"></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
 <a class="back" href="/admin.html">← God Mode</a>
-<section class="hero"><h1>Creator <span>Foundry</span></h1><p class="lede">Browse artwork, build games, and open Knightfall’s creator workspaces from one catalog.</p></section>
+<section class="hero"><h1>Creator <span>Foundry</span></h1><p class="lede">Build games and bots, find reusable site art, and send new ideas to the team.</p></section>
 <div id="status" class="status" role="status" aria-live="polite">Checking Foundry access…</div>
 <div id="workshop" class="hidden">
-<div id="creator-handoff" hidden><h2>Submit artwork for review</h2><p>Save your sprite as a PNG, then attach it in a message to @Knightfall. Include the game or character name and what you’d like reviewed.</p><a class="btn" href="/messages.html">Open messages</a></div>
 <section class="panel" id="bot-forge" data-workspace hidden aria-labelledby="bot-forge-title">
   <h2 id="bot-forge-title">Professional Bot Forge</h2>
   <p>Create, manage, and test personal bots directly in Creator Foundry with the full studio below.</p>
   <iframe title="Knightfall Personal Bot Architect" src="/personal-bots.html?foundry=1#bot-pro-studio" loading="lazy" style="display:block;width:100%;height:min(1100px,85vh);border:1px solid #6b446b;border-radius:14px;background:#0b0911"></iframe>
 </section>
-<section id="foundry-catalog" aria-label="Tool catalog" tabindex="-1">
-  <div class="foundry-toolbar">
-    <label for="foundry-search">Find a tool</label>
-    <input id="foundry-search" type="search" placeholder="Search sprites, game engines, licenses…" autocomplete="off">
-    <div id="foundry-filters" role="group" aria-label="Filter by category">
-      <button type="button" class="btn" data-category="all" aria-pressed="true">All tools</button>
-      <button type="button" class="btn" data-category="bots" aria-pressed="false">AI &amp; Bots</button>
-      <button type="button" class="btn" data-category="art" aria-pressed="false">Art &amp; Assets</button>
-      <button type="button" class="btn" data-category="games" aria-pressed="false">Game Development</button>
-      <button type="button" class="btn" data-category="media" aria-pressed="false">Audio, Video &amp; Story</button>
-      <button type="button" class="btn" data-category="qa" aria-pressed="false">Testing &amp; Publishing</button>
-    </div>
-    <p id="foundry-count" role="status"></p>
-  </div>
-  <p id="foundry-empty" hidden>No tools match. Try a different search or category.</p>
-  <section class="foundry-group" data-group="bots" aria-labelledby="foundry-bots">
-    <h2 id="foundry-bots">AI &amp; Bot Creation</h2>
+<section id="foundry-catalog" aria-label="Foundry workspaces" tabindex="-1">
+  <section class="foundry-group" data-group="desk" aria-labelledby="foundry-desk">
+    <h2 id="foundry-desk">Creator Desk</h2>
     <div class="foundry-grid">
-      <article class="foundry-card" data-search="bot forge advanced professional AI creator personality presets prompt private public chat memory">
-        <h3>Professional Bot Forge</h3>
-        <p>Build, tune, test, and publish bots with the full professional editor. Digital Creators and staff get unlimited ownership.</p>
-        <div class="actions"><a class="primary" href="#bot-forge" data-workspace-search>Open Bot Forge</a><a href="/personal-bots.html">Full page</a></div>
+      <article class="foundry-card" data-search="requests feedback proposals ideas cards feature">
+        <h3>Submissions</h3>
+        <p>Propose a Knightfall or Cinderwild feature, pitch a new card, and track the review.</p>
+        <div class="actions"><a class="primary" href="#creator-handoff" data-workspace-search>Submit an idea</a></div>
+      </article>
+      <article class="foundry-card" data-search="upload photos PNG JPG WebP image storage artwork reusable approve">
+        <h3>Site Image Library</h3>
+        <p>Store and preview images, check approvals, and copy URLs for use around the site.</p>
+        <div class="actions"><a class="primary" href="#site-image-library" data-workspace-search>Open Image Library</a></div>
+      </article>
+      <article class="foundry-card" data-search="cards prompts answers black white expansion deck madhouse after hours">
+        <h3>Cards Against Chaos Catalog</h3>
+        <p>Search every prompt and answer in the base deck and Madhouse After Hours.</p>
+        <div class="actions"><a class="primary" href="#chaos-card-catalog" data-workspace-search>Browse cards</a></div>
       </article>
     </div>
   </section>
+  <div class="foundry-toolbar">
+    <label for="foundry-search">Search the Foundry</label>
+    <input id="foundry-search" type="search" placeholder="Sprites, cards, game engines…" autocomplete="off">
+    <div id="foundry-filters" role="group" aria-label="Filter by category">
+      <button type="button" class="btn" data-category="all" aria-pressed="true">Everything</button>
+      <button type="button" class="btn" data-category="desk" aria-pressed="false">Creator Desk</button>
+      <button type="button" class="btn" data-category="art" aria-pressed="false">Assets &amp; previews</button>
+      <button type="button" class="btn" data-category="games" aria-pressed="false">Build</button>
+      <button type="button" class="btn" data-category="tools" aria-pressed="false">Production tools</button>
+    </div>
+    <p id="foundry-count" role="status"></p>
+  </div>
+  <p id="foundry-empty" hidden>No workspaces or tools match this search.</p>
   <section class="foundry-group" data-group="art" aria-labelledby="foundry-art">
-    <h2 id="foundry-art">Art &amp; Assets</h2>
+    <h2 id="foundry-art">Assets &amp; previews</h2>
     <div class="foundry-grid">
-    <article class="foundry-card" data-search="upload photos images PNG JPG WebP artwork game sprites icons collections horror skeleton space assets">
-      <h3>Artwork Collections & Upload Studio</h3>
-      <p>Preview Knightfall's new crest, character concepts, relics and Creator design. Convert and publish approved PNG files to the real site-asset store.</p>
-      <div class="actions"><a class="primary" href="#knightfall-art-collection" data-workspace-search>Open artwork studio</a></div>
-    </article>
-    <article class="foundry-card" data-search="piskel pixelorama free tex packer tiled pixel editor sprite animation texture atlas tile map level design offline native">
-  <h3>Creator Production Lab</h3><p>Three working local-first tools: 32px pixel-art editor with frames, PNG sprite atlas packer with JSON metadata, and Tiled-style level painter and exports.</p>
-  <p class="foundry-meta">Built-in tools · inspired by Piskel, FreeTexPacker &amp; Tiled workflows · no server upload</p>
-  <div class="actions"><a class="primary" href="#production-workbench" data-workspace-search>Open Production Lab</a></div>
-</article>
-<article class="foundry-card" data-search="pixel atlas CRT scanlines contrast render diagnostics PNG SVG upload developer bench">
-      <h3>Sprite Workshop</h3>
-      <p>Preview and animate arcade sprites, inspect local images, and export sheets or individual sprites.</p>
-      <div class="actions"><a class="primary" href="#sprite-workshop">Open sprite workshop</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Visual Asset Library</h3>
-      <p>Browse remastered SVG icons, sprites, mascots, backdrops, and other downloadable artwork.</p>
-      <div class="actions"><a class="primary" href="#dt-vector-library" data-workspace-search>Browse artwork</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Brand Vault</h3>
-      <p>Get the current and archived Chaos Cartridge and Ash-Fall logos and app icons.</p>
-      <div class="actions"><a class="primary" href="#brand-library" data-workspace-search>Browse logos</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Gravewave Site Icons</h3>
-      <p>Browse the complete 24-icon neon set for Knightfall.</p>
-      <div class="actions"><a class="primary" href="#gravewave-icon-collection" data-workspace-search>Browse icons</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Original Icon Crops</h3>
-      <p>View the original PNG artwork or load the 24 icon crops locally.</p>
-      <div class="actions"><a class="primary" href="#original-icon-crops" data-workspace-search>Browse original icons</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>App Icon Candidates</h3>
-      <p>Preview, compare, and download alternate SVG app icons.</p>
-      <div class="actions"><a class="primary" href="#app-icon-choices" data-workspace-search>Compare app icons</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Gravewave Game Sprites</h3>
-      <p>Browse the game-ready neon sprite collection.</p>
-      <div class="actions"><a class="primary" href="#gravewave-game-sprites" data-workspace-search>Browse game sprites</a></div>
-    </article>
-    <article class="foundry-card">
-      <h3>Neon Nuisances</h3>
-      <p>Browse the deluxe original character collection and its sprite assets.</p>
-      <div class="actions"><a class="primary" href="#neon-nuisances" data-workspace-search>Browse characters</a></div>
+    <article class="foundry-card" data-search="preview originals artwork brand logo icon mascots characters sprites game map Cinderwild">
+      <h3>Creation Gallery</h3>
+      <p>Preview and download Knightfall branding, site icons, character art, sprites, and game maps.</p>
+      <div class="actions"><a class="primary" href="#creation-gallery" data-workspace-search>Browse previews</a></div>
     </article>
     <article class="foundry-card" data-admin-only data-search="pixelorama sprite pixel art animation open source mit desktop web">
       <h3>Pixelorama</h3>
@@ -188,13 +152,24 @@
     </div>
   </section>
   <section class="foundry-group" data-group="games" aria-labelledby="foundry-games">
-    <h2 id="foundry-games">Game Development</h2>
+    <h2 id="foundry-games">Build games &amp; bots</h2>
     <div class="foundry-grid">
-    <article class="foundry-card">
-      <h3>Original Creations</h3>
-      <p>Browse the archive of original games and sprites.</p>
-      <div class="actions"><a class="primary" href="#original-creations" data-workspace-search>Browse original creations</a></div>
+    <article class="foundry-card" data-search="bot forge advanced professional AI creator personality presets prompt private public chat memory">
+        <h3>Professional Bot Forge</h3>
+        <p>Build, tune, test, and publish bots with the full professional editor. Digital Creators and staff get unlimited ownership.</p>
+        <div class="actions"><a class="primary" href="#bot-forge" data-workspace-search>Open Bot Forge</a><a href="/personal-bots.html">Full page</a></div>
+      </article>
+    <article class="foundry-card" data-search="piskel pixelorama free tex packer tiled pixel editor sprite animation texture atlas tile map level design offline native">
+  <h3>Creator Production Lab</h3><p>Three working local-first tools: 32px pixel-art editor with frames, PNG sprite atlas packer with JSON metadata, and Tiled-style level painter and exports.</p>
+  <p class="foundry-meta">Built-in tools · inspired by Piskel, FreeTexPacker &amp; Tiled workflows · no server upload</p>
+  <div class="actions"><a class="primary" href="#production-workbench" data-workspace-search>Open Production Lab</a></div>
+</article>
+<article class="foundry-card" data-search="pixel atlas CRT scanlines contrast render diagnostics PNG SVG upload developer bench">
+      <h3>Sprite Workshop</h3>
+      <p>Preview and animate arcade sprites, inspect local images, and export sheets or individual sprites.</p>
+      <div class="actions"><a class="primary" href="#sprite-workshop">Open sprite workshop</a></div>
     </article>
+
     <article class="foundry-card">
       <h3>Arcade Project Resources</h3>
       <p>Find source, asset references, and cabinets using the shared sprite runtime.</p>
@@ -262,8 +237,8 @@
     </article>
     </div>
   </section>
-  <section class="foundry-group" data-group="media" aria-labelledby="foundry-media">
-    <h2 id="foundry-media">Audio, Video &amp; Story</h2>
+  <section class="foundry-group" data-group="tools" aria-labelledby="foundry-media">
+    <h2 id="foundry-media">Production &amp; testing tools</h2>
     <div class="foundry-grid">
     <article class="foundry-card" data-admin-only data-search="audacity sound audio editing effects waveform open source">
       <h3>Audacity</h3>
@@ -301,11 +276,7 @@
       <p class="foundry-meta">Retro sound effects · Unlicense</p>
       <div class="actions"><a href="https://github.com/chr15m/jsfxr">Source and license</a><a href="https://sfxr.me/">Open official project</a></div>
     </article>
-    </div>
-  </section>
-  <section class="foundry-group" data-group="qa" aria-labelledby="foundry-qa">
-    <h2 id="foundry-qa">Testing &amp; Publishing</h2>
-    <div class="foundry-grid">
+
     <article class="foundry-card" data-admin-only>
       <h3>Asset Release Queue</h3>
       <p>Stage sprites, publish them to the game-asset store, and review previous releases.</p>
@@ -353,9 +324,87 @@
     <p>The catalog links to official projects, downloads, and web editors. Review the license before importing any code or artwork. Record each imported asset’s source, exact license, attribution, and affected game in the project asset manifest.</p>
   </details>
 </section>
-<a id="foundry-back" class="btn" href="#foundry-catalog" hidden>← Back to catalog</a>
-<section class="panel kf-art-studio" id="knightfall-art-collection" data-workspace hidden aria-labelledby="kf-art-title">
-  <header class="kf-art-heading"><div><p class="eyebrow">KNIGHTFALL • CREATOR COLLECTIONS</p><h2 id="kf-art-title">Artwork Vault & Asset Publisher</h2><p>Original artwork for the site, character concepts, horror, skeletal creatures, relics and game graphics. Concept sheets are references, not automatic animation frames.</p></div>
+<a id="foundry-back" class="btn" href="#foundry-catalog" hidden>← Creator Foundry</a>
+  <section class="panel" id="creator-handoff" data-workspace hidden aria-labelledby="foundry-ideas-title">
+  <h2 id="foundry-ideas-title">Submissions</h2>
+  <p>Pitch a feature for Knightfall or Cinderwild, suggest a Cards Against Chaos card, or share another idea. Admins can accept or decline submissions.</p>
+  <div class="foundry-links"><a href="#site-image-library">Submit artwork for review</a><a href="#chaos-card-catalog">Browse existing cards</a></div>
+  <div class="foundry-desk-layout">
+    <form id="foundry-idea-form" class="foundry-form">
+      <h3>New submission</h3>
+      <div class="foundry-control-row">
+        <label>Project<select name="project" class="foundry-input"><option>Knightfall</option><option>Cinderwild</option><option>Cards Against Chaos</option></select></label>
+        <label>Type<select name="kind" class="foundry-input"><option>Feature</option><option>General idea</option><option>Prompt card</option><option>Answer card</option></select></label>
+      </div>
+      <label>Title<input name="title" class="foundry-input" maxlength="100" required></label>
+      <label>Details<textarea name="detail" class="foundry-input" maxlength="1500" rows="5" required></textarea></label>
+      <button type="submit" class="btn foundry-action">Send for review</button>
+      <p id="foundry-idea-status" role="status"></p>
+    </form>
+    <section aria-labelledby="foundry-queue-title">
+      <h3 id="foundry-queue-title">My submissions</h3>
+      <p id="foundry-queue-status" role="status"></p>
+      <div id="foundry-ideas-list" class="foundry-ideas-list"></div>
+      <div class="foundry-links">
+        <button type="button" class="btn" id="foundry-ideas-refresh">Refresh</button>
+        <button type="button" class="btn" id="foundry-ideas-more" hidden>Load more</button>
+      </div>
+    </section>
+  </div>
+</section>
+<section class="panel" id="chaos-card-catalog" data-workspace hidden aria-labelledby="chaos-catalog-title">
+  <h2 id="chaos-catalog-title">Cards Against Chaos Catalog</h2>
+  <p>Search the base deck and Madhouse After Hours. Mature humor.</p>
+  <div class="foundry-links">
+    <a href="#creator-handoff" data-project="Cards Against Chaos" data-kind="Prompt card">Suggest a prompt</a>
+    <a href="#creator-handoff" data-project="Cards Against Chaos" data-kind="Answer card">Suggest an answer</a>
+  </div>
+  <div class="foundry-control-row foundry-card-filters">
+    <label>Find a card<input id="chaos-catalog-search" class="foundry-input" type="search" placeholder="Card text or ID"></label>
+    <label>Deck<select id="chaos-catalog-deck" class="foundry-input"><option value="">All decks</option><option>Base deck</option></select></label>
+    <label>Card type<select id="chaos-catalog-type" class="foundry-input"><option value="">All cards</option><option value="prompt">Prompts</option><option value="answer">Answers</option></select></label>
+  </div>
+  <label class="foundry-age-check"><input id="chaos-catalog-adult" type="checkbox"> I’m 18 or older. Include Madhouse After Hours.</label>
+  <p id="chaos-catalog-count" role="status"></p>
+  <div id="chaos-catalog-cards" class="foundry-card-grid"></div>
+  <div class="foundry-links">
+    <button type="button" class="btn" id="chaos-catalog-prev">Previous</button>
+    <button type="button" class="btn" id="chaos-catalog-next">Next</button>
+  </div>
+</section>
+
+<section class="panel kf-art-studio kf-art-uploader" id="site-image-library" data-workspace hidden aria-labelledby="site-image-title">
+    <h2 id="site-image-title">Site Image Library</h2>
+    <p>Upload game and site images as PNG, JPEG, or WebP. Preview the optimized PNG, then submit it for approval or publish it as an Admin.</p>
+    <div id="kf-art-drop" class="kf-art-drop" tabindex="0" role="button" aria-label="Choose artwork to upload">
+      <span aria-hidden="true">⬆</span><strong>Drop photos, sprites & graphics</strong><small>PNG · JPEG · WebP • up to 8 MB each</small>
+      <input type="file" id="kf-art-input" accept="image/png,image/jpeg,image/webp" multiple hidden>
+    </div>
+    <div class="kf-art-actions"><button class="btn" type="button" id="kf-art-choose">Choose files</button><button class="btn" type="button" id="kf-art-clear">Clear preview</button><button class="btn" type="button" id="kf-art-refresh">Refresh library</button></div>
+    <p class="small" id="kf-art-upload-status" role="status" aria-live="polite">Choose an image to get started.</p>
+    <div id="kf-art-staged" class="kf-art-staged"></div>
+    <h3>Artwork review queue</h3><p class="small">Digital Creators submit prepared photos here. Only Admin and God roles can approve or reject. Pending artwork is private.</p><div id="kf-art-review" class="kf-art-staged"><p class="small">Loading review queue…</p></div>
+    <h3>Published site assets</h3>
+    <label for="kf-art-search">Search published images</label>
+    <input id="kf-art-search" type="search" class="foundry-input" maxlength="64" placeholder="Image name">
+    <p class="small">Open an image to preview it, or copy its URL for a game or site page.</p>
+    <div id="kf-art-published" class="kf-art-staged"><p class="small">Loading asset inventory…</p></div>
+  <button class="btn" type="button" id="kf-art-more" hidden>Load more images</button>
+</section>
+<section class="panel" id="creation-gallery" data-workspace hidden aria-labelledby="creation-gallery-title">
+  <h2 id="creation-gallery-title">Creation Gallery</h2>
+  <a href="#site-image-library">Open the Site Image Library</a>
+  <nav class="foundry-links" aria-label="Preview categories">
+    <a href="#preview-brand">Brand &amp; interface</a>
+    <a href="#preview-art">Characters &amp; sprites</a>
+    <a href="#preview-games">Games &amp; maps</a>
+  </nav>
+  <div id="preview-brand" class="foundry-preview-group"><h3>Brand &amp; interface</h3></div>
+  <div id="preview-art" class="foundry-preview-group"><h3>Characters &amp; sprites</h3></div>
+  <div id="preview-games" class="foundry-preview-group"><h3>Games &amp; maps</h3></div>
+</section>
+<section class="panel kf-art-studio" id="knightfall-art-collection" aria-labelledby="kf-art-title">
+  <header class="kf-art-heading"><div><h2 id="kf-art-title">Knightfall artwork</h2><p>Original artwork for the site, character concepts, horror, skeletal creatures, relics and game graphics. Concept sheets are references, not automatic animation frames.</p></div>
     <img src="/icons/knightfall-crest-512.png" width="110" height="110" alt="Knightfall skull and eclipse emblem"></header>
   <div class="kf-art-gallery" id="kf-art-gallery">
     <article class="kf-art-card kf-art-brand"><img src="/icons/knightfall-crest-512.png" alt="Knightfall skull and eclipse crest with green flame and gothic metal" loading="lazy"><h3>Official Knightfall Crest</h3><p>Site favicon, home navigation, app installation, and visual identity.</p><a href="/icons/knightfall-crest-512.png" download>Save transparent PNG</a></article>
@@ -382,21 +431,7 @@
   <p class="small">Twelve individual reusable crops from the original relic collection. Preview and export PNGs for inventory, HUDs, cards and game menus. Use these as static graphics, not animated sprites.</p>
   <div id="kf-art-relic-gallery" class="kf-art-sprite-gallery kf-relic-gallery" role="list" aria-label="Knightfall relic icons"></div>
 
-  <section class="kf-art-uploader" aria-label="Upload game and site art">
-    <h3>Upload photos & artwork for site use</h3>
-    <p>Drag PNG, JPEG or WebP artwork here, or select up to 12 files. The editor converts files to optimized PNG, previews them and lets administrators publish intentionally. Digital Creators can preview and prepare downloads for review; publishing requires administrator access.</p>
-    <div id="kf-art-drop" class="kf-art-drop" tabindex="0" role="button" aria-label="Choose artwork to upload">
-      <span aria-hidden="true">⬆</span><strong>Drop photos, sprites & graphics</strong><small>PNG · JPEG · WebP • up to 8 MB each</small>
-      <input type="file" id="kf-art-input" accept="image/png,image/jpeg,image/webp" multiple hidden>
-    </div>
-    <div class="kf-art-actions"><button class="btn" type="button" id="kf-art-choose">Choose files</button><button class="btn" type="button" id="kf-art-clear">Clear preview</button><button class="btn" type="button" id="kf-art-refresh">Refresh published library</button></div>
-    <p class="small" id="kf-art-upload-status" role="status" aria-live="polite">Select assets to prepare. Nothing publishes without pressing Publish.</p>
-    <div id="kf-art-staged" class="kf-art-staged"></div>
-    <h3>Artwork review queue</h3><p class="small">Digital Creators submit prepared photos here. Only Admin and God roles can approve or reject. Pending artwork is private.</p><div id="kf-art-review" class="kf-art-staged"><p class="small">Loading review queue…</p></div>
-    <h3>Published site assets</h3>
-    <p class="small">Approved files receive a permanent /public-assets/ URL backed by R2. Use these URLs in games or pages only after reviewing size, transparency and licensing.</p>
-    <div id="kf-art-published" class="kf-art-staged"><p class="small">Loading asset inventory…</p></div>
-  </section>
+
 </section>
 <section class="panel" id="developer-arsenal-ci" data-workspace hidden aria-labelledby="developer-arsenal-title" style="margin:1rem 0;border-color:#c6ff4570">
   <h2 id="developer-arsenal-title">God Mode / Developer Arsenal</h2>
@@ -415,7 +450,7 @@
   </div>
   <p class="foot">Implementation inventory: <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/developer-arsenal.md" target="_blank" rel="noopener noreferrer">Developer Arsenal Guide</a>. Production and repository write access remain separately authorized.</p>
 </section>
-<section class="panel" style="margin:1rem 0;border-color:#ff55d866" id="brand-library" data-workspace hidden>
+<section class="panel" style="margin:1rem 0;border-color:#ff55d866" id="brand-library">
 <h2>Chaos Cartridge Brand Vault</h2>
 <p>Shared logo and icon masters for the arcade, app, browser tabs, game pages, promo art, and future Ash-Fall projects. The previous ember logo is archived here rather than overwritten.</p>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem">
@@ -426,15 +461,15 @@
 <article style="margin-top:1rem;padding:.75rem;border:1px solid #ffffff22;border-radius:10px;background:#080b13"><img src="/branding/archive/ash-fall-wordmark.svg" alt="Archived original Ash-Fall wordmark" style="display:block;width:100%;max-height:120px;object-fit:contain;background:#07070b;border-radius:8px"><strong style="display:block;margin:.6rem 0">Archived original Ash-Fall logo / wordmark</strong><a class="btn" href="/branding/archive/ash-fall-wordmark.svg" download>Download old logo SVG</a></article>
 <p class="small">Palette: hot pink #ff27ce · acid green #c6ff45 · midnight #07070b. App shortcuts and push notifications use the new icon; the old flame is preserved as an archive asset.</p>
 </section>
-<section class="panel" id="original-icon-crops" data-workspace hidden style="margin:1rem 0;border-color:#c6ff4588">
+<section class="panel" id="original-icon-crops" style="margin:1rem 0;border-color:#c6ff4588">
 <h2>Original Artwork · 24 Exact Icon Crops</h2>
 <p>This gallery displays the exact PNG artwork, not SVG redraws. Once the PNG files are published under <code>/assets/devil-tools/original-icons/</code>, they load automatically for everyone. Until then, administrators can preview the complete original collection by selecting the 24 PNG files from the icon pack on this device.</p>
 <div class="bar"><label class="btn primary" for="original-icon-import">Import original PNG crops</label><input class="hidden" id="original-icon-import" type="file" accept="image/png" multiple><button class="btn" type="button" id="original-icon-clear">Clear local preview</button></div>
 <p class="small" id="original-icon-status" role="status">Checking published original icon assets…</p>
 <div id="original-icon-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:.7rem"></div>
 </section><script src="/original-icon-crops.js?v=20261028-1" defer></script>
-<section class="panel" id="gravewave-icon-collection" data-workspace hidden style="margin:1rem 0;border-color:#ff55d888"><h2>Gravewave · 24 Neon Site Icons</h2><p>Complete original neon icon set for Ash-Fall, Forums, Messages, Friends, Profiles, Creator Foundry, Arcade, Shop, Donate, Adults 18+, Dating, Bots, Miss Chaos, Church, Library, Open Source Arsenal, Media Vault, Games, Settings, Ranks, Calendar, Astrology, Help, and Admin. Each SVG can be downloaded individually. These are vector reinterpretations of the concept sheet, not pixel-for-pixel crops.</p><p class="small" id="gravewave-icon-status" role="status">Loading icon library…</p></section><script src="/gravewave-site-icons.js?v=20261028-1" defer></script>
-<section class="panel" id="app-icon-choices" data-workspace hidden style="margin:1rem 0;border-color:#c6ff4588">
+<section class="panel" id="gravewave-icon-collection" style="margin:1rem 0;border-color:#ff55d888"><h2>Gravewave · 24 Neon Site Icons</h2><p>Complete original neon icon set for Ash-Fall, Forums, Messages, Friends, Profiles, Creator Foundry, Arcade, Shop, Donate, Adults 18+, Dating, Bots, Miss Chaos, Church, Library, Open Source Arsenal, Media Vault, Games, Settings, Ranks, Calendar, Astrology, Help, and Admin. Each SVG can be downloaded individually. These are vector reinterpretations of the concept sheet, not pixel-for-pixel crops.</p><p class="small" id="gravewave-icon-status" role="status">Loading icon library…</p></section><script src="/gravewave-site-icons.js?v=20261028-1" defer></script>
+<section class="panel" id="app-icon-choices" style="margin:1rem 0;border-color:#c6ff4588">
 <h2>21 App Icon Candidates · 16 New Designs</h2>
 <p>Choose a visual candidate for the Ash-Fall app. These are downloadable original SVG masters. The currently installed app icon changes only after its manifest is updated and the app is reinstalled or refreshed by the operating system.</p>
 <div id="app-icon-choice-gallery" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.8rem"></div>
@@ -450,7 +485,7 @@ for(const [id,name] of choices){const url='/icons/choices/'+id+'.svg',card=docum
 function update(){for(const card of gallery.children){const active=card.dataset.iconChoice===selected;card.style.borderColor=active?'#c6ff45':'#ffffff33';card.querySelector('button').textContent=active?'Selected for preview':'Preview this icon'}const match=choices.find(x=>x[0]===selected);status.textContent=match?'Preview selected: '+match[1]+'. This is a browser-only preference, not the installed app icon.':'Choose a design to preview and download.'}update();
 })();
 </script>
-<section class="panel" id="gravewave-game-sprites" data-workspace hidden style="margin:1rem 0;border-color:#c6ff4577">
+<section class="panel" id="gravewave-game-sprites" style="margin:1rem 0;border-color:#c6ff4577">
 <h2>Gravewave · Game-Ready Neon Sprites</h2>
 <p>Enemies, projectiles, pickups, hazards, terrain, effects, and UI icons. Sixteen original transparent SVG assets, sized for arcade games. Use <code>/gravewave-sprites.js</code> to preload and draw them on canvas.</p>
 <p id="gravewave-game-status" class="small" role="status">Loading game sprites…</p>
@@ -468,7 +503,7 @@ const type=document.createElement('small');type.textContent=item.category;type.s
 const a=document.createElement('a');a.href=item.src;a.download=item.id+'.svg';a.className='btn';a.textContent='Download SVG';a.style.cssText='display:inline-block;margin-top:.5rem;font-size:.7rem';
 card.append(img,title,type,a);root.append(card);count++}status.textContent=count+' game-ready sprites available.'}).catch(e=>{status.textContent='Game sprite collection unavailable: '+e.message})})();
 </script>
-<section class="panel" id="neon-nuisances" data-workspace hidden style="margin:1rem 0;border-color:#ff55d877">
+<section class="panel" id="neon-nuisances" style="margin:1rem 0;border-color:#ff55d877">
 <h2>Gravewave · Neon Nuisances · Deluxe Collection</h2>
 <p>Meet the original neon-horror character crew. Minion Mouse, Mini Villain, and The Eddie now have distinct hand-authored silhouettes and four animated expressions each. Preview all available variants, read their character lore, and download editable SVG masters.</p>
 <p><a class="btn" href="/mascot-pets.html" style="display:inline-block;border-color:#c6ff45;color:#c6ff45">✦ Enter the Sanctuary · Adopt a Profile Pet</a></p><p class="small" id="nuisances-status" role="status">Loading mascot collection…</p>
@@ -501,7 +536,7 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 })();
 </script>
 <link rel="stylesheet" href="/devil-tools-vector-gallery.css?v=20261102-overhaul7">
-<section class="panel" id="dt-vector-library" data-workspace hidden style="margin:1rem 0;border-color:#79ffe788">
+<section class="panel" id="dt-vector-library" style="margin:1rem 0;border-color:#79ffe788">
 <h2>Visual Asset Library · Remastered SVG Icons, Sprites &amp; Artwork</h2>
 <p>Browse 135 original vector assets across Gravewave effects, monster sprites, arcade art, and Miss Chaos. All previews use first-party files, and every asset can be downloaded as an editable SVG. The Neon Nuisances mascot gallery above keeps its own animated previews.</p>
 <div class="dt-svg-controls">
@@ -514,7 +549,7 @@ status.textContent=data.characters.length+' Gravewave mascots · '+data.characte
 <div class="dt-gallery-grid" data-dt-gallery aria-label="Downloadable original vector graphics"></div>
 </section>
 <script src="/devil-tools-vector-gallery.js?v=20261102-overhaul7" defer></script>
-<section class="panel" id="original-creations" data-workspace hidden style="margin:1rem 0;border-color:#ff55d888">
+<section class="panel" id="original-creations" style="margin:1rem 0;border-color:#ff55d888">
 <h2>Original Creations · Game & Sprite Archive</h2>
 <p>First-party Knightfall games and their original artwork. Every entry links to its playable cabinet, editable SVG source assets, and GitHub implementation. New originals belong in <code>/arcade/original-creations.json</code>; legacy imports are not included.</p>
 <div class="bar"><a class="btn" href="/arcade/original-creations.json" target="_blank" rel="noopener noreferrer">View source manifest</a><button type="button" class="btn" id="refresh-originals">Refresh archive</button></div>
@@ -558,6 +593,24 @@ observer.observe(document.getElementById('workshop'),{attributes:true,attributeF
 if(!document.getElementById('workshop').classList.contains('hidden')){observer.disconnect();refresh()}
 })();
 </script>
+<section class="panel" id="cinderwild-preview">
+  <h3>Ashen Village · Cinderwild</h3>
+  <img class="foundry-map-preview" src="/arcade/hosted/cinderwild/art/village.png" alt="Ashen Village map showing wooded paths and moss-covered ruins" loading="lazy">
+  <div class="foundry-links">
+    <a href="/arcade/hosted/cinderwild/">Play Cinderwild</a>
+    <a href="/arcade/hosted/cinderwild/art/village.png" download>Download map PNG</a>
+    <a href="/arcade/hosted/cinderwild/art/SOURCE.md">Map &amp; art credits</a>
+    <a href="#creator-handoff" data-project="Cinderwild" data-kind="Feature">Propose a Cinderwild feature</a>
+  </div>
+  <details><summary>Terrain and trainer sprites</summary>
+    <div class="foundry-map-assets">
+      <a href="/arcade/hosted/cinderwild/art/terrain.png" download><img src="/arcade/hosted/cinderwild/art/terrain.png" alt="" loading="lazy">Terrain tiles</a>
+      <a href="/arcade/hosted/cinderwild/art/props.png" download><img src="/arcade/hosted/cinderwild/art/props.png" alt="" loading="lazy">Scenery tiles</a>
+      <a href="/arcade/hosted/cinderwild/art/trainer.png" download><img src="/arcade/hosted/cinderwild/art/trainer.png" alt="" loading="lazy">Trainer sprites</a>
+      <a href="/arcade/hosted/cinderwild/art/warden.png" download><img src="/arcade/hosted/cinderwild/art/warden.png" alt="" loading="lazy">Warden sprites</a>
+    </div>
+  </details>
+</section>
 <section id="production-workbench" data-workspace hidden class="panel" aria-labelledby="lab-title">
  <h2 id="lab-title">Creator Production Lab</h2>
  <p>Paint pixel sprites, pack texture atlases and build 2D maps entirely in your browser. These are native Knightfall tools modeled on open-source workflows, <strong>not copies of the upstream applications</strong>.</p>
@@ -674,10 +727,18 @@ async function boot(){
       const back = document.querySelector('a.back');
       back.href = '/account.html';
       back.textContent = '← My account';
-      $('#creator-handoff').hidden = false;
     }
+    workshop.dataset.canPublish = String(administrator);
     workshop.classList.remove('hidden');
     note('Signed in as @' + user.username + '.', true);
+    for (const [category, panels] of Object.entries({
+      art: ['knightfall-art-collection','gravewave-game-sprites','neon-nuisances','dt-vector-library'],
+      brand: ['brand-library','gravewave-icon-collection','original-icon-crops','app-icon-choices'],
+      games: ['cinderwild-preview','original-creations']
+    })) {
+      const group = $('#preview-' + category);
+      for (const id of panels) group.append(document.getElementById(id));
+    }
     setup();
     workshop.dispatchEvent(new Event('foundry:ready'));
   } catch (error) {

@@ -1,7 +1,8 @@
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id), KEY="knightfall:cinderwild:save:v1";
-const W=64,H=38,S=32, VIEW_W=18,VIEW_H=12;
+const village=globalThis.CinderwildVillage, renderer=globalThis.CinderwildRenderer;
+const W=64,H=village?village.y+village.height+1:38,S=32, VIEW_W=18,VIEW_H=12;
 const SPECIES={
  mossbit:["Mossbit","grass",28,8,8,"mossreaper",12,1],
  mossreaper:["Mossreaper","grass",47,16,14,null,0,3],
@@ -78,7 +79,7 @@ function load(rawSource){
   return t;
  }catch{return fresh();}
 }
-let state=load(),battle=null,modal="",logLines=[],lastStep=0,onlinePeers=[];
+let state=load(),battle=null,modal="",logLines=[],lastStep=0,onlinePeers=[],facing=0;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));document.dispatchEvent(new CustomEvent("cinderwild:local-save"));}catch{notify("Storage unavailable. Progress may not persist.");}}
 function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;const unit={id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[],status:null};unit.pp=moves(unit).map(m=>m.pp);return unit;}
 function moves(c){
@@ -110,11 +111,12 @@ function addXP(c,amount){
  }
  return m;
 }
-function zone(x=state.x){return x<14?"Cinder Town":x<32?"Bramble Trail":x<51?"Storm Marsh":"Eclipse Ridge";}
+function zone(x=state.x){return village&&state.y>=village.y?"Ashen Village":x<14?"Cinder Town":x<32?"Bramble Trail":x<51?"Storm Marsh":"Eclipse Ridge";}
 function hash(x,y){let z=(x*374761393+y*668265263+93284)|0;z=Math.imul(z^(z>>>13),1274126177);return(z^(z>>>16))>>>0;}
 function tile(x,y){
  if(x<0||x>=W||y<0||y>=H)return"wall";
  if(y===0||y===H-1||x===0||x===W-1)return"tree";
+ const imported=village?.terrainAt(x,y);if(imported)return imported;
  if(x<14&&y>=12&&y<=23){
   if((x===4||x===11)&&y===14)return"roof";
   if((x===4||x===11)&&y===15)return"house";
@@ -129,7 +131,7 @@ function tile(x,y){
 }
 function walkable(x,y){
  const t=tile(x,y);
- if(["tree","water","house","roof","wall"].includes(t))return false;
+ if(["tree","water","house","roof","ruin","wall"].includes(t))return false;
  if(NPCS.some(n=>n.x===x&&n.y===y))return false;
  return true;
 }
@@ -289,7 +291,12 @@ function interact(){
 }
 function step(dx,dy,serverPosition=null){
  if(battle||modal||!state.party.length)return false;
- if(!serverPosition&&window.CinderwildOnline?.connected){window.CinderwildOnline.requestMove(dx,dy);return true;}
+ if(!serverPosition&&window.CinderwildOnline?.connected){
+  if(village&&state.x+dx===village.entrance&&state.y+dy===village.y-1){
+   notify("Leave the shared world to explore Ashen Village.");return false;
+  }
+  window.CinderwildOnline.requestMove(dx,dy);return true;
+ }
  const now=Date.now();if(now-lastStep<90&&!serverPosition)return false;lastStep=now;
  const x=state.x+dx,y=state.y+dy;
  if(serverPosition&&(serverPosition.x!==x||serverPosition.y!==y)){
@@ -298,7 +305,9 @@ function step(dx,dy,serverPosition=null){
  if(!serverPosition&&x>=32&&!state.badges.includes("bramble")){notify("The Bramble Crest opens the Storm Marsh crossing.");return;}
  if(!serverPosition&&x>=51&&!state.badges.includes("storm")){notify("The Storm Crest opens the Eclipse Ridge crossing.");return;}
  if(!walkable(x,y)){const npc=NPCS.find(n=>n.x===x&&n.y===y);if(npc)interact();return;}
+ facing=dx<0?2:dx>0?3:dy<0?1:0;
  state.x=x;state.y=y;state.steps++;
+ if(village&&x===village.entrance&&y===village.y&&dy>0)notify("You discovered Ashen Village.");
  const shrine=SHRINES.find(s=>s.x===x&&s.y===y);
  if(shrine&&!state.caught.includes(shrine.id)){
   if(!state.complete)notify(shrine.name+" is sealed. Earn all three crests to awaken it.");
@@ -312,18 +321,11 @@ function draw(){
  const canvas=$("world"),ctx=canvas.getContext("2d");if(!ctx)return;
  ctx.imageSmoothingEnabled=false;const t=32;
  const ox=clamp(state.x-Math.floor(VIEW_W/2),0,W-VIEW_W),oy=clamp(state.y-Math.floor(VIEW_H/2),0,H-VIEW_H);
- const palette={town:"#d7b995",path:"#d1ad82",grass:"#74b777",field:"#92c88c",tree:"#265f55",water:"#348dad",house:"#aa696b",roof:"#82516e",wall:"#202f34"};
  const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
- for(let row=0;row<VIEW_H;row++)for(let col=0;col<VIEW_W;col++){
-  const x=ox+col,y=oy+row,px=col*t,py=row*t,k=tile(x,y),n=hash(x,y);
-  rect(px,py,t,t,palette[k]);
-  if(k==="grass"){rect(px+4+n%8,py+5,3,12,"#317b51");rect(px+19,py+10,3,13,"#3d8c4e");rect(px+9,py+22,4,6,"#d0d877");}
-  if(k==="tree"){rect(px+14,py+19,6,13,"#634b43");rect(px+3,py+2,26,24,"#226453");rect(px+7,py+5,18,15,"#3e8d5b");}
-  if(k==="path"||k==="town"){rect(px+(n%21),py+(n%19),3,2,k==="town"?"#ebd9b6":"#b18c69");}
-  if(k==="water"){rect(px+7,py+9,13,2,"#8cdae3");rect(px+15,py+23,10,2,"#8cdae3");}
-  if(k==="house"){rect(px+2,py+4,28,26,"#f3d7ac");rect(px+12,py+14,9,16,"#694b4f");}
-  if(k==="roof"){rect(px+1,py+3,30,26,"#833f61");rect(px+5,py+5,22,5,"#c9768b");}
-  ctx.strokeStyle="#1c2d3324";ctx.strokeRect(px+.5,py+.5,t-1,t-1);
+ if(renderer)renderer.world(ctx,ox,oy,VIEW_W,VIEW_H,t,W,H,tile,hash,village);
+ else for(let row=0;row<VIEW_H;row++)for(let col=0;col<VIEW_W;col++){
+  const colors={town:"#c7ae74",path:"#c29460",grass:"#82993f",field:"#8ea64d",tree:"#425e3b",water:"#36768a",house:"#917050",roof:"#6c5d45",ruin:"#646748"};
+  rect(col*t,row*t,t,t,colors[tile(ox+col,oy+row)]||"#24362e");
  }
  for(const shrine of SHRINES){
   const px=(shrine.x-ox)*t,py=(shrine.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
@@ -331,18 +333,17 @@ function draw(){
  }
  for(const npc of NPCS){
   const px=(npc.x-ox)*t,py=(npc.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
-  const gym=npc.kind==="gym";rect(px+9,py+8,14,18,gym?"#302b60":"#e3e4a7");rect(px+9,py+2,14,12,gym?"#ff74c8":"#e8b787");
+  const gym=npc.kind==="gym";
+  if(renderer?.actor(ctx,"warden",px,py,t)){rect(px+12,py+1,8,2,gym?"#ef93c2":"#ffdd81");continue;}
+  rect(px+9,py+8,14,18,gym?"#302b60":"#e3e4a7");rect(px+9,py+2,14,12,gym?"#ff74c8":"#e8b787");
   rect(px+11,py+8,3,3,"#24313a");rect(px+19,py+8,3,3,"#24313a");
   rect(px+7,py,18,3,gym?"#d6fa67":"#f8d97e");
  }
  for(const visitor of onlinePeers){
   const px=(visitor.x-ox)*t,py=(visitor.y-oy)*t;
   if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
-  rect(px+7,py+24,18,5,"#1c333b99");
-  rect(px+9,py+13,14,15,"#285667");
-  rect(px+10,py+7,12,12,"#e9b69a");
-  rect(px+7,py+4,18,7,"#78ccf2");
-  rect(px+12,py+2,10,5,"#d1eefb");
+  const direction=["down","up","left","right"].indexOf(visitor.facing);
+  if(!renderer?.actor(ctx,"warden",px,py,t,Math.max(0,direction)))rect(px+9,py+7,14,19,"#78ccf2");
   ctx.font="bold 10px sans-serif";ctx.textAlign="center";
   const label=String(visitor.display_name||visitor.username||"Trainer").slice(0,13);
   const width=Math.min(118,Math.max(44,label.length*6+6));
@@ -351,13 +352,15 @@ function draw(){
   ctx.fillStyle="#e2f8ff";ctx.fillText(label,tx,Math.max(10,ty-3),width-4);
  }
  const px=(state.x-ox)*t,py=(state.y-oy)*t;
+ if(renderer?.actor(ctx,"trainer",px,py,t,facing,state.steps%4))return;
  rect(px+8,py+24,18,5,"#24342d66");rect(px+9,py+13,14,15,"#34354b");rect(px+10,py+7,12,12,"#f2c0a0");
  rect(px+7,py+4,18,7,"#de496e");rect(px+12,py+2,10,5,"#f2c2cb");rect(px+12,py+15,3,2,"#292638");rect(px+18,py+15,3,2,"#292638");
 }
 function drawFieldMap(){
  const canvas=$("field-map");if(!canvas)return;
  const ctx=canvas.getContext("2d");if(!ctx)return;
- const p=8,colors={town:"#d7b995",path:"#d1ad82",grass:"#74b777",field:"#92c88c",tree:"#265f55",water:"#348dad",house:"#aa696b",roof:"#82516e",wall:"#202f34"};
+ const p=8;canvas.height=H*p;
+ const colors={town:"#d7b995",path:"#d1ad82",grass:"#74b777",field:"#92c88c",tree:"#265f55",water:"#348dad",house:"#aa696b",roof:"#82516e",ruin:"#545440",wall:"#202f34"};
  for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.fillStyle=colors[tile(x,y)]||colors.wall;ctx.fillRect(x*p,y*p,p,p);}
  for(const npc of NPCS){
   const cleared=npc.kind==="gym"&&state.badges.includes(npc.id);
@@ -435,7 +438,7 @@ function openMenu(type){
   const rows=[["orbs","Capture Orb",30],["superOrbs","Prism Orb",80],["potions","Potion",22],["revives","Revive",65]];
   area.innerHTML='<p>Cinders: '+state.coins+'</p>'+rows.map(row=>'<div class="shop-row"><span><strong>'+row[1]+'</strong> · owned '+state.items[row[0]]+'</span><button data-buy="'+row[0]+'" '+(state.coins<row[2]?"disabled":"")+'>Buy · '+row[2]+'</button></div>').join("");
  }else if(type==="map"){
-  area.innerHTML='<p>Pixel map: white and pink = you, yellow = town services, pink = Wardens, purple = sealed or active legendary shrines.</p><canvas id="field-map" width="512" height="304" role="img" aria-label="Cinderwild region map with player location, Wardens and legendary shrines"></canvas><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((label,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(label)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'. Legend shrines: 54,18 · 59,18 · 62,18.</p>';
+  area.innerHTML='<p>Pixel map: white and pink = you, yellow = town services, pink = Wardens, purple = sealed or active legendary shrines.</p><canvas id="field-map" width="512" height="'+H*8+'" role="img" aria-label="Cinderwild region map with player location, Wardens and legendary shrines"></canvas><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((label,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(label)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'. Legend shrines: 54,18 · 59,18 · 62,18. Ashen Village entrance: 8,37 (offline).</p>';
  }else{
   area.innerHTML='<p>You are a field trainer. Choose one of three starter creatures, wander into tall grass for wild encounters, capture and train a party of six, challenge all three Wardens, and fill the Bestiary.</p><p>Controls: arrow keys or WASD to walk, E/Space to interact, M for menu, and touch controls on mobile.</p><p>Three crests: '+state.badges.map(id=>esc(GYMS.find(g=>g.id===id).badge)).join(", ")+'</p><p>Battle victories: '+state.wins+' · Steps: '+state.steps+'</p><div class="inline-actions"><button id="export-save">Export save</button><button id="reset-save">Erase local save</button></div><p class="hint">Offline save is stored only in this browser. Export a backup before clearing site data.</p>';
  }
@@ -450,6 +453,7 @@ function firstRun(){
 }
 function initialize(){
  $("world").width=VIEW_W*S;$("world").height=VIEW_H*S;
+ renderer?.load(render);
  render();firstRun();
  $("controls").addEventListener("click",e=>{const b=e.target.closest("[data-direction]");if(b){const d=b.dataset.direction;step(d==="left"?-1:d==="right"?1:0,d==="up"?-1:d==="down"?1:0);}if(e.target.closest("#interact"))interact();});
  document.querySelectorAll("[data-menu]").forEach(b=>b.addEventListener("click",()=>openMenu(b.dataset.menu)));

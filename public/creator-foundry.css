@@ -175,3 +175,232 @@
   display: inline-block;
   text-decoration: none;
 }
+
+/* Creator desk and shared workspace controls */
+body {
+  font-family: "Instrument Sans", system-ui, sans-serif;
+  background: radial-gradient(ellipse at 48% -8rem, #322345 0, #11101b 29rem, #090a11 58rem);
+}
+
+.hero h1 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  letter-spacing: -.04em;
+}
+
+[data-group="desk"] .foundry-card {
+  padding: 1.2rem;
+  min-height: 9.7rem;
+  border-color: #715183;
+  background: linear-gradient(145deg, #271c37 0, #181527 75%);
+}
+
+[data-group="desk"] .foundry-card:first-child {
+  border-color: #a18470;
+  background: linear-gradient(145deg, #342536 0, #22182a 75%);
+}
+
+.foundry-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: .55rem .7rem;
+  background: #0c0d18;
+  color: #f8f2ff;
+  border: 1px solid #71627e;
+  border-radius: .55rem;
+  font: inherit;
+}
+
+.foundry-input:focus-visible {
+  outline: 2px solid #d1ee9a;
+  outline-offset: 2px;
+}
+
+.foundry-control-row, .foundry-desk-layout {
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.foundry-desk-layout {
+  gap: clamp(1rem, 3vw, 2rem);
+  margin-top: 1rem;
+}
+
+.foundry-form {
+  display: grid;
+  align-content: start;
+  gap: .8rem;
+  padding: 1rem;
+  border: 1px solid #614972;
+  border-radius: .8rem;
+  background: #181326;
+}
+
+.foundry-form h3, .foundry-form p, .foundry-idea h4, .foundry-idea p {
+  margin: 0;
+}
+
+.foundry-form label, .foundry-card-filters label {
+  display: grid;
+  gap: .35rem;
+}
+
+.foundry-form .foundry-action {
+  justify-self: start;
+  color: #1d1723;
+  background: #d7edab;
+  border-color: #d7edab;
+}
+
+.foundry-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .9rem;
+  margin-block: .65rem;
+}
+
+.foundry-links > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: #e5aff4;
+  text-underline-offset: .2em;
+}
+
+.foundry-links .btn:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+.foundry-card-filters {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.foundry-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: .75rem;
+}
+
+.foundry-deck-card {
+  display: grid;
+  align-content: space-between;
+  gap: .8rem;
+  min-height: 9rem;
+  padding: .85rem;
+  border: 1px solid #756880;
+  border-radius: .7rem;
+  background: #201d2b;
+  color: #fff9fd;
+}
+
+.foundry-deck-card[data-type="answer"] {
+  background: #eee7df;
+  border-color: #b7a6b9;
+  color: #2b2434;
+}
+
+.foundry-deck-card p {
+  color: inherit;
+  margin: 0;
+  font-weight: 750;
+}
+
+.foundry-deck-card code, .foundry-deck-card small {
+  color: inherit;
+}
+
+.foundry-ideas-list {
+  display: grid;
+  gap: .7rem;
+}
+
+.foundry-idea {
+  display: grid;
+  gap: .45rem;
+  padding: .85rem;
+  border: 1px solid #5b4e6b;
+  border-radius: .65rem;
+  background: #161525;
+  overflow-wrap: anywhere;
+}
+
+.foundry-idea p.foundry-idea-meta, .foundry-idea p.foundry-idea-state {
+  color: #c7afd8;
+  font-size: .82rem;
+}
+
+.foundry-idea[data-status="accepted"] .foundry-idea-state {
+  color: #d9eea8;
+}
+
+.foundry-idea-detail {
+  white-space: pre-wrap;
+}
+
+.foundry-preview-group, #chaos-catalog-count, #cinderwild-preview {
+  scroll-margin-top: 6rem;
+}
+
+.foundry-preview-group {
+  padding-top: .4rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid #443851;
+}
+
+.foundry-map-preview {
+  display: block;
+  width: min(100%, 560px);
+  image-rendering: pixelated;
+  border-radius: .55rem;
+}
+
+.foundry-map-assets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  margin-top: .7rem;
+}
+
+.foundry-map-assets a {
+  display: grid;
+  gap: .4rem;
+  color: #e5aff4;
+}
+
+.foundry-map-assets img {
+  width: 7rem;
+  height: 6rem;
+  object-fit: contain;
+  background: #282032;
+  border-radius: .4rem;
+  image-rendering: pixelated;
+}
+
+@media (max-width: 690px) {
+  .foundry-desk-layout { grid-template-columns: 1fr; }
+  .foundry-card-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foundry-card-filters > label:first-child { grid-column: 1 / -1; }
+}
+
+.foundry-age-check {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.75rem;
+  margin-top: .35rem;
+}
+
+.foundry-age-check input {
+  accent-color: #d7edab;
+}
+
+#status.good {
+  display: none;
+}
+
+[data-group="desk"] {
+  margin-block: .75rem 1.35rem;
+}

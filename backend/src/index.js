@@ -33,6 +33,7 @@ import { handleArcadeDeckLocker } from "./arcade-deck-locker.js";
 import { handlePrivacyAssistance } from "./privacy-assistance.js";
 import { handleMessageSearch } from "./message-search.js";
 import { handleMessageSummary } from "./message-conversation-summary.js";
+import { handleCreatorIdeas } from "./creator-ideas.js";
 import { handleCreatorArtSubmissions } from "./creator-art-submissions.js";
 import { handleMessageLive, publishMessageLive, notifyConversationLive } from "./messaging-live.js";
 export { MessageLiveRoom } from "./messaging-live.js";
@@ -680,8 +681,19 @@ async function handlePublicAssetRequest(request, env, origin, url) {
   if (!user) return json({ error: "Sign in before publishing assets." }, 401, origin);
   if (!canAccessCreatorFoundry(user)) return json({ error: "Creator Foundry access required." }, 403, origin);
   if (request.method === "GET") {
-    const rows = await env.DB.prepare("SELECT id,asset_name,content_type,size_bytes,created_at,etag FROM public_asset_releases ORDER BY created_at DESC LIMIT 100").all();
-    return json({ assets: (rows.results || []).map(row => ({ ...row, url: "/public-assets/" + row.id, size_bytes: Number(row.size_bytes) })) }, 200, origin);
+    const q = (url.searchParams.get("q") || "").trim().slice(0, 64).toLowerCase();
+    const limit = Number(url.searchParams.get("limit") || 100);
+    const offset = Number(url.searchParams.get("offset") || 0);
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100 || !Number.isSafeInteger(offset) || offset < 0) {
+      return json({ error: "Invalid image library page." }, 400, origin);
+    }
+    const rows = await env.DB.prepare(
+      "SELECT id,asset_name,content_type,size_bytes,created_at,etag FROM public_asset_releases " +
+      "WHERE instr(lower(asset_name), ?) > 0 ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?"
+    ).bind(q, limit + 1, offset).all();
+    const assets = rows.results || [];
+    return json({ assets: assets.slice(0, limit).map(row => ({ ...row, url: "/public-assets/" + row.id,
+      size_bytes: Number(row.size_bytes) })), next_offset: assets.length > limit ? offset + limit : null }, 200, origin);
   }
   if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, origin, { allow: "GET, POST" });
   if (!isAdmin(user)) return json({ error: "Administrator approval required to publish game assets." }, 403, origin);
@@ -1291,6 +1303,8 @@ export default { async queue(batch, env) {
   if (mediaAlbumResponse) return mediaAlbumResponse;
   const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
   if (profilePhotoResponse) return profilePhotoResponse;
+  const creatorIdeasResponse = await handleCreatorIdeas(request,env,url,{requireUser,isAdmin,rateLimit,randomToken,json,audit,origin});
+  if(creatorIdeasResponse)return creatorIdeasResponse;
   const creatorArtResponse = await handleCreatorArtSubmissions(request,env,url,{requireUser,isAdmin,rateLimit,randomToken,json,audit,origin});
   if(creatorArtResponse)return creatorArtResponse;
   const publicAssetResponse = await handlePublicAssetRequest(request, env, origin, url);

@@ -48,8 +48,11 @@ function fixture({user={id:17,username:"Fieldwalker"},starter=true,joined=true,c
 }
 test("the online alpha is linked after the shared account and game scripts",()=>{
  assert.match(page,/src="\/arcade-save\.js" defer/);
- assert.match(page,/src="\.\/game\.js\?v=20261115-online1" defer/);
+ assert.match(page,/src="\.\/game\.js\?v=[^"]+" defer/);
  assert.match(page,/src="\.\/online-world\.js\?v=20261115-online1" defer/);
+ assert.ok(page.indexOf('./village-layout.js') < page.indexOf('./game.js'));
+ assert.ok(page.indexOf('./world-renderer.js') < page.indexOf('./game.js'));
+ assert.ok(page.indexOf('./game.js') < page.indexOf('./online-world.js'));
  assert.match(page,/id="online-players"/);
  assert.match(page,/id="online-quests"/);
 });

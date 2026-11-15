@@ -46,3 +46,12 @@
 .online-details #online-quests li small{display:block;margin-top:2px;color:#acc1c8;line-height:1.35}
 .online-details #online-quests li.quest-done{border-color:#adfa91;background:#203f36}
 @media(max-width:570px){.online-panel{padding:12px}.online-details{grid-template-columns:1fr}.online-heading span{font-size:.59rem}.online-actions button{width:100%}}
+
+/* Map-first game frame */
+:root{--bg:#121813;--panel:#232b20;--edge:#677050;--lime:#e1eaa6;--pink:#eba1bd}
+body{background:radial-gradient(ellipse at 50% 4%,#35412b 0,#181e17 38rem,#101512 68rem);font-family:"Atkinson Hyperlegible Next",system-ui,sans-serif}
+.screen-frame{background:#1b2419;border-color:#78835b;box-shadow:0 0 0 2px #141a12,0 18px 32px #080d0a66}
+.screen-heading,.screen-foot{color:#e0e7cf}
+.screen-heading a{color:#e0e7cf;text-decoration:underline;text-underline-offset:.18em}
+#world{image-rendering:pixelated}
+#field-map{aspect-ratio:auto}
