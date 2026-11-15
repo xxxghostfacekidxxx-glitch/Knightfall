@@ -10,12 +10,12 @@ const sources = {
   privacy: new URL("../public/privacy.html", import.meta.url),
   shop: new URL("../public/cinder-shop.html", import.meta.url)
 };
-const legacy = /#(?:5b3028|15100f|ff9b81|49413d|56306b|553b2b|4b382b|15110e|57433a|e8d4c8)\b/i;
+const legacy = /#(?:5b3028|15100f|ff9b81|49413d|56306b|553b2b|4b382b|15110e|57433a|e8d4c8|ffb0ed|ff80e5|e8b5f5|c6ff45|ff55d8)\b/i;
 for (const [name, url] of Object.entries(sources)) {
-  test(`${name} retains the neon palette without legacy orange/brown`, () => {
+  test(`${name} retains the Gothic Creator palette without legacy orange/brown or neon`, () => {
     const html = readFileSync(url, "utf8");
     assert.doesNotMatch(html, legacy);
-    assert.match(html, /#(?:ffb0ed|ff80e5|e8b5f5)/i);
+    assert.match(html, /#(?:b25b68|c7a77c|ece1d3)/i);
   });
 }
 test("account deletion still requires confirmation and warns about manual processing", () => {
