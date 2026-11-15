@@ -151,6 +151,13 @@ q("#owner-operations").hidden = !owner;
 document.querySelectorAll("[data-god-vault-tab],[data-god-vault-panel]").forEach(el=>{el.hidden=me.user.role!=="god";});
 q("#admin-vault-shortcut").hidden = !owner;
 document.querySelectorAll("[data-god-only]").forEach(link => {link.hidden = me.user.role !== "god";});
+if(me.user.role!=="god"){
+  const selector=q("#social-review-kind");
+  [...selector.options].filter(option=>option.value!=="safety_reports").forEach(option=>option.remove());
+  selector.value="safety_reports";
+  const deletedToggle=q("#include-deleted");deletedToggle.checked=false;
+  if(deletedToggle.closest("label"))deletedToggle.closest("label").hidden=true;
+}
 canManageOwner = owner;
 adminReady = true;
 q("#staff-controls").hidden = false;
