@@ -71,7 +71,7 @@ try {
         await page.getByRole("button", { name: "Open navigation" }).click();
       }
       await nav.waitFor();
-      assert.equal(await page.getByRole("link", { name: "Ash-Fall home" }).getAttribute("aria-current"), "page");
+      assert.equal(await page.getByRole("link", { name: "Knightfall home" }).getAttribute("aria-current"), "page");
       assert.equal(await nav.getByRole("link", { name: "Explore", exact: true }).count(), 0);
 
       const community = nav.locator("summary").filter({ hasText: "Community" });
