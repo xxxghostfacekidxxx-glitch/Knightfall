@@ -2,7 +2,7 @@
 Ruinwire is the branded, separately installable **web app** for existing Knightfall messaging. It intentionally reuses the same origin, sign-in cookie, message API, group chats, Web Push service worker, chat bubbles and message storage rather than duplicating private data.
 
 - Install page: `/ruinwire.html`
-- App launcher: `/messages.html?app=ruinwire`
+- App launcher: `/messages?app=ruinwire`
 - Manifest ID: `/ruinwire` (different from Knightfall PWA `/`)
 - PWA manifest: `/ruinwire.webmanifest`
 - Existing shared service worker: `/sw.js` (does **not** cache private messages, account APIs or authenticated pages)
