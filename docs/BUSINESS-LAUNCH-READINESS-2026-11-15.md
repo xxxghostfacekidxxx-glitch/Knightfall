@@ -48,6 +48,7 @@ Additional verification:
 
 ## Priority 2: evidence of external demand
 - [ ] Confirm privacy-conscious first-party or Cloudflare Web Analytics, privacy disclosures and consent requirements.
+- [x] Add a staff-only, read-only D1 aggregate business metrics panel under Admin > System. It displays records, not verified customers or revenue.
 - [ ] Track weekly active users (WAU), monthly active users (MAU), four-week returning members, activation, engagement by major module and outages.
 - [ ] Split internal/staff/test activity from genuine external users.
 - [ ] Select flagship conversion path: **Chaos Cartridge or Cinderwild -> member account -> messaging/community -> safe premium perks**.

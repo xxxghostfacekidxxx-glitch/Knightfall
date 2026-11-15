@@ -44,6 +44,7 @@ const workerApiSurface = worker + "\n" + await Promise.all([
   "eye-of-horus.js",
   "god-trash.js",
   "staff-capabilities.js",
+  "business-metrics.js",
   "creator-ideas.js",
   "creator-art-submissions.js",
   "arcade-turn-matches.js",

@@ -15,6 +15,7 @@ import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities
 import { handleEyeOfHorus } from "./eye-of-horus.js";
 import { handleGodTrash } from "./god-trash.js";
 import { handleHomeActivityFeed } from "./home-activity-feed.js";
+import { handleBusinessMetrics } from "./business-metrics.js";
 import { getStarterPublicBot, listStarterPublicBots, starterPublicSummary } from "./starter-public-bots.js";
 import { handleMascotPets } from "./mascot-pets.js";
 import { handlePersonalAvatars } from "./personal-avatars.js";
@@ -1308,6 +1309,8 @@ export default { async queue(batch, env) {
   if (mediaAlbumResponse) return mediaAlbumResponse;
   const profilePhotoResponse = await handleProfilePhotoRequest(request, env, origin, url);
   if (profilePhotoResponse) return profilePhotoResponse;
+  const businessMetricsResponse = await handleBusinessMetrics(request,env,url,{requireUser,json,origin});
+  if(businessMetricsResponse)return businessMetricsResponse;
   const creatorIdeasResponse = await handleCreatorIdeas(request,env,url,{requireUser,isAdmin,rateLimit,randomToken,json,audit,origin});
   if(creatorIdeasResponse)return creatorIdeasResponse;
   const creatorArtResponse = await handleCreatorArtSubmissions(request,env,url,{requireUser,isAdmin,rateLimit,randomToken,json,audit,origin});
