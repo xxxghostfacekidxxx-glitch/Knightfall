@@ -56,6 +56,22 @@ test('install center supports PWA now and gates APK behind verified release',()=
  assert.equal(installMeta.signedReleaseVerified,false);
  assert.equal(installMeta.apkUrl,null);
 });
+test('web app install action always offers a real next step on mobile, even without native prompt',()=>{
+ assert.match(installPage,/id="kf-install-guide"/);
+ assert.match(installPage,/id="kf-install-guide-steps"/);
+ assert.match(installPage,/id="kf-install-help-button"/);
+ assert.match(installPage,/id="kf-install-copy-link"/);
+ assert.match(installPage,/\/install\.js\?v=20261114-setup2/);
+ assert.match(installScript,/beforeinstallprompt/);
+ assert.match(installScript,/if\(!prompt\)\{showGuide\(\);return;\}/);
+ assert.match(installScript,/Open Knightfall in a regular browser/);
+ assert.match(installScript,/Install Knightfall on Android/);
+ assert.match(installScript,/Install Knightfall on iPhone or iPad/);
+ assert.match(installScript,/navigator\.clipboard\.writeText/);
+ assert.match(nav,/href="\/install\.html" class="kf-install-pill"/);
+ assert.match(read('public/install.css'),/#kf-install-guide/);
+});
+
 test('Android TWA test build uses official site, Android API 36, and hosted debug artifacts only',()=>{
  assert.match(androidManifest,/androidbrowserhelper\.trusted\.LauncherActivity/);
  assert.match(androidManifest,/https:\/\/ash-fall\.com\//);
@@ -84,7 +100,7 @@ test('install center uses current Android workflow instead of expiring build art
  assert.match(code,/\/android-release\.json/);
  assert.match(code,/\/\.well-known\/assetlinks\.json/);
  assert.doesNotMatch(code,/api\.ash-fall\.com|credentials:"include"/);
- assert.match(read('public/sw.js'),/knightfall-shell-v36/);
+ assert.match(read('public/sw.js'),/knightfall-shell-v37/);
  assert.match(read('public/sw.js'),/\/install-health\.js/);
 });
 
