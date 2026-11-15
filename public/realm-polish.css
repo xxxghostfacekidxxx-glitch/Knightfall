@@ -1,7 +1,7 @@
 /* Ash-Fall realm polish: shared visual language across the site's major destinations. */
 :root{--realm-ember:#b25b68;--realm-rust:#874356;--realm-line:rgba(255,255,255,.09);--realm-muted:#b9afa8}
 .directory-shell,.community-directory{position:relative;isolation:isolate}
-.directory-shell:before,.community-directory:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -4vw auto;height:28rem;background:radial-gradient(ellipse at 75% 15%,rgba(178,91,104,.105),transparent 58%),linear-gradient(115deg,transparent 35%,rgba(255,255,255,.012),transparent 72%)}
+.directory-shell:before,.community-directory:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 0 auto;height:28rem;background:radial-gradient(ellipse at 75% 15%,rgba(178,91,104,.105),transparent 58%),linear-gradient(115deg,transparent 35%,rgba(255,255,255,.012),transparent 72%)}
 .directory-hero{position:relative;padding-top:clamp(4.5rem,9vw,7.5rem);padding-bottom:3.2rem;border-bottom-color:rgba(255,255,255,.11)}
 .directory-hero:after{content:"ASH-FALL / REALMS";position:absolute;right:0;bottom:1.25rem;color:#50453e;font-size:.58rem;font-weight:900;letter-spacing:.25em}
 .directory-hero h1{max-width:1000px;font-size:clamp(3.2rem,8vw,7rem);letter-spacing:-.075em;text-wrap:balance}
