@@ -57,6 +57,9 @@ jobs:
           sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee android/app/build/outputs/apk/debug/app-debug.apk.sha256
           echo "NOTICE: This is a DEBUG-SIGNED TEST APK, not an approved public Knightfall release." >> "$GITHUB_STEP_SUMMARY"
           echo "TWA fullscreen verification needs a permanent release certificate fingerprint in /.well-known/assetlinks.json." >> "$GITHUB_STEP_SUMMARY"
+      - name: Exercise isolated Gradle release signing without publishing a key or APK
+        shell: bash
+        run: bash scripts/android-signing-smoke.sh
       - name: Upload private test APK artifact
         uses: actions/upload-artifact@v4
         with:
