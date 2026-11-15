@@ -1,10 +1,11 @@
 /* Connect saved personal misfits to the Profile Studio preview and active look. */
-(()=>{'use strict';
+(async()=>{'use strict';
 const API='https://api.ash-fall.com',kit=window.KnightfallMisfitAvatars;
 const select=document.getElementById('profile-misfit-slot'),preview=document.getElementById('profile-misfit-preview'),
  activate=document.getElementById('profile-misfit-activate'),deactivate=document.getElementById('profile-misfit-deactivate'),
  status=document.getElementById('profile-misfit-status');
 if(!select||!preview||!activate||!deactivate||!status||!kit)return;
+try{await kit.ready;}catch(error){status.textContent='Avatar artwork failed to load. Reload to retry.';console.warn(error);return;}
 let slots=[],activeSlot=null,busy=false;
 window.KnightfallProfileMisfits={activeAvatar:null,previewAvatar:null,activeName:''};
 async function api(path,options={}){

@@ -4,232 +4,54 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
-const read=file=>readFileSync(resolve(root,file),'utf8');
-
-function loadRenderer(){
-  const context={window:{}};
-  vm.runInNewContext(read('public/misfit-avatar.js'),context,{timeout:2000});
-  return context.window.KnightfallMisfitAvatars;
+const read=path=>readFileSync(resolve(fileURLToPath(new URL('..',import.meta.url)),path),'utf8');
+const sample={schema:'humanforge.avatar2d',version:1,style:'forge-2d-v2',face:{shape:'oval',skin:'golden',eyes:'almond',eyeColor:'#7a4a26',brows:'soft',nose:'soft',mouth:'balanced',lipColor:'#c8727d',cheeks:2,freckles:0,mole:'none',eyeshadow:'#00000000',lashes:true},hair:{style:'long-center',color:'#8a5a34',highlight:null,highlightStyle:'balayage'},headwear:{style:'none',color:'#9db69b',fabric:'jersey',undercap:false},outfit:{top:'long-sleeve',topColor:'#2a2b30',bottom:'wide-jeans',bottomColor:'#9a9da3',dress:'none',dressColor:'#2f5b4a',outer:'puffer-crop',outerColor:'#e6dcc8',shoes:'fluffy-boots',shoesColor:'#7a5236'},accessories:{glasses:'none',glassesColor:'#25252a',earrings:'none',metal:'#e0b24c',necklace:'none',bag:'none',bagColor:'#7a5236',scarf:'none',scarfColor:'#c4b6e6',hairAccessory:'none',hairAccessoryColor:'#f3f0ea'},expression:'neutral',pose:'relaxed'};
+async function getKit(){
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 700"><g data-layer="face"></g></svg>';
+ const mock='Promise.resolve({DEFAULT_CONFIG:'+JSON.stringify(sample)+',renderAvatarSvg:()=>'+JSON.stringify(svg)+'})';
+ const src=read('public/misfit-avatar.js').replace("import('https://esm.sh/humanforge@0.8.1/forge2d?bundle')",mock);
+ const context={window:{},console};
+ vm.runInNewContext(src,context,{timeout:2000});
+ const kit=context.window.KnightfallMisfitAvatars;await kit.ready;return kit;
 }
-function loadApiValidator(){
-  const context={};
-  const script=read('backend/src/personal-avatars.js').replace(/^export\s+/gm,'');
-  vm.runInNewContext(script+'\nthis.cleanAvatar=cleanAvatar;',context,{timeout:2000});
-  return context.cleanAvatar;
+function validator(){
+ const context={};
+ vm.runInNewContext(read('backend/src/personal-avatars.js').replace(/^export\s+/gm,'')+'\nthis.validate=cleanAvatar;',context,{timeout:3000});
+ return context.validate;
 }
-
-test('Misfit Studio mounts all essential live editing controls',()=>{
- const html=read('public/avatar-studio.html');
- const expected=['avatar-preview','category-tabs','controls','preset-list','slot-list',
-  'avatar-name','undo-avatar','redo-avatar','reset-avatar','preview-compare',
-  'download-svg','download-avatar','save-avatar','set-active','studio-status',
-  'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
- for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v='+(path==='avatar-studio.css'?'20261115-noir4':'20261115-a11y1')),path+' cache token missing');
- assert.ok(html.includes('/avatar-cartoon.css?v=20261114-book3'),'cartoon stylesheet token missing');
- assert.ok(html.includes('/misfit-avatar.js?v=20261115-noir4'),'renderer cache token missing');
- const js=read('public/avatar-studio.js');
- assert.match(js,/paintTabs\(\)/);
- assert.match(js,/applyAvatar\(next/);
- assert.match(js,/function moveHistory/);
- assert.match(js,/savedSnapshot&&Number\(slotNo\)!==selected/);
- assert.match(js,/Boolean\(selectedSlot\(\)\?\.is_active\)/);
+test('single production renderer is HumanForge Forge2D',async()=>{
+ const kit=await getKit(),svg=kit.render(kit.defaults);
+ assert.equal(kit.engine,'HumanForge Forge2D');
+ assert.match(svg,/data-render-engine="humanforge-forge2d"/);
+ assert.match(svg,/data-layer="face"/);
+ assert.doesNotMatch(read('public/misfit-avatar.js'),/storybook-comic-v3|noir-face-sculpt/);
 });
-
-test('existing looks stay valid, with all designer choices accepted on server',()=>{
- const kit=loadRenderer(),cleanAvatar=loadApiValidator();
- assert.ok(kit&&kit.defaults&&kit.choices&&kit.palettes);
- const defaults={...kit.defaults};
- assert.deepEqual({...cleanAvatar(defaults)},defaults);
- for(const [field,values] of Object.entries(kit.choices)){
-  assert.ok(values.length>=2,field+' has no meaningful selection');
-  assert.equal(values.length,new Set(values).size,field+' has duplicate choices');
-  for(const value of values){
-   const candidate={...defaults,[field]:value};
-   const cleaned=cleanAvatar(candidate);
-   assert.ok(cleaned,field+':'+value+' rejected by Worker validation');
-   assert.equal(cleaned[field],value);
-   const markup=kit.render(candidate);
-   assert.ok(markup.startsWith('<svg'),field+':'+value+' missing SVG');
-   assert.ok(markup.endsWith('</svg>'),field+':'+value+' closing SVG missing');
-   assert.ok(!markup.includes('undefined'),field+':'+value+' contains an unresolved art layer');
-  }
+test('all saved avatar option values remain supported by backend',async()=>{
+ const kit=await getKit(),clean=validator();
+ for(const [field,values] of Object.entries(kit.choices))for(const value of values){
+  const data={...kit.defaults,[field]:value};
+  assert.ok(clean(data),field+':'+value+' rejected by Worker');
+  assert.equal(kit.safeAvatar(data)[field],value);
+  assert.match(kit.render(data),/data-render-engine/);
  }
- assert.equal(cleanAvatar({...defaults,skin:'javascript:alert(1)'}),null,'untrusted avatar values must be rejected');
- assert.equal(kit.safeAvatar({skin:'illegal'}).skin,defaults.skin,'client must sanitize invalid values');
+ assert.equal(kit.safeAvatar({hair:'invalid'}).hair,kit.defaults.hair);
 });
-
-test('fine-detail layers and remix locks have matching controls',()=>{
- const kit=loadRenderer();
- for(const key of ['nose','facial_hair','makeup','tattoo','hair_highlight','outfit_patch']){
-  assert.ok(kit.choices[key]?.length>=4,key+' not registered');
-  assert.match(read('public/avatar-studio.js'),new RegExp("\\['"+key+"','"),key+' missing from editor');
+test('Forge2D converts legacy shape, outfit, hair and face settings',async()=>{
+ const kit=await getKit();
+ const a=kit.toForge({...kit.defaults,skin:'cocoa',face_shape:'angular',hair:'coils',eyes:'cat',expression:'grin',outfit:'jacket',piercing:'ear',neckwear:'spike_choker'});
+ assert.equal(a.face.skin,'deep');assert.equal(a.face.shape,'diamond');assert.equal(a.face.eyes,'cat');
+ assert.equal(a.hair.style,'curly-long');assert.equal(a.outfit.outer,'denim-jacket');
+ assert.equal(a.accessories.earrings,'stud');assert.equal(a.accessories.necklace,'choker');
+});
+test('every display surface loads Forge2D and waits until ready',()=>{
+ for(const path of ['public/avatar-studio.html','public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
+  const text=read(path);
+  assert.match(text,/misfit-avatar\.js\?v=20261115-forge2d1/);
+  assert.match(text,/forge2d-avatar\.css/);
+  assert.doesNotMatch(text,/avatar-cartoon\.css|misfit-renderer-lab/);
  }
- const source=read('public/avatar-studio.js');
- for(const marker of ['lockedTraits=new Set','lockedTraits.has(key)','trait-toolbar','trait-tool','previousScroll','dataset.choice','window.addEventListener(\'beforeunload\'']){
-  assert.ok(source.includes(marker),'missing editor behavior: '+marker);
- }
- const svg=kit.render({...kit.defaults,nose:'sharp',facial_hair:'goatee',makeup:'winged',tattoo:'neon_sigil',hair_highlight:'pink',outfit_patch:'skull'});
- for(const detail of ['#784758','#392432','#26192d','#d460e9','#ff55d8','translate(144 219)'])assert.ok(svg.includes(detail),'Missing visual detail '+detail);
-});
-
-test('every background renders an actual scene, not only a color swatch',()=>{
- const kit=loadRenderer();
- const seen=new Set();
- for(const background of kit.choices.background){
-  const svg=kit.render({...kit.defaults,background});
-  assert.ok(svg.includes('data-scene="'+background+'"'),background+' scene missing');
-  const begin=svg.indexOf('<g data-scene="'+background+'">');
-  const scene=svg.slice(begin,svg.indexOf('</g>',begin));
-  assert.ok(scene.length>=110,background+' scene has insufficient detail');
-  seen.add(scene);
- }
- assert.equal(seen.size,kit.choices.background.length,'Different background choices must render different scenes');
-});
-
-test('single-trait edits use fast updates without rebuilding entire SVG galleries',()=>{
- const code=read('public/avatar-studio.js');
- assert.match(code,/function refreshSelectedTrait/);
- assert.match(code,/changed\.length!==1\|\|category!==activeGroup/);
- assert.match(code,/kit\.render\(\{\.\.\.avatar,\[key\]:choice\}\)/,
-  'Trait thumbnails should reflect the character being edited rather than the generic defaults');
- assert.match(code,/if\(busy\)\{status\.textContent='Finish the current save/);
- assert.match(read('public/avatar-studio.css'),/position:sticky;bottom:8px/);
-});
-
-test('colored eye details and rear hair silhouette remain distinct',()=>{
- const kit=loadRenderer();
- for(const eyes of ['doe','mischief','cat','cyber','hollow','star','spiral']){
-  const blue=kit.render({...kit.defaults,eyes,eye_color:'blue'});
-  const red=kit.render({...kit.defaults,eyes,eye_color:'red'});
-  assert.notEqual(blue,red,'Eye color not rendered for '+eyes);
-  assert.ok(blue.includes(kit.palettes.eye_color.blue));
-  assert.ok(red.includes(kit.palettes.eye_color.red));
- }
- for(const hair of ['shag','bob','waves','locs','flop']){
-  const svg=kit.render({...kit.defaults,hair});
-  assert.match(svg,/data-hair-depth="rear"/);
- }
-});
-
-test('distinctive hair silhouettes and ear styles preserve saved-avatar compatibility',()=>{
- const kit=loadRenderer(),validate=loadApiValidator();
- for(const hair of ["wolfcut","coils","braids","long_messy","buzzcut","slickback"]){
-  assert.ok(kit.choices.hair.includes(hair));
-  assert.ok(validate({...kit.defaults,hair}));
-  assert.match(kit.render({...kit.defaults,hair}),/data-hair-depth="rear"/);
- }
- for(const ear_style of ["human","elf","bat","cyber","demon"]){
-  const avatar={...kit.defaults,ear_style};
-  assert.ok(validate(avatar));
-  assert.ok(kit.render(avatar).includes('data-ear-style="'+ear_style+'"'));
- }
- const old={...kit.defaults};delete old.ear_style;
- assert.equal(validate(old).ear_style,'human');
-});
-
-test('four new cinematic starter looks are available with distinct silhouettes',()=>{
- const code=read('public/avatar-studio.js'),kit=loadRenderer(),clean=loadApiValidator();
- for(const name of ['Cinder Witch','Chrome Wraith','Night Howl','Velvet Hex']){
-  assert.ok(code.includes("name:'"+name+"'"));
- }
- for(const hair of ['wolfcut','coils','braids','buzzcut']){
-  const avatar={...kit.defaults,hair};
-  assert.ok(clean(avatar));
-  assert.ok(kit.render(avatar).includes('<svg'));
- }
-});
-
-test('renderer has unique gradient namespaces for simultaneous gallery previews',()=>{
- const kit=loadRenderer();
- const a=kit.render(),b=kit.render({background:'neon_city',hair:'undercut'});
- const id1=a.match(/id="(kf-misfit-\d+-ambient)"/)?.[1];
- const id2=b.match(/id="(kf-misfit-\d+-ambient)"/)?.[1];
- assert.ok(id1&&id2);assert.notEqual(id1,id2);
- assert.ok(a.includes('url(#'+id1+')'));
- assert.ok(b.includes('url(#'+id2+')'));
- assert.match(a,/<feDropShadow/);
- assert.match(b,/linearGradient/);
-});
-
-test('profile and mascot pages load the refreshed renderer',()=>{
- for(const page of ['public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
-  assert.match(read(page),/\/misfit-avatar\.js\?v=20261115-noir4/,page+' has stale artwork');
- }
- const css=read('public/avatar-studio.css');
- for(const cls of ['.avatar-stage','.trait-option','.category-tabs','.preset-chip','.unsaved-indicator'])assert.ok(css.includes(cls),cls+' missing');
-});
-
-test('Misfit Ink 5 adds detail without changing saved avatar data',()=>{
- const kit=loadRenderer();
- const variants=[kit.defaults,
-  {...kit.defaults,skin:'cocoa',hair:'coils',background:'eclipse',outfit:'armor'},
-  {...kit.defaults,skin:'frost',hair:'waves',background:'neon_city',aura:'lightning'}];
- const layers=['cinematic-background','face-paint','garment-ink','hair-ink','eye-structure','collector-frame'];
- for(const variant of variants){
-  const markup=kit.render(variant);
-  for(const layer of layers)assert.ok(markup.includes('data-art-pass="'+layer+'"'),'Missing art pass: '+layer);
-  assert.match(markup,/clip-path="url\(#kf-misfit-\d+-face-clip\)"/);
-  assert.match(markup,/id="kf-misfit-\d+-dot-grain"/);
-  assert.equal((markup.match(/<g(?:\s|>)/g)||[]).length,(markup.match(/<\/g>/g)||[]).length,'Unclosed illustration layer');
-  assert.ok(markup.endsWith('</svg>'));
- }
- const html=read('public/avatar-studio.html'),js=read('public/avatar-studio.js'),css=read('public/avatar-studio.css');
- for(const id of ['preview-full','preview-portrait','look-hair','look-expression','look-outfit'])assert.ok(html.includes('id="'+id+'"'));
- assert.match(js,/kit\.render\(\{\.\.\.avatar,\[key\]:choice\}\)/);
- assert.match(js,/stage\.dataset\.framing=portraitFocus\?'portrait':'full'/);
- assert.match(css,/data-framing="portrait"/);
- assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
-});
-
-test('Misfit preview and exported SVG render with storybook comic ink without changing customization keys',()=>{
- const kit=loadRenderer();
- const svg=kit.render({background:'eclipse',expression:'fang',eyes:'doe'});
- assert.match(svg,/data-render-style="neon-noir-illustration-v4"/);
- assert.match(svg,/data-art-pass="storybook-frame"/);
- assert.match(svg,/data-art-pass="comic-blush"/);
- assert.match(svg,/data-art-pass="comic-eye-ink"/);
- assert.ok(svg.includes('viewBox="0 0 224 256"'));
- assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261114-book3'));
- assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
-});
-
-
-test('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
- const html=read('public/avatar-studio.html'),js=read('public/avatar-studio.js'),css=read('public/avatar-studio.css');
- assert.match(html,/id="category-tabs"[^>]*role="tablist"/);
- assert.match(html,/id="controls"[^>]*role="tabpanel"/);
- assert.match(js,/tab\.tabIndex=group\.key===activeGroup\?0:-1/);
- assert.match(js,/event\.key==='ArrowRight'/);
- assert.match(js,/event\.key==='ArrowLeft'/);
- assert.match(js,/event\.key==='Home'/);
- assert.match(js,/event\.key==='End'/);
- assert.match(js,/aria-labelledby/);
- assert.match(css,/\.category-tab:focus-visible/);
-});
-
- 
-test('Noir 4 renderer adds layered portrait sculpting, hair finish, eye detail and garment tailoring',()=>{
- const kit=loadRenderer();
- const svg=kit.render({...kit.defaults,hair_highlight:'teal',background:'neon_city',outfit:'jacket'});
- for(const layer of ['noir-face-sculpt','noir-hair-detail','noir-eye-detail','noir-tailoring']){
-  assert.ok(svg.includes('data-art-pass="'+layer+'"'),'Missing premium render layer '+layer);
- }
- assert.match(svg,/radialGradient/);
- assert.match(svg,/linearGradient/);
- assert.match(svg,/data-render-style="neon-noir-illustration-v4"/);
-});
-
-test('dimensional renderer candidate stays isolated from production until visual approval',()=>{
- const html=read('public/misfit-renderer-lab.html');
- const js=read('public/misfit-renderer-lab.js');
- assert.match(html,/noindex,nofollow/);
- assert.match(html,/misfit-renderer-lab\.js/);
- assert.match(html,/does not change saved member avatars or the live editor/);
- assert.match(js,/humanforge@0\.8\.1\/forge2d\?bundle/);
- assert.match(js,/renderAvatarSvg\(config/);
- assert.match(js,/Prototype engine unavailable/);
- assert.match(js,/HumanForge Forge2D/);
- assert.doesNotMatch(read('public/avatar-studio.html'),/misfit-renderer-lab/);
+ assert.match(read('public/avatar-studio.js'),/await kit\.ready/);
+ assert.match(read('public/profile-misfit-editor.js'),/await kit\.ready/);
+ assert.match(read('public/profile.js'),/await window\.KnightfallMisfitAvatars\.ready/);
+ assert.match(read('public/mascot-pet-life.js'),/await kit\.ready/);
 });

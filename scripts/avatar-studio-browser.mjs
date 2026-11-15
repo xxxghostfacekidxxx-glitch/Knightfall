@@ -46,9 +46,8 @@ async function scenario(label,viewport){
   assert.equal(await page.locator("#category-tabs .category-tab").count(),4);
   assert.equal(await page.locator("#preset-list .preset-chip").count(),13);
   assert.ok((await page.locator("#avatar-preview svg").count())===1);
-  assert.ok((await page.locator("#avatar-preview [data-art-pass]").count())>=9,
-    "The updated storybook-comic illustration should render every art layer");
-  assert.equal(await page.locator('#avatar-preview [data-art-pass="comic-eye-ink"]').count(),1);
+  assert.equal(await page.locator('#avatar-preview svg[data-render-engine="humanforge-forge2d"]').count(),1);
+  assert.ok(await page.locator("#avatar-preview svg [data-layer]").count()>=9, "Forge2D figure layers should render");
   await page.locator("#preview-portrait").click();
   assert.equal(await page.locator("#avatar-preview").getAttribute("data-framing"),"portrait");
   assert.equal(await page.locator("#preview-portrait").getAttribute("aria-pressed"),"true");

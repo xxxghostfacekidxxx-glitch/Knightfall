@@ -1,262 +1,96 @@
-(()=>{
- const defaults={skin:'peach',face_shape:'round',hair:'shag',hair_color:'ink',eyes:'doe',eye_color:'violet',brow_style:'soft',eye_glimmer:'none',expression:'smile',face_mark:'freckles',piercing:'none',outfit:'hoodie',outfit_color:'plum',headwear:'none',eyewear:'none',neckwear:'spike_choker',aura:'none',accessory:'none',background:'void',pattern:'sparkles',ear_style:'human',nose:'button',facial_hair:'none',makeup:'none',tattoo:'none',hair_highlight:'none',outfit_patch:'none'};
- const choices={
-  skin:['porcelain','peach','honey','olive','cocoa','violet'],
-  face_shape:['round','soft_square','heart_face','long'],
-  hair:['shag','spikes','bob','mohawk','horns','buns','flop'],
-  hair_color:['ink','plum','pink','acid','silver','copper','blue'],
-  eyes:['doe','sleepy','mischief','star','spiral'],
-  eye_color:['violet','green','blue','pink','gold','red'],
-  brow_style:['none','soft','raised','bold','sleepy'],
-  eye_glimmer:['none','star','double','heart'],
-  expression:['smile','grin','pout','fang','frown','tongue'],
-  face_mark:['none','freckles','stars','stitches','lightning','heart'],
-  piercing:['none','septum','brow','lip','ear'],
-  outfit:['hoodie','jacket','overalls','dress','sweater','cape'],
-  outfit_color:['plum','pink','acid','silver','copper','blue','black','red'],
-  headwear:['none','witch_hat','tiara','antenna','headphones','flower'],
-  eyewear:['none','star_shades','round_specs','visor','monocle','eyepatch'],
-  neckwear:['none','spike_choker','chain','bandana','scarf'],
-  aura:['none','ghost_flames','spark_ring','glow','moon'],
-  accessory:['none','horns','halo','bow','beanie','crown','bandage'],
-  background:['void','bubblegum','toxic','gravewave','ember','lavender','sky'],
-  pattern:['none','sparkles','static','bats','hearts']
+/* Knightfall Misfit: HumanForge Forge2D v0.8.1, MIT. Production single renderer. */
+(()=>{'use strict';
+const defaults={"skin":"peach","face_shape":"round","hair":"shag","hair_color":"ink","eyes":"doe","eye_color":"violet","brow_style":"soft","eye_glimmer":"none","expression":"smile","face_mark":"freckles","piercing":"none","outfit":"hoodie","outfit_color":"plum","headwear":"none","eyewear":"none","neckwear":"spike_choker","aura":"none","accessory":"none","background":"void","pattern":"sparkles","ear_style":"human","nose":"button","facial_hair":"none","makeup":"none","tattoo":"none","hair_highlight":"none","outfit_patch":"none"};
+const choices={"skin":["porcelain","peach","honey","olive","cocoa","violet","frost","ashen","infernal"],"face_shape":["round","soft_square","heart_face","long","angular","oval"],"hair":["shag","spikes","bob","mohawk","horns","buns","flop","wolfcut","coils","braids","long_messy","buzzcut","slickback","undercut","waves","locs"],"hair_color":["ink","plum","pink","acid","silver","copper","blue","white","crimson","teal"],"eyes":["doe","sleepy","mischief","star","spiral","cat","cyber","hollow"],"eye_color":["violet","green","blue","pink","gold","red","ice","amber"],"brow_style":["none","soft","raised","bold","sleepy"],"eye_glimmer":["none","star","double","heart"],"expression":["smile","grin","pout","fang","frown","tongue","smirk","snarl"],"face_mark":["none","freckles","stars","stitches","lightning","heart","scar","runes"],"piercing":["none","septum","brow","lip","ear","nose"],"outfit":["hoodie","jacket","overalls","dress","sweater","cape","armor","punk","techwear"],"outfit_color":["plum","pink","acid","silver","copper","blue","black","red","teal","gold"],"headwear":["none","witch_hat","tiara","antenna","headphones","flower","spiked_cap"],"eyewear":["none","star_shades","round_specs","visor","monocle","eyepatch","cyber_lens"],"neckwear":["none","spike_choker","chain","bandana","scarf","pendant"],"aura":["none","ghost_flames","spark_ring","glow","moon","lightning"],"accessory":["none","horns","halo","bow","beanie","crown","bandage","safety_pin"],"background":["void","bubblegum","toxic","gravewave","ember","lavender","sky","eclipse","neon_city","storm"],"pattern":["none","sparkles","static","bats","hearts","runes","shards"],"nose":["button","sharp","hooked","minimal"],"facial_hair":["none","stubble","mustache","goatee","full_beard"],"makeup":["none","smoky","winged","corpse","glitter"],"tattoo":["none","teardrop","neon_sigil","cracks","serpent"],"hair_highlight":["none","pink","acid","silver","blue","crimson","teal"],"outfit_patch":["none","skull","heart","lightning","cinder"],"ear_style":["human","elf","bat","cyber","demon"]};
+const palettes={"skin":{"porcelain":"#f8dbe0","peach":"#efb28f","honey":"#c98258","olive":"#9b7655","cocoa":"#704938","violet":"#b997d2","frost":"#d5e8f0","ashen":"#9895aa","infernal":"#a14858"},"hair_color":{"ink":"#20182a","plum":"#71366e","pink":"#ff55d8","acid":"#a8ec42","silver":"#d9d4e3","copper":"#c66d45","blue":"#63b7ed","white":"#f6eef1","crimson":"#d53e65","teal":"#3bd0c7"},"background":{"void":"#171021","bubblegum":"#54294f","toxic":"#24391e","gravewave":"#16403f","ember":"#4a241c","lavender":"#36264d","sky":"#20364c","eclipse":"#101423","neon_city":"#22213b","storm":"#1b263d"},"outfit_color":{"plum":"#733b86","pink":"#be3c92","acid":"#557833","silver":"#7a788d","copper":"#a94f39","blue":"#315c87","black":"#292532","red":"#922c45","teal":"#167b84","gold":"#b58c35"},"eye_color":{"violet":"#8e56c7","green":"#53b65b","blue":"#4c9fea","pink":"#ec5ab7","gold":"#d2a83e","red":"#dc455e","ice":"#a3f6ff","amber":"#ed9938"}};
+
+const safeAvatar=(input={})=>{const obj={...defaults};for(const k of Object.keys(defaults))if(choices[k]?.includes(input?.[k]))obj[k]=input[k];return obj;};
+const from=(mapping,key,fallback)=>Object.prototype.hasOwnProperty.call(mapping,key)?mapping[key]:fallback;
+const colors=(group,value,fallback)=>palettes[group]?.[value]||fallback;
+const skins={porcelain:'porcelain',peach:'ivory',honey:'tan',olive:'medium',cocoa:'deep',violet:'porcelain',frost:'fair',ashen:'medium',infernal:'brown'};
+const faces={round:'round',soft_square:'square',heart_face:'heart',long:'long',angular:'diamond',oval:'oval'};
+const eyes={doe:'doe',sleepy:'hooded',mischief:'upturned',star:'wide',spiral:'wide',cat:'cat',cyber:'mono',hollow:'hooded'};
+const brows={none:'thin',soft:'soft',raised:'feather',bold:'bold',sleepy:'straight'};
+const noses={button:'button',sharp:'slim',hooked:'broad',minimal:'soft'};
+const mouths={smile:'balanced',grin:'wide',pout:'full',fang:'wide',frown:'thin',tongue:'wide',smirk:'balanced',snarl:'wide'};
+const expressions={smile:'happy',grin:'excited',pout:'thoughtful',fang:'confident',frown:'sad',tongue:'excited',smirk:'confident',snarl:'confident'};
+const hairStyles={shag:'wavy-medium',spikes:'wavy-bob',bob:'bob-fringe',mohawk:'wavy-bob',horns:'wavy-medium',buns:'curly-medium',flop:'long-side',wolfcut:'wavy-medium',coils:'curly-long',braids:'long-center',long_messy:'wavy-long',buzzcut:'bob-fringe',slickback:'medium-straight',undercut:'bob-fringe',waves:'wavy-long',locs:'curly-long'};
+const tops={hoodie:'hoodie',jacket:'tee',overalls:'long-sleeve',dress:'tee',sweater:'sweater',cape:'long-sleeve',armor:'turtleneck',punk:'crop-tee',techwear:'long-sleeve'};
+const outers={hoodie:'none',jacket:'denim-jacket',overalls:'none',dress:'none',sweater:'none',cape:'long-coat',armor:'blazer',punk:'bomber',techwear:'puffer-vest'};
+const headwear={none:'none',witch_hat:'beret',tiara:'none',antenna:'none',headphones:'none',flower:'none',spiked_cap:'cap'};
+const glasses={none:'none',star_shades:'round-sun',round_specs:'round',visor:'aviator',monocle:'round',eyepatch:'none',cyber_lens:'cat-sun'};
+const neckwear={none:'none',spike_choker:'choker',chain:'chain',bandana:'none',scarf:'none',pendant:'pendant'};
+const palettesBg={void:['#0a0b1b','#362440'],bubblegum:['#2c1534','#744575'],toxic:['#0d211c','#38644a'],gravewave:['#0a2329','#315b5f'],ember:['#26131c','#78463e'],lavender:['#19152b','#5a4581'],sky:['#0b1c32','#37628a'],eclipse:['#0a0a16','#49374b'],neon_city:['#11142c','#353f67'],storm:['#091b2d','#365067']};
+let forge=null,sequence=0;
+const ready=import('https://esm.sh/humanforge@0.8.1/forge2d?bundle').then(module=>{
+ if(typeof module.renderAvatarSvg!=='function'||!module.DEFAULT_CONFIG)throw Error('Forge2D library unavailable');
+ forge=module;return module;
+});
+function toForge(value={}){
+ if(!forge)throw Error('Forge2D not ready; await KnightfallMisfitAvatars.ready');
+ const a=safeAvatar(value),d=forge.DEFAULT_CONFIG;
+ const primary=colors('outfit_color',a.outfit_color,'#3b3149');
+ const highlight={pink:'#ff55d8',acid:'#c6ff45',silver:'#d9d4e3',blue:'#4c9fea',crimson:'#d53e65',teal:'#3bd0c7'}[a.hair_highlight]||null;
+ return {...d,
+  face:{...d.face,shape:from(faces,a.face_shape,'oval'),skin:from(skins,a.skin,'medium'),
+   eyes:from(eyes,a.eyes,'almond'),eyeColor:colors('eye_color',a.eye_color,'#7a4a26'),
+   brows:from(brows,a.brow_style,'soft'),nose:from(noses,a.nose,'button'),
+   mouth:from(mouths,a.expression,'balanced'),lipColor:a.expression==='pout'?'#bb5c82':'#99576c',
+   freckles:a.face_mark==='freckles'?2:a.face_mark==='stars'?1:0,
+   cheeks:a.makeup==='glitter'?2:1,eyeshadow:a.makeup==='none'?'#00000000':a.makeup==='glitter'?'#a157a0':'#312538',
+   mole:a.face_mark==='heart'?'cheek':'none',lashes:a.eyes==='cat'||a.makeup!=='none'},
+  hair:{...d.hair,style:from(hairStyles,a.hair,'wavy-medium'),color:colors('hair_color',a.hair_color,'#20182a'),highlight,highlightStyle:'streaks'},
+  headwear:{...d.headwear,style:from(headwear,a.headwear,'none'),color:primary},
+  outfit:{...d.outfit,top:from(tops,a.outfit,'tee'),topColor:primary,
+   outer:from(outers,a.outfit,'none'),outerColor:a.outfit==='jacket'?'#25232f':primary,
+   dress:a.outfit==='dress'?'shirt-dress':'none',dressColor:primary,
+   bottom:a.outfit==='punk'?'skinny-jeans':a.outfit==='techwear'?'joggers':'straight-jeans',
+   bottomColor:a.outfit==='overalls'?primary:'#292934',
+   shoes:a.outfit==='armor'?'knee-boots':a.outfit==='punk'?'chunky-sneakers':'chelsea-boots',shoesColor:'#1b1923'},
+  accessories:{...d.accessories,glasses:from(glasses,a.eyewear,'none'),
+   glassesColor:a.eyewear==='cyber_lens'?'#70f4e2':'#302935',
+   earrings:a.piercing==='ear'?'stud':a.piercing==='brow'?'huggie':'none',metal:'#c9d2dd',
+   necklace:from(neckwear,a.neckwear,'none'),
+   scarf:a.neckwear==='scarf'?'chunky':a.neckwear==='bandana'?'bandana':'none',
+   bag:a.accessory==='safety_pin'?'crossbody':'none',
+   hairAccessory:a.headwear==='flower'||a.accessory==='bow'?'flower':a.accessory==='bandage'?'headband':'none'},
+  expression:from(expressions,a.expression,'neutral'),
+  pose:a.expression==='fang'?'crossed':a.expression==='tongue'?'wave':'hip'
  };
- const palettes={
-  skin:{porcelain:'#f8dbe0',peach:'#efb28f',honey:'#c98258',olive:'#9b7655',cocoa:'#704938',violet:'#b997d2'},
-  hair_color:{ink:'#20182a',plum:'#71366e',pink:'#ff55d8',acid:'#a8ec42',silver:'#d9d4e3',copper:'#c66d45',blue:'#63b7ed'},
-  background:{void:'#171021',bubblegum:'#54294f',toxic:'#24391e',gravewave:'#16403f',ember:'#4a241c',lavender:'#36264d',sky:'#20364c'},
-  outfit_color:{plum:'#733b86',pink:'#be3c92',acid:'#557833',silver:'#7a788d',copper:'#a94f39',blue:'#315c87',black:'#292532',red:'#922c45'},
-  eye_color:{violet:'#8e56c7',green:'#53b65b',blue:'#4c9fea',pink:'#ec5ab7',gold:'#d2a83e',red:'#dc455e'}
- };
- const safeAvatar=input=>{const out={...defaults};for(const k of Object.keys(defaults))if(choices[k].includes(input?.[k]))out[k]=input[k];return out};
- const hairstyles={
-  shag:'<path d="M50 113 Q37 48 92 39 Q137 25 164 59 Q192 88 175 134 L157 112 L145 75 Q122 99 74 81 L69 119Z"/>',
-  spikes:'<path d="M48 107 L61 63 L80 79 L94 35 L114 70 L136 32 L146 76 L173 52 L177 121Z"/>',
-  bob:'<path d="M48 117 Q39 46 107 40 Q180 44 175 121 L159 147 L153 88 Q119 111 68 86 L67 144Z"/>',
-  mohawk:'<path d="M54 106 Q49 58 82 48 L84 22 L103 49 L114 11 L132 50 L151 35 Q180 59 173 110Z"/>',
-  horns:'<path d="M49 120 Q40 53 98 39 Q160 32 178 96 L169 131 L153 84 L74 85Z"/><path fill="#f5e9fb" d="M64 76 Q43 37 38 17 Q72 37 79 69 M148 68 Q162 36 187 19 Q181 54 164 83"/>',
-  buns:'<path d="M49 116 Q38 52 91 41 Q151 30 178 88 L168 128 L153 81 L70 85Z"/><circle cx="54" cy="54" r="25"/><circle cx="168" cy="51" r="24"/>',
-  flop:'<path d="M48 122 Q38 45 102 38 Q161 35 181 83 Q155 62 129 73 Q119 119 84 133 Q59 142 48 122Z"/>'
- };
- const eyeShapes={
-  doe:'<ellipse cx="82" cy="121" rx="13" ry="17" fill="#fff"/><ellipse cx="145" cy="121" rx="13" ry="17" fill="#fff"/>',
-  sleepy:'<path d="M67 120 Q82 108 97 120 M130 120 Q145 108 160 120" fill="none" stroke="#231727" stroke-width="8" stroke-linecap="round"/>',
-  mischief:'<path d="M68 119 Q82 103 97 117 Q85 133 68 119 M130 117 Q146 101 160 117 Q147 133 130 117" fill="#fff" stroke="#231727" stroke-width="3"/>',
-  star:'<path d="M82 105 L87 116 L99 117 L90 125 L93 137 L82 131 L71 137 L74 125 L65 117 L77 116Z M145 105 L150 116 L162 117 L153 125 L156 137 L145 131 L134 137 L137 125 L128 117 L140 116Z" fill="#fff" stroke="#231727" stroke-width="3"/>',
-  spiral:'<circle cx="82" cy="121" r="15" fill="#fff"/><circle cx="145" cy="121" r="15" fill="#fff"/><path d="M82 111 C98 113 91 132 80 129 C72 127 77 118 84 121 M145 111 C161 113 154 132 143 129 C135 127 140 118 147 121" fill="none" stroke="#231727" stroke-width="4" stroke-linecap="round"/>'
- };
- const accessories={
-  none:'',horns:'<path d="M69 71 Q42 34 40 17 Q69 36 84 68 M145 68 Q162 34 187 17 Q182 51 161 79" fill="#eee0f7" stroke="#241629" stroke-width="5"/>',
-  halo:'<ellipse cx="113" cy="39" rx="35" ry="9" fill="none" stroke="#c6ff45" stroke-width="7"/>',
-  bow:'<path d="M151 57 Q168 35 185 47 L174 69 L189 82 Q171 93 151 76Z" fill="#ff62c7" stroke="#28162c" stroke-width="4"/><circle cx="163" cy="69" r="7" fill="#ffe1f4"/>',
-  beanie:'<path d="M49 83 Q52 44 110 40 Q162 43 174 83Z" fill="#39a36b" stroke="#241629" stroke-width="5"/><path d="M49 81 Q112 68 174 81 L175 96 Q112 88 50 98Z" fill="#c6ff45"/><circle cx="111" cy="38" r="10" fill="#ff55d8"/>',
-  crown:'<path d="M66 79 L59 48 L86 64 L109 34 L133 64 L160 46 L155 82Z" fill="#c6ff45" stroke="#28172e" stroke-width="5"/><path d="M68 81 H154 V94 H68Z" fill="#ff55d8"/>',
-  bandage:'<path d="M68 105 L153 87 L160 104 L73 123Z" fill="#e9d4c5" stroke="#352332" stroke-width="4"/><circle cx="89" cy="104" r="2"/><circle cx="139" cy="97" r="2"/>'
- };
- const patterns={
-  none:'',
-  sparkles:'<path d="M32 68 l4 9 9 4 -9 4 -4 9 -4-9 -9-4 9-4z M192 160 l4 8 8 4 -8 4 -4 8 -4-8 -8-4 8-4z M189 49 l3 6 6 3 -6 3 -3 6 -3-6 -6-3 6-3z" fill="#c6ff45"/>',
-  static:'<path d="M17 130h16l8-12 10 25 10-18h13 M160 186h15l8-11 10 22 7-14h9" fill="none" stroke="#79ffe7" stroke-width="4" opacity=".7"/>',
-  bats:'<path d="M20 70q11-12 20 0 8-10 16 0l-4-13 12 13q-13 2-23 13-10-11-21-13 M163 177q10-12 20 0 8-10 16 0l-4-13 12 13q-13 2-23 13-10-11-21-13" fill="#171018" stroke="#bfa3d2" stroke-width="2"/>',
-  hearts:'<path d="M27 172 C11 158 29 145 37 158 C45 145 63 158 47 172 L37 181Z M181 75 C166 62 182 50 190 62 C198 50 214 62 199 75 L190 84Z" fill="#ff62c7" opacity=".85"/>'
- };
- const faceMarks={
-  none:'',freckles:'<g fill="#9e5361"><circle cx="64" cy="142" r="2.3"/><circle cx="73" cy="149" r="2.3"/><circle cx="81" cy="141" r="2.3"/><circle cx="145" cy="142" r="2.3"/><circle cx="154" cy="149" r="2.3"/><circle cx="162" cy="141" r="2.3"/></g>',
-  stars:'<path d="M66 143l3 6 7 1-5 4 1 7-6-3-6 3 1-7-5-4 7-1z M157 143l3 6 7 1-5 4 1 7-6-3-6 3 1-7-5-4 7-1z" fill="#c6ff45"/>',
-  stitches:'<path d="M58 139l18 14m-14-19l18 14m68-11l18 14m-14-19l18 14" stroke="#512c45" stroke-width="3" stroke-linecap="round"/>',
-  lightning:'<path d="M67 136l13-10-4 12 10-2-15 16 4-12-9 1z M148 136l13-10-4 12 10-2-15 16 4-12-9 1z" fill="#c6ff45"/>',
-  heart:'<path d="M65 144c-8-8 2-15 7-8 5-7 15 0 7 8l-7 6z M145 144c-8-8 2-15 7-8 5-7 15 0 7 8l-7 6z" fill="#ff6b9c"/>'
- };
- const piercings={
-  none:'',septum:'<path d="M105 148 Q112 159 119 148" fill="none" stroke="#e8d8f4" stroke-width="4"/><circle cx="105" cy="148" r="2.6" fill="#c6ff45"/><circle cx="119" cy="148" r="2.6" fill="#c6ff45"/>',
-  brow:'<circle cx="93" cy="98" r="4" fill="#e8d8f4"/><circle cx="101" cy="97" r="4" fill="#c6ff45"/>',
-  lip:'<circle cx="112" cy="160" r="4" fill="#e8d8f4"/><circle cx="112" cy="160" r="2" fill="#ff55d8"/>',
-  ear:'<circle cx="49" cy="119" r="5" fill="#c6ff45"/><circle cx="175" cy="119" r="5" fill="#ff55d8"/>'
- };
- const mouths={
-  smile:'<path d="M101 147 Q112 155 123 147" fill="none" stroke="#9a4d65" stroke-width="4" stroke-linecap="round"/>',
-  grin:'<path d="M98 146 Q112 166 126 146Z" fill="#7f304d" stroke="#59243b" stroke-width="3"/><path d="M102 150h20" stroke="#fff1e8" stroke-width="3"/>',
-  pout:'<path d="M105 151 Q112 144 119 151 Q112 158 105 151Z" fill="#b7556e"/>',
-  fang:'<path d="M101 147 Q112 157 123 147" fill="none" stroke="#7f304d" stroke-width="5" stroke-linecap="round"/><path d="M105 148l2 9 4-6 M119 148l-2 9-4-6" fill="#fff4e8"/>',
-  frown:'<path d="M101 154 Q112 145 123 154" fill="none" stroke="#9a4d65" stroke-width="4" stroke-linecap="round"/>',
-  tongue:'<path d="M100 146 Q112 157 124 146 Q122 161 112 161 Q102 159 100 146Z" fill="#7f304d"/><path d="M112 156 Q111 168 120 165 Q126 162 120 157" fill="#f06b9a" stroke="#9a4d65" stroke-width="2"/>'
- };
- for(const [field,values] of Object.entries({"nose":["button","sharp","hooked","minimal"],"facial_hair":["none","stubble","mustache","goatee","full_beard"],"makeup":["none","smoky","winged","corpse","glitter"],"tattoo":["none","teardrop","neon_sigil","cracks","serpent"],"hair_highlight":["none","pink","acid","silver","blue","crimson","teal"],"outfit_patch":["none","skull","heart","lightning","cinder"]}))choices[field]=values;
- const silhouetteChoices={hair:["wolfcut","coils","braids","long_messy","buzzcut","slickback"],ear_style:["human","elf","bat","cyber","demon"]};
- for(const [field,values] of Object.entries(silhouetteChoices)){if(!choices[field])choices[field]=[];choices[field].push(...values);}
- const extraChoices={"skin":["frost","ashen","infernal"],"face_shape":["angular","oval"],"hair":["undercut","waves","locs"],"hair_color":["white","crimson","teal"],"eyes":["cat","cyber","hollow"],"eye_color":["ice","amber"],"expression":["smirk","snarl"],"face_mark":["scar","runes"],"piercing":["nose"],"outfit":["armor","punk","techwear"],"outfit_color":["teal","gold"],"accessory":["safety_pin"],"background":["eclipse","neon_city","storm"],"pattern":["runes","shards"],"headwear":["spiked_cap"],"eyewear":["cyber_lens"],"neckwear":["pendant"],"aura":["lightning"]};
- for(const [field,values] of Object.entries(extraChoices))choices[field].push(...values);
- for(const [field,values] of Object.entries({"skin":{"frost":"#d5e8f0","ashen":"#9895aa","infernal":"#a14858"},"hair_color":{"white":"#f6eef1","crimson":"#d53e65","teal":"#3bd0c7"},"eye_color":{"ice":"#a3f6ff","amber":"#ed9938"},"outfit_color":{"teal":"#167b84","gold":"#b58c35"},"background":{"eclipse":"#101423","neon_city":"#22213b","storm":"#1b263d"}}))Object.assign(palettes[field],values);
- const extraArt={"hair":{"undercut":"<path d=\"M50 112Q42 58 93 40Q160 30 177 99L156 84Q124 66 86 90L67 113Z\"/><path d=\"M77 72q38-29 77-11\" fill=\"none\" stroke=\"#fff\" opacity=\".13\" stroke-width=\"3\"/>","waves":"<path d=\"M46 143Q32 85 55 61Q83 23 115 39Q168 27 178 80L176 149L157 120Q170 95 143 77Q123 64 112 82Q85 62 71 91L64 133Z\"/><path d=\"M49 117Q31 153 51 168m121-50q19 31 1 53\" fill=\"none\" stroke-width=\"10\" stroke-linecap=\"round\"/>","locs":"<path d=\"M51 108Q38 42 109 35Q177 36 175 110L157 88Q118 65 68 90Z\"/><path d=\"M52 84q-16 32-7 85m29-92q-17 37-11 92m21-94q-9 32-12 94m74-90q14 40 7 91m11-90q18 35 14 84\" fill=\"none\" stroke-width=\"12\" stroke-linecap=\"round\"/>"},"eyes":{"cat":"<path d=\"M64 117Q82 101 101 117Q87 131 67 123l-8-13m68 7q18-17 38 0l4-9q-4 30-40 16z\" fill=\"#fff\" stroke=\"#28172f\" stroke-width=\"3\"/>","cyber":"<rect x=\"66\" y=\"109\" width=\"33\" height=\"26\" rx=\"5\" fill=\"#d4ffff\" stroke=\"#23363b\" stroke-width=\"4\"/><rect x=\"129\" y=\"109\" width=\"33\" height=\"26\" rx=\"5\" fill=\"#d4ffff\" stroke=\"#23363b\" stroke-width=\"4\"/>","hollow":"<ellipse cx=\"82\" cy=\"121\" rx=\"15\" ry=\"18\" fill=\"#130c1e\" stroke=\"#a16bdf\" stroke-width=\"3\"/><ellipse cx=\"145\" cy=\"121\" rx=\"15\" ry=\"18\" fill=\"#130c1e\" stroke=\"#a16bdf\" stroke-width=\"3\"/><circle cx=\"82\" cy=\"121\" r=\"4\" fill=\"#d0a0ff\"/><circle cx=\"145\" cy=\"121\" r=\"4\" fill=\"#d0a0ff\"/>"},"expression":{"smirk":"<path d=\"M99 152q14 6 27-9\" fill=\"none\" stroke=\"#943853\" stroke-width=\"4\" stroke-linecap=\"round\"/>","snarl":"<path d=\"M98 149q14-9 28 0l-3 11-6-4-6 5-8-5Z\" fill=\"#81344c\" stroke=\"#482031\" stroke-width=\"2\"/><path d=\"M103 147l5 8 4-8m7 0 4 8\" fill=\"#fff7f1\"/>"},"face_mark":{"scar":"<path d=\"M65 110l23 50m-20-28 13-5m-7 21 13-6\" stroke=\"#92465a\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>","runes":"<path d=\"M65 130v22l13-12-13-10m78 0v22m-8-14 8-8 8 8-8 14\" fill=\"none\" stroke=\"#be69ed\" stroke-width=\"3\"/>"},"piercing":{"nose":"<circle cx=\"120\" cy=\"144\" r=\"3.6\" fill=\"#f2d17b\" stroke=\"#512d3c\" stroke-width=\"1.4\"/>"},"garments":{"armor":"<path d=\"M77 188Q112 172 148 188L175 249H49Z\" fill=\"@cloth\" stroke=\"#201827\" stroke-width=\"6\"/><path d=\"M72 198l27-13 13 19 13-19 27 13-14 39H86Z\" fill=\"#232a39\" stroke=\"@accent\" stroke-width=\"4\"/><path d=\"M101 206l11 10 12-10-12 34Z\" fill=\"@accent\"/><path d=\"M58 211l25-15m81 15-25-15\" stroke=\"#abb8c5\" stroke-width=\"7\"/>","punk":"<path d=\"M76 188Q112 171 148 188L170 249H54Z\" fill=\"@cloth\" stroke=\"#201827\" stroke-width=\"6\"/><path d=\"M95 188l17 26 17-26-5 58H100Z\" fill=\"#17121b\"/><path d=\"M87 189l20 19m31-19-20 19\" stroke=\"@accent\" stroke-width=\"4\"/><path d=\"M76 214l13 5-13 5m74-10-13 5 13 5\" fill=\"none\" stroke=\"#f1d8ec\" stroke-width=\"3\"/>","techwear":"<path d=\"M76 188Q112 171 148 188L172 249H52Z\" fill=\"@cloth\" stroke=\"#201827\" stroke-width=\"6\"/><path d=\"M86 188l26 18 26-18-9 61H96Z\" fill=\"#252e3c\" stroke=\"@accent\" stroke-width=\"3\"/><path d=\"M112 206v43m-30-29h20m20 0h24\" stroke=\"#a4e7df\" stroke-width=\"3\" opacity=\".7\"/><rect x=\"122\" y=\"226\" width=\"25\" height=\"12\" rx=\"2\" fill=\"#1e3c41\" stroke=\"@accent\" stroke-width=\"2\"/>"},"accessory":{"safety_pin":"<path d=\"M150 63q15-21 28-8l-8 24-19-16\" fill=\"none\" stroke=\"#ffe29b\" stroke-width=\"4\"/><circle cx=\"176\" cy=\"54\" r=\"4\" fill=\"#ff5fc7\"/>"},"pattern":{"runes":"<path d=\"M22 59v27l19-14-19-13m168 114v26l-18-14 18-12M20 183l18-21m-9 0v22M186 55l12 17-20 3Z\" fill=\"none\" stroke=\"#d2a3ff\" stroke-width=\"2.5\" opacity=\".8\"/>","shards":"<path d=\"M18 37l33-20-8 46z M184 174l26 11-24 25z M18 216l23-17 11 29Z\" fill=\"#b3fff3\" stroke=\"#e9ffff\" stroke-width=\"1.5\" opacity=\".35\"/>"},"headwear":{"spiked_cap":"<path d=\"M51 88Q67 31 116 39Q161 41 174 88L169 98Q115 86 56 101Z\" fill=\"#261b32\" stroke=\"#b4ff5a\" stroke-width=\"4\"/><path d=\"M68 51l-5-17 19 12m46-8 9-16 11 20\" fill=\"#e6e5ef\" stroke=\"#342538\" stroke-width=\"3\"/><path d=\"M60 94q59-21 118 0\" fill=\"none\" stroke=\"#ff5fc9\" stroke-width=\"4\"/>"},"eyewear":{"cyber_lens":"<path d=\"M61 106h42l8 18-13 18H61l-10-20z\" fill=\"#75ffe277\" stroke=\"#79ffe7\" stroke-width=\"4\"/><path d=\"M64 118h37m-19-8v28\" stroke=\"#e0fffa\" stroke-width=\"2\"/>"},"neckwear":{"pendant":"<path d=\"M86 178q25 22 52 0\" fill=\"none\" stroke=\"#f3d684\" stroke-width=\"3\"/><path d=\"M113 190l-8 13 8 10 8-10Z\" fill=\"#a678ee\" stroke=\"#ffe2fb\" stroke-width=\"2\"/>"},"aura":{"lightning":"<path d=\"M29 90l22-27-8 29 19-7-25 37 5-30zm166 55-24 28 9-28-18 7 26-38-6 28z\" fill=\"#c6ff45\" stroke=\"#79ffe7\" stroke-width=\"2\" opacity=\".86\"/>"}};
- const sceneArt={"void":"<circle cx=\"112\" cy=\"100\" r=\"84\" fill=\"none\" stroke=\"#9167c1\" opacity=\".3\" stroke-width=\"2\"/><path d=\"M0 200Q40 168 85 205T224 198V256H0Z\" fill=\"#080512\" opacity=\".65\"/><circle cx=\"28\" cy=\"43\" r=\"2\" fill=\"#e6e0ff\"/><circle cx=\"195\" cy=\"90\" r=\"3\" fill=\"#c6ff45\"/><circle cx=\"201\" cy=\"42\" r=\"2\" fill=\"#ee99ff\"/>","bubblegum":"<path d=\"M0 39Q65-6 126 48T224 40M0 219Q68 168 143 226T224 209\" fill=\"none\" stroke=\"#ffb5e5\" stroke-width=\"15\" opacity=\".13\"/><circle cx=\"45\" cy=\"65\" r=\"17\" fill=\"#ff63cc\" opacity=\".16\"/><circle cx=\"186\" cy=\"181\" r=\"24\" fill=\"#fdd9ee\" opacity=\".15\"/><path d=\"M14 112l12-16 12 16-12 16zm178-66 10-13 10 13-10 13z\" fill=\"#f2b0f9\" opacity=\".38\"/>","toxic":"<path d=\"M0 205Q27 174 51 216T110 203T170 212T224 196V256H0Z\" fill=\"#baff5d\" opacity=\".19\"/><path d=\"M0 226q42-22 73 1t72-1q32-24 79 0\" fill=\"none\" stroke=\"#b6ff7d\" stroke-width=\"4\" opacity=\".43\"/><circle cx=\"36\" cy=\"159\" r=\"8\" fill=\"#bbff56\" opacity=\".31\"/><circle cx=\"189\" cy=\"107\" r=\"11\" fill=\"#baff63\" opacity=\".24\"/><path d=\"M16 50l12-15 13 15-13 14zm174 13 13-20 14 20-14 17z\" fill=\"#c6ff45\" opacity=\".2\"/>","gravewave":"<circle cx=\"174\" cy=\"67\" r=\"39\" fill=\"#8cf9ef\" opacity=\".17\"/><path d=\"M0 211h14v-31q8-12 16 0v30h15v-61q9-18 18 0v63h18v-34q10-17 20 0v34h25v-52q8-18 18 0v52h15v-37q10-15 18 0v35h20v-55q12-18 21 0v53h17v48H0Z\" fill=\"#061d23\" opacity=\".7\"/><path d=\"M0 193q52-19 111 0t113 0\" fill=\"none\" stroke=\"#81f0df\" stroke-width=\"6\" opacity=\".22\"/>","ember":"<path d=\"M0 229Q33 181 56 208T114 207T182 210T224 188V256H0Z\" fill=\"#ff814e\" opacity=\".28\"/><path d=\"M0 230q18-22 29-8t27-11q14-13 28 2t34-8q19-21 33 3t36 0q18-23 37-1\" fill=\"none\" stroke=\"#ffb45c\" stroke-width=\"7\" opacity=\".35\"/><g fill=\"#ffc36f\"><circle cx=\"33\" cy=\"112\" r=\"3\"/><circle cx=\"178\" cy=\"76\" r=\"4\"/><circle cx=\"194\" cy=\"156\" r=\"2\"/><circle cx=\"28\" cy=\"182\" r=\"2\"/></g>","lavender":"<circle cx=\"175\" cy=\"59\" r=\"37\" fill=\"#e7d8ff\" opacity=\".23\"/><circle cx=\"188\" cy=\"50\" r=\"37\" fill=\"#36264d\"/><path d=\"M17 216l20-54 24 64m98-15 21-60 27 66\" fill=\"#9873dd\" stroke=\"#c9a0ff\" stroke-width=\"2\" opacity=\".3\"/><path d=\"M25 60l9-12 9 12-9 11zm170 109 8-12 8 12-8 12z\" fill=\"#f7c8ff\" opacity=\".38\"/>","sky":"<circle cx=\"179\" cy=\"56\" r=\"35\" fill=\"#fff4b9\" opacity=\".25\"/><path d=\"M0 119q22-24 43-7t40-4q19-18 40 3t55-4q30-13 46 7M0 172q36-18 63-3t57-6q37-15 64 5t40-1\" fill=\"none\" stroke=\"#d6fcff\" stroke-width=\"12\" opacity=\".14\"/><path d=\"M0 230h32v-33h26v21h33v-49h29v54h37v-36h22v44h45v25H0Z\" fill=\"#111b32\" opacity=\".44\"/>","eclipse":"<circle cx=\"112\" cy=\"91\" r=\"66\" fill=\"#ffcf8c\" opacity=\".13\"/><circle cx=\"112\" cy=\"91\" r=\"57\" fill=\"none\" stroke=\"#ffdb7e\" stroke-width=\"9\" opacity=\".8\"/><circle cx=\"112\" cy=\"91\" r=\"53\" fill=\"#0d1020\"/><path d=\"M0 216l35-37 22 25 29-46 38 55 30-31 24 37 27-21 19 18v40H0Z\" fill=\"#10152b\"/><path d=\"M29 50l7 6 10-6m129 5 10-7 7 7\" fill=\"none\" stroke=\"#fff1b7\" stroke-width=\"2.5\" opacity=\".65\"/>","neon_city":"<path d=\"M0 206h15v-55h21v30h18v-64h24v44h18v-76h24v60h19v-36h27v83h19v-52h19v116H0Z\" fill=\"#0b1026\" opacity=\".85\"/><path d=\"M0 233h45v-46h25v37h35v-56h28v62h29v-38h27v39h35v25H0Z\" fill=\"#17294b\" opacity=\".73\"/><path d=\"M23 162v8m0 9v8m41-59v10m0 10v10m44-59v10m0 12v8m47-7v10m0 12v10m48-28v9m0 13v9\" stroke=\"#6ff8e8\" stroke-width=\"4\" opacity=\".65\"/><path d=\"M0 218h224\" stroke=\"#ff5bcc\" stroke-width=\"2\" opacity=\".45\"/><circle cx=\"111\" cy=\"48\" r=\"33\" fill=\"#ef64de\" opacity=\".12\"/>","storm":"<path d=\"M0 54q21-33 58-18t57-7q28-23 59 2t50 6V0H0Z\" fill=\"#c8d8ff\" opacity=\".12\"/><path d=\"M188 20l-32 62 20-7-28 54 48-65-21 4z\" fill=\"#b5ebff\" opacity=\".57\" stroke=\"#edffff\" stroke-width=\"1.5\"/><path d=\"M32 65l-17 28m62-27L57 97m65-22-21 35m109 11-15 26M35 171l-16 25m185-11-16 28\" stroke=\"#a1d7f5\" stroke-width=\"2.5\" opacity=\".35\"/>"};
- const fineArt={"nose":{"button":"<path d=\"M107 137q-4 9 5 9 7-1 5-9\" fill=\"none\" stroke=\"#794955\" stroke-width=\"2.5\" opacity=\".47\" stroke-linecap=\"round\"/>","sharp":"<path d=\"M113 131l-5 12 8 3m-7-1q5 3 9-2\" fill=\"none\" stroke=\"#784758\" stroke-width=\"2.4\" opacity=\".65\" stroke-linecap=\"round\"/>","hooked":"<path d=\"M109 131q7 7 2 12-6 6 7 4\" fill=\"none\" stroke=\"#784758\" stroke-width=\"2.6\" opacity=\".65\" stroke-linecap=\"round\"/>","minimal":"<path d=\"M109 143q3 2 6 0\" fill=\"none\" stroke=\"#784758\" stroke-width=\"2\" opacity=\".32\"/>"},"facial_hair":{"none":"","stubble":"<path d=\"M82 150q-3 17 30 25 34-8 33-25m-54 14 3 4m9 1 2 4m14-4 2 3m8-7 3 3m7-13 3 3\" fill=\"none\" stroke=\"#3e2530\" opacity=\".4\" stroke-width=\"2\" stroke-linecap=\"round\"/>","mustache":"<path d=\"M109 147q-16-9-21 4 12 5 24-1 12 6 24 0-6-13-22-4z\" fill=\"#34222b\" stroke=\"#241729\" stroke-width=\"1.4\"/>","goatee":"<path d=\"M104 164q8 4 16 0l-8 15z\" fill=\"#392432\" stroke=\"#241729\" stroke-width=\"2\"/><path d=\"M105 148q-8-3-13 3m24-3q8-3 13 3\" fill=\"none\" stroke=\"#392432\" stroke-width=\"3\"/>","full_beard":"<path d=\"M68 142q-3 32 44 45 48-13 45-45l-16 19-10 5-17 10-21-10-10-8z\" fill=\"#392832\" stroke=\"#241629\" stroke-width=\"3\"/><path d=\"M97 158q15 9 30 0m-33 13 5 6m27-6-6 6\" fill=\"none\" stroke=\"#8b6278\" stroke-width=\"1.5\" opacity=\".64\"/>"},"makeup":{"none":"","smoky":"<path d=\"M63 111q20-21 39 0m24 0q20-21 39 0\" fill=\"none\" stroke=\"#3c2446\" stroke-width=\"10\" stroke-linecap=\"round\" opacity=\".65\"/>","winged":"<path d=\"M66 116l-13-10q13 5 26 1m52 0q13 5 26 1l13-10\" fill=\"none\" stroke=\"#26192d\" stroke-width=\"4\" stroke-linecap=\"round\"/>","corpse":"<path d=\"M65 111q18-18 37 0m25 0q18-18 36 0\" fill=\"none\" stroke=\"#65466e\" stroke-width=\"13\" opacity=\".6\"/><path d=\"M62 138l8 6m89-6-8 6\" stroke=\"#38263e\" stroke-width=\"4\"/>","glitter":"<g fill=\"#fd9fe7\"><circle cx=\"62\" cy=\"108\" r=\"2.5\"/><circle cx=\"69\" cy=\"102\" r=\"2\"/><circle cx=\"98\" cy=\"102\" r=\"2\"/><circle cx=\"130\" cy=\"102\" r=\"2\"/><circle cx=\"157\" cy=\"102\" r=\"2\"/><circle cx=\"165\" cy=\"109\" r=\"2.5\"/></g>"},"tattoo":{"none":"","teardrop":"<path d=\"M154 138q7 12 0 15-8-3 0-15z\" fill=\"#38223c\" stroke=\"#ac72dc\" stroke-width=\"1.5\"/>","neon_sigil":"<g fill=\"none\" stroke=\"#d460e9\" stroke-width=\"2.8\"><path d=\"M58 138l11-10 11 10-11 10zM69 129v20\"/><path d=\"M145 155l7-16 7 16m-12-7h10\"/></g>","cracks":"<path d=\"M58 125l12 11-7 9 14 11m83-38-12 15 8 8-13 15\" fill=\"none\" stroke=\"#533446\" stroke-width=\"3\" stroke-linecap=\"round\"/>","serpent":"<path d=\"M62 136q20-18 16 8-16 6-7 14 16 4 14-9m-6 0-8 1m7 7-4-3\" fill=\"none\" stroke=\"#335c52\" stroke-width=\"3.7\" stroke-linecap=\"round\"/>"},"outfit_patch":{"none":"","skull":"<g transform=\"translate(144 219)\"><circle r=\"9\" fill=\"#17141e\" stroke=\"#e4dfeb\" stroke-width=\"1.5\"/><path d=\"M-5-2h3m4 0h3M-4 4v3h8V4\" fill=\"none\" stroke=\"#eff3f3\" stroke-width=\"2\"/></g>","heart":"<path d=\"M143 225q-17-13-7-18 5-3 8 3 4-7 10-3 9 7-11 18z\" fill=\"#ff5dbd\" stroke=\"#28132d\" stroke-width=\"1.5\"/>","lightning":"<path d=\"M147 207l-11 14h9l-4 11 16-19h-10l5-6z\" fill=\"#c6ff45\" stroke=\"#231e2c\" stroke-width=\"1.5\"/>","cinder":"<path d=\"M143 203q11 15 5 24-12 8-19-5 0-9 14-19m0 10q-11 13-3 14 6 2 3-14z\" fill=\"#ff834e\" stroke=\"#272031\" stroke-width=\"1.5\"/>"}};
- Object.assign(hairstyles,extraArt.hair);
- Object.assign(eyeShapes,extraArt.eyes);
- Object.assign(mouths,extraArt.expression);
- Object.assign(faceMarks,extraArt.face_mark);
- Object.assign(piercings,extraArt.piercing);
- Object.assign(accessories,extraArt.accessory);
- Object.assign(patterns,extraArt.pattern);
- const silhouetteArt={front:{"wolfcut":"<path d=\"M48 122Q33 54 78 42l16-13 13 15 18-16 13 16q52 11 39 80l-20-14 10-14-25-10-11 25-13-19-19 17-13-18-21 25Z\"/><path d=\"M58 106l-13 32m119-32 14 32\" fill=\"none\" stroke-width=\"12\" stroke-linecap=\"round\"/>","coils":"<path d=\"M44 115Q26 100 41 87q-17-22 7-34 3-23 24-18 20-23 39-5 26-20 40 10 22-10 27 18 20 19 1 38l-13 22-15-30Q110 101 74 85l-16 38Z\"/><circle cx=\"60\" cy=\"59\" r=\"17\"/><circle cx=\"89\" cy=\"41\" r=\"17\"/><circle cx=\"125\" cy=\"37\" r=\"20\"/><circle cx=\"161\" cy=\"62\" r=\"17\"/>","braids":"<path d=\"M47 121Q34 48 100 39q72-6 80 80l-19-13-14-24q-36 19-77 5l-10 30Z\"/><path d=\"M74 83l25-10m21 0 29 9\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3\" opacity=\".28\"/>","long_messy":"<path d=\"M47 130Q30 61 78 43l15-15 21 12 27-10q47 16 42 105l-18-15-8-28-22-8-16 21-24-15-26 39Z\"/><path d=\"M62 96l-19 61m122-59 18 60\" fill=\"none\" stroke-width=\"11\" stroke-linecap=\"round\"/>","buzzcut":"<path d=\"M50 103Q41 42 110 41q67 0 65 62l-16-10q-46-15-92 3Z\"/><path d=\"M69 73q43-32 90 1m-66-17 12-5m25 9 17 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3\" opacity=\".25\"/>","slickback":"<path d=\"M51 115Q38 44 107 40q67-4 68 75l-14-14-2-25Q114 51 67 82l1 35Z\"/><path d=\"M69 76q38-30 77-16M70 84q46-26 86-11\" fill=\"none\" stroke=\"#fff\" stroke-width=\"5\" opacity=\".22\"/>"},rear:{"wolfcut":"<path d=\"M54 103Q33 134 38 176l19-15 7 29 18-19m78-67q29 28 28 71l-21-14-7 29-18-19Z\"/>","braids":"<path d=\"M60 103q-29 26-17 71l12 37q21-16 9-40-12-25 3-48m97-20q29 26 17 71l-12 37q-21-16-9-40 12-25-3-48\" stroke=\"#241629\" stroke-width=\"5\"/><path d=\"M43 152l24 8m-22 13 24 8m111-29-24 8m22 13-24 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3\" opacity=\".22\"/>","long_messy":"<path d=\"M53 99Q28 132 40 177l-13 40 42-18 13-31m88-69q27 34 15 78l17 40-42-18-14-31Z\"/>","coils":"<circle cx=\"45\" cy=\"110\" r=\"29\"/><circle cx=\"180\" cy=\"110\" r=\"29\"/><circle cx=\"66\" cy=\"77\" r=\"29\"/><circle cx=\"159\" cy=\"77\" r=\"29\"/>"},ears:{"human":"<ellipse cx=\"50\" cy=\"113\" rx=\"15\" ry=\"24\" fill=\"@skin\" stroke=\"#241629\" stroke-width=\"5\"/><ellipse cx=\"174\" cy=\"113\" rx=\"15\" ry=\"24\" fill=\"@skin\" stroke=\"#241629\" stroke-width=\"5\"/>","elf":"<path d=\"M59 106Q31 83 15 79q9 46 31 55 20 6 13-28Zm106 0q28-23 44-27-9 46-31 55-20 6-13-28Z\" fill=\"@skin\" stroke=\"#241629\" stroke-width=\"5\"/><path d=\"M42 112L31 94m151 18 11-18\" fill=\"none\" stroke=\"#a16d81\" stroke-width=\"3\"/>","bat":"<path d=\"M59 96L24 54l8 33-17 7 23 20q10 30 23 11Zm106 0 35-42-8 33 17 7-23 20q-10 30-23 11Z\" fill=\"@skin\" stroke=\"#241629\" stroke-width=\"5\"/><path d=\"M43 104L31 78m150 26 12-26\" fill=\"none\" stroke=\"#aa5983\" stroke-width=\"3\"/>","cyber":"<path d=\"M48 94l-20 10-4 28 24 17 19-23Zm128 0 20 10 4 28-24 17-19-23Z\" fill=\"#343e52\" stroke=\"#121721\" stroke-width=\"5\"/><path d=\"M31 111l13 22m149-22-13 22\" stroke=\"#7cffe3\" stroke-width=\"4\"/><circle cx=\"44\" cy=\"118\" r=\"7\" fill=\"#79ffe7\"/><circle cx=\"180\" cy=\"118\" r=\"7\" fill=\"#ff65cb\"/>","demon":"<path d=\"M56 105Q28 84 31 48q16 28 27 26l7 47Zm112 0q28-21 25-57-16 28-27 26l-7 47Z\" fill=\"@skin\" stroke=\"#241629\" stroke-width=\"5\"/><path d=\"M46 82l-8-15m140 15 8-15\" stroke=\"#ff8b94\" stroke-width=\"3\"/>"}};
- const rearHair={"shag":"<path d=\"M55 96Q33 130 37 160l-9 26 26-14 14 18 15-36m87-55q20 32 16 62l11 25-30-14-13 18-13-36Z\"/>","bob":"<path d=\"M58 88Q34 118 43 178l18 19 20-31m85-76q23 30 15 89l-18 18-20-32Z\"/>","flop":"<path d=\"M54 101Q35 130 45 175l17 15 11-38M164 102q28 37 17 78l-20 11-11-39Z\"/>","waves":"<path d=\"M53 89Q26 116 37 169l-12 44 39-14 16-31m93-77q26 26 15 77l15 45-39-16-17-32Z\"/>","locs":"<path d=\"M55 107q-26 34-11 100m24-105q-12 49-6 111m107-108q26 34 11 100m-24-103q12 49 6 111\" fill=\"none\" stroke-width=\"15\" stroke-linecap=\"round\"/>"};
- let renderSequence=0;
- function render(input={}){
-  const a=safeAvatar(input),skin=palettes.skin[a.skin],hair=palettes.hair_color[a.hair_color],bg=palettes.background[a.background],cloth=palettes.outfit_color[a.outfit_color],eye=palettes.eye_color[a.eye_color],accent=a.background==='toxic'?'#c6ff45':a.background==='bubblegum'?'#ff62c7':'#79ffe7';
-  const headShape={angular:'<path d="M56 58Q112 24 166 58L173 126 147 170 112 183 76 170 51 125Z"/>',oval:'<ellipse cx="112" cy="114" rx="60" ry="73"/>',round:'<circle cx="112" cy="113" r="68"/>',soft_square:'<path d="M48 88Q48 45 88 45H136Q176 45 176 88V128Q176 177 112 181Q48 177 48 128Z"/>',heart_face:'<path d="M112 181Q98 171 61 132Q38 108 45 79Q53 48 83 48Q103 48 112 69Q121 48 141 48Q171 48 179 79Q186 108 163 132Q126 171 112 181Z"/>',long:'<ellipse cx="112" cy="112" rx="58" ry="76"/>'}[a.face_shape];
-  const brows={none:'',soft:'<path d="M68 101q14-8 28 0m34 0q14-8 28 0"/>',raised:'<path d="M68 98q14-14 28-5m34-2q14-8 28 5"/>',bold:'<path d="M67 100q15-12 31-3m31 0q16-9 31 3" stroke-width="8"/>',sleepy:'<path d="M68 99q14-2 28 3m34-3q14-2 28 3"/>'}[a.brow_style];
-  const glimmer={none:'',star:'<path d="M82 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z M145 111l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#fff"/>',double:'<circle cx="77" cy="115" r="2" fill="#fff"/><circle cx="88" cy="128" r="2" fill="#fff"/><circle cx="140" cy="115" r="2" fill="#fff"/><circle cx="151" cy="128" r="2" fill="#fff"/>',heart:'<path d="M73 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z M136 112c-5-5 1-10 5-5 4-5 10 0 5 5l-5 5z" fill="#fff"/>'}[a.eye_glimmer];
-  const pupils={
-  doe:`<ellipse cx="82" cy="125" rx="8" ry="11" fill="${eye}" stroke="#342337" stroke-width="1"/><ellipse cx="145" cy="125" rx="8" ry="11" fill="${eye}" stroke="#342337" stroke-width="1"/><ellipse cx="82" cy="126" rx="4" ry="7" fill="#1e162b"/><ellipse cx="145" cy="126" rx="4" ry="7" fill="#1e162b"/><circle cx="78" cy="120" r="3" fill="#fff"/><circle cx="141" cy="120" r="3" fill="#fff"/>`,
-  sleepy:'',
-  mischief:`<ellipse cx="82" cy="121" rx="6" ry="9" fill="${eye}"/><ellipse cx="145" cy="121" rx="6" ry="9" fill="${eye}"/><path d="M82 115v13m63-13v13" stroke="#1d1427" stroke-width="3"/>`,
-  cat:`<ellipse cx="82" cy="120" rx="7" ry="9" fill="${eye}"/><ellipse cx="145" cy="120" rx="7" ry="9" fill="${eye}"/><path d="M82 113v14m63-14v14" stroke="#1b1423" stroke-width="3"/>`,
-  cyber:`<path d="M75 115h16v15H75zM137 115h16v15h-16z" fill="${eye}" opacity=".85"/><path d="M82 114v19m63-19v19M70 123h26m35 0h27" stroke="#142938" stroke-width="2"/>`,
-  hollow:`<circle cx="82" cy="121" r="8" fill="none" stroke="${eye}" stroke-width="3"/><circle cx="145" cy="121" r="8" fill="none" stroke="${eye}" stroke-width="3"/><circle cx="82" cy="121" r="4" fill="${eye}"/><circle cx="145" cy="121" r="4" fill="${eye}"/>`,
-  star:`<circle cx="82" cy="122" r="5.5" fill="${eye}"/><circle cx="145" cy="122" r="5.5" fill="${eye}"/>`,
-  spiral:`<circle cx="82" cy="121" r="6" fill="${eye}" opacity=".75"/><circle cx="145" cy="121" r="6" fill="${eye}" opacity=".75"/>`
- }[a.eyes];
-  const garments={
-   hoodie:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M83 194 Q70 184 78 174 Q91 178 99 190 M141 190 Q151 177 164 175 Q171 185 158 197" fill="${cloth}" stroke="#20172a" stroke-width="5"/><path d="M95 194l-3 23h40l-4-23 M105 193l-3 12m18-12 3 12" fill="none" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`,
-   jacket:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M94 187l18 20 18-20-8 48h-20z" fill="#17131f" stroke="${accent}" stroke-width="3"/><path d="M92 189l20 20-9 5-17-19m46-6-20 20 9 5 17-19" fill="${cloth}" stroke="#20172a" stroke-width="3"/><path d="M112 207v35" stroke="#e7d5ed" stroke-width="2"/><circle cx="112" cy="218" r="2" fill="${accent}"/><circle cx="112" cy="230" r="2" fill="${accent}"/>`,
-   overalls:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="#252330" stroke="#20172a" stroke-width="6"/><path d="M82 198h60l8 51H74z" fill="${cloth}" stroke="#20172a" stroke-width="4"/><path d="M91 190l8 25m34-25-8 25" stroke="${accent}" stroke-width="9" stroke-linecap="round"/><path d="M96 218h32v18H96z" fill="#ffffff12" stroke="#20172a" stroke-width="3"/><circle cx="97" cy="202" r="3" fill="#f7d777"/><circle cx="127" cy="202" r="3" fill="#f7d777"/>`,
-   dress:`<path d="M78 190 Q112 174 147 190 L174 249 H50Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M96 191l16 23 16-23" fill="none" stroke="${accent}" stroke-width="6"/><path d="M67 231 Q112 220 157 231" fill="none" stroke="#ffffff55" stroke-width="4"/><path d="M108 216l4 6 4-6" fill="${accent}"/>`,
-   sweater:`<path d="M78 190 Q112 174 147 190 L170 249 H55Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M89 192h46m-43 11h40m-43 11h46m-41 11h36" stroke="#ffffff30" stroke-width="3"/><path d="M99 188q13 13 26 0" fill="none" stroke="${accent}" stroke-width="7" stroke-linecap="round"/><path d="M75 211l15 4m44 0 15-4" stroke="${accent}" stroke-width="5"/>`,
-   cape:`<path d="M65 201 Q112 175 160 201 L186 250 H39Z" fill="${cloth}" stroke="#20172a" stroke-width="6"/><path d="M101 190 L112 226 L124 190" fill="${accent}"/><path d="M62 212l16 5m84-5-16 5" stroke="#ffffff55" stroke-width="3"/>`
-  };
-  const headwear={
-   none:'',witch_hat:'<path d="M68 78 Q73 43 112 38 Q152 42 159 78Z" fill="#25152e" stroke="#241629" stroke-width="5"/><path d="M51 80 Q110 69 174 80 L169 91 Q110 84 56 94Z" fill="#c6ff45" stroke="#241629" stroke-width="4"/><path d="M90 49l22-23 16 26" fill="#25152e" stroke="#241629" stroke-width="4"/>',
-   tiara:'<path d="M73 79l-8-22 24 13 23-31 22 31 24-13-7 24z" fill="#c6ff45" stroke="#241629" stroke-width="4"/>',
-   antenna:'<path d="M91 54 Q80 28 65 25 M134 54 Q147 27 163 24" fill="none" stroke="#352340" stroke-width="5"/><circle cx="64" cy="23" r="9" fill="#ff55d8"/><circle cx="164" cy="22" r="9" fill="#79ffe7"/>',
-   headphones:'<path d="M51 112 Q49 44 112 42 Q176 44 173 112" fill="none" stroke="#30243a" stroke-width="12"/><rect x="43" y="95" width="19" height="38" rx="8" fill="#ff55d8" stroke="#241629" stroke-width="4"/><rect x="163" y="95" width="19" height="38" rx="8" fill="#c6ff45" stroke="#241629" stroke-width="4"/>',
-   flower:'<path d="M161 54q-8-18 5-22 14 5 2 21 17-12 23 2-3 15-22 5 13 18-1 23-14-6-3-23-17 12-23-2 4-15 22-4z" fill="#ff62c7" stroke="#35172e" stroke-width="3"/><circle cx="168" cy="59" r="7" fill="#f7dc7b"/>'
-  };
-  const eyewear={
-   none:'',star_shades:'<path d="M63 112l15-6 14 7-7 17-15 1z M131 113l14-7 15 6-7 19-15-1z M92 116h39" fill="#21172b" stroke="#c6ff45" stroke-width="4"/>',
-   round_specs:'<circle cx="82" cy="121" r="20" fill="none" stroke="#e8d8f4" stroke-width="4"/><circle cx="145" cy="121" r="20" fill="none" stroke="#e8d8f4" stroke-width="4"/><path d="M102 119q11-8 23 0" fill="none" stroke="#e8d8f4" stroke-width="4"/>',
-   visor:'<path d="M61 104 Q112 89 163 104 L158 132 Q112 143 66 132Z" fill="#79ffe755" stroke="#79ffe7" stroke-width="4"/><path d="M69 111h86" stroke="#d9fff8" stroke-width="3"/>',
-   monocle:'<circle cx="145" cy="121" r="19" fill="#79ffe722" stroke="#f1d880" stroke-width="4"/><path d="M159 136l14 23" stroke="#f1d880" stroke-width="3"/>',
-   eyepatch:'<path d="M62 108q20-13 39 0l-4 21q-20 13-34-2z" fill="#21172b" stroke="#e8d8f4" stroke-width="4"/><path d="M62 110l-12-9m49 8 9-12" stroke="#e8d8f4" stroke-width="3"/>'
-  };
-  const neckwear={
-   none:'',spike_choker:'<path d="M87 179 Q112 191 137 179 L135 192 Q112 203 89 192Z" fill="#21172b" stroke="#c6ff45" stroke-width="3"/><path d="M96 188l-4 8 9-4m23-4 4 8-9-4" fill="#ddd0e8"/>',
-   chain:'<path d="M88 178 Q112 201 136 178" fill="none" stroke="#f3cf66" stroke-width="4"/><path d="M112 194l-8 9 8 10 8-10z" fill="#c6ff45" stroke="#241629" stroke-width="3"/>',
-   bandana:'<path d="M82 178 Q112 189 142 178 L132 201 112 212 91 200Z" fill="#a63866" stroke="#241629" stroke-width="4"/><path d="M96 187l16 17 16-17" fill="none" stroke="#f2d8ea" stroke-width="3"/>',
-   scarf:`<path d="M84 179 Q112 193 140 179 L135 194 Q112 205 89 193Z" fill="${accent}" stroke="#241629" stroke-width="4"/><path d="M129 191l7 36-15-5-4-25" fill="${accent}" stroke="#241629" stroke-width="4"/>`
-  };
-  const auras={
-   none:'',ghost_flames:'<path d="M42 168 Q31 145 48 127 Q40 154 58 155 Q57 132 72 120 Q65 152 83 161 M181 168 Q193 146 176 127 Q184 154 166 155 Q167 132 152 120 Q159 152 141 161" fill="none" stroke="#79ffe7" stroke-width="7" stroke-linecap="round" opacity=".8"/>',
-   spark_ring:'<ellipse cx="112" cy="126" rx="93" ry="110" fill="none" stroke="#c6ff45" stroke-width="3" stroke-dasharray="3 12" opacity=".7"/>',
-   glow:'<circle cx="112" cy="113" r="76" fill="none" stroke="#ff55d8" stroke-width="9" opacity=".35"/><circle cx="112" cy="113" r="83" fill="none" stroke="#ff55d8" stroke-width="3" opacity=".6"/>',
-   moon:'<path d="M175 152a30 30 0 1 1-28-46 25 25 0 1 0 28 46z" fill="#f4dc83" stroke="#30243a" stroke-width="3"/><circle cx="44" cy="103" r="5" fill="#c6ff45"/><circle cx="184" cy="190" r="5" fill="#ff62c7"/>'
-  };
-   
-   
-   
-   
-   
-   
-   
-   const extraGarment=extraArt.garments[a.outfit];if(extraGarment)garments[a.outfit]=extraGarment.replaceAll('@cloth',cloth).replaceAll('@accent',accent);
-   Object.assign(headwear,extraArt.headwear);
-   Object.assign(eyewear,extraArt.eyewear);
-   Object.assign(neckwear,extraArt.neckwear);
-   Object.assign(auras,extraArt.aura);
-   const uid='kf-misfit-'+(++renderSequence);
-   const shapeGlow=a.background==='toxic'?'#c6ff45':a.background==='ember'?'#ff986b':a.background==='bubblegum'?'#ff7de2':'#78efec';
-   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar" data-render-style="neon-noir-illustration-v4">
- <defs>
-<clipPath id="${uid}-face-clip">${headShape}</clipPath>
-<linearGradient id="${uid}-edge-light" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${shapeGlow}" stop-opacity=".9"/><stop offset=".45" stop-color="#f3c4fd" stop-opacity=".18"/><stop offset="1" stop-color="${accent}" stop-opacity=".8"/></linearGradient>
-<radialGradient id="${uid}-portrait-light" cx="48%" cy="22%" r="68%"><stop stop-color="#fff" stop-opacity=".27"/><stop offset=".62" stop-color="${shapeGlow}" stop-opacity=".08"/><stop offset="1" stop-color="#05020d" stop-opacity=".38"/></radialGradient>
-<pattern id="${uid}-dot-grain" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#fff" opacity=".11"/></pattern>
-  <radialGradient id="${uid}-ambient" cx="51%" cy="35%" r="79%"><stop stop-color="${shapeGlow}" stop-opacity=".46"/><stop offset=".45" stop-color="${bg}" stop-opacity=".10"/><stop offset="1" stop-color="#05030a" stop-opacity=".82"/></radialGradient>
-  <linearGradient id="${uid}-skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7ed" stop-opacity=".34"/><stop offset=".27" stop-color="${skin}"/><stop offset=".7" stop-color="${skin}"/><stop offset="1" stop-color="#3d2438" stop-opacity=".54"/></linearGradient>
-  <linearGradient id="${uid}-hair" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fff7ff" stop-opacity=".38"/><stop offset=".18" stop-color="${hair}"/><stop offset=".7" stop-color="${hair}"/><stop offset="1" stop-color="#160c1d"/></linearGradient>
-  <linearGradient id="${uid}-cloth" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff" stop-opacity=".23"/><stop offset=".21" stop-color="${cloth}"/><stop offset=".76" stop-color="${cloth}"/><stop offset="1" stop-color="#110c19"/></linearGradient>
-  <radialGradient id="${uid}-shine"><stop stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-  <filter id="${uid}-shadow" x="-35%" y="-35%" width="170%" height="190%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#05030c" flood-opacity=".54"/></filter>
- </defs>
- <rect width="224" height="256" rx="35" fill="${bg}"/>
- <g data-art-pass="storybook-frame" stroke-linecap="round" stroke-linejoin="round">
-   <circle cx="112" cy="116" r="93" fill="${shapeGlow}" opacity=".13"/>
-   <circle cx="112" cy="116" r="89" fill="none" stroke="${shapeGlow}" stroke-width="7" opacity=".35"/>
-   <path d="M19 75Q26 38 68 21M156 21Q200 35 205 78" fill="none" stroke="#fff6ea" stroke-width="7" opacity=".28"/>
-   <path d="m31 148 7 8-7 8-7-8zM186 180l6 7-6 7-6-7z" fill="${accent}" stroke="#211327" stroke-width="2.4" opacity=".82"/>
- </g>
- <rect width="224" height="256" rx="35" fill="url(#${uid}-ambient)"/>
-<g data-art-pass="cinematic-background"><path d="M-18 22 L59 -10 L-1 148Z M154 -12 L248 43 L226 176Z" fill="${shapeGlow}" opacity=".11"/><circle cx="112" cy="112" r="104" fill="none" stroke="${shapeGlow}" stroke-width="1.2" opacity=".3"/><circle cx="112" cy="112" r="94" fill="none" stroke="#f4d9fc" stroke-width=".7" stroke-dasharray="1 8" opacity=".4"/><path d="M13 218L90 256M162 0l65 78" fill="none" stroke="#fff" stroke-width="1" opacity=".16"/></g>
- <g data-scene="${a.background}">${sceneArt[a.background]}</g>
-<rect width="224" height="256" rx="35" fill="url(#${uid}-dot-grain)" opacity=".45"/>
- <g opacity=".27" stroke="${shapeGlow}" fill="none">
-   <circle cx="112" cy="124" r="100" stroke-width=".8"/><circle cx="112" cy="124" r="90" stroke-dasharray="3 7" stroke-width="1"/>
-   <path d="M16 206L62 160M165 31l40 39M17 28h26m139 196h20" stroke-width="1.5"/>
- </g>
- <path d="M12 65v-27q0-24 24-24h24m152 159v41q0 28-28 28h-28" fill="none" stroke="${shapeGlow}" stroke-width="2" opacity=".5"/>
- <circle cx="112" cy="117" r="102" fill="url(#${uid}-shine)"/>
- ${patterns[a.pattern]}${auras[a.aura]}
- <ellipse cx="112" cy="240" rx="71" ry="10" fill="#07030a" opacity=".48"/>
- <g filter="url(#${uid}-shadow)">
-  <path d="M83 184Q75 201 76 217M141 184Q150 200 148 216" fill="none" stroke="${skin}" stroke-width="12" stroke-linecap="round"/>
-  ${garments[a.outfit].replaceAll('fill="' + cloth + '"','fill="url(#' + uid + '-cloth)"')}
-  ${fineArt.outfit_patch[a.outfit_patch]}
-<g data-art-pass="garment-ink" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M65 227q7-14 17-20m60 0q13 11 18 21M93 241q19-5 38 0" stroke="#fff" stroke-width="2.6" opacity=".15"/><path d="M68 222l8-5m-5 12 8-5m69-7 8 8m-9 4 6 5" stroke="#0a0c19" stroke-width="2.8" opacity=".6"/><path d="M87 228l-1 16m53-16 1 16" stroke="${accent}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".58"/></g>
-  <path d="M60 234q20-13 31-12m45 0q17-2 32 12" fill="none" stroke="#fff" stroke-width="1.5" opacity=".24"/>
-  <g data-art-pass="noir-tailoring" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M72 202q14 7 22 19m58-19q-14 7-22 19M82 239q30 8 60 0" stroke="#fff4ff" stroke-width="1.5" opacity=".22"/>
-   <path d="M87 196l12 12m38-12-12 12M75 218l10 4m64-4-10 4" stroke="${accent}" stroke-width="1.7" opacity=".48"/>
-   <path d="M111 211v27" stroke="#080711" stroke-width="2.5" opacity=".42"/>
-  </g>
-  ${neckwear[a.neckwear]}
-  <g data-hair-depth="rear" fill="url(#${uid}-hair)" stroke="#241629" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${silhouetteArt.rear[a.hair]||rearHair[a.hair]||''}</g>
-  <g data-ear-style="${a.ear_style}">${silhouetteArt.ears[a.ear_style].replaceAll("@skin",skin)}</g>
-  <g fill="url(#${uid}-skin)" stroke="#241629" stroke-width="5" stroke-linejoin="round">${headShape}</g>
-<g data-art-pass="face-paint" clip-path="url(#${uid}-face-clip)"><ellipse cx="112" cy="94" rx="66" ry="85" fill="url(#${uid}-portrait-light)"/><path d="M55 77 Q49 130 75 170" fill="none" stroke="#351e38" stroke-width="8" opacity=".13"/><path d="M170 75 Q180 126 151 170" fill="none" stroke="#1a1532" stroke-width="8" opacity=".23"/><path d="M75 161 Q111 186 149 160" fill="none" stroke="#fff7fb" stroke-width="2.8" opacity=".18"/><path d="M60 117q-3 17 6 26m92-26q7 14 1 27" fill="none" stroke="#fff" stroke-width="2" opacity=".23"/><ellipse cx="75" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/><ellipse cx="151" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/></g>
-  <g data-art-pass="noir-face-sculpt" clip-path="url(#${uid}-face-clip)" fill="none" stroke-linecap="round">
-   <path d="M57 106q-5 25 8 49m102-49q5 25-8 49" stroke="#382038" stroke-width="5" opacity=".16"/>
-   <path d="M77 158q13 9 26 5m18 0q13 4 26-5" stroke="#fff3fa" stroke-width="2.1" opacity=".19"/>
-   <path d="M108 128q-3 10 1 16m7-16q4 9 1 15" stroke="#784a59" stroke-width="1.5" opacity=".22"/>
-   <path d="M96 169q16 8 32 0" stroke="#5a3447" stroke-width="1.6" opacity=".2"/>
-  </g>
-  <ellipse cx="90" cy="81" rx="44" ry="28" fill="#fff" opacity=".075"/>
-  <g data-art-pass="comic-blush">
-    <ellipse cx="73" cy="146" rx="23" ry="12" fill="#f27591" opacity=".19"/>
-    <ellipse cx="152" cy="146" rx="23" ry="12" fill="#f27591" opacity=".19"/>
-    <path d="m63 147-5 4m14-4-5 4m78-4-5 4m15-4-5 4" fill="none" stroke="#ad596f" stroke-width="2.2" stroke-linecap="round" opacity=".39"/>
-  </g>
-  ${fineArt.nose[a.nose]}
-  <g fill="url(#${uid}-hair)" stroke="#241629" stroke-width="4" stroke-linejoin="round">${silhouetteArt.front[a.hair]||hairstyles[a.hair]}</g>
-  ${a.hair_highlight==="none"?"":`<path d="M71 68q17-18 36-17m17 0q18 4 27 19" fill="none" stroke="${palettes.hair_color[a.hair_highlight]}" stroke-width="6" stroke-linecap="round" opacity=".8"/>`}
-  <g data-art-pass="noir-hair-detail" fill="none" stroke-linecap="round">
-   <path d="M63 82Q83 47 119 50M126 51Q151 52 165 84" stroke="#fff" stroke-width="2.7" opacity=".28"/>
-   <path d="M70 91Q85 67 103 65M137 63q16 8 20 23" stroke="${palettes.hair_color[a.hair_highlight]||'#fff'}" stroke-width="2.2" opacity="${a.hair_highlight==='none'?'.16':'.78'}"/>
-   <path d="M59 102q-5 18 0 35m107-35q5 18 0 35" stroke="#090711" stroke-width="2.2" opacity=".34"/>
-   <path d="M83 56q18-10 35-5m8 1q13 2 21 11" stroke="#fff" stroke-width="1.1" opacity=".32"/>
-  </g>
-  <path d="M61 71Q82 41 120 49m15 3q15 7 23 19" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".19"/>
-<g data-art-pass="hair-ink" fill="none" stroke-linecap="round"><path d="M72 62Q98 43 123 52M126 52q17 6 25 20" stroke="#fff" stroke-width="2.2" opacity=".17"/><path d="M61 94q-5 18-1 34m107-35q5 14 1 34" stroke="#090710" stroke-width="2.8" opacity=".42"/><path d="M82 52l-7 13m17-19-4 11m55-6 6 14" stroke="${accent}" stroke-width="1.3" opacity=".4"/></g>
-  ${accessories[a.accessory]}${headwear[a.headwear]}
-  <g fill="none" stroke="#39283b" stroke-width="4.6" stroke-linecap="round">${brows}</g>
-<g data-art-pass="eye-structure"><path d="M66 113q15-12 32 1m31 0q17-13 33-1" fill="none" stroke="#26182e" stroke-width="2.6" stroke-linecap="round" opacity=".46"/><path d="M72 133q10 6 21 0m40 0q10 6 21 0" fill="none" stroke="#fff3f5" stroke-width="1.5" opacity=".24"/></g>
-  <g data-art-pass="comic-eye-ink" fill="none" stroke="#25172f" stroke-width="3.5" stroke-linecap="round" opacity=".84">
-    <path d="M64 114q18-15 36 1m27-1q18-16 36 1"/>
-  </g>
-  ${fineArt.makeup[a.makeup]}${eyeShapes[a.eyes]}${pupils}
-  <g data-art-pass="noir-eye-detail" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M65 112q17-14 35 0m27 0q18-14 35 0" stroke="#160f20" stroke-width="2.2" opacity=".78"/>
-   <path d="M69 108l-5-5m12 2-2-6m14 5 2-5m47 4 2-5m9 7 4-6m5 8 5-4" stroke="#241629" stroke-width="1.8" opacity=".7"/>
-   <path d="M70 136q12 5 23 1m40 0q12 4 23-1" stroke="#fff1fa" stroke-width="1.6" opacity=".34"/>
-   <circle cx="77" cy="118" r="2.4" fill="#fff" stroke="none" opacity=".9"/><circle cx="140" cy="118" r="2.4" fill="#fff" stroke="none" opacity=".9"/>
-  </g>
-  <path d="M68 139q14 5 26 0m38 0q15 5 26 0" fill="none" stroke="#673e57" stroke-width="1.5" opacity=".33"/>
-  <g data-face-sculpt="true" fill="none" stroke="#462a42" stroke-width="1.6" opacity=".3"><path d="M67 148q-5 10 3 17m87-17q5 10-3 17M90 167q22 7 43-1"/></g>
-  ${glimmer}${eyewear[a.eyewear]}${faceMarks[a.face_mark]}${fineArt.tattoo[a.tattoo]}${mouths[a.expression]}${fineArt.facial_hair[a.facial_hair]}${piercings[a.piercing]}
- </g>
- <g data-art-pass="collector-frame" fill="none" stroke-linejoin="round"><rect x="4.5" y="4.5" width="215" height="247" rx="30" stroke="url(#${uid}-edge-light)" stroke-width="2.5" opacity=".65"/><rect x="10" y="10" width="204" height="236" rx="27" stroke="#fff" stroke-width=".7" opacity=".18"/><path d="M16 46V31q0-14 15-14h14m163 191v17q0 14-14 14h-17" stroke="${accent}" stroke-width="2" opacity=".85"/></g>
-<path d="M199 38l3 8 9 3-9 3-3 8-3-8-9-3 9-3z" fill="${accent}"/>
- <path d="M29 198l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${shapeGlow}" opacity=".85"/>
- <path d="M31 230h33m96-207h32" fill="none" stroke="${shapeGlow}" stroke-width="2" opacity=".65"/>
- </svg>`;
- }
- window.KnightfallMisfitAvatars={defaults,safeAvatar,render,choices,palettes};
+}
+function theme(a,uid){
+ const [dark,light]=palettesBg[a.background]||palettesBg.void;
+ const accent=a.background==='toxic'?'#c6ff62':a.background==='gravewave'?'#7feae7':'#f58fcf';
+ const defs='<defs><linearGradient id="'+uid+'-bg" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="'+dark+'"/><stop offset="1" stop-color="'+light+'"/></linearGradient></defs>';
+ let back=defs+'<rect width="400" height="700" fill="url(#'+uid+'-bg)"/><ellipse cx="200" cy="638" rx="159" ry="30" fill="'+accent+'" opacity=".15"/>';
+ if(a.pattern==='sparkles'||a.pattern==='shards')back+='<path d="M70 125l8 20 20 7-20 9-8 20-8-20-20-9 20-7zM337 303l7 15 16 7-16 6-7 16-7-16-16-6 16-7z" fill="'+accent+'" opacity=".38"/>';
+ if(a.pattern==='runes'||a.pattern==='static')back+='<g stroke="'+accent+'" opacity=".26" fill="none"><circle cx="200" cy="285" r="178"/><path d="M21 285h358M200 106v360M72 158l256 254"/></g>';
+ if(a.pattern==='bats')back+='<path d="M52 139q17-25 36 0 16-20 33-1l-13-5-15 17-15-14-18 9z" fill="'+accent+'" opacity=".37"/>';
+ if(a.pattern==='hearts')back+='<path d="M70 236q-35-25 0-40 16-6 21 10 17-26 35-5 17 18-23 45l-13 8z" fill="#e35dba" opacity=".3"/>';
+ let front='';
+ if(a.ear_style==='demon'||a.accessory==='horns'||a.hair==='horns')front+='<path d="M164 63q-37-23-21-56 14 23 37 42m55 14q37-23 21-56-14 23-37 42" fill="#ad82a1" stroke="#321d33" stroke-width="4"/>';
+ if(a.accessory==='halo')front+='<ellipse cx="200" cy="16" rx="50" ry="12" fill="none" stroke="#c6ff62" stroke-width="7"/>';
+ if(a.tattoo==='teardrop')front+='<path d="M258 147q-10 18-3 24 16 4 10-10z" fill="#354a67"/>';
+ if(a.tattoo==='neon_sigil'||a.tattoo==='runes')front+='<path d="M264 149l10-19 7 18-17-8 17-4" fill="none" stroke="#c6ff62" stroke-width="3"/>';
+ if(a.tattoo==='cracks')front+='<path d="M145 137l-8 12 12 9-5 12" fill="none" stroke="#5e4673" stroke-width="3"/>';
+ if(a.tattoo==='serpent')front+='<path d="M266 148q21 8 1 20t-1 19" fill="none" stroke="#428b73" stroke-width="3"/>';
+ if(a.piercing==='septum')front+='<path d="M192 161q8 14 16 0" fill="none" stroke="#cad5dc" stroke-width="3"/>';
+ if(a.piercing==='nose')front+='<circle cx="212" cy="166" r="3" fill="#f5e3ff"/>';
+ if(a.piercing==='lip')front+='<circle cx="200" cy="189" r="3.5" fill="#e4dee9"/>';
+ if(a.eyewear==='eyepatch')front+='<path d="M145 112q30-7 54 0v28q-30 14-54 0z" fill="#171825"/><path d="M142 117l91-26" stroke="#171825" stroke-width="6"/>';
+ if(a.headwear==='tiara'||a.accessory==='crown')front+='<path d="M160 64l-7-27 22 11 23-26 24 26 23-11-8 27z" fill="#c6ff62" stroke="#30233d" stroke-width="3"/>';
+ if(a.aura!=='none')front+='<path d="M52 512q-38-99 17-188M348 512q38-99-17-188" fill="none" stroke="'+accent+'" stroke-width="5" opacity=".34" stroke-dasharray="12 22"/>';
+ return {back,front};
+}
+function render(value={},options={}){
+ if(!forge)throw Error('Forge2D not ready');
+ const a=safeAvatar(value),uid='kf-forge-'+(++sequence);
+ const svg=forge.renderAvatarSvg(toForge(a),{width:400,uid,fast:options.fast!==false,title:'Knightfall Misfit avatar'});
+ if(!svg.startsWith('<svg')||!svg.endsWith('</svg>'))throw Error('Invalid Forge2D SVG output');
+ const art=theme(a,uid);
+ return svg.replace('<svg ','<svg data-render-engine="humanforge-forge2d" ')
+  .replace(/(<svg[^>]*>)/,'$1'+art.back)
+  .replace('</svg>',art.front+'</svg>');
+}
+window.KnightfallMisfitAvatars={defaults,choices,palettes,safeAvatar,toForge,render,ready,engine:'HumanForge Forge2D'};
 })();

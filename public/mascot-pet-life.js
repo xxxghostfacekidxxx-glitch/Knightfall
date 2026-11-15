@@ -100,6 +100,7 @@ async function addMisfitCard(){
  const kit=window.KnightfallMisfitAvatars;
  if(!header||!kit)return;
  try{
+  await kit.ready;
   const response=await fetch(API+'/api/avatars/me',{credentials:'include',cache:'no-store'});
   if(!response.ok)return;
   const data=await response.json(),active=(data.slots||[]).find(slot=>slot.is_active&&slot.avatar);

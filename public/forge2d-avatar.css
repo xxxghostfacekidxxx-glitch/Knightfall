@@ -1,0 +1,11 @@
+/* One Forge2D figure renderer, consistent across studio, member profiles, and sanctuary. */
+.avatar-studio .avatar-stage{min-height:520px;aspect-ratio:1.05/1;overflow:hidden}
+.avatar-studio .avatar-stage svg[data-render-engine="humanforge-forge2d"]{display:block;width:auto;height:min(68vh,565px);max-width:100%;max-height:565px;margin:auto;transition:transform .24s ease;transform-origin:50% 18%;filter:drop-shadow(0 24px 28px #000a)}
+.avatar-studio .avatar-stage[data-framing="portrait"] svg[data-render-engine="humanforge-forge2d"]{transform:scale(1.7) translateY(16%)}
+.avatar-studio .preset-chip .look-avatar svg[data-render-engine],.avatar-studio .trait-option .trait-thumbnail svg[data-render-engine],.avatar-studio .slot-card .tiny-avatar svg[data-render-engine]{width:100%;height:100%;display:block;max-width:100%;max-height:100%;object-fit:contain}
+.avatar-studio .preset-chip .look-avatar,.avatar-studio .trait-option .trait-thumbnail,.avatar-studio .tiny-avatar{overflow:hidden}
+.personal-avatar svg[data-render-engine],#profile-misfit-preview svg[data-render-engine],#studio-preview-avatar svg[data-render-engine]{display:block;width:100%;height:auto;max-height:100%;object-fit:contain}
+.sanctuary-owner-misfit-art svg[data-render-engine]{display:block;max-width:100%;max-height:340px;width:auto;height:auto;margin:auto}
+@media(max-width:850px){.avatar-studio .avatar-stage{min-height:420px}}
+@media(max-width:600px){.avatar-studio .avatar-stage{min-height:380px;aspect-ratio:1/1}.avatar-studio .avatar-stage svg[data-render-engine]{height:min(58vh,415px);max-height:430px;width:auto}.avatar-studio .avatar-stage[data-framing="portrait"] svg[data-render-engine]{transform:scale(1.7) translateY(16%)}}
+@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg[data-render-engine]{transition:none}}
