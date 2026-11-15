@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
@@ -72,7 +72,7 @@ for (const { id, name } of characters) {
 
 test('legacy optional mascot crew keeps featured artwork without globally replacing the Gothic site theme', () => {
   const js = read('public/gravewave-takeover.js');
-  const css = read('public/gravewave-takeover.css');
+  const css = read('public/knightfall-unified-theme.css');
   const nav = read('public/nav.js');
   for (const { id } of characters) {
     assert.ok(js.includes("'" + id + "'"), 'crew includes ' + id);
@@ -84,9 +84,10 @@ test('legacy optional mascot crew keeps featured artwork without globally replac
   assert.match(nav, /knightfall-unified-theme\.css\?v=20261115-gothic\d+/, 'approved Gothic unified theme loads instead');
   assert.ok(nav.includes('mountApprovedTheme'), 'the shared theme loader is retained');
   assert.ok(nav.includes('document.head.appendChild(link)'), 'approved theme must be mounted after page-specific styles');
-  assert.ok(css.includes('nth-child(n+5){display:none}'), 'mobile crew remains compact');
-  assert.ok(css.includes('body:has(canvas)'), 'active games remain unobstructed');
-  assert.ok(css.includes('body:has(:fullscreen)'), 'fullscreen views remain unobstructed');
+  assert.ok(css.includes('.gw-character-crew'), 'obsolete mascot crew overlays are suppressed');
+  assert.ok(css.includes('.gw-ambient'), 'obsolete ambient art overlays are suppressed');
+  assert.ok(!existsSync(resolve(root, 'public/gravewave-takeover.css')), 'retired global stylesheet stays deleted');
+  assert.ok(css.includes('body:not(.profile-custom-theme)'), 'approved site chrome preserves profile customization');
 });
 
 test('Devil Tools has working per-character previews and a lore section', () => {
