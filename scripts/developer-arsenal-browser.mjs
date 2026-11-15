@@ -60,7 +60,7 @@ try {
         await page.locator("#foundry-back:visible").click();
         await catalog.waitFor();
 
-        const search = catalog.getByRole("searchbox", { name: "Find a tool" });
+        const search = catalog.getByRole("searchbox", { name: "Search the Foundry" });
         await catalog.locator('[data-category="games"]').click();
         assert.equal(await catalog.locator("[data-group]:visible").count(), 1);
         await search.fill(role.developer ? "phaser" : "trenchbroom");
@@ -70,7 +70,7 @@ try {
         await search.fill("zz-no-such-tool");
         await catalog.getByText("No tools match.", { exact: false }).waitFor();
 
-        await catalog.locator('[data-category="art"]').click();
+        await catalog.locator('[data-category="games"]').click();
         await search.fill("sprite workshop");
         await catalog.getByRole("link", { name: "Open sprite workshop" }).click();
         await page.locator("#sprite-workshop").waitFor();
@@ -84,7 +84,7 @@ try {
         await page.getByRole("link", { name: "Back to catalog" }).click();
         await catalog.waitFor();
         assert.equal(await search.inputValue(), "sprite workshop");
-        assert.equal(await catalog.locator('[data-category="art"]').getAttribute("aria-pressed"), "true");
+        assert.equal(await catalog.locator('[data-category="games"]').getAttribute("aria-pressed"), "true");
 
         // Browser-native tools work for the authorized roles without third-party scripts or uploads.
         await search.fill("production lab");
@@ -116,7 +116,7 @@ try {
 
         await page.goto(base + "/devil-tools.html#brand-library");
         await page.locator("#brand-library").waitFor();
-        assert.equal(await page.locator("#foundry-catalog:visible").count(), 0);
+        assert.equal(await page.locator("#foundry-catalog:visible").count(), 1, "non-workspace brand library bookmarks keep catalog visible");
         await page.goto(base + "/dev-toolkit.html#release-simulator");
         await page.waitForURL("**/devil-tools.html#release-simulator");
         await page.locator(role.developer ? "#release-simulator" : "#foundry-catalog").waitFor();
