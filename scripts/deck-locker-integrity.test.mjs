@@ -30,11 +30,13 @@ function startWardrobe(memory=new Map()){
 
 test("all twelve current skins are immediately free",()=>{
  const {api,root}=startWardrobe();
- assert.equal(api.skins.length,24);
- assert.equal(new Set(api.skins.map(s=>s.id)).size,24);
+ assert.equal(api.skins.length,42);
+ assert.equal(new Set(api.skins.map(s=>s.id)).size,42);
  assert.equal(api.skins.filter(s=>s.kind==="free").length,12);
  assert.equal(api.skins.filter(s=>s.kind==="unlock").length,0);
  assert.equal(api.skins.filter(s=>s.kind==="premium").length,12);
+ assert.equal(api.skins.filter(s=>s.kind==="cinders").length,12);
+ assert.equal(api.skins.filter(s=>s.kind==="vip").length,6);
  assert.equal(api.current,"ash-classic");
  assert.equal(root.dataset.kfDeckSkin,"ash-classic");
  assert.equal(api.chooseSkin("neon-riot"),true);
@@ -92,14 +94,15 @@ test("every catalogued card-game entry imports the same asset pipeline",()=>{
  assert.match(read("public/arcade/hosted/cards-against-chaos/online.js"),/recordDeal\('cards-against-chaos'\)/);
 });
 
-test("all 24 bespoke faces and backs render, with existing 12 permanently free",()=>{
+test("all 42 faces and backs render, with existing 12 permanently free",()=>{
  for(const skin of startWardrobe().api.skins){
   assert.ok(css.includes('data-kf-deck-skin="'+skin.id+'"'),skin.id+" missing skin selector");
   assert.ok(css.includes('.kf-deck-preview--'+skin.id),skin.id+" missing matching face preview");
-  assert.ok(["free","premium"].includes(skin.kind));
+  assert.ok(["free","premium","cinders","vip"].includes(skin.kind));
   assert.ok(typeof skin.symbol==="string"&&skin.symbol.length>0);
   if(skin.kind==="free")assert.ok(!shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must not appear for sale");
-  else assert.ok(shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must have a shop listing");
+  else if(skin.kind==="premium")assert.ok(shop.includes('id="deck-skin-'+skin.id+'"'),skin.id+" must have a shop listing");
+  else {assert.ok(skin.cost_cinders>=300&&skin.cost_cinders<=2500);assert.equal(startWardrobe().api.isAvailable(skin.id),false,"Cinders skin must require verified ownership");}
  }
  assert.match(css,/--kf-art-sigil/);
  assert.match(css,/\.kf-card-mini-back/);
@@ -109,4 +112,21 @@ test("all 24 bespoke faces and backs render, with existing 12 permanently free",
  assert.match(css,/\.cac-shell \.prompt-card/);
  assert.match(css,/#hand button\.af-deck-card/);
  assert.match(shop,/All twelve existing Knightfall card styles are now free/);
+});
+
+test("Cinders products match SQL catalog and VIP access rules, never browser-provided prices",()=>{
+ const sql=read("backend/migrations/0142_deck_cinders_vip.sql");
+ const code=read("backend/src/deck-cinder-products.js");
+ const freeAndPaid=startWardrobe().api.skins;
+ const cinders=freeAndPaid.filter(s=>s.kind==="cinders"||s.kind==="vip");
+ assert.equal(cinders.length,18);
+ assert.equal(new Set(cinders.map(s=>s.id)).size,18);
+ for(const skin of cinders){
+  assert.match(sql,new RegExp("'"+skin.id+"',"+skin.cost_cinders+",'"+skin.kind+"'"));
+  assert.ok(code.includes('"'+skin.id+'"'),skin.id+" missing server-owned catalog");
+ }
+ assert.match(sql,/VIP membership required/);
+ assert.match(sql,/Not enough Cinders/);
+ assert.match(sql,/INSERT INTO wallet_ledger/);
+ assert.match(sql,/PRIMARY KEY\(user_id,skin_id\)/);
 });
