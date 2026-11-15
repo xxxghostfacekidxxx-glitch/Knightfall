@@ -107,7 +107,7 @@ self.addEventListener("push", event => {
   let payload = {};
   try { payload = event.data ? event.data.json() : {}; } catch { payload = { title: "Ash-Fall alert", body: "You have a new notification." }; }
   const title = String(payload.title || "Ash-Fall alert").slice(0, 120);
-  const body = String(payload.body || "You have a new notification.").slice(0, 240);
+  const body = Array.from(String(payload.body || "You have a new notification.")).slice(0, 240).join("");
   const path = safeNotificationPath(payload.url);
   const conversationId = messageConversationId(path);
   const tag = payload.tag ? String(payload.tag).slice(0, 100) : "ash-fall-alert";

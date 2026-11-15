@@ -125,12 +125,18 @@ test("message acknowledgement never waits for push notification delivery",async(
  const workerCtx={waitUntil(promise){waiting.push(promise);}};
  const returned=ctx.queueMessageNotifications(workerCtx,{},[
   {user_id:8,muted_until:null}
- ],{id:2,username:"tester"},7,"hello @friend");
+ ],{id:2,username:"tester"},7,"hello  @friend",0);
  assert.equal(returned,undefined,"response does not await notification");
  assert.equal(waiting.length,1);
  assert.equal(notices.length,1);
+ assert.equal(notices[0].title,"New message · @tester");
+ assert.equal(notices[0].pushPreview,"hello @friend");
  delivery.resolve();
  await waiting[0];
  assert.equal(mentions.length,1);
- assert.match(backend,/queueMessageNotifications\(ctx,env,recipients.results\|\|\[\],user,conversationId,message\)/);
+ await ctx.queueMessageNotifications(null,{},[{user_id:8}],{id:2,username:"tester"},7,"",2);
+ assert.equal(notices[1].pushPreview,"Sent 2 attachments.");
+ await ctx.queueMessageNotifications(null,{},[{user_id:8}],{id:2,username:"tester"},7,"🙂".repeat(181),0);
+ assert.equal(notices[2].pushPreview,"🙂".repeat(179)+"…");
+ assert.match(backend,/queueMessageNotifications\(ctx,env,recipients.results\|\|\[\],user,conversationId,message,attachmentIds\.length\)/);
 });

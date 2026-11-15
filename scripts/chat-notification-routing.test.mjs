@@ -27,8 +27,8 @@ function harness({noTextAction=false,sendOk=true,windows=[]}={}){
     fetchCalls.push({url,options});return {ok:sendOk,status:sendOk?201:403};
   }};
   vm.runInNewContext(sw,context);
-  async function push(url="/messages.html?conversation=42",notificationId){
-    let pending;listeners.push({data:{json(){return {title:"New message",body:"Message received",url,notification_id:notificationId};}},waitUntil(p){pending=p;}});
+  async function push(url="/messages.html?conversation=42",notificationId,body="Message received"){
+    let pending;listeners.push({data:{json(){return {title:"New message",body,url,notification_id:notificationId};}},waitUntil(p){pending=p;}});
     await pending;
   }
   async function click({url="/messages.html?conversation=42",action="",reply,notificationId}={}){
@@ -39,8 +39,10 @@ function harness({noTextAction=false,sendOk=true,windows=[]}={}){
 }
 
 test("message push offers an Android text reply and preserves conversation ID",async()=>{
-  const h=harness();await h.push();
+  const h=harness(),preview="🙂".repeat(179)+"…";
+  await h.push(undefined,undefined,preview);
   assert.equal(h.shown.length,1);
+  assert.equal(h.shown[0].options.body,preview);
   assert.equal(h.shown[0].options.data.conversationId,42);
   assert.equal(h.shown[0].options.actions[0].type,"text");
 });

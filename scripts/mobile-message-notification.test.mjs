@@ -18,7 +18,7 @@ function context({subscription=null,visible="hidden"}={}){
     window:{Notification,PushManager:function(){}},Notification,
     navigator:{serviceWorker:{ready:Promise.resolve({pushManager:{getSubscription:async()=>subscription},showNotification:async(...args)=>notices.push(args)})}},
     document:{visibilityState:visible},
-    conversations:[{id:42,unread_count:1,other_display_name:"Example",other_username:"example"}],
+    conversations:[{id:42,unread_count:1,other_display_name:"Example",other_username:"example",last_body:"Check the Arcade tonight?",last_message_incoming:1}],
     currentId:null,
     knownUnreadByConversation:new Map([[42,0]]),unreadBaselineReady:true,
     conversationName:conv=>conv.other_display_name,
@@ -36,6 +36,7 @@ test("Android inbox unread notification uses service worker, not illegal page co
   assert.equal(c.constructorCalls,0);
   assert.equal(c.notices.length,1);
   assert.match(c.notices[0][0],/New message/);
+  assert.equal(c.notices[0][1].body,"Check the Arcade tonight?");
   assert.equal(c.notices[0][1].data.url,"/messages.html?conversation=42");
 });
 test("existing cloud push subscription prevents duplicate foreground alerts",async()=>{

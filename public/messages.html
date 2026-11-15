@@ -143,11 +143,16 @@ function updateNotificationButton(){
  b.textContent=!supported?"Phone push unavailable":Notification.permission==="denied"?"Phone push blocked":"Phone push settings";
  b.setAttribute("aria-pressed","false");
 }
+function unreadAlertBody(conv){
+ const preview=Array.from(conv.last_message_incoming ? String(conv.last_body||"").replace(/\s+/g," ").trim() : "");
+ if(preview.length>180)return preview.slice(0,179).join("")+"…";
+ return preview.join("")||(conv.last_message_incoming?"Sent an attachment.":"You have a new message in Ash-Fall.");
+}
 function maybeNotifyUnread(){
  const next=new Map(conversations.map(x=>[Number(x.id),Number(x.unread_count||0)]));
  const newUnreads=unreadBaselineReady?conversations.filter(conv=>{
    const id=Number(conv.id);
-   return id!==Number(currentId)&&Number(conv.unread_count||0)>(knownUnreadByConversation.get(id)||0);
+   return id!==Number(currentId)&&!(Date.parse(conv.muted_until)>Date.now())&&Number(conv.unread_count||0)>(knownUnreadByConversation.get(id)||0);
  }):[];
  knownUnreadByConversation=next;unreadBaselineReady=true;
  if(!newUnreads.length||document.visibilityState!=="hidden"||!("Notification" in window)||Notification.permission!=="granted")return;
@@ -160,7 +165,7 @@ function maybeNotifyUnread(){
      if(subscribed)return;
      for(const conv of newUnreads){
        const options={
-         body:"You have a new message in Ash-Fall.",
+         body:unreadAlertBody(conv),
          tag:"ashfall-conversation-"+Number(conv.id),
          data:{url:"/messages.html?conversation="+Number(conv.id),conversationId:Number(conv.id)}
        };
@@ -179,7 +184,7 @@ function maybeNotifyUnread(){
    // Desktop fallback only. Never let notification UI errors interrupt messaging.
    try{if(typeof Notification==="function")
      for(const conv of newUnreads)new Notification("New message · "+conversationName(conv),{
-       body:"You have a new message in Ash-Fall.",tag:"ashfall-conversation-"+Number(conv.id)
+       body:unreadAlertBody(conv),tag:"ashfall-conversation-"+Number(conv.id)
      });
    }catch(error){console.warn("foreground_notification_unavailable",String(error));}
  }
