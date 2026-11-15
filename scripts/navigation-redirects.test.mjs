@@ -105,12 +105,12 @@ test("global navigation exposes only one arcade directory", () => {
 
 test("mobile drawer toggles scroll lock and keeps section context", () => {
   const theme = readFileSync(join(publicDir, "theme.css"), "utf8");
-  const neon = readFileSync(join(publicDir, "neon-global.css"), "utf8");
+  const design = readFileSync(join(publicDir, "design-system.css"), "utf8");
   const unified = readFileSync(join(publicDir, "knightfall-unified-theme.css"), "utf8");
   assert.match(nav, /const mobileNavViewport = window\.matchMedia\("\(max-width: 1080px\)"\)/);
   assert.match(nav, /document\.body\.classList\.toggle\("kf-navigation-open", visible\)/);
   assert.match(theme, /body\.kf-navigation-open\{overflow:hidden\}/);
-  for (const stylesheet of [theme, neon, unified]) {
+  for (const stylesheet of [theme, design, unified]) {
     assert.ok(!stylesheet.includes(".kf-nav-more"), "Retired dropdown rules reappeared");
   }
   for (const route of ["/profile-edit", "/thread", "/community-topic", "/create-thread"]) {

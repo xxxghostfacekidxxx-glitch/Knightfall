@@ -20,17 +20,17 @@
  accent-color:var(--kf-antique-gold);color-scheme:dark
 }
 html{background:#0d1013;scrollbar-color:#6f6266 #0d1013}
-body:not(.profile-custom-theme){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])){
  color:var(--kf-bone);color-scheme:dark;
  background-color:#0d1013!important;
  background-image:radial-gradient(ellipse at 86% 2%,rgba(131,86,114,.17),transparent 42%),
  radial-gradient(ellipse at 2% 78%,rgba(101,114,92,.10),transparent 48%),
  linear-gradient(160deg,#111218,#0d1013 49%,#151319)!important
 }
-body:not(.profile-custom-theme) :where(h1,h2,h3){color:var(--kf-bone);text-shadow:none;text-wrap:balance}
-body:not(.profile-custom-theme) :where(a){color:var(--kf-antique-gold);text-underline-offset:.18em}
-body:not(.profile-custom-theme) :where(a:hover){color:#edcda0}
-body:not(.profile-custom-theme) :where(a,button,input,select,textarea,[role="button"]):focus-visible{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(h1,h2,h3){color:var(--kf-bone);text-shadow:none;text-wrap:balance}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a){color:var(--kf-antique-gold);text-underline-offset:.18em}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a:hover){color:#edcda0}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(a,button,input,select,textarea,[role="button"]):focus-visible{
  outline:2px solid var(--kf-antique-gold)!important;outline-offset:3px
 }
 .kf-header{
@@ -74,7 +74,7 @@ body:not(.profile-custom-theme) :where(a,button,input,select,textarea,[role="but
 }
 .kf-announcement strong{color:#dec19a!important}
 /* Shared surfaces retain original layout, scrolling, interactions and accessibility. */
-body:not(.profile-custom-theme) :where(
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
  .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
  .game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
@@ -83,7 +83,7 @@ body:not(.profile-custom-theme) :where(
  border-color:var(--kf-chrome-line)!important;border-radius:clamp(12px,1.5vw,19px);
  box-shadow:var(--kf-chrome-shadow)
 }
-body:not(.profile-custom-theme) :where(
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
  .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
  .game-card,.public-chat-panel,.listing-card,.quick-card,.directory-group
@@ -92,8 +92,8 @@ body:not(.profile-custom-theme) :where(
  background:radial-gradient(ellipse at 96% 5%,rgba(153,71,92,.10),transparent 47%),
  linear-gradient(145deg,#262128,#15181c 88%)!important
 }
-body:not(.profile-custom-theme) :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page,.friends-page,.cartridge-shelf,.memo-page){min-width:0}
-body:not(.profile-custom-theme) :where(
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page,.friends-page,.cartridge-shelf,.memo-page){min-width:0}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
  .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,
  .members-page .members-hero,.foundry .foundry-hero,.directory-hero
 ){
@@ -101,86 +101,86 @@ body:not(.profile-custom-theme) :where(
  background:radial-gradient(ellipse at 98% 3%,rgba(138,77,100,.14),transparent 45%),
  linear-gradient(130deg,#29202c,#12161a 76%)!important;color:var(--kf-bone)
 }
-body:not(.profile-custom-theme) :where(.eyebrow,.arcade-kicker,.section-label,.cartridge-number,.kf-start-eyebrow){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.eyebrow,.arcade-kicker,.section-label,.cartridge-number,.kf-start-eyebrow){
  color:var(--kf-antique-gold)!important;letter-spacing:.12em
 }
-body:not(.profile-custom-theme) :where(.muted,.subtitle,.helper-text,.directory-hero>p,.listing-description,.quick-card p){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.muted,.subtitle,.helper-text,.directory-hero>p,.listing-description,.quick-card p){
  color:var(--kf-muted)!important
 }
-body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select){
  min-width:0;max-width:100%;border-radius:10px;
  background-color:#17181d!important;color:var(--kf-bone)!important;border-color:#75636b!important
 }
-body:not(.profile-custom-theme) :where(input,textarea,select)::placeholder{color:#b6a9a4;opacity:1}
-body:not(.profile-custom-theme) :where(input,textarea,select):focus{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select)::placeholder{color:#b6a9a4;opacity:1}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select):focus{
  border-color:var(--kf-antique-gold)!important;box-shadow:0 0 0 2px rgba(199,167,124,.15)!important
 }
-body:not(.profile-custom-theme) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){
  background:linear-gradient(125deg,#883e51,#b25b68)!important;border-color:#c3948d!important;
  color:#fff3e4!important;font-weight:800;
  box-shadow:0 7px 19px rgba(0,0,0,.33),inset 0 1px rgba(255,243,228,.10)
 }
-body:not(.profile-custom-theme) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)):hover{filter:brightness(1.12)}
-body:not(.profile-custom-theme) :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed}
-body:not(.profile-custom-theme) :where(.status.good,.success,[role="status"].success){color:#aabc9f!important}
-body:not(.profile-custom-theme) :where(.tabs [aria-selected="true"],.tabs .active,.admin-shell .admin-tabs .active){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)):hover{filter:brightness(1.12)}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.status.good,.success,[role="status"].success){color:#aabc9f!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.tabs [aria-selected="true"],.tabs .active,.admin-shell .admin-tabs .active){
  border-color:var(--kf-antique-gold)!important;
  background:rgba(199,167,124,.16)!important;color:var(--kf-bone)!important
 }
-body:not(.profile-custom-theme) .admin-shell .admin-tabs .active{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .admin-shell .admin-tabs .active{
  box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
 }
-body:not(.profile-custom-theme) .messages-shell .conversation.active{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .conversation.active{
  border-color:#b7a080!important;background:linear-gradient(105deg,#342430,#201f26)!important;
  box-shadow:inset 3px 0 var(--kf-oxblood)!important
 }
-body:not(.profile-custom-theme) .messages-shell .composer{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .composer{
  border-top-color:#8e7372!important;background:linear-gradient(180deg,#211d25,#14171c)!important
 }
-body:not(.profile-custom-theme) .messages-shell .composer textarea{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .messages-shell .composer textarea{
  color:var(--kf-bone)!important;background:#16181e!important;border-color:#806d72!important
 }
-body:not(.profile-custom-theme) .cartridge-shelf .cartridge-number{color:var(--kf-antique-gold)!important}
-body:not(.profile-custom-theme) .cartridge-cabinet{border-top:1px solid #a18876!important}
-body:not(.profile-custom-theme) .directory-group li+li{border-color:rgba(199,167,124,.18)}
-body:not(.profile-custom-theme) .site-footer,
-body:not(.profile-custom-theme) #ashfall-support-footer{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-shelf .cartridge-number{color:var(--kf-antique-gold)!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-cabinet{border-top:1px solid #a18876!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .directory-group li+li{border-color:rgba(199,167,124,.18)}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .site-footer,
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #ashfall-support-footer{
  background:linear-gradient(100deg,#16171b,#221b21)!important;
  border-top:1px solid rgba(199,167,124,.48)!important;color:var(--kf-muted)!important
 }
-body:not(.profile-custom-theme) :where(.site-footer a,#ashfall-support-footer a){color:#dac098!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.site-footer a,#ashfall-support-footer a){color:#dac098!important}
 /* Approved crest watermark: subdued, never on top of working controls. */
-body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero){
  isolation:isolate;position:relative;overflow:hidden;border:1px solid rgba(199,167,124,.48)!important;
  border-radius:clamp(15px,2vw,23px);
  background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
  linear-gradient(120deg,#29202b,#14191d)!important
 }
-body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero)::after{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero)::after{
  content:"";position:absolute;pointer-events:none;z-index:-1;
  right:clamp(-70px,-2vw,0px);top:50%;transform:translateY(-50%);
  width:min(31vw,230px);height:min(31vw,230px);
  background:url("/icons/knightfall-crest-512.png") center/contain no-repeat;
  opacity:.20;filter:saturate(.70)
 }
-body:not(.profile-custom-theme) .home-intro h1{color:#f3e7d9!important}
-body:not(.profile-custom-theme) .home-intro h1 span{color:#dbac9a!important}
-body:not(.profile-custom-theme) .home-intro p{color:#d0c3bc!important}
-body:not(.profile-custom-theme) .home-sign-in:not([hidden]){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{color:#f3e7d9!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{color:#dbac9a!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro p{color:#d0c3bc!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-sign-in:not([hidden]){
  display:inline-flex!important;align-items:center;justify-content:center;
  min-height:44px;padding:.6rem 1rem;border:1px solid #b89b78;border-radius:10px;
  background:#713d4a!important;color:#fff2e6!important;text-decoration:none;font-weight:800
 }
-body:not(.profile-custom-theme) :where(.home-explore-link,.kf-start-card a){
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-explore-link,.kf-start-card a){
  border-color:#a0886d!important;color:#e7cfaa!important;background:#28252a!important
 }
-body:not(.profile-custom-theme) .kf-start-here{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-here{
  border-color:#8f7273!important;background:linear-gradient(140deg,#251e27,#171c1d)!important
 }
-body:not(.profile-custom-theme) .kf-start-card{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card{
  background:linear-gradient(140deg,#2a242b,#1b2021)!important
 }
-body:not(.profile-custom-theme) .kf-start-card>span{color:#cea98a!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card>span{color:#cea98a!important}
 /* Cached older Gravewave decorations no longer participate in shared chrome. */
 body .gw-character-crew,body .gw-ambient,body .gw-panel-mascot,
 body .kf-gravewave-ribbon,body .kf-gravewave-title,body .kf-gravewave-corner,
@@ -192,14 +192,14 @@ body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important}
  .kf-header .kf-brand{font-size:.94rem}
  .kf-brand::before{width:34px;height:34px;margin-right:.35rem}
  .kf-nav-menu{box-shadow:none!important}
- body:not(.profile-custom-theme) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
- body:not(.profile-custom-theme) :where(input,textarea,select){font-size:16px}
- body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero)::after{
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select){font-size:16px}
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero)::after{
   width:124px;height:124px;right:-22px;opacity:.10
  }
 }
 @media(prefers-reduced-motion:reduce){
- body:not(.profile-custom-theme) :where(.primary,.btn,.button,.card,.game-card,.arcade-card){
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.primary,.btn,.button,.card,.game-card,.arcade-card){
   transition:none!important;animation:none!important
  }
 }

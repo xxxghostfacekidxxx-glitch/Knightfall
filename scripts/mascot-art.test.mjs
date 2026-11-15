@@ -70,7 +70,7 @@ for (const { id, name } of characters) {
   });
 }
 
-test('site crew has featured trio, preserves other mascots and does not block controls', () => {
+test('legacy optional mascot crew keeps featured artwork without globally replacing the Gothic site theme', () => {
   const js = read('public/gravewave-takeover.js');
   const css = read('public/gravewave-takeover.css');
   const nav = read('public/nav.js');
@@ -80,7 +80,8 @@ test('site crew has featured trio, preserves other mascots and does not block co
   assert.ok(js.includes('crewGroups'));
   assert.ok(js.includes('[1,3,12,13,14,16]'), 'home crew displays Gillrot and Nocturnib ahead of trio');
   assert.ok(js.includes("'.svg?v=20261102-mascot6'"), 'new artwork is cache-busted');
-  assert.ok(nav.includes('20261102-mascot6'), 'shared nav loads revised assets');
+  assert.ok(!nav.includes('/gravewave-takeover.js'), 'approved Gothic theme must not globally inject mascot overlays');
+  assert.ok(nav.includes('knightfall-unified-theme.css?v=20261115-gothic2'), 'approved crest theme loads instead');
   assert.ok(css.includes('nth-child(n+5){display:none}'), 'mobile crew remains compact');
   assert.ok(css.includes('body:has(canvas)'), 'active games remain unobstructed');
   assert.ok(css.includes('body:has(:fullscreen)'), 'fullscreen views remain unobstructed');

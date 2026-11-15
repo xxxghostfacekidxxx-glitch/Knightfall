@@ -19,6 +19,7 @@ assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
 assert.match(css,/knightfall-crest-192\.png/);
 assert.match(css,/knightfall-crest-512\.png/);
 assert.match(css,/body:not\(\.profile-custom-theme\)/);
+assert.match(css,/:not\(:has\(#profile\[data-theme\]\)\)/,"Member profile color themes must not be overwritten");
 assert.match(css,/\.messages-shell \.conversation\.active/);
 assert.match(css,/\.admin-shell \.admin-tabs \.active/);
 assert.match(css,/\.cartridge-shelf \.cartridge-number/);
