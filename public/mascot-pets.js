@@ -34,7 +34,7 @@ function cardBase(item,image,ownedCard=false){
   const scene=safeSrc(item.habitat.art);
   if(scene){const imageBg=make('img','pet-habitat-scene');imageBg.src=scene+'?v=20261102-adventures1';imageBg.alt='';imageBg.setAttribute('aria-hidden','true');visual.append(imageBg)}
  }
- if(src){const img=make('img','pet-base-image');img.src=src+'?v=20261104-starborn1';img.alt=item.name||item.nickname||'Companion';img.loading='lazy';visual.append(img)}
+ if(src){const img=make('img','pet-base-image');img.src=src+'?v=20261115-storybook1';img.alt=item.name||item.nickname||'Companion';img.loading='lazy';visual.append(img)}
  if(ownedCard&&item.habitat?.decoration_art){
   const decor=safeSrc(item.habitat.decoration_art);
   if(decor){const layer=make('img','pet-habitat-decor');layer.src=decor+'?v=20261102-adventures1';layer.alt='';layer.setAttribute('aria-hidden','true');visual.append(layer)}
@@ -138,7 +138,7 @@ function renderSpotlight(){
  if(!pet){
   const starters=make('div','spotlight-starters');
   for(const item of species.filter(item=>item.first_rescue_free).slice(0,4)){
-   const image=make('img');image.src=safeSrc(item.idle||item.svg);image.alt='';starters.append(image);
+   const image=make('img');image.src=safeSrc(item.idle||item.svg)+'?v=20261115-storybook1';image.alt='';starters.append(image);
   }
   const panel=make('div','spotlight-empty');
   panel.append(starters,make('h3','','Your first rescue is free'),make('p','','Choose a starter in the adoption gallery to meet your first companion.'));

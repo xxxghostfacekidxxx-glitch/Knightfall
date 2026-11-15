@@ -19,7 +19,7 @@ async function request(path,options={}){
 }
 function img(node,source){
  const valid=safeAsset(source);
- if(valid){node.src=valid+'?v=20261102-room1';node.hidden=false;}
+ if(valid){node.src=valid+'?v=20261115-storybook1';node.hidden=false;}
  else{node.removeAttribute('src');node.hidden=true}
 }
 function renderVisitorFurniture(){

@@ -3,7 +3,7 @@
  'use strict';
  const deadlines = new WeakMap();
  // These pets have a single illustrated idle pose. CSS still animates their reactions.
- const idleOnly = new Set(['lydibug','sootsnoot','rumblefluff','glittergob','craggle','prismare']);
+ const idleOnly = new Set(['lydibug','mini-villain','mini-eddie','minion-mouse','boo-thang','crush','chunky-monkey','sootsnoot','rumblefluff','glittergob','craggle','prismare']);
  function poseAsset(source,pose) {
   const match=typeof source==='string'&&source.match(/\/([a-z0-9-]+)-idle\.svg(?:\?|$)/);
   return match&&!idleOnly.has(match[1])&&['bounce','blink','mischief'].includes(pose)
