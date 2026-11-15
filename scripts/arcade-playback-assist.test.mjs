@@ -38,3 +38,13 @@ test('fatal load failures offer a retry and arcade return without touching saves
   assert.match(source,/chaos-cartridge\.html/);
   assert.doesNotMatch(source,/localStorage\.clear|indexedDB\.deleteDatabase|sessionStorage\.clear/);
 });
+
+test('Neon Surge preserves its built-in fullscreen control and provides a missing-module recovery path',()=>{
+  const html=read('public/arcade/hosted/neon-surge/index.html');
+  assert.match(html,/id="fsBtn"/);
+  assert.match(html,/data-fullscreen="existing"/);
+  assert.match(html,/data-ready="__NS"/);
+  assert.ok(html.indexOf('arcade-playback-assist.js')<html.indexOf('<script type="module">'));
+  assert.match(source,/el\.type==='module'/);
+  assert.match(source,/game-boot-timeout/);
+});
