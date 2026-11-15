@@ -16,9 +16,9 @@ assert.match(tokens, /--af-yellow:#ffe36b/);
 for (const hex of ["#ff55d8", "#c6ff45", "#ffe36b", "#070710"]) {
   assert.ok(css.includes(hex), `Unified palette missing ${hex}`);
 }
-assert.match(global, /@import url\("\/knightfall-unified-theme\.css\?v=20261111-yellow1"\)/);
+assert.match(global, /@import url\("\/knightfall-unified-theme\.css\?v=20261114-gothic1"\)/);
 assert.match(nav, /data-knightfall-unified-theme/);
-assert.match(nav, /knightfall-unified-theme\.css\?v=20261111-yellow1/);
+assert.match(nav, /knightfall-unified-theme\.css\?v=20261114-gothic1/);
 assert.match(sw, /const CACHE_NAME = "knightfall-shell-v\d+";/);
 assert.match(sw, /"\/knightfall-unified-theme\.css"/);
 assert.match(css, /body:not\(\.profile-custom-theme\)/);
