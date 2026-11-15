@@ -214,6 +214,6 @@
     flex:0 0 auto;min-width:0;padding:7px 8px;
   }
   #kf-chat-heads.kf-chat-expanded .kf-chat-compose textarea{resize:none;max-height:72px;font-size:16px}
-  #kf-chat-heads.kf-chat-expanded #kf-chat-resize{display:none!important}
+  #kf-chat-heads.kf-chat-expanded :is(#kf-chat-resize,#kf-chat-move){display:none!important}
   #kf-chat-heads.kf-chat-expanded .kf-chat-status{flex:0 0 auto}
 }
