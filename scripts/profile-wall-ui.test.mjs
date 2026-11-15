@@ -13,7 +13,7 @@ test("member wall scripts parse, load in order and expose a graceful mount",()=>
  assert.doesNotThrow(()=>new Script(ui,{filename:"profile-wall.js"}));
  assert.match(ui,/window\.KnightfallProfileWall=\{mount\}/);
  assert.ok(html.indexOf("/profile-wall.js?")<html.indexOf("/profile.js?"));
- assert.match(html,/profile-wall\.css\?v=20261111-wall3/);
+ assert.match(html,/profile-wall\.css\?v=20261115-gothic9/);
  assert.match(file("profile.js"),/if\(window\.KnightfallProfileWall\?\.mount\)/);
 });
 test("real reactions and comments use authenticated API and text-safe rendering",()=>{
@@ -59,7 +59,7 @@ test("notification deep links load the exact post without bypassing server priva
 test("profile-wall mobile and reduced-motion styles stay within member theme",()=>{
  assert.match(css,/#profile \.profile-wall/);
  assert.match(css,/var\(--profile-accent/);
- assert.match(css,/#ffe36b/);
+ assert.match(css,/#c7a77c/);
  assert.match(css,/@media\(max-width:660px\)/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
  const balance=(css.match(/\{/g)||[]).length-(css.match(/\}/g)||[]).length;

@@ -15,7 +15,7 @@ test('Profile Link Hub scripts parse and dedicated editing section is reachable 
  assert.match(editor,/id="studio-link-rows"/);
  assert.match(editor,/id="studio-link-add"/);
  assert.match(editor,/profile-links-editor\.js\?v=20261103-links3/);
- assert.match(editor,/profile-links\.css\?v=20261103-links2/);
+ assert.match(editor,/profile-links\.css\?v=20261115-gothic9/);
  assert.match(editor,/window\.KnightfallProfileLinks\.save\(\)/);
 });
 test('Link Hub mutations stay private until confirmed Save profile or intentional discard',()=>{
@@ -35,7 +35,7 @@ test('Profile Link Hub privacy is enforced on backend, not merely hidden in the 
  assert.match(migration,/CREATE TABLE IF NOT EXISTS member_profile_links/);
  assert.match(migration,/PRIMARY KEY\(user_id,position\)/);
  assert.match(publicPage,/profile-links-view\.js\?v=20261103-links2/);
- assert.match(publicPage,/profile-links\.css\?v=20261103-links2/);
+ assert.match(publicPage,/profile-links\.css\?v=20261115-gothic9/);
  assert.match(profile,/await window\.KnightfallRenderProfileLinks\?\.\(d\.user\.username,root\)/);
  assert.match(profile,/\["#profile-link-hub","Links"\]/);
  assert.match(viewer,/new URL\(link\.url\)/);
@@ -54,6 +54,6 @@ test('All nine profile themes have a complete editor, API and public rendering p
   assert.match(themes,new RegExp('#profile\\[data-theme="'+id+'"\\]'));
   assert.match(themes,new RegExp('studio-preview-card\\[data-theme="'+id+'"\\]'));
  }
- assert.match(publicPage,/profile-theme-library\.css\?v=20261103-theme3/);
- assert.match(editor,/profile-theme-library\.css\?v=20261103-theme3/);
+ assert.match(publicPage,/profile-theme-library\.css\?v=20261115-gothic9/);
+ assert.match(editor,/profile-theme-library\.css\?v=20261115-gothic9/);
 });

@@ -15,7 +15,7 @@ test("showcase code parses, loads before profile and has no unsafe HTML injectio
  assert.match(profile,/KnightfallProfileHighlights\?\.mount/);
  assert.match(profile,/#profile-featured/);
  assert.match(profile,/#profile-achievements/);
- assert.match(html,/profile-highlights\.css\?v=20261111-highlights1/);
+ assert.match(html,/profile-highlights\.css\?v=20261115-gothic9/);
  assert.doesNotMatch(js,/\.innerHTML\s*=/);
  assert.doesNotMatch(js,/localStorage|sessionStorage/);
 });
