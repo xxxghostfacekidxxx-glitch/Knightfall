@@ -87,3 +87,16 @@ Source modules: `public/creator-production-{lab.js,lab.css,core.mjs}`; automated
 - Expand Playwright coverage with staging test accounts instead of production credentials.
 - Add an error ingestion/monitoring service once cost and data retention are approved.
 - Treat changes to branches, migrations, DNS, credentials and deployments as privileged actions.
+
+## Android APK / Trusted Web Activity (November 2026)
+
+A **real Android Gradle project** is now staged at `android/`, using Android Browser Helper to wrap the existing Knightfall website. The `.github/workflows/knightfall-android.yml` workflow uses hosted JDK 17, Android SDK API 36 and Gradle to compile an **internal debug-signed test APK**, uploaded only to GitHub Actions artifacts. No developer needs Android Studio on a Chromebook for this cloud build.
+
+- **Integrated:** Android Browser Helper in `android/app/build.gradle`; GitHub Actions build and debug artifact.
+- **Available tool:** [Bubblewrap CLI](https://github.com/GoogleChromeLabs/bubblewrap), an Apache-2.0 CLI for official TWA packaging and validation (`npm i -g @bubblewrap/cli`). It is documented and linked in Creator Foundry, not falsely claimed to be installed on member devices.
+- **Available tool:** [Android SDK command-line tools and ADB](https://developer.android.com/tools). GitHub-hosted runners provide the build environment.
+- **Alternative:** [PWABuilder](https://www.pwabuilder.com/) for checking installability and exporting TWA packaging; an external service, not installed within Knightfall.
+- **Shared install entry:** `public/install.html` (accessible from every page through `nav.js`). The browser web app is installable now. The APK link remains gated by `public/android-release.json` until a signed release and SHA-256 are verified.
+- **Provisional application ID:** `com.ashfall.knightfall`; confirm before the first permanent Android release. Current debug app version is `0.1.0-test`.
+- **Security prerequisite:** do not ship a debug APK as a public release or add a made-up signing fingerprint. Create a long-lived release keystore securely; store secrets outside Git; publish the true SHA-256 certificate fingerprint via `/.well-known/assetlinks.json`; confirm TWA verification and Android navigation before enabling the link.
+- **CI:** `.github/workflows/knightfall-android.yml`; debug APK and checksum are available to repository-authorized testers after a successful run. This is not a Play Store listing or publicly verified package.
