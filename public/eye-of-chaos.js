@@ -100,6 +100,12 @@ function renderMissions(){
     const result=await api("/missions/"+m.id+"/run","POST");if(result.created_draft){await loadMissions();await loadDrafts();}
    })));
   }
+  if(m.status!=="cancelled"&&m.division!=="arcade"){
+   buttons.append(action("AI draft",()=>busy("Generating a pending AI draft for GOD review…",async()=>{
+    const result=await api("/missions/"+m.id+"/draft","POST");
+    if(result.created_draft){await loadDrafts();openSection("approvals")}
+   })));
+  }
   if(["queued","ready","failed"].includes(m.status))buttons.append(action("Pause",()=>busy("Pausing mission…",async()=>{await api("/missions/"+m.id+"/pause","POST");await loadMissions()})));
   if(m.status==="paused")buttons.append(action("Resume",()=>busy("Resuming mission…",async()=>{await api("/missions/"+m.id+"/resume","POST");await loadMissions()})));
   if(["queued","ready","paused","failed"].includes(m.status))buttons.append(action("Cancel",async()=>{
