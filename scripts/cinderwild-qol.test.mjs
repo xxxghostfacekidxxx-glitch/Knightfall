@@ -35,7 +35,7 @@ function gameHarness() {
 test('Cinderwild scripts parse and are linked from the arcade game', () => {
   const syntax = spawnSync(process.execPath, ['--check'], {input: js, encoding: 'utf8'});
   assert.equal(syntax.status, 0, syntax.stderr);
-  assert.match(html, /src="\.\/game\.js\?v=20261115-qol"/);
+  assert.match(html, /src="\.\/game\.js\?v=20261115-storage"/);
   assert.match(html, /src="\.\/style\.css\?v=20261115-qol"/);
 });
 
