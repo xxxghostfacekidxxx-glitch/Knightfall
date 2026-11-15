@@ -28,8 +28,15 @@ function originAllowed(request){
  return !origin||origin==="https://ash-fall.com"||origin==="https://www.ash-fall.com";
 }
 async function ownedPremiumSkins(env,userId){
- const r=await env.DB.prepare("SELECT skin_id FROM arcade_deck_paid_entitlements WHERE user_id=? AND state='active'").bind(userId).all();
- return (r.results||[]).map(x=>x.skin_id).filter(id=>DECK_PREMIUM_SKINS.includes(id));
+ // A migration may arrive after code deploy. Keep the twelve free skins usable
+ // while the new paid-entitlement table is being provisioned.
+ try {
+  const r=await env.DB.prepare("SELECT skin_id FROM arcade_deck_paid_entitlements WHERE user_id=? AND state='active'").bind(userId).all();
+  return (r.results||[]).map(x=>x.skin_id).filter(id=>DECK_PREMIUM_SKINS.includes(id));
+ } catch(error){
+  if(/no such table/i.test(String(error)))return [];
+  throw error;
+ }
 }
 async function readAccount(env,userId){
  const [row,owned]=await Promise.all([
