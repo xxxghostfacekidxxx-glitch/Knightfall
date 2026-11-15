@@ -102,13 +102,18 @@ async function executeResearch(env,mission,actorId){
  if(Number(old.meta?.changes||0)!==1)return {error:"Mission is paused, busy, or recently executed.",status:409};
  try{
   const finding=await runSourceResearch(env,mission),id=uuid(),now=timestamp();
-  await env.DB.prepare("INSERT INTO eye_chaos_drafts(id,mission_id,author_key,title,body,source_url,destination,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)")
-   .bind(id,mission.id,mission.agent_key,finding.title,finding.body,finding.source_url,mission.destination,now,now).run();
+  // Never requeue the same story for the same mission on every cron run.
+  const existing=await env.DB.prepare("SELECT id FROM eye_chaos_drafts WHERE mission_id=? AND source_url=? LIMIT 1")
+   .bind(mission.id,finding.source_url).first();
+  if(!existing){
+   await env.DB.prepare("INSERT INTO eye_chaos_drafts(id,mission_id,author_key,title,body,source_url,destination,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)")
+    .bind(id,mission.id,mission.agent_key,finding.title,finding.body,finding.source_url,mission.destination,now,now).run();
+  }
   const next=cycleNext(mission.cadence);
   await env.DB.prepare("UPDATE eye_chaos_missions SET status=?,last_run_at=?,next_run_at=?,updated_at=? WHERE id=?")
    .bind(next?"queued":"ready",now,next,now,mission.id).run();
   if(actorId)await event(env,actorId,"mission",mission.id,"research_completed");
-  return {ok:true,created_draft:id};
+  return {ok:true,created_draft:existing?null:id,duplicate:!!existing};
  }catch(error){
   await env.DB.prepare("UPDATE eye_chaos_missions SET status='failed',updated_at=? WHERE id=?").bind(timestamp(),mission.id).run();
   return {error:String(error.message||"Research source failed.").slice(0,180),status:502};
