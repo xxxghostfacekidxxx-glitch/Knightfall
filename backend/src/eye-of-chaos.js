@@ -26,6 +26,7 @@ const forumFallback=Object.freeze([
  {key:"beelzebub-music",name:"Beelzebub",division:"forums",kind:"existing-service",status:"unverified"}
 ]);
 export const CHAOS_SOURCES=Object.freeze({
+ knightfall:{label:"Knightfall public Madhouse threads",url:"https://ash-fall.com/community.html",category:"Community"},
  music:{label:"Billboard music feed",url:"https://www.billboard.com/feed/",category:"Music"},
  scifi:{label:"Star Wars News Net",url:"https://www.starwarsnewsnet.com/feed",category:"Entertainment"},
  horror:{label:"Bloody Disgusting horror news",url:"https://bloody-disgusting.com/feed/",category:"Horror"},
@@ -80,6 +81,19 @@ function xmlValue(xml,tag){
 }
 export async function runSourceResearch(env,mission){
  if(!Object.hasOwn(CHAOS_SOURCES,mission.source_key))throw Error("Choose an approved research source.");
+ if(mission.source_key==="knightfall"){
+  // Public forum metadata only, excluding deleted posts and the 18+ category.
+  // Never query private messages, journals, or profile data for bot research.
+  const row=await env.DB.prepare("SELECT t.id,t.title,c.slug AS category_slug FROM threads t JOIN categories c ON c.id=t.category_id WHERE t.deleted_at IS NULL AND c.slug NOT IN ('adults-only') ORDER BY t.id DESC LIMIT 1").first();
+  if(!row||!Number.isSafeInteger(row.id)||row.id<=0||!validText(row.title,300))
+   throw Error("No suitable public Madhouse discussions found.");
+  const link="https://ash-fall.com/thread.html?id="+row.id;
+  return {title:"Madhouse discussion: "+row.title.slice(0,108),
+   body:"Public Knightfall discussion in "+row.category_slug+": "+row.title.slice(0,250)+
+    "\n\nOriginal discussion: "+link+
+    "\n\nThis is an unverified discovery lead. Review the actual public thread before writing or responding. No private member data was retrieved.",
+   source_url:link};
+ }
  const source=CHAOS_SOURCES[mission.source_key];
  const response=await fetch(source.url,{
   method:"GET",redirect:"error",headers:{"accept":"application/rss+xml,application/xml,text/xml","user-agent":"KnightfallEyeOfChaos/1.0"},
