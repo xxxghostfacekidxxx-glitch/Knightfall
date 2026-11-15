@@ -27,7 +27,13 @@ const forumFallback=Object.freeze([
 ]);
 export const CHAOS_SOURCES=Object.freeze({
  music:{label:"Billboard music feed",url:"https://www.billboard.com/feed/",category:"Music"},
- scifi:{label:"Star Wars News Net",url:"https://www.starwarsnewsnet.com/feed",category:"Entertainment"}
+ scifi:{label:"Star Wars News Net",url:"https://www.starwarsnewsnet.com/feed",category:"Entertainment"},
+ horror:{label:"Bloody Disgusting horror news",url:"https://bloody-disgusting.com/feed/",category:"Horror"},
+ entertainment:{label:"Variety entertainment news",url:"https://variety.com/feed/",category:"Entertainment"},
+ science:{label:"ScienceDaily latest discoveries",url:"https://www.sciencedaily.com/rss/all.xml",category:"Science"},
+ strange:{label:"ScienceDaily strange & offbeat",url:"https://www.sciencedaily.com/rss/strange_offbeat.xml",category:"Strange science"},
+ space:{label:"NASA news releases",url:"https://www.nasa.gov/news-release/feed/",category:"Space"},
+ technology:{label:"Ars Technica AI news",url:"https://arstechnica.com/ai/feed/",category:"Technology"}
 });
 const API="/api/god/chaos";
 const noStore={"cache-control":"private, no-store","x-robots-tag":"noindex,nofollow"};
