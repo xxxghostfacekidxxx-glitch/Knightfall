@@ -1,9 +1,9 @@
 /* Ruinwire separate PWA launcher and compact inbox presentation. */
-:root{--rw-bg:#090811;--rw-pink:#ff55d8;--rw-green:#c6ff45;--rw-line:#514064}
+:root{--rw-bg:#0d1013;--rw-pink:#b25b68;--rw-green:#c7a77c;--rw-line:#827076}
 .ruinwire-install-page{background:radial-gradient(ellipse at 20% 0%,#341038 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#17290e 0,transparent 45%),var(--rw-bg);color:#f8f1fa;min-height:100dvh}
 .rw-install{width:min(1100px,100%);margin:auto;padding:clamp(1.1rem,5vw,4rem)}
 .rw-install-hero{display:grid;grid-template-columns:clamp(88px,14vw,144px) minmax(0,1fr);align-items:start;gap:clamp(1rem,4vw,3rem);padding:clamp(1.3rem,5vw,3rem);border:1px solid #6f387a;border-radius:28px;background:linear-gradient(135deg,#211027ee,#10101aee);box-shadow:0 22px 100px #0008}
-.rw-install-hero img{width:100%;height:auto;filter:drop-shadow(0 0 16px #ff55d86b)}
+.rw-install-hero img{width:100%;height:auto;filter:drop-shadow(0 0 16px #b25b686b)}
 .rw-eyebrow{color:var(--rw-green);font-size:.75rem;font-weight:800;letter-spacing:.2em}
 .rw-install h1{font-size:clamp(2.6rem,8vw,6rem);line-height:1;margin:.6rem 0 1rem;letter-spacing:-.07em}
 .rw-install h1 span{color:var(--rw-pink)}
