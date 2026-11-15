@@ -15,7 +15,7 @@ export async function handleHomeActivityFeed(request,env,url,{requireUser,json,r
     const before=rawBefore&&/^\d+$/.test(rawBefore)?Math.min(Number(rawBefore),Number.MAX_SAFE_INTEGER):Number.MAX_SAFE_INTEGER;
     const viewer=await requireUser(request,env);
     const {results}=await env.DB.prepare(
-      "SELECT p.id,p.title,p.body,p.category,p.created_at,u.username,u.display_name,u.avatar_url,u.role,(SELECT title FROM member_bot_creator_privileges WHERE user_id=u.id) AS public_title FROM site_activity_posts p JOIN users u ON u.id=p.user_id WHERE u.status='active' AND p.id<? ORDER BY p.id DESC LIMIT ?"
+      "SELECT p.id,p.title,p.body,p.category,p.created_at,u.username,u.display_name,u.avatar_url,u.role,(SELECT title FROM member_bot_creator_privileges WHERE user_id=u.id) AS public_title FROM site_activity_posts p JOIN users u ON u.id=p.user_id WHERE u.status='active' AND p.deleted_at IS NULL AND p.id<? ORDER BY p.id DESC LIMIT ?"
     ).bind(before,limit).all();
     const posts=(results||[]).map(p=>({
       id:p.id,title:p.title,body:p.body,category:p.category,created_at:p.created_at,
@@ -33,11 +33,11 @@ export async function handleHomeActivityFeed(request,env,url,{requireUser,json,r
   if(match&&request.method==="DELETE") {
     const id=Number(match[1]);
     if(!Number.isSafeInteger(id)||id<1)return json({error:"Invalid post ID."},400,origin);
-    const record=await env.DB.prepare("SELECT user_id FROM site_activity_posts WHERE id=?").bind(id).first();
+    const record=await env.DB.prepare("SELECT user_id FROM site_activity_posts WHERE id=? AND deleted_at IS NULL").bind(id).first();
     if(!record)return json({error:"Post not found."},404,origin);
     const canModerate=STAFF_ROLES.has(String(user.role||"").toLowerCase());
     if(!canModerate&&Number(record.user_id)!==Number(user.id))return json({error:"You can only remove your own posts."},403,origin);
-    await env.DB.prepare("DELETE FROM site_activity_posts WHERE id=?").bind(id).run();
+    await env.DB.prepare("UPDATE site_activity_posts SET deleted_at=? WHERE id=? AND deleted_at IS NULL").bind(new Date().toISOString(),id).run();
     await audit(env,user,"home_activity.delete","site_activity_post",id);
     return json({ok:true},200,origin);
   }
