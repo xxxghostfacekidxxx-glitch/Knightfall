@@ -1,6 +1,14 @@
 plugins {
     id 'com.android.application'
 }
+// Release signing is enabled ONLY when the protected CI environment supplies
+// all four values. No signing certificate or password belongs in this repository.
+def releaseKeyFile = System.getenv('KNIGHTFALL_ANDROID_KEYSTORE_FILE')
+def releaseAlias = System.getenv('KNIGHTFALL_ANDROID_KEY_ALIAS')
+def releaseStorePassword = System.getenv('KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD')
+def releaseKeyPassword = System.getenv('KNIGHTFALL_ANDROID_KEY_PASSWORD')
+def canSignRelease = [releaseKeyFile, releaseAlias, releaseStorePassword, releaseKeyPassword]
+    .every { it != null && !it.trim().isEmpty() }
 android {
     namespace 'com.ashfall.knightfall'
     compileSdk 36
@@ -8,12 +16,27 @@ android {
         applicationId 'com.ashfall.knightfall'
         minSdk 26
         targetSdk 36
-        versionCode 1
-        versionName '0.1.0-test'
+        versionCode providers.gradleProperty('knightfallVersionCode').orElse('1').get().toInteger()
+        versionName providers.gradleProperty('knightfallVersionName').orElse('0.1.0-test').get()
+    }
+    signingConfigs {
+        knightfallRelease {
+            if (canSignRelease) {
+                storeFile file(releaseKeyFile)
+                storePassword releaseStorePassword
+                keyAlias releaseAlias
+                keyPassword releaseKeyPassword
+                enableV1Signing false
+                enableV2Signing true
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
+            if (canSignRelease) {
+                signingConfig signingConfigs.knightfallRelease
+            }
         }
     }
     compileOptions {
