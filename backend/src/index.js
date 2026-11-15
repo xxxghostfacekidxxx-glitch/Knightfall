@@ -1262,7 +1262,7 @@ export default { async queue(batch, env) {
       const draft=await env.DB.prepare("SELECT status,media_key FROM creator_posts WHERE id=? AND creator_id=?").bind(draftId,user.id).first();
       if(!draft)return json({error:"Draft not found."},404,origin);
       if(draft.status!=="draft"||draft.media_key)return json({error:"Only drafts without media can be removed."},409,origin);
-      await env.DB.prepare("DELETE FROM creator_posts WHERE id=? AND creator_id=? AND status='draft' AND media_key IS NULL").bind(draftId,user.id).run();
+      await env.DB.prepare("UPDATE creator_posts SET deleted_at=? WHERE id=? AND creator_id=? AND status='draft' AND media_key IS NULL AND deleted_at IS NULL").bind(new Date().toISOString(),draftId,user.id).run();
       await audit(env,user,"creator.draft.remove","creator_post",null,{draft_id:draftId});
       return json({ok:true},200,origin);
     }
