@@ -81,7 +81,7 @@ assert.match(adminPage, /JSON\.stringify\(note\?\{status:button\.dataset\.action
 assert.match(privacy, /does not itself erase the account/i);
 assert.ok(manifest.shortcuts.length >= 3, "PWA must retain its three core shortcuts");
 for (const url of ["/?source=app-shortcut#ecosystem", "/chaos-cartridge.html", "/messages.html"]) assert.ok(manifest.shortcuts.some(item => item.url.startsWith(url)), `Missing core shortcut: ${url}`);
-assert.ok(manifest.icons.some(icon => icon.src === "/icons/chaos-cartridge-maskable.svg"));
-assert.ok(existsSync(new URL("../public/icons/chaos-cartridge-maskable.svg", import.meta.url)));
+assert.ok(manifest.icons.some(icon => icon.src === "/icons/knightfall-crest-maskable.png" && String(icon.purpose).includes("maskable")));
+assert.ok(existsSync(new URL("../public/icons/knightfall-crest-maskable.png", import.meta.url)));
 
 console.log("Account deletion request static audit passed. Full data deletion remains an explicit release blocker.");
