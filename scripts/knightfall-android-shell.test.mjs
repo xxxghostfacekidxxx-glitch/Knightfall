@@ -101,3 +101,14 @@ test('Android phone QA is tied to the candidate version, GitHub run and exact AP
  assert.match(qa,/checks\.forEach\(x=>x\.checked=false\)/);
  assert.doesNotMatch(qa,/fetch\(|https?:\/\//);
 });
+
+test('verified Android APK activation also updates stale preparing-only copy',()=>{
+ const page=read('public/install.html');
+ const script=read('public/install.js');
+ assert.match(page,/id="kf-apk-release-label"/);
+ assert.match(page,/id="kf-apk-description"/);
+ assert.match(script,/getElementById\("kf-apk-release-label"\)/);
+ assert.match(script,/getElementById\("kf-apk-description"\)/);
+ assert.match(script,/label\.classList\.remove\("kf-install-pending"\)/);
+ assert.ok(script.indexOf('data.signedReleaseVerified!==true')<script.indexOf('SIGNED APK RELEASE AVAILABLE'),'Publication copy must be behind the verified-release gate');
+});

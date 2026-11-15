@@ -45,6 +45,11 @@
       if(url.protocol!=="https:"||url.hostname!=="github.com"||
          !url.pathname.startsWith("/xxxghostfacekidxxx-glitch/Knightfall/releases/download/")||
          !url.pathname.toLowerCase().endsWith(".apk"))return;
+      // Swap the preparing-only copy after metadata passes every release gate.
+      const label=document.getElementById("kf-apk-release-label");
+      const description=document.getElementById("kf-apk-description");
+      if(label){label.textContent="SIGNED APK RELEASE AVAILABLE";label.classList.remove("kf-install-pending");}
+      if(description)description.textContent="Knightfall has an official release-signed Android APK. Download from the verified GitHub release link and compare its SHA-256 checksum before installing.";
       apk.href=url.href;apk.hidden=false;
       releaseStatus.textContent="Signed APK "+String(data.versionName||"")+" available. Check SHA-256: "+data.apkSha256;
     }).catch(()=>{/* No verified APK is a legitimate release state. */});
