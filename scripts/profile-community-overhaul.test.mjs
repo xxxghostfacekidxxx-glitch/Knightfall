@@ -45,7 +45,7 @@ test("activity filter and sharing controls remain keyboard and mobile usable",()
   assert.match(profile,/aria-pressed/);
   assert.match(profile,/navigator\.share/);
   assert.match(profile,/navigator\.clipboard\?\.writeText/);
-  assert.match(page,/profile-community-overhaul\.css\?v=20261111-profile6/);
+  assert.match(page,/profile-community-overhaul\.css\?v=20261115-gothic9/);
   assert.match(page,/src="\/profile\.js\?v=[^"]+"/);
   assert.match(css,/@media\(max-width:620px\)/);
   assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);

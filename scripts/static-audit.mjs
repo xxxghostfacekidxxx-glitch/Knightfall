@@ -102,7 +102,7 @@ for (const [label, present] of [
   ["profile fallback retains add friend", profileScript.includes('data-fallback-friend')],
   ["profile fallback retains message", profileScript.includes('data-message-user')],
   ["profile incoming request accepts by ID", profileScript.includes('encodeURIComponent(incoming.id)')],
-  ["profile uses neon default accent", profileScript.includes('ember:"#ff55d8"')],
+  ["profile uses approved Gothic default accent", profileScript.includes('ember:"#b25b68"')],
   ["profile scripts are cache-versioned", /profile\.js\?v=[^\"'\s]+/.test(profileHtml)]
 ]) {
   if (present) ok(label); else fail(label);
