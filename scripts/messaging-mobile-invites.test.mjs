@@ -99,6 +99,7 @@ test("mobile floating chat is isolated from page layout and tracks the keyboard 
  assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded \.(?:kf-chat-panel)/);
  assert.match(bubbleCss,/height:var\(--kf-chat-viewport-height,100dvh\)!important/);
  assert.match(bubbleCss,/overscroll-behavior:contain/);
- assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded #kf-chat-resize\{display:none!important\}/);
+ assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded :is\(#kf-chat-resize,#kf-chat-move\)\{display:none!important\}/);
+ assert.match(bubbles,/if\(dock\.classList\.contains\("kf-chat-expanded"\)\)return/);
  assert.match(bubbles,/event\.target===dock&&dock\.classList\.contains\("kf-chat-expanded"\)/);
 });
