@@ -14,7 +14,7 @@ assert.match(tokens,/--af-bg:#0d1013/);
 assert.match(tokens,/body\{min-width:0;margin:0\}/,"Shared body reset must remove 8px browser margin");
 assert.match(tokens,/--af-ember:#b25b68/);
 assert.match(tokens,/--af-ember-light:#c7a77c/);
-assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
+assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic9/);
 assert.doesNotMatch(theme,/@import url\("\/neon-global\.css/);
 assert.match(nav,/knightfall-unified-theme/);
 assert.doesNotMatch(nav,/#ff55d8|#c6ff45|#ba36c1/i,"Injected navigation must not revive neon palette");
@@ -22,15 +22,15 @@ for(const id of ["kf-nav-emergency-css","kf-pwa-navigation-recovery","kf-nav-sta
 assert.match(css,/Canonical navigation chrome/);
 assert.match(nav,/DOMContentLoaded[^\n]*mountApprovedTheme/,"Approved theme must mount after page styles");
 assert.match(nav,/document\.head\.appendChild\(link\)/,"Approved theme must be last in cascade");
-assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
+assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic9/);
 for(const old of ["/gravewave-takeover.js","/gravewave-decor.js","/neon-global.css","/gravewave-consistency.css"])
  assert.ok(!nav.includes(old),"Nav reintroduces legacy neon theme: "+old);
 assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
 for (const path of ["auth.html","community.html"]) {
  const page=read("../public/"+path);
  assert.ok(!page.includes("gravewave-takeover."),"Retired Gravewave must not load on "+path);
- assert.ok(page.includes("/theme.css?v=20261115-gothic7"),"Gothic theme must be versioned on "+path);
- assert.ok(page.includes("/nav.js?v=20261115-gothic7"),"Current navigation must be versioned on "+path);
+ assert.ok(page.includes("/theme.css?v=20261115-gothic9"),"Gothic theme must be versioned on "+path);
+ assert.ok(page.includes("/nav.js?v=20261115-gothic9"),"Current navigation must be versioned on "+path);
 }
 assert.doesNotMatch(read("../public/auth.html"),/#ff55d8|#c6ff45|#a8ff3e/i,"Neon auth styling must not return");
 assert.doesNotMatch(read("../public/realm-polish.css"),/inset:0 -4vw auto/,"Directory decorations must not overflow mobile viewport");
@@ -44,11 +44,11 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v44";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v45";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
-assert.equal(manifest.theme_color,"#111217");
+assert.equal(manifest.theme_color,"#0d1013");
 assert.ok(manifest.icons.some(i=>i.src==="/icons/knightfall-crest-maskable.png"));
 let depth=0;for(const c of css){if(c==="{")depth++;if(c==="}")depth--;assert.ok(depth>=0)}
 assert.equal(depth,0,"Invalid CSS nesting");
@@ -65,7 +65,7 @@ assert.doesNotMatch(foundryStyle,/#c6ff45|#ff55d8/i,"Foundry inline chrome must 
 assert.doesNotMatch(catalogCSS,/#c6ff45|#ff55d8/i,"Arcade catalog must use Gothic color system");
 assert.doesNotMatch(leaderboardsCSS,/#c6ff45|#ff55d8/i,"Leaderboards must use Gothic color system");
 assert.doesNotMatch(arcadeHub,/chaos-cartridge-theme\.css/,"Hub must not load per-game neon skins");
-assert.match(arcadeHub,/arcade-catalog\.css\?v=20261115-gothic7/);
+assert.match(arcadeHub,/arcade-catalog\.css\?v=20261115-gothic9/);
 
 assert.ok(!foundryPage.includes('href="/arcade-polish.css'),"Creator Foundry must not load neon arcade game skin");
 
@@ -75,5 +75,14 @@ for(const filename of sharedGothicFiles){
  const src=read("../public/"+filename);
  assert.ok(!src.includes("#ff55d8")&&!src.includes("#c6ff45")&&!src.includes("rgba(255,85,216"),"Legacy neon must not revive in "+filename);
 }
-assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic8"),"Support page must load the approved shared theme");
-assert.ok(read("../public/memo-pad.html").includes("/memo-pad.css?v=20261115-gothic8"),"Memo Pad styles must be cache busted");
+assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic9"),"Support page must load the approved shared theme");
+assert.ok(read("../public/memo-pad.html").includes("/memo-pad.css?v=20261115-gothic9"),"Memo Pad styles must be cache busted");
+
+
+// The dashboard used to override the global Gothic Creator palette with
+// legacy neon locally, so testing only design-system.css was insufficient.
+const adminCss=read("../public/admin.css");
+assert.doesNotMatch(adminCss,/#ff55d8|#c6ff45|rgba\(255,85,216/i,"Admin must inherit Gothic Creator, not Gravewave");
+assert.match(nav,/location\.pathname\.startsWith\("\/arcade\/hosted\/"\)/,"Playable arcade only may load glitch chrome");
+assert.doesNotMatch(nav,/location\.pathname\.startsWith\("\/chaos-cartridge"\)/);
+assert.match(read("../public/profile.css"),/--gw-panel-accent:var\(--profile-accent,#b25b68\)/);
