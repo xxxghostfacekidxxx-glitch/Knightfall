@@ -45,8 +45,8 @@
       ]
     },
     {
-      "name": "Messages",
-      "short_name": "Messages",
+      "name": "Ruinwire",
+      "short_name": "Chat",
       "url": "/messages.html?source=app-shortcut",
       "icons": [
         {
