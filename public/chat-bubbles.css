@@ -154,3 +154,19 @@
    max-height:max(125px,calc(var(--kf-chat-visible-height,100dvh) - 110px));
  }
 }
+
+/* When a game shell enters the top layer, the existing chat dock lives inside it. */
+#kf-chat-heads.kf-chat-in-fullscreen{
+  position:fixed!important;
+  z-index:2147483646!important;
+  pointer-events:none;
+  max-height:calc(100dvh - 24px);
+}
+#kf-chat-heads.kf-chat-in-fullscreen .kf-chat-panel{
+  max-height:min(580px,calc(100dvh - 105px));
+}
+:fullscreen>#kf-chat-heads.kf-chat-in-fullscreen{isolation:isolate}
+@media(max-width:620px){
+  #kf-chat-heads.kf-chat-in-fullscreen{right:max(8px,env(safe-area-inset-right))!important;bottom:max(9px,env(safe-area-inset-bottom))!important}
+  #kf-chat-heads.kf-chat-in-fullscreen .kf-chat-panel{width:min(355px,calc(100vw - 20px));max-height:calc(100dvh - 100px)}
+}
