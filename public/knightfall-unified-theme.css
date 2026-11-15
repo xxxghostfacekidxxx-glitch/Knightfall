@@ -226,7 +226,7 @@ body:not(.profile-custom-theme) .kf-nav-menu a{white-space:normal}
  body:not(.profile-custom-theme) :where(.directory-shell,.profile-shell,.admin-shell,.foundry,.messages-shell){width:100%;min-width:0}
  body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]),textarea,select){min-width:0;max-width:100%;font-size:16px}
  body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat{min-height:0;max-width:100%}
- body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .chat-panel{height:auto;max-height:calc(100dvh - 88px);min-height:0}
+ /* Message panel height is owned by messages.css to protect fullscreen chat. */
  body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
  body:not(.profile-custom-theme) .messages-shell .composer{min-width:0;max-width:100%;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
  body:not(.profile-custom-theme) .messages-shell .composer-main{min-width:0;max-width:100%}
