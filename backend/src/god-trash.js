@@ -18,7 +18,11 @@ const TYPES=Object.freeze({
  moon_journal:{table:"moon_journal",id:"entry_date",label:"title",owner:"user_id",dateId:true},
  shadow_journal:{table:"shadow_journal",id:"entry_date",label:"title",owner:"user_id",dateId:true},
  media_albums:{table:"media_albums",id:"id",label:"name",owner:"owner_id"},
- shop_products:{table:"shop_products",id:"id",label:"name",owner:null,textId:true}
+ shop_products:{table:"shop_products",id:"id",label:"name",owner:null,textId:true},
+ die_ary_entries:{table:"die_ary_entries",id:"id",label:"title",owner:"user_id"},
+ site_activity_posts:{table:"site_activity_posts",id:"id",label:"title",owner:"user_id"},
+ creator_posts:{table:"creator_posts",id:"id",label:"title",owner:"creator_id",textId:true},
+ vault_folders:{table:"vault_folders",id:"id",label:"name",owner:null}
 });
 function parseId(type,value){
  if(type.dateId)return /^\d{4}-\d{2}-\d{2}$/.test(value)?value:null;
@@ -94,6 +98,8 @@ export async function handleGodTrash(request,env,url,{requireUser,json,origin}){
    await env.DB.prepare("DELETE FROM vault_folder_items WHERE object_key=?").bind(id).run();
  }else if(category==="profile_photos"){
    await deleteStorage(env,type,row);
+ }else if(category==="vault_folders"){
+   await env.DB.prepare("DELETE FROM vault_folder_items WHERE folder_id=?").bind(id).run();
  }
  await env.DB.prepare("DELETE FROM "+type.table+" WHERE "+where).bind(...check.args).run();
  return response({ok:true,purged:true,category,id});
