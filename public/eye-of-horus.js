@@ -1,123 +1,105 @@
-(()=>{"use strict";
-const API="https://api.ash-fall.com",BASE="/api/god/eye";
+(()=>{
+"use strict";
+const API="https://api.ash-fall.com",ROOT="/api/god/eye";
 const $=id=>document.getElementById(id);
-const status=$("eye-status"),denied=$("eye-denied"),unlock=$("eye-unlock"),workspace=$("eye-workspace"),results=$("eye-results");
-let unlocked=false,nextOffset=0,hasMore=false,lastForm=null;
-const node=(tag,cls,content)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(content!=null)el.textContent=String(content);return el};
-const msg=message=>{status.textContent=message};
-async function request(path,options={}){
- const response=await fetch(API+BASE+path,{credentials:"include",cache:"no-store",...options});
- const data=await response.json().catch(()=>({}));
- if(!response.ok)throw new Error(data.error||"Request failed ("+response.status+").");
+const status=$("eye-status"),results=$("eye-results");
+let current=null,next=0,hasMore=false,showingTrash=false;
+function element(tag,cls,value){const node=document.createElement(tag);if(cls)node.className=cls;if(value!==undefined)node.textContent=String(value);return node}
+function message(text){status.textContent=text}
+async function request(path,opts={}){
+ const r=await fetch(API+path,{credentials:"include",cache:"no-store",...opts});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok)throw Error(data.error||"Request failed ("+r.status+").");
  return data;
 }
-function show(mode){denied.hidden=mode!=="denied";unlock.hidden=mode!=="unlock";workspace.hidden=mode!=="workspace";unlocked=mode==="workspace";if(!unlocked){results.replaceChildren();lastForm=null;hasMore=false;$("eye-next").hidden=true;}}
-const post=(path,obj)=>request(path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(obj)});
-function iso(value){
- const d=new Date(String(value||"").replace(" ","T")+(String(value||"").includes("Z")?"":"Z"));
- return Number.isFinite(d.getTime())?d.toLocaleString():String(value||"");
-}
-function itemCard(category,item){
- const card=node("article","eye-result"),top=node("header"),id=item.id;
- top.append(node("span","",category.replaceAll("_"," ").toUpperCase()+" / "+String(id)));
- top.append(node("time","",iso(item.created_at)));
+const post=(path)=>request(path,{method:"POST"});
+function time(value){if(!value)return "";const d=new Date(String(value));return Number.isFinite(d.getTime())?d.toLocaleString():String(value)}
+function renderRecord(category,item){
+ const card=element("article","eye-result"),top=element("header");
+ top.append(element("span","",category.replaceAll("_"," ").toUpperCase()+" / "+String(item.id??item.user_id??item.entry_date??"record")));
+ top.append(element("time","",time(item.created_at||item.updated_at)));
  card.append(top);
- let title="",description="";
- if(category==="direct_messages"){
-   title="From @"+item.sender+" · Conversation #"+item.conversation_id;
-   description=item.body;
-   card.append(node("small","", "Participants: "+(item.participants||"Unknown")));
- } else if(category==="miss_chaos"){
-   title="@"+item.username+" · "+item.role+" · "+(item.conversation_title||"Miss Chaos");
-   description=item.content;
- } else if(category==="personal_bot_chats"){
-   title="@"+item.username+" · "+item.role+" · "+item.bot_name;
-   description=item.content;
- } else if(category==="profile_photos"){
-   title="@"+item.username+" · "+item.kind+" photo";
-   description=item.caption||"No caption.";
- } else if(category==="message_attachments"){
-   title="@"+item.username+" · "+item.original_filename;
-   description="Message #"+item.message_id+" · "+item.content_type+" · "+item.byte_size+" bytes";
- } else if(category==="bot_definitions"){
-   title="@"+item.username+" · "+item.name;
-   description=(item.description||"")+(item.system_prompt?"\n\nCreator instructions:\n"+item.system_prompt:"");
- }
- card.append(node("h3","",title),node("pre","",description));
- if((category==="profile_photos"||category==="message_attachments")&&/^image\/(?:png|jpeg|gif|webp)$/.test(item.content_type)){
-   const photo=document.createElement("img");
-   photo.loading="lazy";
-   photo.alt=(category==="profile_photos"?"Reviewed member photo":"Reviewed message image")+" #"+id;
-   photo.referrerPolicy="no-referrer";
-   photo.src=API+BASE+"/media/"+category+"/"+encodeURIComponent(id);
-   card.append(photo);
+ if(item.username||item.sender)card.append(element("h3","", "@"+String(item.username||item.sender)));
+ const code=element("pre","");code.textContent=JSON.stringify(item,null,2);card.append(code);
+ if(["profile_photos","message_attachments","vault_files"].includes(category)&&/^image\/(png|jpeg|webp|gif)$/.test(String(item.content_type||""))){
+   const img=document.createElement("img");img.loading="lazy";
+   img.alt="Private stored image";img.referrerPolicy="no-referrer";
+   let id=String(item.id);
+   if(category==="vault_files")id=id.replace(/^vault\//,"");
+   img.src=API+ROOT+"/media/"+category+"/"+encodeURIComponent(id);
+   card.append(img);
  }
  return card;
 }
-async function loadReview(next=false){
- if(!unlocked)return;
- const form=$("eye-review-form");
- if(!form.reportValidity())return;
- const data=Object.fromEntries(new FormData(form).entries());
- const payload={category:data.category,user_id:data.user_id||null,reason:data.reason,limit:20,offset:next?nextOffset:0};
- const submit=form.querySelector('button[type="submit"]');
- submit.disabled=true;$("eye-next").disabled=true;
- msg("Reading authorized records…");
+async function browse(continued=false){
+ const category=$("eye-category").value;
+ const user=$("eye-user").value.trim();
+ if(user&&(!Number.isSafeInteger(Number(user))||Number(user)<1)){message("Provide a positive member ID.");return}
+ const offset=continued?next:0;
+ const params=new URLSearchParams({category,limit:"20",offset:String(offset)});
+ if(user)params.set("user_id",user);
+ message("Reading "+category.replaceAll("_"," ")+"…");
  try{
-  const d=await post("/review",payload);
-  if(!next)results.replaceChildren();
-  for(const item of d.items||[])results.append(itemCard(d.category,item));
-  if(!results.childElementCount)results.append(node("p","", "No saved records found for this review."));
-  nextOffset=payload.offset+(d.items||[]).length;hasMore=d.has_more===true;
-  $("eye-next").hidden=!hasMore;
-  $("eye-count").textContent=nextOffset+" saved record(s) reviewed";
-  lastForm=payload;
-  msg("Review recorded in the Eye of Horus access ledger.");
- }catch(error){msg(error.message);if(/password|unlock/i.test(error.message))show("unlock");}
- finally{submit.disabled=false;$("eye-next").disabled=false;}
+   const data=await request(ROOT+"/browse?"+params);
+   if(!continued)results.replaceChildren();
+   for(const item of data.items||[])results.append(renderRecord(category,item));
+   if(!results.childElementCount)results.append(element("p","", "No stored records found."));
+   next=offset+(data.items||[]).length;
+   hasMore=data.has_more===true;
+   $("eye-next").hidden=!hasMore;current={category,user};
+   showingTrash=false;$("eye-count").textContent=next+" retained record(s) shown";
+   message("GOD record browser ready.");
+ }catch(e){message(e.message)}
 }
-$("eye-unlock-form").addEventListener("submit",async event=>{
- event.preventDefault();
- const password=$("eye-password").value;
- const button=event.currentTarget.querySelector("button");
- button.disabled=true;msg("Verifying God credentials…");
+async function trash(){
+ showingTrash=true;results.replaceChildren();$("eye-next").hidden=true;message("Opening soft-deleted vault…");
  try{
-  const d=await post("/unlock",{password});
-  $("eye-password").value="";
-  $("eye-expires").textContent="Authorized until "+iso(d.expires_at);
-  show("workspace");msg("Eye of Horus unlocked. All reviews require a documented purpose.");
- }catch(error){msg(error.message);}
- finally{button.disabled=false;$("eye-password").value="";}
-});
-$("eye-lock").addEventListener("click",async()=>{
- try{await post("/lock",{});show("unlock");msg("Oversight session locked.");}
- catch(error){msg(error.message);}
-});
-$("eye-review-form").addEventListener("submit",e=>{e.preventDefault();loadReview();});
+   const data=await request("/api/god/trash");
+   for(const entry of data.items||[]){
+     const card=element("article","eye-result");
+     const title=element("h3","",entry.category.replaceAll("_"," ")+" #"+entry.id);
+     card.append(title,element("small","", "Owner: "+(entry.user_id||"Unknown")+" · Deleted: "+time(entry.deleted_at)));
+     card.append(element("pre","",entry.label||"No description"));
+     const controls=element("div","eye-toolbar");
+     for(const [act,label] of [["restore","Restore"],["purge","Permanently purge"]]){
+       const button=element("button","eye-subtle",label);button.type="button";
+       button.addEventListener("click",async()=>{
+         if(act==="purge"&&!confirm("PERMANENTLY DELETE this soft-deleted item? This cannot be undone, including its associated files."))return;
+         button.disabled=true;
+         try{
+           const url="/api/god/trash/"+encodeURIComponent(entry.category)+"/"+encodeURIComponent(String(entry.id))+"/"+act;
+           const params=entry.category==="moon_journal"||entry.category==="shadow_journal"?"?user_id="+encodeURIComponent(String(entry.user_id)):"";
+           await post(url+params);message(act==="purge"?"Permanent deletion completed.":"Item restored.");await trash();
+         }catch(e){message(e.message);button.disabled=false}
+       });
+       controls.append(button);
+     }
+     card.append(controls);results.append(card);
+   }
+   if(!results.childElementCount)results.append(element("p","", "No soft-deleted content found in indexed collections."));
+   $("eye-count").textContent=(data.items||[]).length+" soft-deleted item(s)";
+   message("GOD recovery vault ready.");
+ }catch(e){message(e.message)}
+}
+$("eye-browse-form").addEventListener("submit",e=>{e.preventDefault();browse(false)});
 $("eye-next").addEventListener("click",()=>{
- if(lastForm&&lastForm.category===$("eye-category").value&&lastForm.reason===$("eye-reason").value.trim()&&String(lastForm.user_id||"")===String($("eye-user").value||""))loadReview(true);
- else loadReview();
+ if(!showingTrash&&hasMore&&current){
+   if(current.category===$("eye-category").value&&current.user===$("eye-user").value.trim())browse(true);
+   else browse(false);
+ }
 });
-$("eye-audit").addEventListener("click",async()=>{
- msg("Loading access log…");
- try{
-  const d=await request("/audit");
-  results.replaceChildren();
-  for(const item of d.logs||[]){
-   const card=node("article","eye-result");
-   card.append(node("h3","",item.action+" · "+item.category),node("small","",iso(item.created_at)),node("pre","",item.reason),node("small","", "Member filter: "+(item.target_user_id??"All")+" · Records: "+item.result_count));
-   results.append(card);
-  }
-  if(!results.childElementCount)results.append(node("p","", "No prior Eye of Horus reads."));
-  $("eye-next").hidden=true;msg("Access history loaded.");
- }catch(error){msg(error.message);}
-});
+$("eye-trash").addEventListener("click",trash);
 (async()=>{
  try{
-  const d=await request("/status");
-  show(d.unlocked?"workspace":"unlock");
-  if(d.unlocked){$("eye-expires").textContent="Authorized until "+iso(d.expires_at);msg("Authorized review session is active.");}
-  else msg("God account confirmed. Password verification is required.");
- }catch(error){show("denied");msg(error.message);}
+   const data=await request(ROOT+"/status");
+   if(!data.god)throw Error("GOD access required.");
+   const picker=$("eye-category");
+   for(const item of data.datasets||[]){
+     const option=document.createElement("option");option.value=item.id;option.textContent=item.label;picker.append(option);
+   }
+   $("eye-workspace").hidden=false;
+   message("GOD access confirmed.");
+   await browse(false);
+ }catch(e){$("eye-denied").hidden=false;message(e.message)}
 })();
 })();
