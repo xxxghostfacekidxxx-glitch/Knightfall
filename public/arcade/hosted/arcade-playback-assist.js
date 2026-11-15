@@ -6,6 +6,8 @@
   'use strict';
   const loader = document.currentScript;
   const targetSelector = loader?.dataset.target || 'body';
+  const existingFullscreen = loader?.dataset.fullscreen === 'existing';
+  const readyGlobal = loader?.dataset.ready || '';
   const rootId = 'kf-arcade-view-toggle';
   let root, button, theater = false, errorShown = false;
   const queuedErrors = [];
@@ -81,7 +83,7 @@
     const el=event.target;
     if(el && el!==window && el.tagName==='SCRIPT') {
       const url=el.src||'';
-      if(url && new URL(url,location.href).origin===location.origin) notice('missing-script');
+      if((url && new URL(url,location.href).origin===location.origin) || (!url && el.type==='module')) notice('missing-script');
     } else if(event instanceof ErrorEvent && event.error) notice('runtime-error');
   },true);
   window.addEventListener('unhandledrejection',()=>notice('unhandled-rejection'));
@@ -90,6 +92,7 @@
   function init() {
     css();
     root=(targetSelector==='body'?document.body:document.querySelector(targetSelector))||document.body;
+    if(!existingFullscreen){
     button=document.createElement('button');
     button.id=rootId;
     button.type='button';
@@ -118,12 +121,16 @@
       theater=true;
       setState(true);
     });
+    }
     document.addEventListener('fullscreenchange',sync);
     document.addEventListener('webkitfullscreenchange',sync);
     document.addEventListener('keydown',event=>{
       if(event.key==='Escape' && theater) closeTheater();
     });
     if(queuedErrors.length)showError();
+    if(readyGlobal) window.setTimeout(()=>{
+      if(!document.hidden && !window[readyGlobal] && !errorShown) notice('game-boot-timeout');
+    },15000);
     if(root!==document.body) window.setTimeout(()=>{
       if(document.hidden || errorShown) return;
       const box=root.getBoundingClientRect();
