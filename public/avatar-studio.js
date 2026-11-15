@@ -85,7 +85,7 @@
   history=history.slice(0,historyIndex+1);history.push(JSON.stringify(safe));
   if(history.length>45)history.shift();historyIndex=history.length-1;avatar=safe;
   const field=changed[0],category=fields.find(item=>item[0]===field)?.[2];
-  if(changed.length!==1||category!==activeGroup||!refreshSelectedTrait(field))paintControls();
+  if(traitQuery||changed.length!==1||category!==activeGroup||!refreshSelectedTrait(field))paintControls();
   updatePreview();if(message)status.textContent=message;
  }
  function moveHistory(delta){
@@ -175,7 +175,11 @@
   const prior=document.activeElement,focusField=root.contains(prior)?prior?.dataset?.trait:null;
   const focusChoice=focusField?prior?.dataset?.choice:null;
   paintTabs();root.replaceChildren();
-  const own=fields.filter(field=>field[2]===activeGroup);
+  const query=traitQuery.trim().toLowerCase();
+  const own=fields.filter(([key,label,group])=>!query?group===activeGroup:[key,label,group,...(kit.choices[key]||[]).map(choice=>labels[choice]||choice)].join(' ').toLowerCase().includes(query));
+  const count=byId('trait-search-count');
+  if(count)count.textContent=query?(own.length+' matching feature'+(own.length===1?'':'s')+' across all categories'):'Showing '+own.length+' features in '+(groups.find(g=>g.key===activeGroup)?.name||'this category')+'.';
+  if(!own.length){const empty=document.createElement('p');empty.className='trait-no-results';empty.textContent='No features match. Try hair, tattoos, outfit or aura.';root.append(empty);}
   for(const [key,label] of own){
    const box=document.createElement('fieldset');box.className='control-group';
    const legend=document.createElement('legend');legend.textContent=label;box.append(legend);
@@ -210,7 +214,9 @@
      image.className='trait-swatch';
      image.style.background=choice==='none'?'repeating-linear-gradient(45deg,#24172e 0 6px,#54415c 6px 12px)':kit.palettes?.[key==='hair_highlight'?'hair_color':key]?.[choice]||'#4f4059';
     }else{
-     image.className='trait-thumbnail';image.innerHTML=kit.render({...avatar,[key]:choice});
+     image.className='trait-thumbnail';
+     if(thumbObserver){image.dataset.field=key;image.dataset.choice=choice;image.dataset.avatar=JSON.stringify(avatar);thumbObserver.observe(image);}
+     else image.innerHTML=kit.render({...avatar,[key]:choice});
     }
     const caption=document.createElement('span');caption.textContent=choiceLabel;
     button.append(image,caption);
@@ -304,6 +310,9 @@
  byId('redo-avatar').addEventListener('click',()=>moveHistory(1));
  byId('reset-avatar').addEventListener('click',()=>applyAvatar(kit.defaults,'Back to the blank canvas. Your saved look is untouched.'));
  byId('avatar-name').addEventListener('input',syncDirty);
+ const searchInput=byId('trait-search-input'),searchClear=byId('trait-search-clear');
+ searchInput.addEventListener('input',()=>{traitQuery=searchInput.value.trim();searchClear.hidden=!traitQuery;paintControls();});
+ searchClear.addEventListener('click',()=>{searchInput.value='';traitQuery='';searchClear.hidden=true;paintControls();searchInput.focus();});
  const compare=byId('preview-compare');
  function setComparing(value){comparing=Boolean(value)&&Boolean(selectedSlot()?.avatar);updatePreview();}
  compare.addEventListener('pointerdown',event=>{if(!compare.disabled){setComparing(true);compare.setPointerCapture?.(event.pointerId);}});
