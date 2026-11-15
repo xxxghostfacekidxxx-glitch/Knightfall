@@ -19,8 +19,7 @@ function simulateAPI(userId,log){
   const owned=dataStore.premium.get(userId)||[];
   if(method==="PUT"){
    if(body.revision!==profile.revision)return mockResponse(409,{error:"Conflict"});
-   if(["void-royalty","crimson-rite","holo-wraith","toxic-pop","eclipse-noir"].includes(body.skin_id)&&!owned.includes(body.skin_id))
-    return mockResponse(403,{error:"Not owned"});
+   // Every current cosmetic skin is public; no entitlement checks.
    profile={...profile,equipped_skin:body.skin_id,revision:profile.revision+1};
    dataStore.profiles.set(userId,profile);
   }else if(method==="POST"&&body.action==="deal"){
@@ -95,22 +94,20 @@ test("stale revisions synchronize and safely retry latest user choice",async()=>
  assert.equal(b.api.current,"bone-white");
  assert.equal(dataStore.profiles.get(202).revision,2);
 });
-test("premium skins never unlock from client localStorage, only server account ownership",async()=>{
+test("former premium skins are now free and sync between devices",async()=>{
  dataStore.profiles.clear();dataStore.premium.clear();
- const storage=new Map([["ashfall:deck-locker:selected:v1","void-royalty"],["ashfall:deck-locker:deals:v1","100000"]]);
- const a=client(303,storage);
- assert.equal(a.api.current,"ash-classic");
- await a.api.refresh();
- assert.equal(a.api.chooseSkin("void-royalty"),false);
- dataStore.premium.set(303,["void-royalty"]);
- assert.equal(await a.api.refresh(),true);
+ const storage=new Map([["ashfall:deck-locker:selected:v1","void-royalty"]]);
+ const a=client(303,storage),b=client(303);
+ assert.equal(a.api.current,"void-royalty");
+ await a.api.refresh();await b.api.refresh();
  assert.equal(a.api.chooseSkin("void-royalty"),true);
  await settled();
+ await b.api.refresh();
+ assert.equal(b.api.current,"void-royalty");
  assert.equal(dataStore.profiles.get(303).equipped_skin,"void-royalty");
- dataStore.premium.delete(303);
- await a.api.refresh();
- assert.equal(a.api.current,"ash-classic");
- assert.equal(a.api.chooseSkin("void-royalty"),false);
+ dataStore.premium.clear();
+ assert.equal(await a.api.refresh(),true);
+ assert.equal(a.api.current,"void-royalty");
 });
 test("progress imports at most once and guest fallback remains usable",async()=>{
  dataStore.profiles.clear();dataStore.premium.clear();
