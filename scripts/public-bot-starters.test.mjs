@@ -36,7 +36,7 @@ test("public chat can open 32-character official IDs, display starters, and pres
  assert.match(chatHtml,/id="bot-starter-prompts"/);
  assert.match(chatHtml,/id="bot-specialty"/);
  assert.match(chatHtml,/bot-public\.js\?v=20261103-bot-starters1/);
- assert.match(chatHtml,/bot-starter-chat\.css\?v=20261103-bot-starters1/);
+ assert.match(chatHtml,/bot-starter-chat\.css\?v=20261114-mobile-wrap/);
  assert.match(chatScript,/\/\^\[a-f0-9\]\{32\}\$\//);
  assert.match(chatScript,/showStarters\(d\.bot\)/);
  assert.match(chatScript,/input\.value=suggestion/);
