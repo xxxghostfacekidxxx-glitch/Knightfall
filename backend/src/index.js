@@ -334,7 +334,7 @@ async function handleVaultRequest(request, env, origin, url) {
     return json({ok:true,folder_id:folderId},200,origin);
   }
   if (url.pathname === "/api/vault/items" && request.method === "GET") {
-    const rows = await env.DB.prepare("SELECT v.object_key,v.filename,v.content_type,v.size_bytes,v.created_at,v.etag,fi.folder_id FROM vault_items v LEFT JOIN vault_folder_items fi ON fi.object_key=v.object_key ORDER BY v.created_at DESC LIMIT 300").all();
+    const rows = await env.DB.prepare("SELECT v.object_key,v.filename,v.content_type,v.size_bytes,v.created_at,v.etag,fi.folder_id FROM vault_items v LEFT JOIN vault_folder_items fi ON fi.object_key=v.object_key WHERE v.deleted_at IS NULL ORDER BY v.created_at DESC LIMIT 300").all();
     return json({ items: (rows.results || []).map((x) => ({ key: x.object_key.slice(6), filename: x.filename, content_type: x.content_type, size_bytes: Number(x.size_bytes), created_at: x.created_at, etag: x.etag, folder_id: x.folder_id ?? null })), summary: await vaultSummary(env) }, 200, origin);
   }
   if (url.pathname === "/api/vault/items" && request.method === "POST") {
@@ -372,7 +372,7 @@ async function handleVaultRequest(request, env, origin, url) {
   }
   const contentMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})\/content$/);
   if (contentMatch && request.method === "GET") {
-    const row = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes FROM vault_items WHERE object_key=?").bind("vault/" + contentMatch[1]).first();
+    const row = await env.DB.prepare("SELECT object_key,filename,content_type,size_bytes FROM vault_items WHERE object_key=? AND deleted_at IS NULL").bind("vault/" + contentMatch[1]).first();
     if (!row) return json({ error: "Media not found." }, 404, origin);
     const rangeHeader = request.headers.get("range");
     const useRange = !!rangeHeader && /^bytes=\d*-\d*$/.test(rangeHeader);
@@ -413,11 +413,9 @@ async function handleVaultRequest(request, env, origin, url) {
   const itemMatch = url.pathname.match(/^\/api\/vault\/items\/([a-f0-9]{32})$/);
   if (itemMatch && request.method === "DELETE") {
     const objectKey = "vault/" + itemMatch[1];
-    const row = await env.DB.prepare("SELECT filename,size_bytes FROM vault_items WHERE object_key=?").bind(objectKey).first();
+    const row = await env.DB.prepare("SELECT filename,size_bytes FROM vault_items WHERE object_key=? AND deleted_at IS NULL").bind(objectKey).first();
     if (!row) return json({ error: "Media not found." }, 404, origin);
-    await env.VAULT.delete(objectKey);
-    await env.DB.prepare("DELETE FROM vault_folder_items WHERE object_key=?").bind(objectKey).run();
-    await env.DB.prepare("DELETE FROM vault_items WHERE object_key=?").bind(objectKey).run();
+    await env.DB.prepare("UPDATE vault_items SET deleted_at=? WHERE object_key=? AND deleted_at IS NULL").bind(new Date().toISOString(),objectKey).run();
     await audit(env, user, "vault.delete", "vault_item", null, { filename: row.filename, size_bytes: Number(row.size_bytes) });
     return json({ ok: true, summary: await vaultSummary(env) }, 200, origin);
   }
@@ -859,31 +857,31 @@ async function handleMediaAlbums(request,env,origin,url){
  const member=pathname.match(/^\/api\/media-library\/albums\/(\d+)\/photos\/(\d+)$/);
  const favorite=pathname.match(/^\/api\/media-library\/favorites\/(\d+)$/);
  if(pathname==="/api/media-library/albums"&&method==="GET"){
-   const rows=await env.DB.prepare("SELECT a.id,a.name,a.created_at,COUNT(ap.photo_id) AS photo_count FROM media_albums a LEFT JOIN media_album_photos ap ON ap.album_id=a.id WHERE a.owner_id=? GROUP BY a.id ORDER BY a.created_at DESC LIMIT 100").bind(user.id).all();
+   const rows=await env.DB.prepare("SELECT a.id,a.name,a.created_at,COUNT(ap.photo_id) AS photo_count FROM media_albums a LEFT JOIN media_album_photos ap ON ap.album_id=a.id WHERE a.owner_id=? AND a.deleted_at IS NULL GROUP BY a.id ORDER BY a.created_at DESC LIMIT 100").bind(user.id).all();
    return json({albums:rows.results||[]},200,origin);
  }
  if(pathname==="/api/media-library/albums"&&method==="POST"){
    const data=await body(),name=String(data?.name||"").trim();
    if(!name||name.length>80)return json({error:"Album name must be 1–80 characters."},400,origin);
-   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM media_albums WHERE owner_id=?").bind(user.id).first();
+   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM media_albums WHERE owner_id=? AND deleted_at IS NULL").bind(user.id).first();
    if(Number(count?.n||0)>=100)return json({error:"Album limit reached."},409,origin);
    const now=new Date().toISOString();
    const album=await env.DB.prepare("INSERT INTO media_albums(owner_id,name,created_at,updated_at) VALUES(?,?,?,?) RETURNING id,name,created_at").bind(user.id,name,now,now).first();
    return json({album},201,origin);
  }
  if(albumId&&method==="DELETE"){
-   const result=await env.DB.prepare("DELETE FROM media_albums WHERE id=? AND owner_id=?").bind(Number(albumId[1]),user.id).run();
+   const result=await env.DB.prepare("UPDATE media_albums SET deleted_at=? WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),Number(albumId[1]),user.id).run();
    return json({ok:result.meta.changes>0},result.meta.changes?200:404,origin);
  }
  if(albumId&&method==="GET"){
-   const album=await env.DB.prepare("SELECT id,name,created_at FROM media_albums WHERE id=? AND owner_id=?").bind(Number(albumId[1]),user.id).first();
+   const album=await env.DB.prepare("SELECT id,name,created_at FROM media_albums WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(Number(albumId[1]),user.id).first();
    if(!album)return json({error:"Album not found."},404,origin);
    const rows=await env.DB.prepare("SELECT p.id,p.caption,p.created_at FROM media_album_photos ap JOIN profile_photos p ON p.id=ap.photo_id WHERE ap.album_id=? AND p.user_id=? AND p.kind='gallery' ORDER BY ap.added_at DESC").bind(album.id,user.id).all();
    return json({album,photos:(rows.results||[]).map(p=>({...p,url:profilePhotoUrl(p.id)}))},200,origin);
  }
  if(member&&(method==="PUT"||method==="DELETE")){
    const aid=Number(member[1]),pid=Number(member[2]);
-   const album=await env.DB.prepare("SELECT id FROM media_albums WHERE id=? AND owner_id=?").bind(aid,user.id).first();
+   const album=await env.DB.prepare("SELECT id FROM media_albums WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(aid,user.id).first();
    if(!album)return json({error:"Album not found."},404,origin);
    if(method==="PUT"){
      const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery' AND deleted_at IS NULL").bind(pid,user.id).first();
@@ -1305,7 +1303,7 @@ export default { async queue(batch, env) {
   // Miss Chaos: private, user-controlled long-term memories.
   if(url.pathname==="/api/chaos/memories"&&request.method==="GET"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
-    const {results}=await env.DB.prepare("SELECT id,memory,category,created_at,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
+    const {results}=await env.DB.prepare("SELECT id,memory,category,created_at,updated_at FROM chaos_memories WHERE user_id=? AND deleted_at IS NULL ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
     return json({memories:results||[]},200,origin);
   }
   if(url.pathname==="/api/chaos/memories"&&request.method==="POST"){
@@ -1315,9 +1313,9 @@ export default { async queue(batch, env) {
     const memory=typeof body.memory==="string"?body.memory.trim():"";
     const category=["personal","preference","project","other"].includes(body.category)?body.category:"personal";
     if(!memory||memory.length>500)return json({error:"A memory must be between 1 and 500 characters."},400,origin);
-    const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM chaos_memories WHERE user_id=?").bind(user.id).first();
+    const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM chaos_memories WHERE user_id=? AND deleted_at IS NULL").bind(user.id).first();
     if(Number(count?.count||0)>=100)return json({error:"Memory limit reached. Delete an old memory before adding another."},409,origin);
-    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND lower(memory)=lower(?)").bind(user.id,memory).first();
+    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND deleted_at IS NULL AND lower(memory)=lower(?)").bind(user.id,memory).first();
     if(duplicate)return json({error:"That memory is already saved."},409,origin);
     const now=new Date().toISOString();
     const row=await env.DB.prepare("INSERT INTO chaos_memories (user_id,memory,category,created_at,updated_at) VALUES (?,?,?,?,?) RETURNING id,memory,category,created_at,updated_at").bind(user.id,memory,category,now,now).first();
@@ -1328,12 +1326,12 @@ export default { async queue(batch, env) {
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
     if(!(await rateLimit(env,request,"chaos-memory-write",30,60)))return json({error:"Too many memory changes. Try again in a minute."},429,origin);
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    const id=Number(chaosMemoryMatch[1]),current=await env.DB.prepare("SELECT id,memory,category FROM chaos_memories WHERE id=? AND user_id=?").bind(id,user.id).first();
+    const id=Number(chaosMemoryMatch[1]),current=await env.DB.prepare("SELECT id,memory,category FROM chaos_memories WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(id,user.id).first();
     if(!current)return json({error:"Memory not found."},404,origin);
     const memory=body.memory===undefined?current.memory:(typeof body.memory==="string"?body.memory.trim():"");
     const category=body.category===undefined?current.category:body.category;
     if(!memory||memory.length>500||!["personal","preference","project","other"].includes(category))return json({error:"Invalid memory or category."},400,origin);
-    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND lower(memory)=lower(?) AND id<>?").bind(user.id,memory,id).first();
+    const duplicate=await env.DB.prepare("SELECT id FROM chaos_memories WHERE user_id=? AND deleted_at IS NULL AND lower(memory)=lower(?) AND id<>?").bind(user.id,memory,id).first();
     if(duplicate)return json({error:"Another saved memory already says that."},409,origin);
     const now=new Date().toISOString();
     const row=await env.DB.prepare("UPDATE chaos_memories SET memory=?,category=?,updated_at=? WHERE id=? AND user_id=? RETURNING id,memory,category,created_at,updated_at").bind(memory,category,now,id,user.id).first();
@@ -1341,7 +1339,7 @@ export default { async queue(batch, env) {
   }
   if(chaosMemoryMatch&&request.method==="DELETE"){
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to manage Miss Chaos memories."},401,origin);
-    const result=await env.DB.prepare("DELETE FROM chaos_memories WHERE id=? AND user_id=?").bind(Number(chaosMemoryMatch[1]),user.id).run();
+    const result=await env.DB.prepare("UPDATE chaos_memories SET deleted_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),Number(chaosMemoryMatch[1]),user.id).run();
     if(!result.meta?.changes)return json({error:"Memory not found."},404,origin);
     return json({ok:true},200,origin);
   }
@@ -1573,7 +1571,7 @@ export default { async queue(batch, env) {
       astrology:"Be an interested, conversational astrology guide. Match the depth to the question, acknowledge different traditions, and avoid invented chart calculations.",
       custom:"Use a vivid, candid, witty voice while adapting to the user's requested style."
     };
-    const {results:allMemories}=await env.DB.prepare("SELECT memory,category,updated_at FROM chaos_memories WHERE user_id=? ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
+    const {results:allMemories}=await env.DB.prepare("SELECT memory,category,updated_at FROM chaos_memories WHERE user_id=? AND deleted_at IS NULL ORDER BY updated_at DESC LIMIT 100").bind(user.id).all();
     const stopWords=new Set(["the","and","for","that","with","this","from","have","your","you","are","was","were","what","when","where","why","how","about","into","then","them","they","their","there","here","can","could","would","should","will","just","not","but","our","out","all","any","who","its","it's","too","also","than","has","had","does","did","been","being","get","got","make","made","like","know","tell","please"]);
     const continuityText=[message,conversation?.title||"",...(history||[]).slice(0,6).map(m=>m.content)].join(" ").toLowerCase();
     const queryTokens=new Set((continuityText.match(/[a-z0-9][a-z0-9'-]{2,}/g)||[]).filter(t=>!stopWords.has(t)));
