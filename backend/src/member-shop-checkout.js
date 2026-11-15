@@ -1,6 +1,7 @@
 // Stripe-backed bot slot checkout. Never trust client prices or success redirects.
 import {BOT_SLOT_PRODUCTS} from "./bot-slot-shop.js";
 import {PET_ACCESSORIES} from "./mascot-collectibles.js";
+import {PREMIUM_DECK_SKUS} from "./deck-skin-products.js";
 const respond=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json","cache-control":"no-store"}});
 const hex=bytes=>Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,"0")).join("");
 async function verifyStripeSignature(raw,header,secret){
@@ -27,12 +28,16 @@ export async function handleBotSlotShop(request,env,url,user){
   if(env.MEMBER_SHOP_CHECKOUT_ENABLED!=="true")return respond({error:"Checkout is not available yet"},503);
   if(!env.STRIPE_SECRET_KEY||!env.STRIPE_WEBHOOK_SECRET)return respond({error:"Checkout is not configured"},503);
   let data;try{data=await request.json()}catch{return respond({error:"Invalid JSON"},400)}
-  const product=Object.prototype.hasOwnProperty.call(BOT_SLOT_PRODUCTS,data?.sku)?BOT_SLOT_PRODUCTS[data.sku]:(PET_ACCESSORIES[data?.sku]?.premium?PET_ACCESSORIES[data.sku]:null);
+  const product=Object.prototype.hasOwnProperty.call(BOT_SLOT_PRODUCTS,data?.sku)?BOT_SLOT_PRODUCTS[data.sku]:(PET_ACCESSORIES[data?.sku]?.premium?PET_ACCESSORIES[data.sku]:(PREMIUM_DECK_SKUS[data?.sku]||null));
   if(!product)return respond({error:"Unknown paid shop product"},400);
+  if(PREMIUM_DECK_SKUS[data.sku]){
+   const existing=await env.DB.prepare("SELECT skin_id FROM arcade_deck_paid_entitlements WHERE user_id=? AND skin_id=? AND state='active'").bind(user.id,PREMIUM_DECK_SKUS[data.sku].skin_id).first();
+   if(existing)return respond({error:"You already own this deck skin."},409);
+  }
   const id=crypto.randomUUID(),now=new Date().toISOString();
   await env.DB.prepare("INSERT INTO member_shop_orders(id,user_id,sku,amount_cents,currency,status,provider,created_at,updated_at) VALUES(?,?,?,?,?,'pending','stripe',?,?)").bind(id,user.id,data.sku,product.price_cents,"USD",now,now).run();
   try{
-   const session=await stripeRequest(env,"checkout/sessions",{"mode":"payment","success_url":(product.premium?"https://ash-fall.com/mascot-pets.html?checkout=success":"https://ash-fall.com/cinder-shop.html?checkout=success"),"cancel_url":(product.premium?"https://ash-fall.com/mascot-pets.html?checkout=cancelled":"https://ash-fall.com/cinder-shop.html?checkout=cancelled"),"client_reference_id":id,"metadata[order_id]":id,"line_items[0][price_data][currency]":"usd","line_items[0][price_data][unit_amount]":String(product.price_cents),"line_items[0][price_data][product_data][name]":product.premium?"Neon Nuisances · "+product.name:(data.sku==="bot_slot_1"?"Ash-Fall +1 Bot Slot":"Ash-Fall +5 Bot Slots"),"line_items[0][quantity]":"1"},id);
+   const session=await stripeRequest(env,"checkout/sessions",{"mode":"payment","success_url":(product.premium?"https://ash-fall.com/mascot-pets.html?checkout=success":"https://ash-fall.com/cinder-shop.html?checkout=success"),"cancel_url":(product.premium?"https://ash-fall.com/mascot-pets.html?checkout=cancelled":"https://ash-fall.com/cinder-shop.html?checkout=cancelled"),"client_reference_id":id,"metadata[order_id]":id,"line_items[0][price_data][currency]":"usd","line_items[0][price_data][unit_amount]":String(product.price_cents),"line_items[0][price_data][product_data][name]":product.premium?"Neon Nuisances · "+product.name:(PREMIUM_DECK_SKUS[data.sku]?"Knightfall Deck · "+product.name:(data.sku==="bot_slot_1"?"Ash-Fall +1 Bot Slot":"Ash-Fall +5 Bot Slots")),"line_items[0][quantity]":"1"},id);
    return respond({checkout_url:session.url,order_id:id});
   }catch(e){console.error("member_shop_checkout",e);return respond({error:"Checkout unavailable"},502)}
  }
@@ -55,7 +60,7 @@ export async function handleBotSlotShop(request,env,url,user){
   const id=session.client_reference_id;
   if(typeof id!=="string"||!session.id)return respond({error:"Invalid session"},400);
   const order=await env.DB.prepare("SELECT id,user_id,sku,amount_cents,currency,status FROM member_shop_orders WHERE id=?").bind(id).first();
-  const product=order&&(BOT_SLOT_PRODUCTS[order.sku]||(PET_ACCESSORIES[order.sku]?.premium?PET_ACCESSORIES[order.sku]:null));
+  const product=order&&(BOT_SLOT_PRODUCTS[order.sku]||(PET_ACCESSORIES[order.sku]?.premium?PET_ACCESSORIES[order.sku]:PREMIUM_DECK_SKUS[order.sku]));
   if(!product||order.currency!=="USD"||order.amount_cents!==product.price_cents||session.amount_total!==order.amount_cents||String(session.currency).toLowerCase()!=="usd"||session.metadata?.order_id!==id)return respond({error:"Order mismatch"},400);
   if(order.status==="fulfilled")return respond({received:true});
   if(order.status!=="pending"&&order.status!=="paid")return respond({error:"Order not fulfillable"},409);
@@ -64,7 +69,8 @@ export async function handleBotSlotShop(request,env,url,user){
    env.DB.prepare("UPDATE member_shop_orders SET status='fulfilled',provider_payment_id=?,updated_at=? WHERE id=? AND status IN ('pending','paid')").bind(session.payment_intent||session.id,now,id),
    env.DB.prepare("INSERT OR IGNORE INTO member_shop_fulfillments(order_id,user_id,sku,fulfilled_at) SELECT id,user_id,sku,? FROM member_shop_orders WHERE id=? AND status='fulfilled'").bind(now,id),
    env.DB.prepare("INSERT INTO member_shop_entitlements(user_id,extra_bot_slots,updated_at) VALUES(?,(SELECT COALESCE(SUM(CASE sku WHEN 'bot_slot_1' THEN 1 WHEN 'bot_slot_5' THEN 5 ELSE 0 END),0) FROM member_shop_fulfillments WHERE user_id=?),?) ON CONFLICT(user_id) DO UPDATE SET extra_bot_slots=excluded.extra_bot_slots,updated_at=excluded.updated_at").bind(order.user_id,order.user_id,now),
-   env.DB.prepare("INSERT OR IGNORE INTO mascot_wardrobe(user_id,sku,acquired_at) SELECT user_id,sku,? FROM member_shop_fulfillments WHERE order_id=? AND sku=?").bind(now,id,order.sku)
+   env.DB.prepare("INSERT OR IGNORE INTO mascot_wardrobe(user_id,sku,acquired_at) SELECT user_id,sku,? FROM member_shop_fulfillments WHERE order_id=? AND sku=?").bind(now,id,order.sku),
+   env.DB.prepare("INSERT INTO arcade_deck_paid_entitlements(user_id,skin_id,source_order_id,state,granted_at) SELECT user_id,? ,id,'active',? FROM member_shop_orders WHERE id=? AND sku=? AND status='fulfilled' ON CONFLICT(user_id,skin_id) DO UPDATE SET state='active',source_order_id=excluded.source_order_id,granted_at=excluded.granted_at,revoked_at=NULL").bind(PREMIUM_DECK_SKUS[order.sku]?.skin_id||"__not_a_deck__",now,id,order.sku)
   ]);
   return respond({received:true});
  }
