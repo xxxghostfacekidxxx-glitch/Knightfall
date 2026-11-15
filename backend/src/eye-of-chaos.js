@@ -156,6 +156,26 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin}
  }
  if(url.pathname===API+"/sources"&&request.method==="GET")
   return respond({sources:Object.entries(CHAOS_SOURCES).map(([key,value])=>({key,...value}))});
+ if(url.pathname===API+"/qa"&&request.method==="GET"){
+  // Live read-only GitHub evidence; no browser token, workflow dispatch or fabricated verdicts.
+  const base="https://api.github.com/repos/xxxghostfacekidxxx-glitch/Knightfall";
+  const options={headers:{"accept":"application/vnd.github+json","user-agent":"KnightfallEyeOfChaos/1.0"},
+   cf:{cacheTtl:120,cacheEverything:true},signal:AbortSignal.timeout(6000)};
+  try{
+   const response=await fetch(base+"/actions/workflows/arcade-test-fleet.yml/runs?branch=main&per_page=1",options);
+   if(!response.ok)return respond({verified:false,message:"GitHub test status unavailable ("+response.status+")."});
+   const run=(await response.json()).workflow_runs?.[0];
+   if(!run)return respond({verified:false,message:"No Arcade Test Fleet run found."});
+   const info={id:run.id,status:run.status,conclusion:run.conclusion,sha:run.head_sha,created_at:run.created_at,url:run.html_url};
+   const jobsResponse=await fetch(base+"/actions/runs/"+run.id+"/jobs?per_page=50",options);
+   if(!jobsResponse.ok)return respond({verified:true,run:info,jobs:[],jobs_verified:false});
+   const jobs=(await jobsResponse.json()).jobs||[];
+   const workerJobs=jobs.filter(j=>CHAOS_QA_FLEET.some(a=>j.name?.startsWith(a.name+" ·")))
+    .map(j=>({name:j.name,status:j.status,conclusion:j.conclusion,url:j.html_url}));
+   return respond({verified:true,run:info,jobs:workerJobs,jobs_verified:true});
+  }catch{return respond({verified:false,message:"GitHub could not be reached. Check the workflow directly."})}
+ }
+
  if(!ready)return respond({error:"Eye of Chaos storage migration 0142 has not been applied. Controls remain read-only.",schema_ready:false},503);
  async function body(){
   if(Number(request.headers.get("content-length")||0)>15500)throw Error("Too large");
