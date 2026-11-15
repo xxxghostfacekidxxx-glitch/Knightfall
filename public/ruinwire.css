@@ -39,3 +39,7 @@ html.ruinwire-mode .message-layout{min-height:0!important;flex:1 1 auto!importan
 html.ruinwire-mode .messages-hero-actions{gap:.3rem}
 html.ruinwire-mode .messages-hero-actions button{font-size:.76rem;padding:.4rem .55rem}
 @media(max-width:660px){.rw-install-hero{grid-template-columns:1fr}.rw-install-hero img{width:100px}.rw-features{grid-template-columns:1fr}.rw-appbar{gap:.4rem}.rw-appbar a{font-size:.73rem}}
+
+/* Hidden until a passing debug artifact is verified via GitHub. */
+#rw-debug-apk-link[hidden]{display:none!important}
+[data-android-debug-find]:disabled{opacity:.65;cursor:wait}
