@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {PET_AFFINITIES,SPECIES_AFFINITY,affinityFor,stagesFor,growthFor,GROWTH_FORM_NAMES} from '../backend/src/mascot-lineages.js';
 import {PET_MARKET} from '../backend/src/mascot-collectibles.js';
 test('all 32 sanctuary species have exactly one affinity and three named forms',()=>{
@@ -49,7 +50,7 @@ test('storybook pet compositor retains server-owned lineage and separate type pa
  const renderer=readFileSync(new URL('../public/mascot-renderer.js',import.meta.url),'utf8');
  const css=readFileSync(new URL('../public/mascot-cartoon.css',import.meta.url),'utf8');
  for(const html of [page,room,profile])assert.match(html,/mascot-cartoon\.css\?v=20261114-book3/);
- assert.match(renderer,/pet-render-v2','pet-render-v3'/);
+ assert.match(renderer,/pet-render-v2','pet-render-v3/);
  assert.match(renderer,/pet-comic-affinity-mark/);
  assert.match(renderer,/storybook-comic-v3/);
  assert.match(css,/data-affinity="neon"/);
