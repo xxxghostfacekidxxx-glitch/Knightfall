@@ -80,7 +80,10 @@ export async function handleArcadeDeckLocker(request,env,url,{getUser,json,rateL
  const user=await getUser(request,env);
  if(!user)return send({error:"Sign in to sync your Deck Locker."},401);
  const userId=Number(user.id);
- if(request.method==="GET")return send(await readAccount(env,userId));
+ if(request.method==="GET"){
+  await env.DB.prepare("INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)").bind(userId,(user.username==="knightfall"||["admin","moderator","god"].includes(user.role))?1000000:2000).run();
+  return send(await readAccount(env,userId));
+ }
  if(!await rateLimit(env,request,"deck-locker-write",70,60,userId))
   return send({error:"Too many Deck Locker updates; try again shortly."},429);
  if(!String(request.headers.get("content-type")||"").toLowerCase().includes("application/json"))
@@ -104,8 +107,8 @@ export async function handleArcadeDeckLocker(request,env,url,{getUser,json,rateL
   return send(await readAccount(env,userId));
  }
  if(body.action==="buy_cinders"){
+  if(typeof body.skin_id!=="string"||!Object.hasOwn(CINDER_DECK_SKINS,body.skin_id))return send({error:"Unknown Cinders deck skin."},400);
   const item=CINDER_DECK_SKINS[body.skin_id];
-  if(!item)return send({error:"Unknown Cinders deck skin."},400);
   // The browser supplies only an ID. SQLite validates tier, price, balance and
   // one-purchase-per-account atomically using the 0142 triggers.
   await env.DB.prepare("INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)").bind(userId,(user.username==="knightfall"||["admin","moderator","god"].includes(user.role))?1000000:2000).run();
