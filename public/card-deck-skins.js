@@ -15,7 +15,19 @@
   {id:"crimson-rite",name:"Crimson Rite",kind:"free",tag:"FREE",symbol:"✧",description:"Scarlet wax seal and ritual geometry."},
   {id:"holo-wraith",name:"Holo Wraith",kind:"free",tag:"FREE",symbol:"◇",description:"Iridescent spectral foil with prismatic highlights."},
   {id:"toxic-pop",name:"Toxic Pop",kind:"free",tag:"FREE",symbol:"☢",description:"Graphic-novel splashes and radioactive green."},
-  {id:"eclipse-noir",name:"Eclipse Noir",kind:"free",tag:"FREE",symbol:"☾",description:"Embossed black-on-black eclipse and satin silver."}
+  {id:"eclipse-noir",name:"Eclipse Noir",kind:"free",tag:"FREE",symbol:"☾",description:"Embossed black-on-black eclipse and satin silver."},
+  {id:"obsidian-cathedral",name:"Obsidian Cathedral",kind:"premium",price_cents:100,tag:"$1.00",symbol:"♜",description:"Gothic arches, etched windows and black-gold foil."},
+  {id:"mourning-rose",name:"Mourning Rose",kind:"premium",price_cents:125,tag:"$1.25",symbol:"✿",description:"Pressed black roses and antique blush engraving."},
+  {id:"serpent-crown",name:"Serpent Crown",kind:"premium",price_cents:149,tag:"$1.49",symbol:"♛",description:"Emerald scales wrapped around a burnished crown."},
+  {id:"arcane-tarot",name:"Arcane Tarot",kind:"premium",price_cents:175,tag:"$1.75",symbol:"☽",description:"Midnight celestial engraving and intricate constellations."},
+  {id:"blood-moon",name:"Blood Moon",kind:"premium",price_cents:199,tag:"$1.99",symbol:"◉",description:"Lunar eclipse lacquer with crimson halo foil."},
+  {id:"rusted-relic",name:"Rusted Relic",kind:"premium",price_cents:100,tag:"$1.00",symbol:"⚙",description:"Weathered copper plates and distressed industrial geometry."},
+  {id:"phantom-masquerade",name:"Phantom Masquerade",kind:"premium",price_cents:125,tag:"$1.25",symbol:"◈",description:"Ornate ivory masquerade masks on plum velvet."},
+  {id:"starfall",name:"Starfall",kind:"premium",price_cents:149,tag:"$1.49",symbol:"✶",description:"Meteor streaks and deep indigo starlight."},
+  {id:"witching-hour",name:"Witching Hour",kind:"premium",price_cents:175,tag:"$1.75",symbol:"⌛",description:"Moonlit clockwork, blue smoke and silver ink."},
+  {id:"thornbound",name:"Thornbound",kind:"premium",price_cents:199,tag:"$1.99",symbol:"❦",description:"Entwined thorns with antique bronze edging."},
+  {id:"sacred-static",name:"Sacred Static",kind:"premium",price_cents:149,tag:"$1.49",symbol:"⌁",description:"Glitched stained glass and holographic fragments."},
+  {id:"cinder-emperor",name:"Cinder Emperor",kind:"premium",price_cents:199,tag:"$1.99",symbol:"♚",description:"Regal ember filigree and molten volcanic enamel."}
  ]);
  const skinMap=new Map(SKINS.map(s=>[s.id,s]));
  const STORAGE_KEY="ashfall:deck-locker:selected:v1";
@@ -27,7 +39,7 @@
  let deals=localDeals;
  const account={ready:false,userId:null,revision:0,owned:new Set(),imported:false,status:"Checking account sync…"};
  const API="https://api.ash-fall.com/api/arcade/deck-locker";
- const allowed=skin=>!!skin&&skinMap.has(skin.id);
+ const allowed=skin=>!!skin&&(skin.kind==="free"||(skin.kind==="premium"&&account.ready&&account.owned.has(skin.id)));
  let chosen=read(STORAGE_KEY)||"ash-classic";
  if(!allowed(skinMap.get(chosen)))chosen="ash-classic";
  const updateDocument=()=>{root.dataset.kfDeckSkin=chosen;root.style.colorScheme="dark"};
@@ -51,7 +63,7 @@
   account.ready=true;account.userId=Number(data.user_id);
   account.revision=Math.max(0,Math.floor(Number(data.profile.revision)||0));
   account.imported=!!data.profile.local_imported;
-  account.owned=new Set(); // Legacy paid entitlements are unnecessary: every existing finish is free.
+  account.owned=new Set((Array.isArray(data.owned_skin_ids)?data.owned_skin_ids:[]).filter(id=>skinMap.get(id)?.kind==="premium"));
   deals=Math.min(100000,Math.max(0,Math.floor(Number(data.profile.earned_deals)||0)));
   const selected=data.profile.equipped_skin;
   chosen=allowed(skinMap.get(selected))?selected:"ash-classic";
@@ -66,7 +78,7 @@
   // misreported as game launch failures in the arcade fleet.
   const host=window.location?.hostname;
   if(host&&host!=="ash-fall.com"&&host!=="www.ash-fall.com"){
-   account.status="Local preview · all 12 skins free; account sync is available on ash-fall.com";
+   account.status="Local preview · 12 free skins; premium ownership sync is available on ash-fall.com";
    if(renderCardList)renderCardList();
    return false;
   }
@@ -157,8 +169,8 @@
   locker.replaceChildren();
   const heading=make("div","kf-deck-intro");
   const intro=make("div");
-  intro.append(make("strong",null,"THE DECK ATELIER · 12 FREE DESIGNS"),make("p",null,"Pick a handcrafted look for every card table. All existing finishes are free, with no unlocks or purchases."));
-  const prog=make("div","kf-deck-progress","ALL 12 FREE · "+deals+" deals played");
+  intro.append(make("strong",null,"THE DECK ATELIER · 12 FREE + 12 PREMIUM"),make("p",null,"Pick a handcrafted look for every card table. All 12 original finishes remain free; the 12 new designs cost $1.00–$1.99 each."));
+  const prog=make("div","kf-deck-progress","12 FREE FOREVER · "+deals+" deals played");
   heading.append(intro,prog);
   locker.append(heading);
   const syncStatus=make("div","kf-deck-sync-status");
@@ -184,19 +196,24 @@
    preview.append(make("span","kf-card-mini-back",skin.symbol),make("span","kf-card-mini-face","♠"),make("span","kf-deck-preview-mark",skin.name.toUpperCase()));
    const info=make("div","kf-deck-item-copy");
    info.append(make("strong",null,skin.name),make("small",null,skin.description));
-   const meta=make("span","kf-deck-kind","FREE · FOREVER");
-   const button=make("button","kf-deck-choice",skin.id===chosen?"✓ Equipped":"Equip skin");
+   const meta=make("span","kf-deck-kind",skin.kind==="free"?"FREE · FOREVER":`${(skin.price_cents/100).toFixed(2)} · ONE-TIME`);
+   const button=make("button","kf-deck-choice",skin.id===chosen?"✓ Equipped":available?"Equip skin":"Purchase required");
    button.type="button";
    button.disabled=!available||skin.id===chosen;
    button.setAttribute("aria-label",(skin.id===chosen?"Equipped ":available?"Equip ":"Locked ")+skin.name);
    if(available&&skin.id!==chosen)button.addEventListener("click",()=>chooseSkin(skin.id));
    const footer=make("div","kf-deck-item-footer");
    footer.append(meta,button);
+   if(skin.kind==="premium"&&!available){
+    const link=make("a","kf-deck-premium-link","View $"+(skin.price_cents/100).toFixed(2)+" skin in shop");
+    link.href="/cinder-shop.html#deck-skin-"+skin.id;
+    footer.append(link);
+   }
    item.append(preview,info,footer);
    grid.append(item);
   }
   locker.append(grid);
-  const note=make("p","kf-deck-disclaimer","Every current deck skin is free. Signing in syncs your selection; guest choices stay on this device. Cosmetics never change cards, odds or expansion ownership.");
+  const note=make("p","kf-deck-disclaimer","All 12 original skins remain free forever. New premium skins require a verified, server-issued entitlement before equipping; checkout is not active until Stripe launch verification. No cosmetic changes gameplay or card expansion ownership.");
   locker.append(note);
  }
  function init(){
