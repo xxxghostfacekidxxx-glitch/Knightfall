@@ -65,13 +65,16 @@ export async function handleBotSlotShop(request,env,url,user){
   if(order.status==="fulfilled")return respond({received:true});
   if(order.status!=="pending"&&order.status!=="paid")return respond({error:"Order not fulfillable"},409);
   const now=new Date().toISOString();
-  await env.DB.batch([
+  const fulfillments=[
    env.DB.prepare("UPDATE member_shop_orders SET status='fulfilled',provider_payment_id=?,updated_at=? WHERE id=? AND status IN ('pending','paid')").bind(session.payment_intent||session.id,now,id),
    env.DB.prepare("INSERT OR IGNORE INTO member_shop_fulfillments(order_id,user_id,sku,fulfilled_at) SELECT id,user_id,sku,? FROM member_shop_orders WHERE id=? AND status='fulfilled'").bind(now,id),
    env.DB.prepare("INSERT INTO member_shop_entitlements(user_id,extra_bot_slots,updated_at) VALUES(?,(SELECT COALESCE(SUM(CASE sku WHEN 'bot_slot_1' THEN 1 WHEN 'bot_slot_5' THEN 5 ELSE 0 END),0) FROM member_shop_fulfillments WHERE user_id=?),?) ON CONFLICT(user_id) DO UPDATE SET extra_bot_slots=excluded.extra_bot_slots,updated_at=excluded.updated_at").bind(order.user_id,order.user_id,now),
-   env.DB.prepare("INSERT OR IGNORE INTO mascot_wardrobe(user_id,sku,acquired_at) SELECT user_id,sku,? FROM member_shop_fulfillments WHERE order_id=? AND sku=?").bind(now,id,order.sku),
-   env.DB.prepare("INSERT INTO arcade_deck_paid_entitlements(user_id,skin_id,source_order_id,state,granted_at) SELECT user_id,? ,id,'active',? FROM member_shop_orders WHERE id=? AND sku=? AND status='fulfilled' ON CONFLICT(user_id,skin_id) DO UPDATE SET state='active',source_order_id=excluded.source_order_id,granted_at=excluded.granted_at,revoked_at=NULL").bind(PREMIUM_DECK_SKUS[order.sku]?.skin_id||"__not_a_deck__",now,id,order.sku)
-  ]);
+   env.DB.prepare("INSERT OR IGNORE INTO mascot_wardrobe(user_id,sku,acquired_at) SELECT user_id,sku,? FROM member_shop_fulfillments WHERE order_id=? AND sku=?").bind(now,id,order.sku)
+  ];
+  if(PREMIUM_DECK_SKUS[order.sku])fulfillments.push(
+   env.DB.prepare("INSERT INTO arcade_deck_paid_entitlements(user_id,skin_id,source_order_id,state,granted_at) SELECT user_id,?,id,'active',? FROM member_shop_orders WHERE id=? AND sku=? AND status='fulfilled' ON CONFLICT(user_id,skin_id) DO UPDATE SET state='active',source_order_id=excluded.source_order_id,granted_at=excluded.granted_at,revoked_at=NULL").bind(PREMIUM_DECK_SKUS[order.sku].skin_id,now,id,order.sku)
+  );
+  await env.DB.batch(fulfillments);
   return respond({received:true});
  }
  return null;
