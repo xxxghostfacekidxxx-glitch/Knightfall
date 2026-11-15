@@ -184,4 +184,9 @@
 .avatar-studio .category-tab[aria-selected="true"]{background:linear-gradient(132deg,#c9ff70,#84d8b1);box-shadow:0 8px 24px #c6ff4533}
 @media(max-width:850px){.avatar-studio .avatar-stage{min-height:310px}.avatar-studio .avatar-stage svg{width:min(88%,395px)}}
 @media(max-width:600px){.avatar-studio .avatar-stage{min-height:260px;aspect-ratio:1.19/1}.avatar-studio .avatar-stage[data-framing="portrait"] svg{transform:scale(1.44) translateY(13%)}.avatar-studio .character-ticket>div{padding:8px 6px;min-height:57px}.avatar-studio .character-ticket strong{font-size:10px}.avatar-studio .preset-chip{min-height:143px}.avatar-studio .preset-chip .look-avatar{height:97px}.avatar-studio .trait-option .trait-thumbnail{width:58px;height:69px}}
-@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{transition:none;animation:none}.avatar-studio .framing-button{transition:none}}
+@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{transition:none;animation:none}.avatar-studio .framing-button{transition:none}}\n
+/* Misfit Studio accessibility pass: proper tab focus and clear keyboard focus states. */
+.avatar-studio .category-tabs[role="tablist"]{isolation:isolate}
+.avatar-studio .category-tab:focus-visible{outline:3px solid var(--misfit-cyan);outline-offset:3px;z-index:1}
+.avatar-studio .controls[role="tabpanel"]:focus{outline:none}
+.avatar-studio .controls[role="tabpanel"]:focus-visible{outline:2px solid #73eee6;outline-offset:5px;border-radius:12px}
