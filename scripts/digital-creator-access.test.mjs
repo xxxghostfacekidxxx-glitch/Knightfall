@@ -14,7 +14,7 @@ test("workshop access follows authenticated server title, not one account ID", (
   assert.match(tools, /const administrator = isGod \|\|/);
 });
 test("asset publication remains administrator-only and creator handoff stays available", () => {
-  assert.match(backend, /Administrator access required to publish game assets\./);
+  assert.match(backend, /Administrator approval required to publish game assets\./);
   assert.match(tools, /id="creator-handoff"/);
   assert.match(tools, /if \(!administrator && !digitalCreator\)/);
 });
