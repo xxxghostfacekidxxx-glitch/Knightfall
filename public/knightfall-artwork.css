@@ -1,0 +1,13 @@
+/* Original Knightfall Gothic artwork layer, isolated from member profile themes and gameplay. */
+.home-page .home-intro{position:relative;isolation:isolate;min-height:clamp(390px,55vw,610px);display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:clamp(2rem,5vw,4rem);margin:1.25rem 0 2rem;border:1px solid #8d736a;border-radius:22px;overflow:hidden;background:#13151a url('/assets/knightfall/eclipse-cathedral.svg') center 42%/cover no-repeat;box-shadow:0 30px 80px #0009,inset 0 0 0 1px #d0a88d33}
+.home-page .home-intro::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#0b0d12 0%,#0b0d12df 22%,#0b0d1255 60%,#0b0d1208 100%);pointer-events:none}
+.home-page .home-intro h1{max-width:850px;font-family:Georgia,serif;font-size:clamp(2.3rem,6.5vw,5.4rem);line-height:1.03;letter-spacing:-.045em;text-shadow:0 4px 20px #000}
+.home-page .home-intro h1 span{color:#e2b7a5}
+.home-page .home-intro>p{max-width:660px;color:#eadfd3;text-shadow:0 2px 8px #000;font-size:clamp(.98rem,1.8vw,1.18rem)}
+.home-page .home-intro-actions{justify-content:flex-start}
+.home-page .kf-start-here{position:relative;border-color:#977b71;background:linear-gradient(150deg,#282029,#11171b)}
+.home-page .kf-start-card{position:relative;overflow:hidden;border-color:#9b817354;background:linear-gradient(145deg,#2e2630,#16191d)}
+.home-page .kf-start-card::before{content:"";position:absolute;right:-30px;top:-38px;width:150px;height:150px;border:1px solid #c7a77c3b;border-radius:50%;box-shadow:0 0 0 13px #c7a77c0b,0 0 0 28px #c7a77c08;pointer-events:none}
+.home-page .kf-start-card h3,.home-page .kf-start-card p,.home-page .kf-start-card a{position:relative}
+@media(max-width:640px){.home-page .home-intro{min-height:510px;background-position:54% center;padding:1.4rem}.home-page .home-intro h1{font-size:clamp(2.2rem,10vw,3.3rem)}.home-page .home-intro-actions{width:100%}}
+@media(prefers-reduced-motion:reduce){.home-page .home-intro{scroll-behavior:auto}}
