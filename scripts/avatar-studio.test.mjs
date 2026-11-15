@@ -46,7 +46,7 @@ test('Forge2D converts legacy shape, outfit, hair and face settings',async()=>{
 test('every display surface loads Forge2D and waits until ready',()=>{
  for(const path of ['public/avatar-studio.html','public/profile.html','public/profile-edit.html','public/mascot-pets.html']){
   const text=read(path);
-  assert.match(text,/misfit-avatar\.js\?v=20261115-forge2d1/);
+  assert.match(text,/misfit-avatar\.js\?v=20261115-forge2d2/);
   assert.match(text,/forge2d-avatar\.css/);
   assert.doesNotMatch(text,/avatar-cartoon\.css|misfit-renderer-lab/);
  }
