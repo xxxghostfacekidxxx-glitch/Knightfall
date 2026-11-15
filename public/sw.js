@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v34";
+const CACHE_NAME = "knightfall-shell-v35";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -14,6 +14,11 @@ const APP_SHELL = [
   "/neon-global.css",
   "/gravewave-consistency.css",
   "/nav.js",
+  "/install.html",
+  "/install.css",
+  "/install.js",
+  "/chat-bubbles.css",
+  "/chat-bubbles.js",
   "/message-live.js",
   "/moonology.html",
   "/moonology.css",
