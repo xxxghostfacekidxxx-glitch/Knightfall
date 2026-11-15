@@ -7,3 +7,5 @@ The village layout and art are adapted from [Ninja Adventure](https://github.com
 - `trainer.png` and `warden.png` crop the first four animation rows from the upstream blue ninja and samurai sheets.
 
 [CC0 1.0 license](https://creativecommons.org/publicdomain/zero/1.0/)
+
+`twilight-clearing.webp` is an original generated illustration for Cinderwild's battle arena.

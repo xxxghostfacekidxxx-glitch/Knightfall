@@ -80,6 +80,8 @@ function load(rawSource){
  }catch{return fresh();}
 }
 let state=load(),battle=null,modal="",logLines=[],lastStep=0,onlinePeers=[],facing=0;
+let viewWidth=VIEW_W,viewHeight=VIEW_H,motion=null;
+const reducedMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)");
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));document.dispatchEvent(new CustomEvent("cinderwild:local-save"));}catch{notify("Storage unavailable. Progress may not persist.");}}
 function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;const unit={id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[],status:null};unit.pp=moves(unit).map(m=>m.pp);return unit;}
 function moves(c){
@@ -153,7 +155,9 @@ function active(){return state.party.find(c=>c.hp>0)||null;}
 function lead(){const c=active();if(c&&state.party[0]!==c){const i=state.party.indexOf(c);state.party.splice(i,1);state.party.unshift(c);}return c;}
 function startBattle(enemy,trainer=null,roster=[]){
  if(!lead()){healAll();notify("Your party was revived at Cinder Town.");return;}
- battle={enemy,trainer,roster,round:0,lines:["A "+(trainer?"challenger sent out ":"wild ")+name(enemy.id)+" appeared!"],busy:false};
+ const stage=document.querySelector?.(".battle-stage");
+ if(stage)stage.dataset.biome=state.x>=51?"ridge":state.x>=32?"marsh":"forest";
+ battle={enemy,trainer,roster,round:0,lines:[trainer?trainer.name+" sent out "+name(enemy.id)+"!":"A wild "+name(enemy.id)+" appeared!"],busy:false};
  remember(enemy.id);$("fight").hidden=false;$("world-wrap").classList.add("is-battling");renderBattle();save();
 }
 function battleLog(s){battle.lines=[s,...battle.lines].slice(0,3);notify(s);}
@@ -167,6 +171,11 @@ function strike(a,b,m,ppIndex){
  if(ppIndex!==undefined){a.pp[ppIndex]--;a.pp[ppIndex]=Math.max(0,a.pp[ppIndex]);}
  if(Math.random()*100>=m.acc)return name(a.id)+" used "+m.name+" but missed!";
  const hit=rollDamage(a,b,m);b.hp=Math.max(0,b.hp-hit.value);
+ const target=$(b===battle?.enemy?"enemy-sprite":"ally-sprite");
+ if(target?.animate&&!reducedMotion?.matches){
+  for(const animation of target.getAnimations())animation.cancel();
+  target.animate([{filter:"brightness(1.65)",translate:".4rem 0"},{translate:"-.22rem 0"},{translate:"0 0"}],{duration:250,easing:"steps(4, end)"});
+ }
  let message=name(a.id)+" used "+m.name+"! -"+hit.value+" HP.";
  if(hit.mult>1)message+=" Super effective!";
  else if(hit.mult<1)message+=" Not very effective.";
@@ -306,6 +315,7 @@ function step(dx,dy,serverPosition=null){
  if(!serverPosition&&x>=51&&!state.badges.includes("storm")){notify("The Storm Crest opens the Eclipse Ridge crossing.");return;}
  if(!walkable(x,y)){const npc=NPCS.find(n=>n.x===x&&n.y===y);if(npc)interact();return;}
  facing=dx<0?2:dx>0?3:dy<0?1:0;
+ if(renderer&&!reducedMotion?.matches)motion={x:state.x,y:state.y,targetX:x,targetY:y,time:performance.now()};
  state.x=x;state.y=y;state.steps++;
  if(village&&x===village.entrance&&y===village.y&&dy>0)notify("You discovered Ashen Village.");
  const shrine=SHRINES.find(s=>s.x===x&&s.y===y);
@@ -317,15 +327,34 @@ function step(dx,dy,serverPosition=null){
  if(state.steps%5===0||serverPosition)save();
  render();return true;
 }
-function draw(){
+function resizeWorld(width,height){
+ if(width<1||height<1)return;
+ const tileSize=width<520?32:width<950?37:42;
+ const columns=clamp(Math.round(width/tileSize),8,42);
+ const rows=clamp(Math.round(height/tileSize),4,27);
+ if(columns===viewWidth&&rows===viewHeight)return;
+ viewWidth=columns;viewHeight=rows;
+ $("world").width=columns*S;$("world").height=rows*S;
+ draw();
+}
+function draw(now=globalThis.performance?.now()||0){
  const canvas=$("world"),ctx=canvas.getContext("2d");if(!ctx)return;
- ctx.imageSmoothingEnabled=false;const t=32;
- const ox=clamp(state.x-Math.floor(VIEW_W/2),0,W-VIEW_W),oy=clamp(state.y-Math.floor(VIEW_H/2),0,H-VIEW_H);
+ ctx.imageSmoothingEnabled=false;const t=S;
+ let playerX=state.x,playerY=state.y,walkFrame=0;
+ if(motion&&motion.targetX===state.x&&motion.targetY===state.y&&!reducedMotion?.matches){
+  const progress=clamp((now-motion.time)/100,0,1);
+  playerX=motion.x+(state.x-motion.x)*progress;
+  playerY=motion.y+(state.y-motion.y)*progress;
+  walkFrame=progress<1?1+(state.steps%2)*2:0;
+  if(progress===1)motion=null;
+ }else motion=null;
+ const snap=value=>Math.round(value*16)/16;
+ const ox=snap(clamp(playerX-(viewWidth-1)/2,0,W-viewWidth)),oy=snap(clamp(playerY-(viewHeight-1)/2,0,H-viewHeight));
  const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
- if(renderer)renderer.world(ctx,ox,oy,VIEW_W,VIEW_H,t,W,H,tile,hash,village);
- else for(let row=0;row<VIEW_H;row++)for(let col=0;col<VIEW_W;col++){
+ if(renderer)renderer.world(ctx,ox,oy,viewWidth,viewHeight,t,W,H,tile,hash,village,reducedMotion?.matches?0:now);
+ else for(let row=0;row<viewHeight;row++)for(let col=0;col<viewWidth;col++){
   const colors={town:"#c7ae74",path:"#c29460",grass:"#82993f",field:"#8ea64d",tree:"#425e3b",water:"#36768a",house:"#917050",roof:"#6c5d45",ruin:"#646748"};
-  rect(col*t,row*t,t,t,colors[tile(ox+col,oy+row)]||"#24362e");
+  rect(col*t,row*t,t,t,colors[tile(Math.floor(ox)+col,Math.floor(oy)+row)]||"#24362e");
  }
  for(const shrine of SHRINES){
   const px=(shrine.x-ox)*t,py=(shrine.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
@@ -351,8 +380,8 @@ function draw(){
   rect(tx-width/2,Math.max(0,ty-13),width,13,"#142631e0");
   ctx.fillStyle="#e2f8ff";ctx.fillText(label,tx,Math.max(10,ty-3),width-4);
  }
- const px=(state.x-ox)*t,py=(state.y-oy)*t;
- if(renderer?.actor(ctx,"trainer",px,py,t,facing,state.steps%4))return;
+ const px=(playerX-ox)*t,py=(playerY-oy)*t;
+ if(renderer?.actor(ctx,"trainer",px,py,t,facing,walkFrame))return;
  rect(px+8,py+24,18,5,"#24342d66");rect(px+9,py+13,14,15,"#34354b");rect(px+10,py+7,12,12,"#f2c0a0");
  rect(px+7,py+4,18,7,"#de496e");rect(px+12,py+2,10,5,"#f2c2cb");rect(px+12,py+15,3,2,"#292638");rect(px+18,py+15,3,2,"#292638");
 }
@@ -390,10 +419,12 @@ function filterBestiary(){
  count.textContent=matching+" matching bestiary entries";
 }
 function hpbar(c){const ratio=clamp(c.hp/c.maxHp,0,1);return '<span class="health"><span style="width:'+(ratio*100)+'%;background:'+(ratio>.5?"#7ae4a0":ratio>.2?"#e9d575":"#ff737f")+'"></span></span>';}
-function sprite(id,canvasId){
- const cvs=$(canvasId);if(!cvs)return;
- const ctx=cvs.getContext("2d");ctx.clearRect(0,0,cvs.width,cvs.height);
- if(window.HellOrbitSprites?.draw)window.HellOrbitSprites.draw(ctx,id,8,0,96,0,canvasId==="ally-sprite");
+function sprite(id,canvasId,frame=0){
+ const cvs=$(canvasId);if(!cvs||!cvs.width)return;
+ const ctx=cvs.getContext("2d");if(!ctx)return;
+ ctx.clearRect(0,0,cvs.width,cvs.height);
+ if(renderer?.creature(ctx,id,cvs.width,frame,canvasId==="ally-sprite"))return;
+ if(window.HellOrbitSprites?.draw)window.HellOrbitSprites.draw(ctx,id,0,0,cvs.width,frame,canvasId==="ally-sprite");
  else{ctx.font="64px system-ui";ctx.fillText(sp(id)?.[0]?.[0]||"?",20,72);}
 }
 function renderBattle(){
@@ -453,7 +484,40 @@ function firstRun(){
 }
 function initialize(){
  $("world").width=VIEW_W*S;$("world").height=VIEW_H*S;
- renderer?.load(render);
+ const drawStarters=()=>{
+  for(const id of ["mossbit","embercub","driftfin"])sprite(id,"starter-"+id);
+ };
+ renderer?.load(()=>{
+  render();
+  drawStarters();
+  if(battle){
+   const ally=active();
+   if(ally)sprite(ally.id,"ally-sprite");
+   sprite(battle.enemy.id,"enemy-sprite");
+  }
+ });
+ if(typeof ResizeObserver==="function"){
+  new ResizeObserver(([entry])=>resizeWorld(entry.contentRect.width,entry.contentRect.height)).observe($("world-wrap"));
+ }
+ if(renderer&&typeof requestAnimationFrame==="function"){
+  let lastFrame=0;
+  const frame=now=>{
+   if(!document.hidden&&!reducedMotion?.matches){
+    if(battle&&now-lastFrame>=160){
+     const ally=active();
+     if(ally)sprite(ally.id,"ally-sprite",Math.floor(now/180)%4);
+     sprite(battle.enemy.id,"enemy-sprite",Math.floor(now/180)%4);
+     lastFrame=now;
+    }else if(!battle&&!modal&&(motion||now-lastFrame>=65)){
+     draw(now);
+     lastFrame=now;
+    }
+   }
+   requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+ }
+ drawStarters();
  render();firstRun();
  $("controls").addEventListener("click",e=>{const b=e.target.closest("[data-direction]");if(b){const d=b.dataset.direction;step(d==="left"?-1:d==="right"?1:0,d==="up"?-1:d==="down"?1:0);}if(e.target.closest("#interact"))interact();});
  document.querySelectorAll("[data-menu]").forEach(b=>b.addEventListener("click",()=>openMenu(b.dataset.menu)));
@@ -494,12 +558,12 @@ function initialize(){
    if(confirm("Erase your Cinderwild save from this browser? This cannot be undone.")){try{localStorage.removeItem(KEY);}catch{}state=fresh();closeMenu();render();firstRun();}
   }
  });
- $("fullscreen").addEventListener("click",()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else $("game-shell").requestFullscreen?.().catch(()=>{});});
  window.addEventListener("keydown",e=>{
   if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName))return;
-  if(e.key==="Escape"){if(modal)closeMenu();return;}
+  if(e.key==="Escape"){if(modal){e.preventDefault();closeMenu();}return;}
   if($("starter").hidden===false)return;
   if(battle)return;
+  if((e.key===" "||e.key==="Enter")&&["BUTTON","SUMMARY","A"].includes(document.activeElement?.tagName))return;
   if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," ","w","a","s","d","e","m"].includes(e.key))e.preventDefault();
   const k=e.key.toLowerCase();
   if(k==="arrowup"||k==="w")step(0,-1);

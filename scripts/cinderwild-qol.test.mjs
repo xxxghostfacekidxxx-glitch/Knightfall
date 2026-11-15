@@ -19,13 +19,14 @@ function gameHarness() {
   }));
   const nodes = {
     'field-map': {getContext: () => ctx},
+    world: {width: 576, height: 384, getContext: () => null},
     'dex-entries': {querySelectorAll: () => rows},
     'dex-count': {textContent: ''},
     'dex-search': {value: ''},
     'dex-status-filter': {value: 'all'},
   };
   const document = {getElementById: id => nodes[id] ?? null};
-  const code = js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, 'globalThis.__game = {drawFieldMap,filterBestiary,state,SPECIES,make,moves};})();');
+  const code = js.replace(/initialize\(\);\s*\}\)\(\);\s*$/, 'globalThis.__game = {drawFieldMap,filterBestiary,resizeWorld,state,SPECIES,make,moves};})();');
   assert.notEqual(code, js, 'test harness must intercept game initialization');
   const sandbox = {window: {}, document, localStorage: {getItem: () => null}};
   vm.runInNewContext(code, sandbox, {timeout: 1000});
@@ -37,6 +38,18 @@ test('Cinderwild scripts parse and are linked from the arcade game', () => {
   assert.equal(syntax.status, 0, syntax.stderr);
   assert.match(html, /src="\.\/game\.js\?v=[^"]+"/);
   assert.match(html, /href="\.\/style\.css\?v=[^"]+"/);
+});
+
+test('the viewport redraws more terrain in wide play instead of stretching the portrait canvas', () => {
+  const {game, nodes} = gameHarness();
+  game.resizeWorld(380, 510);
+  const portrait = [nodes.world.width, nodes.world.height];
+  assert.ok(portrait[0] < portrait[1]);
+  game.resizeWorld(1060, 540);
+  assert.ok(nodes.world.width > portrait[0] * 2);
+  assert.ok(nodes.world.width > nodes.world.height);
+  assert.equal(nodes.world.width % 32, 0, 'canvas dimensions stay aligned to the pixel grid');
+  assert.equal(nodes.world.height % 32, 0);
 });
 
 test('field map draws every tile, town services, Wardens, three shrines, and player', () => {
