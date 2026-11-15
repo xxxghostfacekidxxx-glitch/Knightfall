@@ -4,7 +4,8 @@
  */
 export const DECK_FREE_SKINS=Object.freeze(["ash-classic","neon-riot","bone-white","grave-velvet","glitch-circuit","ghost-orchid","infernal-foil","void-royalty","crimson-rite","holo-wraith","toxic-pop","eclipse-noir"]);
 export const DECK_EARNED_SKINS=Object.freeze({}); // Existing finishes no longer require deals.
-export const DECK_PREMIUM_SKINS=Object.freeze([]); // Existing cosmetic finishes are free.
+import {PREMIUM_DECK_PRODUCTS} from "./deck-skin-products.js";
+export const DECK_PREMIUM_SKINS=Object.freeze(Object.keys(PREMIUM_DECK_PRODUCTS)); // Twelve NEW purchasable designs.
 export const DECK_ACTIVITY_GAMES=Object.freeze([
  "cards-against-chaos","chaos-blackjack","chaos-five-card-draw","chaos-war",
  "chaos-klondike","chaos-freecell","chaos-crazy-eights","chaos-gin-rummy",
@@ -27,7 +28,7 @@ function originAllowed(request){
  return !origin||origin==="https://ash-fall.com"||origin==="https://www.ash-fall.com";
 }
 async function ownedPremiumSkins(env,userId){
- const r=await env.DB.prepare("SELECT skin_id FROM arcade_deck_entitlements WHERE user_id=? AND state='active'").bind(userId).all();
+ const r=await env.DB.prepare("SELECT skin_id FROM arcade_deck_paid_entitlements WHERE user_id=? AND state='active'").bind(userId).all();
  return (r.results||[]).map(x=>x.skin_id).filter(id=>DECK_PREMIUM_SKINS.includes(id));
 }
 async function readAccount(env,userId){
