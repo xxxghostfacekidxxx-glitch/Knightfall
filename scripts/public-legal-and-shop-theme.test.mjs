@@ -48,3 +48,17 @@ test("public community shop directory cannot imply live payment processing",()=>
  assert.match(workspace,/Live checkout and automatic supplier fulfillment are not enabled yet/i);
  assert.match(api,/checkout_enabled:false/);
 });
+
+test("public legal and deletion help links remain discoverable across shared footers",()=>{
+ const nav=readFileSync(new URL("../public/nav.js",import.meta.url),"utf8");
+ const terms=readFileSync(new URL("../public/terms.html",import.meta.url),"utf8");
+ const deletion=readFileSync(sources.deletion,"utf8");
+ const privacy=readFileSync(sources.privacy,"utf8");
+ assert.match(nav,/\["\/privacy\.html","Privacy"\]/);
+ assert.match(nav,/\["\/account-deletion\.html","Delete account"\]/);
+ assert.match(nav,/<a href="\/privacy\.html">Privacy<\/a>/);
+ assert.match(nav,/<a href="\/account-deletion\.html">Delete account<\/a>/);
+ assert.match(terms,/href="\/account-deletion\.html"/);
+ assert.match(deletion,/id="privacy-help-form"/);
+ assert.match(privacy,/does not itself erase the account/i);
+});
