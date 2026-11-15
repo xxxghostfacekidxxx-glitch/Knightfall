@@ -733,7 +733,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     if (photo.kind === "gallery") {
       const viewer = await requireUser(request,env);
       const ownerViewing = viewer?.id === photo.user_id;
-      const moderatorViewing = isModerator(viewer);
+      const moderatorViewing = false; // Unreported private media requires owner/friend authorization or an audited Eye review.
       if (photo.profile_visibility === "private" && !ownerViewing && !moderatorViewing) return json({error:"Photo not found."},404,origin);
       if (photo.profile_visibility === "friends" && !ownerViewing && !moderatorViewing) {
         if (!viewer) return json({error:"Sign in to view this photo."},401,origin);
@@ -764,7 +764,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     if (!owner) return json({error:"Profile not found."},404,origin);
     const viewer = await requireUser(request,env);
     const ownerViewing = viewer?.id === owner.id;
-    const moderatorViewing = isModerator(viewer);
+    const moderatorViewing = false; // Unreported private media requires owner/friend authorization or an audited Eye review.
     if (owner.profile_visibility === "private" && !ownerViewing && !moderatorViewing) return json({error:"This member keeps their profile private."},404,origin);
     if (owner.profile_visibility === "friends" && !ownerViewing && !moderatorViewing) {
       if (!viewer) return json({error:"Sign in to view this profile."},401,origin);
