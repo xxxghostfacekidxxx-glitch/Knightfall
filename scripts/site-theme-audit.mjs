@@ -73,7 +73,7 @@ const sharedGothicFiles=["support.html","reset-password.html","auth.css","member
   "shop-upgrade.css","shops.html","memo-pad.css","memo-pad.html","push-settings.css"];
 for(const filename of sharedGothicFiles){
  const src=read("../public/"+filename);
- assert.doesNotMatch(src,/#ff55d8|#c6ff45|rgba\\(255,85,216/i,"Legacy neon must not revive in "+filename);
+ assert.ok(!src.includes("#ff55d8")&&!src.includes("#c6ff45")&&!src.includes("rgba(255,85,216"),"Legacy neon must not revive in "+filename);
 }
 assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic8"),"Support page must load the approved shared theme");
 assert.ok(read("../public/memo-pad.html").includes("/memo-pad.css?v=20261115-gothic8"),"Memo Pad styles must be cache busted");
