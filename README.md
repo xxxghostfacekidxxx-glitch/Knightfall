@@ -36,10 +36,12 @@ The public website and backend/API are intentionally kept separate. The frontend
 
 ## Community features
 
-- `public/bots.html` lists public personal bots; `public/personal-bots.html` is the signed-in admin/moderator bot workspace.
+- The homepage staff activity wire uses the public read-only `GET /api/home/activity` feed and authenticated `POST /api/home/activity` and `DELETE /api/home/activity/:id` routes. Only God, admin, moderator and Digital Creator accounts can publish; Digital Creators remove their own posts and moderator/admin/God can remove any. The D1 `site_activity_posts_staff_guard` also enforces create authorization.
+
+- `public/bots.html` lists public personal bots; `public/personal-bots.html` is the signed-in personal bot workshop for every member; Digital Creators and staff get advanced bot tools, also available inside Creator Foundry.
 - `public/die-ary.html` provides each signed-in member with a private journal; entries are not shown on public profiles and API reads/edits/deletes are scoped to the authenticated owner.
 - `public/shops.html` lists public creator shops; `public/shop-builder.html` is the quick-build planner; `public/my-shop.html` manages a member's own catalog; `public/store.html` renders a public shop.
-- Personal bot limits are enforced by the API and the D1 `personal_bots_owner_limit` trigger: 10 for administrators and 5 for moderators.
+- Personal bot limits are enforced by the API and D1 trigger: unlimited for God, administrators, moderators and Digital Creators; 5 for regular members; 10 for accounts with an active server-verified Premium entitlement. Previously purchased extra slots remain additive. Premium billing activation is not yet part of this release.
 - The `Adults Only (18+)` forum category is hidden until a signed-in member completes an 18+ self-attestation. The confirmation is account-bound in KV for 30 days and enforced by the API for category listing, thread viewing, creation, and replies. This is self-attestation, not identity verification.
 - Public Miss Chaos is never configured for explicit NSFW content, even for age-confirmed users. Personal bots can use adult-theme guidance after 18+ confirmation. Public bots must be explicitly marked `NSFW (18+)` by their creator to enable adult-theme guidance; unmarked public bots remain general-audience and NSFW-marked bots require age confirmation before chat. The underlying AI model/provider may still restrict outputs, and sexual content involving minors, age-ambiguous participants, coercion, or exploitation remains prohibited.
 - The `Astrology` forum category covers birth charts, zodiac signs, planetary transits, compatibility, and astrological traditions.
