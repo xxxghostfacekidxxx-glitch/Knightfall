@@ -224,7 +224,7 @@
 /* Gravewave inbox finish pass: preserve readable contrast without restoring the retired orange surfaces. */
 .messages-shell{width:min(1480px,96%);padding-top:clamp(1rem,3vw,2rem)}
 .messages-hero{position:relative;isolation:isolate}
-.messages-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:-1rem -2vw;background:radial-gradient(ellipse at 85% 0%,rgba(178,91,104,.12),transparent 55%)}
+.messages-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0;background:radial-gradient(ellipse at 85% 0%,rgba(178,91,104,.12),transparent 55%)}
 .messages-hero h1{font-size:clamp(2.8rem,6vw,4.8rem)!important;letter-spacing:-.07em!important}
 .messages-hero h1 span{color:#b25b68}
 .message-layout{border:1px solid #342430!important;border-radius:17px!important;box-shadow:0 25px 80px rgba(0,0,0,.34),0 0 35px rgba(178,91,104,.035)!important;overflow:hidden}
