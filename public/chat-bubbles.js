@@ -65,7 +65,8 @@
   dock.id="kf-chat-heads";
   dock.setAttribute("aria-label","Floating conversations");
   dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Recent conversations</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open conversations" aria-expanded="false" aria-controls="kf-chat-panel"><span aria-hidden="true">💬</span><b id="kf-chat-unread" hidden></b></button>';
-  document.body.append(dock);
+  // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
+  document.documentElement.append(dock);
   function syncBubbleViewport(){
     const viewport=window.visualViewport,layoutHeight=window.innerHeight;
     const visibleHeight=viewport?.height||layoutHeight;
@@ -74,6 +75,14 @@
     dock.style.setProperty("--kf-chat-keyboard-offset",keyboardInset+"px");
     dock.style.setProperty("--kf-chat-visible-height",visibleHeight+"px");
     dock.style.setProperty("--kf-chat-dock-base-bottom",visibleHeight<520?"12px":"80px");
+    // Android keyboards change the visual viewport without necessarily changing innerHeight.
+    // Keep the open mobile conversation in its own viewport-sized layer, not in the
+    // same layout box as the pinned heads and launcher.
+    dock.style.setProperty("--kf-chat-viewport-left",(viewport?.offsetLeft||0)+"px");
+    dock.style.setProperty("--kf-chat-viewport-top",(viewport?.offsetTop||0)+"px");
+    dock.style.setProperty("--kf-chat-viewport-width",(viewport?.width||innerWidth)+"px");
+    dock.style.setProperty("--kf-chat-viewport-height",visibleHeight+"px");
+    dock.classList.toggle("kf-chat-expanded",state.visible&&window.matchMedia("(max-width:700px)").matches);
   }
   syncBubbleViewport();
   window.addEventListener("resize",syncBubbleViewport,{passive:true});
@@ -118,6 +127,9 @@
     }));}catch{}
   }
   function fitDock(){
+    // The expanded mobile sheet owns its geometry; saved desktop drag coordinates
+    // must never push it offscreen or make the keyboard clip the composer.
+    if(dock.classList.contains("kf-chat-expanded"))return;
     if(desiredSize)setSize(desiredSize.width,desiredSize.height,false);
     else if(panel.style.width||panel.style.height){
       const r=panel.getBoundingClientRect();
@@ -207,7 +219,9 @@
     state.visible=!!value;
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
-    if(customPosition)requestAnimationFrame(fitDock);
+    syncBubbleViewport();
+    fitDock();
+    if(customPosition&&!dock.classList.contains("kf-chat-expanded"))requestAnimationFrame(fitDock);
     $("#kf-chat-launcher").setAttribute("aria-expanded",String(state.visible));
     if(opening)window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));
     if(state.visible){
@@ -370,6 +384,10 @@
     if(event.detail?.panel!=="member-chat"&&state.visible)setVisible(false);
   });
   $("#kf-chat-minimize").addEventListener("click",()=>setVisible(false));
+  // Dismiss the mobile backdrop without passing a touch into the game/page.
+  dock.addEventListener("click",event=>{
+    if(event.target===dock&&dock.classList.contains("kf-chat-expanded"))setVisible(false);
+  });
   composer.addEventListener("submit",async event=>{
     event.preventDefault();
     const id=state.active,original=input.value,body=original.trim();
@@ -433,7 +451,7 @@
     const fullscreen=document.fullscreenElement||document.webkitFullscreenElement;
     const canHost=fullscreen&&fullscreen!==dock&&!dock.contains(fullscreen)
       &&!["CANVAS","VIDEO","IMG"].includes(fullscreen.tagName);
-    const host=canHost?fullscreen:document.body;
+    const host=canHost?fullscreen:document.documentElement;
     if(dock.parentElement!==host)host.append(dock);
     dock.hidden=false;
     dock.classList.toggle("kf-chat-in-fullscreen",!!canHost);
