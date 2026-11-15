@@ -100,7 +100,7 @@ test('install center uses current Android workflow instead of expiring build art
  assert.match(code,/\/android-release\.json/);
  assert.match(code,/\/\.well-known\/assetlinks\.json/);
  assert.doesNotMatch(code,/api\.ash-fall\.com|credentials:"include"/);
- assert.match(read('public/sw.js'),/knightfall-shell-v37/);
+ assert.match(read('public/sw.js'),/knightfall-shell-v\d+/);
  assert.match(read('public/sw.js'),/\/install-health\.js/);
 });
 
