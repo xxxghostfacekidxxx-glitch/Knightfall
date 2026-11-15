@@ -23,7 +23,7 @@ try {
   // Actual computed-browser verification of the approved Nov 14 Gothic site style.
   await page.waitForFunction(() =>
     getComputedStyle(document.documentElement).getPropertyValue("--kf-bone").trim()==="#ece1d3",
-    { timeout: 8000 }
+    null, { timeout: 8000 }
   );
   const gothic = await page.evaluate(() => {
     const brand=document.querySelector(".kf-brand");
@@ -40,7 +40,7 @@ try {
   assert.equal(gothic.bone,"#ece1d3");
   assert.equal(gothic.crimson,"#b25b68");
   assert.equal(gothic.bronze,"#c7a77c");
-  assert.match(gothic.crest,/knightfall-crest-192\\.png/);
+  assert.match(gothic.crest,/knightfall-crest-192\.png/);
   assert.equal(gothic.floatingMascots,0,"Older Gravewave decorations must not cover site controls");
   assert.equal(await page.locator('link[rel="manifest"]').getAttribute("href"), "/manifest.webmanifest");
   const manifestResponse = await page.request.get(base + "/manifest.webmanifest");
