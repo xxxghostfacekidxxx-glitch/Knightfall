@@ -729,7 +729,7 @@ function profilePhotoUrl(id) { return "https://api.ash-fall.com/api/profile-medi
 async function handleProfilePhotoRequest(request, env, origin, url) {
   const publicMatch = url.pathname.match(/^\/api\/profile-media\/(\d+)$/);
   if (publicMatch && (request.method === "GET" || request.method === "HEAD")) {
-    const photo = await env.DB.prepare("SELECT p.object_key,p.content_type,p.size_bytes,p.kind,p.user_id,u.profile_visibility FROM profile_photos p JOIN users u ON u.id=p.user_id WHERE p.id=? AND u.status='active'").bind(Number(publicMatch[1])).first();
+    const photo = await env.DB.prepare("SELECT p.object_key,p.content_type,p.size_bytes,p.kind,p.user_id,u.profile_visibility FROM profile_photos p JOIN users u ON u.id=p.user_id WHERE p.id=? AND p.deleted_at IS NULL AND u.status='active'").bind(Number(publicMatch[1])).first();
     if (!photo || !env.PROFILE_MEDIA) return json({error:"Photo not found."},404,origin);
     if (photo.kind === "gallery") {
       const viewer = await requireUser(request,env);
@@ -772,7 +772,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
       const friendship = await env.DB.prepare("SELECT 1 FROM friend_requests WHERE status='accepted' AND ((requester_id=? AND addressee_id=?) OR (requester_id=? AND addressee_id=?)) LIMIT 1").bind(viewer.id,owner.id,owner.id,viewer.id).first();
       if (!friendship) return json({error:"This profile is visible to friends only."},403,origin);
     }
-    const rows = await env.DB.prepare("SELECT id,content_type,size_bytes,caption,created_at FROM profile_photos WHERE user_id=? AND kind='gallery' ORDER BY created_at DESC,id DESC LIMIT 60").bind(owner.id).all();
+    const rows = await env.DB.prepare("SELECT id,content_type,size_bytes,caption,created_at FROM profile_photos WHERE user_id=? AND kind='gallery' AND deleted_at IS NULL ORDER BY created_at DESC,id DESC LIMIT 60").bind(owner.id).all();
     return json({photos:(rows.results||[]).map(p=>({...p,size_bytes:Number(p.size_bytes),url:profilePhotoUrl(p.id)}))},200,origin);
   }
   if (url.pathname === "/api/profile/photos" && request.method === "POST") {
@@ -789,7 +789,7 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     const type=String(file.type||"").toLowerCase();
     if (!new Set(["image/jpeg","image/png","image/gif","image/webp"]).has(type)) return json({error:"Use JPG, PNG, GIF, or WebP images."},415,origin);
     if (kind==="gallery") {
-      const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM profile_photos WHERE user_id=? AND kind='gallery'").bind(user.id).first();
+      const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM profile_photos WHERE user_id=? AND kind='gallery' AND deleted_at IS NULL").bind(user.id).first();
       if (Number(count?.count||0)>=60) return json({error:"Your profile gallery is full. Remove a photo before adding another."},409,origin);
     }
     const bytes=await file.arrayBuffer(),head=new Uint8Array(bytes).slice(0,12);
@@ -798,15 +798,14 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     if (!signatureOk) return json({error:"The file contents do not match a supported image format."},415,origin);
     const objectKey="profiles/"+Number(user.id)+"/"+randomToken(20);
     let previous=null;
-    if (kind==="avatar") previous=await env.DB.prepare("SELECT id,object_key FROM profile_photos WHERE user_id=? AND kind='avatar'").bind(user.id).first();
+    if (kind==="avatar") previous=await env.DB.prepare("SELECT id,object_key FROM profile_photos WHERE user_id=? AND kind='avatar' AND deleted_at IS NULL").bind(user.id).first();
     try {
       await env.PROFILE_MEDIA.put(objectKey,bytes,{httpMetadata:{contentType:type,cacheControl:"public, max-age=3600"}});
       const now=new Date().toISOString();
       const inserted=await env.DB.prepare("INSERT INTO profile_photos (user_id,object_key,content_type,size_bytes,caption,kind,created_at) VALUES (?,?,?,?,?,?,?) RETURNING id,content_type,size_bytes,caption,kind,created_at").bind(user.id,objectKey,type,file.size,caption,kind,now).first();
       if (kind==="avatar") await env.DB.prepare("UPDATE users SET avatar_url=?,updated_profile_at=? WHERE id=?").bind(profilePhotoUrl(inserted.id),now,user.id).run();
       if (previous) {
-        await env.DB.prepare("DELETE FROM profile_photos WHERE id=? AND user_id=?").bind(previous.id,user.id).run();
-        try { await env.PROFILE_MEDIA.delete(previous.object_key); } catch (cleanupError) { console.error("profile_avatar_cleanup_failed",cleanupError); }
+        await env.DB.prepare("UPDATE profile_photos SET deleted_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(now,previous.id,user.id).run();
       }
       await audit(env,user,kind==="avatar"?"profile.avatar.upload":"profile.photo.upload","profile_photo",inserted.id,{kind,size_bytes:file.size,content_type:type});
       return json({photo:{...inserted,id:Number(inserted.id),size_bytes:Number(inserted.size_bytes),url:profilePhotoUrl(inserted.id)}},201,origin);
@@ -824,11 +823,11 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
     if(!await rateLimit(env,request,"profile-photo-caption-edit",30,60,user.id))return json({error:"Too many caption edits. Try again shortly."},429,origin);
     let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400,origin)}
     if(typeof body?.caption!=="string"||body.caption.length>240)return json({error:"Captions must contain at most 240 characters."},400,origin);
-    const photo=await env.DB.prepare("SELECT id,user_id,kind FROM profile_photos WHERE id=?").bind(Number(captionMatch[1])).first();
+    const photo=await env.DB.prepare("SELECT id,user_id,kind FROM profile_photos WHERE id=? AND deleted_at IS NULL").bind(Number(captionMatch[1])).first();
     if(!photo)return json({error:"Photo not found."},404,origin);
     if(Number(photo.user_id)!==Number(user.id))return json({error:"Only the owner may edit this photo."},403,origin);
     if(photo.kind!=="gallery")return json({error:"Only gallery captions are editable."},400,origin);
-    const updated=await env.DB.prepare("UPDATE profile_photos SET caption=? WHERE id=? AND user_id=? AND kind='gallery' RETURNING id,caption,created_at").bind(body.caption.trim(),photo.id,user.id).first();
+    const updated=await env.DB.prepare("UPDATE profile_photos SET caption=? WHERE id=? AND user_id=? AND kind='gallery' AND deleted_at IS NULL RETURNING id,caption,created_at").bind(body.caption.trim(),photo.id,user.id).first();
     if(!updated)return json({error:"Photo no longer exists."},404,origin);
     await audit(env,user,"profile.photo.caption","profile_photo",photo.id,{caption_length:updated.caption.length});
     return json({photo:{id:Number(updated.id),caption:updated.caption,created_at:updated.created_at,url:profilePhotoUrl(updated.id)}},200,origin);
@@ -837,13 +836,12 @@ async function handleProfilePhotoRequest(request, env, origin, url) {
   if (deleteMatch && request.method==="DELETE") {
     const user=await requireUser(request,env);
     if (!user) return json({error:"Authentication required."},401,origin);
-    const photo=await env.DB.prepare("SELECT id,user_id,object_key,kind FROM profile_photos WHERE id=?").bind(Number(deleteMatch[1])).first();
+    const photo=await env.DB.prepare("SELECT id,user_id,object_key,kind FROM profile_photos WHERE id=? AND deleted_at IS NULL").bind(Number(deleteMatch[1])).first();
     if (!photo) return json({error:"Photo not found."},404,origin);
     if (Number(photo.user_id)!==Number(user.id)) return json({error:"You can only delete your own photos."},403,origin);
-    await env.DB.prepare("DELETE FROM profile_photos WHERE id=? AND user_id=?").bind(photo.id,user.id).run();
+    await env.DB.prepare("UPDATE profile_photos SET deleted_at=? WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),photo.id,user.id).run();
     if (photo.kind==="avatar") await env.DB.prepare("UPDATE users SET avatar_url='',updated_profile_at=? WHERE id=? AND avatar_url=?").bind(new Date().toISOString(),user.id,profilePhotoUrl(photo.id)).run();
     if (photo.kind==="gallery") await env.DB.prepare("UPDATE users SET cover_url='',updated_profile_at=? WHERE id=? AND cover_url=?").bind(new Date().toISOString(),user.id,profilePhotoUrl(photo.id)).run();
-    try { await env.PROFILE_MEDIA.delete(photo.object_key); } catch(error) { console.error("profile_photo_delete_cleanup_failed",error); }
     await audit(env,user,"profile.photo.delete","profile_photo",photo.id,{kind:photo.kind});
     return json({ok:true},200,origin);
   }
@@ -888,7 +886,7 @@ async function handleMediaAlbums(request,env,origin,url){
    const album=await env.DB.prepare("SELECT id FROM media_albums WHERE id=? AND owner_id=?").bind(aid,user.id).first();
    if(!album)return json({error:"Album not found."},404,origin);
    if(method==="PUT"){
-     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery'").bind(pid,user.id).first();
+     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery' AND deleted_at IS NULL").bind(pid,user.id).first();
      if(!photo)return json({error:"Photo not found in your gallery."},404,origin);
      await env.DB.prepare("INSERT OR IGNORE INTO media_album_photos(album_id,photo_id,added_at) VALUES(?,?,?)").bind(aid,pid,new Date().toISOString()).run();
    }else{
@@ -903,7 +901,7 @@ async function handleMediaAlbums(request,env,origin,url){
  if(favorite&&(method==="PUT"||method==="DELETE")){
    const pid=Number(favorite[1]);
    if(method==="PUT"){
-     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery'").bind(pid,user.id).first();
+     const photo=await env.DB.prepare("SELECT id FROM profile_photos WHERE id=? AND user_id=? AND kind='gallery' AND deleted_at IS NULL").bind(pid,user.id).first();
      if(!photo)return json({error:"Photo not found in your gallery."},404,origin);
      await env.DB.prepare("INSERT OR IGNORE INTO media_photo_favorites(user_id,photo_id,created_at) VALUES(?,?,?)").bind(user.id,pid,new Date().toISOString()).run();
    }else await env.DB.prepare("DELETE FROM media_photo_favorites WHERE user_id=? AND photo_id=?").bind(user.id,pid).run();
