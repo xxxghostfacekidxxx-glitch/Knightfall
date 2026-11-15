@@ -58,9 +58,9 @@ test("list and detail reads bind the verified account, not request parameters",a
   assert.equal((await h.request("/api/shadow-journal?user_id=29")).status,200);
   assert.equal((await h.request("/api/shadow-journal/"+day+"?user_id=29")).body.entry,null);
   const [list, detail]=h.statements;
-  assert.match(list.sql,/WHERE user_id = \? AND entry_date < \?/);
+  assert.match(list.sql,/WHERE user_id = \? AND deleted_at IS NULL AND entry_date < \?/);
   assert.deepEqual(list.args,[17,"2101-01-01"]);
-  assert.match(detail.sql,/WHERE user_id = \? AND entry_date = \?/);
+  assert.match(detail.sql,/WHERE user_id = \? AND entry_date = \? AND deleted_at IS NULL/);
   assert.deepEqual(detail.args,[17,day]);
 });
 
@@ -91,7 +91,7 @@ test("updates and deletes require both owner and matching version",async()=>{
   const del=await h.request("/api/shadow-journal/"+day,"DELETE",{version,user_id:29});
   assert.equal(del.status,409);
   const remove=h.statements.at(-1);
-  assert.match(remove.sql,/DELETE FROM shadow_journal WHERE user_id = \? AND entry_date = \? AND version = \?/);
+  assert.match(remove.sql,/UPDATE shadow_journal SET deleted_at=CURRENT_TIMESTAMP WHERE user_id = \? AND entry_date = \? AND version = \? AND deleted_at IS NULL/);
   assert.deepEqual(remove.args,[17,day,version]);
 });
 
