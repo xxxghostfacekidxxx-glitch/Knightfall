@@ -49,6 +49,13 @@ jobs:
       - name: Validate official starter-bot catalog and public chat routing
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
 
+      - name: Verify bot tier authorization and staff-only homepage updates
+        run: |
+          node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs
+          node --check backend/src/bot-creator-access.js
+          node --check backend/src/home-activity-feed.js
+          node --check public/home-activity.js
+
       - name: Verify Cards Against Chaos deck counts and variety
         run: node --test scripts/chaos-deck-variety.test.mjs
 
