@@ -11,6 +11,7 @@ import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-pol
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { handleStripeBilling } from "./stripe-billing.js";
+import { handleStripeInvoiceDraft } from "./stripe-invoicing.js";
 import { handleShopCommerce } from "./shop-commerce.js";
 import { botAccessPolicy } from "./bot-creator-access.js";
 import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities.js";
@@ -1082,6 +1083,14 @@ export default { async queue(batch, env) {
    if(avatarResponse)return avatarResponse;
   }
 
+  // Admin-only draft invoices. The API never sends or finalizes invoices automatically.
+  if(url.pathname==="/api/stripe/invoices/draft"){
+   const user=await requireUser(request,env);
+   if(user&&request.method==="POST"&&!await rateLimit(env,request,"stripe-invoice-draft",5,3600,user.id))
+    return json({error:"Invoice draft rate limit reached."},429,origin);
+   const result=await handleStripeInvoiceDraft(request,env,url,user);
+   if(result)return json(await result.json(),result.status,origin,{"cache-control":"private, no-store"});
+  }
   // Stripe Billing: authenticated hosted subscription Checkout and customer portal.
   if(url.pathname.startsWith("/api/stripe/billing/")){
    const user=await requireUser(request,env);
