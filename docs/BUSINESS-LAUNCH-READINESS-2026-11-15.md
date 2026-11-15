@@ -32,6 +32,7 @@ Additional verification:
 - [ ] Verify game source/asset licensing and preserve third-party attribution; block any infringement-prone content from commercial marketing.
 - [ ] Review adult content, user-created bots, dating, virtual currencies and casino-style games against processor policies before monetization.
 - [ ] Review GOD/admin visibility, private user data, notification behavior, deletion, user disclosures, incident response and independent access-control testing.
+- [x] Record production D1 schema inventory and account-erasure gaps in [Account deletion erasure matrix](ACCOUNT-DELETION-ERASURE-MATRIX-2026-11-15.md); no erasure executor or Play compliance claimed.
 - [ ] Publish an easy-to-find support contact, refunds/terms/privacy guidance and reliable account-deletion flow.
 
 **Release gate:** no critical account, messaging, payment, or security defects; passing automated checks; physical-device acceptance logs; permissions and IP review documented.

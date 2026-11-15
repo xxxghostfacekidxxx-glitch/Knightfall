@@ -2,6 +2,8 @@
 
 Last updated: 2026-11-14. Public origin: https://ash-fall.com. Provisional Android package: `com.ashfall.knightfall`.
 
+> Account-erasure evidence and implementation gates: [Account erasure matrix](ACCOUNT-DELETION-ERASURE-MATRIX-2026-11-15.md). Production request intake exists, but verified cross-store erasure is **not complete**.
+
 ## Status and separation of responsibilities
 
 - **Debug build:** `.github/workflows/knightfall-android.yml` builds an installable debug APK in GitHub Actions; now also runs an Android emulator smoke job. This build has a *temporary* signing certificate and is not a permanent public release. The job does **not** put signing keys into files or the repository.
