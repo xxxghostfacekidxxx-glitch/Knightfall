@@ -1,0 +1,41 @@
+/* Ruinwire separate PWA launcher and compact inbox presentation. */
+:root{--rw-bg:#090811;--rw-pink:#ff55d8;--rw-green:#c6ff45;--rw-line:#514064}
+.ruinwire-install-page{background:radial-gradient(ellipse at 20% 0%,#341038 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#17290e 0,transparent 45%),var(--rw-bg);color:#f8f1fa;min-height:100dvh}
+.rw-install{width:min(1100px,100%);margin:auto;padding:clamp(1.1rem,5vw,4rem)}
+.rw-install-hero{display:grid;grid-template-columns:clamp(88px,14vw,144px) minmax(0,1fr);align-items:start;gap:clamp(1rem,4vw,3rem);padding:clamp(1.3rem,5vw,3rem);border:1px solid #6f387a;border-radius:28px;background:linear-gradient(135deg,#211027ee,#10101aee);box-shadow:0 22px 100px #0008}
+.rw-install-hero img{width:100%;height:auto;filter:drop-shadow(0 0 16px #ff55d86b)}
+.rw-eyebrow{color:var(--rw-green);font-size:.75rem;font-weight:800;letter-spacing:.2em}
+.rw-install h1{font-size:clamp(2.6rem,8vw,6rem);line-height:1;margin:.6rem 0 1rem;letter-spacing:-.07em}
+.rw-install h1 span{color:var(--rw-pink)}
+.rw-lead{font-size:clamp(1rem,2.3vw,1.3rem);line-height:1.6;max-width:60ch}
+.rw-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.4rem 0}
+.rw-button,.rw-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.8rem 1.2rem;border-radius:13px;text-decoration:none;font-weight:850;cursor:pointer}
+.rw-button{border:0;background:var(--rw-pink);color:#180818}
+.rw-secondary{border:2px solid var(--rw-green);color:var(--rw-green);background:#12121c}
+.rw-button:focus-visible,.rw-secondary:focus-visible{outline:3px solid white;outline-offset:3px}
+#rw-install-status{min-height:1.7em;font-size:.93rem;color:#d2bed7}
+.rw-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.1rem 0}
+.rw-features article,.rw-install-help{border:1px solid var(--rw-line);background:#14101ecf;border-radius:16px;padding:1.35rem}
+.rw-features strong{color:var(--rw-green);font-size:.9rem;letter-spacing:.06em}
+.rw-features p,.rw-install-help p{line-height:1.6}
+.rw-install-help{margin-top:1rem}
+.rw-install-help a{color:#ff92eb}
+.rw-note{color:#c5b5cb}
+html.ruinwire-mode,html.ruinwire-mode body{height:100%;overflow:hidden}
+html.ruinwire-mode body{background:#090911}
+html.ruinwire-mode .kf-header,html.ruinwire-mode footer.site-footer{display:none!important}
+html.ruinwire-mode .messages-shell{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;height:100dvh!important;min-height:0!important;display:flex!important;flex-direction:column}
+html.ruinwire-mode .messages-hero{padding:.6rem 1rem!important;margin:0!important;border-radius:0!important;flex:0 0 auto}
+html.ruinwire-mode .messages-hero h1{font-size:clamp(1.25rem,4vw,1.8rem)!important}
+html.ruinwire-mode .messages-hero .eyebrow{display:none}
+html.ruinwire-mode .messages-hero p{display:none}
+html.ruinwire-mode .message-layout{min-height:0!important;flex:1 1 auto!important;height:auto!important;max-height:none!important}
+.rw-appbar{display:flex;align-items:center;gap:.65rem;background:#120b1c;padding:env(safe-area-inset-top,0px) 12px 0;border-bottom:1px solid #4b2454;min-height:54px;flex:0 0 auto}
+.rw-appbar img{width:33px;height:33px}.rw-appbar strong{font-size:1.1rem;letter-spacing:.04em}
+.rw-appbar strong span{color:var(--rw-pink)}
+.rw-appbar a{color:var(--rw-green);font-size:.8rem;text-decoration:none;font-weight:750}
+.rw-appbar .rw-spacer{flex:1}
+.rw-appbar a:focus-visible{outline:2px solid white}
+html.ruinwire-mode .messages-hero-actions{gap:.3rem}
+html.ruinwire-mode .messages-hero-actions button{font-size:.76rem;padding:.4rem .55rem}
+@media(max-width:660px){.rw-install-hero{grid-template-columns:1fr}.rw-install-hero img{width:100px}.rw-features{grid-template-columns:1fr}.rw-appbar{gap:.4rem}.rw-appbar a{font-size:.73rem}}
