@@ -249,3 +249,11 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - The existing account session authenticates the online presence API. Cross-origin writes are rejected; blocked users are omitted from nearby-player lists; stale players expire after 45 seconds; quest credit is awarded only for server-confirmed movements or proximity to an NPC.
 - Local Cinderwild battles, creatures, single-player gym badges and cross-device backups remain separate; **they are not authoritative PvP/trade state**. Competitive inventory, online gyms, battle instances and live chat require their own later server-owned releases.
 - Regression gates: `node --test scripts/cinderwild-world-rules.test.mjs backend/src/cinderwild-online-world.test.mjs scripts/cinderwild-online-ui.test.mjs` plus manual two-account web/mobile smoke after successful Pages and Worker deployment. Migration read-back does not itself establish live gameplay.
+
+## Hosted seller commerce foundation · November 15, 2026
+
+- `0136_shop_commerce_foundation.sql` creates the additive tables `shop_business_profiles`, `shop_product_variants`, `shop_orders`, `shop_order_items`, and `shop_webhook_events`.
+- Verified remote production D1 `d1_migrations` ended at `0135_cinderwild_online_world.sql` and all five new tables were absent before applying.
+- Applied the reviewed SQL through the authorized Cloudflare D1 query API, verified all five tables, and recorded `0136_shop_commerce_foundation.sql` in the migration ledger afterward. The normal Wrangler migration workflow was **not** used.
+- New seller APIs check authentication and shop ownership, and public endpoints return only seller-published policy fields and approved product variant fields (never supplier SKU or cost). `backend/src/shop-commerce.test.mjs` checks validation, access, and read-only order behavior.
+- No live checkout, Stripe onboarding, supplier automation, shipment tracking, or financial fulfillment is enabled. These tables are foundation only.
