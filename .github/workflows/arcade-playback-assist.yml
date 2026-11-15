@@ -1,0 +1,44 @@
+name: Arcade Fullscreen and Load Recovery
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/arcade/hosted/arcade-playback-assist.js'
+      - 'public/arcade/hosted/radius-raid/index.html'
+      - 'public/arcade/hosted/terravia/index.html'
+      - 'public/arcade/hosted/interstellar-armada/index.html'
+      - 'public/arcade/hosted/single-html-space-shooter/index.html'
+      - 'public/arcade/hosted/browserquest-solo/index.html'
+      - 'public/arcade/hosted/openfront-solo/index.html'
+      - 'public/arcade/hosted/cinder-life/index.html'
+      - 'public/arcade/hosted/cinder-slots/index.html'
+      - 'scripts/arcade-playback-assist.test.mjs'
+      - 'scripts/smoke-arcade-playback-assist.mjs'
+      - '.github/workflows/arcade-playback-assist.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  arcade-playback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check eight opt-in cabinets and safe recovery behavior
+        run: node --test scripts/arcade-playback-assist.test.mjs
+      - name: Install Chromium browser for real page interactions
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Exercise eight game fullscreen controls on desktop and Android-size viewport
+        run: node scripts/smoke-arcade-playback-assist.mjs
+      - name: Preserve screenshots and error reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arcade-playback-evidence
+          path: priority-arcade-evidence/
+          retention-days: 7
