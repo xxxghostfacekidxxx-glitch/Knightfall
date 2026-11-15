@@ -59,4 +59,4 @@ jobs:
             android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk
             android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk.sha256
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
