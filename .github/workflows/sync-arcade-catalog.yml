@@ -5,6 +5,7 @@ on:
     paths:
       - 'public/arcade/catalog.json'
       - 'scripts/build-arcade-catalog.mjs'
+      - '.github/workflows/sync-arcade-catalog.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -24,6 +25,8 @@ jobs:
           node-version: '22'
       - name: Generate canonical Chaos Cartridge directory
         run: node scripts/build-arcade-catalog.mjs
+      - name: Verify canonical shelf and unique launch paths
+        run: node --test scripts/arcade-shelf-dedup.test.mjs
       - name: Commit generated pages when changed
         run: |
           git config user.name "github-actions[bot]"
@@ -33,5 +36,8 @@ jobs:
             echo "Catalog page already synchronized"
           else
             git commit -m "Sync canonical arcade directory with catalog"
-            git push origin HEAD:main
+            if ! git push origin HEAD:main; then
+              echo "::error::main changed during regeneration. No force-push attempted. Run sync again on current main."
+              exit 1
+            fi
           fi
