@@ -66,3 +66,5 @@ assert.doesNotMatch(catalogCSS,/#c6ff45|#ff55d8/i,"Arcade catalog must use Gothi
 assert.doesNotMatch(leaderboardsCSS,/#c6ff45|#ff55d8/i,"Leaderboards must use Gothic color system");
 assert.doesNotMatch(arcadeHub,/chaos-cartridge-theme\.css/,"Hub must not load per-game neon skins");
 assert.match(arcadeHub,/arcade-catalog\.css\?v=20261115-gothic7/);
+
+assert.doesNotMatch(foundryPage,/href="\\/arcade-polish\\.css/,"Creator Foundry must not load neon arcade game skin");
