@@ -69,3 +69,8 @@
 #kf-install-copy-status{font-size:.8rem;color:#c6ff84;overflow-wrap:anywhere}
 .kf-install-actions>*{max-width:100%}
 @media(max-width:560px){.kf-install-guide{padding:.8rem}.kf-install-actions .kf-install-primary,.kf-install-actions .kf-install-secondary{flex:1 1 auto}}
+
+/* Direct internal test-build lookup keeps official signed APK release gating untouched. */
+.kf-debug-apk-lookup{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:.75rem 0}
+.kf-debug-apk-lookup>p{flex-basis:100%;margin:.2rem 0;overflow-wrap:anywhere}
+.kf-debug-apk-lookup [hidden]{display:none!important}
