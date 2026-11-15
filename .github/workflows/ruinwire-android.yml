@@ -49,7 +49,7 @@ jobs:
         run: gradle --project-dir android :ruinwire:assembleDebug --no-daemon --stacktrace
       - name: Verify APK and checksum
         run: |
-          test -s android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk || test -s android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk
+          test -s android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk
           sha256sum android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk | tee android/ruinwire/build/outputs/apk/debug/ruinwire-debug.apk.sha256
           echo "Internal TEST build only; public release requires stable signing, asset links, and real-device verification." >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
