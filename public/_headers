@@ -7,3 +7,21 @@
   Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'
   X-DNS-Prefetch-Control: off
   X-Permitted-Cross-Domain-Policies: none
+
+# Revalidate the shared theme on every visit; the PWA retains offline fallback.
+/theme.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/design-system.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/knightfall-unified-theme.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/visual-refresh.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/section-overhaul.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/nav.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/messages.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/ruinwire.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
