@@ -69,7 +69,7 @@ test('web app install action always offers a real next step on mobile, even with
  assert.match(installScript,/Install Knightfall on iPhone or iPad/);
  assert.match(installScript,/navigator\.clipboard\.writeText/);
  assert.match(nav,/href="\/install\.html" class="kf-install-pill"/);
- assert.match(read('public/install.css'),/#kf-install-guide/);
+ assert.match(read('public/install.css'),/\.kf-install-guide/);
 });
 
 test('Android TWA test build uses official site, Android API 36, and hosted debug artifacts only',()=>{
