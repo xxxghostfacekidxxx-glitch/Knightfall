@@ -12,10 +12,9 @@ test("Knightfall homepage has direct signup and a safe free first step",()=>{
   assert.match(html,/href="\/community\.html"/);
   assert.match(html,/href="\/mascot-pets\.html"/);
   assert.match(html,/Browse free games/);
-  // Entry points must stay unique. The directory offers the rest of Knightfall.
-  const visible = html.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,"");
+  // Guard against repeating the same visible route in multiple homepage sections.
   for(const target of ["/chaos-cartridge.html","/community.html","/mascot-pets.html"])
-    assert.equal((visible.match(new RegExp('href="'+target.replace(/\\./g,'\\\\.')+'"','g'))||[]).length,1,target);
+    assert.equal(html.split('href="'+target+'"').length-1,1,target);
   assert.doesNotMatch(html,/free premium|guaranteed earnings|buy now|checkout now/i);
 });
 test("all first-step destinations exist in Pages and are usable on mobile",()=>{
