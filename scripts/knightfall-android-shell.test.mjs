@@ -68,3 +68,22 @@ test('Android TWA test build uses official site, Android API 36, and hosted debu
  assert.match(workflow,/DEBUG-SIGNED TEST APK/);
  assert.doesNotMatch(workflow,/gh release create|:app:bundleRelease/);
 });
+
+test('install center uses current Android workflow instead of expiring build artifacts',()=>{
+ const page=read('public/install.html');
+ assert.match(page,/actions\/workflows\/knightfall-android\.yml/);
+ assert.doesNotMatch(page,/actions\/runs\/[0-9]+/);
+ assert.doesNotMatch(page,/Artifact expires November/);
+ assert.match(page,/id="kf-install-check-run"/);
+ assert.match(page,/id="kf-install-check-results"/);
+ const code=read('public/install-health.js');
+ assert.doesNotThrow(()=>new vm.Script(code));
+ assert.match(code,/credentials:"omit"/);
+ assert.match(code,/serviceWorker\.getRegistration/);
+ assert.match(code,/\/manifest\.webmanifest/);
+ assert.match(code,/\/android-release\.json/);
+ assert.match(code,/\/\.well-known\/assetlinks\.json/);
+ assert.doesNotMatch(code,/api\.ash-fall\.com|credentials:"include"/);
+ assert.match(read('public/sw.js'),/knightfall-shell-v36/);
+ assert.match(read('public/sw.js'),/\/install-health\.js/);
+});

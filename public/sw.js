@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v35";
+const CACHE_NAME = "knightfall-shell-v36";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -17,6 +17,8 @@ const APP_SHELL = [
   "/install.html",
   "/install.css",
   "/install.js",
+  "/install-health.js",
+  "/android-device-check.js",
   "/chat-bubbles.css",
   "/chat-bubbles.js",
   "/message-live.js",

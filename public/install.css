@@ -34,3 +34,13 @@
 .kf-release-owner-details{margin-top:1rem;padding:.9rem;border:1px solid #806b7b;border-radius:10px}
 .kf-release-owner-details summary{cursor:pointer;color:#e8d8bc;font-weight:850}
 .kf-release-owner-details a{color:#c4f9a1}
+
+/* Browser-only install diagnostics, no account data collection. */
+.kf-install-check-results{padding:0;margin:1rem 0;display:grid;gap:.55rem;list-style:none}
+.kf-install-check-results li{padding:.7rem .85rem;background:#141321;border:1px solid #665169;border-radius:.75rem;color:#eee8f3}
+.kf-install-check-results li strong{color:#ffe2b0}
+.kf-install-check-results li p{margin:.25rem 0 0;line-height:1.45}
+.kf-install-check-results .kf-install-check-ok{border-inline-start:4px solid #b1fa80}
+.kf-install-check-results .kf-install-check-attention{border-inline-start:4px solid #ffae73}
+.kf-install-check-results .kf-install-check-info{border-inline-start:4px solid #d7a1eb}
+#kf-install-check-copy[hidden]{display:none!important}
