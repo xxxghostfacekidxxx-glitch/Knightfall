@@ -220,3 +220,16 @@ test('Noir 4 renderer adds layered portrait sculpting, hair finish, eye detail a
  assert.match(svg,/linearGradient/);
  assert.match(svg,/data-render-style="neon-noir-illustration-v4"/);
 });
+
+test('dimensional renderer candidate stays isolated from production until visual approval',()=>{
+ const html=read('public/misfit-renderer-lab.html');
+ const js=read('public/misfit-renderer-lab.js');
+ assert.match(html,/noindex,nofollow/);
+ assert.match(html,/misfit-renderer-lab\.js/);
+ assert.match(html,/does not change saved member avatars or the live editor/);
+ assert.match(js,/humanforge@0\.8\.1\/forge2d\?bundle/);
+ assert.match(js,/renderAvatarSvg\(config/);
+ assert.match(js,/Prototype engine unavailable/);
+ assert.match(js,/HumanForge Forge2D/);
+ assert.doesNotMatch(read('public/avatar-studio.html'),/misfit-renderer-lab/);
+});
