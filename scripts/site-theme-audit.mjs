@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,existsSync,readdirSync} from "node:fs";
 const read=p=>readFileSync(new URL(p,import.meta.url),"utf8");
 const css=read("../public/knightfall-unified-theme.css"),tokens=read("../public/design-system.css");
 const theme=read("../public/theme.css"),nav=read("../public/nav.js"),home=read("../public/index.html");
@@ -44,7 +44,7 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v45";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v46";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
@@ -100,3 +100,30 @@ for (const filename of [
 for (const filename of ["profile-community-overhaul.css","profile-links.css","profile-wall.css","profile-highlights.css"]){
  assert.match(read("../public/"+filename),/var\(--profile-accent/,filename+" must respect member-selected accents");
 }
+
+// Permanent Gravewave retirement guard: chrome only, never recolor game canvas art
+// or member-selected profile accents.
+const retiredChrome=/#(?:ff55d8|c6ff45|e8b5f5|a8ff3e|d9ff51)(?:[0-9a-f]{2})?\b|rgba\(\s*255\s*,\s*85\s*,\s*216/i;
+for (const filename of [
+  "arcade-polish.css","chaos-cartridge-theme.css","chat-bubbles.css",
+  "account-deletion.html","admin-deletion-requests.html","privacy.html",
+  "terms.html","eula.html","offline.html","devil-tools.html"
+]) assert.doesNotMatch(read("../public/"+filename),retiredChrome,"Retired palette returned in "+filename);
+assert.ok(!existsSync(new URL("../public/gravewave-takeover.css",import.meta.url)),
+  "Removed Gravewave takeover CSS must not be resurrected");
+for(const filename of readdirSync(new URL("../public/",import.meta.url)).filter(name=>name.endsWith(".html"))){
+  const source=read("../public/"+filename);
+  assert.doesNotMatch(source,/<link\b[^>]*(?:gravewave-takeover|neon-global|gravewave-consistency)\.(?:css|js)/i,
+    "Retired takeover asset loaded by "+filename);
+}
+for (const filename of ["chaos-glitch.css","miss-chaos-presence.css"]){
+  assert.doesNotMatch(read("../public/"+filename),/#(?:ff55d8|c6ff45)/i,
+    "Miss Chaos character skin must use its own colors, not Gravewave");
+}
+assert.match(nav,/chat-bubbles\.css\?v=20261115-gothic10/);
+assert.match(read("../public/miss-chaos-presence.js"),/miss-chaos-presence\.css\?v=20261115-theme-purge2/);
+for (const path of ["/arcade-polish.css","/chaos-cartridge-theme.css","/chat-bubbles.css","/miss-chaos-presence.css"]){
+  assert.ok(read("../public/_headers").includes(path+"\n  Cache-Control: no-cache"),
+    "Theme asset must revalidate: "+path);
+}
+console.log("Retired Gravewave chrome purge and PWA cache version checked.");

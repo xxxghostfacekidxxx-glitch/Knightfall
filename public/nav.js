@@ -154,7 +154,7 @@
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261113-messaging2";
+    companion.src = "/miss-chaos-presence.js?v=20261115-theme-purge2";
     companion.dataset.missChaosPresence = "true";
     document.head.append(companion);
   }
@@ -386,7 +386,7 @@
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261115-viewport3";
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261115-gothic10";
             sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
