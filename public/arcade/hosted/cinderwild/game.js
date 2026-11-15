@@ -405,7 +405,7 @@ function openMenu(type){
   area.innerHTML=state.party.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+esc(sp(c.id)[1])+' · '+c.hp+'/'+c.maxHp+' HP · XP '+c.xp+'/'+expreq(c.level)+'</small>'+hpbar(c)+'<div class="inline-actions"><button data-lead="'+i+'" '+(i===0||c.hp<=0?"disabled":"")+'>Lead</button><button data-potion="'+i+'" '+(!state.items.potions||c.hp===c.maxHp||c.hp===0?"disabled":"")+'>Potion</button><button data-revive="'+i+'" '+(!state.items.revives||c.hp?"disabled":"")+'>Revive</button><button data-store="'+i+'" '+(state.party.length<=1?"disabled":"")+'>Store</button></div></div>').join("")||"<p>No creatures yet.</p>";
   area.innerHTML+='<p>Potions: '+state.items.potions+' · Revives: '+state.items.revives+'</p>';
  }else if(type==="box"){
-  area.innerHTML='<p>Up to 6 creatures in your team. Captures overflow here automatically.</p>'+state.box.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+c.hp+'/'+c.maxHp+' HP</small><button data-withdraw="'+i+'" '+(state.party.length>=6?"disabled":"")+'>Add to party</button></div>').join("")||"<p>Storage is empty.</p>";
+  area.innerHTML='<p>Stored '+state.box.length+' / 200 creatures. Captures overflow here when your six-member party is full. Legendary creatures cannot be released.</p>'+(state.box.map((c,i)=>'<div class="creature-line"><strong>'+esc(name(c.id))+' · Lv.'+c.level+'</strong><small>'+c.hp+'/'+c.maxHp+' HP</small><div class="inline-actions"><button data-withdraw="'+i+'" '+(state.party.length>=6?"disabled":"")+'>Add to party</button><button data-release="'+i+'" '+(SHRINES.some(shrine=>shrine.id===c.id)?"disabled":"")+'>Release</button></div></div>').join("")||"<p>Storage is empty.</p>");
  }else if(type==="dex"){
   area.innerHTML='<p>'+state.caught.length+' captured · '+state.seen.length+' seen of '+Object.keys(SPECIES).length+' original species.</p><div class="dex-controls"><label>Search known creatures<input id="dex-search" type="search" placeholder="Name or bestiary number" autocomplete="off"></label><label>Collection<select id="dex-status-filter"><option value="all">All creatures</option><option value="seen">Discovered</option><option value="caught">Captured</option><option value="missing">Undiscovered</option></select></label></div><p id="dex-count" role="status" aria-live="polite"></p><div id="dex-entries" class="dex-list">'+Object.keys(SPECIES).map((id,i)=>'<div data-dex-id="'+id+'" data-dex-number="'+String(i+1).padStart(3,"0")+'" class="'+(state.caught.includes(id)?"caught":state.seen.includes(id)?"seen":"unknown")+'"><span>#'+String(i+1).padStart(3,"0")+'</span><strong>'+esc(state.seen.includes(id)||state.caught.includes(id)?name(id):"????????")+'</strong><small>'+(state.caught.includes(id)?"Captured":state.seen.includes(id)?"Seen":"Unknown")+'</small></div>').join("")+'</div>';
  }else if(type==="shop"){
@@ -450,9 +450,15 @@ function initialize(){
   else if(b.dataset.potion!==undefined)usePotion(val("potion"));
   else if(b.dataset.revive!==undefined)useRevive(val("revive"));
   else if(b.dataset.store!==undefined){
-   const i=val("store");if(state.party.length>1){state.box.push(state.party.splice(i,1)[0]);save();openMenu("party");}
+   const i=val("store");if(state.box.length>=200){notify("Storage is full. Withdraw or release a creature first.");return;}
+   if(state.party.length>1&&state.party[i]){state.box.push(state.party.splice(i,1)[0]);save();openMenu("party");}
   }else if(b.dataset.withdraw!==undefined){
    const i=val("withdraw");if(state.party.length<6&&state.box[i]){state.party.push(state.box.splice(i,1)[0]);save();openMenu("box");}
+  }else if(b.dataset.release!==undefined){
+   const i=val("release"),creature=state.box[i];
+   if(!creature||SHRINES.some(shrine=>shrine.id===creature.id))return;
+   if(!confirm("Release "+name(creature.id)+" (Lv."+creature.level+") permanently? This cannot be undone."))return;
+   state.box.splice(i,1);save();openMenu("box");notify(name(creature.id)+" was released back into the wild.");
   }else if(b.dataset.buy)buy(b.dataset.buy,{orbs:30,superOrbs:80,potions:22,revives:65}[b.dataset.buy]);
   else if(b.id==="export-save"){
    const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
