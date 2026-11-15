@@ -27,7 +27,8 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
  for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261113-misfit-ink5'),path+' cache token missing');
- assert.ok(html.includes('/avatar-cartoon.css?v=20261114-book3'),'cartoon stylesheet token missing');\n assert.ok(html.includes('/misfit-avatar.js?v=20261115-noir4'),'renderer cache token missing');
+ assert.ok(html.includes('/avatar-cartoon.css?v=20261114-book3'),'cartoon stylesheet token missing');
+ assert.ok(html.includes('/misfit-avatar.js?v=20261115-noir4'),'renderer cache token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -194,7 +195,8 @@ test('Misfit preview and exported SVG render with storybook comic ink without ch
  assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
 });
 
-\ntest('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
+
+test('appearance categories expose accessible tab semantics and keyboard navigation',()=>{
  const html=read('public/avatar-studio.html'),js=read('public/avatar-studio.js'),css=read('public/avatar-studio.css');
  assert.match(html,/id="category-tabs"[^>]*role="tablist"/);
  assert.match(html,/id="controls"[^>]*role="tabpanel"/);
