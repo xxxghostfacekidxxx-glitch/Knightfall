@@ -6,7 +6,7 @@
 <meta name="description" content="Create your own Knightfall Misfit with a live visual character editor, collectible looks, neon styles and profile-ready avatars.">
 <title>Misfit Studio | Knightfall</title>
 <link rel="stylesheet" href="/theme.css?v=20261113-misfit-ink5">
-<link rel="stylesheet" href="/avatar-studio.css?v=20261113-misfit-ink5">
+<link rel="stylesheet" href="/avatar-studio.css?v=20261115-noir4">
 <link rel="stylesheet" href="/avatar-cartoon.css?v=20261114-book3">
 </head>
 <body>
@@ -66,8 +66,8 @@
     <div><p class="eyebrow">03 / THE DETAILS</p><h2 id="customize-title">Make it unmistakably yours</h2><p class="section-description">Tap a style to see it instantly. Every choice is reversible.</p></div>
     <div class="history-tools" aria-label="Edit history"><button id="undo-avatar" type="button" class="icon-button" title="Undo last change" aria-label="Undo last change">↶</button><button id="redo-avatar" type="button" class="icon-button" title="Redo last change" aria-label="Redo last change">↷</button><button id="reset-avatar" type="button" class="icon-button" title="Reset appearance to original" aria-label="Reset appearance">↺</button></div>
    </div>
-   <nav id="category-tabs" class="category-tabs" aria-label="Appearance categories"></nav>
-   <div id="controls" class="controls"></div>
+   <nav id="category-tabs" class="category-tabs" role="tablist" aria-label="Appearance categories" aria-orientation="horizontal"></nav>
+   <div id="controls" class="controls" role="tabpanel" tabindex="0"></div>
   </section>
   <div class="studio-actions">
    <span id="unsaved-indicator" class="unsaved-indicator" role="status">All changes saved</span>
@@ -85,7 +85,7 @@
 </section>
 </main>
 <script src="/nav.js?v=20261113-misfit-ink5" defer></script>
-<script src="/misfit-avatar.js?v=20261114-book3" defer></script>
-<script src="/avatar-studio.js?v=20261113-misfit-ink5" defer></script>
+<script src="/misfit-avatar.js?v=20261115-noir4" defer></script>
+<script src="/avatar-studio.js?v=20261115-a11y1" defer></script>
 </body>
 </html>

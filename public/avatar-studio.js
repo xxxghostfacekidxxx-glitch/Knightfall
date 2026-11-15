@@ -76,15 +76,41 @@
  }
  function paintTabs(){
   const nav=byId('category-tabs');
-  if(nav.children.length===groups.length){Array.from(nav.children).forEach((button,index)=>button.setAttribute('aria-selected',String(groups[index].key===activeGroup)));return;}
+  const panel=byId('controls');
+  if(nav.children.length===groups.length){
+   Array.from(nav.children).forEach((button,index)=>{
+    const selected=groups[index].key===activeGroup;
+    button.setAttribute('aria-selected',String(selected));
+    button.tabIndex=selected?0:-1;
+   });
+   const activeTab=nav.querySelector('[aria-selected="true"]');
+   if(activeTab)panel.setAttribute('aria-labelledby',activeTab.id);
+   return;
+  }
   nav.replaceChildren();
   for(const group of groups){
    const tab=document.createElement('button');tab.type='button';tab.className='category-tab';
-   tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(group.key===activeGroup));tab.setAttribute('aria-controls','controls');
+   tab.id='category-tab-'+group.key;
+   tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(group.key===activeGroup));
+   tab.setAttribute('aria-controls','controls');tab.tabIndex=group.key===activeGroup?0:-1;
    tab.innerHTML='<span class="tab-icon" aria-hidden="true">'+group.icon+'</span><span>'+group.name+'</span>';
    tab.addEventListener('click',()=>{activeGroup=group.key;paintControls();});
+   tab.addEventListener('keydown',event=>{
+    const current=groups.findIndex(item=>item.key===group.key);
+    let next=current;
+    if(event.key==='ArrowRight')next=(current+1)%groups.length;
+    else if(event.key==='ArrowLeft')next=(current-1+groups.length)%groups.length;
+    else if(event.key==='Home')next=0;
+    else if(event.key==='End')next=groups.length-1;
+    else return;
+    event.preventDefault();
+    activeGroup=groups[next].key;paintControls();
+    nav.querySelector('[aria-selected="true"]')?.focus();
+   });
    nav.append(tab);
   }
+  const activeTab=nav.querySelector('[aria-selected="true"]');
+  if(activeTab)panel.setAttribute('aria-labelledby',activeTab.id);
  }
  async function loadBuddy(){
   const root=byId('avatar-buddy');if(!root)return;

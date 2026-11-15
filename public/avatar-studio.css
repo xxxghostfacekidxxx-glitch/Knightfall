@@ -184,4 +184,19 @@
 .avatar-studio .category-tab[aria-selected="true"]{background:linear-gradient(132deg,#c9ff70,#84d8b1);box-shadow:0 8px 24px #c6ff4533}
 @media(max-width:850px){.avatar-studio .avatar-stage{min-height:310px}.avatar-studio .avatar-stage svg{width:min(88%,395px)}}
 @media(max-width:600px){.avatar-studio .avatar-stage{min-height:260px;aspect-ratio:1.19/1}.avatar-studio .avatar-stage[data-framing="portrait"] svg{transform:scale(1.44) translateY(13%)}.avatar-studio .character-ticket>div{padding:8px 6px;min-height:57px}.avatar-studio .character-ticket strong{font-size:10px}.avatar-studio .preset-chip{min-height:143px}.avatar-studio .preset-chip .look-avatar{height:97px}.avatar-studio .trait-option .trait-thumbnail{width:58px;height:69px}}
-@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{transition:none;animation:none}.avatar-studio .framing-button{transition:none}}
+@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{transition:none;animation:none}.avatar-studio .framing-button{transition:none}}\n
+/* Misfit Studio accessibility pass: proper tab focus and clear keyboard focus states. */
+.avatar-studio .category-tabs[role="tablist"]{isolation:isolate}
+.avatar-studio .category-tab:focus-visible{outline:3px solid var(--misfit-cyan);outline-offset:3px;z-index:1}
+.avatar-studio .controls[role="tabpanel"]:focus{outline:none}
+.avatar-studio .controls[role="tabpanel"]:focus-visible{outline:2px solid #73eee6;outline-offset:5px;border-radius:12px}
+
+/* Misfit Studio Noir 4: deeper portrait lighting and tactile editor surfaces. */
+.avatar-studio .avatar-stage{background:radial-gradient(ellipse at 50% 27%,#f5a6dc32 0,transparent 35%),radial-gradient(ellipse at 50% 75%,#9bffdf20 0,transparent 42%),linear-gradient(145deg,#21142e 0%,#171323 47%,#090b15 100%);border-color:#b47bb0;box-shadow:0 0 0 1px #ffb6ec22,0 0 38px #d85db526,inset 0 0 95px #05030dba,0 24px 55px #000b}
+.avatar-studio .avatar-stage:before{opacity:.72;background:radial-gradient(ellipse at 50% 42%,transparent 27%,#070510c9 100%),linear-gradient(90deg,transparent 49.7%,#e9d8ff15 50%,transparent 50.3%),repeating-linear-gradient(0deg,transparent 0 27px,#ffffff0b 28px),repeating-linear-gradient(90deg,transparent 0 27px,#ffffff0b 28px)}
+.avatar-studio .avatar-stage svg{width:min(96%,510px);max-height:520px;filter:drop-shadow(0 20px 25px #000d) drop-shadow(0 0 22px #e35bc72b)}
+.avatar-studio .preview-card,.avatar-studio .builder-card{border-color:#80518a;box-shadow:inset 0 1px #ffffff2a,0 28px 72px #000a,0 0 32px #bd4fa510}
+.avatar-studio .trait-option .trait-thumbnail{background:radial-gradient(circle at 48% 28%,#674269,#201629 76%);border:1px solid #ffffff12}
+.avatar-studio .trait-option[aria-pressed="true"] .trait-thumbnail{box-shadow:0 0 18px #c6ff4540,inset 0 0 16px #c6ff451c}
+.avatar-studio .preset-chip .look-avatar{background:radial-gradient(ellipse at 50% 30%,#88527c,#21152e 62%,#100d19);box-shadow:inset 0 0 28px #0008}
+@media(prefers-reduced-motion:reduce){.avatar-studio .avatar-stage svg{animation:none;transition:none}}
