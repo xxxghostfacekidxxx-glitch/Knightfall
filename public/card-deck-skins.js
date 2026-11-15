@@ -1,22 +1,21 @@
-/* Knightfall Deck Locker: shared across all catalogued playing-card games.
-   Free and locally earned skins are cosmetic only. Premium skins are catalogue
-   previews until an authenticated payment/entitlement system is activated. */
+/* Knightfall Deck Locker: all current cosmetic skins free for every player.
+   Cosmetic choice never affects gameplay or paid card expansion ownership. */
 (()=>{
  "use strict";
  if(window.AshFallDeckSkins)return;
  const SKINS=Object.freeze([
-  {id:"ash-classic",name:"Ash Classic",kind:"free",tag:"ORIGINAL",description:"The clean Knightfall card face."},
-  {id:"neon-riot",name:"Neon Riot",kind:"free",tag:"FREE",description:"Shock pink, electric lime and club lights."},
-  {id:"bone-white",name:"Bone White",kind:"free",tag:"FREE",description:"Ivory stock with ink-black typography."},
-  {id:"grave-velvet",name:"Grave Velvet",kind:"unlock",deals:3,tag:"3 DEALS",description:"Deep velvet purple and silver trim."},
-  {id:"glitch-circuit",name:"Glitch Circuit",kind:"unlock",deals:10,tag:"10 DEALS",description:"Chromatic static and pixel-cut edges."},
-  {id:"ghost-orchid",name:"Ghost Orchid",kind:"unlock",deals:25,tag:"25 DEALS",description:"An eerie spectral bloom."},
-  {id:"infernal-foil",name:"Infernal Foil",kind:"unlock",deals:50,tag:"50 DEALS",description:"Fire-forged golden foil."},
-  {id:"void-royalty",name:"Void Royalty",kind:"premium",price_cents:199,tag:"COMING SOON",description:"Royal violet enamel and obsidian."},
-  {id:"crimson-rite",name:"Crimson Rite",kind:"premium",price_cents:199,tag:"COMING SOON",description:"Deep crimson wax seal finish."},
-  {id:"holo-wraith",name:"Holo Wraith",kind:"premium",price_cents:299,tag:"COMING SOON",description:"Prismatic hologram shimmer."},
-  {id:"toxic-pop",name:"Toxic Pop",kind:"premium",price_cents:299,tag:"COMING SOON",description:"Acid-green comic-book lacquer."},
-  {id:"eclipse-noir",name:"Eclipse Noir",kind:"premium",price_cents:399,tag:"COMING SOON",description:"Black-on-black luxury embossed backs."}
+  {id:"ash-classic",name:"Ash Classic",kind:"free",tag:"FREE",symbol:"✦",description:"Charcoal linen, broken halo and bone-white crest."},
+  {id:"neon-riot",name:"Neon Riot",kind:"free",tag:"FREE",symbol:"⚡",description:"Street-art stickers, laser streaks and electric edgework."},
+  {id:"bone-white",name:"Bone White",kind:"free",tag:"FREE",symbol:"♣",description:"Vintage ivory engraving with black filigree."},
+  {id:"grave-velvet",name:"Grave Velvet",kind:"free",tag:"FREE",symbol:"♠",description:"Royal plum velvet and silver damask."},
+  {id:"glitch-circuit",name:"Glitch Circuit",kind:"free",tag:"FREE",symbol:"⌁",description:"Cyberpunk circuitry with interrupted light trails."},
+  {id:"ghost-orchid",name:"Ghost Orchid",kind:"free",tag:"FREE",symbol:"✿",description:"Translucent floral etching on smoky jade."},
+  {id:"infernal-foil",name:"Infernal Foil",kind:"free",tag:"FREE",symbol:"♜",description:"Molten copper, ember cracks and forged metal."},
+  {id:"void-royalty",name:"Void Royalty",kind:"free",tag:"FREE",symbol:"♛",description:"Midnight enamel and ornamental heraldic foil."},
+  {id:"crimson-rite",name:"Crimson Rite",kind:"free",tag:"FREE",symbol:"✧",description:"Scarlet wax seal and ritual geometry."},
+  {id:"holo-wraith",name:"Holo Wraith",kind:"free",tag:"FREE",symbol:"◇",description:"Iridescent spectral foil with prismatic highlights."},
+  {id:"toxic-pop",name:"Toxic Pop",kind:"free",tag:"FREE",symbol:"☢",description:"Graphic-novel splashes and radioactive green."},
+  {id:"eclipse-noir",name:"Eclipse Noir",kind:"free",tag:"FREE",symbol:"☾",description:"Embossed black-on-black eclipse and satin silver."}
  ]);
  const skinMap=new Map(SKINS.map(s=>[s.id,s]));
  const STORAGE_KEY="ashfall:deck-locker:selected:v1";
@@ -28,8 +27,7 @@
  let deals=localDeals;
  const account={ready:false,userId:null,revision:0,owned:new Set(),imported:false,status:"Checking account sync…"};
  const API="https://api.ash-fall.com/api/arcade/deck-locker";
- const allowed=skin=>skin?.kind==="free"||(skin?.kind==="unlock"&&deals>=skin.deals)
-  ||(skin?.kind==="premium"&&account.ready&&account.owned.has(skin.id));
+ const allowed=skin=>!!skin&&skinMap.has(skin.id);
  let chosen=read(STORAGE_KEY)||"ash-classic";
  if(!allowed(skinMap.get(chosen)))chosen="ash-classic";
  const updateDocument=()=>{root.dataset.kfDeckSkin=chosen;root.style.colorScheme="dark"};
@@ -53,8 +51,7 @@
   account.ready=true;account.userId=Number(data.user_id);
   account.revision=Math.max(0,Math.floor(Number(data.profile.revision)||0));
   account.imported=!!data.profile.local_imported;
-  account.owned=new Set((Array.isArray(data.owned_skin_ids)?data.owned_skin_ids:[])
-   .filter(id=>skinMap.get(id)?.kind==="premium"));
+  account.owned=new Set(); // Legacy paid entitlements are unnecessary: every existing finish is free.
   deals=Math.min(100000,Math.max(0,Math.floor(Number(data.profile.earned_deals)||0)));
   const selected=data.profile.equipped_skin;
   chosen=allowed(skinMap.get(selected))?selected:"ash-classic";
@@ -69,7 +66,7 @@
   // misreported as game launch failures in the arcade fleet.
   const host=window.location?.hostname;
   if(host&&host!=="ash-fall.com"&&host!=="www.ash-fall.com"){
-   account.status="Local preview · play and unlock skins here; cloud sync is available on ash-fall.com";
+   account.status="Local preview · all 12 skins free; account sync is available on ash-fall.com";
    if(renderCardList)renderCardList();
    return false;
   }
@@ -160,8 +157,8 @@
   locker.replaceChildren();
   const heading=make("div","kf-deck-intro");
   const intro=make("div");
-  intro.append(make("strong",null,"CHOOSE YOUR CARD FINISH"),make("p",null,"One wardrobe across every card table. Cosmetic only; game rules stay unchanged."));
-  const prog=make("div","kf-deck-progress",deals+" recorded deals"+(account.ready?" · account":" · device"));
+  intro.append(make("strong",null,"THE DECK ATELIER · 12 FREE DESIGNS"),make("p",null,"Pick a handcrafted look for every card table. All existing finishes are free, with no unlocks or purchases."));
+  const prog=make("div","kf-deck-progress","ALL 12 FREE · "+deals+" deals played");
   heading.append(intro,prog);
   locker.append(heading);
   const syncStatus=make("div","kf-deck-sync-status");
@@ -180,35 +177,26 @@
   locker.append(syncStatus);
   const grid=make("div","kf-deck-grid");
   for(const skin of SKINS){
-   const available=allowed(skin),premium=skin.kind==="premium";
+   const available=allowed(skin);
    const item=make("article","kf-deck-item"+(skin.id===chosen?" is-selected":"")+(available?"":" is-locked"));
    const preview=make("div","kf-deck-preview kf-deck-preview--"+skin.id);
    preview.setAttribute("aria-hidden","true");
-   preview.append(make("span","kf-deck-preview-star","✦"),make("span","kf-deck-preview-mark","ASH / FALL"));
+   preview.append(make("span","kf-deck-preview-star",skin.symbol),make("span","kf-deck-preview-mark",skin.name.toUpperCase()));
    const info=make("div","kf-deck-item-copy");
    info.append(make("strong",null,skin.name),make("small",null,skin.description));
-   const meta=make("span","kf-deck-kind",skin.kind==="free"?"FREE":premium?"PREMIUM":available?"UNLOCKED":"LOCKED");
-   const button=make("button","kf-deck-choice",skin.id===chosen?"✓ Equipped":available?"Equip":premium?"Not available yet":`Unlock at ${skin.deals} deals`);
+   const meta=make("span","kf-deck-kind","FREE · FOREVER");
+   const button=make("button","kf-deck-choice",skin.id===chosen?"✓ Equipped":"Equip skin");
    button.type="button";
    button.disabled=!available||skin.id===chosen;
    button.setAttribute("aria-label",(skin.id===chosen?"Equipped ":available?"Equip ":"Locked ")+skin.name);
    if(available&&skin.id!==chosen)button.addEventListener("click",()=>chooseSkin(skin.id));
    const footer=make("div","kf-deck-item-footer");
    footer.append(meta,button);
-   if(premium){
-    const link=make("a","kf-deck-premium-link",`Shop preview $ ${(skin.price_cents/100).toFixed(2)}`);
-    link.href="/cinder-shop.html#deck-skin-"+skin.id;
-    footer.append(link);
-   }else if(skin.kind==="unlock"&&!available){
-    footer.append(make("span","kf-deck-progress-mini",deals+" / "+skin.deals+" deals"));
-   }
    item.append(preview,info,footer);
    grid.append(item);
   }
   locker.append(grid);
-  const note=make("p","kf-deck-disclaimer",account.ready
-   ?"Skins and cosmetic play progress are saved to your account. Local game activity is rate-limited, not independently game-verified. Premium ownership requires server-issued entitlements; checkout is not live."
-   :"Guest progress stays on this device. Sign in to save earned styles across devices; premium checkout remains disabled.");
+  const note=make("p","kf-deck-disclaimer","Every current deck skin is free. Signing in syncs your selection; guest choices stay on this device. Cosmetics never change cards, odds or expansion ownership.");
   locker.append(note);
  }
  function init(){
@@ -247,7 +235,7 @@
   get deviceDeals(){return localDeals},
   get accountSynced(){return account.ready},
   get accountId(){return account.userId},
-  get ownedPremium(){return [...account.owned]},
+  get ownedPremium(){return [...account.owned]}, // Backward-compatible accessor
   isAvailable:id=>allowed(skinMap.get(id))
  });
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
