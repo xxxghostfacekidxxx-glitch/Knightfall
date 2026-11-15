@@ -27,6 +27,12 @@ window.AshFallVisuals={burst,setEnabled,get enabled(){return enabled}};
 function init(){
 if(!document.body)return;
 document.body.classList.add("af-nextgen");document.body.dataset.afGame=slug;setEnabled(enabled);
+// Bootstrap one shared header and authenticated chat dock on first-party arcade cabinets.
+if(document.querySelector(".kf-header")&&!document.querySelector('script[src*="/nav.js"]')&&!document.querySelector('script[data-kf-arcade-nav]')){
+ const navScript=document.createElement("script");
+ navScript.src="/nav.js?v=20261114-game-chat2";navScript.dataset.kfArcadeNav="true";
+ document.head.append(navScript);
+}
 const cards=document.querySelectorAll("#game-shelf article.arcade-flat-card");
 const icons={Action:"⚡",Adventure:"🗺️",Arcade:"👾",Board:"♟️",Card:"🃏",Casual:"🎯",Fighting:"🥊",Idle:"✨",Platformer:"🏃",Puzzle:"🧩",RPG:"⚔️",Racing:"🏎️",Shooter:"🚀",Simulation:"🏗️",Sports:"🏆",Strategy:"♜",Word:"🔮"};
 const palettes=[["#9631b7","#1a3b59"],["#087a8f","#302047"],["#7654df","#19433d"],["#ca2674","#183c4f"]];
