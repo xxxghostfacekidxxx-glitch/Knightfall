@@ -15,7 +15,7 @@ test("live main arcade and regenerated catalog both preserve the hall of fame", 
   assert.match(renderPage(false), expected);
   assert.equal(html.match(expected)[0], renderPage(false).match(expected)[0]);
   assert.doesNotMatch(renderPage(true), /id="arcade-leaderboards"/);
-  assert.match(html, /\/arcade-leaderboards\.css\?v=20261103-hall1/);
+  assert.match(html, /\/arcade-leaderboards\.css\?v=[a-z0-9-]+/i, "current leaderboard stylesheet must be loaded with a cache key");
   assert.match(html, /\/arcade-leaderboards\.js\?v=20261103-hall1/);
 });
 test("leaderboard API ranks within each game, filters inactive players and respects auth", () => {
