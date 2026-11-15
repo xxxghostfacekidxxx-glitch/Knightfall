@@ -665,7 +665,7 @@ async function boot(){
     const isGod = role === 'god';
     const administrator = isGod || role === 'admin';
     // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
-    const digitalCreator = String(user.public_title || '').trim() === 'Digital Creator';
+    const digitalCreator = role === 'member' && String(user.public_title || '').trim() === 'Digital Creator';
     if (!administrator && !digitalCreator) throw Error('Workshop access required.');
     if (!administrator) {
       $('#developer-arsenal-ci').remove();
