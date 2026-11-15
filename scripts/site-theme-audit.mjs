@@ -11,7 +11,7 @@ const sw=read("../public/sw.js"),manifest=JSON.parse(read("../public/manifest.we
 for(const color of ["#0d1013","#ece1d3","#b25b68","#c7a77c","#92a18a"])
  assert.ok(css.includes(color),"Missing approved Gothic color "+color);
 assert.match(tokens,/--af-bg:#0d1013/);
-assert.match(tokens,/body\\{min-width:0;margin:0\\}/,"Shared body reset must remove 8px browser margin");
+assert.match(tokens,/body\{min-width:0;margin:0\}/,"Shared body reset must remove 8px browser margin");
 assert.match(tokens,/--af-ember:#b25b68/);
 assert.match(tokens,/--af-ember-light:#c7a77c/);
 assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
