@@ -65,3 +65,14 @@
 .variant-card{border:1px solid #544054;background:#211626;border-radius:12px;padding:1rem;line-height:1.5}
 .variant-card strong{color:#ff9ce5}.variant-card p{color:#cfc0ce;font-size:.85rem}
 #seller-order-list{margin-top:1rem;color:#c7b9c6}
+
+/* Public seller information and non-transactional variant previews. */
+.store-policy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
+.store-policy-card{padding:1rem;background:#1a131e;border:1px solid #4b364a;border-radius:12px}
+.store-policy-card h3{color:#ff99db;margin:.2rem 0 .8rem}
+.store-policy-card p{margin:.3rem 0;color:#e8deea;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.store-policy-card a{display:block;color:#ffb4e9;overflow-wrap:anywhere;margin:.3rem 0}
+.public-option-panel{background:#201726;border-radius:10px;padding:.7rem;margin-top:.6rem;font-size:.88rem;line-height:1.5}
+.public-option-panel[hidden]{display:none}
+.public-variant-list{padding-left:1.4rem;margin:.4rem 0}.public-variant-list li{margin:.25rem 0}
+@media(max-width:850px){.store-policy-grid{grid-template-columns:1fr}}
