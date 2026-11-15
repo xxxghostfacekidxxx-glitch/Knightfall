@@ -1,0 +1,68 @@
+/* Eye of Chaos: GOD-only Gothic command deck. Follow shared design tokens. */
+.chaos-console{background:var(--af-bg,#0d1013);color:var(--af-text,#ece1d3);font:16px/1.5 system-ui,sans-serif}
+.chaos-shell{width:min(1240px,calc(100% - 2rem));margin:1.5rem auto 5rem;min-width:0}
+.chaos-shell *, .chaos-shell *:before,.chaos-shell *:after{box-sizing:border-box}
+.chaos-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;color:var(--af-muted,#b9afa8);font-size:.84rem;margin-bottom:1.3rem}
+.chaos-shell a{color:var(--af-ember-light,#c7a77c);overflow-wrap:anywhere}
+.chaos-breadcrumb a:last-child{margin-left:auto}
+.chaos-hero{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.6rem;border:1px solid #554852;background:radial-gradient(ellipse at 92% 10%,rgba(178,91,104,.16),transparent 50%),linear-gradient(135deg,#17171c,#0c1014);border-radius:22px}
+.chaos-eyebrow{font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--af-ember-light,#c7a77c)}
+.chaos-hero h1{font-size:clamp(1.65rem,5.5vw,3.5rem);line-height:1.07;letter-spacing:-.04em;margin:.25rem 0 .55rem;color:#f3e6e0}
+.chaos-hero h1 span{color:var(--af-ember,#b25b68)}
+.chaos-hero p:last-child{color:var(--af-muted,#b9afa8);margin:0}
+.chaos-shield{padding:.85rem 1rem;border:1px solid #807057;border-radius:999px;background:#1c1d21;color:#dac6a0;font-size:.72rem;font-weight:900;letter-spacing:.08em}
+.chaos-shield-icon{margin-right:.35rem}
+.chaos-status{min-height:1.5rem;padding:.75rem 0;color:#d5c2b4}
+.chaos-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin:.6rem 0 1rem}
+.chaos-stats article{padding:1rem;border:1px solid #49454d;border-radius:12px;background:#17171c;min-width:0}
+.chaos-stats strong{display:block;font-size:clamp(1.4rem,3vw,2.2rem);font-variant-numeric:tabular-nums;color:#f8e6de}
+.chaos-stats span{display:block;font-size:.72rem;color:#b9afa8}
+.chaos-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0 1.25rem}
+.chaos-shell button{min-height:44px;padding:.66rem .95rem;border:1px solid #77545d;border-radius:10px;background:#442a31;color:#f9e5e5;font:700 .86rem/1.2 system-ui,sans-serif;cursor:pointer}
+.chaos-shell button:hover{background:#674048}
+.chaos-shell button:focus-visible,.chaos-shell a:focus-visible,.chaos-shell input:focus-visible,.chaos-shell select:focus-visible,.chaos-shell textarea:focus-visible{outline:2px solid #c7a77c;outline-offset:2px}
+.chaos-shell button:disabled{opacity:.5;cursor:not-allowed}
+.chaos-tabs button{background:#1a1b20;color:#b9afa8;border-color:#37373b}
+.chaos-tabs button[aria-current=page]{background:#452c34;border-color:#b25b68;color:#fff3e4}
+.chaos-panel{display:grid;gap:1rem}
+.chaos-panel[hidden],#chaos-workspace[hidden],#chaos-denied[hidden],.chaos-shell [hidden]{display:none!important}
+.chaos-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.chaos-card{background:linear-gradient(145deg,#1a1b20,#131419);border:1px solid #49454d;border-radius:16px;padding:1.2rem;min-width:0}
+.chaos-card h2,.chaos-card h3{color:#f2e2df;margin:.2rem 0 .7rem;line-height:1.25}
+.chaos-card p,.chaos-note,.chaos-panel>p{color:#bdb2b0;line-height:1.6}
+.chaos-card button{margin-top:.5rem}
+.chaos-flow{padding-left:1.4rem;color:#e3d2c9}
+.chaos-flow li{padding:.25rem 0}
+.chaos-note{font-size:.81rem}
+.chaos-section-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap}
+.chaos-section-head h2{margin:0;font-size:1.6rem}
+.chaos-section-head p{margin:.4rem 0;color:#b9afa8}
+.chaos-registry{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,235px),1fr));gap:.65rem}
+.chaos-agent{border:1px solid #44434a;background:#191a20;border-radius:12px;padding:.9rem;min-width:0}
+.chaos-agent h3{font-size:1rem;margin:0 0 .3rem;color:#f1e3dc}
+.chaos-agent p{font-size:.79rem;color:#bdafa9;margin:0}
+.chaos-agent small{display:block;font-size:.65rem;letter-spacing:.09em;text-transform:uppercase;color:#c7a77c;margin-bottom:.25rem}
+.chaos-form{display:grid;gap:.8rem}
+.chaos-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+.chaos-form label{display:grid;gap:.4rem;color:#ebddd7;font-size:.84rem;font-weight:650;min-width:0}
+.chaos-form input,.chaos-form textarea,.chaos-form select{width:100%;max-width:100%;background:#0e1115;color:#f7e9e3;border:1px solid #625760;border-radius:8px;padding:.75rem;font:inherit}
+.chaos-form textarea{resize:vertical}
+.chaos-form input::placeholder,.chaos-form textarea::placeholder{color:#8e8380}
+.chaos-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.chaos-shell button.chaos-quiet{background:#202026;border-color:#55505c}
+.chaos-shell button.chaos-danger{background:#3d2023;border-color:#853a42}
+.chaos-stack{display:grid;gap:.8rem}
+.chaos-mission,.chaos-draft{background:#17191d;border:1px solid #484750;border-radius:14px;padding:1.05rem;min-width:0}
+.chaos-item-heading{display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:.65rem;margin-bottom:.4rem}
+.chaos-item-heading h4{margin:0;font-size:1rem;color:#f7e9e3}
+.chaos-mission p,.chaos-draft p{color:#c4b9b4;overflow-wrap:anywhere;white-space:pre-wrap}
+.chaos-metadata{display:flex;gap:.5rem;flex-wrap:wrap;color:#9e9ba0;font-size:.73rem}
+.chaos-state{border-radius:999px;border:1px solid #6d5760;padding:.25rem .55rem;background:#29232a;font-size:.7rem;color:#f4d6d5;text-transform:uppercase}
+.chaos-state[data-state=approved],.chaos-state[data-state=ready]{color:#a4d8b2;border-color:#366146;background:#18251e}
+.chaos-state[data-state=failed],.chaos-state[data-state=rejected]{color:#f0abab;border-color:#703937;background:#281619}
+.chaos-mission pre,.chaos-draft pre{white-space:pre-wrap;word-break:break-word;font:inherit;color:#d7c8bc}
+.chaos-empty{padding:1.5rem;border:1px dashed #504951;border-radius:12px;color:#aca3a5}
+.chaos-footer{margin-top:1.5rem;text-align:center;font-size:.71rem;letter-spacing:.1em}
+@media(max-width:850px){.chaos-grid{grid-template-columns:1fr}.chaos-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.chaos-shell{width:calc(100% - 1rem);margin:1rem auto 4rem}.chaos-hero{padding:1rem}.chaos-form-grid{grid-template-columns:1fr}.chaos-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.chaos-tabs button{width:100%;padding:.7rem .4rem}.chaos-shield{border-radius:10px}.chaos-card{padding:.9rem}}
+@media(prefers-reduced-motion:reduce){.chaos-shell *, .chaos-shell *::before,.chaos-shell *::after{scroll-behavior:auto!important;transition:none!important}}
