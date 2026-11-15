@@ -6,9 +6,11 @@
 <meta name="theme-color" content="#121b27">
 <meta name="description" content="Cinderwild: an original handheld-style creature catching adventure. Explore, battle, evolve, collect and challenge three Wardens.">
 <title>Cinderwild | Knightfall Chaos Cartridge</title>
-<link rel="stylesheet" href="./style.css?v=20261115-qol">
+<link rel="stylesheet" href="./style.css?v=20261115-cloud1">
 <script src="/monster-mmo-sprite-atlas.js" defer></script>
-<script src="./game.js?v=20261115-storage" defer></script>
+<script src="/arcade-save.js" defer></script>
+<script src="./game.js?v=20261115-cloud1" defer></script>
+<script src="./cloud-sync.js?v=20261115-cloud1" defer></script>
 </head>
 <body>
 <main id="game-shell" class="shell">
@@ -45,9 +47,21 @@
  </div>
 </div>
 <div class="bottom">
+ <section class="cloud-panel" aria-labelledby="cloud-heading">
+  <h2 id="cloud-heading">☁ Knightfall Account Saves</h2>
+  <p id="cloud-status" role="status" aria-live="polite">Checking your account…</p>
+  <div class="cloud-actions">
+   <a id="cloud-signin" href="/auth.html">Sign in to sync</a>
+   <button id="cloud-upload" type="button" hidden>⬆ Upload this device</button>
+   <button id="cloud-restore" type="button" hidden>⬇ Use account save</button>
+   <button id="cloud-backup" type="button" hidden>↶ Restore device backup</button>
+   <button id="cloud-pause" type="button" hidden>Pause autosave</button>
+  </div>
+  <p class="hint">Device progress remains available offline. When account and device saves differ, you decide which one to keep. Cloud sync is not multiplayer progression.</p>
+ </section>
  <p id="notice" role="status" aria-live="polite">Explore Cinderwild and find your first wild creature.</p>
  <div id="journal" class="journal" aria-label="Field messages" aria-live="off"></div>
- <p class="hint">Move with the D-pad, WASD, or arrow keys. Talk to the Nurse and Shop Keeper in town. Step into tall grass to find wild creatures. All progress saves locally on your device.</p>
+ <p class="hint">Move with the D-pad, WASD, or arrow keys. Talk to the Nurse and Shop Keeper in town. Step into tall grass to find wild creatures. Progress saves locally on your device. Signed-in players can also back it up to their Knightfall account.</p>
 </div>
 <section id="starter" class="overlay" hidden aria-labelledby="starter-title" role="dialog" aria-modal="true">
  <div class="window starter-window">
