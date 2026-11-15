@@ -437,7 +437,7 @@ async function handleShopRequest(request,env,origin,url){
  if(publicItem&&request.method==="GET"){
   const shop=await env.DB.prepare("SELECT s.id,s.name,s.slug,s.description,s.niche,s.template,s.updated_at,u.username AS owner_username FROM shops s JOIN users u ON u.id=s.owner_id WHERE s.slug=? AND s.is_public=1 AND u.status='active'").bind(publicItem[1]).first();
   if(!shop)return json({error:"This shop is private or unavailable."},404,origin);
-  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,created_at FROM shop_products WHERE shop_id=? AND is_active=1 ORDER BY created_at DESC LIMIT 100").bind(shop.id).all();
+  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,created_at FROM shop_products WHERE shop_id=? AND is_active=1 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 100").bind(shop.id).all();
   return json({shop,products:products.results||[]},200,origin);
  }
  const user=await requireUser(request,env);
@@ -445,7 +445,7 @@ async function handleShopRequest(request,env,origin,url){
  if(path==="/api/my-shop"&&request.method==="GET"){
   const shop=await env.DB.prepare("SELECT id,name,slug,description,niche,template,is_public,created_at,updated_at FROM shops WHERE owner_id=?").bind(user.id).first();
   if(!shop)return json({shop:null},200,origin);
-  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? ORDER BY created_at DESC").bind(shop.id).all();
+  const products=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? AND deleted_at IS NULL ORDER BY created_at DESC").bind(shop.id).all();
   return json({shop:{...shop,is_public:Number(shop.is_public)===1,public_url:Number(shop.is_public)===1?"/store.html?slug="+encodeURIComponent(shop.slug):null},products:(products.results||[]).map(p=>({...p,is_active:Number(p.is_active)===1}))},200,origin);
  }
  if(path==="/api/my-shop"&&request.method==="POST"){
@@ -482,14 +482,14 @@ async function handleShopRequest(request,env,origin,url){
  if(path==="/api/my-shop/products"&&request.method==="GET"){
   const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
   if(!shop)return json({products:[]},200,origin);
-  const rows=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? ORDER BY created_at DESC").bind(shop.id).all();
+  const rows=await env.DB.prepare("SELECT id,name,description,price_cents,image_url,supplier_url,is_active,created_at,updated_at FROM shop_products WHERE shop_id=? AND deleted_at IS NULL ORDER BY created_at DESC").bind(shop.id).all();
   return json({products:(rows.results||[]).map(p=>({...p,is_active:Number(p.is_active)===1}))},200,origin);
  }
  if(path==="/api/my-shop/products"&&request.method==="POST"){
   if(!await rateLimit(env,request,"shop-product-create",30,600))return json({error:"Too many product changes. Try again in ten minutes."},429,origin);
   const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
   if(!shop)return json({error:"Create your shop first."},404,origin);
-  const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM shop_products WHERE shop_id=?").bind(shop.id).first();if(Number(count?.count||0)>=500)return json({error:"A shop can contain up to 500 products."},409,origin);
+  const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM shop_products WHERE shop_id=? AND deleted_at IS NULL").bind(shop.id).first();if(Number(count?.count||0)>=500)return json({error:"A shop can contain up to 500 products."},409,origin);
   let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
   const name=typeof body.name==="string"?body.name.trim():"",description=typeof body.description==="string"?body.description.trim():"",price=Number(body.price_cents),image=typeof body.image_url==="string"?body.image_url.trim():"",supplier=typeof body.supplier_url==="string"?body.supplier_url.trim():"";
   if(!validText(name,100)||description.length>2000||image.length>2000||supplier.length>2000||!Number.isSafeInteger(price)||price<0||price>100000000)return json({error:"Provide a product name (1–100 chars), description up to 2,000 chars, URLs up to 2,000 characters, and a valid price in cents."},400,origin);
@@ -502,9 +502,9 @@ async function handleShopRequest(request,env,origin,url){
  if(productItem&&(request.method==="PATCH"||request.method==="DELETE")){
   const shop=await env.DB.prepare("SELECT id FROM shops WHERE owner_id=?").bind(user.id).first();
   if(!shop)return json({error:"Shop not found."},404,origin);
-  const product=await env.DB.prepare("SELECT id FROM shop_products WHERE id=? AND shop_id=?").bind(productItem[1],shop.id).first();
+  const product=await env.DB.prepare("SELECT id FROM shop_products WHERE id=? AND shop_id=? AND deleted_at IS NULL").bind(productItem[1],shop.id).first();
   if(!product)return json({error:"Product not found in your shop."},404,origin);
-  if(request.method==="DELETE"){await env.DB.prepare("DELETE FROM shop_products WHERE id=? AND shop_id=?").bind(product.id,shop.id).run();await audit(env,user,"shop_product.delete","shop_product",null,{shop_id:shop.id});return json({ok:true},200,origin);}
+  if(request.method==="DELETE"){await env.DB.prepare("UPDATE shop_products SET deleted_at=? WHERE id=? AND shop_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),product.id,shop.id).run();return json({ok:true,soft_deleted:true},200,origin);}
   let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
   const fields={};
   if(body.name!==undefined){if(!validText(body.name,100))return json({error:"Product name must be 1–100 characters."},400,origin);fields.name=body.name.trim();}
