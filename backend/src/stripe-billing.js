@@ -6,7 +6,7 @@
 const reply=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json","cache-control":"private, no-store"}});
 const API="https://api.stripe.com/v1/";
 const BILLING_ROOT="/api/stripe/billing/";
-function apiReady(env){return env.STRIPE_BILLING_ENABLED==="true"&&!!env.STRIPE_SECRET_KEY&&/^price_[A-Za-z0-9]+$/.test(env.STRIPE_PREMIUM_PRICE_ID||"");}
+function apiReady(env){return env.STRIPE_BILLING_ENABLED==="true"&&!!env.STRIPE_SECRET_KEY&&!!env.STRIPE_WEBHOOK_SECRET&&/^price_[A-Za-z0-9]+$/.test(env.STRIPE_PREMIUM_PRICE_ID||"");}
 async function stripe(env,path,params){
  const response=await fetch(API+path,{method:"POST",headers:{"Authorization":"Bearer "+env.STRIPE_SECRET_KEY,"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(params)});
  const data=await response.json().catch(()=>({}));
@@ -66,6 +66,12 @@ export async function handleVerifiedBillingEvent(event,env){
  if(!["customer.subscription.created","customer.subscription.updated","customer.subscription.deleted"].includes(event?.type))return false;
  const subscription=event.data?.object;
  if(subscription?.object!=="subscription"||typeof subscription.customer!=="string"||!/^cus_[a-zA-Z0-9]+$/.test(subscription.customer))return true;
+ // A customer can buy many unrelated products. Only the configured Premium
+ // recurring price may affect Knightfall membership privileges.
+ const premiumPrice=env.STRIPE_PREMIUM_PRICE_ID;
+ if(!/^price_[A-Za-z0-9]+$/.test(premiumPrice||""))return true;
+ const matches=Array.isArray(subscription.items?.data)&&subscription.items.data.some(line=>line.price?.id===premiumPrice);
+ if(!matches)return true;
  const user=await env.DB.prepare("SELECT user_id FROM stripe_member_customers WHERE customer_id=?").bind(subscription.customer).first();
  if(!user)return true;
  const approved=subscription.status==="active"||subscription.status==="trialing";
