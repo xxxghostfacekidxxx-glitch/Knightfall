@@ -75,6 +75,8 @@ jobs:
           node --test scripts/home-start.test.mjs scripts/business-metrics-report.test.mjs backend/src/business-metrics.test.mjs
           node --test scripts/public-legal-and-shop-theme.test.mjs
           node --test backend/src/mascot-payments.test.mjs
+          node --test backend/src/eye-of-chaos.test.mjs scripts/eye-of-chaos-ui.test.mjs
+          python3 scripts/test_eye_of_chaos_sql.py
           node --test scripts/cinderwild-qol.test.mjs
           node --test scripts/cinderwild-cloud-sync.test.mjs
           node --test scripts/cinderwild-world-rules.test.mjs
