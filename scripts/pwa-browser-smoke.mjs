@@ -19,7 +19,29 @@ try {
       assert.ok(width.content <= width.viewport + 1, path + " should not overflow horizontally on a 390px viewport. Offenders: " + JSON.stringify(offenders));
     }
   }
-  await page.goto(base + "/", { waitUntil: "domcontentloaded" });
+  await page.goto(base + "/", { waitUntil: "load" });
+  // Actual computed-browser verification of the approved Nov 14 Gothic site style.
+  await page.waitForFunction(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--kf-bone").trim()==="#ece1d3",
+    { timeout: 8000 }
+  );
+  const gothic = await page.evaluate(() => {
+    const brand=document.querySelector(".kf-brand");
+    return {
+      ink:getComputedStyle(document.body).backgroundColor,
+      bone:getComputedStyle(document.documentElement).getPropertyValue("--kf-bone").trim(),
+      crimson:getComputedStyle(document.documentElement).getPropertyValue("--kf-oxblood").trim(),
+      bronze:getComputedStyle(document.documentElement).getPropertyValue("--kf-antique-gold").trim(),
+      crest:brand?getComputedStyle(brand,"::before").backgroundImage:"",
+      floatingMascots:document.querySelectorAll(".gw-character-crew,.gw-ambient,.kf-gravewave-ribbon").length
+    };
+  });
+  assert.equal(gothic.ink,"rgb(13, 16, 19)","Homepage must use approved black-stone background");
+  assert.equal(gothic.bone,"#ece1d3");
+  assert.equal(gothic.crimson,"#b25b68");
+  assert.equal(gothic.bronze,"#c7a77c");
+  assert.match(gothic.crest,/knightfall-crest-192\\.png/);
+  assert.equal(gothic.floatingMascots,0,"Older Gravewave decorations must not cover site controls");
   assert.equal(await page.locator('link[rel="manifest"]').getAttribute("href"), "/manifest.webmanifest");
   const manifestResponse = await page.request.get(base + "/manifest.webmanifest");
   assert.equal(manifestResponse.status(), 200);
