@@ -170,3 +170,50 @@
   #kf-chat-heads.kf-chat-in-fullscreen{right:max(8px,env(safe-area-inset-right))!important;bottom:max(9px,env(safe-area-inset-bottom))!important}
   #kf-chat-heads.kf-chat-in-fullscreen .kf-chat-panel{width:min(355px,calc(100vw - 20px));max-height:calc(100dvh - 100px)}
 }
+
+/* Viewport-safe chat overlay: the expanded conversation is a separate layer.
+   Neither the mobile keyboard nor pinned heads contribute to its height. */
+#kf-chat-heads{contain:layout style;}
+#kf-chat-heads:not(.kf-chat-expanded) .kf-chat-panel{
+  height:min(480px,max(140px,calc(var(--kf-chat-visible-height,100dvh) - var(--kf-chat-dock-base-bottom,80px) - 172px)));
+}
+@media(max-width:700px){
+  #kf-chat-heads.kf-chat-expanded{
+    position:fixed!important;
+    left:var(--kf-chat-viewport-left,0px)!important;
+    top:var(--kf-chat-viewport-top,0px)!important;
+    right:auto!important;bottom:auto!important;
+    width:var(--kf-chat-viewport-width,100vw)!important;
+    height:var(--kf-chat-viewport-height,100dvh)!important;
+    min-width:0!important;max-width:none!important;max-height:none!important;
+    display:block!important;overflow:hidden!important;
+    z-index:2147483646!important;
+  }
+  #kf-chat-heads.kf-chat-expanded::before{
+    content:"";position:absolute;inset:0;background:#08060cc9;pointer-events:auto;
+  }
+  #kf-chat-heads.kf-chat-expanded .kf-chat-panel{
+    position:absolute!important;
+    left:max(8px,env(safe-area-inset-left))!important;
+    top:max(6px,env(safe-area-inset-top))!important;
+    right:auto!important;bottom:auto!important;
+    width:calc(100% - max(8px,env(safe-area-inset-left)) - max(8px,env(safe-area-inset-right)))!important;
+    height:calc(100% - max(6px,env(safe-area-inset-top)) - max(8px,env(safe-area-inset-bottom)))!important;
+    min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;
+    display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain;
+    border-radius:14px;
+  }
+  #kf-chat-heads.kf-chat-expanded :is(.kf-chat-head-row,.kf-chat-launcher){display:none!important}
+  #kf-chat-heads.kf-chat-expanded .kf-chat-panel-header{
+    flex:0 0 auto;min-width:0;padding:8px;touch-action:auto;cursor:default;
+  }
+  #kf-chat-heads.kf-chat-expanded :is(.kf-chat-recent,.kf-chat-thread){
+    flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;
+  }
+  #kf-chat-heads.kf-chat-expanded .kf-chat-compose{
+    flex:0 0 auto;min-width:0;padding:7px 8px;
+  }
+  #kf-chat-heads.kf-chat-expanded .kf-chat-compose textarea{resize:none;max-height:72px;font-size:16px}
+  #kf-chat-heads.kf-chat-expanded #kf-chat-resize{display:none!important}
+  #kf-chat-heads.kf-chat-expanded .kf-chat-status{flex:0 0 auto}
+}
