@@ -53,6 +53,7 @@ const GYMS=[
  {id:"eclipse",x:57,y:19,name:"Oracle Nyx",badge:"Eclipse Crest",team:[["gloamshade",20],["squibmarshal",22],["minivillain",24]],text:"One last test before the sky opens."}
 ];
 const NPCS=[{x:6,y:17,name:"Nurse Ember",kind:"heal"},{x:10,y:17,name:"Supply Keeper",kind:"shop"},...GYMS.map(g=>({x:g.x,y:g.y,name:g.name,kind:"gym",id:g.id}))];
+const SHRINES=[{id:"minionmouse",x:54,y:18,level:25,name:"Spark Shrine"},{id:"minivillain",x:59,y:18,level:26,name:"Shadow Shrine"},{id:"minieddie",x:62,y:18,level:27,name:"Ember Shrine"}];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),pick=a=>a[Math.floor(Math.random()*a.length)],sp=id=>SPECIES[id],name=id=>sp(id)?.[0]||"Unknown";
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fresh=()=>({x:8,y:18,steps:0,coins:150,party:[],box:[],seen:[],caught:[],items:{orbs:8,superOrbs:2,potions:5,revives:1},badges:[],defeated:[],wins:0,story:[],complete:false});
@@ -221,6 +222,7 @@ function playerMove(index){
 }
 function capture(kind){
  if(!battle||battle.trainer)return;
+ if(state.party.length>=6&&state.box.length>=200){battleLog("Party and storage are full. Free a slot before capturing.");renderBattle();return;}
  if(state.items[kind]<=0){battleLog("No capture orbs left.");renderBattle();return;}
  state.items[kind]--;
  const b=battle.enemy,s=sp(b.id),health=1-b.hp/b.maxHp;
@@ -289,7 +291,12 @@ function step(dx,dy){
  if(x>=51&&!state.badges.includes("storm")){notify("The Storm Crest opens the Eclipse Ridge crossing.");return;}
  if(!walkable(x,y)){const npc=NPCS.find(n=>n.x===x&&n.y===y);if(npc)interact();return;}
  state.x=x;state.y=y;state.steps++;
- if(tile(x,y)==="grass"&&Math.random()<.13)startBattle(generateWild());
+ const shrine=SHRINES.find(s=>s.x===x&&s.y===y);
+ if(shrine&&!state.caught.includes(shrine.id)){
+  if(!state.complete)notify(shrine.name+" is sealed. Earn all three crests to awaken it.");
+  else{notify("The "+shrine.name+" awakens!");startBattle(make(shrine.id,shrine.level));}
+ }
+ if(!shrine&&tile(x,y)==="grass"&&Math.random()<.13)startBattle(generateWild());
  if(state.steps%5===0)save();
  render();
 }
@@ -309,6 +316,10 @@ function draw(){
   if(k==="house"){rect(px+2,py+4,28,26,"#f3d7ac");rect(px+12,py+14,9,16,"#694b4f");}
   if(k==="roof"){rect(px+1,py+3,30,26,"#833f61");rect(px+5,py+5,22,5,"#c9768b");}
   ctx.strokeStyle="#1c2d3324";ctx.strokeRect(px+.5,py+.5,t-1,t-1);
+ }
+ for(const shrine of SHRINES){
+  const px=(shrine.x-ox)*t,py=(shrine.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
+  const cleared=state.caught.includes(shrine.id);rect(px+4,py+22,24,7,"#3f355d");rect(px+8,py+11,16,17,cleared?"#63737b":state.complete?"#ff8bca":"#61778a");rect(px+12,py+6,8,11,cleared?"#8e9a9e":"#c7f274");
  }
  for(const npc of NPCS){
   const px=(npc.x-ox)*t,py=(npc.y-oy)*t;if(px<0||py<0||px>=canvas.width||py>=canvas.height)continue;
@@ -364,7 +375,7 @@ function openMenu(type){
   const rows=[["orbs","Capture Orb",30],["superOrbs","Prism Orb",80],["potions","Potion",22],["revives","Revive",65]];
   area.innerHTML='<p>Cinders: '+state.coins+'</p>'+rows.map(row=>'<div class="shop-row"><span><strong>'+row[1]+'</strong> · owned '+state.items[row[0]]+'</span><button data-buy="'+row[0]+'" '+(state.coins<row[2]?"disabled":"")+'>Buy · '+row[2]+'</button></div>').join("");
  }else if(type==="map"){
-  area.innerHTML='<p>Start in Cinder Town. Defeat Wardens to unlock regions.</p><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((s,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(s)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'.</p>';
+  area.innerHTML='<p>Start in Cinder Town. Defeat Wardens to unlock regions. After earning three crests, awaken the three legendary shrines at positions 54,18; 59,18; and 62,18.</p><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((s,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(s)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'.</p>';
  }else{
   area.innerHTML='<p>You are a field trainer. Choose one of three starter creatures, wander into tall grass for wild encounters, capture and train a party of six, challenge all three Wardens, and fill the Bestiary.</p><p>Controls: arrow keys or WASD to walk, E/Space to interact, M for menu, and touch controls on mobile.</p><p>Three crests: '+state.badges.map(id=>esc(GYMS.find(g=>g.id===id).badge)).join(", ")+'</p><p>Battle victories: '+state.wins+' · Steps: '+state.steps+'</p><div class="inline-actions"><button id="export-save">Export save</button><button id="reset-save">Erase local save</button></div><p class="hint">Offline save is stored only in this browser. Export a backup before clearing site data.</p>';
  }
