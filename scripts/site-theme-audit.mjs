@@ -11,9 +11,10 @@ const sw=read("../public/sw.js"),manifest=JSON.parse(read("../public/manifest.we
 for(const color of ["#0d1013","#ece1d3","#b25b68","#c7a77c","#92a18a"])
  assert.ok(css.includes(color),"Missing approved Gothic color "+color);
 assert.match(tokens,/--af-bg:#0d1013/);
+assert.match(tokens,/body\\{min-width:0;margin:0\\}/,"Shared body reset must remove 8px browser margin");
 assert.match(tokens,/--af-ember:#b25b68/);
 assert.match(tokens,/--af-ember-light:#c7a77c/);
-assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic3/);
+assert.match(theme,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
 assert.doesNotMatch(theme,/@import url\("\/neon-global\.css/);
 assert.match(nav,/knightfall-unified-theme/);
 assert.doesNotMatch(nav,/#ff55d8|#c6ff45|#ba36c1/i,"Injected navigation must not revive neon palette");
@@ -21,7 +22,7 @@ for(const id of ["kf-nav-emergency-css","kf-pwa-navigation-recovery","kf-nav-sta
 assert.match(css,/Canonical navigation chrome/);
 assert.match(nav,/DOMContentLoaded[^\n]*mountApprovedTheme/,"Approved theme must mount after page styles");
 assert.match(nav,/document\.head\.appendChild\(link\)/,"Approved theme must be last in cascade");
-assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic5/);
+assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic6/);
 for(const old of ["/gravewave-takeover.js","/gravewave-decor.js","/neon-global.css","/gravewave-consistency.css"])
  assert.ok(!nav.includes(old),"Nav reintroduces legacy neon theme: "+old);
 assert.doesNotMatch(home,/\/gravewave-takeover\.(js|css)/);
@@ -35,7 +36,7 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v43";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v44";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
