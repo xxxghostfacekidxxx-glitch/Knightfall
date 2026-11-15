@@ -80,3 +80,10 @@ test('shared first-party fullscreen toolbar works without native fullscreen supp
  assert.match(src,/event\.key==='Escape'&&theater/);
  assert.match(src,/main\.querySelector\('#full,#fullscreen,#toggle-fullscreen/);
 });
+
+test('Sanctuary Original uses a theater-only fullscreen path to avoid heavy WebGPU mode transitions',()=>{
+  const html=read('public/arcade/hosted/sanctuary-original/sanctuary.html');
+  assert.match(html,/data-theater-only="true"/);
+  assert.match(source,/const theaterOnly = loader\?\.dataset\.theaterOnly === 'true'/);
+  assert.match(source,/if\(theaterOnly\)\{theater=true;setState\(true\);return;\}/);
+});
