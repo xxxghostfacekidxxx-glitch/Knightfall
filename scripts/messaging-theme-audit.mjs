@@ -7,12 +7,10 @@ const css = readFileSync(new URL("../public/messages.css", import.meta.url), "ut
 const html = readFileSync(new URL("../public/messages.html", import.meta.url), "utf8");
 
 const colors = [...css.matchAll(/#[0-9a-fA-F]{6}\b/g)].map(match => match[0]);
-const warm = colors.filter(hex => {
-  const [r, g, b] = [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16));
-  // Detect the old red > green > blue browns without rejecting pink/purple or lime.
-  return r >= g && g >= b && r - b >= 1;
-});
-assert.deepEqual([...new Set(warm)], [], "Messages CSS restored warm/orange hex values");
+const retired = /#(?:ff55d8|ff45b5|ba36c1|c6ff45|e8b5f5)\\b|rgba\\(\\s*255\\s*,\\s*85\\s*,\\s*216\\s*,/i;
+assert.doesNotMatch(css,retired,"Retired neon colors must not return to messaging");
+assert.match(css,/#b25b68/i,"Approved muted crimson must appear in messaging");
+assert.match(css,/#c7a77c/i,"Approved antique bronze must appear in messaging");
 
 for (const selector of [
   ".message-layout", ".conversation-panel", ".conversation.active",
@@ -21,7 +19,7 @@ for (const selector of [
 ]) {
   assert.ok(css.includes(selector), `Missing messaging surface ${selector}`);
 }
-assert.match(css, /#ff55d8/i, "Neon pink must remain the messaging accent");
+assert.doesNotMatch(css, /#ff55d8/i, "Retired neon pink must not be the messaging accent");
 assert.match(css, /var\(--kf-accent-bright\)/, "Acid green highlight must remain in messaging");
 // Keep fresh versioned assets without pinning the audit to a month-old build.
 assert.match(html, /\/messages\.css\?v=\d{8}-[a-z0-9-]+/i, "Inbox CSS must use a dated cache key");
