@@ -5,13 +5,13 @@
   // Late-mounted shared polish wins over legacy page skins without changing navigation logic.
   if (!document.querySelector('link[data-visual-refresh]')) {
     const polish=document.createElement('link');
-    polish.rel='stylesheet';polish.href='/visual-refresh.css?v=20261115-gothic2';
+    polish.rel='stylesheet';polish.href='/visual-refresh.css?v=20261115-gothic3';
     polish.dataset.visualRefresh='true';document.head.append(polish);
   }
   // Page-specific visual refresh is late-mounted so legacy inline styles cannot override it.
   if (!document.querySelector('link[data-section-overhaul]')) {
     const sections=document.createElement('link');sections.rel='stylesheet';
-    sections.href='/section-overhaul.css?v=20261115-gothic2';
+    sections.href='/section-overhaul.css?v=20261115-gothic3';
     sections.dataset.sectionOverhaul='true';document.head.append(sections);
   }
   // Approved Gothic Creator shell loads after legacy page styles. Old neon
@@ -19,7 +19,7 @@
   if (!document.querySelector('link[data-knightfall-unified-theme]')) {
     const unified=document.createElement("link");
     unified.rel="stylesheet";
-    unified.href="/knightfall-unified-theme.css?v=20261115-gothic2";
+    unified.href="/knightfall-unified-theme.css?v=20261115-gothic3";
     unified.dataset.knightfallUnifiedTheme="true";
     document.head.append(unified);
   }
