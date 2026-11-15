@@ -10,7 +10,7 @@ test("Marshland Marksman parses and uses first-party save API",()=>{
 });
 test("Marshland Marksman restart invalidates old frames and preserves one active run",()=>{
  const nodes=new Map(),listeners=new Map(),frames=[],cancelled=[],events=[];
- const node=k=>{if(!nodes.has(k))nodes.set(k,{textContent:"",hidden:false,addEventListener:(type,fn)=>listeners.set(k+":"+type,fn)});return nodes.get(k)};
+ const node=k=>{if(!nodes.has(k)){const attrs=new Map();nodes.set(k,{textContent:"",hidden:false,setAttribute:(name,value)=>attrs.set(name,String(value)),getAttribute:name=>attrs.get(name)||null,addEventListener:(type,fn)=>listeners.set(k+":"+type,fn)});}return nodes.get(k)};
  const ctx={fillRect(){},beginPath(){},arc(){},ellipse(){},fill(){},moveTo(){},lineTo(){},stroke(){},save(){},translate(){},restore(){},fillText(){},createLinearGradient(){return{addColorStop(){}}}};
  node("game").getContext=()=>ctx;node("game").width=960;node("game").height=540;node("game").getBoundingClientRect=()=>({left:0,top:0,width:960,height:540});
  const document={getElementById:node,querySelector:()=>({requestFullscreen(){}}),addEventListener:(type,fn)=>listeners.set("document:"+type,fn),dispatchEvent:e=>events.push(e)};
