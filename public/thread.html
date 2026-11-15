@@ -6,17 +6,17 @@
   <meta name="description" content="An Ash-Fall community discussion. Read the thread, join the conversation, and keep the chaos usable.">
   <meta name="description" content="Ash-Fall community discussion thread." />
   <title>Ash-Fall Thread</title>
-  <link rel="stylesheet" href="/theme.css" /><link rel="stylesheet" href="/homepage.css" />
+  <link rel="stylesheet" href="/theme.css?v=20261115-gothic9" /><link rel="stylesheet" href="/homepage.css" />
   <style>
     .thread-view-card,.post-card{position:relative;background:linear-gradient(145deg,#131313,#0b0b0b);border:1px solid #292929;border-radius:13px;padding:1.4rem;margin-top:1.2rem;box-shadow:0 14px 40px rgba(0,0,0,.2)}
     .thread-view-card h1{font-size:clamp(2.2rem,6vw,4.4rem);line-height:.95;letter-spacing:-.05em;margin:.6rem 0}
     .thread-meta,.post-card time{color:#777;font-size:.8rem}.thread-body,.post-body{margin-top:1.3rem;color:#ddd;line-height:1.75;overflow-wrap:anywhere}
     .thread-controls,.post-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.1rem}
     .thread-controls button,.post-actions button,.reply-form button,.report-form button{background:#111;color:#eee;border:1px solid #333;border-radius:8px;padding:8px 12px;cursor:pointer;transition:.2s}
-    .thread-controls button:hover,.post-actions button:hover,.reply-form button:hover,.report-form button:hover{background:#181818;border-color:#ff55d8}
-    .post-card{padding:1.1rem;margin-top:.7rem}.post-card strong a{color:#eee;text-decoration:none}.post-card strong a:hover{color:#ff55d8}
+    .thread-controls button:hover,.post-actions button:hover,.reply-form button:hover,.report-form button:hover{background:#181818;border-color:#b25b68}
+    .post-card{padding:1.1rem;margin-top:.7rem}.post-card strong a{color:#eee;text-decoration:none}.post-card strong a:hover{color:#b25b68}
     .post-edit,.reply-form,.report-form{margin-top:12px}.post-edit textarea,.reply-form textarea,.report-form textarea{width:100%;min-height:100px;background:#0a0a0a;color:#eee;border:1px solid #333;border-radius:8px;padding:10px;resize:vertical;font:inherit}
-    .reply-form{padding:1.2rem;border:1px solid #292929;border-radius:12px;background:#101010}.reply-form button{border-color:#ff55d8;background:#ff55d8}
+    .reply-form{padding:1.2rem;border:1px solid #292929;border-radius:12px;background:#101010}.reply-form button{border-color:#b25b68;background:#b25b68}
     .hidden{display:none}.notice{color:#999;margin-top:10px}
     @media(max-width:700px){.thread-view-card,.post-card{padding:1rem}.thread-controls button,.post-actions button{flex:1}}
   </style></head>
@@ -49,5 +49,5 @@ root.addEventListener('submit',async e=>{e.preventDefault();try{if(e.target.id==
  return}if(e.target.matches('.post-edit')){const id=e.target.closest('.post-card').dataset.postId;await api(`/api/posts/${id}`,{method:'PATCH',body:JSON.stringify({body:e.target.querySelector('textarea').value})});await load();return}if(e.target.matches('.report-form')){const type=e.target.dataset.reportType,id=Number(e.target.dataset.reportId),reason=e.target.querySelector('textarea').value;await api('/api/reports',{method:'POST',body:JSON.stringify({target_type:type,target_id:id,reason})});e.target.reset();e.target.classList.add('hidden');alert('Report submitted.');}}catch(err){alert(err.message)}});
 load();
 </script>
-<script src="/nav.js" defer></script>
+<script src="/nav.js?v=20261115-gothic9" defer></script>
 </body></html>

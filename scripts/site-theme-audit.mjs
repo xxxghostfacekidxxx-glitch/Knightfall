@@ -86,3 +86,17 @@ assert.doesNotMatch(adminCss,/#ff55d8|#c6ff45|rgba\(255,85,216/i,"Admin must inh
 assert.match(nav,/location\.pathname\.startsWith\("\/arcade\/hosted\/"\)/,"Playable arcade only may load glitch chrome");
 assert.doesNotMatch(nav,/location\.pathname\.startsWith\("\/chaos-cartridge"\)/);
 assert.match(read("../public/profile.css"),/--gw-panel-accent:var\(--profile-accent,#b25b68\)/);
+
+
+// Secondary community, studio and link-hub chrome must not silently restore neon.
+for (const filename of [
+ "thread.html","create-thread.html","community-topic.html","admin-privacy-assistance.html",
+ "arcade-open-source.html","profile-community-overhaul.css","profile-studio-next.css",
+ "profile-links.css","profile-wall.css","profile-highlights.css"
+]){
+ const source=read("../public/"+filename);
+ assert.doesNotMatch(source,/#ff55d8|#c6ff45|rgba\(255,85,216/i,filename+" revives retired Gravewave chrome");
+}
+for (const filename of ["profile-community-overhaul.css","profile-links.css","profile-wall.css","profile-highlights.css"]){
+ assert.match(read("../public/"+filename),/var\(--profile-accent/,filename+" must respect member-selected accents");
+}
