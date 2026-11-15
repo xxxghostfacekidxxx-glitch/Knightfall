@@ -25,6 +25,8 @@
 #ashfall-armada-guide a{color:#baff75;text-decoration:underline;text-underline-offset:3px}
 #ashfall-armada-guide a:focus-visible{outline:2px solid #baff75;outline-offset:3px}
 @media (max-width:480px){#ashfall-armada-guide{font-size:11px;right:8px;bottom:8px}}
+#kf-armada-rotate-help{display:none}
+@media (orientation:portrait) and (max-width:820px){#kf-armada-rotate-help{display:block;position:fixed;left:12px;right:12px;bottom:clamp(110px,17vh,180px);z-index:17;margin:0 auto;max-width:440px;padding:13px 16px;border-radius:12px;background:#130f21eb;border:1px solid #b28bd0;color:#f4e9f6;text-align:center;font:700 15px/1.45 system-ui,sans-serif;box-shadow:0 6px 20px #0009}#kf-armada-rotate-help strong{color:#c6ff45}}
 </style><script src="/arcade/hosted/arcade-playback-assist.js?v=20261115-rescue1" data-target="body"></script>
 </head>
     <body ondragstart="return false;" ondrop="return false;">
@@ -43,6 +45,7 @@
         </div>
         <script data-main="js/main.js" src="assets/libs/require.min.js"></script>
         <img class="orientation" src="assets/images/orientation.png" alt="Rotate or resize your screen to landscape orientation">
+        <p id="kf-armada-rotate-help" role="status"><strong>Rotate your phone sideways</strong> to play Interstellar Armada. This game needs a landscape screen. Desktop play is also supported.</p>
         <nav id="ashfall-armada-guide" aria-label="Interstellar Armada arcade navigation">
           Interstellar Armada · single-player WebGL
           <a href="/chaos-cartridge.html" aria-label="Return to Chaos Cartridge">↩ Back to arcade</a>
