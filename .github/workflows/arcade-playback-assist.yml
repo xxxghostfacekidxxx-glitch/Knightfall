@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'public/arcade/hosted/arcade-playback-assist.js'
+      - 'public/arcade-cabinet-ui.js'
+      - 'public/arcade/hosted/cinder-chess/index.html'
+      - 'public/arcade/hosted/hex-embers/index.html'
       - 'public/arcade/hosted/radius-raid/index.html'
       - 'public/arcade/hosted/terravia/index.html'
       - 'public/arcade/hosted/interstellar-armada/index.html'
