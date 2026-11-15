@@ -1872,6 +1872,8 @@ For complex questions, organize the answer clearly and provide actionable detail
     let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
     const game=String(body.game_key||""),score=Number(body.score);
     if(!arcadeGames.has(game))return json({error:"Unknown arcade game."},400,origin);
+    // Cinderwild saves are client-authored backups, not verified competitive scores.
+    if(game==="cinderwild")return json({error:"Cinderwild does not accept unverified leaderboard scores."},400,origin);
     const scoreCap=arcadeScoreCaps[game]??1000000000;
     if(!Number.isSafeInteger(score)||score<0||score>scoreCap)return json({error:"Score is outside the accepted range for this game."},400,origin);
     const now=new Date().toISOString();
