@@ -86,3 +86,19 @@ test("floating conversation heads can be moved and chat windows resized",()=>{
  assert.match(bubbleCss,/#kf-chat-heads #kf-chat-resize/);
  assert.match(bubbleCss,/touch-action:none/);
 });
+
+
+test("mobile floating chat is isolated from page layout and tracks the keyboard viewport",()=>{
+ assert.match(bubbles,/document\.documentElement\.append\(dock\)/);
+ assert.match(bubbles,/dock\.classList\.toggle\("kf-chat-expanded",state\.visible&&window\.matchMedia\("\(max-width:700px\)"\)\.matches\)/);
+ assert.match(bubbles,/--kf-chat-viewport-top/);
+ assert.match(bubbles,/--kf-chat-viewport-height/);
+ assert.match(bubbles,/if\(dock\.classList\.contains\("kf-chat-expanded"\)\)return/);
+ assert.match(bubbles,/const host=canHost\?fullscreen:document\.documentElement/);
+ assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded::before/);
+ assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded \.(?:kf-chat-panel)/);
+ assert.match(bubbleCss,/height:var\(--kf-chat-viewport-height,100dvh\)!important/);
+ assert.match(bubbleCss,/overscroll-behavior:contain/);
+ assert.match(bubbleCss,/#kf-chat-heads\.kf-chat-expanded #kf-chat-resize\{display:none!important\}/);
+ assert.match(bubbles,/event\.target===dock&&dock\.classList\.contains\("kf-chat-expanded"\)/);
+});
