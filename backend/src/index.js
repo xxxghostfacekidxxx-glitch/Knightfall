@@ -11,6 +11,7 @@ import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-pol
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { botAccessPolicy } from "./bot-creator-access.js";
+import { handleHomeActivityFeed } from "./home-activity-feed.js";
 import { getStarterPublicBot, listStarterPublicBots, starterPublicSummary } from "./starter-public-bots.js";
 import { handleMascotPets } from "./mascot-pets.js";
 import { handlePersonalAvatars } from "./personal-avatars.js";
@@ -594,15 +595,16 @@ async function handlePersonalBotRequest(request,env,origin,url){
   const {results}=await env.DB.prepare("SELECT id,role,content,created_at FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=? ORDER BY id DESC LIMIT 100").bind(botId,user.id).all();
   return json({messages:(results||[]).reverse()},200,origin);
  }
- const [creatorGrant,slotEntitlement]=await Promise.all([
+ const [creatorGrant,slotEntitlement,premiumMembership]=await Promise.all([
   env.DB.prepare("SELECT title,unlimited_slots,advanced_builder FROM member_bot_creator_privileges WHERE user_id=?").bind(user.id).first(),
-  env.DB.prepare("SELECT extra_bot_slots FROM member_shop_entitlements WHERE user_id=?").bind(user.id).first()
+  env.DB.prepare("SELECT extra_bot_slots FROM member_shop_entitlements WHERE user_id=?").bind(user.id).first(),
+  env.DB.prepare("SELECT 1 AS active FROM member_premium_memberships WHERE user_id=? AND status='active' AND (expires_at IS NULL OR datetime(expires_at)>CURRENT_TIMESTAMP)").bind(user.id).first()
  ]);
- const policy=botAccessPolicy(user,slotEntitlement?.extra_bot_slots,creatorGrant);
+ const policy=botAccessPolicy(user,slotEntitlement?.extra_bot_slots,creatorGrant,!!premiumMembership);
  const cap=policy.limit;
  if(path===collection&&request.method==="GET"){
   const {results}=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE owner_id=? ORDER BY created_at DESC").bind(user.id).all();
-  return json({bots:(results||[]).map(b=>({...b,is_public:Number(b.is_public)===1,is_nsfw:Number(b.is_nsfw)===1,share_url:Number(b.is_public)===1?"https://ash-fall.com/bot.html?id="+b.id:null})),limit:cap,unlimited:policy.unlimited,advanced_builder:policy.advanced_builder,title:policy.title,role:user.role},200,origin);
+  return json({bots:(results||[]).map(b=>({...b,is_public:Number(b.is_public)===1,is_nsfw:Number(b.is_nsfw)===1,share_url:Number(b.is_public)===1?"https://ash-fall.com/bot.html?id="+b.id:null})),limit:cap,unlimited:policy.unlimited,advanced_builder:policy.advanced_builder,title:policy.title,role:user.role,tier:policy.tier},200,origin);
  }
  if(path===collection&&request.method==="POST"){
   if(!await rateLimit(env,request,"personal-bot-create",10,60))return json({error:"Too many bot changes. Try again in a minute."},429,origin);
@@ -1088,6 +1090,8 @@ export default { async queue(batch, env) {
     return json({ok:true,report_id:result.meta?.last_row_id,note:"Your report has been submitted for review."},201,origin);
   }
 
+  const homeActivityResponse=await handleHomeActivityFeed(request,env,url,{requireUser,json,rateLimit,audit,origin});
+  if(homeActivityResponse)return homeActivityResponse;
   const showcaseResponse=await handleProfileShowcase(request,env,url,{requireUser,json,origin,rateLimit,isModerator,isAdmin});
   if(showcaseResponse)return showcaseResponse;
   const profileWallResponse=await handleProfileWall(request,env,url,{requireUser,json,origin,rateLimit,audit,isModerator,isAdmin,createNotification});
