@@ -108,11 +108,11 @@ export async function handleArcadeDeckLocker(request,env,url,{getUser,json,rateL
   if(!item)return send({error:"Unknown Cinders deck skin."},400);
   // The browser supplies only an ID. SQLite validates tier, price, balance and
   // one-purchase-per-account atomically using the 0142 triggers.
+  await env.DB.prepare("INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)").bind(userId,(user.username==="knightfall"||["admin","moderator","god"].includes(user.role))?1000000:2000).run();
   const current=await readAccount(env,userId);
   if(current.owned_cinder_skin_ids.includes(item.id))return send({error:"You already own this deck skin.",...current},409);
   if(item.kind==="vip"&&!current.vip_active)return send({error:"An active VIP membership is required for this design.",...current},403);
   if(current.wallet_balance<item.cost_cinders)return send({error:"Not enough Cinders.",...current},409);
-  await env.DB.prepare("INSERT OR IGNORE INTO user_wallets(user_id,balance) VALUES(?,?)").bind(userId,(user.username==="knightfall"||["admin","moderator","god"].includes(user.role))?1000000:2000).run();
   try{
    await env.DB.prepare("INSERT INTO arcade_deck_cinder_purchases(user_id,skin_id,cost_cinders) VALUES(?,?,?)").bind(userId,item.id,item.cost_cinders).run();
   }catch(error){
