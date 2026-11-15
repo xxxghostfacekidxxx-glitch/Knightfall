@@ -79,6 +79,33 @@ function theme(a,uid){
  if(a.piercing==='lip')front+='<circle cx="200" cy="189" r="3.5" fill="#e4dee9"/>';
  if(a.eyewear==='eyepatch')front+='<path d="M145 112q30-7 54 0v28q-30 14-54 0z" fill="#171825"/><path d="M142 117l91-26" stroke="#171825" stroke-width="6"/>';
  if(a.headwear==='tiara'||a.accessory==='crown')front+='<path d="M160 64l-7-27 22 11 23-26 24 26 23-11-8 27z" fill="#c6ff62" stroke="#30233d" stroke-width="3"/>';
+
+ // Knightfall-specific ink layers that Forge2D cannot express natively.
+ // Fixed vector geometry keeps member designs deterministic across every surface.
+ const ink='#302732',silver='#d5c6ce',skin=colors('skin',a.skin,'#efb28f');
+ if(a.ear_style==='elf')front+='<path d="M119 148L87 108L103 171L123 184M281 148L313 108L297 171L277 184" fill="'+skin+'" stroke="'+ink+'" stroke-width="3"/>';
+ if(a.ear_style==='bat')front+='<path d="M119 148L86 96L90 151L78 170L124 184M281 148L314 96L310 151L322 170L276 184" fill="#5c445f" stroke="#c496b7" stroke-width="3"/>';
+ if(a.ear_style==='cyber')front+='<g fill="#292e3b" stroke="#70bcb6" stroke-width="3"><rect x="108" y="144" width="17" height="40" rx="5"/><rect x="275" y="144" width="17" height="40" rx="5"/></g>';
+ if(a.face_mark==='scar')front+='<path d="M140 144l16 12-12 13 15 10" fill="none" stroke="#8d4b56" stroke-width="4" stroke-linecap="round"/><path d="M140 144l16 12-12 13 15 10" fill="none" stroke="#e9b6a4" stroke-width="1.4"/>';
+ if(a.face_mark==='stitches')front+='<g stroke="#41313c" stroke-width="2.5" fill="none"><path d="M135 170q20 10 43 3M142 167l-6 11m18-8-4 11m17-9-3 10"/></g>';
+ if(a.face_mark==='lightning')front+='<path d="M143 126l-11 25h14l-9 25 25-34h-13l8-16z" fill="#d8b58d" stroke="'+ink+'" stroke-width="2"/>';
+ if(a.face_mark==='heart')front+='<path d="M148 177q-11-14-18-3-3 9 18 21 21-12 18-21-7-11-18 3z" fill="#b25571"/>';
+ if(a.face_mark==='runes')front+='<g fill="none" stroke="#c6aac9" stroke-width="2.4"><path d="M134 140l17 19-10 20m-10-22 27-9m113-14-8 20 14 13"/></g>';
+ if(a.eye_glimmer==='star'||a.eye_glimmer==='double')front+='<g fill="#fff5cf"><path d="M161 121l3 7 7 3-7 3-3 7-3-7-7-3 7-3zM237 121l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g>';
+ if(a.eye_glimmer==='heart')front+='<g fill="#ff9abb"><path d="M162 130q-8-10-13 0 0 6 13 13 13-7 13-13-5-10-13 0zM237 130q-8-10-13 0 0 6 13 13 13-7 13-13-5-10-13 0z"/></g>';
+ if(a.makeup==='corpse')front+='<g fill="none" stroke="#24202c" stroke-width="7" opacity=".75"><path d="M144 110l-11 43m124-43 11 43M170 188q31 14 61 0"/></g>';
+ if(a.makeup==='winged')front+='<g fill="none" stroke="#2e2635" stroke-width="5" stroke-linecap="round"><path d="M147 136l-17-8m125 8 17-8"/></g>';
+ if(a.facial_hair==='mustache'||a.facial_hair==='goatee'||a.facial_hair==='full_beard')front+='<path d="M178 180q15-12 22 2 7-14 22-2-11 21-22 7-11 14-22-7z" fill="'+colors('hair_color',a.hair_color,'#29232f')+'" opacity=".88"/>';
+ if(a.facial_hair==='goatee'||a.facial_hair==='full_beard')front+='<path d="M186 211q14 25 28 0l-14 30z" fill="'+colors('hair_color',a.hair_color,'#29232f')+'" opacity=".9"/>';
+ if(a.facial_hair==='stubble')front+='<path d="M158 205q42 35 84 0" fill="none" stroke="'+colors('hair_color',a.hair_color,'#29232f')+'" stroke-width="9" opacity=".28" stroke-dasharray="2 4"/>';
+ if(a.outfit_patch!=='none'){
+  const motifs={skull:'<circle cx="0" cy="-3" r="10"/><path d="M-7 5v9h14V5M-5-5h2m6 0h2"/>',heart:'<path d="M0 13Q-25-5-10-15 0-22 0-10 10-22 10-15 25-5 0 13Z"/>',lightning:'<path d="M-2-16L-13 4H-2L-7 16 13-7H3L8-16Z"/>',cinder:'<path d="M0-17Q18-2 8 13 0 21-9 12-18 1 0-17Z"/>'};
+  front+='<g transform="translate(240 395)" fill="#bc9c7e" stroke="#2c2431" stroke-width="2.3">'+(motifs[a.outfit_patch]||'')+'</g>';
+ }
+ if(a.accessory==='safety_pin')front+='<path d="M145 393q-20 14-1 34 18 15 31-12l-12-15m-17 27 20-26" stroke="'+silver+'" stroke-width="4" fill="none"/>';
+ if(a.aura==='moon')front+='<path d="M55 260q-37 92 32 139-100-10-85-108 7-52 53-84" fill="#d4b990" opacity=".5"/>';
+ if(a.aura==='lightning')front+='<path d="M38 260L18 337H45L27 420 92 316H62L76 260M355 228l-22 74h25l-11 88 48-101h-29l17-61" fill="none" stroke="#d7a9d0" stroke-width="7" opacity=".68"/>';
+ if(a.aura==='spark_ring')front+='<g fill="none" stroke="#c9b18a" stroke-width="4" opacity=".6"><ellipse cx="200" cy="370" rx="185" ry="68" transform="rotate(-21 200 370)"/></g>';
  if(a.aura!=='none')front+='<path d="M52 512q-38-99 17-188M348 512q38-99-17-188" fill="none" stroke="'+accent+'" stroke-width="5" opacity=".34" stroke-dasharray="12 22"/>';
  return {back,front};
 }
