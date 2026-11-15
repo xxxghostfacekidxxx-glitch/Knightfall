@@ -17,15 +17,15 @@
 
 .foundry-toolbar {
   padding: clamp(.9rem, 2vw, 1.4rem);
-  border: 1px solid #45305b;
+  border: 1px solid #827076;
   border-radius: 1rem;
-  background: linear-gradient(125deg, #1b1429, #101320);
+  background: linear-gradient(125deg, #242128, #17171c);
 }
 
 .foundry-toolbar label {
   display: block;
   margin-bottom: .45rem;
-  color: #f8f2ff;
+  color: #ece1d3;
   font-weight: 800;
 }
 
@@ -34,10 +34,10 @@
   width: 100%;
   min-height: 2.8rem;
   padding: .65rem .8rem;
-  border: 1px solid #71627e;
+  border: 1px solid #827076;
   border-radius: .6rem;
-  background: #090b14;
-  color: #f8f2ff;
+  background: #0d1013;
+  color: #ece1d3;
   font: inherit;
 }
 
@@ -51,20 +51,20 @@
 #foundry-filters .btn {
   min-height: 2.75rem;
   padding: .5rem .8rem;
-  background: #111521;
-  border-color: #554561;
+  background: #17171c;
+  border-color: #594751;
   font-size: .875rem;
 }
 
 #foundry-filters .btn[aria-pressed="true"] {
-  background: #c6ff45;
-  border-color: #c6ff45;
-  color: #151b09;
+  background: #c7a77c;
+  border-color: #c7a77c;
+  color: #17171c;
 }
 
 #foundry-count {
   margin: .7rem 0 0;
-  color: #cbc1d9;
+  color: #b9afa8;
   font-size: .85rem;
 }
 
@@ -89,9 +89,9 @@
   flex-direction: column;
   min-width: 0;
   padding: 1rem;
-  border: 1px solid #403351;
+  border: 1px solid #827076;
   border-radius: .75rem;
-  background: #121322;
+  background: #17171c;
 }
 
 .foundry-card h3,
@@ -101,17 +101,17 @@
 
 .foundry-card h3 {
   font-size: 1.05rem;
-  color: #f7efff;
+  color: #ece1d3;
 }
 
 .foundry-card p {
-  color: #c2bbd1;
+  color: #b9afa8;
   font-size: .875rem;
   line-height: 1.5;
 }
 
 .foundry-card p.foundry-meta {
-  color: #a9a0be;
+  color: #b9afa8;
   font-size: .78rem;
 }
 
@@ -127,29 +127,29 @@
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
-  color: #f6b9ed;
+  color: #c7a77c;
   font-size: .82rem;
   font-weight: 700;
   text-underline-offset: .2em;
 }
 
 .foundry-card .actions a.foundry-link-main {
-  color: #d6ff88;
+  color: #c7a77c;
 }
 
 .foundry-card:focus-within,
 .foundry-card:hover {
-  border-color: #a06abb;
+  border-color: #82617c;
 }
 
 .foundry-policy,
 #creator-handoff {
   margin-top: 1rem;
   padding: .9rem 1rem;
-  border: 1px solid #45305b;
+  border: 1px solid #827076;
   border-radius: .75rem;
-  color: #c2bbd1;
-  background: #101320;
+  color: #b9afa8;
+  background: #17171c;
 }
 
 .foundry-policy summary {
@@ -167,7 +167,7 @@
 
 #creator-handoff h2 {
   margin: 0;
-  color: #f7efff;
+  color: #ece1d3;
   font-size: 1.1rem;
 }
 
@@ -179,7 +179,7 @@
 /* Creator desk and shared workspace controls */
 body {
   font-family: "Instrument Sans", system-ui, sans-serif;
-  background: radial-gradient(ellipse at 48% -8rem, #322345 0, #11101b 29rem, #090a11 58rem);
+  background: radial-gradient(ellipse at 48% -8rem, #29232b 0, #17171c 29rem, #0d1013 58rem);
 }
 
 .hero h1 {
@@ -190,13 +190,13 @@ body {
 [data-group="desk"] .foundry-card {
   padding: 1.2rem;
   min-height: 9.7rem;
-  border-color: #715183;
-  background: linear-gradient(145deg, #271c37 0, #181527 75%);
+  border-color: #827076;
+  background: linear-gradient(145deg, #242128 0, #17171c 75%);
 }
 
 [data-group="desk"] .foundry-card:first-child {
-  border-color: #a18470;
-  background: linear-gradient(145deg, #342536 0, #22182a 75%);
+  border-color: #c7a77c;
+  background: linear-gradient(145deg, #342430 0, #201d24 75%);
 }
 
 .foundry-input {
@@ -204,15 +204,15 @@ body {
   min-width: 0;
   min-height: 2.75rem;
   padding: .55rem .7rem;
-  background: #0c0d18;
-  color: #f8f2ff;
-  border: 1px solid #71627e;
+  background: #0d1013;
+  color: #ece1d3;
+  border: 1px solid #827076;
   border-radius: .55rem;
   font: inherit;
 }
 
 .foundry-input:focus-visible {
-  outline: 2px solid #d1ee9a;
+  outline: 2px solid #c7a77c;
   outline-offset: 2px;
 }
 
@@ -232,9 +232,9 @@ body {
   align-content: start;
   gap: .8rem;
   padding: 1rem;
-  border: 1px solid #614972;
+  border: 1px solid #827076;
   border-radius: .8rem;
-  background: #181326;
+  background: #17171c;
 }
 
 .foundry-form h3, .foundry-form p, .foundry-idea h4, .foundry-idea p {
@@ -248,9 +248,9 @@ body {
 
 .foundry-form .foundry-action {
   justify-self: start;
-  color: #1d1723 !important;
-  background: #d7edab !important;
-  border-color: #d7edab !important;
+  color: #17171c !important;
+  background: #c7a77c !important;
+  border-color: #c7a77c !important;
 }
 
 .foundry-links {
@@ -265,7 +265,7 @@ body {
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
-  color: #e5aff4;
+  color: #c7a77c;
   text-underline-offset: .2em;
 }
 
@@ -290,16 +290,16 @@ body {
   gap: .8rem;
   min-height: 9rem;
   padding: .85rem;
-  border: 1px solid #756880;
+  border: 1px solid #827076;
   border-radius: .7rem;
-  background: #201d2b;
-  color: #fff9fd;
+  background: #242128;
+  color: #ece1d3;
 }
 
 .foundry-deck-card[data-type="answer"] {
-  background: #eee7df;
-  border-color: #b7a6b9;
-  color: #2b2434;
+  background: #ece1d3;
+  border-color: #827076;
+  color: #17171c;
 }
 
 .foundry-deck-card p {
@@ -321,19 +321,19 @@ body {
   display: grid;
   gap: .45rem;
   padding: .85rem;
-  border: 1px solid #5b4e6b;
+  border: 1px solid #827076;
   border-radius: .65rem;
-  background: #161525;
+  background: #17171c;
   overflow-wrap: anywhere;
 }
 
 .foundry-idea p.foundry-idea-meta, .foundry-idea p.foundry-idea-state {
-  color: #c7afd8;
+  color: #b9afa8;
   font-size: .82rem;
 }
 
 .foundry-idea[data-status="accepted"] .foundry-idea-state {
-  color: #d9eea8;
+  color: #92a18a;
 }
 
 .foundry-idea-detail {
@@ -347,7 +347,7 @@ body {
 .foundry-preview-group {
   padding-top: .4rem;
   margin-top: 1.25rem;
-  border-top: 1px solid #443851;
+  border-top: 1px solid #827076;
 }
 
 .foundry-map-preview {
@@ -367,14 +367,14 @@ body {
 .foundry-map-assets a {
   display: grid;
   gap: .4rem;
-  color: #e5aff4;
+  color: #c7a77c;
 }
 
 .foundry-map-assets img {
   width: 7rem;
   height: 6rem;
   object-fit: contain;
-  background: #282032;
+  background: #242128;
   border-radius: .4rem;
   image-rendering: pixelated;
 }
@@ -394,7 +394,7 @@ body {
 }
 
 .foundry-age-check input {
-  accent-color: #d7edab;
+  accent-color: #c7a77c;
 }
 
 #status.good {
@@ -411,28 +411,28 @@ body {
 
 #foundry-catalog .foundry-card .actions > a.foundry-link-main {
   padding-inline: .65rem;
-  border: 1px solid #ab84b9;
+  border: 1px solid #82617c;
   border-radius: .45rem;
-  background: #332442;
-  color: #fae9ff;
+  background: #342430;
+  color: #ece1d3;
   text-decoration: none;
 }
 
 #foundry-catalog .foundry-card .actions > a.foundry-link-main:hover,
 #foundry-catalog .foundry-card .actions > a.foundry-link-main:focus-visible {
   background: #453152;
-  border-color: #dfbbeb;
+  border-color: #c7a77c;
 }
 
 #foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main {
-  background: #d9edb0;
-  border-color: #d9edb0;
-  color: #22291b;
+  background: #c7a77c;
+  border-color: #c7a77c;
+  color: #17171c;
 }
 
 #foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main:hover,
 #foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main:focus-visible {
-  background: #edfacf;
+  background: #dec19a;
 }
 
 @media (max-width: 690px) {
