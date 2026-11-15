@@ -238,3 +238,14 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - **0134** adds soft deletion for Die-ary entries, official homepage posts, creator drafts and vault folders.
 - `/api/god/trash` and `/api/god/trash/:category/:id/restore|purge` permit GOD to browse, restore, and permanently delete supported soft-deleted records. The archive requires a live GOD session; destructive operations require a matching origin. Administrator messaging is restored for active messages, and other private reviews are restricted to reports. The normal account-deletion legal/compliance workflow remains a separate release requirement.
 - The rollout is phased. Not every transient relation, cached file, attachment, third-party copy, game save, or account object is yet covered by universal tombstones; do not claim that all site data uses soft deletion until every feature has been audited.
+
+
+## 0135: Cinderwild shared-world alpha (November 15, 2026)
+
+- `0135_cinderwild_online_world.sql` adds only new account-owned tables: `cinderwild_world_players` (server-side coordinates, move revision, online presence TTL) and `cinderwild_world_quests` (verified exploration milestones). No existing creature saves or user data were rewritten.
+- **Applied to production `knightfall-forum` November 15, 2026, at 08:24:31 UTC** with the reviewed Cloudflare D1 query API. Pre-migration Time Travel recovery bookmark was available: `000004ff-00000004-00005124-8e97d9e136645b73e9daff4f7306dd0d`.
+- Production read-back verified both tables, primary keys, the two new indexes and `d1_migrations` ledger **ID 80**. Both tables were empty at creation. **Do not reapply this migration manually** to production.
+- Public map movement uses only server-owned positions and cardinal directions. Browser-provided coordinates and single-player save badges are never accepted as online authority. The first alpha region is bounded by the Bramble Crest gate until a separate verified online gym-battle implementation can award server-owned progression.
+- The existing account session authenticates the online presence API. Cross-origin writes are rejected; blocked users are omitted from nearby-player lists; stale players expire after 45 seconds; quest credit is awarded only for server-confirmed movements or proximity to an NPC.
+- Local Cinderwild battles, creatures, single-player gym badges and cross-device backups remain separate; **they are not authoritative PvP/trade state**. Competitive inventory, online gyms, battle instances and live chat require their own later server-owned releases.
+- Regression gates: `node --test scripts/cinderwild-world-rules.test.mjs backend/src/cinderwild-online-world.test.mjs scripts/cinderwild-online-ui.test.mjs` plus manual two-account web/mobile smoke after successful Pages and Worker deployment. Migration read-back does not itself establish live gameplay.
