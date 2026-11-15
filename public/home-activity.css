@@ -1,0 +1,25 @@
+.home-activity{padding:clamp(1.6rem,4vw,3rem) 0;border-top:1px solid #382a3e;border-bottom:1px solid #382a3e}
+.home-activity .activity-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.home-activity .activity-heading h2{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.15;letter-spacing:-.035em}
+.home-activity .activity-heading p{color:#b9aebe;max-width:620px;margin:.45rem 0}
+.home-activity .activity-eyebrow{color:#e1ff73;letter-spacing:.16em;font-size:.72rem;font-weight:900}
+.home-activity .activity-stream{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:1rem}
+.home-activity .activity-post{display:flex;flex-direction:column;min-width:0;border:1px solid #674267;border-radius:15px;background:linear-gradient(145deg,#191323,#0d0c13);padding:1.15rem;box-shadow:0 12px 35px #0004}
+.home-activity .activity-post-top,.home-activity .activity-post-footer{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.home-activity .activity-post-category{font-size:.7rem;text-transform:uppercase;letter-spacing:.13em;color:#e7ff91;border:1px solid #acb95066;border-radius:99px;padding:.15rem .6rem}
+.home-activity .activity-post-time,.home-activity .activity-post-footer{font-size:.78rem;color:#bab1c7}
+.home-activity .activity-post h3{color:#fff;font-size:1.16rem;line-height:1.3;overflow-wrap:anywhere;margin:1rem 0 .5rem}
+.home-activity .activity-post-body{white-space:pre-wrap;overflow-wrap:anywhere;color:#ddd4e1;line-height:1.6;flex:1}
+.home-activity .activity-post-footer{border-top:1px solid #ffffff16;margin-top:1.2rem;padding-top:.7rem}
+.home-activity .activity-form{display:grid;gap:.65rem;border:1px solid #694e76;border-radius:14px;padding:1rem;background:#150f1d;margin-bottom:1rem}
+.home-activity .activity-form[hidden],.home-activity [hidden]{display:none!important}
+.home-activity .activity-form label{display:grid;gap:.35rem;color:#eee;font-weight:750}
+.home-activity .activity-form input,.home-activity .activity-form select,.home-activity .activity-form textarea{width:100%;font:inherit;background:#0c0911;color:#fff;padding:.75rem;border:1px solid #775d85;border-radius:9px}
+.home-activity .activity-form textarea{resize:vertical;min-height:110px}
+.home-activity button{border:1px solid #dc75cc;border-radius:9px;padding:.58rem .95rem;background:#2e1533;color:#fff;cursor:pointer}
+.home-activity button[type=submit]{background:#f268d5;color:#1a091b;font-weight:900}
+.home-activity button:hover,.home-activity button:focus-visible{outline:2px solid #e4ff87;outline-offset:1px}
+.home-activity button:disabled{opacity:.5;cursor:wait}
+.home-activity .activity-empty{grid-column:1/-1;border:1px dashed #614765;padding:1.3rem;border-radius:12px;color:#d8c7de}
+.home-activity .activity-footer{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.home-activity #home-activity-status{color:#beb1cb;font-size:.8rem}
