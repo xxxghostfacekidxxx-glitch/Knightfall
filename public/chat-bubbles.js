@@ -142,6 +142,9 @@
   function draggable(handle,ignoreControls=false){
     let drag=null,blockClickUntil=0;
     handle.addEventListener("pointerdown",e=>{
+      // Moving the dock only applies to the minimized/desktop bubble, never the
+      // fullscreen mobile sheet. Otherwise a swipe changes saved dock position.
+      if(dock.classList.contains("kf-chat-expanded"))return;
       if(e.button!==0||e.isPrimary===false||
          (ignoreControls&&e.target.closest("button,a,input,textarea,select")))return;
       const r=dock.getBoundingClientRect();
