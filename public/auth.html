@@ -3,39 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Sign in to Ash-Fall or create an account.">
-  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Sign in to Knightfall or create an account.">
+  <meta name="theme-color" content="#0d1013">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Sign in or create an account | Ash-Fall</title>
-  <link rel="stylesheet" href="/theme.css?v=20261026-foundation1">
-  <link rel="stylesheet" href="/visual-refresh.css?v=20261029-v2">
-  <link rel="stylesheet" href="/gravewave-takeover.css?v=20261026-visibility3"><script src="/gravewave-takeover.js?v=20261026-visibility3" defer></script><script src="/nav.js?v=20261112-home" defer></script>
+  <title>Sign in or create an account | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css?v=20261115-gothic7">
+  
+  <script src="/nav.js?v=20261115-gothic7" defer></script>
   <style>
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 18% 15%,rgba(255,85,216,.13),transparent 38%),radial-gradient(ellipse at 88% 90%,rgba(198,255,69,.08),transparent 34%),#070710;color:#eee;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 18% 15%,rgba(178,91,104,.13),transparent 38%),radial-gradient(ellipse at 88% 90%,rgba(146,161,138,.08),transparent 34%),#0d1013;color:#eee;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:radial-gradient(circle,rgba(255,255,255,.6) 0 1px,transparent 1.4px);background-size:151px 163px}
     .entry-layout{position:relative;width:min(calc(100% - 2rem),32rem);margin:clamp(1.2rem,4vw,3rem) auto}
     .entry-card{border:1px solid #303030;border-radius:18px;background:linear-gradient(155deg,rgba(22,22,22,.98),rgba(10,10,10,.98));padding:clamp(1.25rem,3vw,2rem);box-shadow:0 25px 90px #0008}
     .tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.3rem;border:1px solid #292929;border-radius:10px;background:#090909;margin-bottom:1.4rem}
     .tab{border:0;border-radius:7px;background:transparent;color:#999;padding:.8rem;font:inherit;font-size:.88rem;font-weight:750;cursor:pointer}
-    .tab[aria-selected="true"]{background:#25132e;color:#c6ff45;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
+    .tab[aria-selected="true"]{background:#242128;color:#c7a77c;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
     #auth-title{font-size:clamp(1.5rem,5vw,2rem);margin:0 0 1rem;letter-spacing:-.025em}
     .field{display:grid;gap:.42rem;margin-bottom:.9rem}
     label{font-size:.78rem;font-weight:750;color:#d0d0d0}
     input{width:100%;min-height:45px;border:1px solid #343434;border-radius:8px;background:#090909;color:#f5f5f5;padding:.75rem .85rem;font:inherit;font-size:.9rem}
-    input:focus{outline:2px solid #a8ff3e;outline-offset:1px;border-color:#a8ff3e}
+    input:focus{outline:2px solid #c7a77c;outline-offset:1px;border-color:#c7a77c}
     input::placeholder{color:#696969}
-    .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #a8ff3e;border-radius:9px;background:linear-gradient(180deg,#ff55d8,#b728a1);color:#180a20;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #ff55d826}
+    .primary{width:100%;min-height:47px;margin-top:.35rem;border:1px solid #c7a77c;border-radius:9px;background:linear-gradient(180deg,#b25b68,#874356);color:#17171c;font:inherit;font-size:.86rem;font-weight:850;letter-spacing:.035em;cursor:pointer;box-shadow:0 8px 24px #b25b6826}
     .primary:hover{filter:brightness(1.1)}
     .primary:disabled{opacity:.6;cursor:wait}
-    .status{min-height:1.2rem;margin:.7rem 0 0;color:#ff8ce6;font-size:.8rem;line-height:1.5}
+    .status{min-height:1.2rem;margin:.7rem 0 0;color:#c7a77c;font-size:.8rem;line-height:1.5}
     .legal{color:#777;font-size:.72rem;line-height:1.6;text-align:center;margin:1rem 0 0}
-    .legal a{color:#ff55d8}
+    .legal a{color:#b25b68}
     .below{color:#858585;text-align:center;font-size:.78rem;margin:1.2rem 0 0}
-    .below a{color:#c6ff45;text-decoration:none;font-weight:750}
+    .below a{color:#c7a77c;text-decoration:none;font-weight:750}
     [hidden]{display:none!important}
 
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
@@ -53,7 +53,7 @@
       <form id="login-panel" role="tabpanel" aria-labelledby="login-tab">
         <div class="field"><label for="login-identifier">Username or email</label><input id="login-identifier" name="identifier" autocomplete="username" required placeholder="Your username or email"></div>
         <div class="field"><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Your password"></div>
-        <button class="primary" type="submit">Log in to Ash-Fall ↗</button>
+        <button class="primary" type="submit">Log in to Knightfall ↗</button>
         <p class="status" id="login-status" role="status" aria-live="polite"></p>
         <p class="below"><a href="/reset-password.html">Forgot your password?</a></p>
       </form>
@@ -140,7 +140,7 @@
           status.textContent = "You're in. Opening Ash-Fall…";
           window.location.assign(destination);
         } catch (error) {
-          status.style.color = "#ff8ce6";
+          status.style.color = "#c7a77c";
           status.textContent = error.message || "Network error. Check your connection and try again.";
           if (endpoint.endsWith("/register") && turnstileEnabled && window.turnstile) window.turnstile.reset();
         } finally {
@@ -168,7 +168,7 @@
       if (params.has("oauth_error")) {
         const message = oauthErrors[params.get("oauth_error")] || oauthErrors.sign_in_failed;
         document.getElementById("login-status").textContent = message;
-        document.getElementById("login-status").style.color = "#ff8ce6";
+        document.getElementById("login-status").style.color = "#c7a77c";
         document.getElementById("register-status").textContent = message;
         const clean = new URL(location.href);
         clean.searchParams.delete("oauth_error");
