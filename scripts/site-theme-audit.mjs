@@ -44,7 +44,7 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v46";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v47";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
@@ -131,4 +131,18 @@ console.log("Retired Gravewave chrome purge and PWA cache version checked.");
 for(const filename of ["gravewave-takeover.js","gravewave-decor.js"]){
  assert.ok(!existsSync(new URL("../public/"+filename,import.meta.url)),
    "Retired global injection script must stay removed: "+filename);
+}
+
+// All first-party UI styles must use the approved palette. Keep creative game
+// rendering, character art assets, and selectable member profile themes separate.
+const auditedChromeStyles=["account.css","admin-command-center.css","arcade-cabinet-ui.css","avatar-studio.css","bot-public.css","bot-starter-chat.css","bots-starter.css","creator-motion-preview.css","creator-production-lab.css","devil-tools-vector-gallery.css","die-ary.css","directory.css","mascot-pets.css","mascot-room-furniture.css","mascot-room.css","mascot-trials.css","members.css","messages.css","moderation.css","open-source-arsenal.css","personal-bots.css","profile-mascots.css","profile.css","social-hub.css","vault.css","miss-chaos.css","miss-chaos-radar.css"];
+for(const filename of auditedChromeStyles){
+  assert.doesNotMatch(read("../public/"+filename),retiredChrome,
+    "Retired Gravewave colors resurfaced in "+filename);
+  assert.ok(read("../public/_headers").includes("/"+filename+"\n  Cache-Control: no-cache"),
+    "Cached first-party chrome may stay stale: "+filename);
+}
+for(const filename of ["arcade-cabinet-ui.js","arcade-fullscreen.js","arcade-save.js"]){
+  assert.doesNotMatch(read("../public/"+filename),retiredChrome,
+    "UI script reintroduced an old color: "+filename);
 }

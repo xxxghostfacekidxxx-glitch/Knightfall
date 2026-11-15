@@ -39,3 +39,63 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-glitch.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+# Gothic Creator: revalidate all first-party chrome CSS after palette removal.
+/account.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/admin-command-center.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade-cabinet-ui.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/avatar-studio.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/bot-public.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/bot-starter-chat.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/bots-starter.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/creator-motion-preview.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/creator-production-lab.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/devil-tools-vector-gallery.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/die-ary.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/directory.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/mascot-pets.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/mascot-room-furniture.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/mascot-room.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/mascot-trials.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/members.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/moderation.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/open-source-arsenal.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/personal-bots.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/profile-mascots.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/profile.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/social-hub.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/vault.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/miss-chaos.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/miss-chaos-radar.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade-cabinet-ui.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade-fullscreen.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade-save.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
