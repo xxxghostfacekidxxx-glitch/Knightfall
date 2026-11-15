@@ -54,6 +54,23 @@ export async function handleBotSlotShop(request,env,url,user){
   if(raw.length>100000)return respond({error:"Payload too large"},413);
   if(!await verifyStripeSignature(raw,request.headers.get("stripe-signature"),env.STRIPE_WEBHOOK_SECRET))return respond({error:"Invalid signature"},400);
   let event;try{event=JSON.parse(raw)}catch{return respond({error:"Invalid event"},400)}
+  // A fully refunded card charge revokes only the matching collector finish.
+  // Verify the Stripe signature above before trusting any reversal event.
+  if(event.type==="charge.refunded"){
+   const charge=event.data?.object;
+   if(typeof charge?.payment_intent!=="string"||!Number.isSafeInteger(charge.amount)||!Number.isSafeInteger(charge.amount_refunded)||charge.amount_refunded<charge.amount)return respond({received:true});
+   const order=await env.DB.prepare("SELECT id,user_id,sku,amount_cents,status FROM member_shop_orders WHERE provider_payment_id=? LIMIT 1").bind(charge.payment_intent).first();
+   const product=order&&PREMIUM_DECK_SKUS[order.sku];
+   if(!product||order.status==="refunded")return respond({received:true});
+   if(order.status!=="fulfilled"||charge.amount!==order.amount_cents)return respond({received:true});
+   const now=new Date().toISOString();
+   await env.DB.batch([
+    env.DB.prepare("UPDATE member_shop_orders SET status='refunded',updated_at=? WHERE id=? AND status='fulfilled'").bind(now,order.id),
+    env.DB.prepare("UPDATE arcade_deck_paid_entitlements SET state='revoked',revoked_at=? WHERE user_id=? AND skin_id=? AND source_order_id=? AND state='active'").bind(now,order.user_id,product.skin_id,order.id),
+    env.DB.prepare("UPDATE arcade_deck_profiles SET equipped_skin='ash-classic',revision=revision+1,updated_at=? WHERE user_id=? AND equipped_skin=?").bind(now,order.user_id,product.skin_id)
+   ]);
+   return respond({received:true});
+  }
   if(event.type!=="checkout.session.completed")return respond({received:true});
   const session=event.data?.object;
   if(session?.payment_status!=="paid"||session?.mode!=="payment")return respond({received:true});
