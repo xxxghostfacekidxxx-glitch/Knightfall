@@ -61,15 +61,16 @@ function fixture(role="god",ready=true){
    }};
   return q;
  }};
- const deps={requireUser:async()=>role==="guest"?null:{id:11,role,status:"active"},
+ const env={DB:db};
+ const deps={requireUser:async()=>role==="guest"?null:{id:11,role,status:"active"},rateLimit:async()=>true,
   json:(data,status=200,origin,headers={})=>new Response(JSON.stringify(data),{status,headers}),origin:"https://ash-fall.com"};
  function call(path,method="GET",payload=null,from="https://ash-fall.com"){
   const options={method,headers:{origin:from,...(method!=="GET"?{"content-type":"application/json"}:{})}};
   if(method!=="GET")options.body=JSON.stringify(payload||{});
   const request=new Request("https://api.ash-fall.com"+path,options);
-  return handleEyeOfChaos(request,{DB:db},new URL(request.url),deps);
+  return handleEyeOfChaos(request,env,new URL(request.url),deps);
  }
- return {call,missions,drafts,queries,events,env:{DB:db}};
+ return {call,missions,drafts,queries,events,env,deps};
 }
 const base="/api/god/chaos";
 test("the approved roster is exactly 20, Pop Morgue is #18, and the real QA matrix has ten workers",()=>{
@@ -178,4 +179,40 @@ test("GOD QA dashboard reflects verified GitHub workflows and their actual worke
  const denied=fixture("admin");
  const forbidden=await denied.call(base+"/qa");
  assert.equal(forbidden.status,403);
+});
+
+test("AI generation creates an editable pending draft, never a published bot post",async()=>{
+ const f=fixture();
+ const mission=await f.call(base+"/missions","POST",{
+  division:"agents",agent_key:"chaos-18",kind:"draft",instructions:"Write an original intro to obscure cult cinema",cadence:"manual",destination:"Madhouse / Entertainment"});
+ const missionId=(await mission.json()).id;
+ const calls=[];
+ f.env.AI={run:async(model,opts)=>{
+  calls.push({model,opts});return {response:JSON.stringify({title:"Forgotten horror treasures",body:"Three original film discussion questions for curious cinephiles."})};
+ }};
+ const generated=await f.call(base+"/missions/"+missionId+"/draft","POST"),data=await generated.json();
+ assert.equal(generated.status,201);
+ assert.equal(data.published,false);
+ assert.equal(data.status,"pending");
+ assert.equal(f.drafts.get(data.created_draft).status,"pending");
+ assert.equal(f.drafts.get(data.created_draft).author_key,"chaos-18");
+ assert.equal(f.drafts.get(data.created_draft).approved_by,null);
+ assert.equal(calls.length,1);
+ assert.match(calls[0].opts.messages[0].content,/Pop Morgue/);
+ assert.match(calls[0].model,/llama-3.1-8b-instruct-fast/);
+ assert.ok(f.events.some(x=>x.action==="ai_generated_pending_review"));
+ const denied=fixture("member");denied.env.AI=f.env.AI;
+ assert.equal((await denied.call(base+"/missions/"+missionId+"/draft","POST")).status,403);
+});
+test("AI mission drafting fails closed on invalid output, lack of AI, and rate limits",async()=>{
+ const f=fixture(),create=await f.call(base+"/missions","POST",{
+  division:"agents",agent_key:"chaos-01",kind:"draft",instructions:"Write a new original post",cadence:"manual"});
+ const id=(await create.json()).id;
+ assert.equal((await f.call(base+"/missions/"+id+"/draft","POST")).status,503);
+ f.env.AI={run:async()=>({response:"not json"})};
+ assert.equal((await f.call(base+"/missions/"+id+"/draft","POST")).status,502);
+ assert.equal(f.drafts.size,0);
+ f.deps.rateLimit=async()=>false;
+ assert.equal((await f.call(base+"/missions/"+id+"/draft","POST")).status,429);
+ assert.equal(f.drafts.size,0);
 });
