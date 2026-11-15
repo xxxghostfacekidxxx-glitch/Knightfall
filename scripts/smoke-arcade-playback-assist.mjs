@@ -78,6 +78,38 @@ try {
       await writeFile('priority-arcade-evidence/assist-neon-surge.txt',err.stack);
     }finally{await context.close();}
   }
+  // Shared first-party cabinets: theater fallback is essential on Android in-app browsers.
+  for(const id of ['cinder-chess','hex-embers']){
+    const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+    const page=await context.newPage();
+    try{
+      const response=await page.goto(origin+'/arcade/hosted/'+id+'/index.html',{waitUntil:'domcontentloaded',timeout:20000});
+      if(!response?.ok())throw Error(id+' HTTP '+response?.status());
+      const shared=page.locator('.cabinet-view-controls button');
+      if(id==='hex-embers'){
+        if(await shared.count())throw Error('Duplicated existing #full control');
+        if(!await page.locator('#full').count())throw Error('Existing fullscreen control missing');
+      }else{
+        await shared.waitFor({state:'visible',timeout:10000});
+        await page.evaluate(()=>{
+          const main=document.querySelector('main');
+          main.requestFullscreen=()=>Promise.reject(Error('simulated blocked fullscreen'));
+        });
+        await shared.click({timeout:10000});
+        if(await shared.getAttribute('aria-pressed')!=='true')throw Error('Theater fallback did not activate');
+        if(!await page.locator('main').evaluate(x=>x.classList.contains('kf-cabinet-theater')))throw Error('Game did not enter theater surface');
+        await shared.click({timeout:10000});
+        if(await shared.getAttribute('aria-pressed')!=='false')throw Error('Theater exit did not restore button');
+        if(await page.locator('main').evaluate(x=>x.classList.contains('kf-cabinet-theater')))throw Error('Theater exit left game stuck fullscreen');
+      }
+      console.log('PASS '+id+' | shared theater fallback or existing fullscreen preserved');
+    }catch(err){
+      failures.push(id+': '+err.message);
+      console.error('FAIL '+id+': '+err.message);
+      await writeFile('priority-arcade-evidence/assist-'+id+'.txt',err.stack||String(err));
+      try{await page.screenshot({path:'priority-arcade-evidence/assist-'+id+'.png',timeout:10000})}catch{}
+    }finally{await context.close();}
+  }
 } finally {
   if(browser)await browser.close();
   if(server)server.kill();
