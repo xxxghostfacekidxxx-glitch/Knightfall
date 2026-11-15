@@ -13,3 +13,16 @@
 .battle-healing button{font-size:.74rem;line-height:1.3;text-align:left;white-space:normal}
 .battle-healing p{grid-column:1/-1;margin:4px 0;font-size:.74rem;color:var(--muted)}
 @media(max-width:520px){.dex-controls{grid-template-columns:1fr}.battle-healing>div{grid-template-columns:1fr}}
+
+/* Cinderwild cloud backup controls */
+.cloud-panel{border:2px solid #567f79;border-radius:10px;background:#142732;padding:14px 16px;margin:4px 0 15px;box-shadow:inset 0 -3px #0b1921}
+.cloud-panel h2{font-size:1.02rem;color:var(--lime);margin:0 0 7px}
+.cloud-panel #cloud-status{color:#d2e4da;font-size:.88rem;margin:6px 0 12px;overflow-wrap:anywhere}
+.cloud-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cloud-actions button,.cloud-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:9px 11px;border:2px solid #739b8b;background:#293e47;border-radius:7px;color:#eaf6dc;font-size:.79rem;font-weight:850;text-decoration:none}
+.cloud-actions #cloud-restore{border-color:#82b5d5}
+.cloud-actions #cloud-upload{border-color:var(--lime);color:var(--lime)}
+.cloud-actions #cloud-pause{border-color:#c3a0bb}
+.cloud-actions [hidden]{display:none!important}
+.cloud-panel .hint{font-size:.73rem;margin:12px 0 0;color:#b1c7c1}
+@media(max-width:520px){.cloud-panel{padding:11px}.cloud-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.cloud-actions button,.cloud-actions a{font-size:.72rem;text-align:center}}
