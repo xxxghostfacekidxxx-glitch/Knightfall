@@ -6,11 +6,12 @@
 <meta name="theme-color" content="#121b27">
 <meta name="description" content="Cinderwild: an original handheld-style creature catching adventure. Explore, battle, evolve, collect and challenge three Wardens.">
 <title>Cinderwild | Knightfall Chaos Cartridge</title>
-<link rel="stylesheet" href="./style.css?v=20261115-cloud1">
+<link rel="stylesheet" href="./style.css?v=20261115-online1">
 <script src="/monster-mmo-sprite-atlas.js" defer></script>
 <script src="/arcade-save.js" defer></script>
-<script src="./game.js?v=20261115-cloud1" defer></script>
+<script src="./game.js?v=20261115-online1" defer></script>
 <script src="./cloud-sync.js?v=20261115-cloud1" defer></script>
+<script src="./online-world.js?v=20261115-online1" defer></script>
 </head>
 <body>
 <main id="game-shell" class="shell">
@@ -47,6 +48,17 @@
  </div>
 </div>
 <div class="bottom">
+ <section class="online-panel" id="online-world" aria-labelledby="online-heading">
+  <div class="online-heading"><h2 id="online-heading">🌐 Cinderwild Shared World</h2><span>ONLINE ALPHA</span></div>
+  <p id="online-status" role="status" aria-live="polite">Checking online access…</p>
+  <div class="online-actions">
+   <button type="button" id="online-join">✦ Join Online World</button>
+   <button type="button" id="online-leave" hidden>Leave Online World</button>
+  </div>
+  <p class="hint">Online trainers appear on your map. Movement and nearby quest milestones are server-verified. This first shared-world area begins in Cinder Town; competitive battles, trading and online crest rewards are not enabled yet.</p>
+  <div class="online-details"><div id="online-players" aria-live="off"><strong>Trainers nearby: 0</strong></div>
+   <div><strong>Shared-world quests</strong><ul id="online-quests"></ul></div></div>
+ </section>
  <section class="cloud-panel" aria-labelledby="cloud-heading">
   <h2 id="cloud-heading">☁ Knightfall Account Saves</h2>
   <p id="cloud-status" role="status" aria-live="polite">Checking your account…</p>
