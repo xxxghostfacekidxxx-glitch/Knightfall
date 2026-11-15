@@ -44,6 +44,7 @@ const workerApiSurface = worker + "\n" + await Promise.all([
   "eye-of-horus.js",
   "god-trash.js",
   "staff-capabilities.js",
+  "creator-ideas.js",
   "creator-art-submissions.js",
   "arcade-turn-matches.js",
   "message-search.js",
@@ -223,10 +224,12 @@ for (const file of htmlFiles) {
     // These documents are generated in a per-game cache by the offline launcher's service worker.
     if (/^\/admin-offline\/play\/(?:ashfall-infernal-reign-dev|sanctuary-original)\/sanctuary\.html$/.test(pathname)) continue;
     if (!pathname || pathname === "/" || pathname.startsWith("/api/")) continue;
-    // A directory URL is a real Pages route when it has an index.html.
-    // Keep flagging nonexistent folders; don't treat valid PWA start URLs as missing assets.
+    // Cloudflare Pages serves /messages from /messages.html, and /about/ from
+    // /about/index.html. These are actual routes, not missing assets.
+    // Still fail on nonexistent extensionless pages, folders and static files.
     const pointsToIndex = pathname.endsWith("/") && publicPaths.has(pathname + "index.html");
-    if (!publicPaths.has(pathname) && !pointsToIndex)
+    const pointsToHtml = publicPaths.has(pathname + ".html");
+    if (!publicPaths.has(pathname) && !pointsToIndex && !pointsToHtml)
       fail(rel + " references missing local asset " + pathname);
   }
   ok("HTML structure and local assets: " + rel);
