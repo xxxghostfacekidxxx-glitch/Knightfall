@@ -53,6 +53,10 @@ jobs:
         run: |
           node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs backend/src/staff-capabilities.test.mjs backend/src/eye-of-horus.test.mjs backend/src/god-trash.test.mjs
           node --test backend/src/business-metrics.test.mjs
+          node --test backend/src/eye-of-chaos.test.mjs
+          python3 scripts/test_eye_of_chaos_sql.py
+          node --check backend/src/eye-of-chaos.js
+          node --check public/eye-of-chaos.js
           node --check backend/src/business-metrics.js
           python3 scripts/test_eye_of_horus_sql.py
           python3 scripts/test_home_bot_tiers_sql.py
