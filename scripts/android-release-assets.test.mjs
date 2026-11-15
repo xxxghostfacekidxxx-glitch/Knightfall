@@ -57,3 +57,26 @@ test('owner-local signing bootstrap parses safely and cannot publish a public re
  assert.doesNotMatch(bootstrap,/gh release create|publish_public_release=true/);
  assert.doesNotMatch(bootstrap,/echo "\$KEY_PASS"/);
 });
+
+test('public Android release promotes only exact successful signed candidate tested on device',()=>{
+ const workflow=readFileSync(new URL('../.github/workflows/knightfall-android-release.yml',import.meta.url),'utf8');
+ assert.match(workflow,/candidate_run_id:/);
+ assert.match(workflow,/tested_apk_sha256:/);
+ assert.match(workflow,/DEVICE_CONFIRMATION.*inputs.physical_test_confirmation/);
+ assert.match(workflow,/ANDROID_VERIFIED/);
+ assert.match(workflow,/^\s+if: \$\{\{ !inputs.publish_public_release \}\}/m);
+ assert.match(workflow,/gh run view "\$CANDIDATE_RUN_ID"/);
+ assert.match(workflow,/run\.conclusion!=='success'/);
+ assert.match(workflow,/run\.headBranch!=='main'/);
+ assert.match(workflow,/gh run download "\$CANDIDATE_RUN_ID"/);
+ assert.match(workflow,/sha256sum --check --status/);
+ assert.match(workflow,/String\(info\.apkSha256\)\.toLowerCase\(\)/);
+ assert.match(workflow,/STORE_CERT_SHA/);
+ assert.match(workflow,/ACTUAL_SHA.*TESTED_APK_SHA256/);
+ assert.match(workflow,/cmp -s "\$RUNNER_TEMP\/live-assetlinks\.json"/);
+ assert.match(workflow,/gh release create/);
+ const verify=workflow.indexOf('ACTUAL_SHA=');
+ const release=workflow.indexOf('gh release create');
+ const published=workflow.indexOf("entry.signedReleaseVerified=true");
+ assert.ok(verify>-1&&release>verify&&published>release,'APK hash verification must precede GitHub Release and site publication');
+});
