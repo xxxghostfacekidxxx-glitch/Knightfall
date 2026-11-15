@@ -127,7 +127,7 @@ try {
       if (session.name === "guest") {
         await page.goto(origin + "/homepage.html?source=legacy#memorial");
         await page.waitForURL(origin + "/?source=legacy#memorial");
-        await page.locator("#memorial a[href='/remembering-josh.html']").waitFor();
+        await page.locator("footer.site-footer a[href='/remembering-josh.html']").waitFor();
 
         const next = "/account.html?from=legacy#account-tools";
         await page.goto(origin + "/index.html?mode=register&next=" + encodeURIComponent(next));
