@@ -19,6 +19,7 @@ function fixture({user={id:17,username:"Fieldwalker"},starter=true,joined=true,c
  const storage=new Map(),calls=[],peers=[],positions=[];
  const game={
   hasStarter:()=>starter,isBusy:()=>false,
+  position:()=>positions.at(-1)||{x:8,y:18},
   snapshot:()=>({party:[{id:"mossbit"}],x:8,y:18}),
   syncOnlinePosition:pos=>{positions.push(pos);return true;},
   applyOnlineMove:(dx,dy,pos)=>{positions.push(pos);return true;},
