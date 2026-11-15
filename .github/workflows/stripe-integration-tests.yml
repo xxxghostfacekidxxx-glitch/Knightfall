@@ -1,0 +1,36 @@
+name: Stripe Payments Billing and Invoicing tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/src/stripe-billing.js'
+      - 'backend/src/stripe-invoicing.js'
+      - 'backend/src/stripe-billing.test.mjs'
+      - 'backend/src/stripe-invoicing.test.mjs'
+      - 'backend/src/member-shop-checkout.js'
+      - 'backend/src/mascot-payments.test.mjs'
+      - 'backend/src/deck-skin-products.js'
+      - 'backend/src/index.js'
+      - 'backend/migrations/0145_stripe_member_customers.sql'
+      - '.github/workflows/stripe-integration-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  stripe-sandbox-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Worker API syntax
+        run: |
+          node --check backend/src/stripe-billing.js
+          node --check backend/src/stripe-invoicing.js
+          node --check backend/src/member-shop-checkout.js
+          node --check backend/src/index.js
+      - name: Test payment gates, signed webhooks, Billing and Invoicing
+        run: |
+          node --test backend/src/stripe-billing.test.mjs backend/src/stripe-invoicing.test.mjs backend/src/mascot-payments.test.mjs
