@@ -23,7 +23,7 @@
 }
 .chaos-radar button { cursor:pointer; font-size:.84rem; }
 .chaos-radar button[aria-pressed="true"],.chaos-radar form button { background:#e9b9ec; border-color:#e9b9ec; color:#221328; }
-.chaos-radar :focus-visible,.chaos-radar-trigger:focus-visible { outline:2px solid #c6ff45; outline-offset:3px; }
+.chaos-radar :focus-visible,.chaos-radar-trigger:focus-visible { outline:2px solid #39ff88; outline-offset:3px; }
 .chaos-radar #radar-results { display:grid; gap:.55rem; }
 .chaos-radar article { background:#21182c; border:1px solid #61446e; border-radius:11px; padding:.7rem .85rem; }
 .chaos-radar p { margin:.45rem 0; }

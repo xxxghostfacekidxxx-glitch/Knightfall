@@ -127,3 +127,8 @@ for (const path of ["/arcade-polish.css","/chaos-cartridge-theme.css","/chat-bub
     "Theme asset must revalidate: "+path);
 }
 console.log("Retired Gravewave chrome purge and PWA cache version checked.");
+
+for(const filename of ["gravewave-takeover.js","gravewave-decor.js"]){
+ assert.ok(!existsSync(new URL("../public/"+filename,import.meta.url)),
+   "Retired global injection script must stay removed: "+filename);
+}

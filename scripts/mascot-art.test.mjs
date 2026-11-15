@@ -71,15 +71,14 @@ for (const { id, name } of characters) {
 }
 
 test('legacy optional mascot crew keeps featured artwork without globally replacing the Gothic site theme', () => {
-  const js = read('public/gravewave-takeover.js');
+  const gallery = read('public/devil-tools.html');
   const css = read('public/knightfall-unified-theme.css');
   const nav = read('public/nav.js');
   for (const { id } of characters) {
-    assert.ok(js.includes("'" + id + "'"), 'crew includes ' + id);
+    assert.ok(gallery.includes("'" + id + "'"), 'creator gallery retains ' + id);
   }
-  assert.ok(js.includes('crewGroups'));
-  assert.ok(js.includes('[1,3,12,13,14,16]'), 'home crew displays Gillrot and Nocturnib ahead of trio');
-  assert.ok(js.includes("'.svg?v=20261102-mascot6'"), 'new artwork is cache-busted');
+  assert.ok(!existsSync(resolve(root, 'public/gravewave-takeover.js')), 'retired takeover script is gone');
+  assert.ok(!existsSync(resolve(root, 'public/gravewave-decor.js')), 'retired decoration injector is gone');
   assert.ok(!nav.includes('/gravewave-takeover.js'), 'approved Gothic theme must not globally inject mascot overlays');
   assert.match(nav, /knightfall-unified-theme\.css\?v=20261115-gothic\d+/, 'approved Gothic unified theme loads instead');
   assert.ok(nav.includes('mountApprovedTheme'), 'the shared theme loader is retained');
@@ -107,7 +106,7 @@ test('Madhouse Memory uses the current The Eddie art without changing the legacy
 
 test('Gillrot and Nocturnib upgraded artwork remains visible and all animated variants exist', () => {
   const gallery = read('public/devil-tools.html');
-  const site = read('public/gravewave-takeover.js');
+  const site = read('public/devil-tools.html');
   for (const { id, name } of [{ id: 'bloop', name: 'Gillrot' }, { id: 'nib', name: 'Nocturnib' }]) {
     const mascot = manifest.characters.find(c => c.id === id);
     assert.ok(mascot, name + ' in catalog');
@@ -124,5 +123,5 @@ test('Gillrot and Nocturnib upgraded artwork remains visible and all animated va
     assert.ok(gallery.includes("'" + id + "'"), name + ' is spotlighted in Devil Tools');
     assert.ok(site.includes("'" + id + "'"), name + ' is part of the sitewide mascot array');
   }
-  assert.ok(site.includes('home?[1,3,14]'), 'both appear in homepage ambient art');
+  assert.ok(!existsSync(resolve(root, 'public/gravewave-takeover.js')), 'home no longer injects legacy mascot crew');
 });

@@ -47,7 +47,7 @@ const cssReferences = css.sort().map(path => {
 // The old Gravewave overlay is kept as a dormant, opt-in compatibility asset.
  // Do not globally import it: that would override the approved Gothic theme.
  // All other zero-reference CSS files remain release blockers.
-const intentionallyRetainedCss = new Set(["gravewave-takeover.css"]);
+const intentionallyRetainedCss = new Set();
 const retainedCss = cssReferences.filter(entry => entry.references === 0 && intentionallyRetainedCss.has(entry.css)).map(entry=>entry.css);
 const orphanCandidates = cssReferences.filter(entry => entry.references === 0 && !intentionallyRetainedCss.has(entry.css)).map(entry => entry.css);
 

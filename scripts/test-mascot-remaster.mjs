@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,existsSync} from 'node:fs';
 const directory='public/assets/devil-tools/neon-nuisances/';
 const manifest=JSON.parse(readFileSync(directory+'manifest.json','utf8'));
 const names=[['bloop','Gillrot','axolotl'],['nib','Nocturnib','bat']];
@@ -45,9 +45,9 @@ test('Madhouse Memory uses Gillrot remaster instead of its outdated sprite copy'
  assert.equal(readFileSync('public/arcade/hosted/crypt-pairs/sprites/bloop.svg','utf8'),readFileSync(directory+'bloop.svg','utf8'));
 });
 test('Gillrot and Nocturnib art remains available without replacing the approved Gothic site theme',()=>{
- const site=readFileSync('public/gravewave-takeover.js','utf8');
- assert.match(site,/crewGroups=\[\[1,3,/);
- assert.match(site,/home\?\[1,3,14\]/);
+ const gallery=readFileSync('public/devil-tools.html','utf8');
+ assert.ok(gallery.includes("'bloop'") && gallery.includes("'nib'"));
+ assert.equal(existsSync('public/gravewave-takeover.js'),false);
  const nav=readFileSync('public/nav.js','utf8');
  assert.doesNotMatch(nav,/gravewave-takeover\.js\?v=20261102-mascot6/);
  assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic\d+/);
