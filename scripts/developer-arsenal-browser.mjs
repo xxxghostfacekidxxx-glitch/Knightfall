@@ -53,7 +53,12 @@ try {
         assert.equal(await page.locator("#bot-forge iframe[src^=\"/personal-bots.html?foundry=1\"]").count(),1);
         assert.equal(await catalog.getByRole("heading", { name: "Pixelorama", exact: true }).count(), role.developer ? 1 : 0);
         assert.equal(await page.locator("#release-simulator").count(), role.developer ? 1 : 0);
-        assert.equal(await page.locator("#creator-handoff:visible").count(), role.developer ? 0 : 1);
+        // Workspaces start hidden until their catalog shortcuts are opened.
+        assert.equal(await page.locator("#creator-handoff:visible").count(), 0);
+        await catalog.getByRole("link", { name: "Submit an idea" }).click();
+        await page.locator("#creator-handoff:visible").waitFor();
+        await page.locator("#foundry-back:visible").click();
+        await catalog.waitFor();
 
         const search = catalog.getByRole("searchbox", { name: "Find a tool" });
         await catalog.locator('[data-category="games"]').click();
