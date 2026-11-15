@@ -20,7 +20,7 @@
  accent-color:var(--kf-antique-gold);color-scheme:dark
 }
 html{background:#0d1013;scrollbar-color:#6f6266 #0d1013}
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])){
+body:not(.profile-custom-theme){
  color:var(--kf-bone);color-scheme:dark;
  background-color:#0d1013!important;
  background-image:radial-gradient(ellipse at 86% 2%,rgba(131,86,114,.17),transparent 42%),
