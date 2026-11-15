@@ -5,12 +5,13 @@ import {CHAOS_AGENTS,CHAOS_QA_FLEET,CHAOS_SOURCES,handleEyeOfChaos,runEyeChaosSc
 if(!globalThis.crypto)globalThis.crypto=webcrypto;
 
 function fixture(role="god",ready=true){
- const missions=new Map(),drafts=new Map(),events=[],queries=[];
+ const missions=new Map(),drafts=new Map(),events=[],queries=[],paused={value:0};
  const db={prepare(sql){
   const q={sql,args:[],bind(...v){this.args=v;return this},
    async first(){
     queries.push({sql,args:this.args});
-    if(sql.includes("sqlite_master"))return ready?{ready:1}:null;
+    if(sql.includes("sqlite_master"))return ready?{ready:3}:null;
+    if(sql.includes("SELECT paused FROM eye_chaos_controls"))return {paused:paused.value};
     if(sql.includes("FROM eye_chaos_missions WHERE id="))return missions.get(this.args[0])||null;
     if(sql.includes("FROM eye_chaos_drafts WHERE id="))return drafts.get(this.args[0])||null;
     if(sql.includes("FROM eye_chaos_drafts WHERE mission_id=")){
@@ -57,6 +58,7 @@ function fixture(role="god",ready=true){
     }else if(sql.startsWith("UPDATE eye_chaos_missions SET status=?,last_run_at=")){
      const d=missions.get(a[4]);Object.assign(d,{status:a[0],last_run_at:a[1],next_run_at:a[2]});
     }
+    if(sql.startsWith("UPDATE eye_chaos_controls SET paused="))paused.value=a[0];
     return {meta:{changes:1}};
    }};
   return q;
@@ -70,7 +72,7 @@ function fixture(role="god",ready=true){
   const request=new Request("https://api.ash-fall.com"+path,options);
   return handleEyeOfChaos(request,env,new URL(request.url),deps);
  }
- return {call,missions,drafts,queries,events,env,deps};
+ return {call,missions,drafts,queries,events,env,deps,paused};
 }
 const base="/api/god/chaos";
 test("the approved roster is exactly 20, Pop Morgue is #18, and the real QA matrix has ten workers",()=>{
@@ -232,4 +234,26 @@ test("Knightfall research reads only public non-deleted non-adult thread metadat
  assert.match(queries[0],/c\.slug NOT IN \('adults-only'\)/);
  assert.doesNotMatch(queries[0],/\bmessages\b|\bjournals\b|\bprivate\b/);
  assert.doesNotMatch(lead.body,/member_email|private chat/);
+});
+
+test("GOD master pause is durable and blocks AI execution, manual research and scheduled work",async()=>{
+ const f=fixture();
+ const mission=await f.call(base+"/missions","POST",{
+  division:"agents",agent_key:"chaos-01",kind:"research",source_key:"knightfall",
+  instructions:"Find public community discussion starters"});
+ const id=(await mission.json()).id;
+ const locked=await f.call(base+"/control","POST",{paused:true});
+ assert.equal(locked.status,200);
+ assert.equal(f.paused.value,1);
+ assert.equal((await f.call(base+"/control")).status,200);
+ assert.equal((await f.call(base+"/missions/"+id+"/run","POST")).status,423);
+ f.env.AI={run:async()=>{throw Error("Model should not be called when GOD paused")}};
+ assert.equal((await f.call(base+"/missions/"+id+"/draft","POST")).status,423);
+ assert.deepEqual(await runEyeChaosScheduledResearch(f.env),{executed:0,reason:"god_paused"});
+ assert.equal((await f.call(base+"/control","POST",{paused:"false"})).status,400);
+ assert.equal((await f.call(base+"/control","POST",{paused:false})).status,200);
+ assert.equal(f.paused.value,0);
+ assert.deepEqual(f.events.filter(x=>x.object_type==="system").map(x=>x.action),["master_pause","master_resume"]);
+ const unauthorized=fixture("moderator");
+ assert.equal((await unauthorized.call(base+"/control","POST",{paused:true})).status,403);
 });
