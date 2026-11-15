@@ -61,8 +61,16 @@ try {
           const value = style[property] || "";
           for (const match of value.matchAll(/rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/gi)) {
             const [, red, green, blue] = match.map(Number);
-            // Old rust/brown surfaces have red > green > blue. Neon pink has blue > green.
-            if (red >= green + 6 && green >= blue + 4) {
+            // The approved Gothic theme deliberately uses warm bone and bronze.
+            // Reject retired rust/orange UI tokens instead of any red > green > blue.
+            const retiredRgb = new Set([
+              "91,48,40","21,16,15","255,155,129","73,65,61",
+              "86,48,107","85,59,43","75,56,43","21,17,14","87,67,58"
+            ]);
+            const colorKey = [red, green, blue].join(",");
+            const harshOrange = red >= green + 55 && green >= blue + 15 &&
+              green >= 45 && red >= 115 && blue <= 135;
+            if (retiredRgb.has(colorKey) || harshOrange) {
               legacy.push({ selector, property, color: match[0] });
             }
           }
@@ -74,7 +82,7 @@ try {
       };
     });
     assert.match(report.stylesheet, /\/messages\.css\?v=\d{8}-[a-z0-9-]+/i, "Messages must load a versioned CSS asset");
-    assert.deepEqual(report.legacy, [], "Warm messaging palette leaked into computed browser styles");
+    assert.deepEqual(report.legacy, [], "Legacy rust/orange messaging palette leaked into browser styles");
   }
   console.log("PWA mobile smoke passed: start page, manifest, icons, shortcuts, privacy/deletion/offline pages, and narrow viewport.");
 } finally {
