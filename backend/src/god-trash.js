@@ -18,7 +18,7 @@ const TYPES=Object.freeze({
  moon_journal:{table:"moon_journal",id:"entry_date",label:"title",owner:"user_id",dateId:true},
  shadow_journal:{table:"shadow_journal",id:"entry_date",label:"title",owner:"user_id",dateId:true},
  media_albums:{table:"media_albums",id:"id",label:"name",owner:"owner_id"},
- shop_products:{table:"shop_products",id:"id",label:"name",owner:null}
+ shop_products:{table:"shop_products",id:"id",label:"name",owner:null,textId:true}
 });
 function parseId(type,value){
  if(type.dateId)return /^\d{4}-\d{2}-\d{2}$/.test(value)?value:null;
@@ -67,6 +67,7 @@ export async function handleGodTrash(request,env,url,{requireUser,json,origin}){
  if(!row)return response({error:"Item is not soft-deleted or no longer exists."},404);
  const where=type.id+"=?"+(type.dateId?" AND user_id=?":"")+" AND deleted_at IS NOT NULL";
  if(action==="restore"){
+   if(category==="member_memo_mail")await env.DB.prepare("UPDATE member_memo_mail SET sender_archived_at=NULL,recipient_archived_at=NULL WHERE id=?").bind(id).run();
    await env.DB.prepare("UPDATE "+type.table+" SET deleted_at=NULL WHERE "+where).bind(...check.args).run();
    return response({ok:true,restored:true,category,id});
  }
