@@ -63,6 +63,7 @@
  const updateDocument=()=>{root.dataset.kfDeckSkin=chosen;root.style.colorScheme="dark"};
  updateDocument();
  let locker=null,renderCardList=null,mutations=Promise.resolve(),syncing=null;
+ let activeCategory="all";
  const request=async(method="GET",body=null)=>{
   const response=await window.fetch(API,{
    method,credentials:"include",cache:"no-store",
@@ -226,8 +227,18 @@
   refresh.type="button";refresh.addEventListener("click",syncNow);
   syncStatus.append(refresh);
   locker.append(syncStatus);
+  const filters=make("div","kf-deck-filters");
+  filters.setAttribute("role","group");filters.setAttribute("aria-label","Filter deck skins");
+  for(const [category,name] of [["all","All 42"],["free","Free 12"],["premium","Collector 12"],["cinders","Cinders 12"],["vip","VIP 6"]]){
+   const tab=make("button","kf-deck-filter"+(activeCategory===category?" is-active":""),name);
+   tab.type="button";tab.setAttribute("aria-pressed",String(activeCategory===category));
+   tab.addEventListener("click",()=>{activeCategory=category;renderCardList?.()});
+   filters.append(tab);
+  }
+  locker.append(filters);
   const grid=make("div","kf-deck-grid");
   for(const skin of SKINS){
+   if(activeCategory!=="all"&&skin.kind!==activeCategory)continue;
    const available=allowed(skin);
    const item=make("article","kf-deck-item"+(skin.id===chosen?" is-selected":"")+(available?"":" is-locked"));
    const preview=make("div","kf-deck-preview kf-deck-preview--"+skin.id);
