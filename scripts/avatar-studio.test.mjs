@@ -66,3 +66,21 @@ test('Misfit Studio searches all 27 traits and defers offscreen thumbnails',()=>
  assert.match(editor,/thumbnailCache\.size>120/);
  assert.match(styles,/trait-no-results/);
 });
+
+test('Knightfall illustrated layers visibly distinguish special saved traits',async()=>{
+ const kit=await getKit();
+ const base={...kit.defaults,face_mark:'none',ear_style:'human',outfit_patch:'none',aura:'none'};
+ const plain=kit.render(base);
+ const scar=kit.render({...base,face_mark:'scar'});
+ const elf=kit.render({...base,ear_style:'elf'});
+ const patched=kit.render({...base,outfit_patch:'skull'});
+ const storm=kit.render({...base,aura:'lightning'});
+ for(const result of [scar,elf,patched,storm]){
+  assert.match(result,/data-render-engine="humanforge-forge2d"/);
+  assert.notEqual(result,plain,'Custom layer must change output artwork');
+ }
+ assert.match(scar,/M140 144l16 12/);
+ assert.match(elf,/M119 148L87 108/);
+ assert.match(patched,/translate\(240 395\)/);
+ assert.match(storm,/M38 260L18 337/);
+});
