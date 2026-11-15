@@ -31,11 +31,27 @@ jobs:
             echo 'Android production release signing: owner setup is needed.' >> "$GITHUB_STEP_SUMMARY"
             echo 'No signed candidate was started; no private signing data was generated or exposed.' >> "$GITHUB_STEP_SUMMARY"
             echo 'Use scripts/bootstrap-android-signing.sh on the owner-controlled device.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Private signing setup: https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/android-release-runbook.md' >> "$GITHUB_STEP_SUMMARY"
             echo "ready=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo 'All four protected Android signing secrets are configured. Starting signed candidate build without public release.' >> "$GITHUB_STEP_SUMMARY"
           echo "ready=true" >> "$GITHUB_OUTPUT"
+      - name: Show latest available internal Android APK test runs
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo '## Recent internal test builds' >> "$GITHUB_STEP_SUMMARY"
+          echo 'These APKs use the DEBUG certificate and must not be advertised as permanent releases.' >> "$GITHUB_STEP_SUMMARY"
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow knightfall-android.yml \\
+            --limit 5 --json databaseId,conclusion,createdAt \\
+            --jq '.[] | "- Knightfall: run \(.databaseId), \(.conclusion), \(.createdAt)"' >> "$GITHUB_STEP_SUMMARY" || true
+          gh run list --repo "$GITHUB_REPOSITORY" --workflow ruinwire-android.yml \\
+            --limit 5 --json databaseId,conclusion,createdAt \\
+            --jq '.[] | "- Ruinwire: run \(.databaseId), \(.conclusion), \(.createdAt)"' >> "$GITHUB_STEP_SUMMARY" || true
+          echo 'GitHub sign-in is needed to download the workflow artifact ZIP. A signed public release is a separate process.' >> "$GITHUB_STEP_SUMMARY"
       - name: Start owner-controlled signed Android candidate
         if: steps.preflight.outputs.ready == 'true'
         env:
