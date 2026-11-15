@@ -43,7 +43,38 @@ function scene(type,id){
  svg.setAttribute('preserveAspectRatio','xMidYMid slice');
  svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');
  svg.classList.add('pet-world-illustration');
- svg.innerHTML=(landscapes[type]||landscapes.feral)+seedDots(id);
+ // Illustrated comic backdrop: broad cel-shaded shapes rather than another
+ // site-wide fluorescent filter. Each affinity keeps its own color language.
+ svg.innerHTML='<ellipse cx="200" cy="225" rx="161" ry="158" fill="var(--creature-light)" opacity=".055"/>'+
+   '<circle cx="200" cy="210" r="147" fill="none" stroke="var(--creature-mid)" stroke-width="9" opacity=".27"/>'+
+   '<path d="M27 84Q76 33 129 38M273 42Q335 60 368 119" fill="none" stroke="var(--creature-light)" stroke-width="8" stroke-linecap="round" opacity=".33"/>'+
+   (landscapes[type]||landscapes.feral)+seedDots(id)+
+   '<path d="M50 353Q198 328 352 355" fill="none" stroke="var(--creature-ink)" stroke-width="12" stroke-linecap="round" opacity=".67"/>';
+
+ return svg;
+}
+const typeIcons={
+ wildwood:'<path d="M19 5q19 3 17 21-20 2-21-14-6 9-6 23" />',
+ tidal:'<path d="M5 22q9-15 19 0 9 15 18 0M8 31q6-9 12 0 6 9 12 0" />',
+ ember:'<path d="M25 4Q10 20 18 25q-2-13-12-4-3 17 17 17Q45 37 36 19q-1 13-11 13Q30 18 25 4Z" />',
+ dusk:'<path d="M33 7A17 17 0 1 0 33 40 20 20 0 1 1 33 7Z" />',
+ spectral:'<path d="M11 13q13-16 26 0v21l-6-5-7 6-7-6-6 5Z" /><circle cx="19" cy="22" r="2"/><circle cx="29" cy="22" r="2"/>',
+ stone:'<path d="m23 4 15 9 1 18-16 12L7 30 8 13Z" /><path d="M23 4v39M8 13l31 18"/>',
+ storm:'<path d="m28 3-19 24h13l-4 18 22-27H27Z" />',
+ celestial:'<path d="m23 3 5 14 14 5-14 5-5 14-5-14-14-5 14-5Z" />',
+ feral:'<circle cx="12" cy="15" r="5"/><circle cx="24" cy="10" r="5"/><circle cx="37" cy="15" r="5"/><path d="M10 32q14-18 28 0 2 11-14 10-16 1-14-10Z"/>',
+ toxic:'<path d="M9 38q7-21 13-33 11 14 13 33Z" /><path d="M18 30h12M23 19v17" />',
+ neon:'<path d="M8 9h32v27H8Z" /><path d="M18 13v19m10-19v19M12 22h24" />'
+};
+function cartoonStamp(type){
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+ svg.setAttribute('viewBox','0 0 48 48');
+ svg.setAttribute('aria-hidden','true');
+ svg.setAttribute('focusable','false');
+ svg.classList.add('pet-comic-affinity-mark');
+ svg.innerHTML='<circle cx="24" cy="24" r="22" fill="var(--creature-ink)" stroke="var(--creature-light)" stroke-width="2"/>'+
+   '<g fill="var(--creature-light)" stroke="var(--creature-light)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'+
+   (typeIcons[type]||typeIcons.feral)+'</g>';
  return svg;
 }
 function decorate(visual,item){
@@ -51,16 +82,16 @@ function decorate(visual,item){
  const id=String(item?.species||item?.id||'');
  const type=landscapes[item?.affinity]?item.affinity:(affinity[id]||'feral');
  const stage=Math.max(1,Math.min(3,Number(item?.growth?.stage)||1));
- visual.classList.add('pet-render-v2');
+ visual.classList.add('pet-render-v2','pet-render-v3');
  visual.dataset.affinity=type;visual.dataset.form=String(stage);
  const parent=visual.closest('.pet-card');
  if(parent){parent.dataset.affinity=type;parent.dataset.form=String(stage)}
  visual.prepend(scene(type,id));
  const light=document.createElement('span');light.className='pet-world-light';light.setAttribute('aria-hidden','true');
  const texture=document.createElement('span');texture.className='pet-world-texture';texture.setAttribute('aria-hidden','true');
- visual.append(light,texture);
+ visual.append(light,texture,cartoonStamp(type));
  if(stage>1){const mark=document.createElement('span');mark.className='pet-growth-crown';mark.setAttribute('aria-hidden','true');visual.append(mark)}
  return visual;
 }
-window.KnightfallPetRenderer=Object.freeze({decorate,typeFor:id=>affinity[id]||'feral'});
+window.KnightfallPetRenderer=Object.freeze({decorate,typeFor:id=>affinity[id]||'feral',artDirection:'storybook-comic-v3'});
 })();
