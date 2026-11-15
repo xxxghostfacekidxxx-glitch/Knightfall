@@ -2,6 +2,7 @@
 import {BOT_SLOT_PRODUCTS} from "./bot-slot-shop.js";
 import {PET_ACCESSORIES} from "./mascot-collectibles.js";
 import {PREMIUM_DECK_SKUS} from "./deck-skin-products.js";
+import {handleVerifiedBillingEvent} from "./stripe-billing.js";
 const respond=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{"content-type":"application/json","cache-control":"no-store"}});
 const hex=bytes=>Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,"0")).join("");
 async function verifyStripeSignature(raw,header,secret){
@@ -56,6 +57,10 @@ export async function handleBotSlotShop(request,env,url,user){
   let event;try{event=JSON.parse(raw)}catch{return respond({error:"Invalid event"},400)}
   // A fully refunded card charge revokes only the matching collector finish.
   // Verify the Stripe signature above before trusting any reversal event.
+  // Signature checked above. Grant membership only from Stripe subscription state.
+  if(await handleVerifiedBillingEvent(event,env))return respond({received:true});
+  // A Checkout redirect or completed subscription session is not entitlement proof.
+  if(event.type==="checkout.session.completed"&&event.data?.object?.mode==="subscription")return respond({received:true});
   if(event.type==="charge.refunded"){
    const charge=event.data?.object;
    if(typeof charge?.payment_intent!=="string"||!Number.isSafeInteger(charge.amount)||!Number.isSafeInteger(charge.amount_refunded)||charge.amount_refunded<charge.amount)return respond({received:true});
