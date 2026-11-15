@@ -1,6 +1,6 @@
 /* Ruinwire shares Knightfall messages and authentication, not a second message store. */
 (()=>{"use strict";
-if(location.pathname!=="/messages.html"||new URLSearchParams(location.search).get("app")!=="ruinwire")return;
+if(!["/messages","/messages.html"].includes(location.pathname)||new URLSearchParams(location.search).get("app")!=="ruinwire")return;
 document.documentElement.classList.add("ruinwire-mode");
 document.title="Ruinwire | Knightfall Messenger";
 const m=document.createElement("link");m.rel="manifest";m.href="/ruinwire.webmanifest";document.head.append(m);
@@ -9,7 +9,7 @@ const style=document.createElement("link");style.rel="stylesheet";style.href="/r
 function init(){
 const shell=document.querySelector(".messages-shell");if(!shell)return;
 const bar=document.createElement("div");bar.className="rw-appbar";bar.setAttribute("role","banner");
-bar.innerHTML='<img src="/icons/ruinwire.svg" alt=""><strong>RUIN<span>WIRE</span></strong><div class="rw-spacer"></div><a href="/auth.html?next=%2Fmessages.html%3Fapp%3Druinwire" id="rw-signin">Sign in</a><a href="/notifications.html" aria-label="Notification settings">Alerts</a><a href="/" aria-label="Open Knightfall">Knightfall</a>';
+bar.innerHTML='<img src="/icons/ruinwire.svg" alt=""><strong>RUIN<span>WIRE</span></strong><div class="rw-spacer"></div><a href="/auth?next=%2Fmessages%3Fapp%3Druinwire" id="rw-signin">Sign in</a><a href="/notifications.html" aria-label="Notification settings">Alerts</a><a href="/" aria-label="Open Knightfall">Knightfall</a>';
 shell.prepend(bar);
 const h=document.querySelector(".messages-hero h1");if(h)h.innerHTML="RUINWIRE<span>.</span>";
 const subtitle=document.querySelector(".messages-hero>div>p:last-child");if(subtitle)subtitle.textContent="Your Knightfall conversations, now on their own frequency.";
