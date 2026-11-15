@@ -3,6 +3,8 @@
 @import url("/section-overhaul.css?v=20261115-gothic9");
 /* Shared final polish for pages with or without nav.js. */
 @import url("/knightfall-unified-theme.css?v=20261115-gothic9");
+/* Navigationless pages get the same Gothic artwork styles. */
+@import url("/knightfall-artwork.css?v=20261115-art3");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
