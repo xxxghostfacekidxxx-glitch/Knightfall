@@ -67,4 +67,4 @@ assert.doesNotMatch(leaderboardsCSS,/#c6ff45|#ff55d8/i,"Leaderboards must use Go
 assert.doesNotMatch(arcadeHub,/chaos-cartridge-theme\.css/,"Hub must not load per-game neon skins");
 assert.match(arcadeHub,/arcade-catalog\.css\?v=20261115-gothic7/);
 
-assert.doesNotMatch(foundryPage,/href="\\/arcade-polish\\.css/,"Creator Foundry must not load neon arcade game skin");
+assert.ok(!foundryPage.includes('href="/arcade-polish.css'),"Creator Foundry must not load neon arcade game skin");
