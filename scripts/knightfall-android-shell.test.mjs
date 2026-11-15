@@ -96,7 +96,7 @@ test('Android phone QA is tied to the candidate version, GitHub run and exact AP
    assert.match(qa,new RegExp(id));
  }
  assert.match(qa,/kf-android-physical-qa-v2/);
- assert.match(qa,/\\^\\[a-f0-9\\]\\{64\\}\\$/);
+ assert.ok(qa.includes('/^[a-f0-9]{64}$/'), 'Phone QA requires exactly 64 hexadecimal SHA-256 digits');
  assert.match(qa,/Build identity changed: old test checkmarks were cleared/);
  assert.match(qa,/checks\.forEach\(x=>x\.checked=false\)/);
  assert.doesNotMatch(qa,/fetch\(|https?:\/\//);
