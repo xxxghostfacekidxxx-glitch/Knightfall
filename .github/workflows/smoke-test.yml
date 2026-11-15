@@ -134,6 +134,8 @@ jobs:
         run: node scripts/messaging-theme-audit.mjs
       - name: Guard unified neon/yellow design system and protected surfaces
         run: node scripts/site-theme-audit.mjs
+      - name: Test seller commerce privacy and input validation
+        run: node --test backend/src/shop-commerce.test.mjs && node --check backend/src/shop-commerce.js
       - name: Verify admin task navigation and permissions contract
         run: node --test scripts/admin-task-navigation.test.mjs
       - name: Verify canonical URLs and redirect targets
