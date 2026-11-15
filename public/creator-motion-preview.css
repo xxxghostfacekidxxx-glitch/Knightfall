@@ -10,7 +10,7 @@
 .kf-pose-controls select,.kf-pose-controls input[type=range]{width:100%;max-width:100%;min-height:42px;border:1px solid #806b7b;border-radius:8px;padding:.4rem;background:#1b1a24;color:#f6e9f0;font:inherit}
 .kf-pose-controls input[type=range]{min-height:32px;padding:0;accent-color:#d6ad94}
 .kf-pose-check{display:flex;align-items:center;gap:.55rem;color:#eee;font-size:.85rem}
-.kf-pose-check input{width:19px;height:19px;accent-color:#c6ff45}
+.kf-pose-check input{width:19px;height:19px;accent-color:#c7a77c}
 .kf-pose-buttons{display:flex;flex-wrap:wrap;gap:.55rem}
 .kf-pose-buttons button{flex:1;min-height:44px}
 @media(max-width:680px){.kf-pose-layout{grid-template-columns:1fr}.kf-pose-stage{max-width:450px;width:100%;margin-inline:auto}}
