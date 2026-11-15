@@ -68,8 +68,8 @@ test("only server-owned authenticated customer can get billing link",async()=>{
  assert.equal(state.writes.length,0);
 });
 test("verified webhook path routes exclusively through signed member-shop gateway",()=>{
- const shop=readFileSync("src/member-shop-checkout.js","utf8");
- const app=readFileSync("src/index.js","utf8");
+ const shop=readFileSync(new URL("./member-shop-checkout.js",import.meta.url),"utf8");
+ const app=readFileSync(new URL("./index.js",import.meta.url),"utf8");
  assert.match(shop,/verifyStripeSignature\(raw/);
  assert.match(shop,/handleVerifiedBillingEvent\(event,env\)/);
  assert.match(app,/handleStripeBilling\(request,env,url,user\)/);
