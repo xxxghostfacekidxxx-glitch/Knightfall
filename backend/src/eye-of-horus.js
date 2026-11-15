@@ -40,7 +40,7 @@ export function eyeReviewQuery(category,limit,offset,userId) {
   if(userId!==null){conditions.push(filterColumn+"=?");parameters.push(userId)}
   const where=conditions.length?" WHERE "+conditions.join(" AND "):"";
   const orderColumn=category==="bot_definitions"?"b.created_at":category==="profile_photos"?"p.created_at":category==="message_attachments"?"a.created_at":"m.created_at";
-  return {sql:select+where+" ORDER BY "+orderColumn+" DESC, id DESC LIMIT ? OFFSET ?",parameters:[...parameters,limit,offset]};
+  return {sql:select+where+" ORDER BY "+orderColumn+" DESC, "+orderColumn.split(".")[0]+".id DESC LIMIT ? OFFSET ?",parameters:[...parameters,limit,offset]};
 }
 
 function sessionKey(cookie){return "eye:unlock:"+cookie}
