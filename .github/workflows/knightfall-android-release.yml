@@ -20,9 +20,17 @@ on:
         type: boolean
         default: false
       physical_test_confirmation:
-        description: Enter ANDROID_VERIFIED only after signed APK is tested on a real Android device
+        description: Enter ANDROID_VERIFIED only after testing the exact signed APK on real Android hardware
         type: string
         default: NOT_TESTED
+      candidate_run_id:
+        description: Successful signed candidate workflow run ID; required for public release
+        type: string
+        default: ''
+      tested_apk_sha256:
+        description: Exact 64-character SHA-256 checksum of the APK installed on the test phone
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -43,6 +51,8 @@ jobs:
       STAGE_ASSET_LINKS: ${{ inputs.stage_asset_links }}
       PUBLISH_RELEASE: ${{ inputs.publish_public_release }}
       DEVICE_CONFIRMATION: ${{ inputs.physical_test_confirmation }}
+      CANDIDATE_RUN_ID: ${{ inputs.candidate_run_id }}
+      TESTED_APK_SHA256: ${{ inputs.tested_apk_sha256 }}
       KNIGHTFALL_ANDROID_KEYSTORE_BASE64: ${{ secrets.KNIGHTFALL_ANDROID_KEYSTORE_BASE64 }}
       KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD }}
       KNIGHTFALL_ANDROID_KEY_ALIAS: ${{ secrets.KNIGHTFALL_ANDROID_KEY_ALIAS }}
@@ -74,6 +84,8 @@ jobs:
             exit 1
           fi
           if [[ "$PUBLISH_RELEASE" == true ]]; then
+            [[ "$CANDIDATE_RUN_ID" =~ ^[1-9][0-9]*$ ]] || { echo "::error::Provide the successful signed-candidate Actions run ID."; exit 1; }
+            [[ "$TESTED_APK_SHA256" =~ ^[a-fA-F0-9]{64}$ ]] || { echo "::error::Provide the exact SHA-256 of the APK tested on real Android hardware."; exit 1; }
             if gh release view "v$VERSION_NAME" >/dev/null 2>&1; then
               echo "::error::Version v$VERSION_NAME already has a release; use a new version."
               exit 1
@@ -112,11 +124,54 @@ jobs:
           mkdir -p android/app/src/main/res/drawable-nodpi
           cp public/icons/knightfall-crest-512.png android/app/src/main/res/drawable-nodpi/knightfall_icon.png
       - name: Build release-signed APK and Google Play bundle
+        if: ${{ !inputs.publish_public_release }}
         shell: bash
         run: |
           set -euo pipefail
           gradle --project-dir android :app:assembleRelease :app:bundleRelease --no-daemon \
             "-PknightfallVersionCode=$VERSION_CODE" "-PknightfallVersionName=$VERSION_NAME"
+      - name: Retrieve EXACT signed candidate previously tested on real Android hardware
+        if: inputs.publish_public_release
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run view "$CANDIDATE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --json conclusion,headBranch,workflowName,event,headSha \
+            > "$RUNNER_TEMP/candidate-run.json"
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const run=JSON.parse(readFileSync(process.env.RUNNER_TEMP+'/candidate-run.json','utf8'));
+          if(run.conclusion!=='success'||run.headBranch!=='main'||
+              run.workflowName!=='Knightfall signed Android release candidate'||
+              run.event!=='workflow_dispatch'||!/^[a-f0-9]{40}$/i.test(String(run.headSha))) {
+            throw Error('Requested candidate is not a successful, manually approved Knightfall main-branch signing run.');
+          }
+          NODE
+          mkdir -p "$RUNNER_TEMP/tested-candidate"
+          gh run download "$CANDIDATE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name knightfall-signed-release-candidate --dir "$RUNNER_TEMP/tested-candidate"
+          APK_SOURCE="$RUNNER_TEMP/tested-candidate/app-release.apk"
+          AAB_SOURCE="$RUNNER_TEMP/tested-candidate/app-release.aab"
+          test -s "$APK_SOURCE" && test -s "$AAB_SOURCE"
+          echo "$TESTED_APK_SHA256  $APK_SOURCE" | sha256sum --check --status || {
+            echo "::error::The candidate APK differs from the exact APK tested on the phone."
+            exit 1
+          }
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const p=process.env.RUNNER_TEMP+'/tested-candidate/android-release-candidate.json';
+          const info=JSON.parse(readFileSync(p,'utf8'));
+          if(info.status!=='not_released'||info.signedReleaseVerified!==false||
+             info.apkUrl!==null||info.versionName!==process.env.VERSION_NAME||
+             info.applicationId!=='com.ashfall.knightfall'||
+             String(info.apkSha256).toLowerCase()!==process.env.TESTED_APK_SHA256.toLowerCase()) {
+            throw Error('Candidate metadata must match the tested APK checksum, exact version and Knightfall package.');
+          }
+          NODE
+          mkdir -p android/app/build/outputs/apk/release android/app/build/outputs/bundle/release
+          cp "$APK_SOURCE" android/app/build/outputs/apk/release/app-release.apk
+          cp "$AAB_SOURCE" android/app/build/outputs/bundle/release/app-release.aab
+          echo 'Reusing the exact device-tested APK bytes, not rebuilding a different artifact.' >> "$GITHUB_STEP_SUMMARY"
       - name: Verify release signatures and generate exact Digital Asset Links
         shell: bash
         run: |
@@ -131,6 +186,13 @@ jobs:
           [[ "$APK_CERT_SHA" =~ ^[a-f0-9]{64}$ ]] || { echo "::error::APK signing fingerprint unavailable"; exit 1; }
           STORE_CERT_SHA="$(keytool -exportcert -keystore "$KNIGHTFALL_ANDROID_KEYSTORE_FILE" -alias "$KNIGHTFALL_ANDROID_KEY_ALIAS" -storepass:env KNIGHTFALL_ANDROID_KEYSTORE_PASSWORD | openssl dgst -sha256 | sed 's/.*= //')"
           [[ "$STORE_CERT_SHA" == "$APK_CERT_SHA" ]] || { echo "::error::APK signer does not match protected release keystore"; exit 1; }
+          if [[ "$PUBLISH_RELEASE" == true ]]; then
+            ACTUAL_SHA="$(sha256sum "$APK" | cut -d ' ' -f 1)"
+            if [[ "$ACTUAL_SHA" != "${TESTED_APK_SHA256,,}" ]]; then
+              echo "::error::Public APK does not match the exact signed APK tested on Android hardware."
+              exit 1
+            fi
+          fi
           jarsigner -verify "$AAB" >/dev/null || { echo "::error::App Bundle signature verification failed"; exit 1; }
           FINGERPRINT="$(printf %s "$APK_CERT_SHA" | sed 's/../&:/g;s/:$//' | tr '[:lower:]' '[:upper:]')"
           OUT="$RUNNER_TEMP/knightfall-candidate"
