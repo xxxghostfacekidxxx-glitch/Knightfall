@@ -13,7 +13,7 @@ tables=[
 ]
 con=sqlite3.connect(":memory:")
 for table in tables:
-    con.execute(f"CREATE TABLE {table} (id INTEGER PRIMARY KEY,owner_id INTEGER)")
+    con.execute(f"CREATE TABLE {table} (id INTEGER PRIMARY KEY,owner_id INTEGER,user_id INTEGER,bot_id TEXT)")
 con.executescript("CREATE TABLE eye_of_horus_access_log (id INTEGER PRIMARY KEY);")
 con.executescript(migration)
 for table in tables:
