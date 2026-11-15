@@ -95,7 +95,7 @@ test("global navigation exposes only one arcade directory", () => {
   assert.ok(menu, "Shared primary navigation not found");
   const hrefs = [...menu.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map(match => match[1]);
   assert.equal(hrefs.filter(href => href === "/#ecosystem").length, 0, "Explore duplicates the home brand route");
-  assert.match(nav, /class="kf-brand" href="\/" aria-label="Ash-Fall home"/);
+  assert.match(nav, /class="kf-brand" href="\/" aria-label="Knightfall home"/);
   assert.match(nav, /brand\.setAttribute\("aria-current", "page"\)/);
   assert.equal(hrefs.filter(href => href === "/chaos-cartridge.html").length, 1);
   assert.equal(new Set(hrefs).size, hrefs.length, "Duplicate links in primary navigation");
