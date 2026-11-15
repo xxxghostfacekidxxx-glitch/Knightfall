@@ -220,3 +220,11 @@ On November 3, 2026 UTC, the production D1 database was audited and all 36 expec
 - The API's insert uses `INSERT OR IGNORE` plus a D1 affected-row check. A concurrent submission that loses to the UNIQUE index returns the existing request and does not duplicate audit/notification fanout.
 - `scripts/test_account_deletion_migration.py` tests uniqueness across statuses, transition to in-progress, historical terminal requests, and migration idempotency; the runtime smoke workflow runs it.
 - Source changes and schema installation do **not** prove authenticated end-to-end deletion request submission, actual account erasure or mobile acceptance. Issue #150 stays open.
+
+## 0130: Staff homepage activity and personal bot tiers (November 14, 2026)
+
+- `0130_home_activity_and_bot_tiers.sql` creates `site_activity_posts` with a D1 staff-only INSERT trigger, plus `member_premium_memberships` for server-owned Premium entitlements.
+- Existing Bot Creator grants are renamed Digital Creator. All Digital Creators receive unlimited slots and the professional builder, without gaining administrator permissions.
+- Personal bot limits: staff (God/admin/moderator) and Digital Creators unlimited; regular members 5; active Premium 10; verified purchased extra slots additive. Both the Worker policy and D1 `personal_bots_owner_limit` trigger enforce them. The API cannot grant Premium from browser input; paid-tier webhook integration remains a separate billing task.
+- Production schema, trigger definitions, Digital Creator records, and migration ledger were read back after a one-time reviewed Cloudflare D1 API application on November 14, 2026 (America/Chicago). Changes to user entitlements must be provisioned only through trusted billing or administrator workflows.
+- Tests: `node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs`, followed by account-level staff/member/Premium acceptance checks.
