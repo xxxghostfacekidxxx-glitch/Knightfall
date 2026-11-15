@@ -119,8 +119,15 @@
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountDevilToolsStamps, { once: true });
   else mountDevilToolsStamps();
-  // Shared PWA setup and global Chaos Cartridge favicon.
-  const iconLinks = [
+  // Dedicated Ruinwire PWA keeps its own icon; all other pages use Knightfall's crest.
+  const isRuinwire = ["/ruinwire", "/ruinwire.html"].includes(location.pathname) ||
+    (["/messages", "/messages.html"].includes(location.pathname) &&
+      new URLSearchParams(location.search).get("app") === "ruinwire");
+  const iconLinks = isRuinwire ? [
+    { rel: "icon", href: "/icons/ruinwire.svg", type: "image/svg+xml" },
+    { rel: "shortcut icon", href: "/icons/ruinwire.svg", type: "image/svg+xml" },
+    { rel: "apple-touch-icon", href: "/icons/knightfall-crest-512.png?v=20261114" }
+  ] : [
     { rel: "icon", href: "/icons/knightfall-crest-192.png?v=20261114", type: "image/png" },
     { rel: "shortcut icon", href: "/icons/knightfall-crest-192.png?v=20261114", type: "image/png" },
     { rel: "apple-touch-icon", href: "/icons/knightfall-crest-512.png?v=20261114" }
@@ -450,7 +457,7 @@
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
       // One shared WebSocket signal for inbox bubbles, with polling fallback.
-      if (location.pathname !== "/messages.html") {
+      if (!["/messages", "/messages.html"].includes(location.pathname)) {
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
