@@ -331,6 +331,24 @@ function draw(){
  rect(px+8,py+24,18,5,"#24342d66");rect(px+9,py+13,14,15,"#34354b");rect(px+10,py+7,12,12,"#f2c0a0");
  rect(px+7,py+4,18,7,"#de496e");rect(px+12,py+2,10,5,"#f2c2cb");rect(px+12,py+15,3,2,"#292638");rect(px+18,py+15,3,2,"#292638");
 }
+function drawFieldMap(){
+ const canvas=$("field-map");if(!canvas)return;
+ const ctx=canvas.getContext("2d");if(!ctx)return;
+ const p=8,colors={town:"#d7b995",path:"#d1ad82",grass:"#74b777",field:"#92c88c",tree:"#265f55",water:"#348dad",house:"#aa696b",roof:"#82516e",wall:"#202f34"};
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){ctx.fillStyle=colors[tile(x,y)]||colors.wall;ctx.fillRect(x*p,y*p,p,p);}
+ for(const npc of NPCS){
+  const cleared=npc.kind==="gym"&&state.badges.includes(npc.id);
+  ctx.fillStyle=npc.kind==="gym"?(cleared?"#d1ecc4":"#f489ba"):"#f3d46e";
+  ctx.fillRect(npc.x*p+1,npc.y*p+1,p-2,p-2);
+ }
+ for(const shrine of SHRINES){
+  ctx.fillStyle=state.caught.includes(shrine.id)?"#d1ecc4":state.complete?"#b58bff":"#635276";
+  ctx.fillRect(shrine.x*p+1,shrine.y*p+1,p-2,p-2);
+ }
+ ctx.fillStyle="#142431";ctx.fillRect(state.x*p-2,state.y*p-2,p+4,p+4);
+ ctx.fillStyle="#fffaff";ctx.fillRect(state.x*p,state.y*p,p,p);
+ ctx.fillStyle="#e14f8c";ctx.fillRect(state.x*p+2,state.y*p+2,p-4,p-4);
+}
 function hpbar(c){const ratio=clamp(c.hp/c.maxHp,0,1);return '<span class="health"><span style="width:'+(ratio*100)+'%;background:'+(ratio>.5?"#7ae4a0":ratio>.2?"#e9d575":"#ff737f")+'"></span></span>';}
 function sprite(id,canvasId){
  const cvs=$(canvasId);if(!cvs)return;
@@ -375,10 +393,11 @@ function openMenu(type){
   const rows=[["orbs","Capture Orb",30],["superOrbs","Prism Orb",80],["potions","Potion",22],["revives","Revive",65]];
   area.innerHTML='<p>Cinders: '+state.coins+'</p>'+rows.map(row=>'<div class="shop-row"><span><strong>'+row[1]+'</strong> · owned '+state.items[row[0]]+'</span><button data-buy="'+row[0]+'" '+(state.coins<row[2]?"disabled":"")+'>Buy · '+row[2]+'</button></div>').join("");
  }else if(type==="map"){
-  area.innerHTML='<p>Start in Cinder Town. Defeat Wardens to unlock regions. After earning three crests, awaken the three legendary shrines at positions 54,18; 59,18; and 62,18.</p><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((s,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(s)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'.</p>';
+  area.innerHTML='<p>Pixel map: white and pink = you, yellow = town services, pink = Wardens, purple = sealed or active legendary shrines.</p><canvas id="field-map" width="512" height="304" role="img" aria-label="Cinderwild region map with player location, Wardens and legendary shrines"></canvas><div class="area-list">'+["Cinder Town · Nurse & Shop","Bramble Trail · Warden Briar","Storm Marsh · Captain Volt","Eclipse Ridge · Oracle Nyx"].map((label,i)=>'<p>'+(i===0||state.badges.length>=i?"✓ ":"🔒 ")+esc(label)+'</p>').join("")+'</div><p>Current position: '+state.x+', '+state.y+'. Legend shrines: 54,18 · 59,18 · 62,18.</p>';
  }else{
   area.innerHTML='<p>You are a field trainer. Choose one of three starter creatures, wander into tall grass for wild encounters, capture and train a party of six, challenge all three Wardens, and fill the Bestiary.</p><p>Controls: arrow keys or WASD to walk, E/Space to interact, M for menu, and touch controls on mobile.</p><p>Three crests: '+state.badges.map(id=>esc(GYMS.find(g=>g.id===id).badge)).join(", ")+'</p><p>Battle victories: '+state.wins+' · Steps: '+state.steps+'</p><div class="inline-actions"><button id="export-save">Export save</button><button id="reset-save">Erase local save</button></div><p class="hint">Offline save is stored only in this browser. Export a backup before clearing site data.</p>';
  }
+ if(type==="map")drawFieldMap();
 }
 function closeMenu(){modal="";$("menu").hidden=true;}
 function firstRun(){
