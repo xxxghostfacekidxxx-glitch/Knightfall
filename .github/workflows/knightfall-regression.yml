@@ -70,6 +70,7 @@ jobs:
           node --test scripts/bot-creator-access.test.mjs
           node --test scripts/knightfall-art-rollout.test.mjs
           node --test scripts/knightfall-art-motion.test.mjs
+          node --test scripts/knightfall-android-shell.test.mjs
           node --test scripts/arcade-nextgen-visual.test.mjs
           node --test scripts/arcade-neon-surge.test.mjs
           node --test scripts/arcade-embervale.test.mjs
