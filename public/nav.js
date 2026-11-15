@@ -14,34 +14,12 @@
     sections.href='/section-overhaul.css?v=20261029-sections1';
     sections.dataset.sectionOverhaul='true';document.head.append(sections);
   }
-  // Shared Gravewave theme and original artwork, loaded once on all nav-enabled pages.
-  if (!document.querySelector('link[data-gravewave-theme]')) {
-    const theme=document.createElement('link');theme.rel='stylesheet';theme.href='/neon-global.css?v=20261026-neonfix2';theme.dataset.gravewaveTheme='true';document.head.append(theme);
-  }
-  if (!document.querySelector('script[data-gravewave-decor]')) {
-    const decor=document.createElement('script');decor.src='/gravewave-decor.js?v=20261026-neonfix2';decor.defer=true;decor.dataset.gravewaveDecor='true';document.head.append(decor);
-  }
-  // Loaded after legacy page styles, including on cached installed-app pages.
-  if (!document.querySelector('link[data-gravewave-consistency]')) {
-    const consistency=document.createElement('link');
-    consistency.rel='stylesheet';
-    consistency.href='/gravewave-consistency.css?v=20261027-profile-neon1';
-    consistency.dataset.gravewaveConsistency='true';
-    document.head.append(consistency);
-  }
-  // Full-site Gravewave signal interference and original mascot decorations.
-  if (!document.querySelector('link[data-gravewave-takeover]')) {
-    const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/gravewave-takeover.css?v=20261102-mascot6';sheet.dataset.gravewaveTakeover='true';document.head.append(sheet);
-  }
-  if (!document.querySelector('script[data-gravewave-takeover],script[src*="/gravewave-takeover.js"]')) {
-    const art=document.createElement('script');art.src='/gravewave-takeover.js?v=20261102-mascot6';art.defer=true;art.dataset.gravewaveTakeover='true';document.head.append(art);
-  }
-  // Final site-wide visual system. Insert after the legacy styles so every
-  // shared-navigation page gets the same pink/lime/yellow chrome.
+  // Approved Gothic Creator shell loads after legacy page styles. Old neon
+  // mascots, scanlines and global Gravewave layers are intentionally retired.
   if (!document.querySelector('link[data-knightfall-unified-theme]')) {
     const unified=document.createElement("link");
     unified.rel="stylesheet";
-    unified.href="/knightfall-unified-theme.css?v=20261114-gothic1";
+    unified.href="/knightfall-unified-theme.css?v=20261115-gothic2";
     unified.dataset.knightfallUnifiedTheme="true";
     document.head.append(unified);
   }
@@ -75,50 +53,12 @@
     footer.setAttribute("aria-label","Knightfall support and dedication");
     footer.innerHTML='<a href="/support.html">Support Knightfall</a> <a href="/user-agreement.html">Terms &amp; Policies</a> <a class="kf-dedication-link" href="/remembering-josh.html">Dedication · Josh “Crush” Van Patten</a>';
     const css=document.createElement("style");
-    css.textContent='#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ff55d8;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#c6ff45;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #c6ff45;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
+    css.textContent='#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#17191c;border-top:1px solid #a48a75;color:#d7c8bc;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#d1b48b;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #d1b48b;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
     document.head.append(css);
     document.body.append(footer);
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",mountSupportFooter,{once:true});
   else mountSupportFooter();
-  // Original Devil Tools SVG atlas: small, decorative stamps across shared pages.
-  // Use the existing first-party asset; never insert SVG markup from user content.
-  const mountDevilToolsStamps = () => {
-    const atlas = "/assets/arcade/chaos-sprite-atlas.svg";
-    const stamp = (name, index) => {
-      const node = document.createElement("span");
-      node.className = "kf-devil-stamp kf-devil-stamp-" + name;
-      node.style.setProperty("--kf-sprite-x", (index % 12) * 100 / 11 + "%");
-      node.style.setProperty("--kf-sprite-y", index < 12 ? "0%" : "100%");
-      node.style.backgroundImage = 'url("' + atlas + '")';
-      node.setAttribute("aria-hidden", "true");
-      return node;
-    };
-    const footer = document.getElementById("ashfall-support-footer");
-    if (footer && !footer.querySelector(".kf-devil-footer-stamps")) {
-      const collection = document.createElement("span");
-      collection.className = "kf-devil-footer-stamps";
-      collection.setAttribute("aria-hidden", "true");
-      collection.append(stamp("flame", 20), stamp("skull", 1), stamp("crown", 11));
-      footer.prepend(collection);
-    }
-    const main = document.querySelector("main");
-    const title = main?.querySelector("h1");
-    if (!title || main.querySelector(".kf-devil-title-stamps")) return;
-    const path = location.pathname;
-    // Keep account, private content, moderation, and editor screens distraction-free.
-    if (/\/(?:admin|moderation|account|profile|messages|vault|adult|dating|friends|notifications|devil-tools|die-ary|create-|edit-)/i.test(path)) return;
-    const collection = document.createElement("span");
-    collection.className = "kf-devil-title-stamps";
-    collection.setAttribute("aria-hidden", "true");
-    const indexes = /arcade|chaos-cartridge|game/i.test(path) ? [2, 6, 11] :
-      /community|madhouse|social/i.test(path) ? [1, 10, 18] :
-      /shop|support/i.test(path) ? [4, 20, 16] : [20, 1, 11];
-    indexes.forEach((index, i) => collection.append(stamp("title-" + i, index)));
-    title.after(collection);
-  };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountDevilToolsStamps, { once: true });
-  else mountDevilToolsStamps();
   // Dedicated Ruinwire PWA keeps its own icon; all other pages use Knightfall's crest.
   const isRuinwire = ["/ruinwire", "/ruinwire.html"].includes(location.pathname) ||
     (["/messages", "/messages.html"].includes(location.pathname) &&
@@ -146,7 +86,7 @@
   }
   let themeColor = document.querySelector('meta[name="theme-color"]');
   if (!themeColor) { themeColor = document.createElement("meta"); themeColor.name = "theme-color"; document.head.append(themeColor); }
-  themeColor.content = "#17101f";
+  themeColor.content = "#111217";
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {}), { once: true });
   }
@@ -159,7 +99,7 @@
       if (!document.getElementById("kf-app-update-style")) {
         const style = document.createElement("style");
         style.id = "kf-app-update-style";
-        style.textContent = '.kf-app-update{position:fixed;z-index:2147483000;bottom:max(1rem,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(92vw,540px);display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;padding:.85rem 1rem;border:1px solid #ff55d8;border-radius:14px;background:#140d20f5;color:#f9f3ff;box-shadow:0 8px 36px #000a;font:600 14px/1.45 system-ui,sans-serif}.kf-app-update span{flex:1 1 210px}.kf-app-update button{min-height:40px;padding:.5rem .8rem;border-radius:8px;border:1px solid #ff55d8;background:#ff55d8;color:#15071b;font:700 14px system-ui;cursor:pointer}.kf-app-update button:last-child{background:transparent;color:#f9f3ff}.kf-app-update button:focus-visible{outline:2px solid #a8ff3e;outline-offset:2px}@media(max-width:400px){.kf-app-update{bottom:max(.4rem,env(safe-area-inset-bottom));gap:.45rem}}';
+        style.textContent = '.kf-app-update{position:fixed;z-index:2147483000;bottom:max(1rem,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(92vw,540px);display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;padding:.85rem 1rem;border:1px solid #ae8b79;border-radius:14px;background:#211e22f5;color:#efe1d2;box-shadow:0 8px 36px #000a;font:600 14px/1.45 system-ui,sans-serif}.kf-app-update span{flex:1 1 210px}.kf-app-update button{min-height:40px;padding:.5rem .8rem;border-radius:8px;border:1px solid #c5a57c;background:#9b4758;color:#fff3e4;font:700 14px system-ui;cursor:pointer}.kf-app-update button:last-child{background:transparent;color:#efe1d2}.kf-app-update button:focus-visible{outline:2px solid #c5a57c;outline-offset:2px}@media(max-width:400px){.kf-app-update{bottom:max(.4rem,env(safe-area-inset-bottom));gap:.45rem}}';
         document.head.append(style);
       }
       updateToast = document.createElement("aside");

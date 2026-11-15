@@ -1,9 +1,8 @@
 @import url("/design-system.css?v=20261026-foundation1");
 /* Shared neon styling also applies on pages that omit nav.js. */
-@import url("/neon-global.css?v=20261026-neonfix2");
 @import url("/section-overhaul.css?v=20261029-sections1");
 /* Shared final polish for pages with or without nav.js. */
-@import url("/knightfall-unified-theme.css?v=20261114-gothic1");
+@import url("/knightfall-unified-theme.css?v=20261115-gothic2");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}

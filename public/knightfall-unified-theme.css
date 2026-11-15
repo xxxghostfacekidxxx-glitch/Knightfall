@@ -1,313 +1,206 @@
-/* Knightfall visual system | 2026-11-11.
-   Same Gravewave identity, tighter spacing and surfaces, a small electric-yellow signal.
-   Keep custom profile skins, game canvases, private inputs, and embedded apps intact. */
-:root {
-  --kf-yellow:#ffe36b;
-  --kf-yellow-soft:rgba(255,227,107,.13);
-  --kf-yellow-line:rgba(255,227,107,.38);
-  --kf-neon-pink:#ff55d8;
-  --kf-neon-lime:#c6ff45;
-  --kf-ink:#070710;
-  --kf-ink-raised:#191329;
-  --kf-chrome-line:rgba(255,85,216,.30);
-  --kf-chrome-shadow:0 16px 42px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
-  --af-yellow:var(--kf-yellow);
-  --af-v2-yellow:var(--kf-yellow);
-  --gw-yellow:var(--kf-yellow);
-}
-
-/* Dark stays dark. Yellow is a glint, never the base or a replacement for lime. */
-body:not(.profile-custom-theme) {
-  background-color:var(--kf-ink)!important;
-  background-image:
-    radial-gradient(ellipse at 10% 4%,rgba(255,85,216,.135),transparent 40%),
-    radial-gradient(ellipse at 90% 75%,rgba(198,255,69,.075),transparent 41%),
-    radial-gradient(ellipse at 96% 2%,rgba(255,227,107,.034),transparent 24%)!important;
-}
-body:not(.profile-custom-theme) :where(.kf-header,.kf-nav,.kf-nav-menu) {
-  font-synthesis:none;
-}
-.kf-header {
-  isolation:isolate;
-  border-bottom:1px solid var(--kf-chrome-line)!important;
-  box-shadow:0 12px 35px #0008,0 1px 0 rgba(255,227,107,.06)!important;
-}
-.kf-header::after {
-  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,85,216,.72) 24%,rgba(198,255,69,.65) 65%,rgba(255,227,107,.82) 92%,transparent 100%);
-  pointer-events:none;opacity:.78;
-}
-.kf-brand {letter-spacing:.105em;text-wrap:nowrap}
-.kf-brand::after {
-  width:74%;
-  background:linear-gradient(90deg,var(--kf-neon-pink),var(--kf-neon-lime) 72%,var(--kf-yellow),transparent)!important;
-}
-.kf-nav :where(a,.kf-nav-group>summary,.kf-nav-toggle) {
-  border-radius:10px;
-}
-.kf-nav :where(a,.kf-nav-group>summary):focus-visible,
-.kf-nav-toggle:focus-visible {
-  outline:2px solid var(--kf-neon-lime)!important;outline-offset:3px;
-}
-.kf-nav a[aria-current="page"],
-.kf-nav .kf-nav-section-current {
-  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
-}
-.kf-nav-group:has(a[aria-current="page"])>summary {
-  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
-}
-.kf-nav-menu {
-  border:1px solid var(--kf-chrome-line)!important;
-  border-radius:14px!important;
-  box-shadow:0 20px 44px #000b,0 0 22px rgba(255,85,216,.08)!important;
-}
-.kf-announcement strong {color:var(--kf-yellow)!important}
-
-/* Use one rhythm for major Knightfall surfaces; do not alter the game viewport. */
-body:not(.profile-custom-theme) :where(
-  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
-  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
-  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,
-  .wallet-card,.public-chat-panel,.memo-panel
-) {
-  border-radius:clamp(12px,1.5vw,19px);
-  box-shadow:var(--kf-chrome-shadow);
-}
-body:not(.profile-custom-theme) :where(
-  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
-  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
-  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,
-  .public-chat-panel
-) {
-  background-image:
-    radial-gradient(ellipse at 97% 0%,rgba(255,227,107,.038),transparent 40%),
-    linear-gradient(145deg,rgba(255,85,216,.055),transparent 52%),
-    linear-gradient(145deg,#181125,#0b0b17 88%)!important;
-}
-body:not(.profile-custom-theme) :where(
-  .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
-  .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
-  .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card
-):focus-within {
-  border-color:rgba(198,255,69,.55);
-}
-@media(hover:hover) and (pointer:fine) {
-  body:not(.profile-custom-theme) :where(
-    .friend-card,.member-card,.admin-shortcut,.tool-card,
-    .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card
-  ):hover {
-    box-shadow:var(--kf-chrome-shadow),0 0 22px rgba(255,85,216,.12),0 0 1px var(--kf-yellow-line);
-  }
-}
-
-/* Form controls: visible labels, generous hit targets, no decorative intrusion. */
-body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select) {
-  min-width:0;max-width:100%;
-  border-radius:10px;
-}
-body:not(.profile-custom-theme) :where(input,textarea,select)::placeholder {
-  color:#a89ab7;opacity:1;
-}
-body:not(.profile-custom-theme) :where(input,textarea,select):focus-visible {
-  outline:2px solid var(--kf-neon-lime)!important;outline-offset:2px;
-}
-body:not(.profile-custom-theme) :where(button,.btn,.button,.action,[role="button"]):not(:disabled) {
-  -webkit-tap-highlight-color:rgba(255,227,107,.12);
-}
-body:not(.profile-custom-theme) :where(.primary,.af-button-primary,button[type="submit"]:not(.danger)) {
-  box-shadow:0 8px 20px rgba(255,85,216,.19),inset 0 1px rgba(255,227,107,.18);
-}
-body:not(.profile-custom-theme) :where(.primary,.af-button-primary,button[type="submit"]:not(.danger)):focus-visible {
-  outline:2px solid var(--kf-yellow)!important;
-}
-body:not(.profile-custom-theme) :where(.status.good,.success,[role="status"].success) {
-  color:var(--kf-neon-lime);
-}
-
-/* Yellow is reserved for small details: labels, active rails and selected marks. */
-:where(.kf-theme-spark,.kf-yellow-signal) {color:var(--kf-yellow)!important}
-:where(.kf-theme-spark,.kf-yellow-signal)::selection {background:var(--kf-yellow);color:#080812}
-body:not(.profile-custom-theme) :where(.eyebrow,.genre,.tag,.pill,.license) {
-  text-underline-offset:.2em;
-}
-body:not(.profile-custom-theme) :where(.messages-shell .conversation.active,
-  .admin-shell .admin-tabs .active,.community-directory .category:focus-within,
-  .cartridge-shelf .cartridge-cabinet:focus-within) {
-  border-color:rgba(198,255,69,.50)!important;
-}
-body:not(.profile-custom-theme) .messages-shell .conversation.active {
-  box-shadow:inset 3px 0 var(--kf-neon-pink),inset 0 -2px 0 var(--kf-yellow-soft);
-}
-body:not(.profile-custom-theme) .admin-shell .admin-tabs .active {
-  box-shadow:inset 0 -2px 0 var(--kf-yellow)!important;
-}
-body:not(.profile-custom-theme) .cartridge-shelf .cartridge-number {
-  color:var(--kf-yellow)!important;
-}
-
-/* The same frame across public shop, arcade, community and creation tools. */
-body:not(.profile-custom-theme) :where(
-  .community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,
-  .members-page,.friends-page,.cartridge-shelf,.dt-workspace-nav,.memo-page
-) {min-width:0}
-body:not(.profile-custom-theme) :where(.section-title,.panel-head h2,.chat-heading h2) {
-  letter-spacing:-.025em;
-}
-#ashfall-support-footer {
-  border-top:1px solid var(--kf-chrome-line)!important;
-  box-shadow:inset 0 1px 0 var(--kf-yellow-soft);
-}
-#ashfall-support-footer a:focus-visible {
-  outline:2px solid var(--kf-yellow)!important;outline-offset:3px;
-}
-@media(max-width:760px) {
-  .kf-header {min-height:64px}
-  .kf-nav-menu {box-shadow:none!important}
-  body:not(.profile-custom-theme) :where(.entry-card,.panel,.card,.arcade-card,.game-card) {
-    border-radius:14px;
-  }
-  body:not(.profile-custom-theme) :where(input,textarea,select) {font-size:16px}
-}
-@media(prefers-reduced-motion:reduce) {
-  body:not(.profile-custom-theme) :where(button,.btn,.button,.action,.card,.game-card,.arcade-card) {
-    transition:none!important;animation:none!important;
-  }
-}
-/* Embedded games and custom profile palettes always retain their own art and colors. */
-body.profile-custom-theme :where(.profile-shell,#profile) {color:inherit}
-
-
-/* Knightfall gothic assets 2026-11-14: concept-led visual styling.
-   Original artwork is decorative; controls remain semantic and readable. */
+/* Knightfall Gothic Creator, approved Nov 14 with skull-and-eclipse crest.
+   Bone, steel, moss, bronze, muted crimson and eclipse-violet. Site chrome only.
+   Never replace original artwork, game canvases or member-customized profile colors. */
 :root{
- --kf-bone:#e9d7cc;
- --kf-iron:#786879;
- --kf-oxblood:#8b314b;
- --kf-antique-gold:#c4a070;
- --kf-eclipse:#ba4987;
- --kf-ink:#100b17;
- --kf-ink-raised:#211727;
- --kf-chrome-line:rgba(185,132,166,.43);
- --kf-chrome-shadow:0 16px 36px rgba(0,0,0,.49),inset 0 1px rgba(244,218,238,.07);
+ --kf-bone:#ece1d3;--kf-steel:#96949e;--kf-moss:#92a18a;
+ --kf-oxblood:#b25b68;--kf-antique-gold:#c7a77c;--kf-eclipse:#82617c;
+ --kf-ink:#0d1013;--kf-ink-raised:#201d24;
+ --kf-chrome-line:rgba(178,148,151,.37);
+ --kf-chrome-shadow:0 14px 35px rgba(0,0,0,.52),inset 0 1px rgba(236,225,211,.055);
+ --kf-yellow:var(--kf-antique-gold);--kf-yellow-soft:rgba(199,167,124,.12);
+ --kf-yellow-line:rgba(199,167,124,.35);
+ --kf-bg:var(--kf-ink);--kf-panel:#17171c;--kf-panel-2:#242128;
+ --kf-text:var(--kf-bone);--kf-muted:#b9afa8;--kf-line:var(--kf-chrome-line);
+ --kf-accent:var(--kf-oxblood);--kf-accent-bright:var(--kf-antique-gold);
+ --kf-accent-soft:rgba(178,91,104,.15);
+ --af-v2-ink:#0d1013;--af-v2-card:#19191e;--af-v2-raised:#242128;
+ --af-v2-pink:var(--kf-oxblood);--af-v2-green:var(--kf-moss);
+ --af-v2-text:var(--kf-bone);--af-v2-muted:var(--kf-muted);
+ --af-v2-line:var(--kf-chrome-line);
+ accent-color:var(--kf-antique-gold);color-scheme:dark
 }
+html{background:#0d1013;scrollbar-color:#6f6266 #0d1013}
 body:not(.profile-custom-theme){
- background-color:#100b17!important;
- background-image:
-  radial-gradient(ellipse at 91% 3%,rgba(152,53,94,.16),transparent 40%),
-  radial-gradient(ellipse at 3% 70%,rgba(90,57,120,.16),transparent 54%),
-  linear-gradient(155deg,#0f0b17 5%,#100e19 42%,#14101b 100%)!important;
- color-scheme:dark;
+ color:var(--kf-bone);color-scheme:dark;
+ background-color:#0d1013!important;
+ background-image:radial-gradient(ellipse at 86% 2%,rgba(131,86,114,.17),transparent 42%),
+ radial-gradient(ellipse at 2% 78%,rgba(101,114,92,.10),transparent 48%),
+ linear-gradient(160deg,#111218,#0d1013 49%,#151319)!important
+}
+body:not(.profile-custom-theme) :where(h1,h2,h3){color:var(--kf-bone);text-shadow:none;text-wrap:balance}
+body:not(.profile-custom-theme) :where(a){color:var(--kf-antique-gold);text-underline-offset:.18em}
+body:not(.profile-custom-theme) :where(a:hover){color:#edcda0}
+body:not(.profile-custom-theme) :where(a,button,input,select,textarea,[role="button"]):focus-visible{
+ outline:2px solid var(--kf-antique-gold)!important;outline-offset:3px
 }
 .kf-header{
- background:linear-gradient(100deg,rgba(22,13,29,.96),rgba(12,10,18,.95))!important;
- border-bottom:1px solid rgba(203,144,173,.53)!important;
- box-shadow:0 12px 33px #0009,inset 0 -1px rgba(194,156,99,.18)!important;
+ isolation:isolate;background:linear-gradient(100deg,rgba(24,20,28,.97),rgba(12,15,18,.97))!important;
+ border-bottom:1px solid rgba(199,167,124,.42)!important;
+ box-shadow:0 13px 32px #0008,inset 0 -1px rgba(177,93,107,.19)!important
 }
 .kf-header::after{
- background:linear-gradient(90deg,transparent,#a73d79 20%,#c39b70 49%,#78436b 75%,transparent)!important;
- opacity:.75;
+ content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+ background:linear-gradient(90deg,transparent,#984557 23%,#b99e79 48%,#778a79 75%,transparent)!important;
+ opacity:.75;pointer-events:none
 }
 .kf-brand{
- display:inline-flex;align-items:center;gap:0;
- color:var(--kf-bone)!important;
- font-family:Georgia,'Times New Roman',serif;
- font-weight:900;letter-spacing:.035em!important;
- font-size:clamp(.95rem,1.75vw,1.28rem);
- text-shadow:0 2px 8px #0009,0 0 14px #dd669033!important;
- white-space:nowrap;
+ display:inline-flex;align-items:center;white-space:nowrap;color:var(--kf-bone)!important;
+ font:900 clamp(.95rem,1.8vw,1.28rem)/1.1 Georgia,"Times New Roman",serif;
+ letter-spacing:.04em!important;text-shadow:0 2px 7px #0009!important;text-decoration:none
 }
 .kf-brand::before{
- content:"";display:inline-block;flex:0 0 auto;
- width:clamp(32px,3.4vw,46px);height:clamp(32px,3.4vw,46px);
- margin-right:.5rem;
- background:url("/icons/knightfall-crest-192.png") center/contain no-repeat;
- filter:drop-shadow(0 3px 5px #0009);
+ content:"";display:inline-block;flex:none;width:clamp(34px,3.5vw,46px);height:clamp(34px,3.5vw,46px);
+ margin-right:.5rem;background:url("/icons/knightfall-crest-192.png") center/contain no-repeat;
+ filter:drop-shadow(0 3px 6px #000a)
 }
-.kf-brand b{color:#e9b0cf!important}
-.kf-brand::after{display:none!important}
-.kf-header :where(.kf-nav a,.kf-nav-group>summary){
- color:#dacbd8;
- font-weight:750;letter-spacing:.012em;
+.kf-brand b{color:#d6b0a7!important}.kf-brand::after{display:none!important}
+.kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle){color:#e3d7ce!important;border-radius:9px}
+.kf-header :where(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle):hover,
+.kf-header .kf-nav-group[open]>summary{
+ color:#fff7e8!important;background:linear-gradient(135deg,#392834,#24242b)!important;
+ border-color:#ab7777!important
 }
-.kf-header :where(.kf-nav a,.kf-nav-group>summary):hover{
- background:linear-gradient(115deg,#3c223f,#251b2c)!important;
- border-color:#a87797!important;color:#fff!important;
+.kf-header :where(.kf-nav a[aria-current="page"],.kf-nav-section-current,.kf-nav-group:has(a[aria-current="page"])>summary){
+ color:#f1d5aa!important;background:rgba(178,91,104,.18)!important;
+ border-color:#a8807d!important;box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
 }
-.kf-header .kf-nav-menu{
- background:linear-gradient(145deg,#291a31,#110c1b)!important;
- border:1px solid #875979!important;
- box-shadow:0 20px 44px #000c,inset 0 1px #e2b8d217!important;
+.kf-header .kf-nav-menu,.kf-header .kf-nav.open{
+ background:linear-gradient(145deg,#28222b,#12151a)!important;
+ border:1px solid #78666a!important;box-shadow:0 19px 44px #000c!important
 }
+.kf-header .kf-notify-badge{background:#bd9a6e!important;color:#191518!important}
+.kf-announcement,.kf-maintenance{
+ background:#201a20!important;border-bottom-color:#77656a!important;color:#e4d6ca!important
+}
+.kf-announcement strong{color:#dec19a!important}
+/* Shared surfaces retain original layout, scrolling, interactions and accessibility. */
 body:not(.profile-custom-theme) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
- .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
- .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,
- .wallet-card,.public-chat-panel,.memo-panel
+ .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
+ .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
+ .game-card,.wallet-card,.public-chat-panel,.memo-panel,.listing-card,.quick-card,
+ .directory-group,.kf-start-card
 ){
- border-color:rgba(151,108,142,.5);
- box-shadow:0 12px 28px #0007,inset 0 1px #f8d9db0c;
+ border-color:var(--kf-chrome-line)!important;border-radius:clamp(12px,1.5vw,19px);
+ box-shadow:var(--kf-chrome-shadow)
 }
 body:not(.profile-custom-theme) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
- .admin-panel,.admin-shortcut,.tool-card,.dt-workspace-nav,
- .arcade-card,.cartridge-cabinet,.arcade-flat-card,.game-card,.public-chat-panel
+ .entry-card,.panel,.card,.post-card,.friend-card,.member-card,.admin-panel,.admin-shortcut,
+ .tool-card,.dt-workspace-nav,.arcade-card,.cartridge-cabinet,.arcade-flat-card,
+ .game-card,.public-chat-panel,.listing-card,.quick-card,.directory-group
 ){
- background-image:
-  radial-gradient(ellipse at 94% 8%,rgba(186,71,130,.09),transparent 48%),
-  linear-gradient(150deg,#241929,#110d1a 85%)!important;
+ color:var(--kf-bone)!important;
+ background:radial-gradient(ellipse at 96% 5%,rgba(153,71,92,.10),transparent 47%),
+ linear-gradient(145deg,#262128,#15181c 88%)!important
 }
+body:not(.profile-custom-theme) :where(.community-directory,.messages-shell,.admin-shell,.profile-shell,.foundry,.members-page,.friends-page,.cartridge-shelf,.memo-page){min-width:0}
 body:not(.profile-custom-theme) :where(
- .entry-card,.panel,.card,.post-card,.friend-card,.member-card,
- .admin-panel,.admin-shortcut,.tool-card,.arcade-card,.cartridge-cabinet,.game-card
-):hover{border-color:rgba(201,147,178,.62)}
-body:not(.profile-custom-theme) :where(.panel h2,.card h2,.section-title,.cartridge-hero h1){
- text-wrap:balance;
+ .community-directory .hero,.messages-shell .messages-hero,.admin-shell>.hero,
+ .members-page .members-hero,.foundry .foundry-hero,.directory-hero
+){
+ border-color:var(--kf-chrome-line)!important;
+ background:radial-gradient(ellipse at 98% 3%,rgba(138,77,100,.14),transparent 45%),
+ linear-gradient(130deg,#29202c,#12161a 76%)!important;color:var(--kf-bone)
 }
-body:not(.profile-custom-theme) :where(.primary,.btn.primary,.button-primary){
- border-color:#d28aaa!important;
- background:linear-gradient(120deg,#9e366d,#d861a2)!important;
- color:#fff4f9!important;
+body:not(.profile-custom-theme) :where(.eyebrow,.arcade-kicker,.section-label,.cartridge-number,.kf-start-eyebrow){
+ color:var(--kf-antique-gold)!important;letter-spacing:.12em
 }
-body:not(.profile-custom-theme) :where(.primary,.btn.primary,.button-primary):hover{
- filter:brightness(1.08);
+body:not(.profile-custom-theme) :where(.muted,.subtitle,.helper-text,.directory-hero>p,.listing-description,.quick-card p){
+ color:var(--kf-muted)!important
 }
-body:not(.profile-custom-theme) :where(.eyebrow,.arcade-kicker){
- color:#dfb0c9;
- letter-spacing:.14em;
+body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),textarea,select){
+ min-width:0;max-width:100%;border-radius:10px;
+ background-color:#17181d!important;color:var(--kf-bone)!important;border-color:#75636b!important
 }
+body:not(.profile-custom-theme) :where(input,textarea,select)::placeholder{color:#b6a9a4;opacity:1}
+body:not(.profile-custom-theme) :where(input,textarea,select):focus{
+ border-color:var(--kf-antique-gold)!important;box-shadow:0 0 0 2px rgba(199,167,124,.15)!important
+}
+body:not(.profile-custom-theme) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)){
+ background:linear-gradient(125deg,#883e51,#b25b68)!important;border-color:#c3948d!important;
+ color:#fff3e4!important;font-weight:800;
+ box-shadow:0 7px 19px rgba(0,0,0,.33),inset 0 1px rgba(255,243,228,.10)
+}
+body:not(.profile-custom-theme) :where(.primary,.af-button-primary,.btn.primary,.button-primary,button[type="submit"]:not(.danger)):hover{filter:brightness(1.12)}
+body:not(.profile-custom-theme) :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed}
+body:not(.profile-custom-theme) :where(.status.good,.success,[role="status"].success){color:#aabc9f!important}
+body:not(.profile-custom-theme) :where(.tabs [aria-selected="true"],.tabs .active,.admin-shell .admin-tabs .active){
+ border-color:var(--kf-antique-gold)!important;
+ background:rgba(199,167,124,.16)!important;color:var(--kf-bone)!important
+}
+body:not(.profile-custom-theme) .admin-shell .admin-tabs .active{
+ box-shadow:inset 0 -2px 0 var(--kf-antique-gold)!important
+}
+body:not(.profile-custom-theme) .messages-shell .conversation.active{
+ border-color:#b7a080!important;background:linear-gradient(105deg,#342430,#201f26)!important;
+ box-shadow:inset 3px 0 var(--kf-oxblood)!important
+}
+body:not(.profile-custom-theme) .messages-shell .composer{
+ border-top-color:#8e7372!important;background:linear-gradient(180deg,#211d25,#14171c)!important
+}
+body:not(.profile-custom-theme) .messages-shell .composer textarea{
+ color:var(--kf-bone)!important;background:#16181e!important;border-color:#806d72!important
+}
+body:not(.profile-custom-theme) .cartridge-shelf .cartridge-number{color:var(--kf-antique-gold)!important}
+body:not(.profile-custom-theme) .cartridge-cabinet{border-top:1px solid #a18876!important}
+body:not(.profile-custom-theme) .directory-group li+li{border-color:rgba(199,167,124,.18)}
+body:not(.profile-custom-theme) .site-footer,
+body:not(.profile-custom-theme) #ashfall-support-footer{
+ background:linear-gradient(100deg,#16171b,#221b21)!important;
+ border-top:1px solid rgba(199,167,124,.48)!important;color:var(--kf-muted)!important
+}
+body:not(.profile-custom-theme) :where(.site-footer a,#ashfall-support-footer a){color:#dac098!important}
+/* Approved crest watermark: subdued, never on top of working controls. */
 body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero){
- isolation:isolate;position:relative;overflow:hidden;
- border:1px solid rgba(173,111,147,.36);
- border-radius:clamp(14px,2vw,23px);
- background:radial-gradient(circle at 100% 0%,#53243a55,transparent 52%),linear-gradient(125deg,#201525,#100e19);
+ isolation:isolate;position:relative;overflow:hidden;border:1px solid rgba(199,167,124,.48)!important;
+ border-radius:clamp(15px,2vw,23px);
+ background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
+ linear-gradient(120deg,#29202b,#14191d)!important
 }
 body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero)::after{
  content:"";position:absolute;pointer-events:none;z-index:-1;
- right:clamp(-75px,-2vw,0px);top:50%;transform:translateY(-50%);
- width:min(32vw,235px);height:min(32vw,235px);
+ right:clamp(-70px,-2vw,0px);top:50%;transform:translateY(-50%);
+ width:min(31vw,230px);height:min(31vw,230px);
  background:url("/icons/knightfall-crest-512.png") center/contain no-repeat;
- opacity:.22;filter:saturate(.75);
+ opacity:.20;filter:saturate(.70)
 }
-body:not(.profile-custom-theme) .cartridge-hero::before{
- content:"";position:absolute;pointer-events:none;z-index:-1;
- inset:0;background:linear-gradient(90deg,transparent 45%,rgba(38,20,37,.12)),
- url("/assets/knightfall/horror-space-characters.png") right center/auto 90% no-repeat;
- opacity:.1;
+body:not(.profile-custom-theme) .home-intro h1{color:#f3e7d9!important}
+body:not(.profile-custom-theme) .home-intro h1 span{color:#dbac9a!important}
+body:not(.profile-custom-theme) .home-intro p{color:#d0c3bc!important}
+body:not(.profile-custom-theme) .home-sign-in:not([hidden]){
+ display:inline-flex!important;align-items:center;justify-content:center;
+ min-height:44px;padding:.6rem 1rem;border:1px solid #b89b78;border-radius:10px;
+ background:#713d4a!important;color:#fff2e6!important;text-decoration:none;font-weight:800
 }
-body:not(.profile-custom-theme) .cartridge-cabinet{
- border-top:1px solid rgba(177,129,154,.65);
+body:not(.profile-custom-theme) :where(.home-explore-link,.kf-start-card a){
+ border-color:#a0886d!important;color:#e7cfaa!important;background:#28252a!important
 }
-body:not(.profile-custom-theme) :where(.kf-header a,.kf-header button,input,textarea,select):focus-visible{
- outline-color:#e7c37b!important;
+body:not(.profile-custom-theme) .kf-start-here{
+ border-color:#8f7273!important;background:linear-gradient(140deg,#251e27,#171c1d)!important
 }
+body:not(.profile-custom-theme) .kf-start-card{
+ background:linear-gradient(140deg,#2a242b,#1b2021)!important
+}
+body:not(.profile-custom-theme) .kf-start-card>span{color:#cea98a!important}
+/* Cached older Gravewave decorations no longer participate in shared chrome. */
+body .gw-character-crew,body .gw-ambient,body .gw-panel-mascot,
+body .kf-gravewave-ribbon,body .kf-gravewave-title,body .kf-gravewave-corner,
+body .kf-devil-title-stamps,body .kf-devil-footer-stamps{display:none!important}
+body.gravewave-everywhere::after{display:none!important}
+body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important}
 @media(max-width:760px){
- .kf-header .kf-brand{font-size:.93rem}
- .kf-brand::before{width:33px;height:33px;margin-right:.3rem}
+ .kf-header{min-height:64px}
+ .kf-header .kf-brand{font-size:.94rem}
+ .kf-brand::before{width:34px;height:34px;margin-right:.35rem}
+ .kf-nav-menu{box-shadow:none!important}
+ body:not(.profile-custom-theme) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
+ body:not(.profile-custom-theme) :where(input,textarea,select){font-size:16px}
  body:not(.profile-custom-theme) :where(.home-intro,.cartridge-hero)::after{
-  width:126px;height:126px;right:-21px;opacity:.12
+  width:124px;height:124px;right:-22px;opacity:.10
  }
- body:not(.profile-custom-theme) .cartridge-hero::before{opacity:.05}
 }
 @media(prefers-reduced-motion:reduce){
- body:not(.profile-custom-theme) :where(.primary,.btn.primary,.button-primary){transition:none!important}
+ body:not(.profile-custom-theme) :where(.primary,.btn,.button,.card,.game-card,.arcade-card){
+  transition:none!important;animation:none!important
+ }
 }
+/* Never target canvas, svg, video or member profile-custom-theme. */

@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v39";
+const CACHE_NAME = "knightfall-shell-v40";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -11,8 +11,6 @@ const APP_SHELL = [
   "/section-directory.css",
   "/visual-refresh.css",
   "/knightfall-unified-theme.css",
-  "/neon-global.css",
-  "/gravewave-consistency.css",
   "/nav.js",
   "/install.html",
   "/ruinwire.html",
@@ -42,10 +40,8 @@ const APP_SHELL = [
   "/moon-widget.mjs",
   "/lunar-phases.mjs",
   "/vendor/astronomy-engine-2.1.19.min.js",
-  "/gravewave-takeover.css",
-  "/gravewave-takeover.js",
-  "/assets/devil-tools/neon-nuisances/moxie.svg",
-  "/assets/devil-tools/neon-nuisances/gravebyte.svg",
+  "/icons/knightfall-crest-192.png",
+  "/icons/knightfall-crest-512.png",
   "/icons/chaos-cartridge.svg",
   "/icons/chaos-cartridge-maskable.svg",
   "/branding/chaos-cartridge-logo.svg"
