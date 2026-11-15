@@ -52,7 +52,7 @@ Additional verification:
 - [ ] Track weekly active users (WAU), monthly active users (MAU), four-week returning members, activation, engagement by major module and outages.
 - [x] Surface member-role and staff-role activity separately in the read-only business dashboard. Member-role accounts may still include development/test accounts.
 - [ ] Split internal/staff/test activity from genuine external users.
-- [x] Add a public homepage first-step funnel: free arcade -> Madhouse community -> pet/profile exploration, with direct account creation and no paid claims.
+- [x] Add a public homepage first-step funnel: free arcade -> Madhouse community -> pet/profile exploration, with direct account creation, no paid claims and no duplicate directory links.
 - [ ] Measure the first-step funnel and validate flagship path: **Chaos Cartridge or Cinderwild -> member account -> messaging/community -> safe premium perks**. No individual visitor tracking added yet.
 - [ ] Test acquisition with unpaid creator collaboration, owned social channels, game showcases and personal referrals before purchasing ads.
 - [ ] Run one pricing experiment with defined eligibility, conversion count, refund rate and cancellation tracking.
