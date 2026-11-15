@@ -427,8 +427,25 @@
   document.addEventListener("keydown",event=>{
     if(event.key==="Escape"&&state.visible){setVisible(false);$("#kf-chat-launcher").focus();}
   });
-  document.addEventListener("fullscreenchange",()=>{
-    dock.hidden=!!document.fullscreenElement;
+  // Native fullscreen sits above document siblings. Move the active chat DOM
+  // inside a fullscreen game container so chat stays usable during gameplay.
+  function syncFullscreenChat(){
+    const fullscreen=document.fullscreenElement||document.webkitFullscreenElement;
+    const canHost=fullscreen&&fullscreen!==dock&&!dock.contains(fullscreen)
+      &&!["CANVAS","VIDEO","IMG"].includes(fullscreen.tagName);
+    const host=canHost?fullscreen:document.body;
+    if(dock.parentElement!==host)host.append(dock);
+    dock.hidden=false;
+    dock.classList.toggle("kf-chat-in-fullscreen",!!canHost);
+    syncBubbleViewport();fitDock();
+  }
+  document.addEventListener("fullscreenchange",syncFullscreenChat);
+  document.addEventListener("webkitfullscreenchange",syncFullscreenChat);
+  syncFullscreenChat();
+  // A game listening for arrow keys, WASD or space must not intercept typed chat.
+  dock.addEventListener("keydown",event=>{
+    if(event.key==="Escape")return;
+    if(event.target.closest("input,textarea,[contenteditable=true],select,button,a"))event.stopPropagation();
   });
   document.addEventListener("visibilitychange",()=>{
     if(!document.hidden)tick().catch(()=>{});
