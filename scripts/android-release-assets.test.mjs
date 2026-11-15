@@ -40,3 +40,20 @@ test('Android build and emulator smoke are configured without releasing a debug 
  assert.match(yaml,/reactivecircus\/android-emulator-runner@v2/);
  assert.match(yaml,/assembleDebug/);
 });
+
+test('owner-local signing bootstrap parses safely and cannot publish a public release', () => {
+ const scriptPath=new URL('./bootstrap-android-signing.sh',import.meta.url);
+ const bootstrap=readFileSync(scriptPath,'utf8');
+ const syntax=spawnSync('bash',['-n',scriptPath.pathname],{encoding:'utf8'});
+ assert.equal(syntax.status,0,syntax.stderr);
+ assert.match(bootstrap,/set -euo pipefail/);
+ assert.match(bootstrap,/umask 077/);
+ assert.match(bootstrap,/keytool -genkeypair/);
+ assert.match(bootstrap,/gh auth status/);
+ assert.equal((bootstrap.match(/gh secret set -R "\$REPO" KNIGHTFALL_ANDROID_/g)||[]).length,4);
+ assert.match(bootstrap,/KEYSTORE_BASE64/);
+ assert.match(bootstrap,/publish_public_release=false/);
+ assert.match(bootstrap,/physical_test_confirmation=NOT_TESTED/);
+ assert.doesNotMatch(bootstrap,/gh release create|publish_public_release=true/);
+ assert.doesNotMatch(bootstrap,/echo "\$KEY_PASS"/);
+});
