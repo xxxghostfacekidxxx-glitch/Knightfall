@@ -4,9 +4,10 @@ import {readFileSync} from "node:fs";
 import {handleStripeBilling,handleVerifiedBillingEvent} from "./stripe-billing.js";
 const user={id:17,email:"member@example.test",role:"member"};
 function mock(){
- const state={customers:new Map(),memberships:new Map(),writes:[],calls:[]};
+ const state={customers:new Map(),memberships:new Map(),cursors:new Map(),writes:[],calls:[]};
  const DB={prepare(sql){
   return {bind(...params){return {
+   sql,params,
    async first(){
     if(sql.startsWith("SELECT customer_id FROM stripe_member_customers"))return state.customers.has(params[0])?{customer_id:state.customers.get(params[0])}:null;
     if(sql.startsWith("SELECT user_id FROM stripe_member_customers")){for(const [id,customer] of state.customers)if(customer===params[0])return {user_id:id};return null}
@@ -20,6 +21,22 @@ function mock(){
     return {success:true}
    }
   }}}
+ },
+ async batch(items){
+  for(const item of items){
+   state.writes.push({sql:item.sql,params:item.params});
+   if(item.sql.startsWith("UPDATE stripe_member_customers SET last_subscription_event_created")){
+    const [created,priority,id,userId]=item.params;
+    const old=state.cursors.get(userId)||{created:0,priority:0};
+    if(created>old.created||(created===old.created&&priority>old.priority))state.cursors.set(userId,{created,priority,id});
+   }else if(item.sql.startsWith("INSERT INTO member_premium_memberships")){
+    const [status,expires,userId,created,priority,id]=item.params;
+    const cursor=state.cursors.get(userId);
+    if(cursor?.created===created&&cursor?.priority===priority&&cursor?.id===id)state.memberships.set(userId,{status,expires_at:expires});
+   }else throw Error("Unexpected batched query: "+item.sql);
+  }
+  return items.map(()=>({success:true}));
+ }
  }};
  return {state,env:{DB}};
 }
@@ -50,12 +67,18 @@ test("unrelated Stripe subscription can never grant Knightfall premium",async()=
  const {env,state}=mock();
  env.STRIPE_PREMIUM_PRICE_ID="price_correct";
  state.customers.set(user.id,"cus_abc123");
- const event=(price,status="active")=>({type:"customer.subscription.updated",data:{object:{object:"subscription",customer:"cus_abc123",status,current_period_end:1893456000,items:{data:[{price:{id:price}}]}}}});
+ const event=(price,status="active",created=1900000000,period=2000000000)=>({id:"evt_example"+created+status,type:"customer.subscription.updated",created,data:{object:{object:"subscription",customer:"cus_abc123",status,current_period_end:period,items:{data:[{price:{id:price},current_period_end:period}]}}}});
  assert.equal(await handleVerifiedBillingEvent(event("price_wrong"),env),true);
  assert.equal(state.memberships.size,0);
  assert.equal(await handleVerifiedBillingEvent(event("price_correct"),env),true);
  assert.equal(state.memberships.get(user.id).status,"active");
- assert.equal(await handleVerifiedBillingEvent(event("price_correct","canceled"),env),true);
+ assert.equal(await handleVerifiedBillingEvent(event("price_correct","canceled",1900000001),env),true);
+ assert.equal(state.memberships.get(user.id).status,"inactive");
+ // A delayed, older active event must never resurrect canceled Premium.
+ assert.equal(await handleVerifiedBillingEvent(event("price_correct","active",1900000000),env),true);
+ assert.equal(state.memberships.get(user.id).status,"inactive");
+ // Malformed future active events must not grant forever.
+ assert.equal(await handleVerifiedBillingEvent(event("price_correct","active",1900000002,null),env),true);
  assert.equal(state.memberships.get(user.id).status,"inactive");
 });
 test("only server-owned authenticated customer can get billing link",async()=>{
