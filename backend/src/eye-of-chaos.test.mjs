@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {webcrypto} from "node:crypto";
-import {CHAOS_AGENTS,CHAOS_QA_FLEET,CHAOS_SOURCES,handleEyeOfChaos,runEyeChaosScheduledResearch} from "./eye-of-chaos.js";
+import {CHAOS_AGENTS,CHAOS_QA_FLEET,CHAOS_SOURCES,handleEyeOfChaos,runEyeChaosScheduledResearch,runSourceResearch} from "./eye-of-chaos.js";
 if(!globalThis.crypto)globalThis.crypto=webcrypto;
 
 function fixture(role="god",ready=true){
@@ -143,7 +143,7 @@ test("GOD approval applies only to exact draft versions; edits invalidate approv
  assert.equal(f.events.filter(x=>x.action==="approve").length,2);
 });
 test("scheduled research never invokes publication; only registered sources are allowed",async()=>{
- const f=fixture();assert.deepEqual(Object.keys(CHAOS_SOURCES),["music","scifi","horror","entertainment","science","strange","space","technology"]);
+ const f=fixture();assert.deepEqual(Object.keys(CHAOS_SOURCES),["knightfall","music","scifi","horror","entertainment","science","strange","space","technology"]);
  const result=await runEyeChaosScheduledResearch(f.env);
  assert.deepEqual(result,{executed:0});
 });
@@ -215,4 +215,21 @@ test("AI mission drafting fails closed on invalid output, lack of AI, and rate l
  f.deps.rateLimit=async()=>false;
  assert.equal((await f.call(base+"/missions/"+id+"/draft","POST")).status,429);
  assert.equal(f.drafts.size,0);
+});
+
+test("Knightfall research reads only public non-deleted non-adult thread metadata",async()=>{
+ const queries=[];
+ const env={DB:{prepare(sql){
+  queries.push(sql);
+  return {async first(){return {id:71,title:"Favorite indie horror games",category_slug:"gaming"}}};
+ }}};
+ const lead=await runSourceResearch(env,{source_key:"knightfall"});
+ assert.match(lead.title,/indie horror/);
+ assert.equal(lead.source_url,"https://ash-fall.com/thread.html?id=71");
+ assert.match(lead.body,/unverified discovery lead/);
+ assert.equal(queries.length,1);
+ assert.match(queries[0],/t\.deleted_at IS NULL/);
+ assert.match(queries[0],/c\.slug NOT IN \('adults-only'\)/);
+ assert.doesNotMatch(queries[0],/\bmessages\b|\bjournals\b|\bprivate\b/);
+ assert.doesNotMatch(lead.body,/member_email|private chat/);
 });
