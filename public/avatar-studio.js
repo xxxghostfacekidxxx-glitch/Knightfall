@@ -22,6 +22,23 @@
  let state={slots:[],wallet:0,products:[],extra:0,max:20},selected=1,avatar={...kit.defaults},busy=false;
  let activeGroup='face',history=[],historyIndex=0,savedSnapshot='',savedName='',comparing=false,portraitFocus=false;
  const lockedTraits=new Set();
+ let traitQuery='';
+ const thumbnailCache=new Map();
+ const thumbObserver=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{
+  for(const entry of entries){if(!entry.isIntersecting)continue;
+   const el=entry.target;thumbObserver.unobserve(el);
+   if(!el.isConnected)continue;
+   const field=el.dataset.field,choice=el.dataset.choice;
+   if(!field||!choice)continue;
+   const snapshot=JSON.parse(el.dataset.avatar);
+   const key=JSON.stringify([snapshot,field,choice]);
+   let art=thumbnailCache.get(key);
+   if(!art){art=kit.render({...snapshot,[field]:choice});thumbnailCache.set(key,art);
+    if(thumbnailCache.size>120)thumbnailCache.delete(thumbnailCache.keys().next().value);
+   }
+   el.innerHTML=art;delete el.dataset.avatar;
+  }
+ },{rootMargin:'220px'}):null;
  const groups=[{key:'face',name:'Face & hair',icon:'✦'},{key:'features',name:'Expression',icon:'◉'},{key:'fit',name:'Style & gear',icon:'⚡'},{key:'scene',name:'World & aura',icon:'☾'}];
  const colorFields=new Set(['skin','hair_color','eye_color','outfit_color','background']);
  const byId=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
