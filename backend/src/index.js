@@ -534,14 +534,14 @@ async function handlePersonalBotRequest(request,env,origin,url){
  if(path!==collection&&path!=="/api/public-bots"&&!publicMatch&&!ownerMatch&&!/^\/api\/personal-bots\/[a-f0-9]{32}\/(?:history|memory)$/.test(path))return null;
  if(path==="/api/public-bots"&&request.method==="GET"){
   const q=String(url.searchParams.get("q")||"").trim().slice(0,80);
-  const rows=q?await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' AND (b.name LIKE ? OR b.description LIKE ?) ORDER BY b.updated_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%").all():await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND u.status='active' ORDER BY b.updated_at DESC LIMIT 100").all();
+  const rows=q?await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND b.deleted_at IS NULL AND u.status='active' AND (b.name LIKE ? OR b.description LIKE ?) ORDER BY b.updated_at DESC LIMIT 100").bind("%"+q+"%","%"+q+"%").all():await env.DB.prepare("SELECT b.id,b.name,b.description,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.is_public=1 AND b.deleted_at IS NULL AND u.status='active' ORDER BY b.updated_at DESC LIMIT 100").all();
   const community=(rows.results||[]).map(b=>({id:b.id,name:b.name,description:b.description,is_nsfw:Number(b.is_nsfw)===1,owner_username:b.owner_username,system_bot:false,updated_at:b.updated_at,url:"/bot.html?id="+b.id}));
   return json({bots:[...listStarterPublicBots(q),...community]},200,origin);
  }
  if(publicInfo&&request.method==="GET"){
   const official=getStarterPublicBot(publicMatch[1]);
   if(official)return json({bot:starterPublicSummary(official)},200,origin);
-  const bot=await env.DB.prepare("SELECT b.id,b.name,b.description,b.owner_id,b.is_public,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.id=? AND b.is_public=1 AND u.status='active'").bind(publicMatch[1]).first();
+  const bot=await env.DB.prepare("SELECT b.id,b.name,b.description,b.owner_id,b.is_public,b.is_nsfw,b.updated_at,u.username AS owner_username FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.id=? AND b.deleted_at IS NULL AND b.deleted_at IS NULL AND b.is_public=1 AND u.status='active'").bind(publicMatch[1]).first();
   if(!bot)return json({error:"This bot is private or no longer available."},404,origin);
   return json({bot:{id:bot.id,name:bot.name,description:bot.description,is_nsfw:Number(bot.is_nsfw)===1,owner_username:bot.owner_username,updated_at:bot.updated_at}},200,origin);
  }
@@ -549,7 +549,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
   if(request.method!=="POST")return json({error:"Method not allowed."},405,origin);
   if(!await rateLimit(env,request,"personal-bot-public-chat",12,60))return json({error:"This bot is receiving messages too quickly. Try again in a minute."},429,origin);
   const official=getStarterPublicBot(publicMatch[1]);
-  const bot=official?{...official,owner_id:null,is_public:1,is_nsfw:0,owner_status:"active"}:await env.DB.prepare("SELECT b.id,b.name,b.description,b.system_prompt,b.owner_id,b.is_public,b.is_nsfw,u.status AS owner_status FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.id=?").bind(publicMatch[1]).first();
+  const bot=official?{...official,owner_id:null,is_public:1,is_nsfw:0,owner_status:"active"}:await env.DB.prepare("SELECT b.id,b.name,b.description,b.system_prompt,b.owner_id,b.is_public,b.is_nsfw,u.status AS owner_status FROM personal_bots b JOIN users u ON u.id=b.owner_id WHERE b.id=? AND b.deleted_at IS NULL").bind(publicMatch[1]).first();
   if(!bot||Number(bot.is_public)!==1||bot.owner_status!=="active")return json({error:"This bot is private or no longer available."},404,origin);
   const isNsfw=Number(bot.is_nsfw)===1,adultConfirmed=await adultAccessConfirmed(request,env);
   if(isNsfw&&!adultConfirmed)return json({error:"This bot is marked NSFW. Sign in and confirm that you are 18 or older in the Adults Only forum area to use it.",adult_gate:true},403,origin);
@@ -573,7 +573,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const memoryMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/memory$/);
  if(memoryMatch&&(request.method==="GET"||request.method==="PUT")){
   const botId=memoryMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
   if(request.method==="GET"){const row=await env.DB.prepare("SELECT enabled,notes FROM personal_bot_memory WHERE bot_id=? AND owner_id=?").bind(botId,user.id).first();return json({enabled:Number(row?.enabled||0)===1,notes:row?.notes||""},200,origin);}
   let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
@@ -585,17 +585,17 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const historyMatch=path.match(/^\/api\/personal-bots\/([a-f0-9]{32})\/history$/);
  if(historyMatch&&request.method==="DELETE"){
   const botId=historyMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
-  const result=await env.DB.prepare("DELETE FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=?").bind(botId,user.id).run();
+  const result=await env.DB.prepare("UPDATE personal_bot_chat_messages SET deleted_at=? WHERE bot_id=? AND user_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),botId,user.id).run();
   await audit(env,user,"personal_bot.history.delete","personal_bot",null,{bot_id:botId,deleted:result.meta?.changes||0});
   return json({ok:true,deleted:result.meta?.changes||0},200,origin);
  }
  if(historyMatch&&request.method==="GET"){
   const botId=historyMatch[1];
-  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND owner_id=?").bind(botId,user.id).first();
+  const owned=await env.DB.prepare("SELECT id FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=? AND deleted_at IS NULL").bind(botId,user.id).first();
   if(!owned)return json({error:"Bot not found."},404,origin);
-  const {results}=await env.DB.prepare("SELECT id,role,content,created_at FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=? ORDER BY id DESC LIMIT 100").bind(botId,user.id).all();
+  const {results}=await env.DB.prepare("SELECT id,role,content,created_at FROM personal_bot_chat_messages WHERE bot_id=? AND user_id=? AND deleted_at IS NULL ORDER BY id DESC LIMIT 100").bind(botId,user.id).all();
   return json({messages:(results||[]).reverse()},200,origin);
  }
  const [creatorGrant,slotEntitlement,premiumMembership]=await Promise.all([
@@ -606,7 +606,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  const policy=botAccessPolicy(user,slotEntitlement?.extra_bot_slots,creatorGrant,!!premiumMembership);
  const cap=policy.limit;
  if(path===collection&&request.method==="GET"){
-  const {results}=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE owner_id=? ORDER BY created_at DESC").bind(user.id).all();
+  const {results}=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE owner_id=? AND deleted_at IS NULL ORDER BY created_at DESC").bind(user.id).all();
   return json({bots:(results||[]).map(b=>({...b,is_public:Number(b.is_public)===1,is_nsfw:Number(b.is_nsfw)===1,share_url:Number(b.is_public)===1?"https://ash-fall.com/bot.html?id="+b.id:null})),limit:cap,unlimited:policy.unlimited,advanced_builder:policy.advanced_builder,title:policy.title,role:user.role,tier:policy.tier},200,origin);
  }
  if(path===collection&&request.method==="POST"){
@@ -614,7 +614,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
   let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
   const name=typeof body.name==="string"?body.name.trim():"",description=typeof body.description==="string"?body.description.trim():"",systemPrompt=typeof body.system_prompt==="string"?body.system_prompt.trim():"",isNsfw=body.is_nsfw===true;
   if(!validText(name,60)||description.length>500||!validText(systemPrompt,4000))return json({error:"Provide a bot name (1–60 characters), description (up to 500), and instructions (1–4000 characters)."},400,origin);
-  const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM personal_bots WHERE owner_id=?").bind(user.id).first();
+  const count=await env.DB.prepare("SELECT COUNT(*) AS count FROM personal_bots WHERE owner_id=? AND deleted_at IS NULL").bind(user.id).first();
   if(cap!==null&&Number(count?.count||0)>=cap)return json({error:"Your account can create up to "+cap+" personal bots."},409,origin);
   const id=randomToken(16),slug=slugify(name)||"personal-bot",now=new Date().toISOString(),isPublic=body.is_public===true?1:0;
   try{await env.DB.prepare("INSERT INTO personal_bots (id,owner_id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)").bind(id,user.id,name,slug,description,systemPrompt,isPublic,isNsfw?1:0,now,now).run();}catch(error){if(String(error).includes("personal_bot_limit_reached"))return json({error:"Your account has reached its personal bot limit. Refresh your workspace."},409,origin);if(String(error).includes("UNIQUE"))return json({error:"You already have a bot with a conflicting name."},409,origin);throw error;}
@@ -623,7 +623,7 @@ async function handlePersonalBotRequest(request,env,origin,url){
  }
  const id=(ownerMatch||[])[1];
  if(ownerItem||ownerChat){
-  const bot=await env.DB.prepare("SELECT id,owner_id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE id=?").bind(id).first();
+  const bot=await env.DB.prepare("SELECT id,owner_id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE id=? AND deleted_at IS NULL").bind(id).first();
   if(!bot||Number(bot.owner_id)!==Number(user.id))return json({error:"Bot not found in your personal workspace."},404,origin);
   if(ownerChat&&request.method==="POST"){
    if(!await rateLimit(env,request,"personal-bot-owner-chat",30,60))return json({error:"Too many messages. Try again in a minute."},429,origin);
@@ -647,10 +647,10 @@ async function handlePersonalBotRequest(request,env,origin,url){
    const now=new Date().toISOString(),sets=entries.map(([key])=>key+"=?");sets.push("updated_at=?");
    try{await env.DB.prepare("UPDATE personal_bots SET "+sets.join(",")+" WHERE id=? AND owner_id=?").bind(...entries.map(([,v])=>v),now,id,user.id).run();}catch(error){if(String(error).includes("UNIQUE"))return json({error:"You already have a bot with a conflicting name."},409,origin);throw error;}
    await audit(env,user,"personal_bot.update","personal_bot",null,{bot_id:id,fields:entries.map(([key])=>key),is_public:fields.is_public===undefined?undefined:!!fields.is_public,is_nsfw:fields.is_nsfw===undefined?undefined:!!fields.is_nsfw});
-   const updated=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE id=? AND owner_id=?").bind(id,user.id).first();
+   const updated=await env.DB.prepare("SELECT id,name,slug,description,system_prompt,is_public,is_nsfw,created_at,updated_at FROM personal_bots WHERE id=? AND deleted_at IS NULL AND owner_id=?").bind(id,user.id).first();
    return json({ok:true,bot:{...updated,is_public:Number(updated.is_public)===1,is_nsfw:Number(updated.is_nsfw)===1,share_url:Number(updated.is_public)===1?"https://ash-fall.com/bot.html?id="+id:null}},200,origin);
   }
-  if(ownerItem&&request.method==="DELETE"){await env.DB.prepare("DELETE FROM personal_bots WHERE id=? AND owner_id=?").bind(id,user.id).run();await audit(env,user,"personal_bot.delete","personal_bot",null,{bot_id:id,name:bot.name});return json({ok:true},200,origin);}
+  if(ownerItem&&request.method==="DELETE"){await env.DB.prepare("UPDATE personal_bots SET deleted_at=? WHERE id=? AND owner_id=? AND deleted_at IS NULL").bind(new Date().toISOString(),id,user.id).run();return json({ok:true,soft_deleted:true},200,origin);}
  }
  return json({error:"Personal bot endpoint not found."},404,origin);
 }
