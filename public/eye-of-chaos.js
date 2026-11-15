@@ -2,7 +2,7 @@
 "use strict";
 const API="https://api.ash-fall.com/api/god/chaos";
 const $=id=>document.getElementById(id);
-const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,section:"overview"};
+const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,paused:false,section:"overview"};
 const root=$("chaos-workspace"),notice=$("chaos-status");
 const node=(tag,cls,text)=>{
  const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);
@@ -54,6 +54,13 @@ function refreshSource(){
  const target=$("chaos-source");target.replaceChildren(new Option("No automated source",""));
  for(const source of state.sources)target.append(new Option(source.label+" · "+source.category,source.key));
 }
+function refreshMaster(){
+ const status=$("chaos-master-state"),button=$("chaos-master-toggle");
+ if(!state.ready){status.textContent="Execution controls require database migrations 0142 and 0143.";button.disabled=true;return}
+ status.textContent=state.paused?"ALL AGENT EXECUTION PAUSED · GOD LOCK ACTIVE":"Mission research and manual AI drafting may run on explicit assignments.";
+ button.textContent=state.paused?"Resume agent execution":"Pause all agent execution";
+ button.disabled=false;
+}
 function lockForms(){
  if(state.ready)return;
  for(const form of [$("chaos-mission-form"),$("chaos-draft-form")]){
@@ -95,12 +102,12 @@ function renderMissions(){
   const badge=node("span","chaos-state",m.status);badge.dataset.state=m.status;head.append(left,badge);
   card.append(head,node("p","",m.instructions));
   const buttons=node("div","chaos-actions");
-  if(m.status!=="cancelled"&&m.kind==="research"&&m.source_key){
+  if(m.status!=="cancelled"&&!state.paused&&m.kind==="research"&&m.source_key){
    buttons.append(action("Research now",()=>busy("Fetching approved research source…",async()=>{
     const result=await api("/missions/"+m.id+"/run","POST");if(result.created_draft){await loadMissions();await loadDrafts();}
    })));
   }
-  if(m.status!=="cancelled"&&m.division!=="arcade"){
+  if(m.status!=="cancelled"&&!state.paused&&m.division!=="arcade"){
    buttons.append(action("AI draft",()=>busy("Generating a pending AI draft for GOD review…",async()=>{
     const result=await api("/missions/"+m.id+"/draft","POST");
     if(result.created_draft){await loadDrafts();openSection("approvals")}
@@ -211,6 +218,15 @@ $("chaos-mission-refresh").addEventListener("click",loadMissions);
 $("chaos-draft-refresh").addEventListener("click",loadDrafts);
 $("chaos-history-refresh").addEventListener("click",loadEvents);
 $("chaos-qa-refresh").addEventListener("click",loadQA);
+$("chaos-master-toggle").addEventListener("click",async()=>{
+ if(!state.ready)return;
+ const target=!state.paused;
+ if(target&&!confirm("GOD master pause: stop all manual research, scheduled research and AI draft execution?"))return;
+ await busy(target?"Pausing every Eye of Chaos worker…":"Resuming GOD-approved mission execution…",async()=>{
+  const outcome=await api("/control","POST",{paused:target});
+  state.paused=outcome.paused;refreshMaster();await loadMissions();
+ });
+});
 $("chaos-draft-cancel").addEventListener("click",resetDraftEditor);
 $("chaos-mission-form").addEventListener("submit",async e=>{
  e.preventDefault();if(!state.ready)return;
@@ -242,7 +258,7 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
 (async()=>{
  try{
   const data=await api("/status");
-  state.fleet=data;state.ready=data.schema_ready===true;
+  state.fleet=data;state.ready=data.schema_ready===true;state.paused=data.execution_paused===true;
   $("chaos-agent-count").textContent=String(data.agents.length);
   $("chaos-qa-count").textContent=String(data.arcade.length);
   $("chaos-forum-count").textContent=data.forums_loaded?String(data.forums.length):"—";
@@ -250,10 +266,10 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
   renderCards($("chaos-qa-registry"),data.arcade,"QA");
   renderCards($("chaos-forum-registry"),data.forums,"Forum");
   $("chaos-qa-link").href=data.qa_workflow;
-  root.hidden=false;refreshAssignee();refreshDraftAssignee();
+  root.hidden=false;refreshAssignee();refreshDraftAssignee();refreshMaster();
   try{state.sources=(await api("/sources")).sources||[];refreshSource()}catch{}
-  if(!state.ready){lockForms();message("GOD authorized. Fleet registry online; mission storage requires D1 migration 0142.");return}
-  message("GOD authorized. Mission and approval controls ready. Publishing is locked.");
+  if(!state.ready){lockForms();message("GOD authorized. Fleet registry online; controls require D1 migrations 0142 and 0143.");return}
+  message(state.paused?"GOD authorized. Master execution lock is active.":"GOD authorized. Mission and approval controls ready. Publishing is locked.");
   await Promise.allSettled([loadMissions(),loadDrafts(),loadEvents()]);
  }catch(error){
   $("chaos-denied").hidden=false;message(error.message);
