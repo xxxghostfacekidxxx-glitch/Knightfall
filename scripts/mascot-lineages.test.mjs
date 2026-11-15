@@ -41,3 +41,18 @@ test('the compositor and bestiary are wired to sanctuary page before the main sc
  assert.ok(ui.indexOf('card.append(visual);')<ui.indexOf('window.KnightfallPetRenderer?.decorate(visual,item)'));
  assert.ok(engine.includes("const landscapes="));
 });
+
+test('storybook pet compositor retains server-owned lineage and separate type palettes',()=>{
+ const page=readFileSync(new URL('../public/mascot-pets.html',import.meta.url),'utf8');
+ const room=readFileSync(new URL('../public/mascot-room.html',import.meta.url),'utf8');
+ const profile=readFileSync(new URL('../public/profile.html',import.meta.url),'utf8');
+ const renderer=readFileSync(new URL('../public/mascot-renderer.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../public/mascot-cartoon.css',import.meta.url),'utf8');
+ for(const html of [page,room,profile])assert.match(html,/mascot-cartoon\.css\?v=20261114-book3/);
+ assert.match(renderer,/pet-render-v2','pet-render-v3'/);
+ assert.match(renderer,/pet-comic-affinity-mark/);
+ assert.match(renderer,/storybook-comic-v3/);
+ assert.match(css,/data-affinity="neon"/);
+ assert.match(css,/prefers-reduced-motion/);
+ assert.doesNotMatch(renderer,/localStorage|fetch\(/);
+});

@@ -1,0 +1,84 @@
+/* Knightfall Storybook Creatures v3: hand-painted color families, chibi proportions,
+   thick comic borders. Uses existing saved pets, evolution assets and affinity data. */
+.sanctuary-shell .pet-card[data-affinity]{
+ border:2px solid color-mix(in srgb,var(--creature-mid),#140e22 40%);
+ border-radius:25px;
+ background:linear-gradient(157deg,color-mix(in srgb,var(--creature-sky),#261529 32%),var(--creature-floor) 84%);
+ box-shadow:0 16px 0 -10px #090712,0 20px 32px #0008,inset 0 3px 0 #fff1;
+}
+.sanctuary-shell .pet-card[data-affinity].featured{
+ border-color:color-mix(in srgb,var(--creature-light),#f7d69c 30%);
+ box-shadow:0 16px 0 -10px #090712,0 20px 40px #0009,0 0 0 2px color-mix(in srgb,var(--creature-light),transparent 78%);
+}
+.sanctuary-shell .pet-card .pet-art.pet-render-v3{
+ border-radius:21px;
+ border:3px solid color-mix(in srgb,var(--creature-ink),#f1dcbd 22%);
+ background:radial-gradient(ellipse at 50% 30%,color-mix(in srgb,var(--creature-light),transparent 68%),transparent 60%),linear-gradient(165deg,var(--creature-sky),var(--creature-floor))!important;
+ box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--creature-light),transparent 81%),inset 0 -24px 30px #0002;
+}
+.pet-render-v3>.pet-world-illustration{
+ filter:drop-shadow(0 2px 0 var(--creature-ink));
+ opacity:.96;
+}
+.pet-render-v3>.pet-comic-affinity-mark{
+ position:absolute;z-index:7;width:44px;height:44px;right:11px;top:11px;
+ pointer-events:none;filter:drop-shadow(0 3px 0 #0b0812a8);
+}
+.pet-render-v3>.pet-world-light{
+ background:linear-gradient(138deg,#fff9 0%,transparent 26%,transparent 75%,#05071048 100%);
+ mix-blend-mode:soft-light;
+}
+.pet-render-v3>.pet-world-texture{
+ opacity:.25;
+ background-image:radial-gradient(#ffffff30 1.1px,transparent 1.8px);
+ background-size:13px 13px;
+ mix-blend-mode:soft-light;
+}
+.sanctuary-shell .pet-card:not(.is-undiscovered) .pet-render-v3>img.pet-base-image{
+ /* Subtle animated-series contrast; keep the species' own base palette. */
+ filter:contrast(1.19) saturate(.94)
+   drop-shadow(-2px 0 0 #110e1f) drop-shadow(2px 0 0 #110e1f)
+   drop-shadow(0 5px 0 #110e1f) drop-shadow(0 13px 7px #06070cc4)!important;
+ transition:transform .24s cubic-bezier(.19,.73,.31,1.19);
+}
+.sanctuary-shell .pet-card[data-affinity="neon"] .pet-render-v3>img.pet-base-image{
+ filter:contrast(1.18) saturate(1.17) drop-shadow(0 4px 0 #110e1f)
+   drop-shadow(0 14px 8px #050710ce)!important;
+}
+.sanctuary-shell .pet-card:not(.is-undiscovered):hover .pet-render-v3>img.pet-base-image{
+ transform:translateY(-5px) scale(1.065);
+}
+.sanctuary-shell .pet-card[data-form="2"]:not(.is-undiscovered) .pet-render-v3>img.pet-base-image{
+ transform:translateY(-2px) scale(1.075);
+}
+.sanctuary-shell .pet-card[data-form="3"]:not(.is-undiscovered) .pet-render-v3>img.pet-base-image{
+ transform:translateY(-4px) scale(1.11);
+}
+.sanctuary-shell .pet-card[data-affinity] .pet-label{
+ letter-spacing:-.015em;
+}
+.sanctuary-shell .pet-card[data-affinity] .pet-affinity-chip{
+ border-width:2px;border-radius:999px;
+ box-shadow:inset 0 1px 0 #fff2;
+}
+.room-avatar[data-affinity]{
+ border-radius:40%;
+ filter:drop-shadow(-2px 0 0 #14101e) drop-shadow(2px 0 0 #14101e) drop-shadow(0 5px 0 #14101e);
+}
+.mascot-profile-pet[data-affinity]{
+ border:2px solid var(--creature-mid);
+ border-radius:19px;
+ box-shadow:0 6px 0 -2px var(--creature-ink),0 15px 25px #0005;
+}
+.mascot-profile-pet[data-affinity] .mascot-profile-master{
+ filter:contrast(1.14) saturate(.87) drop-shadow(0 4px 0 #150e20) drop-shadow(0 7px 7px #0009)!important;
+}
+@media (max-width:550px){
+ .pet-render-v3>.pet-comic-affinity-mark{width:34px;height:34px;top:6px;right:6px}
+ .sanctuary-shell .pet-card[data-affinity]{border-radius:18px}
+ .sanctuary-shell .pet-card .pet-art.pet-render-v3{border-radius:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pet-render-v3>img.pet-base-image{transition:none!important;animation:none!important}
+ .sanctuary-shell .pet-card:hover .pet-render-v3>img.pet-base-image{transform:none}
+}

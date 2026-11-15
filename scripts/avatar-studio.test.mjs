@@ -26,7 +26,8 @@ test('Misfit Studio mounts all essential live editing controls',()=>{
   'download-svg','download-avatar','save-avatar','set-active','studio-status',
   'unsaved-indicator','clear-avatar','slot-products','remove-active-avatar'];
  for(const id of expected)assert.match(html,new RegExp('id="'+id+'"'),id+' missing');
- for(const path of ['avatar-studio.css','misfit-avatar.js','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261113-misfit-ink5'),path+' cache token missing');
+ for(const path of ['avatar-studio.css','avatar-studio.js'])assert.ok(html.includes('/'+path+'?v=20261113-misfit-ink5'),path+' cache token missing');
+ for(const path of ['avatar-cartoon.css','misfit-avatar.js'])assert.ok(html.includes('/'+path+'?v=20261114-book3'),path+' cartoon token missing');
  const js=read('public/avatar-studio.js');
  assert.match(js,/paintTabs\(\)/);
  assert.match(js,/applyAvatar\(next/);
@@ -179,4 +180,16 @@ test('Misfit Ink 5 adds detail without changing saved avatar data',()=>{
  assert.match(js,/stage\.dataset\.framing=portraitFocus\?'portrait':'full'/);
  assert.match(css,/data-framing="portrait"/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+test('Misfit preview and exported SVG render with storybook comic ink without changing customization keys',()=>{
+ const kit=loadRenderer();
+ const svg=kit.render({background:'eclipse',expression:'fang',eyes:'doe'});
+ assert.match(svg,/data-render-style="storybook-comic-v3"/);
+ assert.match(svg,/data-art-pass="storybook-frame"/);
+ assert.match(svg,/data-art-pass="comic-blush"/);
+ assert.match(svg,/data-art-pass="comic-eye-ink"/);
+ assert.ok(svg.includes('viewBox="0 0 224 256"'));
+ assert.ok(read('public/avatar-studio.html').includes('/avatar-cartoon.css?v=20261114-book3'));
+ assert.ok(read('public/profile.html').includes('/avatar-cartoon.css?v=20261114-book3'));
 });
