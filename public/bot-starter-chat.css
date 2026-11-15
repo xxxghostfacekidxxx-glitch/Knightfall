@@ -27,3 +27,12 @@
 .public-bot-page .public-disclaimer{color:#ae9ebc}
 @media(max-width:560px){.bot-starter-prompts{display:grid;grid-template-columns:minmax(0,1fr)}.bot-starter-suggestion{width:100%;min-height:43px}.public-bot-page .public-chat-panel{padding:12px}.public-bot-page .public-chat-log{min-height:200px;max-height:50vh}}
 @media(prefers-reduced-motion:reduce){.bot-starter-suggestion{transition:none}}
+
+/* Keep starter chat badges and suggestions from stretching narrow Android viewports. */
+@media (max-width:560px){
+ .public-bot-page .public-bot-shell,.public-bot-page .public-chat-panel,.public-bot-page .bot-starters{min-width:0;max-width:100%}
+ .public-bot-page .chat-heading{flex-wrap:wrap;gap:.65rem}
+ .public-bot-page .public-pill{white-space:normal;min-width:0;max-width:100%;overflow-wrap:anywhere}
+ .public-bot-page .bot-starter-suggestion{min-width:0;max-width:100%;overflow-wrap:anywhere;white-space:normal}
+ .public-bot-page .public-chat-compose{min-width:0;max-width:100%}
+}
