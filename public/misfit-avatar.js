@@ -164,7 +164,7 @@
    Object.assign(auras,extraArt.aura);
    const uid='kf-misfit-'+(++renderSequence);
    const shapeGlow=a.background==='toxic'?'#c6ff45':a.background==='ember'?'#ff986b':a.background==='bubblegum'?'#ff7de2':'#78efec';
-   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar">
+   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 256" role="img" aria-label="Knightfall Misfit collectible avatar" data-render-style="storybook-comic-v3">
  <defs>
 <clipPath id="${uid}-face-clip">${headShape}</clipPath>
 <linearGradient id="${uid}-edge-light" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${shapeGlow}" stop-opacity=".9"/><stop offset=".45" stop-color="#f3c4fd" stop-opacity=".18"/><stop offset="1" stop-color="${accent}" stop-opacity=".8"/></linearGradient>
@@ -178,6 +178,12 @@
   <filter id="${uid}-shadow" x="-35%" y="-35%" width="170%" height="190%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#05030c" flood-opacity=".54"/></filter>
  </defs>
  <rect width="224" height="256" rx="35" fill="${bg}"/>
+ <g data-art-pass="storybook-frame" stroke-linecap="round" stroke-linejoin="round">
+   <circle cx="112" cy="116" r="93" fill="${shapeGlow}" opacity=".13"/>
+   <circle cx="112" cy="116" r="89" fill="none" stroke="${shapeGlow}" stroke-width="7" opacity=".35"/>
+   <path d="M19 75Q26 38 68 21M156 21Q200 35 205 78" fill="none" stroke="#fff6ea" stroke-width="7" opacity=".28"/>
+   <path d="m31 148 7 8-7 8-7-8zM186 180l6 7-6 7-6-7z" fill="${accent}" stroke="#211327" stroke-width="2.4" opacity=".82"/>
+ </g>
  <rect width="224" height="256" rx="35" fill="url(#${uid}-ambient)"/>
 <g data-art-pass="cinematic-background"><path d="M-18 22 L59 -10 L-1 148Z M154 -12 L248 43 L226 176Z" fill="${shapeGlow}" opacity=".11"/><circle cx="112" cy="112" r="104" fill="none" stroke="${shapeGlow}" stroke-width="1.2" opacity=".3"/><circle cx="112" cy="112" r="94" fill="none" stroke="#f4d9fc" stroke-width=".7" stroke-dasharray="1 8" opacity=".4"/><path d="M13 218L90 256M162 0l65 78" fill="none" stroke="#fff" stroke-width="1" opacity=".16"/></g>
  <g data-scene="${a.background}">${sceneArt[a.background]}</g>
@@ -202,16 +208,22 @@
   <g fill="url(#${uid}-skin)" stroke="#241629" stroke-width="5" stroke-linejoin="round">${headShape}</g>
 <g data-art-pass="face-paint" clip-path="url(#${uid}-face-clip)"><ellipse cx="112" cy="94" rx="66" ry="85" fill="url(#${uid}-portrait-light)"/><path d="M55 77 Q49 130 75 170" fill="none" stroke="#351e38" stroke-width="8" opacity=".13"/><path d="M170 75 Q180 126 151 170" fill="none" stroke="#1a1532" stroke-width="8" opacity=".23"/><path d="M75 161 Q111 186 149 160" fill="none" stroke="#fff7fb" stroke-width="2.8" opacity=".18"/><path d="M60 117q-3 17 6 26m92-26q7 14 1 27" fill="none" stroke="#fff" stroke-width="2" opacity=".23"/><ellipse cx="75" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/><ellipse cx="151" cy="146" rx="24" ry="13" fill="#ec7591" opacity=".09"/></g>
   <ellipse cx="90" cy="81" rx="44" ry="28" fill="#fff" opacity=".075"/>
-  <ellipse cx="73" cy="146" rx="19" ry="9" fill="#ff607e" opacity=".16"/>
-  <ellipse cx="152" cy="146" rx="19" ry="9" fill="#ff607e" opacity=".16"/>
+  <g data-art-pass="comic-blush">
+    <ellipse cx="73" cy="146" rx="23" ry="12" fill="#f27591" opacity=".19"/>
+    <ellipse cx="152" cy="146" rx="23" ry="12" fill="#f27591" opacity=".19"/>
+    <path d="m63 147-5 4m14-4-5 4m78-4-5 4m15-4-5 4" fill="none" stroke="#ad596f" stroke-width="2.2" stroke-linecap="round" opacity=".39"/>
+  </g>
   ${fineArt.nose[a.nose]}
   <g fill="url(#${uid}-hair)" stroke="#241629" stroke-width="4" stroke-linejoin="round">${silhouetteArt.front[a.hair]||hairstyles[a.hair]}</g>
   ${a.hair_highlight==="none"?"":`<path d="M71 68q17-18 36-17m17 0q18 4 27 19" fill="none" stroke="${palettes.hair_color[a.hair_highlight]}" stroke-width="6" stroke-linecap="round" opacity=".8"/>`}
   <path d="M61 71Q82 41 120 49m15 3q15 7 23 19" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".19"/>
 <g data-art-pass="hair-ink" fill="none" stroke-linecap="round"><path d="M72 62Q98 43 123 52M126 52q17 6 25 20" stroke="#fff" stroke-width="2.2" opacity=".17"/><path d="M61 94q-5 18-1 34m107-35q5 14 1 34" stroke="#090710" stroke-width="2.8" opacity=".42"/><path d="M82 52l-7 13m17-19-4 11m55-6 6 14" stroke="${accent}" stroke-width="1.3" opacity=".4"/></g>
   ${accessories[a.accessory]}${headwear[a.headwear]}
-  <g fill="none" stroke="#39283b" stroke-width="4" stroke-linecap="round">${brows}</g>
+  <g fill="none" stroke="#39283b" stroke-width="4.6" stroke-linecap="round">${brows}</g>
 <g data-art-pass="eye-structure"><path d="M66 113q15-12 32 1m31 0q17-13 33-1" fill="none" stroke="#26182e" stroke-width="2.6" stroke-linecap="round" opacity=".46"/><path d="M72 133q10 6 21 0m40 0q10 6 21 0" fill="none" stroke="#fff3f5" stroke-width="1.5" opacity=".24"/></g>
+  <g data-art-pass="comic-eye-ink" fill="none" stroke="#25172f" stroke-width="3.5" stroke-linecap="round" opacity=".84">
+    <path d="M64 114q18-15 36 1m27-1q18-16 36 1"/>
+  </g>
   ${fineArt.makeup[a.makeup]}${eyeShapes[a.eyes]}${pupils}
   <path d="M68 139q14 5 26 0m38 0q15 5 26 0" fill="none" stroke="#673e57" stroke-width="1.5" opacity=".33"/>
   <g data-face-sculpt="true" fill="none" stroke="#462a42" stroke-width="1.6" opacity=".3"><path d="M67 148q-5 10 3 17m87-17q5 10-3 17M90 167q22 7 43-1"/></g>
