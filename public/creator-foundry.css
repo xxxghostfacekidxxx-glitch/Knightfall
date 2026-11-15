@@ -133,7 +133,7 @@
   text-underline-offset: .2em;
 }
 
-.foundry-card .actions a.primary {
+.foundry-card .actions a.foundry-link-main {
   color: #d6ff88;
 }
 
@@ -248,9 +248,9 @@ body {
 
 .foundry-form .foundry-action {
   justify-self: start;
-  color: #1d1723;
-  background: #d7edab;
-  border-color: #d7edab;
+  color: #1d1723 !important;
+  background: #d7edab !important;
+  border-color: #d7edab !important;
 }
 
 .foundry-links {
@@ -403,4 +403,39 @@ body {
 
 [data-group="desk"] {
   margin-block: .75rem 1.35rem;
+}
+
+[data-group="desk"] .foundry-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#foundry-catalog .foundry-card .actions > a.foundry-link-main {
+  padding-inline: .65rem;
+  border: 1px solid #ab84b9;
+  border-radius: .45rem;
+  background: #332442;
+  color: #fae9ff;
+  text-decoration: none;
+}
+
+#foundry-catalog .foundry-card .actions > a.foundry-link-main:hover,
+#foundry-catalog .foundry-card .actions > a.foundry-link-main:focus-visible {
+  background: #453152;
+  border-color: #dfbbeb;
+}
+
+#foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main {
+  background: #d9edb0;
+  border-color: #d9edb0;
+  color: #22291b;
+}
+
+#foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main:hover,
+#foundry-catalog [data-group="desk"] .foundry-card .actions > a.foundry-link-main:focus-visible {
+  background: #edfacf;
+}
+
+@media (max-width: 690px) {
+  [data-group="desk"] .foundry-grid { grid-template-columns: 1fr; }
+  [data-group="desk"] .foundry-card { min-height: auto; }
 }
