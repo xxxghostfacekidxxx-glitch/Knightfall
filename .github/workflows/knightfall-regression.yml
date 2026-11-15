@@ -76,6 +76,7 @@ jobs:
           node --test scripts/cinderwild-cloud-sync.test.mjs
           node --test scripts/cinderwild-world-rules.test.mjs
           node --test backend/src/cinderwild-online-world.test.mjs
+          node --test scripts/cinderwild-online-ui.test.mjs
           node --test scripts/password-reset-security.test.mjs
           node --test scripts/message-native-limit.test.mjs
           node --test scripts/digital-creator-access.test.mjs
