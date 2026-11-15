@@ -66,7 +66,7 @@ function load(){
     unit.hp=clamp(Number(c.hp)||0,0,unit.maxHp);
     unit.xp=clamp(Number(c.xp)||0,0,99999);
     unit.status=["burn","poison",null].includes(c.status)?c.status:null;
-    unit.pp=Array.isArray(c.pp)?[0,1,2,3].map(i=>clamp(Number(c.pp[i])||0,0,moves(unit)[i].pp)):[28,25,15,99];
+    unit.pp=Array.isArray(c.pp)?[0,1,2,3].map(i=>clamp(Number(c.pp[i])||0,0,moves(unit)[i].pp)):moves(unit).map(m=>m.pp);
     return unit;
   });
   for(const k of ["seen","caught"])t[k]=[...new Set((Array.isArray(raw[k])?raw[k]:[]).filter(id=>sp(id)))];
@@ -79,7 +79,7 @@ function load(){
 }
 let state=load(),battle=null,modal="",logLines=[],lastStep=0;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{notify("Storage unavailable. Progress may not persist.");}}
-function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;return{id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[28,25,15,99],status:null};}
+function make(id,level=1){const s=sp(id);level=clamp(level,1,100);const maxHp=s[2]+(level-1)*3;const unit={id,level,hp:maxHp,maxHp,attack:s[3]+Math.floor(level*0.8),defense:s[4]+Math.floor(level*0.65),xp:0,pp:[],status:null};unit.pp=moves(unit).map(m=>m.pp);return unit;}
 function moves(c){
  const type=sp(c.id)[1],pair=SPECIAL[type],lvl=c.level;
  return [
@@ -96,13 +96,14 @@ function addXP(c,amount){
   const delta=make(c.id,c.level),old=c.maxHp;
   c.maxHp=delta.maxHp;c.hp=clamp(c.hp+c.maxHp-old,0,c.maxHp);
   c.attack=delta.attack;c.defense=delta.defense;
+  c.pp=moves(c).map((move,i)=>Math.min(Number(c.pp[i])||0,move.pp));
   m+=name(c.id)+" reached Lv."+c.level+"! ";
   const ev=sp(c.id);
   if(ev[5]&&c.level>=ev[6]){
    const before=c.id,life=c.hp/c.maxHp,oldXp=c.xp;
    Object.assign(c,make(ev[5],c.level));c.hp=Math.max(1,Math.round(c.maxHp*life));c.xp=oldXp;
-   c.pp=[28,25,15,99];
-   state.seen.push(c.id);state.caught.push(c.id);
+   c.pp=moves(c).map(move=>move.pp);
+   remember(c.id,true);
    m+=name(before)+" evolved into "+name(c.id)+"! ";
   }
  }
@@ -180,6 +181,7 @@ function enemyTurn(){
  const choice=pick(options);
  battleLog(strike(attacker,hero,choice.m));
  const effect=tick(attacker);if(effect)battleLog(effect);
+ if(attacker.hp<=0){victory();return;}
  if(hero.hp<=0){battleLog(name(hero.id)+" fainted!");if(!active())blackout();}
 }
 function endBattle(){
@@ -209,7 +211,7 @@ function victory(){
 function playerMove(index){
  if(!battle||!active())return;
  const hero=lead(),m=moves(hero)[index];
- if(!m||hero.pp[index]<=0){battleLog("That move is out of charges. Rest or choose another.");renderBattle();return;}
+ if(!m||Math.min(hero.pp[index],m.pp)<=0){battleLog("That move is out of charges. Rest or choose another.");renderBattle();return;}
  battle.round++;
  battleLog(strike(hero,battle.enemy,m,index));
  if(battle.enemy.hp<=0){victory();if(battle)renderBattle();return;}
@@ -232,7 +234,7 @@ function capture(kind){
  battleLog(name(b.id)+" broke free!");enemyTurn();if(battle)renderBattle();save();
 }
 function healAll(){
- for(const c of state.party){c.hp=c.maxHp;c.status=null;c.pp=[28,25,15,99];}
+ for(const c of state.party){c.hp=c.maxHp;c.status=null;c.pp=moves(c).map(m=>m.pp);}
  save();
 }
 function usePotion(i,inBattle=false){
@@ -335,7 +337,7 @@ function renderBattle(){
  $("ally-name").textContent=name(a.id)+" · Lv."+a.level;
  $("ally-hp").innerHTML=hpbar(a)+"<small>"+a.hp+" / "+a.maxHp+" HP</small>";
  $("battle-notes").replaceChildren(...battle.lines.map(s=>{const p=document.createElement("p");p.textContent=s;return p;}));
- $("battle-buttons").innerHTML=choices.map((m,i)=>'<button data-move="'+i+'" '+(a.pp[i]<=0?"disabled":"")+'><strong>'+esc(m.name)+'</strong><span>'+esc(m.type.toUpperCase())+' · '+a.pp[i]+' PP</span></button>').join("");
+ $("battle-buttons").innerHTML=choices.map((m,i)=>'<button data-move="'+i+'" '+(Math.min(a.pp[i],m.pp)<=0?"disabled":"")+'><strong>'+esc(m.name)+'</strong><span>'+esc(m.type.toUpperCase())+' · '+Math.min(a.pp[i],m.pp)+' PP</span></button>').join("");
  $("battle-items").innerHTML='<button data-capture="orbs" '+(!canCapture||!state.items.orbs?"disabled":"")+'>Capture Orb ('+state.items.orbs+')</button><button data-capture="superOrbs" '+(!canCapture||!state.items.superOrbs?"disabled":"")+'>Prism Orb ('+state.items.superOrbs+')</button><button data-battle-heal="0" '+(!state.items.potions?"disabled":"")+'>Potion ('+state.items.potions+')</button><button data-flee '+(!canCapture?"disabled":"")+'>Run</button>';
  $("battle-switch").innerHTML=state.party.map((c,i)=>'<button data-switch="'+i+'" '+(i===0||c.hp<=0?"disabled":"")+'>'+esc(name(c.id))+' Lv.'+c.level+' · '+c.hp+' HP</button>').join("");
  sprite(a.id,"ally-sprite");sprite(b.id,"enemy-sprite");
