@@ -9,9 +9,9 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/knightfall-crest-192.png" type="image/png">
 <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/install.css?v=20261114-2">
+<link rel="stylesheet" href="/install.css?v=20261114-setup2">
 <script src="/nav.js?v=20261114-install1" defer></script>
-<script src="/install.js?v=20261114-1" defer></script>
+<script src="/install.js?v=20261114-setup2" defer></script>
 <script src="/install-health.js?v=20261114-1" defer></script>
 <script src="/android-device-check.js?v=20261114-qa1" defer></script>
 </head>
@@ -23,8 +23,9 @@
 <div><p class="kf-install-kicker">KNIGHTFALL / YOUR PORTAL INTO THE MADHOUSE</p>
 <h1>Install Knightfall</h1>
 <p>All the chaos, none of the browser tab hunting. Install the current web app now and keep getting the same updates as the website. A standalone Android APK is being prepared separately.</p>
-<div class="kf-install-actions"><button class="kf-install-primary" id="kf-pwa-install" type="button">Install web app</button><a class="kf-install-secondary" href="/chaos-cartridge.html">Explore the arcade</a></div>
+<div class="kf-install-actions"><button class="kf-install-primary" id="kf-pwa-install" type="button">Install web app</button><button class="kf-install-secondary" id="kf-install-help-button" type="button" aria-controls="kf-install-guide" aria-expanded="false">How to install</button><a class="kf-install-secondary" href="/chaos-cartridge.html">Explore the arcade</a></div>
 <p id="kf-install-status" class="kf-install-status" role="status" aria-live="polite">Checking installation options for this device…</p>
+<div class="kf-install-guide" id="kf-install-guide" aria-labelledby="kf-install-guide-title" hidden><h2 id="kf-install-guide-title" tabindex="-1">Install Knightfall from your browser</h2><p id="kf-install-guide-context"></p><ol id="kf-install-guide-steps"></ol><div class="kf-install-guide-actions"><button class="kf-install-secondary" type="button" id="kf-install-copy-link">Copy install page link</button><span id="kf-install-copy-status" role="status" aria-live="polite"></span></div></div>
 </div>
 </section>
 <section class="kf-install-grid" aria-label="Platform installation instructions">
