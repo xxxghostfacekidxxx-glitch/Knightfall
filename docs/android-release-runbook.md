@@ -10,6 +10,22 @@ Last updated: 2026-11-14. Public origin: https://ash-fall.com. Provisional Andro
 - **Real Android hardware tests:** still require a physical device. The GitHub emulator smoke test is a separate and narrower technical check, not evidence of working push notifications or real phone gestures.
 - **Play Store:** requires its own policy/identity steps, including verified privacy and account-deletion flows. A public GitHub APK does not imply Play Store approval.
 
+## Owner setup in one local script (recommended)
+
+A secure bootstrap script is available in the repository at [`scripts/bootstrap-android-signing.sh`](../scripts/bootstrap-android-signing.sh). On your trusted Chromebook Linux terminal, install the GitHub CLI and Java 17 once, sign in, then run:
+
+```bash
+sudo apt update && sudo apt install -y gh openjdk-17-jdk git
+gh auth login
+git clone https://github.com/xxxghostfacekidxxx-glitch/Knightfall.git
+cd Knightfall
+bash scripts/bootstrap-android-signing.sh
+```
+
+If you already cloned Knightfall, use the existing checkout and `git pull --ff-only origin main` instead of cloning again. The script runs **locally**, prompts invisibly for a long password, creates or reuses a private persistent keystore under `~/.local/share/knightfall/android-signing/`, uploads four encrypted GitHub Actions secrets **directly from stdin**, and starts the signed candidate workflow on the existing `main` branch with public release disabled. It never prints the keystore or password to the terminal and never creates a pull request. It requires a GitHub account with permission to edit repository Actions secrets.
+
+On Android, use a trusted Termux environment with `git`, `gh`, and Java `keytool` installed; the same script works in an interactive POSIX-compatible Bash environment. Do not run the bootstrap in public CI, from a link that you have not inspected, or on a shared device. Confirm that you have a secure backup of the signing key before publishing.
+
 ## One-time release signing key, performed privately by site owner
 
 **Never paste the keystore or passwords into ChatGPT, GitHub issues, commits, forum threads, or website files.** Keep at least two encrypted, independently stored backups of the keystore. If the signing key is lost, future installed APK updates may be impossible to sign with the same identity.
