@@ -1,67 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-<title id="title">Mini Villain | Ash-Fall Neon Nuisances</title>
-<desc id="desc">A smug pocket-sized gothic supervillain, wearing a dramatic asymmetrical horned crown, massive magenta cape, spiked armor and a glowing green arcane scepter.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="mini-villain-title mini-villain-desc"><title id="mini-villain-title">Mini Villain | Knightfall Storybook Edition</title><desc id="mini-villain-desc">A laughing pint-sized horned dragon villain with tiny bat wings, a mischievous fang grin, and a crooked crown.</desc>
 <defs>
- <linearGradient id="cape" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff76d5"/><stop offset=".5" stop-color="#8c2676"/><stop offset="1" stop-color="#321942"/></linearGradient>
- <linearGradient id="mask" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9b8cbb"/><stop offset=".5" stop-color="#49314d"/><stop offset="1" stop-color="#252339"/></linearGradient>
- <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+<linearGradient id="mini-villain-sky" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#453047"/><stop offset=".56" stop-color="#1c1429"/><stop offset="1" stop-color="#100d1a"/></linearGradient>
+<radialGradient id="mini-villain-aura" cx=".49" cy=".42" r=".63"><stop stop-color="#ffb8b3" stop-opacity=".43"/><stop offset=".65" stop-color="#df657b" stop-opacity=".15"/><stop offset="1" stop-color="#1c1429" stop-opacity="0"/></radialGradient>
+<linearGradient id="mini-villain-ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3e2b40"/><stop offset="1" stop-color="#15131d"/></linearGradient>
+<filter id="mini-villain-shadow" x="-35%" y="-40%" width="170%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="7" flood-color="#090710" flood-opacity=".7"/></filter>
 </defs>
-<ellipse cx="63" cy="118" rx="42" ry="5" fill="#ff55d8" opacity=".26"/>
-<circle cx="64" cy="65" r="50" fill="#ff27ce" opacity=".18" filter="url(#halo)"/>
-<g id="fx"><path d="m14 21 3-9 4 9-4 9Zm97 65 3-8 4 8-4 9Z" fill="#c6ff45"/><circle cx="105" cy="18" r="3" fill="#ff55d8"/></g>
-<g id="character" stroke-linejoin="round" stroke-linecap="round">
- <!-- cape and wildly oversized collar, not the same silhouette as the mouse -->
- <path d="M44 67Q21 60 14 106L7 118q25-10 40-3 18 14 36 0 19-5 37 5l-8-29q-7-21-29-25" fill="url(#cape)" stroke="#181221" stroke-width="4"/>
- <path d="m32 81 5 20 16 10m42-30-6 20-14 10" fill="none" stroke="#ffa0ed" stroke-width="2.5"/>
- <path d="M46 77 21 53l14 3-2-24 24 38M83 72l15-41-2 24 14-6-24 31" fill="#27172b" stroke="#ff55d8" stroke-width="3"/>
- <!-- floating scepter with orbiting energy -->
- <path d="M106 104 111 52" stroke="#17111b" stroke-width="8"/><path d="M106 104 111 52" stroke="#c6ff45" stroke-width="3"/>
- <path d="m111 51-11-12 12-13 10 12Z" fill="#c6ff45" stroke="#221629" stroke-width="3"/>
- <path d="m98 37-7-7m27 4 8-7m-15 0V16" stroke="#ff55d8" stroke-width="3"/>
- <!-- tiny boots with flared armor -->
- <path d="M44 97 36 112l19 4 10-13m13 0 9 14 19-4-12-16" fill="#241b2b" stroke="#13111a" stroke-width="4"/>
- <path d="M32 112q15-5 28 2l-2 7H29Zm48 3q15-9 27 0l-1 7H81Z" fill="#111421" stroke="#ff55d8" stroke-width="2.5"/>
- <path d="M39 82q25-15 46 0l9 26-15 8H48l-14-10Z" fill="url(#mask)" stroke="#15101d" stroke-width="4"/>
- <path d="M55 83 64 97l10-14-3 30H57Z" fill="#1c1727" stroke="#c6ff45" stroke-width="2.5"/>
- <path d="m63 92 5 0-2 12-5-7Z" fill="#ff55d8"/>
- <path d="m39 91-17 7m66-6 12 9" stroke="#383047" stroke-width="8"/>
- <path d="m21 96-7 1 3 9 10 1m74-8 6 0-1 10-8 0" fill="#211929" stroke="#c6ff45" stroke-width="3"/>
- <!-- tall asymmetric horns and crown -->
- <path d="M41 54 23 12q22 8 29 23l6-19 13 18 24-25-4 33 14-8-11 27" fill="#262032" stroke="#13101e" stroke-width="4"/>
- <path d="m33 22 13 31m40-5 6-25" stroke="#ff55d8" stroke-width="3"/>
- <path d="M38 47q6-19 27-22 24 3 28 22l1 27q-6 22-29 23-28-3-32-26Z" fill="url(#mask)" stroke="#13101d" stroke-width="4"/>
- <path d="M42 42q23-13 46-2l-7 11-14-7-16 9Z" fill="#1a1625" stroke="#ff55d8" stroke-width="2.5"/>
- <!-- theatrical masked eyes -->
- <g id="eyes">
-  <path d="M40 62q10-13 24 0l-12 10Zm27 0q11-12 22 1L77 73Z" fill="#0c141b" stroke="#ff55d8" stroke-width="2"/>
-  <path d="M44 63l12 3-5 4Zm29 3 12-3-8 7Z" fill="#c6ff45"/>
-  <circle cx="54" cy="65" r="1.6" fill="#fff"/><circle cx="80" cy="65" r="1.6" fill="#fff"/>
- </g>
- <g id="lids" opacity="0"><path d="m43 64 18 3m11 0 16-3" stroke="#c6ff45" stroke-width="4" fill="none"/></g>
- <g id="wink" opacity="0"><path d="m70 65 15-3" stroke="#ff55d8" stroke-width="4"/></g>
- <path d="m50 56 10-5m14 0 10 5" stroke="#151322" stroke-width="3"/>
- <path d="M52 81q14 13 26-1l-7 12-7-5-6 4Z" fill="#11111c" stroke="#ff55d8" stroke-width="2"/>
- <path d="m59 83 3 5 5-3 5 3" stroke="#f7fff0" stroke-width="2" fill="none"/>
- <circle cx="91" cy="75" r="3" fill="#c6ff45" stroke="#191220" stroke-width="1.5"/>
- <path d="m48 90-6 8m43-8 6 8" stroke="#ff55d8" stroke-width="2.4"/>
-<g id="deluxe-villain-regalia" stroke-linecap="round" stroke-linejoin="round">
-<path d="m37 29-12 3 10 9m58-12 12 3-10 9" fill="#371828" stroke="#ff55d8" stroke-width="2.5"/>
-<path d="m41 35 5-8 7 8m29 0 7-8 5 8" stroke="#c6ff45" stroke-width="2.5" fill="none"/>
-<path d="m41 48-9 7m63-7 9 7" stroke="#ff9de7" stroke-width="3"/>
-<path d="M40 93q10 12 24 10 14 2 24-10" fill="none" stroke="#f99cce" stroke-width="2.8"/>
-<path d="m38 96-15 7 8 9m59-16 15 7-8 9" fill="none" stroke="#c6ff45" stroke-width="2.4"/>
-<path d="M51 102l13 9 13-9" fill="none" stroke="#d7a8ff" stroke-width="2.4"/>
-<path d="m56 106 8 5 8-5" fill="none" stroke="#fff2fa" stroke-width="2.3"/>
-<path d="M52 33l12-7 12 7-12 8Z" fill="#20243a" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="m61 33 3-4 3 4-3 5Z" fill="#ff55d8"/>
-<path d="m41 62 8-4m30 0 8 4" stroke="#ffecff" stroke-width="2.5"/>
-<path d="M43 71q8 6 16 0m10 0q8 6 16 0" fill="none" stroke="#c6ff45" stroke-width="2"/>
-<path d="m24 83-7-7m87 7 7-7" stroke="#ff55d8" stroke-width="3"/>
-<path d="m31 105-5 12m74-12 5 12" stroke="#a4fff3" stroke-width="3"/>
-<path d="M47 110q17-4 34 0" stroke="#ff55d8" stroke-width="3"/>
-<path d="m19 40 6-10m78 10 6-10" stroke="#c6ff45" stroke-width="2.7"/>
-<circle cx="43" cy="46" r="2.8" fill="#ff55d8"/><circle cx="86" cy="46" r="2.8" fill="#79ffe7"/>
-<path d="m30 21 7-8 8 7m46-7 8 8" stroke="#ff55d8" stroke-width="2.7" fill="none"/>
-<circle cx="112" cy="48" r="3" fill="#c6ff45"/><circle cx="17" cy="81" r="2.7" fill="#79ffe7"/>
-<path d="M97 47q20 3 16 21m-5-6 5 6-4 9" stroke="#ff55d8" stroke-width="3.3" fill="none"/>
-</g></g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:levitate 4.5s ease-in-out infinite}#fx{animation:pulse 2.4s ease-in-out infinite}@keyframes levitate{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-6px) rotate(1deg)}}@keyframes pulse{50%{opacity:.3}}}</style></svg>
+<rect x="0" y="0" width="512" height="512" rx="34" fill="url(#mini-villain-sky)"/>
+<circle cx="256" cy="233" r="222" fill="url(#mini-villain-aura)"/>
+<circle cx="396" cy="93" r="48" fill="#ffb8b3" opacity=".12"/>
+<circle cx="396" cy="93" r="37" fill="none" stroke="#ffb8b3" opacity=".28" stroke-width="4"/>
+<path d="M27 340V206l25-39 25 39v83l24-35 19 26v87m275-18v-95l27-42 28 42v124m-422-5q48-27 106 0" fill="#1c1429" stroke="#ffb8b3" stroke-width="3" opacity=".24"/>
+<g fill="#ffb8b3" opacity=".72"><path d="m70 103 6 15 15 6-15 6-6 15-6-15-15-6 15-6zm343 148 5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><circle cx="364" cy="178" r="3"/><circle cx="113" cy="249" r="3"/><circle cx="402" cy="338" r="4"/></g>
+<ellipse cx="256" cy="454" rx="190" ry="28" fill="#08080e" opacity=".69"/>
+<path d="M68 449q30-25 97-24h187q61 2 93 26l-13 25H82Z" fill="url(#mini-villain-ground)" stroke="#a47783" stroke-width="6"/>
+<path d="M95 450q100-19 322 0" fill="none" stroke="#ffb8b3" stroke-width="4" opacity=".47"/>
+<g filter="url(#mini-villain-shadow)">
+<g class="creature" stroke="#2b192b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M195 287Q100 198 56 247q30-3 49 42-32-7-48 34 57-9 138 33Z" fill="#93364e" stroke="#36182e"/>
+<path d="M319 289Q406 189 456 243q-29 0-48 43 34-4 47 35-55-12-139 35Z" fill="#bb506d" stroke="#36182e"/>
+<path d="M203 315Q120 342 147 408q19 39 57 7M309 320q91 13 75 79-13 30-37 17" fill="none" stroke="#ad5264" stroke-width="19"/>
+<path d="M165 348q-27 56 5 94l68-6 16-70M348 347q26 59-2 95l-71-5-16-70" fill="#44273a"/>
+<path d="M171 364Q256 327 341 363L330 438H180Z" fill="#63334a"/>
+<path d="M207 373l12 53m93-51-13 49" fill="none" stroke="#d57a83" stroke-width="5"/>
+<ellipse cx="256" cy="235" rx="132" ry="111" fill="#f5ccc1"/>
+<path d="M144 184Q112 84 137 62q47 10 79 118M322 181q49-102 75-119 17 81-30 151" fill="#50304a" stroke="#251529" stroke-width="10"/>
+<path d="M155 158Q137 107 151 98q20 35 38 61M357 155q24-41 25-58 17 31-5 62" fill="#b76e8d" stroke-width="4"/>
+<path d="M137 194q-36-49-59-21l37 69M369 193q33-57 64-19l-29 68" fill="#e8a79e"/>
+<path d="M154 200q48-70 108-70 62 5 103 70" fill="#382538" stroke-width="7"/>
+<path d="M181 247q27-20 58 1M277 248q31-22 58-2" stroke="#331e2e" stroke-width="8" fill="none"/>
+<path d="M179 260q26 26 52 0m53-1q28 27 51 0" fill="none" stroke="#ad6778" stroke-width="5"/>
+<path d="M205 285q49 71 104-2Q295 364 256 374q-39-10-51-89Z" fill="#6a2543" stroke-width="5"/>
+<path d="m215 297 12 21 9-18m39 0 9 18 12-20" fill="#fff7ed" stroke="#fff7ed" stroke-width="2"/>
+<ellipse cx="182" cy="292" rx="20" ry="11" fill="#e98b99" opacity=".7" stroke="none"/><ellipse cx="338" cy="292" rx="20" ry="11" fill="#e98b99" opacity=".7" stroke="none"/>
+<path d="M188 328l11 30m126-33-12 32" fill="none" stroke="#d3929e" stroke-width="6"/>
+<g transform="translate(261 128)" stroke="#43233c" stroke-width="4"><path d="m-39 2-3-30 24 11 18-33 19 33 24-12-4 31Z" fill="#deb278"/><rect x="-41" y="0" width="82" height="12" rx="4" fill="#bf7c55"/><circle cx="0" cy="-18" r="6" fill="#a94d6b"/></g>
+<circle cx="257" cy="406" r="17" fill="#cf9a78" stroke="#e6c18e" stroke-width="4"/><path d="m250 405 7-9 8 9-8 9Z" fill="#8f2d52" stroke-width="2"/>
+</g></g>
+<path d="M28 63V35q0-11 14-11h41M429 25h41q13 0 13 14v42M31 429v38q0 13 13 13h44M424 481h40q17 0 17-16v-37" fill="none" stroke="#df657b" stroke-width="4" opacity=".55" stroke-linecap="round"/>
+</svg>

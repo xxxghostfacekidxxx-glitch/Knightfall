@@ -1,71 +1,43 @@
-<svg data-starborn-ready="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-<title id="title">Minion Mouse | Ash-Fall Neon Nuisances</title>
-<desc id="desc">A clever little lady mouse with giant stitched ears, mint goggles, a lucky ladybug patch and a pink bow, built for secret tunnels and bigger plans.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="minion-mouse-title minion-mouse-desc"><title id="minion-mouse-title">Minion Mouse | Knightfall Storybook Edition</title><desc id="minion-mouse-desc">A tiny cream-colored mouse in a stitched burgundy hood, with giant pink ears, whiskers, and a brass moon charm.</desc>
 <defs>
- <linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54476a"/><stop offset="1" stop-color="#191627"/></linearGradient>
- <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb7e8"/><stop offset=".5" stop-color="#ff4fb9"/><stop offset="1" stop-color="#8b2d79"/></linearGradient>
- <linearGradient id="lens" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4ff98"/><stop offset="1" stop-color="#50d8bf"/></linearGradient>
- <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+<linearGradient id="minion-mouse-sky" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#4c2b3f"/><stop offset=".56" stop-color="#211625"/><stop offset="1" stop-color="#100d1a"/></linearGradient>
+<radialGradient id="minion-mouse-aura" cx=".49" cy=".42" r=".63"><stop stop-color="#e7b8bd" stop-opacity=".43"/><stop offset=".65" stop-color="#e38da6" stop-opacity=".15"/><stop offset="1" stop-color="#211625" stop-opacity="0"/></radialGradient>
+<linearGradient id="minion-mouse-ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3e2b40"/><stop offset="1" stop-color="#15131d"/></linearGradient>
+<filter id="minion-mouse-shadow" x="-35%" y="-40%" width="170%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="7" flood-color="#090710" flood-opacity=".7"/></filter>
 </defs>
-<ellipse cx="65" cy="118" rx="41" ry="5" fill="#ff55d8" opacity=".28"/>
-<circle cx="64" cy="61" r="50" fill="#c6ff45" opacity=".19" filter="url(#halo)"/>
-<g id="fx"><path d="m14 17 3-8 3 8-3 8Zm94 7 4-9 4 9-4 9Z" fill="#c6ff45"/><circle cx="117" cy="79" r="2.5" fill="#ff55d8"/></g>
-<g id="character" stroke-linecap="round" stroke-linejoin="round">
- <!-- spring-tail and antenna pack -->
- <path d="M97 95q23 0 22-19t-15-12q-10 8 1 14" fill="none" stroke="#111321" stroke-width="9"/>
- <path d="M97 95q23 0 22-19t-15-12q-10 8 1 14" fill="none" stroke="#ff55d8" stroke-width="4"/>
- <path d="m108 61 6-7m-6 9 10-4" stroke="#c6ff45" stroke-width="2"/>
- <rect x="85" y="72" width="22" height="24" rx="5" fill="#212130" stroke="#c6ff45" stroke-width="3"/>
- <path d="M94 78v10m-5-5h10" stroke="#ff55d8" stroke-width="3"/>
- <!-- giant asymmetrical mouse ears -->
- <path d="M33 51Q2 49 11 20q9-25 36-9 11 12 3 36M80 43Q76 9 98 5q30-4 30 27-1 19-30 24" fill="url(#fur)" stroke="#10121e" stroke-width="4.5"/>
- <path d="M36 43Q13 40 21 21q8-13 22-3 5 8-2 22M90 40Q85 16 101 15q19-1 19 16-2 13-21 14" fill="url(#ear)" stroke="#ffc4ee" stroke-width="2"/>
- <path d="m21 31 12 3m72-13 8 7" stroke="#111321" stroke-width="2.5"/>
- <path d="M46 16 40 27 49 34M102 47l-8-9-7 8" stroke="#c6ff45" stroke-width="2" fill="none"/>
- <!-- tiny sneakers and patched jacket -->
- <path d="M46 99 38 115h20l7-16m14 1 4 15h18L91 98" fill="#342139" stroke="#141421" stroke-width="4"/>
- <path d="M34 111q16-5 29 0v9H32Zm47 0q14-6 24 1l1 8H80Z" fill="#171522" stroke="#c6ff45" stroke-width="2.5"/>
- <path d="M37 114h21m28 0h16" stroke="#ff55d8" stroke-width="2"/>
- <path d="M42 79q19-10 44-1l10 25-14 10H45l-13-11Z" fill="#222034" stroke="#0e111b" stroke-width="4"/>
- <path d="m55 83 8 25m15-24-8 24" stroke="#ff55d8" stroke-width="2"/>
- <path d="M42 93 28 104m60-11 16 10" stroke="#7bfbc5" stroke-width="6"/>
- <circle cx="28" cy="105" r="5.5" fill="#b1a2b1" stroke="#14121d" stroke-width="3"/><circle cx="103" cy="104" r="5.5" fill="#b1a2b1" stroke="#14121d" stroke-width="3"/>
- <path d="M47 92h13l-1 12H47Z" fill="#171725" stroke="#c6ff45" stroke-width="2"/><path d="m50 98 3-4 3 4-3 4Z" fill="#ff55d8"/>
- <!-- pointed snout and ratty tuft -->
- <path d="M36 48Q32 27 61 28q35-5 40 24l-5 28q-8 20-34 18-22 0-27-21Z" fill="url(#fur)" stroke="#11111c" stroke-width="4.5"/>
- <path d="m49 35 8-16 7 12 9-13 7 15" fill="#c6ff45" stroke="#141421" stroke-width="3"/>
- <path d="m40 53-12-8m67 7 9-7" stroke="#ff55d8" stroke-width="3"/>
- <!-- oversized junkyard goggles -->
- <path d="M39 54q9-8 22-3m8-1q14-4 23 5" fill="none" stroke="#c6ff45" stroke-width="3"/>
- <g id="eyes">
-  <rect x="39" y="53" width="24" height="20" rx="8" fill="#0c1920" stroke="#f569cf" stroke-width="3"/>
-  <rect x="66" y="51" width="27" height="23" rx="8" fill="#0c1920" stroke="#c6ff45" stroke-width="3"/>
-  <circle cx="52" cy="62" r="6" fill="url(#lens)"/><circle cx="79" cy="62" r="7" fill="#ff55d8"/>
-  <circle cx="54" cy="60" r="2" fill="#fff"/><circle cx="81" cy="59" r="2" fill="#fff"/>
- </g>
- <g id="lids" opacity="0"><path d="M43 64h16m11-1h18" stroke="#e9fff3" stroke-width="4" fill="none"/></g>
- <g id="wink" opacity="0"><path d="m70 63 8 3 9-3" fill="none" stroke="#baff80" stroke-width="4"/></g>
- <path d="M52 77q12-3 21 3-1 7-12 7Z" fill="#b9a1b7" stroke="#12121d" stroke-width="2.3"/>
- <path d="M72 80q8-2 15-1-8 14-19 10" fill="#f98ac5" stroke="#13111d" stroke-width="2.3"/>
- <circle cx="65" cy="78" r="3" fill="#ff55d8"/>
- <path d="M51 91q13 8 29-1" stroke="#c6ff45" stroke-width="2" fill="none"/>
- <path d="m37 81-11 0m9 5-10 5m67-11 10-1m-10 8 11 5" fill="none" stroke="#c6ff45" stroke-width="2"/>
-<g id="deluxe-scavenger-gear" stroke-linecap="round" stroke-linejoin="round">
-<path d="m13 38 13-8 6 9m83-2-13-8-6 9" fill="none" stroke="#d5fff1" stroke-width="2.5"/>
-<path d="m14 25 10-3m81 3-10-3M14 47l10 4m80-3-10 4" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="m27 31 6 7m62-7-6 7" stroke="#ff55d8" stroke-width="2.6"/>
-<path d="M34 45q10-8 20-5m24 0q13-3 21 5" stroke="#e6ffff" stroke-opacity=".7" stroke-width="2.2" fill="none"/>
-<path d="m32 61-7-4m75 3 7-5" stroke="#c6ff45" stroke-width="2.4"/>
-<path d="M40 70q7-5 13-3m21 0q8-5 14 3" stroke="#fff9e5" stroke-width="2.5" fill="none"/>
-<path d="m39 96-9 8 11 9m50-17 9 8-11 9" fill="none" stroke="#ff55d8" stroke-width="3"/>
-<path d="M44 101l9-4 7 7 7-7 10 7 9-5" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="M58 106h14l-3 7h-8Z" fill="#19273a" stroke="#79ffe7" stroke-width="2"/>
-<circle cx="65" cy="109" r="2" fill="#c6ff45"/>
-<path d="m30 81-10 3m10 3-10 4m77-10 10 3m-10 3 10 4" stroke="#fff0f6" stroke-width="2"/>
-<path d="M52 115l5 9m18-9-5 9" stroke="#79ffe7" stroke-width="2.4"/>
-<path d="M100 100q17 6 16-13m-7 13 8 3" fill="none" stroke="#ff55d8" stroke-width="4"/>
-<circle cx="114" cy="90" r="3" fill="#c6ff45"/>
-<path d="m62 20 5-8 4 9m-31 5 4-8m48 8-4-8" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="m47 55 8-4m20 0 8 4" stroke="#f3ffed" stroke-width="2.3"/>
-<circle cx="42" cy="36" r="2" fill="#ff55d8"/><circle cx="89" cy="37" r="2" fill="#79ffe7"/>
-</g></g><style>@media (prefers-reduced-motion: no-preference){#character{transform-box:fill-box;transform-origin:center}#character{animation:scurry 2.3s ease-in-out infinite}#fx{animation:blinkSpark 1.9s ease-in-out infinite}@keyframes scurry{0%,100%{transform:translate(0,0) rotate(-1deg)}32%{transform:translate(-2px,-3px) rotate(-3deg)}68%{transform:translate(2px,-2px) rotate(2deg)}}@keyframes blinkSpark{50%{opacity:.2}}}</style><g stroke-linejoin="round" stroke-linecap="round"><path d="m20 18q10-10 18 0l-9 8Zm18 0q10-10 18 0L47 26Z" fill="#ff55d8" stroke="#161421" stroke-width="2.8"/><circle cx="38" cy="18" r="3.5" fill="#c6ff45" stroke="#161421" stroke-width="2"/><path d="M27 92q8-7 16 0l-2 10-7 5-8-6Z" fill="#ec4b72" stroke="#171421" stroke-width="2.5"/><circle cx="32" cy="95" r="1.8" fill="#fff1c6"/><circle cx="39" cy="98" r="1.8" fill="#fff1c6"/><path d="m31 90 3-5m5 6 4-4" stroke="#c6ff45" stroke-width="1.8"/></g></svg>
+<rect x="0" y="0" width="512" height="512" rx="34" fill="url(#minion-mouse-sky)"/>
+<circle cx="256" cy="233" r="222" fill="url(#minion-mouse-aura)"/>
+<circle cx="396" cy="93" r="48" fill="#e7b8bd" opacity=".12"/>
+<circle cx="396" cy="93" r="37" fill="none" stroke="#e7b8bd" opacity=".28" stroke-width="4"/>
+<path d="M27 340V206l25-39 25 39v83l24-35 19 26v87m275-18v-95l27-42 28 42v124m-422-5q48-27 106 0" fill="#211625" stroke="#e7b8bd" stroke-width="3" opacity=".24"/>
+<g fill="#e7b8bd" opacity=".72"><path d="m70 103 6 15 15 6-15 6-6 15-6-15-15-6 15-6zm343 148 5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><circle cx="364" cy="178" r="3"/><circle cx="113" cy="249" r="3"/><circle cx="402" cy="338" r="4"/></g>
+<ellipse cx="256" cy="454" rx="190" ry="28" fill="#08080e" opacity=".69"/>
+<path d="M68 449q30-25 97-24h187q61 2 93 26l-13 25H82Z" fill="url(#minion-mouse-ground)" stroke="#a47783" stroke-width="6"/>
+<path d="M95 450q100-19 322 0" fill="none" stroke="#e7b8bd" stroke-width="4" opacity=".47"/>
+<g filter="url(#minion-mouse-shadow)">
+<g class="creature" stroke="#352031" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M306 385q95-17 87 36-9 37-62 14" fill="none" stroke="#d4aeb0" stroke-width="19"/>
+<path d="M124 380q15-127 59-190 42-57 83-59 60-3 98 65 40 77 35 198l-91 40-91 1Z" fill="#87394f"/>
+<path d="M137 375q-4-94 43-160 35-62 85-66 70 12 99 100 26 70 15 140" fill="#61283f" stroke="#c78d94" stroke-width="4"/>
+<ellipse cx="156" cy="197" rx="75" ry="90" fill="#dfb3ba"/>
+<ellipse cx="356" cy="199" rx="75" ry="90" fill="#dfb3ba"/>
+<ellipse cx="156" cy="197" rx="47" ry="60" fill="#f4b3bf" stroke="#ac7684" stroke-width="6"/>
+<ellipse cx="356" cy="199" rx="47" ry="60" fill="#f4b3bf" stroke="#ac7684" stroke-width="6"/>
+<path d="M128 256q6-102 71-128 65-32 121 5 78 49 72 127l-57-15q-66-20-131-2Z" fill="#5f2840"/>
+<ellipse cx="257" cy="286" rx="112" ry="106" fill="#f4e4db"/>
+<ellipse cx="205" cy="290" rx="20" ry="29" fill="#563648"/><ellipse cx="308" cy="290" rx="20" ry="29" fill="#563648"/>
+<ellipse cx="198" cy="278" rx="7" ry="10" fill="#fff" stroke="none"/><ellipse cx="301" cy="279" rx="7" ry="10" fill="#fff" stroke="none"/>
+<path d="m249 307 17 0-8 11Z" fill="#cc788b" stroke-width="3"/>
+<path d="M245 329q13 12 26 0" fill="none" stroke="#955f72" stroke-width="4"/>
+<path d="M236 318q-32-11-74 0m73 13q-41 2-70 19m107-32q39-11 76 3m-75 10q41 7 73 21" fill="none" stroke="#d5b6b1" stroke-width="4"/>
+<ellipse cx="169" cy="327" rx="21" ry="13" fill="#efa8b2" stroke="none" opacity=".5"/><ellipse cx="339" cy="329" rx="21" ry="13" fill="#efa8b2" stroke="none" opacity=".5"/>
+<path d="M170 247Q193 172 251 157q64-9 112 63" fill="none" stroke="#a25569" stroke-width="9"/>
+<path d="M202 153l-19 36 23 9m-2-44 21 37-21 6M302 155l22 40-16 7" stroke="#d8aaa8" stroke-width="5" fill="none"/>
+<path d="M190 371q-36 6-39 34 14 26 51 5m111-40q42 6 48 32-16 27-51 6" fill="#f0dbd5"/>
+<path d="M207 384Q256 420 311 382" fill="none" stroke="#b37783" stroke-width="8"/>
+<path d="M243 398q12 17 28 0m-17-15v38" fill="none" stroke="#e9bc83" stroke-width="6"/>
+<path d="M265 423a18 18 0 1 1-9-33 13 13 0 1 0 9 33Z" fill="#e4b57d" stroke="#ba8663" stroke-width="3"/>
+<circle cx="195" cy="191" r="7" fill="#ecb6a1" stroke="none"/><circle cx="310" cy="195" r="7" fill="#ecb6a1" stroke="none"/>
+</g></g>
+<path d="M28 63V35q0-11 14-11h41M429 25h41q13 0 13 14v42M31 429v38q0 13 13 13h44M424 481h40q17 0 17-16v-37" fill="none" stroke="#e38da6" stroke-width="4" opacity=".55" stroke-linecap="round"/>
+</svg>

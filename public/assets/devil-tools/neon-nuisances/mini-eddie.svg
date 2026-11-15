@@ -1,65 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-<title id="title">The Eddie | Ash-Fall Neon Nuisances</title>
-<desc id="desc">The Eddie, a tiny fearless undead punk with a tall lime mohawk, stitched scar, crimson and green mismatched eyes, cracked jacket, skeletal chest, heavy boots and an oversized mischievous grin.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="mini-eddie-title mini-eddie-desc"><title id="mini-eddie-title">Eddie | Knightfall Storybook Edition</title><desc id="mini-eddie-desc">A cheeky skeletal guardian pup with oversized ears, a skull cap, mismatched glowing eyes, and a tiny green lantern.</desc>
 <defs>
- <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e3e3e8"/><stop offset=".5" stop-color="#9baac2"/><stop offset="1" stop-color="#756884"/></linearGradient>
- <linearGradient id="jacket" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b314f"/><stop offset=".5" stop-color="#211725"/><stop offset="1" stop-color="#101323"/></linearGradient>
- <filter id="halo" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+<linearGradient id="mini-eddie-sky" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#344044"/><stop offset=".56" stop-color="#1b1b2d"/><stop offset="1" stop-color="#100d1a"/></linearGradient>
+<radialGradient id="mini-eddie-aura" cx=".49" cy=".42" r=".63"><stop stop-color="#b6b9ac" stop-opacity=".43"/><stop offset=".65" stop-color="#87b885" stop-opacity=".15"/><stop offset="1" stop-color="#1b1b2d" stop-opacity="0"/></radialGradient>
+<linearGradient id="mini-eddie-ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3e2b40"/><stop offset="1" stop-color="#15131d"/></linearGradient>
+<filter id="mini-eddie-shadow" x="-35%" y="-40%" width="170%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="7" flood-color="#090710" flood-opacity=".7"/></filter>
 </defs>
-<ellipse cx="64" cy="119" rx="40" ry="5" fill="#c6ff45" opacity=".27"/>
-<circle cx="63" cy="64" r="50" fill="#c6ff45" opacity=".18" filter="url(#halo)"/>
-<g id="fx"><path d="m17 22 3-8 3 8-3 8Zm92 9 4-9 4 9-4 9Z" fill="#ff55d8"/><circle cx="116" cy="92" r="2.5" fill="#c6ff45"/></g>
-<g id="character" stroke-linejoin="round" stroke-linecap="round">
- <!-- steel-toed boots, slouched rebellious posture -->
- <path d="m45 103-8 13 23 0 5-12m14 0 8 12 20-2-12-15" fill="#474050" stroke="#111421" stroke-width="4"/>
- <path d="m29 115 29-5 6 11H26Zm52-4 27 2 3 9H79Z" fill="#13141e" stroke="#c6ff45" stroke-width="2.7"/>
- <path d="M38 114h19m27 1 19-1" stroke="#ff55d8" stroke-width="2.5"/>
- <!-- asymmetrical ragged coat with exposed ribbed torso -->
- <path d="M37 79q19-11 51 0l12 29-17 12H42l-15-13Z" fill="url(#jacket)" stroke="#13111b" stroke-width="4"/>
- <path d="m40 83 10 0 7 21-9 13-17-9Z M87 83l-12 0-5 21 11 13 16-11Z" fill="#36243c" stroke="#ff55d8" stroke-width="2"/>
- <path d="M53 91q11-4 22 0l-2 22q-10 6-18 0Z" fill="#101620" stroke="#c6ff45" stroke-width="2.5"/>
- <path d="M58 95h13m-14 6 14 0m-13 5 12 0M64 89v26" stroke="#d7f9d7" stroke-width="2.5"/>
- <path d="m33 95-16 12m77-13 17 12" stroke="#aaa9c1" stroke-width="8"/>
- <path d="m19 107-6 0 0 8 11 0m81-7 8-2 2 9-11 2" fill="#85899d" stroke="#1a1424" stroke-width="3"/>
- <path d="m37 89 6 6m-6 0 6-6m41 0 6 6m-6 0 6-6" stroke="#c6ff45" stroke-width="2"/>
- <path d="m83 97 5-4 5 4-5 5Z" fill="#ff55d8"/>
- <!-- head, scars and iconic jagged mohawk -->
- <path d="M34 48Q39 25 65 24q30 3 33 26l-4 26q-6 22-28 23-25-1-31-22Z" fill="url(#skin)" stroke="#14121e" stroke-width="4"/>
- <path d="m38 41 3-16 11 7 7-25 9 16 12-18 4 21 14-4-3 27-16-12-13 9-12-10Z" fill="#c6ff45" stroke="#13141d" stroke-width="3.2"/>
- <path d="m45 35 14-13m11 11 8-18" stroke="#ecff9c" stroke-width="2.5"/>
- <path d="m33 52-11-7m75 8 11-6" stroke="#ff55d8" stroke-width="3.2"/>
- <path d="m42 42 6 11m-9-5 11 3m-10 0 7-5" stroke="#301c33" stroke-width="2.3"/>
- <path d="M48 57q7-7 16-1m8 0q7-6 15 1" fill="none" stroke="#1b1422" stroke-width="3.5"/>
- <!-- two different eyes and deliberately jagged sockets -->
- <g id="eyes">
-  <path d="M43 62q9-12 20 0l-9 11Zm29 0q9-11 18 2l-9 10Z" fill="#191520" stroke="#15121c" stroke-width="2"/>
-  <circle cx="54" cy="63" r="6" fill="#ff55d8"/><circle cx="81" cy="63" r="6" fill="#c6ff45"/>
-  <circle cx="55" cy="61" r="2" fill="#fff"/><circle cx="82" cy="61" r="2" fill="#fff"/>
- </g>
- <g id="lids" opacity="0"><path d="m45 64 16 0m13 0 14 0" fill="none" stroke="#1a1621" stroke-width="5"/></g>
- <g id="wink" opacity="0"><path d="m72 63 15 3" fill="none" stroke="#1a1621" stroke-width="5"/></g>
- <path d="M57 76q8 3 16-1" stroke="#6d435c" stroke-width="2.3" fill="none"/>
- <path d="M45 81q20 20 43-1l-6 14-8-6-8 10-9-10-7 5Z" fill="#15131b" stroke="#c6ff45" stroke-width="2.8"/>
- <path d="m52 83 6 5 7-4 7 4 7-5" stroke="#fff9e9" stroke-width="2.8" fill="none"/>
- <path d="M45 76q-8-3-11-2m57 0 8-2" stroke="#ff55d8" stroke-width="2.2"/>
- <circle cx="94" cy="70" r="4" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
-<g id="deluxe-eddie-armor" stroke-linecap="round" stroke-linejoin="round">
-<path d="m47 19 6-10 6 12m0-10 5-9 6 17m3-10 5-6 3 15" fill="#c6ff45" stroke="#182020" stroke-width="2.6"/>
-<path d="M47 26q17-7 36 0" fill="none" stroke="#f7ffcc" stroke-width="2.3"/>
-<path d="m39 49 8-5m36 0 8 5" stroke="#ff55d8" stroke-width="2.6"/>
-<path d="m44 59 10-5m21 0 10 5" stroke="#fff9dd" stroke-width="2.1"/>
-<path d="m34 81-9 6 7 12m63-18 9 6-7 12" fill="none" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="m42 100 12-5 11 9 10-9 12 5" fill="none" stroke="#ff55d8" stroke-width="2.7"/>
-<path d="M53 99l6 9m12-9-6 9m17-10-5 11" stroke="#ecf5e4" stroke-width="2.3"/>
-<path d="m47 108 6 12m28-12-6 12" stroke="#c6ff45" stroke-width="2.7"/>
-<path d="M45 118h14m17 0h14" stroke="#ff55d8" stroke-width="3"/>
-<path d="M42 73 35 76m58-3 7 3" stroke="#ff55d8" stroke-width="3.1"/>
-<path d="M57 88q9 6 17 0" fill="none" stroke="#79ffe7" stroke-width="2.5"/>
-<path d="M51 35l6 7 8-5 8 5 7-7" fill="none" stroke="#c6ff45" stroke-width="2.3"/>
-<path d="m40 64 5 3m43-3-5 3" stroke="#ff96d5" stroke-width="2.6"/>
-<path d="M42 83q6 10 9 10m34-10q-6 10-9 10" stroke="#fff1dd" stroke-width="2.1"/>
-<circle cx="48" cy="45" r="2.5" fill="#c6ff45"/><circle cx="89" cy="45" r="2.5" fill="#ff55d8"/>
-<path d="m22 62-5-5m100 5 5-5" stroke="#79ffe7" stroke-width="2.8"/>
-<path d="M27 37l-5-8m81 8 5-8" stroke="#c6ff45" stroke-width="3"/>
-<circle cx="114" cy="100" r="3" fill="#ff55d8"/><circle cx="16" cy="86" r="3" fill="#79ffe7"/>
-</g></g></svg>
+<rect x="0" y="0" width="512" height="512" rx="34" fill="url(#mini-eddie-sky)"/>
+<circle cx="256" cy="233" r="222" fill="url(#mini-eddie-aura)"/>
+<circle cx="396" cy="93" r="48" fill="#b6b9ac" opacity=".12"/>
+<circle cx="396" cy="93" r="37" fill="none" stroke="#b6b9ac" opacity=".28" stroke-width="4"/>
+<path d="M27 340V206l25-39 25 39v83l24-35 19 26v87m275-18v-95l27-42 28 42v124m-422-5q48-27 106 0" fill="#1b1b2d" stroke="#b6b9ac" stroke-width="3" opacity=".24"/>
+<g fill="#b6b9ac" opacity=".72"><path d="m70 103 6 15 15 6-15 6-6 15-6-15-15-6 15-6zm343 148 5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><circle cx="364" cy="178" r="3"/><circle cx="113" cy="249" r="3"/><circle cx="402" cy="338" r="4"/></g>
+<ellipse cx="256" cy="454" rx="190" ry="28" fill="#08080e" opacity=".69"/>
+<path d="M68 449q30-25 97-24h187q61 2 93 26l-13 25H82Z" fill="url(#mini-eddie-ground)" stroke="#a47783" stroke-width="6"/>
+<path d="M95 450q100-19 322 0" fill="none" stroke="#b6b9ac" stroke-width="4" opacity=".47"/>
+<g filter="url(#mini-eddie-shadow)">
+<g class="creature" stroke="#27202a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M123 331q-51 36-34 72 19 31 70-6" fill="none" stroke="#a2ac98" stroke-width="23"/>
+<path d="M167 317Q248 278 345 317L354 409Q266 437 163 410Z" fill="#393b43"/>
+<path d="M186 326q-8 51 7 88m46-93q-2 58 6 97m42-100q-4 61 4 100m38-83q9 37 1 74" stroke="#d7d4c6" stroke-width="16" fill="none"/>
+<path d="M177 347q86-25 168 0M172 389q90-20 180 4" stroke="#8e9294" stroke-width="5" opacity=".66" fill="none"/>
+<path d="M173 401q-32 8-39 36 26 20 80-2m132-36q28 10 38 36-35 17-73-2" fill="#d0cbc0"/>
+<path d="M178 177Q104 110 100 196q13 49 74 58m160-79q72-88 90 9-4 50-70 79" fill="#9b9c9d"/>
+<path d="M143 191Q99 158 135 214m228-27q41-30 33 28" fill="#b7b7b3" stroke="#564d52" stroke-width="4"/>
+<path d="M159 185q68-103 192 1l26 47-37 117-76 22-83-25-40-107Z" fill="#c9c8bc"/>
+<path d="M172 183q32-82 92-74 64-4 90 79" fill="#5d6162"/>
+<path d="M202 156q72-62 120 4l-8 33H195Z" fill="#9da0a0" stroke-width="4"/>
+<path d="m192 215 51-19-4 51-40 18zm82-17 53 13-1 50-44-13Z" fill="#32293c"/>
+<ellipse cx="219" cy="237" rx="14" ry="17" fill="#ca87c6" stroke="none"/><ellipse cx="304" cy="229" rx="14" ry="17" fill="#9fcf9c" stroke="none"/>
+<circle cx="214" cy="228" r="6" fill="#fff" stroke="none"/><circle cx="298" cy="223" r="6" fill="#fff" stroke="none"/>
+<path d="m246 267 14-16 18 17-15 16Z" fill="#4d4249"/>
+<path d="M210 302q51 42 104-1-25 52-104 1Z" fill="#564351"/>
+<path d="m220 311 10 13 10-11m37 0 11 11 10-13" fill="#fff9ee" stroke-width="3"/>
+<path d="M182 351l76 32 80-31" fill="none" stroke="#b17a88" stroke-width="8"/>
+<path d="M337 345q16-14 36-10l14 54-42 13-19-44Z" fill="#3d4f4c"/>
+<path d="M353 336v-18h23v20m-24-6h24m-28 13 4 41h28l4-41" stroke="#c4b08b" stroke-width="5" fill="#78ba75"/>
+<circle cx="366" cy="363" r="12" fill="#c7f88a" stroke="none"/>
+<path d="M113 211q-14-29 3-46m251-84q-19-15-4-35" fill="none" stroke="#c1eba1" stroke-width="9" opacity=".67"/>
+<g transform="translate(244 111)"><path d="m-34 0 10-29 22 10 13-29 12 28 25-10-1 28Z" fill="#9e8c75" stroke="#36313a" stroke-width="5"/><rect x="-32" width="79" height="12" rx="5" fill="#d3ba8f" stroke-width="3"/></g>
+</g></g>
+<path d="M28 63V35q0-11 14-11h41M429 25h41q13 0 13 14v42M31 429v38q0 13 13 13h44M424 481h40q17 0 17-16v-37" fill="none" stroke="#87b885" stroke-width="4" opacity=".55" stroke-linecap="round"/>
+</svg>
