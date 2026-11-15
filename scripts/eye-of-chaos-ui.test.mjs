@@ -52,6 +52,15 @@ test("mobile-safe Gothic palette and no untrusted HTML insertion",()=>{
  assert.doesNotMatch(js,/\.innerHTML\s*=/);
  assert.match(js,/textContent=/);
 });
+test("GOD can generate original drafts but no agent UI has a publish button",()=>{
+ assert.match(js,/AI draft/);
+ assert.match(js,/\/missions\/"\+m\.id\+"\/draft/);
+ assert.match(js,/openSection\("approvals"\)/);
+ assert.match(html,/id="chaos-qa-refresh"/);
+ assert.match(js,/api\("\/qa"\)/);
+ assert.match(js,/GitHub QA status unavailable/);
+ assert.doesNotMatch(html,/<button[^>]*>Publish<\/button>/i);
+});
 test("new features stay locked when storage migration is absent",()=>{
  assert.match(js,/state\.ready=data\.schema_ready===true/);
  assert.match(js,/lockForms\(\)/);
