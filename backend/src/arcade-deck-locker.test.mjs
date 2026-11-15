@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {handleArcadeDeckLocker,canEquipDeckSkin,DECK_PREMIUM_SKINS,DECK_ACTIVITY_GAMES} from "./arcade-deck-locker.js";
+import {handleArcadeDeckLocker,canEquipDeckSkin,DECK_PREMIUM_SKINS,DECK_FREE_SKINS,DECK_ACTIVITY_GAMES} from "./arcade-deck-locker.js";
 
 class DB {
  constructor(){this.profiles=new Map();this.owned=new Map();this.events=new Set();}
@@ -57,16 +57,11 @@ async function api(db,{id=1,method="GET",body,authed=true,origin="https://ash-fa
  });
  return {status:res.status,...await res.json()};
 }
-test("12 account-defined skins and five premium ownership gates",()=>{
+test("all 12 current skins are free without play counts or ownership",()=>{
  assert.equal(DECK_ACTIVITY_GAMES.length,10);
- assert.equal(DECK_PREMIUM_SKINS.length,5);
- assert.ok(canEquipDeckSkin("neon-riot"));
- assert.ok(!canEquipDeckSkin("grave-velvet",2));
- assert.ok(canEquipDeckSkin("grave-velvet",3));
- assert.ok(!canEquipDeckSkin("infernal-foil",49));
- assert.ok(canEquipDeckSkin("infernal-foil",50));
- assert.ok(!canEquipDeckSkin("holo-wraith",100000));
- assert.ok(canEquipDeckSkin("holo-wraith",0,["holo-wraith"]));
+ assert.equal(DECK_FREE_SKINS.length,12);
+ assert.equal(DECK_PREMIUM_SKINS.length,0);
+ for(const skin of DECK_FREE_SKINS)assert.ok(canEquipDeckSkin(skin,0,[]),skin+" must be free");
  assert.ok(!canEquipDeckSkin("fake",100000,["fake"]));
 });
 test("a session is required, and profiles remain isolated between accounts",async()=>{
@@ -77,15 +72,15 @@ test("a session is required, and profiles remain isolated between accounts",asyn
  assert.equal((await api(db,{id:2})).profile.equipped_skin,"ash-classic");
  assert.equal((await api(db,{id:1})).profile.equipped_skin,"neon-riot");
 });
-test("stale revisions and guessed premium ownership cannot equip skins",async()=>{
+test("revision conflicts still protect wardrobe, without premium ownership gates",async()=>{
  const db=new DB();
- assert.equal((await api(db,{method:"PUT",body:{skin_id:"void-royalty",revision:0}})).status,403);
- assert.equal((await api(db,{method:"PUT",body:{skin_id:"neon-riot",revision:0}})).status,200);
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"void-royalty",revision:0}})).status,200);
  assert.equal((await api(db,{method:"PUT",body:{skin_id:"bone-white",revision:0}})).status,409);
- db.owned.set(1,["void-royalty"]);
- assert.equal((await api(db,{method:"PUT",body:{skin_id:"void-royalty",revision:1}})).status,200);
- db.owned.delete(1); // refunded or revoked: no more premium ownership
- assert.equal((await api(db)).profile.equipped_skin,"ash-classic");
+ assert.equal((await api(db)).profile.equipped_skin,"void-royalty");
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"holo-wraith",revision:1}})).status,200);
+ db.owned.delete(1);
+ assert.equal((await api(db)).profile.equipped_skin,"holo-wraith");
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"nonexistent",revision:2}})).status,400);
 });
 test("legacy device progress imports only once, max 50, without resetting higher account totals",async()=>{
  const db=new DB();
