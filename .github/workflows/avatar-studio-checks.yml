@@ -7,6 +7,8 @@ on:
       - 'public/avatar-studio.js'
       - 'public/avatar-studio.html'
       - 'public/avatar-studio.css'
+      - 'public/misfit-renderer-lab.html'
+      - 'public/misfit-renderer-lab.js'
       - 'public/profile.html'
       - 'public/profile-edit.html'
       - 'public/mascot-pets.html'
@@ -46,6 +48,7 @@ jobs:
         run: |
           node --check public/misfit-avatar.js
           node --check public/avatar-studio.js
+          node --check public/misfit-renderer-lab.js
           node --check backend/src/personal-avatars.js
       - name: Verify rendering, editor, profile and server choice compatibility
         run: node --test scripts/avatar-studio.test.mjs
