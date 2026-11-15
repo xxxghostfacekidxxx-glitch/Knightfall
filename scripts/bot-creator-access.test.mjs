@@ -8,11 +8,12 @@ assert.equal(botAccessPolicy({role:"member"},0,null,true).limit,10);
 assert.equal(botAccessPolicy({role:"member"},2,null,true).limit,12);
 for(const role of ["god","admin","moderator"]){
  const policy=botAccessPolicy({role});
- assert.deepEqual([policy.limit,policy.unlimited,policy.advanced_builder,policy.tier],[null,true,true,"staff"]);
+ assert.deepEqual([policy.limit,policy.unlimited,policy.advanced_builder,policy.tier],[null,true,role!=="moderator","staff"]);
 }
 const creator=botAccessPolicy({role:"member"},0,{title:"Digital Creator",unlimited_slots:1,advanced_builder:1});
 assert.deepEqual([creator.limit,creator.unlimited,creator.advanced_builder,creator.title],[null,true,true,"Digital Creator"]);
 assert.equal(botAccessPolicy({role:"member",public_title:"Digital Creator"}).unlimited,true);
+assert.equal(botAccessPolicy({role:"moderator",public_title:"Digital Creator"},0,{advanced_builder:1}).advanced_builder,false);
 assert.equal(botAccessPolicy({role:"member"},0,{title:"Custom"}).advanced_builder,false);
 console.log("Bot access policy verified.");
 const migration=readFileSync(new URL("../backend/migrations/0130_home_activity_and_bot_tiers.sql",import.meta.url),"utf8");
