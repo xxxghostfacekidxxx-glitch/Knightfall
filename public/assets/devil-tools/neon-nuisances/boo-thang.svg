@@ -1,46 +1,30 @@
-<svg data-starborn-ready="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
-<title id="title">Boo Thang · Deluxe Haunted Punk</title><desc id="desc">A sweetly spooky ghost girl with a moonlit veil, heart-shaped spectral glow and playful punk sparkle, haunting only the people she loves.</desc>
-<defs><radialGradient id="aura"><stop stop-color="#ff55d8" stop-opacity=".38"/><stop offset="1" stop-color="#ff55d8" stop-opacity="0"/></radialGradient><linearGradient id="sheet" x1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".55" stop-color="#b0f9ff"/><stop offset="1" stop-color="#8e80da"/></linearGradient></defs>
-<circle cx="80" cy="76" r="72" fill="url(#aura)"/>
-<ellipse cx="80" cy="147" rx="42" ry="6" fill="#79faff" opacity=".26"/>
-<g id="boo-figure" stroke-linecap="round" stroke-linejoin="round">
-<path d="m19 75-9-11 11 4 4-14 5 16 12 2-13 7-3 13-5-13ZM128 36l-4-12 10 8 9-9-1 13 13 3-13 5-7 12-1-14Z" fill="#c6ff45"/>
-<path d="M37 105Q28 84 40 54Q49 26 80 25Q113 26 123 56Q132 84 122 110L135 135 111 126 99 143 80 129 63 144 50 126 25 138Z" fill="url(#sheet)" stroke="#201327" stroke-width="5"/>
-<path d="M41 99Q32 114 47 121M119 99q9 15-6 22" fill="none" stroke="#ff55d8" stroke-width="4"/>
-<path d="M47 42Q42 34 33 39Q32 50 48 58L57 47Z M57 47Q63 25 75 34Q76 45 59 54Z" fill="#ff55d8" stroke="#201327" stroke-width="3"/>
-<circle cx="55" cy="48" r="7" fill="#c6ff45" stroke="#201327" stroke-width="3"/>
-<path d="M47 66q15-14 28 0Q62 82 47 66M85 66q15-14 28 0Q100 82 85 66" fill="#251529" stroke="#ff55d8" stroke-width="3"/>
-<path d="M53 66q6-7 13 0M91 66q6-7 13 0" stroke="#c6ff45" stroke-width="3" fill="none"/>
-<path d="M74 67h12" stroke="#251529" stroke-width="4"/>
-<path d="M68 91q13 13 25-3" stroke="#251529" stroke-width="4" fill="none"/>
-<path d="m86 93 4 8 5-11" fill="#fff" stroke="#251529" stroke-width="2"/>
-<ellipse cx="48" cy="85" rx="9" ry="4" fill="#ff55d8" opacity=".65"/><ellipse cx="111" cy="85" rx="9" ry="4" fill="#ff55d8" opacity=".65"/>
-<path d="M57 108Q80 118 103 108" fill="none" stroke="#242037" stroke-width="3"/>
-<path d="M65 115q15 14 30 0" stroke="#ff55d8" stroke-width="4" fill="none"/>
-<path d="M80 111v17" stroke="#201327" stroke-width="3"/><path d="m73 127 7-7 7 7-7 8Z" fill="#c6ff45" stroke="#201327" stroke-width="2"/>
-<path d="m122 83 9-6 8 7-7 12-9-2Z" fill="#ff55d8" stroke="#201327" stroke-width="3"/>
-<path d="m133 82 3 6" stroke="#fff" stroke-width="2"/><g id="premium-character-details" stroke-linecap="round" stroke-linejoin="round">
-<path d="M43 52q5-14 21-15m16-6q18-2 31 14" fill="none" stroke="#ffffff" stroke-opacity=".74" stroke-width="3"/>
-<path d="m46 45 9-9 5 7-6 9Z" fill="#ff9ae7" stroke="#201327" stroke-width="2"/>
-<path d="M41 52q-9 26 1 42" fill="none" stroke="#79ffe7" stroke-width="3" opacity=".7"/>
-<path d="M117 51q13 27 3 43" fill="none" stroke="#79ffe7" stroke-width="3" opacity=".7"/>
-<path d="m32 105-11 22 17-6 9 18 11-20m72-14 11 20-17-5-9 18-11-19" fill="none" stroke="#ffb6f2" stroke-width="3"/>
-<path d="m35 91 7 7m76-7-7 7" stroke="#c6ff45" stroke-width="3"/>
-<path d="M50 106q29 16 60 0" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="2.5"/>
-<path d="M58 115q23 8 46 0" fill="none" stroke="#a9eaff" stroke-width="2"/>
-<path d="m62 121 10 9 8-6 9 6 10-9" fill="none" stroke="#ff55d8" stroke-width="2.8"/>
-<path d="m48 88 7-2m51 0 7 2" stroke="#79ffe7" stroke-width="2.6"/>
-<path d="m63 48 4-12 10 11" fill="#c6ff45" stroke="#201327" stroke-width="2"/>
-<path d="m74 42 4-5m-21 5-4-5" stroke="#ffffff" stroke-width="2"/>
-<circle cx="59" cy="48" r="3" fill="#ff55d8" stroke="#251324" stroke-width="1.5"/>
-<path d="M95 100q10-9 16 1" fill="none" stroke="#ff55d8" stroke-width="3"/>
-<path d="M66 76q8 5 14 0" fill="none" stroke="#a7c8f8" stroke-width="2.7"/>
-<circle cx="56" cy="69" r="2.5" fill="#79ffe7"/><circle cx="103" cy="69" r="2.5" fill="#c6ff45"/>
-<path d="m33 66-11 10 14 7m88-17 11 10-14 7" stroke="#ff55d8" stroke-width="2.4" fill="none" opacity=".8"/>
-<path d="M78 103q8 7 17-1" fill="none" stroke="#c6ff45" stroke-width="2.3"/>
-<path d="m63 128 18 17 18-18" fill="none" stroke="#79ffe7" stroke-opacity=".6" stroke-width="2.5"/>
-<path d="m19 35 5-16 4 14 12 7-14 4-6 15-4-15-11-6ZM136 103l5-9 4 9 9 4-9 5-4 9-5-10-9-4Z" fill="#c6ff45" opacity=".9"/>
-<path d="m12 117 6-7m117-88 9-9" stroke="#79ffe7" stroke-width="3"/>
-<circle cx="119" cy="25" r="4" fill="#ff55d8" opacity=".8"/>
-</g>
-</g><g stroke-linecap="round" stroke-linejoin="round"><path d="M51 33q-7-14 4-19l8 9 9-14 7 15 11-10q9 10 0 20" fill="#f7c7fa" stroke="#25142b" stroke-width="3"/><path d="M28 112q22 14 41 4m33 0q17 9 34-3" fill="none" stroke="#fff4ff" stroke-width="2.7" opacity=".8"/><path d="M76 107q4-8 9 0 5-8 9 0 0 9-9 14-9-5-9-14Z" fill="#ff55d8" stroke="#27152b" stroke-width="2"/><circle cx="87" cy="111" r="2" fill="#fff"/><path d="m36 71-4-7m97 9 5-7" stroke="#c6ff45" stroke-width="2.5"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="boo-thang-title boo-thang-desc"><title id="boo-thang-title">Boo Thang | Knightfall Storybook Edition</title><desc id="boo-thang-desc">A playful lavender-white ghost girl, with a crooked crown, rosy cheeks, lilac edges and a glowing tiny lantern.</desc>
+<defs><linearGradient id="boo-thang-sky" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#342b59"/><stop offset=".56" stop-color="#201a36"/><stop offset="1" stop-color="#100d1a"/></linearGradient><radialGradient id="boo-thang-aura" cx=".49" cy=".42" r=".63"><stop stop-color="#d4b9f3" stop-opacity=".43"/><stop offset=".65" stop-color="#ac87e7" stop-opacity=".15"/><stop offset="1" stop-color="#201a36" stop-opacity="0"/></radialGradient><linearGradient id="boo-thang-ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3e2b40"/><stop offset="1" stop-color="#15131d"/></linearGradient><filter id="boo-thang-shadow" x="-35%" y="-40%" width="170%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="7" flood-color="#090710" flood-opacity=".7"/></filter></defs>
+<rect x="0" y="0" width="512" height="512" rx="34" fill="url(#boo-thang-sky)"/><circle cx="256" cy="233" r="222" fill="url(#boo-thang-aura)"/><circle cx="396" cy="93" r="48" fill="#d4b9f3" opacity=".12"/><circle cx="396" cy="93" r="37" fill="none" stroke="#d4b9f3" opacity=".28" stroke-width="4"/>
+<path d="M27 340V206l25-39 25 39v83l24-35 19 26v87m275-18v-95l27-42 28 42v124m-422-5q48-27 106 0" fill="#201a36" stroke="#d4b9f3" stroke-width="3" opacity=".24"/>
+<g fill="#d4b9f3" opacity=".72"><path d="m70 103 6 15 15 6-15 6-6 15-6-15-15-6 15-6zm343 148 5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><circle cx="364" cy="178" r="3"/><circle cx="113" cy="249" r="3"/><circle cx="402" cy="338" r="4"/></g>
+<ellipse cx="256" cy="454" rx="190" ry="28" fill="#08080e" opacity=".69"/><path d="M68 449q30-25 97-24h187q61 2 93 26l-13 25H82Z" fill="url(#boo-thang-ground)" stroke="#a47783" stroke-width="6"/><path d="M95 450q100-19 322 0" fill="none" stroke="#d4b9f3" stroke-width="4" opacity=".47"/>
+<g filter="url(#boo-thang-shadow)">
+<g class="creature" stroke="#4a355f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M164 371q-58 28-94-15 9 61 82 66m211-50q47 33 87-9-14 59-78 57" fill="#8c76bc" opacity=".54" stroke="#8175b5"/>
+<path d="M254 139q-128 1-139 150-10 89-49 128 62 13 109-22 9 35 37 37 33 1 47-25 22 45 57 24 33-10 42-39 53 36 97 12-59-55-70-143Q368 140 254 139Z" fill="#dfd5fa" stroke="#5d4a82" stroke-width="10"/>
+<path d="M160 211q46-83 123-62 47 13 65 70" fill="none" stroke="#fff6ff" stroke-width="11" opacity=".72"/>
+<path d="M148 343q-15 56-53 63m255-66q21 42 67 55" fill="none" stroke="#a995da" stroke-width="8" opacity=".6"/>
+<path d="M170 378q26-19 44 8 29 28 51 4 23-22 49 2 21 26 44-13" fill="none" stroke="#ffffff" stroke-width="10" opacity=".55"/>
+<ellipse cx="210" cy="263" rx="24" ry="31" fill="#302543" stroke="none"/><ellipse cx="305" cy="263" rx="24" ry="31" fill="#302543" stroke="none"/>
+<g fill="#fff" stroke="none"><ellipse cx="203" cy="249" rx="8" ry="11"/><ellipse cx="297" cy="248" rx="8" ry="11"/><circle cx="220" cy="277" r="4"/><circle cx="315" cy="275" r="4"/></g>
+<path d="M234 301q21 40 47 0-3 41-24 44-21-3-23-44Z" fill="#5a3c6a" stroke-width="4"/>
+<path d="m246 324 6-11 7 13 7-13 7 12" fill="#e49cba" stroke="none"/>
+<ellipse cx="169" cy="298" rx="22" ry="13" fill="#f19dbd" stroke="none" opacity=".59"/><ellipse cx="346" cy="298" rx="22" ry="13" fill="#f19dbd" stroke="none" opacity=".59"/>
+<path d="M135 314q-42-24-61-12-13 22 48 46m263-32q38-28 61-7 13 23-43 43" fill="#d5c6f4"/>
+<path d="M340 362q48-6 63-37" fill="none" stroke="#b7a4d8" stroke-width="10"/>
+<path d="M402 328l18 37m-18-37 17-11" fill="none" stroke="#d4ba90" stroke-width="5"/>
+<path d="M395 360h45l-3 51q-20 19-38 0Z" fill="#5b4079" stroke="#ccb9e0" stroke-width="5"/>
+<path d="M405 374q13-12 26 1l-4 24q-13 10-22 0Z" fill="#ddadfa" stroke="none"/>
+<circle cx="420" cy="381" r="8" fill="#fff9d0" stroke="none"/>
+<path d="m195 176-17-21 12-18 12 20m109 20 18-24-11-19-12 21" fill="none" stroke="#d3c0f7" stroke-width="7" opacity=".85"/>
+<g transform="translate(261 147)" stroke="#4e3468" stroke-width="4"><path d="m-34-3-6-33 25 11 15-26 16 26 25-10-6 32Z" fill="#cfad87"/><rect x="-36" y="-4" width="72" height="13" rx="5" fill="#b78ca1"/><circle cx="0" cy="-20" r="6" fill="#a95fba"/></g>
+<path d="M224 373q31-11 60 1m-34-8q9-14 17 0" fill="none" stroke="#a97ba5" stroke-width="5"/>
+</g></g>
+<path d="M28 63V35q0-11 14-11h41M429 25h41q13 0 13 14v42M31 429v38q0 13 13 13h44M424 481h40q17 0 17-16v-37" fill="none" stroke="#ac87e7" stroke-width="4" opacity=".55" stroke-linecap="round"/>
+</svg>

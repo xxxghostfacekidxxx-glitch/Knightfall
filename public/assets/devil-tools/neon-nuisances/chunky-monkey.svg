@@ -1,51 +1,40 @@
-<svg data-starborn-ready="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
-<title id="title">Chunky Monkey · Deluxe Punk Primate</title><desc id="desc">A big-hearted punk monkey girl with bright cheeky eyes, a flower clip, tiny hoop earrings, a bold bandana and her trusty banana blade.</desc>
-<defs><radialGradient id="halo"><stop stop-color="#c6ff45" stop-opacity=".38"/><stop offset="1" stop-color="#c6ff45" stop-opacity="0"/></radialGradient><linearGradient id="fur" x2="0" y2="1"><stop stop-color="#9f5b85"/><stop offset="1" stop-color="#57334d"/></linearGradient><linearGradient id="bananaSteel"><stop stop-color="#fff9c0"/><stop offset=".45" stop-color="#c6ff45"/><stop offset="1" stop-color="#568c13"/></linearGradient></defs>
-<circle cx="80" cy="77" r="72" fill="url(#halo)"/>
-<ellipse cx="80" cy="150" rx="47" ry="6" fill="#ff55d8" opacity=".3"/>
-<g id="chunky-figure" stroke-linejoin="round" stroke-linecap="round">
-<path d="M115 105Q161 117 143 82Q136 68 125 80" fill="none" stroke="#201525" stroke-width="14"/><path d="M115 105Q161 117 143 82Q136 68 125 80" fill="none" stroke="#ff55d8" stroke-width="7"/>
-<path d="M56 119 50 140 72 143 76 122M88 122 94 143 116 139 107 115" fill="#493149" stroke="#16101f" stroke-width="6"/>
-<path d="M44 138q13-9 31-1l1 10H39zm48-1q15-9 30 0l3 10H88z" fill="#191421" stroke="#c6ff45" stroke-width="3"/>
-<path d="M48 90Q18 86 23 122L42 127 54 109M111 91q31-7 31 29l-19 7-19-17" fill="#74445f" stroke="#1a1320" stroke-width="5"/>
-<path d="M46 79Q80 68 114 79L123 114Q114 142 80 140Q46 142 37 113Z" fill="url(#fur)" stroke="#201421" stroke-width="6"/>
-<ellipse cx="80" cy="114" rx="31" ry="24" fill="#d9989c" stroke="#2a1728" stroke-width="3"/>
-<path d="M45 87L62 88 74 128 64 135 45 122Z M115 87L98 88 86 128 96 135 115 122Z" fill="#181520" stroke="#ff55d8" stroke-width="3"/>
-<path d="M64 92 76 126m20-34-12 34" stroke="#c6ff45" stroke-width="3" stroke-dasharray="4 6"/>
-<path d="m70 108 10-10 10 10-10 10Z" fill="#c6ff45" stroke="#191421" stroke-width="2"/><path d="M73 107q11-8 14-2-5 12-14 5" fill="#191421"/>
-<circle cx="37" cy="123" r="10" fill="#9c6173" stroke="#201421" stroke-width="4"/><circle cx="130" cy="122" r="10" fill="#9c6173" stroke="#201421" stroke-width="4"/>
-<circle cx="36" cy="59" r="22" fill="#784b65" stroke="#201421" stroke-width="5"/><circle cx="124" cy="59" r="22" fill="#784b65" stroke="#201421" stroke-width="5"/>
-<circle cx="36" cy="59" r="11" fill="#ff55d8"/><circle cx="124" cy="59" r="11" fill="#ff55d8"/>
-<path d="M34 66Q31 27 80 24Q129 27 126 66L119 92Q80 122 41 92Z" fill="url(#fur)" stroke="#1a1320" stroke-width="6"/>
-<path d="M48 35q-8-23 12-12l14 6q6-25 19-12l-1 15 19 3-12 9H58Z" fill="#c6ff45" stroke="#1a1320" stroke-width="4"/>
-<path d="M56 74Q80 66 104 74Q114 82 105 99Q80 117 55 99Q46 84 56 74" fill="#d9a1a5" stroke="#1a1320" stroke-width="4"/>
-<path d="M52 63q10-11 22-3M86 60q12-8 21 3" fill="none" stroke="#201421" stroke-width="5"/>
-<ellipse cx="65" cy="68" rx="6" ry="8" fill="#11141b"/><ellipse cx="96" cy="68" rx="6" ry="8" fill="#11141b"/><circle cx="67" cy="65" r="2.5" fill="#fff"/><circle cx="98" cy="65" r="2.5" fill="#fff"/>
-<ellipse cx="71" cy="85" rx="5" ry="4" fill="#492c44"/><ellipse cx="91" cy="85" rx="5" ry="4" fill="#492c44"/>
-<path d="M65 95q15 16 30 0l-4 10-8 1-5-4-6 4Z" fill="#1c1420"/><path d="m72 100 4 4 5-3 5 3 4-4" fill="none" stroke="#fff1dc" stroke-width="2.5"/>
-<path d="M107 47q13-7 18 7" fill="none" stroke="#ff55d8" stroke-width="4"/>
-<path d="M125 105q12-6 15 4-3 7-14 8" fill="#c6ff45" stroke="#201421" stroke-width="3"/><g id="premium-character-details" stroke-linecap="round" stroke-linejoin="round">
-<path d="M26 45q7-15 15-1M119 44q12-14 18-3" fill="none" stroke="#fdb6f1" stroke-width="3" opacity=".65"/>
-<path d="M59 27q-11-13 7-15l12 8 10-13 8 15-13 16" fill="#ff55d8" stroke="#171320" stroke-width="3"/>
-<path d="m63 22 11 6m10-7 7 5" stroke="#fbe8fc" stroke-width="2.1"/>
-<path d="M39 49q7-10 17-7m48 0q10-3 17 7" fill="none" stroke="#fff0c6" stroke-width="2" opacity=".75"/>
-<path d="m31 84-5 17 10 4m88-23 7 22-12 2" fill="none" stroke="#ff55d8" stroke-width="4"/>
-<path d="m29 106 8 4m93 0-8 4" stroke="#c6ff45" stroke-width="3"/>
-<path d="M53 82 68 75m39 7-15-7" stroke="#f5c6b9" stroke-width="2.1" opacity=".7"/>
-<path d="m50 91 11-2m40 2-11-2" stroke="#f8eddb" stroke-width="2.2"/>
-<path d="M39 96 49 91l5 8 6-4m61 1-9-5-6 8-7-4" fill="none" stroke="#ff55d8" stroke-width="2.5"/>
-<path d="m46 117 12 7m44-7-12 7" stroke="#ef95cb" stroke-width="3"/>
-<path d="m51 122 7 8m50-8-7 8" stroke="#f8dbf5" stroke-width="2"/>
-<path d="M51 114h13m32 0h13" stroke="#c6ff45" stroke-width="2.6"/>
-<path d="M73 113l7 5 7-5 2 11-9 7-9-7Z" fill="#242034" stroke="#c6ff45" stroke-width="2.5"/>
-<path d="M76 119h8l-4 6Z" fill="#ff55d8"/>
-<path d="m57 139 5 6m-12-6 5 6m50-6-5 6m11-6-5 6" stroke="#ff55d8" stroke-width="2.3"/>
-<path d="M136 108q7-10 13-3 5 10-7 15" fill="none" stroke="#c6ff45" stroke-width="4"/>
-<path d="M139 77q-8-23 2-29 15-1 12 14-4 15-14 15Z" fill="#e2ff69" stroke="#171421" stroke-width="3"/>
-<path d="M143 57q4-8 7-4" stroke="#fff9d1" stroke-width="3" fill="none"/>
-<path d="m115 103 7 2m-7 3 7 2" stroke="#c6ff45" stroke-width="2.7"/>
-<circle cx="70" cy="64" r="2.2" fill="#79ffe7"/><circle cx="101" cy="63" r="2.2" fill="#ff55d8"/>
-<path d="m39 72-4 9m86-9 4 9" stroke="#fbb3e4" stroke-width="2.7"/>
-<circle cx="118" cy="31" r="3" fill="#c6ff45"/><circle cx="34" cy="24" r="2" fill="#79ffe7"/>
-</g>
-</g><g stroke-linecap="round" stroke-linejoin="round"><path d="M34 44q6-12 16 0m48 0q11-12 18 0" fill="none" stroke="#14121c" stroke-width="3.5"/><path d="m109 30 7-9 7 9-7 10Z" fill="#ff55d8" stroke="#211421" stroke-width="2.2"/><circle cx="116" cy="30" r="2.7" fill="#c6ff45"/><path d="M20 82q-9 9 0 17 9-8 0-17m120 0q9 9 0 17-9-8 0-17" fill="none" stroke="#f7c36b" stroke-width="3.2"/><path d="M52 30q24 13 56 0" fill="none" stroke="#ff55d8" stroke-width="4"/><path d="m63 31 5 4m10-2 5 3m10-4 5 3" stroke="#fff0c6" stroke-width="2"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="chunky-monkey-title chunky-monkey-desc"><title id="chunky-monkey-title">Chunky Monkey | Knightfall Storybook Edition</title><desc id="chunky-monkey-desc">Chunky Monkey, the laughing female chibi monkey with huge ears, pink floral hair clip, tiny gold crown, big curls and a shiny green apple.</desc>
+<defs><linearGradient id="chunky-monkey-sky" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#55364b"/><stop offset=".56" stop-color="#302039"/><stop offset="1" stop-color="#100d1a"/></linearGradient><radialGradient id="chunky-monkey-aura" cx=".49" cy=".42" r=".63"><stop stop-color="#f3c59f" stop-opacity=".43"/><stop offset=".65" stop-color="#e68d96" stop-opacity=".15"/><stop offset="1" stop-color="#302039" stop-opacity="0"/></radialGradient><linearGradient id="chunky-monkey-ground" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#3e2b40"/><stop offset="1" stop-color="#15131d"/></linearGradient><filter id="chunky-monkey-shadow" x="-35%" y="-40%" width="170%" height="180%"><feDropShadow dx="0" dy="11" stdDeviation="7" flood-color="#090710" flood-opacity=".7"/></filter></defs>
+<rect x="0" y="0" width="512" height="512" rx="34" fill="url(#chunky-monkey-sky)"/><circle cx="256" cy="233" r="222" fill="url(#chunky-monkey-aura)"/><circle cx="396" cy="93" r="48" fill="#f3c59f" opacity=".12"/><circle cx="396" cy="93" r="37" fill="none" stroke="#f3c59f" opacity=".28" stroke-width="4"/>
+<path d="M27 340V206l25-39 25 39v83l24-35 19 26v87m275-18v-95l27-42 28 42v124m-422-5q48-27 106 0" fill="#302039" stroke="#f3c59f" stroke-width="3" opacity=".24"/>
+<g fill="#f3c59f" opacity=".72"><path d="m70 103 6 15 15 6-15 6-6 15-6-15-15-6 15-6zm343 148 5 12 13 5-13 5-5 13-5-13-13-5 13-5z"/><circle cx="364" cy="178" r="3"/><circle cx="113" cy="249" r="3"/><circle cx="402" cy="338" r="4"/></g>
+<ellipse cx="256" cy="454" rx="190" ry="28" fill="#08080e" opacity=".69"/><path d="M68 449q30-25 97-24h187q61 2 93 26l-13 25H82Z" fill="url(#chunky-monkey-ground)" stroke="#a47783" stroke-width="6"/><path d="M95 450q100-19 322 0" fill="none" stroke="#f3c59f" stroke-width="4" opacity=".47"/>
+<g filter="url(#chunky-monkey-shadow)">
+<g class="creature" stroke="#382335" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M328 390q99 0 92-86-10-57-59-37" fill="none" stroke="#8c665b" stroke-width="30"/>
+<path d="M325 390q99 0 92-86-10-57-59-37" fill="none" stroke="#cb9a78" stroke-width="10" opacity=".83"/>
+<ellipse cx="248" cy="365" rx="135" ry="103" fill="#835a56"/>
+<path d="M152 353q21-52 83-46 81 1 116 61l-4 69H148Z" fill="#9f5968" stroke="#4a3440"/>
+<path d="M169 382q69 26 155 0" fill="none" stroke="#eb949d" stroke-width="8"/>
+<path d="M144 403q-36-3-48 28 28 26 68 3m171-31q40-9 51 28-25 24-68 0" fill="#b7836d"/>
+<ellipse cx="142" cy="219" rx="67" ry="76" fill="#b67d67"/><ellipse cx="374" cy="219" rx="67" ry="76" fill="#b67d67"/>
+<ellipse cx="142" cy="220" rx="39" ry="47" fill="#e4a99b" stroke="#905c62" stroke-width="5"/><ellipse cx="374" cy="220" rx="39" ry="47" fill="#e4a99b" stroke="#905c62" stroke-width="5"/>
+<path d="M139 215Q137 106 248 101q107 3 123 109 12 81-45 130-43 35-91 31-94-7-105-98Z" fill="#93645b" stroke="#3e2c39" stroke-width="10"/>
+<path d="M172 136q70-70 146 4" fill="none" stroke="#d6a17e" stroke-width="9" opacity=".58"/>
+<ellipse cx="252" cy="281" rx="107" ry="84" fill="#eac2a6" stroke="#765050" stroke-width="5"/>
+<ellipse cx="209" cy="243" rx="24" ry="29" fill="#fff9f2"/><ellipse cx="305" cy="243" rx="24" ry="29" fill="#fff9f2"/>
+<ellipse cx="213" cy="250" rx="17" ry="21" fill="#4b3544"/><ellipse cx="305" cy="250" rx="17" ry="21" fill="#4b3544"/>
+<g fill="#fff" stroke="none"><circle cx="206" cy="242" r="7"/><circle cx="298" cy="242" r="7"/><circle cx="220" cy="261" r="3"/><circle cx="311" cy="262" r="3"/></g>
+<ellipse cx="164" cy="291" rx="22" ry="12" fill="#dc9298" stroke="none" opacity=".54"/><ellipse cx="353" cy="290" rx="22" ry="12" fill="#dc9298" stroke="none" opacity=".54"/>
+<ellipse cx="257" cy="286" rx="19" ry="13" fill="#95655f"/>
+<path d="M221 314q36 56 73 0-13 51-36 51-28 0-37-51Z" fill="#793f56" stroke="#5b3849" stroke-width="5"/>
+<path d="M232 317q25 15 52 0" fill="none" stroke="#fff5e5" stroke-width="7"/>
+<path d="M245 342q18-15 31 0" fill="#ee929a" stroke="#dd7b91" stroke-width="4"/>
+<path d="M190 340q-28-8-48 19l17 34 36-7m126-41q31-10 48 12l-12 39-32-11" fill="#b27b69"/>
+<path d="M346 333q8-32 32-37 39-2 42 30-2 26-30 42-35 3-44-35Z" fill="#a2ba5a" stroke="#426e44" stroke-width="7"/>
+<path d="M378 299q-8-22 4-32" fill="none" stroke="#766348" stroke-width="8"/>
+<path d="M386 286q28-35 45-6-16 26-45 6Z" fill="#70ac68" stroke="#496b4d" stroke-width="4"/>
+<ellipse cx="369" cy="329" rx="13" ry="22" fill="#e0f1a0" stroke="none" opacity=".44"/>
+<path d="M202 373Q257 409 308 373" fill="none" stroke="#edc98a" stroke-width="8"/>
+<circle cx="256" cy="394" r="15" fill="#e4bf82" stroke="#8c5e54" stroke-width="5"/>
+<path d="m247 394 9-9 9 9-9 9Z" fill="#e98bab" stroke-width="2"/>
+<g transform="translate(267 112)" stroke="#674359" stroke-width="4"><path d="m-37 1-5-30 25 9 15-29 19 29 25-10-6 31Z" fill="#dabb7c"/><rect x="-38" width="78" height="12" rx="5" fill="#c4946f"/></g>
+<g transform="translate(332 154)" stroke="#8d5164" stroke-width="3"><circle cx="0" cy="0" r="17" fill="#f6b4bc"/><circle cx="-15" cy="-9" r="12" fill="#f3a4b1"/><circle cx="15" cy="-8" r="12" fill="#f4a5b3"/><circle cx="-10" cy="11" r="11" fill="#f2a4b1"/><circle cx="10" cy="12" r="11" fill="#f6b4c0"/><circle cx="0" cy="0" r="8" fill="#e8c77e" stroke="#a56f73"/></g>
+</g></g>
+<path d="M28 63V35q0-11 14-11h41M429 25h41q13 0 13 14v42M31 429v38q0 13 13 13h44M424 481h40q17 0 17-16v-37" fill="none" stroke="#e68d96" stroke-width="4" opacity=".55" stroke-linecap="round"/>
+</svg>
