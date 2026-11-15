@@ -75,6 +75,6 @@ preview();
  const d=await r.json();
  if(d.advanced_builder!==true)return;
  studio.hidden=false;
- studio.querySelector("#pro-creator-rank").textContent=d.title==="Bot Creator"?"BOT CREATOR":String(d.role||"").toUpperCase()+" ACCESS";
+ studio.querySelector("#pro-creator-rank").textContent=d.title==="Digital Creator"?"DIGITAL CREATOR":String(d.role||"").toUpperCase()+" ACCESS";
 }catch{}})();
 })();
