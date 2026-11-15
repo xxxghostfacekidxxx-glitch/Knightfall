@@ -26,7 +26,7 @@ function setup(){
   if(update)orders.get(update.params[2]).status='fulfilled';
   return statements.map(()=>({success:true}));
  }};
- return {orders,batched,env:{DB:db,STRIPE_SECRET_KEY:'test-only',STRIPE_WEBHOOK_SECRET:'test-webhook-secret'}};
+ return {orders,batched,env:{DB:db,STRIPE_SECRET_KEY:'test-only',STRIPE_WEBHOOK_SECRET:'test-webhook-secret',MEMBER_SHOP_CHECKOUT_ENABLED:'true'}};
 }
 test('Premium catalog has known USD prices; unconfigured checkout is disabled',async()=>{
  assert.equal(PET_ACCESSORIES.glitch_horns.price_cents,299);
@@ -34,6 +34,14 @@ test('Premium catalog has known USD prices; unconfigured checkout is disabled',a
  const r=await handleBotSlotShop(respondRequest('/api/member-shop/checkout',{sku:'glitch_horns'}),
   {DB:{}},url('/api/member-shop/checkout'),owner);
  assert.equal(r.status,503);
+});
+test('Stripe keys alone cannot enable member checkout before launch approval',async()=>{
+ const {env,orders}=setup();
+ delete env.MEMBER_SHOP_CHECKOUT_ENABLED;
+ const res=await handleBotSlotShop(respondRequest('/api/member-shop/checkout',{sku:'glitch_horns'}),
+  env,url('/api/member-shop/checkout'),owner);
+ assert.equal(res.status,503);
+ assert.equal(orders.size,0,'the disabled shop must not create a pending order');
 });
 test('Premium item checkout never trusts client price and has no pre-payment inventory grant',async()=>{
  const {env,orders,batched}=setup();const previous=globalThis.fetch;
