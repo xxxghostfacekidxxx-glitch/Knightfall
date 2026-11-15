@@ -21,3 +21,31 @@ Live Cloudflare browser rendering verified the homepage and Madhouse at a 390px 
 viewport: Gothic body and bone brand colors loaded, with no horizontal overflow.
 The remaining routes, authenticated screens, and device-specific interactions still need
 independent manual visual acceptance; passing static checks is not proof of full visual QA.
+
+## November 15 final Gravewave eradication
+
+The globally injected Gravewave takeover has been fully retired from production:
+`public/gravewave-takeover.css`, `public/gravewave-takeover.js`, and
+`public/gravewave-decor.js` were deleted. The creator galleries retain original
+mascot SVG and sprite assets without automatically injecting them on every page.
+
+Site chrome was standardized in account, admin, auth-related, message/chat heads,
+community, bots, Creator Foundry, arcade navigation/controls, members, profiles,
+pet sanctuary/rooms/trials, moderation, support/legal, vault and offline screens.
+The legacy-compatible `chaos-cartridge-theme.css` filename now serves Gothic
+colors, not neon. Miss Chaos retains her intentionally separate character colors
+(`#ff2f92` / `#39ff88`) without importing the retired takeover palette.
+
+Preserved intentionally: selectable custom member profile themes, gameplay canvas
+art, pet illustrations, and independent game-only effects and sprite renderers.
+
+Stylesheet URLs and Cloudflare Pages no-cache headers have been refreshed, and
+`knightfall-shell-v47` invalidates older installed PWA shell caches.
+The shared site theme audit checks all converted first-party UI CSS and selected
+UI scripts against forbidden palette tokens, confirms deprecated injection files
+stay deleted, and checks cache-control coverage. Maintain these guards when adding
+new pages or editing old ones.
+
+Cloudflare Pages successfully deployed commit `77ccf1cf`; its Knightfall smoke
+and regression suite passed. Separate runtime/arcade audit failures can be tracked
+independently and must not be mistaken for a successful end-to-end visual QA result.
