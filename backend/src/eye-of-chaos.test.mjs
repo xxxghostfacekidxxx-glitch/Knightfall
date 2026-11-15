@@ -142,7 +142,7 @@ test("GOD approval applies only to exact draft versions; edits invalidate approv
  assert.equal(f.events.filter(x=>x.action==="approve").length,2);
 });
 test("scheduled research never invokes publication; only registered sources are allowed",async()=>{
- const f=fixture();assert.deepEqual(Object.keys(CHAOS_SOURCES),["music","scifi"]);
+ const f=fixture();assert.deepEqual(Object.keys(CHAOS_SOURCES),["music","scifi","horror","entertainment","science","strange","space","technology"]);
  const result=await runEyeChaosScheduledResearch(f.env);
  assert.deepEqual(result,{executed:0});
 });
