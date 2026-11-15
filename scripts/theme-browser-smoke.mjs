@@ -5,7 +5,8 @@ import { chromium } from "playwright";
 // without requiring credentials or modifying game canvases/member themes.
 const base = process.env.THEME_TEST_BASE || "http://127.0.0.1:8765";
 const routes = [
-  "/", "/auth.html", "/community.html",
+  "/", "/auth.html", "/community.html", "/members.html",
+  "/shops.html", "/support.html", "/memo-pad.html",
   "/messages.html", "/devil-tools.html", "/chaos-cartridge.html"
 ];
 const viewports = [
