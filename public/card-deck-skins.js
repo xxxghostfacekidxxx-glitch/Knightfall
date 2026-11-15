@@ -181,7 +181,7 @@
    const item=make("article","kf-deck-item"+(skin.id===chosen?" is-selected":"")+(available?"":" is-locked"));
    const preview=make("div","kf-deck-preview kf-deck-preview--"+skin.id);
    preview.setAttribute("aria-hidden","true");
-   preview.append(make("span","kf-deck-preview-star",skin.symbol),make("span","kf-deck-preview-mark",skin.name.toUpperCase()));
+   preview.append(make("span","kf-card-mini-back",skin.symbol),make("span","kf-card-mini-face","♠"),make("span","kf-deck-preview-mark",skin.name.toUpperCase()));
    const info=make("div","kf-deck-item-copy");
    info.append(make("strong",null,skin.name),make("small",null,skin.description));
    const meta=make("span","kf-deck-kind","FREE · FOREVER");
