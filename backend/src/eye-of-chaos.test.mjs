@@ -146,3 +146,36 @@ test("scheduled research never invokes publication; only registered sources are 
  const result=await runEyeChaosScheduledResearch(f.env);
  assert.deepEqual(result,{executed:0});
 });
+
+test("GOD QA dashboard reflects verified GitHub workflows and their actual worker verdicts",async()=>{
+ const f=fixture();
+ const previous=globalThis.fetch;
+ let calls=0;
+ globalThis.fetch=async(url)=>{
+  calls++;
+  assert.match(url,/api\.github\.com\/repos\/xxxghostfacekidxxx-glitch\/Knightfall\/actions\//);
+  if(url.includes("/workflows/"))return Response.json({workflow_runs:[{
+   id:777,head_sha:"1234567890abcdef",status:"completed",conclusion:"failure",
+   html_url:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/777",
+   created_at:"2026-11-15T12:00:00Z"
+  }]});
+  return Response.json({jobs:[
+   {name:"Ash Sentinel · sharded arcade audit",status:"completed",conclusion:"success",html_url:"https://github.com/example/a"},
+   {name:"Pixel Medic · sharded arcade audit",status:"completed",conclusion:"failure",html_url:"https://github.com/example/b"},
+   {name:"Other workflow job",status:"completed",conclusion:"success"}
+  ]});
+ };
+ try{
+  const res=await f.call(base+"/qa"),data=await res.json();
+  assert.equal(res.status,200);
+  assert.equal(data.verified,true);
+  assert.equal(data.run.conclusion,"failure");
+  assert.deepEqual(data.jobs.map(x=>x.name),["Ash Sentinel · sharded arcade audit","Pixel Medic · sharded arcade audit"]);
+  assert.equal(data.jobs[1].conclusion,"failure");
+  assert.equal(calls,2);
+  assert.equal(f.queries.filter(q=>q.sql.includes("eye_chaos_drafts")).length,0,"QA should not write or access member drafts");
+ }finally{globalThis.fetch=previous}
+ const denied=fixture("admin");
+ const forbidden=await denied.call(base+"/qa");
+ assert.equal(forbidden.status,403);
+});
