@@ -43,8 +43,8 @@ test('reduced-motion pose avoids animated bobs while still drawing image',async(
  const ctx=canvas();
  assert.equal(art.drawMotion(ctx,'spectral-wolf',8,14,110,70,{state:'walk',time:2,reducedMotion:true}),true);
  const moves=ctx.ops.filter(x=>x[0]==='translate');
+ assert.equal(moves.length,1,'reduced-motion rendering uses one stable foot-anchor translation');
  assert.deepEqual(moves[0].slice(1),[63,84]);
- assert.deepEqual(moves[1].slice(1),[0,0]);
  assert.equal(ctx.ops.filter(x=>x[0]==='drawImage').length,1);
 });
 test('City and zombie shooter accept motion artwork without replacing gameplay mechanics',()=>{
