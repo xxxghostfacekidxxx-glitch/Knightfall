@@ -11,6 +11,7 @@ const retired = /#(?:ff55d8|ff45b5|ba36c1|c6ff45|e8b5f5)\b|rgba\(\s*255\s*,\s*85
 assert.doesNotMatch(css,retired,"Retired neon colors must not return to messaging");
 assert.match(css,/#b25b68/i,"Approved muted crimson must appear in messaging");
 assert.match(css,/#c7a77c/i,"Approved antique bronze must appear in messaging");
+assert.doesNotMatch(css,/inset:-1rem -2vw/,"Decorative hero must not expand mobile layout beyond viewport");
 
 for (const selector of [
   ".message-layout", ".conversation-panel", ".conversation.active",
