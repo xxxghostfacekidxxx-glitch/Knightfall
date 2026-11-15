@@ -44,7 +44,12 @@ const cssReferences = css.sort().map(path => {
     .map(source => source.path);
   return { css: path, references: dependents.length, users: dependents.slice(0, 8) };
 });
-const orphanCandidates = cssReferences.filter(entry => entry.references === 0).map(entry => entry.css);
+// The old Gravewave overlay is kept as a dormant, opt-in compatibility asset.
+ // Do not globally import it: that would override the approved Gothic theme.
+ // All other zero-reference CSS files remain release blockers.
+const intentionallyRetainedCss = new Set(["gravewave-takeover.css"]);
+const retainedCss = cssReferences.filter(entry => entry.references === 0 && intentionallyRetainedCss.has(entry.css)).map(entry=>entry.css);
+const orphanCandidates = cssReferences.filter(entry => entry.references === 0 && !intentionallyRetainedCss.has(entry.css)).map(entry => entry.css);
 
 // Include CSS deep inside hosted games. Files named "style.css" can be referenced
 // by relative paths, so use source filenames as a conservative safety signal.
@@ -59,6 +64,7 @@ console.log("NESTED CSS ZERO-REFERENCE CANDIDATES (MANUAL REVIEW): " + JSON.stri
 console.log("ROOT CSS FILES: " + css.length);
 console.log("APP SOURCE FILES SCANNED: " + sources.length);
 console.log("CSS FILES WITH ZERO APP REFERENCES (REVIEW BEFORE DELETE): " + JSON.stringify(orphanCandidates));
+console.log("INTENTIONALLY RETAINED OPT-IN CSS (NOT LOADED GLOBALLY): " + JSON.stringify(retainedCss));
 console.log("HTML LINKS TO RETIRED ARCADE DIRECTORIES: " + JSON.stringify(pageLinks));
 for (const record of cssReferences.filter(entry => entry.references <= 1)) {
   console.log("LOW-REFERENCE CSS: " + JSON.stringify(record));
