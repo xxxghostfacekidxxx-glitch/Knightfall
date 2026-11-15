@@ -74,6 +74,7 @@ on:
       - 'scripts/build-arcade-catalog.mjs'
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
+      - 'scripts/theme-browser-smoke.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
   workflow_run:
@@ -130,9 +131,9 @@ jobs:
           node --check public/miss-chaos-presence.js
           node --check backend/src/member-memos.js
           node --check backend/src/member-memo-mail.js
-      - name: Verify messaging uses neon palette (no retired orange)
+      - name: Verify messaging uses approved Gothic palette
         run: node scripts/messaging-theme-audit.mjs
-      - name: Guard unified neon/yellow design system and protected surfaces
+      - name: Guard approved Gothic design system and protected surfaces
         run: node scripts/site-theme-audit.mjs
       - name: Test seller commerce privacy and input validation
         run: node --test backend/src/shop-commerce.test.mjs && node --check backend/src/shop-commerce.js
@@ -192,6 +193,8 @@ jobs:
         run: node scripts/profile-community-browser.mjs
       - name: Exercise PWA start page, icons, shortcuts, and mobile policy pages
         run: node scripts/pwa-browser-smoke.mjs
+      - name: Check approved Gothic Creator theme across mobile and desktop
+        run: node scripts/theme-browser-smoke.mjs
       - name: Exercise public privacy assistance and staff queue at phone/desktop widths
         run: node scripts/privacy-assistance-browser.mjs
       - name: Verify offline installation and disconnected game playback
