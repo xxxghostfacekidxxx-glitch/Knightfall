@@ -50,7 +50,7 @@ test('install center supports PWA now and gates APK behind verified release',()=
  assert.match(installPage,/id="kf-pwa-install"/);
  assert.match(installPage,/id="kf-apk-download"[^>]*hidden/);
  assert.match(installScript,/beforeinstallprompt/);
- assert.match(installScript,/signedReleaseVerified===true/);
+ assert.match(installScript,/signedReleaseVerified!==true/);
  assert.match(installScript,/\/releases\/download\//);
  assert.equal(installMeta.status,'not_released');
  assert.equal(installMeta.signedReleaseVerified,false);
