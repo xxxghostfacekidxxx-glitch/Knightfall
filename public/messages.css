@@ -569,7 +569,7 @@
 }
 .conversation .avatar,.chat-avatar{
  background:linear-gradient(140deg,#342430,#17171c);color:var(--gw-msg-green);
- border:1px solid rgba(198,255,69,.35);box-shadow:inset 0 1px rgba(255,255,255,.06)
+ border:1px solid rgba(199,167,124,.35);box-shadow:inset 0 1px rgba(255,255,255,.06)
 }
 .conversation-copy strong{color:#f3edfb}
 .conversation-copy :is(small,em){color:var(--gw-msg-muted)}
@@ -669,7 +669,7 @@
 @media(max-width:650px){.chaos-card-chat-invite{min-height:40px;padding:.48rem .6rem;font-size:.75rem}}
 
 /* Saved-message drafts are distinguishable without disguising new-message alerts. */
-.messages-shell .draft-marker{font-size:.72rem;font-weight:900;color:#d9ff51}
+.messages-shell .draft-marker{font-size:.72rem;font-weight:900;color:#c7a77c}
 .messages-shell .conversation:not(.active) .draft-marker{color:#ff9fe5}
 
 
