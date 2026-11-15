@@ -381,7 +381,12 @@ function renderBattle(){
  $("ally-hp").innerHTML=hpbar(a)+"<small>"+a.hp+" / "+a.maxHp+" HP</small>";
  $("battle-notes").replaceChildren(...battle.lines.map(s=>{const p=document.createElement("p");p.textContent=s;return p;}));
  $("battle-buttons").innerHTML=choices.map((m,i)=>'<button data-move="'+i+'" '+(Math.min(a.pp[i],m.pp)<=0?"disabled":"")+'><strong>'+esc(m.name)+'</strong><span>'+esc(m.type.toUpperCase())+' · '+Math.min(a.pp[i],m.pp)+' PP</span></button>').join("");
- $("battle-items").innerHTML='<button data-capture="orbs" '+(!canCapture||!state.items.orbs?"disabled":"")+'>Capture Orb ('+state.items.orbs+')</button><button data-capture="superOrbs" '+(!canCapture||!state.items.superOrbs?"disabled":"")+'>Prism Orb ('+state.items.superOrbs+')</button><button data-battle-heal="0" '+(!state.items.potions?"disabled":"")+'>Potion ('+state.items.potions+')</button><button data-flee '+(!canCapture?"disabled":"")+'>Run</button>';
+ const healing=state.party.map((c,i)=>{
+  const potion=c.hp>0&&c.hp<c.maxHp?'<button data-battle-heal="'+i+'" '+(!state.items.potions?"disabled":"")+'>Potion: '+esc(name(c.id))+' · '+c.hp+'/'+c.maxHp+' HP</button>':"";
+  const revive=c.hp<=0?'<button data-battle-revive="'+i+'" '+(!state.items.revives?"disabled":"")+'>Revive: '+esc(name(c.id))+'</button>':"";
+  return potion+revive;
+ }).join("")||"<p>Everybody is healthy. Save your supplies.</p>";
+ $("battle-items").innerHTML='<button data-capture="orbs" '+(!canCapture||!state.items.orbs?"disabled":"")+'>Capture Orb ('+state.items.orbs+')</button><button data-capture="superOrbs" '+(!canCapture||!state.items.superOrbs?"disabled":"")+'>Prism Orb ('+state.items.superOrbs+')</button><button data-flee '+(!canCapture?"disabled":"")+'>Run</button><details class="battle-healing"><summary>Healing · '+state.items.potions+' potions / '+state.items.revives+' revives</summary><div>'+healing+'</div></details>';
  $("battle-switch").innerHTML=state.party.map((c,i)=>'<button data-switch="'+i+'" '+(i===0||c.hp<=0?"disabled":"")+'>'+esc(name(c.id))+' Lv.'+c.level+' · '+c.hp+' HP</button>').join("");
  sprite(a.id,"ally-sprite");sprite(b.id,"enemy-sprite");
 }
@@ -434,6 +439,7 @@ function initialize(){
   else if(b.hasAttribute("data-flee"))flee();
   else if(b.dataset.switch!==undefined)changeLead(Number(b.dataset.switch),true);
   else if(b.dataset.battleHeal!==undefined)usePotion(Number(b.dataset.battleHeal),true);
+  else if(b.dataset.battleRevive!==undefined)useRevive(Number(b.dataset.battleRevive),true);
  });
  $("menu-body").addEventListener("input",e=>{if(e.target.id==="dex-search")filterBestiary();});
  $("menu-body").addEventListener("change",e=>{if(e.target.id==="dex-status-filter")filterBestiary();});
