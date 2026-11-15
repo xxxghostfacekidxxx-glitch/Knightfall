@@ -59,6 +59,9 @@ async function poll(myEpoch){
   if(myEpoch!==epoch)return;
   if(result.needs_join){disconnect("Online session expired. Join again to resume.");return;}
   if(result.ok){
+   // Reconcile lost/missed move responses and local battle blackouts against the server.
+   const current=game.position();
+   if(!game.isBusy()&&result.me&&(current.x!==result.me.x||current.y!==result.me.y))game.syncOnlinePosition(result.me);
    renderPlayers(result.players||[]);
    renderQuests(result.quests||[]);
    report("● Connected to the shared world · "+result.me.zone+" · "+(result.online_count||1)+" nearby incl. you");
