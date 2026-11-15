@@ -1,0 +1,59 @@
+name: Knightfall Android test APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - '.github/workflows/knightfall-android.yml'
+      - 'public/icons/knightfall-crest-512.png'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knightfall-android-debug
+  cancel-in-progress: true
+
+jobs:
+  test-apk:
+    name: Compile debug-signed Android test APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android command-line SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android API 36
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+      - name: Setup Gradle 8.11.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Install Knightfall crest into Android resources
+        run: |
+          test -s public/icons/knightfall-crest-512.png
+          mkdir -p android/app/src/main/res/drawable-nodpi
+          cp public/icons/knightfall-crest-512.png android/app/src/main/res/drawable-nodpi/knightfall_icon.png
+      - name: Compile debug app
+        run: gradle --project-dir android :app:assembleDebug --no-daemon --stacktrace
+      - name: Verify and fingerprint test APK
+        run: |
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee android/app/build/outputs/apk/debug/app-debug.apk.sha256
+          echo "NOTICE: This is a DEBUG-SIGNED TEST APK, not an approved public Knightfall release." >> "$GITHUB_STEP_SUMMARY"
+          echo "TWA fullscreen verification needs a permanent release certificate fingerprint in /.well-known/assetlinks.json." >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload private test APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-android-debug-apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/apk/debug/app-debug.apk.sha256
+          if-no-files-found: error
+          retention-days: 7
