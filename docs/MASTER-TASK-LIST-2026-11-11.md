@@ -2,6 +2,20 @@
 
 Status convention: **Implemented** means present in source; **CI verified** means a named automated check passed; **production verified** and **device accepted** require separate evidence. Unchecked entries must not be described as absent.
 
+## Current artwork checkpoint — November 15, 2026
+
+**Knightfall Creature Sanctuary art rollout:**
+- [x] Seven original storybook-cartoon first forms have consistent SVG assets in Sanctuary, profile cards, private rooms and Trials: **Lydibug, Mini Villain, Eddie, Minion Mouse, Boo Thang, Crush and Chunky Monkey**. All seven have canonical base, idle and portrait variants, with correct matching type palettes.
+- [x] Repainted **five existing earned Starborn evolution images** (Lydibloom, Supreme Mini Villain, Everguard Eddie, Minion Mouse: Mastermind, Boo Thang: Heartlight), preserving server-controlled level/bond requirements and member ownership.
+- [x] Updated artwork integrity expectations and the Madhouse Memory Eddie sprite to match the new source. Mascot Art Integrity [passed](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43672196691); SVG Quality [passed](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43672196680); updated Sanctuary Integration [passed](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43672353815); Misfit Avatar Studio Regression [passed](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43672284194).
+- [x] Production Pages **successfully deployed** the artwork with the cache-refresh scripts at commit [77a02caa](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/commit/77a02caa4ef982554a22e3e646ded84fffd31411). Later test-only commits require separate deployment confirmation.
+- [x] Corrected outdated navigation test expectations for the Knightfall home label and shared support footer, without changing user-facing navigation.
+- [x] At the start of this checkpoint, GitHub reported exactly one branch (`main`) and no open PRs. Recheck before new feature batches.
+- [ ] **Physical-device acceptance:** verify seven pet portraits, five earned evolution previews, room scale/position, Android readability, real animated feedback, profile/Trials displays and existing pets. CI does not prove real-device acceptance.
+- [ ] **Remaining art:** intermediate pet growth forms, bespoke reaction/idle artwork (currently synchronized first-form silhouettes), remaining Sanctuary species and any future server-authorized evolutions. Chunky Monkey and Crush have **no** Starborn unlock configured; do not portray one as released.
+- [ ] **Separate pre-existing arcade/catalog work:** reconcile canonical `public/arcade/catalog.json`, `scripts/build-arcade-catalog.mjs` and `public/chaos-cartridge.html` without stripping the new arcade cover scripts; arcade catalog integrity reported generated-source drift in [this run](https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/runs/43672196694). Do not conflate this with pet-art tests.
+- [ ] Confirm the latest test-only navigation patches in Runtime Smoke CI and Cloudflare production before treating the new checkpoint as fully released.
+
 ## Completed in repository — 2026-11-11 quick-fix batch
 
 - [x] Corrected mini-game saved-state validation to return a synchronous boolean for Cinder Collider (Particle Clicker), Crypt Conduits and Ash Slope. Previously the async validator returned a truthy Promise, which could bypass corruption checks.
