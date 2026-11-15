@@ -210,7 +210,7 @@
   const heading=make("div","kf-deck-intro");
   const intro=make("div");
   intro.append(make("strong",null,"THE DECK ATELIER · 42 ORIGINAL FINISHES"),make("p",null,"12 free forever · 12 dollar collector skins · 12 public Cinders skins · 6 VIP-only Cinders skins."));
-  const prog=make("div","kf-deck-progress","12 FREE · "+(account.ready?account.walletBalance.toLocaleString()+" Cinders · "+(account.vipActive?"VIP active":"Standard member"):"Sign in for Cinders")");
+  const prog=make("div","kf-deck-progress","12 FREE · "+(account.ready?account.walletBalance.toLocaleString()+" Cinders · "+(account.vipActive?"VIP active":"Standard member"):"Sign in for Cinders"));
   heading.append(intro,prog);
   locker.append(heading);
   const syncStatus=make("div","kf-deck-sync-status");
@@ -246,7 +246,7 @@
    preview.append(make("span","kf-card-mini-back",skin.symbol),make("span","kf-card-mini-face","♠"),make("span","kf-deck-preview-mark",skin.name.toUpperCase()));
    const info=make("div","kf-deck-item-copy");
    info.append(make("strong",null,skin.name),make("small",null,skin.description));
-   const meta=make("span","kf-deck-kind",skin.kind==="free"?"FREE · FOREVER":`${(skin.price_cents/100).toFixed(2)} · ONE-TIME`);
+   const meta=make("span","kf-deck-kind",skin.kind==="free"?"FREE · FOREVER":skin.kind==="premium"?`${(skin.price_cents/100).toFixed(2)} · ONE-TIME`:(skin.kind==="vip"?"VIP ONLY · ":"")+skin.cost_cinders.toLocaleString()+" Cinders");
    const canBuy=["cinders","vip"].includes(skin.kind)&&account.ready&&!account.ownedCinders.has(skin.id)&&(skin.kind!=="vip"||account.vipActive);
    const button=make("button","kf-deck-choice",skin.id===chosen?"✓ Equipped":available?"Equip skin":canBuy?"Buy · "+skin.cost_cinders.toLocaleString()+" Cinders":skin.kind==="vip"?"VIP required":skin.kind==="cinders"?"Sign in to buy":"Purchase required");
    button.type="button";
