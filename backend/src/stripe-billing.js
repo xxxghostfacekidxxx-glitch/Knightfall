@@ -75,9 +75,24 @@ export async function handleVerifiedBillingEvent(event,env){
  const user=await env.DB.prepare("SELECT user_id FROM stripe_member_customers WHERE customer_id=?").bind(subscription.customer).first();
  if(!user)return true;
  const approved=subscription.status==="active"||subscription.status==="trialing";
- const end=Number(subscription.current_period_end);
- const expires=Number.isFinite(end)&&end>0?new Date(end*1000).toISOString():null;
- await env.DB.prepare("INSERT INTO member_premium_memberships(user_id,status,expires_at,updated_at) VALUES(?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(user_id) DO UPDATE SET status=excluded.status,expires_at=excluded.expires_at,updated_at=CURRENT_TIMESTAMP")
-  .bind(user.user_id,approved?"active":"inactive",approved?expires:null).run();
+ const matchedItem=subscription.items.data.find(line=>line.price?.id===premiumPrice);
+ // Stripe API versions may put the period on a subscription item rather than
+ // the subscription itself. Never grant indefinite membership on an absent date.
+ const end=Number(subscription.current_period_end??matchedItem?.current_period_end);
+ if(approved&&(!Number.isSafeInteger(end)||end<=Date.now()/1000))return true;
+ const expires=approved?new Date(end*1000).toISOString():null;
+ const created=Number(event.created);
+ if(!Number.isSafeInteger(created)||created<946684800)return true;
+ // When events have the same second, inactive status wins. This and the
+ // conditional membership write run in one atomic D1 batch, preventing stale
+ // webhook retries from reactivating a canceled subscription.
+ const priority=approved?1:2, eventId=String(event.id||"");
+ if(!/^evt_[A-Za-z0-9]+$/.test(eventId))return true;
+ await env.DB.batch([
+  env.DB.prepare("UPDATE stripe_member_customers SET last_subscription_event_created=?,last_subscription_event_priority=?,last_subscription_event_id=? WHERE user_id=? AND (last_subscription_event_created<? OR (last_subscription_event_created=? AND last_subscription_event_priority<?))")
+   .bind(created,priority,eventId,user.user_id,created,created,priority),
+  env.DB.prepare("INSERT INTO member_premium_memberships(user_id,status,expires_at,updated_at) SELECT user_id,?,?,CURRENT_TIMESTAMP FROM stripe_member_customers WHERE user_id=? AND last_subscription_event_created=? AND last_subscription_event_priority=? AND last_subscription_event_id=? ON CONFLICT(user_id) DO UPDATE SET status=excluded.status,expires_at=excluded.expires_at,updated_at=CURRENT_TIMESTAMP")
+   .bind(approved?"active":"inactive",expires,user.user_id,created,priority,eventId)
+ ]);
  return true;
 }
