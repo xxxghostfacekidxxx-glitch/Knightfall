@@ -68,7 +68,7 @@ jobs:
             android/app/build/outputs/apk/debug/app-debug.apk
             android/app/build/outputs/apk/debug/app-debug.apk.sha256
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
 
   emulator-smoke:
     name: Boot Knightfall in Android emulator
@@ -103,5 +103,5 @@ jobs:
         with:
           name: knightfall-emulator-evidence
           path: emulator-evidence/
-          retention-days: 7
+          retention-days: 14
           if-no-files-found: warn
