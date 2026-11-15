@@ -50,7 +50,7 @@
         .replace(/<link rel="stylesheet" href="\/visual-refresh\.css[^"]*">/, () => "<style>" + refreshCss.replace(/<\/style/gi,"<\\/style") + "</style>")
         // The live arcade recovery/fullscreen helper is site-only and must not
         // remain as a remote script in the downloadable standalone game.
-        .replace(/<script src="\\/arcade\\/hosted\\/arcade-playback-assist\\.js[^"]*"[^>]*><\\/script>/, "")
+        .replace(/<script src="\/arcade\/hosted\/arcade-playback-assist\.js[^"]*"[^>]*><\/script>/, "")
         .replace('<script src="/monster-mmo-engine-bridge.js" defer></script>', "")
         .replace(jsTag, "<script>" + safeJs + "</script>")
         .replace(pixelTag, "<script defer>" + safePixel + "</script>")
