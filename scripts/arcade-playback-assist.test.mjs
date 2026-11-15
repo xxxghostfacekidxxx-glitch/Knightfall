@@ -48,3 +48,19 @@ test('Neon Surge preserves its built-in fullscreen control and provides a missin
   assert.match(source,/el\.type==='module'/);
   assert.match(source,/game-boot-timeout/);
 });
+
+test('additional full-game pages expose fallback fullscreen without modifying game engines',()=>{
+  const extra=[
+    ['public/monster-mmo.html','main'],
+    ['public/arcade/hosted/mutation-merge/index.html','main'],
+    ['public/arcade/hosted/fable-gta/index.html','body'],
+    ['public/arcade/hosted/sanctuary-original/sanctuary.html','body'],
+    ['public/arcade/hosted/sanctuary-end/sanctuary.html','body']
+  ];
+  for(const [file,target] of extra){
+    const html=read(file);
+    assert.ok(html.includes('arcade-playback-assist.js'),file+' lacks fallback loader');
+    assert.ok(html.includes('data-target="'+target+'"'),file+' lacks target');
+    assert.equal((html.match(/arcade-playback-assist\.js/g)||[]).length,1,file+' duplicate fallback');
+  }
+});
