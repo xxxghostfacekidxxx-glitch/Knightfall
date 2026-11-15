@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121b27">
+<meta name="description" content="Cinderwild: an original handheld-style creature catching adventure. Explore, battle, evolve, collect and challenge three Wardens.">
+<title>Cinderwild | Knightfall Chaos Cartridge</title>
+<link rel="stylesheet" href="./style.css?v=1">
+<script src="/monster-mmo-sprite-atlas.js" defer></script>
+<script src="./game.js?v=1" defer></script>
+</head>
+<body>
+<main id="game-shell" class="shell">
+<header class="topbar">
+ <a class="back" href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a>
+ <div class="brand"><span>KNIGHTFALL PRESENTS</span><strong>CINDER<span>WILD</span></strong></div>
+ <button id="fullscreen" type="button" title="Fullscreen">⛶ Fullscreen</button>
+</header>
+<div class="hud" aria-label="Trainer status">
+ <div><small>REGION</small><strong id="location">Cinder Town</strong></div>
+ <div><small>POSITION</small><strong id="coordinates">8, 18</strong></div>
+ <div><small>CRESTS</small><strong id="badges">0 / 3 Crests</strong></div>
+ <div><small>CINDERS</small><strong>✦ <span id="money">150</span></strong></div>
+</div>
+<div class="screen-frame" id="world-wrap">
+ <div class="screen-heading"><span>✦ THE WILDS ARE CALLING</span><span>ORIGINAL CREATURE ADVENTURE</span></div>
+ <canvas id="world" width="576" height="384" role="img" aria-label="Overworld map. Use arrow keys, WASD or the movement buttons to explore."></canvas>
+ <div class="screen-foot"><span id="party-summary">Choose a starter</span><span id="progress">Field Bestiary</span></div>
+</div>
+<div id="controls" class="play-controls">
+ <div class="dpad" aria-label="Touch movement">
+  <button type="button" data-direction="up" class="up" aria-label="Walk north">▲</button>
+  <button type="button" data-direction="left" class="left" aria-label="Walk west">◀</button>
+  <button type="button" data-direction="down" class="down" aria-label="Walk south">▼</button>
+  <button type="button" data-direction="right" class="right" aria-label="Walk east">▶</button>
+ </div>
+ <button id="interact" class="interact" type="button">✦ TALK / ACTION <small>E / SPACE</small></button>
+ <div class="quickbar" aria-label="Trainer menu">
+  <button type="button" data-menu="party">◈ Party</button>
+  <button type="button" data-menu="box">▣ Storage</button>
+  <button type="button" data-menu="dex">✧ Bestiary</button>
+  <button type="button" data-menu="map">⌖ Map</button>
+  <button type="button" data-menu="guide">☰ Journal</button>
+ </div>
+</div>
+<div class="bottom">
+ <p id="notice" role="status" aria-live="polite">Explore Cinderwild and find your first wild creature.</p>
+ <div id="journal" class="journal" aria-label="Field messages" aria-live="off"></div>
+ <p class="hint">Move with the D-pad, WASD, or arrow keys. Talk to the Nurse and Shop Keeper in town. Step into tall grass to find wild creatures. All progress saves locally on your device.</p>
+</div>
+<section id="starter" class="overlay" hidden aria-labelledby="starter-title" role="dialog" aria-modal="true">
+ <div class="window starter-window">
+  <p class="eyebrow">THE ADVENTURE BEGINS</p>
+  <h1 id="starter-title">Choose your first companion</h1>
+  <p>Every great story starts with one small disaster. Which one is yours?</p>
+  <div id="starter-options" class="starter-options">
+   <button data-starter="mossbit"><span class="starter-portrait">✿</span><strong>Mossbit</strong><small>GRASS · The stubborn sprout</small></button>
+   <button data-starter="embercub"><span class="starter-portrait">✹</span><strong>Embercub</strong><small>FIRE · The little troublemaker</small></button>
+   <button data-starter="driftfin"><span class="starter-portrait">◈</span><strong>Driftfin</strong><small>WATER · The quiet fighter</small></button>
+  </div>
+  <p class="hint">Your starter is yours permanently. More creatures can be caught in the wild.</p>
+ </div>
+</section>
+<section id="menu" class="overlay" hidden aria-label="Trainer menu" role="dialog" aria-modal="true">
+ <div class="window menu-window">
+  <div class="window-top"><h2 id="menu-title">Trainer Menu</h2><button id="menu-close" type="button" aria-label="Close menu">✕ Close</button></div>
+  <div id="menu-body" class="menu-body"></div>
+ </div>
+</section>
+<section id="fight" class="overlay battle-overlay" hidden aria-labelledby="fight-title" role="dialog" aria-modal="true">
+ <div class="window battle-window">
+  <div class="battle-caption"><span>⚔ CINDERWILD BATTLE</span><strong id="fight-title">Wild encounter</strong></div>
+  <div class="battle-stage">
+   <div class="enemy-slot"><div class="battle-label"><strong id="enemy-name"></strong><div id="enemy-hp"></div></div><canvas id="enemy-sprite" width="112" height="112" role="img" aria-label="Opponent creature"></canvas></div>
+   <div class="ally-slot"><canvas id="ally-sprite" width="112" height="112" role="img" aria-label="Your creature"></canvas><div class="battle-label"><strong id="ally-name"></strong><div id="ally-hp"></div></div></div>
+  </div>
+  <div class="battle-bottom">
+   <div id="battle-notes" class="battle-notes" aria-live="polite"></div>
+   <h3>Choose an attack</h3><div id="battle-buttons" class="move-grid"></div>
+   <h3>Capture &amp; supplies</h3><div id="battle-items" class="item-grid"></div>
+   <details class="switch-group"><summary>Switch active creature</summary><div id="battle-switch"></div></details>
+  </div>
+ </div>
+</section>
+<footer>ASH-FALL · KNIGHTFALL ORIGINAL · No copyrighted franchise assets or characters are used.</footer>
+</main>
+</body>
+</html>
