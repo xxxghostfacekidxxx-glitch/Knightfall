@@ -83,7 +83,7 @@
      chosen=allowed(skinMap.get(local))?local:"ash-classic";updateDocument();
      account.status="Guest · sign in to sync skins across devices";
     }else{
-     // Never trust a cached premium selection while the API is unavailable.
+     // Offline and guest selections may use any of the twelve free finishes.
      if(!account.ready) {
       deals=localDeals;
       if(!allowed(skinMap.get(chosen)))chosen="ash-classic";
