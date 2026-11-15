@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/install.css?v=20261114-1">
 <script src="/nav.js?v=20261114-install1" defer></script>
 <script src="/install.js?v=20261114-1" defer></script>
+<script src="/android-device-check.js?v=20261114-qa1" defer></script>
 </head>
 <body class="kf-install-page">
 <header class="kf-header"></header>
@@ -34,5 +35,25 @@
 <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/knightfall-android.yml" target="_blank" rel="noopener noreferrer" class="kf-install-secondary">Future Android builds</a></article>
 </section>
 <section class="kf-install-note"><h2>Will site updates still work?</h2><p>Yes. Knightfall remains hosted on Cloudflare Pages and Workers. Game art, messaging, forums, and Creator Foundry changes update through the web. Only changes to the Android wrapper itself require another signed APK.</p><p><strong>Security note:</strong> Only install a Knightfall APK when it is explicitly identified as a signed release on this official page. Never install an APK from a random chat attachment or impersonating website.</p></section>
+<section class="kf-install-note kf-android-test-checklist" id="android-device-checklist">
+<h2>Android device testing checklist</h2>
+<p>After installing the <strong>release-signed candidate</strong>, check each item on your actual Android phone. A checked box is a human observation, not an automated verification. No passwords or messages are collected.</p>
+<form id="kf-android-test-form">
+<fieldset>
+<legend>Verify the app's essential features</legend>
+<label><input type="checkbox" name="launch"> Signed APK installs and launches without crashing</label>
+<label><input type="checkbox" name="twa"> Verified TWA launches without Chrome address bar</label>
+<label><input type="checkbox" name="login"> Sign in, sign out and account recovery navigation work</label>
+<label><input type="checkbox" name="chat"> Chat bubbles stay usable in a fullscreen first-party game</label>
+<label><input type="checkbox" name="controls"> Game touch controls and Android Back button work</label>
+<label><input type="checkbox" name="push"> Background push notification arrives and opens correctly</label>
+<label><input type="checkbox" name="offline"> Offline fallback, reconnect and app reopening work</label>
+<label><input type="checkbox" name="rotation"> Screen resizing, rotation and keyboard input remain usable</label>
+</fieldset>
+<div class="kf-android-test-actions"><button type="button" class="kf-install-secondary" id="kf-qa-copy">Copy test report</button><button type="button" class="kf-install-secondary" id="kf-qa-reset">Clear checks</button></div>
+<p id="kf-qa-result" role="status" aria-live="polite">Complete these checks on a physical Android phone. You can copy the results for troubleshooting.</p>
+</form>
+<details class="kf-release-owner-details"><summary>For the Knightfall release owner: signing setup</summary><p>Permanent release signing requires a private keystore and four GitHub Actions secrets. Never send signing keys or passwords through chat. <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/android-release-runbook.md" target="_blank" rel="noopener noreferrer">Read secure signing and release instructions</a>, then use the <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/knightfall-android-release.yml" target="_blank" rel="noopener noreferrer">signed Android release workflow</a>.</p></details>
+</section>
 </main>
 </body></html>
