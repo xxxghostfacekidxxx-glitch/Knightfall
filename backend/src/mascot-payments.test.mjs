@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createHmac} from 'node:crypto';
 import {handleBotSlotShop} from './member-shop-checkout.js';
 import {PET_ACCESSORIES} from './mascot-collectibles.js';
+import {PREMIUM_DECK_PRODUCTS,PREMIUM_DECK_SKUS} from './deck-skin-products.js';
 
 const owner={id:101,username:'tester'};
 const url=path=>new URL('https://api.ash-fall.com'+path);
@@ -82,4 +83,53 @@ test('Unsigned checkout webhook never fulfills; verified payment grants wardrobe
  assert.ok(batched[0].some(x=>x.sql.includes('INSERT OR IGNORE INTO mascot_wardrobe')));
  res=await handleBotSlotShop(makeRequest('t='+now+',v1='+digest),env,url('/api/member-shop/stripe-webhook'),null);
  assert.equal(res.status,200);assert.equal(batched.length,1,'retry must not re-fulfill an order');
+});
+
+test('Twelve new deck SKUs have fixed one-time prices from $1.00 to $1.99',()=>{
+ const list=Object.values(PREMIUM_DECK_PRODUCTS);
+ assert.equal(list.length,12);
+ assert.equal(new Set(list.map(p=>p.sku)).size,12);
+ for(const p of list){
+  assert.equal(PREMIUM_DECK_SKUS[p.sku],p);
+  assert.ok(p.price_cents>=100&&p.price_cents<=199,p.name+" violates $2 price cap");
+ }
+});
+test('New deck checkout uses server-set price and cannot grant ownership before payment',async()=>{
+ const {env,orders,batched}=setup();const previous=globalThis.fetch;
+ const product=PREMIUM_DECK_PRODUCTS['blood-moon'];
+ globalThis.fetch=async(target,options)=>{
+  const params=new URLSearchParams(options.body);
+  assert.equal(params.get('line_items[0][price_data][unit_amount]'),'199');
+  assert.equal(params.get('line_items[0][price_data][product_data][name]'),'Knightfall Deck · Blood Moon');
+  return {ok:true,json:async()=>({url:'https://checkout.stripe.com/c/test-deck'})};
+ };
+ try{
+  const res=await handleBotSlotShop(respondRequest('/api/member-shop/checkout',{sku:product.sku,price_cents:1}),
+   env,url('/api/member-shop/checkout'),owner);
+  assert.equal(res.status,200);
+  const body=await res.json();
+  assert.equal(orders.get(body.order_id).amount_cents,199);
+  assert.equal(batched.length,0,'a checkout session is never proof of purchase');
+ }finally{globalThis.fetch=previous}
+});
+test('Signed paid deck webhook issues one server-side entitlement, idempotently',async()=>{
+ const {env,orders,batched}=setup(),id='deck-verified-example';
+ const sku=PREMIUM_DECK_PRODUCTS['obsidian-cathedral'].sku;
+ orders.set(id,{id,user_id:owner.id,sku,amount_cents:100,currency:'USD',status:'pending'});
+ const payload=JSON.stringify({type:'checkout.session.completed',data:{object:{
+  id:'cs_deck_test',client_reference_id:id,metadata:{order_id:id},payment_status:'paid',
+  mode:'payment',amount_total:100,currency:'usd',payment_intent:'pi_deck_test'
+ }}});
+ const stamp=Math.floor(Date.now()/1000);
+ const signature='t='+stamp+',v1='+createHmac('sha256',env.STRIPE_WEBHOOK_SECRET).update(stamp+'.'+payload).digest('hex');
+ const req=()=>new Request(url('/api/member-shop/stripe-webhook'),{method:'POST',headers:{'stripe-signature':signature},body:payload});
+ const result=await handleBotSlotShop(req(),env,url('/api/member-shop/stripe-webhook'),null);
+ assert.equal(result.status,200);
+ assert.equal(batched.length,1);
+ const writes=batched[0].filter(s=>s.sql.includes('arcade_deck_paid_entitlements'));
+ assert.equal(writes.length,1);
+ assert.equal(writes[0].params[0],'obsidian-cathedral');
+ assert.equal(writes[0].params[2],id);
+ await handleBotSlotShop(req(),env,url('/api/member-shop/stripe-webhook'),null);
+ assert.equal(batched.length,1,'duplicate webhook must not grant twice');
 });
