@@ -1,8 +1,8 @@
 /* Ruinwire separate PWA launcher and compact inbox presentation. */
 :root{--rw-bg:#0d1013;--rw-pink:#b25b68;--rw-green:#c7a77c;--rw-line:#827076}
-.ruinwire-install-page{background:radial-gradient(ellipse at 20% 0%,#341038 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#17290e 0,transparent 45%),var(--rw-bg);color:#f8f1fa;min-height:100dvh}
+.ruinwire-install-page{background:radial-gradient(ellipse at 20% 0%,#2a2028 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#1b2021 0,transparent 45%),var(--rw-bg);color:#ece1d3;min-height:100dvh}
 .rw-install{width:min(1100px,100%);margin:auto;padding:clamp(1.1rem,5vw,4rem)}
-.rw-install-hero{display:grid;grid-template-columns:clamp(88px,14vw,144px) minmax(0,1fr);align-items:start;gap:clamp(1rem,4vw,3rem);padding:clamp(1.3rem,5vw,3rem);border:1px solid #6f387a;border-radius:28px;background:linear-gradient(135deg,#211027ee,#10101aee);box-shadow:0 22px 100px #0008}
+.rw-install-hero{display:grid;grid-template-columns:clamp(88px,14vw,144px) minmax(0,1fr);align-items:start;gap:clamp(1rem,4vw,3rem);padding:clamp(1.3rem,5vw,3rem);border:1px solid #827076;border-radius:28px;background:linear-gradient(135deg,#29242bee,#101419ee);box-shadow:0 22px 100px #0008}
 .rw-install-hero img{width:100%;height:auto;filter:drop-shadow(0 0 16px #b25b686b)}
 .rw-eyebrow{color:var(--rw-green);font-size:.75rem;font-weight:800;letter-spacing:.2em}
 .rw-install h1{font-size:clamp(2.6rem,8vw,6rem);line-height:1;margin:.6rem 0 1rem;letter-spacing:-.07em}
@@ -10,19 +10,19 @@
 .rw-lead{font-size:clamp(1rem,2.3vw,1.3rem);line-height:1.6;max-width:60ch}
 .rw-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.4rem 0}
 .rw-button,.rw-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.8rem 1.2rem;border-radius:13px;text-decoration:none;font-weight:850;cursor:pointer}
-.rw-button{border:0;background:var(--rw-pink);color:#180818}
-.rw-secondary{border:2px solid var(--rw-green);color:var(--rw-green);background:#12121c}
+.rw-button{border:0;background:var(--rw-pink);color:#17171c}
+.rw-secondary{border:2px solid var(--rw-green);color:var(--rw-green);background:#17171c}
 .rw-button:focus-visible,.rw-secondary:focus-visible{outline:3px solid white;outline-offset:3px}
-#rw-install-status{min-height:1.7em;font-size:.93rem;color:#d2bed7}
+#rw-install-status{min-height:1.7em;font-size:.93rem;color:#b9afa8}
 .rw-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.1rem 0}
-.rw-features article,.rw-install-help{border:1px solid var(--rw-line);background:#14101ecf;border-radius:16px;padding:1.35rem}
+.rw-features article,.rw-install-help{border:1px solid var(--rw-line);background:#201d24cf;border-radius:16px;padding:1.35rem}
 .rw-features strong{color:var(--rw-green);font-size:.9rem;letter-spacing:.06em}
 .rw-features p,.rw-install-help p{line-height:1.6}
 .rw-install-help{margin-top:1rem}
-.rw-install-help a{color:#ff92eb}
-.rw-note{color:#c5b5cb}
+.rw-install-help a{color:#c7a77c}
+.rw-note{color:#b9afa8}
 html.ruinwire-mode,html.ruinwire-mode body{height:100%;overflow:hidden}
-html.ruinwire-mode body{background:#090911}
+html.ruinwire-mode body{background:#0d1013}
 html.ruinwire-mode .kf-header,html.ruinwire-mode footer.site-footer{display:none!important}
 html.ruinwire-mode .messages-shell{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;height:100dvh!important;min-height:0!important;display:flex!important;flex-direction:column}
 html.ruinwire-mode .messages-hero{padding:.6rem 1rem!important;margin:0!important;border-radius:0!important;flex:0 0 auto}
@@ -30,7 +30,7 @@ html.ruinwire-mode .messages-hero h1{font-size:clamp(1.25rem,4vw,1.8rem)!importa
 html.ruinwire-mode .messages-hero .eyebrow{display:none}
 html.ruinwire-mode .messages-hero p{display:none}
 html.ruinwire-mode .message-layout{min-height:0!important;flex:1 1 auto!important;height:auto!important;max-height:none!important}
-.rw-appbar{display:flex;align-items:center;gap:.65rem;background:#120b1c;padding:env(safe-area-inset-top,0px) 12px 0;border-bottom:1px solid #4b2454;min-height:54px;flex:0 0 auto}
+.rw-appbar{display:flex;align-items:center;gap:.65rem;background:#201d24;padding:env(safe-area-inset-top,0px) 12px 0;border-bottom:1px solid #82617c;min-height:54px;flex:0 0 auto}
 .rw-appbar img{width:33px;height:33px}.rw-appbar strong{font-size:1.1rem;letter-spacing:.04em}
 .rw-appbar strong span{color:var(--rw-pink)}
 .rw-appbar a{color:var(--rw-green);font-size:.8rem;text-decoration:none;font-weight:750}
