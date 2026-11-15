@@ -53,3 +53,19 @@
 .kf-device-qa-metadata input::placeholder{color:#9d91a6;opacity:1}
 .kf-qa-explain{font-size:.82rem}
 @media(max-width:680px){.kf-device-qa-metadata{grid-template-columns:1fr}}
+
+/* Platform-specific fallback: when an embedded browser refuses beforeinstallprompt,
+   the install action must show visible, accessible steps instead of appearing inert. */
+.kf-install-guide[hidden]{display:none!important}
+.kf-install-guide{margin-top:.8rem;padding:1rem 1.1rem;border:1px solid #bb8fe0;border-radius:13px;background:#150f22;color:#f5eaf6;box-shadow:0 8px 20px #0007}
+.kf-install-guide h2{margin:.1rem 0 .55rem;color:#fff3dd;font-size:1.07rem;line-height:1.35}
+.kf-install-guide h2:focus{outline:none}
+.kf-install-guide h2:focus-visible{outline:3px solid #bdfb75;outline-offset:3px}
+.kf-install-guide p{margin:.4rem 0 .65rem;color:#e3d3e5;font-size:.9rem;line-height:1.55}
+.kf-install-guide ol{margin:.65rem 0;padding-left:1.4rem;display:grid;gap:.55rem}
+.kf-install-guide li{padding-left:.15rem;color:#f0e9f2;font-size:.9rem;line-height:1.5}
+.kf-install-guide li::marker{color:#bdfb75;font-weight:800}
+.kf-install-guide-actions{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center}
+#kf-install-copy-status{font-size:.8rem;color:#c6ff84;overflow-wrap:anywhere}
+.kf-install-actions>*{max-width:100%}
+@media(max-width:560px){.kf-install-guide{padding:.8rem}.kf-install-actions .kf-install-primary,.kf-install-actions .kf-install-secondary{flex:1 1 auto}}
