@@ -1008,8 +1008,11 @@ export default { async queue(batch, env) {
     (url.pathname==="/api/admin/social-review"&&url.searchParams.get("kind")==="messages")
   );
   const oldChaosMutation=request.method==="PATCH"&&url.pathname.startsWith("/api/admin/chaos/conversations/");
-  if(oldPrivateRead||oldChaosMutation)
-    return json({error:"Private archives now require a documented, password-verified Eye of Horus review."},410,origin,{"cache-control":"private, no-store"});
+  if(oldPrivateRead||oldChaosMutation){
+    const viewer=await requireUser(request,env);
+    if(viewer?.role!=="god")return json({error:"God role required for unrestricted private archives."},403,origin,{"cache-control":"private, no-store"});
+    return json({error:"Use the documented, password-verified Eye of Horus console."},410,origin,{"cache-control":"private, no-store"});
+  }
 
   // Public privacy assistance is available even if login is unavailable or forums are under maintenance.
   if(url.pathname==="/api/privacy/deletion-assistance"||url.pathname==="/api/admin/privacy-assistance"||/^\/api\/admin\/privacy-assistance\/[0-9a-f]{32}$/.test(url.pathname)){
