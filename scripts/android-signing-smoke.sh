@@ -30,13 +30,13 @@ store_sha="$(keytool -exportcert -keystore "$key" -alias "$KNIGHTFALL_ANDROID_KE
 }
 fingerprint="$(printf %s "$apk_sha" | sed 's/../&:/g;s/:$//' | tr '[:lower:]' '[:upper:]')"
 node scripts/android-release-assets.mjs --apk "$apk" \
-  --version "0.1.0" --fingerprint "$fingerprint" --out "$scratch/generated"
+  --version "0.1.0" --version-code 2 --fingerprint "$fingerprint" --out "$scratch/generated"
 node -e '
 const fs=require("node:fs");
 const x=JSON.parse(fs.readFileSync(process.argv[1]));
 const y=JSON.parse(fs.readFileSync(process.argv[2]));
 if(x.length!==1||x[0].target.package_name!=="com.ashfall.knightfall")process.exit(1);
-if(y.status!=="not_released"||y.signedReleaseVerified!==false||y.apkUrl!==null)process.exit(1);
+if(y.status!=="not_released"||y.versionCode!==2||y.signedReleaseVerified!==false||y.apkUrl!==null)process.exit(1);
 ' "$scratch/generated/assetlinks.json" "$scratch/generated/android-release-candidate.json"
 echo 'Disposable release signing, APK cryptographic verification, and assetlinks generation passed.' >> "$GITHUB_STEP_SUMMARY"
 echo 'No permanent signing certificate was generated, stored, or uploaded by this test.' >> "$GITHUB_STEP_SUMMARY"

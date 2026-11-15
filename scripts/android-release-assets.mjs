@@ -3,7 +3,7 @@
  * Asset Links metadata. Never infer a fingerprint from the APK file's SHA-256.
  *
  * CI usage:
- * node scripts/android-release-assets.mjs --fingerprint "XX:..." --apk /path/to/app.apk --version 0.2.0 --out /tmp/knightfall-release
+ * node scripts/android-release-assets.mjs --fingerprint "XX:..." --apk /path/to/app.apk --version 0.2.0 --version-code 2 --out /tmp/knightfall-release
  */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -22,28 +22,29 @@ export function makeAssetLinks(packageName,fingerprint){
    target:{namespace:'android_app',package_name:packageName,
      sha256_cert_fingerprints:[validateCertFingerprint(fingerprint)]}}];
 }
-export function makeCandidateMetadata({versionName,apkSha256,certificateFingerprint}){
+export function makeCandidateMetadata({versionName,versionCode,apkSha256,certificateFingerprint}){
  if(!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.]+)?$/i.test(String(versionName)))throw new TypeError('Invalid release version.');
+ if(!Number.isSafeInteger(Number(versionCode))||Number(versionCode)<1)throw new TypeError('Expected a positive Android versionCode.');
  if(!/^[a-f0-9]{64}$/i.test(String(apkSha256)))throw new TypeError('Expected APK file SHA-256 digest.');
  const fingerprint=validateCertFingerprint(certificateFingerprint);
  return {schemaVersion:1,platform:'android',status:'not_released',
-   applicationId:PKG,versionName,apkUrl:null,apkSha256:apkSha256.toLowerCase(),
+   applicationId:PKG,versionName,versionCode:Number(versionCode),apkUrl:null,apkSha256:apkSha256.toLowerCase(),
    signedReleaseVerified:false,signingCertificateSha256:fingerprint,
    notes:'Signed release candidate only. Publish Digital Asset Links, verify on Android hardware, then explicitly release the APK before enabling the public link.'};
 }
 async function main(){
  const args=new Map();
  for(let i=2;i<process.argv.length;i+=2){
-   if(!/^--(?:fingerprint|apk|version|out)$/.test(process.argv[i])||!process.argv[i+1])throw Error('Unrecognized or missing CLI option.');
+   if(!/^--(?:fingerprint|apk|version|version-code|out)$/.test(process.argv[i])||!process.argv[i+1])throw Error('Unrecognized or missing CLI option.');
    args.set(process.argv[i].slice(2),process.argv[i+1]);
  }
- if(args.size!==4)throw Error('Expected --fingerprint, --apk, --version and --out.');
+ if(args.size!==5)throw Error('Expected --fingerprint, --apk, --version, --version-code and --out.');
  const apk=readFileSync(resolve(args.get('apk')));
  if(apk.length<10000)throw Error('APK is missing or unexpectedly small.');
  const apkSha256=createHash('sha256').update(apk).digest('hex');
  const out=resolve(args.get('out'));mkdirSync(out,{recursive:true});
  const fingerprint=validateCertFingerprint(args.get('fingerprint'));
- const metadata=makeCandidateMetadata({versionName:args.get('version'),apkSha256,certificateFingerprint:fingerprint});
+ const metadata=makeCandidateMetadata({versionName:args.get('version'),versionCode:args.get('version-code'),apkSha256,certificateFingerprint:fingerprint});
  writeFileSync(join(out,'assetlinks.json'),JSON.stringify(makeAssetLinks(PKG,fingerprint),null,2)+'\n');
  writeFileSync(join(out,'android-release-candidate.json'),JSON.stringify(metadata,null,2)+'\n');
  writeFileSync(join(out,'app-release.apk.sha256'),apkSha256+'  app-release.apk\n');

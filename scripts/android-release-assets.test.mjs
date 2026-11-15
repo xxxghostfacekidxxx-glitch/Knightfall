@@ -24,12 +24,14 @@ test('Digital Asset Links derive from the real certificate and exact Android pac
  assert.throws(()=>makeAssetLinks('com.other-package',FINGERPRINT));
 });
 test('candidate metadata is fail-closed, never a public download', () => {
- const meta=makeCandidateMetadata({versionName:'0.2.0',apkSha256:DIGEST,certificateFingerprint:FINGERPRINT});
+ const meta=makeCandidateMetadata({versionName:'0.2.0',versionCode:2,apkSha256:DIGEST,certificateFingerprint:FINGERPRINT});
  assert.equal(meta.status,'not_released');
  assert.equal(meta.signedReleaseVerified,false);
  assert.equal(meta.apkUrl,null);
  assert.equal(meta.applicationId,'com.ashfall.knightfall');
- assert.throws(()=>makeCandidateMetadata({versionName:'0.2.0',apkSha256:'bad',certificateFingerprint:FINGERPRINT}));
+ assert.equal(meta.versionCode,2);
+ assert.throws(()=>makeCandidateMetadata({versionName:'0.2.0',versionCode:0,apkSha256:DIGEST,certificateFingerprint:FINGERPRINT}));
+ assert.throws(()=>makeCandidateMetadata({versionName:'0.2.0',versionCode:2,apkSha256:'bad',certificateFingerprint:FINGERPRINT}));
 });
 test('Android build and emulator smoke are configured without releasing a debug APK',()=>{
  const b=readFileSync(new URL('../android/app/build.gradle',import.meta.url),'utf8');
@@ -71,6 +73,7 @@ test('public Android release promotes only exact successful signed candidate tes
  assert.match(workflow,/gh run download "\$CANDIDATE_RUN_ID"/);
  assert.match(workflow,/sha256sum --check --status/);
  assert.match(workflow,/String\(info\.apkSha256\)\.toLowerCase\(\)/);
+ assert.match(workflow,/info\.versionCode!==Number\(process\.env\.VERSION_CODE\)/);
  assert.match(workflow,/STORE_CERT_SHA/);
  assert.match(workflow,/ACTUAL_SHA.*TESTED_APK_SHA256/);
  assert.match(workflow,/cmp -s "\$RUNNER_TEMP\/live-assetlinks\.json"/);
