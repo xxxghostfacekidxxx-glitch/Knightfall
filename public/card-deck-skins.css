@@ -321,3 +321,17 @@ html[data-kf-deck-skin] .cac-shell .answer-card{
 }
 @media(prefers-reduced-motion:reduce){.kf-deck-item,.kf-deck-preview .kf-card-mini-back,
  .kf-deck-preview .kf-card-mini-face{transition:none!important}}
+
+/* Each preview shows its OWN card face, not the currently equipped finish. */
+.kf-deck-preview--ash-classic{--kf-deck-face:linear-gradient(145deg,#fff,#e9e3f2);--kf-deck-ink:#201628;--kf-deck-stroke:#e6d6ed}
+.kf-deck-preview--neon-riot{--kf-deck-face:radial-gradient(circle at 95% 0,#c3ff72 0 15%,transparent 52%),linear-gradient(145deg,#ffb7ec,#ffeefb 48%,#c2f8f7);--kf-deck-ink:#300a38;--kf-deck-stroke:#ff50d6}
+.kf-deck-preview--bone-white{--kf-deck-face:linear-gradient(145deg,#fcf8ea,#e8dfce);--kf-deck-ink:#231e1b;--kf-deck-stroke:#9f9686}
+.kf-deck-preview--grave-velvet{--kf-deck-face:linear-gradient(145deg,#d8c8e6,#f5e8f3 60%,#b49aca);--kf-deck-ink:#2a163e;--kf-deck-stroke:#9676ad}
+.kf-deck-preview--glitch-circuit{--kf-deck-face:repeating-linear-gradient(0deg,#e6ffff 0 7px,#d9e3f0 7px 9px,#f5e9ff 9px 17px);--kf-deck-ink:#07283b;--kf-deck-stroke:#34d6ee}
+.kf-deck-preview--ghost-orchid{--kf-deck-face:radial-gradient(circle at 90% 10%,#c7f5e1 0 17%,transparent 60%),linear-gradient(145deg,#d8dcff,#f5f3ff);--kf-deck-ink:#233048;--kf-deck-stroke:#c3b5f9}
+.kf-deck-preview--infernal-foil{--kf-deck-face:linear-gradient(110deg,#ffe4a4,#fff5dd 45%,#efaf62);--kf-deck-ink:#44210d;--kf-deck-stroke:#d98c33}
+.kf-deck-preview--void-royalty{--kf-deck-face:linear-gradient(145deg,#d3b6fa,#f9eaff 60%,#a899d0);--kf-deck-ink:#200a4e;--kf-deck-stroke:#5e26b1}
+.kf-deck-preview--crimson-rite{--kf-deck-face:linear-gradient(145deg,#f7ded7,#f7e8e5 48%,#d7a7b0);--kf-deck-ink:#4c1222;--kf-deck-stroke:#aa384c}
+.kf-deck-preview--holo-wraith{--kf-deck-face:linear-gradient(120deg,#cdfbfe 0%,#fff4fb 28%,#d8cbff 53%,#e7ffe3 75%,#bfe9ff 100%);--kf-deck-ink:#15234a;--kf-deck-stroke:#74baf0}
+.kf-deck-preview--toxic-pop{--kf-deck-face:linear-gradient(130deg,#ecffa5,#f6ffe5 60%,#a4f668);--kf-deck-ink:#143719;--kf-deck-stroke:#74bb11}
+.kf-deck-preview--eclipse-noir{--kf-deck-face:linear-gradient(145deg,#bac0d4,#f5f2f2 51%,#a2a2b3);--kf-deck-ink:#11131e;--kf-deck-stroke:#3b4056}
