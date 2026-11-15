@@ -34,4 +34,19 @@
    button.disabled=true;button.textContent="Installed";
    announce("Knightfall has been installed on this device.");
  });
+  // Only activate an APK download for a signed release on the official GitHub repository.
+  const apk=document.getElementById("kf-apk-download");
+  const releaseStatus=document.getElementById("kf-apk-release-status");
+  if(apk&&releaseStatus){
+    fetch("/android-release.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(data=>{
+      if(!data||data.status!=="released"||data.signedReleaseVerified!==true)return;
+      if(data.applicationId!=="com.ashfall.knightfall"||typeof data.apkSha256!=="string"||!/^[a-f0-9]{64}$/i.test(data.apkSha256))return;
+      const url=new URL(String(data.apkUrl||""),location.origin);
+      if(url.protocol!=="https:"||url.hostname!=="github.com"||
+         !url.pathname.startsWith("/xxxghostfacekidxxx-glitch/Knightfall/releases/download/")||
+         !url.pathname.toLowerCase().endsWith(".apk"))return;
+      apk.href=url.href;apk.hidden=false;
+      releaseStatus.textContent="Signed APK "+String(data.versionName||"")+" available. Check SHA-256: "+data.apkSha256;
+    }).catch(()=>{/* No verified APK is a legitimate release state. */});
+  }
 })();
