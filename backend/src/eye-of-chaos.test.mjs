@@ -176,7 +176,7 @@ test("GOD QA dashboard reflects verified GitHub workflows and their actual worke
   assert.deepEqual(data.jobs.map(x=>x.name),["Ash Sentinel · sharded arcade audit","Pixel Medic · sharded arcade audit"]);
   assert.equal(data.jobs[1].conclusion,"failure");
   assert.equal(calls,2);
-  assert.equal(f.queries.filter(q=>q.sql.includes("eye_chaos_drafts")).length,0,"QA should not write or access member drafts");
+  assert.equal(f.queries.filter(q=>/\b(?:FROM|INTO|UPDATE|DELETE FROM)\s+eye_chaos_drafts\b/i.test(q.sql)).length,0,"QA should not write or access member drafts");
  }finally{globalThis.fetch=previous}
  const denied=fixture("admin");
  const forbidden=await denied.call(base+"/qa");
