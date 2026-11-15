@@ -56,7 +56,7 @@ test("canonical home retains one support footer and retired directories point to
  assert.match(home,/class="site-footer"/);
  assert.match(home,/href="\/support\.html"/);
  assert.match(home,/href="\/user-agreement\.html"/);
- assert.match(nav,/document\.querySelector\("\.site-footer"\)/);
+ assert.match(nav,/document\.querySelector\("footer\.site-footer"\)/);
  assert.match(home,/id="ecosystem"/);
  assert.match(vault,/\/chaos-cartridge\.html/);
  for(const legacy of ["#vault-mines","#vault-breakout","#vault-snake"])
