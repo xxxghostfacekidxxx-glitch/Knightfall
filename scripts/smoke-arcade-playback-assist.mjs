@@ -110,6 +110,35 @@ try {
       try{await page.screenshot({path:'priority-arcade-evidence/assist-'+id+'.png',timeout:10000})}catch{}
     }finally{await context.close();}
   }
+  // Games that previously had no fullscreen controls at all.
+  const extra=[
+    ['monster-mmo','/monster-mmo.html','main'],
+    ['mutation-merge','/arcade/hosted/mutation-merge/index.html','main'],
+    ['fable-gta','/arcade/hosted/fable-gta/index.html','body'],
+    ['sanctuary-original','/arcade/hosted/sanctuary-original/sanctuary.html','body'],
+    ['sanctuary-end','/arcade/hosted/sanctuary-end/sanctuary.html','body']
+  ];
+  for(const [id,route,target] of extra){
+    const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+    const page=await context.newPage();
+    try{
+      const response=await page.goto(origin+route,{waitUntil:'domcontentloaded',timeout:25000});
+      if(!response?.ok())throw Error('HTTP '+response?.status());
+      const button=page.locator('#kf-arcade-view-toggle');
+      await button.waitFor({state:'visible',timeout:15000});
+      if(await page.locator('script[src*="arcade-playback-assist.js"]').getAttribute('data-target')!==target)throw Error('Game root mismatch');
+      await button.click({timeout:10000});
+      await page.waitForFunction(()=>document.querySelector('#kf-arcade-view-toggle')?.getAttribute('aria-pressed')==='true',{timeout:8000});
+      await button.click({timeout:10000});
+      await page.waitForFunction(()=>document.querySelector('#kf-arcade-view-toggle')?.getAttribute('aria-pressed')==='false',{timeout:8000});
+      console.log('PASS '+id+' | fullscreen/theater enters and exits');
+    }catch(err){
+      failures.push(id+': '+err.message);
+      console.error('FAIL '+id+': '+err.message);
+      await writeFile('priority-arcade-evidence/assist-'+id+'.txt',err.stack||String(err));
+      try{await page.screenshot({path:'priority-arcade-evidence/assist-'+id+'.png',timeout:10000})}catch{}
+    }finally{await context.close();}
+  }
 } finally {
   if(browser)await browser.close();
   if(server)server.kill();
