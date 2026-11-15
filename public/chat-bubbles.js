@@ -4,7 +4,7 @@
   const script=document.currentScript;
   const userId=Number(script?.dataset?.userId);
   if(!Number.isSafeInteger(userId)||userId<1||document.getElementById("kf-chat-heads"))return;
-  if(location.pathname==="/messages.html")return; // The full inbox already owns this route.
+  if(["/messages","/messages.html"].includes(location.pathname))return; // The full inbox already owns this route.
   const API="https://api.ash-fall.com";
   const storeKey="kf-chat-heads-"+userId;
   const draftKey="kf-chat-drafts-"+userId;
