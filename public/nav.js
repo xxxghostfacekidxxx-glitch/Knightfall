@@ -7,9 +7,9 @@
   // were parsed, allowing old neon/page CSS to override the approved theme.
   const mountApprovedTheme = () => {
     const styles = [
-      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic6"],
-      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic6"],
-      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic6"]
+      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic9"],
+      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
+      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -30,7 +30,7 @@
     mountApprovedTheme();
   }
   // Chaos Cartridge CRT / signal-corruption skin, only on arcade routes.
-  if (location.pathname.startsWith("/arcade") || location.pathname.startsWith("/chaos-cartridge")) {
+  if (location.pathname.startsWith("/arcade/hosted/")) {
     if (document.body) document.body.classList.add("chaos-glitch-arcade");
     else document.addEventListener("DOMContentLoaded", () => document.body.classList.add("chaos-glitch-arcade"), {once:true});
     if (!document.querySelector('link[data-chaos-glitch]')) {
@@ -98,7 +98,7 @@
   }
   let themeColor = document.querySelector('meta[name="theme-color"]');
   if (!themeColor) { themeColor = document.createElement("meta"); themeColor.name = "theme-color"; document.head.append(themeColor); }
-  themeColor.content = "#111217";
+  themeColor.content = "#0d1013";
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {}), { once: true });
   }

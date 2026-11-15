@@ -332,7 +332,7 @@
   background:radial-gradient(ellipse at 4% 0%,rgba(255,85,216,.095),transparent 48%),linear-gradient(148deg,#151022,#090a14 72%);
   box-shadow:0 22px 70px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.04);
 }
-#profile{--gw-panel-accent:var(--profile-accent,#ff55d8);color:var(--gw-profile-text)}
+#profile{--gw-panel-accent:var(--profile-accent,#b25b68);color:var(--gw-profile-text)}
 #profile :is(.profile-stats>div,.profile-favorites,.profile-birth-chart,.friends-panel,.profile-album-tools,.friend-request-form,.profile-photo-card,.activity-card,.profile-status-message,.profile-quote,.wallet-card){
   min-width:0;
   border:1px solid color-mix(in srgb,var(--gw-panel-accent) 24%,#333044);

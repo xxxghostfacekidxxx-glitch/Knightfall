@@ -313,3 +313,41 @@ body.kf-navigation-open #kf-chat-heads{visibility:hidden!important;pointer-event
  html body>.kf-header .kf-install-pill{min-width:0;padding:5px 6px;font-size:11px}
  html body>.kf-header .kf-nav-toggle{padding:.45rem .6rem!important;min-width:44px}
 }
+
+
+/* Gothic Creator default profile surfaces; never override member-selected
+   profiles or the deliberately separate Miss Chaos art/controls. */
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell{
+  --gw-profile-bg:#0d1013;--gw-profile-raised:#242128;
+  --gw-profile-line:rgba(199,167,124,.32);--gw-profile-text:#ece1d3;
+  --gw-profile-muted:#b9afa8
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #profile{
+  --gw-panel-accent:var(--profile-accent,#b25b68)
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
+ .profile-shell>.card,.profile-shell .card,.friends-page-card,.friends-panel,
+ .friend-discover,.wallet-card
+){
+ border-color:rgba(199,167,124,.32)!important;
+ background:radial-gradient(ellipse at 9% 0%,rgba(130,97,124,.12),transparent 56%),
+ linear-gradient(145deg,#242128,#17171c)!important;color:#ece1d3!important
+}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) #profile :where(
+ .profile-stats>div,.profile-favorites,.profile-birth-chart,.profile-album-tools,
+ .friend-request-form,.profile-photo-card,.activity-card,.profile-status-message,.profile-quote
+){border-color:rgba(199,167,124,.30)!important;background:linear-gradient(145deg,#242128,#17171c)!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
+ .friends-summary strong,.friend-count,.friend-person .friend-avatar,
+ .wallet-kicker,.wallet-balance small,.profile-shell .studio-jump a
+){color:var(--kf-antique-gold)!important}
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(
+ .friend-card,.profile-shell .studio-layout-presets button,.profile-shell .studio-layout-row
+){background-color:#201d24!important;border-color:rgba(199,167,124,.28)!important}
+@media(max-width:600px){
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell{width:calc(100% - 1.25rem)}
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell .card{padding:clamp(.85rem,3vw,1.15rem)}
+}
+@media(prefers-reduced-motion:reduce){
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .profile-shell :where(.card,.friend-card){transition:none!important}
+}
