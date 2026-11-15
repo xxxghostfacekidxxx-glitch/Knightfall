@@ -26,7 +26,7 @@ test("app provides offline shell and quick Miss Chaos launch",()=>{
 
 test("push click reuses the exact inbox, but never hijacks an unrelated game or page",()=>{
  assert.match(sw,/const chat=windows\.find\(client=>/);
- assert.match(sw,/url\.pathname==="\/messages\.html"/);
+ assert.ok(sw.includes('["/messages","/messages.html"].includes(url.pathname)'),"both Pages pretty route and HTML route are recognized as inboxes");
  assert.match(sw,/if\(chat\.url!==target&&typeof chat\.navigate==="function"\)/);
  assert.match(sw,/const exact=windows\.find\(client=>client\.url===target\)/);
  assert.match(sw,/self\.clients\.openWindow\(target\)/);

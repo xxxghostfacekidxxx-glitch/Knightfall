@@ -48,7 +48,7 @@ try {
         assert.equal(await developer.count(), role.developer ? 1 : 0,
           role.role + " " + role.title + " developer section access");
         const catalog = page.locator("#foundry-catalog");
-        assert.equal(await catalog.locator("[data-group]:visible").count(), 5);
+        assert.equal(await catalog.locator("[data-group]:visible").count(), 4, "four consolidated Foundry groups");
         assert.equal(await catalog.getByRole("heading", { name: "AI & Bot Creation", exact: true }).count(),1);
         assert.equal(await page.locator("#bot-forge iframe[src^=\"/personal-bots.html?foundry=1\"]").count(),1);
         assert.equal(await catalog.getByRole("heading", { name: "Pixelorama", exact: true }).count(), role.developer ? 1 : 0);

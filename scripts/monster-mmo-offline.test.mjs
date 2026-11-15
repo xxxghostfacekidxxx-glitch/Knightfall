@@ -31,6 +31,7 @@ test("admin can download a complete single-file offline creature game", async ()
   assert.ok(!html.includes('href="/monster-mmo.css"'));
   assert.match(html, /id="connect" type="button" hidden disabled/);
   assert.ok(!/<script[^>]+src=/.test(html), "No remote game scripts remain");
+  assert.ok(!html.includes("arcade-playback-assist.js"), "Online arcade helper must not be required offline");
   assert.ok(!/<link[^>]+rel="stylesheet"/.test(html), "All game styles are bundled");
   assert.ok(!html.includes('src="/monster-mmo-engine-bridge.js"'));
   const match = html.match(/<script>([\s\S]*?)<\/script>/);
