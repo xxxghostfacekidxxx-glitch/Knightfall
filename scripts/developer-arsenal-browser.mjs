@@ -49,14 +49,14 @@ try {
           role.role + " " + role.title + " developer section access");
         const catalog = page.locator("#foundry-catalog");
         assert.equal(await catalog.locator("[data-group]:visible").count(), 4, "four consolidated Foundry groups");
-        assert.equal(await catalog.getByRole("heading", { name: "AI & Bot Creation", exact: true }).count(),1);
+        assert.equal(await catalog.getByRole("heading", { name: "Creator Desk", exact: true }).count(),1);
         assert.equal(await page.locator("#bot-forge iframe[src^=\"/personal-bots.html?foundry=1\"]").count(),1);
         assert.equal(await catalog.getByRole("heading", { name: "Pixelorama", exact: true }).count(), role.developer ? 1 : 0);
         assert.equal(await page.locator("#release-simulator").count(), role.developer ? 1 : 0);
         assert.equal(await page.locator("#creator-handoff:visible").count(), role.developer ? 0 : 1);
 
         const search = catalog.getByRole("searchbox", { name: "Find a tool" });
-        await catalog.getByRole("button", { name: "Game Development" }).click();
+        await catalog.locator('[data-category="games"]').click();
         assert.equal(await catalog.locator("[data-group]:visible").count(), 1);
         await search.fill(role.developer ? "phaser" : "trenchbroom");
         const result = catalog.locator(".foundry-card:visible");
@@ -65,7 +65,7 @@ try {
         await search.fill("zz-no-such-tool");
         await catalog.getByText("No tools match.", { exact: false }).waitFor();
 
-        await catalog.getByRole("button", { name: "Art & Assets" }).click();
+        await catalog.locator('[data-category="art"]').click();
         await search.fill("sprite workshop");
         await catalog.getByRole("link", { name: "Open sprite workshop" }).click();
         await page.locator("#sprite-workshop").waitFor();
@@ -79,7 +79,7 @@ try {
         await page.getByRole("link", { name: "Back to catalog" }).click();
         await catalog.waitFor();
         assert.equal(await search.inputValue(), "sprite workshop");
-        assert.equal(await catalog.getByRole("button", { name: "Art & Assets" }).getAttribute("aria-pressed"), "true");
+        assert.equal(await catalog.locator('[data-category="art"]').getAttribute("aria-pressed"), "true");
 
         // Browser-native tools work for the authorized roles without third-party scripts or uploads.
         await search.fill("production lab");
