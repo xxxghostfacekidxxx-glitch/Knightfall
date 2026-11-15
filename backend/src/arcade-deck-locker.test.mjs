@@ -1,15 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {handleArcadeDeckLocker,canEquipDeckSkin,DECK_PREMIUM_SKINS,DECK_FREE_SKINS,DECK_ACTIVITY_GAMES} from "./arcade-deck-locker.js";
+import {CINDER_DECK_SKINS} from "./deck-cinder-products.js";
 
 class DB {
- constructor(){this.profiles=new Map();this.owned=new Map();this.events=new Set();}
+ constructor(){this.profiles=new Map();this.owned=new Map();this.cinders=new Map();this.vip=new Set();this.balances=new Map();this.events=new Set();}
  prepare(sql){
   const db=this;let args=[];
   return {
    bind(...xs){args=xs;return this;},
    async first(){
     if(sql.startsWith("SELECT equipped_skin"))return db.profiles.get(args[0])||null;
+    if(sql.includes("FROM member_premium_memberships"))return db.vip.has(args[0])?{active:1}:null;
+    if(sql.includes("FROM user_wallets"))return db.balances.has(args[0])?{balance:db.balances.get(args[0])}:null;
     if(sql.includes("SET equipped_skin=?")){
      const [skin,,id,revision]=args,p=db.profiles.get(id);
      if(!p||revision!==p.revision)return null;
@@ -28,10 +31,20 @@ class DB {
     throw Error("Unknown first query: "+sql);
    },
    async all(){
-    if(sql.startsWith("SELECT skin_id"))return {results:(db.owned.get(args[0])||[]).map(skin_id=>({skin_id}))};
+    if(sql.startsWith("SELECT skin_id"))return {results:(sql.includes("arcade_deck_cinder_purchases")?(db.cinders.get(args[0])||[]):(db.owned.get(args[0])||[])).map(skin_id=>({skin_id}))};
     throw Error("Unknown all query: "+sql);
    },
    async run(){
+    if(sql.startsWith("INSERT OR IGNORE INTO user_wallets")){if(!db.balances.has(args[0]))db.balances.set(args[0],args[1]);return {meta:{changes:1}}}
+    if(sql.startsWith("INSERT INTO arcade_deck_cinder_purchases")){
+     const [id,skin,cost]=args,p=CINDER_DECK_SKINS[skin];
+     if(!p||p.cost_cinders!==cost)throw Error("Invalid Cinders skin price");
+     if(p.kind==="vip"&&!db.vip.has(id))throw Error("VIP membership required");
+     if((db.cinders.get(id)||[]).includes(skin))throw Error("Already owned");
+     if((db.balances.get(id)||0)<cost)throw Error("Not enough Cinders");
+     db.balances.set(id,db.balances.get(id)-cost);db.cinders.set(id,[...(db.cinders.get(id)||[]),skin]);
+     return {meta:{changes:1}};
+    }
     if(sql.startsWith("INSERT OR IGNORE INTO arcade_deck_profiles")){
      if(db.profiles.has(args[0]))return {meta:{changes:0}};
      db.profiles.set(args[0],{equipped_skin:"ash-classic",earned_deals:0,local_imported:0,revision:0,last_deal_at:null});return {meta:{changes:1}};
@@ -50,7 +63,7 @@ async function api(db,{id=1,method="GET",body,authed=true,origin="https://ash-fa
  const url="https://api.ash-fall.com/api/arcade/deck-locker";
  const req=new Request(url,{method,headers:{"origin":origin,...(body?{"content-type":"application/json"}:{})},...(body?{body:JSON.stringify(body)}:{})});
  const res=await handleArcadeDeckLocker(req,{DB:db},new URL(url),{
-  getUser:async()=>authed?{id}:null,
+  getUser:async()=>authed?{id,username:"tester",role:"member"}:null,
   rateLimit:async()=>true,
   json:(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{"content-type":"application/json"}}),
   origin
@@ -113,6 +126,35 @@ test("deal events are idempotent and cool down, unknown games are rejected",asyn
  assert.equal(rapid.profile.earned_deals,1);
  assert.equal((await api(db,{method:"POST",body:{...body,game_key:"not-registered",event_id:"valid-event-name-123"}})).status,400);
 });
+test("Cinders tiers require wallet ownership; VIP purchase and equip require active membership",async()=>{
+ const db=new DB();
+ assert.equal(Object.keys(CINDER_DECK_SKINS).length,18);
+ assert.equal(Object.values(CINDER_DECK_SKINS).filter(p=>p.kind==="cinders").length,12);
+ assert.equal(Object.values(CINDER_DECK_SKINS).filter(p=>p.kind==="vip").length,6);
+ assert.equal(canEquipDeckSkin("ashen-baroque",0,[],[]),false);
+ assert.equal(canEquipDeckSkin("ashen-baroque",0,[],["ashen-baroque"]),true);
+ assert.equal(canEquipDeckSkin("infernal-covenant",0,[],["infernal-covenant"],false),false);
+ assert.equal(canEquipDeckSkin("infernal-covenant",0,[],["infernal-covenant"],true),true);
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"ashen-baroque",revision:0}})).status,403);
+ const first=await api(db,{method:"POST",body:{action:"buy_cinders",skin_id:"ashen-baroque",cost_cinders:1}});
+ assert.equal(first.status,201);
+ assert.equal(first.cinders_spent,300);
+ assert.equal(first.wallet_balance,1700);
+ assert.equal((await api(db,{method:"POST",body:{action:"buy_cinders",skin_id:"ashen-baroque"}})).status,409);
+ assert.equal(db.balances.get(1),1700,"repeat purchase cannot double-debit");
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"ashen-baroque",revision:0}})).status,200);
+ assert.equal((await api(db,{method:"POST",body:{action:"buy_cinders",skin_id:"infernal-covenant"}})).status,403);
+ db.vip.add(1);
+ const vip=await api(db,{method:"POST",body:{action:"buy_cinders",skin_id:"infernal-covenant"}});
+ assert.equal(vip.status,201);
+ assert.equal(vip.wallet_balance,500);
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"infernal-covenant",revision:1}})).status,200);
+ db.vip.delete(1);
+ assert.equal((await api(db)).profile.equipped_skin,"ash-classic","expired VIP membership hides equipped VIP skin");
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"infernal-covenant",revision:2}})).status,403);
+ assert.ok((db.cinders.get(1)||[]).includes("infernal-covenant"),"purchased VIP skin remains owned for later renewal");
+});
+
 test("cross-origin writes and invalid HTTP methods are rejected",async()=>{
  const db=new DB();
  assert.equal((await api(db,{method:"POST",origin:"https://hostile.example",body:{action:"import",legacy_deals:50}})).status,403);
