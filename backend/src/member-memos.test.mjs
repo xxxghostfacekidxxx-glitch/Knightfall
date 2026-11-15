@@ -52,7 +52,7 @@ test('creation enforces title/text limits, quota and owner insert',async()=>{
  assert.equal((await invoke('/api/memos','POST',{title:'over',body:'quota'},quota)).status,409);
 });
 test('updating and deleting a memo never bypass owner filters',async()=>{
- const calls=[],database=env((sql)=>sql.startsWith('UPDATE')?{id:8,title:'Edited',body:'hi'}:{meta:{changes:1}},calls);
+ const calls=[],database=env((sql)=>sql.includes('SET deleted_at=')?{meta:{changes:1}}:sql.startsWith('UPDATE')?{id:8,title:'Edited',body:'hi'}:{meta:{changes:1}},calls);
  const edited=await invoke('/api/memos/8','PATCH',{title:'Edited',body:'hi'},database);
  assert.equal(edited.data.memo.id,8);
  const removed=await invoke('/api/memos/8','DELETE',null,database);
