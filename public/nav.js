@@ -59,15 +59,23 @@
   }
   // Shared donation footer. Payment destination is configured on the support page.
   const mountSupportFooter = () => {
-    // The canonical home page already has its own footer with support and legal links.
-    // Avoid stacking two separate footers and repeating the same navigation.
-    if (document.getElementById("ashfall-support-footer") || document.querySelector(".site-footer")) return;
-    const footer = document.createElement("footer");
-    footer.id = "ashfall-support-footer";
-    footer.setAttribute("aria-label", "Support Ash-Fall");
-    footer.innerHTML = '<a href="/support.html">Support Ash-Fall</a> <a href="/user-agreement.html">Terms &amp; Policies</a>';
-    const css = document.createElement("style");
-    css.textContent = '#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ff55d8;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#c6ff45;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #c6ff45;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
+    // One dedication link per footer, including home pages with custom footer markup.
+    const existing=document.getElementById("ashfall-support-footer")||document.querySelector("footer.site-footer");
+    if(existing){
+      const links=existing.querySelector(".footer-links")||existing;
+      if(!links.querySelector('a[href="/remembering-josh.html"]')){
+        const dedication=document.createElement("a");dedication.href="/remembering-josh.html";
+        dedication.className="kf-dedication-link";dedication.textContent="Dedication · Josh “Crush” Van Patten";
+        links.append(dedication);
+      }
+      return;
+    }
+    const footer=document.createElement("footer");
+    footer.id="ashfall-support-footer";
+    footer.setAttribute("aria-label","Knightfall support and dedication");
+    footer.innerHTML='<a href="/support.html">Support Knightfall</a> <a href="/user-agreement.html">Terms &amp; Policies</a> <a class="kf-dedication-link" href="/remembering-josh.html">Dedication · Josh “Crush” Van Patten</a>';
+    const css=document.createElement("style");
+    css.textContent='#ashfall-support-footer{box-sizing:border-box;width:100%;margin-top:3rem;padding:1.3rem 1rem;text-align:center;background:#110f12;border-top:1px solid #ff55d8;color:#cfc4bb;font:500 14px/1.7 system-ui,sans-serif}#ashfall-support-footer a{display:inline-block;margin-left:.6rem;color:#c6ff45;font-weight:800;text-decoration:underline;text-underline-offset:3px}#ashfall-support-footer a:focus-visible{outline:2px solid #c6ff45;outline-offset:4px}@media(max-width:520px){#ashfall-support-footer a{display:block;margin:.4rem auto 0}}';
     document.head.append(css);
     document.body.append(footer);
   };
@@ -211,6 +219,12 @@
     recoveryStyle.textContent = `html body .kf-header{z-index:1000!important;isolation:isolate}html body .kf-header .kf-nav-toggle{position:relative;z-index:1002;visibility:visible;opacity:1;pointer-events:auto}html body .kf-header .kf-nav{z-index:1001}html body .kf-header .kf-nav.open{visibility:visible!important;opacity:1!important;pointer-events:auto!important}@media(max-width:1080px){html body .kf-header{display:flex!important;align-items:center;justify-content:space-between;min-height:60px}html body .kf-header .kf-nav-toggle{display:inline-flex!important;align-items:center!important;min-height:44px!important}html body .kf-header .kf-nav:not(.open){display:none!important}html body .kf-header .kf-nav.open{display:grid!important;position:absolute!important;top:100%!important;left:.5rem!important;right:.5rem!important;max-height:calc(100dvh - 80px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:#100c1c!important;border:1px solid #ff55d8!important;box-shadow:0 12px 36px #000c!important;padding:.7rem!important}html body .kf-header .kf-nav.open a,html body .kf-header .kf-nav.open summary{min-height:44px}html body .kf-header .kf-nav-group[open] .kf-nav-menu{position:static!important;max-height:none!important}}`;
     document.head.append(recoveryStyle);
   }
+  // A global install shortcut and staff notices are part of one canonical header.
+  if(!document.getElementById("kf-shared-header-ext-css")){
+    const style=document.createElement("style");style.id="kf-shared-header-ext-css";
+    style.textContent='.kf-header:has(>.kf-shared-announcement),.kf-header:has(>.kf-shared-maintenance){flex-wrap:wrap!important}.kf-header .kf-shared-announcement,.kf-header .kf-shared-maintenance{position:relative!important;order:99;flex:1 0 100%!important;display:flex;justify-content:center;gap:.5rem;align-items:center;min-height:35px;box-sizing:border-box;margin:0!important;padding:6px 12px!important;border:1px solid #7e556d;border-radius:8px;background:#251927;color:#f9e8ef;font:700 12px/1.4 system-ui,sans-serif;text-align:center}.kf-header .kf-shared-announcement strong{color:#ffe29f}.kf-header .kf-install-pill,.kf-header .kf-admin-quick-link{display:inline-flex;align-items:center;justify-content:center;flex:none;gap:4px;min-height:38px;padding:5px 9px;border:1px solid #b18a89;border-radius:9px;background:linear-gradient(115deg,#392638,#171c2a);color:#fceccc!important;text-decoration:none!important;font:800 12px/1.2 system-ui,sans-serif;white-space:nowrap}.kf-header .kf-admin-quick-link{border-color:#ca7bc3;color:#f5e3f4!important}.kf-header :is(.kf-install-pill,.kf-admin-quick-link):focus-visible{outline:2px solid #ffe36b;outline-offset:2px}.kf-header :is(.kf-install-pill,.kf-admin-quick-link)[hidden]{display:none!important}@media(max-width:490px){.kf-header .kf-install-pill{min-width:40px;padding:5px 7px}.kf-header .kf-install-pill span{display:none}.kf-header .kf-admin-quick-link{padding:5px 7px;font-size:11px}}';
+    document.head.append(style);
+  }
   // Shared keyboard shortcut to bypass the site-wide navigation.
   const mainContent=document.querySelector("main");
   if(mainContent && !document.querySelector(".kf-skip-link")){
@@ -239,6 +253,7 @@
   }
   header.innerHTML = `
     <a class="kf-brand" href="/" aria-label="Knightfall home"><span>KNIGHT</span><b>FALL</b></a>
+    <a href="/install.html" class="kf-install-pill" aria-label="Install Knightfall on your device">⬇ <span>Install</span></a>
     <button class="kf-nav-toggle" type="button" aria-expanded="false" aria-controls="kf-primary-nav" aria-label="Open navigation">☰ <span>Menu</span></button>
     <nav id="kf-primary-nav" class="kf-nav" aria-label="Primary navigation">
       <details class="kf-nav-group">
@@ -270,6 +285,7 @@
       </details>
       <a class="kf-nav-primary kf-sign-in-link" href="/auth.html">Sign In</a>
     </nav>
+    <a class="kf-admin-quick-link" href="/admin.html" hidden aria-label="Administrator dashboard">Admin</a>
     <a class="kf-lunar-strip" href="/moonology.html">
       <span class="kf-lunar-disks" aria-hidden="true"></span>
       <span class="kf-lunar-label">Moonology</span>
@@ -389,19 +405,22 @@
       if (siteSettings.feature_miss_chaos === "false") document.querySelector("[data-miss-chaos-directory]")?.setAttribute("hidden", "");
       if (siteSettings.announcements_enabled === "true" && (siteSettings.announcement_title || siteSettings.announcement_body)) {
         const banner = document.createElement("aside");
-        banner.className = "kf-announcement";
+        banner.id="kf-shared-announcement";
+        banner.className = "kf-announcement kf-shared-announcement";
         const heading = document.createElement("strong");
         heading.textContent = siteSettings.announcement_title || "Knightfall";
         const message = document.createElement("span");
         message.textContent = siteSettings.announcement_body || "";
         banner.append(heading, message);
-        document.body.prepend(banner);
+        header.append(banner);
       }
       if (siteSettings.maintenance_mode === "true") {
         const banner = document.createElement("aside");
         banner.className = "kf-maintenance";
         banner.textContent = "Knightfall is in maintenance mode. Administrator access remains available.";
-        document.body.prepend(banner);
+        banner.id="kf-shared-maintenance";
+        banner.classList.add("kf-shared-maintenance");
+        header.append(banner);
       }
     }).catch(() => {});
 
@@ -421,6 +440,7 @@
       nav.querySelector(".kf-admin-foundry-link").hidden = !admin && !creator;
       nav.querySelector(".kf-staff-group").hidden = !staff;
       nav.querySelector(".kf-admin-link").hidden = !admin;
+      header.querySelector(".kf-admin-quick-link").hidden=!admin;
       nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
       setInterval(refreshNotifications, 45000);
