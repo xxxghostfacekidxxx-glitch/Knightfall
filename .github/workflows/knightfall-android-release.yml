@@ -223,7 +223,7 @@ jobs:
           name: knightfall-signed-release-candidate
           path: ${{ runner.temp }}/knightfall-candidate/
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
       - name: Stage matching Digital Asset Links on the existing main branch
         if: inputs.stage_asset_links
         shell: bash
