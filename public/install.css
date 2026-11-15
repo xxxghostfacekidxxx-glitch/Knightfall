@@ -1,0 +1,23 @@
+*{box-sizing:border-box}.kf-install-page{background:radial-gradient(ellipse at 16% 5%,#3a243a88,transparent 45%),radial-gradient(ellipse at 95% 75%,#3d403333,transparent 42%),#0b0b12;color:#f8eef5;font-family:system-ui,-apple-system,sans-serif}
+.kf-install-main{width:min(1120px,calc(100% - 24px));margin:0 auto;padding:clamp(20px,4vw,45px) 0 60px}
+.kf-install-hero{display:grid;grid-template-columns:clamp(125px,23vw,225px) minmax(0,1fr);gap:clamp(16px,4vw,42px);align-items:center;padding:clamp(20px,4vw,44px);border:1px solid #8d667b;border-radius:22px;background:linear-gradient(130deg,#261b2b,#121825 80%);box-shadow:0 18px 55px #0007}
+.kf-install-icon{display:grid;place-items:center;aspect-ratio:1;border-radius:24px;background:radial-gradient(circle,#483040,#191622 78%)}
+.kf-install-icon img{display:block;width:88%;height:auto;filter:drop-shadow(0 7px 10px #0008)}
+.kf-install-kicker{font-size:.69rem;letter-spacing:.17em;color:#edbc9f;font-weight:950}
+.kf-install-hero h1{font-size:clamp(2rem,5vw,3.65rem);line-height:1.08;letter-spacing:-.05em;margin:.3rem 0 .8rem}
+.kf-install-hero p{line-height:1.66;color:#d8c9d5;max-width:70ch}
+.kf-install-actions{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:1rem 0}
+.kf-install-primary,.kf-install-secondary{display:inline-flex;justify-content:center;align-items:center;min-height:44px;padding:.7rem 1rem;border-radius:10px;font:800 .89rem system-ui,sans-serif;text-decoration:none;cursor:pointer}
+.kf-install-primary{background:#e4b896;color:#181221;border:1px solid #f1d5ac}
+.kf-install-secondary{background:#2e2632;color:#f6d8e9;border:1px solid #896a84}
+.kf-install-primary:focus-visible,.kf-install-secondary:focus-visible{outline:3px solid #bdfb75;outline-offset:3px}
+.kf-install-status{font-size:.81rem}
+.kf-install-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.25rem 0}
+.kf-install-card,.kf-install-note{padding:clamp(17px,3vw,26px);border:1px solid #6b5066;border-radius:17px;background:linear-gradient(150deg,#201a27,#11141e)}
+.kf-install-card h2,.kf-install-note h2{font-size:1.2rem;color:#fff0f6;margin:.55rem 0}
+.kf-install-card p,.kf-install-note p{font-size:.9rem;line-height:1.65;color:#cebecb}
+.kf-install-type{font-size:.69rem;letter-spacing:.13em;font-weight:950;color:#bdfb75}
+.kf-install-pending{color:#ffcf93}
+.kf-install-note strong{color:#f6dcb7}
+@media(max-width:730px){.kf-install-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.kf-install-hero{grid-template-columns:1fr}.kf-install-icon{width:145px;margin:auto}.kf-install-hero h1{font-size:2.15rem}}
