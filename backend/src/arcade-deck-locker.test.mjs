@@ -60,7 +60,11 @@ async function api(db,{id=1,method="GET",body,authed=true,origin="https://ash-fa
 test("all 12 current skins are free without play counts or ownership",()=>{
  assert.equal(DECK_ACTIVITY_GAMES.length,10);
  assert.equal(DECK_FREE_SKINS.length,12);
- assert.equal(DECK_PREMIUM_SKINS.length,0);
+ assert.equal(DECK_PREMIUM_SKINS.length,12);
+ for(const skin of DECK_PREMIUM_SKINS){
+  assert.equal(canEquipDeckSkin(skin,100000,[]),false);
+  assert.equal(canEquipDeckSkin(skin,0,[skin]),true);
+ }
  for(const skin of DECK_FREE_SKINS)assert.ok(canEquipDeckSkin(skin,0,[]),skin+" must be free");
  assert.ok(!canEquipDeckSkin("fake",100000,["fake"]));
 });
@@ -72,8 +76,9 @@ test("a session is required, and profiles remain isolated between accounts",asyn
  assert.equal((await api(db,{id:2})).profile.equipped_skin,"ash-classic");
  assert.equal((await api(db,{id:1})).profile.equipped_skin,"neon-riot");
 });
-test("revision conflicts still protect wardrobe, without premium ownership gates",async()=>{
+test("revision conflicts protect wardrobe and new premium ownership gates",async()=>{
  const db=new DB();
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"obsidian-cathedral",revision:0}})).status,403);
  assert.equal((await api(db,{method:"PUT",body:{skin_id:"void-royalty",revision:0}})).status,200);
  assert.equal((await api(db,{method:"PUT",body:{skin_id:"bone-white",revision:0}})).status,409);
  assert.equal((await api(db)).profile.equipped_skin,"void-royalty");
@@ -81,6 +86,10 @@ test("revision conflicts still protect wardrobe, without premium ownership gates
  db.owned.delete(1);
  assert.equal((await api(db)).profile.equipped_skin,"holo-wraith");
  assert.equal((await api(db,{method:"PUT",body:{skin_id:"nonexistent",revision:2}})).status,400);
+ db.owned.set(1,["obsidian-cathedral"]);
+ assert.equal((await api(db,{method:"PUT",body:{skin_id:"obsidian-cathedral",revision:2}})).status,200);
+ db.owned.delete(1);
+ assert.equal((await api(db)).profile.equipped_skin,"ash-classic","Revoked premium skin must fall back safely");
 });
 test("legacy device progress imports only once, max 50, without resetting higher account totals",async()=>{
  const db=new DB();
