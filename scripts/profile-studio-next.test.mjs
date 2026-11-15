@@ -77,7 +77,7 @@ test("Profile Studio sections are accessible and mobile responsive",()=>{
  assert.match(styles,/@media\(max-width:540px\)/);
  assert.match(styles,/prefers-reduced-motion/);
  assert.match(styles,/\.studio-jump\{position:sticky/);
- assert.match(styles,/#c6ff45/);
+ assert.match(styles,/#c7a77c/);
  assert.match(studio,/kf:profile-loaded/);
  assert.match(studio,/kf:layout-changed/);
  assert.match(studio,/kf:profile-saving/);

@@ -87,10 +87,10 @@ test("profile actions respect account identity and authenticated God role",()=>{
 });
 
 
-test("Gravewave profile panels and appearance selector stay neon and responsive",()=>{
+test("Gothic profile panels and member-selected appearances stay responsive",()=>{
  const profile=readFileSync(new URL("profile.html",root),"utf8");
  const editor=readFileSync(new URL("profile-edit.html",root),"utf8");
- assert.match(profile,/profile\.css\?v=20261103-creator-title1/);
+ assert.match(profile,/profile\.css\?v=20261115-gothic9/);
  assert.match(editor,/profile\.css\?v=20261103-gravewave-profile3/);
  for(const selector of [
   ".profile-shell .studio-theme-presets button[aria-pressed=\"true\"]",

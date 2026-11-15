@@ -58,7 +58,7 @@ test("per-member appearance survives site-wide generic card rules",()=>{
     assert.ok(css.includes(token),"Missing custom profile token "+token);
   }
   assert.match(css,/linear-gradient\(90deg,var\(--profile-accent/);
-  assert.match(css,/#ffe36b/);
+  assert.match(css,/#c7a77c/);
   assert.doesNotMatch(css,/\b(?:localStorage|sessionStorage)\b/);
   assert.doesNotMatch(css,/canvas\s*\{/);
   let n=0;
