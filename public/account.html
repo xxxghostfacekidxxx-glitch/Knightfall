@@ -67,6 +67,7 @@
           <div><span>Member since</span><strong>${esc(memberDate(user.created_at))}</strong></div>
           <div><span>Profile</span><strong>${user.bio ? "Bio added" : "Ready to customize"}</strong></div>
           <div><span>Session</span><strong>Active</strong></div>
+          ${user.staff_access?.staff ? '<div><span>Staff tier</span><strong>Level '+esc(user.staff_access.level)+' · '+esc(user.staff_access.track)+'</strong></div>' : ""}
         </div>
         ${user.bio ? `<div class="bio"><span>Bio</span><p>${esc(user.bio)}</p></div>` : ""}
         <div class="account-actions">
@@ -91,6 +92,7 @@
                 ${personalBots ? '<li><a href="/personal-bots.html">Personal Bots</a></li>' : ""}
                 <li><a href="/my-shop.html">My Shop</a></li>
                 ${ownerVault ? '<li><a href="/vault.html">Private Vault</a></li>' : ""}
+                ${role === "god" ? '<li><a href="/eye-of-horus.html">Eye of Horus (God only)</a></li>' : ""}
               </ul>
             </section>
           </div>
