@@ -18,13 +18,15 @@ function setup(){
      id:params[0],user_id:params[1],sku:params[2],amount_cents:params[3],
      currency:params[4],status:'pending'});
     return {meta:{changes:1}};
-   },async first(){if(sql.includes('FROM member_shop_orders WHERE id'))return orders.get(params[0])||null;return null},
+   },async first(){if(sql.includes('FROM member_shop_orders WHERE id'))return orders.get(params[0])||null;if(sql.includes('FROM member_shop_orders WHERE provider_payment_id'))return [...orders.values()].find(o=>o.provider_payment_id===params[0])||null;return null},
    async all(){return {results:[]}},sql,params};
   }};
  },async batch(statements){
   batched.push(statements.map(x=>({sql:x.sql,params:x.params})));
   const update=statements.find(x=>x.sql.includes("UPDATE member_shop_orders SET status='fulfilled'"));
-  if(update)orders.get(update.params[2]).status='fulfilled';
+  if(update){orders.get(update.params[2]).status='fulfilled';orders.get(update.params[2]).provider_payment_id=update.params[0]}
+  const refund=statements.find(x=>x.sql.includes("UPDATE member_shop_orders SET status='refunded'"));
+  if(refund)orders.get(refund.params[1]).status='refunded';
   return statements.map(()=>({success:true}));
  }};
  return {orders,batched,env:{DB:db,STRIPE_SECRET_KEY:'test-only',STRIPE_WEBHOOK_SECRET:'test-webhook-secret',MEMBER_SHOP_CHECKOUT_ENABLED:'true'}};
@@ -132,4 +134,22 @@ test('Signed paid deck webhook issues one server-side entitlement, idempotently'
  assert.equal(writes[0].params[2],id);
  await handleBotSlotShop(req(),env,url('/api/member-shop/stripe-webhook'),null);
  assert.equal(batched.length,1,'duplicate webhook must not grant twice');
+});
+
+test('Signed full refund revokes collector finish, without affecting unrelated items',async()=>{
+ const {env,orders,batched}=setup(),id='deck-refund-scenario';
+ const sku=PREMIUM_DECK_PRODUCTS['starfall'].sku;
+ orders.set(id,{id,user_id:owner.id,sku,amount_cents:149,currency:'USD',status:'fulfilled',provider_payment_id:'pi_paid_refund'});
+ const refund=JSON.stringify({type:'charge.refunded',data:{object:{id:'ch_refund',payment_intent:'pi_paid_refund',amount:149,amount_refunded:149}}});
+ const stamp=Math.floor(Date.now()/1000);
+ const signed=text=>new Request(url('/api/member-shop/stripe-webhook'),{method:'POST',headers:{'stripe-signature':'t='+stamp+',v1='+createHmac('sha256',env.STRIPE_WEBHOOK_SECRET).update(stamp+'.'+text).digest('hex')},body:text});
+ let res=await handleBotSlotShop(signed(refund),env,url('/api/member-shop/stripe-webhook'),null);
+ assert.equal(res.status,200);
+ assert.equal(orders.get(id).status,'refunded');
+ assert.equal(batched.length,1);
+ assert.ok(batched[0].some(w=>w.sql.includes('UPDATE arcade_deck_paid_entitlements SET state=\'revoked\'')));
+ assert.ok(batched[0].some(w=>w.sql.includes("UPDATE arcade_deck_profiles SET equipped_skin='ash-classic'")));
+ res=await handleBotSlotShop(signed(refund),env,url('/api/member-shop/stripe-webhook'),null);
+ assert.equal(res.status,200);
+ assert.equal(batched.length,1,'refund replay must be idempotent');
 });
