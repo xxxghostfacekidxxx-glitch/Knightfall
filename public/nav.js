@@ -461,12 +461,12 @@
         const startChatHeads=()=>{
           if (!document.querySelector('link[data-kf-chat-bubbles]')) {
             const sheet=document.createElement("link");
-            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261114-fullscreen2";
+            sheet.rel="stylesheet";sheet.href="/chat-bubbles.css?v=20261115-viewport3";
             sheet.dataset.kfChatBubbles="true";document.head.append(sheet);
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261114-fullscreen2";
+            bubbles.src="/chat-bubbles.js?v=20261115-viewport3";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             document.body.append(bubbles);
