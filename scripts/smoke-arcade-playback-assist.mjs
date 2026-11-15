@@ -119,7 +119,8 @@ try {
     ['sanctuary-end','/arcade/hosted/sanctuary-end/sanctuary.html','body']
   ];
   for(const [id,route,target] of extra){
-    const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+    const desktopOnly=id.startsWith('sanctuary-');
+    const context=await browser.newContext(desktopOnly?{viewport:{width:1366,height:768},hasTouch:false,isMobile:false}:{viewport:{width:390,height:844},hasTouch:true,isMobile:true});
     const page=await context.newPage();
     try{
       const response=await page.goto(origin+route,{waitUntil:'domcontentloaded',timeout:25000});
