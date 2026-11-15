@@ -27,6 +27,7 @@ import { handleProfileWall } from "./profile-wall.js";
 import { handleProfileShowcase } from "./profile-showcase.js";
 import { calculateAstrology, calculateTransits } from "./astrology.js";
 import { handleArcadeTurnMatches } from "./arcade-turn-matches.js";
+import { handleCinderwildOnlineWorld } from "./cinderwild-online-world.js";
 import { handleChaosCardMatches } from "./chaos-card-matches.js";
 import { handleArcadeDeckLocker } from "./arcade-deck-locker.js";
 import { handlePrivacyAssistance } from "./privacy-assistance.js";
@@ -1800,6 +1801,16 @@ For complex questions, organize the answer clearly and provide actionable detail
     }catch(error){
       if(/no such table: arcade_chaos_four_matches/i.test(String(error?.message||error)))
         return json({error:"Four-player Cards Against Chaos is awaiting D1 migration 0120."},503,origin,{"retry-after":"60"});
+      throw error;
+    }
+  }
+  if(url.pathname.startsWith("/api/cinderwild/world")){
+    try{
+      const worldResponse=await handleCinderwildOnlineWorld(request,env,url,{getUser:requireUser,json,rateLimit,origin});
+      if(worldResponse)return worldResponse;
+    }catch(error){
+      if(/no such table: cinderwild_world_/i.test(String(error?.message||error)))
+        return json({error:"The online world database is being prepared. Offline play still works."},503,origin,{"retry-after":"60"});
       throw error;
     }
   }
