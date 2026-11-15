@@ -204,3 +204,30 @@ body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important}
  }
 }
 /* Never target canvas, svg, video or member profile-custom-theme. */
+
+/* Gothic Creator responsive integrity: shared chrome, not game canvases or custom profiles. */
+html{max-width:100%;overflow-x:clip}
+body:not(.profile-custom-theme){max-width:100%;min-width:0}
+body:not(.profile-custom-theme) :where(main,section,article,aside,.kf-header,.kf-nav,.messages-shell,.message-layout,.chat-panel,.composer,.directory-shell,.foundry,.admin-shell,.profile-shell,.cartridge-shelf){min-width:0;max-width:100%}
+body:not(.profile-custom-theme) :where(p,h1,h2,h3,h4,a,button,summary){overflow-wrap:break-word}
+body:not(.profile-custom-theme) :where(img,video,iframe){max-width:100%}
+body:not(.profile-custom-theme) :where(.table-wrap,.admin-table-wrap,[role="region"][aria-label*="table"]){max-width:100%;overflow-x:auto}
+body:not(.profile-custom-theme) .kf-header{width:100%;min-width:0}
+body:not(.profile-custom-theme) .kf-header .kf-brand{min-width:0;max-width:100%;white-space:normal}
+body:not(.profile-custom-theme) .kf-nav.open{z-index:100;overscroll-behavior:contain}
+body:not(.profile-custom-theme) .kf-nav-menu a{white-space:normal}
+@media(max-width:1080px){
+ body:not(.profile-custom-theme) .kf-header{flex-wrap:nowrap;align-items:center}
+ body:not(.profile-custom-theme) .kf-header .kf-nav-toggle{margin-left:auto;flex:none;min-height:44px}
+ body:not(.profile-custom-theme) .kf-header .kf-nav.open{left:max(.5rem,env(safe-area-inset-left));right:max(.5rem,env(safe-area-inset-right));width:auto;max-height:calc(100dvh - 78px);overflow-y:auto}
+ body:not(.profile-custom-theme) .kf-header .kf-nav-menu{position:static;max-width:100%;min-width:0}
+}
+@media(max-width:680px){
+ body:not(.profile-custom-theme) :where(.directory-shell,.profile-shell,.admin-shell,.foundry,.messages-shell){width:100%;min-width:0}
+ body:not(.profile-custom-theme) :where(input:not([type="checkbox"]):not([type="radio"]),textarea,select){min-width:0;max-width:100%;font-size:16px}
+ body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat{min-height:0;max-width:100%}
+ body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .chat-panel{height:auto;max-height:calc(100dvh - 88px);min-height:0}
+ body:not(.profile-custom-theme) .messages-shell .message-layout.show-chat .messages-list{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+ body:not(.profile-custom-theme) .messages-shell .composer{min-width:0;max-width:100%;padding-bottom:max(.75rem,env(safe-area-inset-bottom))!important}
+ body:not(.profile-custom-theme) .messages-shell .composer-main{min-width:0;max-width:100%}
+}
