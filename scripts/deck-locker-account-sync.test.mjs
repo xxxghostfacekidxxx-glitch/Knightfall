@@ -19,7 +19,8 @@ function simulateAPI(userId,log){
   const owned=dataStore.premium.get(userId)||[];
   if(method==="PUT"){
    if(body.revision!==profile.revision)return mockResponse(409,{error:"Conflict"});
-   // Every current cosmetic skin is public; no entitlement checks.
+   // Premium cosmetics require server-issued ownership even if local storage is forged.
+   if(body.skin_id==="obsidian-cathedral"&&!owned.includes(body.skin_id))return mockResponse(403,{error:"Not owned"});
    profile={...profile,equipped_skin:body.skin_id,revision:profile.revision+1};
    dataStore.profiles.set(userId,profile);
   }else if(method==="POST"&&body.action==="deal"){
@@ -128,4 +129,23 @@ test("progress imports at most once and guest fallback remains usable",async()=>
  assert.equal(guest.api.accountSynced,false);
  assert.equal(guest.api.chooseSkin("neon-riot"),true);
  assert.equal(guest.api.recordDeal("chaos-blackjack"),1);
+});
+
+test("new collector skins require ownership and persist only for the purchasing account",async()=>{
+ dataStore.profiles.clear();dataStore.premium.clear();
+ const stored=new Map([["ashfall:deck-locker:selected:v1","obsidian-cathedral"]]);
+ const a=client(501,stored),b=client(502);
+ assert.equal(a.api.current,"ash-classic");
+ assert.equal(a.api.chooseSkin("obsidian-cathedral"),false);
+ await a.api.refresh();await b.api.refresh();
+ assert.equal(a.api.chooseSkin("obsidian-cathedral"),false);
+ dataStore.premium.set(501,["obsidian-cathedral"]);
+ await a.api.refresh();
+ assert.equal(a.api.chooseSkin("obsidian-cathedral"),true);
+ await settled();
+ assert.equal(a.api.current,"obsidian-cathedral");
+ assert.equal(b.api.chooseSkin("obsidian-cathedral"),false);
+ dataStore.premium.delete(501);
+ await a.api.refresh();
+ assert.equal(a.api.current,"ash-classic");
 });
