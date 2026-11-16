@@ -7,7 +7,7 @@ const PREVIEW="kf:theme-crew-preview";
 const KNOWN=new Set(["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"]);
 const enabledHosts=new Set(["ash-fall.com","www.ash-fall.com"]);
 const path=location.pathname.toLowerCase();
-if(/^\/(?:arcade\/hosted\/|games\/|casino\/)/.test(path))return;
+if(/^\/(?:arcade\/hosted\/|games\/|casino\/)/.test(path)||/^\/(?:offline|personal-bots-offline)(?:\.html)?$/.test(path))return;
 const isLive=enabledHosts.has(location.hostname.toLowerCase());
 let lastRevision=-1,published="cathedral";
 const safe=value=>KNOWN.has(value)?value:null;
@@ -34,7 +34,15 @@ const refresh=async()=>{
   if(lastRevision!==result.revision||published!==key){lastRevision=result.revision;published=key;paint()}
  }catch{/* Safe, offline fallback: use the last known theme. */}
 };
+const addFallbackRealm=()=>{
+ if(document.body?.dataset.kfRealm)return;
+ const p=path.replace(/\.html$/,"");
+ if(/^\/(?:admin-bot-archive|moderation-accounts)$/.test(p))document.body.dataset.kfRealm="god";
+ else if(/^\/(?:reset-password|verify-email)$/.test(p))document.body.dataset.kfRealm="members";
+ else document.body.dataset.kfRealm="general";
+};
 const start=()=>{
+ addFallbackRealm();
  paint();
  refresh();
  window.addEventListener("storage",event=>{if(event.key===PREVIEW)paint()});
