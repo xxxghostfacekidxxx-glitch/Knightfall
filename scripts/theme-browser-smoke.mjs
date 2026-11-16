@@ -79,6 +79,21 @@ try {
             assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-artwork.css")),
               label + " must mount the artwork layer");
           }
+          if (route === "/auth.html") {
+            await page.waitForFunction(() => {
+              const layout = document.querySelector(".entry-layout");
+              return document.body.dataset.kfRealm === "members" && layout &&
+                getComputedStyle(layout, "::before").backgroundImage.includes("realm-members.svg");
+            }, null, {timeout: 12000});
+            const authVisual = await page.evaluate(() => ({
+              artwork: getComputedStyle(document.querySelector(".entry-layout"), "::before").backgroundImage,
+              brand: document.getElementById("auth-title")?.textContent || ""
+            }));
+            assert.match(authVisual.artwork,/gothic-chrome-frame\.svg/,
+              label + " must display decorative metal frame behind real auth form");
+            assert.match(authVisual.brand,/Knightfall/,
+              label + " must use current Knightfall identity");
+          }
           if (route === "/auth.html" || route === "/community.html") {
             assert.equal(state.oldTakeover, false, label + " must not inject Gravewave overlay");
             assert.ok(!state.stylesheets.some(sheet => sheet.includes("gravewave-takeover")),
