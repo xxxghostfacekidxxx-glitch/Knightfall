@@ -532,3 +532,44 @@ button:hover:not(:disabled) { border-color: #bba172; }
 @media (orientation: landscape) and (max-height: 560px) {
   .battle-stage canvas { width: clamp(3.5rem, 22svh, 8.5rem); }
 }
+
+/* Fullscreen is a playable cabinet, not a letterboxed screenshot. Give the
+   canvas the remaining viewport and keep the party controls reachable. */
+.shell:is(:fullscreen, .is-expanded) {
+  --cabinet-height: 100%;
+  overflow: hidden;
+}
+.shell:is(:fullscreen, .is-expanded) .cabinet-layout {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.shell:is(:fullscreen, .is-expanded) .playfield {
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.shell:is(:fullscreen, .is-expanded) .screen-frame { min-height: 0; }
+.shell:is(:fullscreen, .is-expanded) .trainer-panel {
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+@media (max-width: 850px) and (orientation: portrait) {
+  .shell:is(:fullscreen, .is-expanded) {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .shell:is(:fullscreen, .is-expanded) .cabinet-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: .35rem;
+  }
+  .shell:is(:fullscreen, .is-expanded) .playfield {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+  .shell:is(:fullscreen, .is-expanded) .trainer-panel {
+    align-self: stretch;
+    max-height: clamp(10rem, 34svh, 17rem);
+  }
+}
