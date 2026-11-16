@@ -1,4 +1,5 @@
 import test from 'node:test';
+import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 
@@ -80,4 +81,42 @@ test('secondary public sections use the correct realm instead of generic fallbac
  }
  assert.ok(nav.includes('main.querySelector("canvas, [data-game-canvas]")'));
  assert.ok(art.includes(':not(.kf-gameplay-page)'));
+});
+
+
+test('canonical and hyphenated URLs execute the right realm styling',()=>{
+ const start=nav.indexOf('  const mountRealmArtwork = () => {');
+ const end=nav.indexOf('  if (document.readyState === "loading")',start);
+ assert.ok(start>=0&&end>start,'executable realm selector is present');
+ const runtime=nav.slice(start,end)+'\nmountRealmArtwork();';
+ const cases=[
+  ['/','home'],['/community','madhouse'],['/community-topic','madhouse'],
+  ['/chaos-cartridge','arcade'],['/arcade-progress','arcade'],
+  ['/devil-tools','foundry'],['/personal-bots','foundry'],['/bots','foundry'],['/creator-studio','foundry'],
+  ['/messages','messages'],['/ruinwire','messages'],['/notifications','messages'],['/miss-chaos','messages'],
+  ['/moonology','moon'],['/shadow-work','moon'],
+  ['/shops','market'],['/shop-builder','market'],['/my-shop','market'],
+  ['/members','members'],['/auth','members'],['/profile','members'],
+  ['/admin','god'],['/admin.html','god'],['/admin-offline','god'],['/eye-of-horus','god'],['/god-bot-control','god'],
+  ['/mascot-pets','pets'],['/mascot-pets.html','pets'],['/mascot-room','pets'],['/mascot-trials','pets'],
+  ['/die-ary','diary'],['/memo-pad','diary']
+ ];
+ const run=(path,hasCanvas=false)=>{
+  const hero={dataset:{}},classes=new Set();
+  const main={dataset:{},contains:node=>node===hero,querySelector:()=>hasCanvas?{}:null};
+  const body={dataset:{},classList:{add:value=>classes.add(value)}};
+  const document={body,querySelector:selector=>selector==='main'?main:hero};
+  vm.runInNewContext(runtime,{location:{pathname:path},document},{timeout:1000});
+  return {body,hero,main,classes};
+ };
+ for(const [path,realm] of cases){
+  const {body,hero}=run(path);
+  assert.equal(body.dataset.kfRealm,realm,path+' must map to '+realm);
+  if(realm!=='home')assert.equal(hero.dataset.kfArtHero,realm,path+' must mount hero');
+ }
+ const hosted=run('/arcade/hosted/asteroids/');
+ assert.equal(hosted.body.dataset.kfRealm,undefined,'hosted games are excluded');
+ const standalone=run('/city-of-cinders',true);
+ assert.ok(standalone.classes.has('kf-gameplay-page'),'root-level canvas games are excluded');
+ assert.equal(standalone.hero.dataset.kfArtHero,undefined,'game art stays independent');
 });
