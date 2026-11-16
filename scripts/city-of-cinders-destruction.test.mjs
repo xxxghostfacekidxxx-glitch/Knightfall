@@ -162,3 +162,14 @@ test('Rampage now exposes fullscreen, pause, and visually distinct wall breaches
  assert.match(html,/WALL BREACHED/);
  assert.match(html,/MONSTER MAYHEM/);
 });
+
+test('visible tanks fire from simulated vehicles and can be punched or destroyed by rage',()=>{
+ const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(code);
+ assert.match(code,/tanks\.push\(\{x,y:ground\+5,hp:3/);
+ assert.match(code,/shots\.push\(\{x:tank\.x-26,y:ground-9/);
+ assert.match(code,/const tank=tanks\.find\(/);
+ assert.match(code,/tanks=tanks\.filter\(t=>t\.hp>0\)/);
+ assert.match(code,/for\(const tank of tanks\)\{/);
+ assert.doesNotMatch(code,/shots\.push\(\{x:cam\+W\+rand\(30,100\)/);
+});

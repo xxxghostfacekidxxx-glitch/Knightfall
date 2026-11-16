@@ -56,7 +56,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
 const W=960,H=540,ground=430,worldW=2620,gameKey='city-of-cinders',World=window.CityCindersWorld; if(!World)throw Error('City destruction engine unavailable');
-let state='ready',last=0,score=0,health=100,maxHealth=100,rage=0,frame=0,elapsed=0,shake=0,cam=0,buildings=[],shots=[],heli=[],particles=[],keys={},touch={},monster={},wrecked=0,submitted=false,loop=0;const roster={guttermaw:{name:'Guttermaw',title:'The Walking Catastrophe',desc:'Slow, powerful, and built to flatten the block.',speed:2.9,jump:13,reach:110,power:1,health:100,color:'#45404d',eye:'#b8ff38',rage:'Faultline Roar'},malpractice:{name:'Malpractice',title:'The Laughing Mistake',desc:'Fast combos, but less health.',speed:4.1,jump:14,reach:132,power:.78,health:78,color:'#24232c',eye:'#ff2d8a',rage:'Reality Check'},dredge:{name:'The Dredge',title:'What the City Buried',desc:'Long reach and control, with slower movement.',speed:2.35,jump:9,reach:155,power:1.08,health:115,color:'#26383a',eye:'#67e8f9',rage:'Sinkhole'},'ash-tyrant':{name:'Ash Tyrant',title:'The Last Extinction',desc:'Heavy hits and wide rage damage; slow to recover.',speed:2.15,jump:8,reach:120,power:1.35,health:125,color:'#3c2925',eye:'#56306b',rage:'World Furnace'},widowbyte:{name:'Widowbyte',title:'The Neon Plague',desc:'Fast, agile, and excels at aerial movement.',speed:4.5,jump:17,reach:118,power:.7,health:72,color:'#26202f',eye:'#ff2d8a',rage:'Neon Tempest'},wreckoning:{name:'Wreckoning',title:'The Siege Engine',desc:'Armored and forceful; best when attacks build momentum.',speed:3.1,jump:10,reach:125,power:1.15,health:112,color:'#494039',eye:'#56306b',rage:'Total Demolition'}};let unlockedCharacters=['guttermaw'];try{const saved=JSON.parse(localStorage.getItem('cinders-unlocked')||'[]');unlockedCharacters=[...new Set(['guttermaw',...saved.filter(k=>roster[k])])];}catch{}let selectedCharacter='guttermaw',selectedMutation='balanced',combo=0,charge=0;try{const savedCharacter=localStorage.getItem('cinders-character');selectedCharacter=roster[savedCharacter]&&unlockedCharacters.includes(savedCharacter)?savedCharacter:'guttermaw';selectedMutation=['balanced','feral','armored'].includes(localStorage.getItem('cinders-mutation'))?localStorage.getItem('cinders-mutation'):'balanced';}catch{}const unlockRules={malpractice:'Score 1,200 in one run',dredge:'Destroy 3 buildings in one run',widowbyte:'Destroy 5 buildings in one run',wreckoning:'Score 2,800 in one run','ash-tyrant':'Win a run by destroying all 12 buildings'};function character(){return roster[selectedCharacter]||roster.guttermaw;}function applySelection(){document.querySelectorAll('[data-character]').forEach(b=>{const unlocked=unlockedCharacters.includes(b.dataset.character);b.disabled=!unlocked;b.setAttribute('aria-pressed',String(b.dataset.character===selectedCharacter));const small=b.querySelector('small');if(small){const original=small.dataset.original||small.textContent;if(!small.dataset.original)small.dataset.original=original;small.textContent=unlocked?original:'LOCKED · '+unlockRules[b.dataset.character];}});document.querySelectorAll('[data-mutation]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mutation===selectedMutation)));const c=character();$('characterName').textContent=c.name+' · '+c.title;$('characterDesc').textContent=c.desc+' Signature: '+c.rage+'.';$('rosterStatus').textContent=c.name+' selected. Mutation: '+selectedMutation+'. Unlocked '+unlockedCharacters.length+'/6 monsters.';$('rosterStatus').style.color=c.eye;}
+let state='ready',last=0,score=0,health=100,maxHealth=100,rage=0,frame=0,elapsed=0,shake=0,cam=0,buildings=[],shots=[],heli=[],tanks=[],particles=[],keys={},touch={},monster={},wrecked=0,submitted=false,loop=0;const roster={guttermaw:{name:'Guttermaw',title:'The Walking Catastrophe',desc:'Slow, powerful, and built to flatten the block.',speed:2.9,jump:13,reach:110,power:1,health:100,color:'#45404d',eye:'#b8ff38',rage:'Faultline Roar'},malpractice:{name:'Malpractice',title:'The Laughing Mistake',desc:'Fast combos, but less health.',speed:4.1,jump:14,reach:132,power:.78,health:78,color:'#24232c',eye:'#ff2d8a',rage:'Reality Check'},dredge:{name:'The Dredge',title:'What the City Buried',desc:'Long reach and control, with slower movement.',speed:2.35,jump:9,reach:155,power:1.08,health:115,color:'#26383a',eye:'#67e8f9',rage:'Sinkhole'},'ash-tyrant':{name:'Ash Tyrant',title:'The Last Extinction',desc:'Heavy hits and wide rage damage; slow to recover.',speed:2.15,jump:8,reach:120,power:1.35,health:125,color:'#3c2925',eye:'#56306b',rage:'World Furnace'},widowbyte:{name:'Widowbyte',title:'The Neon Plague',desc:'Fast, agile, and excels at aerial movement.',speed:4.5,jump:17,reach:118,power:.7,health:72,color:'#26202f',eye:'#ff2d8a',rage:'Neon Tempest'},wreckoning:{name:'Wreckoning',title:'The Siege Engine',desc:'Armored and forceful; best when attacks build momentum.',speed:3.1,jump:10,reach:125,power:1.15,health:112,color:'#494039',eye:'#56306b',rage:'Total Demolition'}};let unlockedCharacters=['guttermaw'];try{const saved=JSON.parse(localStorage.getItem('cinders-unlocked')||'[]');unlockedCharacters=[...new Set(['guttermaw',...saved.filter(k=>roster[k])])];}catch{}let selectedCharacter='guttermaw',selectedMutation='balanced',combo=0,charge=0;try{const savedCharacter=localStorage.getItem('cinders-character');selectedCharacter=roster[savedCharacter]&&unlockedCharacters.includes(savedCharacter)?savedCharacter:'guttermaw';selectedMutation=['balanced','feral','armored'].includes(localStorage.getItem('cinders-mutation'))?localStorage.getItem('cinders-mutation'):'balanced';}catch{}const unlockRules={malpractice:'Score 1,200 in one run',dredge:'Destroy 3 buildings in one run',widowbyte:'Destroy 5 buildings in one run',wreckoning:'Score 2,800 in one run','ash-tyrant':'Win a run by destroying all 12 buildings'};function character(){return roster[selectedCharacter]||roster.guttermaw;}function applySelection(){document.querySelectorAll('[data-character]').forEach(b=>{const unlocked=unlockedCharacters.includes(b.dataset.character);b.disabled=!unlocked;b.setAttribute('aria-pressed',String(b.dataset.character===selectedCharacter));const small=b.querySelector('small');if(small){const original=small.dataset.original||small.textContent;if(!small.dataset.original)small.dataset.original=original;small.textContent=unlocked?original:'LOCKED · '+unlockRules[b.dataset.character];}});document.querySelectorAll('[data-mutation]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mutation===selectedMutation)));const c=character();$('characterName').textContent=c.name+' · '+c.title;$('characterDesc').textContent=c.desc+' Signature: '+c.rage+'.';$('rosterStatus').textContent=c.name+' selected. Mutation: '+selectedMutation+'. Unlocked '+unlockedCharacters.length+'/6 monsters.';$('rosterStatus').style.color=c.eye;}
 // Knightfall crossover costumes are optional. The original kaiju-like monster bodies are the default.
  const cityArtMap=Object.freeze({'guttermaw':'iron-butcher','malpractice':'carnival-ghoul','dredge':'chainbound-revenant','ash-tyrant':'crimson-void-knight','widowbyte':'thorn-queen','wreckoning':'starfall-templar'});
  const reducedArtMotion=!!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -89,7 +89,7 @@ function makeCity(){
 function reset(){
  const c=character();score=0;maxHealth=c.health*(selectedMutation==='armored'?1.25:selectedMutation==='feral'?.82:1);
  health=maxHealth;rage=0;frame=0;elapsed=0;shake=0;cam=0;wrecked=0;submitted=false;
- shots=[];heli=[];particles=[];keys={};touch={};combo=0;charge=0;
+ shots=[];heli=[];tanks=[];particles=[];keys={};touch={};combo=0;charge=0;
  monster={x:25,y:ground-110,vx:0,vy:0,w:selectedCharacter==='dredge'?112:selectedCharacter==='widowbyte'?78:92,
  h:selectedCharacter==='widowbyte'?98:112,face:1,grounded:true,climbing:null,punch:0,invuln:0};
  monster.y=ground-monster.h;
@@ -160,6 +160,13 @@ function punch(){
   }
  }else{
   const fistX=monster.x+monster.w/2+monster.face*c.reach*.8;
+  const tank=tanks.find(t=>Math.abs(t.x-fistX)<75&&monster.y+monster.h>=ground-78);
+  if(tank){
+   tank.hp-=selectedCharacter==='ash-tyrant'||selectedCharacter==='wreckoning'?2:1;
+   score+=170;rage=Math.min(100,rage+15);shake=Math.max(shake,6);
+   particle(tank.x,ground-16,'#ffc08c',18);impactSound('punch');
+   if(tank.hp<=0){score+=300;particle(tank.x,ground-22,'#ff7b5b',32);tanks=tanks.filter(x=>x!==tank);}
+  }
   const shot=shots.find(s=>Math.abs(s.x-fistX)<55&&Math.abs(s.y-(monster.y+monster.h*.45))<65);
   if(shot){shots=shots.filter(s=>s!==shot);score+=75;rage=Math.min(100,rage+8);particle(shot.x,shot.y,c.eye,10);}
  }
@@ -183,6 +190,8 @@ function roar(){
  }
  if(selectedCharacter==='wreckoning'){monster.climbing=null;charge=35;monster.vx=monster.face*12;}
  if(selectedCharacter==='malpractice'){score+=combo*90;combo=0;}
+ for(const tank of tanks)if(Math.abs(tank.x-cx)<radius){score+=250;particle(tank.x,ground-20,'#ffb56f',20);tank.hp=0;}
+ tanks=tanks.filter(t=>t.hp>0);
  shots=[];particle(cx,cy,c.eye,65);
  $('status').textContent=c.rage.toUpperCase()+' RELEASED. THE SKYLINE IS IN TROUBLE.';
  updateHud();if(wrecked>=buildings.length)finish(true);
@@ -197,8 +206,30 @@ function jump(){
   monster.vy=-character().jump*(selectedMutation==='feral'?1.12:1);monster.grounded=false;
  }
 }
-function spawnEnemy(){if(frame%135===0)heli.push({x:cam+W+rand(20,180),y:rand(70,175),hp:2,phase:rand(0,6)});if(frame%105===0&&Math.random()<.8)shots.push({x:cam+W+rand(30,100),y:ground-12,vx:-rand(4,6),kind:'tank'});}
-function collide(){for(const s of shots){s.x+=s.vx;if(s.kind==='heli')s.y+=Math.sin(frame*.15)*.8;}shots=shots.filter(s=>s.x>cam-50&&s.x<cam+W+100);for(const s of shots){if(Math.abs(s.x-(monster.x+monster.w/2))<30&&Math.abs(s.y-(monster.y+monster.h/2))<45&&monster.invuln<=0){health-=(s.kind==='tank'?8:5)*(selectedMutation==='armored'?.65:1);monster.invuln=42;particle(monster.x+monster.w/2,monster.y+40,'#ff2d8a',8);}}for(const h of heli){h.x-=1.1;h.phase+=.05;if(Math.random()<.018)shots.push({x:h.x,y:h.y+25,vx:-3.4,kind:'heli'});}heli=heli.filter(h=>h.x>cam-200);if(monster.invuln>0)monster.invuln--;if(health<=0)finish(false);}
+function spawnEnemy(){
+ if(frame%190===0)heli.push({x:cam+W+rand(20,180),y:rand(70,175),hp:2,phase:rand(0,6)});
+ // Real armored vehicles on the street, no more bullets coming from invisible tanks.
+ if(frame%225===0&&tanks.length<5){
+  const x=Math.min(worldW-70,cam+W+rand(25,140));
+  tanks.push({x,y:ground+5,hp:3,cool:45+Math.floor(rand(0,65)),dir:-1,track:0});
+ }
+}
+function collide(){
+ for(const tank of tanks){
+  tank.x=Math.max(6,tank.x-1.05);tank.track+=.11;tank.cool--;
+  if(tank.cool<=0&&Math.abs(tank.x-monster.x)<590){
+   tank.cool=95+Math.floor(rand(0,65));
+   shots.push({x:tank.x-26,y:ground-9,vx:-6,kind:'tank'});
+   particle(tank.x-28,ground-10,'#ffc48a',5);
+  }
+  const close=Math.abs(tank.x-(monster.x+monster.w*.5))<53&&monster.y+monster.h>=ground-45;
+  if(close&&monster.invuln<=0){
+   health-=9*(selectedMutation==='armored'?.65:1);monster.invuln=42;
+   particle(monster.x+monster.w*.5,ground-20,'#fca4a4',12);
+  }
+ }
+ tanks=tanks.filter(tank=>tank.x>cam-220&&tank.hp>0);
+ for(const s of shots){s.x+=s.vx;if(s.kind==='heli')s.y+=Math.sin(frame*.15)*.8;}shots=shots.filter(s=>s.x>cam-50&&s.x<cam+W+100);for(const s of shots){if(Math.abs(s.x-(monster.x+monster.w/2))<30&&Math.abs(s.y-(monster.y+monster.h/2))<45&&monster.invuln<=0){health-=(s.kind==='tank'?8:5)*(selectedMutation==='armored'?.65:1);monster.invuln=42;particle(monster.x+monster.w/2,monster.y+40,'#ff2d8a',8);}}for(const h of heli){h.x-=1.1;h.phase+=.05;if(Math.random()<.018)shots.push({x:h.x,y:h.y+25,vx:-3.4,kind:'heli'});}heli=heli.filter(h=>h.x>cam-200);if(monster.invuln>0)monster.invuln--;if(health<=0)finish(false);}
 function update(dt){
  if(state!=='playing')return;
  const step=Math.min(2,Math.max(.5,dt/16.67||1));
@@ -354,6 +385,24 @@ function draw(){
  ctx.fillStyle='#12151f';for(let x=-(cam%79);x<W;x+=79){ctx.fillRect(x,ground+40,40,3);ctx.fillRect(x+44,ground+14,3,19);}
  // Broken facade fragments render over the street but beneath our kaiju.
  for(const b of buildings)drawBuilding(b);
+ // Armored columns roll down the street and visibly fire their own shells.
+ for(const tank of tanks){
+  const x=tank.x-cam,y=ground+6;
+  if(x<-80||x>W+80)continue;
+  ctx.save();ctx.translate(x,y);
+  ctx.fillStyle='#090d15';ctx.fillRect(-35,8,70,15);
+  for(let i=0;i<5;i++){
+   ctx.beginPath();ctx.fillStyle='#a2a4ac';ctx.arc(-26+i*13,15,6,0,7);ctx.fill();
+   ctx.beginPath();ctx.fillStyle='#1e2530';ctx.arc(-26+i*13,15,3,0,7);ctx.fill();
+  }
+  const armor=ctx.createLinearGradient(-38,-18,32,10);
+  armor.addColorStop(0,'#69717e');armor.addColorStop(.48,'#303b4b');armor.addColorStop(1,'#101820');
+  ctx.fillStyle=armor;ctx.beginPath();ctx.moveTo(-35,10);ctx.lineTo(-25,-13);ctx.lineTo(22,-13);ctx.lineTo(35,9);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#84919b';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#1d2837';ctx.fillRect(-4,-21,29,10);ctx.fillRect(-43,-20,41,5);
+  ctx.fillStyle='#ff9c78';ctx.fillRect(-33,-16,7,3);
+  ctx.restore();
+ }
  for(const h of heli){
   const x=h.x-cam;ctx.save();ctx.translate(x,h.y);
   ctx.fillStyle='#161a25';ctx.strokeStyle='#a6b5c4';ctx.lineWidth=2;
@@ -447,6 +496,7 @@ document.querySelectorAll('[data-tap]').forEach(b=>{
 window.CityCindersDiagnostics=()=>({
  state,score,wrecked,frame,health,renderer:renderMode,canvasPixels:[canvas.width,canvas.height],
  monster:{x:monster.x,y:monster.y,grounded:monster.grounded,climbing:!!monster.climbing,punch:monster.punch},
+ tanks:tanks.length,
  buildings:buildings.map(b=>({x:b.x,top:ground-b.h,hp:b.hp,full:b.full,dead:b.dead,
   holes:b.cells.filter(cell=>cell.hp<2).length,openHoles:b.cells.filter(cell=>cell.hp===0).length}))
 });
