@@ -525,9 +525,23 @@ function initialize(){
    sprite(battle.enemy.id,"enemy-sprite");
   }
  });
+ // Also respond to fullscreen and mobile visual-viewport changes. Some Android
+ // WebViews do not implement ResizeObserver, leaving the map at its small boot size.
+ const fitViewport=()=>{
+  const wrap=$("world-wrap");
+  const bounds=wrap?.getBoundingClientRect?.();
+  resizeWorld(bounds?.width||wrap?.clientWidth||0,bounds?.height||wrap?.clientHeight||0);
+ };
  if(typeof ResizeObserver==="function"){
   new ResizeObserver(([entry])=>resizeWorld(entry.contentRect.width,entry.contentRect.height)).observe($("world-wrap"));
  }
+ window.addEventListener("resize",fitViewport);
+ window.visualViewport?.addEventListener?.("resize",fitViewport);
+ document.addEventListener?.("fullscreenchange",()=>{
+  if(typeof requestAnimationFrame==="function")requestAnimationFrame(fitViewport);
+  else fitViewport();
+ });
+ fitViewport();
  if(renderer&&typeof requestAnimationFrame==="function"){
   let lastFrame=0;
   const frame=now=>{
