@@ -25,7 +25,7 @@ const infernalInput=read('arcade/hosted/sanctuary-end/js/13-input.js');
 for(const marker of ['pointerdown', 'pointermove', 'installTouchControls', 'KEYBINDS[action]', 'hpPotion', 'manaPotion', 'visibilitychange', 'pointercancel', '!anyModal()', 'camDist+delta', 'Collapse mobile controls']) {
  if(!infernalInput.includes(marker)) errors.push('Infernal Reign mobile controls missing '+marker);
 }
-if(!infernalInput.includes('SAVE.saveCharacter(currentSlot,character)') || !infernalInput.includes('Save failed'))errors.push('Infernal Reign: mobile manual save and failure feedback missing');
+if(!infernalInput.includes('saveProgress(true)') || !infernalInput.includes('Save failed') || !read('arcade/hosted/sanctuary-end/js/17-update.js').includes('character.level = player.level'))errors.push('Infernal Reign: mobile save must sync live stats and report storage failure');
 const infernalSave=read('arcade/hosted/sanctuary-end/js/03-save.js');
 try { new vm.Script(infernalInput,{filename:'Infernal Reign input'}); new vm.Script(infernalSave,{filename:'Infernal Reign saves'}); } catch(e) { errors.push('Infernal Reign syntax failure: '+e.message); }
 if(!infernalSave.includes("document.addEventListener('visibilitychange'") || !infernalSave.includes('SAVE._idleH != null'))errors.push('Infernal Reign: pending mobile saves not flushed on background');
