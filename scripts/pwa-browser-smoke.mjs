@@ -36,7 +36,7 @@ try {
       floatingMascots:document.querySelectorAll(".gw-character-crew,.gw-ambient,.kf-gravewave-ribbon").length
     };
   });
-  assert.equal(gothic.ink,"rgb(13, 16, 19)","Homepage must use approved black-stone background");
+  assert.equal(gothic.ink,"rgb(10, 13, 19)","Cathedral Ascendant homepage must use approved deep-stone canvas");
   assert.equal(gothic.bone,"#ece1d3");
   assert.equal(gothic.crimson,"#b25b68");
   assert.equal(gothic.bronze,"#c7a77c");
