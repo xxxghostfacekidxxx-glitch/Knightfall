@@ -471,3 +471,173 @@ body:has(#workshop:not(.hidden)) #foundry-public-preview{display:none!important}
 @media(prefers-reduced-motion:reduce){
  body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card{transition:none!important;transform:none!important}
 }
+
+
+/* CATHEDRAL ASCENDANT II — handcrafted depth, real links, real sections.
+   Built on the approved Gothic Creator identity, not another theme reset. */
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ --kf-vault-art:url('/assets/knightfall/vaulted-cathedral.svg');
+ --kf-rose-art:url('/assets/knightfall/rose-window.svg');
+ --kf-cut-edge:polygon(0 14px,14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px));
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ background-image:linear-gradient(180deg,#090b13f0 0%,#0e0d19e5 33%,#0a0a11f6 72%,#090b12 100%),radial-gradient(ellipse at 82% 14%,color-mix(in srgb,var(--kf-realm-glow,#b55584) 36%,transparent),transparent 56%),var(--kf-vault-art)!important;
+ background-size:cover,cover,cover!important;
+ background-position:center,center,center top!important;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.kf-start-here,.home-activity,.ecosystem-section,.sanctuary-shell>section,.admin-shell>section,.moon-panel,.builder-panel,.messages-shell .conversation-panel,.messages-shell .chat-panel){
+ border-color:color-mix(in srgb,var(--kf-realm-metal,#c9ad9b) 37%,transparent)!important;
+ box-shadow:0 24px 60px #0009,inset 0 1px #e6c1ad19,0 0 0 1px #08090b8c!important;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.home-activity,.ecosystem-section,.sanctuary-shell>section,.builder-panel,.moon-panel){
+ background-image:linear-gradient(135deg,#211927f2,#141822eb 52%,#12121beF),var(--kf-vault-art)!important;
+ background-size:cover,cover!important;
+ background-position:center,center!important;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.section-heading,.activity-heading,.sanctuary-section-heading,.foundry-public-heading,.kf-start-heading){
+ position:relative;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.section-heading,.activity-heading,.sanctuary-section-heading,.foundry-public-heading,.kf-start-heading)::after{
+ content:"";display:block;pointer-events:none;height:22px;width:min(440px,100%);margin-top:8px;
+ background:var(--kf-ceremonial-rule) center/contain no-repeat;opacity:.72;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.home-activity,.ecosystem-section,.sanctuary-shell,.foundry,.moon-shell,.admin-shell,.messages-shell,.builder-shell) h2{
+ text-shadow:0 2px 10px #000b,0 0 25px color-mix(in srgb,var(--kf-realm-glow,#ab5a76) 19%,transparent);
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.kf-start-card,.directory-group,.foundry-card,.tool-card,.quick-card,.game-card,.cartridge-cabinet,.member-card,.friend-card){
+ border-radius:16px!important;
+ background-image:
+   linear-gradient(147deg,rgba(255,218,186,.055),transparent 28%),
+   linear-gradient(131deg,#29212dea,#171723f5 60%,#10141bf7)!important;
+ border:1px solid color-mix(in srgb,var(--kf-realm-metal,#bba18b) 48%,transparent)!important;
+ box-shadow:0 19px 45px #0008,inset 0 1px #ead7bd1c,0 0 0 1px #07070a9c!important;
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.kf-start-card,.directory-group,.foundry-card,.tool-card,.quick-card,.cartridge-cabinet,.member-card,.friend-card):is(:hover,:focus-within){
+ border-color:var(--kf-realm-metal,#d3b2a0)!important;
+ box-shadow:0 24px 50px #000a,0 0 22px color-mix(in srgb,var(--kf-realm-glow,#bd668d) 28%,transparent),inset 0 1px #f0cbbd41!important;
+ transform:translateY(-2px);
+}
+body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.button,.button-primary,.foundry-link-main,.home-explore-link,.home-sign-in,.sanctuary-links a){
+ font-weight:750;letter-spacing:.018em;
+}
+
+/* A navigable illustrated realm atlas. Images are content illustrations,
+   never false controls, and the whole content remains accessible without them. */
+body.home-page:not(.profile-custom-theme) .kf-realm-atlas{
+ position:relative;margin:clamp(2.25rem,5vw,4.5rem) auto;
+ padding:clamp(1.2rem,3.5vw,2.8rem);
+ border:1px solid #c59c9675;border-radius:26px;
+ background:linear-gradient(135deg,#17111df5,#10121bf7 66%,#161420f4),var(--kf-vault-art) center/cover no-repeat;
+ box-shadow:0 30px 85px #000b,inset 0 1px #f2c2a82a;
+ overflow:hidden;
+}
+body.home-page:not(.profile-custom-theme) .kf-realm-atlas::before{
+ content:"";position:absolute;z-index:0;top:-175px;right:-125px;
+ width:clamp(340px,53vw,720px);aspect-ratio:1040/720;
+ background:var(--kf-rose-art) center/contain no-repeat;
+ opacity:.22;filter:drop-shadow(0 0 40px #aa567a67);
+ pointer-events:none;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-heading{position:relative;z-index:1;max-width:850px;margin:0 0 clamp(1.25rem,3vw,2rem)}
+body.home-page:not(.profile-custom-theme) .kf-atlas-eyebrow{
+ color:#d7a1b8;letter-spacing:.18em;font-size:.72rem;font-weight:900;margin-bottom:.6rem;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-heading h2{
+ margin:0;font:700 clamp(2rem,4.4vw,4rem)/1.06 Georgia,'Times New Roman',serif;letter-spacing:-.047em;
+ color:#f6e6d6;text-shadow:0 3px 22px #000;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-heading h2 span{
+ color:#e2afba;background:linear-gradient(105deg,#ecc5aa,#d68eb3,#d5b5d2);
+ -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-heading>p:last-child{
+ max-width:64ch;line-height:1.65;color:#d5c4c8;font-size:clamp(.93rem,1.5vw,1.06rem);margin-top:1rem;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-grid{
+ position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.9rem,2vw,1.3rem);
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card{
+ position:relative;min-width:0;min-height:clamp(275px,29vw,335px);
+ display:flex;flex-direction:column;isolation:isolate;overflow:hidden;
+ padding:clamp(1.2rem,2.5vw,1.9rem);border:1px solid #b78b9b8a;border-radius:18px;
+ background:radial-gradient(ellipse at 84% 20%,#77435763,transparent 52%),linear-gradient(142deg,#322338,#151620 64%,#0d1119);
+ box-shadow:0 18px 39px #0009,inset 0 1px #e0babc3d;
+ transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card::after{
+ content:"";z-index:-1;pointer-events:none;position:absolute;inset:0;
+ background:linear-gradient(90deg,#16131ceB 0%,#15151cd0 48%,#12151a29 100%);
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card>img{
+ position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% center;
+ opacity:.82;filter:saturate(.85);
+ transition:transform .45s ease,opacity .4s ease;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card:is(:hover,:focus-within){
+ transform:translateY(-4px);border-color:#e7bdc3;
+ box-shadow:0 28px 58px #000c,0 0 31px #bd5e883c,inset 0 1px #efd0c95c;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card:is(:hover,:focus-within)>img{transform:scale(1.055);opacity:.96}
+body.home-page:not(.profile-custom-theme) .kf-atlas-index{
+ position:relative;align-self:flex-start;padding:.4rem .66rem;
+ border:1px solid #a9878980;border-radius:7px;background:#17131bdc;
+ color:#e5c0b3;font-size:.7rem;font-weight:900;letter-spacing:.16em;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-copy{position:relative;margin-top:auto;max-width:350px}
+body.home-page:not(.profile-custom-theme) .kf-atlas-copy h3{
+ color:#f6e8d8;font:700 clamp(1.8rem,2.7vw,2.65rem)/1.1 Georgia,serif;
+ letter-spacing:-.04em;text-shadow:0 3px 18px #000;margin:.6rem 0 .4rem;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-copy p{
+ color:#dfd0d0;font-size:clamp(.84rem,1.1vw,.95rem);line-height:1.53;margin-bottom:1rem;text-shadow:0 1px 8px #000;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-copy a{
+ display:inline-flex;align-items:center;gap:.85rem;justify-content:space-between;
+ padding:.67rem .83rem;min-height:44px;border:1px solid #cba3a6b8;border-radius:9px;
+ color:#fff0e0;background:linear-gradient(140deg,#75415cf0,#3d2a45f4);
+ text-decoration:none;font-size:.88rem;font-weight:850;box-shadow:0 7px 19px #0009;
+}
+body.home-page:not(.profile-custom-theme) .kf-atlas-copy a:is(:hover,:focus-visible){background:#9d5771;border-color:#e1b4af;color:white}
+body.home-page:not(.profile-custom-theme) .kf-atlas-messages{--kf-atlas-accent:#a88cbd}
+body.home-page:not(.profile-custom-theme) .kf-atlas-foundry{--kf-atlas-accent:#d88ba8}
+body.home-page:not(.profile-custom-theme) .kf-atlas-moon{--kf-atlas-accent:#b8b5db}
+body.home-page:not(.profile-custom-theme) .kf-atlas-market{--kf-atlas-accent:#dfbe86}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card .kf-atlas-index{border-color:var(--kf-atlas-accent)}
+body.home-page:not(.profile-custom-theme) .kf-atlas-card .kf-atlas-copy a{border-color:var(--kf-atlas-accent)}
+
+/* Guest-safe identity treatment extends to real entry screens.
+   Protected content stays protected, but empty states are no longer unstyled. */
+body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout,
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) #foundry-public-preview{
+ isolation:isolate;
+}
+body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-card{
+ box-shadow:0 25px 65px #000c,0 0 0 1px #bb988957,inset 0 1px #f1d6c02e!important;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.admin-panel,.admin-shortcut,.eye-panel),
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) :is(.foundry-card,.foundry-public-card),
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.builder-panel,.shop-card,.store-card){
+ border-color:color-mix(in srgb,var(--kf-realm-metal,#cba98a) 60%,transparent)!important;
+}
+@media(max-width:900px){
+ body.home-page:not(.profile-custom-theme) .kf-realm-atlas{margin:2rem auto;padding:1.25rem}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-grid{gap:.8rem}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-card{min-height:290px}
+}
+@media(max-width:650px){
+ body.home-page:not(.profile-custom-theme) .kf-realm-atlas{padding:1rem;border-radius:18px}
+ body.home-page:not(.profile-custom-theme) .kf-realm-atlas::before{width:360px;top:-80px;right:-130px;opacity:.14}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-grid{grid-template-columns:1fr}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-heading h2{font-size:clamp(1.95rem,9vw,2.75rem)}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-card{min-height:260px;padding:1.25rem}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-card>img{object-position:60% 50%}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-copy{max-width:290px}
+ body[data-kf-realm]:not(.profile-custom-theme) :is(.home-activity,.ecosystem-section,.sanctuary-shell>section){box-shadow:0 12px 35px #0008!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.home-page:not(.profile-custom-theme) :is(.kf-atlas-card,.kf-atlas-card>img){transition:none!important;transform:none!important}
+}
+@media(forced-colors:active){
+ body.home-page:not(.profile-custom-theme) :is(.kf-realm-atlas,.kf-atlas-card,.kf-atlas-copy a){border:1px solid CanvasText!important}
+ body.home-page:not(.profile-custom-theme) .kf-atlas-heading h2 span{-webkit-text-fill-color:CanvasText}
+}
