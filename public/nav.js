@@ -11,7 +11,7 @@
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
       ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art9"],
-      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral4"]
+      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral5"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -205,7 +205,7 @@
   // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
   if (!document.querySelector('script[data-miss-chaos-presence]')) {
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261116-mobile-dock1";
+    companion.src = "/miss-chaos-presence.js?v=20261116-hero-dock2";
     companion.dataset.missChaosPresence = "true";
     document.head.append(companion);
   }
