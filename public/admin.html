@@ -32,7 +32,7 @@
 <h2>Operations</h2>
 <div class="admin-shortcuts" id="owner-operations" hidden>
   <a class="admin-shortcut" id="admin-vault-shortcut" href="/vault.html" hidden><strong>Private Vault</strong></a>
-  <a class="admin-shortcut" href="/eye-of-chaos.html" data-god-only hidden><strong>𓂀 Eye of Chaos · GOD Bot Command Center</strong></a>
+  <a class="admin-shortcut" href="/eye-of-chaos.html" data-eye-chaos-access hidden><strong>𓂀 Eye of Chaos · Staff Bot &amp; Game Command Center</strong></a>
   <a class="admin-shortcut" href="/theme-crew.html" data-god-only hidden><strong>✦ Theme Crew · Sitewide Gothic Themes &amp; CSS Bots</strong></a>
   <a class="admin-shortcut" href="/god-bot-control.html" data-god-only hidden><strong>Madhouse Bot Profiles · Legacy Editor</strong></a>
   <a class="admin-shortcut" href="/eye-of-horus.html" data-god-only hidden><strong>𓂀 Eye of Horus · GOD Access and Recovery Vault</strong></a>
@@ -203,7 +203,8 @@ const requestedTool = new URLSearchParams(location.search).get("tool");
 selectAdminTab(adminTabs.some(tab => tab.dataset.tab === requestedTool) ? requestedTool : "users");
 window.addEventListener("hashchange", openTaskListFromBookmark);
 (async()=>{try{const me=await api("/api/auth/me");if(!["admin","god"].includes(me.user?.role))throw Error("Administrator access required.");const owner = me.user.role === "god" || me.user.username === "knightfall";
-q("#owner-operations").hidden = !owner;
+q("#owner-operations").hidden = false;
+document.querySelectorAll("[data-eye-chaos-access]").forEach(link => {link.hidden=false;});
 document.querySelectorAll("[data-god-vault-tab],[data-god-vault-panel]").forEach(el=>{el.hidden=me.user.role!=="god";});
 q("#admin-vault-shortcut").hidden = !owner;
 document.querySelectorAll("[data-god-only]").forEach(link => {link.hidden = me.user.role !== "god";});
