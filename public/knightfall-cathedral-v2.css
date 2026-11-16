@@ -102,12 +102,7 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-
  content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;
  background:linear-gradient(0deg,#06080ddc 0%,transparent 50%);
 }
-body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
- content:"";position:absolute;pointer-events:none;
- height:52px;width:min(640px,88%);bottom:0;left:50%;transform:translateX(-50%);
- background:var(--kf-ceremonial-rule) center bottom/contain no-repeat;
- opacity:.62;z-index:0;
-}
+
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{
  max-width:930px!important;font-size:clamp(2.8rem,6.7vw,6.8rem)!important;
  font-family:Georgia,'Times New Roman',serif!important;
@@ -366,7 +361,7 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-st
  }
  body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{font-size:clamp(2.2rem,9.4vw,3.6rem)!important}
  body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro>p{font-size:1rem;line-height:1.55}
- body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{height:31px;opacity:.48}
+ 
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) [data-kf-art-hero]{
   min-height:230px!important;padding:1.3rem!important;
   background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e16f8,#14121dd4 72%,#10121bab),var(--kf-art-image)!important;
