@@ -7,6 +7,7 @@ on:
       - 'public/arcade/catalog.json'
       - 'public/chaos-cartridge.html'
       - 'scripts/cinderwild-audit.mjs'
+      - 'scripts/cinderwild-qol.test.mjs'
       - '.github/workflows/cinderwild-tests.yml'
   workflow_dispatch:
 jobs:
@@ -19,6 +20,11 @@ jobs:
         with:
           node-version: '22'
       - name: JavaScript syntax
-        run: node --check public/arcade/hosted/cinderwild/game.js
-      - name: Creature RPG smoke tests
-        run: node scripts/cinderwild-audit.mjs
+        run: |
+          node --check public/arcade/hosted/cinderwild/game.js
+          node --check public/arcade/hosted/cinderwild/world-renderer.js
+          node --check public/arcade/hosted/cinderwild/cabinet.js
+      - name: Creature RPG smoke tests and fullscreen Android rendering
+        run: |
+          node scripts/cinderwild-audit.mjs
+          node --test scripts/cinderwild-qol.test.mjs
