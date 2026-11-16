@@ -12,6 +12,7 @@ on:
       - 'public/sw.js'
       - 'backend/src/theme-crew*'
       - 'scripts/theme-crew-audit.mjs'
+      - 'scripts/pages-release-guard.mjs'
       - 'scripts/theme-crew-route.test.mjs'
       - 'scripts/theme-crew-browser-smoke.mjs'
       - 'scripts/theme-browser-smoke.mjs'
@@ -33,6 +34,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Audit all CSS files, shared imports, assets and leak guards
         run: node scripts/theme-crew-audit.mjs
+      - name: Simulate the exact Cloudflare Pages prepublish release gate
+        run: node scripts/pages-release-guard.mjs
       - name: Upload inspectable CSS report even when the guard fails
         if: always()
         uses: actions/upload-artifact@v4
