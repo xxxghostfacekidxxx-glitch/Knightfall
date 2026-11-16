@@ -107,8 +107,8 @@ test('offline fallback screens preserve Gothic cathedral art without network-dep
   const page=read(file);
   assert.match(page,/data-kf-theme="cathedral"/);
   assert.match(page,/data-kf-realm="(?:general|foundry)"/);
-  assert.match(page,/assets\\/knightfall\\/rose-window\\.svg/);
-  assert.match(page,/assets\\/knightfall\\/vaulted-cathedral\\.svg/);
-  assert.doesNotMatch(page,/theme-crew-runtime\\.js/);
+  assert.match(page,/assets\/knightfall\/rose-window\.svg/);
+  assert.match(page,/assets\/knightfall\/vaulted-cathedral\.svg/);
+  assert.doesNotMatch(page,/theme-crew-runtime\.js/);
  }
 });
