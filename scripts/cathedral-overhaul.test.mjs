@@ -8,15 +8,15 @@ const theme=read('theme.css');
 const nav=read('nav.js');
 const sw=read('sw.js');
 
-test('stained glass is owned by one cascade rule, and realm art remains visible',()=>{
+test('stained glass has one owner and realm artwork remains in the cascade',()=>{
  const requiem=read('knightfall-requiem.css');
  const shared=read('knightfall-unified-theme.css');
- assert.doesNotMatch(chrome,/\\.home-intro::after/,'The old tiny cathedral divider must remain removed');
- assert.doesNotMatch(shared,/:where\\(\\.home-intro,\\.cartridge-hero\\)::after/,'Global crest must not occupy stained-glass pseudo element');
- assert.doesNotMatch(requiem,/REQUIEM STAINED-GLASS CASCADE REPAIR/,'No appended emergency rule');
- assert.match(requiem,/sanctum-stained-glass\\.svg/);
- assert.match(requiem,/var\\(--kf-start-art/);
- assert.match(requiem,/rose-window\\.svg/);
+ assert.ok(!chrome.includes('.home-intro::after'),'Old 52px cathedral divider must stay deleted');
+ assert.ok(!shared.includes(':where(.home-intro,.cartridge-hero)::after'),'Legacy crest cannot occupy the glass pseudo element');
+ assert.ok(!requiem.includes('REQUIEM STAINED-GLASS CASCADE REPAIR'),'No layered emergency repair');
+ assert.ok(requiem.includes('sanctum-stained-glass.svg'));
+ assert.ok(requiem.includes('var(--kf-start-art'));
+ assert.ok(requiem.includes('rose-window.svg'));
 });
 test('Sanctum luminous stained glass is visible, accessible and installed offline',()=>{
  const art=read('assets/knightfall/sanctum-stained-glass.svg');
