@@ -15,6 +15,8 @@ on:
       - 'public/arcade/catalog.json'
       - 'public/arcade/hosted/arcade-playback-assist.js'
       - 'public/arcade-cabinet-ui.js'
+      - 'public/arcade-fullscreen.js'
+      - 'scripts/arcade-fullscreen-contract.test.mjs'
       - 'public/arcade/hosted/cinder-chess/index.html'
       - 'public/arcade/hosted/hex-embers/index.html'
       - 'public/arcade/hosted/radius-raid/index.html'
@@ -45,6 +47,8 @@ jobs:
           node-version: '22'
       - run: npm install --no-save playwright
       - run: npx playwright install --with-deps chromium
+      - name: Verify preserved fullscreen game controls
+        run: node --test scripts/arcade-fullscreen-contract.test.mjs
       - name: Browser smoke test shared navigation
         run: node scripts/smoke-navigation.mjs
       - name: Browser smoke test priority arcade games
