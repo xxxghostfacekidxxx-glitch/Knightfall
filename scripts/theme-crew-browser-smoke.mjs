@@ -7,7 +7,7 @@ import {chromium} from "playwright";
 const base=process.env.THEME_TEST_BASE||"http://127.0.0.1:8765";
 const out="artifacts/theme-crew/visual";
 mkdirSync(out,{recursive:true});
-const routes=["/","/community.html","/chaos-cartridge.html","/messages.html","/devil-tools.html","/moonology.html","/members.html","/shops.html","/auth.html","/members.html","/theme-crew.html"];
+const routes=["/","/community.html","/chaos-cartridge.html","/messages.html","/devil-tools.html","/moonology.html","/members.html","/shops.html","/auth.html","/theme-crew.html"];
 const looks={
  cathedral:null,
  blood_moon:"#d54372",
