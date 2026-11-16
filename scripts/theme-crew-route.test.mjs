@@ -4,11 +4,14 @@ import {readFileSync} from "node:fs";
 const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const nav=read("public/nav.js"),base=read("public/theme.css"),runtime=read("public/theme-crew-runtime.js");
 const css=read("public/theme-crew.css"),sw=read("public/sw.js"),backend=read("backend/src/index.js");
-test("Theme Crew is last in the cascade and loaded by shared navigation",()=>{
- assert.ok(nav.indexOf('["theme-crew"')>nav.indexOf('["knightfall-cathedral-v2"'));
+test("Theme Crew and final Cathedral Requiem use one canonical ordered cascade",()=>{
+ assert.ok(base.indexOf('"/theme-crew.css?')>base.indexOf('"/knightfall-cathedral-v2.css?'));
+ assert.ok(base.indexOf('"/knightfall-requiem.css?')>base.indexOf('"/theme-crew.css?'));
+ assert.match(nav,/kfCanonicalTheme/);
+ assert.match(nav,/themes\.shift\(\)/);
  assert.match(nav,/theme-crew-runtime\.js/);
  assert.match(base,/^@import url\("\/theme-crew\.css/m);
- assert.match(sw,/knightfall-shell-v63/);
+ assert.match(sw,/knightfall-shell-v64/);
  for(const asset of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
   assert.ok(sw.includes('"/'+asset+'"'),asset+" not in offline shell");
 });
