@@ -41,9 +41,9 @@ try {
           await page.waitForSelector(".kf-header .kf-brand", { timeout: 15000 });
           await page.waitForFunction(() => {
             const body = document.body;
-            return !!document.querySelector('link[data-knightfall-unified-theme]') &&
-              !!document.querySelector('link[data-knightfall-cathedral-v2]') &&
-              !!body && getComputedStyle(body).backgroundColor === "rgb(10, 13, 19)";
+            return !!document.querySelector('link[data-kf-canonical-theme]') &&
+              !!body && body.dataset.kfTheme === "cathedral" &&
+              getComputedStyle(body).backgroundColor === "rgb(9, 10, 17)";
           }, null, { timeout: 15000 });
           const state = await page.evaluate(() => {
             const color = selector => {
@@ -66,23 +66,25 @@ try {
           });
           const label = route + " / " + viewport.width + "px";
           assert.ok(state.header, label + " has shared navigation");
-          assert.equal(state.brand, "rgb(244, 223, 210)", label + " uses bone-colored branding");
+          assert.equal(state.brand, "rgb(247, 228, 201)", label + " uses gilded cathedral branding");
           assert.ok(state.scroll <= state.client + 1,
             label + " must not overflow horizontally: " + JSON.stringify(state));
           assert.equal(state.oldEmergency, false, label + " must not mount legacy emergency chrome");
-          assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-cathedral-v2.css")),
-            label + " must mount Cathedral Ascendant as final visual layer");
+          assert.equal(state.stylesheets.filter(sheet => sheet.includes("/theme.css")).length,1,
+             label + " must mount exactly one canonical cathedral stylesheet");
           await page.waitForFunction(() => document.body?.dataset.kfTheme === "cathedral" && !!window.KnightfallThemeCrew, null, {timeout: 15000});
           const crewCascade = await page.evaluate(() => {
             const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
-            const shared = links.filter(node => /\/(?:visual-refresh|section-overhaul|knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(node.href));
+            const shared = links.filter(node => new URL(node.href).pathname === "/theme.css");
             return {
               final: shared.at(-1)?.href || "",
-              count: links.filter(node => node.href.includes("/theme-crew.css")).length,
+              count: shared.length,
+              imported: [...document.styleSheets].some(sheet=>{try{return [...sheet.cssRules].some(rule=>String(rule.href||"").includes("/knightfall-requiem.css"))}catch{return false}}),
               activeTheme: document.body.dataset.kfTheme
             };
           });
-          assert.match(crewCascade.final,/\/theme-crew\.css/,label + " must load the Theme Crew as the final layer");
+          assert.match(crewCascade.final,/\/theme\.css/,label + " must load one canonical root");
+          assert.ok(crewCascade.imported,label + " must import the Cathedral Requiem artwork");
           assert.equal(crewCascade.count,1,label + " must not inject duplicate Theme Crew CSS links");
           assert.equal(crewCascade.activeTheme,"cathedral",label + " must default to original Gothic artwork");
 
@@ -93,8 +95,8 @@ try {
             const background = await page.locator(selector).evaluate(node => getComputedStyle(node).backgroundImage);
             assert.ok(background.includes(expected),
               label + " must render original artwork " + expected + "; found " + background);
-            assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-artwork.css")),
-              label + " must mount the artwork layer");
+            assert.ok(state.stylesheets.some(sheet => sheet.includes("/theme.css")),
+              label + " must mount the canonical artwork layer");
           }
           if (route === "/auth.html") {
             await page.waitForFunction(() => {
