@@ -1,4 +1,4 @@
-import {canAccessEyeOfHorus} from "./staff-capabilities.js";
+import {canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
 
 // Fixed identities for the GOD command board. These are profiles, not member accounts.
 const specialists=[
@@ -162,7 +162,8 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
  const respond=(value,status=200)=>json(value,status,origin,noStore);
  const user=await requireUser(request,env);
  if(!user)return respond({error:"Authentication required."},401);
- if(!canAccessEyeOfHorus(user))return respond({error:"GOD account required."},403);
+ if(!canAccessEyeOfChaos(user))return respond({error:"Administrator access required."},403);
+  const isGod=canAccessEyeOfHorus(user);
  if(request.method!=="GET"){
   const incoming=request.headers.get("Origin");
   if(incoming!=="https://ash-fall.com"&&incoming!=="https://www.ash-fall.com")
@@ -173,7 +174,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
  const ready=await schemaReady(env);
  if(url.pathname===API+"/status"&&request.method==="GET"){
   const f=await fleet(env);
-  return respond({...f,schema_ready:ready,execution_paused:ready?await isExecutionPaused(env):true,publishing_enabled:false,research_scheduler:ready?"available":"pending_migration"});
+  return respond({...f,schema_ready:ready,execution_paused:ready?await isExecutionPaused(env):true,publishing_enabled:false,permissions:{can_view:true,can_manage_missions:true,can_manage_drafts:true,can_approve:isGod,can_control:isGod,can_view_god_tools:isGod},research_scheduler:ready?"available":"pending_migration"});
  }
  if(url.pathname===API+"/sources"&&request.method==="GET")
   return respond({sources:Object.entries(CHAOS_SOURCES).map(([key,value])=>({key,...value}))});
@@ -207,6 +208,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
  if(url.pathname===API+"/control"){
   if(request.method==="GET")return respond({paused:await isExecutionPaused(env)});
   if(request.method==="POST"){
+    if(!isGod)return respond({error:"GOD account required for the master execution lock."},403);
    let payload;try{payload=await body()}catch{return respond({error:"Invalid JSON."},400)}
    if(typeof payload.paused!=="boolean")return respond({error:"Paused must be a boolean."},400);
    const changed=await env.DB.prepare("UPDATE eye_chaos_controls SET paused=?,updated_by=?,updated_at=? WHERE id=1").bind(payload.paused?1:0,user.id,timestamp()).run();
@@ -320,6 +322,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
  }
  if(matchDraft){
   const [ ,id,action]=matchDraft;
+   if(request.method==="POST"&&["approve","reject"].includes(action)&&!isGod)return respond({error:"Only GOD may approve or reject publication drafts."},403);
   const draft=await env.DB.prepare("SELECT * FROM eye_chaos_drafts WHERE id=?").bind(id).first();
   if(!draft)return respond({error:"Draft not found."},404);
   if(request.method==="PATCH"&&!action){
@@ -327,6 +330,7 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
    if(!validText(data.title,160)||!validText(data.body,10000)||!safeUrl(data.source_url||"")||
     !validText(String(data.destination||""),150,0))return respond({error:"Invalid draft text."},400);
    if(draft.status==="published")return respond({error:"Published content is immutable."},409);
+    if(draft.status==="approved"&&!isGod)return respond({error:"Only GOD can reopen an approved draft."},403);
    const changed=await env.DB.prepare("UPDATE eye_chaos_drafts SET title=?,body=?,source_url=?,destination=?,version=version+1,status='pending',approved_by=NULL,approved_at=NULL,approved_version=NULL,updated_at=? WHERE id=? AND version=?")
     .bind(data.title.trim(),data.body.trim(),String(data.source_url||""),String(data.destination||"").trim(),timestamp(),id,draft.version).run();
    if(Number(changed.meta?.changes||0)!==1)return respond({error:"Draft changed; reload."},409);
