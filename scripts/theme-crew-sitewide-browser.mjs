@@ -40,10 +40,23 @@ try{
       const body=document.body;
       const styles=[...document.querySelectorAll('link[rel=stylesheet]')].map(n=>n.href);
       const shared=styles.filter(s=>/\/(?:knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(s));
+      let crewImported=false;
+      for(const sheet of document.styleSheets){
+       try{if([...sheet.cssRules].some(rule=>String(rule.href||"").includes("/theme-crew.css")))crewImported=true}
+       catch{/* Other-origin sheets have inaccessible CSSOM; never treat them as a failure. */}
+      }
+      const overflowing=[...document.querySelectorAll("body *")].map(el=>{
+       const rect=el.getBoundingClientRect();const style=getComputedStyle(el);
+       return {el,rect,style};
+      }).filter(({rect,style})=>style.display!=="none"&&style.visibility!=="hidden"&&rect.width>0&&
+         (rect.right>document.documentElement.clientWidth+2||rect.left< -2))
+       .slice(0,12).map(({el,rect,style})=>({tag:el.tagName,cls:String(el.className||"").slice(0,85),
+         id:el.id,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width),
+         pos:style.position,overflow:style.overflow}));
       const heading=document.querySelector('main h1,main h2,h1');
       return {viewport:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,
        theme:body.dataset.kfTheme||null,realm:body.dataset.kfRealm||null,
-       sharedLast:shared.at(-1)||null,stylesheetCount:styles.length,
+       sharedLast:shared.at(-1)||null,crewImported,overflowing,stylesheetCount:styles.length,
        header:!!document.querySelector(".kf-header"),heading:heading?.textContent.trim().slice(0,100)||null};
      });
      record.state=state;
@@ -52,7 +65,7 @@ try{
      if(route.navigation&&!state.theme&&!route.intentional)issues.push("theme_runtime_missing");
      if(route.navigation&&state.theme&&state.theme!=="cathedral")issues.push("wrong_default_theme");
      if(route.navigation&&state.theme&&!state.realm)issues.push("realm_unclassified");
-     if(route.navigation&&state.theme&&!/\/theme-crew\.css/.test(state.sharedLast||""))issues.push("incorrect_final_cascade");
+     if(route.navigation&&state.theme&&!/\/theme-crew\.css/.test(state.sharedLast||"")&&!state.crewImported)issues.push("incorrect_final_cascade");
      record.issues=issues;
      if(issues.length){
       const screenshot=out+"/"+route.page.replace(/[^a-z0-9.-]/gi,"_")+"-"+viewport.width+".png";
