@@ -23,12 +23,21 @@ function valid(el){
 }
 function obstacles(){
  const result=[],seen=new Set();
- const elements=document.querySelectorAll('a[href],button,input,select,textarea,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer');
+ const elements=document.querySelectorAll('a[href],button,input,select,textarea,h1,h2,h3,[role="button"],[role="navigation"],[data-mc-keep-clear],#ashfall-support-footer');
  for(const el of elements){
   if(result.length>=180)break;
   if(!valid(el)||seen.has(el))continue;
   seen.add(el);
-  const rect=el.getBoundingClientRect(),style=getComputedStyle(el);
+  // Headings are content too. Measure painted text, not a full-width block,
+  // so the dock avoids words without constantly chasing empty heading space.
+  let rect=el.getBoundingClientRect();
+  if(/^H[1-3]$/.test(el.tagName) && document.createRange){
+    const range=document.createRange();
+    range.selectNodeContents(el);
+    const painted=range.getBoundingClientRect();
+    if(painted.width>0&&painted.height>0)rect=painted;
+  }
+  const style=getComputedStyle(el);
   // Exclude huge general containers but include full-width sticky nav/footer bars.
   const structural=el.id==='ashfall-support-footer'||style.position==='fixed'||style.position==='sticky';
   if((rect.width>innerWidth*.89||rect.height>innerHeight*.57)&&!structural)continue;
