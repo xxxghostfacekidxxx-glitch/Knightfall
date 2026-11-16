@@ -72,6 +72,14 @@ async function run(name,width,height){
   assert.equal(chats.length,1);
   assert.equal(letters.length,1,'Sending a chat message must not create another memo');
   assert.equal(notes.length,1,'Send must preserve original private memo');
+  // The dock defaults to compact on laptops and mobile to avoid covering
+  // page controls. Restore it through the same visible tab a member uses.
+  await page.locator('#miss-chaos-presence[data-dock-ready="true"]').waitFor();
+  if(await page.locator('#miss-chaos-presence').getAttribute('data-minimized')==='true'){
+    await page.locator('#mc-restore').click();
+    await page.waitForFunction(()=>document.querySelector('#miss-chaos-presence')?.dataset.minimized==='false');
+  }
+  assert.equal(await page.locator('#mc-restore').isHidden(),true,'Restore tab must hide after expanding the toolbar');
   await page.locator('#mc-memo-toggle').waitFor();
   await page.locator('#mc-memo-toggle').click();
   await page.locator('#mc-memo-host .memo-title').waitFor();
