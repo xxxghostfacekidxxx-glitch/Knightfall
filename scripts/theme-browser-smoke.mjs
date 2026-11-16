@@ -9,6 +9,15 @@ const routes = [
   "/shops.html", "/support.html", "/memo-pad.html",
   "/messages.html", "/devil-tools.html", "/chaos-cartridge.html"
 ];
+const realmArtwork = {
+  "/": "eclipse-cathedral.svg",
+  "/community.html": "realm-madhouse.svg",
+  "/members.html": "realm-members.svg",
+  "/shops.html": "realm-market.svg",
+  "/messages.html": "realm-messages.svg",
+  "/devil-tools.html": "realm-foundry.svg",
+  "/chaos-cartridge.html": "realm-arcade.svg"
+};
 const viewports = [
   { width: 390, height: 844, isMobile: true },
   { width: 1366, height: 900, isMobile: false }
@@ -60,6 +69,16 @@ try {
           assert.ok(state.scroll <= state.client + 1,
             label + " must not overflow horizontally: " + JSON.stringify(state));
           assert.equal(state.oldEmergency, false, label + " must not mount legacy emergency chrome");
+          if (realmArtwork[route]) {
+            const expected = realmArtwork[route];
+            const selector = route === "/" ? ".home-intro" : "[data-kf-art-hero]";
+            await page.waitForSelector(selector, {timeout: 10000});
+            const background = await page.locator(selector).evaluate(node => getComputedStyle(node).backgroundImage);
+            assert.ok(background.includes(expected),
+              label + " must render original artwork " + expected + "; found " + background);
+            assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-artwork.css")),
+              label + " must mount the artwork layer");
+          }
           if (route === "/auth.html" || route === "/community.html") {
             assert.equal(state.oldTakeover, false, label + " must not inject Gravewave overlay");
             assert.ok(!state.stylesheets.some(sheet => sheet.includes("gravewave-takeover")),
