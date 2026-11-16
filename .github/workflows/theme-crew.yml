@@ -1,0 +1,77 @@
+name: Knightfall Theme Crew
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 10 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'public/**/*.css'
+      - 'public/theme-crew*'
+      - 'public/nav.js'
+      - 'public/sw.js'
+      - 'backend/src/theme-crew*'
+      - 'scripts/theme-crew-audit.mjs'
+      - 'scripts/cathedral-overhaul.test.mjs'
+      - 'scripts/knightfall-sitewide-artwork.test.mjs'
+      - '.github/workflows/theme-crew.yml'
+permissions:
+  contents: read
+concurrency:
+  group: theme-crew-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  veil-sentinel:
+    name: Veil Sentinel / whole-repository CSS inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit all CSS files, shared imports, assets and leak guards
+        run: node scripts/theme-crew-audit.mjs
+      - name: Upload inspectable CSS report even when the guard fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-theme-css-inventory
+          path: artifacts/theme-crew/css-audit.json
+          if-no-files-found: warn
+  morgue-mason:
+    name: Morgue Mason / vetted designs
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all preset recipes and GOD authorization
+        run: node --test backend/src/theme-crew.test.mjs
+      - name: Validate browser and API JavaScript
+        run: |
+          node --check public/theme-crew-runtime.js
+          node --check public/theme-crew-ui.js
+          node --check backend/src/theme-crew.js
+  prism-warden:
+    name: Prism Warden / real site architecture and safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard heritage art, real templates, mobile and game exclusions
+        run: |
+          node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs
+          node --check public/nav.js
+          node --check public/sw.js
+  switchblade:
+    name: Switchblade / publisher contract (nonpublishing CI)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    needs: [morgue-mason,prism-warden]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce approved preset list and revision-safe GOD publish
+        run: node --test backend/src/theme-crew.test.mjs
+      - name: Confirm owner activation is manual and rollback exists
+        run: |
+          grep -q '/api/god/theme/activate' backend/src/theme-crew.js
+          grep -q '/api/god/theme/rollback' backend/src/theme-crew.js
+          grep -q 'expectedRevision' backend/src/theme-crew.js
+          echo "Safe publishing contract checked. CI does not change the live theme."
