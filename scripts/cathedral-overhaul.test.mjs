@@ -9,7 +9,7 @@ const nav=read('nav.js');
 const sw=read('sw.js');
 
 test('Cathedral Ascendant ships real original illustration assets and readable markup',()=>{
- for(const asset of ['obsidian-cathedral.svg','ceremonial-divider.svg']){
+ for(const asset of ['obsidian-cathedral.svg','ceremonial-divider.svg','rose-window.svg','vaulted-cathedral.svg']){
   const p='assets/knightfall/'+asset;
   assert.ok(existsSync(new URL('../public/'+p,import.meta.url)),p+' must exist');
   const svg=read(p);
@@ -21,9 +21,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral5/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral5"\)/);
- assert.match(sw,/knightfall-shell-v58/);
+ assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral6/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral6"\)/);
+ assert.match(sw,/knightfall-shell-v59/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
@@ -80,4 +80,14 @@ test('authenticated Foundry hides functional public previews without touching st
  assert.ok(markup.includes('id="workshop" class="hidden"'));
  for(const path of ['/chaos-cartridge.html','/community.html','/mascot-pets.html'])assert.ok(markup.includes('href="'+path+'"'));
  assert.ok(chrome.includes('body:has(#workshop:not(.hidden)) #foundry-public-preview{display:none!important}'));
+});
+
+test('Ascendant II exposes real functional portal routes and architectural art',()=>{
+ const home=read('index.html');
+ assert.match(home,/class="kf-realm-atlas"/);
+ for(const href of ['/messages.html','/devil-tools.html','/moonology.html','/shops.html'])assert.ok(home.includes('href="'+href+'"'),'real destination missing: '+href);
+ for(const key of ['.kf-atlas-grid','.kf-atlas-card','.kf-atlas-copy a','kf-rose-art','kf-vault-art'])assert.ok(chrome.includes(key),'visual treatment missing '+key);
+ assert.match(chrome,/@media\(max-width:650px\)/);
+ assert.match(chrome,/prefers-reduced-motion:reduce/);
+ assert.doesNotMatch(chrome,/\.kf-atlas-card\s*\{[^}]*pointer-events:none/s,'portal cards must remain clickable');
 });
