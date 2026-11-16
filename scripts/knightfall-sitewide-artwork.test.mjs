@@ -54,7 +54,7 @@ test('artwork is mounted last, kept in cache, and does not skin private profile 
  assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
  assert.match(nav,/kfCanonicalTheme/);
  assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v64/);
+ assert.match(sw,/knightfall-shell-v65/);
  assert.match(sw,/knightfall-artwork\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);

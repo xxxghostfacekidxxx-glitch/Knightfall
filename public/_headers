@@ -119,3 +119,6 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /arcade-save.js
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+/assets/knightfall/sanctum-stained-glass.svg
+  Cache-Control: no-cache, max-age=0, must-revalidate

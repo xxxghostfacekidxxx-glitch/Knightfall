@@ -75,12 +75,12 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
  content:"";position:absolute;z-index:0;pointer-events:none;
- width:min(58%,610px);aspect-ratio:1.45;
- right:-3%;top:-6%;
- background:url('/assets/knightfall/rose-window.svg') center/contain no-repeat;
- opacity:.72;mix-blend-mode:screen;
- mask-image:radial-gradient(ellipse at center,#000 30%,transparent 72%);
- filter:drop-shadow(0 0 42px #df7baa77);
+ width:min(49%,540px);aspect-ratio:.87;
+ right:1%;top:-3%;
+ background:url('/assets/knightfall/sanctum-stained-glass.svg') center/contain no-repeat;
+ opacity:.88;mix-blend-mode:screen;
+ mask-image:linear-gradient(180deg,#000 0%,#000 67%,transparent 100%);
+ filter:drop-shadow(0 0 46px #dc6fc49a);
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
@@ -198,7 +198,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
   padding:1.5rem!important;background-position:center,center,54% center!important;
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
-  top:0;right:-20%;width:95%;opacity:.3;
+  top:-24px;right:-9%;width:100%;opacity:.75;mask-image:linear-gradient(180deg,#000 0%,#000 51%,transparent 94%);
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
   font-size:clamp(2.25rem,10vw,3.8rem)!important;
