@@ -40,3 +40,11 @@ test("Only GOD may mutate the live recipe; custom member looks and gameplay are 
  for(const key of ["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"])
   assert.ok(runtime.includes(key)&&css.includes(key),"Preset not fully implemented: "+key);
 });
+
+test("Arcade atmospheric art stays inside the document viewport",()=>{
+ const arcade=read("public/arcade-polish.css");
+ assert.doesNotMatch(arcade,/main\.arcade:before,body>main:before\{[^}]*inset:0 -3vw auto/,
+  "Gothic decoration must never create 3vw horizontal overflow on games");
+ assert.match(arcade,/main\.arcade:before,body>main:before\{[^}]*inset:0 0 auto/,
+  "Ambient artwork must remain clipped to the main shell");
+});
