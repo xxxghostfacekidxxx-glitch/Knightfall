@@ -71,13 +71,13 @@ test('secondary public sections use the correct realm instead of generic fallbac
   ['eye-of-horus.html','eye-hero','god'],
   ['shop-builder.html','builder-hero','market']
  ];
- for (const [page,heading,realm] of sections) {
+ for(const [page,heading,realm] of sections){
   const html=read(page);
-  assert.ok(html.includes('class="'+heading+'"'),page+' has visible masthead');
-  assert.match(html,/\\/nav\\.js/,page+' loads shared theme routing');
-  assert.ok(nav.includes('.'+heading),page+' is covered by realm selector');
-  assert.ok(art.includes('body[data-kf-realm="'+realm+'"]'),realm+' has an illustrated asset');
+  assert.ok(html.includes('class="'+heading+'"'),page+' has a visible masthead');
+  assert.ok(html.includes('/nav.js'),page+' loads the shared theme runtime');
+  assert.ok(nav.includes('.'+heading),page+' is covered by a realm selector');
+  assert.ok(art.includes('body[data-kf-realm="'+realm+'"]'),realm+' has illustration assets');
  }
- assert.match(nav,/main\\.querySelector\\("canvas, \\[data-game-canvas\\]"\\)/);
- assert.match(art,/:not\\(\\.kf-gameplay-page\\)/);
+ assert.ok(nav.includes('main.querySelector("canvas, [data-game-canvas]")'));
+ assert.ok(art.includes(':not(.kf-gameplay-page)'));
 });
