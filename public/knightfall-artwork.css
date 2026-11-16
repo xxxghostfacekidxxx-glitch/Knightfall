@@ -32,8 +32,8 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):n
  position:relative!important;isolation:isolate;overflow:hidden;border:1px solid #ac8e79!important;
  border-radius:20px!important;min-height:clamp(210px,23vw,310px);padding:clamp(1.4rem,3vw,2.6rem)!important;
  background-color:#171820!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
- background-size:100% 100%,cover,cover!important;background-position:center,center,center!important;background-repeat:no-repeat!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
+ background-size:100% 100%,clamp(210px,34vw,460px) auto,cover,cover!important;background-position:center,right 4% top 10px,center,center!important;background-repeat:no-repeat!important;
  box-shadow:0 21px 58px #000a,inset 0 0 0 1px #e0c4a71f!important;
 }
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero] :is(h1,h2,p,a,button,.eyebrow){position:relative;z-index:1;text-shadow:0 2px 12px #050408de}
@@ -61,8 +61,9 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-card,.directory-group,.community-directory .category,.arcade-directory .cartridge-cabinet,.arcade-directory .arcade-flat-card,.kf-start-card,.arcade-card,.tool-card,.quick-card,.game-card,.entry-card):focus-within{outline:2px solid #c7a77c;outline-offset:3px}
 @media(max-width:700px){
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-hero]{
-  min-height:210px;background-position:center,68% center!important;
-  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),var(--kf-art-image)!important;
+  min-height:210px;background-position:center,center,right 12px top 8px,68% center!important;
+  background-size:100% 100%,cover,175px auto,cover!important;
+  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),url('/assets/knightfall/winged-skull-crest.svg'),var(--kf-art-image)!important;
  }
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{width:100%;opacity:.18}
 }
@@ -102,9 +103,9 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
    gradient to .home-intro, hiding the actual cathedral illustration. */
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
  background-color:#101219!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
- background-position:center,center,center 42%!important;
- background-size:100% 100%,cover,cover!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg'),linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
+ background-position:center,right 5% top 13px,center,center 42%!important;
+ background-size:100% 100%,clamp(200px,36vw,440px) auto,cover,cover!important;
  background-repeat:no-repeat!important;
 }
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
@@ -162,8 +163,8 @@ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card:is(:hover
 /* Shared ornate chrome: accent the existing real controls, never draw fake ones. */
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) :is(.page-hero,.section-hero,.directory-hero,.arcade-hero):not([data-kf-art-hero]){
  position:relative;isolation:isolate;overflow:hidden;border:1px solid #a88a79!important;border-radius:20px!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#11131bef,#16151bdf 56%,#16151b77),var(--kf-art-image)!important;
- background-size:100% 100%,cover,cover!important;background-position:center,center,center!important;background-repeat:no-repeat!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg'),linear-gradient(90deg,#11131bef,#16151bdf 56%,#16151b77),var(--kf-art-image)!important;
+ background-size:100% 100%,clamp(210px,34vw,460px) auto,cover,cover!important;background-position:center,right 4% top 10px,center,center!important;background-repeat:no-repeat!important;
  box-shadow:0 19px 45px #0009,inset 0 1px #e4bba923!important;
 }
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) :is(.community-directory,.foundry,.members-page,.cartridge-shelf,.admin-shell,.messages-shell,.bots-shell,.sanctuary-shell,.directory-shell) :is(h1,h2){
