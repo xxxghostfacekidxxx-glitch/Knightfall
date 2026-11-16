@@ -1952,14 +1952,14 @@
     },
     {
       "id": "sanctuary-ashfall-edition",
-      "title": "Sanctuary's End · Ash-Fall Edition",
+      "title": "Infernal Reign",
       "route": "/arcade/hosted/sanctuary-end/sanctuary.html",
-      "description": "Knightfall's separately hosted custom edition of the Diablo-style Sanctuary's End action RPG.",
+      "description": "Explore a gothic 3D action RPG with four hero classes, demon combat, dungeons, loot and talent builds.",
       "genre": "RPG",
       "collection": "games",
       "device": "desktop",
       "source": "/arcade/hosted/sanctuary-end/CREDITS.md",
-      "notes": "Separate edition from the original. Existing game files; graphics compatibility and runtime QA pending.",
+      "notes": "Knightfall's customized Sanctuary's End edition. Local saves and experimental player presence/chat; shared enemies and loot are not online yet.",
       "links": [],
       "featured": false
     },
