@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-16T22:20:34.539Z",
-  "reportsFound": 20,
+  "generatedAt": "2026-11-16T22:26:25.904Z",
+  "reportsFound": 10,
   "catalogRoutes": 133,
   "targets": {
     "live": {
@@ -11,23 +11,50 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
-    },
-    "local": {
-      "reports": 10,
-      "expectedShards": 10,
-      "expectedRoutes": 133,
-      "coveredRoutes": 133,
-      "missingShards": [],
-      "duplicatedShards": [],
-      "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-5-Rally Hound/tmp/arcade-browser-evidence/shard-5/live/report.json",
+          "shard": 5
+        }
+      ],
+      "failures": [
+        {
+          "game": "ashbound-runner",
+          "route": "/arcade/hosted/ashbound-runner/index.html",
+          "profile": "phone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/ashbound-runner/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinderwild",
+          "route": "/arcade/hosted/cinderwild/index.html",
+          "profile": "phone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinderwild/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinder-lander",
+          "route": "/arcade/hosted/cinder-lander/index.html",
+          "profile": "smallPhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinder-lander/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "004.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     }
   },
-  "passed": true,
-  "sourceRunId": 43968346549
+  "passed": false,
+  "sourceRunId": 43969651466
 }
