@@ -84,8 +84,8 @@ test("the approved roster is exactly 20, Pop Morgue is #18, and the real QA matr
  assert.ok(CHAOS_QA_FLEET.some(a=>a.name==="Ash Sentinel"));
  assert.ok(CHAOS_QA_FLEET.every(a=>a.kind==="github-action"));
 });
-test("GOD alone may see fleet data: guest, member, moderator and admin are denied before database reads",async()=>{
- for(const role of ["guest","member","moderator","admin"]){
+test("Admins and GOD may see command data; lower roles cannot",async()=>{
+ for(const role of ["guest","member","moderator"]){
   const f=fixture(role);
   const response=await f.call(base+"/status");
   assert.equal(response.status,role==="guest"?401:403);
@@ -99,6 +99,15 @@ test("GOD alone may see fleet data: guest, member, moderator and admin are denie
  assert.equal(data.forums[0].name,"Beelzebub");
  assert.equal(data.publication_locked,true);
  assert.equal(data.schema_ready,true);
+ assert.equal(data.permissions.can_approve,true);
+ assert.equal(data.permissions.can_control,true);
+ const admin=fixture("admin");
+ const adminResponse=await admin.call(base+"/status"),adminData=await adminResponse.json();
+ assert.equal(adminResponse.status,200);
+ assert.equal(adminData.permissions.can_view,true);
+ assert.equal(adminData.permissions.can_manage_missions,true);
+ assert.equal(adminData.permissions.can_approve,false);
+ assert.equal(adminData.permissions.can_control,false);
  assert.match(response.headers.get("cache-control"),/no-store/);
 });
 test("migration absent never authorizes mission writes or misreports activation",async()=>{
@@ -178,11 +187,23 @@ test("GOD QA dashboard reflects verified GitHub workflows and their actual worke
   assert.equal(calls,2);
   assert.equal(f.queries.filter(q=>/\b(?:FROM|INTO|UPDATE|DELETE FROM)\s+eye_chaos_drafts\b/i.test(q.sql)).length,0,"QA should not write or access member drafts");
  }finally{globalThis.fetch=previous}
- const denied=fixture("admin");
- const forbidden=await denied.call(base+"/qa");
- assert.equal(forbidden.status,403);
+ // QA is available to admins; GOD-only approval authority is tested separately.
 });
 
+test("Admins can assign missions and prepare drafts, but GOD-only actions fail before database reads",async()=>{
+ const admin=fixture("admin");
+ const mission=await admin.call(base+"/missions","POST",{division:"arcade",agent_key:"qa-01",kind:"qa",instructions:"Check arcade launch and fullscreen controls",cadence:"manual"});
+ assert.equal(mission.status,201);
+ const draft=await admin.call(base+"/drafts","POST",{division:"agents",author_key:"chaos-18",title:"Game QA recap",body:"Proposed fixes awaiting GOD review.",destination:"Madhouse / Gaming"});
+ assert.equal(draft.status,201);
+ const id=(await draft.json()).id;
+ const before=admin.queries.length;
+ assert.equal((await admin.call(base+"/control","POST",{paused:true})).status,403);
+ assert.equal((await admin.call(base+"/drafts/"+id+"/approve","POST")).status,403);
+ assert.equal((await admin.call(base+"/drafts/"+id+"/reject","POST")).status,403);
+ assert.equal(admin.queries.length,before);
+ assert.equal(admin.drafts.get(id).status,"pending");
+});
 test("AI generation creates an editable pending draft, never a published bot post",async()=>{
  const f=fixture();
  const mission=await f.call(base+"/missions","POST",{
