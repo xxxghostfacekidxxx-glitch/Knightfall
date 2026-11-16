@@ -3,29 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#080808">
+  <meta name="theme-color" content="#0d1013">
   <meta name="robots" content="noindex">
-  <title>You're offline | Ash-Fall</title>
+  <title>You're offline | Knightfall</title>
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/theme.css?v=20261116-offline-cathedral1">
   <style>
     *,*::before,*::after{box-sizing:border-box}
     html,body{max-width:100%;overflow-x:clip}
-    body{margin:0}
-
-    .offline{width:min(680px,92%);margin:12vh auto 3rem;padding:clamp(1.3rem,5vw,3rem);border:1px solid #333;border-radius:18px;background:#101010;text-align:center}
-    .offline .mark{font-size:3rem;color:#c7a77c}
-    .offline h1{font-size:clamp(2.4rem,8vw,4.5rem);line-height:.95;letter-spacing:-.06em;margin:.6rem 0 1rem}
-    .offline p{color:#aaa;line-height:1.7}
+    body{margin:0;min-height:100vh;background:#0d1013 url('/assets/knightfall/vaulted-cathedral.svg') center/cover fixed;color:#ece1d3;font:16px system-ui,sans-serif}
+    .offline{position:relative;isolation:isolate;overflow:hidden;width:min(680px,92%);margin:12vh auto 3rem;padding:clamp(1.3rem,5vw,3rem);border:1px solid #b88e8b;border-radius:21px;background:linear-gradient(140deg,#211824f2,#10141cf5);box-shadow:0 26px 76px #000b,inset 0 1px #ead2b229;text-align:center}
+    .offline::before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:-28% -23% auto auto;width:390px;aspect-ratio:1;background:url('/assets/knightfall/rose-window.svg') center/contain no-repeat;opacity:.18}
+    .offline .mark{font:700 3rem Georgia,serif;color:#d3b08a;text-shadow:0 0 25px #a8547866}
+    .offline h1{font:700 clamp(2.4rem,8vw,4.5rem)/1.02 Georgia,serif;letter-spacing:-.05em;margin:.6rem 0 1rem;color:#fff0db}
+    .offline p{color:#d8c8c2;line-height:1.7}
+    .offline .eyebrow{font-size:.77rem;letter-spacing:.17em;color:#dbb2b1;font-weight:800}
     .offline .actions{display:flex;justify-content:center;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem}
-    .offline a,.offline button{border:1px solid #c7a77c;border-radius:8px;background:#c7a77c;color:#101010;padding:.8rem 1rem;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
-    .offline a.secondary{background:#171717;color:#eee;border-color:#393939}
+    .offline a,.offline button{border:1px solid #dbad96;border-radius:9px;background:linear-gradient(135deg,#9c5872,#603b57);color:#fff4e8;padding:.8rem 1rem;font:inherit;font-weight:800;text-decoration:none;cursor:pointer;min-height:44px}
+    .offline a.secondary{background:#201b27;color:#f0e1d7;border-color:#927c80}
+    .offline a:focus-visible,.offline button:focus-visible{outline:2px solid #f1d4a7;outline-offset:3px}
+    @media(max-width:640px){body{background-attachment:scroll}.offline{margin:7vh auto 2rem}.offline::before{width:260px;opacity:.11}}
+    @media(prefers-reduced-motion:reduce){.offline *{scroll-behavior:auto}}
   </style>
 </head>
-<body>
+<body data-kf-realm="general" data-kf-theme="cathedral">
 <main class="offline">
   <div class="mark" aria-hidden="true">✳</div>
-  <p class="eyebrow">ASH-FALL / CONNECTION LOST</p>
+  <p class="eyebrow">KNIGHTFALL / CONNECTION LOST</p>
   <h1>The chaos can wait.</h1>
   <p>You're offline right now. Private pages, messages, games that need the server, and account actions are not stored for offline use. Reconnect to pick up where you left off; we deliberately avoid caching your private account data on this device.</p>
   <div class="actions">
@@ -39,7 +43,7 @@
   const status = document.getElementById("connection-status");
   retry.addEventListener("click", () => location.reload());
   window.addEventListener("online", () => {
-    status.textContent = "Connection restored. Reloading Ash-Fall…";
+    status.textContent = "Connection restored. Reloading Knightfall…";
     location.reload();
   });
   window.addEventListener("offline", () => { status.textContent = "Still offline. Your private data remains uncached."; });
