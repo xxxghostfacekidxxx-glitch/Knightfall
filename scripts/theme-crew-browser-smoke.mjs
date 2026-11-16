@@ -28,17 +28,17 @@ try{
     try{
      const response=await page.goto(base+route,{waitUntil:"domcontentloaded",timeout:30000});
      assert.ok(response?.ok(),route+" must respond successfully");
-     await page.waitForFunction(()=>!!window.KnightfallThemeCrew&&!!document.body.dataset.kfTheme&&!!document.querySelector('link[data-theme-crew]')?.sheet,null,{timeout:16000});
+     await page.waitForFunction(()=>!!window.KnightfallThemeCrew&&!!document.body.dataset.kfTheme&&!!document.querySelector('link[data-kf-canonical-theme]')?.sheet,null,{timeout:16000});
      const state=await page.evaluate(()=>{
       const links=[...document.querySelectorAll('link[rel=stylesheet]')].map(n=>n.href);
-      const shared=links.filter(x=>/\/(?:knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(x));
+      const shared=links.filter(x=>new URL(x).pathname==="/theme.css");
       return {preset:document.body.dataset.kfTheme,realm:document.body.dataset.kfRealm,
-       final:shared.at(-1)||"",crew:links.filter(x=>x.includes("/theme-crew.css")).length,
+       final:shared.at(-1)||"",crew:shared.length,
        overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth};
      });
      assert.equal(state.preset,"cathedral",route+" must preserve the approved live default");
      assert.ok(state.realm,route+" must have a realm classification");
-     assert.match(state.final,/\/theme-crew\.css(?:\?|$)/,route+" must load last audited CSS layer");
+     assert.match(state.final,/\/theme\.css(?:\?|$)/,route+" must load the canonical CSS root");
      assert.equal(state.crew,1,route+" must not duplicate the global theme stylesheet");
      assert.ok(state.overflow<=2,route+" horizontal overflow on "+vp.width+"px viewport: "+state.overflow);
      if(["/","/community.html","/chaos-cartridge.html","/messages.html","/devil-tools.html","/moonology.html"].includes(route)){
