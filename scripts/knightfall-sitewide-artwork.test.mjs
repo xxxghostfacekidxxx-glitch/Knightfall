@@ -33,7 +33,7 @@ test('Gothic realm illustration files are valid vector resources',()=>{
  assert.match(read('assets/knightfall/gothic-chrome-frame.svg'),/<svg\b/);
  assert.ok(sw.includes('/assets/knightfall/gothic-chrome-frame.svg'),'frame SVG is cached for installed apps');
  assert.ok(art.includes('gothic-chrome-frame.svg'),'frame overlays real headers');
- assert.match(read('assets/knightfall/winged-skull-crest.svg'),/<svg\\b/);
+ assert.match(read('assets/knightfall/winged-skull-crest.svg'),/<svg\b/);
  assert.ok(sw.includes('/assets/knightfall/winged-skull-crest.svg'),'approved skull art must be in offline shell');
  assert.ok(art.includes('winged-skull-crest.svg'),'approved skull art must be used on real pages');
 });
