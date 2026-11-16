@@ -133,7 +133,7 @@ try {
         const next = "/account.html?from=legacy#account-tools";
         await page.goto(origin + "/index.html?mode=register&next=" + encodeURIComponent(next));
         await page.waitForURL(url => url.pathname === "/auth.html" && url.searchParams.get("next") === next);
-        await page.getByRole("heading", { name: "Create an Ash-Fall account" }).waitFor();
+        await page.getByRole("heading", { name: "Create a Knightfall account" }).waitFor();
         assert.equal(await page.locator("[data-provider]").count(), 0);
         await page.getByLabel("Display name").fill("Fixture");
         await page.locator("#register-username").fill("fixture");
@@ -146,7 +146,7 @@ try {
         await page.getByRole("tab", { name: "Log in" }).click();
         await page.getByLabel("Username or email").fill("fixture");
         await page.getByLabel("Password", { exact: true }).fill("fixture-password");
-        await page.getByRole("button", { name: "Log in to Ash-Fall" }).click();
+        await page.getByRole("button", { name: /Log in to Knightfall/i }).click();
         await page.waitForURL(origin + next);
         await page.goto(origin + "/verify-email.html#token=" + "a".repeat(64));
         await page.getByLabel("Password").fill("fixture-password");
