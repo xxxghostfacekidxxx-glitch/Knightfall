@@ -46,7 +46,10 @@
     const ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     waters = []; lights = []; fireflies = [];
-    const shapes = materials.map(() => new Path2D());
+    // Embedded Android browsers may omit Path2D or its roundRect method.
+    // Keep ground materials visible instead of leaving a black game screen.
+    const vectorPaths = typeof Path2D === "function";
+    const shapes = materials.map(() => vectorPaths ? new Path2D() : { rectangles: [], rect(x,y,w,h){ this.rectangles.push([x,y,w,h]); } });
     const objects = [];
     const roadAt = (x, y) => tileAt(x, y) === "path" || (tileAt(x, y) === "town" && y === 16 && (x === 4 || x === 11));
     const settlement = (x, y) => x >= 2 && x <= 13 && y >= 16 && y <= 20;
@@ -69,8 +72,9 @@
           const right = roadAt(x + 1, y) || settlement(x + 1, y) ? 0 : inset;
           const top = roadAt(x, y - 1) || settlement(x, y - 1) ? 0 : inset;
           const bottom = roadAt(x, y + 1) || settlement(x, y + 1) ? 0 : inset;
-          shape.roundRect(dx + left, dy + top, n - left - right, n - top - bottom,
-            [left && top, right && top, right && bottom, left && bottom].map(edge => edge ? inset : 0));
+          const radii = [left && top, right && top, right && bottom, left && bottom].map(edge => edge ? inset : 0);
+          if (typeof shape.roundRect === "function") shape.roundRect(dx + left, dy + top, n - left - right, n - top - bottom, radii);
+          else shape.rect(dx + left, dy + top, n - left - right, n - top - bottom);
         }
 
         if (kind === "tree") {
@@ -110,7 +114,8 @@
         sheetCell(sample, art.ground, index, 3, 2, 0, 0, 96);
         ctx.fillStyle = ctx.createPattern(swatch, "repeat") || colors[index];
       }
-      ctx.fill(shape);
+      if (vectorPaths) ctx.fill(shape);
+      else for (const box of shape.rectangles) ctx.fillRect(...box);
     }
 
     // Broad patches of canopy shadow break up the repeating materials on long routes.
