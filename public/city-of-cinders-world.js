@@ -16,7 +16,7 @@ function createBuilding(x,w,h,seed=0) {
   const full=5.8+floors*.61;
   return {x,w,h,seed,floors,cols,full,hp:full,dead:false,collapse:0,
     cells:Array.from({length:floors*cols},(_,i)=>({hp:2,lit:hash(seed,i,7)>.34})),
-    facade:null};
+    facade:null,shards:[],impactCount:0,shake:0};
 }
 function buildingTop(b,ground){return ground-b.h;}
 function findGrip(buildings,m,ground,margin=19) {
@@ -76,6 +76,22 @@ function damageBuilding(b,amount,wx,wy,ground) {
   const index=floor*b.cols+col,cell=b.cells[index];
   const brokenBefore=cell.hp<=0;
   cell.hp=Math.max(0,cell.hp-amount*1.9);
+  b.impactCount=(b.impactCount||0)+1;
+  b.shake=Math.min(6,(b.shake||0)+Math.min(3,amount*1.6));
+  const originX=b.x+(col+.5)*b.w/b.cols;
+  const originY=top+(floor+.5)*b.h/b.floors;
+  for(let piece=0;piece<Math.min(12,Math.ceil(amount*5));piece++){
+    if(b.shards.length>=160)b.shards.shift();
+    const a=hash(b.seed,b.impactCount,piece)*Math.PI*2;
+    const speed=1.3+hash(piece,b.impactCount,b.seed)*4.5;
+    b.shards.push({
+      x:originX+(hash(piece,b.seed,b.impactCount)-.5)*b.w/b.cols,
+      y:originY+(hash(b.impactCount,piece,8)-.5)*b.h/b.floors,
+      vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-2.5,
+      size:3+hash(b.seed,piece,b.impactCount)*9,life:85+hash(piece,4,b.seed)*50,
+      tint:piece%3
+    });
+  }
   for(const dc of [-1,1]){
     const c=col+dc;if(c<0||c>=b.cols)continue;
     const other=b.cells[floor*b.cols+c];other.hp=Math.max(0,other.hp-amount*.17);
@@ -85,7 +101,17 @@ function damageBuilding(b,amount,wx,wy,ground) {
   if(collapsed){b.dead=true;b.collapse=0;}
   return {hit:true,broken:!brokenBefore&&cell.hp<=0,collapsed,floor,col,remaining:b.hp};
 }
-function stepCollapse(b,dt=1){if(b.dead)b.collapse=Math.min(1,b.collapse+Math.min(2,Math.max(0,dt))*.025);return b.collapse;}
+function stepCollapse(b,dt=1){
+  const step=Math.max(0,Math.min(3,Number(dt)||0));
+  if(b.dead)b.collapse=Math.min(1,b.collapse+step*.020);
+  b.shake=Math.max(0,(b.shake||0)-step*.32);
+  for(const bit of b.shards||[]){
+    bit.x+=bit.vx*step;bit.y+=bit.vy*step;
+    bit.vy+=.25*step;bit.vx*=Math.pow(.982,step);bit.life-=step;
+  }
+  if(b.shards)b.shards=b.shards.filter(bit=>bit.life>0&&bit.y<550);
+  return b.collapse;
+}
 function facade(b) {
   if(b.facade)return b.facade;
   if(typeof document==='undefined'||!document.createElement)return null;
@@ -119,59 +145,120 @@ function facade(b) {
 function paintDamage(c,b,x,top,frame) {
   const cw=b.w/b.cols,ch=b.h/b.floors;
   for(let i=0;i<b.cells.length;i++){
-    const cell=b.cells[i];if(cell.hp>=2)continue;
+    const cell=b.cells[i],ratio=clamp((2-cell.hp)/2,0,1);
+    if(ratio<=0)continue;
     const row=Math.floor(i/b.cols),col=i%b.cols;
-    const cx=x+(col+.5)*cw,cy=top+(row+.5)*ch;
-    const ratio=clamp((2-cell.hp)/2,0,1),r=Math.min(cw,ch)*(.13+ratio*.38);
+    const left=x+col*cw,yt=top+row*ch,cx=left+cw*.5,cy=yt+ch*.5;
     c.save();
-    c.fillStyle='#060910';c.strokeStyle='#d8a6b0';c.lineWidth=1.3;
-    c.beginPath();
-    for(let p=0;p<=10;p++){
-      const theta=p*Math.PI*2/10,radius=r*(.72+hash(b.seed,i,p)*.48);
-      const px=cx+Math.cos(theta)*radius,py=cy+Math.sin(theta)*radius;
-      if(!p)c.moveTo(px,py);else c.lineTo(px,py);
+    if(cell.hp<=0){
+      // A punched-out floor is an actual recessed cavity, not a black painted spot.
+      c.fillStyle='#05060d';c.fillRect(left+2,yt+3,cw-4,ch-5);
+      c.fillStyle='#1c1b28';c.fillRect(left+6,yt+7,cw-11,ch-12);
+      c.fillStyle='#05060a';c.fillRect(left+9,yt+9,cw-17,ch-17);
+      c.fillStyle='#af9ea8';c.fillRect(left+2,yt+2,cw-4,3);
+      c.fillStyle='#6e5c61';c.fillRect(left+3,yt+ch-7,cw-6,5);
+      // Horizontal slab and vertical pillars give the destruction readable depth.
+      c.fillStyle='#4b424b';c.fillRect(left+4,yt+7,4,ch-12);
+      c.fillStyle='#2a333d';c.fillRect(left+cw-9,yt+7,5,ch-12);
+      c.fillStyle='#a97b73';c.fillRect(left+3,yt+ch*.54,cw-6,2);
+      if((row+col+b.seed)%3===0){c.fillStyle='#efad6b';c.globalAlpha=.33+.12*Math.sin(frame*.07+i);c.fillRect(left+cw*.3,yt+ch*.33,cw*.38,3);c.globalAlpha=1;}
+      // Ragged broken masonry hangs over the edges of the newly-open hole.
+      c.fillStyle='#73636d';
+      for(let p=0;p<5;p++){
+        const k=hash(b.seed,i,p),edge=p%2?left+cw-5:left+1;
+        c.fillRect(edge,yt+5+k*(ch-14),4+2*k,3+4*hash(p,i,b.seed));
+      }
+    }else{
+      const r=Math.min(cw,ch)*(.17+ratio*.37);
+      c.fillStyle='#05080f';c.strokeStyle='#d3a2a7';c.lineWidth=1.5;
+      c.beginPath();
+      for(let p=0;p<=11;p++){
+        const angle=p*Math.PI*2/11,radius=r*(.66+hash(b.seed,i,p)*.45);
+        const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
+        if(!p)c.moveTo(px,py);else c.lineTo(px,py);
+      }
+      c.closePath();c.fill();c.stroke();
     }
-    c.closePath();c.fill();c.stroke();
-    // Exposed interior steel and cracks radiate outward from each hole.
-    c.strokeStyle='#748b9b';c.lineWidth=2;
-    c.beginPath();c.moveTo(cx-r*.6,cy+r*.2);c.lineTo(cx+r*.8,cy-r*.15);c.stroke();
-    c.strokeStyle='#15101d';c.lineWidth=1.4;
-    for(let p=0;p<4;p++){
-      const theta=(p*.51+hash(i,p,b.seed))*Math.PI*2;
-      const dx=Math.cos(theta)*r,dy=Math.sin(theta)*r;
-      c.beginPath();c.moveTo(cx+dx*.5,cy+dy*.5);c.lineTo(cx+dx*1.45,cy+dy*1.55);c.lineTo(cx+dx*1.7-4,cy+dy*1.7+5);c.stroke();
+    c.strokeStyle=cell.hp<=0?'#92828c':'#e19c8b';c.lineWidth=1.3;
+    for(let p=0;p<5;p++){
+      const angle=(p/5+hash(i,p,b.seed)*.14)*Math.PI*2;
+      const reach=Math.min(cw,ch)*(.22+ratio*.52);
+      c.beginPath();c.moveTo(cx+Math.cos(angle)*reach*.42,cy+Math.sin(angle)*reach*.42);
+      c.lineTo(cx+Math.cos(angle)*reach,cy+Math.sin(angle)*reach);
+      c.lineTo(cx+Math.cos(angle+.16)*reach*1.28,cy+Math.sin(angle+.16)*reach*1.28);c.stroke();
     }
-    if(ratio>.65){c.fillStyle='#e6a56c';c.globalAlpha=.15+.09*Math.sin(frame*.12+i);c.fillRect(cx-r*.65,cy+r*.4,r*1.3,3);}
     c.restore();
   }
 }
+function paintFragments(c,b,cam,ground,frame) {
+  for(const bit of b.shards||[]){
+    const alpha=clamp(bit.life/50,0,1),sx=bit.x-cam;
+    if(sx<-25||sx>1000||bit.y>ground+95)continue;
+    c.globalAlpha=alpha;
+    c.fillStyle=bit.tint===0?'#ddaa89':bit.tint===1?'#6b6477':'#9c8390';
+    c.fillRect(sx,Math.min(ground+40,bit.y),bit.size,Math.max(2,bit.size*.64));
+    c.fillStyle='#080c16';c.fillRect(sx+bit.size*.4,Math.min(ground+40,bit.y)+1,bit.size*.4,2);
+  }
+  c.globalAlpha=1;
+}
 function drawBuilding(c,b,cam,ground,frame=0,mode='cinematic'){
-  const x=b.x-cam,top=buildingTop(b,ground),t=b.collapse||0;
+  const top=buildingTop(b,ground),t=b.collapse||0;
+  const quake=(b.shake||0)*Math.sin(frame*2.2),x=b.x-cam+quake;
   if(x>1000||x+b.w<-40)return;
   const skin=facade(b);
-  if(b.dead){
-    // Layers descend and rotate into a heap rather than disappearing on the killing blow.
-    if(t<.97&&skin){
-      c.save();c.globalAlpha=1-t*.85;c.translate(x+b.w/2,top+b.h);
-      c.rotate((b.seed%2?1:-1)*t*.12);
-      c.drawImage(skin,-b.w/2,-b.h+t*b.h*.82,b.w,b.h);
-      c.restore();
+  // Architectural extrusion: a visible side plane + cast shadow, even at rest.
+  const depth=mode==='performance'?9:16;
+  c.fillStyle='#080a14';c.fillRect(x+depth,top+9,b.w,ground-top+9);
+  if(!b.dead){
+    c.fillStyle='#10111c';c.fillRect(x+b.w,top+depth,depth,b.h-depth);
+    c.fillStyle='#50526b';c.fillRect(x+b.w,top+depth,2,b.h-depth);
+    c.fillStyle='#212237';c.beginPath();c.moveTo(x,top);c.lineTo(x+depth,top-depth*.42);c.lineTo(x+b.w+depth,top-depth*.42);c.lineTo(x+b.w,top);c.closePath();c.fill();
+    if(skin)c.drawImage(skin,x,top,b.w,b.h);
+    else{c.fillStyle='#293343';c.fillRect(x,top,b.w,b.h);}
+    paintDamage(c,b,x,top,frame);
+    // Exposed corner steel is now separate from facade damage.
+    c.fillStyle='#141824';c.fillRect(x+2,top+1,4,b.h-3);
+    c.fillStyle='#8893a2';c.fillRect(x+4,top+4,1,b.h-8);
+    c.fillStyle='#10131b';c.fillRect(x+b.w-7,top+3,5,b.h-3);
+    c.fillStyle='#e77db6';c.fillRect(x+b.w*.39,top-12,b.w*.22,3);
+    c.fillStyle='#080c14';c.fillRect(x+b.w*.37,top-9,b.w*.26,9);
+    if(b.hp<b.full){
+      c.fillStyle='#080d17';c.fillRect(x+5,top-17,b.w-10,5);
+      c.fillStyle='#ff849f';c.fillRect(x+6,top-16,(b.w-12)*(b.hp/b.full),3);
     }
-    c.fillStyle='#252432';c.fillRect(x-8,ground-12,b.w+16,12);
-    for(let i=0;i<12;i++){const q=hash(b.seed,i,4),px=x+q*b.w,size=5+hash(i,b.seed,3)*12; c.fillStyle=i%3===0?'#986a69':'#4c4555';c.fillRect(px,ground-6-size*.56,size,5+size*.56);}
-    if(t<.96){c.fillStyle='#bb9eae';c.globalAlpha=(1-t)*.20;c.fillRect(x-16,ground-23-t*25,b.w+32,22);c.globalAlpha=1;}
-    return;
+  }else{
+    // Every floor folds down independently as the structure loses support.
+    const cw=b.w/b.cols,ch=b.h/b.floors;
+    if(t<.99&&skin){
+      for(let floor=b.floors-1;floor>=0;floor--){
+        const phase=clamp(t*(1.42+floor/b.floors*.6)-floor/b.floors*.12,0,1);
+        if(phase>=1)continue;
+        const srcY=floor*ch,offsetY=Math.min(b.h-srcY,phase*(ground-(top+srcY))*.96);
+        const sag=phase*phase*18;
+        c.save();c.globalAlpha=1-phase*.78;
+        c.translate(x+(floor%2?1:-1)*phase*11,top+srcY+offsetY+sag);
+        c.transform(1,(floor%2?1:-1)*phase*.11,0,Math.max(.1,1-phase*.82),0,0);
+        c.drawImage(skin,0,srcY,b.w,ch,0,0,b.w,ch);
+        c.restore();
+      }
+    }
+    // Persistent smashed slabs, exposed iron, dust.
+    c.fillStyle='#1e1d29';c.fillRect(x-8,ground-14,b.w+18,14);
+    for(let i=0;i<20;i++){
+      const k=hash(b.seed,i,4),px=x+Math.min(b.w,k*b.w),size=4+hash(i,b.seed,3)*17;
+      c.fillStyle=i%4===0?'#b68e83':i%3===0?'#494658':'#787280';
+      c.fillRect(px,ground-3-size*.58,size,Math.max(3,size*.58));
+    }
+    if(t<.99){
+      c.globalAlpha=(1-t)*.4;c.fillStyle='#aaa0b2';
+      for(let p=0;p<5;p++){
+        const q=hash(b.seed,p,11),xx=x+q*b.w-20;
+        c.fillRect(xx,ground-25-t*(24+p*13),34+p*11,15+p*4);
+      }
+      c.globalAlpha=1;
+    }
   }
-  if(skin)c.drawImage(skin,x,top,b.w,b.h);
-  else{c.fillStyle='#293343';c.fillRect(x,top,b.w,b.h);}
-  paintDamage(c,b,x,top,frame);
-  c.fillStyle='#090b14';c.fillRect(x+b.w*.43,top-12,b.w*.14,12);
-  c.fillStyle='#e879b4';c.fillRect(x+b.w*.45,top-10,b.w*.10,3);
-  c.strokeStyle='#8e94a8';c.lineWidth=3;c.strokeRect(x,top,b.w,b.h);
-  if(b.hp<b.full){
-    c.fillStyle='#090d18';c.fillRect(x+5,top-9,b.w-10,5);
-    c.fillStyle='#ef7998';c.fillRect(x+6,top-8,(b.w-12)*(b.hp/b.full),3);
-  }
+  paintFragments(c,b,cam,ground,frame);
 }
 const api={createBuilding,buildingTop,findGrip,resolveWall,landing,findTarget,damageBuilding,stepCollapse,drawBuilding,hash};
 root.CityCindersWorld=api;
