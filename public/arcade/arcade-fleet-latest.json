@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T14:47:47.361Z",
+  "generatedAt": "2026-11-16T15:02:55.359Z",
   "reportsFound": 10,
   "catalogRoutes": 133,
   "targets": {
@@ -11,50 +11,11 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [
-        {
-          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-8-Savekeeper/tmp/arcade-browser-evidence/shard-8/live/report.json",
-          "shard": 8
-        }
-      ],
-      "failures": [
-        {
-          "game": "sanctuary-ashfall-edition",
-          "route": "/arcade/hosted/sanctuary-end/sanctuary.html",
-          "profile": "desktop",
-          "action": "navigate",
-          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/sanctuary-end/sanctuary.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
-          "target": "live",
-          "screenshot": "011.png",
-          "networkErrorCount": 0,
-          "browserErrorCount": 0
-        },
-        {
-          "game": "lift-riot",
-          "route": "/arcade/hosted/lift-riot/index.html",
-          "profile": "tablet",
-          "action": "navigate",
-          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/lift-riot/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
-          "target": "live",
-          "screenshot": "008.png",
-          "networkErrorCount": 0,
-          "browserErrorCount": 0
-        },
-        {
-          "game": "rift-wardens",
-          "route": "/arcade/hosted/rift-wardens/index.html",
-          "profile": "tablet",
-          "action": "navigate",
-          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/rift-wardens/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
-          "target": "live",
-          "screenshot": null,
-          "networkErrorCount": 1,
-          "browserErrorCount": 0
-        }
-      ],
-      "coverageOk": false
+      "malformedReports": [],
+      "failures": [],
+      "coverageOk": true
     }
   },
   "passed": false,
-  "sourceRunId": 43888631094
+  "sourceRunId": 43891718447
 }
