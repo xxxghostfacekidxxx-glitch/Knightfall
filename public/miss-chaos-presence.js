@@ -110,6 +110,6 @@
   });
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261103-memo-dock2";
+  dockScript.src="/miss-chaos-dock.js?v=20261115-avoid-headings1";
   document.head.append(dockScript);
 })();
