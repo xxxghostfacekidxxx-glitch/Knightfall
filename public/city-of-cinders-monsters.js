@@ -103,7 +103,7 @@ function draw(c,id,x,y,w,h,opts={}){
  const climb=state==='climb',attack=state==='attack',roar=state==='roar';
  const bounce=opts.reducedMotion?0:climb?Math.sin(phase*1.7)*2:moving?Math.abs(gait)*2:Math.sin(phase*.7)*2;
  const backAngle=climb?-1.3+gait*.65:moving?gait*.35:-.12;
- const frontAngle=attack?-1.25-Math.sin(phase*2)*.25:climb?-1.3-gait*.65:roar?-1.8:moving?-gait*.42:-.25;
+ const frontAngle=attack?-1.45-Math.sin(phase*2)*.20:climb?-1.38-gait*.65:roar?-1.8:moving?-gait*.35:.15;
  c.save();c.translate(x+w*.5,y+h);c.scale((opts.face===-1?-1:1)*w/110*1.37,h/145*1.17);c.translate(-82,-180);
  if(opts.hurt&&frame%6<3)c.globalAlpha=.6;
  if(roar){c.save();c.globalAlpha=.45;c.strokeStyle=p.eyes;c.lineWidth=6;c.beginPath();c.arc(83,108,65+Math.sin(phase)*5,0,Math.PI*2);c.stroke();c.restore();}
@@ -114,8 +114,16 @@ function draw(c,id,x,y,w,h,opts={}){
  if(id==='minion-mouse')mouse(c,p);
  else if(id==='mini-villain')villain(c,p);
  else eddie(c,p);
- arm(c,id==='the-eddie'?126:115,96,frontAngle,p,id==='the-eddie'?1.32:id==='mini-villain'?.88:1.03);
- if(opts.mutation==='armored'){plate(c,43,96,23,17);plate(c,107,97,24,17);}
+ arm(c,id==='the-eddie'?126:115,111,frontAngle,p,id==='the-eddie'?1.28:id==='mini-villain'?.88:1.03);
+ if(roar){
+  c.save();c.globalAlpha=.85;c.strokeStyle=p.eyes;c.lineWidth=3;
+  for(let i=0;i<6;i++){
+    const x=44+i*17,yy=75+Math.sin(phase+i)*24;
+    c.beginPath();c.moveTo(x,yy);c.lineTo(x+6,yy-11);c.lineTo(x+1,yy-16);c.lineTo(x+12,yy-29);c.stroke();
+  }
+  c.restore();
+}
+if(opts.mutation==='armored'){plate(c,43,96,23,17);plate(c,107,97,24,17);}
  if(opts.mutation==='feral'){c.strokeStyle='#ff55d8';c.lineWidth=3;for(let i=0;i<3;i++){c.beginPath();c.moveTo(46+i*19,139);c.lineTo(39+i*19,150);c.stroke();}}
  c.restore();return true;
 }
@@ -129,6 +137,14 @@ function portrait(canvas,id,opts={}){
  c.strokeStyle=hue;c.globalAlpha=.3;c.lineWidth=2;
  for(let i=0;i<5;i++){c.beginPath();c.moveTo(0,h*.18+i*28);c.lineTo(w,h*.08+i*28);c.stroke();}
  c.globalAlpha=1;
+ // The cast is skyscraper-sized: silhouettes of destroyed rooftops frame them.
+ for(let i=0;i<7;i++){
+  const bw=18+(i%3)*7,bx=(i*47)%w,by=h*(.63+(i%4)*.045);
+  c.fillStyle=i%2?'#131320':'#1c1424';c.fillRect(bx,by,bw,h-by);
+  c.fillStyle=i%2?'#855f82':'#50816c';
+  for(let row=0;row<3;row++)for(let col=0;col<2;col++)
+   c.fillRect(bx+4+col*9,by+5+row*12,3,5);
+ }
  draw(c,id,w*.30,h*.30,w*.40,h*.56,{state:opts.state||'idle',frame:opts.frame||0,mutation:opts.mutation});
  c.fillStyle=hue;c.fillRect(w*.14,h-7,w*.72,3);
  return true;

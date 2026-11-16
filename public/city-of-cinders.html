@@ -39,7 +39,7 @@
 .monster-card strong{font-size:clamp(1.15rem,2vw,1.65rem);line-height:1.15;padding:0 4px;color:#f9eaf2}
 .monster-card small{color:#cfc0cb;padding:7px 4px 3px;line-height:1.45;min-height:3.5em}
 #roster .monster-card{background:linear-gradient(145deg,#241729,#11121d);color:#eee8e8}
-#roster .monster-card[aria-pressed="true"]{background:linear-gradient(145deg,#392039,#17141e);border-color:#c6ff45}
+#roster .monster-card[aria-pressed="true"]{background:linear-gradient(145deg,#392039,#17141e)!important;color:#f7f0ec!important;border-color:#c6ff45!important}
 .monster-card:focus-visible{outline:3px solid #c6ff45;outline-offset:3px}
 @media(max-width:700px){.roster{grid-template-columns:none;grid-auto-columns:minmax(195px,75%);grid-auto-flow:column;overflow-x:auto;scroll-snap-type:x mandatory;padding:3px 3px 10px;overscroll-behavior-x:contain}.monster-card{scroll-snap-align:center;min-height:210px}.monster-card strong{font-size:1.25rem}}
 @media(prefers-reduced-motion:reduce){.monster-card{transition:none!important;transform:none!important}}
@@ -72,7 +72,7 @@
 <div class="help"><section class="card"><h2>How to ruin a perfectly good skyline</h2><ul><li><b>Move:</b> A/D or arrow keys. Use the on-screen buttons on mobile.</li><li><b>Smash:</b> Space or hold PUNCH. Face a façade and attack its individual floors: windows crack, walls open, structural damage spreads, and the whole tower can collapse.</li><li><b>Climb:</b> Hold W or ↑ against a building wall (hold CLIMB on mobile). Reach the top to pull yourself onto the roof. Hold S or ↓ to descend.</li><li><b>Jump:</b> J, X or JUMP. Leap off walls, rooftops, or evade gunfire.</li><li><b>Rage roar:</b> E or ROAR when the rage meter reaches 100%. It wrecks nearby structures and clears projectiles.</li><li><b>Win:</b> Wreck all 12 buildings. Survive long enough to make the skyline a historical rumor.</li></ul></section><section class="card"><h2>Original monster. Original mess.</h2><p>Meet <b>Minion Mouse</b>, <b>Mini Villain</b> and <b>The Eddie</b>, three building-sized Knightfall legends. This original 2.5D city-destruction game uses an original animated monster renderer, cached procedural façade art, local gameplay, and Knightfall arcade scores for signed-in accounts. The controls are designed for keyboard and touch screens.</p><p>Score submission requires an Ash-Fall account. If you play signed out, your run still works, because even monsters deserve a little privacy.</p></section></div>
 </main>
 <script src="/arcade-sprites.js?v=20261023-arcade-overhaul"></script>
-<script src="/city-of-cinders-world.js?v=20261116-mayhem4"></script><script src="/city-of-cinders-monsters.js?v=20261116-legends2"></script>
+<script src="/city-of-cinders-world.js?v=20261116-mayhem4"></script><script src="/city-of-cinders-monsters.js?v=20261116-legends3"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
