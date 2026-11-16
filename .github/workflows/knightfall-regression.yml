@@ -62,6 +62,8 @@ jobs:
           node --check scripts/arcade-embervale-expansion.test.mjs
           node --check public/arcade/hosted/embervale/js/world.js
           node --check public/arcade/hosted/embervale/js/entities.js
+          node --check public/city-of-cinders-world.js
+          node --check scripts/city-of-cinders-destruction.test.mjs
           node --check public/arcade/hosted/embervale/js/game.js
           node --check public/arcade/hosted/embervale/js/knightfall-expansion.js
           node --check public/arcade/hosted/embervale/js/knightfall-touch.js
@@ -102,6 +104,7 @@ jobs:
           node --test scripts/arcade-neon-surge.test.mjs
           node --test scripts/arcade-embervale.test.mjs
           node --test scripts/arcade-embervale-expansion.test.mjs
+          node --test scripts/city-of-cinders-destruction.test.mjs
           node --test scripts/infernal-reign-upgrades.test.mjs
           node --test scripts/admin-offline-paths.test.mjs scripts/admin-offline-install.test.mjs scripts/messages-composer-races.test.mjs
           node --test scripts/messages-history-cursor.test.mjs scripts/monster-mmo-moves.test.mjs scripts/devil-tools-icon-choices.test.mjs scripts/monster-recovered-sprites.test.mjs scripts/arcade-revision-migration.test.mjs scripts/archived-arcade-features.test.mjs scripts/arcade-bridge-manifest.test.mjs scripts/selected-open-source-games.test.mjs
