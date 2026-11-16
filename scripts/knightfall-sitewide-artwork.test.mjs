@@ -45,7 +45,7 @@ test('shared nav discovers the actual public page headers',()=>{
 test('artwork is mounted last, kept in cache, and does not skin private profile themes or gameplay',()=>{
  assert.match(nav,/knightfall-artwork\.css/);
  assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v48/);
+ assert.match(sw,/knightfall-shell-v49/);
  assert.match(sw,/knightfall-artwork\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);
