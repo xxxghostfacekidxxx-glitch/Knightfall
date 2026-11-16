@@ -46,6 +46,20 @@ try{
       await page.screenshot({path:out+"/baseline-"+key+"-"+vp.width+".png",animations:"disabled"});
       screenshots++;
      }
+     if(route==="/devil-tools.html"){
+      // Guest entry and authenticated Foundry workshop share one destination,
+      // but never appear together. Verify real computed visibility.
+      const link='a[href="/mascot-pets.html"]:visible';
+      assert.equal(await page.locator(link).count(),1,
+        "Guest Foundry should expose a single visible Sanctuary entrance");
+      await page.evaluate(()=>document.getElementById("workshop")?.classList.remove("hidden"));
+      await page.waitForFunction(()=>{
+        const guest=document.getElementById("foundry-public-preview");
+        return guest&&getComputedStyle(guest).display==="none";
+      },null,{timeout:5000});
+      assert.equal(await page.locator(link).count(),1,
+        "Staff Foundry should expose one Sanctuary link, not a duplicate");
+     }
      if(route==="/theme-crew.html"){
       const workspace=await page.locator("#theme-crew-workspace").isHidden();
       assert.equal(workspace,true,"Guest must not see GOD publisher controls");
