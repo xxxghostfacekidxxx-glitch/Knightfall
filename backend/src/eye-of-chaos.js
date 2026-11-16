@@ -171,6 +171,11 @@ export async function handleEyeOfChaos(request,env,url,{requireUser,json,origin,
   if(!String(request.headers.get("content-type")||"").startsWith("application/json")&&request.method!=="DELETE")
    return respond({error:"JSON body required."},415);
  }
+  // Deny GOD-only mutations before any D1 read, even the schema readiness check.
+  if(!isGod&&request.method==="POST"&&(
+    url.pathname===API+"/control"||
+    /^\/api\/god\/chaos\/drafts\/[0-9a-f-]{36}\/(approve|reject)$/.test(url.pathname)
+  ))return respond({error:"GOD approval required."},403);
  const ready=await schemaReady(env);
  if(url.pathname===API+"/status"&&request.method==="GET"){
   const f=await fleet(env);
