@@ -10,12 +10,13 @@ const old=read("../public/god-bot-control.html");
 const backend=read("../backend/src/index.js");
 const api=read("../backend/src/eye-of-chaos.js");
 
-test("GOD console exposes all seven unique workspaces with navigation",()=>{
+test("Admin and GOD command deck exposes all seven workspaces with navigation",()=>{
  const panels=[...html.matchAll(/class="chaos-panel" data-panel="([^"]+)"/g)].map(a=>a[1]);
  const tabs=[...html.matchAll(/data-section="([^"]+)"/g)].map(a=>a[1]);
  assert.deepEqual(panels,["overview","fleet","missions","approvals","qa","forums","history"]);
  assert.deepEqual(tabs,panels);
- assert.match(admin,/href="\/eye-of-chaos\.html" data-god-only hidden/);
+ assert.match(admin,/href="\/eye-of-chaos\.html" data-eye-chaos-access hidden/);
+ assert.match(js,/data-chaos-god-only/);
  assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
  assert.match(html,/id="chaos-workspace" hidden/);
  assert.match(js,/api\("\/status"\)/);
