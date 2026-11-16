@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {staffCapabilities,canAccessCreatorFoundry,canAccessModeration,canAccessEyeOfHorus} from "./staff-capabilities.js";
+import {staffCapabilities,canAccessCreatorFoundry,canAccessModeration,canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
 import {botAccessPolicy} from "./bot-creator-access.js";
 
 test("Level 1 has two mutually exclusive job tracks at identical rank",()=>{
@@ -24,6 +24,11 @@ test("Administrator inherits both tracks, God inherits both plus Eye of Horus",(
  for(const cap of ["can_create","can_moderate","unlimited_bots","advanced_bot_builder"]) {
   assert.equal(admin[cap],true);assert.equal(god[cap],true);
  }
+ assert.equal(admin.can_eye_of_chaos,true);
+ assert.equal(god.can_eye_of_chaos,true);
+ assert.equal(canAccessEyeOfChaos({role:"moderator"}),false);
+ assert.equal(canAccessEyeOfChaos({role:"member",public_title:"Digital Creator"}),false);
+ assert.equal(canAccessEyeOfChaos({role:"admin"}),true);
  assert.equal(admin.can_eye_of_horus,false);
  assert.equal(god.can_eye_of_horus,true);
  assert.equal(staffCapabilities({role:"member"}).level,0);
