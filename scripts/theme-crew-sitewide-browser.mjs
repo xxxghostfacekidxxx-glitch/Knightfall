@@ -39,7 +39,7 @@ try{
      const state=await page.evaluate(()=>{
       const body=document.body;
       const styles=[...document.querySelectorAll('link[rel=stylesheet]')].map(n=>n.href);
-      const shared=styles.filter(s=>/\/(?:knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(s));
+      const shared=styles.filter(s=>new URL(s).pathname==="/theme.css");
       let crewImported=false;
       for(const sheet of document.styleSheets){
        try{if([...sheet.cssRules].some(rule=>String(rule.href||"").includes("/theme-crew.css")))crewImported=true}
@@ -65,7 +65,7 @@ try{
      if(route.navigation&&!state.theme&&!route.intentional)issues.push("theme_runtime_missing");
      if(route.navigation&&state.theme&&state.theme!=="cathedral")issues.push("wrong_default_theme");
      if(route.navigation&&state.theme&&!state.realm)issues.push("realm_unclassified");
-     if(route.navigation&&state.theme&&!/\/theme-crew\.css/.test(state.sharedLast||"")&&!state.crewImported)issues.push("incorrect_final_cascade");
+     if(route.navigation&&state.theme&&!/\/theme\.css/.test(state.sharedLast||""))issues.push("incorrect_final_cascade");
      record.issues=issues;
      if(issues.length){
       const screenshot=out+"/"+route.page.replace(/[^a-z0-9.-]/gi,"_")+"-"+viewport.width+".png";
