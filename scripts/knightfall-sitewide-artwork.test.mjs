@@ -30,6 +30,9 @@ test('Gothic realm illustration files are valid vector resources',()=>{
   assert.ok(sw.includes('/'+filename),'PWA shell missing '+filename);
  }
  assert.match(read('assets/knightfall/eclipse-cathedral.svg'),/<svg\b/);
+ assert.match(read('assets/knightfall/gothic-chrome-frame.svg'),/<svg\b/);
+ assert.ok(sw.includes('/assets/knightfall/gothic-chrome-frame.svg'),'frame SVG is cached for installed apps');
+ assert.ok(art.includes('gothic-chrome-frame.svg'),'frame overlays real headers');
 });
 test('shared nav discovers the actual public page headers',()=>{
  for (const [page,markup,realm] of headings){
@@ -45,7 +48,7 @@ test('shared nav discovers the actual public page headers',()=>{
 test('artwork is mounted last, kept in cache, and does not skin private profile themes or gameplay',()=>{
  assert.match(nav,/knightfall-artwork\.css/);
  assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v49/);
+ assert.match(sw,/knightfall-shell-v50/);
  assert.match(sw,/knightfall-artwork\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);
