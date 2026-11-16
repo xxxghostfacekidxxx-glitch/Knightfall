@@ -31,7 +31,7 @@
   const mountCrewRuntime = () => {
     if(document.querySelector('script[data-kf-theme-crew-runtime]'))return;
     const script=document.createElement("script");
-    script.src="/theme-crew-runtime.js?v=20261116-crew1";
+    script.src="/theme-crew-runtime.js?v=20261116-crew2";
     script.dataset.kfThemeCrewRuntime="true";
     script.defer=true;
     document.head.appendChild(script);
