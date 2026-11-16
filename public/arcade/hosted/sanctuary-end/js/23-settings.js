@@ -9,7 +9,18 @@ const QUALITY_PRESETS = {
   medium: { resScale: 90, shadows: true, ssao: false, reflections: true, bloom: 0.9, postfx: true, colorgrade: true, vfx: true, plMax: 7, shadowSize: 1024, particles: false, groundTex: true, scatterDensity: 70 },
   high: { resScale: 100, shadows: true, ssao: true, reflections: true, bloom: 0.9, postfx: true, colorgrade: true, vfx: true, plMax: 9, shadowSize: 1024, particles: true, groundTex: true, scatterDensity: 100 },
 };
-function autoTier() { return isWebGPUBackend ? 'high' : 'medium'; } /* WebGL2 fallback => Medium (conservative); WebGPU => High. (A GPU-time probe could refine later — deferred; no low-end device to calibrate against.) */
+function autoTier() {
+  // WebGPU support alone is not proof of a fast phone. Auto protects smaller
+  // screens and memory-limited devices; manual Low/Medium/High/Custom overrides.
+  const mobile = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    && window.matchMedia('(pointer: coarse), (max-width: 700px)').matches;
+  const hardware = typeof navigator === 'undefined' ? {} : navigator;
+  const memory = Number(hardware.deviceMemory) || 0;
+  const cores = Number(hardware.hardwareConcurrency) || 0;
+  if (mobile) return (!isWebGPUBackend || (memory && memory <= 4) || (cores && cores <= 4)) ? 'low' : 'medium';
+  if (memory && memory <= 2) return 'low';
+  return isWebGPUBackend ? 'high' : 'medium';
+}
 function applyLights() { const s = SAVE._data.settings; PL_MAX = (s.plMax != null ? s.plMax : 9); if (typeof cullLights === 'function') cullLights(); }
 function applyShadowSize() { const s = SAVE._data.settings; const sz = (s.shadowSize === 512 || s.shadowSize === 2048) ? s.shadowSize : 1024; if (moon.shadow.mapSize.width !== sz) { moon.shadow.mapSize.set(sz, sz); if (moon.shadow.map) { moon.shadow.map.dispose(); moon.shadow.map = null; } moon.shadow.needsUpdate = true; } } /* resize requires disposing the existing depth target so it regenerates */
 function applyAllGfx() { applyGraphics(); applyShadowSize(); applyLights(); if (typeof buildPipeline === 'function') buildPipeline(); applyPostFX(); applyReflections(); applyGrade(); if (typeof applyParticles === 'function') applyParticles(); if (typeof refreshGroundTex === 'function') refreshGroundTex(); if (typeof applyFrustumCull === 'function') applyFrustumCull(); if (typeof applyShadowFrustum === 'function') applyShadowFrustum(); }

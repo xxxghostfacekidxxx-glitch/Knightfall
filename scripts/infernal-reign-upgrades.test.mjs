@@ -104,3 +104,24 @@ test('all customized game scripts are parseable JavaScript',()=>{
     assert.equal(check.status,0,filename+' '+check.stderr);
   }
 });
+
+test('Auto graphics starts low on weaker mobile devices and preserves desktop WebGPU quality',()=>{
+  const source=read('js/23-settings.js');
+  const start=source.indexOf('function autoTier()');
+  const end=source.indexOf('function applyLights()',start);
+  assert.ok(start>=0&&end>start);
+  const fn=source.slice(start,end)+'\nglobalThis.__autoTier=autoTier;';
+  const tier=(webgpu,mobile,memory,cores)=>{
+    const box={isWebGPUBackend:webgpu,window:{matchMedia:()=>({matches:mobile})},
+      navigator:{deviceMemory:memory,hardwareConcurrency:cores}};
+    vm.runInNewContext(fn,box,{timeout:1000});
+    return box.__autoTier();
+  };
+  assert.equal(tier(true,false,16,12),'high');
+  assert.equal(tier(false,false,16,12),'medium');
+  assert.equal(tier(true,true,2,4),'low');
+  assert.equal(tier(true,true,8,8),'medium');
+  assert.equal(tier(false,true,8,8),'low');
+  assert.equal(tier(true,false,1,4),'low');
+  assert.match(source,/if \(s\.quality === 'custom'\) return null/);
+});
