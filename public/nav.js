@@ -11,7 +11,7 @@
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
       ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art9"],
-      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral2"]
+      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral3"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
