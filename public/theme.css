@@ -6,7 +6,7 @@
 /* Navigationless pages get the same Gothic artwork styles. */
 @import url("/knightfall-artwork.css?v=20261116-art9");
 /* Cathedral Ascendant loads on pages with and without shared navigation. */
-@import url("/knightfall-cathedral-v2.css?v=20261116-cathedral2");
+@import url("/knightfall-cathedral-v2.css?v=20261116-cathedral3");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
