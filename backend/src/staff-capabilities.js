@@ -12,11 +12,12 @@ export function staffCapabilities(user) {
   const track=god?"god":admin?"admin":moderator?"moderation":digitalCreator?"creation":"member";
   return {
     level, track, staff:level>0, can_moderate:canModerate,
-    can_create:canCreate, can_admin:admin, can_eye_of_horus:god,
+    can_create:canCreate, can_admin:admin, can_eye_of_chaos:admin, can_eye_of_horus:god,
     unlimited_bots:level>0,
     advanced_bot_builder:canCreate
   };
 }
 export function canAccessCreatorFoundry(user){return staffCapabilities(user).can_create}
 export function canAccessModeration(user){return staffCapabilities(user).can_moderate}
+export function canAccessEyeOfChaos(user){return staffCapabilities(user).can_eye_of_chaos}
 export function canAccessEyeOfHorus(user){return staffCapabilities(user).can_eye_of_horus}
