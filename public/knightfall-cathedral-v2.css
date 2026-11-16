@@ -641,3 +641,137 @@ body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.builder-panel,.shop
  body.home-page:not(.profile-custom-theme) :is(.kf-realm-atlas,.kf-atlas-card,.kf-atlas-copy a){border:1px solid CanvasText!important}
  body.home-page:not(.profile-custom-theme) .kf-atlas-heading h2 span{-webkit-text-fill-color:CanvasText}
 }
+
+
+/* ASCENDANT III — explicitly style the real interfaces hidden behind each
+   realm's public masthead, including staff consoles and empty member states.
+   Only paint and spacing change; permission, data and actions stay intact. */
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-card,.chaos-panel,.chaos-registry,.admin-panel,.admin-tool-section,.admin-shortcut){
+ border:1px solid #bd8b9c81!important;border-radius:16px!important;
+ background-image:radial-gradient(ellipse at 100% 0%,#ad506522,transparent 44%),linear-gradient(145deg,#281d2af3,#11131ded)!important;
+ box-shadow:0 15px 37px #0008,inset 0 1px #e5b9b31c!important;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-section-head,.panel-head){
+ position:relative;padding-bottom:.8rem;
+ border-bottom:1px solid #cda3a348;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-section-head,.panel-head)::after{
+ content:"◆";position:absolute;right:.25rem;bottom:-.5em;color:#c98fa7;font:400 1rem Georgia,serif;
+ text-shadow:0 0 13px #9a526b8c;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-eyebrow,.chaos-section-head h2,.admin-panel h2){
+ color:#ecc7c6;text-shadow:0 2px 12px #000;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-form input,.chaos-form select,.chaos-form textarea,.admin-panel input,.admin-panel select){
+ background:#10121af2!important;color:#f2e6df!important;border-color:#947a86!important;
+}
+body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-card,.chaos-panel,.admin-shortcut):is(:hover,:focus-within){
+ border-color:#e0a6ba!important;box-shadow:0 20px 46px #000b,0 0 19px #ad577e33!important;
+}
+
+/* Real directory input surfaces and signed-out cards. */
+body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.directory-toolbar,.directory-stats,.members-footer,.members-grid>.card,.profile-shell>.card,.profile-quick-links){
+ border:1px solid #b9a08d75;border-radius:16px;
+ background:linear-gradient(135deg,#29212ae9,#121821eb);
+ box-shadow:0 15px 35px #0008,inset 0 1px #e6c0ab23;
+}
+body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.directory-toolbar,.directory-stats,.members-footer){padding:clamp(.8rem,2vw,1.25rem)}
+body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.directory-toolbar input,.filter-wrap select,.search-wrap input){
+ background:#0c1019!important;border:1px solid #ae948b!important;color:#ede0d5!important;border-radius:9px;
+ min-height:44px;
+}
+body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .members-grid :is(.member-card,.card):is(:hover,:focus-within){
+ border-color:#ddaf9f!important;box-shadow:0 23px 45px #000a,0 0 18px #b6717b33!important;
+}
+
+/* Marketplace: the real filters, listings, and shop-preview machinery. */
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.shop-filters,.shop-results,.shop-readonly-note,.directory-meta,.preview-window,.template-pills,.builder-form){
+ border-color:#c6a47676!important;
+}
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.shop-filters,.shop-readonly-note,.template-pills){
+ background:linear-gradient(140deg,#31251ff2,#171820e9)!important;
+ border:1px solid #c1a17b75!important;border-radius:13px;padding:clamp(.7rem,1.5vw,1.1rem);
+ box-shadow:inset 0 1px #e6cca52a;
+}
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.preview-window,.builder-panel){
+ background:linear-gradient(148deg,#30271ff4,#10141af2),var(--kf-vault-art) center/cover no-repeat!important;
+ border:1px solid #d2ae8166!important;border-radius:17px!important;
+ box-shadow:0 16px 38px #0009,inset 0 1px #ebd2ac2e!important;
+}
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.template-pill,.quiet-button,.primary-button){
+ border-color:#d1ae867a!important;border-radius:9px!important;
+}
+body[data-kf-realm="market"]:not(.profile-custom-theme) :is(input,textarea,select):focus-visible{outline:2px solid #e8c79c!important;outline-offset:2px!important}
+
+/* Messaging remains usable; only its real conversation surfaces and actions
+   inherit the Gothic materials. The message text and bubble colors stay intact. */
+body[data-kf-realm="messages"]:not(.profile-custom-theme) :is(.people-pane,.conversation-panel,.chat-panel,.chat-more-panel,.compose-dialog,.group-result){
+ border-color:#af8da888!important;
+ box-shadow:0 17px 37px #0008,inset 0 1px #efd4d01a!important;
+}
+body[data-kf-realm="messages"]:not(.profile-custom-theme) :is(.compose-dialog-head,.panel-title){
+ border-bottom:1px solid #ba9aab64!important;
+ background:linear-gradient(140deg,#322237c5,#1b1929b3)!important;
+}
+body[data-kf-realm="messages"]:not(.profile-custom-theme) :is(.compose-tab,.small-action,.icon-button):is(:hover,:focus-visible){
+ border-color:#d2a3c3!important;box-shadow:0 0 12px #a36a9b44!important;
+}
+body[data-kf-realm="messages"]:not(.profile-custom-theme) :is(.compose-dialog input,.compose-dialog textarea,.search input){
+ background:#121421!important;color:#f2e4e7!important;border:1px solid #8d718d!important;
+}
+
+/* Moon: a little astronomical drama behind working calendar and guide content. */
+body[data-kf-realm="moon"]:not(.profile-custom-theme) :is(.moon-panel,.moon-current,.moon-calendar,.moon-guide,.moon-upcoming){
+ border:1px solid #a8a4c78a!important;border-radius:19px!important;
+ background-image:radial-gradient(ellipse at 100% 0%,#7f73c13b,transparent 58%),linear-gradient(136deg,#26243af2,#121620f4)!important;
+ box-shadow:0 18px 47px #0009,inset 0 1px #d4cfe73a!important;
+}
+body[data-kf-realm="moon"]:not(.profile-custom-theme) .moon-current{
+ background-image:linear-gradient(96deg,#161827f0,#1d2031bf),var(--kf-rose-art)!important;
+ background-position:center,right top!important;background-size:cover,auto 155%!important;
+}
+body[data-kf-realm="moon"]:not(.profile-custom-theme) :is(.moon-section-head,.moon-phase-name){color:#e2d9f0;text-shadow:0 2px 16px #000a}
+body[data-kf-realm="moon"]:not(.profile-custom-theme) .moon-button{border-color:#a6a0dc!important}
+
+/* The Diary: old paper under glass, never overwrite text or personal entries. */
+body[data-kf-realm="diary"]:not(.profile-custom-theme) :is(.diary-card,.diary-privacy,.diary-entries-section,.diary-shell>section){
+ border:1px solid #b7a0c98c!important;border-radius:17px!important;
+ background-image:linear-gradient(145deg,#2b2439f2,#141620f4)!important;
+ box-shadow:0 17px 44px #0009,inset 0 1px #d9bdd632!important;
+}
+body[data-kf-realm="diary"]:not(.profile-custom-theme) :is(.diary-card-head,.diary-form-foot){
+ border-color:#a78caf77!important;
+}
+body[data-kf-realm="diary"]:not(.profile-custom-theme) :is(.diary-card input,.diary-card textarea,.diary-card select){
+ background:#12131f!important;color:#efe4f6!important;border:1px solid #9882a7!important;
+}
+
+/* Companion Sanctuary keeps the creatures' cartoon art and playful controls,
+   while the surrounding chrome becomes carved moss-and-bronze stone. */
+body[data-kf-realm="pets"]:not(.profile-custom-theme) :is(.sanctuary-directory,.sanctuary-care-toolbar,.pet-filter-bar,.pet-economy,.pet-empty){
+ border:1px solid #a9bd938a!important;border-radius:14px!important;
+ background-image:linear-gradient(138deg,#252c27ed,#141b1df1)!important;
+ box-shadow:0 12px 32px #0008,inset 0 1px #d1dfac2e!important;
+}
+body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-directory a:is(:hover,:focus-visible){
+ color:#f0eacf!important;background:#3c4a3b!important;border-radius:9px;
+}
+body[data-kf-realm="pets"]:not(.profile-custom-theme) :is(.pet-grid,.pet-quest-grid){gap:clamp(.65rem,1.7vw,1.1rem)}
+/* Staff-facing Creator fields: layout stays functional even when signed-out
+   browser tests cannot enter the protected workspace. */
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) :is(.foundry-input,.lab-tools input,.foundry-group input,.foundry-group select,.foundry-group textarea){
+ color:#f0e6eb!important;background:#11121df0!important;border:1px solid #b48caa!important;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) :is(.console,.lab-tools,.foundry-group,.kf-art-card){
+ border:1px solid #c19aae68;border-radius:15px;
+ background-image:linear-gradient(150deg,#2b202fe9,#141822ef);
+ box-shadow:0 15px 35px #0008,inset 0 1px #f2cad72b;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) :is(.foundry-group,.console) :is(h2,h3){color:#edc9d6}
+@media(max-width:650px){
+ body[data-kf-realm="god"]:not(.profile-custom-theme) :is(.chaos-card,.admin-panel,.chaos-panel),
+ body[data-kf-realm="market"]:not(.profile-custom-theme) :is(.builder-panel,.preview-window),
+ body[data-kf-realm="members"]:not(.profile-custom-theme) :is(.directory-toolbar,.members-footer){border-radius:12px!important}
+}
+/* Sitewide element selectors are intentionally not used on message bubbles,
+   game canvases, custom profiles or member-contributed illustrations. */
