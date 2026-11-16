@@ -1,0 +1,230 @@
+/*
+ * KNIGHTFALL / CATHEDRAL REQUIEM
+ * Final, canonical visual layer. No script, remote font, or additional runtime.
+ * Artwork exists in /assets/knightfall; member profiles and gameplay stay owned
+ * by their own themes. Alternate GOD presets stay owned by theme-crew.css.
+ */
+:root{--kf-requiem-version:1}
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade){
+ --kf-relic-gold:#efcf9d;--kf-relic-gold-dim:#a78364;--kf-relic-ivory:#f5e9dd;
+ --kf-relic-crimson:#bd557b;--kf-relic-violet:#9273b2;
+ --kf-relic-halo:0 0 26px #c477bd26,0 0 74px #e19d9b16;
+ --kf-relic-line:rgba(221,169,128,.54);
+ color:var(--kf-relic-ivory);
+ background-color:#090a11!important;
+ background-image:
+ radial-gradient(ellipse at 55% -12%,#ac567c30,transparent 60%),
+ radial-gradient(ellipse at 5% 75%,#7b5a9e18,transparent 48%),
+ linear-gradient(180deg,#0a0c14ef 0%,#0c0d17ef 55%,#0a0912f9 100%),
+ url('/assets/knightfall/vaulted-cathedral.svg')!important;
+ background-position:center top,left bottom,center,center top!important;
+ background-size:auto,auto,cover,cover!important;
+ background-repeat:no-repeat!important;
+}
+/* Architectural chrome: ribbed vault, metallic underline and illuminated crest. */
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
+ min-height:76px;
+ background-image:linear-gradient(90deg,#0b0d16ee,#181321ee 50%,#0b0d17f5),url('/assets/knightfall/vaulted-cathedral.svg')!important;
+ background-position:center,center 43%!important;
+ background-size:cover,cover!important;
+ border-bottom:1px solid #d8a77a80!important;
+ box-shadow:0 2px 0 #100e19,0 16px 46px #000b,0 0 28px #b95a8640!important;
+}
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header .kf-brand{
+ color:#f7e4c9!important;
+ font-family:Georgia,'Times New Roman',serif!important;
+ font-size:clamp(1.08rem,2vw,1.5rem)!important;
+ letter-spacing:.13em!important;
+ text-shadow:0 2px 4px #000,0 0 24px #e8ad8870!important;
+}
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-primary,.kf-nav-toggle){
+ border:1px solid #c49b762b!important;
+ background:linear-gradient(170deg,#30243999,#12101b77)!important;
+ color:#f1d9c8!important;
+ box-shadow:inset 0 1px #e4bca31e!important;
+}
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-group[open]>summary,.kf-nav a[aria-current="page"]){
+ border-color:#e4b78c8c!important;
+ background:linear-gradient(130deg,#573047e8,#291f39e8)!important;
+ color:#ffe8c4!important;
+ box-shadow:inset 0 1px #f0cda447,0 0 24px #b4588c44!important;
+}
+/* The opening vista is a cathedral, not a generic rectangular banner. */
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme) .home-intro{
+ position:relative;isolation:isolate;
+ min-height:clamp(570px,64vw,785px)!important;
+ margin:1.4rem auto 2.25rem!important;
+ padding:clamp(1.35rem,5vw,4.4rem)!important;
+ justify-content:flex-end;align-items:flex-start;
+ overflow:hidden;
+ border:2px solid #d6a876c7!important;
+ border-radius:clamp(18px,3vw,32px)!important;
+ background-color:#0c0e18!important;
+ background-image:
+ url('/assets/knightfall/gothic-chrome-frame.svg'),
+ linear-gradient(90deg,#0a0917ef 0%,#110f1fce 42%,#110e2248 76%,#0d0b1c3b 100%),
+ url('/assets/knightfall/obsidian-cathedral.svg')!important;
+ background-size:100% 100%,cover,cover!important;
+ background-position:center,center,center 43%!important;
+ background-repeat:no-repeat!important;
+ box-shadow:inset 0 0 0 4px #110f1bdc,inset 0 0 0 6px #b68d674c,0 35px 90px #000c,0 0 75px #b55d7833!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::before{
+ content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+ background:linear-gradient(0deg,#080914fa 0%,#0b0a17c6 28%,#0a0b1720 76%),radial-gradient(ellipse at 80% 28%,#c67eab36,transparent 48%);
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
+ content:"";position:absolute;z-index:0;pointer-events:none;
+ width:min(58%,610px);aspect-ratio:1.45;
+ right:-3%;top:-6%;
+ background:url('/assets/knightfall/rose-window.svg') center/contain no-repeat;
+ opacity:.72;mix-blend-mode:screen;
+ mask-image:radial-gradient(ellipse at center,#000 30%,transparent 72%);
+ filter:drop-shadow(0 0 42px #df7baa77);
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
+ max-width:850px!important;
+ margin:0 0 .6rem!important;
+ color:#fff1db!important;
+ font:700 clamp(2.6rem,6.8vw,6.5rem)/.99 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.055em!important;
+ text-shadow:0 3px 2px #08070be6,0 13px 34px #000,0 0 22px #a76b9240!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1 span{
+ color:#f2b7be!important;
+ background:linear-gradient(100deg,#ffe8c5 0%,#f0a8b9 52%,#d797e1 100%);
+ -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro>p{
+ color:#f7e9db!important;
+ max-width:600px;font-size:clamp(1rem,1.65vw,1.18rem)!important;
+ line-height:1.65!important;text-shadow:0 2px 11px #000!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link){
+ border:1px solid #edc99e!important;border-radius:10px!important;
+ padding:.86rem 1.35rem!important;min-height:48px;
+ color:#fff1dc!important;font-weight:850!important;letter-spacing:.025em;
+ background:linear-gradient(145deg,#80415f,#38273f 75%)!important;
+ box-shadow:inset 0 1px #ffdfba55,0 8px 24px #0009,0 0 16px #ba638344!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link):hover{
+ filter:brightness(1.17)!important;transform:translateY(-1px)
+}
+/* The middle of the page is a guild hall: carved bronze, glass and stone. */
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+ position:relative;isolation:isolate;overflow:hidden;
+ padding:clamp(1.1rem,3vw,2.5rem)!important;
+ border:1px solid #d2a47f91!important;
+ border-radius:22px!important;
+ background:linear-gradient(135deg,#241729e8,#111421f2 52%,#25182bed),url('/assets/knightfall/vaulted-cathedral.svg') center/cover!important;
+ box-shadow:inset 0 1px #ead3b04d,inset 0 0 0 4px #120e19,0 20px 54px #0009,0 0 45px #b64d8430!important;
+ margin-block:1.6rem 2.5rem!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-here::after{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ right:-9%;top:-110px;width:min(55%,450px);aspect-ratio:1;
+ background:url('/assets/knightfall/rose-window.svg') center/contain no-repeat;
+ opacity:.2;mix-blend-mode:screen;mask-image:radial-gradient(circle,#000 33%,transparent 70%);
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-heading h2,.kf-atlas-heading h2,.activity-heading h2,.section-heading h2){
+ font-family:Georgia,'Times New Roman',serif!important;
+ color:#ffe2bd!important;
+ font-size:clamp(1.6rem,3.2vw,2.65rem)!important;
+ line-height:1.13;letter-spacing:-.032em;
+ text-shadow:0 2px 15px #000,0 0 22px #d69d8428!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-eyebrow,.kf-atlas-eyebrow,.activity-eyebrow){
+ color:#eec49e!important;letter-spacing:.19em!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
+ border:1px solid #ce9c7d84!important;
+ border-radius:17px!important;
+ background:linear-gradient(155deg,#39273bdb,#171826f2 50%,#211a2af5)!important;
+ box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #a4507c19!important;
+ transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group):hover{
+ transform:translateY(-3px);border-color:#edc599bd!important;
+ box-shadow:inset 0 1px #f5d3b545,0 18px 42px #000b,0 0 32px #d67aa142!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card{
+ min-height:230px!important;padding:clamp(1.2rem,2.2vw,1.65rem)!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card h3{
+ font:700 clamp(1.24rem,2vw,1.65rem)/1.15 Georgia,serif!important;color:#ffe3cb!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-start-card>span{
+ font:800 .74rem/1.2 ui-sans-serif,system-ui,sans-serif!important;color:#f1bba8!important;letter-spacing:.19em!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card{
+ overflow:hidden;min-height:290px!important;isolation:isolate;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card>img{
+ width:100%;height:100%;object-fit:cover;filter:saturate(1.2) contrast(1.08);
+ transition:transform .35s ease,filter .35s ease;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card:hover>img{transform:scale(1.035);filter:saturate(1.28) contrast(1.1)}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card .kf-atlas-copy h3{
+ font-family:Georgia,serif!important;color:#ffe7c9!important;
+ text-shadow:0 3px 16px #000!important;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card a,.kf-atlas-copy a,.directory-group a){
+ color:#ffe0ac!important;text-decoration-thickness:1px;text-underline-offset:4px;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto{
+ border-block:1px solid #d0a47788;
+ background:linear-gradient(90deg,transparent,#4c2d447c,transparent);
+ padding:2.5rem 1rem;text-align:center;
+}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manifesto p{
+ font:italic 700 clamp(1.5rem,3vw,2.8rem)/1.2 Georgia,serif!important;
+ color:#eed6ba!important;
+}
+/* Section-specific panoramas remain visible without covering functional UI. */
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
+ border:1px solid #d6a778b5!important;
+ border-radius:20px!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e1af5 0%,#12111de9 44%,#17111b66 100%),var(--kf-art-image)!important;
+ background-size:100% 100%,cover,cover!important;
+ background-position:center,center,center!important;
+ background-repeat:no-repeat!important;
+ box-shadow:inset 0 0 0 4px #15101cd6,0 25px 65px #000a,0 0 35px #a9558230!important;
+}
+/* Accessibility and practical mobile spacing matter more than visual theatrics. */
+@media(max-width:780px){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro{
+  min-height:590px!important;margin-top:.6rem!important;
+  padding:1.5rem!important;background-position:center,center,54% center!important;
+ }
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
+  top:0;right:-20%;width:95%;opacity:.3;
+ }
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
+  font-size:clamp(2.25rem,10vw,3.8rem)!important;
+ }
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-here,.kf-realm-atlas,.home-activity,.ecosystem-section){
+  padding:1.1rem!important;margin-block:1.1rem!important;
+ }
+ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header{
+  min-height:62px;
+ }
+}
+@media(max-width:520px){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro{
+  min-height:535px!important;
+ }
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .kf-atlas-card{min-height:250px!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-sign-in,.home-explore-link){
+  width:100%;justify-content:center;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group,.kf-atlas-card>img,.home-sign-in,.home-explore-link){
+  transition:none!important;transform:none!important;
+ }
+}
+@media(forced-colors:active){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.home-intro,.kf-start-here,.kf-realm-atlas,.kf-atlas-card,.kf-start-card){border:1px solid CanvasText!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText!important}
+}
