@@ -160,7 +160,7 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero:
  background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
  linear-gradient(120deg,#29202b,#14191d)!important
 }
-body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero)::after{
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero::after{
  content:"";position:absolute;pointer-events:none;z-index:-1;
  right:clamp(-70px,-2vw,0px);top:50%;transform:translateY(-50%);
  width:min(31vw,230px);height:min(31vw,230px);
@@ -198,7 +198,7 @@ body.gravewave-everywhere :where(h1,h2,.kf-brand){text-shadow:none!important}
  .kf-nav-menu{box-shadow:none!important}
  body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.entry-card,.panel,.card,.arcade-card,.game-card){border-radius:14px}
  body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(input,textarea,select){font-size:16px}
- body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero)::after{
+ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero::after{
   width:124px;height:124px;right:-22px;opacity:.10
  }
 }
