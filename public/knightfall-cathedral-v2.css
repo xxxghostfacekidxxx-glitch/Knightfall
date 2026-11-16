@@ -396,3 +396,78 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-st
  body[data-kf-realm]:not(.profile-custom-theme) :is([data-kf-art-hero],.kf-start-card,.foundry-card,.entry-card){border:1px solid CanvasText!important}
  body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText}
 }
+
+
+/* Real guest-facing Foundry: no pretend upload buttons or access bypasses. */
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) #foundry-public-preview{
+ margin:clamp(1.1rem,3vw,2rem) auto;max-width:1220px;
+ padding:clamp(1.2rem,3vw,2.2rem);
+ border:1px solid #c29aaf80;border-radius:22px;
+ background:
+  linear-gradient(145deg,#1f1727ef,#0f141ced 75%),
+  var(--kf-cathedral-art) center/cover no-repeat;
+ box-shadow:0 25px 65px #000a,inset 0 1px #e6bec531;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-heading{
+ position:relative;padding-bottom:1.65rem;margin-bottom:1.1rem;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-heading::after{
+ content:"";position:absolute;left:0;bottom:0;width:min(400px,100%);height:33px;
+ background:var(--kf-ceremonial-rule) left center/contain no-repeat;opacity:.8;pointer-events:none;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-eyebrow{
+ color:#dbb4c4;font-size:.73rem;font-weight:850;letter-spacing:.16em;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-heading h2{
+ font:700 clamp(1.65rem,3vw,2.5rem)/1.12 Georgia,serif;
+ color:#fff0da;letter-spacing:-.044em;margin:.45rem 0;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-heading>p:last-child{
+ max-width:65ch;line-height:1.6;color:#d1bfc8;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-grid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card{
+ position:relative;isolation:isolate;min-width:0;min-height:275px;
+ display:flex;flex-direction:column;padding:1.45rem;overflow:hidden;text-decoration:none;
+ border:1px solid #b488a47a;border-radius:17px;
+ background:linear-gradient(130deg,#322233f5,#151824f0 83%);
+ box-shadow:0 15px 36px #0007,inset 0 1px #f0c6be31;
+ color:#f3e4d9;
+ transition:border-color .22s ease,transform .22s ease,box-shadow .22s ease;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card img{
+ position:absolute;z-index:-1;right:-7%;top:5%;width:77%;height:84%;object-fit:contain;
+ opacity:.54;filter:drop-shadow(0 0 14px #b24e804f);
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 73%);
+ mask-image:linear-gradient(90deg,transparent,#000 73%);
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card span{
+ color:#eac7ab;letter-spacing:.15em;font-size:.67rem;font-weight:900;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card h3{
+ max-width:68%;font:700 clamp(1.3rem,2vw,1.65rem)/1.1 Georgia,serif;
+ letter-spacing:-.035em;margin:.65rem 0;color:#fff0dc;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card p{
+ max-width:70%;color:#ded0cb;font-size:.87rem;line-height:1.55;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card strong{
+ margin-top:auto;align-self:flex-start;padding:.5rem .75rem;
+ border:1px solid #c59aa4a6;border-radius:8px;background:#4b2c42e8;color:#f8e4d2;
+ font-size:.79rem;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card:is(:hover,:focus-visible){
+ transform:translateY(-3px);border-color:#ebbfcb;
+ box-shadow:0 23px 51px #000a,0 0 23px #a34f8442,inset 0 1px #e0b4c455;
+}
+body:has(#workshop:not(.hidden)) #foundry-public-preview{display:none!important}
+@media(max-width:850px){
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-grid{grid-template-columns:1fr}
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card{min-height:205px}
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card img{height:100%;width:48%;right:0;top:0}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card{transition:none!important;transform:none!important}
+}
