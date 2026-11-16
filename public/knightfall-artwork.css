@@ -123,3 +123,13 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-
  background-repeat:no-repeat!important;
 }
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
+
+/* Pet sanctuary stays cartoon-bright, but the primary mint CTA needs dark text.
+   The shared bronze link rule otherwise creates near-invisible bronze-on-mint text. */
+body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:first-child{
+ color:#14231f!important;text-shadow:none!important;font-weight:900!important;
+ border-color:#abf6da!important;
+}
+body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:not(:first-child){
+ color:#ece1d3!important;text-shadow:none!important;
+}
