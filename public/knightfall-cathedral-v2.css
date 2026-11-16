@@ -43,7 +43,7 @@ body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(a,butt
  outline:2px solid var(--kf-realm-metal,#d7ae91)!important;outline-offset:3px!important;
 }
 /* Navigation carved out of smoke and bronze */
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header{
  position:relative;
  background-color:#0e1018!important;
  background-image:
@@ -54,36 +54,36 @@ html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-h
  box-shadow:inset 0 1px #cf9ea44a,inset 0 -2px #88506d55,0 16px 45px #000b!important;
  backdrop-filter:blur(19px) saturate(1.1);
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header::before{
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header::before{
  content:"";pointer-events:none;position:absolute;left:1.4rem;right:1.4rem;bottom:0;height:1px;
  background:linear-gradient(90deg,transparent 0%,#cfac9c88 23%,#8c527d88 50%,#cfac9c88 77%,transparent 100%);opacity:.9;
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header .kf-brand{
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand{
  font-family:Georgia,'Times New Roman',serif!important;
  text-transform:uppercase;letter-spacing:.085em!important;
  color:#f4dfd2!important;text-shadow:0 2px 10px #000,0 0 23px #cc6e9950!important;
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header .kf-brand::before{
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand::before{
  filter:drop-shadow(0 0 11px #c26a9080);transition:filter .24s ease;
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header .kf-brand:hover::before{filter:drop-shadow(0 0 20px #e6a5bbac)}
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle,.kf-install-pill){
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand:hover::before{filter:drop-shadow(0 0 20px #e6a5bbac)}
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a,.kf-nav-group>summary,.kf-nav-toggle,.kf-install-pill){
  text-shadow:0 1px 5px #0009;
  border-radius:9px!important;transition:background-color .23s ease,border-color .23s ease,box-shadow .23s ease!important;
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-toggle:hover,.kf-nav a[aria-current="page"]){
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header :is(.kf-nav a:hover,.kf-nav-group>summary:hover,.kf-nav-toggle:hover,.kf-nav a[aria-current="page"]){
  background:linear-gradient(155deg,#72445a71,#1b192d88)!important;
  border-color:#c797ab72!important;
  box-shadow:inset 0 1px #f5c5c126,0 0 16px #a84b7942!important;
  color:#fff0df!important;
 }
-html body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header .kf-nav-menu{
+html body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-nav-menu{
  background:linear-gradient(150deg,#28202ef9,#11141cf9 70%)!important;
  border:1px solid #c2959b73!important;
  box-shadow:0 22px 60px #000d,inset 0 1px #efd1bb1c!important;
 }
 /* Home: open the cathedral gates. Building art replaces the simplified old diagram. */
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .home-intro{
  min-height:clamp(490px,56vw,720px);border:1px solid #e2b29a9f!important;
  padding:clamp(1.7rem,5vw,5rem)!important;
  background-color:#0b0d16!important;
@@ -98,32 +98,32 @@ body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .home-intro{
  border-radius:25px!important;
  box-shadow:0 38px 90px #000c,0 0 50px #803e6535,inset 0 0 0 2px #d0a89b36!important;
 }
-body.home-page:not(.profile-custom-theme) .home-intro::before{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::before{
  content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;
  background:linear-gradient(0deg,#06080ddc 0%,transparent 50%);
 }
-body.home-page:not(.profile-custom-theme) .home-intro::after{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
  content:"";position:absolute;pointer-events:none;
  height:52px;width:min(640px,88%);bottom:0;left:50%;transform:translateX(-50%);
  background:var(--kf-ceremonial-rule) center bottom/contain no-repeat;
  opacity:.62;z-index:0;
 }
-body.home-page:not(.profile-custom-theme) .home-intro h1{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{
  max-width:930px!important;font-size:clamp(2.8rem,6.7vw,6.8rem)!important;
  font-family:Georgia,'Times New Roman',serif!important;
  font-weight:700;letter-spacing:-.058em!important;line-height:1.02!important;
  color:#fff0dc!important;text-shadow:0 4px 26px #030207,0 0 34px #190d1e7d!important;
 }
-body.home-page:not(.profile-custom-theme) .home-intro h1 span{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{
  color:#edb3aa!important;
  background:linear-gradient(116deg,#f6d6b7,#ebaaa8 53%,#d788ae 86%,#f1c8ae);
  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
  filter:drop-shadow(0 3px 6px #160c13);
 }
-body.home-page:not(.profile-custom-theme) .home-intro>p{max-width:680px;color:#e8d6d5!important;font-size:clamp(1rem,1.45vw,1.18rem);line-height:1.7}
-body.home-page:not(.profile-custom-theme) .home-intro .home-intro-actions{position:relative;z-index:3;gap:1rem}
-body.home-page:not(.profile-custom-theme) .home-intro .home-sign-in,
-body.home-page:not(.profile-custom-theme) .home-intro .home-explore-link{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro>p{max-width:680px;color:#e8d6d5!important;font-size:clamp(1rem,1.45vw,1.18rem);line-height:1.7}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro .home-intro-actions{position:relative;z-index:3;gap:1rem}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro .home-sign-in,
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro .home-explore-link{
  display:inline-flex;align-items:center;justify-content:center;min-height:48px;
  border:1px solid #f1d2ac89!important;
  border-radius:11px!important;padding:.82rem 1.3rem!important;
@@ -131,11 +131,11 @@ body.home-page:not(.profile-custom-theme) .home-intro .home-explore-link{
  box-shadow:inset 0 1px #fff9db37,0 11px 28px #0008!important;
  transition:transform .23s ease,filter .23s ease,box-shadow .23s ease;
 }
-body.home-page:not(.profile-custom-theme) .home-intro .home-sign-in{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro .home-sign-in{
  background:linear-gradient(145deg,#ba6a82,#703b58 71%,#47233f)!important;color:#fff3df!important;
 }
-body.home-page:not(.profile-custom-theme) .home-intro .home-explore-link{background:linear-gradient(140deg,#2d2733,#151b23)!important;color:#f5dac8!important}
-body.home-page:not(.profile-custom-theme) .home-intro :is(.home-sign-in,.home-explore-link):hover{transform:translateY(-3px);filter:brightness(1.13);box-shadow:0 14px 34px #000b,0 0 24px #c9668a48!important}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro .home-explore-link{background:linear-gradient(140deg,#2d2733,#151b23)!important;color:#f5dac8!important}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro :is(.home-sign-in,.home-explore-link):hover{transform:translateY(-3px);filter:brightness(1.13);box-shadow:0 14px 34px #000b,0 0 24px #c9668a48!important}
 /* Every section gets an intentional richly illustrated masthead, not generic paint. */
 body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
  min-height:clamp(240px,26vw,390px)!important;
@@ -265,29 +265,29 @@ body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):n
  border-color:#e2b69e!important;box-shadow:0 0 0 3px #bf6b8540,inset 0 2px 7px #0006!important;
 }
 /* Homepage discovery turns three ordinary cards into gateways. */
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-here{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-here{
  position:relative;overflow:hidden;
  border-color:#c99f9c80!important;
  padding:clamp(1.4rem,3vw,2.35rem)!important;
 }
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-here::before{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-here::before{
  content:"";position:absolute;pointer-events:none;inset:0;
  background:linear-gradient(145deg,#ffffff06,transparent 35%),var(--kf-cathedral-art) center 55%/cover no-repeat;
  opacity:.11;
 }
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-here>:not([hidden]){position:relative;z-index:1}
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-card{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-here>:not([hidden]){position:relative;z-index:1}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-card{
  min-height:270px;padding:1.5rem!important;border-color:#b8899790!important;
  background-image:linear-gradient(140deg,#2b202deb,#161922f7)!important;
 }
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-card::after{
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-card::after{
  opacity:.46!important;width:90%!important;right:-9%!important;
  -webkit-mask-image:linear-gradient(90deg,transparent 1%,#000 85%)!important;
  mask-image:linear-gradient(90deg,transparent 1%,#000 85%)!important;
 }
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-card h3{font:700 clamp(1.35rem,2vw,1.8rem)/1.1 Georgia,serif!important;letter-spacing:-.035em}
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-card>span{color:#eac6ab!important}
-body.home-page:not(.profile-custom-theme):not(.kf-gameplay-page) .kf-start-card a{margin-top:auto;align-self:flex-start!important}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-card h3{font:700 clamp(1.35rem,2vw,1.8rem)/1.1 Georgia,serif!important;letter-spacing:-.035em}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-card>span{color:#eac6ab!important}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) .kf-start-card a{margin-top:auto;align-self:flex-start!important}
 body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:first-child{
  color:#11251f!important;background:linear-gradient(145deg,#c2f7d5,#8ccda7)!important;text-shadow:none!important;
 }
@@ -317,17 +317,17 @@ body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(#ashfa
 }
 /* Responsive: a cinematic app, not a cropped desktop poster. */
 @media(max-width:900px){
- body.home-page:not(.profile-custom-theme) .home-intro{
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
   min-height:540px;background-position:center,right 4% top 8px,center,57% center!important;
   background-size:100% 100%,min(42vw,310px) auto,cover,cover!important;
  }
- body.home-page:not(.profile-custom-theme) .home-intro h1{font-size:clamp(2.8rem,7vw,5rem)!important}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{font-size:clamp(2.8rem,7vw,5rem)!important}
 }
 @media(max-width:700px){
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page){
   background-attachment:scroll,scroll,scroll!important;
  }
- body.home-page:not(.profile-custom-theme) .home-intro{
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
   min-height:520px;padding:1.5rem!important;margin-top:.8rem!important;
   background-image:
    url('/assets/knightfall/gothic-chrome-frame.svg'),
@@ -338,9 +338,9 @@ body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(#ashfa
   background-position:center,right 8px top 12px,center,60% center!important;
   border-radius:19px!important;
  }
- body.home-page:not(.profile-custom-theme) .home-intro h1{font-size:clamp(2.2rem,9.4vw,3.6rem)!important}
- body.home-page:not(.profile-custom-theme) .home-intro>p{font-size:1rem;line-height:1.55}
- body.home-page:not(.profile-custom-theme) .home-intro::after{height:31px;opacity:.48}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{font-size:clamp(2.2rem,9.4vw,3.6rem)!important}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro>p{font-size:1rem;line-height:1.55}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{height:31px;opacity:.48}
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page) [data-kf-art-hero]{
   min-height:230px!important;padding:1.3rem!important;
   background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e16f8,#14121dd4 72%,#10121bab),var(--kf-art-image)!important;
@@ -354,19 +354,19 @@ body[data-kf-realm]:not(.profile-custom-theme):not(.kf-gameplay-page) :is(#ashfa
   background-position:center,right 9px top 10px,center,61% center!important;
  }
  body[data-kf-realm]:not(.profile-custom-theme) [data-kf-art-hero] :is(h1,h2){font-size:clamp(2rem,7.2vw,3.2rem)!important}
- body.home-page:not(.profile-custom-theme) .kf-start-card{min-height:235px}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card{min-height:235px}
  body[data-kf-realm]:not(.profile-custom-theme) :is(.kf-start-card,.foundry-card,.directory-group,.quick-card):is(:hover,:focus-within){transform:none}
  html body[data-kf-realm]>.kf-header .kf-nav.open{background:#16121eee!important;border:1px solid #c8a1aa82!important;backdrop-filter:blur(20px)}
 }
 @media(max-width:420px){
- body.home-page:not(.profile-custom-theme) .home-intro{min-height:505px}
- body.home-page:not(.profile-custom-theme) .home-intro h1{font-size:clamp(2.1rem,8.8vw,3rem)!important}
- body.home-page:not(.profile-custom-theme) .kf-start-here{padding:1rem!important}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{min-height:505px}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1{font-size:clamp(2.1rem,8.8vw,3rem)!important}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-here{padding:1rem!important}
 }
 @media(prefers-reduced-motion:reduce){
  body[data-kf-realm]:not(.profile-custom-theme) :is(.kf-start-card,.ecosystem-card,.directory-group,.foundry-card,.tool-card,.quick-card,.game-card,.kf-nav a){transition:none!important;transform:none!important}
 }
 @media(forced-colors:active){
  body[data-kf-realm]:not(.profile-custom-theme) :is([data-kf-art-hero],.kf-start-card,.foundry-card,.entry-card){border:1px solid CanvasText!important}
- body.home-page:not(.profile-custom-theme) .home-intro h1 span{-webkit-text-fill-color:CanvasText}
+ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro h1 span{-webkit-text-fill-color:CanvasText}
 }
