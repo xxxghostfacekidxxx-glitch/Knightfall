@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);
 const status=$("theme-crew-status");
 const workspace=$("theme-crew-workspace");
 const denied=$("theme-crew-denied");
-let current=null,presets={},selected="cathedral",busy=false;
+let current=null,presets={},selected="cathedral",busy=false,initialized=false;
 const announce=text=>{status.textContent=String(text)};
 const textNode=(tag,text,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=String(text);return e};
 async function req(path,method="GET",payload){
@@ -60,7 +60,8 @@ function drawHistory(rows){
 async function load(){
  const data=await req("/status");
  current=data.current;presets=data.presets;
- if(!Object.hasOwn(presets,selected))selected=current.preset;
+ if(!initialized||!Object.hasOwn(presets,selected))selected=current.preset;
+ initialized=true;
  $("theme-crew-current").textContent="LIVE: "+presets[current.preset]?.name+" · Revision "+current.revision+
    (current.updated_at?" · "+new Date(current.updated_at).toLocaleString():" · Default release");
  drawPresets();drawBots(data.bots||[],data.workflow);drawHistory(data.history||[]);
@@ -78,15 +79,17 @@ async function publish(undo=false){
  const verb=undo?"ROLL BACK":"PUBLISH";
  if(!confirm(verb+" "+presets[desired].name+" across Knightfall? Every member will see the selected look. This action is logged and reversible."))return;
  lock(true);
+ let published=false;
  try{
   const result=await req(undo?"/rollback":"/activate","POST",undo?{expectedRevision:current.revision}:{preset:desired,expectedRevision:current.revision});
   current=result.current;
-  await load();
+  published=true;
+  try{await load()}catch(error){announce("Theme published as "+presets[current.preset].name+", but dashboard refresh failed: "+error.message+". Reload to verify.");}
   // Local preview must not hide the new live state.
   window.KnightfallThemeCrew?.preview?.(null);
   await window.KnightfallThemeCrew?.refresh?.();
   announce("Published "+presets[current.preset].name+" sitewide. Revision "+current.revision+". Existing tabs refresh automatically.");
- }catch(e){announce("Publish failed: "+e.message+". Nothing was changed from this console.");}
+ }catch(e){announce(published?"Theme change was accepted, but confirmation was interrupted: "+e.message+". Check the live status before trying again.":"Theme change was not confirmed: "+e.message+". Refresh live status before retrying.");}
  finally{lock(false)}
 }
 $("theme-crew-preview").addEventListener("click",()=>{
