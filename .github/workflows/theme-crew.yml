@@ -98,7 +98,6 @@ jobs:
           name: knightfall-theme-sitewide-qa
           path: artifacts/theme-crew/sitewide/
           if-no-files-found: warn
-          if-no-files-found: warn
   switchblade:
     name: Switchblade / publisher contract (nonpublishing CI)
     runs-on: ubuntu-latest
