@@ -72,12 +72,19 @@ try {
           assert.equal(state.oldEmergency, false, label + " must not mount legacy emergency chrome");
           assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-cathedral-v2.css")),
             label + " must mount Cathedral Ascendant as final visual layer");
-          const cathedralCss = await page.evaluate(() => {
-            const styles = [...document.querySelectorAll('link[rel="stylesheet"]')];
-            const shared = styles.filter(node => /\/(?:visual-refresh|section-overhaul|knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2)\.css/.test(node.href));
-            return shared.at(-1)?.href.includes("knightfall-cathedral-v2.css") === true;
+          await page.waitForFunction(() => document.body?.dataset.kfTheme === "cathedral" && !!window.KnightfallThemeCrew, null, {timeout: 15000});
+          const crewCascade = await page.evaluate(() => {
+            const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+            const shared = links.filter(node => /\/(?:visual-refresh|section-overhaul|knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(node.href));
+            return {
+              final: shared.at(-1)?.href || "",
+              count: links.filter(node => node.href.includes("/theme-crew.css")).length,
+              activeTheme: document.body.dataset.kfTheme
+            };
           });
-          assert.equal(cathedralCss,true,label + " must keep Cathedral Ascendant last in stylesheet order");
+          assert.match(crewCascade.final,/\/theme-crew\.css/,label + " must load the Theme Crew as the final layer");
+          assert.equal(crewCascade.count,1,label + " must not inject duplicate Theme Crew CSS links");
+          assert.equal(crewCascade.activeTheme,"cathedral",label + " must default to original Gothic artwork");
 
           if (realmArtwork[route]) {
             const expected = realmArtwork[route];
