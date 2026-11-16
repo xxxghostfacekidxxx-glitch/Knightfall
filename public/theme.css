@@ -7,6 +7,8 @@
 @import url("/knightfall-artwork.css?v=20261116-art9");
 /* Cathedral Ascendant loads on pages with and without shared navigation. */
 @import url("/knightfall-cathedral-v2.css?v=20261116-cathedral7");
+/* The approved Theme Crew switchboard is the last global look layer. */
+@import url("/theme-crew.css?v=20261116-crew1");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
