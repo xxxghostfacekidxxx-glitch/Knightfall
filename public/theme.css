@@ -8,7 +8,7 @@
 @import url("/knightfall-cathedral-v2.css?v=20261116-requiem1");
 @import url("/theme-crew.css?v=20261116-requiem1");
 /* Final cathedral-only appearance; alternative presets retain their own art. */
-@import url("/knightfall-requiem.css?v=20261116-requiem1");
+@import url("/knightfall-requiem.css?v=20261116-requiem2");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}
