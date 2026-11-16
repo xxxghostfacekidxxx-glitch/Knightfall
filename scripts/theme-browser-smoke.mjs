@@ -121,8 +121,8 @@ try {
               label + " must not load game-only neon stylesheet");
           }
           if (route === "/chaos-cartridge.html") {
-            assert.ok(!state.stylesheets.some(sheet => sheet.includes("chaos-glitch.css")),
-              label + " arcade hub must use Gothic chrome, not game glitch skin");
+            assert.equal(await page.locator("body").evaluate(node => node.classList.contains("chaos-glitch-arcade")),false,
+              label + " arcade hub must not activate the game-only CRT skin");
             assert.ok(!state.stylesheets.some(sheet => sheet.includes("chaos-cartridge-theme.css")),
               label + " hub must not load per-game skins");
             assert.equal(state.arcadeAccent, "rgb(199, 167, 124)",
