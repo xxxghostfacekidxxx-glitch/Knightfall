@@ -33,6 +33,9 @@ test('Gothic realm illustration files are valid vector resources',()=>{
  assert.match(read('assets/knightfall/gothic-chrome-frame.svg'),/<svg\b/);
  assert.ok(sw.includes('/assets/knightfall/gothic-chrome-frame.svg'),'frame SVG is cached for installed apps');
  assert.ok(art.includes('gothic-chrome-frame.svg'),'frame overlays real headers');
+ assert.match(read('assets/knightfall/winged-skull-crest.svg'),/<svg\\b/);
+ assert.ok(sw.includes('/assets/knightfall/winged-skull-crest.svg'),'approved skull art must be in offline shell');
+ assert.ok(art.includes('winged-skull-crest.svg'),'approved skull art must be used on real pages');
 });
 test('shared nav discovers the actual public page headers',()=>{
  for (const [page,markup,realm] of headings){
@@ -51,7 +54,7 @@ test('artwork is mounted last, kept in cache, and does not skin private profile 
  assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
  assert.match(nav,/knightfall-artwork\.css/);
  assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v51/);
+ assert.match(sw,/knightfall-shell-v52/);
  assert.match(sw,/knightfall-artwork\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);
