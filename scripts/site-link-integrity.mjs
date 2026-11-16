@@ -53,7 +53,13 @@ for (const file of files) {
   }
   // All static same-URL anchors on one page are a duplicate route to the same place.
   for (const [href, count] of counts) {
-    if (count > 1) failures.push(`${file}: ${count} repeated static links to ${href}`);
+    if (count > 1) {
+      // The Foundry guest portal and authenticated workshop are mutually exclusive.
+      // Keep both functional entrances, but never permit three copies or other duplicates.
+      const roleSplit=file==="devil-tools.html"&&href==="/mascot-pets.html"&&count===2&&
+        body.includes('id="foundry-public-preview"')&&body.includes('id="workshop" class="hidden"');
+      if(!roleSplit)failures.push(`${file}: ${count} repeated static links to ${href}`);
+    }
   }
 }
 console.log(`First-party link audit: ${files.length} HTML pages, ${checked} local anchors.`);
