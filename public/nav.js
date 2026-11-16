@@ -6,30 +6,31 @@
   // The previous eager injection could run in <head> before later stylesheets
   // were parsed, allowing old neon/page CSS to override the approved theme.
   const mountApprovedTheme = () => {
-    const styles = [
-      ["visual-refresh", "/visual-refresh.css?v=20261115-gothic9"],
-      ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
-      ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
-      ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art9"],
-      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral7"],
-      ["theme-crew", "/theme-crew.css?v=20261116-crew1"]
-    ];
-    for (const [id, href] of styles) {
-      const selector = 'link[data-' + id + ']';
-      let link = document.querySelector(selector);
-      if (!link) {
-        link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.dataset[id.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = "true";
-      }
-      link.href = href;
-      // Reposition existing links as well, so page styling cannot trail them.
-      document.head.appendChild(link);
+    // One canonical CSS cascade, never the same six stylesheets injected twice.
+    // Move the existing root sheet behind page-specific CSS, without cloning it.
+    const sheets = [...document.querySelectorAll('link[rel="stylesheet"]')];
+    const themes = sheets.filter(link => {
+      try { return new URL(link.href, document.baseURI).pathname === "/theme.css"; }
+      catch { return false; }
+    });
+    const link = themes.shift() || document.createElement("link");
+    link.rel = "stylesheet";
+    link.dataset.kfCanonicalTheme = "true";
+    const target = "/theme.css?v=20261116-requiem1";
+    if (link.getAttribute("href") !== target) link.href = target;
+    // The canonical root imports design, artwork, cathedral and theme crew
+    // in that order. Appending only this link prevents double application.
+    document.head.appendChild(link);
+    for (const duplicate of themes) duplicate.remove();
+    // Retire links formerly added by the legacy injector. Existing pages
+    // retaining a manually-authored themed link are not altered here.
+    for (const old of document.querySelectorAll('link[data-visual-refresh],link[data-section-overhaul],link[data-knightfall-unified-theme],link[data-knightfall-artwork],link[data-knightfall-cathedral-v2],link[data-theme-crew]')) {
+      old.remove();
     }
   };
   // Loaded separately so both navigation-enabled and navigationless chrome stay isolated.
   const mountCrewRuntime = () => {
-    if(document.querySelector('script[data-kf-theme-crew-runtime]'))return;
+    if(document.querySelector('script[data-kf-theme-crew-runtime],script[src^="/theme-crew-runtime.js"]'))return;
     const script=document.createElement("script");
     script.src="/theme-crew-runtime.js?v=20261116-crew2";
     script.dataset.kfThemeCrewRuntime="true";
