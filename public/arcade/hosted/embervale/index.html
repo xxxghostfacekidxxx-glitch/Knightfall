@@ -32,10 +32,27 @@
   }
   #hint b { color: #9fb4d8; }
 </style>
-<link rel="stylesheet" href="knightfall.css?v=20261102-1">
+<link rel="stylesheet" href="knightfall.css?v=20261116-saves1">
 </head>
 <body>
-  <nav id="arcade-nav" aria-label="Arcade actions"><a href="/chaos-cartridge.html">← CHAOS CARTRIDGE</a><button id="full-screen" type="button" aria-label="Toggle fullscreen">⛶ FULLSCREEN</button></nav>
+  <nav id="arcade-nav" aria-label="Arcade actions">
+    <a href="/chaos-cartridge.html" aria-label="Back to Chaos Cartridge">← <span>CHAOS CARTRIDGE</span></a>
+    <div class="save-nav-actions">
+      <button id="save-game" type="button" title="Save your current adventure">💾 SAVE</button>
+      <details id="save-menu">
+        <summary aria-label="Load and back up your Embervale save">SAVES ▾</summary>
+        <div class="save-menu-panel">
+          <button id="continue-game" type="button">▶ CONTINUE</button>
+          <button id="backup-save" type="button">↓ DOWNLOAD BACKUP</button>
+          <button id="restore-save" type="button">↑ RESTORE BACKUP</button>
+          <input id="restore-save-file" type="file" accept=".json,application/json" hidden>
+          <p>Autosaves every 15 seconds and when leaving. Backups stay on your device.</p>
+        </div>
+      </details>
+      <button id="full-screen" type="button" aria-label="Toggle fullscreen">⛶ FULLSCREEN</button>
+    </div>
+  </nav>
+  <p id="save-status" class="save-status" role="status" aria-live="polite" hidden></p>
   <div id="wrap">
     <canvas id="game" width="256" height="224"></canvas>
     <div id="hint">
@@ -61,7 +78,8 @@
   <script src="js/world.js"></script>
   <script src="js/entities.js"></script>
   <script src="js/knightfall-expansion.js"></script>
-  <script src="js/game.js"></script>
+  <script src="js/game.js?v=20261116-saves1"></script>
+  <script src="js/knightfall-save-controls.js?v=20261116-saves1"></script>
   <script src="js/knightfall-touch.js"></script>
 </body>
 </html>
