@@ -142,7 +142,8 @@ test('the rebuilt destruction game is listed as a featured full arcade game',()=
  assert.ok(game,'City of Cinders must be in canonical catalog');
  assert.equal(game.collection,'games');
  assert.equal(game.featured,true);
- assert.match(game.description,/scale buildings, punch holes through separate floors/);
+ assert.match(game.description,/Minion Mouse, Mini Villain, and The Eddie/);
+ assert.match(game.description,/punch holes in individual floors/);
  const shelf=readFileSync('public/chaos-cartridge.html','utf8');
  assert.match(shelf,/data-game-id="city-of-cinders" data-category="Action" data-collection="games" data-device="touch" data-featured="true"/);
  assert.match(shelf,/77 full games/);
