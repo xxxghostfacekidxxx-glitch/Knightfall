@@ -21,7 +21,7 @@
     .entry-card{border:1px solid #303030;border-radius:18px;background:linear-gradient(155deg,rgba(22,22,22,.98),rgba(10,10,10,.98));padding:clamp(1.25rem,3vw,2rem);box-shadow:0 25px 90px #0008}
     .tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.3rem;border:1px solid #292929;border-radius:10px;background:#090909;margin-bottom:1.4rem}
     .tab{border:0;border-radius:7px;background:transparent;color:#999;padding:.8rem;font:inherit;font-size:.88rem;font-weight:750;cursor:pointer}
-    .tab[aria-selected="true"]{background:#242128;color:#c7a77c;box-shadow:inset 0 0 0 1px rgba(168,255,62,.3)}
+    .tab[aria-selected="true"]{background:#242128;color:#c7a77c;box-shadow:inset 0 0 0 1px rgba(199,167,124,.32)}
     #auth-title{font-size:clamp(1.5rem,5vw,2rem);margin:0 0 1rem;letter-spacing:-.025em}
     .field{display:grid;gap:.42rem;margin-bottom:.9rem}
     label{font-size:.78rem;font-weight:750;color:#d0d0d0}
@@ -45,7 +45,7 @@
   <header class="kf-header"></header>
   <main class="entry-layout">
     <section class="entry-card" aria-labelledby="auth-title">
-      <h1 id="auth-title">Sign in to Ash-Fall</h1>
+      <h1 id="auth-title">Sign in to Knightfall</h1>
       <div class="tabs" role="tablist" aria-label="Account action">
         <button class="tab" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-panel">Log in</button>
         <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-panel">Create account</button>
@@ -82,7 +82,7 @@
       const registerForm = document.getElementById("register-panel");
       function setMode(mode) {
         const registering = mode === "register";
-        document.getElementById("auth-title").textContent = registering ? "Create an Ash-Fall account" : "Sign in to Ash-Fall";
+        document.getElementById("auth-title").textContent = registering ? "Create a Knightfall account" : "Sign in to Knightfall";
         loginTab.setAttribute("aria-selected", String(!registering));
         registerTab.setAttribute("aria-selected", String(registering));
         loginForm.hidden = registering;
@@ -137,7 +137,7 @@
             status.textContent = "Check your email for a verification link. It expires in 30 minutes. To request another link, re-enter your password and submit again.";
             return;
           }
-          status.textContent = "You're in. Opening Ash-Fall…";
+          status.textContent = "You're in. Opening Knightfall…";
           window.location.assign(destination);
         } catch (error) {
           status.style.color = "#c7a77c";
@@ -145,7 +145,7 @@
           if (endpoint.endsWith("/register") && turnstileEnabled && window.turnstile) window.turnstile.reset();
         } finally {
           submit.disabled = false;
-          submit.textContent = endpoint.endsWith("/login") ? "Log in to Ash-Fall ↗" : "Create my account ↗";
+          submit.textContent = endpoint.endsWith("/login") ? "Log in to Knightfall ↗" : "Create my account ↗";
         }
       }
       loginForm.addEventListener("submit", event => {
