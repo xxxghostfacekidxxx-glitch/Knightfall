@@ -80,7 +80,7 @@ for(const term of [/\bcanvas\s*\{/i,/\.message\.(?:mine|theirs)\s*\{/i,/[{\s]bac
  if(term.test(crew))failures.push({type:"unsafe_global_css",pattern:String(term)});
 for(const p of pages){
  const page=read(p);
- if(!page.includes("nav.js")&&page.includes("theme.css"))warnings.push({type:"no_live_theme_runtime",file:p});
+ if(!page.includes("nav.js")&&!page.includes("theme-crew-runtime.js")&&page.includes("theme.css")&&!["offline.html","personal-bots-offline.html"].includes(p))warnings.push({type:"no_live_theme_runtime",file:p});
 }
 const report={time:new Date().toISOString(),css_files:files.length,top_level_pages:pages.length,core_stylesheets:[...core],
  failures,warnings,heaviest_important:records.slice().sort((a,b)=>b.important-a.important).slice(0,12),
@@ -88,4 +88,5 @@ const report={time:new Date().toISOString(),css_files:files.length,top_level_pag
 mkdirSync(output,{recursive:true});
 writeFileSync(join(output,"css-audit.json"),JSON.stringify(report,null,2)+"\n");
 console.log("VEIL SENTINEL / CSS AUDIT\n"+JSON.stringify({css_files:report.css_files,pages:report.top_level_pages,critical:failures.length,warnings:warnings.length,heaviest:report.heaviest_important.slice(0,5)},null,2));
+if(warnings.length)console.warn("CSS audit warnings (review, do not blindly delete):\n"+JSON.stringify(warnings,null,2));
 if(failures.length){console.error("Critical CSS errors\n"+JSON.stringify(failures,null,2));process.exitCode=1}
