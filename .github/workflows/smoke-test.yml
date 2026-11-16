@@ -139,6 +139,8 @@ jobs:
         run: node scripts/site-theme-audit.mjs
       - name: Verify section illustrations are wired to real site templates
         run: node --test scripts/knightfall-sitewide-artwork.test.mjs scripts/cathedral-overhaul.test.mjs
+      - name: CSS Theme Crew security and responsive review
+        run: node scripts/theme-crew-audit.mjs && node --test backend/src/theme-crew.test.mjs
       - name: Test seller commerce privacy and input validation
         run: node --test backend/src/shop-commerce.test.mjs && node --check backend/src/shop-commerce.js
       - name: Verify admin task navigation and permissions contract
