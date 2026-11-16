@@ -21,9 +21,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral3/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral3"\)/);
- assert.match(sw,/knightfall-shell-v56/);
+ assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral4/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral4"\)/);
+ assert.match(sw,/knightfall-shell-v57/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
@@ -72,4 +72,12 @@ test('style source keeps balanced declarations and no unsupported remote assets'
  assert.equal(depth,0,'Unbalanced Gothic CSS rules');
  assert.doesNotMatch(chrome,/@import\s+url\(https?:/i);
  assert.doesNotMatch(chrome,/url\(["']?https?:/i);
+});
+
+test('authenticated Foundry hides functional public previews without touching staff access',()=>{
+ const markup=read('devil-tools.html');
+ assert.ok(markup.includes('id="foundry-public-preview"'));
+ assert.ok(markup.includes('id="workshop" class="hidden"'));
+ for(const path of ['/chaos-cartridge.html','/community.html','/mascot-pets.html'])assert.ok(markup.includes('href="'+path+'"'));
+ assert.ok(chrome.includes('body:has(#workshop:not(.hidden)) #foundry-public-preview{display:none!important}'));
 });
