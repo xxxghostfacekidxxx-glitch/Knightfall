@@ -165,7 +165,7 @@ try {
       console.log("PASS Cinder Reversi AI, undo, fullscreen, hint and mobile board ("+viewport.width+"px)");
     }finally{await page.close();}
   }
-  // Regression guard: the arcade theme must never restore the retired orange palette.
+  // Regression guard: arcade hub chrome stays on the approved Gothic palette; playable games keep their own art.
   // Exercise the actual CSS cascade rather than checking source text alone.
   for (const route of ["/chaos-cartridge.html", "/arcade-games.html"]) {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -180,8 +180,8 @@ try {
           ember: root.getPropertyValue("--arcade-ember").trim().toLowerCase()
         };
       });
-      if (palette.chaos && palette.chaos !== "#ff55d8") throw new Error(route + " has incorrect arcade pink: " + palette.chaos);
-      if (palette.ember && !["#ff55d8", "var(--chaos-pink)"].includes(palette.ember)) throw new Error(route + " has incorrect arcade ember: " + palette.ember);
+      if (palette.chaos && palette.chaos !== "#b25b68") throw new Error(route + " has incorrect Gothic muted crimson accent: " + palette.chaos);
+      if (palette.ember && !["#b25b68", "#92a18a", "var(--chaos-pink)"].includes(palette.ember)) throw new Error(route + " has incorrect approved Gothic ember: " + palette.ember);
     } finally {
       await page.close();
     }
