@@ -54,7 +54,7 @@ test('three illustrated public gateways are real local assets and remain availab
  for(const part of ['arcade','madhouse','pets']){
   const file='assets/knightfall/gateway-'+part+'.svg';
   assert.ok(existsSync(new URL('../public/'+file,import.meta.url)),file+' exists');
-  assert.match(read(file),/<svg\\s+[^>]*viewBox=/,file+' is scalable');
+  assert.match(read(file),/<svg\s+[^>]*viewBox=/,file+' is scalable');
   assert.ok(chrome.includes('/assets/knightfall/gateway-'+part+'.svg'),'Site uses '+part+' illustration');
   assert.ok(sw.includes('/assets/knightfall/gateway-'+part+'.svg'),'PWA caches '+part+' illustration');
  }
