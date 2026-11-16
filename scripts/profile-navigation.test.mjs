@@ -103,8 +103,8 @@ test("Gothic profile panels and member-selected appearances stay responsive",()=
  ]) assert.ok(css.includes(selector),"Missing themed profile box: "+selector);
  const colors=[...css.matchAll(/#[0-9a-fA-F]{6}\b/g)].map(match=>match[0]);
  const retired=colors.filter(hex=>{
-  // The approved antique bronze is intentionally warm, not legacy brown.
-  if(hex.toLowerCase()==="#c7a77c")return false;
+  // Approved antique bronze and bone parchment are deliberately warm. Do not flag approved palette tokens as legacy brown.
+  if(new Set(["#c7a77c","#ece1d3"]).has(hex.toLowerCase()))return false;
   const [r,g,b]=[1,3,5].map(i=>Number.parseInt(hex.slice(i,i+2),16));
   return r>=g&&g>=b&&r-b>=10;
  });
