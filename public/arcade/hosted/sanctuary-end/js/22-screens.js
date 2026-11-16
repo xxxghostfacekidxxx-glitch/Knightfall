@@ -37,7 +37,8 @@ document.getElementById('nameInput').addEventListener('keydown', e => { if (e.ke
 document.getElementById('backBtn').onclick = () => { renderSlots(); show('selectScreen'); startMenu(); };
 document.getElementById('reviveBtn').onclick = () => { enterGame(); };
 document.getElementById('quitBtn').onclick = () => { renderSlots(); show('selectScreen'); startMenu(); };
-document.getElementById('saveBtn').onclick = () => { saveProgress(true); running = false; setHud(false); renderSlots(); show('selectScreen'); startMenu(); };
+document.getElementById('quickSaveBtn').onclick = () => { if (running) saveProgress(true); };
+document.getElementById('saveBtn').onclick = () => { if (!saveProgress(true)) return; running = false; setHud(false); renderSlots(); show('selectScreen'); startMenu(); };
 document.getElementById('invBtn').onclick = () => toggleInv(); document.getElementById('invClose').onclick = () => toggleInv();
 document.getElementById('skillBtn').onclick = () => toggleSkill(); document.getElementById('skillClose').onclick = () => toggleSkill();
 document.querySelectorAll('#skillTabs .tab').forEach(t => t.onclick = () => setSkillTab(t.dataset.sktab));

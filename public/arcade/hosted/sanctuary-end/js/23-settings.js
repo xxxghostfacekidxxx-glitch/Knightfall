@@ -32,6 +32,9 @@ function openSettings() { Audio2.init(); applySettings(); renderSettings(); setS
 function closeSettings() { capturingAction = null; captureCb = null; settingsModal.style.display = 'none'; syncBackdrop(); }
 document.getElementById('setBtn').onclick = openSettings;
 document.getElementById('menuSettings').onclick = openSettings;
+const openBackup = () => { if (running && character) flushSaveProgress(); openSettings(); setSettingsTab('saves'); };
+document.getElementById('menuBackup').onclick = openBackup;
+document.getElementById('backupBtn').onclick = openBackup;
 document.getElementById('settingsClose').onclick = closeSettings;
 document.getElementById('setDone').onclick = closeSettings;
 document.getElementById('setVol').oninput = e => { SAVE._data.settings.volume = +e.target.value; applySettings(); };
@@ -59,10 +62,10 @@ document.getElementById('setExpo').onchange = () => SAVE.persist();
 function setSettingsTab(name) { document.querySelectorAll('#setTabs .tab').forEach(t => t.classList.toggle('on', t.dataset.stab === name)); document.querySelectorAll('#settingsModal .setPane').forEach(p => p.style.display = (p.dataset.pane === name) ? 'block' : 'none'); if (name === 'controls') renderControls(); if (name === 'loot') renderLootFilter(); if (name === 'saves') renderSavesIO(); }
 /* ---------- save export / import ---------- */
 function _saveIoMsg(t, ok) { const m = document.getElementById('saveIoMsg'); if (m) { m.textContent = t || ''; m.style.color = (ok === false) ? '#e07a5a' : (ok === true ? '#7ad08a' : '#7a6a4a'); } }
-function renderSavesIO() { const ta = document.getElementById('saveExportText'); if (ta) ta.value = JSON.stringify(SAVE._data); _saveIoMsg(''); }
-function downloadSave() { try { const blob = new Blob([JSON.stringify(SAVE._data, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-'); a.href = url; a.download = 'sanctuarys_end_save_' + ts + '.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); _saveIoMsg('Save file downloaded.', true); } catch (e) { _saveIoMsg('Download failed: ' + e.message, false); } }
+function renderSavesIO() { if (running && character) flushSaveProgress(); const ta = document.getElementById('saveExportText'); if (ta) ta.value = JSON.stringify(SAVE._data); _saveIoMsg(''); }
+function downloadSave() { if (running && character) flushSaveProgress(); try { const blob = new Blob([JSON.stringify(SAVE._data, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-'); a.href = url; a.download = 'infernal_reign_save_' + ts + '.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); _saveIoMsg('Save file downloaded.', true); } catch (e) { _saveIoMsg('Download failed: ' + e.message, false); } }
 function _fallbackCopy(text, done) { const ta = document.getElementById('saveExportText'); if (ta) { ta.value = text; ta.focus(); ta.select(); try { if (document.execCommand('copy')) { done(); return; } } catch (_) { } } _saveIoMsg('Select the export text and press Ctrl+C to copy.'); }
-function copySave() { const data = JSON.stringify(SAVE._data); const done = () => _saveIoMsg('Copied to clipboard.', true); if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(data).then(done).catch(() => _fallbackCopy(data, done)); } else _fallbackCopy(data, done); }
+function copySave() { if (running && character) flushSaveProgress(); const data = JSON.stringify(SAVE._data); const done = () => _saveIoMsg('Copied to clipboard.', true); if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(data).then(done).catch(() => _fallbackCopy(data, done)); } else _fallbackCopy(data, done); }
 /* Sanitize an imported save in place. Imported JSON is fully attacker-controlled, so before it is persisted
    we (a) drop any slot that isn't a plain character object — a non-object slot makes SAVE.load()'s migrate()
    throw at boot and brick the game — and (b) neutralize the only values that ever reach innerHTML from item
@@ -88,10 +91,11 @@ function _sanitizeImportedSlot(ch) {
   return ch;
 }
 function importSave() {
-  const ta = document.getElementById('saveImportText'); const raw = ((ta && ta.value) || '').trim(); if (!raw) { _saveIoMsg('Paste save text or load a file first.', false); return; }
+  const ta = document.getElementById('saveImportText'); const raw = ((ta && ta.value) || '').trim(); if (raw.length > 5000000) { _saveIoMsg('Save file is too large.', false); return; } if (!raw) { _saveIoMsg('Paste save text or load a file first.', false); return; }
   let data; try { data = JSON.parse(raw); } catch (e) { _saveIoMsg('Invalid JSON: ' + e.message, false); return; }
-  if (!data || typeof data !== 'object' || !Array.isArray(data.slots)) { _saveIoMsg('Not a valid Sanctuary save (missing "slots").', false); return; }
-  data.slots = data.slots.map(_sanitizeImportedSlot);
+  if (!data || typeof data !== 'object' || Array.isArray(data) || !Array.isArray(data.slots) || data.slots.length > SAVE.NUM_SLOTS) { _saveIoMsg('Not a valid Infernal Reign save (invalid slots).', false); return; }
+  data.slots = [...data.slots, ...Array(SAVE.NUM_SLOTS - data.slots.length).fill(null)].map(_sanitizeImportedSlot);
+  if (data.settings != null && (typeof data.settings !== 'object' || Array.isArray(data.settings))) { _saveIoMsg('Invalid save settings.', false); return; }
   if (!confirm('Import will REPLACE all local characters and settings, then reload the game. Continue?')) return;
   try { localStorage.setItem(SAVE.KEY, JSON.stringify(data)); } catch (e) { _saveIoMsg('Could not write save: ' + e.message, false); return; }
   _saveIoMsg('Imported — reloading…', true); setTimeout(() => location.reload(), 450);

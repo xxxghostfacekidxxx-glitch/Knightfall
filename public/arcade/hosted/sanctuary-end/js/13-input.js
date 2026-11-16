@@ -167,7 +167,7 @@ const SKILL_COEF = {
   Object.assign(saveButton.style,{minHeight:'44px',padding:'6px 10px',color:'#fff',background:'#392145',border:'1px solid #9af5bf',borderRadius:'8px'});
   saveButton.addEventListener('click',()=>{
     if(!running || currentSlot===null || !character) return;
-    const saved=SAVE.saveCharacter(currentSlot,character);
+    const saved=saveProgress(true); /* sync live XP, gold, kills and potions first */
     saveButton.textContent=saved?'Saved ✓':'Save failed';
     saveButton.setAttribute('aria-label',saved?'Character saved':'Save failed; check browser storage');
     setTimeout(()=>{saveButton.textContent='Save';saveButton.setAttribute('aria-label','Save character progress');},2200);

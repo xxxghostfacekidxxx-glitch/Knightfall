@@ -15,28 +15,40 @@ const NET = {
       endpoint = new URL(/^wss?:\/\//i.test(raw) ? raw : (securePage ? 'wss://' : 'ws://') + raw);
       if (!['ws:', 'wss:'].includes(endpoint.protocol) || !endpoint.hostname || endpoint.username || endpoint.password) throw new Error('Invalid socket endpoint');
       if (securePage && endpoint.protocol !== 'wss:') { this.status('Secure HTTPS pages require a wss:// multiplayer server'); return; }
+      if (port && !/^\\d{1,5}$/.test(String(port))) throw new Error('Invalid port');
       if (port && !endpoint.port) endpoint.port = String(port);
       else if (!endpoint.port && !/^wss?:\/\//i.test(raw) && !raw.includes(':') && !securePage) endpoint.port = '8787';
       this.ws = new WebSocket(endpoint.toString());
     } catch (e) { this.status('Invalid multiplayer address or port'); return; }
     this.status('Connecting…');
-    this.ws.onopen = () => { this.connected = true; this.status('Connected — adventuring together'); this.refreshUI(); };
-    this.ws.onclose = () => { this.connected = false; this.clearRemotes(); this.status('Disconnected'); this.refreshUI(); };
-    this.ws.onerror = () => { this.status('Connection failed (is the server running & port open?)'); };
-    this.ws.onmessage = ev => { let m; try { m = JSON.parse(ev.data); } catch (_) { return; } this.onMsg(m); };
+    const liveSocket = this.ws;
+    this.ws.onopen = () => { if (this.ws !== liveSocket) return; this.connected = true; this.status('Connected — adventuring together'); this.refreshUI(); };
+    this.ws.onclose = () => { if (this.ws !== liveSocket) return; this.connected = false; this.clearRemotes(); this.status('Disconnected'); this.refreshUI(); };
+    this.ws.onerror = () => { if (this.ws !== liveSocket) return; this.status('Connection failed (is the server running & port open?)'); };
+    this.ws.onmessage = ev => { if (this.ws !== liveSocket) return; let m; try { m = JSON.parse(ev.data); } catch (_) { return; } this.onMsg(m); };
   },
-  disconnect() { if (this.ws) { try { this.ws.close(); } catch (_) { } } this.ws = null; this.connected = false; this.clearRemotes(); this.refreshUI(); this.status('Not connected'); },
+  disconnect() { const old = this.ws; this.ws = null; if (old) { try { old.onopen = old.onmessage = old.onclose = old.onerror = null; old.close(); } catch (_) { } } this.connected = false; this.clearRemotes(); this.refreshUI(); this.status('Not connected'); },
   send(o) { if (this.connected && this.ws && this.ws.readyState === 1) { try { this.ws.send(JSON.stringify(o)); } catch (_) { } } },
-  onMsg(m) { if (m.t === 'welcome') { this.id = m.id; } else if (m.t === 'state') { this.upsert(m); } else if (m.t === 'leave') { this.removeRemote(m.id); } else if (m.t === 'chat') { this.chat(m.name, m.msg); } },
+  onMsg(m) {
+    if (!m || typeof m !== 'object' || Array.isArray(m)) return;
+    if (m.t === 'welcome' && (Number.isSafeInteger(m.id) || (typeof m.id === 'string' && m.id.length <= 64))) this.id = m.id;
+    else if (m.t === 'state') this.upsert(m);
+    else if (m.t === 'leave') this.removeRemote(m.id);
+    else if (m.t === 'chat' && typeof m.msg === 'string') this.chat(String(m.name || 'Hero').slice(0, 24), m.msg.slice(0, 200));
+  },
   upsert(m) {
-    let r = this.remotes.get(m.id); if (!r) { const mesh = buildHero(); mesh.scale.set(0.96, 0.96, 0.96); mesh.visible = false; scene.add(mesh); r = { mesh }; this.remotes.set(m.id, r); }
-    // Coerce every relayed field — the relay forwards peer payloads verbatim, so a NaN/string x/z/dir would
-    // poison the scene-graph transform (and the projected nameplate), and an unknown class must not recolor.
-    const nx = Number(m.x), nz = Number(m.z);
-    if (!Number.isFinite(nx) || !Number.isFinite(nz) || Math.abs(nx) > 100000 || Math.abs(nz) > 100000) return;
+    // Validate BEFORE allocating a GPU mesh; relays forward peer-controlled data.
+    if (!m || typeof m !== 'object' || (typeof m.id !== 'string' && !Number.isSafeInteger(m.id)) ||
+        !String(m.id).length || String(m.id).length > 64 || m.id === this.id ||
+        !Number.isFinite(m.x) || !Number.isFinite(m.z) ||
+        Math.abs(m.x) > 100000 || Math.abs(m.z) > 100000 ||
+        (this.remotes.size >= 32 && !this.remotes.has(m.id))) return;
+    const nx = m.x, nz = m.z;
+    let r = this.remotes.get(m.id);
+    if (!r) { const mesh = buildHero(); mesh.scale.set(0.96, 0.96, 0.96); mesh.visible = false; scene.add(mesh); r = { mesh }; this.remotes.set(m.id, r); }
     r.tx = nx; r.tz = nz;
     if (r.x === undefined || Math.hypot(nx - r.x, nz - r.z) > 20) { r.x = nx; r.z = nz; } // snap on spawn/teleport; otherwise tick() lerps toward the target so ~9Hz updates don't stutter
-    r.dir = +m.dir || 0; r.zone = m.zone; r.depth = +m.depth || 0; r.name = String(m.name || 'Player').slice(0, 24); r.cls = m.cls; r.level = +m.level || 1; r.hp = +m.hp || 0; r.hpMax = +m.hpMax || 1;
+    r.dir = Number.isFinite(m.dir) ? m.dir : 0; r.zone = String(m.zone || '').slice(0, 24); r.depth = Number.isInteger(m.depth) ? m.depth : 0; r.name = String(m.name || 'Player').slice(0, 24); r.cls = m.cls; r.level = Number.isFinite(m.level) ? clamp(m.level,1,1000) : 1; r.hp = Number.isFinite(m.hp) ? Math.max(0,m.hp) : 0; r.hpMax = Number.isFinite(m.hpMax) ? Math.max(1,m.hpMax) : 1;
     if (r.mesh.userData.cloak && Object.prototype.hasOwnProperty.call(CLASSES, m.cls)) r.mesh.userData.cloak.material.color.setHex(CLASSES[m.cls].col);
   },
   removeRemote(id) { const r = this.remotes.get(id); if (r) { removeMesh(r.mesh); this.remotes.delete(id); } },
