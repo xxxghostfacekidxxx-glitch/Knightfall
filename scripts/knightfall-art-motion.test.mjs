@@ -50,9 +50,10 @@ test('reduced-motion pose avoids animated bobs while still drawing image',async(
 test('City and zombie shooter accept motion artwork without replacing gameplay mechanics',()=>{
  const inline=html=>[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
  for(const html of [city,shooter,crossing,marsh])for(const code of inline(html))assert.doesNotThrow(()=>new vm.Script(code));
- assert.match(city,/id="kf-city-skin"/);
- assert.match(city,/cityArt\.drawMotion/);
- assert.match(city,/if\(drawn\)return/);
+ assert.match(city,/city-of-cinders-monsters\.js/);
+ assert.match(city,/Art\.draw\(ctx,selectedCharacter/);
+ assert.match(city,/Art\.portrait\(c,c\.dataset\.portrait/);
+ for(const id of ['minion-mouse','mini-villain','the-eddie'])assert.match(city,new RegExp('data-character="'+id+'"'));
  assert.match(city,/function punch\(\)/);
  assert.match(shooter,/id="kf-ndy-art"/);
  assert.match(shooter,/ndyArt\.drawMotion/);
