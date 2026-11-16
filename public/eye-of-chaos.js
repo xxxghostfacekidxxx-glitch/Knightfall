@@ -2,7 +2,7 @@
 "use strict";
 const API="https://api.ash-fall.com/api/god/chaos";
 const $=id=>document.getElementById(id);
-const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,paused:false,section:"overview"};
+const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,paused:false,canGod:false,section:"overview"};
 const root=$("chaos-workspace"),notice=$("chaos-status");
 const node=(tag,cls,text)=>{
  const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);
@@ -56,7 +56,8 @@ function refreshSource(){
 }
 function refreshMaster(){
  const status=$("chaos-master-state"),button=$("chaos-master-toggle");
- if(!state.ready){status.textContent="Execution controls require database migrations 0142 and 0143.";button.disabled=true;return}
+ if(!state.canGod){button.disabled=true;return;}
+  if(!state.ready){status.textContent="Execution controls require database migrations 0142 and 0143.";button.disabled=true;return}
  status.textContent=state.paused?"ALL AGENT EXECUTION PAUSED · GOD LOCK ACTIVE":"Mission research and manual AI drafting may run on explicit assignments.";
  button.textContent=state.paused?"Resume agent execution":"Pause all agent execution";
  button.disabled=false;
@@ -67,7 +68,7 @@ function lockForms(){
   for(const control of form.querySelectorAll("input,select,textarea,button"))control.disabled=true;
  }
  for(const group of [$("chaos-mission-list"),$("chaos-draft-list")]){
-  group.replaceChildren(node("p","chaos-empty","Storage migration 0142 is pending. GOD can view the fleet, but mission and draft controls stay locked."));
+  group.replaceChildren(node("p","chaos-empty","Storage migration 0142 is pending. Staff can view the fleet, but mission and draft controls stay locked."));
  }
 }
 function metaLine(values){
@@ -156,12 +157,12 @@ function renderDrafts(){
   card.append(node("pre","",d.body));
   if(d.source_url&&/^https:\/\//.test(d.source_url)){const p=node("p");const a=node("a","","Original source");a.href=d.source_url;a.rel="noopener noreferrer";a.target="_blank";p.append(a);card.append(p)}
   const controls=node("div","chaos-actions");
-  if(d.status!=="published")controls.append(action("Edit draft",()=>editDraft(d)));
-  if(["pending","rejected"].includes(d.status))
+  if(d.status!=="published"&&(d.status!=="approved"||state.canGod))controls.append(action("Edit draft",()=>editDraft(d)));
+  if(state.canGod&&["pending","rejected"].includes(d.status))
    controls.append(action("GOD approve",()=>busy("Recording version-specific approval…",async()=>{
     await api("/drafts/"+d.id+"/approve","POST");await loadDrafts();
    })));
-  if(["pending","approved"].includes(d.status))
+  if(state.canGod&&["pending","approved"].includes(d.status))
    controls.append(action("Reject",()=>busy("Rejecting draft…",async()=>{await api("/drafts/"+d.id+"/reject","POST");await loadDrafts()}),"chaos-danger"));
   if(d.status==="approved")card.append(node("p","chaos-note","GOD approval recorded. Still unpublished: destination publishing is locked."));
   card.append(controls);panel.append(card);
@@ -205,7 +206,7 @@ async function loadEvents(){
   if(!state.events.length)root.append(node("p","chaos-empty","No operations recorded."));
   for(const e of state.events){
    const card=node("article","chaos-mission");
-   card.append(node("strong","",e.action+" / "+e.object_type),metaLine(["GOD #"+e.actor_id,e.object_id,fmtTime(e.occurred_at)]));
+   card.append(node("strong","",e.action+" / "+e.object_type),metaLine(["Staff #"+e.actor_id,e.object_id,fmtTime(e.occurred_at)]));
    root.append(card);
   }
  }catch(e){message("Mission history unavailable: "+e.message)}
@@ -219,7 +220,7 @@ $("chaos-draft-refresh").addEventListener("click",loadDrafts);
 $("chaos-history-refresh").addEventListener("click",loadEvents);
 $("chaos-qa-refresh").addEventListener("click",loadQA);
 $("chaos-master-toggle").addEventListener("click",async()=>{
- if(!state.ready)return;
+ if(!state.ready||!state.canGod)return;
  const target=!state.paused;
  if(target&&!confirm("GOD master pause: stop all manual research, scheduled research and AI draft execution?"))return;
  await busy(target?"Pausing every Eye of Chaos worker…":"Resuming GOD-approved mission execution…",async()=>{
@@ -231,7 +232,7 @@ $("chaos-draft-cancel").addEventListener("click",resetDraftEditor);
 $("chaos-mission-form").addEventListener("submit",async e=>{
  e.preventDefault();if(!state.ready)return;
  const b=$("chaos-mission-create");b.disabled=true;
- await busy("Creating GOD mission…",async()=>{
+ await busy("Creating staff mission…",async()=>{
   await api("/missions","POST",{
    division:$("chaos-division").value,agent_key:$("chaos-assignee").value,
    kind:$("chaos-kind").value,cadence:$("chaos-cadence").value,
@@ -259,6 +260,8 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
  try{
   const data=await api("/status");
   state.fleet=data;state.ready=data.schema_ready===true;state.paused=data.execution_paused===true;
+   state.canGod=data.permissions?.can_approve===true&&data.permissions?.can_control===true;
+   document.querySelectorAll("[data-chaos-god-only]").forEach(el=>{el.hidden=!state.canGod;});
   $("chaos-agent-count").textContent=String(data.agents.length);
   $("chaos-qa-count").textContent=String(data.arcade.length);
   $("chaos-forum-count").textContent=data.forums_loaded?String(data.forums.length):"—";
@@ -268,8 +271,8 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
   $("chaos-qa-link").href=data.qa_workflow;
   root.hidden=false;refreshAssignee();refreshDraftAssignee();refreshMaster();
   try{state.sources=(await api("/sources")).sources||[];refreshSource()}catch{}
-  if(!state.ready){lockForms();message("GOD authorized. Fleet registry online; controls require D1 migrations 0142 and 0143.");return}
-  message(state.paused?"GOD authorized. Master execution lock is active.":"GOD authorized. Mission and approval controls ready. Publishing is locked.");
+  if(!state.ready){lockForms();message("Staff authorized. Fleet registry online; controls require D1 migrations 0142 and 0143.");return}
+  message(state.paused?"Staff authorized. GOD execution lock is active.":(state.canGod?"GOD controls online. Publishing is locked.":"Admin command deck online. GOD approval and master controls are restricted."));
   await Promise.allSettled([loadMissions(),loadDrafts(),loadEvents()]);
  }catch(error){
   $("chaos-denied").hidden=false;message(error.message);
