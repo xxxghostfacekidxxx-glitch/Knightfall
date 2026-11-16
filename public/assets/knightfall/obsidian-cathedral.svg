@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="t d"><title id="t">Knightfall Obsidian Cathedral</title><desc id="d">Ornate Gothic cathedral ruins beneath a crimson eclipse and green spectral fires, with iron arches, stone gargoyles, and a sweeping vaulted skyline</desc><defs>
+<radialGradient id="sky" cx=".69" cy=".36" r=".91"><stop stop-color="#583047"/><stop offset=".3" stop-color="#312236"/><stop offset=".65" stop-color="#171923"/><stop offset="1" stop-color="#070a10"/></radialGradient>
+<radialGradient id="halo"><stop stop-color="#ce4a7d" stop-opacity=".66"/><stop offset=".46" stop-color="#ab416e" stop-opacity=".26"/><stop offset="1" stop-color="#9d3e6e" stop-opacity="0"/></radialGradient>
+<linearGradient id="moon" x2=".78" y2="1"><stop stop-color="#edc2b1"/><stop offset=".3" stop-color="#b77386"/><stop offset=".8" stop-color="#692e58"/><stop offset="1" stop-color="#341c35"/></linearGradient>
+<linearGradient id="stone" x2=".15" y2="1"><stop stop-color="#60515b"/><stop offset=".18" stop-color="#37313d"/><stop offset=".63" stop-color="#1c2128"/><stop offset="1" stop-color="#090e13"/></linearGradient>
+<linearGradient id="steel" x2="1" y2="1"><stop stop-color="#dbc1bc"/><stop offset=".28" stop-color="#89737d"/><stop offset=".62" stop-color="#3d3242"/><stop offset="1" stop-color="#af8f8d"/></linearGradient>
+<linearGradient id="fire" x2="0" y2="1"><stop stop-color="#d4fb80"/><stop offset=".25" stop-color="#9ade62"/><stop offset=".65" stop-color="#467a52"/><stop offset="1" stop-color="#183b3e"/></linearGradient>
+<pattern id="bricks" width="100" height="46" patternUnits="userSpaceOnUse"><path d="M0 44h100M50 0v44" fill="none" stroke="#dec5b0" stroke-opacity=".09" stroke-width="2"/><circle cx="15" cy="18" r="1" fill="#dac3b3" opacity=".07"/></pattern>
+<pattern id="stars" width="211" height="174" patternUnits="userSpaceOnUse"><circle cx="22" cy="13" r="1.4" fill="#f9d6bb" opacity=".52"/><circle cx="124" cy="83" r="1" fill="#b6bcdd" opacity=".5"/><path d="M181 138h10m-5-5v10" stroke="#edd0b1" stroke-opacity=".3"/></pattern>
+<filter id="blur"><feGaussianBlur stdDeviation="23"/></filter></defs>
+<rect width="1600" height="900" fill="url(#sky)"/><rect width="1600" height="900" fill="url(#stars)"/>
+<ellipse cx="1110" cy="320" rx="395" ry="385" fill="url(#halo)"/>
+<circle cx="1115" cy="330" r="234" fill="url(#moon)" stroke="#c28b9d" stroke-width="6"/><circle cx="1150" cy="290" r="219" fill="#151821"/>
+<circle cx="1115" cy="330" r="253" fill="none" stroke="#c29a8d" opacity=".5" stroke-width="2"/><circle cx="1115" cy="330" r="284" fill="none" stroke="#d677a2" opacity=".23" stroke-width="1"/>
+<g stroke="#a88386" stroke-opacity=".4" fill="none"><circle cx="1115" cy="330" r="305"/><path d="M1115 19v-28m0 678v-28M792 330h-31m710 0h-32M876 92l-22-22m521 520 23 23M876 567l-22 22m521-521 23-23"/></g>
+<!-- Distant city silhouette -->
+<g fill="#14151d" stroke="#715562" stroke-opacity=".27" stroke-width="2">
+<path d="M0 630V336l34-58 29 58v294zm47 0V412l42-69 45 69v218zm80 0V260l70-99 61 99v370zm115 0V400l40-52 43 52v230zm72 0V279l42-61 43 61v351zm65 0V442l53-78 51 78v188zm81 0V302l61-104 63 104v328zm112 0V427l43-69 46 69v203zm84 0V320l70-104 72 104v310zm645 0V290l69-110 63 110v340zm112 0V412l51-77 51 77v218zm90 0V302l45-84 43 84v328z"/>
+</g>
+<!-- Gothic spires -->
+<g fill="url(#stone)" stroke="#c0a4a1" stroke-opacity=".42" stroke-width="3">
+<path d="M0 900V312l67-155 62 155v588zM1472 900V300l66-156 62 156v600z"/>
+<path d="M120 900V407l59-121 60 121v493zM1356 900V398l59-121 57 121v502z"/>
+<path d="M260 900V240l65-134 64 134v660zM1214 900V238l64-131 67 131v662z"/>
+<path d="M379 900V500l88-153 89 153v400zM1048 900V502l88-156 91 156v398z"/>
+</g>
+<g stroke="#c7a77c" stroke-opacity=".42" fill="none" stroke-width="5"><path d="M325 107V14M1278 107V14M67 157V72M1538 145V59M179 285v-67M1415 278v-61"/><path d="m320 48-30 17 32-2 32 2-30-17M1276 45l-30 17 31-2 33 2-32-17"/></g>
+<!-- Main cathedral pointed arches, rail and carved pillars -->
+<path d="M535 900V361Q803 0 1070 361V900h-156V406Q806 234 694 406v494z" fill="url(#stone)" stroke="url(#steel)" stroke-width="13"/>
+<path d="M553 900V365Q803 42 1052 365V900" fill="none" stroke="#c7a77c" stroke-opacity=".5" stroke-width="5"/>
+<path d="M590 900V419Q803 126 1016 419V900" fill="none" stroke="#e6c2ae" stroke-opacity=".18" stroke-width="2"/>
+<path d="M695 900V413Q804 248 913 413V900" fill="#10131b" stroke="#a8878e" stroke-opacity=".6" stroke-width="5"/>
+<path d="M803 271v629M694 420h219M698 610h215M698 791h215" stroke="#876779" stroke-width="5" stroke-opacity=".38"/>
+<g fill="#1a2025" stroke="#a98784" stroke-opacity=".32"><path d="M535 900V550h41v350zm493 0V550h42v350z"/><path d="M535 493h45v18h-45zm491 0h45v18h-45z"/></g>
+<rect x="0" y="620" width="1600" height="280" fill="url(#bricks)" opacity=".65"/>
+<!-- ornamental vaulted tracery -->
+<g fill="none" stroke="#b99a99" stroke-width="3.2" opacity=".47">
+<path d="M325 385q-70-90-133 0v235m132-235q70-90 132 0v235m824-235q-70-90-130 0v235m130-235q70-90 133 0v235"/>
+<path d="M193 554q66-80 131 0m-130-30q67-80 130 0m831 30q66-80 131 0m-131-30q67-80 131 0"/>
+<circle cx="325" cy="361" r="37"/><circle cx="1278" cy="361" r="37"/><path d="M325 324v74m-37-37h74M1278 324v74m-37-37h74"/>
+<path d="M488 483q-34-49-62 0m756 0q-34-49-62 0"/>
+</g>
+<!-- Cathedral rose window -->
+<circle cx="803" cy="325" r="88" fill="#261923" stroke="#b89a98" stroke-width="7"/><circle cx="803" cy="325" r="73" fill="#211c26" stroke="#8b5777" stroke-width="3"/>
+<g fill="none" stroke="#ac7595" opacity=".75" stroke-width="4"><circle cx="803" cy="325" r="20"/><path d="M803 252v146m-73-73h146M752 273l103 103m0-103-103 103"/><path d="M803 252l20 48-20 25-20-25zM876 325l-48 20-25-20 25-20zM803 398l-20-48 20-25 20 25zM730 325l48-20 25 20-25 20z"/></g>
+<!-- Gothic green flame braziers -->
+<g fill="url(#fire)" stroke="#d4ff98" stroke-opacity=".48">
+<path d="M435 573q-48-65-16-130 14 38 28 40-2-52 45-93-9 49 8 80 32-20 29-48 49 71 2 151z"/>
+<path d="M1174 573q-48-65-16-130 14 38 28 40-2-52 45-93-9 49 8 80 32-20 29-48 49 71 2 151z"/>
+</g><g fill="none" stroke="#cba4a2" opacity=".65"><path d="M431 572h101m642 0h101M437 573l20 70h52l19-70m652 0 20 70h52l19-70"/></g>
+<!-- winged creatures and thorn silhouettes -->
+<g fill="#0c1117"><path d="m585 210-58-38 25 38-37-8 50 29 20-7 27 20-10-25z"/><path d="m1366 203 64-46-29 47 42-12-59 36-19-7-30 20 12-27z"/><path d="M0 900V772l70-37 49 30 68-43 70 28 69-51 75 38 67-33 80 44 79-23 89 46 94-49 99 47 87-38 89 53 88-31 96 42 64-35 86 57v104z"/></g>
+<g stroke="#baa0a3" stroke-opacity=".28" fill="none" stroke-width="4"><path d="M0 765q89-40 164-142m0 0-16-39m16 39 42-18M0 811q122-80 235-153m126 58 44-71m-44 71 68-10m1175 66q-89-40-164-142m0 0 16-39m-16 39-42-18"/></g>
+<path d="M0 896q360-91 770-17t830-16v37H0" fill="#0c1015"/>
+<rect width="1600" height="900" fill="none" stroke="#b58b8a" stroke-opacity=".16" stroke-width="8"/>
+</svg>
