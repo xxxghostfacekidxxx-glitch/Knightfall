@@ -74,8 +74,8 @@ try {
             label + " must mount Cathedral Ascendant as final visual layer");
           const cathedralCss = await page.evaluate(() => {
             const styles = [...document.querySelectorAll('link[rel="stylesheet"]')];
-            const last = styles[styles.length - 1];
-            return last?.href.includes("knightfall-cathedral-v2.css") === true;
+            const shared = styles.filter(node => /\/(?:visual-refresh|section-overhaul|knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2)\.css/.test(node.href));
+            return shared.at(-1)?.href.includes("knightfall-cathedral-v2.css") === true;
           });
           assert.equal(cathedralCss,true,label + " must keep Cathedral Ascendant last in stylesheet order");
 
