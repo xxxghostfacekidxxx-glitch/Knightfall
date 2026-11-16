@@ -36,17 +36,19 @@
     const path = location.pathname.toLowerCase();
     if (/^\/(?:arcade\/hosted\/|casino\/|games\/)/.test(path)) return;
     let realm = "general";
+    // Canonical Pages URLs omit .html. A shared hyphen/dot/slash boundary
+    // covers /admin, /admin.html, /admin-foo and /mascot-pets alike.
     if (path === "/" || path === "/index.html") realm = "home";
-    else if (/^\/(?:community(?:-topic)?|homepage|thread|create-thread|forums|madhouse)(?:[./]|$)/.test(path)) realm = "madhouse";
-    else if (/^\/(?:chaos-cartridge|chaos-lab|arcade(?:-|\/)|arcade-vault)(?:[./]|$)/.test(path)) realm = "arcade";
-    else if (/^\/(?:devil-tools|dev-toolkit|creator-|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:[./]|$)/.test(path)) realm = "foundry";
-    else if (/^\/(?:messages|ruinwire|social|friends|notifications|miss-chaos|bot)(?:[./]|$)/.test(path)) realm = "messages";
-    else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:[./]|$)/.test(path)) realm = "moon";
-    else if (/^\/(?:shops|shop-builder|my-shop|store|support|billing|stripe-invoicing)(?:[./]|$)/.test(path)) realm = "market";
-    else if (/^\/(?:members|profile|account|auth|login|register)(?:[./]|$)/.test(path)) realm = "members";
-    else if (/^\/(?:admin(?:-|\.)|eye-of-chaos|eye-of-horus|god-|moderation)(?:[./]|$)/.test(path)) realm = "god";
-    else if (/^\/(?:mascot|pet|companion)(?:[./]|$)/.test(path)) realm = "pets";
-    else if (/^\/(?:die-ary|memo-pad|vault|diary)(?:[./]|$)/.test(path)) realm = "diary";
+    else if (/^\/(?:community|homepage|thread|create-thread|forums|madhouse)(?:-|[./]|$)/.test(path)) realm = "madhouse";
+    else if (/^\/(?:chaos-cartridge|chaos-lab|arcade|arcade-vault)(?:-|[./]|$)/.test(path)) realm = "arcade";
+    else if (/^\/(?:devil-tools|dev-toolkit|creator|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:-|[./]|$)/.test(path)) realm = "foundry";
+    else if (/^\/(?:messages|ruinwire|social|friends|notifications|miss-chaos|bot)(?:-|[./]|$)/.test(path)) realm = "messages";
+    else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:-|[./]|$)/.test(path)) realm = "moon";
+    else if (/^\/(?:shops|shop-builder|my-shop|store|support|billing|stripe-invoicing)(?:-|[./]|$)/.test(path)) realm = "market";
+    else if (/^\/(?:members|profile|account|auth|login|register)(?:-|[./]|$)/.test(path)) realm = "members";
+    else if (/^\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation)(?:-|[./]|$)/.test(path)) realm = "god";
+    else if (/^\/(?:mascot|pet|companion)(?:-|[./]|$)/.test(path)) realm = "pets";
+    else if (/^\/(?:die-ary|memo-pad|vault|diary)(?:-|[./]|$)/.test(path)) realm = "diary";
     const main = document.querySelector("main");
     if (!main) return;
     document.body.dataset.kfRealm = realm;
