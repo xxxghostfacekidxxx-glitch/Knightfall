@@ -21,9 +21,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral2/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral2"\)/);
- assert.match(sw,/knightfall-shell-v55/);
+ assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral3/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral3"\)/);
+ assert.match(sw,/knightfall-shell-v56/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
@@ -50,6 +50,17 @@ test('core public sections and restricted consoles have dedicated frame and pane
  assert.ok(chrome.includes('winged-skull-crest.svg'),'Approved original crest must be retained');
  assert.ok(chrome.includes('obsidian-cathedral.svg'),'Cathedral illustration must appear in the homepage');
 });
+test('three illustrated public gateways are real local assets and remain available offline',()=>{
+ for(const part of ['arcade','madhouse','pets']){
+  const file='assets/knightfall/gateway-'+part+'.svg';
+  assert.ok(existsSync(new URL('../public/'+file,import.meta.url)),file+' exists');
+  assert.match(read(file),/<svg\\s+[^>]*viewBox=/,file+' is scalable');
+  assert.ok(chrome.includes('/assets/knightfall/gateway-'+part+'.svg'),'Site uses '+part+' illustration');
+  assert.ok(sw.includes('/assets/knightfall/gateway-'+part+'.svg'),'PWA caches '+part+' illustration');
+ }
+ assert.ok(read('index.html').includes('class="kf-start-grid"'),'Visible home entry card grid exists');
+});
+
 test('style source keeps balanced declarations and no unsupported remote assets',()=>{
  const stripped=chrome.replace(/\/\*[\s\S]*?\*\//g,'').replace(/"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g,'');
  let depth=0;
