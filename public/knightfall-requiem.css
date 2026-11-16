@@ -13,9 +13,9 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  color:var(--kf-relic-ivory);
  background-color:#090a11!important;
  background-image:
- radial-gradient(ellipse at 55% -12%,#ac567c30,transparent 60%),
- radial-gradient(ellipse at 5% 75%,#7b5a9e18,transparent 48%),
- linear-gradient(180deg,#0a0c14ef 0%,#0c0d17ef 55%,#0a0912f9 100%),
+ radial-gradient(ellipse at 55% -12%,#b866a84a,transparent 60%),
+ radial-gradient(ellipse at 5% 75%,#896bc332,transparent 48%),
+ linear-gradient(180deg,#0a0c14a6 0%,#0c0d17b5 55%,#0a0912db 100%),
  url('/assets/knightfall/vaulted-cathedral.svg')!important;
  background-position:center top,left bottom,center,center top!important;
  background-size:auto,auto,cover,cover!important;
@@ -24,7 +24,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 /* Architectural chrome: ribbed vault, metallic underline and illuminated crest. */
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(.kf-gameplay-page)>.kf-header{
  min-height:76px;
- background-image:linear-gradient(90deg,#0b0d16ee,#181321ee 50%,#0b0d17f5),url('/assets/knightfall/vaulted-cathedral.svg')!important;
+ background-image:linear-gradient(90deg,#0b0d16d9,#181321bd 50%,#0b0d17df),url('/assets/knightfall/vaulted-cathedral.svg')!important;
  background-position:center,center 43%!important;
  background-size:cover,cover!important;
  border-bottom:1px solid #d8a77a80!important;
@@ -62,7 +62,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.p
  background-color:#0c0e18!important;
  background-image:
  url('/assets/knightfall/gothic-chrome-frame.svg'),
- linear-gradient(90deg,#0a0917ef 0%,#110f1fce 42%,#110e2248 76%,#0d0b1c3b 100%),
+ linear-gradient(90deg,#0a0917eb 0%,#110f1fb5 41%,#110e222a 70%,#0d0b1c14 100%),
  url('/assets/knightfall/obsidian-cathedral.svg')!important;
  background-size:100% 100%,cover,cover!important;
  background-position:center,center,center 43%!important;
@@ -73,14 +73,16 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-
  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
  background:linear-gradient(0deg,#080914fa 0%,#0b0a17c6 28%,#0a0b1720 76%),radial-gradient(ellipse at 80% 28%,#c67eab36,transparent 48%);
 }
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
- content:"";position:absolute;z-index:0;pointer-events:none;
- width:min(49%,540px);aspect-ratio:.87;
- right:1%;top:-3%;
- background:url('/assets/knightfall/sanctum-stained-glass.svg') center/contain no-repeat;
- opacity:.88;mix-blend-mode:screen;
- mask-image:linear-gradient(180deg,#000 0%,#000 67%,transparent 100%);
- filter:drop-shadow(0 0 46px #dc6fc49a);
+/* One authoritative stained-glass window, no footer divider workaround. */
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
+ content:"";display:block;position:absolute;inset:auto;left:auto;bottom:auto;
+ z-index:1;pointer-events:none;right:-1.5%;top:-2%;
+ width:min(53%,590px);height:clamp(440px,51vw,690px);aspect-ratio:auto;
+ background:url('/assets/knightfall/sanctum-stained-glass.svg') center top/contain no-repeat;
+ opacity:.96;mix-blend-mode:screen;
+ -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
+ mask-image:linear-gradient(180deg,#000 0%,#000 65%,transparent 100%);
+ filter:drop-shadow(0 0 48px #dc6fc49a);
 }
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
@@ -117,7 +119,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
  padding:clamp(1.1rem,3vw,2.5rem)!important;
  border:1px solid #d2a47f91!important;
  border-radius:22px!important;
- background:linear-gradient(135deg,#241729e8,#111421f2 52%,#25182bed),url('/assets/knightfall/vaulted-cathedral.svg') center/cover!important;
+ background:linear-gradient(135deg,#241729c9,#111421d9 52%,#25182bcb),url('/assets/knightfall/vaulted-cathedral.svg') center/cover!important;
  box-shadow:inset 0 1px #ead3b04d,inset 0 0 0 4px #120e19,0 20px 54px #0009,0 0 45px #b64d8430!important;
  margin-block:1.6rem 2.5rem!important;
 }
@@ -140,7 +142,8 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.k
 html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) :is(.kf-start-card,.kf-atlas-card,.activity-card,.directory-group){
  border:1px solid #ce9c7d84!important;
  border-radius:17px!important;
- background:linear-gradient(155deg,#39273bdb,#171826f2 50%,#211a2af5)!important;
+ background-image:linear-gradient(105deg,#251b2ef0 0%,#171826df 53%,#1414204d 100%),var(--kf-start-art,url('/assets/knightfall/rose-window.svg'))!important;
+ background-position:center,60% center!important;background-size:cover,cover!important;
  box-shadow:inset 0 1px #f5d3b52f,0 12px 26px #0008,0 0 24px #a4507c19!important;
  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
@@ -185,9 +188,9 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .manif
 html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page):not(.chaos-glitch-arcade) [data-kf-art-hero]{
  border:1px solid #d6a778b5!important;
  border-radius:20px!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e1af5 0%,#12111de9 44%,#17111b66 100%),var(--kf-art-image)!important;
- background-size:100% 100%,cover,cover!important;
- background-position:center,center,center!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0c0e1ae8 0%,#12111dca 43%,#17111b33 100%),url('/assets/knightfall/rose-window.svg'),var(--kf-art-image)!important;
+ background-size:100% 100%,cover,clamp(170px,25vw,340px) auto,cover!important;
+ background-position:center,center,right 3% center,center!important;
  background-repeat:no-repeat!important;
  box-shadow:inset 0 0 0 4px #15101cd6,0 25px 65px #000a,0 0 35px #a9558230!important;
 }
@@ -197,7 +200,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
   min-height:590px!important;margin-top:.6rem!important;
   padding:1.5rem!important;background-position:center,center,54% center!important;
  }
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
   top:-24px;right:-9%;width:100%;opacity:.75;mask-image:linear-gradient(180deg,#000 0%,#000 51%,transparent 94%);
  }
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro h1{
@@ -230,53 +233,12 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 }
 
 
-/* REQUIEM STAINED-GLASS CASCADE REPAIR.
-   The earlier Cathedral Ascendant ::after used :has(#profile[data-theme]),
-   giving it ID-level specificity and silently hiding the illuminated glass.
-   Own every placement property explicitly so the older decorative divider
-   cannot flatten this window to 52px at the bottom of the hero. */
-html body.home-page[data-kf-theme="cathedral"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  inset:auto!important;
-  left:auto!important;
-  right:-2%!important;
-  top:-26px!important;
-  bottom:auto!important;
-  width:min(52%,570px)!important;
-  height:clamp(400px,48vw,660px)!important;
-  aspect-ratio:auto!important;
-  transform:none!important;
-  border:0!important;
-  background-image:url('/assets/knightfall/sanctum-stained-glass.svg')!important;
-  background-position:center top!important;
-  background-size:contain!important;
-  background-repeat:no-repeat!important;
-  opacity:.88!important;
-  mix-blend-mode:screen!important;
-  mask-image:linear-gradient(#000 0%,#000 57%,transparent 98%)!important;
-  filter:drop-shadow(0 0 35px #d467b177)!important;
-  pointer-events:none!important;
-  z-index:0!important;
-}
-@media(max-width:780px){
-  html body.home-page[data-kf-theme="cathedral"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-    width:100%!important;
-    height:440px!important;
-    right:-4%!important;
-    top:-26px!important;
-    opacity:.85!important;
-    background-position:center top!important;
-    mask-image:linear-gradient(#000 0%,#000 43%,transparent 97%)!important;
-  }
-}
+/* Compact screen refinement, using the same single glass owner. */
 @media(max-width:420px){
-  html body.home-page[data-kf-theme="cathedral"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
-    height:390px!important;
-    opacity:.78!important;
-  }
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{
+  height:385px;right:-7%;opacity:.8
+ }
 }
 @media(forced-colors:active){
-  html body.home-page[data-kf-theme="cathedral"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro::after{display:none!important}
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{display:none!important}
 }
