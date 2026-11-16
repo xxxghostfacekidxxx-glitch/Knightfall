@@ -103,7 +103,7 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
    gradient to .home-intro, hiding the actual cathedral illustration. */
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
  background-color:#101219!important;
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg'),linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
  background-position:center,right 5% top 13px,center,center 42%!important;
  background-size:100% 100%,clamp(200px,36vw,440px) auto,cover,cover!important;
  background-repeat:no-repeat!important;
@@ -234,14 +234,14 @@ body[data-kf-realm="members"]:not(.profile-custom-theme) :not(:has(#profile[data
 /* The approved winged skull is a Creator identity ornament, not a sticker on
    every app. Arcade, Ruinwire, pets and forums retain their own illustrated symbols. */
 body[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),linear-gradient(90deg,#101219f7 0%,#16151bf0 32%,#17151ec4 49%,#16151d47 75%),var(--kf-art-image)!important;
  background-size:100% 100%,clamp(210px,34vw,460px) auto,cover,cover!important;
  background-position:center,right 4% top 10px,center,center!important;
  background-repeat:no-repeat!important;
 }
 @media(max-width:700px){
  body[data-kf-realm="foundry"]:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.chaos-glitch-arcade):not(.kf-gameplay-page) [data-kf-art-hero]{
-  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),url('/assets/knightfall/winged-skull-crest.svg'),var(--kf-art-image)!important;
+  background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#111319ed,#14161de0 62%,#14161da8),url('/assets/knightfall/winged-skull-crest.svg?v=20261116-alpha2'),var(--kf-art-image)!important;
   background-position:center,center,right 12px top 8px,68% center!important;
   background-size:100% 100%,cover,175px auto,cover!important;
  }
