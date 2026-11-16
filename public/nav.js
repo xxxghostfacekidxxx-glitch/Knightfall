@@ -10,7 +10,7 @@
       ["visual-refresh", "/visual-refresh.css?v=20261115-gothic9"],
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
-      ["knightfall-artwork", "/knightfall-artwork.css?v=20261115-art3"]
+      ["knightfall-artwork", "/knightfall-artwork.css?v=20261115-art4"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -39,10 +39,10 @@
     if (path === "/" || path === "/index.html") realm = "home";
     else if (/^\/(?:community(?:-topic)?|homepage|thread|create-thread|forums|madhouse)(?:[./]|$)/.test(path)) realm = "madhouse";
     else if (/^\/(?:chaos-cartridge|chaos-lab|arcade(?:-|\/)|arcade-vault)(?:[./]|$)/.test(path)) realm = "arcade";
-    else if (/^\/(?:devil-tools|dev-toolkit|creator-|open-source-arsenal|cinderwild|cinderwind)(?:[./]|$)/.test(path)) realm = "foundry";
-    else if (/^\/(?:messages|ruinwire|social|friends|notifications)(?:[./]|$)/.test(path)) realm = "messages";
+    else if (/^\/(?:devil-tools|dev-toolkit|creator-|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:[./]|$)/.test(path)) realm = "foundry";
+    else if (/^\/(?:messages|ruinwire|social|friends|notifications|miss-chaos|bot(?:\.|\/|$))(?:[./]|$)/.test(path)) realm = "messages";
     else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:[./]|$)/.test(path)) realm = "moon";
-    else if (/^\/(?:shops|shop-builder|store|support|billing|stripe-invoicing)(?:[./]|$)/.test(path)) realm = "market";
+    else if (/^\/(?:shops|shop-builder|my-shop|store|support|billing|stripe-invoicing)(?:[./]|$)/.test(path)) realm = "market";
     else if (/^\/(?:members|profile|account|auth|login|register)(?:[./]|$)/.test(path)) realm = "members";
     else if (/^\/(?:admin(?:-|\.)|eye-of-chaos|eye-of-horus|god-|moderation)(?:[./]|$)/.test(path)) realm = "god";
     else if (/^\/(?:mascot|pet|companion)(?:[./]|$)/.test(path)) realm = "pets";
@@ -51,16 +51,21 @@
     if (!main) return;
     document.body.dataset.kfRealm = realm;
     if (realm === "home") return; // Homepage has its own illustrated cathedral hero.
+    // Keep actual games untouched even when a game lives at a root-level URL.
+    if (realm === "general" && main.querySelector("canvas, [data-game-canvas]")) {
+      document.body.classList.add("kf-gameplay-page");
+      return;
+    }
     const selectors = {
       madhouse: ".community-directory > .hero, .forum-hero, main > .hero",
       arcade: ".arcade-directory > .cartridge-hero, .lab > .hero, main > .hero",
-      foundry: "main > .hero, .foundry-hero, .creator-hero",
-      messages: ".messages-shell > .messages-hero, .rw-install-hero, .social-hero, .friends-hero",
+      foundry: ".bots-shell > .bots-hero, .directory-shell > .directory-hero, main > .hero, .foundry-hero, .creator-hero",
+      messages: ".messages-shell > .messages-hero, .rw-install-hero, .social-hero, .notifications-hero, .friends-hero",
       moon: ".moon-shell > .moon-intro, .moon-hero",
-      market: ".directory-shell > .directory-hero, .market-hero, main > .hero",
+      market: ".directory-shell > .directory-hero, .market-hero, .builder-hero, main > .hero",
       members: ".members-page > .members-hero, .profile-hero, .account-hero",
-      god: ".admin-shell > .hero, .chaos-shell > .chaos-hero, main > .hero",
-      pets: ".room-intro, .trials-hero, .mascot-hero",
+      god: ".admin-shell > .hero, .chaos-shell > .chaos-hero, .eye-shell > .eye-hero, main > .hero",
+      pets: ".sanctuary-shell > .sanctuary-header, .room-intro, .trials-hero, .mascot-hero",
       diary: ".diary-shell > .diary-hero, .memo-hero, .vault-hero",
       general: "main > .hero, main > .page-hero"
     };
