@@ -96,3 +96,35 @@ test('storage never discards the 201st creature and protects shrine legends from
   assert.match(js, /SHRINES\.some\(shrine=>shrine\.id===creature\.id\)/);
   assert.match(js, /Storage is empty/);
 });
+
+test('fullscreen allocates map space and keeps touch controls scrollable in portrait', () => {
+ assert.match(css, /\.shell:is\(:fullscreen, \.is-expanded\) \.cabinet-layout \{/);
+ assert.match(css, /\.shell:is\(:fullscreen, \.is-expanded\) \.screen-frame \{ min-height: 0; \}/);
+ assert.match(css, /max-height: clamp\(10rem, 34svh, 17rem\)/);
+ assert.match(js, /window\.visualViewport\?\.addEventListener\?\.\("resize",fitViewport\)/);
+ assert.match(js, /document\.addEventListener\?\.\("fullscreenchange"/);
+});
+
+test('illustrated terrain survives WebViews without Path2D or roundRect', () => {
+ const source = readFileSync('public/arcade/hosted/cinderwild/world-renderer.js', 'utf8');
+ const syntax = spawnSync(process.execPath, ['--check'], {input: source, encoding: 'utf8'});
+ assert.equal(syntax.status, 0, syntax.stderr);
+ let painted = 0;
+ const gradient = {addColorStop(){}};
+ const ctx = {
+  canvas: {width:256,height:192}, imageSmoothingEnabled:false,
+  fillRect(){painted++;}, drawImage(){}, beginPath(){}, ellipse(){}, fill(){},
+  save(){}, restore(){}, translate(){}, scale(){},
+  createRadialGradient(){return gradient;}, createPattern(){return null;}
+ };
+ const document = {
+  currentScript:{src:'https://ash-fall.com/arcade/hosted/cinderwild/world-renderer.js'},
+  createElement(){return {width:0,height:0,getContext(){return ctx;}};}
+ };
+ const sandbox = {document,URL,console};
+ // Path2D is deliberately absent: this must not produce a blank canvas.
+ vm.runInNewContext(source,sandbox,{timeout:1000});
+ assert.ok(sandbox.CinderwildRenderer);
+ sandbox.CinderwildRenderer.world(ctx,0,0,8,6,32,12,10,()=> 'field',()=>5,null,0);
+ assert.ok(painted>=120,'all 120 ground tiles should paint without Path2D');
+});
