@@ -21,9 +21,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral4/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral4"\)/);
- assert.match(sw,/knightfall-shell-v57/);
+ assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral5/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral5"\)/);
+ assert.match(sw,/knightfall-shell-v58/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
