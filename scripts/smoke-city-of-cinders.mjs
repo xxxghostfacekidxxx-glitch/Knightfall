@@ -52,10 +52,10 @@ try{
  }
  await sleep(150);
  const destroyed=await snapshot(page);
- assert.equal(destroyed.buildings[0].dead,true,'sustained punches collapse a tower');
- assert.ok(destroyed.wrecked>=1,'collapsed tower increments destruction HUD');
  mkdirSync('city-of-cinders-evidence',{recursive:true});
  await page.locator('#game').screenshot({path:'city-of-cinders-evidence/climb-destruction-desktop.png'});
+ assert.equal(destroyed.buildings[0].dead,true,'sustained punches must collapse a tower: '+JSON.stringify({hp:destroyed.buildings[0].hp,frame:destroyed.frame,punch:destroyed.monster.punch,health:destroyed.health,state:destroyed.state,score:destroyed.score,climbing:destroyed.monster.climbing}));
+ assert.ok(destroyed.wrecked>=1,'collapsed tower increments destruction HUD');
  await page.locator('#restart').click();
  await page.locator('#kf-city-fidelity').selectOption('performance');
  const performanceMode=await snapshot(page);
