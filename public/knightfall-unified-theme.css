@@ -152,7 +152,11 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.site-foo
 /* Approved crest watermark: subdued, never on top of working controls. */
 body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :where(.home-intro,.cartridge-hero){
  isolation:isolate;position:relative;overflow:hidden;border:1px solid rgba(199,167,124,.48)!important;
- border-radius:clamp(15px,2vw,23px);
+ border-radius:clamp(15px,2vw,23px)
+}
+/* The shared palette must never hide illustrated heroes. Artwork lives in
+   knightfall-artwork.css; only the non-illustrated fallback uses gradients. */
+body:not(.profile-custom-theme):not(:has(#profile[data-theme])) .cartridge-hero:not([data-kf-art-hero]){
  background:radial-gradient(circle at 93% 3%,rgba(149,73,92,.18),transparent 46%),
  linear-gradient(120deg,#29202b,#14191d)!important
 }
