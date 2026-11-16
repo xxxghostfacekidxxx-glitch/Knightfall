@@ -21,8 +21,8 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/theme\\.css\\?v=20261116-requiem1/);
- assert.match(theme,/@import url\\("\\/knightfall-cathedral-v2\\.css\\?v=20261116-requiem1"\\)/);
+ assert.match(nav,/theme\.css\?v=20261116-requiem1/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-requiem1"\)/);
  assert.match(sw,/knightfall-shell-v64/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(theme.indexOf("knightfall-cathedral-v2.css")>theme.indexOf("knightfall-artwork.css") && theme.indexOf("knightfall-requiem.css")>theme.indexOf("theme-crew.css"),"Single canonical cascade must keep architectural art above the legacy layers");
