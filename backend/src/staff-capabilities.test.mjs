@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
 import {staffCapabilities,canAccessCreatorFoundry,canAccessModeration,canAccessEyeOfHorus} from "./staff-capabilities.js";
 import {botAccessPolicy} from "./bot-creator-access.js";
 
@@ -33,4 +34,23 @@ test("a stray creator title must never elevate a moderator into Creator Foundry"
  assert.equal(botAccessPolicy(fake,0,{title:"Digital Creator",unlimited_slots:1,advanced_builder:1}).advanced_builder,false);
  assert.equal(botAccessPolicy(fake).unlimited,true);
  assert.equal(botAccessPolicy({role:"member",public_title:"Digital Creator"}).advanced_builder,true);
+});
+
+
+test("Admin User Command lists Creator as a separately selectable member track",()=>{
+ const dashboard=readFileSync(new URL("../../public/admin.html",import.meta.url),"utf8");
+ const api=readFileSync(new URL("./index.js",import.meta.url),"utf8");
+ assert.match(dashboard,/<option value="creator"/);
+ assert.match(dashboard,/x\.role==="member"&&x\.public_title==="Digital Creator"/);
+ assert.match(dashboard,/const change=e\.dataset\.role\?\{role:e\.value\}:\{status:e\.value\}/);
+ assert.match(api,/const roles=\["member","creator","moderator","admin","god"\]/);
+ assert.match(api,/const databaseRole=body\.role==="creator"\?"member":body\.role\?\?null/);
+ assert.match(api,/INSERT INTO member_bot_creator_privileges \(user_id,title,unlimited_slots,advanced_builder\)/);
+ assert.match(api,/ON CONFLICT\(user_id\) DO UPDATE SET title='Digital Creator',unlimited_slots=1,advanced_builder=1/);
+ assert.match(api,/DELETE FROM member_bot_creator_privileges WHERE user_id=\? AND title='Digital Creator'/);
+ assert.match(api,/await env\.DB\.batch\(updates\)/);
+ assert.match(api,/AS public_title FROM users ORDER BY created_at DESC/);
+ assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).track,"creation");
+ assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).can_moderate,false);
+ assert.equal(staffCapabilities({role:"member"}).can_create,false);
 });
