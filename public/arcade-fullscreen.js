@@ -1,113 +1,117 @@
-/* Ash-Fall arcade: per-cabinet fullscreen controls. No dependencies. */
+/* Knightfall Chaos Cartridge: preserve the complete game HUD in native fullscreen and mobile theater. */
 (() => {
   "use strict";
-  const page = location.pathname.split("/").pop();
-  const selectors = {
-    "arcade-games.html": ".game-panel",    "arcade-after-dark.html": ".game",
-    "arcade-originals.html": ".cabinet",
-    "arcade-fresh-meat.html": ".cabinet",
-    "city-of-cinders.html": "main",
-    "not-dead-yet.html": "main",
-    "last-drop-lemonade.html": "main",
-    "wagonbound.html": "main"
+  const page=location.pathname.split("/").pop();
+  const selectors={
+    "arcade-games.html":".game-panel",
+    "arcade-after-dark.html":".game",
+    "arcade-originals.html":".cabinet",
+    "arcade-fresh-meat.html":".cabinet",
+    "city-of-cinders.html":"main",
+    "not-dead-yet.html":"main",
+    "last-drop-lemonade.html":"main",
+    "wagonbound.html":"main"
   };
-  const selector = selectors[page];
-  if (!selector) return;
-
-  const label = (button, active) => {
-    button.textContent = active ? "⤢ Exit fullscreen" : "⛶ Fullscreen";
-    button.setAttribute("aria-label", active ? "Exit fullscreen game view" : "Open game in fullscreen");
-    button.setAttribute("aria-pressed", String(active));
-  };
-
-  function init() {
-    document.querySelectorAll('[id$="status"],[id$="message"],[id$="msg"],[role="status"],[aria-live="polite"]').forEach(el => { if (!el.hasAttribute("aria-live")) el.setAttribute("aria-live", "polite"); if (!el.hasAttribute("aria-atomic")) el.setAttribute("aria-atomic", "true"); });
-    document.querySelectorAll(selector).forEach((root, index) => {
-      if (root.dataset.afFullscreenReady === "true") return;
-      root.dataset.afFullscreenReady = "true";
+  const selector=selectors[page];
+  if(!selector)return;
+  const sheet=document.createElement("style");
+  sheet.id="kf-arcade-lossless-fullscreen";
+  sheet.textContent=`
+    .af-game-root:fullscreen,.af-game-root:-webkit-full-screen,.af-game-root.af-game-theater{
+      box-sizing:border-box!important;display:block!important;width:100vw!important;
+      height:100dvh!important;max-width:none!important;max-height:none!important;
+      margin:0!important;padding:clamp(8px,2vw,22px)!important;
+      overflow:auto!important;overscroll-behavior:contain;background:#080917!important;
+      color:#f5e7dc;border-radius:0!important
+    }
+    .af-game-root.af-game-theater{position:fixed!important;inset:0!important;z-index:2147483000!important}
+    body.af-game-theater-open{overflow:hidden!important}
+    .af-game-root:is(:fullscreen,:-webkit-full-screen,.af-game-theater) .af-game-tools{
+      position:sticky!important;top:0;z-index:20;background:#151321f4!important
+    }
+    .af-game-root:is(:fullscreen,:-webkit-full-screen,.af-game-theater) :is(canvas,video){
+      display:block;max-width:100%!important;max-height:calc(100dvh - 110px)!important;
+      height:auto;object-fit:contain;box-sizing:border-box
+    }
+    .af-game-root:is(:fullscreen,:-webkit-full-screen,.af-game-theater) :is(.play-area,.shoot-wrap,.board,.game-area){
+      max-width:100%;min-width:0
+    }
+    .af-game-tools{display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+      padding:.55rem .85rem;margin-bottom:.75rem;border:1px solid #b68a8e80;
+      border-radius:10px;background:linear-gradient(110deg,#211825e8,#10131bdf)}
+    .af-fullscreen-toggle{min-height:44px;padding:.55rem 1rem;cursor:pointer;
+      border:1px solid #e0b58e;border-radius:9px;
+      background:linear-gradient(135deg,#663747,#292639);color:#fff0dc;
+      font:800 .88rem/1.25 system-ui,sans-serif}
+    .af-fullscreen-toggle:focus-visible{outline:3px solid #f0c38c;outline-offset:2px}
+    @media(max-width:600px){
+      .af-game-tools{padding:.45rem;gap:.3rem}
+      .af-game-kicker{font-size:.68rem;letter-spacing:.09em}
+    }
+    @media(prefers-reduced-motion:reduce){.af-game-root{scroll-behavior:auto}}
+  `;
+  document.head.append(sheet);
+  const nativeActive=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const notifyResize=()=>window.dispatchEvent(new Event("resize"));
+  function sync(){
+    let theaterOpen=false;
+    for(const root of document.querySelectorAll(".af-game-root")){
+      const theater=root.classList.contains("af-game-theater");
+      theaterOpen ||= theater;
+      const on=nativeActive()===root||theater;
+      const button=root.querySelector(".af-fullscreen-toggle");
+      if(!button)continue;
+      button.textContent=on?"⤢ Exit fullscreen":"⛶ Fullscreen";
+      button.setAttribute("aria-label",on?"Exit fullscreen game view":"Open game in fullscreen");
+      button.setAttribute("aria-pressed",String(on));
+    }
+    document.body.classList.toggle("af-game-theater-open",theaterOpen);
+  }
+  async function toggle(root){
+    if(root.classList.contains("af-game-theater")){
+      root.classList.remove("af-game-theater");
+      sync();notifyResize();return;
+    }
+    if(nativeActive()===root){
+      try{
+        if(document.exitFullscreen)await document.exitFullscreen();
+        else if(document.webkitExitFullscreen)await document.webkitExitFullscreen();
+      }catch{/* Some embedded mobile browsers deny native exit; state will resync. */}
+      sync();return;
+    }
+    try{
+      if(root.requestFullscreen){
+        try{await root.requestFullscreen({navigationUI:"hide"});}
+        catch{await root.requestFullscreen();}
+      }else if(root.webkitRequestFullscreen){await root.webkitRequestFullscreen();}
+      else throw Error("Native fullscreen unavailable");
+    }catch{
+      // Embedded Android webviews may prohibit the Fullscreen API.
+      // Theater mode retains actual scores, game controls, and canvas content.
+      root.classList.add("af-game-theater");
+    }
+    sync();notifyResize();
+  }
+  function init(){
+    document.querySelectorAll(selector).forEach(root=>{
+      if(root.dataset.afFullscreenReady==="true")return;
+      root.dataset.afFullscreenReady="true";
       root.classList.add("af-game-root");
-      if (!root.id) root.id = "af-game-root-" + (index + 1);
-
-      const tools = document.createElement("div");
-      tools.className = "af-game-tools";
-      tools.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.7rem 1rem;margin-bottom:.8rem;border:1px solid rgba(178,91,104,.35);border-radius:12px;background:linear-gradient(100deg,rgba(178,91,104,.10),rgba(168,255,62,.06));";
-      const tag = document.createElement("span");
-      tag.className = "af-game-kicker";
-      tag.textContent = "ASH-FALL ARCADE";
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "af-fullscreen-toggle";
-      button.style.cssText = "display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:.65rem .9rem;border:1px solid #b25b68;border-radius:9px;background:linear-gradient(135deg,#b25b68,#92a18a);color:#101010;font:inherit;font-size:.83rem;font-weight:900;cursor:pointer;";
-      button.dataset.fullscreenTarget = root.id;
-      label(button, false);
-      button.addEventListener("click", async () => {
-        const current = document.fullscreenElement || document.webkitFullscreenElement;
-        if (current === root) {
-          try {
-            if (document.exitFullscreen) await document.exitFullscreen();
-            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-          } catch (_) { button.textContent = "Fullscreen unavailable"; }
-          return;
-        }
-        try {
-          if (root.requestFullscreen) {
-            try { await root.requestFullscreen({ navigationUI: "hide" }); }
-            catch (_) { await root.requestFullscreen(); }
-          } else if (root.webkitRequestFullscreen) {
-            root.webkitRequestFullscreen();
-          } else {
-            button.textContent = "Fullscreen unsupported";
-            button.setAttribute("aria-label", "Fullscreen is not supported by this browser");
-          }
-        } catch (_) {
-          button.textContent = "Fullscreen blocked";
-          button.setAttribute("aria-label", "The browser blocked fullscreen mode");
-        }
-      });
-      tools.append(tag, button);
-      root.prepend(tools);
+      const tools=document.createElement("div");tools.className="af-game-tools";
+      const label=document.createElement("span");label.className="af-game-kicker";label.textContent="CHAOS CARTRIDGE";
+      const button=document.createElement("button");button.className="af-fullscreen-toggle";button.type="button";
+      button.addEventListener("click",()=>toggle(root));
+      tools.append(label,button);root.prepend(tools);
     });
-    syncButtons();
+    sync();
   }
-
-  function syncButtons() {
-    const active = document.fullscreenElement || document.webkitFullscreenElement;
-    document.querySelectorAll(".af-fullscreen-toggle").forEach(button => {
-      const root = document.getElementById(button.dataset.fullscreenTarget);
-      label(button, !!active && active === root);
-    });
-    document.querySelectorAll(".af-game-root").forEach(root => {
-      if (root === active && root.dataset.afFullscreenLayout !== "true") {
-        root.dataset.afFullscreenLayout = "true";
-        root.dataset.afOriginalStyle = root.getAttribute("style") === null ? "__none__" : root.getAttribute("style");
-        root.style.cssText = "width:100vw;height:100vh;max-width:none;max-height:none;margin:0;padding:clamp(8px,2vw,24px);overflow:auto;box-sizing:border-box;background:#080808;border-radius:0;";
-        root.querySelectorAll(":scope > .back,:scope > .hero,:scope > .intro,:scope > .account,:scope > .directory-hero,:scope > .roster,:scope > .roster-heading,:scope > .mutation-row,:scope > .character-banner").forEach(el => {
-          el.dataset.afOriginalStyle = el.getAttribute("style") === null ? "__none__" : el.getAttribute("style");
-          el.style.display = "none";
-        });
-        root.querySelectorAll("canvas").forEach(canvas => {
-          canvas.dataset.afOriginalStyle = canvas.getAttribute("style") === null ? "__none__" : canvas.getAttribute("style");
-          canvas.style.maxHeight = "calc(100dvh - 190px)";
-          canvas.style.width = "100%";
-          canvas.style.objectFit = "contain";
-        });
-        const tools = root.querySelector(".af-game-tools");
-        if (tools) { tools.dataset.afOriginalStyle = tools.getAttribute("style") === null ? "__none__" : tools.getAttribute("style"); tools.style.position = "sticky"; tools.style.top = "0"; tools.style.zIndex = "100"; }
-      } else if (root !== active && root.dataset.afFullscreenLayout === "true") {
-        const original = root.dataset.afOriginalStyle;
-        if (original === "__none__") root.removeAttribute("style"); else root.setAttribute("style", original);
-        root.querySelectorAll("[data-af-original-style]").forEach(el => {
-          const style = el.dataset.afOriginalStyle;
-          if (style === "__none__") el.removeAttribute("style"); else el.setAttribute("style", style);
-          delete el.dataset.afOriginalStyle;
-        });
-        delete root.dataset.afFullscreenLayout;
-        delete root.dataset.afOriginalStyle;
-      }
-    });
-  }
-  document.addEventListener("fullscreenchange", syncButtons);
-  document.addEventListener("webkitfullscreenchange", syncButtons);
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+  document.addEventListener("fullscreenchange",()=>{sync();notifyResize();});
+  document.addEventListener("webkitfullscreenchange",()=>{sync();notifyResize();});
+  document.addEventListener("keydown",event=>{
+    if(event.key!=="Escape")return;
+    const open=document.querySelector(".af-game-root.af-game-theater");
+    if(open){open.classList.remove("af-game-theater");sync();notifyResize();}
+  });
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
 })();
