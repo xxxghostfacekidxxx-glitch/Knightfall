@@ -10,7 +10,7 @@
       ["visual-refresh", "/visual-refresh.css?v=20261115-gothic9"],
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
-      ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art8"]
+      ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art9"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
