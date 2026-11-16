@@ -199,25 +199,25 @@ body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout{
 }
 body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .entry-layout[data-kf-art-backdrop]::before{
  content:"";position:absolute;z-index:-1;pointer-events:none;
- width:min(1100px,calc(100vw - 20px))!important;height:calc(100% + 80px)!important;
+ width:min(1100px,calc(100vw - 20px));height:calc(100% + 80px);
  top:-40px;left:50%;transform:translateX(-50%);
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0d1013c7,#16151b55 50%,#0d1013bf),url('/assets/knightfall/realm-members.svg')!important;
- background-position:center,center,center!important;background-repeat:no-repeat!important;
- background-size:100% 100%,cover,cover!important;
- opacity:.87!important;border-radius:24px;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0d1013c7,#16151b55 50%,#0d1013bf),url('/assets/knightfall/realm-members.svg');
+ background-position:center,center,center;background-repeat:no-repeat;
+ background-size:100% 100%,cover,cover;
+ opacity:.87;border-radius:24px;
 }
-body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout .entry-card{
+body[data-kf-realm="members"]:not(.profile-custom-theme) :not(:has(#profile[data-theme])) .entry-layout .entry-card{
  position:relative;isolation:isolate;
- border-color:#ac8791!important;border-radius:19px!important;
- background:linear-gradient(158deg,#29232eea,#17151ced 55%,#11151af2)!important;
- box-shadow:0 28px 90px #000d,0 0 0 1px #a4827344,inset 0 1px #f2d8c337!important;
+ border-color:#ac8791;border-radius:19px;
+ background:linear-gradient(158deg,#29232eea,#17151ced 55%,#11151af2);
+ box-shadow:0 28px 90px #000d,0 0 0 1px #a4827344,inset 0 1px #f2d8c337;
 }
-body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout .entry-card::before{
+body[data-kf-realm="members"]:not(.profile-custom-theme) :not(:has(#profile[data-theme])) .entry-layout .entry-card::before{
  content:"";position:absolute;inset:10px;z-index:-1;border:1px solid #b3907e29;
  border-radius:12px;pointer-events:none;
 }
-body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout .entry-card #auth-title{
- color:#ece1d3!important;font-family:Georgia,'Times New Roman',serif;
+body[data-kf-realm="members"]:not(.profile-custom-theme) :not(:has(#profile[data-theme])) .entry-layout .entry-card #auth-title{
+ color:#ece1d3;font-family:Georgia,'Times New Roman',serif;
  letter-spacing:-.04em;text-shadow:0 2px 14px #0009;
 }
 @media(max-width:650px){
