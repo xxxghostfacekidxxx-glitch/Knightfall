@@ -56,7 +56,7 @@
     else if (/^\/(?:devil-tools|dev-toolkit|creator|open-source-arsenal|cinderwild|cinderwind|personal-bots|bots)(?:-|[./]|$)/.test(path)) realm = "foundry";
     else if (/^\/(?:messages|ruinwire|social|friends|notifications|miss-chaos|bot)(?:-|[./]|$)/.test(path)) realm = "messages";
     else if (/^\/(?:moonology|shadow-work|astrology|birth-chart|cosmic)(?:-|[./]|$)/.test(path)) realm = "moon";
-    else if (/^\/(?:shops|shop-builder|my-shop|store|support|billing|stripe-invoicing)(?:-|[./]|$)/.test(path)) realm = "market";
+    else if (/^\/(?:shops|shop-builder|cinder-shop|my-shop|store|support|billing|stripe-invoicing)(?:-|[./]|$)/.test(path)) realm = "market";
     else if (/^\/(?:members|profile|account|auth|login|register)(?:-|[./]|$)/.test(path)) realm = "members";
     else if (/^\/(?:admin|eye-of-chaos|eye-of-horus|god|moderation)(?:-|[./]|$)/.test(path)) realm = "god";
     else if (/^\/(?:mascot|pet|companion)(?:-|[./]|$)/.test(path)) realm = "pets";
