@@ -58,3 +58,26 @@ test('homepage artwork includes three primary paths and ecosystem cards',()=>{
  assert.match(art,/\.home-page \.kf-start-card::after/);
  assert.match(art,/\.home-page \.ecosystem-section \.directory-group::before/);
 });
+
+
+test('secondary public sections use the correct realm instead of generic fallback',()=>{
+ const sections=[
+  ['mascot-pets.html','sanctuary-header','pets'],
+  ['personal-bots.html','bots-hero','foundry'],
+  ['bots.html','directory-hero','foundry'],
+  ['notifications.html','notifications-hero','messages'],
+  ['ruinwire.html','rw-install-hero','messages'],
+  ['social.html','social-hero','messages'],
+  ['eye-of-horus.html','eye-hero','god'],
+  ['shop-builder.html','builder-hero','market']
+ ];
+ for (const [page,heading,realm] of sections) {
+  const html=read(page);
+  assert.ok(html.includes('class="'+heading+'"'),page+' has visible masthead');
+  assert.match(html,/\\/nav\\.js/,page+' loads shared theme routing');
+  assert.ok(nav.includes('.'+heading),page+' is covered by realm selector');
+  assert.ok(art.includes('body[data-kf-realm="'+realm+'"]'),realm+' has an illustrated asset');
+ }
+ assert.match(nav,/main\\.querySelector\\("canvas, \\[data-game-canvas\\]"\\)/);
+ assert.match(art,/:not\\(\\.kf-gameplay-page\\)/);
+});
