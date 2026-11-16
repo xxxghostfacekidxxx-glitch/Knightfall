@@ -1,0 +1,36 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
+const nav=read("public/nav.js"),base=read("public/theme.css"),runtime=read("public/theme-crew-runtime.js");
+const css=read("public/theme-crew.css"),sw=read("public/sw.js"),backend=read("backend/src/index.js");
+test("Theme Crew is last in the cascade and loaded by shared navigation",()=>{
+ assert.ok(nav.indexOf('["theme-crew"')>nav.indexOf('["knightfall-cathedral-v2"'));
+ assert.match(nav,/theme-crew-runtime\.js/);
+ assert.match(base,/^@import url\("\/theme-crew\.css/m);
+ assert.match(sw,/knightfall-shell-v62/);
+ for(const asset of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
+  assert.ok(sw.includes('"/'+asset+'"'),asset+" not in offline shell");
+});
+test("Navigationless legal, account-recovery and staff views get the live switch",()=>{
+ for(const file of ["admin-bot-archive.html","eula.html","moderation-accounts.html","reset-password.html","terms.html","verify-email.html"]){
+  const html=read("public/"+file);
+  assert.match(html,/theme-crew-runtime\.js\?v=20261116-crew2/,file+" missing fallback runtime");
+  assert.ok(html.includes("/theme.css"),file+" must preserve shared styling");
+ }
+ for(const file of ["offline.html","personal-bots-offline.html"]){
+  assert.doesNotMatch(read("public/"+file),/theme-crew-runtime\.js/,file+" must remain offline");
+ }
+ for(const key of ["admin-bot-archive","moderation-accounts","reset-password","verify-email","addFallbackRealm"])
+  assert.ok(runtime.includes(key),"Navigationless realm missing: "+key);
+});
+test("Only GOD may mutate the live recipe; custom member looks and gameplay are exempt",()=>{
+ assert.match(backend,/handleThemeCrew\(request,env,url/);
+ assert.match(css,/profile-custom-theme/);
+ assert.match(css,/:has\(#profile\[data-theme\]\)/);
+ assert.match(css,/kf-gameplay-page/);
+ assert.doesNotMatch(css,/canvas\s*\{/i);
+ assert.doesNotMatch(css,/\.message\.mine\s*\{/);
+ for(const key of ["cathedral","blood_moon","verdant_crypt","iron_eclipse","royal_abyss"])
+  assert.ok(runtime.includes(key)&&css.includes(key),"Preset not fully implemented: "+key);
+});
