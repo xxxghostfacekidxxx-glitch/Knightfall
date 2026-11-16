@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T15:41:22.925Z",
+  "generatedAt": "2026-11-16T15:54:45.273Z",
   "reportsFound": 10,
   "catalogRoutes": 133,
   "targets": {
@@ -11,11 +11,83 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-7-Pixel Medic/tmp/arcade-browser-evidence/shard-7/live/report.json",
+          "shard": 7
+        }
+      ],
+      "failures": [
+        {
+          "game": "ashen-dominion",
+          "route": "/arcade/hosted/ashen-dominion/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/ashen-dominion/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "001.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "burrow-blitz",
+          "route": "/arcade/hosted/burrow-blitz/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/burrow-blitz/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinder-crossing",
+          "route": "/arcade/hosted/cinder-crossing/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinder-crossing/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "003.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinder-lanes",
+          "route": "/arcade/hosted/cinder-lanes/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinder-lanes/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "004.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "connect-four",
+          "route": "/arcade/hosted/connect-four/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/connect-four/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "005.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cube-composer",
+          "route": "/arcade/hosted/cube-composer/index.html",
+          "profile": "largePhone",
+          "action": "navigate",
+          "reason": "page.goto: Timeout 12000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cube-composer/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:66:30",
+          "target": "live",
+          "screenshot": "006.png",
+          "networkErrorCount": 0,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     }
   },
   "passed": false,
-  "sourceRunId": 43898705628
+  "sourceRunId": 43899768483
 }
