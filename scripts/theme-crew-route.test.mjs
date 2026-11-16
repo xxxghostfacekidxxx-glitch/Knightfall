@@ -8,7 +8,7 @@ test("Theme Crew is last in the cascade and loaded by shared navigation",()=>{
  assert.ok(nav.indexOf('["theme-crew"')>nav.indexOf('["knightfall-cathedral-v2"'));
  assert.match(nav,/theme-crew-runtime\.js/);
  assert.match(base,/^@import url\("\/theme-crew\.css/m);
- assert.match(sw,/knightfall-shell-v62/);
+ assert.match(sw,/knightfall-shell-v63/);
  for(const asset of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
   assert.ok(sw.includes('"/'+asset+'"'),asset+" not in offline shell");
 });
