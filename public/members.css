@@ -96,3 +96,42 @@ h1 span{color:var(--accent)}
  .members-hero h1{font-size:clamp(2.6rem,10vw,4.5rem)}
  .directory-stats>div{flex:1 1 130px;min-width:0}
 }
+
+
+/* Final mobile directory layout. The old intrinsic-width 2-column grid
+   expanded to 481px on 390px phones when select labels were long. */
+@media (max-width:600px){
+  .members-page .directory-toolbar{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    min-width:0;
+  }
+  .members-page .directory-toolbar > .search-wrap{
+    grid-column:1 / -1;
+    min-width:0;
+    width:100%;
+  }
+  .members-page .directory-toolbar > .filter-wrap{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    align-content:center;
+    gap:2px;
+    min-width:0;
+    width:100%;
+    padding:6px 9px;
+  }
+  .members-page .directory-toolbar .search-wrap input{
+    flex:1 1 0;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+  .members-page .directory-toolbar .filter-wrap select{
+    display:block;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    text-overflow:ellipsis;
+  }
+}
