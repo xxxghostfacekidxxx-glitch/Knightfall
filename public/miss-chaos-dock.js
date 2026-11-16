@@ -7,6 +7,9 @@ root.dataset.dockReady='true';
 const button=id=>root.querySelector('#'+id),move=button('mc-move'),mini=button('mc-minimize'),restore=button('mc-restore');
 const options=['br','bl','tl','tr'],descriptions={br:'bottom right',bl:'bottom left',tl:'top left',tr:'top right'};
 let preference='auto',frame=0,current='br',headerBottom=0;
+const compactKey='kf:miss-chaos:compact';
+let initiallyMinimized=window.matchMedia('(max-width:600px)').matches;
+try{const stored=localStorage.getItem(compactKey);if(stored==='true'||stored==='false')initiallyMinimized=stored==='true';}catch{}
 try{const saved=localStorage.getItem('kf:miss-chaos:dock');if(options.includes(saved))preference=saved;}catch{}
 function overlap(a,b){
  const x=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
@@ -106,10 +109,12 @@ move.addEventListener('click',()=>{
 mini.addEventListener('click',()=>{
  if(!button('miss-chaos-window').hidden)button('mc-close').click();
  if(!button('mc-memo-panel').hidden)button('mc-memo-close').click();
- root.dataset.minimized='true';restore.hidden=false;schedule();
+ root.dataset.minimized='true';restore.hidden=false;
+ try{localStorage.setItem(compactKey,'true')}catch{}schedule();
 });
 restore.addEventListener('click',()=>{
- root.dataset.minimized='false';restore.hidden=true;schedule();
+ root.dataset.minimized='false';restore.hidden=true;
+ try{localStorage.setItem(compactKey,'false')}catch{}schedule();
 });
 for(const event of ['scroll','resize','orientationchange'])window.addEventListener(event,schedule,{passive:true});
 document.addEventListener('fullscreenchange',()=>{
@@ -125,6 +130,8 @@ if(window.MutationObserver){
  });
  observer.observe(document.body,{childList:true,subtree:false});
 }
-root.dataset.minimized='false';root.dataset.dock='br';
+root.dataset.minimized=initiallyMinimized?'true':'false';
+restore.hidden=!initiallyMinimized;
+root.dataset.dock='br';
 schedule();
 })();
