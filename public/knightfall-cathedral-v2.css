@@ -330,7 +330,7 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-st
  background-size:contain!important;
  background-position:94% center!important;
  background-repeat:no-repeat!important;
- opacity:.58!important;
+ opacity:.72!important;
  width:74%!important;
  right:-2%!important;
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 75%)!important;
@@ -339,7 +339,7 @@ body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-st
  transition:opacity .28s ease,transform .28s ease;
 }
 body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .kf-start-card:is(:hover,:focus-within)::after{
- opacity:.8!important;transform:scale(1.035);
+ opacity:.91!important;transform:scale(1.035);
 }
 /* Responsive: a cinematic app, not a cropped desktop poster. */
 @media(max-width:900px){
@@ -439,7 +439,7 @@ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card{
 }
 body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-public-card img{
  position:absolute;z-index:-1;right:-7%;top:5%;width:77%;height:84%;object-fit:contain;
- opacity:.54;filter:drop-shadow(0 0 14px #b24e804f);
+ opacity:.78;filter:drop-shadow(0 0 21px #c866a68a);
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 73%);
  mask-image:linear-gradient(90deg,transparent,#000 73%);
 }
