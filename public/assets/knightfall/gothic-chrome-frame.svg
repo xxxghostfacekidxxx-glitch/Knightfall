@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" preserveAspectRatio="none" role="img" aria-label="Gothic metal filigree frame" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#514454"/><stop offset=".22" stop-color="#e9d0b6"/><stop offset=".42" stop-color="#aa93a0"/><stop offset=".67" stop-color="#39313f"/><stop offset="1" stop-color="#b4a5a7"/></linearGradient>
+<linearGradient id="ember" x1="0" x2="1"><stop stop-color="#9a4e69"/><stop offset=".5" stop-color="#d06899"/><stop offset="1" stop-color="#705b76"/></linearGradient>
+<filter id="gleam" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="4"/></filter>
+<g id="corner" fill="none" stroke-linejoin="round" stroke-linecap="round">
+<path d="M10 124V42Q10 11 41 11H138" stroke="#1d1923" stroke-width="17"/>
+<path d="M10 124V42Q10 11 41 11H138" stroke="url(#chrome)" stroke-width="7"/>
+<path d="M19 119V43Q19 20 42 20H124" stroke="#e0bdad" stroke-opacity=".4" stroke-width="1.6"/>
+<path d="M12 71l22-24 22 6-7 19-17-9 16-17 28-7 15 8-22 12 8-20 31-19-9 22 26-10" stroke="url(#chrome)" stroke-width="4"/>
+<path d="M12 71l22-24 22 6-7 19-17-9 16-17 28-7 15 8" stroke="#db6094" stroke-opacity=".65" stroke-width="1.4"/>
+<path d="m10 126 12-23 11 19 6-28 17 7-8 16m79-105-18 16 22 8-13 10 16 13" stroke="#9e8b98" stroke-width="3"/>
+<path d="m30 29 10-10 10 10-10 10z" fill="#bb7692" stroke="#ddc2ac" stroke-width="2"/>
+<path d="m40 21-7-7m7 19 7 7" stroke="#e0bacc" stroke-width="2"/>
+</g>
+</defs>
+<path d="M39 6H1161M39 514H1161M6 40V480M1194 40V480" fill="none" stroke="#120f17" stroke-width="10" stroke-opacity=".8"/>
+<path d="M39 6H1161M39 514H1161M6 40V480M1194 40V480" fill="none" stroke="url(#chrome)" stroke-width="2.5" stroke-opacity=".73"/>
+<path d="M139 15H1061M139 505H1061" fill="none" stroke="url(#ember)" stroke-width="2" stroke-opacity=".38"/>
+<use xlink:href="#corner" x="0" y="0"/>
+<use xlink:href="#corner" transform="translate(1200 0) scale(-1 1)"/>
+<use xlink:href="#corner" transform="translate(0 520) scale(1 -1)"/>
+<use xlink:href="#corner" transform="translate(1200 520) scale(-1 -1)"/>
+<g fill="#18151c" stroke="url(#chrome)" stroke-width="3">
+<path d="m600 5 16 15-16 15-16-15z"/>
+<path d="m600 515 16-15-16-15-16 15z"/>
+<path d="m7 260 15-13 15 13-15 13z"/>
+<path d="m1193 260-15-13-15 13 15 13z"/>
+</g>
+<g fill="#b25b83" stroke="#d1b49f" stroke-width="1.6"><circle cx="600" cy="20" r="5"/><circle cx="600" cy="500" r="5"/><circle cx="22" cy="260" r="5"/><circle cx="1178" cy="260" r="5"/></g>
+<g opacity=".55"><path d="M172 24h165m525 0h165M172 496h165m525 0h165" stroke="#da5585" stroke-width="5" filter="url(#gleam)"/><path d="M172 24h165m525 0h165M172 496h165m525 0h165" stroke="#dd9fc1" stroke-width="1.5"/></g>
+</svg>
