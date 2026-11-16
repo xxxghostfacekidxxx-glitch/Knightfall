@@ -16,7 +16,7 @@
     const link = themes.shift() || document.createElement("link");
     link.rel = "stylesheet";
     link.dataset.kfCanonicalTheme = "true";
-    const target = "/theme.css?v=20261116-requiem1";
+    const target = "/theme.css?v=20261116-glass3";
     if (link.getAttribute("href") !== target) link.href = target;
     // The canonical root imports design, artwork, cathedral and theme crew
     // in that order. Appending only this link prevents double application.
