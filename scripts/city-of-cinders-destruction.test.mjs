@@ -115,3 +115,28 @@ test('facade renderer caches procedural art rather than rebuilding every frame',
  assert.equal(canvases,1,'facade cached across frames');
  assert.ok(rendered>50,'architectural elements painted');
 });
+
+test('real titan body art and hold-to-punch remain the default play experience',()=>{
+ const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(code);
+ assert.match(code,/let cityArt=null,citySkin='classic'/);
+ assert.match(html, /<option value="classic">Original titan monsters<\/option>/);
+ assert.match(html, /<option value="premium">Knightfall crossover skins<\/option>/);
+ assert.match(code, /touch\.punch=true;punch\(\)/);
+ assert.match(code, /\(keys\[' '\]\|\|touch\.punch\)&&monster\.punch<=0/);
+ assert.match(code, /monster\.punch=Math\.max\(0,monster\.punch-step\)/);
+ assert.match(code, /function drawSky\(\)/);
+ assert.match(code, /skySurface\.getContext\('2d'/);
+});
+
+test('the rebuilt destruction game is listed as a featured full arcade game',()=>{
+ const catalog=JSON.parse(readFileSync('public/arcade/catalog.json','utf8'));
+ const game=catalog.games.find(x=>x.id==='city-of-cinders');
+ assert.ok(game,'City of Cinders must be in canonical catalog');
+ assert.equal(game.collection,'games');
+ assert.equal(game.featured,true);
+ assert.match(game.description,/scale buildings, punch holes through separate floors/);
+ const shelf=readFileSync('public/chaos-cartridge.html','utf8');
+ assert.match(shelf,/data-game-id="city-of-cinders" data-category="Action" data-collection="games" data-device="touch" data-featured="true"/);
+ assert.match(shelf,/77 full games/);
+});
