@@ -28,7 +28,7 @@ try{
     try{
      const response=await page.goto(base+route,{waitUntil:"domcontentloaded",timeout:30000});
      assert.ok(response?.ok(),route+" must respond successfully");
-     await page.waitForFunction(()=>!!window.KnightfallThemeCrew&&!!document.body.dataset.kfTheme&&!!document.querySelector('link[data-theme-crew]'),null,{timeout:16000});
+     await page.waitForFunction(()=>!!window.KnightfallThemeCrew&&!!document.body.dataset.kfTheme&&!!document.querySelector('link[data-theme-crew]')?.sheet,null,{timeout:16000});
      const state=await page.evaluate(()=>{
       const links=[...document.querySelectorAll('link[rel=stylesheet]')].map(n=>n.href);
       const shared=links.filter(x=>/\/(?:knightfall-unified-theme|knightfall-artwork|knightfall-cathedral-v2|theme-crew)\.css/.test(x));
@@ -61,7 +61,7 @@ try{
      const query=key==="cathedral"?"":"?kf_theme_preview="+encodeURIComponent(key);
      const response=await page.goto(base+"/"+query,{waitUntil:"domcontentloaded",timeout:30000});
      assert.ok(response?.ok(),"Preview must load "+key);
-     await page.waitForFunction(key=>document.body?.dataset.kfTheme===key&&!!window.KnightfallThemeCrew,key,{timeout:16000});
+     await page.waitForFunction(key=>document.body?.dataset.kfTheme===key&&!!window.KnightfallThemeCrew&&!!document.querySelector('link[data-theme-crew]')?.sheet,key,{timeout:16000});
      const actual=await page.evaluate(()=>({
       theme:document.body.dataset.kfTheme,
       glow:getComputedStyle(document.body).getPropertyValue("--kf-realm-glow").trim().toLowerCase(),
