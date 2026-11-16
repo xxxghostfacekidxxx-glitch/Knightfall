@@ -133,3 +133,42 @@ body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctua
 body[data-kf-realm="pets"]:not(.profile-custom-theme) .sanctuary-header .sanctuary-links a:not(:first-child){
  color:#ece1d3!important;text-shadow:none!important;
 }
+
+/* Creator Foundry: the approved crest-and-chrome design language, without
+   placing a screenshot of fake interface controls behind real controls. */
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]{
+ border-color:#aa6881!important;
+ box-shadow:0 22px 60px #000b,inset 0 0 0 1px #c7a77c4f,0 0 27px #cf3c7d20!important;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::before{
+ content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+ background:radial-gradient(ellipse at 79% 46%,#db49853b,transparent 37%),
+ linear-gradient(95deg,transparent 63%,#99bc6e17 85%,transparent 100%);
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::after{
+ content:"";position:absolute;pointer-events:none;z-index:0;
+ right:clamp(1rem,5vw,5rem);top:50%;transform:translateY(-50%);
+ width:clamp(125px,19vw,225px);aspect-ratio:1;
+ background:url('/icons/knightfall-crest-512.png') center/contain no-repeat;
+ opacity:.51;filter:drop-shadow(0 0 20px #d84f8a8a);
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero] h1 span{
+ color:#e8b1c2!important;text-shadow:0 0 24px #b84f7866;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card{
+ border-color:#92748c!important;
+ box-shadow:0 12px 32px #0009,inset 0 1px #d8b6ce1c!important;
+ transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card:is(:hover,:focus-within){
+ border-color:#ce819f!important;
+ box-shadow:0 16px 40px #000a,0 0 18px #b5477d33,inset 0 1px #d7c0cd38!important;
+}
+@media(max-width:700px){
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) [data-kf-art-hero]::after{
+  width:120px;right:.5rem;opacity:.27;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-kf-realm="foundry"]:not(.profile-custom-theme) .foundry-card{transition:none}
+}
