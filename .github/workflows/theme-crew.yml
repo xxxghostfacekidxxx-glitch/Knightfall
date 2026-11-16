@@ -15,6 +15,7 @@ on:
       - 'scripts/pages-release-guard.mjs'
       - 'scripts/theme-crew-route.test.mjs'
       - 'scripts/theme-crew-browser-smoke.mjs'
+      - 'scripts/theme-crew-sitewide-browser.mjs'
       - 'scripts/theme-browser-smoke.mjs'
       - 'public/*.html'
       - 'scripts/cathedral-overhaul.test.mjs'
@@ -59,7 +60,7 @@ jobs:
   prism-warden:
     name: Prism Warden / real site architecture and safety
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: Guard heritage art, real templates, mobile and game exclusions
@@ -82,12 +83,21 @@ jobs:
           exit 1
       - name: Test real mobile/desktop styles and all five preset previews
         run: node scripts/theme-crew-browser-smoke.mjs
+      - name: Test every top-level page at mobile and desktop viewport
+        run: node scripts/theme-crew-sitewide-browser.mjs
       - name: Attach visually inspectable screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: knightfall-theme-visual-qa
           path: artifacts/theme-crew/visual/
+      - name: Attach whole-site route matrix and failing screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-theme-sitewide-qa
+          path: artifacts/theme-crew/sitewide/
+          if-no-files-found: warn
           if-no-files-found: warn
   switchblade:
     name: Switchblade / publisher contract (nonpublishing CI)
