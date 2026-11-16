@@ -82,3 +82,33 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
  body[data-kf-realm]:not(.profile-custom-theme):not(:has(#profile[data-theme])) [data-kf-art-backdrop]::before{width:100%;opacity:.18}
 }
 @media(prefers-reduced-motion:reduce){body[data-kf-realm] [data-kf-art-hero]{animation:none!important;transition:none!important}}
+
+/* Homepage discovery uses actual released section illustrations, not decorative circles alone. */
+.home-page .kf-start-card{position:relative;isolation:isolate;overflow:hidden;min-height:218px}
+.home-page .kf-start-card::after{
+ content:"";position:absolute;z-index:-1;right:-4%;top:0;height:100%;width:75%;
+ opacity:.33;pointer-events:none;
+ background:var(--kf-start-art) center/cover no-repeat;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 64%);
+ mask-image:linear-gradient(90deg,transparent,#000 64%);
+}
+.home-page .kf-start-card:nth-child(1){--kf-start-art:url('/assets/knightfall/realm-arcade.svg')}
+.home-page .kf-start-card:nth-child(2){--kf-start-art:url('/assets/knightfall/realm-madhouse.svg')}
+.home-page .kf-start-card:nth-child(3){--kf-start-art:url('/assets/knightfall/realm-pets.svg')}
+.home-page .kf-start-card>span{position:relative;z-index:1}
+.home-page .kf-start-card h3,.home-page .kf-start-card p,.home-page .kf-start-card a{z-index:1}
+.home-page .ecosystem-section .directory-group{position:relative;isolation:isolate;overflow:hidden;min-height:190px;padding:1.2rem}
+.home-page .ecosystem-section .directory-group::before{
+ content:"";position:absolute;z-index:-1;inset:0 0 0 35%;pointer-events:none;
+ opacity:.22;background:var(--kf-directory-art) center/cover no-repeat;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 70%);
+ mask-image:linear-gradient(90deg,transparent,#000 70%);
+}
+.home-page .ecosystem-section .directory-group:nth-child(1){--kf-directory-art:url('/assets/knightfall/realm-members.svg')}
+.home-page .ecosystem-section .directory-group:nth-child(2){--kf-directory-art:url('/assets/knightfall/realm-foundry.svg')}
+.home-page .ecosystem-section .directory-group:nth-child(3){--kf-directory-art:url('/assets/knightfall/realm-moon.svg')}
+.home-page .ecosystem-section .directory-group :is(h3,ul){position:relative;z-index:1}
+@media(max-width:700px){
+ .home-page .kf-start-card::after{opacity:.23;width:67%}
+ .home-page .ecosystem-section .directory-group::before{opacity:.14}
+}
