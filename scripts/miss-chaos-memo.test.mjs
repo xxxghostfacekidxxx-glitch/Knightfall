@@ -17,7 +17,7 @@ test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  assert.match(presence,/id="mc-minimize"/);
  assert.match(presence,/id="mc-restore"/);
  assert.match(presence,/window\.KnightfallMemoPad\.mount/);
- assert.match(presence,/miss-chaos-dock\.js\?v=20261116-mobile-dock1/);
+ assert.match(presence,/miss-chaos-dock\.js\?v=20261116-hero-dock2/);
  assert.match(page,/id="memo-pad-app"/);
  assert.match(page,/memo-pad\.js\?v=20261103-mail-chat3/);
 });
@@ -32,7 +32,7 @@ test('dock has four corners, automatic control avoidance, minimize, and fullscre
  assert.match(dock,/window\.addEventListener\(event,schedule/);
  assert.match(dock,/fullscreenchange/);
  assert.ok(dock.includes('kf:miss-chaos:compact'));
- assert.ok(dock.includes("window.matchMedia('(max-width:600px)').matches"));
+ assert.ok(dock.includes("window.matchMedia('(max-width:1366px)').matches"));
  assert.match(style,/\[data-dock="bl"\]/);
  assert.match(style,/\[data-dock="tl"\]/);
  assert.match(style,/\[data-dock="tr"\]/);
