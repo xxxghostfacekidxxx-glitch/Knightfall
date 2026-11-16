@@ -10,7 +10,7 @@ const routes = [
   "/messages.html", "/devil-tools.html", "/chaos-cartridge.html"
 ];
 const realmArtwork = {
-  "/": "eclipse-cathedral.svg",
+  "/": "obsidian-cathedral.svg",
   "/community.html": "realm-madhouse.svg",
   "/members.html": "realm-members.svg",
   "/shops.html": "realm-market.svg",
@@ -42,7 +42,8 @@ try {
           await page.waitForFunction(() => {
             const body = document.body;
             return !!document.querySelector('link[data-knightfall-unified-theme]') &&
-              !!body && getComputedStyle(body).backgroundColor === "rgb(13, 16, 19)";
+              !!document.querySelector('link[data-knightfall-cathedral-v2]') &&
+              !!body && getComputedStyle(body).backgroundColor === "rgb(10, 13, 19)";
           }, null, { timeout: 15000 });
           const state = await page.evaluate(() => {
             const color = selector => {
@@ -65,10 +66,19 @@ try {
           });
           const label = route + " / " + viewport.width + "px";
           assert.ok(state.header, label + " has shared navigation");
-          assert.equal(state.brand, "rgb(236, 225, 211)", label + " uses bone-colored branding");
+          assert.equal(state.brand, "rgb(244, 223, 210)", label + " uses bone-colored branding");
           assert.ok(state.scroll <= state.client + 1,
             label + " must not overflow horizontally: " + JSON.stringify(state));
           assert.equal(state.oldEmergency, false, label + " must not mount legacy emergency chrome");
+          assert.ok(state.stylesheets.some(sheet => sheet.includes("knightfall-cathedral-v2.css")),
+            label + " must mount Cathedral Ascendant as final visual layer");
+          const cathedralCss = await page.evaluate(() => {
+            const styles = [...document.querySelectorAll('link[rel="stylesheet"]')];
+            const last = styles[styles.length - 1];
+            return last?.href.includes("knightfall-cathedral-v2.css") === true;
+          });
+          assert.equal(cathedralCss,true,label + " must keep Cathedral Ascendant last in stylesheet order");
+
           if (realmArtwork[route]) {
             const expected = realmArtwork[route];
             const selector = route === "/" ? ".home-intro" : "[data-kf-art-hero]";
