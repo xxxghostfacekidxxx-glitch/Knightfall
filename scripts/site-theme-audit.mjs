@@ -44,7 +44,7 @@ assert.match(css,/\.cartridge-shelf \.cartridge-number/);
 assert.match(css,/@media\(max-width:760px\)/);
 assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(css,/^\s*canvas\s*\{/m);
-assert.match(sw,/const CACHE_NAME = "knightfall-shell-v\\d+";/);
+assert.match(sw,/const CACHE_NAME = "knightfall-shell-v\d+";/);
 assert.match(sw,/"\/knightfall-unified-theme\.css"/);
 assert.match(sw,/"\/icons\/knightfall-crest-192\.png"/);
 assert.equal(manifest.background_color,"#0d1013");
