@@ -1,10 +1,10 @@
-# Eye of Chaos · GOD bot command center
+# Eye of Chaos · Admin + GOD bot command center
 
-**Status (November 15, 2026):** Implemented as a GOD-only command board, integrated with existing arcade CI and Madhouse service identities. All publication through the new control board remains **disabled**. All 20 Chaos Agent identities are registered but do not have autonomous accounts or unrestricted browsing access.
+**Status (November 16, 2026):** Implemented as an Admin + GOD command board, integrated with existing arcade CI and Madhouse service identities. Admins can review the fleet, dispatch missions, generate drafts and inspect game QA. GOD alone controls draft approval, the master execution lock, GOD-only management links, and Eye of Horus. All publication through the new control board remains **disabled**. All 20 Chaos Agent identities are registered but do not have autonomous accounts or unrestricted browsing access.
 
 ## Open the command board
 
-- `/eye-of-chaos.html` from GOD account settings, the admin GOD operations panel, or Eye of Horus.
+- `/eye-of-chaos.html` from the Admin Dashboard staff operations panel. Available to authenticated `admin` and `god` accounts; never to regular members, Digital Creators or moderators.
 - `/god-bot-control.html` remains the existing, separately authorized Madhouse service-bot profile editor and **direct manual GOD publish** tool. Its automatic posting controls are disabled and its direct publish button now asks GOD to confirm the exact message.
 - `/eye-of-horus.html` is a separate GOD-only retained-data console. Nothing in Eye of Chaos reads private conversations, journals, uploads, or private member profiles.
 - `.github/workflows/arcade-test-fleet.yml` remains the canonical QA test runner. The 10 fleet names are real matrix jobs, not registered site users.
@@ -38,13 +38,13 @@
 | --- | --- |
 | `backend/src/eye-of-chaos.js` | Route handler, fixed fleet registry, research source allowlist, mission state transitions, approvals, source-linked leads, manual AI drafting and read-only GitHub QA |
 | `backend/migrations/0142_eye_of_chaos.sql` | D1 missions, drafts (version-locked approval), and minimal operational events |
-| `public/eye-of-chaos.html`, `.js`, `.css` | Mobile-friendly GOD dashboard, mission dispatcher, QA results, edit/review queue |
+| `public/eye-of-chaos.html`, `.js`, `.css` | Mobile-friendly admin/GOD dashboard, mission dispatcher, QA results and draft queue |
 | `backend/src/index.js` | Route mounting, Worker scheduled research trigger, and explicit disablement of previous forum cron publishing |
-| `backend/src/eye-of-chaos.test.mjs` | GOD access, schema availability, roster, mission controls, AI draft validation, version invalidation and QA results |
+| `backend/src/eye-of-chaos.test.mjs` | role-level access, GOD-only approval, schema availability, roster, missions, AI draft validation, version invalidation and QA results |
 | `scripts/test_eye_of_chaos_sql.py` | In-memory D1/SQLite constraints and migration idempotence |
-| `scripts/eye-of-chaos-ui.test.mjs` | GOD navigation, accessible layout, evidence links and no publishing controls |
+| `scripts/eye-of-chaos-ui.test.mjs` | admin navigation, GOD-only control hiding, accessible layout, evidence links and no publishing controls |
 
-GOD-only access is enforced by the Worker with an authenticated session and the existing `canAccessEyeOfHorus` capability. UI hiding is not the authorization boundary. Mutations also require the normal Knightfall site Origin. API replies are `no-store`.
+Authenticated admin-or-GOD access is enforced in the Worker using `canAccessEyeOfChaos`, while GOD-only approval and global pause/resume use `canAccessEyeOfHorus` and server checks before database access. UI hiding is not the authorization boundary. Mutations also require the normal Knightfall site Origin. API replies are `no-store`. Moderator and Digital Creator titles do not grant access.
 
 **The API has no `publish` operation.** GOD approval records the exact draft version and approved-by identity; editing removes that approval. Publishing the approved draft is a separate, intentionally unimplemented integration. The legacy GOD direct-publishing endpoint remains available through its explicit manual workflow, so it is a separate administrative publishing action, not part of this approval queue.
 
@@ -54,7 +54,7 @@ GOD-only access is enforced by the Worker with an authenticated session and the 
 - **Scheduled research:** daily or weekly mission; Worker cron checks due missions and processes at most two per tick. New findings are pending drafts. Nothing publishes. Paused or cancelled missions are not executed.
 - **Public Knightfall search:** reads only recent public forum thread IDs, titles and category names where thread is not deleted and category is not `adults-only`. No message, journal, private media or member profile data is requested.
 - **Curated external feeds:** music, science, unusual science, space, technology, horror, entertainment and Star Wars. External requests are limited to fixed HTTPS sources; redirects are forbidden; source links are checked against the originating host.
-- **Manual AI draft generation:** GOD clicks *AI draft* on a content or forum mission. Uses the existing Cloudflare Workers AI `@cf/meta/llama-3.1-8b-instruct-fast` binding. The prompt contains the named agent's identity, specialty and mission instructions, **not private member content**. A per-operator rate limit applies; invalid output fails closed; generated text is pending and must be reviewed and approved.
+- **Manual AI draft generation:** an admin or GOD clicks *AI draft* on a content or forum mission. Uses the existing Cloudflare Workers AI `@cf/meta/llama-3.1-8b-instruct-fast` binding. The prompt contains the named agent's identity, specialty and mission instructions, **not private member content**. A per-operator rate limit applies; invalid output fails closed; generated text is pending and must be reviewed and approved.
 - **Game QA:** live results are read from public GitHub Actions endpoints using no browser token. Unreachable or missing evidence displays as unverified, not passed. Test execution and artifacts remain with GitHub.
 - **Master pause:** GOD can pause and resume all manual research, scheduled research and AI generation from the Command Deck. D1 `eye_chaos_controls` enforces the switch on the server, and jobs recheck after fetching/inference before writing drafts. Existing drafts and GOD review remain accessible during pause. If the control row or migration is missing, execution fails closed.
 
@@ -62,22 +62,22 @@ GOD-only access is enforced by the Worker with an authenticated session and the 
 
 The additive D1 table statements in migration `0142_eye_of_chaos.sql` were applied using Cloudflare D1's query API on November 15, 2026. All three tables were independently verified to exist and initially contained **zero rows**. This does not touch users, messages, prior D1 tables, Stripe, or arcade saves.
 
-Migration `0143_eye_chaos_controls.sql` was also applied and verified in production. The singleton controls row exists with `paused=0`, all Eye of Chaos mission/draft/event tables still held zero rows, and the readiness table count was 3. A value of 0 permits explicitly scheduled or GOD-launched execution; 1 halts execution.
+Migration `0143_eye_chaos_controls.sql` was also applied and verified in production. The singleton controls row exists with `paused=0`, all Eye of Chaos mission/draft/event tables still held zero rows, and the readiness table count was 3. A value of 0 permits explicitly scheduled or staff-launched execution; 1 halts execution.
 
 **Important:** The separate Wrangler-managed `d1_migrations` history still last reported migration `0137` at the time of that verification. The pending `0141` premium deck migration was **not** applied as part of Eye of Chaos. The new `0142` and `0143` migrations are idempotent (`CREATE TABLE/INDEX IF NOT EXISTS`) and remains in the repository so it can be reconciled by the existing reviewed migrations workflow later. Do not manually mark Wrangler migrations applied without verifying which migrations have actually executed.
 
-The GOD dashboard should report `schema_ready:true` when production's D1 binding sees the missions, drafts and master controls tables. If unavailable, the fleet registry still renders but mission and approval forms remain disabled.
+The staff dashboard should report `schema_ready:true` when production's D1 binding sees the missions, drafts and master controls tables. If unavailable, the fleet registry still renders but mission and approval forms remain disabled.
 
 ## Release validation checklist
 
-- [x] GOD role-only API checks through isolated test fixtures
+- [x] Admin/GOD access tests, with GOD-only approval and master-lock enforcement
 - [x] 20 registered agents, 10 verified QA matrix identities, existing forum identity lookups
 - [x] Mission and draft persistence schema with approval-version integrity
 - [x] Source allowlist, no-site-private-data research, manual and scheduled pending review drafts
 - [x] Legacy scheduler posting call disabled and legacy configuration rejects auto-posting
 - [x] GitHub QA results are independently verified rather than inferred from a workflow link
 - [x] D1 additive schema and GOD pause settings applied and independently verified
-- [ ] Authenticated production GOD UI acceptance on real member session
+- [ ] Authenticated production admin AND GOD UI acceptance on real staff sessions
 - [ ] End-to-end source execution and Workers AI draft generation on production
 - [ ] Full current-main regression suite and mobile UI QA
 - [ ] Destination-specific GOD-approved publishing integration, if desired
