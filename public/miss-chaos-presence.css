@@ -73,6 +73,7 @@
 #miss-chaos-presence #mc-move,#miss-chaos-presence #mc-minimize,#miss-chaos-presence #mc-restore{display:inline-grid;place-items:center;border:1px solid #67477a;color:#ded2f0;background:#251b34;border-radius:50%;height:26px;width:26px;min-height:26px;min-width:26px;font:900 .94rem system-ui;cursor:pointer}
 #miss-chaos-presence #mc-move:hover,#miss-chaos-presence #mc-minimize:hover{border-color:#39ff88}
 #miss-chaos-presence #mc-restore{height:34px;width:34px;border-color:#39ff88;color:#39ff88}
+#miss-chaos-presence #mc-restore[hidden]{display:none!important}
 #miss-chaos-presence[data-minimized="true"] #mc-dock>:not(#mc-restore){display:none!important}
 #miss-chaos-presence[data-minimized="true"] #mc-dock{padding:3px;border-color:#64456f}
 #miss-chaos-presence :is(button,a,input,select,textarea):focus-visible{outline:2px solid #39ff88;outline-offset:3px}
