@@ -380,7 +380,7 @@ a:hover{color:#d7ff72}
 /* Ash-Fall arcade design system: polished cabinets, legible controls, responsive play spaces. */
 :root{--arcade-ember:#92a18a;--arcade-rust:#b25b68;--arcade-line:#303030}
 main.arcade,body>main{position:relative;isolation:isolate}
-main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 -3vw auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(178,91,104,.11),transparent 58%)}
+main.arcade:before,body>main:before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0 0 auto;height:25rem;background:radial-gradient(ellipse at 78% 0%,rgba(178,91,104,.11),transparent 58%)}
 .hero{position:relative;padding-top:clamp(3.5rem,8vw,6.5rem)!important;padding-bottom:2.5rem!important}
 .hero h1{font-size:clamp(3.2rem,8vw,6.6rem)!important;line-height:.9!important;letter-spacing:-.075em!important;text-wrap:balance}
 .hero h1 span{color:#c7a77c;text-shadow:0 0 36px rgba(178,91,104,.1)}
