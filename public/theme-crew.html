@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0d1013">
+<meta name="description" content="Knightfall GOD-only theme orchestration and CSS quality command deck.">
+<title>Theme Crew | Knightfall GOD Mode</title>
+<link rel="stylesheet" href="/theme.css?v=20261115-gothic9">
+<link rel="stylesheet" href="/theme-crew.css?v=20261116-crew1">
+<script src="/nav.js?v=20261115-gothic9" defer></script>
+<script src="/theme-crew-ui.js?v=20261116-crew1" defer></script>
+</head>
+<body class="theme-crew-page"><header class="kf-header"></header>
+<main class="theme-crew-shell" id="theme-crew">
+<nav class="theme-crew-breadcrumb" aria-label="Breadcrumb"><a href="/admin.html">GOD Mode</a><span>/</span><a href="/eye-of-chaos.html">Eye of Chaos</a><span>/</span><span>Theme Crew</span></nav>
+<header class="theme-crew-header"><div><p class="eyebrow">KNIGHTFALL / EYE OF CHAOS / DIVISION IV</p>
+<h1>The Theme Crew.</h1><p>Four specialist workers. One sitewide aesthetic. Audit the CSS, sculpt the atmosphere, check the visuals and change the entire kingdom with an approved, reversible command.</p></div></header>
+<p id="theme-crew-status" class="theme-crew-status" role="status" aria-live="polite">Checking GOD authorization and live theme state…</p>
+<section id="theme-crew-denied" class="theme-crew-panel theme-crew-denied" hidden><h2>GOD access required</h2><p>Only the GOD account can publish or roll back a global theme. The public site never receives the control API.</p><a href="/auth.html?next=%2Ftheme-crew.html">Sign in to Knightfall</a></section>
+<div id="theme-crew-workspace" class="theme-crew-workspace" hidden>
+  <section class="theme-crew-panel" aria-labelledby="crew-presets-title">
+  <h2 id="crew-presets-title">Sitewide appearance</h2>
+  <p id="theme-crew-current" aria-live="polite">Reading the published version…</p>
+  <div id="theme-crew-presets" class="theme-crew-presets" role="group" aria-label="Reviewed Gothic theme presets"></div>
+  <div class="theme-crew-actions">
+    <button type="button" id="theme-crew-preview">Preview locally</button>
+    <button type="button" id="theme-crew-publish">Publish sitewide</button>
+    <button type="button" id="theme-crew-revert-preview">Clear my preview</button>
+    <button type="button" id="theme-crew-rollback">Rollback last change</button>
+  </div>
+  <p><small>Preview stays in your browser session. Publish requires GOD confirmation and applies to public site chrome on the next refresh, with active pages checking for changes. Gameplay and individual profile themes stay untouched.</small></p>
+  <div class="theme-crew-plan">
+    <h2>Ask Morgue Mason</h2>
+    <p>Describe a look. The planner matches your direction to a reviewed palette without injecting generated CSS.</p>
+    <form id="theme-crew-plan-form">
+      <label for="theme-crew-mood">Your creative direction</label>
+      <textarea id="theme-crew-mood" maxlength="200" placeholder="Velvet crimson, ruined abbey, occult rose gold, moonlight…"></textarea>
+      <button type="submit" class="theme-crew-action">Build a theme proposal</button>
+    </form>
+    <p id="theme-crew-plan-result" role="status" aria-live="polite"></p>
+  </div>
+  </section>
+  <aside>
+   <section class="theme-crew-panel" aria-labelledby="crew-bots-title">
+    <h2 id="crew-bots-title">Four working specialists</h2>
+    <div id="theme-crew-bots" class="theme-crew-bot-grid"></div>
+    <p><a id="theme-crew-workflow" href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/theme-crew.yml" target="_blank" rel="noopener noreferrer">Inspect scheduled CSS audits &amp; visual QA</a></p>
+   </section>
+   <section class="theme-crew-panel" style="margin-top:1rem" aria-labelledby="crew-history-title">
+    <h2 id="crew-history-title">Theme history</h2>
+    <ol id="theme-crew-history" class="theme-crew-history"><li>No recorded changes yet.</li></ol>
+    <button id="theme-crew-refresh" class="theme-crew-action" type="button">Refresh live state</button>
+   </section>
+  </aside>
+</div>
+</main>
+</body></html>
