@@ -1,0 +1,41 @@
+name: City of Cinders · climb and destruction
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/city-of-cinders.html'
+      - 'public/city-of-cinders-world.js'
+      - 'scripts/city-of-cinders-destruction.test.mjs'
+      - 'scripts/smoke-city-of-cinders.mjs'
+      - '.github/workflows/city-of-cinders-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  city-destruction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check code syntax and deterministic wall/floor physics
+        run: |
+          node --check public/city-of-cinders-world.js
+          node --check scripts/smoke-city-of-cinders.mjs
+          node --test scripts/city-of-cinders-destruction.test.mjs
+      - name: Install Chromium test browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Play the game and tear a building down in desktop and mobile Chromium
+        run: node scripts/smoke-city-of-cinders.mjs
+      - name: Upload screenshots and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: city-of-cinders-climb-destruct-screenshots
+          path: city-of-cinders-evidence/
+          if-no-files-found: ignore
+          retention-days: 7
