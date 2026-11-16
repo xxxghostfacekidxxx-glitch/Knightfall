@@ -12,6 +12,8 @@ on:
       - 'public/sw.js'
       - 'backend/src/theme-crew*'
       - 'scripts/theme-crew-audit.mjs'
+      - 'scripts/theme-crew-route.test.mjs'
+      - 'public/*.html'
       - 'scripts/cathedral-overhaul.test.mjs'
       - 'scripts/knightfall-sitewide-artwork.test.mjs'
       - '.github/workflows/theme-crew.yml'
@@ -57,7 +59,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Guard heritage art, real templates, mobile and game exclusions
         run: |
-          node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs
+          node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs scripts/theme-crew-route.test.mjs
           node --check public/nav.js
           node --check public/sw.js
   switchblade:
