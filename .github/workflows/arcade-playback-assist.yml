@@ -5,6 +5,8 @@ on:
     paths:
       - 'public/arcade/hosted/arcade-playback-assist.js'
       - 'public/arcade-cabinet-ui.js'
+      - 'public/arcade-fullscreen.js'
+      - 'scripts/arcade-fullscreen-contract.test.mjs'
       - 'public/arcade/hosted/cinder-chess/index.html'
       - 'public/arcade/hosted/hex-embers/index.html'
       - 'public/arcade/hosted/radius-raid/index.html'
@@ -31,6 +33,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check lossless fullscreen on mobile and desktop
+        run: node --test scripts/arcade-fullscreen-contract.test.mjs
       - name: Check eight opt-in cabinets and safe recovery behavior
         run: node --test scripts/arcade-playback-assist.test.mjs
       - name: Install Chromium browser for real page interactions
