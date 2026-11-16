@@ -112,3 +112,14 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])) :is(.foundry-car
  .home-page .kf-start-card::after{opacity:.23;width:67%}
  .home-page .ecosystem-section .directory-group::before{opacity:.14}
 }
+
+/* Fix production override: the approved shared theme assigned an !important
+   gradient to .home-intro, hiding the actual cathedral illustration. */
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro{
+ background-color:#101219!important;
+ background-image:linear-gradient(0deg,rgba(9,11,16,.95) 0%,rgba(9,11,16,.66) 27%,rgba(9,11,16,.08) 72%),url('/assets/knightfall/eclipse-cathedral.svg')!important;
+ background-position:center,center 42%!important;
+ background-size:cover,cover!important;
+ background-repeat:no-repeat!important;
+}
+body.home-page:not(.profile-custom-theme):not(:has(#profile[data-theme])) .home-intro :is(h1,p,.home-intro-actions){position:relative;z-index:2}
