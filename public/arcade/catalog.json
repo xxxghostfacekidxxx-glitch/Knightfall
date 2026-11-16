@@ -865,14 +865,14 @@
       "id": "city-of-cinders",
       "title": "City of Cinders",
       "route": "/city-of-cinders.html",
-      "description": "Pick a monster, smash a city, and become the zoning board's worst nightmare.",
+      "description": "Play an original giant-monster rampage: scale buildings, punch holes through separate floors, collapse towers and fight the military. Six monsters, keyboard and touch controls.",
       "genre": "Action",
-      "collection": "experiments",
+      "collection": "games",
       "device": "touch",
       "source": "",
-      "notes": "",
+      "notes": "Cinematic HD and performance modes, destructible façades, rooftop combat, local monster unlocks and optional account score sync.",
       "links": [],
-      "featured": false
+      "featured": true
     },
     {
       "id": "colossus-clash",
