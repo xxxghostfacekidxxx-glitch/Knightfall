@@ -46,9 +46,12 @@ test('shared nav discovers the actual public page headers',()=>{
  assert.match(nav,/document\.body\.dataset\.kfRealm/);
 });
 test('artwork is mounted last, kept in cache, and does not skin private profile themes or gameplay',()=>{
+ const source=read('knightfall-unified-theme.css');
+ assert.doesNotMatch(source,/background:radial-gradient[^}]*\.home-intro/s,'global Gothic palette must not override home artwork');
+ assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
  assert.match(nav,/knightfall-artwork\.css/);
  assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v50/);
+ assert.match(sw,/knightfall-shell-v51/);
  assert.match(sw,/knightfall-artwork\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);
