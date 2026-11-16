@@ -75,7 +75,8 @@ try {
           const response=await page.goto(base+route,{waitUntil:"domcontentloaded",timeout:12000});
           if(!response?.ok())throw Error("Deck Locker route failed: "+route+" "+response?.status());
           await page.locator("#kf-deck-wardrobe summary").click();
-          if(await page.locator("#kf-deck-wardrobe .kf-deck-item").count()!==12)throw Error(route+": expected twelve wardrobe finishes");
+          await page.waitForFunction(()=>document.querySelectorAll("#kf-deck-wardrobe .kf-deck-item").length===42,null,{timeout:12000});
+          if(await page.locator("#kf-deck-wardrobe .kf-deck-item").count()!==42)throw Error(route+": expected all 42 current wardrobe finishes");
           if(index===0){
             await page.locator("#kf-deck-wardrobe .kf-deck-item").nth(1).locator("button").click();
             await page.locator("#start").click();
@@ -91,7 +92,7 @@ try {
               border:style?.borderTopColor||"",
               stroke:getComputedStyle(document.documentElement).getPropertyValue("--kf-deck-stroke").trim(),
               deals:skin?.localDeals,
-              premiumLocked:skin?.isAvailable("holo-wraith")===false,
+              premiumLocked:skin?.isAvailable("obsidian-cathedral")===false,
               scroll:document.documentElement.scrollWidth,
               screen:innerWidth
             };
