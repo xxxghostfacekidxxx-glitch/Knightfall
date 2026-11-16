@@ -21,9 +21,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral6/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral6"\)/);
- assert.match(sw,/knightfall-shell-v59/);
+ assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral7/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral7"\)/);
+ assert.match(sw,/knightfall-shell-v60/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
@@ -90,4 +90,13 @@ test('Ascendant II exposes real functional portal routes and architectural art',
  assert.match(chrome,/@media\(max-width:650px\)/);
  assert.match(chrome,/prefers-reduced-motion:reduce/);
  assert.doesNotMatch(chrome,/\.kf-atlas-card\s*\{[^}]*pointer-events:none/s,'portal cards must remain clickable');
+});
+
+test('formerly skipped staff and member interfaces have real style targets',()=>{
+ for(const selector of ['.chaos-card','.chaos-panel','.admin-panel','.directory-toolbar','.shop-filters','.builder-panel','.compose-dialog','.moon-current','.diary-card','.sanctuary-directory','.foundry-input']){
+  assert.ok(chrome.includes(selector),selector+' is still present and styled');
+ }
+ assert.ok(chrome.includes('ASCENDANT III'));
+ assert.ok(chrome.includes(':not(.profile-custom-theme)'));
+ assert.doesNotMatch(chrome,/\.chat-bubble\s*\{[^}]*background/i,'message bubbles are not overpainted');
 });
