@@ -111,8 +111,7 @@ function reset(){
  const c=character();score=0;maxHealth=c.health*(selectedMutation==='armored'?1.25:selectedMutation==='feral'?.82:1);
  health=maxHealth;rage=0;frame=0;elapsed=0;shake=0;cam=0;wrecked=0;submitted=false;
  shots=[];heli=[];tanks=[];particles=[];keys={};touch={};combo=0;charge=0;
- monster={x:25,y:ground-110,vx:0,vy:0,w:selectedCharacter==='dredge'?112:selectedCharacter==='widowbyte'?78:92,
- h:selectedCharacter==='widowbyte'?98:112,face:1,grounded:true,climbing:null,punch:0,invuln:0};
+ monster={x:25,y:ground-c.h,vx:0,vy:0,w:c.w,h:c.h,face:1,grounded:true,climbing:null,punch:0,invuln:0};
  monster.y=ground-monster.h;
  makeCity();updateHud();draw();
 }
@@ -151,22 +150,22 @@ function smash(b,amount,x,y){
 function punch(){
  if(state!=='playing'||monster.punch>0)return;
  const c=character();
- monster.punch=selectedCharacter==='malpractice'?5:selectedCharacter==='ash-tyrant'?9:selectedCharacter==='dredge'?8:7;
- combo=selectedCharacter==='malpractice'?combo+1:0;
- const aerialSlash=selectedCharacter==='widowbyte'&&!monster.grounded&&!monster.climbing;
+ monster.punch=selectedCharacter==='minion-mouse'?5:selectedCharacter==='the-eddie'?9:7;
+ combo=selectedCharacter==='minion-mouse'?combo+1:0;
+ const aerialSlash=selectedCharacter==='mini-villain'&&!monster.grounded&&!monster.climbing;
  const strikePower=c.power*(selectedMutation==='feral'?1.22:1)*
-   (selectedCharacter==='malpractice'?1+Math.min(combo-1,4)*.16:1)*(aerialSlash?1.55:1);
+   (selectedCharacter==='minion-mouse'?1+Math.min(combo-1,5)*.17:1)*(aerialSlash?1.55:1);
  const hit=target();
  if(hit){
   const impact=smash(hit.building,strikePower*1.9,hit.x,hit.y);
   if(impact.hit){
-   score+=Math.round(95*strikePower+(selectedCharacter==='malpractice'?combo*18:0)+(aerialSlash?45:0));
-   rage=Math.min(100,rage+(selectedCharacter==='malpractice'?9:13));
-   shake=Math.max(shake,selectedCharacter==='wreckoning'?9:5);
+   score+=Math.round(95*strikePower+(selectedCharacter==='minion-mouse'?combo*21:0)+(aerialSlash?45:0));
+   rage=Math.min(100,rage+(selectedCharacter==='minion-mouse'?10:13));
+   shake=Math.max(shake,selectedCharacter==='the-eddie'?10:5);
    impactSound('punch');
    if(impact.broken)impactSound('collapse');
    // Heavy monsters transmit shock damage into nearby walls.
-   if(selectedCharacter==='ash-tyrant' || selectedCharacter==='dredge'){
+   if(selectedCharacter==='the-eddie'){
     for(const near of buildings){
      if(near===hit.building||near.dead)continue;
      if(Math.abs(near.x-hit.x)<110)smash(near,strikePower*.42,near.x+7,hit.y);
@@ -183,7 +182,7 @@ function punch(){
   const fistX=monster.x+monster.w/2+monster.face*c.reach*.8;
   const tank=tanks.find(t=>Math.abs(t.x-fistX)<75&&monster.y+monster.h>=ground-78);
   if(tank){
-   tank.hp-=selectedCharacter==='ash-tyrant'||selectedCharacter==='wreckoning'?2:1;
+   tank.hp-=selectedCharacter==='the-eddie'?2:1;
    score+=170;rage=Math.min(100,rage+15);shake=Math.max(shake,6);
    particle(tank.x,ground-16,'#ffc08c',18);impactSound('punch');
    if(tank.hp<=0){score+=300;particle(tank.x,ground-22,'#ff7b5b',32);tanks=tanks.filter(x=>x!==tank);}
@@ -197,20 +196,20 @@ function punch(){
 function roar(){
  if(state!=='playing'||rage<100)return;
  const c=character();rage=0;shake=19;impactSound('collapse');
- const radius=selectedCharacter==='ash-tyrant'?470:selectedCharacter==='dredge'?390:selectedCharacter==='widowbyte'?300:350;
- const damage=selectedCharacter==='malpractice'?2.7:selectedCharacter==='dredge'?3.6:selectedCharacter==='ash-tyrant'?5.2:selectedCharacter==='wreckoning'?4.5:3.8;
+ const radius=selectedCharacter==='the-eddie'?465:selectedCharacter==='mini-villain'?395:350;
+ const damage=selectedCharacter==='the-eddie'?5.2:selectedCharacter==='mini-villain'?4.15:3.4;
  const cx=monster.x+monster.w/2,cy=monster.y+monster.h*.5;
  for(const b of buildings)if(!b.dead && Math.abs(b.x+b.w/2-cx)<radius){
   const y=Math.max(ground-b.h+8,Math.min(ground-7,cy));
   smash(b,damage,b.x+b.w/2,y);
  }
- if(selectedCharacter==='widowbyte'){
+ if(selectedCharacter==='mini-villain'){
   monster.climbing=null;monster.vy=-10;monster.grounded=false;
   for(const h of heli)if(Math.abs(h.x-cx)<350){score+=120;particle(h.x,h.y,c.eye,15);h.x=-999;}
   heli=heli.filter(h=>h.x>-500);
  }
- if(selectedCharacter==='wreckoning'){monster.climbing=null;charge=35;monster.vx=monster.face*12;}
- if(selectedCharacter==='malpractice'){score+=combo*90;combo=0;}
+ if(selectedCharacter==='the-eddie'){monster.climbing=null;charge=28;monster.vx=monster.face*12;}
+ if(selectedCharacter==='minion-mouse'){score+=combo*90;combo=0;particle(cx,cy,'#c6ff45',30);}
  for(const tank of tanks)if(Math.abs(tank.x-cx)<radius){score+=250;particle(tank.x,ground-20,'#ffb56f',20);tank.hp=0;}
  tanks=tanks.filter(t=>t.hp>0);
  shots=[];particle(cx,cy,c.eye,65);
@@ -275,7 +274,7 @@ function update(dt){
   else{
    monster.x=side==='left'?b.x-monster.w:b.x+b.w;
    monster.vx=0;monster.vy=0;monster.grounded=false;
-   monster.y+=(down?2.7:up?-3.4:0)*step;
+   monster.y+=(down?2.7:up?-character().climbSpeed:0)*step;
    monster.y=Math.min(ground-monster.h,monster.y);
    if(monster.y+monster.h<=ground-b.h+7){
     monster.climbing=null;monster.y=ground-b.h-monster.h;
@@ -466,7 +465,14 @@ function draw(){
   ctx.fillStyle='#b8ff38';ctx.fillRect(18,36,230*Math.max(0,health/maxHealth),5);
  }
 }
-function finish(win){if(state!=='playing')return;state=win?'won':'over';const was=new Set(unlockedCharacters);if(score>=1200)unlockedCharacters.push('malpractice');if(wrecked>=3)unlockedCharacters.push('dredge');if(wrecked>=5)unlockedCharacters.push('widowbyte');if(score>=2800)unlockedCharacters.push('wreckoning');if(win)unlockedCharacters.push('ash-tyrant');unlockedCharacters=[...new Set(unlockedCharacters)];try{localStorage.setItem('cinders-unlocked',JSON.stringify(unlockedCharacters));}catch{}applySelection();const newly=[...unlockedCharacters].filter(k=>!was.has(k));$('overlay').hidden=false;$('overlayTitle').textContent=win?'THE SKYLINE HAS LEFT THE CHAT':character().name.toUpperCase()+' NEEDS A NAP';$('overlayText').textContent=(win?'All 12 buildings are rubble. The city is now one large open-plan concept. ':'The military response finally got a lucky shot. ')+ 'Final score: '+score+'.'+(newly.length?' New monster unlocked: '+newly.map(k=>roster[k].name).join(', ')+'.':' Keep chasing the roster challenges to unlock more monsters.');$('start').textContent='RAMPAGE AGAIN';$('status').textContent=newly.length?'Unlocked: '+newly.map(k=>roster[k].name).join(', ')+'. Your roster is saved on this device.':'Run finished. Submitting score if your Ash-Fall account is signed in…';submitScore();}
+function finish(win){
+ if(state!=='playing')return;state=win?'won':'over';unlockedCharacters=Object.keys(roster);
+ try{localStorage.setItem('cinders-unlocked',JSON.stringify(unlockedCharacters));}catch{}
+ applySelection();$('overlay').hidden=false;
+ $('overlayTitle').textContent=win?'THE SKYLINE HAS LEFT THE CHAT':character().name.toUpperCase()+' NEEDS A NAP';
+ $('overlayText').textContent=(win?'All 12 towers are rubble. '+character().name+' owns the skyline. ':'The military finally got a lucky shot. ')+'Final score: '+score+'. Try the other monsters or mutations next.';
+ $('start').textContent='RAMPAGE AGAIN';$('status').textContent='Run complete. Submitting score if signed in…';submitScore();
+}
 async function submitScore(){if(submitted)return;submitted=true;try{if(window.AshFallArcade?.recordScore){const r=await window.AshFallArcade.recordScore(gameKey,score,{lastScore:score,best:score,buildingsDestroyed:wrecked,won:state==='won',character:selectedCharacter,mutation:selectedMutation,unlockedCharacters});$('status').textContent=r?.saved?'Score saved to your Ash-Fall arcade record.':r?.message||'Run complete. Sign in to sync your score.';}else $('status').textContent='Run complete. Sign in to sync your score when arcade accounts are available.';}catch(e){$('status').textContent='Run finished. Score sync failed: '+(e.message||'network error')+'. Your local run is still complete.';}}
 function tick(t){
  const dt=Math.min(32,t-last||16);last=t;
@@ -510,7 +516,7 @@ window.CityCindersDiagnostics=()=>({
  buildings:buildings.map(b=>({x:b.x,top:ground-b.h,hp:b.hp,full:b.full,dead:b.dead,
   holes:b.cells.filter(cell=>cell.hp<2).length,openHoles:b.cells.filter(cell=>cell.hp===0).length}))
 });
-makeCity();const c=character();monster={x:25,y:ground-110,vx:0,vy:0,w:selectedCharacter==='dredge'?112:selectedCharacter==='widowbyte'?78:92,h:selectedCharacter==='widowbyte'?98:112,face:1,grounded:true,climbing:null,punch:0,invuln:0};document.querySelectorAll('[data-character]').forEach(b=>b.addEventListener('click',()=>{if(state==='playing')return;selectedCharacter=b.dataset.character;try{localStorage.setItem('cinders-character',selectedCharacter);}catch{}applySelection();reset();}));document.querySelectorAll('[data-mutation]').forEach(b=>b.addEventListener('click',()=>{if(state==='playing')return;selectedMutation=b.dataset.mutation;try{localStorage.setItem('cinders-mutation',selectedMutation);}catch{}applySelection();reset();}));async function restoreAccountProgress(){const api=window.AshFallArcade;if(!api?.loadProgress)return;try{await api.refreshUser();if(!api.user)return;const saved=await api.loadProgress(gameKey);if(!saved)return;const known=Array.isArray(saved.unlockedCharacters)?saved.unlockedCharacters.filter(k=>roster[k]):[];unlockedCharacters=[...new Set([...unlockedCharacters,...known,'guttermaw'])];if(roster[saved.character]&&unlockedCharacters.includes(saved.character))selectedCharacter=saved.character;if(['balanced','feral','armored'].includes(saved.mutation))selectedMutation=saved.mutation;try{localStorage.setItem('cinders-unlocked',JSON.stringify(unlockedCharacters));localStorage.setItem('cinders-character',selectedCharacter);localStorage.setItem('cinders-mutation',selectedMutation);}catch{}applySelection();reset();$('status').textContent='Your Ash-Fall account progression has been restored across devices.';}catch(error){console.info('City of Cinders account progress restore unavailable:',error.message);}}applySelection();updateHud();draw();restoreAccountProgress();requestAnimationFrame(tick);
+makeCity();const c=character();monster={x:25,y:ground-c.h,vx:0,vy:0,w:c.w,h:c.h,face:1,grounded:true,climbing:null,punch:0,invuln:0};document.querySelectorAll('[data-character]').forEach(b=>b.addEventListener('click',()=>{if(state==='playing')return;selectedCharacter=b.dataset.character;selectionTouched=true;try{localStorage.setItem('cinders-character',selectedCharacter);}catch{}applySelection();reset();}));document.querySelectorAll('[data-mutation]').forEach(b=>b.addEventListener('click',()=>{if(state==='playing')return;selectedMutation=b.dataset.mutation;selectionTouched=true;try{localStorage.setItem('cinders-mutation',selectedMutation);}catch{}applySelection();reset();}));async function restoreAccountProgress(){const api=window.AshFallArcade;if(!api?.loadProgress)return;try{await api.refreshUser();if(!api.user)return;const saved=await api.loadProgress(gameKey);if(!saved||state!=='ready'||selectionTouched)return;unlockedCharacters=Object.keys(roster);if(roster[saved.character]&&unlockedCharacters.includes(saved.character))selectedCharacter=saved.character;if(['balanced','feral','armored'].includes(saved.mutation))selectedMutation=saved.mutation;try{localStorage.setItem('cinders-unlocked',JSON.stringify(unlockedCharacters));localStorage.setItem('cinders-character',selectedCharacter);localStorage.setItem('cinders-mutation',selectedMutation);}catch{}applySelection();reset();$('status').textContent='Your Ash-Fall account progression has been restored across devices.';}catch(error){console.info('City of Cinders account progress restore unavailable:',error.message);}}applySelection();updateHud();draw();restoreAccountProgress();requestAnimationFrame(tick);
 })();
 </script><script src="/arcade-fullscreen.js?v=20261024" defer></script>
 <script src="/arcade-feedback.js?v=20261024" defer></script>
