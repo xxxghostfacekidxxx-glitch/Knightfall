@@ -8,6 +8,16 @@ const theme=read('theme.css');
 const nav=read('nav.js');
 const sw=read('sw.js');
 
+test('stained glass is owned by one cascade rule, and realm art remains visible',()=>{
+ const requiem=read('knightfall-requiem.css');
+ const shared=read('knightfall-unified-theme.css');
+ assert.doesNotMatch(chrome,/\\.home-intro::after/,'The old tiny cathedral divider must remain removed');
+ assert.doesNotMatch(shared,/:where\\(\\.home-intro,\\.cartridge-hero\\)::after/,'Global crest must not occupy stained-glass pseudo element');
+ assert.doesNotMatch(requiem,/REQUIEM STAINED-GLASS CASCADE REPAIR/,'No appended emergency rule');
+ assert.match(requiem,/sanctum-stained-glass\\.svg/);
+ assert.match(requiem,/var\\(--kf-start-art/);
+ assert.match(requiem,/rose-window\\.svg/);
+});
 test('Sanctum luminous stained glass is visible, accessible and installed offline',()=>{
  const art=read('assets/knightfall/sanctum-stained-glass.svg');
  const visual=read('knightfall-requiem.css');
@@ -30,9 +40,9 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/theme\.css\?v=20261116-requiem1/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-requiem1"\)/);
- assert.match(sw,/knightfall-shell-v65/);
+ assert.match(nav,/theme\.css\?v=20261116-glass3/);
+ assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-glass3"\)/);
+ assert.match(sw,/knightfall-shell-v66/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(theme.indexOf("knightfall-cathedral-v2.css")>theme.indexOf("knightfall-artwork.css") && theme.indexOf("knightfall-requiem.css")>theme.indexOf("theme-crew.css"),"Single canonical cascade must keep architectural art above the legacy layers");
 });
