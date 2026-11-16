@@ -63,7 +63,22 @@ try {
    page.on("pageerror",error=>errors.push(String(error.stack||error)));
    page.on("requestfailed",request=>{ const url=request.url(); const optionalLocalAuth=base.startsWith("http://127.0.0.1:") && /^https:\/\/api\.ash-fall\.com\/api\/auth\/me(?:[?#]|$)/.test(url); if(!optionalLocalAuth) network.push({url,error:request.failure()?.errorText||"unknown"}); });
    page.on("response",response=>{if(response.url().startsWith(base)&&response.status()>=400)network.push({url:response.url(),status:response.status()});});
-   const response=await page.goto(base+game.route,{waitUntil:"domcontentloaded",timeout:12000});
+   let response,navAttempts=0;
+   for(let attempt=1;attempt<=2;attempt++){
+    navAttempts=attempt;
+    try{
+     response=await page.goto(base+game.route,{waitUntil:"domcontentloaded",timeout:attempt===1?12000:22000});
+     break;
+    }catch(error){
+     const transient=/Timeout(?:Error|\\s+\\d+ms exceeded)/i.test(String(error));
+     if(attempt===2||!transient||process.env.ARCADE_TEST_TARGET!=="live")throw error;
+     // A single stalled live CDN navigation is not proof the game fails to boot.
+     // Retry once on a clean page state; a second failure remains a real failure.
+     action="retry live navigation";
+     await page.goto("about:blank",{waitUntil:"commit",timeout:4000}).catch(()=>{});
+     errors.length=0;network.length=0;
+    }
+   }
    if (!response?.ok()) throw Error("HTTP "+(response?.status()??"no response"));
    action="inspect page";
    const title=await page.title();
