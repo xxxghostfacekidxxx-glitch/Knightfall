@@ -23,7 +23,7 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
  assert.match(nav,/knightfall-cathedral-v2\.css\?v=20261116-cathedral7/);
  assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-cathedral7"\)/);
- assert.match(sw,/knightfall-shell-v62/);
+ assert.match(sw,/knightfall-shell-v63/);
  assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
  assert.ok(nav.indexOf('["knightfall-cathedral-v2"')>nav.indexOf('["knightfall-artwork"'),
   'Cathedral art must win over legacy artwork without changing the original theme');
@@ -99,4 +99,16 @@ test('formerly skipped staff and member interfaces have real style targets',()=>
  assert.ok(chrome.includes('ASCENDANT III'));
  assert.ok(chrome.includes(':not(.profile-custom-theme)'));
  assert.doesNotMatch(chrome,/\.chat-bubble\s*\{[^}]*background/i,'message bubbles are not overpainted');
+});
+
+
+test('offline fallback screens preserve Gothic cathedral art without network-dependent runtimes',()=>{
+ for(const file of ['offline.html','personal-bots-offline.html']){
+  const page=read(file);
+  assert.match(page,/data-kf-theme="cathedral"/);
+  assert.match(page,/data-kf-realm="(?:general|foundry)"/);
+  assert.match(page,/assets\\/knightfall\\/rose-window\\.svg/);
+  assert.match(page,/assets\\/knightfall\\/vaulted-cathedral\\.svg/);
+  assert.doesNotMatch(page,/theme-crew-runtime\\.js/);
+ }
 });
