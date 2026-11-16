@@ -129,7 +129,7 @@ function portrait(canvas,id,opts={}){
  c.strokeStyle=hue;c.globalAlpha=.3;c.lineWidth=2;
  for(let i=0;i<5;i++){c.beginPath();c.moveTo(0,h*.18+i*28);c.lineTo(w,h*.08+i*28);c.stroke();}
  c.globalAlpha=1;
- draw(c,id,w*.26,h*.09,w*.50,h*.84,{state:opts.state||'idle',frame:opts.frame||0,mutation:opts.mutation});
+ draw(c,id,w*.30,h*.30,w*.40,h*.56,{state:opts.state||'idle',frame:opts.frame||0,mutation:opts.mutation});
  c.fillStyle=hue;c.fillRect(w*.14,h-7,w*.72,3);
  return true;
 }
