@@ -13,6 +13,8 @@ on:
       - 'backend/src/theme-crew*'
       - 'scripts/theme-crew-audit.mjs'
       - 'scripts/theme-crew-route.test.mjs'
+      - 'scripts/theme-crew-browser-smoke.mjs'
+      - 'scripts/theme-browser-smoke.mjs'
       - 'public/*.html'
       - 'scripts/cathedral-overhaul.test.mjs'
       - 'scripts/knightfall-sitewide-artwork.test.mjs'
@@ -62,6 +64,28 @@ jobs:
           node --test scripts/cathedral-overhaul.test.mjs scripts/knightfall-sitewide-artwork.test.mjs scripts/theme-crew-route.test.mjs
           node --check public/nav.js
           node --check public/sw.js
+      - name: Install Playwright Chromium for actual UI tests
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Host the actual site for offline-safe visual smoke
+        run: |
+          python3 -m http.server 8765 --directory public > /tmp/theme-crew-site.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/index.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/theme-crew-site.log
+          exit 1
+      - name: Test real mobile/desktop styles and all five preset previews
+        run: node scripts/theme-crew-browser-smoke.mjs
+      - name: Attach visually inspectable screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: knightfall-theme-visual-qa
+          path: artifacts/theme-crew/visual/
+          if-no-files-found: warn
   switchblade:
     name: Switchblade / publisher contract (nonpublishing CI)
     runs-on: ubuntu-latest
