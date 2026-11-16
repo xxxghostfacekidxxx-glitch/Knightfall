@@ -115,5 +115,10 @@ $("theme-crew-plan-form").addEventListener("submit",async event=>{
   $("theme-crew-plan-result").textContent="Morgue Mason recommends "+preset.name+". "+plan.reason+" Preview it before publishing.";
  }catch(e){$("theme-crew-plan-result").textContent="Planner failed: "+e.message}
 });
-boot();
+if(["ash-fall.com","www.ash-fall.com"].includes(location.hostname.toLowerCase())){
+ boot();
+}else{
+ workspace.hidden=true;denied.hidden=false;
+ announce("Live GOD theme controls are only available on Knightfall production. This copy is preview-only.");
+}
 })();
