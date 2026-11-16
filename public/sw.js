@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v55";
+const CACHE_NAME = "knightfall-shell-v56";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -15,6 +15,9 @@ const APP_SHELL = [
   "/knightfall-cathedral-v2.css",
   "/assets/knightfall/obsidian-cathedral.svg",
   "/assets/knightfall/ceremonial-divider.svg",
+  "/assets/knightfall/gateway-arcade.svg",
+  "/assets/knightfall/gateway-madhouse.svg",
+  "/assets/knightfall/gateway-pets.svg",
   "/assets/knightfall/eclipse-cathedral.svg",
   "/assets/knightfall/gothic-chrome-frame.svg",
   "/assets/knightfall/winged-skull-crest.svg",
