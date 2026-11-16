@@ -11,7 +11,8 @@
       ["section-overhaul", "/section-overhaul.css?v=20261115-gothic9"],
       ["knightfall-unified-theme", "/knightfall-unified-theme.css?v=20261115-gothic9"],
       ["knightfall-artwork", "/knightfall-artwork.css?v=20261116-art9"],
-      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral7"]
+      ["knightfall-cathedral-v2", "/knightfall-cathedral-v2.css?v=20261116-cathedral7"],
+      ["theme-crew", "/theme-crew.css?v=20261116-crew1"]
     ];
     for (const [id, href] of styles) {
       const selector = 'link[data-' + id + ']';
@@ -26,10 +27,20 @@
       document.head.appendChild(link);
     }
   };
+  // Loaded separately so both navigation-enabled and navigationless chrome stay isolated.
+  const mountCrewRuntime = () => {
+    if(document.querySelector('script[data-kf-theme-crew-runtime]'))return;
+    const script=document.createElement("script");
+    script.src="/theme-crew-runtime.js?v=20261116-crew1";
+    script.dataset.kfThemeCrewRuntime="true";
+    script.defer=true;
+    document.head.appendChild(script);
+  };
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mountApprovedTheme, {once:true});
+    document.addEventListener("DOMContentLoaded", () => {mountApprovedTheme();mountCrewRuntime()}, {once:true});
   } else {
     mountApprovedTheme();
+    mountCrewRuntime();
   }
 
   // Original section illustrations: site chrome only, not gameplay or personal themes.
