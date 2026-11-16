@@ -75,6 +75,7 @@ on:
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
       - 'scripts/theme-browser-smoke.mjs'
+      - 'scripts/theme-crew-browser-smoke.mjs'
       - 'scripts/knightfall-sitewide-artwork.test.mjs'
       - 'scripts/cathedral-overhaul.test.mjs'
       - '.github/workflows/smoke-test.yml'
