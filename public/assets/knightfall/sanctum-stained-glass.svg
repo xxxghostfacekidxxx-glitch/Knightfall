@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 940" role="img" aria-labelledby="title desc">
+<title id="title">Illuminated stained-glass sanctum</title>
+<desc id="desc">Original Knightfall Gothic rose window above three jeweled lancet windows, glowing with crimson, violet, turquoise, spectral green, and amber light within intricate dark stone tracery.</desc>
+<defs>
+<radialGradient id="aura"><stop stop-color="#e455b7" stop-opacity=".6"/><stop offset=".52" stop-color="#9c53a4" stop-opacity=".26"/><stop offset="1" stop-color="#9c53a4" stop-opacity="0"/></radialGradient>
+<linearGradient id="shine" x1="0" y1="0" x2=".88" y2="1"><stop stop-color="#fff2bf" stop-opacity=".75"/><stop offset=".26" stop-color="#fff6e5" stop-opacity=".06"/><stop offset=".66" stop-color="#080a15" stop-opacity=".12"/><stop offset="1" stop-color="#090817" stop-opacity=".8"/></linearGradient>
+<radialGradient id="center"><stop stop-color="#fff0cf"/><stop offset=".4" stop-color="#f7a2d7"/><stop offset="1" stop-color="#783bc8"/></radialGradient>
+<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4c9a6"/><stop offset=".36" stop-color="#6e5877"/><stop offset=".67" stop-color="#b9859f"/><stop offset="1" stop-color="#211b32"/></linearGradient>
+<filter id="bloom" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="18"/></filter>
+<filter id="stone" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="9" flood-color="#09050e" flood-opacity=".9"/></filter>
+<clipPath id="rose"><circle cx="400" cy="236" r="145"/></clipPath>
+</defs>
+<ellipse cx="400" cy="420" rx="375" ry="455" fill="url(#aura)" opacity=".75"/>
+<circle cx="400" cy="236" r="166" fill="#d465bc" opacity=".44" filter="url(#bloom)"/>
+<g fill="none" stroke="url(#metal)" stroke-linejoin="round">
+<path d="M96 879V442Q100 270 196 179 Q278 97 400 38Q522 97 604 179Q700 270 704 442V879" stroke-width="19" opacity=".73"/>
+<path d="M116 879V443Q116 296 216 190Q294 111 400 62Q506 111 584 190Q684 296 684 443V879" stroke-width="5" opacity=".87"/>
+<path d="M125 834H675M114 871H686" stroke-width="11" opacity=".8"/>
+</g>
+<circle cx="400" cy="236" r="152" fill="#1a1125" stroke="url(#metal)" stroke-width="17" filter="url(#stone)"/>
+<g clip-path="url(#rose)"><path d="M400.0 174.0 L400.0 95.0 A141 141 0 0 1 454.0 105.7 L423.7 178.7 Z" fill="#ef3b7e" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M423.7 178.7 L454.0 105.7 A141 141 0 0 1 499.7 136.3 L443.8 192.2 Z" fill="#e39e5f" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M443.8 192.2 L499.7 136.3 A141 141 0 0 1 530.3 182.0 L457.3 212.3 Z" fill="#9a54d5" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M457.3 212.3 L530.3 182.0 A141 141 0 0 1 541.0 236.0 L462.0 236.0 Z" fill="#16c2bd" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M462.0 236.0 L541.0 236.0 A141 141 0 0 1 530.3 290.0 L457.3 259.7 Z" fill="#e256ab" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M457.3 259.7 L530.3 290.0 A141 141 0 0 1 499.7 335.7 L443.8 279.8 Z" fill="#83bd74" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M443.8 279.8 L499.7 335.7 A141 141 0 0 1 454.0 366.3 L423.7 293.3 Z" fill="#6876db" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M423.7 293.3 L454.0 366.3 A141 141 0 0 1 400.0 377.0 L400.0 298.0 Z" fill="#f16a68" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M400.0 298.0 L400.0 377.0 A141 141 0 0 1 346.0 366.3 L376.3 293.3 Z" fill="#b25ce6" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M376.3 293.3 L346.0 366.3 A141 141 0 0 1 300.3 335.7 L356.2 279.8 Z" fill="#47b6d6" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M356.2 279.8 L300.3 335.7 A141 141 0 0 1 269.7 290.0 L342.7 259.7 Z" fill="#ecb96b" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M342.7 259.7 L269.7 290.0 A141 141 0 0 1 259.0 236.0 L338.0 236.0 Z" fill="#d83c64" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M338.0 236.0 L259.0 236.0 A141 141 0 0 1 269.7 182.0 L342.7 212.3 Z" fill="#8b5cce" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M342.7 212.3 L269.7 182.0 A141 141 0 0 1 300.3 136.3 L356.2 192.2 Z" fill="#8cce92" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M356.2 192.2 L300.3 136.3 A141 141 0 0 1 346.0 105.7 L376.3 178.7 Z" fill="#ff8ab6" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+<path d="M376.3 178.7 L346.0 105.7 A141 141 0 0 1 400.0 95.0 L400.0 174.0 Z" fill="#e0ab75" fill-opacity=".91" stroke="#1a1425" stroke-width="7"/>
+</g>
+<circle cx="400" cy="236" r="65" fill="#100f20" stroke="#efc9ae" stroke-width="13"/>
+<circle cx="400" cy="236" r="44" fill="url(#center)" stroke="#6f3f79" stroke-width="5"/>
+<path d="M400 198L412 223L439 236L412 248L400 275L388 248L361 236L388 223Z" fill="#f9ead7" stroke="#ab648b" stroke-width="3"/>
+<circle cx="400" cy="236" r="143" fill="none" stroke="#f9dcb1" stroke-opacity=".67" stroke-width="3"/>
+<g stroke="url(#metal)" stroke-width="12" stroke-linejoin="round" fill="none"><path d="M142 424Q168 373 217 366Q266 373 292 424M320 424Q346 373 395 366Q444 373 470 424M498 424Q524 373 573 366Q622 373 648 424"/></g>
+<clipPath id="g0"><path d="M154 802 V565 Q160 485 231 440 Q302 485 308 565 V802Z"/></clipPath><g opacity=".98"><path d="M154 802 V565 Q160 485 231 440 Q302 485 308 565 V802Z" fill="#111320" stroke="#e8bb9a" stroke-width="14" filter="url(#stone)"/><g clip-path="url(#g0)"><rect x="154" y="440" width="154" height="362" fill="#e39e5f"/><path d="M134 508 L348 687 L348 448Z" fill="#16c2bd" opacity=".83"/><path d="M134 686L348 548L348 778Z" fill="#83bd74" opacity=".85"/><path d="M134 787L348 692L348 880Z" fill="#b25ce6" opacity=".85"/><path d="M154 560L308 740 M308 605L154 787 M231 440V802M154 671H308" fill="none" stroke="#190e24" stroke-width="7"/><rect x="154" y="440" width="154" height="362" fill="url(#shine)" opacity=".65"/></g><path d="M154 802 V565 Q160 485 231 440 Q302 485 308 565 V802Z" fill="none" stroke="#efd1b1" stroke-opacity=".7" stroke-width="3"/></g><clipPath id="g1"><path d="M332 802 V565 Q338 485 409 440 Q480 485 486 565 V802Z"/></clipPath><g opacity=".98"><path d="M332 802 V565 Q338 485 409 440 Q480 485 486 565 V802Z" fill="#111320" stroke="#e8bb9a" stroke-width="14" filter="url(#stone)"/><g clip-path="url(#g1)"><rect x="332" y="440" width="154" height="362" fill="#83bd74"/><path d="M312 508 L526 687 L526 448Z" fill="#f16a68" opacity=".83"/><path d="M312 686L526 548L526 778Z" fill="#47b6d6" opacity=".85"/><path d="M312 787L526 692L526 880Z" fill="#8b5cce" opacity=".85"/><path d="M332 560L486 740 M486 605L332 787 M409 440V802M332 671H486" fill="none" stroke="#190e24" stroke-width="7"/><rect x="332" y="440" width="154" height="362" fill="url(#shine)" opacity=".65"/></g><path d="M332 802 V565 Q338 485 409 440 Q480 485 486 565 V802Z" fill="none" stroke="#efd1b1" stroke-opacity=".7" stroke-width="3"/></g><clipPath id="g2"><path d="M510 802 V565 Q516 485 587 440 Q658 485 664 565 V802Z"/></clipPath><g opacity=".98"><path d="M510 802 V565 Q516 485 587 440 Q658 485 664 565 V802Z" fill="#111320" stroke="#e8bb9a" stroke-width="14" filter="url(#stone)"/><g clip-path="url(#g2)"><rect x="510" y="440" width="154" height="362" fill="#47b6d6"/><path d="M490 508 L704 687 L704 448Z" fill="#d83c64" opacity=".83"/><path d="M490 686L704 548L704 778Z" fill="#8cce92" opacity=".85"/><path d="M490 787L704 692L704 880Z" fill="#ef3b7e" opacity=".85"/><path d="M510 560L664 740 M664 605L510 787 M587 440V802M510 671H664" fill="none" stroke="#190e24" stroke-width="7"/><rect x="510" y="440" width="154" height="362" fill="url(#shine)" opacity=".65"/></g><path d="M510 802 V565 Q516 485 587 440 Q658 485 664 565 V802Z" fill="none" stroke="#efd1b1" stroke-opacity=".7" stroke-width="3"/></g>
+<g stroke="#e9c8aa" stroke-width="4" stroke-opacity=".7" fill="none"><path d="M400 397V840"/><path d="M96 878H704"/><path d="M120 855H680"/><path d="M122 412Q220 364 301 416M499 416Q580 364 678 412"/></g>
+<g opacity=".63"><path d="M155 808V892 M645 808V892" stroke="#f7b9dd" stroke-width="10" filter="url(#bloom)"/><path d="M155 808V892 M645 808V892" stroke="#f4cbba" stroke-width="3"/></g>
+</svg>
