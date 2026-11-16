@@ -197,14 +197,14 @@ body:not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay
 body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout{
  position:relative;isolation:isolate;
 }
-body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout::before{
+body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .entry-layout[data-kf-art-backdrop]::before{
  content:"";position:absolute;z-index:-1;pointer-events:none;
- width:min(1100px,calc(100vw - 20px));height:calc(100% + 80px);
+ width:min(1100px,calc(100vw - 20px))!important;height:calc(100% + 80px)!important;
  top:-40px;left:50%;transform:translateX(-50%);
- background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0d1013c7,#16151b55 50%,#0d1013bf),url('/assets/knightfall/realm-members.svg');
- background-position:center,center,center;background-repeat:no-repeat;
- background-size:100% 100%,cover,cover;
- opacity:.87;border-radius:24px;
+ background-image:url('/assets/knightfall/gothic-chrome-frame.svg'),linear-gradient(90deg,#0d1013c7,#16151b55 50%,#0d1013bf),url('/assets/knightfall/realm-members.svg')!important;
+ background-position:center,center,center!important;background-repeat:no-repeat!important;
+ background-size:100% 100%,cover,cover!important;
+ opacity:.87!important;border-radius:24px;
 }
 body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout .entry-card{
  position:relative;isolation:isolate;
@@ -221,7 +221,7 @@ body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout .entry-ca
  letter-spacing:-.04em;text-shadow:0 2px 14px #0009;
 }
 @media(max-width:650px){
- body[data-kf-realm="members"]:not(.profile-custom-theme) .entry-layout::before{
+ body[data-kf-realm="members"]:not(.profile-custom-theme):not(:has(#profile[data-theme])) .entry-layout[data-kf-art-backdrop]::before{
   top:-12px;height:calc(100% + 24px);width:calc(100vw - 14px);opacity:.47;
  }
 }
