@@ -89,29 +89,63 @@ const G = {
   toast(msg) { this.toastMsg = msg; this.toastT = 130; },
 
   // ---------- persistence ----------
-  save() {
+  // Old Embervale saves remain compatible. Save the CURRENT tile, not merely
+  // the doorway where the player entered the last screen.
+  snapshot(updatePosition = true) {
+    if (updatePosition && this.player && ['play', 'pause', 'dialog', 'itemget'].includes(this.state) && !this.scroll) {
+      const px = Math.max(0, Math.min(15, Math.floor(this.player.cx / TILE)));
+      const py = Math.max(0, Math.min(10, Math.floor(this.player.cy / TILE)));
+      if (Number.isFinite(px) && Number.isFinite(py) && getScreenDef(this.map, this.sx, this.sy) &&
+          !rectSolid(this.player.x + this.player.hx, this.player.y + this.player.hy, this.player.hw, this.player.hh))
+        this.lastPos = { map: this.map, sx: this.sx, sy: this.sy, px, py };
+    }
+    return {
+      version: 2, savedAt: Date.now(),
+      flags: [...this.flags], inv: {...this.inv}, hp: this.hp, maxHp: this.maxHp,
+      gems: this.gems, keys: this.keys, equipped: this.equipped,
+      visited: [...this.visited], stats: {...this.stats}, lastPos: {...this.lastPos}
+    };
+  },
+  save(updatePosition = true) {
     try {
-      localStorage.setItem('embervale_save', JSON.stringify({
-        flags: [...this.flags], inv: this.inv, hp: this.hp, maxHp: this.maxHp,
-        gems: this.gems, keys: this.keys, equipped: this.equipped,
-        visited: [...this.visited], stats: this.stats, lastPos: this.lastPos
-      }));
-    } catch (e) { /* private mode */ }
+      localStorage.setItem('embervale_save', JSON.stringify(this.snapshot(updatePosition)));
+      return true;
+    } catch (e) { return false; } // Blocked browser storage is surfaced by the Save UI.
+  },
+  validSave(s) {
+    if (!s || typeof s !== 'object' || Array.isArray(s) || !Array.isArray(s.flags) ||
+        !s.flags.every(f => typeof f === 'string') || s.flags.length > 5000 ||
+        !Array.isArray(s.visited || []) || !s.inv || typeof s.inv !== 'object' ||
+        Array.isArray(s.inv) || !Number.isFinite(s.hp) || !Number.isFinite(s.maxHp) ||
+        s.maxHp <= 0 || s.hp < 0 || s.hp > s.maxHp ||
+        !Number.isFinite(s.gems) || !Number.isFinite(s.keys) || s.gems < 0 || s.keys < 0)
+      return false;
+    const p = s.lastPos;
+    return !!(p && typeof p.map === 'string' && p.map.length <= 40 &&
+      Number.isInteger(p.sx) && Number.isInteger(p.sy) &&
+      Number.isInteger(p.px) && Number.isInteger(p.py) &&
+      p.sx >= 0 && p.sy >= 0 && p.sx < 32 && p.sy < 32 &&
+      p.px >= 0 && p.px < 16 && p.py >= 0 && p.py < 11 &&
+      getScreenDef(p.map, p.sx, p.sy));
   },
   loadSave() {
     try {
       const s = JSON.parse(localStorage.getItem('embervale_save'));
-      if (!s) return false;
-      this.flags = new Set(s.flags); this.inv = s.inv;
+      if (!this.validSave(s)) return false;
+      this.flags = new Set(s.flags);
+      this.inv = {...this.inv, ...s.inv};
       this.hp = s.hp; this.maxHp = s.maxHp; this.gems = s.gems; this.keys = s.keys;
-      this.equipped = s.equipped;
+      this.equipped = s.equipped || null;
       this.visited = new Set(s.visited || []);
       this.stats = s.stats || { time: 0, deaths: 0, kills: 0 };
-      if (s.lastPos) this.lastPos = s.lastPos;
+      this.lastPos = s.lastPos;
       return true;
     } catch (e) { return false; }
   },
-  hasSave() { try { return !!localStorage.getItem('embervale_save'); } catch (e) { return false; } },
+  hasSave() {
+    try { return this.validSave(JSON.parse(localStorage.getItem('embervale_save'))); }
+    catch (e) { return false; }
+  },
   clearSave() { try { localStorage.removeItem('embervale_save'); } catch (e) { } },
 
   // ---------- flag helpers ----------
@@ -215,7 +249,9 @@ const G = {
 
     // location toast
     if (def.name) this.toast(def.name);
-    this.save();
+    // loadRoom may run during a scroll before the new player position exists.
+    // Preserve the prior safe checkpoint until the transition completes.
+    this.save(false);
   },
 
   breakCrack(tx, ty) {
@@ -343,6 +379,8 @@ const G = {
 // ============================================================
 function updatePlay() {
   G.stats.time++;
+  // Fifteen-second checkpoints supplement screen transitions and explicit Save.
+  if (G.stats.time % 900 === 0) G.save();
   G.animT++;
   const p = G.player;
 
@@ -1260,6 +1298,49 @@ function render() {
     ctx.fillRect(0, 0, 256, 224);
   }
 }
+
+// ============================================================
+// Knightfall save controls: optional UI over the original MIT game.
+// The existing 'embervale_save' key and old saves stay intact.
+// ============================================================
+window.EmbervaleSaves = Object.freeze({
+  state() { return G.state; },
+  hasSave() { return G.hasSave(); },
+  saveNow() {
+    if (!['play', 'pause', 'dialog', 'itemget'].includes(G.state)) return false;
+    return G.save();
+  },
+  resume() {
+    if (!G.hasSave()) return false;
+    G.continueGame();
+    return true;
+  },
+  exportSave() {
+    if (['play', 'pause', 'dialog', 'itemget'].includes(G.state))
+      return JSON.stringify(G.snapshot());
+    try {
+      const raw = localStorage.getItem('embervale_save');
+      return G.validSave(JSON.parse(raw)) ? raw : null;
+    } catch { return null; }
+  },
+  importSave(text) {
+    if (typeof text !== 'string' || text.length > 250000) return false;
+    try {
+      const data = JSON.parse(text);
+      if (!G.validSave(data)) return false;
+      localStorage.setItem('embervale_save', JSON.stringify(data));
+      G.continueGame();
+      return true;
+    } catch { return false; }
+  }
+});
+const saveOnExit = () => {
+  if (['play', 'pause', 'dialog', 'itemget'].includes(G.state)) G.save();
+};
+window.addEventListener('pagehide', saveOnExit);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) saveOnExit();
+});
 
 // ============================================================
 // BOOT
