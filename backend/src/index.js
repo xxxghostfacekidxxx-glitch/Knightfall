@@ -17,6 +17,7 @@ import { botAccessPolicy } from "./bot-creator-access.js";
 import { staffCapabilities, canAccessCreatorFoundry } from "./staff-capabilities.js";
 import { handleEyeOfHorus } from "./eye-of-horus.js";
 import { handleEyeOfChaos, runEyeChaosScheduledResearch } from "./eye-of-chaos.js";
+import {handleThemeCrew} from "./theme-crew.js";
 import { handleGodTrash } from "./god-trash.js";
 import { handleHomeActivityFeed } from "./home-activity-feed.js";
 import { handleBusinessMetrics } from "./business-metrics.js";
@@ -1022,10 +1023,13 @@ export default { async queue(batch, env) {
     const deletionSchema=await env.DB.prepare("SELECT 1 AS ready FROM sqlite_master WHERE type='index' AND tbl_name='account_deletion_requests' AND name='idx_account_deletion_requests_one_active_user' LIMIT 1").first();
     return json({ok:check?.ok===1,service:"knightfall-api",database:true,deletion_requests_ready:deletionSchema?.ready===1},200,origin);
   }
-  if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&url.pathname!=="/api/privacy/deletion-assistance"&&url.pathname!=="/api/account/deletion-request"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
+  if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&url.pathname!=="/api/theme"&&url.pathname!=="/api/privacy/deletion-assistance"&&url.pathname!=="/api/account/deletion-request"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/")||url.pathname.startsWith("/api/avatars/profile/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 
+  // Global theme recipes: public read, GOD-only versioned publishing/rollback.
+  const themeCrewResponse=await handleThemeCrew(request,env,url,{requireUser,json,origin,audit});
+  if(themeCrewResponse)return themeCrewResponse;
   const chaosResponse=await handleEyeOfChaos(request,env,url,{requireUser,json,origin,rateLimit});
   if(chaosResponse)return chaosResponse;
   const eyeResponse=await handleEyeOfHorus(request,env,url,{requireUser,json,origin});
