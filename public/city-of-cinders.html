@@ -114,14 +114,14 @@ function smash(b,amount,x,y){
 function punch(){
  if(state!=='playing'||monster.punch>0)return;
  const c=character();
- monster.punch=selectedCharacter==='malpractice'?7:selectedCharacter==='ash-tyrant'?18:selectedCharacter==='dredge'?15:11;
+ monster.punch=selectedCharacter==='malpractice'?5:selectedCharacter==='ash-tyrant'?9:selectedCharacter==='dredge'?8:7;
  combo=selectedCharacter==='malpractice'?combo+1:0;
  const aerialSlash=selectedCharacter==='widowbyte'&&!monster.grounded&&!monster.climbing;
  const strikePower=c.power*(selectedMutation==='feral'?1.22:1)*
    (selectedCharacter==='malpractice'?1+Math.min(combo-1,4)*.16:1)*(aerialSlash?1.55:1);
  const hit=target();
  if(hit){
-  const impact=smash(hit.building,strikePower*1.65,hit.x,hit.y);
+  const impact=smash(hit.building,strikePower*1.9,hit.x,hit.y);
   if(impact.hit){
    score+=Math.round(95*strikePower+(selectedCharacter==='malpractice'?combo*18:0)+(aerialSlash?45:0));
    rage=Math.min(100,rage+(selectedCharacter==='malpractice'?9:13));
@@ -229,7 +229,7 @@ function update(dt){
   if(monster.y+monster.h>=ground){monster.y=ground-monster.h;monster.vy=0;monster.grounded=true;}
   if(monster.vx)monster.face=Math.sign(monster.vx);
  }
- if(monster.punch>0)monster.punch--;
+ if(monster.punch>0)monster.punch=Math.max(0,monster.punch-step);
  if(frame%9===0&&Math.abs(monster.vx)>0.2&&monster.grounded)particle(monster.x+monster.w/2,monster.y+monster.h,'#95747c',2);
  spawnEnemy();collide();
  for(const p of particles){p.x+=p.vx*step;p.y+=p.vy*step;p.vy+=.14*step;p.life-=step;}
@@ -239,61 +239,72 @@ function update(dt){
  if(wrecked>=buildings.length){finish(true);return;}
  updateHud();
 }
+// Sky is drawn to a reusable low-resolution layer. It need not rebuild hundreds
+// of windows, smoke gradients and lights on every retina-resolution game frame.
+const skySurface=document.createElement('canvas');skySurface.width=W;skySurface.height=H;
+const skyCtx=skySurface.getContext('2d',{alpha:false});
+let skyRenderedFrame=-999,skyRenderedCam=Infinity;
 function drawSky(){
-  const sky=ctx.createLinearGradient(0,0,0,H);
+ if(frame-skyRenderedFrame>= (renderMode==='performance'?4:2) || Math.abs(cam-skyRenderedCam)>7 || frame<skyRenderedFrame){
+  renderSkyFrame();skyRenderedFrame=frame;skyRenderedCam=cam;
+ }
+ ctx.drawImage(skySurface,0,0,W,H);
+}
+function renderSkyFrame(){
+  const sky=skyCtx.createLinearGradient(0,0,0,H);
   sky.addColorStop(0,'#080f20');sky.addColorStop(.3,'#21182d');sky.addColorStop(.58,'#572b36');sky.addColorStop(.82,'#ff55d8');sky.addColorStop(1,'#171018');
-  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  skyCtx.fillStyle=sky;skyCtx.fillRect(0,0,W,H);
   // Distant industrial glow and a bruised, oversized eclipse.
-  const glow=ctx.createRadialGradient(W*.77,H*.24,4,W*.77,H*.24,Math.max(W*.42,180));
+  const glow=skyCtx.createRadialGradient(W*.77,H*.24,4,W*.77,H*.24,Math.max(W*.42,180));
   glow.addColorStop(0,'#e8b5f535');glow.addColorStop(.32,'#ff55d81b');glow.addColorStop(1,'#ff55d800');
-  ctx.fillStyle=glow;ctx.fillRect(0,0,W,H*.78);
+  skyCtx.fillStyle=glow;skyCtx.fillRect(0,0,W,H*.78);
   const sunX=W*.78,sunY=H*.25,sunR=Math.min(42,H*.095);
-  ctx.save();ctx.shadowColor='#56306b';ctx.shadowBlur=38;ctx.fillStyle='#e8b5f5';ctx.beginPath();ctx.arc(sunX,sunY,sunR,0,Math.PI*2);ctx.fill();ctx.restore();
-  ctx.fillStyle='#38253a';ctx.beginPath();ctx.arc(sunX+sunR*.33,sunY-sunR*.16,sunR*.91,0,Math.PI*2);ctx.fill();
+  skyCtx.save();skyCtx.shadowColor='#56306b';skyCtx.shadowBlur=38;skyCtx.fillStyle='#e8b5f5';skyCtx.beginPath();skyCtx.arc(sunX,sunY,sunR,0,Math.PI*2);skyCtx.fill();skyCtx.restore();
+  skyCtx.fillStyle='#38253a';skyCtx.beginPath();skyCtx.arc(sunX+sunR*.33,sunY-sunR*.16,sunR*.91,0,Math.PI*2);skyCtx.fill();
   // Slow, layered smoke banks give the skyline depth without hiding targets.
   for(let i=0;i<5;i++){
     const y=H*(.24+i*.095)+Math.sin(frame*.008+i*2)*7;
     const x=((i*191-frame*(.16+i*.035))%(W+260)+W+260)%(W+260)-130;
-    const haze=ctx.createRadialGradient(x,y,4,x,y,Math.max(75,W*.2));
+    const haze=skyCtx.createRadialGradient(x,y,4,x,y,Math.max(75,W*.2));
     haze.addColorStop(0,i%2?'#a85b5a19':'#22263d42');haze.addColorStop(1,'#14132200');
-    ctx.fillStyle=haze;ctx.fillRect(0,y-65,W,135);
+    skyCtx.fillStyle=haze;skyCtx.fillRect(0,y-65,W,135);
   }
   // Three parallax industrial skylines, each with its own window rhythm.
   for(let layer=0;layer<3;layer++){
     const base=H*(.57+layer*.095),unit=layer===0?46:layer===1?63:82,offset=cam*(.08+layer*.12);
-    ctx.fillStyle=layer===0?'#171b2b':layer===1?'#211923':'#24171b';
+    skyCtx.fillStyle=layer===0?'#171b2b':layer===1?'#211923':'#24171b';
     for(let i=-2;i<Math.ceil(W/unit)+3;i++){
       const seed=i+layer*17,ww=unit*(.58+((seed*7%5)+5)%5*.075),hh=H*(.09+((((seed*13)%11)+11)%11)/100)+layer*5;
       const x=i*unit-((offset%unit)+unit)%unit;
-      ctx.fillRect(x,base-hh,ww,hh);
-      ctx.fillStyle=layer===0?'#8d6470':'#56306b';
+      skyCtx.fillRect(x,base-hh,ww,hh);
+      skyCtx.fillStyle=layer===0?'#8d6470':'#56306b';
       for(let wy=base-hh+8;wy<base-5;wy+=10+layer*2){
         for(let wx=x+6;wx<x+ww-4;wx+=11+layer*2){
           const lit=((Math.floor(wx/7)+Math.floor(wy/9)+seed*3)%7);
-          if(lit<2){ctx.globalAlpha=layer===0?.28:.18;ctx.fillRect(wx,wy,3,4);}
+          if(lit<2){skyCtx.globalAlpha=layer===0?.28:.18;skyCtx.fillRect(wx,wy,3,4);}
         }
       }
-      ctx.globalAlpha=1;ctx.fillStyle=layer===0?'#171b2b':layer===1?'#211923':'#24171b';
-      if(layer===2&&i%4===0){ctx.fillStyle='#ff55d8';ctx.globalAlpha=.72;ctx.fillRect(x+ww*.25,base-hh-5,ww*.5,2);ctx.globalAlpha=1;ctx.fillStyle='#24171b';}
+      skyCtx.globalAlpha=1;skyCtx.fillStyle=layer===0?'#171b2b':layer===1?'#211923':'#24171b';
+      if(layer===2&&i%4===0){skyCtx.fillStyle='#ff55d8';skyCtx.globalAlpha=.72;skyCtx.fillRect(x+ww*.25,base-hh-5,ww*.5,2);skyCtx.globalAlpha=1;skyCtx.fillStyle='#24171b';}
     }
   }
   // Ash flecks and embers drift in front of the skyline.
   for(let i=0;i<54;i++){
     const x=((i*137+frame*(i%4===0?.32:i%3===0?.17:.055))%(W+24)+W+24)%(W+24)-12;
     const y=(i*59+Math.sin(frame*.018+i)*10)%(H*.76);
-    ctx.globalAlpha=.12+(i%5)*.075;ctx.fillStyle=i%5===0?'#e8b5f5':i%3===0?'#ff55d8':'#d7c5cf';
-    ctx.beginPath();ctx.ellipse(x,y,i%6===0?2.2:1,i%6===0?1.3:1,frame*.02,0,Math.PI*2);ctx.fill();
+    skyCtx.globalAlpha=.12+(i%5)*.075;skyCtx.fillStyle=i%5===0?'#e8b5f5':i%3===0?'#ff55d8':'#d7c5cf';
+    skyCtx.beginPath();skyCtx.ellipse(x,y,i%6===0?2.2:1,i%6===0?1.3:1,frame*.02,0,Math.PI*2);skyCtx.fill();
   }
-  ctx.globalAlpha=1;
+  skyCtx.globalAlpha=1;
   // A moving searchlight catches the smog for a moment, like a city that refuses to sleep.
   const beamX=W*(.16+((Math.sin(frame*.009)+1)*.5)*.18);
-  const beam=ctx.createLinearGradient(beamX,H*.18,beamX+W*.18,H*.76);
+  const beam=skyCtx.createLinearGradient(beamX,H*.18,beamX+W*.18,H*.76);
   beam.addColorStop(0,'#b9d8ff08');beam.addColorStop(.5,'#b9d8ff12');beam.addColorStop(1,'#b9d8ff00');
-  ctx.fillStyle=beam;ctx.beginPath();ctx.moveTo(beamX,H*.17);ctx.lineTo(beamX+W*.23,H*.76);ctx.lineTo(beamX-W*.08,H*.76);ctx.closePath();ctx.fill();
+  skyCtx.fillStyle=beam;skyCtx.beginPath();skyCtx.moveTo(beamX,H*.17);skyCtx.lineTo(beamX+W*.23,H*.76);skyCtx.lineTo(beamX-W*.08,H*.76);skyCtx.closePath();skyCtx.fill();
   // Foreground haze separates the playable street from the far skyline.
-  const fog=ctx.createLinearGradient(0,H*.58,0,H);
+  const fog=skyCtx.createLinearGradient(0,H*.58,0,H);
   fog.addColorStop(0,'#56306b00');fog.addColorStop(.72,'#080b14a6');fog.addColorStop(1,'#080b14e8');
-  ctx.fillStyle=fog;ctx.fillRect(0,H*.55,W,H*.45);
+  skyCtx.fillStyle=fog;skyCtx.fillRect(0,H*.55,W,H*.45);
 }
 function drawBuilding(b){World.drawBuilding(ctx,b,cam,ground,frame,renderMode);}
 function drawMonster(){
@@ -379,8 +390,8 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){if(state==
 document.querySelectorAll('[data-hold]').forEach(b=>{const k=b.dataset.hold;const on=e=>{e.preventDefault();touch[k]=true;try{b.setPointerCapture(e.pointerId)}catch{}};const off=()=>touch[k]=false;b.addEventListener('pointerdown',on);['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,off));});
 document.querySelectorAll('[data-tap]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.dataset.tap==='punch')punch();if(b.dataset.tap==='roar')roar();if(b.dataset.tap==='jump')jump();}));
 window.CityCindersDiagnostics=()=>({
- state,score,wrecked,renderer:renderMode,canvasPixels:[canvas.width,canvas.height],
- monster:{x:monster.x,y:monster.y,grounded:monster.grounded,climbing:!!monster.climbing},
+ state,score,wrecked,frame,health,renderer:renderMode,canvasPixels:[canvas.width,canvas.height],
+ monster:{x:monster.x,y:monster.y,grounded:monster.grounded,climbing:!!monster.climbing,punch:monster.punch},
  buildings:buildings.map(b=>({x:b.x,top:ground-b.h,hp:b.hp,full:b.full,dead:b.dead,
   holes:b.cells.filter(cell=>cell.hp<2).length,openHoles:b.cells.filter(cell=>cell.hp===0).length}))
 });
