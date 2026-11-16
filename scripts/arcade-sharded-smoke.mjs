@@ -70,7 +70,7 @@ try {
      response=await page.goto(base+game.route,{waitUntil:"domcontentloaded",timeout:attempt===1?12000:22000});
      break;
     }catch(error){
-     const transient=/Timeout(?:Error|\\s+\\d+ms exceeded)/i.test(String(error));
+     const transient=/Timeout(?:Error|\s+\d+ms exceeded)/i.test(String(error));
      if(attempt===2||!transient||process.env.ARCADE_TEST_TARGET!=="live")throw error;
      // A single stalled live CDN navigation is not proof the game fails to boot.
      // Retry once on a clean page state; a second failure remains a real failure.
