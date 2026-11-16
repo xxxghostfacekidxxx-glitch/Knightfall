@@ -511,7 +511,7 @@ document.querySelectorAll('[data-tap]').forEach(b=>{
 });
 window.CityCindersDiagnostics=()=>({
  state,score,wrecked,frame,health,renderer:renderMode,canvasPixels:[canvas.width,canvas.height],
- monster:{x:monster.x,y:monster.y,grounded:monster.grounded,climbing:!!monster.climbing,punch:monster.punch},
+ monster:{x:monster.x,y:monster.y,grounded:monster.grounded,climbing:!!monster.climbing,punch:monster.punch},character:selectedCharacter,mutation:selectedMutation,
  tanks:tanks.length,
  buildings:buildings.map(b=>({x:b.x,top:ground-b.h,hp:b.hp,full:b.full,dead:b.dead,
   holes:b.cells.filter(cell=>cell.hp<2).length,openHoles:b.cells.filter(cell=>cell.hp===0).length}))

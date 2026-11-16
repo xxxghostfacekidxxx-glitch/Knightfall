@@ -30,6 +30,23 @@ try{
  assert.equal(initial.buildings.length,12,'12 real structures');
  assert.equal(initial.renderer,'cinematic');
  assert.equal(initial.canvasPixels[0],1920,'HD renderer should honor high-density displays');
+ // Every legendary portrait must be a real painted canvas, and each selected
+ // monster must have a corresponding playable body, not a mislabeled skin.
+ const signatures=[];
+ for(const id of ['minion-mouse','mini-villain','the-eddie']){
+  await page.locator('[data-character="'+id+'"]').click();
+  const current=await snapshot(page);
+  assert.equal(current.character,id,'selected playable character '+id);
+  const signature=await page.locator('[data-portrait="'+id+'"]').evaluate(canvas=>{
+   const px=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
+   let hash=2166136261;for(let i=0;i<px.length;i+=43)hash=Math.imul(hash^px[i],16777619);
+   return hash>>>0;
+  });
+  signatures.push(signature);
+ }
+ assert.equal(new Set(signatures).size,3,'all three characters need different illustrated portraits');
+ await page.locator('[data-character="minion-mouse"]').click();
+
  await page.locator('#start').click();
  await page.waitForFunction(()=>window.CityCindersDiagnostics().state==='playing');
  const start=await snapshot(page);

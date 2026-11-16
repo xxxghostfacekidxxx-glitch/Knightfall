@@ -116,17 +116,24 @@ test('facade renderer caches procedural art rather than rebuilding every frame',
  assert.ok(rendered>50,'architectural elements painted');
 });
 
-test('real titan body art and hold-to-punch remain the default play experience',()=>{
+test('legendary playable monster cast replaces obsolete silhouettes',()=>{
  const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
  assert.ok(code);
- assert.match(code,/let cityArt=null,citySkin='classic'/);
- assert.match(html, /<option value="classic">Original titan monsters<\/option>/);
- assert.match(html, /<option value="premium">Knightfall crossover skins<\/option>/);
- assert.match(code, /touch\.punch=true;punch\(\)/);
- assert.match(code, /\(keys\[' '\]\|\|touch\.punch\)&&monster\.punch<=0/);
- assert.match(code, /monster\.punch=Math\.max\(0,monster\.punch-step\)/);
- assert.match(code, /function drawSky\(\)/);
- assert.match(code, /skySurface\.getContext\('2d'/);
+ for(const id of ['minion-mouse','mini-villain','the-eddie']){
+  assert.match(html,new RegExp('data-character="'+id+'"'));
+  assert.match(html,new RegExp('data-portrait="'+id+'"'));
+  assert.match(code,new RegExp("'"+id+"'"));
+ }
+ assert.match(code,/const roster=Object\.freeze/);
+ assert.match(code,/Art\.draw\(ctx,selectedCharacter/);
+ assert.match(code,/Art\.portrait\(c,c\.dataset\.portrait/);
+ assert.match(code,/touch\.punch=true;punch\(\)/);
+ assert.match(code,/\(keys\[' '\]\|\|touch\.punch\)&&monster\.punch<=0/);
+ assert.match(code,/monster\.punch=Math\.max\(0,monster\.punch-step\)/);
+ assert.match(code,/function drawSky\(\)/);
+ assert.match(code,/skySurface\.getContext\('2d'/);
+ assert.doesNotMatch(html,/Guttermaw|Malpractice|Wreckoning/);
+ assert.ok(html.indexOf('city-of-cinders-monsters.js')<html.indexOf("(()=>{'use strict'"));
 });
 
 test('the rebuilt destruction game is listed as a featured full arcade game',()=>{
@@ -172,4 +179,38 @@ test('visible tanks fire from simulated vehicles and can be punched or destroyed
  assert.match(code,/tanks=tanks\.filter\(t=>t\.hp>0\)/);
  assert.match(code,/for\(const tank of tanks\)\{/);
  assert.doesNotMatch(code,/shots\.push\(\{x:cam\+W\+rand\(30,100\)/);
+});
+
+test('monster renderer draws original animated silhouettes and matching portraits for each hero',()=>{
+ const script=readFileSync('public/city-of-cinders-monsters.js','utf8');
+ const fake={module:{exports:{}}};
+ vm.runInNewContext(script,fake,{filename:'city-of-cinders-monsters.js',timeout:2000});
+ const art=fake.module.exports;
+ assert.deepEqual(Array.from(art.ids),['minion-mouse','mini-villain','the-eddie']);
+ const gradient={addColorStop(){}};
+ for(const id of art.ids){
+  let drawn=0;
+  const ctx={
+   beginPath(){drawn++},ellipse(){},moveTo(){},lineTo(){},closePath(){},quadraticCurveTo(){},bezierCurveTo(){},arc(){},
+   fill(){},stroke(){},fillRect(){},clearRect(){},save(){},restore(){},translate(){},scale(){},rotate(){},
+   createLinearGradient(){return gradient},createRadialGradient(){return gradient}
+  };
+  for(const state of ['idle','walk','run','climb','attack','jump','roar','hurt']){
+    assert.equal(art.draw(ctx,id,30,180,100,120,{state,frame:44,face:-1,mutation:'feral'}),true);
+  }
+  assert.equal(art.portrait({width:300,height:200,getContext:()=>ctx},id,{mutation:'armored'}),true);
+  assert.ok(drawn>110,id+' needs detailed vector artwork, not a blank canvas');
+ }
+ assert.equal(art.draw({},'missing',0,0,100,100),false);
+});
+
+test('three monstrous playstyles are explicit and free from obsolete unlock requirements',()=>{
+ const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+ assert.match(code,/unlockedCharacters=Object\.keys\(roster\)/);
+ assert.match(code,/selectedCharacter='minion-mouse'/);
+ assert.match(code,/selectedCharacter==='minion-mouse'\?5/);
+ assert.match(code,/selectedCharacter==='mini-villain'&&!monster\.grounded/);
+ assert.match(code,/selectedCharacter==='the-eddie'\?5\.2/);
+ assert.match(code,/climbSpeed/);
+ assert.doesNotMatch(code,/const unlockRules/);
 });
