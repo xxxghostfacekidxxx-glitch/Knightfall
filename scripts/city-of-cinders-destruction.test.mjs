@@ -103,7 +103,7 @@ test('facade renderer caches procedural art rather than rebuilding every frame',
  const cx={
    createLinearGradient(){return grad;},fillRect(){rendered++;},strokeRect(){},
    save(){},restore(){},drawImage(){rendered++;},beginPath(){},moveTo(){},
-   lineTo(){},closePath(){},stroke(){},fill(){},
+   lineTo(){},closePath(){},stroke(){},fill(){},transform(){},translate(){},rotate(){},
    set globalAlpha(v){},set fillStyle(v){},set strokeStyle(v){},set lineWidth(v){}
  };
  const document={createElement(){canvases++;return {width:0,height:0,getContext(){return cx}}}};
@@ -139,4 +139,26 @@ test('the rebuilt destruction game is listed as a featured full arcade game',()=
  const shelf=readFileSync('public/chaos-cartridge.html','utf8');
  assert.match(shelf,/data-game-id="city-of-cinders" data-category="Action" data-collection="games" data-device="touch" data-featured="true"/);
  assert.match(shelf,/77 full games/);
+});
+
+test('damage renderer creates recessed holes, masonry debris and a falling-floor animation',()=>{
+ const b=building();
+ const breach=World.damageBuilding(b,1.2,b.x+8,ground-b.h+30,ground);
+ assert.equal(breach.broken,true);
+ assert.ok(b.shards.length>0,'a punch should spawn physical rubble');
+ const oldY=b.shards[0].y;World.stepCollapse(b,3);
+ assert.notEqual(b.shards[0].y,oldY,'flying concrete should advance each frame');
+ let collapsed=false;
+ for(let i=0;i<12&&!collapsed;i++)collapsed=World.damageBuilding(b,3,b.x+8,ground-b.h+30,ground).collapsed;
+ assert.ok(collapsed,'structural hits should collapse tower');
+});
+
+test('Rampage now exposes fullscreen, pause, and visually distinct wall breaches',()=>{
+ assert.match(html,/id="fullscreen"/);
+ assert.match(html,/requestFullscreen\(\)/);
+ assert.match(html,/id="pause"/);
+ assert.match(html,/function togglePause\(\)/);
+ assert.match(html,/\.game-shell:fullscreen/);
+ assert.match(html,/WALL BREACHED/);
+ assert.match(html,/MONSTER MAYHEM/);
 });
