@@ -52,7 +52,8 @@ test('artwork is mounted last, kept in cache, and does not skin private profile 
  const source=read('knightfall-unified-theme.css');
  assert.doesNotMatch(source,/:where\(\.home-intro,\.cartridge-hero\)\s*\{[^}]*\bbackground\s*:/s,'global Gothic palette must not override home artwork');
  assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
- assert.match(nav,/knightfall-artwork\.css/);
+ assert.match(nav,/kfCanonicalTheme/);
+ assert.match(theme,/knightfall-artwork\\.css/);
  assert.match(theme,/knightfall-artwork\.css/);
  assert.match(sw,/knightfall-shell-v64/);
  assert.match(sw,/knightfall-artwork\.css/);
