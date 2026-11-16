@@ -91,7 +91,11 @@ for (const {path,body} of sources.filter(x=>/^[^/]+\.html$/.test(x.path))) {
        !publicPaths.has(destination.replace(/\/$/,"")+"/index.html") && !redirectAliases.has(destination))
       invalidTopLevelLinks.push({page:path,href:link});
   }
-  for(const [href,count] of counts)if(count>1)topLevelDuplicates.push({page:path,href,count});
+  for(const [href,count] of counts){
+    const roleSplit=path==="devil-tools.html"&&href==="/mascot-pets.html"&&count===2&&
+      body.includes('id="foundry-public-preview"')&&body.includes('id="workshop" class="hidden"');
+    if(count>1&&!roleSplit)topLevelDuplicates.push({page:path,href,count});
+  }
 }
 console.log("TOP-LEVEL REPEATED LOCAL LINKS (REVIEW): " + JSON.stringify(topLevelDuplicates));
 console.log("TOP-LEVEL MISSING LOCAL TARGETS (REVIEW): " + JSON.stringify(invalidTopLevelLinks));
