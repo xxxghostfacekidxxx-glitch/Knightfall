@@ -1,0 +1,117 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+
+const source=readFileSync('public/city-of-cinders-world.js','utf8');
+const html=readFileSync('public/city-of-cinders.html','utf8');
+const sandbox={module:{exports:{}}};
+vm.runInNewContext(source,sandbox,{filename:'city-of-cinders-world.js',timeout:2000});
+const World=sandbox.module.exports;
+const ground=430;
+
+function building() {
+ const b=World.createBuilding(140,130,245,7);
+ b._top=ground-b.h;
+ return b;
+}
+function monster(x=48,y=318) {
+ return {x,y,w:92,h:112,face:1,grounded:true,climbing:null,vy:0};
+}
+
+test('climbable city has unique damageable floors instead of a single three-hit box',()=>{
+ const b=building();
+ assert.ok(b.floors>=7);
+ assert.equal(b.cols,4);
+ assert.equal(b.cells.length,b.floors*b.cols);
+ assert.ok(b.full>8);
+ assert.equal(b.dead,false);
+ assert.equal(World.createBuilding(140,130,245,7).full,b.full);
+ assert.equal(World.hash(1,2,3),World.hash(1,2,3));
+});
+
+test('walls stop walking, but can be grabbed from either side',()=>{
+ const b=building(),left=monster();
+ assert.equal(World.findGrip([b],left,ground).side,'left');
+ const right=monster(b.x+b.w,318);
+ assert.equal(World.findGrip([b],right,ground).side,'right');
+ const moved=monster(53,318);
+ assert.equal(World.resolveWall([b],moved,48,ground),48);
+ assert.equal(moved.x,48,'monster cannot walk through intact tower');
+ assert.equal(World.findGrip([b],monster(5,318),ground),null);
+ const high=monster(53,b._top-112);
+ assert.equal(World.resolveWall([b],high,48,ground),53,'body fully above the rooftop can pass over');
+});
+
+test('climbing reaches roof and rooftop collisions allow a stable landing',()=>{
+ const b=building();
+ const m=monster(153,b._top-116);
+ const landed=World.landing([b],m,b._top-4,b._top+9);
+ assert.equal(landed.y,b._top-m.h);
+ m.y=landed.y;
+ const hit=World.findTarget([b],m,ground,112);
+ assert.ok(hit?.roof,'punching while standing on a rooftop can damage the roof');
+ assert.equal(hit.building,b);
+});
+
+test('each punch scars a distinct part of the facade, then enough damage collapses the building',()=>{
+ const b=building(),top=b._top;
+ const first=World.damageBuilding(b,1.3,b.x+9,top+12,ground);
+ assert.equal(first.hit,true);
+ assert.equal(first.floor,0);
+ assert.equal(first.col,0);
+ assert.ok(b.cells[0].hp<2);
+ const second=World.damageBuilding(b,1.3,b.x+b.w-7,top+112,ground);
+ assert.ok(second.floor>first.floor);
+ assert.equal(second.col,3);
+ assert.ok(b.cells[second.floor*b.cols+3].hp<2);
+ let collapsed=false,attempts=0;
+ while(!collapsed&&attempts++<20){
+   const outcome=World.damageBuilding(b,1.65,b.x+8,top+29,ground);
+   collapsed=outcome.collapsed;
+ }
+ assert.equal(collapsed,true);
+ assert.equal(b.dead,true);
+ assert.equal(b.hp,0);
+ assert.ok(attempts<=8,'tower falls after several targeted blows, not hundreds');
+ assert.equal(World.findGrip([b],monster(),ground),null);
+ assert.equal(World.damageBuilding(b,99,b.x,top,ground).hit,false,'collapsed tower never awards repeated destruction');
+ assert.ok(World.stepCollapse(b,20)>0);
+ assert.equal(World.stepCollapse(b,100),Math.min(1,b.collapse));
+});
+
+test('remote and on-screen controls have a usable climb path and responsive renderer options',()=>{
+ const code=html.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+ assert.ok(code,'Game script missing');
+ assert.doesNotThrow(()=>new vm.Script(code,{filename:'city-of-cinders-inline.js'}));
+ assert.ok(html.indexOf('city-of-cinders-world.js')<html.indexOf('(()=>{\'use strict\''),'world logic loads before gameplay');
+ for(const needle of ['data-hold="up"','id="kf-city-fidelity"','Cinematic HD','Performance','JUMP','CLIMB','Wall','Punch'])
+   assert.ok(html.toLowerCase().includes(needle.toLowerCase()),needle+' missing');
+ assert.match(code,/World\.findGrip\(buildings,monster,ground\)/);
+ assert.match(code,/World\.resolveWall\(buildings,monster,oldX,ground\)/);
+ assert.match(code,/World\.landing\(buildings,monster,oldFoot,monster\.y\+monster\.h\)/);
+ assert.match(code,/World\.damageBuilding\(b,amount,x,y,ground\)/);
+ assert.match(code,/function configureRenderer\(\)/);
+ assert.match(code,/ctx\.setTransform\(ratio,0,0,ratio,0,0\)/);
+ assert.match(code,/World\.drawBuilding\(ctx,b,cam,ground,frame,renderMode\)/);
+ assert.match(html,/class="control" data-hold="up"/);
+});
+
+test('facade renderer caches procedural art rather than rebuilding every frame',()=>{
+ let rendered=0,canvases=0;
+ const grad={addColorStop(){}};
+ const cx={
+   createLinearGradient(){return grad;},fillRect(){rendered++;},strokeRect(){},
+   save(){},restore(){},drawImage(){rendered++;},beginPath(){},moveTo(){},
+   lineTo(){},closePath(){},stroke(){},fill(){},
+   set globalAlpha(v){},set fillStyle(v){},set strokeStyle(v){},set lineWidth(v){}
+ };
+ const document={createElement(){canvases++;return {width:0,height:0,getContext(){return cx}}}};
+ const env={module:{exports:{}},document};
+ vm.runInNewContext(source,env,{filename:'city-of-cinders-world-renderer.js',timeout:2000});
+ const api=env.module.exports,b=api.createBuilding(140,130,245,7);
+ api.drawBuilding(cx,b,0,ground,0);
+ api.drawBuilding(cx,b,0,ground,1);
+ assert.equal(canvases,1,'facade cached across frames');
+ assert.ok(rendered>50,'architectural elements painted');
+});
