@@ -8,7 +8,7 @@ const button=id=>root.querySelector('#'+id),move=button('mc-move'),mini=button('
 const options=['br','bl','tl','tr'],descriptions={br:'bottom right',bl:'bottom left',tl:'top left',tr:'top right'};
 let preference='auto',frame=0,current='br',headerBottom=0;
 const compactKey='kf:miss-chaos:compact';
-let initiallyMinimized=window.matchMedia('(max-width:600px)').matches;
+let initiallyMinimized=window.matchMedia('(max-width:1366px)').matches;
 try{const stored=localStorage.getItem(compactKey);if(stored==='true'||stored==='false')initiallyMinimized=stored==='true';}catch{}
 try{const saved=localStorage.getItem('kf:miss-chaos:dock');if(options.includes(saved))preference=saved;}catch{}
 function overlap(a,b){
