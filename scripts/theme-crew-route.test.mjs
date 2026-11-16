@@ -24,6 +24,12 @@ test("Navigationless legal, account-recovery and staff views get the live switch
  for(const key of ["admin-bot-archive","moderation-accounts","reset-password","verify-email","addFallbackRealm"])
   assert.ok(runtime.includes(key),"Navigationless realm missing: "+key);
 });
+test("Theme Crew management page does not load duplicate final CSS",()=>{
+ const page=read("public/theme-crew.html");
+ assert.ok(page.includes('/theme.css'),"Management page must load shared theme");
+ assert.ok(page.includes('/nav.js'),"Management page must mount final stylesheet via navigation");
+ assert.doesNotMatch(page,/<link[^>]+href="\/theme-crew\.css/,"Do not load the final theme stylesheet twice");
+});
 test("Only GOD may mutate the live recipe; custom member looks and gameplay are exempt",()=>{
  assert.match(backend,/handleThemeCrew\(request,env,url/);
  assert.match(css,/profile-custom-theme/);
