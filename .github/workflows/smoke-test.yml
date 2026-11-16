@@ -75,6 +75,7 @@ on:
       - 'scripts/messaging-theme-audit.mjs'
       - 'scripts/site-theme-audit.mjs'
       - 'scripts/theme-browser-smoke.mjs'
+      - 'scripts/knightfall-sitewide-artwork.test.mjs'
       - '.github/workflows/smoke-test.yml'
   workflow_dispatch:
   workflow_run:
@@ -135,6 +136,8 @@ jobs:
         run: node scripts/messaging-theme-audit.mjs
       - name: Guard approved Gothic design system and protected surfaces
         run: node scripts/site-theme-audit.mjs
+      - name: Verify section illustrations are wired to real site templates
+        run: node --test scripts/knightfall-sitewide-artwork.test.mjs
       - name: Test seller commerce privacy and input validation
         run: node --test backend/src/shop-commerce.test.mjs && node --check backend/src/shop-commerce.js
       - name: Verify admin task navigation and permissions contract
