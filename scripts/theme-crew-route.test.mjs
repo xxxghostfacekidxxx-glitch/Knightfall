@@ -11,7 +11,7 @@ test("Theme Crew and final Cathedral Requiem use one canonical ordered cascade",
  assert.match(nav,/themes\.shift\(\)/);
  assert.match(nav,/theme-crew-runtime\.js/);
  assert.match(base,/^@import url\("\/theme-crew\.css/m);
- assert.match(sw,/knightfall-shell-v73/);
+ assert.match(sw,/knightfall-shell-v74/);
  for(const asset of ["theme-crew.css","theme-crew-runtime.js","theme-crew.html","theme-crew-ui.js"])
   assert.ok(sw.includes('"/'+asset+'"'),asset+" not in offline shell");
 });
