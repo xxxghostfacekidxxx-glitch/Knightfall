@@ -29,6 +29,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="hint"/);
  assert.match(page,/id="next-whisk"/);
  assert.match(page,/id="shelf"/);
+ assert.match(page,/id="refresh-order"/);
+ assert.match(script,/refreshOrder\\(game/);
  assert.match(page,/id="shelf-counter"/);
  assert.match(script,/function renderShelf/);
  assert.match(script,/function tapShelf/);
