@@ -23,6 +23,9 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/role="grid"/);
  assert.match(page,/aria-live="polite"/);
  assert.match(page,/id="energy-track"/);
+ assert.match(page,/href="\.\/sprites\/icons\.svg#garden-6"/);
+ assert.match(page,/issues\/new\?title=/);
+ assert.match(stylesheet,/\.order-card:disabled\{opacity:1/);
  assert.match(script,/pointerdown/);assert.match(script,/pointermove/);assert.match(script,/pointerup/);
  assert.match(script,/setPointerCapture/);
  assert.match(script,/keydown/);assert.match(script,/function tapCell/);
