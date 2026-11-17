@@ -4,7 +4,14 @@ export const CELL_COUNT=WIDTH*WIDTH;
 export const SHELF_SLOTS=2;
 export const MAX_SHELF_SLOTS=6;
 export const shelfCapacity=level=>Math.min(MAX_SHELF_SLOTS,SHELF_SLOTS+Math.max(0,Math.floor((level-1)/3)));
-export const MAX_ENERGY=40;
+export const MAX_ENERGY=40; // Natural regeneration ceiling.
+export const ENERGY_HARD_CAP=999; // Earned rewards can accumulate above the regeneration ceiling.
+export function awardEnergy(state,amount,now=Date.now()){
+ const previous=state.energy;
+ state.energy=Math.min(ENERGY_HARD_CAP,state.energy+Math.max(0,Math.floor(Number(amount)||0)));
+ if(state.energy>=MAX_ENERGY)state.energyLast=now;
+ return state.energy-previous;
+}
 export const ENERGY_INTERVAL=9000;
 export const RECIPES=Object.freeze({
  garden:Object.freeze({name:"Garden",hue:"#ee987b",unlock:1,items:["Seedling","Ruby tomato","Chopped tomatoes","Scarlet sauce","Moonlit pasta","Firestone pizza","Infernal banquet"]}),
@@ -37,9 +44,7 @@ export function claimQuest(state,kind,now=Date.now()){
  if(quest.progress<questTarget(kind,quest.stage))return {ok:false,reason:"incomplete"};
  const reward=questReward(kind,quest.stage);
  state.coins=cap(state.coins+reward.coins);
- const grantedEnergy=Math.min(MAX_ENERGY-state.energy,reward.energy);
- state.energy+=grantedEnergy;
- if(state.energy===MAX_ENERGY)state.energyLast=now;
+ const grantedEnergy=awardEnergy(state,reward.energy,now);
  const result={ok:true,type:"quest",kind,stage:quest.stage,coins:reward.coins,energy:grantedEnergy};
  quest.stage=Math.min(100,quest.stage+1);
  quest.progress=0;
@@ -235,8 +240,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  const coins=order.coins*(rush?2:1);
  const gained=order.xp*10*(rush?2:1);
  state.coins=cap(state.coins+coins);state.score=cap(state.score+gained);state.best=Math.max(state.best,state.score);
- state.energy=Math.min(MAX_ENERGY,state.energy+order.energy);
- if(state.energy===MAX_ENERGY)state.energyLast=now;
+ awardEnergy(state,order.energy,now);
  state.xp+=order.xp;state.served++;state.combo=0;
  const whiskEarned=state.served%WHISK_EVERY===0 && state.whisks<WHISK_CAP;
  if(whiskEarned)state.whisks++;
@@ -246,8 +250,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  while(state.xp>=xpNeeded(state.level)&&state.level<30){
   state.xp-=xpNeeded(state.level);state.level++;leveled=true;
   state.coins=cap(state.coins+35+state.level*12);
-  state.energy=Math.min(MAX_ENERGY,state.energy+8);
-  if(state.energy===MAX_ENERGY)state.energyLast=now;
+  awardEnergy(state,8,now);
   if(state.level===3){unlockedSweetshop=true;attachGenerator(state,"sweets")}
   while(state.shelf.length<shelfCapacity(state.level))state.shelf.push(null);
  }
@@ -292,7 +295,7 @@ export function restore(raw,random=Math.random,now=Date.now()){
  state.level=num(value.level,1,1,30);
  state.xp=num(value.xp,0,0,2000);
  state.coins=num(value.coins,90,0,1000000000);
- state.energy=num(value.energy,MAX_ENERGY,0,MAX_ENERGY);
+ state.energy=num(value.energy,MAX_ENERGY,0,ENERGY_HARD_CAP);
  state.energyLast=num(value.energyLast,now,0,now);
  state.score=num(value.score,0,0,1000000000);
  state.best=Math.max(state.score,num(value.best,state.score,0,1000000000));
