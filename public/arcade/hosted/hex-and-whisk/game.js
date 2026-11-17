@@ -197,7 +197,7 @@ function renderOrders(){
   if(favoriteTip)button.append(text("span","♡ FAV +"+favoriteTip,"favorite-tip"));
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
-  button.append(footer,text("span",ready?"✦ SERVE ME!":"✧ COOKING...","serve-label"));
+  button.append(footer,text("span",ready?"✦ SERVE ME!":"♡ TAP TO CHAT","serve-label"));
   button.addEventListener("click",()=>{
    if(ready){fulfill(i);return}
    customerMoment(patron,customerLine(order,false),favoriteTip?"♡ FAV +"+favoriteTip+" coins":"MAKE "+label(order.chain,order.tier).toUpperCase(),"waiting");
