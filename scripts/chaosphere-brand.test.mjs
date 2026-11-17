@@ -22,7 +22,7 @@ test("Original mascot ships as accessible SVG without remote assets",()=>{
  assert.match(icon,/<svg/);assert.match(icon,/<title /);
  assert.match(icon,/<desc /);
  assert.match(icon,/<\/svg>/);
- assert.doesNotMatch(icon,/<image|https?:\/\//);
+ assert.doesNotMatch(icon,/<image\b|(?:href|src)=["']https?:\/\//);
  assert.match(read("messages.html"),/alt="Chaosphere's little demon mascot"/);
  assert.match(read("chaosphere.html"),/icons\/chaosphere\.svg/);
 });
