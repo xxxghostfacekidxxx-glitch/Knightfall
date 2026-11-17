@@ -6,9 +6,9 @@
  <meta name="theme-color" content="#1b1021">
  <meta name="description" content="Hex & Whisk is a free, original merge-cooking game. Drag matching ingredients, cook fantastic meals, fulfill orders and grow your magical kitchen.">
  <title>Hex &amp; Whisk | Knightfall Chaos Cartridge</title>
- <link rel="stylesheet" href="./game.css?v=4">
+ <link rel="stylesheet" href="./game.css?v=5">
  <script src="/arcade-save.js" defer></script>
- <script type="module" src="./game.js?v=4"></script>
+ <script type="module" src="./game.js?v=5"></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -47,7 +47,7 @@
    <section class="orders-panel panel" aria-labelledby="orders-title">
     <div class="panel-heading">
      <div><span class="section-kicker">THE NIGHT SHIFT</span><h2 id="orders-title">Hungry customers <span class="mini-heart">♥</span></h2></div>
-     <span id="rush" class="rush-chip" aria-live="off">RUSH HOUR / EVERY 5 ORDERS</span>
+     <div class="order-actions"><button type="button" id="refresh-order" class="order-refresh" title="Replace one unfinished customer order for 35 earned coins">↻ NEW ORDER · 35 ◈</button><span id="rush" class="rush-chip" aria-live="off">RUSH HOUR / EVERY 5 ORDERS</span></div>
     </div>
     <div id="orders" class="order-grid" aria-label="Customer orders"></div>
    </section>
@@ -97,7 +97,7 @@
    </section>
    <section class="tips-panel panel">
     <span class="section-kicker">YOUR LITTLE HANDBOOK</span><h2>How to play</h2>
-    <ol><li>Tap <strong>Garden</strong> or <strong>Bakery</strong> for free ingredients.</li><li><strong>Drag matching items</strong> together, or tap one then another.</li><li>When you own a dish a customer wants, tap <strong>Serve</strong> for tips and XP.</li><li>Unlock the <strong>Sweetshop</strong> at level 3. Every fifth order starts a 45-second tip frenzy.</li></ol>
+    <ol><li>Tap <strong>Garden</strong> or <strong>Bakery</strong> for free ingredients.</li><li><strong>Drag matching items</strong> together, or tap one then another.</li><li>When you own a dish a customer wants, tap <strong>Serve</strong> for tips and XP. Refresh one unfinished request for 35 earned coins if you get stuck.</li><li>Unlock the <strong>Sweetshop</strong> at level 3. Every fifth order starts a 45-second tip frenzy.</li></ol>
     <p>Need a hand? <strong>Find a match</strong> highlights two ingredients for free. Earn <strong>Magic Whisks</strong> by serving every three orders for an automatic merge. The Secret Pantry stores two ingredients for free; stored dishes can be served and everything survives saves. Swapping and rearranging is free. Recycle any selected item to clear space. Complete workboard quests and discover new recipes for extra coins and energy. Your kitchen restores energy while you're away.</p>
    </section>
    <section class="cloud-panel panel"><span class="section-kicker">DON'T LOSE YOUR RECIPES</span><h2>Save your kitchen</h2><p>Progress is automatically saved on this device. Signed-in members can also sync across devices.</p><div class="cloud-actions"><button id="cloud-save" type="button">↑ Save to account</button><button id="cloud-load" type="button">↓ Load account save</button></div><p id="arcade-account-status" class="account-status" role="status" aria-live="polite">Checking account connection…</p></section>
