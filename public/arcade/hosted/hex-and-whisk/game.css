@@ -17,3 +17,33 @@ html{min-width:300px;min-height:100%;background:#110a1a}body{min-width:300px;min
 .footer-links{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}
 body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 @media(max-width:600px){.footer-links{gap:10px}}
+
+/* HEX & WHISK / Kitchen workboard and collectible illustrated recipe archive. */
+.quest-list{display:grid;gap:10px}
+.quest-card{border:1px solid #f7c7b94d;border-radius:16px;background:linear-gradient(145deg,#59405499,#443047b8);padding:12px;box-shadow:inset 0 1px #fff1}
+.quest-card.complete{border-color:#c7efbb;background:linear-gradient(145deg,#476956a1,#453e52d1);box-shadow:0 0 22px #aedda023}
+.quest-heading{display:flex;align-items:center;gap:11px}.quest-icon{height:38px;width:38px;display:grid;place-items:center;flex:none;border-radius:12px;background:#ffcba329;color:#ffebbc;font-size:1.5rem}
+.quest-desc{min-width:0;display:grid;gap:3px}.quest-desc strong{font-size:.86rem;color:#fff0df}.quest-desc small{font-size:.66rem;color:#d7b9ca}
+.quest-ratio{display:flex;justify-content:space-between;gap:10px;margin:10px 0 5px;font-size:.66rem;font-weight:900;color:#ffe2b7}
+.quest-track{height:8px;background:#170e22;border-radius:999px;overflow:hidden;box-shadow:inset 0 1px 3px #0007}
+.quest-fill{display:block;height:100%;background:linear-gradient(90deg,#e89abd,#f6d083);box-shadow:0 0 12px #f8d09780;border-radius:999px;transition:width .28s ease}
+.quest-claim{display:block;width:100%;min-height:36px;border:1px solid #f5d0aa8a;border-radius:10px;margin-top:10px;background:linear-gradient(125deg,#e5bc89,#f4dba2);color:#38223e;font-size:.69rem;font-weight:950;letter-spacing:.07em}
+.quest-claim:disabled{background:#ffffff12;color:#c8abb9;border-color:#ffffff25;opacity:.75}
+.quest-claim:not(:disabled){animation:reward-glow 1.8s ease-in-out infinite}
+@keyframes reward-glow{50%{box-shadow:0 0 17px #efdba67a;filter:brightness(1.08)}}
+.cookbook-details{border:1px solid #dcb3b160;border-radius:15px;background:#1e162b7d;overflow:hidden}
+.cookbook-details summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;min-height:51px;padding:12px 13px;cursor:pointer;color:#ffe9ce;font-size:.7rem;font-weight:950;letter-spacing:.08em}
+.cookbook-details summary::-webkit-details-marker{display:none}
+.cookbook-details summary:before{content:"✦";color:#f8c998;margin-right:5px}.cookbook-details[open] summary{border-bottom:1px solid #f5c8a52e}
+.cookbook-details summary span{font-size:.68rem;white-space:nowrap;color:#ffddab;border:1px solid #ffe9b74a;padding:6px 9px;border-radius:999px;background:#fae5ba16}
+.cookbook-details>p{font-size:.72rem;line-height:1.45;color:#d6bece;padding:0 12px;margin:11px 0}
+.recipe-chapters{display:grid;gap:15px;padding:10px}
+.recipe-chapter h3{margin:0 0 7px;color:#f2d5b7;font:900 .76rem ui-rounded,"Trebuchet MS",system-ui,sans-serif}
+.recipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.recipe-item{min-width:0;min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:5px 3px 7px;border-radius:11px;border:1px solid #f8dfbf52;background:linear-gradient(160deg,#eecbad,#d4a5b5);text-align:center;box-shadow:inset 0 1px #fff8}
+.recipe-item .food{width:100%;height:61px;filter:drop-shadow(0 3px 4px #613e5360)}
+.recipe-item.secret{border-color:#ffffff20;background:linear-gradient(150deg,#3d3049,#30243d);color:#afa0b6}
+.recipe-mystery{display:grid;place-items:center;height:60px;color:#c1a1c4;font:900 1.6rem Georgia,serif;text-shadow:0 0 20px #ca9ab66d}
+.recipe-name{display:block;max-width:100%;font-size:.52rem;font-weight:900;line-height:1.2;color:#37283a;overflow-wrap:anywhere}
+.recipe-item.secret .recipe-name{color:#a69aaf}
+@media(max-width:600px){.quest-card{padding:11px}.recipe-item{min-height:75px}.recipe-item .food{height:51px}.recipe-mystery{height:51px}}

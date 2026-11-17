@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -110,6 +110,63 @@ function renderUpgrades(){
  }
  upgrades.replaceChildren(frag);
 }
+
+function renderQuests(){
+ const frag=document.createDocumentFragment();
+ for(const [kind,info] of Object.entries(QUESTS)){
+  const quest=game.quests[kind],target=questTarget(kind,quest.stage);
+  const reward=questReward(kind,quest.stage),ready=quest.progress>=target;
+  const card=text("div","","quest-card"+(ready?" complete":""));
+  const heading=text("div","","quest-heading");
+  const icon=text("span",info.icon,"quest-icon");
+  const description=text("div","","quest-desc");
+  description.append(text("strong",info.title),text("small",info.subtitle+" · Stage "+quest.stage));
+  heading.append(icon,description);
+  const ratio=text("div","","quest-ratio");ratio.append(text("span",quest.progress+" / "+target),text("span","◈ "+reward.coins+"  ·  ⚡ "+reward.energy));
+  const track=text("div","","quest-track");
+  track.setAttribute("role","progressbar");
+  track.setAttribute("aria-label",info.title+" quest progress");
+  track.setAttribute("aria-valuemin","0");track.setAttribute("aria-valuemax",String(target));
+  track.setAttribute("aria-valuenow",String(quest.progress));
+  const fill=text("span","","quest-fill");fill.style.width=(quest.progress/target*100)+"%";track.append(fill);
+  const button=text("button",ready?"CLAIM REWARD ✦":"KEEP COOKING","quest-claim");
+  button.type="button";button.disabled=!ready;
+  button.setAttribute("aria-label","Claim "+info.title+" for "+reward.coins+" coins and "+reward.energy+" energy");
+  button.addEventListener("click",()=>collectQuest(kind));
+  card.append(heading,ratio,track,button);frag.append(card);
+ }
+ $("quest-list").replaceChildren(frag);
+}
+function renderCookbook(){
+ const frag=document.createDocumentFragment();
+ const recipes=Object.entries(RECIPES);
+ for(const [chain,info] of recipes){
+  const section=text("section","","recipe-chapter");
+  const heading=text("h3",info.name+" · "+Math.min(7,game.discovered[chain])+" / 7");
+  section.append(heading);
+  const grid=text("div","","recipe-grid");
+  for(let tier=1;tier<=7;tier++){
+   const known=game.discovered[chain]>=tier;
+   const entry=text("div","","recipe-item"+(known?" discovered":" secret"));
+   if(known)entry.append(food(chain,tier));
+   else entry.append(text("span","?","recipe-mystery"));
+   entry.append(text("span",known?info.items[tier-1]:"???","recipe-name"));
+   entry.setAttribute("title",known?info.items[tier-1]:"Discover this recipe by merging");
+   grid.append(entry);
+  }
+  section.append(grid);frag.append(section);
+ }
+ $("recipe-book").replaceChildren(frag);
+ $("discovery-count").textContent=discoveryCount(game)+" / 21";
+}
+function collectQuest(kind){
+ const result=claimQuest(game,kind,Date.now());
+ if(!result.ok){problem(result.reason);return}
+ history=null;selected=null;render();
+ announce("QUEST COMPLETE! +"+result.coins+" coins and +"+result.energy+" energy.",true);
+ bell([520,690,880,1100],.1);rumble([15,40,15]);
+}
+
 function renderStats(){
  $("score").textContent=game.score.toLocaleString();
  $("coins").textContent=game.coins.toLocaleString();
@@ -130,7 +187,7 @@ function renderStats(){
  $("recycle").disabled=selected===null||!game.board[selected];
  $("stir").disabled=game.coins<15||available(game)===CELL_COUNT;
 }
-function render(pop=-1){renderBoard(pop);renderOrders();renderStations();renderUpgrades();renderStats();safeSave()}
+function render(pop=-1){renderBoard(pop);renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
@@ -150,7 +207,7 @@ function particle(place,note,color){
  }
 }
 function problem(reason){
- const map={locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
+ const map={quest:"Unknown kitchen quest.",incomplete:"Finish the quest before claiming.",locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
  announce(map[reason]||"That action didn't work. Try another item.");bell([245],.05);
 }
 function action(fn){
@@ -163,6 +220,7 @@ function makeIngredient(chain){
  if(!result)return;
  render(result.place);particle(result.place,"+1",RECIPES[chain].hue);
  announce("Fresh "+label(chain,result.tier)+"! Drag matching items to cook something bigger.");
+ if(result.discoveryBonus)toast("NEW RECIPE! +"+result.discoveryBonus+" discovery coins ✦");
  bell([390,540],.05);rumble(8);
 }
 function moveIngredient(a,b){
@@ -171,6 +229,7 @@ function moveIngredient(a,b){
  if(result.type==="merge"){
   render(result.place);particle(result.place,"+"+result.gained,RECIPES[result.chain].hue);
   announce(result.combo>1?"MAGICAL COMBO ×"+result.combo+"! "+label(result.chain,result.tier)+" created!":"Mmm! "+label(result.chain,result.tier)+" cooked.",result.combo>=3);
+  if(result.discoveryBonus)toast("NEW RECIPE: "+label(result.chain,result.tier)+"! +"+result.discoveryBonus+" discovery coins ✦");
   bell(result.combo>1?[520,780,1040]:[440,660],.09);rumble(12);
  }else{
   render();announce(result.type==="swap"?"Ingredients swapped. The counter is yours to arrange.":"Ingredient moved. Keep matching!");

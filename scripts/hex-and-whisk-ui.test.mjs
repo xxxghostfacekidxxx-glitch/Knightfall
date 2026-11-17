@@ -23,6 +23,12 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/role="grid"/);
  assert.match(page,/aria-live="polite"/);
  assert.match(page,/id="energy-track"/);
+ assert.match(page,/id="quest-list"/);
+ assert.match(page,/id="recipe-book"/);
+ assert.match(page,/id="discovery-count"/);
+ assert.match(script,/function renderQuests/);
+ assert.match(script,/function renderCookbook/);
+ assert.match(script,/claimQuest\(game,kind/);
  assert.match(page,/href="\.\/sprites\/icons\.svg#garden-6"/);
  assert.match(page,/issues\/new\?title=/);
  assert.match(stylesheet,/\.order-card:disabled\{opacity:1/);
@@ -35,6 +41,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(stylesheet,/prefers-reduced-motion:reduce/);
  assert.match(stylesheet,/max-width:600px/);
  assert.match(stylesheet,/\.spark\{/);
+ assert.match(stylesheet,/\.quest-card\.complete\{/);
+ assert.match(stylesheet,/\.recipe-grid\{/);
  assert.doesNotMatch(page,/<script[^>]*src="https?:/i);
  assert.doesNotMatch(stylesheet,/@import\s+url\(https?:/i);
 });

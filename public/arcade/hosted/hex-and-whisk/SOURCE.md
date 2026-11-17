@@ -9,3 +9,7 @@
 **Saving:** autosaves locally in this browser, including energy regeneration while away. Signed-in Knightfall members can explicitly save and load their kitchen via the arcade progress API. Saving scores to an account is optional. There are no purchases, ads, random paid rewards, external assets, or remote dependencies for gameplay.
 
 This implementation is not affiliated with the creators of Merge Cooking. See the repo's project license for site contribution licensing terms.
+
+## Kitchen progression update
+
+Every new recipe tier is added to the illustrated cookbook and awards a one-time discovery bonus. The Witch's Workboard has three repeatable, gameplay-only missions for merging, serving orders, and harvesting ingredients. Earn coins and energy by claiming completed quests; later stages require more actions. Local and cloud saves retain this progression. Older version-1 kitchen saves remain readable and are migrated without wiping the board or score.

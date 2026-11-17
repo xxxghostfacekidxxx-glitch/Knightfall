@@ -14,6 +14,48 @@ const rnd=random=>Math.min(.999999,Math.max(0,Number(random())||0));
 const num=(x,fallback,min,max)=>Number.isFinite(Number(x))?Math.max(min,Math.min(max,Math.floor(Number(x)))):fallback;
 export const xpNeeded=level=>32+level*24;
 export const upgradeCost=level=>70+level*110;
+
+/* Repeatable earnable tasks are not daily-login streaks or monetized energy. */
+export const QUESTS=Object.freeze({
+ merge:Object.freeze({title:"Whisk Wizard",subtitle:"Combine matching dishes",icon:"✧"}),
+ serve:Object.freeze({title:"Dinner Dash",subtitle:"Finish customer orders",icon:"♡"}),
+ harvest:Object.freeze({title:"Pantry Patrol",subtitle:"Harvest ingredients",icon:"✦"})
+});
+export const questTarget=(kind,stage)=>kind==="merge"?4+2*stage:kind==="serve"?2+stage:kind==="harvest"?7+4*stage:0;
+export const questReward=(kind,stage)=>({coins:20+stage*(kind==="serve"?30:kind==="merge"?22:14),energy:kind==="serve"?8:kind==="merge"?6:4});
+function tickQuest(state,kind){
+ const quest=state.quests?.[kind];
+ if(!quest)return;
+ quest.progress=Math.min(questTarget(kind,quest.stage),quest.progress+1);
+}
+export function claimQuest(state,kind,now=Date.now()){
+ const quest=state.quests?.[kind];
+ if(!quest||!QUESTS[kind])return {ok:false,reason:"quest"};
+ if(quest.progress<questTarget(kind,quest.stage))return {ok:false,reason:"incomplete"};
+ const reward=questReward(kind,quest.stage);
+ state.coins=cap(state.coins+reward.coins);
+ const grantedEnergy=Math.min(MAX_ENERGY-state.energy,reward.energy);
+ state.energy+=grantedEnergy;
+ if(state.energy===MAX_ENERGY)state.energyLast=now;
+ const result={ok:true,type:"quest",kind,stage:quest.stage,coins:reward.coins,energy:grantedEnergy};
+ quest.stage=Math.min(100,quest.stage+1);
+ quest.progress=0;
+ return result;
+}
+export function discoveryCount(state){
+ return keys.reduce((n,k)=>n+Math.min(7,Math.max(0,state.discovered?.[k]||0)),0);
+}
+function discover(state,chain,tier){
+ const previous=state.discovered?.[chain]||0;
+ if(tier<=previous)return 0;
+ state.discovered[chain]=tier;
+ const bonus=8+11*tier;
+ state.coins=cap(state.coins+bonus);
+ state.score=cap(state.score+bonus*5);
+ state.best=Math.max(state.best,state.score);
+ return bonus;
+}
+
 export function unlocked(state,chain){return !!RECIPES[chain]&&state.level>=RECIPES[chain].unlock}
 export const available=state=>state.board.filter(tile=>tile===null).length;
 export const findReady=(state,order)=>state.board.findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
@@ -31,7 +73,7 @@ function orderFor(state,random){
  return {id:state.serial++,chain,tier,coins:14+tier*14,xp:10+tier*9,energy:5+Math.floor(tier/2)};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0}};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}}};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -62,7 +104,9 @@ export function spawn(state,chain,random=Math.random,now=Date.now()){
  state.board[place]={chain,tier,id:state.serial++};
  state.energy--;
  state.combo=0;
- return {ok:true,type:"spawn",place,chain,tier};
+ const discoveryBonus=discover(state,chain,tier);
+ tickQuest(state,"harvest");
+ return {ok:true,type:"spawn",place,chain,tier,discoveryBonus};
 }
 export function move(state,from,to,now=Date.now()){
  if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=CELL_COUNT||to>=CELL_COUNT||from===to)return {ok:false,reason:"invalid"};
@@ -76,7 +120,9 @@ export function move(state,from,to,now=Date.now()){
   const gained=(10+source.tier*source.tier*9)*combo;
   state.score=cap(state.score+gained);
   state.best=Math.max(state.best,state.score);
-  return {ok:true,type:"merge",place:to,chain:source.chain,tier:source.tier+1,gained,combo};
+  const discoveryBonus=discover(state,source.chain,source.tier+1);
+  tickQuest(state,"merge");
+  return {ok:true,type:"merge",place:to,chain:source.chain,tier:source.tier+1,gained,combo,discoveryBonus};
  }
  if(target&&source.chain===target.chain&&source.tier===7)return {ok:false,reason:"highest"};
  state.board[to]=source;state.board[from]=target||null;
@@ -96,6 +142,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.energy=Math.min(MAX_ENERGY,state.energy+order.energy);
  if(state.energy===MAX_ENERGY)state.energyLast=now;
  state.xp+=order.xp;state.served++;state.combo=0;
+ tickQuest(state,"serve");
  let leveled=false,unlockedSweetshop=false;
  while(state.xp>=xpNeeded(state.level)&&state.level<30){
   state.xp-=xpNeeded(state.level);state.level++;leveled=true;
@@ -150,9 +197,17 @@ export function restore(raw,random=Math.random,now=Date.now()){
  state.lastMerge=num(value.lastMerge,0,0,now);
  state.rushUntil=num(value.rushUntil,0,0,now+45000);
  state.serial=num(value.serial,100,1,1000000000);
- for(const name of keys)state.upgrades[name]=num(value.upgrades?.[name],0,0,3);
+ for(const name of keys){
+  state.upgrades[name]=num(value.upgrades?.[name],0,0,3);
+  state.discovered[name]=num(value.discovered?.[name],state.discovered[name],0,7);
+ }
+ for(const kind of Object.keys(QUESTS)){
+  const stage=num(value.quests?.[kind]?.stage,1,1,100);
+  state.quests[kind]={stage,progress:num(value.quests?.[kind]?.progress,0,0,questTarget(kind,stage))};
+ }
  const goodTile=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=1&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  state.board=value.board.map(x=>goodTile(x)?{chain:x.chain,tier:x.tier,id:x.id}:null);
+ for(const tile of state.board)if(tile)state.discovered[tile.chain]=Math.max(state.discovered[tile.chain],tile.tier);
  const goodOrder=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=2&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  if(value.orders.every(goodOrder))state.orders=value.orders.map(x=>({id:x.id,chain:x.chain,tier:x.tier,coins:num(x.coins,35,1,1000),xp:num(x.xp,20,1,200),energy:num(x.energy,5,0,20)}));
  else state.orders=Array.from({length:3},()=>orderFor(state,random));

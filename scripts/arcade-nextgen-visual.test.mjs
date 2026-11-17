@@ -24,8 +24,8 @@ test("all original game pages use one versioned visual layer without losing game
   const html=read(path);
   if(game.id==="hex-and-whisk"){
    assert.match(html,/data-kf-standalone-art="hex-and-whisk"/,path);
-   assert.match(html,/href="\.\/game\.css\?v=1"/,path);
-   assert.match(html,/src="\.\/game\.js\?v=1"/,path);
+   assert.match(html,/href="\.\/game\.css\?v=2"/,path);
+   assert.match(html,/src="\.\/game\.js\?v=2"/,path);
    assert.match(read("public/arcade/hosted/hex-and-whisk/game.css"),/prefers-reduced-motion:reduce/,"Standalone animated art must honor reduced-motion preferences");
   }else{
    assert.match(html,/<link rel="stylesheet" href="\/arcade\/nextgen\.css\?v=20261102-1">/,path);
