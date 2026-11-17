@@ -34,6 +34,40 @@ export const FAVORITE_TIP_PERCENT=20;
 export const LOYALTY_VISIT_INTERVAL=3;
 export const loyaltyStamps=(state,patron)=>Math.max(0,Math.floor(Number(state.patronVisits?.[patron.symbol])||0));
 export const loyaltyNext=(state,patron)=>LOYALTY_VISIT_INTERVAL-loyaltyStamps(state,patron)%LOYALTY_VISIT_INTERVAL;
+/* VIP contracts mix actual merging and serving; stages are independent of the regular quests. */
+export const VIP_CONTRACT_SERVES=2;
+export const VIP_CONTRACT_MERGES=1;
+export const initialVipContract=()=>({stage:1,chain:"garden",serves:0,merges:0});
+export function vipContractInfo(state){
+ const c=state.vipContract||initialVipContract();
+ const stage=Math.max(1,Math.floor(c.stage)||1);
+ const chain=RECIPES[c.chain]?c.chain:"garden";
+ const sponsor=PATRONS[(stage-1)%PATRONS.length];
+ return {stage,chain,sponsor,serves:Math.min(VIP_CONTRACT_SERVES,Math.max(0,c.serves||0)),
+  merges:Math.min(VIP_CONTRACT_MERGES,Math.max(0,c.merges||0)),
+  ready:(c.serves||0)>=VIP_CONTRACT_SERVES&&(c.merges||0)>=VIP_CONTRACT_MERGES,
+  coins:65+stage*20,energy:6+Math.min(stage,8),whisk:stage%2===0};
+}
+function creditVipContract(state,kind,chain,tier=0){
+ const c=state.vipContract;
+ if(!c||c.chain!==chain)return;
+ if(kind==="serve")c.serves=Math.min(VIP_CONTRACT_SERVES,c.serves+1);
+ else if(kind==="merge"&&tier>=3)c.merges=Math.min(VIP_CONTRACT_MERGES,c.merges+1);
+}
+export function claimVipContract(state,now=Date.now()){
+ const info=vipContractInfo(state);
+ if(!info.ready)return {ok:false,reason:"incomplete"};
+ state.coins=cap(state.coins+info.coins);
+ const energy=awardEnergy(state,info.energy,now);
+ const whisk=info.whisk&&state.whisks<WHISK_CAP;
+ if(whisk)state.whisks++;
+ const stage=Math.min(info.stage+1,1000000);
+ const chains=Object.keys(RECIPES).filter(key=>unlocked(state,key));
+ const chain=chains[(stage-1)%chains.length]||"garden";
+ state.vipContract={stage,chain,serves:0,merges:0};
+ return {ok:true,type:"vip-contract",coins:info.coins,energy,whisk,stage:info.stage,nextStage:stage,nextChain:chain};
+}
+
 export const favoriteTipForOrder=order=>order?.chain===patronForOrder(order).favorite?Math.ceil(order.coins*FAVORITE_TIP_PERCENT/100):0;
 export const KEEPSAKE_LEVELS=Object.freeze([1,3,9]);
 export const PATRON_KEEPSAKES=Object.freeze({
@@ -218,7 +252,7 @@ export function refreshOrder(state,random=Math.random){
  return {ok:true,type:"refresh-order",index,previous,replacement,cost:ORDER_REFRESH_COST};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),generators:{garden:0,bakery:5,sweets:-1},shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},patronVisits:{},whisks:1};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),generators:{garden:0,bakery:5,sweets:-1},shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},patronVisits:{},vipContract:initialVipContract(),whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -267,7 +301,7 @@ export function move(state,from,to,now=Date.now()){
   state.score=cap(state.score+gained);
   state.best=Math.max(state.best,state.score);
   const discoveryBonus=discover(state,source.chain,source.tier+1);
-  tickQuest(state,"merge");
+  tickQuest(state,"merge");creditVipContract(state,"merge",source.chain,source.tier+1);
   return {ok:true,type:"merge",place:to,chain:source.chain,tier:source.tier+1,gained,combo,discoveryBonus};
  }
  if(target&&source.chain===target.chain&&source.tier===7)return {ok:false,reason:"highest"};
@@ -296,7 +330,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.xp+=order.xp;state.served++;state.combo=0;
  const whiskEarned=state.served%WHISK_EVERY===0 && state.whisks<WHISK_CAP;
  if(whiskEarned)state.whisks++;
- tickQuest(state,"serve");
+ tickQuest(state,"serve");creditVipContract(state,"serve",order.chain);
  const previousShelfSize=state.shelf.length;
  let leveled=false,unlockedSweetshop=false;
  while(state.xp>=xpNeeded(state.level)&&state.level<30){
@@ -354,6 +388,11 @@ export function restore(raw,random=Math.random,now=Date.now()){
  state.served=num(value.served,0,0,10000000);
  state.whisks=num(value.whisks,1,0,WHISK_CAP);
  state.patronVisits=Object.fromEntries(PATRONS.map(p=>[p.symbol,num(value.patronVisits?.[p.symbol],0,0,1000000)]));
+ const vip=value.vipContract;
+ if(vip&&typeof vip==="object"){
+  const chain=RECIPES[vip.chain]&&unlocked(state,vip.chain)?vip.chain:"garden";
+  state.vipContract={stage:num(vip.stage,1,1,1000000),chain,serves:num(vip.serves,0,0,VIP_CONTRACT_SERVES),merges:num(vip.merges,0,0,VIP_CONTRACT_MERGES)};
+ }
  state.combo=num(value.combo,0,0,5);
  state.lastMerge=num(value.lastMerge,0,0,now);
  state.rushUntil=num(value.rushUntil,0,0,now+45000);
