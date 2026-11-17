@@ -5,6 +5,7 @@ const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upg
 const STORE="knightfall:hex-and-whisk:v1",SOUND_STORE="knightfall:hex-and-whisk:sound";
 let game,selected=null,selectedShelf=null,history=null,drag=null,ghost=null,hovered=null,hoveredShelf=null,lastToast=0,toastTimer=null,audio=null,hintPair=null;
 let soundOn=false,bonusUntil=0,lastSyncScore=0,lastCookbookSignature="";
+let readyOrderIds=null,momentToken=0,momentTimer=null;
 try{soundOn=localStorage.getItem(SOUND_STORE)==="yes"}catch{}
 try{game=restore(localStorage.getItem(STORE),Math.random,Date.now())}catch{game=makeGame()}
 function safeSave(){try{localStorage.setItem(STORE,serialize(game))}catch{}}
@@ -65,6 +66,39 @@ function toast(message){
  const el=$("toast");el.textContent=message;el.classList.add("show");
  const stamp=++lastToast;clearTimeout(toastTimer);
  toastTimer=setTimeout(()=>{if(stamp===lastToast)el.classList.remove("show")},2300);
+}
+function customerMoment(patron,phrase,reward="",mood="happy"){
+ const stage=$("customer-moment");
+ if(!stage)return;
+ const copy=stage.querySelector(".moment-copy"),avatar=stage.querySelector(".moment-portrait");
+ if(!copy||!avatar)return;
+ const symbol=patron?.symbol||"imp";
+ stage.dataset.customer=symbol;
+ stage.dataset.mood=mood;
+ stage.querySelector(".moment-name").textContent=patron?.name||"Midnight Guest";
+ stage.querySelector(".moment-line").textContent=phrase;
+ stage.querySelector(".moment-reward").textContent=reward;
+ avatar.replaceChildren(portrait(patron||PATRONS[0]));
+ const token=++momentToken;
+ clearTimeout(momentTimer);
+ stage.classList.remove("moment-show");
+ stage.setAttribute("aria-hidden","false");
+ // Restart the entrance sequence on successive servings.
+ void stage.offsetWidth;
+ stage.classList.add("moment-show");
+ momentTimer=setTimeout(()=>{if(token!==momentToken)return;stage.classList.remove("moment-show");stage.setAttribute("aria-hidden","true");},2300);
+}
+function syncCustomerReactions(){
+ const current=new Set(game.orders.filter(order=>findReady(game,order)>=0||findShelfReady(game,order)>=0).map(order=>order.id));
+ if(readyOrderIds!==null){
+  const justReady=game.orders.find(order=>current.has(order.id)&&!readyOrderIds.has(order.id));
+  if(justReady){
+   const patron=patronForOrder(justReady);
+   const tip=favoriteTipForOrder(justReady);
+   customerMoment(patron,customerLine(justReady,true),tip?"♡ FAV +"+tip+" coins":"READY TO SERVE","ready");
+  }
+ }
+ readyOrderIds=current;
 }
 function bell(notes=[520,780],duration=.095){
  if(!soundOn)return;
@@ -150,7 +184,7 @@ function renderOrders(){
   button.dataset.customer=patron.symbol;
   button.dataset.mood=ready?"delighted":order.tier>=5?"impatient":"hopeful";
   button.classList.toggle("favorite-order",favoriteTip>0);
-  button.disabled=!ready;button.title=ready?"Serve "+label(order.chain,order.tier):"Merge ingredients to make "+label(order.chain,order.tier);
+  button.disabled=false;button.title=ready?"Serve "+label(order.chain,order.tier):"Tap to hear "+patron.name+" and check their order for "+label(order.chain,order.tier);
   button.setAttribute("aria-label",patron.name+" ("+patron.personality+") requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" "+customerLine(order,ready)+" Earn "+(order.coins+favoriteTip)+" coins"+(favoriteTip?" including "+favoriteTip+" favorite-food tip":"")+" and "+order.xp+" XP.");
   if(ready)button.append(text("span","✓","check"));
   const customer=text("span","","customer-badge");
@@ -164,7 +198,12 @@ function renderOrders(){
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
   button.append(footer,text("span",ready?"✦ SERVE ME!":"✧ COOKING...","serve-label"));
-  button.addEventListener("click",()=>fulfill(i));frag.append(button);
+  button.addEventListener("click",()=>{
+   if(ready){fulfill(i);return}
+   customerMoment(patron,customerLine(order,false),favoriteTip?"♡ FAV +"+favoriteTip+" coins":"MAKE "+label(order.chain,order.tier).toUpperCase(),"waiting");
+   announce(patron.name+" wants "+label(order.chain,order.tier)+". "+(favoriteTip?"Favorite meal bonus: +"+favoriteTip+" coins.":"Merge ingredients to prepare it."));
+   bell([420,530],.05);
+  });frag.append(button);
  });
  orders.replaceChildren(frag);
  const refresh=$("refresh-order");const disabled=game.coins<ORDER_REFRESH_COST||game.orders.every(order=>findReady(game,order)>=0||findShelfReady(game,order)>=0);
@@ -290,7 +329,7 @@ function renderStats(){
  $("whisk").disabled=game.whisks<1||!findMergePair(game);
  $("hint").disabled=!findMergePair(game);
 }
-function render(pop=-1){renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();safeSave()}
+function render(pop=-1){renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();syncCustomerReactions();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
@@ -366,12 +405,15 @@ function retrieveIngredient(boardIndex){
  bell([570,770],.07);rumble(8);
 }
 function fulfill(index){
+ const servedOrder=game.orders[index];
+ const servedPatron=servedOrder?patronForOrder(servedOrder):null;
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
  history=null;selected=null;selectedShelf=null;hintPair=null;render();
  const earned=result.patron+" loved it! +"+result.coins+" coins"+(result.favoriteTip?" (including "+result.favoriteTip+" favorite tip!)":"")+" ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
- const patron=PATRONS.find(p=>p.name===result.patron);if(patron){const lines=CUSTOMER_LINES[patron.symbol].served;toast(result.patron+": "+lines[game.served%lines.length]);}
+ const patron=servedPatron;if(patron){const lines=CUSTOMER_LINES[patron.symbol].served;
+  customerMoment(patron,lines[game.served%lines.length],"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:""),"served");}
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
  if(result.storageUnlocked)toast("✦ PANTRY EXPANDED! "+result.storageCapacity+" storage pockets unlocked!");
