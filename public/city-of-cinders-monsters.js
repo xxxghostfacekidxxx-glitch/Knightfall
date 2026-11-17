@@ -99,6 +99,41 @@ function eddie(c,p){
  oval(c,83,38,15,12,'#e2afa7',black,2);
  ink(c,'#372235',3,q=>{q.moveTo(72,37);q.lineTo(80,43);q.lineTo(88,37);q.moveTo(91,37);q.lineTo(98,42);});
 }
+
+// Three readable, character-specific special attacks.
+function signature(c,id,state,phase,reducedMotion){
+ if(state!=='roar'&&state!=='attack')return;
+ c.save();c.globalAlpha=state==='roar'?.85:.55;
+ if(id==='minion-mouse'){
+  // Three fox-tail lightning trails, even at mobile sprite scale.
+  for(let i=0;i<3;i++){
+   const x=30+i*40,y=153-i%2*9;
+   ink(c,i%2?'#ffd183':'#ff63a6',4,q=>{
+    q.moveTo(x,y);q.lineTo(x+13,y-19);q.lineTo(x+3,y-30);
+    q.lineTo(x+22,y-44);q.lineTo(x+14,y-53);
+   });
+  }
+ }else if(id==='mini-villain'){
+  // Comedy supervillain crown burst with its own six-point seal.
+  for(let i=0;i<6;i++){
+   const a=i*Math.PI/3+(reducedMotion?0:Math.sin(phase)*.08);
+   ink(c,'#c7a2fd',3,q=>{
+    q.moveTo(86+Math.cos(a)*49,97+Math.sin(a)*49);
+    q.lineTo(86+Math.cos(a)*65,97+Math.sin(a)*65);
+    q.lineTo(86+Math.cos(a)*83,97+Math.sin(a)*83);
+   });
+  }
+ }else{
+  // Eddie slams the street: angular dusty shockwaves on either side.
+  for(const side of [-1,1]){
+   ink(c,'#ffb363',5,q=>{
+    q.moveTo(86,173);q.lineTo(86+side*24,163);q.lineTo(86+side*39,173);
+    q.lineTo(86+side*61,156);q.lineTo(86+side*80,169);
+   });
+  }
+ }
+ c.restore();
+}
 function draw(c,id,x,y,w,h,opts={}){
  const p=designs[id];if(!p||!c||!(w>0)||!(h>0))return false;
  const frame=Number(opts.frame)||0,state=opts.state||'idle';
@@ -115,11 +150,12 @@ function draw(c,id,x,y,w,h,opts={}){
  c.translate(0,-bounce);
  leg(c,57,137,climb?gait*.5:gait*.22,p,id);
  leg(c,103,137,climb?-gait*.5:-gait*.22,p,id);
- arm(c,41,92,backAngle,p,id==='the-eddie'?1.2:1);
+ arm(c,41,92,backAngle,p,id==='the-eddie'?1.13:id==='mini-villain'?.79:.86);
  if(id==='minion-mouse')mouse(c,p);
  else if(id==='mini-villain')villain(c,p);
  else eddie(c,p);
- arm(c,id==='the-eddie'?126:115,111,frontAngle,p,id==='the-eddie'?1.28:id==='mini-villain'?.88:1.03);
+ signature(c,id,state,phase,opts.reducedMotion);
+ arm(c,id==='the-eddie'?126:115,111,frontAngle,p,id==='the-eddie'?1.18:id==='mini-villain'?.81:.9);
  if(roar){
   c.save();c.globalAlpha=.85;c.strokeStyle=p.eyes;c.lineWidth=3;
   for(let i=0;i<6;i++){
