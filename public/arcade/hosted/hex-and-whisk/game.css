@@ -434,3 +434,60 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 }
 @media(max-width:890px) and (orientation:landscape){.customer-moment{top:35px;left:auto;right:10px;max-width:280px;min-height:67px;grid-template-columns:58px 1fr}.customer-moment .moment-portrait{width:58px;height:58px}.customer-moment .moment-portrait .patron-icon{width:69px;height:69px}.customer-moment .moment-copy .moment-line{font-size:.7rem}}
 @media(prefers-reduced-motion:reduce){.customer-moment.moment-show{animation:none!important;opacity:1;transform:none}.customer-moment .moment-halo,.customer-moment .moment-portrait,.customer-moment .moment-sparkles{animation:none!important}}
+
+/* V12: ONE uninterrupted stone checkerboard; food is free-standing illustrated art, NOT cards. */
+.merge-board{
+ background:conic-gradient(from 90deg,#54405c 25%,#624967 0 50%,#54405c 0 75%,#624967 0)!important;
+ background-size:33.333333% 33.333333%!important;
+ border:1px solid #f3d8ba48;
+ box-shadow:inset 0 0 22px #1c102c95!important;
+}
+.merge-board .slot,
+.merge-board .slot:nth-child(12n + 1),.merge-board .slot:nth-child(12n + 3),
+.merge-board .slot:nth-child(12n + 5),.merge-board .slot:nth-child(12n + 8),
+.merge-board .slot:nth-child(12n + 10),.merge-board .slot:nth-child(12n + 12),
+.merge-board .slot[data-family],
+.merge-board .slot[data-family="garden"],.merge-board .slot[data-family="bakery"],
+.merge-board .slot[data-family="sweets"]{
+ background:transparent!important;background-image:none!important;
+ border:1px solid #f4e4cd13!important;border-radius:0!important;
+ box-shadow:none!important;
+}
+.merge-board .slot[data-family]:before,.merge-board .slot[data-family]:after{
+ content:none!important;display:none!important;
+}
+.merge-board .slot[data-family] .food-object{
+ display:block!important;position:relative;width:100%!important;height:100%!important;
+ max-width:100%;max-height:100%;margin:auto;padding:0!important;
+ border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;
+ transform-origin:50% 63%;
+ filter:drop-shadow(0 7px 3px #130b208e) drop-shadow(0 0 6px #fff7de23)!important;
+ animation:ingredient-breathe 4.7s ease-in-out infinite!important;
+ pointer-events:none;
+}
+.merge-board .slot[data-family="bakery"] .food-object{animation-delay:-1.3s!important}
+.merge-board .slot[data-family="sweets"] .food-object{animation-delay:-2.6s!important}
+.merge-board .slot[data-family]:active .food-object{transform:scale(.9);animation-play-state:paused!important}
+.merge-board .slot.pop .food-object{animation:ingredient-born .45s cubic-bezier(.16,1.35,.4,1) both!important}
+.merge-board .slot.selected{outline:2px solid #ffe7a5!important;outline-offset:-3px!important;background:#ffe9a022!important}
+.merge-board .slot.match-option{background:#f8d7a51d!important;box-shadow:inset 0 0 0 2px #fce1a46e!important}
+.merge-board .slot.order-ready-piece:not(.selected):not(.match-option){background:#bbffc314!important}
+.merge-board .slot.drop-target{background:#ffe5b450!important}
+.merge-board .slot.generator-slot{border:1px solid #ffe3a54f!important}
+.merge-board .slot.generator-slot[data-generator="garden"]{background:radial-gradient(circle,#5a9f868c 0%,#3d28435c 87%)!important}
+.merge-board .slot.generator-slot[data-generator="bakery"]{background:radial-gradient(circle,#cc925f98 0%,#3d28435c 87%)!important}
+.merge-board .slot.generator-slot[data-generator="sweets"]{background:radial-gradient(circle,#ba79b294 0%,#3d28435c 87%)!important}
+@keyframes ingredient-breathe{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2px) rotate(1deg)}}
+.order-card .customer-avatar .expression-spark{position:absolute;z-index:3;width:9px;height:9px;top:-4px;left:-4px;border-radius:50%;background:var(--patron-glow);box-shadow:0 0 11px 2px var(--patron-glow);opacity:0;transform:scale(.4);pointer-events:none}
+.order-card[data-expression="joy"] .expression-spark{opacity:1;animation:expression-spark .85s ease-in-out infinite alternate}
+.order-card[data-expression="familiar"] .expression-spark{opacity:.8;animation:expression-spark 3s ease-in-out infinite alternate}
+.order-card .loyalty-mark{position:absolute;top:2px;left:2px;z-index:2;padding:2px 4px;border-radius:8px;background:#26142ada;border:1px solid var(--patron-glow);font-size:.5rem!important;color:#ffe4c3!important;font-weight:950}
+.order-card.regular-customer .customer-avatar{box-shadow:0 4px 11px #10061cba,0 0 0 2px var(--patron-glow),0 0 16px color-mix(in srgb,var(--patron-glow) 30%,transparent)}
+.customer-moment .moment-face-spark{position:absolute;top:8px;right:2px;width:12px;height:12px;background:var(--moment-color);border-radius:50%;box-shadow:0 0 14px var(--moment-color);animation:expression-spark .7s ease-in-out infinite alternate}
+.customer-moment[data-expression="curious"] .moment-face-spark{background:#ffe5bd;animation-duration:1.8s}
+.customer-moment[data-expression="joy"] .moment-portrait .patron-icon{animation:expression-joy .75s ease-in-out infinite alternate}
+.customer-moment[data-expression="delight"] .moment-portrait .patron-icon{animation:expression-joy 1.1s ease-in-out infinite alternate}
+@keyframes expression-spark{to{transform:scale(1.35) translateY(-3px);opacity:.38}}
+@keyframes expression-joy{to{transform:rotate(6deg) translateY(-4px) scale(1.06)}}
+@media(max-width:890px){.order-card .loyalty-mark{top:0;left:auto;right:0;font-size:.43rem!important;padding:1px 3px}.order-card .favorite-tip{right:2px}}
+@media(prefers-reduced-motion:reduce){.merge-board .slot[data-family] .food-object,.merge-board .slot.pop .food-object,.order-card .customer-avatar .expression-spark,.customer-moment .moment-face-spark,.customer-moment .moment-portrait .patron-icon{animation:none!important}}
