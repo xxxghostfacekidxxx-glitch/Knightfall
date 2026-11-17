@@ -2,6 +2,8 @@
 export const WIDTH=6;
 export const CELL_COUNT=WIDTH*WIDTH;
 export const SHELF_SLOTS=2;
+export const MAX_SHELF_SLOTS=6;
+export const shelfCapacity=level=>Math.min(MAX_SHELF_SLOTS,SHELF_SLOTS+Math.max(0,Math.floor((level-1)/3)));
 export const MAX_ENERGY=40;
 export const ENERGY_INTERVAL=9000;
 export const RECIPES=Object.freeze({
@@ -96,18 +98,38 @@ export function magicWhisk(state,now=Date.now()){
 }
 
 export function unlocked(state,chain){return !!RECIPES[chain]&&state.level>=RECIPES[chain].unlock}
-export const available=state=>state.board.filter(tile=>tile===null).length;
+export const generatorAt=(state,index)=>Object.keys(state.generators||{}).find(chain=>state.generators[chain]===index)||null;
+export const available=state=>state.board.reduce((n,tile,i)=>n+(tile===null&&!generatorAt(state,i)?1:0),0);
+function attachGenerator(state,chain){
+ if(!unlocked(state,chain)||Number.isInteger(state.generators[chain])&&state.generators[chain]>=0)return;
+ const preferred={garden:0,bakery:5,sweets:30}[chain];
+ const spots=[preferred,...Array.from({length:CELL_COUNT},(_,i)=>i)];
+ const spot=spots.find(i=>state.board[i]===null&&!generatorAt(state,i));
+ if(spot!==undefined)state.generators[chain]=spot;
+}
+export function relocateGenerator(state,from,to){
+ if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=CELL_COUNT||to>=CELL_COUNT||from===to)return {ok:false,reason:"invalid"};
+ const source=generatorAt(state,from),target=generatorAt(state,to);
+ if(!source&&!target)return {ok:false,reason:"generator"};
+ if(source&&target){state.generators[source]=to;state.generators[target]=from;}
+ else if(source){state.generators[source]=to;state.board[from]=state.board[to];state.board[to]=null;}
+ else {state.generators[target]=from;state.board[to]=state.board[from];state.board[from]=null;}
+ state.combo=0;
+ return {ok:true,type:"generator-move",from,to,chain:source||target};
+}
+
 export const findReady=(state,order)=>state.board.findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
 export const findShelfReady=(state,order)=>(state.shelf||[]).findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
 /* The pantry shelf is free storage, not another generator. Each move preserves item identity. */
 export function storeOnShelf(state,boardIndex,shelfIndex){
- if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=SHELF_SLOTS)return {ok:false,reason:"invalid"};
+ if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=state.shelf.length)return {ok:false,reason:"invalid"};
  const tile=state.board[boardIndex];if(!tile)return {ok:false,reason:"empty"};
  const previous=state.shelf[shelfIndex];state.shelf[shelfIndex]=tile;state.board[boardIndex]=previous||null;state.combo=0;
  return {ok:true,type:previous?"shelf-swap":"shelf-store",place:boardIndex,shelfIndex};
 }
 export function takeFromShelf(state,shelfIndex,boardIndex){
- if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=SHELF_SLOTS)return {ok:false,reason:"invalid"};
+ if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=state.shelf.length)return {ok:false,reason:"invalid"};
+ if(generatorAt(state,boardIndex))return {ok:false,reason:"generator-slot"};
  const tile=state.shelf[shelfIndex];if(!tile)return {ok:false,reason:"shelf-empty"};
  const previous=state.board[boardIndex];state.board[boardIndex]=tile;state.shelf[shelfIndex]=previous||null;state.combo=0;
  return {ok:true,type:previous?"shelf-swap":"shelf-take",place:boardIndex,shelfIndex};
@@ -144,7 +166,7 @@ export function refreshOrder(state,random=Math.random){
  return {ok:true,type:"refresh-order",index,previous,replacement,cost:ORDER_REFRESH_COST};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),generators:{garden:0,bakery:5,sweets:-1},shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -167,7 +189,7 @@ export function spawn(state,chain,random=Math.random,now=Date.now()){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
  if(state.energy<=0)return {ok:false,reason:"energy"};
  const empty=[];
- state.board.forEach((tile,i)=>{if(!tile)empty.push(i)});
+ state.board.forEach((tile,i)=>{if(!tile&&!generatorAt(state,i))empty.push(i)});
  if(!empty.length)return {ok:false,reason:"full"};
  const place=empty[Math.floor(rnd(random)*empty.length)];
  const level=state.upgrades[chain]||0;
@@ -181,6 +203,7 @@ export function spawn(state,chain,random=Math.random,now=Date.now()){
 }
 export function move(state,from,to,now=Date.now()){
  if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=CELL_COUNT||to>=CELL_COUNT||from===to)return {ok:false,reason:"invalid"};
+ if(generatorAt(state,from)||generatorAt(state,to))return relocateGenerator(state,from,to);
  const source=state.board[from],target=state.board[to];
  if(!source)return {ok:false,reason:"empty"};
  if(target&&source.chain===target.chain&&source.tier===target.tier&&source.tier<7){
@@ -223,7 +246,8 @@ export function serve(state,index,random=Math.random,now=Date.now()){
   state.coins=cap(state.coins+35+state.level*12);
   state.energy=Math.min(MAX_ENERGY,state.energy+8);
   if(state.energy===MAX_ENERGY)state.energyLast=now;
-  if(state.level===3)unlockedSweetshop=true;
+  if(state.level===3){unlockedSweetshop=true;attachGenerator(state,"sweets")}
+  while(state.shelf.length<shelfCapacity(state.level))state.shelf.push(null);
  }
  if(state.served%5===0)state.rushUntil=now+45000;
  state.orders.splice(index,1);
@@ -249,7 +273,8 @@ export function stir(state,random=Math.random){
  const positions=state.board.filter(Boolean);
  for(let i=positions.length-1;i>0;i--){const j=Math.floor(rnd(random)*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]]}
  const cells=Array(CELL_COUNT).fill(null);
- for(const tile of positions){let empty=Math.floor(rnd(random)*CELL_COUNT);while(cells[empty])empty=(empty+1)%CELL_COUNT;cells[empty]=tile}
+ const spaces=Array.from({length:CELL_COUNT},(_,i)=>i).filter(i=>!generatorAt(state,i));
+ for(const tile of positions){let offset=Math.floor(rnd(random)*spaces.length);while(cells[spaces[offset]])offset=(offset+1)%spaces.length;cells[spaces[offset]]=tile}
  state.board=cells;state.coins-=15;state.combo=0;
  return {ok:true,type:"stir"};
 }
@@ -282,8 +307,17 @@ export function restore(raw,random=Math.random,now=Date.now()){
  }
  const goodTile=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=1&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  state.board=value.board.map(x=>goodTile(x)?{chain:x.chain,tier:x.tier,id:x.id}:null);
- state.shelf=Array.isArray(value.shelf)&&value.shelf.length===SHELF_SLOTS?value.shelf.map(x=>goodTile(x)?{chain:x.chain,tier:x.tier,id:x.id}:null):Array(SHELF_SLOTS).fill(null);
+ state.shelf=Array.from({length:shelfCapacity(state.level)},(_,i)=>Array.isArray(value.shelf)&&i<value.shelf.length&&goodTile(value.shelf[i])?{chain:value.shelf[i].chain,tier:value.shelf[i].tier,id:value.shelf[i].id}:null);
  for(const tile of [...state.board,...state.shelf])if(tile)state.discovered[tile.chain]=Math.max(state.discovered[tile.chain],tile.tier);
+ // Legacy kitchens had no board generators. Prefer original corners, then any free cell.
+ state.generators={garden:-1,bakery:-1,sweets:-1};
+ for(const chain of keys){
+  if(!unlocked(state,chain))continue;
+  const desired=value.generators?.[chain];
+  if(Number.isInteger(desired)&&desired>=0&&desired<CELL_COUNT&&!state.board[desired]&&!generatorAt(state,desired))state.generators[chain]=desired;
+  else attachGenerator(state,chain);
+ }
+
  const goodOrder=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=2&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  if(value.orders.every(goodOrder))state.orders=value.orders.map(x=>({id:x.id,chain:x.chain,tier:x.tier,coins:num(x.coins,35,1,1000),xp:num(x.xp,20,1,200),energy:num(x.energy,5,0,20)}));
  else state.orders=Array.from({length:3},()=>orderFor(state,random));
