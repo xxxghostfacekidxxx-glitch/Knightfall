@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,FAVORITE_TIP_PERCENT,favoriteTipForOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -381,4 +381,28 @@ test("favorite meals produce a real extra tip, without altering saved orders or 
  const rushResult=serve(rush,0,rng,now);
  assert.equal(rushResult.coins,(51+11)*2);
  assert.equal(rushResult.favoriteTip,22);
+});
+
+test("regular customers remember visits and return with an earned bonus every third order",()=>{
+ const state=makeGame(rng,now);
+ const id=state.orders[0].id,patron=patronForOrder(state.orders[0]);
+ assert.equal(LOYALTY_VISIT_INTERVAL,3);
+ assert.equal(loyaltyStamps(state,patron),0);
+ assert.equal(loyaltyNext(state,patron),3);
+ for(let visit=1;visit<=4;visit++){
+  const order={...state.orders[0],id,coins:50,tier:2,chain:patron.favorite};
+  state.orders[0]=order;
+  state.board[11]={id:8000+visit,chain:order.chain,tier:order.tier};
+  const before=state.coins;
+  const result=serve(state,0,rng,now);
+  assert.equal(result.ok,true);assert.equal(result.visits,visit);
+  assert.equal(loyaltyStamps(state,patron),visit);
+  assert.equal(result.loyaltyBonus,visit===3?15+state.level*5:0);
+  assert.equal(state.coins-before>=result.coins,true);
+ }
+ const saved=restore(serialize(state),rng,now);
+ assert.equal(loyaltyStamps(saved,patron),4);
+ assert.equal(loyaltyNext(saved,patron),2);
+ const legacy=JSON.parse(serialize(state));delete legacy.patronVisits;
+ assert.equal(loyaltyStamps(restore(legacy,rng,now),patron),0);
 });
