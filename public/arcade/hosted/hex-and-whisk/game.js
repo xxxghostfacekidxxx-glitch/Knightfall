@@ -72,6 +72,10 @@ function renderBoard(pop=-1){
   if(selected===index)slot.classList.add("selected");
   const producer=generatorAt(game,index);
   if(producer)slot.classList.add("generator-slot");
+  // Subtle ingredient glow highlights valid merges when the player selects a dish.
+  const held=selected!==null?game.board[selected]:null;
+  if(held&&item&&index!==selected&&held.chain===item.chain&&held.tier===item.tier&&item.tier<7)slot.classList.add("match-option");
+  if(item&&game.orders.some(order=>order.chain===item.chain&&order.tier===item.tier))slot.classList.add("order-ready-piece");
   if(hintPair?.from===index)slot.classList.add("hint-source");
   if(hintPair?.to===index)slot.classList.add("hint-dest");
   if(index===pop)slot.classList.add("pop");
