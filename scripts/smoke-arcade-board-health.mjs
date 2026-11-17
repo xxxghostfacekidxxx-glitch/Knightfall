@@ -64,6 +64,16 @@ try{
         const response=await page.goto(origin+'/arcade/hosted/'+game.id+'/index.html',{waitUntil:'domcontentloaded',timeout:20000});
         if(!response?.ok())throw Error('HTTP '+(response?.status()||'no response'));
         await page.waitForFunction(({selector,minimum})=>document.querySelectorAll(selector).length>=minimum,{selector:game.selector,minimum:game.count||game.minimum},{timeout:10000});
+        if(profile.name==='mobile'&&game.id==='ash-sudoku'){
+          // Never silently pass a "black screen" just because Playwright scrolls
+          // down to a board hidden below an oversized control sidebar.
+          const firstPaint=await page.locator('#board').evaluate(board=>{
+            const rect=board.getBoundingClientRect(),vp=window.innerHeight,styles=getComputedStyle(board);
+            return {top:rect.top,bottom:rect.bottom,height:rect.height,viewport:vp,visibility:styles.visibility};
+          });
+          if(firstPaint.top>firstPaint.viewport*0.65||firstPaint.bottom<100||firstPaint.visibility==='hidden')
+            throw Error('Sudoku puzzle is not on the opening mobile screen: '+JSON.stringify(firstPaint));
+        }
         const visual=await page.locator(game.selector).first().evaluate(element=>{
           const s=getComputedStyle(element),r=element.getBoundingClientRect();
           return {width:r.width,height:r.height,display:s.display,visibility:s.visibility,opacity:Number(s.opacity)};
