@@ -6,9 +6,9 @@
  <meta name="theme-color" content="#1b1021">
  <meta name="description" content="Hex & Whisk is a free, original merge-cooking game. Drag matching ingredients, cook fantastic meals, fulfill orders and grow your magical kitchen.">
  <title>Hex &amp; Whisk | Knightfall Chaos Cartridge</title>
- <link rel="stylesheet" href="./game.css?v=14">
+ <link rel="stylesheet" href="./game.css?v=15">
  <script src="/arcade-save.js" defer></script>
- <script type="module" src="./game.js?v=14"></script>
+ <script type="module" src="./game.js?v=15"></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -133,6 +133,14 @@
      <summary>EXPLORE MY RECIPES <span id="discovery-count">4 / 21</span></summary>
      <p>Cook a new dish to discover its illustration and earn bonus coins. New discoveries stay in your collection.</p>
      <div id="recipe-book" class="recipe-chapters"></div>
+    </details>
+   </section>
+   <section class="guestbook-panel panel" aria-labelledby="guestbook-title">
+    <div class="panel-heading"><div><span class="section-kicker">THE LITTLE MONSTERS WHO LOVE YOUR COOKING</span><h2 id="guestbook-title">Night Shift Guestbook <span class="mini-heart">♡</span></h2></div></div>
+    <details class="guestbook-details" id="guestbook-details">
+     <summary>OPEN THE MONSTER GUESTBOOK <span id="guestbook-count">0 / 24</span></summary>
+     <p class="side-hint">Every friend leaves keepsakes after their 1st, 3rd and 9th visits. Serve their orders to fill your collection.</p>
+     <div id="guestbook" class="guestbook-grid" aria-label="Customer keepsake collection"></div>
     </details>
    </section>
    <section class="upgrades-panel panel" aria-labelledby="upgrades-title">
