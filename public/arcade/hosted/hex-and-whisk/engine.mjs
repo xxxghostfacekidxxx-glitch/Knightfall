@@ -56,6 +56,44 @@ function discover(state,chain,tier){
  return bonus;
 }
 
+
+// A free, earnable one-tap helper. No premium currency, no timer, no purchases.
+export const WHISK_CAP=5;
+export const WHISK_EVERY=3;
+/* Prefer merges which create a currently ordered dish, then progress toward orders.
+   The selection is deterministic, so players can preview the exact pair first. */
+export function findMergePair(state){
+ const wants=Array.isArray(state.orders)?state.orders:[];
+ let best=null;
+ for(let i=0;i<CELL_COUNT;i++){
+  const a=state.board[i];
+  if(!a||a.tier>=7)continue;
+  for(let j=i+1;j<CELL_COUNT;j++){
+   const b=state.board[j];
+   if(!b||b.chain!==a.chain||b.tier!==a.tier)continue;
+   const next=a.tier+1;
+   let weight=next*10;
+   for(const order of wants){
+    if(order.chain!==a.chain)continue;
+    if(order.tier===next)weight+=10000;
+    else if(order.tier>next)weight+=1000-25*(order.tier-next);
+   }
+   if(!best||weight>best.weight||(weight===best.weight&&i<best.from))
+    best={from:i,to:j,chain:a.chain,tier:next,weight};
+  }
+ }
+ return best?{from:best.from,to:best.to,chain:best.chain,tier:best.tier}:null;
+}
+export function magicWhisk(state,now=Date.now()){
+ if(state.whisks<=0)return {ok:false,reason:"no-whisks"};
+ const pair=findMergePair(state);
+ if(!pair)return {ok:false,reason:"no-pair"};
+ const result=move(state,pair.from,pair.to,now);
+ if(!result.ok)return result;
+ state.whisks--;
+ return {...result,type:"whisk",from:pair.from,to:pair.to,charges:state.whisks};
+}
+
 export function unlocked(state,chain){return !!RECIPES[chain]&&state.level>=RECIPES[chain].unlock}
 export const available=state=>state.board.filter(tile=>tile===null).length;
 export const findReady=(state,order)=>state.board.findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
@@ -73,7 +111,7 @@ function orderFor(state,random){
  return {id:state.serial++,chain,tier,coins:14+tier*14,xp:10+tier*9,energy:5+Math.floor(tier/2)};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}}};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -142,6 +180,8 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.energy=Math.min(MAX_ENERGY,state.energy+order.energy);
  if(state.energy===MAX_ENERGY)state.energyLast=now;
  state.xp+=order.xp;state.served++;state.combo=0;
+ const whiskEarned=state.served%WHISK_EVERY===0 && state.whisks<WHISK_CAP;
+ if(whiskEarned)state.whisks++;
  tickQuest(state,"serve");
  let leveled=false,unlockedSweetshop=false;
  while(state.xp>=xpNeeded(state.level)&&state.level<30){
@@ -154,7 +194,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  if(state.served%5===0)state.rushUntil=now+45000;
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
- return {ok:true,type:"serve",place,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0};
+ return {ok:true,type:"serve",place,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
@@ -193,6 +233,7 @@ export function restore(raw,random=Math.random,now=Date.now()){
  state.score=num(value.score,0,0,1000000000);
  state.best=Math.max(state.score,num(value.best,state.score,0,1000000000));
  state.served=num(value.served,0,0,10000000);
+ state.whisks=num(value.whisks,1,0,WHISK_CAP);
  state.combo=num(value.combo,0,0,5);
  state.lastMerge=num(value.lastMerge,0,0,now);
  state.rushUntil=num(value.rushUntil,0,0,now+45000);

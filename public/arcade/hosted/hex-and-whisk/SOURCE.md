@@ -13,3 +13,7 @@ This implementation is not affiliated with the creators of Merge Cooking. See th
 ## Kitchen progression update
 
 Every new recipe tier is added to the illustrated cookbook and awards a one-time discovery bonus. The Witch's Workboard has three repeatable, gameplay-only missions for merging, serving orders, and harvesting ingredients. Earn coins and energy by claiming completed quests; later stages require more actions. Local and cloud saves retain this progression. Older version-1 kitchen saves remain readable and are migrated without wiping the board or score.
+
+## Magic Whisk and enchanted customers
+
+The Midnight Kitchen has four original in-page SVG customer portraits (Pip the Imp, Mochi Bat, Wisp Ghost and Marnie Witch). The free Find a Match action highlights a pair, prioritizing dishes requested by active customers. Players start with one Magic Whisk and earn another for every three completed customer orders, up to five in storage. Each Whisk spends one earned charge to automatically merge a useful pair. Charges survive local and connected-account saves; older saves migrate with one starter charge. Helpers do not require purchases or use extra energy.

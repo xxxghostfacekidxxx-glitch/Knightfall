@@ -6,12 +6,21 @@
  <meta name="theme-color" content="#1b1021">
  <meta name="description" content="Hex & Whisk is a free, original merge-cooking game. Drag matching ingredients, cook fantastic meals, fulfill orders and grow your magical kitchen.">
  <title>Hex &amp; Whisk | Knightfall Chaos Cartridge</title>
- <link rel="stylesheet" href="./game.css?v=2">
+ <link rel="stylesheet" href="./game.css?v=3">
  <script src="/arcade-save.js" defer></script>
- <script type="module" src="./game.js?v=2"></script>
+ <script type="module" src="./game.js?v=3"></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="patron-defs" viewBox="0 0 100 100">
+<defs><linearGradient id="patron-fire" x2="1" y2="1"><stop stop-color="#ffb88e"/><stop offset="1" stop-color="#dc6271"/></linearGradient>
+<linearGradient id="patron-night" x2="1" y2="1"><stop stop-color="#cba9d4"/><stop offset="1" stop-color="#755783"/></linearGradient>
+<linearGradient id="patron-mist" x2="1" y2="1"><stop stop-color="#fffdf3"/><stop offset="1" stop-color="#b9a9e5"/></linearGradient></defs>
+<symbol id="patron-imp" viewBox="0 0 100 100"><path d="M19 33L9 9L39 20M81 33L91 9L61 20" fill="#b24c6a" stroke="#faab94" stroke-width="4"/><ellipse cx="50" cy="52" rx="35" ry="34" fill="url(#patron-fire)" stroke="#fbd7af" stroke-width="4"/><path d="M28 51q10-10 20 0M53 51q10-10 20 0" fill="none" stroke="#60304d" stroke-width="5" stroke-linecap="round"/><path d="M41 67q9 9 18 0" fill="none" stroke="#a34a5f" stroke-width="4" stroke-linecap="round"/><circle cx="27" cy="62" r="6" fill="#ffb8a1"/><circle cx="74" cy="62" r="6" fill="#ffb8a1"/></symbol>
+<symbol id="patron-bat" viewBox="0 0 100 100"><path d="M23 55Q3 20 4 60Q23 48 25 70M77 55Q97 20 96 60Q77 48 75 70" fill="#83658d" stroke="#dbc2d5" stroke-width="3"/><path d="M22 41L22 9L45 30M78 41L78 9L55 30" fill="#73517e" stroke="#d7b3cb" stroke-width="4"/><ellipse cx="50" cy="55" rx="30" ry="30" fill="url(#patron-night)" stroke="#f4c4db" stroke-width="4"/><ellipse cx="40" cy="53" rx="5" ry="7" fill="#31203f"/><ellipse cx="60" cy="53" rx="5" ry="7" fill="#31203f"/><path d="M39 67q11 8 22 0" fill="none" stroke="#f1dfd0" stroke-width="4"/><path d="M40 66l3 11 4-8M54 69l4 8 3-11" fill="#fff4de"/></symbol>
+<symbol id="patron-ghost" viewBox="0 0 100 100"><path d="M23 84V43Q23 13 50 13Q80 13 80 44V85L69 76L59 86L50 76L39 86L30 76Z" fill="url(#patron-mist)" stroke="#fff6e8" stroke-width="4"/><ellipse cx="40" cy="50" rx="5" ry="8" fill="#5c4a74"/><ellipse cx="61" cy="50" rx="5" ry="8" fill="#5c4a74"/><ellipse cx="51" cy="67" rx="7" ry="5" fill="#d48ba9"/><ellipse cx="31" cy="63" rx="5" ry="4" fill="#eeb1cb"/><ellipse cx="73" cy="63" rx="5" ry="4" fill="#eeb1cb"/></symbol>
+<symbol id="patron-witch" viewBox="0 0 100 100"><ellipse cx="50" cy="57" rx="31" ry="34" fill="#5c416c"/><ellipse cx="50" cy="58" rx="26" ry="27" fill="#f0b7a5" stroke="#e9a49d" stroke-width="3"/><path d="M11 43L56 4L75 42Z" fill="#4b345d" stroke="#b694b7" stroke-width="3"/><path d="M11 43Q52 34 87 43" stroke="#4b345d" stroke-width="12" stroke-linecap="round"/><path d="M28 40q22 6 48 0" stroke="#e5a6c2" stroke-width="5"/><circle cx="40" cy="59" r="4" fill="#54394e"/><circle cx="61" cy="59" r="4" fill="#54394e"/><path d="M42 70q9 9 17 0" fill="none" stroke="#a65c72" stroke-width="3"/><path d="M42 19l2 8 8 2-8 4 1 8-6-6-8 2 4-7-4-7 8 2Z" fill="#f9d58c"/></symbol>
+</svg>
 <main id="hex-root" class="game-shell">
  <header class="site-bar">
   <a class="back" href="/chaos-cartridge.html" aria-label="Return to Chaos Cartridge"><span aria-hidden="true">‹</span> CHAOS CARTRIDGE</a>
@@ -49,8 +58,13 @@
     </div>
     <div class="board-stage"><div class="board-frame"><div id="board" class="merge-board" role="grid" aria-label="Six by six cooking merge board" aria-describedby="board-directions" tabindex="0"></div></div><div id="fx-layer" class="fx-layer" aria-hidden="true"></div></div>
     <div class="status-strip"><span id="status-icon" aria-hidden="true">✦</span><p id="status" role="status" aria-live="polite">Tap a station to collect ingredients. Drag two matching foods together!</p></div>
-    <p id="board-directions" class="visually-hidden">Tap one ingredient and then a matching ingredient to merge. Drag and drop also works. Use arrow keys to move across the board, Enter or Space to select, and Delete to recycle.</p>
+    <p id="board-directions" class="visually-hidden">Tap one ingredient and then a matching ingredient to merge. Drag and drop also works. Use arrow keys to move across the board, Enter or Space to select, Delete to recycle, H to reveal a free hint and W to use an earned Magic Whisk.</p>
     <div class="board-tools"><button type="button" id="undo" class="tool-btn" title="Undo the last board move">↶ <span>Undo</span></button><button type="button" id="recycle" class="tool-btn" title="Remove the selected item">♻ <span>Recycle</span></button><button type="button" id="stir" class="tool-btn" title="Randomize your board for 15 coins">❋ <span>Stir · 15 ◈</span></button></div>
+    <div class="magic-actions" aria-label="Merge assistance">
+     <button type="button" id="hint" class="hint-btn" title="Reveal a matching ingredient pair for free">✧ <span>Find a match</span></button>
+     <button type="button" id="whisk" class="whisk-btn" title="Use one earned Magic Whisk to combine a matching pair automatically">✨ <span>Magic Whisk</span><strong id="whisk-count">1 / 5</strong></button>
+    </div>
+    <p id="next-whisk" class="whisk-progress">0 / 3 orders toward next whisk</p>
    </section>
   </div>
   <aside class="secondary-column">
@@ -79,7 +93,7 @@
    <section class="tips-panel panel">
     <span class="section-kicker">YOUR LITTLE HANDBOOK</span><h2>How to play</h2>
     <ol><li>Tap <strong>Garden</strong> or <strong>Bakery</strong> for free ingredients.</li><li><strong>Drag matching items</strong> together, or tap one then another.</li><li>When you own a dish a customer wants, tap <strong>Serve</strong> for tips and XP.</li><li>Unlock the <strong>Sweetshop</strong> at level 3. Every fifth order starts a 45-second tip frenzy.</li></ol>
-    <p>Swapping and rearranging is free. Recycle any selected item to clear space. Complete workboard quests and discover new recipes for extra coins and energy. Your kitchen restores energy while you're away.</p>
+    <p>Need a hand? <strong>Find a match</strong> highlights two ingredients for free. Earn <strong>Magic Whisks</strong> by serving every three orders for an automatic merge. Swapping and rearranging is free. Recycle any selected item to clear space. Complete workboard quests and discover new recipes for extra coins and energy. Your kitchen restores energy while you're away.</p>
    </section>
    <section class="cloud-panel panel"><span class="section-kicker">DON'T LOSE YOUR RECIPES</span><h2>Save your kitchen</h2><p>Progress is automatically saved on this device. Signed-in members can also sync across devices.</p><div class="cloud-actions"><button id="cloud-save" type="button">↑ Save to account</button><button id="cloud-load" type="button">↓ Load account save</button></div><p id="arcade-account-status" class="account-status" role="status" aria-live="polite">Checking account connection…</p></section>
   </aside>

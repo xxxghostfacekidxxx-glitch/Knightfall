@@ -1,9 +1,9 @@
-import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
 const STORE="knightfall:hex-and-whisk:v1",SOUND_STORE="knightfall:hex-and-whisk:sound";
-let game,selected=null,history=null,drag=null,ghost=null,hovered=null,lastToast=0,toastTimer=null,audio=null;
+let game,selected=null,history=null,drag=null,ghost=null,hovered=null,lastToast=0,toastTimer=null,audio=null,hintPair=null;
 let soundOn=false,bonusUntil=0,lastSyncScore=0,lastCookbookSignature="";
 try{soundOn=localStorage.getItem(SOUND_STORE)==="yes"}catch{}
 try{game=restore(localStorage.getItem(STORE),Math.random,Date.now())}catch{game=makeGame()}
@@ -15,6 +15,12 @@ function food(chain,tier){
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");
  use.setAttribute("href","./sprites/icons.svg#"+chain+"-"+tier);svg.append(use);
  return svg;
+}
+
+const PATRONS=[{name:"Pip the Imp",symbol:"imp"},{name:"Mochi Bat",symbol:"bat"},{name:"Wisp Ghost",symbol:"ghost"},{name:"Marnie Witch",symbol:"witch"}];
+function portrait(patron){
+ const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.classList.add("patron-icon");svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");
+ const use=document.createElementNS("http://www.w3.org/2000/svg","use");use.setAttribute("href","#patron-"+patron.symbol);svg.append(use);return svg;
 }
 const label=(chain,tier)=>RECIPES[chain].items[tier-1];
 function announce(note,celebrate=false){
@@ -49,6 +55,8 @@ function renderBoard(pop=-1){
  game.board.forEach((item,index)=>{
   const slot=document.createElement("button");slot.type="button";slot.className="slot";
   if(selected===index)slot.classList.add("selected");
+  if(hintPair?.from===index)slot.classList.add("hint-source");
+  if(hintPair?.to===index)slot.classList.add("hint-dest");
   if(index===pop)slot.classList.add("pop");
   slot.dataset.index=String(index);slot.setAttribute("role","gridcell");
   slot.setAttribute("aria-rowindex",String(Math.floor(index/WIDTH)+1));
@@ -68,10 +76,13 @@ function renderOrders(){
  const frag=document.createDocumentFragment();
  game.orders.forEach((order,i)=>{
   const ready=findReady(game,order)>=0;
+  const patron=PATRONS[order.id%PATRONS.length];
   const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"");
   button.disabled=!ready;button.title=ready?"Serve "+label(order.chain,order.tier):"Merge ingredients to make "+label(order.chain,order.tier);
-  button.setAttribute("aria-label",(ready?"Serve ":"Need ")+label(order.chain,order.tier)+" for "+order.coins+" coins and "+order.xp+" XP");
+  button.setAttribute("aria-label",patron.name+" requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" Earn "+order.coins+" coins and "+order.xp+" XP.");
   if(ready)button.append(text("span","✓","check"));
+  const customer=text("span","","customer-badge");customer.append(portrait(patron),text("span",patron.name));
+  button.append(customer);
   button.append(food(order.chain,order.tier),text("span",label(order.chain,order.tier),"order-name"));
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+order.coins),text("span","✦ "+order.xp+" XP"));
@@ -168,7 +179,7 @@ function renderCookbook(){
 function collectQuest(kind){
  const result=claimQuest(game,kind,Date.now());
  if(!result.ok){problem(result.reason);return}
- history=null;selected=null;render();
+ history=null;selected=null;hintPair=null;render();
  announce("QUEST COMPLETE! +"+result.coins+" coins and +"+result.energy+" energy.",true);
  bell([520,690,880,1100],.1);rumble([15,40,15]);
 }
@@ -192,6 +203,10 @@ function renderStats(){
  $("undo").disabled=!history;
  $("recycle").disabled=selected===null||!game.board[selected];
  $("stir").disabled=game.coins<15||available(game)===CELL_COUNT;
+ $("whisk-count").textContent=game.whisks+" / "+WHISK_CAP;
+ $("next-whisk").textContent=(game.served%WHISK_EVERY)+" / "+WHISK_EVERY+" orders toward next whisk";
+ $("whisk").disabled=game.whisks<1||!findMergePair(game);
+ $("hint").disabled=!findMergePair(game);
 }
 function render(pop=-1){renderBoard(pop);renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();safeSave()}
 function particle(place,note,color){
@@ -219,7 +234,7 @@ function problem(reason){
 function action(fn){
  const snapshot=serialize(game),result=fn();
  if(!result.ok){problem(result.reason);return null}
- history=snapshot;selected=null;return result;
+ history=snapshot;selected=null;hintPair=null;return result;
 }
 function makeIngredient(chain){
  const result=action(()=>spawn(game,chain,Math.random,Date.now()));
@@ -245,10 +260,11 @@ function moveIngredient(a,b){
 function fulfill(index){
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
- history=null;selected=null;render();
- const earned="ORDER SERVED! +"+result.coins+" coins ✦ +"+result.gained+" stars";
+ history=null;selected=null;hintPair=null;render();
+ const earned="ORDER SERVED! +"+result.coins+" coins ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
+ if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
  if(result.rush)toast("🔥 RUSH HOUR! DOUBLE TIPS FOR 45 SECONDS");
  maybeCloudAutosave();
 }
@@ -268,9 +284,25 @@ function mix(){
  if(!result)return;
  render();announce("A little kitchen magic! The ingredients got shuffled.");bell([470,600,740]);
 }
+
+function showMergeHint(){
+ const pair=findMergePair(game);
+ if(!pair){hintPair=null;renderBoard();announce("No matching pair yet. Harvest, serve, or move food to make space.");return}
+ hintPair=pair;selected=null;renderBoard();renderStats();
+ announce("A handy match: combine the glowing "+label(pair.chain,pair.tier-1)+" tiles to make "+label(pair.chain,pair.tier)+".");
+ bell([540,660],.05);
+}
+function useMagicWhisk(){
+ const result=action(()=>magicWhisk(game,Date.now()));
+ if(!result)return;
+ render(result.place);particle(result.place,"✦ MAGIC MERGE",RECIPES[result.chain].hue);
+ announce("✨ WHISKED! "+label(result.chain,result.tier)+" cooked automatically. "+game.whisks+" charges left.",true);
+ if(result.discoveryBonus)toast("NEW RECIPE: "+label(result.chain,result.tier)+"!");
+ bell([510,740,980,1180],.12);rumble([15,35,12]);
+}
 function undo(){
  if(!history){announce("Nothing to undo yet.");return}
- game=restore(history,Math.random,Date.now());history=null;selected=null;
+ game=restore(history,Math.random,Date.now());history=null;selected=null;hintPair=null;
  render();announce("Last board action undone.");bell([460,390],.06);
 }
 function tapCell(index){
@@ -344,6 +376,8 @@ document.addEventListener("keydown",event=>{
  const key=event.key.toLowerCase();
  if(key==="u"){event.preventDefault();undo()}
  if(key==="s"){event.preventDefault();mix()}
+ if(key==="h"){event.preventDefault();showMergeHint()}
+ if(key==="w"){event.preventDefault();useMagicWhisk()}
  if(key==="m"){$("sound-toggle").click()}
  if(key==="escape"&&selected!==null){selected=null;renderBoard();renderStats()}
  if(["1","2","3"].includes(key)&&event.target.tagName!=="BUTTON"){makeIngredient(Object.keys(RECIPES)[Number(key)-1])}
@@ -351,6 +385,8 @@ document.addEventListener("keydown",event=>{
 $("undo").addEventListener("click",undo);
 $("recycle").addEventListener("click",discard);
 $("stir").addEventListener("click",mix);
+$("hint").addEventListener("click",showMergeHint);
+$("whisk").addEventListener("click",useMagicWhisk);
 $("sound-toggle").addEventListener("click",()=>{
  soundOn=!soundOn;$("sound-toggle").textContent=soundOn?"♫ ON":"♪ OFF";
  $("sound-toggle").setAttribute("aria-pressed",String(soundOn));
@@ -392,7 +428,7 @@ async function loadAccount(){
   if(!saved){announce("No account kitchen save found yet. Your local save remains untouched.");return}
   if((game.score>0||game.served>0)&&!window.confirm("Replace this device's kitchen with your saved account kitchen?"))return;
   game=restore(saved.serialized||saved.gameState||saved,Math.random,Date.now());
-  history=null;selected=null;render();announce("Account kitchen loaded. Welcome back, chef!",true);
+  history=null;selected=null;hintPair=null;render();announce("Account kitchen loaded. Welcome back, chef!",true);
  }catch{announce("Could not load the account save. Your local kitchen is safe.")}
 }
 function maybeCloudAutosave(){

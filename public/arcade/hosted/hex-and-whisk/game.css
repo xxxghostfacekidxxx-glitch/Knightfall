@@ -47,3 +47,27 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 .recipe-name{display:block;max-width:100%;font-size:.52rem;font-weight:900;line-height:1.2;color:#37283a;overflow-wrap:anywhere}
 .recipe-item.secret .recipe-name{color:#a69aaf}
 @media(max-width:600px){.quest-card{padding:11px}.recipe-item{min-height:75px}.recipe-item .food{height:51px}.recipe-mystery{height:51px}}
+
+/* Earned helper controls and original midnight-kitchen customer portraits. */
+.patron-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.customer-badge{height:27px;display:flex;align-items:center;justify-content:center;gap:3px;max-width:100%;color:#fff2e2;font-weight:950;font-size:.58rem;white-space:nowrap;line-height:1.1}
+.customer-badge span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.patron-icon{width:27px;height:27px;flex:none;filter:drop-shadow(0 2px 3px #170a205f)}
+.order-card{min-height:178px}
+.slot.hint-source,.slot.hint-dest{border-color:#fff3be!important;box-shadow:0 0 0 2px #fae3a4,inset 0 0 18px #f5c8869c,0 0 20px #f7db9a85!important;animation:hint-shimmer 1.25s ease-in-out infinite alternate}
+.slot.hint-source:before,.slot.hint-dest:before{content:"✧";position:absolute;top:2px;left:4px;z-index:2;color:#fff8c7;font-size:clamp(12px,2vw,20px);text-shadow:0 0 9px #fff3bc}
+@keyframes hint-shimmer{to{filter:brightness(1.2);transform:translateY(-2px)}}
+.magic-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:8px;margin-top:10px}
+.magic-actions button{min-height:47px;display:flex;align-items:center;justify-content:center;gap:7px;border-radius:13px;font-weight:950;font-size:.77rem;border:1px solid #fff1c18b;transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
+.magic-actions button:not(:disabled):active{transform:scale(.974)}
+.hint-btn{background:linear-gradient(135deg,#4b3c62,#665074);color:#fff0de}
+.whisk-btn{background:linear-gradient(110deg,#e1a2b8,#f8d493);color:#432a40;box-shadow:inset 0 1px #fff9,0 7px 20px #cd82a03b}
+.whisk-btn:not(:disabled){animation:whisk-pulse 2.9s ease-in-out infinite}
+.whisk-btn strong{padding:4px 7px;border-radius:999px;background:#713e5b23;color:#523148;font-variant-numeric:tabular-nums;font-size:.68rem}
+.magic-actions button:disabled{filter:saturate(.55);opacity:.62;animation:none}
+@keyframes whisk-pulse{50%{box-shadow:inset 0 1px #fff9,0 0 20px #f5c69e8c}}
+.whisk-progress{text-align:right;margin:6px 4px 0;color:#d5b8c9;font-size:.62rem;letter-spacing:.06em}
+@media(max-width:600px){.order-card{min-height:156px}.customer-badge{height:23px;font-size:.51rem;gap:2px}.patron-icon{width:23px;height:23px}.order-card .food{width:41px;height:41px}.magic-actions button{min-height:44px;font-size:.7rem}}
+@media(max-width:365px){.customer-badge{font-size:.47rem}.patron-icon{width:20px;height:20px}.order-card{min-height:148px}.magic-actions button{font-size:.64rem}}
+@media(prefers-reduced-motion:reduce){.slot.hint-source,.slot.hint-dest,.whisk-btn:not(:disabled){animation:none}}
+@media(forced-colors:active){.slot.hint-source,.slot.hint-dest{outline:3px solid Highlight}}

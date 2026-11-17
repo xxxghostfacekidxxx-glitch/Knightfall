@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,available,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -141,4 +141,57 @@ test("invalid saves with missing restaurant orders reset safely instead of resto
  const restored=restore(serialize(state),rng,now);
  assert.equal(restored.orders.length,3);
  assert.equal(restored.board.length,36);
+});
+
+test("Magic Whisk finds the most valuable available match for an open customer order",()=>{
+ const state=makeGame(rng,now);
+ state.board.fill(null);
+ state.orders=[{id:1,chain:"bakery",tier:3,coins:20,xp:15,energy:2}];
+ state.board[0]={chain:"garden",tier:2,id:101};
+ state.board[1]={chain:"garden",tier:2,id:102};
+ state.board[2]={chain:"bakery",tier:2,id:103};
+ state.board[3]={chain:"bakery",tier:2,id:104};
+ const chosen=findMergePair(state);
+ assert.equal(chosen.chain,"bakery");
+ assert.deepEqual([chosen.from,chosen.to],[2,3]);
+ const previous=state.score;
+ assert.equal(state.whisks,1);
+ const result=magicWhisk(state,now);
+ assert.equal(result.ok,true);
+ assert.equal(result.type,"whisk");
+ assert.equal(result.tier,3);
+ assert.equal(state.board[2],null);
+ assert.equal(state.board[3].tier,3);
+ assert.equal(state.whisks,0);
+ assert.ok(state.score>previous);
+ assert.equal(magicWhisk(state,now+100).reason,"no-whisks");
+});
+test("Magic Whisk never spends charges on a board with no matching pairs",()=>{
+ const state=makeGame(rng,now);
+ state.board.fill(null);
+ state.board[0]={chain:"garden",tier:1,id:100};
+ state.board[1]={chain:"bakery",tier:2,id:101};
+ assert.equal(findMergePair(state),null);
+ assert.equal(magicWhisk(state,now).reason,"no-pair");
+ assert.equal(state.whisks,1);
+});
+test("three served orders earn a free Magic Whisk, and old saves gain a starter charge",()=>{
+ const state=makeGame(rng,now);
+ state.whisks=0;state.served=2;
+ const customer=state.orders[0];state.board[1]={id:999,chain:customer.chain,tier:customer.tier};
+ const result=serve(state,0,rng,now);
+ assert.equal(result.whiskEarned,true);
+ assert.equal(state.whisks,1);
+ const loaded=restore(serialize(state),rng,now);
+ assert.equal(loaded.whisks,1);
+ const old=JSON.parse(serialize(state));
+ delete old.whisks;
+ assert.equal(restore(old,rng,now).whisks,1);
+ const tampered=JSON.parse(serialize(state));tampered.whisks=99999;
+ assert.equal(restore(tampered,rng,now).whisks,WHISK_CAP);
+ state.whisks=WHISK_CAP;state.served=5;
+ const again=state.orders[0];state.board[5]={id:888,chain:again.chain,tier:again.tier};
+ const served=serve(state,0,rng,now+500);
+ assert.equal(served.whiskEarned,false);
+ assert.equal(state.whisks,WHISK_CAP);
 });
