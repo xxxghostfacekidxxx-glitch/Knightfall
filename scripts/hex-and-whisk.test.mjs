@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,KEEPSAKE_LEVELS,PATRON_KEEPSAKES,keepsakesForPatron,keepsakeUnlocked,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -419,4 +419,33 @@ test("customer progress tracks closest recipe tier across countertop and pantry"
  state.board[14]={id:104,chain:"garden",tier:5};
  assert.deepEqual(orderProgress(state,order),{tier:5,steps:0,ready:true,pieces:3});
  assert.deepEqual(orderProgress(state,null),{tier:0,steps:0,ready:false,pieces:0});
+});
+
+test("guestbook keepsakes unlock only on specific repeat visit milestones",()=>{
+ const state=makeGame(rng,now),patron=patronForOrder(state.orders[0]);
+ assert.deepEqual(KEEPSAKE_LEVELS,[1,3,9]);
+ assert.equal(Object.keys(PATRON_KEEPSAKES).length,8);
+ assert.deepEqual(keepsakesForPatron(state,patron),[]);
+ for(const count of [1,2,3,8,9,10]){
+  state.patronVisits[patron.symbol]=count;
+  const items=keepsakesForPatron(state,patron);
+  assert.equal(items.length,count>=9?3:count>=3?2:1);
+  assert.equal(new Set(items.map(item=>item.name)).size,items.length);
+ }
+ assert.equal(keepsakeUnlocked(patron,2),null);
+ assert.equal(keepsakeUnlocked(patron,3).visits,3);
+ const saved=restore(serialize(state),rng,now);
+ assert.deepEqual(keepsakesForPatron(saved,patron),keepsakesForPatron(state,patron));
+});
+test("serving a guest issues first, third and ninth visit keepsakes exactly once",()=>{
+ const state=makeGame(rng,now);
+ const order=state.orders[0],guest=patronForOrder(order);
+ for(let i=1;i<=10;i++){
+  state.orders[0]={...order};
+  state.board[11]={id:6000+i,chain:order.chain,tier:order.tier};
+  const result=serve(state,0,rng,now);
+  assert.equal(result.ok,true);
+  assert.equal(result.keepsake?.visits||0,[1,3,9].includes(i)?i:0);
+ }
+ assert.equal(keepsakesForPatron(state,guest).length,3);
 });
