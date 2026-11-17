@@ -125,6 +125,24 @@ function orderFor(state,random){
  }
  return {id:state.serial++,chain,tier,coins:14+tier*14,xp:10+tier*9,energy:5+Math.floor(tier/2)};
 }
+// A paid-in-game-coins escape hatch for stalled customer queues. Never reroll a ready meal.
+export const ORDER_REFRESH_COST=35;
+export function refreshOrder(state,random=Math.random){
+ if(!Array.isArray(state.orders)||state.orders.length!==3)return {ok:false,reason:"order"};
+ const index=state.orders.findIndex(order=>findReady(state,order)<0&&findShelfReady(state,order)<0);
+ if(index<0)return {ok:false,reason:"all-ready"};
+ if(state.coins<ORDER_REFRESH_COST)return {ok:false,reason:"coins",cost:ORDER_REFRESH_COST};
+ const previous=state.orders[index];
+ // Exclude the discarded order so it cannot immediately reappear.
+ const kept=state.orders.filter((_,i)=>i!==index);
+ state.orders=kept.concat(previous);
+ const replacement=orderFor(state,random);
+ state.orders[index]=replacement;
+ state.orders.length=3;
+ state.coins-=ORDER_REFRESH_COST;
+ state.combo=0;
+ return {ok:true,type:"refresh-order",index,previous,replacement,cost:ORDER_REFRESH_COST};
+}
 export function makeGame(random=Math.random,now=Date.now()){
  const state={version:1,board:Array(CELL_COUNT).fill(null),shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
