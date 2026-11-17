@@ -393,3 +393,44 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
  .order-card .customer-speech{color:var(--patron-ink)}
 }
 @media(prefers-reduced-motion:reduce){.merge-board .slot[data-family] .food{animation:none!important;transition:none!important}}
+
+/* V11: theatrical patron close-ups and crisp customer interactions, without moving the board. */
+.customer-moment{--moment-color:#ffc9d9;position:fixed;z-index:3800;top:clamp(70px,11dvh,130px);right:clamp(14px,3vw,45px);width:min(355px,calc(100vw - 28px));min-height:108px;display:grid;grid-template-columns:105px 1fr;align-items:center;gap:10px;padding:11px 16px 11px 8px;background:linear-gradient(128deg,#4e304eea,#211727f5 65%,#52324aee);border:2px solid var(--moment-color);border-radius:23px;box-shadow:0 13px 43px #12081dd9,inset 0 1px #fff5d455,0 0 30px color-mix(in srgb,var(--moment-color) 25%,transparent);color:#fff3de;pointer-events:none;opacity:0;visibility:hidden;transform:translateY(-12px) scale(.87);transform-origin:75% 30%;overflow:hidden}
+.customer-moment.moment-show{visibility:visible;animation:customer-stage-enter .5s cubic-bezier(.14,1.55,.32,1) forwards;opacity:1}
+.customer-moment[data-customer="imp"]{--moment-color:#ffad8a}
+.customer-moment[data-customer="bat"]{--moment-color:#d9b4ff}
+.customer-moment[data-customer="ghost"]{--moment-color:#b7eaff}
+.customer-moment[data-customer="witch"]{--moment-color:#ffafd6}
+.customer-moment[data-customer="gargoyle"]{--moment-color:#c6bad6}
+.customer-moment[data-customer="moth"]{--moment-color:#ffe7b0}
+.customer-moment[data-customer="crow"]{--moment-color:#c2addd}
+.customer-moment[data-customer="slime"]{--moment-color:#9affda}
+.customer-moment .moment-halo{position:absolute;width:165px;height:165px;left:-29px;top:-35px;border-radius:50%;border:2px dashed color-mix(in srgb,var(--moment-color) 60%,transparent);background:radial-gradient(circle,color-mix(in srgb,var(--moment-color) 35%,transparent),transparent 67%);animation:moment-halo-turn 13s linear infinite;pointer-events:none}
+.customer-moment .moment-portrait{position:relative;z-index:1;width:100px;height:100px;display:grid;place-items:center;animation:moment-portrait-arrive .65s cubic-bezier(.16,1.45,.35,1) both}
+.customer-moment .moment-portrait .patron-icon{width:112px;height:112px;overflow:visible;filter:drop-shadow(0 7px 2px #170b26a8) drop-shadow(0 0 8px color-mix(in srgb,var(--moment-color) 45%,transparent))}
+.customer-moment .moment-copy{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.customer-moment .moment-copy strong{font-size:clamp(.9rem,2.5vw,1.2rem);line-height:1.1;letter-spacing:.02em;color:var(--moment-color);text-shadow:0 2px 3px #1c0c26}
+.customer-moment .moment-copy .moment-line{font-weight:800;font-size:clamp(.79rem,2vw,1.03rem);line-height:1.18;text-wrap:balance}
+.customer-moment .moment-reward{font-size:.69rem;font-weight:900;letter-spacing:.06em;color:#ffe4a2}
+.customer-moment .moment-sparkles{position:absolute;bottom:6px;right:10px;color:var(--moment-color);letter-spacing:.8em;font-size:1rem;opacity:.65}
+.customer-moment[data-mood="served"] .moment-copy strong{color:#fff3bd}
+.customer-moment[data-mood="served"] .moment-sparkles{animation:moment-sparkle .7s ease-in-out infinite alternate}
+.customer-moment[data-mood="waiting"] .moment-halo{animation-duration:24s}
+@keyframes customer-stage-enter{0%{opacity:0;transform:translateY(-15px) scale(.85) rotate(3deg)}55%{opacity:1;transform:translateY(1px) scale(1.04) rotate(-1.5deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+@keyframes moment-portrait-arrive{0%{transform:translateY(22px) rotate(-12deg) scale(.6)}75%{transform:translateY(-4px) rotate(3deg) scale(1.08)}100%{transform:none}}
+@keyframes moment-halo-turn{to{transform:rotate(360deg)}}
+@keyframes moment-sparkle{to{opacity:1;transform:translateY(-4px)}}
+.order-card:not(:disabled){cursor:pointer}
+.order-card:not(.ready):hover .customer-avatar{box-shadow:0 0 15px var(--patron-glow),0 3px 10px #13091d}
+.order-card:not(.ready):focus-visible{outline:2px solid #ffe5a1;outline-offset:1px}
+@media(max-width:890px){
+ .customer-moment{top:clamp(44px,7dvh,80px);left:8px;right:8px;width:auto;min-height:75px;grid-template-columns:72px 1fr;gap:8px;border-radius:16px;padding:6px 12px 6px 4px}
+ .customer-moment .moment-halo{width:118px;height:118px;left:-22px;top:-25px}
+ .customer-moment .moment-portrait{width:72px;height:72px}
+ .customer-moment .moment-portrait .patron-icon{width:82px;height:82px}
+ .customer-moment .moment-copy strong{font-size:.88rem}
+ .customer-moment .moment-copy .moment-line{font-size:.78rem}
+ .customer-moment .moment-reward{font-size:.57rem}
+}
+@media(max-width:890px) and (orientation:landscape){.customer-moment{top:35px;left:auto;right:10px;max-width:280px;min-height:67px;grid-template-columns:58px 1fr}.customer-moment .moment-portrait{width:58px;height:58px}.customer-moment .moment-portrait .patron-icon{width:69px;height:69px}.customer-moment .moment-copy .moment-line{font-size:.7rem}}
+@media(prefers-reduced-motion:reduce){.customer-moment.moment-show{animation:none!important;opacity:1;transform:none}.customer-moment .moment-halo,.customer-moment .moment-portrait,.customer-moment .moment-sparkles{animation:none!important}}
