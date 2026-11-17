@@ -383,10 +383,29 @@ function makeIngredient(chain){
  if(result.discoveryBonus)toast("NEW RECIPE! +"+result.discoveryBonus+" discovery coins ✦");
  bell([390,540],.05);rumble(8);
 }
+function mergeFlight(from,to,chain,tier){
+ if(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)return;
+ const source=board.querySelector('[data-index="'+from+'"]');
+ const destination=board.querySelector('[data-index="'+to+'"]');
+ if(!source||!destination||!fx)return;
+ const bounds=fx.getBoundingClientRect(),start=source.getBoundingClientRect(),end=destination.getBoundingClientRect();
+ const flying=document.createElement("span");
+ flying.className="merge-flight";
+ flying.style.left=(start.left-bounds.left+start.width/2)+"px";
+ flying.style.top=(start.top-bounds.top+start.height/2)+"px";
+ flying.style.setProperty("--fly-x",(end.left-start.left+(end.width-start.width)/2)+"px");
+ flying.style.setProperty("--fly-y",(end.top-start.top+(end.height-start.height)/2)+"px");
+ flying.append(food(chain,tier));
+ fx.append(flying);
+ flying.addEventListener("animationend",()=>flying.remove(),{once:true});
+ setTimeout(()=>flying.remove(),650);
+}
 function moveIngredient(a,b){
+ const origin=game.board[a]?{...game.board[a]}:null;
  const result=action(()=>move(game,a,b,Date.now()));
  if(!result)return;
  if(result.type==="merge"){
+  if(origin)mergeFlight(a,b,origin.chain,origin.tier);
   render(result.place);particle(result.place,"+"+result.gained,RECIPES[result.chain].hue);
   announce(result.combo>1?"MAGICAL COMBO ×"+result.combo+"! "+label(result.chain,result.tier)+" created!":"Mmm! "+label(result.chain,result.tier)+" cooked.",result.combo>=3);
   if(result.discoveryBonus)toast("NEW RECIPE: "+label(result.chain,result.tier)+"! +"+result.discoveryBonus+" discovery coins ✦");
