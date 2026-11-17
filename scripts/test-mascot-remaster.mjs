@@ -50,6 +50,8 @@ test('Gillrot and Nocturnib art remains available without replacing the approved
  assert.equal(existsSync('public/gravewave-takeover.js'),false);
  const nav=readFileSync('public/nav.js','utf8');
  assert.doesNotMatch(nav,/gravewave-takeover\.js\?v=20261102-mascot6/);
- assert.match(nav,/knightfall-unified-theme\.css\?v=20261115-gothic\d+/);
+ assert.match(nav,/theme\.css\?v=20261116-cascade4/);
+ const theme=readFileSync('public/theme.css','utf8');
+ assert.match(theme,/knightfall-unified-theme\.css\?v=20261116-cascade4/);
  assert.match(nav,/mountApprovedTheme/);
 });
