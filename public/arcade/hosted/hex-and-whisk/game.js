@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -17,7 +17,21 @@ function food(chain,tier){
  return svg;
 }
 
-const PATRONS=[{name:"Pip the Imp",symbol:"imp"},{name:"Mochi Bat",symbol:"bat"},{name:"Wisp Ghost",symbol:"ghost"},{name:"Marnie Witch",symbol:"witch"}];
+const CUSTOMER_LINES={
+ imp:{waiting:["Psst! Extra chaos!","I'm STARVING!","Make it spicy-ish!"],ready:["Mine! Mine! Mine!","Hehe, delicious!"],served:["Perfect! Evil genius!","I'm telling EVERY demon!"]},
+ bat:{waiting:["Um... one snack?","I'll wait right here...","Smells really nice."],ready:["For... me? ♡","My little heart!"],served:["Thank you! *flap*","Best midnight snack!"]},
+ ghost:{waiting:["I remember flavors...","Something moonlit...","I'm haunting the menu."],ready:["I can almost taste it!","Ethereal! ♡"],served:["Heavenly... sort of.","I feel alive again!"]},
+ witch:{waiting:["Don't disappoint me.","Darling, I'm famished.","A touch of elegance."],ready:["Finally, perfection!","Now THAT is magic."],served:["Exquisite, darling.","Five curses out of five!"]},
+ gargoyle:{waiting:["Hmph. Food.","Impress me, tiny chef.","I do NOT smile."],ready:["...Okay, I'm excited.","Looks acceptable. ♡"],served:["Don't tell anyone I liked it.","...I'm coming back."]},
+ moth:{waiting:["Is that a LAMP?!","Ooh, shiny supper!","Fluttering with hunger!"],ready:["It's GLOWING! ✨","Absolutely radiant!"],served:["My wings are dancing!","A dazzling delight!"]},
+ crow:{waiting:["What's in the dough?","I have my doubts.","Prove you're a chef."],ready:["Suspiciously delicious.","I approve. Maybe."],served:["Not bad. Not bad at all.","I'll tell my flock."]},
+ slime:{waiting:["Bloop! Food time!","I could eat a castle!","BUBBLE BUBBLE!"],ready:["BLOOP BLOOP!!","HAPPY SLIME! ♡"],served:["SQUEEE! So good!","I might explode!"]}
+};
+function customerLine(order,ready){
+ const patron=patronForOrder(order),phrases=CUSTOMER_LINES[patron.symbol][ready?"ready":"waiting"];
+ const phase=(order.id+order.tier)%phrases.length;
+ return phrases[phase];
+}
 function portrait(patron){
  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");svg.classList.add("patron-icon");svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");use.setAttribute("href","#patron-"+patron.symbol);svg.append(use);return svg;
@@ -124,21 +138,26 @@ function renderOrders(){
  const frag=document.createDocumentFragment();
  game.orders.forEach((order,i)=>{
   const ready=findReady(game,order)>=0||findShelfReady(game,order)>=0;
-  const patron=PATRONS[order.id%PATRONS.length];
+  const patron=patronForOrder(order);
+  const favoriteTip=favoriteTipForOrder(order);
   const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"")+(order.tier>=5?" deluxe":"");
   button.style.setProperty("--customer-delay",String(i*-.7)+"s");
+  button.dataset.customer=patron.symbol;
+  button.dataset.mood=ready?"delighted":order.tier>=5?"impatient":"hopeful";
+  button.classList.toggle("favorite-order",favoriteTip>0);
   button.disabled=!ready;button.title=ready?"Serve "+label(order.chain,order.tier):"Merge ingredients to make "+label(order.chain,order.tier);
-  button.setAttribute("aria-label",patron.name+" requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" Earn "+order.coins+" coins and "+order.xp+" XP.");
+  button.setAttribute("aria-label",patron.name+" ("+patron.personality+") requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" "+customerLine(order,ready)+" Earn "+(order.coins+favoriteTip)+" coins"+(favoriteTip?" including "+favoriteTip+" favorite-food tip":"")+" and "+order.xp+" XP.");
   if(ready)button.append(text("span","✓","check"));
   const customer=text("span","","customer-badge");
   const avatar=text("span","","customer-avatar");avatar.append(portrait(patron));
   customer.append(avatar,text("span",patron.name));
-  const speech=text("span",ready?"YUM! ♡":order.tier>=5?"A grand feast!":"Something tasty?","customer-speech");
+  const speech=text("span",customerLine(order,ready),"customer-speech");
   customer.append(speech);
   button.append(customer);
   button.append(food(order.chain,order.tier),text("span",label(order.chain,order.tier),"order-name"));
+  if(favoriteTip)button.append(text("span","♡ FAV +"+favoriteTip,"favorite-tip"));
   const footer=document.createElement("span");footer.className="order-foot";
-  footer.append(text("span","◈ "+order.coins),text("span","✦ "+order.xp+" XP"));
+  footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
   button.append(footer,text("span",ready?"✦ SERVE ME!":"✧ COOKING...","serve-label"));
   button.addEventListener("click",()=>fulfill(i));frag.append(button);
  });
@@ -345,8 +364,9 @@ function fulfill(index){
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
  history=null;selected=null;selectedShelf=null;hintPair=null;render();
- const earned="ORDER SERVED! +"+result.coins+" coins ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
+ const earned=result.patron+" loved it! +"+result.coins+" coins"+(result.favoriteTip?" (including "+result.favoriteTip+" favorite tip!)":"")+" ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
+ const patron=PATRONS.find(p=>p.name===result.patron);if(patron){const lines=CUSTOMER_LINES[patron.symbol].served;toast(result.patron+": "+lines[game.served%lines.length]);}
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
  if(result.storageUnlocked)toast("✦ PANTRY EXPANDED! "+result.storageCapacity+" storage pockets unlocked!");
