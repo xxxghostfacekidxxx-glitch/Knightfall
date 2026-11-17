@@ -291,7 +291,7 @@ test("storage grows at levels 4, 7, 10 and 13 and keeps old pantry contents",()=
  assert.deepEqual(loaded.shelf[0],state.shelf[0]);
  assert.deepEqual(loaded.shelf[3],state.shelf[3]);
  assert.equal(loaded.shelf.length,shelfCapacity(7));
- assert.equal(storeOnShelf(loaded,0,3).ok,true);
+ assert.equal(storeOnShelf(loaded,8,3).ok,true);
  assert.equal(loaded.shelf[3]?.chain,"garden");
 });
 test("sweetshop generator unlocks on level 3 and a missing generator returns when space frees",()=>{
@@ -302,9 +302,9 @@ test("sweetshop generator unlocks on level 3 and a missing generator returns whe
  const served=serve(state,0,rng,now);
  assert.equal(served.ok,true);
  assert.equal(state.level>=3,true);
- assert.equal(generatorAt(state,state.generators.sweets),"sweets");
+ assert.ok(state.generators.sweets>=0);assert.equal(generatorAt(state,state.generators.sweets),"sweets");
  const saved=restore(serialize(state),rng,now);
- assert.equal(generatorAt(saved,saved.generators.sweets),"sweets");
+ assert.ok(saved.generators.sweets>=0);assert.ok(saved.generators.sweets>=0);assert.equal(generatorAt(saved,saved.generators.sweets),"sweets");
  saved.generators.sweets=-1;
  saved.board[7]={chain:"garden",tier:2,id:444};
  assert.equal(recycle(saved,7).ok,true);
