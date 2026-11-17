@@ -1,9 +1,9 @@
-import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
 const STORE="knightfall:hex-and-whisk:v1",SOUND_STORE="knightfall:hex-and-whisk:sound";
-let game,selected=null,history=null,drag=null,ghost=null,hovered=null,lastToast=0,toastTimer=null,audio=null,hintPair=null;
+let game,selected=null,selectedShelf=null,history=null,drag=null,ghost=null,hovered=null,hoveredShelf=null,lastToast=0,toastTimer=null,audio=null,hintPair=null;
 let soundOn=false,bonusUntil=0,lastSyncScore=0,lastCookbookSignature="";
 try{soundOn=localStorage.getItem(SOUND_STORE)==="yes"}catch{}
 try{game=restore(localStorage.getItem(STORE),Math.random,Date.now())}catch{game=makeGame()}
@@ -72,10 +72,30 @@ function renderBoard(pop=-1){
  board.replaceChildren(frag);
  if(focusIndex>=0&&document.activeElement!==board){const item=board.querySelector('[data-index="'+focusIndex+'"]');if(item)item.focus({preventScroll:true})}
 }
+function renderShelf(){
+ const shelf=$("shelf");if(!shelf)return;
+ const frag=document.createDocumentFragment();
+ game.shelf.forEach((item,index)=>{
+  const button=document.createElement("button");button.type="button";
+  button.className="shelf-slot"+(item?" filled":"")+(selectedShelf===index?" selected":"");
+  button.dataset.shelfIndex=String(index);
+  button.setAttribute("aria-pressed",String(selectedShelf===index));
+  if(item){
+   button.append(food(item.chain,item.tier),text("span",label(item.chain,item.tier),"shelf-name"));
+   button.setAttribute("aria-label","Pantry shelf "+(index+1)+": "+label(item.chain,item.tier)+". Tap to choose, then tap a board square to retrieve or swap.");
+  }else{
+   button.append(text("span","✧","shelf-star"),text("span","EMPTY POCKET","shelf-name"));
+   button.setAttribute("aria-label","Empty pantry shelf "+(index+1)+". Select a board ingredient, then tap here to store it.");
+  }
+  button.addEventListener("click",()=>tapShelf(index));frag.append(button);
+ });
+ shelf.replaceChildren(frag);
+ const counter=$("shelf-counter");if(counter)counter.textContent=game.shelf.filter(Boolean).length+" / "+SHELF_SLOTS+" FILLED";
+}
 function renderOrders(){
  const frag=document.createDocumentFragment();
  game.orders.forEach((order,i)=>{
-  const ready=findReady(game,order)>=0;
+  const ready=findReady(game,order)>=0||findShelfReady(game,order)>=0;
   const patron=PATRONS[order.id%PATRONS.length];
   const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"");
   button.disabled=!ready;button.title=ready?"Serve "+label(order.chain,order.tier):"Merge ingredients to make "+label(order.chain,order.tier);
@@ -208,7 +228,7 @@ function renderStats(){
  $("whisk").disabled=game.whisks<1||!findMergePair(game);
  $("hint").disabled=!findMergePair(game);
 }
-function render(pop=-1){renderBoard(pop);renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();safeSave()}
+function render(pop=-1){renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
@@ -228,13 +248,13 @@ function particle(place,note,color){
  }
 }
 function problem(reason){
- const map={quest:"Unknown kitchen quest.",incomplete:"Finish the quest before claiming.",locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
+ const map={"shelf-empty":"That pantry pocket is empty.",quest:"Unknown kitchen quest.",incomplete:"Finish the quest before claiming.",locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
  announce(map[reason]||"That action didn't work. Try another item.");bell([245],.05);
 }
 function action(fn){
  const snapshot=serialize(game),result=fn();
  if(!result.ok){problem(result.reason);return null}
- history=snapshot;selected=null;hintPair=null;return result;
+ history=snapshot;selected=null;selectedShelf=null;hintPair=null;return result;
 }
 function makeIngredient(chain){
  const result=action(()=>spawn(game,chain,Math.random,Date.now()));
@@ -257,10 +277,33 @@ function moveIngredient(a,b){
   bell([350],.04);
  }
 }
+function parkIngredient(boardIndex,shelfIndex){
+ const result=action(()=>storeOnShelf(game,boardIndex,shelfIndex));
+ if(!result)return;
+ render();announce(result.type==="shelf-swap"?"Swapped the counter item with your pantry reserve.":"Ingredient safely tucked into your pantry shelf.");
+ bell([420,680],.08);rumble(8);
+}
+function tapShelf(index){
+ if(selected!==null){parkIngredient(selected,index);return}
+ if(!game.shelf[index]){
+  selectedShelf=null;renderShelf();announce("Select a board ingredient, then tap an empty pantry pocket to store it.");return;
+ }
+ selectedShelf=selectedShelf===index?null:index;hintPair=null;
+ renderShelf();renderBoard();
+ announce(selectedShelf===null?"Pantry selection cleared.":"Pantry ingredient selected. Tap any board square to retrieve it or swap places.");
+}
+function retrieveIngredient(boardIndex){
+ const index=selectedShelf;
+ const result=action(()=>takeFromShelf(game,index,boardIndex));
+ if(!result)return;
+ render(boardIndex);
+ announce(result.type==="shelf-swap"?"Pantry and counter swapped places.":"Ingredient returned to the counter.");
+ bell([570,770],.07);rumble(8);
+}
 function fulfill(index){
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
- history=null;selected=null;hintPair=null;render();
+ history=null;selected=null;selectedShelf=null;hintPair=null;render();
  const earned="ORDER SERVED! +"+result.coins+" coins ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
@@ -302,11 +345,12 @@ function useMagicWhisk(){
 }
 function undo(){
  if(!history){announce("Nothing to undo yet.");return}
- game=restore(history,Math.random,Date.now());history=null;selected=null;hintPair=null;
+ game=restore(history,Math.random,Date.now());history=null;selected=null;selectedShelf=null;hintPair=null;
  render();announce("Last board action undone.");bell([460,390],.06);
 }
 function tapCell(index){
  if(!Number.isInteger(index)||index<0||index>=CELL_COUNT)return;
+ if(selectedShelf!==null){retrieveIngredient(index);return}
  if(selected!==null){
   if(selected===index){selected=null;renderBoard();renderStats();return}
   moveIngredient(selected,index);return;
@@ -314,8 +358,9 @@ function tapCell(index){
  if(!game.board[index]){announce("Empty square. Tap an ingredient first, or collect some from a station.");return}
  selected=index;renderBoard();renderStats();announce(label(game.board[index].chain,game.board[index].tier)+" selected. Tap or drag it onto a match.");
 }
-function clearHovered(){if(hovered!==null){const b=board.querySelector('[data-index="'+hovered+'"]');if(b)b.classList.remove("drop-target")}hovered=null}
+function clearHovered(){if(hovered!==null){const b=board.querySelector('[data-index="'+hovered+'"]');if(b)b.classList.remove("drop-target")}hovered=null;if(hoveredShelf!==null){$("shelf")?.querySelector('[data-shelf-index="'+hoveredShelf+'"]')?.classList.remove("drop-target")}hoveredShelf=null}
 function removeGhost(){clearHovered();if(ghost){ghost.remove();ghost=null}}
+function shelfAt(x,y){const element=document.elementFromPoint(x,y);const slot=element?.closest?.(".shelf-slot");return slot&&$("shelf")?.contains(slot)?Number(slot.dataset.shelfIndex):null}
 function indexAt(x,y){
  const element=document.elementFromPoint(x,y);
  const slot=element?.closest?.(".slot");
@@ -338,20 +383,22 @@ board.addEventListener("pointermove",event=>{
  if(!drag.moved)return;
  event.preventDefault();
  ghost.style.left=event.clientX+"px";ghost.style.top=event.clientY+"px";
- const target=indexAt(event.clientX,event.clientY);
- if(target!==hovered){
+ const target=indexAt(event.clientX,event.clientY),shelfTarget=shelfAt(event.clientX,event.clientY);
+ if(target!==hovered||shelfTarget!==hoveredShelf){
   clearHovered();
   if(target!==null&&target!==drag.from){hovered=target;board.querySelector('[data-index="'+target+'"]')?.classList.add("drop-target")}
+  if(shelfTarget!==null){hoveredShelf=shelfTarget;$("shelf")?.querySelector('[data-shelf-index="'+shelfTarget+'"]')?.classList.add("drop-target")}
  }
 });
 function endDrag(event){
  if(!drag||drag.id!==event.pointerId)return;
- const original=drag.from,didMove=drag.moved,target=didMove?indexAt(event.clientX,event.clientY):null;
+ const original=drag.from,didMove=drag.moved,target=didMove?indexAt(event.clientX,event.clientY):null,shelfTarget=didMove?shelfAt(event.clientX,event.clientY):null;
  removeGhost();drag=null;
  try{board.releasePointerCapture(event.pointerId)}catch{}
  if(didMove){
-  if(target!==null&&target!==original)moveIngredient(original,target);
-  else announce("Drop that ingredient onto a board square.");
+  if(shelfTarget!==null)parkIngredient(original,shelfTarget);
+  else if(target!==null&&target!==original)moveIngredient(original,target);
+  else announce("Drop that ingredient onto a board square or pantry pocket.");
  }else tapCell(original);
 }
 board.addEventListener("pointerup",endDrag);
@@ -379,7 +426,7 @@ document.addEventListener("keydown",event=>{
  if(key==="h"){event.preventDefault();showMergeHint()}
  if(key==="w"){event.preventDefault();useMagicWhisk()}
  if(key==="m"){$("sound-toggle").click()}
- if(key==="escape"&&selected!==null){selected=null;renderBoard();renderStats()}
+ if(key==="escape"&&(selected!==null||selectedShelf!==null)){selected=null;selectedShelf=null;renderBoard();renderShelf();renderStats()}
  if(["1","2","3"].includes(key)&&event.target.tagName!=="BUTTON"){makeIngredient(Object.keys(RECIPES)[Number(key)-1])}
 });
 $("undo").addEventListener("click",undo);
@@ -428,7 +475,7 @@ async function loadAccount(){
   if(!saved){announce("No account kitchen save found yet. Your local save remains untouched.");return}
   if((game.score>0||game.served>0)&&!window.confirm("Replace this device's kitchen with your saved account kitchen?"))return;
   game=restore(saved.serialized||saved.gameState||saved,Math.random,Date.now());
-  history=null;selected=null;hintPair=null;render();announce("Account kitchen loaded. Welcome back, chef!",true);
+  history=null;selected=null;selectedShelf=null;hintPair=null;render();announce("Account kitchen loaded. Welcome back, chef!",true);
  }catch{announce("Could not load the account save. Your local kitchen is safe.")}
 }
 function maybeCloudAutosave(){
