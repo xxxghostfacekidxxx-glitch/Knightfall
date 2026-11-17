@@ -55,7 +55,7 @@ test('gothic presentation is accessible and does not touch game canvases or sele
  assert.match(chrome,/@media\(forced-colors:active\)/);
  assert.match(chrome,/:focus-visible/);
  assert.doesNotMatch(chrome,/canvas\s*\{|\.game-renderer\s*\{/i,'Must not recolor game rendering');
- assert.doesNotMatch(chrome,/\[hidden\]\s*\{\s*display\s*:/i,'Must not reveal hidden staff content');
+ assert.doesNotMatch(chrome,/\[hidden\]\s*\{\s*display\s*:(?!none\b)/i,'Must never override hidden staff controls with a visible display value');
 });
 test('core public sections and restricted consoles have dedicated frame and panel styling',()=>{
  for(const name of ['home','madhouse','arcade','foundry','messages','moon','market','members','god','pets','diary']){
