@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=11"/);
- assert.match(page,/href="\.\/game\.css\?v=11"/);
+ assert.match(page,/src="\.\/game\.js\?v=12"/);
+ assert.match(page,/href="\.\/game\.css\?v=12"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -164,8 +164,8 @@ test("art revision enhances all original recipes, portraits and generator equipm
  }
  assert.match(script,/machineTrim/);
  assert.match(stylesheet,/V10 illustrated art direction/);
- assert.match(page,/game\.js\?v=11/);
- assert.match(page,/game\.css\?v=11/);
+ assert.match(page,/game\.js\?v=12/);
+ assert.match(page,/game\.css\?v=12/);
 });
 
 test("patron spotlights allow waiting dialogue and celebrate newly ready and served orders",()=>{
@@ -181,4 +181,18 @@ test("patron spotlights allow waiting dialogue and celebrate newly ready and ser
  assert.match(stylesheet,/\.customer-moment\.moment-show/);
  assert.match(stylesheet,/@keyframes customer-stage-enter/);
  assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+test("free-standing ingredient sprites retain the seamless checkerboard and customers display return visits",()=>{
+ assert.match(page,/game\.js\?v=12/);
+ assert.match(page,/game\.css\?v=12/);
+ assert.match(script,/svg\.classList\.add\("food","food-object"\)/);
+ assert.match(stylesheet,/V12: ONE uninterrupted stone checkerboard/);
+ assert.match(stylesheet,/background:conic-gradient/);
+ assert.match(stylesheet,/\.slot\[data-family\] \.food-object/);
+ assert.match(stylesheet,/background:transparent!important;background-image:none!important/);
+ assert.match(script,/loyaltyStamps\(game,patron\)/);
+ assert.match(script,/regular-customer/);
+ assert.match(stylesheet,/\.loyalty-mark/);
+ assert.match(stylesheet,/@keyframes expression-joy/);
 });
