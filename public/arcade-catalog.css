@@ -8,3 +8,11 @@
 @media(max-width:540px){.arcade-directory{padding:1.2rem .85rem 4rem}#game-shelf .cartridge-shelf{grid-template-columns:1fr}#game-shelf .arcade-catalog-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.arcade-catalog-toolbar label:last-child{grid-column:1/-1}.cartridge-hero{padding:1.8rem 0 1rem}.arcade-collections button{font-size:.75rem;padding:.6rem .8rem}.arcade-license-link{margin-left:0}}
 /* Keep the catalog's launch buttons clear of floating character overlays. */
 body:has(.arcade-directory) #miss-chaos-presence,body:has(.arcade-directory) .gw-character-crew{display:none!important}
+
+/* Compact, deliberate repair action. Never obstruct or float above the game shelf. */
+#arcade-repair{cursor:pointer;min-height:44px;border:1px solid #c7a77c;color:#f6dfc7;background:#231d29;padding:.65rem 1rem;border-radius:11px;font-weight:800}
+#arcade-repair:hover{border-color:#e4bd8d;background:#33283a}
+#arcade-repair:focus-visible{outline:3px solid #b25b68;outline-offset:3px}
+#arcade-repair[aria-busy=true]{opacity:.68;cursor:wait}
+.arcade-repair-status{max-width:72ch;padding:10px 13px;border:1px solid #827076;border-radius:11px;background:#241f2a;color:#ecdec9;font-size:.88rem;line-height:1.45}
+.arcade-repair-status[hidden]{display:none!important}

@@ -60,6 +60,10 @@
 # Invalidate retired colors across cached UI and installed app shells.
 /arcade-polish.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade-repair.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-cartridge.html
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-cartridge-theme.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chat-bubbles.css

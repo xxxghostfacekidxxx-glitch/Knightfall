@@ -41,7 +41,7 @@ test("Legacy installed messenger identities remain stable, with no new message d
  assert.match(read("ruinwire-app.js"),/\["chaosphere","ruinwire"\]/);
  assert.match(read("ruinwire-app.js"),/\/chaosphere\.webmanifest/);
  assert.match(read("chat-bubbles.js"),/\/api\/messages\/conversations/);
- assert.match(read("sw.js"),/knightfall-shell-v74/);
+ assert.match(read("sw.js"),/knightfall-shell-v75/);
  for(const path of ["chaosphere.html","chaosphere.webmanifest","icons/chaosphere.svg"])
   assert.ok(existsSync(new URL(path,root)),path+" must be shipped");
  new vm.Script(read("ruinwire-app.js"));

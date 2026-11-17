@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v74";
+const CACHE_NAME = "knightfall-shell-v75";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -11,6 +11,7 @@ const APP_SHELL = [
   "/visual-refresh.css",
   "/knightfall-unified-theme.css",
   "/knightfall-requiem.css",
+  "/arcade-repair.js",
   "/arcade/hosted/hex-and-whisk/index.html",
   "/arcade/hosted/hex-and-whisk/game.css",
   "/arcade/hosted/hex-and-whisk/game.js",
@@ -274,7 +275,12 @@ self.addEventListener("fetch", event => {
   const offlineBotAsset = url.pathname === "/personal-bots-offline.html" || url.pathname === "/personal-bots-offline.js";
   if (!offlineBotAsset && (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault"))) return;
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(async () => {
+    // Game HTML can be silently stale on Android/PWA even when all page assets
+    // have updated. Always fetch a fresh game *document* while preserving the
+    // offline Hex & Whisk fallback. This never touches cloud or local saves.
+    const navigation=request.url.includes("/arcade/hosted/") ?
+      new Request(request,{cache:"no-store"}) : request;
+    event.respondWith(fetch(navigation).catch(async () => {
       // The self-hosted merge kitchen is precached and should open while offline.
       if (url.pathname === "/arcade/hosted/hex-and-whisk/index.html") {
         const kitchen = await caches.match("/arcade/hosted/hex-and-whisk/index.html", { ignoreSearch: true });
