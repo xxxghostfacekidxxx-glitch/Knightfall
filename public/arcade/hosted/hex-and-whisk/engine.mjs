@@ -1,6 +1,7 @@
 /* Hex & Whisk / original Knightfall merge-cooking rules. Pure state engine. */
 export const WIDTH=6;
 export const CELL_COUNT=WIDTH*WIDTH;
+export const SHELF_SLOTS=2;
 export const MAX_ENERGY=40;
 export const ENERGY_INTERVAL=9000;
 export const RECIPES=Object.freeze({
@@ -97,6 +98,20 @@ export function magicWhisk(state,now=Date.now()){
 export function unlocked(state,chain){return !!RECIPES[chain]&&state.level>=RECIPES[chain].unlock}
 export const available=state=>state.board.filter(tile=>tile===null).length;
 export const findReady=(state,order)=>state.board.findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
+export const findShelfReady=(state,order)=>(state.shelf||[]).findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
+/* The pantry shelf is free storage, not another generator. Each move preserves item identity. */
+export function storeOnShelf(state,boardIndex,shelfIndex){
+ if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=SHELF_SLOTS)return {ok:false,reason:"invalid"};
+ const tile=state.board[boardIndex];if(!tile)return {ok:false,reason:"empty"};
+ const previous=state.shelf[shelfIndex];state.shelf[shelfIndex]=tile;state.board[boardIndex]=previous||null;state.combo=0;
+ return {ok:true,type:previous?"shelf-swap":"shelf-store",place:boardIndex,shelfIndex};
+}
+export function takeFromShelf(state,shelfIndex,boardIndex){
+ if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=SHELF_SLOTS)return {ok:false,reason:"invalid"};
+ const tile=state.shelf[shelfIndex];if(!tile)return {ok:false,reason:"shelf-empty"};
+ const previous=state.board[boardIndex];state.board[boardIndex]=tile;state.shelf[shelfIndex]=previous||null;state.combo=0;
+ return {ok:true,type:previous?"shelf-swap":"shelf-take",place:boardIndex,shelfIndex};
+}
 function orderFor(state,random){
  const unlockedKeys=keys.filter(k=>unlocked(state,k));
  const maxTier=state.level<3?3:state.level<5?4:state.level<8?5:6;
@@ -111,7 +126,7 @@ function orderFor(state,random){
  return {id:state.serial++,chain,tier,coins:14+tier*14,xp:10+tier*9,energy:5+Math.floor(tier/2)};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -170,9 +185,10 @@ export function move(state,from,to,now=Date.now()){
 export function serve(state,index,random=Math.random,now=Date.now()){
  advance(state,now);
  if(!Number.isInteger(index)||index<0||index>=state.orders.length)return {ok:false,reason:"order"};
- const order=state.orders[index],place=findReady(state,order);
- if(place<0)return {ok:false,reason:"missing"};
- state.board[place]=null;
+ const order=state.orders[index],place=findReady(state,order),shelfPlace=place<0?findShelfReady(state,order):-1;
+ if(place<0&&shelfPlace<0)return {ok:false,reason:"missing"};
+ if(place>=0)state.board[place]=null;
+ else state.shelf[shelfPlace]=null;
  const rush=state.rushUntil>now;
  const coins=order.coins*(rush?2:1);
  const gained=order.xp*10*(rush?2:1);
@@ -194,7 +210,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  if(state.served%5===0)state.rushUntil=now+45000;
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
- return {ok:true,type:"serve",place,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0,whiskEarned};
+ return {ok:true,type:"serve",place,shelfPlace,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
@@ -248,11 +264,12 @@ export function restore(raw,random=Math.random,now=Date.now()){
  }
  const goodTile=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=1&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  state.board=value.board.map(x=>goodTile(x)?{chain:x.chain,tier:x.tier,id:x.id}:null);
- for(const tile of state.board)if(tile)state.discovered[tile.chain]=Math.max(state.discovered[tile.chain],tile.tier);
+ state.shelf=Array.isArray(value.shelf)&&value.shelf.length===SHELF_SLOTS?value.shelf.map(x=>goodTile(x)?{chain:x.chain,tier:x.tier,id:x.id}:null):Array(SHELF_SLOTS).fill(null);
+ for(const tile of [...state.board,...state.shelf])if(tile)state.discovered[tile.chain]=Math.max(state.discovered[tile.chain],tile.tier);
  const goodOrder=x=>x&&typeof x==="object"&&!!RECIPES[x.chain]&&Number.isInteger(x.tier)&&x.tier>=2&&x.tier<=7&&Number.isSafeInteger(x.id)&&x.id>0;
  if(value.orders.every(goodOrder))state.orders=value.orders.map(x=>({id:x.id,chain:x.chain,tier:x.tier,coins:num(x.coins,35,1,1000),xp:num(x.xp,20,1,200),energy:num(x.energy,5,0,20)}));
  else state.orders=Array.from({length:3},()=>orderFor(state,random));
- state.serial=Math.max(state.serial,1+Math.max(0,...state.board.filter(Boolean).map(x=>x.id),...state.orders.map(x=>x.id)));
+ state.serial=Math.max(state.serial,1+Math.max(0,...state.board.filter(Boolean).map(x=>x.id),...state.shelf.filter(Boolean).map(x=>x.id),...state.orders.map(x=>x.id)));
  advance(state,now);
  return state;
 }
