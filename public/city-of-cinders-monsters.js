@@ -2,9 +2,9 @@
    Character motifs carried over from the site's Minion Mouse, Mini Villain and Eddie. */
 (function(root){'use strict';
 const designs=Object.freeze({
- 'minion-mouse':{name:'Minion Mouse',fur:'#e8d3bf',shade:'#ad898d',jacket:'#783b56',accent:'#ff55d8',eyes:'#c6ff45'},
- 'mini-villain':{name:'Mini Villain',fur:'#bd809e',shade:'#6e426b',jacket:'#341a50',accent:'#f0b66d',eyes:'#c6ff45'},
- 'the-eddie':{name:'The Eddie',fur:'#93a29b',shade:'#4c5663',jacket:'#22232d',accent:'#c6ff45',eyes:'#ff55d8'}
+ 'minion-mouse':{name:'Minion Mouse',fur:'#ffe2ce',shade:'#c07a7a',jacket:'#963b54',accent:'#ef6b9b',eyes:'#bc365a',archetype:'chibi fox-eared animal girl',tails:3},
+ 'mini-villain':{name:'Mini Villain',fur:'#f1bca2',shade:'#a194aa',jacket:'#352442',accent:'#b58ee4',eyes:'#25192f',archetype:'kid villain in a homemade foil crown',tails:0},
+ 'the-eddie':{name:'The Eddie',fur:'#f0bd9e',shade:'#a87770',jacket:'#292434',accent:'#fa965b',eyes:'#75312c',archetype:'feral baby with goggles and flat-bill hat',tails:0}
 });
 const black='#130f1c';
 function shape(c,fill,draw,stroke=black,width=5){c.beginPath();draw(c);if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=width;c.lineJoin='round';c.lineCap='round';c.stroke();}}
@@ -21,78 +21,83 @@ function arm(c,x,y,angle,p,size=1){c.save();c.translate(x,y);c.rotate(angle);c.s
  shape(c,g,q=>{q.moveTo(-14,-3);q.quadraticCurveTo(24,-12,24,18);q.lineTo(22,45);q.quadraticCurveTo(30,66,9,70);q.quadraticCurveTo(-15,67,-17,47);q.closePath();});
  oval(c,12,61,20,16,p.fur,black,4,-.2);
  for(let i=0;i<3;i++)tooth(c,1+i*11,66);c.restore();}
+function foxTail(c,x,y,angle,scale){
+ c.save();c.translate(x,y);c.rotate(angle);c.scale(scale,scale);
+ shape(c,'#e68b5d',q=>{q.moveTo(0,0);q.bezierCurveTo(-24,-34,-52,-62,-29,-83);q.bezierCurveTo(0,-111,40,-77,28,-46);q.quadraticCurveTo(20,-18,0,0);q.closePath();},black,5);
+ shape(c,'#fff1de',q=>{q.moveTo(-28,-69);q.bezierCurveTo(-43,-95,2,-104,26,-75);q.lineTo(13,-75);q.lineTo(5,-67);q.lineTo(-8,-79);q.closePath();},black,2);
+ c.restore();
+}
+function foxEar(c,x,tilt){
+ c.save();c.translate(x,43);c.rotate(tilt);
+ shape(c,'#cc765b',q=>{q.moveTo(-22,7);q.lineTo(-13,-53);q.lineTo(10,-44);q.lineTo(23,11);q.closePath();},black,5);
+ shape(c,'#ffb5a8',q=>{q.moveTo(-11,3);q.lineTo(-7,-34);q.lineTo(9,-28);q.lineTo(15,5);q.closePath();},black,2);
+ c.restore();
+}
 function mouse(c,p){
- // Heavy electro-mechanical tail and giant stitched ears.
- ink(c,black,19,q=>{q.moveTo(49,139);q.bezierCurveTo(-25,140,1,64,31,76);q.bezierCurveTo(45,83,3,111,12,100);});
- ink(c,'#f5afc2',11,q=>{q.moveTo(49,139);q.bezierCurveTo(-25,140,1,64,31,76);q.bezierCurveTo(45,83,3,111,12,100);});
- for(const [x,y,angle] of [[46,42,-.21],[116,38,.19]]){
-  oval(c,x,y,33,44,p.shade,black,6,angle);oval(c,x,y,23,34,'#ffacbb','#a65381',3,angle);
-  ink(c,'#ffdde3',3,q=>{q.moveTo(x-8,y+10);q.quadraticCurveTo(x-14,y-7,x+2,y-19);});
+ // Clearly three separate fox tails, chibi girl, fox ears, mouse-logo patch.
+ foxTail(c,50,142,-.85,.88);foxTail(c,92,150,.1,1.06);foxTail(c,122,143,.83,.86);
+ oval(c,83,121,42,43,p.jacket,black,6);
+ shape(c,'#e4ad78',q=>{q.moveTo(67,103);q.lineTo(84,117);q.lineTo(103,101);q.lineTo(95,151);q.lineTo(75,153);q.closePath();},black,3);
+ ink(c,'#f6c3a4',4,q=>{q.moveTo(48,151);q.lineTo(117,152);});
+ oval(c,103,125,12,11,'#392536',black,2);
+ oval(c,96,119,4,4,'#e69da9',null);oval(c,111,118,4,4,'#e69da9',null);
+ foxEar(c,46,-.18);foxEar(c,123,.17);
+ // Short fluffy ivory hair frames the giant animated face.
+ oval(c,83,76,57,47,'#f4d8ce',black,6);
+ oval(c,83,91,48,36,p.fur,black,5);
+ for(let i=0;i<5;i++){
+  const x=34+i*21;
+  shape(c,'#f5d8ce',q=>{q.moveTo(x,54);q.lineTo(x+9,35+(i%2)*8);q.lineTo(x+21,61);q.closePath();},black,2);
  }
- plate(c,36,111,25,38);oval(c,48,130,8,10,p.eyes,black,2);
- oval(c,82,116,47,50,p.fur,black,7);
- shape(c,p.jacket,q=>{q.moveTo(47,97);q.quadraticCurveTo(70,78,105,91);q.lineTo(126,150);q.lineTo(57,161);q.closePath();});
- oval(c,80,124,27,29,'#eddbc3','#9f8388',3);
- ink(c,'#d3a3aa',3,q=>{q.moveTo(55,109);q.lineTo(60,119);q.lineTo(53,134);});
- ink(c,'#eec88d',3,q=>{q.moveTo(82,109);q.quadraticCurveTo(98,119,93,143);});
- oval(c,93,147,11,11,'#e7c78b','#755963',2);
- const g=c.createLinearGradient(49,44,135,126);g.addColorStop(0,'#fff3da');g.addColorStop(.6,p.fur);g.addColorStop(1,p.shade);
- oval(c,87,81,50,46,g,black,7,.08);oval(c,122,97,26,20,'#f8e0d1',black,4);
- oval(c,143,88,7,6,'#744058',black,2);
- // Scavenger goggles and exposed lenses.
- shape(c,'#4b3a50',q=>{q.moveTo(50,65);q.quadraticCurveTo(84,43,122,61);q.lineTo(125,73);q.quadraticCurveTo(79,57,48,78);q.closePath();},black,3);
- for(const x of [69,101]){oval(c,x,66,15,13,'#353b4b','#d3ad88',5);oval(c,x+1,64,9,8,'#80d8df',null);oval(c,x-3,60,3,2,'#fff7e6',null);}
- for(const [x,y] of [[78,89],[109,88]]){oval(c,x,y,10,10,black,null);oval(c,x+2,y,5,6,p.eyes,null);}
- ink(c,'#673e55',4,q=>{q.moveTo(105,106);q.quadraticCurveTo(125,123,138,106);});
- tooth(c,113,109);tooth(c,124,109);
- for(let i=0;i<3;i++){ink(c,'#f9d4c6',2,q=>{q.moveTo(115,94+i*7);q.lineTo(150,86+i*12);});}
+ for(const x of [65,101]){oval(c,x,93,12,14,'#fff7ed',black,3);oval(c,x+3,94,6,9,p.eyes,null);oval(c,x+3,90,2,3,'#fff2e0',null);}
+ oval(c,48,110,10,5,'#f5a1a9',null);oval(c,121,110,10,5,'#f5a1a9',null);
+ ink(c,'#6c344b',4,q=>{q.moveTo(77,113);q.quadraticCurveTo(93,125,108,112);});tooth(c,95,117);
+ // Copper-lensed scavenger goggles above eyes, not in place of ears.
+ ink(c,'#45313c',7,q=>{q.moveTo(47,63);q.quadraticCurveTo(83,44,122,63);});
+ for(const x of [64,101]){oval(c,x,60,16,13,'#392c3b','#c99d70',5);oval(c,x,59,10,8,'#df934a',null);oval(c,x-4,56,3,2,'#fff8e0',null);}
+ oval(c,39,48,7,7,'#493043',null);oval(c,33,43,4,4,'#493043',null);oval(c,45,43,4,4,'#493043',null);
 }
 function villain(c,p){
- // Oversized velvet cape, bat wings and barbed tail.
- shape(c,'#3d1e52',q=>{q.moveTo(66,81);q.lineTo(26,101);q.lineTo(10,166);q.lineTo(39,151);q.lineTo(70,172);q.lineTo(117,149);q.lineTo(140,170);q.lineTo(127,97);q.closePath();});
- shape(c,'#9c577e',q=>{q.moveTo(55,87);q.lineTo(13,73);q.lineTo(2,107);q.lineTo(28,125);q.lineTo(45,112);q.lineTo(55,145);q.closePath();},black,4);
- shape(c,'#b9668d',q=>{q.moveTo(105,84);q.lineTo(143,66);q.lineTo(156,102);q.lineTo(137,122);q.lineTo(117,111);q.closePath();},black,4);
- ink(c,black,16,q=>{q.moveTo(58,141);q.bezierCurveTo(6,172,-6,128,21,98);});
- ink(c,'#d88ba6',9,q=>{q.moveTo(58,141);q.bezierCurveTo(6,172,-6,128,21,98);});
- shape(c,'#f4bd80',q=>{q.moveTo(19,89);q.lineTo(2,85);q.lineTo(14,111);q.lineTo(30,98);q.closePath();},black,3);
- oval(c,87,120,42,48,p.fur,black,7);
- shape(c,p.jacket,q=>{q.moveTo(56,95);q.lineTo(85,113);q.lineTo(122,91);q.lineTo(111,118);q.lineTo(89,132);q.lineTo(56,114);q.closePath();},black,4);
- plate(c,70,126,35,19);oval(c,89,134,8,8,'#f3cb8b',black,2);
- for(const [x,dir] of [[56,-1],[110,1]])shape(c,'#eed2af',q=>{q.moveTo(x-12,62);q.lineTo(x+dir*18,7);q.lineTo(x+14,52);q.closePath();},black,5);
- // Crooked crown.
- shape(c,'#e6bd76',q=>{q.moveTo(60,51);q.lineTo(58,23);q.lineTo(76,34);q.lineTo(87,10);q.lineTo(98,32);q.lineTo(115,22);q.lineTo(111,52);q.closePath();},black,4);
- c.fillStyle='#a53d65';c.fillRect(82,35,12,10);
- const g=c.createLinearGradient(49,47,139,112);g.addColorStop(0,'#edb3ab');g.addColorStop(.64,p.fur);g.addColorStop(1,p.shade);
- oval(c,86,82,47,43,g,black,7,-.1);
- shape(c,'#c27d9a',q=>{q.moveTo(98,83);q.quadraticCurveTo(141,68,146,99);q.lineTo(113,111);q.closePath();},black,4);
- oval(c,137,95,6,5,'#411e37',null);
- for(const x of [66,106]){oval(c,x,81,12,11,black,null);oval(c,x+2,81,6,7,p.eyes,null);}
- ink(c,'#4b2348',5,q=>{q.moveTo(54,68);q.lineTo(76,72);q.moveTo(95,75);q.lineTo(118,65);});
- ink(c,'#2b1931',5,q=>{q.moveTo(96,107);q.quadraticCurveTo(117,122,136,105);});
- for(let i=0;i<3;i++)tooth(c,104+i*10,108);
+ // A cocky child in a homemade tinfoil crown and dramatic purple cape.
+ shape(c,'#2a2038',q=>{q.moveTo(63,88);q.lineTo(21,103);q.lineTo(6,171);q.lineTo(42,147);q.lineTo(80,172);q.lineTo(121,148);q.lineTo(148,171);q.lineTo(125,94);q.closePath();},black,5);
+ shape(c,'#854a9b',q=>{q.moveTo(51,105);q.lineTo(16,127);q.lineTo(13,159);q.lineTo(48,136);q.closePath();},black,3);
+ oval(c,85,125,41,43,'#c8c0cb',black,6);
+ shape(c,'#eee3d6',q=>{q.moveTo(54,105);q.lineTo(83,115);q.lineTo(113,101);q.lineTo(117,150);q.lineTo(53,150);q.closePath();},black,4);
+ // Spiral insignia: a homemade crest rather than borrowed artwork.
+ oval(c,86,129,20,18,'#252032',black,2);oval(c,86,129,10,9,'#f1dfd0',null);oval(c,88,130,5,5,'#282033',null);
+ for(let i=0;i<4;i++)plate(c,46+i*21,149,19,13);
+ oval(c,84,79,53,45,p.fur,black,7);
+ // Spiky black hair sticking under bent metallic foil crown.
+ for(let i=0;i<6;i++)shape(c,'#231c2d',q=>{const x=34+i*18;q.moveTo(x,63);q.lineTo(x+3,35+(i%2)*5);q.lineTo(x+19,64);q.closePath();},black,2);
+ shape(c,'#d9d3dc',q=>{q.moveTo(34,56);q.lineTo(27,22);q.lineTo(54,30);q.lineTo(72,10);q.lineTo(94,29);q.lineTo(119,13);q.lineTo(125,54);q.closePath();},black,5);
+ shape(c,'#f7ece0',q=>{q.moveTo(41,45);q.lineTo(54,36);q.lineTo(74,18);q.lineTo(94,41);q.lineTo(113,26);q.lineTo(115,50);q.closePath();},null);
+ ink(c,'#747483',2,q=>{q.moveTo(58,28);q.lineTo(64,53);q.moveTo(94,37);q.lineTo(99,52);});
+ ink(c,black,4,q=>{q.moveTo(74,13);q.lineTo(78,-5);});oval(c,78,-7,5,5,'#fff3e8',black,2);
+ for(const x of [61,105]){oval(c,x,85,17,10,'#fff7ea',black,3);oval(c,x+4,85,5,6,p.eyes,null);}
+ ink(c,'#231929',4,q=>{q.moveTo(47,73);q.lineTo(77,79);q.moveTo(91,79);q.lineTo(121,72);});
+ shape(c,'#482337',q=>{q.moveTo(63,111);q.quadraticCurveTo(86,124,111,109);q.quadraticCurveTo(91,133,74,123);q.closePath();},black,2);
+ for(let i=0;i<4;i++)tooth(c,74+i*8,115);
 }
 function eddie(c,p){
- // Torn black leather and glow-in-the-dark bones, heavyweight boots.
- oval(c,86,120,56,51,'#3d444a',black,8);
- shape(c,p.jacket,q=>{q.moveTo(43,87);q.lineTo(81,110);q.lineTo(122,87);q.lineTo(139,163);q.lineTo(107,166);q.lineTo(84,127);q.lineTo(55,166);q.lineTo(40,149);q.closePath();},black,6);
- for(let i=0;i<4;i++)ink(c,'#c2d4bd',3,q=>{let y=115+i*10;q.moveTo(68,y);q.quadraticCurveTo(86,y+9,104,y);});
- shape(c,'#b14e67',q=>{q.moveTo(78,113);q.lineTo(91,120);q.lineTo(100,114);q.lineTo(88,147);q.closePath();},black,2);
- for(let i=0;i<4;i++)shape(c,'#d2c7b8',q=>{let x=43+i*25;q.moveTo(x,106);q.lineTo(x+6,91);q.lineTo(x+12,105);q.closePath();},black,2);
- plate(c,46,129,13,23);plate(c,114,130,13,21);
- const g=c.createLinearGradient(44,50,140,114);g.addColorStop(0,'#c5c9bb');g.addColorStop(.65,p.fur);g.addColorStop(1,p.shade);
- oval(c,88,80,53,49,g,black,8);
- for(const [x,s] of [[46,-1],[124,1]])shape(c,p.shade,q=>{q.moveTo(x-11,64);q.lineTo(x+s*22,14);q.lineTo(x+17,52);q.closePath();},black,6);
- // Acid-green mosh-pit mohawk.
- shape(c,'#c6ff45',q=>{q.moveTo(57,46);q.lineTo(61,22);q.lineTo(74,32);q.lineTo(84,5);q.lineTo(96,30);q.lineTo(109,15);q.lineTo(114,45);q.closePath();},black,5);
- ink(c,'#f1ffb0',3,q=>{q.moveTo(73,27);q.lineTo(83,12);q.lineTo(92,29);});
- oval(c,114,104,31,24,'#a7aaa0',black,5,-.1);oval(c,140,97,9,8,'#333036',black,2);
- oval(c,67,83,12,13,black,null);oval(c,68,83,7,8,'#ff55d8',null);
- oval(c,106,82,12,13,black,null);oval(c,106,82,7,8,'#c6ff45',null);
- ink(c,'#3c3840',5,q=>{q.moveTo(53,69);q.lineTo(75,75);q.moveTo(97,74);q.lineTo(116,68);});
- ink(c,'#241c29',6,q=>{q.moveTo(97,114);q.quadraticCurveTo(120,132,140,111);});
- for(let i=0;i<3;i++)tooth(c,108+i*10,116);
- ink(c,'#5d4657',3,q=>{q.moveTo(48,111);q.lineTo(72,99);});
- for(let i=0;i<3;i++)ink(c,'#f4ded5',2,q=>{q.moveTo(55+i*8,104);q.lineTo(60+i*8,113);});
+ // Wild baby in goggles and a massive flat-bill cap, never a horned beast.
+ oval(c,83,123,48,40,p.fur,black,6);
+ shape(c,'#f2e3d9',q=>{q.moveTo(45,128);q.lineTo(125,126);q.lineTo(130,162);q.lineTo(46,162);q.closePath();},black,5);
+ ink(c,'#bb5366',4,q=>{q.moveTo(72,152);q.lineTo(75,143);q.lineTo(85,150);q.lineTo(94,142);q.lineTo(100,152);});
+ plate(c,49,132,16,13);plate(c,106,132,16,13);
+ oval(c,84,86,56,53,p.fur,black,7);
+ // Feral grin and oversized cheeks.
+ for(const x of [47,121])oval(c,x,112,11,6,'#e68a79',null);
+ shape(c,'#5d2839',q=>{q.moveTo(63,120);q.quadraticCurveTo(88,134,114,118);q.quadraticCurveTo(105,148,88,146);q.quadraticCurveTo(70,143,63,120);q.closePath();},black,3);
+ oval(c,91,141,11,5,'#e66c7a',null);tooth(c,73,120);tooth(c,99,119);
+ ink(c,'#8b5360',3,q=>{q.moveTo(54,108);q.lineTo(60,114);q.moveTo(116,106);q.lineTo(111,114);});
+ // Chunky punk goggles with warm amber lenses.
+ ink(c,'#3c2c35',8,q=>{q.moveTo(37,81);q.quadraticCurveTo(87,72,135,82);});
+ for(const x of [64,108]){oval(c,x,84,24,22,'#3a3441',black,5);oval(c,x,84,18,16,'#ffb05d','#bd915e',3);oval(c,x+3,88,9,10,'#794235',null);oval(c,x-6,77,6,3,'#fff4d8',null);}
+ // Spiked flat-bill hat: horizontal brim and red underside.
+ shape(c,'#292635',q=>{q.moveTo(25,58);q.lineTo(28,27);q.quadraticCurveTo(85,4,143,28);q.lineTo(140,59);q.closePath();},black,6);
+ shape(c,'#c04762',q=>{q.moveTo(12,59);q.quadraticCurveTo(82,44,165,59);q.lineTo(165,70);q.quadraticCurveTo(88,64,16,70);q.closePath();},black,5);
+ oval(c,83,38,15,12,'#e2afa7',black,2);
+ ink(c,'#372235',3,q=>{q.moveTo(72,37);q.lineTo(80,43);q.lineTo(88,37);q.moveTo(91,37);q.lineTo(98,42);});
 }
 function draw(c,id,x,y,w,h,opts={}){
  const p=designs[id];if(!p||!c||!(w>0)||!(h>0))return false;
