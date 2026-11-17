@@ -99,6 +99,7 @@
   window.addEventListener("kf:chaosphere-imp-ready",attachImp,{once:true});
   const impReact=kind=>imp?.react(kind);
   let unreadBaselineReady=false;
+  let serverUnreadBaseline=[];
 
 
   // Movable and resizable messenger, with per-account placement persistence.
@@ -394,7 +395,11 @@
       const selected=getConversation(state.active);
       const fetched=data.conversations||[];
       // Initial fetch is just a baseline. Only a later increase is truly new.
-      const newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread(state.conversations,fetched);
+      const newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread(serverUnreadBaseline,fetched);
+      // Keep this immutable server snapshot separate from optimistic local read
+      // markers. An old unread badge returning from an eventual consistency
+      // delay is not a fresh message from another member.
+      serverUnreadBaseline=fetched.map(c=>({id:c.id,unread_count:c.unread_count}));
       state.conversations=fetched;
       unreadBaselineReady=true;
       if(newArrival)impReact("incoming");

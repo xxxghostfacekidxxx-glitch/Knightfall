@@ -13,6 +13,7 @@ test("Chaosphere is canonical across pages, navigation, chat and home",()=>{
  assert.match(read("chat-bubbles.css"),/kf-imp-panic/);
  assert.match(read("chat-bubbles.js"),/ChaosphereImp\.mount/);
  assert.match(read("chat-bubbles.js"),/unreadBaselineReady/);
+ assert.match(read("chat-bubbles.js"),/serverUnreadBaseline=fetched\.map/);
  assert.match(read("messages.html"),/id="cs-hero-imp"/);
  assert.match(read("sw.js"),/chaosphere-imp\.js/);
  assert.match(read("messages.css"),/\.cs-hero-brand/);

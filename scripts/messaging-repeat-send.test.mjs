@@ -84,7 +84,7 @@ function bubble(){
   Number,JSON,console,
   getConversation:id=>({id,messaging_blocked:0}),
   rememberDraft(id,value){if(value)drafts.set(id,value);else drafts.delete(id);},
-  $:()=>button,announce(){},renderPanel(){},refreshThread:async()=>{},
+  $:()=>button,announce(){},impReact(){},renderPanel(){},refreshThread:async()=>{},
   refreshConversations:async()=>{},
   api(path,opts){const req=deferred();requests.push(req);sent.push({path,body:JSON.parse(opts.body)});return req.promise;}
  };
