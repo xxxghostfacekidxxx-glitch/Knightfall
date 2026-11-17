@@ -99,6 +99,7 @@ function renderShelf(){
  });
  shelf.replaceChildren(frag);
  const counter=$("shelf-counter");if(counter)counter.textContent=game.shelf.filter(Boolean).length+" / "+game.shelf.length+" FILLED";
+ const badge=$("storage-badge");if(badge)badge.textContent=game.shelf.filter(Boolean).length+"/"+game.shelf.length;
  const next=$("next-storage");if(next)next.textContent=game.shelf.length>=6?"ALL STORAGE UNLOCKED":"NEXT POCKET AT LEVEL "+(game.level+3-(game.level-1)%3);
 }
 function renderOrders(){
@@ -124,7 +125,9 @@ function renderOrders(){
   button.addEventListener("click",()=>fulfill(i));frag.append(button);
  });
  orders.replaceChildren(frag);
- const refresh=$("refresh-order");if(refresh){refresh.disabled=game.coins<ORDER_REFRESH_COST||game.orders.every(order=>findReady(game,order)>=0||findShelfReady(game,order)>=0);}
+ const refresh=$("refresh-order");const disabled=game.coins<ORDER_REFRESH_COST||game.orders.every(order=>findReady(game,order)>=0||findShelfReady(game,order)>=0);
+ if(refresh)refresh.disabled=disabled;
+ const mobileRefresh=$("mobile-refresh-order");if(mobileRefresh)mobileRefresh.disabled=disabled;
 }
 function renderStations(){
  const frag=document.createDocumentFragment();
@@ -224,12 +227,14 @@ function renderStats(){
  $("coins").textContent=game.coins.toLocaleString();
  $("level").textContent=game.level;
  $("served").textContent=game.served;
- $("energy").textContent=game.energy+" / "+MAX_ENERGY;
- $("energy-fill").style.width=(game.energy/MAX_ENERGY*100)+"%";
+ $("energy").textContent=game.energy+" / "+MAX_ENERGY+(game.energy>MAX_ENERGY?" BONUS":"");
+ $("energy-fill").style.width=(Math.min(game.energy,MAX_ENERGY)/MAX_ENERGY*100)+"%";
+ $("energy-track").setAttribute("aria-valuetext",game.energy+" energy; natural regeneration stops at "+MAX_ENERGY);
+ $("energy-track").classList.toggle("energy-overflow",game.energy>MAX_ENERGY);
  $("energy-track").setAttribute("aria-valuenow",String(game.energy));
  const now=Date.now();
  const seconds=game.energy>=MAX_ENERGY?0:Math.max(1,Math.ceil((ENERGY_INTERVAL-(now-game.energyLast)%ENERGY_INTERVAL)/1000));
- $("energy-timer").textContent=game.energy>=MAX_ENERGY?"Ready to cook":("Next energy in "+seconds+"s");
+ $("energy-timer").textContent=game.energy>MAX_ENERGY?"BONUS ENERGY · regeneration pauses at 40":game.energy===MAX_ENERGY?"Naturally full":("Next energy in "+seconds+"s");
  $("combo").textContent="×"+Math.max(1,game.combo);
  $("level-progress").textContent=game.xp+" / "+xpNeeded(game.level)+" XP";
  const rush=$("rush"),remain=Math.max(0,Math.ceil((game.rushUntil-now)/1000));
@@ -313,7 +318,7 @@ function retrieveIngredient(boardIndex){
  const index=selectedShelf;
  const result=action(()=>takeFromShelf(game,index,boardIndex));
  if(!result)return;
- render(boardIndex);
+ render(boardIndex);if(activeKitchenDrawer==="storage")setKitchenDrawer();
  announce(result.type==="shelf-swap"?"Pantry and counter swapped places.":"Ingredient returned to the counter.");
  bell([570,770],.07);rumble(8);
 }
@@ -358,6 +363,28 @@ function mix(){
  render();announce("A little kitchen magic! The ingredients got shuffled.");bell([470,600,740]);
 }
 
+// On compact screens the board remains playable while optional tools use overlay drawers.
+let activeKitchenDrawer=null;
+function setKitchenDrawer(which=null){
+ const shelf=$("kitchen-storage"),menu=$("kitchen-menu"),scrim=$("game-overlay-scrim");
+ activeKitchenDrawer=which;
+ const storageOpen=which==="storage",menuOpen=which==="menu";
+ shelf?.classList.toggle("drawer-open",storageOpen);
+ menu?.classList.toggle("drawer-open",menuOpen);
+ scrim.hidden=!which;
+ document.body.classList.toggle("kitchen-drawer-active",!!which);
+ $("open-storage")?.setAttribute("aria-expanded",String(storageOpen));
+ $("open-kitchen-menu")?.setAttribute("aria-expanded",String(menuOpen));
+ if(which)(storageOpen?shelf:menu)?.focus({preventScroll:true});
+ else (storageOpen?$("open-storage"):$("open-kitchen-menu"))?.blur();
+}
+$("open-storage")?.addEventListener("click",()=>setKitchenDrawer(activeKitchenDrawer==="storage"?null:"storage"));
+$("open-kitchen-menu")?.addEventListener("click",()=>setKitchenDrawer(activeKitchenDrawer==="menu"?null:"menu"));
+$("close-storage")?.addEventListener("click",()=>setKitchenDrawer());
+$("close-kitchen-menu")?.addEventListener("click",()=>setKitchenDrawer());
+$("game-overlay-scrim")?.addEventListener("click",()=>setKitchenDrawer());
+$("mobile-refresh-order")?.addEventListener("click",()=>refreshCustomerOrder());
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&activeKitchenDrawer){event.preventDefault();setKitchenDrawer();}});
 function showMergeHint(){
  const pair=findMergePair(game);
  if(!pair){hintPair=null;renderBoard();announce("No matching pair yet. Harvest, serve, or move food to make space.");return}
