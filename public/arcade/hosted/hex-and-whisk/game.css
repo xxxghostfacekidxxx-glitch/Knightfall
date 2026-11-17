@@ -71,3 +71,23 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 @media(max-width:365px){.customer-badge{font-size:.47rem}.patron-icon{width:20px;height:20px}.order-card{min-height:148px}.magic-actions button{font-size:.64rem}}
 @media(prefers-reduced-motion:reduce){.slot.hint-source,.slot.hint-dest,.whisk-btn:not(:disabled){animation:none}}
 @media(forced-colors:active){.slot.hint-source,.slot.hint-dest{outline:3px solid Highlight}}
+
+/* The Secret Pantry: two ingredient pockets, fully touch accessible and save-safe. */
+.shelf-panel{position:relative;isolation:isolate;margin:12px 2px 0;padding:12px 12px 10px;border:1px solid #f1c69c77;border-radius:17px;background:radial-gradient(ellipse at 50% 0,#9d65816c,transparent 80%),linear-gradient(145deg,#38253e,#21192f);box-shadow:inset 0 1px #ffe9bc41,0 8px 26px #09051677}
+.shelf-panel:before{content:"";position:absolute;inset:5px;border:1px solid #e7b9862c;border-radius:12px;pointer-events:none}
+.shelf-heading{position:relative;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#ffe5b9;font-size:.65rem;font-weight:950;letter-spacing:.12em;margin-bottom:8px}
+.shelf-heading strong{font-size:.6rem;color:#f4bfd5;font-variant-numeric:tabular-nums;white-space:nowrap}
+.shelf-pockets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.shelf-slot{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:76px;padding:5px 10px;border-radius:13px;border:2px dashed #b58caa88;color:#dfbcd2;background:linear-gradient(130deg,#30233b,#24182f);box-shadow:inset 0 4px 14px #110d1d9e;transition:transform .16s ease,border-color .16s,box-shadow .16s}
+.shelf-slot.filled{border:1px solid #ffdcaaab;background:radial-gradient(circle at 26% 15%,#f8d3aa4c,transparent 58%),linear-gradient(130deg,#785370,#50364e);box-shadow:inset 0 1px #fff5,0 5px 14px #0905147a}
+.shelf-slot.selected,.shelf-slot.drop-target{border:2px solid #ffefb6;box-shadow:0 0 0 2px #dc9cbd82,0 0 20px #f4cb9078,inset 0 1px #fff7;transform:translateY(-2px)}
+.shelf-slot .food{width:62px;height:62px;max-width:48%;flex:none;filter:drop-shadow(0 3px 5px #0005);animation:pantry-float 3s ease-in-out infinite}
+.shelf-star{font-size:1.5rem;color:#c6a6c9}
+.shelf-name{font-size:.66rem;line-height:1.28;font-weight:900;text-align:left;color:#fff0d9;overflow-wrap:anywhere}
+.shelf-help{position:relative;font-size:.66rem;line-height:1.4;color:#d3b5ca;margin:9px 1px 0}
+.shelf-help strong{color:#ffe4b3}
+@keyframes pantry-float{50%{transform:translateY(-3px) rotate(-3deg)}}
+@media(max-width:600px){.shelf-panel{padding:10px 8px 8px;margin-top:9px}.shelf-slot{min-height:62px;padding:4px 7px;gap:5px}.shelf-slot .food{width:50px;height:50px}.shelf-name{font-size:.57rem}.shelf-help{font-size:.6rem}}
+@media(max-width:350px){.shelf-slot{min-height:56px}.shelf-slot .food{width:42px;height:42px}}
+@media(prefers-reduced-motion:reduce){.shelf-slot .food{animation:none}}
+@media(forced-colors:active){.shelf-slot.selected,.shelf-slot.drop-target{outline:3px solid Highlight}}
