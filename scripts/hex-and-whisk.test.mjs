@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -241,4 +241,20 @@ test("pantry state survives saves and upgrades old or corrupted kitchens safely"
  assert.equal(recovered.shelf[0],null);
  assert.equal(recovered.shelf[1].id,600);
  assert.equal(recovered.discovered.bakery>=4,true);
+});
+
+test("refreshing a customer request costs earned coins, keeps completed meals, and preserves saved state",()=>{
+ const state=makeGame(rng,now);state.coins=120;
+ const ready=state.orders[0];state.board[0]={chain:ready.chain,tier:ready.tier,id:1001};
+ const oldId=state.orders[1].id;
+ const result=refreshOrder(state,()=>0.7);
+ assert.equal(result.ok,true);assert.equal(result.index,1);assert.equal(result.cost,ORDER_REFRESH_COST);
+ assert.equal(state.coins,120-ORDER_REFRESH_COST);
+ assert.equal(state.orders[0].id,ready.id);assert.notEqual(state.orders[1].id,oldId);
+ assert.ok(state.board[0]);
+ assert.equal(restore(serialize(state),rng,now).orders[1].id,state.orders[1].id);
+ state.coins=0;assert.equal(refreshOrder(state,rng).reason,"coins");
+ state.coins=200;
+ for(let i=0;i<3;i++)state.board[i]={chain:state.orders[i].chain,tier:state.orders[i].tier,id:2000+i};
+ assert.equal(refreshOrder(state,rng).reason,"all-ready");
 });
