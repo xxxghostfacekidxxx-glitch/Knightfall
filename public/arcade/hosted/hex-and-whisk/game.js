@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -55,13 +55,20 @@ function renderBoard(pop=-1){
  game.board.forEach((item,index)=>{
   const slot=document.createElement("button");slot.type="button";slot.className="slot";
   if(selected===index)slot.classList.add("selected");
+  const producer=generatorAt(game,index);
+  if(producer)slot.classList.add("generator-slot");
   if(hintPair?.from===index)slot.classList.add("hint-source");
   if(hintPair?.to===index)slot.classList.add("hint-dest");
   if(index===pop)slot.classList.add("pop");
   slot.dataset.index=String(index);slot.setAttribute("role","gridcell");
   slot.setAttribute("aria-rowindex",String(Math.floor(index/WIDTH)+1));
   slot.setAttribute("aria-colindex",String(index%WIDTH+1));
-  if(item){
+  if(producer){
+   slot.dataset.generator=producer;slot.style.setProperty("--i",String(index));
+   const icon=text("span",producer==="garden"?"🌿":producer==="bakery"?"🥐":"🧁","generator-emoji");
+   slot.append(text("span","✦","generator-sigil"),icon,text("small",RECIPES[producer].name.toUpperCase(),"generator-name"),text("span","LV "+(game.upgrades[producer]+1),"generator-tier"));
+   slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": movable "+RECIPES[producer].name+" generator. Select and tap again to harvest, or move it to another square.");
+  }else if(item){
    slot.dataset.family=item.chain;slot.style.setProperty("--i",String(index));
    slot.append(food(item.chain,item.tier));
    slot.append(text("span",""+item.tier,"tile-rank"),text("small",label(item.chain,item.tier),"tile-name"));
@@ -90,23 +97,29 @@ function renderShelf(){
   button.addEventListener("click",()=>tapShelf(index));frag.append(button);
  });
  shelf.replaceChildren(frag);
- const counter=$("shelf-counter");if(counter)counter.textContent=game.shelf.filter(Boolean).length+" / "+SHELF_SLOTS+" FILLED";
+ const counter=$("shelf-counter");if(counter)counter.textContent=game.shelf.filter(Boolean).length+" / "+game.shelf.length+" FILLED";
+ const next=$("next-storage");if(next)next.textContent=game.shelf.length>=6?"ALL STORAGE UNLOCKED":"NEXT POCKET AT LEVEL "+(game.level+3-(game.level-1)%3);
 }
 function renderOrders(){
  const frag=document.createDocumentFragment();
  game.orders.forEach((order,i)=>{
   const ready=findReady(game,order)>=0||findShelfReady(game,order)>=0;
   const patron=PATRONS[order.id%PATRONS.length];
-  const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"");
+  const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"")+(order.tier>=5?" deluxe":"");
+  button.style.setProperty("--customer-delay",String(i*-.7)+"s");
   button.disabled=!ready;button.title=ready?"Serve "+label(order.chain,order.tier):"Merge ingredients to make "+label(order.chain,order.tier);
   button.setAttribute("aria-label",patron.name+" requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" Earn "+order.coins+" coins and "+order.xp+" XP.");
   if(ready)button.append(text("span","✓","check"));
-  const customer=text("span","","customer-badge");customer.append(portrait(patron),text("span",patron.name));
+  const customer=text("span","","customer-badge");
+  const avatar=text("span","","customer-avatar");avatar.append(portrait(patron));
+  customer.append(avatar,text("span",patron.name));
+  const speech=text("span",ready?"YUM! ♡":order.tier>=5?"A grand feast!":"Something tasty?","customer-speech");
+  customer.append(speech);
   button.append(customer);
   button.append(food(order.chain,order.tier),text("span",label(order.chain,order.tier),"order-name"));
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+order.coins),text("span","✦ "+order.xp+" XP"));
-  button.append(footer,text("span",ready?"TAP TO SERVE":"KEEP MERGING","serve-label"));
+  button.append(footer,text("span",ready?"✦ SERVE ME!":"✧ COOKING...","serve-label"));
   button.addEventListener("click",()=>fulfill(i));frag.append(button);
  });
  orders.replaceChildren(frag);
@@ -119,9 +132,9 @@ function renderStations(){
   const b=document.createElement("button");b.type="button";b.className="station-button"+(isOpen?" active":" locked");
   b.disabled=!isOpen||game.energy<=0||available(game)===0;
   b.setAttribute("aria-label",isOpen?"Collect from "+info.name+", costs one energy":info.name+" unlocks at level "+info.unlock);
-  const art=text("span","","station-pic");art.append(food(chain,chain==="garden"?2:chain==="bakery"?4:5));
+  const art=text("span","","station-pic");art.append(text("span",chain==="garden"?"🌿":chain==="bakery"?"🥐":"🧁","station-emoji"));
   const copy=text("span","","station-text");
-  copy.append(text("strong",info.name),text("small",isOpen?"TAP TO MAKE FOOD · LV "+(game.upgrades[chain]+1):"UNLOCKS AT KITCHEN LEVEL "+info.unlock));
+  copy.append(text("strong",info.name),text("small",isOpen?"ON YOUR GRID · TAP HERE TO HARVEST · LV "+(game.upgrades[chain]+1):"UNLOCKS AT KITCHEN LEVEL "+info.unlock));
   b.append(art,copy,text("span",isOpen?"1 ✦":"🔒","station-badge"));
   b.addEventListener("click",()=>makeIngredient(chain));frag.append(b);
  }
@@ -249,7 +262,7 @@ function particle(place,note,color){
  }
 }
 function problem(reason){
- const map={"shelf-empty":"That pantry pocket is empty.",quest:"Unknown kitchen quest.",incomplete:"Finish the quest before claiming.",locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
+ const map={"generator-slot":"That tile is occupied by a generator. Move it first.","generator":"Select a generator or an ingredient first.","shelf-empty":"That pantry pocket is empty.",quest:"Unknown kitchen quest.",incomplete:"Finish the quest before claiming.",locked:"Sweetshop unlocks at kitchen level 3.",energy:"Out of energy. More arrives every 9 seconds.",full:"The counter is full. Merge or recycle ingredients.",empty:"Pick a food item first.",invalid:"Drop on a different square.",highest:"That recipe is already at its maximum tier.",missing:"You don't have the dish this customer wants yet.",coins:"Not enough coins. Serve orders to earn more.",maxed:"This station is completely upgraded.",order:"No such order."};
  announce(map[reason]||"That action didn't work. Try another item.");bell([245],.05);
 }
 function action(fn){
@@ -273,6 +286,8 @@ function moveIngredient(a,b){
   announce(result.combo>1?"MAGICAL COMBO ×"+result.combo+"! "+label(result.chain,result.tier)+" created!":"Mmm! "+label(result.chain,result.tier)+" cooked.",result.combo>=3);
   if(result.discoveryBonus)toast("NEW RECIPE: "+label(result.chain,result.tier)+"! +"+result.discoveryBonus+" discovery coins ✦");
   bell(result.combo>1?[520,780,1040]:[440,660],.09);rumble(12);
+ }else if(result.type==="generator-move"){
+  render(result.to);announce("✦ "+RECIPES[result.chain].name+" generator moved! Arrange your kitchen however you like.");bell([450,730],.07);
  }else{
   render();announce(result.type==="swap"?"Ingredients swapped. The counter is yours to arrange.":"Ingredient moved. Keep matching!");
   bell([350],.04);
@@ -285,7 +300,7 @@ function parkIngredient(boardIndex,shelfIndex){
  bell([420,680],.08);rumble(8);
 }
 function tapShelf(index){
- if(selected!==null){parkIngredient(selected,index);return}
+ if(selected!==null){if(generatorAt(game,selected)){announce("Generators stay on the cooking grid. Drag them anywhere on the counter instead.");return}parkIngredient(selected,index);return}
  if(!game.shelf[index]){
   selectedShelf=null;renderShelf();announce("Select a board ingredient, then tap an empty pantry pocket to store it.");return;
  }
@@ -366,11 +381,17 @@ function tapCell(index){
  if(!Number.isInteger(index)||index<0||index>=CELL_COUNT)return;
  if(selectedShelf!==null){retrieveIngredient(index);return}
  if(selected!==null){
-  if(selected===index){selected=null;renderBoard();renderStats();return}
+  if(selected===index){
+   const chain=generatorAt(game,index);
+   selected=null;
+   if(chain){makeIngredient(chain);return}
+   renderBoard();renderStats();return
+  }
   moveIngredient(selected,index);return;
  }
- if(!game.board[index]){announce("Empty square. Tap an ingredient first, or collect some from a station.");return}
- selected=index;renderBoard();renderStats();announce(label(game.board[index].chain,game.board[index].tier)+" selected. Tap or drag it onto a match.");
+ if(!game.board[index]&&!generatorAt(game,index)){announce("Empty square. Tap an ingredient or generator first.");return}
+ selected=index;renderBoard();renderStats();const selectedGenerator=generatorAt(game,index);
+ announce(selectedGenerator?RECIPES[selectedGenerator].name+" generator selected. Tap again to harvest, or tap another square to relocate it.":label(game.board[index].chain,game.board[index].tier)+" selected. Tap or drag it onto a match.");
 }
 function clearHovered(){if(hovered!==null){const b=board.querySelector('[data-index="'+hovered+'"]');if(b)b.classList.remove("drop-target")}hovered=null;if(hoveredShelf!==null){$("shelf")?.querySelector('[data-shelf-index="'+hoveredShelf+'"]')?.classList.remove("drop-target")}hoveredShelf=null}
 function removeGhost(){clearHovered();if(ghost){ghost.remove();ghost=null}}
@@ -389,9 +410,11 @@ board.addEventListener("pointerdown",event=>{
 board.addEventListener("pointermove",event=>{
  if(!drag||drag.id!==event.pointerId)return;
  const dist=Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY);
- if(!drag.moved&&dist>9&&game.board[drag.from]){
+ if(!drag.moved&&dist>9&&(game.board[drag.from]||generatorAt(game,drag.from))){
   drag.moved=true;ghost=text("div","","drag-ghost");
-  ghost.append(food(game.board[drag.from].chain,game.board[drag.from].tier));
+  const generator=generatorAt(game,drag.from);
+  if(generator)ghost.append(text("span",generator==="garden"?"🌿":generator==="bakery"?"🥐":"🧁","generator-emoji"));
+  else ghost.append(food(game.board[drag.from].chain,game.board[drag.from].tier));
   document.body.append(ghost);
  }
  if(!drag.moved)return;
@@ -410,7 +433,7 @@ function endDrag(event){
  removeGhost();drag=null;
  try{board.releasePointerCapture(event.pointerId)}catch{}
  if(didMove){
-  if(shelfTarget!==null)parkIngredient(original,shelfTarget);
+  if(shelfTarget!==null){if(generatorAt(game,original))announce("Keep your generator on the cooking grid, chef!");else parkIngredient(original,shelfTarget);}
   else if(target!==null&&target!==original)moveIngredient(original,target);
   else announce("Drop that ingredient onto a board square or pantry pocket.");
  }else tapCell(original);
