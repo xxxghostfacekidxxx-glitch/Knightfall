@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -8,13 +8,13 @@ test("a six-by-six board starts playable with three restaurant orders and origin
  assert.equal(WIDTH,6);assert.equal(CELL_COUNT,36);assert.equal(s.board.length,36);
  assert.equal(s.orders.length,3);assert.equal(s.energy,MAX_ENERGY);
  assert.deepEqual(Object.keys(RECIPES),["garden","bakery","sweets"]);
- assert.equal(available(s),30);
+ assert.equal(available(s),28);
 });
 test("tapping a producer uses energy, respects unlocks and refuses full boards",()=>{
  const s=blank();
  assert.equal(spawn(s,"sweets",rng,now).reason,"locked");
  assert.equal(spawn(s,"garden",rng,now).ok,true);
- assert.equal(available(s),35);assert.equal(s.energy,MAX_ENERGY-1);
+ assert.equal(available(s),33);assert.equal(s.energy,MAX_ENERGY-1);
  s.board=Array(36).fill({chain:"garden",tier:1,id:3});
  assert.equal(spawn(s,"garden",rng,now).reason,"full");
 });
@@ -257,4 +257,64 @@ test("refreshing a customer request costs earned coins, keeps completed meals, a
  state.coins=200;
  for(let i=0;i<3;i++)state.board[i]={chain:state.orders[i].chain,tier:state.orders[i].tier,id:2000+i};
  assert.equal(refreshOrder(state,rng).reason,"all-ready");
+});
+
+test("board generators begin on the grid and move or exchange places without losing ingredients",()=>{
+ const state=makeGame(rng,now);
+ assert.equal(generatorAt(state,0),"garden");assert.equal(generatorAt(state,5),"bakery");
+ assert.equal(available(state),28);
+ assert.equal(move(state,0,1,now).type,"generator-move");
+ assert.equal(generatorAt(state,1),"garden");assert.equal(generatorAt(state,0),null);
+ const item=state.board[8];
+ assert.equal(move(state,1,8,now).type,"generator-move");
+ assert.equal(generatorAt(state,8),"garden");assert.equal(state.board[1].id,item.id);
+ assert.equal(state.board[8],null);
+ assert.equal(move(state,8,5,now).type,"generator-move");
+ assert.equal(generatorAt(state,5),"garden");assert.equal(generatorAt(state,8),"bakery");
+ const fromIngredient=state.board[9];
+ assert.equal(move(state,9,5,now).type,"generator-move");
+ assert.equal(generatorAt(state,9),"garden");assert.equal(state.board[5].id,fromIngredient.id);
+ assert.equal(spawn(state,"garden",()=>0,now).ok,true);
+ assert.equal(state.board[9],null);
+ const restored=restore(serialize(state),rng,now);
+ assert.deepEqual(restored.generators,state.generators);
+ assert.equal(generatorAt(restored,9),"garden");
+});
+test("storage grows at levels 4, 7, 10 and 13 and keeps old pantry contents",()=>{
+ assert.deepEqual([1,3,4,6,7,10,13,30].map(shelfCapacity),[2,2,3,3,4,5,6,6]);
+ const state=makeGame(rng,now);
+ state.shelf[0]={chain:"garden",tier:3,id:900};
+ state.level=7;state.shelf.push(null,null);
+ state.shelf[3]={chain:"bakery",tier:4,id:901};
+ const loaded=restore(serialize(state),rng,now);
+ assert.equal(loaded.shelf.length,4);
+ assert.deepEqual(loaded.shelf[0],state.shelf[0]);
+ assert.deepEqual(loaded.shelf[3],state.shelf[3]);
+ assert.equal(loaded.shelf.length,shelfCapacity(7));
+ assert.equal(storeOnShelf(loaded,0,3).ok,true);
+ assert.equal(loaded.shelf[3]?.chain,"garden");
+});
+test("sweetshop generator unlocks on level 3 and a missing generator returns when space frees",()=>{
+ const state=makeGame(rng,now);
+ state.level=2;state.xp=0;
+ const order=state.orders[0];state.board[4]={chain:order.chain,tier:order.tier,id:2300};
+ state.xp=500;
+ const served=serve(state,0,rng,now);
+ assert.equal(served.ok,true);
+ assert.equal(state.level>=3,true);
+ assert.equal(generatorAt(state,state.generators.sweets),"sweets");
+ const saved=restore(serialize(state),rng,now);
+ assert.equal(generatorAt(saved,saved.generators.sweets),"sweets");
+ saved.generators.sweets=-1;
+ saved.board[7]={chain:"garden",tier:2,id:444};
+ assert.equal(recycle(saved,7).ok,true);
+ assert.equal(generatorAt(saved,saved.generators.sweets),"sweets");
+});
+test("generators cannot be parked on pantry or overwritten by a pantry retrieval",()=>{
+ const state=makeGame(rng,now);
+ state.shelf[0]={chain:"bakery",tier:2,id:700};
+ assert.equal(storeOnShelf(state,0,0).ok,false);
+ assert.equal(takeFromShelf(state,0,0).reason,"generator-slot");
+ assert.equal(state.shelf[0].id,700);
+ assert.equal(generatorAt(state,0),"garden");
 });
