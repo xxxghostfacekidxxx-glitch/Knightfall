@@ -515,3 +515,19 @@ test("VIP progress ignores wrong food, lower-tier merges and legacy saves",()=>{
  assert.equal(sanitized.vipContract.chain,"garden");
  assert.equal(sanitized.vipContract.serves,2);assert.equal(sanitized.vipContract.merges,0);
 });
+
+test("VIP sponsor chooses favorite recipe when unlocked and safe fallback otherwise",()=>{
+ const state=makeGame(rng,now);
+ state.vipContract={stage:1,chain:"garden",serves:2,merges:1};
+ claimVipContract(state,now);
+ assert.equal(vipContractInfo(state).sponsor.symbol,"bat");
+ assert.equal(vipContractInfo(state).chain,"bakery");
+ state.vipContract={stage:2,chain:"bakery",serves:2,merges:1};
+ claimVipContract(state,now);
+ assert.equal(vipContractInfo(state).sponsor.symbol,"ghost");
+ assert.equal(vipContractInfo(state).chain,"garden");
+ state.level=3;
+ state.vipContract={stage:2,chain:"bakery",serves:2,merges:1};
+ claimVipContract(state,now);
+ assert.equal(vipContractInfo(state).chain,"sweets");
+});
