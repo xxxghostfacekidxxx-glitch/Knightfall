@@ -559,10 +559,14 @@ test('post-attack weak point raises capture chance without changing a shot cost'
   assert.equal(defended.monster.armor,17);
   const vulnerable=attempt(true);
   assert.ok(vulnerable.monster.exposedUntil>vulnerable.table.time);
-  assert.equal(vulnerable.table.seats[0].caught,1);
-  assert.equal(vulnerable.table.seats[0].totalWon,80);
-  assert.equal(vulnerable.table.seats[0].credits,STARTING_CREDITS+80);
   assert.equal(vulnerable.table.targets.some(t=>t.id===902),false);
+  assert.ok(vulnerable.table.effects.some(effect=>effect.kind==='catch'
+    && effect.target.species==='king' && effect.amount===80));
+  // The same net may also catch newly summoned Hellhound escorts.
+  assert.ok(vulnerable.table.seats[0].caught>=1);
+  assert.ok(vulnerable.table.seats[0].totalWon>=80);
+  assert.equal(vulnerable.table.seats[0].credits,
+    STARTING_CREDITS+vulnerable.table.seats[0].totalWon);
 });
 
 test('armor meters and weak-point graphics work on all three bosses and reduced-motion mode',()=>{
