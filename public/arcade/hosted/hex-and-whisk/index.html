@@ -59,6 +59,19 @@
     <p class="side-hint">Each tap makes a fresh ingredient. Two matching ingredients become one upgraded dish.</p>
     <div id="stations" class="station-stack"></div>
    </section>
+   <section class="quests-panel panel" aria-labelledby="quests-title">
+    <div class="panel-heading"><div><span class="section-kicker">REPEATABLE NIGHT-TIME MISSIONS</span><h2 id="quests-title">Witch's workboard <span class="mini-heart">✧</span></h2></div></div>
+    <p class="side-hint">Complete kitchen challenges and claim coins and energy. The quests get tougher as you improve.</p>
+    <div id="quest-list" class="quest-list" aria-label="Kitchen quests"></div>
+   </section>
+   <section class="cookbook-panel panel" aria-labelledby="cookbook-title">
+    <div class="panel-heading"><div><span class="section-kicker">COLLECT THE WHOLE MENU</span><h2 id="cookbook-title">The forbidden cookbook <span class="mini-heart">♡</span></h2></div></div>
+    <details class="cookbook-details" id="cookbook-details">
+     <summary>EXPLORE MY RECIPES <span id="discovery-count">4 / 21</span></summary>
+     <p>Cook a new dish to discover its illustration and earn bonus coins. New discoveries stay in your collection.</p>
+     <div id="recipe-book" class="recipe-chapters"></div>
+    </details>
+   </section>
    <section class="upgrades-panel panel" aria-labelledby="upgrades-title">
     <div class="panel-heading"><div><span class="section-kicker">SPELLBOOK &amp; SUPPLIES</span><h2 id="upgrades-title">Kitchen upgrades</h2></div></div>
     <div id="upgrades" class="upgrade-stack"></div>
@@ -66,7 +79,7 @@
    <section class="tips-panel panel">
     <span class="section-kicker">YOUR LITTLE HANDBOOK</span><h2>How to play</h2>
     <ol><li>Tap <strong>Garden</strong> or <strong>Bakery</strong> for free ingredients.</li><li><strong>Drag matching items</strong> together, or tap one then another.</li><li>When you own a dish a customer wants, tap <strong>Serve</strong> for tips and XP.</li><li>Unlock the <strong>Sweetshop</strong> at level 3. Every fifth order starts a 45-second tip frenzy.</li></ol>
-    <p>Swapping and rearranging is free. Recycle any selected item to clear space. Your kitchen restores energy while you're away.</p>
+    <p>Swapping and rearranging is free. Recycle any selected item to clear space. Complete workboard quests and discover new recipes for extra coins and energy. Your kitchen restores energy while you're away.</p>
    </section>
    <section class="cloud-panel panel"><span class="section-kicker">DON'T LOSE YOUR RECIPES</span><h2>Save your kitchen</h2><p>Progress is automatically saved on this device. Signed-in members can also sync across devices.</p><div class="cloud-actions"><button id="cloud-save" type="button">↑ Save to account</button><button id="cloud-load" type="button">↓ Load account save</button></div><p id="arcade-account-status" class="account-status" role="status" aria-live="polite">Checking account connection…</p></section>
   </aside>
