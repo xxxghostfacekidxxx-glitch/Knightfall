@@ -273,3 +273,7 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
  .board-panel{grid-template-rows:auto minmax(0,1fr) auto auto auto}
 }
 @media(prefers-reduced-motion:reduce){.shelf-panel,.secondary-column{transition:none}}
+
+/* Close controls are meaningful only when tools become mobile drawers. */
+@media(min-width:891px){.drawer-close{display:none!important}.game-overlay-scrim{display:none!important}}
+@media(max-width:890px){.shelf-panel,.secondary-column{overscroll-behavior:contain}.shelf-panel:focus,.secondary-column:focus{outline:none}.mobile-game-actions button:focus-visible,.drawer-close:focus-visible{outline:2px solid #ffe3a3;outline-offset:2px}}
