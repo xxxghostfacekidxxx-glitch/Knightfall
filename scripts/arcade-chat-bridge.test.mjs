@@ -132,7 +132,7 @@ test("arcade chat lives in game headers, not over mobile attack controls",()=>{
   "city-of-cinders.html"
  ]){
    const html=read(file);
-   assert.match(html,/arcade-chat-bridge\.js\?v=20261117-arcade1/);
+   assert.match(html,/arcade-chat-bridge\.js\?v=20261117-arcade2/);
    assert.match(html,/data-kf-arcade-chat/);
    assert.match(html,/href="\/messages\.html"|action="\/messages\.html"/);
  }

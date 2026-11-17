@@ -68,7 +68,7 @@
   if(window.KnightfallChat){activate();return;}
   if(document.querySelector('script[data-kf-chat-bubbles]'))return;
   const script=document.createElement("script");
-  script.src="/chat-bubbles.js?v=20261117-arcade1";
+  script.src="/chat-bubbles.js?v=20261117-arcade2";
   script.dataset.kfChatBubbles="true";
   script.dataset.userId=String(userId);
   script.addEventListener("load",activate,{once:true});
