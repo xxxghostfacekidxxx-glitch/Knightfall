@@ -1,10 +1,12 @@
-import { HEIGHT, bossParts, muzzle } from './furnace.mjs';
+import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=2';
 
 const INK = '#210912';
 const COLORS = {
   grinner: ['#ff653d', '#a41737', '#ffe087'],
   ashwing: ['#ffb738', '#ce4529', '#fff1a4'],
   brute: ['#f04838', '#7f1738', '#ffd267'],
+  fuse: ['#ff8e33', '#8e2635', '#ffe892'],
+  spark: ['#f35555', '#ab2759', '#fffab4'],
   king: ['#fd783c', '#8c1337', '#ffe58b'],
 };
 
@@ -30,9 +32,9 @@ function ellipse(ctx, x, y, rx, ry, fill, angle = 0) {
 }
 
 function imp(ctx, target, time) {
-  const [skin, shade, light] = COLORS[target.type];
+  const [skin, shade, light] = COLORS[target.species];
   const scale = target.radius / 27;
-  const flap = Math.sin(time * 16 + (target.phase || 0)) * 7;
+  const flap = Math.sin(time * 16 + target.id) * 7;
   ctx.save();
   ctx.translate(target.x, target.y);
   ctx.scale(scale * (target.direction || 1), scale);
@@ -53,128 +55,141 @@ function imp(ctx, target, time) {
   polygon(ctx, INK, [[-18, 7], [-1, 11], [22, 6], [14, 19], [-2, 21], [-13, 15]], 0);
   polygon(ctx, '#fff3d3', [[-12, 9], [-6, 11], [-9, 15], [0, 12], [8, 10], [6, 16], [14, 9], [18, 8], [14, 13], [-5, 18]], 0);
   polygon(ctx, '#ffffff75', [[-17, -17], [-5, -21], [8, -19], [-4, -17]], 0);
+  if (target.species === 'king') {
+    polygon(ctx, '#ffd56a', [[-20, -23], [-22, -44], [-8, -37], [0, -49], [11, -36], [24, -45], [19, -21]], 3);
+    ellipse(ctx, 1, -33, 4, 5, '#ff543b');
+  } else if (target.bonus) {
+    ellipse(ctx, -2, 23, 8, 9, target.bonus === 'blast' ? '#ffb339' : '#fffad0');
+    polygon(ctx, INK, [[0, 15], [-6, 24], [-1, 24], [-3, 32], [6, 21], [1, 21]], 0);
+  }
   ctx.restore();
 }
 
-function bossArt(ctx, boss, time) {
-  imp(ctx, { ...boss, y: boss.y - 22, radius: 42, type: 'king' }, time);
-  const exposed = !boss.left && !boss.right;
-  for (const part of bossParts(boss)) {
-    if (!part.hp) continue;
-    const core = part.id === 'core';
-    const hp = part.hp / (core ? 51 : 26);
-    const x = part.x;
-    const y = part.y;
-    ctx.save();
-    ctx.translate(x, y);
-    const glow = core && exposed;
-    if (glow) {
-      const radius = 32 + Math.sin(time * 9) * 3;
-      const flare = ctx.createRadialGradient(0, 0, 4, 0, 0, radius + 13);
-      flare.addColorStop(0, '#ffca57');
-      flare.addColorStop(1, '#ff521600');
-      ellipse(ctx, 0, 0, radius + 13, radius + 13, flare);
+function label(ctx, text, x, y, color, size = 13) {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = '900 ' + size + 'px system-ui';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = INK;
+  ctx.strokeText(text, x, y);
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+}
+
+function drawSeat(ctx, table, seat, index) {
+  const { x, y } = seatOrigin(table, index);
+  const color = SEAT_COLORS[index];
+  ctx.save();
+  ctx.translate(x, y);
+  ellipse(ctx, 0, 1, 34, 34, '#240a1699');
+  ellipse(ctx, 0, 0, 28, 28, '#4b2030');
+  ellipse(ctx, 0, 0, 23, 23, color);
+  ellipse(ctx, 0, 0, 20, 20, '#361829');
+  ctx.rotate(seat.angle);
+  ctx.translate(-seat.recoil * 7, 0);
+  polygon(ctx, color, [[-21, -10], [-10, -17], [17, -14], [41, -11], [42, 11], [18, 14], [-10, 17], [-21, 10]], 4);
+  polygon(ctx, '#492235', [[-7, -8], [40, -7], [41, 7], [-7, 8]], 0);
+  ellipse(ctx, 6, 0, 8, 7, color);
+  if (seat.recoil > .6) ellipse(ctx, 46, 0, 12, 7, color);
+  ctx.restore();
+  label(ctx, seat.name.toUpperCase() + (index ? ' ' + seat.credits : ''), x, y + (index === 2 ? -25 : 34), color, 12);
+}
+
+function drawNet(ctx, effect, opacity) {
+  const radius = effect.radius * (.5 + .5 * (1 - opacity));
+  ctx.beginPath();
+  ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+  ctx.stroke();
+  if (effect.kind !== 'net') {
+    ctx.beginPath();
+    ctx.arc(effect.x, effect.y, radius * .88, 0, Math.PI * 2);
+    ctx.stroke();
+    return;
+  }
+  for (let ring = 1; ring <= 3; ring++) {
+    ctx.beginPath();
+    for (let ray = 0; ray < 8; ray++) {
+      const angle = ray * Math.PI / 4;
+      const x = effect.x + Math.cos(angle) * radius * ring / 3.2;
+      const y = effect.y + Math.sin(angle) * radius * ring / 3.2;
+      if (ray === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
-    polygon(ctx, glow ? '#ffe587' : '#762638', [[-26, -4], [-15, -21], [10, -23], [25, -10], [24, 14], [1, 27], [-20, 15]], 4);
-    polygon(ctx, glow ? '#fff8d6' : '#df643f', [[-19, -5], [-10, -16], [9, -18], [17, -9], [8, -6], [-4, -9]], 0);
-    if (!core || glow) {
-      polygon(ctx, glow ? '#fff2a4' : '#ffac59', [[0, -13], [12, 0], [0, 14], [-10, 0]], 2);
-      ctx.fillStyle = '#260b15';
-      ctx.fillRect(-20, 31, 40, 5);
-      ctx.fillStyle = '#ffd367';
-      ctx.fillRect(-20, 31, 40 * hp, 5);
-    } else {
-      ctx.strokeStyle = '#ffae6e';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(-11, -2);
-      ctx.lineTo(10, 9);
-      ctx.moveTo(11, -2);
-      ctx.lineTo(-10, 9);
-      ctx.stroke();
-    }
-    ctx.restore();
+    ctx.closePath();
+    ctx.stroke();
+  }
+  for (let ray = 0; ray < 8; ray++) {
+    const angle = ray * Math.PI / 4;
+    ctx.beginPath();
+    ctx.moveTo(effect.x, effect.y);
+    ctx.lineTo(effect.x + Math.cos(angle) * radius, effect.y + Math.sin(angle) * radius);
+    ctx.stroke();
   }
 }
 
 export function makeRenderer(ctx, backdrop) {
-  return (run, width, aim, mode, time, reducedMotion) => {
+  return (table, control, reducedMotion) => {
+    const width = table.width;
+    const time = table.time;
     ctx.clearRect(0, 0, width, HEIGHT);
     if (backdrop.complete && backdrop.naturalWidth) {
-      // Keep both banks in view when the table is upright on a phone.
-      const ratio = width / HEIGHT;
-      const imageRatio = backdrop.naturalWidth / backdrop.naturalHeight;
-      const sourceWidth = backdrop.naturalWidth * Math.min(1, Math.max(.72, ratio / imageRatio));
+      const sourceWidth = backdrop.naturalWidth * Math.min(1, Math.max(.7, width / HEIGHT * backdrop.naturalHeight / backdrop.naturalWidth));
       ctx.drawImage(backdrop, (backdrop.naturalWidth - sourceWidth) / 2, 0, sourceWidth, backdrop.naturalHeight, 0, 0, width, HEIGHT);
     }
-    const shade = ctx.createLinearGradient(0, 0, 0, HEIGHT);
-    shade.addColorStop(0, '#1d091344');
-    shade.addColorStop(.62, '#2a0a131f');
-    shade.addColorStop(1, '#14060cc4');
-    ctx.fillStyle = shade;
+    ctx.fillStyle = '#360d1654';
     ctx.fillRect(0, 0, width, HEIGHT);
-    for (let i = 0; i < 45; i++) {
-      const x = ((i * 119 + time * (5 + i % 7)) % width + width) % width;
-      const y = HEIGHT - (i * 79 + time * (8 + i % 14)) % HEIGHT;
-      const radius = 1 + i % 3 * .48;
-      ellipse(ctx, x, y, radius, radius, i % 4 ? '#fc681965' : '#ffe37ca0');
-    }
-    for (const target of run.targets) imp(ctx, target, time);
-    if (run.boss && run.boss.core) bossArt(ctx, run.boss, time);
-    ctx.lineCap = 'round';
-    for (const shot of run.shots) {
-      ctx.beginPath();
-      ctx.moveTo(shot.x - shot.vx * .018, shot.y - shot.vy * .018);
-      ctx.lineTo(shot.x, shot.y);
-      ctx.strokeStyle = shot.color;
-      ctx.lineWidth = shot.radius;
-      ctx.stroke();
-      ellipse(ctx, shot.x, shot.y, shot.radius * .72, shot.radius * .72, '#fff6db');
-    }
-    for (const impact of run.effects) {
-      if (impact.label) {
-        ctx.textAlign = 'center';
-        ctx.font = '900 22px system-ui';
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = INK;
-        ctx.fillStyle = impact.color;
-        const y = impact.y - 30 + impact.life * 27;
-        ctx.strokeText(impact.label, impact.x, y);
-        ctx.fillText(impact.label, impact.x, y);
-      } else if (!reducedMotion) {
-        const radius = (1 - impact.life / .28) * 27;
-        for (let i = 0; i < 7; i++) {
-          const angle = impact.seed + i * Math.PI * 2 / 7;
-          polygon(ctx, impact.color, [[impact.x + Math.cos(angle) * radius, impact.y + Math.sin(angle) * radius],
-            [impact.x + Math.cos(angle + .13) * (radius + 7), impact.y + Math.sin(angle + .13) * (radius + 7)],
-            [impact.x + Math.cos(angle - .1) * (radius + 5), impact.y + Math.sin(angle - .1) * (radius + 5)]], 0);
-        }
+    if (!reducedMotion) {
+      for (let i = 0; i < 28; i++) {
+        const x = (i * 119 + time * (5 + i % 7)) % width;
+        const y = HEIGHT - (i * 79 + time * (8 + i % 14)) % HEIGHT;
+        ellipse(ctx, x, y, 1 + i % 3 * .55, 1 + i % 3 * .55, i % 4 ? '#ff742960' : '#ffe37ca0');
       }
     }
-
-    const origin = muzzle(width, aim);
-    const cannonColors = ['#ffd870', '#ff8d52', '#fff0cf'];
-    const color = cannonColors[mode];
-    ctx.save();
-    ctx.translate(width / 2, HEIGHT - 35);
-    ellipse(ctx, 0, 7, 43, 23, '#260c17');
-    ellipse(ctx, 0, 1, 36, 20, '#a74f39');
-    ctx.rotate(origin.angle);
-    ctx.translate(-run.recoil * 7, 0);
-    polygon(ctx, '#60273c', [[-23, -13], [-9, -20], [18, -15], [40, -13], [43, 13], [18, 15], [-9, 20], [-23, 13]], 4);
-    polygon(ctx, '#c96646', [[-15, -10], [-5, -16], [29, -11], [32, -6], [-8, -4]], 0);
-    ellipse(ctx, 4, 0, 8, 6, color);
-    if (run.recoil > .6) ellipse(ctx, 46, 0, 11, 6, color);
-    ctx.restore();
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
+    for (const target of table.targets) {
+      if (target.x < -85 || target.x > width + 85) continue;
+      imp(ctx, target, time);
+      label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
+        target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
+    }
+    ctx.lineCap = 'round';
+    for (const shot of table.shots) {
+      const color = SEAT_COLORS[shot.seat];
+      ctx.beginPath();
+      ctx.moveTo(shot.x - Math.cos(shot.angle) * 18, shot.y - Math.sin(shot.angle) * 18);
+      ctx.lineTo(shot.x, shot.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = shot.cost > 2 ? 5 : 3;
+      ctx.stroke();
+      ellipse(ctx, shot.x, shot.y, 3, 3, '#fff6db');
+    }
+    for (const effect of table.effects) {
+      const opacity = effect.life / effect.duration;
+      const color = SEAT_COLORS[effect.seat];
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, opacity * 1.65);
+      if (effect.kind === 'catch') label(ctx, '+' + effect.amount, effect.x, effect.y - 36 + opacity * 25, color, effect.seat ? 14 : 20);
+      else {
+        ctx.lineWidth = effect.kind === 'net' ? 1.6 : 4;
+        ctx.strokeStyle = color;
+        drawNet(ctx, effect, opacity);
+        if (effect.kind !== 'net') label(ctx, effect.kind === 'blast' ? 'BOMB' : 'CHAIN', effect.x, effect.y, color, 20);
+      }
+      ctx.restore();
+    }
+    table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
+    const lock = table.targets.find(target => target.id === control.lockId);
+    const aim = lock ?? control.aim;
+    const radius = lock ? lock.radius + 9 : 10;
+    ctx.strokeStyle = SEAT_COLORS[0];
+    ctx.lineWidth = lock ? 2.7 : 1.7;
     ctx.beginPath();
-    ctx.arc(aim.x, aim.y, 9, 0, Math.PI * 2);
-    ctx.moveTo(aim.x - 15, aim.y); ctx.lineTo(aim.x - 5, aim.y);
-    ctx.moveTo(aim.x + 5, aim.y); ctx.lineTo(aim.x + 15, aim.y);
-    ctx.moveTo(aim.x, aim.y - 15); ctx.lineTo(aim.x, aim.y - 5);
-    ctx.moveTo(aim.x, aim.y + 5); ctx.lineTo(aim.x, aim.y + 15);
+    ctx.arc(aim.x, aim.y, radius, 0, Math.PI * 2);
+    for (let i = 0; i < 4; i++) {
+      const x = Math.cos(i * Math.PI / 2);
+      const y = Math.sin(i * Math.PI / 2);
+      ctx.moveTo(aim.x + x * (radius - 4), aim.y + y * (radius - 4));
+      ctx.lineTo(aim.x + x * (radius + 6), aim.y + y * (radius + 6));
+    }
     ctx.stroke();
   };
 }

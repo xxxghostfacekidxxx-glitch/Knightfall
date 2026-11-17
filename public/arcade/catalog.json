@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-11-16",
+  "updated": "2026-11-17",
   "games": [
     {
       "id": "neon-nuisances-species-trials",
@@ -41,12 +41,12 @@
       "id": "imp-inferno",
       "title": "Imp Inferno",
       "route": "/arcade/hosted/imp-inferno/index.html",
-      "description": "Blast swarms of cartoon imps in a blazing fish-table shooter. Swap between three cannons, chain kills and crack the Furnace King’s armor.",
+      "description": "Fire capture nets into moving schools of cartoon imps on a shared four-seat table. Choose your shot cost, catch bonus imps and hunt the 80× Furnace King.",
       "genre": "Shooter",
       "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
-      "notes": "Original Knightfall solo score attack. Free to play with local best scores.",
+      "notes": "Free table credits. Play against three CPU cannons with Auto, Rapid, and Lock controls.",
       "links": [],
       "featured": true
     },
@@ -410,7 +410,7 @@
       "id": "casino",
       "title": "Ash-Fall Casino",
       "route": "/casino/index.html",
-      "description": "Enter slots, blackjack, European roulette, Plinko, plus a dedicated room for three original fish-shooter cabinets with distinct themes and boss fights.",
+      "description": "Play slots, blackjack, European roulette and Plinko with virtual credits.",
       "genre": "Arcade",
       "collection": "games",
       "device": "touch",
@@ -1457,19 +1457,6 @@
       "featured": false
     },
     {
-      "id": "magma-trench-relic-hunt",
-      "title": "Magma Trench: Relic Hunt",
-      "route": "/magma-trench-relic-hunt.html",
-      "description": "Hunt armored creatures around volcanic vents. Manage cannon heat, deploy a cooling blast, and crack the Furnace King's plated shell for relic bonuses.",
-      "genre": "Shooter",
-      "collection": "games",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
       "id": "marshland-marksman",
       "title": "Marshland Marksman",
       "route": "/arcade/hosted/marshland-marksman/index.html",
@@ -1491,19 +1478,6 @@
       "collection": "mini",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "neon-kelp-reef-rush",
-      "title": "Neon Kelp: Reef Rush",
-      "route": "/neon-kelp-reef-rush.html",
-      "description": "Three prism weapons, glowing schools, combo chains and a full-screen Prism Surge against the Sunken Core. Bright neon, fast action.",
-      "genre": "Shooter",
-      "collection": "games",
-      "device": "touch",
-      "source": "",
       "notes": "",
       "links": [],
       "featured": false
@@ -1736,19 +1710,6 @@
       "description": "Local two-player strategy for friends who enjoy extremely small grudges.",
       "genre": "Arcade",
       "collection": "mini",
-      "device": "touch",
-      "source": "",
-      "notes": "",
-      "links": [],
-      "featured": false
-    },
-    {
-      "id": "abyssal-arsenal",
-      "title": "Trench Bounty",
-      "route": "/abyssal-arsenal.html",
-      "description": "Classic fish-table action. Aim a rotating cannon, manage shot costs, catch armored targets and take down the Trench Leviathan.",
-      "genre": "Shooter",
-      "collection": "games",
       "device": "touch",
       "source": "",
       "notes": "",

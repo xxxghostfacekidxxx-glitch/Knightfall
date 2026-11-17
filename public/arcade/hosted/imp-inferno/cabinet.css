@@ -29,7 +29,7 @@ button:disabled { opacity: .55; cursor: default; }
   box-shadow: 0 12px 35px #070203b3, inset 0 1px #f98d67;
 }
 .scoreboard {
-  margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
   text-align: center; background: #18090f; border-radius: 8px 8px 0 0;
 }
 .scoreboard > div { padding: 7px 1px; border-right: 1px solid #44202a; }
@@ -66,12 +66,12 @@ h2 { font-size: clamp(1.65rem, 5.5vw, 3.4rem); color: #ffe4a6; text-shadow: 3px 
   background: #200d15dc; border: 1px solid #9a4631; padding: 5px 10px; border-radius: 4px;
 }
 .deck { justify-content: space-between; padding-top: 8px; }
-.mode-group { flex: 1; }
-.mode-group button { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1px 7px; text-align: left; min-width: 104px; }
-.mode-group button[aria-pressed="true"] { background: linear-gradient(#7b2f23, #391624); border-color: #ffaf56; color: #fff1b7; }
-.mode-group strong { text-transform: uppercase; letter-spacing: .05em; }
-.mode-group small { grid-column: 2; font-size: .72rem; font-weight: 600; color: #ffc7a5; }
-kbd { grid-row: span 2; border: 1px solid #a15b49; border-radius: 4px; padding: 3px; color: #ffe7bd; }
+.mode-group, .fire-controls { display: flex; align-items: center; gap: 5px; }
+.mode-group button { min-width: 42px; font-variant-numeric: tabular-nums; }
+.deck button[aria-pressed="true"] { background: linear-gradient(#8c3827, #391624); border-color: #ffbd6a; color: #fff1b7; }
+.catch-guide { margin: 7px auto 0; text-align: center; color: #ffd3a5; font-size: .76rem; }
+.catch-guide summary { cursor: pointer; }
+.catch-guide p { margin: 4px auto; }
 .controls { margin: 8px 0 0; font-size: .75rem; color: #ebbcab; text-align: center; }
 .cabinet:fullscreen {
   width: 100%; padding: 6px 14px; background: #170a0f; display: flex; flex-direction: column;
@@ -83,10 +83,11 @@ kbd { grid-row: span 2; border: 1px solid #a15b49; border-radius: 4px; padding: 
   .top { flex-wrap: wrap; gap: 5px; }
   .top > a { width: 100%; }
   .arena { height: clamp(330px, 58dvh, 520px); }
-  .mode-group { gap: 4px; }
-  .mode-group button { flex: 1; min-width: 0; padding: 5px; grid-template-columns: 1fr; text-align: center; }
-  .mode-group small { grid-column: 1; font-size: .65rem; }
-  kbd { display: none; }
+  .deck { gap: 5px; flex-wrap: wrap; }
+  .mode-group, .fire-controls { gap: 4px; }
+  .mode-group button, .fire-controls button { min-width: 32px; padding: 5px 6px; }
+  .controls { margin-top: 5px; }
+
 }
 @media (orientation: landscape) and (max-height: 560px) {
   .cabinet { padding-top: 5px; }

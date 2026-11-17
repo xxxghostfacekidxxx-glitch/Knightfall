@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#1d090c">
-  <meta name="description" content="Blast swarming imps and crack the Furnace King's armor in a free solo fish-table shooter.">
+  <meta name="description" content="Share a four-seat arcade table, net schools of imps and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
-  <link rel="stylesheet" href="./cabinet.css">
-  <script src="./cabinet.mjs" type="module"></script>
+  <link rel="stylesheet" href="./cabinet.css?v=2">
+  <script src="./cabinet.mjs?v=2" type="module"></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -22,35 +22,45 @@
 
     <section class="bezel" aria-label="Imp Inferno table">
       <dl class="scoreboard">
-        <div><dt>Score</dt><dd id="score">0</dd></div>
-        <div><dt>Best</dt><dd id="best">0</dd></div>
-        <div><dt>Wave</dt><dd id="wave">1 / 4</dd></div>
-        <div><dt>Time</dt><dd id="time">1:20</dd></div>
-        <div><dt>Chain</dt><dd id="chain">×1</dd></div>
+        <div><dt>Your credits</dt><dd id="credits">240</dd></div>
+        <div><dt>Per shot</dt><dd id="cost">1</dd></div>
+        <div><dt>Won</dt><dd id="won">0</dd></div>
+        <div><dt>Caught</dt><dd id="caught">0</dd></div>
       </dl>
       <div class="arena" id="arena">
-        <canvas id="table" tabindex="0" aria-label="Playfield. Aim with mouse, touch, or arrow keys. Hold to fire, or hold Space. Press Escape to pause."></canvas>
+        <canvas id="table" tabindex="0" aria-label="Shared capture table. Aim with the arrow keys, mouse or touch. Hold Space or press and hold the table to fire."></canvas>
         <div class="announcement" id="announcement" role="status" hidden></div>
         <div class="overlay" id="overlay">
           <div class="plate">
-            <p id="eyebrow">Solo score attack</p>
-            <h2 id="headline">Open the furnace</h2>
-            <p id="instructions">Hold the table to fire. Chain kills for bigger scores and break both of the Furnace King’s shoulder plates to expose his core.</p>
-            <button class="primary" id="start" type="button">Start run</button>
+            <p id="eyebrow">Free play · Three CPU rivals</p>
+            <h2 id="headline">Take your seat</h2>
+            <p id="instructions">Every shot spends table credits. Shots open into nets, and a catch pays its multiplier × your shot cost. Hold to fire or switch on Auto.</p>
+            <button class="primary" id="start" type="button">Join table</button>
           </div>
         </div>
       </div>
     </section>
 
     <footer class="deck">
-      <div class="mode-group" role="group" aria-label="Cannon mode">
-        <button type="button" data-mode="0" aria-pressed="true"><kbd>1</kbd><strong>Ember</strong><small>Rapid fire</small></button>
-        <button type="button" data-mode="1" aria-pressed="false"><kbd>2</kbd><strong>Scatter</strong><small>3-shot spread</small></button>
-        <button type="button" data-mode="2" aria-pressed="false"><kbd>3</kbd><strong>Hellshot</strong><small>Heavy punch</small></button>
+      <div class="mode-group" role="group" aria-label="Shot cost">
+        <button type="button" data-power="0" aria-label="1 credit per shot" aria-pressed="true">1</button>
+        <button type="button" data-power="1" aria-label="2 credits per shot" aria-pressed="false">2</button>
+        <button type="button" data-power="2" aria-label="5 credits per shot" aria-pressed="false">5</button>
+        <button type="button" data-power="3" aria-label="10 credits per shot" aria-pressed="false">10</button>
       </div>
-      <button id="pause" type="button" disabled>Pause</button>
+      <div class="fire-controls" role="group" aria-label="Cannon controls">
+        <button id="auto" type="button" aria-pressed="false">Auto</button>
+        <button id="rapid" type="button" aria-pressed="false">Rapid</button>
+        <button id="lock" type="button" aria-pressed="false">Lock</button>
+        <button id="pause" type="button" disabled>Pause</button>
+      </div>
     </footer>
-    <p class="controls">Aim and hold with mouse or touch. Arrow keys aim, Space fires, 1–3 swap cannons, Esc pauses.</p>
+    <p class="controls">Hold the table to fire. With Lock on, tap an imp to track it. Arrow keys aim, Space fires, 1–4 set power, Esc pauses. Table credits reset each session.</p>
+    <details class="catch-guide">
+      <summary>Catch guide</summary>
+      <p>Grinner 2× · Ashwing 4× · Brute 8× · Fuse Imp 15× and a blast · Spark Imp 20× and a chain · Furnace King 80×.</p>
+      <p>Higher-cost shots spread wider and have a better chance to catch. Credits are free and stay on this table.</p>
+    </details>
   </main>
 </body>
 </html>
