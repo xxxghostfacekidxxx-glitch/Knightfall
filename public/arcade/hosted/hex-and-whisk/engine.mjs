@@ -18,6 +18,20 @@ export const RECIPES=Object.freeze({
  bakery:Object.freeze({name:"Bakery",hue:"#f3c87b",unlock:1,items:["Golden wheat","Flour sack","Soft dough","Honey loaf","Moon croissant","Velvet cupcake","Celebration cake"]}),
  sweets:Object.freeze({name:"Sweetshop",hue:"#eaa6cf",unlock:3,items:["Wild berry","Berry jam","Tart shell","Berry tart","Dream parfait","Moon cheesecake","Starry sundae"]})
 });
+// Stable customer identities are derived from existing order ids: old saves stay compatible.
+export const PATRONS=Object.freeze([
+ Object.freeze({name:"Pip the Imp",symbol:"imp",favorite:"garden",personality:"mischievous"}),
+ Object.freeze({name:"Mochi Bat",symbol:"bat",favorite:"bakery",personality:"shy"}),
+ Object.freeze({name:"Wisp Ghost",symbol:"ghost",favorite:"sweets",personality:"dreamy"}),
+ Object.freeze({name:"Marnie Witch",symbol:"witch",favorite:"bakery",personality:"dramatic"}),
+ Object.freeze({name:"Grumble Gargoyle",symbol:"gargoyle",favorite:"garden",personality:"grumpy"}),
+ Object.freeze({name:"Nix the Moth",symbol:"moth",favorite:"sweets",personality:"starstruck"}),
+ Object.freeze({name:"Rook the Crow",symbol:"crow",favorite:"bakery",personality:"suspicious"}),
+ Object.freeze({name:"Bubbles Slime",symbol:"slime",favorite:"garden",personality:"excitable"})
+]);
+export const patronForOrder=order=>PATRONS[(Number.isSafeInteger(order?.id)?order.id:0)%PATRONS.length];
+export const FAVORITE_TIP_PERCENT=20;
+export const favoriteTipForOrder=order=>order?.chain===patronForOrder(order).favorite?Math.ceil(order.coins*FAVORITE_TIP_PERCENT/100):0;
 const keys=Object.keys(RECIPES);
 const cap=n=>Math.max(0,Math.min(1000000000,Math.floor(Number(n)||0)));
 const rnd=random=>Math.min(.999999,Math.max(0,Number(random())||0));
@@ -237,7 +251,8 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  if(place>=0)state.board[place]=null;
  else state.shelf[shelfPlace]=null;
  const rush=state.rushUntil>now;
- const coins=order.coins*(rush?2:1);
+ const favoriteTip=favoriteTipForOrder(order);
+ const coins=(order.coins+favoriteTip)*(rush?2:1);
  const gained=order.xp*10*(rush?2:1);
  state.coins=cap(state.coins+coins);state.score=cap(state.score+gained);state.best=Math.max(state.best,state.score);
  awardEnergy(state,order.energy,now);
@@ -258,7 +273,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
  for(const chain of keys)attachGenerator(state,chain);
- return {ok:true,type:"serve",place,shelfPlace,coins,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
+ return {ok:true,type:"serve",place,shelfPlace,coins,favoriteTip:favoriteTip*(rush?2:1),patron:patronForOrder(order).name,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
