@@ -1,4 +1,4 @@
-name: Ruinwire Android debug test APK
+name: Chaosphere Android debug test APK
 on:
   workflow_dispatch:
   push:
@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   debug-apk:
-    name: Build Ruinwire debug APK (not a public release)
+    name: Build Chaosphere debug APK (not a public release)
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -40,12 +40,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
-      - name: Install Ruinwire launcher icon
+      - name: Verify Chaosphere's original demon launcher icon
         run: |
-          test -s public/icons/knightfall-crest-512.png
-          mkdir -p android/ruinwire/src/main/res/drawable-nodpi
-          cp public/icons/knightfall-crest-512.png android/ruinwire/src/main/res/drawable-nodpi/ruinwire_icon.png
-      - name: Compile Ruinwire test app
+          test -s public/icons/chaosphere.svg
+          test -s android/ruinwire/src/main/res/drawable/ruinwire_icon.xml
+          # Use the committed scalable vector. Never overwrite it with Knightfall's old crest.
+      - name: Compile Chaosphere test app
         run: gradle --project-dir android :ruinwire:assembleDebug --no-daemon --stacktrace
       - name: Verify APK and checksum
         run: |
