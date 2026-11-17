@@ -220,6 +220,7 @@
   function inboxUrl(id){return "/messages.html"+(id?"?conversation="+id:"");}
   function setVisible(value){
     state.visible=!!value;
+    dock.classList.toggle("kf-chat-open",state.visible);
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
     syncBubbleViewport();
@@ -232,6 +233,7 @@
       if(state.active)refreshThread().catch(error=>announce(error.message));
       else if(!state.conversations.length)refreshConversations().catch(error=>announce(error.message));
     }
+    window.dispatchEvent(new CustomEvent("kf:chat-visibility",{detail:{open:state.visible}}));
   }
   function showList(){
     if(state.active)rememberDraft(state.active,input.value);
@@ -448,6 +450,15 @@
   document.addEventListener("keydown",event=>{
     if(event.key==="Escape"&&state.visible){setVisible(false);$("#kf-chat-launcher").focus();}
   });
+  // Public, narrow interface for arcade headers to open the SAME authenticated
+  // inbox, without inventing a second chat store or bypassing its permissions.
+  window.KnightfallChat=Object.freeze({
+    open(){showList();return true;},
+    close(){setVisible(false);return true;},
+    toggle(){if(state.visible)setVisible(false);else showList();return state.visible;},
+    isOpen(){return state.visible;}
+  });
+  window.dispatchEvent(new Event("kf:chat-ready"));
   // Native fullscreen sits above document siblings. Move the active chat DOM
   // inside a fullscreen game container so chat stays usable during gameplay.
   function syncFullscreenChat(){
@@ -465,7 +476,10 @@
   syncFullscreenChat();
   // A game listening for arrow keys, WASD or space must not intercept typed chat.
   dock.addEventListener("keydown",event=>{
-    if(event.key==="Escape")return;
+    // Escape should close chat, NOT also pause/flee an arcade game.
+    if(event.key==="Escape"&&state.visible){
+      event.stopPropagation();setVisible(false);$("#kf-chat-launcher").focus();return;
+    }
     if(event.target.closest("input,textarea,[contenteditable=true],select,button,a"))event.stopPropagation();
   });
   document.addEventListener("visibilitychange",()=>{
