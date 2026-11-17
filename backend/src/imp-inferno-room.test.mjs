@@ -83,6 +83,16 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   const messages = pairs.map(pair => pair[1].messages.at(-1).table.targets);
   assert.deepEqual(messages.map(targets => targets[0].species), ['king', 'king', 'hydra', 'hydra']);
   assert.deepEqual(messages.map(targets => targets[1].species), ['fuse', 'firestorm', 'firestorm', 'firestorm']);
+  const muzzle = { kind: 'muzzle', seat: 1, x: 100, y: 50, angle: 0, power: 6, life: .2, duration: .2 };
+  room.table.effects.push(muzzle);
+  room.broadcast();
+  for (const pair of pairs.slice(0, 2)) {
+    assert.equal(pair[1].messages.at(-1).table.effects.some(effect => effect.kind === 'muzzle'), false);
+  }
+  for (const pair of pairs.slice(2, 4)) {
+    assert.equal(pair[1].messages.at(-1).table.effects.some(effect => effect.kind === 'muzzle'), true);
+  }
+  room.table.effects.pop();
   room.table.targets = openingTargets;
   room.table.tideIndex = 1;
   room.table.nextTide = room.table.time + 3;
