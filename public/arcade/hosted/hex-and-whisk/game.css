@@ -305,3 +305,58 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 .merge-board .slot.match-option .food{filter:drop-shadow(0 3px 2px #1f132aab) drop-shadow(0 0 9px #fff0b0b0)}
 .merge-board .slot.order-ready-piece:before{content:""!important;position:absolute;top:3px;right:3px;width:6px;height:6px;background:#baffc8;border-radius:50%;box-shadow:0 0 8px 2px #a8ffba9c;z-index:2;pointer-events:none}
 .merge-board .slot.order-ready-piece.match-option:before{background:#ffe3a3;box-shadow:0 0 8px #ffe3a3}
+
+/* Night-shift personalities: unmistakable character silhouettes and lively dialogue. */
+.order-card{--patron-glow:#efb9d0;--patron-ink:#fff2da;position:relative}
+.order-card[data-customer="imp"]{--patron-glow:#ff9e79;--patron-ink:#ffe1ca}
+.order-card[data-customer="bat"]{--patron-glow:#d3a8ff;--patron-ink:#ecd9ff}
+.order-card[data-customer="ghost"]{--patron-glow:#c2e5ff;--patron-ink:#e3f3ff}
+.order-card[data-customer="witch"]{--patron-glow:#ffb1d0;--patron-ink:#ffe4ef}
+.order-card[data-customer="gargoyle"]{--patron-glow:#abb4d5;--patron-ink:#e0e4f8}
+.order-card[data-customer="moth"]{--patron-glow:#ffe4b5;--patron-ink:#fff0ca}
+.order-card[data-customer="crow"]{--patron-glow:#bea8db;--patron-ink:#e6dcef}
+.order-card[data-customer="slime"]{--patron-glow:#8ff2ce;--patron-ink:#d6ffeb}
+.order-card .customer-avatar{border-color:var(--patron-glow);box-shadow:inset 0 1px #fff9,0 3px 11px #140a23ac,0 0 16px color-mix(in srgb,var(--patron-glow) 29%,transparent);transform-origin:50% 90%}
+.order-card[data-customer="imp"] .customer-avatar{animation:patron-mischief 2.6s ease-in-out infinite}
+.order-card[data-customer="bat"] .customer-avatar{animation:patron-shy 3.5s ease-in-out infinite}
+.order-card[data-customer="ghost"] .customer-avatar{animation:patron-ghost 4.5s ease-in-out infinite}
+.order-card[data-customer="witch"] .customer-avatar{animation:patron-dramatic 3s ease-in-out infinite}
+.order-card[data-customer="gargoyle"] .customer-avatar{animation:patron-grumble 4.2s ease-in-out infinite}
+.order-card[data-customer="moth"] .customer-avatar{animation:patron-flutter 1.8s ease-in-out infinite}
+.order-card[data-customer="crow"] .customer-avatar{animation:patron-crow 3.6s ease-in-out infinite}
+.order-card[data-customer="slime"] .customer-avatar{animation:patron-bloop 2.1s ease-in-out infinite}
+.order-card.ready .customer-avatar{animation:customer-happy .6s ease-in-out infinite alternate}
+.order-card .customer-speech{position:relative;max-width:100%;background:#24182edb;border:1px solid color-mix(in srgb,var(--patron-glow) 48%,transparent);color:var(--patron-ink);font-style:italic;line-height:1.15;text-wrap:balance}
+.order-card .customer-speech:before{content:"";position:absolute;top:-5px;left:calc(50% - 4px);width:7px;height:7px;background:#24182e;border-top:1px solid var(--patron-glow);border-left:1px solid var(--patron-glow);transform:rotate(45deg)}
+.order-card.ready{border-color:var(--patron-glow);box-shadow:0 0 18px color-mix(in srgb,var(--patron-glow) 35%,transparent)}
+.order-card.favorite-order:not(.ready){border-color:color-mix(in srgb,var(--patron-glow) 58%,#6a486c)}
+.order-card .favorite-tip{position:absolute;top:2px;right:2px;z-index:4;border:1px solid #ffd99b90;background:#462f4de8;color:#ffe5aa;border-radius:8px;padding:2px 4px;font-weight:950;font-size:.53rem;line-height:1.1;white-space:nowrap;box-shadow:0 2px 7px #11091bb8}
+.order-card.ready .favorite-tip{background:#365842}
+@keyframes patron-mischief{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(7deg) translateY(-4px)}}
+@keyframes patron-shy{0%,100%{transform:rotate(-6deg) translateY(1px) scale(.97)}45%{transform:rotate(0) translateY(-2px) scale(1)}}
+@keyframes patron-ghost{0%,100%{transform:translateY(2px) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes patron-dramatic{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg) translateY(-3px)}}
+@keyframes patron-grumble{0%,100%{transform:translateY(0)}50%{transform:translateY(2px) rotate(-3deg)}}
+@keyframes patron-flutter{0%,100%{transform:translateY(0) rotate(-9deg)}50%{transform:translateY(-4px) rotate(10deg)}}
+@keyframes patron-crow{0%,100%{transform:rotate(0)}30%{transform:rotate(8deg)}65%{transform:rotate(-6deg)}}
+@keyframes patron-bloop{0%,100%{transform:scale(1,.95)}45%{transform:scale(1.08,.92) translateY(-3px)}80%{transform:scale(.95,1.08)}}
+@media(max-width:890px){
+ .order-card{isolation:isolate}
+ .order-card .customer-badge{align-items:flex-start}
+ .order-card .customer-avatar{margin-top:1px}
+ .order-card .customer-speech{display:block!important;position:absolute;left:3px;right:3px;bottom:2px;max-width:none;min-height:11px;margin:0;padding:1px 3px;border-radius:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-wrap:nowrap;text-align:center;font-size:clamp(.45rem,1.5vw,.6rem);font-style:italic}
+ .order-card .customer-speech:before{display:none}
+ .order-card .serve-label{display:none}
+ .order-card .favorite-tip{top:auto;bottom:16px;right:2px;left:auto;font-size:clamp(.41rem,1.3vw,.52rem);padding:1px 2px}
+ .order-card>.food{bottom:18px}
+ .order-card .order-name{margin-top:2px}
+ .order-card .order-foot{margin-top:auto;margin-bottom:13px}
+ .order-card .check{top:0;left:0;right:auto}
+}
+@media(max-width:890px) and (max-height:640px){
+ .order-card .customer-speech{font-size:.42rem;bottom:1px}
+ .order-card .favorite-tip{bottom:12px}
+ .order-card>.food{bottom:14px}
+ .order-card .order-foot{margin-bottom:10px}
+}
+@media(prefers-reduced-motion:reduce){.order-card .customer-avatar{animation:none!important}}
