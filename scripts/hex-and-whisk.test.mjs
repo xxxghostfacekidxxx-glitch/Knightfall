@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,KEEPSAKE_LEVELS,PATRON_KEEPSAKES,keepsakesForPatron,keepsakeUnlocked,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,KEEPSAKE_LEVELS,PATRON_KEEPSAKES,keepsakesForPatron,keepsakeUnlocked,nextKeepsakeProgress,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -448,4 +448,19 @@ test("serving a guest issues first, third and ninth visit keepsakes exactly once
   assert.equal(result.keepsake?.visits||0,[1,3,9].includes(i)?i:0);
  }
  assert.equal(keepsakesForPatron(state,guest).length,3);
+});
+
+test("guestbook progression tracks next milestone without altering visits",()=>{
+ const state=makeGame(rng,now),guest=patronForOrder(state.orders[0]);
+ const cases=[
+  [0,1,1,0],[1,3,2,0],[2,3,1,.5],[3,9,6,0],
+  [6,9,3,.5],[8,9,1,5/6],[9,9,0,1],[20,9,0,1]
+ ];
+ for(const [visits,goal,remaining,ratio] of cases){
+  state.patronVisits[guest.symbol]=visits;
+  const data=nextKeepsakeProgress(state,guest);
+  assert.equal(data.visits,visits);assert.equal(data.goal,goal);
+  assert.equal(data.remaining,remaining);assert.equal(data.ratio,ratio);
+  assert.equal(data.complete,visits>=9);
+ }
 });
