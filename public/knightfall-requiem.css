@@ -30,7 +30,7 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
  border-bottom:1px solid #d8a77a80!important;
  box-shadow:0 2px 0 #100e19,0 16px 46px #000b,0 0 28px #b95a8640!important;
 }
-html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme]))>.kf-header .kf-brand{
+html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.profile-custom-theme):not(:has(#profile[data-theme])):not(.kf-gameplay-page)>.kf-header .kf-brand{
  color:#f7e4c9!important;
  font-family:Georgia,'Times New Roman',serif!important;
  font-size:clamp(1.08rem,2vw,1.5rem)!important;
