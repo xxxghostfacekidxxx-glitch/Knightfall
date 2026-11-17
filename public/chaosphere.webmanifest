@@ -1,0 +1,61 @@
+{
+  "id": "/ruinwire",
+  "name": "Chaosphere | Knightfall Messenger",
+  "short_name": "Chaosphere",
+  "description": "Chaosphere: live messaging, private chats, group conversations and arcade invites for Knightfall.",
+  "lang": "en-US",
+  "start_url": "/messages?app=chaosphere",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#090912",
+  "theme_color": "#0d1013",
+  "categories": [
+    "social",
+    "communication"
+  ],
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/chaosphere.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/knightfall-crest-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Inbox",
+      "short_name": "Chats",
+      "url": "/messages?app=chaosphere",
+      "icons": [
+        {
+          "src": "/icons/knightfall-crest-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

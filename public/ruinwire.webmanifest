@@ -1,10 +1,10 @@
 {
   "id": "/ruinwire",
-  "name": "Ruinwire | Knightfall Messenger",
-  "short_name": "Ruinwire",
-  "description": "Private chats, group messages, replies and notifications for Knightfall members.",
+  "name": "Chaosphere | Knightfall Messenger",
+  "short_name": "Chaosphere",
+  "description": "Chaosphere: live messaging, private chats, group conversations and arcade invites for Knightfall.",
   "lang": "en-US",
-  "start_url": "/messages?app=ruinwire",
+  "start_url": "/messages?app=chaosphere",
   "scope": "/",
   "display": "standalone",
   "display_override": [
@@ -20,7 +20,7 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/icons/ruinwire.svg",
+      "src": "/icons/chaosphere.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
@@ -48,7 +48,7 @@
     {
       "name": "Inbox",
       "short_name": "Chats",
-      "url": "/messages?app=ruinwire",
+      "url": "/messages?app=chaosphere",
       "icons": [
         {
           "src": "/icons/knightfall-crest-192.png",
