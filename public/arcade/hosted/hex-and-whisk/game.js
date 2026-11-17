@@ -5,7 +5,7 @@ const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upg
 const STORE="knightfall:hex-and-whisk:v1",SOUND_STORE="knightfall:hex-and-whisk:sound";
 let game,selected=null,selectedShelf=null,history=null,drag=null,ghost=null,hovered=null,hoveredShelf=null,lastToast=0,toastTimer=null,audio=null,hintPair=null;
 let soundOn=false,bonusUntil=0,lastSyncScore=0,lastCookbookSignature="";
-let readyOrderIds=null,momentToken=0,momentTimer=null;
+let readyOrderIds=null,momentToken=0,momentTimer=null,focusedOrderId=null;
 try{soundOn=localStorage.getItem(SOUND_STORE)==="yes"}catch{}
 try{game=restore(localStorage.getItem(STORE),Math.random,Date.now())}catch{game=makeGame()}
 function safeSave(){try{localStorage.setItem(STORE,serialize(game))}catch{}}
@@ -123,6 +123,7 @@ function renderBoard(pop=-1){
  const focused=document.activeElement?.closest?.(".slot");
  const focusIndex=focused?Number(focused.dataset.index):-1;
  const frag=document.createDocumentFragment();
+ const focusedOrder=game.orders.find(order=>order.id===focusedOrderId)||null;
  game.board.forEach((item,index)=>{
   const slot=document.createElement("button");slot.type="button";slot.className="slot";
   if(selected===index)slot.classList.add("selected");
@@ -132,6 +133,11 @@ function renderBoard(pop=-1){
   const held=selected!==null?game.board[selected]:null;
   if(held&&item&&index!==selected&&held.chain===item.chain&&held.tier===item.tier&&item.tier<7)slot.classList.add("match-option");
   if(item&&game.orders.some(order=>order.chain===item.chain&&order.tier===item.tier))slot.classList.add("order-ready-piece");
+  if(focusedOrder&&item&&item.chain===focusedOrder.chain){
+   slot.classList.add(item.tier===focusedOrder.tier?"focus-exact":"focus-ingredient");
+   if(item.tier<focusedOrder.tier)slot.style.setProperty("--order-distance",String(focusedOrder.tier-item.tier));
+  }
+  if(focusedOrder&&producer===focusedOrder.chain)slot.classList.add("focus-generator");
   if(hintPair?.from===index)slot.classList.add("hint-source");
   if(hintPair?.to===index)slot.classList.add("hint-dest");
   if(index===pop)slot.classList.add("pop");
@@ -189,6 +195,7 @@ function renderOrders(){
   button.classList.toggle("favorite-order",favoriteTip>0);
   const visits=loyaltyStamps(game,patron);
   button.classList.toggle("regular-customer",visits>0);
+  button.classList.toggle("order-focused",order.id===focusedOrderId);
   button.dataset.expression=ready?"joy":visits>1?"familiar":"curious";
   button.disabled=false;button.title=ready?"Serve "+label(order.chain,order.tier):"Tap to hear "+patron.name+" and check their order for "+label(order.chain,order.tier);
   button.setAttribute("aria-label",patron.name+" ("+patron.personality+") requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" "+customerLine(order,ready)+" Earn "+(order.coins+favoriteTip)+" coins"+(favoriteTip?" including "+favoriteTip+" favorite-food tip":"")+" and "+order.xp+" XP.");
@@ -209,8 +216,10 @@ function renderOrders(){
   button.append(footer,text("span",ready?"✦ SERVE ME!":"♡ TAP TO CHAT","serve-label"));
   button.addEventListener("click",()=>{
    if(ready){fulfill(i);return}
+   focusedOrderId=focusedOrderId===order.id?null:order.id;
+   renderBoard();renderOrders();
    customerMoment(patron,customerLine(order,false),favoriteTip?"♡ FAV +"+favoriteTip+" coins":"MAKE "+label(order.chain,order.tier).toUpperCase(),"waiting");
-   announce(patron.name+" wants "+label(order.chain,order.tier)+". "+(favoriteTip?"Favorite meal bonus: +"+favoriteTip+" coins.":"Merge ingredients to prepare it."));
+   announce(focusedOrderId===null?"Order focus cleared.":patron.name+" wants "+label(order.chain,order.tier)+". Matching ingredients are highlighted on the board. "+(favoriteTip?"Favorite meal bonus: +"+favoriteTip+" coins.":""));
    bell([420,530],.05);
   });frag.append(button);
  });
@@ -338,7 +347,7 @@ function renderStats(){
  $("whisk").disabled=game.whisks<1||!findMergePair(game);
  $("hint").disabled=!findMergePair(game);
 }
-function render(pop=-1){renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();syncCustomerReactions();safeSave()}
+function render(pop=-1){if(focusedOrderId!==null&&!game.orders.some(order=>order.id===focusedOrderId))focusedOrderId=null;renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();syncCustomerReactions();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
@@ -415,6 +424,7 @@ function retrieveIngredient(boardIndex){
 }
 function fulfill(index){
  const servedOrder=game.orders[index];
+ if(servedOrder?.id===focusedOrderId)focusedOrderId=null;
  const servedPatron=servedOrder?patronForOrder(servedOrder):null;
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
@@ -437,7 +447,7 @@ function refreshCustomerOrder(){
   else problem(result.reason);
   return;
  }
- history=null;selected=null;selectedShelf=null;hintPair=null;render();
+ history=null;selected=null;selectedShelf=null;hintPair=null;focusedOrderId=null;render();
  announce("✧ New customer request! "+ORDER_REFRESH_COST+" coins spent. Your cooked dishes are safe.",true);
  bell([480,640,820],.08);
 }
