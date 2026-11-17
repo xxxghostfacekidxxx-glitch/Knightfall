@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#1d090c">
   <meta name="description" content="Share a four-seat arcade table, net schools of imps and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
-  <link rel="stylesheet" href="./cabinet.css?v=5">
-  <script src="./cabinet.mjs?v=5" type="module"></script>
+  <link rel="stylesheet" href="./cabinet.css?v=6">
+  <script src="./cabinet.mjs?v=6" type="module"></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -61,6 +61,9 @@
         <button type="button" data-power="1" aria-label="2 credits per shot" aria-pressed="false">2</button>
         <button type="button" data-power="2" aria-label="5 credits per shot" aria-pressed="false">5</button>
         <button type="button" data-power="3" aria-label="10 credits per shot" aria-pressed="false">10</button>
+        <button type="button" data-power="4" aria-label="15 credits per shot" aria-pressed="false">15</button>
+        <button type="button" data-power="5" aria-label="20 credits per shot" aria-pressed="false">20</button>
+        <button type="button" data-power="6" aria-label="25 credits per shot" aria-pressed="false">25</button>
       </div>
       <div class="fire-controls" role="group" aria-label="Cannon controls">
         <button id="auto" type="button" aria-pressed="false">Auto</button>
@@ -73,11 +76,12 @@
       <strong>Player 2</strong><span id="p2-score"></span>
       <span>WASD aim · F fire · Q/E change power</span>
     </div>
-    <p class="controls">Hold the table to fire. With Lock on, tap an imp to track it. Arrow keys aim, Space fires, 1–4 set power, Esc pauses. Table credits reset each session.</p>
+    <p class="controls">Hold the table to fire. With Lock on, tap an imp to track it. Arrow keys aim, Space fires, 1–7 set power, Esc pauses. Table credits reset each session.</p>
     <details class="catch-guide">
       <summary>Catch guide</summary>
       <p>Grinner 2× · Ashwing 4× · Brute 8× · Furnace King 80×.</p>
       <p>Fuse 15× explodes · Spark 20× chains · Prism 25× grants a Hellbeam · Drill 30× grants a piercing shot · Vortex 35× sweeps one nearby species.</p>
+      <p>Croupier 12× triggers the Furnace Wheel. It awards 5×–50× your catch shot cost in free table credits.</p>
       <p>Shots bounce off the rails. Watch for the Inferno tide, when three schools swim through together.</p>
       <p>Higher-cost shots spread wider and have a better chance to catch. Credits are free and stay on this table.</p>
     </details>

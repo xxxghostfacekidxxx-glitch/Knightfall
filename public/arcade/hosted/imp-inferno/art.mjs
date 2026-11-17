@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=5';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=6';
 
 const INK = '#210912';
 const COLORS = {
@@ -10,6 +10,7 @@ const COLORS = {
   prism: ['#ff735a', '#a02453', '#fff5bb'],
   drill: ['#ff762b', '#802138', '#ffd886'],
   vortex: ['#fc4b55', '#661935', '#ffe0a2'],
+  croupier: ['#a646d4', '#651551', '#ffd992'],
   king: ['#fd783c', '#8c1337', '#ffe58b'],
 };
 
@@ -63,7 +64,7 @@ function imp(ctx, target, time) {
     ellipse(ctx, 1, -33, 4, 5, '#ff543b');
   } else if (target.bonus) {
     ellipse(ctx, -2, 23, 8, 9, target.bonus === 'blast' ? '#ffb339' : '#fffad0');
-    const glyphs = { blast: '✹', chain: 'ϟ', beam: '◆', drill: '▼', vortex: '◎' };
+    const glyphs = { blast: '✹', chain: 'ϟ', beam: '◆', drill: '▼', vortex: '◎', wheel: '✦' };
     ctx.font = '900 12px system-ui';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -189,6 +190,45 @@ function drawEffect(ctx, effect, table, reducedMotion) {
   ctx.restore();
 }
 
+function drawWheel(ctx, table, control, reduceMotion) {
+  const spin = (table.spins ?? []).find(item => item.starts <= table.time
+    && (item.seat === (control.onlineSeat ?? 0) || (control.secondSeat && item.seat === 2)));
+  if (!spin) return;
+  const radius = Math.min(72, table.width * .19);
+  const x = Math.max(radius + 15, table.width * .2);
+  const y = 121;
+  const slice = Math.PI * 2 / WHEEL_MULTIPLIERS.length;
+  const elapsed = Math.min(1, (table.time - spin.starts) / (spin.ends - spin.starts));
+  const finish = -Math.PI / 2 - (spin.slot + .5) * slice;
+  const rotation = reduceMotion && !spin.paid ? 0 : finish - Math.PI * 8 * (1 - elapsed) ** 3;
+  const seatColor = SEAT_COLORS[spin.seat];
+
+  ctx.save();
+  ctx.translate(x, y);
+  ellipse(ctx, 0, 0, radius + 8, radius + 8, '#240f19ee');
+  ellipse(ctx, 0, 0, radius + 4, radius + 4, seatColor);
+  for (const [index, multiplier] of WHEEL_MULTIPLIERS.entries()) {
+    const start = rotation + index * slice;
+    const mid = start + slice / 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, radius, start, start + slice);
+    ctx.closePath();
+    ctx.fillStyle = spin.paid && index === spin.slot ? '#d96523' : index % 2 ? '#632844' : '#301b35';
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#db9b61';
+    ctx.stroke();
+    label(ctx, multiplier + '×', Math.cos(mid) * radius * .73, Math.sin(mid) * radius * .73, '#fff4d3', radius < 60 ? 10 : 13);
+  }
+  ellipse(ctx, 0, 0, radius * .26, radius * .26, '#512039');
+  label(ctx, '✦', 0, 1, seatColor, 18);
+  polygon(ctx, '#fff6c7', [[-8, -radius - 10], [8, -radius - 10], [0, -radius + 10]]);
+  const copy = spin.paid ? '+' + spin.cost * WHEEL_MULTIPLIERS[spin.slot] + ' credits' : 'FURNACE WHEEL';
+  label(ctx, copy, 0, radius + 21, seatColor, 16);
+  ctx.restore();
+}
+
 export function makeRenderer(ctx, backdrop) {
   return (table, control, reducedMotion) => {
     const width = table.width;
@@ -232,6 +272,7 @@ export function makeRenderer(ctx, backdrop) {
     table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
     drawAim(ctx, table, control, control.onlineSeat ?? 0);
     if (control.secondSeat) drawAim(ctx, table, control.secondSeat, 2);
+    drawWheel(ctx, table, control, reducedMotion);
 
   };
 }

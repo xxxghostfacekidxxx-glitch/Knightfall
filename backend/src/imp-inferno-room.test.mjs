@@ -12,6 +12,8 @@ test('room input clamps aim and cannot specify seat, balance, or target identity
   assert.equal(input.credits, undefined);
   assert.equal(input.seat, undefined);
   assert.equal(input.lockId, undefined);
+  assert.equal(readImpInput('{"x":0,"y":0,"power":6}').power, 6);
+  assert.equal(readImpInput('{"x":0,"y":0,"power":7}'), null);
 });
 
 test('socket upgrade validates origin and forwards only the seat capability', async () => {
@@ -77,8 +79,10 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   await join('c');
   assert.equal(pairs[5][1].messages[0].seat, 2);
   assert.equal(pairs[5][1].messages[1].table.seats[2].credits, 113);
+  room.table.spins = [{ seat: 2, cost: 25 }];
   await room.webSocketClose(pairs[5][1], 4000, 'Left table');
   await join('e');
   assert.equal(pairs[6][1].messages[0].seat, 2);
   assert.equal(pairs[6][1].messages[1].table.seats[2].credits, 240);
+  assert.equal(room.table.spins.length, 0);
 });

@@ -174,6 +174,26 @@ test('both design references are linked from the Imp Inferno arcade card', () =>
   assert.ok(card.includes('https://gaming-products.com/mini-arcade/455-ocean-king-3-monster-awaken'));
 });
 
+test('Croupier triggers one free wheel payout valued at the original shot cost', () => {
+  const table = isolatedTable();
+  target(table, 'croupier', 1, 290);
+  table.shots.push({
+    seat: 0, cost: 5, radius: 38, strength: 1, angle: -Math.PI / 2,
+    lockId: 1, life: 1.5, x: 400, y: 290,
+  });
+  advance(table, .016, control, () => 0);
+  assert.equal(table.spins.length, 1);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS + 60);
+  advance(table, 1, { ...control, power: 6 }, () => .99);
+  assert.equal(table.spins[0].paid, false);
+  advance(table, 1.5, control, () => .99);
+  assert.equal(table.spins[0].paid, true);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS + 60 + 25);
+  advance(table, 2, control, () => .99);
+  assert.equal(table.spins.length, 0);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS + 60 + 25);
+});
+
 test('retired cabinet routes are absent from the site, catalog, and redirects', () => {
   const routes = ['abyssal-arsenal', 'neon-kelp-reef-rush', 'magma-trench-relic-hunt', 'casino/fish-tables'];
   const catalog = JSON.parse(readFileSync('public/arcade/catalog.json', 'utf8'));

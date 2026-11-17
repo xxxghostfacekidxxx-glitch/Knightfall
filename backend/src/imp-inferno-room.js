@@ -77,7 +77,7 @@ export class ImpInfernoRoom {
         pair[1].close(4004, 'All four seats are taken');
         return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': PROTOCOL } });
       }
-      this.table.shots = this.table.shots.filter(shot => shot.seat !== seat);
+      this.clearSeatEffects(seat);
       this.table.seats[seat] = { ...newTable(WIDTH).seats[seat], name: 'P' + (seat + 1) };
     }
     const previous = this.connections.get(seat);
@@ -95,6 +95,11 @@ export class ImpInfernoRoom {
     return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': PROTOCOL } });
   }
 
+  clearSeatEffects(seat) {
+    this.table.shots = this.table.shots.filter(shot => shot.seat !== seat);
+    this.table.spins = (this.table.spins ?? []).filter(spin => spin.seat !== seat);
+  }
+
   webSocketMessage(socket, raw) {
     const seat = socket.deserializeAttachment()?.seat;
     if (this.connections.get(seat) !== socket) return;
@@ -104,7 +109,8 @@ export class ImpInfernoRoom {
     const now = Date.now();
     if (previous && now - previous.at < 8) return;
     if (input.refill && this.table.seats[seat].credits === 0 && !this.table.seats[seat].bonus
-      && !this.table.shots.some(shot => shot.seat === seat)) this.table.seats[seat].credits = STARTING_CREDITS;
+      && !this.table.shots.some(shot => shot.seat === seat)
+      && !this.table.spins?.some(spin => spin.seat === seat && !spin.paid)) this.table.seats[seat].credits = STARTING_CREDITS;
     const lockId = input.lockMode
       ? input.retarget ? pickTarget(this.table, input.aim)?.id ?? null : previous?.lockId ?? null
       : null;
@@ -118,7 +124,7 @@ export class ImpInfernoRoom {
       this.inputs[seat] = null;
       if (code === 4000) {
         this.leases[seat] = null;
-        this.table.shots = this.table.shots.filter(shot => shot.seat !== seat);
+        this.clearSeatEffects(seat);
       } else this.leases[seat].until = Date.now() + RESERVE_MS;
       this.broadcast();
       if (!this.connections.size) {

@@ -5,6 +5,9 @@ export const POWERS = [
   { cost: 2, radius: 47, strength: 1.15 },
   { cost: 5, radius: 58, strength: 1.38 },
   { cost: 10, radius: 73, strength: 1.65 },
+  { cost: 15, radius: 80, strength: 1.8 },
+  { cost: 20, radius: 88, strength: 1.95 },
+  { cost: 25, radius: 96, strength: 2.1 },
 ];
 export const SPECIES = {
   grinner: { name: 'Grinner', multiplier: 2, radius: 17, chance: .49 },
@@ -15,9 +18,12 @@ export const SPECIES = {
   prism: { name: 'Prism Imp', multiplier: 25, radius: 26, chance: .058, bonus: 'beam' },
   drill: { name: 'Drill Imp', multiplier: 30, radius: 28, chance: .047, bonus: 'drill' },
   vortex: { name: 'Vortex Imp', multiplier: 35, radius: 29, chance: .041, bonus: 'vortex' },
+  croupier: { name: 'Croupier Imp', multiplier: 12, radius: 28, chance: .12, bonus: 'wheel' },
   king: { name: 'Furnace King', multiplier: 80, radius: 47, chance: .019 },
 };
-const RARE_IMPS = ['fuse', 'spark', 'prism', 'drill', 'vortex'];
+const RARE_IMPS = ['fuse', 'croupier', 'spark', 'prism', 'drill', 'vortex'];
+export const WHEEL_MULTIPLIERS = [5, 10, 5, 15, 8, 25, 8, 50];
+export const WHEEL_DURATION = 2.4;
 export const SEAT_COLORS = ['#ffcf70', '#83e4ff', '#ff90c7', '#a7f8a0'];
 export const SEAT_NAMES = ['You', 'Coal', 'Hex', 'Vex'];
 const FORMATIONS = [
@@ -27,7 +33,7 @@ const FORMATIONS = [
 
 export function newTable(width) {
   return {
-    width, time: 0, targets: [], shots: [], effects: [], nextId: 0, nextShotId: 0,
+    width, time: 0, targets: [], shots: [], effects: [], spins: [], nextId: 0, nextShotId: 0,
     nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, rareIndex: 0, formation: 0, banner: '',
     seats: SEAT_NAMES.map((name, i) => ({
       name, credits: STARTING_CREDITS, totalWon: 0, caught: 0, readyAt: 0,
@@ -179,6 +185,14 @@ function net(table, shot, rng) {
 
 function triggerBonus(table, target, shot, rng) {
   const kind = target.bonus;
+  if (kind === 'wheel') {
+    const slot = Math.floor(rng() * WHEEL_MULTIPLIERS.length);
+    const spins = table.spins ??= [];
+    const previous = spins.findLast(spin => spin.seat === shot.seat);
+    const starts = Math.max(table.time, previous ? previous.ends + 1.25 : 0);
+    spins.push({ seat: shot.seat, cost: shot.cost, slot, starts, ends: starts + WHEEL_DURATION, paid: false });
+    return;
+  }
   if (kind === 'beam' || kind === 'drill') {
     const seat = table.seats[shot.seat];
     seat.bonus = { kind, cost: shot.cost };
@@ -256,6 +270,7 @@ function moveShot(table, shot, dt, rng) {
 
 export function advance(table, dt, control, rng = Math.random) {
   table.time += dt;
+  updateWheels(table);
   if (table.time >= table.nextSchool) {
     const [species, count, route] = FORMATIONS[table.formation++ % FORMATIONS.length];
     addFormation(table, species, count, route, rng);
@@ -311,4 +326,18 @@ function directSeat(table, seat, control) {
   if (control.firing || (control.auto && (!control.lockMode || lock))) {
     fire(table, seat, aim, control.power, control.rapid, Boolean(lock));
   }
+}
+
+function updateWheels(table) {
+  const spins = table.spins ??= [];
+  for (const spin of spins) {
+    if (spin.paid || spin.ends > table.time) continue;
+    const seat = table.seats[spin.seat];
+    const amount = spin.cost * WHEEL_MULTIPLIERS[spin.slot];
+    seat.credits += amount;
+    seat.totalWon += amount;
+    spin.paid = true;
+    table.banner = seat.name + ' · Furnace wheel +' + amount;
+  }
+  table.spins = spins.filter(spin => spin.ends + 1.25 > table.time);
 }

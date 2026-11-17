@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=5';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=5';
+import { makeRenderer } from './art.mjs?v=6';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=6';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=5';
 
@@ -194,7 +194,7 @@ document.addEventListener('keydown', event => {
   if (event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'Escape' && !event.repeat) return togglePause();
   if ((phase !== 'playing' && phase !== 'online') || document.activeElement !== canvas) return;
-  if (/^[1-4]$/.test(event.key)) choosePower(Number(event.key) - 1);
+  if (/^[1-7]$/.test(event.key)) choosePower(Number(event.key) - 1);
   if (event.key === 'Enter' && control.lockMode) lockAim();
   const second = control.secondSeat;
   if (second && (event.code === 'KeyQ' || event.code === 'KeyE')) {
@@ -423,7 +423,8 @@ function displayRoom(now) {
 
 function seatEmpty(index) {
   const seat = table.seats[index];
-  return seat.credits === 0 && !seat.bonus && !table.shots.some(shot => shot.seat === index);
+  return seat.credits === 0 && !seat.bonus && !table.shots.some(shot => shot.seat === index)
+    && !table.spins?.some(spin => spin.seat === index && !spin.paid);
 }
 
 function moveAim(aim, [up, down, left, right], dt) {
