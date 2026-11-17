@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d090c">
+  <meta name="description" content="Blast swarming imps and crack the Furnace King's armor in a free solo fish-table shooter.">
+  <title>Imp Inferno | Chaos Cartridge</title>
+  <link rel="stylesheet" href="./cabinet.css">
+  <script src="./cabinet.mjs" type="module"></script>
+</head>
+<body>
+  <main class="cabinet" id="cabinet">
+    <header class="top">
+      <a href="/chaos-cartridge.html">← Chaos Cartridge</a>
+      <h1>Imp <em>Inferno</em></h1>
+      <div class="settings">
+        <button id="sound" type="button" aria-pressed="false">Sound off</button>
+        <button id="fullscreen" type="button" hidden>Full screen</button>
+      </div>
+    </header>
+
+    <section class="bezel" aria-label="Imp Inferno table">
+      <dl class="scoreboard">
+        <div><dt>Score</dt><dd id="score">0</dd></div>
+        <div><dt>Best</dt><dd id="best">0</dd></div>
+        <div><dt>Wave</dt><dd id="wave">1 / 4</dd></div>
+        <div><dt>Time</dt><dd id="time">1:20</dd></div>
+        <div><dt>Chain</dt><dd id="chain">×1</dd></div>
+      </dl>
+      <div class="arena" id="arena">
+        <canvas id="table" tabindex="0" aria-label="Playfield. Aim with mouse, touch, or arrow keys. Hold to fire, or hold Space. Press Escape to pause."></canvas>
+        <div class="announcement" id="announcement" role="status" hidden></div>
+        <div class="overlay" id="overlay">
+          <div class="plate">
+            <p id="eyebrow">Solo score attack</p>
+            <h2 id="headline">Open the furnace</h2>
+            <p id="instructions">Hold the table to fire. Chain kills for bigger scores and break both of the Furnace King’s shoulder plates to expose his core.</p>
+            <button class="primary" id="start" type="button">Start run</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="deck">
+      <div class="mode-group" role="group" aria-label="Cannon mode">
+        <button type="button" data-mode="0" aria-pressed="true"><kbd>1</kbd><strong>Ember</strong><small>Rapid fire</small></button>
+        <button type="button" data-mode="1" aria-pressed="false"><kbd>2</kbd><strong>Scatter</strong><small>3-shot spread</small></button>
+        <button type="button" data-mode="2" aria-pressed="false"><kbd>3</kbd><strong>Hellshot</strong><small>Heavy punch</small></button>
+      </div>
+      <button id="pause" type="button" disabled>Pause</button>
+    </footer>
+    <p class="controls">Aim and hold with mouse or touch. Arrow keys aim, Space fires, 1–3 swap cannons, Esc pauses.</p>
+  </main>
+</body>
+</html>

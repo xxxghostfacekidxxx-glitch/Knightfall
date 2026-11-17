@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-11-15",
+  "updated": "2026-11-16",
   "games": [
     {
       "id": "neon-nuisances-species-trials",
@@ -22,6 +22,19 @@
           "route": "/mascot-room.html"
         }
       ],
+      "featured": true
+    },
+    {
+      "id": "imp-inferno",
+      "title": "Imp Inferno",
+      "route": "/arcade/hosted/imp-inferno/index.html",
+      "description": "Blast swarms of cartoon imps in a blazing fish-table shooter. Swap between three cannons, chain kills and crack the Furnace King’s armor.",
+      "genre": "Shooter",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/arcade-license-guide.html",
+      "notes": "Original Knightfall solo score attack. Free to play with local best scores.",
+      "links": [],
       "featured": true
     },
     {
