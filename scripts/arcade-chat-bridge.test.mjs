@@ -77,8 +77,8 @@ test("authenticated hosted game loads Chaosphere using existing messages, then t
  assert.equal(h.requestLog[0].url,"https://api.ash-fall.com/api/auth/me");
  assert.equal(h.requestLog[0].options.credentials,"include");
  assert.equal(h.requestLog[0].options.cache,"no-store");
- assert.ok(h.styles.some(x=>x.href.startsWith("/chat-bubbles.css?")));
- assert.ok(h.styles.some(x=>x.href.startsWith("/arcade-chat.css?")));
+ assert.ok(h.styles.some(x=>x.href?.startsWith("/chat-bubbles.css?")));
+ assert.ok(h.styles.some(x=>x.href?.startsWith("/arcade-chat.css?")));
  assert.equal(h.styles.filter(x=>x.dataset.kfArcadeChatCss).length,1);
  assert.equal(h.scripts.length,1);
  assert.equal(h.scripts[0].src,"/message-live.js?v=20261113-realtime1");
