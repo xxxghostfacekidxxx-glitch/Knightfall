@@ -231,7 +231,7 @@ function renderStats(){
  $("energy-fill").style.width=(Math.min(game.energy,MAX_ENERGY)/MAX_ENERGY*100)+"%";
  $("energy-track").setAttribute("aria-valuetext",game.energy+" energy; natural regeneration stops at "+MAX_ENERGY);
  $("energy-track").classList.toggle("energy-overflow",game.energy>MAX_ENERGY);
- $("energy-track").setAttribute("aria-valuenow",String(game.energy));
+ $("energy-track").setAttribute("aria-valuenow",String(Math.min(MAX_ENERGY,game.energy)));
  const now=Date.now();
  const seconds=game.energy>=MAX_ENERGY?0:Math.max(1,Math.ceil((ENERGY_INTERVAL-(now-game.energyLast)%ENERGY_INTERVAL)/1000));
  $("energy-timer").textContent=game.energy>MAX_ENERGY?"BONUS ENERGY · regeneration pauses at 40":game.energy===MAX_ENERGY?"Naturally full":("Next energy in "+seconds+"s");
@@ -311,6 +311,7 @@ function tapShelf(index){
   selectedShelf=null;renderShelf();announce("Select a board ingredient, then tap an empty pantry pocket to store it.");return;
  }
  selectedShelf=selectedShelf===index?null:index;hintPair=null;
+ if(selectedShelf!==null&&activeKitchenDrawer==="storage")setKitchenDrawer();
  renderShelf();renderBoard();
  announce(selectedShelf===null?"Pantry selection cleared.":"Pantry ingredient selected. Tap any board square to retrieve it or swap places.");
 }
