@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -110,6 +110,7 @@ function renderOrders(){
   button.addEventListener("click",()=>fulfill(i));frag.append(button);
  });
  orders.replaceChildren(frag);
+ const refresh=$("refresh-order");if(refresh){refresh.disabled=game.coins<ORDER_REFRESH_COST||game.orders.every(order=>findReady(game,order)>=0||findShelfReady(game,order)>=0);}
 }
 function renderStations(){
  const frag=document.createDocumentFragment();
@@ -311,6 +312,18 @@ function fulfill(index){
  if(result.rush)toast("🔥 RUSH HOUR! DOUBLE TIPS FOR 45 SECONDS");
  maybeCloudAutosave();
 }
+function refreshCustomerOrder(){
+ const result=refreshOrder(game,Math.random);
+ if(!result.ok){
+  if(result.reason==="all-ready")announce("Every customer is ready! Serve those dishes before refreshing orders.");
+  else if(result.reason==="coins")announce("Need "+ORDER_REFRESH_COST+" coins to refresh an unfinished order.");
+  else problem(result.reason);
+  return;
+ }
+ history=null;selected=null;selectedShelf=null;hintPair=null;render();
+ announce("✧ New customer request! "+ORDER_REFRESH_COST+" coins spent. Your cooked dishes are safe.",true);
+ bell([480,640,820],.08);
+}
 function buyUpgrade(chain){
  const result=upgrade(game,chain);
  if(!result.ok){problem(result.reason);return}
@@ -335,6 +348,7 @@ function showMergeHint(){
  announce("A handy match: combine the glowing "+label(pair.chain,pair.tier-1)+" tiles to make "+label(pair.chain,pair.tier)+".");
  bell([540,660],.05);
 }
+$("refresh-order")?.addEventListener("click",refreshCustomerOrder);
 function useMagicWhisk(){
  const result=action(()=>magicWhisk(game,Date.now()));
  if(!result)return;
