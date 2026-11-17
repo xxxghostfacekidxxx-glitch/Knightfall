@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -317,4 +317,32 @@ test("generators cannot be parked on pantry or overwritten by a pantry retrieval
  assert.equal(takeFromShelf(state,0,0).reason,"generator-slot");
  assert.equal(state.shelf[0].id,700);
  assert.equal(generatorAt(state,0),"garden");
+});
+
+test("earned energy can exceed natural regeneration cap and remain safe across saves",()=>{
+ const state=makeGame(rng,now);
+ assert.equal(MAX_ENERGY,40);
+ assert.equal(awardEnergy(state,12,now),12);
+ assert.equal(state.energy,52);
+ assert.equal(advance(state,now+ENERGY_INTERVAL*30),0);
+ assert.equal(state.energy,52);
+ const saved=restore(serialize(state),rng,now+ENERGY_INTERVAL*30);
+ assert.equal(saved.energy,52);
+ saved.energy=39;saved.energyLast=now;
+ assert.equal(advance(saved,now+ENERGY_INTERVAL*5),1);
+ assert.equal(saved.energy,40);
+ assert.equal(awardEnergy(saved,99999,now),ENERGY_HARD_CAP-40);
+ assert.equal(saved.energy,ENERGY_HARD_CAP);
+});
+test("customer and quest rewards grant bonus energy instead of discarding energy at 40",()=>{
+ const state=makeGame(rng,now);
+ state.quests.merge.progress=questTarget("merge",1);
+ const quest=claimQuest(state,"merge",now);
+ assert.equal(quest.energy,6);
+ assert.equal(state.energy,46);
+ const order=state.orders[0];
+ state.board[11]={id:5000,chain:order.chain,tier:order.tier};
+ const served=serve(state,0,rng,now);
+ assert.equal(served.ok,true);
+ assert.ok(state.energy>46);
 });
