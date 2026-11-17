@@ -3,7 +3,7 @@
  * conversations, permissions, live signals and message storage. */
 (()=>{
  "use strict";
- const links=[...document.querySelectorAll('a[data-kf-arcade-chat]')];
+ const links=[...document.querySelectorAll('[data-kf-arcade-chat]')];
  if(!links.length)return;
  const liveHost=["ash-fall.com","www.ash-fall.com"].includes(location.hostname.toLowerCase());
  const onPageWithNavigation=!!document.querySelector('script[src^="/nav.js"]');

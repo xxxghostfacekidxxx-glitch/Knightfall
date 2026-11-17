@@ -26,7 +26,7 @@ function harness({signedIn=true,withNav=false,hostname="ash-fall.com"}={}){
    dispatchEvent(event){for(const listener of events.get(event.type)||[])listener(event);}
  };
  const document={
-   querySelectorAll(selector){return selector==='a[data-kf-arcade-chat]'?links:[];},
+   querySelectorAll(selector){return selector==='[data-kf-arcade-chat]'?links:[];},
    querySelector(selector){
      if(selector==='script[src^="/nav.js"]')return withNav?{}:null;
      if(selector==='link[data-kf-arcade-chat-css]')return styles.find(s=>s.dataset.kfArcadeChatCss)||null;
@@ -119,9 +119,10 @@ test("arcade chat lives in game headers, not over mobile attack controls",()=>{
    const html=read(file);
    assert.match(html,/arcade-chat-bridge\.js\?v=20261117-arcade1/);
    assert.match(html,/data-kf-arcade-chat/);
-   assert.match(html,/href="\/messages\.html"/);
+   assert.match(html,/href="\/messages\.html"|action="\/messages\.html"/);
  }
  assert.match(read("city-of-cinders.html"),/class="kf-game-chat-toggle"/);
+ assert.match(read("city-of-cinders.html"),/form action="\/messages\.html" method="get" class="kf-chat-fallback"/);
  assert.match(read("city-of-cinders.html"),/\.game-shell:fullscreen \.kf-game-chat-toggle/);
  assert.match(css,/#kf-chat-heads\.kf-chat-arcade:not\(\.kf-chat-open\)\{display:none!important\}/);
  assert.match(css,/#kf-chat-heads\.kf-chat-arcade\.kf-chat-expanded/);
