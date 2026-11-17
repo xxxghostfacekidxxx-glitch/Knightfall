@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v69";
+const CACHE_NAME = "knightfall-shell-v70";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -269,6 +269,11 @@ self.addEventListener("fetch", event => {
   if (!offlineBotAsset && (url.pathname.startsWith("/profile") || url.pathname.startsWith("/miss-chaos") || url.pathname.startsWith("/adult") || url.pathname.startsWith("/dating") || url.pathname.startsWith("/account") || url.pathname.startsWith("/messages") || url.pathname.startsWith("/friends") || url.pathname.startsWith("/notifications") || url.pathname.startsWith("/admin") || url.pathname.startsWith("/personal-bots") || url.pathname.startsWith("/vault"))) return;
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
+      // The self-hosted merge kitchen is precached and should open while offline.
+      if (url.pathname === "/arcade/hosted/hex-and-whisk/index.html") {
+        const kitchen = await caches.match("/arcade/hosted/hex-and-whisk/index.html", { ignoreSearch: true });
+        if (kitchen) return kitchen;
+      }
       if (url.pathname === "/personal-bots-offline.html") {
         const localPage = await caches.match("/personal-bots-offline.html");
         if (localPage) return localPage;
