@@ -227,6 +227,9 @@ test('City of Cinders playable trio keep their approved chibi fox, foil villain 
   assert.match(designs['the-eddie'].archetype,/goggles and flat-bill hat/);
   for(const drawCall of ['foxTail(c,50,142','foxTail(c,92,150','foxTail(c,122,143'])
     assert.ok(source.includes(drawCall),'three fox tails are separately illustrated');
+  assert.match(source,/function signature\(c,id,state,phase,reducedMotion\)/);
+  assert.match(source,/signature\(c,id,state,phase,opts\.reducedMotion\)/);
+  assert.match(html,/city-of-cinders-monsters\.js\?v=20261117-chibi2/);
   for(const label of ['chibi fox-eared animal girl','homemade silver foil crown','savage punk baby'])
     assert.ok(html.includes(label),'Game roster description missing '+label);
   assert.doesNotMatch(html,/green mohawk|horned dragon|giant punk mouse/i);
