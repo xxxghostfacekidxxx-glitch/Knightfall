@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=6';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=7';
 
 const INK = '#210912';
 const COLORS = {
@@ -11,6 +11,7 @@ const COLORS = {
   drill: ['#ff762b', '#802138', '#ffd886'],
   vortex: ['#fc4b55', '#661935', '#ffe0a2'],
   croupier: ['#a646d4', '#651551', '#ffd992'],
+  firestorm: ['#fa501d', '#802d2c', '#fff0a6'],
   king: ['#fd783c', '#8c1337', '#ffe58b'],
 };
 
@@ -64,7 +65,7 @@ function imp(ctx, target, time) {
     ellipse(ctx, 1, -33, 4, 5, '#ff543b');
   } else if (target.bonus) {
     ellipse(ctx, -2, 23, 8, 9, target.bonus === 'blast' ? '#ffb339' : '#fffad0');
-    const glyphs = { blast: '✹', chain: 'ϟ', beam: '◆', drill: '▼', vortex: '◎', wheel: '✦' };
+    const glyphs = { blast: '✹', chain: 'ϟ', beam: '◆', drill: '▼', vortex: '◎', wheel: '✦', storm: '▲' };
     ctx.font = '900 12px system-ui';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -229,6 +230,28 @@ function drawWheel(ctx, table, control, reduceMotion) {
   ctx.restore();
 }
 
+function drawStorms(ctx, table, reduceMotion) {
+  for (const storm of table.storms ?? []) {
+    const x = (storm.direction === 1 ? storm.progress : 1 - storm.progress) * table.width;
+    const trail = 40 * storm.direction;
+    const edge = ctx.createLinearGradient(x - trail, 0, x + trail * .26, 0);
+    edge.addColorStop(0, '#ff5b1800');
+    edge.addColorStop(.65, '#f5683280');
+    edge.addColorStop(.8, '#ffb44dbb');
+    edge.addColorStop(1, '#ffd47600');
+    ctx.fillStyle = edge;
+    ctx.fillRect(Math.min(x - trail, x + trail * .26), 0, Math.abs(trail) * 1.26, HEIGHT);
+    if (!reduceMotion) {
+      const color = SEAT_COLORS[storm.seat];
+      for (let i = 0; i < 16; i++) {
+        const y = (i * 83 + table.time * 95) % HEIGHT;
+        const offset = Math.sin(i * 3.4 + table.time * 8) * 26;
+        ellipse(ctx, x - storm.direction * (28 + offset), y, 4 + i % 3 * 2, 2, color, .4);
+      }
+    }
+  }
+}
+
 export function makeRenderer(ctx, backdrop) {
   return (table, control, reducedMotion) => {
     const width = table.width;
@@ -251,6 +274,7 @@ export function makeRenderer(ctx, backdrop) {
         ellipse(ctx, x, y, 1 + i % 3 * .55, 1 + i % 3 * .55, i % 4 ? '#ff742960' : '#ffe37ca0');
       }
     }
+    drawStorms(ctx, table, reducedMotion);
     for (const target of table.targets) {
       if (target.x < -85 || target.x > width + 85) continue;
       imp(ctx, target, time);

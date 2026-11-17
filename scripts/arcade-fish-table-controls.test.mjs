@@ -194,6 +194,27 @@ test('Croupier triggers one free wheel payout valued at the original shot cost',
   assert.equal(table.seats[0].credits, STARTING_CREDITS + 60 + 25);
 });
 
+test('Firestorm sweeps across the table, caps ordinary catches, and credits its triggering seat', () => {
+  const table = isolatedTable();
+  target(table, 'firestorm', 1, 290);
+  for (let id = 2; id <= 15; id++) target(table, 'grinner', id, 160);
+  target(table, 'king', 16, 170);
+  table.shots.push({
+    seat: 2, cost: 5, radius: 25, strength: 1, angle: -Math.PI / 2,
+    lockId: 1, life: 1.5, x: 400, y: 290,
+  });
+  advance(table, .016, control, () => 0);
+  assert.equal(table.storms.length, 1);
+  assert.equal(table.seats[2].credits, STARTING_CREDITS + 90);
+  advance(table, 1.22, control, () => .99);
+  assert.equal(table.storms[0].caught, 12);
+  assert.ok(table.targets.some(target => target.species === 'king'));
+  advance(table, .85, control, () => .99);
+  assert.equal(table.seats[2].credits, STARTING_CREDITS + 90 + 120);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS);
+  assert.equal(table.storms.length, 0);
+});
+
 test('retired cabinet routes are absent from the site, catalog, and redirects', () => {
   const routes = ['abyssal-arsenal', 'neon-kelp-reef-rush', 'magma-trench-relic-hunt', 'casino/fish-tables'];
   const catalog = JSON.parse(readFileSync('public/arcade/catalog.json', 'utf8'));

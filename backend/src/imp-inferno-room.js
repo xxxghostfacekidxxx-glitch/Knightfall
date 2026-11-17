@@ -1,6 +1,7 @@
 import { advance, HEIGHT, newTable, pickTarget, POWERS, seedTable, STARTING_CREDITS } from '../../public/arcade/hosted/imp-inferno/furnace.mjs';
 
 const PROTOCOL = 'imp-inferno-v1';
+const CURRENT_PROTOCOL = 'imp-inferno-v2';
 const WIDTH = 900;
 const RESERVE_MS = 45_000;
 const STEP_MS = 1000 / 30;
@@ -12,7 +13,8 @@ export async function connectImpInferno(request, env, room, allowedOrigins, rate
     return new Response('WebSocket required.', { status: 426 });
   }
   if (!allowedOrigins.has(request.headers.get('Origin'))) return new Response('Origin not allowed.', { status: 403 });
-  if (!protocol?.includes(PROTOCOL) || !token) return new Response('Invalid table protocol.', { status: 400 });
+  const selected = [CURRENT_PROTOCOL, PROTOCOL].find(value => protocol?.includes(value));
+  if (!selected || !token) return new Response('Invalid table protocol.', { status: 400 });
   if (!env.IMP_INFERNO_ROOMS) return new Response('Online tables unavailable.', { status: 503 });
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   const allowed = env.MESSAGE_RATE_LIMITER?.limit
@@ -22,7 +24,7 @@ export async function connectImpInferno(request, env, room, allowedOrigins, rate
     return new Response('Too many connections.', { status: 429 });
   }
   return env.IMP_INFERNO_ROOMS.getByName(room).fetch(new Request('https://imp-inferno.internal/connect', {
-    headers: { Upgrade: 'websocket', 'X-Seat-Token': token.slice(5) },
+    headers: { Upgrade: 'websocket', 'X-Seat-Token': token.slice(5), 'X-Imp-Protocol': selected },
   }));
 }
 
@@ -67,6 +69,7 @@ export class ImpInfernoRoom {
   async fetch(request) {
     const token = request.headers.get('X-Seat-Token');
     if (!token || !/^[a-f0-9]{32}$/.test(token)) return new Response(null, { status: 400 });
+    const protocol = request.headers.get('X-Imp-Protocol') === CURRENT_PROTOCOL ? CURRENT_PROTOCOL : PROTOCOL;
     const now = Date.now();
     let seat = this.leases.findIndex(lease => lease?.token === token);
     if (seat < 0) {
@@ -75,7 +78,7 @@ export class ImpInfernoRoom {
         const pair = new WebSocketPair();
         pair[1].accept();
         pair[1].close(4004, 'All four seats are taken');
-        return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': PROTOCOL } });
+        return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': protocol } });
       }
       this.clearSeatEffects(seat);
       this.table.seats[seat] = { ...newTable(WIDTH).seats[seat], name: 'P' + (seat + 1) };
@@ -84,7 +87,7 @@ export class ImpInfernoRoom {
     this.leases[seat] = { token, until: now + RESERVE_MS };
     const pair = new WebSocketPair();
     this.ctx.acceptWebSocket(pair[1]);
-    pair[1].serializeAttachment({ seat, token });
+    pair[1].serializeAttachment({ seat, token, protocol });
     this.connections.set(seat, pair[1]);
     this.inputs[seat] = null;
     if (previous) previous.close(4001, 'Seat opened elsewhere');
@@ -92,12 +95,13 @@ export class ImpInfernoRoom {
     pair[1].send(JSON.stringify({ type: 'welcome', seat }));
     this.broadcast();
     this.run();
-    return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': PROTOCOL } });
+    return new Response(null, { status: 101, webSocket: pair[0], headers: { 'Sec-WebSocket-Protocol': protocol } });
   }
 
   clearSeatEffects(seat) {
     this.table.shots = this.table.shots.filter(shot => shot.seat !== seat);
     this.table.spins = (this.table.spins ?? []).filter(spin => spin.seat !== seat);
+    this.table.storms = (this.table.storms ?? []).filter(storm => storm.seat !== seat);
   }
 
   webSocketMessage(socket, raw) {
@@ -110,7 +114,8 @@ export class ImpInfernoRoom {
     if (previous && now - previous.at < 8) return;
     if (input.refill && this.table.seats[seat].credits === 0 && !this.table.seats[seat].bonus
       && !this.table.shots.some(shot => shot.seat === seat)
-      && !this.table.spins?.some(spin => spin.seat === seat && !spin.paid)) this.table.seats[seat].credits = STARTING_CREDITS;
+      && !this.table.spins?.some(spin => spin.seat === seat && !spin.paid)
+      && !this.table.storms?.some(storm => storm.seat === seat)) this.table.seats[seat].credits = STARTING_CREDITS;
     const lockId = input.lockMode
       ? input.retarget ? pickTarget(this.table, input.aim)?.id ?? null : previous?.lockId ?? null
       : null;
@@ -178,8 +183,16 @@ export class ImpInfernoRoom {
     const seats = this.leases.map((lease, index) => this.connections.has(index) ? 'connected'
       : lease?.until > Date.now() ? 'reconnecting' : 'open');
     const state = JSON.stringify({ type: 'state', table: this.table, seats });
+    let legacy;
     for (const socket of this.connections.values()) {
-      try { socket.send(state); } catch {}
+      if (socket.deserializeAttachment()?.protocol !== CURRENT_PROTOCOL && !legacy) {
+        const fallback = target => target?.species === 'firestorm' ? { ...target, species: 'fuse', bonus: 'blast' } : target;
+        legacy = JSON.stringify({ type: 'state', seats, table: { ...this.table,
+          targets: this.table.targets.map(fallback),
+          effects: this.table.effects.map(effect => effect.target ? { ...effect, target: fallback(effect.target) } : effect),
+        } });
+      }
+      try { socket.send(socket.deserializeAttachment()?.protocol === CURRENT_PROTOCOL ? state : legacy); } catch {}
     }
   }
 }

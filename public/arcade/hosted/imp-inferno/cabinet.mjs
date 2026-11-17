@@ -1,7 +1,7 @@
-import { makeRenderer } from './art.mjs?v=6';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=6';
+import { makeRenderer } from './art.mjs?v=7';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=7';
 
-import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=5';
+import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=7';
 
 const byId = id => document.getElementById(id);
 const cabinet = byId('cabinet');
@@ -424,7 +424,8 @@ function displayRoom(now) {
 function seatEmpty(index) {
   const seat = table.seats[index];
   return seat.credits === 0 && !seat.bonus && !table.shots.some(shot => shot.seat === index)
-    && !table.spins?.some(spin => spin.seat === index && !spin.paid);
+    && !table.spins?.some(spin => spin.seat === index && !spin.paid)
+    && !table.storms?.some(storm => storm.seat === index);
 }
 
 function moveAim(aim, [up, down, left, right], dt) {

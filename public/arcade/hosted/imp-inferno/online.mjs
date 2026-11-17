@@ -36,7 +36,7 @@ export function openRoom(room, onMessage, onStatus) {
   let reconnect;
   let closed = false;
   function connect() {
-    socket = new WebSocket(API + room, ['imp-inferno-v1', 'seat.' + token]);
+    socket = new WebSocket(API + room, ['imp-inferno-v2', 'imp-inferno-v1', 'seat.' + token]);
     socket.addEventListener('message', event => {
       let message;
       try { message = JSON.parse(event.data); } catch { return; }

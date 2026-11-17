@@ -19,11 +19,14 @@ export const SPECIES = {
   drill: { name: 'Drill Imp', multiplier: 30, radius: 28, chance: .047, bonus: 'drill' },
   vortex: { name: 'Vortex Imp', multiplier: 35, radius: 29, chance: .041, bonus: 'vortex' },
   croupier: { name: 'Croupier Imp', multiplier: 12, radius: 28, chance: .12, bonus: 'wheel' },
+  firestorm: { name: 'Firestorm Imp', multiplier: 18, radius: 30, chance: .082, bonus: 'storm' },
   king: { name: 'Furnace King', multiplier: 80, radius: 47, chance: .019 },
 };
-const RARE_IMPS = ['fuse', 'croupier', 'spark', 'prism', 'drill', 'vortex'];
+const RARE_IMPS = ['fuse', 'croupier', 'firestorm', 'spark', 'prism', 'drill', 'vortex'];
 export const WHEEL_MULTIPLIERS = [5, 10, 5, 15, 8, 25, 8, 50];
 export const WHEEL_DURATION = 2.4;
+const STORM_CAP = 12;
+const STORM_DURATION = 1.6;
 export const SEAT_COLORS = ['#ffcf70', '#83e4ff', '#ff90c7', '#a7f8a0'];
 export const SEAT_NAMES = ['You', 'Coal', 'Hex', 'Vex'];
 const FORMATIONS = [
@@ -33,7 +36,7 @@ const FORMATIONS = [
 
 export function newTable(width) {
   return {
-    width, time: 0, targets: [], shots: [], effects: [], spins: [], nextId: 0, nextShotId: 0,
+    width, time: 0, targets: [], shots: [], effects: [], spins: [], storms: [], nextId: 0, nextShotId: 0,
     nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, rareIndex: 0, formation: 0, banner: '',
     seats: SEAT_NAMES.map((name, i) => ({
       name, credits: STARTING_CREDITS, totalWon: 0, caught: 0, readyAt: 0,
@@ -185,6 +188,13 @@ function net(table, shot, rng) {
 
 function triggerBonus(table, target, shot, rng) {
   const kind = target.bonus;
+  if (kind === 'storm') {
+    const storms = table.storms ??= [];
+    storms.push({ seat: shot.seat, cost: shot.cost, direction: target.direction,
+      progress: 0, caught: 0, credits: 0 });
+    table.banner = table.seats[shot.seat].name + ' unleashed a Firestorm';
+    return;
+  }
   if (kind === 'wheel') {
     const slot = Math.floor(rng() * WHEEL_MULTIPLIERS.length);
     const spins = table.spins ??= [];
@@ -296,6 +306,7 @@ export function advance(table, dt, control, rng = Math.random) {
   }
 
   table.targets = table.targets.filter(target => !target.caught && moveTarget(table, target));
+  advanceStorms(table, dt);
   for (const seat of table.seats) seat.recoil = Math.max(0, seat.recoil - dt * 8);
   const online = control.onlineSeats;
   if (online) {
@@ -340,4 +351,27 @@ function updateWheels(table) {
     table.banner = seat.name + ' · Furnace wheel +' + amount;
   }
   table.spins = spins.filter(spin => spin.ends + 1.25 > table.time);
+}
+
+function advanceStorms(table, dt) {
+  table.storms = (table.storms ?? []).filter(storm => {
+    const before = storm.progress;
+    storm.progress = Math.min(1, before + dt / STORM_DURATION);
+    const available = STORM_CAP - storm.caught;
+    const crossing = table.targets.filter(target => {
+      if (target.caught || target.multiplier > 8 || !visible(table, target)) return false;
+      const x = target.x / table.width;
+      const radius = (target.radius + 14) / table.width;
+      const position = storm.direction === 1 ? x : 1 - x;
+      return position + radius >= before && position - radius <= storm.progress;
+    });
+    for (const target of crossing.slice(0, available)) {
+      payout(table, target, storm);
+      storm.caught++;
+      storm.credits += storm.cost * target.multiplier;
+    }
+    if (storm.progress < 1) return true;
+    table.banner = table.seats[storm.seat].name + ' · Firestorm: ' + storm.caught + ' caught · +' + storm.credits;
+    return false;
+  });
 }
