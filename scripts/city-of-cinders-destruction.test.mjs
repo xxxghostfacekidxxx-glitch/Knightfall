@@ -215,3 +215,19 @@ test('three monstrous playstyles are explicit and free from obsolete unlock requ
  assert.match(code,/climbSpeed/);
  assert.doesNotMatch(code,/const unlockRules/);
 });
+
+test('City of Cinders playable trio keep their approved chibi fox, foil villain and feral baby redesigns',()=>{
+  const source=readFileSync('public/city-of-cinders-monsters.js','utf8');
+  const env={module:{exports:{}}};
+  vm.runInNewContext(source,env,{filename:'city-of-cinders-monsters.js',timeout:2000});
+  const designs=env.module.exports.designs;
+  assert.equal(designs['minion-mouse'].tails,3);
+  assert.match(designs['minion-mouse'].archetype,/fox-eared animal girl/);
+  assert.match(designs['mini-villain'].archetype,/foil crown/);
+  assert.match(designs['the-eddie'].archetype,/goggles and flat-bill hat/);
+  for(const drawCall of ['foxTail(c,50,142','foxTail(c,92,150','foxTail(c,122,143'])
+    assert.ok(source.includes(drawCall),'three fox tails are separately illustrated');
+  for(const label of ['chibi fox-eared animal girl','homemade silver foil crown','savage punk baby'])
+    assert.ok(html.includes(label),'Game roster description missing '+label);
+  assert.doesNotMatch(html,/green mohawk|horned dragon|giant punk mouse/i);
+});
