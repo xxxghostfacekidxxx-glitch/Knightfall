@@ -21,3 +21,7 @@ The Midnight Kitchen has four original in-page SVG customer portraits (Pip the I
 ## The Secret Pantry
 
 Two free shelf pockets let players reserve valuable ingredients when the 6×6 cooking table gets crowded. Storing and retrieving do not consume energy or coins, and dragging ingredients directly onto a pocket is supported on touch devices. An occupied pocket swaps with the chosen board ingredient, so items are never silently destroyed. Ready-made dishes on the shelf can be served straight to hungry customers. The shelf is included in local and account saves. Legacy kitchens without shelf data open with two empty pockets, and damaged shelf items are ignored during restore.
+
+## Customer request refresh
+
+When a customer requests a dish that is taking too long to craft, the **New Order** button replaces the first unfinished request for 35 coins earned in-game. Ready-to-serve requests are protected, all ingredients and stored pantry items remain intact, and the replacement is automatically saved with the rest of the kitchen. The button is disabled when every request is ready or there are insufficient coins. No paid currency is involved.
