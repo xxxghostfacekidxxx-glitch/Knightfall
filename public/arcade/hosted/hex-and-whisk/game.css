@@ -506,3 +506,8 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 @keyframes merge-flight-travel{0%{opacity:.95;transform:translate(-50%,-50%) scale(1) rotate(-10deg)}64%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--fly-x)),calc(-50% + var(--fly-y))) scale(.48) rotate(23deg)}}
 @media(max-width:890px){.merge-flight{width:clamp(22px,12vw,48px);height:clamp(22px,12vw,48px)}}
 @media(prefers-reduced-motion:reduce){.merge-flight{display:none!important}}
+
+/* Compact visual estimate: tier distance, not a promise of exact merge count. */
+.order-card .order-progress-note{position:absolute;z-index:2;bottom:2px;left:5px;max-width:58%;padding:2px 5px;border-radius:8px;border:1px solid #ffe3ba69;background:#22142bd9;color:#ffe8b6;font-size:.55rem;line-height:1.1;font-weight:900;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-card.ready .order-progress-note{color:#d5ffd5;border-color:#c7ffc27c}
+@media(max-width:890px){.order-card .order-progress-note{display:none}.order-card.order-focused .order-name{color:#fff7c3}}
