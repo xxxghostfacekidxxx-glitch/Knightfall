@@ -5,6 +5,7 @@ import {
   advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingTide,
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
+import { drawMuzzle, drawProjectile, drawReticle, drawTurret, TURRET_TIP } from '../public/arcade/hosted/imp-inferno/turret.mjs';
 
 function isolatedTable() {
   const table = newTable(800);
@@ -321,4 +322,54 @@ test('new beast types enter naturally through opening schools, rotation and rare
   for (const species of ['coalbug', 'cinderbat', 'hellhound', 'skullwisp', 'magmaworm', 'boneserpent', 'gargoyle', 'hydra']) {
     assert.ok(observed.has(species), species + ' never spawned');
   }
+});
+
+
+test('all four turrets are rendered as detailed swivel-mounted cannons', () => {
+  const table = newTable(900);
+  const calls = [];
+  const ctx = new Proxy({}, {
+    get(_, prop) { return (...args) => calls.push({ prop, args }); },
+    set() { return true; },
+  });
+  assert.equal(TURRET_TIP, 46);
+  for (let index = 0; index < 4; index++) {
+    const seat = table.seats[index];
+    seat.power = index + 1;
+    seat.recoil = .5;
+    calls.length = 0;
+    drawTurret(ctx, table, seat, index, true);
+    const position = seatOrigin(table, index);
+    assert.deepEqual(calls.find(call => call.prop === 'translate').args, [position.x, position.y]);
+    assert.ok(calls.filter(call => call.prop === 'fill').length > 20);
+    assert.equal(calls.filter(call => call.prop === 'save').length,
+      calls.filter(call => call.prop === 'restore').length);
+    assert.ok(calls.some(call => call.prop === 'rotate'));
+    assert.ok(calls.some(call => call.prop === 'fillText'));
+  }
+  delete table.seats[0].power;
+  assert.doesNotThrow(() => drawTurret(ctx, table, table.seats[0], 0));
+});
+
+test('paid cannon fire emits synchronized muzzle flashes and stronger-looking projectiles', () => {
+  const table = isolatedTable();
+  const firing = { ...control, power: 6, firing: true };
+  advance(table, .016, firing, () => .99);
+  const shot = table.shots[0];
+  const flash = table.effects.find(effect => effect.kind === 'muzzle');
+  const origin = seatOrigin(table, 0);
+  assert.ok(shot);
+  assert.ok(flash);
+  assert.equal(table.seats[0].power, 6);
+  assert.equal(flash.power, 6);
+  assert.equal(flash.seat, 0);
+  assert.ok(Math.abs(flash.x - (origin.x + Math.cos(shot.angle) * TURRET_TIP)) < .001);
+  assert.ok(Math.abs(flash.y - (origin.y + Math.sin(shot.angle) * TURRET_TIP)) < .001);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS - 25);
+  const ctx = new Proxy({}, { get() { return () => {}; }, set() { return true; } });
+  assert.doesNotThrow(() => drawMuzzle(ctx, flash, false));
+  assert.doesNotThrow(() => drawProjectile(ctx, shot, table.time, false));
+  assert.doesNotThrow(() => drawReticle(ctx, table, firing, 0, false));
+  for (let i = 0; i < 16; i++) advance(table, .016, { ...control, power: 6 }, () => .99);
+  assert.ok(!table.effects.some(effect => effect.kind === 'muzzle'), 'expired muzzle effects must be cleaned up');
 });

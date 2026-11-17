@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=9';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingTide } from './furnace.mjs?v=9';
+import { makeRenderer } from './art.mjs?v=10';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingTide } from './furnace.mjs?v=10';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=9';
 
@@ -136,6 +136,7 @@ function togglePause() {
 
 function choosePower(index) {
   control.power = index;
+  table.seats[control.onlineSeat ?? 0].power = index;
   powerButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
   if (phase === 'playing' || phase === 'online') canvas.focus({ preventScroll: true });
   updateDisplay();

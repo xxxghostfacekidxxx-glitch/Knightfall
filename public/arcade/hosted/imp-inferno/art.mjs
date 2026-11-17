@@ -1,5 +1,6 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=9';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=10';
 import { drawCreature } from './creatures.mjs?v=1';
+import { drawMuzzle, drawProjectile, drawReticle, drawTurret } from './turret.mjs?v=1';
 
 const INK = '#210912';
 const COLORS = {
@@ -91,25 +92,6 @@ function label(ctx, text, x, y, color, size = 13) {
   ctx.fillText(text, x, y);
 }
 
-function drawSeat(ctx, table, seat, index) {
-  const { x, y } = seatOrigin(table, index);
-  const color = SEAT_COLORS[index];
-  ctx.save();
-  ctx.translate(x, y);
-  ellipse(ctx, 0, 1, 34, 34, '#240a1699');
-  ellipse(ctx, 0, 0, 28, 28, '#4b2030');
-  ellipse(ctx, 0, 0, 23, 23, color);
-  ellipse(ctx, 0, 0, 20, 20, '#361829');
-  ctx.rotate(seat.angle);
-  ctx.translate(-seat.recoil * 7, 0);
-  polygon(ctx, color, [[-21, -10], [-10, -17], [17, -14], [41, -11], [42, 11], [18, 14], [-10, 17], [-21, 10]], 4);
-  polygon(ctx, '#492235', [[-7, -8], [40, -7], [41, 7], [-7, 8]], 0);
-  ellipse(ctx, 6, 0, 8, 7, color);
-  if (seat.recoil > .6) ellipse(ctx, 46, 0, 12, 7, color);
-  ctx.restore();
-  label(ctx, seat.name.toUpperCase() + (index && seat.name !== 'Open' && seat.name !== 'Away' ? ' ' + seat.credits : ''), x, y + (index === 2 ? -25 : 34), color, 12);
-}
-
 function drawNet(ctx, effect, opacity) {
   const radius = effect.radius * (.5 + .5 * (1 - opacity));
   ctx.beginPath();
@@ -147,7 +129,9 @@ function drawEffect(ctx, effect, table, reducedMotion) {
   const color = SEAT_COLORS[effect.seat];
   ctx.save();
   ctx.globalAlpha = Math.min(1, opacity * 1.65);
-  if (effect.kind === 'catch') {
+  if (effect.kind === 'muzzle') {
+    drawMuzzle(ctx, effect, reducedMotion);
+  } else if (effect.kind === 'catch') {
     if (!reducedMotion) {
       const origin = seatOrigin(table, effect.seat);
       const progress = Math.pow(1 - opacity, 2);
@@ -307,39 +291,13 @@ export function makeRenderer(ctx, backdrop) {
       label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
         target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
     }
-    ctx.lineCap = 'round';
-    for (const shot of table.shots) {
-      const color = SEAT_COLORS[shot.seat];
-      ctx.beginPath();
-      ctx.moveTo(shot.x - Math.cos(shot.angle) * 18, shot.y - Math.sin(shot.angle) * 18);
-      ctx.lineTo(shot.x, shot.y);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = shot.drill ? 11 : shot.cost > 2 ? 5 : 3;
-      ctx.stroke();
-      ellipse(ctx, shot.x, shot.y, shot.drill ? 11 : 3, shot.drill ? 5 : 3, '#fff6db', shot.angle);
-    }
+    for (const shot of table.shots) drawProjectile(ctx, shot, time, reducedMotion);
     for (const effect of table.effects) drawEffect(ctx, effect, table, reducedMotion);
-    table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
-    drawAim(ctx, table, control, control.onlineSeat ?? 0);
-    if (control.secondSeat) drawAim(ctx, table, control.secondSeat, 2);
+    table.seats.forEach((seat, i) => drawTurret(ctx, table, seat, i, reducedMotion));
+    drawReticle(ctx, table, control, control.onlineSeat ?? 0, reducedMotion);
+    if (control.secondSeat) drawReticle(ctx, table, control.secondSeat, 2, reducedMotion);
     drawWheel(ctx, table, control, reducedMotion);
 
   };
 }
 
-function drawAim(ctx, table, control, seat) {
-  const lock = table.targets.find(target => target.id === control.lockId);
-  const aim = lock ?? control.aim;
-  const radius = lock ? lock.radius + 9 : 10;
-  ctx.strokeStyle = SEAT_COLORS[seat];
-  ctx.lineWidth = lock ? 2.7 : 1.7;
-  ctx.beginPath();
-  ctx.arc(aim.x, aim.y, radius, 0, Math.PI * 2);
-  for (let i = 0; i < 4; i++) {
-    const x = Math.cos(i * Math.PI / 2);
-    const y = Math.sin(i * Math.PI / 2);
-    ctx.moveTo(aim.x + x * (radius - 4), aim.y + y * (radius - 4));
-    ctx.lineTo(aim.x + x * (radius + 6), aim.y + y * (radius + 6));
-  }
-  ctx.stroke();
-}

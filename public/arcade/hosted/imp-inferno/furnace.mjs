@@ -84,7 +84,7 @@ export function newTable(width) {
     nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, tideIndex: 0, rareIndex: 0, formation: 0, banner: '',
     seats: SEAT_NAMES.map((name, i) => ({
       name, credits: STARTING_CREDITS, totalWon: 0, caught: 0, readyAt: 0,
-      angle: [-Math.PI / 2, .31, Math.PI / 2, Math.PI - .31][i], recoil: 0, targetId: null, bonus: null,
+      angle: [-Math.PI / 2, .31, Math.PI / 2, Math.PI - .31][i], recoil: 0, power: 0, targetId: null, bonus: null,
     })),
   };
 }
@@ -194,6 +194,12 @@ function fire(table, seat, aim, power, rapid, locked, cpu = false) {
   if (table.time < player.readyAt || (!bonus && player.credits < cost)) return;
   player.readyAt = table.time + (cpu ? .80 + seat * .09 : rapid ? .20 : .37);
   player.recoil = 1;
+  player.power = power;
+  table.effects.push({
+    kind: 'muzzle', seat, x: origin.x + Math.cos(angle) * 46,
+    y: origin.y + Math.sin(angle) * 46, angle, power,
+    life: .24, duration: .24,
+  });
   const shot = {
     id: ++table.nextShotId, seat, cost, radius, strength, angle, lockId: locked ? aim.id : null, life: 2.8, bounces: 2,
     x: origin.x + Math.cos(angle) * 34, y: origin.y + Math.sin(angle) * 34,
@@ -396,6 +402,7 @@ function directSeat(table, seat, control) {
   const lock = table.targets.find(target => target.id === control.lockId && visible(table, target));
   const aim = lock ?? control.aim;
   table.seats[seat].angle = Math.atan2(aim.y - origin.y, aim.x - origin.x);
+  if (POWERS[control.power]) table.seats[seat].power = control.power;
   if (control.firing || (control.auto && (!control.lockMode || lock))) {
     fire(table, seat, aim, control.power, control.rapid, Boolean(lock));
   }
