@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=14"/);
- assert.match(page,/href="\.\/game\.css\?v=14"/);
+ assert.match(page,/src="\.\/game\.js\?v=15"/);
+ assert.match(page,/href="\.\/game\.css\?v=15"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -164,8 +164,8 @@ test("art revision enhances all original recipes, portraits and generator equipm
  }
  assert.match(script,/machineTrim/);
  assert.match(stylesheet,/V10 illustrated art direction/);
- assert.match(page,/game\.js\?v=14/);
- assert.match(page,/game\.css\?v=14/);
+ assert.match(page,/game\.js\?v=15/);
+ assert.match(page,/game\.css\?v=15/);
 });
 
 test("patron spotlights allow waiting dialogue and celebrate newly ready and served orders",()=>{
@@ -184,8 +184,8 @@ test("patron spotlights allow waiting dialogue and celebrate newly ready and ser
 });
 
 test("free-standing ingredient sprites retain the seamless checkerboard and customers display return visits",()=>{
- assert.match(page,/game\.js\?v=14/);
- assert.match(page,/game\.css\?v=14/);
+ assert.match(page,/game\.js\?v=15/);
+ assert.match(page,/game\.css\?v=15/);
  assert.match(script,/svg\.classList\.add\("food","food-object"\)/);
  assert.match(stylesheet,/V12: ONE uninterrupted stone checkerboard/);
  assert.match(stylesheet,/background:conic-gradient/);
@@ -198,8 +198,8 @@ test("free-standing ingredient sprites retain the seamless checkerboard and cust
 });
 
 test("focused customer orders guide ingredient matching and merges animate food objects",()=>{
- assert.match(page,/game\.js\?v=14/);
- assert.match(page,/game\.css\?v=14/);
+ assert.match(page,/game\.js\?v=15/);
+ assert.match(page,/game\.css\?v=15/);
  assert.match(script,/focusedOrderId/);
  assert.match(script,/function mergeFlight\(from,to,chain,tier\)/);
  assert.match(script,/focusedOrderId===order\.id\?null:order\.id/);
@@ -221,8 +221,8 @@ test("customer recipe progress reads board and pantry without overcrowding mobil
 });
 
 test("legendary ingredients glow without adding cards and loyal regulars have special encounters",()=>{
- assert.match(page,/game\.js\?v=14/);
- assert.match(page,/game\.css\?v=14/);
+ assert.match(page,/game\.js\?v=15/);
+ assert.match(page,/game\.css\?v=15/);
  assert.match(script,/CUSTOMER_ENCOUNTERS/);
  for(const symbol of ["imp","bat","ghost","witch","gargoyle","moth","crow","slime"])
   assert.match(script,new RegExp('(?:^|\\n) '+symbol+':"'));
@@ -233,4 +233,17 @@ test("legendary ingredients glow without adding cards and loyal regulars have sp
  assert.match(stylesheet,/\.tier-flourish\.legendary-flourish/);
  assert.match(stylesheet,/\.customer-moment\[data-mood="encounter"\]/);
  assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+test("night shift guestbook displays earned keepsakes without invading the board",()=>{
+ assert.match(page,/id="guestbook-details"/);
+ assert.match(page,/id="guestbook-count"/);
+ assert.match(page,/id="guestbook"/);
+ assert.match(script,/function renderGuestbook\(\)/);
+ assert.match(script,/keepsakesForPatron\(game,patron\)/);
+ assert.match(script,/if\(result\.keepsake\)toast/);
+ assert.match(stylesheet,/\.guestbook-grid/);
+ assert.match(stylesheet,/\.guestbook-keepsake\.earned/);
+ assert.match(page,/game\.js\?v=15/);
+ assert.match(page,/game\.css\?v=15/);
 });
