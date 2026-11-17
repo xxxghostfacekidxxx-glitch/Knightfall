@@ -37,3 +37,15 @@ The Secret Pantry starts with two free storage pockets, then earns one more at l
 ## Verification
 
 The pure engine's 24 regression cases pass in the connector's JavaScript execution environment, covering fresh games, merging, energy, leveling, quests, customer requests, Magic Whisks, generator relocation, shelf upgrades, and legacy save migration. Syntax checks pass for engine and client scripts. Browser rendering and the live Cloudflare deployment still require separate end-to-end verification.
+
+## One-screen mobile kitchen (v7)
+
+The mobile layout prioritizes a single viewport: tiny HUD counters and quick actions, three customers above the counter, then a square 6×6 checkerboard playfield with compact energy, merge and utility controls. Decorative hero content is hidden in the compact layout. Original food SVGs float directly over subtly alternating countertop squares, rather than solid ingredient cards. Storage and the full Kitchen & Quests panel open as accessible slide-up drawers with a backdrop and Escape/close controls; selecting a stored item closes its drawer so the board is immediately usable. Responsive landscape rules and reduced-motion fallbacks remain.
+
+## Bonus energy versus natural regeneration
+
+Natural energy regeneration stops at **40**, but earned energy from orders, level rewards and quests can accumulate up to a safety limit of **999**. Spending earned bonus energy is allowed even above 40. Regeneration resumes once available energy drops below the normal ceiling; bonus energy persists in existing version-1 local and account saves. Energy UI shows the actual balance above 40 and a full threshold meter. No purchase or paid energy mechanic is introduced.
+
+### Verification
+
+The 26 pure-engine regression checks passed in a JavaScript execution harness after the changes, including earned-energy overflow, capped regeneration, quest rewards, and serialization. Client JavaScript syntax and static markup/asset references were checked. Browser layout and live Cloudflare deploy require a separate on-device visual check.
