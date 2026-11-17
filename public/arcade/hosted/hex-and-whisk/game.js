@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,orderProgress,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,orderProgress,keepsakesForPatron,KEEPSAKE_LEVELS,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -301,6 +301,32 @@ function renderQuests(){
  }
  list.replaceChildren(frag);
 }
+function renderGuestbook(){
+ const host=$("guestbook"),counter=$("guestbook-count");
+ if(!host||!counter)return;
+ const frag=document.createDocumentFragment();
+ let collected=0;
+ for(const patron of PATRONS){
+  const visits=loyaltyStamps(game,patron);
+  const earned=keepsakesForPatron(game,patron);
+  collected+=earned.length;
+  const card=text("article","","guestbook-character"+(visits?" returning":""));
+  card.dataset.customer=patron.symbol;
+  const portraitFrame=text("div","","guestbook-portrait");
+  portraitFrame.append(portrait(patron));
+  const info=text("div","","guestbook-info");
+  info.append(text("strong",patron.name),text("small",visits+" visits · "+(visits?"Regular guest":"Not met yet")));
+  const prizes=text("div","","guestbook-keepsakes");
+  for(const [i,limit] of KEEPSAKE_LEVELS.entries()){
+   const owned=earned.find(item=>item.visits===limit);
+   const badge=text("span",owned?"✦ "+owned.name:"◇ Visit "+limit,"guestbook-keepsake"+(owned?" earned":" locked"));
+   badge.title=owned?"Earned on visit "+limit:"Serve "+patron.name+" "+limit+" times to unlock";
+   prizes.append(badge);
+  }
+  info.append(prizes);card.append(portraitFrame,info);frag.append(card);
+ }
+ host.replaceChildren(frag);counter.textContent=collected+" / "+(PATRONS.length*KEEPSAKE_LEVELS.length);
+}
 function renderCookbook(){
  const book=$("recipe-book"),counter=$("discovery-count");
  if(!book||!counter)return; // keep gameplay working across stale page caches
@@ -362,7 +388,7 @@ function renderStats(){
  $("whisk").disabled=game.whisks<1||!findMergePair(game);
  $("hint").disabled=!findMergePair(game);
 }
-function render(pop=-1){if(focusedOrderId!==null&&!game.orders.some(order=>order.id===focusedOrderId))focusedOrderId=null;renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderStats();syncCustomerReactions();safeSave()}
+function render(pop=-1){if(focusedOrderId!==null&&!game.orders.some(order=>order.id===focusedOrderId))focusedOrderId=null;renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderGuestbook();renderStats();syncCustomerReactions();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
@@ -486,7 +512,9 @@ function fulfill(index){
   const milestone=!!result.loyaltyBonus;
   const lines=CUSTOMER_LINES[patron.symbol].served;
   const phrase=milestone?CUSTOMER_ENCOUNTERS[patron.symbol]:lines[game.served%lines.length];
-  customerMoment(patron,phrase,"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:"")+(result.loyaltyBonus?" · REGULAR +"+result.loyaltyBonus:""),milestone?"encounter":"served");
+  const keepsakeNote=result.keepsake?" ✦ KEEPSAKE: "+result.keepsake.name:"";
+  customerMoment(patron,phrase,"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:"")+(result.loyaltyBonus?" · REGULAR +"+result.loyaltyBonus:"")+keepsakeNote,result.keepsake?"encounter":milestone?"encounter":"served");
+  if(result.keepsake)toast("✦ NEW GUESTBOOK KEEPSAKE: "+result.keepsake.name);
  }
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
