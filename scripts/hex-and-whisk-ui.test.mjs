@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=9"/);
- assert.match(page,/href="\.\/game\.css\?v=9"/);
+ assert.match(page,/src="\.\/game\.js\?v=10"/);
+ assert.match(page,/href="\.\/game\.css\?v=10"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -150,4 +150,20 @@ test("eight illustrated characters speak differently and earn favorite meal tips
  assert.match(stylesheet,/\.order-card\[data-customer="moth"\]/);
  assert.match(stylesheet,/@keyframes patron-bloop/);
  assert.match(stylesheet,/\.order-card \.customer-speech\{display:block!important/);
+});
+
+test("art revision enhances all original recipes, portraits and generator equipment",()=>{
+ const recipeArt=read(prefix+"sprites/icons.svg");
+ const symbols=[...recipeArt.matchAll(/<symbol id="(?:garden|bakery|sweets)-[1-7]"/g)];
+ assert.equal(symbols.length,21);
+ assert.match(recipeArt,/hex-piece-sheen/);
+ for(const character of ["imp","bat","ghost","witch","gargoyle","moth","crow","slime"]){
+  const symbol=page.match(new RegExp('<symbol id="patron-'+character+'"[^>]*>([\\s\\S]*?)<\\/symbol>'));
+  assert.ok(symbol,character+" portrait absent");
+  assert.match(symbol[1],/class="patron-accents"/);
+ }
+ assert.match(script,/machineTrim/);
+ assert.match(stylesheet,/V10 illustrated art direction/);
+ assert.match(page,/game\.js\?v=10/);
+ assert.match(page,/game\.css\?v=10/);
 });
