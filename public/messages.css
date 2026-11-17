@@ -916,3 +916,11 @@
   .messages-shell .message-layout.show-chat .composer{max-height:32dvh}
   .messages-shell .message-layout.show-chat .composer textarea{min-height:34px;max-height:12dvh}
 }
+
+/* Chaosphere mascot, preserving all messaging layout tracks and Gothic palette. */
+.messages-hero .cs-hero-brand{display:flex;align-items:center;gap:clamp(8px,1.8vw,18px);min-width:0}
+.messages-hero .cs-hero-brand img{flex:none;width:clamp(46px,7vw,76px);height:clamp(46px,7vw,76px);filter:drop-shadow(0 5px 13px #1a0e21c0);animation:cs-hero-imp 4.2s ease-in-out infinite;transform-origin:center bottom}
+.messages-hero .cs-hero-brand h1{min-width:0;overflow-wrap:anywhere;letter-spacing:-.065em;font-size:clamp(1.7rem,6vw,4.7rem)!important;line-height:1.04!important}
+@keyframes cs-hero-imp{0%,100%{transform:rotate(-2deg)}35%{transform:translateY(-4px) rotate(4deg)}39%{transform:translateY(-2px) rotate(-4deg)}43%{transform:rotate(2deg)}}
+@media(max-width:550px){.messages-hero .cs-hero-brand img{width:44px;height:44px}.messages-hero .cs-hero-brand h1{font-size:clamp(1.38rem,6.5vw,2.15rem)!important;letter-spacing:-.05em!important}}
+@media(prefers-reduced-motion:reduce){.messages-hero .cs-hero-brand img{animation:none}}

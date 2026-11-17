@@ -44,6 +44,16 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /messages.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/chaosphere.webmanifest
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaosphere.html
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/ruinwire-app.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/ruinwire-install.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/icons/chaosphere.svg
+  Cache-Control: public, max-age=300
 /ruinwire.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 

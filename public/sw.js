@@ -1,4 +1,4 @@
-const CACHE_NAME = "knightfall-shell-v72";
+const CACHE_NAME = "knightfall-shell-v73";
 const APP_SHELL = [
   "/",
   "/offline.html",
@@ -44,10 +44,13 @@ const APP_SHELL = [
   "/assets/knightfall/realm-diary.svg",
   "/nav.js",
   "/install.html",
+  "/chaosphere.html",
   "/ruinwire.html",
   "/forge2d-avatar.css",
   "/misfit-avatar.js",
+  "/chaosphere.webmanifest",
   "/ruinwire.webmanifest",
+  "/icons/chaosphere.svg",
   "/icons/ruinwire.svg",
   "/ruinwire.css",
   "/ruinwire-install.js",

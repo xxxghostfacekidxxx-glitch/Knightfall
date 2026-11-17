@@ -45,14 +45,14 @@
       ]
     },
     {
-      "name": "Ruinwire",
+      "name": "Chaosphere",
       "short_name": "Chat",
       "url": "/messages.html?source=app-shortcut",
       "icons": [
         {
-          "src": "/icons/knightfall-crest-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
+          "src": "/icons/chaosphere.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },

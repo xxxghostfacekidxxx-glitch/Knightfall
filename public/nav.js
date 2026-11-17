@@ -134,13 +134,11 @@
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",mountSupportFooter,{once:true});
   else mountSupportFooter();
-  // Dedicated Ruinwire PWA keeps its own icon; all other pages use Knightfall's crest.
-  const isRuinwire = ["/ruinwire", "/ruinwire.html"].includes(location.pathname) ||
-    (["/messages", "/messages.html"].includes(location.pathname) &&
-      new URLSearchParams(location.search).get("app") === "ruinwire");
-  const iconLinks = isRuinwire ? [
-    { rel: "icon", href: "/icons/ruinwire.svg", type: "image/svg+xml" },
-    { rel: "shortcut icon", href: "/icons/ruinwire.svg", type: "image/svg+xml" },
+  // Chaosphere owns message views; legacy Ruinwire routes stay supported.
+  const isChaosphere = ["/chaosphere","/chaosphere.html","/ruinwire","/ruinwire.html","/messages","/messages.html"].includes(location.pathname);
+  const iconLinks = isChaosphere ? [
+    { rel: "icon", href: "/icons/chaosphere.svg", type: "image/svg+xml" },
+    { rel: "shortcut icon", href: "/icons/chaosphere.svg", type: "image/svg+xml" },
     { rel: "apple-touch-icon", href: "/icons/knightfall-crest-512.png?v=20261114" }
   ] : [
     { rel: "icon", href: "/icons/knightfall-crest-192.png?v=20261114", type: "image/png" },
@@ -260,7 +258,7 @@
         </div>
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
-      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Ruinwire</a>
+      <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Chaosphere</a>
       <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -454,7 +452,7 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261117-arcade2";
+            bubbles.src="/chat-bubbles.js?v=20261117-chaosphere1";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             document.body.append(bubbles);

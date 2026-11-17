@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Ruinwire is the private messaging system for Knightfall members.">
-<title>Ruinwire | Knightfall Messages</title>
-<link rel="stylesheet" href="/theme.css?v=20261115-gothic9"><link rel="stylesheet" href="/messages.css?v=20261115-gothic9">
-<script src="/ruinwire-app.js?v=1"></script>
+  <meta name="description" content="Chaosphere brings private messages, group chats, and arcade invites to the Knightfall community.">
+<title>Chaosphere | Knightfall Messages</title>
+<link rel="stylesheet" href="/theme.css?v=20261115-gothic9"><link rel="stylesheet" href="/messages.css?v=20261117-chaosphere1">
+<script src="/ruinwire-app.js?v=20261117-chaosphere1"></script>
 </head>
 <body>
 <header class="kf-header"></header>
 <main class="messages-shell">
   <section class="messages-hero">
-    <div><p class="eyebrow">PRIVATE CHANNELS</p><h1>RUINWIRE<span>.</span></h1><p>Private messages and group conversations for Knightfall members.</p></div>
+    <div><p class="eyebrow">KNIGHTFALL / ENTER THE CHAOS</p><div class="cs-hero-brand"><img src="/icons/chaosphere.svg" width="76" height="76" alt="Chaosphere's little demon mascot"><h1>CHAOSPHERE<span>.</span></h1></div><p>Enter the chaos. Find your kind. Private messages, live conversations, and ridiculous game nights.</p></div>
     <div class="messages-hero-actions"><button id="phone-push-help" class="secondary" type="button">📲 Phone alerts</button><button id="new-group" class="secondary">New group</button><button id="new-message" class="primary">New message</button></div>
   </section>
   <div id="status" class="msg-status" role="status" aria-live="polite"></div>
@@ -193,7 +193,7 @@ function maybeNotifyUnread(){
 function drawConversations(){
  const q=$("#conversation-search").value.trim().toLowerCase();
  const unreadTotal=conversations.reduce((sum,x)=>sum+Math.max(0,Number(x.unread_count)||0),0);
- document.title=(unreadTotal?"("+unreadTotal+") ":"")+"Ash-Fall | Messages";
+ document.title=(unreadTotal?"("+unreadTotal+") ":"")+"Chaosphere | Knightfall Messages";
  const unreadButton=document.querySelector("[data-inbox-filter=\"unread\"]");
  if(unreadButton)unreadButton.textContent=unreadTotal?"Unread ("+unreadTotal+")":"Unread";
  const list=conversations.filter(x=>(String(x.group_name||"")+" "+String(x.other_username||"")+" "+String(x.other_display_name||"")+" "+String(x.last_body||"")).toLowerCase().includes(q)&&(inboxFilter!=="unread"||Number(x.unread_count)>0));
