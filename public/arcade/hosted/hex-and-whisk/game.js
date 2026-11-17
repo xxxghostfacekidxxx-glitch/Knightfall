@@ -325,6 +325,7 @@ function fulfill(index){
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
+ if(result.storageUnlocked)toast("✦ PANTRY EXPANDED! "+result.storageCapacity+" storage pockets unlocked!");
  if(result.rush)toast("🔥 RUSH HOUR! DOUBLE TIPS FOR 45 SECONDS");
  maybeCloudAutosave();
 }
