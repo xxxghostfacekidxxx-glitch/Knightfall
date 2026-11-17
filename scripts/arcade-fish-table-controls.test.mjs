@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import {
   advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingTide,
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
+import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
 
 function isolatedTable() {
   const table = newTable(800);
@@ -271,4 +272,53 @@ test('retired cabinet routes are absent from the site, catalog, and redirects', 
     }
   }
   assert.equal(catalog.games.filter(game => game.id === 'imp-inferno').length, 1);
+});
+
+
+test('infernal creature families have unique point denominations and distinct procedural artwork', () => {
+  const expected = { coalbug: 1, cinderbat: 3, hellhound: 6, skullwisp: 10,
+    magmaworm: 14, boneserpent: 24, gargoyle: 45, hydra: 60 };
+  assert.deepEqual(CREATURE_SPECIES, Object.keys(expected));
+  assert.equal(new Set(Object.values(expected)).size, CREATURE_SPECIES.length);
+  for (const [species, multiplier] of Object.entries(expected)) {
+    assert.equal(SPECIES[species].multiplier, multiplier);
+    assert.ok(SPECIES[species].chance > 0 && SPECIES[species].chance < 1);
+    assert.ok(SPECIES[species].radius > 0);
+    assert.equal(isCreature(species), true);
+  }
+  assert.equal(isCreature('grinner'), false);
+  const calls = [];
+  const ctx = new Proxy({}, {
+    get(_, prop) {
+      if (prop === 'canvas') return null;
+      return (...args) => calls.push([prop, ...args]);
+    },
+    set() { return true; },
+  });
+  for (const species of CREATURE_SPECIES) {
+    calls.length = 0;
+    assert.equal(drawCreature(ctx, { species, x: 50, y: 50, radius: SPECIES[species].radius,
+      direction: 1, id: 1 }, 1.5), true);
+    assert.ok(calls.some(([op]) => op === 'fill'), species + ' drew nothing');
+    assert.ok(calls.some(([op]) => op === 'restore'), species + ' did not restore canvas state');
+  }
+  assert.equal(drawCreature(ctx, { species: 'grinner' }, 0), false);
+});
+
+test('new beast types enter naturally through opening schools, rotation and rare hunts', () => {
+  const table = newTable(800);
+  seedTable(table, () => .5);
+  assert.ok(table.targets.some(target => target.species === 'coalbug'));
+  assert.ok(table.targets.some(target => target.species === 'hellhound'));
+  const observed = new Set(table.targets.map(target => target.species));
+  advance(table, 95, { onlineSeats: [null, null, null, null] }, () => .5);
+  // Frame one big step only spawns one formation; subsequent ticks rotate through all groups.
+  table.nextSchool = table.time;
+  for (let i = 0; i < 45; i++) {
+    advance(table, 3.2, { onlineSeats: [null, null, null, null] }, () => .5);
+    for (const target of table.targets) observed.add(target.species);
+  }
+  for (const species of ['coalbug', 'cinderbat', 'hellhound', 'skullwisp', 'magmaworm', 'boneserpent', 'gargoyle', 'hydra']) {
+    assert.ok(observed.has(species), species + ' never spawned');
+  }
 });

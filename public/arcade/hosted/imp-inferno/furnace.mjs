@@ -10,7 +10,15 @@ export const POWERS = [
   { cost: 25, radius: 96, strength: 2.1 },
 ];
 export const SPECIES = {
+  coalbug: { name: 'Coalbug', multiplier: 1, radius: 15, chance: .65, motion: 'skitter', pace: 1.15 },
   grinner: { name: 'Grinner', multiplier: 2, radius: 17, chance: .49 },
+  cinderbat: { name: 'Cinder Bat', multiplier: 3, radius: 18, chance: .43, motion: 'swoop', pace: 1.12 },
+  hellhound: { name: 'Hellhound Pup', multiplier: 6, radius: 24, chance: .29, motion: 'pounce', pace: 1.05 },
+  skullwisp: { name: 'Skull Wisp', multiplier: 10, radius: 21, chance: .185, motion: 'haunt', pace: .92 },
+  magmaworm: { name: 'Magma Grub', multiplier: 14, radius: 25, chance: .125, motion: 'crawl', pace: .84 },
+  boneserpent: { name: 'Bone Serpent', multiplier: 24, radius: 30, chance: .078, motion: 'slither', pace: .94 },
+  gargoyle: { name: 'Gargoyle', multiplier: 45, radius: 34, chance: .038, motion: 'glide', pace: .73 },
+  hydra: { name: 'Infernal Hydra', multiplier: 60, radius: 49, chance: .021, motion: 'weave', pace: .56 },
   ashwing: { name: 'Ashwing', multiplier: 4, radius: 19, chance: .25 },
   brute: { name: 'Brute', multiplier: 8, radius: 27, chance: .135 },
   fuse: { name: 'Fuse Imp', multiplier: 15, radius: 24, chance: .09, bonus: 'blast' },
@@ -22,7 +30,7 @@ export const SPECIES = {
   firestorm: { name: 'Firestorm Imp', multiplier: 18, radius: 30, chance: .082, bonus: 'storm' },
   king: { name: 'Furnace King', multiplier: 80, radius: 47, chance: .019 },
 };
-const RARE_IMPS = ['fuse', 'croupier', 'firestorm', 'spark', 'prism', 'drill', 'vortex'];
+const RARE_IMPS = ['fuse', 'boneserpent', 'croupier', 'firestorm', 'gargoyle', 'spark', 'prism', 'drill', 'hydra', 'vortex'];
 export const WHEEL_MULTIPLIERS = [5, 10, 5, 15, 8, 25, 8, 50];
 export const WHEEL_DURATION = 2.4;
 const STORM_CAP = 12;
@@ -30,8 +38,10 @@ const STORM_DURATION = 1.6;
 export const SEAT_COLORS = ['#ffcf70', '#83e4ff', '#ff90c7', '#a7f8a0'];
 export const SEAT_NAMES = ['You', 'Coal', 'Hex', 'Vex'];
 const FORMATIONS = [
-  ['grinner', 8, 'shoal'], ['ashwing', 6, 'zigzag'], ['grinner', 7, 'diagonal'],
-  ['brute', 4, 'shoal'], ['grinner', 9, 'zigzag'], ['ashwing', 7, 'diagonal'],
+  ['coalbug', 11, 'shoal'], ['grinner', 8, 'shoal'], ['cinderbat', 7, 'zigzag'],
+  ['ashwing', 6, 'diagonal'], ['hellhound', 5, 'shoal'], ['brute', 4, 'shoal'],
+  ['skullwisp', 5, 'zigzag'], ['magmaworm', 4, 'diagonal'], ['grinner', 9, 'zigzag'],
+  ['cinderbat', 8, 'diagonal'], ['coalbug', 11, 'zigzag'], ['hellhound', 6, 'diagonal'],
 ];
 const TIDES = [
   { name: 'Inferno Tide', route: 'tide', schools: [
@@ -40,15 +50,15 @@ const TIDES = [
     { species: 'brute', count: 5, lane: .71 },
   ] },
   { name: 'Crossfire', route: 'tide', schools: [
-    { species: 'grinner', count: 6, lane: .20 },
-    { species: 'brute', count: 4, lane: .39, opposing: true },
-    { species: 'ashwing', count: 6, lane: .61 },
-    { species: 'grinner', count: 6, lane: .80, opposing: true },
+    { species: 'coalbug', count: 6, lane: .20 },
+    { species: 'hellhound', count: 4, lane: .39, opposing: true },
+    { species: 'cinderbat', count: 6, lane: .61 },
+    { species: 'skullwisp', count: 6, lane: .80, opposing: true },
   ] },
   { name: 'Chevron Rush', route: 'chevron', schools: [
-    { species: 'ashwing', count: 7, lane: .18, delay: .45 },
-    { species: 'brute', count: 5, lane: .50 },
-    { species: 'ashwing', count: 7, lane: .82, delay: .45 },
+    { species: 'cinderbat', count: 7, lane: .18, delay: .45 },
+    { species: 'magmaworm', count: 5, lane: .50 },
+    { species: 'cinderbat', count: 7, lane: .82, delay: .45 },
   ] },
 ];
 const TIDE_INTERVAL = 32;
@@ -100,7 +110,7 @@ function addFormation(table, species, count, route, rng, { openingAt = 0, lane, 
   const direction = from ?? (rng() < .5 ? 1 : -1);
   const rhythm = atRail ? .39 : .67 + rng() * .13;
   const sharedY = lane ?? (.24 + rng() * .49);
-  const speed = atRail ? .103 : species === 'king' ? .047 : .085 + rng() * .021;
+  const speed = (atRail ? .103 : species === 'king' ? .047 : .085 + rng() * .021) * (SPECIES[species].pace ?? 1);
   const arrival = atRail ? 76 / (speed * (table.width + 192)) : openingAt;
   for (let i = 0; i < count; i++) {
     const stats = SPECIES[species];
@@ -124,14 +134,26 @@ function moveTarget(table, target) {
     y = HEIGHT * (.5 + (target.sharedY - .5) * spread);
   }
   target.x = target.direction === 1 ? x : table.width - x;
-  target.y = y + offset + Math.sin(table.time * 3 + target.order) * 5;
+  const beat = table.time * 3 + target.order;
+  const motion = target.motion;
+  if (motion === 'skitter') y += Math.sin(beat * 2.8) * 6;
+  if (motion === 'swoop') y += Math.sin(beat * 1.8) * 19;
+  if (motion === 'pounce') y += Math.abs(Math.sin(beat * 1.3)) * -13;
+  if (motion === 'haunt') y += Math.sin(beat * .75) * 17;
+  if (motion === 'crawl') y += Math.sin(beat * .5) * 4;
+  if (motion === 'slither') y += Math.sin(beat * 1.25) * 15;
+  if (motion === 'glide') y += Math.sin(beat * .55) * 9;
+  if (motion === 'weave') y += Math.sin(beat * .45) * 23;
+  target.y = y + offset + Math.sin(beat) * 5;
   return progress < 1;
 }
 
 export function seedTable(table, rng = Math.random) {
-  addFormation(table, 'grinner', 8, 'shoal', rng, { openingAt: 7 });
-  addFormation(table, 'ashwing', 5, 'diagonal', rng, { openingAt: 6 });
-  addFormation(table, 'brute', 3, 'zigzag', rng, { openingAt: 6 });
+  addFormation(table, 'coalbug', 8, 'shoal', rng, { openingAt: 7 });
+  addFormation(table, 'grinner', 6, 'shoal', rng, { openingAt: 7 });
+  addFormation(table, 'cinderbat', 5, 'diagonal', rng, { openingAt: 6 });
+  addFormation(table, 'ashwing', 4, 'diagonal', rng, { openingAt: 6 });
+  addFormation(table, 'hellhound', 3, 'zigzag', rng, { openingAt: 6 });
   for (const target of table.targets) moveTarget(table, target);
 }
 

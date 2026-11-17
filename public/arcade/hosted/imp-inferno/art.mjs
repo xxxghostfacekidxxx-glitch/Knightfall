@@ -1,4 +1,5 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=8';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=9';
+import { drawCreature } from './creatures.mjs?v=1';
 
 const INK = '#210912';
 const COLORS = {
@@ -73,6 +74,10 @@ function imp(ctx, target, time) {
     ctx.fillText(glyphs[target.bonus], -2, 23);
   }
   ctx.restore();
+}
+
+function drawTarget(ctx, target, time) {
+  if (!drawCreature(ctx, target, time)) imp(ctx, target, time);
 }
 
 function label(ctx, text, x, y, color, size = 13) {
@@ -155,7 +160,7 @@ function drawEffect(ctx, effect, table, reducedMotion) {
       }
       if (opacity > .68) {
         ctx.globalAlpha = (opacity - .68) * 2.4;
-        imp(ctx, { ...effect.target, y: effect.y - (1 - opacity) * 38, radius: effect.target.radius * opacity, flash: true }, table.time);
+        drawTarget(ctx, { ...effect.target, y: effect.y - (1 - opacity) * 38, radius: effect.target.radius * opacity, flash: true }, table.time);
         ctx.globalAlpha = Math.min(1, opacity * 1.65);
       }
     }
@@ -298,7 +303,7 @@ export function makeRenderer(ctx, backdrop) {
     drawStorms(ctx, table, reducedMotion);
     for (const target of table.targets) {
       if (target.x < -85 || target.x > width + 85) continue;
-      imp(ctx, target, time);
+      drawTarget(ctx, target, time);
       label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
         target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
     }

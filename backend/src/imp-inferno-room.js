@@ -1,7 +1,12 @@
 import { advance, HEIGHT, newTable, pickTarget, POWERS, seedTable, STARTING_CREDITS } from '../../public/arcade/hosted/imp-inferno/furnace.mjs';
 
 const PROTOCOL = 'imp-inferno-v1';
-const CURRENT_PROTOCOL = 'imp-inferno-v2';
+const PREVIOUS_PROTOCOL = 'imp-inferno-v2';
+const CURRENT_PROTOCOL = 'imp-inferno-v3';
+const LEGACY_CREATURES = {
+  coalbug: 'grinner', cinderbat: 'ashwing', hellhound: 'brute', skullwisp: 'ashwing',
+  magmaworm: 'brute', boneserpent: 'brute', gargoyle: 'king', hydra: 'king',
+};
 const WIDTH = 900;
 const RESERVE_MS = 45_000;
 const STEP_MS = 1000 / 30;
@@ -13,7 +18,7 @@ export async function connectImpInferno(request, env, room, allowedOrigins, rate
     return new Response('WebSocket required.', { status: 426 });
   }
   if (!allowedOrigins.has(request.headers.get('Origin'))) return new Response('Origin not allowed.', { status: 403 });
-  const selected = [CURRENT_PROTOCOL, PROTOCOL].find(value => protocol?.includes(value));
+  const selected = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL, PROTOCOL].find(value => protocol?.includes(value));
   if (!selected || !token) return new Response('Invalid table protocol.', { status: 400 });
   if (!env.IMP_INFERNO_ROOMS) return new Response('Online tables unavailable.', { status: 503 });
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -69,7 +74,8 @@ export class ImpInfernoRoom {
   async fetch(request) {
     const token = request.headers.get('X-Seat-Token');
     if (!token || !/^[a-f0-9]{32}$/.test(token)) return new Response(null, { status: 400 });
-    const protocol = request.headers.get('X-Imp-Protocol') === CURRENT_PROTOCOL ? CURRENT_PROTOCOL : PROTOCOL;
+    const requested = request.headers.get('X-Imp-Protocol');
+    const protocol = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL].includes(requested) ? requested : PROTOCOL;
     const now = Date.now();
     let seat = this.leases.findIndex(lease => lease?.token === token);
     if (seat < 0) {
@@ -183,16 +189,27 @@ export class ImpInfernoRoom {
     const seats = this.leases.map((lease, index) => this.connections.has(index) ? 'connected'
       : lease?.until > Date.now() ? 'reconnecting' : 'open');
     const state = JSON.stringify({ type: 'state', table: this.table, seats });
-    let legacy;
+    const legacy = new Map();
     for (const socket of this.connections.values()) {
-      if (socket.deserializeAttachment()?.protocol !== CURRENT_PROTOCOL && !legacy) {
-        const fallback = target => target?.species === 'firestorm' ? { ...target, species: 'fuse', bonus: 'blast' } : target;
-        legacy = JSON.stringify({ type: 'state', seats, table: { ...this.table,
-          targets: this.table.targets.map(fallback),
-          effects: this.table.effects.map(effect => effect.target ? { ...effect, target: fallback(effect.target) } : effect),
-        } });
+      const protocol = socket.deserializeAttachment()?.protocol;
+      let payload = state;
+      if (protocol !== CURRENT_PROTOCOL) {
+        if (!legacy.has(protocol)) {
+          const fallback = target => {
+            if (!target) return target;
+            const species = LEGACY_CREATURES[target.species] ?? target.species;
+            return protocol === PROTOCOL && species === 'firestorm'
+              ? { ...target, species: 'fuse', bonus: 'blast' }
+              : { ...target, species };
+          };
+          legacy.set(protocol, JSON.stringify({ type: 'state', seats, table: { ...this.table,
+            targets: this.table.targets.map(fallback),
+            effects: this.table.effects.map(effect => effect.target ? { ...effect, target: fallback(effect.target) } : effect),
+          } }));
+        }
+        payload = legacy.get(protocol);
       }
-      try { socket.send(socket.deserializeAttachment()?.protocol === CURRENT_PROTOCOL ? state : legacy); } catch {}
+      try { socket.send(payload); } catch {}
     }
   }
 }
