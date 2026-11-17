@@ -28,6 +28,15 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="whisk"/);
  assert.match(page,/id="hint"/);
  assert.match(page,/id="next-whisk"/);
+ assert.match(page,/id="shelf"/);
+ assert.match(page,/id="shelf-counter"/);
+ assert.match(script,/function renderShelf/);
+ assert.match(script,/function tapShelf/);
+ assert.match(script,/function parkIngredient/);
+ assert.match(script,/function retrieveIngredient/);
+ assert.match(script,/function shelfAt/);
+ assert.match(stylesheet,/\.shelf-slot/);
+ assert.match(stylesheet,/\.shelf-panel/);
  assert.match(page,/id="patron-bat"/);
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
@@ -70,7 +79,7 @@ test("all 21 original illustrated food tiers ship without external image request
 });
 test("the offline shell and authenticated arcade registry both know the new game",()=>{
  const sw=read("sw.js"),backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
- assert.match(sw,/knightfall-shell-v71/);
+ assert.match(sw,/knightfall-shell-v72/);
  assert.match(sw,/if \(url\.pathname === "\/arcade\/hosted\/hex-and-whisk\/index\.html"\)/);
  assert.match(sw,/caches\.match\("\/arcade\/hosted\/hex-and-whisk\/index\.html", \{ ignoreSearch: true \}\)/);
  for(const asset of ["index.html","game.css","game.js","engine.mjs","sprites/icons.svg"])assert.ok(sw.includes("/"+prefix+asset),"Offline shell missing "+asset);
