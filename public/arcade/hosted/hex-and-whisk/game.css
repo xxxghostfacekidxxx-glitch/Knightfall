@@ -614,3 +614,29 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 @media(max-width:890px){.guestbook-keepsakes{grid-template-columns:repeat(3,minmax(0,1fr))}.guestbook-keepsake{min-height:62px}.guestbook-keepsake .keepsake-art{width:37px;height:37px}.guestbook-keepsake .keepsake-label{font-size:.55rem}.keepsake-reveal{top:max(42px,7dvh);min-height:205px}.keepsake-reveal-art,.keepsake-reveal-art .keepsake-art{width:105px;height:105px}}
 @media(max-width:890px) and (orientation:landscape){.keepsake-reveal{top:16px;min-height:125px;padding:8px;gap:3px}.keepsake-reveal-art,.keepsake-reveal-art .keepsake-art{width:65px;height:65px}.keepsake-reveal-kicker{font-size:.55rem}.keepsake-reveal-name{font-size:.78rem}.keepsake-reveal-byline{font-size:.58rem}}
 @media(prefers-reduced-motion:reduce){.keepsake-reveal.reveal-enter,.keepsake-reveal-rays,.keepsake-reveal-art .keepsake-art{animation:none!important}.guestbook-keepsake,.guestbook-progress-fill{transition:none!important}}
+
+/* V17: Midnight VIP contract parchment inside the existing tools drawer. */
+.vip-contract{display:flex;flex-direction:column;gap:9px;min-width:0;padding:11px;border:1px solid #dca56f91;border-radius:15px;background:radial-gradient(circle at 80% 0%,#9e594448,#321f39 70%);box-shadow:0 6px 15px #12091d65,inset 0 1px #fff2ba29}
+.vip-captain{display:flex;align-items:center;gap:10px;min-width:0}
+.vip-captain-face{width:64px;height:64px;flex:0 0 64px;border-radius:50%;border:2px solid #ffd89a;background:radial-gradient(circle at 40% 25%,#fff2bb68,#4b2c4c);box-shadow:0 0 15px #edb18f61;display:grid;place-items:center}
+.vip-captain-face .patron-icon{width:68px;height:68px;filter:drop-shadow(0 2px 3px #1b0b26)}
+.vip-captain-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.vip-captain-copy strong{font-weight:950;font-size:.93rem;color:#ffedc3;line-height:1.12}
+.vip-captain-copy small{font-size:.68rem;line-height:1.3;color:#edcfcf}
+.vip-goals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vip-goal{display:grid;grid-template-columns:1fr auto;column-gap:3px;row-gap:5px;padding:7px;background:#25182c;border:1px solid #bd8c907d;border-radius:10px;color:#f6dac9;font-size:.58rem;font-weight:800}
+.vip-goal strong{font-size:.69rem;color:#ffe0a8}
+.vip-goal.done{border-color:#b5ecb2;color:#dcffda}
+.vip-goal.done strong{color:#d9ffd2}
+.vip-meter{grid-column:1/-1;height:7px;border-radius:999px;background:#120f1d;overflow:hidden;box-shadow:inset 0 0 0 1px #f5d3a92d}
+.vip-meter-fill{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e09980,#ffe6a6);transition:width .2s ease}
+.vip-goal.done .vip-meter-fill{background:linear-gradient(90deg,#68bd9b,#c9ffbe)}
+.vip-reward{display:flex;flex-wrap:wrap;gap:5px}
+.vip-reward span{padding:4px 7px;background:#76503a81;border:1px solid #e9b78066;border-radius:8px;color:#ffe6b6;font-weight:850;font-size:.66rem}
+.vip-claim{min-height:37px;background:linear-gradient(140deg,#a55c76,#69446c);border:1px solid #ffddaa;box-shadow:inset 0 1px #fff2d069,0 4px 10px #160b23;color:#fff1d6;font-weight:950;letter-spacing:.06em;border-radius:10px;cursor:pointer}
+.vip-claim:not(:disabled):hover{filter:brightness(1.17)}
+.vip-claim:disabled{opacity:.57;cursor:default}
+.vip-claim:focus-visible{outline:3px solid #ffe19e;outline-offset:2px}
+@media(max-width:890px){.vip-contract{padding:9px}.vip-captain-face{width:54px;height:54px;flex-basis:54px}.vip-captain-face .patron-icon{width:58px;height:58px}.vip-captain-copy strong{font-size:.84rem}.vip-goal{padding:6px}}
+@media(max-width:390px){.vip-goals{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.vip-meter-fill{transition:none!important}}
