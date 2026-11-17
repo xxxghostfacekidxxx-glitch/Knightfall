@@ -31,6 +31,9 @@ export const PATRONS=Object.freeze([
 ]);
 export const patronForOrder=order=>PATRONS[(Number.isSafeInteger(order?.id)?order.id:0)%PATRONS.length];
 export const FAVORITE_TIP_PERCENT=20;
+export const LOYALTY_VISIT_INTERVAL=3;
+export const loyaltyStamps=(state,patron)=>Math.max(0,Math.floor(Number(state.patronVisits?.[patron.symbol])||0));
+export const loyaltyNext=(state,patron)=>LOYALTY_VISIT_INTERVAL-loyaltyStamps(state,patron)%LOYALTY_VISIT_INTERVAL;
 export const favoriteTipForOrder=order=>order?.chain===patronForOrder(order).favorite?Math.ceil(order.coins*FAVORITE_TIP_PERCENT/100):0;
 const keys=Object.keys(RECIPES);
 const cap=n=>Math.max(0,Math.min(1000000000,Math.floor(Number(n)||0)));
@@ -186,7 +189,7 @@ export function refreshOrder(state,random=Math.random){
  return {ok:true,type:"refresh-order",index,previous,replacement,cost:ORDER_REFRESH_COST};
 }
 export function makeGame(random=Math.random,now=Date.now()){
- const state={version:1,board:Array(CELL_COUNT).fill(null),generators:{garden:0,bakery:5,sweets:-1},shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},whisks:1};
+ const state={version:1,board:Array(CELL_COUNT).fill(null),generators:{garden:0,bakery:5,sweets:-1},shelf:Array(SHELF_SLOTS).fill(null),orders:[],serial:1,level:1,xp:0,coins:90,energy:MAX_ENERGY,energyLast:now,score:0,best:0,served:0,combo:0,lastMerge:0,rushUntil:0,upgrades:{garden:0,bakery:0,sweets:0},discovered:{garden:2,bakery:2,sweets:0},quests:{merge:{stage:1,progress:0},serve:{stage:1,progress:0},harvest:{stage:1,progress:0}},patronVisits:{},whisks:1};
  const seeds=[{chain:"garden",tier:1},{chain:"garden",tier:1},{chain:"bakery",tier:1},{chain:"bakery",tier:1},{chain:"garden",tier:2},{chain:"bakery",tier:2}];
  const locations=[8,9,14,15,20,21];
  seeds.forEach((seed,i)=>{state.board[locations[i]]={...seed,id:state.serial++}});
@@ -252,9 +255,13 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  else state.shelf[shelfPlace]=null;
  const rush=state.rushUntil>now;
  const favoriteTip=favoriteTipForOrder(order);
- const coins=(order.coins+favoriteTip)*(rush?2:1);
+ const patron=patronForOrder(order);
+ const visits=loyaltyStamps(state,patron)+1;
+ const loyaltyBonus=visits%LOYALTY_VISIT_INTERVAL===0?15+state.level*5:0;
+ const coins=(order.coins+favoriteTip+loyaltyBonus)*(rush?2:1);
  const gained=order.xp*10*(rush?2:1);
- state.coins=cap(state.coins+coins);state.score=cap(state.score+gained);state.best=Math.max(state.best,state.score);
+ state.coins=cap(state.coins+coins);state.score=cap(state.score+gained);
+ state.patronVisits=state.patronVisits||{};state.patronVisits[patron.symbol]=visits;state.best=Math.max(state.best,state.score);
  awardEnergy(state,order.energy,now);
  state.xp+=order.xp;state.served++;state.combo=0;
  const whiskEarned=state.served%WHISK_EVERY===0 && state.whisks<WHISK_CAP;
@@ -273,7 +280,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
  for(const chain of keys)attachGenerator(state,chain);
- return {ok:true,type:"serve",place,shelfPlace,coins,favoriteTip:favoriteTip*(rush?2:1),patron:patronForOrder(order).name,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
+ return {ok:true,type:"serve",place,shelfPlace,coins,favoriteTip:favoriteTip*(rush?2:1),loyaltyBonus:loyaltyBonus*(rush?2:1),visits,patron:patron.name,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
@@ -316,6 +323,7 @@ export function restore(raw,random=Math.random,now=Date.now()){
  state.best=Math.max(state.score,num(value.best,state.score,0,1000000000));
  state.served=num(value.served,0,0,10000000);
  state.whisks=num(value.whisks,1,0,WHISK_CAP);
+ state.patronVisits=Object.fromEntries(PATRONS.map(p=>[p.symbol,num(value.patronVisits?.[p.symbol],0,0,1000000)]));
  state.combo=num(value.combo,0,0,5);
  state.lastMerge=num(value.lastMerge,0,0,now);
  state.rushUntil=num(value.rushUntil,0,0,now+45000);
