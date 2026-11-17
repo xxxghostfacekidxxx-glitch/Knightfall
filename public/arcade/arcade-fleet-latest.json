@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T20:37:22.315Z",
+  "generatedAt": "2026-11-17T21:06:26.594Z",
   "reportsFound": 20,
   "catalogRoutes": 135,
   "targets": {
@@ -12,20 +12,8 @@
       "duplicatedShards": [],
       "duplicatedRoutes": [],
       "malformedReports": [],
-      "failures": [
-        {
-          "game": "ashfall-neon-engine-neon-drift",
-          "route": "/arcade/hosted/ashfall-neon-engine.html?game=neon-drift",
-          "profile": "phone",
-          "action": "navigate",
-          "reason": "page.goto: net::ERR_CONNECTION_RESET at https://ash-fall.com/arcade/hosted/ashfall-neon-engine.html?game=neon-drift\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/ashfall-neon-engine.html?game=neon-drift\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:70:26",
-          "target": "live",
-          "screenshot": "002.png",
-          "networkErrorCount": 1,
-          "browserErrorCount": 0
-        }
-      ],
-      "coverageOk": false
+      "failures": [],
+      "coverageOk": true
     },
     "local": {
       "reports": 10,
@@ -40,6 +28,6 @@
       "coverageOk": true
     }
   },
-  "passed": false,
-  "sourceRunId": 44169915934
+  "passed": true,
+  "sourceRunId": 44175481491
 }
