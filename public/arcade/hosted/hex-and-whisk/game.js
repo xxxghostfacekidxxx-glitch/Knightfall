@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -12,7 +12,7 @@ function safeSave(){try{localStorage.setItem(STORE,serialize(game))}catch{}}
 const text=(tag,content,className)=>{const el=document.createElement(tag);if(className)el.className=className;el.textContent=String(content);return el};
 function food(chain,tier){
  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
- svg.classList.add("food");svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");svg.setAttribute("focusable","false");
+ svg.classList.add("food","food-object");svg.dataset.foodChain=chain;svg.dataset.foodTier=String(tier);svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");svg.setAttribute("focusable","false");
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");
  use.setAttribute("href","./sprites/icons.svg#"+chain+"-"+tier);svg.append(use);
  return svg;
@@ -30,7 +30,8 @@ const CUSTOMER_LINES={
 };
 function customerLine(order,ready){
  const patron=patronForOrder(order),phrases=CUSTOMER_LINES[patron.symbol][ready?"ready":"waiting"];
- const phase=(order.id+order.tier)%phrases.length;
+ const visits=loyaltyStamps(game,patron);
+ const phase=(order.id+order.tier+Math.floor(visits/LOYALTY_VISIT_INTERVAL))%phrases.length;
  return phrases[phase];
 }
 function portrait(patron){
@@ -75,10 +76,12 @@ function customerMoment(patron,phrase,reward="",mood="happy"){
  const symbol=patron?.symbol||"imp";
  stage.dataset.customer=symbol;
  stage.dataset.mood=mood;
+ stage.dataset.expression=mood==="served"?"joy":mood==="ready"?"delight":mood==="waiting"?"curious":"smile";
  stage.querySelector(".moment-name").textContent=patron?.name||"Midnight Guest";
  stage.querySelector(".moment-line").textContent=phrase;
  stage.querySelector(".moment-reward").textContent=reward;
  avatar.replaceChildren(portrait(patron||PATRONS[0]));
+ avatar.append(text("span","","moment-face-spark"));
  const token=++momentToken;
  clearTimeout(momentTimer);
  stage.classList.remove("moment-show");
@@ -184,17 +187,23 @@ function renderOrders(){
   button.dataset.customer=patron.symbol;
   button.dataset.mood=ready?"delighted":order.tier>=5?"impatient":"hopeful";
   button.classList.toggle("favorite-order",favoriteTip>0);
+  const visits=loyaltyStamps(game,patron);
+  button.classList.toggle("regular-customer",visits>0);
+  button.dataset.expression=ready?"joy":visits>1?"familiar":"curious";
   button.disabled=false;button.title=ready?"Serve "+label(order.chain,order.tier):"Tap to hear "+patron.name+" and check their order for "+label(order.chain,order.tier);
   button.setAttribute("aria-label",patron.name+" ("+patron.personality+") requests "+label(order.chain,order.tier)+". "+(ready?"Ready to serve.":"Still cooking.")+" "+customerLine(order,ready)+" Earn "+(order.coins+favoriteTip)+" coins"+(favoriteTip?" including "+favoriteTip+" favorite-food tip":"")+" and "+order.xp+" XP.");
   if(ready)button.append(text("span","✓","check"));
   const customer=text("span","","customer-badge");
   const avatar=text("span","","customer-avatar");avatar.append(portrait(patron));
+  avatar.append(text("span","","expression-spark"));
   customer.append(avatar,text("span",patron.name));
+  if(visits>0)customer.append(text("span",visits+"×","loyalty-mark"));
   const speech=text("span",customerLine(order,ready),"customer-speech");
   customer.append(speech);
   button.append(customer);
   button.append(food(order.chain,order.tier),text("span",label(order.chain,order.tier),"order-name"));
   if(favoriteTip)button.append(text("span","♡ FAV +"+favoriteTip,"favorite-tip"));
+  if(visits>0)button.title+=" · Returning regular ("+visits+" visits); "+loyaltyNext(game,patron)+" until loyalty reward";
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
   button.append(footer,text("span",ready?"✦ SERVE ME!":"♡ TAP TO CHAT","serve-label"));
@@ -410,10 +419,10 @@ function fulfill(index){
  const result=serve(game,index,Math.random,Date.now());
  if(!result.ok){problem(result.reason);return}
  history=null;selected=null;selectedShelf=null;hintPair=null;render();
- const earned=result.patron+" loved it! +"+result.coins+" coins"+(result.favoriteTip?" (including "+result.favoriteTip+" favorite tip!)":"")+" ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
+ const earned=result.patron+" loved it! +"+result.coins+" coins"+(result.favoriteTip?" (including "+result.favoriteTip+" favorite tip!)":"")+(result.loyaltyBonus?" · REGULAR BONUS +"+result.loyaltyBonus:"")+" ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
  const patron=servedPatron;if(patron){const lines=CUSTOMER_LINES[patron.symbol].served;
-  customerMoment(patron,lines[game.served%lines.length],"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:""),"served");}
+  customerMoment(patron,lines[game.served%lines.length],"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:"")+(result.loyaltyBonus?" · LOYALTY +"+result.loyaltyBonus:""),"served");}
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
  if(result.storageUnlocked)toast("✦ PANTRY EXPANDED! "+result.storageCapacity+" storage pockets unlocked!");
