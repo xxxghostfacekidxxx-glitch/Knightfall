@@ -6,9 +6,9 @@
  <meta name="theme-color" content="#1b1021">
  <meta name="description" content="Hex & Whisk is a free, original merge-cooking game. Drag matching ingredients, cook fantastic meals, fulfill orders and grow your magical kitchen.">
  <title>Hex &amp; Whisk | Knightfall Chaos Cartridge</title>
- <link rel="stylesheet" href="./game.css?v=16">
+ <link rel="stylesheet" href="./game.css?v=17">
  <script src="/arcade-save.js" defer></script>
- <script type="module" src="./game.js?v=16"></script>
+ <script type="module" src="./game.js?v=17"></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -121,6 +121,11 @@
     <div class="panel-heading"><div><span class="section-kicker">THE PANTRY</span><h2 id="stations-title">Tap to harvest <span class="mini-heart">✦</span></h2></div></div>
     <p class="side-hint">Each tap makes a fresh ingredient. Two matching ingredients become one upgraded dish.</p>
     <div id="stations" class="station-stack"></div>
+   </section>
+   <section class="vip-panel panel" aria-labelledby="vip-title">
+    <div class="panel-heading"><div><span class="section-kicker">SIGNED UNDER A BLOOD-RED MOON</span><h2 id="vip-title">VIP Midnight Contracts <span class="mini-heart">✦</span></h2></div></div>
+    <p class="side-hint">Take on a monster's cooking contract. Merge a higher-tier dish, serve two orders in its recipe family, then collect your reward.</p>
+    <div id="vip-contract" class="vip-contract" aria-live="polite"></div>
    </section>
    <section class="quests-panel panel" aria-labelledby="quests-title">
     <div class="panel-heading"><div><span class="section-kicker">REPEATABLE NIGHT-TIME MISSIONS</span><h2 id="quests-title">Witch's workboard <span class="mini-heart">✧</span></h2></div></div>
