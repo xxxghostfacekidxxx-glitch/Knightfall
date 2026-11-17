@@ -12,7 +12,11 @@ new vm.Script(source,{filename:"arcade-chat-bridge.js"});
 new vm.Script(bubble,{filename:"chat-bubbles.js"});
 
 function harness({signedIn=true,withNav=false,hostname="ash-fall.com"}={}){
- const requestLog=[],styles=[],scripts=[],classNames=new Set(),events=new Map(),clickListeners=[];
+ const requestLog=[],styles=[],scripts=[],classNames=new Set(),events=new Map(),clickListeners=[],shareListeners=[];
+ const invite="https://ash-fall.com/arcade/hosted/imp-inferno/index.html#room=abcdef1234567890";
+ const shareLink={dataset:{},href:"/messages.html",attrs:{},addEventListener(name,fn){if(name==="click")shareListeners.push(fn);},
+  click(){let prevented=false;for(const fn of shareListeners)fn({preventDefault(){prevented=true}});return prevented;}
+ };
  const links=Array.from({length:2},()=>({
    href:"/messages.html",dataset:{},attrs:{},
    addEventListener(event,callback){if(event==="click")clickListeners.push(callback);},
@@ -26,7 +30,11 @@ function harness({signedIn=true,withNav=false,hostname="ash-fall.com"}={}){
    dispatchEvent(event){for(const listener of events.get(event.type)||[])listener(event);}
  };
  const document={
-   querySelectorAll(selector){return selector==='[data-kf-arcade-chat]'?links:[];},
+   querySelectorAll(selector){
+    if(selector==='[data-kf-arcade-chat]')return links;
+    if(selector==='[data-kf-arcade-chat-share]')return [shareLink];
+    return [];
+   },
    querySelector(selector){
      if(selector==='script[src^="/nav.js"]')return withNav?{}:null;
      if(selector==='link[data-kf-arcade-chat-css]')return styles.find(s=>s.dataset.kfArcadeChatCss)||null;
@@ -34,7 +42,7 @@ function harness({signedIn=true,withNav=false,hostname="ash-fall.com"}={}){
      if(selector==='script[data-kf-chat-bubbles]')return scripts.find(s=>s.dataset.kfChatBubbles)||null;
      return null;
    },
-   getElementById(id){return id==='kf-chat-heads'?dock:null;},
+   getElementById(id){return id==='kf-chat-heads'?dock:id==='room-invite'?{value:invite}:null;},
    createElement(tag){return {tag,dataset:{},handlers:{},addEventListener(name,callback){this.handlers[name]=callback;}};},
    head:{appendChild(node){styles.push(node);}},
    body:{appendChild(node){scripts.push(node);}}
@@ -43,14 +51,18 @@ function harness({signedIn=true,withNav=false,hostname="ash-fall.com"}={}){
    requestLog.push({url,options});
    return {ok:signedIn,json:async()=>({user:signedIn?{id:42}:null})};
  }
- vm.runInNewContext(source,{window,document,location:{hostname},fetch,console},{timeout:1000});
+ vm.runInNewContext(source,{window,document,location:{hostname,href:"https://ash-fall.com/arcade/hosted/imp-inferno/index.html",origin:"https://ash-fall.com"},fetch,console,URL},{timeout:1000});
  return {
-   window,links,styles,scripts,classNames,requestLog,
+   window,links,shareLink,styles,scripts,classNames,requestLog,
    // The harness exercises the exact async script chain used by production.
    load(index){scripts[index].handlers.load?.();},
    connectChat(){
      let open=false;
-     window.KnightfallChat={toggle(){open=!open;window.dispatchEvent({type:"kf:chat-visibility",detail:{open}});return open;},isOpen(){return open;}};
+     window.KnightfallChat={
+       toggle(){open=!open;window.dispatchEvent({type:"kf:chat-visibility",detail:{open}});return open;},
+       share(text){this.lastShared=text;open=true;window.dispatchEvent({type:"kf:chat-visibility",detail:{open}});return true;},
+       isOpen(){return open;}
+     };
      window.dispatchEvent({type:"kf:chat-ready"});
      return ()=>open;
    }
@@ -83,6 +95,9 @@ test("authenticated hosted game loads existing Ruinwire, then toggles chat witho
  assert.equal(h.links[1].click(1),true,"online-table invite trigger shares the same chat");
  assert.equal(isOpen(),false);
  assert.equal(h.links[1].attrs["aria-expanded"],"false");
+ assert.equal(h.shareLink.click(),true,"valid room invite opens member chat");
+ assert.equal(h.window.KnightfallChat.lastShared,
+  "Join my Imp Inferno table: https://ash-fall.com/arcade/hosted/imp-inferno/index.html#room=abcdef1234567890");
 });
 
 test("signed-out and unavailable sessions retain a normal inbox link, never load chat",async()=>{
@@ -131,6 +146,10 @@ test("arcade chat lives in game headers, not over mobile attack controls",()=>{
  assert.match(css,/#kf-chat-heads\.kf-chat-arcade\.kf-chat-expanded::before\{display:none!important\}/);
  assert.match(css,/kf-chat-panel/);
  assert.match(bubble,/window\.KnightfallChat=Object\.freeze/);
+ assert.match(bubble,/share\(text\)/);
+ assert.match(bubble,/pendingShare\?\(existingDraft\?/);
+ assert.match(read("arcade/hosted/imp-inferno/index.html"),/data-kf-arcade-chat-share/);
+ assert.match(source,/invite\.origin!==location\.origin/);
  assert.match(bubble,/event\.stopPropagation\(\);setVisible\(false\)/);
 });
 

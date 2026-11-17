@@ -25,6 +25,8 @@
   }
   const state={conversations:[],heads:[],active:null,visible:false,loading:false,sending:false,threadToken:0,unread:0,lastThreadKey:""};
   const messageSendQueues=new Map();
+  // Invite content stays a local draft until its recipient deliberately sends it.
+  let pendingShare="";
   const validId=value=>Number.isSafeInteger(Number(value))&&Number(value)>0?Number(value):null;
   const nameOf=c=>c?.kind==="group"?(c.group_name||"Group chat"):(c?.other_display_name||c?.other_username||"Conversation");
   const initialOf=c=>(nameOf(c).trim().charAt(0)||"✦").toUpperCase();
@@ -220,6 +222,7 @@
   function inboxUrl(id){return "/messages.html"+(id?"?conversation="+id:"");}
   function setVisible(value){
     state.visible=!!value;
+    if(!state.visible)pendingShare="";
     dock.classList.toggle("kf-chat-open",state.visible);
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
@@ -252,7 +255,9 @@
     state.active=id;state.threadToken++;state.lastThreadKey="";
     thread.replaceChildren(el("p","kf-chat-empty","Loading messages…"));
     pin(id);announce("");
-    input.value=drafts.get(id)||"";
+    const existingDraft=drafts.get(id)||"";
+    input.value=pendingShare?(existingDraft?existingDraft+"\n"+pendingShare:pendingShare):existingDraft;
+    if(pendingShare){rememberDraft(id,input.value);pendingShare="";}
     setVisible(true);
     input.focus({preventScroll:true});
   }
@@ -456,6 +461,12 @@
     open(){showList();return true;},
     close(){setVisible(false);return true;},
     toggle(){if(state.visible)setVisible(false);else showList();return state.visible;},
+    share(text){
+      const draft=String(text||"").trim().slice(0,1500);
+      if(!draft)return false;
+      pendingShare=draft;showList();announce("Choose a conversation to share this invitation.");
+      return true;
+    },
     isOpen(){return state.visible;}
   });
   window.dispatchEvent(new Event("kf:chat-ready"));

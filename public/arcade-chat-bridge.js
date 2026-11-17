@@ -4,6 +4,7 @@
 (()=>{
  "use strict";
  const links=[...document.querySelectorAll('[data-kf-arcade-chat]')];
+ const shares=[...document.querySelectorAll('[data-kf-arcade-chat-share]')];
  if(!links.length)return;
  const liveHost=["ash-fall.com","www.ash-fall.com"].includes(location.hostname.toLowerCase());
  const onPageWithNavigation=!!document.querySelector('script[src^="/nav.js"]');
@@ -33,6 +34,20 @@
     // Guest links stay ordinary, working inbox navigation.
     event.preventDefault();
     window.KnightfallChat.toggle();
+    sync();
+   });
+  }
+  for(const link of shares){
+   link.dataset.kfChatReady="true";
+   link.addEventListener("click",event=>{
+    const raw=document.getElementById("room-invite")?.value||"";
+    let invite;
+    try{invite=new URL(raw,location.href)}catch{return;}
+    if(invite.origin!==location.origin||
+       invite.pathname!=="/arcade/hosted/imp-inferno/index.html"||
+       !/^#room=[a-f0-9]{16}$/.test(invite.hash))return;
+    event.preventDefault();
+    window.KnightfallChat.share("Join my Imp Inferno table: "+invite.href);
     sync();
    });
   }
