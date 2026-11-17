@@ -12,12 +12,22 @@ function safeSave(){try{localStorage.setItem(STORE,serialize(game))}catch{}}
 const text=(tag,content,className)=>{const el=document.createElement(tag);if(className)el.className=className;el.textContent=String(content);return el};
 function food(chain,tier){
  const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
- svg.classList.add("food","food-object");svg.dataset.foodChain=chain;svg.dataset.foodTier=String(tier);svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");svg.setAttribute("focusable","false");
+ svg.classList.add("food","food-object");if(tier>=5)svg.classList.add("enchanted-food");if(tier>=7)svg.classList.add("legendary-food");svg.dataset.foodChain=chain;svg.dataset.foodTier=String(tier);svg.setAttribute("viewBox","0 0 100 100");svg.setAttribute("aria-hidden","true");svg.setAttribute("focusable","false");
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");
  use.setAttribute("href","./sprites/icons.svg#"+chain+"-"+tier);svg.append(use);
  return svg;
 }
 
+const CUSTOMER_ENCOUNTERS={
+ imp:"Listen, chef. Your kitchen is officially my evil headquarters!",
+ bat:"I brought my whole bat family. They loved your baking!",
+ ghost:"For the first time in a century, I have something to look forward to.",
+ witch:"I hereby appoint you my personal midnight chef. Try not to faint.",
+ gargoyle:"I carved your name on the cathedral wall. That's a compliment.",
+ moth:"I told the moon about you! It wants a reservation.",
+ crow:"I've investigated. This is the best kitchen in the underworld.",
+ slime:"YOU'RE MY FAVORITE HUMAN! BLOOOOOOP!"
+};
 const CUSTOMER_LINES={
  imp:{waiting:["Psst! Extra chaos!","I'm STARVING!","Make it spicy-ish!"],ready:["Mine! Mine! Mine!","Hehe, delicious!"],served:["Perfect! Evil genius!","I'm telling EVERY demon!"]},
  bat:{waiting:["Um... one snack?","I'll wait right here...","Smells really nice."],ready:["For... me? ♡","My little heart!"],served:["Thank you! *flap*","Best midnight snack!"]},
@@ -150,7 +160,7 @@ function renderBoard(pop=-1){
    slot.append(text("span","✦","generator-sigil"),icon,text("small",RECIPES[producer].name.toUpperCase(),"generator-name"),text("span","LV "+(game.upgrades[producer]+1),"generator-tier"));
    slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": movable "+RECIPES[producer].name+" generator. Select and tap again to harvest, or move it to another square.");
   }else if(item){
-   slot.dataset.family=item.chain;slot.style.setProperty("--i",String(index));
+   slot.dataset.family=item.chain;slot.dataset.tier=String(item.tier);if(item.tier>=5)slot.classList.add("enchanted-piece");if(item.tier>=7)slot.classList.add("legendary-piece");slot.style.setProperty("--i",String(index));
    slot.append(food(item.chain,item.tier));
    // Ingredient name and tier are kept in the accessible label only.
    slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": "+label(item.chain,item.tier)+", tier "+item.tier+(selected===index?", selected":""));
@@ -405,6 +415,22 @@ function mergeFlight(from,to,chain,tier){
  flying.addEventListener("animationend",()=>flying.remove(),{once:true});
  setTimeout(()=>flying.remove(),650);
 }
+function highTierFlourish(place,chain,tier){
+ const cell=board.querySelector('[data-index="'+place+'"]');
+ if(!cell||!fx)return;
+ const cellBox=cell.getBoundingClientRect(),layer=fx.getBoundingClientRect();
+ const cx=cellBox.left-layer.left+cellBox.width/2,cy=cellBox.top-layer.top+cellBox.height/2;
+ const flourish=document.createElement("span");
+ flourish.className="tier-flourish"+(tier>=7?" legendary-flourish":"");
+ flourish.style.left=cx+"px";flourish.style.top=cy+"px";
+ flourish.style.setProperty("--flourish-color",RECIPES[chain]?.hue||"#ffe2ae");
+ flourish.textContent=tier>=7?"✦":"✧";
+ fx.append(flourish);
+ flourish.addEventListener("animationend",()=>flourish.remove(),{once:true});
+ setTimeout(()=>flourish.remove(),1200);
+ if(tier>=7)toast("✦ LEGENDARY RECIPE! "+label(chain,tier));
+ else if(tier===5)toast("✧ ENCHANTED RECIPE UNLOCKED: "+label(chain,tier));
+}
 function moveIngredient(a,b){
  const origin=game.board[a]?{...game.board[a]}:null;
  const result=action(()=>move(game,a,b,Date.now()));
@@ -412,6 +438,7 @@ function moveIngredient(a,b){
  if(result.type==="merge"){
   if(origin)mergeFlight(a,b,origin.chain,origin.tier);
   render(result.place);particle(result.place,"+"+result.gained,RECIPES[result.chain].hue);
+  if(result.tier>=5)highTierFlourish(result.place,result.chain,result.tier);
   announce(result.combo>1?"MAGICAL COMBO ×"+result.combo+"! "+label(result.chain,result.tier)+" created!":"Mmm! "+label(result.chain,result.tier)+" cooked.",result.combo>=3);
   if(result.discoveryBonus)toast("NEW RECIPE: "+label(result.chain,result.tier)+"! +"+result.discoveryBonus+" discovery coins ✦");
   bell(result.combo>1?[520,780,1040]:[440,660],.09);rumble(12);
@@ -455,8 +482,12 @@ function fulfill(index){
  history=null;selected=null;selectedShelf=null;hintPair=null;render();
  const earned=result.patron+" loved it! +"+result.coins+" coins"+(result.favoriteTip?" (including "+result.favoriteTip+" favorite tip!)":"")+(result.loyaltyBonus?" · REGULAR BONUS +"+result.loyaltyBonus:"")+" ✦ +"+result.gained+" stars"+(result.whiskEarned?" ✧ +1 Magic Whisk!":"");
  announce(earned,true);bell([610,810,1040],.12);rumble(18);
- const patron=servedPatron;if(patron){const lines=CUSTOMER_LINES[patron.symbol].served;
-  customerMoment(patron,lines[game.served%lines.length],"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:"")+(result.loyaltyBonus?" · LOYALTY +"+result.loyaltyBonus:""),"served");}
+ const patron=servedPatron;if(patron){
+  const milestone=!!result.loyaltyBonus;
+  const lines=CUSTOMER_LINES[patron.symbol].served;
+  const phrase=milestone?CUSTOMER_ENCOUNTERS[patron.symbol]:lines[game.served%lines.length];
+  customerMoment(patron,phrase,"+"+result.coins+" ◈"+(result.favoriteTip?" · ♡ FAV TIP +"+result.favoriteTip:"")+(result.loyaltyBonus?" · REGULAR +"+result.loyaltyBonus:""),milestone?"encounter":"served");
+ }
  if(result.leveled)toast("KITCHEN LEVEL "+result.level+"! "+(result.unlockedSweetshop?"SWEETSHOP UNLOCKED!":"Bonus coins & energy!"));
  if(result.whiskEarned)toast("✨ +1 MAGIC WHISK EARNED · "+game.whisks+" / "+WHISK_CAP);
  if(result.storageUnlocked)toast("✦ PANTRY EXPANDED! "+result.storageCapacity+" storage pockets unlocked!");
