@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { connectImpInferno, ImpInfernoRoom, readImpInput } from './imp-inferno-room.js';
+import { advance, upcomingTide } from '../../public/arcade/hosted/imp-inferno/furnace.mjs';
 
 test('room input clamps aim and cannot specify seat, balance, or target identity', () => {
   assert.equal(readImpInput('{"x":0,"y":0,"power":-1}'), null);
@@ -68,10 +69,23 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   await ctx.ready;
   t.after(() => clearInterval(room.timer));
   const join = id => room.fetch(new Request('https://imp-inferno.internal/connect', {
-    headers: { 'X-Seat-Token': id.repeat(32) },
+    headers: { 'X-Seat-Token': id.repeat(32), 'X-Imp-Protocol': id === 'a' ? 'imp-inferno-v1' : 'imp-inferno-v2' },
   }));
   for (const id of 'abcd') assert.equal((await join(id)).status, 101);
   assert.deepEqual(pairs.map(pair => pair[1].messages[0].seat), [0, 1, 2, 3]);
+  room.table.tideIndex = 1;
+  room.table.nextTide = room.table.time + 3;
+  room.broadcast();
+  const forecasts = pairs.map(pair => upcomingTide(pair[1].messages.at(-1).table));
+  assert.equal(forecasts[0].name, 'Crossfire');
+  for (const forecast of forecasts) assert.deepEqual(forecast, forecasts[0]);
+  advance(room.table, 3, { onlineSeats: [] });
+  room.broadcast();
+  for (const pair of pairs) {
+    const { table } = pair[1].messages.at(-1);
+    assert.equal(table.banner, 'Crossfire · 4 schools incoming');
+    assert.deepEqual([...new Set(table.targets.filter(target => target.route === 'tide').map(target => target.direction))], [1, -1]);
+  }
   await join('e');
   assert.equal(pairs[4][1].closeCode, 4004);
   room.table.seats[2].credits = 113;
