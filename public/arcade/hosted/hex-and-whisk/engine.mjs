@@ -35,6 +35,20 @@ export const LOYALTY_VISIT_INTERVAL=3;
 export const loyaltyStamps=(state,patron)=>Math.max(0,Math.floor(Number(state.patronVisits?.[patron.symbol])||0));
 export const loyaltyNext=(state,patron)=>LOYALTY_VISIT_INTERVAL-loyaltyStamps(state,patron)%LOYALTY_VISIT_INTERVAL;
 export const favoriteTipForOrder=order=>order?.chain===patronForOrder(order).favorite?Math.ceil(order.coins*FAVORITE_TIP_PERCENT/100):0;
+export const KEEPSAKE_LEVELS=Object.freeze([1,3,9]);
+export const PATRON_KEEPSAKES=Object.freeze({
+ imp:Object.freeze(["Scorched Matchstick","Tiny Trouble Crown","Infernal VIP Pass"]),
+ bat:Object.freeze(["Velvet Ribbon","Moonlit Cupcake Pin","Bat-Family Heirloom"]),
+ ghost:Object.freeze(["Silver Tear","Midnight Memory","Ethereal Locket"]),
+ witch:Object.freeze(["Spellbound Button","Enchanted Teaspoon","Witch's Royal Seal"]),
+ gargoyle:Object.freeze(["Stone Pebble","Secret Smile","Cathedral Key"]),
+ moth:Object.freeze(["Glitter Dust","Lunar Lantern","Starlight Crest"]),
+ crow:Object.freeze(["Shiny Trinket","Black Feather","Midnight Detective Badge"]),
+ slime:Object.freeze(["Jelly Bubble","Happy Goo Star","Rainbow Slime Crown"])
+});
+export const keepsakesForPatron=(state,patron)=>KEEPSAKE_LEVELS.filter(limit=>loyaltyStamps(state,patron)>=limit).map((limit,index)=>({visits:limit,name:PATRON_KEEPSAKES[patron.symbol][index]}));
+export const keepsakeUnlocked=(patron,visits)=>KEEPSAKE_LEVELS.includes(visits)?{visits,name:PATRON_KEEPSAKES[patron.symbol][KEEPSAKE_LEVELS.indexOf(visits)]}:null;
+
 const keys=Object.keys(RECIPES);
 const cap=n=>Math.max(0,Math.min(1000000000,Math.floor(Number(n)||0)));
 const rnd=random=>Math.min(.999999,Math.max(0,Number(random())||0));
@@ -265,6 +279,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  const patron=patronForOrder(order);
  const visits=loyaltyStamps(state,patron)+1;
  const loyaltyBonus=visits%LOYALTY_VISIT_INTERVAL===0?15+state.level*5:0;
+ const keepsake=keepsakeUnlocked(patron,visits);
  const coins=(order.coins+favoriteTip+loyaltyBonus)*(rush?2:1);
  const gained=order.xp*10*(rush?2:1);
  state.coins=cap(state.coins+coins);state.score=cap(state.score+gained);
@@ -287,7 +302,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
  for(const chain of keys)attachGenerator(state,chain);
- return {ok:true,type:"serve",place,shelfPlace,coins,favoriteTip:favoriteTip*(rush?2:1),loyaltyBonus:loyaltyBonus*(rush?2:1),visits,patron:patron.name,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
+ return {ok:true,type:"serve",place,shelfPlace,coins,favoriteTip:favoriteTip*(rush?2:1),loyaltyBonus:loyaltyBonus*(rush?2:1),keepsake,visits,patron:patron.name,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
