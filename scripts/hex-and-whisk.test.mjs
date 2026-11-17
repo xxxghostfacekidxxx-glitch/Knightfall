@@ -79,7 +79,8 @@ test("stir uses restaurant coins; serialized saves defend against corrupted boar
 });
 
 test("recipe collection earns first-discovery bonuses exactly once and survives saved kitchens",()=>{
- const state=blank();
+ const state=makeGame(rng,now);
+ state.board.fill(null);
  state.board[0]={chain:"garden",tier:2,id:1};state.board[1]={chain:"garden",tier:2,id:2};
  assert.equal(discoveryCount(state),4);
  const coins=state.coins,score=state.score;
@@ -133,4 +134,11 @@ test("old save format restores new progression fields and corrupt quest rewards 
  assert.equal(bounded.quests.merge.stage,100);
  assert.equal(bounded.quests.merge.progress,questTarget("merge",100));
  assert.equal(claimQuest(bounded,"nonsense",now).ok,false);
+});
+
+test("invalid saves with missing restaurant orders reset safely instead of restoring a broken kitchen",()=>{
+ const state=blank();
+ const restored=restore(serialize(state),rng,now);
+ assert.equal(restored.orders.length,3);
+ assert.equal(restored.board.length,36);
 });
