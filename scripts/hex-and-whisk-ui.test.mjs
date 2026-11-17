@@ -101,7 +101,7 @@ test("kitchen keeps running with an older cached HTML shell and avoids redrawing
 test("moveable glowing generators, animated patrons and expanding pantry have accessible controls",()=>{
  assert.match(page,/id="next-storage"/);
  assert.match(page,/Level-up pantry storage/);
- assert.match(script,/generatorAt\\(game,index\\)/);
+ assert.match(script,/generatorAt\(game,index\)/);
  assert.match(script,/generator-slot/);
  assert.match(script,/generator-move/);
  assert.match(script,/customer-speech/);
@@ -176,7 +176,9 @@ test("patron spotlights allow waiting dialogue and celebrate newly ready and ser
  assert.match(script,/function syncCustomerReactions\(\)/);
  assert.match(script,/if\(ready\)\{fulfill\(i\);return\}/);
  assert.match(script,/customerMoment\(patron,customerLine\(order,false\)/);
- assert.match(script,/customerMoment\(patron,lines\[game\.served%lines\.length\]/);
+ // A served patron can speak either regular dialogue or milestone encounter dialogue.
+ assert.match(script,/const phrase=milestone\?CUSTOMER_ENCOUNTERS\[patron\.symbol\]:lines\[game\.served%lines\.length\]/);
+ assert.match(script,/customerMoment\(patron,phrase,/);
  assert.match(script,/button\.disabled=false/);
  assert.match(stylesheet,/\.customer-moment\.moment-show/);
  assert.match(stylesheet,/@keyframes customer-stage-enter/);
@@ -241,7 +243,8 @@ test("night shift guestbook displays earned keepsakes without invading the board
  assert.match(page,/id="guestbook"/);
  assert.match(script,/function renderGuestbook\(\)/);
  assert.match(script,/keepsakesForPatron\(game,patron\)/);
- assert.match(script,/if\(result\.keepsake\)toast/);
+ assert.match(script,/if\(result\.keepsake\)\{toast\(/);
+ assert.match(script,/revealKeepsake\(patron,result\.keepsake\)/);
  assert.match(stylesheet,/\.guestbook-grid/);
  assert.match(stylesheet,/\.guestbook-keepsake\.earned/);
  assert.match(page,/game\.js\?v=17/);
