@@ -217,3 +217,61 @@ export function drawBossHit(ctx, effect, reducedMotion=false) {
   ctx.restore();
   return true;
 }
+
+
+// Shared, visible boss armor: each landed net strips a chunk, even when capture
+// fails. Different players contribute to the same bar, and the final shot wins.
+export function drawBossArmor(ctx, target, time, reducedMotion=false) {
+  if(!ATTACKS[target.species])return false;
+  const maximum=Math.max(1,target.maxArmor??({king:18,hydra:14,gargoyle:10}[target.species]));
+  const remaining=Math.max(0,Math.min(maximum,Number.isFinite(target.armor)?target.armor:maximum));
+  const fraction=remaining/maximum;
+  const exposed=target.exposedUntil>time;
+  const palette=ATTACKS[target.species];
+  const width=Math.max(92,Math.min(160,target.radius*1.8)), height=10;
+  // Leave clearance for the King's crown/name. Both stay in the game field.
+  const top=target.y-target.radius-(target.species==='king'?55:30);
+  const x=target.x-width/2;
+  ctx.save();
+  ctx.globalAlpha=.97;
+  ctx.fillStyle='#200b1de8';
+  ctx.fillRect(x-5,top-5,width+10,height+10);
+  ctx.strokeStyle=exposed?'#fff7a8':'#bc8b70';
+  ctx.lineWidth=2;
+  ctx.strokeRect(x-5,top-5,width+10,height+10);
+  ctx.fillStyle='#391b31';
+  ctx.fillRect(x,top,width,height);
+  if(fraction>0){
+    const gradient=ctx.createLinearGradient(x,top,x+width,top);
+    gradient.addColorStop(0,fraction<=.3?'#ff425b':'#ff774b');
+    gradient.addColorStop(.55,fraction<=.3?'#ffbf5e':palette.color);
+    gradient.addColorStop(1,'#fff3a0');
+    ctx.fillStyle=gradient;
+    ctx.fillRect(x,top,Math.max(1,width*fraction),height);
+  }
+  // Individual armor segments and jagged cracks make damage easy to read.
+  for(let i=1;i<maximum;i++){
+    const px=x+width*i/maximum;
+    ctx.beginPath();ctx.moveTo(px,top+1);ctx.lineTo(px,top+height-1);
+    ctx.strokeStyle='#290c2280';ctx.lineWidth=1;ctx.stroke();
+  }
+  if(fraction<.5){
+    ctx.strokeStyle='#fff3a6a0';ctx.lineWidth=1.4;
+    const length=width*(1-fraction);
+    for(let i=0;i<3;i++){
+      const px=x+length*(i+1)/4;
+      line(ctx,[[px,top],[px+4,top+5],[px+1,top+height]],'#fff1b2',1.2);
+    }
+  }
+  text(ctx,exposed?'WEAK POINT!':'ARMOR '+Math.ceil(remaining)+'/'+maximum,
+    target.x,top-12,exposed?'#fff7af':'#ffe4bd',11);
+  if(exposed){
+    const pulse=reducedMotion?1:1+Math.sin(time*12)*.14;
+    const y=target.y-target.radius*.25;
+    ctx.globalAlpha=.75;
+    oval(ctx,target.x,y,9*pulse,9*pulse,palette.color,0,2);
+    oval(ctx,target.x,y,4,4,'#fffce3');
+  }
+  ctx.restore();
+  return true;
+}

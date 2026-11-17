@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=13';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=13';
+import { makeRenderer } from './art.mjs?v=14';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=14';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=10';
 

@@ -1,6 +1,6 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=13';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=14';
 import { drawCreature } from './creatures.mjs?v=2';
-import { drawFurnaceKing, drawBossAttack, drawBossTell, drawBossHit } from './bosses.mjs?v=2';
+import { drawFurnaceKing, drawBossAttack, drawBossTell, drawBossHit, drawBossArmor } from './bosses.mjs?v=3';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret } from './turret.mjs?v=1';
 
 const INK = '#210912';
@@ -394,6 +394,7 @@ export function makeRenderer(ctx, backdrop) {
       drawBossAura(ctx, target, time, reducedMotion);
       drawTarget(ctx, target, time, reducedMotion);
       drawBossTell(ctx, target, time, reducedMotion);
+      drawBossArmor(ctx, target, time, reducedMotion);
       label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
         target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
       if (target.species === 'king') label(ctx, 'FURNACE KING', target.x, target.y - target.radius - 27, '#fff3b5', 17);

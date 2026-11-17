@@ -31,9 +31,12 @@ export const SPECIES = {
   king: { name: 'Furnace King', multiplier: 80, radius: 80, chance: .019, motion: 'throne' },
 };
 export const BOSS_ABILITIES = Object.freeze({
-  gargoyle: { name: 'STONEWING SLAM', cadence: 6.3, first: 5.4, escort: 'coalbug', count: 3 },
-  hydra: { name: 'TRIPLE HELLFIRE', cadence: 5.4, first: 5.9, escort: 'skullwisp', count: 3 },
-  king: { name: 'CROWN NOVA', cadence: 6.1, first: 6, escort: 'hellhound', count: 4 },
+  gargoyle: { name: 'STONEWING SLAM', cadence: 6.3, first: 5.4, escort: 'coalbug', count: 3,
+    armor: 10, exposed: 2.1 },
+  hydra: { name: 'TRIPLE HELLFIRE', cadence: 5.4, first: 5.9, escort: 'skullwisp', count: 3,
+    armor: 14, exposed: 2.4 },
+  king: { name: 'CROWN NOVA', cadence: 6.1, first: 6, escort: 'hellhound', count: 4,
+    armor: 18, exposed: 2.6 },
 });
 const BOSS_SUMMON_CAP = 85;
 const RARE_IMPS = ['fuse', 'boneserpent', 'croupier', 'firestorm', 'gargoyle', 'spark', 'prism', 'drill', 'hydra', 'vortex'];
@@ -132,7 +135,10 @@ function addFormation(table, species, count, route, rng, { openingAt = 0, lane, 
       ...stats, species, id: ++table.nextId, direction, route, sharedY, order: i,
       start: table.time + i * rhythm + delay - arrival, speed,
       x: direction === 1 ? -100 : table.width + 100, y: HEIGHT * sharedY,
-      ...(ability ? { nextAttack: table.time + ability.first, attackCount: 0 } : {}),
+      ...(ability ? {
+        nextAttack: table.time + ability.first, attackCount: 0,
+        maxArmor: ability.armor, armor: ability.armor, exposedUntil: 0,
+      } : {}),
     });
   }
 }
@@ -197,10 +203,14 @@ function advanceBosses(table) {
   for (const boss of [...table.targets]) {
     const ability = BOSS_ABILITIES[boss.species];
     if (!ability || boss.caught) continue;
+    // Restore/migration-safe initialization for tables saved before armor existed.
+    boss.maxArmor = ability.armor;
+    if (!Number.isFinite(boss.armor)) boss.armor = ability.armor;
     if (!Number.isFinite(boss.nextAttack)) boss.nextAttack = table.time + ability.cadence;
     if (table.time < boss.nextAttack || !visible(table, boss)) continue;
     boss.attackCount = (boss.attackCount ?? 0) + 1;
     boss.lastAttack = table.time;
+    boss.exposedUntil = table.time + ability.exposed;
     boss.nextAttack = table.time + ability.cadence;
     table.effects.push({
       kind: 'boss-attack', species: boss.species, attack: ability.name,
@@ -312,12 +322,22 @@ function net(table, shot, rng) {
     const distance = Math.hypot(target.x - shot.x, target.y - shot.y);
     if (distance > shot.radius + target.radius) continue;
     const factor = distance <= target.radius + 8 ? 1 : .65;
-    if (rng() >= Math.min(.85, target.chance * shot.strength * factor)) {
-      if (BOSS_ABILITIES[target.species]) {
+    const ability = BOSS_ABILITIES[target.species];
+    const exposed = Boolean(ability && target.exposedUntil > table.time);
+    // A boss has both a traditional lucky catch and shared breakable armor.
+    // Weak points appear only after its special move. No effect charges credits.
+    const chance = Math.min(.85, target.chance * shot.strength * factor * (exposed ? 3.3 : 1));
+    const armor = ability ? (Number.isFinite(target.armor) ? target.armor : ability.armor) : 0;
+    const damage = ability ? 1 + Math.floor(shot.cost / 5) + (exposed ? 2 : 0) : 0;
+    if (rng() >= chance && (!ability || armor > damage)) {
+      if (ability) {
+        target.maxArmor = ability.armor;
+        target.armor = Math.max(0, armor - damage);
         target.flashUntil = table.time + .23;
         table.effects.push({
           kind: 'boss-hit', species: target.species, seat: shot.seat,
           x: target.x, y: target.y, radius: target.radius,
+          armor: target.armor, maxArmor: ability.armor, exposed,
           life: .28, duration: .28,
         });
       }

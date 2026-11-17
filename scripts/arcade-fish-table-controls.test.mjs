@@ -6,7 +6,7 @@ import {
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret, TURRET_TIP } from '../public/arcade/hosted/imp-inferno/turret.mjs';
-import { drawBossAttack, drawBossTell, drawBossHit, drawFurnaceKing } from '../public/arcade/hosted/imp-inferno/bosses.mjs';
+import { drawBossAttack, drawBossTell, drawBossHit, drawBossArmor, drawFurnaceKing } from '../public/arcade/hosted/imp-inferno/bosses.mjs';
 
 function isolatedTable() {
   const table = newTable(800);
@@ -512,4 +512,81 @@ test('a resistant boss visibly recoils without altering either credits or catch 
   assert.ok(strokes.includes('stroke'));
   for (let i=0;i<20;i++) advance(table, .016, { onlineSeats: [] }, () => .99);
   assert.equal(table.effects.some(effect => effect.kind === 'boss-hit'), false);
+});
+
+
+test('shared boss armor accumulates net damage from several seats, with a single final payout', () => {
+  const table = isolatedTable();
+  const king = target(table, 'king', 901, 280);
+  king.nextAttack = table.time + 9999;
+  king.armor = king.maxArmor = BOSS_ABILITIES.king.armor;
+  const hits = [0, 1, 2];
+  for(let step=0;step<hits.length;step++){
+    table.shots.push({
+      id: 1100+step, seat: hits[step], cost: 25, strength: 2.1,
+      radius: 96, angle: -Math.PI/2, lockId: king.id,
+      life: 1.5, bounces: 0, x: king.x, y: king.y,
+    });
+    advance(table,.016,{onlineSeats:[]},()=>.99);
+    if(step<2){
+      assert.equal(king.armor,18-(step+1)*6);
+      assert.equal(table.targets.some(t=>t.id===king.id),true);
+      assert.equal(table.effects.filter(e=>e.kind==='boss-hit').length,step+1);
+      assert.deepEqual(table.seats.map(s=>s.totalWon),[0,0,0,0]);
+    }
+  }
+  assert.equal(table.targets.some(t=>t.id===king.id),false);
+  assert.deepEqual(table.seats.map(s=>s.caught),[0,0,1,0]);
+  assert.deepEqual(table.seats.map(s=>s.totalWon),[0,0,2000,0]);
+  assert.ok(table.effects.some(e=>e.kind==='catch'&&e.amount===2000));
+});
+
+test('post-attack weak point raises capture chance without changing a shot cost',()=>{
+  function attempt(active){
+    const table=isolatedTable();
+    const monster=target(table,'king',902,290);
+    monster.nextAttack=active?.01:999;
+    table.shots.push({
+      id:1101,seat:0,cost:1,strength:1,radius:38,
+      angle:-Math.PI/2,lockId:monster.id,life:1.5,bounces:0,
+      x:monster.x,y:monster.y,
+    });
+    advance(table,.016,{onlineSeats:[]},()=>.045);
+    return {table,monster};
+  }
+  const defended=attempt(false);
+  assert.equal(defended.table.seats[0].caught,0);
+  assert.equal(defended.monster.armor,17);
+  const vulnerable=attempt(true);
+  assert.ok(vulnerable.monster.exposedUntil>vulnerable.table.time);
+  assert.equal(vulnerable.table.seats[0].caught,1);
+  assert.equal(vulnerable.table.seats[0].totalWon,80);
+  assert.equal(vulnerable.table.seats[0].credits,STARTING_CREDITS+80);
+  assert.equal(vulnerable.table.targets.some(t=>t.id===902),false);
+});
+
+test('armor meters and weak-point graphics work on all three bosses and reduced-motion mode',()=>{
+  const operations=[];
+  const gradient={addColorStop(){}};
+  const ctx=new Proxy({},{
+    get(_,key){
+      if(key==='createLinearGradient')return()=>gradient;
+      return(...args)=>operations.push(key);
+    },set(){return true;},
+  });
+  for(const species of ['king','hydra','gargoyle']){
+    const target={...SPECIES[species],species,id:101,x:400,y:260,
+      armor:Math.ceil(BOSS_ABILITIES[species].armor/2),
+      maxArmor:BOSS_ABILITIES[species].armor,exposedUntil:2};
+    for(const reduced of [true,false]){
+      operations.length=0;
+      assert.equal(drawBossArmor(ctx,target,1,reduced),true);
+      assert.ok(operations.includes('fillRect'));
+      assert.ok(operations.includes('strokeRect'));
+      assert.ok(operations.includes('fillText'));
+      assert.equal(operations.filter(op=>op==='save').length,
+        operations.filter(op=>op==='restore').length);
+    }
+  }
+  assert.equal(drawBossArmor(ctx,{species:'grinner'},1),false);
 });
