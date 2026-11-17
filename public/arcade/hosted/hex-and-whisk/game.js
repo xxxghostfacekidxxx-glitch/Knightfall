@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,orderProgress,keepsakesForPatron,KEEPSAKE_LEVELS,nextKeepsakeProgress,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,orderProgress,keepsakesForPatron,KEEPSAKE_LEVELS,nextKeepsakeProgress,vipContractInfo,claimVipContract,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -274,6 +274,36 @@ function renderUpgrades(){
  upgrades.replaceChildren(frag);
 }
 
+function renderVipContract(){
+ const host=$("vip-contract");if(!host)return;
+ const c=vipContractInfo(game),section=document.createDocumentFragment();
+ const title=text("div","","vip-captain");
+ const face=text("span","","vip-captain-face");face.append(portrait(c.sponsor));
+ const details=text("div","","vip-captain-copy");
+ details.append(text("strong",c.sponsor.name+" · Contract #"+c.stage),text("small","Kitchen: "+RECIPES[c.chain].name+" · Cook tier 3+ and serve two "+RECIPES[c.chain].name+" dishes"));
+ title.append(face,details);
+ const goals=text("div","","vip-goals");
+ for(const [key,caption,limit] of [["merges","MAGICAL MERGE",1],["serves","CUSTOMER ORDERS",2]]){
+  const row=text("div","","vip-goal"+(c[key]>=limit?" done":""));
+  row.append(text("span",caption),text("strong",c[key]+" / "+limit));
+  const meter=text("span","","vip-meter"),fill=text("span","","vip-meter-fill");
+  fill.style.width=(c[key]/limit*100)+"%";meter.append(fill);row.append(meter);goals.append(row);
+ }
+ const reward=text("div","","vip-reward");
+ reward.append(text("span","◈ "+c.coins+" coins"),text("span","⚡ "+c.energy+" energy"));
+ if(c.whisk)reward.append(text("span","✧ Magic Whisk"));
+ const claim=text("button",c.ready?"✦ CLAIM VIP CONTRACT":"KEEP COOKING","vip-claim");
+ claim.type="button";claim.disabled=!c.ready;
+ claim.setAttribute("aria-label",c.ready?"Claim VIP contract rewards":"Complete VIP contract objectives to claim");
+ claim.addEventListener("click",()=>{
+  const result=claimVipContract(game,Date.now());if(!result.ok){problem(result.reason);return}
+  history=null;selected=null;hintPair=null;render();
+  announce("VIP CONTRACT COMPLETE! +"+result.coins+" coins, +"+result.energy+" energy"+(result.whisk?" and a Magic Whisk!":"!"),true);
+  bell([520,700,920,1180],.13);rumble([15,40,15]);
+  toast("✦ CONTRACT #"+result.stage+" COMPLETE! NEW CONTRACT AVAILABLE");
+ });
+ section.append(title,goals,reward,claim);host.replaceChildren(section);
+}
 function renderQuests(){
  const list=$("quest-list");if(!list)return; // tolerate old cached HTML until new page refreshes
  const frag=document.createDocumentFragment();
@@ -442,7 +472,7 @@ function renderStats(){
  $("whisk").disabled=game.whisks<1||!findMergePair(game);
  $("hint").disabled=!findMergePair(game);
 }
-function render(pop=-1){if(focusedOrderId!==null&&!game.orders.some(order=>order.id===focusedOrderId))focusedOrderId=null;renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderCookbook();renderGuestbook();renderStats();syncCustomerReactions();safeSave()}
+function render(pop=-1){if(focusedOrderId!==null&&!game.orders.some(order=>order.id===focusedOrderId))focusedOrderId=null;renderBoard(pop);renderShelf();renderOrders();renderStations();renderUpgrades();renderQuests();renderVipContract();renderCookbook();renderGuestbook();renderStats();syncCustomerReactions();safeSave()}
 function particle(place,note,color){
  const cell=board.querySelector('[data-index="'+place+'"]');if(!cell)return;
  const bounds=fx.getBoundingClientRect(),r=cell.getBoundingClientRect();
