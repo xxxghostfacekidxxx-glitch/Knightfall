@@ -1,6 +1,6 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=12';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=13';
 import { drawCreature } from './creatures.mjs?v=2';
-import { drawFurnaceKing, drawBossAttack, drawBossTell } from './bosses.mjs?v=1';
+import { drawFurnaceKing, drawBossAttack, drawBossTell, drawBossHit } from './bosses.mjs?v=2';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret } from './turret.mjs?v=1';
 
 const INK = '#210912';
@@ -79,8 +79,9 @@ function imp(ctx, target, time) {
 }
 
 function drawTarget(ctx, target, time, reducedMotion = false) {
-  if (target.species === 'king') drawFurnaceKing(ctx, target, time, reducedMotion);
-  else if (!drawCreature(ctx, target, time)) imp(ctx, target, time);
+  const artwork = target.flashUntil > time ? { ...target, flash: true } : target;
+  if (artwork.species === 'king') drawFurnaceKing(ctx, artwork, time, reducedMotion);
+  else if (!drawCreature(ctx, artwork, time)) imp(ctx, artwork, time);
 }
 
 function label(ctx, text, x, y, color, size = 13) {
@@ -230,6 +231,8 @@ function drawEffect(ctx, effect, table, reducedMotion) {
     drawMuzzle(ctx, effect, reducedMotion);
   } else if (effect.kind === 'boss-attack') {
     drawBossAttack(ctx, effect, reducedMotion);
+  } else if (effect.kind === 'boss-hit') {
+    drawBossHit(ctx, effect, reducedMotion);
   } else if (effect.kind === 'catch') {
     drawCatchBurst(ctx, effect, opacity, reducedMotion);
     if (!reducedMotion) {

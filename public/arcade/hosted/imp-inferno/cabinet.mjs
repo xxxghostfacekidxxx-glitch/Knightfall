@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=12';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=12';
+import { makeRenderer } from './art.mjs?v=13';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=13';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=10';
 
@@ -253,6 +253,16 @@ if (document.fullscreenEnabled && cabinet.requestFullscreen) {
   });
 }
 
+function bossCue(message) {
+  if (/CROWN NOVA|TRIPLE HELLFIRE|STONEWING SLAM/.test(message)) {
+    tone(155, .24);
+    tone(230, .31);
+  } else if (/FURNACE KING/.test(message)) {
+    tone(114, .38);
+    tone(180, .3);
+  }
+}
+
 function tone(frequency, duration) {
   if (!audio || audio.state !== 'running') return;
   const now = audio.currentTime;
@@ -367,6 +377,10 @@ function joinRoom(code) {
           announcement.textContent = table.banner;
           announcement.hidden = false;
           bannerUntil = table.time + 3.2;
+          if (table.time - (room.cueAt ?? -Infinity) > 1) {
+            bossCue(table.banner);
+            room.cueAt = table.time;
+          }
         } else if (table.time >= bannerUntil) announcement.hidden = true;
         updateDisplay();
       }
@@ -460,6 +474,7 @@ function frame(now) {
     if (player.totalWon + (second ? guest.totalWon : 0) > previousWon) tone(730, .15);
     else if (player.credits + (second ? guest.credits : 0) < previousCredits) tone(196, .04);
     if (table.banner) {
+      bossCue(table.banner);
       announcement.textContent = table.banner;
       announcement.hidden = false;
       table.banner = '';

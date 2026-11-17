@@ -6,7 +6,7 @@ import {
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret, TURRET_TIP } from '../public/arcade/hosted/imp-inferno/turret.mjs';
-import { drawBossAttack, drawBossTell, drawFurnaceKing } from '../public/arcade/hosted/imp-inferno/bosses.mjs';
+import { drawBossAttack, drawBossTell, drawBossHit, drawFurnaceKing } from '../public/arcade/hosted/imp-inferno/bosses.mjs';
 
 function isolatedTable() {
   const table = newTable(800);
@@ -481,4 +481,35 @@ test('boss cinematics render safely, including reduced-motion attack tells and a
   }
   assert.equal(calls.filter(op => op === 'save').length, calls.filter(op => op === 'restore').length);
   assert.equal(drawBossAttack(ctx, { kind: 'catch' }), false);
+});
+
+
+test('a resistant boss visibly recoils without altering either credits or catch odds', () => {
+  const table = isolatedTable();
+  const king = target(table, 'king', 600, 290);
+  king.nextAttack = Infinity;
+  table.shots.push({
+    seat: 0, id: 15, cost: 10, radius: 73, strength: 1.65,
+    angle: -Math.PI / 2, lockId: 600, life: 1, bounces: 0,
+    x: 400, y: 290,
+  });
+  advance(table, .016, { onlineSeats: [] }, () => .99);
+  const hit = table.effects.find(effect => effect.kind === 'boss-hit');
+  assert.ok(hit);
+  assert.equal(hit.species, 'king');
+  assert.equal(hit.seat, 0);
+  assert.ok(king.flashUntil > table.time);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS);
+  assert.equal(table.seats[0].totalWon, 0);
+  assert.equal(king.caught, undefined);
+  const strokes = [];
+  const ctx = new Proxy({}, {
+    get(_, property) { return (...args) => strokes.push(property); },
+    set() { return true; },
+  });
+  assert.equal(drawBossHit(ctx, hit), true);
+  assert.equal(drawBossHit(ctx, hit, true), true);
+  assert.ok(strokes.includes('stroke'));
+  for (let i=0;i<20;i++) advance(table, .016, { onlineSeats: [] }, () => .99);
+  assert.equal(table.effects.some(effect => effect.kind === 'boss-hit'), false);
 });

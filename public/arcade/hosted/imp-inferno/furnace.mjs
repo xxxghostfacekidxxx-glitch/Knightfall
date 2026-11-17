@@ -312,7 +312,17 @@ function net(table, shot, rng) {
     const distance = Math.hypot(target.x - shot.x, target.y - shot.y);
     if (distance > shot.radius + target.radius) continue;
     const factor = distance <= target.radius + 8 ? 1 : .65;
-    if (rng() >= Math.min(.85, target.chance * shot.strength * factor)) continue;
+    if (rng() >= Math.min(.85, target.chance * shot.strength * factor)) {
+      if (BOSS_ABILITIES[target.species]) {
+        target.flashUntil = table.time + .23;
+        table.effects.push({
+          kind: 'boss-hit', species: target.species, seat: shot.seat,
+          x: target.x, y: target.y, radius: target.radius,
+          life: .28, duration: .28,
+        });
+      }
+      continue;
+    }
     payout(table, target, shot);
     if (target.bonus) triggerBonus(table, target, shot, rng);
   }

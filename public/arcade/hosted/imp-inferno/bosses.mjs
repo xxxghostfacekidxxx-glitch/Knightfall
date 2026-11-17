@@ -191,3 +191,29 @@ export function drawBossAttack(ctx, effect, reducedMotion=false) {
   ctx.restore();
   return true;
 }
+
+
+// Boss armor flashes on a resisted capture shot. All credit and catch logic
+// remains exclusively on the game engine, not inside this cosmetic renderer.
+export function drawBossHit(ctx, effect, reducedMotion=false) {
+  if(effect.kind!=='boss-hit' || !(effect.duration>0))return false;
+  const palette=ATTACKS[effect.species] ?? ATTACKS.king;
+  const opacity=Math.max(0,Math.min(1,effect.life/effect.duration));
+  const ring=effect.radius*(.7+(1-opacity)*.55);
+  ctx.save();
+  ctx.translate(effect.x,effect.y);
+  ctx.globalAlpha=opacity;
+  ctx.beginPath();ctx.arc(0,0,ring,0,TAU);
+  ctx.strokeStyle='#fff7d7';ctx.lineWidth=5*opacity+1;ctx.stroke();
+  if(!reducedMotion){
+    const count=12;
+    for(let i=0;i<count;i++){
+      const a=i*TAU/count;
+      const r=ring+(1-opacity)*20;
+      line(ctx,[[Math.cos(a)*(r-12),Math.sin(a)*(r-12)],
+        [Math.cos(a)*(r+8),Math.sin(a)*(r+8)]],i%3?'#fff6c3':palette.color,2.8);
+    }
+  }
+  ctx.restore();
+  return true;
+}

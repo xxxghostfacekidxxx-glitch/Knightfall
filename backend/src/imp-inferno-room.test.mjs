@@ -97,6 +97,13 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   room.broadcast();
   assert.deepEqual(pairs.map(pair => pair[1].messages.at(-1).table.effects.some(effect =>
     effect.kind === 'boss-attack')), [false, false, false, true]);
+  const bossHit = { kind: 'boss-hit', species: 'hydra', x: 125, y: 120, radius: 76,
+    seat: 2, life: .25, duration: .28 };
+  room.table.effects.push(bossHit);
+  room.broadcast();
+  assert.deepEqual(pairs.map(pair => pair[1].messages.at(-1).table.effects.some(effect =>
+    effect.kind === 'boss-hit')), [false, false, false, true]);
+  room.table.effects.pop();
   room.table.effects.pop();
   room.table.effects.pop();
   room.table.targets = openingTargets;

@@ -207,7 +207,7 @@ export class ImpInfernoRoom {
           legacy.set(protocol, JSON.stringify({ type: 'state', seats, table: { ...this.table,
             targets: this.table.targets.map(fallback),
             effects: this.table.effects.filter(effect =>
-              effect.kind !== 'boss-attack' && (!oldArt || effect.kind !== 'muzzle'))
+              !['boss-attack', 'boss-hit'].includes(effect.kind) && (!oldArt || effect.kind !== 'muzzle'))
               .map(effect => effect.target ? { ...effect, target: fallback(effect.target) } : effect),
           } }));
         }
