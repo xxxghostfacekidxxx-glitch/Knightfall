@@ -1,4 +1,4 @@
-import { SEAT_COLORS, seatOrigin } from './furnace.mjs?v=10';
+import { SEAT_COLORS, seatOrigin } from './furnace.mjs?v=12';
 
 // Vector-rendered, swiveling furnace cannons, shared by solo and online seats.
 export const TURRET_TIP = 46;

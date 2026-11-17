@@ -140,7 +140,8 @@ export function drawCreature(ctx, target, time) {
       break;
     }
     case 'gargoyle': {
-      const flap = Math.sin(p*.9)*5;
+      const casting = target.lastAttack != null && time - target.lastAttack < .8;
+      const flap = Math.sin(p*.9)*5 + (casting ? 15 : 0);
       shape(ctx,'#6f4d79',[[-11,-11],[-23,-35-flap],[-50,-40-flap],
         [-39,-16],[-43,2],[-20,8]]);
       shape(ctx,'#9a6c82',[[11,-11],[23,-35-flap],[50,-40-flap],
@@ -155,6 +156,7 @@ export function drawCreature(ctx, target, time) {
       break;
     }
     case 'hydra': {
+      const casting = target.lastAttack != null && time - target.lastAttack < .85;
       const heads=[[-32,-21], [0,-34], [32,-19]];
       for(let i=0;i<3;i++){
         const [x,y]=heads[i];
@@ -170,8 +172,12 @@ export function drawCreature(ctx, target, time) {
         const hx=x+sway;
         shape(ctx,'#ffb753',[[hx-12,y+2],[hx-9,y-15],
           [hx-1,y-9],[hx+8,y-17],[hx+13,y+4],[hx+4,y+11],[hx-11,y+10]]);
-        eyes(ctx,[[hx+5,y-1,4,4]],'#ff4264');
+        eyes(ctx,[[hx+5,y-1,4,4]],casting?'#fff9be':'#ff4264');
         shape(ctx,'#fff4cb',[[hx+6,y+9],[hx+11,y+17],[hx+13,y+6]],0);
+        if(casting){
+          shape(ctx,i%2?'#ffb64a':'#ff6680',[[hx+12,y+7],[hx+29,y+3],[hx+41,y+9],[hx+30,y+15],[hx+15,y+13]],0);
+          oval(ctx,hx+32,y+9,7,3,'#fff4d1');
+        }
       }
       break;
     }

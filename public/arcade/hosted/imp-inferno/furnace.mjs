@@ -17,8 +17,8 @@ export const SPECIES = {
   skullwisp: { name: 'Skull Wisp', multiplier: 10, radius: 21, chance: .185, motion: 'haunt', pace: .92 },
   magmaworm: { name: 'Magma Grub', multiplier: 14, radius: 25, chance: .125, motion: 'crawl', pace: .84 },
   boneserpent: { name: 'Bone Serpent', multiplier: 24, radius: 30, chance: .078, motion: 'slither', pace: .94 },
-  gargoyle: { name: 'Gargoyle', multiplier: 45, radius: 34, chance: .038, motion: 'glide', pace: .73 },
-  hydra: { name: 'Infernal Hydra', multiplier: 60, radius: 49, chance: .021, motion: 'weave', pace: .56 },
+  gargoyle: { name: 'Gargoyle', multiplier: 45, radius: 54, chance: .038, motion: 'dive', pace: .73 },
+  hydra: { name: 'Infernal Hydra', multiplier: 60, radius: 76, chance: .021, motion: 'weave', pace: .56 },
   ashwing: { name: 'Ashwing', multiplier: 4, radius: 19, chance: .25 },
   brute: { name: 'Brute', multiplier: 8, radius: 27, chance: .135 },
   fuse: { name: 'Fuse Imp', multiplier: 15, radius: 24, chance: .09, bonus: 'blast' },
@@ -28,8 +28,14 @@ export const SPECIES = {
   vortex: { name: 'Vortex Imp', multiplier: 35, radius: 29, chance: .041, bonus: 'vortex' },
   croupier: { name: 'Croupier Imp', multiplier: 12, radius: 28, chance: .12, bonus: 'wheel' },
   firestorm: { name: 'Firestorm Imp', multiplier: 18, radius: 30, chance: .082, bonus: 'storm' },
-  king: { name: 'Furnace King', multiplier: 80, radius: 47, chance: .019 },
+  king: { name: 'Furnace King', multiplier: 80, radius: 80, chance: .019, motion: 'throne' },
 };
+export const BOSS_ABILITIES = Object.freeze({
+  gargoyle: { name: 'STONEWING SLAM', cadence: 6.3, first: 5.4, escort: 'coalbug', count: 3 },
+  hydra: { name: 'TRIPLE HELLFIRE', cadence: 5.4, first: 5.9, escort: 'skullwisp', count: 3 },
+  king: { name: 'CROWN NOVA', cadence: 6.1, first: 6, escort: 'hellhound', count: 4 },
+});
+const BOSS_SUMMON_CAP = 85;
 const RARE_IMPS = ['fuse', 'boneserpent', 'croupier', 'firestorm', 'gargoyle', 'spark', 'prism', 'drill', 'hydra', 'vortex'];
 export const WHEEL_MULTIPLIERS = [5, 10, 5, 15, 8, 25, 8, 50];
 export const WHEEL_DURATION = 2.4;
@@ -121,10 +127,12 @@ function addFormation(table, species, count, route, rng, { openingAt = 0, lane, 
   const arrival = atRail ? 76 / (speed * (table.width + 192)) : openingAt;
   for (let i = 0; i < count; i++) {
     const stats = SPECIES[species];
+    const ability = BOSS_ABILITIES[species];
     table.targets.push({
       ...stats, species, id: ++table.nextId, direction, route, sharedY, order: i,
       start: table.time + i * rhythm + delay - arrival, speed,
       x: direction === 1 ? -100 : table.width + 100, y: HEIGHT * sharedY,
+      ...(ability ? { nextAttack: table.time + ability.first, attackCount: 0 } : {}),
     });
   }
 }
@@ -150,9 +158,58 @@ function moveTarget(table, target) {
   if (motion === 'crawl') y += Math.sin(beat * .5) * 4;
   if (motion === 'slither') y += Math.sin(beat * 1.25) * 15;
   if (motion === 'glide') y += Math.sin(beat * .55) * 9;
-  if (motion === 'weave') y += Math.sin(beat * .45) * 23;
-  target.y = y + offset + Math.sin(beat) * 5;
+  if (motion === 'dive') y += Math.sin(beat * 1.15) * 27;
+  if (motion === 'weave') y += Math.sin(beat * .45) * 29;
+  if (motion === 'throne') y += Math.sin(beat * .68) * 15;
+  const tell = Number.isFinite(target.nextAttack) ? target.nextAttack - table.time : Infinity;
+  if (motion === 'dive' && tell >= 0 && tell < 1.35) y += 24 * (1 - tell / 1.35);
+  if (motion === 'throne' && tell >= 0 && tell < 1.35) y -= 8 * (1 - tell / 1.35);
+  target.y = Math.min(HEIGHT - target.radius, Math.max(target.radius, y + offset + Math.sin(beat) * 5));
   return progress < 1;
+}
+
+
+// These are attack patterns, not damage to the four players: the threat is new
+// catchable minions and a telegraphed burst. The backend runs this same simulation.
+function summonBossMinions(table, boss, ability) {
+  const count = Math.min(ability.count, Math.max(0, BOSS_SUMMON_CAP - table.targets.length));
+  const stats = SPECIES[ability.escort];
+  const direction = boss.direction || 1;
+  const speed = .095 * (stats.pace ?? 1);
+  // Spawn near the boss's live position instead of popping in at a distant rail.
+  const progress = direction === 1
+    ? (boss.x + 96) / (table.width + 192)
+    : (table.width + 96 - boss.x) / (table.width + 192);
+  for (let i = 0; i < count; i++) {
+    const lane = Math.max(.19, Math.min(.81,
+      (boss.y + (i - (count - 1) / 2) * 38) / HEIGHT));
+    table.targets.push({
+      ...stats, species: ability.escort, id: ++table.nextId,
+      direction, route: 'shoal', order: i, sharedY: lane,
+      start: table.time - progress / speed + i * .18,
+      speed, x: boss.x, y: HEIGHT * lane,
+    });
+  }
+}
+
+function advanceBosses(table) {
+  // Snapshot the list: summoned imps cannot cast or recursively spawn this tick.
+  for (const boss of [...table.targets]) {
+    const ability = BOSS_ABILITIES[boss.species];
+    if (!ability || boss.caught) continue;
+    if (!Number.isFinite(boss.nextAttack)) boss.nextAttack = table.time + ability.cadence;
+    if (table.time < boss.nextAttack || !visible(table, boss)) continue;
+    boss.attackCount = (boss.attackCount ?? 0) + 1;
+    boss.lastAttack = table.time;
+    boss.nextAttack = table.time + ability.cadence;
+    table.effects.push({
+      kind: 'boss-attack', species: boss.species, attack: ability.name,
+      x: boss.x, y: boss.y, radius: boss.radius,
+      direction: boss.direction, life: 1.25, duration: 1.25,
+    });
+    summonBossMinions(table, boss, ability);
+    table.banner = boss.name.toUpperCase() + ' · ' + ability.name + '!';
+  }
 }
 
 export function seedTable(table, rng = Math.random) {
@@ -386,6 +443,7 @@ export function advance(table, dt, control, rng = Math.random) {
   }
 
   table.targets = table.targets.filter(target => !target.caught && moveTarget(table, target));
+  advanceBosses(table);
   advanceStorms(table, dt);
   for (const seat of table.seats) seat.recoil = Math.max(0, seat.recoil - dt * 8);
   const online = control.onlineSeats;

@@ -1,5 +1,6 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=10';
-import { drawCreature } from './creatures.mjs?v=1';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=12';
+import { drawCreature } from './creatures.mjs?v=2';
+import { drawFurnaceKing, drawBossAttack, drawBossTell } from './bosses.mjs?v=1';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret } from './turret.mjs?v=1';
 
 const INK = '#210912';
@@ -77,8 +78,9 @@ function imp(ctx, target, time) {
   ctx.restore();
 }
 
-function drawTarget(ctx, target, time) {
-  if (!drawCreature(ctx, target, time)) imp(ctx, target, time);
+function drawTarget(ctx, target, time, reducedMotion = false) {
+  if (target.species === 'king') drawFurnaceKing(ctx, target, time, reducedMotion);
+  else if (!drawCreature(ctx, target, time)) imp(ctx, target, time);
 }
 
 function label(ctx, text, x, y, color, size = 13) {
@@ -226,6 +228,8 @@ function drawEffect(ctx, effect, table, reducedMotion) {
   ctx.globalAlpha = Math.min(1, opacity * 1.65);
   if (effect.kind === 'muzzle') {
     drawMuzzle(ctx, effect, reducedMotion);
+  } else if (effect.kind === 'boss-attack') {
+    drawBossAttack(ctx, effect, reducedMotion);
   } else if (effect.kind === 'catch') {
     drawCatchBurst(ctx, effect, opacity, reducedMotion);
     if (!reducedMotion) {
@@ -385,7 +389,8 @@ export function makeRenderer(ctx, backdrop) {
     for (const target of table.targets) {
       if (target.x < -85 || target.x > width + 85) continue;
       drawBossAura(ctx, target, time, reducedMotion);
-      drawTarget(ctx, target, time);
+      drawTarget(ctx, target, time, reducedMotion);
+      drawBossTell(ctx, target, time, reducedMotion);
       label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
         target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
       if (target.species === 'king') label(ctx, 'FURNACE KING', target.x, target.y - target.radius - 27, '#fff3b5', 17);

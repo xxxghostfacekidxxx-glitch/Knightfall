@@ -1,7 +1,7 @@
-import { makeRenderer } from './art.mjs?v=11';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=11';
+import { makeRenderer } from './art.mjs?v=12';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=12';
 
-import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=9';
+import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=10';
 
 const byId = id => document.getElementById(id);
 const cabinet = byId('cabinet');

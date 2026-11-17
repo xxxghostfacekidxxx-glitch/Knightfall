@@ -1,8 +1,9 @@
 import { advance, HEIGHT, newTable, pickTarget, POWERS, seedTable, STARTING_CREDITS } from '../../public/arcade/hosted/imp-inferno/furnace.mjs';
 
 const PROTOCOL = 'imp-inferno-v1';
-const PREVIOUS_PROTOCOL = 'imp-inferno-v2';
-const CURRENT_PROTOCOL = 'imp-inferno-v3';
+const LEGACY_PROTOCOL = 'imp-inferno-v2';
+const PREVIOUS_PROTOCOL = 'imp-inferno-v3';
+const CURRENT_PROTOCOL = 'imp-inferno-v4';
 const LEGACY_CREATURES = {
   coalbug: 'grinner', cinderbat: 'ashwing', hellhound: 'brute', skullwisp: 'ashwing',
   magmaworm: 'brute', boneserpent: 'brute', gargoyle: 'king', hydra: 'king',
@@ -18,7 +19,7 @@ export async function connectImpInferno(request, env, room, allowedOrigins, rate
     return new Response('WebSocket required.', { status: 426 });
   }
   if (!allowedOrigins.has(request.headers.get('Origin'))) return new Response('Origin not allowed.', { status: 403 });
-  const selected = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL, PROTOCOL].find(value => protocol?.includes(value));
+  const selected = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL, LEGACY_PROTOCOL, PROTOCOL].find(value => protocol?.includes(value));
   if (!selected || !token) return new Response('Invalid table protocol.', { status: 400 });
   if (!env.IMP_INFERNO_ROOMS) return new Response('Online tables unavailable.', { status: 503 });
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -75,7 +76,7 @@ export class ImpInfernoRoom {
     const token = request.headers.get('X-Seat-Token');
     if (!token || !/^[a-f0-9]{32}$/.test(token)) return new Response(null, { status: 400 });
     const requested = request.headers.get('X-Imp-Protocol');
-    const protocol = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL].includes(requested) ? requested : PROTOCOL;
+    const protocol = [CURRENT_PROTOCOL, PREVIOUS_PROTOCOL, LEGACY_PROTOCOL].includes(requested) ? requested : PROTOCOL;
     const now = Date.now();
     let seat = this.leases.findIndex(lease => lease?.token === token);
     if (seat < 0) {
@@ -195,16 +196,18 @@ export class ImpInfernoRoom {
       let payload = state;
       if (protocol !== CURRENT_PROTOCOL) {
         if (!legacy.has(protocol)) {
+          const oldArt = protocol === PROTOCOL || protocol === LEGACY_PROTOCOL;
           const fallback = target => {
             if (!target) return target;
-            const species = LEGACY_CREATURES[target.species] ?? target.species;
+            const species = oldArt ? LEGACY_CREATURES[target.species] ?? target.species : target.species;
             return protocol === PROTOCOL && species === 'firestorm'
               ? { ...target, species: 'fuse', bonus: 'blast' }
               : { ...target, species };
           };
           legacy.set(protocol, JSON.stringify({ type: 'state', seats, table: { ...this.table,
             targets: this.table.targets.map(fallback),
-            effects: this.table.effects.filter(effect => effect.kind !== 'muzzle')
+            effects: this.table.effects.filter(effect =>
+              effect.kind !== 'boss-attack' && (!oldArt || effect.kind !== 'muzzle'))
               .map(effect => effect.target ? { ...effect, target: fallback(effect.target) } : effect),
           } }));
         }

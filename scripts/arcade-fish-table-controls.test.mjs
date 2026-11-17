@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import {
-  advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingBoss, upcomingTide,
+  advance, BOSS_ABILITIES, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingBoss, upcomingTide,
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret, TURRET_TIP } from '../public/arcade/hosted/imp-inferno/turret.mjs';
+import { drawBossAttack, drawBossTell, drawFurnaceKing } from '../public/arcade/hosted/imp-inferno/bosses.mjs';
 
 function isolatedTable() {
   const table = newTable(800);
@@ -408,4 +409,76 @@ test('rare catches remain 4-player score events and all catches retain standard 
   assert.equal(table.seats[3].credits, STARTING_CREDITS + 225);
   assert.match(table.banner, /Gargoyle/);
   assert.equal(table.effects.filter(effect => effect.kind === 'catch').length, 1);
+});
+
+
+test('three distinct towering bosses cast their own attacks and summon catchable minions without charging seats', () => {
+  assert.ok(SPECIES.king.radius >= 75);
+  assert.ok(SPECIES.hydra.radius >= 70);
+  assert.ok(SPECIES.gargoyle.radius >= 50);
+  const seen = new Set();
+  for (const species of ['gargoyle', 'hydra', 'king']) {
+    const table = isolatedTable();
+    const boss = target(table, species, 100, 290);
+    boss.nextAttack = .01;
+    const credits = table.seats.map(seat => seat.credits);
+    const rng = () => .3;
+    advance(table, .016, { onlineSeats: [null, null, null, null] }, rng);
+    const attack = table.effects.find(effect => effect.kind === 'boss-attack');
+    assert.ok(attack, species + ' never cast');
+    assert.equal(attack.species, species);
+    assert.equal(attack.attack, BOSS_ABILITIES[species].name);
+    assert.equal(attack.radius, SPECIES[species].radius);
+    assert.equal(attack.duration, 1.25);
+    assert.equal(boss.attackCount, 1);
+    assert.ok(boss.nextAttack > table.time + 4);
+    assert.deepEqual(table.seats.map(seat => seat.credits), credits);
+    const summoned = table.targets.filter(item => item.id !== boss.id);
+    assert.equal(summoned.length, BOSS_ABILITIES[species].count);
+    assert.ok(summoned.every(item => item.species === BOSS_ABILITIES[species].escort));
+    assert.ok(summoned.every(item => item.chance > 0 && item.multiplier > 0));
+    assert.ok(summoned.every(item => Math.abs(item.x - boss.x) < 1));
+    assert.match(table.banner, new RegExp(attack.attack));
+    seen.add(attack.attack);
+    for (let i = 0; i < 42; i++) advance(table, .033, { onlineSeats: [] }, () => .8);
+    assert.equal(table.effects.filter(effect => effect.kind === 'boss-attack').length, 0);
+  }
+  assert.equal(seen.size, 3);
+});
+
+test('boss summons respect population cap and never cascade into unlimited spawns', () => {
+  const table = isolatedTable();
+  const boss = target(table, 'king', 700, 280);
+  boss.nextAttack = .01;
+  for (let id = 1000; id < 1090; id++) {
+    const spawn = target(table, 'grinner', id, 300);
+    spawn.x = 420;
+  }
+  advance(table, .016, { onlineSeats: [] }, () => .4);
+  assert.equal(boss.attackCount, 1);
+  assert.equal(table.targets.length, 91);
+  assert.equal(table.effects.filter(effect => effect.kind === 'boss-attack').length, 1);
+  assert.deepEqual(table.seats.map(seat => seat.credits), Array(4).fill(STARTING_CREDITS));
+});
+
+test('boss cinematics render safely, including reduced-motion attack tells and all three attacks', () => {
+  const calls = [];
+  const ctx = new Proxy({}, {
+    get(_, prop) { return (...args) => calls.push(prop); },
+    set() { return true; },
+  });
+  const dummy = { id: 4, x: 320, y: 220, species: 'king', direction: -1, radius: 80,
+    nextAttack: 4.3 };
+  drawFurnaceKing(ctx, dummy, 4, false);
+  assert.ok(calls.filter(op => op === 'fill').length > 20);
+  assert.equal(calls.filter(op => op === 'save').length, calls.filter(op => op === 'restore').length);
+  drawBossTell(ctx, dummy, 4, true);
+  for (const species of ['king', 'hydra', 'gargoyle']) {
+    const burst = { kind: 'boss-attack', species, x: 100, y: 200,
+      radius: SPECIES[species].radius, direction: 1, life: .8, duration: 1.25 };
+    assert.equal(drawBossAttack(ctx, burst, false), true);
+    assert.equal(drawBossAttack(ctx, burst, true), true);
+  }
+  assert.equal(calls.filter(op => op === 'save').length, calls.filter(op => op === 'restore').length);
+  assert.equal(drawBossAttack(ctx, { kind: 'catch' }), false);
 });

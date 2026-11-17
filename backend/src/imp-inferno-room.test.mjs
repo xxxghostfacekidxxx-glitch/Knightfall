@@ -69,7 +69,7 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   await ctx.ready;
   t.after(() => clearInterval(room.timer));
   const join = id => room.fetch(new Request('https://imp-inferno.internal/connect', {
-    headers: { 'X-Seat-Token': id.repeat(32), 'X-Imp-Protocol': id === 'a' ? 'imp-inferno-v1' : id === 'b' ? 'imp-inferno-v2' : 'imp-inferno-v3' },
+    headers: { 'X-Seat-Token': id.repeat(32), 'X-Imp-Protocol': id === 'a' ? 'imp-inferno-v1' : id === 'b' ? 'imp-inferno-v2' : id === 'c' ? 'imp-inferno-v3' : 'imp-inferno-v4' },
   }));
   for (const id of 'abcd') assert.equal((await join(id)).status, 101);
   assert.deepEqual(pairs.map(pair => pair[1].messages[0].seat), [0, 1, 2, 3]);
@@ -92,6 +92,12 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   for (const pair of pairs.slice(2, 4)) {
     assert.equal(pair[1].messages.at(-1).table.effects.some(effect => effect.kind === 'muzzle'), true);
   }
+  const bossAttack = { kind: 'boss-attack', species: 'king', x: 100, y: 100, radius: 80, direction: 1, life: 1, duration: 1.25 };
+  room.table.effects.push(bossAttack);
+  room.broadcast();
+  assert.deepEqual(pairs.map(pair => pair[1].messages.at(-1).table.effects.some(effect =>
+    effect.kind === 'boss-attack')), [false, false, false, true]);
+  room.table.effects.pop();
   room.table.effects.pop();
   room.table.targets = openingTargets;
   room.table.tideIndex = 1;
