@@ -242,3 +242,12 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 @media(forced-colors:active){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{display:none!important}
 }
+
+/* Keep the cathedral artwork behind actual touch targets and text. */
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro {background-color:#090a11!important}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::before,
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after {pointer-events:none!important}
+html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions) {position:relative;z-index:2}
+@media(prefers-reduced-motion:reduce){
+ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{transition:none!important;animation:none!important}
+}
