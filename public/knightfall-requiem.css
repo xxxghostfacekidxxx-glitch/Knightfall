@@ -59,7 +59,7 @@ html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])):not(.p
  overflow:hidden;
  border:2px solid #d6a876c7!important;
  border-radius:clamp(18px,3vw,32px)!important;
- background-color:#0c0e18!important;
+ background-color:#090a11!important;
  background-image:
  url('/assets/knightfall/gothic-chrome-frame.svg'),
  linear-gradient(90deg,#0a0917eb 0%,#110f1fb5 41%,#110e222a 70%,#0d0b1c14 100%),
@@ -241,13 +241,4 @@ html body[data-kf-realm]:is([data-kf-theme="cathedral"],:not([data-kf-theme])):n
 }
 @media(forced-colors:active){
  html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{display:none!important}
-}
-
-/* Keep the cathedral artwork behind actual touch targets and text. */
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro {background-color:#090a11!important}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::before,
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after {pointer-events:none!important}
-html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro :is(h1,p,.home-intro-actions) {position:relative;z-index:2}
-@media(prefers-reduced-motion:reduce){
- html body.home-page:is([data-kf-theme="cathedral"],:not([data-kf-theme])) .home-intro::after{transition:none!important;animation:none!important}
 }
