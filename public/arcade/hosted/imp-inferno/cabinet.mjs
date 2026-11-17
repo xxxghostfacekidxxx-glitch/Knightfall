@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=10';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingTide } from './furnace.mjs?v=10';
+import { makeRenderer } from './art.mjs?v=11';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingBoss, upcomingTide } from './furnace.mjs?v=11';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=9';
 
@@ -484,10 +484,15 @@ function frame(now) {
       room.nextInput = now + 64;
     }
   }
-  const tide = phase === 'playing' || phase === 'online' ? upcomingTide(table) : null;
-  tideWarning.hidden = !tide || !announcement.hidden;
+  const active = phase === 'playing' || phase === 'online';
+  const tide = active ? upcomingTide(table) : null;
+  const boss = active ? upcomingBoss(table) : null;
+  const alert = boss ?? tide;
+  tideWarning.hidden = !alert || !announcement.hidden;
+  tideWarning.dataset.encounter = boss ? 'king' : 'tide';
   if (!tideWarning.hidden) {
-    const message = tide.name + ' in ' + tide.seconds + 's';
+    const message = boss ? 'FURNACE KING · 80× · ' + boss.seconds + 's'
+      : tide.name + ' in ' + tide.seconds + 's';
     if (tideWarning.textContent !== message) tideWarning.textContent = message;
   }
   draw(displayRoom(now), control, reducedMotion.matches, tide);

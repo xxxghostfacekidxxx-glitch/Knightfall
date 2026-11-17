@@ -103,6 +103,19 @@ function drawNet(ctx, effect, opacity) {
     ctx.stroke();
     return;
   }
+  // Three concentric molten rings and an expanding lattice produce a visible hit.
+  ctx.save();
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#fff6c6';
+  ctx.beginPath();
+  ctx.arc(effect.x, effect.y, radius * .66, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = '#ff7f3f';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(effect.x, effect.y, radius * 1.07, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
   for (let ring = 1; ring <= 3; ring++) {
     ctx.beginPath();
     for (let ray = 0; ray < 8; ray++) {
@@ -124,6 +137,88 @@ function drawNet(ctx, effect, opacity) {
   }
 }
 
+
+// Animated but deterministic impact art. No additional network state or game rules.
+function drawCatchBurst(ctx, effect, opacity, reducedMotion) {
+  const value = effect.target?.multiplier ?? 0;
+  const rare = value >= 24;
+  const boss = value >= 60;
+  const length = boss ? 92 : rare ? 57 : 29;
+  const stroke = boss ? '#ffe79a' : rare ? '#ffbd67' : '#fff2bc';
+  const spread = reducedMotion ? 1 : 1 + .32 * (1 - opacity);
+  ctx.save();
+  ctx.translate(effect.x, effect.y);
+  ctx.globalAlpha = Math.min(.82, opacity * (rare ? 1.2 : .7));
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = rare ? 3.5 : 2;
+  const rays = reducedMotion ? 6 : rare ? 14 : 8;
+  for (let i = 0; i < rays; i++) {
+    const a = (i / rays) * Math.PI * 2 + (reducedMotion ? 0 : (1 - opacity) * .6);
+    const inner = (rare ? 25 : 16) * spread;
+    const outer = (length * (i % 3 === 0 ? 1.2 : .8)) * spread;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a) * inner, Math.sin(a) * inner);
+    ctx.lineTo(Math.cos(a) * outer, Math.sin(a) * outer);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, (rare ? 42 : 24) * (1.2 - opacity * .4), 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+function drawBossAura(ctx, target, time, reducedMotion) {
+  const value = target.multiplier;
+  if (value < 35) return;
+  const boss = value >= 60;
+  const r = target.radius + (boss ? 18 : 12);
+  const pulse = reducedMotion ? 0 : Math.sin(time * 3.4 + target.id) * 6;
+  const color = target.species === 'hydra' ? '#ff567a' : target.species === 'gargoyle' ? '#d89bf9' : '#ffba4a';
+  ctx.save();
+  ctx.translate(target.x, target.y);
+  const glow = ctx.createRadialGradient(0, 0, target.radius * .3, 0, 0, r * 1.6);
+  glow.addColorStop(0, color + '70');
+  glow.addColorStop(.42, color + '2b');
+  glow.addColorStop(1, color + '00');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 1.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = boss ? 3.2 : 2;
+  ctx.globalAlpha = .7;
+  ctx.setLineDash([13, 8]);
+  ctx.beginPath();
+  ctx.arc(0, 0, r + pulse, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  if (!reducedMotion) {
+    for (let i = 0; i < (boss ? 10 : 5); i++) {
+      const angle = i * Math.PI * 2 / (boss ? 10 : 5) + time * .8;
+      const distance = r + 6 + Math.sin(time * 3 + i) * 6;
+      ellipse(ctx, Math.cos(angle) * distance, Math.sin(angle) * distance,
+        boss ? 4 : 2.8, boss ? 2.6 : 1.8, i % 2 ? '#fff6c4' : color, angle);
+    }
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+function drawBossPortal(ctx, table, reducedMotion) {
+  const boss = table.targets.find(target => target.species === 'king'
+    && target.x > -100 && target.x < table.width + 100);
+  if (!boss) return;
+  const incoming = boss.direction > 0 ? 0 : table.width;
+  const r = reducedMotion ? 32 : 32 + Math.sin(table.time * 7) * 6;
+  const y = boss.y;
+  ctx.save();
+  const gradient = ctx.createLinearGradient(incoming, y, incoming + (boss.direction > 0 ? 110 : -110), y);
+  gradient.addColorStop(0, '#ff762b99');
+  gradient.addColorStop(1, '#ff762b00');
+  ctx.fillStyle = gradient;
+  const start = boss.direction > 0 ? 0 : table.width - 110;
+  ctx.fillRect(start, y - r, 110, r * 2);
+  ctx.restore();
+}
+
 function drawEffect(ctx, effect, table, reducedMotion) {
   const opacity = effect.life / effect.duration;
   const color = SEAT_COLORS[effect.seat];
@@ -132,6 +227,7 @@ function drawEffect(ctx, effect, table, reducedMotion) {
   if (effect.kind === 'muzzle') {
     drawMuzzle(ctx, effect, reducedMotion);
   } else if (effect.kind === 'catch') {
+    drawCatchBurst(ctx, effect, opacity, reducedMotion);
     if (!reducedMotion) {
       const origin = seatOrigin(table, effect.seat);
       const progress = Math.pow(1 - opacity, 2);
@@ -284,12 +380,15 @@ export function makeRenderer(ctx, backdrop) {
       }
     }
     if (tide) drawTideEntrances(ctx, width, tide);
+    drawBossPortal(ctx, table, reducedMotion);
     drawStorms(ctx, table, reducedMotion);
     for (const target of table.targets) {
       if (target.x < -85 || target.x > width + 85) continue;
+      drawBossAura(ctx, target, time, reducedMotion);
       drawTarget(ctx, target, time);
       label(ctx, target.multiplier + '×', target.x, target.y + target.radius + 9,
         target.multiplier < 15 ? '#fff4c3' : '#ffcb59', target.species === 'king' ? 23 : 12);
+      if (target.species === 'king') label(ctx, 'FURNACE KING', target.x, target.y - target.radius - 27, '#fff3b5', 17);
     }
     for (const shot of table.shots) drawProjectile(ctx, shot, time, reducedMotion);
     for (const effect of table.effects) drawEffect(ctx, effect, table, reducedMotion);

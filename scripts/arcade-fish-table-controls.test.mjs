@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import {
-  advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingTide,
+  advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingBoss, upcomingTide,
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 import { CREATURE_SPECIES, drawCreature, isCreature } from '../public/arcade/hosted/imp-inferno/creatures.mjs';
 import { drawMuzzle, drawProjectile, drawReticle, drawTurret, TURRET_TIP } from '../public/arcade/hosted/imp-inferno/turret.mjs';
@@ -372,4 +372,40 @@ test('paid cannon fire emits synchronized muzzle flashes and stronger-looking pr
   assert.doesNotThrow(() => drawReticle(ctx, table, firing, 0, false));
   for (let i = 0; i < 16; i++) advance(table, .016, { ...control, power: 6 }, () => .99);
   assert.ok(!table.effects.some(effect => effect.kind === 'muzzle'), 'expired muzzle effects must be cleaned up');
+});
+
+test('Furnace King warns five seconds before arrival and enters with two escort schools', () => {
+  const table = isolatedTable();
+  const online = { onlineSeats: [null, null, null, null] };
+  table.nextKing = 10;
+  table.time = 4.9;
+  assert.equal(upcomingBoss(table), null);
+  table.time = 5;
+  assert.equal(upcomingBoss(table).seconds, 5);
+  table.time = 9.1;
+  assert.equal(upcomingBoss(table).seconds, 1);
+  table.time = 10;
+  advance(table, .016, online, () => .2);
+  assert.equal(upcomingBoss(table), null);
+  assert.equal(table.targets.filter(target => target.species === 'king').length, 1);
+  assert.equal(table.targets.filter(target => target.species === 'cinderbat').length, 4);
+  assert.equal(table.targets.filter(target => target.species === 'hellhound').length, 4);
+  assert.equal(table.targets.length, 9);
+  assert.equal(table.banner, 'FURNACE KING · 80× · Demonic escort incoming!');
+  assert.ok(table.targets.every(target => target.direction === 1));
+  assert.equal(table.nextKing, table.time + 35);
+  assert.equal(SPECIES.king.multiplier, 80);
+});
+
+test('rare catches remain 4-player score events and all catches retain standard payouts', () => {
+  const table = isolatedTable();
+  target(table, 'gargoyle', 1, 290);
+  const shot = { seat: 3, cost: 5, radius: 58, strength: 1.38, angle: 0,
+    lockId: 1, life: 1, bounces: 0, x: 400, y: 290 };
+  table.shots.push(shot);
+  advance(table, .016, { onlineSeats: [null, null, null, null] }, () => 0);
+  assert.equal(table.seats[3].totalWon, 45 * 5);
+  assert.equal(table.seats[3].credits, STARTING_CREDITS + 225);
+  assert.match(table.banner, /Gargoyle/);
+  assert.equal(table.effects.filter(effect => effect.kind === 'catch').length, 1);
 });

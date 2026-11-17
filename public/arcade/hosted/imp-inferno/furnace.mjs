@@ -78,6 +78,13 @@ export function upcomingTide(table) {
   return { ...tideFormation(table.tideIndex), remaining, seconds: Math.ceil(remaining) };
 }
 
+// Both solo and multiplayer clients derive the same warning from the shared clock.
+export function upcomingBoss(table) {
+  const remaining = table.nextKing - table.time;
+  if (!(remaining > 0 && remaining <= 5)) return null;
+  return { name: 'Furnace King', multiplier: SPECIES.king.multiplier, remaining, seconds: Math.ceil(remaining) };
+}
+
 export function newTable(width) {
   return {
     width, time: 0, targets: [], shots: [], effects: [], spins: [], storms: [], nextId: 0, nextShotId: 0,
@@ -237,7 +244,8 @@ function payout(table, target, shot) {
   player.caught++;
   target.caught = true;
   table.effects.push({ kind: 'catch', x: target.x, y: target.y, seat: shot.seat, amount, target: { ...target }, life: 1.04, duration: 1.04 });
-  if (target.multiplier >= 15 && (!shot.seat || player.name === 'P2')) table.banner = player.name + ' caught ' + target.name + ' · +' + amount;
+  if (target.multiplier >= 45 || (target.multiplier >= 15 && (!shot.seat || player.name === 'P2')))
+    table.banner = player.name + ' caught ' + target.name + ' · +' + amount;
 }
 
 function net(table, shot, rng) {
@@ -368,9 +376,13 @@ export function advance(table, dt, control, rng = Math.random) {
     table.banner = name + ' · ' + schools.length + ' schools incoming';
   }
   if (table.time >= table.nextKing) {
-    addFormation(table, 'king', 1, 'shoal', rng);
+    const from = rng() < .5 ? 1 : -1;
+    // One shared boss entrance, flanked by two distinctly moving escort schools.
+    addFormation(table, 'king', 1, 'shoal', rng, { from, lane: .5 });
+    addFormation(table, 'cinderbat', 4, 'chevron', rng, { from, lane: .27, delay: .5 });
+    addFormation(table, 'hellhound', 4, 'zigzag', rng, { from, lane: .72, delay: .8 });
     table.nextKing = table.time + 35;
-    table.banner = 'Furnace King incoming · 80×';
+    table.banner = 'FURNACE KING · 80× · Demonic escort incoming!';
   }
 
   table.targets = table.targets.filter(target => !target.caught && moveTarget(table, target));
