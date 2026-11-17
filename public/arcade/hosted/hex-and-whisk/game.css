@@ -277,3 +277,25 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 /* Close controls are meaningful only when tools become mobile drawers. */
 @media(min-width:891px){.drawer-close{display:none!important}.game-overlay-scrim{display:none!important}}
 @media(max-width:890px){.shelf-panel,.secondary-column{overscroll-behavior:contain}.shelf-panel:focus,.secondary-column:focus{outline:none}.mobile-game-actions button:focus-visible,.drawer-close:focus-visible{outline:2px solid #ffe3a3;outline-offset:2px}}
+
+/* V8: geometric 6x6 tray; all six rows exactly match all six columns. */
+.board-frame{width:min(100%,650px);height:auto;aspect-ratio:1;max-width:100%;min-width:0;min-height:0}
+.merge-board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));width:100%;height:100%;aspect-ratio:1;gap:0;min-width:0;min-height:0}
+.merge-board .slot{box-sizing:border-box;display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden;aspect-ratio:1;line-height:1;contain:layout style}
+.merge-board .slot .food{width:90%;height:90%;max-width:100%;max-height:100%;object-fit:contain;align-self:center;justify-self:center}
+.merge-board .slot .tile-rank,.merge-board .slot .tile-name,.merge-board .slot .generator-tier{display:none!important}
+.merge-board .slot.generator-slot .generator-art{width:82%;height:82%;max-width:100%;max-height:100%;display:block;justify-self:center;align-self:center;filter:drop-shadow(0 3px 3px #120d1cb2) drop-shadow(0 0 5px #ffce8b70)}
+.merge-board .slot.generator-slot .generator-name{font-size:clamp(6px,1.2vw,9px);bottom:2px;text-align:center}
+.merge-board .slot.generator-slot:before{width:76%;height:76%;inset:12%;aspect-ratio:1;box-sizing:border-box}
+.merge-board .slot.pop .food{animation:ingredient-born .45s cubic-bezier(.16,1.35,.4,1) both}
+@keyframes ingredient-born{0%{opacity:.25;transform:translateY(7px) scale(.45) rotate(-9deg);filter:drop-shadow(0 0 0 transparent)}55%{opacity:1;transform:translateY(-4px) scale(1.18) rotate(3deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+.merge-board .slot.drop-target{background:radial-gradient(circle,#ead4ac45,#44324f)!important}
+.merge-board .slot:not([data-generator]):not([data-family]):hover{background:#ffffff16!important}
+.station-pic .generator-art{width:86%;height:86%}
+@media(max-width:890px){
+ .board-frame{width:min(100%,calc(100dvh - 276px));max-width:100%;max-height:100%;height:auto;aspect-ratio:1}
+ .merge-board{grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));width:100%;height:100%}
+}
+@media(max-width:890px) and (max-height:640px){.board-frame{width:min(100%,calc(100dvh - 300px))}}
+@media(max-width:890px) and (orientation:landscape){.board-frame{width:min(100%,calc(100dvh - 125px))}}
+@media(prefers-reduced-motion:reduce){.merge-board .slot.pop .food{animation:none}}
