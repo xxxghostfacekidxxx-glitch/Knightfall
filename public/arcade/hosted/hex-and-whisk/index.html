@@ -9,6 +9,7 @@
  <link rel="stylesheet" href="./game.css?v=17">
  <script src="/arcade-save.js" defer></script>
  <script type="module" src="./game.js?v=17"></script>
+ <script src="/arcade-chat-bridge.js?v=20261117-arcade1" defer></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -63,7 +64,7 @@
  <header class="site-bar">
   <a class="back" href="/chaos-cartridge.html" aria-label="Return to Chaos Cartridge"><span aria-hidden="true">‹</span> CHAOS CARTRIDGE</a>
   <span class="site-tag">KNIGHTFALL / MIDNIGHT MENU</span>
-  <div class="header-controls"><button type="button" id="sound-toggle" class="icon-btn" aria-label="Enable sounds" aria-pressed="false">♪ OFF</button><button type="button" id="fullscreen" class="icon-btn" aria-label="Toggle fullscreen">⛶</button></div>
+  <div class="header-controls"><a href="/messages.html" class="icon-btn arcade-chat-link" data-kf-arcade-chat aria-label="Open Ruinwire game chat" aria-expanded="false">💬 Chat</a><button type="button" id="sound-toggle" class="icon-btn" aria-label="Enable sounds" aria-pressed="false">♪ OFF</button><button type="button" id="fullscreen" class="icon-btn" aria-label="Toggle fullscreen">⛶</button></div>
  </header>
  <nav class="mobile-game-actions" aria-label="Kitchen quick actions">
   <button type="button" id="open-storage" aria-controls="kitchen-storage" aria-expanded="false">▣ <span>Storage</span> <strong id="storage-badge">0/2</strong></button>

@@ -454,7 +454,7 @@
           }
           if (!document.querySelector('script[data-kf-chat-bubbles]')) {
             const bubbles=document.createElement("script");
-            bubbles.src="/chat-bubbles.js?v=20261115-viewport3";
+            bubbles.src="/chat-bubbles.js?v=20261117-arcade1";
             bubbles.dataset.kfChatBubbles="true";
             bubbles.dataset.userId=String(user.id);
             document.body.append(bubbles);

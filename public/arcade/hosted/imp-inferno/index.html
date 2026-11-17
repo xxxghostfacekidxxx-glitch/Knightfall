@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1d090c">
   <meta name="description" content="Share a four-seat creature-catching table, hunt eight infernal beast types and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
   <link rel="stylesheet" href="./cabinet.css?v=7">
   <script src="./cabinet.mjs?v=14" type="module"></script>
+  <script src="/arcade-chat-bridge.js?v=20261117-arcade1" defer></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -15,6 +16,7 @@
       <a href="/chaos-cartridge.html">← Chaos Cartridge</a>
       <h1>Imp <em>Inferno</em></h1>
       <div class="settings">
+        <a class="arcade-chat-link" href="/messages.html" data-kf-arcade-chat aria-label="Open Ruinwire game chat" aria-expanded="false">💬 Chat</a>
         <button id="sound" type="button" aria-pressed="false">Sound off</button>
         <button id="fullscreen" type="button" hidden>Full screen</button>
       </div>
@@ -53,6 +55,7 @@
     <div id="online-bar" class="second-seat" hidden>
       <span id="room-status" role="status"></span>
       <button id="copy-room" type="button">Copy invite</button>
+      <a class="arcade-chat-link" href="/messages.html" data-kf-arcade-chat aria-label="Message friends while playing" aria-expanded="false">Message friends</a>
       <input id="room-invite" aria-label="Online table invite" readonly hidden>
       <button id="refill" type="button" hidden>Refill free credits</button>
     </div>

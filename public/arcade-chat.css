@@ -1,0 +1,53 @@
+/* Arcade-specific Ruinwire overlay: game controls always retain priority.
+   Only loaded for authenticated members inside standalone hosted games. */
+#kf-chat-heads.kf-chat-arcade:not(.kf-chat-open){display:none!important}
+#kf-chat-heads.kf-chat-arcade .kf-chat-head-row,
+#kf-chat-heads.kf-chat-arcade .kf-chat-launcher{display:none!important}
+#kf-chat-heads.kf-chat-arcade.kf-chat-open:not(.kf-chat-expanded){
+ left:max(12px,env(safe-area-inset-left))!important;
+ top:max(66px,env(safe-area-inset-top))!important;
+ right:auto!important;bottom:auto!important;
+}
+#kf-chat-heads.kf-chat-arcade.kf-chat-open:not(.kf-chat-expanded) .kf-chat-panel{
+ width:min(365px,calc(100vw - 24px))!important;
+ height:min(450px,calc(100dvh - 90px))!important;
+ max-height:calc(100dvh - 90px)!important;
+}
+@media(max-width:700px){
+ /* Keep the chat in the UPPER section, leaving the cannon/merge buttons below.
+    No giant backdrop that steals taps from the entire game. */
+ #kf-chat-heads.kf-chat-arcade.kf-chat-expanded{
+  left:var(--kf-chat-viewport-left,0px)!important;
+  top:var(--kf-chat-viewport-top,0px)!important;
+  width:var(--kf-chat-viewport-width,100vw)!important;
+  height:min(65%,410px)!important;
+  max-height:var(--kf-chat-viewport-height,100dvh)!important;
+  min-height:0!important;overflow:hidden!important;
+  background:transparent!important;
+  pointer-events:none!important;
+ }
+ #kf-chat-heads.kf-chat-arcade.kf-chat-expanded::before{display:none!important}
+ #kf-chat-heads.kf-chat-arcade.kf-chat-expanded .kf-chat-panel{
+  position:absolute!important;
+  left:max(6px,env(safe-area-inset-left))!important;
+  top:max(4px,env(safe-area-inset-top))!important;
+  width:calc(100% - 12px)!important;
+  height:calc(100% - 8px)!important;
+  max-height:calc(100% - 8px)!important;
+  min-height:0!important;
+  pointer-events:auto!important;
+  border-color:#d5a37c!important;
+  box-shadow:0 8px 40px #07040ae8,0 0 0 1px #e7c8a05e!important;
+ }
+ #kf-chat-heads.kf-chat-arcade.kf-chat-expanded .kf-chat-panel-header{padding:6px 8px!important}
+ #kf-chat-heads.kf-chat-arcade.kf-chat-expanded .kf-chat-compose{padding:5px 7px!important}
+}
+@media(max-height:470px) and (min-width:701px){
+ #kf-chat-heads.kf-chat-arcade.kf-chat-open:not(.kf-chat-expanded){top:7px!important}
+ #kf-chat-heads.kf-chat-arcade.kf-chat-open:not(.kf-chat-expanded) .kf-chat-panel{
+  height:calc(100dvh - 14px)!important;max-height:calc(100dvh - 14px)!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #kf-chat-heads.kf-chat-arcade .kf-chat-panel{transition:none!important}
+}
