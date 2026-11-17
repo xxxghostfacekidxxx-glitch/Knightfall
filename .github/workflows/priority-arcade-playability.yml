@@ -39,6 +39,9 @@ on:
       - 'public/arcade/hosted/cinder-mines/**'
       - 'public/arcade/hosted/cinder-slots/**'
       - 'public/arcade/hosted/cinder-life/**'
+      - 'public/arcade-repair.js'
+      - 'scripts/arcade-repair.test.mjs'
+      - 'scripts/arcade-sharded-smoke.mjs'
       - 'public/nav.js'
       - 'scripts/smoke-navigation.mjs'
       - '.github/workflows/priority-arcade-playability.yml'
@@ -68,7 +71,7 @@ jobs:
         run: node scripts/smoke-priority-arcade.mjs
       - name: Validate arcade fullscreen and loading-recovery wiring
         if: success() || failure()
-        run: node --test scripts/arcade-playback-assist.test.mjs
+        run: node --test scripts/arcade-playback-assist.test.mjs scripts/arcade-repair.test.mjs scripts/arcade-asset-doctor.test.mjs
       - name: Exercise fullscreen and game recovery on actual browser pages
         if: success() || failure()
         run: node scripts/smoke-arcade-playback-assist.mjs

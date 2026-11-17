@@ -96,6 +96,33 @@ try {
     if(profile==="desktop") await button.click({timeout:4000}); else await button.tap({timeout:4000});
     await page.waitForTimeout(150);
    }
+   // Real puzzle-board contracts: a loaded title never substitutes for a
+   // functional DOM board. The older sharded runner silently passed blank games.
+   const boardContracts={
+     "ash-sudoku": ["#board .cell",81],
+     "neon-mahjong": ["#board .tile",40],
+     "cinder-merge": ["#board .tile",16],
+     "ash-tiles": ["#board .sliding",15],
+     "cinder-checkers": ["#board button",64],
+     "cinder-chess": ["#board button",32],
+     "cinder-reversi": ["#board .rev-cell",64],
+     "cinder-mines": ["#board button",36]
+   };
+   if(boardContracts[game.id]){
+     action="verify puzzle board paint";
+     const [selector,minimum]=boardContracts[game.id];
+     await page.waitForFunction(({selector,minimum})=>{
+       const nodes=document.querySelectorAll(selector),first=nodes[0];
+       if(nodes.length<minimum||!first)return false;
+       const r=first.getBoundingClientRect(),s=getComputedStyle(first);
+       return r.width>2&&r.height>2&&s.visibility!=="hidden"&&s.display!=="none"&&Number(s.opacity)>0.01;
+     },{selector,minimum},{timeout:9000});
+     if(game.id==="ash-sudoku"&&profile!=="desktop"){
+       const first=await page.locator("#board").evaluate(x=>({top:x.getBoundingClientRect().top,viewport:innerHeight}));
+       if(first.top>first.viewport*.65)
+         throw Error("Sudoku starts below first mobile viewport: "+JSON.stringify(first));
+     }
+   }
    if (game.id === "cinder-mines" && process.env.ARCADE_TEST_TARGET === "local") {
     action = "verify fullscreen board and corner input";
     await verifyMinesweeperView(page);

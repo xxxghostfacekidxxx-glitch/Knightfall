@@ -27,3 +27,20 @@ test("asset doctor fixes only existing safe targets and reports missing relative
   assert.match(output,/https:\/\/example.org\/a.js/);
  } finally {await rm(dir,{recursive:true,force:true})}
 });
+
+test("game HTML fragments use their parent document's asset base, not their fragment directory",async()=>{
+ const dir=await mkdtemp(path.join(tmpdir(),"arcade-fragment-"));
+ try{
+  await mkdir(path.join(dir,"public/arcade/hosted/space/data/screens"),{recursive:true});
+  await mkdir(path.join(dir,"public/arcade/hosted/space/assets/images"),{recursive:true});
+  await mkdir(path.join(dir,"scripts"),{recursive:true});
+  await cp(source,path.join(dir,"scripts/arcade-asset-doctor.mjs"));
+  await writeFile(path.join(dir,"public/arcade/hosted/space/assets/images/logo.png"),"png stub");
+  await writeFile(path.join(dir,"public/arcade/hosted/space/data/screens/menu.html"),'<img src="assets/images/logo.png"><img src="assets/images/absent.png">');
+  const run=spawnSync(process.execPath,["scripts/arcade-asset-doctor.mjs"],{cwd:dir,encoding:"utf8"});
+  assert.equal(run.status,2);
+  const report=JSON.parse(run.stdout);
+  assert.equal(report.missingAssets,1,JSON.stringify(report.findings));
+  assert.equal(report.findings[0].url,"assets/images/absent.png");
+ }finally{await rm(dir,{recursive:true,force:true});}
+});

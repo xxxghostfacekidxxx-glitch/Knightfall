@@ -9,6 +9,16 @@ let changedFiles = 0, missingAssets = 0, repairs = 0;
 const allowed = /\.(?:js|css|png|jpe?g|webp|gif|svg|ico|woff2?|mp3|ogg|wav)$/i;
 async function exists(file) { try { await access(file); return true; } catch { return false; } }
 function inside(file) { return file.startsWith(root + path.sep); }
+// Interstellar Armada's HTML fragments are injected into index.html. Their
+// asset URLs resolve against the running app document, not the fragment path.
+// Only accept this alternate base if the referenced local asset truly exists.
+function fragmentAppCandidate(file, url) {
+  const relative=path.relative(root,file).split(path.sep).join("/");
+  const match=relative.match(/^arcade\/hosted\/([^/]+)\/(?:src\/)?data\/(?:screens|components)\/[^/]+\.html$/);
+  if(!match || !url.startsWith("assets/"))return null;
+  const target=path.resolve(root,"arcade","hosted",match[1],url.split(/[?#]/,1)[0]);
+  return inside(target)?target:null;
+}
 function candidate(file, url) {
   if (!url || /^(?:https?:|data:|blob:|\/\/|#)/i.test(url)) return null;
   let pathname;
@@ -30,6 +40,8 @@ async function visit(dir) {
       const url = match[3], target = candidate(file, url);
       if (!target) continue;
       if (await exists(target)) continue;
+      const mountedAsset=fragmentAppCandidate(file,url);
+      if(mountedAsset && await exists(mountedAsset))continue;
       let fixed = null;
       // Case 1: accidentally published root-relative URL with a /public/ prefix.
       if (url.startsWith("/public/")) fixed = url.slice("/public".length);
