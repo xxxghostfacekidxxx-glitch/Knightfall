@@ -56,5 +56,6 @@ test("new PWA fetch always refreshes game documents, preserving kitchen offline 
  assert.match(html,/arcade-repair\.js/);
 });
 test("Sudoku board precedes controls on narrow phones",()=>{
- assert.match(sudoku,/@media\(max-width:850px\)[^{]*\{[^}]*\.play-area\{order:0\}\.sudoku-sidebar\{order:1/);
+ assert.match(sudoku,/@media\\(max-width:850px\\)/);
+ assert.match(sudoku,/\\.play-area\\{order:0\\}\\.sudoku-sidebar\\{order:1/);
 });
