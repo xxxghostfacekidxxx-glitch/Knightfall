@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,KEEPSAKE_LEVELS,PATRON_KEEPSAKES,keepsakesForPatron,keepsakeUnlocked,nextKeepsakeProgress,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,VIP_CONTRACT_SERVES,VIP_CONTRACT_MERGES,vipContractInfo,claimVipContract,PATRONS,patronForOrder,KEEPSAKE_LEVELS,PATRON_KEEPSAKES,keepsakesForPatron,keepsakeUnlocked,nextKeepsakeProgress,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -463,4 +463,55 @@ test("guestbook progression tracks next milestone without altering visits",()=>{
   assert.equal(data.remaining,remaining);assert.equal(data.ratio,ratio);
   assert.equal(data.complete,visits>=9);
  }
+});
+
+test("VIP Midnight Contract requires an advanced merge and two relevant served orders",()=>{
+ const state=makeGame(rng,now);
+ const start=vipContractInfo(state);
+ assert.equal(start.stage,1);assert.equal(start.chain,"garden");
+ assert.equal(VIP_CONTRACT_SERVES,2);assert.equal(VIP_CONTRACT_MERGES,1);
+ assert.equal(claimVipContract(state,now).ok,false);
+ state.board.fill(null);
+ state.board[11]={id:8001,chain:"garden",tier:2};
+ state.board[12]={id:8002,chain:"garden",tier:2};
+ const merged=move(state,11,12,now);
+ assert.equal(merged.ok,true);assert.equal(merged.tier,3);
+ assert.equal(vipContractInfo(state).merges,1);
+ for(let i=0;i<2;i++){
+  const order={...state.orders[0],chain:"garden",tier:2,coins:25,xp:10,energy:3};
+  state.orders[0]=order;
+  state.board[14+i]={id:8100+i,chain:"garden",tier:2};
+  const served=serve(state,0,rng,now);
+  assert.equal(served.ok,true);
+  assert.equal(vipContractInfo(state).serves,i+1);
+ }
+ const before=state.coins,info=vipContractInfo(state);
+ assert.equal(info.ready,true);
+ const claimed=claimVipContract(state,now);
+ assert.equal(claimed.ok,true);assert.equal(claimed.coins,info.coins);
+ assert.equal(state.coins,before+info.coins);
+ assert.equal(vipContractInfo(state).stage,2);
+ assert.equal(vipContractInfo(state).chain,"bakery");
+ assert.equal(vipContractInfo(state).ready,false);
+ assert.equal(claimVipContract(state,now).ok,false);
+ const saved=restore(serialize(state),rng,now);
+ assert.deepEqual(saved.vipContract,state.vipContract);
+});
+test("VIP progress ignores wrong food, lower-tier merges and legacy saves",()=>{
+ const state=makeGame(rng,now);
+ state.board.fill(null);
+ state.board[10]={id:8101,chain:"bakery",tier:2};
+ state.board[11]={id:8102,chain:"bakery",tier:2};
+ move(state,10,11,now);
+ assert.equal(vipContractInfo(state).merges,0);
+ state.board[12]={id:8103,chain:"garden",tier:1};
+ state.board[13]={id:8104,chain:"garden",tier:1};
+ move(state,12,13,now);
+ assert.equal(vipContractInfo(state).merges,0);
+ const legacy=JSON.parse(serialize(state));delete legacy.vipContract;
+ assert.deepEqual(restore(legacy,rng,now).vipContract,{stage:1,chain:"garden",serves:0,merges:0});
+ const invalid=JSON.parse(serialize(state));invalid.vipContract={stage:2,chain:"sweets",serves:999,merges:-1};
+ const sanitized=restore(invalid,rng,now);
+ assert.equal(sanitized.vipContract.chain,"garden");
+ assert.equal(sanitized.vipContract.serves,2);assert.equal(sanitized.vipContract.merges,0);
 });
