@@ -27,7 +27,7 @@ const FORMATIONS = [
 
 export function newTable(width) {
   return {
-    width, time: 0, targets: [], shots: [], effects: [], nextId: 0,
+    width, time: 0, targets: [], shots: [], effects: [], nextId: 0, nextShotId: 0,
     nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, rareIndex: 0, formation: 0, banner: '',
     seats: SEAT_NAMES.map((name, i) => ({
       name, credits: STARTING_CREDITS, totalWon: 0, caught: 0, readyAt: 0,
@@ -125,7 +125,7 @@ function fire(table, seat, aim, power, rapid, locked, cpu = false) {
   player.readyAt = table.time + (cpu ? .80 + seat * .09 : rapid ? .20 : .37);
   player.recoil = 1;
   const shot = {
-    seat, cost, radius, strength, angle, lockId: locked ? aim.id : null, life: 2.8, bounces: 2,
+    id: ++table.nextShotId, seat, cost, radius, strength, angle, lockId: locked ? aim.id : null, life: 2.8, bounces: 2,
     x: origin.x + Math.cos(angle) * 34, y: origin.y + Math.sin(angle) * 34,
   };
   if (bonus) {
@@ -282,9 +282,14 @@ export function advance(table, dt, control, rng = Math.random) {
 
   table.targets = table.targets.filter(target => !target.caught && moveTarget(table, target));
   for (const seat of table.seats) seat.recoil = Math.max(0, seat.recoil - dt * 8);
-  directSeat(table, 0, control);
-  if (control.secondSeat) directSeat(table, 2, control.secondSeat);
-  for (let seat = 1; seat < table.seats.length; seat++) {
+  const online = control.onlineSeats;
+  if (online) {
+    online.forEach((input, index) => { if (input) directSeat(table, index, input); });
+  } else {
+    directSeat(table, 0, control);
+    if (control.secondSeat) directSeat(table, 2, control.secondSeat);
+  }
+  for (let seat = 1; !online && seat < table.seats.length; seat++) {
     if (seat === 2 && control.secondSeat) continue;
     if (table.time < table.seats[seat].readyAt) continue;
     const target = aimRival(table, seat, rng);

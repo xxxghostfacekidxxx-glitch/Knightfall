@@ -1,5 +1,7 @@
-import { makeRenderer } from './art.mjs?v=4';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=4';
+import { makeRenderer } from './art.mjs?v=5';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=5';
+
+import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=5';
 
 const byId = id => document.getElementById(id);
 const cabinet = byId('cabinet');
@@ -23,6 +25,13 @@ backdrop.src = new URL('./furnace.webp?v=2', import.meta.url).href;
 const draw = makeRenderer(ctx, backdrop);
 
 let phase = 'ready';
+let room = null;
+const roomBar = byId('online-bar');
+const roomStatus = byId('room-status');
+const roomInvite = byId('room-invite');
+const createRoom = byId('create-room');
+const joinForm = byId('join-room');
+const refill = byId('refill');
 let table = newTable(700);
 const control = { aim: { x: 350, y: 235 }, firing: false, auto: false, rapid: false, lockMode: false, lockId: null, power: 0 };
 const keys = new Set();
@@ -33,7 +42,7 @@ let audio = null;
 seedTable(table);
 
 function updateDisplay() {
-  const seat = table.seats[0];
+  const seat = table.seats[control.onlineSeat ?? 0];
   const values = { credits: seat.credits, cost: POWERS[control.power].cost, won: seat.totalWon, caught: seat.caught };
   const bonus = seat.bonus;
   const weaponText = bonus ? (bonus.kind === 'beam' ? 'Hellbeam ready' : 'Drill shot ready') + ' · next shot free' : '';
@@ -54,7 +63,7 @@ function updateDisplay() {
 function resize() {
   const box = canvas.getBoundingClientRect();
   if (!box.width || !box.height) return;
-  const width = HEIGHT * box.width / box.height;
+  const width = room ? 900 : HEIGHT * box.width / box.height;
   control.aim.x *= width / table.width;
   if (control.secondSeat) control.secondSeat.aim.x *= width / table.width;
   resizeTable(table, width);
@@ -70,6 +79,7 @@ function releaseInput() {
   keys.clear();
   control.firing = false;
   if (control.secondSeat) control.secondSeat.firing = false;
+  sendRoomInput();
 }
 
 function showOverlay(label, headline, instructions, action) {
@@ -84,7 +94,7 @@ function showOverlay(label, headline, instructions, action) {
 function setToggle(id, property, value) {
   control[property] = value;
   byId(id).setAttribute('aria-pressed', String(value));
-  if (phase === 'playing') canvas.focus({ preventScroll: true });
+  if (phase === 'playing' || phase === 'online') canvas.focus({ preventScroll: true });
 }
 
 function begin(twoPlayers = Boolean(control.secondSeat)) {
@@ -113,6 +123,7 @@ function begin(twoPlayers = Boolean(control.secondSeat)) {
 }
 
 function togglePause() {
+  if (room) return quitRoom();
   if (phase === 'paused') begin();
   else if (phase === 'playing') {
     phase = 'paused';
@@ -125,7 +136,7 @@ function togglePause() {
 function choosePower(index) {
   control.power = index;
   powerButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
-  if (phase === 'playing') canvas.focus({ preventScroll: true });
+  if (phase === 'playing' || phase === 'online') canvas.focus({ preventScroll: true });
   updateDisplay();
 }
 
@@ -137,16 +148,21 @@ function point(event) {
 
 function lockAim() {
   control.lockId = pickTarget(table, control.aim)?.id ?? null;
+  sendRoomInput({ target: true });
 }
 
 canvas.addEventListener('pointerdown', event => {
-  if (phase !== 'playing' || pointer !== null || event.button !== 0) return;
+  if ((phase !== 'playing' && phase !== 'online') || overlay.hidden === false || pointer !== null || event.button !== 0) return;
   event.preventDefault();
   canvas.focus({ preventScroll: true });
   point(event);
   if (control.lockMode) lockAim();
   pointer = event.pointerId;
   canvas.setPointerCapture(pointer);
+  if (room) {
+    sendRoomInput({ target: control.lockMode, tap: true });
+    return;
+  }
   // A tap should fire even when down and up land inside the same animation frame.
   const credits = table.seats[0].credits;
   if (!control.lockMode || control.lockId !== null) {
@@ -156,15 +172,20 @@ canvas.addEventListener('pointerdown', event => {
   updateDisplay();
 });
 canvas.addEventListener('pointermove', event => {
-  if (phase === 'playing' && (event.pointerId === pointer || (pointer === null && event.pointerType === 'mouse'))) point(event);
+  if ((phase === 'playing' || phase === 'online') && (event.pointerId === pointer || (pointer === null && event.pointerType === 'mouse'))) point(event);
 });
 for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) {
-  canvas.addEventListener(eventName, event => { if (event.pointerId === pointer) pointer = null; });
+  canvas.addEventListener(eventName, event => { if (event.pointerId === pointer) { pointer = null; sendRoomInput(); } });
 }
 window.addEventListener('blur', releaseInput);
 canvas.addEventListener('blur', releaseInput);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && phase === 'playing') togglePause();
+  if (room) {
+    releaseInput();
+    if (document.hidden) setToggle('auto', 'auto', false);
+    sendRoomInput();
+  }
 });
 
 const aimKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -172,7 +193,7 @@ const secondAimKeys = ['KeyW', 'KeyS', 'KeyA', 'KeyD'];
 document.addEventListener('keydown', event => {
   if (event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'Escape' && !event.repeat) return togglePause();
-  if (phase !== 'playing' || document.activeElement !== canvas) return;
+  if ((phase !== 'playing' && phase !== 'online') || document.activeElement !== canvas) return;
   if (/^[1-4]$/.test(event.key)) choosePower(Number(event.key) - 1);
   if (event.key === 'Enter' && control.lockMode) lockAim();
   const second = control.secondSeat;
@@ -195,9 +216,13 @@ document.addEventListener('keydown', event => {
     event.preventDefault();
     if (event.code === 'Space' && !event.repeat && control.lockMode && !control.lockId) lockAim();
     keys.add(event.code);
+    if (room && event.code === 'Space' && !event.repeat) sendRoomInput({ target: control.lockMode, tap: true });
   }
 });
-document.addEventListener('keyup', event => keys.delete(event.code));
+document.addEventListener('keyup', event => {
+  keys.delete(event.code);
+  if (event.code === 'Space') sendRoomInput();
+});
 start.addEventListener('click', () => begin());
 duo.addEventListener('click', () => begin(true));
 pause.addEventListener('click', togglePause);
@@ -219,7 +244,7 @@ if (document.fullscreenEnabled && cabinet.requestFullscreen) {
     } catch {
       full.hidden = true;
     }
-    if (phase === 'playing') canvas.focus({ preventScroll: true });
+    if (phase === 'playing' || phase === 'online') canvas.focus({ preventScroll: true });
   });
   document.addEventListener('fullscreenchange', () => {
     full.textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen';
@@ -252,8 +277,149 @@ sound.addEventListener('click', async () => {
   } catch {
     sound.hidden = true;
   }
-  if (phase === 'playing') canvas.focus({ preventScroll: true });
+  if (phase === 'playing' || phase === 'online') canvas.focus({ preventScroll: true });
 });
+
+function sendRoomInput(extra = {}) {
+  if (!room?.connection || control.onlineSeat == null) return;
+  room.connection.send({
+    x: control.aim.x, y: control.aim.y, power: control.power,
+    fire: !document.hidden && (pointer !== null || keys.has('Space')),
+    auto: !document.hidden && control.auto, rapid: control.rapid, lock: control.lockMode, ...extra,
+  });
+}
+
+function quitRoom(message = '') {
+  room?.connection.close();
+  room = null;
+  delete control.onlineSeat;
+  releaseInput();
+  control.lockId = null;
+  setToggle('auto', 'auto', false);
+  table = newTable(700);
+  seedTable(table);
+  control.aim = { x: 350, y: 235 };
+  phase = 'ready';
+  cabinet.classList.remove('online');
+  roomBar.hidden = true;
+  roomInvite.hidden = true;
+  pause.disabled = true;
+  pause.textContent = 'Pause';
+  start.hidden = false;
+  duo.hidden = false;
+  createRoom.hidden = false;
+  joinForm.hidden = false;
+  announcement.hidden = true;
+  if (location.hash.startsWith('#room=')) history.replaceState(null, '', location.pathname + location.search);
+  showOverlay('Free play · Four-seat table', 'Take your seat', message || 'Play solo or invite up to three friends to a shared table.', 'Play solo');
+  resize();
+  updateDisplay();
+}
+
+function joinRoom(code) {
+  if (room) return;
+  phase = 'online';
+  control.secondSeat = null;
+  secondHud.hidden = true;
+  setToggle('auto', 'auto', false);
+  room = { previous: null, snapshotAt: 0, nextInput: 0 };
+  cabinet.classList.add('online');
+  resize();
+  roomInvite.value = inviteUrl(code);
+  history.replaceState(null, '', roomInvite.value);
+  roomBar.hidden = false;
+  refill.hidden = true;
+  roomStatus.textContent = 'Connecting…';
+  showOverlay('Online table', 'Taking your seat', 'Connecting to room ' + code + '…', 'Play solo');
+  start.hidden = true;
+  duo.hidden = true;
+  createRoom.hidden = true;
+  joinForm.hidden = true;
+  pause.disabled = false;
+  pause.textContent = 'Leave table';
+  const currentRoom = room;
+  try {
+    room.connection = openRoom(code, message => {
+      if (room !== currentRoom) return;
+      if (message.type === 'welcome') {
+        control.onlineSeat = message.seat;
+        room.previous = null;
+        releaseInput();
+        canvas.focus({ preventScroll: true });
+      } else if (message.type === 'state' && control.onlineSeat != null) {
+        const seat = control.onlineSeat;
+        room.previous = room.snapshotAt ? table : null;
+        room.snapshotAt = performance.now();
+        table = message.table;
+        table.seats.forEach((player, i) => {
+          player.name = message.seats[i] === 'open' ? 'Open' : message.seats[i] === 'reconnecting' ? 'Away' : 'P' + (i + 1);
+        });
+        if (!overlay.hidden) {
+          overlay.hidden = true;
+          canvas.focus({ preventScroll: true });
+        }
+        const count = message.seats.filter(value => value === 'connected').length;
+        roomStatus.textContent = 'Room ' + code + ' · P' + (seat + 1) + ' · ' + count + '/4 online';
+        refill.hidden = !seatEmpty(seat);
+        if (table.banner) {
+          announcement.textContent = table.banner;
+          announcement.hidden = false;
+          bannerUntil = table.time + 3.2;
+        } else if (table.time >= bannerUntil) announcement.hidden = true;
+        updateDisplay();
+      }
+    }, (label, terminal) => {
+      if (room !== currentRoom) return;
+      delete control.onlineSeat;
+      releaseInput();
+      if (terminal) quitRoom(label);
+      else roomStatus.textContent = label;
+    });
+  } catch {
+    quitRoom('Could not open an online table.');
+  }
+}
+
+createRoom.addEventListener('click', () => joinRoom(newRoomId()));
+joinForm.addEventListener('submit', event => {
+  event.preventDefault();
+  const input = byId('room-code');
+  const code = parseRoom(input.value);
+  if (code) joinRoom(code);
+  else {
+    input.setCustomValidity('Enter a room code or an Imp Inferno invite link.');
+    input.reportValidity();
+  }
+});
+byId('room-code').addEventListener('input', event => event.target.setCustomValidity(''));
+byId('copy-room').addEventListener('click', async event => {
+  try {
+    await navigator.clipboard.writeText(roomInvite.value);
+    const button = event.currentTarget ?? byId('copy-room');
+    button.textContent = 'Invite copied';
+    setTimeout(() => { button.textContent = 'Copy invite'; }, 1400);
+  } catch {
+    roomInvite.hidden = false;
+    roomInvite.select();
+  }
+});
+refill.addEventListener('click', () => {
+  sendRoomInput({ refill: true });
+  canvas.focus({ preventScroll: true });
+});
+
+function displayRoom(now) {
+  if (!room?.previous) return table;
+  const blend = Math.min(1, Math.max(0, (now - room.snapshotAt) / 100));
+  const positions = (before, after) => {
+    const previous = new Map(before.map(item => [item.id, item]));
+    return after.map(item => {
+      const from = previous.get(item.id);
+      return from ? { ...item, x: from.x + (item.x - from.x) * blend, y: from.y + (item.y - from.y) * blend } : item;
+    });
+  };
+  return { ...table, targets: positions(room.previous.targets, table.targets), shots: positions(room.previous.shots, table.shots) };
+}
 
 function seatEmpty(index) {
   const seat = table.seats[index];
@@ -306,10 +472,20 @@ function frame(now) {
     }
     updateDisplay();
   }
-  draw(table, control, reducedMotion.matches);
+  if (phase === 'online') {
+    moveAim(control.aim, aimKeys, dt);
+    if (control.lockMode && control.lockId != null && !table.targets.some(target => target.id === control.lockId)) control.lockId = null;
+    if (now >= room.nextInput) {
+      sendRoomInput();
+      room.nextInput = now + 64;
+    }
+  }
+  draw(displayRoom(now), control, reducedMotion.matches);
   requestAnimationFrame(frame);
 }
 new ResizeObserver(resize).observe(canvas);
 resize();
 updateDisplay();
+const invite = parseRoom(location.href);
+if (invite) joinRoom(invite);
 requestAnimationFrame(frame);

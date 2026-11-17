@@ -42,6 +42,8 @@ import { handleMessageSummary } from "./message-conversation-summary.js";
 import { handleCreatorIdeas } from "./creator-ideas.js";
 import { handleCreatorArtSubmissions } from "./creator-art-submissions.js";
 import { handleMessageLive, publishMessageLive, notifyConversationLive } from "./messaging-live.js";
+import { connectImpInferno } from "./imp-inferno-room.js";
+export { ImpInfernoRoom } from "./imp-inferno-room.js";
 export { MessageLiveRoom } from "./messaging-live.js";
 const ALLOWED_ORIGINS = new Set(["https://ash-fall.com", "https://www.ash-fall.com"]);
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
@@ -1024,6 +1026,8 @@ export default { async queue(batch, env) {
     return json({ok:check?.ok===1,service:"knightfall-api",database:true,deletion_requests_ready:deletionSchema?.ready===1},200,origin);
   }
   if(url.pathname.startsWith("/api/")&&!url.pathname.startsWith("/api/auth/")&&!url.pathname.startsWith("/api/admin/")&&!url.pathname.startsWith("/api/vault/")&&url.pathname!=="/api/vault"&&url.pathname!=="/api/site-settings"&&url.pathname!=="/api/theme"&&url.pathname!=="/api/privacy/deletion-assistance"&&url.pathname!=="/api/account/deletion-request"&&(await getSetting(env,"maintenance_mode"))==="true"){const user=await requireUser(request,env);if(!isAdmin(user))return json({error:"Knightfall is temporarily offline for maintenance."},503,origin);}
+  const impRoomPath = /^\/api\/arcade\/imp-inferno\/rooms\/([a-f0-9]{16})$/.exec(url.pathname);
+  if (impRoomPath) return await connectImpInferno(request, env, impRoomPath[1], ALLOWED_ORIGINS, rateLimit);
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/")||url.pathname.startsWith("/api/avatars/profile/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
 

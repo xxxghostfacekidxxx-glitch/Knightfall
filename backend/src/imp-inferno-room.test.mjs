@@ -1,0 +1,84 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { connectImpInferno, ImpInfernoRoom, readImpInput } from './imp-inferno-room.js';
+
+test('room input clamps aim and cannot specify seat, balance, or target identity', () => {
+  assert.equal(readImpInput('{"x":0,"y":0,"power":-1}'), null);
+  assert.equal(readImpInput('x'.repeat(241)), null);
+  const input = readImpInput('{"x":-9,"y":922,"power":2,"fire":true,"seat":3,"credits":99,"lockId":4}');
+  assert.deepEqual(input.aim, { x: 0, y: 500 });
+  assert.equal(input.power, 2);
+  assert.equal(input.firing, true);
+  assert.equal(input.credits, undefined);
+  assert.equal(input.seat, undefined);
+  assert.equal(input.lockId, undefined);
+});
+
+test('socket upgrade validates origin and forwards only the seat capability', async () => {
+  let forwarded;
+  const env = { IMP_INFERNO_ROOMS: { getByName: room => ({ fetch: request => {
+    forwarded = [room, request];
+    return new Response('upgrade');
+  } }) } };
+  const origin = 'https://ash-fall.com';
+  const headers = {
+    Origin: origin, Upgrade: 'websocket', Cookie: 'session=ignored',
+    'Sec-WebSocket-Protocol': 'imp-inferno-v1, seat.' + 'a'.repeat(32),
+  };
+  const request = values => new Request('https://api.ash-fall.com/', { headers: { ...headers, ...values } });
+  const run = input => connectImpInferno(input, env, '0123456789abcdef', new Set([origin]), async () => true);
+  assert.equal((await run(request({ Origin: 'https://foreign.example' }))).status, 403);
+  assert.equal((await run(request({ 'Sec-WebSocket-Protocol': 'imp-inferno-v1' }))).status, 400);
+  assert.equal((await run(request({}))).status, 200);
+  assert.equal(forwarded[0], '0123456789abcdef');
+  assert.equal(forwarded[1].headers.get('Cookie'), null);
+  assert.equal(forwarded[1].headers.get('X-Seat-Token'), 'a'.repeat(32));
+});
+
+test('four sockets get distinct seats, fifth is refused, and reconnect preserves credits', async t => {
+  class Socket {
+    messages = [];
+    accept() {}
+    serializeAttachment(data) { this.data = data; }
+    deserializeAttachment() { return this.data; }
+    send(message) { this.messages.push(JSON.parse(message)); }
+    close(code) { this.closeCode = code; }
+  }
+  const pairs = [];
+  t.mock.method(globalThis, 'Response', class {
+    constructor(body, options) { return { body, ...options }; }
+  });
+  globalThis.WebSocketPair = class {
+    constructor() {
+      this[0] = new Socket();
+      this[1] = new Socket();
+      pairs.push(this);
+    }
+  };
+  t.after(() => delete globalThis.WebSocketPair);
+  const ctx = {
+    storage: { get: async () => null, put: async () => {}, setAlarm: async () => {} },
+    blockConcurrencyWhile: callback => { ctx.ready = callback(); },
+    acceptWebSocket: () => {},
+    getWebSockets: () => [],
+  };
+  const room = new ImpInfernoRoom(ctx);
+  await ctx.ready;
+  t.after(() => clearInterval(room.timer));
+  const join = id => room.fetch(new Request('https://imp-inferno.internal/connect', {
+    headers: { 'X-Seat-Token': id.repeat(32) },
+  }));
+  for (const id of 'abcd') assert.equal((await join(id)).status, 101);
+  assert.deepEqual(pairs.map(pair => pair[1].messages[0].seat), [0, 1, 2, 3]);
+  await join('e');
+  assert.equal(pairs[4][1].closeCode, 4004);
+  room.table.seats[2].credits = 113;
+  await room.webSocketClose(pairs[2][1], 1006, '');
+  await join('c');
+  assert.equal(pairs[5][1].messages[0].seat, 2);
+  assert.equal(pairs[5][1].messages[1].table.seats[2].credits, 113);
+  await room.webSocketClose(pairs[5][1], 4000, 'Left table');
+  await join('e');
+  assert.equal(pairs[6][1].messages[0].seat, 2);
+  assert.equal(pairs[6][1].messages[1].table.seats[2].credits, 240);
+});

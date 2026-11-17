@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=4';
+import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=5';
 
 const INK = '#210912';
 const COLORS = {
@@ -100,7 +100,7 @@ function drawSeat(ctx, table, seat, index) {
   ellipse(ctx, 6, 0, 8, 7, color);
   if (seat.recoil > .6) ellipse(ctx, 46, 0, 12, 7, color);
   ctx.restore();
-  label(ctx, seat.name.toUpperCase() + (index ? ' ' + seat.credits : ''), x, y + (index === 2 ? -25 : 34), color, 12);
+  label(ctx, seat.name.toUpperCase() + (index && seat.name !== 'Open' && seat.name !== 'Away' ? ' ' + seat.credits : ''), x, y + (index === 2 ? -25 : 34), color, 12);
 }
 
 function drawNet(ctx, effect, opacity) {
@@ -230,7 +230,7 @@ export function makeRenderer(ctx, backdrop) {
     }
     for (const effect of table.effects) drawEffect(ctx, effect, table, reducedMotion);
     table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
-    drawAim(ctx, table, control, 0);
+    drawAim(ctx, table, control, control.onlineSeat ?? 0);
     if (control.secondSeat) drawAim(ctx, table, control.secondSeat, 2);
 
   };

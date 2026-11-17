@@ -41,11 +41,13 @@
   },
   "durable_objects": {
     "bindings": [
-      {"name":"MESSAGE_LIVE","class_name":"MessageLiveRoom"}
+      {"name":"MESSAGE_LIVE","class_name":"MessageLiveRoom"},
+      {"name":"IMP_INFERNO_ROOMS","class_name":"ImpInfernoRoom"}
     ]
   },
   "migrations": [
-    {"tag":"v1-message-live","new_sqlite_classes":["MessageLiveRoom"]}
+    {"tag":"v1-message-live","new_sqlite_classes":["MessageLiveRoom"]},
+    {"tag":"v2-imp-inferno-rooms","new_sqlite_classes":["ImpInfernoRoom"]}
   ],
   "r2_buckets": [
     {

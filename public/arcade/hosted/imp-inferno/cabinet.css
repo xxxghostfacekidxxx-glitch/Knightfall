@@ -114,3 +114,11 @@ h2 { font-size: clamp(1.65rem, 5.5vw, 3.4rem); color: #ffe4a6; text-shadow: 3px 
   background: #2e1321; font-size: .82rem;
 }
 .second-seat strong { color: #ff90c7; }
+
+.join-room { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px; }
+.join-room label { flex-basis: 100%; font-size: .78rem; }
+.join-room input, #room-invite { width: 155px; min-height: 40px; padding: 4px 8px; color: inherit; background: #271119; border: 1px solid #9b426b; border-radius: 6px; }
+#online-bar { align-items: center; }
+.cabinet.online .arena { height: auto; aspect-ratio: 9 / 5; max-height: 70dvh; }
+.cabinet.online canvas { position: absolute; inset: 0; }
+.cabinet.online:fullscreen .arena { aspect-ratio: auto; max-height: none; }

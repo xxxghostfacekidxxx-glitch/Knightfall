@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#1d090c">
   <meta name="description" content="Share a four-seat arcade table, net schools of imps and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
-  <link rel="stylesheet" href="./cabinet.css?v=4">
-  <script src="./cabinet.mjs?v=4" type="module"></script>
+  <link rel="stylesheet" href="./cabinet.css?v=5">
+  <script src="./cabinet.mjs?v=5" type="module"></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -37,12 +37,24 @@
             <h2 id="headline">Take your seat</h2>
             <p id="instructions">Every shot spends table credits. Shots open into nets, and a catch pays its multiplier × your shot cost. Hold to fire or switch on Auto.</p>
             <button class="primary" id="start" type="button">Play solo</button>
+            <button class="primary" id="create-room" type="button">Create online table</button>
             <button id="duo" type="button">Two players · keyboard</button>
+            <form id="join-room" class="join-room">
+              <label for="room-code">Room code or invite link</label>
+              <input id="room-code" autocomplete="off" spellcheck="false" required>
+              <button type="submit">Join online</button>
+            </form>
           </div>
         </div>
       </div>
     </section>
 
+    <div id="online-bar" class="second-seat" hidden>
+      <span id="room-status" role="status"></span>
+      <button id="copy-room" type="button">Copy invite</button>
+      <input id="room-invite" aria-label="Online table invite" readonly hidden>
+      <button id="refill" type="button" hidden>Refill free credits</button>
+    </div>
     <footer class="deck">
       <div class="mode-group" role="group" aria-label="Shot cost">
         <button type="button" data-power="0" aria-label="1 credit per shot" aria-pressed="true">1</button>
