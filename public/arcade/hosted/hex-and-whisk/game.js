@@ -23,7 +23,21 @@ function portrait(patron){
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");use.setAttribute("href","#patron-"+patron.symbol);svg.append(use);return svg;
 }
 const label=(chain,tier)=>RECIPES[chain].items[tier-1];
-function generatorArt(chain){const art=food(chain,chain==="garden"?1:chain==="bakery"?3:2);art.classList.add("generator-art");return art;}
+// Distinct illustrated equipment, not food pieces from any merge chain.
+const GENERATOR_ART={
+ garden:`<rect x="13" y="27" width="74" height="60" rx="11" fill="#35554c" stroke="#e9d5a2" stroke-width="4"/><path d="M18 40 30 15H70L82 40Z" fill="#78b3a3" stroke="#f8dcac" stroke-width="4"/><path d="M31 22h38M50 20v19" stroke="#d1fff0" stroke-width="3" opacity=".75"/><rect x="23" y="45" width="54" height="35" rx="6" fill="#1e3436" stroke="#c9ad7b" stroke-width="3"/><path d="M33 76V59m17 17V52m17 24V59" stroke="#b5d8a9" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="46" r="5" fill="#f5da9b"/><path d="M44 46q-10-15-18-5m24 5q10-17 20-8" stroke="#91d9a5" stroke-width="4" fill="none"/><path d="M35 87h30" stroke="#f4d397" stroke-width="5" stroke-linecap="round"/>`,
+ bakery:`<path d="M16 38Q16 13 50 13T84 38V84H16Z" fill="#87505a" stroke="#f6d5a3" stroke-width="5"/><path d="M25 36Q25 22 50 22T75 36V43H25Z" fill="#d98b6e" stroke="#ffe7b6" stroke-width="3"/><rect x="23" y="46" width="54" height="31" rx="7" fill="#432c39" stroke="#eac28f" stroke-width="4"/><path d="M33 67q6-17 12-7q5-18 11-3q6-9 11 9" fill="#ffbd70" stroke="#ffdf99" stroke-width="2"/><circle cx="28" cy="33" r="3" fill="#fce7bc"/><circle cx="72" cy="33" r="3" fill="#fce7bc"/><path d="M32 87h36" stroke="#edbd8a" stroke-width="6" stroke-linecap="round"/>`,
+ sweets:`<path d="M25 42L17 23L37 30L50 10L63 30L83 23L75 42" fill="#c794c2" stroke="#ffe0f1" stroke-width="4"/><rect x="17" y="39" width="66" height="42" rx="12" fill="#8d5a9c" stroke="#f6d0e9" stroke-width="5"/><path d="M26 44q24-17 48 0" fill="none" stroke="#ffe8ad" stroke-width="4"/><circle cx="35" cy="58" r="6" fill="#f7c6dd"/><circle cx="50" cy="56" r="7" fill="#ffe2a3"/><circle cx="65" cy="58" r="6" fill="#b9e7da"/><path d="M30 73h40" stroke="#f4d4f7" stroke-width="4" stroke-linecap="round"/><path d="M32 81v8m36-8v8" stroke="#e5b5db" stroke-width="6" stroke-linecap="round"/>`
+};
+function generatorArt(chain){
+ const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+ svg.classList.add("generator-art");
+ svg.setAttribute("viewBox","0 0 100 100");
+ svg.setAttribute("aria-hidden","true");
+ svg.setAttribute("focusable","false");
+ svg.innerHTML=GENERATOR_ART[chain]||GENERATOR_ART.garden;
+ return svg;
+}
 function announce(note,celebrate=false){
  $("status").textContent=note;$("status-icon").textContent=celebrate?"✧":"✦";
  if(celebrate)toast(note);
@@ -72,7 +86,7 @@ function renderBoard(pop=-1){
   }else if(item){
    slot.dataset.family=item.chain;slot.style.setProperty("--i",String(index));
    slot.append(food(item.chain,item.tier));
-   slot.append(text("span",""+item.tier,"tile-rank"),text("small",label(item.chain,item.tier),"tile-name"));
+   // Ingredient name and tier are kept in the accessible label only.
    slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": "+label(item.chain,item.tier)+", tier "+item.tier+(selected===index?", selected":""));
   }else slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": empty");
   frag.append(slot);
