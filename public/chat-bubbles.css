@@ -217,3 +217,11 @@
   #kf-chat-heads.kf-chat-expanded :is(#kf-chat-resize,#kf-chat-move){display:none!important}
   #kf-chat-heads.kf-chat-expanded .kf-chat-status{flex:0 0 auto}
 }
+
+/* Chaosphere's original little imp runs the messenger launcher. */
+#kf-chat-heads .kf-chaosphere-demon{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;user-select:none;pointer-events:none}
+#kf-chat-heads .kf-chat-launcher{padding:4px;overflow:visible;background:#17121e;border-color:#c7a77c}
+#kf-chat-heads.kf-chat-has-unread .kf-chaosphere-demon{animation:kf-imp-panic .8s ease-in-out 2}
+#kf-chat-heads.kf-chat-has-unread .kf-chat-launcher{box-shadow:0 4px 22px #000a,0 0 15px #b25b6870}
+@keyframes kf-imp-panic{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}45%{transform:rotate(13deg)}70%{transform:rotate(-7deg)}}
+@media(prefers-reduced-motion:reduce){#kf-chat-heads.kf-chat-has-unread .kf-chaosphere-demon{animation:none}}

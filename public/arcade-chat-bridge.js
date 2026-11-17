@@ -1,5 +1,5 @@
 /* Chaos Cartridge signed-in messaging bridge.
- * Standalone games keep their own rendering/styles while reusing Ruinwire
+ * Standalone games keep their own rendering/styles while reusing Chaosphere
  * conversations, permissions, live signals and message storage. */
 (()=>{
  "use strict";
@@ -20,7 +20,7 @@
  function sync(open=!!window.KnightfallChat?.isOpen?.()){
   for(const link of links){
    link.setAttribute("aria-expanded",String(open));
-   link.title=open?"Minimize messages and return to the game":"Open Ruinwire conversations over the game";
+   link.title=open?"Minimize messages and return to the game":"Open Chaosphere conversations over the game";
   }
  }
  function activate(){
@@ -68,7 +68,7 @@
   if(window.KnightfallChat){activate();return;}
   if(document.querySelector('script[data-kf-chat-bubbles]'))return;
   const script=document.createElement("script");
-  script.src="/chat-bubbles.js?v=20261117-arcade2";
+  script.src="/chat-bubbles.js?v=20261117-chaosphere1";
   script.dataset.kfChatBubbles="true";
   script.dataset.userId=String(userId);
   script.addEventListener("load",activate,{once:true});

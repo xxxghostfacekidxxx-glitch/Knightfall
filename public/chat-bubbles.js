@@ -65,8 +65,8 @@
   }catch{}
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
-  dock.setAttribute("aria-label","Floating conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Recent conversations</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open conversations" aria-expanded="false" aria-controls="kf-chat-panel"><span aria-hidden="true">💬</span><b id="kf-chat-unread" hidden></b></button>';
+  dock.setAttribute("aria-label","Chaosphere conversations");
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   function syncBubbleViewport(){
@@ -312,7 +312,7 @@
     const c=getConversation(state.active);
     if(state.active&&!c)state.active=null;
     const selected=getConversation(state.active);
-    $("#kf-chat-title").textContent=selected?nameOf(selected):"Recent conversations";
+    $("#kf-chat-title").textContent=selected?nameOf(selected):"Chaosphere · Chats";
     $("#kf-chat-subtitle").textContent=selected?(selected.kind==="group"?"Group conversation":"Private messages"):"Message without leaving this page";
     $("#kf-chat-full").href=inboxUrl(state.active);
     $("#kf-chat-back").hidden=!selected;
@@ -350,6 +350,7 @@
     const badge=$("#kf-chat-unread");
     badge.hidden=!state.unread;
     badge.textContent=state.unread>99?"99+":String(state.unread);
+    dock.classList.toggle("kf-chat-has-unread",state.unread>0);
   }
   function markLocalRead(id){
     const c=getConversation(id);
