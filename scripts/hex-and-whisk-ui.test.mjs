@@ -97,3 +97,16 @@ test("kitchen keeps running with an older cached HTML shell and avoids redrawing
  assert.match(script,/lastCookbookSignature/);
  assert.match(script,/if\(signature===lastCookbookSignature\)return/);
 });
+
+test("moveable glowing generators, animated patrons and expanding pantry have accessible controls",()=>{
+ assert.match(page,/id="next-storage"/);
+ assert.match(page,/Level-up pantry storage/);
+ assert.match(script,/generatorAt\\(game,index\\)/);
+ assert.match(script,/generator-slot/);
+ assert.match(script,/generator-move/);
+ assert.match(script,/customer-speech/);
+ assert.match(script,/customer-avatar/);
+ assert.match(stylesheet,/\\.slot\\.generator-slot/);
+ assert.match(stylesheet,/\\.customer-avatar/);
+ assert.match(stylesheet,/prefers-reduced-motion:reduce/);
+});
