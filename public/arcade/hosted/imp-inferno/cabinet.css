@@ -106,3 +106,11 @@ h2 { font-size: clamp(1.65rem, 5.5vw, 3.4rem); color: #ffe4a6; text-shadow: 3px 
   color: #fff1bb; background: #321019f5; box-shadow: 0 0 14px #ff924b66;
   font-size: .78rem; font-weight: 800;
 }
+
+.second-seat {
+  display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
+  gap: 4px 12px; margin-top: 8px; padding: 6px 8px;
+  border: 1px solid #9b426b; border-radius: 6px; color: #ffd6eb;
+  background: #2e1321; font-size: .82rem;
+}
+.second-seat strong { color: #ff90c7; }

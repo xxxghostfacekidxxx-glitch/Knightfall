@@ -1,11 +1,15 @@
-import { makeRenderer } from './art.mjs?v=3';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=3';
+import { makeRenderer } from './art.mjs?v=4';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=4';
 
 const byId = id => document.getElementById(id);
 const cabinet = byId('cabinet');
 const canvas = byId('table');
 const ctx = canvas.getContext('2d');
 const start = byId('start');
+const duo = byId('duo');
+const secondHud = byId('second-seat');
+const secondScore = byId('p2-score');
+const weapon = byId('weapon');
 const pause = byId('pause');
 const full = byId('fullscreen');
 const sound = byId('sound');
@@ -32,10 +36,15 @@ function updateDisplay() {
   const seat = table.seats[0];
   const values = { credits: seat.credits, cost: POWERS[control.power].cost, won: seat.totalWon, caught: seat.caught };
   const bonus = seat.bonus;
-  const weapon = byId('weapon');
   const weaponText = bonus ? (bonus.kind === 'beam' ? 'Hellbeam ready' : 'Drill shot ready') + ' · next shot free' : '';
   if (weapon.textContent !== weaponText) weapon.textContent = weaponText;
   weapon.hidden = !bonus;
+  if (control.secondSeat) {
+    const player = table.seats[2];
+    const available = player.bonus ? ' · ' + (player.bonus.kind === 'beam' ? 'Free Hellbeam' : 'Free drill shot') : '';
+    const score = player.credits.toLocaleString('en-US') + ' credits · ' + POWERS[control.secondSeat.power].cost + ' per shot · ' + player.caught + ' caught' + available;
+    if (secondScore.textContent !== score) secondScore.textContent = score;
+  }
   for (const [key, amount] of Object.entries(values)) {
     const text = amount.toLocaleString('en-US');
     if (display[key].textContent !== text) display[key].textContent = text;
@@ -47,6 +56,7 @@ function resize() {
   if (!box.width || !box.height) return;
   const width = HEIGHT * box.width / box.height;
   control.aim.x *= width / table.width;
+  if (control.secondSeat) control.secondSeat.aim.x *= width / table.width;
   resizeTable(table, width);
   const density = Math.min(devicePixelRatio || 1, 2);
   canvas.width = Math.round(box.width * density);
@@ -59,6 +69,7 @@ function releaseInput() {
   pointer = null;
   keys.clear();
   control.firing = false;
+  if (control.secondSeat) control.secondSeat.firing = false;
 }
 
 function showOverlay(label, headline, instructions, action) {
@@ -76,7 +87,7 @@ function setToggle(id, property, value) {
   if (phase === 'playing') canvas.focus({ preventScroll: true });
 }
 
-function begin() {
+function begin(twoPlayers = Boolean(control.secondSeat)) {
   if (phase === 'empty') {
     table = newTable(table.width);
     seedTable(table);
@@ -85,8 +96,15 @@ function begin() {
     bannerUntil = 0;
     announcement.hidden = true;
   }
+  if (phase === 'ready' || phase === 'empty') {
+    control.secondSeat = twoPlayers ? { aim: { x: table.width / 2, y: 275 }, firing: false, power: 0 } : null;
+    table.seats[0].name = twoPlayers ? 'P1' : 'You';
+    if (twoPlayers) table.seats[2].name = 'P2';
+    secondHud.hidden = !twoPlayers;
+  }
   releaseInput();
   phase = 'playing';
+  duo.hidden = true;
   overlay.hidden = true;
   pause.textContent = 'Pause';
   pause.disabled = false;
@@ -150,12 +168,29 @@ document.addEventListener('visibilitychange', () => {
 });
 
 const aimKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+const secondAimKeys = ['KeyW', 'KeyS', 'KeyA', 'KeyD'];
 document.addEventListener('keydown', event => {
   if (event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'Escape' && !event.repeat) return togglePause();
   if (phase !== 'playing' || document.activeElement !== canvas) return;
   if (/^[1-4]$/.test(event.key)) choosePower(Number(event.key) - 1);
   if (event.key === 'Enter' && control.lockMode) lockAim();
+  const second = control.secondSeat;
+  if (second && (event.code === 'KeyQ' || event.code === 'KeyE')) {
+    event.preventDefault();
+    if (!event.repeat) second.power = Math.max(0, Math.min(POWERS.length - 1, second.power + (event.code === 'KeyQ' ? -1 : 1)));
+    updateDisplay();
+  }
+  if (second && (secondAimKeys.includes(event.code) || event.code === 'KeyF')) {
+    event.preventDefault();
+    keys.add(event.code);
+    if (event.code === 'KeyF' && !event.repeat) {
+      const credits = table.seats[2].credits;
+      advance(table, 0, { ...control, secondSeat: { ...second, firing: true } });
+      if (table.seats[2].credits < credits) tone(248, .04);
+      updateDisplay();
+    }
+  }
   if (aimKeys.includes(event.key) || event.code === 'Space') {
     event.preventDefault();
     if (event.code === 'Space' && !event.repeat && control.lockMode && !control.lockId) lockAim();
@@ -163,7 +198,8 @@ document.addEventListener('keydown', event => {
   }
 });
 document.addEventListener('keyup', event => keys.delete(event.code));
-start.addEventListener('click', begin);
+start.addEventListener('click', () => begin());
+duo.addEventListener('click', () => begin(true));
 pause.addEventListener('click', togglePause);
 powerButtons.forEach((button, i) => button.addEventListener('click', () => choosePower(i)));
 byId('auto').addEventListener('click', () => setToggle('auto', 'auto', !control.auto));
@@ -219,15 +255,31 @@ sound.addEventListener('click', async () => {
   if (phase === 'playing') canvas.focus({ preventScroll: true });
 });
 
+function seatEmpty(index) {
+  const seat = table.seats[index];
+  return seat.credits === 0 && !seat.bonus && !table.shots.some(shot => shot.seat === index);
+}
+
+function moveAim(aim, [up, down, left, right], dt) {
+  const step = 260 * dt;
+  aim.x = Math.min(table.width, Math.max(0, aim.x + step * (Number(keys.has(right)) - Number(keys.has(left)))));
+  aim.y = Math.min(HEIGHT, Math.max(0, aim.y + step * (Number(keys.has(down)) - Number(keys.has(up)))));
+}
+
 function frame(now) {
   const dt = previous ? Math.min(.25, (now - previous) / 1000) : 0;
   previous = now;
   if (phase === 'playing') {
-    const step = 260 * dt;
-    control.aim.x = Math.min(table.width, Math.max(0, control.aim.x + step * (Number(keys.has('ArrowRight')) - Number(keys.has('ArrowLeft')))));
-    control.aim.y = Math.min(HEIGHT, Math.max(0, control.aim.y + step * (Number(keys.has('ArrowDown')) - Number(keys.has('ArrowUp')))));
-    const previousCredits = table.seats[0].credits;
-    const previousWon = table.seats[0].totalWon;
+    moveAim(control.aim, aimKeys, dt);
+    const second = control.secondSeat;
+    if (second) {
+      moveAim(second.aim, secondAimKeys, dt);
+      second.firing = keys.has('KeyF');
+    }
+    const player = table.seats[0];
+    const guest = table.seats[2];
+    const previousCredits = player.credits + (second ? guest.credits : 0);
+    const previousWon = player.totalWon + (second ? guest.totalWon : 0);
     const steps = Math.max(1, Math.ceil(dt / .032));
     for (let i = 0; i < steps; i++) {
       if (control.lockId !== null && !table.targets.some(target =>
@@ -235,20 +287,22 @@ function frame(now) {
       control.firing = (pointer !== null || keys.has('Space')) && (!control.lockMode || control.lockId !== null);
       advance(table, dt / steps, control);
     }
-    const player = table.seats[0];
-    if (player.totalWon > previousWon) tone(730, .15);
-    else if (player.credits < previousCredits) tone(196, .04);
+    if (player.totalWon + (second ? guest.totalWon : 0) > previousWon) tone(730, .15);
+    else if (player.credits + (second ? guest.credits : 0) < previousCredits) tone(196, .04);
     if (table.banner) {
       announcement.textContent = table.banner;
       announcement.hidden = false;
       table.banner = '';
       bannerUntil = table.time + 3.2;
     } else if (table.time >= bannerUntil) announcement.hidden = true;
-    if (player.credits === 0 && !player.bonus && !table.shots.some(shot => shot.seat === 0)) {
+    if (seatEmpty(0) && (!second || seatEmpty(2))) {
       phase = 'empty';
       releaseInput();
       pause.disabled = true;
-      showOverlay('Out of credits', 'Table closed', 'You caught ' + player.caught + ' targets and won ' + player.totalWon.toLocaleString('en-US') + ' credits. Start a free table with 240 new credits.', 'New table');
+      const summary = second
+        ? 'P1 caught ' + player.caught + ' · P2 caught ' + guest.caught + '.'
+        : 'You caught ' + player.caught + ' targets and won ' + player.totalWon.toLocaleString('en-US') + ' credits.';
+      showOverlay('Out of credits', 'Table closed', summary + ' Start a free table with 240 new credits per seat.', 'New table');
     }
     updateDisplay();
   }

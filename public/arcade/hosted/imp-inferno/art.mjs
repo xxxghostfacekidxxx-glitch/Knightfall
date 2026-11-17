@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=3';
+import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=4';
 
 const INK = '#210912';
 const COLORS = {
@@ -230,19 +230,25 @@ export function makeRenderer(ctx, backdrop) {
     }
     for (const effect of table.effects) drawEffect(ctx, effect, table, reducedMotion);
     table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
-    const lock = table.targets.find(target => target.id === control.lockId);
-    const aim = lock ?? control.aim;
-    const radius = lock ? lock.radius + 9 : 10;
-    ctx.strokeStyle = SEAT_COLORS[0];
-    ctx.lineWidth = lock ? 2.7 : 1.7;
-    ctx.beginPath();
-    ctx.arc(aim.x, aim.y, radius, 0, Math.PI * 2);
-    for (let i = 0; i < 4; i++) {
-      const x = Math.cos(i * Math.PI / 2);
-      const y = Math.sin(i * Math.PI / 2);
-      ctx.moveTo(aim.x + x * (radius - 4), aim.y + y * (radius - 4));
-      ctx.lineTo(aim.x + x * (radius + 6), aim.y + y * (radius + 6));
-    }
-    ctx.stroke();
+    drawAim(ctx, table, control, 0);
+    if (control.secondSeat) drawAim(ctx, table, control.secondSeat, 2);
+
   };
+}
+
+function drawAim(ctx, table, control, seat) {
+  const lock = table.targets.find(target => target.id === control.lockId);
+  const aim = lock ?? control.aim;
+  const radius = lock ? lock.radius + 9 : 10;
+  ctx.strokeStyle = SEAT_COLORS[seat];
+  ctx.lineWidth = lock ? 2.7 : 1.7;
+  ctx.beginPath();
+  ctx.arc(aim.x, aim.y, radius, 0, Math.PI * 2);
+  for (let i = 0; i < 4; i++) {
+    const x = Math.cos(i * Math.PI / 2);
+    const y = Math.sin(i * Math.PI / 2);
+    ctx.moveTo(aim.x + x * (radius - 4), aim.y + y * (radius - 4));
+    ctx.lineTo(aim.x + x * (radius + 6), aim.y + y * (radius + 6));
+  }
+  ctx.stroke();
 }

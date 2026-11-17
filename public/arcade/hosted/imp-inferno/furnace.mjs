@@ -114,7 +114,7 @@ function aimRival(table, seat, rng) {
   return target;
 }
 
-function fire(table, seat, aim, power, rapid, locked) {
+function fire(table, seat, aim, power, rapid, locked, cpu = false) {
   const player = table.seats[seat];
   const { cost, radius, strength } = POWERS[power];
   const origin = seatOrigin(table, seat);
@@ -122,7 +122,7 @@ function fire(table, seat, aim, power, rapid, locked) {
   player.angle = angle;
   const bonus = player.bonus;
   if (table.time < player.readyAt || (!bonus && player.credits < cost)) return;
-  player.readyAt = table.time + (seat ? .80 + seat * .09 : rapid ? .20 : .37);
+  player.readyAt = table.time + (cpu ? .80 + seat * .09 : rapid ? .20 : .37);
   player.recoil = 1;
   const shot = {
     seat, cost, radius, strength, angle, lockId: locked ? aim.id : null, life: 2.8, bounces: 2,
@@ -161,7 +161,7 @@ function payout(table, target, shot) {
   player.caught++;
   target.caught = true;
   table.effects.push({ kind: 'catch', x: target.x, y: target.y, seat: shot.seat, amount, target: { ...target }, life: 1.04, duration: 1.04 });
-  if (!shot.seat && (target.multiplier >= 15)) table.banner = target.name + ' caught · +' + amount;
+  if (target.multiplier >= 15 && (!shot.seat || player.name === 'P2')) table.banner = player.name + ' caught ' + target.name + ' · +' + amount;
 }
 
 function net(table, shot, rng) {
@@ -182,7 +182,7 @@ function triggerBonus(table, target, shot, rng) {
   if (kind === 'beam' || kind === 'drill') {
     const seat = table.seats[shot.seat];
     seat.bonus = { kind, cost: shot.cost };
-    if (!shot.seat) table.banner = (kind === 'beam' ? 'Hellbeam' : 'Drill shot') + ' ready · next shot free';
+    if (!shot.seat || seat.name === 'P2') table.banner = seat.name + ' · ' + (kind === 'beam' ? 'Hellbeam' : 'Drill shot') + ' ready';
     return;
   }
   const radius = kind === 'chain' ? 190 : kind === 'vortex' ? 230 : 117;
@@ -282,22 +282,28 @@ export function advance(table, dt, control, rng = Math.random) {
 
   table.targets = table.targets.filter(target => !target.caught && moveTarget(table, target));
   for (const seat of table.seats) seat.recoil = Math.max(0, seat.recoil - dt * 8);
-  const origin = seatOrigin(table, 0);
-  const lock = table.targets.find(target => target.id === control.lockId && visible(table, target));
-  const aim = lock ?? control.aim;
-  table.seats[0].angle = Math.atan2(aim.y - origin.y, aim.x - origin.x);
-  if (control.firing || (control.auto && (!control.lockMode || lock))) {
-    fire(table, 0, aim, control.power, control.rapid, Boolean(lock));
-  }
+  directSeat(table, 0, control);
+  if (control.secondSeat) directSeat(table, 2, control.secondSeat);
   for (let seat = 1; seat < table.seats.length; seat++) {
+    if (seat === 2 && control.secondSeat) continue;
     if (table.time < table.seats[seat].readyAt) continue;
     const target = aimRival(table, seat, rng);
     if (target) {
       const power = target.multiplier >= 15 && table.seats[seat].credits > 70 ? 1 : 0;
-      fire(table, seat, target, power, false, true);
+      fire(table, seat, target, power, false, true, true);
     }
   }
   table.shots = table.shots.filter(shot => moveShot(table, shot, dt, rng));
   table.targets = table.targets.filter(target => !target.caught);
   table.effects = table.effects.filter(effect => (effect.life -= dt) > 0);
+}
+
+function directSeat(table, seat, control) {
+  const origin = seatOrigin(table, seat);
+  const lock = table.targets.find(target => target.id === control.lockId && visible(table, target));
+  const aim = lock ?? control.aim;
+  table.seats[seat].angle = Math.atan2(aim.y - origin.y, aim.x - origin.x);
+  if (control.firing || (control.auto && (!control.lockMode || lock))) {
+    fire(table, seat, aim, control.power, control.rapid, Boolean(lock));
+  }
 }

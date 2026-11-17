@@ -46,8 +46,17 @@
       "collection": "games",
       "device": "touch",
       "source": "/arcade/arcade-license-guide.html",
-      "notes": "Free table credits. Play against three CPU cannons with Auto, Rapid, and Lock controls.",
-      "links": [],
+      "notes": "Free table credits. Play solo with touch or keyboard, or share a keyboard in local two-player mode.",
+      "links": [
+        {
+          "title": "Fish Joy · Open-source reference",
+          "route": "https://github.com/d4vucat/Fish-Joy"
+        },
+        {
+          "title": "Ocean King 3 · Cabinet reference",
+          "route": "https://gaming-products.com/mini-arcade/455-ocean-king-3-monster-awaken"
+        }
+      ],
       "featured": true
     },
     {

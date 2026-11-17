@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#1d090c">
   <meta name="description" content="Share a four-seat arcade table, net schools of imps and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
-  <link rel="stylesheet" href="./cabinet.css?v=3">
-  <script src="./cabinet.mjs?v=3" type="module"></script>
+  <link rel="stylesheet" href="./cabinet.css?v=4">
+  <script src="./cabinet.mjs?v=4" type="module"></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -33,10 +33,11 @@
         <div class="announcement" id="announcement" role="status" hidden></div>
         <div class="overlay" id="overlay">
           <div class="plate">
-            <p id="eyebrow">Free play · Three CPU rivals</p>
+            <p id="eyebrow">Free play · Four-seat table</p>
             <h2 id="headline">Take your seat</h2>
             <p id="instructions">Every shot spends table credits. Shots open into nets, and a catch pays its multiplier × your shot cost. Hold to fire or switch on Auto.</p>
-            <button class="primary" id="start" type="button">Join table</button>
+            <button class="primary" id="start" type="button">Play solo</button>
+            <button id="duo" type="button">Two players · keyboard</button>
           </div>
         </div>
       </div>
@@ -56,6 +57,10 @@
         <button id="pause" type="button" disabled>Pause</button>
       </div>
     </footer>
+    <div class="second-seat" id="second-seat" hidden>
+      <strong>Player 2</strong><span id="p2-score"></span>
+      <span>WASD aim · F fire · Q/E change power</span>
+    </div>
     <p class="controls">Hold the table to fire. With Lock on, tap an imp to track it. Arrow keys aim, Space fires, 1–4 set power, Esc pauses. Table credits reset each session.</p>
     <details class="catch-guide">
       <summary>Catch guide</summary>

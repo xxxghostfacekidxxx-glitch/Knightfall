@@ -153,6 +153,27 @@ test('the tide sends three schools in the same direction on separate lanes', () 
   assert.ok(table.nextSchool > table.time);
 });
 
+test('two local players have independent aiming, shot costs, and credits', () => {
+  const table = isolatedTable();
+  table.seats[2].readyAt = 0;
+  const guest = { aim: { x: 400, y: 320 }, firing: false, power: 2 };
+  target(table, 'grinner', 1, 290);
+  advance(table, .016, { ...control, secondSeat: guest }, () => 0);
+  assert.equal(table.shots.length, 0, 'the CPU must yield the occupied seat');
+  advance(table, .016, { ...control, firing: true, secondSeat: { ...guest, firing: true } }, () => 0);
+  assert.deepEqual(table.shots.map(({ seat, cost }) => [seat, cost]), [[0, 2], [2, 5]]);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS - 2);
+  assert.equal(table.seats[2].credits, STARTING_CREDITS - 5);
+  assert.ok(table.shots[0].y > table.shots[1].y);
+});
+
+test('both design references are linked from the Imp Inferno arcade card', () => {
+  const html = readFileSync('public/chaos-cartridge.html', 'utf8');
+  const card = html.split('data-game-id="imp-inferno"')[1].split('</article>')[0];
+  assert.ok(card.includes('https://github.com/d4vucat/Fish-Joy'));
+  assert.ok(card.includes('https://gaming-products.com/mini-arcade/455-ocean-king-3-monster-awaken'));
+});
+
 test('retired cabinet routes are absent from the site, catalog, and redirects', () => {
   const routes = ['abyssal-arsenal', 'neon-kelp-reef-rush', 'magma-trench-relic-hunt', 'casino/fish-tables'];
   const catalog = JSON.parse(readFileSync('public/arcade/catalog.json', 'utf8'));
