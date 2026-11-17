@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 
 const read=(p)=>readFileSync(new URL('../public/'+p,import.meta.url),'utf8');
-const chrome=read('knightfall-cathedral-v2.css');
+const chrome=read('knightfall-unified-theme.css');
 const theme=read('theme.css');
 const nav=read('nav.js');
 const sw=read('sw.js');
@@ -11,7 +11,7 @@ const sw=read('sw.js');
 test('stained glass has one owner and realm artwork remains in the cascade',()=>{
  const requiem=read('knightfall-requiem.css');
  const shared=read('knightfall-unified-theme.css');
- assert.ok(!chrome.includes('.home-intro::after'),'Old 52px cathedral divider must stay deleted');
+ assert.ok(!chrome.includes('height:52px;width:min(640px,88%)'),'Old tiny cathedral divider must stay deleted');
  assert.ok(!shared.includes(':where(.home-intro,.cartridge-hero)::after'),'Legacy crest cannot occupy the glass pseudo element');
  assert.ok(!requiem.includes('REQUIEM STAINED-GLASS CASCADE REPAIR'),'No layered emergency repair');
  assert.ok(requiem.includes('sanctum-stained-glass.svg'));
@@ -40,11 +40,11 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
  }
 });
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
- assert.match(nav,/theme\.css\?v=20261116-glass3/);
- assert.match(theme,/@import url\("\/knightfall-cathedral-v2\.css\?v=20261116-glass3"\)/);
- assert.match(sw,/knightfall-shell-v66/);
- assert.match(sw,/"\/knightfall-cathedral-v2\.css"/);
- assert.ok(theme.indexOf("knightfall-cathedral-v2.css")>theme.indexOf("knightfall-artwork.css") && theme.indexOf("knightfall-requiem.css")>theme.indexOf("theme-crew.css"),"Single canonical cascade must keep architectural art above the legacy layers");
+ assert.match(nav,/theme\.css\?v=20261116-cascade4/);
+ assert.ok(theme.includes('"/knightfall-unified-theme.css?v=20261116-cascade4"'),'Cathedral architecture must ship through canonical CSS');
+ assert.match(sw,/knightfall-shell-v67/);
+ assert.ok(sw.includes('"/knightfall-unified-theme.css"'),'Canonical shared chrome must be cached');
+ assert.ok(chrome.indexOf("CATHEDRAL ARCHITECTURE")>chrome.indexOf("ORIGINAL ARTWORK") && theme.indexOf("knightfall-requiem.css")>theme.indexOf("theme-crew.css"),"Architecture follows original artwork, and Requiem follows reversible presets");
 });
 test('gothic presentation is accessible and does not touch game canvases or selected profile themes',()=>{
  assert.match(chrome,/:not\(\.kf-gameplay-page\)/);

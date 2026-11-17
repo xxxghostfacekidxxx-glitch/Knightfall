@@ -1,14 +1,12 @@
 /* Single ordered Gothic cascade, used by every first-party page.
    Keep all shared look imports here. nav.js reorders THIS link only. */
-@import url("/design-system.css?v=20261116-glass3");
-@import url("/visual-refresh.css?v=20261116-glass3");
-@import url("/section-overhaul.css?v=20261116-glass3");
-@import url("/knightfall-unified-theme.css?v=20261116-glass3");
-@import url("/knightfall-artwork.css?v=20261116-glass3");
-@import url("/knightfall-cathedral-v2.css?v=20261116-glass3");
-@import url("/theme-crew.css?v=20261116-glass3");
-/* Final cathedral-only appearance; alternative presets retain their own art. */
-@import url("/knightfall-requiem.css?v=20261116-glass3");
+/* Five layers: tokens, standalone-compatible polish, unified site chrome,
+   reversible GOD presets, and the final Cathedral Requiem finish. */
+@import url("/design-system.css?v=20261116-cascade4");
+@import url("/visual-refresh.css?v=20261116-cascade4");
+@import url("/knightfall-unified-theme.css?v=20261116-cascade4");
+@import url("/theme-crew.css?v=20261116-cascade4");
+@import url("/knightfall-requiem.css?v=20261116-cascade4");
 :root{color-scheme:dark}
 
 :focus-visible{outline:2px solid var(--kf-accent-bright);outline-offset:3px}

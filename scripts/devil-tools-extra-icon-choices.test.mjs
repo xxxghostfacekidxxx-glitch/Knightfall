@@ -14,7 +14,7 @@ test("eight additional SVGs are listed in the 21-choice icon gallery",async()=>{
  }
 });
 test("mobile inbox controls keep neon palette and are not obscured by mascots",async()=>{
- const css=await read("section-overhaul.css");
+ const css=await read("knightfall-unified-theme.css");
  assert.match(css,/\.messages-shell \.composer textarea\{background:#0b0d1b!important/);
  assert.match(css,/body:has\(\.messages-shell\) \.gw-character-crew\{display:none!important\}/);
 });

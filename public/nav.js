@@ -16,9 +16,9 @@
     const link = themes.shift() || document.createElement("link");
     link.rel = "stylesheet";
     link.dataset.kfCanonicalTheme = "true";
-    const target = "/theme.css?v=20261116-glass3";
+    const target = "/theme.css?v=20261116-cascade4";
     if (link.getAttribute("href") !== target) link.href = target;
-    // The canonical root imports design, artwork, cathedral and theme crew
+    // The canonical root imports tokens, shared chrome, presets and Requiem
     // in that order. Appending only this link prevents double application.
     document.head.appendChild(link);
     for (const duplicate of themes) duplicate.remove();

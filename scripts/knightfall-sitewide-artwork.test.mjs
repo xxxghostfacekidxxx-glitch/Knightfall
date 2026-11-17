@@ -5,7 +5,7 @@ import {readFileSync,existsSync} from 'node:fs';
 
 const read = name => readFileSync(new URL('../public/' + name, import.meta.url),'utf8');
 const nav=read('nav.js');
-const art=read('knightfall-artwork.css');
+const art=read('knightfall-unified-theme.css');
 const theme=read('theme.css');
 const sw=read('sw.js');
 const headings=[
@@ -53,9 +53,9 @@ test('artwork is mounted last, kept in cache, and does not skin private profile 
  assert.doesNotMatch(source,/:where\(\.home-intro,\.cartridge-hero\)\s*\{[^}]*\bbackground\s*:/s,'global Gothic palette must not override home artwork');
  assert.ok(art.includes('Account entry is part of Knightfall'),'auth artwork must be integrated');
  assert.match(nav,/kfCanonicalTheme/);
- assert.match(theme,/knightfall-artwork\.css/);
- assert.match(sw,/knightfall-shell-v66/);
- assert.match(sw,/knightfall-artwork\.css/);
+ assert.match(theme,/knightfall-unified-theme\.css/);
+ assert.match(sw,/knightfall-shell-v67/);
+ assert.match(sw,/knightfall-unified-theme\.css/);
  assert.match(art,/profile-custom-theme/);
  assert.match(art,/chaos-glitch-arcade/);
  assert.match(art,/prefers-reduced-motion/);

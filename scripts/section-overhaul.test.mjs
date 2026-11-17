@@ -3,13 +3,14 @@ import assert from "node:assert/strict";
 import {readFile} from "node:fs/promises";
 const read=name=>readFile(new URL("../public/"+name,import.meta.url),"utf8");
 test("section polish loads with and without navigation",async()=>{
- const [theme,nav,css]=await Promise.all([read("theme.css"),read("nav.js"),read("section-overhaul.css")]);
- assert.match(theme,/@import url\("\/section-overhaul\.css\?v=20261115-gothic9"\)/);
- assert.match(nav,/"section-overhaul"/);
+ const [theme,nav,css]=await Promise.all([read("theme.css"),read("nav.js"),read("knightfall-unified-theme.css")]);
+ assert.ok(theme.includes('"/knightfall-unified-theme.css?v=20261116-cascade4"'), 'Section styles must load from canonical CSS');
+ assert.match(nav,/kfCanonicalTheme/);
+ assert.ok(css.includes("CANONICAL KNIGHTFALL CHROME: SECTION FOUNDATIONS"));
  for(const root of [".community-directory",".cartridge-shelf",".messages-shell",".admin-shell",".profile-shell",".foundry",".dt-workspace-nav"])assert.ok(css.includes(root),root);
 });
 test("section overhaul supports small screens, keyboard access and personal themes",async()=>{
- const css=await read("section-overhaul.css");
+ const css=await read("knightfall-unified-theme.css");
  assert.match(css,/@media\(max-width:600px\)/);
  assert.match(css,/:focus-visible/);
  assert.match(css,/prefers-reduced-motion:reduce/);

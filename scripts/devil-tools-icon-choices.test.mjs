@@ -37,7 +37,7 @@ test("eight original vector icon options are complete and available",async()=>{
  }
 });
 test("mobile message controls keep neon style and avoid mascot overlay",async()=>{
- const css=await archivedRead("section-overhaul.css");
+ const css=await archivedRead("knightfall-unified-theme.css");
  assert.match(css,/\.messages-shell \.composer textarea\{background:#0b0d1b!important/);
  assert.match(css,/body:has\(\.messages-shell\) \.gw-character-crew\{display:none!important\}/);
  assert.match(css,/\.messages-shell \.composer-actions\{justify-content:flex-end\}/);
