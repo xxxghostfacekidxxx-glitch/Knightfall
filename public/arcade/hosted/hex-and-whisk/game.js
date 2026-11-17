@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
 const STORE="knightfall:hex-and-whisk:v1",SOUND_STORE="knightfall:hex-and-whisk:sound";
 let game,selected=null,history=null,drag=null,ghost=null,hovered=null,lastToast=0,toastTimer=null,audio=null;
-let soundOn=false,bonusUntil=0,lastSyncScore=0;
+let soundOn=false,bonusUntil=0,lastSyncScore=0,lastCookbookSignature="";
 try{soundOn=localStorage.getItem(SOUND_STORE)==="yes"}catch{}
 try{game=restore(localStorage.getItem(STORE),Math.random,Date.now())}catch{game=makeGame()}
 function safeSave(){try{localStorage.setItem(STORE,serialize(game))}catch{}}
@@ -112,6 +112,7 @@ function renderUpgrades(){
 }
 
 function renderQuests(){
+ const list=$("quest-list");if(!list)return; // tolerate old cached HTML until new page refreshes
  const frag=document.createDocumentFragment();
  for(const [kind,info] of Object.entries(QUESTS)){
   const quest=game.quests[kind],target=questTarget(kind,quest.stage);
@@ -135,9 +136,14 @@ function renderQuests(){
   button.addEventListener("click",()=>collectQuest(kind));
   card.append(heading,ratio,track,button);frag.append(card);
  }
- $("quest-list").replaceChildren(frag);
+ list.replaceChildren(frag);
 }
 function renderCookbook(){
+ const book=$("recipe-book"),counter=$("discovery-count");
+ if(!book||!counter)return; // keep gameplay working across stale page caches
+ const signature=Object.keys(RECIPES).map(chain=>game.discovered[chain]||0).join(":");
+ if(signature===lastCookbookSignature)return;
+ lastCookbookSignature=signature;
  const frag=document.createDocumentFragment();
  const recipes=Object.entries(RECIPES);
  for(const [chain,info] of recipes){
@@ -156,8 +162,8 @@ function renderCookbook(){
   }
   section.append(grid);frag.append(section);
  }
- $("recipe-book").replaceChildren(frag);
- $("discovery-count").textContent=discoveryCount(game)+" / 21";
+ book.replaceChildren(frag);
+ counter.textContent=discoveryCount(game)+" / 21";
 }
 function collectQuest(kind){
  const result=claimQuest(game,kind,Date.now());

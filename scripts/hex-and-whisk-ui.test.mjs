@@ -64,3 +64,10 @@ test("the offline shell and authenticated arcade registry both know the new game
  const original=JSON.parse(read("arcade/original-creations.json")).games.find(x=>x.id==="hex-and-whisk");
  assert.ok(original);assert.equal(original.assets[0].path,"/"+prefix+"sprites/icons.svg");
 });
+
+test("kitchen keeps running with an older cached HTML shell and avoids redrawing unchanged recipe art",()=>{
+ assert.match(script,/if\(!list\)return/);
+ assert.match(script,/if\(!book\|\|!counter\)return/);
+ assert.match(script,/lastCookbookSignature/);
+ assert.match(script,/if\(signature===lastCookbookSignature\)return/);
+});
