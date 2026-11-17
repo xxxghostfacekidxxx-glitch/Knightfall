@@ -49,3 +49,7 @@ Natural energy regeneration stops at **40**, but earned energy from orders, leve
 ### Verification
 
 The 26 pure-engine regression checks passed in a JavaScript execution harness after the changes, including earned-energy overflow, capped regeneration, quest rewards, and serialization. Client JavaScript syntax and static markup/asset references were checked. Browser layout and live Cloudflare deploy require a separate on-device visual check.
+
+## Square-grid and distinct-generator refinement (v8)
+
+The board now explicitly uses six equal CSS columns and six equal CSS rows, with square slots and centered ingredient artwork. Ingredient tier numbers and item-name overlays have been removed from the board (accessible names remain in ARIA labels). Generator artwork no longer reuses any food symbols: Garden is a little enchanted greenhouse, Bakery is a magic oven, and Sweetshop is a candy-making machine. All three are built as original inline SVGs and remain draggable. Selecting an ingredient now subtly highlights possible matching partners, and a tiny green indicator marks ready-to-serve food. Newly created ingredients and merges receive a lightweight pop animation that respects reduced-motion settings. Existing game state, recipes, and saves are unchanged.
