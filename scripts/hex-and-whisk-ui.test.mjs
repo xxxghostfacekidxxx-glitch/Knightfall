@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=10"/);
- assert.match(page,/href="\.\/game\.css\?v=10"/);
+ assert.match(page,/src="\.\/game\.js\?v=11"/);
+ assert.match(page,/href="\.\/game\.css\?v=11"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -164,6 +164,21 @@ test("art revision enhances all original recipes, portraits and generator equipm
  }
  assert.match(script,/machineTrim/);
  assert.match(stylesheet,/V10 illustrated art direction/);
- assert.match(page,/game\.js\?v=10/);
- assert.match(page,/game\.css\?v=10/);
+ assert.match(page,/game\.js\?v=11/);
+ assert.match(page,/game\.css\?v=11/);
+});
+
+test("patron spotlights allow waiting dialogue and celebrate newly ready and served orders",()=>{
+ assert.match(page,/id="customer-moment"/);
+ assert.match(page,/class="moment-portrait"/);
+ assert.match(page,/class="moment-line"/);
+ assert.match(script,/function customerMoment\(patron,phrase,reward=/);
+ assert.match(script,/function syncCustomerReactions\(\)/);
+ assert.match(script,/if\(ready\)\{fulfill\(i\);return\}/);
+ assert.match(script,/customerMoment\(patron,customerLine\(order,false\)/);
+ assert.match(script,/customerMoment\(patron,lines\[game\.served%lines\.length\]/);
+ assert.match(script,/button\.disabled=false/);
+ assert.match(stylesheet,/\.customer-moment\.moment-show/);
+ assert.match(stylesheet,/@keyframes customer-stage-enter/);
+ assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)/);
 });
