@@ -88,7 +88,7 @@ test('public Android release promotes only exact successful signed candidate tes
 test('internal Android APK finder links only to a successful exact GitHub workflow artifact', async () => {
  const code=readFileSync(new URL('../public/android-test-apk-links.js',import.meta.url),'utf8');
  const html=readFileSync(new URL('../public/install.html',import.meta.url),'utf8');
- const ruinwire=readFileSync(new URL('../public/ruinwire.html',import.meta.url),'utf8');
+ const ruinwire=readFileSync(new URL('../public/chaosphere.html',import.meta.url),'utf8');
  assert.match(html,/data-android-debug-find="knightfall-android-debug-apk"/);
  assert.match(ruinwire,/data-android-debug-find="ruinwire-android-debug-apk"/);
  assert.match(code,/credentials:"omit"/);

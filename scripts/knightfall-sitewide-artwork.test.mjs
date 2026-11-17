@@ -76,7 +76,7 @@ test('secondary public sections use the correct realm instead of generic fallbac
   ['personal-bots.html','bots-hero','foundry'],
   ['bots.html','directory-hero','foundry'],
   ['notifications.html','notifications-hero','messages'],
-  ['ruinwire.html','rw-install-hero','messages'],
+  ['chaosphere.html','rw-install-hero','messages'],
   ['social.html','social-hero','messages'],
   ['eye-of-horus.html','eye-hero','god'],
   ['shop-builder.html','builder-hero','market']
@@ -102,7 +102,7 @@ test('canonical and hyphenated URLs execute the right realm styling',()=>{
   ['/','home'],['/community','madhouse'],['/community-topic','madhouse'],
   ['/chaos-cartridge','arcade'],['/arcade-progress','arcade'],
   ['/devil-tools','foundry'],['/personal-bots','foundry'],['/bots','foundry'],['/creator-studio','foundry'],
-  ['/messages','messages'],['/ruinwire','messages'],['/notifications','messages'],['/miss-chaos','messages'],
+  ['/messages','messages'],['/ruinwire','messages'],['/chaosphere','messages'],['/notifications','messages'],['/miss-chaos','messages'],
   ['/moonology','moon'],['/shadow-work','moon'],
   ['/shops','market'],['/shop-builder','market'],['/my-shop','market'],
   ['/members','members'],['/auth','members'],['/profile','members'],

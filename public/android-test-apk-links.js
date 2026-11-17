@@ -7,7 +7,7 @@
   const REPO="xxxghostfacekidxxx-glitch/Knightfall";
   const workflows={
     "knightfall-android-debug-apk":"Knightfall Android test APK",
-    "ruinwire-android-debug-apk":"Ruinwire Android debug test APK"
+    "ruinwire-android-debug-apk":"Chaosphere Android debug test APK"
   };
   const api="https://api.github.com/repos/"+REPO;
   const requests={headers:{Accept:"application/vnd.github+json"}};

@@ -88,7 +88,7 @@ try {
       const staff = nav.locator("summary").filter({ hasText: "Staff" });
       if (session.user) {
         await account.waitFor();
-        assert.equal(await nav.getByRole("link", { name: /^(?:Messages|Ruinwire)$/ }).count(), 1);
+        assert.equal(await nav.getByRole("link", { name: /^(?:Messages|Chaosphere)$/ }).count(), 1);
         await account.click();
         await nav.getByRole("link", { name: /Notifications.*3/ }).waitFor();
         const foundry = nav.getByRole("link", { name: "Creator Foundry" });
