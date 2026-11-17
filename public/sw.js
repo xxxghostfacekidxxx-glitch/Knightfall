@@ -58,6 +58,8 @@ const APP_SHELL = [
   "/android-device-check.js",
   "/chat-bubbles.css",
   "/chat-bubbles.js",
+  "/arcade-chat.css",
+  "/arcade-chat-bridge.js",
   "/message-live.js",
   "/moonology.html",
   "/moonology.css",

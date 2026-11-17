@@ -9,6 +9,13 @@
  const onPageWithNavigation=!!document.querySelector('script[src^="/nav.js"]');
  let ready=false;
  const dock=()=>document.getElementById("kf-chat-heads");
+ function ensureArcadeStyles(){
+  if(document.querySelector('link[data-kf-arcade-chat-css]'))return;
+  const sheet=document.createElement("link");
+  sheet.rel="stylesheet";sheet.href="/arcade-chat.css?v=20261117-arcade1";
+  sheet.dataset.kfArcadeChatCss="true";
+  document.head.appendChild(sheet);
+ }
  function sync(open=!!window.KnightfallChat?.isOpen?.()){
   for(const link of links){
    link.setAttribute("aria-expanded",String(open));
@@ -18,6 +25,7 @@
  function activate(){
   if(ready||!window.KnightfallChat||!dock())return;
   ready=true;
+  ensureArcadeStyles();
   dock().classList.add("kf-chat-arcade");
   for(const link of links){
    link.dataset.kfChatReady="true";
@@ -53,7 +61,7 @@
  }
  function connect(userId){
   stylesheet("/chat-bubbles.css?v=20261115-gothic10");
-  stylesheet("/arcade-chat.css?v=20261117-arcade1");
+  ensureArcadeStyles();
   const activeLive=window.KnightfallLive;
   if(activeLive){chatScript(userId);return;}
   const existing=document.querySelector('script[data-kf-message-live]');
