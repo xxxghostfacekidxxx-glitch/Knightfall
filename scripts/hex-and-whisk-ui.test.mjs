@@ -211,3 +211,11 @@ test("focused customer orders guide ingredient matching and merges animate food 
  assert.match(stylesheet,/@keyframes merge-flight-travel/);
  assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)\{\.merge-flight\{display:none!important\}\}/);
 });
+
+test("customer recipe progress reads board and pantry without overcrowding mobile orders",()=>{
+ assert.match(script,/const progress=orderProgress\(game,order\)/);
+ assert.match(script,/TIERS TO GO/);
+ assert.match(script,/order-progress-note/);
+ assert.match(stylesheet,/\.order-card \.order-progress-note/);
+ assert.match(stylesheet,/@media\(max-width:890px\)\{\.order-card \.order-progress-note\{display:none\}/);
+});
