@@ -140,6 +140,13 @@ export function relocateGenerator(state,from,to){
  return {ok:true,type:"generator-move",from,to,chain:source||target};
 }
 
+export function orderProgress(state,order){
+ if(!order||!RECIPES[order.chain])return {tier:0,steps:0,ready:false,pieces:0};
+ const items=[...state.board,...(state.shelf||[])].filter(tile=>tile&&tile.chain===order.chain);
+ const exact=items.some(tile=>tile.tier===order.tier);
+ const closest=items.filter(tile=>tile.tier<=order.tier).reduce((highest,tile)=>Math.max(highest,tile.tier),0);
+ return {tier:closest,steps:Math.max(0,order.tier-closest),ready:exact,pieces:items.length};
+}
 export const findReady=(state,order)=>state.board.findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
 export const findShelfReady=(state,order)=>(state.shelf||[]).findIndex(tile=>tile&&order&&tile.chain===order.chain&&tile.tier===order.tier);
 /* The pantry shelf is free storage, not another generator. Each move preserves item identity. */
