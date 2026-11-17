@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=12"/);
- assert.match(page,/href="\.\/game\.css\?v=12"/);
+ assert.match(page,/src="\.\/game\.js\?v=13"/);
+ assert.match(page,/href="\.\/game\.css\?v=13"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -164,8 +164,8 @@ test("art revision enhances all original recipes, portraits and generator equipm
  }
  assert.match(script,/machineTrim/);
  assert.match(stylesheet,/V10 illustrated art direction/);
- assert.match(page,/game\.js\?v=12/);
- assert.match(page,/game\.css\?v=12/);
+ assert.match(page,/game\.js\?v=13/);
+ assert.match(page,/game\.css\?v=13/);
 });
 
 test("patron spotlights allow waiting dialogue and celebrate newly ready and served orders",()=>{
@@ -184,8 +184,8 @@ test("patron spotlights allow waiting dialogue and celebrate newly ready and ser
 });
 
 test("free-standing ingredient sprites retain the seamless checkerboard and customers display return visits",()=>{
- assert.match(page,/game\.js\?v=12/);
- assert.match(page,/game\.css\?v=12/);
+ assert.match(page,/game\.js\?v=13/);
+ assert.match(page,/game\.css\?v=13/);
  assert.match(script,/svg\.classList\.add\("food","food-object"\)/);
  assert.match(stylesheet,/V12: ONE uninterrupted stone checkerboard/);
  assert.match(stylesheet,/background:conic-gradient/);
@@ -195,4 +195,19 @@ test("free-standing ingredient sprites retain the seamless checkerboard and cust
  assert.match(script,/regular-customer/);
  assert.match(stylesheet,/\.loyalty-mark/);
  assert.match(stylesheet,/@keyframes expression-joy/);
+});
+
+test("focused customer orders guide ingredient matching and merges animate food objects",()=>{
+ assert.match(page,/game\.js\?v=13/);
+ assert.match(page,/game\.css\?v=13/);
+ assert.match(script,/focusedOrderId/);
+ assert.match(script,/function mergeFlight\(from,to,chain,tier\)/);
+ assert.match(script,/focusedOrderId===order\.id\?null:order\.id/);
+ assert.match(script,/slot\.classList\.add\(item\.tier===focusedOrder\.tier\?"focus-exact":"focus-ingredient"\)/);
+ assert.match(script,/slot\.classList\.add\("focus-generator"\)/);
+ assert.match(script,/mergeFlight\(a,b,origin\.chain,origin\.tier\)/);
+ assert.match(stylesheet,/\.order-card\.order-focused/);
+ assert.match(stylesheet,/\.merge-board \.slot\.focus-exact/);
+ assert.match(stylesheet,/@keyframes merge-flight-travel/);
+ assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)\{\.merge-flight\{display:none!important\}\}/);
 });
