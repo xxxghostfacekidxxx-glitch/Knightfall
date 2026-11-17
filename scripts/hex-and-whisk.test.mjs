@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -194,4 +194,51 @@ test("three served orders earn a free Magic Whisk, and old saves gain a starter 
  const served=serve(state,0,rng,now+500);
  assert.equal(served.whiskEarned,false);
  assert.equal(state.whisks,WHISK_CAP);
+});
+
+test("two-slot pantry stashes, swaps, and retrieves exact ingredients without spending energy",()=>{
+ const state=blank(),energy=state.energy;
+ assert.equal(SHELF_SLOTS,2);
+ state.board[0]={id:500,chain:"garden",tier:4};
+ state.board[1]={id:501,chain:"bakery",tier:2};
+ const parked=storeOnShelf(state,0,0);
+ assert.equal(parked.type,"shelf-store");assert.equal(state.board[0],null);
+ assert.equal(state.shelf[0].id,500);
+ assert.equal(storeOnShelf(state,0,1).reason,"empty");
+ assert.equal(storeOnShelf(state,1,0).type,"shelf-swap");
+ assert.equal(state.board[1].id,500);assert.equal(state.shelf[0].id,501);
+ assert.equal(takeFromShelf(state,0,2).type,"shelf-take");
+ assert.equal(state.board[2].id,501);assert.equal(state.shelf[0],null);
+ assert.equal(takeFromShelf(state,0,5).reason,"shelf-empty");
+ assert.equal(storeOnShelf(state,2,2).reason,"invalid");
+ assert.equal(takeFromShelf(state,-1,0).reason,"invalid");
+ assert.equal(state.energy,energy);
+});
+test("stored meals are ready to serve directly from pantry and earn the usual order rewards",()=>{
+ const state=makeGame(rng,now),order=state.orders[0];
+ state.board.fill(null);
+ state.shelf[1]={id:503,chain:order.chain,tier:order.tier};
+ assert.equal(findReady(state,order),-1);assert.equal(findShelfReady(state,order),1);
+ const before=state.coins;
+ const result=serve(state,0,rng,now);
+ assert.equal(result.ok,true);assert.equal(result.place,-1);assert.equal(result.shelfPlace,1);
+ assert.equal(state.shelf[1],null);assert.equal(state.served,1);
+ assert.ok(state.coins>before);assert.equal(state.orders.length,3);
+});
+test("pantry state survives saves and upgrades old or corrupted kitchens safely",()=>{
+ const state=makeGame(rng,now);
+ state.board[0]={id:999,chain:"sweets",tier:5};
+ storeOnShelf(state,0,0);
+ const restored=restore(serialize(state),rng,now);
+ assert.deepEqual(restored.shelf[0],state.shelf[0]);
+ assert.equal(restored.discovered.sweets,5);
+ assert.ok(restored.serial>999);
+ const legacy=JSON.parse(serialize(state));delete legacy.shelf;
+ assert.deepEqual(restore(legacy,rng,now).shelf,[null,null]);
+ const corrupt=JSON.parse(serialize(state));
+ corrupt.shelf=[{id:-1,chain:"garden",tier:200},{id:600,chain:"bakery",tier:4}];
+ const recovered=restore(corrupt,rng,now);
+ assert.equal(recovered.shelf[0],null);
+ assert.equal(recovered.shelf[1].id,600);
+ assert.equal(recovered.discovered.bakery>=4,true);
 });
