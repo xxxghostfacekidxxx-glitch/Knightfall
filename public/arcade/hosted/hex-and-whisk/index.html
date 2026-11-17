@@ -6,9 +6,9 @@
  <meta name="theme-color" content="#1b1021">
  <meta name="description" content="Hex & Whisk is a free, original merge-cooking game. Drag matching ingredients, cook fantastic meals, fulfill orders and grow your magical kitchen.">
  <title>Hex &amp; Whisk | Knightfall Chaos Cartridge</title>
- <link rel="stylesheet" href="./game.css?v=6">
+ <link rel="stylesheet" href="./game.css?v=7">
  <script src="/arcade-save.js" defer></script>
- <script type="module" src="./game.js?v=6"></script>
+ <script type="module" src="./game.js?v=7"></script>
 </head>
 <body>
 <div class="floating-orbs" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -27,6 +27,12 @@
   <span class="site-tag">KNIGHTFALL / MIDNIGHT MENU</span>
   <div class="header-controls"><button type="button" id="sound-toggle" class="icon-btn" aria-label="Enable sounds" aria-pressed="false">♪ OFF</button><button type="button" id="fullscreen" class="icon-btn" aria-label="Toggle fullscreen">⛶</button></div>
  </header>
+ <nav class="mobile-game-actions" aria-label="Kitchen quick actions">
+  <button type="button" id="open-storage" aria-controls="kitchen-storage" aria-expanded="false">▣ <span>Storage</span> <strong id="storage-badge">0/2</strong></button>
+  <button type="button" id="open-kitchen-menu" aria-controls="kitchen-menu" aria-expanded="false">✦ <span>Kitchen &amp; Quests</span></button>
+  <button type="button" id="mobile-refresh-order" aria-label="Refresh unfinished customer order for 35 coins">↻ <span>New order</span></button>
+ </nav>
+ <div id="game-overlay-scrim" class="game-overlay-scrim" hidden></div>
  <section class="hero" aria-labelledby="game-title">
   <div class="hero-copy">
    <span class="eyebrow"><span class="twinkle">✦</span> A LITTLE MAGIC. A LOT OF BUTTER.</span>
@@ -53,12 +59,12 @@
    </section>
    <section class="board-panel panel" aria-label="Ingredient merge table">
     <div class="board-top">
-     <div class="energy-block"><div class="energy-title"><span>✦ KITCHEN ENERGY</span><strong id="energy">40 / 40</strong></div><div class="energy-track" role="progressbar" aria-label="Kitchen energy" aria-valuemin="0" aria-valuemax="40" aria-valuenow="40" id="energy-track"><span id="energy-fill"></span></div><small id="energy-timer">Ready to cook</small></div>
+     <div class="energy-block"><div class="energy-title"><span>✦ KITCHEN ENERGY</span><strong id="energy">40 / 40</strong></div><div class="energy-track" role="progressbar" aria-label="Kitchen energy regeneration threshold" aria-valuemin="0" aria-valuemax="40" aria-valuenow="40" id="energy-track"><span id="energy-fill"></span></div><small id="energy-timer">Ready to cook</small></div>
      <div class="combo-block"><span>STREAK</span><strong id="combo">×1</strong><small id="level-progress">0 / 56 XP</small></div>
     </div>
     <div class="board-stage"><div class="board-frame"><div id="board" class="merge-board" role="grid" aria-label="Six by six cooking merge board" aria-describedby="board-directions" tabindex="0"></div></div><div id="fx-layer" class="fx-layer" aria-hidden="true"></div></div>
-    <section class="shelf-panel" aria-label="Level-up pantry storage">
-     <div class="shelf-heading"><span>✦ THE SECRET PANTRY</span><strong id="shelf-counter">0 / 2 FILLED</strong><span id="next-storage" class="storage-progress">NEXT POCKET AT LEVEL 4</span></div>
+    <section class="shelf-panel" id="kitchen-storage" aria-label="Level-up pantry storage" tabindex="-1">
+     <div class="shelf-heading"><button type="button" id="close-storage" class="drawer-close" aria-label="Close storage">×</button><span>✦ THE SECRET PANTRY</span><strong id="shelf-counter">0 / 2 FILLED</strong><span id="next-storage" class="storage-progress">NEXT POCKET AT LEVEL 4</span></div>
      <div id="shelf" class="shelf-pockets" aria-label="Expandable storage pockets for cooked dishes and ingredients"></div>
      <p class="shelf-help">Save valuable ingredients: <strong>unlock an extra storage pocket every three levels (up to six)</strong>. Tap an ingredient, then a pantry pocket, or drag it here. Tap a filled pocket, then a counter square, to retrieve or swap. Stored dishes can be served directly!</p>
     </section>
@@ -72,7 +78,7 @@
     <p id="next-whisk" class="whisk-progress">0 / 3 orders toward next whisk</p>
    </section>
   </div>
-  <aside class="secondary-column">
+  <aside class="secondary-column" id="kitchen-menu" tabindex="-1"><button type="button" id="close-kitchen-menu" class="drawer-close" aria-label="Close kitchen menu">×</button>
    <section class="station-panel panel" aria-labelledby="stations-title">
     <div class="panel-heading"><div><span class="section-kicker">THE PANTRY</span><h2 id="stations-title">Tap to harvest <span class="mini-heart">✦</span></h2></div></div>
     <p class="side-hint">Each tap makes a fresh ingredient. Two matching ingredients become one upgraded dish.</p>
