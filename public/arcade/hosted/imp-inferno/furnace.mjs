@@ -33,11 +33,45 @@ const FORMATIONS = [
   ['grinner', 8, 'shoal'], ['ashwing', 6, 'zigzag'], ['grinner', 7, 'diagonal'],
   ['brute', 4, 'shoal'], ['grinner', 9, 'zigzag'], ['ashwing', 7, 'diagonal'],
 ];
+const TIDES = [
+  { name: 'Inferno Tide', route: 'tide', schools: [
+    { species: 'grinner', count: 8, lane: .29 },
+    { species: 'ashwing', count: 7, lane: .50 },
+    { species: 'brute', count: 5, lane: .71 },
+  ] },
+  { name: 'Crossfire', route: 'tide', schools: [
+    { species: 'grinner', count: 6, lane: .20 },
+    { species: 'brute', count: 4, lane: .39, opposing: true },
+    { species: 'ashwing', count: 6, lane: .61 },
+    { species: 'grinner', count: 6, lane: .80, opposing: true },
+  ] },
+  { name: 'Chevron Rush', route: 'chevron', schools: [
+    { species: 'ashwing', count: 7, lane: .18, delay: .45 },
+    { species: 'brute', count: 5, lane: .50 },
+    { species: 'ashwing', count: 7, lane: .82, delay: .45 },
+  ] },
+];
+const TIDE_INTERVAL = 32;
+const TIDE_WARNING = 4;
+
+function tideFormation(index) {
+  const formation = TIDES[index % TIDES.length];
+  const side = Math.floor(index / TIDES.length) % 2 === 0 ? 1 : -1;
+  return { ...formation, schools: formation.schools.map(school => ({
+    ...school, from: school.opposing ? -side : side,
+  })) };
+}
+
+export function upcomingTide(table) {
+  const remaining = table.nextTide - table.time;
+  if (!Number.isInteger(table.tideIndex) || !(remaining > 0 && remaining <= TIDE_WARNING)) return null;
+  return { ...tideFormation(table.tideIndex), remaining, seconds: Math.ceil(remaining) };
+}
 
 export function newTable(width) {
   return {
     width, time: 0, targets: [], shots: [], effects: [], spins: [], storms: [], nextId: 0, nextShotId: 0,
-    nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, rareIndex: 0, formation: 0, banner: '',
+    nextSchool: 1, nextRare: 8, nextKing: 27, nextTide: 16, tideIndex: 0, rareIndex: 0, formation: 0, banner: '',
     seats: SEAT_NAMES.map((name, i) => ({
       name, credits: STARTING_CREDITS, totalWon: 0, caught: 0, readyAt: 0,
       angle: [-Math.PI / 2, .31, Math.PI / 2, Math.PI - .31][i], recoil: 0, targetId: null, bonus: null,
@@ -62,16 +96,17 @@ export function pickTarget(table, point) {
   }, { target: null, distance: Infinity }).target;
 }
 
-function addFormation(table, species, count, route, rng, { openingAt = 0, lane, from } = {}) {
+function addFormation(table, species, count, route, rng, { openingAt = 0, lane, from, delay = 0, atRail = false } = {}) {
   const direction = from ?? (rng() < .5 ? 1 : -1);
-  const rhythm = route === 'tide' ? .39 : .67 + rng() * .13;
+  const rhythm = atRail ? .39 : .67 + rng() * .13;
   const sharedY = lane ?? (.24 + rng() * .49);
-  const speed = species === 'king' ? .047 : .085 + rng() * .021;
+  const speed = atRail ? .103 : species === 'king' ? .047 : .085 + rng() * .021;
+  const arrival = atRail ? 76 / (speed * (table.width + 192)) : openingAt;
   for (let i = 0; i < count; i++) {
     const stats = SPECIES[species];
     table.targets.push({
       ...stats, species, id: ++table.nextId, direction, route, sharedY, order: i,
-      start: table.time + i * rhythm - openingAt, speed,
+      start: table.time + i * rhythm + delay - arrival, speed,
       x: direction === 1 ? -100 : table.width + 100, y: HEIGHT * sharedY,
     });
   }
@@ -82,8 +117,12 @@ function moveTarget(table, target) {
   const x = -96 + progress * (table.width + 192);
   const phase = progress * Math.PI;
   const offset = (target.order % 2 ? -1 : 1) * (target.route === 'shoal' ? 23 : 10);
-  const y = target.route === 'diagonal' ? 124 + 238 * progress
-    : HEIGHT * target.sharedY + Math.sin(phase * (target.route === 'zigzag' ? 4 : 2)) * (target.route === 'tide' ? 18 : 54);
+  let y = HEIGHT * target.sharedY + Math.sin(phase * (target.route === 'zigzag' ? 4 : 2)) * (target.route === 'tide' ? 18 : 54);
+  if (target.route === 'diagonal') y = 124 + 238 * progress;
+  if (target.route === 'chevron') {
+    const spread = 1 - .68 * Math.sin(Math.PI * Math.max(0, progress));
+    y = HEIGHT * (.5 + (target.sharedY - .5) * spread);
+  }
   target.x = target.direction === 1 ? x : table.width - x;
   target.y = y + offset + Math.sin(table.time * 3 + target.order) * 5;
   return progress < 1;
@@ -280,8 +319,9 @@ function moveShot(table, shot, dt, rng) {
 
 export function advance(table, dt, control, rng = Math.random) {
   table.time += dt;
+  table.tideIndex ??= 0;
   updateWheels(table);
-  if (table.time >= table.nextSchool) {
+  if (table.time >= table.nextSchool && table.time < table.nextTide) {
     const [species, count, route] = FORMATIONS[table.formation++ % FORMATIONS.length];
     addFormation(table, species, count, route, rng);
     table.nextSchool = table.time + 3.1;
@@ -291,13 +331,13 @@ export function advance(table, dt, control, rng = Math.random) {
     table.nextRare = table.time + 8.5;
   }
   if (table.time >= table.nextTide) {
-    const from = rng() < .5 ? 1 : -1;
-    addFormation(table, 'grinner', 8, 'tide', rng, { lane: .29, from });
-    addFormation(table, 'ashwing', 7, 'tide', rng, { lane: .50, from });
-    addFormation(table, 'brute', 5, 'tide', rng, { lane: .71, from });
-    table.nextTide = table.time + 32;
+    const { name, route, schools } = tideFormation(table.tideIndex++);
+    for (const school of schools) {
+      addFormation(table, school.species, school.count, route, rng, { ...school, atRail: true });
+    }
+    table.nextTide = table.time + TIDE_INTERVAL;
     table.nextSchool = table.time + 7;
-    table.banner = 'Inferno tide · three schools incoming';
+    table.banner = name + ' · ' + schools.length + ' schools incoming';
   }
   if (table.time >= table.nextKing) {
     addFormation(table, 'king', 1, 'shoal', rng);

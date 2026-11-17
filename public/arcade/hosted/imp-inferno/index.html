@@ -7,7 +7,7 @@
   <meta name="description" content="Share a four-seat arcade table, net schools of imps and catch the Furnace King for an 80× payout.">
   <title>Imp Inferno | Chaos Cartridge</title>
   <link rel="stylesheet" href="./cabinet.css?v=6">
-  <script src="./cabinet.mjs?v=7" type="module"></script>
+  <script src="./cabinet.mjs?v=8" type="module"></script>
 </head>
 <body>
   <main class="cabinet" id="cabinet">
@@ -31,6 +31,7 @@
         <canvas id="table" tabindex="0" aria-label="Shared capture table. Aim with the arrow keys, mouse or touch. Hold Space or press and hold the table to fire."></canvas>
         <div class="weapon" id="weapon" role="status" hidden></div>
         <div class="announcement" id="announcement" role="status" hidden></div>
+        <div class="announcement" id="tide-warning" hidden></div>
         <div class="overlay" id="overlay">
           <div class="plate">
             <p id="eyebrow">Free play · Four-seat table</p>
@@ -83,7 +84,8 @@
       <p>Fuse 15× explodes · Spark 20× chains · Prism 25× grants a Hellbeam · Drill 30× grants a piercing shot · Vortex 35× sweeps one nearby species.</p>
       <p>Croupier 12× triggers the Furnace Wheel. It awards 5×–50× your catch shot cost in free table credits.</p>
       <p>Firestorm 18× sends a wall of flame across the table that can catch up to 12 common imps.</p>
-      <p>Shots bounce off the rails. Watch for the Inferno tide, when three schools swim through together.</p>
+      <p>Lit rails show where the next schools enter. Inferno Tide sweeps in from one side, Crossfire enters from both sides, and Chevron Rush converges near the center.</p>
+      <p>Shots bounce off the rails.</p>
       <p>Higher-cost shots spread wider and have a better chance to catch. Credits are free and stay on this table.</p>
     </details>
   </main>

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import {
-  advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS,
+  advance, HEIGHT, newTable, pickTarget, POWERS, seatOrigin, seedTable, SPECIES, STARTING_CREDITS, upcomingTide,
 } from '../public/arcade/hosted/imp-inferno/furnace.mjs';
 
 function isolatedTable() {
@@ -151,6 +151,48 @@ test('the tide sends three schools in the same direction on separate lanes', () 
   assert.ok(table.targets.every(target => target.direction === 1 && target.route === 'tide'));
   assert.equal(new Set(table.targets.map(target => target.sharedY)).size, 3);
   assert.ok(table.nextSchool > table.time);
+});
+
+test('the tide warning previews the actual schools on each rail and rotates through three patterns', () => {
+  const table = isolatedTable();
+  const online = { onlineSeats: [null, null, null, null] };
+  table.nextTide = 5;
+  assert.equal(upcomingTide(table), null);
+  for (const [name, directions] of [
+    ['Inferno Tide', [1, 1, 1]], ['Crossfire', [1, -1, 1, -1]],
+    ['Chevron Rush', [1, 1, 1]], ['Inferno Tide', [-1, -1, -1]],
+  ]) {
+    table.time = table.nextTide - 4;
+    const warning = upcomingTide(table);
+    assert.equal(warning.name, name);
+    assert.equal(warning.seconds, 4);
+    assert.deepEqual(warning.schools.map(school => school.from), directions);
+    const previousId = table.nextId;
+    table.time = table.nextTide;
+    advance(table, .016, online, () => .1);
+    assert.equal(upcomingTide(table), null);
+    const arrivals = table.targets.filter(target => target.id > previousId);
+    for (const { species, count, lane, from } of warning.schools) {
+      const school = arrivals.filter(target => target.sharedY === lane);
+      assert.equal(school.length, count);
+      assert.ok(school.every(target => target.direction === from && target.species === species));
+    }
+  }
+});
+
+test('a saved table resumes into the wave rotation and chevron wings close toward the center', () => {
+  const table = isolatedTable();
+  const online = { onlineSeats: [null, null, null, null] };
+  delete table.tideIndex;
+  advance(table, .016, online);
+  assert.equal(table.tideIndex, 0);
+  table.tideIndex = 2;
+  table.nextTide = table.time;
+  advance(table, .016, online);
+  const wing = table.targets.find(target => target.sharedY === .18);
+  assert.ok(wing.y < HEIGHT * .25);
+  for (let i = 0; i < 165; i++) advance(table, .032, online);
+  assert.ok(wing.y > HEIGHT * .37);
 });
 
 test('two local players have independent aiming, shot costs, and credits', () => {

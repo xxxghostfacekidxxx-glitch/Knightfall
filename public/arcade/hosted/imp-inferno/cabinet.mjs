@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=7';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=7';
+import { makeRenderer } from './art.mjs?v=8';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable, upcomingTide } from './furnace.mjs?v=8';
 
 import { inviteUrl, newRoomId, openRoom, parseRoom } from './online.mjs?v=7';
 
@@ -17,6 +17,7 @@ const full = byId('fullscreen');
 const sound = byId('sound');
 const overlay = byId('overlay');
 const announcement = byId('announcement');
+const tideWarning = byId('tide-warning');
 const powerButtons = [...document.querySelectorAll('[data-power]')];
 const display = Object.fromEntries(['credits', 'cost', 'won', 'caught'].map(id => [id, byId(id)]));
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -482,7 +483,13 @@ function frame(now) {
       room.nextInput = now + 64;
     }
   }
-  draw(displayRoom(now), control, reducedMotion.matches);
+  const tide = phase === 'playing' || phase === 'online' ? upcomingTide(table) : null;
+  tideWarning.hidden = !tide || !announcement.hidden;
+  if (!tideWarning.hidden) {
+    const message = tide.name + ' in ' + tide.seconds + 's';
+    if (tideWarning.textContent !== message) tideWarning.textContent = message;
+  }
+  draw(displayRoom(now), control, reducedMotion.matches, tide);
   requestAnimationFrame(frame);
 }
 new ResizeObserver(resize).observe(canvas);

@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=7';
+import { HEIGHT, SEAT_COLORS, seatOrigin, WHEEL_MULTIPLIERS } from './furnace.mjs?v=8';
 
 const INK = '#210912';
 const COLORS = {
@@ -252,8 +252,28 @@ function drawStorms(ctx, table, reduceMotion) {
   }
 }
 
+function drawTideEntrances(ctx, width, tide) {
+  const reach = Math.min(58, width * .15);
+  for (const { from, lane } of tide.schools) {
+    const rail = from === 1 ? 0 : width;
+    const y = HEIGHT * lane;
+    const light = ctx.createLinearGradient(rail, y, rail + from * reach, y);
+    light.addColorStop(0, '#ff9836e0');
+    light.addColorStop(1, '#ff532000');
+    ctx.fillStyle = light;
+    ctx.fillRect(from === 1 ? 0 : width - reach, y - 25, reach, 50);
+    ctx.beginPath();
+    ctx.moveTo(rail + from * 9, y - 10);
+    ctx.lineTo(rail + from * 21, y);
+    ctx.lineTo(rail + from * 9, y + 10);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#fff0ac';
+    ctx.stroke();
+  }
+}
+
 export function makeRenderer(ctx, backdrop) {
-  return (table, control, reducedMotion) => {
+  return (table, control, reducedMotion, tide) => {
     const width = table.width;
     const time = table.time;
     ctx.clearRect(0, 0, width, HEIGHT);
@@ -274,6 +294,7 @@ export function makeRenderer(ctx, backdrop) {
         ellipse(ctx, x, y, 1 + i % 3 * .55, 1 + i % 3 * .55, i % 4 ? '#ff742960' : '#ffe37ca0');
       }
     }
+    if (tide) drawTideEntrances(ctx, width, tide);
     drawStorms(ctx, table, reducedMotion);
     for (const target of table.targets) {
       if (target.x < -85 || target.x > width + 85) continue;
