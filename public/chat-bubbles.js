@@ -351,6 +351,12 @@
     badge.hidden=!state.unread;
     badge.textContent=state.unread>99?"99+":String(state.unread);
     dock.classList.toggle("kf-chat-has-unread",state.unread>0);
+    // Screen readers and mobile hover-help announce unread count without
+    // placing another bubble or intrusive toast over a running arcade game.
+    const launcher=$("#kf-chat-launcher");
+    const count=state.unread;
+    launcher.setAttribute("aria-label",count?"Open Chaosphere: "+count+" unread "+(count===1?"message":"messages"):"Open Chaosphere conversations");
+    launcher.title=count?"Chaosphere: "+count+" unread":"Chaosphere · Enter the chaos";
   }
   function markLocalRead(id){
     const c=getConversation(id);
