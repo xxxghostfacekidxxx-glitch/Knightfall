@@ -255,7 +255,7 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
  .order-card>.food{bottom:12px;width:29px;height:29px}
  .order-card .order-name{font-size:.49rem}
  .board-top{min-height:23px}
- .board-frame{width:min(100%,calc(100dvh - 236px))}
+ .board-frame{width:min(100%,calc(100dvh - 300px))}
  .status-strip{min-height:14px;max-height:18px}
  .magic-actions button,.board-tools .tool-btn{min-height:26px}
 }
