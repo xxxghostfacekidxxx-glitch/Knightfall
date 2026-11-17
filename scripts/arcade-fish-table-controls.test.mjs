@@ -85,14 +85,18 @@ test('rivals use four separate seats, credits stay nonnegative, and the table ke
   assert.ok(table.seats.slice(1).every(seat => seat.credits !== STARTING_CREDITS && seat.credits >= 0));
 });
 
-test('the three legacy launch files are gone and bookmarks resolve to one replacement', () => {
+test('retired cabinet routes are absent from the site, catalog, and redirects', () => {
   const routes = ['abyssal-arsenal', 'neon-kelp-reef-rush', 'magma-trench-relic-hunt', 'casino/fish-tables'];
   const catalog = JSON.parse(readFileSync('public/arcade/catalog.json', 'utf8'));
-  const redirects = readFileSync('public/_redirects', 'utf8').split('\n');
+  const redirectSources = readFileSync('public/_redirects', 'utf8').split('\n').map(line => line.split(/\s+/)[0]);
+  const pages = ['public/chaos-cartridge.html', 'public/casino/index.html', 'public/casino/classic-floor.html', 'public/devil-tools.html'];
   for (const route of routes) {
     assert.equal(existsSync('public/' + route + '.html'), false);
     assert.ok(!catalog.games.some(game => game.route === '/' + route + '.html'));
-    assert.ok(redirects.includes('/' + route + '.html /arcade/hosted/imp-inferno/ 301'));
+    for (const path of ['/' + route, '/' + route + '.html']) {
+      assert.ok(!redirectSources.includes(path), path);
+      for (const page of pages) assert.ok(!readFileSync(page, 'utf8').includes('href="' + path + '"'), page + ' links to ' + path);
+    }
   }
   assert.equal(catalog.games.filter(game => game.id === 'imp-inferno').length, 1);
 });
