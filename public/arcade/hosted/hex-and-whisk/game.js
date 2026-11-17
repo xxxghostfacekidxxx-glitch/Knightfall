@@ -1,4 +1,4 @@
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,MAX_ENERGY,ENERGY_INTERVAL,RECIPES,xpNeeded,upgradeCost,unlocked,available,findReady,findShelfReady,storeOnShelf,takeFromShelf,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,QUESTS,questTarget,questReward,claimQuest,discoveryCount,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,favoriteTipForOrder,orderProgress,loyaltyStamps,loyaltyNext,LOYALTY_VISIT_INTERVAL} from "./engine.mjs";
 
 const $=id=>document.getElementById(id);
 const board=$("board"),orders=$("orders"),stations=$("stations"),upgrades=$("upgrades"),fx=$("fx-layer");
@@ -188,6 +188,7 @@ function renderOrders(){
   const ready=findReady(game,order)>=0||findShelfReady(game,order)>=0;
   const patron=patronForOrder(order);
   const favoriteTip=favoriteTipForOrder(order);
+  const progress=orderProgress(game,order);
   const button=document.createElement("button");button.type="button";button.className="order-card"+(ready?" ready":"")+(order.tier>=5?" deluxe":"");
   button.style.setProperty("--customer-delay",String(i*-.7)+"s");
   button.dataset.customer=patron.symbol;
@@ -214,11 +215,15 @@ function renderOrders(){
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
   button.append(footer,text("span",ready?"✦ SERVE ME!":"♡ TAP TO CHAT","serve-label"));
+  const progressLabel=ready?"READY!":progress.tier>0?progress.steps+" MERGES AWAY":"START RECIPE";
+  const progressTag=text("span",progressLabel,"order-progress-note");
+  progressTag.title=progress.tier>0?"Highest available ingredient: "+label(order.chain,progress.tier):"No ingredients from this recipe family on the board or in storage";
+  button.append(progressTag);
   button.addEventListener("click",()=>{
    if(ready){fulfill(i);return}
    focusedOrderId=focusedOrderId===order.id?null:order.id;
    renderBoard();renderOrders();
-   customerMoment(patron,customerLine(order,false),favoriteTip?"♡ FAV +"+favoriteTip+" coins":"MAKE "+label(order.chain,order.tier).toUpperCase(),"waiting");
+   customerMoment(patron,customerLine(order,false),favoriteTip?"♡ FAV +"+favoriteTip+" coins":progress.tier>0?progress.steps+" TIER STEPS FROM CLOSEST DISH":"MAKE "+label(order.chain,order.tier).toUpperCase(),"waiting");
    announce(focusedOrderId===null?"Order focus cleared.":patron.name+" wants "+label(order.chain,order.tier)+". Matching ingredients are highlighted on the board. "+(favoriteTip?"Favorite meal bonus: +"+favoriteTip+" coins.":""));
    bell([420,530],.05);
   });frag.append(button);
