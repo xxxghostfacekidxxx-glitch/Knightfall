@@ -303,5 +303,5 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 /* Quiet, nonnumeric gameplay cues that do not hide the food illustrations. */
 .merge-board .slot.match-option{box-shadow:inset 0 0 0 2px #ffe0a9a6,inset 0 0 22px #ffd18a55!important}
 .merge-board .slot.match-option .food{filter:drop-shadow(0 3px 2px #1f132aab) drop-shadow(0 0 9px #fff0b0b0)}
-.merge-board .slot.order-ready-piece:before{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;background:#baffc8;border-radius:50%;box-shadow:0 0 8px 2px #a8ffba9c;z-index:2;pointer-events:none}
+.merge-board .slot.order-ready-piece:before{content:""!important;position:absolute;top:3px;right:3px;width:6px;height:6px;background:#baffc8;border-radius:50%;box-shadow:0 0 8px 2px #a8ffba9c;z-index:2;pointer-events:none}
 .merge-board .slot.order-ready-piece.match-option:before{background:#ffe3a3;box-shadow:0 0 8px #ffe3a3}
