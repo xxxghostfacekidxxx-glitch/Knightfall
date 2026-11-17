@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=7"/);
- assert.match(page,/href="\.\/game\.css\?v=7"/);
+ assert.match(page,/src="\.\/game\.js\?v=8"/);
+ assert.match(page,/href="\.\/game\.css\?v=8"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -126,4 +126,14 @@ test("the mobile kitchen keeps orders and board visible with accessible slide-up
  assert.match(stylesheet,/\.shelf-panel\.drawer-open/);
  assert.match(stylesheet,/\.secondary-column\.drawer-open/);
  assert.match(stylesheet,/@media\(max-width:890px\) and \(orientation:landscape\)/);
+});
+
+test("board tiles are square and never show tier-number badges",()=>{
+ assert.match(stylesheet,/grid-template-rows:repeat\(6,minmax\(0,1fr\)\)/);
+ assert.match(stylesheet,/\.merge-board \.slot\{[^}]*aspect-ratio:1/);
+ assert.match(stylesheet,/\.tile-rank[^}]*display:none!important/);
+ assert.doesNotMatch(script,/slot\.append\(text\("span",""\+item\.tier,"tile-rank"/);
+ assert.match(script,/GENERATOR_ART/);
+ assert.match(script,/function generatorArt\(chain\)/);
+ assert.doesNotMatch(script,/function generatorArt\(chain\)\{const art=food/);
 });
