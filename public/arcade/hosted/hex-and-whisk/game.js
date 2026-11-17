@@ -49,7 +49,12 @@ function generatorArt(chain){
  svg.setAttribute("viewBox","0 0 100 100");
  svg.setAttribute("aria-hidden","true");
  svg.setAttribute("focusable","false");
- svg.innerHTML=GENERATOR_ART[chain]||GENERATOR_ART.garden;
+ const machineTrim={
+ garden:`<path d="M16 40h68" stroke="#fff7cd" stroke-width="2" opacity=".75"/><circle cx="31" cy="30" r="3" fill="#ecffbf"/><circle cx="69" cy="30" r="3" fill="#ecffbf"/><path d="M28 73l8-3 8 3 8-3 8 3 8-3" stroke="#74c497" stroke-width="2.5" fill="none"/><path d="M37 14l4-8 4 8-4 7z" fill="#b2f8b6"/>`,
+ bakery:`<path d="M19 42q31-9 62 0" stroke="#ffe2ab" stroke-width="2.5" fill="none"/><path d="M38 68q6-12 12-6t12 2" stroke="#ffeab6" stroke-width="2.5" fill="none"/><circle cx="28" cy="79" r="3" fill="#ffe4ba"/><circle cx="71" cy="79" r="3" fill="#ffe4ba"/><path d="M45 13l5-9 5 9" stroke="#ffefc7" stroke-width="2.5" fill="none"/>`,
+ sweets:`<path d="M31 47q19-11 38 0" stroke="#fff2ca" stroke-width="2.5" fill="none"/><circle cx="26" cy="33" r="3" fill="#ffdbf1"/><circle cx="74" cy="33" r="3" fill="#ffdbf1"/><path d="M37 79l-4 5m30-5 4 5" stroke="#fff0cc" stroke-width="2.5"/><path d="M46 14l4-8 4 8 8 2-8 3-4 8-4-8-8-3z" fill="#fff2b9"/>`
+};
+ svg.innerHTML=(GENERATOR_ART[chain]||GENERATOR_ART.garden)+(machineTrim[chain]||"");
  return svg;
 }
 function announce(note,celebrate=false){
