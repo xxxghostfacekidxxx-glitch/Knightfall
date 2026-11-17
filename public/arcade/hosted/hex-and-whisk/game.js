@@ -23,6 +23,7 @@ function portrait(patron){
  const use=document.createElementNS("http://www.w3.org/2000/svg","use");use.setAttribute("href","#patron-"+patron.symbol);svg.append(use);return svg;
 }
 const label=(chain,tier)=>RECIPES[chain].items[tier-1];
+function generatorArt(chain){const art=food(chain,chain==="garden"?1:chain==="bakery"?3:2);art.classList.add("generator-art");return art;}
 function announce(note,celebrate=false){
  $("status").textContent=note;$("status-icon").textContent=celebrate?"✧":"✦";
  if(celebrate)toast(note);
@@ -65,7 +66,7 @@ function renderBoard(pop=-1){
   slot.setAttribute("aria-colindex",String(index%WIDTH+1));
   if(producer){
    slot.dataset.generator=producer;slot.style.setProperty("--i",String(index));
-   const icon=text("span",producer==="garden"?"🌿":producer==="bakery"?"🥐":"🧁","generator-emoji");
+   const icon=generatorArt(producer);
    slot.append(text("span","✦","generator-sigil"),icon,text("small",RECIPES[producer].name.toUpperCase(),"generator-name"),text("span","LV "+(game.upgrades[producer]+1),"generator-tier"));
    slot.setAttribute("aria-label","Row "+(Math.floor(index/WIDTH)+1)+" column "+(index%WIDTH+1)+": movable "+RECIPES[producer].name+" generator. Select and tap again to harvest, or move it to another square.");
   }else if(item){
@@ -132,7 +133,7 @@ function renderStations(){
   const b=document.createElement("button");b.type="button";b.className="station-button"+(isOpen?" active":" locked");
   b.disabled=!isOpen||game.energy<=0||available(game)===0;
   b.setAttribute("aria-label",isOpen?"Collect from "+info.name+", costs one energy":info.name+" unlocks at level "+info.unlock);
-  const art=text("span","","station-pic");art.append(text("span",chain==="garden"?"🌿":chain==="bakery"?"🥐":"🧁","station-emoji"));
+  const art=text("span","","station-pic");art.append(generatorArt(chain));
   const copy=text("span","","station-text");
   copy.append(text("strong",info.name),text("small",isOpen?"ON YOUR GRID · TAP HERE TO HARVEST · LV "+(game.upgrades[chain]+1):"UNLOCKS AT KITCHEN LEVEL "+info.unlock));
   b.append(art,copy,text("span",isOpen?"1 ✦":"🔒","station-badge"));
@@ -413,7 +414,7 @@ board.addEventListener("pointermove",event=>{
  if(!drag.moved&&dist>9&&(game.board[drag.from]||generatorAt(game,drag.from))){
   drag.moved=true;ghost=text("div","","drag-ghost");
   const generator=generatorAt(game,drag.from);
-  if(generator)ghost.append(text("span",generator==="garden"?"🌿":generator==="bakery"?"🥐":"🧁","generator-emoji"));
+  if(generator)ghost.append(generatorArt(generator));
   else ghost.append(food(game.board[drag.from].chain,game.board[drag.from].tier));
   document.body.append(ghost);
  }
