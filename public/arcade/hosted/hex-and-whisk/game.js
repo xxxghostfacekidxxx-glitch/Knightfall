@@ -215,7 +215,7 @@ function renderOrders(){
   const footer=document.createElement("span");footer.className="order-foot";
   footer.append(text("span","◈ "+(order.coins+favoriteTip)),text("span","✦ "+order.xp+" XP"));
   button.append(footer,text("span",ready?"✦ SERVE ME!":"♡ TAP TO CHAT","serve-label"));
-  const progressLabel=ready?"READY!":progress.tier>0?progress.steps+" MERGES AWAY":"START RECIPE";
+  const progressLabel=ready?"READY!":progress.tier>0?progress.steps+" TIERS TO GO":"START RECIPE";
   const progressTag=text("span",progressLabel,"order-progress-note");
   progressTag.title=progress.tier>0?"Highest available ingredient: "+label(order.chain,progress.tier):"No ingredients from this recipe family on the board or in storage";
   button.append(progressTag);
