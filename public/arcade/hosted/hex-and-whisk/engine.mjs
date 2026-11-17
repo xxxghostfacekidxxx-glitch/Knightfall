@@ -241,6 +241,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  const whiskEarned=state.served%WHISK_EVERY===0 && state.whisks<WHISK_CAP;
  if(whiskEarned)state.whisks++;
  tickQuest(state,"serve");
+ const previousShelfSize=state.shelf.length;
  let leveled=false,unlockedSweetshop=false;
  while(state.xp>=xpNeeded(state.level)&&state.level<30){
   state.xp-=xpNeeded(state.level);state.level++;leveled=true;
@@ -254,7 +255,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
  for(const chain of keys)attachGenerator(state,chain);
- return {ok:true,type:"serve",place,shelfPlace,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0,whiskEarned};
+ return {ok:true,type:"serve",place,shelfPlace,coins,gained,leveled,unlockedSweetshop,storageUnlocked:state.shelf.length>previousShelfSize,storageCapacity:state.shelf.length,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
  if(!unlocked(state,chain))return {ok:false,reason:"locked"};
