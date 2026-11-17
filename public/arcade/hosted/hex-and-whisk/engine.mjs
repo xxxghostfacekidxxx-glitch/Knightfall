@@ -63,7 +63,8 @@ export function claimVipContract(state,now=Date.now()){
  if(whisk)state.whisks++;
  const stage=Math.min(info.stage+1,1000000);
  const chains=Object.keys(RECIPES).filter(key=>unlocked(state,key));
- const chain=chains[(stage-1)%chains.length]||"garden";
+ const sponsor=PATRONS[(stage-1)%PATRONS.length];
+ const chain=chains.includes(sponsor.favorite)?sponsor.favorite:(chains[(stage-1)%chains.length]||"garden");
  state.vipContract={stage,chain,serves:0,merges:0};
  return {ok:true,type:"vip-contract",coins:info.coins,energy,whisk,stage:info.stage,nextStage:stage,nextChain:chain};
 }
