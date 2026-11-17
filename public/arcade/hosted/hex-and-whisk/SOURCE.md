@@ -25,3 +25,15 @@ Two free shelf pockets let players reserve valuable ingredients when the 6×6 co
 ## Customer request refresh
 
 When a customer requests a dish that is taking too long to craft, the **New Order** button replaces the first unfinished request for 35 coins earned in-game. Ready-to-serve requests are protected, all ingredients and stored pantry items remain intact, and the replacement is automatically saved with the rest of the kitchen. The button is disabled when every request is ready or there are insufficient coins. No paid currency is involved.
+
+## Movable magical workstations (grid update)
+
+Garden and Bakery generators now occupy dedicated squares on the 6×6 counter. The Sweetshop generator joins the grid at kitchen level 3. Select a generator then select another square to move it, or drag it on touch or desktop. Moving it onto an ingredient swaps their positions without consuming energy, destroying ingredients or changing recipe tiers. Moving one generator onto another swaps their locations. Tap the generator twice to harvest (costs one energy), or use its corresponding Pantry button. Stations now use the game's existing original SVG food illustrations inside animated etched magic circles instead of generic emoji. Their placement survives both device and account save formats. Older kitchens migrate generators onto available spots without replacing saved foods.
+
+## Pantry expansion and customer portraits
+
+The Secret Pantry starts with two free storage pockets, then earns one more at levels 4, 7, 10 and 13, capped at six. Saved pantry dishes are retained as capacity grows and are still servable directly from storage. The grid now has dimensional moonstone sockets and stained-glass highlights, with reduced-motion support. Existing original SVG patrons gain softly animated portrait medallions, expressive speech bubbles and happy movement when their orders are ready. All mechanics remain free to play.
+
+## Verification
+
+The pure engine's 24 regression cases pass in the connector's JavaScript execution environment, covering fresh games, merging, energy, leveling, quests, customer requests, Magic Whisks, generator relocation, shelf upgrades, and legacy save migration. Syntax checks pass for engine and client scripts. Browser rendering and the live Cloudflare deployment still require separate end-to-end verification.
