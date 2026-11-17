@@ -41,8 +41,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=3"/);
- assert.match(page,/href="\.\/game\.css\?v=3"/);
+ assert.match(page,/src="\.\/game\.js\?v=4"/);
+ assert.match(page,/href="\.\/game\.css\?v=4"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
