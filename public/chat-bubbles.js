@@ -66,7 +66,7 @@
   const dock=el("aside","kf-chat-dock");
   dock.id="kf-chat-heads";
   dock.setAttribute("aria-label","Chaosphere conversations");
-  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button>';
+  dock.innerHTML='<section class="kf-chat-panel" id="kf-chat-panel" aria-label="Conversation quick chat" hidden><header class="kf-chat-panel-header"><button id="kf-chat-back" type="button" aria-label="Back to recent conversations" hidden>←</button><div class="kf-chat-panel-title"><strong id="kf-chat-title">Chaosphere · Chats</strong><small id="kf-chat-subtitle">Message without leaving this page</small><small id="kf-imp-inline" class="kf-imp-inline" aria-hidden="true" hidden></small></div><a id="kf-chat-full" href="/messages.html">Inbox</a><button id="kf-imp-quiet" class="kf-imp-quiet-button" type="button" aria-label="Turn off Chaosphere mascot reactions" aria-pressed="true" title="Silence the tiny demon">😈</button><button id="kf-chat-move" type="button" aria-label="Move chat with drag or arrow keys" title="Drag to move">⠿</button><button id="kf-chat-minimize" type="button" aria-label="Minimize chat">×</button></header><label id="kf-chat-search-wrap" class="kf-chat-search-wrap"><span class="kf-chat-sr">Find a conversation</span><input id="kf-chat-search" type="search" autocomplete="off" placeholder="Find a conversation…" aria-label="Find a conversation"></label><div id="kf-chat-list" class="kf-chat-recent"></div><div id="kf-chat-thread" class="kf-chat-thread" hidden></div><form id="kf-chat-compose" class="kf-chat-compose" hidden><label class="kf-chat-sr" for="kf-chat-input">Message</label><textarea id="kf-chat-input" maxlength="4000" rows="2" placeholder="Write a reply…" aria-label="Write a message"></textarea><button id="kf-chat-send" type="submit">Send</button></form><div id="kf-chat-status" class="kf-chat-status" role="status" aria-live="polite"></div><button id="kf-chat-resize" type="button" aria-label="Resize chat by dragging or arrow keys" title="Drag to resize">◢</button></section><div class="kf-chat-head-row" id="kf-chat-head-row"></div><button class="kf-chat-launcher" id="kf-chat-launcher" type="button" aria-label="Open Chaosphere conversations" aria-expanded="false" aria-controls="kf-chat-panel"><img class="kf-chaosphere-demon" src="/icons/chaosphere.svg" alt="" aria-hidden="true" width="46" height="46"><b id="kf-chat-unread" hidden></b></button><span id="kf-imp-speech" class="kf-imp-speech" aria-hidden="true" hidden></span>';
   // Host outside the page body so transformed game/page wrappers cannot clip or resize chat.
   document.documentElement.append(dock);
   function syncBubbleViewport(){
@@ -92,6 +92,14 @@
   window.visualViewport?.addEventListener("scroll",syncBubbleViewport,{passive:true});
   const $=selector=>dock.querySelector(selector);
   const panel=$("#kf-chat-panel"),recent=$("#kf-chat-list"),thread=$("#kf-chat-thread"),composer=$("#kf-chat-compose"),input=$("#kf-chat-input"),status=$("#kf-chat-status");
+  // Progressive enhancement: a failed mascot load must never disable messaging.
+  let imp=null;
+  function attachImp(){if(!imp&&window.ChaosphereImp)imp=window.ChaosphereImp.mount(dock,userId);}
+  attachImp();
+  window.addEventListener("kf:chaosphere-imp-ready",attachImp,{once:true});
+  const impReact=kind=>imp?.react(kind);
+  let unreadBaselineReady=false;
+
 
   // Movable and resizable messenger, with per-account placement persistence.
   const layoutKey="kf-chat-layout-"+userId;
@@ -224,13 +232,14 @@
     state.visible=!!value;
     if(!state.visible)pendingShare="";
     dock.classList.toggle("kf-chat-open",state.visible);
+    imp?.syncVisibility();
     const opening=!!value&&panel.hidden;
     panel.hidden=!state.visible;
     syncBubbleViewport();
     fitDock();
     if(customPosition&&!dock.classList.contains("kf-chat-expanded"))requestAnimationFrame(fitDock);
     $("#kf-chat-launcher").setAttribute("aria-expanded",String(state.visible));
-    if(opening)window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));
+    if(opening){window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"member-chat"}}));impReact("wake");}
     if(state.visible){
       renderPanel();
       if(state.active)refreshThread().catch(error=>announce(error.message));
@@ -383,7 +392,12 @@
       // A temporarily truncated inbox list must not kick the user out of an
       // already open conversation after sending its first message.
       const selected=getConversation(state.active);
-      state.conversations=data.conversations||[];
+      const fetched=data.conversations||[];
+      // Initial fetch is just a baseline. Only a later increase is truly new.
+      const newArrival=unreadBaselineReady&&!!window.ChaosphereImp?.newUnread(state.conversations,fetched);
+      state.conversations=fetched;
+      unreadBaselineReady=true;
+      if(newArrival)impReact("incoming");
       if(selected&&!state.conversations.some(c=>Number(c.id)===Number(selected.id)))
         state.conversations.push(selected);
       lastListRefresh=Date.now();
@@ -415,12 +429,14 @@
       input.value="";rememberDraft(id,"");
     }
     announce("Sending message…");
+    impReact("sending");
     const previous=messageSendQueues.get(id)||Promise.resolve();
     const queued=previous.catch(()=>{}).then(async()=>{
       state.sending=true;
       try{
         await api("/api/messages/conversations/"+id,{method:"POST",body:JSON.stringify({body})});
         announce("Message sent.");
+        impReact("sent");
         void (async()=>{
           try{
             if(state.active===id)await refreshThread();
@@ -437,6 +453,7 @@
           input.focus({preventScroll:true});
         }else rememberDraft(id,old?original+"\n"+old:original);
         announce("Message not sent: "+error.message+" Draft restored.");
+        impReact("failed");
       }finally{
         state.sending=false;
         if(state.active===id&&state.visible){
@@ -471,7 +488,7 @@
     share(text){
       const draft=String(text||"").trim().slice(0,1500);
       if(!draft)return false;
-      pendingShare=draft;showList();announce("Choose a conversation to share this invitation.");
+      pendingShare=draft;showList();announce("Choose a conversation to share this invitation.");impReact("invite");
       return true;
     },
     isOpen(){return state.visible;}

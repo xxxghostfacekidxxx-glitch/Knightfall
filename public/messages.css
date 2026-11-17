@@ -924,3 +924,12 @@
 @keyframes cs-hero-imp{0%,100%{transform:rotate(-2deg)}35%{transform:translateY(-4px) rotate(4deg)}39%{transform:translateY(-2px) rotate(-4deg)}43%{transform:rotate(2deg)}}
 @media(max-width:550px){.messages-hero .cs-hero-brand img{width:44px;height:44px}.messages-hero .cs-hero-brand h1{font-size:clamp(1.38rem,6.5vw,2.15rem)!important;letter-spacing:-.05em!important}}
 @media(prefers-reduced-motion:reduce){.messages-hero .cs-hero-brand img{animation:none}}
+
+/* Chaosphere inbox mascot speaks only when tapped. */
+.messages-hero .cs-hero-imp{display:grid;place-items:center;flex:none;border:0;padding:0;background:transparent;cursor:pointer;border-radius:16px}
+.messages-hero .cs-hero-imp:focus-visible{outline:3px solid var(--kf-accent-bright,#c7a77c);outline-offset:3px}
+.messages-hero .cs-hero-imp.cs-imp-poked img{animation:cs-imp-poke .6s ease-out 1}
+.messages-hero .cs-hero-imp-speech{display:inline-block;margin:.45rem 0 0;padding:.4rem .7rem;border-radius:10px;border:1px solid #827076;background:#28212a;color:#ead2b7;font-weight:800;font-size:.74rem}
+.messages-hero .cs-hero-imp-speech[hidden]{display:none!important}
+@keyframes cs-imp-poke{0%,100%{transform:rotate(0)}30%{transform:rotate(10deg) translateY(-5px)}65%{transform:rotate(-9deg)}}
+@media(prefers-reduced-motion:reduce){.messages-hero .cs-hero-imp.cs-imp-poked img{animation:none!important}}

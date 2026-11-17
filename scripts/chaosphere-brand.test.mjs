@@ -11,6 +11,10 @@ test("Chaosphere is canonical across pages, navigation, chat and home",()=>{
  assert.match(read("chaosphere.html"),/Enter the chaos\. Find your kind/);
  assert.match(read("chat-bubbles.js"),/kf-chaosphere-demon/);
  assert.match(read("chat-bubbles.css"),/kf-imp-panic/);
+ assert.match(read("chat-bubbles.js"),/ChaosphereImp\.mount/);
+ assert.match(read("chat-bubbles.js"),/unreadBaselineReady/);
+ assert.match(read("messages.html"),/id="cs-hero-imp"/);
+ assert.match(read("sw.js"),/chaosphere-imp\.js/);
  assert.match(read("messages.css"),/\.cs-hero-brand/);
  assert.match(read("index.html"),/href="\/chaosphere\.html"/);
  assert.match(read("install.html"),/Install Chaosphere Messenger/);
@@ -36,7 +40,7 @@ test("Legacy installed messenger identities remain stable, with no new message d
  assert.match(read("ruinwire-app.js"),/\["chaosphere","ruinwire"\]/);
  assert.match(read("ruinwire-app.js"),/\/chaosphere\.webmanifest/);
  assert.match(read("chat-bubbles.js"),/\/api\/messages\/conversations/);
- assert.match(read("sw.js"),/knightfall-shell-v73/);
+ assert.match(read("sw.js"),/knightfall-shell-v74/);
  for(const path of ["chaosphere.html","chaosphere.webmanifest","icons/chaosphere.svg"])
   assert.ok(existsSync(new URL(path,root)),path+" must be shipped");
  new vm.Script(read("ruinwire-app.js"));

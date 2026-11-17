@@ -64,6 +64,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chat-bubbles.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/chaosphere-imp.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /chat-bubbles.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 /arcade-chat-bridge.js

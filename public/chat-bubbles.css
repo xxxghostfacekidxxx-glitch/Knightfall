@@ -225,3 +225,23 @@
 #kf-chat-heads.kf-chat-has-unread .kf-chat-launcher{box-shadow:0 4px 22px #000a,0 0 15px #b25b6870}
 @keyframes kf-imp-panic{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}45%{transform:rotate(13deg)}70%{transform:rotate(-7deg)}}
 @media(prefers-reduced-motion:reduce){#kf-chat-heads.kf-chat-has-unread .kf-chaosphere-demon{animation:none}}
+
+/* Chaosphere moods: fixed quips, quiet toggle, no sound, never block arcade controls. */
+#kf-chat-heads .kf-imp-quiet-button{flex:none;display:grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid #82617c;border-radius:9px;background:#26202c;color:#f8e3c6;font-size:17px;cursor:pointer}
+#kf-chat-heads .kf-imp-quiet-button:focus-visible{outline:3px solid #c7a77c;outline-offset:2px}
+#kf-chat-heads .kf-imp-quiet-button[aria-pressed=false]{opacity:.7}
+#kf-chat-heads .kf-imp-inline{display:block;overflow:hidden;max-width:100%;white-space:nowrap;text-overflow:ellipsis;color:#e8bea0;font-size:10px;letter-spacing:.025em}
+#kf-chat-heads .kf-imp-inline[hidden]{display:none!important}
+#kf-chat-heads .kf-imp-speech{position:absolute;right:3px;bottom:calc(69px + env(safe-area-inset-bottom));z-index:4;max-width:min(208px,calc(100vw - 26px));padding:8px 11px;border:1px solid #c7a77c;border-radius:13px 13px 4px 13px;background:#281d2b;color:#f2dfc7;box-shadow:0 6px 20px #000b;font:850 11px/1.3 system-ui,sans-serif;pointer-events:none;text-wrap:balance}
+#kf-chat-heads .kf-imp-speech[hidden],#kf-chat-heads.kf-chat-arcade .kf-imp-speech,#kf-chat-heads.kf-chat-expanded .kf-imp-speech{display:none!important}
+#kf-chat-heads.kf-chat-has-unread .kf-chaosphere-demon{animation:none}
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=incoming] .kf-chaosphere-demon{animation:kf-imp-panic .75s ease-in-out 2}
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=sent] .kf-chaosphere-demon,
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=invite] .kf-chaosphere-demon{animation:kf-imp-hop .63s ease-out 2}
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=failed] .kf-chaosphere-demon{animation:kf-imp-droop .7s ease-out}
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=wake] .kf-chaosphere-demon{animation:kf-imp-hop .63s ease-out}
+#kf-chat-heads:not(.kf-imp-quiet)[data-kf-imp-mood=sending] .kf-chaosphere-demon{animation:kf-imp-panic .5s ease-in-out}
+@keyframes kf-imp-hop{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-8px) rotate(-12deg)}65%{transform:translateY(1px) rotate(7deg)}}
+@keyframes kf-imp-droop{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(14deg) scale(.85)}}
+@media(max-width:600px){#kf-chat-heads .kf-imp-quiet-button{width:28px;height:28px}}
+@media(prefers-reduced-motion:reduce){#kf-chat-heads .kf-chaosphere-demon{animation:none!important}}

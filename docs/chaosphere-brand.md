@@ -10,10 +10,14 @@ GIR/JTHM/BMTH are *tonal references*, not character assets to copy.
 
 ## Behavior
 - The mascot lives in the Chaosphere install icon, inbox hero and floating launcher.
-- It wiggles on unread messages. Motion stops when reduced motion is requested.
+- It reacts to newly increased unread counts after a baseline, plus open, send, sent,
+  failed-send and invite actions. Existing unread counts never trigger new-message reactions.
+- The captions are fixed quips; user content never goes into mascot text.
+- A per-account quiet-demon toggle disables reactions and persists locally.
+- Motion stops on reduced-motion settings. No sounds or overlay in arcade gameplay.
 - Chat and live-message events use existing Knightfall D1 messaging, WebSocket and push.
 - It never blocks game controls, never plays sound without a user action and never automatically sends messages or game invitations.
-- Planned: custom reactions/emotes, optional sounds, costume unlocks and seasonal expressions. Not yet implemented.
+- Planned: illustrated expression variants, optional sound effects, costume unlocks and seasonal expressions. Not yet implemented.
 
 ## Compatibility
 - `/messages.html` and D1 remain the authoritative inbox. No conversation migration.
