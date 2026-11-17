@@ -69,10 +69,21 @@ test('four sockets get distinct seats, fifth is refused, and reconnect preserves
   await ctx.ready;
   t.after(() => clearInterval(room.timer));
   const join = id => room.fetch(new Request('https://imp-inferno.internal/connect', {
-    headers: { 'X-Seat-Token': id.repeat(32), 'X-Imp-Protocol': id === 'a' ? 'imp-inferno-v1' : 'imp-inferno-v2' },
+    headers: { 'X-Seat-Token': id.repeat(32), 'X-Imp-Protocol': id === 'a' ? 'imp-inferno-v1' : id === 'b' ? 'imp-inferno-v2' : 'imp-inferno-v3' },
   }));
   for (const id of 'abcd') assert.equal((await join(id)).status, 101);
   assert.deepEqual(pairs.map(pair => pair[1].messages[0].seat), [0, 1, 2, 3]);
+  // Existing v1/v2 clients receive equivalent legacy silhouettes; v3 sees actual creatures.
+  const openingTargets = room.table.targets;
+  room.table.targets = [
+    { species: 'hydra', multiplier: 60, name: 'Infernal Hydra', id: 501 },
+    { species: 'firestorm', multiplier: 18, bonus: 'storm', id: 502 },
+  ];
+  room.broadcast();
+  const messages = pairs.map(pair => pair[1].messages.at(-1).table.targets);
+  assert.deepEqual(messages.map(targets => targets[0].species), ['king', 'king', 'hydra', 'hydra']);
+  assert.deepEqual(messages.map(targets => targets[1].species), ['fuse', 'firestorm', 'firestorm', 'firestorm']);
+  room.table.targets = openingTargets;
   room.table.tideIndex = 1;
   room.table.nextTide = room.table.time + 3;
   room.broadcast();
