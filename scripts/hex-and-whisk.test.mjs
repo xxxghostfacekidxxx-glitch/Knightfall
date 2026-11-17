@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,FAVORITE_TIP_PERCENT,favoriteTipForOrder} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -345,4 +345,40 @@ test("customer and quest rewards grant bonus energy instead of discarding energy
  const served=serve(state,0,rng,now);
  assert.equal(served.ok,true);
  assert.ok(state.energy>46);
+});
+
+test("eight distinct patrons maintain stable identities and tastes with existing order IDs",()=>{
+ assert.equal(PATRONS.length,8);
+ assert.equal(new Set(PATRONS.map(p=>p.symbol)).size,8);
+ assert.equal(new Set(PATRONS.map(p=>p.name)).size,8);
+ const state=makeGame(rng,now);
+ for(const order of state.orders){
+  assert.equal(patronForOrder(order),PATRONS[order.id%PATRONS.length]);
+  assert.equal(patronForOrder(restore(serialize(state),rng,now).orders.find(o=>o.id===order.id)),patronForOrder(order));
+ }
+ assert.equal(FAVORITE_TIP_PERCENT,20);
+});
+test("favorite meals produce a real extra tip, without altering saved orders or rush hour",()=>{
+ const state=makeGame(rng,now);
+ const order=state.orders[0],favorite=patronForOrder(order).favorite;
+ const favoriteOrder={...order,chain:favorite,tier:2,coins:51};
+ state.orders[0]=favoriteOrder;
+ state.board[10]={chain:favorite,tier:2,id:9100};
+ const tip=favoriteTipForOrder(favoriteOrder);
+ assert.equal(tip,11);
+ const before=state.coins;
+ const result=serve(state,0,rng,now);
+ assert.equal(result.ok,true);
+ assert.equal(result.favoriteTip,tip);
+ assert.equal(result.coins,51+tip);
+ assert.equal(state.coins-before,result.coins);
+ assert.equal(result.patron,patronForOrder(favoriteOrder).name);
+ const otherChain=Object.keys(RECIPES).find(c=>c!==favorite);
+ assert.equal(favoriteTipForOrder({...favoriteOrder,chain:otherChain}),0);
+ const rush=makeGame(rng,now),o=rush.orders[0],fav=patronForOrder(o).favorite;
+ rush.orders[0]={...o,chain:fav,tier:2,coins:51};
+ rush.board[11]={chain:fav,tier:2,id:9101};rush.rushUntil=now+40000;
+ const rushResult=serve(rush,0,rng,now);
+ assert.equal(rushResult.coins,(51+11)*2);
+ assert.equal(rushResult.favoriteTip,22);
 });
