@@ -1,4 +1,4 @@
-/* Ruinwire separate PWA launcher and compact inbox presentation. */
+/* Chaosphere brand; legacy .ruinwire-mode selector retained for installed clients. */
 :root{--rw-bg:#0d1013;--rw-pink:#b25b68;--rw-green:#c7a77c;--rw-line:#827076}
 .ruinwire-install-page{background:radial-gradient(ellipse at 20% 0%,#2a2028 0,transparent 48%),radial-gradient(ellipse at 90% 80%,#1b2021 0,transparent 45%),var(--rw-bg);color:#ece1d3;min-height:100dvh}
 .rw-install{width:min(1100px,100%);margin:auto;padding:clamp(1.1rem,5vw,4rem)}
@@ -43,3 +43,11 @@ html.ruinwire-mode .messages-hero-actions button{font-size:.76rem;padding:.4rem 
 /* Hidden until a passing debug artifact is verified via GitHub. */
 #rw-debug-apk-link[hidden]{display:none!important}
 [data-android-debug-find]:disabled{opacity:.65;cursor:wait}
+
+/* Original mascot: subtle cartoon disorder without blocking install controls. */
+.rw-install-hero{position:relative}
+.cs-mascot-tooltip{position:absolute;right:18px;top:-19px;padding:7px 11px;border:1px solid #c7a77c;border-radius:12px;background:#281e2c;color:#f9e6c8;font:850 .65rem/1.2 system-ui,sans-serif;letter-spacing:.06em;transform:rotate(4deg);box-shadow:0 5px 12px #0006}
+.rw-install-hero>img{animation:cs-imp-bob 3.5s ease-in-out infinite;transform-origin:center bottom}
+@keyframes cs-imp-bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(4deg)}}
+@media(prefers-reduced-motion:reduce){.rw-install-hero>img{animation:none}}
+@media(max-width:550px){.cs-mascot-tooltip{right:8px;top:-14px;font-size:.55rem}}
