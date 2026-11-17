@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T16:45:59.302Z",
+  "generatedAt": "2026-11-17T17:14:29.109Z",
   "reportsFound": 20,
   "catalogRoutes": 135,
   "targets": {
@@ -11,9 +11,48 @@
       "missingShards": [],
       "duplicatedShards": [],
       "duplicatedRoutes": [],
-      "malformedReports": [],
-      "failures": [],
-      "coverageOk": true
+      "malformedReports": [
+        {
+          "file": "/home/runner/work/Knightfall/Knightfall/artifacts/shards/arcade-test-results-3-Maze Warden/tmp/arcade-browser-evidence/shard-3/live/report.json",
+          "shard": 3
+        }
+      ],
+      "failures": [
+        {
+          "game": "bowling",
+          "route": "/arcade/hosted/bowling/index.html",
+          "profile": "tablet",
+          "action": "retry live navigation",
+          "reason": "page.goto: Timeout 22000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/bowling/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:70:26",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinder-gomoku",
+          "route": "/arcade/hosted/cinder-gomoku/index.html",
+          "profile": "tablet",
+          "action": "retry live navigation",
+          "reason": "page.goto: Timeout 22000ms exceeded.\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinder-gomoku/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:70:26",
+          "target": "live",
+          "screenshot": null,
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        },
+        {
+          "game": "cinder-reversi",
+          "route": "/arcade/hosted/cinder-reversi/index.html",
+          "profile": "tablet",
+          "action": "retry live navigation",
+          "reason": "page.goto: net::ERR_CONNECTION_RESET at https://ash-fall.com/arcade/hosted/cinder-reversi/index.html\nCall log:\n  - navigating to \"https://ash-fall.com/arcade/hosted/cinder-reversi/index.html\", waiting until \"domcontentloaded\"\n\n    at /home/runner/work/Knightfall/Knightfall/scripts/arcade-sharded-smoke.mjs:70:26",
+          "target": "live",
+          "screenshot": "005.png",
+          "networkErrorCount": 1,
+          "browserErrorCount": 0
+        }
+      ],
+      "coverageOk": false
     },
     "local": {
       "reports": 10,
@@ -28,6 +67,6 @@
       "coverageOk": true
     }
   },
-  "passed": true,
-  "sourceRunId": 44128601703
+  "passed": false,
+  "sourceRunId": 44133344200
 }
