@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
+import {WIDTH,CELL_COUNT,SHELF_SLOTS,shelfCapacity,generatorAt,relocateGenerator,MAX_ENERGY,ENERGY_HARD_CAP,awardEnergy,ENERGY_INTERVAL,RECIPES,makeGame,advance,spawn,move,serve,upgrade,recycle,stir,serialize,restore,findReady,findShelfReady,storeOnShelf,takeFromShelf,available,WHISK_CAP,WHISK_EVERY,findMergePair,magicWhisk,QUESTS,questTarget,questReward,claimQuest,discoveryCount,ORDER_REFRESH_COST,refreshOrder,PATRONS,patronForOrder,orderProgress,FAVORITE_TIP_PERCENT,favoriteTipForOrder,LOYALTY_VISIT_INTERVAL,loyaltyStamps,loyaltyNext} from "../public/arcade/hosted/hex-and-whisk/engine.mjs";
 const rng=()=>.3,now=1_800_000_000_000;
 const blank=()=>{const s=makeGame(rng,now);s.board.fill(null);s.orders=[];return s};
 test("a six-by-six board starts playable with three restaurant orders and original cooking chains",()=>{
@@ -405,4 +405,18 @@ test("regular customers remember visits and return with an earned bonus every th
  assert.equal(loyaltyNext(saved,patron),2);
  const legacy=JSON.parse(serialize(state));delete legacy.patronVisits;
  assert.equal(loyaltyStamps(restore(legacy,rng,now),patron),0);
+});
+
+test("customer progress tracks closest recipe tier across countertop and pantry",()=>{
+ const state=makeGame(rng,now);
+ state.board.fill(null);state.shelf.fill(null);
+ const order={id:5000,chain:"garden",tier:5,coins:100,xp:50};
+ assert.deepEqual(orderProgress(state,order),{tier:0,steps:5,ready:false,pieces:0});
+ state.board[11]={id:101,chain:"garden",tier:2};
+ state.board[12]={id:102,chain:"bakery",tier:6};
+ state.shelf[0]={id:103,chain:"garden",tier:4};
+ assert.deepEqual(orderProgress(state,order),{tier:4,steps:1,ready:false,pieces:2});
+ state.board[14]={id:104,chain:"garden",tier:5};
+ assert.deepEqual(orderProgress(state,order),{tier:5,steps:0,ready:true,pieces:3});
+ assert.deepEqual(orderProgress(state,null),{tier:0,steps:0,ready:false,pieces:0});
 });
