@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=6"/);
- assert.match(page,/href="\.\/game\.css\?v=6"/);
+ assert.match(page,/src="\.\/game\.js\?v=7"/);
+ assert.match(page,/href="\.\/game\.css\?v=7"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -109,4 +109,21 @@ test("moveable glowing generators, animated patrons and expanding pantry have ac
  assert.match(stylesheet,/\\.slot\\.generator-slot/);
  assert.match(stylesheet,/\\.customer-avatar/);
  assert.match(stylesheet,/prefers-reduced-motion:reduce/);
+});
+
+test("the mobile kitchen keeps orders and board visible with accessible slide-up tools",()=>{
+ assert.match(page,/id="open-storage"/);
+ assert.match(page,/id="open-kitchen-menu"/);
+ assert.match(page,/id="kitchen-storage"/);
+ assert.match(page,/id="kitchen-menu"/);
+ assert.match(page,/id="game-overlay-scrim"/);
+ assert.match(script,/function setKitchenDrawer/);
+ assert.match(script,/aria-expanded/);
+ assert.match(script,/energy-overflow/);
+ assert.match(stylesheet,/\.mobile-game-actions/);
+ assert.match(stylesheet,/grid-template-rows:auto auto auto minmax\(0,1fr\)/);
+ assert.match(stylesheet,/\.merge-board \.slot:nth-child/);
+ assert.match(stylesheet,/\.shelf-panel\.drawer-open/);
+ assert.match(stylesheet,/\.secondary-column\.drawer-open/);
+ assert.match(stylesheet,/@media\(max-width:890px\) and \(orientation:landscape\)/);
 });
