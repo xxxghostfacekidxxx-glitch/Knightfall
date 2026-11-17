@@ -43,8 +43,8 @@ test("game uses original vector cooking pieces and accessible touch/keyboard sem
  assert.match(page,/id="patron-ghost"/);
  assert.match(page,/id="patron-imp"/);
  assert.match(page,/id="patron-witch"/);
- assert.match(page,/src="\.\/game\.js\?v=8"/);
- assert.match(page,/href="\.\/game\.css\?v=8"/);
+ assert.match(page,/src="\.\/game\.js\?v=9"/);
+ assert.match(page,/href="\.\/game\.css\?v=9"/);
  assert.match(script,/function showMergeHint/);
  assert.match(script,/function useMagicWhisk/);
  assert.match(script,/magicWhisk\(game/);
@@ -136,4 +136,18 @@ test("board tiles are square and never show tier-number badges",()=>{
  assert.match(script,/GENERATOR_ART/);
  assert.match(script,/function generatorArt\(chain\)/);
  assert.doesNotMatch(script,/function generatorArt\(chain\)\{const art=food/);
+});
+
+test("eight illustrated characters speak differently and earn favorite meal tips",()=>{
+ for(const symbol of ["imp","bat","ghost","witch","gargoyle","moth","crow","slime"])
+  assert.match(page,new RegExp('id="patron-'+symbol+'"'));
+ assert.match(script,/CUSTOMER_LINES/);
+ assert.match(script,/function customerLine\(order,ready\)/);
+ assert.match(script,/data\.customer|dataset\.customer/);
+ assert.match(script,/favoriteTipForOrder/);
+ assert.match(script,/customer-speech/);
+ assert.match(script,/favorite-tip/);
+ assert.match(stylesheet,/\.order-card\[data-customer="moth"\]/);
+ assert.match(stylesheet,/@keyframes patron-bloop/);
+ assert.match(stylesheet,/\.order-card \.customer-speech\{display:block!important/);
 });
