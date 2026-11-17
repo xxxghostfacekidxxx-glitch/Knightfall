@@ -144,3 +144,9 @@ body.theater .game-shell{max-width:none;width:100%;min-height:100dvh}
 @keyframes customer-twinkle{50%{opacity:.3;transform:rotate(30deg) scale(.7)}}
 @media(max-width:600px){.board-frame:before{inset:2px;border-radius:12px}.generator-emoji{font-size:clamp(1.15rem,6vw,1.8rem)}.generator-name{font-size:clamp(5px,1.45vw,8px)}.customer-avatar{width:40px;height:40px}.customer-badge{min-height:45px}.customer-speech{font-size:.48rem;padding:3px 4px}.order-card .food{width:40px;height:40px}.shelf-pockets{grid-template-columns:repeat(3,minmax(0,1fr))}.storage-progress{font-size:.5rem}}
 @media(prefers-reduced-motion:reduce){.slot.generator-slot,.slot.generator-slot:before,.generator-emoji,.customer-avatar,.customer-avatar:before,.slot[data-family] .food{animation:none!important}}
+
+/* Original recipe artwork sits inside every generator's etched copper spell wheel. */
+.slot.generator-slot .generator-art{position:relative;width:78%;height:76%;z-index:1;filter:drop-shadow(0 5px 4px #3d163eaa) drop-shadow(0 0 8px #ffedbe8b);animation:station-hover 3.4s ease-in-out infinite;pointer-events:none}
+.station-pic .generator-art{width:88%;height:88%;filter:drop-shadow(0 4px 3px #4d25437d);animation:station-hover 3.4s ease-in-out infinite}
+.drag-ghost .generator-art{width:85%;height:85%;filter:drop-shadow(0 6px 4px #633c4e7d)}
+@media(prefers-reduced-motion:reduce){.slot.generator-slot .generator-art,.station-pic .generator-art{animation:none!important}}
