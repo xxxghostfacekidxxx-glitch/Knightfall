@@ -48,6 +48,14 @@ export const PATRON_KEEPSAKES=Object.freeze({
 });
 export const keepsakesForPatron=(state,patron)=>KEEPSAKE_LEVELS.filter(limit=>loyaltyStamps(state,patron)>=limit).map((limit,index)=>({visits:limit,name:PATRON_KEEPSAKES[patron.symbol][index]}));
 export const keepsakeUnlocked=(patron,visits)=>KEEPSAKE_LEVELS.includes(visits)?{visits,name:PATRON_KEEPSAKES[patron.symbol][KEEPSAKE_LEVELS.indexOf(visits)]}:null;
+export function nextKeepsakeProgress(state,patron){
+ const visits=loyaltyStamps(state,patron);
+ const next=KEEPSAKE_LEVELS.find(milestone=>milestone>visits);
+ if(!next)return {visits,complete:true,goal:9,current:9,remaining:0,ratio:1};
+ const previous=[0,...KEEPSAKE_LEVELS].filter(milestone=>milestone<next).at(-1);
+ return {visits,complete:false,goal:next,current:visits,remaining:next-visits,ratio:(visits-previous)/(next-previous)};
+}
+
 
 const keys=Object.keys(RECIPES);
 const cap=n=>Math.max(0,Math.min(1000000000,Math.floor(Number(n)||0)));
