@@ -1,4 +1,4 @@
-import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=2';
+import { HEIGHT, SEAT_COLORS, seatOrigin } from './furnace.mjs?v=3';
 
 const INK = '#210912';
 const COLORS = {
@@ -7,6 +7,9 @@ const COLORS = {
   brute: ['#f04838', '#7f1738', '#ffd267'],
   fuse: ['#ff8e33', '#8e2635', '#ffe892'],
   spark: ['#f35555', '#ab2759', '#fffab4'],
+  prism: ['#ff735a', '#a02453', '#fff5bb'],
+  drill: ['#ff762b', '#802138', '#ffd886'],
+  vortex: ['#fc4b55', '#661935', '#ffe0a2'],
   king: ['#fd783c', '#8c1337', '#ffe58b'],
 };
 
@@ -60,7 +63,12 @@ function imp(ctx, target, time) {
     ellipse(ctx, 1, -33, 4, 5, '#ff543b');
   } else if (target.bonus) {
     ellipse(ctx, -2, 23, 8, 9, target.bonus === 'blast' ? '#ffb339' : '#fffad0');
-    polygon(ctx, INK, [[0, 15], [-6, 24], [-1, 24], [-3, 32], [6, 21], [1, 21]], 0);
+    const glyphs = { blast: '✹', chain: 'ϟ', beam: '◆', drill: '▼', vortex: '◎' };
+    ctx.font = '900 12px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = INK;
+    ctx.fillText(glyphs[target.bonus], -2, 23);
   }
   ctx.restore();
 }
@@ -127,6 +135,60 @@ function drawNet(ctx, effect, opacity) {
   }
 }
 
+function drawEffect(ctx, effect, table, reducedMotion) {
+  const opacity = effect.life / effect.duration;
+  const color = SEAT_COLORS[effect.seat];
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, opacity * 1.65);
+  if (effect.kind === 'catch') {
+    if (!reducedMotion) {
+      const origin = seatOrigin(table, effect.seat);
+      const progress = Math.pow(1 - opacity, 2);
+      for (let coin = 0; coin < 4; coin++) {
+        const drift = Math.sin(Math.PI * progress) * (coin - 1.5) * 18;
+        const x = effect.x + (origin.x - effect.x) * progress + drift;
+        const y = effect.y + (origin.y - effect.y) * progress - drift;
+        ellipse(ctx, x, y, 3 + coin % 2, 5, color, progress * 8);
+        ellipse(ctx, x, y, 1.2, 3, '#fff3b4', progress * 8);
+      }
+      if (opacity > .68) {
+        ctx.globalAlpha = (opacity - .68) * 2.4;
+        imp(ctx, { ...effect.target, y: effect.y - (1 - opacity) * 38, radius: effect.target.radius * opacity, flash: true }, table.time);
+        ctx.globalAlpha = Math.min(1, opacity * 1.65);
+      }
+    }
+    label(ctx, '+' + effect.amount, effect.x, effect.y - 42 + opacity * 28, color, effect.seat ? 14 : 21);
+  } else if (effect.kind === 'beam') {
+    for (const [width, shade] of [[25, color + '85'], [11, color], [3, '#fff5cb']]) {
+      ctx.beginPath();
+      ctx.moveTo(effect.x, effect.y);
+      ctx.lineTo(effect.endX, effect.endY);
+      ctx.lineWidth = width * Math.max(.14, opacity);
+      ctx.strokeStyle = shade;
+      ctx.stroke();
+    }
+  } else {
+    ctx.lineWidth = effect.kind === 'net' || effect.kind === 'bounce' ? 1.6 : 4;
+    ctx.strokeStyle = color;
+    drawNet(ctx, effect, opacity);
+    if (effect.kind === 'chain' || effect.kind === 'vortex') {
+      for (const point of effect.points) {
+        ctx.beginPath();
+        ctx.moveTo(effect.x, effect.y);
+        const dx = point.x - effect.x;
+        const dy = point.y - effect.y;
+        ctx.lineTo(effect.x + dx * .32 + dy * .12, effect.y + dy * .32 - dx * .12);
+        ctx.lineTo(effect.x + dx * .67 - dy * .1, effect.y + dy * .67 + dx * .1);
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+      }
+    }
+    const callout = { blast: 'BOMB', chain: 'CHAIN', vortex: 'VORTEX' }[effect.kind];
+    if (callout) label(ctx, callout, effect.x, effect.y, color, 20);
+  }
+  ctx.restore();
+}
+
 export function makeRenderer(ctx, backdrop) {
   return (table, control, reducedMotion) => {
     const width = table.width;
@@ -135,6 +197,10 @@ export function makeRenderer(ctx, backdrop) {
     if (backdrop.complete && backdrop.naturalWidth) {
       const sourceWidth = backdrop.naturalWidth * Math.min(1, Math.max(.7, width / HEIGHT * backdrop.naturalHeight / backdrop.naturalWidth));
       ctx.drawImage(backdrop, (backdrop.naturalWidth - sourceWidth) / 2, 0, sourceWidth, backdrop.naturalHeight, 0, 0, width, HEIGHT);
+    }
+    if (table.nextTide - table.time >= 25) {
+      ctx.fillStyle = '#f6671b19';
+      ctx.fillRect(0, 0, width, HEIGHT);
     }
     ctx.fillStyle = '#360d1654';
     ctx.fillRect(0, 0, width, HEIGHT);
@@ -158,24 +224,11 @@ export function makeRenderer(ctx, backdrop) {
       ctx.moveTo(shot.x - Math.cos(shot.angle) * 18, shot.y - Math.sin(shot.angle) * 18);
       ctx.lineTo(shot.x, shot.y);
       ctx.strokeStyle = color;
-      ctx.lineWidth = shot.cost > 2 ? 5 : 3;
+      ctx.lineWidth = shot.drill ? 11 : shot.cost > 2 ? 5 : 3;
       ctx.stroke();
-      ellipse(ctx, shot.x, shot.y, 3, 3, '#fff6db');
+      ellipse(ctx, shot.x, shot.y, shot.drill ? 11 : 3, shot.drill ? 5 : 3, '#fff6db', shot.angle);
     }
-    for (const effect of table.effects) {
-      const opacity = effect.life / effect.duration;
-      const color = SEAT_COLORS[effect.seat];
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, opacity * 1.65);
-      if (effect.kind === 'catch') label(ctx, '+' + effect.amount, effect.x, effect.y - 36 + opacity * 25, color, effect.seat ? 14 : 20);
-      else {
-        ctx.lineWidth = effect.kind === 'net' ? 1.6 : 4;
-        ctx.strokeStyle = color;
-        drawNet(ctx, effect, opacity);
-        if (effect.kind !== 'net') label(ctx, effect.kind === 'blast' ? 'BOMB' : 'CHAIN', effect.x, effect.y, color, 20);
-      }
-      ctx.restore();
-    }
+    for (const effect of table.effects) drawEffect(ctx, effect, table, reducedMotion);
     table.seats.forEach((seat, i) => drawSeat(ctx, table, seat, i));
     const lock = table.targets.find(target => target.id === control.lockId);
     const aim = lock ?? control.aim;

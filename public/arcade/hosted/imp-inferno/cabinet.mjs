@@ -1,5 +1,5 @@
-import { makeRenderer } from './art.mjs?v=2';
-import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=2';
+import { makeRenderer } from './art.mjs?v=3';
+import { advance, HEIGHT, newTable, pickTarget, POWERS, resizeTable, seedTable } from './furnace.mjs?v=3';
 
 const byId = id => document.getElementById(id);
 const cabinet = byId('cabinet');
@@ -31,6 +31,11 @@ seedTable(table);
 function updateDisplay() {
   const seat = table.seats[0];
   const values = { credits: seat.credits, cost: POWERS[control.power].cost, won: seat.totalWon, caught: seat.caught };
+  const bonus = seat.bonus;
+  const weapon = byId('weapon');
+  const weaponText = bonus ? (bonus.kind === 'beam' ? 'Hellbeam ready' : 'Drill shot ready') + ' · next shot free' : '';
+  if (weapon.textContent !== weaponText) weapon.textContent = weaponText;
+  weapon.hidden = !bonus;
   for (const [key, amount] of Object.entries(values)) {
     const text = amount.toLocaleString('en-US');
     if (display[key].textContent !== text) display[key].textContent = text;
@@ -239,7 +244,7 @@ function frame(now) {
       table.banner = '';
       bannerUntil = table.time + 3.2;
     } else if (table.time >= bannerUntil) announcement.hidden = true;
-    if (player.credits === 0 && !table.shots.some(shot => shot.seat === 0)) {
+    if (player.credits === 0 && !player.bonus && !table.shots.some(shot => shot.seat === 0)) {
       phase = 'empty';
       releaseInput();
       pause.disabled = true;

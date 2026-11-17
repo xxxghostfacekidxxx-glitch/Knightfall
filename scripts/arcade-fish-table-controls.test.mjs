@@ -7,7 +7,7 @@ import {
 
 function isolatedTable() {
   const table = newTable(800);
-  table.nextSchool = table.nextRare = table.nextKing = Infinity;
+  table.nextSchool = table.nextRare = table.nextKing = table.nextTide = Infinity;
   for (const seat of table.seats.slice(1)) seat.readyAt = Infinity;
   return table;
 }
@@ -83,6 +83,74 @@ test('rivals use four separate seats, credits stay nonnegative, and the table ke
   assert.ok(table.formation > 20);
   assert.equal(table.seats[0].credits, 1);
   assert.ok(table.seats.slice(1).every(seat => seat.credits !== STARTING_CREDITS && seat.credits >= 0));
+});
+
+test('a bank shot reflects without charging twice and expires after its bounce budget', () => {
+  const table = isolatedTable();
+  table.shots.push({
+    seat: 0, cost: 2, radius: 45, strength: 1, angle: 0, lockId: null, life: 5, bounces: 1, x: 790, y: 250,
+  });
+  advance(table, .032, control, () => .99);
+  assert.equal(table.shots[0].x, 800);
+  assert.equal(table.shots[0].bounces, 0);
+  assert.ok(Math.cos(table.shots[0].angle) < 0);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS);
+  for (let i = 0; i < 40; i++) advance(table, .032, control, () => .99);
+  assert.equal(table.shots.length, 0);
+});
+
+test('a Prism catch earns one free beam at its original shot value', () => {
+  const table = isolatedTable();
+  target(table, 'prism', 1, 280);
+  table.shots.push({ seat: 0, cost: 5, radius: 47, strength: 1, angle: -Math.PI / 2, lockId: 1, life: 1.5, x: 400, y: 280 });
+  advance(table, .016, control, () => 0);
+  const seat = table.seats[0];
+  assert.deepEqual(seat.bonus, { kind: 'beam', cost: 5 });
+  assert.equal(seat.totalWon, 125);
+  target(table, 'grinner', 2, 210);
+  target(table, 'ashwing', 3, 280);
+  advance(table, .016, { ...control, power: 3, firing: true }, () => .99);
+  assert.equal(seat.credits, STARTING_CREDITS + 125 + 30);
+  assert.equal(seat.bonus, null);
+  assert.equal(seat.caught, 3);
+  assert.ok(table.effects.some(effect => effect.kind === 'beam'));
+});
+
+test('a charged drill pierces two imps and applies the captured shot value', () => {
+  const table = isolatedTable();
+  table.seats[0].bonus = { kind: 'drill', cost: 2 };
+  target(table, 'ashwing', 7, 372);
+  target(table, 'grinner', 8, 338);
+  advance(table, .016, { ...control, power: 3, firing: true }, () => .99);
+  for (let i = 0; i < 16; i++) advance(table, .016, control, () => .99);
+  assert.equal(table.seats[0].credits, STARTING_CREDITS + 12);
+  assert.equal(table.seats[0].caught, 2);
+  assert.equal(table.seats[0].bonus, null);
+});
+
+test('Vortex sweeps a matching school and leaves other species in play', () => {
+  const table = isolatedTable();
+  target(table, 'vortex', 1, 290);
+  target(table, 'grinner', 2, 216);
+  target(table, 'grinner', 3, 181);
+  target(table, 'ashwing', 4, 175);
+  table.shots.push({
+    seat: 0, cost: 2, radius: 38, strength: 1, angle: -Math.PI / 2, lockId: 1, life: 1.5, x: 400, y: 290,
+  });
+  advance(table, .016, control, () => 0);
+  assert.deepEqual(table.targets.map(target => target.id), [4]);
+  assert.equal(table.seats[0].totalWon, 2 * (35 + 2 + 2));
+  assert.equal(table.effects.find(effect => effect.kind === 'vortex').points.length, 2);
+});
+
+test('the tide sends three schools in the same direction on separate lanes', () => {
+  const table = isolatedTable();
+  table.nextTide = 0;
+  advance(table, .016, control, () => .1);
+  assert.equal(table.targets.length, 20);
+  assert.ok(table.targets.every(target => target.direction === 1 && target.route === 'tide'));
+  assert.equal(new Set(table.targets.map(target => target.sharedY)).size, 3);
+  assert.ok(table.nextSchool > table.time);
 });
 
 test('retired cabinet routes are absent from the site, catalog, and redirects', () => {
