@@ -125,6 +125,7 @@ export function storeOnShelf(state,boardIndex,shelfIndex){
  if(!Number.isInteger(boardIndex)||boardIndex<0||boardIndex>=CELL_COUNT||!Number.isInteger(shelfIndex)||shelfIndex<0||shelfIndex>=state.shelf.length)return {ok:false,reason:"invalid"};
  const tile=state.board[boardIndex];if(!tile)return {ok:false,reason:"empty"};
  const previous=state.shelf[shelfIndex];state.shelf[shelfIndex]=tile;state.board[boardIndex]=previous||null;state.combo=0;
+ for(const chain of keys)attachGenerator(state,chain);
  return {ok:true,type:previous?"shelf-swap":"shelf-store",place:boardIndex,shelfIndex};
 }
 export function takeFromShelf(state,shelfIndex,boardIndex){
@@ -252,6 +253,7 @@ export function serve(state,index,random=Math.random,now=Date.now()){
  if(state.served%5===0)state.rushUntil=now+45000;
  state.orders.splice(index,1);
  state.orders.push(orderFor(state,random));
+ for(const chain of keys)attachGenerator(state,chain);
  return {ok:true,type:"serve",place,shelfPlace,coins,gained,leveled,unlockedSweetshop,level:state.level,rush:state.served%5===0,whiskEarned};
 }
 export function upgrade(state,chain){
@@ -266,11 +268,13 @@ export function recycle(state,index){
  if(!Number.isInteger(index)||index<0||index>=CELL_COUNT||!state.board[index])return {ok:false,reason:"empty"};
  const tile=state.board[index];
  state.board[index]=null;state.combo=0;
+ for(const chain of keys)attachGenerator(state,chain);
  return {ok:true,type:"recycle",place:index,chain:tile.chain,tier:tile.tier};
 }
 export function stir(state,random=Math.random){
  if(state.coins<15)return {ok:false,reason:"coins"};
  const positions=state.board.filter(Boolean);
+ if(positions.length>CELL_COUNT-Object.values(state.generators||{}).filter(x=>x>=0).length)return {ok:false,reason:"full"};
  for(let i=positions.length-1;i>0;i--){const j=Math.floor(rnd(random)*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]]}
  const cells=Array(CELL_COUNT).fill(null);
  const spaces=Array.from({length:CELL_COUNT},(_,i)=>i).filter(i=>!generatorAt(state,i));
