@@ -20,24 +20,24 @@ test("tapping a producer uses energy, respects unlocks and refuses full boards",
 });
 test("dragging matching objects merges with an escalating timed combo",()=>{
  const s=blank();
- s.board[0]={chain:"garden",tier:1,id:10};
- s.board[1]={chain:"garden",tier:1,id:11};
- s.board[2]={chain:"garden",tier:2,id:12};
- const a=move(s,0,1,now);
+ s.board[10]={chain:"garden",tier:1,id:10};
+ s.board[11]={chain:"garden",tier:1,id:11};
+ s.board[12]={chain:"garden",tier:2,id:12};
+ const a=move(s,10,11,now);
  assert.equal(a.type,"merge");assert.equal(a.tier,2);assert.equal(a.combo,1);
- const b=move(s,1,2,now+500);
+ const b=move(s,11,12,now+500);
  assert.equal(b.type,"merge");assert.equal(b.tier,3);assert.equal(b.combo,2);
  assert.ok(b.gained>a.gained);assert.equal(s.best,s.score);
 });
 test("unlike a sliding 2048 board, nonmatches can move or swap freely",()=>{
  const s=blank();
- s.board[0]={chain:"garden",tier:1,id:1};
- s.board[1]={chain:"bakery",tier:1,id:2};
- assert.equal(move(s,0,1,now).type,"swap");
- assert.equal(s.board[0].chain,"bakery");
- assert.equal(move(s,1,3,now).type,"move");
- assert.equal(s.board[3].chain,"garden");
- assert.equal(move(s,3,3,now).reason,"invalid");
+ s.board[10]={chain:"garden",tier:1,id:1};
+ s.board[11]={chain:"bakery",tier:1,id:2};
+ assert.equal(move(s,10,11,now).type,"swap");
+ assert.equal(s.board[10].chain,"bakery");
+ assert.equal(move(s,11,13,now).type,"move");
+ assert.equal(s.board[13].chain,"garden");
+ assert.equal(move(s,13,13,now).reason,"invalid");
 });
 test("customer order is fulfilled by exact dish, gains coins XP and generates next",()=>{
  const s=makeGame(rng,now);
@@ -81,25 +81,25 @@ test("stir uses restaurant coins; serialized saves defend against corrupted boar
 test("recipe collection earns first-discovery bonuses exactly once and survives saved kitchens",()=>{
  const state=makeGame(rng,now);
  state.board.fill(null);
- state.board[0]={chain:"garden",tier:2,id:1};state.board[1]={chain:"garden",tier:2,id:2};
+ state.board[10]={chain:"garden",tier:2,id:1};state.board[11]={chain:"garden",tier:2,id:2};
  assert.equal(discoveryCount(state),4);
  const coins=state.coins,score=state.score;
- const one=move(state,0,1,now);
+ const one=move(state,10,11,now);
  assert.equal(one.tier,3);assert.equal(one.discoveryBonus,41);
  assert.equal(state.coins,coins+41);assert.ok(state.score>score);
  assert.equal(state.discovered.garden,3);
  const reloaded=restore(serialize(state),rng,now);
  assert.equal(discoveryCount(reloaded),5);
- reloaded.board[2]={chain:"garden",tier:2,id:10};
- reloaded.board[3]={chain:"garden",tier:2,id:11};
- assert.equal(move(reloaded,2,3,now+7000).discoveryBonus,0);
+ reloaded.board[12]={chain:"garden",tier:2,id:10};
+ reloaded.board[13]={chain:"garden",tier:2,id:11};
+ assert.equal(move(reloaded,12,13,now+7000).discoveryBonus,0);
 });
 test("three earning quests advance only for the correct action",()=>{
  const state=makeGame(rng,now);
  assert.deepEqual(Object.keys(QUESTS),["merge","serve","harvest"]);
- state.board[0]={chain:"garden",tier:1,id:110};
- state.board[1]={chain:"garden",tier:1,id:111};
- move(state,0,1,now);
+ state.board[10]={chain:"garden",tier:1,id:110};
+ state.board[11]={chain:"garden",tier:1,id:111};
+ move(state,10,11,now);
  assert.equal(state.quests.merge.progress,1);assert.equal(state.quests.serve.progress,0);
  spawn(state,"garden",rng,now);
  assert.equal(state.quests.harvest.progress,1);
@@ -199,19 +199,19 @@ test("three served orders earn a free Magic Whisk, and old saves gain a starter 
 test("two-slot pantry stashes, swaps, and retrieves exact ingredients without spending energy",()=>{
  const state=blank(),energy=state.energy;
  assert.equal(SHELF_SLOTS,2);
- state.board[0]={id:500,chain:"garden",tier:4};
- state.board[1]={id:501,chain:"bakery",tier:2};
- const parked=storeOnShelf(state,0,0);
- assert.equal(parked.type,"shelf-store");assert.equal(state.board[0],null);
+ state.board[10]={id:500,chain:"garden",tier:4};
+ state.board[11]={id:501,chain:"bakery",tier:2};
+ const parked=storeOnShelf(state,10,0);
+ assert.equal(parked.type,"shelf-store");assert.equal(state.board[10],null);
  assert.equal(state.shelf[0].id,500);
- assert.equal(storeOnShelf(state,0,1).reason,"empty");
- assert.equal(storeOnShelf(state,1,0).type,"shelf-swap");
- assert.equal(state.board[1].id,500);assert.equal(state.shelf[0].id,501);
- assert.equal(takeFromShelf(state,0,2).type,"shelf-take");
- assert.equal(state.board[2].id,501);assert.equal(state.shelf[0],null);
- assert.equal(takeFromShelf(state,0,5).reason,"shelf-empty");
- assert.equal(storeOnShelf(state,2,2).reason,"invalid");
- assert.equal(takeFromShelf(state,-1,0).reason,"invalid");
+ assert.equal(storeOnShelf(state,10,1).reason,"empty");
+ assert.equal(storeOnShelf(state,11,0).type,"shelf-swap");
+ assert.equal(state.board[11].id,500);assert.equal(state.shelf[0].id,501);
+ assert.equal(takeFromShelf(state,0,12).type,"shelf-take");
+ assert.equal(state.board[12].id,501);assert.equal(state.shelf[0],null);
+ assert.equal(takeFromShelf(state,0,15).reason,"shelf-empty");
+ assert.equal(storeOnShelf(state,12,2).reason,"invalid");
+ assert.equal(takeFromShelf(state,-1,10).reason,"invalid");
  assert.equal(state.energy,energy);
 });
 test("stored meals are ready to serve directly from pantry and earn the usual order rewards",()=>{
