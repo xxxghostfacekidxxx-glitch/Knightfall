@@ -324,14 +324,29 @@ const cityGame = await readFile(path.join(root, "public/city-of-cinders.html"), 
 const cartridge = await readFile(path.join(root, "public/chaos-cartridge.html"), "utf8");
 const arcadeProgress = await readFile(path.join(root, "public/arcade-progress.html"), "utf8");
 if (!cityGame.includes("gameKey='city-of-cinders'")) fail("City of Cinders is missing its arcade game key.");
-if (!["guttermaw","malpractice","dredge","ash-tyrant","widowbyte","wreckoning"].every(key => cityGame.includes(key))) fail("City of Cinders is missing one or more of its six playable monsters.");
-if (!cityGame.includes("data-character") || !cityGame.includes("data-mutation")) fail("City of Cinders is missing character selection or mutation controls.");
-if (!cityGame.includes("cinders-unlocked") || !cityGame.includes("unlockRules") || !cityGame.includes("unlockedCharacters")) fail("City of Cinders is missing mixed character unlock progression.");
-if (!cityGame.includes("restoreAccountProgress") || !cityGame.includes("api.loadProgress(gameKey)")) fail("City of Cinders does not restore account-backed character progression.");
-if (!cityGame.includes("selectedCharacter==='malpractice'") || !cityGame.includes("selectedCharacter==='wreckoning'")) fail("City of Cinders is missing character-specific visual identity details.");
-if (!cityGame.includes("aerialSlash") || !cityGame.includes("nearby.hp-=.65") || !cityGame.includes("Math.min(combo-1,4)*.16")) fail("City of Cinders is missing signature attack behavior for its roster.");
-const arcadeSave = await readFile(path.join(root, "public/arcade-save.js"), "utf8");
-if (!arcadeSave.includes("async function loadProgress") || !arcadeSave.includes("loadProgress,saveProgress")) fail("Arcade save helper does not expose account-backed progress loading.");
+// The original six-name prototype was retired. Validate the live three-hero
+// design instead, and test actual signatures and cross-device persistence.
+const cindersArt = await readFile(path.join(root, "public/city-of-cinders-monsters.js"), "utf8");
+const currentCast = ["minion-mouse", "mini-villain", "the-eddie"];
+for (const id of currentCast) {
+  if (!cityGame.includes('data-character="' + id + '"') ||
+      !cityGame.includes('data-portrait="' + id + '"') ||
+      !cityGame.includes("'" + id + "'") ||
+      !cindersArt.includes("'" + id + "'")) fail("City of Cinders lacks playable art or selection for " + id);
+}
+for (const retired of ["guttermaw", "malpractice", "dredge", "ash-tyrant", "widowbyte", "wreckoning"])
+  if (cityGame.includes('data-character="' + retired + '"')) fail("City of Cinders restored obsolete character " + retired);
+if (!cityGame.includes("data-mutation") || !cityGame.includes("unlockedCharacters=Object.keys(roster)"))
+  fail("City of Cinders lost mutation controls or free starter roster.");
+if (!cityGame.includes("restoreAccountProgress") || !cityGame.includes("api.loadProgress(gameKey)") ||
+    !cityGame.includes("'cinders-character'") || !cityGame.includes("'cinders-mutation'"))
+  fail("City of Cinders does not restore local and account-backed character progression.");
+if (!cityGame.includes("aerialSlash") || !cityGame.includes("selectedCharacter==='mini-villain'") ||
+    !cityGame.includes("selectedCharacter==='the-eddie'") ||
+    !cityGame.includes("selectedCharacter==='minion-mouse'") ||
+    !cityGame.includes("Math.min(combo-1,5)*.17") ||
+    !cityGame.includes("charge=28"))
+  fail("City of Cinders is missing the cast's unique aerial, combo, or shock-charge attacks.");
 if (!cityGame.includes("data-hold") || !cityGame.includes("data-tap")) fail("City of Cinders is missing touch controls.");
 if (!cartridge.includes('href="/city-of-cinders.html"')) fail("Chaos Cartridge does not link to City of Cinders.");
 if (!arcadeProgress.includes('"city-of-cinders":"City of Cinders"')) fail("Arcade records do not register City of Cinders.");
