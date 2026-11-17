@@ -26,7 +26,13 @@ for(const game of manifest.games){
  if(existsSync(htmlPath)){
   const html=readFileSync(htmlPath,"utf8");
   if(!html.includes('src="/arcade-save.js"')&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"'))errors.push(game.id+": missing shared score bridge");
-  if(!html.includes("recordScore(")&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"')&&!html.includes('src="/arcade/hosted/ashfall-mini-games.js"'))errors.push(game.id+": missing score submission");
+  // Standalone ES-module games can submit scores in their own local script rather than inline HTML.
+  const localScripts=[...html.matchAll(/<script[^>]*src="\.\/([a-z0-9_-]+\.js)(?:\?[^"]*)?"/gi)].map(m=>m[1]);
+  const moduleScore=localScripts.some(src=>{
+   const disk=join(root,"arcade/hosted",game.id,src);
+   return disk.startsWith(join(root,"arcade/hosted",game.id)+"/")&&existsSync(disk)&&readFileSync(disk,"utf8").includes("recordScore(");
+  });
+  if(!html.includes("recordScore(")&&!moduleScore&&!html.includes('src="/arcade/hosted/arcade-account-bridge.js"')&&!html.includes('src="/arcade/hosted/ashfall-mini-games.js"'))errors.push(game.id+": missing score submission");
   for(const m of html.matchAll(/(?:src|href)="(\.\/sprites\/[a-zA-Z0-9._\/-]+)"/g)){
    if(!existsSync(join(root,"arcade/hosted",game.id,m[1])))errors.push(game.id+": broken sprite reference "+m[1]);
   }

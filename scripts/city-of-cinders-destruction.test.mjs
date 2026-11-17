@@ -146,7 +146,7 @@ test('the rebuilt destruction game is listed as a featured full arcade game',()=
  assert.match(game.description,/punch holes in individual floors/);
  const shelf=readFileSync('public/chaos-cartridge.html','utf8');
  assert.match(shelf,/data-game-id="city-of-cinders" data-category="Action" data-collection="games" data-device="touch" data-featured="true"/);
- assert.match(shelf,/77 full games/);
+ assert.ok(shelf.includes(catalog.games.filter(x=>x.collection==='games').length+' full games'),'Arcade header should reflect the live canonical full-game count');
 });
 
 test('damage renderer creates recessed holes, masonry debris and a falling-floor animation',()=>{

@@ -5,6 +5,24 @@
   "updated": "2026-10-26",
   "games": [
     {
+      "id": "hex-and-whisk",
+      "name": "Hex & Whisk: Midnight Kitchen",
+      "genre": "Puzzle",
+      "sprites": [
+        "icons.svg"
+      ],
+      "notes": "Original touch-first merge-cooking game with restaurant orders, energy regeneration, drag/tap controls, streaks, upgrades and cloud saves.",
+      "engine": "/arcade/hosted/hex-and-whisk/index.html",
+      "source": "https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/public/arcade/hosted/hex-and-whisk",
+      "assets": [
+        {
+          "name": "icons.svg",
+          "path": "/arcade/hosted/hex-and-whisk/sprites/icons.svg"
+        }
+      ],
+      "status": "playable original build; browser QA planned"
+    },
+    {
       "id": "cinder-merge",
       "name": "Cinder Merge",
       "genre": "Puzzle",

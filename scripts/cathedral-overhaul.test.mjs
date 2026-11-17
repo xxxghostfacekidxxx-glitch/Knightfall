@@ -42,7 +42,7 @@ test('Cathedral Ascendant ships real original illustration assets and readable m
 test('final cathedral stylesheet mounts on every themed page and refreshes the installed app',()=>{
  assert.match(nav,/theme\.css\?v=20261116-cascade4/);
  assert.ok(theme.includes('"/knightfall-unified-theme.css?v=20261116-cascade4"'),'Cathedral architecture must ship through canonical CSS');
- assert.match(sw,/knightfall-shell-v67/);
+ assert.match(sw,/knightfall-shell-v68/);
  assert.ok(sw.includes('"/knightfall-unified-theme.css"'),'Canonical shared chrome must be cached');
  assert.ok(chrome.indexOf("CATHEDRAL ARCHITECTURE")>chrome.indexOf("ORIGINAL ARTWORK") && theme.indexOf("knightfall-requiem.css")>theme.indexOf("theme-crew.css"),"Architecture follows original artwork, and Requiem follows reversible presets");
 });

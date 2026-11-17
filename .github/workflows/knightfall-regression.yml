@@ -44,6 +44,8 @@ jobs:
           node --check backend/src/home-activity-feed.js
           node --check public/home-activity.js
           node --check backend/src/index.js
+          node --check public/arcade/hosted/hex-and-whisk/engine.mjs
+          node --check public/arcade/hosted/hex-and-whisk/game.js
           node --check backend/src/privacy-assistance.js
           node --check public/arcade-save.js
           node --check public/monster-mmo-moves.js
@@ -96,6 +98,7 @@ jobs:
           node --test scripts/bot-creator-access.test.mjs backend/src/home-activity-feed.test.mjs backend/src/staff-capabilities.test.mjs backend/src/eye-of-horus.test.mjs backend/src/god-trash.test.mjs
           python3 scripts/test_eye_of_horus_sql.py
           python3 scripts/test_home_bot_tiers_sql.py
+          node --test scripts/hex-and-whisk.test.mjs scripts/hex-and-whisk-ui.test.mjs
           node --test scripts/knightfall-art-rollout.test.mjs
           node --test scripts/knightfall-art-motion.test.mjs
           node --test scripts/knightfall-android-shell.test.mjs

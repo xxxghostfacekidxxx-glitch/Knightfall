@@ -25,6 +25,19 @@
       "featured": true
     },
     {
+      "id": "hex-and-whisk",
+      "title": "Hex & Whisk: Midnight Kitchen",
+      "route": "/arcade/hosted/hex-and-whisk/index.html",
+      "description": "A beautifully animated merge-cooking restaurant. Drag matching ingredients, discover 21 handmade food illustrations, fill magical customer orders, upgrade your stations and unlock the Sweetshop.",
+      "genre": "Puzzle",
+      "collection": "games",
+      "device": "touch",
+      "source": "/arcade/hosted/hex-and-whisk/SOURCE.md",
+      "notes": "Original free Knightfall game. Touch and keyboard controls, endless orders, local autosave, optional account sync and offline gameplay.",
+      "links": [],
+      "featured": true
+    },
+    {
       "id": "imp-inferno",
       "title": "Imp Inferno",
       "route": "/arcade/hosted/imp-inferno/index.html",
