@@ -87,3 +87,46 @@ test("explicit memo recall works even if the AI tool planner ignores tool calls"
   assert.equal(result.response,"I found your note");
   assert.ok(calls[1].messages[0].content.includes("My arcade fixes"));
 });
+
+import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
+
+test("public research only uses an encoded fixed Wikipedia endpoint",async()=>{
+  let requested="";
+  const fetcher=async (url,options)=>{
+    requested=url;
+    assert.equal(options.method,"GET");
+    return {ok:true,json:async()=>({pages:[{title:"Mars",key:"Mars",excerpt:"<span>Mars</span> is a planet"}]})};
+  };
+  const r=await wikipediaLookup({query:"planet Mars"},{fetcher});
+  assert.equal(new URL(requested).hostname,"en.wikipedia.org");
+  assert.equal(new URL(requested).searchParams.get("q"),"planet Mars");
+  assert.equal(r.results[0].url,"https://en.wikipedia.org/wiki/Mars");
+  assert.match(r.results[0].excerpt,/Mars is a planet/);
+  await assert.rejects(wikipediaLookup({query:"private@example.com"},{fetcher}),/public topic/);
+});
+test("current clock validates timezones",()=>{
+  assert.equal(currentClock({timezone:"America/Chicago"}).timezone,"America/Chicago");
+  assert.match(currentClock().now_utc,/Z$/);
+  assert.throws(()=>currentClock({timezone:"Not/A_Zone"}));
+});
+test("shared handoff reader enforces the existing invitation and limits output",async()=>{
+  const makeEnv=(userId)=>({DB:{prepare(sql){return{
+    bind(){return this},
+    async first(){
+      if(sql.includes("sqlite_master"))return{n:4};
+      if(sql.includes("FROM ai_handoff_partner p"))return{user_id:userId,status:"accepted",username:"authorized"};
+      return null;
+    },
+    async all(){
+      if(sql.includes("FROM ai_handoff_tasks"))return{results:[{id:11,title:"Fix arcade",details:"Check games",status:"todo",priority:"high"}]};
+      if(sql.includes("FROM ai_handoff_notes"))return{results:[{category:"update",body:"Progress",created_at:"2026-11-18"}]};
+      return{results:[]};
+    }
+  }}}}});
+  const mk=env=>createChaosAgentHandlers({env,arcadePicks:()=>({}),moonBrief:()=>({}),shadowBrief:()=>({}),readGodAuditSummary:async()=>({})});
+  const owner=await runChaosModelCalls([{name:"user.handoff",arguments:{}}],{id:12,role:"member"},mk(makeEnv(12)));
+  assert.equal(owner[0].result.tasks[0].title,"Fix arcade");
+  const unauthorized=await runChaosModelCalls([{name:"user.handoff",arguments:{}}],{id:9,role:"member"},mk(makeEnv(12)));
+  assert.equal(unauthorized[0].result.available,false);
+  assert.equal(unauthorized[0].result.tasks,undefined);
+});

@@ -1,8 +1,30 @@
+import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
+import {handleAiHandoff} from "./src/ai-handoff.js";
 /** Trusted read-only model tools. Every personal query binds the VERIFIED session id. */
 export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,readGodAuditSummary}){
   const safe=(value,max=160)=>String(value||"").trim().slice(0,max);
   const match=(text,query)=>!query||String(text||"").toLowerCase().includes(query.toLowerCase());
   return {
+    "research.wikipedia":async({input})=>wikipediaLookup(input),
+    "utility.now":async({input})=>currentClock(input),
+    "user.handoff":async({principal})=>{
+      // Delegate authorization to the same route as the member's existing shared board.
+      const url=new URL("https://api.ash-fall.com/api/ai-handoff/");
+      const response=await handleAiHandoff(new Request(url),env,url,{
+        getUser:async()=>({id:principal.id,role:principal.role}),
+        json:(data,status=200)=>Response.json(data,{status}),
+        origin:"https://ash-fall.com",
+        rateLimit:async()=>false
+      });
+      if(!response.ok)return {available:false,reason:"No authorized shared handoff is available."};
+      const board=await response.json();
+      if(!board.confirmed_access)return {available:false,reason:"This account must accept its invitation first."};
+      return {available:true,source:"authorized Knightfall shared AI handoff",
+        tasks:(board.tasks||[]).slice(0,25).map(t=>({id:t.id,title:String(t.title).slice(0,180),
+          details:String(t.details||"").slice(0,400),status:t.status,priority:t.priority,updated_at:t.updated_at})),
+        notes:(board.notes||[]).slice(0,5).map(n=>({category:n.category,body:String(n.body||"").slice(0,400),created_at:n.created_at})),
+        reminder:"Read-only snapshot. Project changes must be explicitly approved and performed through the authenticated handoff page."};
+    },
     "site.games":async({input})=>arcadePicks({
       query:safe(input.query,120),
       device:["touch","desktop"].includes(input.device)?input.device:"",

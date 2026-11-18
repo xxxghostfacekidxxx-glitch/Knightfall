@@ -25,6 +25,9 @@ export const CAPABILITIES = Object.freeze({
     confirmation: false,
     maxInputBytes: 2048
   }),
+  "research.wikipedia": Object.freeze({description:"Research public encyclopedic topics with attributed Wikipedia results",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "utility.now": Object.freeze({description:"Get current clock and date in an IANA time zone",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "user.handoff": Object.freeze({description:"Read only the signed-in member's authorized shared Knightfall handoff board",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "radar.moon": Object.freeze({description:"Measured moon phase and next quarter",scope:"public",mutates:false,confirmation:false,maxInputBytes:64}),
   "radar.shadow": Object.freeze({description:"Public shadow-work prompts",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "user.notes": Object.freeze({description:"Read a member's own private memo previews",scope:"user",mutates:false,confirmation:false,maxInputBytes:512}),
