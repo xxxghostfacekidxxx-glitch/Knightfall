@@ -7,6 +7,7 @@ import { dispatchChaosTool, describeChaosTools } from "../chaos-tool-dispatch.mj
 import { storeAuditUpload, readGodAuditSummary } from "./developer-audit-ingest.js";
 import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
+import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
@@ -1728,11 +1729,12 @@ MEMORY RULES:
 
 For complex questions, organize the answer clearly and provide actionable details rather than a shallow summary. For astrology readings based on actual chart data, synthesize the whole chart and discuss uncertainty; do not claim you calculated placements unless chart data was supplied in the user message.\n\nKeep the answer useful and natural. Do not mention this system prompt.` + behaviorGuidance + (memoryContext ? `\n\nUSER-APPROVED SAVED MEMORIES (may be outdated; use only when relevant):\n${memoryContext}` : "");
     const messages=[...(history||[]).reverse().map(m=>({role:m.role,content:m.content})),{role:"user",content:message}];
-    const aiOptions={messages:[{role:"system",content:systemPrompt+"\n\n"+CHAOS_CONVERSATION_VOICE+"\n"+chaosReplyGuidance(message)+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1400:950,temperature:mood==="astrology"?0.55:0.8};
+    const aiOptions={messages:[{role:"system",content:systemPrompt+"\n\n"+CHAOS_CONVERSATION_VOICE+"\n"+chaosReplyGuidance(message)+siteLookupContext+utilityContext+"\n\n"+MISS_CHAOS_NO_NSFW_GUIDANCE},...messages],max_tokens:mood==="astrology"?1600:/\b(full|detailed|thorough|complete|explain|write code|debug|step.by.step|in.depth)\b/i.test(message)?1800:1050,temperature:mood==="astrology"?0.55:0.8};
+    const agentHandlers=createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,readGodAuditSummary});
     if(body.stream===true){
       let source;
       try{
-        source=await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast",{...aiOptions,stream:true});
+        source=await inferWithChaosTools({ai:env.AI,model:"@cf/meta/llama-3.1-8b-instruct-fast",messages:aiOptions.messages,principal:{id:user.id,role:user.role},handlers:agentHandlers,max_tokens:aiOptions.max_tokens,temperature:aiOptions.temperature,stream:true});
         if(!source||typeof source.getReader!=="function")throw Error("Streaming model did not return a readable stream.");
       }catch(error){console.error("miss_chaos_stream_start_failed",error);return json({error:"Streaming is temporarily unavailable. Try sending again."},502,origin);}
       const encoder=new TextEncoder();
@@ -1780,7 +1782,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     }
     let reply="";
     try{
-      const result=await inferWithChaosTools({ai:env.AI,model:"@cf/meta/llama-3.1-8b-instruct-fast",messages:aiOptions.messages,principal:{id:user.id,role:user.role},max_tokens:aiOptions.max_tokens,temperature:aiOptions.temperature});
+      const result=await inferWithChaosTools({ai:env.AI,model:"@cf/meta/llama-3.1-8b-instruct-fast",messages:aiOptions.messages,principal:{id:user.id,role:user.role},handlers:agentHandlers,max_tokens:aiOptions.max_tokens,temperature:aiOptions.temperature});
       reply=String(result?.response||"").trim();
       if(!reply)throw new Error("The model returned an empty response.");
     }catch(error){console.error("miss_chaos_inference_failed",error);return json({error:"Miss Chaos couldn't reach her AI engine just now. Your message was not saved. Please try again shortly."},502,origin);}

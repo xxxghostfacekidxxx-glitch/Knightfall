@@ -1,0 +1,76 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {createChaosAgentHandlers} from "./chaos-agent-handlers.mjs";
+import {inferWithChaosTools,runChaosModelCalls} from "./chaos-model-tools.mjs";
+import {describeChaosTools} from "./chaos-tool-dispatch.mjs";
+
+const rows=[
+ {memory:"I love arcade games",category:"preference",updated_at:"2026-11-01"},
+ {memory:"Someone else's secret",category:"personal",updated_at:"2026-10-01"}
+];
+const memoRows=[{id:21,title:"My arcade fixes",body:"Repair the black screens",updated_at:"2026-11-01"}];
+function setup(){
+  const sqlLog=[];
+  const env={DB:{prepare(sql){return{bind(id){sqlLog.push({sql,id});return this},async all(){return{results:sql.includes("chaos_memories")?rows:memoRows}}}}}};
+  return {sqlLog,handlers:createChaosAgentHandlers({
+    env,arcadePicks:args=>({kind:"arcade",args}),
+    moonBrief:()=>({kind:"moon",phase:"new"}),
+    shadowBrief:topic=>({kind:"shadow",topic}),
+    readGodAuditSummary:async({principal})=>({role:principal.role,total:3})
+  })};
+}
+test("registered real tools are discoverable to signed-in users only",()=>{
+  assert.ok(describeChaosTools({id:42,role:"member"}).includes("user.notes"));
+  assert.ok(!describeChaosTools(null).includes("user.notes"));
+  assert.ok(describeChaosTools({id:42,role:"god"}).includes("god.audit_summary"));
+});
+test("AI can use own memory and memo titles through session-scoped D1",async()=>{
+  const {handlers,sqlLog}=setup();
+  const principal={id:42,role:"member"};
+  const results=await runChaosModelCalls([
+    {name:"user.memories",arguments:{query:"arcade"}},
+    {name:"user.notes",arguments:{query:"arcade"}}
+  ],principal,handlers);
+  assert.equal(results[0].result.results.length,1);
+  assert.equal(results[1].result.results[0].title,"My arcade fixes");
+  assert.equal(results[1].result.results[0].preview,"Repair the black screens");
+  assert.deepEqual(sqlLog.map(x=>x.id),[42,42]);
+  assert.ok(sqlLog.every(x=>/user_id=\?/.test(x.sql)));
+});
+test("non-GOD user cannot get GOD diagnostics",async()=>{
+  const {handlers}=setup();
+  await assert.rejects(runChaosModelCalls([{name:"god.audit_summary",arguments:{}}],{id:42,role:"member"},handlers),/authorized/);
+  const res=await runChaosModelCalls([{name:"god.audit_summary",arguments:{}}],{id:1,role:"god"},handlers);
+  assert.equal(res[0].result.total,3);
+});
+test("arcade, moon and shadow work tools return real wired results",async()=>{
+  const {handlers}=setup();
+  const r=await runChaosModelCalls([
+    {name:"site.games",arguments:{query:"puzzle",device:"touch",length:"mini"}},
+    {name:"radar.moon",arguments:{}},
+    {name:"radar.shadow",arguments:{topic:"boundaries"}}
+  ],{id:2,role:"member"},handlers);
+  assert.equal(r[0].result.args.device,"touch");
+  assert.equal(r[1].result.kind,"moon");
+  assert.equal(r[2].result.topic,"boundaries");
+});
+test("streaming and regular replies both receive verified tool data",async()=>{
+  for(const stream of [false,true]){
+    const {handlers}=setup();const calls=[];
+    const ai={run:async(model,options)=>{
+      calls.push({model,options});
+      if(options.tools)return{tool_calls:[{name:"user.notes",arguments:{query:"arcade"}}]};
+      return stream?{getReader:()=>({})}:{response:"Here are your notes."};
+    }};
+    const reply=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"system"},{role:"user",content:"find my notes about arcade"}],principal:{id:4,role:"member"},handlers,stream});
+    assert.equal(calls.length,2);
+    assert.ok(calls[1].options.messages[0].content.includes("My arcade fixes"));
+    assert.equal(Boolean(calls[1].options.stream),stream);
+    assert.ok(reply);
+  }
+});
+test("tool failures do not become made-up success claims",async()=>{
+  const ai={run:async(model,options)=>options.tools?{tool_calls:[{name:"god.audit_summary",arguments:{}}]}:{response:"fallback"}};
+  const out=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"x"},{role:"user",content:"audit site"}],principal:{id:3,role:"member"},handlers:setup().handlers});
+  assert.equal(out.response,"fallback");
+});
