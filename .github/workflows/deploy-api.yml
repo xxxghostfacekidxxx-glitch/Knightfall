@@ -105,6 +105,12 @@ jobs:
           node --check backend/src/member-memos.js
           node --check backend/src/index.js
 
+      - name: Verify private AI handoff auth, consent and client syntax
+        run: |
+          node --test backend/src/ai-handoff.test.mjs
+          node --check backend/src/ai-handoff.js
+          node --check public/ai-handoff.js
+
       - name: Validate authenticated realtime messaging and member-only history search
         run: |
           node --test backend/src/message-search.test.mjs backend/src/messaging-live.test.mjs scripts/message-realtime-client.test.mjs
