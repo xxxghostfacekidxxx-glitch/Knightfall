@@ -19,7 +19,7 @@ const stub=(partner=null,results=[])=>({
 test('Unauthenticated visitors never receive shared tasks',async()=>{
   const r=await handleAiHandoff(request(''),stub(),new URL('https://api.ash-fall.com/api/ai-handoff'),args(async()=>null,stub()));
   assert.equal(r.status,401);
-  assert.match(r.headers.get('cache-control'),'no-store');
+  assert.match(r.headers.get('cache-control'),/no-store/);
 });
 test('Uninvited members cannot read the list or packet',async()=>{
  const env=stub();

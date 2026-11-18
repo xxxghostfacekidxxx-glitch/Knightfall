@@ -74,3 +74,16 @@ test("tool failures do not become made-up success claims",async()=>{
   const out=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"x"},{role:"user",content:"audit site"}],principal:{id:3,role:"member"},handlers:setup().handlers});
   assert.equal(out.response,"fallback");
 });
+
+test("planner outage falls back to regular replies rather than breaking chat",async()=>{
+  const ai={run:async (_model,opts)=>{if(opts.tools)throw Error("provider temporarily unreachable");return {response:"still here"};}};
+  const out=await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"where is the arcade"}],principal:{id:2},handlers:setup().handlers});
+  assert.equal(out.response,"still here");
+});
+test("explicit memo recall works even if the AI tool planner ignores tool calls",async()=>{
+  const calls=[];
+  const ai={run:async(_model,opts)=>{calls.push(opts);return opts.tools?{response:"ignored tools"}:{response:"I found your note"};}};
+  const result=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:"find my notes about arcade"}],principal:{id:6,role:"member"},handlers:setup().handlers});
+  assert.equal(result.response,"I found your note");
+  assert.ok(calls[1].messages[0].content.includes("My arcade fixes"));
+});

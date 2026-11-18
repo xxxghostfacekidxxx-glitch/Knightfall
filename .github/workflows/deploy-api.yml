@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'backend/src/**'
+      - 'backend/chaos-*.mjs'
+      - 'backend/chaos-*.test.mjs'
       - 'backend/package.json'
       - 'backend/migrations/**'
       - 'backend/src/profile-wall.test.mjs'
@@ -48,6 +50,9 @@ jobs:
 
       - name: Validate official starter-bot catalog and public chat routing
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
+
+      - name: Verify Miss Chaos scoped agent runtime before deploying
+        run: node --test backend/chaos-*.test.mjs
 
       - name: Verify bot tier authorization and staff-only homepage updates
         run: |
