@@ -50,6 +50,27 @@
     ].join('\n');
     document.head.append(style);
   }
+  // A fresh URL alone cannot evict old JavaScript/CSS from a PWA's Cache
+  // Storage. Remove only cached arcade resources for this game, keeping account,
+  // messages, saves and the merge kitchen's offline HTML fallback untouched.
+  async function clearCachedGameFiles() {
+    if(navigator.onLine===false || !('caches' in window)) return;
+    const gamePath=new URL(location.href).pathname;
+    const dir=gamePath.match(/^\/arcade\/hosted\/[^/]+\//)?.[0];
+    if(!dir)return;
+    const keepOfflineHtml='/arcade/hosted/hex-and-whisk/index.html';
+    for(const name of (await caches.keys()).filter(n=>/^(?:knightfall|ashfall)-shell-/.test(n))) {
+      try{
+        const store=await caches.open(name);
+        for(const entry of await store.keys()) {
+          const url=new URL(entry.url);
+          if(url.origin!==location.origin || !url.pathname.startsWith(dir) ||
+             url.pathname===keepOfflineHtml)continue;
+          await store.delete(entry).catch(()=>{});
+        }
+      }catch{/* Storage can be blocked by the browser; retry navigation anyway. */}
+    }
+  }
   function showError() {
     if (errorShown || !document.body) return;
     errorShown=true;
@@ -63,9 +84,11 @@
     const reload=document.createElement('button');
     reload.type='button';
     reload.textContent='↻ Reload fresh game files';
-    reload.addEventListener('click',()=>{
-      // PWA/Android caches may keep a broken game document even after deployments.
-      // Fresh navigation intentionally changes only the URL, never saved data.
+    reload.addEventListener('click',async()=>{
+      reload.disabled=true;
+      reload.textContent='Refreshing game assets…';
+      // The retry must really clear this game's PWA cache, not merely rename its URL.
+      try{await clearCachedGameFiles();}catch{}
       const fresh=new URL(location.href);
       fresh.searchParams.set('kf-fresh',Date.now().toString(36));
       location.replace(fresh.href);
