@@ -122,7 +122,7 @@ test("shared handoff reader enforces the existing invitation and limits output",
       if(sql.includes("FROM ai_handoff_notes"))return{results:[{category:"update",body:"Progress",created_at:"2026-11-18"}]};
       return{results:[]};
     }
-  }}}}});
+  }}}});
   const mk=env=>createChaosAgentHandlers({env,arcadePicks:()=>({}),moonBrief:()=>({}),shadowBrief:()=>({}),readGodAuditSummary:async()=>({})});
   const owner=await runChaosModelCalls([{name:"user.handoff",arguments:{}}],{id:12,role:"member"},mk(makeEnv(12)));
   assert.equal(owner[0].result.tasks[0].title,"Fix arcade");
