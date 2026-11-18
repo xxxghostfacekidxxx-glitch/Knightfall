@@ -88,3 +88,46 @@ test('Sanctuary Original uses a theater-only fullscreen path to avoid heavy WebG
   assert.match(source,/const theaterOnly = loader\?\.dataset\.theaterOnly === 'true'/);
   assert.match(source,/if\(theaterOnly\)\{theater=true;setState\(true\);return;\}/);
 });
+
+test('recovery button removes only scoped cached game resources, keeping offline kitchen and private data',async()=>{
+ const vm=await import('node:vm');
+ for(const game of ['hex-and-whisk','imp-inferno']){
+  const removed=[],listeners={},created=[];
+  const urls=[
+   'https://ash-fall.com/arcade/hosted/'+game+'/game.js',
+   'https://ash-fall.com/arcade/hosted/'+game+'/game.css',
+   'https://ash-fall.com/arcade/hosted/hex-and-whisk/index.html',
+   'https://ash-fall.com/arcade/hosted/other-game/game.js',
+   'https://ash-fall.com/messages.html',
+   'https://ash-fall.com/theme.css'
+  ];
+  function node(tag){
+   const el={tagName:tag,id:'',textContent:'',children:[],events:{},
+    classList:{toggle(){}},setAttribute(){},addEventListener(kind,fn){this.events[kind]=fn},
+    append(...items){this.children.push(...items)},remove(){}};
+   created.push(el);return el;
+  }
+  const body=node('body'),head=node('head');
+  const document={currentScript:{dataset:{target:'body'}},readyState:'complete',body,head,
+   getElementById:()=>null,createElement:node,addEventListener(){}};
+  const cache={keys:async()=>urls.map(url=>({url})),delete:async req=>{removed.push(req.url);return true}};
+  const caches={keys:async()=>['knightfall-shell-v75','unrelated-cache'],
+   open:async name=>{assert.equal(name,'knightfall-shell-v75');return cache;}};
+  let navigated=null;
+  const location={origin:'https://ash-fall.com',href:'https://ash-fall.com/arcade/hosted/'+game+'/index.html',
+   replace(value){navigated=value;}};
+  const window={caches,addEventListener:(name,fn)=>{listeners[name]=fn;},dispatchEvent(){}};
+  vm.runInNewContext(source,{document,window,location,caches,navigator:{onLine:true},URL,Date,Event:class{}},{timeout:2000});
+  listeners.unhandledrejection();
+  const recovery=body.children.find(el=>el.id==='kf-arcade-recovery');
+  assert.ok(recovery,'missing recovery dialog');
+  const reload=recovery.children.find(el=>el.tagName==='button'&&el.textContent.includes('Reload'));
+  assert.ok(reload,'missing fresh retry');
+  await reload.events.click();
+  assert.ok(navigated?.includes('kf-fresh='),'retry did not navigate to a fresh URL');
+  assert.ok(removed.some(url=>url.includes('/'+game+'/game.js')),'game JS cache not cleared');
+  assert.ok(removed.some(url=>url.includes('/'+game+'/game.css')),'game CSS cache not cleared');
+  assert.ok(removed.every(url=>url.includes('/arcade/hosted/'+game+'/')),'unrelated cached files were removed');
+  assert.ok(!removed.some(url=>url.endsWith('/hex-and-whisk/index.html')),'offline merge kitchen document was removed');
+ }
+});
