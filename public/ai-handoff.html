@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0c0a13">
+<title>Between the Flames | Knightfall AI Handoff</title>
+<meta name="description" content="Private Knightfall handoff and shared to-do list.">
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=1">
+<script src="/nav.js" defer></script><script src="/ai-handoff.js?v=1" defer></script>
+</head>
+<body class="handoff-page">
+<header class="kf-header"></header>
+<main class="handoff-shell">
+  <nav class="handoff-crumb"><a href="/">Knightfall</a><span> / </span><span>Between the Flames</span></nav>
+  <header class="handoff-hero">
+    <div class="handoff-sigil" aria-hidden="true">✦<span>♜</span>✦</div>
+    <div><p class="eyebrow">PRIVATE // RONNIE + SAMANTHA</p>
+      <h1>BETWEEN <span>THE FLAMES</span></h1>
+      <p>One shared to-do list. Two people. Two AI assistants. No more parallel universes of outdated information.</p>
+      <div class="hero-chips"><span>🔒 Account-only</span><span>✎ Shared updates</span><span>⟲ Current task status</span></div>
+    </div>
+  </header>
+  <p id="handoff-status" class="handoff-status" role="status" aria-live="polite">Verifying private access…</p>
+  <section id="handoff-gate" class="handoff-card" hidden>
+    <h2 id="gate-title">Private access</h2><p id="gate-detail">Sign in to continue.</p>
+    <a id="gate-signin" class="handoff-button" href="/auth.html?next=%2Fai-handoff.html">Sign in</a>
+    <button id="gate-accept" class="handoff-button" type="button" hidden>Accept Ronnie's invitation</button>
+  </section>
+  <div id="handoff-app" hidden>
+    <section class="handoff-card message-card">
+      <span class="eyebrow">FOR SAMANTHA ♡</span>
+      <h2>Ronnie says he loves you.</h2>
+      <p>And yes, it's in the note for your ChatGPT too. Some messages are worth making absolutely sure don't get lost in the machine.</p>
+    </section>
+    <div class="handoff-top-grid">
+      <section class="handoff-card">
+        <div class="section-title"><div><p class="eyebrow">THE BRIDGE</p><h2>AI-to-AI handoff</h2></div><span class="status-dot">● LIVE LIST</span></div>
+        <p>Your ChatGPT assistants cannot secretly talk to each other. Copy the latest handoff packet into Samantha's or Ronnie's ChatGPT, then bring changes back to this page. The page itself stores the shared record.</p>
+        <div class="handoff-actions">
+          <button type="button" id="copy-packet" class="handoff-button">Copy latest AI handoff note</button>
+          <button type="button" id="refresh-all" class="handoff-button ghost">Refresh updates</button>
+        </div>
+        <details class="instructions"><summary>Read the instructions sent to Samantha's ChatGPT</summary><pre id="handoff-instructions"></pre></details>
+      </section>
+      <section class="handoff-card">
+        <p class="eyebrow">THE CONNECTION</p><h2>Shared access</h2>
+        <p id="partner-summary">Checking collaborator…</p>
+        <div id="invite-controls" hidden>
+          <form id="invite-form" class="stack-form">
+            <label for="invite-username">Samantha's exact Knightfall username</label>
+            <input id="invite-username" required autocomplete="off" maxlength="40" placeholder="Her username">
+            <button type="submit" class="handoff-button">Invite Samantha</button>
+          </form>
+          <button id="revoke-partner" type="button" class="handoff-button danger" hidden>Revoke access</button>
+        </div>
+        <p class="subtle">She must sign in and accept her invitation. Sharing a URL alone does not unlock private tasks.</p>
+      </section>
+    </div>
+    <section class="handoff-card" aria-labelledby="task-heading">
+      <div class="section-title"><div><p class="eyebrow">ONE SOURCE OF TRUTH</p><h2 id="task-heading">Shared to-do list <span id="task-count"></span></h2></div></div>
+      <form id="task-form" class="task-form">
+        <div><label for="task-title">New task</label><input id="task-title" placeholder="What needs doing?" maxlength="180" required></div>
+        <div><label for="task-priority">Priority</label><select id="task-priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select></div>
+        <button type="submit" class="handoff-button">Add task +</button>
+        <div class="task-wide"><label for="task-details">Details (optional)</label><textarea id="task-details" rows="2" maxlength="3000" placeholder="Context, outcome, blockers, next steps"></textarea></div>
+      </form>
+      <div id="task-list" class="task-list" aria-live="polite"></div>
+    </section>
+    <div class="handoff-top-grid">
+      <section class="handoff-card">
+        <p class="eyebrow">LEAVE A TRAIL</p><h2>Pass a note</h2>
+        <form id="note-form" class="stack-form">
+          <label for="note-type">Type</label><select id="note-type"><option value="update">Progress update</option><option value="decision">Decision</option><option value="blocker">Blocker</option></select>
+          <label for="note-body">Message for the other person / assistant</label>
+          <textarea id="note-body" rows="5" maxlength="4000" placeholder="What changed? What's next? Anything the other GPT needs to know?" required></textarea>
+          <button type="submit" class="handoff-button">Post handoff note</button>
+        </form>
+      </section>
+      <section class="handoff-card">
+        <p class="eyebrow">RECENT TRANSMISSIONS</p><h2>Handoff notes</h2>
+        <div id="note-list" class="note-list"></div>
+      </section>
+    </div>
+    <section class="handoff-card">
+      <p class="eyebrow">WHAT CHANGED</p><h2>Activity log</h2>
+      <div id="activity-list" class="activity-list"></div>
+    </section>
+  </div>
+</main>
+<footer class="handoff-foot">PRIVATE KNIGHTFALL HANDOFF · NO PUBLIC SHARING · <a href="/account.html">Account</a></footer>
+</body>
+</html>
