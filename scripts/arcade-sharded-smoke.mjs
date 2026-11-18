@@ -123,6 +123,43 @@ try {
          throw Error("Sudoku starts below first mobile viewport: "+JSON.stringify(first));
      }
    }
+   // The kitchen previously passed fleet checks when the page loaded but
+   // its playable merge grid never mounted. Require all 36 real hit targets.
+   if (game.id === "hex-and-whisk") {
+     action = "verify kitchen merge grid";
+     await page.waitForFunction(() => {
+       const board=document.getElementById("board");
+       if (!board) return false;
+       const tiles=[...board.querySelectorAll("button.slot")];
+       if (tiles.length!==36) return false;
+       const rect=board.getBoundingClientRect();
+       if(rect.width<180||rect.height<180) return false;
+       return tiles.every(tile=>{
+         const box=tile.getBoundingClientRect(),style=getComputedStyle(tile);
+         return box.width>=20&&box.height>=20&&style.display!=="none"&&style.visibility!=="hidden";
+       });
+     },null,{timeout:9000});
+   }
+   // An animated canvas can leave a perfectly plausible title/toolbar while
+   // painting absolutely nothing. Imp Inferno must start and draw real pixels.
+   if (game.id === "imp-inferno") {
+     action = "verify active infernal table paint";
+     await page.waitForFunction(() => {
+       const canvas=document.getElementById("table");
+       const overlay=document.getElementById("overlay");
+       if (!canvas||!overlay?.hidden) return false;
+       const rect=canvas.getBoundingClientRect();
+       if(rect.width<180||rect.height<100||canvas.width<180||canvas.height<100) return false;
+       const ctx=canvas.getContext("2d");
+       if(!ctx) return false;
+       try{
+         const positions=[[.1,.1],[.5,.5],[.9,.9],[.3,.7],[.7,.3]];
+         return positions.some(([x,y])=>ctx.getImageData(
+           Math.min(canvas.width-1,Math.floor(x*canvas.width)),
+           Math.min(canvas.height-1,Math.floor(y*canvas.height)),1,1).data[3]>0);
+       }catch{return false;}
+     },null,{timeout:9000});
+   }
    if (game.id === "cinder-mines" && process.env.ARCADE_TEST_TARGET === "local") {
     action = "verify fullscreen board and corner input";
     await verifyMinesweeperView(page);
