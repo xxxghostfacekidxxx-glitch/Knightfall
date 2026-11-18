@@ -147,3 +147,9 @@
 
 /assets/knightfall/sanctum-stained-glass.svg
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+# Revalidate the PWA worker and arcade loading-recovery bridge after each deploy.
+/sw.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/arcade/hosted/arcade-playback-assist.js
+  Cache-Control: no-cache, max-age=0, must-revalidate

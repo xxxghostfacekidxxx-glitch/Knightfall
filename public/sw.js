@@ -299,6 +299,17 @@ self.addEventListener("fetch", event => {
     }));
     return;
   }
+  // Android can load fresh HTML while reusing stale game modules and styles.
+  // Bypass only code caches; keep large game art cacheable and offline kitchen safe.
+  if (url.pathname.startsWith("/arcade/hosted/") &&
+      (request.destination === "script" || request.destination === "style")) {
+    event.respondWith(fetch(new Request(request, { cache: "no-store" })).catch(async error => {
+      const offlineAsset = await caches.match(request, { ignoreSearch: true });
+      if (offlineAsset) return offlineAsset;
+      throw error;
+    }));
+    return;
+  }
   if (APP_SHELL.includes(url.pathname) && !request.headers.has("Authorization")) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
