@@ -25,6 +25,7 @@ import { getStarterPublicBot, listStarterPublicBots, starterPublicSummary } from
 import { handleMascotPets } from "./mascot-pets.js";
 import { handlePersonalAvatars } from "./personal-avatars.js";
 import { handleMemberMemos } from "./member-memos.js";
+import { handleAiHandoff } from "./ai-handoff.js";
 import { handleMoonJournal } from "./moon-journal.js";
 import { handleShadowJournal } from "./shadow-journal.js";
 import { handleMemberMemoMail } from "./member-memo-mail.js";
@@ -1030,6 +1031,12 @@ export default { async queue(batch, env) {
   if (impRoomPath) return await connectImpInferno(request, env, impRoomPath[1], ALLOWED_ORIGINS, rateLimit);
   if(url.pathname.startsWith("/api/chaos/")&&(await getSetting(env,"feature_miss_chaos"))==="false")return json({error:"Miss Chaos is currently disabled."},503,origin);
   if((url.pathname==="/api/members"||url.pathname==="/api/discover"||url.pathname.startsWith("/api/users/")||url.pathname.startsWith("/api/avatars/profile/"))&&(await getSetting(env,"feature_profiles"))==="false"){const viewer=await requireUser(request,env);if(!isAdmin(viewer))return json({error:"Member profiles are currently disabled."},503,origin);}
+
+  // Ronnie + Samantha: private, invitation-gated shared task list and AI handoff.
+  if(url.pathname==="/api/ai-handoff"||url.pathname.startsWith("/api/ai-handoff/")){
+    const handoffResponse=await handleAiHandoff(request,env,url,{getUser:requireUser,json,origin,rateLimit});
+    if(handoffResponse)return handoffResponse;
+  }
 
   // Global theme recipes: public read, GOD-only versioned publishing/rollback.
   const themeCrewResponse=await handleThemeCrew(request,env,url,{requireUser,json,origin,audit});
