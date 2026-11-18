@@ -62,8 +62,14 @@
     explanation.textContent='A game script or graphics context failed. You can retry without changing your saved progress.';
     const reload=document.createElement('button');
     reload.type='button';
-    reload.textContent='↻ Reload game';
-    reload.addEventListener('click',()=>location.reload());
+    reload.textContent='↻ Reload fresh game files';
+    reload.addEventListener('click',()=>{
+      // PWA/Android caches may keep a broken game document even after deployments.
+      // Fresh navigation intentionally changes only the URL, never saved data.
+      const fresh=new URL(location.href);
+      fresh.searchParams.set('kf-fresh',Date.now().toString(36));
+      location.replace(fresh.href);
+    });
     const home=document.createElement('a');
     home.href='/chaos-cartridge.html';
     home.textContent='Back to arcade';
@@ -89,6 +95,7 @@
   },true);
   window.addEventListener('unhandledrejection',()=>notice('unhandled-rejection'));
   document.addEventListener('webglcontextlost',()=>notice('webgl-context-lost'),true);
+  document.addEventListener('webglcontextcreationerror',()=>notice('webgl-not-supported'),true);
 
   function init() {
     css();

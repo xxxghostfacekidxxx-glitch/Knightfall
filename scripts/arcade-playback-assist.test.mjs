@@ -34,7 +34,8 @@ test('fullscreen bridge uses a user gesture and restores browser layout on exit'
 test('fatal load failures offer a retry and arcade return without touching saves',()=>{
   assert.match(source,/window\.addEventListener\('unhandledrejection'/);
   assert.match(source,/webglcontextlost/);
-  assert.match(source,/location\.reload\(\)/);
+  assert.match(source,/location\.replace\(fresh\.href\)/);
+  assert.match(source,/webglcontextcreationerror/);
   assert.match(source,/chaos-cartridge\.html/);
   assert.doesNotMatch(source,/localStorage\.clear|indexedDB\.deleteDatabase|sessionStorage\.clear/);
 });
