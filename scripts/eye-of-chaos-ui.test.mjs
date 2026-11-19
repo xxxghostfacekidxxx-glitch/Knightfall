@@ -67,6 +67,6 @@ test("new features stay locked when storage migration is absent",()=>{
  assert.match(js,/lockForms\(\)/);
  assert.match(api,/if\(!ready\)return respond/);
  assert.match(html,/No automatic publishing/);
- assert.match(html,/href="\\/theme-crew\\.html" class="chaos-quiet"/);
+ assert.ok(html.includes('href="/theme-crew.html" class="chaos-quiet"'));
  assert.match(js,/state\.canApprove=data\.permissions\?\.can_approve===true/);
 });
