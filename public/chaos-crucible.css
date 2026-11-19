@@ -87,3 +87,23 @@
 @media(max-width:650px){.crucible-page .crucible-shell{width:calc(100% - 18px);padding-top:12px}.crucible-hero{padding:21px;border-radius:15px;min-height:0}.crucible-sigil{position:absolute;right:-34px;top:-15px;width:130px;opacity:.23;pointer-events:none}.crucible-hero-copy{max-width:100%}.crucible-hero h1{font-size:clamp(2.7rem,11vw,4.4rem)}.crucible-workspace{gap:10px;margin-top:10px}.crucible-panel{border-radius:14px;padding:15px}.crucible-type-grid{grid-template-columns:1fr 1fr;gap:7px}.crucible-type{padding:10px 9px;gap:6px}.crucible-type-icon{flex-basis:22px;font-size:1.23rem}.crucible-type strong{font-size:.76rem}.crucible-type small{font-size:.65rem}.crucible-footer{flex-direction:column;align-items:flex-start;gap:7px}.crucible-action-grid{gap:7px}.crucible-button{padding:9px 6px;font-size:.73rem}}
 @media(max-width:365px){.crucible-type-grid{grid-template-columns:1fr}.crucible-action-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.crucible-type,.crucible-progress-track>span{transition:none}}
+
+
+/* Crucible project checkpoints: evidence before victory banners. */
+.crucible-checklist-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.crucible-checklist-heading h3{margin:0}
+#crucible-milestone-readout{color:#9cfac6;font-size:.67rem;font-weight:800;text-align:right}
+.crucible-milestone-meter{height:7px;border-radius:99px;overflow:hidden;background:#273c37;margin-bottom:16px;border:1px solid #426157}
+#crucible-milestone-fill{display:block;width:0;height:100%;background:linear-gradient(90deg,#ff5ea3,#7dffb3);transition:width .18s ease}
+.crucible-next-step{margin-top:17px;padding:14px;border:1px solid #67e6a066;border-radius:12px;background:linear-gradient(115deg,#1a1628,#10251e)}
+.crucible-next-kicker{font-size:.65rem;font-weight:950;letter-spacing:.14em;color:#8cf8b2}
+.crucible-next-step p,.crucible-next-step #crucible-next-step{font-size:.84rem;color:#f2e9f3;line-height:1.5;margin:7px 0 10px;font-weight:700}
+#crucible-open-tool{display:inline-block;text-decoration:none;font-size:.75rem;font-weight:900;color:#a1ffca;padding:7px 9px;border:1px solid #4d866a;border-radius:9px}
+#crucible-open-tool:hover{border-color:#ff9ecb;color:#ffd4ec}
+.crucible-evidence{display:grid;gap:8px;margin-top:17px}
+.crucible-evidence label{font-size:.81rem;font-weight:900;color:#fce1ed}
+.crucible-evidence label small{display:block;color:#aeb9b3;font-size:.7rem;font-weight:500;margin-top:4px}
+.crucible-evidence textarea{width:100%;min-width:0;min-height:80px;padding:10px 12px;resize:vertical;color:#f9edff;background:#0b0d16;border:1px solid #456257;border-radius:9px;font:400 .8rem/1.5 inherit}
+.crucible-evidence textarea:focus-visible{outline:2px solid #8cffbd;outline-offset:2px}
+.crucible-evidence p{font-size:.69rem;line-height:1.45;color:#a4afaa;margin:0}
+@media(prefers-reduced-motion:reduce){#crucible-milestone-fill{transition:none}}
