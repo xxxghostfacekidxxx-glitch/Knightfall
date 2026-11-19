@@ -65,6 +65,41 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
           preview:safe(n.body,300),url:safeUrl(n.url),created_at:n.created_at})),
         read_only:true,notice:"Opening or clearing alerts on the Notifications page marks them read."};
     },
+    "user.profile":async({principal})=>{
+      // No email, birthday, billing, secrets, location, or other members' fields.
+      const profile=await env.DB.prepare(
+        "SELECT username,display_name,bio,profile_visibility,avatar_url FROM users WHERE id=? AND status='active' LIMIT 1"
+      ).bind(principal.id).first();
+      if(!profile)return {available:false,reason:"Account profile unavailable."};
+      return {source:"signed-in member's own profile",read_only:true,
+        profile:{username:safe(profile.username,24),display_name:safe(profile.display_name,80),
+          bio:safe(profile.bio,500),visibility:safe(profile.profile_visibility,30),
+          avatar_url:typeof profile.avatar_url==="string"&&profile.avatar_url.startsWith("/")&&!profile.avatar_url.startsWith("//")
+            ?profile.avatar_url.slice(0,320):null},
+        edit_url:"/profile.html",note:"This is a snapshot. Editing requires the member to use their account settings."};
+    },
+    "user.inbox":async({principal})=>{
+      // The INNER JOIN on the verified session's membership is the privacy boundary.
+      // Read-only; fetching these previews MUST NOT mark conversations as read.
+      const {results=[]}=await env.DB.prepare(
+        "SELECT c.id,c.kind,c.name AS group_name,c.updated_at,"+
+        "(SELECT u.username FROM conversation_members om JOIN users u ON u.id=om.user_id "+
+        "WHERE om.conversation_id=c.id AND om.user_id<>? AND c.kind='direct' LIMIT 1) AS other_username,"+
+        "(SELECT m.body FROM messages m WHERE m.conversation_id=c.id AND m.deleted_at IS NULL "+
+        "ORDER BY m.id DESC LIMIT 1) AS last_body "+
+        "FROM conversations c JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=? "+
+        "WHERE c.kind IN ('direct','group') ORDER BY c.updated_at DESC LIMIT 10"
+      ).bind(principal.id,principal.id).all();
+      return {source:"signed-in member's joined conversations",read_only:true,more_possible:results.length===10,
+        conversations:results.map(c=>({
+          id:Number(c.id),kind:c.kind==="group"?"group":"direct",
+          title:c.kind==="group"?safe(c.group_name,80):"@"+safe(c.other_username,24),
+          latest_preview:safe(c.last_body,200),updated_at:c.updated_at,
+          url:Number.isSafeInteger(Number(c.id))&&Number(c.id)>0
+            ?"/messages.html?conversation="+Number(c.id):"/messages.html"
+        })),
+        note:"Only short excerpts from the user's own conversations. Open Chaosphere to read or reply."};
+    },
     "user.notes":async({input,principal})=>{
       const query=safe(input.query,120);
       const {results=[]}=await env.DB.prepare(
