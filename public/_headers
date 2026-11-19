@@ -42,6 +42,21 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /nav.js
   Cache-Control: no-cache, max-age=0, must-revalidate
+# Keep private command pages current across mobile browsers and installed PWAs.
+/ai-handoff.html
+  Cache-Control: private, no-store
+/ai-handoff.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/ai-handoff.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/eye-of-chaos.html
+  Cache-Control: private, no-store
+/eye-of-chaos.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/admin.html
+  Cache-Control: private, no-store
+/account.html
+  Cache-Control: private, no-store
 /messages.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaosphere.webmanifest
