@@ -27,7 +27,7 @@
       <p class="account-status">Checking your session…</p>
     </section>
   </main>
-  <script src="/nav.js?v=20261115-gothic9" defer></script>
+  <script src="/nav.js?v=20261118-command-access1" defer></script>
   <script>
     const API = "https://api.ash-fall.com";
     const root = document.querySelector("#account");
@@ -81,6 +81,7 @@
               <h3>Notes &amp; Journals</h3>
               <ul>
                 <li><a href="/memo-pad.html">Memo Pad, Mail &amp; Live Chat</a></li>
+                 ${role === "god" || String(user.username||"").toLowerCase()==="knightfallsamantha" ? '<li><a href="/ai-handoff.html">♡ Between the Flames · Shared To-Do &amp; AI Handoff</a></li>' : ""}
                 <li><a href="/die-ary.html">The Die-ary</a></li>
                 <li><a href="/moonology.html#journal">Moon Journal</a></li>
                 <li><a href="/shadow-work.html#journal">Shadow Journal</a></li>
@@ -92,7 +93,8 @@
                 ${personalBots ? '<li><a href="/personal-bots.html">Personal Bots</a></li>' : ""}
                 <li><a href="/my-shop.html">My Shop</a></li>
                 ${ownerVault ? '<li><a href="/vault.html">Private Vault</a></li>' : ""}
-                ${role === "god" ? '<li><a href="/eye-of-chaos.html">Eye of Chaos · Bot Command</a></li><li><a href="/eye-of-horus.html">Eye of Horus · Data Oversight</a></li>' : ""}
+                ${["admin","god"].includes(role) ? '<li><a href="/eye-of-chaos.html">𓂀 Eye of Chaos · Staff Bot Command</a></li>' : ""}
+                 ${role === "god" ? '<li><a href="/eye-of-horus.html">Eye of Horus · Data Oversight</a></li>' : ""}
               </ul>
             </section>
           </div>
