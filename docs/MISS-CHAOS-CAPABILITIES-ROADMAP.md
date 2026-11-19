@@ -25,6 +25,19 @@ The following are wired into the Worker-side capability registry, model-tool pal
 
 **Still open:** multi-photo dimensional reconstruction and manually verified constraints; mature garment patterns/grading; real-time tool status and cancellation; developer-only deployment diagnostics with trusted GitHub access; paid-plan/model fallback if Cloudflare free quotas run out; cross-device notification QA and accessibility testing.
 
+## Intelligence and research reliability upgrade (November 19, 2026)
+
+- Added a deterministic, allowlisted intent router in `backend/chaos-intent-router.mjs`. Clear member requests (own notes/memory/profile/inbox/notifications/shared handoff) reach their session-bound read-only tool without a second planning-model call. This improves both response time and free-allowance usage; it does not expose another account's data.
+- Named free-source searches for Wikipedia, Wikidata, Poly Haven and The Met similarly bypass optional planning and retain grounded source URLs. A bounded two-source Wikipedia+Wikidata comparison can return partial evidence when one source is unavailable.
+- Added direct deterministic calculations, word counts, moon-phase lookup and IANA-timezone clock requests, plus a maintained Knightfall page-navigation index including install and notification settings.
+- Selected tools are settled independently within the three-call budget; a failure cannot erase already successful public tool results. Unknown, unauthorized or failed tools are marked unavailable and raw provider errors are not shared.
+- Any planner outage or no-result response injects an explicit warning not to invent recent facts, private account data, or live results. External results remain untrusted reference data, never instructions.
+- Maker catalog queries now reject obvious contact/phone/account information before sending requests to fixed public source endpoints.
+- Miss Chaos's chat offers a small primary starter row and an accessible expandable More tools section with separate source, creator, and shared-task starters; the dated script version is refreshed to avoid stale frontend code.
+- Regression tests cover source routing, partial failures, privacy, tool authorization, actual utility outputs and frontend starter accessibility.
+
+**Remaining limitations:** Catalog searches are not arbitrary live web browsing; snippets and metadata must not be treated as full verified texts. Cloudflare Workers AI free capacity is finite, and mobile push/device testing plus authentication-audit secrets remain independent operational tasks.
+
 ## Tool architecture
 1. Introduce a server-side capability registry, with name, JSON-schema input, per-user permission, rate budget, timeout, audit event, and explicit approval requirement.
 2. A planner selects a tool only if necessary; validate arguments on the server. Never execute arbitrary model-generated code, URLs, SQL, or shell commands.
