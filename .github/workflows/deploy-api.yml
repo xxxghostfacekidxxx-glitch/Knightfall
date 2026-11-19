@@ -11,6 +11,7 @@ on:
       - 'backend/migrations/**'
       - 'backend/src/profile-wall.test.mjs'
       - 'scripts/profile-wall-ui.test.mjs'
+      - 'scripts/ai-handoff-master.test.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
       - 'scripts/message-realtime-client.test.mjs'
       - 'scripts/messaging-history-deeplink.test.mjs'
