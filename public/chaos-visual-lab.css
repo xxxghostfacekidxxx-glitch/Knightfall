@@ -1,0 +1,30 @@
+/* Knightfall native Chaos Visual Lab. Uses theme variables and no external fonts. */
+.cvl-main{width:min(1240px,calc(100% - 1.5rem));margin:1rem auto 3rem;color:#ece1d3}
+.cvl-crumb{font-size:.82rem;color:#b9afa8;padding:.6rem 0}.cvl-crumb a,.cvl-tip a{color:#c7a77c;text-decoration:underline;text-underline-offset:3px}
+.cvl-hero{border:1px solid #b25b685c;background:radial-gradient(ellipse at 0 0,#b25b6829,transparent 55%),linear-gradient(130deg,#191421,#0d1013);border-radius:18px;padding:clamp(1.1rem,3vw,2.1rem);margin:.75rem 0 1rem}
+.cvl-kicker{color:#d292a4;font-size:.74rem;letter-spacing:.18em;font-weight:900}
+.cvl-hero h1{font-size:clamp(2.15rem,6vw,4.5rem);letter-spacing:-.065em;line-height:1.03;margin:.3rem 0}.cvl-hero h1 span{color:#c7a77c}
+.cvl-hero>p{max-width:79ch;line-height:1.6}.cvl-privacy{border-left:3px solid #c7a77c;padding:.5rem .85rem;background:#c7a77c10;color:#ece1d3}
+.cvl-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr);gap:1rem;align-items:start}
+.cvl-panel{min-width:0;border:1px solid #c7a77c52;border-radius:16px;padding:clamp(1rem,2vw,1.4rem);background:linear-gradient(130deg,#1d1921,#111219);box-shadow:0 14px 36px #0004}
+.cvl-panel h2{margin:0 0 .95rem;font-size:1.4rem}.cvl-panel label{display:block;margin:.85rem 0 .35rem;font-weight:750;color:#f0e4ec;font-size:.87rem}
+.cvl-panel :is(input[type=file],select,textarea){width:100%;min-width:0;display:block;color:#ece1d3;background:#0d1013;border:1px solid #8e7081;border-radius:10px;padding:.72rem;font:inherit}
+.cvl-panel textarea{resize:vertical;font-size:.78rem;line-height:1.6;font-family:ui-monospace,SFMono-Regular,monospace}
+.cvl-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+.cvl-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0}.cvl-actions button{min-height:44px;padding:.72rem .9rem;border-radius:10px;border:1px solid #c7a77c7d;background:#2a202b;color:#f9f5f8;font:inherit;font-weight:800;cursor:pointer}
+.cvl-actions button:first-child{background:linear-gradient(130deg,#8a405f,#54466e)}.cvl-actions button:disabled{opacity:.46;cursor:not-allowed}
+.cvl-panel :is(button,input,select,textarea):focus-visible{outline:3px solid #e2c985;outline-offset:2px}
+.cvl-status{font-size:.86rem;line-height:1.5;color:#e0c2d4;min-height:2.8em}
+.cvl-stage{min-height:230px;display:grid;place-items:center;border:2px dashed #8e7081;border-radius:13px;overflow:hidden;padding:.6rem;background-color:#12111a;background-image:linear-gradient(45deg,#252230 25%,transparent 25%,transparent 75%,#252230 75%),linear-gradient(45deg,#252230 25%,transparent 25%,transparent 75%,#252230 75%);background-size:20px 20px;background-position:0 0,10px 10}
+.cvl-stage.cvl-dropping{border-color:#c7a77c;background-color:#22212e}.cvl-stage canvas{display:block;max-width:100%;max-height:480px;width:auto;height:auto;object-fit:contain;image-rendering:pixelated}
+.cvl-stage #visual-placeholder{margin:.6rem 0;text-align:center;color:#d3abbc}
+.cvl-stage #visual-placeholder[hidden]{display:none}
+.cvl-meta,.cvl-description,.cvl-tip p{font-size:.83rem;line-height:1.55;color:#b9afa8}
+.cvl-swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;min-height:115px}
+.cvl-swatch{display:flex;flex-direction:column;justify-content:space-between;gap:.45rem;min-height:110px;padding:.6rem;border:1px solid #ffffff40;border-radius:10px;box-shadow:inset 0 0 0 1px #0004;overflow-wrap:anywhere}
+.cvl-swatch strong{font-family:ui-monospace,monospace;font-size:1rem}.cvl-swatch small{font-size:.67rem;font-weight:750}
+.cvl-tip{border-top:1px solid #b25b6866;margin:1.2rem 0 0;padding-top:1rem}.cvl-tip h3{font-size:1rem;margin:0 0 .5rem}
+.cvl-foot{color:#a9a3a8;font-size:.78rem;padding:1rem 0}
+@media(max-width:860px){.cvl-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.cvl-main{width:calc(100% - 1rem)}.cvl-options{grid-template-columns:1fr}.cvl-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.cvl-actions button{flex:1 1 132px}}
+@media(prefers-reduced-motion:reduce){.cvl-main *{scroll-behavior:auto!important;transition:none!important}}
