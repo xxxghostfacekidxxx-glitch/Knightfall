@@ -23,7 +23,8 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Chaos Code Studio",url:"/chaos-code-studio.html",terms:"free programming code editor syntax formatting prettier flowchart diagram mermaid debug inspect javascript json"},
   {title:"Chaos Visual Lab",url:"/chaos-visual-lab.html",terms:"free local browser image resize pixel art avatar sprite photo png webp export palette extraction swatches css tokens tattoo stencil blackwork transfer mirror threshold outline contour svg vector tracing 100 percent printable calibrated size millimeters mm a4 letter QR share Openverse creator artwork colors"},
   {title:"Chaos Forge",url:"/chaos-forge.html",terms:"clothing sewing pattern drafting craft blueprints 3d model viewer camera photo image analysis poly haven met wikidata free resource maker"},
-  {title:"The Crucible",url:"/chaos-crucible.html",terms:"miss chaos creative workbench project builder brief blueprint tattoo character game design craft sewing coding writing markdown export private memo save maker projects"}
+  {title:"The Crucible",url:"/chaos-crucible.html",terms:"miss chaos creative workbench project builder brief blueprint tattoo character game design craft sewing coding writing markdown export private memo save maker projects"},
+  {title:"Miss Chaos Abilities Guide",url:"/miss-chaos-guide.html",terms:"what can miss chaos do capabilities guide ai tools how to use assistant member osiris isis private modes permissions creator code research demo"}
 ]);
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);
