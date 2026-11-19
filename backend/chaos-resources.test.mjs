@@ -36,6 +36,14 @@ test("no arbitrary URLs and invalid query rejected",async()=>{
  await assert.rejects(metSearch({query:""}),/public search topic/);
 });
 
+test("public maker catalogs reject contact and account data before an external request",async()=>{
+ const deny=()=>{throw Error("should never fetch");};
+ for(const search of [metSearch,polyhavenSearch,wikidataSearch]){
+  for(const query of ["private@example.com","515 555 0123","12345678901234"]){
+   await assert.rejects(search({query},{fetcher:deny}),/public search topic/);
+  }
+ }
+});
 test("Poly Haven metadata schema drift cannot crash resource search",async()=>{
  const got=await polyhavenSearch({query:"fabric",type:"textures"},{fetcher:async()=>example({
     good:{name:"Fabric",tags:{fabric:true},description:null},
