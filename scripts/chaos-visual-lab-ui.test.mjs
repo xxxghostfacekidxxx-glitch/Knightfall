@@ -66,5 +66,8 @@ test("private artwork and QR never call third-party services",()=>{
  assert.match(openverse,/https:\/\/api\.openverse\.org\/v1\/images\//);
  assert.match(openverse,/credentials:"omit"/);
  assert.match(openverse,/referrerPolicy:"no-referrer"/);
- assert.doesNotMatch(openverse,/getImageData|FileReader|createImageBitmap|\.thumbnail\b|\.innerHTML/);
+ assert.doesNotMatch(openverse,/getImageData|FileReader|createImageBitmap|\.innerHTML/);
+ assert.match(js,/show\.addEventListener\("click",\(\)=>/);
+ assert.match(js,/image\.src=item\.thumbnail_url/);
+ assert.match(js,/image\.referrerPolicy="no-referrer"/);
 });
