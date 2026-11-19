@@ -103,7 +103,7 @@
 .crucible-evidence{display:grid;gap:8px;margin-top:17px}
 .crucible-evidence label{font-size:.81rem;font-weight:900;color:#fce1ed}
 .crucible-evidence label small{display:block;color:#aeb9b3;font-size:.7rem;font-weight:500;margin-top:4px}
-.crucible-evidence textarea{width:100%;min-width:0;min-height:80px;padding:10px 12px;resize:vertical;color:#f9edff;background:#0b0d16;border:1px solid #456257;border-radius:9px;font:400 .8rem/1.5 inherit}
+.crucible-evidence textarea{width:100%;min-width:0;min-height:80px;padding:10px 12px;resize:vertical;color:#f9edff;background:#0b0d16;border:1px solid #456257;border-radius:9px;font-family:inherit;font-weight:400;font-size:.8rem;line-height:1.5}
 .crucible-evidence textarea:focus-visible{outline:2px solid #8cffbd;outline-offset:2px}
 .crucible-evidence p{font-size:.69rem;line-height:1.45;color:#a4afaa;margin:0}
 @media(prefers-reduced-motion:reduce){#crucible-milestone-fill{transition:none}}
