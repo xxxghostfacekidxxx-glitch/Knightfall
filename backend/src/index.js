@@ -9,6 +9,7 @@ import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
 import {handleChaosCompanion,companionScope,acceptedAdminPartner} from "./chaos-companion.mjs";
+import {handleChaosDevReviews} from "./chaos-dev-reviews.js";
 import { getKnightfallGithubHealth } from "../chaos-github-health.mjs";
 import { makeChaosPatternDraft } from "../chaos-forge-tool.mjs";
 import { estimateFabric } from "../chaos-fabric-estimate.mjs";
@@ -1055,6 +1056,10 @@ export default { async queue(batch, env) {
 
   const companionResponse=await handleChaosCompanion(request,env,url,{requireUser,json,origin,rateLimit});
    if(companionResponse)return companionResponse;
+
+  // Scoped developer-review queue: immutable source, human approval, NO GitHub writes.
+  const reviewResponse=await handleChaosDevReviews(request,env,url,{requireUser,json,origin,rateLimit});
+  if(reviewResponse)return reviewResponse;
 
    // Global theme recipes: public read, GOD-only versioned publishing/rollback.
   const themeCrewResponse=await handleThemeCrew(request,env,url,{requireUser,json,origin,audit});
