@@ -21,7 +21,7 @@ test("all six disciplines have live self-reported checkpoints and a meaningful n
   assert.equal(state.completed,2);
   assert.equal(state.percent,40);
   assert.equal(state.nextStep,CRUCIBLE_KINDS[kind].steps[1]);
-  assert.match(state.report,/member-reported; not independently verified/);
+  assert.match(state.report,/self-reported; not independently verified/);
   assert.match(state.report,/Evidence and working notes/);
   assert.match(state.report,/\[x\]/);
   assert.match(state.report,/\[ \]/);
