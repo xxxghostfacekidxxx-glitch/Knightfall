@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'backend/chaos-*'
+      - 'backend/src/chaos-companion.mjs'
+      - 'public/samantha-chaos*'
+      - 'scripts/samantha-chaos-ui.test.mjs'
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,3 +20,5 @@ jobs:
       - run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
       - name: Verify Code Studio interface and client syntax
         run: node --check public/chaos-code-studio.js && node --test scripts/chaos-code-studio-ui.test.mjs
+      - name: Verify private Samantha companion and relay UI
+        run: node --check public/samantha-chaos.js && node --test scripts/samantha-chaos-ui.test.mjs

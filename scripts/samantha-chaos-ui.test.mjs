@@ -13,7 +13,7 @@ test("private Samantha shell inherits real account-bound Miss Chaos with gated d
  assert.match(html,/\/miss-chaos\.js\?/);
  assert.match(js,/me\.role!=="partner"/);
  assert.match(js,/\/api\/chaos\/companion/);
- assert.match(chat,/partnerCompanion \? "partner" : undefined/);
+ assert.match(chat,/partnerCompanion\?"partner":undefined/);
  assert.match(backend,/companionMode=body\.companion==="partner"/);
  assert.match(backend,/access\.role!=="partner"/);
 });

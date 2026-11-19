@@ -88,3 +88,9 @@ Use the existing Cloudflare stack, cache nonpersonal public data, cap retrieval 
 - Both are routed through the existing bounded public capability permissions; the code inspector is also included in the existing authenticated direct utility endpoint, and known coding requests bypass the second tool-planner call. Chat starters expose both features.
 - Backend installs pinned Acorn 8.19.0. Two Miss Chaos CI jobs now install backend dependencies before running tests. Worker deploy already performs this installation.
 - Uninstalled follow-ons: Prettier formatting (MIT), Monaco Editor (MIT), Mermaid diagrams (MIT), highlight.js (BSD-3-Clause), Transformers.js (Apache-2.0). Assess memory, worker budgets, rendering safety and CSP before committing.
+
+## Samantha's private companion and fleet handoff (November 19, 2026)
+- Dedicated authenticated `/samantha-chaos.html` uses the existing Miss Chaos chat, private account-bound conversations and memories. It requires the accepted `ai_handoff_partner` membership on every partner-mode chat request; no cloned account or copy of the owner's memory is created.
+- The page includes verified read-only shared tasks and a deliberate shared-note/task posting interface routed to existing Between the Flames endpoints. A posted update becomes available to either assistant through `user.handoff` at the next retrieval, not through unconsented cross-account chat access.
+- `user.bot_fleet` provides the signed-in member's own metadata plus only the owner's explicitly public, non-NSFW bot summaries to an accepted partner. System prompts, private bot logs, private memory, and God controls are not shared. Bot conversation uses existing public-bot chat only on explicit user submission; copying a bot reply into a handoff note remains a separate deliberate click.
+- This is coordination through a shared user-controlled board, not automated bot-to-bot task execution or private bot permission delegation.
