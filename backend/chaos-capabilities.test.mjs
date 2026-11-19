@@ -5,6 +5,7 @@ import {executeChaosCapability} from "./chaos-capabilities.mjs";
 const handlers = {
   "site.help": async ({input}) => ({answer: input.topic}),
   "user.memories": async ({principal}) => ({owner: principal.id}),
+  "user.journal": async ({principal}) => ({owner: principal.id,previews_only:true}),
   "god.diagnostics": async () => ({ok: true}),
   "god.propose_change": async () => ({proposed: true})
 };
@@ -21,6 +22,11 @@ test("unknown tool rejected", async () => {
 test("personal memory requires verified identity", async () => {
   await assert.rejects(run("user.memories"), /Sign-in required/);
   assert.deepEqual(await run("user.memories", {principal: {id: "a"}}), {owner: "a"});
+});
+test("private journal tool cannot run without verified member identity", async () => {
+  await assert.rejects(run("user.journal"),/Sign-in required/);
+  assert.deepEqual(await run("user.journal",{principal:{id:47,role:"member"}}),
+    {owner:47,previews_only:true});
 });
 test("god tools cannot be called by normal users", async () => {
   await assert.rejects(run("god.diagnostics", {principal: {id: "a", role: "user"}}), /Not authorized/);
