@@ -86,6 +86,12 @@ test("tattoo stencil controls use the actual deterministic pixel math and print 
  assert.match(js,/opened!==loadRevision/);
  assert.match(js,/token!==revision\|\|active!==bitmap/);
  assert.match(js,/tracingRevision!==revision\|\|tracingBitmap!==bitmap/);
+ assert.match(js,/clearButton\.addEventListener\("click"/);
+ assert.match(js,/\+\+loadRevision/);
+ assert.match(js,/reset\(\);source\.value=""/);
+ assert.match(html,/class="cvl-workstations"/);
+ assert.equal((html.match(/href="#(?:image-workbench|palette-extract|stencil-forge|sigil-maker|commons-scout)"/g)||[]).length,5);
+ assert.match(css,/\.cvl-workstations/);
  assert.match(effects,/function applyChaosArtworkEffects|export function applyChaosArtworkEffects/);
  assert.match(effects,/export function buildChaosPrintSheet/);
  assert.doesNotMatch(effects,/\bfetch\s*\(|XMLHttpRequest|WebSocket|eval\s*\(|\.innerHTML/);
