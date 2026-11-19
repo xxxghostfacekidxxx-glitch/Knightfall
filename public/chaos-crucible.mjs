@@ -183,8 +183,15 @@ if(root){
    if(file.size>12000){status("Project kit is larger than 12 KB. No changes were made.",true);return;}
    try{
      const imported=parseCrucibleWorkspace(await file.text());
-     if(fields.some(key=>String(form.elements.namedItem(key).value||"").trim())&&
-        !confirm("Importing will replace the visible draft for that discipline. Continue?"))return;
+     // Import replaces only the target discipline. Never silently discard a hidden
+     // unsaved draft that a member created before switching disciplines.
+     const targetIsVisible=imported.project.kind===selectedKind;
+     const targetDraft=targetIsVisible?readFields():(valuesByKind.get(imported.project.kind)||{});
+     const targetSteps=checkedByKind.get(imported.project.kind)||new Set();
+     const targetNotes=targetIsVisible?$("#crucible-proof-notes").value:(progressByKind.get(imported.project.kind)||"");
+     const targetBusy=fields.some(key=>String(targetDraft[key]||"").trim())||
+       targetSteps.size>0||!!String(targetNotes).trim();
+     if(targetBusy&&!confirm("This import will replace an unfinished draft for the same discipline, including its progress notes. Export a backup first if you need it. Continue?"))return;
      storeDraft();
      selectedKind=imported.project.kind;
      valuesByKind.set(selectedKind,imported.project);
