@@ -53,7 +53,7 @@ jobs:
         run: node --test backend/src/starter-public-bots.test.mjs scripts/public-bot-starters.test.mjs
 
       - name: Verify Miss Chaos scoped agent runtime before deploying
-        run: node --test backend/chaos-*.test.mjs backend/src/chaos-forge-vision.test.mjs
+        run: node --test backend/chaos-*.test.mjs backend/src/chaos-forge-vision.test.mjs backend/src/notification-delivery-policy.test.mjs
 
       - name: Verify bot tier authorization and staff-only homepage updates
         run: |
