@@ -117,6 +117,13 @@ test("notification link awaits read receipt before navigating; badge listens for
   assert.match(bubbles,/window\.dispatchEvent\(new Event\("kf:notifications-changed"\)\)/);
   assert.match(messages,/const hadUnread=Number\(c\.unread_count\)>0/);
 });
+test("notification list refreshes promptly when another tab or message opens an alert",()=>{
+  assert.match(notifications,/window\.addEventListener\("storage",event=>/);
+  assert.match(notifications,/event\.key==="kf:notifications-changed"/);
+  assert.match(notifications,/event\.data\?\.type==="KF_NOTIFICATIONS_CHANGED"/);
+  assert.match(notifications,/window\.addEventListener\("kf:notifications-changed",refreshReadState\)/);
+  assert.match(notifications,/if\(document\.visibilityState==="visible"\)void load\(\)/);
+});
 test("opening a conversation only clears existing alerts for the signed-in member",()=>{
   assert.match(backend,/UPDATE notifications SET read_at=\? WHERE user_id=\? AND target_type='conversation' AND target_id=\? AND kind IN \('message','mention'\) AND read_at IS NULL AND created_at<=\?/);
   assert.match(backend,/\.bind\(openedAt,user\.id,conversationId,openedAt\)\.run\(\)/);
