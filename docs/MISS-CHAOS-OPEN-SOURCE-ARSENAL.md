@@ -25,3 +25,9 @@ Run `npm install --prefix backend` then `node --test backend/chaos-*.test.mjs ba
 - New `god.github_health` tool reads the latest 12 public GitHub Actions runs on main directly from the fixed Knightfall repository using a bounded free GitHub GET request. No GitHub secret or paid API is needed; GitHub anonymous API limits apply.
 - The tool returns grounded workflow links, status and generic proposals for what to inspect. It explicitly does not fetch detailed job logs, diagnose root causes, make file changes or auto-approve any repairs. Verified GOD role is enforced on both chat and authenticated utility API; ordinary members cannot invoke it.
 - Owner can ask Miss Chaos 'Check Knightfall GitHub workflow status'. Any code change remains a separate review-and-approval step.
+
+## Free developer utilities: November 19, 2026 (phase 3)
+- [@babel/parser 7.28.5](https://github.com/babel/babel/tree/main/packages/babel-parser), MIT: extends actual syntax parser coverage to TypeScript, JSX and TSX. This is **syntax validation**, not TypeScript semantic type-checking or running source.
+- [jsdiff 8.0.2](https://github.com/kpdecker/jsdiff), BSD-3-Clause: read-only line diffs, unified patch preview and add/remove counts. Never applies a patch or writes to GitHub.
+- Knightfall's own deliberately bounded JSON-shape validator supports a transparent subset of JSON Schema (types, required/properties, items, enums, limits). No remote $ref, arbitrary pattern evaluation, user-supplied code compilation or paid service.
+- The Code Studio UI offers corresponding direct tools under the existing authenticated, rate-limited utility endpoint. All raw source remains unsaved by these tools. No new third-party account, analytics or billing.

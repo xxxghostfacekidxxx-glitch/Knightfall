@@ -1,4 +1,5 @@
 import {parse} from "acorn";
+import {parse as parseBabel} from "@babel/parser";
 /** Acorn-backed, read-only syntax inspector. Never executes or persists submitted code. */
 const clip=(s,n=160)=>String(s||"").slice(0,n);
 export function inspectChaosCode(input={}){
@@ -7,7 +8,7 @@ export function inspectChaosCode(input={}){
  if(typeof code!=="string"||!code.trim()||new TextEncoder().encode(code).length>10000)
    throw Error("Provide up to 10,000 bytes of code.");
  const language=String(input.language||"javascript").toLowerCase();
- if(!["javascript","json"].includes(language))throw Error("Only JavaScript and JSON are supported.");
+ if(!["javascript","json","typescript","jsx","tsx"].includes(language))throw Error("Only JavaScript, TypeScript, JSX, TSX and JSON are supported.");
  const line_count=code.split(/\r\n|\n|\r/).length;
  if(language==="json"){
    try{
@@ -21,12 +22,17 @@ export function inspectChaosCode(input={}){
  }
  const source_type=["script","module"].includes(input.source_type)?input.source_type:"module";
  let ast;
- try{ast=parse(code,{ecmaVersion:"latest",sourceType:source_type,locations:true,allowHashBang:true});}
+ try{
+  ast=["typescript","jsx","tsx"].includes(language)?parseBabel(code,{sourceType:source_type,
+    plugins:language==="typescript"?["typescript"]:language==="jsx"?["jsx"]:["typescript","jsx"],
+    allowReturnOutsideFunction:false,errorRecovery:false}):
+    parse(code,{ecmaVersion:"latest",sourceType:source_type,locations:true,allowHashBang:true});
+ }
  catch(error){
-   return {source:"Acorn 8.19.0 (MIT)",language,source_type,syntax_valid:false,line_count,
+   return {source:language==="javascript"?"Acorn 8.19.0 (MIT)":"Babel parser 7.28.5 (MIT)",language,source_type,syntax_valid:false,line_count,
      errors:[{message:clip(error?.message),line:error?.loc?.line||null,
        column:Number.isInteger(error?.loc?.column)?error.loc.column+1:null}],
-     limits:"JavaScript only. TypeScript and JSX require additional parsers."};
+     limits:"Syntax inspection only, no code execution or type checking."};
  }
  const findings=[],stack=[ast];let parsed_nodes=0;
  const report=(node,rule,severity,message)=>{
@@ -53,6 +59,6 @@ export function inspectChaosCode(input={}){
      else if(v?.type)stack.push(v);
    }
  }
- return {source:"Acorn 8.19.0 (MIT)",language,source_type,syntax_valid:true,line_count,parsed_nodes,
-   findings,errors:[],limits:"Bounded syntax validation and limited heuristic warnings; not a full lint/security audit. No execution. No TS/JSX."};
+ return {source:language==="javascript"?"Acorn 8.19.0 (MIT)":"Babel parser 7.28.5 (MIT)",language,source_type,syntax_valid:true,line_count,parsed_nodes,
+   findings,errors:[],limits:"Bounded syntax validation and limited heuristic warnings; not a full lint/security or TypeScript type-checking audit. No code execution."};
 }

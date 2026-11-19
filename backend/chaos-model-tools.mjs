@@ -12,9 +12,11 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"resource.polyhaven",description:"Search CC0 3D models, textures and HDRI assets from Poly Haven with source credit",parameters:{type:"object",properties:{query:{type:"string"},type:{type:"string",enum:["models","textures","hdris"]}},required:["query"]}},
   {name:"resource.wikidata",description:"Look up structured facts and references from Wikidata",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.github_repos",description:"Find public, licensed GitHub source repositories related to an open-source software topic, with real source links and license metadata. Read-only, no private GitHub access.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
-  {name:"dev.code_format",description:"Use free local Prettier to format the supplied JavaScript or JSON text; outputs actual formatted text and does not execute code. For large snippets, open the Code Studio.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","json"]},print_width:{type:"integer"}},required:["code","language"]}},
+  {name:"dev.code_diff",description:"Compare two supplied short source versions without running them. Return actual unified patch and addition/removal counts; no automatic edits or GitHub writes.",parameters:{type:"object",properties:{before:{type:"string"},after:{type:"string"}},required:["before","after"]}},
+  {name:"dev.json_shape",description:"Check JSON document against bounded non-executing JSON Schema subset: type, required fields, properties, items, enums and length/number bounds. No remote refs or regex.",parameters:{type:"object",properties:{document:{type:"string"},schema:{type:"string"}},required:["document","schema"]}},
+  {name:"dev.code_format",description:"Use free local Prettier to format the supplied JavaScript, TypeScript, JSX, TSX or JSON text; outputs actual formatted text and does not execute code. For large snippets, open the Code Studio.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","typescript","jsx","tsx","json"]},print_width:{type:"integer"}},required:["code","language"]}},
   {name:"dev.diagram_flow",description:"Create an actual flowchart and exportable Mermaid diagram code from the user-provided steps. Never invent workflow actions or execute a graph.",parameters:{type:"object",properties:{steps:{type:"string"}},required:["steps"]}},
-  {name:"dev.code_inspect",description:"Parse supplied JavaScript or JSON code and report exact syntax errors, with a limited static risk review. Never execute code. TypeScript and JSX are not supported.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","json"]},source_type:{type:"string",enum:["module","script"]}},required:["code","language"]}},
+  {name:"dev.code_inspect",description:"Parse supplied JavaScript, TypeScript, JSX, TSX or JSON and report exact syntax errors, with a limited static risk review. Never execute code or perform TypeScript semantic type checking.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","typescript","jsx","tsx","json"]},source_type:{type:"string",enum:["module","script"]}},required:["code","language"]}},
   {name:"research.books",description:"Search public Open Library book catalog for titles, authors and publication years. No full book text.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.papers",description:"Search Crossref scholarly metadata and DOI links; never claim the paper was read or peer-reviewed from metadata alone.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"forge.pattern_draft",description:"Compute measured prototype sewing/craft pattern cut list and actual-editable Chaos Forge link. All dimensions are inches. Optional fabric width gives a rough no-rotation material estimate. Do not invent missing sizes.",parameters:{type:"object",properties:{template:{type:"string",enum:["tote","pouch","apron","skirt","box"]},width_in:{type:"number"},height_in:{type:"number"},depth_in:{type:"number"},seam_in:{type:"number"},fabric_width_in:{type:"number"},reserve_percent:{type:"number"},cost_per_yard:{type:"number"}},required:["template"]}},
@@ -39,7 +41,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox"]);
 const GOD=new Set(["god.audit_summary","god.github_health"]);
-const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug|format|prettify|flowchart|diagram|workflow)\b/i;
+const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug|format|prettify|flowchart|diagram|workflow|compare|diff|schema|typescript|tsx|jsx)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||
@@ -99,9 +101,17 @@ function explicitGithubRequest(text){
  const match=String(text||"").trim().match(/^(?:please\s+)?(?:find|search|recommend|show|research|look\s*up)\s+(?:me\s+)?(?:(?:free|open[- ]source)\s+)*(?:github\s+)?(?:repos(?:itories)?|projects?|libraries)\s+(?:for|about|on)\s+(.{2,100})$/i);
  return match?{name:"research.github_repos",arguments:{query:match[1].replace(/[.!?]+$/,"").trim()}}:null;
 }
+function explicitDiffRequest(text){
+ const m=String(text||"").trim().match(/^Compare code versions:\s*OLD:\s*([\s\S]{1,5000}?)\s*NEW:\s*([\s\S]{1,5000})$/i);
+ return m?{name:"dev.code_diff",arguments:{before:m[1],after:m[2]}}:null;
+}
+function explicitJSONShapeRequest(text){
+ const m=String(text||"").trim().match(/^Validate JSON schema:\s*SCHEMA:\s*([\s\S]{2,5300}?)\s*DOCUMENT:\s*([\s\S]{1,5300})$/i);
+ return m?{name:"dev.json_shape",arguments:{schema:m[1],document:m[2]}}:null;
+}
 function explicitCodeRequest(text){
- const match=String(text||"").trim().match(/^(?:please\s+)?(?:check|inspect|lint|validate)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code|syntax)?\s*:\s*([\s\S]{1,10000})$/i);
- return match?{name:"dev.code_inspect",arguments:{language:match[1].toLowerCase()==="json"?"json":"javascript",code:match[2]}}:null;
+ const match=String(text||"").trim().match(/^(?:please\s+)?(?:check|inspect|lint|validate)\s+(?:(?:my|the)\s+)?(javascript|js|json|typescript|ts|tsx|jsx)\s*(?:code|syntax)?\s*:\s*([\s\S]{1,10000})$/i);
+ return match?{name:"dev.code_inspect",arguments:{language:({ts:"typescript",js:"javascript"})[match[1].toLowerCase()]||match[1].toLowerCase(),code:match[2]}}:null;
 }
 function explicitGodGithubRequest(text){
  const source=String(text||"").trim();
@@ -111,8 +121,8 @@ function explicitGodGithubRequest(text){
  return {name:"god.github_health",arguments:{}};
 }
 function explicitFormatRequest(text){
- const m=String(text||"").trim().match(/^(?:please\s+)?(?:format|prettify)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code)?\s*:\s*([\s\S]{1,10000})$/i);
- return m?{name:"dev.code_format",arguments:{language:m[1].toLowerCase()==="json"?"json":"javascript",code:m[2]}}:null;
+ const m=String(text||"").trim().match(/^(?:please\s+)?(?:format|prettify)\s+(?:(?:my|the)\s+)?(javascript|js|json|typescript|ts|tsx|jsx)\s*(?:code)?\s*:\s*([\s\S]{1,10000})$/i);
+ return m?{name:"dev.code_format",arguments:{language:({ts:"typescript",js:"javascript"})[m[1].toLowerCase()]||m[1].toLowerCase(),code:m[2]}}:null;
 }
 function explicitFlowRequest(text){
  const m=String(text||"").trim().match(/^(?:please\s+)?(?:create|make|draw|generate|build)\s+(?:a\s+)?(?:flowchart|flow\s+diagram|workflow\s+diagram)\s*:\s*([\s\S]{3,1800})$/i);
@@ -173,7 +183,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const obvious=(principal?.id&&principal.role==="god"?explicitGodGithubRequest(latest):null)||explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
+  const obvious=explicitDiffRequest(latest)||explicitJSONShapeRequest(latest)||(principal?.id&&principal.role==="god"?explicitGodGithubRequest(latest):null)||explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
   // Pure deterministic helpers run before optional expensive model planning.

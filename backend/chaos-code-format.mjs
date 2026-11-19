@@ -1,6 +1,7 @@
 import * as prettier from "prettier/standalone";
 import prettierBabel from "prettier/plugins/babel";
 import prettierEstree from "prettier/plugins/estree";
+import prettierTypescript from "prettier/plugins/typescript";
 export {buildChaosFlow} from "../public/chaos-flow-core.mjs";
 
 /** No model calls, account access, file writes or code execution. */
@@ -10,14 +11,14 @@ export async function formatChaosCode(input={}){
  if(typeof code!=="string"||!code.trim()||new TextEncoder().encode(code).length>10000)
   throw Error("Provide 1–10,000 bytes of JavaScript or JSON.");
  const language=String(input.language||"javascript").toLowerCase();
- if(!["javascript","json"].includes(language))throw Error("Only JavaScript and JSON formatting are supported.");
+ if(!["javascript","json","typescript","jsx","tsx"].includes(language))throw Error("Only JavaScript, TypeScript, JSX, TSX and JSON formatting are supported.");
  const printWidth=input.print_width===undefined?80:input.print_width;
  if(!Number.isInteger(printWidth)||printWidth<40||printWidth>120)throw Error("Print width must be 40–120.");
  let formatted;
  try{
   formatted=await prettier.format(code,{
-   parser:language==="json"?"json":"babel",
-   plugins:[prettierBabel,prettierEstree],
+   parser:language==="json"?"json":language==="typescript"||language==="tsx"?"typescript":"babel",
+   plugins:[prettierBabel,prettierEstree,prettierTypescript],
    printWidth,tabWidth:2,useTabs:false,semi:true,
    singleQuote:false,bracketSpacing:true,
    endOfLine:"lf"
