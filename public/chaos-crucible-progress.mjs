@@ -34,7 +34,7 @@ export function buildCrucibleProgress(brief,raw={}){
   const percent=Math.round(completed/total*100);
   const verified=completed===total;
   const report=[
-    "## Crucible checkpoint (member-reported; not independently verified)",
+    "## Crucible checkpoint (self-reported; not independently verified)",
     "**Milestones marked complete:** "+completed+"/"+total+" ("+percent+"%)",
     ...brief.track.steps.map((step,index)=>"- ["+(done.has(index)?"x":" ")+"] "+step),
     "**Next proposed step:** "+(next?next.step:"All planned steps marked complete. Validate the acceptance checks independently."),
