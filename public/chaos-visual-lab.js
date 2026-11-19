@@ -180,7 +180,7 @@ async function render(){
   preview.style.imageRendering=pixel?"pixelated":"auto";
   placeholder.hidden=true;
   palette=sampleColors(canvas);drawPalette();pngButton.disabled=false;webpButton.disabled=false;
-  compareButton.disabled=false;printButton.disabled=false;
+  compareButton.disabled=false;updatePrintHint();
   dimensions.textContent="Export: "+outW+" × "+outH+" pixels · "+processor+" · "+
    (mode==="normal"?"Original colors":mode==="ink"?"Blackwork threshold":mode==="outline"?"Extracted edges":"Grayscale")+
    (mirror.checked?" · mirrored":"")+
@@ -215,7 +215,73 @@ processButton.addEventListener("click",()=>{void render();});
 grid.addEventListener("change",()=>{if(bitmap)void render();});
 size.addEventListener("change",()=>{if(bitmap)void render();});
 engine.addEventListener("change",()=>{if(bitmap)void render();});
-effect.addEventListener("change",()=>{if(bitmap)void render();});
+effect.addEventListener("change",()=>{
+ const binary=["ink","outline"].includes(effect.value);
+ transparentWhite.disabled=!binary;
+ if(!binary)transparentWhite.checked=false;
+ if(bitmap)void render();
+});
+function applyAdjustment(){if(bitmap)void render();}
+threshold.addEventListener("input",()=>{thresholdLabel.value=threshold.value;thresholdLabel.textContent=threshold.value;});
+threshold.addEventListener("change",applyAdjustment);
+mirror.addEventListener("change",applyAdjustment);
+invert.addEventListener("change",applyAdjustment);
+transparentWhite.addEventListener("change",applyAdjustment);
+transparentWhite.disabled=true;
+$("visual-preset-stencil").addEventListener("click",()=>{
+ grid.value="0";size.value="1024";effect.value="outline";threshold.value="100";
+ thresholdLabel.value="100";thresholdLabel.textContent="100";
+ mirror.checked=true;invert.checked=false;transparentWhite.checked=false;transparentWhite.disabled=false;
+ if(bitmap)void render();
+});
+$("visual-adjust-reset").addEventListener("click",()=>{
+ effect.value="normal";grid.value="0";threshold.value="145";
+ thresholdLabel.value="145";thresholdLabel.textContent="145";
+ mirror.checked=false;invert.checked=false;transparentWhite.checked=false;transparentWhite.disabled=true;
+ if(bitmap)void render();
+});
+compareButton.addEventListener("click",()=>{
+ if(!bitmap||!outputCanvas)return;
+ compareOriginal=!compareOriginal;
+ const ctx=preview.getContext("2d");
+ ctx.clearRect(0,0,preview.width,preview.height);
+ ctx.imageSmoothingEnabled=true;
+ ctx.drawImage(compareOriginal?bitmap:outputCanvas,0,0,preview.width,preview.height);
+ compareButton.setAttribute("aria-pressed",String(compareOriginal));
+ compareButton.textContent=compareOriginal?"Show processed":"Compare original";
+ say(compareOriginal?"Comparing the original reference. Exports still use your processed artwork.":
+ "Processed preview restored. Export uses these settings.");
+});
+const paperSelect=$("visual-paper"),printWidth=$("visual-print-width"),printStatus=$("visual-print-status");
+function updatePrintHint(){
+ if(!outputCanvas){printButton.disabled=true;return;}
+ try{
+  const config=stencilPaperConfig({paper:paperSelect.value,widthMm:Number(printWidth.value),
+   widthPx:outputCanvas.width,heightPx:outputCanvas.height});
+  printButton.disabled=false;
+  printStatus.textContent="Print layout: "+config.artWidthMm.toFixed(1)+" × "+
+   config.artHeightMm.toFixed(1)+" mm on "+(paperSelect.value==="a4"?"A4":"US Letter")+
+   ". Set printer scaling to Actual Size / 100% and verify the 50 mm calibration line.";
+ }catch(err){
+  printButton.disabled=true;
+  printStatus.textContent=String(err.message||"Invalid physical print size.").slice(0,200);
+ }
+}
+paperSelect.addEventListener("change",updatePrintHint);
+printWidth.addEventListener("input",updatePrintHint);
+printButton.addEventListener("click",()=>{
+ if(!outputCanvas)return;
+ try{
+  const {svg,layout}=buildChaosPrintSheet({
+   paper:paperSelect.value,widthMm:Number(printWidth.value),
+   widthPx:outputCanvas.width,heightPx:outputCanvas.height,
+   pngDataUrl:outputCanvas.toDataURL("image/png")
+  });
+  saveBlob("knightfall-stencil-"+Math.round(layout.artWidthMm)+"mm-"+paperSelect.value+".svg",
+   new Blob([svg],{type:"image/svg+xml;charset=utf-8"}));
+  printStatus.textContent="Calibrated SVG exported. Print at 100% (not Fit to Page), then measure the 50 mm line before transfer.";
+ }catch(err){printStatus.textContent=String(err.message||"Unable to export measured sheet.").slice(0,200);}
+});
 pngButton.addEventListener("click",()=>downloadImage("image/png"));
 webpButton.addEventListener("click",()=>downloadImage("image/webp"));
 copyButton.addEventListener("click",async()=>{
@@ -236,12 +302,14 @@ const traceButton=$("visual-trace"),svgButton=$("visual-svg"),traceStatus=$("vis
 const svgPreview=$("visual-svg-preview"),traceStyle=$("visual-trace-style"),traceDetail=$("visual-trace-detail");
 function traceStatusText(message){traceStatus.textContent=message;}
 traceButton.addEventListener("click",async()=>{
- if(!bitmap)return;
+ if(!bitmap||!outputCanvas)return;
+ const tracingRevision=revision,tracingBitmap=bitmap;
  traceButton.disabled=true;svgButton.disabled=true;
  traceStatusText("Building local vector paths from the processed pixels...");
  try{
   // One yield lets the status paint before a deliberately limited synchronous trace.
   await new Promise(resolve=>setTimeout(resolve,0));
+  if(tracingRevision!==revision||tracingBitmap!==bitmap||!outputCanvas)return;
   if(!window.ImageTracer?.imagedataToSVG)throw Error("ImageTracerJS did not initialize.");
   const style=traceStyle.value,detail=traceDetail.value;
   if(!["blackwork","grayscale","color"].includes(style)||
@@ -282,7 +350,12 @@ traceButton.addEventListener("click",async()=>{
   traceStatusText("Created a real "+style+" vector SVG ("+frame.width+" × "+frame.height+" trace grid, "+
    Math.round(vector.length/1024)+" KB). Review and edit curves before production.");
  }catch(err){traceSvg="";traceStatusText(String(err.message||"Could not trace the selected image.").slice(0,180));}
- finally{traceButton.disabled=!bitmap;}
+ finally{traceButton.disabled=!bitmap||!outputCanvas;}
+});
+for(const control of [traceStyle,traceDetail])control.addEventListener("change",()=>{
+ if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
+ traceSvg="";svgButton.disabled=true;svgPreview.removeAttribute("src");svgPreview.hidden=true;
+ traceStatusText("Trace settings changed. Generate a new vector preview before export.");
 });
 svgButton.addEventListener("click",()=>{
  if(traceSvg)saveBlob("knightfall-traced-stencil.svg",new Blob([traceSvg],{type:"image/svg+xml;charset=utf-8"}));
