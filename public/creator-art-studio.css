@@ -52,3 +52,18 @@
 .kf-art-sprite-card .kf-relic-export{margin-top:auto;min-height:40px;width:100%;padding:.5rem .6rem;border:1px solid #bc9477;border-radius:9px;background:linear-gradient(145deg,#403044,#24202e);color:#f9e8d3;font:800 .72rem system-ui,sans-serif;cursor:pointer}
 .kf-art-sprite-card .kf-relic-export:hover,.kf-art-sprite-card .kf-relic-export:focus-visible{border-color:#ebd2ae;outline-offset:2px}
 .kf-relic-gallery{grid-template-columns:repeat(auto-fill,minmax(min(100%,146px),1fr))}
+
+/* Keep the Android system photo picker interactable through its native label,
+   without adding a second distracting file field to the Foundry. */
+.kf-art-photo-native{
+ position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;opacity:0!important;overflow:hidden!important;
+ clip-path:inset(50%)!important;pointer-events:none!important;
+}
+#site-image-library label[for="kf-art-photo-input"]{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:44px;cursor:pointer;text-align:center;
+}
+#site-image-library label[for="kf-art-photo-input"]:focus-visible{
+ outline:3px solid #79ffe7;outline-offset:3px;
+}
