@@ -53,6 +53,7 @@
 | Messages | `/chaosphere.html`, `/messages.html` | Social conversations and private inbox |
 | Arcade | `/chaos-cartridge.html`, `/arcade-games.html` | Arcade, games, progress, leaderboards and QA targets |
 | Miss Chaos | `/miss-chaos.html` | Main assistant chat, tool use and personal memory |
+| Capability guide | `/miss-chaos-guide.html` | Public examples, copied starter prompts, authenticated tool list and read-only arithmetic/word-count demos; private links only after verified mode discovery |
 | Samantha's companion | `/samantha-chaos.html` | Private account-bound partner workspace, authorized bot list and handoff |
 | Two-person coordination | `/ai-handoff.html` | **Between the Flames:** shared tasks, notes, status, evidence and optional privately configured GPT Action keys |
 | Staff | `/admin.html`, `/eye-of-chaos.html` | Moderation, mission dispatch, draft review, bot fleets |
@@ -93,3 +94,16 @@ Technical layout: GitHub `xxxghostfacekidxxx-glitch/Knightfall`, primary `main` 
 As of a direct Cloudflare Pages inspection on November 19, 2026, `ac1a04a78087c3224732bb2edbda1d5a07fec06e` succeeded in production and carried the custom-domain alias; the subsequent `6000e615b5b44c86bd0fdb6f719ff3b14827c638` frontend build was still queued. Later source commits require later deployment verification; do not assume the queued commit or this document is already live.
 
 **Current source references:** `docs/MISS-CHAOS-CAPABILITIES-ROADMAP.md`, `docs/MISS-CHAOS-PRIVATE-WORKSPACES.md`, `backend/chaos-capabilities.mjs`, `backend/src/eye-of-chaos.js`, `backend/src/ai-handoff.js`, `public/eye-of-chaos.html`, `public/chaos-code-studio.html`, and `README.md`.
+
+
+## 7. Member introduction and verified capability guide (November 19, 2026)
+
+**Public announcement, suitable for members:** Miss Chaos is Knightfall's creative AI assistant for conversation, saved user-selected memories, coding help, original art and tattoos, measured craft patterns, optional chat photo analysis, moon-based reflection, arcade navigation, and attributed research from selected public sources. The Crucible provides six project disciplines, editable JSON exports/imports, self-reported milestone trackers, next-step handoffs, and an **opt-in** twelve-project device shelf. The shelf is not encrypted or account-synced; shared-browser users can read it.
+
+**Public handbook:** `/miss-chaos-guide.html` organizes seven real capability areas with copyable examples. A logged-in viewer can check the tool identifiers the server currently offers via `/api/chaos/tools`, and explicitly invoke harmless calculator or word-count examples through `/api/chaos/tools/execute`. The listing is not a guarantee of provider uptime, unrestricted browsing or unlimited Workers AI quota. Any private Osiris/Isis panel requires authenticated `/api/chaos/modes` mode discovery and the separate verified tool list. Never use display names, URL query parameters or saved client flags as staff authorization.
+
+**Osiris: verified GOD + accepted owner**. Private owner assistant, read-only staff source and GitHub health tools, Eye of Chaos command desk, GOD-only Eye of Horus, owner master execution lock, root diagnostics and approved publication controls. No autonomous code application/deployment from Miss Chaos.
+
+**Isis: accepted collaborator + separately verified admin account**. Her own private companion, memories and account history; shared tasks/notes through explicit Between the Flames postings; curated owner bot consultations including permitted private bots with adult gating; admin/creator/moderation tools, Eye of Chaos missions and version-specific draft approvals, reviewed Theme Crew release/rollback. **Never GOD-only Eye of Horus, master execution lock, GOD diagnostics, or implicit GitHub/Cloudflare permissions.** Partnership alone without admin status doesn't grant admin powers.
+
+**Engineering constraints:** `scripts/miss-chaos-guide.test.mjs` checks the seven guide areas, live-demo input validation and fail-closed private roles. `scripts/miss-chaos-site-index.test.mjs` checks public source navigation and forbids retired Creator Foundry links. Both run in the Cloudflare Pages release guard and the Miss Chaos CI workflow. `backend/chaos-public-tools.mjs` must stay syntactically valid, including a comma after every catalog entry. Do not claim mobile or partner-account validation without actual two-account/device testing.
