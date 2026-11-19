@@ -23,12 +23,22 @@
     ["Papers", "Search research papers about "],
     ["Patterns", "Draft a tote bag 16 x 18 x 4 inches with a 0.5 inch seam. Use fabric width 44 inches with 10% reserve. Give me a measured cut list, approximate fabric yardage and Chaos Forge design link."],
     ["Yardage", "Help me estimate how much fabric to buy. Ask me for usable fabric width, measured cut piece dimensions, piece counts, grain direction and reserve percentage. Never invent missing sizes."],
-    ["Inbox", "Show my recent Chaosphere conversations"]
+    ["Inbox", "Show my recent Chaosphere conversations"],
+    ["My Tasks", "Show our shared handoff task board and summarize the unfinished tasks. Only use tasks I have access to."],
+    ["3D Assets", "Find free CC0 models on Poly Haven for "],
+    ["Textures", "Find CC0 textures on Poly Haven for "],
+    ["Museum", "Find historical costumes at The Met"],
+    ["Wiki", "Search Wikipedia for "],
+    ["Site Help", "Where can I find the Chaos Forge?"]
   ];
   const starterBar = document.createElement("div");
   starterBar.className = "chaos-task-starters";
   starterBar.setAttribute("aria-label", "Assistant task starters");
   starterBar.style.cssText = "display:flex;flex-wrap:wrap;gap:.45rem;padding:.55rem .75rem";
+  const advancedBar = document.createElement("div");
+  advancedBar.id = "chaos-advanced-starters";
+  advancedBar.style.cssText = "display:none;flex-wrap:wrap;flex-basis:100%;gap:.45rem";
+  const featuredStarters = new Set(["Debug","Research","Patterns","Inbox"]);
   for (const [name, prompt] of taskStarters) {
     const button = document.createElement("button");
     button.type = "button";
@@ -41,8 +51,21 @@
       input.dispatchEvent(new Event("input", {bubbles:true}));
       input.focus();
     });
-    starterBar.append(button);
+    (featuredStarters.has(name) ? starterBar : advancedBar).append(button);
   }
+  const moreTools = document.createElement("button");
+  moreTools.type = "button";
+  moreTools.textContent = "More tools";
+  moreTools.setAttribute("aria-controls", "chaos-advanced-starters");
+  moreTools.setAttribute("aria-expanded", "false");
+  moreTools.style.cssText = "border:1px solid #84e89c80;background:#151b19;color:#c7fbd7;border-radius:999px;padding:.4rem .7rem;cursor:pointer;font:inherit;font-size:.78rem";
+  moreTools.addEventListener("click", () => {
+    const open = moreTools.getAttribute("aria-expanded") !== "true";
+    moreTools.setAttribute("aria-expanded", String(open));
+    moreTools.textContent = open ? "Fewer tools" : "More tools";
+    advancedBar.style.display = open ? "flex" : "none";
+  });
+  starterBar.append(moreTools, advancedBar);
   form.parentNode.insertBefore(starterBar, form);
   const referenceButton=$("#chaos-reference-photo"),referenceInput=$("#chaos-reference-input"),referenceStatus=$("#chaos-reference-status");
   let referenceBusy=false;
