@@ -45,3 +45,15 @@ test("tool selection refuses unknown names",async()=>{
  const {runChaosModelCalls}=await import("./chaos-model-tools.mjs");
  await assert.rejects(runChaosModelCalls([{name:"unlisted.action",arguments:{}}],{id:"test"}));
 });
+
+test("explicit conversions use measured results even without planner model",async()=>{
+ const calls=[];
+ const ai={run:async (_model,options)=>{calls.push(options);return {response:"12 inches equals 30.48 cm"};}};
+ const result=await inferWithChaosTools({ai,model:"fast",
+  messages:[{role:"system",content:"Only report proven values"},{role:"user",content:"Convert 12 inches to cm"}],
+  principal:{id:1,role:"member"}});
+ assert.equal(result.response,"12 inches equals 30.48 cm");
+ assert.equal(calls.length,1,"deterministic conversion must not spend another model call on planning");
+ assert.match(calls[0].messages[0].content,/"result":30.48/);
+ assert.match(calls[0].messages[0].content,/utility.convert/);
+});
