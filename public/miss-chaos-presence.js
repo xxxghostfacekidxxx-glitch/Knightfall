@@ -1,9 +1,10 @@
 (() => {
   "use strict";
+  const mount = () => {
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-dock-fixed4"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-overlay-recovery1"; document.head.append(css);
   const photoCss=document.createElement("link");photoCss.rel="stylesheet";photoCss.href="/chaos-chat-image-picker.css?v=20261119-attach1";document.head.append(photoCss);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261115-mc-scope2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
@@ -248,8 +249,16 @@
     catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey(),message);}catch(_){} }
     finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;chatPhoto?.setBusy(false);showModeLabel();input.focus({preventScroll:true});}
   });
+  // Verify companion modes at startup; requiring an initial chat click hid
+  // the Osiris/Isis switch despite an already authenticated session.
+  void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
-  dockScript.src="/miss-chaos-dock.js?v=20261119-dock-fixed4";
+  dockScript.src="/miss-chaos-dock.js?v=20261119-overlay-recovery1";
   document.head.append(dockScript);
+  };
+  // This module may also load directly in the <head> on legacy routes.
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", mount, {once:true});
+  else mount();
 })();
