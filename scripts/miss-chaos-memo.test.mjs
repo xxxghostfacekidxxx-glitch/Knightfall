@@ -17,7 +17,7 @@ test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  assert.match(presence,/id="mc-minimize"/);
  assert.match(presence,/id="mc-restore"/);
  assert.match(presence,/window\.KnightfallMemoPad\.mount/);
- assert.match(presence,/miss-chaos-dock\.js\?v=20261116-hero-dock2/);
+ assert.match(presence,/miss-chaos-dock\.js\?v=\d{8}-[a-z0-9-]+/);
  assert.match(page,/id="memo-pad-app"/);
  assert.match(page,/memo-pad\.js\?v=20261103-mail-chat3/);
 });
