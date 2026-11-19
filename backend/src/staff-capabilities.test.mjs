@@ -20,7 +20,7 @@ test("Level 1 has two mutually exclusive job tracks at identical rank",()=>{
 test("Administrator inherits both tracks, God inherits both plus Eye of Horus",()=>{
  const admin=staffCapabilities({role:"admin"});
  const god=staffCapabilities({role:"god"});
- assert.equal(admin.level,2);assert.equal(god.level,3);
+ assert.equal(admin.level,2);assert.equal(god.level,4);
  for(const cap of ["can_create","can_moderate","unlimited_bots","advanced_bot_builder"]) {
   assert.equal(admin[cap],true);assert.equal(god[cap],true);
  }
@@ -32,6 +32,23 @@ test("Administrator inherits both tracks, God inherits both plus Eye of Horus",(
  assert.equal(admin.can_eye_of_horus,false);
  assert.equal(god.can_eye_of_horus,true);
  assert.equal(staffCapabilities({role:"member"}).level,0);
+});
+test("Osiris is owner rank, and Isis is only the DB-verified accepted admin partner",()=>{
+ const osiris=staffCapabilities({role:"god",username:"knightfall"});
+ const isis=staffCapabilities({role:"admin",is_isis:1,username:"knightfallsamantha"});
+ const ordinaryAdmin=staffCapabilities({role:"admin",is_isis:0});
+ assert.deepEqual([osiris.level,isis.level,ordinaryAdmin.level],[4,3,2]);
+ assert.deepEqual([osiris.rank_name,isis.rank_name,ordinaryAdmin.rank_name],["Osiris","Isis","Administrator"]);
+ assert.deepEqual([osiris.rank_code,isis.rank_code,ordinaryAdmin.rank_code],["osiris","isis","admin"]);
+ assert.equal(isis.can_eye_of_chaos,true);
+ assert.equal(isis.can_eye_of_horus,false);
+ assert.equal(isis.can_delegate_approval,true);
+ assert.equal(osiris.can_eye_of_horus,true);
+ assert.equal(ordinaryAdmin.can_delegate_approval,false);
+ for(const fake of [{role:"member",is_isis:1},{role:"moderator",is_isis:1},{role:"admin",public_title:"Isis"}]){
+   assert.notEqual(staffCapabilities(fake).rank_name,"Isis");
+   assert.equal(staffCapabilities(fake).can_eye_of_horus,false);
+ }
 });
 test("a stray creator title must never elevate a moderator into Creator Foundry",()=>{
  const fake={role:"moderator",public_title:"Digital Creator"};
@@ -54,7 +71,7 @@ test("Admin User Command lists Creator as a separately selectable member track",
  assert.match(api,/ON CONFLICT\(user_id\) DO UPDATE SET title='Digital Creator',unlimited_slots=1,advanced_builder=1/);
  assert.match(api,/DELETE FROM member_bot_creator_privileges WHERE user_id=\? AND title='Digital Creator'/);
  assert.match(api,/await env\.DB\.batch\(updates\)/);
- assert.match(api,/AS public_title FROM users ORDER BY created_at DESC/);
+ assert.match(api,/AS public_title,EXISTS\\(SELECT 1 FROM ai_handoff_partner/);
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).track,"creation");
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).can_moderate,false);
  assert.equal(staffCapabilities({role:"member"}).can_create,false);
