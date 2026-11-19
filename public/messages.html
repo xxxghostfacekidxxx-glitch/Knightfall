@@ -236,6 +236,13 @@ async function refreshGameInvitesForConversation(c,token){
   if(pending){turnLink.hidden=false;turnLink.href="/arcade/async-play.html?match="+encodeURIComponent(pending.id);}
  }
 }
+function closeConversationPushNotices(id){
+ const conversationId=Number(id);
+ if(!Number.isSafeInteger(conversationId)||conversationId<=0||!("serviceWorker" in navigator))return;
+ const payload={type:"KF_CLOSE_HANDLED_NOTIFICATIONS",conversationId};
+ if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage(payload);
+ else navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage(payload)).catch(()=>{});
+}
 async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMessageId=null}={}){
  const previousId=Number(currentId);const token=++conversationLoadToken;oldestId=null;loadingOlder=false;latestRenderedFingerprint=null;latestRenderedConversation=null;
  historyPinnedConversationId=beforeMessageId?Number(id):null;
@@ -259,7 +266,7 @@ async function openConversation(id,{scroll=true,beforeMessageId=null,highlightMe
  $("#manage-group").hidden=c?.kind!=="group";updatePresenceLabel();$("#mute-chat").hidden=false;const muted=!!(c?.muted_until&&new Date(c.muted_until)>new Date());$("#mute-chat").dataset.muted=muted?"1":"0";$("#mute-chat").textContent=muted?"Unmute conversation":"Mute for "+({"60":"1h","480":"8h","1440":"24h","10080":"7d","43200":"30d"}[String($("#mute-duration").value)]||"24h");const restricted=!!Number(c?.messaging_blocked);$("#conversation-restricted").hidden=!restricted;$("#composer").hidden=restricted;$("#body").disabled=restricted;$("#body").placeholder="Message "+conversationName(c)+"…";$("#load-older").hidden=true;$("#jump-latest").hidden=!beforeMessageId;$("#messages").innerHTML='<div class="empty">Loading conversation…</div>';
  try{const initialPath="/api/messages/conversations/"+Number(id)+"?limit="+MESSAGE_PAGE_SIZE+
     (Number.isSafeInteger(Number(beforeMessageId))&&Number(beforeMessageId)>0?"&before="+encodeURIComponent(Number(beforeMessageId)+1):"");
-  const d=await api(initialPath);if(token!==conversationLoadToken)return;renderMessages(d.messages||[],false);$("#load-older").hidden=(d.messages||[]).length<MESSAGE_PAGE_SIZE;if(c&&!beforeMessageId){
+  const d=await api(initialPath);if(token!==conversationLoadToken)return;if(!beforeMessageId)closeConversationPushNotices(id);renderMessages(d.messages||[],false);$("#load-older").hidden=(d.messages||[]).length<MESSAGE_PAGE_SIZE;if(c&&!beforeMessageId){
    const hadUnread=Number(c.unread_count)>0;
    c.unread_count=0;
    if(hadUnread)window.dispatchEvent(new Event("kf:notifications-changed"));
