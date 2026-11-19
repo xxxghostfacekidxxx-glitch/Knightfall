@@ -20,7 +20,8 @@ export function explicitChaosMemberCall(message){
    const query=cut(text.match(/\b(?:about|for|containing|related\s+to)\s+(.{2,90})/i)?.[1]||"");
    return lookup("user.memories",{query});
  }
- if(/\b(?:handoff|shared\s+tasks?|to.do\s+list|task\s+board)\b/i.test(text))return lookup("user.handoff");
+ if(/\b(?:handoff|shared\s+tasks?|to.do\s+list|task\s+board|between\s+the\s+flames)\b/i.test(text))return lookup("user.handoff");
+ if(/\b(?:bot\s+fleet|bot\s+roster|my\s+bots|our\s+bots|published\s+bots|personal\s+bots)\b/i.test(text))return lookup("user.bot_fleet");
  if(/\b(?:notifications?|unread\s+alerts?|alerts?)\b/i.test(text))return lookup("user.notifications");
  if(/\b(?:profile)\b/i.test(text))return lookup("user.profile");
  if(/\b(?:inbox|conversations?|dms?|direct\s+messages?|chaosphere\s+chats?|chats?)\b/i.test(text))return lookup("user.inbox");

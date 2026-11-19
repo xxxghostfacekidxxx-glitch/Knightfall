@@ -42,6 +42,7 @@ export const CAPABILITIES = Object.freeze({
   "design.color_contrast": Object.freeze({description:"Check WCAG text contrast for provided hex colors",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "forge.scale_pattern": Object.freeze({description:"Resize measured rectangular pattern pieces with fixed seam options",scope:"public",mutates:false,confirmation:false,maxInputBytes:6000}),
   "utility.now": Object.freeze({description:"Get current clock and date in an IANA time zone",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "user.bot_fleet": Object.freeze({description:"Read member-owned bots and accepted-partner-accessible published owner bots",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "user.handoff": Object.freeze({description:"Read only the signed-in member's authorized shared Knightfall handoff board",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "radar.moon": Object.freeze({description:"Measured moon phase and next quarter",scope:"public",mutates:false,confirmation:false,maxInputBytes:64}),
   "radar.shadow": Object.freeze({description:"Public shadow-work prompts",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
