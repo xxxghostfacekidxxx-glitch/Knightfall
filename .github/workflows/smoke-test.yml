@@ -31,6 +31,8 @@ on:
       - 'scripts/cosmic-member-browser.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/miss-chaos-ux.test.mjs'
+      - 'scripts/chaos-forge-core.test.mjs'
+      - 'scripts/chaos-forge-browser.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
       - 'backend/src/member-memo-mail.test.mjs'
       - 'scripts/miss-chaos-memo-browser.mjs'
@@ -105,6 +107,11 @@ jobs:
           node-version: '22'
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
+      - name: Verify Chaos Forge patterns and offline-friendly 3D scripts
+        run: |
+          node --check public/chaos-forge.js
+          node --check public/chaos-forge-core.mjs
+          node --test scripts/chaos-forge-core.test.mjs
       - name: Verify birth charts, card-room rules and offline navigation
         run: node --test scripts/astrology.test.mjs scripts/profile-birth-chart.test.mjs scripts/cosmic-chart.test.mjs scripts/cosmic-atlas.test.mjs scripts/cosmic-lexicon.test.mjs scripts/cosmic-geo-timezone.test.mjs scripts/card-room-runtime.test.mjs scripts/nav-offline-api.test.mjs
       - name: Verify public profile hub, privacy, and custom themes
@@ -185,6 +192,8 @@ jobs:
           done
           cat /tmp/knightfall-static.log
           exit 1
+      - name: Exercise Chaos Forge mobile and desktop drafting, preview and photo analysis
+        run: node scripts/chaos-forge-browser.mjs
       - name: Exercise navigation, login roles and legacy bookmarks on mobile and desktop
         run: node scripts/smoke-navigation.mjs
       - name: Exercise Cosmic Atlas on Android and desktop (natal, focus, transits)
