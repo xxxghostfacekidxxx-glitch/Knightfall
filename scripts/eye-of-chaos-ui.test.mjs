@@ -35,15 +35,15 @@ test("GOD's approve, reject and edit controls never claim to publish",()=>{
  assert.match(js,/\/drafts/);
  assert.match(js,/GOD approve/);
 });
-test("every publishing path is still protected by an explicit GOD action",()=>{
+test("every bot posting path requires explicitly authorized staff action",()=>{
  assert.match(api,/approved_version=version/);
  assert.match(api,/approved_by=NULL,approved_at=NULL,approved_version=NULL/);
  assert.match(api,/Publishing remains disabled/);
  assert.doesNotMatch(api,/\/publish"/);
  assert.doesNotMatch(backend,/await publishScheduledBotNews\(env\)/);
- assert.match(backend,/Automatic posting is disabled\. Every forum post needs explicit GOD approval/);
+ assert.match(backend,/Automatic posting is disabled\. Every forum post needs explicit approval by GOD or the accepted admin partner/);
  assert.match(old,/frequency" disabled/);
- assert.match(old,/GOD approval: publish this exact bot message/);
+ assert.match(old,/Publish this exact message publicly as the selected curator bot/);
 });
 test("mobile-safe Gothic palette and no untrusted HTML insertion",()=>{
  assert.match(css,/@media\(max-width:520px\)/);
