@@ -3,7 +3,7 @@
   "info": {
     "title": "Knightfall Between the Flames AI Bridge",
     "version": "1.0.0",
-    "description": "Private account-scoped Knightfall shared task and handoff note API. Each authorized collaborator creates a separate expiring AI key at https://ash-fall.com/ai-handoff.html. Never put keys in GPT instructions, chat messages or a public GPT. Read the latest snapshot before making updates."
+    "description": "Authenticated Knightfall shared task/project notes API. Two consenting collaborators; each must use their own expiring private connection. Workstreams and verification levels help track real status without confusing source code with production success. Never expose keys or publish private notes."
   },
   "servers": [
     {
@@ -58,6 +58,38 @@
           },
           "priority": {
             "$ref": "#/components/schemas/TaskPriority"
+          },
+          "area": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 56,
+            "description": "Workstream/category such as Creator Tools, Open Source Arsenal, Arcade Reliability or Security & Accounts."
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "needs_review",
+              "source_checked",
+              "ci_passed",
+              "deployed",
+              "device_verified"
+            ],
+            "description": "Evidence level. Set only if evidence supports it; code presence is not deployment or device acceptance."
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Optional URL to a Knightfall GitHub issue/docs/source or ash-fall.com page. Never include private secrets."
+          },
+          "next_step": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "Concrete next action, written simply enough for a nontechnical collaborator."
+          },
+          "blocker": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "Current verified dependency or blocker; empty if not known."
           }
         },
         "required": [
@@ -87,6 +119,38 @@
           },
           "priority": {
             "$ref": "#/components/schemas/TaskPriority"
+          },
+          "area": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 56,
+            "description": "Workstream/category such as Creator Tools, Open Source Arsenal, Arcade Reliability or Security & Accounts."
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "needs_review",
+              "source_checked",
+              "ci_passed",
+              "deployed",
+              "device_verified"
+            ],
+            "description": "Evidence level. Set only if evidence supports it; code presence is not deployment or device acceptance."
+          },
+          "source_url": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Optional URL to a Knightfall GitHub issue/docs/source or ash-fall.com page. Never include private secrets."
+          },
+          "next_step": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "Concrete next action, written simply enough for a nontechnical collaborator."
+          },
+          "blocker": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "Current verified dependency or blocker; empty if not known."
           }
         },
         "required": [
@@ -122,7 +186,7 @@
       "get": {
         "operationId": "getHandoffSnapshot",
         "summary": "Read the latest shared Knightfall to-do list and handoff notes",
-        "description": "Read the current task list, versions and private handoff notes before working on the shared project. Previous chat messages may be outdated.",
+        "description": "Read the source-linked master tracker, including workstreams, evidence level, next action and blockers, plus recent private handoff notes. Use Open Source Arsenal (https://ash-fall.com/open-source-arsenal.html) as a research/reference catalog and Creator Foundry (https://ash-fall.com/devil-tools.html#production-workbench) for available native asset creation tools. Do not confuse source-checked with deployed/device-tested. For less technical collaborators, give small actionable instructions. Fetch this snapshot before updates and respect task versions.",
         "responses": {
           "200": {
             "description": "Authenticated shared workspace response with current records."
