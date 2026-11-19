@@ -353,7 +353,24 @@ function showCommons(items){
   article.append(h,credit);
   if(item.attribution){const attribution=document.createElement("p");attribution.textContent=
    "Attribution: "+item.attribution;article.append(attribution);}
-  article.append(actions);commonsResults.append(article);
+  article.append(actions);
+  // Never fetch source thumbnails just because a search result was returned.
+  // Loading a preview is a separate explicit user click and contacts its origin.
+  if(item.thumbnail_url){
+   const show=document.createElement("button");
+   show.type="button";show.className="cvl-preview-button";
+   show.textContent="Show image preview (contacts external host)";
+   const image=document.createElement("img");image.className="cvl-result-image";
+   image.alt="External preview: "+item.title;image.loading="lazy";
+   image.referrerPolicy="no-referrer";image.hidden=true;
+   show.addEventListener("click",()=>{
+    if(!item.thumbnail_url)return;
+    image.src=item.thumbnail_url;image.hidden=false;show.disabled=true;
+   });
+   image.addEventListener("error",()=>{image.hidden=true;show.disabled=false;show.textContent="Preview unavailable; open original source";});
+   article.append(show,image);
+  }
+  commonsResults.append(article);
  }
 }
 commonsButton.addEventListener("click",async()=>{
