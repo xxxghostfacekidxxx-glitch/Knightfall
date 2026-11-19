@@ -8,8 +8,18 @@ const button=id=>root.querySelector('#'+id),move=button('mc-move'),mini=button('
 const options=['br','bl','tl','tr'],descriptions={br:'bottom right',bl:'bottom left',tl:'top left',tr:'top right'};
 let preference='auto',frame=0,current='br',headerBottom=0;
 const compactKey='kf:miss-chaos:compact';
-let initiallyMinimized=window.matchMedia('(max-width:1366px)').matches;
-try{const stored=localStorage.getItem(compactKey);if(stored==='true'||stored==='false')initiallyMinimized=stored==='true';}catch{}
+// A phone is not a reason to hide the entire assistant, its memo pad or mode switch.
+// Reset the old compact setting once for existing members who lost the dock.
+let initiallyMinimized=false;
+try{
+ const stored=localStorage.getItem(compactKey);
+ const recovered=localStorage.getItem('kf:miss-chaos:visible-recovery-v1');
+ if(recovered==='done')initiallyMinimized=stored==='true';
+ else{
+  localStorage.setItem('kf:miss-chaos:visible-recovery-v1','done');
+  localStorage.setItem(compactKey,'false');
+ }
+}catch{}
 try{const saved=localStorage.getItem('kf:miss-chaos:dock');if(options.includes(saved))preference=saved;}catch{}
 function overlap(a,b){
  const x=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
@@ -121,9 +131,19 @@ restore.addEventListener('click',()=>{
    button('miss-chaos-launcher')?.click();
 });
 for(const event of ['scroll','resize','orientationchange'])window.addEventListener(event,schedule,{passive:true});
-document.addEventListener('fullscreenchange',()=>{
- root.hidden=!!document.fullscreenElement;schedule();
-});
+// Native fullscreen hides document siblings. Place the dock inside a fullscreen
+// GAME CONTAINER instead of deliberately hiding it from the player.
+function syncFullscreenDock(){
+ const stage=document.fullscreenElement||document.webkitFullscreenElement;
+ const canHost=stage&&stage!==root&&!root.contains(stage)&&!['CANVAS','VIDEO','IMG'].includes(stage.tagName);
+ const host=canHost?stage:document.body;
+ if(root.parentElement!==host)host.append(root);
+ root.hidden=false;
+ root.classList.toggle('mc-fullscreen',!!canHost);
+ schedule();
+}
+document.addEventListener('fullscreenchange',syncFullscreenDock);
+document.addEventListener('webkitfullscreenchange',syncFullscreenDock);
 window.addEventListener('pageshow',schedule,{passive:true});
 const header=document.querySelector('body > .kf-header');
 if(header && window.ResizeObserver)new ResizeObserver(schedule).observe(header);
@@ -137,5 +157,5 @@ if(window.MutationObserver){
 root.dataset.minimized=initiallyMinimized?'true':'false';
 restore.hidden=!initiallyMinimized;
 root.dataset.dock='br';
-schedule();
+syncFullscreenDock();
 })();
