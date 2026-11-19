@@ -16,7 +16,7 @@ const swatches=$("visual-swatches"),css=$("visual-css");
 const copyButton=$("visual-copy-colors"),textButton=$("visual-save-colors");
 const status=$("visual-status"),dimensions=$("visual-dimensions"),placeholder=$("visual-placeholder");
 let revision=0,loadRevision=0,compareOriginal=false,traceUrl=null,traceSvg="",qrSvg="",qrCanvas=null;
-const types=new Set(["image/png","image/jpeg","image/webp","image/gif"]);
+const types=new Set(["image/png","image/jpeg","image/webp","image/gif","image/avif","image/heic","image/heif"]);
 let bitmap=null,outputCanvas=null,palette=[];
 function say(s){status.textContent=s;}
 function reset(){
@@ -41,7 +41,7 @@ async function openPicture(file){
  reset();
  if(!file){say("Choose an image to begin.");return;}
  if(!types.has(file.type)||file.size===0||file.size>12*1024*1024){
-  say("Use a PNG, JPEG, WebP or GIF under 12 MB.");return;
+  say("Choose a supported picture under 12 MB from Photos or Files. SVG and unknown formats aren't accepted.");return;
  }
  say("Decoding the image on this device...");
  try{
@@ -60,7 +60,7 @@ async function openPicture(file){
   void render();
  }catch(err){
   if(opened!==loadRevision)return;
-  say("Image could not be decoded here. "+String(err.message||"Try another file.").slice(0,130));
+  say("This device could not decode the picture. In Google Photos, download or export the photo as JPG/PNG, then select that file. "+String(err.message||"").slice(0,70));
  }
 }
 const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
