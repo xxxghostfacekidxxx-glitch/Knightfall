@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-pinned-proposal2"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-pinned-proposal3"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -53,6 +53,8 @@
         </div>
         <p id="studio-repo-status" class="studio-status" role="status" aria-live="polite">Requires a signed-in staff account. No files are changed.</p>
         <pre id="studio-repo-output" class="studio-results" tabindex="0">No source loaded yet.</pre>
+        <p id="studio-ci-status" class="studio-status" role="status" aria-live="polite">CI checks apply to committed source, not your uncommitted proposal.</p>
+        <pre id="studio-ci-output" class="studio-results" tabindex="0">No GitHub CI status checked yet.</pre>
         <div class="studio-proposal" aria-labelledby="studio-proposal-heading">
           <h3 id="studio-proposal-heading">Supervised patch proposal · no writes</h3>
           <p class="studio-note">Read an allowlisted <strong>main</strong> file excerpt, copy it into the editor, edit, and stage a review packet. Miss Chaos records the exact commit SHA, rechecks that main has not changed, and creates a non-executing diff. If the entire small JS/TS/JSX/TSX/JSON file was captured, it also syntax-checks the proposed full file. <strong>Partial excerpts are not ready-to-apply patches.</strong> No uploaded code is executed. Full integration tests, authorized approval, and deployment remain separate steps.</p>
