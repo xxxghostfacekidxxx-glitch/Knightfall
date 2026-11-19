@@ -54,3 +54,9 @@
 .cvl-foot a{color:#e2c985}
 @media(max-width:860px){.cvl-grid>.cvl-commons{grid-column:auto}}
 @media(max-width:480px){.cvl-actions .cvl-action-link{flex:1 1 180px}.cvl-result{padding:.85rem}}
+
+.cvl-preview-button{border:1px solid #c7a77c7d;border-radius:9px;padding:.58rem .75rem;min-height:44px;
+ background:#241d2d;color:#ece1d3;font:inherit;font-size:.79rem;font-weight:800;cursor:pointer}
+.cvl-preview-button:disabled{opacity:.5;cursor:default}
+.cvl-result-image{display:block;max-width:100%;max-height:240px;margin-top:.6rem;object-fit:contain;border-radius:9px}
+.cvl-result-image[hidden]{display:none}
