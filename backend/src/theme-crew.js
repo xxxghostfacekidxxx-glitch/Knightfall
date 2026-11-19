@@ -1,4 +1,4 @@
-import {canAccessEyeOfHorus} from "./staff-capabilities.js";
+import {canAccessEyeOfChaos,canAccessEyeOfHorus} from "./staff-capabilities.js";
 
 // Theme Crew: fixed, allowlisted sitewide looks. No AI-generated or arbitrary CSS
 // reaches the browser. This state is stored in the existing site_settings D1 table.
@@ -79,16 +79,21 @@ export async function handleThemeCrew(request,env,url,{requireUser,json,origin,a
   return reply(publicTheme((await readCurrent(env)).state));
  }
  const user=await requireUser(request,env);
- if(!user)return reply({error:"Sign in as GOD."},401);
- if(!canAccessEyeOfHorus(user))return reply({error:"GOD role required."},403);
+ if(!user)return reply({error:"Sign in as Knightfall staff."},401);
+ if(!canAccessEyeOfChaos(user))return reply({error:"Administrator or GOD access required."},403);
+ const canPublish=canAccessEyeOfHorus(user);
+ // Administrators can inspect, plan and preview, but cannot mutate sitewide theme.
+ if(!canPublish&&(path==="/api/god/theme/activate"||path==="/api/god/theme/rollback"))
+   return reply({error:"Only GOD can publish or roll back the sitewide theme."},403);
  if(path==="/api/god/theme/status"&&request.method==="GET"){
   const state=(await readCurrent(env)).state;
   return reply({current:state,presets:THEME_CREW_PRESETS,bots:THEME_CREW_BOTS,
     history:await history(env),workflow:"https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions/workflows/theme-crew.yml",
-    policy:"Only GOD may publish. Every update is versioned and reversible. No arbitrary CSS endpoint."});
+    permissions:{can_view:true,can_plan:true,can_preview:true,can_publish:canPublish,can_rollback:canPublish},
+    policy:"Staff may inspect and plan. Only GOD may publish or roll back. Every update is versioned and reversible. No arbitrary CSS endpoint."});
  }
  if(request.method!=="POST")return reply({error:"Unsupported Theme Crew action."},405);
- if(!allowedOrigin.has(request.headers.get("Origin")))return reply({error:"Open the GOD console on Knightfall."},403);
+ if(!allowedOrigin.has(request.headers.get("Origin")))return reply({error:"Open the staff theme console on Knightfall."},403);
  if(!String(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return reply({error:"JSON required."},415);
  let data;try{data=await readBody(request)}catch{return reply({error:"Invalid JSON payload."},400)}
  if(!data||typeof data!=="object"||Array.isArray(data))return reply({error:"Invalid payload."},400);
