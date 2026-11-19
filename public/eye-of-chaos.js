@@ -2,7 +2,7 @@
 "use strict";
 const API="https://api.ash-fall.com/api/god/chaos";
 const $=id=>document.getElementById(id);
-const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,paused:false,canGod:false,section:"overview"};
+const state={fleet:null,sources:[],missions:[],drafts:[],events:[],ready:false,paused:false,canGod:false,canApprove:false,section:"overview"};
 const root=$("chaos-workspace"),notice=$("chaos-status");
 const node=(tag,cls,text)=>{
  const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=String(text);
@@ -157,14 +157,14 @@ function renderDrafts(){
   card.append(node("pre","",d.body));
   if(d.source_url&&/^https:\/\//.test(d.source_url)){const p=node("p");const a=node("a","","Original source");a.href=d.source_url;a.rel="noopener noreferrer";a.target="_blank";p.append(a);card.append(p)}
   const controls=node("div","chaos-actions");
-  if(d.status!=="published"&&(d.status!=="approved"||state.canGod))controls.append(action("Edit draft",()=>editDraft(d)));
-  if(state.canGod&&["pending","rejected"].includes(d.status))
-   controls.append(action("GOD approve",()=>busy("Recording version-specific approval…",async()=>{
+  if(d.status!=="published"&&(d.status!=="approved"||state.canApprove))controls.append(action("Edit draft",()=>editDraft(d)));
+  if(state.canApprove&&["pending","rejected"].includes(d.status))
+   controls.append(action(state.canGod?"GOD approve":"Approve draft",()=>busy("Recording version-specific approval…",async()=>{
     await api("/drafts/"+d.id+"/approve","POST");await loadDrafts();
    })));
-  if(state.canGod&&["pending","approved"].includes(d.status))
+  if(state.canApprove&&["pending","approved"].includes(d.status))
    controls.append(action("Reject",()=>busy("Rejecting draft…",async()=>{await api("/drafts/"+d.id+"/reject","POST");await loadDrafts()}),"chaos-danger"));
-  if(d.status==="approved")card.append(node("p","chaos-note","GOD approval recorded. Still unpublished: destination publishing is locked."));
+  if(d.status==="approved")card.append(node("p","chaos-note","Version-specific authorized approval recorded. Still unpublished: destination publishing is locked."));
   card.append(controls);panel.append(card);
  }
 }
@@ -260,8 +260,10 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
  try{
   const data=await api("/status");
   state.fleet=data;state.ready=data.schema_ready===true;state.paused=data.execution_paused===true;
-   state.canGod=data.permissions?.can_approve===true&&data.permissions?.can_control===true;
+   state.canGod=data.permissions?.can_control===true;
+    state.canApprove=data.permissions?.can_approve===true;
    document.querySelectorAll("[data-chaos-god-only]").forEach(el=>{el.hidden=!state.canGod;});
+    document.querySelectorAll("[data-chaos-approval-access]").forEach(el=>{el.hidden=!state.canApprove;});
   $("chaos-agent-count").textContent=String(data.agents.length);
   $("chaos-qa-count").textContent=String(data.arcade.length);
   $("chaos-forum-count").textContent=data.forums_loaded?String(data.forums.length):"—";
@@ -272,7 +274,7 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
   root.hidden=false;refreshAssignee();refreshDraftAssignee();refreshMaster();
   try{state.sources=(await api("/sources")).sources||[];refreshSource()}catch{}
   if(!state.ready){lockForms();message("Staff authorized. Fleet registry online; controls require D1 migrations 0142 and 0143.");return}
-  message(state.paused?"Staff authorized. GOD execution lock is active.":(state.canGod?"GOD controls online. Publishing is locked.":"Admin command deck online. GOD approval and master controls are restricted."));
+  message(state.paused?"Staff authorized. GOD execution lock is active.":(state.canGod?"GOD controls online. Publishing is locked.":(state.canApprove?"Partner-admin approvals available. GOD master controls remain locked.":"Admin command deck online. GOD approval and master controls are restricted.")));
   await Promise.allSettled([loadMissions(),loadDrafts(),loadEvents()]);
  }catch(error){
   $("chaos-denied").hidden=false;message(error.message);
