@@ -219,3 +219,51 @@ test("Miss Chaos can retrieve unread notices when the model ignores its tools",a
  assert.equal(inputs.length,2);
  assert.match(inputs[1].messages[0].content,/New message/);
 });
+
+test("private profile and inbox readers remain tied to the verified account, without read mutations",async()=>{
+ const queries=[];
+ const env={DB:{prepare(sql){
+   const call={sql,ids:[]};queries.push(call);
+   return {bind(...ids){call.ids=ids;return this;},
+     async first(){return {username:"maker",display_name:"Test Maker",bio:"Creates useful things",
+       profile_visibility:"friends",avatar_url:"https://evil.invalid/tracker"};},
+     async all(){return {results:[
+       {id:12,kind:"direct",group_name:null,other_username:"friend",last_body:"Is your project done?",
+         updated_at:"2026-11-18T20:00:00Z"},
+       {id:13,kind:"group",group_name:"Developers",other_username:null,last_body:"Check the game patch",
+         updated_at:"2026-11-18T21:00:00Z"}]};}
+   };
+ }}};
+ const handlers=createChaosAgentHandlers({env,arcadePicks:()=>({}),moonBrief:()=>({}),
+   shadowBrief:()=>({}),readGodAuditSummary:async()=>({})});
+ for(const name of ["user.profile","user.inbox"])
+   await assert.rejects(runChaosModelCalls([{name,arguments:{}}],null,handlers),/authorized/);
+ const result=await runChaosModelCalls([
+   {name:"user.profile",arguments:{}},{name:"user.inbox",arguments:{}}
+ ],{id:77,role:"member"},handlers);
+ assert.equal(result[0].result.profile.username,"maker");
+ assert.equal(result[0].result.profile.avatar_url,null,"external image URLs are not echoed by account lookup");
+ assert.equal(result[1].result.conversations[0].title,"@friend");
+ assert.equal(result[1].result.conversations[1].title,"Developers");
+ assert.equal(result[1].result.conversations[0].url,"/messages.html?conversation=12");
+ assert.ok(result.every(x=>x.result.read_only===true));
+ assert.deepEqual(queries.map(q=>q.ids),[[77],[77,77]]);
+ assert.ok(queries.every(q=>/^SELECT\b/.test(q.sql)));
+ assert.match(queries[1].sql,/JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=\?/);
+});
+test("profile and inbox requests still get verified context if the planner returns no tool calls",async()=>{
+ const outputs=[];
+ const ai={run:async(_model,options)=>{outputs.push(options);
+   return options.tools?{response:"no tool calls"}:{response:"here is a read-only preview"};}};
+ const handlers={
+   "user.profile":async()=>({profile:{username:"maker"}}),
+   "user.inbox":async()=>({conversations:[{title:"Developers",url:"/messages.html?conversation=13"}]})
+ };
+ for(const question of ["Show my profile","Show my inbox"]){
+   outputs.length=0;
+   await inferWithChaosTools({ai,model:"fast",principal:{id:77,role:"member"},
+     messages:[{role:"system",content:"base"},{role:"user",content:question}],handlers});
+   assert.equal(outputs.length,2);
+   assert.match(outputs[1].messages[0].content,/TRUSTED READ-ONLY TOOL RESULTS/);
+ }
+});
