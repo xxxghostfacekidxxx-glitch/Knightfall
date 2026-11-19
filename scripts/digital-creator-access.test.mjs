@@ -10,7 +10,7 @@ const backend = readFileSync(new URL("../backend/src/index.js", import.meta.url)
 test("workshop access follows authenticated server title, not one account ID", () => {
   assert.match(tools, /String\(user\.public_title\s*\|\|\s*''\)\.trim\(\)\s*===\s*'Digital Creator'/);
   assert.doesNotMatch(tools, /const digitalCreator\s*=\s*Number\(user\.id\)/);
-  assert.match(backend, /AS public_title FROM users WHERE id = \?/);
+  assert.ok(backend.includes("AS public_title,EXISTS(SELECT 1 FROM ai_handoff_partner"));
   assert.match(tools, /const administrator = isGod \|\|/);
 });
 test("asset publication remains administrator-only and creator handoff stays available", () => {
