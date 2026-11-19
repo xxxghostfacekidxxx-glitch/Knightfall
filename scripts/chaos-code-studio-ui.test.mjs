@@ -49,6 +49,11 @@ test("staff review packet binds a verified read-only main excerpt to a non-execu
 });
 
 test("Between the Flames requires an explicit staff click and only sends non-code review metadata",()=>{
+ assert.ok(html.includes('id="studio-ci-output"'));
+ assert.ok(html.includes('id="studio-ci-status"'));
+ assert.match(js,/note\(ciOutput,/);
+ assert.match(js,/Committed-source CI only/);
+ assert.doesNotMatch(js,/ciCheck\.addEventListener\([\s\S]{0,700}currentRepoExcerpt=null/);
  assert.match(js,/reviewHandoff\.addEventListener\("click"/);
  assert.match(js,/window\.confirm\(/);
  assert.match(js,/\/api\/ai-handoff\/notes/);
