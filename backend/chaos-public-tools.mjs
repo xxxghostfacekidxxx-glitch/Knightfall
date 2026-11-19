@@ -11,6 +11,7 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Personal Bots",url:"/personal-bots.html",terms:"create edit publish private personal bots companions slots"},
   {title:"Offline Personal Bots",url:"/personal-bots-offline.html",terms:"offline local bot backup export import device no internet"},
   {title:"Memo Pad",url:"/memo-pad.html",terms:"notes memos private notebook draft memo mail"},
+  {title:"Private Die-ary",url:"/die-ary.html",terms:"my journal private diary die ary entries personal writing reflection diary notes"},
   {title:"Moonology",url:"/moonology.html",terms:"moon phase journal moonology lunar ritual"},
   {title:"Shadow Work",url:"/shadow-work.html",terms:"shadow work reflection journal prompts introspection"},
   {title:"Devil's Toolkit",url:"/devil-tools.html",terms:"developer tools coding workshop artwork sprites"},
