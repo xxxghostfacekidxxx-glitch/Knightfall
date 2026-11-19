@@ -27,6 +27,7 @@ try{
   });
   const loaded=await page.goto(BASE+"/chaos-visual-lab.html",{waitUntil:"domcontentloaded",timeout:30000});
   assert.equal(loaded.status(),200);
+  assert.equal(await page.locator(".cvl-workstations a").count(),5);
   const dataURL=await page.evaluate(()=>{
    const canvas=document.createElement("canvas");canvas.width=32;canvas.height=32;
    const ctx=canvas.getContext("2d");ctx.fillStyle="#222222";ctx.fillRect(0,0,32,32);
@@ -115,6 +116,12 @@ try{
   assert.equal(thumbCalls.length,1);
   const overflowing=await page.evaluate(()=>document.querySelector(".cvl-main").scrollWidth>window.innerWidth+6);
   assert.equal(overflowing,false,"Visual Lab panels should not overflow viewport at "+width);
+  await page.click("#visual-clear");
+  assert.equal(await page.locator("#visual-file").inputValue(),"");
+  for(const id of ["visual-png","visual-webp","visual-svg","visual-print-sheet","visual-trace"]){
+   assert.equal(await page.locator("#"+id).isDisabled(),true,"clear must invalidate "+id);
+  }
+  assert.match(await page.locator("#visual-status").innerText(),/Image cleared/);
   assert.deepEqual(errors.filter(x=>/ReferenceError|TypeError|SyntaxError/.test(x)),[],"page errors at "+width+": "+errors.join("\n"));
   await page.close();
  }
