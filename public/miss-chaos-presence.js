@@ -126,6 +126,8 @@
   async function swapMode(next,{restoreSaved=true}={}){
     if(busy||!availableModes.some(m=>m.id===next)){modeSelect.value=assistantMode;return;}
     saveModeDraft();
+    // Never carry a selected image across owner/partner/standard boundaries.
+    chatPhoto?.clear();
     assistantMode=next;
     conversationId=userId?(sessionStorage.getItem(key(userId,assistantMode))||""):"";
     try{sessionStorage.setItem(modeStorage(userId),assistantMode);}catch(_){}
