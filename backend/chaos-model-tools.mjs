@@ -12,7 +12,8 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"resource.wikidata",description:"Look up structured facts and references from Wikidata",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.books",description:"Search public Open Library book catalog for titles, authors and publication years. No full book text.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.papers",description:"Search Crossref scholarly metadata and DOI links; never claim the paper was read or peer-reviewed from metadata alone.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
-  {name:"forge.pattern_draft",description:"Compute measured prototype sewing/craft pattern cut list and actual-editable Chaos Forge link. All dimensions are inches. If dimensions are missing, ask user rather than guessing.",parameters:{type:"object",properties:{template:{type:"string",enum:["tote","pouch","apron","skirt","box"]},width_in:{type:"number"},height_in:{type:"number"},depth_in:{type:"number"},seam_in:{type:"number"}},required:["template"]}},
+  {name:"forge.pattern_draft",description:"Compute measured prototype sewing/craft pattern cut list and actual-editable Chaos Forge link. All dimensions are inches. Optional fabric width gives a rough no-rotation material estimate. Do not invent missing sizes.",parameters:{type:"object",properties:{template:{type:"string",enum:["tote","pouch","apron","skirt","box"]},width_in:{type:"number"},height_in:{type:"number"},depth_in:{type:"number"},seam_in:{type:"number"},fabric_width_in:{type:"number"},reserve_percent:{type:"number"},cost_per_yard:{type:"number"}},required:["template"]}},
+  {name:"forge.material_estimate",description:"Estimate approximate fabric yardage and optional cost from real measured rectangular cut sizes. Pieces must already include chosen seam allowances. Never invent or rotate pieces, guarantee optimal nesting, or claim this is a production-ready layout.",parameters:{type:"object",properties:{fabric_width_in:{type:"number"},pieces:{type:"array",maxItems:24,items:{type:"object",properties:{name:{type:"string"},width_in:{type:"number"},height_in:{type:"number"},count:{type:"integer"}},required:["width_in","height_in","count"]}},reserve_percent:{type:"number"},cost_per_yard:{type:"number"}},required:["fabric_width_in","pieces"]}},
   {name:"utility.now",description:"Get current date/time using an IANA time zone, default UTC",parameters:{type:"object",properties:{timezone:{type:"string"}},required:[]}},
   {name:"radar.moon",description:"Look up the calculated moon phase and upcoming lunar quarter",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"radar.shadow",description:"Get a reflective shadow-work prompt (not someone's private journal)",parameters:{type:"object",properties:{topic:{type:"string"}},required:[]}},
@@ -30,7 +31,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox"]);
 const GOD=new Set(["god.audit_summary"]);
-const TOOL_INTENT=/\b(profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt)\b/i;
+const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||
@@ -95,6 +96,10 @@ function explicitCreatorRequest(text){
    if(dimensions){args.width_in=Number(dimensions[1]);args.height_in=Number(dimensions[2]);args.depth_in=Number(dimensions[3]);}
    const seam=message.match(/\b(?:seam(?:\s+allowance)?)\s*(?:of|:|=)?\s*(\d+(?:\.\d+)?)\b/i);
    if(seam)args.seam_in=Number(seam[1]);
+   const fabric=message.match(/\b(?:fabric|cloth|bolt)\s*(?:width|wide)?\s*(?:of|:|=)?\s*(\d+(?:\.\d+)?)\s*(?:inches|inch|in|")\b/i);
+   if(fabric)args.fabric_width_in=Number(fabric[1]);
+   const reserve=message.match(/\b(?:reserve|extra|waste)\s*(?:of|:|=)?\s*(\d+(?:\.\d+)?)\s*%/i);
+   if(reserve)args.reserve_percent=Number(reserve[1]);
    return {name:"forge.pattern_draft",arguments:args};
  }
  return null;
