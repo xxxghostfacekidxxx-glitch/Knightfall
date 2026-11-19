@@ -101,7 +101,7 @@
     const actions=$("#mc-private-actions"),dashboard=$("#mc-private-dashboard");
     actions.hidden=assistantMode==="standard";
     dashboard.href=assistantMode==="owner"?"/eye-of-chaos.html":"/samantha-chaos.html";
-    dashboard.textContent=assistantMode==="owner"?"⚙ Open Eye of Chaos":"💚 Open Partner Desk";
+    dashboard.textContent=assistantMode==="owner"?"𓂀 Open Osiris Command":"𓂀 Open Isis Desk";
     $("#mc-private-eye").hidden=assistantMode!=="partner"||
       verifiedPermissions?.can_admin!==true||verifiedPermissions?.can_eye_of_chaos!==true;
     modeSelect.value=assistantMode;
@@ -116,9 +116,9 @@
     input.dispatchEvent(new Event("input"));
     messages.replaceChildren();
     add("system",assistantMode==="owner"?
-      "Private Owner Miss Chaos · Verified GOD workspace. Only your own account history is visible here.":
+      "Osiris · Private Miss Chaos. Your owner command workspace. Account-owned chat history remains private.":
       assistantMode==="partner"?
-      "Private Partner Miss Chaos · Your own chats stay yours. Shared tasks require an explicit action.":
+      "Isis · Private Miss Chaos. Your own chats stay yours. Shared tasks require an explicit action.":
       "Standard Miss Chaos · Your normal account assistant.");
     error.textContent="";
     showModeLabel();
