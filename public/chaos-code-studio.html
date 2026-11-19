@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-repo-tools1"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-proposal1"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -49,9 +49,20 @@
           <button type="button" id="studio-repo-read">Read file excerpt</button>
           <button type="button" id="studio-ci-check">Check GitHub CI</button>
           <button type="button" id="studio-repo-copy" disabled>Copy excerpt into editor</button>
+          <button type="button" id="studio-repo-propose" disabled>Stage review proposal from edited excerpt</button>
         </div>
         <p id="studio-repo-status" class="studio-status" role="status" aria-live="polite">Requires a signed-in staff account. No files are changed.</p>
         <pre id="studio-repo-output" class="studio-results" tabindex="0">No source loaded yet.</pre>
+        <div class="studio-proposal" aria-labelledby="studio-proposal-heading">
+          <h3 id="studio-proposal-heading">Supervised patch proposal · no writes</h3>
+          <p class="studio-note">Read an allowlisted <strong>main</strong> file excerpt, copy it to the editor, make an edit, then stage a review packet. It records the original source and line range and calls the existing non-executing diff tool. <strong>Partial excerpts are not ready-to-apply patches.</strong> The reviewed full-file edit, exact base SHA, test run, approval and deployment remain separate steps.</p>
+          <div class="studio-actions">
+            <button type="button" id="studio-proposal-export" disabled>Download proposal for human review</button>
+            <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions" target="_blank" rel="noopener noreferrer">View actual GitHub Actions</a>
+          </div>
+          <p id="studio-proposal-status" class="studio-status" role="status" aria-live="polite">Nothing staged. Source inspection is limited to verified staff.</p>
+          <pre id="studio-proposal-output" class="studio-results" tabindex="0">No proposal staged yet.</pre>
+        </div>
       </section>
       <div class="studio-controls">
         <label for="studio-language">Language
