@@ -289,3 +289,7 @@ body.zombie-immersive-open #miss-chaos-presence{display:none!important}
 /* Crucible is a real workspace, not another auto-sending prompt chip. */
 #miss-chaos-presence a.mc-field-kit-crucible{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;text-decoration:none;white-space:nowrap;background:linear-gradient(110deg,#67305b,#18392b);color:#d7ffe5;border-color:#65ffac;padding:5px 11px;min-height:34px}
 #miss-chaos-presence a.mc-field-kit-crucible:hover{border-color:#ff8fc8;background:linear-gradient(110deg,#8d3670,#1c4d39)}
+
+/* Clear, unobtrusive handbook link next to the Crucible workshop. */
+#miss-chaos-presence a.mc-field-kit-guide{display:inline-flex;align-items:center;justify-content:center;min-height:34px;flex:0 0 auto;padding:5px 10px;text-decoration:none;border-radius:10px;border:1px solid #866784;background:#221927;color:#f7d6e9;font-size:.73rem;font-weight:800;white-space:nowrap}
+#miss-chaos-presence a.mc-field-kit-guide:hover{color:#c5ffda;border-color:#70ffb2;background:#183126}
