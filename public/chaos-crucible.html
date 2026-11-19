@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0715">
+  <meta name="description" content="Miss Chaos Crucible: an original, free creative project workbench for artwork, tattoos, crafts, game design, writing and code repair. Draft privately and send to Miss Chaos only when you choose.">
+  <title>Miss Chaos Crucible | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/chaos-crucible.css?v=20261119-crucible1">
+  <script src="/nav.js" defer></script>
+  <script type="module" src="/chaos-crucible.mjs?v=20261119-crucible1"></script>
+</head>
+<body class="crucible-page">
+<header class="kf-header"></header>
+<main class="crucible-shell" id="chaos-crucible">
+  <section class="crucible-hero" aria-labelledby="crucible-title">
+    <div class="crucible-hero-copy">
+      <span class="crucible-kicker">𓂀 KNIGHTFALL // MISS CHAOS // CREATOR ENGINE</span>
+      <h1 id="crucible-title"><span>THE</span> CRUCIBLE<span class="crucible-bang">✦</span></h1>
+      <p class="crucible-lede">Bring me a broken idea, a half-made monster, a tattoo, a game, or a machine that hates you. We'll turn it into a brief you can actually build from.</p>
+      <p class="crucible-promise">No paid add-ons. No invented measurements. No automatic publishing. Your work remains in this browser until you deliberately save it or send it.</p>
+    </div>
+    <div class="crucible-sigil" aria-hidden="true">
+      <div class="sigil-outer"><div class="sigil-inner"><span>𓂀</span><small>CHAOS<br>INTO<br>FORM</small></div></div>
+      <i class="sigil-blip blip-a"></i><i class="sigil-blip blip-b"></i><i class="sigil-blip blip-c"></i>
+    </div>
+  </section>
+
+  <div class="crucible-workspace">
+    <section class="crucible-panel crucible-picker" aria-labelledby="crucible-choose-title">
+      <div class="crucible-section-head">
+        <span class="crucible-index">01 / SPARK</span>
+        <h2 id="crucible-choose-title">Choose your chaos</h2>
+        <p>Each discipline uses a practical checklist instead of the usual vague inspirational nonsense.</p>
+      </div>
+      <div class="crucible-type-grid" id="crucible-types" role="group" aria-label="Project type"><p>Loading workshop disciplines…</p></div>
+      <div class="crucible-bridge">
+        <h3>Tools already in Knightfall</h3>
+        <div class="crucible-bridge-links">
+          <a href="/chaos-visual-lab.html">🎨 Visual Lab</a>
+          <a href="/chaos-forge.html">✂ Chaos Forge</a>
+          <a href="/chaos-code-studio.html">⌘ Code Studio</a>
+          <a href="/creator-foundry.html">✦ Creator Foundry</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="crucible-panel crucible-editor" aria-labelledby="crucible-detail-title">
+      <div class="crucible-section-head">
+        <span class="crucible-index">02 / SPECIFY</span>
+        <h2 id="crucible-detail-title">Make the vision buildable</h2>
+        <p id="crucible-track-description">Select a discipline to begin.</p>
+      </div>
+      <form id="crucible-form" novalidate>
+        <div class="crucible-field"><label for="crucible-name">Project name <span aria-hidden="true">*</span></label>
+          <input id="crucible-name" name="title" maxlength="100" required placeholder="A name that actually means something…" autocomplete="off">
+        </div>
+        <div class="crucible-field"><label for="crucible-goal">What are we actually trying to accomplish? <span aria-hidden="true">*</span></label>
+          <textarea id="crucible-goal" name="goal" rows="3" maxlength="240" required placeholder="Describe one specific outcome, not just the vibe."></textarea>
+        </div>
+        <div class="crucible-field"><label for="crucible-known">Known facts, measurements and source references</label>
+          <textarea id="crucible-known" name="known" rows="3" maxlength="650" placeholder="Evidence you've already checked, actual dimensions, references you own…"></textarea>
+          <p class="crucible-helper">Unverified guesses belong under questions, not facts.</p>
+        </div>
+        <div class="crucible-field"><label for="crucible-first" id="crucible-first-label">What should Miss Chaos know first?</label>
+          <textarea id="crucible-first" name="first" rows="3" maxlength="350"></textarea>
+        </div>
+        <div class="crucible-field"><label for="crucible-second" id="crucible-second-label">What matters next?</label>
+          <textarea id="crucible-second" name="second" rows="3" maxlength="350"></textarea>
+        </div>
+        <div class="crucible-field"><label for="crucible-constraints">Limits, exclusions and non-negotiables</label>
+          <textarea id="crucible-constraints" name="constraints" rows="3" maxlength="450" placeholder="Budget, time, size, licenses, accessible controls, style constraints…"></textarea>
+        </div>
+        <div class="crucible-progress" aria-live="polite"><span id="crucible-progress-label">0 / 6 fields supplied</span><div class="crucible-progress-track"><span id="crucible-progress-fill"></span></div></div>
+        <div class="crucible-form-foot"><button class="crucible-button muted" id="crucible-clear" type="button">Clear this brief</button><span>Private by default · no autosave to a server</span></div>
+      </form>
+    </section>
+
+    <section class="crucible-panel crucible-output" aria-labelledby="crucible-output-title">
+      <div class="crucible-section-head">
+        <span class="crucible-index">03 / FORGE</span>
+        <h2 id="crucible-output-title">Your build-ready brief</h2>
+        <p>Real structure, missing information, milestones, and checks. You control what happens next.</p>
+      </div>
+      <div class="crucible-missing" id="crucible-missing" aria-live="polite"></div>
+      <div class="crucible-checklist">
+        <h3>Suggested build sequence</h3>
+        <ol id="crucible-steps"></ol>
+      </div>
+      <div class="crucible-preview-head"><h3>Markdown preview</h3><span>Editable inputs · generated output</span></div>
+      <pre class="crucible-preview" id="crucible-preview" tabindex="0" aria-label="Generated project brief">Add a project name and objective to generate your brief.</pre>
+      <p class="crucible-action-status" id="crucible-status" role="status" aria-live="polite"></p>
+      <div class="crucible-action-grid">
+        <button type="button" class="crucible-button primary" id="crucible-ask">𓂀 Ask Miss Chaos</button>
+        <button type="button" class="crucible-button" id="crucible-copy">Copy brief</button>
+        <button type="button" class="crucible-button" id="crucible-download">Download .md</button>
+        <button type="button" class="crucible-button" id="crucible-save">📝 Save private memo</button>
+      </div>
+      <p class="crucible-disclaimer">Ask Miss Chaos opens a draft in the floating chat. She does not send it until you press Send. Saving creates a private memo on your own signed-in Knightfall account, never a public post.</p>
+    </section>
+  </div>
+
+  <footer class="crucible-footer"><strong>MISS CHAOS // MADE FOR THE MAKERS, MISFITS AND MONSTERS.</strong><span>Ideas are cheap. Building them well is the art. 🖤</span></footer>
+</main>
+<noscript><p>The Crucible needs JavaScript to create local briefs. It does not need a paid AI subscription for the blueprint generator.</p></noscript>
+</body>
+</html>
