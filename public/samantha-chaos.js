@@ -42,19 +42,23 @@
    const info=await secureFetch("/api/chaos/fleet");
    const mine=Array.isArray(info.own_bots)?info.own_bots:[];
    const shared=Array.isArray(info.shared_owner_public_bots)?info.shared_owner_public_bots:[];
-   allowedBots=[...shared,...mine.filter(b=>b.is_public&&!b.is_nsfw)]
+   const privateOwner=Array.isArray(info.shared_owner_private_bots)?info.shared_owner_private_bots:[];
+   const services=Array.isArray(info.project_service_bots)?info.project_service_bots:[];
+   allowedBots=[...shared,...privateOwner,...mine.filter(b=>b.is_public&&!b.is_nsfw)]
     .filter(b=>/^[a-f0-9]{32}$/.test(b.id));
-   set(fleetStatus,mine.length+" personal bots; "+shared.length+" owner-published bots available.");
+   set(fleetStatus,mine.length+" personal bots; "+(shared.length+privateOwner.length)+" owner bots available. "+(info.adult_verified?"Adult access verified.":"Restricted bots stay locked until this account confirms 18+."));
    fleetList.replaceChildren();
-   for(const b of shared.slice(0,16))add(fleetList,"Owner fleet: "+String(b.name).slice(0,60)+" · "+String(b.description||"").slice(0,120));
+   for(const b of shared.slice(0,16))add(fleetList,"Owner public: "+String(b.name).slice(0,60)+" · "+String(b.description||"").slice(0,120));
+   for(const b of privateOwner.slice(0,16))add(fleetList,"Owner private, shared with partner: "+String(b.name).slice(0,60));
+   for(const b of services.slice(0,8))add(fleetList,"Configured curator: "+String(b.name).slice(0,60)+(b.posting_enabled?" (posting enabled)":" (posting disabled)")+" · no direct chat");
    for(const b of mine.slice(0,10))add(fleetList,"My bot: "+String(b.name).slice(0,60)+(b.is_public?" (public)":" (private)"));
-   const placeholder=document.createElement("option");placeholder.value="";placeholder.textContent="Choose a published bot";
+   const placeholder=document.createElement("option");placeholder.value="";placeholder.textContent="Choose an authorized bot";
    fleetSelect.replaceChildren(placeholder);
    for(const b of allowedBots){
-    const option=document.createElement("option");option.value=b.id;option.textContent=(b.shared?"Owner: ":"Mine: ")+b.name;
+    const option=document.createElement("option");option.value=b.id;option.textContent=(b.shared?"Owner: ":"Mine: ")+b.name+(b.private_share?" (private partner access)":"");
     fleetSelect.appendChild(option);
    }
-   if(!allowedBots.length)add(fleetList,"No owner-published bots available yet. Private bots remain owner-only.");
+   if(!allowedBots.length)add(fleetList,"No usable owner bots shown. Restricted bots require your own confirmed 18+ access and remain unpublished.");
   }catch(error){set(fleetStatus,error.message);fleetList.replaceChildren();}
  }
  taskForm.addEventListener("submit",async e=>{
@@ -78,12 +82,15 @@
  botForm.addEventListener("submit",async e=>{
   e.preventDefault();
   const id=fleetSelect.value;
-  if(!allowedBots.some(b=>b.id===id)){set(botStatus,"Choose a published bot first.");return;}
+  const selected=allowedBots.find(b=>b.id===id);
+  if(!selected){set(botStatus,"Choose an authorized bot first.");return;}
   const message=botInput.value.trim();
   if(!message||message.length>3000)return;
-  const btn=botForm.querySelector("button");btn.disabled=true;copyReply.disabled=true;set(botStatus,"Asking the selected public bot…");
+  const btn=botForm.querySelector("button");btn.disabled=true;copyReply.disabled=true;set(botStatus,"Consulting the selected bot using Knightfall’s existing free-tier AI allowance…");
   try{
-   const reply=await send("/api/public-bots/"+id+"/chat",{message});
+   const reply=selected.private_share
+     ?await send("/api/chaos/fleet/partner-chat",{bot_id:id,message})
+     :await send("/api/public-bots/"+id+"/chat",{message});
    set(botReply,reply.reply||"No reply returned.");
    set(botStatus,"Bot responded. Nothing has been posted to Between the Flames.");
    copyReply.disabled=!reply.reply;
