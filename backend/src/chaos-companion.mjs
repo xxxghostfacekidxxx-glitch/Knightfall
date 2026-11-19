@@ -5,9 +5,9 @@ export async function companionScope(env,user){
  const row=await env.DB.prepare("SELECT user_id,invited_by,status FROM ai_handoff_partner WHERE slot=1").first();
  const accepted=row?.status==="accepted";
  if(user.role==="god"&&Number(row?.invited_by)===Number(user.id))
-  return {role:"owner",accepted:true,owner_id:Number(user.id)};
+  return {role:"owner",accepted:true,owner_id:Number(user.id),royal_rank:"osiris"};
  if(accepted&&Number(row.user_id)===Number(user.id))
-  return {role:"partner",accepted:true,owner_id:Number(row.invited_by)};
+  return {role:"partner",accepted:true,owner_id:Number(row.invited_by),royal_rank:user.role==="admin"?"isis":null};
  return {role:"member",accepted:false,owner_id:null};
 }
 /**
@@ -37,10 +37,10 @@ export async function companionPermissions(env,user){
 export function companionModeList(scope){
  const modes=[{id:"standard",label:"Miss Chaos",detail:"My regular account-bound assistant",full_chat:"/miss-chaos.html"}];
  if(scope?.accepted&&scope.role==="owner")modes.push({
-   id:"owner",label:"Private Owner",detail:"GOD-only owner workspace and project coordination",full_chat:"/miss-chaos.html?companion=owner"
+   id:"owner",label:"Osiris · Private Chaos",detail:"Owner-only command workspace and project coordination",full_chat:"/miss-chaos.html?companion=owner"
  });
  if(scope?.accepted&&scope.role==="partner")modes.push({
-   id:"partner",label:"Private Partner",detail:"My private assistant, delegated admin workspaces and Between the Flames",full_chat:"/samantha-chaos.html"
+   id:"partner",label:scope.royal_rank==="isis"?"Isis · Private Chaos":"Private Partner",detail:"My private assistant, verified collaborator tools and Between the Flames",full_chat:"/samantha-chaos.html"
  });
  return modes;
 }
