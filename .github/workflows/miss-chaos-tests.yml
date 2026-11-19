@@ -19,6 +19,8 @@ on:
       - 'scripts/miss-chaos-private-switch.test.mjs'
       - 'public/miss-chaos-dock.js'
       - 'public/miss-chaos-field-kit.mjs'
+      - 'public/chaos-crucible*'
+      - 'scripts/chaos-crucible.test.mjs'
       - 'scripts/miss-chaos-field-kit.test.mjs'
       - 'public/creator-art-studio*'
       - 'public/devil-tools.html'
@@ -60,6 +62,11 @@ jobs:
           node --check public/vendor/visual-lab/qrcode.mjs
           node --check public/vendor/visual-lab/imagetracer.js
           node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs scripts/chaos-visual-effects.test.mjs
+      - name: Verify Crucible original project briefs and safe chat draft handoff
+        run: |
+          node --check public/chaos-crucible-core.mjs
+          node --check public/chaos-crucible.mjs
+          node --test scripts/chaos-crucible.test.mjs
       - name: Verify Miss Chaos floating dock, private modes and memo publishing
         run: |
           node --check public/nav.js
