@@ -116,6 +116,25 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
         .map(x=>({id:x.id,title:String(x.title).slice(0,100),preview:String(x.body||"").slice(0,500),updated_at:x.updated_at}));
       return {results:items,source:"signed-in user's private Memo Pad",previews_only:true,more:results.length>items.length};
     },
+    "user.journal":async({input,principal})=>{
+      // Private Die-ary is never treated as public context. A verified member can
+      // request only short previews of their own, non-deleted entries.
+      const query=safe(input.query,120);
+      const {results=[]}=await env.DB.prepare(
+        "SELECT id,title,body,updated_at FROM die_ary_entries "+
+        "WHERE user_id=? AND deleted_at IS NULL ORDER BY updated_at DESC,id DESC LIMIT 60"
+      ).bind(principal.id).all();
+      const matches=results.filter(x=>match(x.title,query)||match(x.body,query));
+      return {
+        source:"signed-in member's private Die-ary",read_only:true,previews_only:true,
+        entries:matches.slice(0,8).map(x=>({
+          id:Number(x.id),title:safe(x.title,120),preview:safe(x.body,450),
+          updated_at:x.updated_at,url:"/die-ary.html"
+        })),
+        more:results.length>=60||matches.length>8,
+        notice:"Only your own entry previews. Open the private Die-ary for full entries, edits or deletion."
+      };
+    },
     "god.audit_summary":async({principal})=>readGodAuditSummary({env,principal}),
     "god.github_health":async()=>getKnightfallGithubHealth()
   };
