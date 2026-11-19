@@ -159,7 +159,7 @@ function renderDrafts(){
   const controls=node("div","chaos-actions");
   if(d.status!=="published"&&(d.status!=="approved"||state.canApprove))controls.append(action("Edit draft",()=>editDraft(d)));
   if(state.canApprove&&["pending","rejected"].includes(d.status))
-   controls.append(action(state.canGod?"GOD approve":"Approve draft",()=>busy("Recording version-specific approval…",async()=>{
+   controls.append(action(state.canGod?"Osiris approve":"Isis approve",()=>busy("Recording version-specific approval…",async()=>{
     await api("/drafts/"+d.id+"/approve","POST");await loadDrafts();
    })));
   if(state.canApprove&&["pending","approved"].includes(d.status))
@@ -222,7 +222,7 @@ $("chaos-qa-refresh").addEventListener("click",loadQA);
 $("chaos-master-toggle").addEventListener("click",async()=>{
  if(!state.ready||!state.canGod)return;
  const target=!state.paused;
- if(target&&!confirm("GOD master pause: stop all manual research, scheduled research and AI draft execution?"))return;
+ if(target&&!confirm("Osiris master pause: stop all manual research, scheduled research and AI draft execution?"))return;
  await busy(target?"Pausing every Eye of Chaos worker…":"Resuming GOD-approved mission execution…",async()=>{
   const outcome=await api("/control","POST",{paused:target});
   state.paused=outcome.paused;refreshMaster();await loadMissions();
@@ -274,7 +274,7 @@ $("chaos-draft-form").addEventListener("submit",async e=>{
   root.hidden=false;refreshAssignee();refreshDraftAssignee();refreshMaster();
   try{state.sources=(await api("/sources")).sources||[];refreshSource()}catch{}
   if(!state.ready){lockForms();message("Staff authorized. Fleet registry online; controls require D1 migrations 0142 and 0143.");return}
-  message(state.paused?"Staff authorized. GOD execution lock is active.":(state.canGod?"GOD controls online. Publishing is locked.":(state.canApprove?"Partner-admin approvals available. GOD master controls remain locked.":"Admin command deck online. GOD approval and master controls are restricted.")));
+  message(state.paused?"Staff authorized. Osiris execution lock is active.":(state.canGod?"Osiris controls online. Publishing is locked.":(state.canApprove?"Isis approvals available. Osiris master controls remain locked.":"Admin command deck online. Royal draft approval and master controls are restricted.")));
   await Promise.allSettled([loadMissions(),loadDrafts(),loadEvents()]);
  }catch(error){
   $("chaos-denied").hidden=false;message(error.message);
