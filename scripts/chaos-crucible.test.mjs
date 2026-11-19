@@ -68,6 +68,6 @@ test("App uses text-only preview, local drafts, explicit memo save and no automa
  assert.match(popup,/window\.addEventListener\("kf:miss-chaos:compose"/);
  assert.match(popup,/if\(busy\).*detail\.error/);
  assert.match(popup,/detail\.handled=true/);
- assert.match(kit,/href="\/chaos-crucible\.html"/);
+ assert.match(kit,/crucible\.href="\/chaos-crucible\.html"/);
  assert.doesNotMatch(js,/\/api\/chaos\/chat/);
 });
