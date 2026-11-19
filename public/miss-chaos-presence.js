@@ -12,6 +12,10 @@
       <label id="mc-companion-label" class="mc-companion-control" for="mc-companion-mode" hidden>PRIVATE WORKSPACE
         <select id="mc-companion-mode" aria-label="Miss Chaos assistant workspace" disabled><option value="standard">Miss Chaos</option></select>
       </label>
+      <nav id="mc-private-actions" class="mc-private-actions" aria-label="Private workspace links" hidden>
+        <a href="/ai-handoff.html" id="mc-private-board">🔥 Between the Flames</a>
+        <a href="/samantha-chaos.html" id="mc-private-dashboard">Open private desk ↗</a>
+      </nav>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
       <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
@@ -93,6 +97,10 @@
     fullChat.title="Open "+(item.label||"Miss Chaos")+" full chat";
     fullChat.setAttribute("aria-label",fullChat.title);
     $("#mc-form").dataset.companion=assistantMode;
+    const actions=$("#mc-private-actions"),dashboard=$("#mc-private-dashboard");
+    actions.hidden=assistantMode==="standard";
+    dashboard.href=assistantMode==="owner"?"/eye-of-chaos.html":"/samantha-chaos.html";
+    dashboard.textContent=assistantMode==="owner"?"⚙ Open Eye of Chaos":"💚 Open Partner Desk";
     modeSelect.value=assistantMode;
   }
   async function swapMode(next,{restoreSaved=true}={}){
