@@ -28,6 +28,8 @@ body.af-nextgen main{position:relative;z-index:1}
 @keyframes af-score-flash{0%{filter:brightness(1.85);text-shadow:0 0 24px #bdff43}100%{filter:brightness(1);text-shadow:initial}}
 #af-vfx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none!important;z-index:2147483000;contain:strict}
 .af-nextgen.af-effects-off #af-vfx-canvas{display:none}
+/* An opaque GPU/compositor layer must never cover a hosted game canvas or grid. */
+body.af-nextgen:not([data-af-game="directory"]) #af-vfx-canvas{display:none!important;pointer-events:none!important}
 .af-nextgen[data-af-game="cinder-merge"] .board .tile:not([data-v="0"]){color:#fff;background:linear-gradient(148deg,#4d266f,#211d48);border:1px solid #fc70e991;box-shadow:inset 0 2px 2px #ffffff33,inset 0 -7px 16px #0005,0 5px 14px #0006;text-shadow:0 2px 8px #000}
 .af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="2"],[data-v="4"]){background:linear-gradient(135deg,#52258a,#13768b)}
 .af-nextgen[data-af-game="cinder-merge"] .board .tile:is([data-v="8"],[data-v="16"]){background:linear-gradient(135deg,#c52f9d,#6133c7)}
