@@ -114,7 +114,11 @@ mini.addEventListener('click',()=>{
 });
 restore.addEventListener('click',()=>{
  root.dataset.minimized='false';restore.hidden=true;
- try{localStorage.setItem(compactKey,'false')}catch{}schedule();
+ try{localStorage.setItem(compactKey,'false')}catch{}
+ schedule();
+ // A collapsed phone dock is one action away from chat, not a two-tap mystery.
+ if(window.innerWidth<=600&&button('miss-chaos-window')?.hidden)
+   button('miss-chaos-launcher')?.click();
 });
 for(const event of ['scroll','resize','orientationchange'])window.addEventListener(event,schedule,{passive:true});
 document.addEventListener('fullscreenchange',()=>{
