@@ -1,0 +1,26 @@
+/* Shared Miss Chaos image composer for floating and full-size chats. */
+.mc-attach-button{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;
+ border:1px solid #9b659c;border-radius:10px;background:linear-gradient(120deg,#362438,#1a2429);
+ color:#e9e5f4;font:800 .77rem system-ui;padding:.65rem .5rem;min-height:42px;cursor:pointer;white-space:nowrap}
+.mc-attach-button:disabled,.mc-attachment-remove:disabled{opacity:.55;cursor:wait}
+.mc-attach-button:focus-visible,.mc-attachment-remove:focus-visible{outline:2px solid #39ff88;outline-offset:2px}
+.mc-attach-input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;
+ pointer-events:none!important;clip-path:inset(50%)!important;overflow:hidden!important}
+.mc-attachment-preview{display:flex;align-items:center;gap:.65rem;border:1px solid #855d83;
+ border-radius:12px;background:#1c1622;color:#ece1e9;padding:.45rem .6rem;min-width:0;max-width:100%}
+.mc-attachment-preview[hidden],.mc-attachment-status[hidden],.chaos-image-status[hidden]{display:none!important}
+.mc-attachment-thumb{width:57px;height:57px;max-width:57px;max-height:57px;flex:0 0 57px;
+ border-radius:7px;object-fit:cover;background:#111}
+.mc-attachment-info{font-size:.75rem;line-height:1.45;min-width:0;overflow-wrap:anywhere;flex:1}
+.mc-attachment-remove{flex:0 0 auto;border:1px solid #995d76;border-radius:8px;background:#371f2a;
+ color:#fff;padding:.5rem;font:800 .7rem system-ui;min-height:42px;cursor:pointer}
+.mc-attachment-status,.chaos-image-status{padding:.45rem .65rem;background:#21182a;border-left:3px solid #79ffc7;
+ color:#e4dcf1;font-size:.72rem;line-height:1.45;overflow-wrap:anywhere}
+#miss-chaos-presence .mc-attachment-preview{margin:.3rem .5rem;width:calc(100% - 1rem)}
+#miss-chaos-presence #mc-attachment-status{margin:.15rem .5rem}
+#miss-chaos-presence #mc-form .mc-attach-button{max-width:90px;padding:.5rem .42rem;font-size:.7rem}
+.chaos-shell .mc-attachment-preview{margin:.45rem 1rem .3rem}
+.chaos-shell .chaos-image-status{margin:.45rem 1rem}
+.chaos-shell .composer-actions .mc-attach-button{min-height:40px}
+@media(max-width:410px){.mc-attachment-preview{gap:.4rem}.mc-attachment-thumb{width:48px;height:48px;flex-basis:48px}
+ .mc-attachment-info{font-size:.68rem}.mc-attachment-remove{padding:.38rem;font-size:.67rem}}
