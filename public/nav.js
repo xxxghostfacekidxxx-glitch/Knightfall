@@ -223,13 +223,19 @@
     });
   }
 
-  // Persistent Miss Chaos companion loads before the shared header guard so pages without a nav still get her.
-  if (!document.querySelector('script[data-miss-chaos-presence]')) {
+  // A dynamically inserted <head> script can execute before document.body exists.
+  // Mount the floating assistant after DOMContentLoaded on every navigation-enabled route.
+  const mountMissChaos = () => {
+    if (document.getElementById("miss-chaos-presence") || document.querySelector('script[data-miss-chaos-presence]')) return;
     const companion = document.createElement("script");
-    companion.src = "/miss-chaos-presence.js?v=20261119-photo-mode2";
+    companion.src = "/miss-chaos-presence.js?v=20261119-overlay-recovery1";
     companion.dataset.missChaosPresence = "true";
-    document.head.append(companion);
-  }
+    companion.onerror = () => console.warn("Miss Chaos floating tools could not be loaded.");
+    document.body.append(companion);
+  };
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", mountMissChaos, {once:true});
+  else mountMissChaos();
 
   // Defer navigation mounting for PWA pages that load the shared script early.
   const initializeNavigation = () => {
