@@ -15,6 +15,7 @@
       <nav id="mc-private-actions" class="mc-private-actions" aria-label="Private workspace links" hidden>
         <a href="/ai-handoff.html" id="mc-private-board">🔥 Between the Flames</a>
         <a href="/samantha-chaos.html" id="mc-private-dashboard">Open private desk ↗</a>
+        <a href="/eye-of-chaos.html" id="mc-private-eye" hidden>𓂀 Eye of Chaos</a>
       </nav>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
@@ -83,7 +84,7 @@
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
 
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
-  let assistantMode="standard",availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
+  let assistantMode="standard",verifiedPermissions=null,availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
   const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat");
   const modeStorage=id=>"missChaosPresenceMode:"+String(id);
   const key=(id,mode="standard")=>"missChaosPresenceConversation:"+String(id)+(mode==="standard"?"":":"+mode);
@@ -101,6 +102,8 @@
     actions.hidden=assistantMode==="standard";
     dashboard.href=assistantMode==="owner"?"/eye-of-chaos.html":"/samantha-chaos.html";
     dashboard.textContent=assistantMode==="owner"?"⚙ Open Eye of Chaos":"💚 Open Partner Desk";
+    $("#mc-private-eye").hidden=assistantMode!=="partner"||
+      verifiedPermissions?.can_admin!==true||verifiedPermissions?.can_eye_of_chaos!==true;
     modeSelect.value=assistantMode;
   }
   async function swapMode(next,{restoreSaved=true}={}){
@@ -156,7 +159,7 @@
     try{d=await request("/api/auth/me");}
     catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}
     if(!d.user){
-      userId=null;conversationId=null;assistantMode="standard";
+      userId=null;conversationId=null;assistantMode="standard";verifiedPermissions=null;
       modeLabel.hidden=true;modeSelect.disabled=true;
       if(!messages.querySelector("[data-mc-signin]")){
         add("system","Sign in to save your conversations and unlock any private workspaces you can access.");
@@ -175,8 +178,10 @@
       try{input.value=sessionStorage.getItem(draftKey())||"";}catch(_){}
     }
     let list=[];
+    verifiedPermissions=null;
     try{
       const catalog=await request("/api/chaos/modes");
+      verifiedPermissions=catalog.permissions||null;
       list=Array.isArray(catalog.modes)?catalog.modes:[];
     }catch{
       // Never persist an old privileged option when the server cannot verify it.
