@@ -3,7 +3,7 @@ const MAX_QUERY=90;
 const USER_AGENT="Knightfall-MissChaos-Forgelab/1.0 (https://ash-fall.com)";
 function queryText(q){
  const text=String(q||"").trim();
- if(text.length<2||text.length>MAX_QUERY||/[\u0000-\u001f]/.test(text))throw Error("Enter a public search topic (2–90 characters).");
+ if(text.length<2||text.length>MAX_QUERY||/[\u0000-\u001f]/.test(text)||/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(text)||/\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b/.test(text)||/\b\d{10,}\b/.test(text))throw Error("Enter a public search topic (2–90 characters), not private information.");
  return text;
 }
 async function jsonGet(url,{fetcher=fetch,agent=false}={}){
