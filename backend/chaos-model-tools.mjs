@@ -7,6 +7,9 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"site.help",description:"Find help or the right public Knightfall feature page",parameters:{type:"object",properties:{topic:{type:"string"}},required:["topic"]}},
   {name:"site.games",description:"Recommend actual Knightfall arcade games filtered by request, device and session",parameters:{type:"object",properties:{query:{type:"string"},device:{type:"string",enum:["","touch","desktop"]},length:{type:"string",enum:["","mini","games"]}},required:["query"]}},
   {name:"research.wikipedia",description:"Search Wikipedia for a public factual topic and return source URLs, not general web browsing",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"resource.met",description:"Find historical garments, crafted objects and public-domain art in The Met collection",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"resource.polyhaven",description:"Search CC0 3D models, textures and HDRI assets from Poly Haven with source credit",parameters:{type:"object",properties:{query:{type:"string"},type:{type:"string",enum:["models","textures","hdris"]}},required:["query"]}},
+  {name:"resource.wikidata",description:"Look up structured facts and references from Wikidata",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"utility.now",description:"Get current date/time using an IANA time zone, default UTC",parameters:{type:"object",properties:{timezone:{type:"string"}},required:[]}},
   {name:"radar.moon",description:"Look up the calculated moon phase and upcoming lunar quarter",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"radar.shadow",description:"Get a reflective shadow-work prompt (not someone's private journal)",parameters:{type:"object",properties:{topic:{type:"string"}},required:[]}},
@@ -20,7 +23,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff"]);
 const GOD=new Set(["god.audit_summary"]);
-const TOOL_INTENT=/\b(search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board)\b/i;
+const TOOL_INTENT=/\b(search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||

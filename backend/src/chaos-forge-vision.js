@@ -1,0 +1,43 @@
+/** Single-photo craft deconstruction with opt-in Workers AI vision, no image storage. */
+const MODEL="@cf/moondream/moondream3.1-9B-A2B";
+export async function handleChaosForgeVision(request,env,{requireUser,rateLimit,json,origin}){
+ const user=await requireUser(request,env);
+ if(!user)return json({error:"Sign in to analyze a reference image."},401,origin);
+ if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("origin")))
+   return json({error:"Open Chaos Forge from Knightfall."},403,origin);
+ if(!await rateLimit(env,request,"chaos-forge-vision",4,3600,user.id))
+   return json({error:"Image analysis limit reached. Use the manual tools or retry later."},429,origin);
+ const declared=Number(request.headers.get("content-length")||0);
+ if(declared>980000)return json({error:"Image too large. Reduce the image size."},413,origin);
+ let body;
+ try{
+   const text=await request.text();
+   if(text.length>980000)throw Error("too large");
+   body=JSON.parse(text);
+ }catch{return json({error:"Invalid or oversized image request."},400,origin);}
+ const image=String(body?.image||"");
+ if(image.length>900000||!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(image))
+   return json({error:"Use a resized JPEG, PNG, or WebP image under 650 KB."},400,origin);
+ const kind=["clothing","craft","accessory","object"].includes(body?.kind)?body.kind:"object";
+ const notes=String(body?.notes||"").trim().slice(0,400);
+ if(!env.AI?.run)return json({error:"Vision AI is not available on this account."},503,origin);
+ const question=[
+  "You are Miss Chaos, a practical maker and pattern-drafting assistant. Analyze this single reference photo of a "+kind+".",
+  "Use the following headings: VISIBLE DETAILS; POSSIBLE CONSTRUCTION; MATERIALS & TOOLS; CUT/ASSEMBLY PLAN; MEASUREMENTS NEEDED; UNCERTAINTIES.",
+  "Identify separate panels, seams, fasteners, joints, closures, edge treatments, and likely material if visible.",
+  "Write a specific numbered assembly sequence and a rough list of cut pieces when reasonable.",
+  "Explicitly separate what you can SEE from guesses. Never invent true sizes or hidden back/inside construction.",
+  "Suggest a good starter pattern type: tote, pouch, apron, skirt, box, or trace/custom if no template fits.",
+  "Say that it is a draft, not a production-ready pattern, and ask for missing measurements if needed.",
+  notes?"Maker notes: "+notes:""
+ ].filter(Boolean).join("\n");
+ try{
+   const result=await env.AI.run(MODEL,{task:"query",image,question,reasoning:false,max_tokens:1200,temperature:0.2});
+   const analysis=String(result?.answer||result?.response||"").trim().slice(0,9000);
+   if(!analysis)throw Error("Vision returned an empty answer.");
+   return json({analysis,model:MODEL,kind,limits:"One image cannot determine exact fit, hidden surfaces, or accurate dimensions. Check measurements and prototypes.",stored:false},200,origin);
+ }catch(error){
+   console.warn("chaos_forge_vision_failed",String(error?.message||error).slice(0,140));
+   return json({error:"Vision analysis is unavailable or the free AI allowance was exhausted. Manual drafting and 3D preview still work."},503,origin);
+ }
+}

@@ -8,6 +8,8 @@ import { storeAuditUpload, readGodAuditSummary } from "./developer-audit-ingest.
 import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
+import { searchChaosResources } from "../chaos-resources.mjs";
+import { handleChaosForgeVision } from "./chaos-forge-vision.js";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
@@ -1619,6 +1621,16 @@ export default { async queue(batch, env) {
     if(!query)return json({error:"Search query required."},400,origin);
     const result=await dispatchChaosTool({name:"site.search",input:{query},principal:{id:user.id,role:user.role}});
     return json(result,200,origin);
+  }
+  if(url.pathname==="/api/chaos/forge/analyze"&&request.method==="POST"){
+    return handleChaosForgeVision(request,env,{requireUser,rateLimit,json,origin});
+  }
+  if(url.pathname==="/api/chaos/resources"&&request.method==="GET"){
+    const member=await requireUser(request,env);if(!member)return json({error:"Sign in to use the maker libraries."},401,origin);
+    if(!await rateLimit(env,request,"chaos-free-resources",12,60,member.id))return json({error:"Please slow down your resource searches."},429,origin);
+    try{const results=await searchChaosResources({source:url.searchParams.get("source"),query:url.searchParams.get("q"),type:url.searchParams.get("type")});
+      return json(results,200,origin);
+    }catch(error){return json({error:String(error?.message||"Library unavailable.").slice(0,180)},503,origin);}
   }
   if(url.pathname==="/api/chaos/chat"&&request.method==="POST"){
     if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);

@@ -17,7 +17,8 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Creator Foundry",url:"/creator-foundry.html",terms:"creator art tools pixel studio atlas packer tilemap"},
   {title:"Shop",url:"/cinder-shop.html",terms:"shop merch currency cosmetics purchases"},
   {title:"Account",url:"/account.html",terms:"member account profile settings sign in"},
-  {title:"AI Handoff",url:"/ai-handoff.html",terms:"shared to do list task coordination collaboration invite assistant handoff"}
+  {title:"AI Handoff",url:"/ai-handoff.html",terms:"shared to do list task coordination collaboration invite assistant handoff"},
+  {title:"Chaos Forge",url:"/chaos-forge.html",terms:"clothing sewing pattern drafting craft blueprints 3d model viewer camera photo image analysis poly haven met wikidata free resource maker"}
 ]);
 export function searchPublicPages(input={}) {
   const query=String(input.query||"").trim().toLowerCase().slice(0,160);

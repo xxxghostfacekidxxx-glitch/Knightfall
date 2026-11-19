@@ -1,4 +1,5 @@
 import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
+import {searchChaosResources} from "./chaos-resources.mjs";
 import {handleAiHandoff} from "./src/ai-handoff.js";
 /** Trusted read-only model tools. Every personal query binds the VERIFIED session id. */
 export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,readGodAuditSummary}){
@@ -6,6 +7,9 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
   const match=(text,query)=>!query||String(text||"").toLowerCase().includes(query.toLowerCase());
   return {
     "research.wikipedia":async({input})=>wikipediaLookup(input),
+    "resource.met":async({input})=>searchChaosResources({source:"met",query:safe(input.query,90)}),
+    "resource.polyhaven":async({input})=>searchChaosResources({source:"polyhaven",query:safe(input.query,90),type:input.type}),
+    "resource.wikidata":async({input})=>searchChaosResources({source:"wikidata",query:safe(input.query,90)}),
     "utility.now":async({input})=>currentClock(input),
     "user.handoff":async({principal})=>{
       // Delegate authorization to the same route as the member's existing shared board.

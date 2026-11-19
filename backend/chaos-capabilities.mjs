@@ -26,6 +26,9 @@ export const CAPABILITIES = Object.freeze({
     maxInputBytes: 2048
   }),
   "research.wikipedia": Object.freeze({description:"Research public encyclopedic topics with attributed Wikipedia results",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "resource.met": Object.freeze({description:"Find public-domain artworks and historical clothing or artifacts at The Met",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "resource.polyhaven": Object.freeze({description:"Find freely reusable CC0 3D models, textures and HDRIs from Poly Haven",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "resource.wikidata": Object.freeze({description:"Look up CC0 public knowledge from Wikidata",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "utility.now": Object.freeze({description:"Get current clock and date in an IANA time zone",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "user.handoff": Object.freeze({description:"Read only the signed-in member's authorized shared Knightfall handoff board",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "radar.moon": Object.freeze({description:"Measured moon phase and next quarter",scope:"public",mutates:false,confirmation:false,maxInputBytes:64}),
