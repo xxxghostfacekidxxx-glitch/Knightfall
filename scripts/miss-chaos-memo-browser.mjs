@@ -173,7 +173,7 @@ async function run(name,width,height){
   await page.locator('#miss-chaos-presence[data-dock-ready="true"]').waitFor();
   await page.locator('#crucible-ask').click();
   await page.waitForFunction(()=>document.querySelector('#miss-chaos-window')&&!document.querySelector('#miss-chaos-window').hidden);
-  assert.match(await page.locator('#mc-input').inputValue(),/Help me turn this Crucible brief/);
+  assert.match(await page.locator('#mc-input').inputValue(),/Help me advance this Crucible project/);
   assert.equal(aiRequests.length,beforeHandoff,'Crucible must never auto-send the draft to the AI');
   const imported={
     schema:'knightfall.miss-chaos.crucible.v1',
