@@ -94,3 +94,22 @@ Use the existing Cloudflare stack, cache nonpersonal public data, cap retrieval 
 - The page includes verified read-only shared tasks and a deliberate shared-note/task posting interface routed to existing Between the Flames endpoints. A posted update becomes available to either assistant through `user.handoff` at the next retrieval, not through unconsented cross-account chat access.
 - `user.bot_fleet` provides the signed-in member's own metadata plus only the owner's explicitly public, non-NSFW bot summaries to an accepted partner. System prompts, private bot logs, private memory, and God controls are not shared. Bot conversation uses existing public-bot chat only on explicit user submission; copying a bot reply into a handoff note remains a separate deliberate click.
 - This is coordination through a shared user-controlled board, not automated bot-to-bot task execution or private bot permission delegation.
+
+
+## Supervised development partner: immutable review packets (November 19, 2026)
+- The staff `staff.repo_file` backend reader now obtains the publicly verifiable `refs/heads/main` Git commit ID through GitHub's fixed REST endpoint, validates the 40-character SHA, and fetches the allowlisted raw source at that immutable revision. A missing/refused/rate-limited ref lookup fails closed. Excerpts return `commit_sha`; any line over 300 characters is flagged as incomplete.
+- Chaos Code Studio checks for a real immutable SHA, consecutive source lines, and no clipped long lines before offering a patch proposal. At **proposal staging** it repeats the authenticated source lookup and compares both the exact current head SHA and the returned excerpt. If main changed, the proposal is rejected and requires a fresh source read.
+- A complete small JS/TS/JSX/TSX/JSON file (<5 KB proposed content and captured in full) receives a non-executing parser preflight. A partial source excerpt is explicitly marked **not syntactically verified as a complete program**. No browser- or Worker-side arbitrary code execution is introduced.
+- The exportable text review packet contains file, source URL, immutable commit, line range, changes, preflight status, actual unified diff and both snippets. It is **not** a ready-to-apply patch, a CI-tested artifact, an approved change, or a deployed release.
+- An explicitly clicked, confirmation-gated **Post review summary to Between the Flames** button creates a private shared-board note through the existing authenticated API. The note contains only provenance, counts and the review checklist; it does **not** include source text, secrets, or a claimed deployment. Posting is denied unless the account is GOD or the accepted handoff partner.
+- Main-branch GitHub CI diagnostics have a separate results panel; checking committed CI no longer discards a user's staged review and is labeled **not** a test of their uncommitted proposal.
+- The special Miss Chaos workflow is triggered for Source Reader, Code Studio, handoff and their tests. GitHub CI now checks the new source-pinning, invalid head, long-line, UI consent and proposal-safety regressions.
+
+### Next gates still required
+1. Add a genuine isolated integration-test runner for reviewer-approved **full-file** proposals; do not run arbitrary submitted code inside the public Worker, browser, or production runtime.
+2. Capture and validate target full-file blob hashes and real test-artifact digests at integration time; fail closed if `main` moved after review.
+3. Add per-proposal staff approval identities and an append-only decision record with exact source changes. Partner approval only when the backend verifies accepted partner **and** separate admin permission. GOD alone retains final override and master pause.
+4. Only after separate server-verified authorization integrate the actual reviewed code; follow `main`-only repo policy, avoid automatic branch/PR creation, confirm CI on the integrated commit, verify Pages/Worker deployment SHA, and test the resulting behavior on a real device.
+5. Monitor GitHub public API rate limits: no guarantee of unlimited no-cost HEAD inspections. Any lookup failure leaves proposals unverified, not silently accepted.
+
+**Field guide for Samantha's GPT:** `docs/MISS-CHAOS-OSIRIS-ISIS-FIELD-GUIDE.md`. Review the live authenticated Between the Flames board for newer decisions.
