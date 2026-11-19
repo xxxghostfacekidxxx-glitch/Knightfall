@@ -102,6 +102,10 @@ async function run(name,width,height){
   await page.locator('#mc-private-switch').click();
   assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-assistant-mode'),'standard');
   await page.locator('#mc-close').click();
+  await page.locator('#miss-chaos-launcher').click();
+  await page.locator('#mc-quick-memo').click();
+  assert.equal(await page.locator('#mc-memo-panel').isVisible(),true,'Chat header must open the floating Memo Pad');
+  await page.locator('#mc-memo-close').click();
   await page.locator('#mc-memo-toggle').waitFor();
   await page.locator('#mc-memo-toggle').click();
   await page.locator('#mc-memo-host .memo-title').waitFor();
