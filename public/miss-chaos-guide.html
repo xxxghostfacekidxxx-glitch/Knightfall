@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#100b19">
+  <meta name="description" content="A practical, verified guide to Miss Chaos: AI chat, creativity, crafting, code, research, Moonology and member-only Knightfall tools. Osiris and Isis workspaces are server-authorized.">
+  <title>Meet Miss Chaos · Capabilities & Commands | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/miss-chaos-guide.css?v=20261119-guide1">
+  <script src="/nav.js" defer></script>
+  <script type="module" src="/miss-chaos-guide.mjs?v=20261119-guide1"></script>
+</head>
+<body class="mc-guide-page">
+<header class="kf-header"></header>
+<main class="mc-guide-shell">
+ <section class="mc-guide-hero" aria-labelledby="mc-guide-title">
+   <span class="mc-guide-eyebrow">𓂀 KNIGHTFALL / MEET YOUR LITTLE MENACE</span>
+   <div class="mc-guide-hero-grid">
+    <div>
+      <h1 id="mc-guide-title">MISS <span>CHAOS</span></h1>
+      <p class="mc-guide-tagline">Part AI companion. Part creative partner. Entirely too many opinions about the color pink.</p>
+      <p class="mc-guide-intro">Ask questions, develop art, build games, untangle code, plan crafts, research trusted references and navigate Knightfall. She's a work-in-progress with actual tools, not a magic wand or an unsupervised website administrator.</p>
+      <div class="mc-guide-hero-actions">
+        <a href="/miss-chaos.html">🧠 Talk to Miss Chaos</a>
+        <a href="/chaos-crucible.html">⚒ Start in The Crucible</a>
+      </div>
+    </div>
+    <div class="mc-guide-eye" aria-hidden="true"><span class="mc-guide-iris">𓂀</span><small>CHAOS<br>WITH A PURPOSE</small></div>
+   </div>
+   <p class="mc-guide-truth">The tools below are summarized from Knightfall's capability registry. Sign in to see which read-only tool identifiers are currently offered to your account. Service availability and rate limits can still change.</p>
+ </section>
+
+ <section class="mc-guide-discovery" aria-labelledby="mc-guide-explore-title">
+   <div class="mc-guide-section-head">
+    <div><p class="mc-guide-index">01 / THE ARSENAL</p><h2 id="mc-guide-explore-title">What can she help me do?</h2><p>Explore a real use case and copy a starter request. Nothing is automatically sent.</p></div>
+    <label class="mc-guide-filter-label" for="mc-guide-filter">Find a capability<input id="mc-guide-filter" type="search" maxlength="80" placeholder="Try tattoo, coding, games…" autocomplete="off"></label>
+   </div>
+   <div class="mc-guide-cards" id="mc-guide-cards"></div>
+   <p id="mc-guide-card-status" class="mc-guide-mini-status" role="status" aria-live="polite"></p>
+ </section>
+
+ <section class="mc-guide-live" aria-labelledby="mc-guide-live-title">
+   <div class="mc-guide-section-head"><div><p class="mc-guide-index">02 / TEST THE MACHINE</p><h2 id="mc-guide-live-title">Try a real tool</h2><p>Explicit, read-only utility requests. They do not start a model chat, change accounts, or post anything.</p></div></div>
+   <div class="mc-guide-live-grid">
+     <form class="mc-guide-tool-form" id="mc-guide-tool-form">
+       <label for="mc-guide-tool">Select a deterministic utility</label>
+       <select id="mc-guide-tool"><option value="calc">Quick calculation</option><option value="words">Word counter</option></select>
+       <label for="mc-guide-tool-input" id="mc-guide-tool-label">Arithmetic expression</label>
+       <textarea id="mc-guide-tool-input" rows="3" maxlength="3000" placeholder="(12 * 4) + 7"></textarea>
+       <p id="mc-guide-tool-description">The calculator handles simple arithmetic, not arbitrary program execution.</p>
+       <button id="mc-guide-tool-run" type="submit" disabled>Try verified utility</button>
+       <p id="mc-guide-tool-status" role="status" aria-live="polite">Sign in to check which utilities are available.</p>
+     </form>
+     <div class="mc-guide-tool-result"><h3>Verified result</h3><pre id="mc-guide-tool-result" tabindex="0">Only actual server responses appear here. No made-up test results.</pre><p>Results are limited to the inputs you explicitly submit. Never paste passwords, private keys, or another member's information.</p></div>
+   </div>
+ </section>
+
+ <section class="mc-guide-access" aria-labelledby="mc-guide-access-title">
+   <div class="mc-guide-section-head"><div><p class="mc-guide-index">03 / YOUR WORKSPACE</p><h2 id="mc-guide-access-title">What does your account unlock?</h2><p>Everyone gets the general guide. Account-specific tools require a signed-in, server-verified Knightfall session.</p></div></div>
+   <p class="mc-guide-auth-status" id="mc-guide-auth-status" role="status" aria-live="polite">Checking your Knightfall session…</p>
+   <div id="mc-guide-member-tools" class="mc-guide-member-tools" hidden></div>
+   <section id="mc-guide-private" class="mc-guide-private" hidden aria-label="Verified private assistant">
+     <div class="mc-guide-private-top"><span>𓂀 PRIVATE WORKSPACE · VERIFIED</span><h3 id="mc-guide-private-title"></h3></div>
+     <p id="mc-guide-private-summary"></p>
+     <div id="mc-guide-private-links" class="mc-guide-private-links"></div>
+     <p id="mc-guide-private-limit" class="mc-guide-private-limit"></p>
+   </section>
+   <p class="mc-guide-boundary">Private chat, notes, memories and account records stay scoped to the current authenticated account. Sharing a specific project update through Between the Flames is an explicit action. A nickname or URL parameter cannot grant Osiris or Isis access.</p>
+ </section>
+
+ <footer class="mc-guide-footer"><strong>MISS CHAOS // BUILT FOR MAKERS, MISFITS & MONSTERS</strong><p>Some model-assisted features and public-source requests have limited free quotas. Miss Chaos never promises unlimited AI, unrestricted browsing or silent deployment.</p></footer>
+</main>
+<noscript><p>Miss Chaos can assist with chat, coding, creative projects, craft measurements, public research, moon phases and Knightfall navigation. Enable JavaScript to see account-specific tools and run opt-in utilities.</p></noscript>
+</body>
+</html>
