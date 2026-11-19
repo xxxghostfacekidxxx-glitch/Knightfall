@@ -317,5 +317,15 @@ let lastRefresh=0;
 function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});loadPrefs().catch(()=>{});}
 document.addEventListener("visibilitychange",refreshVisibleNotifications);
 window.addEventListener("focus",refreshVisibleNotifications);
+// Messages opened elsewhere, another tab clearing alerts, and push-click receipts
+// should immediately remove handled rows from the live notifications screen.
+const refreshReadState=()=>{if(document.visibilityState==="visible")void load();};
+window.addEventListener("kf:notifications-changed",refreshReadState);
+window.addEventListener("storage",event=>{
+ if(event.key==="kf:notifications-changed")refreshReadState();
+});
+if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("message",event=>{
+ if(event.data?.type==="KF_NOTIFICATIONS_CHANGED")refreshReadState();
+});
 load();loadPrefs();
 </script></body></html>
