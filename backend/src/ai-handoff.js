@@ -15,13 +15,30 @@ const RESPONSE_HEADERS={'cache-control':'private, no-store'};
 const goodText=(v,max)=>typeof v==='string'&&v.trim().length>0&&v.trim().length<=max?v.trim():null;
 const validStatus=v=>['todo','in_progress','done'].includes(v);
 const validPriority=v=>['low','normal','high'].includes(v);
+const validVerification=v=>['needs_review','source_checked','ci_passed','deployed','device_verified'].includes(v);
+const validArea=v=>typeof v==='string'&&v.trim().length>0&&v.trim().length<=56;
+const validSource=v=>{
+ if(v==='')return true;
+ if(typeof v!=='string'||v.length>500)return false;
+ try{const u=new URL(v);return u.protocol==='https:'&&(u.hostname==='ash-fall.com'||u.hostname==='www.ash-fall.com'||u.hostname==='github.com'&&u.pathname.startsWith('/xxxghostfacekidxxx-glitch/Knightfall/'))}catch{return false}
+};
+const taskExtra=(data,current={})=>{
+ const area=data.area===undefined?(current.area||'General'):data.area;
+ const verification=data.verification===undefined?(current.verification||'needs_review'):data.verification;
+ const source_url=data.source_url===undefined?(current.source_url||''):data.source_url;
+ const next_step=data.next_step===undefined?(current.next_step||''):data.next_step;
+ const blocker=data.blocker===undefined?(current.blocker||''):data.blocker;
+ if(!validArea(area)||!validVerification(verification)||!validSource(source_url)||
+  typeof next_step!=='string'||next_step.length>600||typeof blocker!=='string'||blocker.length>600)return null;
+ return {area:area.trim(),verification,source_url,next_step:next_step.trim(),blocker:blocker.trim()};
+};
 const event=(env,user,action,taskId,snapshot='')=>env.DB.prepare('INSERT INTO ai_handoff_events(actor_id,action,task_id,snapshot) VALUES(?,?,?,?)').bind(user.id,action,taskId,snapshot).run();
 async function ready(env){
  const row=await env.DB.prepare("SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name IN ('ai_handoff_partner','ai_handoff_tasks','ai_handoff_notes','ai_handoff_events')").first();
  return Number(row?.n)===4;
 }
 async function partner(env){return env.DB.prepare("SELECT p.user_id,p.status,p.invited_at,p.accepted_at,u.username,u.display_name FROM ai_handoff_partner p JOIN users u ON u.id=p.user_id WHERE p.slot=1").first();}
-async function tasks(env){return (await env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END, CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 200").all()).results||[];}
+async function tasks(env){return (await env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.area,t.verification,t.source_url,t.next_step,t.blocker,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END, CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 200").all()).results||[];}
 async function notes(env){return (await env.DB.prepare("SELECT n.id,n.body,n.category,n.created_at,u.username AS author FROM ai_handoff_notes n JOIN users u ON u.id=n.author_id ORDER BY n.id DESC LIMIT 60").all()).results||[];}
 async function activity(env){return (await env.DB.prepare("SELECT e.id,e.action,e.task_id,e.snapshot,e.created_at,u.username AS actor FROM ai_handoff_events e JOIN users u ON u.id=e.actor_id ORDER BY e.id DESC LIMIT 35").all()).results||[];}
 function packet(board){
@@ -31,7 +48,10 @@ function packet(board){
   'IMPORTANT: Re-read the authenticated handoff page for the newest changes before acting. A pasted copy is not live.',
   INSTRUCTIONS,
   'CURRENT TO-DO LIST:',
-  ...board.tasks.map(t=>'#'+t.id+' ['+t.status+'] ('+t.priority+') '+t.title+(t.details?' | '+t.details:'')+' | revision '+t.version),
+  ...board.tasks.map(t=>'#'+t.id+' ['+t.status+'] ('+t.priority+') [Area: '+(t.area||'General')+'] '+t.title+
+  ' | Verification: '+(t.verification||'needs_review')+
+  (t.next_step?' | NEXT: '+t.next_step:'')+(t.blocker?' | BLOCKER: '+t.blocker:'')+
+  (t.details?' | Details: '+t.details:'')+(t.source_url?' | Source: '+t.source_url:'')+' | revision '+t.version),
   'LATEST HANDOFF NOTES:',
   ...board.notes.slice(0,20).map(n=>n.created_at+' / '+n.author+' / '+n.category+': '+n.body),
   'End of handoff. Samantha, Ronnie says he loves you.'
@@ -91,11 +111,11 @@ export async function handleAiHandoff(request,env,url,{getUser,json,origin,rateL
  if(!canRead)return respond({error:'Accept your invitation to access this list.'},403);
  if(path==='/tasks'&&request.method==='POST'){
    const title=goodText(body.title,180),details=typeof body.details==='string'?body.details.trim():'';
-   const status=body.status||'todo',priority=body.priority||'normal';
-   if(!title||details.length>3000||!validStatus(status)||!validPriority(priority))return respond({error:'Check task title, details, status and priority.'},400);
+   const status=body.status||'todo',priority=body.priority||'normal',extra=taskExtra(body);
+   if(!title||details.length>3000||!validStatus(status)||!validPriority(priority)||!extra)return respond({error:'Check task title, details, status, priority, area, verification and source.'},400);
    const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM ai_handoff_tasks WHERE deleted_at IS NULL").first();
    if(Number(count?.n)>=200)return respond({error:'Task limit reached. Archive completed tasks first.'},409);
-   const task=await env.DB.prepare("INSERT INTO ai_handoff_tasks(title,details,status,priority,created_by,updated_by) VALUES(?,?,?,?,?,?) RETURNING *").bind(title,details,status,priority,user.id,user.id).first();
+   const task=await env.DB.prepare("INSERT INTO ai_handoff_tasks(title,details,status,priority,created_by,updated_by,area,verification,source_url,next_step,blocker) VALUES(?,?,?,?,?,?,?,?,?,?,?) RETURNING *").bind(title,details,status,priority,user.id,user.id,extra.area,extra.verification,extra.source_url,extra.next_step,extra.blocker).first();
    await event(env,user,'created',task.id,task.title);
    return respond({task},201);
  }
@@ -125,8 +145,9 @@ export async function handleAiHandoff(request,env,url,{getUser,json,origin,rateL
      const details=body.details===undefined?current.details:typeof body.details==='string'?body.details.trim():null;
      const status=body.status===undefined?current.status:body.status;
      const priority=body.priority===undefined?current.priority:body.priority;
-     if(!title||details===null||details.length>3000||!validStatus(status)||!validPriority(priority))return respond({error:'Invalid task changes.'},400);
-     const updated=await env.DB.prepare("UPDATE ai_handoff_tasks SET title=?,details=?,status=?,priority=?,version=version+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND version=? AND deleted_at IS NULL RETURNING *").bind(title,details,status,priority,user.id,id,version).first();
+     const extra=taskExtra(body,current);
+     if(!title||details===null||details.length>3000||!validStatus(status)||!validPriority(priority)||!extra)return respond({error:'Invalid task changes.'},400);
+     const updated=await env.DB.prepare("UPDATE ai_handoff_tasks SET title=?,details=?,status=?,priority=?,area=?,verification=?,source_url=?,next_step=?,blocker=?,version=version+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND version=? AND deleted_at IS NULL RETURNING *").bind(title,details,status,priority,extra.area,extra.verification,extra.source_url,extra.next_step,extra.blocker,user.id,id,version).first();
      if(!updated)return respond({error:'This task was updated elsewhere. Refresh.',code:'VERSION_CONFLICT'},409);
      await event(env,user,'updated',id,'status: '+current.status+' → '+status+' | '+title);
      return respond({task:updated});
