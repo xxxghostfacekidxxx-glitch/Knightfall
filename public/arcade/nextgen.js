@@ -3,6 +3,9 @@
 if(window.AshFallVisuals)return;
 const prefsKey="ashfall:arcade:effects:v1", root=document.documentElement;
 const slug=(location.pathname.match(/\/arcade\/hosted\/([^/]+)\//)||[])[1]||"directory";
+// A fullscreen FX canvas can become an opaque black compositor layer on Android.
+// Hosted games render their own frames: never add a viewport-sized particle canvas over them.
+const hostedGame=/^\/arcade\/hosted\/[^/]+\//.test(location.pathname);
 const motion=window.matchMedia?.("(prefers-reduced-motion: reduce)");
 const limited=window.matchMedia?.("(prefers-reduced-data: reduce)")?.matches||false;
 let enabled=true;
@@ -11,13 +14,13 @@ const disabled=()=>!enabled||!!motion?.matches||limited||document.hidden;
 const paint=["#ff35d5","#bdff43","#4cf4ff","#8c65ff","#ffffff"];
 let layer,ctx,particles=[],scheduled=false,last=0;
 function size(){if(!layer||!ctx)return;const dpr=Math.min(1.5,window.devicePixelRatio||1);layer.width=Math.floor(window.innerWidth*dpr);layer.height=Math.floor(window.innerHeight*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
-function attach(){if(layer||!document.body)return;layer=document.createElement("canvas");layer.id="af-vfx-canvas";layer.setAttribute("aria-hidden","true");layer.width=1;layer.height=1;document.body.appendChild(layer);ctx=layer.getContext("2d",{alpha:true});if(ctx)size()}
+function attach(){if(hostedGame||layer||!document.body)return;layer=document.createElement("canvas");layer.id="af-vfx-canvas";layer.setAttribute("aria-hidden","true");layer.width=1;layer.height=1;document.body.appendChild(layer);ctx=layer.getContext("2d",{alpha:true});if(ctx)size()}
 function frame(now){scheduled=false;if(disabled()||!ctx){particles.length=0;if(ctx)ctx.clearRect(0,0,window.innerWidth,window.innerHeight);return}
 const dt=Math.min(.04,Math.max(.008,(now-last||16)/1000));last=now;ctx.clearRect(0,0,window.innerWidth,window.innerHeight);ctx.save();ctx.globalCompositeOperation="lighter";
 particles=particles.filter(p=>p.life>0);
 for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=65*dt;const f=Math.max(0,p.life/p.max);ctx.globalAlpha=Math.min(1,f*f);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=12*f;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(.2,p.r*f),0,Math.PI*2);ctx.fill()}
 ctx.restore();if(particles.some(p=>p.life>0)){scheduled=true;requestAnimationFrame(frame)}else ctx.clearRect(0,0,window.innerWidth,window.innerHeight)}
-function burst(x,y,power=1){if(disabled())return;attach();if(!ctx)return;
+function burst(x,y,power=1){if(hostedGame||disabled())return;attach();if(!ctx)return;
 const cap=Number(navigator.hardwareConcurrency||4)<=2?30:58;const count=Math.min(16,Math.max(4,Math.round(8*power)));
 for(let i=0;i<count&&particles.length<cap;i++){const a=Math.random()*Math.PI*2,s=(40+Math.random()*125)*Math.min(2,power);const life=.25+Math.random()*.38;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-25,life,max:life,r:1.6+Math.random()*2.9,color:paint[Math.floor(Math.random()*paint.length)]})}
 if(!scheduled){last=0;scheduled=true;requestAnimationFrame(frame)}
@@ -26,6 +29,8 @@ function setEnabled(v){enabled=!!v;root.classList.toggle("af-effects-off",!enabl
 window.AshFallVisuals={burst,setEnabled,get enabled(){return enabled}};
 function init(){
 if(!document.body)return;
+// If an older copy of the effects script created a blocking canvas, retire it.
+if(hostedGame)document.getElementById("af-vfx-canvas")?.remove();
 document.body.classList.add("af-nextgen");document.body.dataset.afGame=slug;setEnabled(enabled);
 // Bootstrap one shared header and authenticated chat dock on first-party arcade cabinets.
 if(document.querySelector(".kf-header")&&!document.querySelector('script[src*="/nav.js"]')&&!document.querySelector('script[data-kf-arcade-nav]')){
