@@ -50,11 +50,19 @@ repoRead.addEventListener("click",async()=>{
   const result=await utility("staff.repo_file",{path,start_line:start,line_count:55});
   if(!result?.available){note(repoStatus,result?.message||"Source unavailable.");note(repoOutput,"No verified source.");return;}
   const lines=(result.lines||[]).filter(x=>Number.isInteger(x.number)&&typeof x.text==="string");
-  if(result.branch!=="main"){note(repoStatus,"Unexpected source branch. No excerpt accepted.");return;}
-  currentRepoExcerpt={path:result.path,lines,sourceUrl:result.source_url,branch:result.branch};
+  if(result.branch!=="main"||!/^[a-f0-9]{40}$/i.test(result.commit_sha||"")){
+   note(repoStatus,"Source revision could not be verified. No excerpt accepted.");return;
+  }
+  const contiguous=lines.every((line,i)=>line.number===start+i);
+  if(!contiguous||lines.length!==Number(result.returned_lines)){
+   note(repoStatus,"Incomplete or noncontiguous source lines. Read again.");return;
+  }
+  currentRepoExcerpt={path:result.path,lines,sourceUrl:result.source_url,branch:result.branch,
+   commitSha:result.commit_sha,totalLines:result.total_lines,longLinesOmitted:result.long_lines_omitted===true};
   note(repoOutput,lines.map(l=>String(l.number).padStart(4," ")+" | "+l.text).join("\n"));
-  repoCopy.disabled=lines.length===0;
-  note(repoStatus,result.path+" · "+lines.length+" of "+result.total_lines+" lines. Read-only; no code executed.");
+  repoCopy.disabled=lines.length===0||currentRepoExcerpt.longLinesOmitted;
+  note(repoStatus,result.path+" @ "+result.commit_sha.slice(0,12)+" · "+lines.length+" of "+result.total_lines+
+   " lines. "+(currentRepoExcerpt.longLinesOmitted?"Long lines were clipped. Cannot stage a patch from this excerpt.":"Read-only, immutable revision."));
  }catch(error){note(repoStatus,String(error.message||"Source could not be read."));note(repoOutput,"No verified source.")}
  finally{repoRead.disabled=false;}
 });
@@ -92,24 +100,55 @@ proposeButton.addEventListener("click",async()=>{
  proposeButton.disabled=true;clearReview("Generating a read-only change proposal...");
  note(reviewStatus,"Comparing the verified excerpt with your editor. No file writes or test execution.");
  try{
-  const result=await utility("dev.code_diff",{before:snapshot.original,after:candidate});
-  if(result.identical){note(reviewStatus,"No changes to propose.");note(reviewOutput,"The source and edited excerpt are identical.");return;}
+  // A proposal must still describe the live main revision, not a stale editor tab.
   const first=snapshot.lines[0]?.number,last=snapshot.lines.at(-1)?.number;
   if(!Number.isInteger(first)||!Number.isInteger(last))throw Error("Verified source range missing.");
+  const fresh=await utility("staff.repo_file",{path:snapshot.path,start_line:first,line_count:snapshot.lines.length});
+  const sameLines=Array.isArray(fresh?.lines)&&fresh.lines.length===snapshot.lines.length&&
+   fresh.lines.every((line,i)=>line.number===snapshot.lines[i].number&&line.text===snapshot.lines[i].text);
+  if(!fresh?.available||fresh.branch!=="main"||fresh.commit_sha!==snapshot.commitSha||
+     fresh.long_lines_omitted||!sameLines){
+   proposalSnapshot=null;
+   clearReview("Main changed since this source was read. Reopen the source before proposing a patch.");
+   note(reviewStatus,"STALE SOURCE: main revision or excerpt changed. Read current source and rebase your idea.");
+   return;
+  }
+  const fullFile=first===1&&snapshot.lines.length===snapshot.totalLines;
+  const ext=snapshot.path.split(".").at(-1)?.toLowerCase();
+  let preflight="Not run: proposal is a partial excerpt or unsupported file type.";
+  if(fullFile&&["js","mjs","cjs","ts","tsx","jsx","json"].includes(ext)){
+   const expectedLanguage={js:"javascript",mjs:"javascript",cjs:"javascript",ts:"typescript",
+    tsx:"tsx",jsx:"jsx",json:"json"}[ext];
+   const inspection=await utility("dev.code_inspect",{code:candidate,language:expectedLanguage,
+    source_type:ext==="cjs"?"script":"module"});
+   if(!inspection?.syntax_valid){
+    const error=(inspection?.errors||[]).slice(0,3).map(e=>e.message).join("; ");
+    throw Error("Full-file syntax preflight failed: "+(error||"Syntax is invalid.")+
+     " Fix it before staging.");
+   }
+   preflight="PASS: non-executing syntax inspection of the full proposed file ("+expectedLanguage+
+    "); this is not a test suite or security audit.";
+  }
+  const result=await utility("dev.code_diff",{before:snapshot.original,after:candidate});
+  if(result.identical){note(reviewStatus,"No changes to propose.");note(reviewOutput,"The source and edited excerpt are identical.");return;}
   const diff=String(result.unified_diff||"");
   if(!diff)throw Error("The code tool did not return a real diff.");
+  if(code.value!==candidate)throw Error("Editor changed during verification. Stage again.");
   reviewPacket=[
    "KNIGHTFALL / MISS CHAOS / HUMAN REVIEW REQUIRED",
    "Status: PROPOSAL ONLY. Not committed, CI-tested or deployed.",
    "Repository: xxxghostfacekidxxx-glitch/Knightfall",
-   "Branch inspected: main (base commit SHA not locked)",
+   "Branch inspected: main",
+   "Immutable base commit SHA: "+snapshot.commitSha,
+   "Freshness: main HEAD and selected lines rechecked before staging.",
+   "Preflight: "+preflight,
    "Path: "+snapshot.path,
    "Original source URL: "+snapshot.sourceUrl,
    "Excerpt lines: "+first+"-"+last+" of "+snapshot.lines.length+" selected",
    "Prepared at: "+new Date().toISOString(),
    "Change count: +"+Number(result.added_lines||0)+" / -"+Number(result.removed_lines||0),
-   "CAUTION: A partial-file excerpt is NOT an apply-ready full-file patch.",
-   "Before acceptance: re-read latest full file, verify base SHA, inspect syntax,",
+   "CAUTION: "+(fullFile?"Whole file was captured, but this proposal still has no automatic apply rights.":"A partial-file excerpt is NOT an apply-ready full-file patch."),
+   "Before acceptance: re-read latest full file, verify current main SHA, inspect syntax,",
    "run real CI against the integrated change, obtain human approval,",
    "deploy the exact reviewed commit and verify production/device behavior.",
    "",
@@ -126,7 +165,8 @@ proposeButton.addEventListener("click",async()=>{
   note(reviewOutput,reviewPacket);reviewDownload.disabled=false;
   beforeDiff.value=snapshot.original;afterDiff.value=candidate;storedPatch="";
   diffDownload.disabled=true;
-  note(reviewStatus,"Review packet staged. Proposed change is NOT applied. Export and give it to Osiris/Isis for the test-and-approval gate.");
+  note(reviewStatus,"Review packet staged at "+snapshot.commitSha.slice(0,12)+". "+preflight+
+   " No CI tests were run on this proposal and no code was applied.");
  }catch(err){clearReview("No verified proposal.");note(reviewStatus,String(err.message||"Unable to stage proposal."));}
  finally{proposeButton.disabled=!proposalSnapshot;}
 });
