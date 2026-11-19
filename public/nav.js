@@ -259,6 +259,8 @@
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
       <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Chaosphere</a>
+      <a class="kf-nav-primary kf-handoff-link" href="/ai-handoff.html" hidden>🔥 Between the Flames</a>
+      <a class="kf-nav-primary kf-eye-chaos-link" href="/eye-of-chaos.html" hidden>𓂀 Eye of Chaos</a>
       <details class="kf-nav-group kf-profile-group" hidden>
         <summary>My Account <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
@@ -266,12 +268,14 @@
           <a href="/friends.html">Friends</a>
           <a class="kf-notify" href="/notifications.html">Notifications <span class="kf-notify-badge" hidden>0</span></a>
           <a class="kf-account-link" href="/account.html">Settings &amp; Tools</a>
+          <a class="kf-account-handoff-link" href="/ai-handoff.html" hidden>♡ Between the Flames · Shared To-Do</a>
         </div>
       </details>
       <details class="kf-nav-group kf-staff-group" hidden>
         <summary>Staff <span aria-hidden="true">⌄</span></summary>
         <div class="kf-nav-menu">
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
+          <a class="kf-staff-eye-chaos-link" href="/eye-of-chaos.html" hidden>𓂀 Eye of Chaos · Bot Command</a>
           <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
           <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
           <a class="kf-god-eye-link" href="/eye-of-horus.html" hidden>𓂀 Eye of Horus</a>
@@ -438,6 +442,13 @@
       nav.querySelector(".kf-god-eye-link").hidden = role !== "god" || rights.can_eye_of_horus === false;
       nav.querySelector(".kf-staff-group").hidden = !staff;
       nav.querySelector(".kf-admin-link").hidden = !admin;
+      // Keep private links discoverable to the two confirmed collaborating accounts.
+      // Backend sessions and collaboration grants still enforce actual access.
+      const sharedHandoff = role === "god" || String(user.username || "").trim().toLowerCase() === "knightfallsamantha";
+      nav.querySelector(".kf-handoff-link").hidden = !sharedHandoff;
+      nav.querySelector(".kf-account-handoff-link").hidden = !sharedHandoff;
+      nav.querySelector(".kf-eye-chaos-link").hidden = !admin;
+      nav.querySelector(".kf-staff-eye-chaos-link").hidden = !admin;
       header.querySelector(".kf-admin-quick-link").hidden=!admin;
       nav.querySelector(".kf-my-profile-link").href = "/profile.html?username=" + encodeURIComponent(user.username);
       refreshNotifications();
