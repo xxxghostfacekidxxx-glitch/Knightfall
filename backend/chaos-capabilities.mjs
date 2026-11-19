@@ -42,6 +42,8 @@ export const CAPABILITIES = Object.freeze({
   "forge.pattern_draft": Object.freeze({description:"Compute an inch-measured prototype cut list for a basic craft or garment pattern",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "forge.material_estimate": Object.freeze({description:"Calculate rectangular fabric layout length, yardage and optional materials budget from real cut sizes",scope:"public",mutates:false,confirmation:false,maxInputBytes:6000}),
   "design.color_contrast": Object.freeze({description:"Check WCAG text contrast for provided hex colors",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "design.palette_build": Object.freeze({description:"Generate a deterministic accessible color harmony and CSS tokens from a hex seed",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "research.dictionary": Object.freeze({description:"Look up English definitions and synonyms from attributed free Wiktionary data",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "forge.scale_pattern": Object.freeze({description:"Resize measured rectangular pattern pieces with fixed seam options",scope:"public",mutates:false,confirmation:false,maxInputBytes:6000}),
   "utility.now": Object.freeze({description:"Get current clock and date in an IANA time zone",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "user.bot_fleet": Object.freeze({description:"Read member-owned bots and accepted-partner-accessible published owner bots",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
