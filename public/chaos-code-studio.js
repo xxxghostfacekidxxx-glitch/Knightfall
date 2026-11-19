@@ -33,6 +33,33 @@ const repoRead=byId("studio-repo-read"),ciCheck=byId("studio-ci-check");
 const repoCopy=byId("studio-repo-copy"),repoStatus=byId("studio-repo-status");
 const repoOutput=byId("studio-repo-output"),ciOutput=byId("studio-ci-output"),ciStatus=byId("studio-ci-status"),repoPath=byId("studio-repo-path");
 const repoStart=byId("studio-repo-start");
+const repoDir=byId("studio-repo-dir"),repoQuery=byId("studio-repo-query");
+const repoFind=byId("studio-repo-find"),repoFindStatus=byId("studio-repo-find-status");
+const repoFileSelect=byId("studio-repo-file-select"),repoFileUse=byId("studio-repo-file-use");
+repoFind.addEventListener("click",async()=>{
+ repoFind.disabled=true;repoFileUse.disabled=true;repoFileSelect.disabled=true;repoFileSelect.replaceChildren();
+ note(repoFindStatus,"Looking for verified public source files in "+repoDir.value+"…");
+ try{
+  const result=await utility("staff.source_files",{directory:repoDir.value,query:repoQuery.value.trim()});
+  if(result?.branch!=="main"||!/^[a-f0-9]{40}$/i.test(result?.commit_sha||""))
+   throw Error("GitHub source revision was not verified.");
+  const files=(result.results||[]).filter(item=>typeof item.path==="string"&&
+    item.path.startsWith(repoDir.value+"/")&&item.path.length<=190);
+  for(const file of files)repoFileSelect.append(new Option(file.path,file.path));
+  repoFileSelect.disabled=files.length===0;
+  repoFileUse.disabled=files.length===0;
+  note(repoFindStatus,result.matched+" matching public files at main commit "+
+   result.commit_sha.slice(0,12)+". "+files.length+" listed. Choose one and load a separate verified excerpt.");
+ }catch(err){note(repoFindStatus,String(err.message||"Source directory not available."));}
+ finally{repoFind.disabled=false;}
+});
+repoFileSelect.addEventListener("change",()=>{repoFileUse.disabled=!repoFileSelect.value;});
+repoFileUse.addEventListener("click",()=>{
+ if(!repoFileSelect.value)return;
+ repoPath.value=repoFileSelect.value;
+ note(repoFindStatus,"Source path selected. Click Read file excerpt for a fresh SHA-pinned inspection.");
+});
+
 let currentRepoExcerpt=null;
 let proposalSnapshot=null, reviewPacket="", reviewCandidate="", reviewSummary="";
 const proposeButton=byId("studio-repo-propose"),reviewDownload=byId("studio-proposal-export");
