@@ -57,7 +57,10 @@ async function openPicture(file){
   say("Image ready. Choose a resize style, effect or stencil workflow.");
   dimensions.textContent="Source: "+candidate.width+" × "+candidate.height+" pixels. No upload occurred.";
   void render();
- }catch(err){say("Image could not be decoded here. "+String(err.message||"Try another file.").slice(0,130));}
+ }catch(err){
+  if(opened!==loadRevision)return;
+  say("Image could not be decoded here. "+String(err.message||"Try another file.").slice(0,130));
+ }
 }
 const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
 function sampleColors(image){
