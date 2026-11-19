@@ -118,9 +118,11 @@ test("verified accepted admin partner can publish reviewed presets and roll back
  assert.equal(f.logs.length,2);
  assert.equal(f.logs[0].details.action,"rollback");
  for(const user of [{id:44,role:"admin"},{id:42,role:"member"}]){
-  const guard=fixture(user,true);
+  const guard=fixture(user,false);
   assert.equal((await guard.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,403);
  }
+ const memberWithInvite=fixture({id:42,role:"member"},true);
+ assert.equal((await memberWithInvite.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,403);
  const revoked=fixture({id:42,role:"admin"},false);
  assert.equal((await revoked.call("/api/god/theme/rollback","POST",{expectedRevision:0})).status,403);
 });
