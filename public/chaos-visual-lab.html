@@ -4,12 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d1013">
-<meta name="description" content="Knightfall Chaos Visual Lab: free private browser-only image pixelizer, PNG/WebP exporter, palette extractor and CSS design tokens.">
+<meta name="description" content="Chaos Visual Lab: free Pica image resizer, pixel art, tattoo stencil SVG tracer, QR share-card creator, color palettes and Openverse asset search.">
 <title>Chaos Visual Lab | Knightfall</title>
 <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/chaos-visual-lab.css?v=20261119-a1">
+<link rel="stylesheet" href="/chaos-visual-lab.css?v=20261119-v2">
 <script src="/nav.js" defer></script>
-<script type="module" src="/chaos-visual-lab.js?v=20261119-a1"></script>
+<script src="/vendor/visual-lab/imagetracer.js" defer></script>
+<script type="module" src="/chaos-visual-lab.js?v=20261119-v2"></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -18,8 +19,8 @@
   <header class="cvl-hero">
     <p class="cvl-kicker">CREATOR FOUNDRY / FREE MEMBER TOOL</p>
     <h1>CHAOS <span>VISUAL LAB</span> ⚡</h1>
-    <p>Turn your own reference image into chunky pixel art, resize it for avatars or game sprites, extract a six-color palette, and export CSS design tokens. No account required. No file uploads, subscriptions, trackers, or third-party JavaScript.</p>
-    <p class="cvl-privacy">🖤 Your selected image stays in your browser. Canvas processing occurs locally; nothing is sent to Miss Chaos or the site server.</p>
+    <p>Resize with Pica, turn artwork into pixel sprites, extract colors, trace tattoo-ready SVG stencils, and create QR share cards. Find openly licensed references with an optional Openverse search. Free to all visitors, no account or paid API required.</p>
+    <p class="cvl-privacy">🖤 Your selected image and QR design stay in your browser. Only if you deliberately search the Commons will your search text go to the external Openverse API. No images are uploaded.</p>
   </header>
   <div class="cvl-grid">
     <section class="cvl-panel" aria-labelledby="visual-workbench">
@@ -27,8 +28,14 @@
       <label for="visual-file">Choose PNG, JPEG, WebP or GIF (first frame only), up to 12 MB</label>
       <input id="visual-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
       <div class="cvl-options">
-        <label for="visual-grid">Pixel size
-          <select id="visual-grid"><option value="0">Smooth resize</option><option value="16">16-pixel art</option><option value="32" selected>32-pixel art</option><option value="64">64-pixel art</option><option value="128">128-pixel art</option></select>
+        <label for="visual-grid">Image style
+          <select id="visual-grid"><option value="0" selected>Smooth resize</option><option value="16">16-pixel art</option><option value="32">32-pixel art</option><option value="64">64-pixel art</option><option value="128">128-pixel art</option></select>
+        </label>
+        <label for="visual-engine">Smooth resizing engine
+          <select id="visual-engine"><option value="pica" selected>Pica high quality</option><option value="browser">Browser-native</option></select>
+        </label>
+        <label for="visual-effect">Artwork effect
+          <select id="visual-effect"><option value="normal" selected>Original color</option><option value="grayscale">Black &amp; gray</option><option value="ink">High-contrast blackwork</option></select>
         </label>
         <label for="visual-output-size">Export longest side
           <select id="visual-output-size"><option value="128">128 px</option><option value="256" selected>256 px</option><option value="512">512 px</option><option value="1024">1024 px</option></select>
@@ -58,8 +65,48 @@
         <p>For editable pixel sprites, animation frames, tilemaps and texture atlases use <a href="/devil-tools.html#production-workbench">Creator Production Lab</a>. For fabric and craft layouts use <a href="/chaos-forge.html">Chaos Forge</a>. Need design feedback? <a href="/miss-chaos.html">Ask Miss Chaos</a> to generate an accessible color harmony from a hex seed.</p>
       </div>
     </section>
+    <section class="cvl-panel" aria-labelledby="visual-trace-title" id="stencil-forge">
+      <h2 id="visual-trace-title">03 / Stencil Surgery: SVG tracing</h2>
+      <p class="cvl-description">Turn the loaded image into real vector paths using the locally hosted ImageTracerJS library. Use <strong>Blackwork</strong> for tattoo stencil starting points or <strong>Color</strong> for posterized artwork. Inspect paths and clean up the exported SVG in any vector editor before tattooing or printing.</p>
+      <div class="cvl-options">
+        <label for="visual-trace-style">Trace style
+          <select id="visual-trace-style"><option value="blackwork" selected>Blackwork stencil</option><option value="grayscale">Grayscale</option><option value="color">Limited color</option></select>
+        </label>
+        <label for="visual-trace-detail">Path detail
+          <select id="visual-trace-detail"><option value="simple">Simple / fewer nodes</option><option value="balanced" selected>Balanced</option><option value="detailed">Detailed</option></select>
+        </label>
+      </div>
+      <div class="cvl-actions"><button type="button" id="visual-trace" disabled>Trace current image to SVG</button><button type="button" id="visual-svg" disabled>Export SVG</button></div>
+      <p class="cvl-status" id="visual-trace-status" role="status" aria-live="polite">Load an image to unlock vector tracing. Source pixels never leave this device.</p>
+      <div class="cvl-stage cvl-vector-stage" id="visual-svg-stage"><img id="visual-svg-preview" alt="Locally traced vector artwork preview" hidden></div>
+      <p class="cvl-meta">Tracing is limited to 192 pixels on the longest input side to protect mobile devices. Vector results can be enlarged without bitmap blur but may require manual cleanup.</p>
+    </section>
+    <section class="cvl-panel" aria-labelledby="visual-qr-title" id="sigil-maker">
+      <h2 id="visual-qr-title">04 / Portal Sigils: QR share cards</h2>
+      <p class="cvl-description">Make a printable card pointing at your Knightfall profile, gallery, shop or portfolio. QR patterns are generated entirely offline by a locally hosted MIT-licensed library.</p>
+      <label for="visual-qr-url">Link to encode (HTTPS only)</label>
+      <input id="visual-qr-url" type="url" maxlength="300" spellcheck="false" autocomplete="url" value="https://ash-fall.com/" placeholder="https://ash-fall.com/your-profile">
+      <label for="visual-qr-label">Card label</label>
+      <input id="visual-qr-label" type="text" maxlength="45" value="SCAN MY PORTAL" placeholder="Your artist name or event">
+      <div class="cvl-actions"><button type="button" id="visual-qr-generate">Generate QR card</button><button type="button" id="visual-qr-png" disabled>Export card PNG</button><button type="button" id="visual-qr-svg" disabled>Export clean QR SVG</button></div>
+      <p class="cvl-status" id="visual-qr-status" role="status" aria-live="polite">QR code scanning works offline after generating the card. Verify the target URL and test with a phone camera before printing.</p>
+      <div class="cvl-stage cvl-qr-stage"><canvas id="visual-qr-preview" width="480" height="590" aria-label="Preview QR code poster" role="img"></canvas></div>
+      <p class="cvl-meta">The QR SVG has a plain black-on-white code for reliable scanning; the PNG includes the Knightfall art card. Never encode passwords, account tokens or private URLs.</p>
+    </section>
+    <section class="cvl-panel cvl-commons" aria-labelledby="visual-commons-title" id="commons-scout">
+      <h2 id="visual-commons-title">05 / Commons Scout: Openverse</h2>
+      <p class="cvl-description">Find openly licensed images to inspire original tattoos, avatars and games. Openverse is a discovery index, not permission to copy every work. Always inspect the original license and required attribution.</p>
+      <p class="cvl-privacy">Searching sends only the phrase and selected license filter from your device to Openverse. Your loaded artwork is never sent. Results link out to their original creators; no external image previews load automatically.</p>
+      <label for="visual-commons-query">Search openly licensed artwork</label>
+      <input id="visual-commons-query" type="search" maxlength="120" placeholder="gothic cathedral, bat illustration, moon..." autocomplete="off">
+      <label for="visual-commons-license">License filter</label>
+      <select id="visual-commons-license"><option value="all" selected>All open licenses (verify each)</option><option value="cc0,pdm">Public domain and CC0</option><option value="by">Creative Commons Attribution</option><option value="by-sa">CC Attribution ShareAlike</option></select>
+      <div class="cvl-actions"><button type="button" id="visual-commons-search">Search Openverse</button><a id="visual-commons-external" class="cvl-action-link" href="https://openverse.org/" target="_blank" rel="noopener noreferrer">Open Openverse site</a></div>
+      <p class="cvl-status" id="visual-commons-status" role="status" aria-live="polite">No external requests until you press Search.</p>
+      <div id="visual-commons-results" class="cvl-results" aria-live="polite"></div>
+    </section>
   </div>
-  <footer class="cvl-foot">Built in native browser Canvas. No external runtime or API key. Processing limits protect mobile browsers from oversized images.</footer>
+  <footer class="cvl-foot">Bundled locally: Pica (MIT), QR Code Generator (MIT), ImageTracerJS (Unlicense). <a href="/vendor/visual-lab/LICENSES.txt">Library notices</a>. Editing stays private; the optional Openverse search requires network and may be rate-limited.</footer>
 </main>
 </body>
 </html>
