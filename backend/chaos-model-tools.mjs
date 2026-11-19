@@ -202,7 +202,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const staff=principal?.id&&["admin","god"].includes(principal.role)?explicitStaffFileRequest(latest)||explicitStaffGithubRequest(latest):null;
+  const staff=principal?.id&&["admin","god"].includes(principal.role)?explicitStaffFileRequest(latest)||(principal.role==="admin"?explicitStaffGithubRequest(latest):null):null;
   const obvious=staff||explicitDiffRequest(latest)||explicitJSONShapeRequest(latest)||(principal?.id&&principal.role==="god"?explicitGodGithubRequest(latest):null)||explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
