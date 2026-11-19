@@ -7,6 +7,8 @@ on:
       - 'backend/src/chaos-companion.mjs'
       - 'public/samantha-chaos*'
       - 'public/chaos-code-studio*'
+      - 'public/chaos-visual-lab*'
+      - 'scripts/chaos-visual-lab-ui.test.mjs'
       - 'public/ai-handoff.html'
       - 'backend/src/ai-handoff.js'
       - 'scripts/chaos-code-studio-ui.test.mjs'
@@ -25,5 +27,7 @@ jobs:
       - run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
       - name: Verify Code Studio interface and client syntax
         run: node --check public/chaos-code-studio.js && node --test scripts/chaos-code-studio-ui.test.mjs
+      - name: Verify privacy-preserving member Chaos Visual Lab
+        run: node --check public/chaos-visual-lab.js && node --test scripts/chaos-visual-lab-ui.test.mjs
       - name: Verify private Samantha companion and relay UI
         run: node --check public/samantha-chaos.js && node --test scripts/samantha-chaos-ui.test.mjs
