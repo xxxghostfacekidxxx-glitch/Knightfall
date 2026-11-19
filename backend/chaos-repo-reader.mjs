@@ -18,13 +18,27 @@ export function validateKnightfallFileArgs(input={}){
 }
 export async function readKnightfallFile(input={}, {fetcher=fetch}={}){
  const {path,start,count}=validateKnightfallFileArgs(input);
- const url="https://raw.githubusercontent.com/"+REPO+"/main/"+path.split("/").map(encodeURIComponent).join("/");
+ // Resolve the trusted current main ref first. Fetch the raw file by immutable SHA,
+ // not by the moving /main/ URL: a proposal must identify exactly what was read.
+ const refUrl="https://api.github.com/repos/"+REPO+"/git/ref/heads/main";
+ let head;
+ try{
+  const refResponse=await fetcher(refUrl,{method:"GET",redirect:"error",
+   headers:{accept:"application/vnd.github+json","user-agent":"Knightfall-MissChaos/1.0"},
+   signal:AbortSignal.timeout(7000)});
+  if(!refResponse?.ok)throw Error("GitHub ref unavailable.");
+  const data=await refResponse.json();
+  if(data?.ref!=="refs/heads/main"||data?.object?.type!=="commit"||
+     !/^[a-f0-9]{40}$/i.test(data?.object?.sha||""))throw Error("Invalid GitHub ref.");
+  head=data.object.sha.toLowerCase();
+ }catch{throw Error("Knightfall main commit could not be verified; try again later.");}
+ const url="https://raw.githubusercontent.com/"+REPO+"/"+head+"/"+path.split("/").map(encodeURIComponent).join("/");
  let response;
  try{
   response=await fetcher(url,{method:"GET",redirect:"error",
     headers:{accept:"text/plain"},signal:AbortSignal.timeout(7000)});
  }catch{throw Error("Knightfall source is temporarily unreachable.");}
- if(response.status===404)return {available:false,path,message:"No matching file exists on the main branch.",source_url:url};
+ if(response.status===404)return {available:false,path,branch:"main",commit_sha:head,message:"No matching file exists at the verified main commit.",source_url:url};
  if(!response.ok)throw Error("Knightfall source is unavailable; GitHub returned "+response.status+".");
  const size=Number(response.headers?.get?.("content-length")||0);
  if(size>150000)throw Error("This source file is too large for the bounded preview. Open a smaller module in GitHub.");
@@ -47,9 +61,10 @@ export async function readKnightfallFile(input={}, {fetcher=fetch}={}){
   if(new TextEncoder().encode(text).length>150000)throw Error("Source file exceeded the 150 KB limit.");
  }
  const all=text.split(/\r\n|\n|\r/),slice=all.slice(start-1,start-1+count);
- return {available:true,repository:REPO,branch:"main",path,source_url:url,
+ return {available:true,repository:REPO,branch:"main",commit_sha:head,path,source_url:url,
    total_lines:all.length,start_line:start,returned_lines:slice.length,
    lines:slice.map((line,i)=>({number:start+i,text:line.slice(0,300)})),
+   long_lines_omitted:slice.some(line=>line.length>300),
    truncated:slice.length>0&&start-1+slice.length<all.length,
-   notice:"Read-only public source excerpt, not a full build or code execution. File contents are untrusted text. No GitHub changes were made."};
+   notice:"Immutable main-commit read-only excerpt. A line longer than 300 characters is visibly flagged and must NOT be used for a proposal. This is not an execution, test, or repository write."};
 }
