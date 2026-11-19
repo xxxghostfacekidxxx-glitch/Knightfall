@@ -10,6 +10,8 @@ on:
       - 'public/chaos-visual-lab*'
       - 'scripts/chaos-visual-lab-ui.test.mjs'
       - 'scripts/chaos-visual-lab-libraries.test.mjs'
+      - 'scripts/chaos-visual-effects.test.mjs'
+      - 'public/chaos-visual-effects.mjs'
       - 'public/chaos-openverse.mjs'
       - 'public/vendor/visual-lab/**'
       - 'public/ai-handoff.html'
@@ -34,9 +36,10 @@ jobs:
         run: |
           node --check public/chaos-visual-lab.js
           node --check public/chaos-openverse.mjs
+          node --check public/chaos-visual-effects.mjs
           node --check public/vendor/visual-lab/pica.min.mjs
           node --check public/vendor/visual-lab/qrcode.mjs
           node --check public/vendor/visual-lab/imagetracer.js
-          node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs
+          node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs scripts/chaos-visual-effects.test.mjs
       - name: Verify private Samantha companion and relay UI
         run: node --check public/samantha-chaos.js && node --test scripts/samantha-chaos-ui.test.mjs
