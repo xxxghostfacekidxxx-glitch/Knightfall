@@ -38,6 +38,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"user.notifications",description:"List only this signed-in member's unread Knightfall alerts, with safe navigation links. Read-only, does not mark them read.",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"user.profile",description:"Read ONLY this signed-in member's own profile display details, never other users or private account credentials",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"user.inbox",description:"Preview ONLY the signed-in member's joined conversations in Chaosphere. Does not mark messages read or send them.",parameters:{type:"object",properties:{},additionalProperties:false}},
+  {name:"staff.source_files",description:"Staff-only verified public Knightfall source filename discovery. List eligible files in a fixed directory at immutable main commit; no file writes, secrets, recursion or repository mutations.",parameters:{type:"object",properties:{directory:{type:"string",enum:["backend","backend/src","public","public/arcade","scripts","tests","docs",".github/workflows"]},query:{type:"string"}},required:["directory"]}},
   {name:"staff.repo_file",description:"Read up to 80 actual lines of one allowlisted Knightfall main-branch public source file. Admin or GOD session required. Never executes code or changes repository files.",parameters:{type:"object",properties:{path:{type:"string"},start_line:{type:"integer"},line_count:{type:"integer"}},required:["path"]}},
   {name:"staff.github_health",description:"Read verified Knightfall GitHub Actions status and non-executing repair leads for authenticated admin/Isis/Osiris.",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"god.github_health",description:"GOD role only: inspect recent public Knightfall GitHub Actions results and get non-executing review proposals. Does not read job logs or modify repository.",parameters:{type:"object",properties:{},additionalProperties:false}},
@@ -45,7 +46,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 ]);
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.bot_fleet","user.notifications","user.profile","user.inbox"]);
-const STAFF=new Set(["staff.repo_file","staff.github_health"]);
+const STAFF=new Set(["staff.repo_file","staff.github_health","staff.source_files"]);
 const GOD=new Set(["god.audit_summary","god.github_health"]);
 const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|palette|colors?|swatches?|define|dictionary|definitions?|synonyms?|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug|format|prettify|flowchart|diagram|workflow|compare|diff|schema|typescript|tsx|jsx)\b/i;
 function visibleTools(principal) {
@@ -127,6 +128,10 @@ function explicitJSONShapeRequest(text){
 function explicitCodeRequest(text){
  const match=String(text||"").trim().match(/^(?:please\s+)?(?:check|inspect|lint|validate)\s+(?:(?:my|the)\s+)?(javascript|js|json|typescript|ts|tsx|jsx)\s*(?:code|syntax)?\s*:\s*([\s\S]{1,10000})$/i);
  return match?{name:"dev.code_inspect",arguments:{language:({ts:"typescript",js:"javascript"})[match[1].toLowerCase()]||match[1].toLowerCase(),code:match[2]}}:null;
+}
+function explicitStaffFileIndexRequest(text){
+ const m=String(text||"").trim().match(/^(?:please\s+)?(?:list|find|search|show)\s+(?:(?:the|our|knightfall|source|repo|repository)\s+)*(?:files?|modules?|scripts?)\s+(?:in|under)\s+(backend\/src|backend|public\/arcade|public|scripts|tests|docs|\.github\/workflows)(?:\s+(?:for|containing|matching|with)\s+([a-z0-9_ .-]{1,64}))?\s*[.!?]?$/i);
+ return m?{name:"staff.source_files",arguments:{directory:m[1],query:m[2]?.trim()||""}}:null;
 }
 function explicitStaffFileRequest(text){
  const m=String(text||"").trim().match(/^(?:please\s+)?(?:read|open|inspect|review|show|debug|check|explain|summarize)\s+(?:(?:the|my|our)\s+)?(?:(?:knightfall|repo(?:sitory)?|source)\s+)?(?:file\s+)?((?:backend|public|scripts|tests|docs|\.github\/workflows)\/[a-zA-Z0-9_./-]+\.(?:js|mjs|cjs|ts|tsx|jsx|html|css|json|jsonc|md|yml|yaml))(?:\s+lines?\s+(\d+)(?:\s*[-–]\s*(\d+))?)?\s*[.!?]?$/i);
@@ -212,7 +217,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const staff=principal?.id&&["admin","god"].includes(principal.role)?explicitStaffFileRequest(latest)||(principal.role==="admin"?explicitStaffGithubRequest(latest):null):null;
+  const staff=principal?.id&&["admin","god"].includes(principal.role)?explicitStaffFileIndexRequest(latest)||explicitStaffFileRequest(latest)||(principal.role==="admin"?explicitStaffGithubRequest(latest):null):null;
   const obvious=staff||explicitDiffRequest(latest)||explicitJSONShapeRequest(latest)||(principal?.id&&principal.role==="god"?explicitGodGithubRequest(latest):null)||explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitPaletteRequest(latest)||explicitDictionaryRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
