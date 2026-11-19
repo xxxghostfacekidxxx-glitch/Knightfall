@@ -2,23 +2,29 @@
 import pica from "./vendor/visual-lab/pica.min.mjs";
 import qrcode from "./vendor/visual-lab/qrcode.mjs";
 import {searchOpenverseImages,safeExternalHttps} from "./chaos-openverse.mjs";
+import {applyChaosArtworkEffects,buildChaosPrintSheet,stencilPaperConfig} from "./chaos-visual-effects.mjs";
 const resizer=pica();
 const $=id=>document.getElementById(id);
 const source=$("visual-file"),grid=$("visual-grid"),size=$("visual-output-size");
 const engine=$("visual-engine"),effect=$("visual-effect");
+const threshold=$("visual-threshold"),thresholdLabel=$("visual-threshold-value");
+const mirror=$("visual-mirror"),invert=$("visual-invert"),transparentWhite=$("visual-transparent-white");
+const compareButton=$("visual-compare"),printButton=$("visual-print-sheet");
 const processButton=$("visual-process"),pngButton=$("visual-png"),webpButton=$("visual-webp");
 const preview=$("visual-preview"),drop=$("visual-drop");
 const swatches=$("visual-swatches"),css=$("visual-css");
 const copyButton=$("visual-copy-colors"),textButton=$("visual-save-colors");
 const status=$("visual-status"),dimensions=$("visual-dimensions"),placeholder=$("visual-placeholder");
-let revision=0,traceUrl=null,traceSvg="",qrSvg="",qrCanvas=null;
+let revision=0,loadRevision=0,compareOriginal=false,traceUrl=null,traceSvg="",qrSvg="",qrCanvas=null;
 const types=new Set(["image/png","image/jpeg","image/webp","image/gif"]);
 let bitmap=null,outputCanvas=null,palette=[];
 function say(s){status.textContent=s;}
 function reset(){
  revision++;
  processButton.disabled=true;pngButton.disabled=true;webpButton.disabled=true;
- copyButton.disabled=true;textButton.disabled=true;outputCanvas=null;palette=[];
+ copyButton.disabled=true;textButton.disabled=true;compareButton.disabled=true;printButton.disabled=true;
+ compareOriginal=false;compareButton.setAttribute("aria-pressed","false");compareButton.textContent="Compare original";
+ outputCanvas=null;palette=[];
  $("visual-trace").disabled=true;$("visual-svg").disabled=true;
  traceSvg="";if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
  const traced=$("visual-svg-preview");traced.removeAttribute("src");traced.hidden=true;
@@ -30,6 +36,7 @@ function reset(){
  const context=preview.getContext("2d");context?.clearRect(0,0,preview.width,preview.height);
 }
 async function openPicture(file){
+ const opened=++loadRevision;
  if(bitmap){bitmap.close();bitmap=null;}
  reset();
  if(!file){say("Choose an image to begin.");return;}
@@ -39,6 +46,7 @@ async function openPicture(file){
  say("Decoding the image on this device...");
  try{
   const candidate=await createImageBitmap(file);
+  if(opened!==loadRevision){candidate.close();return;}
   if(!candidate.width||!candidate.height||candidate.width>8192||candidate.height>8192||
     candidate.width*candidate.height>20_000_000){
    candidate.close();throw Error("Image exceeds the 20-megapixel or 8192-pixel-side safety limit.");
@@ -113,10 +121,14 @@ async function render(){
  if(!bitmap)return;
  const token=++revision,active=bitmap;
  processButton.disabled=true;
+ pngButton.disabled=true;webpButton.disabled=true;printButton.disabled=true;
+ compareButton.disabled=true;outputCanvas=null;
+ $("visual-trace").disabled=true;$("visual-svg").disabled=true;
+ compareOriginal=false;compareButton.setAttribute("aria-pressed","false");compareButton.textContent="Compare original";
  try{
   const side=Number(size.value),pixel=Number(grid.value),mode=String(effect.value);
   if(![128,256,512,1024].includes(side)||![0,16,32,64,128].includes(pixel))throw Error("Unsupported image settings.");
-  if(!["normal","grayscale","ink"].includes(mode))throw Error("Invalid image effect.");
+  if(!["normal","grayscale","ink","outline"].includes(mode))throw Error("Invalid image effect.");
   const ratio=side/Math.max(active.width,active.height);
   const outW=clamp(Math.round(active.width*ratio),1,1024),outH=clamp(Math.round(active.height*ratio),1,1024);
   const canvas=document.createElement("canvas");canvas.width=outW;canvas.height=outH;
@@ -152,16 +164,12 @@ async function render(){
    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(active,0,0,outW,outH);
   }
   if(token!==revision||active!==bitmap)return;
-  if(mode!=="normal"){
-   const frame=ctx.getImageData(0,0,outW,outH),data=frame.data;
-   for(let i=0;i<data.length;i+=4){
-    if(!data[i+3])continue;
-    const lum=Math.round(data[i]*.2126+data[i+1]*.7152+data[i+2]*.0722);
-    const val=mode==="ink"?(lum>=145?255:0):lum;
-    data[i]=val;data[i+1]=val;data[i+2]=val;
-   }
-   ctx.putImageData(frame,0,0);
-  }
+  const adjusted=ctx.getImageData(0,0,outW,outH);
+  applyChaosArtworkEffects(adjusted,{
+   mode,threshold:Number(threshold.value),mirror:mirror.checked,
+   invert:invert.checked,transparentWhite:transparentWhite.checked
+  });
+  ctx.putImageData(adjusted,0,0);
   traceSvg="";
   if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
   $("visual-svg-preview").hidden=true;
@@ -172,12 +180,21 @@ async function render(){
   preview.style.imageRendering=pixel?"pixelated":"auto";
   placeholder.hidden=true;
   palette=sampleColors(canvas);drawPalette();pngButton.disabled=false;webpButton.disabled=false;
+  compareButton.disabled=false;printButton.disabled=false;
   dimensions.textContent="Export: "+outW+" × "+outH+" pixels · "+processor+" · "+
-   (mode==="normal"?"Original colors":mode==="ink"?"Blackwork threshold":"Grayscale")+
+   (mode==="normal"?"Original colors":mode==="ink"?"Blackwork threshold":mode==="outline"?"Extracted edges":"Grayscale")+
+   (mirror.checked?" · mirrored":"")+
+   (transparentWhite.checked&&["ink","outline"].includes(mode)?" · transparent white":"")+
    " · alpha preserved where supported.";
   say("Artwork processed locally using "+processor+". "+palette.length+" colors extracted.");
  }catch(err){if(token===revision)say(String(err.message||"Could not process this image.").slice(0,180));}
- finally{if(token===revision)processButton.disabled=false;}
+ finally{
+  if(token===revision){
+   processButton.disabled=false;
+   $("visual-trace").disabled=!bitmap||!outputCanvas;
+   if(!outputCanvas)printButton.disabled=true;
+  }
+ }
 }
 function saveBlob(name,blob){
  const url=URL.createObjectURL(blob),a=document.createElement("a");
