@@ -9,6 +9,12 @@ const INSTRUCTIONS=[
  'After finishing work, discovering blockers, or changing a decision, keep the shared to-do list current: update task status and details using Samantha\u2019s authenticated Knightfall handoff page, or ask Samantha to make the update when direct access is unavailable.',
  'Add a dated handoff note describing what changed, what remains, and what needs Ronnie\u2019s attention. Do not claim an update occurred unless the site confirmed it.',
  'Only include project details Samantha and Ronnie choose to share. This is private to their authorized Knightfall accounts; do not publish the handoff elsewhere.',
+ 'The project backlog now has workstreams (area), priorities, source_url, next_step, blocker and verification. The shared board may contain partially implemented items: never assume a task is unfinished or finished without verifying current source, CI, deployment and real-device behavior.',
+ 'Explain technical work in plain language for Samantha. Give a concrete next step, the relevant page/tool and what a successful result looks like; no assumed prior coding knowledge.',
+ 'CREATOR FOUNDRY: https://ash-fall.com/devil-tools.html is the authenticated art/game creation workspace. Inside it, Creator Production Lab at https://ash-fall.com/devil-tools.html#production-workbench includes native Pixel Studio (32×32 brush/frames/PNG), Atlas Packer (sprite sheets and JSON) and Tilemap Forge (tile painting/map export). There are external references such as Piskel, Pixelorama, Blender and Krita; not all are installed in Knightfall. A creator title does not confer admin, repository, or production asset publishing rights.',
+ 'OPEN SOURCE ARSENAL: https://ash-fall.com/open-source-arsenal.html is a curated, searchable catalog of source tools and game/framework references, NOT a claim that each tool is installed, playable, commercially licensed, or automatically imported. Check exact project license and asset attribution before integrating. When helping Samantha, explain the difference between links to an upstream project and Knightfall tools she can actually use.',
+ 'CHAOS FORGE: https://ash-fall.com/chaos-forge.html is for craft/clothing pattern and 3D workflow experiments; confirm actual capabilities on the page rather than assuming full reconstruction.',
+ 'Samantha can edit tasks, mark reviewed progress, log blockers, draft art and research options through her authorized workspace. Production code changes, live publishing, payments, role grants and security settings require additional authorized access and verification. Do not invent deployment success.',
  'And please tell Samantha this exact message: "Ronnie says he loves you."'
 ].join('\n\n');
 const RESPONSE_HEADERS={'cache-control':'private, no-store'};
@@ -47,6 +53,7 @@ function packet(board){
   'Snapshot: '+new Date().toISOString(),
   'IMPORTANT: Re-read the authenticated handoff page for the newest changes before acting. A pasted copy is not live.',
   INSTRUCTIONS,
+  'SOURCE REGISTERS: https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/MASTER-TASK-LIST-2026-11-11.md | https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/ASH-FALL-RECOVERED-BACKLOG.md | https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/BUSINESS-LAUNCH-READINESS-2026-11-15.md',
   'CURRENT TO-DO LIST:',
   ...board.tasks.map(t=>'#'+t.id+' ['+t.status+'] ('+t.priority+') [Area: '+(t.area||'General')+'] '+t.title+
   ' | Verification: '+(t.verification||'needs_review')+
@@ -72,7 +79,7 @@ export async function handleAiHandoff(request,env,url,{getUser,json,origin,rateL
  if(path==='/'&&request.method==='GET'){
    if(isPending)return respond({role:'invited',invitation:{by:'Ronnie',status:'pending'},message:'Accept the invitation to see the shared to-do list.'});
    if(!canRead)return respond({role:'unauthorized',error:'This is a private shared space. Ask Ronnie to invite your Knightfall username.'},403);
-   return respond({role:isGod?'owner':'partner',partner:invite,confirmed_access:true,tasks:await tasks(env),notes:await notes(env),activity:await activity(env),instructions:INSTRUCTIONS,message:'Ronnie says he loves you.'});
+   return respond({role:isGod?'owner':'partner',partner:invite,confirmed_access:true,tasks:await tasks(env),notes:await notes(env),activity:await activity(env),instructions:INSTRUCTIONS,guide_links:{foundry:'https://ash-fall.com/devil-tools.html',production_lab:'https://ash-fall.com/devil-tools.html#production-workbench',arsenal:'https://ash-fall.com/open-source-arsenal.html',chaos_forge:'https://ash-fall.com/chaos-forge.html'},message:'Ronnie says he loves you.'});
  }
  if(path==='/packet'&&request.method==='GET'){
    if(!canRead)return respond({error:'Private handoff access required.'},403);
