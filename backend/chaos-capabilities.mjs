@@ -32,6 +32,7 @@ export const CAPABILITIES = Object.freeze({
   "research.books": Object.freeze({description:"Look up publicly indexed books from Open Library; no copyrighted full-text retrieval",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.papers": Object.freeze({description:"Search free Crossref scholarly publication metadata and DOI links",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "forge.pattern_draft": Object.freeze({description:"Compute an inch-measured prototype cut list for a basic craft or garment pattern",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "forge.material_estimate": Object.freeze({description:"Calculate rectangular fabric layout length, yardage and optional materials budget from real cut sizes",scope:"public",mutates:false,confirmation:false,maxInputBytes:6000}),
   "utility.now": Object.freeze({description:"Get current clock and date in an IANA time zone",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "user.handoff": Object.freeze({description:"Read only the signed-in member's authorized shared Knightfall handoff board",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "radar.moon": Object.freeze({description:"Measured moon phase and next quarter",scope:"public",mutates:false,confirmation:false,maxInputBytes:64}),
