@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0c0a13">
 <title>Between the Flames | Knightfall AI Handoff</title>
 <meta name="description" content="Private Knightfall handoff and shared to-do list.">
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=20261118-bridge1">
-<script src="/nav.js?v=20261118-command-access1" defer></script><script src="/ai-handoff.js?v=20261118-bridge1" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=20261118-master2">
+<script src="/nav.js?v=20261118-command-access1" defer></script><script src="/ai-handoff.js?v=20261118-master2" defer></script>
 </head>
 <body class="handoff-page">
 <header class="kf-header"></header>
@@ -91,15 +91,63 @@
         <p class="subtle"><strong>ChatGPT availability (November 2026):</strong> Personal Free, Go, Plus and Pro accounts cannot create new custom GPTs. These Action steps only work for existing editable GPTs or workspaces that still support Actions. Otherwise use the live shared website and copyable packet. Knightfall cannot silently access either person's private ChatGPT conversations.</p>
       </details>
     </section>
+    <section class="handoff-card mentor-card" aria-labelledby="mentor-heading">
+      <div class="section-title"><div><p class="eyebrow">GUIDE FOR SAMANTHA + HER GPT</p><h2 id="mentor-heading">The creator's survival kit</h2></div>
+        <button type="button" id="copy-mentor-guide" class="handoff-button ghost">Copy GPT tool briefing</button>
+      </div>
+      <p>Sam, you do not need to know coding to help build Knightfall. Start with an art idea, an issue you noticed, or a small test. Your GPT can explain the steps, draft work, suggest free tools and add the results to this board when it has an authorized connection. No imaginary superpowers required.</p>
+      <div class="mentor-tools">
+        <article>
+          <h3>🎨 Creator Foundry</h3>
+          <p><strong>The workshop on Knightfall.</strong> Build and test assets: Pixel Studio draws pixel sprites and frames; Atlas Packer makes spritesheets; Tilemap Forge paints levels. The Creator Production Lab is inside the Foundry.</p>
+          <a href="/devil-tools.html">Open Creator Foundry</a> · <a href="/devil-tools.html#production-workbench">Open Production Lab</a>
+        </article>
+        <article>
+          <h3>⚙ Open Source Arsenal</h3>
+          <p><strong>The research library.</strong> Find free software, source repos, game engines, art editors and ideas. External links are not installed Knightfall features. Read the license and preserve attribution before using code or assets.</p>
+          <a href="/open-source-arsenal.html">Explore Open Source Arsenal</a>
+        </article>
+        <article>
+          <h3>✂ Chaos Forge</h3>
+          <p><strong>Craft and design experiments.</strong> Explore clothing patterns, blueprints and 3D previews. Ask the GPT to break an idea into small parts and check the actual available controls first.</p>
+          <a href="/chaos-forge.html">Explore Chaos Forge</a>
+        </article>
+      </div>
+      <details class="instructions"><summary>Easy workflow for Samantha and her GPT</summary>
+        <ol class="mentor-steps">
+          <li><strong>Pick one project task.</strong> Filter by workstream or priority, or search for a game, art asset or problem.</li>
+          <li><strong>Check where it stands.</strong> Read the source link, verification level, next action and any blocker. "Needs review" is not the same as "nothing exists."</li>
+          <li><strong>Ask for simple steps.</strong> Have your GPT explain what tool to open, what to click, and what success looks like. Use Foundry for building and Arsenal for finding references.</li>
+          <li><strong>Record what actually happened.</strong> Change the status only when justified, add a blocker or next step, and leave a short dated handoff note for Ronnie.</li>
+          <li><strong>Respect permissions.</strong> Creating local artwork and proposing code are okay. Publishing, changing accounts, granting roles, spending money or deploying requires separately authorized access.</li>
+        </ol>
+        <p class="subtle">Neither assistant can inspect the other's private conversation without a supported, explicitly connected integration. The shared list and notes are the coordination record.</p>
+      </details>
+    </section>
     <section class="handoff-card" aria-labelledby="task-heading">
-      <div class="section-title"><div><p class="eyebrow">ONE SOURCE OF TRUTH</p><h2 id="task-heading">Shared to-do list <span id="task-count"></span></h2></div></div>
+      <div class="section-title"><div><p class="eyebrow">ONE SOURCE OF TRUTH</p><h2 id="task-heading">Knightfall master task tracker <span id="task-count"></span></h2></div></div>
+      <p class="subtle">Tasks are grouped by workstream. An item can be present in source code but still require CI, deployment and real-device testing. A blocker is a dependency, not proof that something is impossible.</p>
+      <div id="task-metrics" class="task-metrics" aria-label="Task summary"></div>
+      <div id="workstream-summary" class="workstream-summary" aria-label="Filter tasks by workstream"></div>
+      <div class="task-filterbar" aria-label="Filter project tasks">
+        <label>Search tasks<input id="filter-query" type="search" placeholder="Game, feature, issue or next step…" autocomplete="off"></label>
+        <label>Workstream<select id="filter-area"><option value="all">All workstreams</option></select></label>
+        <label>Progress<select id="filter-status"><option value="open">Open (default)</option><option value="all">All tasks</option><option value="todo">To do</option><option value="in_progress">In progress</option><option value="blocked">Flagged blockers</option><option value="done">Completed</option></select></label>
+        <label>Priority<select id="filter-priority"><option value="all">All priorities</option><option value="high">High</option><option value="normal">Normal</option><option value="low">Low</option></select></label>
+        <label>Verification<select id="filter-verification"><option value="all">All evidence levels</option><option value="needs_review">Needs review</option><option value="source_checked">Source checked</option><option value="ci_passed">CI passed</option><option value="deployed">Deployed</option><option value="device_verified">Device verified</option></select></label>
+        <button type="button" id="reset-task-filters" class="handoff-button ghost">Reset filters</button>
+      </div>
+      <p id="task-filter-count" class="subtle" role="status"></p>
       <form id="task-form" class="task-form">
         <div><label for="task-title">New task</label><input id="task-title" placeholder="What needs doing?" maxlength="180" required></div>
         <div><label for="task-priority">Priority</label><select id="task-priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select></div>
+        <div><label for="task-area">Workstream</label><select id="task-area"><option value="General">General</option></select></div>
         <button type="submit" class="handoff-button">Add task +</button>
         <div class="task-wide"><label for="task-details">Details (optional)</label><textarea id="task-details" rows="2" maxlength="3000" placeholder="Context, outcome, blockers, next steps"></textarea></div>
       </form>
       <div id="task-list" class="task-list" aria-live="polite"></div>
+      <button type="button" id="more-tasks" class="handoff-button ghost" hidden>Show more tasks</button>
+      <p class="subtle">Original source registers: <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/MASTER-TASK-LIST-2026-11-11.md" target="_blank" rel="noopener">Master task list</a>, <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/blob/main/docs/ASH-FALL-RECOVERED-BACKLOG.md" target="_blank" rel="noopener">Recovered backlog</a>, and <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/issues" target="_blank" rel="noopener">live GitHub issues</a>. These preserve historical detail beyond the concise tracker.</p>
     </section>
     <div class="handoff-top-grid">
       <section class="handoff-card">
