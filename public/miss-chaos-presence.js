@@ -246,6 +246,23 @@
   document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!memoPanel.hidden){closeMemo();memoToggle.focus({preventScroll:true})}else if(!panel.hidden)close();});
   input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("#mc-form").requestSubmit();}});
   input.addEventListener("input",()=>{try{sessionStorage.setItem(draftKey(),input.value);}catch(_){} input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";});
+  // Workbench-to-companion handoff: data stays in the draft, never auto-sent.
+  // Do not discard a member's existing message or switch private workspaces.
+  window.addEventListener("kf:miss-chaos:compose",event=>{
+    const detail=event?.detail;
+    if(!detail||typeof detail.text!=="string")return;
+    const addition=detail.text.trim();
+    if(!addition||addition.length>4000){detail.error="The brief is too long for chat. Shorten it before handing it off.";return;}
+    if(busy){detail.error="Miss Chaos is replying. Keep your brief open and try after she finishes.";return;}
+    const existing=input.value.trim();
+    const next=existing?existing+"\n\n"+addition:addition;
+    if(next.length>4000){detail.error="Your current chat draft plus this brief exceed 4,000 characters. Nothing was overwritten.";return;}
+    input.value=next;
+    input.dispatchEvent(new Event("input",{bubbles:true}));
+    open();
+    detail.handled=true;
+  });
+
   $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const sendingPhoto=chatPhoto?.hasImage()===true;const message=input.value.trim()||(sendingPhoto?"Describe this image and explain what you can see.":"");if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;modeSelect.disabled=true;privateToggle.disabled=true;chatPhoto?.setBusy(true);input.value="";try{sessionStorage.removeItem(draftKey());}catch(_){} input.style.height="auto";add("user",message+(sendingPhoto?"\n📷 Image attached (original not stored)":""));const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
     try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();const imageData=sendingPhoto?await chatPhoto.prepare():null;let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId,assistantMode));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode,image:imageData||undefined})});}else throw first;}typing.remove();chatPhoto?.clear();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
     catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey(),message);}catch(_){} }
