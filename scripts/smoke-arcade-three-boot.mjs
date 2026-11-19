@@ -78,7 +78,7 @@ try {
         const uncovered=await page.locator(surface).evaluate(root=>{
           const rect=root.getBoundingClientRect();
           const x=Math.max(0,Math.min(innerWidth-1,rect.left+rect.width/2));
-          const y=Math.max(0,Math.min(innerHeight-1,Math.max(rect.top,0)+Math.min(rect.bottom,innerHeight)/2));
+          const y=Math.max(0,Math.min(innerHeight-1,(Math.max(rect.top,0)+Math.min(rect.bottom,innerHeight))/2));
           const above=document.elementFromPoint(x,y);
           return !!above && (above===root||root.contains(above));
         });
