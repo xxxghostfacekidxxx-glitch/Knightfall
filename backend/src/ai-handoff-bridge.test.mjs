@@ -25,7 +25,7 @@ function fakeDB({accepted=true,connection=true,versionConflict=false}={}){
     if(sql.includes("FROM ai_handoff_bridge_keys k JOIN users"))return connection?{id:3,user_id:208,username:sam.username,role:sam.role,status:'active'}:null;
     if(sql.includes("COUNT(*)"))return {n:0};
     if(sql.includes("INSERT INTO ai_handoff_bridge_keys"))return {id:4,label:'Samantha GPT',created_at:'now',expires_at:'future'};
-    if(sql.includes("SELECT title,details,status,priority FROM ai_handoff_tasks"))return {title:'Test',details:'',status:'todo',priority:'normal'};
+    if(sql.includes("SELECT title,details,status,priority,area,verification,source_url,next_step,blocker FROM ai_handoff_tasks"))return {title:'Test',details:'',status:'todo',priority:'normal',area:'Arcade Reliability',verification:'needs_review',source_url:'',next_step:'',blocker:''};
     if(sql.includes("UPDATE ai_handoff_tasks"))return versionConflict?null:{id:5,status:'done',version:2};
     if(sql.includes("INSERT INTO ai_handoff_notes"))return {id:3,body:'Done',category:'update'};
     if(sql.includes("INSERT INTO ai_handoff_tasks"))return {id:5,title:'New',version:1};
