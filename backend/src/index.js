@@ -8,7 +8,7 @@ import { storeAuditUpload, readGodAuditSummary } from "./developer-audit-ingest.
 import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
-import {handleChaosCompanion,companionScope} from "./chaos-companion.mjs";
+import {handleChaosCompanion,companionScope,acceptedAdminPartner} from "./chaos-companion.mjs";
 import { getKnightfallGithubHealth } from "../chaos-github-health.mjs";
 import { makeChaosPatternDraft } from "../chaos-forge-tool.mjs";
 import { estimateFabric } from "../chaos-fabric-estimate.mjs";
@@ -2199,7 +2199,14 @@ For complex questions, organize the answer clearly and provide actionable detail
   if(url.pathname==="/api/god/bot-publish" && request.method==="POST"){
     const actor=await requireUser(request,env);
     if(!actor)return json({error:"Authentication required"},401,origin);
-    if(actor.role!=="god")return json({error:"God role required"},403,origin);
+    if(actor.role!=="god"&&!await acceptedAdminPartner(env,actor))
+      return json({error:"GOD or delegated admin partner required"},403,origin);
+    if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("Origin")))
+      return json({error:"Open the authenticated Knightfall bot editor."},403,origin);
+    if(!await rateLimit(env,request,"god-bot-manual-publish",8,60,actor.id))
+      return json({error:"Manual bot publishing limit reached."},429,origin);
+    if(Number(request.headers.get("content-length")||0)>16000)
+      return json({error:"Bot message too large."},413,origin);
     if((await getSetting(env,"forum_enabled"))==="false")return json({error:"Forum maintenance"},503,origin);
     let input;try{input=await request.json()}catch{return json({error:"Invalid JSON"},400,origin)}
     if(!input||typeof input!=="object"||Array.isArray(input))return json({error:"Invalid payload"},400,origin);
@@ -2230,7 +2237,16 @@ For complex questions, organize the answer clearly and provide actionable detail
   if(url.pathname.startsWith("/api/god/bots") && ["GET","PATCH"].includes(request.method)){
     const actor=await requireUser(request,env);
     if(!actor)return json({error:"Authentication required"},401,origin);
-    if(actor.role!=="god")return json({error:"God role required"},403,origin);
+    if(actor.role!=="god"&&!await acceptedAdminPartner(env,actor))
+      return json({error:"GOD or delegated admin partner required"},403,origin);
+    if(request.method==="PATCH"){
+      if(!["https://ash-fall.com","https://www.ash-fall.com"].includes(request.headers.get("Origin")))
+        return json({error:"Open the authenticated Knightfall bot editor."},403,origin);
+      if(!await rateLimit(env,request,"god-bot-profile-edit",12,60,actor.id))
+        return json({error:"Bot profile edit limit reached."},429,origin);
+      if(Number(request.headers.get("content-length")||0)>6000)
+        return json({error:"Bot profile payload too large."},413,origin);
+    }
     if(url.pathname==="/api/god/bots"&&request.method==="GET"){
       const rows=await env.DB.prepare("SELECT bot_key,display_name,bio,source_name,source_url,0 AS posting_enabled,news_frequency AS cadence,updated_at FROM god_bot_profiles ORDER BY bot_key").all();
       return json({bots:rows.results||[]},200,origin);
