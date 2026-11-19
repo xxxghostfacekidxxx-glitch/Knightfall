@@ -42,6 +42,8 @@ jobs:
       - name: Verify scoped OIDC identity before diagnostics
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: node scripts/developer-arsenal-oidc-diagnostic.mjs
+      - name: Install backend parser dependencies
+        run: npm install --prefix backend --no-audit --no-fund
       - name: Validate key JavaScript modules
         run: |
           node --check public/open-source-arsenal.js
