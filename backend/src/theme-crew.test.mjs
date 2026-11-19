@@ -2,11 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {handleThemeCrew,normalizeThemeState,themePlan,THEME_CREW_PRESETS,THEME_CREW_BOTS} from "./theme-crew.js";
 const json=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"content-type":"application/json"}});
-function fixture(user={id:1,role:"god"}){
+function fixture(user={id:1,role:"god"},delegated=false){
  let saved=null,logged=[];
  const env={DB:{prepare(sql){
   return {bind(...params){return {
-   async first(){if(sql.startsWith("SELECT value"))return saved===null?null:{value:saved};return null},
+   async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;if(sql.startsWith("SELECT value"))return saved===null?null:{value:saved};return null},
    async all(){return {results:logged.map(e=>({created_at:e.created_at,actor_id:e.actor_id,details:JSON.stringify(e.details)}))}},
    async run(){
     if(sql.startsWith("INSERT OR IGNORE")){if(saved===null)saved=params[1];return {meta:{changes:1}}}
@@ -101,4 +101,26 @@ test("Planner only proposes code-reviewed themes; never directly publishes",asyn
  const result=await f.call("/api/god/theme/plan","POST",{mood:"Moonsteel industrial violet"});
  assert.equal(result.status,200);assert.equal(result.body.plan.preset,"iron_eclipse");assert.equal(result.body.published,false);
  assert.equal((await f.call("/api/theme")).body.preset,"cathedral");
+});
+
+
+test("verified accepted admin partner can publish reviewed presets and roll back with audit history",async()=>{
+ const f=fixture({id:42,role:"admin"},true);
+ const status=await f.call("/api/god/theme/status");
+ assert.equal(status.status,200);
+ assert.deepEqual(status.body.permissions,{can_view:true,can_plan:true,can_preview:true,can_publish:true,can_rollback:true});
+ const publish=await f.call("/api/god/theme/activate","POST",{preset:"verdant_crypt",expectedRevision:0});
+ assert.equal(publish.status,200);
+ assert.equal(publish.body.current.preset,"verdant_crypt");
+ const rollback=await f.call("/api/god/theme/rollback","POST",{expectedRevision:1});
+ assert.equal(rollback.status,200);
+ assert.equal(rollback.body.current.preset,"cathedral");
+ assert.equal(f.logs.length,2);
+ assert.equal(f.logs[0].details.action,"rollback");
+ for(const user of [{id:44,role:"admin"},{id:42,role:"member"}]){
+  const guard=fixture(user,true);
+  assert.equal((await guard.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,403);
+ }
+ const revoked=fixture({id:42,role:"admin"},false);
+ assert.equal((await revoked.call("/api/god/theme/rollback","POST",{expectedRevision:0})).status,403);
 });
