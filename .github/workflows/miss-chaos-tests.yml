@@ -18,6 +18,8 @@ on:
       - 'scripts/miss-chaos-memo.test.mjs'
       - 'scripts/miss-chaos-private-switch.test.mjs'
       - 'public/miss-chaos-dock.js'
+      - 'public/miss-chaos-field-kit.mjs'
+      - 'scripts/miss-chaos-field-kit.test.mjs'
       - 'public/creator-art-studio*'
       - 'public/devil-tools.html'
       - 'scripts/miss-chaos-image-ui.test.mjs'
@@ -64,7 +66,8 @@ jobs:
           node --check public/memo-pad.js
           node --check public/miss-chaos-presence.js
           node --check public/miss-chaos-dock.js
-          node --test scripts/miss-chaos-private-switch.test.mjs scripts/miss-chaos-memo.test.mjs
+          node --check public/miss-chaos-field-kit.mjs
+          node --test scripts/miss-chaos-private-switch.test.mjs scripts/miss-chaos-memo.test.mjs scripts/miss-chaos-field-kit.test.mjs
       - name: Verify Android photo-picker, private popup and ephemeral AI image chat
         run: |
           node --check public/miss-chaos-presence.js
