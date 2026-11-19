@@ -32,6 +32,10 @@ on:
       - 'scripts/smoke-arcade-render-health.mjs'
       - 'scripts/smoke-arcade-board-health.mjs'
       - 'public/arcade/hosted/ash-sudoku/**'
+      - 'public/arcade/hosted/ash-veil/**'
+      - 'public/arcade/hosted/cinder-gauntlet/**'
+      - 'public/arcade/hosted/arcade-boot-guard.js'
+      - 'scripts/smoke-arcade-three-boot.mjs'
       - 'public/arcade/hosted/neon-mahjong/**'
       - 'public/arcade/hosted/cinder-merge/**'
       - 'public/arcade/hosted/cinder-checkers/**'
@@ -69,6 +73,9 @@ jobs:
       - name: Verify visible and playable boards for ten arcade games (mobile and desktop)
         if: success() || failure()
         run: node scripts/smoke-arcade-board-health.mjs
+      - name: Verify Ash Veil, Cinder Gauntlet and Sudoku paint and accept input on mobile and desktop
+        if: success() || failure()
+        run: node scripts/smoke-arcade-three-boot.mjs
       - name: Browser smoke test priority arcade games
         if: success() || failure()
         run: node scripts/smoke-priority-arcade.mjs
