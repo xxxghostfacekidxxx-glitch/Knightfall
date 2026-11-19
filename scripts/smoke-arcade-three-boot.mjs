@@ -69,11 +69,19 @@ try {
           await page.locator('#right').click();
           if((await page.locator('#moves').textContent())?.trim()!=='1')throw Error('Ash Veil directional input failed');
         } else {
-          if(!await painted(page,'#game'))throw Error('Cinder Gauntlet startup frame remained blank');
-          if(!/Floor 1/.test(await page.locator('#message').textContent()))throw Error('Dungeon did not auto-start');
+          // Preserve the intended hero-selection step; an automatic start was an unrelated regression.
+          await page.locator('#hero').selectOption('mage');
+          await page.locator('#start').click();
+          if(!await painted(page,'#game'))throw Error('Cinder Gauntlet active dungeon remained blank');
+          if(!/Floor 1/.test(await page.locator('#message').textContent()))throw Error('Dungeon did not start after pressing Start');
           await page.locator('#pause').click();
           if((await page.locator('#message').textContent())?.trim()!=='Paused')throw Error('Cinder Gauntlet pause failed');
         }
+        // The reported bug appears AFTER the engine draws: wait for HUD mutations
+        // and assert no site-wide FX canvas was added above the live game.
+        await page.waitForTimeout(1600);
+        if(await page.locator('#af-vfx-canvas').count())
+          throw Error('Shared NextGen added a fullscreen particle canvas over the running game');
         const surface=game==='cinder-gauntlet'?'#game':'#board';
         await page.locator(surface).scrollIntoViewIfNeeded();
         const uncovered=await page.locator(surface).evaluate(root=>{
