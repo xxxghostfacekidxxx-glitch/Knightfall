@@ -147,6 +147,32 @@ async function run(name,width,height){
   assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-minimized'),'false');
   const sizes=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:window.innerWidth}));
   assert.ok(sizes.page<=sizes.viewport+2,'Horizontal overflow: '+JSON.stringify(sizes));
+  // Crucible: real mobile + desktop workbench, state isolation and no auto-send.
+  const creatorPage=await page.goto(base+'/chaos-crucible.html',{waitUntil:'domcontentloaded'});
+  assert.equal(creatorPage.status(),200);
+  await page.locator('#crucible-name').fill('My original little imp');
+  await page.locator('#crucible-goal').fill('Make a readable character mascot for the arcade');
+  await page.waitForFunction(()=>document.querySelector('#crucible-preview')?.textContent.includes('My original little imp'));
+  await page.locator('.crucible-type[data-kind="craft"]').click();
+  await page.locator('#crucible-name').fill('Pattern prototype');
+  await page.locator('#crucible-goal').fill('Produce a measured craft cut list');
+  await page.locator('.crucible-type[data-kind="character"]').click();
+  assert.equal(await page.locator('#crucible-name').inputValue(),'My original little imp',
+    'Switching disciplines must not destroy an unfinished creator draft');
+  const briefText=await page.locator('#crucible-preview').textContent();
+  assert.match(briefText,/Proposed workflow \(not yet executed\)/);
+  await page.locator('#crucible-save').click();
+  await page.waitForFunction(()=>document.querySelector('#crucible-status')?.textContent.includes('Saved privately'));
+  assert.equal(notes.length,3,'Crucible save must create exactly one authenticated private memo');
+  assert.match(notes[0].body,/My original little imp/);
+  const beforeHandoff=aiRequests.length;
+  await page.locator('#miss-chaos-presence[data-dock-ready="true"]').waitFor();
+  await page.locator('#crucible-ask').click();
+  await page.waitForFunction(()=>document.querySelector('#miss-chaos-window')&&!document.querySelector('#miss-chaos-window').hidden);
+  assert.match(await page.locator('#mc-input').inputValue(),/Help me turn this Crucible brief/);
+  assert.equal(aiRequests.length,beforeHandoff,'Crucible must never auto-send the draft to the AI');
+  const creatorSize=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
+  assert.ok(creatorSize.page<=creatorSize.viewport+2,'Crucible horizontal overflow: '+JSON.stringify(creatorSize));
   assert.deepEqual(errors,[],name+' browser errors');
   console.log('PASS',name);
  }catch(err){failures.push(name+': '+err.message);console.error('FAIL',name,err)}
