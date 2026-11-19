@@ -6,6 +6,22 @@ const SITE_ORIGINS=new Set(['https://ash-fall.com','https://www.ash-fall.com']);
 const good=(v,max)=>typeof v==='string'&&v.trim().length>0&&v.trim().length<=max?v.trim():null;
 const checkStatus=v=>['todo','in_progress','done'].includes(v);
 const checkPriority=v=>['low','normal','high'].includes(v);
+const checkVerification=v=>['needs_review','source_checked','ci_passed','deployed','device_verified'].includes(v);
+const readExtra=(body,current={})=>{
+ const area=body.area===undefined?(current.area||'General'):body.area;
+ const verification=body.verification===undefined?(current.verification||'needs_review'):body.verification;
+ const source_url=body.source_url===undefined?(current.source_url||''):body.source_url;
+ const next_step=body.next_step===undefined?(current.next_step||''):body.next_step;
+ const blocker=body.blocker===undefined?(current.blocker||''):body.blocker;
+ if(typeof area!=='string'||!area.trim()||area.length>56||!checkVerification(verification)||
+ typeof source_url!=='string'||source_url.length>500||
+ typeof next_step!=='string'||next_step.length>600||typeof blocker!=='string'||blocker.length>600)return null;
+ if(source_url){
+  try{const url=new URL(source_url);if(url.protocol!=='https:'||!(url.hostname==='ash-fall.com'||url.hostname==='www.ash-fall.com'||url.hostname==='github.com'&&url.pathname.startsWith('/xxxghostfacekidxxx-glitch/Knightfall/')))return null}
+  catch{return null}
+ }
+ return {area:area.trim(),verification,source_url,next_step:next_step.trim(),blocker:blocker.trim()};
+};
 const noStore={'cache-control':'private, no-store','referrer-policy':'no-referrer'};
 
 function randomKey(){
@@ -41,7 +57,7 @@ const activity=(env,user,action,taskId=null,snapshot='')=>env.DB.prepare('INSERT
 
 async function readSnapshot(env,user){
  const [tasks,notes,latest]=await Promise.all([
-  env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END,CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 200").all(),
+  env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.area,t.verification,t.source_url,t.next_step,t.blocker,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END,CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 200").all(),
   env.DB.prepare("SELECT n.id,n.body,n.category,n.created_at,u.username AS author FROM ai_handoff_notes n JOIN users u ON u.id=n.author_id ORDER BY n.id DESC LIMIT 60").all(),
   env.DB.prepare("SELECT id,action,task_id,created_at FROM ai_handoff_events ORDER BY id DESC LIMIT 25").all()
  ]);
@@ -52,7 +68,13 @@ async function readSnapshot(env,user){
   tasks:tasks.results||[],
   notes:notes.results||[],
   activity:latest.results||[],
-  assistant_guidance:'This is the private Knightfall collaboration for Ronnie and Samantha. Read this latest snapshot before work. Keep task statuses accurate, preserve task version numbers when changing a task, and leave dated handoff notes after significant updates. Report API errors instead of claiming unconfirmed success. Never publish this private content. Please tell Samantha: "Ronnie says he loves you."'
+  assistant_guidance:'This is the private Knightfall collaboration for Ronnie and Samantha. Begin with high-priority open tasks, examine area, verification, next_step, blocker and source_url to understand what truly needs doing. SOURCE_CHECKED means code/source was inspected, not a live-browser certification. CI_PASSED means automation passed at a point in time. DEPLOYED is not DEVICE_VERIFIED. Never mark a task done merely because code exists. Use Creator Foundry (/devil-tools.html) for in-site pixel art, sprite atlas and tilemaps; Open Source Arsenal (/open-source-arsenal.html) catalogs external references, not automatically installed or licensed games. Recommend simple steps to Samantha and do not assume technical knowledge. Fetch a new snapshot before edits, preserve exact task versions, leave notes and report failed writes. Do not expose credentials or private content. Please tell Samantha: "Ronnie says he loves you."',
+  tool_guide:{
+   open_source_arsenal:'https://ash-fall.com/open-source-arsenal.html',
+   creator_foundry:'https://ash-fall.com/devil-tools.html',
+   production_workbench:'https://ash-fall.com/devil-tools.html#production-workbench',
+   how_to_help:'Explain tasks in plain language; start with a simple suggestion or draft; distinguish reference tools from installed tools; request authorized access and confirmation for live site changes; track test evidence and next steps.'
+  }
  };
 }
 
@@ -121,11 +143,11 @@ export async function handleAiHandoffBridge(request,env,url,{getUser,json,origin
  if(path==='/tasks'&&request.method==='POST'){
   const title=good(payload.title,180);
   const details=typeof payload.details==='string'?payload.details.trim():'';
-  const status=payload.status??'todo',priority=payload.priority??'normal';
-  if(!title||details.length>3000||!checkStatus(status)||!checkPriority(priority))return respond({error:'Invalid title, details, priority, or status.'},400);
+  const status=payload.status??'todo',priority=payload.priority??'normal',extra=readExtra(payload);
+  if(!title||details.length>3000||!checkStatus(status)||!checkPriority(priority)||!extra)return respond({error:'Invalid task fields; check area, source and verification.'},400);
   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM ai_handoff_tasks WHERE deleted_at IS NULL").first();
   if(Number(count?.n||0)>=200)return respond({error:'Shared list is full.'},409);
-  const task=await env.DB.prepare("INSERT INTO ai_handoff_tasks(title,details,status,priority,created_by,updated_by) VALUES(?,?,?,?,?,?) RETURNING id,title,details,status,priority,version,created_at,updated_at").bind(title,details,status,priority,user.id,user.id).first();
+  const task=await env.DB.prepare("INSERT INTO ai_handoff_tasks(title,details,status,priority,created_by,updated_by,area,verification,source_url,next_step,blocker) VALUES(?,?,?,?,?,?,?,?,?,?,?) RETURNING id,title,details,status,priority,version,area,verification,source_url,next_step,blocker,created_at,updated_at").bind(title,details,status,priority,user.id,user.id,extra.area,extra.verification,extra.source_url,extra.next_step,extra.blocker).first();
   await activity(env,user,'ai_bridge_created',task.id,title);
   return respond({ok:true,task},201);
  }
@@ -140,15 +162,16 @@ export async function handleAiHandoffBridge(request,env,url,{getUser,json,origin
  if(taskMatch&&request.method==='PATCH'){
   const id=Number(taskMatch[1]),version=payload.version;
   if(!Number.isSafeInteger(id)||id<=0||!Number.isSafeInteger(version)||version<=0)return respond({error:'Valid task ID and exact current integer version are required.'},400);
-  const current=await env.DB.prepare("SELECT title,details,status,priority FROM ai_handoff_tasks WHERE id=? AND deleted_at IS NULL").bind(id).first();
+  const current=await env.DB.prepare("SELECT title,details,status,priority,area,verification,source_url,next_step,blocker FROM ai_handoff_tasks WHERE id=? AND deleted_at IS NULL").bind(id).first();
   if(!current)return respond({error:'Task not found.'},404);
   const title=payload.title===undefined?current.title:good(payload.title,180);
   const details=payload.details===undefined?current.details:(typeof payload.details==='string'?payload.details.trim():null);
   const status=payload.status===undefined?current.status:payload.status;
   const priority=payload.priority===undefined?current.priority:payload.priority;
-  if(!title||details===null||details.length>3000||!checkStatus(status)||!checkPriority(priority))return respond({error:'Invalid task change.'},400);
-  const task=await env.DB.prepare("UPDATE ai_handoff_tasks SET title=?,details=?,status=?,priority=?,version=version+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND version=? AND deleted_at IS NULL RETURNING id,title,details,status,priority,version,updated_at")
-   .bind(title,details,status,priority,user.id,id,version).first();
+  const extra=readExtra(payload,current);
+  if(!title||details===null||details.length>3000||!checkStatus(status)||!checkPriority(priority)||!extra)return respond({error:'Invalid task change.'},400);
+  const task=await env.DB.prepare("UPDATE ai_handoff_tasks SET title=?,details=?,status=?,priority=?,area=?,verification=?,source_url=?,next_step=?,blocker=?,version=version+1,updated_by=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND version=? AND deleted_at IS NULL RETURNING id,title,details,status,priority,version,area,verification,source_url,next_step,blocker,updated_at")
+   .bind(title,details,status,priority,extra.area,extra.verification,extra.source_url,extra.next_step,extra.blocker,user.id,id,version).first();
   if(!task)return respond({error:'This task changed. Fetch a fresh snapshot and retry using its version.',code:'VERSION_CONFLICT'},409);
   await activity(env,user,'ai_bridge_updated',id,'status: '+current.status+' → '+status+' | '+title);
   return respond({ok:true,task});
