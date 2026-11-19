@@ -20,7 +20,7 @@ test("floating assistant script and switcher are syntactically valid, accessible
  assert.match(floating,/modeSelect\.addEventListener\("change"/);
  assert.match(floating,/modeLabel\.hidden=availableModes\.length<2/);
  assert.match(css,/\.mc-companion-control select/);
- assert.match(nav,/miss-chaos-presence\.js\?v=20261119-private-switch1/);
+ assert.match(nav,/miss-chaos-presence\.js\?v=20261119-admin-delegate1/);
  assert.match(floating,/miss-chaos-presence\.css\?v=20261119-private-switch1/);
 });
 
