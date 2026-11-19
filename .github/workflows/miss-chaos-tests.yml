@@ -20,6 +20,9 @@ on:
       - 'public/miss-chaos-dock.js'
       - 'public/miss-chaos-field-kit.mjs'
       - 'public/chaos-crucible*'
+      - 'public/miss-chaos-guide*'
+      - 'scripts/miss-chaos-guide.test.mjs'
+      - 'scripts/miss-chaos-site-index.test.mjs'
       - 'scripts/chaos-crucible.test.mjs'
       - 'scripts/chaos-crucible-progress.test.mjs'
       - 'scripts/chaos-crucible-shelf.test.mjs'
@@ -71,6 +74,12 @@ jobs:
           node --check public/chaos-crucible-progress.mjs
           node --check public/chaos-crucible-shelf.mjs
           node --test scripts/chaos-crucible.test.mjs scripts/chaos-crucible-progress.test.mjs scripts/chaos-crucible-shelf.test.mjs
+      - name: Verify real member capability guide, exact authorization and site index
+        run: |
+          node --check public/miss-chaos-guide-core.mjs
+          node --check public/miss-chaos-guide.mjs
+          node --check backend/chaos-public-tools.mjs
+          node --test scripts/miss-chaos-guide.test.mjs scripts/miss-chaos-site-index.test.mjs
       - name: Verify Miss Chaos floating dock, private modes and memo publishing
         run: |
           node --check public/nav.js
