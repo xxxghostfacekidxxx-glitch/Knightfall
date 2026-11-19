@@ -9,6 +9,9 @@
   root.innerHTML=`
     <section id="miss-chaos-window" aria-label="Chat with Miss Chaos" aria-hidden="true" hidden>
       <header class="mc-head"><img src="${AVATAR}" alt="Miss Chaos portrait"><div class="mc-head-copy"><strong>Miss Chaos</strong><small id="mc-presence-status"><span aria-hidden="true">● </span>Your chaos, one tap away</small></div><div class="mc-head-actions"><button type="button" id="mc-voice" aria-label="Enable spoken replies" aria-pressed="false" title="Spoken replies">♫</button><button type="button" id="mc-full-chat" aria-label="Open full Miss Chaos chat" title="Full chat">↗</button><button type="button" id="mc-close" aria-label="Close Miss Chaos" title="Close">×</button></div></header>
+      <label id="mc-companion-label" class="mc-companion-control" for="mc-companion-mode" hidden>PRIVATE WORKSPACE
+        <select id="mc-companion-mode" aria-label="Miss Chaos assistant workspace" disabled><option value="standard">Miss Chaos</option></select>
+      </label>
       <label class="sr-only" for="mc-mood">Miss Chaos mood</label><select id="mc-mood"><option value="default">Mood: Default</option><option value="playful">Playful</option><option value="dark">Dark humor</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option></select>
       <button type="button" id="mc-game-tips" hidden>🎮 Ask for game tips</button>
       <div id="mc-messages" aria-live="polite"><div class="mc-bubble system">I'm here. Ask me something, throw me an idea, or let me help untangle the mess. 🖤</div></div><div id="mc-error" role="status" aria-live="polite"></div>
@@ -76,11 +79,58 @@
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
 
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
+  let assistantMode="standard",availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
+  const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat");
+  const modeStorage=id=>"missChaosPresenceMode:"+String(id);
+  const key=(id,mode="standard")=>"missChaosPresenceConversation:"+String(id)+(mode==="standard"?"":":"+mode);
+  const draftKey=()=>assistantMode==="standard"?"missChaosPresenceDraft":"missChaosPresenceDraft:"+String(userId)+":"+assistantMode;
+  const modeForDisplay=()=>availableModes.find(m=>m.id===assistantMode)||availableModes[0];
+  function saveModeDraft(){try{sessionStorage.setItem(draftKey(),input.value);}catch(_){}}
+  function showModeLabel(){
+    const item=modeForDisplay();
+    root.dataset.assistantMode=assistantMode;
+    $(".mc-head-copy strong").textContent=item.label||"Miss Chaos";
+    fullChat.title="Open "+(item.label||"Miss Chaos")+" full chat";
+    fullChat.setAttribute("aria-label",fullChat.title);
+    $("#mc-form").dataset.companion=assistantMode;
+    modeSelect.value=assistantMode;
+  }
+  async function swapMode(next,{restoreSaved=true}={}){
+    if(busy||!availableModes.some(m=>m.id===next)){modeSelect.value=assistantMode;return;}
+    saveModeDraft();
+    assistantMode=next;
+    conversationId=userId?(sessionStorage.getItem(key(userId,assistantMode))||""):"";
+    try{sessionStorage.setItem(modeStorage(userId),assistantMode);}catch(_){}
+    input.value=restoreSaved?(sessionStorage.getItem(draftKey())||""):"";
+    input.dispatchEvent(new Event("input"));
+    messages.replaceChildren();
+    add("system",assistantMode==="owner"?
+      "Private Owner Miss Chaos · Verified GOD workspace. Only your own account history is visible here.":
+      assistantMode==="partner"?
+      "Private Partner Miss Chaos · Your own chats stay yours. Shared tasks require an explicit action.":
+      "Standard Miss Chaos · Your normal account assistant.");
+    error.textContent="";
+    showModeLabel();
+    if(conversationId){
+      const selected=assistantMode,id=conversationId;
+      try{
+        const data=await request("/api/chaos/conversations/"+encodeURIComponent(id)+"/messages");
+        if(selected!==assistantMode||id!==conversationId)return;
+        for(const m of (data.messages||[]).slice(-16))
+          if(m.role==="user"||m.role==="assistant")add(m.role,String(m.content||"").slice(0,4000));
+      }catch(e){
+        if(selected===assistantMode&&id===conversationId){
+          conversationId="";try{sessionStorage.removeItem(key(userId,assistantMode));}catch(_){}
+          add("system","This older private conversation could not be reopened. New messages will start a fresh thread.");
+        }
+      }
+    }
+  }
+  modeSelect.addEventListener("change",()=>{void swapMode(modeSelect.value);});
   const status=$("#mc-presence-status"), voiceButton=$("#mc-voice"), mood=$("#mc-mood");
   function setExpression(expression){root.dataset.expression=expression;const labels={default:"Your chaos, one tap away",playful:"Up to something",dark:"Professionally unhinged",supportive:"Here with you",philosophical:"Questioning reality",thinking:"Thinking up trouble…",speaking:"Speaking"};status.textContent="● "+(labels[expression]||labels.default);}
   function speak(text){if(!voiceEnabled||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined")return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(String(text||""));utterance.rate=1.02;utterance.pitch=1.1;utterance.onstart=()=>setExpression("speaking");utterance.onend=()=>setExpression(mood.value);utterance.onerror=()=>setExpression(mood.value);window.speechSynthesis.speak(utterance);}
-  const key=id=>"missChaosPresenceConversation:"+String(id);
-  const draftKey="missChaosPresenceDraft";
+
   try{input.value=sessionStorage.getItem(draftKey)||"";}catch(_){}
   function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));input.focus({preventScroll:true});}
   function close({restoreFocus=true}={}){try{sessionStorage.setItem(draftKey,input.value);}catch(_){} panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
