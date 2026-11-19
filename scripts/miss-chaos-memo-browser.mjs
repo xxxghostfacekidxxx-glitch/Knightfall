@@ -98,9 +98,9 @@ async function run(name,width,height){
   assert.equal(await page.locator('#mc-restore').isHidden(),true,'Restore tab must hide after expanding the toolbar');
   await page.locator('#mc-private-switch').waitFor({state:'visible'});
   await page.locator('#mc-private-switch').click();
-  assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-assistant-mode'),'owner');
+  await page.waitForFunction(()=>document.querySelector('#miss-chaos-presence')?.dataset.assistantMode==='owner');
   await page.locator('#mc-private-switch').click();
-  assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-assistant-mode'),'standard');
+  await page.waitForFunction(()=>document.querySelector('#miss-chaos-presence')?.dataset.assistantMode==='standard');
   await page.locator('#mc-close').click();
   await page.locator('#miss-chaos-launcher').click();
   await page.locator('#mc-quick-memo').click();
