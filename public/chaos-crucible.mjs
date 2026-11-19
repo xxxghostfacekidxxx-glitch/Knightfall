@@ -1,5 +1,6 @@
 import {CRUCIBLE_KINDS,CRUCIBLE_FIELD_LIMITS,buildCrucibleBrief} from "./chaos-crucible-core.mjs?v=20261119-crucible2";
 import {buildCrucibleProgress,prepareCrucibleHandoff,exportCrucibleWorkspace,parseCrucibleWorkspace} from "./chaos-crucible-progress.mjs?v=20261119-crucible3";
+import {readCrucibleShelf,saveCrucibleShelf,deleteCrucibleShelf} from "./chaos-crucible-shelf.mjs?v=20261119-crucible4";
 
 const root=document.getElementById("chaos-crucible");
 if(root){
@@ -16,6 +17,7 @@ if(root){
  const valuesByKind=new Map();
  const checkedByKind=new Map();
  const progressByKind=new Map();
+ const shelfIdByKind=new Map();
  let selectedKind=Object.hasOwn(CRUCIBLE_KINDS,location.hash.slice(1))?location.hash.slice(1):"character";
  let currentBrief=null;
  let saving=false;
@@ -125,6 +127,8 @@ if(root){
      if(!result.missing.length)p.className="ready";
      missingBox.append(p);
    }
+   $("#crucible-shelf-save").disabled=!currentBrief;
+   $("#crucible-shelf-copy").disabled=!currentBrief;
    for(const id of actionIds)$("#"+id).disabled=!currentBrief||
      (id==="crucible-save"&&saving)||
      (id==="crucible-ask"&&!currentBrief?.aiPrompt)||
@@ -137,7 +141,8 @@ if(root){
  $("#crucible-clear").addEventListener("click",()=>{
    if(!fields.some(key=>String(form.elements.namedItem(key).value||"").trim()))return;
    if(!confirm("Clear this discipline's unsaved brief? Other discipline drafts stay in this browser tab."))return;
-   form.reset();checkedByKind.delete(selectedKind);progressByKind.delete(selectedKind);$("#crucible-proof-notes").value="";renderTrack();recompute();
+   form.reset();checkedByKind.delete(selectedKind);progressByKind.delete(selectedKind);shelfIdByKind.delete(selectedKind);
+   $("#crucible-proof-notes").value="";renderTrack();recompute();
    status("The current brief was cleared. Nothing was deleted from saved Knightfall memos.");
  });
  $("#crucible-copy").addEventListener("click",async()=>{
@@ -185,6 +190,7 @@ if(root){
      valuesByKind.set(selectedKind,imported.project);
      checkedByKind.set(selectedKind,new Set(imported.progress.completed));
      progressByKind.set(selectedKind,imported.progress.notes);
+     shelfIdByKind.delete(selectedKind);
      restoreDraft(selectedKind);
      for(const button of typeHost.querySelectorAll("button[data-kind]"))
        button.setAttribute("aria-pressed",String(button.dataset.kind===selectedKind));
@@ -229,5 +235,83 @@ if(root){
      status(message,true);
    }finally{saving=false;recompute();}
  });
- renderTypes();renderTrack();restoreDraft(selectedKind);recompute();
+ const shelfStatus=(message,failed=false)=>{
+   const node=$("#crucible-shelf-status");
+   node.textContent=String(message||"");
+   node.dataset.error=failed?"true":"false";
+ };
+ function renderShelf(){
+   const host=$("#crucible-shelf-list");
+   host.replaceChildren();
+   let entries=[];
+   try{entries=readCrucibleShelf(window.localStorage);}
+   catch(error){shelfStatus(String(error.message||"Device storage is unavailable."),true);return;}
+   if(!entries.length){
+     const empty=doc.createElement("p");empty.className="crucible-shelf-empty";
+     empty.textContent="No saved device copies yet. Your portable .json export still works without the shelf.";
+     host.append(empty);return;
+   }
+   for(const entry of entries){
+     const row=doc.createElement("div");row.className="crucible-shelf-project";
+     const details=doc.createElement("div");details.className="crucible-shelf-project-details";
+     const name=doc.createElement("strong");name.textContent=entry.title;
+     const metadata=doc.createElement("small");
+     metadata.textContent=(CRUCIBLE_KINDS[entry.kind]?.name||entry.kind)+
+       " · "+new Date(entry.savedAt).toLocaleString();
+     details.append(name,metadata);
+     const actions=doc.createElement("div");actions.className="crucible-shelf-project-actions";
+     const open=doc.createElement("button");open.type="button";open.textContent="Resume";
+     open.className="crucible-button muted";open.setAttribute("aria-label","Resume "+entry.title);
+     open.addEventListener("click",()=>{
+       try{
+         // Revalidate storage at the moment of use: stale or corrupted entries fail closed.
+         const latest=readCrucibleShelf(window.localStorage).find(item=>item.id===entry.id);
+         if(!latest)throw Error("This device copy no longer exists.");
+         const parsed=parseCrucibleWorkspace(latest.kit);
+         const busyFields=fields.some(key=>String(form.elements.namedItem(key).value||"").trim());
+         const busyNotes=!!$("#crucible-proof-notes").value.trim();
+         if((busyFields||busyNotes)&&
+            !confirm("Resume this saved device project? The current unsaved view will be replaced. Export it first if needed."))return;
+         storeDraft();
+         selectedKind=parsed.project.kind;
+         valuesByKind.set(selectedKind,parsed.project);
+         checkedByKind.set(selectedKind,new Set(parsed.progress.completed));
+         progressByKind.set(selectedKind,parsed.progress.notes);
+         shelfIdByKind.set(selectedKind,entry.id);
+         restoreDraft(selectedKind);
+         for(const button of typeHost.querySelectorAll("button[data-kind]"))
+           button.setAttribute("aria-pressed",String(button.dataset.kind===selectedKind));
+         renderTrack();recompute();
+         shelfStatus("Resumed "+entry.title+". Editing remains local until you explicitly save again.");
+       }catch(error){shelfStatus(String(error.message||"Unable to open this device copy."),true);}
+     });
+     const remove=doc.createElement("button");remove.type="button";remove.textContent="Remove";
+     remove.className="crucible-button muted";remove.setAttribute("aria-label","Remove saved copy "+entry.title);
+     remove.addEventListener("click",()=>{
+       if(!confirm("Remove "+entry.title+" from this device shelf? The action cannot be undone. Export a kit first if you need a backup."))return;
+       try{
+         const removed=deleteCrucibleShelf(window.localStorage,entry.id);
+         if(removed)for(const [kind,id] of shelfIdByKind.entries())if(id===entry.id)shelfIdByKind.delete(kind);
+         shelfStatus(removed?"Saved device copy removed. The open editor was not erased.":"Device copy was already absent.");
+         renderShelf();
+       }catch(error){shelfStatus(String(error.message||"Unable to remove this device copy."),true);}
+     });
+     actions.append(open,remove);row.append(details,actions);host.append(row);
+   }
+ }
+ function saveDeviceCopy(asNew=false){
+   if(!currentBrief)return;
+   try{
+     const kit=exportCrucibleWorkspace(readFields(),readProgress());
+     const id=asNew?null:(shelfIdByKind.get(selectedKind)||null);
+     const saved=saveCrucibleShelf(window.localStorage,kit,{id});
+     shelfIdByKind.set(selectedKind,saved.id);
+     shelfStatus(saved.replaced?"Updated your existing device copy. No server request was made.":
+       "Saved as a new device-only copy. Anyone using this browser profile can access it.");
+     renderShelf();
+   }catch(error){shelfStatus(String(error.message||"Saving to this browser failed."),true);}
+ }
+ $("#crucible-shelf-save").addEventListener("click",()=>saveDeviceCopy(false));
+ $("#crucible-shelf-copy").addEventListener("click",()=>saveDeviceCopy(true));
+  renderTypes();renderTrack();restoreDraft(selectedKind);recompute();renderShelf();
 }
