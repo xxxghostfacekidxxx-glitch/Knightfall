@@ -64,7 +64,7 @@ export function explicitChaosQuickCall(message){
  if(words)return {name:"utility.word_count",arguments:{text:words[1]}};
  if(/^(?:please\s+)?(?:what(?:'s| is)\s+the\s+)?(?:current\s+)?moon\s+phase\s*(?:today|right\s+now)?\s*[?.!]?$/i.test(text))
    return {name:"radar.moon",arguments:{}};
- const time=text.match(/^(?:(?:what(?:'s| is)\s+the\s+)?(?:current\s+)?time|show\s+time)\s+(?:in|for)\s+([a-z_]+\/[a-z_]+|UTC)\s*[?.!]?$/i);
+ const time=text.match(/^(?:(?:what(?:'s| is)?\s+(?:the\s+)?(?:current\s+)?time)|(?:(?:current\s+)?time)|(?:show\s+time))\s+(?:in|for)\s+([a-z_]+\/[a-z_]+|UTC)\s*[?.!]?$/i);
  if(time)return {name:"utility.now",arguments:{timezone:time[1]}};
  return null;
 }
