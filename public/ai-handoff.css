@@ -15,3 +15,47 @@
 .bridge-steps{padding-left:1.35rem;color:#e8d3df;line-height:1.7}
 .bridge-steps li{margin:.5rem 0;overflow-wrap:anywhere}
 @media(max-width:530px){.bridge-key-item{flex-direction:column;align-items:stretch}.bridge-key-item .handoff-button{align-self:flex-start}.bridge-secret{padding:.7rem}}
+
+
+/* Knightfall master project tracker and Samantha's beginner-friendly creator guide. */
+.task-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:1rem 0}
+.task-metric{padding:.75rem .8rem;border-radius:12px;border:1px solid #aa7a925e;background:linear-gradient(145deg,#211423,#100d1d);display:flex;flex-direction:column;gap:.2rem}
+.task-metric strong{color:#ffcedc;font:850 clamp(1.35rem,3vw,1.9rem)/1.2 system-ui}
+.task-metric span{font-size:.76rem;color:#cdbacc}
+.task-metric.urgent{border-color:#ff8f7675}
+.task-metric.blocked{border-color:#f8cf7780}
+.workstream-summary{display:flex;flex-wrap:wrap;gap:.45rem;margin:.8rem 0 1rem;max-height:155px;overflow:auto}
+.workstream-chip{border:1px solid #90687888;border-radius:99px;background:#1c1424;color:#e5cdd9;font:650 .78rem system-ui;padding:.43rem .7rem;cursor:pointer;min-height:36px}
+.workstream-chip:hover,.workstream-chip.selected{background:#7c315c;color:white;border-color:#ffb4d2}
+.task-filterbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:.7rem;margin:1rem 0 .45rem;padding:1rem;background:#100c1a;border:1px solid #b47a974f;border-radius:13px}
+.task-filterbar label{display:flex;flex-direction:column;gap:.4rem;min-width:0;font-size:.78rem}
+.task-filterbar input,.task-filterbar select{max-width:100%;min-width:0}
+.task-filterbar button{align-self:end}
+.task-titlebar{display:flex;gap:.75rem;align-items:baseline;flex-wrap:wrap}
+.task-titlebar h3{margin:.2rem 0;flex:1 1 230px}
+.workstream-tag,.task-verification,.task-blocked-tag{display:inline-block;border:1px solid #ab7e9d85;background:#3d2540;color:#e9d5eb;padding:.18rem .55rem;border-radius:99px;font-size:.72rem;font-weight:700}
+.task-tags{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:.4rem 0}
+.task-verification{background:#222638;border-color:#8e94b26c;color:#c4d1ef}
+.task-blocked-tag{background:#4a2a17;border-color:#eabc7e9c;color:#ffe0a8}
+.task-next,.task-blocker{padding:.55rem .75rem;border-left:3px solid #9ee5c8;background:#15322958;border-radius:5px;color:#defbed;margin:.45rem 0;font-size:.87rem;overflow-wrap:anywhere}
+.task-blocker{border-left-color:#f5b476;background:#44281555;color:#ffe3c4}
+.task-source{display:inline-block;color:#ffb6d5;text-decoration:underline;font-weight:650;font-size:.84rem;margin:.35rem 0}
+.task-content{min-width:0}
+.task-list .task{min-width:0;gap:1.1rem;align-items:start}
+.task-list .task-controls{align-self:start}
+.task-editor{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;padding:1rem;border-radius:12px;border:1px solid #eeadc284;background:#201323}
+.task-editor label{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.task-editor .handoff-actions{grid-column:1/-1;margin:.25rem 0}
+.task-form{grid-template-columns:minmax(210px,1fr) 125px minmax(150px,230px) auto}
+#more-tasks{margin:1rem 0}
+.mentor-card{margin:1.1rem 0;border-color:#b8d7c17a}
+.mentor-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin:.8rem 0}
+.mentor-tools article{border:1px solid #946b8f76;border-radius:12px;background:#130d1c;padding:1rem;min-width:0}
+.mentor-tools h3{font:800 1.1rem system-ui;color:#ffbad4;margin:0 0 .5rem}
+.mentor-tools p{font-size:.86rem;line-height:1.6;margin:.5rem 0}
+.mentor-tools a{color:#b3efcf;font-size:.83rem;font-weight:700;display:inline-block;margin:.25rem .1rem}
+.mentor-steps{color:#ead7e4;line-height:1.75;margin:.7rem 0;padding-left:1.35rem}
+.mentor-steps li{padding:.2rem 0}
+@media(max-width:1000px){.mentor-tools{grid-template-columns:1fr}.task-form{grid-template-columns:1fr 145px 1fr}.task-form>button{grid-column:1/-1}}
+@media(max-width:760px){.task-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.task-filterbar{grid-template-columns:repeat(2,minmax(0,1fr))}.task-editor{grid-template-columns:1fr}.task-form{grid-template-columns:1fr 1fr}.task-form>button{grid-column:1/-1}}
+@media(max-width:460px){.task-filterbar{grid-template-columns:1fr;padding:.75rem}.task-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.task-form{grid-template-columns:1fr}.task-filterbar button{width:100%}.task-list .task-controls{width:100%}.task-list .task-controls select{flex:1;min-width:130px}.mentor-card .section-title button{width:100%}.task-editor{padding:.65rem}}
