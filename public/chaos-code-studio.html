@@ -58,9 +58,10 @@
           <p class="studio-note">Read an allowlisted <strong>main</strong> file excerpt, copy it into the editor, edit, and stage a review packet. Miss Chaos records the exact commit SHA, rechecks that main has not changed, and creates a non-executing diff. If the entire small JS/TS/JSX/TSX/JSON file was captured, it also syntax-checks the proposed full file. <strong>Partial excerpts are not ready-to-apply patches.</strong> No uploaded code is executed. Full integration tests, authorized approval, and deployment remain separate steps.</p>
           <div class="studio-actions">
             <button type="button" id="studio-proposal-export" disabled>Download proposal for human review</button>
+            <button type="button" id="studio-proposal-handoff" disabled>Post review summary to Between the Flames</button>
             <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions" target="_blank" rel="noopener noreferrer">View actual GitHub Actions</a>
           </div>
-          <p id="studio-proposal-status" class="studio-status" role="status" aria-live="polite">Nothing staged. Source inspection is limited to verified staff.</p>
+          <p id="studio-proposal-status" class="studio-status" role="status" aria-live="polite">Nothing staged. Source inspection is limited to verified staff; sharing a summary requires your own accepted Between the Flames access.</p>
           <pre id="studio-proposal-output" class="studio-results" tabindex="0">No proposal staged yet.</pre>
         </div>
       </section>
