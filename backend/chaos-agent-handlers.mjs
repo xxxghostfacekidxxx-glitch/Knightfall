@@ -50,6 +50,21 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
         .map(x=>({memory:String(x.memory).slice(0,500),category:x.category,updated_at:x.updated_at}));
       return {results:items,source:"signed-in user's saved memories",more:results.length>items.length};
     },
+    "user.notifications":async({principal})=>{
+      // Read-only, always scoped by the verified server session: never expose other members' alerts.
+      const {results=[]}=await env.DB.prepare(
+        "SELECT id,kind,title,body,url,created_at FROM notifications WHERE user_id=? AND read_at IS NULL ORDER BY created_at DESC LIMIT 10"
+      ).bind(principal.id).all();
+      const count=await env.DB.prepare(
+        "SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL"
+      ).bind(principal.id).first();
+      const safeUrl=url=>typeof url==="string"&&url.startsWith("/")&&!url.startsWith("//")&&!/[\\\\\x00-\x1f]/.test(url)?url:null;
+      return {source:"signed-in member's unread Knightfall alerts",
+        unread_count:Number(count?.count||0),
+        alerts:results.map(n=>({id:n.id,kind:safe(n.kind,60),title:safe(n.title,160),
+          preview:safe(n.body,300),url:safeUrl(n.url),created_at:n.created_at})),
+        read_only:true,notice:"Opening or clearing alerts on the Notifications page marks them read."};
+    },
     "user.notes":async({input,principal})=>{
       const query=safe(input.query,120);
       const {results=[]}=await env.DB.prepare(
