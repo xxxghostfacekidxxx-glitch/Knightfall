@@ -62,7 +62,7 @@ test("streaming and regular replies both receive verified tool data",async()=>{
       if(options.tools)return{tool_calls:[{name:"user.notes",arguments:{query:"arcade"}}]};
       return stream?{getReader:()=>({})}:{response:"Here are your notes."};
     }};
-    const reply=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"system"},{role:"user",content:"find my notes about arcade"}],principal:{id:4,role:"member"},handlers,stream});
+    const reply=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"system"},{role:"user",content:"locate arcade notes context"}],principal:{id:4,role:"member"},handlers,stream});
     assert.equal(calls.length,2);
     assert.ok(calls[1].options.messages[0].content.includes("My arcade fixes"));
     assert.equal(Boolean(calls[1].options.stream),stream);
@@ -85,7 +85,8 @@ test("explicit memo recall works even if the AI tool planner ignores tool calls"
   const ai={run:async(_model,opts)=>{calls.push(opts);return opts.tools?{response:"ignored tools"}:{response:"I found your note"};}};
   const result=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:"find my notes about arcade"}],principal:{id:6,role:"member"},handlers:setup().handlers});
   assert.equal(result.response,"I found your note");
-  assert.ok(calls[1].messages[0].content.includes("My arcade fixes"));
+  assert.equal(calls.length,1,"direct note recall should not use an extra planning model");
+  assert.ok(calls[0].messages[0].content.includes("My arcade fixes"));
 });
 
 import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
@@ -216,8 +217,8 @@ test("Miss Chaos can retrieve unread notices when the model ignores its tools",a
  const handlers={"user.notifications":async()=>({unread_count:1,alerts:[{title:"New message"}]})};
  await inferWithChaosTools({ai,model:"fast",principal:{id:47},
    messages:[{role:"system",content:"base"},{role:"user",content:"Show my unread notifications"}],handlers});
- assert.equal(inputs.length,2);
- assert.match(inputs[1].messages[0].content,/New message/);
+ assert.equal(inputs.length,1,"direct alerts should avoid an extra planning model");
+ assert.match(inputs[0].messages[0].content,/New message/);
 });
 
 test("private profile and inbox readers remain tied to the verified account, without read mutations",async()=>{
@@ -263,8 +264,8 @@ test("profile and inbox requests still get verified context if the planner retur
    outputs.length=0;
    await inferWithChaosTools({ai,model:"fast",principal:{id:77,role:"member"},
      messages:[{role:"system",content:"base"},{role:"user",content:question}],handlers});
-   assert.equal(outputs.length,2);
-   assert.match(outputs[1].messages[0].content,/TRUSTED READ-ONLY TOOL RESULTS/);
+   assert.equal(outputs.length,1,"direct private reads should avoid the planning model");
+   assert.match(outputs[0].messages[0].content,/READ-ONLY TOOL EVIDENCE/);
  }
 });
 
