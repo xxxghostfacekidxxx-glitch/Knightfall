@@ -19,6 +19,10 @@
  background:linear-gradient(110deg,#3d182c,#20182d)
 }
 #miss-chaos-presence .mc-companion-control select:disabled{opacity:.6;cursor:wait}
+#miss-chaos-presence .mc-private-actions{display:flex;gap:.45rem;justify-content:space-between;flex-wrap:wrap;padding:.48rem .7rem;background:#130e21;border-bottom:1px solid #46364b}
+#miss-chaos-presence .mc-private-actions a{display:inline-block;flex:1;min-width:120px;text-align:center;text-decoration:none;border:1px solid #7964a380;border-radius:8px;color:#caffdf;padding:.42rem .55rem;font-weight:750;font-size:.73rem}
+#miss-chaos-presence .mc-private-actions a:hover{border-color:#39ff88;background:#39ff8818}
+
 @media(max-width:480px){
  #miss-chaos-presence .mc-companion-control{padding:.4rem .65rem;gap:.3rem}
  #miss-chaos-presence .mc-companion-control select{max-width:67%}
