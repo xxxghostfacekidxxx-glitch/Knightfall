@@ -38,13 +38,30 @@ function mount(host,{compact=false}={}){
  const sendFoot=make('div','memo-send-foot'),inboxLink=make('a','memo-inbox-link','Open Memo Mail ↗');
  inboxLink.href='/memo-pad.html?tab=inbox&box=sent';sendFoot.append(sendButton,inboxLink);
  sendBox.append(sendHeading,info,recipientLabel,results,chosen,sendFoot);
+ // Explicitly publish a COPY: the source memo remains account-private.
+ const publishBox=make('section','memo-publish-box');
+ const publishHeading=make('h3','','↗ Send this memo somewhere useful');
+ const publishInfo=make('p','', 'Private journal stays yours. Tasks and Between the Flames notes are visible to your authorized project partner.');
+ const publishActions=make('div','memo-publish-actions');
+ const destinations=[
+  {id:'journal',label:'🔒 Private journal'},
+  {id:'task',label:'☑ Shared task list'},
+  {id:'flames',label:'🔥 Between the Flames'}
+ ];
+ const publishButtons=destinations.map(destination=>{
+  const b=make('button','memo-button',destination.label);
+  b.type='button';b.dataset.publishDestination=destination.id;b.disabled=true;
+  publishActions.append(b);return b;
+ });
+ publishBox.append(publishHeading,publishInfo,publishActions);
  const auth=make('div','memo-auth');auth.hidden=true;
  const signLink=make('a','memo-button primary','Sign in to use Memo Pad');signLink.href='/auth.html?next='+encodeURIComponent(location.pathname+location.search);
  auth.append(make('p','','Memo Pad saves private notes to your account and sends through the member inbox.'),signLink);
- host.append(h,bar,status,content,sendBox,auth);
+ host.append(h,bar,status,content,publishBox,sendBox,auth);
  const say=(msg,err=false)=>{status.textContent=msg;status.dataset.error=err?'true':'false'};
  function updateSend(){const text=body.value.trim(),headline=noteTitle.value.trim()||'Untitled memo',full='📝 '+headline+'\n\n'+text;
   sendButton.disabled=!isSignedIn||!recipient||!text||full.length>LIMIT||saving;
+  for(const button of publishButtons)button.disabled=!isSignedIn||!text||saving;
   counter.textContent=body.value.length.toLocaleString()+' / 4,000 characters';
   if(text&&full.length>LIMIT)chosen.textContent='Shorten your memo: its title and body must total 4,000 characters to send.';
  }
@@ -71,24 +88,25 @@ function mount(host,{compact=false}={}){
  function disable(disabled){
   for(const element of [newButton,saveButton,refreshButton,noteTitle,body,search])element.disabled=disabled;
   deleteButton.disabled=disabled||!selected;
-  if(disabled)sendButton.disabled=true;else updateSend();
+  if(disabled){sendButton.disabled=true;for(const button of publishButtons)button.disabled=true}
+  else updateSend();
  }
  async function refresh({initial=false}={}){
   try{
    const me=await api('/api/auth/me');isSignedIn=!!me.user;
    if(!isSignedIn){
-    auth.hidden=false;content.hidden=true;bar.hidden=true;sendBox.hidden=true;say('Sign in to save or share private memos.');
+    auth.hidden=false;content.hidden=true;bar.hidden=true;sendBox.hidden=true;publishBox.hidden=true;say('Sign in to save or share private memos.');
     return;
    }
    const uid=String(me.user.id||me.user.user_id||me.user.username||'member');
    if(account&&account!==uid){notes=[];selected=null;choose(null)}
-   account=uid;myUsername=String(me.user.username||'').toLowerCase();auth.hidden=true;content.hidden=false;bar.hidden=false;sendBox.hidden=false;
+   account=uid;myUsername=String(me.user.username||'').toLowerCase();auth.hidden=true;content.hidden=false;bar.hidden=false;sendBox.hidden=false;publishBox.hidden=false;
    const data=await api('/api/memos');
    notes=Array.isArray(data.memos)?data.memos:[];
    const current=notes.find(m=>m.id===selected);
    selected=current?.id??notes[0]?.id??null;
    choose(current||notes[0]||null);drawList();disable(false);say(notes.length?'Memos synced to your account.':'Start writing your first memo.');
-  }catch(e){say(e.message||'Could not load memos.',true);disable(false);if(e.status===401){auth.hidden=false;content.hidden=true;sendBox.hidden=true;bar.hidden=true}}
+  }catch(e){say(e.message||'Could not load memos.',true);disable(false);if(e.status===401){auth.hidden=false;content.hidden=true;sendBox.hidden=true;publishBox.hidden=true;bar.hidden=true}}
  }
  async function commit(){
   clearTimeout(saveTimer);saveTimer=0;
@@ -118,6 +136,32 @@ function mount(host,{compact=false}={}){
   if(completed&&dirty)return commit();
   return completed;
  }
+ async function publishMemo(destination){
+  if(!isSignedIn){say('Sign in before posting this memo.',true);return}
+  if(dirty&&!await commit())return; // Never share an unsaved draft by accident.
+  if(!selected){say('Save this memo before publishing it.',true);return}
+  const headline=noteTitle.value.trim()||'Untitled memo',text=body.value.trim();
+  if(!text){say('Write a memo before publishing.',true);return}
+  const shared='📝 '+headline+'\n\n'+text;
+  if(destination==='task'&&text.length>3000){say('Shared tasks allow 3,000 characters. Shorten this memo before adding a task.',true);return}
+  if(destination==='flames'&&shared.length>4000){say('Between the Flames notes allow 4,000 characters including the memo title.',true);return}
+  if(destination!=='journal'&&!confirm('Post a copy to the SHARED '+(destination==='task'?'task list':'Between the Flames notes')+'? Your collaborator will be able to read it.'))return;
+  const url=destination==='journal'?'/api/die-ary/entries':destination==='task'?'/api/ai-handoff/tasks':'/api/ai-handoff/notes';
+  const data=destination==='journal'?{title:headline,body:text}:
+   destination==='task'?{title:headline,details:text,status:'todo',priority:'normal',area:'Memo Pad',verification:'needs_review'}:
+   {body:shared,category:'update'};
+  for(const button of publishButtons)button.disabled=true;
+  say(destination==='journal'?'Saving to your private journal…':'Posting a shared copy…');
+  try{
+   await api(url,{method:'POST',body:JSON.stringify(data)});
+   say(destination==='journal'?'Copied to your private Die-ary ✓':
+    destination==='task'?'Added to the shared task list ✓':'Posted to Between the Flames ✓');
+   // Retain the original account-owned memo and allow independent destinations.
+   document.dispatchEvent(new CustomEvent('kf:memo-published',{detail:{source:host,destination,memo_id:selected}}));
+  }catch(e){say('Memo was not published: '+(e.message||'Request failed.')+' Your original is safe.',true)}
+  finally{updateSend()}
+ }
+ publishButtons.forEach(button=>button.addEventListener('click',()=>{void publishMemo(button.dataset.publishDestination)}));
  function scheduleSave(){clearTimeout(saveTimer);if(isSignedIn&&dirty)saveTimer=setTimeout(()=>{void commit()},DELAY)}
  const edit=()=>{dirty=true;rev++;counter.textContent=body.value.length.toLocaleString()+' / 4,000 characters';updateSend();scheduleSave()};
  noteTitle.addEventListener('input',edit);body.addEventListener('input',edit);
