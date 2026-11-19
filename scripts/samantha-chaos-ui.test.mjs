@@ -1,0 +1,31 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const read=path=>readFileSync(new URL(path,import.meta.url),"utf8");
+const html=read("../public/samantha-chaos.html");
+const js=read("../public/samantha-chaos.js");
+const chat=read("../public/miss-chaos.js");
+const backend=read("../backend/src/index.js");
+test("private Samantha shell inherits real account-bound Miss Chaos with gated display",()=>{
+ assert.match(html,/id="samantha-companion-gate"/);
+ assert.match(html,/id="samantha-private-chat" hidden/);
+ assert.match(html,/data-chaos-companion="partner"/);
+ assert.match(html,/\/miss-chaos\.js\?/);
+ assert.match(js,/me\.role!=="partner"/);
+ assert.match(js,/\/api\/chaos\/companion/);
+ assert.match(chat,/partnerCompanion \? "partner" : undefined/);
+ assert.match(backend,/companionMode=body\.companion==="partner"/);
+ assert.match(backend,/access\.role!=="partner"/);
+});
+test("shared board and published bot chat use explicit signed-in actions, no auto-post",()=>{
+ assert.match(js,/credentials:"include"/);
+ assert.match(js,/\/api\/ai-handoff\/tasks/);
+ assert.match(js,/\/api\/ai-handoff\/notes/);
+ assert.match(js,/\/api\/public-bots\//);
+ assert.match(js,/allowedBots\.some/);
+ assert.match(js,/botReply\.textContent/);
+ assert.match(js,/noteInput\.value/);
+ assert.doesNotMatch(js,/innerHTML\s*=/);
+ assert.doesNotMatch(js,/localStorage|sessionStorage/);
+ assert.doesNotMatch(js,/eval\s*\(/);
+});

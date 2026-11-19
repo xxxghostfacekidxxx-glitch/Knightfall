@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#070710">
+  <meta name="description" content="Meet Miss Chaos, Ash-Fall's sharp-tongued AI companion for conversation, creativity, and useful answers.">
+  <title>Samantha’s Private Miss Chaos | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/miss-chaos.css?v=20261026-stream1">
+  <link rel="stylesheet" href="/samantha-chaos.css?v=20261119-private1">
+  <link rel="stylesheet" href="/cosmic-chart.css?v=20261111-handoff4">
+  <link rel="stylesheet" href="/miss-chaos-radar.css?v=20261111">
+</head>
+<body class="chaos-page samantha-chaos-page" data-chaos-companion="partner">
+  <header class="kf-header"></header>
+  <section id="samantha-companion-gate" class="samantha-chaos-gate" role="status" aria-live="polite">
+    <h1>💚 Samantha's Private Miss Chaos</h1>
+    <p id="samantha-companion-gate-status">Verifying your accepted Between the Flames invitation…</p>
+    <a href="/auth.html?next=%2Fsamantha-chaos.html">Sign in to your own Knightfall account</a>
+  </section>
+  <section id="samantha-companion-desk" class="samantha-companion-desk" hidden aria-label="Between the Flames collaboration desk">
+    <h1>💚 Samantha's Private Miss Chaos</h1>
+    <p>Your conversations and memories stay yours. Shared project updates travel through Between the Flames only when you send them. Published owner bots are available for individual conversations.</p>
+    <div class="samantha-desk-grid">
+      <section aria-labelledby="samantha-board-heading">
+        <h2 id="samantha-board-heading">🔥 Between the Flames</h2>
+        <p id="samantha-board-status" role="status">Checking shared task board…</p>
+        <div id="samantha-board-preview"></div>
+        <form id="samantha-task-form">
+          <label for="samantha-task-title">New shared task</label>
+          <input id="samantha-task-title" maxlength="180" placeholder="What should we work on?" required>
+          <button type="submit">Add shared task</button>
+        </form>
+        <form id="samantha-note-form">
+          <label for="samantha-handoff-note">Update for Ronnie and both assistants</label>
+          <textarea id="samantha-handoff-note" rows="3" maxlength="4000" placeholder="What changed? What does the other assistant need to know?" required></textarea>
+          <button type="submit">Post to Between the Flames</button>
+        </form>
+        <a href="/ai-handoff.html">Open full private task board</a>
+      </section>
+      <section aria-labelledby="samantha-fleet-heading">
+        <h2 id="samantha-fleet-heading">🤖 Bot Fleet Link</h2>
+        <p id="samantha-fleet-status" role="status">Checking available bots…</p>
+        <div id="samantha-fleet-list"></div>
+        <form id="samantha-bot-form">
+          <label for="samantha-bot-select">Public bot to consult</label>
+          <select id="samantha-bot-select" required><option value="">Choose a published bot</option></select>
+          <label for="samantha-bot-message">Ask this bot</label>
+          <textarea id="samantha-bot-message" rows="3" maxlength="3000" required placeholder="Ask about a project task. Never paste private account information."></textarea>
+          <button type="submit">Talk to selected bot</button>
+        </form>
+        <p id="samantha-bot-status" role="status"></p>
+        <pre id="samantha-bot-reply" aria-live="polite"></pre>
+        <button type="button" id="samantha-draft-bot-reply" disabled>Copy bot reply into shared-note draft</button>
+        <a href="/personal-bots.html">Manage my own bots</a>
+      </section>
+    </div>
+  </section>
+  <main class="chaos-shell" id="samantha-private-chat" hidden>
+    <aside class="chaos-sidebar" aria-label="Conversation history">
+      <a class="chaos-back" href="/">← Back to Ash-Fall</a>
+      <div class="sidebar-title"><span class="eyebrow">YOUR CHAOS</span><h2>Conversations</h2></div>
+      <button id="new-chat" class="new-chat" type="button">＋ New conversation</button>
+      <button id="export-chat" class="archive-toggle" type="button" title="Download your current conversation as Markdown">↓ Export current chat</button>
+      <a class="archive-toggle" href="/chaos-code-studio.html">⚡ Open Chaos Code Studio</a>
+      <button id="show-deleted" class="archive-toggle" type="button" aria-pressed="false">Recently Deleted</button>
+      <label class="sr-only" for="conversation-search">Search your conversations</label>
+      <input id="conversation-search" class="conversation-search" type="search" maxlength="100" placeholder="Search chats and messages…">
+      <p class="conversation-search-hint">Search titles and message text. Saved memories can carry across chats.</p>
+      <div id="conversation-list" class="conversation-list" aria-live="polite"><p class="muted">Loading your conversations…</p></div>
+      <section id="admin-chaos-archive" class="admin-archive" aria-labelledby="admin-chaos-heading" hidden>
+        <div class="memory-heading"><h3 id="admin-chaos-heading">⚑ Admin conversation archive</h3></div>
+        <p class="memory-description">Administrator access to all users' Miss Chaos conversations, including recently deleted items. Views and actions are audit-logged.</p>
+        <label class="sr-only" for="admin-chaos-search">Search conversations or usernames</label>
+        <input id="admin-chaos-search" type="search" placeholder="Search title, username, or user ID">
+        <label class="sr-only" for="admin-chaos-status">Conversation status</label>
+        <select id="admin-chaos-status"><option value="active">Active conversations</option><option value="deleted">Recently deleted</option><option value="all">All conversations</option></select>
+        <button id="admin-chaos-refresh" class="memory-save" type="button">Load archive</button>
+        <p id="admin-chaos-status-message" class="memory-status" role="status" hidden></p>
+        <div id="admin-chaos-list" class="admin-chaos-list"><p class="muted">Archive not loaded.</p></div>
+        <div class="admin-pagination"><button id="admin-chaos-prev" type="button" disabled>← Previous</button><span id="admin-chaos-page">Page 1</span><button id="admin-chaos-next" type="button" disabled>Next →</button></div>
+      </section>
+      <section class="memory-manager" aria-labelledby="memory-heading">
+        <div class="memory-heading"><h3 id="memory-heading">✦ What I remember</h3><span id="memory-count">0 / 100</span></div>
+        <p class="memory-description">Only save what you want me to remember. You can edit or delete it anytime.</p>
+        <form id="memory-form" class="memory-form">
+          <label class="sr-only" for="memory-input">A detail for Miss Chaos to remember</label>
+          <textarea id="memory-input" rows="2" maxlength="500" placeholder="A preference, project detail, or useful fact…" required></textarea>
+          <label class="sr-only" for="memory-category">Memory category</label>
+          <select id="memory-category">
+            <option value="personal">Personal</option><option value="preference">Preference</option><option value="project">Project</option><option value="other">Other</option>
+          </select>
+          <button type="submit" class="memory-save">Save memory</button>
+        </form>
+        <p id="memory-status" class="memory-status" role="status" hidden></p>
+        <label class="sr-only" for="memory-search">Search saved memories</label>
+        <input id="memory-search" type="search" maxlength="100" placeholder="Search saved memories…">
+        <div id="memory-list" class="memory-list" aria-live="polite"><p class="muted">Loading memories…</p></div>
+      </section>
+      <div class="sidebar-note"><span class="pulse-dot"></span> Account-bound conversations </div>
+    </aside>
+    <section class="chat-panel" aria-label="Chat with Miss Chaos">
+      <div class="chat-topbar">
+        <div class="chaos-identity"><div class="chaos-avatar"><img src="/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c" alt="Miss Chaos portrait" width="128" height="128" decoding="async" onerror="this.onerror=null;this.src='/icons/miss-chaos.svg?v=20261026-face2'"><span aria-hidden="true">✦</span></div><div><p class="eyebrow">KNIGHTFALL AI COMPANION</p><h1>Miss Chaos</h1><p class="presence"><span class="pulse-dot"></span><span id="engine-status">Waking up the engine…</span></p></div></div>
+        <label class="mood-control">MOOD
+          <select id="mood" aria-label="Miss Chaos mood">
+            <option value="default">Default</option><option value="playful">Playful</option><option value="dark">Dark</option><option value="supportive">Supportive</option><option value="philosophical">Philosophical</option><option value="astrology">🔮 Astrology</option><option value="custom">Custom</option>
+          </select>
+        </label>
+      </div>
+      <p style="margin:.6rem 1rem"><a href="/chaos-forge.html" style="color:#94ffd4;font-weight:800">✂ Open Chaos Forge: photo deconstruction, patterns &amp; 3D studio</a></p>
+      <section class="astrology-tools" id="astrology-tools" aria-label="Astrology reading tools" hidden><div class="astro-heading"><strong>✦ Cosmic Reading Room</strong><span>Symbolic readings, no fabricated chart positions</span></div><p class="astro-help"><a href="/moonology.html">Moonology &amp; Moon Journal</a></p><div class="astro-actions"><button type="button" data-astro-prompt="natal">Natal chart</button><button type="button" data-astro-prompt="compatibility">Compatibility</button><button type="button" data-astro-prompt="transits">Transits</button><button type="button" data-astro-prompt="placements">Interpret placements</button></div>
+<div class="astro-compare-row"><label>Compare with a member who shares a birth chart
+<input id="astro-compare-username" type="text" autocomplete="off" maxlength="40" placeholder="@username"></label>
+<button type="button" id="astro-compare">Compare charts</button></div>
+<p class="astro-help">Compatibility only uses your saved chart and placements the other member has chosen to publish to a profile you may view. No private chart is retrieved from someone else.</p>
+<form id="astro-chart-form" class="astro-chart-form">
+  <label class="astro-unknown-time"><input type="checkbox" id="astro-time-unknown"> I don't know the birth time</label>
+  <label id="astro-date-only-label" hidden>Birth date (time unknown) <input id="astro-date-only" type="date" min="1900-01-01" max="2100-12-31"></label>
+  <p class="astro-help">When birth time is unknown, use a provisional 12:00 UTC chart. Rising sign and houses are omitted, and the Moon or placements near sign cusps may differ at the actual time.</p>
+  <label>Birth date and local clock time <input id="astro-birth-time" type="datetime-local" required min="1900-01-01T00:00" max="2100-12-31T23:59"></label>
+  <label>UTC offset at birth (hours, e.g. -5 or +5.5) <input id="astro-utc-offset" type="number" min="-12" max="14" step=".25" value="-5" required></label>
+  <label>Birth-place time zone (optional, recommended) <input id="astro-timezone" class="cosmic-timezone-select" type="text" autocomplete="off" placeholder="e.g. America/Chicago"></label>
+  <p id="astro-timezone-status" class="astro-help" role="status">Selecting a city suggests its present geographic time zone; verify historical rules and border cases.</p>
+  <label>Repeated DST hour <select id="astro-fold"><option value="earlier">First occurrence</option><option value="later">Second occurrence</option></select></label>
+  <p class="astro-help cosmic-timezone-help">Choose the time zone used at your birthplace, not necessarily your current one. If provided, it determines the historical UTC offset automatically. The offset field above is the fallback for verified manual entry.</p>
+  <label>Birth city (optional; city, region, country) <input id="astro-city" type="text" placeholder="e.g. Des Moines, Iowa, USA"></label>
+  <button type="button" id="astro-city-search">Find birth city</button>
+  <label>Matching location <select id="astro-city-results" disabled><option value="">Search for a city first</option></select></label>
+  <p id="astro-city-status" class="astro-help" role="status">Selecting a city calculates rising sign and houses. Coordinates stay hidden from the form.</p>
+  <input id="astro-latitude" type="hidden"><input id="astro-longitude" type="hidden">
+  <label>House system <select id="astro-house-system"><option value="equal">Equal houses</option><option value="whole-sign">Whole-sign houses</option></select></label>
+  <label>Transit date (optional; UTC noon)<input type="date" id="astro-transit-day" min="1900-01-01" max="2100-12-31"></label>
+  <p class="astro-help">Leave the transit date empty for this moment; a selected date uses 12:00 UTC. Transit charts show sky positions, not natal houses.</p>
+  <button type="submit">Calculate placements</button><button type="button" id="astro-saved-chart">Use my profile chart</button><button type="button" id="astro-transits">Explore transits</button><button type="button" id="astro-natal-back" hidden>Return to natal wheel</button><button type="button" id="astro-overlay" hidden>Overlay natal + transits</button><button type="button" id="astro-transit-only" hidden>Transit sky only</button>
+</form>
+<p id="astro-chart-status" role="status" class="astro-help"></p>
+<div id="astro-preview" class="cosmic-preview" hidden aria-label="Calculated natal chart preview"></div>
+<p class="astro-help">Western tropical astrology is a symbolic, reflective tradition, not a scientifically proven predictor of personality or events. Planetary positions use Astronomy Engine; house angles and lunar nodes remain approximate. The reading draft is yours to review before sending. Sending it stores the chart text in your conversation.</p></section>
+      <button id="chaos-radar-open" class="chaos-radar-trigger" type="button" aria-haspopup="dialog">✦ Open Chaos Radar</button>
+      <div id="chat-messages" class="chat-messages" aria-live="polite" aria-relevant="additions text">
+        <div class="welcome-card"><div class="welcome-symbol">✦</div><p class="eyebrow">THE STATIC IS CLEARING</p><h2>Well, well. You found me. Try not to break anything important. I just got here.</h2><p>I'm Miss Chaos. Bring me a question, a half-formed idea, a problem to untangle, or the weird thought keeping you awake. I can do sincere. I can do sarcastic. Sometimes both, because apparently that's useful.</p><p class="welcome-hint">Your first message starts a conversation. Your saved chats stay attached to your account.</p><p class="welcome-hint">Research sources: Open Library, Crossref, Wikipedia, Wikidata, The Met and Poly Haven. Creator tools: Chaos Forge patterns, approximate fabric yardage and 3D previews. Use Patterns or Yardage above the message box. Ask for your own inbox or profile whenever you need it.</p></div>
+      </div>
+      <div id="chat-error" class="chat-error" role="status" hidden></div>
+      <form id="chat-form" class="composer">
+        <label class="sr-only" for="message-input">Message Miss Chaos</label>
+        <textarea id="message-input" name="message" rows="1" maxlength="4000" placeholder="Tell me what's on your mind…" required></textarea>
+        <div class="composer-bottom"><span id="char-count">0 / 4000</span><div class="composer-actions"><button id="chaos-reference-photo" class="icon-button" type="button" aria-label="Analyze a clothing or craft reference photo" title="Analyze a clothing or craft reference photo (opt-in)">📷</button><input id="chaos-reference-input" type="file" accept="image/png,image/jpeg,image/webp" hidden aria-label="Choose reference photo to analyze"><button id="voice-input" class="icon-button" type="button" aria-label="Dictate message" title="Dictate message">🎙</button><button id="speak-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken replies" aria-label="Toggle spoken replies">🔊</button><button id="send-button" class="send-button" type="submit">Send <span aria-hidden="true">↗</span></button></div></div>
+      </form>
+      <p id="chaos-reference-status" role="status" aria-live="polite" hidden style="padding:.5rem .8rem;margin:.3rem .8rem;border-left:2px solid #79ffc7;color:#d5f7e6;font-size:.85rem"></p>
+      <p class="privacy-note">Miss Chaos is a general-audience companion and does not generate explicit NSFW content. For adult content, use a public bot explicitly labeled NSFW or your personal bot after confirming 18+. Reference photos are sent to Workers AI only after you choose one; Knightfall does not save the raw photo in chat. Review generated notes before sending, since sent notes become part of your conversation. AI can make mistakes. Authorized administrators may review conversations; archive access is logged. Don't share passwords or highly sensitive information.</p>
+    </section>
+  </main>
+  <dialog id="chaos-radar" class="chaos-radar" aria-labelledby="chaos-radar-title">
+    <header><h2 id="chaos-radar-title">Chaos Radar</h2><button type="button" id="chaos-radar-close">Close</button></header>
+    <nav aria-label="Radar mode">
+      <button type="button" data-radar-mode="arcade" aria-pressed="true">Arcade picks</button>
+      <button type="button" data-radar-mode="moon" aria-pressed="false">Moon now</button>
+      <button type="button" data-radar-mode="shadow" aria-pressed="false">Shadow Work</button>
+    </nav>
+    <form id="radar-arcade-form">
+      <label>Game or genre <input name="q" maxlength="120" placeholder="Try puzzle or racing"></label>
+      <label>Controls <select name="device"><option value="">Any</option><option value="touch">Touch</option><option value="desktop">Desktop</option></select></label>
+      <label>Session <select name="length"><option value="">Any length</option><option value="mini">Mini game</option><option value="games">Full game</option></select></label>
+      <button type="submit">Find games</button>
+    </form>
+    <form id="radar-shadow-form" hidden>
+      <label>Reflection topic <select name="q">
+        <option value="">Daily prompt</option><option value="reactions">Strong reactions</option>
+        <option value="assumptions">Assumptions</option><option value="boundaries">Boundaries</option>
+        <option value="inner-critic">Inner critic</option><option value="hidden-strengths">Hidden strengths</option>
+        <option value="repair">Accountability and repair</option>
+      </select></label>
+      <button type="submit">Get prompt</button>
+    </form>
+    <p id="radar-status" role="status"></p>
+    <div id="radar-results"></div>
+  </dialog>
+  <script src="/nav.js?v=20261111-radar" defer></script>
+  <script src="/cosmic-lexicon.js?v=20261111-handoff4" defer></script>
+<script src="/cosmic-insights.js?v=20261111-handoff4" defer></script>
+<script src="/cosmic-chart.js?v=20261111-handoff4" defer></script>
+  <script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
+  <script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
+  <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
+  <script src="/miss-chaos.js?v=20261119-code-studio2" defer></script>
+  <script src="/miss-chaos-radar.js?v=20261111" defer></script>
+  <script src="/samantha-chaos.js?v=20261119-private1" defer></script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 (() => {
   "use strict";
   const API = "https://api.ash-fall.com";
+  const partnerCompanion = document.body.dataset.chaosCompanion === "partner";
   const $ = (selector) => document.querySelector(selector);
   const messagesEl = $("#chat-messages"), listEl = $("#conversation-list");
   const form = $("#chat-form"), input = $("#message-input"), sendButton = $("#send-button");
@@ -35,6 +36,7 @@
     ["Yardage", "Help me estimate how much fabric to buy. Ask me for usable fabric width, measured cut piece dimensions, piece counts, grain direction and reserve percentage. Never invent missing sizes."],
     ["Inbox", "Show my recent Chaosphere conversations"],
     ["My Tasks", "Show our shared handoff task board and summarize the unfinished tasks. Only use tasks I have access to."],
+    ["Bot Fleet", "Show my bot fleet and the owner-published bots available to me."],
     ["3D Assets", "Find free CC0 models on Poly Haven for "],
     ["Textures", "Find CC0 textures on Poly Haven for "],
     ["Museum", "Find historical costumes at The Met"],
@@ -750,8 +752,8 @@
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
   });
   async function streamChaosReply(conversationId,message,mood,onDelta){
-    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,stream:true})});
-    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
+    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,companion:partnerCompanion?"partner":undefined,stream:true})});
+    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood,companion:partnerCompanion?"partner":undefined})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
     if(!response.body)throw Error("Your browser does not support streamed replies.");
     const reader=response.body.getReader(),decoder=new TextDecoder();
     let pending="",reply="",done=false;

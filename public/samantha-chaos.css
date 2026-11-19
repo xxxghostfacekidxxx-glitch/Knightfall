@@ -1,0 +1,18 @@
+
+/* Personal private companion, task relay and explicitly published bot list. */
+.samantha-chaos-page{background:radial-gradient(circle at 50% 0,#30142f,#080c12 58%);}
+.samantha-chaos-gate,.samantha-companion-desk{width:min(1230px,96%);margin:1.2rem auto;border:1px solid #9a4d88;border-radius:16px;padding:1rem 1.3rem;color:#fbe9f6;background:#140f1bee}
+.samantha-chaos-gate h1,.samantha-companion-desk h1{font-size:clamp(1.4rem,2.7vw,2.1rem);margin:.2rem 0;color:#ffc5ec;}
+.samantha-companion-desk p{line-height:1.55}
+.samantha-desk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}
+.samantha-desk-grid>section{min-width:0;border:1px solid #774a78;background:#110f1c;border-radius:12px;padding:1rem}
+.samantha-desk-grid h2{color:#c3ffdc;margin:.2rem 0 .8rem;font-size:1.15rem}
+.samantha-desk-grid label{display:block;font-weight:700;margin:.65rem 0 .3rem}
+.samantha-desk-grid select,.samantha-desk-grid input,.samantha-desk-grid textarea{display:block;width:100%;box-sizing:border-box;border:1px solid #a65d8f;border-radius:7px;background:#090e15;color:#fff;font:inherit;padding:.6rem}
+.samantha-desk-grid button{font:inherit;cursor:pointer;border:1px solid #f19cce;border-radius:8px;background:#652047;color:#fff;padding:.65rem;margin:.5rem 0;min-height:42px}
+.samantha-desk-grid button:disabled{opacity:.5;cursor:not-allowed}
+.samantha-desk-grid a,.samantha-chaos-gate a{color:#b2ffdf}
+#samantha-board-preview,#samantha-fleet-list{max-height:240px;overflow:auto;border-top:1px solid #604763;margin:.75rem 0;padding:.35rem 0}
+#samantha-board-preview p,#samantha-fleet-list p{border-bottom:1px solid #46354e;padding:.38rem 0;margin:.1rem 0}
+#samantha-bot-reply{white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto;color:#cbf3e8;background:#0b1719;padding:.7rem;border-radius:7px}
+@media(max-width:780px){.samantha-desk-grid{grid-template-columns:minmax(0,1fr)}.samantha-chaos-gate,.samantha-companion-desk{padding:1rem}}

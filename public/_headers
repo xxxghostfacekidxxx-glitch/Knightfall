@@ -177,3 +177,10 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-forge.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+/samantha-chaos.html
+  Cache-Control: private, no-store
+/samantha-chaos.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/samantha-chaos.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
