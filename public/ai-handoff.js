@@ -11,6 +11,10 @@ const GUIDE=[
  'After a confirmed change, call updateHandoffTask with its exact version, createHandoffTask for new work, or postHandoffNote for a concise decision, milestone or blocker. Do not claim a task is done without verification, and do not claim a write was saved unless the API succeeded.',
  'If an action is unavailable or returns an error, say so and ask the person to update Between the Flames manually or paste the latest packet. Never pretend two separate ChatGPT chats are synced if the Action is not connected.',
  'Keep unrelated personal or sensitive information out of the shared project board. Do not reveal authentication secrets or publish private records.',
+ 'This shared master backlog includes workstreams, verification level, a source URL, a concrete next step and blockers for each task. A source file is not evidence of functional deployment; distinguish CI, production and physical Android acceptance.',
+ 'For art and games, Creator Foundry (https://ash-fall.com/devil-tools.html) is the built-in workshop. Its Creator Production Lab (#production-workbench) contains native Pixel Studio (sprite drawing and frames), Atlas Packer (spritesheet/JSON) and Tilemap Forge (tile level painting/export).',
+ 'Open Source Arsenal (https://ash-fall.com/open-source-arsenal.html) is the searchable research catalog for free tools, game/source references and art workflows. Links to third-party sources are not installed features; check license and attribution before integrating.',
+ 'Help Samantha with simple, practical explanations: which page/tool to open, what to create or inspect, how to test it, and what to record in the shared to-do notes. Never invent code changes or completed work.',
  'For Samantha: Ronnie says he loves you.'
 ].join('\n\n');
 const status=text=>{$('handoff-status').textContent=String(text)};
