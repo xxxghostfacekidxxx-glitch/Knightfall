@@ -26,7 +26,7 @@ test("Studio escapes content through text and SVG nodes, never executes or persi
 });
 
 test("staff review packet binds a verified read-only main excerpt to a non-executing diff",()=>{
- for(const id of ["studio-repo-propose","studio-proposal-export","studio-proposal-status","studio-proposal-output"]){
+ for(const id of ["studio-repo-propose","studio-proposal-export","studio-proposal-handoff","studio-proposal-status","studio-proposal-output"]){
   assert.ok(html.includes('id="'+id+'"'),"missing proposal control "+id);
  }
  assert.match(html,/Stage review proposal from edited excerpt/);
@@ -46,4 +46,17 @@ test("staff review packet binds a verified read-only main excerpt to a non-execu
  assert.match(js,/code\.value!==reviewCandidate/);
  assert.match(js,/reviewPacket=\[[\s\S]*?\]\.join\(/);
  assert.doesNotMatch(js,/github\.com\/repos\/[^\s]*\/contents\/.*method:\s*"PUT"/);
+});
+
+test("Between the Flames requires an explicit staff click and only sends non-code review metadata",()=>{
+ assert.match(js,/reviewHandoff\.addEventListener\("click"/);
+ assert.match(js,/window\.confirm\(/);
+ assert.match(js,/\/api\/ai-handoff\/notes/);
+ assert.match(js,/credentials:"include"/);
+ assert.match(js,/reviewSummary=\[/);
+ assert.match(js,/MISS CHAOS \/ CODE REVIEW REQUEST \(NOT APPROVED\)/);
+ assert.match(js,/Status: NEEDS REVIEW/);
+ assert.match(js,/category:"update",body:reviewSummary/);
+ assert.match(js,/data\.note\?\.id/);
+ assert.match(js,/Only Osiris and the accepted Between the Flames partner/);
 });
