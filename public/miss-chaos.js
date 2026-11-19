@@ -2,6 +2,9 @@
   "use strict";
   const API = "https://api.ash-fall.com";
   const partnerCompanion = document.body.dataset.chaosCompanion === "partner";
+  // The URL selects a UI workspace, NOT an authorization level. The Worker verifies GOD.
+  const ownerCompanion = !partnerCompanion && new URLSearchParams(location.search).get("companion") === "owner";
+  const companionVariant = partnerCompanion ? "partner" : ownerCompanion ? "owner" : undefined;
   const $ = (selector) => document.querySelector(selector);
   const messagesEl = $("#chat-messages"), listEl = $("#conversation-list");
   const form = $("#chat-form"), input = $("#message-input"), sendButton = $("#send-button");
@@ -454,7 +457,15 @@
     try {
       statusEl.textContent = "Checking connection…";
       const me = await request("/api/auth/me");
-      if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent("/miss-chaos.html"); return; }
+      if (!me.user) { location.href = "/auth.html?next=" + encodeURIComponent(location.pathname+location.search); return; }
+       if(ownerCompanion){
+         const scope=await request("/api/chaos/companion");
+         if(scope.role!=="owner"){location.replace("/miss-chaos.html");return;}
+         document.title="Private Owner Miss Chaos | Knightfall";
+         const heading=$(".chaos-identity h1"),eyebrow=$(".chaos-identity .eyebrow");
+         if(heading)heading.textContent="Private Owner Miss Chaos";
+         if(eyebrow)eyebrow.textContent="VERIFIED GOD OWNER WORKSPACE";
+       }
       isAdmin = ["admin", "god"].includes(me.user.role);
       // Unreported member AI chats are reviewed only in the God-only Eye of Horus.
       if (isAdmin) $("#admin-chaos-archive").hidden = true;
@@ -752,8 +763,8 @@
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
   });
   async function streamChaosReply(conversationId,message,mood,onDelta){
-    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,companion:partnerCompanion?"partner":undefined,stream:true})});
-    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood,companion:partnerCompanion?"partner":undefined})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
+    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant,stream:true})});
+    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
     if(!response.body)throw Error("Your browser does not support streamed replies.");
     const reader=response.body.getReader(),decoder=new TextDecoder();
     let pending="",reply="",done=false;
