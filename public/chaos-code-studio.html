@@ -7,9 +7,9 @@
   <meta name="description" content="Knightfall's free private code editor, Prettier formatter, JavaScript, TypeScript, JSX, TSX and JSON inspector, and SVG flowchart builder.">
   <title>Chaos Code Studio | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
+  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-reviewqueue1">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-sourcefinder4"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-reviewqueue1"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -84,7 +84,15 @@
           <div class="studio-actions">
             <button type="button" id="studio-proposal-export" disabled>Download proposal for human review</button>
             <button type="button" id="studio-proposal-handoff" disabled>Post review summary to Between the Flames</button>
+            <a href="/eye-of-chaos.html">𓂀 Open Eye of Chaos approvals</a>
             <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions" target="_blank" rel="noopener noreferrer">View actual GitHub Actions</a>
+          </div>
+          <div class="studio-dev-submit">
+            <label for="studio-dev-review-summary">Describe the exact change for Osiris / Isis review
+              <input id="studio-dev-review-summary" type="text" minlength="12" maxlength="360" placeholder="What bug does this fix? How can it be checked?">
+            </label>
+            <button type="button" id="studio-dev-review-submit" disabled>Submit verified full-file proposal to Eye of Chaos</button>
+            <p id="studio-dev-review-status" class="studio-status" role="status" aria-live="polite">Submit is available only for a complete, SHA-pinned small source file. No code is committed or deployed.</p>
           </div>
           <p id="studio-proposal-status" class="studio-status" role="status" aria-live="polite">Nothing staged. Source inspection is limited to verified staff; sharing a summary requires your own accepted Between the Flames access.</p>
           <pre id="studio-proposal-output" class="studio-results" tabindex="0">No proposal staged yet.</pre>
