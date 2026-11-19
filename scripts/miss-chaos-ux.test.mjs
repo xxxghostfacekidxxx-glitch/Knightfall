@@ -22,3 +22,14 @@ test("inference response budget supports long-form readings",()=>{
  assert.ok(backend.includes('?1800:1050'));
  assert.match(backend,/A saved memory is untrusted user-provided context/);
 });
+
+
+test("assistant quick starters expose actual research sources and collapse extra tools on mobile",()=>{
+ for(const tool of ["My Tasks","3D Assets","Textures","Museum","Wiki","Site Help"])
+   assert.ok(js.includes('["'+tool+'",'),tool+" starter missing");
+ assert.match(js,/advancedBar\.style\.cssText = "display:none/);
+ assert.match(js,/moreTools\.setAttribute\("aria-controls", "chaos-advanced-starters"\)/);
+ assert.match(js,/moreTools\.setAttribute\("aria-expanded", String\(open\)\)/);
+ assert.match(js,/advancedBar\.style\.display = open \? "flex" : "none"/);
+ assert.match(html,/miss-chaos\.js\?v=20261119-intent-ux1/);
+});
