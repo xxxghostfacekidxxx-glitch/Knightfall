@@ -22,6 +22,8 @@
     ["GitHub", "Find open source GitHub repositories for "],
     ["Inspect JS", "Check JavaScript syntax:\n"],
     ["Inspect JSON", "Check JSON syntax:\n"],
+    ["Format JS", "Format JavaScript code:\n"],
+    ["Flowchart", "Create flowchart: Idea -> Design -> Test -> Release"],
     ["Books", "Find books about "],
     ["Papers", "Search research papers about "],
     ["Patterns", "Draft a tote bag 16 x 18 x 4 inches with a 0.5 inch seam. Use fabric width 44 inches with 10% reserve. Give me a measured cut list, approximate fabric yardage and Chaos Forge design link."],

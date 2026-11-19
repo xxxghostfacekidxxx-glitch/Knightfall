@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0e0b16">
+  <meta name="description" content="Knightfall's free private code editor, Prettier formatter, JavaScript and JSON inspector, and SVG flowchart builder.">
+  <title>Chaos Code Studio | Knightfall</title>
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v1">
+  <script src="/nav.js" defer></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-v1"></script>
+</head>
+<body class="chaos-code-page">
+<header class="kf-header"></header>
+<main class="chaos-code-shell" id="main-content">
+  <nav class="studio-links" aria-label="Code Studio navigation">
+    <a href="/">Knightfall</a><span aria-hidden="true">/</span>
+    <a href="/miss-chaos.html">Miss Chaos</a><span aria-hidden="true">/</span>
+    <span>Code Studio</span>
+  </nav>
+  <header class="studio-hero">
+    <p class="eyebrow">DEVIL'S TOOLKIT · NO PAID APIS</p>
+    <h1><span>CHAOS</span> CODE STUDIO <span aria-hidden="true">⚡</span></h1>
+    <p>A proper workstation for your mischievous AI. Edit code, inspect syntax, format with free Prettier, turn steps into diagrams and download your results. No hidden checkout, subscription or AI credits.</p>
+    <div class="studio-hero-links">
+      <a href="/devil-tools.html">Creator Foundry</a>
+      <a href="/chaos-forge.html">Chaos Forge</a>
+      <a href="/miss-chaos.html">Ask Miss Chaos</a>
+    </div>
+  </header>
+
+  <div class="studio-grid">
+    <section class="studio-panel" aria-labelledby="code-title">
+      <div class="studio-panel-heading"><div><p class="eyebrow">01 / CODE WORKBENCH</p><h2 id="code-title">Source Surgery</h2></div><span class="studio-chip">LOCAL DRAFT</span></div>
+      <p class="studio-note">Editing, importing, copying and downloading stay on your device. Pressing Inspect or Format deliberately sends only the current code to Knightfall's existing authenticated API; it does not run or save that code.</p>
+      <div class="studio-controls">
+        <label for="studio-language">Language
+          <select id="studio-language"><option value="javascript">JavaScript</option><option value="json">JSON</option></select>
+        </label>
+        <label for="studio-import">Open a local text file (max 10 KB)
+          <input type="file" id="studio-import" accept=".js,.mjs,.json,.txt,text/plain,application/json,text/javascript">
+        </label>
+      </div>
+      <label class="studio-code-label" for="studio-code">Editable source code</label>
+      <textarea id="studio-code" rows="16" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-describedby="code-hint">// Try the free formatter.
+function hello(name){return "Hello, "+name}
+</textarea>
+      <p id="code-hint" class="studio-hint">Tab inserts two spaces. Shift+Tab removes them. No code is executed.</p>
+      <div class="studio-actions">
+        <button type="button" id="studio-inspect">Inspect syntax</button>
+        <button type="button" id="studio-format">Format with Prettier</button>
+        <button type="button" id="studio-undo" disabled>Undo format</button>
+        <button type="button" id="studio-copy">Copy code</button>
+        <button type="button" id="studio-save">Download code</button>
+      </div>
+      <p class="studio-status" id="studio-code-status" role="status" aria-live="polite">Ready to edit. Inspect and Format require your Knightfall sign-in.</p>
+      <h3>Inspection results</h3>
+      <pre id="studio-code-results" class="studio-results" tabindex="0">No inspection yet.</pre>
+    </section>
+
+    <section class="studio-panel" aria-labelledby="diagram-title">
+      <div class="studio-panel-heading"><div><p class="eyebrow">02 / DIAGRAM FOUNDRY</p><h2 id="diagram-title">Flowchart Summoning</h2></div><span class="studio-chip">WORKS OFFLINE</span></div>
+      <p class="studio-note">Write one step per line or use arrows to describe branches. The preview is rendered locally as SVG, without calling any AI model or outside server.</p>
+      <label for="studio-steps">Diagram steps or connections</label>
+      <textarea id="studio-steps" rows="6" maxlength="1800" spellcheck="false">Idea -> Design -> Test -> Release
+Test -> Fix bugs
+Fix bugs -> Test</textarea>
+      <p class="studio-hint">Cycles are not supported by this lightweight renderer. For a looping workflow, write the return path in the Mermaid export instead.</p>
+      <div class="studio-actions">
+        <button type="button" id="studio-diagram-build">Generate flowchart</button>
+        <button type="button" id="studio-diagram-svg" disabled>Download SVG</button>
+        <button type="button" id="studio-diagram-mermaid" disabled>Download Mermaid</button>
+      </div>
+      <p class="studio-status" id="studio-diagram-status" role="status" aria-live="polite">Diagram generation is entirely free and runs in your browser.</p>
+      <div class="studio-diagram-scroll"><div id="studio-diagram-preview" role="img" aria-label="Generated flowchart preview" class="studio-preview"><span>Generate a diagram to preview it here.</span></div></div>
+      <label for="studio-mermaid">Exportable Mermaid flowchart source</label>
+      <textarea id="studio-mermaid" rows="8" readonly spellcheck="false" placeholder="Your flowchart source will appear here"></textarea>
+      <p class="studio-hint">Mermaid text can be opened in Mermaid-compatible editors. This page uses a small built-in SVG renderer, not the complete Mermaid library.</p>
+    </section>
+  </div>
+  <footer class="studio-footer">Built with pinned MIT-licensed Prettier and Knightfall's own no-cost diagram code. No paid accounts, paid code API, execution sandbox, or third-party source upload.</footer>
+</main>
+</body></html>

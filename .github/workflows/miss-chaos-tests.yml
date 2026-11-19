@@ -15,3 +15,5 @@ jobs:
       - name: Install backend dependencies for parser tests
         run: npm install --prefix backend --no-audit --no-fund
       - run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs
+      - name: Verify Code Studio interface and client syntax
+        run: node --check public/chaos-code-studio.js && node --test scripts/chaos-code-studio-ui.test.mjs

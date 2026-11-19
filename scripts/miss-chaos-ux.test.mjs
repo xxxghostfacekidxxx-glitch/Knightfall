@@ -25,7 +25,7 @@ test("inference response budget supports long-form readings",()=>{
 
 
 test("assistant quick starters expose actual research sources and collapse extra tools on mobile",()=>{
- for(const tool of ["My Tasks","3D Assets","Textures","Museum","Wiki","Site Help","Scale","Contrast","GitHub","Inspect JS","Inspect JSON"])
+ for(const tool of ["My Tasks","3D Assets","Textures","Museum","Wiki","Site Help","Scale","Contrast","GitHub","Inspect JS","Inspect JSON","Format JS","Flowchart"])
    assert.ok(js.includes('["'+tool+'",'),tool+" starter missing");
  assert.match(js,/advancedBar\.style\.cssText = "display:none/);
  assert.match(js,/moreTools\.setAttribute\("aria-controls", "chaos-advanced-starters"\)/);

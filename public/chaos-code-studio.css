@@ -1,0 +1,41 @@
+/* Chaos Code Studio: restrained neon-cathedral styling, mobile-first */
+body.chaos-code-page{background:radial-gradient(circle at 0% 0%,#27102d 0,transparent 50%),radial-gradient(circle at 95% 4%,#102d28 0,transparent 44%),#0b0b13;color:#f4e8f6}
+.chaos-code-shell{width:min(1480px,96%);margin:0 auto;padding:1.3rem .4rem 4rem}
+.studio-links,.studio-hero-links,.studio-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem}
+.studio-links{margin:1rem 0;color:#b2b6c7;font-size:.9rem}
+.studio-links a,.studio-hero-links a{color:#ccf5df}
+.studio-hero{background:linear-gradient(130deg,#210e26e8,#091a1ad9);padding:clamp(1.3rem,4vw,3rem);border:1px solid #b3368c88;border-radius:20px;box-shadow:0 0 38px #ff2f6c12;margin-bottom:1.35rem}
+.studio-hero h1{font-size:clamp(1.8rem,4vw,3.8rem);line-height:1.1;margin:.35rem 0 .6rem;letter-spacing:.04em}
+.studio-hero h1>span:first-child{color:#ff57b6}
+.studio-hero .eyebrow,.studio-panel .eyebrow{font-weight:700;letter-spacing:.13em;color:#a9fbd7;font-size:.72rem}
+.studio-hero p{max-width:75ch;line-height:1.5}
+.studio-hero-links a{padding:.45rem .7rem;border:1px solid #8cdabf66;border-radius:9px;text-decoration:none}
+.studio-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:1rem}
+.studio-panel{min-width:0;border:1px solid #784c7a;border-radius:18px;background:#15111df5;padding:1rem;box-shadow:0 6px 24px #0005}
+.studio-panel-heading{display:flex;justify-content:space-between;gap:.5rem;align-items:center;flex-wrap:wrap}
+.studio-panel h2{margin:.35rem 0;font-size:1.45rem;color:#fae7f5}
+.studio-panel h3{margin:1.2rem 0 .55rem;font-size:1rem}
+.studio-chip{border:1px solid #66d6ad77;color:#b5f7d7;border-radius:20px;padding:.25rem .55rem;font-size:.7rem}
+.studio-note,.studio-hint,.studio-footer{color:#c6becf;font-size:.9rem;line-height:1.5}
+.studio-code-label,.studio-panel label{display:block;font-weight:700;margin:.65rem 0 .25rem}
+.studio-controls{display:grid;grid-template-columns:1fr 1.4fr;gap:.8rem}
+.studio-panel textarea,.studio-panel select,.studio-panel input[type=file]{box-sizing:border-box;display:block;max-width:100%;width:100%;padding:.7rem;border:1px solid #93648a;border-radius:9px;background:#090c16;color:#f1f1f4;font:inherit}
+.studio-panel textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.55;tab-size:2;resize:vertical}
+#studio-code{min-height:300px}
+#studio-steps{min-height:116px}
+#studio-mermaid{min-height:130px;background:#0d1b20;border-color:#3a7775}
+.studio-panel textarea:focus,.studio-panel input:focus,.studio-panel select:focus{outline:2px solid #85f8c7;outline-offset:2px}
+.studio-actions{margin:.8rem 0;align-items:stretch}
+.studio-actions button{font:inherit;cursor:pointer;border-radius:9px;padding:.6rem .7rem;color:#fff;background:#69224e;border:1px solid #f483c3a8;min-height:42px}
+.studio-actions button:first-child{background:#a52b69}
+.studio-actions button:focus-visible,.studio-hero-links a:focus-visible{outline:3px solid #b2ffd7;outline-offset:2px}
+.studio-actions button:disabled{opacity:.45;cursor:not-allowed}
+.studio-status{min-height:2rem;border-left:3px solid #6ab99e;background:#0c2220;padding:.55rem .75rem;border-radius:3px;line-height:1.45}
+.studio-results{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;border-radius:10px;border:1px solid #604c70;background:#090b15;padding:.9rem;line-height:1.6;color:#d6f7e5}
+.studio-diagram-scroll{overflow:auto;max-height:950px;border:1px solid #653a61;border-radius:12px;background:#0c1019;margin:.75rem 0}
+.studio-preview{min-height:190px;min-width:100%;display:grid;place-items:center}
+.studio-preview svg{display:block;max-width:none}
+.studio-footer{margin:1.2rem 0;text-align:center}
+@media(max-width:970px){.studio-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:580px){.chaos-code-shell{width:100%;padding:1rem .7rem 3rem}.studio-controls{grid-template-columns:1fr}.studio-panel{padding:.8rem}.studio-actions button{flex:1 1 9rem}}
+@media(prefers-reduced-motion:reduce){.studio-panel *{scroll-behavior:auto}}

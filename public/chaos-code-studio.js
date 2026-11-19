@@ -1,0 +1,172 @@
+import {buildChaosFlow} from "./chaos-flow-core.mjs";
+const API="https://api.ash-fall.com";
+const byId=id=>document.getElementById(id);
+const code=byId("studio-code"),language=byId("studio-language");
+const codeStatus=byId("studio-code-status"),codeResults=byId("studio-code-results");
+const steps=byId("studio-steps"),diagramStatus=byId("studio-diagram-status");
+const preview=byId("studio-diagram-preview"),mermaidOutput=byId("studio-mermaid");
+const undo=byId("studio-undo"),diagramSvg=byId("studio-diagram-svg"),diagramMermaid=byId("studio-diagram-mermaid");
+const encoder=new TextEncoder();
+let beforeFormat=null,currentSvg=null;
+const note=(element,text)=>{element.textContent=String(text);};
+function download(name,content,type){
+ const blob=content instanceof Blob?content:new Blob([content],{type});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1200);
+}
+async function utility(name,input){
+ if(encoder.encode(JSON.stringify(input)).length>14500)throw Error("Too much source text. Keep code under 10 KB.");
+ let response;
+ try{
+  response=await fetch(API+"/api/chaos/tools/execute",{
+   method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({name,input})
+  });
+ }catch{throw Error("Knightfall API unavailable. Local editing and diagrams still work.");}
+ let json;try{json=await response.json();}catch{throw Error("The API returned an unreadable response.");}
+ if(!response.ok)throw Error(response.status===401?"Please sign in to Knightfall to use code tools.":String(json.error||"Request failed.").slice(0,180));
+ return json.result;
+}
+async function handleCode(action){
+ const text=code.value;
+ if(!text.trim()){note(codeStatus,"Enter code first.");return;}
+ if(encoder.encode(text).length>10000){note(codeStatus,"Code exceeds the 10 KB limit. Nothing was sent.");return;}
+ const inspect=byId("studio-inspect"),format=byId("studio-format");
+ inspect.disabled=true;format.disabled=true;
+ note(codeStatus,action==="inspect"?"Checking syntax without running your code…":"Formatting through Knightfall's free Prettier Worker…");
+ try{
+  const input={code:text,language:language.value};
+  const data=await utility(action==="inspect"?"dev.code_inspect":"dev.code_format",input);
+  if(action==="inspect"){
+   if(data.syntax_valid){
+    const findings=(data.findings||[]).map(f=>f.rule+": "+f.message+" (line "+f.line+")");
+    note(codeResults,"✓ Syntax valid. "+(data.parsed_nodes?data.parsed_nodes+" parsed nodes.":"")+"\n"+(findings.length?findings.join("\n"):"No flagged patterns in this limited inspection."));
+    note(codeStatus,"Syntax inspection complete. This is not a full security audit.");
+   }else{
+    note(codeResults,"Syntax errors:\n"+(data.errors||[]).map(e=>e.message+(e.line?" at line "+e.line+", column "+e.column:"")).join("\n"));
+    note(codeStatus,"Syntax needs repair before formatting.");
+   }
+  }else if(data.valid){
+   beforeFormat=text;code.value=String(data.formatted||"");undo.disabled=false;
+   note(codeResults,"Source formatted with Prettier. Review the result before using it.");
+   note(codeStatus,data.changed?"Formatting applied. Undo is available.":"Code was already formatted.");
+  }else{
+   note(codeResults,"Formatter: "+String(data.error||"Invalid syntax."));
+   note(codeStatus,"Formatting failed. Original code was not modified.");
+  }
+ }catch(error){
+  note(codeStatus,String(error.message||"Could not reach the code tool."));
+ }finally{inspect.disabled=false;format.disabled=false;}
+}
+byId("studio-inspect").addEventListener("click",()=>handleCode("inspect"));
+byId("studio-format").addEventListener("click",()=>handleCode("format"));
+undo.addEventListener("click",()=>{
+ if(beforeFormat!==null){code.value=beforeFormat;beforeFormat=null;undo.disabled=true;note(codeStatus,"Last format undone.");}
+});
+code.addEventListener("keydown",e=>{
+ if(e.key!=="Tab")return;
+ e.preventDefault();
+ const begin=code.selectionStart,end=code.selectionEnd,selected=code.value.slice(begin,end);
+ if(e.shiftKey){
+  const remove=selected.startsWith("  ")?2:selected.startsWith(" ")?1:0;
+  if(remove){code.setRangeText(selected.slice(remove),begin,end,"select");}
+ }else{code.setRangeText("  ",begin,end,"end");}
+});
+byId("studio-copy").addEventListener("click",async()=>{
+ try{await navigator.clipboard.writeText(code.value);note(codeStatus,"Source copied.");}
+ catch{note(codeStatus,"Clipboard access unavailable. Select the code and copy it manually.");}
+});
+byId("studio-save").addEventListener("click",()=>{
+ download(language.value==="json"?"chaos-code.json":"chaos-code.js",code.value,"text/plain;charset=utf-8");
+ note(codeStatus,"File prepared for download.");
+});
+byId("studio-import").addEventListener("change",async e=>{
+ const f=e.target.files?.[0];
+ if(!f)return;
+ if(f.size>10000){note(codeStatus,"Only text files under 10 KB are supported.");e.target.value="";return;}
+ if(!/\.(?:m?js|json|txt)$/i.test(f.name)){note(codeStatus,"Use .js, .mjs, .json or .txt files.");e.target.value="";return;}
+ try{
+  const data=await f.text();
+  if(encoder.encode(data).length>10000)throw Error("File text exceeds 10 KB.");
+  code.value=data;beforeFormat=null;undo.disabled=true;
+  language.value=/\.json$/i.test(f.name)?"json":"javascript";
+  note(codeStatus,"Local file loaded in the editor. Nothing uploaded.");
+ }catch(err){note(codeStatus,String(err.message||"Could not open the file."));}
+ e.target.value="";
+});
+function node(tag,attrs={},value){
+ const element=document.createElementNS("http://www.w3.org/2000/svg",tag);
+ for(const [key,val]of Object.entries(attrs))element.setAttribute(key,String(val));
+ if(value!==undefined)element.textContent=String(value);
+ return element;
+}
+function renderFlow(flow){
+ const groups=new Map();
+ for(const n of flow.nodes){
+  const level=flow.layers[n.id]||0;
+  if(!groups.has(level))groups.set(level,[]);
+  groups.get(level).push(n);
+ }
+ const maxLevel=Math.max(...groups.keys()),maxPerRow=Math.max(...[...groups.values()].map(a=>a.length));
+ const width=Math.max(690,maxPerRow*224+85),height=Math.max(280,(maxLevel+1)*118+75);
+ const svg=node("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 "+width+" "+height,
+  width,height,role:"img","aria-label":"Flowchart with "+flow.nodes.length+" steps"});
+ svg.appendChild(node("rect",{width,height,fill:"#0c1019"}));
+ const defs=node("defs"),marker=node("marker",{id:"chaos-arrow",markerWidth:10,markerHeight:10,refX:9,refY:4,
+   orient:"auto",markerUnits:"strokeWidth"});marker.appendChild(node("path",{d:"M0 0 L9 4 L0 8 z",fill:"#84eabb"}));
+ defs.appendChild(marker);svg.appendChild(defs);
+ const coords=new Map();
+ for(const [level,group]of groups){
+  group.forEach((item,index)=>{
+   coords.set(item.id,{x:width/2+(index-(group.length-1)/2)*224,y:35+level*118});
+  });
+ }
+ for(const edge of flow.edges){
+  const a=coords.get(edge.from),b=coords.get(edge.to);
+  if(!a||!b)continue;
+  const startY=a.y+62,endY=b.y-4;
+  const controlY=(startY+endY)/2;
+  svg.appendChild(node("path",{d:"M "+a.x+" "+startY+" C "+a.x+" "+controlY+", "+b.x+" "+controlY+", "+b.x+" "+endY,
+    fill:"none",stroke:"#85edbb","stroke-width":2.5,"marker-end":"url(#chaos-arrow)"}));
+ }
+ for(const item of flow.nodes){
+  const {x,y}=coords.get(item.id);
+  svg.appendChild(node("rect",{x:x-95,y,width:190,height:62,rx:12,fill:"#33172e",stroke:"#eb69b9","stroke-width":1.8}));
+  const words=item.label.split(/\s+/),chunks=[];let line="";
+  for(const word of words){
+   if((line+" "+word).trim().length>25&&line){chunks.push(line);line=word;}
+   else line=(line+" "+word).trim();
+  }
+  if(line)chunks.push(line);
+  const display=chunks.slice(0,2);
+  const t=node("text",{x,y:y+(display.length===1?36:27),fill:"#fff1fa",
+    "font-family":"Arial,sans-serif","font-size":13,"font-weight":"600","text-anchor":"middle"});
+  for(const [i,value]of display.entries())t.appendChild(node("tspan",{x,dy:i?18:0},i===1&&chunks.length>2?value.slice(0,22)+"…":value));
+  svg.appendChild(t);
+ }
+ return svg;
+}
+byId("studio-diagram-build").addEventListener("click",()=>{
+ try{
+  const graph=buildChaosFlow({steps:steps.value});
+  currentSvg=renderFlow(graph);
+  preview.replaceChildren(currentSvg);mermaidOutput.value=graph.mermaid;
+  diagramSvg.disabled=false;diagramMermaid.disabled=false;
+  note(diagramStatus,"Created "+graph.nodes.length+" nodes and "+graph.edges.length+" connections locally. No API calls.");
+ }catch(error){
+  currentSvg=null;preview.replaceChildren(node("svg",{width:1,height:1}));mermaidOutput.value="";
+  diagramSvg.disabled=true;diagramMermaid.disabled=true;
+  note(diagramStatus,String(error.message||"Invalid diagram steps."));
+ }
+});
+diagramSvg.addEventListener("click",()=>{
+ if(!currentSvg)return;
+ const xml='<?xml version="1.0" encoding="UTF-8"?>\n'+new XMLSerializer().serializeToString(currentSvg);
+ download("chaos-flowchart.svg",xml,"image/svg+xml;charset=utf-8");
+});
+diagramMermaid.addEventListener("click",()=>{
+ if(mermaidOutput.value)download("chaos-flowchart.mmd",mermaidOutput.value,"text/plain;charset=utf-8");
+});
+// Diagram preview remains local and available without a signed-in account.
+byId("studio-diagram-build").click();
