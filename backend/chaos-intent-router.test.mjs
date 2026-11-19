@@ -5,6 +5,8 @@ test("own-data requests map only to read-only account tools",()=>{
  for(const [query,name] of [
   ["Show my unread notifications","user.notifications"],
   ["Find my notes about arcade","user.notes"],
+  ["Read my private journal entries about arcade","user.journal"],
+  ["Show my Die-ary","user.journal"],
   ["Recall my memories about music","user.memories"],
   ["Check our shared handoff board","user.handoff"],
   ["Review my profile","user.profile"],
@@ -12,11 +14,12 @@ test("own-data requests map only to read-only account tools",()=>{
   ["Show my inbox","user.inbox"]
  ])assert.equal(member(query)?.name,name,query);
  assert.deepEqual(member("Find my notes about arcade").arguments,{query:"arcade"});
+ assert.deepEqual(member("Read my private journal entries about arcade").arguments,{query:"arcade"});
 });
 test("prevent private tool use for non-command text or requests about another member",()=>{
  for(const text of [
   "Do not show my notes", "I wrote my notes yesterday",
-  "Show Samantha's private messages","Show her profile","hello","show the public arcade"
+  "Show Samantha's private messages","Show her profile","Show Samantha's journal","hello","show the public arcade"
  ])assert.equal(member(text),null,text);
 });
 test("source-specific research requests use fixed library names and bounded queries",()=>{
