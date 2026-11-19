@@ -22,6 +22,8 @@
     ["Books", "Find books about "],
     ["Papers", "Search research papers about "],
     ["Patterns", "Draft a tote bag 16 x 18 x 4 inches with a 0.5 inch seam. Use fabric width 44 inches with 10% reserve. Give me a measured cut list, approximate fabric yardage and Chaos Forge design link."],
+    ["Scale", "Scale a panel 12 x 16 inches by 125%"],
+    ["Contrast", "Check contrast between #ff4f9a and #110d1c"],
     ["Yardage", "Help me estimate how much fabric to buy. Ask me for usable fabric width, measured cut piece dimensions, piece counts, grain direction and reserve percentage. Never invent missing sizes."],
     ["Inbox", "Show my recent Chaosphere conversations"],
     ["My Tasks", "Show our shared handoff task board and summarize the unfinished tasks. Only use tasks I have access to."],

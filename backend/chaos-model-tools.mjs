@@ -15,6 +15,8 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"research.papers",description:"Search Crossref scholarly metadata and DOI links; never claim the paper was read or peer-reviewed from metadata alone.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"forge.pattern_draft",description:"Compute measured prototype sewing/craft pattern cut list and actual-editable Chaos Forge link. All dimensions are inches. Optional fabric width gives a rough no-rotation material estimate. Do not invent missing sizes.",parameters:{type:"object",properties:{template:{type:"string",enum:["tote","pouch","apron","skirt","box"]},width_in:{type:"number"},height_in:{type:"number"},depth_in:{type:"number"},seam_in:{type:"number"},fabric_width_in:{type:"number"},reserve_percent:{type:"number"},cost_per_yard:{type:"number"}},required:["template"]}},
   {name:"forge.material_estimate",description:"Estimate approximate fabric yardage and optional cost from real measured rectangular cut sizes. Pieces must already include chosen seam allowances. Never invent or rotate pieces, guarantee optimal nesting, or claim this is a production-ready layout.",parameters:{type:"object",properties:{fabric_width_in:{type:"number"},pieces:{type:"array",maxItems:24,items:{type:"object",properties:{name:{type:"string"},width_in:{type:"number"},height_in:{type:"number"},count:{type:"integer"}},required:["width_in","height_in","count"]}},reserve_percent:{type:"number"},cost_per_yard:{type:"number"}},required:["fabric_width_in","pieces"]}},
+  {name:"design.color_contrast",description:"Precise WCAG AA/AAA contrast calculation of two user-supplied opaque hex colors, including readable black/white text suggestion.",parameters:{type:"object",properties:{foreground:{type:"string"},background:{type:"string"}},required:["foreground","background"]}},
+  {name:"forge.scale_pattern",description:"Scale rectangular measured cut pieces by percent or original and target measurements; optional fixed seam and rounding. Not garment grading.",parameters:{type:"object",properties:{pieces:{type:"array",maxItems:20,items:{type:"object",properties:{name:{type:"string"},width_in:{type:"number"},height_in:{type:"number"},count:{type:"integer"}},required:["width_in","height_in","count"]}},scale_percent:{type:"number"},from_measure_in:{type:"number"},to_measure_in:{type:"number"},seam_in:{type:"number"},round_to_in:{type:"number"}},required:["pieces"]}},
   {name:"utility.now",description:"Get current date/time using an IANA time zone, default UTC",parameters:{type:"object",properties:{timezone:{type:"string"}},required:[]}},
   {name:"radar.moon",description:"Look up the calculated moon phase and upcoming lunar quarter",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"radar.shadow",description:"Get a reflective shadow-work prompt (not someone's private journal)",parameters:{type:"object",properties:{topic:{type:"string"}},required:[]}},
@@ -32,7 +34,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox"]);
 const GOD=new Set(["god.audit_summary"]);
-const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt)\b/i;
+const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||
@@ -84,8 +86,14 @@ function explicitMeasurementRequest(text){
   if(!from||!to||!Number.isFinite(value))return null;
   return {name:"utility.convert",arguments:{value,from,to}};
 }
+function explicitContrastRequest(text){
+ const m=String(text||"").trim().match(/^(?:please\s+)?(?:check|test|calculate|audit)\s+(?:(?:the|color|text|wcag)\s+)*contrast\s+(?:between\s+)?(#[0-9a-f]{3}(?:[0-9a-f]{3})?)\s+(?:and|against|on)\s+(#[0-9a-f]{3}(?:[0-9a-f]{3})?)\s*[.!?]?$/i);
+ return m?{name:"design.color_contrast",arguments:{foreground:m[1],background:m[2]}}:null;
+}
 function explicitCreatorRequest(text){
  const message=String(text||"").trim();
+ const resize=message.match(/^(?:please\s+)?(?:scale|resize)\s+(?:a|the)\s+([a-z][a-z -]{0,28}?)\s+(\d+(?:\.\d+)?)\s*(?:x|×|by)\s*(\d+(?:\.\d+)?)\s*(?:in|inch|inches)\s+(?:by|to)\s+(\d+(?:\.\d+)?)\s*%\s*[.!]?$/i);
+ if(resize)return {name:"forge.scale_pattern",arguments:{pieces:[{name:resize[1].trim(),width_in:Number(resize[2]),height_in:Number(resize[3]),count:1}],scale_percent:Number(resize[4])}};
  const book=message.match(/\b(?:find|search|look\s*up|show|recommend|research)\b.{0,35}\b(?:books?|novels?)\b(?:\s+(?:about|on|for|by|regarding))?\s+(.{2,95})/i);
  if(book)return {name:"research.books",arguments:{query:book[1].replace(/[.!?]+$/,"").trim()}};
  const paper=message.match(/\b(?:find|search|look\s*up|show|research)\b.{0,35}\b(?:papers?|studies|journal articles?|publications?)\b(?:\s+(?:about|on|for|regarding))?\s+(.{2,95})/i);
@@ -137,7 +145,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const obvious=explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
+  const obvious=explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
   // Pure deterministic helpers run before optional expensive model planning.

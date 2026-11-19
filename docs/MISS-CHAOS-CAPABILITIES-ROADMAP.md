@@ -74,3 +74,10 @@ P5: owner-only repo diagnostics, CI status, issue/PR proposals and approved code
 
 ## Cost discipline
 Use the existing Cloudflare stack, cache nonpersonal public data, cap retrieval and tool calls, and avoid claiming that a hosted LLM or external research provider is free or unlimited. Maintain graceful fallback if a paid provider is not configured.
+
+## Deterministic design tools (November 19, 2026)
+
+- `forge.scale_pattern` resizes user-measured rectangular cut pieces by a supplied percentage or measured ratio, optionally preserving a supplied seam allowance and rounding to supported increments. This is a preliminary craft pattern resize, not garment grading or photographic size inference.
+- `design.color_contrast` computes WCAG 2.x contrast ratios of user-supplied opaque hex colors, tests AA/AAA thresholds and suggests readable black/white foreground text. It does not mutate themes or claim full accessibility coverage.
+- Both tools are registered through the bounded capability gate and model planner. Clear color and single-panel resize requests avoid a second planning model. Chat starters expose them and the script version has been changed to avoid stale caches.
+- Verify with `node --test backend/chaos-*.test.mjs` and deployed Worker smoke tests. A successful repository commit alone does not prove the site is deployed.
