@@ -61,12 +61,13 @@ repoFileUse.addEventListener("click",()=>{
 });
 
 let currentRepoExcerpt=null;
-let proposalSnapshot=null, reviewPacket="", reviewCandidate="", reviewSummary="";
+let proposalSnapshot=null, reviewPacket="", reviewCandidate="", reviewSummary="",reviewSubmission=null;
 const proposeButton=byId("studio-repo-propose"),reviewDownload=byId("studio-proposal-export");
 const reviewHandoff=byId("studio-proposal-handoff");
 const reviewOutput=byId("studio-proposal-output"),reviewStatus=byId("studio-proposal-status");
+const devSubmit=byId("studio-dev-review-submit"),devSummary=byId("studio-dev-review-summary"),devStatus=byId("studio-dev-review-status");
 function clearReview(message="No proposal staged yet."){
- reviewPacket="";reviewCandidate="";reviewSummary="";reviewDownload.disabled=true;reviewHandoff.disabled=true;
+ reviewPacket="";reviewCandidate="";reviewSummary="";reviewSubmission=null;reviewDownload.disabled=true;reviewHandoff.disabled=true;devSubmit.disabled=true;
  note(reviewOutput,message);
 }
 repoRead.addEventListener("click",async()=>{
@@ -190,6 +191,11 @@ proposeButton.addEventListener("click",async()=>{
    candidate
   ].join("\n");
   reviewCandidate=candidate;
+  reviewSubmission=fullFile?{path:snapshot.path,source_sha:snapshot.commitSha,
+    original:snapshot.original,candidate}:null;
+  devSubmit.disabled=!reviewSubmission;
+  note(devStatus,fullFile?"Complete small file verified. Add a clear summary to submit for review; nothing will be committed.":
+    "This is only an excerpt. Cannot submit a partial-file change to the review docket.");
   reviewSummary=[
    "MISS CHAOS / CODE REVIEW REQUEST (NOT APPROVED)",
    "Repository: xxxghostfacekidxxx-glitch/Knightfall",
@@ -221,6 +227,32 @@ reviewDownload.addEventListener("click",()=>{
  download("knightfall-source-review.txt",reviewPacket,"text/plain;charset=utf-8");
  note(reviewStatus,"Read-only proposal downloaded. No repository or production change occurred.");
 });
+devSubmit.addEventListener("click",async()=>{
+ const proposal=reviewSubmission;
+ if(!proposal||!reviewPacket){note(devStatus,"Only complete SHA-verified source can enter the review docket.");return;}
+ const summary=devSummary.value.trim();
+ if(summary.length<12||summary.length>360){note(devStatus,"Write a specific 12–360 character explanation of the change.");return;}
+ if(code.value!==proposal.candidate){
+   clearReview("The editor changed; the old review candidate is no longer valid.");
+   note(devStatus,"Editor changed. Re-stage the exact proposal before submitting.");return;
+ }
+ if(!window.confirm("Submit this full-file source change to the Osiris/Isis review docket? The proposal will be stored for staff review. This will NOT commit, run CI or deploy code."))return;
+ devSubmit.disabled=true;
+ note(devStatus,"Rechecking the immutable main file on the server, then saving a pending review…");
+ try{
+   const result=await fetch(API+"/api/chaos/dev-reviews",{
+     method:"POST",credentials:"include",cache:"no-store",
+     headers:{"content-type":"application/json"},
+     body:JSON.stringify({...proposal,summary})
+   });
+   const data=await result.json().catch(()=>({}));
+   if(!result.ok)throw Error(String(data.error||"Developer review docket unavailable.").slice(0,235));
+   if(data.status!=="pending"||!data.id)throw Error("The server did not confirm a pending review.");
+   note(devStatus,"Submitted review #"+data.id+". No code was committed or deployed. Open Eye of Chaos's approval panel.");
+   reviewSubmission=null;devSubmit.disabled=true;
+ }catch(error){devSubmit.disabled=false;note(devStatus,String(error.message||"Unable to submit this review."));}
+});
+
 reviewHandoff.addEventListener("click",async()=>{
  if(!reviewSummary||!reviewPacket){note(reviewStatus,"Stage a verified proposal before sharing.");return;}
  if(code.value!==reviewCandidate){clearReview("Editor changed. Re-stage the proposal before sharing.");note(reviewStatus,"Review summary expired.");return;}
