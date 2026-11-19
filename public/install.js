@@ -16,6 +16,10 @@
  const copyStatus=document.getElementById("kf-install-copy-status");
  let prompt=null;
  let installed=false;
+ const installKey="kf:main-pwa-installed";
+ const recorded=()=>{try{return localStorage.getItem(installKey)==="1"}catch{return false}};
+ const remember=()=>{try{localStorage.setItem(installKey,"1")}catch{}};
+ const forget=()=>{try{localStorage.removeItem(installKey)}catch{}};
  const announce=message=>{status.textContent=message;};
  const standalone=()=>Boolean(window.matchMedia?.("(display-mode: standalone)")?.matches||
    window.matchMedia?.("(display-mode: fullscreen)")?.matches||navigator.standalone===true);
@@ -62,18 +66,18 @@
    guideTitle.focus?.({preventScroll:true});
  }
  function markInstalled(){
-   installed=true;prompt=null;
+   installed=true;prompt=null;remember();
    button.disabled=true;
    button.textContent="Already installed";
-   announce("Knightfall is installed and running as a web app on this device.");
+   announce(standalone()?"Knightfall is installed and running as an app.":"Knightfall is already installed in this browser. Open it from your device’s apps.");
    if(guide)guide.hidden=true;
    guideToggle?.setAttribute("aria-expanded","false");
  }
- if(standalone())markInstalled();
+ if(standalone()||recorded())markInstalled();
  else announce("Tap Install web app. If your browser does not support a direct prompt, clear installation steps will open.");
  window.addEventListener("beforeinstallprompt",event=>{
-   if(installed||standalone())return;
-   event.preventDefault();prompt=event;
+   if(standalone())return;
+   event.preventDefault();installed=false;forget();prompt=event;
    button.disabled=false;
    button.textContent="Install Knightfall";
    announce("Your browser is ready to install the Knightfall web app. Tap Install Knightfall.");
@@ -87,7 +91,8 @@
      await pending.prompt();
      const result=await pending.userChoice;
      if(result?.outcome==="accepted"){
-       announce("Installation accepted. Finish any remaining steps in your browser.");
+       markInstalled();
+       announce("Installation accepted. Knightfall should appear in your device's apps.");
      }else{
        showGuide();
        announce("Installation was dismissed. You can also use your browser's Install app or Add to Home Screen menu.");
