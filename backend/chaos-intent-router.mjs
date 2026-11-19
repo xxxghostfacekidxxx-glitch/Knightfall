@@ -41,7 +41,7 @@ export function explicitChaosSourceCalls(message){
  if(matches.length===2 && !matches.every(s=>/wikipedia|wikidata/.test(s.name)))return [];
  let query=text.replace(verbs," ").replace(/\b(?:in|at|on|from)\s+(?:the\s+)?(?:poly\s+haven|metropolitan\s+museum|met\s+museum|the\s+met|wikipedia|wikidata)\b/gi," ");
  for(const src of matches)query=query.replace(src.pattern," ");
- query=query.replace(/^\s*(?:(?:for|about|of|on|at|from|with|the|free|cc0|open.access|public.domain|models?|textures?|3d\s+assets?|hdris?|artworks?|artifacts?|facts?|entries?|information|records?)\s+)+/i," ");
+ query=query.replace(/^\s*(?:(?:and|or|for|about|of|on|at|from|with|the|free|cc0|open.access|public.domain|models?|textures?|3d\s+assets?|hdris?|artworks?|artifacts?|facts?|entries?|information|records?)\s+)+/i," ");
  query=query.replace(/\s+(?:(?:from|in|at|on)\s+)?(?:the\s+)?(?:free|cc0|public.domain)\s*$/i," ");
  query=cut(query);
  if(query.length<2)return [];
