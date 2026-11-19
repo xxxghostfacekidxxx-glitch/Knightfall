@@ -11,6 +11,12 @@ on:
       - 'public/miss-chaos.js'
       - 'public/miss-chaos.html'
       - 'public/miss-chaos-presence*'
+      - 'public/nav.js'
+      - 'public/memo-pad.js'
+      - 'public/memo-pad.css'
+      - 'public/memo-pad.html'
+      - 'scripts/miss-chaos-memo.test.mjs'
+      - 'scripts/miss-chaos-private-switch.test.mjs'
       - 'public/miss-chaos-dock.js'
       - 'public/creator-art-studio*'
       - 'public/devil-tools.html'
@@ -52,6 +58,13 @@ jobs:
           node --check public/vendor/visual-lab/qrcode.mjs
           node --check public/vendor/visual-lab/imagetracer.js
           node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs scripts/chaos-visual-effects.test.mjs
+      - name: Verify Miss Chaos floating dock, private modes and memo publishing
+        run: |
+          node --check public/nav.js
+          node --check public/memo-pad.js
+          node --check public/miss-chaos-presence.js
+          node --check public/miss-chaos-dock.js
+          node --test scripts/miss-chaos-private-switch.test.mjs scripts/miss-chaos-memo.test.mjs
       - name: Verify Android photo-picker, private popup and ephemeral AI image chat
         run: |
           node --check public/miss-chaos-presence.js
