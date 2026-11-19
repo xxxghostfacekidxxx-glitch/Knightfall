@@ -5,7 +5,7 @@ const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 
 test('shared master task register preserves existing records and imports 147 unique source-backed items',()=>{
  const migration=read('backend/migrations/0150_knightfall_shared_master_register.sql');
- const inserts=[...migration.matchAll(/^INSERT INTO ai_handoff_tasks\(title,details,status,priority,area,verification,source_url,next_step,blocker\)/gm)];
+ const inserts=[...migration.matchAll(/^INSERT INTO ai_handoff_tasks\(title,details,status,priority,area,verification,source_url,next_step,blocker,created_by,updated_by\)/gm)];
  assert.equal(inserts.length,147);
  assert.equal((migration.match(/^UPDATE ai_handoff_tasks SET area=/gm)||[]).length,5);
  assert.match(migration,/WHERE NOT EXISTS\(SELECT 1 FROM ai_handoff_tasks WHERE title=/);
