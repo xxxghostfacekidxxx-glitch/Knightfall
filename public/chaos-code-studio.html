@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-proposal1"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-pinned-proposal2"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -36,7 +36,7 @@
       <p class="studio-note">Editing, importing, copying and downloading stay on your device. Pressing Inspect or Format deliberately sends only the current code to Knightfall's existing authenticated API; it does not run or save that code.</p>
       <section class="studio-repository" aria-labelledby="studio-repository-title">
         <h3 id="studio-repository-title">Knightfall Source Reader · Staff Only</h3>
-        <p class="studio-note">Isis, Osiris and other authorized admins can inspect real public source from the main branch. This is a bounded read-only preview, not a GitHub editor or automatic code deployment.</p>
+        <p class="studio-note">Isis, Osiris and authorized admins can inspect a bounded public-source excerpt from an <strong>exact verified main commit</strong>. Long lines are flagged and cannot become patch proposals. This is not a GitHub editor or automatic code deployment.</p>
         <div class="studio-repo-fields">
           <label for="studio-repo-path">Repository file
             <input id="studio-repo-path" maxlength="190" value="public/miss-chaos.js" placeholder="backend/src/eye-of-chaos.js" spellcheck="false" autocomplete="off">
@@ -55,7 +55,7 @@
         <pre id="studio-repo-output" class="studio-results" tabindex="0">No source loaded yet.</pre>
         <div class="studio-proposal" aria-labelledby="studio-proposal-heading">
           <h3 id="studio-proposal-heading">Supervised patch proposal · no writes</h3>
-          <p class="studio-note">Read an allowlisted <strong>main</strong> file excerpt, copy it to the editor, make an edit, then stage a review packet. It records the original source and line range and calls the existing non-executing diff tool. <strong>Partial excerpts are not ready-to-apply patches.</strong> The reviewed full-file edit, exact base SHA, test run, approval and deployment remain separate steps.</p>
+          <p class="studio-note">Read an allowlisted <strong>main</strong> file excerpt, copy it into the editor, edit, and stage a review packet. Miss Chaos records the exact commit SHA, rechecks that main has not changed, and creates a non-executing diff. If the entire small JS/TS/JSX/TSX/JSON file was captured, it also syntax-checks the proposed full file. <strong>Partial excerpts are not ready-to-apply patches.</strong> No uploaded code is executed. Full integration tests, authorized approval, and deployment remain separate steps.</p>
           <div class="studio-actions">
             <button type="button" id="studio-proposal-export" disabled>Download proposal for human review</button>
             <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/actions" target="_blank" rel="noopener noreferrer">View actual GitHub Actions</a>
