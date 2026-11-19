@@ -291,3 +291,33 @@ test("pattern drafts understand actual fabric width and reserve with direct no-p
  assert.match(inputs[0].messages[0].content,/"fabric_width_in":44/);
  assert.match(inputs[0].messages[0].content,/"reserve_percent":10/);
 });
+
+test("member private journal previews remain owner-scoped, bounded, and read-only",async()=>{
+ const observed=[];
+ const env={DB:{prepare(sql){
+  observed.push({sql,args:[]});
+  const call=observed.at(-1);
+  return {
+   bind(...args){call.args=args;return this;},
+   async all(){return {results:[
+    {id:11,title:"Arcade repairs",body:"A long page about the arcade overlay.",updated_at:"2026-11-19"},
+    {id:12,title:"Private thoughts",body:"Completely unrelated material.",updated_at:"2026-11-18"}
+   ]};}
+  };
+ }}};
+ const handlers=createChaosAgentHandlers({env,arcadePicks:()=>({}),moonBrief:()=>({}),
+  shadowBrief:()=>({}),readGodAuditSummary:async()=>({})});
+ await assert.rejects(runChaosModelCalls([{name:"user.journal",arguments:{}}],null,handlers),/authorized|Sign-in/i);
+ const [{result}]=await runChaosModelCalls(
+  [{name:"user.journal",arguments:{query:"arcade"}}],{id:47,role:"member"},handlers);
+ assert.equal(result.previews_only,true);
+ assert.equal(result.read_only,true);
+ assert.equal(result.entries.length,1);
+ assert.equal(result.entries[0].title,"Arcade repairs");
+ assert.ok(!JSON.stringify(result).includes("Completely unrelated"));
+ assert.deepEqual(observed.map(x=>x.args),[[47]]);
+ assert.ok(observed[0].sql.includes("WHERE user_id=? AND deleted_at IS NULL"));
+ assert.ok(observed[0].sql.includes("LIMIT 60"));
+ assert.ok(observed.every(x=>/^SELECT/i.test(x.sql.trim())));
+ assert.equal(result.entries[0].url,"/die-ary.html");
+});
