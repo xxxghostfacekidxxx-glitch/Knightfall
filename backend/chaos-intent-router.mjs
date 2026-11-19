@@ -16,6 +16,10 @@ export function explicitChaosMemberCall(message){
    const query=cut(text.match(/\b(?:about|for|containing|related\s+to)\s+(.{2,90})/i)?.[1]||"");
    return lookup("user.notes",{query});
  }
+ if(/\b(?:journal|diary|die[ -]?ary)\b/i.test(text)){
+   const query=cut(text.match(/\b(?:about|for|containing|related\s+to)\s+(.{2,90})/i)?.[1]||"");
+   return lookup("user.journal",{query});
+ }
  if(/\bmemor(?:y|ies)\b/i.test(text)){
    const query=cut(text.match(/\b(?:about|for|containing|related\s+to)\s+(.{2,90})/i)?.[1]||"");
    return lookup("user.memories",{query});
