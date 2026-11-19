@@ -32,6 +32,7 @@ export async function searchOpenverseImages({query,license="all",signal}={},fetc
    creator:safeText(x.creator,90)||"Unlisted creator",
    license:safeText(x.license,24)||"Check license",
    license_url:safeExternalHttps(x.license_url),
+   thumbnail_url:safeExternalHttps(x.thumbnail),
    source:safeText(x.source,40),url:landing,
    attribution:safeText(x.attribution,480)};
  }).filter(Boolean);
