@@ -32,6 +32,9 @@ on:
       - 'scripts/smoke-arcade-render-health.mjs'
       - 'scripts/smoke-arcade-board-health.mjs'
       - 'public/arcade/hosted/ash-sudoku/**'
+      - 'public/arcade/nextgen.js'
+      - 'public/arcade/nextgen.css'
+      - 'scripts/arcade-nextgen-overlay.test.mjs'
       - 'public/arcade/hosted/ash-veil/**'
       - 'public/arcade/hosted/cinder-gauntlet/**'
       - 'scripts/smoke-arcade-three-boot.mjs'
@@ -72,6 +75,8 @@ jobs:
       - name: Verify visible and playable boards for ten arcade games (mobile and desktop)
         if: success() || failure()
         run: node scripts/smoke-arcade-board-health.mjs
+      - name: Reject full-screen VFX overlays on hosted arcade games
+        run: node --test scripts/arcade-nextgen-overlay.test.mjs
       - name: Verify Ash Veil, Cinder Gauntlet and Sudoku paint and accept input on mobile and desktop
         if: success() || failure()
         run: node scripts/smoke-arcade-three-boot.mjs
