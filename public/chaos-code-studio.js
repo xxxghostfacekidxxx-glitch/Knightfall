@@ -28,6 +28,48 @@ async function utility(name,input){
  if(!response.ok)throw Error(response.status===401?"Please sign in to Knightfall to use code tools.":String(json.error||"Request failed.").slice(0,180));
  return json.result;
 }
+// Staff source and CI inspection are read-only. The Worker rechecks staff role.
+const repoRead=byId("studio-repo-read"),ciCheck=byId("studio-ci-check");
+const repoCopy=byId("studio-repo-copy"),repoStatus=byId("studio-repo-status");
+const repoOutput=byId("studio-repo-output"),repoPath=byId("studio-repo-path");
+const repoStart=byId("studio-repo-start");
+let currentRepoExcerpt=null;
+repoRead.addEventListener("click",async()=>{
+ const path=repoPath.value.trim(),start=Number(repoStart.value);
+ repoRead.disabled=true;repoCopy.disabled=true;currentRepoExcerpt=null;
+ note(repoStatus,"Reading public main-branch source with staff authorization...");
+ try{
+  const result=await utility("staff.repo_file",{path,start_line:start,line_count:55});
+  if(!result?.available){note(repoStatus,result?.message||"Source unavailable.");note(repoOutput,"No verified source.");return;}
+  const lines=(result.lines||[]).filter(x=>Number.isInteger(x.number)&&typeof x.text==="string");
+  currentRepoExcerpt={path:result.path,lines};
+  note(repoOutput,lines.map(l=>String(l.number).padStart(4," ")+" | "+l.text).join("\n"));
+  repoCopy.disabled=lines.length===0;
+  note(repoStatus,result.path+" · "+lines.length+" of "+result.total_lines+" lines. Read-only; no code executed.");
+ }catch(error){note(repoStatus,String(error.message||"Source could not be read."));note(repoOutput,"No verified source.")}
+ finally{repoRead.disabled=false;}
+});
+repoCopy.addEventListener("click",()=>{
+ if(!currentRepoExcerpt)return;
+ const snippet=currentRepoExcerpt.lines.map(l=>l.text).join("\n");
+ if(encoder.encode(snippet).length>10000){note(repoStatus,"Excerpt is over the editor's 10 KB limit. Load fewer lines.");return;}
+ code.value=snippet;beforeFormat=null;undo.disabled=true;
+ const ext=currentRepoExcerpt.path.split(".").at(-1).toLowerCase();
+ language.value=ext==="json"?"json":ext==="ts"?"typescript":ext==="tsx"?"tsx":ext==="jsx"?"jsx":"javascript";
+ note(repoStatus,"Copied a "+currentRepoExcerpt.lines.length+"-line excerpt into the editor. This is not the complete file.");
+ code.focus();
+});
+ciCheck.addEventListener("click",async()=>{
+ ciCheck.disabled=true;note(repoStatus,"Checking actual GitHub Actions runs...");
+ try{
+  const data=await utility("staff.github_health",{});
+  const entries=(data.workflows||[]).slice(0,12);
+  note(repoOutput,entries.map(x=>x.name+" · "+(x.conclusion||x.status)+" · "+(x.url||"")).join("\n")||"No verified runs.");
+  currentRepoExcerpt=null;repoCopy.disabled=true;
+  note(repoStatus,entries.length+" recent main-branch workflow runs, "+Number(data.failed_count||0)+" failures. No jobs rerun or code changed.");
+ }catch(error){note(repoStatus,String(error.message||"GitHub status unavailable."));note(repoOutput,"No verified CI status.");}
+ finally{ciCheck.disabled=false;}
+});
 async function handleCode(action){
  const text=code.value;
  if(!text.trim()){note(codeStatus,"Enter code first.");return;}
