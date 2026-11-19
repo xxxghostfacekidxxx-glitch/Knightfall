@@ -62,8 +62,8 @@ export function guideViewer(modesResponse,toolsResponse){
  if(!modes.some(m=>m&&m.id==="standard")||!Array.isArray(toolsResponse?.capabilities))
   return {verified:false,role:"visitor",mode:null,permissions:{},capabilities:[]};
  const names=capabilities.filter(x=>typeof x==="string"&&/^[a-z_]+\.[a-z_]+$/.test(x));
- const partner=modes.find(m=>m?.id==="partner"&&typeof m.full_chat==="string");
- const owner=modes.find(m=>m?.id==="owner"&&typeof m.full_chat==="string");
+ const partner=modes.find(m=>m?.id==="partner"&&m.full_chat==="/samantha-chaos.html");
+ const owner=modes.find(m=>m?.id==="owner"&&m.full_chat==="/miss-chaos.html?companion=owner");
  const mode=owner||partner||null;
  // Role is derived from the server's verified mode list, not from username or local controls.
  return {verified:true,role:owner?"osiris":partner?"partner":"member",mode:mode?{
