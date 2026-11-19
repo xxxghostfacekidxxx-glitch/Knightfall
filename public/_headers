@@ -99,11 +99,7 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /miss-chaos-field-kit.mjs
   Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-crucible.mjs
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-crucible-core.mjs
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/chaos-crucible.css
+/chaos-crucible*
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-glitch.css
   Cache-Control: no-cache, max-age=0, must-revalidate
@@ -217,11 +213,7 @@
 /vendor/visual-lab/*
   Cache-Control: public, max-age=300
 
-# Keep the fixed Miss Chaos popup, private mode control and picture picker fresh.
-/miss-chaos-presence.js
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/miss-chaos-dock.js
-  Cache-Control: no-cache, max-age=0, must-revalidate
+# Keep the fixed Miss Chaos picture picker fresh; the popup and dock cache rules are already defined above.
 /chaos-chat-image-picker.mjs
   Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-chat-image-picker.css
