@@ -37,6 +37,6 @@ test("staff review packet binds a verified read-only main excerpt to a non-execu
  assert.match(js,/base commit SHA not locked/);
  assert.match(js,/NOT an apply-ready full-file patch/);
  assert.match(js,/code\.value!==reviewCandidate/);
- assert.match(js,/reviewPacket=.*join/);
+ assert.match(js,/reviewPacket=\[[\s\S]*?\]\.join\(/);
  assert.doesNotMatch(js,/github\.com\/repos\/[^\s]*\/contents\/.*method:\s*"PUT"/);
 });
