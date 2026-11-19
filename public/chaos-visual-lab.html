@@ -7,10 +7,10 @@
 <meta name="description" content="Chaos Visual Lab: free Pica image resizer, pixel art, tattoo stencil SVG tracer, QR share-card creator, color palettes and Openverse asset search.">
 <title>Chaos Visual Lab | Knightfall</title>
 <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="/chaos-visual-lab.css?v=20261119-v2">
+<link rel="stylesheet" href="/chaos-visual-lab.css?v=20261119-v3">
 <script src="/nav.js" defer></script>
 <script src="/vendor/visual-lab/imagetracer.js" defer></script>
-<script type="module" src="/chaos-visual-lab.js?v=20261119-v2"></script>
+<script type="module" src="/chaos-visual-lab.js?v=20261119-v3"></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -41,10 +41,26 @@
           <select id="visual-output-size"><option value="128">128 px</option><option value="256" selected>256 px</option><option value="512">512 px</option><option value="1024">1024 px</option></select>
         </label>
       </div>
+      <fieldset class="cvl-adjustments">
+        <legend>Stencil &amp; image adjustments</legend>
+        <label for="visual-threshold">Blackwork / outline sensitivity: <output id="visual-threshold-value" for="visual-threshold">145</output>
+          <input id="visual-threshold" type="range" min="1" max="254" value="145" step="1">
+        </label>
+        <div class="cvl-toggles">
+          <label><input id="visual-mirror" type="checkbox"> Mirror horizontally for transfer</label>
+          <label><input id="visual-invert" type="checkbox"> Invert grayscale / ink</label>
+          <label><input id="visual-transparent-white" type="checkbox"> Transparent white (PNG / ink only)</label>
+        </div>
+        <div class="cvl-actions cvl-adjust-buttons">
+          <button id="visual-preset-stencil" type="button">Tattoo transfer preset</button>
+          <button id="visual-adjust-reset" type="button">Reset effects</button>
+        </div>
+      </fieldset>
       <div class="cvl-actions">
         <button id="visual-process" type="button" disabled>Process image</button>
         <button id="visual-png" type="button" disabled>Export PNG</button>
         <button id="visual-webp" type="button" disabled>Export WebP</button>
+        <button id="visual-compare" type="button" aria-pressed="false" disabled>Compare original</button>
       </div>
       <p id="visual-status" class="cvl-status" aria-live="polite" role="status">Choose an image to begin. Drag and drop onto the preview also works on desktop.</p>
       <div id="visual-drop" class="cvl-stage" aria-label="Image processing preview and drop area">
@@ -80,6 +96,20 @@
       <p class="cvl-status" id="visual-trace-status" role="status" aria-live="polite">Load an image to unlock vector tracing. Source pixels never leave this device.</p>
       <div class="cvl-stage cvl-vector-stage" id="visual-svg-stage"><img id="visual-svg-preview" alt="Locally traced vector artwork preview" hidden></div>
       <p class="cvl-meta">Tracing is limited to 192 pixels on the longest input side to protect mobile devices. Vector results can be enlarged without bitmap blur but may require manual cleanup.</p>
+      <div class="cvl-print">
+        <h3>Measured stencil transfer sheet</h3>
+        <p class="cvl-description">Export a local print-ready SVG with your processed, mirrored artwork at the chosen physical size. Includes a 50 mm calibration line to verify the printed result with a ruler.</p>
+        <div class="cvl-options">
+          <label for="visual-paper">Paper
+            <select id="visual-paper"><option value="letter">US Letter</option><option value="a4">A4</option></select>
+          </label>
+          <label for="visual-print-width">Actual tattoo width (millimeters)
+            <input id="visual-print-width" type="number" min="15" max="195" value="100" step="1" inputmode="decimal">
+          </label>
+        </div>
+        <div class="cvl-actions"><button type="button" id="visual-print-sheet" disabled>Export calibrated transfer sheet SVG</button></div>
+        <p id="visual-print-status" class="cvl-status" role="status" aria-live="polite">Process an image to enable a measured transfer sheet. Print with scaling set to 100%, not Fit to Page.</p>
+      </div>
     </section>
     <section class="cvl-panel" aria-labelledby="visual-qr-title" id="sigil-maker">
       <h2 id="visual-qr-title">04 / Portal Sigils: QR share cards</h2>
