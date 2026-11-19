@@ -8,7 +8,7 @@ import {estimateFabric} from "./chaos-fabric-estimate.mjs";
 import {handleAiHandoff} from "./src/ai-handoff.js";
 import {companionFleet} from "./src/chaos-companion.mjs";
 /** Trusted read-only model tools. Every personal query binds the VERIFIED session id. */
-export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,readGodAuditSummary}){
+export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,readGodAuditSummary,adultConfirmed=false}){
   const safe=(value,max=160)=>String(value||"").trim().slice(0,max);
   const match=(text,query)=>!query||String(text||"").toLowerCase().includes(query.toLowerCase());
   return {
@@ -22,7 +22,7 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
     "forge.pattern_draft":async({input})=>makeChaosPatternDraft(input),
     "forge.material_estimate":async({input})=>estimateFabric(input),
     "utility.now":async({input})=>currentClock(input),
-    "user.bot_fleet":async({principal})=>companionFleet(env,principal),
+    "user.bot_fleet":async({principal})=>companionFleet(env,principal,{adultConfirmed}),
     "user.handoff":async({principal})=>{
       // Delegate authorization to the same route as the member's existing shared board.
       const url=new URL("https://api.ash-fall.com/api/ai-handoff/");
