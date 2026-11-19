@@ -55,8 +55,8 @@ test("full private chat requests use backend-authorized roles and account-bound 
  assert.match(chat,/request\("\/api\/chaos\/companion"\)/);
  assert.match(chat,/if\(scope\.role!=="owner"\)/);
  assert.match(chat,/companion:companionVariant/);
- assert.match(ownerPage,/miss-chaos\.js\?v=20261119-private-switch1/);
- assert.match(partnerPage,/miss-chaos\.js\?v=20261119-private-switch1/);
+ assert.match(ownerPage,/miss-chaos\.js\?v=20261119-staff-repo2/);
+ assert.match(partnerPage,/miss-chaos\.js\?v=20261119-staff-repo2/);
  assert.match(partnerPage,/data-chaos-companion="partner"/);
  assert.doesNotMatch(companion,/role:\s*body\./);
 });
