@@ -34,7 +34,6 @@ on:
       - 'public/arcade/hosted/ash-sudoku/**'
       - 'public/arcade/hosted/ash-veil/**'
       - 'public/arcade/hosted/cinder-gauntlet/**'
-      - 'public/arcade/hosted/arcade-boot-guard.js'
       - 'scripts/smoke-arcade-three-boot.mjs'
       - 'public/arcade/hosted/neon-mahjong/**'
       - 'public/arcade/hosted/cinder-merge/**'
