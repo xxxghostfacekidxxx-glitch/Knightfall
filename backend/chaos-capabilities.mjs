@@ -52,6 +52,7 @@ export const CAPABILITIES = Object.freeze({
   "radar.moon": Object.freeze({description:"Measured moon phase and next quarter",scope:"public",mutates:false,confirmation:false,maxInputBytes:64}),
   "radar.shadow": Object.freeze({description:"Public shadow-work prompts",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "user.notes": Object.freeze({description:"Read a member's own private memo previews",scope:"user",mutates:false,confirmation:false,maxInputBytes:512}),
+  "user.journal": Object.freeze({description:"Read brief previews only from the signed-in member's own private Die-ary, explicitly on request",scope:"user",mutates:false,confirmation:false,maxInputBytes:512}),
   "utility.calculate": Object.freeze({description:"Calculate arithmetic expressions",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "utility.word_count": Object.freeze({description:"Count words and estimate reading time",scope:"public",mutates:false,confirmation:false,maxInputBytes:13000}),
   "utility.convert": Object.freeze({description:"Convert craft, repair and everyday measurements with standard factors",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
