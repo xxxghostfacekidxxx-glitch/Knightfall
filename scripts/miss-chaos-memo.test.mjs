@@ -13,6 +13,10 @@ test('site-wide Miss Chaos loads memo dock with fresh asset cache keys',()=>{
  assert.match(nav,/miss-chaos-presence\.js\?v=\d{8}-[a-z0-9-]+/);
  assert.match(presence,/id="mc-memo-toggle"/);
  assert.match(presence,/id="mc-memo-panel"/);
+ assert.match(presence,/id="mc-quick-memo"/);
+ assert.match(presence,/void openMemo\(\)/);
+ assert.match(presence,/document.readyState === "loading"/);
+ assert.match(nav,/DOMContentLoaded", mountMissChaos/);
  assert.match(presence,/id="mc-move"/);
  assert.match(presence,/id="mc-minimize"/);
  assert.match(presence,/id="mc-restore"/);
