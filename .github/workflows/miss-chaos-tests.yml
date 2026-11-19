@@ -6,7 +6,12 @@ on:
       - 'backend/chaos-*'
       - 'backend/src/chaos-companion.mjs'
       - 'public/samantha-chaos*'
+      - 'public/chaos-code-studio*'
+      - 'public/ai-handoff.html'
+      - 'backend/src/ai-handoff.js'
+      - 'scripts/chaos-code-studio-ui.test.mjs'
       - 'scripts/samantha-chaos-ui.test.mjs'
+      - '.github/workflows/miss-chaos-tests.yml'
 jobs:
   test:
     runs-on: ubuntu-latest
