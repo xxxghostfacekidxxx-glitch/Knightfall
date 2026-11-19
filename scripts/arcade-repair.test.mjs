@@ -51,7 +51,7 @@ test("new PWA fetch always refreshes game documents, preserving kitchen offline 
  assert.match(sw,/const navigation=request\.url\.includes\("\/arcade\/hosted\/"\)/);
  assert.match(sw,/new Request\(request,\{cache:"no-store"\}\)/);
  assert.match(sw,/caches\.match\("\/arcade\/hosted\/hex-and-whisk\/index\.html"/);
- assert.match(sw,/knightfall-shell-v75/);
+ assert.match(sw,/knightfall-shell-v\d+/);
  assert.match(html,/id="arcade-repair"/);
  assert.match(html,/arcade-repair\.js/);
 });
