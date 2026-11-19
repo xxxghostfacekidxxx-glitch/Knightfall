@@ -24,3 +24,19 @@ test("Studio escapes content through text and SVG nodes, never executes or persi
  assert.doesNotMatch(js,/new Function/);
  assert.match(js,/URL\.revokeObjectURL/);
 });
+
+test("staff review packet binds a verified read-only main excerpt to a non-executing diff",()=>{
+ for(const id of ["studio-repo-propose","studio-proposal-export","studio-proposal-status","studio-proposal-output"]){
+  assert.ok(html.includes('id="'+id+'"'),"missing proposal control "+id);
+ }
+ assert.match(html,/Stage review proposal from edited excerpt/);
+ assert.match(html,/Partial excerpts are not ready-to-apply patches/);
+ assert.match(js,/if\(result\.branch!=="main"\)/);
+ assert.match(js,/proposalSnapshot=.*original:snippet/);
+ assert.match(js,/utility\("dev\.code_diff",\{before:snapshot\.original,after:candidate\}\)/);
+ assert.match(js,/base commit SHA not locked/);
+ assert.match(js,/NOT an apply-ready full-file patch/);
+ assert.match(js,/code\.value!==reviewCandidate/);
+ assert.match(js,/reviewPacket=.*join/);
+ assert.doesNotMatch(js,/github\.com\/repos\/[^\s]*\/contents\/.*method:\s*"PUT"/);
+});
