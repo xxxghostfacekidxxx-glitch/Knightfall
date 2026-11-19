@@ -32,7 +32,10 @@ test('dock has four corners, automatic control avoidance, minimize, and fullscre
  assert.match(dock,/window\.addEventListener\(event,schedule/);
  assert.match(dock,/fullscreenchange/);
  assert.ok(dock.includes('kf:miss-chaos:compact'));
- assert.ok(dock.includes("window.matchMedia('(max-width:1366px)').matches"));
+ assert.match(dock,/let initiallyMinimized=false/);
+ assert.match(dock,/visible-recovery-v1/);
+ assert.match(dock,/syncFullscreenDock/);
+ assert.doesNotMatch(dock,/root\.hidden=!!document\.fullscreenElement/);
  assert.match(style,/\[data-dock="bl"\]/);
  assert.match(style,/\[data-dock="tl"\]/);
  assert.match(style,/\[data-dock="tr"\]/);
@@ -57,6 +60,17 @@ test('notes remain account-owned and never trigger a message on autosave',()=>{
  const save=memo.slice(memo.indexOf('async function commit()'),memo.indexOf('function scheduleSave()'));
  assert.doesNotMatch(save,/\/api\/messages\//);
 });
+test('publish routes copy only through authenticated, explicit journal and shared handoff actions',()=>{
+ assert.match(memo,/\/api\/die-ary\/entries/);
+ assert.match(memo,/\/api\/ai-handoff\/tasks/);
+ assert.match(memo,/\/api\/ai-handoff\/notes/);
+ assert.match(memo,/if\(dirty&&!await commit\(\)\)return/);
+ assert.match(memo,/destination!==\'journal\'&&!confirm/);
+ assert.match(memo,/Memo was not published/);
+ assert.match(memo,/Your original is safe/);
+ assert.match(memo,/memo-publish-box/);
+});
+
 test('quick send requires a saved memo, member selection and separate Memo Mail delivery',()=>{
  assert.match(memo,/\/api\/discover\?q=/);
  assert.match(memo,/\/api\/memo-mail/);
