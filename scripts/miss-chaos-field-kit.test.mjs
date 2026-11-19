@@ -7,6 +7,10 @@ test("members get free practical tools without owner or partner commands",()=>{
  assert.ok(standard.length>=6);
  assert.ok(standard.some(p=>p.id==="craft"));
  assert.ok(standard.some(p=>p.id==="code"));
+ assert.ok(standard.some(p=>p.id==="games"));
+ assert.ok(standard.some(p=>p.id==="moon"));
+ assert.ok(standard.some(p=>p.id==="journal"));
+ assert.match(promptsForMode("owner").find(p=>p.id==="handoff").text,/^Read our Between the Flames/);
  assert.ok(!standard.some(p=>p.privateOnly));
  assert.deepEqual(promptsForMode("guest").map(p=>p.id),standard.map(p=>p.id));
  for(const mode of ["owner","partner"]){
