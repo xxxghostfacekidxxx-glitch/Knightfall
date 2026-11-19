@@ -75,6 +75,8 @@ jobs:
         run: node scripts/css-route-inventory.mjs
       - name: Inventory exact CSS rule duplication
         run: node scripts/css-rule-dedup.mjs --check
+      - name: Install free backend parser dependencies for companion tests
+        run: npm install --prefix backend --no-audit --no-fund
       - name: Run focused regression tests
         run: |
           node --test scripts/site-command-nav.test.mjs scripts/ai-handoff-master.test.mjs
