@@ -3,7 +3,7 @@
   "info": {
     "title": "Knightfall Between the Flames AI Bridge",
     "version": "1.0.0",
-    "description": "Private shared to-do list and handoff notes for Ronnie and Samantha. Each person creates and privately stores their own expiring AI connection key on https://ash-fall.com/ai-handoff.html. Do not put keys in GPT instructions or conversations. Read the newest snapshot before editing and confirm successful writes."
+    "description": "Private account-scoped Knightfall shared task and handoff note API. Each authorized collaborator creates a separate expiring AI key at https://ash-fall.com/ai-handoff.html. Never put keys in GPT instructions, chat messages or a public GPT. Read the latest snapshot before making updates."
   },
   "servers": [
     {
@@ -122,7 +122,7 @@
       "get": {
         "operationId": "getHandoffSnapshot",
         "summary": "Read the latest shared Knightfall to-do list and handoff notes",
-        "description": "Call before working on or discussing shared project tasks. The response contains the current task versions, notes, and instructions, including a message for Samantha. This is the source of truth; prior chat text may be outdated.",
+        "description": "Read the current task list, versions and private handoff notes before working on the shared project. Previous chat messages may be outdated.",
         "responses": {
           "200": {
             "description": "Authenticated shared workspace response with current records."
