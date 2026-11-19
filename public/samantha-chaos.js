@@ -115,7 +115,7 @@
      set(summary,
        (permissions.can_approve_drafts?"✓ Versioned draft approvals · ":"Draft approvals restricted · ")+
        (permissions.can_theme_publish?"✓ Audited theme publishing + rollback · ":"Theme publishing restricted · ")+
-       "GOD-only: Eye of Horus, root ownership and master emergency pause.");
+       "Osiris-only: Eye of Horus, root ownership and master emergency pause.");
    }
    await Promise.all([refreshBoard(),refreshFleet()]);
   }catch(error){set(gateStatus,error.message);}
