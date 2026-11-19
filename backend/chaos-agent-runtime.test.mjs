@@ -187,3 +187,35 @@ test("missing sizes are never invented by the direct Forge route",async()=>{
  assert.match(calls[0].messages[0].content,/height_in/);
  assert.equal(calls.length,1);
 });
+
+test("unread alerts tool is read-only and bound to the authenticated member",async()=>{
+ const seen=[];
+ const env={DB:{prepare(sql){return{bind(id){
+   seen.push({sql,id});
+   return {
+     all:async()=>({results:[{id:9,kind:"message",title:"New message",body:"Your reply arrived",
+       url:"/messages.html?conversation=11",created_at:"2026-11-18"}]}),
+     first:async()=>({count:1})
+   };
+ }}}}};
+ const handlers=createChaosAgentHandlers({env,arcadePicks:()=>({}),moonBrief:()=>({}),
+   shadowBrief:()=>({}),readGodAuditSummary:async()=>({})});
+ await assert.rejects(runChaosModelCalls([{name:"user.notifications",arguments:{}}],null,handlers),/authorized/);
+ const result=await runChaosModelCalls([{name:"user.notifications",arguments:{}}],{id:47,role:"member"},handlers);
+ assert.equal(result[0].result.unread_count,1);
+ assert.equal(result[0].result.alerts[0].url,"/messages.html?conversation=11");
+ assert.equal(result[0].result.read_only,true);
+ assert.ok(seen.every(row=>row.id===47&&/user_id=\?/.test(row.sql)&&/^SELECT\b/.test(row.sql)));
+ assert.equal(seen.length,2);
+});
+test("Miss Chaos can retrieve unread notices when the model ignores its tools",async()=>{
+ const inputs=[];
+ const ai={run:async(_model,opts)=>{
+   inputs.push(opts);return opts.tools?{response:"ignored"}:{response:"A message is waiting."};
+ }};
+ const handlers={"user.notifications":async()=>({unread_count:1,alerts:[{title:"New message"}]})};
+ await inferWithChaosTools({ai,model:"fast",principal:{id:47},
+   messages:[{role:"system",content:"base"},{role:"user",content:"Show my unread notifications"}],handlers});
+ assert.equal(inputs.length,2);
+ assert.match(inputs[1].messages[0].content,/New message/);
+});
