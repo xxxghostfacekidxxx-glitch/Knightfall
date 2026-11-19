@@ -13,9 +13,11 @@ test("private Samantha shell inherits real account-bound Miss Chaos with gated d
  assert.match(html,/\/miss-chaos\.js\?/);
  assert.match(js,/me\.role!=="partner"/);
  assert.match(js,/\/api\/chaos\/companion/);
- assert.match(chat,/partnerCompanion\?"partner":undefined/);
+ assert.match(chat,/const companionVariant = partnerCompanion \? "partner" : ownerCompanion \? "owner"/);
+ assert.match(chat,/companion:companionVariant/);
  assert.match(backend,/companionMode=body\.companion==="partner"/);
  assert.match(backend,/access\.role!=="partner"/);
+ assert.match(backend,/access\.role!=="owner"\|\|user\.role!=="god"/);
 });
 test("shared board and published bot chat use explicit signed-in actions, no auto-post",()=>{
  assert.match(js,/credentials:"include"/);
