@@ -15,7 +15,7 @@ test("local art lab is discoverable, usable without staff login, and responsive"
   "visual-status","visual-drop","visual-preview","visual-swatches","visual-css","visual-copy-colors","visual-save-colors"]){
   assert.ok(html.includes('id="'+id+'"'),id);
  }
- assert.match(html,/Your selected image stays in your browser/);
+ assert.match(html,/Your selected image and QR design stay in your browser/);
  assert.match(css,/@media\(max-width:480px\)/);
  assert.match(html,/src="\/nav.js"/);
 });
