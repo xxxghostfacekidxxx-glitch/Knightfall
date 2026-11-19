@@ -101,16 +101,16 @@ if(root){
      ?"Master execution locks and GOD-only audit/oversight are exclusive to the verified owner. Reviewing a proposed patch is not publishing or deploying it."
      :"Partner access does not transfer GOD authority, other members' memories, private credentials, or external Cloudflare/GitHub permissions. Approvals and Theme Crew publishing appear only when your separate admin privileges are verified.";
  }
- function updateDemo(){
+ function updateDemo(reset=true){
    const demo=GUIDE_DEMOS[tool.value];
    if(!demo)return;
    $("#mc-guide-tool-label").textContent=demo.label;
    toolInput.placeholder=demo.placeholder;
    toolInput.maxLength=demo.id==="calc"?100:3000;
    $("#mc-guide-tool-description").textContent=demo.description;
-   toolResult.textContent="Only actual server responses appear here. No made-up test results.";
+   if(reset)toolResult.textContent="Only actual server responses appear here. No made-up test results.";
    toolRun.disabled=!view.verified||!view.capabilities.includes(demo.capability)||loading;
-   setStatus(toolStatus,view.verified
+   if(reset)setStatus(toolStatus,view.verified
      ?toolRun.disabled?"This particular utility is not listed for this account.":"Ready. Press Try to run this read-only utility."
      :"Sign in to check which utilities are available.");
  }
@@ -140,7 +140,7 @@ if(root){
    }catch(error){
      toolResult.textContent="No verified result. Nothing has been invented.";
      setStatus(toolStatus,String(error.message||"Utility failed."),true);
-   }finally{loading=false;updateDemo();}
+   }finally{loading=false;updateDemo(false);}
  });
  async function request(path){
    const res=await fetch("https://api.ash-fall.com"+path,{method:"GET",credentials:"include",cache:"no-store"});
