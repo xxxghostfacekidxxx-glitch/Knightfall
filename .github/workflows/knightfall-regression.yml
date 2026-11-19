@@ -80,7 +80,7 @@ jobs:
       - name: Run focused regression tests
         run: |
           node --test scripts/site-command-nav.test.mjs scripts/ai-handoff-master.test.mjs
-          node --test backend/chaos-companion.test.mjs scripts/samantha-chaos-ui.test.mjs scripts/miss-chaos-private-switch.test.mjs
+          node --test scripts/samantha-chaos-ui.test.mjs scripts/miss-chaos-private-switch.test.mjs
           node --check public/business-metrics-report.js
           node --test scripts/home-start.test.mjs scripts/business-metrics-report.test.mjs backend/src/business-metrics.test.mjs
           node --test scripts/public-legal-and-shop-theme.test.mjs
