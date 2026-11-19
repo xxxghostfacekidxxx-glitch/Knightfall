@@ -31,10 +31,17 @@ test("staff review packet binds a verified read-only main excerpt to a non-execu
  }
  assert.match(html,/Stage review proposal from edited excerpt/);
  assert.match(html,/Partial excerpts are not ready-to-apply patches/);
- assert.match(js,/if\(result\.branch!=="main"\)/);
+ assert.match(js,/result\.branch!=="main"/);
+ assert.match(js,/result\.commit_sha/);
+ assert.match(js,/longLinesOmitted/);
  assert.match(js,/proposalSnapshot=.*original:snippet/);
  assert.match(js,/utility\("dev\.code_diff",\{before:snapshot\.original,after:candidate\}\)/);
- assert.match(js,/base commit SHA not locked/);
+ assert.match(js,/Immutable base commit SHA/);
+ assert.match(js,/fresh\.commit_sha!==snapshot\.commitSha/);
+ assert.match(js,/STALE SOURCE/);
+ assert.match(js,/fullFile&&/);
+ assert.match(js,/utility\("dev\.code_inspect"/);
+ assert.match(js,/syntax preflight failed/);
  assert.match(js,/NOT an apply-ready full-file patch/);
  assert.match(js,/code\.value!==reviewCandidate/);
  assert.match(js,/reviewPacket=\[[\s\S]*?\]\.join\(/);
