@@ -10,6 +10,9 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"resource.met",description:"Find historical garments, crafted objects and public-domain art in The Met collection",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"resource.polyhaven",description:"Search CC0 3D models, textures and HDRI assets from Poly Haven with source credit",parameters:{type:"object",properties:{query:{type:"string"},type:{type:"string",enum:["models","textures","hdris"]}},required:["query"]}},
   {name:"resource.wikidata",description:"Look up structured facts and references from Wikidata",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"research.books",description:"Search public Open Library book catalog for titles, authors and publication years. No full book text.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"research.papers",description:"Search Crossref scholarly metadata and DOI links; never claim the paper was read or peer-reviewed from metadata alone.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"forge.pattern_draft",description:"Compute measured prototype sewing/craft pattern cut list and actual-editable Chaos Forge link. All dimensions are inches. If dimensions are missing, ask user rather than guessing.",parameters:{type:"object",properties:{template:{type:"string",enum:["tote","pouch","apron","skirt","box"]},width_in:{type:"number"},height_in:{type:"number"},depth_in:{type:"number"},seam_in:{type:"number"}},required:["template"]}},
   {name:"utility.now",description:"Get current date/time using an IANA time zone, default UTC",parameters:{type:"object",properties:{timezone:{type:"string"}},required:[]}},
   {name:"radar.moon",description:"Look up the calculated moon phase and upcoming lunar quarter",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"radar.shadow",description:"Get a reflective shadow-work prompt (not someone's private journal)",parameters:{type:"object",properties:{topic:{type:"string"}},required:[]}},
@@ -23,7 +26,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff"]);
 const GOD=new Set(["god.audit_summary"]);
-const TOOL_INTENT=/\b(search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven)\b/i;
+const TOOL_INTENT=/\b(search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||
