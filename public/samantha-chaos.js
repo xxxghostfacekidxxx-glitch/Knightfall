@@ -107,6 +107,16 @@
    const me=await secureFetch("/api/chaos/companion");
    if(me.role!=="partner"){set(gateStatus,"This page is reserved for the accepted Knightfall collaborator. The owner can use their own Miss Chaos and Between the Flames.");return;}
    gate.hidden=true;desk.hidden=false;chat.hidden=false;
+   const adminTools=$("samantha-admin-tools"),summary=$("samantha-admin-power-summary");
+   const permissions=me.permissions||{};
+   const verifiedAdmin=me.staff_role==="admin"&&permissions.can_admin===true&&permissions.can_eye_of_chaos===true;
+   adminTools.hidden=!verifiedAdmin;
+   if(verifiedAdmin){
+     set(summary,
+       (permissions.can_approve_drafts?"✓ Versioned draft approvals · ":"Draft approvals restricted · ")+
+       (permissions.can_theme_publish?"✓ Audited theme publishing + rollback · ":"Theme publishing restricted · ")+
+       "GOD-only: Eye of Horus, root ownership and master emergency pause.");
+   }
    await Promise.all([refreshBoard(),refreshFleet()]);
   }catch(error){set(gateStatus,error.message);}
  }
