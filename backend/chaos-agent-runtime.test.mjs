@@ -321,3 +321,22 @@ test("member private journal previews remain owner-scoped, bounded, and read-onl
  assert.ok(observed.every(x=>/^SELECT/i.test(x.sql.trim())));
  assert.equal(result.entries[0].url,"/die-ary.html");
 });
+
+test("private journal is inaccessible to speculative model tools, but explicit owner requests work",async()=>{
+ let reads=0,offeredJournal=false;
+ const handlers={"user.journal":async()=>{reads++;return {entries:[{title:"Only mine"}],read_only:true};}};
+ const ai={run:async(_model,options)=>{
+  if(Array.isArray(options.tools)){
+   offeredJournal=options.tools.some(t=>t.name==="user.journal");
+   // Even an untrusted model fabricating an unseen private tool name cannot trigger the read.
+   return {tool_calls:[{name:"user.journal",arguments:{}}]};
+  }
+  return {response:"I will not invent a private journal lookup."};
+ }};
+ const principal={id:47,role:"member"};
+ await inferWithChaosTools({ai,model:"test",messages:[{role:"user",content:"Research journal writing techniques"}],principal,handlers});
+ assert.equal(offeredJournal,false);
+ assert.equal(reads,0);
+ await inferWithChaosTools({ai,model:"test",messages:[{role:"user",content:"Read my private journal"}],principal,handlers});
+ assert.equal(reads,1);
+});
