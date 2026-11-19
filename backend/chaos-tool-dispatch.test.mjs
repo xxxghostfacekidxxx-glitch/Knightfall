@@ -3,12 +3,15 @@ import assert from "node:assert/strict";
 import {dispatchChaosTool,describeChaosTools} from "./chaos-tool-dispatch.mjs";
 
 test("anonymous users only see public capabilities",()=>{
-  assert.deepEqual(describeChaosTools(null),["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","research.github_repos","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape"]);
+  assert.deepEqual(describeChaosTools(null),["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","design.palette_build","research.dictionary","forge.scale_pattern","dev.code_inspect","research.github_repos","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape"]);
 });
 test("signed-in users do not see God Mode capabilities",()=>{
   const names=describeChaosTools({id:"member",role:"user"});
   assert.ok(names.includes("user.memories"));
   assert.ok(!names.includes("god.diagnostics"));
+  assert.ok(names.includes("research.dictionary"));
+  assert.ok(names.includes("design.palette_build"));
+  assert.ok(!names.includes("staff.repo_file"));
 });
 test("God Mode visibility is explicitly gated",()=>{
   assert.ok(describeChaosTools({id:"owner",role:"god"}).includes("god.propose_change"));
