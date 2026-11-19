@@ -5,7 +5,7 @@ const json=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:{"
 function fixture(user={id:1,role:"god"},delegated=false){
  let saved=null,logged=[];
  const env={DB:{prepare(sql){
-  return {bind(...params){return {
+  return {async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;return null;},bind(...params){return {
    async first(){if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:user.id,invited_by:1,status:"accepted"}:null;if(sql.startsWith("SELECT value"))return saved===null?null:{value:saved};return null},
    async all(){return {results:logged.map(e=>({created_at:e.created_at,actor_id:e.actor_id,details:JSON.stringify(e.details)}))}},
    async run(){
