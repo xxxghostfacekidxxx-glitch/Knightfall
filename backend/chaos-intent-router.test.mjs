@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {explicitChaosMemberCall as member,explicitChaosSourceCalls as source} from "./chaos-intent-router.mjs";
+import {explicitChaosMemberCall as member,explicitChaosSourceCalls as source,explicitChaosQuickCall as quick,explicitChaosSiteCall as site} from "./chaos-intent-router.mjs";
 test("own-data requests map only to read-only account tools",()=>{
  for(const [query,name] of [
   ["Show my unread notifications","user.notifications"],
@@ -41,4 +41,20 @@ test("two reference sources allowed, no unbounded multi-library search",()=>{
  assert.deepEqual(pair.map(x=>x.arguments.query),["dragonflies","dragonflies"]);
  assert.deepEqual(source("Find articles at the Met and Poly Haven for cosplay"),[]);
  assert.deepEqual(source("I'm reading Wikipedia"),[]);
+});
+
+test("quick arithmetic, word counts, moon and timezone use trusted fixed tools",()=>{
+ assert.deepEqual(quick("Calculate 2+3*4"),{name:"utility.calculate",arguments:{expression:"2+3*4"}});
+ assert.deepEqual(quick("Count words: bad little gremlins"),{name:"utility.word_count",arguments:{text:"bad little gremlins"}});
+ assert.deepEqual(quick("What is the moon phase today?"),{name:"radar.moon",arguments:{}});
+ assert.deepEqual(quick("What time in America/Chicago?"),{name:"utility.now",arguments:{timezone:"America/Chicago"}});
+ for(const request of ["Calculate require('fs')","Word count", "Time in evil.example", "Solve everything"])
+  assert.equal(quick(request),null,request);
+});
+test("site navigation is grounded and does not swallow unrelated research",()=>{
+ assert.equal(site("Where is the arcade?").name,"site.search");
+ assert.equal(site("Where can I find Chaos Forge?").arguments.query,"Where can I find Chaos Forge?");
+ assert.equal(site("How do I find the Creator Foundry?").name,"site.search");
+ for(const request of ["Where are ghosts made?","Tell me how to create a sword", "What is love"])
+  assert.equal(site(request),null,request);
 });
