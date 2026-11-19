@@ -20,6 +20,12 @@ function announceReadChange(){
  window.dispatchEvent(new Event("kf:notifications-changed"));
  try{localStorage.setItem("kf:notifications-changed",String(Date.now()));}catch{}
 }
+function closeHandledPush(options){
+ if(!("serviceWorker" in navigator))return;
+ const payload={type:"KF_CLOSE_HANDLED_NOTIFICATIONS",...options};
+ if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage(payload);
+ else navigator.serviceWorker.ready.then(reg=>reg.active?.postMessage(payload)).catch(()=>{});
+}
 function noticeDestination(n){
  const id=Number(n.target_id);
  if(n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(id)&&id>0)return "/messages.html?conversation="+id;
@@ -63,6 +69,7 @@ async function load(){
       unreadCount=Math.max(0,unreadCount-1);
       status.textContent=unreadCount+" unread";
       announceReadChange();
+      closeHandledPush({notificationId:Number(item.dataset.notice)});
      }catch(error){
       status.textContent="Could not dismiss notification: "+error.message;
       return;
@@ -303,7 +310,7 @@ document.querySelector("#read-all").onclick=async()=>{
   showingHistory=false;
   const history=document.querySelector("#show-history");
   history.textContent="View past alerts";history.setAttribute("aria-pressed","false");
-  announceReadChange();await load();
+  announceReadChange();closeHandledPush({all:true});await load();
  }catch(e){status.textContent=e.message}
 };
 let lastRefresh=0;
