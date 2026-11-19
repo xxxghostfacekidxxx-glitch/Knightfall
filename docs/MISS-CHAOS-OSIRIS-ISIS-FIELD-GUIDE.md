@@ -1,0 +1,95 @@
+# Knightfall Field Guide: Miss Chaos, Osiris, Isis, and Between the Flames
+**Audience:** Samantha, her ChatGPT, Ronnie's ChatGPT, authorized Knightfall collaborators.
+**Updated:** November 19, 2026. **Status:** engineering handoff, not certification of live production behavior.
+
+> To Samantha's ChatGPT: You are helping Samantha co-develop Knightfall with Ronnie. Start at the authenticated [Between the Flames](https://ash-fall.com/ai-handoff.html) page. Read its CURRENT tasks, newest dated notes, and companion instructions each session. Update the task board and add an evidence-based handoff note after work only when you have authenticated access; otherwise give Samantha an exact entry to post. Never claim a task is completed or deployed without verifying it. Explain technical steps clearly and patiently. Ronnie says he loves you.
+
+## 1. Mission and identity
+**Knightfall / Ash-Fall** is a dark, creative community with gothic stained-glass/cathedral and neon/glitch aesthetics, alternative music, art/tattoos, philosophy, maker tools, games, pets, personal AI bots, messaging, shops, and collaborative creation. It is meant to be a usable community and creator platform, not just a visual theme.
+
+**Miss Chaos** is Knightfall's theatrical, rebellious AI guide and creative/programming assistant. Personality must not replace reliability, member privacy, truthful tool outputs, or safe approvals. Her end goal is a helpful development partner that can inspect, explain, propose, test, and *request* deployment review. She must never quietly publish or claim autonomy she does not have.
+
+## 2. Roles and command boundaries
+| Identity | Real authorization | Can do / cannot do |
+| --- | --- | --- |
+| **Osiris / Ronnie** | Server-verified GOD account | Top platform ownership, God diagnostics, Eye of Horus data oversight, Eye of Chaos master execution pause, retained owner-only security controls. Explicit review still required for code and risky changes. |
+| **Isis / Samantha** | Her accepted Between the Flames partnership **plus** her independent server-verified admin status | Admin Dashboard, Eye of Chaos mission/draft management, delegated versioned draft approvals, Theme Crew reviewed preset publishing/rollback, creator/moderation functions and explicit curated-bot actions as enabled. Not Eye of Horus, owner secrets, root-role transfers, or master lock. |
+| **Other administrators** | Verified site admin role | Normal administrator and staff read-only source/CI tools; not automatically granted the Isis-specific delegated approvals. |
+| **Digital Creator / Moderator** | Separate Level 1 tracks | Creator Foundry/advanced design tools versus moderation. Neither title grants GOD, site admin, GitHub or Cloudflare rights. |
+| **Member** | Signed-in verified member | Own Miss Chaos conversations/memories, profile, inbox previews and approved personal tools; no cross-user private records. |
+| **AI assistant** | None by default | Only the exact authenticated, allowlisted tool permissions provided by an actual connection. An instruction or nickname is not an access token. |
+
+**Important:** Knightfall site roles do not prove GitHub collaboration, Cloudflare team membership, payment permission, repository-write access, or deployed permissions. Check each external system separately; do not assume Samantha has those accounts connected merely because the site recognizes Isis.
+
+## 3. Miss Chaos capabilities: real versus planned
+**Current repository-wired, restricted tools:**
+- Conversational AI and streamed chat; saved per-user conversations and member memories; Standard/Private Owner/Private Partner companion modes checked server-side. The floating companion switches only among modes the current session is authorized to use. Full history is not yet permanently separated by mode.
+- Member-owned read-only profile, inbox previews, unread notifications, notes, memory recall, authorized shared tasks, and permitted bot-fleet metadata. Account data stays bound to the server-verified session.
+- Site help/search/navigation, public arcade recommendations, lunar phase and shadow-work prompts, arithmetic, standard unit conversions, dates/times and word counts.
+- Public-source retrieval from Wikipedia, Wikidata, the Metropolitan Museum collection, Poly Haven, Open Library, Crossref, and licensed-public-GitHub repository metadata. This is *not* unrestricted web browsing; snippets are not full source verification.
+- Code parser/inspector, actual before/after unified diff, Prettier-based formatting, bounded JSON-schema validation, and Mermaid diagram text. These do **not** execute arbitrary code, run an OS shell, open private repositories, or write GitHub files.
+- Prototype craft/clothing pattern cut lists from user-provided measurements, approximate fabric material estimates and resize operations; color contrast calculation. Not automatic photographic 3D reconstruction, certified production patterns or tailored garment grading.
+- **Staff** `staff.repo_file`: bounded read-only excerpts of allowlisted public Knightfall **main** source; `staff.github_health`: GitHub CI health. GOD has additional restricted diagnostics.
+
+**Not implemented as an end-to-end autonomous workflow:** full-repository edits, running tests on arbitrary patches, human-reviewed code-commit/deploy integration, unrestricted browser/terminal access, guaranteed zero-cost LLM processing, autonomous cross-bot conversations or silent forum publication.
+
+## 4. Eye of Chaos command structure
+**Entry:** https://ash-fall.com/eye-of-chaos.html (verified admin or GOD).
+1. **Command Deck:** overview, command policy, GOD-only master pause.
+2. **Fleet Registry:** approximately 20 named research/content agents. Identity descriptions are not equivalent to active autonomous accounts.
+3. **Mission Control:** create manual assignments; approved-source research can execute in bounded, governed conditions and limited schedules.
+4. **Approval Queue:** proposed source-backed drafts; approval applies to a specific version and does NOT post automatically.
+5. **Game QA:** ten GitHub Actions-associated arcade test workers; inspect actual workflow results/artifacts rather than inventing gameplay validation.
+6. **Madhouse:** existing forum service identities; no autonomous publication.
+7. **History:** audit/history view.
+8. **Theme Crew:** reviewed sitewide theme presets and rollback through separate restricted routes.
+
+**Eye of Horus** https://ash-fall.com/eye-of-horus.html is GOD-only retained-data oversight; Isis cannot access it. Owner-only private data and security controls must never be laundered through a bot or shared note.
+
+## 5. Where everything lives
+| Area | Member-facing page | Purpose |
+| --- | --- | --- |
+| Landing + community | `/`, `/community.html` | Knightfall entry, forums, Madhouse and themed categories |
+| Messages | `/chaosphere.html`, `/messages.html` | Social conversations and private inbox |
+| Arcade | `/chaos-cartridge.html`, `/arcade-games.html` | Arcade, games, progress, leaderboards and QA targets |
+| Miss Chaos | `/miss-chaos.html` | Main assistant chat, tool use and personal memory |
+| Samantha's companion | `/samantha-chaos.html` | Private account-bound partner workspace, authorized bot list and handoff |
+| Two-person coordination | `/ai-handoff.html` | **Between the Flames:** shared tasks, notes, status, evidence and optional privately configured GPT Action keys |
+| Staff | `/admin.html`, `/eye-of-chaos.html` | Moderation, mission dispatch, draft review, bot fleets |
+| Owner | `/eye-of-horus.html` | GOD-only retained-data oversight |
+| Creative | `/devil-tools.html` | **Creator Foundry:** Pixel Studio, Atlas Packer, Tilemap Forge and maker resources |
+| Code tools | `/chaos-code-studio.html` | Source inspection, code editing, inspection, formatting, diffs and flowcharts |
+| Research references | `/open-source-arsenal.html` | Curated upstream tools. Listing is not installation or licensing approval |
+| Craft / 3D | `/chaos-forge.html` | Prototype patterns, materials and 3D-oriented experiments |
+| Personal bots | `/personal-bots.html`, `/bots.html` | User bots and public bot gallery |
+| Shops | `/shops.html`, `/shop-builder.html`, `/cinder-shop.html` | Catalog/creator shop tools, **not** fully active end-to-end checkout |
+| Notifications / install | `/notifications.html`, `/install.html` | Alerts and PWA setup |
+| Personal journal | `/die-ary.html` | Private journal, authenticated account-scoped |
+
+Technical layout: GitHub `xxxghostfacekidxxx-glitch/Knightfall`, primary `main` branch. `public/` is the static Cloudflare Pages output; `backend/` is Worker/API + D1 migrations; `.github/workflows/` holds CI; `scripts/` and `tests/` supply checks. GitHub source and Cloudflare deployment are distinct states. Site: https://ash-fall.com; API: https://api.ash-fall.com.
+
+## 6. Key development workstreams
+**P0: Stability and trustworthy releases.** Fix remaining black-screen arcade games, broken fullscreen/mobile controls, stale styles/scripts, install prompts, unread alert dismissal and notification delivery. Confirm a deploy's **exact commit** is live before calling it done. Check mobile devices separately; CI is not a phone.
+
+**P1: Miss Chaos developer mode.** Create a supervised path:
+`read allowlisted main source → record commit/path/line range → propose diff without executing → inspect/format → run project tests in isolated CI → require explicit Osiris/authorized Isis review → release using verified deployment pipeline → verify deployed SHA and roll back if necessary`.
+**Never** let model output grant itself permissions, fabricate tests, publish secrets, auto-approve its own changes, or deploy arbitrary snippets. Keep one `main` branch as Ronnie requested; only use protected review mechanisms when explicitly approved. Start with read-only proposals; repository mutation comes later, after an authenticated approval boundary and tests are implemented.
+
+**P2: Arcade/Game polish.** Imp Inferno as a 4-player cartoon-demon fish-table-inspired arcade shooter (avoid real-money gambling mechanics); Hex Whisk as a mobile-first, one-screen merge-cooking game; repair Sudoku and other black-screening titles; improve Rampage-style character play, Rooftop Riot, Not Dead Yet Asshole, Reign's End and Embervale saves; strengthen game QA and consistent fullscreen.
+
+**P3: Creative community.** Improve pet/avatar artwork and evolution mechanics, Creator Foundry tools, design consistency, profile and messaging UX; coordinate shared shop planning and creator catalog workflows. Artistic aspirations are not evidence that integrations are deployed.
+
+**P4: Bot and community intelligence.** Better searchable public resources, member assistance, bot orchestration with consent, task updates and safe publishing workflows. Keep public Miss Chaos separate from private owner/partner memories.
+
+## 7. How to collaborate through Between the Flames
+- On every session, load the live authenticated board; check task **area, priority, status, source_url, next_step, blocker, verification** and newest notes.
+- Use statuses `todo`, `in_progress`, `done`. Verification is separately `needs_review`, `source_checked`, `ci_passed`, `deployed`, or `device_verified`; never mark deployed just because a commit exists.
+- Write concise, dated notes after a verified action: WHAT changed; exact file/commit/URL; test result; deployment result if known; what's next; what requires permission; who owns it.
+- Samantha's GPT should teach her the steps in everyday language and tell her exactly which page to open. If it cannot connect to the private board, provide a copyable entry and do not claim it posted anything.
+- Each user may configure a separate revocable private GPT Action key **inside that GPT's Action authentication settings**, never in a chat, doc, source file or a shared key. The copyable handoff packet works even without the Action integration.
+- Neither GPT is an independent system operator just because this document asks it to help. Source, CI, permissions, migrations and production behavior need independent verification.
+
+## 8. Release checkpoint
+As of a direct Cloudflare Pages inspection on November 19, 2026, `ac1a04a78087c3224732bb2edbda1d5a07fec06e` succeeded in production and carried the custom-domain alias; the subsequent `6000e615b5b44c86bd0fdb6f719ff3b14827c638` frontend build was still queued. Later source commits require later deployment verification; do not assume the queued commit or this document is already live.
+
+**Current source references:** `docs/MISS-CHAOS-CAPABILITIES-ROADMAP.md`, `docs/MISS-CHAOS-PRIVATE-WORKSPACES.md`, `backend/chaos-capabilities.mjs`, `backend/src/eye-of-chaos.js`, `backend/src/ai-handoff.js`, `public/eye-of-chaos.html`, `public/chaos-code-studio.html`, and `README.md`.
