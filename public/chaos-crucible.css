@@ -1,0 +1,89 @@
+/* THE CRUCIBLE · original Miss Chaos workbench. Scoped to the page.
+   No web fonts, trackers, remote runtime libraries or paid dependencies. */
+.crucible-page{margin:0;background:#0b0911;color:#f5eaf6;min-height:100vh;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.crucible-page *{box-sizing:border-box}
+.crucible-page .crucible-shell{width:min(1460px,calc(100% - 28px));margin:0 auto;padding:24px 0 60px}
+.crucible-page button,.crucible-page input,.crucible-page textarea{font:inherit}
+.crucible-page button{cursor:pointer}
+.crucible-page button:focus-visible,.crucible-page a:focus-visible,.crucible-page input:focus-visible,.crucible-page textarea:focus-visible,.crucible-page [tabindex="0"]:focus-visible{outline:2px solid #82ffbb;outline-offset:3px}
+.crucible-hero{position:relative;min-height:260px;padding:clamp(24px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:30px;overflow:hidden;border:1px solid #75405e;border-radius:23px;background:radial-gradient(ellipse at 94% 23%,#ff3a9140,transparent 40%),radial-gradient(ellipse at 16% 80%,#26ff9f18,transparent 55%),linear-gradient(120deg,#140b1c,#10131d 55%,#1d1023);box-shadow:0 20px 70px #0008}
+.crucible-hero::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.19;background:repeating-linear-gradient(0deg,transparent 0,transparent 7px,#f8b9e20c 8px,#f8b9e20c 9px)}
+.crucible-hero-copy{position:relative;z-index:2;max-width:780px}
+.crucible-kicker{display:block;font-weight:850;font-size:.7rem;letter-spacing:.2em;color:#a3ffcf}
+.crucible-hero h1{margin:12px 0 10px;line-height:.97;font-weight:1000;font-size:clamp(2.8rem,6.3vw,6.2rem);letter-spacing:-.055em;color:#ff73b9;text-shadow:0 0 38px #ff35953c}
+.crucible-hero h1>span:first-child{color:#f7edf4}
+.crucible-bang{display:inline-block;margin-left:12px;font-size:.55em;color:#8cffbf;vertical-align:middle;filter:drop-shadow(0 0 12px #38ff87)}
+.crucible-lede{max-width:640px;color:#f2dfef;font-size:clamp(.96rem,1.3vw,1.17rem);line-height:1.65}
+.crucible-promise{max-width:660px;font-size:.78rem;color:#b7b9c3;line-height:1.55;margin-top:12px}
+.crucible-sigil{position:relative;flex:0 0 clamp(150px,18vw,235px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 0 26px #eb2c795c)}
+.sigil-outer{position:absolute;width:88%;aspect-ratio:1;border-radius:50%;border:3px solid #f4509b;box-shadow:0 0 0 12px #ff499011,inset 0 0 35px #f2298f3c;transform:rotate(14deg)}
+.sigil-outer::before,.sigil-outer::after{content:"";position:absolute;width:56%;height:2px;background:#80ffc1;top:50%;left:22%;transform:rotate(60deg)}
+.sigil-outer::after{transform:rotate(-60deg)}
+.sigil-inner{position:absolute;inset:22%;border:2px solid #65ffaf;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;background:#110d1f;transform:rotate(-14deg)}
+.sigil-inner span{font-size:clamp(2rem,3.5vw,3.7rem);line-height:1;color:#ff73b9}
+.sigil-inner small{text-align:center;font-size:.49rem;font-weight:950;letter-spacing:.22em;color:#b6ffd6}
+.sigil-blip{position:absolute;width:7px;height:7px;border-radius:50%;background:#74ffa8;box-shadow:0 0 20px #55ffaa}
+.blip-a{top:3%;right:10%}.blip-b{bottom:12%;right:4%}.blip-c{bottom:15%;left:6%}
+.crucible-workspace{display:grid;grid-template-columns:minmax(235px,.83fr) minmax(350px,1.18fr) minmax(315px,1.07fr);gap:14px;margin-top:16px;align-items:start}
+.crucible-panel{background:linear-gradient(152deg,#15111e,#0e0d13 75%);border:1px solid #493349;border-radius:18px;padding:22px;min-width:0;box-shadow:0 10px 35px #0005}
+.crucible-section-head{margin-bottom:18px}
+.crucible-index{display:block;font-size:.67rem;font-weight:900;letter-spacing:.17em;color:#70f5ac}
+.crucible-section-head h2{font-size:clamp(1.2rem,1.65vw,1.58rem);line-height:1.2;color:#ffe3f2;margin:9px 0 7px}
+.crucible-section-head p{color:#bdb4c3;font-size:.82rem;line-height:1.55;margin:0}
+.crucible-type-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.crucible-type{width:100%;text-align:left;display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:1px solid #534053;background:#201522;color:#f6eaf2;transition:background .15s,border-color .15s}
+.crucible-type:hover{background:#31203a;border-color:#ff73b9}
+.crucible-type[aria-pressed="true"]{border:1px solid #8cffbf;box-shadow:inset 3px 0 #8cffbf,0 0 19px #2bff8b16;background:linear-gradient(100deg,#12382c,#26172c)}
+.crucible-type-icon{font-size:1.55rem;flex:0 0 28px;text-align:center;line-height:1.1}
+.crucible-type strong{display:block;font-size:.86rem}
+.crucible-type small{color:#b9adbc;font-size:.69rem;line-height:1.38;display:block;margin-top:3px}
+.crucible-bridge{margin-top:22px;padding-top:17px;border-top:1px solid #413243}
+.crucible-bridge h3,.crucible-checklist h3,.crucible-preview-head h3{margin:0 0 12px;font-size:.88rem;color:#f8d6e7}
+.crucible-bridge-links{display:flex;flex-wrap:wrap;gap:7px}
+.crucible-bridge-links a{display:inline-block;text-decoration:none;color:#b1ffcf;padding:8px 10px;border:1px solid #43695d;border-radius:9px;font-size:.74rem;font-weight:800}
+.crucible-bridge-links a:hover{background:#163f30}
+.crucible-field{display:grid;gap:7px;margin:0 0 14px}
+.crucible-field label{font-size:.79rem;font-weight:850;color:#f4e2f0}
+.crucible-field label span{color:#ff87be}
+.crucible-field input,.crucible-field textarea{display:block;min-width:0;width:100%;border-radius:10px;border:1px solid #504052;background:#0b0b13;color:#f9f4ff;font-size:.84rem;line-height:1.5;padding:11px 12px}
+.crucible-field textarea{resize:vertical;min-height:82px}
+.crucible-field input::placeholder,.crucible-field textarea::placeholder{color:#918394}
+.crucible-field input:focus,.crucible-field textarea:focus{border-color:#74ffb2}
+.crucible-helper{margin:-2px 0 0;font-size:.7rem;color:#8c9e98}
+.crucible-progress{margin:14px 0 16px}
+.crucible-progress>span{display:block;font-size:.73rem;font-weight:800;color:#a6ffd1;margin-bottom:7px}
+.crucible-progress-track{height:6px;border-radius:99px;overflow:hidden;background:#38313e}
+.crucible-progress-track>span{display:block;background:linear-gradient(90deg,#ff4a9a,#65ffab);width:0%;height:100%;transition:width .2s}
+.crucible-form-foot{display:flex;align-items:center;gap:14px;justify-content:space-between}
+.crucible-form-foot>span{font-size:.68rem;color:#9990a2}
+.crucible-button{display:flex;align-items:center;justify-content:center;gap:5px;min-height:41px;padding:10px 13px;border:1px solid #75506f;border-radius:10px;background:#2b1d32;color:#f5e8f4;font-size:.78rem;font-weight:850;line-height:1.25;text-align:center}
+.crucible-button:hover:not(:disabled){border-color:#86ffba;background:#34243a;color:#e9fff4}
+.crucible-button.primary{background:linear-gradient(110deg,#bc2e79,#67286f);border-color:#ff79ba;color:#fff;box-shadow:0 5px 17px #f1378b2a}
+.crucible-button.primary:hover:not(:disabled){background:linear-gradient(110deg,#d54292,#8b347d)}
+.crucible-button.muted{min-height:33px;background:#17121c;color:#c6b8ca;font-size:.7rem}
+.crucible-button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.crucible-missing{min-height:44px;display:flex;flex-direction:column;gap:6px;margin-bottom:17px}
+.crucible-missing p{font-size:.75rem;line-height:1.45;color:#ffdb9f;padding:10px 12px;margin:0;border:1px solid #98743b;border-radius:8px;background:#362718}
+.crucible-missing .ready{border-color:#337955;color:#baffd7;background:#153124}
+.crucible-checklist{padding:14px 16px;border:1px solid #415d57;border-radius:12px;background:linear-gradient(140deg,#14221e,#15151c);margin-bottom:17px}
+.crucible-checklist h3{color:#b6ffda}
+.crucible-checklist ol{display:grid;gap:9px;margin:0;padding:0;list-style:none;counter-reset:build}
+.crucible-checklist li{font-size:.78rem;line-height:1.5;color:#e6dce6}
+.crucible-checklist label{display:flex;align-items:flex-start;gap:9px;cursor:pointer}
+.crucible-checklist input{margin-top:4px;accent-color:#5dffa2}
+.crucible-checklist input:checked+span{color:#8f9f97;text-decoration:line-through}
+.crucible-preview-head{display:flex;align-items:baseline;justify-content:space-between;gap:9px;margin:17px 0 7px}
+.crucible-preview-head h3{margin:0}
+.crucible-preview-head span{font-size:.66rem;color:#9e95a9}
+.crucible-preview{min-height:190px;max-height:390px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:14px;border:1px solid #443849;border-radius:10px;background:#080a11;color:#d0ebdd;font:400 .75rem/1.65 ui-monospace,"Cascadia Code",Consolas,monospace}
+.crucible-action-status{min-height:17px;margin:12px 0;color:#abf9cb;font-size:.76rem;line-height:1.4}
+.crucible-action-status[data-error="true"]{color:#ffbad0}
+.crucible-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.crucible-disclaimer{font-size:.7rem;color:#a6a0af;line-height:1.6;margin:14px 0 0}
+.crucible-footer{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:22px 8px;color:#a7a0b0;font-size:.74rem}
+.crucible-footer strong{color:#ffa7cd;font-size:.66rem;letter-spacing:.06em}
+@media(max-width:1190px){.crucible-workspace{grid-template-columns:minmax(230px,.85fr) minmax(350px,1.15fr)}.crucible-output{grid-column:1/-1}.crucible-type-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.crucible-workspace{grid-template-columns:1fr}.crucible-picker,.crucible-editor,.crucible-output{grid-column:auto}.crucible-hero{padding:25px}.crucible-sigil{flex-basis:132px}.crucible-type-grid{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:650px){.crucible-page .crucible-shell{width:calc(100% - 18px);padding-top:12px}.crucible-hero{padding:21px;border-radius:15px;min-height:0}.crucible-sigil{position:absolute;right:-34px;top:-15px;width:130px;opacity:.23;pointer-events:none}.crucible-hero-copy{max-width:100%}.crucible-hero h1{font-size:clamp(2.7rem,11vw,4.4rem)}.crucible-workspace{gap:10px;margin-top:10px}.crucible-panel{border-radius:14px;padding:15px}.crucible-type-grid{grid-template-columns:1fr 1fr;gap:7px}.crucible-type{padding:10px 9px;gap:6px}.crucible-type-icon{flex-basis:22px;font-size:1.23rem}.crucible-type strong{font-size:.76rem}.crucible-type small{font-size:.65rem}.crucible-footer{flex-direction:column;align-items:flex-start;gap:7px}.crucible-action-grid{gap:7px}.crucible-button{padding:9px 6px;font-size:.73rem}}
+@media(max-width:365px){.crucible-type-grid{grid-template-columns:1fr}.crucible-action-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.crucible-type,.crucible-progress-track>span{transition:none}}
