@@ -455,3 +455,13 @@
 .studio-preview-avatar[data-identity=misfit]{border:1px solid #b36ab1;background:#1d1224;box-shadow:0 0 0 2px #c7a77c22}
 @media(max-width:560px){.profile-top .personal-avatar-frame{width:116px;flex-basis:116px}.profile-top .personal-avatar{width:112px;height:123px;border-radius:21px}.profile-top .personal-avatar svg{width:123px;height:140px}.profile-top .personal-avatar-label{max-width:115px;font-size:.63rem}.profile-misfit-controls{grid-template-columns:minmax(0,1fr) 112px}.profile-misfit-preview{width:112px;height:129px}.profile-misfit-preview svg{width:119px;height:138px}}
 @media(prefers-reduced-motion:reduce){.profile-top .personal-avatar svg{transition:none}}
+
+/* Egyptian royal ranks are server-verified, not member-editable profile titles. */
+.profile-title-badge.isis{
+  color:#f7e0a1;background:linear-gradient(110deg,rgba(29,91,120,.4),rgba(106,51,135,.35));
+  border-color:#d7a85c;box-shadow:0 0 22px rgba(215,168,92,.22);
+}
+.profile-title-badge.god{
+  color:#fbe5a0;background:linear-gradient(105deg,rgba(9,98,86,.26),rgba(164,111,43,.3));
+  border-color:#e2b861;box-shadow:0 0 24px rgba(226,184,97,.25);
+}
