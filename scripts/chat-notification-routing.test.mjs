@@ -13,12 +13,12 @@ for(const source of [sw,bubbles,navigation])new vm.Script(source);
 const inline=[...messages.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean).pop();
 new vm.Script(inline);
 
-function harness({noTextAction=false,sendOk=true,windows=[]}={}){
+function harness({noTextAction=false,sendOk=true,windows=[],existing=[]}={}){
   const listeners={},shown=[],fetchCalls=[],opened=[];
   const context={self:{
     location:{origin:"https://ash-fall.com"},
     addEventListener(name,handler){listeners[name]=handler;},
-    registration:{async showNotification(title,options){
+    registration:{async getNotifications(){return existing;},async showNotification(title,options){
       shown.push({title,options});
       if(noTextAction&&options.actions?.[0]?.type==="text")throw Error("unsupported");
     }},
@@ -35,7 +35,11 @@ function harness({noTextAction=false,sendOk=true,windows=[]}={}){
     let pending;listeners.notificationclick({action,reply,notification:{data:{url,notificationId},close(){}},waitUntil(p){pending=p;}});
     await pending;
   }
-  return {push,click,shown,opened,fetchCalls};
+  async function closeHandled(data){
+    let pending;listeners.message({data:{type:"KF_CLOSE_HANDLED_NOTIFICATIONS",...data},waitUntil(p){pending=p;}});
+    if(pending)await pending;
+  }
+  return {push,click,shown,opened,fetchCalls,closeHandled};
 }
 
 test("message push offers an Android text reply and preserves conversation ID",async()=>{
@@ -105,7 +109,7 @@ test("invalid notification IDs cannot trigger read updates",async()=>{
 });
 
 test("notification link awaits read receipt before navigating; badge listens for updates",()=>{
-  assert.match(notifications,/if\(link\)event\.preventDefault\(\)/);
+  assert.match(notifications,/if\(event\.target\.closest\("a\.notice-link"\)\)event\.preventDefault\(\)/);
   assert.match(notifications,/await api\("\/api\/notifications\/"\+item\.dataset\.notice,\{method:"PATCH"\}\)/);
   assert.match(notifications,/announceReadChange\(\)/);
   assert.match(navigation,/window\.addEventListener\("kf:notifications-changed", refreshNotifications\)/);
@@ -117,4 +121,23 @@ test("opening a conversation only clears existing alerts for the signed-in membe
   assert.match(backend,/UPDATE notifications SET read_at=\? WHERE user_id=\? AND target_type='conversation' AND target_id=\? AND kind IN \('message','mention'\) AND read_at IS NULL AND created_at<=\?/);
   assert.match(backend,/\.bind\(openedAt,user\.id,conversationId,openedAt\)\.run\(\)/);
   assert.match(backend,/notification\.id=Number\(inserted\.meta\?\.last_row_id\)/);
+});
+
+test("handled alerts close only matching system notifications; clear-all closes remaining",async()=>{
+ const active=[123,124,125].map((notificationId,i)=>({
+   data:{notificationId,conversationId:i===2?52:41},closed:false,
+   close(){this.closed=true;}
+ }));
+ const h=harness({existing:active});
+ await h.closeHandled({notificationId:123});
+ assert.deepEqual(active.map(n=>n.closed),[true,false,false]);
+ await h.closeHandled({conversationId:52});
+ assert.deepEqual(active.map(n=>n.closed),[true,false,true]);
+ await h.closeHandled({all:true});
+ assert.ok(active.every(n=>n.closed));
+});
+test("acknowledging browser alerts also requests cleanup of Android banners",()=>{
+ assert.match(notifications,/closeHandledPush\(\{notificationId:Number\(item\.dataset\.notice\)\}\)/);
+ assert.match(notifications,/closeHandledPush\(\{all:true\}\)/);
+ assert.match(messages,/if\(!beforeMessageId\)closeConversationPushNotices\(id\)/);
 });
