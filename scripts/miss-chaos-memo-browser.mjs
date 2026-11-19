@@ -4,14 +4,18 @@ const base=process.env.MEMO_TEST_BASE||'http://127.0.0.1:8765';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const failures=[];
 async function run(name,width,height){
- const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[];
+ const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[],journals=[],tasks=[],handoff=[];
  page.on('pageerror',err=>errors.push(err.message));
  await page.route('https://api.ash-fall.com/**',async route=>{
   const req=route.request(),path=new URL(req.url()).pathname,method=req.method();
   const origin=req.headers().origin||base,headers={'access-control-allow-origin':origin,'access-control-allow-credentials':'true','access-control-allow-methods':'GET,POST,PATCH,DELETE,OPTIONS','access-control-allow-headers':'content-type','content-type':'application/json'};
   const respond=async(status,data)=>route.fulfill({status,headers,body:JSON.stringify(data)});
   if(method==='OPTIONS')return route.fulfill({status:204,headers});
-  if(path==='/api/auth/me')return respond(200,{user:{id:7,username:'memo_tester'}});
+  if(path==='/api/auth/me')return respond(200,{user:{id:7,username:'memo_tester',role:'god'}});
+  if(path==='/api/chaos/modes')return respond(200,{modes:[{id:'owner',label:'Osiris · Private Miss Chaos',full_chat:'/miss-chaos.html?companion=owner'}],permissions:{can_admin:true}});
+  if(path==='/api/die-ary/entries'&&method==='POST'){journals.push(JSON.parse(req.postData()||'{}'));return respond(201,{entry:{id:journals.length}});}
+  if(path==='/api/ai-handoff/tasks'&&method==='POST'){tasks.push(JSON.parse(req.postData()||'{}'));return respond(201,{task:{id:tasks.length}});}
+  if(path==='/api/ai-handoff/notes'&&method==='POST'){handoff.push(JSON.parse(req.postData()||'{}'));return respond(201,{note:{id:handoff.length}});}
   if(path==='/api/memos'&&method==='GET')return respond(200,{memos:notes});
   if(path==='/api/memos'&&method==='POST'){
    const payload=JSON.parse(req.postData()||'{}'),memo={id:notes.length+1,...payload,created_at:new Date().toISOString(),updated_at:new Date().toISOString()};
@@ -53,6 +57,18 @@ async function run(name,width,height){
   await page.locator('#memo-pad-app .memo-button').filter({hasText:'Save memo'}).click();
   await page.waitForFunction(()=>document.querySelector('#memo-pad-app .memo-status')?.textContent.includes('Saved privately'));
   assert.equal(notes.length,1);
+  await page.locator('#memo-pad-app [data-publish-destination="journal"]').click();
+  await page.waitForFunction(()=>document.querySelector('#memo-pad-app .memo-status')?.textContent.includes('private Die-ary'));
+  assert.equal(journals.length,1);assert.equal(journals[0].title,'Big idea');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#memo-pad-app [data-publish-destination="task"]').click();
+  await page.waitForFunction(()=>document.querySelector('#memo-pad-app .memo-status')?.textContent.includes('shared task list'));
+  assert.equal(tasks.length,1);assert.equal(tasks[0].priority,'normal');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#memo-pad-app [data-publish-destination="flames"]').click();
+  await page.waitForFunction(()=>document.querySelector('#memo-pad-app .memo-status')?.textContent.includes('Between the Flames'));
+  assert.equal(handoff.length,1);assert.equal(handoff[0].category,'update');
+  assert.equal(notes.length,1,'Publishing must preserve the original private memo');
   await page.locator('#memo-pad-app .memo-member-search').fill('chaos');
   await page.locator('#memo-pad-app .memo-member-result').waitFor();
   await page.locator('#memo-pad-app .memo-member-result').first().click();
@@ -72,14 +88,20 @@ async function run(name,width,height){
   assert.equal(chats.length,1);
   assert.equal(letters.length,1,'Sending a chat message must not create another memo');
   assert.equal(notes.length,1,'Send must preserve original private memo');
-  // The dock defaults to compact on laptops and mobile to avoid covering
-  // page controls. Restore it through the same visible tab a member uses.
+  // The floating controls must be visible by default on mobile AND desktop.
   await page.locator('#miss-chaos-presence[data-dock-ready="true"]').waitFor();
+  assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-minimized'),'false');
   if(await page.locator('#miss-chaos-presence').getAttribute('data-minimized')==='true'){
     await page.locator('#mc-restore').click();
     await page.waitForFunction(()=>document.querySelector('#miss-chaos-presence')?.dataset.minimized==='false');
   }
   assert.equal(await page.locator('#mc-restore').isHidden(),true,'Restore tab must hide after expanding the toolbar');
+  await page.locator('#mc-private-switch').waitFor({state:'visible'});
+  await page.locator('#mc-private-switch').click();
+  assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-assistant-mode'),'owner');
+  await page.locator('#mc-private-switch').click();
+  assert.equal(await page.locator('#miss-chaos-presence').getAttribute('data-assistant-mode'),'standard');
+  await page.locator('#mc-close').click();
   await page.locator('#mc-memo-toggle').waitFor();
   await page.locator('#mc-memo-toggle').click();
   await page.locator('#mc-memo-host .memo-title').waitFor();
