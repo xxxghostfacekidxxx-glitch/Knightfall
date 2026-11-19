@@ -8,6 +8,7 @@ const jobs=[
  ["Messaging theme regression",["scripts/messaging-theme-audit.mjs"]],
  ["Sitewide art, responsive safety and realm routing",["--test","scripts/cathedral-overhaul.test.mjs","scripts/knightfall-sitewide-artwork.test.mjs","scripts/theme-crew-route.test.mjs"]],
  ["GOD-only publisher, revisions and rollback",["--test","backend/src/theme-crew.test.mjs"]],
+ ["Cloudflare custom header budget and deduplication",["--test","scripts/pages-header-budget.test.mjs"]],
  ["Miss Chaos Crucible real project brief regressions",["--test","scripts/chaos-crucible.test.mjs"]],
  ["Crucible page syntax",["--check","public/chaos-crucible.mjs"]],
  ["Crucible briefing engine syntax",["--check","public/chaos-crucible-core.mjs"]],
