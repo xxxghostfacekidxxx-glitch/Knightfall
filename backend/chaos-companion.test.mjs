@@ -80,7 +80,7 @@ test("private bot consult is blocked for uninvited users or unverified adult acc
  assert.equal(owner.status,403);
  const badOrigin=await run("/api/chaos/fleet/partner-chat",f.env,{id:42,role:"member"},{bot_id:PRIVATE.id,message:"Hello"},"https://evil.invalid");
  assert.equal(badOrigin.status,403);
- const garbage=await run("/api/chaos/fleet/partner-chat",f.env,{id:42,role:"member"},{bot_id:"not-an-id",message:"Hello"});
+ const garbage=await run("/api/chaos/fleet/partner-chat",f.env,{id:42,role:"member"},{bot_id:"invalid/id",message:"Hello"});
  assert.equal(garbage.status,400);
  assert.equal(f.runs.length,0);
 });
