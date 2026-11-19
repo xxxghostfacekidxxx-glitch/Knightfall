@@ -17,3 +17,11 @@
 #samantha-board-preview p,#samantha-fleet-list p{border-bottom:1px solid #46354e;padding:.38rem 0;margin:.1rem 0}
 #samantha-bot-reply{white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto;color:#cbf3e8;background:#0b1719;padding:.7rem;border-radius:7px}
 @media(max-width:780px){.samantha-desk-grid{grid-template-columns:minmax(0,1fr)}.samantha-chaos-gate,.samantha-companion-desk{padding:1rem}}
+
+/* Verified collaborator admin launch surface. All links are separately gated server-side. */
+.samantha-admin-tools{border:1px solid #61e7ab88;border-radius:14px;padding:1rem;background:linear-gradient(140deg,#132323,#1c152c);margin:.9rem 0}
+.samantha-admin-tools h2{margin:.1rem 0 .4rem;color:#c5ffe4;font-size:1.15rem}
+.samantha-admin-tools nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.55rem;margin:.7rem 0}
+.samantha-admin-tools nav a{display:flex;align-items:center;justify-content:center;min-height:42px;min-width:0;border:1px solid #5beab87a;border-radius:10px;padding:.5rem;color:#d6ffe6;text-decoration:none;background:#09161b;font-weight:750;text-align:center}
+.samantha-admin-tools nav a:hover,.samantha-admin-tools nav a:focus-visible{border-color:#ff7bb2;outline-offset:3px}
+.samantha-admin-tools [role="status"]{font-size:.8rem;color:#c6d7d0}
