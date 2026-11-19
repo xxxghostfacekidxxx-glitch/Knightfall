@@ -12,6 +12,7 @@ test("signed-in users do not see God Mode capabilities",()=>{
 });
 test("God Mode visibility is explicitly gated",()=>{
   assert.ok(describeChaosTools({id:"owner",role:"god"}).includes("god.propose_change"));
+  assert.ok(describeChaosTools({id:"owner",role:"god"}).includes("god.github_health"));
 });
 test("public tool dispatch works without identity",async()=>{
   const result=await dispatchChaosTool({name:"site.search",input:{query:"offline bots"}});

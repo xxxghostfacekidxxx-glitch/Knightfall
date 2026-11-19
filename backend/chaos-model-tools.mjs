@@ -33,11 +33,12 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"user.notifications",description:"List only this signed-in member's unread Knightfall alerts, with safe navigation links. Read-only, does not mark them read.",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"user.profile",description:"Read ONLY this signed-in member's own profile display details, never other users or private account credentials",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"user.inbox",description:"Preview ONLY the signed-in member's joined conversations in Chaosphere. Does not mark messages read or send them.",parameters:{type:"object",properties:{},additionalProperties:false}},
+  {name:"god.github_health",description:"GOD role only: inspect recent public Knightfall GitHub Actions results and get non-executing review proposals. Does not read job logs or modify repository.",parameters:{type:"object",properties:{},additionalProperties:false}},
   {name:"god.audit_summary",description:"Read a trusted counts-only Knightfall developer audit, GOD role only",parameters:{type:"object",properties:{},additionalProperties:false}}
 ]);
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox"]);
-const GOD=new Set(["god.audit_summary"]);
+const GOD=new Set(["god.audit_summary","god.github_health"]);
 const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug|format|prettify|flowchart|diagram|workflow)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
@@ -102,6 +103,13 @@ function explicitCodeRequest(text){
  const match=String(text||"").trim().match(/^(?:please\s+)?(?:check|inspect|lint|validate)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code|syntax)?\s*:\s*([\s\S]{1,10000})$/i);
  return match?{name:"dev.code_inspect",arguments:{language:match[1].toLowerCase()==="json"?"json":"javascript",code:match[2]}}:null;
 }
+function explicitGodGithubRequest(text){
+ const source=String(text||"").trim();
+ if(source.length>145||!/^(?:please\s+)?(?:check|review|show|summarize|scan)\s+/i.test(source)||
+   !/\b(?:github|actions|ci)\b/i.test(source)||!/\b(?:workflows?|status|health|failures?|runs?)\b/i.test(source))
+   return null;
+ return {name:"god.github_health",arguments:{}};
+}
 function explicitFormatRequest(text){
  const m=String(text||"").trim().match(/^(?:please\s+)?(?:format|prettify)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code)?\s*:\s*([\s\S]{1,10000})$/i);
  return m?{name:"dev.code_format",arguments:{language:m[1].toLowerCase()==="json"?"json":"javascript",code:m[2]}}:null;
@@ -165,7 +173,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const obvious=explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
+  const obvious=(principal?.id&&principal.role==="god"?explicitGodGithubRequest(latest):null)||explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
   // Pure deterministic helpers run before optional expensive model planning.

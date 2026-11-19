@@ -1,5 +1,6 @@
 import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
 import {findChaosGithubRepos} from "./chaos-github-repos.mjs";
+import {getKnightfallGithubHealth} from "./chaos-github-health.mjs";
 import {searchChaosResources} from "./chaos-resources.mjs";
 import {findOpenBooks,findCrossrefPapers} from "./chaos-reference-sources.mjs";
 import {makeChaosPatternDraft} from "./chaos-forge-tool.mjs";
@@ -113,6 +114,7 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
         .map(x=>({id:x.id,title:String(x.title).slice(0,100),preview:String(x.body||"").slice(0,500),updated_at:x.updated_at}));
       return {results:items,source:"signed-in user's private Memo Pad",previews_only:true,more:results.length>items.length};
     },
-    "god.audit_summary":async({principal})=>readGodAuditSummary({env,principal})
+    "god.audit_summary":async({principal})=>readGodAuditSummary({env,principal}),
+    "god.github_health":async()=>getKnightfallGithubHealth()
   };
 }

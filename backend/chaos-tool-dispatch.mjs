@@ -17,6 +17,6 @@ export async function dispatchChaosTool({name,input,principal,handlers={},approv
 export function describeChaosTools(principal) {
   const publicTools = ["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","research.github_repos","dev.code_format","dev.diagram_flow"];
   if (principal?.id) publicTools.push("user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox","radar.moon","radar.shadow","research.wikipedia","utility.now");
-  if (principal?.id && principal.role==="god") publicTools.push("god.diagnostics","god.audit_summary","god.propose_change");
+  if (principal?.id && principal.role==="god") publicTools.push("god.diagnostics","god.audit_summary","god.github_health","god.propose_change");
   return publicTools;
 }

@@ -20,3 +20,8 @@ Run `npm install --prefix backend` then `node --test backend/chaos-*.test.mjs ba
 - Prettier 3.6.2 (MIT) is bundled as a pinned npm runtime dependency and used locally within the existing Worker for bounded JS/JSON formatting. No third-party hosted formatting service or pay-per-request API.
 - The Knightfall original flowchart builder is a static-browser and shared Worker utility, not a claimed full Mermaid renderer. It produces standard Mermaid flowchart source and a browser-native SVG preview.
 - Editing and exports are local to the browser; code analysis/formatting requires signing in to the existing Knightfall API, with existing rate limits. No saved source, no repository modifications, no arbitrary code execution.
+
+## Owner-only GitHub health and repair review (read-only)
+- New `god.github_health` tool reads the latest 12 public GitHub Actions runs on main directly from the fixed Knightfall repository using a bounded free GitHub GET request. No GitHub secret or paid API is needed; GitHub anonymous API limits apply.
+- The tool returns grounded workflow links, status and generic proposals for what to inspect. It explicitly does not fetch detailed job logs, diagnose root causes, make file changes or auto-approve any repairs. Verified GOD role is enforced on both chat and authenticated utility API; ordinary members cannot invoke it.
+- Owner can ask Miss Chaos 'Check Knightfall GitHub workflow status'. Any code change remains a separate review-and-approval step.

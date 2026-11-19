@@ -8,6 +8,7 @@ import { storeAuditUpload, readGodAuditSummary } from "./developer-audit-ingest.
 import { navigationContext } from "../chaos-navigation.mjs";
 import { inferWithChaosTools } from "../chaos-model-tools.mjs";
 import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
+import { getKnightfallGithubHealth } from "../chaos-github-health.mjs";
 import { makeChaosPatternDraft } from "../chaos-forge-tool.mjs";
 import { estimateFabric } from "../chaos-fabric-estimate.mjs";
 import { searchChaosResources } from "../chaos-resources.mjs";
@@ -1616,12 +1617,13 @@ export default { async queue(batch, env) {
     const declaredSize=Number(request.headers.get("content-length")||0);
     if(declaredSize>16000)return json({error:"Utility request too large."},413,origin);
     let body;try{const raw=await request.text();if(raw.length>16000)return json({error:"Utility request too large."},413,origin);body=JSON.parse(raw);}catch{return json({error:"Invalid JSON."},400,origin);}
-    if(!["utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","god.audit_summary"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
+    if(!["utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","god.audit_summary","god.github_health"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
     try{
       const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role},handlers:{
          "forge.pattern_draft":async ({input})=>makeChaosPatternDraft(input),
          "forge.material_estimate":async ({input})=>estimateFabric(input),
-         "god.audit_summary":async ({principal})=>readGodAuditSummary({env,principal})
+         "god.audit_summary":async ({principal})=>readGodAuditSummary({env,principal}),
+         "god.github_health":async ()=>getKnightfallGithubHealth()
        }});
       return json({name:body.name,result},200,origin);
     }catch(error){return json({error:String(error.message||"Invalid tool input").slice(0,180)},400,origin);}

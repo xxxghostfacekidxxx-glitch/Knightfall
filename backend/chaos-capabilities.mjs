@@ -64,6 +64,7 @@ export const CAPABILITIES = Object.freeze({
     confirmation: false,
     maxInputBytes: 1024
   }),
+  "god.github_health": Object.freeze({description:"Read recent public Knightfall GitHub workflow results and prepare non-executing repair proposals",scope:"god",mutates:false,confirmation:false,maxInputBytes:128}),
   "god.audit_summary": Object.freeze({
     description: "Read a validated, counts-only Developer Arsenal audit summary via trusted backend",
     scope: "god",
