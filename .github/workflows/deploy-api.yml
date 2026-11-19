@@ -116,6 +116,7 @@ jobs:
           node --check backend/src/ai-handoff.js
           node --check public/ai-handoff.js
           node --test backend/src/ai-handoff-bridge.test.mjs
+          node --test scripts/ai-handoff-master.test.mjs
           node --check backend/src/ai-handoff-bridge.js
 
       - name: Validate authenticated realtime messaging and member-only history search
