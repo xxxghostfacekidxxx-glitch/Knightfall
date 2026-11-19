@@ -2,6 +2,13 @@
   // Offline/local previews must not fetch a real member session, production
   // site settings, or notification counts. Live Ash-Fall retains all API behavior.
   const cloudAccountAvailable = ["ash-fall.com", "www.ash-fall.com"].includes(String(location.hostname || "").toLowerCase());
+  const mainPwaKey="kf:main-pwa-installed";
+  const standalonePwa=()=>Boolean(window.matchMedia?.("(display-mode: standalone)")?.matches||
+    window.matchMedia?.("(display-mode: fullscreen)")?.matches||navigator.standalone===true);
+  const mainManifestActive=()=>!/\/(?:chaosphere|ruinwire)\.webmanifest(?:\?|$)/.test(
+    document.querySelector('link[rel="manifest"]')?.getAttribute("href")||"");
+  const mainPwaRecorded=()=>{try{return localStorage.getItem(mainPwaKey)==="1"}catch{return false}};
+  const recordMainPwa=()=>{if(mainManifestActive())try{localStorage.setItem(mainPwaKey,"1")}catch{}};
   // Apply shared Gothic chrome AFTER every page-specific and inline stylesheet.
   // The previous eager injection could run in <head> before later stylesheets
   // were parsed, allowing old neon/page CSS to override the approved theme.
@@ -168,7 +175,8 @@
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     let updateToast = null;
     const showUpdate = registration => {
-      if (!registration.waiting || !navigator.serviceWorker.controller || updateToast) return;
+      const snoozed=()=>{try{return Date.now()<Number(localStorage.getItem("kf:update-snooze-until")||0)}catch{return false}};
+      if (!registration.waiting || !navigator.serviceWorker.controller || updateToast || snoozed()) return;
       if (!document.getElementById("kf-app-update-style")) {
         const style = document.createElement("style");
         style.id = "kf-app-update-style";
@@ -179,7 +187,7 @@
       updateToast.className = "kf-app-update";
       updateToast.setAttribute("role", "status");
       const message = document.createElement("span");
-      message.textContent = "Ash-Fall update ready. Install it when you're done here.";
+      message.textContent = "Knightfall update ready. Apply it when you are finished here.";
       const apply = document.createElement("button");
       apply.type = "button"; apply.textContent = "Update";
       const later = document.createElement("button");
@@ -188,7 +196,10 @@
         apply.disabled = true; apply.textContent = "Updating…";
         registration.waiting?.postMessage({type:"SKIP_WAITING"});
       });
-      later.addEventListener("click", () => { updateToast.remove(); updateToast = null; });
+      later.addEventListener("click", () => {
+        try{localStorage.setItem("kf:update-snooze-until",String(Date.now()+6*60*60*1000))}catch{}
+        updateToast.remove(); updateToast = null;
+      });
       updateToast.append(message, apply, later);
       document.body.append(updateToast);
     };
@@ -332,6 +343,30 @@
       if (group.open) nav.querySelectorAll(".kf-nav-group").forEach(other => { if (other !== group) other.open = false; });
     });
   });
+  const installLink=header.querySelector(".kf-install-pill");
+  const syncInstallLink=()=>{
+    const hidden=standalonePwa()||mainPwaRecorded();
+    installLink.hidden=hidden;
+    installLink.style.display=hidden?"none":"";
+    if(hidden)installLink.setAttribute("aria-hidden","true");
+    else installLink.removeAttribute("aria-hidden");
+  };
+  syncInstallLink();
+  window.addEventListener("appinstalled",()=>{recordMainPwa();syncInstallLink()});
+  window.addEventListener("beforeinstallprompt",()=>{
+    if(!mainManifestActive())return;
+    try{localStorage.removeItem(mainPwaKey)}catch{}
+    syncInstallLink();
+  });
+  window.addEventListener("storage",event=>{if(event.key===mainPwaKey)syncInstallLink()});
+  if(typeof navigator.getInstalledRelatedApps==="function"&&mainManifestActive()){
+    navigator.getInstalledRelatedApps().then(apps=>{
+      if(Array.isArray(apps)&&apps.some(app=>app?.platform==="webapp"&&
+        /\/manifest\.webmanifest(?:\?|$)/.test(String(app.url||"")))){
+        recordMainPwa();syncInstallLink();
+      }
+    }).catch(()=>{});
+  }
   const toggle = header.querySelector(".kf-nav-toggle");
   const profileGroup = nav.querySelector(".kf-profile-group");
   const badge = nav.querySelector(".kf-notify-badge");
