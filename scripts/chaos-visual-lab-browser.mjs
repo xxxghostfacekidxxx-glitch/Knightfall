@@ -67,8 +67,10 @@ try{
   assert.equal(commonsCalls.length,1);
   assert.equal(thumbCalls.length,0,"no third-party image previews before explicit click");
   assert.match(await page.locator("#visual-commons-results").innerText(),/Witchy Bat/);
+  const thumbnailResponse=page.waitForResponse(response=>response.url().includes("static.example.org/visual-lab-bat.png"));
   await page.click(".cvl-preview-button");
   await page.waitForFunction(()=>document.querySelector(".cvl-result-image")?.getAttribute("src")?.includes("static.example.org"));
+  await thumbnailResponse;
   assert.equal(thumbCalls.length,1);
   const overflowing=await page.evaluate(()=>document.querySelector(".cvl-main").scrollWidth>window.innerWidth+6);
   assert.equal(overflowing,false,"Visual Lab panels should not overflow viewport at "+width);
