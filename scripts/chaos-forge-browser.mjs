@@ -18,6 +18,13 @@ try{
   await page.selectOption("#forge-template","box");
   await page.click("#forge-build");
   assert.match(await page.locator("#forge-pattern-status").innerText(),/Draft generated/);
+  // Measurements cannot change while retaining a stale pattern or OBJ export.
+  await page.fill("#forge-width","22");
+  assert.equal(await page.locator("#forge-export-svg").isDisabled(),true);
+  assert.equal(await page.locator("#forge-export-json").isDisabled(),true);
+  assert.match(await page.locator("#forge-pattern-status").innerText(),/Generate a fresh blueprint/);
+  await page.click("#forge-build");
+  assert.equal(await page.locator("#forge-export-svg").isEnabled(),true);
   const fileDownload=page.waitForEvent("download");
   await page.click("#forge-export-svg");
   const download=await fileDownload;
@@ -36,6 +43,23 @@ try{
   assert.equal(await page.locator("#forge-template").inputValue(),"apron");
   assert.equal(await page.locator("#forge-width").inputValue(),"");
   assert.match(await page.locator("#forge-pattern-status").innerText(),/Enter measured dimensions/);
+  assert.equal(await page.locator("#forge-export-svg").isDisabled(),true);
+  assert.equal(await page.locator("#forge-export-json").isDisabled(),true);
+  assert.equal(await page.locator("#forge-pattern-preview svg").count(),0);
+  // Inspect real local OBJ input and downloadable triangle geometry, not just a canvas tag.
+  if(await page.locator("#forge-viewer-fallback").isHidden()){
+    await page.locator("#forge-model-file").setInputFiles({
+      name:"triangle.obj",mimeType:"text/plain",
+      buffer:Buffer.from("v 0 0 0\nv 3 0 0\nv 0 2 0\nf 1 2 3\n")
+    });
+    await page.waitForFunction(()=>document.querySelector("#forge-model-status")?.textContent.includes("Imported triangle.obj"));
+    assert.equal(await page.locator("#forge-export-obj").isEnabled(),true);
+    const exported=page.waitForEvent("download");
+    await page.click("#forge-export-obj");
+    assert.match((await exported).suggestedFilename(),/triangle-obj\.obj/);
+  }else{
+    assert.match(await page.locator("#forge-viewer-fallback").innerText(),/WebGL|3D engine/);
+  }
   // 3D canvas is always present; a device without WebGL must show an explicit fallback.
   const exists=await page.locator("#forge-3d").count();
   assert.equal(exists,1);

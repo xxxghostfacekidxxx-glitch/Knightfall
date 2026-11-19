@@ -60,11 +60,12 @@ ref.addEventListener("click",event=>{
  if(x<photoFrame.x||x>photoFrame.x+photoFrame.w||y<photoFrame.y||y>photoFrame.y+photoFrame.h)return;
  if(outline.length>=100){status("forge-vision-status","Maximum of 100 trace points reached.");return;}
  outline.push([clamp((x-photoFrame.x)/photoFrame.w,0,1),clamp((y-photoFrame.y)/photoFrame.h,0,1)]);
+ if(select.value==="trace")invalidateDraft();
  drawPhoto();
  status("forge-photo-caption",outline.length+" outline points. Continue around the edge; at least 3 are needed.");
 });
-$("forge-trace-undo").addEventListener("click",()=>{outline.pop();drawPhoto();status("forge-photo-caption",outline.length+" points left.");});
-$("forge-trace-clear").addEventListener("click",()=>{outline=[];drawPhoto();status("forge-photo-caption","Outline cleared.");});
+$("forge-trace-undo").addEventListener("click",()=>{outline.pop();if(select.value==="trace")invalidateDraft();drawPhoto();status("forge-photo-caption",outline.length+" points left.");});
+$("forge-trace-clear").addEventListener("click",()=>{outline=[];if(select.value==="trace")invalidateDraft();drawPhoto();status("forge-photo-caption","Outline cleared.");});
 $("forge-image").addEventListener("change",async event=>{
  const file=event.target.files?.[0];
  if(!file)return;
@@ -73,8 +74,8 @@ $("forge-image").addEventListener("change",async event=>{
  try{
    const image=new Image();
    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(Error("Image couldn't be decoded."));image.src=url;});
-   if(!image.naturalWidth||!image.naturalHeight||image.naturalWidth>12000||image.naturalHeight>12000)throw Error("Image dimensions are too large.");
-   photo=image;outline=[];drawPhoto();
+   if(!image.naturalWidth||!image.naturalHeight||image.naturalWidth>6000||image.naturalHeight>6000||image.naturalWidth*image.naturalHeight>16000000)throw Error("Image resolution is too high for a mobile device. Resize or crop it to 16 megapixels or less.");
+   photo=image;outline=[];if(select.value==="trace")invalidateDraft();drawPhoto();
    status("forge-photo-caption",file.name+" · "+image.naturalWidth+"×"+image.naturalHeight+" · tap to trace outline");
    status("forge-vision-status","Image loaded locally. Only Analyze will send a compressed version to the AI service.");
    $("forge-analysis").hidden=true;
@@ -111,6 +112,7 @@ $("forge-analyze").addEventListener("click",async()=>{
     $("forge-width").value="";
     $("forge-height").value="";
     $("forge-depth").value="";
+    invalidateDraft();
     status("forge-pattern-status","Miss Chaos suggests "+suggested.toUpperCase()+". Enter measured dimensions"+
       (suggested==="trace"?" and tap around the visible outline.":" and select Generate cutting pattern.")+
       " No dimensions were inferred from the photograph.");
@@ -135,7 +137,21 @@ function syncTemplate(){
  $("forge-depth-label").textContent=labels[2];
  status("forge-dimension-hint",labels[3]);
 }
-select.addEventListener("change",syncTemplate);syncTemplate();
+function invalidateDraft(reason="The pattern inputs changed. Generate a fresh blueprint before cutting or exporting."){
+ current=null;currentSvg="";
+ $("forge-export-svg").disabled=true;
+ $("forge-export-json").disabled=true;
+ $("forge-pattern-preview").replaceChildren();
+ $("forge-pattern-preview").textContent="Generate a new cutting blueprint using the current measurements.";
+ $("forge-cut-list").replaceChildren();
+ if(view?.clearTemplate)view.clearTemplate();
+ status("forge-pattern-status",reason);
+}
+select.addEventListener("change",()=>{syncTemplate();invalidateDraft();});
+for(const id of ["forge-width","forge-height","forge-depth","forge-seam"]){
+ $(id).addEventListener("input",()=>invalidateDraft());
+}
+syncTemplate();
 function renderDraftList(draft){
  const root=$("forge-cut-list");root.replaceChildren();
  const heading=document.createElement("h3");heading.textContent="Cut list";root.append(heading);
@@ -157,9 +173,7 @@ function drawPattern(){
   status("forge-pattern-status","Draft generated. Download SVG at 100% scale and measure the 1-inch test rectangle.");
   if(view)view.showTemplate(select.value,current);
  }catch(error){
-  current=null;currentSvg="";
-  $("forge-export-svg").disabled=true;$("forge-export-json").disabled=true;
-  status("forge-pattern-status",error.message);
+  invalidateDraft(error.message);
  }
 }
 $("forge-build").addEventListener("click",drawPattern);
@@ -361,7 +375,16 @@ function buildViewer(){
   try{download("chaos-forge-"+safeName(modelKind)+".obj",asBlob(exportObj(),"text/plain;charset=utf-8"));}
   catch(error){status("forge-model-status",error.message);}
  });
- return{showTemplate};
+ function clearTemplate(){
+  if(!String(modelKind).startsWith("Template:"))return;
+  scene.remove(display);
+  display.traverse(obj=>{if(obj.isMesh){obj.geometry?.dispose();obj.material?.dispose();}});
+  display=new TH.Group();modelKind="";
+  $("forge-export-obj").disabled=true;
+  status("forge-model-status","The old 3D prototype was cleared because its template or measurements changed.");
+  refresh();
+ }
+ return{showTemplate,clearTemplate};
 }
 view=buildViewer();
 drawPattern();
