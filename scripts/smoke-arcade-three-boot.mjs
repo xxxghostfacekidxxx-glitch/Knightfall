@@ -75,6 +75,7 @@ try {
           if((await page.locator('#message').textContent())?.trim()!=='Paused')throw Error('Cinder Gauntlet pause failed');
         }
         const surface=game==='cinder-gauntlet'?'#game':'#board';
+        await page.locator(surface).scrollIntoViewIfNeeded();
         const uncovered=await page.locator(surface).evaluate(root=>{
           const rect=root.getBoundingClientRect();
           const x=Math.max(0,Math.min(innerWidth-1,rect.left+rect.width/2));
