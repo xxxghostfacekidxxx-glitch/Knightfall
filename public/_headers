@@ -196,3 +196,17 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /vendor/visual-lab/*
   Cache-Control: public, max-age=300
+
+# Keep the fixed Miss Chaos popup, private mode control and picture picker fresh.
+/miss-chaos-presence.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/miss-chaos-dock.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-chat-image-picker.mjs
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-chat-image-picker.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/creator-art-studio.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/creator-art-studio.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
