@@ -18,7 +18,10 @@
     ["Plan", "Help me plan a project with milestones, dependencies, risks, and actionable next steps."],
     ["Write", "Help me draft or revise writing for a specific audience and purpose."],
     ["Research", "Help me research a topic. Clearly distinguish verified sources from your existing knowledge and do not invent citations."],
-    ["Code", "Help me write code with clear setup instructions, tests, and failure handling."]
+    ["Code", "Help me write code with clear setup instructions, tests, and failure handling."],
+    ["Books", "Find books about "],
+    ["Papers", "Search research papers about "],
+    ["Patterns", "Draft a tote bag 16 x 18 x 4 inches with a 0.5 inch seam. Give me the measured cut list and a Chaos Forge design link."]
   ];
   const starterBar = document.createElement("div");
   starterBar.className = "chaos-task-starters";
@@ -60,13 +63,26 @@
   function scrollToBottom() { messagesEl.scrollTop = messagesEl.scrollHeight; }
   function renderReplyText(node, content) {
     node.replaceChildren();
-    const links = /https:\/\/ash-fall\.com\/[a-z0-9/_-]+(?:\.html)?(?:#[a-z0-9_-]+)?(?=$|[\s).,!?])/gi;
+    // Link only our own site and trusted public catalogs. Text nodes prevent markup injection.
+    const allowed = new Set(["ash-fall.com","www.ash-fall.com","openlibrary.org",
+      "www.openlibrary.org","doi.org","www.doi.org","polyhaven.com",
+      "www.polyhaven.com","www.wikidata.org","en.wikipedia.org","www.metmuseum.org"]);
+    const links = /https:\/\/[^\s<>"']+/gi;
     let end = 0;
-    for (const match of content.matchAll(links)) {
-      const link = document.createElement("a");
-      link.href = match[0]; link.textContent = match[0];
-      node.append(content.slice(end, match.index), link);
-      end = match.index + match[0].length;
+    for (const match of String(content).matchAll(links)) {
+      const raw=match[0].replace(/[.,;:!?)}\]]+$/g,"");
+      if(!raw)continue;
+      let parsed;
+      try{parsed=new URL(raw);}catch{continue;}
+      if(parsed.protocol!=="https:"||!allowed.has(parsed.hostname))continue;
+      const link=document.createElement("a");
+      link.href=parsed.href;
+      link.textContent=raw;
+      if(parsed.hostname!=="ash-fall.com"&&parsed.hostname!=="www.ash-fall.com"){
+        link.target="_blank";link.rel="noopener noreferrer";
+      }
+      node.append(content.slice(end,match.index),link);
+      end=match.index+raw.length;
     }
     node.append(content.slice(end));
   }

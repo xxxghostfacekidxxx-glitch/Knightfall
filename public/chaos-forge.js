@@ -387,7 +387,26 @@ function buildViewer(){
  return{showTemplate,clearTemplate};
 }
 view=buildViewer();
-drawPattern();
+const sharedDesign=new URLSearchParams(location.search);
+const templateFromChat=sharedDesign.get("template");
+if(["tote","pouch","apron","skirt","box"].includes(templateFromChat)){
+ select.value=templateFromChat;syncTemplate();
+ let missing=false;
+ for(const [key,id]of [["width","forge-width"],["height","forge-height"],["depth","forge-depth"],["seam","forge-seam"]]){
+   const value=sharedDesign.get(key),control=$(id);
+   if(value===null){
+     if(key!=="seam"){missing=true;control.value="";}
+     continue;
+   }
+   const number=Number(value);
+   if(!value.trim()||!Number.isFinite(number)||number<Number(control.min)||number>Number(control.max)){
+     control.value="";missing=true;continue;
+   }
+   control.value=String(number);
+ }
+ if(missing)invalidateDraft("The shared design needs valid measured dimensions before generating.");
+ else drawPattern();
+}else drawPattern();
 $("forge-resource-type").addEventListener("change",()=>{});
 function showResources(data){
  const root=$("forge-resource-results");root.replaceChildren();

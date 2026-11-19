@@ -151,3 +151,39 @@ test("malformed provider tool payloads cannot execute a private query",async()=>
   }
   assert.equal(sqlLog.length,0);
 });
+
+test("explicit book search bypasses optional planner and attributes grounded results",async()=>{
+ const calls=[];
+ const ai={run:async(_model,opts)=>{calls.push(opts);return{response:"Here are sources."};}};
+ const handlers={"research.books":async({input})=>({source:"Open Library",results:[{title:"Design Book",url:"https://openlibrary.org/works/OL5W"}],query:input.query})};
+ const reply=await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"hello"},{role:"user",content:"Find books about costume design"}],principal:{id:4,role:"member"},handlers});
+ assert.equal(reply.response,"Here are sources.");
+ assert.equal(calls.length,1);
+ assert.match(calls[0].messages[0].content,/Open Library/);
+ assert.match(calls[0].messages[0].content,/OL5W/);
+});
+test("explicit paper lookup survives a downed tool planner",async()=>{
+ const calls=[];
+ const ai={run:async(_model,opts)=>{calls.push(opts);return{response:"metadata only"};}};
+ const handlers={"research.papers":async()=>({source:"Crossref",results:[{url:"https://doi.org/10.1000/test"}]})};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:"Search research papers about fabric chemistry"}],principal:{id:7},handlers});
+ assert.equal(calls.length,1);
+ assert.match(calls[0].messages[0].content,/Crossref/);
+});
+test("natural language Forge sizes produce a measured, read-only draft",async()=>{
+ const calls=[];
+ const ai={run:async(_model,opts)=>{calls.push(opts);return{response:"Open the link."};}};
+ const handlers={"forge.pattern_draft":async({input})=>({design_url:"https://ash-fall.com/chaos-forge.html?template=tote&width="+input.width_in,template:input.template,depth_in:input.depth_in})};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:"Draft a tote bag 16 x 18 x 4 seam 0.5"}],principal:{id:7},handlers});
+ assert.equal(calls.length,1);
+ assert.match(calls[0].messages[0].content,/width=16/);
+ assert.match(calls[0].messages[0].content,/"depth_in":4/);
+});
+test("missing sizes are never invented by the direct Forge route",async()=>{
+ const calls=[];
+ const ai={run:async(_model,opts)=>{calls.push(opts);return{response:"What dimensions?"};}};
+ const handlers={"forge.pattern_draft":async({input})=>({available:false,needs:["width_in","height_in","depth_in"],template:input.template})};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:"Make an apron pattern"}],principal:{id:7},handlers});
+ assert.match(calls[0].messages[0].content,/height_in/);
+ assert.equal(calls.length,1);
+});

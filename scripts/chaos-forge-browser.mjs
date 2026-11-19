@@ -66,6 +66,16 @@ try{
   const three=await page.evaluate(()=>Boolean(window.THREE));
   assert.ok(three,"Knightfall's bundled Three.js should load without a CDN");
   assert.ok(!errors.some(e=>/SyntaxError|ReferenceError|TypeError/.test(e)),errors.join("\n"));
+  // Chat-supplied measured URL must open the same exact values in the real pattern engine.
+  await page.goto(BASE+"/chaos-forge.html?template=pouch&width=21&height=11&depth=3&seam=0.5",{waitUntil:"domcontentloaded"});
+  await page.waitForSelector("#forge-pattern-preview svg",{timeout:15000});
+  assert.equal(await page.locator("#forge-template").inputValue(),"pouch");
+  assert.equal(await page.locator("#forge-width").inputValue(),"21");
+  assert.equal(await page.locator("#forge-height").inputValue(),"11");
+  assert.equal(await page.locator("#forge-depth").inputValue(),"3");
+  await page.goto(BASE+"/chaos-forge.html?template=tote&width=21&height=11",{waitUntil:"domcontentloaded"});
+  assert.equal(await page.locator("#forge-export-svg").isDisabled(),true);
+  assert.match(await page.locator("#forge-pattern-status").innerText(),/needs valid measured dimensions/);
   await page.close();
  }
 }finally{await browser.close();}
