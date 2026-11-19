@@ -9,6 +9,9 @@ on:
       - 'public/chaos-code-studio*'
       - 'public/chaos-visual-lab*'
       - 'scripts/chaos-visual-lab-ui.test.mjs'
+      - 'scripts/chaos-visual-lab-libraries.test.mjs'
+      - 'public/chaos-openverse.mjs'
+      - 'public/vendor/visual-lab/**'
       - 'public/ai-handoff.html'
       - 'backend/src/ai-handoff.js'
       - 'scripts/chaos-code-studio-ui.test.mjs'
@@ -28,6 +31,12 @@ jobs:
       - name: Verify Code Studio interface and client syntax
         run: node --check public/chaos-code-studio.js && node --test scripts/chaos-code-studio-ui.test.mjs
       - name: Verify privacy-preserving member Chaos Visual Lab
-        run: node --check public/chaos-visual-lab.js && node --test scripts/chaos-visual-lab-ui.test.mjs
+        run: |
+          node --check public/chaos-visual-lab.js
+          node --check public/chaos-openverse.mjs
+          node --check public/vendor/visual-lab/pica.min.mjs
+          node --check public/vendor/visual-lab/qrcode.mjs
+          node --check public/vendor/visual-lab/imagetracer.js
+          node --test scripts/chaos-visual-lab-ui.test.mjs scripts/chaos-visual-lab-libraries.test.mjs
       - name: Verify private Samantha companion and relay UI
         run: node --check public/samantha-chaos.js && node --test scripts/samantha-chaos-ui.test.mjs
