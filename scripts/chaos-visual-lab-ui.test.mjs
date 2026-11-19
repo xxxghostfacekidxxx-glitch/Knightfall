@@ -71,3 +71,22 @@ test("private artwork and QR never call third-party services",()=>{
  assert.match(js,/image\.src=item\.thumbnail_url/);
  assert.match(js,/image\.referrerPolicy="no-referrer"/);
 });
+
+test("tattoo stencil controls use the actual deterministic pixel math and print core",()=>{
+ const effects=read("public/chaos-visual-effects.mjs");
+ for(const id of ["visual-threshold","visual-threshold-value","visual-mirror","visual-invert",
+  "visual-transparent-white","visual-preset-stencil","visual-adjust-reset","visual-compare",
+  "visual-paper","visual-print-width","visual-print-sheet","visual-print-status"]){
+  assert.ok(html.includes('id="'+id+'"'),"Missing measured-stencil control: "+id);
+ }
+ assert.match(js,/import \{applyChaosArtworkEffects,buildChaosPrintSheet,stencilPaperConfig\} from "\.\/chaos-visual-effects\.mjs"/);
+ assert.match(js,/applyChaosArtworkEffects\(adjusted/);
+ assert.match(js,/buildChaosPrintSheet\(/);
+ assert.match(js,/compareButton\.addEventListener\("click"/);
+ assert.match(js,/opened!==loadRevision/);
+ assert.match(js,/token!==revision\|\|active!==bitmap/);
+ assert.match(js,/tracingRevision!==revision\|\|tracingBitmap!==bitmap/);
+ assert.match(effects,/function applyChaosArtworkEffects|export function applyChaosArtworkEffects/);
+ assert.match(effects,/export function buildChaosPrintSheet/);
+ assert.doesNotMatch(effects,/\bfetch\s*\(|XMLHttpRequest|WebSocket|eval\s*\(|\.innerHTML/);
+});
