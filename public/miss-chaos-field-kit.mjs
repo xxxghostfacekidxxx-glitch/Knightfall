@@ -7,9 +7,11 @@ export const FIELD_KIT_PROMPTS=Object.freeze([
  {id:"art",label:"🎨 Create",text:"Help me design an original character, artwork, game asset, or tattoo concept. Ask about size, style, colors, and production requirements."},
  {id:"write",label:"✍ Write",text:"Help me turn rough notes into polished writing. Preserve my intended meaning and voice, and separate confirmed facts from uncertainties."},
  {id:"learn",label:"🔎 Explain",text:"Teach me a topic in plain language, with a worked example, limitations, and reliable sources to verify."},
+ {id:"games",label:"🎮 Games",text:"Recommend real Knightfall arcade games that work well on my device, with the controls and links to play. Check the live site game catalog, and do not invent games."},
+ {id:"moon",label:"🌙 Moon",text:"What is the moon phase today?"},
  {id:"journal",label:"🔒 My Journal",text:"Read my recent private Die-ary journal entry previews and help me reflect on themes. Keep this account-private, avoid inventing missing details, and do not publish anything."},
- {id:"mission",label:"𓂀 Mission",privateOnly:true,text:"Help me organize a Knightfall development mission: goal, exact files or features to inspect, risks, free-first approach, tests, reviewer approvals, and deployment evidence. Do not claim work is done without evidence."},
- {id:"handoff",label:"🔥 Handoff",privateOnly:true,text:"Help draft a clear Between the Flames update with what changed, what is verified, remaining blockers, next steps, and how Samantha and Ronnie can coordinate. Do not post it automatically."}
+ {id:"mission",label:"𓂀 Mission",privateOnly:true,text:"Review my shared handoff board and help organize a Knightfall development mission: goal, exact files or features to inspect, risks, free-first approach, tests, reviewer approvals, and deployment evidence. Do not claim work is done without evidence."},
+ {id:"handoff",label:"🔥 Handoff",privateOnly:true,text:"Read our Between the Flames shared handoff board and help draft an update with what changed, what is verified, blockers, and next steps for both collaborators. Do not post or modify anything automatically."}
 ]);
 export function promptsForMode(mode){
  return FIELD_KIT_PROMPTS.filter(prompt=>!prompt.privateOnly||mode==="owner"||mode==="partner");
