@@ -14,7 +14,7 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Private Die-ary",url:"/die-ary.html",terms:"my journal private diary die ary entries personal writing reflection diary notes"},
   {title:"Moonology",url:"/moonology.html",terms:"moon phase journal moonology lunar ritual"},
   {title:"Shadow Work",url:"/shadow-work.html",terms:"shadow work reflection journal prompts introspection"},
-  {title:"Devil's Toolkit / Creator Foundry",url:"/devil-tools.html",terms:"developer tools coding workshop creator foundry art tools pixel studio atlas packer tilemap artwork sprites free opensource"}
+  {title:"Devil's Toolkit / Creator Foundry",url:"/devil-tools.html",terms:"developer tools coding workshop creator foundry art tools pixel studio atlas packer tilemap artwork sprites free opensource"},
   {title:"Shop",url:"/cinder-shop.html",terms:"shop merch currency cosmetics purchases"},
   {title:"Account",url:"/account.html",terms:"member account profile settings sign in"},
   {title:"Notifications",url:"/notifications.html",terms:"notification alerts unread push phone Android subscription settings devices"},
