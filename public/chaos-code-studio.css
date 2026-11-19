@@ -19,6 +19,13 @@ body.chaos-code-page{background:radial-gradient(circle at 0% 0%,#27102d 0,transp
 .studio-note,.studio-hint,.studio-footer{color:#c6becf;font-size:.9rem;line-height:1.5}
 .studio-code-label,.studio-panel label{display:block;font-weight:700;margin:.65rem 0 .25rem}
 .studio-controls{display:grid;grid-template-columns:1fr 1.4fr;gap:.8rem}
+.studio-repository{border:1px solid #458f75aa;border-radius:13px;padding:.75rem;margin:.8rem 0 1.1rem;background:#10211944}
+.studio-repository h3{margin:.2rem 0 .3rem}
+.studio-repo-fields{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:.7rem;align-items:end}
+.studio-repo-fields label{min-width:0}
+.studio-repo-fields input{box-sizing:border-box;display:block;width:100%;max-width:100%;padding:.7rem;border:1px solid #93648a;border-radius:9px;background:#090c16;color:#fff;font:inherit}
+#studio-repo-output{max-height:260px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:520px){.studio-repo-fields{grid-template-columns:minmax(0,1fr) 88px}}
 .studio-panel textarea,.studio-panel select,.studio-panel input[type=file]{box-sizing:border-box;display:block;max-width:100%;width:100%;padding:.7rem;border:1px solid #93648a;border-radius:9px;background:#090c16;color:#f1f1f4;font:inherit}
 .studio-panel textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;line-height:1.55;tab-size:2;resize:vertical}
 #studio-code{min-height:300px}
