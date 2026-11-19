@@ -77,7 +77,7 @@ test("tool failures do not become made-up success claims",async()=>{
 
 test("planner outage falls back to regular replies rather than breaking chat",async()=>{
   const ai={run:async (_model,opts)=>{if(opts.tools)throw Error("provider temporarily unreachable");return {response:"still here"};}};
-  const out=await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"where is the arcade"}],principal:{id:2},handlers:setup().handlers});
+  const out=await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"research the effect of lighting on gameplay"}],principal:{id:2},handlers:setup().handlers});
   assert.equal(out.response,"still here");
 });
 test("explicit memo recall works even if the AI tool planner ignores tool calls",async()=>{
