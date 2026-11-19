@@ -67,7 +67,7 @@ function renderTaskOverview(groups){
  const work=$('workstream-summary');work.replaceChildren();
  const entries=Object.entries(groups).sort((a,b)=>b[1].high-a[1].high||b[1].open-a[1].open||a[0].localeCompare(b[0]));
  for(const [area,c] of entries){
-  const b=button(area+' · '+c.open+' open','', 'workstream-chip'+(filters.area===area?' selected':''));
+  const b=button(area+' · '+c.open+' open',()=>{}, 'workstream-chip'+(filters.area===area?' selected':''));
   b.addEventListener('click',()=>{
    filters.area=filters.area===area?'all':area;
    filters.limit=24;$('filter-area').value=filters.area;renderTasks();
