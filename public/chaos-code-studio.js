@@ -78,19 +78,19 @@ byId("studio-copy").addEventListener("click",async()=>{
  catch{note(codeStatus,"Clipboard access unavailable. Select the code and copy it manually.");}
 });
 byId("studio-save").addEventListener("click",()=>{
- download(language.value==="json"?"chaos-code.json":"chaos-code.js",code.value,"text/plain;charset=utf-8");
+ download("chaos-code"+({javascript:".js",typescript:".ts",jsx:".jsx",tsx:".tsx",json:".json"}[language.value]||".txt"),code.value,"text/plain;charset=utf-8");
  note(codeStatus,"File prepared for download.");
 });
 byId("studio-import").addEventListener("change",async e=>{
  const f=e.target.files?.[0];
  if(!f)return;
  if(f.size>10000){note(codeStatus,"Only text files under 10 KB are supported.");e.target.value="";return;}
- if(!/\.(?:m?js|json|txt)$/i.test(f.name)){note(codeStatus,"Use .js, .mjs, .json or .txt files.");e.target.value="";return;}
+ if(!/\.(?:m?js|jsx|ts|tsx|json|txt)$/i.test(f.name)){note(codeStatus,"Use .js, .mjs, .jsx, .ts, .tsx, .json or .txt files.");e.target.value="";return;}
  try{
   const data=await f.text();
   if(encoder.encode(data).length>10000)throw Error("File text exceeds 10 KB.");
   code.value=data;beforeFormat=null;undo.disabled=true;
-  language.value=/\.json$/i.test(f.name)?"json":"javascript";
+  language.value=/\.json$/i.test(f.name)?"json":/\.tsx$/i.test(f.name)?"tsx":/\.ts$/i.test(f.name)?"typescript":/\.jsx$/i.test(f.name)?"jsx":"javascript";
   note(codeStatus,"Local file loaded in the editor. Nothing uploaded.");
  }catch(err){note(codeStatus,String(err.message||"Could not open the file."));}
  e.target.value="";
@@ -168,5 +168,56 @@ diagramSvg.addEventListener("click",()=>{
 diagramMermaid.addEventListener("click",()=>{
  if(mermaidOutput.value)download("chaos-flowchart.mmd",mermaidOutput.value,"text/plain;charset=utf-8");
 });
+
+let storedPatch="";
+const beforeDiff=byId("studio-diff-before"),afterDiff=byId("studio-diff-after");
+const diffOutput=byId("studio-diff-output"),diffStatus=byId("studio-diff-status");
+const diffDownload=byId("studio-diff-export"),diffButton=byId("studio-diff-run");
+const schema=byId("studio-schema"),documentData=byId("studio-json-data");
+const schemaButton=byId("studio-schema-check"),schemaOutput=byId("studio-schema-output"),schemaStatus=byId("studio-schema-status");
+byId("studio-copy-to-after").addEventListener("click",()=>{
+ if(encoder.encode(code.value).length>5000){note(diffStatus,"Current editor exceeds the 5 KB comparison limit.");return;}
+ afterDiff.value=code.value;storedPatch="";diffDownload.disabled=true;
+ note(diffStatus,"Current editor copied to After. Nothing was changed in GitHub.");
+});
+diffButton.addEventListener("click",async()=>{
+ const before=beforeDiff.value,after=afterDiff.value;
+ if(encoder.encode(before).length>5000||encoder.encode(after).length>5000){
+  note(diffStatus,"Each version must be 5 KB or smaller.");return;
+ }
+ diffButton.disabled=true;storedPatch="";diffDownload.disabled=true;
+ note(diffStatus,"Comparing text. No code will execute and no patch will be applied.");
+ try{
+  const data=await utility("dev.code_diff",{before,after});
+  storedPatch=String(data.unified_diff||"");
+  note(diffOutput,storedPatch||"Identical source. Nothing changed.");
+  diffDownload.disabled=!storedPatch;
+  note(diffStatus,data.identical?"No differences detected.":"Comparison ready: "+data.added_lines+" added lines, "+data.removed_lines+" removed lines.");
+ }catch(err){note(diffStatus,String(err.message||"Comparison failed."));note(diffOutput,"No verified diff.");}
+ finally{diffButton.disabled=false;}
+});
+diffDownload.addEventListener("click",()=>{
+ if(storedPatch)download("chaos-review.patch",storedPatch,"text/plain;charset=utf-8");
+});
+byId("studio-copy-json-data").addEventListener("click",()=>{
+ if(language.value!=="json"){note(schemaStatus,"Switch the editor to JSON first.");return;}
+ if(encoder.encode(code.value).length>5300){note(schemaStatus,"Editor JSON exceeds the 5.3 KB schema check limit.");return;}
+ documentData.value=code.value;
+ note(schemaStatus,"Current JSON editor copied into the validator. Nothing sent yet.");
+});
+schemaButton.addEventListener("click",async()=>{
+ if(encoder.encode(schema.value).length>5300||encoder.encode(documentData.value).length>5300){
+  note(schemaStatus,"Keep JSON and schema under 5.3 KB each.");return;
+ }
+ schemaButton.disabled=true;note(schemaStatus,"Validating document against your supplied safe schema…");
+ try{
+  const result=await utility("dev.json_shape",{schema:schema.value,document:documentData.value});
+  const lines=result.errors?.map(e=>(e.path||"/")+": "+e.message)||[];
+  note(schemaOutput,result.valid?"✓ JSON matches the supported schema subset.":lines.join("\n"));
+  note(schemaStatus,result.valid?"Validation passed.":"Validation found "+lines.length+" issue(s).");
+ }catch(e){note(schemaStatus,String(e.message||"Unable to validate."));note(schemaOutput,"No verified result.");}
+ finally{schemaButton.disabled=false;}
+});
+
 // Diagram preview remains local and available without a signed-in account.
 byId("studio-diagram-build").click();

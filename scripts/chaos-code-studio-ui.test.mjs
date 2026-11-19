@@ -6,7 +6,8 @@ const js=readFileSync(new URL("../public/chaos-code-studio.js",import.meta.url),
 const chat=readFileSync(new URL("../public/miss-chaos.html",import.meta.url),"utf8");
 test("Code Studio exposes editor, inspect, formatting, exports and local diagram UI",()=>{
  for(const id of ["studio-code","studio-language","studio-inspect","studio-format","studio-save","studio-undo",
-  "studio-steps","studio-diagram-build","studio-diagram-svg","studio-diagram-mermaid","studio-diagram-preview","studio-mermaid"]){
+  "studio-steps","studio-diagram-build","studio-diagram-svg","studio-diagram-mermaid","studio-diagram-preview","studio-mermaid",
+  "studio-diff-before","studio-diff-after","studio-diff-run","studio-diff-export","studio-diff-output","studio-schema","studio-json-data","studio-schema-check","studio-schema-output"]){
   assert.ok(html.includes('id="'+id+'"'),"missing "+id);
  }
  assert.match(chat,/\/chaos-code-studio\.html/);

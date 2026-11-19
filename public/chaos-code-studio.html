@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0e0b16">
-  <meta name="description" content="Knightfall's free private code editor, Prettier formatter, JavaScript and JSON inspector, and SVG flowchart builder.">
+  <meta name="description" content="Knightfall's free private code editor, Prettier formatter, JavaScript, TypeScript, JSX, TSX and JSON inspector, and SVG flowchart builder.">
   <title>Chaos Code Studio | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v1">
+  <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-v1"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-v2"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -22,7 +22,7 @@
   <header class="studio-hero">
     <p class="eyebrow">DEVIL'S TOOLKIT · NO PAID APIS</p>
     <h1><span>CHAOS</span> CODE STUDIO <span aria-hidden="true">⚡</span></h1>
-    <p>A proper workstation for your mischievous AI. Edit code, inspect syntax, format with free Prettier, turn steps into diagrams and download your results. No hidden checkout, subscription or AI credits.</p>
+    <p>A proper workstation for your mischievous AI. Edit code, inspect syntax, format with free Prettier, turn steps into diagrams and download your results. No new paid coding service or subscription. Existing Cloudflare free-tier usage limits still apply.</p>
     <div class="studio-hero-links">
       <a href="/devil-tools.html">Creator Foundry</a>
       <a href="/chaos-forge.html">Chaos Forge</a>
@@ -36,10 +36,10 @@
       <p class="studio-note">Editing, importing, copying and downloading stay on your device. Pressing Inspect or Format deliberately sends only the current code to Knightfall's existing authenticated API; it does not run or save that code.</p>
       <div class="studio-controls">
         <label for="studio-language">Language
-          <select id="studio-language"><option value="javascript">JavaScript</option><option value="json">JSON</option></select>
+          <select id="studio-language"><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="jsx">JSX</option><option value="tsx">TSX</option><option value="json">JSON</option></select>
         </label>
         <label for="studio-import">Open a local text file (max 10 KB)
-          <input type="file" id="studio-import" accept=".js,.mjs,.json,.txt,text/plain,application/json,text/javascript">
+          <input type="file" id="studio-import" accept=".js,.mjs,.ts,.tsx,.jsx,.json,.txt,text/plain,application/json,text/javascript">
         </label>
       </div>
       <label class="studio-code-label" for="studio-code">Editable source code</label>
@@ -77,6 +77,46 @@ Fix bugs -> Release</textarea>
       <label for="studio-mermaid">Exportable Mermaid flowchart source</label>
       <textarea id="studio-mermaid" rows="8" readonly spellcheck="false" placeholder="Your flowchart source will appear here"></textarea>
       <p class="studio-hint">Mermaid text can be opened in Mermaid-compatible editors. This page uses a small built-in SVG renderer, not the complete Mermaid library.</p>
+    </section>
+    <section class="studio-panel" aria-labelledby="diff-title">
+      <div class="studio-panel-heading"><div><p class="eyebrow">03 / CODE REVIEW</p><h2 id="diff-title">Before & After Autopsy</h2></div><span class="studio-chip">READ ONLY</span></div>
+      <p class="studio-note">Compare two versions without running or applying changes. No GitHub writes. Each version is limited to 5 KB.</p>
+      <label for="studio-diff-before">Before: original code</label>
+      <textarea id="studio-diff-before" rows="7" spellcheck="false">const total=1;
+</textarea>
+      <label for="studio-diff-after">After: proposed change</label>
+      <textarea id="studio-diff-after" rows="7" spellcheck="false">const total=2;
+const valid=true;
+</textarea>
+      <div class="studio-actions">
+        <button type="button" id="studio-diff-run">Compare versions</button>
+        <button type="button" id="studio-diff-export" disabled>Download .patch</button>
+        <button type="button" id="studio-copy-to-after">Use current editor as After</button>
+      </div>
+      <p id="studio-diff-status" class="studio-status" role="status" aria-live="polite">Comparison uses the existing signed-in utility endpoint.</p>
+      <pre id="studio-diff-output" class="studio-results" tabindex="0">No comparison yet.</pre>
+    </section>
+    <section class="studio-panel" aria-labelledby="schema-title">
+      <div class="studio-panel-heading"><div><p class="eyebrow">04 / DATA LAB</p><h2 id="schema-title">JSON Structure Examiner</h2></div><span class="studio-chip">SAFE SUBSET</span></div>
+      <p class="studio-note">Check required fields, types, allowed properties, numeric bounds and arrays. This intentionally excludes risky remote references, regex patterns and executable schemas.</p>
+      <label for="studio-schema">JSON shape (schema)</label>
+      <textarea id="studio-schema" rows="9" spellcheck="false">{
+  "type": "object",
+  "required": ["username", "level"],
+  "additionalProperties": false,
+  "properties": {
+    "username": {"type": "string", "minLength": 2},
+    "level": {"type": "integer", "minimum": 1}
+  }
+}</textarea>
+      <label for="studio-json-data">JSON data to validate</label>
+      <textarea id="studio-json-data" rows="5" spellcheck="false">{"username":"Chaos","level":5}</textarea>
+      <div class="studio-actions">
+        <button type="button" id="studio-schema-check">Validate JSON</button>
+        <button type="button" id="studio-copy-json-data">Use current JSON editor content</button>
+      </div>
+      <p id="studio-schema-status" class="studio-status" role="status" aria-live="polite">Only the data and schema you submit are sent to Knightfall's existing API.</p>
+      <pre id="studio-schema-output" class="studio-results" tabindex="0">No validation yet.</pre>
     </section>
   </div>
   <footer class="studio-footer">Built with pinned MIT-licensed Prettier and Knightfall's own no-cost diagram code. No paid accounts, paid code API, execution sandbox, or third-party source upload.</footer>

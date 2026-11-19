@@ -39,3 +39,11 @@ body.chaos-code-page{background:radial-gradient(circle at 0% 0%,#27102d 0,transp
 @media(max-width:970px){.studio-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:580px){.chaos-code-shell{width:100%;padding:1rem .7rem 3rem}.studio-controls{grid-template-columns:1fr}.studio-panel{padding:.8rem}.studio-actions button{flex:1 1 9rem}}
 @media(prefers-reduced-motion:reduce){.studio-panel *{scroll-behavior:auto}}
+
+
+/* Added code review and JSON shape panels retain compact, accessible stacking. */
+#studio-diff-before,#studio-diff-after{min-height:115px}
+#studio-schema{min-height:220px}
+#studio-json-data{min-height:108px}
+#studio-diff-output{min-height:110px}
+#studio-schema-output{min-height:80px}
