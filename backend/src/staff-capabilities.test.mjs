@@ -71,7 +71,7 @@ test("Admin User Command lists Creator as a separately selectable member track",
  assert.match(api,/ON CONFLICT\(user_id\) DO UPDATE SET title='Digital Creator',unlimited_slots=1,advanced_builder=1/);
  assert.match(api,/DELETE FROM member_bot_creator_privileges WHERE user_id=\? AND title='Digital Creator'/);
  assert.match(api,/await env\.DB\.batch\(updates\)/);
- assert.match(api,/AS public_title,EXISTS\\(SELECT 1 FROM ai_handoff_partner/);
+ assert.ok(api.includes("AS public_title,EXISTS(SELECT 1 FROM ai_handoff_partner"));
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).track,"creation");
  assert.equal(staffCapabilities({role:"member",public_title:"Digital Creator"}).can_moderate,false);
  assert.equal(staffCapabilities({role:"member"}).can_create,false);
