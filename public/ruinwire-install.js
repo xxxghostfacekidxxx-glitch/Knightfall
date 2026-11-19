@@ -8,7 +8,7 @@ const remember=()=>{try{localStorage.setItem(installKey,"1")}catch{}};
 const forget=()=>{try{localStorage.removeItem(installKey)}catch{}};
 const standalone=window.matchMedia?.("(display-mode: standalone)")?.matches||navigator.standalone===true;
 const markInstalled=()=>{
-  pending=null;remember();b.disabled=true;b.hidden=true;
+  pending=null;remember();b.disabled=true;b.hidden=true;b.style.display="none";
   s.textContent="Chaosphere is installed. Open it from your device's apps.";
 };
 const help=()=>{s.textContent="Use your browser menu to choose Install app or Add to Home screen. On iPhone, use Safari's Share menu.";document.getElementById("rw-help")?.scrollIntoView({behavior:"smooth",block:"center"});};
@@ -16,7 +16,7 @@ if(standalone||remembered())markInstalled();
 else{s.textContent="Tap Install Chaosphere to install it separately from Knightfall.";}
 window.addEventListener("beforeinstallprompt",e=>{
   if(standalone)return;
-  e.preventDefault();forget();pending=e;b.hidden=false;b.disabled=false;
+  e.preventDefault();forget();pending=e;b.hidden=false;b.style.display="";b.disabled=false;
   s.textContent="Your browser is ready to install Chaosphere.";
 });
 window.addEventListener("appinstalled",markInstalled);
