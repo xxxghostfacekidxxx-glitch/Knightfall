@@ -91,7 +91,7 @@
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
   let assistantMode="standard",verifiedPermissions=null,availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"}];
   const modeSelect=$("#mc-companion-mode"),modeLabel=$("#mc-companion-label"),fullChat=$("#mc-full-chat"),privateToggle=$("#mc-private-switch");
-  let chatPhoto=null;
+  let chatPhoto=null,fieldKit=null;
   import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
     chatPhoto=mountChaosChatImage({form:$("#mc-form"),composer:$("#mc-form"),
       status:$("#mc-attachment-status")});
@@ -124,6 +124,7 @@
       "Switch to "+(privateMode?.label||"private assistant"):"Return to standard Miss Chaos";
     privateToggle.setAttribute("aria-label",privateToggle.title);
     privateToggle.setAttribute("aria-pressed",String(assistantMode!=="standard"));
+    fieldKit?.refresh();
   }
   async function swapMode(next,{restoreSaved=true}={}){
     if(busy||!availableModes.some(m=>m.id===next)){modeSelect.value=assistantMode;return;}
@@ -184,7 +185,7 @@
       if(!memoPanel.hidden)closeMemo();
     }
   });
-  function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);messages.scrollTop=messages.scrollHeight;return el;}
+  function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);if(role==="assistant")fieldKit?.decorate(el,text);messages.scrollTop=messages.scrollHeight;return el;}
   async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
   async function ensureAccount(refresh=false){
     if(userId&&!refresh)return true;
@@ -253,6 +254,16 @@
   // Verify companion modes at startup; requiring an initial chat click hid
   // the Osiris/Isis switch despite an already authenticated session.
   void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
+  // Local, free-first console: reusable draft prompts and explicit reply-to-memo.
+  // Import failures cannot prevent Miss Chaos chat or her floating dock from loading.
+  import("/miss-chaos-field-kit.mjs?v=20261119-field-kit1")
+    .then(({mountMissChaosFieldKit})=>{
+      fieldKit=mountMissChaosFieldKit({
+        panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode
+      });
+      fieldKit?.refresh();
+    })
+    .catch(e=>console.warn("Miss Chaos field kit unavailable:",e.message));
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
   dockScript.src="/miss-chaos-dock.js?v=20261119-overlay-recovery1";
