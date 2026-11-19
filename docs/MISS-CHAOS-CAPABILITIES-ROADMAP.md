@@ -113,3 +113,39 @@ Use the existing Cloudflare stack, cache nonpersonal public data, cap retrieval 
 5. Monitor GitHub public API rate limits: no guarantee of unlimited no-cost HEAD inspections. Any lookup failure leaves proposals unverified, not silently accepted.
 
 **Field guide for Samantha's GPT:** `docs/MISS-CHAOS-OSIRIS-ISIS-FIELD-GUIDE.md`. Review the live authenticated Between the Flames board for newer decisions.
+
+## Member maker extensions and staff source index (November 19, 2026)
+
+**New code committed on main. Do not infer production deployment until Cloudflare confirms the exact SHA.**
+
+### Public Miss Chaos tools
+- `design.palette_build`: deterministic five-swatch analogous, complementary, triadic or monochrome HSL harmonies from user-provided `#RGB`/`#RRGGBB`; validated hex and palette mode, CSS variable export, black/white readable text contrast computed with WCAG 2.x sRGB math. No network, file access, side effects or image understanding. Conversational direct route: “Make a complementary color palette from #f00”.
+- `research.dictionary`: constrained single English-word lookup through the free `https://api.dictionaryapi.dev/api/v2/entries/en/<word>` endpoint, with bounded definitions and synonyms, Wiktionary attribution and a real source URL. Fixed host, no custom URLs, user data or redirects. The service can be unavailable or rate-limited; lookup does **not** silently fabricate results. Conversational route: “Define chaos”.
+- Both abilities are exposed through the verified capability registry, model tool definitions, dispatch and authenticated direct tool endpoint. These are public **capability scopes** but the Knightfall chat/tool API still requires a signed-in member. The exact role checker remains server-side.
+
+### Staff-only assistant navigation
+- `staff.source_files`: identify actual allowlisted public repository filenames inside one explicitly enumerated directory (`backend`, `backend/src`, `public`, `public/arcade`, `scripts`, `tests`, `docs`, `.github/workflows`). GitHub's `main` SHA must be verified first, and the subsequent read uses that immutable commit. Forbidden paths, dotfiles, secrets, non-source types and unlisted directories are never returned. At most 40 matching entries are shown and no contents are downloaded.
+- Example request: “List files in backend/src for chaos.” The model receives filenames, blob hashes/sizes and a canonical source URL; then uses `staff.repo_file` for separate read-only inspection of a chosen file.
+- Accessible only to server-verified admin/GOD staff in both the AI chat and Code Studio. There are no GitHub token operations, arbitrary branch selection, code writes or CI launches. GitHub public API quotas apply.
+- Chaos Code Studio now has a staff directory/file finder. Choosing a filename does **not** execute, edit, read or deploy it; the user must click the existing SHA-pinned read button.
+
+### Public native browser workstation
+- `/chaos-visual-lab.html` is a free visitor/member page, also linked from Creator Foundry, Miss Chaos and the public site index. It is built with local browser Canvas, uses no imports or network requests and sends no images to the Worker.
+- Users may choose or drag/drop a **PNG/JPEG/WebP/GIF first frame** up to 12 MB, constrained to 20 megapixels and 8192 pixels per side. Pixel-art scale (16/32/64/128) or smooth resize, 128/256/512/1024 longest-side exports, PNG/WebP download, six representative image swatches, suggested legible text color and CSS/TXT palette export.
+- This is a raster/pixel art and palette tool, **not** a geometric vector-trace engine, automatic clothing pattern or 3D reconstruction engine. Existing Pixel Studio/Atlas Packer/Tilemap Forge remain the editable game-art tools.
+- New UI regression verifies discoverability, no network/storage calls and bounded image-processing/export behavior. Device interaction, visual output fidelity and Cloudflare rollout require separate verification.
+
+### Open-source candidates researched, not installed
+- Pica (MIT) for advanced high-quality browser resizing: https://github.com/nodeca/pica
+- Color Thief (MIT) for palette extraction: https://github.com/lokesh/color-thief
+- qrcode-generator (MIT) for printable creator/artist share cards: https://github.com/kazuhikoarase/qrcode-generator
+- FinVector (MIT application, mixed component licenses) for raster-to-vector user workflow ideas: https://github.com/justynroberts/FinVector
+- Openverse (openly licensed media search, individual work licenses and API request limits): https://openverse.org
+Do not copy upstream assets or install runtimes without license review, dependency audit and performance testing.
+
+### Remaining build queue
+1. Run Chrome and Android touch/device tests for Visual Lab, including GIF, transparency, large images, WebP export fallback, keyboard input and 320-pixel screens.
+2. Confirm authenticated member/direct tool endpoint responds with validated palette/dictionary results and staff role denies `staff.source_files` to members.
+3. Inspect GitHub CI on exact integrated commit SHA; confirm both Cloudflare Pages and Worker deployments, since frontend and backend features have separate release gates.
+4. For a deeper member maker suite: add optional licensed vector tracing, high-quality resize, QR profile/artist share cards and reusable palette profiles only after privacy review and explicit save controls.
+5. For staff: retain human-reviewed patch integration, isolated test artifacts, signed approval and exact deployed-SHA validation; no autonomous GitHub writes.
