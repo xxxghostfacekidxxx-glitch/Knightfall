@@ -19,12 +19,16 @@ test("account and settings bootstrap never make production network requests on l
  assert.match(source,/function refreshNotifications\(\) \{\s*if \(!cloudAccountAvailable\) return;/);
  assert.match(source,/Promise\.resolve\(null\)/);
 });
-test("navigation exposes one route per destination and starts signed out",()=>{
+test("navigation keeps intentional shortcuts and grouped links while starting signed out",()=>{
  const markup = source.split("header.innerHTML = `")[1].split("`")[0];
  const nav = markup.split('<nav id="kf-primary-nav"')[1].split("</nav>")[0];
  const routes = [...nav.matchAll(/href="([^"]+)"/g)].map(match=>match[1]);
- assert.equal(routes.length,new Set(routes).size);
- assert.ok(routes.length<=15);
+ // Handoff and GOD tools intentionally appear both as quick links and in their account/staff menus.
+ // Everything else must remain unique.
+ const seen=new Set(),repeated=[];
+ for(const route of routes){if(seen.has(route))repeated.push(route);seen.add(route);}
+ assert.deepEqual(repeated.sort(),["/ai-handoff.html","/eye-of-chaos.html"]);
+ assert.ok(routes.length<=18,"Avoid adding another oversized navigation menu");
  assert.match(nav,/class="kf-nav-group kf-profile-group" hidden/);
  assert.match(nav,/class="kf-nav-group kf-staff-group" hidden/);
  assert.match(nav,/class="kf-sign-in-link"|kf-sign-in-link" href="\/auth.html"/);
