@@ -26,7 +26,7 @@ test("shared board and published bot chat use explicit signed-in actions, no aut
  assert.match(js,/\/api\/public-bots\//);
  assert.match(js,/\/api\/chaos\/fleet\/partner-chat/);
  assert.match(js,/selected\.private_share/);
- assert.match(js,/allowedBots\.some/);
+ assert.match(js,/allowedBots\.find/);
  assert.match(js,/set\(botReply,/);
  assert.match(js,/noteInput\.value/);
  assert.doesNotMatch(js,/innerHTML\s*=/);
