@@ -2260,7 +2260,7 @@ For complex questions, organize the answer clearly and provide actionable detail
     const existing=await env.DB.prepare("SELECT * FROM god_bot_profiles WHERE bot_key=?").bind(match[1]).first();
     if(!existing)return json({error:"Unknown bot"},404,origin);
     const name=payload.display_name??existing.display_name,bio=payload.bio??existing.bio,cadence=payload.cadence??existing.news_frequency,posting=payload.posting_enabled??existing.auto_post_enabled;
-    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily","three-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin); if(Number(posting)===1)return json({error:"Automatic posting is disabled. Every forum post needs explicit GOD approval."},409,origin);
+    if(!validText(name,80)||typeof bio!=="string"||bio.length>2000||!["manual","daily","twice-daily","three-daily"].includes(cadence)||![0,1,true,false].includes(posting))return json({error:"Invalid profile fields"},400,origin); if(Number(posting)===1)return json({error:"Automatic posting is disabled. Every forum post needs explicit approval by GOD or the accepted admin partner."},409,origin);
     await env.DB.prepare("UPDATE god_bot_profiles SET display_name=?,bio=?,news_frequency=?,auto_post_enabled=?,updated_at=CURRENT_TIMESTAMP WHERE bot_key=?").bind(name.trim(),bio,cadence,0,match[1]).run();
     await env.DB.prepare("UPDATE users SET display_name=?,bio=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT user_id FROM god_bot_accounts WHERE bot_key=?)").bind(name.trim(),bio,match[1]).run();
     await audit(env,actor,"god_bot_profile_update","bot",null,{bot_key:match[1],fields:Object.keys(payload)});
