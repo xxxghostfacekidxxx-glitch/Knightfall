@@ -48,6 +48,18 @@ test("staff review packet binds a verified read-only main excerpt to a non-execu
  assert.doesNotMatch(js,/github\.com\/repos\/[^\s]*\/contents\/.*method:\s*"PUT"/);
 });
 
+test("staff source finder lists only verified paths and requires a fresh separate read",()=>{
+ for(const id of ["studio-repo-dir","studio-repo-query","studio-repo-find","studio-repo-find-status",
+   "studio-repo-file-select","studio-repo-file-use"]){
+  assert.ok(html.includes('id="'+id+'"'),id);
+ }
+ assert.match(js,/utility\("staff\.source_files"/);
+ assert.match(js,/repoFileSelect\.replaceChildren\(\)/);
+ assert.match(js,/new Option\(file\.path,file\.path\)/);
+ assert.match(js,/result\.commit_sha/);
+ assert.match(js,/Click Read file excerpt for a fresh SHA-pinned inspection/);
+ assert.doesNotMatch(js,/repoFileUse\.addEventListener\([\s\S]{0,220}fetch\(/);
+});
 test("Between the Flames requires an explicit staff click and only sends non-code review metadata",()=>{
  assert.ok(html.includes('id="studio-ci-output"'));
  assert.ok(html.includes('id="studio-ci-status"'));
