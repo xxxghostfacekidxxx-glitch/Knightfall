@@ -57,7 +57,7 @@ const activity=(env,user,action,taskId=null,snapshot='')=>env.DB.prepare('INSERT
 
 async function readSnapshot(env,user){
  const [tasks,notes,latest]=await Promise.all([
-  env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.area,t.verification,t.source_url,t.next_step,t.blocker,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END,CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 200").all(),
+  env.DB.prepare("SELECT t.id,t.title,t.details,t.status,t.priority,t.version,t.area,t.verification,t.source_url,t.next_step,t.blocker,t.created_at,t.updated_at,u.username AS updated_by FROM ai_handoff_tasks t LEFT JOIN users u ON u.id=t.updated_by WHERE t.deleted_at IS NULL ORDER BY CASE t.status WHEN 'todo' THEN 0 WHEN 'in_progress' THEN 1 ELSE 2 END,CASE t.priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END,t.updated_at DESC,t.id DESC LIMIT 500").all(),
   env.DB.prepare("SELECT n.id,n.body,n.category,n.created_at,u.username AS author FROM ai_handoff_notes n JOIN users u ON u.id=n.author_id ORDER BY n.id DESC LIMIT 60").all(),
   env.DB.prepare("SELECT id,action,task_id,created_at FROM ai_handoff_events ORDER BY id DESC LIMIT 25").all()
  ]);
@@ -146,7 +146,7 @@ export async function handleAiHandoffBridge(request,env,url,{getUser,json,origin
   const status=payload.status??'todo',priority=payload.priority??'normal',extra=readExtra(payload);
   if(!title||details.length>3000||!checkStatus(status)||!checkPriority(priority)||!extra)return respond({error:'Invalid task fields; check area, source and verification.'},400);
   const count=await env.DB.prepare("SELECT COUNT(*) AS n FROM ai_handoff_tasks WHERE deleted_at IS NULL").first();
-  if(Number(count?.n||0)>=200)return respond({error:'Shared list is full.'},409);
+  if(Number(count?.n||0)>=500)return respond({error:'Shared list has reached its 500-task capacity.'},409);
   const task=await env.DB.prepare("INSERT INTO ai_handoff_tasks(title,details,status,priority,created_by,updated_by,area,verification,source_url,next_step,blocker) VALUES(?,?,?,?,?,?,?,?,?,?,?) RETURNING id,title,details,status,priority,version,area,verification,source_url,next_step,blocker,created_at,updated_at").bind(title,details,status,priority,user.id,user.id,extra.area,extra.verification,extra.source_url,extra.next_step,extra.blocker).first();
   await activity(env,user,'ai_bridge_created',task.id,title);
   return respond({ok:true,task},201);
