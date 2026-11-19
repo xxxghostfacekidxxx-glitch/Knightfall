@@ -140,7 +140,8 @@ jobs:
           node --check public/bot-public.js
       - name: Verify memo API, floating dock and member quick-send
         run: |
-          node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs
+          node --test backend/src/member-memos.test.mjs backend/src/member-memo-mail.test.mjs scripts/miss-chaos-memo.test.mjs scripts/miss-chaos-field-kit.test.mjs
+          node --check public/miss-chaos-field-kit.mjs
           node --check public/memo-pad.js
           node --check public/memo-communications.js
           node --check public/miss-chaos-dock.js
