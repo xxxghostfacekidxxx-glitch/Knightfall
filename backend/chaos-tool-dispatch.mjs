@@ -12,7 +12,7 @@ export async function dispatchChaosTool({name,input,principal,handlers={},approv
   return executeChaosCapability({name,input,principal,handlers:trustedHandlers,approved,usedCalls});
 }
 export function describeChaosTools(principal) {
-  const publicTools = ["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert"];
+  const publicTools = ["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate"];
   if (principal?.id) publicTools.push("user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox","radar.moon","radar.shadow","research.wikipedia","utility.now");
   if (principal?.id && principal.role==="god") publicTools.push("god.diagnostics","god.audit_summary","god.propose_change");
   return publicTools;
