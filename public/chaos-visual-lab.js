@@ -162,6 +162,11 @@ async function render(){
    }
    ctx.putImageData(frame,0,0);
   }
+  traceSvg="";
+  if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
+  $("visual-svg-preview").hidden=true;
+  $("visual-svg").disabled=true;
+  $("visual-trace-status").textContent="Image processed. Trace the current result to create fresh vector paths.";
   outputCanvas=canvas;preview.width=outW;preview.height=outH;
   preview.getContext("2d").drawImage(canvas,0,0);
   preview.style.imageRendering=pixel?"pixelated":"auto";
@@ -209,4 +214,163 @@ drop.addEventListener("drop",e=>{
  e.preventDefault();drop.classList.remove("cvl-dropping");
  if(e.dataTransfer?.files?.length)void openPicture(e.dataTransfer.files[0]);
 });
-window.addEventListener("pagehide",()=>{bitmap?.close();bitmap=null;});
+// ---- Raster-to-vector: separate opt-in, bounded synchronous ImageTracerJS. ----
+const traceButton=$("visual-trace"),svgButton=$("visual-svg"),traceStatus=$("visual-trace-status");
+const svgPreview=$("visual-svg-preview"),traceStyle=$("visual-trace-style"),traceDetail=$("visual-trace-detail");
+function traceStatusText(message){traceStatus.textContent=message;}
+traceButton.addEventListener("click",async()=>{
+ if(!bitmap)return;
+ traceButton.disabled=true;svgButton.disabled=true;
+ traceStatusText("Building local vector paths from the processed pixels...");
+ try{
+  // One yield lets the status paint before a deliberately limited synchronous trace.
+  await new Promise(resolve=>setTimeout(resolve,0));
+  if(!window.ImageTracer?.imagedataToSVG)throw Error("ImageTracerJS did not initialize.");
+  const style=traceStyle.value,detail=traceDetail.value;
+  if(!["blackwork","grayscale","color"].includes(style)||
+     !["simple","balanced","detailed"].includes(detail))throw Error("Unsupported trace settings.");
+  const art=outputCanvas||bitmap;
+  const longest=style==="color"?160:192,f=Math.min(1,longest/Math.max(art.width,art.height));
+  const frame=document.createElement("canvas");
+  frame.width=Math.max(1,Math.round(art.width*f));
+  frame.height=Math.max(1,Math.round(art.height*f));
+  const context=frame.getContext("2d",{willReadFrequently:true});
+  if(!context)throw Error("Pixel data access unavailable.");
+  context.imageSmoothingEnabled=true;context.drawImage(art,0,0,frame.width,frame.height);
+  const data=context.getImageData(0,0,frame.width,frame.height);
+  // Trace on white paper. Transparent areas become white; blackwork has two colors.
+  for(let i=0;i<data.data.length;i+=4){
+   const d=data.data;
+   if(d[i+3]<128){d[i]=255;d[i+1]=255;d[i+2]=255;d[i+3]=255;continue;}
+   if(style!=="color"){
+    const gray=Math.round(d[i]*.2126+d[i+1]*.7152+d[i+2]*.0722);
+    const value=style==="blackwork"?(gray>=145?255:0):gray;
+    d[i]=value;d[i+1]=value;d[i+2]=value;d[i+3]=255;
+   }
+  }
+  const precision={simple:{pathomit:12,ltres:2.5,qtres:2.5},
+   balanced:{pathomit:5,ltres:1.2,qtres:1.2},
+   detailed:{pathomit:2,ltres:.7,qtres:.7}}[detail];
+  const vector=window.ImageTracer.imagedataToSVG(data,{
+   ...precision,colorsampling:2,numberofcolors:style==="blackwork"?2:style==="grayscale"?6:8,
+   colorquantcycles:2,strokewidth:0,roundcoords:1,scale:1,viewbox:true,blurradius:0
+  });
+  if(typeof vector!=="string"||vector.length>2_000_000||!vector.startsWith("<svg ")||
+    /<(?:script|iframe|foreignObject|object)\b|\bon[a-z]+\s*=|javascript:/i.test(vector))
+   throw Error("SVG output failed the safety and size checks.");
+  const blob=new Blob([vector],{type:"image/svg+xml;charset=utf-8"});
+  if(traceUrl)URL.revokeObjectURL(traceUrl);
+  traceUrl=URL.createObjectURL(blob);svgPreview.src=traceUrl;svgPreview.hidden=false;
+  traceSvg=vector;svgButton.disabled=false;
+  traceStatusText("Created a real "+style+" vector SVG ("+frame.width+" × "+frame.height+" trace grid, "+
+   Math.round(vector.length/1024)+" KB). Review and edit curves before production.");
+ }catch(err){traceSvg="";traceStatusText(String(err.message||"Could not trace the selected image.").slice(0,180));}
+ finally{traceButton.disabled=!bitmap;}
+});
+svgButton.addEventListener("click",()=>{
+ if(traceSvg)saveBlob("knightfall-traced-stencil.svg",new Blob([traceSvg],{type:"image/svg+xml;charset=utf-8"}));
+});
+
+// ---- Offline QR share cards: locally hosted MIT QR Code Generator. ----
+const qrUrl=$("visual-qr-url"),qrLabel=$("visual-qr-label");
+const qrButton=$("visual-qr-generate"),qrPng=$("visual-qr-png"),qrSvgButton=$("visual-qr-svg");
+const qrPreview=$("visual-qr-preview"),qrStatus=$("visual-qr-status");
+function qrMessage(message){qrStatus.textContent=message;}
+function makeQrSvg(code){
+ const n=code.getModuleCount(),quiet=4,cell=10,width=(n+quiet*2)*cell;
+ const dark=['<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+width+
+  '" viewBox="0 0 '+width+' '+width+'"><rect width="100%" height="100%" fill="#fff"/>'];
+ for(let row=0;row<n;row++)for(let col=0;col<n;col++)if(code.isDark(row,col))
+  dark.push('<rect x="'+(col+quiet)*cell+'" y="'+(row+quiet)*cell+'" width="'+cell+'" height="'+cell+'" fill="#000"/>');
+ dark.push("</svg>");
+ return dark.join("");
+}
+qrButton.addEventListener("click",()=>{
+ qrPng.disabled=true;qrSvgButton.disabled=true;qrSvg="";qrCanvas=null;
+ try{
+  const urlString=qrUrl.value.trim(),address=new URL(urlString);
+  if(address.protocol!=="https:"||!address.hostname||address.username||address.password||
+    urlString.length>300)throw Error("Enter a HTTPS link with no embedded credentials (up to 300 characters).");
+  const label=qrLabel.value.trim().slice(0,45)||"SCAN MY PORTAL";
+  const code=qrcode(0,"M");code.addData(urlString);code.make();
+  qrSvg=makeQrSvg(code);
+  const canvas=qrPreview,ctx=canvas.getContext("2d");
+  if(!ctx)throw Error("QR canvas unavailable.");
+  canvas.width=720;canvas.height=880;
+  ctx.fillStyle="#100e18";ctx.fillRect(0,0,720,880);
+  ctx.fillStyle="#b25b68";ctx.fillRect(0,0,720,18);ctx.fillRect(0,862,720,18);
+  ctx.fillStyle="#ece1d3";ctx.textAlign="center";
+  ctx.font="bold 34px sans-serif";ctx.fillText("KNIGHTFALL",360,78);
+  ctx.font="700 19px sans-serif";ctx.fillStyle="#c7a77c";ctx.fillText(label.toUpperCase(),360,116,650);
+  const n=code.getModuleCount(),quiet=4,cell=Math.max(1,Math.floor(560/(n+quiet*2)));
+  const occupied=(n+quiet*2)*cell,x=Math.floor((720-occupied)/2),y=150;
+  ctx.fillStyle="#fff";ctx.fillRect(x,y,occupied,occupied);
+  ctx.fillStyle="#000";
+  for(let row=0;row<n;row++)for(let col=0;col<n;col++)if(code.isDark(row,col))
+   ctx.fillRect(x+(col+quiet)*cell,y+(row+quiet)*cell,cell,cell);
+  ctx.fillStyle="#ece1d3";ctx.font="bold 25px sans-serif";ctx.fillText("SCAN THE SIGIL",360,760,645);
+  ctx.font="17px monospace";ctx.fillStyle="#c7a77c";
+  ctx.fillText(urlString.length>65?urlString.slice(0,61)+"…":urlString,360,808,650);
+  qrCanvas=canvas;qrPng.disabled=false;qrSvgButton.disabled=false;
+  qrMessage("QR card ready. The full encoded HTTPS link is "+urlString.length+
+   " characters. Check the result with your phone camera before printing.");
+ }catch(err){qrMessage(String(err.message||"Could not create a QR code.").slice(0,200));}
+});
+qrPng.addEventListener("click",()=>{
+ if(!qrCanvas)return;
+ qrCanvas.toBlob(blob=>{
+  if(blob){saveBlob("knightfall-portal-qr-card.png",blob);qrMessage("QR card PNG exported locally.");}
+  else qrMessage("QR PNG export unavailable in this browser.");
+ },"image/png");
+});
+qrSvgButton.addEventListener("click",()=>{
+ if(qrSvg)saveBlob("knightfall-portal-qr.svg",new Blob([qrSvg],{type:"image/svg+xml;charset=utf-8"}));
+});
+
+// ---- Opt-in online Commons metadata search: unrelated to local image files. ----
+const commonsQuery=$("visual-commons-query"),commonsFilter=$("visual-commons-license");
+const commonsButton=$("visual-commons-search"),commonsStatus=$("visual-commons-status");
+const commonsResults=$("visual-commons-results"),commonsExternal=$("visual-commons-external");
+function externalLink(label,url){
+ const safe=safeExternalHttps(url);
+ if(!safe)return null;
+ const a=document.createElement("a");
+ a.href=safe;a.target="_blank";a.rel="noopener noreferrer";a.textContent=label;return a;
+}
+function showCommons(items){
+ commonsResults.replaceChildren();
+ if(!items.length){const p=document.createElement("p");p.textContent="No matching works in this limited result set. Adjust keywords or open Openverse directly.";commonsResults.append(p);return;}
+ for(const item of items){
+  const article=document.createElement("article");article.className="cvl-result";
+  const h=document.createElement("h3");h.textContent=item.title;
+  const credit=document.createElement("p");credit.textContent="Creator: "+item.creator+
+   " · License: "+item.license+(item.source?" · Source: "+item.source:"");
+  const actions=document.createElement("p");actions.className="cvl-result-links";
+  const origin=externalLink("View original and verify rights",item.url);
+  if(origin)actions.append(origin);
+  const license=externalLink("Read license",item.license_url);
+  if(license)actions.append(license);
+  article.append(h,credit);
+  if(item.attribution){const attribution=document.createElement("p");attribution.textContent=
+   "Attribution: "+item.attribution;article.append(attribution);}
+  article.append(actions);commonsResults.append(article);
+ }
+}
+commonsButton.addEventListener("click",async()=>{
+ const term=commonsQuery.value.trim();
+ commonsExternal.href="https://openverse.org/search/image?q="+encodeURIComponent(term.slice(0,120));
+ commonsResults.replaceChildren();commonsButton.disabled=true;
+ commonsStatus.textContent="Searching Openverse for openly licensed works. Only your search phrase is sent...";
+ try{
+  const result=await searchOpenverseImages({query:term,license:commonsFilter.value});
+  showCommons(result.items);
+  commonsStatus.textContent="Openverse returned "+result.items.length+
+   " usable results from this page. Always verify each original license and creator credit.";
+ }catch(err){commonsStatus.textContent=String(err.message||"Commons search unavailable.").slice(0,200);}
+ finally{commonsButton.disabled=false;}
+});
+commonsQuery.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();commonsButton.click();}});
+window.addEventListener("pagehide",()=>{
+ bitmap?.close();bitmap=null;
+ if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
+});
