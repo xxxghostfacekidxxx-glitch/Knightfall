@@ -301,6 +301,25 @@ ok("New cabinets are linked from the main arcade and registered in the player re
 
 
 
+// Source-backed contract checks for routes dispatched through trusted subrouters.
+// Do not blindly allow an /api/ prefix: require both the Worker handoff and
+// exact endpoint implementation, or fail the release audit.
+const handoffRoutes = await readFile(path.join(root,"backend/src/ai-handoff.js"),"utf8");
+const companionRoutes = await readFile(path.join(root,"backend/src/chaos-companion.mjs"),"utf8");
+const delegatedApiImplemented = endpoint => {
+  if(endpoint==="/api/ai-handoff/tasks"||endpoint==="/api/ai-handoff/notes"){
+    const subpath=endpoint.slice("/api/ai-handoff".length);
+    return worker.includes("handleAiHandoff(") &&
+      handoffRoutes.includes("const PREFIX='/api/ai-handoff'") &&
+      handoffRoutes.includes("if(path==='"+subpath+"'&&request.method==='POST')");
+  }
+  if(["/api/chaos/modes","/api/chaos/companion","/api/chaos/fleet","/api/chaos/fleet/partner-chat"].includes(endpoint)){
+    return worker.includes("handleChaosCompanion(") &&
+      companionRoutes.includes('const known=') &&
+      companionRoutes.includes('"'+endpoint+'"');
+  }
+  return false;
+};
 const apiCandidates = new Set();
 for (const file of [...htmlFiles, ...jsFiles]) {
   // This upstream solo bundle has its own optional service API, not Knightfall routes.
@@ -314,7 +333,7 @@ for (const file of [...htmlFiles, ...jsFiles]) {
 for (const endpoint of apiCandidates) {
   const isStagingRoute=/^\/api\/game\/(?:global-chat|action|save|world)$/.test(endpoint) && stagingWorker.includes(endpoint);
   const isDownloadRoute=/^\/api\/admin\/game-downloads\/[a-z0-9-]+$/.test(endpoint) && worker.includes('serveAdminGameArchive');
-  if (!isStagingRoute && !isDownloadRoute && !workerApiSurface.includes(endpoint) && !workerApiSurface.includes(endpoint.replaceAll("/", "\\/"))) {
+  if (!isStagingRoute && !isDownloadRoute && !delegatedApiImplemented(endpoint) && !workerApiSurface.includes(endpoint) && !workerApiSurface.includes(endpoint.replaceAll("/", "\\/"))) {
     fail("Frontend references an API path not found in the Worker: " + endpoint);
   }
 }
