@@ -8,6 +8,7 @@
 <title>𓂀 Eye of Chaos | Knightfall Staff</title>
 <link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/eye-of-chaos.css?v=20261115-1">
 <script src="/nav.js?v=20261118-command-access1" defer></script><script src="/eye-of-chaos.js?v=20261119-osiris-isis1" defer></script>
+<script type="module" src="/chaos-dev-review-ui.mjs?v=20261119-reviewqueue1"></script>
 </head>
 <body class="chaos-console"><header class="kf-header"></header>
 <main id="chaos-app" class="chaos-shell">
@@ -81,6 +82,15 @@
    <label>Draft content<textarea id="chaos-draft-body" maxlength="10000" rows="7" required></textarea></label>
    <div class="chaos-actions"><button type="submit" id="chaos-draft-save">Save pending draft</button><button type="button" id="chaos-draft-cancel" class="chaos-quiet" hidden>Cancel edit</button></div>
   </form>
+  <article class="chaos-card" id="chaos-dev-review-panel" aria-labelledby="chaos-dev-review-heading">
+    <div class="chaos-section-head"><div>
+      <h3 id="chaos-dev-review-heading">⚡ Miss Chaos · Developer review docket</h3>
+      <p>Full small source files only. Every submission is server-rechecked against an immutable main SHA. Osiris or authorized admin Isis can approve or reject that exact version. Approval never applies code, runs CI, commits or deploys.</p>
+    </div><button type="button" id="chaos-dev-review-refresh" class="chaos-quiet">Refresh code proposals</button></div>
+    <p id="chaos-dev-review-status" class="chaos-note" role="status" aria-live="polite">Verify permissions and the D1 review schema to load proposals.</p>
+    <div id="chaos-dev-review-list" class="chaos-stack" aria-label="Pending code review proposals"></div>
+    <a class="chaos-quiet" href="/chaos-code-studio.html">Open Code Studio to prepare a source change</a>
+  </article>
   <h3>Pending, approved and rejected drafts</h3><p class="chaos-note">Approved means signed off by Osiris or the authorized Isis, not published. Editing an approved draft invalidates its approval.</p>
   <div id="chaos-draft-list" class="chaos-stack"><p class="chaos-empty">Loading drafts…</p></div>
  </section>
