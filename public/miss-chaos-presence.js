@@ -4,7 +4,7 @@
   if (document.getElementById("miss-chaos-presence")) return;
   const API = "https://api.ash-fall.com";
   const AVATAR = "/assets/miss-chaos/miss-chaos-avatar.svg?v=20261027c";
-  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-crucible1"; document.head.append(css);
+  const css = document.createElement("link"); css.rel="stylesheet"; css.href="/miss-chaos-presence.css?v=20261119-guide1"; document.head.append(css);
   const photoCss=document.createElement("link");photoCss.rel="stylesheet";photoCss.href="/chaos-chat-image-picker.css?v=20261119-attach1";document.head.append(photoCss);
   const glitchCss = document.createElement("link"); glitchCss.rel="stylesheet"; glitchCss.href="/chaos-glitch.css?v=20261115-mc-scope2"; document.head.append(glitchCss);
   const root=document.createElement("div"); root.id="miss-chaos-presence";
@@ -273,7 +273,7 @@
   void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
   // Local, free-first console: reusable draft prompts and explicit reply-to-memo.
   // Import failures cannot prevent Miss Chaos chat or her floating dock from loading.
-  import("/miss-chaos-field-kit.mjs?v=20261119-crucible1")
+  import("/miss-chaos-field-kit.mjs?v=20261119-guide1")
     .then(({mountMissChaosFieldKit})=>{
       fieldKit=mountMissChaosFieldKit({
         panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode
