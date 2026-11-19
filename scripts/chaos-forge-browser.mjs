@@ -9,7 +9,7 @@ try{
   const errors=[];
   page.on("pageerror",error=>errors.push(error.message));
   await page.route("https://api.ash-fall.com/api/chaos/resources**",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({source:"Poly Haven",attribution:"Powered by Poly Haven",results:[{title:"Leather fabric",description:"CC0 material",url:"https://polyhaven.com/a/leather_01",license:"CC0"}]})}));
-  await page.route("https://api.ash-fall.com/api/chaos/forge/analyze",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({analysis:"VISIBLE DETAILS: two panels. MEASUREMENTS NEEDED: true finished width.",stored:false})}));
+  await page.route("https://api.ash-fall.com/api/chaos/forge/analyze",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({analysis:"TEMPLATE: apron\nVISIBLE DETAILS: two panels. MEASUREMENTS NEEDED: true finished width.",suggested_template:"apron",stored:false})}));
   const response=await page.goto(BASE+"/chaos-forge.html",{waitUntil:"domcontentloaded",timeout:25000});
   assert.equal(response.status(),200);
   await page.waitForSelector("#forge-pattern-preview svg",{timeout:15000});
@@ -33,6 +33,9 @@ try{
   await page.click("#forge-analyze");
   await page.locator("#forge-analysis:not([hidden])").waitFor({timeout:8000});
   assert.match(await page.locator("#forge-analysis").innerText(),/VISIBLE DETAILS/);
+  assert.equal(await page.locator("#forge-template").inputValue(),"apron");
+  assert.equal(await page.locator("#forge-width").inputValue(),"");
+  assert.match(await page.locator("#forge-pattern-status").innerText(),/Enter measured dimensions/);
   // 3D canvas is always present; a device without WebGL must show an explicit fallback.
   const exists=await page.locator("#forge-3d").count();
   assert.equal(exists,1);

@@ -6,12 +6,13 @@ const req=(image)=>new Request("https://api.ash-fall.com/api/chaos/forge/analyze
 const helpers=(user,rateLimit=async()=>true)=>({requireUser:async()=>user,rateLimit,json,origin:"https://ash-fall.com"});
 test("private image never persists and authorized calls invoke fixed vision model",async()=>{
  const calls=[];
- const env={AI:{run:async(...args)=>{calls.push(args);return{answer:"VISIBLE DETAILS: seams and a zipper. MEASUREMENTS NEEDED: chest."};}}};
+ const env={AI:{run:async(...args)=>{calls.push(args);return{answer:"TEMPLATE: trace\nVISIBLE DETAILS: seams and a zipper. MEASUREMENTS NEEDED: chest."};}}};
  const result=await handleChaosForgeVision(req("data:image/jpeg;base64,AAAA"),env,helpers({id:7}));
  assert.equal(result.status,200);
  const body=await result.json();
  assert.match(body.analysis,/seams/);
  assert.equal(body.stored,false);
+ assert.equal(body.suggested_template,"trace");
  assert.match(calls[0][0],/moondream3.1/);
  assert.equal(calls[0][1].task,"query");
  assert.equal(calls[0][1].image,"data:image/jpeg;base64,AAAA");

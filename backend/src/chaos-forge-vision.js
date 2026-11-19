@@ -27,7 +27,8 @@ export async function handleChaosForgeVision(request,env,{requireUser,rateLimit,
   "Identify separate panels, seams, fasteners, joints, closures, edge treatments, and likely material if visible.",
   "Write a specific numbered assembly sequence and a rough list of cut pieces when reasonable.",
   "Explicitly separate what you can SEE from guesses. Never invent true sizes or hidden back/inside construction.",
-  "Suggest a good starter pattern type: tote, pouch, apron, skirt, box, or trace/custom if no template fits.",
+  "Start your reply with exactly: TEMPLATE: followed by one of tote, pouch, apron, skirt, box, or trace. Use trace if none truly fits.",
+  "Do not guess exact dimensions or infer hidden construction from a single image.",
   "Say that it is a draft, not a production-ready pattern, and ask for missing measurements if needed.",
   notes?"Maker notes: "+notes:""
  ].filter(Boolean).join("\n");
@@ -35,7 +36,8 @@ export async function handleChaosForgeVision(request,env,{requireUser,rateLimit,
    const result=await env.AI.run(MODEL,{task:"query",image,question,reasoning:false,max_tokens:1200,temperature:0.2});
    const analysis=String(result?.answer||result?.response||"").trim().slice(0,9000);
    if(!analysis)throw Error("Vision returned an empty answer.");
-   return json({analysis,model:MODEL,kind,limits:"One image cannot determine exact fit, hidden surfaces, or accurate dimensions. Check measurements and prototypes.",stored:false},200,origin);
+   const suggested_template=analysis.match(/(?:^|\n)\s*TEMPLATE\s*:\s*(tote|pouch|apron|skirt|box|trace)\b/im)?.[1]?.toLowerCase()||null;
+   return json({analysis,suggested_template,model:MODEL,kind,limits:"One image cannot determine exact fit, hidden surfaces, or accurate dimensions. Check measurements and prototypes.",stored:false},200,origin);
  }catch(error){
    console.warn("chaos_forge_vision_failed",String(error?.message||error).slice(0,140));
    return json({error:"Vision analysis is unavailable or the free AI allowance was exhausted. Manual drafting and 3D preview still work."},503,origin);

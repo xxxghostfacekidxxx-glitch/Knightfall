@@ -104,6 +104,17 @@ $("forge-analyze").addEventListener("click",async()=>{
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw Error(data.error||"Vision analysis unavailable.");
   $("forge-analysis").hidden=false;$("forge-analysis").textContent=data.analysis;
+  // An AI guess is a template recommendation, not an inferred physical size.
+  const suggested=String(data.suggested_template||"");
+  if(["tote","pouch","apron","skirt","box","trace"].includes(suggested)){
+    select.value=suggested;syncTemplate();
+    $("forge-width").value="";
+    $("forge-height").value="";
+    $("forge-depth").value="";
+    status("forge-pattern-status","Miss Chaos suggests "+suggested.toUpperCase()+". Enter measured dimensions"+
+      (suggested==="trace"?" and tap around the visible outline.":" and select Generate cutting pattern.")+
+      " No dimensions were inferred from the photograph.");
+  }
   status("forge-vision-status","AI analysis received. This is a construction hypothesis; confirm measurements before cutting.");
  }catch(error){
   status("forge-vision-status",error.message);
