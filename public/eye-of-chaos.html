@@ -14,7 +14,7 @@
 <div class="chaos-breadcrumb"><a href="/admin.html">Admin Dashboard</a><span aria-hidden="true">/</span><span>Eye of Chaos</span><a href="/eye-of-horus.html" data-chaos-god-only hidden>Eye of Horus</a></div>
 <header class="chaos-hero">
  <div><p class="chaos-eyebrow">KNIGHTFALL / STAFF COMMAND</p><h1><span aria-hidden="true">𓂀</span> EYE OF CHAOS</h1>
- <p>One control room. Three fleets. No publication without GOD approval.</p></div>
+ <p>One control room. Three fleets. No automatic publishing. Draft approval is audited and restricted.</p></div>
  <div class="chaos-shield"><span class="chaos-shield-icon" aria-hidden="true">◆</span> PUBLICATION LOCKED</div>
 </header>
 <p id="chaos-status" class="chaos-status" role="status" aria-live="polite">Verifying staff authorization…</p>
@@ -37,10 +37,10 @@
  </nav>
  <section class="chaos-panel" data-panel="overview">
   <div class="chaos-grid">
-   <article class="chaos-card"><span class="chaos-eyebrow">DIVISION I</span><h2>Agents of Chaos</h2><p>Twenty approved research and content personalities. Inactive as autonomous accounts. Staff can assign work for GOD review.</p><button type="button" data-open="fleet">Explore the 20 agents</button></article>
+   <article class="chaos-card"><span class="chaos-eyebrow">DIVISION I</span><h2>Agents of Chaos</h2><p>Twenty approved research and content personalities. Inactive as autonomous accounts. Staff can assign work for authorized review.</p><button type="button" data-open="fleet">Explore the 20 agents</button></article>
    <article class="chaos-card"><span class="chaos-eyebrow">DIVISION II</span><h2>Chaos Cartridge Test Fleet</h2><p>Ten existing GitHub Actions workers. Preserve real CI execution and evidence rather than inventing bot accounts.</p><button type="button" data-open="qa">Open game QA</button></article>
    <article class="chaos-card"><span class="chaos-eyebrow">DIVISION III</span><h2>Madhouse Forum Fleet</h2><p>Existing service identities and profiles. Automated publishing is disabled. Explicit GOD publication only.</p><button type="button" data-open="forums">Manage forum bots</button></article>
-   <article class="chaos-card"><span class="chaos-eyebrow">DIVISION IV</span><h2>Theme Crew · GOD Studio</h2><p>Four CSS specialists. Scheduled audit, deterministic design proposals, live QA, and one-click approved sitewide themes with rollback.</p><a href="/theme-crew.html" class="chaos-quiet" data-chaos-god-only hidden>Open Theme Crew</a><p class="chaos-note">Live theme publishing remains GOD-only.</p></article>
+   <article class="chaos-card"><span class="chaos-eyebrow">DIVISION IV</span><h2>Theme Crew · Staff Studio</h2><p>Four CSS specialists. Scheduled audit, deterministic design proposals, live QA, and one-click approved sitewide themes with rollback.</p><a href="/theme-crew.html" class="chaos-quiet">Open Theme Crew</a><p class="chaos-note">Reviewed theme presets can be published by GOD or the verified delegated admin partner.</p></article>
   </div>
   <article class="chaos-card" id="chaos-master-controls" data-chaos-god-only hidden><div class="chaos-section-head"><div><h2>Master execution control</h2><p id="chaos-master-state" role="status" aria-live="polite">Reading GOD execution lock…</p></div><button type="button" id="chaos-master-toggle" class="chaos-danger" disabled>Pause all agent execution</button></div><p class="chaos-note">The server-enforced master pause blocks manual and scheduled research and AI drafting, without deleting missions or affecting your ability to review existing drafts.</p></article>
   <article class="chaos-card"><h2>Command protocol</h2><ol class="chaos-flow"><li>Dispatch a mission to a named agent or division</li><li>Research and collect evidence from approved public sources</li><li>Prepare or edit a source-backed draft</li><li>Approve that exact draft version as GOD</li><li>Publish only when a separately verified destination connector is available</li></ol><p class="chaos-note">Approval does not publish automatically. No social bot impersonation, automatic replies, or unrestricted website crawling.</p></article>
@@ -67,7 +67,7 @@
   <h3>Mission queue</h3><div id="chaos-mission-list" class="chaos-stack"><p class="chaos-empty">Loading mission records…</p></div>
  </section>
  <section class="chaos-panel" data-panel="approvals" hidden>
-  <div class="chaos-section-head"><div><h2>GOD publication approval queue</h2><p>Exact content version, source and destination recorded with each decision.</p></div><button type="button" id="chaos-draft-refresh" class="chaos-quiet">Refresh</button></div>
+  <div class="chaos-section-head"><div><h2>Draft approval queue</h2><p>Exact content version, source and destination recorded with each decision.</p></div><button type="button" id="chaos-draft-refresh" class="chaos-quiet">Refresh</button></div>
   <form id="chaos-draft-form" class="chaos-card chaos-form">
    <h3 id="chaos-draft-form-heading">Prepare a draft for review</h3>
    <input type="hidden" id="chaos-edit-id">
