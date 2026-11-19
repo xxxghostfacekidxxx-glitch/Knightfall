@@ -59,6 +59,27 @@ export async function runChaosModelCalls(calls,principal,handlers={}) {
  * Keeps obvious library and pattern requests working even when the tool planner is unavailable.
  * All tool execution still passes through the normal capability and permission gate.
  */
+// Short, explicit measurement requests bypass an unreliable optional planner.
+const UNIT_ALIASES=Object.freeze({
+  mm:"mm",millimeter:"mm",millimeters:"mm",cm:"cm",centimeter:"cm",centimeters:"cm",
+  m:"m",meter:"m",meters:"m",metre:"m",metres:"m",km:"km",kilometer:"km",kilometers:"km",
+  in:"in",inch:"in",inches:"in",ft:"ft",foot:"ft",feet:"ft",yd:"yd",yard:"yd",yards:"yd",
+  mi:"mi",mile:"mi",miles:"mi",g:"g",gram:"g",grams:"g",kg:"kg",kilogram:"kg",kilograms:"kg",
+  oz:"oz",ounce:"oz",ounces:"oz",lb:"lb",lbs:"lb",pound:"lb",pounds:"lb",
+  ml:"ml",milliliter:"ml",milliliters:"ml",l:"l",liter:"l",liters:"l",
+  tsp:"tsp",teaspoon:"tsp",teaspoons:"tsp",tbsp:"tbsp",tablespoon:"tbsp",tablespoons:"tbsp",
+  cup:"cup",cups:"cup",pt:"pt",pint:"pt",pints:"pt",qt:"qt",quart:"qt",quarts:"qt",
+  gal:"gal",gallon:"gal",gallons:"gal",c:"c",celsius:"c",f:"f",fahrenheit:"f",k:"k",kelvin:"k",
+  cm2:"cm2",m2:"m2",in2:"in2",ft2:"ft2",yd2:"yd2"
+});
+function explicitMeasurementRequest(text){
+  const message=String(text||"").trim().toLowerCase();
+  const match=message.match(/^(?:convert|change|how much is|how many)\s+(-?\d+(?:\.\d+)?)\s+([a-z0-9]+)\s+(?:to|into|in)\s+([a-z0-9]+)\s*[?.!]?$/i);
+  if(!match)return null;
+  const from=UNIT_ALIASES[match[2]],to=UNIT_ALIASES[match[3]],value=Number(match[1]);
+  if(!from||!to||!Number.isFinite(value))return null;
+  return {name:"utility.convert",arguments:{value,from,to}};
+}
 function explicitCreatorRequest(text){
  const message=String(text||"").trim();
  const book=message.match(/\b(?:find|search|look\s*up|show|recommend|research)\b.{0,35}\b(?:books?|novels?)\b(?:\s+(?:about|on|for|by|regarding))?\s+(.{2,95})/i);
@@ -87,7 +108,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const obvious=explicitCreatorRequest(latest);
+  const obvious=explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   if(obvious&&principal?.id){
     let evidence;
     try {
