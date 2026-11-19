@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-pinned-proposal3"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-sourcefinder4"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -37,6 +37,29 @@
       <section class="studio-repository" aria-labelledby="studio-repository-title">
         <h3 id="studio-repository-title">Knightfall Source Reader · Staff Only</h3>
         <p class="studio-note">Isis, Osiris and authorized admins can inspect a bounded public-source excerpt from an <strong>exact verified main commit</strong>. Long lines are flagged and cannot become patch proposals. This is not a GitHub editor or automatic code deployment.</p>
+        <div class="studio-repo-fields">
+          <label for="studio-repo-dir">Discover source directory
+            <select id="studio-repo-dir">
+              <option value="public">public/</option>
+              <option value="backend">backend/</option>
+              <option value="backend/src">backend/src/</option>
+              <option value="scripts">scripts/</option>
+              <option value="tests">tests/</option>
+              <option value="docs">docs/</option>
+              <option value="public/arcade">public/arcade/</option>
+              <option value=".github/workflows">.github/workflows/</option>
+            </select>
+          </label>
+          <label for="studio-repo-query">Find filename
+            <input id="studio-repo-query" type="search" maxlength="64" placeholder="chaos, avatar, arcade…" autocomplete="off">
+          </label>
+          <div class="studio-actions"><button type="button" id="studio-repo-find">Find source files</button></div>
+          <label for="studio-repo-file-select">Choose verified source path
+            <select id="studio-repo-file-select" disabled><option value="">Search to discover source files</option></select>
+          </label>
+          <div class="studio-actions"><button type="button" id="studio-repo-file-use" disabled>Use selected file path</button></div>
+        </div>
+        <p id="studio-repo-find-status" class="studio-status" role="status" aria-live="polite">Read-only public source filenames. The source is not downloaded until you click Read file excerpt.</p>
         <div class="studio-repo-fields">
           <label for="studio-repo-path">Repository file
             <input id="studio-repo-path" maxlength="190" value="public/miss-chaos.js" placeholder="backend/src/eye-of-chaos.js" spellcheck="false" autocomplete="off">
