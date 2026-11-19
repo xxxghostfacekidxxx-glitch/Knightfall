@@ -80,3 +80,15 @@
 .cvl-panel input[type=number]:focus-visible,.cvl-adjustments input:focus-visible{outline:3px solid #e2c985;outline-offset:2px}
 .cvl-print .cvl-status{color:#e0c2d4}
 @media(max-width:480px){.cvl-adjustments{padding:.55rem .7rem}.cvl-toggles{grid-template-columns:1fr}}
+
+/* One consolidated workbench with quick-scroll anchors; no duplicate tools pages. */
+.cvl-workstations{display:flex;gap:.55rem;margin:0 0 1rem;overflow-x:auto;overscroll-behavior-inline:contain;
+ scroll-snap-type:x proximity;padding:.25rem .2rem .7rem;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.cvl-workstations a{scroll-snap-align:start;white-space:nowrap;flex:0 0 auto;display:inline-flex;align-items:center;
+ min-height:44px;border:1px solid #b58a9e88;border-radius:999px;padding:.45rem .9rem;
+ background:linear-gradient(120deg,#281a2b,#1b1e28);color:#f3e2ea;font-size:.84rem;
+ font-weight:800;text-decoration:none}
+.cvl-workstations a:hover{background:#403047;border-color:#e2c985}
+.cvl-workstations a:focus-visible{outline:3px solid #e2c985;outline-offset:2px}
+.cvl-panel[id]{scroll-margin-top:1.2rem}
+@media(max-width:480px){.cvl-workstations{margin-inline:-.15rem;padding-inline:.15rem}}
