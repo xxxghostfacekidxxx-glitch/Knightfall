@@ -15,13 +15,16 @@ const partnerPage=read("public/samantha-chaos.html");
 test("floating assistant script and switcher are syntactically valid, accessible and available sitewide",()=>{
  assert.doesNotThrow(()=>new Script(floating));
  assert.match(floating,/id="mc-companion-mode"/);
+ assert.match(floating,/id="mc-private-switch"/);
+ assert.match(floating,/privateToggle\.addEventListener\("click"/);
+ assert.match(floating,/privateToggle\.hidden=!privateMode/);
  assert.match(floating,/aria-label="Miss Chaos assistant workspace"/);
  assert.match(floating,/id="mc-companion-label"[^>]*hidden/);
  assert.match(floating,/modeSelect\.addEventListener\("change"/);
  assert.match(floating,/modeLabel\.hidden=availableModes\.length<2/);
  assert.match(css,/\.mc-companion-control select/);
- assert.match(nav,/miss-chaos-presence\.js\?v=20261119-admin-delegate1/);
- assert.match(floating,/miss-chaos-presence\.css\?v=20261119-private-switch1/);
+ assert.match(nav,/miss-chaos-presence\.js\?v=20261119-photo-mode2/);
+ assert.match(floating,/miss-chaos-presence\.css\?v=20261119-dock-fixed4/);
 });
 
 test("session-owned mode discovery controls the private choices and always fails closed",()=>{
@@ -42,7 +45,7 @@ test("switching does not mix account or mode conversation pointers and respects 
  assert.match(floating,/mode==="standard"\?"":":"\+mode/);
  assert.match(floating,/missChaosPresenceDraft:/);
  assert.match(floating,/if\(busy\|\|!availableModes\.some/);
- assert.match(floating,/modeSelect\.disabled=true;input\.value=""/);
+ assert.match(floating,/modeSelect\.disabled=true;privateToggle\.disabled=true;chatPhoto\?\.setBusy\(true\);input\.value=""/);
  assert.match(floating,/key\(userId,assistantMode\)/);
  assert.match(floating,/sessionStorage\.setItem\(modeStorage\(userId\),assistantMode\)/);
  assert.match(floating,/selected!==assistantMode\|\|id!==conversationId/);
@@ -55,8 +58,8 @@ test("full private chat requests use backend-authorized roles and account-bound 
  assert.match(chat,/request\("\/api\/chaos\/companion"\)/);
  assert.match(chat,/if\(scope\.role!=="owner"\)/);
  assert.match(chat,/companion:companionVariant/);
- assert.match(ownerPage,/miss-chaos\.js\?v=20261119-staff-repo2/);
- assert.match(partnerPage,/miss-chaos\.js\?v=20261119-staff-repo2/);
+ assert.match(ownerPage,/miss-chaos\.js\?v=20261119-photo-chat2/);
+ assert.match(partnerPage,/miss-chaos\.js\?v=20261119-photo-chat2/);
  assert.match(partnerPage,/data-chaos-companion="partner"/);
  assert.doesNotMatch(companion,/role:\s*body\./);
 });
