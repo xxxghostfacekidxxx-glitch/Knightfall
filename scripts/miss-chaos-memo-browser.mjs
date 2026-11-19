@@ -165,12 +165,29 @@ async function run(name,width,height){
   await page.waitForFunction(()=>document.querySelector('#crucible-status')?.textContent.includes('Saved privately'));
   assert.equal(notes.length,3,'Crucible save must create exactly one authenticated private memo');
   assert.match(notes[0].body,/My original little imp/);
+  const kitDownload=page.waitForEvent('download');
+  await page.locator('#crucible-export-kit').click();
+  const kitFile=await kitDownload;
+  assert.match(kitFile.suggestedFilename(),/\.crucible\.json$/);
   const beforeHandoff=aiRequests.length;
   await page.locator('#miss-chaos-presence[data-dock-ready="true"]').waitFor();
   await page.locator('#crucible-ask').click();
   await page.waitForFunction(()=>document.querySelector('#miss-chaos-window')&&!document.querySelector('#miss-chaos-window').hidden);
   assert.match(await page.locator('#mc-input').inputValue(),/Help me turn this Crucible brief/);
   assert.equal(aiRequests.length,beforeHandoff,'Crucible must never auto-send the draft to the AI');
+  const imported={
+    schema:'knightfall.miss-chaos.crucible.v1',
+    project:{kind:'tattoo',title:'Imported stencil',goal:'Create an original measured blackwork piece',
+      known:'Reference is user-owned',first:'Shoulder, 4 inches wide',second:'Blackwork with negative space',
+      constraints:'No unlicensed reference artwork'}
+  };
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#crucible-import-file').setInputFiles({
+    name:'sample.crucible.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(imported))
+  });
+  await page.waitForFunction(()=>document.querySelector('#crucible-name')?.value==='Imported stencil');
+  assert.equal(await page.locator('.crucible-type[data-kind="tattoo"]').getAttribute('aria-pressed'),'true');
+  assert.match(await page.locator('#crucible-preview').textContent(),/Shoulder, 4 inches wide/);
   const creatorSize=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(creatorSize.page<=creatorSize.viewport+2,'Crucible horizontal overflow: '+JSON.stringify(creatorSize));
   assert.deepEqual(errors,[],name+' browser errors');
