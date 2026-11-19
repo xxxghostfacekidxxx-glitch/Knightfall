@@ -75,10 +75,10 @@ test("App uses text-only preview, local drafts, explicit memo save and no automa
  assert.match(html,/id="crucible-save"/);
  assert.match(html,/id="crucible-export-kit"/);
  assert.match(html,/id="crucible-import-file"/);
- assert.match(js,/parseCrucibleKit\(await file\.text\(\)\)/);
- assert.match(js,/exportCrucibleKit\(readFields\(\)\)/);
+ assert.match(js,/parseCrucibleWorkspace\(await file\.text\(\)\)/);
+ assert.match(js,/exportCrucibleWorkspace\(readFields\(\),readProgress\(\)\)/);
  assert.match(html,/chaos-crucible\.mjs\?v=20\d{6}-/);
- assert.match(js,/preview\.textContent=result\.markdown/);
+ assert.match(js,/preview\.textContent=currentBrief\.markdown/);
  assert.doesNotMatch(js,/\.innerHTML\s*=/);
  assert.match(js,/valuesByKind=new Map/);
  assert.match(js,/checkedByKind=new Map/);
