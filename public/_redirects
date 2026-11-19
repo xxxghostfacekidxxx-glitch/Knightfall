@@ -1,3 +1,9 @@
+# Consolidated Foundry: keep legacy bookmarks alive.
+/dev-toolkit /devil-tools.html 301
+/dev-toolkit.html /devil-tools.html 301
+/open-source-arsenal /devil-tools.html#open-source-reference 301
+/open-source-arsenal.html /devil-tools.html#open-source-reference 301
+
 # Knightfall route aliases. Public links should point straight to the canonical pages.
 # Keep homepage.html as a local/offline fallback; Pages handles these HTTP redirects.
 /homepage / 301

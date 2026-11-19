@@ -11,7 +11,7 @@
 
   const legacyAnchors = {
     "tools": "foundry-catalog",
-    "open-source-tools": "foundry-catalog",
+    "open-source-tools": "open-source-reference",
     "dt-workspace-1": "arcade-project-resources",
     "dt-workspace-12": "sprite-preview",
     "dt-workspace-13": "sprite-catalog",

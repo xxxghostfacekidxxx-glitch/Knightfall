@@ -269,6 +269,7 @@
         </div>
       </details>
       <a class="kf-nav-primary" href="/chaos-cartridge.html">Arcade</a>
+      <a class="kf-nav-primary" href="/devil-tools.html">Foundry</a>
       <a class="kf-nav-primary kf-messages-shortcut" href="/messages.html" hidden>Chaosphere</a>
       <a class="kf-nav-primary kf-handoff-link" href="/ai-handoff.html" hidden>🔥 Between the Flames</a>
       <a class="kf-nav-primary kf-eye-chaos-link" href="/eye-of-chaos.html" hidden>𓂀 Eye of Chaos</a>
@@ -288,7 +289,6 @@
           <a class="kf-admin-link" href="/admin.html" hidden>Admin Dashboard</a>
           <a class="kf-staff-eye-chaos-link" href="/eye-of-chaos.html" hidden>𓂀 Eye of Chaos · Bot Command</a>
           <a class="kf-mod-link" href="/moderation.html" hidden>Moderation</a>
-          <a class="kf-admin-foundry-link" href="/devil-tools.html" hidden>Creator Foundry</a>
           <a class="kf-god-eye-link" href="/eye-of-horus.html" hidden>𓂀 Eye of Horus</a>
         </div>
       </details>
@@ -478,9 +478,7 @@
       const quickAdmin=header.querySelector(".kf-admin-quick-link");
       if(quickAdmin)quickAdmin.textContent=royalRank||"Admin";
       const canModerate = admin || role === "moderator";
-      const canCreate = admin || (role === "member" && String(user.public_title || "").trim() === "Digital Creator");
-      const staff = canModerate || canCreate;
-      nav.querySelector(".kf-admin-foundry-link").hidden = !canCreate;
+      const staff = canModerate;
       nav.querySelector(".kf-mod-link").hidden = !canModerate;
       nav.querySelector(".kf-god-eye-link").hidden = role !== "god" || rights.can_eye_of_horus === false;
       nav.querySelector(".kf-staff-group").hidden = !staff;

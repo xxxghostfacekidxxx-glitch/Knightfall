@@ -135,7 +135,7 @@ for(const filename of ["gravewave-takeover.js","gravewave-decor.js"]){
 
 // All first-party UI styles must use the approved palette. Keep creative game
 // rendering, character art assets, and selectable member profile themes separate.
-const auditedChromeStyles=["account.css","admin-command-center.css","arcade-cabinet-ui.css","avatar-studio.css","bot-public.css","bot-starter-chat.css","bots-starter.css","creator-motion-preview.css","creator-production-lab.css","devil-tools-vector-gallery.css","die-ary.css","directory.css","mascot-pets.css","mascot-room-furniture.css","mascot-room.css","mascot-trials.css","members.css","messages.css","moderation.css","open-source-arsenal.css","personal-bots.css","profile-mascots.css","profile.css","social-hub.css","vault.css","miss-chaos.css","miss-chaos-radar.css"];
+const auditedChromeStyles=["account.css","admin-command-center.css","arcade-cabinet-ui.css","avatar-studio.css","bot-public.css","bot-starter-chat.css","bots-starter.css","creator-motion-preview.css","creator-production-lab.css","devil-tools-vector-gallery.css","die-ary.css","directory.css","mascot-pets.css","mascot-room-furniture.css","mascot-room.css","mascot-trials.css","members.css","messages.css","moderation.css","creator-foundry.css","personal-bots.css","profile-mascots.css","profile.css","social-hub.css","vault.css","miss-chaos.css","miss-chaos-radar.css"];
 for(const filename of auditedChromeStyles){
   assert.doesNotMatch(read("../public/"+filename),retiredChrome,
     "Retired Gravewave colors resurfaced in "+filename);

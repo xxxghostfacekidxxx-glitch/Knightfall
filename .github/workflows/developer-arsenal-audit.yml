@@ -46,7 +46,7 @@ jobs:
         run: npm install --prefix backend --no-audit --no-fund
       - name: Validate key JavaScript modules
         run: |
-          node --check public/open-source-arsenal.js
+          node --check public/creator-foundry.js
           node --check public/creator-production-lab.js
           node --check public/creator-production-core.mjs
           node --check public/admin-command-center.js
@@ -88,7 +88,7 @@ jobs:
       - name: Run Biome advisory scan
         continue-on-error: true
         run: |
-          npx --yes @biomejs/biome@2.2.6 lint public/open-source-arsenal.js public/admin-command-center.js backend/chaos-tool-dispatch.mjs > biome-report.txt 2>&1
+          npx --yes @biomejs/biome@2.2.6 lint public/creator-foundry.js public/admin-command-center.js backend/chaos-tool-dispatch.mjs > biome-report.txt 2>&1
           cat biome-report.txt
       - name: Install Semgrep
         run: python3 -m pip install --user 'semgrep>=1.90,<2'

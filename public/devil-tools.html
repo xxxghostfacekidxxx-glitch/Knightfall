@@ -20,8 +20,8 @@
 <script type="module" src="/creator-motion-preview.js?v=20261114-motion1"></script>
 <script type="module" src="/creator-production-lab.js?v=20261113-creator1"></script>
 </head><body><header class="kf-header"></header><main>
-<a class="back" href="/admin.html">← God Mode</a>
-<section class="hero"><h1>Creator <span data-mc-keep-clear>Foundry</span></h1><p class="lede">Build games and bots, find reusable site art, and send new ideas to the team.</p></section>
+<a class="back" href="/">← Knightfall</a>
+<section class="hero"><h1>Creator <span data-mc-keep-clear>Foundry</span></h1><p class="lede">One organized home for creative workspaces, developer tools, open-source research, games, art, bots, and publishing.</p></section>
 <p style="margin:1rem 0"><a href="/chaos-forge.html" style="display:inline-block;background:#381529;border:1px solid #ff409c;color:#a9ffd8;border-radius:12px;padding:.75rem 1rem;font-weight:800">✂ Open Chaos Forge: clothing patterns, craft blueprints &amp; 3D studio</a></p>
 <div id="status" class="status" role="status" aria-live="polite">Checking Foundry access…</div>
 
@@ -37,6 +37,37 @@
   <a class="foundry-public-card" href="/mascot-pets.html"><img src="/assets/knightfall/gateway-pets.svg" width="240" height="240" loading="lazy" alt=""><span>03 / COLLECT</span><h3>Creature Sanctuary</h3><p>Meet the misfits and discover companions.</p><strong>Meet the creatures ›</strong></a>
   <a class="foundry-public-card" href="/chaos-visual-lab.html"><span aria-hidden="true" style="display:grid;place-items:center;min-height:155px;border-radius:12px;background:linear-gradient(135deg,#352036,#522a4b,#25283b);font-size:5rem">🎨</span><span>04 / MAKE</span><h3>Chaos Visual Lab</h3><p>Free private pixel-art converter, image export, palette extractor and CSS colors. Open to everyone, no upload.</p><strong>Open the Visual Lab ›</strong></a>
  </div>
+</section>
+<section class="foundry-reference panel" id="open-source-reference" aria-labelledby="open-source-reference-title">
+  <p class="eyebrow">CREATOR FOUNDRY / OPEN-SOURCE ARSENAL</p>
+  <h2 id="open-source-reference-title">Open-source research &amp; developer references</h2>
+  <p>The old Arsenal lives here now. These are upstream source projects <strong>for research, not installed applications</strong>. Verify licensing, attribution, assets, dependencies and platform requirements before reuse.</p>
+  <div class="foundry-reference-grid">
+    <section><h3>Community & media</h3><ul>
+      <li><a href="https://github.com/Elgg/Elgg" target="_blank" rel="noopener noreferrer">Elgg</a><small>Profiles, groups and activity; PHP reference, not a Worker module</small></li>
+      <li><a href="https://github.com/humhub/humhub" target="_blank" rel="noopener noreferrer">HumHub</a><small>Social spaces and themed communities</small></li>
+      <li><a href="https://github.com/flarum/flarum" target="_blank" rel="noopener noreferrer">Flarum</a><small>Forum and discussion interface</small></li>
+      <li><a href="https://github.com/immich-app/immich" target="_blank" rel="noopener noreferrer">Immich</a><small>Media library; separate hosting required</small></li>
+      <li><a href="https://github.com/umami-software/umami" target="_blank" rel="noopener noreferrer">Umami</a><small>Analytics reference; not configured here</small></li>
+    </ul></section>
+    <section><h3>Games & creative systems</h3><ul>
+      <li><a href="https://github.com/doublespeakgames/adarkroom" target="_blank" rel="noopener noreferrer">A Dark Room</a><small>Survival and incremental narrative</small></li>
+      <li><a href="https://github.com/Hextris/hextris" target="_blank" rel="noopener noreferrer">Hextris</a><small>Puzzle gameplay</small></li>
+      <li><a href="https://github.com/ellisonleao/clumsy-bird" target="_blank" rel="noopener noreferrer">Clumsy Bird</a><small>Physics and replay loops</small></li>
+      <li><a href="https://github.com/magwo/elevatorsaga" target="_blank" rel="noopener noreferrer">Elevator Saga</a><small>Simulation and scoring</small></li>
+      <li><a href="https://github.com/Anuken/Mindustry" target="_blank" rel="noopener noreferrer">Mindustry</a><small>Production and defense; not a Pages drop-in</small></li>
+    </ul></section>
+    <section><h3>Server operations</h3><ul>
+      <li><a href="https://github.com/pterodactyl/panel" target="_blank" rel="noopener noreferrer">Pterodactyl</a><small>Server control reference</small></li>
+      <li><a href="https://github.com/pelican-dev/panel" target="_blank" rel="noopener noreferrer">Pelican Panel</a><small>Server UI; AGPL review needed</small></li>
+      <li><a href="https://github.com/GameServerManagers/LinuxGSM" target="_blank" rel="noopener noreferrer">LinuxGSM</a><small>Server maintenance</small></li>
+      <li><a href="https://github.com/gameap/gameap" target="_blank" rel="noopener noreferrer">GameAP</a><small>Game server fleet management</small></li>
+      <li><a href="https://github.com/PufferPanel/PufferPanel" target="_blank" rel="noopener noreferrer">PufferPanel</a><small>Game-server admin patterns</small></li>
+      <li><a href="https://github.com/gameyfin/gameyfin" target="_blank" rel="noopener noreferrer">Gameyfin</a><small>Game library; AGPL review needed</small></li>
+      <li><a href="https://github.com/rommapp/romm" target="_blank" rel="noopener noreferrer">RomM</a><small>Retro library; no ROMs included</small></li>
+    </ul></section>
+  </div>
+  <p class="foundry-reference-note"><strong>Working tools:</strong> Creator Production Lab, Sprite Workshop and staff Developer Arsenal stay in this Foundry; Code Studio, Chaos Forge and Visual Lab remain linked editing modules. The <a href="https://github.com/xxxghostfacekidxxx-glitch/Knightfall/tree/main/toolkit" target="_blank" rel="noopener noreferrer">source toolkit</a> documents imports. None of the references above is silently deployed.</p>
 </section>
 <div id="workshop" class="hidden">
 <section class="panel" id="bot-forge" data-workspace hidden aria-labelledby="bot-forge-title">
@@ -255,6 +286,16 @@
   <section class="foundry-group" data-group="tools" aria-labelledby="foundry-media">
     <h2 id="foundry-media">Production &amp; testing tools</h2>
     <div class="foundry-grid">
+    <article class="foundry-card" data-search="open source arsenal research references elgg flarum immich projects free toolkit developer">
+      <h3>Open-Source Research</h3>
+      <p>Browse curated upstream projects, hosting notes and license reminders in the same Foundry.</p>
+      <div class="actions"><a class="foundry-link-main" href="#open-source-reference">Browse references</a></div>
+    </article>
+    <article class="foundry-card" data-search="chaos code studio developer editor formatting prettier inspect source patches diagrams json">
+      <h3>Chaos Code Studio</h3>
+      <p>Source inspector, formatter, diagrams and supervised patch proposals in a dedicated editor.</p>
+      <div class="actions"><a class="foundry-link-main" href="/chaos-code-studio.html">Open Code Studio</a></div>
+    </article>
     <article class="foundry-card" data-admin-only data-search="audacity sound audio editing effects waveform open source">
       <h3>Audacity</h3>
       <p>Edit and layer weapon sounds, creature effects, ambient loops, hit sounds, and UI feedback.</p>
@@ -734,6 +775,11 @@ async function boot(){
     // Account IDs are stable across profile and username edits. All publish operations remain Worker-authorized.
     const digitalCreator = role === 'member' && String(user.public_title || '').trim() === 'Digital Creator';
     if (!administrator && !digitalCreator) throw Error('Workshop access required.');
+    if (administrator) {
+      const back = document.querySelector('a.back');
+      back.href = '/admin.html';
+      back.textContent = '← Admin dashboard';
+    }
     if (!administrator) {
       $('#developer-arsenal-ci').remove();
       $('#release-simulator').remove();

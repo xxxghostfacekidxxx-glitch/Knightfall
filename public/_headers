@@ -119,6 +119,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /creator-production-lab.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+/creator-foundry.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /devil-tools-vector-gallery.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /die-ary.css
@@ -136,8 +138,6 @@
 /members.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /moderation.css
-  Cache-Control: no-cache, max-age=0, must-revalidate
-/open-source-arsenal.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 /personal-bots.css
   Cache-Control: no-cache, max-age=0, must-revalidate

@@ -70,7 +70,7 @@ After the latest Pages deployment is live, open `https://ash-fall.com` in Chrome
 
 ## Open-Source Arsenal
 
-- `public/open-source-arsenal.html` is a curated guide to upstream projects that can inform or extend Ash-Fall: Elgg, HumHub, Flarum, Immich, Umami, and A Dark Room.
+- `public/devil-tools.html#open-source-reference` is a curated guide to upstream projects that can inform or extend Ash-Fall: Elgg, HumHub, Flarum, Immich, Umami, and A Dark Room.
 - The guide distinguishes upstream references from software actually installed in Knightfall. These projects are not bundled or falsely represented as deployed services.
 - The current public frontend is Cloudflare Pages and the API is a Cloudflare Worker with D1, KV, and R2. Traditional Docker/PHP/Ruby/Node services such as a full Elgg/HumHub/Flarum/Immich/Umami deployment cannot simply be copied into a Worker. Running them requires separate compatible hosting and operational maintenance.
 - Existing native features already cover parts of the same needs: member profiles/friends and the Madhouse, site messaging, the private R2-backed vault, and Chaos Cartridge including the Open-Source Game Hall. The guide links these internal equivalents where useful.

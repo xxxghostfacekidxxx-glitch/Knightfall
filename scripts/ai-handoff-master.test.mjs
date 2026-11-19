@@ -41,7 +41,7 @@ test('mobile board can search by area, progress, evidence and priority',()=>{
  const html=read('public/ai-handoff.html'),js=read('public/ai-handoff.js');
  for(const id of ['task-metrics','workstream-summary','filter-area','filter-query','filter-status','filter-priority','filter-verification','more-tasks','task-area','copy-mentor-guide'])
   assert.match(html,new RegExp('id="'+id+'"'));
- for(const link of ['open-source-arsenal.html','devil-tools.html','chaos-forge.html'])
+ for(const link of ['devil-tools.html#open-source-reference','devil-tools.html','chaos-forge.html'])
   assert.match(html,new RegExp(link));
  for(const label of ['workstreamCounts','matchesFilters','renderTasks','task-editor','sourceLink','next_step','blocker'])
   assert.ok(js.includes(label),label+' absent');

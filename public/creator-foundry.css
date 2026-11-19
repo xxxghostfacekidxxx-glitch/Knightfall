@@ -439,3 +439,15 @@ body {
   [data-group="desk"] .foundry-grid { grid-template-columns: 1fr; }
   [data-group="desk"] .foundry-card { min-height: auto; }
 }
+
+/* Unified read-only upstream catalog; all interactive editor code stays modular. */
+.foundry-reference{margin:1.4rem 0;scroll-margin-top:6rem}
+.foundry-reference>h2{font-size:clamp(1.35rem,3vw,2rem)}
+.foundry-reference-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.85rem;margin:1rem 0}
+.foundry-reference-grid section{min-width:0;padding:.85rem 1rem;border:1px solid #827076;border-radius:.85rem;background:#17171c}
+.foundry-reference-grid h3{margin:0 0 .65rem;color:#ece1d3}
+.foundry-reference-grid ul{margin:0;padding-left:1.2rem}
+.foundry-reference-grid li{padding:.35rem 0}
+.foundry-reference-grid a,.foundry-reference-note a{color:#c7a77c;text-underline-offset:.2em}
+.foundry-reference-grid small{display:block;margin-top:.15rem;color:#b9afa8;line-height:1.45}
+.foundry-reference-note{margin-bottom:0}
