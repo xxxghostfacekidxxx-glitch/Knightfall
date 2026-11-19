@@ -15,7 +15,8 @@ test("Admin and GOD command deck exposes all seven workspaces with navigation",(
  const tabs=[...html.matchAll(/data-section="([^"]+)"/g)].map(a=>a[1]);
  assert.deepEqual(panels,["overview","fleet","missions","approvals","qa","forums","history"]);
  assert.deepEqual(tabs,panels);
- assert.match(admin,/href="\/eye-of-chaos\.html" data-eye-chaos-access hidden/);
+ assert.match(admin,/class="admin-shortcut" href="\/eye-of-chaos\.html"/);
+ assert.equal((admin.match(/class="admin-shortcut" href="\/eye-of-chaos\.html"/g)||[]).length,1,"Eye of Chaos needs one dashboard shortcut");
  assert.match(js,/data-chaos-god-only/);
  assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
  assert.match(html,/id="chaos-workspace" hidden/);
