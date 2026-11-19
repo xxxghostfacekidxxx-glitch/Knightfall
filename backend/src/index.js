@@ -14,6 +14,7 @@ import { makeChaosPatternDraft } from "../chaos-forge-tool.mjs";
 import { estimateFabric } from "../chaos-fabric-estimate.mjs";
 import { searchChaosResources } from "../chaos-resources.mjs";
 import { handleChaosForgeVision } from "./chaos-forge-vision.js";
+import { inspectChaosChatImage } from "./chaos-chat-image.js";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
 import { shouldDeliverStoredNotification } from "./notification-delivery-policy.js";
 import { checkTurnstile } from "./turnstile.js";
@@ -1655,8 +1656,26 @@ export default { async queue(batch, env) {
     if(!(await rateLimit(env,request,"chaos-chat",20,60)))return json({error:"Miss Chaos needs a breather. Try again in a minute."},429,origin);
     const user=await requireUser(request,env);if(!user)return json({error:"Sign in to use Miss Chaos."},401,origin);
     if(!env.AI||typeof env.AI.run!=="function")return json({error:"The AI engine is not enabled yet. The interface is ready, but the model binding needs to be activated."},503,origin);
-    let body;try{body=await request.json();}catch{return json({error:"Invalid JSON."},400,origin);}
-    const message=typeof body.message==="string"?body.message.trim():"";
+    // Images arrive only on explicit send, with a hard bound before JSON parsing.
+    if(Number(request.headers.get("content-length")||0)>980000)
+      return json({error:"Chat image too large. Choose a smaller picture."},413,origin);
+    let body;
+    try{
+      const reader=request.body?.getReader();
+      if(!reader)throw Error();
+      const chunks=[];let total=0;
+      while(true){
+        const {value,done}=await reader.read();if(done)break;
+        total+=value.byteLength;
+        if(total>980000){await reader.cancel();return json({error:"Chat image too large. Choose a smaller picture."},413,origin);}
+        chunks.push(value);
+      }
+      const all=new Uint8Array(total);let offset=0;
+      for(const piece of chunks){all.set(piece,offset);offset+=piece.byteLength;}
+      body=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(all));
+      if(!body||typeof body!=="object"||Array.isArray(body))throw Error();
+    }catch{return json({error:"Invalid or oversized chat JSON."},400,origin);}
+    let message=typeof body.message==="string"?body.message.trim():"";
     // User-submitted mode is only a request. Roles come from the verified session.
     if(body.companion!==undefined&&!["standard","owner","partner"].includes(body.companion))
       return json({error:"Unknown Miss Chaos mode."},400,origin);
@@ -1670,7 +1689,26 @@ export default { async queue(batch, env) {
     }
      const mood=["default","playful","dark","supportive","philosophical","astrology","custom"].includes(body.mood)?body.mood:"default";
     let conversationId=typeof body.conversation_id==="string"?body.conversation_id:"";
-    if(!message||message.length>4000)return json({error:"Message must be between 1 and 4000 characters."},400,origin);
+    const hasImage=body.image!==undefined;
+    if(hasImage&&(!ALLOWED_ORIGINS.has(request.headers.get("Origin"))||
+       typeof body.image!=="string"))
+      return json({error:"Choose images from the signed-in Knightfall chat."},403,origin);
+    if((!message&&!hasImage)||message.length>4000)
+      return json({error:"Message must be between 1 and 4000 characters, or contain one photo."},400,origin);
+    if(hasImage){
+      if(!await rateLimit(env,request,"chaos-chat-vision",4,3600,user.id))
+        return json({error:"Four photo questions per hour are available on the free AI service."},429,origin);
+      try{
+        const observed=await inspectChaosChatImage({ai:env.AI,image:body.image,question:message});
+        const question=message||"Describe this attached picture.";
+        // The source photo is never stored. Save a bounded untrusted visual summary so the
+        // assistant can remember what the member shared without saving image bytes.
+        message=(question+"\n[User-selected photo: raw image not saved. AI-generated untrusted visual description; verify details: "+
+          observed.summary+"]").slice(0,4000);
+      }catch(error){
+        return json({error:String(error?.message||"Unable to analyze this photo.").slice(0,200)},400,origin);
+      }
+    }
     let conversation=null;
     if(conversationId){conversation=await env.DB.prepare("SELECT id,title FROM chaos_conversations WHERE id=? AND user_id=? AND deleted_at IS NULL").bind(conversationId,user.id).first();if(!conversation)return json({error:"Conversation not found."},404,origin);}
     else {conversationId=crypto.randomUUID();const now=new Date().toISOString();await env.DB.prepare("INSERT INTO chaos_conversations (id,user_id,title,mood,created_at,updated_at) VALUES (?,?,?,?,?,?)").bind(conversationId,user.id,message.slice(0,64),"default",now,now).run();conversation={id:conversationId,title:message.slice(0,64)};}
