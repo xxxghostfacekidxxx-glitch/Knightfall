@@ -9,13 +9,13 @@ test("direct API allows only listed calculations and keeps authenticated route",
  assert.match(worker,/url\.pathname==="\/api\/chaos\/tools\/execute"/);
  assert.match(worker,/const user=await requireUser\(request,env\)/);
  assert.match(worker,/rateLimit\(env,request,"chaos-utility",20,60,user\.id\)/);
- assert.match(worker,/\["utility\.calculate","utility\.word_count","utility\.convert","forge\.pattern_draft","forge\.material_estimate","god\.audit_summary"\]/);
+ assert.match(worker,/\["utility\.calculate","utility\.word_count","utility\.convert","forge\.pattern_draft","forge\.material_estimate","design\.color_contrast","forge\.scale_pattern","god\.audit_summary"\]/);
  assert.match(worker,/"forge\.material_estimate":async \(\{input\}\)=>estimateFabric\(input\)/);
  assert.match(worker,/"forge\.pattern_draft":async \(\{input\}\)=>makeChaosPatternDraft\(input\)/);
 });
 test("listed public Forge operations perform bounded real calculations",async()=>{
  const available=describeChaosTools(null);
- for(const name of ["utility.convert","forge.pattern_draft","forge.material_estimate"])
+ for(const name of ["utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern"])
    assert.ok(available.includes(name));
  const handlers={
    "forge.pattern_draft":async ({input})=>makeChaosPatternDraft(input),
