@@ -10,6 +10,13 @@ test("private Samantha shell inherits real account-bound Miss Chaos with gated d
  assert.match(html,/id="samantha-companion-gate"/);
  assert.match(html,/id="samantha-private-chat" hidden/);
  assert.match(html,/data-chaos-companion="partner"/);
+ assert.match(html,/id="samantha-admin-tools"[^>]*hidden/);
+ assert.match(html,/href="\/eye-of-chaos.html"/);
+ assert.match(html,/href="\/theme-crew.html"/);
+ assert.match(js,/me\.staff_role==="admin"/);
+ assert.match(js,/permissions\.can_eye_of_chaos===true/);
+ assert.match(js,/permissions\.can_approve_drafts/);
+ assert.match(js,/permissions\.can_theme_publish/);
  assert.match(html,/\/miss-chaos\.js\?/);
  assert.match(js,/me\.role!=="partner"/);
  assert.match(js,/\/api\/chaos\/companion/);
