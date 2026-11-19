@@ -210,6 +210,23 @@
     const file=Array.from(event.clipboardData?.files||[]).find(accepted);
     if(file){event.preventDefault();void addFiles([file]);}
   });
+  document.getElementById('kf-art-paste')?.addEventListener('click',async()=>{
+    if(!navigator.clipboard?.read){
+      report('Clipboard image access is unavailable in this browser. Use Choose from Photos or Browse files.');
+      return;
+    }
+    try{
+      const entries=await navigator.clipboard.read();
+      for(const item of entries){
+        const mime=item.types.find(type=>allowed.has(type));
+        if(!mime)continue;
+        const blob=await item.getType(mime);
+        await addFiles([new File([blob],'pasted-image.'+(mime.split('/')[1]||'png'),{type:mime})]);
+        return;
+      }
+      report('Clipboard has no supported image. Copy the picture first or select it through Photos.');
+    }catch{report('Clipboard access denied or unavailable. Choose from Photos, or download the Google Photos item to Files.');}
+  });
   drop.addEventListener('dragover',event=>{event.preventDefault();drop.classList.add('is-over')});
   drop.addEventListener('dragleave',()=>drop.classList.remove('is-over'));
   drop.addEventListener('drop',event=>{event.preventDefault();drop.classList.remove('is-over');void addFiles(event.dataTransfer?.files)});
