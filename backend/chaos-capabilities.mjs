@@ -35,6 +35,8 @@ export const CAPABILITIES = Object.freeze({
   "dev.code_format": Object.freeze({description:"Format supplied JavaScript or JSON with local MIT-licensed Prettier, without execution",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
   "dev.diagram_flow": Object.freeze({description:"Turn supplied steps into a safe flowchart and Mermaid text",scope:"public",mutates:false,confirmation:false,maxInputBytes:2200}),
   "dev.code_inspect": Object.freeze({description:"Parse JavaScript or JSON snippets safely without running code",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
+  "staff.repo_file": Object.freeze({description:"Read a bounded excerpt of allowlisted Knightfall main-branch source",scope:"staff",mutates:false,confirmation:false,maxInputBytes:400}),
+  "staff.github_health": Object.freeze({description:"Read verified public Knightfall GitHub CI health with no repository changes",scope:"staff",mutates:false,confirmation:false,maxInputBytes:128}),
   "research.books": Object.freeze({description:"Look up publicly indexed books from Open Library; no copyrighted full-text retrieval",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.papers": Object.freeze({description:"Search free Crossref scholarly publication metadata and DOI links",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "forge.pattern_draft": Object.freeze({description:"Compute an inch-measured prototype cut list for a basic craft or garment pattern",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
@@ -85,7 +87,7 @@ export const CAPABILITIES = Object.freeze({
 });
 
 const LIMIT = 3;
-const ALLOWED_SCOPES = new Set(["public", "user", "god"]);
+const ALLOWED_SCOPES = new Set(["public", "user", "staff", "god"]);
 function safeInput(input, maxBytes) {
   if (input === null || typeof input !== "object" || Array.isArray(input)) throw new Error("Invalid tool arguments.");
   const raw = JSON.stringify(input);
@@ -108,6 +110,7 @@ export async function executeChaosCapability({name, input, principal, handlers, 
   if (!Number.isInteger(usedCalls) || usedCalls < 0 || usedCalls >= LIMIT) throw new Error("Tool call limit reached.");
   if (!ALLOWED_SCOPES.has(capability.scope)) throw new Error("Invalid capability scope.");
   if (capability.scope !== "public" && !principal?.id) throw new Error("Sign-in required.");
+  if (capability.scope === "staff" && !["admin", "god"].includes(principal?.role)) throw new Error("Not authorized.");
   if (capability.scope === "god" && principal?.role !== "god") throw new Error("Not authorized.");
   if (capability.mutates && (!capability.confirmation || approved !== true)) throw new Error("Approval required.");
   const args = safeInput(input, capability.maxInputBytes);
