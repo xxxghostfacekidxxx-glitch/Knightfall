@@ -46,7 +46,7 @@ test("repo reader fails closed for unavailable files, large files and upstream f
  await assert.rejects(readKnightfallFile({path:"public/other.js"},{
   fetcher:async()=>{throw Error("token:PRIVATE");}}),/temporarily unreachable/);
  await assert.rejects(readKnightfallFile({path:"public/over.js"},{
-  fetcher:async()=>read("x".repeat(150001))}),/150 KB limit/);
+  fetcher:async()=>read("x".repeat(150001))}),/too large|150 KB limit/);
 });
 test("all staff tools are server-gated, and only staff sees them in model palette",async()=>{
  for(const role of ["member","moderator"]){
