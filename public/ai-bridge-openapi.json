@@ -1,0 +1,253 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Knightfall Between the Flames AI Bridge",
+    "version": "1.0.0",
+    "description": "Private shared to-do list and handoff notes for Ronnie and Samantha. Each person creates and privately stores their own expiring AI connection key on https://ash-fall.com/ai-handoff.html. Do not put keys in GPT instructions or conversations. Read the newest snapshot before editing and confirm successful writes."
+  },
+  "servers": [
+    {
+      "url": "https://api.ash-fall.com"
+    }
+  ],
+  "security": [
+    {
+      "KnightfallBridgeKey": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "KnightfallBridgeKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Use the private one-time key generated under Between the Flames -> AI connections. Enter only in the GPT Action authentication settings."
+      }
+    },
+    "schemas": {
+      "TaskStatus": {
+        "type": "string",
+        "enum": [
+          "todo",
+          "in_progress",
+          "done"
+        ]
+      },
+      "TaskPriority": {
+        "type": "string",
+        "enum": [
+          "low",
+          "normal",
+          "high"
+        ]
+      },
+      "CreateTask": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 3000
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateTask": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Exact current version from getHandoffSnapshot. A stale version returns 409."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 3000
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/TaskPriority"
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "CreateNote": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "update",
+              "decision",
+              "blocker"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/api/ai-handoff/bridge/snapshot": {
+      "get": {
+        "operationId": "getHandoffSnapshot",
+        "summary": "Read the latest shared Knightfall to-do list and handoff notes",
+        "description": "Call before working on or discussing shared project tasks. The response contains the current task versions, notes, and instructions, including a message for Samantha. This is the source of truth; prior chat text may be outdated.",
+        "responses": {
+          "200": {
+            "description": "Authenticated shared workspace response with current records."
+          },
+          "401": {
+            "description": "Missing, expired, or revoked connection key."
+          },
+          "403": {
+            "description": "The account no longer has permission to collaborate."
+          },
+          "409": {
+            "description": "Task changed; fetch a new snapshot for its current version."
+          }
+        }
+      }
+    },
+    "/api/ai-handoff/bridge/tasks": {
+      "post": {
+        "operationId": "createHandoffTask",
+        "summary": "Add a shared Knightfall to-do item",
+        "description": "Create a task in the same live workspace visible to Ronnie and Samantha. Only use for a task explicitly requested in the ongoing conversation. Confirm the returned result before claiming completion.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated shared workspace response with current records."
+          },
+          "201": {
+            "description": "Task created."
+          },
+          "401": {
+            "description": "Missing, expired, or revoked connection key."
+          },
+          "403": {
+            "description": "The account no longer has permission to collaborate."
+          },
+          "409": {
+            "description": "Task changed; fetch a new snapshot for its current version."
+          }
+        }
+      }
+    },
+    "/api/ai-handoff/bridge/tasks/{taskId}": {
+      "patch": {
+        "operationId": "updateHandoffTask",
+        "summary": "Update a shared task status or details",
+        "description": "First read getHandoffSnapshot to obtain the current version. Never mark a task complete without verified evidence. Pass the exact version in request body. On 409 refresh the snapshot and reconcile, do not overwrite another person's changes.",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTask"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated shared workspace response with current records."
+          },
+          "401": {
+            "description": "Missing, expired, or revoked connection key."
+          },
+          "403": {
+            "description": "The account no longer has permission to collaborate."
+          },
+          "409": {
+            "description": "Task changed; fetch a new snapshot for its current version."
+          }
+        }
+      }
+    },
+    "/api/ai-handoff/bridge/notes": {
+      "post": {
+        "operationId": "postHandoffNote",
+        "summary": "Post a dated AI handoff note visible to both collaborators",
+        "description": "After significant verified updates, decisions, or blockers, leave a concise dated note in the live shared board. Avoid sensitive unrelated personal data. Confirm the successful API response.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNote"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated shared workspace response with current records."
+          },
+          "201": {
+            "description": "Note saved."
+          },
+          "401": {
+            "description": "Missing, expired, or revoked connection key."
+          },
+          "403": {
+            "description": "The account no longer has permission to collaborate."
+          },
+          "409": {
+            "description": "Task changed; fetch a new snapshot for its current version."
+          }
+        }
+      }
+    }
+  }
+}
