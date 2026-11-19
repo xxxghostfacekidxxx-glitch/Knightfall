@@ -8,8 +8,12 @@ const worker=readFileSync(new URL("./src/index.js",import.meta.url),"utf8");
 const ui=readFileSync(new URL("../public/chaos-code-studio.js",import.meta.url),"utf8");
 const page=readFileSync(new URL("../public/chaos-code-studio.html",import.meta.url),"utf8");
 const sample=Array.from({length:130},(_,i)=>"const n"+(i+1)+" = "+(i+1)+";").join("\n");
-const urlBase="https://raw.githubusercontent.com/xxxghostfacekidxxx-glitch/Knightfall/main/";
+const SHA="a".repeat(40);
+const refUrl="https://api.github.com/repos/xxxghostfacekidxxx-glitch/Knightfall/git/ref/heads/main";
+const urlBase="https://raw.githubusercontent.com/xxxghostfacekidxxx-glitch/Knightfall/"+SHA+"/";
 const read=(text=sample)=>new Response(text,{headers:{"Content-Type":"text/plain","Content-Length":String(new TextEncoder().encode(text).length)}});
+const head=()=>Response.json({ref:"refs/heads/main",object:{type:"commit",sha:SHA}});
+const githubFetch=(text=sample)=>async url=>url===refUrl?head():read(text);
 test("source viewer only accepts bounded public Knightfall file paths and line ranges",()=>{
  assert.deepEqual(validateKnightfallFileArgs({path:"backend/src/eye-of-chaos.js",start_line:6,line_count:30}),
    {path:"backend/src/eye-of-chaos.js",start:6,count:30});
@@ -22,12 +26,18 @@ test("source viewer only accepts bounded public Knightfall file paths and line r
   assert.throws(()=>validateKnightfallFileArgs(args),/Start line/);
 });
 test("repo reader returns actual numbered source without ever selecting another repo or branch",async()=>{
- let requested;
+ const requested=[];
  const result=await readKnightfallFile({path:"public/nav.js",start_line:5,line_count:3},{
-  fetcher:async(url,opts)=>{requested={url,opts};return read();}
+  fetcher:async(url,opts)=>{requested.push({url,opts});return url===refUrl?head():read();}
  });
- assert.equal(requested.url,urlBase+"public/nav.js");
- assert.equal(requested.opts.redirect,"error");
+ assert.equal(requested.length,2);
+ assert.equal(requested[0].url,refUrl);
+ assert.equal(requested[1].url,urlBase+"public/nav.js");
+ assert.equal(requested[0].opts.redirect,"error");
+ assert.equal(requested[1].opts.redirect,"error");
+ assert.equal(result.commit_sha,SHA);
+ assert.match(result.source_url,new RegExp(SHA));
+ assert.equal(result.long_lines_omitted,false);
  assert.equal(result.available,true);
  assert.equal(result.start_line,5);
  assert.deepEqual(result.lines.map(x=>x.number),[5,6,7]);
@@ -39,14 +49,32 @@ test("repo reader returns actual numbered source without ever selecting another 
 });
 test("repo reader fails closed for unavailable files, large files and upstream failure",async()=>{
  const missing=await readKnightfallFile({path:"public/missing.js"},{
-  fetcher:async()=>new Response("",{status:404})});
+  fetcher:async url=>url===refUrl?head():new Response("",{status:404})});
  assert.equal(missing.available,false);
  await assert.rejects(readKnightfallFile({path:"public/large.js"},{
-  fetcher:async()=>new Response("x",{headers:{"content-length":"250000"}})}),/too large/);
+  fetcher:async url=>url===refUrl?head():new Response("x",{headers:{"content-length":"250000"}})}),/too large/);
  await assert.rejects(readKnightfallFile({path:"public/other.js"},{
   fetcher:async()=>{throw Error("token:PRIVATE");}}),/temporarily unreachable/);
  await assert.rejects(readKnightfallFile({path:"public/over.js"},{
-  fetcher:async()=>read("x".repeat(150001))}),/too large|150 KB limit/);
+  fetcher:async url=>url===refUrl?head():read("x".repeat(150001))}),/too large|150 KB limit/);
+});
+test("ref failures and invalid GitHub SHAs fail closed before raw source is requested",async()=>{
+ let calledRaw=false;
+ for(const response of [new Response("",{status:429}),Response.json({ref:"refs/heads/main",object:{type:"commit",sha:"bad"}}),
+    Response.json({ref:"refs/heads/other",object:{type:"commit",sha:SHA}})]){
+  await assert.rejects(readKnightfallFile({path:"public/nav.js"},{
+   fetcher:async url=>{if(url!==refUrl){calledRaw=true;throw Error("No raw fetch should occur.");}return response;}
+  }),/main commit could not be verified/);
+ }
+ assert.equal(calledRaw,false);
+});
+test("very long source lines are flagged because truncation must not silently become a patch",async()=>{
+ const result=await readKnightfallFile({path:"public/nav.js",line_count:3},{
+  fetcher:githubFetch("x".repeat(305)+"\nconst fine=1;")
+ });
+ assert.equal(result.long_lines_omitted,true);
+ assert.equal(result.lines[0].text.length,300);
+ assert.equal(result.lines[1].text,"const fine=1;");
 });
 test("all staff tools are server-gated, and only staff sees them in model palette",async()=>{
  for(const role of ["member","moderator"]){
