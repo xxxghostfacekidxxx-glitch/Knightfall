@@ -9,6 +9,18 @@ export async function companionScope(env,user){
   return {role:"partner",accepted:true,owner_id:Number(row.invited_by)};
  return {role:"member",accepted:false,owner_id:null};
 }
+/** Only the signed-in member can select one of these private AI modes.
+ * The accepted invitation does not grant administrator/GOD permissions. */
+export function companionModeList(scope){
+ const modes=[{id:"standard",label:"Miss Chaos",detail:"My regular account-bound assistant",full_chat:"/miss-chaos.html"}];
+ if(scope?.accepted&&scope.role==="owner")modes.push({
+   id:"owner",label:"Private Owner",detail:"GOD-only owner workspace and project coordination",full_chat:"/miss-chaos.html?companion=owner"
+ });
+ if(scope?.accepted&&scope.role==="partner")modes.push({
+   id:"partner",label:"Private Partner",detail:"My private assistant and Between the Flames",full_chat:"/samantha-chaos.html"
+ });
+ return modes;
+}
 const trim=(v,n)=>typeof v==="string"?v.trim().slice(0,n):"";
 const validId=v=>/^[a-f0-9]{32}$/.test(String(v||""));
 const summary=(b,shared,privateShare=false)=>({id:b.id,name:trim(b.name,60),
@@ -118,7 +130,7 @@ async function consultOwnerBot(request,env,user,{rateLimit,respond}){
  }
 }
 export async function handleChaosCompanion(request,env,url,{requireUser,json,origin,rateLimit}){
- const known=["/api/chaos/companion","/api/chaos/fleet","/api/chaos/fleet/partner-chat"];
+ const known=["/api/chaos/companion","/api/chaos/modes","/api/chaos/fleet","/api/chaos/fleet/partner-chat"];
  if(!known.includes(url.pathname))return null;
  const respond=(data,status=200)=>{const r=json(data,status,origin);r.headers.set("cache-control","private, no-store");return r};
  const chat=url.pathname==="/api/chaos/fleet/partner-chat";
@@ -134,10 +146,12 @@ export async function handleChaosCompanion(request,env,url,{requireUser,json,ori
    return respond(await companionFleet(env,user,{adultConfirmed}));
   }
   const scope=await companionScope(env,user);
+  if(url.pathname==="/api/chaos/modes")return respond({ok:true,role:scope.role,
+   modes:companionModeList(scope),account_bound:true});
   if(!scope.accepted)return respond({error:"This page requires the accepted Between the Flames partner account."},403);
-  return respond({ok:true,role:scope.role,companion:scope.role==="partner"?"Samantha's Miss Chaos":"Owner's Miss Chaos",
+  return respond({ok:true,role:scope.role,modes:companionModeList(scope),companion:scope.role==="partner"?"Samantha's Miss Chaos":"Owner's Miss Chaos",
    account_bound:true,private_chats:true,private_memories:true,
-   links:{chat:"/miss-chaos.html",board:"/ai-handoff.html",bots:"/personal-bots.html"},
+   links:{chat:scope.role==="partner"?"/samantha-chaos.html":"/miss-chaos.html?companion=owner",board:"/ai-handoff.html",bots:"/personal-bots.html"},
    note:"Your private chat and memory belong only to your account. Share handoff notes only when you submit them."});
  }catch{return respond({error:"Companion service temporarily unavailable."},503);}
 }
