@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {companionScope,companionModeList,companionFleet,companionAdultVerified,handleChaosCompanion} from "./src/chaos-companion.mjs";
+import {companionScope,companionModeList,acceptedAdminPartner,companionPermissions,companionFleet,companionAdultVerified,handleChaosCompanion} from "./src/chaos-companion.mjs";
 import {dispatchChaosTool,describeChaosTools} from "./chaos-tool-dispatch.mjs";
 
 const PUB={id:"a".repeat(32),name:"Public Imp",description:"Published",is_public:1,is_nsfw:0,updated_at:"2026-11-19"};
@@ -151,4 +151,44 @@ test("revoking a partner invitation removes the private partner mode without gra
  assert.deepEqual((await impersonator.json()).modes.map(m=>m.id),["standard"]);
  const nonOwner=await run("/api/chaos/modes",fixture().env,{id:99,role:"god"});
  assert.deepEqual((await nonOwner.json()).modes.map(m=>m.id),["standard"]);
+});
+
+
+test("accepted admin partner alone receives delegated Eye of Chaos draft and reviewed theme powers",async()=>{
+ const f=fixture();
+ const partner={id:42,role:"admin"};
+ assert.equal(await acceptedAdminPartner(f.env,partner),true);
+ const rights=await companionPermissions(f.env,partner);
+ assert.deepEqual(rights,{
+  can_admin:true,can_eye_of_chaos:true,can_create:true,can_approve_drafts:true,
+  can_theme_publish:true,can_eye_of_horus:false,can_master_control:false
+ });
+ const response=await run("/api/chaos/companion",f.env,partner);
+ assert.equal(response.status,200);
+ const data=await response.json();
+ assert.equal(data.staff_role,"admin");
+ assert.equal(data.permissions.can_eye_of_chaos,true);
+ assert.equal(data.permissions.can_theme_publish,true);
+ assert.equal(data.permissions.can_master_control,false);
+ assert.equal(data.links.eye_of_chaos,"/eye-of-chaos.html");
+ assert.equal(data.links.admin,"/admin.html");
+ const modes=await run("/api/chaos/modes",f.env,partner);
+ assert.equal((await modes.json()).permissions.can_approve_drafts,true);
+ for(const candidate of [
+   {id:42,role:"member"},
+   {id:98,role:"admin"},
+   {id:42,role:"moderator"},
+ ]){
+   assert.equal(await acceptedAdminPartner(f.env,candidate),false);
+   assert.equal((await companionPermissions(f.env,candidate)).can_approve_drafts,false);
+ }
+ const revoked=fixture({invite:{user_id:42,invited_by:1,status:"revoked"}});
+ assert.equal(await acceptedAdminPartner(revoked.env,partner),false);
+ const pending=fixture({invite:{user_id:42,invited_by:1,status:"pending"}});
+ assert.equal(await acceptedAdminPartner(pending.env,partner),false);
+ const failed={DB:{prepare(){throw Error("no database")}}};
+ assert.equal(await acceptedAdminPartner(failed,partner),false);
+ const god=await companionPermissions(f.env,{id:1,role:"god"});
+ assert.equal(god.can_eye_of_horus,true);
+ assert.equal(god.can_master_control,true);
 });
