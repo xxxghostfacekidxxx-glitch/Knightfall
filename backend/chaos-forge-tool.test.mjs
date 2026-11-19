@@ -23,6 +23,17 @@ test("Unsafe sizes, unsupported templates and oversized designs are refused",()=
  assert.equal(makeChaosPatternDraft({template:"tshirt"}).available,false);
  assert.throws(()=>makeChaosPatternDraft({template:"box",width_in:100000,height_in:5,depth_in:2}),/Width/);
 });
+test("Optional fabric-width input computes an approximate material budget, not hidden dimensions",()=>{
+ const draft=makeChaosPatternDraft({template:"tote",width_in:16,height_in:18,depth_in:4,
+   seam_in:0.5,fabric_width_in:44,reserve_percent:10,cost_per_yard:12});
+ assert.equal(draft.available,true);
+ assert.equal(draft.fabric_estimate.fabric_width_in,44);
+ assert.equal(draft.fabric_estimate.piece_count,draft.cut_pieces.reduce((n,p)=>n+p.count,0));
+ assert.ok(draft.fabric_estimate.estimated_material_cost>0);
+ assert.match(draft.fabric_estimate.limitations,/Approximate/);
+ const plain=makeChaosPatternDraft({template:"tote",width_in:16,height_in:18,depth_in:4});
+ assert.equal(plain.fabric_estimate,undefined);
+});
 test("Default seam is explicit, never assumed silently",()=>{
  const p=makeChaosPatternDraft({template:"tote",width_in:16,height_in:18,depth_in:4});
  assert.equal(p.seam_assumed,true);
