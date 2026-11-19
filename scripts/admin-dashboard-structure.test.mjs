@@ -75,8 +75,8 @@ test("arcade failure cards expose diagnostic evidence",()=>{
 
 test("arcade failure cards show evidence counts",()=>{assert.match(html,/failure\.browserErrorCount/);assert.match(html,/failure\.networkErrorCount/);});
 
-test("Creation Tools shortcuts open their named tools, not an arcade cabinet",()=>{
- assert.match(html,/<a class="admin-shortcut" href="\/open-source-arsenal\.html">[\s\S]*?<strong>Open Source Arsenal<\/strong>/);
+test("Creation Tools uses the shared Foundry, without a duplicate Arsenal shortcut",()=>{
  assert.match(html,/<a class="admin-shortcut" href="\/devil-tools\.html">[\s\S]*?<strong>Creator Foundry<\/strong>/);
+ assert.doesNotMatch(html,/class="admin-shortcut" href="\/open-source-arsenal\.html"/);
  assert.doesNotMatch(html,/href="\/abyssal-arsenal\.html">[\s\S]{0,100}<strong>Open Source Arsenal<\/strong>/);
 });
