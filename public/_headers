@@ -184,3 +184,15 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /samantha-chaos.css
   Cache-Control: no-cache, max-age=0, must-revalidate
+
+# Revalidate the member maker workstation and external-source opt-in boundary.
+/chaos-visual-lab.html
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-visual-lab.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-visual-lab.css
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/chaos-openverse.mjs
+  Cache-Control: no-cache, max-age=0, must-revalidate
+/vendor/visual-lab/*
+  Cache-Control: public, max-age=300
