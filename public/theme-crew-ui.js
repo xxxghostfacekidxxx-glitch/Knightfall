@@ -23,7 +23,7 @@ function choose(preset){
   b.setAttribute("aria-pressed",String(b.dataset.preset===selected));
  }
  const p=presets[preset];
- announce("Selected "+p.name+". Preview is local. "+(canPublish?"GOD approval is required for publication.":"Your theme proposal can be reviewed by GOD for publication."));
+ announce("Selected "+p.name+". Preview is local. "+(canPublish?"Confirm your authorized sitewide change before publishing.":"Your theme proposal can be reviewed by GOD for publication."));
 }
 function drawPresets(){
  const place=$("theme-crew-presets");place.replaceChildren();
@@ -69,13 +69,13 @@ async function load(){
    (current.updated_at?" · "+new Date(current.updated_at).toLocaleString():" · Default release");
  drawPresets();drawBots(data.bots||[],data.workflow);drawHistory(data.history||[]);
  workspace.hidden=false;denied.hidden=true;
- announce((canPublish?"GOD publishing controls available.":"Staff design and preview controls ready. Final publishing remains GOD-only.")+" Live site: "+presets[current.preset]?.name+".");
+ announce((canPublish?"Authorized audited theme publishing available.":"Staff design and preview controls ready. Final publishing remains GOD-only.")+" Live site: "+presets[current.preset]?.name+".");
 }
 async function boot(){
  try{await load()}catch(e){workspace.hidden=true;denied.hidden=false;announce("Theme Crew unavailable: "+e.message)}
 }
 async function publish(undo=false){
- if(busy||!current||!canPublish){if(!canPublish)announce("Only GOD can publish or roll back a sitewide theme.");return;}
+ if(busy||!current||!canPublish){if(!canPublish)announce("Only GOD or the accepted admin partner can publish or roll back a sitewide theme.");return;}
  const desired=undo?current.previous:selected;
  if(!Object.hasOwn(presets,desired)){announce("Select a reviewed preset.");return}
  if(desired===current.preset){announce("That theme is already live.");return}
