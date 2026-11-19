@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {companionScope,companionFleet,companionAdultVerified,handleChaosCompanion} from "./src/chaos-companion.mjs";
+import {companionScope,companionModeList,companionFleet,companionAdultVerified,handleChaosCompanion} from "./src/chaos-companion.mjs";
 import {dispatchChaosTool,describeChaosTools} from "./chaos-tool-dispatch.mjs";
 
 const PUB={id:"a".repeat(32),name:"Public Imp",description:"Published",is_public:1,is_nsfw:0,updated_at:"2026-11-19"};
@@ -123,4 +123,32 @@ test("accepted partner can consult configured curator bot without enabling auto-
  assert.ok(!f.log.some(x=>x.sql.includes("UPDATE god_bot_profiles")));
  const rejected=await run("/api/chaos/fleet/partner-chat",f.env,{id:99,role:"member"},{bot_id:"order-66-6",message:"Hello"});
  assert.equal(rejected.status,403);
+});
+
+test("floating private mode catalog comes only from the accepted invitation and verified GOD owner",async()=>{
+ const invited=fixture();
+ const partner={id:42,role:"member"},owner={id:1,role:"god"};
+ const partnerScope=await companionScope(invited.env,partner);
+ const ownerScope=await companionScope(invited.env,owner);
+ assert.deepEqual(companionModeList(partnerScope).map(m=>m.id),["standard","partner"]);
+ assert.deepEqual(companionModeList(ownerScope).map(m=>m.id),["standard","owner"]);
+ assert.deepEqual(companionModeList({role:"member",accepted:false}).map(m=>m.id),["standard"]);
+ const partnerModes=await run("/api/chaos/modes",invited.env,partner);
+ assert.equal(partnerModes.status,200);
+ assert.equal(partnerModes.headers.get("cache-control"),"private, no-store");
+ assert.deepEqual((await partnerModes.json()).modes.map(m=>m.id),["standard","partner"]);
+ const ownerModes=await run("/api/chaos/modes",invited.env,owner);
+ assert.deepEqual((await ownerModes.json()).modes.map(m=>m.id),["standard","owner"]);
+ const regularModes=await run("/api/chaos/modes",invited.env,{id:99,role:"member"});
+ assert.deepEqual((await regularModes.json()).modes.map(m=>m.id),["standard"]);
+ assert.equal((await run("/api/chaos/modes",invited.env,null)).status,401);
+});
+test("revoking a partner invitation removes the private partner mode without granting site admin to collaborator",async()=>{
+ const revoked=fixture({invite:{user_id:42,invited_by:1,status:"revoked"}});
+ const partner=await run("/api/chaos/modes",revoked.env,{id:42,role:"member"});
+ assert.deepEqual((await partner.json()).modes.map(m=>m.id),["standard"]);
+ const impersonator=await run("/api/chaos/modes",fixture().env,{id:1,role:"admin"});
+ assert.deepEqual((await impersonator.json()).modes.map(m=>m.id),["standard"]);
+ const nonOwner=await run("/api/chaos/modes",fixture().env,{id:99,role:"god"});
+ assert.deepEqual((await nonOwner.json()).modes.map(m=>m.id),["standard"]);
 });
