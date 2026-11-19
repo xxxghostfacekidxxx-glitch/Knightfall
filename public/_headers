@@ -97,6 +97,8 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /miss-chaos-dock.js
   Cache-Control: no-cache, max-age=0, must-revalidate
+/miss-chaos-field-kit.mjs
+  Cache-Control: no-cache, max-age=0, must-revalidate
 /chaos-glitch.css
   Cache-Control: no-cache, max-age=0, must-revalidate
 
