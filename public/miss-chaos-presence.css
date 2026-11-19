@@ -145,3 +145,105 @@ body.zombie-immersive-open #miss-chaos-presence{display:none!important}
  #miss-chaos-presence #mc-memo-host{padding:7px}
 }
 @media(prefers-reduced-motion:reduce){#miss-chaos-presence #mc-dock button{transition:none!important}}
+
+/* 2026-11-19: use viewport geometry for the floating WINDOW, not the pill dock.
+   Earlier bottom:100% and stacked mobile overrides could stretch or clip it. */
+#miss-chaos-presence #miss-chaos-window{
+ position:fixed!important;
+ inset:auto max(12px,env(safe-area-inset-right)) calc(78px + env(safe-area-inset-bottom)) auto!important;
+ display:flex;flex-direction:column;min-width:0!important;max-width:calc(100vw - 24px)!important;
+ width:min(418px,calc(100vw - 24px))!important;
+ height:min(640px,calc(100dvh - 116px))!important;
+ min-height:0!important;max-height:calc(100dvh - 116px)!important;
+ border-radius:18px!important;overflow:hidden!important;isolation:isolate;
+ box-shadow:0 22px 65px #000d,0 0 24px #ff2f9235!important;
+}
+#miss-chaos-presence[data-dock="bl"] #miss-chaos-window,
+#miss-chaos-presence[data-dock="tl"] #miss-chaos-window{
+ left:max(12px,env(safe-area-inset-left))!important;right:auto!important;
+}
+#miss-chaos-presence[data-dock="tr"] #miss-chaos-window,
+#miss-chaos-presence[data-dock="tl"] #miss-chaos-window{
+ top:calc(var(--mc-header-bottom,0px) + 76px)!important;
+ bottom:auto!important;
+ max-height:calc(100dvh - var(--mc-header-bottom,0px) - 94px)!important;
+}
+#miss-chaos-presence #miss-chaos-window>.mc-head{
+ flex:0 0 auto;display:flex;align-items:center;min-width:0;min-height:66px;
+ padding:.65rem .8rem;gap:.6rem;
+}
+#miss-chaos-presence #miss-chaos-window .mc-head>img{
+ display:block;flex:0 0 42px;width:42px!important;height:42px!important;
+ max-width:42px;max-height:42px;aspect-ratio:1/1;object-fit:cover;
+ border-radius:12px;transform:none;
+}
+#miss-chaos-presence #miss-chaos-window .mc-head-copy{
+ flex:1 1 auto;min-width:0;overflow:hidden;
+}
+#miss-chaos-presence #miss-chaos-window .mc-head-copy :is(strong,small){
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+#miss-chaos-presence #miss-chaos-window .mc-head-actions{
+ display:flex;flex:0 0 auto;gap:4px;align-items:center;
+}
+#miss-chaos-presence #miss-chaos-window .mc-head-actions button{
+ flex:0 0 34px;width:34px;height:34px;min-width:34px;min-height:34px;padding:0;
+}
+#miss-chaos-presence #mc-companion-label,
+#miss-chaos-presence #mc-private-actions,
+#miss-chaos-presence #mc-mood,
+#miss-chaos-presence #mc-game-tips,
+#miss-chaos-presence .mc-footer,
+#miss-chaos-presence #mc-error,
+#miss-chaos-presence #mc-attachment-status,
+#miss-chaos-presence .mc-attachment-preview{flex:0 0 auto}
+#miss-chaos-presence #mc-messages{flex:1 1 0!important;min-height:58px!important;overflow:auto!important;
+ max-width:100%;width:100%;overscroll-behavior:contain}
+#miss-chaos-presence #mc-form{flex:0 0 auto;display:flex;align-items:flex-end;gap:.4rem;max-width:100%;width:100%;
+ min-height:64px;padding:.6rem;min-width:0}
+#miss-chaos-presence #mc-form #mc-input{flex:1 1 0;min-width:0;width:auto;max-width:none!important}
+#miss-chaos-presence #mc-send{flex:0 0 auto;min-height:42px}
+#miss-chaos-presence #mc-private-switch{
+ display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+ min-height:36px;max-width:95px;padding:4px 8px;border-radius:999px;
+ border:1px solid #d6a06f;color:#f4dfbb;
+ background:linear-gradient(125deg,#31202b,#32283c);font-size:.7rem;font-weight:900;
+ white-space:nowrap;cursor:pointer;
+}
+#miss-chaos-presence #mc-private-switch[aria-pressed="true"]{
+ color:#b9ffd1;border-color:#39ff88;background:#19342a;
+}
+#miss-chaos-presence #mc-companion-label select{min-width:0;max-width:68%;font-size:.81rem}
+#miss-chaos-presence #mc-private-actions{min-width:0}
+#miss-chaos-presence #mc-private-actions a{min-width:0;overflow-wrap:anywhere}
+@media(max-width:600px){
+ #miss-chaos-presence #miss-chaos-window{
+  left:max(8px,env(safe-area-inset-left))!important;
+  right:max(8px,env(safe-area-inset-right))!important;
+  width:auto!important;max-width:none!important;
+  height:min(70dvh,650px)!important;
+  max-height:calc(100dvh - 103px)!important;
+  bottom:calc(72px + env(safe-area-inset-bottom))!important;
+  top:auto!important;border-radius:16px!important;
+ }
+ #miss-chaos-presence[data-dock="tr"] #miss-chaos-window,
+ #miss-chaos-presence[data-dock="tl"] #miss-chaos-window{
+  top:calc(var(--mc-header-bottom,0px) + 65px)!important;
+  bottom:auto!important;
+  max-height:calc(100dvh - var(--mc-header-bottom,0px) - 80px)!important;
+ }
+ #miss-chaos-presence #miss-chaos-window>.mc-head{padding:.5rem .6rem;gap:.35rem;min-height:57px}
+ #miss-chaos-presence #miss-chaos-window .mc-head>img{width:36px!important;height:36px!important;flex-basis:36px}
+ #miss-chaos-presence #mc-private-switch{min-width:58px;padding:4px 5px;font-size:.65rem}
+ #miss-chaos-presence #mc-dock{max-width:calc(100vw - 16px)}
+ #miss-chaos-presence #mc-messages{padding:.65rem}
+ #miss-chaos-presence #mc-form{padding:.48rem}
+ #miss-chaos-presence #mc-send{padding:.6rem .55rem}
+ #miss-chaos-presence #mc-companion-label{gap:.25rem;font-size:.58rem}
+}
+@media(max-width:370px){
+ #miss-chaos-presence #mc-private-switch{font-size:.58rem;max-width:68px}
+ #miss-chaos-presence #mc-memo-toggle{width:36px;height:36px;font-size:1.05rem}
+ #miss-chaos-presence #mc-dock{gap:2px;padding:3px}
+ #miss-chaos-presence #mc-move,#miss-chaos-presence #mc-minimize{height:23px;width:23px;min-width:23px}
+}
