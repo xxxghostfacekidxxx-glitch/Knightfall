@@ -4,7 +4,7 @@ const base=process.env.MEMO_TEST_BASE||'http://127.0.0.1:8765';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const failures=[];
 async function run(name,width,height){
- const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[],journals=[],tasks=[],handoff=[];
+ const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[],journals=[],tasks=[],handoff=[],aiRequests=[];
  page.on('pageerror',err=>errors.push(err.message));
  await page.route('https://api.ash-fall.com/**',async route=>{
   const req=route.request(),path=new URL(req.url()).pathname,method=req.method();
@@ -13,6 +13,11 @@ async function run(name,width,height){
   if(method==='OPTIONS')return route.fulfill({status:204,headers});
   if(path==='/api/auth/me')return respond(200,{user:{id:7,username:'memo_tester',role:'god'}});
   if(path==='/api/chaos/modes')return respond(200,{modes:[{id:'owner',label:'Osiris · Private Miss Chaos',full_chat:'/miss-chaos.html?companion=owner'}],permissions:{can_admin:true}});
+  if(path==='/api/chaos/conversations'&&method==='POST')return respond(201,{conversation:{id:'testchat1'}});
+  if(path==='/api/chaos/chat'&&method==='POST'){
+   aiRequests.push(JSON.parse(req.postData()||'{}'));
+   return respond(200,{reply:'Check the root cause, reproduce the issue, inspect the active code, and verify the actual fix.'});
+  }
   if(path==='/api/die-ary/entries'&&method==='POST'){journals.push(JSON.parse(req.postData()||'{}'));return respond(201,{entry:{id:journals.length}});}
   if(path==='/api/ai-handoff/tasks'&&method==='POST'){tasks.push(JSON.parse(req.postData()||'{}'));return respond(201,{task:{id:tasks.length}});}
   if(path==='/api/ai-handoff/notes'&&method==='POST'){handoff.push(JSON.parse(req.postData()||'{}'));return respond(201,{note:{id:handoff.length}});}
@@ -113,6 +118,26 @@ async function run(name,width,height){
   assert.equal(await page.locator('#mc-memo-host .memo-title').inputValue(),'Big idea');
   assert.equal(await page.locator('#mc-memo-host [data-tab="chat"]').count(),1);
   assert.equal(await page.locator('#mc-memo-host [data-tab="inbox"]').count(),1);
+  await page.locator('#mc-memo-close').click();
+  await page.locator('#miss-chaos-launcher').click();
+  await page.locator('#mc-field-kit .mc-field-kit-chip').first().waitFor();
+  assert.equal(await page.locator('#mc-field-kit .mc-field-kit-chip').filter({hasText:'𓂀 Mission'}).count(),0,
+    'Standard users must not see owner mission prompts');
+  await page.locator('#mc-input').fill('Preserve my original draft');
+  await page.locator('#mc-field-kit .mc-field-kit-chip').filter({hasText:'⌘ Debug'}).click();
+  assert.match(await page.locator('#mc-input').inputValue(),/^Preserve my original draft\\n\\nHelp me debug/);
+  assert.equal(aiRequests.length,0,'Quick tools only prepare drafts; they must never auto-send');
+  await page.locator('#mc-send').click();
+  await page.locator('#mc-reply-actions,.mc-reply-actions').first().waitFor();
+  assert.equal(aiRequests.length,1);
+  assert.match(await page.locator('.mc-bubble.assistant').last().innerText(),/Check the root cause/);
+  await page.locator('.mc-reply-actions button').filter({hasText:'Save memo'}).last().click();
+  await page.waitForFunction(()=>document.querySelector('#mc-field-kit-status')?.textContent.includes('Saved privately to Memo Pad'));
+  assert.equal(notes.length,2,'Saving a reply must create a private memo');
+  assert.match(notes[0].title,/Miss Chaos/);
+  assert.match(notes[0].body,/Check the root cause/);
+  await page.locator('.mc-reply-actions button').filter({hasText:'Open pad'}).last().click();
+  assert.equal(await page.locator('#mc-memo-panel').isVisible(),true);
   await page.locator('#mc-memo-close').click();
   await page.locator('#mc-move').click();
   assert.ok(['bl','br','tl','tr'].includes(await page.locator('#miss-chaos-presence').getAttribute('data-dock')));
