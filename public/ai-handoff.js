@@ -34,24 +34,110 @@ function gate(title,description,mode){
  $('gate-title').textContent=title;$('gate-detail').textContent=description;
  $('gate-accept').hidden=mode!=='accept';$('gate-signin').hidden=mode==='accept';
 }
-function field(name,value){const container=elem('span','task-meta',name+': '+value);return container}
+function field(name,value){return elem('span','task-meta',name+': '+value)}
+const filters={area:'all',status:'open',priority:'all',verification:'all',query:'',limit:24};
+const verifiedLabels={needs_review:'Needs review',source_checked:'Source checked',ci_passed:'CI passed',deployed:'Deployed',device_verified:'Device verified'};
+const priorities={high:0,normal:1,low:2};
+const workstreamCounts=()=>state.tasks.reduce((map,t)=>{const area=t.area||'General';if(!map[area])map[area]={total:0,open:0,high:0,blocked:0};const a=map[area];a.total++;if(t.status!=='done')a.open++;if(t.priority==='high'&&t.status!=='done')a.high++;if(t.blocker&&t.status!=='done')a.blocked++;return map},{});
+function syncWorkstreams(groups){
+ const options=Object.keys(groups).sort((a,b)=>a.localeCompare(b));
+ const signature=options.join('|');
+ for(const [id,first] of [['filter-area','All workstreams'],['task-area','General']]){
+  const select=$(id);if(select.dataset.signature===signature)return;
+  const prev=select.value;
+  select.replaceChildren();
+  const initial=elem('option','',first);initial.value=id==='filter-area'?'all':'General';select.append(initial);
+  for(const area of options){if(id==='task-area'&&area==='General')continue;const o=elem('option','',area);o.value=area;select.append(o)}
+  select.value=[...select.options].some(x=>x.value===prev)?prev:initial.value;
+  select.dataset.signature=signature;
+ }
+}
+function metric(label,value,emphasis=''){
+ const card=elem('div','task-metric '+emphasis);
+ card.append(elem('strong','',value),elem('span','',label));return card;
+}
+function renderTaskOverview(groups){
+ const total=state.tasks.length,done=state.tasks.filter(t=>t.status==='done').length;
+ const underway=state.tasks.filter(t=>t.status==='in_progress').length;
+ const blocked=state.tasks.filter(t=>t.status!=='done'&&t.blocker).length;
+ const urgent=state.tasks.filter(t=>t.status!=='done'&&t.priority==='high').length;
+ const needsReview=state.tasks.filter(t=>t.verification==='needs_review'||!t.verification).length;
+ $('task-count').textContent='('+Math.max(0,total-done)+' open / '+total+' total)';
+ $('task-metrics').replaceChildren(metric('Total tasks',total),metric('High priority open',urgent,'urgent'),metric('In progress',underway),metric('Blocked / dependent',blocked,'blocked'),metric('Completed',done),metric('Needs verification',needsReview));
+ const work=$('workstream-summary');work.replaceChildren();
+ const entries=Object.entries(groups).sort((a,b)=>b[1].high-a[1].high||b[1].open-a[1].open||a[0].localeCompare(b[0]));
+ for(const [area,c] of entries){
+  const b=button(area+' · '+c.open+' open','', 'workstream-chip'+(filters.area===area?' selected':''));
+  b.addEventListener('click',()=>{
+   filters.area=filters.area===area?'all':area;
+   filters.limit=24;$('filter-area').value=filters.area;renderTasks();
+  });
+  work.append(b);
+ }
+}
+function sourceLink(source){
+ if(!source)return null;
+ try{
+  const url=new URL(source);
+  if(url.protocol!=='https:'||!(url.hostname==='ash-fall.com'||url.hostname==='www.ash-fall.com'||url.hostname==='github.com'&&url.pathname.startsWith('/xxxghostfacekidxxx-glitch/Knightfall/')))return null;
+  const a=elem('a','task-source','View supporting source ↗');
+  a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';return a;
+ }catch{return null}
+}
+function matchesFilters(t){
+ if(filters.area!=='all'&&(t.area||'General')!==filters.area)return false;
+ if(filters.status==='open'&&t.status==='done')return false;
+ if(filters.status==='blocked'&&(!t.blocker||t.status==='done'))return false;
+ if(['todo','in_progress','done'].includes(filters.status)&&t.status!==filters.status)return false;
+ if(filters.priority!=='all'&&t.priority!==filters.priority)return false;
+ if(filters.verification!=='all'&&(t.verification||'needs_review')!==filters.verification)return false;
+ if(filters.query){
+  const content=[t.title,t.details,t.area,t.next_step,t.blocker,t.source_url].join(' ').toLowerCase();
+  if(!content.includes(filters.query))return false;
+ }
+ return true;
+}
 function renderTasks(){
+ const groups=workstreamCounts();
+ syncWorkstreams(groups);renderTaskOverview(groups);
  const list=$('task-list');list.replaceChildren();
- const open=state.tasks.filter(t=>t.status!=='done').length;
- $('task-count').textContent='('+open+' open / '+state.tasks.length+' total)';
- if(!state.tasks.length){list.append(elem('p','empty','Nothing on the list yet. That is either impressive or extremely suspicious.'));return}
- for(const task of state.tasks){
+ const matching=state.tasks.filter(matchesFilters).sort((a,b)=>
+  (a.status==='done'?1:0)-(b.status==='done'?1:0)||
+  (priorities[a.priority]??1)-(priorities[b.priority]??1)||
+  (a.status==='in_progress'?-1:0)-(b.status==='in_progress'?-1:0)||
+  (a.blocker?0:1)-(b.blocker?0:1)||
+  (a.area||'General').localeCompare(b.area||'General')||a.id-b.id
+ );
+ $('task-filter-count').textContent='Showing '+Math.min(filters.limit,matching.length)+' of '+matching.length+' matching tasks · '+Object.keys(groups).length+' workstreams. Open an item to see evidence, blockers and next actions.';
+ const more=$('more-tasks');more.hidden=matching.length<=filters.limit;
+ more.textContent='Show more tasks ('+(matching.length-filters.limit)+' remaining)';
+ if(!matching.length){list.append(elem('p','empty','No tasks match these filters. Clear the filters or try another workstream.'));return}
+ for(const task of matching.slice(0,filters.limit)){
   const box=elem('article','task '+(task.status==='done'?'done':''));
-  const text=elem('div');
-  text.append(elem('h3','',task.title),elem('div','priority '+task.priority,task.priority+' priority'));
-  if(task.details)text.append(elem('p','task-details',task.details));
+  const content=elem('div','task-content');
+  const header=elem('div','task-titlebar');
+  header.append(elem('h3','',task.title),elem('span','workstream-tag',task.area||'General'));
+  content.append(header);
+  const chips=elem('div','task-tags');
+  chips.append(elem('span','priority '+task.priority,task.priority+' priority'));
+  chips.append(elem('span','task-verification',verifiedLabels[task.verification]||'Needs review'));
+  if(task.blocker&&task.status!=='done')chips.append(elem('span','task-blocked-tag','Blocked / dependent'));
+  content.append(chips);
+  if(task.details)content.append(elem('p','task-details',task.details));
+  if(task.next_step){
+   const step=elem('p','task-next');step.append(elem('strong','','Next: '),document.createTextNode(task.next_step));content.append(step);
+  }
+  if(task.blocker){
+   const block=elem('p','task-blocker');block.append(elem('strong','','Dependency: '),document.createTextNode(task.blocker));content.append(block);
+  }
+  const src=sourceLink(task.source_url);if(src)content.append(src);
   const foot=elem('div','task-footer');
   foot.append(field('Updated',task.updated_at||task.created_at),field('Revision',task.version));
-  text.append(foot);
+  content.append(foot);
   const controls=elem('div','task-controls');
   const select=elem('select');
   select.setAttribute('aria-label','Status for '+task.title);
-  [['todo','To do'],['in_progress','In progress'],['done','Done']].forEach(([v,label])=>{const option=elem('option','',label);option.value=v;select.append(option)});
+  [['todo','To do'],['in_progress','In progress'],['done','Done']].forEach(([v,label])=>{const o=elem('option','',label);o.value=v;select.append(o)});
   select.value=task.status;
   select.addEventListener('change',async()=>{
    select.disabled=true;
@@ -60,18 +146,46 @@ function renderTasks(){
    finally{select.disabled=false}
   });
   controls.append(select);
-  controls.append(button('Edit',()=>editTask(task)));
+  controls.append(button('Edit details',()=>editTask(task,box)));
   if(state.role==='owner')controls.append(button('Archive',()=>archiveTask(task),'handoff-button danger'));
-  box.append(text,controls);list.append(box);
+  box.append(content,controls);list.append(box);
  }
 }
-async function editTask(task){
- // Browser prompts keep edits short without layering an oversized modal over mobile screens.
- const title=prompt('Task title',task.title);if(title===null)return;
- const details=prompt('Task details',task.details||'');if(details===null)return;
- const priority=prompt('Priority: high / normal / low',task.priority);if(priority===null)return;
- try{await api('/tasks/'+task.id,'PATCH',{title,details,priority:priority.trim().toLowerCase(),version:task.version});status('Task updated.');await load(true)}
- catch(e){status(e.message);await load(true)}
+function editTask(task,box){
+ const old=box.querySelector('.task-editor');if(old){old.remove();return}
+ const form=elem('form','task-editor');form.setAttribute('aria-label','Edit '+task.title);
+ const inputField=(name,labelText,value,max=600,kind='input')=>{
+  const label=elem('label','',labelText);
+  const input=elem(kind==='textarea'?'textarea':'input','');
+  input.name=name;input.value=value||'';input.maxLength=max;
+  if(kind==='textarea')input.rows=name==='details'?3:2;
+  if(name==='title')input.required=true;
+  label.append(input);form.append(label);return input;
+ };
+ const selectField=(name,labelText,value,options)=>{
+  const label=elem('label','',labelText),sel=elem('select');sel.name=name;
+  for(const [v,title] of options){const opt=elem('option','',title);opt.value=v;sel.append(opt)}
+  sel.value=value;label.append(sel);form.append(label);return sel;
+ };
+ const titleInput=inputField('title','Task title',task.title,180);
+ inputField('details','Context / details',task.details,3000,'textarea');
+ inputField('area','Workstream',task.area||'General',56);
+ selectField('priority','Priority',task.priority,[['high','High'],['normal','Normal'],['low','Low']]);
+ selectField('verification','Evidence level',task.verification||'needs_review',Object.entries(verifiedLabels));
+ inputField('next_step','Concrete next action',task.next_step,600,'textarea');
+ inputField('blocker','Dependency or blocker (leave empty if none)',task.blocker,600,'textarea');
+ inputField('source_url','Source URL (Knightfall/GitHub only)',task.source_url,500);
+ const actions=elem('div','handoff-actions');
+ const save=elem('button','handoff-button','Save changes');save.type='submit';
+ actions.append(save,button('Cancel',()=>form.remove(),'handoff-button ghost'));form.append(actions);
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();save.disabled=true;
+  const data=Object.fromEntries(new FormData(form).entries());
+  data.version=task.version;data.title=data.title.trim();data.area=data.area.trim();
+  try{await api('/tasks/'+task.id,'PATCH',data);status('Project task and next steps updated for both collaborators.');await load(true)}
+  catch(err){status('Task could not be saved: '+err.message);save.disabled=false;}
+ });
+ box.append(form);titleInput.focus();
 }
 async function archiveTask(task){
  if(!confirm('Archive "'+task.title+'"? It will disappear from the active list.'))return;
@@ -181,9 +295,23 @@ $('copy-bridge-guide').addEventListener('click',async()=>{
 window.setInterval(()=>{
  if(document.hidden||state.role!=='owner'&&state.role!=='partner'||live.loading)return;
  // Avoid interrupting active task status/edit controls while refreshing.
- if(document.activeElement?.closest?.('#task-list'))return;
+ if(document.activeElement?.closest?.('#task-list')||document.querySelector('.task-editor'))return;
  load(true);
 },20000);
+$('copy-mentor-guide').addEventListener('click',async()=>{
+ try{await writeClipboard(state.instructions||GUIDE);status('Samantha GPT tool briefing copied, including Creator Foundry and Open Source Arsenal instructions.')}
+ catch(e){status('Could not copy mentor guide: '+e.message)}
+});
+[['filter-area','area'],['filter-status','status'],['filter-priority','priority'],['filter-verification','verification']].forEach(([id,key])=>{
+ $(id).addEventListener('change',()=>{filters[key]=$(id).value;filters.limit=24;renderTasks()});
+});
+$('filter-query').addEventListener('input',event=>{filters.query=String(event.target.value||'').trim().toLowerCase();filters.limit=24;renderTasks()});
+$('more-tasks').addEventListener('click',()=>{filters.limit+=24;renderTasks()});
+$('reset-task-filters').addEventListener('click',()=>{
+ Object.assign(filters,{area:'all',status:'open',priority:'all',verification:'all',query:'',limit:24});
+ $('filter-query').value='';$('filter-area').value='all';$('filter-status').value='open';
+ $('filter-priority').value='all';$('filter-verification').value='all';renderTasks();
+});
 $('gate-accept').addEventListener('click',async()=>{try{await api('/accept','POST',{});await load()}catch(e){status(e.message)}});
 $('copy-packet').addEventListener('click',async()=>{
  try{
@@ -204,7 +332,7 @@ $('revoke-partner').addEventListener('click',async()=>{
 });
 $('task-form').addEventListener('submit',async event=>{
  event.preventDefault();const title=$('task-title').value.trim(),details=$('task-details').value.trim(),priority=$('task-priority').value;
- try{await api('/tasks','POST',{title,details,priority});$('task-form').reset();status('New task added to the shared list.');await load(true)}catch(e){status(e.message)}
+ try{await api('/tasks','POST',{title,details,priority,area:$('task-area').value});$('task-form').reset();status('New task added to the shared list.');await load(true)}catch(e){status(e.message)}
 });
 $('note-form').addEventListener('submit',async event=>{
  event.preventDefault();const body=$('note-body').value.trim(),category=$('note-type').value;
