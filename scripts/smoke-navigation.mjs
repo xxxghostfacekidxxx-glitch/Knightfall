@@ -91,13 +91,15 @@ try {
         assert.equal(await nav.getByRole("link", { name: /^(?:Messages|Chaosphere)$/ }).count(), 1);
         await account.click();
         await nav.getByRole("link", { name: /Notifications.*3/ }).waitFor();
-        const foundry = nav.getByRole("link", { name: "Creator Foundry" });
+        const foundry = nav.getByRole("link", { name: "Foundry", exact: true });
+        assert.equal(await foundry.count(), 1, "All roles use the single Foundry entrance");
+        assert.equal(await foundry.getAttribute("href"), "/devil-tools.html");
         const admin = ["admin", "god"].includes(session.user.role);
-        const isStaff = admin || session.name === "moderator" || session.name === "creator";
+        // Digital Creators still have server-authorized workshop access; they no longer need a duplicate Staff menu.
+        const isStaff = admin || session.name === "moderator";
         assert.equal(await staff.isVisible(), isStaff);
         if (isStaff) {
           await staff.click();
-          assert.equal(await foundry.isVisible(), admin || session.name === "creator");
           assert.equal(await nav.getByRole("link", { name: "Moderation" }).isVisible(), admin || session.name === "moderator");
           assert.equal(await nav.getByRole("link", { name: "Eye of Horus" }).isVisible(), session.name === "owner");
           await nav.getByRole("link", { name: "Settings & Tools" }).waitFor({ state: "hidden" });
