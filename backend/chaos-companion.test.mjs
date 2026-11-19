@@ -16,6 +16,7 @@ function fixture({invite={user_id:42,invited_by:1,status:"accepted"},adult=false
     bind(...args){this.args=args;log.push({sql,args});return this;},
     async first(){
      if(sql.includes("FROM ai_handoff_partner"))return invite;
+     if(sql.includes("FROM god_bot_profiles WHERE bot_key=?"))return {bot_key:"order-66-6",display_name:"Order 66.6",bio:"Sith humor and project news",source_name:"Sith News",posting_enabled:0};
      if(sql.includes("b.system_prompt"))return [PUB,PRIVATE,ADULT].find(b=>b.id===this.args[0]&&this.args[1]===1)||null;
      return null;
     },
@@ -57,7 +58,7 @@ test("fleet hides adult-only private bot until the partner's own verification",a
  assert.equal(r.own_count,2);
  assert.equal(r.shared_count,2);
  assert.equal(r.shared_owner_private_bots[0].name,"Private Helper");
- assert.equal(r.project_service_bots[0].chat_available,false);
+ assert.equal(r.project_service_bots[0].chat_available,true);
  assert.ok(!JSON.stringify(r).includes("Restricted Imp"));
  assert.ok(!JSON.stringify(r).includes("INTERNAL_PROMPT_DO_NOT_LEAK"));
  assert.ok(log.some(x=>x.sql.includes("JOIN users u")&&x.args[0]===1));
@@ -106,4 +107,20 @@ test("verified fleet reader remains a signed-in scope, never a public tool",asyn
   handlers:{"user.bot_fleet":async()=>companionFleet(f.env,principal,{adultConfirmed:true})}});
  assert.equal(res.shared_count,3);
  await assert.rejects(dispatchChaosTool({name:"user.bot_fleet",input:{}}),/Sign-in required/);
+});
+
+test("accepted partner can consult configured curator bot without enabling auto-posting or leaking account data",async()=>{
+ const f=fixture();
+ const result=await run("/api/chaos/fleet/partner-chat",f.env,{id:42,role:"member"},{bot_id:"order-66-6",message:"Recommend a safe project priority"});
+ assert.equal(result.status,200);
+ const answer=await result.json();
+ assert.equal(answer.stateless,true);
+ assert.equal(answer.bot.name,"Order 66.6");
+ assert.equal(answer.reply,"Confirmed project response.");
+ assert.equal(f.runs.length,1);
+ assert.match(f.runs[0].messages[0].content,/No automatic publishing is permitted/);
+ assert.ok(!f.log.some(x=>x.sql.includes("INSERT INTO personal_bot_chat_messages")));
+ assert.ok(!f.log.some(x=>x.sql.includes("UPDATE god_bot_profiles")));
+ const rejected=await run("/api/chaos/fleet/partner-chat",f.env,{id:99,role:"member"},{bot_id:"order-66-6",message:"Hello"});
+ assert.equal(rejected.status,403);
 });
