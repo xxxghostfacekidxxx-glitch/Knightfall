@@ -98,7 +98,16 @@ test("global navigation exposes only one arcade directory", () => {
   assert.match(nav, /class="kf-brand" href="\/" aria-label="Knightfall home"/);
   assert.match(nav, /brand\.setAttribute\("aria-current", "page"\)/);
   assert.equal(hrefs.filter(href => href === "/chaos-cartridge.html").length, 1);
-  assert.equal(new Set(hrefs).size, hrefs.length, "Duplicate links in primary navigation");
+  // GOD Eye and shared AI handoff are intentionally available both as fast shortcuts
+  // and within their respective staff/account menus, so they remain discoverable.
+  const seen = new Set(), unexpected = [];
+  for (const href of hrefs) {
+    if (seen.has(href) && !["/ai-handoff.html","/eye-of-chaos.html"].includes(href)) unexpected.push(href);
+    seen.add(href);
+  }
+  assert.deepEqual(unexpected, [], "Unexpected duplicate links in primary navigation");
+  assert.ok(hrefs.filter(href => href === "/ai-handoff.html").length <= 2);
+  assert.ok(hrefs.filter(href => href === "/eye-of-chaos.html").length <= 2);
   assert.ok(hrefs.every(href => !["/arcade-games.html", "/arcade-vault.html", "/arcade-30-games.html", "/arcade-card-board.html"].includes(href)),
     "Retired arcade discovery page reappeared in navigation");
 });
