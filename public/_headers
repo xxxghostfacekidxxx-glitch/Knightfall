@@ -170,8 +170,6 @@
   Cache-Control: no-cache, max-age=0, must-revalidate
 /arcade/hosted/ash-sudoku/index.html
   Cache-Control: no-cache, max-age=0, must-revalidate
-/arcade/hosted/arcade-boot-guard.js
-  Cache-Control: no-cache, max-age=0, must-revalidate
 /arcade/nextgen.js
   Cache-Control: no-cache, max-age=0, must-revalidate
 /arcade/nextgen.css
