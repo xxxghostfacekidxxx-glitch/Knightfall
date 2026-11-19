@@ -97,6 +97,21 @@ self.addEventListener("install", event => {
 });
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") event.waitUntil(self.skipWaiting());
+  if (event.data?.type === "KF_CLOSE_HANDLED_NOTIFICATIONS") {
+    const id=notificationRecordId(event.data.notificationId);
+    const conversationId=notificationRecordId(event.data.conversationId);
+    const clearAll=event.data.all===true;
+    if (!id&&!conversationId&&!clearAll) return;
+    // Local OS notification cleanup only. This cannot mark records read on the server.
+    event.waitUntil(self.registration.getNotifications().then(notifications=>{
+      for(const notice of notifications){
+        const data=notice.data||{};
+        if(clearAll||
+          (id&&notificationRecordId(data.notificationId)===id)||
+          (conversationId&&notificationRecordId(data.conversationId)===conversationId))notice.close();
+      }
+    }).catch(error=>console.warn("notification_cleanup_failed",String(error))));
+  }
 });
 
 self.addEventListener("activate", event => {
