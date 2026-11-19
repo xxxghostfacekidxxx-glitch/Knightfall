@@ -55,6 +55,7 @@ export function mountChaosChatImage({form,composer,status,onChange}){
  function clear(){
   serial++;file=null;field.value="";display.hidden=true;thumbnail.removeAttribute("src");
   if(photoUrl){URL.revokeObjectURL(photoUrl);photoUrl=null;}
+  report("");
   onChange?.(false);
  }
  function choose(next){
