@@ -39,6 +39,8 @@ export const CAPABILITIES = Object.freeze({
   "user.notes": Object.freeze({description:"Read a member's own private memo previews",scope:"user",mutates:false,confirmation:false,maxInputBytes:512}),
   "utility.calculate": Object.freeze({description:"Calculate arithmetic expressions",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "utility.word_count": Object.freeze({description:"Count words and estimate reading time",scope:"public",mutates:false,confirmation:false,maxInputBytes:13000}),
+  "utility.convert": Object.freeze({description:"Convert craft, repair and everyday measurements with standard factors",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
+  "user.notifications": Object.freeze({description:"Read only the signed-in member's unread alerts; never mark them read",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "user.memories": Object.freeze({
     description: "Read the current account's approved memories",
     scope: "user",
