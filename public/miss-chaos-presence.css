@@ -284,3 +284,8 @@ body.zombie-immersive-open #miss-chaos-presence{display:none!important}
  #miss-chaos-presence .mc-reply-actions button{font-size:.66rem;padding:5px 7px}
 }
 @media(prefers-reduced-motion:reduce){#miss-chaos-presence .mc-field-kit-chip:active{transform:none}}
+
+
+/* Crucible is a real workspace, not another auto-sending prompt chip. */
+#miss-chaos-presence a.mc-field-kit-crucible{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;text-decoration:none;white-space:nowrap;background:linear-gradient(110deg,#67305b,#18392b);color:#d7ffe5;border-color:#65ffac;padding:5px 11px;min-height:34px}
+#miss-chaos-presence a.mc-field-kit-crucible:hover{border-color:#ff8fc8;background:linear-gradient(110deg,#8d3670,#1c4d39)}
