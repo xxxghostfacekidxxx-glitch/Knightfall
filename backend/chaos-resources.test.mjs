@@ -35,3 +35,13 @@ test("no arbitrary URLs and invalid query rejected",async()=>{
  await assert.rejects(searchChaosResources({source:"private",query:"test"}),/Unknown/);
  await assert.rejects(metSearch({query:""}),/public search topic/);
 });
+
+test("Poly Haven metadata schema drift cannot crash resource search",async()=>{
+ const got=await polyhavenSearch({query:"fabric",type:"textures"},{fetcher:async()=>example({
+    good:{name:"Fabric",tags:{fabric:true},description:null},
+    other:{name:"Fabric weave",tags:"cloth fabric"},
+    junk:null
+ })});
+ assert.equal(got.results.length,2);
+ assert.equal(got.attribution,"Powered by Poly Haven");
+});

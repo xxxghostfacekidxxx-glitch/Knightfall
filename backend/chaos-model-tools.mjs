@@ -39,7 +39,11 @@ export async function runChaosModelCalls(calls,principal,handlers={}) {
     const name=call?.name||call?.function?.name;
     if(!NAMES.has(name))throw Error("Unsupported model tool.");
     if(!visibleTools(principal).some(t=>t.name===name))throw Error("Tool not authorized.");
-    const input=typeof call.arguments==="string"?JSON.parse(call.arguments):call.arguments??call.function?.arguments??{};
+    // Cloudflare uses flat tool calls; OpenAI-compatible replies nest arguments under function.
+    // Both providers may serialize their arguments as JSON text.
+    const raw=call?.arguments??call?.function?.arguments??{};
+    const input=typeof raw==="string"?JSON.parse(raw):raw;
+    if(!input||typeof input!=="object"||Array.isArray(input))throw Error("Invalid model tool arguments.");
     const result=await dispatchChaosTool({name,input,principal,handlers,usedCalls:i});
     results.push({name,result});
   }

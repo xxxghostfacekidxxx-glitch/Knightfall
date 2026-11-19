@@ -130,3 +130,24 @@ test("shared handoff reader enforces the existing invitation and limits output",
   assert.equal(unauthorized[0].result.available,false);
   assert.equal(unauthorized[0].result.tasks,undefined);
 });
+
+test("flat and OpenAI-style serialized tool calls both execute with trusted account scope",async()=>{
+  const {handlers,sqlLog}=setup();
+  const principal={id:89,role:"member"};
+  const calls=[
+    {name:"user.notes",arguments:JSON.stringify({query:"arcade"})},
+    {type:"function",function:{name:"user.memories",arguments:JSON.stringify({query:"arcade"})}}
+  ];
+  const got=await runChaosModelCalls(calls,principal,handlers);
+  assert.equal(got[0].result.results[0].title,"My arcade fixes");
+  assert.equal(got[1].result.results.length,1);
+  assert.deepEqual(sqlLog.map(x=>x.id),[89,89]);
+});
+test("malformed provider tool payloads cannot execute a private query",async()=>{
+  const {handlers,sqlLog}=setup();
+  for(const raw of ["{}", "[]", "null", "garbage"]){
+    if(raw==="{}")continue;
+    await assert.rejects(runChaosModelCalls([{type:"function",function:{name:"user.notes",arguments:raw}}],{id:31},handlers));
+  }
+  assert.equal(sqlLog.length,0);
+});

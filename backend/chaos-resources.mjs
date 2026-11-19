@@ -40,7 +40,10 @@ export async function polyhavenSearch(input,{fetcher=fetch}={}){
  const data=await jsonGet(url.toString(),{fetcher,agent:true});
  const tokens=q.match(/[a-z0-9]{2,}/g)||[];
  const results=Object.entries(data||{}).slice(0,12000).map(([id,item])=>{
-   const hay=(id+" "+item.name+" "+item.description+" "+(item.tags||[]).join(" ")).toLowerCase();
+   // Upstream catalogs are outside our control: tags may be missing or not an array.
+   if(!item||typeof item!=="object"||Array.isArray(item))return {id,item:null,score:0};
+   const tags=Array.isArray(item.tags)?item.tags.join(" "):typeof item.tags==="string"?item.tags:"";
+   const hay=(id+" "+String(item.name||"")+" "+String(item.description||"")+" "+tags).toLowerCase();
    const score=tokens.reduce((n,t)=>n+(hay.includes(t)?1:0),0);
    return {id,item,score};
  }).filter(x=>x.score>0&&/^[a-z0-9_-]{1,100}$/.test(x.id))

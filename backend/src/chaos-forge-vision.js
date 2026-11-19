@@ -7,17 +7,39 @@ export async function handleChaosForgeVision(request,env,{requireUser,rateLimit,
    return json({error:"Open Chaos Forge from Knightfall."},403,origin);
  if(!await rateLimit(env,request,"chaos-forge-vision",4,3600,user.id))
    return json({error:"Image analysis limit reached. Use the manual tools or retry later."},429,origin);
+ const MAX_BODY=980000;
  const declared=Number(request.headers.get("content-length")||0);
- if(declared>980000)return json({error:"Image too large. Reduce the image size."},413,origin);
+ if(declared>MAX_BODY)return json({error:"Image too large. Reduce the image size."},413,origin);
  let body;
  try{
-   const text=await request.text();
-   if(text.length>980000)throw Error("too large");
-   body=JSON.parse(text);
- }catch{return json({error:"Invalid or oversized image request."},400,origin);}
- const image=String(body?.image||"");
- if(image.length>900000||!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(image))
-   return json({error:"Use a resized JPEG, PNG, or WebP image under 650 KB."},400,origin);
+   // Enforce the upload limit while streaming; request.text() would allocate an unbounded body first.
+   const reader=request.body?.getReader();
+   if(!reader)throw Error("Missing request body.");
+   const chunks=[];let bytes=0;
+   while(true){
+     const {value,done}=await reader.read();
+     if(done)break;
+     bytes+=value.byteLength;
+     if(bytes>MAX_BODY){await reader.cancel();return json({error:"Image too large. Reduce the image size."},413,origin);}
+     chunks.push(value);
+   }
+   const all=new Uint8Array(bytes);let offset=0;
+   for(const chunk of chunks){all.set(chunk,offset);offset+=chunk.byteLength;}
+   body=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(all));
+ }catch{return json({error:"Invalid image request."},400,origin);}
+ const image=typeof body?.image==="string"?body.image:"";
+ const match=image.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/]+={0,2})$/);
+ if(!match||image.length>900000)return json({error:"Use a resized JPEG, PNG, or WebP image under 650 KB."},400,origin);
+ let binary;
+ try{binary=atob(match[2]);}catch{return json({error:"Malformed image encoding."},400,origin);}
+ if(binary.length<16||binary.length>650000)return json({error:"The compressed image must be under 650 KB."},400,origin);
+ const starts=pattern=>pattern.every((value,i)=>binary.charCodeAt(i)===value);
+ const valid=match[1]==="jpeg"
+   ?starts([255,216,255])
+   :match[1]==="png"
+     ?starts([137,80,78,71,13,10,26,10])
+     :starts([82,73,70,70])&&binary.slice(8,12)==="WEBP";
+ if(!valid)return json({error:"The image bytes do not match their declared file type."},400,origin);
  const kind=["clothing","craft","accessory","object"].includes(body?.kind)?body.kind:"object";
  const notes=String(body?.notes||"").trim().slice(0,400);
  if(!env.AI?.run)return json({error:"Vision AI is not available on this account."},503,origin);
