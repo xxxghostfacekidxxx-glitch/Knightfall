@@ -23,8 +23,8 @@ test("floating assistant script and switcher are syntactically valid, accessible
  assert.match(floating,/modeSelect\.addEventListener\("change"/);
  assert.match(floating,/modeLabel\.hidden=availableModes\.length<2/);
  assert.match(css,/\.mc-companion-control select/);
- assert.match(nav,/miss-chaos-presence\.js\?v=20261119-photo-mode2/);
- assert.match(floating,/miss-chaos-presence\.css\?v=20261119-dock-fixed4/);
+ assert.match(nav,/miss-chaos-presence\.js\?v=20261119-overlay-recovery1/);
+ assert.match(floating,/miss-chaos-presence\.css\?v=20261119-overlay-recovery1/);
 });
 
 test("session-owned mode discovery controls the private choices and always fails closed",()=>{
@@ -51,6 +51,7 @@ test("switching does not mix account or mode conversation pointers and respects 
  assert.match(floating,/selected!==assistantMode\|\|id!==conversationId/);
  assert.match(floating,/companion:assistantMode==="standard"\?undefined:assistantMode/);
  assert.match(floating,/ensureAccount\(true\)/);
+ assert.match(floating,/void ensureAccount\(true\)\.catch/);
 });
 
 test("full private chat requests use backend-authorized roles and account-bound pages",()=>{
