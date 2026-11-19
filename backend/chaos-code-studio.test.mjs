@@ -25,7 +25,7 @@ test("Formatting is bounded, read-only and never evaluates code",async()=>{
  assert.equal(bad.valid,false);
  assert.ok(!("formatted" in bad));
  await assert.rejects(formatChaosCode({code:"a".repeat(10001)}),/10,000/);
- await assert.rejects(formatChaosCode({code:"const a=1",language:"python"}),/JavaScript and JSON/);
+ await assert.rejects(formatChaosCode({code:"const a=1",language:"python"}),/JavaScript, TypeScript/);
  await assert.rejects(formatChaosCode({code:"const a=1",print_width:5}),/40/);
 });
 test("Flowchart converts plain steps to deterministic safe Mermaid and graph",()=>{

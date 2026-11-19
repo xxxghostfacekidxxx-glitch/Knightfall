@@ -21,7 +21,7 @@ test("JSON is validated without echoing input values",()=>{
  assert.equal(inspectChaosCode({language:"json",code:"{"}).syntax_valid,false);
 });
 test("Code inspection fails closed on unsupported types and oversized bodies",()=>{
- assert.throws(()=>inspectChaosCode({language:"python",code:"print(1)"}),/JavaScript and JSON/);
+ assert.throws(()=>inspectChaosCode({language:"python",code:"print(1)"}),/JavaScript, TypeScript/);
  assert.throws(()=>inspectChaosCode({code:"a".repeat(11000)}),/10,000 bytes/);
 });
 test("GitHub repository search is fixed-host and returns only public licensed links",async()=>{
