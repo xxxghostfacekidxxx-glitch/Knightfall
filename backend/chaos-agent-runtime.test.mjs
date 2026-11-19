@@ -267,3 +267,26 @@ test("profile and inbox requests still get verified context if the planner retur
    assert.match(outputs[1].messages[0].content,/TRUSTED READ-ONLY TOOL RESULTS/);
  }
 });
+
+test("Miss Chaos fabric tool returns a measured, bounded layout and costs, with no account access",async()=>{
+ const r=await runChaosModelCalls([{name:"forge.material_estimate",arguments:{
+   fabric_width_in:44,reserve_percent:10,cost_per_yard:10,
+   pieces:[{name:"front",width_in:20,height_in:36,count:1},
+    {name:"back",width_in:20,height_in:36,count:1}]
+ }}],null,setup().handlers);
+ assert.equal(r[0].result.estimated_yards,1.1);
+ assert.equal(r[0].result.estimated_material_cost,11);
+ assert.equal(r[0].result.piece_count,2);
+ assert.match(r[0].result.limitations,/not an optimal/);
+});
+test("pattern drafts understand actual fabric width and reserve with direct no-planner routing",async()=>{
+ const inputs=[];
+ const ai={run:async(model,options)=>{inputs.push(options);return {response:"Your measured draft."};}};
+ await inferWithChaosTools({ai,model:"fast",messages:[
+  {role:"system",content:"base"},
+  {role:"user",content:"Draft a tote bag 16 x 18 x 4 fabric width 44 inches reserve 10%"}
+ ],principal:{id:7},handlers:setup().handlers});
+ assert.equal(inputs.length,1);
+ assert.match(inputs[0].messages[0].content,/"fabric_width_in":44/);
+ assert.match(inputs[0].messages[0].content,/"reserve_percent":10/);
+});
