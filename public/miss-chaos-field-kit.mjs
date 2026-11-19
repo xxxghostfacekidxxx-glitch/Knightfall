@@ -59,6 +59,12 @@ export function mountMissChaosFieldKit({panel,messages,input,api,onOpenMemo,getM
  setExpanded(expanded);
  function refresh(){
    list.replaceChildren();
+   const crucible=doc.createElement("a");
+   crucible.className="mc-field-kit-chip mc-field-kit-crucible";
+   crucible.href="/chaos-crucible.html";
+   crucible.textContent="⚒ Open Crucible";
+   crucible.title="Original project briefs, downloadable plans and creative tools";
+   list.append(crucible);
    for(const prompt of promptsForMode(getMode?.()||"standard")){
      const button=doc.createElement("button");button.type="button";
      button.className="mc-field-kit-chip";button.textContent=prompt.label;
