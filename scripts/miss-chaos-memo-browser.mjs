@@ -4,7 +4,7 @@ const base=process.env.MEMO_TEST_BASE||'http://127.0.0.1:8765';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const failures=[];
 async function run(name,width,height){
- const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[],journals=[],tasks=[],handoff=[],aiRequests=[];
+ const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage(),errors=[],sent=[],notes=[],letters=[],chats=[],journals=[],tasks=[],handoff=[],aiRequests=[],toolProbes=[];
  page.on('pageerror',err=>errors.push(err.message));
  await page.route('https://api.ash-fall.com/**',async route=>{
   const req=route.request(),path=new URL(req.url()).pathname,method=req.method();
@@ -12,7 +12,17 @@ async function run(name,width,height){
   const respond=async(status,data)=>route.fulfill({status,headers,body:JSON.stringify(data)});
   if(method==='OPTIONS')return route.fulfill({status:204,headers});
   if(path==='/api/auth/me')return respond(200,{user:{id:7,username:'memo_tester',role:'god'}});
-  if(path==='/api/chaos/modes')return respond(200,{modes:[{id:'owner',label:'Osiris · Private Miss Chaos',full_chat:'/miss-chaos.html?companion=owner'}],permissions:{can_admin:true}});
+  if(path==='/api/chaos/modes')return respond(200,{modes:[
+   {id:'standard',label:'Miss Chaos',full_chat:'/miss-chaos.html'},
+   {id:'owner',label:'Osiris · Private Miss Chaos',full_chat:'/miss-chaos.html?companion=owner'}
+  ],permissions:{can_admin:true,can_eye_of_chaos:true,can_eye_of_horus:true,can_master_control:true,can_theme_publish:true}});
+  if(path==='/api/chaos/tools'&&method==='GET')return respond(200,{capabilities:['utility.calculate','utility.word_count','site.help','user.notes','staff.repo_file','god.github_health']});
+  if(path==='/api/chaos/tools/execute'&&method==='POST'){
+   const body=JSON.parse(req.postData()||'{}');toolProbes.push(body);
+   if(body.name==='utility.calculate')return respond(200,{name:body.name,result:{expression:body.input.expression,result:55}});
+   if(body.name==='utility.word_count')return respond(200,{name:body.name,result:{words:4,reading_minutes:1}});
+   return respond(400,{error:'Unrecognized safe demo.'});
+  }
   if(path==='/api/chaos/conversations'&&method==='POST')return respond(201,{conversation:{id:'testchat1'}});
   if(path==='/api/chaos/chat'&&method==='POST'){
    aiRequests.push(JSON.parse(req.postData()||'{}'));
@@ -203,6 +213,29 @@ async function run(name,width,height){
   assert.match(await page.locator('#crucible-milestone-readout').textContent(),/1\/5/);
   const creatorSize=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(creatorSize.page<=creatorSize.viewport+2,'Crucible horizontal overflow: '+JSON.stringify(creatorSize));
+  // Capability guide: real scoped tools in browser, with no AI chat auto-submission.
+  const guideRes=await page.goto(base+'/miss-chaos-guide.html',{waitUntil:'domcontentloaded'});
+  assert.equal(guideRes.status(),200);
+  await page.waitForFunction(()=>document.querySelector('#mc-guide-auth-status')?.textContent.includes('Signed-in account checked'));
+  assert.equal(await page.locator('#mc-guide-private').isVisible(),true);
+  assert.match(await page.locator('#mc-guide-private-title').textContent(),/Osiris/);
+  assert.equal(await page.locator('#mc-guide-private-links a[href="/eye-of-horus.html"]').count(),1);
+  const aiBeforeGuide=aiRequests.length;
+  await page.locator('#mc-guide-tool-input').fill('(12*4)+7');
+  await page.locator('#mc-guide-tool-run').click();
+  await page.waitForFunction(()=>document.querySelector('#mc-guide-tool-status')?.textContent.includes('Verified response'));
+  assert.match(await page.locator('#mc-guide-tool-result').textContent(),/"result": 55/);
+  assert.equal(toolProbes.length,1);
+  assert.equal(toolProbes[0].name,'utility.calculate');
+  assert.equal(aiRequests.length,aiBeforeGuide,'Read-only guide tools must not call the AI chat model');
+  await page.locator('#mc-guide-tool').selectOption('words');
+  await page.locator('#mc-guide-tool-input').fill('This is my text');
+  await page.locator('#mc-guide-tool-run').click();
+  await page.waitForFunction(()=>document.querySelector('#mc-guide-tool-status')?.textContent.includes('Verified response'));
+  assert.equal(toolProbes[1].name,'utility.word_count');
+  assert.equal(aiRequests.length,aiBeforeGuide);
+  const guideSize=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
+  assert.ok(guideSize.page<=guideSize.viewport+2,'Guide horizontal overflow: '+JSON.stringify(guideSize));
   assert.deepEqual(errors,[],name+' browser errors');
   console.log('PASS',name);
  }catch(err){failures.push(name+': '+err.message);console.error('FAIL',name,err)}
