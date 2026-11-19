@@ -1,18 +1,28 @@
-// Chaos Visual Lab: entirely local, bounded canvas processing. No fetches or storage.
+// Chaos Visual Lab: local image, vector and QR processing; optional external text-only Commons search.
+import pica from "./vendor/visual-lab/pica.min.mjs";
+import qrcode from "./vendor/visual-lab/qrcode.mjs";
+import {searchOpenverseImages,safeExternalHttps} from "./chaos-openverse.mjs";
+const resizer=pica();
 const $=id=>document.getElementById(id);
 const source=$("visual-file"),grid=$("visual-grid"),size=$("visual-output-size");
+const engine=$("visual-engine"),effect=$("visual-effect");
 const processButton=$("visual-process"),pngButton=$("visual-png"),webpButton=$("visual-webp");
 const preview=$("visual-preview"),drop=$("visual-drop");
 const swatches=$("visual-swatches"),css=$("visual-css");
 const copyButton=$("visual-copy-colors"),textButton=$("visual-save-colors");
 const status=$("visual-status"),dimensions=$("visual-dimensions"),placeholder=$("visual-placeholder");
-const encoder=new TextEncoder();
+let revision=0,traceUrl=null,traceSvg="",qrSvg="",qrCanvas=null;
 const types=new Set(["image/png","image/jpeg","image/webp","image/gif"]);
 let bitmap=null,outputCanvas=null,palette=[];
 function say(s){status.textContent=s;}
 function reset(){
+ revision++;
  processButton.disabled=true;pngButton.disabled=true;webpButton.disabled=true;
  copyButton.disabled=true;textButton.disabled=true;outputCanvas=null;palette=[];
+ $("visual-trace").disabled=true;$("visual-svg").disabled=true;
+ traceSvg="";if(traceUrl){URL.revokeObjectURL(traceUrl);traceUrl=null;}
+ const traced=$("visual-svg-preview");traced.removeAttribute("src");traced.hidden=true;
+ $("visual-trace-status").textContent="Load an image to unlock vector tracing.";
  swatches.replaceChildren();
  const p=document.createElement("p");p.textContent="Palette appears here after processing an image.";swatches.append(p);
  css.value="/* Your extracted palette will appear here. */";
@@ -35,9 +45,10 @@ async function openPicture(file){
   }
   bitmap=candidate;
   processButton.disabled=false;
-  say("Image ready. Change the size or pixel grid and process it.");
+  $("visual-trace").disabled=false;
+  say("Image ready. Choose a resize style, effect or stencil workflow.");
   dimensions.textContent="Source: "+candidate.width+" × "+candidate.height+" pixels. No upload occurred.";
-  render();
+  void render();
  }catch(err){say("Image could not be decoded here. "+String(err.message||"Try another file.").slice(0,130));}
 }
 const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
@@ -98,37 +109,70 @@ function drawPalette(){
  css.value=":root {\n"+palette.map((hex,i)=>"  --kf-art-"+(i+1)+": "+hex+";").join("\n")+"\n}";
  copyButton.disabled=false;textButton.disabled=false;
 }
-function render(){
+async function render(){
  if(!bitmap)return;
+ const token=++revision,active=bitmap;
  processButton.disabled=true;
  try{
-  const side=Number(size.value),pixel=Number(grid.value);
+  const side=Number(size.value),pixel=Number(grid.value),mode=String(effect.value);
   if(![128,256,512,1024].includes(side)||![0,16,32,64,128].includes(pixel))throw Error("Unsupported image settings.");
-  const ratio=side/Math.max(bitmap.width,bitmap.height);
-  const outW=clamp(Math.round(bitmap.width*ratio),1,1024),outH=clamp(Math.round(bitmap.height*ratio),1,1024);
+  if(!["normal","grayscale","ink"].includes(mode))throw Error("Invalid image effect.");
+  const ratio=side/Math.max(active.width,active.height);
+  const outW=clamp(Math.round(active.width*ratio),1,1024),outH=clamp(Math.round(active.height*ratio),1,1024);
   const canvas=document.createElement("canvas");canvas.width=outW;canvas.height=outH;
-  const ctx=canvas.getContext("2d",{alpha:true});
+  const ctx=canvas.getContext("2d",{alpha:true,willReadFrequently:true});
   if(!ctx)throw Error("Canvas is not available on this device.");
+  let processor="browser-native";
   if(pixel){
    const small=document.createElement("canvas");
-   const f=pixel/Math.max(bitmap.width,bitmap.height);
-   small.width=Math.max(1,Math.round(bitmap.width*f));small.height=Math.max(1,Math.round(bitmap.height*f));
+   const f=pixel/Math.max(active.width,active.height);
+   small.width=Math.max(1,Math.round(active.width*f));small.height=Math.max(1,Math.round(active.height*f));
    const temp=small.getContext("2d",{alpha:true});
    if(!temp)throw Error("Canvas rendering unavailable.");
-   temp.imageSmoothingEnabled=true;
-   temp.drawImage(bitmap,0,0,small.width,small.height);
-   ctx.imageSmoothingEnabled=false;
-   ctx.drawImage(small,0,0,outW,outH);
-  }else{ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(bitmap,0,0,outW,outH);}
+   temp.imageSmoothingEnabled=true;temp.drawImage(active,0,0,small.width,small.height);
+   ctx.imageSmoothingEnabled=false;ctx.drawImage(small,0,0,outW,outH);
+   processor="nearest-neighbor pixel art";
+  }else if(engine.value==="pica"){
+   // Native pre-downscale limits additional working memory before high-quality Pica pass.
+   const bound=Math.min(2048,Math.max(active.width,active.height));
+   const sr=bound/Math.max(active.width,active.height);
+   const from=document.createElement("canvas");
+   from.width=Math.max(1,Math.round(active.width*sr));from.height=Math.max(1,Math.round(active.height*sr));
+   const pre=from.getContext("2d",{alpha:true});
+   if(!pre)throw Error("Source canvas unavailable.");
+   pre.imageSmoothingEnabled=true;pre.imageSmoothingQuality="high";
+   pre.drawImage(active,0,0,from.width,from.height);
+   try{await resizer.resize(from,canvas,{filter:"lanczos3",alpha:true});processor="Pica Lanczos3";}
+   catch{
+    // A resizer can fail on older/low-memory Androids. The user still gets a real local result.
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+    ctx.drawImage(from,0,0,outW,outH);processor="browser fallback (Pica unavailable)";
+   }
+  }else{
+   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(active,0,0,outW,outH);
+  }
+  if(token!==revision||active!==bitmap)return;
+  if(mode!=="normal"){
+   const frame=ctx.getImageData(0,0,outW,outH),data=frame.data;
+   for(let i=0;i<data.length;i+=4){
+    if(!data[i+3])continue;
+    const lum=Math.round(data[i]*.2126+data[i+1]*.7152+data[i+2]*.0722);
+    const val=mode==="ink"?(lum>=145?255:0):lum;
+    data[i]=val;data[i+1]=val;data[i+2]=val;
+   }
+   ctx.putImageData(frame,0,0);
+  }
   outputCanvas=canvas;preview.width=outW;preview.height=outH;
   preview.getContext("2d").drawImage(canvas,0,0);
+  preview.style.imageRendering=pixel?"pixelated":"auto";
   placeholder.hidden=true;
-  palette=sampleColors(bitmap);
-  drawPalette();pngButton.disabled=false;webpButton.disabled=false;
-  dimensions.textContent="Export: "+outW+" × "+outH+" pixels · "+(pixel?"nearest-neighbor pixel art":"smooth resize")+" · transparent pixels retained when supported.";
-  say("Preview generated locally. "+palette.length+" colors extracted. You can now export.");
- }catch(err){say(String(err.message||"Could not process this image.").slice(0,180));}
- finally{processButton.disabled=false;}
+  palette=sampleColors(canvas);drawPalette();pngButton.disabled=false;webpButton.disabled=false;
+  dimensions.textContent="Export: "+outW+" × "+outH+" pixels · "+processor+" · "+
+   (mode==="normal"?"Original colors":mode==="ink"?"Blackwork threshold":"Grayscale")+
+   " · alpha preserved where supported.";
+  say("Artwork processed locally using "+processor+". "+palette.length+" colors extracted.");
+ }catch(err){if(token===revision)say(String(err.message||"Could not process this image.").slice(0,180));}
+ finally{if(token===revision)processButton.disabled=false;}
 }
 function saveBlob(name,blob){
  const url=URL.createObjectURL(blob),a=document.createElement("a");
@@ -145,9 +189,11 @@ function downloadImage(type){
  },type,0.92);
 }
 source.addEventListener("change",()=>{void openPicture(source.files?.[0]);});
-processButton.addEventListener("click",render);
-grid.addEventListener("change",()=>{if(bitmap)render();});
-size.addEventListener("change",()=>{if(bitmap)render();});
+processButton.addEventListener("click",()=>{void render();});
+grid.addEventListener("change",()=>{if(bitmap)void render();});
+size.addEventListener("change",()=>{if(bitmap)void render();});
+engine.addEventListener("change",()=>{if(bitmap)void render();});
+effect.addEventListener("change",()=>{if(bitmap)void render();});
 pngButton.addEventListener("click",()=>downloadImage("image/png"));
 webpButton.addEventListener("click",()=>downloadImage("image/webp"));
 copyButton.addEventListener("click",async()=>{
