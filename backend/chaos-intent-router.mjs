@@ -49,3 +49,30 @@ export function explicitChaosSourceCalls(message){
    {query,type:/\b(?:hdri|environment\s+map|sky)\b/i.test(text)?"hdris":
      /\b(?:textures?|materials?|surfaces?)\b/i.test(text)?"textures":"models"}:{query}}));
 }
+
+
+/**
+ * Deterministic quick answers and navigation. These return tool arguments, NOT
+ * fabricated answers. Each call is still validated by the Worker capability gate.
+ */
+export function explicitChaosQuickCall(message){
+ const text=String(message||"").trim();
+ if(text.length>4000)return null;
+ const calc=text.match(/^(?:please\s+)?(?:calculate|solve|evaluate)\s+([0-9+\-*/().%\s]{1,100})\??$/i);
+ if(calc)return {name:"utility.calculate",arguments:{expression:calc[1].trim().replace(/\?$/,"")}};
+ const words=text.match(/^(?:please\s+)?(?:count\s+(?:the\s+)?words?|word\s+count)\s*[:\-]\s*([\s\S]{1,3500})$/i);
+ if(words)return {name:"utility.word_count",arguments:{text:words[1]}};
+ if(/^(?:please\s+)?(?:what(?:'s| is)\s+the\s+)?(?:current\s+)?moon\s+phase\s*(?:today|right\s+now)?\s*[?.!]?$/i.test(text))
+   return {name:"radar.moon",arguments:{}};
+ const time=text.match(/^(?:(?:what(?:'s| is)\s+the\s+)?(?:current\s+)?time|show\s+time)\s+(?:in|for)\s+([a-z_]+\/[a-z_]+|UTC)\s*[?.!]?$/i);
+ if(time)return {name:"utility.now",arguments:{timezone:time[1]}};
+ return null;
+}
+export function explicitChaosSiteCall(message){
+ const text=String(message||"").trim();
+ if(!/^(?:please\s+)?(?:where\s+(?:is|are|can\s+i\s+find)|how\s+(?:do|can)\s+i\s+(?:find|open)|find\s+the|show\s+(?:me\s+)?the|open\s+the|take\s+me\s+to)\b/i.test(text))
+   return null;
+ if(!/\b(?:knightfall|ash.fall|arcade|games?|chaosphere|messenger|forums?|members?|bots?|memo\s+pad|shop|profile|account|install|foundry|creator|chaos\s+forge|moonology|shadow\s+work|notifications?)\b/i.test(text))
+   return null;
+ return {name:"site.search",arguments:{query:text.slice(0,160)}};
+}
