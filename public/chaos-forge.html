@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090e">
+<meta name="description" content="Chaos Forge: private photo craft analysis, clothing pattern drafting, cutting SVG blueprints, and a local interactive 3D model studio.">
+<title>Chaos Forge | Miss Chaos Maker Lab</title>
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/chaos-forge.css?v=20261118a">
+<script src="/arcade/hosted/pikkuautot-city/three.min.js" defer></script>
+<script type="module" src="/chaos-forge.js?v=20261118a"></script>
+</head><body class="forge-page"><header class="kf-header"></header>
+<main id="forge-app" class="forge-shell">
+<section class="forge-hero">
+ <div><p class="eyebrow">KNIGHTFALL • MISS CHAOS MAKER LAB</p><h1><span>CHAOS</span> FORGE <small>✂ ⚒ ◇</small></h1>
+ <p>Deconstruct a reference. Draft a cut pattern. Spin a 3D mockup. Give the beast a blueprint before you sacrifice your good fabric.</p>
+ <div class="forge-hero-links"><a href="/miss-chaos.html">Talk to Miss Chaos</a><a href="/devil-tools.html">Creator Foundry</a><a href="/open-source-arsenal.html">Open Source Arsenal</a></div>
+ </div><div class="forge-crest" aria-hidden="true">✂<span>⚙</span></div>
+</section>
+<p class="forge-warning"><strong>Construction reality check:</strong> Vision analysis is an estimate, not a measured reverse-engineering scan. Clothing requires accurate body measurements and fittings. Exports are working draft templates, not certified production patterns or tested load-bearing designs. Images stay in your browser until you explicitly choose AI Analyze; then that compressed photo is sent to the configured Cloudflare vision service, not saved in Knightfall's database.</p>
+<div class="forge-columns">
+ <section class="forge-panel" aria-labelledby="reference-heading">
+  <div class="panel-heading"><span class="eyebrow">01 / REFERENCE</span><h2 id="reference-heading">Deconstruction Station</h2></div>
+  <label class="field">Upload a photo (JPG, PNG or WebP, max 8 MB)
+   <input type="file" id="forge-image" accept="image/png,image/jpeg,image/webp">
+  </label>
+  <div class="forge-photo-wrap"><canvas id="forge-reference" width="760" height="460" aria-label="Uploaded reference and manually traced outline"></canvas>
+   <p id="forge-photo-caption">Your image appears here. Click or tap around its visible outline to trace a custom pattern.</p>
+  </div>
+  <div class="forge-actions">
+   <button type="button" id="forge-trace-undo" class="forge-btn secondary">Undo trace point</button>
+   <button type="button" id="forge-trace-clear" class="forge-btn secondary">Clear trace</button>
+  </div>
+  <div class="field"><label for="forge-kind">What are we deconstructing?</label>
+   <select id="forge-kind"><option value="clothing">Clothing / fabric</option><option value="accessory">Accessory / bag</option><option value="craft">Craft / prop</option><option value="object">Other object</option></select></div>
+  <div class="field"><label for="forge-notes">Maker notes (optional)</label><textarea id="forge-notes" maxlength="400" rows="2" placeholder="Denim, close-up of pocket, reference scale, what you want to replicate…"></textarea></div>
+  <button type="button" id="forge-analyze" class="forge-btn primary">✦ Analyze photo with Miss Chaos</button>
+  <p class="forge-status" id="forge-vision-status" role="status">AI analysis requires sign-in and uses the existing Cloudflare Workers AI allowance. Manual tracing, pattern drafting and 3D previews need no AI credits.</p>
+  <pre id="forge-analysis" class="forge-analysis" hidden></pre>
+ </section>
+ <section class="forge-panel" aria-labelledby="pattern-heading">
+  <div class="panel-heading"><span class="eyebrow">02 / PATTERN</span><h2 id="pattern-heading">Cutting Blueprint</h2></div>
+  <div class="field"><label for="forge-template">Pattern draft</label><select id="forge-template">
+   <option value="tote">Tote bag with gusset</option><option value="pouch">Zipper pouch / accessory</option>
+   <option value="apron">Apron with straps</option><option value="skirt">Gathered skirt prototype</option>
+   <option value="box">Open cardboard box net</option><option value="trace">Custom traced silhouette</option></select></div>
+  <p class="forge-hint" id="forge-dimension-hint">Enter desired finished dimensions. Prototype cut pieces include seam allowances where indicated.</p>
+  <div class="forge-measure-grid">
+   <div class="field"><label id="forge-width-label" for="forge-width">Finished width (in)</label><input id="forge-width" type="number" min="2" max="80" step=".25" value="16"></div>
+   <div class="field"><label id="forge-height-label" for="forge-height">Finished height (in)</label><input id="forge-height" type="number" min="2" max="80" step=".25" value="18"></div>
+   <div class="field"><label id="forge-depth-label" for="forge-depth">Gusset / depth (in)</label><input id="forge-depth" type="number" min=".25" max="40" step=".25" value="4"></div>
+   <div class="field"><label for="forge-seam">Seam allowance (in)</label><input id="forge-seam" type="number" min=".125" max="1.5" step=".125" value=".5"></div>
+  </div>
+  <div class="forge-actions"><button type="button" class="forge-btn primary" id="forge-build">Generate cutting pattern</button>
+   <button type="button" class="forge-btn secondary" id="forge-export-svg" disabled>Download SVG • actual scale</button>
+   <button type="button" class="forge-btn secondary" id="forge-export-json" disabled>Download cut list</button></div>
+  <div class="forge-pattern-viewport" id="forge-pattern-preview"><span>Select a template and generate the blueprint.</span></div>
+  <div id="forge-cut-list" class="forge-list" aria-live="polite"></div>
+  <p class="forge-status" id="forge-pattern-status" role="status"></p>
+ </section>
+</div>
+<div class="forge-columns forge-second-row">
+ <section class="forge-panel" aria-labelledby="model-heading">
+  <div class="panel-heading"><span class="eyebrow">03 / 3D MODEL</span><h2 id="model-heading">Mesh Ritual</h2></div>
+  <p>Interactive WebGL preview built on Knightfall's existing MIT-licensed Three.js. Rotate to inspect. Drag a real OBJ or STL model into your local viewer, or export a simplified OBJ of the pattern prototype.</p>
+  <div id="forge-viewer" class="forge-viewer"><canvas id="forge-3d" aria-label="Rotatable 3D model viewer"></canvas><div id="forge-viewer-fallback" class="forge-viewer-fallback" hidden></div></div>
+  <div class="forge-actions">
+   <button type="button" class="forge-btn secondary" id="forge-reset-camera">Reset view</button>
+   <label class="forge-toggle"><input type="checkbox" id="forge-wireframe"> Wireframe</label>
+   <button type="button" class="forge-btn secondary" id="forge-export-obj" disabled>Download OBJ model</button>
+  </div>
+  <label class="field">Open an OBJ or STL file locally (max 8 MB)<input type="file" id="forge-model-file" accept=".obj,.stl"></label>
+  <p id="forge-model-status" class="forge-status" role="status">Generate a template or open an OBJ/STL file to inspect a 3D preview. Files stay on this device.</p>
+ </section>
+ <section class="forge-panel" aria-labelledby="resources-heading">
+  <div class="panel-heading"><span class="eyebrow">04 / FREE RESOURCES</span><h2 id="resources-heading">The Public Vault</h2></div>
+  <p>Search open reference collections and CC0 assets. No paid membership or API key is needed for these catalog queries.</p>
+  <form id="forge-resource-form" class="forge-resource-form">
+   <div class="field"><label for="forge-source">Library</label>
+   <select id="forge-source"><option value="polyhaven">Poly Haven • 3D assets &amp; textures</option><option value="met">The Met • historical garments &amp; artifacts</option><option value="wikidata">Wikidata • structured knowledge</option></select></div>
+   <div class="field"><label for="forge-query">Search</label><input id="forge-query" required maxlength="90" value="leather" placeholder="leather, medieval boots, tattoo equipment…"></div>
+   <div class="field"><label for="forge-resource-type">Poly Haven category</label><select id="forge-resource-type"><option value="models">3D models</option><option value="textures">Surface textures</option><option value="hdris">Lighting environments</option></select></div>
+   <button class="forge-btn primary" type="submit">Search free sources</button>
+  </form>
+  <div class="forge-resource-results" id="forge-resource-results" aria-live="polite"></div>
+  <p class="forge-status" id="forge-resource-status" role="status">Powered by Poly Haven when using its live catalog. Its downloadable assets are CC0.</p>
+  <div class="forge-resource-links">
+   <h3>Free maker tools &amp; references</h3>
+   <a href="https://freesewing.org/" target="_blank" rel="noopener noreferrer">FreeSewing • parametric clothing patterns</a>
+   <a href="https://seamly.io/" target="_blank" rel="noopener noreferrer">Seamly2D • sewing CAD</a>
+   <a href="https://www.blender.org/" target="_blank" rel="noopener noreferrer">Blender • 3D modeling</a>
+   <a href="https://www.freecad.org/" target="_blank" rel="noopener noreferrer">FreeCAD • precision CAD</a>
+   <a href="https://inkscape.org/" target="_blank" rel="noopener noreferrer">Inkscape • edit printable SVGs</a>
+   <a href="https://www.si.edu/openaccess" target="_blank" rel="noopener noreferrer">Smithsonian • open collection (API key for live API)</a>
+  </div>
+ </section>
+</div>
+<footer class="forge-footer"><p>CHAOS FORGE / Built for experiments, prototypes and things that probably shouldn't exist but absolutely should. No input images, models or patterns are uploaded to Knightfall storage.</p></footer>
+</main><script src="/nav.js?v=20261118-forge"></script>
+</body></html>
