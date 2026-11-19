@@ -467,6 +467,22 @@
          if(eyebrow)eyebrow.textContent="𓂀 OSIRIS · VERIFIED OWNER WORKSPACE";
        }
       isAdmin = ["admin", "god"].includes(me.user.role);
+      if(isAdmin&&!advancedBar.querySelector("[data-staff-source]")){
+        for(const [label,prompt] of [
+          ["Inspect File","Inspect public/miss-chaos.js lines 1-55"],
+          ["CI Health","Check Knightfall CI health"]
+        ]){
+          const b=document.createElement("button");b.type="button";b.dataset.staffSource="true";
+          b.textContent=label;b.title=prompt;
+          b.style.cssText="border:1px solid #84e89c80;background:#12231d;color:#d9ffe9;border-radius:999px;padding:.4rem .7rem;cursor:pointer;font:inherit;font-size:.78rem";
+          b.addEventListener("click",()=>{
+            if(input.disabled)return;
+            input.value=prompt+(input.value.trim()?"\n\n"+input.value.trim():"");
+            input.dispatchEvent(new Event("input",{bubbles:true}));input.focus();
+          });
+          advancedBar.append(b);
+        }
+      }
       // Unreported member AI chats are reviewed only in the God-only Eye of Horus.
       if (isAdmin) $("#admin-chaos-archive").hidden = true;
       const [health, conversations] = await Promise.all([
