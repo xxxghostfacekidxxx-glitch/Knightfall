@@ -20,6 +20,7 @@ export const PUBLIC_PAGES = Object.freeze([
   {title:"Notifications",url:"/notifications.html",terms:"notification alerts unread push phone Android subscription settings devices"},
   {title:"Install Knightfall",url:"/install.html",terms:"install app PWA Android home screen mobile offline update installation"},
   {title:"AI Handoff",url:"/ai-handoff.html",terms:"shared to do list task coordination collaboration invite assistant handoff"},
+  {title:"Chaos Code Studio",url:"/chaos-code-studio.html",terms:"free programming code editor syntax formatting prettier flowchart diagram mermaid debug inspect javascript json"},
   {title:"Chaos Forge",url:"/chaos-forge.html",terms:"clothing sewing pattern drafting craft blueprints 3d model viewer camera photo image analysis poly haven met wikidata free resource maker"}
 ]);
 export function searchPublicPages(input={}) {

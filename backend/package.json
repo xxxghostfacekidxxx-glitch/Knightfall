@@ -4,6 +4,7 @@
   "type": "module",
   "dependencies": {
     "astronomy-engine": "2.1.19",
-    "acorn": "8.19.0"
+    "acorn": "8.19.0",
+    "prettier": "3.6.2"
   }
 }

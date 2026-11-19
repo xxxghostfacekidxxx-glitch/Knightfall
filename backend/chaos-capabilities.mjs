@@ -30,6 +30,8 @@ export const CAPABILITIES = Object.freeze({
   "resource.polyhaven": Object.freeze({description:"Find freely reusable CC0 3D models, textures and HDRIs from Poly Haven",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "resource.wikidata": Object.freeze({description:"Look up CC0 public knowledge from Wikidata",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.github_repos": Object.freeze({description:"Find openly licensed GitHub public repositories using fixed source search",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "dev.code_format": Object.freeze({description:"Format supplied JavaScript or JSON with local MIT-licensed Prettier, without execution",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
+  "dev.diagram_flow": Object.freeze({description:"Turn supplied steps into a safe flowchart and Mermaid text",scope:"public",mutates:false,confirmation:false,maxInputBytes:2200}),
   "dev.code_inspect": Object.freeze({description:"Parse JavaScript or JSON snippets safely without running code",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
   "research.books": Object.freeze({description:"Look up publicly indexed books from Open Library; no copyrighted full-text retrieval",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.papers": Object.freeze({description:"Search free Crossref scholarly publication metadata and DOI links",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {dispatchChaosTool,describeChaosTools} from "./chaos-tool-dispatch.mjs";
 
 test("anonymous users only see public capabilities",()=>{
-  assert.deepEqual(describeChaosTools(null),["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","research.github_repos"]);
+  assert.deepEqual(describeChaosTools(null),["site.help","site.games","site.search","utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","research.github_repos","dev.code_format","dev.diagram_flow"]);
 });
 test("signed-in users do not see God Mode capabilities",()=>{
   const names=describeChaosTools({id:"member",role:"user"});

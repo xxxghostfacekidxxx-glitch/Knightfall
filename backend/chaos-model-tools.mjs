@@ -12,6 +12,8 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
   {name:"resource.polyhaven",description:"Search CC0 3D models, textures and HDRI assets from Poly Haven with source credit",parameters:{type:"object",properties:{query:{type:"string"},type:{type:"string",enum:["models","textures","hdris"]}},required:["query"]}},
   {name:"resource.wikidata",description:"Look up structured facts and references from Wikidata",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.github_repos",description:"Find public, licensed GitHub source repositories related to an open-source software topic, with real source links and license metadata. Read-only, no private GitHub access.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
+  {name:"dev.code_format",description:"Use free local Prettier to format the supplied JavaScript or JSON text; outputs actual formatted text and does not execute code. For large snippets, open the Code Studio.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","json"]},print_width:{type:"integer"}},required:["code","language"]}},
+  {name:"dev.diagram_flow",description:"Create an actual flowchart and exportable Mermaid diagram code from the user-provided steps. Never invent workflow actions or execute a graph.",parameters:{type:"object",properties:{steps:{type:"string"}},required:["steps"]}},
   {name:"dev.code_inspect",description:"Parse supplied JavaScript or JSON code and report exact syntax errors, with a limited static risk review. Never execute code. TypeScript and JSX are not supported.",parameters:{type:"object",properties:{code:{type:"string"},language:{type:"string",enum:["javascript","json"]},source_type:{type:"string",enum:["module","script"]}},required:["code","language"]}},
   {name:"research.books",description:"Search public Open Library book catalog for titles, authors and publication years. No full book text.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
   {name:"research.papers",description:"Search Crossref scholarly metadata and DOI links; never claim the paper was read or peer-reviewed from metadata alone.",parameters:{type:"object",properties:{query:{type:"string"}},required:["query"]}},
@@ -36,7 +38,7 @@ export const CHAOS_MODEL_TOOLS = Object.freeze([
 const NAMES=new Set(CHAOS_MODEL_TOOLS.map(t=>t.name));
 const MEMBER=new Set(["user.memories","user.notes","user.handoff","user.notifications","user.profile","user.inbox"]);
 const GOD=new Set(["god.audit_summary"]);
-const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug)\b/i;
+const TOOL_INTENT=/\b(fabric|yardage|material estimates?|cost estimates?|profile|inbox|conversations?|dms?|direct messages?|convert|conversion|measurements?|inches|centimeters?|fahrenheit|celsius|notifications?|unread|alerts?|search|look\s*up|find|where|navigation|navigate|pages?|features?|games?|arcade|play|recommend|calculate|math|count|words?|reading\s*time|notes?|memos?|remember|memories|recall|moon|lunar|shadow|journal|audit|diagnostics?|report|scan|security|latest|wikipedia|research|facts?|news|today|clock|date|time|handoff|tasks?|to.do|board|craft|patterns?|clothing|fashion|fabric|blueprints?|materials?|textures?|models?|3d|museum|artifact|wikidata|poly\s*haven|books?|novels?|literature|papers?|studies|doi|journals?|sewing|draft|cut\s*list|tote|pouch|apron|skirt|contrast|accessibility|resize|scaling|scale|legibility|github|open.source|repositories|code|javascript|syntax|lint|json|debug|format|prettify|flowchart|diagram|workflow)\b/i;
 function visibleTools(principal) {
   return CHAOS_MODEL_TOOLS.filter(tool=>!MEMBER.has(tool.name)&&!GOD.has(tool.name)||
     (MEMBER.has(tool.name)&&Boolean(principal?.id))||
@@ -100,6 +102,14 @@ function explicitCodeRequest(text){
  const match=String(text||"").trim().match(/^(?:please\s+)?(?:check|inspect|lint|validate)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code|syntax)?\s*:\s*([\s\S]{1,10000})$/i);
  return match?{name:"dev.code_inspect",arguments:{language:match[1].toLowerCase()==="json"?"json":"javascript",code:match[2]}}:null;
 }
+function explicitFormatRequest(text){
+ const m=String(text||"").trim().match(/^(?:please\s+)?(?:format|prettify)\s+(?:(?:my|the)\s+)?(javascript|js|json)\s*(?:code)?\s*:\s*([\s\S]{1,10000})$/i);
+ return m?{name:"dev.code_format",arguments:{language:m[1].toLowerCase()==="json"?"json":"javascript",code:m[2]}}:null;
+}
+function explicitFlowRequest(text){
+ const m=String(text||"").trim().match(/^(?:please\s+)?(?:create|make|draw|generate|build)\s+(?:a\s+)?(?:flowchart|flow\s+diagram|workflow\s+diagram)\s*:\s*([\s\S]{3,1800})$/i);
+ return m?{name:"dev.diagram_flow",arguments:{steps:m[1]}}:null;
+}
 function explicitCreatorRequest(text){
  const message=String(text||"").trim();
  const resize=message.match(/^(?:please\s+)?(?:scale|resize)\s+(?:a|the)\s+([a-z][a-z -]{0,28}?)\s+(\d+(?:\.\d+)?)\s*(?:x|×|by)\s*(\d+(?:\.\d+)?)\s*(?:in|inch|inches)\s+(?:by|to)\s+(\d+(?:\.\d+)?)\s*%\s*[.!]?$/i);
@@ -155,7 +165,7 @@ export async function inferWithChaosTools({ai,model,messages,principal,handlers=
   const base={messages,max_tokens,temperature};
   const answer=content=>ai.run(model,{...base,messages:content,...(stream?{stream:true}:{})});
   const latest=messages.filter(item=>item.role==="user").at(-1)?.content||"";
-  const obvious=explicitGithubRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
+  const obvious=explicitGithubRequest(latest)||explicitFormatRequest(latest)||explicitFlowRequest(latest)||explicitCodeRequest(latest)||explicitContrastRequest(latest)||explicitCreatorRequest(latest)||explicitMeasurementRequest(latest);
   const directMember=principal?.id?explicitChaosMemberCall(latest):null;
   const sourceCalls=explicitChaosSourceCalls(latest);
   // Pure deterministic helpers run before optional expensive model planning.

@@ -15,3 +15,8 @@ Audited November 19, 2026.
 
 ## Tests and boundaries
 Run `npm install --prefix backend` then `node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs`. Direct utility endpoint continues to require an authenticated session; public Miss Chaos has no repository-write power. Keep arbitrary GitHub URLs, code execution and secret access out of the model-controlled tool palette. CI passes are not proof of live Worker deployment or external provider availability.
+
+## Free Code Studio follow-up
+- Prettier 3.6.2 (MIT) is bundled as a pinned npm runtime dependency and used locally within the existing Worker for bounded JS/JSON formatting. No third-party hosted formatting service or pay-per-request API.
+- The Knightfall original flowchart builder is a static-browser and shared Worker utility, not a claimed full Mermaid renderer. It produces standard Mermaid flowchart source and a browser-native SVG preview.
+- Editing and exports are local to the browser; code analysis/formatting requires signing in to the existing Knightfall API, with existing rate limits. No saved source, no repository modifications, no arbitrary code execution.
