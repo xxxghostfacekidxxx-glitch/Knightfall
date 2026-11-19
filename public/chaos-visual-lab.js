@@ -9,7 +9,7 @@ const source=$("visual-file"),grid=$("visual-grid"),size=$("visual-output-size")
 const engine=$("visual-engine"),effect=$("visual-effect");
 const threshold=$("visual-threshold"),thresholdLabel=$("visual-threshold-value");
 const mirror=$("visual-mirror"),invert=$("visual-invert"),transparentWhite=$("visual-transparent-white");
-const compareButton=$("visual-compare"),printButton=$("visual-print-sheet");
+const compareButton=$("visual-compare"),printButton=$("visual-print-sheet"),clearButton=$("visual-clear");
 const processButton=$("visual-process"),pngButton=$("visual-png"),webpButton=$("visual-webp");
 const preview=$("visual-preview"),drop=$("visual-drop");
 const swatches=$("visual-swatches"),css=$("visual-css");
@@ -22,7 +22,7 @@ function say(s){status.textContent=s;}
 function reset(){
  revision++;
  processButton.disabled=true;pngButton.disabled=true;webpButton.disabled=true;
- copyButton.disabled=true;textButton.disabled=true;compareButton.disabled=true;printButton.disabled=true;
+ copyButton.disabled=true;textButton.disabled=true;compareButton.disabled=true;printButton.disabled=true;clearButton.disabled=true;
  compareOriginal=false;compareButton.setAttribute("aria-pressed","false");compareButton.textContent="Compare original";
  outputCanvas=null;palette=[];
  $("visual-trace").disabled=true;$("visual-svg").disabled=true;
@@ -52,6 +52,7 @@ async function openPicture(file){
    candidate.close();throw Error("Image exceeds the 20-megapixel or 8192-pixel-side safety limit.");
   }
   bitmap=candidate;
+  clearButton.disabled=false;
   processButton.disabled=false;
   $("visual-trace").disabled=false;
   say("Image ready. Choose a resize style, effect or stencil workflow.");
@@ -215,6 +216,15 @@ function downloadImage(type){
 }
 source.addEventListener("change",()=>{void openPicture(source.files?.[0]);});
 processButton.addEventListener("click",()=>{void render();});
+clearButton.addEventListener("click",()=>{
+ ++loadRevision;
+ if(bitmap){bitmap.close();bitmap=null;}
+ reset();source.value="";
+ dimensions.textContent="Artwork cleared. PNG, SVG and print exports have been disabled.";
+ $("visual-trace-status").textContent="Load a new image to create a fresh vector stencil.";
+ $("visual-print-status").textContent="Choose a new image before exporting a calibrated transfer sheet.";
+ say("Image cleared from the workstation. The selected artwork was not uploaded or stored.");
+});
 grid.addEventListener("change",()=>{if(bitmap)void render();});
 size.addEventListener("change",()=>{if(bitmap)void render();});
 engine.addEventListener("change",()=>{if(bitmap)void render();});
