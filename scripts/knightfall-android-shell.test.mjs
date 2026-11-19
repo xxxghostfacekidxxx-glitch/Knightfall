@@ -61,7 +61,7 @@ test('web app install action always offers a real next step on mobile, even with
  assert.match(installPage,/id="kf-install-guide-steps"/);
  assert.match(installPage,/id="kf-install-help-button"/);
  assert.match(installPage,/id="kf-install-copy-link"/);
- assert.match(installPage,/\/install\.js\?v=20261114-setup2/);
+ assert.match(installPage,/\/install\.js\?v=20261118-installed1/);
  assert.match(installScript,/beforeinstallprompt/);
  assert.match(installScript,/if\(!prompt\)\{showGuide\(\);return;\}/);
  assert.match(installScript,/Open Knightfall in a regular browser/);
