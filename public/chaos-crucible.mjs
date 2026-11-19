@@ -1,4 +1,4 @@
-import {CRUCIBLE_KINDS,CRUCIBLE_FIELD_LIMITS,buildCrucibleBrief} from "./chaos-crucible-core.mjs?v=20261119-crucible1";
+import {CRUCIBLE_KINDS,CRUCIBLE_FIELD_LIMITS,buildCrucibleBrief,exportCrucibleKit,parseCrucibleKit} from "./chaos-crucible-core.mjs?v=20261119-crucible2";
 
 const root=document.getElementById("chaos-crucible");
 if(root){
@@ -10,7 +10,7 @@ if(root){
  const preview=$("#crucible-preview");
  const notice=$("#crucible-status");
  const missingBox=$("#crucible-missing");
- const actionIds=["crucible-ask","crucible-copy","crucible-download","crucible-save"];
+ const actionIds=["crucible-ask","crucible-copy","crucible-download","crucible-save","crucible-export-kit"];
  const fields=Object.keys(CRUCIBLE_FIELD_LIMITS);
  const valuesByKind=new Map();
  const checkedByKind=new Map();
@@ -128,6 +128,38 @@ if(root){
    doc.body.append(link);link.click();link.remove();
    setTimeout(()=>URL.revokeObjectURL(url),1000);
    status("Downloaded the full editable Markdown brief to your device.");
+ });
+ $("#crucible-export-kit").addEventListener("click",()=>{
+   if(!currentBrief)return;
+   try{
+     const data=exportCrucibleKit(readFields());
+     const url=URL.createObjectURL(new Blob([data],{type:"application/json;charset=utf-8"}));
+     const link=doc.createElement("a");link.href=url;
+     link.download=(currentBrief.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,48)||"miss-chaos-project")+".crucible.json";
+     doc.body.append(link);link.click();link.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),1000);
+     status("Your editable project kit was downloaded. You can import it later; nothing was sent to a server.");
+   }catch(e){status(String(e?.message||"Cannot export this project."),true);}
+ });
+ $("#crucible-import-button").addEventListener("click",()=>$("#crucible-import-file").click());
+ $("#crucible-import-file").addEventListener("change",async event=>{
+   const file=event.target.files?.[0];
+   event.target.value="";
+   if(!file)return;
+   if(file.size>12000){status("Project kit is larger than 12 KB. No changes were made.",true);return;}
+   try{
+     const imported=parseCrucibleKit(await file.text());
+     if(fields.some(key=>String(form.elements.namedItem(key).value||"").trim())&&
+        !confirm("Importing will replace the visible draft for that discipline. Continue?"))return;
+     storeDraft();
+     selectedKind=imported.kind;
+     valuesByKind.set(selectedKind,imported);
+     restoreDraft(selectedKind);
+     for(const button of typeHost.querySelectorAll("button[data-kind]"))
+       button.setAttribute("aria-pressed",String(button.dataset.kind===selectedKind));
+     renderTrack();recompute();
+     status("Editable project imported safely. Check the details before asking Miss Chaos to work with it.");
+   }catch(e){status(String(e?.message||"Import failed. Nothing was changed."),true);}
  });
  $("#crucible-ask").addEventListener("click",async()=>{
    if(!currentBrief)return;
