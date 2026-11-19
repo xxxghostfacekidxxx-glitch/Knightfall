@@ -54,7 +54,7 @@ test("repo reader fails closed for unavailable files, large files and upstream f
  await assert.rejects(readKnightfallFile({path:"public/large.js"},{
   fetcher:async url=>url===refUrl?head():new Response("x",{headers:{"content-length":"250000"}})}),/too large/);
  await assert.rejects(readKnightfallFile({path:"public/other.js"},{
-  fetcher:async()=>{throw Error("token:PRIVATE");}}),/temporarily unreachable/);
+  fetcher:async url=>{if(url===refUrl)return head();throw Error("token:PRIVATE");}}),/temporarily unreachable/);
  await assert.rejects(readKnightfallFile({path:"public/over.js"},{
   fetcher:async url=>url===refUrl?head():read("x".repeat(150001))}),/too large|150 KB limit/);
 });
