@@ -111,3 +111,35 @@ export function buildCrucibleBrief(raw={}){
   if(aiPrompt.length>4000)return {ok:false,errors:["This brief is too long for chat. Shorten the reference notes or constraints; nothing was deleted."]};
   return {ok:true,kind,track,title:fields.title,markdown,aiPrompt,missing,checklist:track.steps.slice(),destination:track.destination};
 }
+
+
+export const CRUCIBLE_KIT_SCHEMA="knightfall.miss-chaos.crucible.v1";
+export function exportCrucibleKit(raw={}){
+ const result=buildCrucibleBrief(raw);
+ if(!result.ok)throw Error(result.errors.join(" "));
+ const project={kind:result.kind};
+ for(const key of Object.keys(CRUCIBLE_FIELD_LIMITS))project[key]=String(raw[key]??"").trim();
+ return JSON.stringify({schema:CRUCIBLE_KIT_SCHEMA,project},null,2)+"\n";
+}
+export function parseCrucibleKit(raw){
+ if(typeof raw!=="string"||raw.length>12000)throw Error("Project kits must be JSON files under 12 KB.");
+ let data;
+ try{data=JSON.parse(raw);}catch{throw Error("This file is not valid Crucible project JSON.");}
+ if(!data||typeof data!=="object"||Array.isArray(data)||
+    data.schema!==CRUCIBLE_KIT_SCHEMA||
+    !data.project||typeof data.project!=="object"||Array.isArray(data.project))
+    throw Error("This is not a recognized Miss Chaos Crucible project kit.");
+ const source=data.project;
+ if(typeof source.kind!=="string"||!Object.hasOwn(CRUCIBLE_KINDS,source.kind))
+    throw Error("This project kit contains an unsupported discipline.");
+ const project={kind:source.kind};
+ for(const [name,max] of Object.entries(CRUCIBLE_FIELD_LIMITS)){
+   const value=source[name];
+   if(typeof value!=="string"||value.length>max)
+     throw Error("Invalid or oversized "+name+" in imported project kit.");
+   project[name]=value;
+ }
+ if(!buildCrucibleBrief(project).ok)
+   throw Error("The imported project kit is incomplete or too long for chat.");
+ return project;
+}
