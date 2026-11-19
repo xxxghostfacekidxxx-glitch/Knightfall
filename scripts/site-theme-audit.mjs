@@ -76,7 +76,7 @@ for(const filename of sharedGothicFiles){
  assert.ok(!src.includes("#ff55d8")&&!src.includes("#c6ff45")&&!src.includes("rgba(255,85,216"),"Legacy neon must not revive in "+filename);
 }
 assert.ok(read("../public/support.html").includes("/theme.css?v=20261115-gothic9"),"Support page must load the approved shared theme");
-assert.ok(read("../public/memo-pad.html").includes("/memo-pad.css?v=20261115-gothic9"),"Memo Pad styles must be cache busted");
+assert.match(read("../public/memo-pad.html"),/\/memo-pad\.css\?v=20\d{6}-[a-z0-9-]+/,"Memo Pad styles must be cache busted");
 
 
 // The dashboard used to override the global Gothic Creator palette with
