@@ -41,6 +41,8 @@ export const CAPABILITIES = Object.freeze({
   "utility.word_count": Object.freeze({description:"Count words and estimate reading time",scope:"public",mutates:false,confirmation:false,maxInputBytes:13000}),
   "utility.convert": Object.freeze({description:"Convert craft, repair and everyday measurements with standard factors",scope:"public",mutates:false,confirmation:false,maxInputBytes:256}),
   "user.notifications": Object.freeze({description:"Read only the signed-in member's unread alerts; never mark them read",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
+  "user.profile": Object.freeze({description:"Read a small, safe selection of the signed-in member's own public-facing profile fields",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
+  "user.inbox": Object.freeze({description:"Summarize the signed-in member's own joined conversations without changing their read state",scope:"user",mutates:false,confirmation:false,maxInputBytes:128}),
   "user.memories": Object.freeze({
     description: "Read the current account's approved memories",
     scope: "user",
