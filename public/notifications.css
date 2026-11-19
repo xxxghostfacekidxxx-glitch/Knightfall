@@ -14,3 +14,10 @@
  .notice{grid-template-columns:36px minmax(0,1fr);gap:.7rem;padding:.85rem}
  .notice-link{grid-column:2;justify-self:stretch}
 }
+
+/* Cleared alerts leave the default feed; history remains intentionally optional. */
+.notice-actions{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.notice-actions [aria-pressed="true"]{border-color:var(--kf-accent,#e8a4b7)}
+.notice-dismiss{background:transparent;font:inherit;cursor:pointer}
+.notice-dismiss:focus-visible,.notice-link:focus-visible{outline:2px solid var(--kf-accent,#e8a4b7);outline-offset:3px}
+@media(max-width:650px){.notice-actions{width:100%}.notice-actions button{flex:1}}
