@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/chaos-visual-lab.css?v=20261119-v4">
 <script src="/nav.js" defer></script>
 <script src="/vendor/visual-lab/imagetracer.js" defer></script>
-<script type="module" src="/chaos-visual-lab.js?v=20261119-v4"></script>
+<script type="module" src="/chaos-visual-lab.js?v=20261119-photos-v5"></script>
 </head>
 <body>
 <header class="kf-header"></header>
@@ -32,8 +32,9 @@
   <div class="cvl-grid">
     <section class="cvl-panel" id="image-workbench" aria-labelledby="visual-workbench">
       <h2 id="visual-workbench">01 / The image incinerator</h2>
-      <label for="visual-file">Choose PNG, JPEG, WebP or GIF (first frame only), up to 12 MB</label>
-      <input id="visual-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+      <label for="visual-file">Choose a picture from Photos or Files (PNG, JPEG, WebP, GIF first frame, AVIF or supported HEIC), up to 12 MB</label>
+      <input id="visual-file" type="file" accept="image/*">
+      <p class="cvl-meta">Google Photos cloud-only photos depend on Android's photo picker. If your photo isn't offered, save it to the device as a JPG and choose it from Files.</p>
       <div class="cvl-options">
         <label for="visual-grid">Image style
           <select id="visual-grid"><option value="0" selected>Smooth resize</option><option value="16">16-pixel art</option><option value="32">32-pixel art</option><option value="64">64-pixel art</option><option value="128">128-pixel art</option></select>
