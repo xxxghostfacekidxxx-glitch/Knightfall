@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0c0a13">
 <title>Between the Flames | Knightfall AI Handoff</title>
 <meta name="description" content="Private Knightfall handoff and shared to-do list.">
-<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=1">
-<script src="/nav.js?v=20261118-command-access1" defer></script><script src="/ai-handoff.js?v=1" defer></script>
+<link rel="stylesheet" href="/theme.css"><link rel="stylesheet" href="/ai-handoff.css?v=20261118-bridge1">
+<script src="/nav.js?v=20261118-command-access1" defer></script><script src="/ai-handoff.js?v=20261118-bridge1" defer></script>
 </head>
 <body class="handoff-page">
 <header class="kf-header"></header>
@@ -36,7 +36,8 @@
     <div class="handoff-top-grid">
       <section class="handoff-card">
         <div class="section-title"><div><p class="eyebrow">THE BRIDGE</p><h2>AI-to-AI handoff</h2></div><span class="status-dot">● LIVE LIST</span></div>
-        <p>Your ChatGPT assistants cannot secretly talk to each other. Copy the latest handoff packet into Samantha's or Ronnie's ChatGPT, then bring changes back to this page. The page itself stores the shared record.</p>
+        <p>Shared tasks and notes now refresh automatically while this page is open. A compatible ChatGPT assistant can also read or update this same board directly after its owner explicitly configures a private AI connection. Until then, the copyable packet still works.</p>
+        <p class="subtle" id="live-sync-status" role="status">Checking automatic refresh…</p>
         <div class="handoff-actions">
           <button type="button" id="copy-packet" class="handoff-button">Copy latest AI handoff note</button>
           <button type="button" id="refresh-all" class="handoff-button ghost">Refresh updates</button>
@@ -57,6 +58,39 @@
         <p class="subtle">She must sign in and accept her invitation. Sharing a URL alone does not unlock private tasks.</p>
       </section>
     </div>
+    <section class="handoff-card ai-bridge-card" aria-labelledby="bridge-heading">
+      <div class="section-title"><div><p class="eyebrow">ACTIVATE THE LINK · OPTIONAL</p><h2 id="bridge-heading">Private AI connections</h2></div><span class="status-dot">🔐 INDIVIDUAL KEYS</span></div>
+      <p>Each of you can generate your <strong>own</strong> revocable AI connection for a supported ChatGPT Action. Each key expires after 90 days, and the site stores only its hash. The assistant can read current tasks, add tasks, change status, and post handoff notes; it cannot access other Knightfall data.</p>
+      <p class="subtle"><strong>Important:</strong> This is not connected to ChatGPT until you configure an Action separately. Never paste a connection key into a chat message, a public GPT, or GPT instructions. Put it only in the private Action authentication setting.</p>
+      <form id="bridge-key-form" class="stack-form">
+        <label for="bridge-key-label">Name this AI connection</label>
+        <input id="bridge-key-label" placeholder="My private ChatGPT" maxlength="60" required autocomplete="off">
+        <button type="submit" class="handoff-button">Generate my AI connection key</button>
+      </form>
+      <div id="bridge-secret-panel" class="bridge-secret" hidden>
+        <label for="bridge-secret">New private key · shown just once</label>
+        <textarea id="bridge-secret" rows="2" readonly spellcheck="false" autocomplete="off"></textarea>
+        <div class="handoff-actions"><button type="button" id="copy-bridge-secret" class="handoff-button">Copy private key</button><button type="button" id="hide-bridge-secret" class="handoff-button ghost">Hide it</button></div>
+        <p class="subtle">Save this only in your Action authentication configuration. The raw key cannot be retrieved again. You can revoke it below.</p>
+      </div>
+      <h3>My AI connections</h3>
+      <div id="bridge-key-list" class="bridge-key-list" aria-live="polite"><p>Checking your connections…</p></div>
+      <div class="handoff-actions">
+        <button type="button" id="copy-schema-link" class="handoff-button ghost">Copy OpenAPI schema link</button>
+        <button type="button" id="copy-bridge-guide" class="handoff-button ghost">Copy assistant instructions</button>
+        <a class="handoff-button ghost" href="/ai-bridge-openapi.json" target="_blank" rel="noopener noreferrer">View Action schema</a>
+      </div>
+      <details class="instructions"><summary>How Ronnie and Samantha connect their separate ChatGPT assistants</summary>
+        <ol class="bridge-steps">
+          <li>Each person signs in to Knightfall and generates a separate key here. Do not share keys with each other.</li>
+          <li>In a private ChatGPT configuration that supports custom Actions, import <code>https://ash-fall.com/ai-bridge-openapi.json</code> or paste its schema.</li>
+          <li>Set the Action authentication to <strong>API Key → Bearer</strong>, and store your own key in that authentication field only.</li>
+          <li>Copy the assistant instructions into the assistant's configuration. Test the <strong>getHandoffSnapshot</strong> action; confirm it displays this shared list.</li>
+          <li>When you ask your assistant about Knightfall work, it can read the current list and write confirmed updates. Both people will see the updates here automatically.</li>
+        </ol>
+        <p class="subtle">Not every ChatGPT plan or interface offers custom Actions. If yours does not, continue using the copyable handoff packet. The website can sync between accounts by itself, but cannot silently enter either person's private ChatGPT conversations.</p>
+      </details>
+    </section>
     <section class="handoff-card" aria-labelledby="task-heading">
       <div class="section-title"><div><p class="eyebrow">ONE SOURCE OF TRUTH</p><h2 id="task-heading">Shared to-do list <span id="task-count"></span></h2></div></div>
       <form id="task-form" class="task-form">
