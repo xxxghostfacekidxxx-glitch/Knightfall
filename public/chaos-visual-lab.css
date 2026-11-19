@@ -28,3 +28,29 @@
 @media(max-width:860px){.cvl-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.cvl-main{width:calc(100% - 1rem)}.cvl-options{grid-template-columns:1fr}.cvl-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}.cvl-actions button{flex:1 1 132px}}
 @media(prefers-reduced-motion:reduce){.cvl-main *{scroll-behavior:auto!important;transition:none!important}}
+
+/* The advanced tools share a responsive artwork-first layout, without scrolling
+   individual control groups under a floating overlay. */
+.cvl-panel:target{outline:2px solid #c7a77c;outline-offset:3px}
+.cvl-grid>.cvl-commons{grid-column:1/-1}
+.cvl-panel input[type=url],.cvl-panel input[type=text],.cvl-panel input[type=search]{
+ width:100%;max-width:100%;min-height:44px;min-width:0;
+ border:1px solid #8e7081;border-radius:9px;padding:.75rem;
+ font:inherit;background:#0d1013;color:#ece1d3;
+}
+.cvl-action-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.72rem 1rem;border:1px solid #c7a77c7d;border-radius:10px;color:#e8d5ca;text-decoration:none;font-weight:850;background:#211927}
+.cvl-panel a:focus-visible{outline:3px solid #e2c985;outline-offset:3px}
+.cvl-vector-stage{min-height:200px;background:#f4f4f1;position:relative}
+.cvl-vector-stage img{display:block;width:100%;max-width:100%;max-height:390px;object-fit:contain;overflow:hidden}
+.cvl-vector-stage img[hidden]{display:none}
+.cvl-qr-stage{min-height:0;max-width:520px;margin-inline:auto}
+.cvl-qr-stage canvas{width:100%;height:auto;max-width:480px;display:block;object-fit:contain;image-rendering:auto}
+.cvl-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:.7rem}
+.cvl-result{min-width:0;border:1px solid #7c5f6d;border-radius:11px;padding:1rem;background:radial-gradient(circle at 10% 5%,#b25b681f,transparent 75%),#131219}
+.cvl-result h3{margin:0 0 .5rem;font-size:1.02rem;line-height:1.36;overflow-wrap:anywhere}
+.cvl-result p{color:#c3b5bb;font-size:.77rem;line-height:1.6;overflow-wrap:anywhere}
+.cvl-result-links{display:flex;gap:.8rem;flex-wrap:wrap}
+.cvl-result-links a{color:#c7a77c;font-weight:800;text-underline-offset:3px}
+.cvl-foot a{color:#e2c985}
+@media(max-width:860px){.cvl-grid>.cvl-commons{grid-column:auto}}
+@media(max-width:480px){.cvl-actions .cvl-action-link{flex:1 1 180px}.cvl-result{padding:.85rem}}
