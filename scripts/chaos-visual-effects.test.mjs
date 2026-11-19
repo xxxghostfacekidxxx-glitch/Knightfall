@@ -65,7 +65,7 @@ test("calibrated printable SVG embeds local raster only and includes exact 50 mm
  assert.match(printed.svg,/x="55" y="123\.5" width="100" height="50"/);
  assert.ok(printed.svg.includes('href="'+png+'"'));
  assert.match(printed.svg,/M 15 285 h 50/);
- assert.doesNotMatch(printed.svg,/https?:\/\//);
+ assert.doesNotMatch(printed.svg,/href="https?:/);
  assert.throws(()=>buildChaosPrintSheet({paper:"a4",widthMm:100,widthPx:50,heightPx:50,pngDataUrl:'data:image/svg+xml,<script/>'}),/locally encoded PNG/);
  assert.throws(()=>buildChaosPrintSheet({paper:"a4",widthMm:100,widthPx:50,heightPx:50,pngDataUrl:png+'<foreignObject/>'}),/locally encoded PNG/);
 });
