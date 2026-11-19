@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "astronomy-engine": "2.1.19"
+    "astronomy-engine": "2.1.19",
+    "acorn": "8.19.0"
   }
 }

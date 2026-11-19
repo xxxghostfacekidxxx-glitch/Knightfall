@@ -16,5 +16,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install backend dependencies for parser tests
+        run: npm install --prefix backend --no-audit --no-fund
       - name: Run Miss Chaos and offline cache tests
         run: node --test backend/chaos-*.test.mjs backend/offline-bot-cache.test.mjs

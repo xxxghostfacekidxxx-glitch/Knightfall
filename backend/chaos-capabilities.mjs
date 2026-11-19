@@ -29,6 +29,8 @@ export const CAPABILITIES = Object.freeze({
   "resource.met": Object.freeze({description:"Find public-domain artworks and historical clothing or artifacts at The Met",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "resource.polyhaven": Object.freeze({description:"Find freely reusable CC0 3D models, textures and HDRIs from Poly Haven",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "resource.wikidata": Object.freeze({description:"Look up CC0 public knowledge from Wikidata",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "research.github_repos": Object.freeze({description:"Find openly licensed GitHub public repositories using fixed source search",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
+  "dev.code_inspect": Object.freeze({description:"Parse JavaScript or JSON snippets safely without running code",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
   "research.books": Object.freeze({description:"Look up publicly indexed books from Open Library; no copyrighted full-text retrieval",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.papers": Object.freeze({description:"Search free Crossref scholarly publication metadata and DOI links",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "forge.pattern_draft": Object.freeze({description:"Compute an inch-measured prototype cut list for a basic craft or garment pattern",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),

@@ -81,3 +81,10 @@ Use the existing Cloudflare stack, cache nonpersonal public data, cap retrieval 
 - `design.color_contrast` computes WCAG 2.x contrast ratios of user-supplied opaque hex colors, tests AA/AAA thresholds and suggests readable black/white foreground text. It does not mutate themes or claim full accessibility coverage.
 - Both tools are registered through the bounded capability gate and model planner. Clear color and single-panel resize requests avoid a second planning model. Chat starters expose them and the script version has been changed to avoid stale caches.
 - Verify with `node --test backend/chaos-*.test.mjs` and deployed Worker smoke tests. A successful repository commit alone does not prove the site is deployed.
+
+## Open-source code tooling (November 19, 2026)
+- `dev.code_inspect` parses bounded JavaScript snippets using Acorn 8.19.0 (MIT, https://github.com/acornjs/acorn), reporting syntax errors with source line/column and a small set of heuristic danger patterns. JSON uses native JSON.parse. Neither path runs pasted code or handles JSX/TypeScript. This is not a substitute for a full linter or penetration test.
+- `research.github_repos` searches a fixed official GitHub public API endpoint for public non-archived repositories with declared license metadata. Results show GitHub source URL, declared SPDX license, stars, main language and update date, with a quota warning. License metadata is not independent compliance verification.
+- Both are routed through the existing bounded public capability permissions; the code inspector is also included in the existing authenticated direct utility endpoint, and known coding requests bypass the second tool-planner call. Chat starters expose both features.
+- Backend installs pinned Acorn 8.19.0. Two Miss Chaos CI jobs now install backend dependencies before running tests. Worker deploy already performs this installation.
+- Uninstalled follow-ons: Prettier formatting (MIT), Monaco Editor (MIT), Mermaid diagrams (MIT), highlight.js (BSD-3-Clause), Transformers.js (Apache-2.0). Assess memory, worker budgets, rendering safety and CSP before committing.

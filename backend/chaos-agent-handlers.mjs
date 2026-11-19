@@ -1,4 +1,5 @@
 import {wikipediaLookup,currentClock} from "./chaos-research.mjs";
+import {findChaosGithubRepos} from "./chaos-github-repos.mjs";
 import {searchChaosResources} from "./chaos-resources.mjs";
 import {findOpenBooks,findCrossrefPapers} from "./chaos-reference-sources.mjs";
 import {makeChaosPatternDraft} from "./chaos-forge-tool.mjs";
@@ -13,6 +14,7 @@ export function createChaosAgentHandlers({env,arcadePicks,moonBrief,shadowBrief,
     "resource.met":async({input})=>searchChaosResources({source:"met",query:safe(input.query,90)}),
     "resource.polyhaven":async({input})=>searchChaosResources({source:"polyhaven",query:safe(input.query,90),type:input.type}),
     "resource.wikidata":async({input})=>searchChaosResources({source:"wikidata",query:safe(input.query,90)}),
+    "research.github_repos":async({input})=>findChaosGithubRepos(input),
     "research.books":async({input})=>findOpenBooks({query:safe(input.query,100)}),
     "research.papers":async({input})=>findCrossrefPapers({query:safe(input.query,100)}),
     "forge.pattern_draft":async({input})=>makeChaosPatternDraft(input),
