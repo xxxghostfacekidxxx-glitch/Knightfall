@@ -59,12 +59,12 @@
       try{
         if(!document.querySelector('link[data-memo-pad-css]')){
           const style=document.createElement('link');style.rel='stylesheet';
-          style.href='/memo-pad.css?v=20261103-mail-chat3';style.dataset.memoPadCss='true';document.head.append(style);
+          style.href='/memo-pad.css?v=20261119-memo-publish1';style.dataset.memoPadCss='true';document.head.append(style);
         }
         if(!window.KnightfallMemoPad){
           await new Promise((resolve,reject)=>{
             const script=document.createElement('script');
-            script.src='/memo-pad.js?v=20261103-mail-chat3';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
+            script.src='/memo-pad.js?v=20261119-memo-publish1';script.onload=resolve;script.onerror=()=>reject(Error('Memo Pad could not load.'));
             document.head.append(script);
           });
         }
