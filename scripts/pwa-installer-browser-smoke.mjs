@@ -50,11 +50,14 @@ try{
     await install.click();
     assert.equal(await phone.evaluate(()=>window.__nativeInstallPrompts),1);
     assert.match(await phone.locator("#kf-install-status").innerText(),/Installation accepted/);
-    assert.equal(await install.isEnabled(),true,"Install button returns to a usable state");
-    await install.click();
-    assert.equal(await phone.locator("#kf-install-guide").isVisible(),true,"After prompt is consumed, manual steps still work");
+    assert.equal(await install.isDisabled(),true,"Accepted installation must stop offering Install");
     await phone.evaluate(()=>window.dispatchEvent(new Event("appinstalled")));
-    assert.equal(await install.isDisabled(),true);
+    assert.equal(await phone.locator(".kf-header .kf-install-pill").isVisible(),false,"Installed app hides global install shortcut");
+    assert.equal(await phone.evaluate(()=>localStorage.getItem("kf:main-pwa-installed")),"1","Installed app remembered");
+    await phone.goto(base+"/");
+    assert.equal(await phone.locator(".kf-header .kf-install-pill").isVisible(),false,"Global shortcut stays hidden across navigation");
+    await phone.goto(base+"/install.html");
+    assert.equal(await phone.locator("#kf-pwa-install").isDisabled(),true,"Install page does not prompt twice");
     assert.match(await install.innerText(),/installed/i);
   }
   await android.close();
