@@ -83,6 +83,11 @@
   starterBar.append(moreTools, advancedBar);
   form.parentNode.insertBefore(starterBar, form);
   const referenceButton=$("#chaos-reference-photo"),referenceInput=$("#chaos-reference-input"),referenceStatus=$("#chaos-reference-status");
+   let chatPhoto=null;
+   import("/chaos-chat-image-picker.mjs?v=20261119-photo-chat1").then(({mountChaosChatImage})=>{
+     chatPhoto=mountChaosChatImage({form,composer:form.querySelector(".composer-actions"),
+       status:$("#chaos-chat-image-status")});
+   }).catch(()=>{const s=$("#chaos-chat-image-status");if(s){s.hidden=false;s.textContent="Image attachments could not load; text chat remains available.";}});
   let referenceBusy=false;
   const referenceMessage=text=>{referenceStatus.textContent=text;referenceStatus.hidden=!text;};
   referenceButton.addEventListener("click",()=>{
@@ -778,9 +783,9 @@
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.shiftKey && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
   });
-  async function streamChaosReply(conversationId,message,mood,onDelta){
-    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant,stream:true})});
-    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
+  async function streamChaosReply(conversationId,message,mood,onDelta,image){
+    const response=await fetch(API+"/api/chaos/chat",{method:"POST",credentials:"include",cache:"no-store",headers:{"content-type":"application/json","accept":"text/event-stream"},body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant,stream:true,image:image||undefined})});
+    if(!response.ok){const data=await response.json().catch(()=>({}));if(response.status===502&&data.error==="Streaming is temporarily unavailable. Try sending again.")return request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:conversationId,message,mood,companion:companionVariant,image:image||undefined})});throw Error(data.error||"Streaming request failed ("+response.status+").");}
     if(!response.body)throw Error("Your browser does not support streamed replies.");
     const reader=response.body.getReader(),decoder=new TextDecoder();
     let pending="",reply="",done=false;
@@ -807,12 +812,14 @@
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const message = input.value.trim();
+    const message = input.value.trim() || (chatPhoto?.hasImage()?"Describe this image, noting what is visible and what is uncertain.":"");
+    const sendingPhoto=chatPhoto?.hasImage()===true;
     if (adminViewing) { showError("Administrator archive is read-only. Open one of your own conversations to chat."); return; }
     if (!message || busy) return;
-    busy = true; sendButton.disabled = true; showError("");
+    busy = true; sendButton.disabled = true; chatPhoto?.setBusy(true); showError("");
     input.value = ""; input.dispatchEvent(new Event("input"));
-    addMessage("user", message, "You");
+    const displayed=message+(sendingPhoto?"\n📷 Image attached (original not saved)":"");
+    addMessage("user",displayed,"You");
     const typing = document.createElement("div"); typing.className = "typing"; typing.setAttribute("role","status"); typing.textContent = "Miss Chaos is thinking…"; messagesEl.append(typing); scrollToBottom();
     let streamedArticle=null;
     try {
@@ -820,11 +827,13 @@
         const created = await request("/api/chaos/conversations", {method:"POST",body:"{}"});
         activeConversation = created.conversation.id;
       }
+      const imageData=sendingPhoto?await chatPhoto.prepare():null;
       const result=await streamChaosReply(activeConversation,message,moodSelect.value,partial=>{
         if(!streamedArticle){typing.remove();streamedArticle=addMessage("assistant",partial,"Miss Chaos · "+(moodNames[moodSelect.value]||"Default"));}
         else streamedArticle.querySelector(".message-content").textContent=partial;
         if(messagesEl.scrollHeight-messagesEl.scrollTop-messagesEl.clientHeight<180)scrollToBottom();
-      });
+      },imageData);
+      chatPhoto?.clear();
       typing.remove();
       if(!streamedArticle)addMessage("assistant",result.reply,"Miss Chaos · "+(moodNames[result.mood]||"Default"));
       else renderReplyText(streamedArticle.querySelector(".message-content"),result.reply);
@@ -843,10 +852,10 @@
       // The server may have persisted the request even when the response failed.
       // Keep the unsent text recoverable without encouraging an accidental duplicate send.
       const optimistic = [...messagesEl.querySelectorAll(".message.user")].at(-1);
-      if (optimistic?.querySelector(".message-content")?.textContent === message) optimistic.remove();
+      if (optimistic?.querySelector(".message-content")?.textContent === displayed) optimistic.remove();
       input.value = message; input.dispatchEvent(new Event("input"));
       showError((error.message || "Reply unavailable.") + " Check the conversation history before retrying, since the server may have saved the message.");
-    } finally { busy = false; sendButton.disabled = adminViewing; if (!adminViewing) input.focus(); }
+    } finally { busy = false; sendButton.disabled = adminViewing; chatPhoto?.setBusy(false); if (!adminViewing) input.focus(); }
   });
   speakReplies=localStorage.getItem("missChaosSpeakReplies")==="1";
   $("#speak-toggle").setAttribute("aria-pressed",String(speakReplies));
