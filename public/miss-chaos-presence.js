@@ -10,7 +10,7 @@
   const root=document.createElement("div"); root.id="miss-chaos-presence";
   root.innerHTML=`
     <section id="miss-chaos-window" aria-label="Chat with Miss Chaos" aria-hidden="true" hidden>
-      <header class="mc-head"><img src="${AVATAR}" alt="Miss Chaos portrait"><div class="mc-head-copy"><strong>Miss Chaos</strong><small id="mc-presence-status"><span aria-hidden="true">● </span>Your chaos, one tap away</small></div><div class="mc-head-actions"><button type="button" id="mc-voice" aria-label="Enable spoken replies" aria-pressed="false" title="Spoken replies">♫</button><button type="button" id="mc-full-chat" aria-label="Open full Miss Chaos chat" title="Full chat">↗</button><button type="button" id="mc-close" aria-label="Close Miss Chaos" title="Close">×</button></div></header>
+      <header class="mc-head"><img src="${AVATAR}" alt="Miss Chaos portrait"><div class="mc-head-copy"><strong>Miss Chaos</strong><small id="mc-presence-status"><span aria-hidden="true">● </span>Your chaos, one tap away</small></div><div class="mc-head-actions"><button type="button" id="mc-quick-memo" aria-label="Open Memo Pad" title="Memo Pad">📝</button><button type="button" id="mc-voice" aria-label="Enable spoken replies" aria-pressed="false" title="Spoken replies">♫</button><button type="button" id="mc-full-chat" aria-label="Open full Miss Chaos chat" title="Full chat">↗</button><button type="button" id="mc-close" aria-label="Close Miss Chaos" title="Close">×</button></div></header>
       <label id="mc-companion-label" class="mc-companion-control" for="mc-companion-mode" hidden>PRIVATE WORKSPACE
         <select id="mc-companion-mode" aria-label="Miss Chaos assistant workspace" disabled><option value="standard">Miss Chaos</option></select>
       </label>
@@ -85,6 +85,7 @@
     }else{window.KnightfallMemoPad?.mount($("#mc-memo-host"),{compact:true});window.KnightfallMemoCommunications?.mount($("#mc-memo-host"));}
   }
   memoToggle.addEventListener('click',()=>memoPanel.hidden?openMemo():closeMemo());
+  $("#mc-quick-memo").addEventListener('click',()=>{void openMemo()});
   $("#mc-memo-close").addEventListener('click',()=>{closeMemo();memoToggle.focus({preventScroll:true})});
 
   let userId=null, conversationId=null, busy=false, voiceEnabled=false;
