@@ -31,7 +31,7 @@ async function utility(name,input){
 // Staff source and CI inspection are read-only. The Worker rechecks staff role.
 const repoRead=byId("studio-repo-read"),ciCheck=byId("studio-ci-check");
 const repoCopy=byId("studio-repo-copy"),repoStatus=byId("studio-repo-status");
-const repoOutput=byId("studio-repo-output"),repoPath=byId("studio-repo-path");
+const repoOutput=byId("studio-repo-output"),ciOutput=byId("studio-ci-output"),ciStatus=byId("studio-ci-status"),repoPath=byId("studio-repo-path");
 const repoStart=byId("studio-repo-start");
 let currentRepoExcerpt=null;
 let proposalSnapshot=null, reviewPacket="", reviewCandidate="", reviewSummary="";
@@ -81,14 +81,14 @@ repoCopy.addEventListener("click",()=>{
  code.focus();
 });
 ciCheck.addEventListener("click",async()=>{
- ciCheck.disabled=true;note(repoStatus,"Checking actual GitHub Actions runs...");
+ ciCheck.disabled=true;note(ciStatus,"Checking actual GitHub Actions on main, not executing your proposal...");
  try{
   const data=await utility("staff.github_health",{});
   const entries=(data.workflows||[]).slice(0,12);
-  note(repoOutput,entries.map(x=>x.name+" · "+(x.conclusion||x.status)+" · "+(x.url||"")).join("\n")||"No verified runs.");
-  currentRepoExcerpt=null;proposalSnapshot=null;repoCopy.disabled=true;proposeButton.disabled=true;clearReview();
-  note(repoStatus,entries.length+" recent main-branch workflow runs, "+Number(data.failed_count||0)+" failures. No jobs rerun or code changed.");
- }catch(error){note(repoStatus,String(error.message||"GitHub status unavailable."));note(repoOutput,"No verified CI status.");}
+  note(ciOutput,entries.map(x=>x.name+" · "+(x.conclusion||x.status)+" · "+(x.url||"")).join("\n")||"No verified runs.");
+  note(ciStatus,entries.length+" recent main-branch workflow runs, "+Number(data.failed_count||0)+
+   " failures. Committed-source CI only; your uncommitted draft has not been tested or applied.");
+ }catch(error){note(ciStatus,String(error.message||"GitHub status unavailable."));note(ciOutput,"No verified CI status.");}
  finally{ciCheck.disabled=false;}
 });
 proposeButton.addEventListener("click",async()=>{
