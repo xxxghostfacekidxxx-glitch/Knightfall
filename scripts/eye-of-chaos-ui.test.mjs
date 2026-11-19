@@ -33,7 +33,8 @@ test("GOD's approve, reject and edit controls never claim to publish",()=>{
  assert.match(js,/\/approve/);
  assert.match(js,/\/reject/);
  assert.match(js,/\/drafts/);
- assert.match(js,/GOD approve/);
+ assert.match(js,/Osiris approve/);
+ assert.match(js,/Isis approve/);
 });
 test("every bot posting path requires explicitly authorized staff action",()=>{
  assert.match(api,/approved_version=version/);
@@ -66,7 +67,7 @@ test("new features stay locked when storage migration is absent",()=>{
  assert.match(js,/state\.ready=data\.schema_ready===true/);
  assert.match(js,/lockForms\(\)/);
  assert.match(api,/if\(!ready\)return respond/);
- assert.match(html,/No automatic publishing/);
+ assert.match(html,/Nothing auto-publishes/);
  assert.ok(html.includes('href="/theme-crew.html" class="chaos-quiet"'));
  assert.match(js,/state\.canApprove=data\.permissions\?\.can_approve===true/);
 });
