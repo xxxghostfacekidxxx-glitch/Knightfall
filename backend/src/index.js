@@ -1621,7 +1621,7 @@ export default { async queue(batch, env) {
     const declaredSize=Number(request.headers.get("content-length")||0);
     if(declaredSize>16000)return json({error:"Utility request too large."},413,origin);
     let body;try{const raw=await request.text();if(raw.length>16000)return json({error:"Utility request too large."},413,origin);body=JSON.parse(raw);}catch{return json({error:"Invalid JSON."},400,origin);}
-    if(!["utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape","staff.repo_file","staff.github_health","god.audit_summary","god.github_health"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
+    if(!["utility.calculate","utility.word_count","utility.convert","forge.pattern_draft","forge.material_estimate","design.color_contrast","design.palette_build","research.dictionary","forge.scale_pattern","dev.code_inspect","dev.code_format","dev.diagram_flow","dev.code_diff","dev.json_shape","staff.repo_file","staff.github_health","staff.source_files","god.audit_summary","god.github_health"].includes(body?.name))return json({error:"Unsupported utility."},400,origin);
     try{
       const result=await dispatchChaosTool({name:body.name,input:body.input,principal:{id:user.id,role:user.role},handlers:{
          "forge.pattern_draft":async ({input})=>makeChaosPatternDraft(input),
