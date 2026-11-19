@@ -37,6 +37,7 @@ export const CAPABILITIES = Object.freeze({
   "dev.code_inspect": Object.freeze({description:"Parse JavaScript or JSON snippets safely without running code",scope:"public",mutates:false,confirmation:false,maxInputBytes:12500}),
   "staff.repo_file": Object.freeze({description:"Read a bounded excerpt of allowlisted Knightfall main-branch source",scope:"staff",mutates:false,confirmation:false,maxInputBytes:400}),
   "staff.github_health": Object.freeze({description:"Read verified public Knightfall GitHub CI health with no repository changes",scope:"staff",mutates:false,confirmation:false,maxInputBytes:128}),
+  "staff.source_files": Object.freeze({description:"Search verified public Knightfall source filenames in a strictly allowlisted directory",scope:"staff",mutates:false,confirmation:false,maxInputBytes:256}),
   "research.books": Object.freeze({description:"Look up publicly indexed books from Open Library; no copyrighted full-text retrieval",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "research.papers": Object.freeze({description:"Search free Crossref scholarly publication metadata and DOI links",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
   "forge.pattern_draft": Object.freeze({description:"Compute an inch-measured prototype cut list for a basic craft or garment pattern",scope:"public",mutates:false,confirmation:false,maxInputBytes:512}),
