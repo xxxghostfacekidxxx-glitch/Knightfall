@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/theme.css">
   <link rel="stylesheet" href="/chaos-code-studio.css?v=20261119-v2">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-code-studio.js?v=20261119-v2"></script>
+  <script type="module" src="/chaos-code-studio.js?v=20261119-repo-tools1"></script>
 </head>
 <body class="chaos-code-page">
 <header class="kf-header"></header>
@@ -34,6 +34,25 @@
     <section class="studio-panel" aria-labelledby="code-title">
       <div class="studio-panel-heading"><div><p class="eyebrow">01 / CODE WORKBENCH</p><h2 id="code-title">Source Surgery</h2></div><span class="studio-chip">LOCAL DRAFT</span></div>
       <p class="studio-note">Editing, importing, copying and downloading stay on your device. Pressing Inspect or Format deliberately sends only the current code to Knightfall's existing authenticated API; it does not run or save that code.</p>
+      <section class="studio-repository" aria-labelledby="studio-repository-title">
+        <h3 id="studio-repository-title">Knightfall Source Reader · Staff Only</h3>
+        <p class="studio-note">Isis, Osiris and other authorized admins can inspect real public source from the main branch. This is a bounded read-only preview, not a GitHub editor or automatic code deployment.</p>
+        <div class="studio-repo-fields">
+          <label for="studio-repo-path">Repository file
+            <input id="studio-repo-path" maxlength="190" value="public/miss-chaos.js" placeholder="backend/src/eye-of-chaos.js" spellcheck="false" autocomplete="off">
+          </label>
+          <label for="studio-repo-start">Start line
+            <input id="studio-repo-start" type="number" min="1" max="10000" value="1">
+          </label>
+        </div>
+        <div class="studio-actions">
+          <button type="button" id="studio-repo-read">Read file excerpt</button>
+          <button type="button" id="studio-ci-check">Check GitHub CI</button>
+          <button type="button" id="studio-repo-copy" disabled>Copy excerpt into editor</button>
+        </div>
+        <p id="studio-repo-status" class="studio-status" role="status" aria-live="polite">Requires a signed-in staff account. No files are changed.</p>
+        <pre id="studio-repo-output" class="studio-results" tabindex="0">No source loaded yet.</pre>
+      </section>
       <div class="studio-controls">
         <label for="studio-language">Language
           <select id="studio-language"><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="jsx">JSX</option><option value="tsx">TSX</option><option value="json">JSON</option></select>
