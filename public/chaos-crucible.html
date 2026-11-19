@@ -7,9 +7,9 @@
   <meta name="description" content="Miss Chaos Crucible: an original, free creative project workbench for artwork, tattoos, crafts, game design, writing and code repair. Draft privately and send to Miss Chaos only when you choose.">
   <title>Miss Chaos Crucible | Knightfall</title>
   <link rel="stylesheet" href="/theme.css">
-  <link rel="stylesheet" href="/chaos-crucible.css?v=20261119-crucible1">
+  <link rel="stylesheet" href="/chaos-crucible.css?v=20261119-crucible3">
   <script src="/nav.js" defer></script>
-  <script type="module" src="/chaos-crucible.mjs?v=20261119-crucible2"></script>
+  <script type="module" src="/chaos-crucible.mjs?v=20261119-crucible3"></script>
 </head>
 <body class="crucible-page">
 <header class="kf-header"></header>
@@ -85,22 +85,34 @@
       </div>
       <div class="crucible-missing" id="crucible-missing" aria-live="polite"></div>
       <div class="crucible-checklist">
-        <h3>Suggested build sequence</h3>
+        <div class="crucible-checklist-heading"><h3>Milestone tracker</h3><span id="crucible-milestone-readout">0/5 self-reported</span></div>
+        <div class="crucible-milestone-meter" role="progressbar" aria-label="Self-reported milestone completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="crucible-milestone-meter"><span id="crucible-milestone-fill"></span></div>
         <ol id="crucible-steps"></ol>
+        <div class="crucible-next-step" aria-live="polite">
+          <span class="crucible-next-kicker">✦ YOUR NEXT MOVE</span>
+          <p id="crucible-next-step">Pick a discipline, then define the project.</p>
+          <a href="/chaos-visual-lab.html" id="crucible-open-tool">Open the matching Knightfall tool</a>
+        </div>
+        <div class="crucible-evidence">
+          <label for="crucible-proof-notes">Evidence, blockers and checkpoint notes <small>Up to 500 characters, kept with your portable kit</small></label>
+          <textarea id="crucible-proof-notes" maxlength="500" rows="3" placeholder="What has actually been verified? What failed? What do we do next?"></textarea>
+          <p>Checked milestones are your own progress markers, not automated test results.</p>
+        </div>
       </div>
       <div class="crucible-preview-head"><h3>Markdown preview</h3><span>Editable inputs · generated output</span></div>
       <pre class="crucible-preview" id="crucible-preview" tabindex="0" aria-label="Generated project brief">Add a project name and objective to generate your brief.</pre>
       <p class="crucible-action-status" id="crucible-status" role="status" aria-live="polite"></p>
       <div class="crucible-action-grid">
         <button type="button" class="crucible-button primary" id="crucible-ask">𓂀 Ask Miss Chaos</button>
+        <button type="button" class="crucible-button primary" id="crucible-ask-next">✦ Help with next step</button>
         <button type="button" class="crucible-button" id="crucible-copy">Copy brief</button>
         <button type="button" class="crucible-button" id="crucible-download">Download .md</button>
         <button type="button" class="crucible-button" id="crucible-save">📝 Save private memo</button>
-        <button type="button" class="crucible-button" id="crucible-export-kit">⬇ Export editable kit</button>
+        <button type="button" class="crucible-button" id="crucible-export-kit">⬇ Export project + progress</button>
         <button type="button" class="crucible-button" id="crucible-import-button">⬆ Import project kit</button>
         <input type="file" id="crucible-import-file" accept=".json,application/json" hidden aria-label="Import a saved Crucible project JSON file">
       </div>
-      <p class="crucible-disclaimer">Ask Miss Chaos opens a draft in the floating chat. She does not send it until you press Send. Saving creates a private memo on your own signed-in Knightfall account, never a public post.</p>
+      <p class="crucible-disclaimer">Both Miss Chaos actions open unsent drafts in the floating chat. Progress is member-reported, never independently verified by checking a box. She does not send it until you press Send. Saving creates a private memo on your own signed-in Knightfall account, never a public post.</p>
     </section>
   </div>
 
