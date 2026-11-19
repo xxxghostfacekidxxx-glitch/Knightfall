@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {chromium} from "playwright";
+import {readFile} from "node:fs/promises";
 const BASE=process.env.VISUAL_LAB_TEST_BASE||"http://127.0.0.1:8765";
 const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
 try{
@@ -29,7 +30,7 @@ try{
   const dataURL=await page.evaluate(()=>{
    const canvas=document.createElement("canvas");canvas.width=32;canvas.height=32;
    const ctx=canvas.getContext("2d");ctx.fillStyle="#222222";ctx.fillRect(0,0,32,32);
-   ctx.fillStyle="#ff55a8";ctx.fillRect(4,4,24,24);
+   ctx.fillStyle="#ff55a8";ctx.fillRect(3,4,16,24);
    ctx.fillStyle="#ffffff";ctx.fillRect(12,12,8,8);
    return canvas.toDataURL("image/png");
   });
@@ -43,6 +44,25 @@ try{
   const pngDownloaded=page.waitForEvent("download");
   await page.click("#visual-png");
   assert.match((await pngDownloaded).suggestedFilename(),/\.png$/);
+  // Compare processed artwork with an asymmetrical original reference and verify transfer orientation.
+  await page.selectOption("#visual-engine","browser");
+  await page.waitForFunction(()=>document.querySelector("#visual-dimensions")?.textContent.includes("browser-native"));
+  const sampled=()=>page.evaluate(()=>{
+   const canvas=document.querySelector("#visual-preview"),ctx=canvas.getContext("2d");
+   return ctx.getImageData(45,60,1,1).data[0];
+  });
+  const sourceLeft=await sampled();
+  await page.check("#visual-mirror");
+  await page.waitForFunction(()=>document.querySelector("#visual-dimensions")?.textContent.includes("mirrored"));
+  const mirroredLeft=await sampled();
+  assert.ok(sourceLeft>mirroredLeft+60,"mirror must visibly move artwork horizontally");
+  await page.click("#visual-compare");
+  assert.equal(await page.locator("#visual-compare").getAttribute("aria-pressed"),"true");
+  assert.ok((await sampled())>mirroredLeft+60,"compare must show unmodified reference");
+  await page.click("#visual-compare");
+  assert.equal(await page.locator("#visual-compare").getAttribute("aria-pressed"),"false");
+  await page.uncheck("#visual-mirror");
+  await page.waitForFunction(()=>!document.querySelector("#visual-dimensions")?.textContent.includes("mirrored"));
   await page.selectOption("#visual-effect","ink");
   await page.waitForFunction(()=>document.querySelector("#visual-dimensions")?.textContent.includes("Blackwork threshold"),{timeout:14000});
   await page.click("#visual-trace");
@@ -51,6 +71,27 @@ try{
   const svgDownloaded=page.waitForEvent("download");
   await page.click("#visual-svg");
   assert.match((await svgDownloaded).suggestedFilename(),/\.svg$/);
+  // Exact millimeter sizing, mirrored stencil and printer calibration exports.
+  await page.click("#visual-preset-stencil");
+  await page.waitForFunction(()=>document.querySelector("#visual-dimensions")?.textContent.includes("Extracted edges"),{timeout:15000});
+  assert.equal(await page.locator("#visual-mirror").isChecked(),true);
+  assert.equal(await page.locator("#visual-threshold").inputValue(),"100");
+  await page.selectOption("#visual-paper","a4");
+  await page.fill("#visual-print-width","195");
+  assert.equal(await page.locator("#visual-print-sheet").isDisabled(),true,"oversize artwork must fail before export");
+  await page.fill("#visual-print-width","100");
+  assert.equal(await page.locator("#visual-print-sheet").isEnabled(),true);
+  const sheetDownloaded=page.waitForEvent("download");
+  await page.click("#visual-print-sheet");
+  const sheet=await sheetDownloaded;
+  assert.match(sheet.suggestedFilename(),/stencil-100mm-a4\.svg$/);
+  const sheetText=await readFile(await sheet.path(),"utf8");
+  assert.match(sheetText,/width="210mm" height="297mm"/);
+  assert.match(sheetText,/50 mm calibration/);
+  assert.match(sheetText,/href="data:image\/png;base64,/);
+  await page.click("#visual-adjust-reset");
+  await page.waitForFunction(()=>document.querySelector("#visual-dimensions")?.textContent.includes("Original colors"),{timeout:15000});
+  assert.equal(await page.locator("#visual-mirror").isChecked(),false);
   await page.fill("#visual-qr-url","https://ash-fall.com/profile.html");
   await page.fill("#visual-qr-label","MY TATTOO PORTAL");
   await page.click("#visual-qr-generate");
