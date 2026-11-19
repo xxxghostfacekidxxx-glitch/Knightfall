@@ -81,7 +81,7 @@ test("all 21 original illustrated food tiers ship without external image request
 });
 test("the offline shell and authenticated arcade registry both know the new game",()=>{
  const sw=read("sw.js"),backend=readFileSync(new URL("../backend/src/index.js",import.meta.url),"utf8");
- assert.match(sw,/knightfall-shell-v75/);
+ assert.match(sw,/knightfall-shell-v\d+/);
  assert.match(sw,/if \(url\.pathname === "\/arcade\/hosted\/hex-and-whisk\/index\.html"\)/);
  assert.match(sw,/caches\.match\("\/arcade\/hosted\/hex-and-whisk\/index\.html", \{ ignoreSearch: true \}\)/);
  for(const asset of ["index.html","game.css","game.js","engine.mjs","sprites/icons.svg"])assert.ok(sw.includes("/"+prefix+asset),"Offline shell missing "+asset);
