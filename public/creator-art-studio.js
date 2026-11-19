@@ -4,22 +4,25 @@
   const root=document.getElementById('site-image-library');
   if(!root)return;
   const API='https://api.ash-fall.com',MAX=2*1024*1024,INCOMING=8*1024*1024;
-  const drop=document.getElementById('kf-art-drop'),fileInput=document.getElementById('kf-art-input');
+  const drop=document.getElementById('kf-art-drop'),fileInput=document.getElementById('kf-art-input'),photoInput=document.getElementById('kf-art-photo-input');
   const staged=document.getElementById('kf-art-staged'),published=document.getElementById('kf-art-published'),review=document.getElementById('kf-art-review');
   const status=document.getElementById('kf-art-upload-status'),items=new Set();
   const report=text=>{status.textContent=text};
   const button=(label,onClick,cls='')=>{const el=document.createElement('button');el.type='button';el.className=cls;el.textContent=label;el.addEventListener('click',onClick);return el};
   const label=(tag,text)=>{const el=document.createElement(tag);el.textContent=text;return el};
-  const allowed=new Set(['image/png','image/jpeg','image/webp']);
+  const allowed=new Set(['image/png','image/jpeg','image/webp','image/avif','image/gif','image/heic','image/heif']);
+  const accepted=file=>file&&allowed.has(String(file.type||'').toLowerCase());
   const nameOf=file=>(file.name.replace(/\.[^.]+$/,'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,64)||'knightfall-art');
   function download(blob,name){
     const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;
     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2500);
   }
   async function optimize(file){
-    if(!allowed.has(file.type))throw Error('Only PNG, JPEG, and WebP images are accepted.');
+    if(!accepted(file))throw Error('Choose an image from Photos or Files. JPG, PNG, WebP, GIF, AVIF and browser-supported HEIC are accepted.');
     if(file.size<8||file.size>INCOMING)throw Error('Image must be between 8 bytes and 8 MB.');
-    const bitmap=await createImageBitmap(file);
+    let bitmap;
+    try{bitmap=await createImageBitmap(file)}
+    catch{throw Error('This device could not decode the picture. For cloud-only Google Photos or HEIC, download or export a JPG/PNG first.');}
     try{
       if(bitmap.width<8||bitmap.height<8||bitmap.width>8000||bitmap.height>8000)throw Error('Image dimensions must be between 8 and 8000 pixels.');
       const canvas=document.createElement('canvas');
@@ -199,6 +202,14 @@
   drop.addEventListener('click',openPicker);
   drop.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openPicker()}});
   fileInput.addEventListener('change',()=>{void addFiles(fileInput.files);fileInput.value=''});
+  photoInput?.addEventListener('change',()=>{void addFiles(photoInput.files);photoInput.value=''});
+  document.querySelector('label[for="kf-art-photo-input"]')?.addEventListener('keydown',event=>{
+    if(event.key==='Enter'||event.key===' '){event.preventDefault();photoInput?.click();}
+  });
+  root.addEventListener('paste',event=>{
+    const file=Array.from(event.clipboardData?.files||[]).find(accepted);
+    if(file){event.preventDefault();void addFiles([file]);}
+  });
   drop.addEventListener('dragover',event=>{event.preventDefault();drop.classList.add('is-over')});
   drop.addEventListener('dragleave',()=>drop.classList.remove('is-over'));
   drop.addEventListener('drop',event=>{event.preventDefault();drop.classList.remove('is-over');void addFiles(event.dataTransfer?.files)});
