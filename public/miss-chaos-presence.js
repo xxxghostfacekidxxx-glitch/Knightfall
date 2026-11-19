@@ -131,9 +131,9 @@
   function setExpression(expression){root.dataset.expression=expression;const labels={default:"Your chaos, one tap away",playful:"Up to something",dark:"Professionally unhinged",supportive:"Here with you",philosophical:"Questioning reality",thinking:"Thinking up trouble…",speaking:"Speaking"};status.textContent="● "+(labels[expression]||labels.default);}
   function speak(text){if(!voiceEnabled||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined")return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(String(text||""));utterance.rate=1.02;utterance.pitch=1.1;utterance.onstart=()=>setExpression("speaking");utterance.onend=()=>setExpression(mood.value);utterance.onerror=()=>setExpression(mood.value);window.speechSynthesis.speak(utterance);}
 
-  try{input.value=sessionStorage.getItem(draftKey)||"";}catch(_){}
+  try{input.value=sessionStorage.getItem(draftKey())||"";}catch(_){}
   function open(){closeMemo();panel.hidden=false;panel.setAttribute("aria-hidden","false");launcher.setAttribute("aria-expanded","true");window.dispatchEvent(new CustomEvent("kf:floating-panel-open",{detail:{panel:"miss-chaos"}}));input.focus({preventScroll:true});}
-  function close({restoreFocus=true}={}){try{sessionStorage.setItem(draftKey,input.value);}catch(_){} panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
+  function close({restoreFocus=true}={}){saveModeDraft(); panel.hidden=true;panel.setAttribute("aria-hidden","true");launcher.setAttribute("aria-expanded","false");if(restoreFocus)launcher.focus({preventScroll:true});}
   window.addEventListener("kf:floating-panel-open",event=>{
     if(event.detail?.panel==="member-chat"){
       if(!panel.hidden)close({restoreFocus:false});
@@ -142,21 +142,66 @@
   });
   function add(role,text){const el=document.createElement("div");el.className="mc-bubble "+role;el.textContent=text;messages.append(el);messages.scrollTop=messages.scrollHeight;return el;}
   async function request(path,options={}){const r=await fetch(API+path,{credentials:"include",cache:"no-store",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok){const err=new Error(d.error||"Request failed ("+r.status+").");err.status=r.status;throw err;}return d;}
-  async function ensureAccount(){if(userId)return true;let d;try{d=await request("/api/auth/me");}catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}if(!d.user){if(!messages.querySelector("[data-mc-signin]")){add("system","Sign in to save your conversations and chat with me.");const link=document.createElement("a");link.dataset.mcSignin="true";link.href="/auth.html?next="+encodeURIComponent(location.pathname+location.search);link.textContent=" Sign in to Ash-Fall ↗";messages.append(link);messages.scrollTop=messages.scrollHeight;}return false;}userId=d.user.id||d.user.user_id||d.user.username||"member";conversationId=sessionStorage.getItem(key(userId))||"";return true;}
-  async function ensureConversation(){if(conversationId)return conversationId;const d=await request("/api/chaos/conversations",{method:"POST",body:"{}"});conversationId=d.conversation.id;sessionStorage.setItem(key(userId),String(conversationId));return conversationId;}
-  launcher.addEventListener("click",async()=>{if(panel.hidden){open();try{await ensureAccount();}catch(e){error.textContent=e.message;}}else close();});
-  $("#mc-close").addEventListener("click",close);$("#mc-full-chat").addEventListener("click",()=>location.href="/miss-chaos.html");
+  async function ensureAccount(refresh=false){
+    if(userId&&!refresh)return true;
+    let d;
+    try{d=await request("/api/auth/me");}
+    catch(e){if(e.status!==401&&!/unauth|sign in|401/i.test(e.message))throw e;d={user:null};}
+    if(!d.user){
+      userId=null;conversationId=null;assistantMode="standard";
+      modeLabel.hidden=true;modeSelect.disabled=true;
+      if(!messages.querySelector("[data-mc-signin]")){
+        add("system","Sign in to save your conversations and unlock any private workspaces you can access.");
+        const link=document.createElement("a");link.dataset.mcSignin="true";
+        link.href="/auth.html?next="+encodeURIComponent(location.pathname+location.search);
+        link.textContent=" Sign in to Knightfall ↗";messages.append(link);
+      }
+      return false;
+    }
+    const account=String(d.user.id||d.user.user_id||d.user.username);
+    if(!account)throw Error("Could not verify your account.");
+    const changed=String(userId||"")!==account;
+    if(changed){
+      userId=account;assistantMode="standard";conversationId=null;
+      input.value="";messages.replaceChildren();
+      try{input.value=sessionStorage.getItem(draftKey())||"";}catch(_){}
+    }
+    let list=[];
+    try{
+      const catalog=await request("/api/chaos/modes");
+      list=Array.isArray(catalog.modes)?catalog.modes:[];
+    }catch{
+      // Never persist an old privileged option when the server cannot verify it.
+      error.textContent="Private workspaces could not be verified. Standard chat is still available.";
+    }
+    availableModes=[{id:"standard",label:"Miss Chaos",full_chat:"/miss-chaos.html"},
+      ...list.filter(m=>["owner","partner"].includes(m.id)&&typeof m.label==="string"&&typeof m.full_chat==="string")];
+    modeSelect.replaceChildren();
+    for(const m of availableModes){
+      const option=document.createElement("option");option.value=m.id;
+      option.textContent=m.label;modeSelect.append(option);
+    }
+    modeLabel.hidden=availableModes.length<2;modeSelect.disabled=availableModes.length<2;
+    let preferred=assistantMode;
+    if(changed)try{preferred=sessionStorage.getItem(modeStorage(userId))||"standard";}catch(_){}
+    if(!availableModes.some(m=>m.id===preferred))preferred="standard";
+    await swapMode(preferred);
+    return true;
+  }
+  async function ensureConversation(){if(conversationId)return conversationId;const d=await request("/api/chaos/conversations",{method:"POST",body:"{}"});conversationId=d.conversation.id;sessionStorage.setItem(key(userId,assistantMode),String(conversationId));return conversationId;}
+  launcher.addEventListener("click",async()=>{if(panel.hidden){open();try{await ensureAccount(true);}catch(e){error.textContent=e.message;}}else close();});
+  $("#mc-close").addEventListener("click",close);$("#mc-full-chat").addEventListener("click",()=>{location.href=modeForDisplay().full_chat||"/miss-chaos.html";});
   voiceButton.addEventListener("click",()=>{if(!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){error.textContent="This browser does not support spoken replies.";return;}voiceEnabled=!voiceEnabled;voiceButton.setAttribute("aria-pressed",String(voiceEnabled));voiceButton.setAttribute("aria-label",voiceEnabled?"Disable spoken replies":"Enable spoken replies");voiceButton.title=voiceEnabled?"Turn spoken replies off":"Turn spoken replies on";if(voiceEnabled)speak("Spoken replies are on. Your ears have accepted the terms of chaos.");else{window.speechSynthesis.cancel();setExpression(mood.value);}});
   mood.addEventListener("change",()=>setExpression(mood.value));
   const gameTips=$("#mc-game-tips");
   if(/arcade|chaos-cartridge|game/i.test(location.pathname)){gameTips.hidden=false;gameTips.addEventListener("click",()=>{input.value="Give me tips for playing this game on Chaos Cartridge. Explain the controls, strategy, and any useful beginner tricks.";input.focus();input.dispatchEvent(new Event("input"));$("#mc-form").requestSubmit();});}
   document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!memoPanel.hidden){closeMemo();memoToggle.focus({preventScroll:true})}else if(!panel.hidden)close();});
   input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();$("#mc-form").requestSubmit();}});
-  input.addEventListener("input",()=>{try{sessionStorage.setItem(draftKey,input.value);}catch(_){} input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";});
-  $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;input.value="";try{sessionStorage.removeItem(draftKey);}catch(_){} input.style.height="auto";add("user",message);const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
-    try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value})});}else throw first;}typing.remove();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
-    catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey,message);}catch(_){} }
-    finally{busy=false;send.disabled=false;input.focus({preventScroll:true});}
+  input.addEventListener("input",()=>{try{sessionStorage.setItem(draftKey(),input.value);}catch(_){} input.style.height="auto";input.style.height=Math.min(input.scrollHeight,110)+"px";});
+  $("#mc-form").addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message||busy)return;error.textContent="";busy=true;send.disabled=true;modeSelect.disabled=true;input.value="";try{sessionStorage.removeItem(draftKey());}catch(_){} input.style.height="auto";add("user",message);const typing=add("mc-typing","Miss Chaos is thinking…");typing.className="mc-typing";setExpression("thinking");
+    try{if(!(await ensureAccount())){typing.remove();return;}const id=await ensureConversation();let result;try{result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:id,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode})});}catch(first){if(/conversation|not found|invalid/i.test(first.message)){conversationId="";sessionStorage.removeItem(key(userId,assistantMode));const fresh=await ensureConversation();result=await request("/api/chaos/chat",{method:"POST",body:JSON.stringify({conversation_id:fresh,message,mood:$("#mc-mood").value,companion:assistantMode==="standard"?undefined:assistantMode})});}else throw first;}typing.remove();const reply=result.reply||"I got a response-shaped mystery. Try me again.";add("assistant",reply);setExpression(mood.value);speak(reply);}
+    catch(err){typing.remove();error.textContent=err.message||"I couldn't reach the backend. Try again in a moment.";input.value=message;try{sessionStorage.setItem(draftKey(),message);}catch(_){} }
+    finally{busy=false;send.disabled=false;modeSelect.disabled=availableModes.length<2;input.focus({preventScroll:true});}
   });
   // Overlay placement and minimize controls are isolated from chat logic.
   const dockScript=document.createElement("script");
