@@ -31,6 +31,8 @@ on:
       - 'scripts/cosmic-member-browser.mjs'
       - 'scripts/profile-birth-chart.test.mjs'
       - 'scripts/miss-chaos-ux.test.mjs'
+      - 'scripts/miss-chaos-photo-ui.test.mjs'
+      - 'scripts/miss-chaos-photo-browser.mjs'
       - 'scripts/chaos-forge-core.test.mjs'
       - 'scripts/chaos-forge-browser.mjs'
       - 'scripts/miss-chaos-memo.test.mjs'
@@ -107,6 +109,8 @@ jobs:
           node-version: '22'
       - name: Install astronomy dependency
         run: npm install --prefix backend --no-audit --no-fund
+      - name: Verify opt-in Miss Chaos reference photo privacy and syntax
+        run: node --check public/miss-chaos.js && node --test scripts/miss-chaos-photo-ui.test.mjs
       - name: Verify Chaos Forge patterns and offline-friendly 3D scripts
         run: |
           node --check public/chaos-forge.js
@@ -201,6 +205,8 @@ jobs:
       - name: Verify profile-to-Miss-Chaos published-chart comparison and privacy on mobile
         run: node scripts/cosmic-member-browser.mjs
       # Run the Playwright smoke suite for desktop and mobile regressions.
+      - name: Verify Miss Chaos craft-photo analysis on mobile and desktop
+        run: node scripts/miss-chaos-photo-browser.mjs
       - name: Browse starter bots and chat on desktop and Android
         run: node scripts/starter-bots-browser.mjs
       - name: Exercise Profile Studio desktop and Android editing, crop and save flows

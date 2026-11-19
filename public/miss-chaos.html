@@ -101,9 +101,10 @@
       <form id="chat-form" class="composer">
         <label class="sr-only" for="message-input">Message Miss Chaos</label>
         <textarea id="message-input" name="message" rows="1" maxlength="4000" placeholder="Tell me what's on your mind…" required></textarea>
-        <div class="composer-bottom"><span id="char-count">0 / 4000</span><div class="composer-actions"><button id="voice-input" class="icon-button" type="button" aria-label="Dictate message" title="Dictate message">🎙</button><button id="speak-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken replies" aria-label="Toggle spoken replies">🔊</button><button id="send-button" class="send-button" type="submit">Send <span aria-hidden="true">↗</span></button></div></div>
+        <div class="composer-bottom"><span id="char-count">0 / 4000</span><div class="composer-actions"><button id="chaos-reference-photo" class="icon-button" type="button" aria-label="Analyze a clothing or craft reference photo" title="Analyze a clothing or craft reference photo (opt-in)">📷</button><input id="chaos-reference-input" type="file" accept="image/png,image/jpeg,image/webp" hidden aria-label="Choose reference photo to analyze"><button id="voice-input" class="icon-button" type="button" aria-label="Dictate message" title="Dictate message">🎙</button><button id="speak-toggle" class="icon-button" type="button" aria-pressed="false" title="Toggle spoken replies" aria-label="Toggle spoken replies">🔊</button><button id="send-button" class="send-button" type="submit">Send <span aria-hidden="true">↗</span></button></div></div>
       </form>
-      <p class="privacy-note">Miss Chaos is a general-audience companion and does not generate explicit NSFW content. For adult content, use a public bot explicitly labeled NSFW or your personal bot after confirming 18+. AI can make mistakes. Authorized administrators may review conversations; archive access is logged. Don't share passwords or highly sensitive information.</p>
+      <p id="chaos-reference-status" role="status" aria-live="polite" hidden style="padding:.5rem .8rem;margin:.3rem .8rem;border-left:2px solid #79ffc7;color:#d5f7e6;font-size:.85rem"></p>
+      <p class="privacy-note">Miss Chaos is a general-audience companion and does not generate explicit NSFW content. For adult content, use a public bot explicitly labeled NSFW or your personal bot after confirming 18+. Reference photos are sent to Workers AI only after you choose one; Knightfall does not save the raw photo in chat. Review generated notes before sending, since sent notes become part of your conversation. AI can make mistakes. Authorized administrators may review conversations; archive access is logged. Don't share passwords or highly sensitive information.</p>
     </section>
   </main>
   <dialog id="chaos-radar" class="chaos-radar" aria-labelledby="chaos-radar-title">
@@ -138,7 +139,7 @@
   <script src="/vendor/tz-lookup.js?v=11.8.0" defer></script>
   <script src="/cosmic-place-timezone.js?v=20261111-geo1" defer></script>
   <script src="/cosmic-timezone.js?v=20261111-cosmic1" defer></script>
-  <script src="/miss-chaos.js?v=20261118-refbrain2" defer></script>
+  <script src="/miss-chaos.js?v=20261118-photo3" defer></script>
   <script src="/miss-chaos-radar.js?v=20261111" defer></script>
 </body>
 </html>

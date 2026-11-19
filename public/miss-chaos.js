@@ -42,6 +42,85 @@
     starterBar.append(button);
   }
   form.parentNode.insertBefore(starterBar, form);
+  const referenceButton=$("#chaos-reference-photo"),referenceInput=$("#chaos-reference-input"),referenceStatus=$("#chaos-reference-status");
+  let referenceBusy=false;
+  const referenceMessage=text=>{referenceStatus.textContent=text;referenceStatus.hidden=!text;};
+  referenceButton.addEventListener("click",()=>{
+    if(busy||referenceBusy||adminViewing||input.disabled){
+      referenceMessage("Finish the current response or open your own chat before analyzing a photo.");
+      return;
+    }
+    referenceInput.click(); // Explicit opt-in; never start an upload automatically.
+  });
+  async function compressReferencePhoto(file){
+    if(!file||!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>8*1024*1024)
+      throw Error("Choose a JPEG, PNG, or WebP photo under 8 MB.");
+    const objectURL=URL.createObjectURL(file);
+    try{
+      const image=new Image();
+      await new Promise((resolve,reject)=>{
+        image.onload=resolve;
+        image.onerror=()=>reject(Error("This image couldn't be opened. Try a different photo."));
+        image.src=objectURL;
+      });
+      if(!image.naturalWidth||!image.naturalHeight||
+         image.naturalWidth>6000||image.naturalHeight>6000||
+         image.naturalWidth*image.naturalHeight>16000000)
+        throw Error("Photo resolution exceeds 16 megapixels. Crop or resize it first.");
+      const factor=Math.min(1,768/Math.max(image.naturalWidth,image.naturalHeight));
+      const canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*factor));
+      canvas.height=Math.max(1,Math.round(image.naturalHeight*factor));
+      const ctx=canvas.getContext("2d");
+      if(!ctx)throw Error("Your browser can't resize the photo.");
+      ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(image,0,0,canvas.width,canvas.height);
+      for(const quality of [.78,.62,.48]){
+        const encoded=canvas.toDataURL("image/jpeg",quality);
+        if(encoded.length<860000)return encoded;
+      }
+      throw Error("Photo is still too large after compression. Crop it first.");
+    }finally{URL.revokeObjectURL(objectURL);}
+  }
+  referenceInput.addEventListener("change",async()=>{
+    const file=referenceInput.files?.[0];
+    if(!file||referenceBusy)return;
+    if(adminViewing||busy||input.disabled){
+      referenceMessage("Finish the current reply before analyzing another photo.");
+      referenceInput.value="";
+      return;
+    }
+    const original=input.value.trim();
+    if(original.length>3200){
+      referenceMessage("The message is too long to include photo analysis. Shorten it before uploading.");
+      referenceInput.value="";
+      return;
+    }
+    referenceBusy=true;referenceButton.disabled=true;sendButton.disabled=true;
+    referenceMessage("Analyzing visible craft details. The reference photo is sent to Workers AI, not stored in chat…");
+    try{
+      const image=await compressReferencePhoto(file);
+      // This existing authenticated, rate-limited endpoint handles at most one craft photo at a time.
+      const response=await request("/api/chaos/forge/analyze",{
+        method:"POST",body:JSON.stringify({kind:"craft",image,notes:"Describe clothing/craft construction, materials, seams, parts and missing measurements. No guessed physical size."})
+      });
+      const prefix="AI analysis of my clothing/craft reference photo (single-view estimate, original image not stored):\n";
+      const tail="\n\nHelp me refine this into a practical design. Verify missing measurements before proposing final cut sizes.";
+      const available=4000-original.length-(original?2:0)-prefix.length-tail.length;
+      if(available<240)throw Error("Not enough room for the photo notes. Shorten the message.");
+      const inspection=String(response.analysis||"").trim();
+      if(!inspection)throw Error("Vision AI returned no usable information.");
+      input.value=(original?original+"\n\n":"")+prefix+inspection.slice(0,Math.min(2600,available))+tail;
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+      referenceMessage("Photo analyzed. Review the draft below, edit it, and press Send when you're ready. Only the sent text is saved to chat.");
+      input.focus();
+    }catch(error){
+      referenceMessage(error.message||"Photo analysis is unavailable. You can still use Chaos Forge for manual drafting.");
+    }finally{
+      referenceBusy=false;referenceButton.disabled=false;sendButton.disabled=busy||adminViewing;
+      referenceInput.value="";
+    }
+  });
   const moodNames = {default:"Default",playful:"Playful",dark:"Dark",supportive:"Supportive",philosophical:"Philosophical",astrology:"Astrology",custom:"Custom"};
 
   async function request(path, options = {}) {
