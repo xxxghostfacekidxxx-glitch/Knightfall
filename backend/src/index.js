@@ -11,6 +11,7 @@ import { createChaosAgentHandlers } from "../chaos-agent-handlers.mjs";
 import { searchChaosResources } from "../chaos-resources.mjs";
 import { handleChaosForgeVision } from "./chaos-forge-vision.js";
 import { isTransientPushStatus, shouldRetryPushDelivery } from "./push-retry-policy.js";
+import { shouldDeliverStoredNotification } from "./notification-delivery-policy.js";
 import { checkTurnstile } from "./turnstile.js";
 import { handleBotSlotShop } from "./member-shop-checkout.js";
 import { handleStripeBilling } from "./stripe-billing.js";
@@ -143,6 +144,12 @@ async function deliverPushToUser(env,userId,notification,onlyEndpoint=null,recei
   const delivery={attempted:0,accepted:0,expired:0,failed:0,transient:0};
   try {
     if(!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT){delivery.skipped="unconfigured";return delivery;}
+    // Suppress stale queue retries AFTER the member already opened the alert.
+    // If D1 is temporarily unavailable, fail closed and retry only in queue.
+    let eligibility;
+    try{eligibility=await shouldDeliverStoredNotification(env,userId,notification,receiptToken);}
+    catch(error){delivery.failed++;delivery.transient++;delivery.skipped="state-check-unavailable";console.warn("push_state_check_unavailable",String(error));return delivery;}
+    if(!eligibility.send){delivery.skipped=eligibility.reason;return delivery;}
     const pref=await env.DB.prepare("SELECT push_messages,push_community,push_account,quiet_start,quiet_end FROM notification_preferences WHERE user_id=?").bind(userId).first();
     const kind=String(notification.kind||"");
     const category=kind==="message"?"messages":(["reply","reaction","mention","follow","friend_request","friend_accepted"].includes(kind)?"community":"account");
