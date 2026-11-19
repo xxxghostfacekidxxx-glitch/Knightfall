@@ -191,7 +191,7 @@ test("GOD QA dashboard reflects verified GitHub workflows and their actual worke
  // QA is available to admins; GOD-only approval authority is tested separately.
 });
 
-test("Admins can assign missions and prepare drafts, but GOD-only actions fail before database reads",async()=>{
+test("Other admins can prepare drafts but GOD-only actions never query or mutate privileged records",async()=>{
  const admin=fixture("admin");
  const mission=await admin.call(base+"/missions","POST",{division:"arcade",agent_key:"qa-01",kind:"qa",instructions:"Check arcade launch and fullscreen controls",cadence:"manual"});
  assert.equal(mission.status,201);
@@ -202,7 +202,10 @@ test("Admins can assign missions and prepare drafts, but GOD-only actions fail b
  assert.equal((await admin.call(base+"/control","POST",{paused:true})).status,403);
  assert.equal((await admin.call(base+"/drafts/"+id+"/approve","POST")).status,403);
  assert.equal((await admin.call(base+"/drafts/"+id+"/reject","POST")).status,403);
- assert.equal(admin.queries.length,before);
+ const deniedQueries=admin.queries.slice(before);
+ assert.ok(deniedQueries.length>=3,"each denied mutation checks the live partner invitation first");
+ assert.ok(deniedQueries.every(q=>q.sql.includes("FROM ai_handoff_partner")),
+  "denied GOD commands may verify the partner grant, but must never read or mutate command records");
  assert.equal(admin.drafts.get(id).status,"pending");
 });
 test("AI generation creates an editable pending draft, never a published bot post",async()=>{
