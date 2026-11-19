@@ -1,5 +1,6 @@
 // Private two-person coordination board for GOD and one invited, consenting Knightfall member.
-// GPTs do not automatically sync: the packet is for a human to copy into a ChatGPT session.
+import {handleAiHandoffBridge} from './ai-handoff-bridge.js';
+// Browser collaboration plus optional user-configured, per-account GPT Action connections.
 const PREFIX='/api/ai-handoff';
 const ORIGINS=new Set(['https://ash-fall.com','https://www.ash-fall.com']);
 const INSTRUCTIONS=[
@@ -38,6 +39,7 @@ function packet(board){
 }
 export async function handleAiHandoff(request,env,url,{getUser,json,origin,rateLimit}){
  if(!url.pathname.startsWith(PREFIX))return null;
+ if(url.pathname.startsWith(PREFIX+'/bridge/'))return handleAiHandoffBridge(request,env,url,{getUser,json,origin,rateLimit});
  const respond=(body,status=200)=>{const response=json(body,status,origin);Object.entries(RESPONSE_HEADERS).forEach(([k,v])=>response.headers.set(k,v));return response;};
  const user=await getUser(request,env);
  if(!user)return respond({error:'Sign in to your Knightfall account.'},401);
