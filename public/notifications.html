@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Your Ash-Fall alerts and push notification settings."><title>Ash-Fall | Notifications</title><link rel="stylesheet" href="/theme.css?v=20261026-foundation1"><link rel="stylesheet" href="/notifications.css?v=20261026-layout-pass2"><link rel="stylesheet" href="/push-settings.css?v=20261103-mobile-push2"></head>
 <body><header class="kf-header"></header><main class="notifications-shell">
-<section class="notifications-hero"><div><p class="eyebrow">COMMUNITY SIGNALS</p><h1>WHAT'S HAPPENING<span>.</span></h1><p>Replies, follows, messages, and other events that actually matter.</p></div><button id="read-all">Mark all read</button></section>
+<section class="notifications-hero"><div><p class="eyebrow">COMMUNITY SIGNALS</p><h1>WHAT'S HAPPENING<span>.</span></h1><p>Replies, follows, messages, and other events that actually matter.</p></div><div class="notice-actions"><button id="read-all" type="button">Clear all alerts</button><button id="show-history" type="button" aria-pressed="false">View past alerts</button></div></section>
 <section class="push-settings" aria-labelledby="push-title"><div class="push-settings-head"><div><p class="eyebrow">DEVICE ALERTS</p><h2 id="push-title">Push notifications<span>.</span></h2><p>Get alerts even when Ash-Fall is not open, on supported browsers and devices.</p></div><button id="push-toggle" class="push-toggle" type="button">Checking support…</button></div>
 <div id="push-status" class="push-status" role="status" aria-live="polite"></div><p id="push-device-details" class="push-device-details" aria-live="polite">Checking this device and its server registration…</p>
 <div class="push-preferences"><label><input type="checkbox" id="pref-messages" checked> <span><strong>Messages</strong><small>Direct and group conversations</small></span></label><label><input type="checkbox" id="pref-community" checked> <span><strong>Community</strong><small>Replies, mentions, follows, and friend activity</small></span></label><label><input type="checkbox" id="pref-account" checked> <span><strong>Account and site alerts</strong><small>Important account or moderation notices</small></span></label></div>
@@ -25,32 +25,46 @@ function noticeDestination(n){
  if(n.kind==="message"&&n.target_type==="conversation"&&Number.isSafeInteger(id)&&id>0)return "/messages.html?conversation="+id;
  return safeNoticeUrl(n.url);
 }
+let showingHistory=false,loadVersion=0;
+const emptyLabel=()=>showingHistory?"No alert history to display.":"All caught up. The demons have stopped ringing the doorbell.";
+function refreshEmpty(){
+ if(!root.querySelector("[data-notice]"))root.innerHTML='<p class="empty">'+esc(emptyLabel())+'</p>';
+}
 async function load(){
+ const version=++loadVersion;
  try{
-  const d=await api("/api/notifications?limit=100");
+  const d=await api("/api/notifications?limit=100"+(showingHistory?"":"&unread=true"));
+  if(version!==loadVersion)return;
   root.innerHTML=(d.notifications||[]).map(n=>{
-   const destination=noticeDestination(n);
-   return '<article class="notice '+(n.read_at?"read":"unread")+'" data-notice="'+Number(n.id)+'"'+(destination?' data-target="'+esc(destination)+'"':"")+'><div class="notice-icon">'+(n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+'</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+(n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+(destination?'<a class="notice-link" href="'+esc(destination)+'">Open</a>':"")+'</article>';
-  }).join("")||'<p class="empty">Nothing new. The silence is almost suspicious.</p>';
+   const destination=noticeDestination(n),unread=!n.read_at;
+   const action=destination?'<a class="notice-link" href="'+esc(destination)+'">Open</a>':
+     unread?'<button class="notice-link notice-dismiss" type="button" aria-label="Dismiss '+esc(n.title)+'">Dismiss</button>':"";
+   return '<article class="notice '+(unread?"unread":"read")+'" data-notice="'+Number(n.id)+'"'+
+     (destination?' data-target="'+esc(destination)+'"':"")+'><div class="notice-icon">'+
+     (n.kind==="message"?"✉":n.kind==="follow"?"✦":"•")+
+     '</div><div><strong>'+esc(n.title)+'</strong><p>'+esc(n.body)+'</p><small>'+esc(fmt(n.created_at))+
+     (n.actor_username?" · @"+esc(n.actor_username):"")+'</small></div>'+action+'</article>';
+  }).join("");
+  refreshEmpty();
   unreadCount=Number(d.unread_count||0);
   root.querySelectorAll("[data-notice]").forEach(item=>{
    const target=item.dataset.target;
    if(target){item.style.cursor="pointer";item.title="Open notification";}
    item.addEventListener("click",async event=>{
-    // Prevent anchor navigation from canceling the read-state update.
-    const link=event.target.closest("a.notice-link");
-    if(link)event.preventDefault();
+    // Acknowledge before navigating; failed acknowledgements stay visible.
+    if(event.target.closest("a.notice-link"))event.preventDefault();
     if(item.dataset.reading==="true")return;
     if(item.classList.contains("unread")){
      item.dataset.reading="true";
      try{
       await api("/api/notifications/"+item.dataset.notice,{method:"PATCH"});
       item.classList.remove("unread");item.classList.add("read");
+      if(!showingHistory){item.remove();refreshEmpty();}
       unreadCount=Math.max(0,unreadCount-1);
       status.textContent=unreadCount+" unread";
       announceReadChange();
      }catch(error){
-      status.textContent="Could not mark notification read: "+error.message;
+      status.textContent="Could not dismiss notification: "+error.message;
       return;
      }finally{delete item.dataset.reading;}
     }
@@ -58,8 +72,14 @@ async function load(){
    });
   });
   status.textContent=unreadCount+" unread";
- }catch(error){status.textContent=error.message;}
+ }catch(error){if(version===loadVersion)status.textContent=error.message;}
 }
+document.querySelector("#show-history").addEventListener("click",event=>{
+ showingHistory=!showingHistory;
+ event.currentTarget.textContent=showingHistory?"Show new alerts":"View past alerts";
+ event.currentTarget.setAttribute("aria-pressed",String(showingHistory));
+ load();
+});
 
 function getPrefs(){return {push_messages:document.querySelector("#pref-messages").checked,push_community:document.querySelector("#pref-community").checked,push_account:document.querySelector("#pref-account").checked,quiet_start:document.querySelector("#quiet-start").value||null,quiet_end:document.querySelector("#quiet-end").value||null}}
 let pushTestPendingUntil=0, pushTestReceipt=null;
@@ -277,7 +297,15 @@ if("serviceWorker" in navigator)navigator.serviceWorker.addEventListener("messag
     showPushReceipt(stage);
   }
 });
-document.querySelector("#read-all").onclick=async()=>{try{await api("/api/notifications/read-all",{method:"POST"});announceReadChange();await load()}catch(e){status.textContent=e.message}};
+document.querySelector("#read-all").onclick=async()=>{
+ try{
+  await api("/api/notifications/read-all",{method:"POST"});
+  showingHistory=false;
+  const history=document.querySelector("#show-history");
+  history.textContent="View past alerts";history.setAttribute("aria-pressed","false");
+  announceReadChange();await load();
+ }catch(e){status.textContent=e.message}
+};
 let lastRefresh=0;
 function refreshVisibleNotifications(){if(document.visibilityState!=="visible"||Date.now()-lastRefresh<15000)return;lastRefresh=Date.now();load().catch(()=>{});loadPrefs().catch(()=>{});}
 document.addEventListener("visibilitychange",refreshVisibleNotifications);
