@@ -57,3 +57,79 @@ test("explicit conversions use measured results even without planner model",asyn
  assert.match(calls[0].messages[0].content,/"result":30.48/);
  assert.match(calls[0].messages[0].content,/utility.convert/);
 });
+
+test("direct free-resource requests cite results without relying on planner availability",async()=>{
+ const seen=[];
+ const ai={run:async(_model,opts)=>{seen.push(opts);return {response:"verified source links"};}};
+ const handlers={
+  "resource.polyhaven":async({input})=>({source:"Poly Haven",results:[{title:"Leather",url:"https://polyhaven.com/a/leather_01",type:input.type}]}),
+  "resource.met":async()=>({source:"The Met",results:[{url:"https://www.metmuseum.org/art/collection/search/123"}]}),
+  "resource.wikidata":async()=>({source:"Wikidata",results:[{url:"https://www.wikidata.org/wiki/Q42"}]}),
+  "research.wikipedia":async()=>({source:"Wikipedia",results:[{url:"https://en.wikipedia.org/wiki/Dragonfly"}]})
+ };
+ for(const [prompt,source] of [
+  ["Find CC0 leather textures on Poly Haven","Poly Haven"],
+  ["Find historical costumes at The Met","The Met"],
+  ["Research Wikipedia and Wikidata for dragonflies","Wikidata"]
+ ]){
+   seen.length=0;
+   await inferWithChaosTools({ai,model:"fast",messages:[{role:"system",content:"base"},{role:"user",content:prompt}],principal:{id:7},handlers});
+   assert.equal(seen.length,1,"explicit named source should skip the expensive planner: "+prompt);
+   assert.match(seen[0].messages[0].content,new RegExp(source));
+ }
+ assert.match(seen[0].messages[0].content,/Wikipedia/,"pairwise lookup should include the second source");
+});
+test("one failed source preserves other verified results in a two-library lookup",async()=>{
+ const seen=[];
+ const ai={run:async(_model,opts)=>{seen.push(opts);return {response:"one source available"};}};
+ const handlers={
+  "resource.wikidata":async()=>{throw Error("upstream timeout: sensitive secret should not leak");},
+  "research.wikipedia":async()=>({source:"Wikipedia",results:[{title:"Dragonflies",url:"https://en.wikipedia.org/wiki/Dragonfly"}]})
+ };
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"Research Wikipedia and Wikidata for dragonflies"}],handlers});
+ assert.equal(seen.length,1);
+ const evidence=seen[0].messages[0].content;
+ assert.match(evidence,/"name":"research.wikipedia","result":/);
+ assert.match(evidence,/Dragonfly/);
+ assert.match(evidence,/"name":"resource.wikidata","available":false/);
+ assert.doesNotMatch(evidence,/sensitive secret/);
+});
+test("bad selected tools cannot suppress valid public tool evidence",async()=>{
+ const seen=[];
+ const ai={run:async (_model,opts)=>{
+  seen.push(opts);
+  if(opts.tools)return {tool_calls:[
+   {name:"site.search",arguments:{query:"arcade"}},
+   {name:"shell.exec",arguments:{command:"whoami"}}
+  ]};
+  return {response:"see arcade link"};
+ }};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"research arcade and debug options"}]});
+ assert.equal(seen.length,2);
+ const evidence=seen[1].messages[0].content;
+ assert.match(evidence,/chaos-cartridge.html/);
+ assert.match(evidence,/"name":"unsupported_tool","available":false/);
+ assert.doesNotMatch(evidence,/whoami/);
+});
+test("instant public utilities do not require a planner or member account",async()=>{
+ const calls=[];
+ const ai={run:async(_model,opts)=>{calls.push(opts);return{response:"verified"};}};
+ const handlers={"radar.moon":async()=>({phase:"waxing crescent"}),
+   "utility.now":async({input})=>({timezone:input.timezone,local:"verified clock"})};
+ for(const prompt of ["Calculate 3*7","Count words: little chaos goblins","What is the moon phase today?","What time in America/Chicago?","Where is the arcade?"]){
+  calls.length=0;
+  await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:prompt}],principal:null,handlers});
+  assert.equal(calls.length,1,prompt);
+  assert.match(calls[0].messages[0].content,/available":true/,prompt);
+ }
+});
+test("planner outage explicitly says no research was retrieved",async()=>{
+ const seen=[];
+ const ai={run:async(_model,opts)=>{
+  if(opts.tools)throw Error("plan temporarily unavailable");
+  seen.push(opts);
+  return {response:"I cannot verify that right now."};
+ }};
+ await inferWithChaosTools({ai,model:"fast",messages:[{role:"user",content:"research unverified breaking science"}]});
+ assert.match(seen[0].messages[0].content,/NO live lookup/);
+});
