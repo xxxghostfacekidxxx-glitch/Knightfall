@@ -256,7 +256,7 @@
   void ensureAccount(true).catch(e=>{console.warn("Miss Chaos account mode discovery failed:",e.message);});
   // Local, free-first console: reusable draft prompts and explicit reply-to-memo.
   // Import failures cannot prevent Miss Chaos chat or her floating dock from loading.
-  import("/miss-chaos-field-kit.mjs?v=20261119-field-kit2")
+  import("/miss-chaos-field-kit.mjs?v=20261119-field-kit3")
     .then(({mountMissChaosFieldKit})=>{
       fieldKit=mountMissChaosFieldKit({
         panel,messages,input,api:request,onOpenMemo:openMemo,getMode:()=>assistantMode
