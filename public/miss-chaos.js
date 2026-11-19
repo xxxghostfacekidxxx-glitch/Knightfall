@@ -461,10 +461,10 @@
        if(ownerCompanion){
          const scope=await request("/api/chaos/companion");
          if(scope.role!=="owner"){location.replace("/miss-chaos.html");return;}
-         document.title="Private Owner Miss Chaos | Knightfall";
+         document.title="Osiris · Private Miss Chaos | Knightfall";
          const heading=$(".chaos-identity h1"),eyebrow=$(".chaos-identity .eyebrow");
-         if(heading)heading.textContent="Private Owner Miss Chaos";
-         if(eyebrow)eyebrow.textContent="VERIFIED GOD OWNER WORKSPACE";
+         if(heading)heading.textContent="Osiris · Private Miss Chaos";
+         if(eyebrow)eyebrow.textContent="𓂀 OSIRIS · VERIFIED OWNER WORKSPACE";
        }
       isAdmin = ["admin", "god"].includes(me.user.role);
       // Unreported member AI chats are reviewed only in the God-only Eye of Horus.
