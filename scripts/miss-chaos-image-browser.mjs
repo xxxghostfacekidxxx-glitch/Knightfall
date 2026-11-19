@@ -58,7 +58,10 @@ async function verifyPopup(width,kind){
   if(await page.locator("#miss-chaos-presence").getAttribute("data-minimized")==="true"){
    await page.click("#mc-restore");
   }
-  await page.locator("#miss-chaos-launcher").click();
+  // Small-screen restore now opens the popup in one tap; don't immediately close it.
+  if(await page.locator("#miss-chaos-window").isHidden()){
+   await page.locator("#miss-chaos-launcher").click();
+  }
   await page.waitForSelector('#miss-chaos-window:not([hidden])',{timeout:10000});
   await page.waitForSelector("#mc-form .mc-attach-button",{timeout:10000});
   const dimensions=await page.locator("#miss-chaos-window").boundingBox();
