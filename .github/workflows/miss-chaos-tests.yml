@@ -21,6 +21,7 @@ on:
       - 'public/miss-chaos-field-kit.mjs'
       - 'public/chaos-crucible*'
       - 'scripts/chaos-crucible.test.mjs'
+      - 'scripts/chaos-crucible-progress.test.mjs'
       - 'scripts/miss-chaos-field-kit.test.mjs'
       - 'public/creator-art-studio*'
       - 'public/devil-tools.html'
@@ -66,7 +67,8 @@ jobs:
         run: |
           node --check public/chaos-crucible-core.mjs
           node --check public/chaos-crucible.mjs
-          node --test scripts/chaos-crucible.test.mjs
+          node --check public/chaos-crucible-progress.mjs
+          node --test scripts/chaos-crucible.test.mjs scripts/chaos-crucible-progress.test.mjs
       - name: Verify Miss Chaos floating dock, private modes and memo publishing
         run: |
           node --check public/nav.js
