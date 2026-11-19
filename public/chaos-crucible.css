@@ -107,3 +107,24 @@
 .crucible-evidence textarea:focus-visible{outline:2px solid #8cffbd;outline-offset:2px}
 .crucible-evidence p{font-size:.69rem;line-height:1.45;color:#a4afaa;margin:0}
 @media(prefers-reduced-motion:reduce){#crucible-milestone-fill{transition:none}}
+
+
+/* Optional local project shelf: visually distinct from account-private memos. */
+.crucible-device-shelf{margin-top:21px;padding:15px 14px;border:1px solid #70537e;border-radius:13px;background:radial-gradient(ellipse at 0 0,#57347b24,transparent 70%),#15101d}
+.crucible-shelf-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px}
+.crucible-shelf-heading h3{font-size:.96rem;line-height:1.3;color:#ffd8ef;margin:0}
+.crucible-shelf-heading span{font-size:.68rem;font-weight:800;color:#b8ffc9}
+.crucible-device-shelf>p:not(#crucible-shelf-status){margin:5px 0 12px;font-size:.74rem;line-height:1.55;color:#d4c3da}
+.crucible-shelf-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.crucible-shelf-buttons button{flex:1 1 115px}
+#crucible-shelf-status{min-height:18px;margin:10px 0;color:#b0ffc8;font-size:.73rem;line-height:1.4}
+#crucible-shelf-status[data-error="true"]{color:#ffb0c9}
+.crucible-shelf-list{display:grid;gap:8px;max-height:360px;overflow-y:auto}
+.crucible-shelf-empty{margin:3px 0;color:#ad9eaf;font-size:.76rem;line-height:1.5}
+.crucible-shelf-project{display:flex;align-items:center;gap:9px;justify-content:space-between;min-width:0;background:#0e0c17;border:1px solid #4b3659;border-radius:10px;padding:9px 10px}
+.crucible-shelf-project-details{min-width:0;flex:1}
+.crucible-shelf-project-details strong{display:block;color:#fce8f4;font-size:.76rem;overflow-wrap:anywhere}
+.crucible-shelf-project-details small{display:block;color:#9fb1a3;font-size:.65rem;line-height:1.5;margin-top:3px}
+.crucible-shelf-project-actions{display:flex;align-items:center;gap:5px}
+.crucible-shelf-project-actions .crucible-button{min-height:34px;padding:6px 8px;font-size:.68rem}
+@media(max-width:385px){.crucible-shelf-project{align-items:flex-start;flex-direction:column}.crucible-shelf-project-actions{width:100%}.crucible-shelf-project-actions .crucible-button{flex:1}}
