@@ -53,10 +53,24 @@ test("A visitor may read current preset but never mutate it",async()=>{
  assert.equal((await f.call("/api/god/theme/status")).status,401);
  assert.equal((await f.call("/api/god/theme/activate","POST",{preset:"blood_moon",expectedRevision:0})).status,401);
 });
-test("Admin accounts cannot impersonate GOD to publish global styles",async()=>{
- for(const role of ["admin","member","moderator"]){
+test("Administrators may inspect and plan, but only GOD can publish or roll back global styles",async()=>{
+ const admin=fixture({id:2,role:"admin"});
+ const status=await admin.call("/api/god/theme/status");
+ assert.equal(status.status,200);
+ assert.deepEqual(status.body.permissions,{can_view:true,can_plan:true,can_preview:true,can_publish:false,can_rollback:false});
+ const proposal=await admin.call("/api/god/theme/plan","POST",{mood:"moss green"});
+ assert.equal(proposal.status,200);
+ assert.equal(proposal.body.plan.preset,"verdant_crypt");
+ assert.equal(admin.read(),null,"planning never writes public theme state");
+ for(const endpoint of ["/api/god/theme/activate","/api/god/theme/rollback"]){
+  const denied=await admin.call(endpoint,"POST",{preset:"iron_eclipse",expectedRevision:0});
+  assert.equal(denied.status,403);
+  assert.equal(admin.read(),null,"admin cannot alter sitewide theme data");
+ }
+ for(const role of ["member","moderator"]){
   const f=fixture({id:2,role});
   assert.equal((await f.call("/api/god/theme/status")).status,403);
+  assert.equal((await f.call("/api/god/theme/plan","POST",{mood:"moss green"})).status,403);
   assert.equal((await f.call("/api/god/theme/activate","POST",{preset:"iron_eclipse",expectedRevision:0})).status,403);
  }
 });
