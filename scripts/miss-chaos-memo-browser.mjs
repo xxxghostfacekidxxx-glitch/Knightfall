@@ -181,7 +181,6 @@ async function run(name,width,height){
       known:'Reference is user-owned',first:'Shoulder, 4 inches wide',second:'Blackwork with negative space',
       constraints:'No unlicensed reference artwork'}
   };
-  page.once('dialog',dialog=>dialog.accept());
   await page.locator('#crucible-import-file').setInputFiles({
     name:'sample.crucible.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(imported))
   });
