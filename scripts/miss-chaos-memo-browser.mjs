@@ -188,6 +188,20 @@ async function run(name,width,height){
   await page.waitForFunction(()=>document.querySelector('#crucible-name')?.value==='Imported stencil');
   assert.equal(await page.locator('.crucible-type[data-kind="tattoo"]').getAttribute('aria-pressed'),'true');
   assert.match(await page.locator('#crucible-preview').textContent(),/Shoulder, 4 inches wide/);
+  // Explicit device shelf should retain milestones and evidence across a reload.
+  assert.equal(await page.locator('#crucible-proof-notes').inputValue(),'',
+    'Legacy kit imports must not invent evidence');
+  await page.locator('#crucible-proof-notes').fill('Stencil reviewed; long-term readability still unverified');
+  await page.locator('#crucible-steps input[type="checkbox"]').first().check();
+  await page.locator('#crucible-shelf-save').click();
+  await page.waitForFunction(()=>document.querySelector('#crucible-shelf-status')?.textContent.includes('Saved as a new device-only copy'));
+  assert.match(await page.locator('#crucible-shelf-list').innerText(),/Imported stencil/);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.locator('#crucible-shelf-list').getByRole('button',{name:/Resume Imported stencil/}).click();
+  assert.equal(await page.locator('#crucible-name').inputValue(),'Imported stencil');
+  assert.match(await page.locator('#crucible-proof-notes').inputValue(),/Stencil reviewed/);
+  assert.equal(await page.locator('#crucible-steps input[type="checkbox"]').first().isChecked(),true);
+  assert.match(await page.locator('#crucible-milestone-readout').textContent(),/1\/5/);
   const creatorSize=await page.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(creatorSize.page<=creatorSize.viewport+2,'Crucible horizontal overflow: '+JSON.stringify(creatorSize));
   assert.deepEqual(errors,[],name+' browser errors');
