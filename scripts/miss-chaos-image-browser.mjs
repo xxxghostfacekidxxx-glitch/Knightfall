@@ -54,7 +54,10 @@ async function verifyPopup(width,kind){
   const loaded=await page.goto(BASE+"/index.html",{waitUntil:"domcontentloaded",timeout:30000});
   assert.equal(loaded.status(),200);
   await page.waitForSelector("#miss-chaos-presence",{timeout:12000});
-  if(await page.locator("#mc-restore").isVisible())await page.click("#mc-restore");
+  await page.waitForFunction(()=>document.querySelector("#miss-chaos-presence")?.dataset.dockReady==="true",{timeout:12000});
+  if(await page.locator("#miss-chaos-presence").getAttribute("data-minimized")==="true"){
+   await page.click("#mc-restore");
+  }
   await page.locator("#miss-chaos-launcher").click();
   await page.waitForSelector('#miss-chaos-window:not([hidden])',{timeout:10000});
   await page.waitForSelector("#mc-form .mc-attach-button",{timeout:10000});
