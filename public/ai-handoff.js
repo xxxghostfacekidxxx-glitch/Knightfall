@@ -1,8 +1,24 @@
 (()=>{'use strict';
 const API='https://api.ash-fall.com/api/ai-handoff';
 const $=id=>document.getElementById(id);
-const state={role:null,partner:null,tasks:[],notes:[],activity:[],instructions:''};
+const state={role:null,partner:null,tasks:[],notes:[],activity:[],instructions:'',fingerprint:''};
+const live={loading:false,loadedKeys:false};
+const SCHEMA='https://ash-fall.com/ai-bridge-openapi.json';
+const GUIDE=[
+ 'BETWEEN THE FLAMES · PRIVATE KNIGHTFALL AI HANDOFF',
+ 'You assist either Ronnie or Samantha with the shared Knightfall project. Both accounts use the same authenticated shared tasks and notes.',
+ 'Use the configured Knightfall GPT Action getHandoffSnapshot before planning Knightfall work or discussing task progress. Treat the newest results as the source of truth, not earlier messages.',
+ 'After a confirmed change, call updateHandoffTask with its exact version, createHandoffTask for new work, or postHandoffNote for a concise decision, milestone or blocker. Do not claim a task is done without verification, and do not claim a write was saved unless the API succeeded.',
+ 'If an action is unavailable or returns an error, say so and ask the person to update Between the Flames manually or paste the latest packet. Never pretend two separate ChatGPT chats are synced if the Action is not connected.',
+ 'Keep unrelated personal or sensitive information out of the shared project board. Do not reveal authentication secrets or publish private records.',
+ 'For Samantha: Ronnie says he loves you.'
+].join('\n\n');
 const status=text=>{$('handoff-status').textContent=String(text)};
+const stamp=()=>new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+const writeClipboard=async value=>{
+ if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable. Select and copy the text manually.');
+ await navigator.clipboard.writeText(value);
+};
 const elem=(tag,cls,content)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(content!==undefined)node.textContent=String(content);return node};
 const button=(label,callback,cls='handoff-button ghost')=>{const b=elem('button',cls,label);b.type='button';b.addEventListener('click',callback);return b};
 async function api(path='',method='GET',data){
@@ -89,17 +105,85 @@ function render(){
  renderTasks();renderNotes();renderActivity();renderAccess();
 }
 async function load(quiet=false){
+ if(live.loading)return;
+ live.loading=true;
  try{
   const data=await api();
   if(data.role==='invited'){gate("You've been invited","Ronnie has invited you to share his Knightfall to-do list and AI handoff notes. Accept to join.",'accept');status('Invitation awaiting your acceptance.');return}
+  const next=JSON.stringify([data.tasks?.map(t=>[t.id,t.version,t.status]),data.notes?.map(n=>n.id),data.activity?.map(e=>e.id)]);
+  const changed=!!state.fingerprint&&next!==state.fingerprint;
   Object.assign(state,data);
-  render();if(!quiet)status('Connected. Your shared list is up to date.');
+  state.fingerprint=next;
+  render();
+  $('live-sync-status').textContent='Automatic refresh enabled · checked '+stamp()+' · every 20 seconds while this tab is open';
+  if(changed&&quiet)status('The shared workspace has new updates. Both accounts now see the latest records.');
+  else if(!quiet)status('Connected. Your shared list is up to date.');
+  if(!live.loadedKeys){live.loadedKeys=true;loadBridgeKeys().catch(error=>status(error.message));}
  }catch(e){
   const sign=e.code===401;
   gate(sign?'Sign in required':'Private access',e.message,sign?'signin':'denied');
+  $('live-sync-status').textContent='Automatic refresh unavailable until signed in.';
   status(sign?'Sign in to access the handoff.':e.message);
+ }finally{live.loading=false}
+}
+async function loadBridgeKeys(){
+ const data=await api('/bridge/keys');
+ const list=$('bridge-key-list');
+ list.replaceChildren();
+ const keys=data.keys||[];
+ if(!keys.length){list.append(elem('p','subtle','No AI connections yet. Your shared website list works already; create a key only when you can configure a private ChatGPT Action.'));return}
+ for(const key of keys){
+  const active=!key.revoked_at&&new Date(key.expires_at.replace(' ','T')+'Z').getTime()>Date.now();
+  const card=elem('div','bridge-key-item');
+  const info=elem('div');
+  info.append(elem('strong','',key.label),elem('p','subtle',active?'Active · expires '+key.expires_at+' UTC'+(key.last_used_at?' · last used '+key.last_used_at+' UTC':' · never used'):'Revoked or expired · '+key.created_at+' UTC'));
+  card.append(info);
+  if(active)card.append(button('Revoke',async()=>{
+   if(!confirm('Revoke the AI connection "'+key.label+'"? The assistant using this key will immediately lose access.'))return;
+   try{await api('/bridge/keys/'+key.id,'DELETE');status('Connection revoked. That assistant can no longer access the shared list with this key.');await loadBridgeKeys()}
+   catch(e){status('Could not revoke connection: '+e.message)}
+  },'handoff-button danger'));
+  list.append(card);
  }
 }
+$('bridge-key-form').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const label=$('bridge-key-label').value.trim();
+ const submit=event.currentTarget.querySelector('button[type=submit]');
+ submit.disabled=true;
+ try{
+  const data=await api('/bridge/keys','POST',{label});
+  $('bridge-secret').value=data.secret;
+  $('bridge-secret-panel').hidden=false;
+  $('bridge-key-form').reset();
+  status('Private AI connection created for this account. Copy the key once into your private GPT Action authentication setting.');
+  await loadBridgeKeys();
+ }catch(e){status('Could not generate connection: '+e.message)}
+ finally{submit.disabled=false}
+});
+$('copy-bridge-secret').addEventListener('click',async()=>{
+ try{await writeClipboard($('bridge-secret').value);status('Private key copied. Paste it ONLY into your private Action authentication field.')}
+ catch(e){status(e.message)}
+});
+$('hide-bridge-secret').addEventListener('click',()=>{
+ $('bridge-secret').value='';
+ $('bridge-secret-panel').hidden=true;
+ status('Private key hidden from this page. It cannot be shown again; revoke and create a new one if lost.');
+});
+$('copy-schema-link').addEventListener('click',async()=>{
+ try{await writeClipboard(SCHEMA);status('Action OpenAPI schema link copied. Import it into your private GPT Action configuration.')}
+ catch(e){status(e.message)}
+});
+$('copy-bridge-guide').addEventListener('click',async()=>{
+ try{await writeClipboard(GUIDE);status('Assistant instructions copied. Paste these into the assistant instructions, without adding your secret key.')}
+ catch(e){status(e.message)}
+});
+window.setInterval(()=>{
+ if(document.hidden||state.role!=='owner'&&state.role!=='partner'||live.loading)return;
+ // Avoid interrupting active task status/edit controls while refreshing.
+ if(document.activeElement?.closest?.('#task-list'))return;
+ load(true);
+},20000);
 $('gate-accept').addEventListener('click',async()=>{try{await api('/accept','POST',{});await load()}catch(e){status(e.message)}});
 $('copy-packet').addEventListener('click',async()=>{
  try{
