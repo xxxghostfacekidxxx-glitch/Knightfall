@@ -1,4 +1,5 @@
-import {CRUCIBLE_KINDS,CRUCIBLE_FIELD_LIMITS,buildCrucibleBrief,exportCrucibleKit,parseCrucibleKit} from "./chaos-crucible-core.mjs?v=20261119-crucible2";
+import {CRUCIBLE_KINDS,CRUCIBLE_FIELD_LIMITS,buildCrucibleBrief} from "./chaos-crucible-core.mjs?v=20261119-crucible2";
+import {buildCrucibleProgress,prepareCrucibleHandoff,exportCrucibleWorkspace,parseCrucibleWorkspace} from "./chaos-crucible-progress.mjs?v=20261119-crucible3";
 
 const root=document.getElementById("chaos-crucible");
 if(root){
@@ -10,10 +11,11 @@ if(root){
  const preview=$("#crucible-preview");
  const notice=$("#crucible-status");
  const missingBox=$("#crucible-missing");
- const actionIds=["crucible-ask","crucible-copy","crucible-download","crucible-save","crucible-export-kit"];
+ const actionIds=["crucible-ask","crucible-ask-next","crucible-copy","crucible-download","crucible-save","crucible-export-kit"];
  const fields=Object.keys(CRUCIBLE_FIELD_LIMITS);
  const valuesByKind=new Map();
  const checkedByKind=new Map();
+ const progressByKind=new Map();
  let selectedKind=Object.hasOwn(CRUCIBLE_KINDS,location.hash.slice(1))?location.hash.slice(1):"character";
  let currentBrief=null;
  let saving=false;
@@ -27,10 +29,12 @@ if(root){
    for(const key of fields)data[key]=String(form.elements.namedItem(key)?.value||"");
    return data;
  }
- function storeDraft(){valuesByKind.set(selectedKind,readFields());}
+ function readProgress(){return {completed:[...(checkedByKind.get(selectedKind)||new Set())],notes:$("#crucible-proof-notes").value};}
+ function storeDraft(){valuesByKind.set(selectedKind,readFields());progressByKind.set(selectedKind,$("#crucible-proof-notes").value);}
  function restoreDraft(kind){
    const saved=valuesByKind.get(kind)||{};
    for(const key of fields)form.elements.namedItem(key).value=saved[key]||"";
+   $("#crucible-proof-notes").value=progressByKind.get(kind)||"";
  }
  function renderTypes(){
    typeHost.replaceChildren();
@@ -72,6 +76,7 @@ if(root){
        const next=checkedByKind.get(selectedKind)||new Set();
        if(box.checked)next.add(index);else next.delete(index);
        checkedByKind.set(selectedKind,next);
+       recompute();status("");
      });
      const span=doc.createElement("span");span.textContent=String(index+1)+". "+item;
      label.append(box,span);li.append(label);steps.append(li);
@@ -84,14 +89,34 @@ if(root){
    $("#crucible-progress-label").textContent=count+" / "+fields.length+" fields supplied";
    $("#crucible-progress-fill").style.width=(100*count/fields.length)+"%";
    const result=buildCrucibleBrief(data);
-   currentBrief=result.ok?result:null;
+   const progress=result.ok?buildCrucibleProgress(result,readProgress()):null;
+   const all=result.ok?prepareCrucibleHandoff(result,readProgress()):null;
+   const next=result.ok?prepareCrucibleHandoff(result,readProgress(),true):null;
+   currentBrief=result.ok?{
+     ...result,
+     markdown:result.markdown+"\n\n"+progress.report,
+     aiPrompt:all.ok?all.prompt:null,
+     nextPrompt:next.ok?next.prompt:null
+   }:null;
+   $("#crucible-milestone-readout").textContent=progress
+     ?progress.completed+"/"+progress.total+" self-reported milestones":"0/5 self-reported";
+   $("#crucible-milestone-fill").style.width=progress?progress.percent+"%":"0%";
+   $("#crucible-milestone-meter").setAttribute("aria-valuenow",String(progress?.percent||0));
+   $("#crucible-next-step").textContent=progress
+     ?(progress.nextStep||"All milestones checked. Verify acceptance criteria and actual results before calling the project complete.")
+     :"Define the project to see the next practical step.";
+   const tool=$("#crucible-open-tool");
+   tool.href=CRUCIBLE_KINDS[selectedKind].destination;
+   tool.textContent="Open "+CRUCIBLE_KINDS[selectedKind].destinationLabel+" ↗";
+   $("#crucible-ask").title=all&&!all.ok?all.error:"Prepare a complete, unsent request";
+   $("#crucible-ask-next").title=next&&!next.ok?next.error:"Prepare the next uncompleted step, unsent";
    if(!result.ok){
      preview.textContent="Add a project name and a specific objective to generate your brief.";
      missingBox.replaceChildren();
      const p=doc.createElement("p");p.textContent=result.errors.join(" ");
      missingBox.append(p);
    }else{
-     preview.textContent=result.markdown;
+     preview.textContent=currentBrief.markdown;
      missingBox.replaceChildren();
      const p=doc.createElement("p");
      p.textContent=result.missing.length
@@ -100,15 +125,19 @@ if(root){
      if(!result.missing.length)p.className="ready";
      missingBox.append(p);
    }
-   for(const id of actionIds)$("#"+id).disabled=!currentBrief||(id==="crucible-save"&&saving);
+   for(const id of actionIds)$("#"+id).disabled=!currentBrief||
+     (id==="crucible-save"&&saving)||
+     (id==="crucible-ask"&&!currentBrief?.aiPrompt)||
+     (id==="crucible-ask-next"&&!currentBrief?.nextPrompt);
    return result;
  }
  form.addEventListener("input",()=>{recompute();status("");});
+ $("#crucible-proof-notes").addEventListener("input",()=>{recompute();status("");});
  form.addEventListener("submit",event=>event.preventDefault());
  $("#crucible-clear").addEventListener("click",()=>{
    if(!fields.some(key=>String(form.elements.namedItem(key).value||"").trim()))return;
    if(!confirm("Clear this discipline's unsaved brief? Other discipline drafts stay in this browser tab."))return;
-   form.reset();checkedByKind.delete(selectedKind);renderTrack();recompute();
+   form.reset();checkedByKind.delete(selectedKind);progressByKind.delete(selectedKind);$("#crucible-proof-notes").value="";renderTrack();recompute();
    status("The current brief was cleared. Nothing was deleted from saved Knightfall memos.");
  });
  $("#crucible-copy").addEventListener("click",async()=>{
@@ -132,7 +161,7 @@ if(root){
  $("#crucible-export-kit").addEventListener("click",()=>{
    if(!currentBrief)return;
    try{
-     const data=exportCrucibleKit(readFields());
+     const data=exportCrucibleWorkspace(readFields(),readProgress());
      const url=URL.createObjectURL(new Blob([data],{type:"application/json;charset=utf-8"}));
      const link=doc.createElement("a");link.href=url;
      link.download=(currentBrief.title.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,48)||"miss-chaos-project")+".crucible.json";
@@ -148,31 +177,37 @@ if(root){
    if(!file)return;
    if(file.size>12000){status("Project kit is larger than 12 KB. No changes were made.",true);return;}
    try{
-     const imported=parseCrucibleKit(await file.text());
+     const imported=parseCrucibleWorkspace(await file.text());
      if(fields.some(key=>String(form.elements.namedItem(key).value||"").trim())&&
         !confirm("Importing will replace the visible draft for that discipline. Continue?"))return;
      storeDraft();
-     selectedKind=imported.kind;
-     valuesByKind.set(selectedKind,imported);
+     selectedKind=imported.project.kind;
+     valuesByKind.set(selectedKind,imported.project);
+     checkedByKind.set(selectedKind,new Set(imported.progress.completed));
+     progressByKind.set(selectedKind,imported.progress.notes);
      restoreDraft(selectedKind);
      for(const button of typeHost.querySelectorAll("button[data-kind]"))
        button.setAttribute("aria-pressed",String(button.dataset.kind===selectedKind));
      renderTrack();recompute();
-     status("Editable project imported safely. Check the details before asking Miss Chaos to work with it.");
+     status(imported.legacy
+       ?"Original project kit imported. Milestone history was not included in this older format."
+       :"Project, milestones and evidence notes imported. Check the details before asking Miss Chaos.");
    }catch(e){status(String(e?.message||"Import failed. Nothing was changed."),true);}
  });
- $("#crucible-ask").addEventListener("click",async()=>{
-   if(!currentBrief)return;
-   const detail={text:currentBrief.aiPrompt,handled:false,error:null};
+ async function handoffToCompanion(prompt){
+   if(!prompt)return;
+   const detail={text:prompt,handled:false,error:null};
    window.dispatchEvent(new CustomEvent("kf:miss-chaos:compose",{detail}));
    if(detail.handled){status("Your brief is in Miss Chaos's chat draft. Review it, then press Send when ready.");return;}
    if(detail.error){status(detail.error,true);return;}
    try{
      if(!navigator.clipboard?.writeText)throw Error("Clipboard unavailable");
-     await navigator.clipboard.writeText(currentBrief.aiPrompt);
+     await navigator.clipboard.writeText(prompt);
      status("Miss Chaos's floating chat was unavailable. The prompt was copied; open her full chat and paste it.");
    }catch{status("Floating chat is unavailable. Please copy the preview and open Miss Chaos's full chat.",true);}
- });
+ }
+ $("#crucible-ask").addEventListener("click",()=>void handoffToCompanion(currentBrief?.aiPrompt));
+ $("#crucible-ask-next").addEventListener("click",()=>void handoffToCompanion(currentBrief?.nextPrompt));
  $("#crucible-save").addEventListener("click",async()=>{
    if(!currentBrief||saving)return;
    if(currentBrief.markdown.length>4000){status("Memo limit is 4,000 characters. Shorten the brief before saving; no text was discarded.",true);return;}
