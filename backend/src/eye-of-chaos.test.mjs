@@ -4,13 +4,14 @@ import {webcrypto} from "node:crypto";
 import {CHAOS_AGENTS,CHAOS_QA_FLEET,CHAOS_SOURCES,handleEyeOfChaos,runEyeChaosScheduledResearch,runSourceResearch} from "./eye-of-chaos.js";
 if(!globalThis.crypto)globalThis.crypto=webcrypto;
 
-function fixture(role="god",ready=true){
+function fixture(role="god",ready=true,delegated=false){
  const missions=new Map(),drafts=new Map(),events=[],queries=[],paused={value:0};
  const db={prepare(sql){
   const q={sql,args:[],bind(...v){this.args=v;return this},
    async first(){
     queries.push({sql,args:this.args});
     if(sql.includes("sqlite_master"))return ready?{ready:3}:null;
+    if(sql.includes("FROM ai_handoff_partner"))return delegated?{user_id:11,invited_by:1,status:"accepted"}:null;
     if(sql.includes("SELECT paused FROM eye_chaos_controls"))return {paused:paused.value};
     if(sql.includes("FROM eye_chaos_missions WHERE id="))return missions.get(this.args[0])||null;
     if(sql.includes("FROM eye_chaos_drafts WHERE id="))return drafts.get(this.args[0])||null;
@@ -277,4 +278,29 @@ test("GOD master pause is durable and blocks AI execution, manual research and s
  assert.deepEqual(f.events.filter(x=>x.object_type==="system").map(x=>x.action),["master_pause","master_resume"]);
  const unauthorized=fixture("moderator");
  assert.equal((await unauthorized.call(base+"/control","POST",{paused:true})).status,403);
+});
+
+
+test("accepted admin partner may approve and reject reviewed drafts, but cannot touch GOD master lock",async()=>{
+ const f=fixture("admin",true,true);
+ const status=await f.call(base+"/status");
+ const data=await status.json();
+ assert.equal(data.permissions.can_approve,true);
+ assert.equal(data.permissions.can_control,false);
+ assert.equal(data.permissions.can_view_god_tools,false);
+ const draft={division:"agents",author_key:"chaos-18",title:"Review this original draft",body:"A source-linked original example.",source_url:"https://www.billboard.com/feed/",destination:"Madhouse"};
+ const created=await f.call(base+"/drafts","POST",draft);
+ assert.equal(created.status,201);
+ const id=(await created.json()).id;
+ assert.equal((await f.call(base+"/drafts/"+id+"/approve","POST")).status,200);
+ assert.equal(f.drafts.get(id).approved_by,11);
+ assert.equal((await f.call(base+"/drafts/"+id+"/reject","POST")).status,200);
+ const lock=await f.call(base+"/control","POST",{paused:true});
+ assert.equal(lock.status,403);
+ assert.equal(f.paused.value,0);
+ const independent=fixture("admin",true,false);
+ assert.equal((await independent.call(base+"/status").then(r=>r.json())).permissions.can_approve,false);
+ const rejected=await independent.call(base+"/drafts/12345678-1234-1234-1234-123456789abc/approve","POST");
+ assert.equal(rejected.status,403);
+ assert.equal(independent.queries.some(q=>q.sql.includes("UPDATE eye_chaos_drafts")),false);
 });
