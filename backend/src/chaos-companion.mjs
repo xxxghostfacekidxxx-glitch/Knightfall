@@ -1,3 +1,4 @@
+import {staffCapabilities} from "./staff-capabilities.js";
 /** Knightfall companion and bot relay. All identities come from the verified session. */
 export async function companionScope(env,user){
  if(!user?.id)return {role:"guest",accepted:false};
@@ -9,6 +10,28 @@ export async function companionScope(env,user){
   return {role:"partner",accepted:true,owner_id:Number(row.invited_by)};
  return {role:"member",accepted:false,owner_id:null};
 }
+/**
+ * Additional project powers are delegated to one verified, accepted partner
+ * ONLY if her live Knightfall account has already been assigned admin role.
+ * Never match a display name, email, browser flag or unaccepted invitation.
+ * If the invitation table is unavailable, privilege escalation fails closed.
+ */
+export async function acceptedAdminPartner(env,user){
+ if(user?.role!=="admin"||!Number.isSafeInteger(Number(user.id))||Number(user.id)<=0)return false;
+ try{
+   const scope=await companionScope(env,user);
+   return scope.accepted===true&&scope.role==="partner";
+ }catch{return false;}
+}
+export async function companionPermissions(env,user){
+ const base=staffCapabilities(user),delegated=await acceptedAdminPartner(env,user);
+ return {
+   can_admin:base.can_admin,can_eye_of_chaos:base.can_eye_of_chaos,
+   can_create:base.can_create,can_approve_drafts:base.can_eye_of_horus||delegated,
+   can_theme_publish:base.can_eye_of_horus||delegated,
+   can_eye_of_horus:base.can_eye_of_horus,can_master_control:base.can_eye_of_horus
+ };
+}
 /** Only the signed-in member can select one of these private AI modes.
  * The accepted invitation does not grant administrator/GOD permissions. */
 export function companionModeList(scope){
@@ -17,7 +40,7 @@ export function companionModeList(scope){
    id:"owner",label:"Private Owner",detail:"GOD-only owner workspace and project coordination",full_chat:"/miss-chaos.html?companion=owner"
  });
  if(scope?.accepted&&scope.role==="partner")modes.push({
-   id:"partner",label:"Private Partner",detail:"My private assistant and Between the Flames",full_chat:"/samantha-chaos.html"
+   id:"partner",label:"Private Partner",detail:"My private assistant, delegated admin workspaces and Between the Flames",full_chat:"/samantha-chaos.html"
  });
  return modes;
 }
@@ -166,12 +189,15 @@ export async function handleChaosCompanion(request,env,url,{requireUser,json,ori
    return respond(await companionFleet(env,user,{adultConfirmed}));
   }
   const scope=await companionScope(env,user);
+  const permissions=await companionPermissions(env,user);
   if(url.pathname==="/api/chaos/modes")return respond({ok:true,role:scope.role,
-   modes:companionModeList(scope),account_bound:true});
+   staff_role:user.role,permissions,modes:companionModeList(scope),account_bound:true});
   if(!scope.accepted)return respond({error:"This page requires the accepted Between the Flames partner account."},403);
-  return respond({ok:true,role:scope.role,modes:companionModeList(scope),companion:scope.role==="partner"?"Samantha's Miss Chaos":"Owner's Miss Chaos",
+  return respond({ok:true,role:scope.role,staff_role:user.role,permissions,modes:companionModeList(scope),companion:scope.role==="partner"?"Samantha's Miss Chaos":"Owner's Miss Chaos",
    account_bound:true,private_chats:true,private_memories:true,
-   links:{chat:scope.role==="partner"?"/samantha-chaos.html":"/miss-chaos.html?companion=owner",board:"/ai-handoff.html",bots:"/personal-bots.html"},
+   links:{chat:scope.role==="partner"?"/samantha-chaos.html":"/miss-chaos.html?companion=owner",
+    board:"/ai-handoff.html",bots:"/personal-bots.html",
+    ...(permissions.can_admin?{admin:"/admin.html",eye_of_chaos:"/eye-of-chaos.html",foundry:"/devil-tools.html",theme_crew:"/theme-crew.html"}:{})},
    note:"Your private chat and memory belong only to your account. Share handoff notes only when you submit them."});
  }catch{return respond({error:"Companion service temporarily unavailable."},503);}
 }
