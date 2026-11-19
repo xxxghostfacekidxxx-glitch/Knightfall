@@ -34,11 +34,12 @@ const repoCopy=byId("studio-repo-copy"),repoStatus=byId("studio-repo-status");
 const repoOutput=byId("studio-repo-output"),repoPath=byId("studio-repo-path");
 const repoStart=byId("studio-repo-start");
 let currentRepoExcerpt=null;
-let proposalSnapshot=null, reviewPacket="", reviewCandidate="";
+let proposalSnapshot=null, reviewPacket="", reviewCandidate="", reviewSummary="";
 const proposeButton=byId("studio-repo-propose"),reviewDownload=byId("studio-proposal-export");
+const reviewHandoff=byId("studio-proposal-handoff");
 const reviewOutput=byId("studio-proposal-output"),reviewStatus=byId("studio-proposal-status");
 function clearReview(message="No proposal staged yet."){
- reviewPacket="";reviewCandidate="";reviewDownload.disabled=true;
+ reviewPacket="";reviewCandidate="";reviewSummary="";reviewDownload.disabled=true;reviewHandoff.disabled=true;
  note(reviewOutput,message);
 }
 repoRead.addEventListener("click",async()=>{
@@ -162,7 +163,21 @@ proposeButton.addEventListener("click",async()=>{
    candidate
   ].join("\n");
   reviewCandidate=candidate;
-  note(reviewOutput,reviewPacket);reviewDownload.disabled=false;
+  reviewSummary=[
+   "MISS CHAOS / CODE REVIEW REQUEST (NOT APPROVED)",
+   "Repository: xxxghostfacekidxxx-glitch/Knightfall",
+   "File: "+snapshot.path,
+   "Immutable base main SHA: "+snapshot.commitSha,
+   "Lines: "+first+"-"+last+"; "+(fullFile?"full small file":"partial excerpt"),
+   "Proposal: +"+Number(result.added_lines||0)+" / -"+Number(result.removed_lines||0)+" excerpt lines",
+   "Preflight: "+preflight,
+   "Status: NEEDS REVIEW. No candidate tests, code commit or deployment.",
+   "Osiris/authorized Isis next: get exact proposed text from the author,",
+   "review with full-file context, check base SHA, run isolated tests,",
+   "explicitly approve integrated code, then verify exact deployed commit.",
+   "Original source: "+snapshot.sourceUrl
+  ].join("\n");
+  note(reviewOutput,reviewPacket);reviewDownload.disabled=false;reviewHandoff.disabled=false;
   beforeDiff.value=snapshot.original;afterDiff.value=candidate;storedPatch="";
   diffDownload.disabled=true;
   note(reviewStatus,"Review packet staged at "+snapshot.commitSha.slice(0,12)+". "+preflight+
@@ -178,6 +193,27 @@ reviewDownload.addEventListener("click",()=>{
  }
  download("knightfall-source-review.txt",reviewPacket,"text/plain;charset=utf-8");
  note(reviewStatus,"Read-only proposal downloaded. No repository or production change occurred.");
+});
+reviewHandoff.addEventListener("click",async()=>{
+ if(!reviewSummary||!reviewPacket){note(reviewStatus,"Stage a verified proposal before sharing.");return;}
+ if(code.value!==reviewCandidate){clearReview("Editor changed. Re-stage the proposal before sharing.");note(reviewStatus,"Review summary expired.");return;}
+ if(!window.confirm("Post the proposal's file path, verified commit SHA and review checklist to your private Between the Flames board? This does not share code, approve or deploy it."))return;
+ reviewHandoff.disabled=true;
+ note(reviewStatus,"Posting the review summary to your authorized private handoff...");
+ try{
+  const response=await fetch(API+"/api/ai-handoff/notes",{
+   method:"POST",credentials:"include",cache:"no-store",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({category:"update",body:reviewSummary})
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(response.status===403?
+   "Only Osiris and the accepted Between the Flames partner can post here.":
+   String(data.error||"Private handoff post failed.").slice(0,180));
+  if(!data.note?.id)throw Error("Board did not confirm a saved note.");
+  note(reviewStatus,"Between the Flames saved review request #"+data.note.id+
+   ". Neither the proposed code nor an approval was posted. You can open the board to continue review.");
+ }catch(err){reviewHandoff.disabled=false;note(reviewStatus,String(err.message||"Unable to post summary."));}
 });
 async function handleCode(action){
  const text=code.value;
